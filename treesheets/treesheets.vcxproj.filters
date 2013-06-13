@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="std">
+      <UniqueIdentifier>{f0d0d8ce-94f8-4b97-b0e9-03d326d1cd6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="treesheets">
+      <UniqueIdentifier>{5287dd75-05fd-4552-9817-9991f1f308c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wxwidgets">
+      <UniqueIdentifier>{6ddefa42-3c63-43b7-907a-1bb8eb3fd4e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data">
+      <UniqueIdentifier>{0aa8c6f3-6433-4862-a6a0-6dafbe5877bf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>std</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\stdafx.cpp">
+      <Filter>std</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\stdafx.h">
+      <Filter>std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tools.h">
+      <Filter>std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cell.h">
+      <Filter>treesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\document.h">
+      <Filter>treesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\evaluator.h">
+      <Filter>treesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\grid.h">
+      <Filter>treesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\selection.h">
+      <Filter>treesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\system.h">
+      <Filter>treesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\text.h">
+      <Filter>treesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\myapp.h">
+      <Filter>wxwidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mycanvas.h">
+      <Filter>wxwidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\myevents.h">
+      <Filter>wxwidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\myframe.h">
+      <Filter>wxwidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\src\mywxtools.h">
+      <Filter>wxwidgets</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\TS\docs\history.txt">
+      <Filter>data</Filter>
+    </None>
+    <None Include="..\TODO.txt">
+      <Filter>data</Filter>
+    </None>
+    <None Include="icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="boar.rc" />
+  </ItemGroup>
+</Project>
