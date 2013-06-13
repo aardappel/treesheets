@@ -42,4 +42,4 @@ OSX:
   CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386"
   --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
   --with-macosx-version-min=10.7
-- use the xcode project to build treesheets.
+- use the xcode project in osx/TreeSheets to build treesheets. put the resulting .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.

@@ -1,7 +1,8 @@
 2013-06-02:
+- TreeSheets is now open source! https://github.com/aardappel/treesheets
 - you can now set the background color on a per document basis
 - you can now turn off cursor key navigation of in between cell locations
-- integrated new wxWidgets 2.9.4, which probably fixed a lot of problems, particularly on OS X.
+- integrated new wxWidgets 2.9.4, which probably fixed a lot of problems, particularly on OS X (which has now graduated from Alpha to Beta :).
 - you can now pick a default font size when you pick a default font. This is a per user setting, not per document, other users will open your documents at their preferred size.
 - Edit -> Copy As Continuous Text puts a single line of text merged from any selection into the clipboard. Useful for merging the text of multiple small cells, 
   or making a paragraph out of many cells for use in another application.
