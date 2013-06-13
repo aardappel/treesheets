@@ -1,0 +1,430 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		33306EBF17695BE000AF5315 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EBE17695BE000AF5315 /* Cocoa.framework */; };
+		33306EC917695BE000AF5315 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 33306EC717695BE000AF5315 /* InfoPlist.strings */; };
+		33306EDC17695C5500AF5315 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33306EDB17695C5500AF5315 /* main.cpp */; };
+		33306EF017695EE900AF5315 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEB17695EE900AF5315 /* AudioToolbox.framework */; };
+		33306EF117695EE900AF5315 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEC17695EE900AF5315 /* Carbon.framework */; };
+		33306EF217695EE900AF5315 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EED17695EE900AF5315 /* IOKit.framework */; };
+		33306EF317695EE900AF5315 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEE17695EE900AF5315 /* OpenGL.framework */; };
+		33306EF417695EE900AF5315 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEF17695EE900AF5315 /* QuickTime.framework */; };
+		33306EF91769625C00AF5315 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF51769625C00AF5315 /* images */; };
+		33306EFA1769625C00AF5315 /* docs in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF61769625C00AF5315 /* docs */; };
+		33306EFB1769625C00AF5315 /* examples in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF71769625C00AF5315 /* examples */; };
+		33306EFC1769625C00AF5315 /* readme.html in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF81769625C00AF5315 /* readme.html */; };
+		33306EFF1769648100AF5315 /* App.icns in Resources */ = {isa = PBXBuildFile; fileRef = 33306EFE1769648100AF5315 /* App.icns */; };
+		33306F01176965AD00AF5315 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 33306F00176965AD00AF5315 /* TODO.txt */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		33306EBB17695BE000AF5315 /* TreeSheets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TreeSheets.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		33306EBE17695BE000AF5315 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		33306EC117695BE000AF5315 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		33306EC217695BE000AF5315 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		33306EC317695BE000AF5315 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		33306EC617695BE000AF5315 /* TreeSheets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TreeSheets-Info.plist"; sourceTree = "<group>"; };
+		33306EC817695BE000AF5315 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		33306EDB17695C5500AF5315 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/main.cpp; sourceTree = "<group>"; };
+		33306EDD17695C7500AF5315 /* cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cell.h; path = ../../src/cell.h; sourceTree = "<group>"; };
+		33306EDE17695C7500AF5315 /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = document.h; path = ../../src/document.h; sourceTree = "<group>"; };
+		33306EDF17695C7500AF5315 /* evaluator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evaluator.h; path = ../../src/evaluator.h; sourceTree = "<group>"; };
+		33306EE017695C7500AF5315 /* grid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = grid.h; path = ../../src/grid.h; sourceTree = "<group>"; };
+		33306EE117695C7500AF5315 /* myapp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = myapp.h; path = ../../src/myapp.h; sourceTree = "<group>"; };
+		33306EE217695C7500AF5315 /* mycanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mycanvas.h; path = ../../src/mycanvas.h; sourceTree = "<group>"; };
+		33306EE317695C7500AF5315 /* myevents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = myevents.h; path = ../../src/myevents.h; sourceTree = "<group>"; };
+		33306EE417695C7500AF5315 /* myframe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = myframe.h; path = ../../src/myframe.h; sourceTree = "<group>"; };
+		33306EE517695C7500AF5315 /* mywxtools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mywxtools.h; path = ../../src/mywxtools.h; sourceTree = "<group>"; };
+		33306EE617695C7500AF5315 /* selection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = selection.h; path = ../../src/selection.h; sourceTree = "<group>"; };
+		33306EE717695C7500AF5315 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../src/stdafx.h; sourceTree = "<group>"; };
+		33306EE817695C7500AF5315 /* system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = system.h; path = ../../src/system.h; sourceTree = "<group>"; };
+		33306EE917695C7500AF5315 /* text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = text.h; path = ../../src/text.h; sourceTree = "<group>"; };
+		33306EEA17695C7500AF5315 /* tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tools.h; path = ../../src/tools.h; sourceTree = "<group>"; };
+		33306EEB17695EE900AF5315 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		33306EEC17695EE900AF5315 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		33306EED17695EE900AF5315 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		33306EEE17695EE900AF5315 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		33306EEF17695EE900AF5315 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
+		33306EF51769625C00AF5315 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../../TS/images; sourceTree = "<group>"; };
+		33306EF61769625C00AF5315 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../../TS/docs; sourceTree = "<group>"; };
+		33306EF71769625C00AF5315 /* examples */ = {isa = PBXFileReference; lastKnownFileType = folder; name = examples; path = ../../TS/examples; sourceTree = "<group>"; };
+		33306EF81769625C00AF5315 /* readme.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = readme.html; path = ../../TS/readme.html; sourceTree = "<group>"; };
+		33306EFE1769648100AF5315 /* App.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = App.icns; sourceTree = "<group>"; };
+		33306F00176965AD00AF5315 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO.txt; path = ../../TODO.txt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		33306EB817695BE000AF5315 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33306EF017695EE900AF5315 /* AudioToolbox.framework in Frameworks */,
+				33306EF117695EE900AF5315 /* Carbon.framework in Frameworks */,
+				33306EF217695EE900AF5315 /* IOKit.framework in Frameworks */,
+				33306EF317695EE900AF5315 /* OpenGL.framework in Frameworks */,
+				33306EF417695EE900AF5315 /* QuickTime.framework in Frameworks */,
+				33306EBF17695BE000AF5315 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		33306EB217695BE000AF5315 = {
+			isa = PBXGroup;
+			children = (
+				33306F00176965AD00AF5315 /* TODO.txt */,
+				33306EFE1769648100AF5315 /* App.icns */,
+				33306EFD1769626D00AF5315 /* bundle resources */,
+				33306EDD17695C7500AF5315 /* cell.h */,
+				33306EDE17695C7500AF5315 /* document.h */,
+				33306EDF17695C7500AF5315 /* evaluator.h */,
+				33306EE017695C7500AF5315 /* grid.h */,
+				33306EE117695C7500AF5315 /* myapp.h */,
+				33306EE217695C7500AF5315 /* mycanvas.h */,
+				33306EE317695C7500AF5315 /* myevents.h */,
+				33306EE417695C7500AF5315 /* myframe.h */,
+				33306EE517695C7500AF5315 /* mywxtools.h */,
+				33306EE617695C7500AF5315 /* selection.h */,
+				33306EE717695C7500AF5315 /* stdafx.h */,
+				33306EE817695C7500AF5315 /* system.h */,
+				33306EE917695C7500AF5315 /* text.h */,
+				33306EEA17695C7500AF5315 /* tools.h */,
+				33306EDB17695C5500AF5315 /* main.cpp */,
+				33306EC417695BE000AF5315 /* TreeSheets */,
+				33306EBD17695BE000AF5315 /* Frameworks */,
+				33306EBC17695BE000AF5315 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		33306EBC17695BE000AF5315 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				33306EBB17695BE000AF5315 /* TreeSheets.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		33306EBD17695BE000AF5315 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				33306EEB17695EE900AF5315 /* AudioToolbox.framework */,
+				33306EEC17695EE900AF5315 /* Carbon.framework */,
+				33306EED17695EE900AF5315 /* IOKit.framework */,
+				33306EEE17695EE900AF5315 /* OpenGL.framework */,
+				33306EEF17695EE900AF5315 /* QuickTime.framework */,
+				33306EBE17695BE000AF5315 /* Cocoa.framework */,
+				33306EC017695BE000AF5315 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		33306EC017695BE000AF5315 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				33306EC117695BE000AF5315 /* AppKit.framework */,
+				33306EC217695BE000AF5315 /* CoreData.framework */,
+				33306EC317695BE000AF5315 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		33306EC417695BE000AF5315 /* TreeSheets */ = {
+			isa = PBXGroup;
+			children = (
+				33306EC517695BE000AF5315 /* Supporting Files */,
+			);
+			path = TreeSheets;
+			sourceTree = "<group>";
+		};
+		33306EC517695BE000AF5315 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				33306EC617695BE000AF5315 /* TreeSheets-Info.plist */,
+				33306EC717695BE000AF5315 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		33306EFD1769626D00AF5315 /* bundle resources */ = {
+			isa = PBXGroup;
+			children = (
+				33306EF51769625C00AF5315 /* images */,
+				33306EF61769625C00AF5315 /* docs */,
+				33306EF71769625C00AF5315 /* examples */,
+				33306EF81769625C00AF5315 /* readme.html */,
+			);
+			name = "bundle resources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		33306EBA17695BE000AF5315 /* TreeSheets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 33306ED817695BE000AF5315 /* Build configuration list for PBXNativeTarget "TreeSheets" */;
+			buildPhases = (
+				33306EB717695BE000AF5315 /* Sources */,
+				33306EB817695BE000AF5315 /* Frameworks */,
+				33306EB917695BE000AF5315 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TreeSheets;
+			productName = TreeSheets;
+			productReference = 33306EBB17695BE000AF5315 /* TreeSheets.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		33306EB317695BE000AF5315 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Wouter van Oortmerssen";
+			};
+			buildConfigurationList = 33306EB617695BE000AF5315 /* Build configuration list for PBXProject "TreeSheets" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 33306EB217695BE000AF5315;
+			productRefGroup = 33306EBC17695BE000AF5315 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				33306EBA17695BE000AF5315 /* TreeSheets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		33306EB917695BE000AF5315 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33306EF91769625C00AF5315 /* images in Resources */,
+				33306EFA1769625C00AF5315 /* docs in Resources */,
+				33306EFB1769625C00AF5315 /* examples in Resources */,
+				33306EFC1769625C00AF5315 /* readme.html in Resources */,
+				33306EC917695BE000AF5315 /* InfoPlist.strings in Resources */,
+				33306EFF1769648100AF5315 /* App.icns in Resources */,
+				33306F01176965AD00AF5315 /* TODO.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		33306EB717695BE000AF5315 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33306EDC17695C5500AF5315 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		33306EC717695BE000AF5315 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				33306EC817695BE000AF5315 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		33306ED617695BE000AF5315 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		33306ED717695BE000AF5315 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		33306ED917695BE000AF5315 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"_FILE_OFFSET_BITS=64",
+					__WXMAC__,
+					__WXOSX__,
+					__WXOSX_COCOA__,
+				);
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-2.9",
+					"/usr/local/include/wx-2.9",
+				);
+				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_LDFLAGS = (
+					"-L/usr/local/lib",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-2.9.a",
+					"/usr/local/lib/libwx_baseu_net-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-2.9.a",
+					"/usr/local/lib/libwx_baseu_xml-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-2.9.a",
+					"/usr/local/lib/libwx_baseu-2.9.a",
+					"-lexpat",
+					"-lwxregexu-2.9",
+					"-lwxtiff-2.9",
+					"-lwxjpeg-2.9",
+					"-lwxpng-2.9",
+					"-lz",
+					"-lpthread",
+					"-liconv",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.7;
+				VALID_ARCHS = i386;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		33306EDA17695BE000AF5315 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_FILE_OFFSET_BITS=64",
+					__WXMAC__,
+					__WXOSX__,
+					__WXOSX_COCOA__,
+				);
+				HEADER_SEARCH_PATHS = (
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-2.9",
+					"/usr/local/include/wx-2.9",
+				);
+				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_LDFLAGS = (
+					"-L/usr/local/lib",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-2.9.a",
+					"/usr/local/lib/libwx_baseu_net-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-2.9.a",
+					"/usr/local/lib/libwx_baseu_xml-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-2.9.a",
+					"/usr/local/lib/libwx_baseu-2.9.a",
+					"-lexpat",
+					"-lwxregexu-2.9",
+					"-lwxtiff-2.9",
+					"-lwxjpeg-2.9",
+					"-lwxpng-2.9",
+					"-lz",
+					"-lpthread",
+					"-liconv",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.7;
+				VALID_ARCHS = i386;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		33306EB617695BE000AF5315 /* Build configuration list for PBXProject "TreeSheets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33306ED617695BE000AF5315 /* Debug */,
+				33306ED717695BE000AF5315 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		33306ED817695BE000AF5315 /* Build configuration list for PBXNativeTarget "TreeSheets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33306ED917695BE000AF5315 /* Debug */,
+				33306EDA17695BE000AF5315 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 33306EB317695BE000AF5315 /* Project object */;
+}

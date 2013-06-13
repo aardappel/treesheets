@@ -1,0 +1,324 @@
+2013-06-02:
+- you can now set the background color on a per document basis
+- you can now turn off cursor key navigation of in between cell locations
+- integrated new wxWidgets 2.9.4, which probably fixed a lot of problems, particularly on OS X.
+- you can now pick a default font size when you pick a default font. This is a per user setting, not per document, other users will open your documents at their preferred size.
+- Edit -> Copy As Continuous Text puts a single line of text merged from any selection into the clipboard. Useful for merging the text of multiple small cells, 
+  or making a paragraph out of many cells for use in another application.
+- home/end now move within a line, whereas ctrl+home/end move within the entire text of the cell
+- improved rendering of line rendering style and background color picking
+- added additional space to cell margins
+- hover over wasn't updated during mousewheel scroll
+- optimized drag & drop of external files to not scroll/select while dragging
+- fixed ALT+F etc. not popping up the File menu
+- improved editing of search/replace boxes supporting shift+cursor/home/end etc.
+- on Linux, the Fold operation is now SHIFT+F10 instead of F10 to not clash with Ubuntu pre-defined keys.
+
+2012-04-07:
+- fixed bug caused by right-clicking on a modified selection
+- possibly fixed problem related to "automatically reload files" popping up multiple dialogs at once
+
+2011-08-25:
+- fixed missing UTF-8 charset header in HTML export
+- fixed fold not being preserved on copy/past and undo
+- Now detects when a file that is loaded has been modified on disk by another program / computer,
+  and reloads the file automatically (if it hasn't been changed) or asks (if it has).
+  This allows multiple computers to seamlessly work with 1 treesheets file over services like DropBox.
+  This functionality is by default turned OFF (see Options -> Auto reload documents) because it is
+  potentially expensive if the treesheets file is in a folder with lots of subfolders. 
+  Also not working on network drives at the moment.
+- HOME & END now change selection in a grid
+- INS on a cell that already has a grid now selects the last line of that grid, ready for inserting an item
+- fixed INS not unfolding a folded cell
+- fix for broken OSX clipboard functionality
+- added menu keyboard navigation accellerators
+- fixed bug in CTRL+x on empty text selection
+- fixed bug in CTRL+up/down in text edit mode
+
+2011-04-30:
+- fixed bug in horizontal cell layout text selection
+- clear status message when switching tabs or entering search
+- fixed bug in shift+cursor selection
+- fixed semi-colon CSV import
+- fixed loading a tmp file not marking the document as modified
+
+2011-04-19:
+- folding of grids: Edit -> Toggle Fold (F10) on cell(s) hides the grids they contain.
+  Folded cells will be marked with a '+' symbol in front of them
+  If you zoom into them, you will see the full grid, without having to fold/unfold.
+  A nice alternative to shrinking text if your sheet gets too big.
+- Redo (CTRL+y) now works.
+- an image drop down menu provides a convenient set of images you can quickly add to selected cells
+- there's now a strikethrough style (useful for todo/task lists!) using the CTRL+t shortcut (previously transpose)
+- added alternative (black & white) toolbar icon set (see options menu)
+- "Sort" now sorts on subsequent columns if data in the current column is equal
+- "Sort" can now be either ascending or descending
+- outputs statistics on file when loading
+- added commands to reset text sizes, styles, colors and column widths within the current selection (see Edit menu)
+- [making a lot of edits to a single cell will now set multiple undo points rather than just a single one] -> removed in favor of Redo
+- added shift+del, shift+insert and ctrl+insert as alternatives for ctrl+x, ctrl+v, ctrl+c
+- double clicking grid boundaries now selects that entire grid, not the parent cell
+- option: render document centered or not
+- option: minimize on close
+- option: single click maximize from tray
+- images in front of text rendered centered
+- improved toolbar dropdown rendering & size
+- images don't resize anymore when changing the text size of a cell,
+  instead there's now a function to change the size of an image (Edit -> Images -> Scale)
+- cells shrunks to tiny size don't show images
+- documents always show a small gutter, regardless of size
+- CTRL+f now selects any previous text in the search box, CTRL+a selects all, and HOME/END work too
+- made the interactive tutorial the default help (F1), both it and the old html tutorial available from the menu
+- selects the parent if you cut or delete all children & doesn't allow deleting of all children of the root of the current view
+- fixed filtering making everything tiny if cell text of grid was filtered, now doesn't minimize cells with grids, just greys them out
+- fixed text selection not showing correctly with image in front
+- fixed failing autosave popping up endless dialog boxes
+- fixed undo causing file to be marked as not modified
+- fixed horizontal layout being reset by some operations
+- fixed line style rendering sometimes having wrong background color
+- fixed style settings on "Wrap in new parent"
+- fixed statusbar items not showing fully on some systems
+- fixed bug with badly formatted indented text not being pasted/imported properly
+- fixed selection being off in scaled presentation mode
+- fixed bug with international characters in filenames
+
+2010-11-14:
+- fixed selection box being rendered in the wrong location after switching resolutions
+- fixed it repeatedly trying to save temp files when temp file saving fails
+
+2010-10-15:
+- fixed crash in "Hierarchy Swap" operation on leaf cells
+- "escape" did not exit edit mode, as it used to
+- new cells sometimes would not get applied the correct rendering style (from siblings or parent)
+- changing fonts could leave other open documents with incorrect rendering
+- transpose now keeps a selection
+
+2010-10-10:
+- fixed bug where text background would not be set correctly, mostly resulting in incorrect printouts
+
+2010-09-28:
+- fixed bug that would stop certain operations work on single cell grids (such as browse)
+
+2010-09-20:
+- Added new rendering options for grids, see tutorial.cts for examples, or todo_calendar.cts
+- on multi line text, cursor up & down now moves line by line before moving to the next cell
+- new tabs that have individual close buttons, can be reordered, and by default are at the bottom (use option to move them to the top)
+  CTRL+TAB cycles thru all tabs
+- CTRL+mouse drag moves a cell to a destination (like Cut + Paste)
+  ALT+mouse drag copies a cell to a destination (like Copy + Paste)
+- minimum size of sizing cells is now relative to the current view rather than the root of the document, allowing you to make extremely
+  hierarchical documents (important for presentations).
+- Some operations that work on grids and required you to select the parent cell to operate now also work if you simply select all cells of the grid.
+  This is more intuitive to some people, and also allows these actions on the root grid, which didn't work before.
+  Affected operations sofar: transpose, flatten, hierarchify, and the cell rendering options
+- when loading a file that is already open, instead of the "this file is already loaded" dialog it now simply switches to the open document
+- Added option to swap mousewheel scrolling and zooming operations (make scrolling require CTRL instead of zooming)
+- Made top toolbar more compact to fit on netbook screens better
+- Ctrl+W (close) or closing last tab now simply quits TreeSheets. CTRL+q quits / closes all tabs.
+- When clearing a cell with delete/backspace, it now keeps its colors/styling
+- Statusbar now shows date of last edit of cell you hover over. The furthest these dates go back is cells edited since the 2010-03-10 release
+  of TreeSheets, since older versions didn't record this information.
+- Fixed pasting of NxN grid selections into grids, it behaves much more logical now
+- Fixed potential crash bug in closing tabs
+- On paste, cursor is at the end of the pasted string
+- New grids take default column width from their parent
+- Added column sizing method that does not size any sub grids
+- Improved line-splitting for ( and )
+- Added remove image operation
+- Added seperators to the menus for clarity, and moved some lesser used editing operations into submenus.
+  The roundness setting now shows its current value.
+- Fixed rendering of editing in presentation view
+- Status bar updates even if mouse pointer doesn't move
+- Fixed refresh error in Hierarchy Swap operation, and one related to scrolling
+- Fixed filename being reset on a cancelled Save As
+- Single instance check file under linux is now hidden
+- Rewrote some of the column width related code to make it more robust, fixed several bugs in it
+
+2010-03-22:
+- "Paste Style Only" pastes only the color/style/image from the copied cell into the destination cells, not the text
+- dragging middle mouse button (mousewheel down) now pans
+- Scrolling smoother on "continous" mousewheels
+- Fixed undo resetting column width to default
+- Fixed zoomed in views sometimes not rendering correct background color
+
+2010-03-10:
+- Grid borders can now be rendered with round corners. The "roundness" can be set in the options menu.
+- Added "tags". Tags make cell texts that are used repeatedly easier to assign, recognize, and keep consistent. See menu edit/tags.
+- Added "Toggle Grid Below/Next to Text" (F7) for yet more flexible layout possibilities
+- Added "Hierarchify" and "Flatten" operations that simplify data portability between TreeSheets and spreadsheets
+- Added export to "CSV" format.
+- Added "Hierarchy Swap" (F8) operation (see tutorial)
+- Added "Wrap in new parent" (F9) operation to easily create new hierarchy (works on any selection)
+- Added "filters" (see View menu). A filter forces all cells not included to be shown as 1 pixel characters in lighter grey,
+  so its easy to focus visually on whats important in really large TreeSheets files. Currently, there's filters for the search
+  results, and for a % percent of last edited cells. This feature works because TreeSheets now records the last edit time for
+  each cell. Since older TreeSheets files do not have this information, it may take a while of editing before this feature becomes useful.
+- Completely reworked how columns are sized. Now every column in a grid simply has a character width which can be resized by
+  SHIFT+mousewheel as before, instead of the clumsy per cell linecount. Column width is shown in the statusbar.
+  Resizing affects the column(s) spanning the current selection, and any grids inside of it. Layout is quicker and more
+  predictable. Default column width is 80 characters, so you may have to resize some old treesheets files.
+- When zooming in, now shows you the "context" of what you're looking at in light grey text (the text of all the parent cells)
+- Added "Open File" (F4), which loads a filename in the associated application (paths relative to where the .cts is stored).
+- Improved the UI to be more like other applications and more consistent. Primarily, the mousewheel and PgUp/PgDn now
+  always work the same, without modifiers they scroll, with CTRL they zoom, with SHIFT they change text size, and with
+  ALT they change column size.
+- Support for mousewheel scrolling horizontally (on mice that support it) has been added (NOT TESTED).
+- fixed bug where "replace" could loop indefinitely if the replacement string contained an occurrence of the search string :)
+- Tabs are shown on the left by default (change in options)
+- small improvements to the builtin programming language
+- Option for faster line rendering (useful if you have very complex sheets, or lots of 1 pixel text)
+- text rendering is lots faster on windows now
+- Fixed bug in CVS import where it wouldn't parse linefeeds inside "" correctly
+- Fixed bug where closing some but not all documents could make TreeSheets confused as to which document it is looking at
+- Fixed bug where it could display the wrong filename on tabs/window title due to autosave
+- Linux bug related to unicode keystrokes workaround 
+- Linux now has wxwidgets 2.9 statically linked, so doesn't require that to be installed anymore
+
+2009-11-05:
+- You can now change both the color and width of grid borders
+- Added fullscreen toggle (F11), and scaling toggle (F12): useful for presentations.
+  TreeSheets can do better presentations than powerpoint this way, as you can structure your presentation
+  around hierarchical zooming, which is much more coherent than a sequential set of slides
+- HTML export now sets colors & styles
+- HTML/XML/TXT export now always export the current view instead of the entire document (much like image export)
+- Now remembers all open files when you re-start TreeSheets
+- Added option to show file tabs on the left instead of on top (to save vertical space)
+- The "Open link in browser" and "Go to matching cell" functions now also work on text selections rather than just whole cells
+- Added SHIFT + Home/End operations for text editing (extends selection)
+- improved grid rendering to have a tiny margin
+- improved the way it scrolls the selected cell into view if it is partially out of view
+- find next (F3) zoom in automatically if cell is too small to read
+- Extend Selection to Full Rows/Columns of current selection
+- fixed: deleting the top level grid on a zoomed in view would crash
+- fixed: cancelling new file dialog would crash treesheets
+- fixed: icon did not show in the window frame
+- fixed: filenames could get confused when switching tabs
+- fixed: text editing in both search controls
+- fixed: possible hang in rendering with truely huge treesheets files
+- made the automatic text sizing at zoom a bit more reliable
+- removed the "remove grid" (CTRL+r), "replace parent" and "merge with parent" (CTRL+m) operations,
+  as simply using copy/paste/delete on the cells instead is much more intuitive
+- window now de-minimizes from tray if app is launched again or a treesheets file is launched from explorer
+- shows filename on "discard changes?" dialog
+- updated the tutorial with some recent features, and the spreadsheet language
+- shows <unnamed> on new tabs
+- linux fixes
+
+2009-06-30:
+- Prevents multiple instances being opened, instead files launched will open in the existing instance
+- Will notify you if you accidentally try to open the same file
+- empty cells are now at least square in size
+- shows a "+" instead of a "*" when a file has been modified but has been autosaved
+- fixed ENTER stopped working (caused by tabs)
+- fixed bug that could cause characters to be missing on a multiline rendering
+
+2009-06-25:
+- Multiple documents can now be open in a single TreeSheets instance.
+  - Tabs allow you to switch between them.
+  - copy/paste between seperate files within the same instance of TreeSheets now retain layout and images faithfully.
+- Search functionality:
+  - CTRL+F focuses on search box
+  - press F3 to cycle through all search results
+  - Replace box, type text in here, and then use:
+    - Replace All to replace all occurrences of the current search
+    - Replace in Current Selection: either work in combination with F3 to selectively replace search results,
+      or you can even select a hierarchical subset of all search results and then replace all in that.
+- autosave: saves files that have unsaved modifications to a .tmp whenever the file hasn't been saved for 5 minutes,
+  you go idle for 1 minute, you minimize or deactivate the window, whichever comes first. This file gets removed if you do an explicit save,
+  and you can restore it should your machine crash (TreeSheets will ask you). Does not activate for "new" files that have never been saved before.
+- made multi-cell Paste (and Merge with Parent) not insert unnecessary cells when blank cells are available at the target location
+- added "Minimize to Tray" option
+- added Sort operation: make a 1xN to indicate what column to sort on, and what rows to affect
+- drag & drop of files now works, currently only image files supported (anything else appears as the filename). May support other formats in the future.
+- added seperate XML with attributes import mode (for formats that store their data there, like OPML)
+- CTRL+SHIFT+cursor left & right now select words at a time in edit mode (much like any text editor)
+- automatically increases the number of lines in a cell if text insertions cause it to go over N characters average, configurable from the menu.
+- fixed status bar not updating when changing text size on a cell
+- you can now undo past the point of your last save, all the way to how you loaded it
+- added menu option to disable writing of .bak files on save
+- "Set Print Scale" allows simplistic scaling of print output. No multi-page output yet.
+- fixed image export not clearing background correctly
+- fixed tutorial file not being added to the file history correctly
+
+2009-04-26:
+- fixed thin selections not centering on zoom
+- fixed cursor keys & tab on linux
+
+2009-04-25:
+- can now copy/paste and drag&drop images and text directly from other apps into a treesheet (e.g. web browser, photoshop, etc).
+- you can now select a custom color, and assign it to cells from the color menu
+- improved color/style picking for new rows/columns inserted
+- automatically scrolls & zooms out to bring the current selection in view for most operations (keyboard movement, etc).
+- optimized the screen refreshing
+- when copying a single cell, now properly remembers number of lines, color/style
+- ENTER on grid line selections now inserts a cell
+- SHIFT+leftmouse now enlarges the selection, same as if you had dragged to that location.
+- Export current view as PNG file
+- fixed bug in printer scaling
+- made mousewheel accumulative, to hopefully make zooming work better on continuous mousewheels.
+
+2009-04-19:
+- Added "Go To Matching Cell" (F6) function: will select whatever cell has the same text. If multiple other cells are
+  available, will prefer to go to a cell that has different formatting (color/style) than the current cell (this is
+  to allow this feature to be used as specially marked "links" to a reference cell).
+- as a temporary solution, added a "simple rendering mode" that does not make use of XOR to show selections, and
+  thus renders correctly on on MaxOSX and Linux. It is slower to refresh and does not give hovering feedback, but at
+  least it works. More advanced rendering on these platforms will have to wait until wxWidgets supports wxOverlay's
+  with blending.
+- fixed several issues where the linux version of the wxWidgets behaves differently
+- Made some improvements to make the UI more compliant on the Mac (about/exit menus, drag & drop, some shortcuts)
+- fixed crash bug related to right-clicking outside the treesheet
+- added a "traditional mousewheel" option that swaps the zoom & scroll functions
+- removed the floating grey cursor (it was confusing)
+- the text cursor is now a blinking black line (as in Excel)
+
+2009-04-02:
+- XML export now writes text size/color/style information
+- XML import now recognizes its own XML code (grid sizes, text size/color/style), thus can reconstruct a treesheets file 1:1
+- rewrote the line splitting algorithm to allow more characters to be the splitting point
+- rewrote the column resizing algorithm to work more accurately
+- Added semi-colon CSV format as an alternative to comma CSV import
+- ESC now selects the parent cell of the current selection if not in text edit mode, and SHIFT+ENTER selects the first child
+- added underlined style
+- no longer creates a new selection if you right-click inside an existing selection
+- added keyboard shortcuts for text size and line count (CTRL/SHIFT + PGUP/PGDN)
+- double clicking the current color assigns it directly to the selection, as intended
+- fixed line rendering bug when using colored grids
+
+2009-03-20:
+- every cell can now have its own background and text color
+- shows an edit mouse cursor in text edit mode
+- made ctrl+p mean print rather than replace parent
+- created work-around for cursor left/right & delete not working in the search box
+- fixed bug in Undo coalescing that could cause crash
+
+2009-02-27:
+- automated column resizing! SHIFT+mousewheel now finds the widest (or thinnest) cell in a column instead of just resizing the current cell.
+  Even works on multiple columns at once or hierarchically.
+- added CSV (comma seperated values, for use with Excel), tab delimited text and indented text as import options
+- added outline html export, which loads into Word as an hierarchical set of headers
+- Search box in the toolbar: shows all text that matches the search in red. May add more featureful search & replace in the future
+- ALT + cursor keys or mousewheel scrolls the view
+- Undo undoes all edits in a single cell all at once, and ESC is the same as Undo + leave text mode, when in text mode (just like Excel)
+- Select all (CTRL+a) expands the current selection to the entire grid it is in
+- shift+tab goes to previous cell
+- added "launch in browser" for cells with urls in them (F5)
+- added F2 (rename in my many apps) as an alternative to ENTER to enter text edit mode
+- fixed bug where backspace wouldn't delete entire cell selection
+- fixed unusued special keys (such as F1) showing up as random characters
+
+2009-02-24:
+- doubleclick to select a word (when already in text edit mode), and doubleclick+drag to select a range of words
+- TAB now advanced to the next cell (to the right, or down, or back again to the top) and also selects its contents in text mode.
+- Any cell can now have a "style", sofar available: bold/italic/typewriter
+- increased maximum font size
+- fixed XML export doctype
+
+2009-02-20:
+- initial "polished" release (history below this point deleted)
+
+2009-01-25:
+- initial public release
+
+2009-01-19:
+- closed beta release

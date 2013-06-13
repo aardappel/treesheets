@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>TreeSheets Tutorial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+.style2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+}
+.style6 {font-family: "Courier New", Courier, mono; font-size: medium; font-weight: bold; }
+.style8 {font-family: "Courier New", Courier, mono; font-size: x-large; font-weight: bold; }
+.style11 {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: large; }
+body {
+	background-color: #666666;
+}
+.style13 {font-size: xx-large}
+div#rounded{
+	background: #FFF;
+	width: 580px;
+	margin-left: auto;
+	margin-right: auto;
+}
+div#roundedcontent{
+	padding: 20px;
+}
+b.rtop, b.rbottom{display:block;background: #666}
+b.rtop b, b.rbottom b{display:block;height: 1px; overflow: hidden; background: #FFF}
+b.r1{margin: 0 5px}
+b.r2{margin: 0 3px}
+b.r3{margin: 0 2px}
+b.rtop b.r4, b.rbottom b.r4{margin: 0 1px;height: 2px}
+.style14 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+	font-style: italic;
+	color: #F00;
+}
+-->
+</style>
+</head>
+
+<body>
+
+
+<div id="rounded"><b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b><div id="roundedcontent">
+
+
+<p align="center" class="style11 style13"><img src="images/treesheets_logo.png" width="507" height="156"></p>
+<p align="center" class="style11 style13">Tutorial &amp; Feature description</p>
+<p class="style14">[<strong>Note</strong>: For a much more up to date, in-depth and hands-on tutorial, follow the interactive tutorial that loads up when you first run TreeSheets (or press F1)].</p>
+<p class="style2">Start by creating a new grid (menu <span class="style6">File/New</span>, or <span class="style6">CTRL+N</span>). Don't worry too much about dimensions, inserting/deleting rows and columns is the easiest thing.</p>
+<p class="style2"><img src="images/documentation/new.png" width="59" height="68"></p>
+      <p class="style2">To enter data, simply <span class="style6">LeftClick</span> inside a cell to select it, and start typing:</p>
+      <p class="style2"><img src="images/documentation/edit.png" width="81" height="70"></p>
+      <p class="style2">Once you start typing on a selected cell, a thinner border will indicate that you are in text edit mode (similar to spreadsheets).</p>
+      <p class="style2">Select a grid line (<span class="style6">LeftClick</span>):</p>
+    <p class="style2"><img src="images/documentation/gridline.png" width="88" height="74"></p>
+      <p class="style2">Now start typing to insert a row or column at that location. The new content will end up at between the cells you clicked at (the thicker part of the line selection):</p>
+      <p class="style2"><img src="images/documentation/insert.png" width="87" height="94"></p>
+      <p class="style2">Similarly, we can delete rows or columns by selecting a grid line again:</p>
+      <p class="style2"><img src="images/documentation/gridline2.png" width="86" height="95"></p>
+      <p class="style2">and then using the <span class="style6">BACKSPACE</span> key (for the row above, or the column before) or the <span class="style6">DELETE</span> key (for the row below, or the column after) to delete:</p>
+      <p class="style2"><img src="images/documentation/deleted.png" width="71" height="96"></p>
+      <p class="style2">This intuititively works much like a text editor, try it out. Don't worry about accidental deletions, there's unlimited undo on any actions (<span class="style6">Edit/Undo</span> or <span class="style6">CTRL+Z</span>).</p>
+      <p class="style2">Saving (<span class="style6">File/Save</span> or <span class="style6">CTRL+S</span>, <span class="style6">File/Save As</span>) and Loading (<span class="style6">File/Open</span> or <span class="style6">CTRL+O</span>) work as you expect from any productivity application. TreeSheets automatically loads the last saved <span class="style6">.cts</span> file on startup. Use <span class="style6">File/Export As XML / HTML / Text</span> if you need to use your data outside of TreeSheets.</p>
+      <p class="style2">These are the basics of editing a single grid, but the real fun only starts when you start organizing your data with grids inside other grids. Simply select a single cell, and use <span class="style6">Edit/New Grid</span> or <span class="style6">INSERT</span>:</p>
+      <p class="style2"><img src="images/documentation/pregrid.png" width="70" height="92" align="middle"> <span class="style8">-&gt;</span> <img src="images/documentation/postgrid.png" width="72" height="120" align="middle"></p>
+      <p class="style2">The cell you had selected now has a 1x1 subgrid. Edit this cell, and add some additional cells to this new grid to get the hang of how this new grid works in relation to its parent:</p>
+      <p class="style2"><img src="images/documentation/grid.png" width="129" height="134"></p>
+      <p class="style2">You can select multiple cells simply by using <span class="style6">LeftClick+Drag</span>, much like in spreadsheets. This even works across grid hierarchy levels, where crossing boundaries will automatically select the entire child:</p>
+      <p class="style2"><img src="images/documentation/gridsel1.png" width="124" height="129" align="middle"> or <img src="images/documentation/gridsel2.png" width="127" height="134" align="middle"></p>
+      <p class="style2">Some operations work only on single cells (such as inserting new data above), but many also work on these larger selections. For example, you can use <span class="style6">DELETE</span> to clear/remove any sub selection of a grid, and <span class="style6">CTRL+LEFT|RIGHT|UP|DOWN</span> to move a selection around inside a grid:</p>
+    <p class="style2"><img src="images/documentation/gridsel1.png" width="124" height="129" align="middle"> <span class="style8">-&gt;</span> <img src="images/documentation/gridsel3.png" width="125" height="131" align="middle"></p>
+      <p class="style2">Notice that with every editing operation, resizing to content is automatic. TreeSheets makes organizing data in complex ways really easy, and this way you always get the most compact layout with the ideal usage of space. You can influence how much space anything takes up by using <span class="style6">SHIFT+MouseWheel</span> with any amount of cells selected:</p>
+      <p class="style2"><img src="images/documentation/textsize.png" width="109" height="126"></p>
+      <p class="style2">This changes the <em>relative size</em> of a cell. It is relative to how deeply it is nested (as you saw, a nested grid already had a smaller font). Using relative size is a great tool to make certain important things (such as captions) stand out, and less important data still readable, but very small and thus taking up less space. TreeSheets has been designed with the philosophy that for very large and complex sets of data you should simply be able to shrink data (down to a single pixel per character!) rather than using excessive amounts of space that would require a lot of scrolling around. But once you make something unreadably small, how can you make it readable/editable again? This is where TreeSheets' zooming feature comes in. Simply make any selection, at any level of nesting, and then use the <span class="style6">CTRL+MouseWheel</span> (forward):</p>
+      <p class="style2"><img src="images/documentation/zoomed.png" width="110" height="71"></p>
+      <p class="style2">Every click of the MouseWheel will zoom you in one level, so even very deeply nested grids are instantly reachable with a quick flick of the MouseWheel. And since text sizes are relative, the root of what is currently displayed will always be the default font size, making it readable and editable. This system allows you to create TreeSheets containing huge amounts of data, where only the overal structure is visible at the root level, yet everything is quickly within reach.</p>
+      <p class="style2">Zooming out back to the root is even easier since it doesn't even require a selection: just flick your MouseWheel in the backwards direction.</p>
+      <p class="style2">(Any use of the MouseWheel can be replaced with <span class="style6">PageUp</span>/<span class="style6">PageDown</span>, which may be more convenient on laptops). </p>
+      <p class="style2">TreeSheets will show scrollbars when the current data doesn't fit on screen, but you are encouraged to find out how much easier it is to work without scrollbars, by shrinking items till they fit. You can shrink unimportant text down to single pixels (!) which is then only readably by zooming in. </p>
+      <p class="style2">Another tool to affect the layout of your TreeSheets is the the column width. TreeSheets treats each cell as a single line of text in terms of editing, but you can have that line being word-wrapped across any number of lines you choose. This is useful to stop long lines from stretching the layout of your data. Simply use <span class="style6">ALT+ScrollWheel</span> to increase or decrease the column width:</p>
+      <p class="style2">originally: <img src="images/documentation/long1.png" width="423" height="129" align="middle"></p>
+      <p class="style2">smaller: <img src="images/documentation/long2.png" width="275" height="130" align="middle"></p>
+      <p class="style2">very small: <img src="images/documentation/long3.png" width="174" height="165" align="middle"></p>
+      <p class="style2">Cut (<span class="style6">Edit/Cut</span> or <span class="style6">CTRL+X</span>), Copy (<span class="style6">Edit/Copy</span> or <span class="style6">CTRL+C</span>) and Paste (<span class="style6">Edit/Paste</span> or <span class="style6">CTRL+V</span>) work as you expect, though the destination for Paste is expected to be a single cell. Copy and Paste works too and from other applications as well, with any selection being converted to lines of text, with indentation indicating hierarchy levels. Similarly, if you have any text that uses indentention for hierarchy, pasting it into TreeSheets will reproduce that structure.</p>
+    <p class="style2">Other fun functionality to try:</p>
+      <ul>
+        <li><p class="style2">Use the <span class="style6">cursor keys</span> to move your selection around, or even <span class="style6">Enter</span> to move to the next line</p></li>
+        <li><p class="style2">Import from XML, or copy paste any ascii text into a cell with indentation will create a tree structure according to the indentation</p></li>
+        <li><p class="style2">Set your favourite font to view your TreeSheets with (<span class="style6">View/Pick Default Font</span>)</p></li>
+        <li>
+          <p class="style2">You can add images to any cell (<span class="style6">Edit/Images...</span>). The image will be conveniently stored as part of the file. Once you have loaded an image into a cell once, you can copy paste it to any number of cells within the sheet. Images are always rendered in front of any text that is also part of the cell (and above any subgrid), if you want a different orientation, simply put text and images in seperate cells.</p></li>
+        <li class="style2">TreeSheets has lots of styling and layout options (check out the screenshots page for some examples)</li>
+      </ul>      
+    
+    
+</div><b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b></div>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+File format spec for TreeSheets .cts files, version 16. This should be enough for a programmer to write an importer/exporter
+
+struct File     // not really a struct, i.e. no alignment, read an element at a time
+{
+    char magic[4] = "TSFF";
+    char version = 16;
+    
+    Image images[0 or more];
+
+    char ident = 'D';   // marks start of document, and end of list of images
+
+    // the remainder of the file from here is written as a zlib compressed stream
+    Cell root;
+
+    String tagnames[1 or more, terminated by empty string];
+}
+
+struct Image
+{
+    char ident = 'I';   // marks start of image
+    char png_data[len]; // whatever format wxImage::LoadFile uses
+    // to know len, you need to parse the png chunks
+    // sadly this means there's no way to read the Cells without doing so
+}
+
+struct Cell
+{
+    uchar celltype;     // enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV };
+    uint cellcolor;
+    uint textcolor;
+    uchar drawstyle;    // enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };
+    uchar cellcontents; // enum { TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+    if (TS_TEXT or TS_BOTH)
+    {
+        String text;
+        uint relativesize;
+        uint imageindex; // or 0xFFFFFFFF for no image
+        uint stylebits;   // enum { STYLE_BOLD = 1, STYLE_ITALIC = 2, STYLE_FIXED = 4, STYLE_UNDERLINE = 8, STYLE_STRIKETHRU = 16 };
+        uint64 lastedit;    // internal representation of wxDateTime
+    }
+    if (TS_GRID or TS_BOTH)
+    {
+        uint xs, ys;
+        uint bordercolor;
+        uint user_grid_outer_spacing;
+        uchar verticaltextandgrid;
+        uchar folded;
+        uint columnwidths[xs];
+        Cell cells[xs * ys]; // row major
+    }
+}
+
+struct String  // as wxDataOutputStream::WriteString writes it, apparently UTF-8 prefixed by length
