@@ -293,8 +293,8 @@ struct MyFrame : wxFrame
         editmenu->Append(A_WRAP,        L"&Wrap in new parent\tF9",             L"Creates a new level of hierarchy around the current selection");
         editmenu->AppendSeparator();
         editmenu->Append(A_FOLD,        L"Toggle Fold\t"
-            #ifdef __WXGTK__
-                L"SHIFT+F10", 
+            #ifndef WIN32
+                L"SHIFT+F10",   // F10 is tied to the OS on both Ubuntu and OS X
             #else
                 L"F10", 
             #endif
