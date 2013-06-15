@@ -2,8 +2,7 @@
 
 
 LINUX:
-- MUST make sure F10 is assigned to something else on linux
-- check default font
+- apparently on some systems only every second keystroke arrives at the treesheets view? how to reproduce this?
 - check 12.04 for libgtk error
 
 - VIDEO! on the site, showing how the basics work
