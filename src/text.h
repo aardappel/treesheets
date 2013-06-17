@@ -76,6 +76,7 @@ struct Text
         i = p;
         
         while(i<l && t[i]!=L' ' && !IsWord(t[i])) { i++; p++; };  // gobble up any trailing punctuation
+        if (i != start && i<l && (t[i]=='\"' || t[i]=='\'')) { i++; p++; } // special case: if punctuation followed by quote, quote is meant to be part of word
         
         while(i<l && t[i]==L' ')    // gobble spaces, but do not copy them
         {
