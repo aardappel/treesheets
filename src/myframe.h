@@ -227,7 +227,7 @@ struct MyFrame : wxFrame
         stmenu->Append(A_BOLD,   L"Toggle cell &BOLD\tCTRL+b");
         stmenu->Append(A_ITALIC, L"Toggle cell &ITALIC\tCTRL+i");
         stmenu->Append(A_TT,     L"Toggle cell &typewriter");
-        stmenu->Append(A_UNDERL, L"Toggle cell &underlined");
+        stmenu->Append(A_UNDERL, L"Toggle cell &underlined\tCTRL+u");
         stmenu->Append(A_STRIKET,L"Toggle cell &strikethrough\tCTRL+t");
         stmenu->AppendSeparator();
         stmenu->Append(A_RESETSTYLE, L"&Reset text styles");
