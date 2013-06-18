@@ -5,13 +5,9 @@ If instead you just want to USE TreeSheets, you may be better off with the binar
 
 TreeSheets has been licensed under the ZLIB license (see ZLIB_LICENSE.txt).
 
-src contains all source code. The code is dense, terse, and with few comments, typical for a codebase that was never intended
-to be used by more than one person (me). On the positive side, you'll find the code very small and simple, with all functionality
-easy to find and only in one place (no copy pasting or over-engineering). Enjoy.
+src contains all source code. The code is dense, terse, and with few comments, typical for a codebase that was never intended to be used by more than one person (me). On the positive side, you'll find the code very small and simple, with all functionality easy to find and only in one place (no copy pasting or over-engineering). Enjoy.
 
-TS is the folder that contains all user-facing files, typically the build process results in an executable to be put in the root
-of this folder, and distributing to users is then a matter of giving them this folder. On windows, TS_installer.nsi
-creates a nice installer (install nsis first).
+TS is the folder that contains all user-facing files, typically the build process results in an executable to be put in the root of this folder, and distributing to users is then a matter of giving them this folder.
 
 TODO.txt is the random notes I kept on ideas of myself and others on what future features could be added.
 
@@ -41,7 +37,8 @@ Linux:
 OSX:
 - build wxWidgets 2.9.4 as usual on OS X, but use whatever variant of these options to configure work for you:
   --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa
-  CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386"
+  CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386"
+  OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386"
   --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
   --with-macosx-version-min=10.7
 - use the xcode project in osx/TreeSheets to build treesheets. put the resulting .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.
