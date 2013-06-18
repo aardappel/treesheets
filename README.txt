@@ -30,11 +30,13 @@ Windows:
 - close the wxWidgets sln
 - "treesheets" contains the Visual Studio 2010 files for treesheets, open the .sln.
   If you've done the above correctly, TreeSheets will now compile and pick up the wxWidgets libraries.
+- to distribute, build an installer with TS_installer.nsi (requires nsis.sourceforge.net)
 
 Linux:
 - build wxWidgets 2.9.4 as usual on linux, but use these arguments to configure:
   --enable-unicode --enable-optimize=-O2 --disable-shared
 - in the src folder build.sh should now compile treesheets without errors.
+- the exe is in the TS folder, tgz this folder to distribute
 
 OSX:
 - build wxWidgets 2.9.4 as usual on OS X, but use whatever variant of these options to configure work for you:
