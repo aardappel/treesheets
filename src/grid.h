@@ -1035,7 +1035,7 @@ struct Grid
         Selection s(this, 1, 0, xs-1, ys);
         MultiCellDeleteSub(doc, s);
         
-        foreachcell(c) if(c->grid) c->grid->Hierarchify(doc);    
+        foreachcell(c) if(c->grid && c->grid->xs > 1) c->grid->Hierarchify(doc);    
     }
 
     void MergeRow(Grid *tm)
