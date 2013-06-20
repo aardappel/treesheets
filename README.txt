@@ -41,4 +41,5 @@ OSX:
   OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386"
   --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
   --with-macosx-version-min=10.7
+- alternatively, replace 10.7 in the above 2 locations with 10.6, and google how to install the old 10.6 SDK in the newest Xcode (which only comes with 10.7 onwards).
 - use the xcode project in osx/TreeSheets to build treesheets. put the resulting .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.
