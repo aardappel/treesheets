@@ -872,7 +872,8 @@ struct Document
                 {                
                     if(k<' ') break;
                     #ifndef __WXMAC__   // k==uk appears to be the case on mac, yet this is still needed?
-                    if(k!=uk) break; // FIXME: I see no other way to filter out unused control keys (such as F1) being interpreted as unicode keys
+                    //this check breaks unicode input for some languages (e.g. czech), if there are any unused control keys remaining we'll have to filter them elsewhere. Besides, getting a random unicode char if you hit unused control keys is a benign bug
+                    //if(k!=uk) break; // FIXME: I see no other way to filter out unused control keys being interpreted as unicode keys
                     #endif
                 }
 
