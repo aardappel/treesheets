@@ -838,72 +838,45 @@ struct Document
     const char *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed)
     {
         Cell *c = selected.GetCell();
-
-        switch(k)
+        
+        if (uk == WXK_NONE)
         {
-            //case WXK_NUMPAD_DELETE:     // potentially interferes with a unicode key, no solution for this? -> doesn't ever get triggered? get WXK_NUMPAD_DECIMAL instead
-            //case WXK_DELETE:            // this one can't be caught by a menu always, unlike INS? but doesn't interfere.
-            //    return Action(dc, A_DELETE);
-
-            case WXK_BACK:              // no menu shortcut available in wxwidgets, but doesn't interfere
-                return Action(dc, A_BACKSPACE);
-
-            case WXK_RETURN:            // doesn't interfere
-                return Action(dc, A_ENTERCELL);
-
-            case WXK_ESCAPE:            // docs say it can be used as a menu accelerator, but it does not trigger from there?
-                return Action(dc, A_CANCELEDIT);
-
-            
-            #ifdef __WXGTK__        // should not be needed... another wxwidgets incompatibility
-            case WXK_LEFT:  return Action(dc, A_LEFT);
-            case WXK_RIGHT: return Action(dc, A_RIGHT);
-            case WXK_UP:    return Action(dc, A_UP);
-            case WXK_DOWN:  return Action(dc, A_DOWN);  
-            case WXK_TAB:   return Action(dc, A_NEXT);
-            #endif
-            
-            
-            default:
+            switch(k)
             {
-                if(uk<' ') break;
-            
-                if(k)           // under linux, a unicode key arrives with k==0, under windows k==uk
-                {                
-                    if(k<' ') break;
-                    #ifndef __WXMAC__   // k==uk appears to be the case on mac, yet this is still needed?
-                    //this check breaks unicode input for some languages (e.g. czech), if there are any unused control keys remaining we'll have to filter them elsewhere. Besides, getting a random unicode char if you hit unused control keys is a benign bug
-                    //if(k!=uk) break; // FIXME: I see no other way to filter out unused control keys being interpreted as unicode keys
-                    #endif
-                }
+                case WXK_BACK:              // no menu shortcut available in wxwidgets
+                    return Action(dc, A_BACKSPACE);
 
-                if(!selected.g) return NoSel();
+                case WXK_RETURN:         
+                    return Action(dc, A_ENTERCELL);
 
-                if(!(c = selected.ThinExpand(this))) return OneCell();
-
-                //int sx = c->parent->sx;
-                //int sy = c->parent->sy;
-
-                ShiftToCenter(dc);
-
-                c->AddUndo(this);   // FIXME: not needed for all keystrokes, or at least, merge all keystroke undos within same cell
-
-                if(!selected.TextEdit()) c->text.Clear(this, selected);
-
-                c->text.Key(uk, selected);
-
-                /* FIXME: doesn't speed up that much because drawcalls still happen... and rendering errors
-                // see if we can manage to refresh just this small area
-                Layout(dc);
-                if(sx==c->parent->sx && sy==c->parent->sy)
-                {
-                RefreshCell();
-                return;
-                }
-                */
-                ScrollIfSelectionOutOfView(dc, selected, true);
-                return NULL;
+                case WXK_ESCAPE:            // docs say it can be used as a menu accelerator, but it does not trigger from there?
+                    return Action(dc, A_CANCELEDIT);
+                
+                #ifdef __WXGTK__        // should not be needed... another wxwidgets incompatibility
+                case WXK_LEFT:  return Action(dc, A_LEFT);
+                case WXK_RIGHT: return Action(dc, A_RIGHT);
+                case WXK_UP:    return Action(dc, A_UP);
+                case WXK_DOWN:  return Action(dc, A_DOWN);  
+                case WXK_TAB:   return Action(dc, A_NEXT);
+                #endif
             }
+        }
+        else if(uk >= ' ')
+        {
+            if(!selected.g) return NoSel();
+            
+            if(!(c = selected.ThinExpand(this))) return OneCell();
+            
+            ShiftToCenter(dc);
+            
+            c->AddUndo(this);   // FIXME: not needed for all keystrokes, or at least, merge all keystroke undos within same cell
+            
+            if(!selected.TextEdit()) c->text.Clear(this, selected);
+            
+            c->text.Key(uk, selected);
+            
+            ScrollIfSelectionOutOfView(dc, selected, true);
+            return NULL;
         }
         
         unprocessed = true;

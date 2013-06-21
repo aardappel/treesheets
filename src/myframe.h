@@ -429,6 +429,7 @@ struct MyFrame : wxFrame
                 #endif
                 );
             #ifdef __WXMAC__
+                // these don't seem to work anymore in the newer wxWidgets, handled in the menu event handler below instead
                 wxApp::s_macAboutMenuItemId = A_ABOUT;
                 wxApp::s_macExitMenuItemId = A_EXIT;
                 wxApp::s_macPreferencesMenuItemId = A_DEFFONT;      // we have no prefs, so for now just select the font
@@ -730,9 +731,18 @@ struct MyFrame : wxFrame
 
             case A_SEARCHF: filter->SetFocus(); filter->SetSelection(0, 1000); break;
             
+            #ifdef __WXMAC__
+            case wxID_OSX_HIDE:       Iconize(true); break;
+            case wxID_OSX_HIDEOTHERS: sw->Status("NOT IMPLEMENTED"); break;
+            case wxID_OSX_SHOWALL:    Iconize(false); break;
+            case wxID_ABOUT:          sw->doc->Action(dc, A_ABOUT); break;
+            case wxID_PREFERENCES:    sw->doc->Action(dc, A_DEFFONT); break;
+            case wxID_EXIT:           // FALL THRU:
+            #endif
             case A_EXIT: fromclosebox = false; this->Close(); break;
 
             case A_CLOSE: sw->doc->Action(dc, ce.GetId()); break;   // sw dangling pointer on return
+                
 
             default:
                 if(ce.GetId()>=wxID_FILE1 && ce.GetId()<=wxID_FILE9)
