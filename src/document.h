@@ -839,7 +839,7 @@ struct Document
     {
         Cell *c = selected.GetCell();
         
-        if (uk == WXK_NONE)
+        if (uk == WXK_NONE || k < ' ')
         {
             switch(k)
             {
