@@ -1246,6 +1246,7 @@ struct Document
             case A_CANCELEDIT:
                 if(selected.TextEdit()) break;
                 if(selected.g->cell->parent) { selected = selected.g->cell->parent->grid->FindCell(selected.g->cell); ScrollOrZoom(dc); }
+                else { selected.SelAll(); Refresh(); }
                 return NULL;
 
             case A_NEWGRID:
