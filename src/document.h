@@ -1571,7 +1571,7 @@ struct Document
         #ifdef __WXMAC__
             (col.Red()<<16)+(col.Green()<<8)+col.Blue();
         #else
-            col.GetPixel()&0xFFFFFF;
+            (col.Blue()<<16)+(col.Green()<<8)+col.Red();
         #endif
         return -1;
     }
