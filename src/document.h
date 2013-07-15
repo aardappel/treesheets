@@ -1306,6 +1306,7 @@ struct Document
             {
                 if(!(c = selected.ThinExpand(this))) return OneCell();
                 wxString fn = ::wxFileSelector(L"Please select an image file:", L"", L"", L"", L"*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR);
+                c->AddUndo(this);
                 LoadImageIntoCell(fn, c);
                 Refresh();
                 return NULL;
@@ -1595,7 +1596,6 @@ struct Document
 
     void PasteSingleText(Cell *c, const wxString &t)
     {
-        c->AddUndo(this);
         c->text.Insert(this, t, selected);
     }
 
@@ -1614,6 +1614,7 @@ struct Document
                 if(as.size())
                 {
                     if(as.size()>1) sw->Status("cannot drag & drop more than 1 file");
+                    c->AddUndo(this);
                     if(!LoadImageIntoCell(as[0], c)) PasteSingleText(c, as[0]); 
                     Refresh();
                 }
@@ -1628,6 +1629,7 @@ struct Document
                     c->AddUndo(this);
                     SetImageBM(c, dataobji->GetBitmap().ConvertToImage());
                     dataobji->SetBitmap(wxNullBitmap);
+                    c->Reset();
                     Refresh();
                 }
                 break;
@@ -1664,6 +1666,7 @@ struct Document
                         {
                             if(as.size()<=1)
                             {
+                                c->AddUndo(this);
                                 PasteSingleText(c, as[0]);
                             }
                             else
@@ -1815,13 +1818,14 @@ struct Document
         wxImage im;
         if(!im.LoadFile(fn)) return false;
 
-        c->AddUndo(this);
         SetImageBM(c, im);
+        c->Reset();
         return true;
     }
 
     void ImageChange(wxString &fn)
     {
+        selected.g->cell->AddUndo(this);
         loopallcellsselnorec(c) LoadImageIntoCell(fn, c);
         Refresh();
     }
