@@ -1,3 +1,7 @@
+since development moved to GitHub, the list of changes here may not be up to date.
+The most accurate list of changes will be GitHub commit history:
+https://github.com/aardappel/treesheets/commits/master
+
 2013-06-02:
 - TreeSheets is now open source! https://github.com/aardappel/treesheets
 - you can now set the background color on a per document basis
