@@ -319,6 +319,7 @@ struct MyFrame : wxFrame
         semenu->Append(A_SEARCHF,     L"&Search\tCTRL+f");
         semenu->Append(A_SEARCHNEXT,  L"&Go To Next Search Result\tF3");
         semenu->Append(A_REPLACEONCE, L"&Replace in Current Selection\tCTRL+h");
+        semenu->Append(A_REPLACEONCEJ,L"&Replace in Current Selection & Jump Next\tCTRL+j");
         semenu->Append(A_REPLACEALL,  L"Replace &All");        
 
         wxMenu *scrollmenu = new wxMenu();
@@ -772,6 +773,7 @@ struct MyFrame : wxFrame
     {
         sys->searchstring = ce.GetString().Lower();
         Document *doc = GetCurTab()->doc;
+        doc->selected.g = NULL;
         if(doc->searchfilter) doc->SetSearchFilter(sys->searchstring.Len()!=0);
         else doc->Refresh();
         GetCurTab()->Status();

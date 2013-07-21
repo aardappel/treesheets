@@ -412,8 +412,11 @@ struct Cell
         if(text.t.Lower().Find(search)>=0)
         {
             if(lastwasselected) best = this;
-            lastwasselected = selected==this;
+            lastwasselected = false;
         }
+
+        if(selected==this) lastwasselected = true;
+
         if(grid) best = grid->FindNextSearchMatch(search, best, selected, lastwasselected);
         return best;
     }

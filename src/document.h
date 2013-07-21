@@ -1091,14 +1091,7 @@ struct Document
 
             case A_SEARCHNEXT:
             {
-                if(!sys->searchstring.Len()) return "no search string";
-                bool lastsel = true;
-                Cell *next = rootgrid->FindNextSearchMatch(sys->searchstring, NULL, selected.GetCell(), lastsel);
-                if(!next) return "no matches for search";
-                selected = next->parent->grid->FindCell(next);
-                sw->SetFocus();
-                ScrollOrZoom(dc, true);                
-                return NULL;
+                return SearchNext(dc);
             }
             
             case A_ROUND0:
@@ -1325,9 +1318,11 @@ struct Document
             case A_SORT:  return Sort(false);
             
             case A_REPLACEONCE:
+            case A_REPLACEONCEJ:
             {
                 if (!sys->searchstring.Len()) return "no search";
                 selected.g->ReplaceStr(this, sys->frame->replaces->GetValue(), selected);
+                if(k==A_REPLACEONCEJ) return SearchNext(dc);
                 return NULL;
             }
             
@@ -1563,6 +1558,18 @@ struct Document
             case A_END:  DrawSelect(dc, selected); c->text.HomeEnd(selected, false); DrawSelectMove(dc, selected); return NULL;
             default: return "internal error: unimplemented operation!";
         }
+    }
+
+    char *SearchNext(wxDC &dc)
+    {
+        if(!sys->searchstring.Len()) return "no search string";
+        bool lastsel = true;
+        Cell *next = rootgrid->FindNextSearchMatch(sys->searchstring, NULL, selected.GetCell(), lastsel);
+        if(!next) return "no matches for search";
+        selected = next->parent->grid->FindCell(next);
+        sw->SetFocus();
+        ScrollOrZoom(dc, true);                
+        return NULL;
     }
 
     uint PickColor(wxFrame *fr, uint defcol)
