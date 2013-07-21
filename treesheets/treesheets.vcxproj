@@ -127,7 +127,7 @@
     <Link>
       <AdditionalDependencies>libcmtd.lib;libcpmtd.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw29ud_core.lib;wxbase29ud.lib;opengl32.lib;wxmsw29ud_gl.lib;wxmsw29ud_adv.lib;wxpngd.lib;wxzlibd.lib;wxjpegd.lib;wxtiffd.lib;wxbase29ud_xml.lib;wxexpatd.lib;wxmsw29ud_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\TS\TreeSheets64DBG.exe</OutputFile>
-      <AdditionalLibraryDirectories>C:\w\treesheets\wxwidgets294\lib\vc_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\w\treesheets\wxwidgets294\lib\vc_lib64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -183,7 +183,7 @@
     <Link>
       <AdditionalDependencies>libcmt.lib;libcpmt.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw29u_core.lib;wxbase29u.lib;wxmsw29u_adv.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;wxbase29u_xml.lib;wxexpat.lib;wxmsw29u_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\TS\TreeSheets64.exe</OutputFile>
-      <AdditionalLibraryDirectories>C:\w\treesheets\wxwidgets294\lib\vc_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\w\treesheets\wxwidgets294\lib\vc_lib64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -158,13 +158,13 @@ struct MyFrame : wxFrame
         wxMenu *sizemenu = new wxMenu();
         sizemenu->Append(A_INCSIZE,    L"&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP");
         sizemenu->Append(A_DECSIZE,    L"&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN");
-        sizemenu->Append(A_RESETSIZE,  L"&Reset text sizes");
+        sizemenu->Append(A_RESETSIZE,  L"&Reset text sizes\tSHIFT+CTRL+s");
         sizemenu->AppendSeparator();
         sizemenu->Append(A_INCWIDTH,   L"Increase column width (ALT+mousewheel)\tALT+PGUP");
         sizemenu->Append(A_DECWIDTH,   L"Decrease column width (ALT+mousewheel)\tALT+PGDN");
         sizemenu->Append(A_INCWIDTHNH, L"Increase column width (no sub grids)\tCTRL+ALT+PGUP");
         sizemenu->Append(A_DECWIDTHNH, L"Decrease column width (no sub grids)\tCTRL+ALT+PGDN");
-        sizemenu->Append(A_RESETWIDTH, L"Reset column widths");
+        sizemenu->Append(A_RESETWIDTH, L"Reset column widths\tSHIFT+CTRL+w");
 
         wxMenu *bordmenu = new wxMenu();
         bordmenu->Append(A_BORD1, L"&1");
@@ -230,8 +230,8 @@ struct MyFrame : wxFrame
         stmenu->Append(A_UNDERL, L"Toggle cell &underlined\tCTRL+u");
         stmenu->Append(A_STRIKET,L"Toggle cell &strikethrough\tCTRL+t");
         stmenu->AppendSeparator();
-        stmenu->Append(A_RESETSTYLE, L"&Reset text styles");
-        stmenu->Append(A_RESETCOLOR, L"Reset &colors");
+        stmenu->Append(A_RESETSTYLE, L"&Reset text styles\tSHIFT+CTRL+t");
+        stmenu->Append(A_RESETCOLOR, L"Reset &colors\tSHIFT+CTRL+c");
 
         wxMenu *tagmenu = new wxMenu();
         tagmenu->Append(A_TAGADD,    L"&Add Cell Text as Tag");
