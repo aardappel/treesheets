@@ -230,7 +230,7 @@ struct MyFrame : wxFrame
         stmenu->Append(A_UNDERL, L"Toggle cell &underlined\tCTRL+u");
         stmenu->Append(A_STRIKET,L"Toggle cell &strikethrough\tCTRL+t");
         stmenu->AppendSeparator();
-        stmenu->Append(A_RESETSTYLE, L"&Reset text styles\tSHIFT+CTRL+t");
+        stmenu->Append(A_RESETSTYLE, L"&Reset text styles\tSHIFT+CTRL+r");
         stmenu->Append(A_RESETCOLOR, L"Reset &colors\tSHIFT+CTRL+c");
 
         wxMenu *tagmenu = new wxMenu();
@@ -239,7 +239,7 @@ struct MyFrame : wxFrame
         tagmenu->Append(A_NOP,       L"&Set Cell Text to tag (use CTRL+RMB)", L"Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu");
 
         wxMenu *orgmenu = new wxMenu();
-        orgmenu->Append(A_TRANSPOSE,   L"&Transpose",                          L"changes the orientation of a grid");
+        orgmenu->Append(A_TRANSPOSE,   L"&Transpose\tSHIFT+CTRL+t",            L"changes the orientation of a grid");
         orgmenu->Append(A_SORT,        L"Sort &Ascending",                     L"Make a 1xN selection to indicate which column to sort on, and which rows to affect");
         orgmenu->Append(A_SORTD,       L"Sort &Descending",                    L"Make a 1xN selection to indicate which column to sort on, and which rows to affect");
         orgmenu->Append(A_HSWAP,       L"Hierarchy &Swap\tF8",                 L"Swap all cells with this text at this level (or above) with the parent");        

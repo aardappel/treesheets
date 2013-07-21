@@ -358,7 +358,7 @@ struct Grid
         else      { Cell *c = C(s.x, s.y-(s.y==ys)); int y = c->GetY(doc)+(c->sy+g_line_width+cell_margin)*(s.y==ys)-g_line_width-cell_margin; loop(line, g_line_width) dc.DrawLine(max(cell->GetX(doc), doc->originx), y+line, min(cell->GetX(doc)+cell->sx, doc->maxx), y+line); DrawRectangle(dc, colour, c->GetX(doc), y-1, c->sx, g_line_width+2); }
     }
 
-    wxRect GetRect(Document *doc, Selection &s)
+    wxRect GetRect(Document *doc, Selection &s, bool minimal = false)
     {
         if(s.Thin())
         {
@@ -377,8 +377,11 @@ struct Grid
         {
             Cell *tl = C(s.x, s.y);
             Cell *br = C(s.x+s.xs-1, s.y+s.ys-1);
-            return wxRect(tl->GetX(doc)-cell_margin, tl->GetY(doc)-cell_margin, br->GetX(doc)+br->sx-tl->GetX(doc)+cell_margin*2,
-                                                                                br->GetY(doc)+br->sy-tl->GetY(doc)+cell_margin*2);        
+            wxRect r(tl->GetX(doc)-cell_margin, tl->GetY(doc)-cell_margin, br->GetX(doc)+br->sx-tl->GetX(doc)+cell_margin*2,
+                                                                            br->GetY(doc)+br->sy-tl->GetY(doc)+cell_margin*2);   
+            if (minimal && tl == br) r.width -= tl->sx - tl->minx;
+
+            return r;
         }
     }
 
