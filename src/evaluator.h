@@ -1,4 +1,7 @@
 
+/*
+    A structure describing an operation.
+*/
 struct Operation
 {
     const char *args;
@@ -17,6 +20,9 @@ struct Operation
 WX_DECLARE_STRING_HASH_MAP(Operation *, wxHashMapOperation);
 WX_DECLARE_STRING_HASH_MAP(Cell *, wxHashMapCell);
 
+/*
+    Provides running evaluation of a grid.
+*/
 struct Evaluator
 {
     wxHashMapOperation ops;
@@ -74,7 +80,8 @@ struct Evaluator
 
     Cell *Lookup(wxString &name)
     {
-        return vars[name]->Clone(NULL);
+        wxHashMapCell::iterator lookup = vars.find(name);
+        return (lookup != vars.end()) ? lookup->second->Clone(NULL) : NULL;
     }
 
     void Assign(wxString &name, Cell *val)

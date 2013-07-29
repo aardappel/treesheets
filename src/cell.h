@@ -1,5 +1,17 @@
 
+/* The evaluation types for a cell. 
+CT_DATA: "Data"
+CT_CODE: "Operation"
+CT_VARD: "Variable Assign"
+CT_VARU: "Variable Read"
+CT_VIEWH: "Horizontal View"
+CT_VIEWV: "Vertical View"
+*/
 enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV };
+
+/* The drawstyles for a cell:
+
+*/
 enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };
 
 struct Cell
@@ -379,6 +391,7 @@ struct Cell
 
     Cell *Eval(Evaluator &ev)
     {
+        // Evaluates the internal grid if it exists, otherwise evaluate the text.
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 

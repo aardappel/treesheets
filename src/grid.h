@@ -753,12 +753,14 @@ struct Grid
         ev.vert = vert;
         switch(ct)
         {
+            // Var assign
             case CT_VARD:
                 if(vert) return acc;
                 if(!acc) return NULL;
                 ev.Assign(c->text.t, acc->Clone(NULL));
                 return acc;
 
+            // View
             case CT_VIEWV:
             case CT_VIEWH:
                 if(vert ? ct==CT_VIEWH : ct==CT_VIEWV)
@@ -771,6 +773,7 @@ struct Grid
                 c->celltype = ct;
                 return acc;
 
+            // Operation
             case CT_CODE:
             {
                 Operation *op = ev.FindOp(c->text.t);
@@ -786,6 +789,7 @@ struct Grid
                 }
             }
 
+            // Var read, Data
             default:
                 DELETEP(acc);
                 return c->Eval(ev);
