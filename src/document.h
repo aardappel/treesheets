@@ -1246,11 +1246,11 @@ struct Document
                     case A_MARKVARU:  newcelltype = CT_VARU; break;
                     case A_MARKVIEWH: newcelltype = CT_VIEWH; break;
                     case A_MARKVIEWV: newcelltype = CT_VIEWV; break;
-                    case A_MARKCODE: newcelltype = sys->ev.InferCellType(c->text); break;
+                    case A_MARKCODE: newcelltype = CT_CODE; break;
                 }
                 selected.g->cell->AddUndo(this);
                 loopallcellsselnorec(c) {
-                    c->celltype = newcelltype;
+                    c->celltype = (newcelltype == CT_CODE) ? sys->ev.InferCellType(c->text) : newcelltype;
                     Refresh();
                 }
                 return NULL;
