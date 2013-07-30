@@ -1560,7 +1560,7 @@ struct Document
         }
     }
 
-    char *SearchNext(wxDC &dc)
+    char const *SearchNext(wxDC &dc)
     {
         if(!sys->searchstring.Len()) return "no search string";
         bool lastsel = true;

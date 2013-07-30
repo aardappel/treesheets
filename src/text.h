@@ -343,7 +343,7 @@ struct Text
         }
     }
 
-    void Save(wxDataOutputStream &dos)
+    void Save(wxDataOutputStream &dos) const
     {
         dos.WriteString(t.wx_str());
         dos.Write32(relsize);
@@ -385,8 +385,12 @@ struct Text
     {
         switch(cell->celltype)
         {
+            // Load variable's data.
             case CT_VARU: return ev.Lookup(t);
+
+            // Return our current data.
             case CT_DATA: return cell->Clone(NULL);
+
             default:      return NULL;
         }
     }

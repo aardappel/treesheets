@@ -84,11 +84,41 @@ struct Evaluator
         return (lookup != vars.end()) ? lookup->second->Clone(NULL) : NULL;
     }
 
-    void Assign(wxString &name, Cell *val)
+    bool IsValidSymbol(wxString const& symbol) const { return !symbol.IsEmpty(); }
+
+    void SetSymbol(wxString const& symbol, Cell* val)
     {
-        Cell *old = vars[name];
+        if (!this->IsValidSymbol(symbol))
+        {
+            DELETEP(val);
+            return;
+        }
+        Cell *old = vars[symbol];
         DELETEP(old);
-        vars[name] = val;
+        vars[symbol] = val;
+    }
+
+    void Assign(Cell const* sym, Cell const* val)
+    {
+        this->SetSymbol(sym->text.t, val->Clone(NULL));
+        if (sym->grid)
+            this->DestructuringAssign(sym->grid, val->Clone(NULL));
+    }
+
+    void DestructuringAssign(Grid const* names, Cell* val)
+    {
+        Grid const* ng = names;
+        Grid const* vg = val->grid;
+        if (ng->xs == vg->xs && ng->ys == vg->ys)
+        {
+            loop(x, ng->xs) loop(y, ng->ys)
+            {
+                Cell* nc = ng->C(x, y);
+                Cell* vc = vg->C(x, y);
+                this->SetSymbol(nc->text.t, vc->Clone(NULL));
+            }
+        }
+        DELETEP(val);
     }
 
     Operation *FindOp(wxString &name)
