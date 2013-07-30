@@ -820,7 +820,15 @@ struct Grid
                 acc = EvalGridCell(ev, c, acc, x, y, alldata, false);
             }
 
-        // If all data is true then we can exit now. No need to reverify that claim.
+        // Do top to bottom processing
+        if (ys>1)
+            foreachcellcolumn(c)
+            { 
+                if(y==0) DELETEP(acc);
+                acc = EvalGridCell(ev, c, acc, x, y, alldata, true);
+            }
+
+        // If all data is true then we can exit now.
         if(alldata)
         {
             DELETEP(acc);
@@ -836,14 +844,6 @@ struct Grid
             return result;
         }
 
-        // Do top to bottom processing
-        if (ys>1 && !(alldata))
-            foreachcellcolumn(c)
-            { 
-                if(y==0) DELETEP(acc);
-                acc = EvalGridCell(ev, c, acc, x, y, alldata, true);
-            }
-                
         return acc;
     }
 
