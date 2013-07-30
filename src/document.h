@@ -838,7 +838,7 @@ struct Document
     const char *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed)
     {
         Cell *c = selected.GetCell();
-        
+
         if (uk == WXK_NONE || k < ' ')
         {
             switch(k)
@@ -853,11 +853,11 @@ struct Document
                     return Action(dc, A_CANCELEDIT);
                 
                 #ifdef __WXGTK__        // should not be needed... another wxwidgets incompatibility
-                case WXK_LEFT:  return Action(dc, A_LEFT);
-                case WXK_RIGHT: return Action(dc, A_RIGHT);
-                case WXK_UP:    return Action(dc, A_UP);
-                case WXK_DOWN:  return Action(dc, A_DOWN);  
-                case WXK_TAB:   return Action(dc, A_NEXT);
+                case WXK_LEFT:  return Action(dc, (shift) ? ((ctrl) ? A_SCLEFT : A_SLEFT) : ((ctrl) ? A_MLEFT : A_LEFT));
+                case WXK_RIGHT: return Action(dc, (shift) ? ((ctrl) ? A_SCRIGHT : A_SRIGHT) : ((ctrl) ? A_MRIGHT : A_RIGHT));
+                case WXK_UP:    return Action(dc, (shift) ? ((ctrl) ? A_SCUP : A_SUP) : ((ctrl) ? A_MUP : A_UP));
+                case WXK_DOWN:  return Action(dc, (shift) ? ((ctrl) ? A_SCDOWN : A_SDOWN) : ((ctrl) ? A_MDOWN : A_DOWN));  
+                case WXK_TAB:   return Action(dc, (shift) ? A_PREV : A_NEXT);
                 #endif
             }
         }
