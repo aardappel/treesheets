@@ -1235,7 +1235,27 @@ struct Document
             case A_TT:      return selected.g->SetStyle(this, selected, STYLE_FIXED);
             case A_UNDERL:  return selected.g->SetStyle(this, selected, STYLE_UNDERLINE);
             case A_STRIKET: return selected.g->SetStyle(this, selected, STYLE_STRIKETHRU);
-            
+
+            case A_MARKDATA: case A_MARKVARD: case A_MARKVARU: case A_MARKVIEWH: case A_MARKVIEWV: case A_MARKCODE: 
+            {
+                int newcelltype;
+                switch(k)
+                {
+                    case A_MARKDATA: newcelltype = CT_DATA; break;
+                    case A_MARKVARD:  newcelltype = CT_VARD; break;
+                    case A_MARKVARU:  newcelltype = CT_VARU; break;
+                    case A_MARKVIEWH: newcelltype = CT_VIEWH; break;
+                    case A_MARKVIEWV: newcelltype = CT_VIEWV; break;
+                    case A_MARKCODE: newcelltype = sys->ev.InferCellType(c->text); break;
+                }
+                selected.g->cell->AddUndo(this);
+                loopallcellsselnorec(c) {
+                    c->celltype = newcelltype;
+                    Refresh();
+                }
+                return NULL;
+            }
+
             case A_CANCELEDIT:
                 if(selected.TextEdit()) break;
                 if(selected.g->cell->parent) { selected = selected.g->cell->parent->grid->FindCell(selected.g->cell); ScrollOrZoom(dc); }
@@ -1457,13 +1477,6 @@ struct Document
 
         switch(k)
         {
-            case A_MARKDATA:  c->AddUndo(this); c->celltype = CT_DATA;  Refresh(); return NULL;
-            case A_MARKVARD:  c->AddUndo(this); c->celltype = CT_VARD;  Refresh(); return NULL;
-            case A_MARKVARU:  c->AddUndo(this); c->celltype = CT_VARU;  Refresh(); return NULL;
-            case A_MARKVIEWH: c->AddUndo(this); c->celltype = CT_VIEWH; Refresh(); return NULL;
-            case A_MARKVIEWV: c->AddUndo(this); c->celltype = CT_VIEWV; Refresh(); return NULL;
-            case A_MARKCODE:  c->AddUndo(this); c->celltype = sys->ev.InferCellType(c->text); Refresh(); return NULL;
-
             case A_NEXT: selected.Next(this, dc, false); return NULL;
             case A_PREV: selected.Next(this, dc, true);  return NULL;
 

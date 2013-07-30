@@ -755,14 +755,14 @@ struct Grid
 
     Cell *EvalGridCell(Evaluator &ev, Cell *&c, Cell *acc, int &x, int &y, bool &alldata, bool vert)
     {
-        int ct = c->celltype;               // Type of subcell being evaluated
-        alldata = alldata && ct==CT_DATA;   // Update alldata condition
-        ev.vert = vert;                     // Inform evaluatour of vert status. (?)
+        int ct = c->celltype;                           // Type of subcell being evaluated
+        alldata = alldata && (ct==CT_DATA || ct==CT_VARU);  // Update alldata condition (variable reads act like data)
+        ev.vert = vert;                                 // Inform evaluatour of vert status. (?)
         switch(ct)
         {
             // Var assign
             case CT_VARD:
-                if(vert) return acc;  // (??)
+                if(vert) return acc;  // (Reject vertical assignments)
                 if(!acc) return NULL; // If we have no data, we can't assign anything
 
                 // Assign the current data temporary to the text
@@ -809,17 +809,41 @@ struct Grid
 
     Cell *Eval(Evaluator &ev)
     {
-        Cell *acc = NULL;       // Actual/Accumulating data temporary
-        bool alldata = true;   // Is the grid all data?
-                
-        if(xs>1 || ys==1) foreachcell(c)       { if(x==0) DELETEP(acc); acc = EvalGridCell(ev, c, acc, x, y, alldata, false); }
-        if(ys>1)          foreachcellcolumn(c) { if(y==0) DELETEP(acc); acc = EvalGridCell(ev, c, acc, x, y, alldata, true); }
-                
+        Cell *acc = NULL;                   // Actual/Accumulating data temporary
+        bool alldata = true;                // Is the grid all data?
+             
+        // Do left to right processing   
+        if (xs>1 || ys==1) 
+            foreachcell(c)
+            {
+                if(x==0) DELETEP(acc);
+                acc = EvalGridCell(ev, c, acc, x, y, alldata, false);
+            }
+
+        // If all data is true then we can exit now. No need to reverify that claim.
         if(alldata)
         {
             DELETEP(acc);
-            return cell->Clone(NULL);
+            Cell* result = cell->Clone(NULL);  // Potential result if all data. 
+
+            foreachcellingrid(c, result->grid)
+            {
+                Cell* temp = c->Eval(ev);
+                DELETEP(c);
+                c = temp;
+            }
+
+            return result;
         }
+
+        // Do top to bottom processing
+        if (ys>1 && !(alldata))
+            foreachcellcolumn(c)
+            { 
+                if(y==0) DELETEP(acc);
+                acc = EvalGridCell(ev, c, acc, x, y, alldata, true);
+            }
+                
         return acc;
     }
 
