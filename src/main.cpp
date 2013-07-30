@@ -65,7 +65,7 @@ static uint celltextcolors[] =
 };
 #define CUSTOMCOLORIDX 41
 
-struct treesheets
+namespace treesheets
 {
     enum { TS_VERSION = 17, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
@@ -124,7 +124,7 @@ struct treesheets
     #include "myframe.h"
     #include "myapp.h"
 
-    static System *sys;
+    extern System *sys;
 };
 
 treesheets::System *treesheets::sys = NULL;
