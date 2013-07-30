@@ -401,7 +401,7 @@ struct Text
             }
 
             // Return our current data.
-            case CT_DATA: return cell->Clone(NULL);
+            case CT_DATA: return (t.IsEmpty()) ? NULL : cell->Clone(NULL);
 
             default:      return NULL;
         }

@@ -101,7 +101,7 @@ struct Evaluator
     void Assign(Cell const* sym, Cell const* val)
     {
         this->SetSymbol(sym->text.t, val->Clone(NULL));
-        if (sym->grid)
+        if (sym->grid && val->grid)
             this->DestructuringAssign(sym->grid, val->Clone(NULL));
     }
 

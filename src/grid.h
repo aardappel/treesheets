@@ -762,14 +762,26 @@ struct Grid
         {
             // Var assign
             case CT_VARD:
+            {
                 if(vert) return acc;  // (Reject vertical assignments)
-                if(!acc) return NULL; // If we have no data, we can't assign anything
+                
+                Cell* tmpacc = acc;
+                // If we have no data, lets see if we can generate something useful from the subgrid.                
+                if(!tmpacc)
+                {
+                    tmpacc = c->Eval(ev);
+                    if (!tmpacc)
+                    {
+                        return NULL;
+                    }
+                }
 
                 // Assign the current data temporary to the text
-                ev.Assign(c, acc->Clone(NULL));
+                ev.Assign(c, tmpacc->Clone(NULL));
 
                 // Pass the original data onwards
-                return acc;
+                return tmpacc;
+            }
 
             // View
             case CT_VIEWV:
