@@ -767,7 +767,7 @@ struct Grid
                 
                 Cell* tmpacc = acc;
                 // If we have no data, lets see if we can generate something useful from the subgrid.                
-                if(!tmpacc)
+                if(!tmpacc->grid && tmpacc->text.t.IsEmpty())
                 {
                     tmpacc = c->Eval(ev);
                     if (!tmpacc)
