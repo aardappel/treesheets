@@ -1,7 +1,25 @@
 
+/* The evaluation types for a cell. 
+CT_DATA: "Data"
+CT_CODE: "Operation"
+CT_VARD: "Variable Assign"
+CT_VARU: "Variable Read"
+CT_VIEWH: "Horizontal View"
+CT_VIEWV: "Vertical View"
+*/
 enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV };
+
+/* The drawstyles for a cell:
+
+*/
 enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };
 
+/**
+    The Cell structure represents the editable cells in the sheet.
+
+    They are mutable structures containing a text and grid object. Along with
+    formatting information.
+*/
 struct Cell
 {
     Cell *parent;
@@ -18,7 +36,7 @@ struct Cell
 
     wxUint8 drawstyle;
     
-    Cell(Cell *_p = NULL, Cell *_clonefrom = NULL, int _ct = CT_DATA, Grid *_g = NULL)
+    Cell(Cell *_p = NULL, Cell const *_clonefrom = NULL, int _ct = CT_DATA, Grid *_g = NULL)
         : parent(_p), sx(0), sy(0), ox(0), oy(0), minx(0), miny(0), celltype(_ct), grid(_g),
           tiny(false), verticaltextandgrid(true), drawstyle(DS_GRID),
           cellcolor(0xFFFFFF), textcolor(0x000000)
@@ -49,13 +67,13 @@ struct Cell
         Reset();
     }
 
-    bool HasText()      { return !text.t.empty(); }
-    bool HasTextSize()  { return HasText() || text.relsize; }
-    bool HasTextState() { return HasTextSize() || text.image; }
-    bool HasHeader()    { return HasText() || text.image; }
-    bool HasContent()   { return HasHeader() || grid; }
+    bool HasText() const      { return !text.t.empty(); }
+    bool HasTextSize() const  { return HasText() || text.relsize; }
+    bool HasTextState() const { return HasTextSize() || text.image; }
+    bool HasHeader() const    { return HasText() || text.image; }
+    bool HasContent() const   { return HasHeader() || grid; }
 
-    bool GridShown(Document *doc) { return grid && (!grid->folded || this==doc->curdrawroot); }
+    bool GridShown(Document *doc) const { return grid && (!grid->folded || this==doc->curdrawroot); }
 
     int MinRelsize()    // the smallest relsize is actually the biggest text
     {
@@ -132,6 +150,7 @@ struct Cell
 
     void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int ml, int mr, int mt, int mb, int maxcolwidth, int cell_margin)
     {
+        // Choose color from celltype (program operations)
         switch(celltype)
         {
             case CT_VARD:  actualcellcolor = 0xFF8080; break;
@@ -192,7 +211,7 @@ struct Cell
         if(GridShown(doc)) grid->Render(doc, bx, by, dc, depth, sx-xoff, sy-yoff, xoff, yoff);
     }
 
-    void CloneStyleFrom(Cell *o)
+    void CloneStyleFrom(Cell const *o)
     {
         cellcolor = o->cellcolor;
         textcolor = o->textcolor;
@@ -201,7 +220,8 @@ struct Cell
         text.stylebits = o->text.stylebits;
     }
 
-    Cell *Clone(Cell *_p)
+    /* Clones _p making a new copy of it. This does not mutate the called on cell */
+    Cell *Clone(Cell *_p) const
     {
         Cell *c = new Cell(_p, this, celltype, grid ? new Grid(grid->xs, grid->ys) : NULL);
         c->text = text;
@@ -214,12 +234,12 @@ struct Cell
         return c;
     }
 
-    bool IsInside(int x, int y) { return x>=0 && y>=0 && x<sx && y<sy; }
+    bool IsInside(int x, int y) const { return x>=0 && y>=0 && x<sx && y<sy; }
 
-    int GetX(Document *doc) { return ox+(parent ? parent->GetX(doc) : doc->hierarchysize); }
-    int GetY(Document *doc) { return oy+(parent ? parent->GetY(doc) : doc->hierarchysize); }
+    int GetX(Document *doc) const { return ox+(parent ? parent->GetX(doc) : doc->hierarchysize); }
+    int GetY(Document *doc) const { return oy+(parent ? parent->GetY(doc) : doc->hierarchysize); }
 
-    int Depth() { return parent ? parent->Depth()+1 : 0; }
+    int Depth() const { return parent ? parent->Depth()+1 : 0; }
     Cell *Parent(int i) { return i ? parent->Parent(i-1) : this; }
     Cell *SetParent(Cell *g) { parent = g; return this; }
 
@@ -313,7 +333,7 @@ struct Cell
         doc->AddUndo(this);
     }
 
-    void Save(wxDataOutputStream &dos)
+    void Save(wxDataOutputStream &dos) const
     {
         dos.Write8(celltype);
         dos.Write32(cellcolor);
@@ -379,6 +399,7 @@ struct Cell
 
     Cell *Eval(Evaluator &ev)
     {
+        // Evaluates the internal grid if it exists, otherwise, evaluate the text.
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 

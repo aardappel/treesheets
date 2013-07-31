@@ -1,12 +1,18 @@
 
 struct Grid
 {
+    // owning cell.
     Cell *cell;
 
+    // subcells
     Cell **cells;
+
+    // widths for each column
     int *colwidths;
     
+    // xsize, ysize
     int xs, ys;
+
     int view_margin, view_grid_outer_spacing, user_grid_outer_spacing, cell_margin;
     int bordercolor;
     
@@ -14,7 +20,7 @@ struct Grid
     bool tinyborder;
     bool folded;
 
-    Cell *&C(int x, int y)
+    Cell *&C(int x, int y) const
     {
         ASSERT(x>=0 && y>=0 && x<xs && y<ys);
         return cells[x+y*xs];
@@ -51,6 +57,7 @@ struct Grid
         loop(x, xs) colwidths[x] = cw;
     }
 
+    /* Clones g into this grid. This mutates the grid this function is called on. */
     void Clone(Grid *g)
     {
         g->bordercolor = bordercolor;
@@ -567,7 +574,7 @@ struct Grid
         delete[] ocw;
     }
 
-    void Save(wxDataOutputStream &dos)
+    void Save(wxDataOutputStream &dos) const
     {
         dos.Write32(xs);
         dos.Write32(ys);
@@ -748,17 +755,35 @@ struct Grid
 
     Cell *EvalGridCell(Evaluator &ev, Cell *&c, Cell *acc, int &x, int &y, bool &alldata, bool vert)
     {
-        int ct = c->celltype;
-        alldata = alldata && ct==CT_DATA;
-        ev.vert = vert;
+        int ct = c->celltype;                           // Type of subcell being evaluated
+        alldata = alldata && (ct==CT_DATA || ct==CT_VARU);  // Update alldata condition (variable reads act like data)
+        ev.vert = vert;                                 // Inform evaluatour of vert status. (?)
         switch(ct)
         {
+            // Var assign
             case CT_VARD:
-                if(vert) return acc;
-                if(!acc) return NULL;
-                ev.Assign(c->text.t, acc->Clone(NULL));
-                return acc;
+            {
+                if(vert) return acc;  // (Reject vertical assignments)
+                
+                Cell* tmpacc = acc;
+                // If we have no data, lets see if we can generate something useful from the subgrid.                
+                if(!tmpacc->grid && tmpacc->text.t.IsEmpty())
+                {
+                    tmpacc = c->Eval(ev);
+                    if (!tmpacc)
+                    {
+                        return NULL;
+                    }
+                }
 
+                // Assign the current data temporary to the text
+                ev.Assign(c, tmpacc->Clone(NULL));
+
+                // Pass the original data onwards
+                return tmpacc;
+            }
+
+            // View
             case CT_VIEWV:
             case CT_VIEWH:
                 if(vert ? ct==CT_VIEWH : ct==CT_VIEWV)
@@ -771,6 +796,7 @@ struct Grid
                 c->celltype = ct;
                 return acc;
 
+            // Operation
             case CT_CODE:
             {
                 Operation *op = ev.FindOp(c->text.t);
@@ -786,6 +812,7 @@ struct Grid
                 }
             }
 
+            // Var read, Data
             default:
                 DELETEP(acc);
                 return c->Eval(ev);
@@ -794,17 +821,41 @@ struct Grid
 
     Cell *Eval(Evaluator &ev)
     {
-        Cell *acc = NULL;
-        bool alldata = true;
-                
-        if(xs>1 || ys==1) foreachcell(c)       { if(x==0) DELETEP(acc); acc = EvalGridCell(ev, c, acc, x, y, alldata, false); }
-        if(ys>1)          foreachcellcolumn(c) { if(y==0) DELETEP(acc); acc = EvalGridCell(ev, c, acc, x, y, alldata, true); }
-                
+        Cell *acc = NULL;                   // Actual/Accumulating data temporary
+        bool alldata = true;                // Is the grid all data?
+             
+        // Do left to right processing   
+        if (xs>1 || ys==1) 
+            foreachcell(c)
+            {
+                if(x==0) DELETEP(acc);
+                acc = EvalGridCell(ev, c, acc, x, y, alldata, false);
+            }
+
+        // Do top to bottom processing
+        if (ys>1)
+            foreachcellcolumn(c)
+            { 
+                if(y==0) DELETEP(acc);
+                acc = EvalGridCell(ev, c, acc, x, y, alldata, true);
+            }
+
+        // If all data is true then we can exit now.
         if(alldata)
         {
             DELETEP(acc);
-            return cell->Clone(NULL);
+            Cell* result = cell->Clone(NULL);  // Potential result if all data. 
+
+            foreachcellingrid(c, result->grid)
+            {
+                Cell* temp = c->Eval(ev);
+                DELETEP(c);
+                c = temp;
+            }
+
+            return result;
         }
+
         return acc;
     }
 

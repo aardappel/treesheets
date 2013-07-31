@@ -343,7 +343,7 @@ struct Text
         }
     }
 
-    void Save(wxDataOutputStream &dos)
+    void Save(wxDataOutputStream &dos) const
     {
         dos.WriteString(t.wx_str());
         dos.Write32(relsize);
@@ -385,8 +385,24 @@ struct Text
     {
         switch(cell->celltype)
         {
-            case CT_VARU: return ev.Lookup(t);
+            // Load variable's data.
+            case CT_VARU:
+            {
+                Cell* temp = ev.Lookup(t);
+
+                if (!temp)
+                {
+                    temp = cell->Clone(NULL);
+                    temp->celltype = CT_DATA;
+                    temp->text.t = "**Variable Load Error**";
+                }
+
+                return temp;
+            }
+
+            // Return our current data.
             case CT_DATA: return cell->Clone(NULL);
+
             default:      return NULL;
         }
     }
