@@ -1,4 +1,4 @@
-
+#pragma once
 #include <wx/wx.h>
 #include <wx/dir.h>
 
@@ -55,6 +55,7 @@
 #include <wx/aui/auibar.h>
 #include <wx/aui/auibook.h>
 
+#include <wx/dc.h>
 //#include <wx/uiaction.h>
 
 //#include <wx/overlay.h>
