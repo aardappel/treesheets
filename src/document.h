@@ -89,7 +89,8 @@ struct Document
 
     wxDateTime lastmodificationtime;
     
-    #define loopallcells(c)         CollectCells();         loopv(_i, itercells) for(Cell *c = itercells[_i]; c; c = NULL)
+    #define loopcellsin(par, c)     CollectCells(par);      loopv(_i, itercells) for(Cell *c = itercells[_i]; c; c = NULL)
+    #define loopallcells(c)         CollectCells(rootgrid); loopv(_i, itercells) for(Cell *c = itercells[_i]; c; c = NULL)
     #define loopallcellssel(c)      CollectCellsSel();      loopv(_i, itercells) for(Cell *c = itercells[_i]; c; c = NULL)
     #define loopallcellsselnorec(c) CollectCellsSel(false); loopv(_i, itercells) for(Cell *c = itercells[_i]; c; c = NULL)
 
@@ -1401,6 +1402,29 @@ struct Document
                 Refresh();
                 return NULL;
 
+            case A_MINISIZE:
+            {
+                selected.g->cell->AddUndo(this);
+                CollectCellsSel(false);
+                Vector<Cell *> outer;
+                outer.append(itercells);
+                loopv(i, outer)
+                {
+                    Cell *o = outer[i];
+                    if(o->grid)
+                    {
+                        loopcellsin(o, c) if(_i)
+                        {
+                            c->text.relsize = g_deftextsize - g_mintextsize() - c->Depth();
+                        }
+                    }
+                }
+                outer.setsize_nd(0);
+                selected.g->cell->ResetChildren();
+                Refresh();
+                return NULL;
+            }
+
             case A_FOLD:
                 loopallcellsselnorec(c) if(c->grid)
                 {
@@ -1878,10 +1902,10 @@ struct Document
         return NULL;
     }
 
-    void CollectCells()
+    void CollectCells(Cell *c)
     {
         itercells.setsize_nd(0);
-        rootgrid->CollectCells(itercells);
+        c->CollectCells(itercells);
     }
 
     void CollectCellsSel(bool recurse = true)
@@ -1899,7 +1923,7 @@ struct Document
     {
         searchfilter = false;
         editfilter = min(max(editfilter, 1), 99);
-        CollectCells();
+        CollectCells(rootgrid);
         itercells.sort((void *)(int (__cdecl *)(const void *, const void *))_timesort);
         loopv(i, itercells) itercells[i]->text.filtered = i>itercells.size()*editfilter/100;
         rootgrid->ResetChildren();

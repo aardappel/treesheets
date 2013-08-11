@@ -2,6 +2,8 @@
 
 - When a subgrid has multiple columns "Flatten" should iterate over rows (and copy rowns in their entirety) rather than iterating over each cell.
 
+- file system watch should really just poll on currently open doc filestamps, which would probably be more efficient than the currently broken implementation and work on all platforms.
+
 - LINUX: apparently on some systems only every second keystroke arrives at the treesheets view? how to reproduce this?
 - LINUX: check 12.04 for libgtk error
 

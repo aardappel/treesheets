@@ -91,7 +91,7 @@ struct treesheets
 
            A_RESETSIZE, A_RESETWIDTH, A_RESETSTYLE, A_RESETCOLOR, 
            A_DDIMAGE, A_MINCLOSE, A_SINGLETRAY, A_CENTERED, A_SORTD, A_STRIKET, A_FOLD, A_IMAGESC, A_HELPI, A_REDO,
-           A_FSWATCH, A_DEFBGCOL, A_THINSELC, A_COPYCT,
+           A_FSWATCH, A_DEFBGCOL, A_THINSELC, A_COPYCT, A_MINISIZE,
 
            A_NOP,
            A_TAGSET = 1000  // and all values from here on

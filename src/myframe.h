@@ -159,6 +159,7 @@ struct MyFrame : wxFrame
         sizemenu->Append(A_INCSIZE,    L"&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP");
         sizemenu->Append(A_DECSIZE,    L"&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN");
         sizemenu->Append(A_RESETSIZE,  L"&Reset text sizes\tSHIFT+CTRL+s");
+        sizemenu->Append(A_MINISIZE,   L"&Shrink text of all sub-grids\tSHIFT+CTRL+m");
         sizemenu->AppendSeparator();
         sizemenu->Append(A_INCWIDTH,   L"Increase column width (ALT+mousewheel)\tALT+PGUP");
         sizemenu->Append(A_DECWIDTH,   L"Decrease column width (ALT+mousewheel)\tALT+PGDN");
