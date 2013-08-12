@@ -1,5 +1,7 @@
 - check google moderator for new feature requests
 
+- LINUX: CTRL+PGDN/SHIFT+PGDN stopped working and instead now gets interpreted as PGDN since the latest wxWidgets (2.9.5)
+
 - When a subgrid has multiple columns "Flatten" should iterate over rows (and copy rowns in their entirety) rather than iterating over each cell.
 
 - file system watch should really just poll on currently open doc filestamps, which would probably be more efficient than the currently broken implementation and work on all platforms.
