@@ -634,13 +634,14 @@ struct MyFrame : wxFrame
 
     void OnTabClose(wxAuiNotebookEvent &nbe)
     {
+        TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sys->RememberOpenFiles();
         if(nb->GetPageCount()<=1)
         {
             nbe.Veto();
             Close();
         }
-        else if(GetCurTab()->doc->CloseDocument())
+        else if(sw->doc->CloseDocument())
         {
             nbe.Veto();
         }
