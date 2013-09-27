@@ -345,9 +345,10 @@ struct MyFrame : wxFrame
         viewmenu->Append(A_ZOOMIN,      L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP");
         viewmenu->Append(A_ZOOMOUT,     L"Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN");
         viewmenu->Append(A_NEXTFILE,    L"Switch to &next file/tab\tCTRL+TAB");
+        viewmenu->Append(A_PREVFILE,    L"Switch to &prev file/tab\tSHIFT+CTRL+TAB");
         #ifndef __WXMAC__
             viewmenu->Append(A_FULLSCREEN,  L"Toggle &Fullscreen View\tF11");
-            viewmenu->Append(A_SCALED,      L"Toggle Scaled &Presentation View\tF12");
+            viewmenu->Append(A_SCALED,      L"Toggle &Scaled Presentation View\tF12");
         #endif
         viewmenu->AppendSubMenu(scrollmenu, L"Scroll Sheet...");
         viewmenu->AppendSubMenu(filtermenu, L"Filter...");
@@ -647,9 +648,11 @@ struct MyFrame : wxFrame
         }
     }
 
-    void CycleTabs()
+    void CycleTabs(int offset = 1)
     {
-        nb->SetSelection((nb->GetSelection()+1)%nb->GetPageCount());
+        int numtabs = nb->GetPageCount();
+        offset = ((offset>=0)? 1 : numtabs-1);		// normalize to non-negative wrt modulo
+        nb->SetSelection((nb->GetSelection()+offset)%numtabs);
     }
     
     void SetPageTitle(const wxString &fn, wxString mods, int page = -1)

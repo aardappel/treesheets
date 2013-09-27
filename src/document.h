@@ -858,7 +858,7 @@ struct Document
                 case WXK_RIGHT: return Action(dc, (shift) ? ((ctrl) ? A_SCRIGHT : A_SRIGHT) : ((ctrl) ? A_MRIGHT : A_RIGHT));
                 case WXK_UP:    return Action(dc, (shift) ? ((ctrl) ? A_SCUP : A_SUP) : ((ctrl) ? A_MUP : A_UP));
                 case WXK_DOWN:  return Action(dc, (shift) ? ((ctrl) ? A_SCDOWN : A_SDOWN) : ((ctrl) ? A_MDOWN : A_DOWN));  
-                case WXK_TAB:   return Action(dc, (shift) ? ((ctrl) ? A_NOP : A_PREV) : ((ctrl) ? A_NEXTFILE : A_NEXT));
+                case WXK_TAB:   return Action(dc, (shift) ? ((ctrl) ? A_PREVFILE : A_PREV) : ((ctrl) ? A_NEXTFILE : A_NEXT));
                 #endif
             }
         }
@@ -1063,7 +1063,11 @@ struct Document
             }
             
             case A_NEXTFILE:
-                sys->frame->CycleTabs();
+                sys->frame->CycleTabs(1);
+                return NULL;
+
+            case A_PREVFILE:
+                sys->frame->CycleTabs(-1);
                 return NULL;
 
             case A_CUSTCOL:
