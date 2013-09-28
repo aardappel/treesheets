@@ -583,13 +583,13 @@ struct MyFrame : wxFrame
         if(nb) nb->SetSize(GetClientSize());
     }
     */
-    TSCanvas *NewTab(Document *doc)
+    TSCanvas *NewTab(Document *doc, bool append = false)
     {        
         TSCanvas *sw = new TSCanvas(this, nb);
         sw->doc = doc;
         doc->sw = sw;
         sw->SetScrollRate(1, 1);
-        nb->InsertPage(0, sw, L"<unnamed>", true, wxNullBitmap);
+        if(append) nb->AddPage(sw, L"<unnamed>", true, wxNullBitmap); else nb->InsertPage(0, sw, L"<unnamed>", true, wxNullBitmap);
         sw->SetDropTarget(new DropTarget(doc->dataobjc));
         sw->SetFocus();
         return sw;
