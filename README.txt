@@ -43,3 +43,8 @@ OSX:
   --with-macosx-version-min=10.7
 - alternatively, replace 10.7 in the above 2 locations with 10.6, and google how to install the old 10.6 SDK in the newest Xcode (which only comes with 10.7 onwards).
 - use the xcode project in osx/TreeSheets to build treesheets. put the resulting .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.
+
+
+Contributing:
+=============
+I welcome contributions, especially in the form of neatly prepared pull requests. The main thing to keep in mind when contributing is to keep as close as you can to both the format and the spirit of the existing code, even if it goes against the grain of how you program normally. That means not only using the same formatting and naming conventions (which should be easy), but the same non-redundant style of code (no under-engineering, e.g. copy pasting, and no over engineering, e.g. needless abstractions). Also be economic in terms of features: treesheets tries to accomplish a lot with few features, additional user interface elements (even menu items) have a cost, and features that are only useful for very few people should probably not be in the master branch. Needless to say, performance is important too. When in doubt, ask me :)
