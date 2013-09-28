@@ -17,15 +17,20 @@ Building:
 Note that YOU are responsible to know how to use compilers and C++, the hints below are all the help I will give you:
 
 Windows:
-- Download wxWidgets 2.9.4 and place it in the treesheets folder named "wxwidgets294" (parallel to "src").
-- Inside wxwidgets294/build/msw, open wx_vc9.sln with Visual Studio 2010 (not 2008, the default)
+- Download wxWidgets 2.9.4 and place it in the treesheets folder named "wxwidgets294"
+  (parallel to "src").
+- Inside wxwidgets294/build/msw, open wx_vc9.sln with Visual Studio 2010
+  (not 2008, the default)
 - Select all projects in the solution explorer, and go to properties:
-  Set configuration to debug,   and C/C++ -> Code Generation -> Runtime library to Multithreaded Debug
-  Set configuration to release, and C/C++ -> Code Generation -> Runtime library to Multithreaded
+  Set configuration to debug,   and C/C++ -> Code Generation -> Runtime library
+  to Multithreaded Debug
+  Set configuration to release, and C/C++ -> Code Generation -> Runtime library
+  to Multithreaded
 - build solution in both debug and release
 - close the wxWidgets sln
 - "treesheets" contains the Visual Studio 2010 files for treesheets, open the .sln.
-  If you've done the above correctly, TreeSheets will now compile and pick up the wxWidgets libraries.
+  If you've done the above correctly, TreeSheets will now compile and pick up
+  the wxWidgets libraries.
 - to distribute, build an installer with TS_installer.nsi (requires nsis.sourceforge.net)
 
 Linux:
@@ -35,16 +40,23 @@ Linux:
 - the exe is in the TS folder, tgz this folder to distribute
 
 OSX:
-- build wxWidgets 2.9.4 as usual on OS X, but use whatever variant of these options to configure work for you:
+- build wxWidgets 2.9.4 as usual on OS X, but use whatever variant of these options 
+  to configure work for you:
   --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa
   CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386"
   OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386"
   --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
   --with-macosx-version-min=10.7
-- alternatively, replace 10.7 in the above 2 locations with 10.6, and google how to install the old 10.6 SDK in the newest Xcode (which only comes with 10.7 onwards).
-- use the xcode project in osx/TreeSheets to build treesheets. put the resulting .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.
+- alternatively, replace 10.7 in the above 2 locations with 10.6, and google how 
+  to install the old 10.6 SDK in the newest Xcode (which only comes with 10.7 onwards).
+- use the xcode project in osx/TreeSheets to build treesheets. put the resulting
+  .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.
 
 
 Contributing:
 =============
-I welcome contributions, especially in the form of neatly prepared pull requests. The main thing to keep in mind when contributing is to keep as close as you can to both the format and the spirit of the existing code, even if it goes against the grain of how you program normally. That means not only using the same formatting and naming conventions (which should be easy), but the same non-redundant style of code (no under-engineering, e.g. copy pasting, and no over engineering, e.g. needless abstractions). Also be economic in terms of features: treesheets tries to accomplish a lot with few features, additional user interface elements (even menu items) have a cost, and features that are only useful for very few people should probably not be in the master branch. Needless to say, performance is important too. When in doubt, ask me :)
+I welcome contributions, especially in the form of neatly prepared pull requests. The main thing to keep in mind when contributing is to keep as close as you can to both the format and the spirit of the existing code, even if it goes against the grain of how you program normally. That means not only using the same formatting and naming conventions (which should be easy), but the same non-redundant style of code (no under-engineering, e.g. copy pasting, and no over engineering, e.g. needless abstractions).
+
+Also be economic in terms of features: treesheets tries to accomplish a lot with few features, additional user interface elements (even menu items) have a cost, and features that are only useful for very few people should probably not be in the master branch. Needless to say, performance is important too. When in doubt, ask me :)
+
+Try to keep your pull requests small (don't bundle unrelated changes) and make sure you've done extensive testing before you submit.
