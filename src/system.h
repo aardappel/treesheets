@@ -126,10 +126,10 @@ struct System
         DELETEP(cellclipboard);
     }
 
-    Document *NewTabDoc()
+    Document *NewTabDoc(bool append = false)
     {   
         Document *doc = new Document();
-        frame->NewTab(doc);
+        frame->NewTab(doc, append);
         return doc;
     }
 
@@ -246,7 +246,7 @@ struct System
                         Cell *root = Cell::LoadWhich(dis, NULL, numcells, textbytes);
                         if(!root) return "file corrupted!";
 
-                        doc = NewTabDoc();
+                        doc = NewTabDoc(true);
                         if (loadedfromtmp)
                         {
                             doc->undolistsizeatfullsave = -1;   // if not, user will lose tmp without warning when he closes
@@ -328,7 +328,7 @@ struct System
             TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
             if(p->doc->filename.Len())
             {
-                cfg.Write(wxString::Format(L"lastopenfile_%d", i), p->doc->filename);
+                cfg.Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
                 namedfiles++;
             }
         }
