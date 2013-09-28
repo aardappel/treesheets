@@ -328,7 +328,7 @@ struct System
             TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
             if(p->doc->filename.Len())
             {
-                cfg.Write(wxString::Format(L"lastopenfile_%d", i), p->doc->filename);
+                cfg.Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
                 namedfiles++;
             }
         }
