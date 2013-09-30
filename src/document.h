@@ -1062,13 +1062,8 @@ struct Document
                 return NULL;
             }
             
-            case A_NEXTFILE:
-                sys->frame->CycleTabs(1);
-                return NULL;
-
-            case A_PREVFILE:
-                sys->frame->CycleTabs(-1);
-                return NULL;
+            case A_NEXTFILE: sys->frame->CycleTabs(1);  return NULL;
+            case A_PREVFILE: sys->frame->CycleTabs(-1); return NULL;
 
             case A_CUSTCOL:
             {
