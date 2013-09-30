@@ -345,7 +345,7 @@ struct MyFrame : wxFrame
         viewmenu->Append(A_ZOOMIN,      L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP");
         viewmenu->Append(A_ZOOMOUT,     L"Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN");
         viewmenu->Append(A_NEXTFILE,    L"Switch to &next file/tab\tCTRL+TAB");
-        viewmenu->Append(A_PREVFILE,    L"Switch to &prev file/tab\tSHIFT+CTRL+TAB");
+        viewmenu->Append(A_PREVFILE,    L"Switch to &previous file/tab\tSHIFT+CTRL+TAB");
         #ifndef __WXMAC__
             viewmenu->Append(A_FULLSCREEN,  L"Toggle &Fullscreen View\tF11");
             viewmenu->Append(A_SCALED,      L"Toggle &Scaled Presentation View\tF12");
