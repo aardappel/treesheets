@@ -1,6 +1,14 @@
 - check google moderator for new feature requests
 
+- spellchecker
+
+- add a way to copy only the image from a cell
+
+- LINUX: window resizing sometimes leads to a red blinking border and the program becoming unresponsive???
+  -> also a problem since 2.9.4 according to http://trac.wxwidgets.org/ticket/14871
+
 - LINUX: CTRL+PGDN/SHIFT+PGDN stopped working and instead now gets interpreted as PGDN since the latest wxWidgets (2.9.5)
+  -> compiled with 2.9.4 again, problem goes away
 
 - when zooming out, for any parent(s) of the selected item that also fit on screen, make sure they are shown on screen
 
