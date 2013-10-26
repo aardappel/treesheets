@@ -12,6 +12,7 @@ struct TSCanvas : public wxScrolledWindow
     {
         SetBackgroundStyle(wxBG_STYLE_CUSTOM);
         SetBackgroundColour(*wxWHITE);
+	DisableKeyboardScrolling();
     }
     
     ~TSCanvas() { DELETEP(doc); frame = NULL; }
