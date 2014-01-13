@@ -840,7 +840,9 @@ struct Document
     {
         Cell *c = selected.GetCell();
 
-        if (uk == WXK_NONE || k < ' ')
+	//printf("key: %d %d\n", uk, k);
+
+        if (uk == WXK_NONE || (k < ' ' && k))
         {
             switch(k)
             {
