@@ -1,14 +1,31 @@
 - check google moderator for new feature requests
 
+- CTRL+g same as INS on other platforms
+
+- it be very good to make the XML import/export closer to the native format, plenty of people would want to interoperate with TS that way
+
 - spellchecker
 
 - add a way to copy only the image from a cell
 
+- when importing from text, make sure tab is also seen as indentation
+
+- LINUX: (64bit) typing faster loses characters?
+
+- LINUX: Ctrl+I advances to next tab instead of italics
+
 - LINUX: window resizing sometimes leads to a red blinking border and the program becoming unresponsive???
   -> also a problem since 2.9.4 according to http://trac.wxwidgets.org/ticket/14871
+  
+- LINUX: assert pops up in src/common/log.cpp:480, fixed for now by disabling it in local git, better fix would be good.
+  
+- ctrl+shift+tab for changing tabs backwards
 
-- LINUX: CTRL+PGDN/SHIFT+PGDN stopped working and instead now gets interpreted as PGDN since the latest wxWidgets (2.9.5)
-  -> compiled with 2.9.4 again, problem goes away
+- modifier+enter for going left rather than down upon exiting a cell
+
+- a way to navigate to previous selections (like alt+arrow in browsers)
+
+- shift+F3 find previous.
 
 - when zooming out, for any parent(s) of the selected item that also fit on screen, make sure they are shown on screen
 
