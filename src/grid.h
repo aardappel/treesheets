@@ -622,7 +622,7 @@ struct Grid
     wxString ConvertToText(const Selection &s, int indent, int format, Document *doc)
     {
         wxString r;
-        Formatter(r, format, indent, L"<grid>\n", wxString::Format(L"<table border=1 cellspacing=0 cellpadding=3 style=\"font-size: %dpt;\">\n", 12-indent/2));
+        Formatter(r, format, indent, L"<grid>\n", wxString::Format(L"<table border=1 cellspacing=0 cellpadding=3 style=\"font-size: %dpt;\">\n", 12-indent/2).wc_str());
         foreachcellinsel(c, s)
         {
             if(x==0) Formatter(r, format, indent, L"<row>\n", L"<tr valign=top>\n");
@@ -649,8 +649,8 @@ struct Grid
 
     void Move(int dx, int dy, Selection &s)
     {
-        if(dx<0 || dy<0) foreachcellinsel(c, s) swap(c, C((x+dx+xs)%xs, (y+dy+ys)%ys));
-        else          foreachcellinselrev(c, s) swap(c, C((x+dx+xs)%xs, (y+dy+ys)%ys));
+        if(dx<0 || dy<0) foreachcellinsel(c, s) swap_(c, C((x+dx+xs)%xs, (y+dy+ys)%ys));
+        else          foreachcellinselrev(c, s) swap_(c, C((x+dx+xs)%xs, (y+dy+ys)%ys));
     }
 
     void Add(Cell *c)
@@ -890,7 +890,7 @@ struct Grid
         foreachcell(c) tr[y+x*ys] = c;
         delete[] cells;
         cells = tr;
-        swap(xs, ys);
+        swap_(xs, ys);
         
         SetOrient();
         
@@ -1078,7 +1078,7 @@ struct Grid
             
             if(rest)
             {
-                swap(c->grid, rest->grid);
+                swap_(c->grid, rest->grid);
                 delete rest;
                 c->grid->ReParent(c);
             }
@@ -1099,7 +1099,7 @@ struct Grid
         
         loop(x, xs)
         {
-            swap(C(x, ys-1), tm->C(x, 0));
+            swap_(C(x, ys-1), tm->C(x, 0));
             C(x, ys-1)->parent = cell;
         }
     }

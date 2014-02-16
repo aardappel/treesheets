@@ -1,3 +1,6 @@
+- get it in Ubuntu Software Center? failing that, get a .deb download?
+- change docs saying it needs wxwidgets 3.0.0+
+
 - check google moderator for new feature requests
 
 - CTRL+g same as INS on other platforms
@@ -18,10 +21,12 @@
   -> also a problem since 2.9.4 according to http://trac.wxwidgets.org/ticket/14871
   
 - LINUX: assert pops up in src/common/log.cpp:480, fixed for now by disabling it in local git, better fix would be good.
+
+- LINUX? recent files list not updated after Save As?
   
 - ctrl+shift+tab for changing tabs backwards
 
-- modifier+enter for going left rather than down upon exiting a cell
+- modifier+enter for going left rather than down upon exiting a cell? Hmm TAB already does that.
 
 - a way to navigate to previous selections (like alt+arrow in browsers)
 

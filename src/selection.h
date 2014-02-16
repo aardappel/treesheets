@@ -130,7 +130,7 @@ class Selection
                     curs = c;
                     if(!wxIsalnum(ch) && !wxIsspace(ch)) break;
                 }
-                if(shift) { if(cursorend<cursor) swap(cursorend, cursor); }
+                if(shift) { if(cursorend<cursor) swap_(cursorend, cursor); }
                 else cursorend = cursor = curs;
             }
             else if(shift)

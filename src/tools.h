@@ -39,7 +39,7 @@ typedef unsigned int uint;
     #define _vsnprintf vsnprintf
 #endif
 
-template<class T> inline void swap(T &a, T &b) { T c = a; a = b; b = c; };
+template<class T> inline void swap_(T &a, T &b) { T c = a; a = b; b = c; };
 
 #ifdef WIN32
 #pragma warning (3: 4189)       // local variable is initialized but not referenced
