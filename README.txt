@@ -17,7 +17,7 @@ Building:
 Note that YOU are responsible to know how to use compilers and C++, the hints below are all the help I will give you:
 
 Windows:
-- Download wxWidgets 2.9.4 and place it in the treesheets folder named "wxwidgets294"
+- Download the most recent wxWidgets 3.0.0 or better and place it in the treesheets folder named "wxwidgets294"
   (parallel to "src").
 - Inside wxwidgets294/build/msw, open wx_vc9.sln with Visual Studio 2010
   (not 2008, the default)
@@ -34,13 +34,13 @@ Windows:
 - to distribute, build an installer with TS_installer.nsi (requires nsis.sourceforge.net)
 
 Linux:
-- build wxWidgets 2.9.4 as usual on linux, but use these arguments to configure:
+- build wxWidgets 3.0.0 (or better) as usual on linux, but use these arguments to configure:
   --enable-unicode --enable-optimize=-O2 --disable-shared
 - in the src folder build.sh should now compile treesheets without errors.
 - the exe is in the TS folder, tgz this folder to distribute
 
 OSX:
-- build wxWidgets 2.9.4 as usual on OS X, but use whatever variant of these options 
+- build wxWidgets 3.0.0 (or better) as usual on OS X, but use whatever variant of these options 
   to configure work for you:
   --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa
   CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386"
