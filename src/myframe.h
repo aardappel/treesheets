@@ -50,12 +50,15 @@ struct MyFrame : wxFrame
 
         class MyLog : public wxLog
         {
-            void DoLogString(const wxChar *msg, time_t timestamp)
+            void DoLogString(const wxChar *msg, time_t timestamp) { DoLogText(*msg); }
+            void DoLogText(const wxString &msg)
             {
                 #ifdef WIN32
-                OutputDebugString(msg);
+                OutputDebugString(msg.c_str());
+                OutputDebugString(L"\n");
                 #else
                 fputws(msg, stderr);
+                fputws(L"\n", stderr);
                 #endif
             }
         };

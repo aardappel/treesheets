@@ -83,7 +83,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\wxwidgets294\include;..\wxwidgets294\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wxWidgets\include;..\wxWidgets\lib\vc_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x0400;wxUSE_GUI=1;__WXDEBUG__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -97,9 +97,9 @@
       <AdditionalIncludeDirectories>C:\Program Files\wxWidgets-2.8.8\include\;C:\Program Files\wxWidgets-2.8.8\lib\vc_lib\mswd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libcmtd.lib;libcpmtd.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw29ud_core.lib;wxbase29ud.lib;opengl32.lib;wxmsw29ud_gl.lib;wxmsw29ud_adv.lib;wxpngd.lib;wxzlibd.lib;wxjpegd.lib;wxtiffd.lib;wxbase29ud_xml.lib;wxexpatd.lib;wxmsw29ud_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcmtd.lib;libcpmtd.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw31ud_core.lib;wxbase31ud.lib;opengl32.lib;wxmsw31ud_gl.lib;wxmsw31ud_adv.lib;wxpngd.lib;wxzlibd.lib;wxjpegd.lib;wxtiffd.lib;wxbase31ud_xml.lib;wxexpatd.lib;wxmsw31ud_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\TS\TreeSheetsDBG.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\wxwidgets294\lib\vc_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\wxWidgets\lib\vc_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -139,7 +139,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\wxwidgets294\include;..\wxwidgets294\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wxWidgets\include;..\wxWidgets\lib\vc_lib\mswu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINVER=0x0400;wxUSE_GUI=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -151,9 +151,9 @@
       <AdditionalIncludeDirectories>C:\Program Files\wxWidgets-2.8.8\include\;C:\Program Files\wxWidgets-2.8.8\lib\vc_lib\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libcmt.lib;libcpmt.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw29u_core.lib;wxbase29u.lib;wxmsw29u_adv.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;wxbase29u_xml.lib;wxexpat.lib;wxmsw29u_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcmt.lib;libcpmt.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw31u_core.lib;wxbase31u.lib;wxmsw31u_adv.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;wxbase31u_xml.lib;wxexpat.lib;wxmsw31u_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\TS\TreeSheets.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\wxwidgets294\lib\vc_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\wxWidgets\lib\vc_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>

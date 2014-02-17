@@ -1,3 +1,4 @@
+- way to skip unreadable PNGs
 - get it in Ubuntu Software Center? failing that, get a .deb download?
 - change docs saying it needs wxwidgets 3.0.0+
 
@@ -20,13 +21,11 @@
 - LINUX: window resizing sometimes leads to a red blinking border and the program becoming unresponsive???
   -> also a problem since 2.9.4 according to http://trac.wxwidgets.org/ticket/14871
   
-- LINUX: assert pops up in src/common/log.cpp:480, fixed for now by disabling it in local git, better fix would be good.
-
 - LINUX? recent files list not updated after Save As?
   
 - ctrl+shift+tab for changing tabs backwards
 
-- modifier+enter for going left rather than down upon exiting a cell? Hmm TAB already does that.
+- modifier+enter for going left rather than down upon exiting a cell? Hmm TAB does that, but doesn't go to the line in-between.
 
 - a way to navigate to previous selections (like alt+arrow in browsers)
 

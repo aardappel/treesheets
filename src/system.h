@@ -232,7 +232,8 @@ struct System
                     {
                         if(versionlastloaded<9) dis.ReadString();
                         wxImage im;
-                        if(!im.LoadFile(fis)) return "images in file unloadable";
+                        if(!im.LoadFile(fis))
+                            return "images in file unloadable";
                         loadimageids.push() = AddImageToList(im);
                         break;
                     }
