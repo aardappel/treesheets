@@ -95,7 +95,7 @@ struct TSCanvas : public wxScrolledWindow
         }
         */
 
-        if(ce.AltDown() && wxIsalpha(ce.GetUnicodeKey())) { ce.Skip(); return; }    // only way to avoid keyboard menu nav to not work?
+        if(ce.AltDown() /* && wxIsalpha(ce.GetUnicodeKey()) */) { ce.Skip(); return; }    // only way to avoid keyboard menu nav to not work?
 
         wxClientDC dc(this);
         DoPrepareDC(dc);

@@ -298,7 +298,7 @@ struct MyFrame : wxFrame
         editmenu->AppendSeparator();
         editmenu->Append(A_FOLD,        L"Toggle Fold\t"
             #ifndef WIN32
-                L"SHIFT+F10",   // F10 is tied to the OS on both Ubuntu and OS X
+                L"CTRL+F10",   // F10 is tied to the OS on both Ubuntu and OS X, and SHIFT+F10 is now right click on all platforms?
             #else
                 L"F10", 
             #endif
