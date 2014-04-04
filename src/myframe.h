@@ -57,7 +57,7 @@ struct MyFrame : wxFrame
                 OutputDebugString(msg.c_str());
                 OutputDebugString(L"\n");
                 #else
-                fputws(msg, stderr);
+                fputws(msg.c_str(), stderr);
                 fputws(L"\n", stderr);
                 #endif
             }
