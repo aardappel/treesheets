@@ -1,18 +1,33 @@
+- CTRL+g same as INS on other platforms
+- promote/demote keys?
 - way to skip unreadable PNGs
 - get it in Ubuntu Software Center? failing that, get a .deb download?
 - change docs saying it needs wxwidgets 3.0.0+
 
+- non-windows platforms: wxIsalnum not returning true for certain unicode chars? xxxxxx xxxxxxxx xxxxxx Féretro xxxxx
+
 - check google moderator for new feature requests
 
-- CTRL+g same as INS on other platforms
+- should be easy to add a simplistic drawing tool inside TreeSheets, since we already support bitmaps in cells
+
+- some people have locale settings that makes it break words in the middle:
+  https://mail.google.com/mail/u/1/#inbox/14580421860e7e35
+  maybe do word splits based on ispunct etc instead?
 
 - it be very good to make the XML import/export closer to the native format, plenty of people would want to interoperate with TS that way
 
 - spellchecker
+- print options: scale/position control, and some form of pagination
 
 - add a way to copy only the image from a cell
 
 - when importing from text, make sure tab is also seen as indentation
+
+- make g_cell_margin configurable?
+
+- if we support OPML read/write, then we can edit on iOS using e.g. http://carbonfin.com/
+
+- LINUX: undo log fix in local git
 
 - LINUX: (64bit) typing faster loses characters?
 
@@ -22,7 +37,9 @@
   -> also a problem since 2.9.4 according to http://trac.wxwidgets.org/ticket/14871
   
 - LINUX? recent files list not updated after Save As?
-  
+
+- the fact that you can't just copy a X*Y selection and paste that into a similar selection is a bit weird, e.g. if you wanted to duplicate a spreadsheet row.
+
 - ctrl+shift+tab for changing tabs backwards
 
 - modifier+enter for going left rather than down upon exiting a cell? Hmm TAB does that, but doesn't go to the line in-between.
@@ -47,7 +64,7 @@
 - export images in html
   see also html_rendering_bugs.png
 
-- if we support OPML read/write, then we can edit on iOS using e.g. http://carbonfin.com/
+- if we continue or change the internal programming language, one important thing would be to give it more database functionality, i.e. do something like a SQL query on a treesheet to get a sub-view.
 
 - JSON export
 

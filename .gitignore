@@ -1,6 +1,6 @@
 /treesheets/Release/
 /treesheets/Debug/
-/wxwidgets294/
+/wxwidgets/
 *.exe
 *.zip
 *.tar.gz
