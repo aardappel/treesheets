@@ -856,11 +856,13 @@ struct Document
                     return Action(dc, A_CANCELEDIT);
                 
                 #ifdef __WXGTK__        // should not be needed... another wxwidgets incompatibility
-                case WXK_LEFT:  return Action(dc, (shift) ? ((ctrl) ? A_SCLEFT : A_SLEFT) : ((ctrl) ? A_MLEFT : A_LEFT));
-                case WXK_RIGHT: return Action(dc, (shift) ? ((ctrl) ? A_SCRIGHT : A_SRIGHT) : ((ctrl) ? A_MRIGHT : A_RIGHT));
-                case WXK_UP:    return Action(dc, (shift) ? ((ctrl) ? A_SCUP : A_SUP) : ((ctrl) ? A_MUP : A_UP));
-                case WXK_DOWN:  return Action(dc, (shift) ? ((ctrl) ? A_SCDOWN : A_SDOWN) : ((ctrl) ? A_MDOWN : A_DOWN));  
-                case WXK_TAB:   return Action(dc, (shift) ? ((ctrl) ? A_PREVFILE : A_PREV) : ((ctrl) ? A_NEXTFILE : A_NEXT));
+                case WXK_LEFT:  return Action(dc, shift ? (ctrl ? A_SCLEFT   : A_SLEFT)  : (ctrl ? A_MLEFT    : A_LEFT));
+                case WXK_RIGHT: return Action(dc, shift ? (ctrl ? A_SCRIGHT  : A_SRIGHT) : (ctrl ? A_MRIGHT   : A_RIGHT));
+                case WXK_UP:    return Action(dc, shift ? (ctrl ? A_SCUP     : A_SUP)    : (ctrl ? A_MUP      : A_UP));
+                case WXK_DOWN:  return Action(dc, shift ? (ctrl ? A_SCDOWN   : A_SDOWN)  : (ctrl ? A_MDOWN    : A_DOWN));  
+                case WXK_TAB:   return Action(dc, shift ? (ctrl ? A_PREVFILE : A_PREV)   : (ctrl ? A_NEXTFILE : A_NEXT));
+                case WXK_HOME:  return Action(dc, shift ? (ctrl ? A_SHOME    : A_SHOME)  : (ctrl ? A_CHOME    : A_HOME));
+                case WXK_END:   return Action(dc, shift ? (ctrl ? A_SEND     : A_SEND)   : (ctrl ? A_CEND     : A_END));
                 #endif
             }
         }
