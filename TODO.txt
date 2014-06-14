@@ -1,5 +1,9 @@
+- OS X: when unplugging external monitor, treesheets doesn't resize onto smaller screen, may end up with window borders outside of view, and will remember this
+  accross runs, and thus becomes unusable.
+  doesn't respond to maximize either.
+  
 - CTRL+g same as INS on other platforms
-- promote/demote keys?
+- promote/demote keys? Ctrl-Shift left and right?
 - way to skip unreadable PNGs
 - get it in Ubuntu Software Center? failing that, get a .deb download?
 - change docs saying it needs wxwidgets 3.0.0+
@@ -27,6 +31,8 @@
 
 - if we support OPML read/write, then we can edit on iOS using e.g. http://carbonfin.com/
 
+- CI with Travis
+
 - LINUX: undo log fix in local git
 
 - LINUX: (64bit) typing faster loses characters?
@@ -39,6 +45,10 @@
 - LINUX? recent files list not updated after Save As?
 
 - the fact that you can't just copy a X*Y selection and paste that into a similar selection is a bit weird, e.g. if you wanted to duplicate a spreadsheet row.
+
+- shift+down/up while selecting text should also extend selection.
+
+- easy way to split a cell at the current cursor position, e.g. shift + enter?
 
 - ctrl+shift+tab for changing tabs backwards
 
@@ -67,6 +77,10 @@
 - if we continue or change the internal programming language, one important thing would be to give it more database functionality, i.e. do something like a SQL query on a treesheet to get a sub-view.
 
 - JSON export
+
+- should retain image when folding.
+
+- improve drag and drop with CTRL to use current selection
 
 - text alignment per cell?
 

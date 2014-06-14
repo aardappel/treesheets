@@ -301,6 +301,7 @@ class Selection
         if(Thin()) return doc->NoThin();
         g->cell->AddUndo(doc);
         Cell *np = g->CloneSel(*this);
+        g->C(x, y)->text.t = "."; // avoid this cell getting deleted
         if(xs>1) { Selection s(g, x+1, y,   xs-1, ys  ); g->MultiCellDeleteSub(doc, s); }
         if(ys>1) { Selection s(g, x,   y+1, 1,    ys-1); g->MultiCellDeleteSub(doc, s); }
         Cell *old = g->C(x, y);

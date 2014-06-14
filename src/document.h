@@ -840,7 +840,7 @@ struct Document
     {
         Cell *c = selected.GetCell();
 
-	//printf("key: %d %d\n", uk, k);
+    //printf("key: %d %d\n", uk, k);
 
         if (uk == WXK_NONE || (k < ' ' && k))
         {
@@ -1787,8 +1787,9 @@ struct Document
     {
         return undolist.size() &&
                !c->grid && 
-               undolist.last()->sel.EqLoc(c->parent->grid->FindCell(c)) /*&&
-               abs(int(undolist.last()->clone->text.t.Len() - c->text.t.Len())) < 10*/;
+               undolist.size() != undolistsizeatfullsave &&
+               undolist.last()->sel.EqLoc(c->parent->grid->FindCell(c)) &&
+               (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);    // hacky way to detect word boundaries to stop coalescing, but works, and not a big deal if selected is not actually related to this cell
     }
 
     void AddUndo(Cell *c)
