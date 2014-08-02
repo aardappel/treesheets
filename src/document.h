@@ -1187,14 +1187,17 @@ struct Document
 
                 if(wxTheClipboard->Open())
                 {
+                    wxString s;
                     if(k==A_COPYCT)
                     {
-                        wxString s;
                         loopallcellssel(c) if(c->text.t.Len()) s += c->text.t + " ";
-                        sys->clipboardcopy = s;
                     }
-                    else sys->clipboardcopy = selected.g->ConvertToText(selected, 0, A_EXPCOPY, this);
-                    wxTheClipboard->SetData(new wxTextDataObject(sys->clipboardcopy));  // FIXME? wxTextDataObject does NOT convert \n to 0D 0A on windows, hence LINE_SEPERATOR kludge needed in cell.h
+                    else
+                    {
+                        s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
+                    }
+                    sys->clipboardcopy = s;
+                    wxTheClipboard->SetData(new wxTextDataObject(s));
                     wxTheClipboard->Close();
                 }
 
@@ -1701,6 +1704,9 @@ struct Document
                     */
                     
                     //if(s[0]==0xFEFF) s = s.Mid(1);  // need on OSX only (if pasting from other apps), but can't hurt
+                    auto str1 = sys->clipboardcopy.wc_str();
+                    auto str2 = s.wc_str();
+                    
                     if((sys->clipboardcopy==s) && sys->cellclipboard) 
                     {
                         c->Paste(this, sys->cellclipboard, selected);

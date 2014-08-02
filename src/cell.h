@@ -258,7 +258,7 @@ struct Cell
         
         if(s.cursor!=s.cursorend) return str;
          
-        str.Append(format==A_EXPCOPY ? LINE_SEPERATOR : L"\n");
+        str.Append(L"\n");
         if(grid) str.Append(grid->ToText(indent, s, format, doc));
         if(format==A_EXPXML)
         {
