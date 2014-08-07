@@ -1704,8 +1704,6 @@ struct Document
                     */
                     
                     //if(s[0]==0xFEFF) s = s.Mid(1);  // need on OSX only (if pasting from other apps), but can't hurt
-                    auto str1 = sys->clipboardcopy.wc_str();
-                    auto str2 = s.wc_str();
                     
                     if((sys->clipboardcopy==s) && sys->cellclipboard) 
                     {
