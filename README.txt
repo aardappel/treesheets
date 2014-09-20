@@ -49,15 +49,13 @@ Linux:
 - the exe is in the TS folder, tgz this folder to distribute
 
 OSX:
-- build wxWidgets 3.0.0 (or better) as usual on OS X, but use whatever variant of these options
-  to configure work for you:
-  --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa
-  CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386"
-  OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386"
-  --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
-  --with-macosx-version-min=10.7
-- alternatively, replace 10.7 in the above 2 locations with 10.6, and google how
-  to install the old 10.6 SDK in the newest Xcode (which only comes with 10.7 onwards).
+- build wxWidgets 3.0.1 (or better) as follows:
+- inside the wxWidgets dir:
+- mkdir build_osx
+- cd build_osx
+- ../configure --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk --with-macosx-version-min=10.6
+- make
+- sudo make install
 - use the xcode project in osx/TreeSheets to build treesheets. put the resulting
   .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.
 

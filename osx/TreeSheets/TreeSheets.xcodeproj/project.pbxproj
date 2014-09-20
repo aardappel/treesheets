@@ -275,7 +275,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx10.6;
 			};
@@ -301,7 +301,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx10.6;
 			};
 			name = Release;
@@ -323,28 +323,28 @@
 					__WXOSX_COCOA__,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-2.9",
-					"/usr/local/include/wx-2.9",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.0",
+					"/usr/local/include/wx-3.0",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-2.9.a",
-					"/usr/local/lib/libwx_baseu_net-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-2.9.a",
-					"/usr/local/lib/libwx_baseu_xml-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-2.9.a",
-					"/usr/local/lib/libwx_baseu-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.0.a",
+					"/usr/local/lib/libwx_baseu_net-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.0.a",
+					"/usr/local/lib/libwx_baseu_xml-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.0.a",
+					"/usr/local/lib/libwx_baseu-3.0.a",
 					"-lexpat",
-					"-lwxregexu-2.9",
-					"-lwxtiff-2.9",
-					"-lwxjpeg-2.9",
-					"-lwxpng-2.9",
+					"-lwxregexu-3.0",
+					"-lwxtiff-3.0",
+					"-lwxjpeg-3.0",
+					"-lwxpng-3.0",
 					"-lz",
 					"-lpthread",
 					"-liconv",
@@ -371,28 +371,28 @@
 					__WXOSX_COCOA__,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-2.9",
-					"/usr/local/include/wx-2.9",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.0",
+					"/usr/local/include/wx-3.0",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-2.9.a",
-					"/usr/local/lib/libwx_baseu_net-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-2.9.a",
-					"/usr/local/lib/libwx_baseu_xml-2.9.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-2.9.a",
-					"/usr/local/lib/libwx_baseu-2.9.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.0.a",
+					"/usr/local/lib/libwx_baseu_net-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.0.a",
+					"/usr/local/lib/libwx_baseu_xml-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.0.a",
+					"/usr/local/lib/libwx_baseu-3.0.a",
 					"-lexpat",
-					"-lwxregexu-2.9",
-					"-lwxtiff-2.9",
-					"-lwxjpeg-2.9",
-					"-lwxpng-2.9",
+					"-lwxregexu-3.0",
+					"-lwxtiff-3.0",
+					"-lwxjpeg-3.0",
+					"-lwxpng-3.0",
 					"-lz",
 					"-lpthread",
 					"-liconv",
