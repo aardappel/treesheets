@@ -351,15 +351,15 @@ struct MyFrame : wxFrame
         viewmenu->Append(A_PREVFILE,    L"Switch to &previous file/tab\tSHIFT+CTRL+TAB");
         viewmenu->Append(A_FULLSCREEN,  L"Toggle &Fullscreen View\t"
         #ifdef __WXMAC__
-            "CTRL+F11");
+            L"CTRL+F11");
         #else
-            "F11");
+            L"F11");
         #endif
         viewmenu->Append(A_SCALED,      L"Toggle &Scaled Presentation View\t"
         #ifdef __WXMAC__
-            "CTRL+F12");
+            L"CTRL+F12");
         #else
-            "F12");
+            L"F12");
         #endif
         viewmenu->AppendSubMenu(scrollmenu, L"Scroll Sheet...");
         viewmenu->AppendSubMenu(filtermenu, L"Filter...");
