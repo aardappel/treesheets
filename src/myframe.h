@@ -539,11 +539,23 @@ struct MyFrame : wxFrame
         //nb->SetPadding(wxSize(16, 2));
         //nb->SetOwnFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false));
     
+        const int screenx = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+        const int screeny = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+        const int boundary = 64;
+        const int defx = screenx - 2*boundary;
+        const int defy = screeny - 2*boundary;
         int resx, resy, posx, posy;
-        sys->cfg.Read(L"resx", &resx, 1000);
-        sys->cfg.Read(L"resy", &resy, 750);
-        sys->cfg.Read(L"posx", &posx, 10);
-        sys->cfg.Read(L"posy", &posy, 10);
+        sys->cfg.Read(L"resx", &resx, defx);
+        sys->cfg.Read(L"resy", &resy, defy);
+        sys->cfg.Read(L"posx", &posx, boundary);
+        sys->cfg.Read(L"posy", &posy, boundary);
+        if(posx + resx > screenx || posy + resy > screeny)
+        {
+            // Screen res has been resized since we last ran, set sizes to default to avoid being off-screen.
+            resx = defx;
+            resy = defy;
+            posx = posy = boundary;
+        }
         SetSize(resx, resy);
         SetPosition(wxPoint(posx, posy));
 
@@ -558,9 +570,11 @@ struct MyFrame : wxFrame
             watcher->SetOwner(this);
             Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
         #endif
+        
+        //EnableFullScreenView(true);
 
         Show(TRUE);
-                
+        
         if(ismax) Maximize(true);   // needs to be after Show() to avoid scrollbars rendered in the wrong place?
 
         SetFileAssoc(exename);
@@ -804,7 +818,7 @@ struct MyFrame : wxFrame
     
     void OnSizing(wxSizeEvent  &se) { se.Skip(); }
 
-    void OnMaximize(wxMaximizeEvent &me) { ReFocus(); }
+    void OnMaximize(wxMaximizeEvent &me) { ReFocus(); me.Skip(); }
     void OnActivate(wxActivateEvent &ae) { ReFocus(); }    
 
     void OnIconize(wxIconizeEvent &me)

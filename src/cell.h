@@ -362,6 +362,7 @@ struct Cell
         {
             grid = new Grid(x, y, this);
             grid->InitCells(this);
+            if (parent) grid->CloneStyleFrom(parent->grid);
         }
         return grid;
     }

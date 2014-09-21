@@ -48,6 +48,12 @@ struct Grid
     }
 
     void InitCells(Cell *clonestylefrom = NULL) { foreachcell(c) c = new Cell(cell, clonestylefrom); }
+    
+    void CloneStyleFrom(Grid *o)
+    {
+        bordercolor = o->bordercolor;
+        // TODO: what others?
+    }
 
     void InitColWidths()
     {

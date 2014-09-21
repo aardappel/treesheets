@@ -58,6 +58,7 @@ OSX:
 - sudo make install
 - use the xcode project in osx/TreeSheets to build treesheets. put the resulting
   .app together with the files from the TS folder in osx/TreeSheetsBeta to distribute.
+  Note to use the "Archive" operation to create a release executable.
 
 
 Contributing:
