@@ -206,12 +206,12 @@ struct System
         }
 
         Document *doc = NULL;
+        bool anyimagesfailed = false;
 
         {   // limit destructors
             wxBusyCursor wait;
             wxFFileInputStream fis(fn);
             if(!fis.IsOk()) return "cannot open file";
-            wxDataInputStream dis(fis);
 
             char buf[4];
             fis.Read(buf, 4);
@@ -230,10 +230,38 @@ struct System
                 {
                     case 'I':
                     {
+                        wxDataInputStream dis(fis);
                         if(versionlastloaded<9) dis.ReadString();
                         wxImage im;
-                        if(!im.LoadFile(fis))
-                            return "images in file unloadable";
+                        auto beforepng = fis.TellI();
+                        bool ok = im.LoadFile(fis);
+                        //ok = false;
+                        if(!ok)
+                        {
+                            // Uhoh.. the decoder failed. Try to save the situation by skipping this PNG.
+                            anyimagesfailed = true;
+                            if(beforepng == wxInvalidOffset) return "cannot tell/seek document?";
+                            fis.SeekI(beforepng);
+                            // Now try to skip past this PNG
+                            uchar header[8];
+                            fis.Read(header, 8);
+                            uchar expected[] = { 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n' };
+                            if(memcmp(header, expected, 8)) return "corrupt PNG header";
+                            dis.BigEndianOrdered(true);
+                            for(;;)  // Skip all chunks.
+                            {
+                                auto len = dis.Read32();
+                                char fourcc[4];
+                                fis.Read(fourcc, 4);
+                                fis.SeekI(len, wxFromCurrent);  // skip data
+                                dis.Read32();  // skip CRC
+                                if(memcmp(fourcc, "IEND", 4) == 0) break;
+                            }
+                            // Set empty image here, since document expect there to be one here.
+                            int sz = 32;
+                            im.Create(sz, sz, false);
+                            im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0, 0);  // Set to red to indicate error.
+                        }
                         loadimageids.push() = AddImageToList(im);
                         break;
                     }
@@ -282,6 +310,8 @@ struct System
         FileUsed(filename, doc);
 
         doc->ClearSelectionRefresh();
+
+        if (anyimagesfailed) wxMessageBox(L"PNG decode failed on some images in this document\nThey have been replaced by red squares.", "PNG decoder failure", wxOK, frame);
 
         return "";
     }
