@@ -227,7 +227,6 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\TS\docs\history.txt" />
     <None Include="..\TODO.txt" />
     <None Include="icon1.ico" />
   </ItemGroup>

@@ -43,13 +43,13 @@ Windows:
 - to distribute, build an installer with TS_installer.nsi (requires nsis.sourceforge.net)
 
 Linux:
-- build wxWidgets 3.0.0 (or better) as usual on linux, but use these arguments to configure:
+- build wxWidgets as usual on linux, but use these arguments to configure:
   --enable-unicode --enable-optimize=-O2 --disable-shared
 - in the src folder build.sh should now compile treesheets without errors.
 - the exe is in the TS folder, tgz this folder to distribute
 
 OSX:
-- build wxWidgets 3.0.1 (or better) as follows:
+- build wxWidgets as follows:
 - inside the wxWidgets dir:
 - mkdir build_osx
 - cd build_osx
@@ -74,4 +74,4 @@ interface elements (even menu items) have a cost, and features that are only use
 probably not be in the master branch. Needless to say, performance is important too. When in doubt, ask me :)
 
 Try to keep your pull requests small (don't bundle unrelated changes) and make sure you've done extensive testing
-before you submit.
+before you submit, preferrably on multiple platforms.

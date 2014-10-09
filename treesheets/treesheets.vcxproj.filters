@@ -68,9 +68,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\TS\docs\history.txt">
-      <Filter>data</Filter>
-    </None>
     <None Include="..\TODO.txt">
       <Filter>data</Filter>
     </None>

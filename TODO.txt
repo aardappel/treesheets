@@ -1,24 +1,21 @@
-- OS X: when unplugging external monitor, treesheets doesn't resize onto smaller screen, may end up with window borders outside of view, and will remember this
-  accross runs, and thus becomes unusable.
-  doesn't respond to maximize either.
-  
-- CTRL+g same as INS on other platforms
-- promote/demote keys? Ctrl-Shift left and right?
-- way to skip unreadable PNGs
+[ check google moderator for new feature requests ]
+
 - get it in Ubuntu Software Center? failing that, get a .deb download?
-- change docs saying it needs wxwidgets 3.0.0+
+
+- CTRL+g same as INS on other platforms
+
+- promote/demote keys? Ctrl-Shift left and right?
 
 - non-windows platforms: wxIsalnum not returning true for certain unicode chars? xxxxxx xxxxxxxx xxxxxx Féretro xxxxx
-
-- check google moderator for new feature requests
+- some people have locale settings that makes it break words in the middle.
+  maybe do word splits based on ispunct etc instead?
 
 - should be easy to add a simplistic drawing tool inside TreeSheets, since we already support bitmaps in cells
 
-- some people have locale settings that makes it break words in the middle:
-  https://mail.google.com/mail/u/1/#inbox/14580421860e7e35
-  maybe do word splits based on ispunct etc instead?
-
 - it be very good to make the XML import/export closer to the native format, plenty of people would want to interoperate with TS that way
+
+- we now skip PNGs that fail to load, but would be even better if they didn't fail at all.
+  - could switch to using sbimage for PNG loading, probably more robust.
 
 - spellchecker
 - print options: scale/position control, and some form of pagination
@@ -308,23 +305,3 @@ FIXED??
 FAQ: older versions of logitech mouseware may interfere with treesheets operation, make sure to have the latest installed
 
 ===============================
-
-building new wxwidgets
-- enable opengl (default now)
-- (not used?)enable wxUSE_UIACTIONSIMULATOR : http://wiki.wxwidgets.org/Setup.H
-- disable STL use for strings (may try with it on, as that is what they test with)
-- set to not use DLL runtime + don't use standard libs
-- fix _timezone error by removing ifdefs
-- fix missing locale.h include
-
-on linux/mac:
-
-mkdir buildosx
-cd buildosx
-../configure --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk --with-macosx-version-min=10.7
-or --enable-debug instead of O2 
-
-make -j 4
-
-either: sudo make install    or instead --prefix=$(pwd) on configure allows it to be used from the build folder with wx-config --prefix
-or: copy over libs and setup.h from buildosx/lib, and the general include folder
