@@ -49,8 +49,8 @@ int g_mintextsize() { return g_deftextsize - 8; }
 int g_maxtextsize() { return g_deftextsize + 32; }
 int g_grid_left_offset = 15;
 
-int g_scrollratecursor = 160; // FIXME: must be configurable
-int g_scrollratewheel = 1;  // relative to 1 step on a fixed wheel usually being 120
+int g_scrollratecursor = 240; // FIXME: must be configurable
+int g_scrollratewheel = 2;  // relative to 1 step on a fixed wheel usually being 120
 
 static uint celltextcolors[] =
 {

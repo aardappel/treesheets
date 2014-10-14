@@ -1,5 +1,9 @@
 [ check google moderator for new feature requests ]
 
+- "Wrap in Parent" doesn't respect the border color much like INS used to not do.
+
+- Alt+scrollwheel doesn't seem to get recorded as undoable
+
 - get it in Ubuntu Software Center? failing that, get a .deb download?
 
 - CTRL+g same as INS on other platforms
@@ -38,7 +42,7 @@
 
 - LINUX: window resizing sometimes leads to a red blinking border and the program becoming unresponsive???
   -> also a problem since 2.9.4 according to http://trac.wxwidgets.org/ticket/14871
-  
+
 - LINUX? recent files list not updated after Save As?
 
 - the fact that you can't just copy a X*Y selection and paste that into a similar selection is a bit weird, e.g. if you wanted to duplicate a spreadsheet row.
@@ -124,11 +128,11 @@
 
 - the new sheet dialog confuses people into thinking that the initial size matters, e.g. http://treesheets.findmysoft.com/
   however, starting with a 1x1 would be confusing also
-  
+
 - improve fswatch? can turn it on by default if improved?
   * monitors folders recursively.. wtf not possible to monitor individual files...
   * doesn't pick up changes on network drive
-    ReadDirectoryChangesW fails with ERROR_INVALID_PARAMETER when the buffer length is greater than 64 KB and the application is monitoring a directory over the network. This is due to a packet size limitation with the underlying file sharing protocols. 
+    ReadDirectoryChangesW fails with ERROR_INVALID_PARAMETER when the buffer length is greater than 64 KB and the application is monitoring a directory over the network. This is due to a packet size limitation with the underlying file sharing protocols.
         but: BUFFER_SIZE = 4096
   * are these fixed?
     - only partially writes - presumably Add() failed, is that still happening?
@@ -137,7 +141,7 @@
 
 - calculation language sample use cases:
   - tag cells with a progress complete, and then have overal average progress complete figures in a hierarchical fashion
-  
+
 - treesheets suitable for code editing!
   - export + run + showing console output + jump to line
   - syntax highlighting.. might be fun even for non-programming languages
@@ -166,7 +170,7 @@
     actually theres ways to overwrite, using a PUT request..
     http://www.codeproject.com/Articles/319435/Michael-Haephrati-A-Google-Docs-based-Backup-Appli
   * simplenote requires one http request per "note", so you'd have to put your entire todo in one note
-    really need a sharing service that has text documents you can edit on the web / your phone 
+    really need a sharing service that has text documents you can edit on the web / your phone
   * actually, there's text editors for dropbox. so we can do the above idea for dropbox.
     * would have to keep track of the last file time the file was imported or saved over
     * gets tricky with the real file, since if the text file gets modified, now all treesheets instances have
@@ -254,7 +258,7 @@
 - tim: unicode example is slow... must add partial refresh
 - more icons in the toolbar | icons in the menu
 - work on VPL - errors inside cells - a "comment" cell that gets skipped entirely
-- ISSUE: arial unicode ms has rasterization bugs? 
+- ISSUE: arial unicode ms has rasterization bugs?
 - BUG: rotates characters needlessly in unicode fonts?
 - optimize typing speed when no re-layout is required
 - shrink to selection using Paste()/CloneSel() - Grid inline/merge in parent?
@@ -297,7 +301,7 @@ UNFIXABLE:
   -> tried changing this value to higher numbers with no difference
 
 FIXED??
-- wxStaticText hack not necessary anymore 
+- wxStaticText hack not necessary anymore
     - the toolbar text rendering hack doesn't work if you shrink the window to make less of them visible.
 
 ===============================

@@ -8,11 +8,15 @@ struct TSCanvas : public wxScrolledWindow
     
     wxPoint lastmousepos;
 
-    TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize) : frame(fr), wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size, wxScrolledWindowStyle|wxWANTS_CHARS), mousewheelaccum(0), doc(NULL), lastrmbwaswithctrl(false)
+    TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
+        : frame(fr), wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size, wxScrolledWindowStyle|wxWANTS_CHARS),
+          mousewheelaccum(0), doc(NULL), lastrmbwaswithctrl(false)
     {
         SetBackgroundStyle(wxBG_STYLE_CUSTOM);
         SetBackgroundColour(*wxWHITE);
-	DisableKeyboardScrolling();
+        DisableKeyboardScrolling();
+        // Without this, ScrolledWindow does its own scrolling upon mousewheel events, which interferes with our own.
+        EnableScrolling(false, false);
     }
     
     ~TSCanvas() { DELETEP(doc); frame = NULL; }
@@ -158,7 +162,9 @@ struct TSCanvas : public wxScrolledWindow
         GetViewStart(&x, &y);
         x += dx;
         y += dy;
+        //EnableScrolling(true, true);
         Scroll(x, y);
+        //EnableScrolling(false, false);
     }
 
 

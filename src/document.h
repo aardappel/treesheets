@@ -566,9 +566,9 @@ struct Document
 
         if(scaledviewingmode && currentviewscale>1)
         {
-            sw->EnableScrolling(false, false);
+            //sw->EnableScrolling(false, false);
             sw->SetVirtualSize(maxx, maxy);
-            sw->EnableScrolling(true, true);
+            //sw->EnableScrolling(true, true);
                 
             dc.SetUserScale(currentviewscale, currentviewscale);
 
@@ -582,9 +582,9 @@ struct Document
             dc.SetUserScale(1, 1);
             int drx = max(layoutxs, maxx);
             int dry = max(layoutys, maxy);
-            sw->EnableScrolling(false, false);
+            //sw->EnableScrolling(false, false);
             sw->SetVirtualSize(drx, dry);
-            sw->EnableScrolling(true, true);
+            //sw->EnableScrolling(true, true);
             #ifdef __WXMAC__
                 DrawRectangle(dc, Background(), 0, 0, drx, dry);
             #endif
