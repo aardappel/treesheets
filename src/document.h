@@ -215,7 +215,8 @@ struct Document
 
             sys->FileUsed(filename, this);
 
-            ::wxRemoveFile(sys->TmpName(filename));
+            if(::wxFileExists(sys->TmpName(filename)))
+                ::wxRemoveFile(sys->TmpName(filename));
         }
 
         UpdateFileName(page);
@@ -715,7 +716,7 @@ struct Document
     bool CloseDocument()
     {
         bool keep = CheckForChanges();
-        if(!keep && !filename.empty()) ::wxRemoveFile(sys->TmpName(filename));
+        if(!keep && !filename.empty() && ::wxFileExists(sys->TmpName(filename))) ::wxRemoveFile(sys->TmpName(filename));
         return keep;
     }
 

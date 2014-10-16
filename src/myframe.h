@@ -601,6 +601,9 @@ struct MyFrame : wxFrame
         aui->UnInit();
         DELETEP(aui);
         DELETEP(editmenupopup);
+        #ifdef FSWATCH
+            DELETEP(watcher);
+        #endif
     }
     /*
     void OnSize(wxSizeEvent& event)
@@ -819,7 +822,7 @@ struct MyFrame : wxFrame
     void OnSizing(wxSizeEvent  &se) { se.Skip(); }
 
     void OnMaximize(wxMaximizeEvent &me) { ReFocus(); me.Skip(); }
-    void OnActivate(wxActivateEvent &ae) { ReFocus(); }    
+    void OnActivate(wxActivateEvent &ae) { /*ReFocus();*/ }    
 
     void OnIconize(wxIconizeEvent &me)
     {
