@@ -504,13 +504,13 @@ struct MyFrame : wxFrame
             tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, wxSize(60, 24)));
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, L"Cell "));
-            tb->AddControl(new ColorDropdown(tb, A_CELLCOLOR, 0));
+            tb->AddControl(new ColorDropdown(tb, A_CELLCOLOR, 1));
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, L"Text "));
-            tb->AddControl(new ColorDropdown(tb, A_TEXTCOLOR, 1));
+            tb->AddControl(new ColorDropdown(tb, A_TEXTCOLOR, 2));
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, L"Border "));
-            tb->AddControl(new ColorDropdown(tb, A_BORDCOLOR, 6));
+            tb->AddControl(new ColorDropdown(tb, A_BORDCOLOR, 7));
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, L"Image "));
             wxString imagepath = exepath + L"/images/nuvola/dropdown/";
