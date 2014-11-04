@@ -855,6 +855,11 @@ struct Document
 
                 case WXK_ESCAPE:            // docs say it can be used as a menu accelerator, but it does not trigger from there?
                     return Action(dc, A_CANCELEDIT);
+
+                #ifdef WIN32  // works fine on Linux, not sure OS X
+                case WXK_PAGEDOWN: sw->CursorScroll( 0,  g_scrollratecursor); return NULL;
+                case WXK_PAGEUP:   sw->CursorScroll( 0, -g_scrollratecursor); return NULL;
+                #endif
                 
                 #ifdef __WXGTK__        // should not be needed... another wxwidgets incompatibility
                 case WXK_LEFT:  return Action(dc, shift ? (ctrl ? A_SCLEFT   : A_SLEFT)  : (ctrl ? A_MLEFT    : A_LEFT));
