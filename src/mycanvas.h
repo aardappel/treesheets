@@ -99,7 +99,10 @@ struct TSCanvas : public wxScrolledWindow
         }
         */
 
-        if(ce.AltDown() /*&& wxIsalnum(ce.GetUnicodeKey())*/) { ce.Skip(); return; }    // only way to avoid keyboard menu nav to not work?
+        // Without this check, Alt+F (keyboard menu nav) Alt+1..6 (style changes), Alt+cursor (scrolling) don't work.
+        // The 128 makes sure unicode entry on e.g. Polish keyboards still works.
+        // (on Linux in particular).
+        if(ce.AltDown() && ce.GetUnicodeKey() < 128) { ce.Skip(); return; }
 
         wxClientDC dc(this);
         DoPrepareDC(dc);
