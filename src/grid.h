@@ -485,9 +485,9 @@ struct Grid
             }
             else
             {
-                if(s.y+s.ys < s.x+s.xs) delhoriz = false;
-                if(s.y+s.ys > s.x+s.xs) delvert = false;
-                if(s.y+s.ys == s.x+s.xs) delvert = false;
+                if(s.y-s.ys < s.x-s.xs) delhoriz = false;
+                if(s.y-s.ys > s.x-s.xs) delvert = false;
+                if(s.y-s.ys == s.x-s.xs) delvert = false;
             }
         }
         if(delhoriz)
