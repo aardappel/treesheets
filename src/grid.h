@@ -483,6 +483,12 @@ struct Grid
                 if(y>=s.y && y<s.y+s.ys) delhoriz = false;
                 if(x>=s.x && x<s.x+s.xs) delvert = false;
             }
+            else
+            {
+                if(s.y+s.ys < s.x+s.xs) delhoriz = false;
+                if(s.y+s.ys > s.x+s.xs) delvert = false;
+                if(s.y+s.ys == s.x+s.xs) delvert = false;
+            }
         }
         if(delhoriz)
         {
