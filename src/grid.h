@@ -484,7 +484,7 @@ struct Grid
                 if(x>=s.x && x<s.x+s.xs) delvert = false;
             }
         }
-        if(delhoriz)
+        if(delhoriz && (!delvert || s.xs >= s.ys))
         {
             if(s.ys==ys)
             {
