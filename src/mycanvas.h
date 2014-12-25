@@ -89,6 +89,11 @@ struct TSCanvas : public wxScrolledWindow
         Status(doc->DoubleClick(dc));
     }
 
+    void OnKeyDown(wxKeyEvent &ce)
+    {
+        ce.Skip();
+    }
+    
     void OnChar(wxKeyEvent &ce)
     {
         /*

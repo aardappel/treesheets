@@ -1,5 +1,12 @@
 [ check google moderator for new feature requests ]
 
+- OSX: [github, Yang Xiaowei]: IME input doesn't work
+  No events arrive at either OnChar or OnKeyDown with e.g. Japanese IME selected, and no idea why
+
+- Test multi-monitor off-screen detection on Windows & mac.
+
+- Windows: [Derell Licht]: unnecessary debug messages, especially in non-admin mode.
+
 - "Wrap in Parent" doesn't respect the border color much like INS used to not do.
 
 - Alt+scrollwheel doesn't seem to get recorded as undoable
