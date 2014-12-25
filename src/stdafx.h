@@ -55,6 +55,8 @@
 #include <wx/aui/auibar.h>
 #include <wx/aui/auibook.h>
 
+#include <wx/display.h>
+
 //#include <wx/uiaction.h>
 
 //#include <wx/overlay.h>

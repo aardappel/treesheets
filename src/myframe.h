@@ -539,22 +539,35 @@ struct MyFrame : wxFrame
         //nb->SetPadding(wxSize(16, 2));
         //nb->SetOwnFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false));
     
+        /*
         const int screenx = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
         const int screeny = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+        */
+        auto disprect = wxDisplay(wxDisplay::GetFromWindow(this)).GetClientArea();
+        const int screenx = disprect.width - disprect.x;
+        const int screeny = disprect.height - disprect.y;
+        
         const int boundary = 64;
         const int defx = screenx - 2*boundary;
         const int defy = screeny - 2*boundary;
         int resx, resy, posx, posy;
         sys->cfg.Read(L"resx", &resx, defx);
         sys->cfg.Read(L"resy", &resy, defy);
-        sys->cfg.Read(L"posx", &posx, boundary);
-        sys->cfg.Read(L"posy", &posy, boundary);
-        if(posx + resx > screenx || posy + resy > screeny)
+        sys->cfg.Read(L"posx", &posx, boundary + disprect.x);
+        sys->cfg.Read(L"posy", &posy, boundary + disprect.y);
+        if(resx > screenx ||
+           resy > screeny ||
+           posx < disprect.x ||
+           posy < disprect.y ||
+           posx + resx > disprect.width + disprect.x ||
+           posy + resy > disprect.height + disprect.y)
         {
             // Screen res has been resized since we last ran, set sizes to default to avoid being off-screen.
             resx = defx;
             resy = defy;
             posx = posy = boundary;
+            posx += disprect.x;
+            posy += disprect.y;
         }
         SetSize(resx, resy);
         SetPosition(wxPoint(posx, posy));

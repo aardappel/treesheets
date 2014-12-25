@@ -1,6 +1,8 @@
 /treesheets/Release/
 /treesheets/Debug/
 /wxwidgets/
+osx/TreeSheetsBeta/
+osx/TreeSheets/TreeSheets.xcodeproj/project.xcworkspace/xcuserdata/
 *.exe
 *.zip
 *.tar.gz

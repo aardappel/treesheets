@@ -350,7 +350,7 @@
 					"-liconv",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx;
 				VALID_ARCHS = i386;
 				WRAPPER_EXTENSION = app;
 			};
@@ -398,7 +398,7 @@
 					"-liconv",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx;
 				VALID_ARCHS = i386;
 				WRAPPER_EXTENSION = app;
 			};
