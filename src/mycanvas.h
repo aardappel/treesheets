@@ -52,6 +52,7 @@ struct TSCanvas : public wxScrolledWindow
 
     void SelectClick(int mx, int my, bool right, int isctrlshift)
     {
+        if (mx < 0 || my < 0) return;   // for some reason, using just the "menu" key sends a right-click at (-1, -1)
         wxClientDC dc(this);
         UpdateHover(mx, my, dc);
         Status(doc->Select(dc, right, isctrlshift));

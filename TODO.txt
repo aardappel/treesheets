@@ -1,5 +1,9 @@
 [ check google moderator for new feature requests ]
 
+- make LEFT on the top dotted line go to parent (and maybe UP and leftmost dotted line).
+
+- should save custom color to the cfg
+
 - OSX: [github, Yang Xiaowei]: IME input doesn't work
   No events arrive at either OnChar or OnKeyDown with e.g. Japanese IME selected, and no idea why
 
@@ -16,6 +20,8 @@
 - CTRL+g same as INS on other platforms
 
 - promote/demote keys? Ctrl-Shift left and right?
+
+- if it fails to load its icon files, it should check in the current directory - would simplify command line usage.
 
 - non-windows platforms: wxIsalnum not returning true for certain unicode chars? xxxxxx xxxxxxxx xxxxxx Féretro xxxxx
 - some people have locale settings that makes it break words in the middle.
