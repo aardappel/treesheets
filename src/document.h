@@ -1022,8 +1022,8 @@ struct Document
                     wxFont font = fd.GetFontData().GetChosenFont();
                     sys->defaultfont   = font.GetFaceName();
                     g_deftextsize = min(20, max(10, font.GetPointSize())); 
-                    sys->cfg.Write(L"defaultfont", sys->defaultfont);
-                    sys->cfg.Write(L"defaultfontsize", g_deftextsize);
+                    sys->cfg->Write(L"defaultfont", sys->defaultfont);
+                    sys->cfg->Write(L"defaultfontsize", g_deftextsize);
                     //rootgrid->ResetChildren();
                     sys->frame->TabsReset();   // ResetChildren on all
                     Refresh();
@@ -1111,7 +1111,7 @@ struct Document
             case A_ROUND4:
             case A_ROUND5:
             case A_ROUND6:
-                sys->cfg.Write(L"roundness", long(sys->roundness = k-A_ROUND0));
+                sys->cfg->Write(L"roundness", long(sys->roundness = k-A_ROUND0));
                 Refresh();
                 return NULL;
 

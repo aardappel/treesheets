@@ -27,20 +27,37 @@ struct MyApp : wxApp
         #ifdef __WXMAC__
             wxDisableAsserts();
         #endif
+
+        bool portable = false;
+        wxString filename;
+        for(int i = 1; i < argc; i++)
+        {
+            if(argv[i][0] == '-')
+            {
+                switch((int)argv[i][1])
+                {
+                    case 'p': portable = true; break;
+                }
+            }
+            else
+            {
+                filename = argv[i];
+            }
+        }
         
         const wxString name = wxString::Format(L".treesheets-single-instance-check-%s", wxGetUserId().c_str());
         checker = new wxSingleInstanceChecker(name);
         if(checker->IsAnotherRunning())
         {
             wxClient client;
-            client.MakeConnection(L"localhost", L"4242", argc==2 ? argv[1] : L"*");  // fire and forget            
+            client.MakeConnection(L"localhost", L"4242", filename.Len() ? filename.wc_str() : L"*");  // fire and forget            
             return false;
         }
         
-        sys = new System();
+        sys = new System(portable);
         frame = new MyFrame(argv[0], this);
         SetTopWindow(frame);
-        sys->Init(argc, argv);
+        sys->Init(filename);
         
         serv = new IPCServer();
         serv->Create(L"4242");

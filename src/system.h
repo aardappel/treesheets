@@ -21,7 +21,7 @@ struct System
 
     wxString defaultfont, searchstring;
 
-    wxConfig cfg;
+    wxConfigBase *cfg;
 
     Evaluator ev;
 
@@ -60,41 +60,45 @@ struct System
     
     struct SaveChecker : wxTimer
     {   
-        void Notify() { sys->SaveCheck(); }
+        void Notify() { sys->SaveCheck(); sys->cfg->Flush(); }
     } savechecker;
         
-    System() : cfg(L"TreeSheets"), cellclipboard(NULL),
-               defaultfont(
-                #ifdef WIN32
-                L"Lucida Sans Unicode"
-                #else
-                L"Verdana"
-                #endif
-               ),
-               pen_tinytext(wxColour(0x808080ul)),
-               pen_gridborder(wxColour(0xb5a6a4)),
-               pen_tinygridlines(wxColour(0xf2dcd8)),
-               pen_gridlines(wxColour(0xe5b7b0)),
-               pen_thinselect(*wxLIGHT_GREY),
-               versionlastloaded(0),
-               customcolor(0xFFFFFF),
-               roundness(3),
-               defaultmaxcolwidth(80),
-               makebaks(true),
-               totray(false),
-               autosave(true),
-               #ifdef __WXMAC__
-               fastrender(true),
-               #else
-               fastrender(false),
-               #endif
-               zoomscroll(false),
-               thinselc(true),
-               minclose(false),
-               singletray(false),
-               centered(true),
-               fswatch(false),
-               insidefiledialog(false)
+    System(bool portable)
+          : cfg(portable ? (wxConfigBase *)new wxFileConfig(L"TreeSheets", wxT(""), wxT("TreeSheets.ini"), wxT(""),
+                                                            wxCONFIG_USE_LOCAL_FILE|wxCONFIG_USE_RELATIVE_PATH)
+                         : (wxConfigBase *)new wxConfig(L"TreeSheets")),
+            cellclipboard(NULL),
+            defaultfont(
+            #ifdef WIN32
+            L"Lucida Sans Unicode"
+            #else
+            L"Verdana"
+            #endif
+            ),
+            pen_tinytext(wxColour(0x808080ul)),
+            pen_gridborder(wxColour(0xb5a6a4)),
+            pen_tinygridlines(wxColour(0xf2dcd8)),
+            pen_gridlines(wxColour(0xe5b7b0)),
+            pen_thinselect(*wxLIGHT_GREY),
+            versionlastloaded(0),
+            customcolor(0xFFFFFF),
+            roundness(3),
+            defaultmaxcolwidth(80),
+            makebaks(true),
+            totray(false),
+            autosave(true),
+            #ifdef __WXMAC__
+            fastrender(true),
+            #else
+            fastrender(false),
+            #endif
+            zoomscroll(false),
+            thinselc(true),
+            minclose(false),
+            singletray(false),
+            centered(true),
+            fswatch(false),
+            insidefiledialog(false)
     {
         static const wxDash glpattern[] = { 1, 3 };
         pen_gridlines.SetDashes(2, glpattern);
@@ -102,27 +106,28 @@ struct System
         static const wxDash tspattern[] = { 2, 4 };
         pen_thinselect.SetDashes(2, tspattern);
         pen_thinselect.SetStyle(wxPENSTYLE_USER_DASH );
-        
-        roundness = cfg.Read(L"roundness", roundness);
-        defaultfont = cfg.Read(L"defaultfont", defaultfont);
-        cfg.Read(L"makebaks",   &makebaks,   makebaks);
-        cfg.Read(L"totray",     &totray,     totray);
-        cfg.Read(L"zoomscroll", &zoomscroll, zoomscroll);
-        cfg.Read(L"thinselc",   &thinselc, thinselc);
-        cfg.Read(L"autosave",   &autosave,   autosave);
-        cfg.Read(L"fastrender", &fastrender, fastrender);
-        cfg.Read(L"minclose",   &minclose,   minclose);
-        cfg.Read(L"singletray", &singletray, singletray);
-        cfg.Read(L"centered",   &centered,   centered);
-        cfg.Read(L"fswatch",    &fswatch,    fswatch);
 
-        cfg.Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
+        roundness = cfg->Read(L"roundness", roundness);
+        defaultfont = cfg->Read(L"defaultfont", defaultfont);
+        cfg->Read(L"makebaks",   &makebaks,   makebaks);
+        cfg->Read(L"totray",     &totray,     totray);
+        cfg->Read(L"zoomscroll", &zoomscroll, zoomscroll);
+        cfg->Read(L"thinselc",   &thinselc, thinselc);
+        cfg->Read(L"autosave",   &autosave,   autosave);
+        cfg->Read(L"fastrender", &fastrender, fastrender);
+        cfg->Read(L"minclose",   &minclose,   minclose);
+        cfg->Read(L"singletray", &singletray, singletray);
+        cfg->Read(L"centered",   &centered,   centered);
+        cfg->Read(L"fswatch",    &fswatch,    fswatch);
+
+        cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
 
         //fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
 
     ~System()
     {
+        DELETEP(cfg);
         DELETEP(cellclipboard);
     }
 
@@ -140,19 +145,19 @@ struct System
         newdoc->UpdateFileName();
     }
 
-    void Init(int argc, wxChar **argv)
+    void Init(const wxString &filename)
     {
         ev.Init();
         
-        if(argc==2) LoadDB(argv[1]);
+        if(filename.Len()) LoadDB(filename);
         
         if(!frame->nb->GetPageCount())
         {
-            int numfiles = cfg.Read(L"numopenfiles", (long)0);
+            int numfiles = cfg->Read(L"numopenfiles", (long)0);
             loop(i, numfiles)
             {
                 wxString fn;
-                cfg.Read(wxString::Format(L"lastopenfile_%d", i), &fn);
+                cfg->Read(wxString::Format(L"lastopenfile_%d", i), &fn);
                 LoadDB(fn, true);
             }
         }
@@ -359,12 +364,12 @@ struct System
             TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
             if(p->doc->filename.Len())
             {
-                cfg.Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
+                cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
                 namedfiles++;
             }
         }
 
-        cfg.Write(L"numopenfiles", namedfiles);
+        cfg->Write(L"numopenfiles", namedfiles);
     }
 
     void UpdateStatus(Selection &s)

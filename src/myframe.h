@@ -104,17 +104,17 @@ struct MyFrame : wxFrame
 
         bool showtbar, showsbar, lefttabs, iconset;
 
-        sys->cfg.Read(L"showtbar",   &showtbar, true);
+        sys->cfg->Read(L"showtbar",   &showtbar, true);
         //#ifdef __WXMAC__
         //sys->cfg.Read(L"showsbar",   &showsbar, false);     // debug asserts on redraw otherwise?
         //#else
-        sys->cfg.Read(L"showsbar",   &showsbar, true);
+        sys->cfg->Read(L"showsbar",   &showsbar, true);
         //#endif
-        sys->cfg.Read(L"lefttabs",   &lefttabs, true);
+        sys->cfg->Read(L"lefttabs",   &lefttabs, true);
 
-        sys->cfg.Read(L"iconset",    &iconset,  false);
+        sys->cfg->Read(L"iconset",    &iconset,  false);
 
-        filehistory.Load(sys->cfg);
+        filehistory.Load(*sys->cfg);
 
         wxMenu *expmenu = new wxMenu();
         expmenu->Append(A_EXPXML,   L"&XML...",                        L"Export the current view as XML (which can also be reimported without losing structure)");
@@ -551,10 +551,10 @@ struct MyFrame : wxFrame
         const int defx = screenx - 2*boundary;
         const int defy = screeny - 2*boundary;
         int resx, resy, posx, posy;
-        sys->cfg.Read(L"resx", &resx, defx);
-        sys->cfg.Read(L"resy", &resy, defy);
-        sys->cfg.Read(L"posx", &posx, boundary + disprect.x);
-        sys->cfg.Read(L"posy", &posy, boundary + disprect.y);
+        sys->cfg->Read(L"resx", &resx, defx);
+        sys->cfg->Read(L"resy", &resy, defy);
+        sys->cfg->Read(L"posx", &posx, boundary + disprect.x);
+        sys->cfg->Read(L"posy", &posy, boundary + disprect.y);
         if(resx > screenx ||
            resy > screeny ||
            posx < disprect.x ||
@@ -573,7 +573,7 @@ struct MyFrame : wxFrame
         SetPosition(wxPoint(posx, posy));
 
         bool ismax;
-        sys->cfg.Read(L"maximized", &ismax, true);
+        sys->cfg->Read(L"maximized", &ismax, true);
 
         aui->AddPane(nb, wxCENTER);
         aui->Update();
@@ -597,16 +597,16 @@ struct MyFrame : wxFrame
 
     ~MyFrame()
     {
-        filehistory.Save(sys->cfg);
+        filehistory.Save(*sys->cfg);
         if(!IsIconized())
         {
-            sys->cfg.Write(L"maximized", IsMaximized());
+            sys->cfg->Write(L"maximized", IsMaximized());
             if(!IsMaximized())
             {
-                sys->cfg.Write(L"resx", GetSize().x);
-                sys->cfg.Write(L"resy", GetSize().y);
-                sys->cfg.Write(L"posx", GetPosition().x);
-                sys->cfg.Write(L"posy", GetPosition().y);
+                sys->cfg->Write(L"resx", GetSize().x);
+                sys->cfg->Write(L"resy", GetSize().y);
+                sys->cfg->Write(L"posx", GetPosition().x);
+                sys->cfg->Write(L"posy", GetPosition().y);
             }
         }
 
@@ -759,20 +759,20 @@ struct MyFrame : wxFrame
             case A_AUP:      sw->CursorScroll( 0, -g_scrollratecursor); break;
             case A_ADOWN:    sw->CursorScroll( 0,  g_scrollratecursor); break;
             
-            case A_ICONSET:    sys->cfg.Write(L"iconset",    ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
-            case A_SHOWSBAR:   sys->cfg.Write(L"showsbar",   ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
-            case A_SHOWTBAR:   sys->cfg.Write(L"showtbar",   ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
-            case A_LEFTTABS:   sys->cfg.Write(L"lefttabs",   ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
-            case A_SINGLETRAY: sys->cfg.Write(L"singletray", ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;            
-            case A_MAKEBAKS:   sys->cfg.Write(L"makebaks",   sys->makebaks   = ce.IsChecked()); break;            
-            case A_TOTRAY:     sys->cfg.Write(L"totray",     sys->totray     = ce.IsChecked()); break;            
-            case A_MINCLOSE:   sys->cfg.Write(L"minclose",   sys->minclose   = ce.IsChecked()); break;            
-            case A_ZOOMSCR:    sys->cfg.Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;            
-            case A_THINSELC:   sys->cfg.Write(L"thinselc",   sys->thinselc   = ce.IsChecked()); break;            
-            case A_AUTOSAVE:   sys->cfg.Write(L"autosave",   sys->autosave   = ce.IsChecked()); break;            
-            case A_CENTERED:   sys->cfg.Write(L"centered",   sys->centered   = ce.IsChecked()); Refresh(); break;            
-            case A_FSWATCH:    sys->cfg.Write(L"fswatch",    sys->fswatch    = ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;            
-            case A_FASTRENDER: sys->cfg.Write(L"fastrender", sys->fastrender = ce.IsChecked()); Refresh(); break;            
+            case A_ICONSET:    sys->cfg->Write(L"iconset",    ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
+            case A_SHOWSBAR:   sys->cfg->Write(L"showsbar",   ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
+            case A_SHOWTBAR:   sys->cfg->Write(L"showtbar",   ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
+            case A_LEFTTABS:   sys->cfg->Write(L"lefttabs",   ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;
+            case A_SINGLETRAY: sys->cfg->Write(L"singletray", ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;            
+            case A_MAKEBAKS:   sys->cfg->Write(L"makebaks",   sys->makebaks   = ce.IsChecked()); break;            
+            case A_TOTRAY:     sys->cfg->Write(L"totray",     sys->totray     = ce.IsChecked()); break;            
+            case A_MINCLOSE:   sys->cfg->Write(L"minclose",   sys->minclose   = ce.IsChecked()); break;            
+            case A_ZOOMSCR:    sys->cfg->Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;            
+            case A_THINSELC:   sys->cfg->Write(L"thinselc",   sys->thinselc   = ce.IsChecked()); break;            
+            case A_AUTOSAVE:   sys->cfg->Write(L"autosave",   sys->autosave   = ce.IsChecked()); break;            
+            case A_CENTERED:   sys->cfg->Write(L"centered",   sys->centered   = ce.IsChecked()); Refresh(); break;            
+            case A_FSWATCH:    sys->cfg->Write(L"fswatch",    sys->fswatch    = ce.IsChecked()); sw->Status("change will take effect next run of TreeSheets"); break;            
+            case A_FASTRENDER: sys->cfg->Write(L"fastrender", sys->fastrender = ce.IsChecked()); Refresh(); break;            
 
             case A_FULLSCREEN: ShowFullScreen(!IsFullScreen()); if(IsFullScreen()) sw->Status("press F11 to exit fullscreen mode"); break;
 
