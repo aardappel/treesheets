@@ -212,8 +212,10 @@ public:
 
 
 #ifdef _DEBUG
-inline void *__cdecl operator new(size_t n, const char *fn, int l) { return ::operator new(n, 1, fn, l); }
-inline void __cdecl operator delete(void *p, const char *fn, int l) { ::operator delete(p, 1, fn, l); }
+inline void *__cdecl operator new  (size_t n, const char *fn, int l) { return ::operator new  (n, 1, fn, l); }
+inline void *__cdecl operator new[](size_t n, const char *fn, int l) { return ::operator new[](n, 1, fn, l); }
+inline void __cdecl operator delete  (void *p, const char *fn, int l) { ::operator delete  (p, 1, fn, l); }
+inline void __cdecl operator delete[](void *p, const char *fn, int l) { ::operator delete[](p, 1, fn, l); }
 #define new new(__FILE__,__LINE__)
 #endif
 
