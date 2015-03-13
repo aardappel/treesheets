@@ -835,7 +835,11 @@ struct MyFrame : wxFrame
     void OnSizing(wxSizeEvent  &se) { se.Skip(); }
 
     void OnMaximize(wxMaximizeEvent &me) { ReFocus(); me.Skip(); }
-    void OnActivate(wxActivateEvent &ae) { /*ReFocus();*/ }    
+    void OnActivate(wxActivateEvent &ae)
+    {
+        // This causes warnings in the debug log, but without it keyboard entry upon window select doesn't work.
+        ReFocus();
+    }
 
     void OnIconize(wxIconizeEvent &me)
     {
