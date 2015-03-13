@@ -27,6 +27,10 @@
 - some people have locale settings that makes it break words in the middle.
   maybe do word splits based on ispunct etc instead?
 
+- a fold/unfold all op.
+
+- easy way to split a cell at the current cursor position, e.g. shift + enter?
+
 - should be easy to add a simplistic drawing tool inside TreeSheets, since we already support bitmaps in cells
 
 - it be very good to make the XML import/export closer to the native format, plenty of people would want to interoperate with TS that way
@@ -61,8 +65,6 @@
 - the fact that you can't just copy a X*Y selection and paste that into a similar selection is a bit weird, e.g. if you wanted to duplicate a spreadsheet row.
 
 - shift+down/up while selecting text should also extend selection.
-
-- easy way to split a cell at the current cursor position, e.g. shift + enter?
 
 - ctrl+shift+tab for changing tabs backwards
 

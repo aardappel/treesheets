@@ -64,8 +64,8 @@ struct System
     } savechecker;
         
     System(bool portable)
-          : cfg(portable ? (wxConfigBase *)new wxFileConfig(L"TreeSheets", wxT(""), wxT("TreeSheets.ini"), wxT(""),
-                                                            wxCONFIG_USE_LOCAL_FILE|wxCONFIG_USE_RELATIVE_PATH)
+          : cfg(portable ? (wxConfigBase *)new wxFileConfig(L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""),
+                                                            0)
                          : (wxConfigBase *)new wxConfig(L"TreeSheets")),
             cellclipboard(NULL),
             defaultfont(
@@ -370,6 +370,7 @@ struct System
         }
 
         cfg->Write(L"numopenfiles", namedfiles);
+        cfg->Flush();
     }
 
     void UpdateStatus(Selection &s)
