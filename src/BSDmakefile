@@ -1,0 +1,7 @@
+.if make(debug)
+CXXFLAGS+=	-g
+.elif make(release)
+CXXFLAGS+=	-O3
+.endif
+
+.include "Makefile.common"

@@ -1,5 +1,4 @@
-# Created by: lightside <lightside@gmx.com>
-# This file released into the public domain
+# Common Makefile for BSD and GNU make
 
 WX_CONFIG?=	wx-config
 WX_CXXFLAGS=	`$(WX_CONFIG) --cxxflags`
@@ -12,22 +11,25 @@ APPNAME=	treesheets
 SRCS=	main.cpp
 OBJS=	$(SRCS:.cpp=.o)
 
-all: CXXFLAGS+= -O3
-all: $(SRCS) $(APPNAME)
+debug: all
 
-debug: CXXFLAGS+= -g
-debug: $(SRCS) $(APPNAME)
+release: all
+
+all: $(SRCS) $(APPNAME)
 
 $(APPNAME): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@
-	mv treesheets ../TS
-	rm -f *.o
 
 .o:
 	$(CXX) $(CXXFLAGS) $< -o $@
+
+install: all
+	cp -f $(APPNAME) ../TS
+
+deinstall:
+	rm -f ../TS/$(APPNAME)
 
 clean:
 	rm -f $(APPNAME) *.o
 
 .PHONY: all
-
