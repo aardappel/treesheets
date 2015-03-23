@@ -8,26 +8,52 @@ CXX?=	c++
 CXXFLAGS+=	-std=c++11 $(WX_CXXFLAGS)
 LDFLAGS+=	$(WX_LIBS)
 
+ARCH=	$(firstword $(shell uname -m))
+SYS=	$(firstword $(shell uname -s))
+DISTFILE?=	$(DISTNAME)$(DISTEXT)
+DISTNAME?=	$(APPNAME)_$(SYS)_$(ARCH)
+DISTEXT?=	.tar.gz
+DIST_CMD?=	tar
+DIST_ARGS?=	--gid=0 --uid=0 -caf
+
 APPNAME=	treesheets
 SRCS=	main.cpp
 OBJS=	$(SRCS:.cpp=.o)
 
-all: CXXFLAGS+= -O3
-all: $(SRCS) $(APPNAME)
+release: CXXFLAGS+= -O3
+release: install clean
 
 debug: CXXFLAGS+= -g
-debug: $(SRCS) $(APPNAME)
+debug: install clean
+
+all: $(SRCS) $(APPNAME)
 
 $(APPNAME): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@
-	mv treesheets ../TS
-	rm -f *.o
 
 .o:
 	$(CXX) $(CXXFLAGS) $< -o $@
 
+install: all
+	cp -f $(APPNAME) ../TS
+
+deinstall:
+	rm -f ../TS/$(APPNAME)
+
 clean:
 	rm -f $(APPNAME) *.o
 
-.PHONY: all
+dist-release: release dist
 
+dist-debug: debug dist
+
+dist-all: install clean dist
+
+dist:
+	cd .. && $(DIST_CMD) $(DIST_ARGS) $(DISTFILE) TS
+
+dist-clean:
+	cd .. && rm -f $(DISTFILE)
+
+.PHONY: all debug release clean install deinstall dist dist-all dist-debug \
+	dist-release dist-clean
