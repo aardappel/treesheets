@@ -45,8 +45,9 @@ Windows:
 Linux:
 - build wxWidgets as usual on linux, but use these arguments to configure:
   --enable-unicode --enable-optimize=-O2 --disable-shared
-- in the src folder "make" should now compile treesheets without errors.
-- the exe is placed in the TS folder, tgz this folder to distribute
+- in the src folder "make" should now compile treesheets without errors,
+  and place the exe in the TS folder.
+- "make dist-release" to tgz this folder (to the parent dir) to distribute.
 
 OSX:
 - build wxWidgets as follows:

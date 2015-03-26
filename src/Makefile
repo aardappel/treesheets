@@ -14,7 +14,7 @@ DISTFILE?=	$(DISTNAME)$(DISTEXT)
 DISTNAME?=	$(APPNAME)_$(SYS)_$(ARCH)
 DISTEXT?=	.tar.gz
 DIST_CMD?=	tar
-DIST_ARGS?=	--gid=0 --uid=0 -caf
+DIST_ARGS?=	-caf
 
 APPNAME=	treesheets
 SRCS=	main.cpp
