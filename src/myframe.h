@@ -1,7 +1,7 @@
 struct MyFrame : wxFrame
 {
     wxMenu *editmenupopup;
-    wxString exepath;
+    wxString exepath_;
     wxFileHistory filehistory;
     wxTextCtrl *filter, *replaces;
     wxToolBar *tb;
@@ -27,6 +27,12 @@ struct MyFrame : wxFrame
         bool watcherwaitingforuser;
     #endif
 
+    wxString GetPath(const wxString &relpath)
+    {
+        if (!exepath_.Length()) return relpath;
+        return exepath_ + "/" + relpath;
+    }
+
     MyFrame(wxString exename, wxApp *_app) : wxFrame((wxFrame *)NULL, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE),
         filter(NULL), replaces(NULL), tb(NULL), nb(NULL), idd(NULL), refreshhack(0), refreshhackinstances(0), aui(NULL), fromclosebox(true), app(_app)
         #ifdef FSWATCH
@@ -39,12 +45,12 @@ struct MyFrame : wxFrame
 
         sys->frame = this;
         
-        exepath = wxFileName(exename).GetPath();
+        exepath_ = wxFileName(exename).GetPath();
         #ifdef __WXMAC__
-            int cut = exepath.Find("/MacOS");
+            int cut = exepath_.Find("/MacOS");
             if (cut > 0)
             {
-                exepath = exepath.SubString(0, cut) + "/Resources";
+                exepath_ = exepath_.SubString(0, cut) + "/Resources";
             }
         #endif
 
@@ -75,8 +81,8 @@ struct MyFrame : wxFrame
 
         wxIconBundle icons;
         wxIcon iconbig;
-        icon   .LoadFile(exepath+L"/images/icon16.png", wxBITMAP_TYPE_PNG);
-        iconbig.LoadFile(exepath+L"/images/icon32.png", wxBITMAP_TYPE_PNG);
+        icon   .LoadFile(GetPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG);
+        iconbig.LoadFile(GetPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG);
         #ifdef WIN32
             int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
             int iconlarge = ::GetSystemMetrics(SM_CXICON);
@@ -87,9 +93,9 @@ struct MyFrame : wxFrame
         icons.AddIcon(iconbig);
         SetIcons(icons);
         
-        if(!line_nw.LoadFile(exepath+L"/images/render/line_nw.png", wxBITMAP_TYPE_PNG) ||
-           !line_sw.LoadFile(exepath+L"/images/render/line_sw.png", wxBITMAP_TYPE_PNG) ||
-           !foldicon.LoadFile(exepath+L"/images/nuvola/fold.png"))
+        if(!line_nw.LoadFile(GetPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG) ||
+           !line_sw.LoadFile(GetPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG) ||
+           !foldicon.LoadFile(GetPath(L"images/nuvola/fold.png")))
         {
             wxMessageBox(L"Error loading core data file (TreeSheets not installed correctly?)", L"Initialization Error", wxOK, this);
             // FIXME: what is the correct way to exit?
@@ -477,7 +483,7 @@ struct MyFrame : wxFrame
             #define SEPARATOR tb->AddSeparator()
             #endif
 
-            wxString iconpath = exepath + (iconset ? L"/images/webalys/toolbar/" : L"/images/nuvola/toolbar/");
+            wxString iconpath = GetPath(iconset ? L"images/webalys/toolbar/" : L"images/nuvola/toolbar/");
             tb->SetToolBitmapSize(iconset ? wxSize(18, 18) : wxSize(22, 22));
 
             AddTBIcon(tb, L"New (CTRL+n)",           A_NEW,     iconpath+L"filenew.png");
@@ -513,7 +519,7 @@ struct MyFrame : wxFrame
             tb->AddControl(new ColorDropdown(tb, A_BORDCOLOR, 7));
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, L"Image "));
-            wxString imagepath = exepath + L"/images/nuvola/dropdown/";
+            wxString imagepath = GetPath("images/nuvola/dropdown/");
             idd = new ImageDropdown(tb, imagepath);
             tb->AddControl(idd);
             tb->Realize();

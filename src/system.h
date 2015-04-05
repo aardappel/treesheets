@@ -174,7 +174,7 @@ struct System
 
     void LoadTut()
     {
-        LoadDB(frame->exepath+L"/examples/tutorial.cts");
+        LoadDB(frame->GetPath(L"examples/tutorial.cts"));
     }
 
     Cell *&InitDB(int sizex, int sizey = 0)

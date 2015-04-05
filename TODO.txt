@@ -1,5 +1,7 @@
 [ check google moderator for new feature requests ]
 
+- wordcount feature
+
 - make LEFT on the top dotted line go to parent (and maybe UP and leftmost dotted line).
 
 - should save custom color to the cfg
