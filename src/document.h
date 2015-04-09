@@ -851,7 +851,7 @@ struct Document
                     return Action(dc, A_BACKSPACE);
 
                 case WXK_RETURN:         
-                    return Action(dc, A_ENTERCELL);
+                    return Action(dc, shift ? A_ENTERGRID : A_ENTERCELL);
 
                 case WXK_ESCAPE:            // docs say it can be used as a menu accelerator, but it does not trigger from there?
                     return Action(dc, A_CANCELEDIT);
