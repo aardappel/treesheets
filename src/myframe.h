@@ -312,7 +312,7 @@ struct MyFrame : wxFrame
         editmenu->AppendSeparator();
         editmenu->AppendSubMenu(selmenu,  L"&Selection...");
         editmenu->AppendSubMenu(orgmenu,  L"&Grid Reorganization...");
-        editmenu->AppendSubMenu(laymenu,  L"&Layout & Render Style...");
+        editmenu->AppendSubMenu(laymenu,  L"&Layout && Render Style...");
         editmenu->AppendSubMenu(imgmenu,  L"&Images...");
         editmenu->AppendSubMenu(navmenu,  L"&Browsing...");
         editmenu->AppendSubMenu(temenu,   L"Text &Editing...");
