@@ -99,9 +99,15 @@ struct Text
         if(      l-i<=maxcolwidth) return GetLinePart(i, l, l);
         
         for(int p = i+maxcolwidth; p>=i; p--) if(!IsWord(t[p])) return GetLinePart(i, p, l);
-        for(int p = i+maxcolwidth; p<l;  p++) if(!IsWord(t[p])) return GetLinePart(i, p, l);  // we arrive here only if a single word is too big for maxcolwidth, so simply return that word          
-        
-        return GetLinePart(i, l, l);     // big word was the last one
+
+        // A single word is > maxcolwidth. We split it up anyway.
+        // This happens with long urls and e.g. Japanese text without spaces.
+        // Should really do proper unicode linebreaking instead (see libunibreak),
+        // but for now this is better than the old code below which allowed for arbitrary long words.
+        return GetLinePart(i, min(i+maxcolwidth, l), l);
+
+        //for(int p = i+maxcolwidth; p<l;  p++) if(!IsWord(t[p])) return GetLinePart(i, p, l);  // we arrive here only if a single word is too big for maxcolwidth, so simply return that word                  
+        //return GetLinePart(i, l, l);     // big word was the last one
     }
 
     void TextSize(wxDC &dc, int &sx, int &sy, bool tiny, int &leftoffset, int maxcolwidth)
