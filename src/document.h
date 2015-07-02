@@ -1,3 +1,7 @@
+#ifndef PACKAGE_VERSION
+#define PACKAGE_VERSION __DATE__
+#endif
+
 struct UndoItem
 {
     Vector<Selection> path, selpath;
@@ -984,7 +988,7 @@ struct Document
             {
                 wxAboutDialogInfo info;
                 info.SetName(L"TreeSheets");
-                info.SetVersion(wxT(__DATE__));
+                info.SetVersion(wxT(PACKAGE_VERSION));
                 info.SetCopyright(L"(C) 2009 Wouter van Oortmerssen");
                 info.SetDescription(L"The Free Form Hierarchical Information Organizer");
                 wxAboutBox(info);
