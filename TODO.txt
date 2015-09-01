@@ -1,6 +1,6 @@
 [ check google moderator for new feature requests ]
 
-- wordcount feature
+- wordcount feature, for all, and also shown for current cell
 
 - make LEFT on the top dotted line go to parent (and maybe UP and leftmost dotted line).
 
@@ -63,6 +63,9 @@
   -> also a problem since 2.9.4 according to http://trac.wxwidgets.org/ticket/14871
 
 - LINUX? recent files list not updated after Save As?
+
+- the bitmaps used for rounded lines show up using black for the alpha on some printers.
+  draw them using actual lines when in printing mode.
 
 - the fact that you can't just copy a X*Y selection and paste that into a similar selection is a bit weird, e.g. if you wanted to duplicate a spreadsheet row.
 
