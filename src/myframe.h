@@ -353,7 +353,13 @@ struct MyFrame : wxFrame
         wxMenu *viewmenu = new wxMenu();
         viewmenu->Append(A_ZOOMIN,      L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP");
         viewmenu->Append(A_ZOOMOUT,     L"Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN");
-        viewmenu->Append(A_NEXTFILE,    L"Switch to &next file/tab\tCTRL+TAB");
+        viewmenu->Append(A_NEXTFILE,    L"Switch to &next file/tab"
+        #ifndef __WXGTK__
+            // On Linux, this conflicts with CTRL+I, see Document::Key()
+            // CTRL+SHIFT+TAB below still works, so that will have to be used to switch tabs.
+            L"\tCTRL+TAB"
+        #endif
+        );
         viewmenu->Append(A_PREVFILE,    L"Switch to &previous file/tab\tSHIFT+CTRL+TAB");
         viewmenu->Append(A_FULLSCREEN,  L"Toggle &Fullscreen View\t"
         #ifdef __WXMAC__
