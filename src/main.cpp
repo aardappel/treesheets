@@ -255,6 +255,7 @@ struct treesheets
         A_THINSELC,
         A_COPYCT,
         A_MINISIZE,
+        A_CUSTKEY,
 
         A_NOP,
         A_TAGSET = 1000  // and all values from here on

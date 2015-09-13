@@ -73,6 +73,8 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 
 #include <new>
 
+#include <vector>
+
 #include "tools.h"
 
 

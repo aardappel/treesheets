@@ -33,6 +33,29 @@ struct MyFrame : wxFrame
         return exepath_ + "/" + relpath;
     }
 
+    std::vector<std::pair<wxString, wxString>> menustrings;
+
+    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"")
+    {
+        wxString item = contents;
+        wxString key = L"";
+        auto pos = contents.Find("\t");
+        if (pos >= 0)
+        {
+            item = contents.Mid(0, pos);
+            key = contents.Mid(pos + 1);
+        }
+
+        key = sys->cfg->Read(item, key);
+
+        auto newcontents = item;
+        if (key.Length()) newcontents += "\t" + key;
+
+        menu->Append(tag, newcontents, help);
+
+        menustrings.push_back(std::make_pair(item, key));
+    }
+
     MyFrame(wxString exename, wxApp *_app)
         : wxFrame((wxFrame *)NULL, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE),
           filter(NULL),
@@ -138,204 +161,204 @@ struct MyFrame : wxFrame
         filehistory.Load(*sys->cfg);
 
         wxMenu *expmenu = new wxMenu();
-        expmenu->Append(A_EXPXML, L"&XML...",
+        MyAppend(expmenu, A_EXPXML, L"&XML...",
                         L"Export the current view as XML (which can also be reimported without losing structure)");
-        expmenu->Append(
+        MyAppend(expmenu, 
             A_EXPHTMLT, L"&HTML (Tables+Styling)...",
             L"Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet");
-        expmenu->Append(
+        MyAppend(expmenu, 
             A_EXPHTMLO, L"HTML (&Outline)...",
             L"Export the current view as HTML as nested headers, suitable for importing into Word's outline mode");
-        expmenu->Append(A_EXPTEXT, L"Indented &Text...",
+        MyAppend(expmenu, A_EXPTEXT, L"Indented &Text...",
                         L"Export the current view as tree structured text, using spaces for each indentation level. "
                         L"Suitable for importing into mindmanagers and general text programs");
-        expmenu->Append(A_EXPCSV, L"&Comma delimited text (CSV)...",
+        MyAppend(expmenu, A_EXPCSV, L"&Comma delimited text (CSV)...",
                         L"Export the current view as CSV. Good for spreadsheets and databases. Only works on grids "
                         L"with no sub-grids (use the Flatten operation first if need be)");
-        expmenu->Append(A_EXPIMAGE, L"&Image...",
+        MyAppend(expmenu, A_EXPIMAGE, L"&Image...",
                         L"Export the current view as an image. Useful for faithfull renderings of the TreeSheet, and "
                         L"programs that don't accept any of the above options");
 
         wxMenu *impmenu = new wxMenu();
-        impmenu->Append(A_IMPXML, L"XML...");
-        impmenu->Append(A_IMPXMLA, L"XML (attributes too, for OPML etc)...");
-        impmenu->Append(A_IMPTXTI, L"Indented text...");
-        impmenu->Append(A_IMPTXTC, L"Comma delimited text (CSV)...");
-        impmenu->Append(A_IMPTXTS, L"Semi-Colon delimited text (CSV)...");
-        impmenu->Append(A_IMPTXTT, L"Tab delimited text...");
+        MyAppend(impmenu, A_IMPXML, L"XML...");
+        MyAppend(impmenu, A_IMPXMLA, L"XML (attributes too, for OPML etc)...");
+        MyAppend(impmenu, A_IMPTXTI, L"Indented text...");
+        MyAppend(impmenu, A_IMPTXTC, L"Comma delimited text (CSV)...");
+        MyAppend(impmenu, A_IMPTXTS, L"Semi-Colon delimited text (CSV)...");
+        MyAppend(impmenu, A_IMPTXTT, L"Tab delimited text...");
 
         wxMenu *recentmenu = new wxMenu();
         filehistory.UseMenu(recentmenu);
         filehistory.AddFilesToMenu();
 
         wxMenu *filemenu = new wxMenu();
-        filemenu->Append(
+        MyAppend(filemenu, 
             A_NEW,
             L"&New\tCTRL+n");  //->SetBitmap(wxBitmap("images/nuvola/16x16/actions/filenew.png", wxBITMAP_TYPE_PNG));
-        filemenu->Append(A_OPEN, L"&Open...\tCTRL+o");
-        filemenu->Append(A_CLOSE, L"&Close\tCTRL+w");
+        MyAppend(filemenu, A_OPEN, L"&Open...\tCTRL+o");
+        MyAppend(filemenu, A_CLOSE, L"&Close\tCTRL+w");
         filemenu->AppendSubMenu(recentmenu, L"&Recent files");
-        filemenu->Append(A_SAVE, L"&Save\tCTRL+s");
-        filemenu->Append(A_SAVEAS, L"Save &As...");
+        MyAppend(filemenu, A_SAVE, L"&Save\tCTRL+s");
+        MyAppend(filemenu, A_SAVEAS, L"Save &As...");
         filemenu->AppendSeparator();
-        filemenu->Append(A_PAGESETUP, L"Page Setup...");
-        filemenu->Append(A_PRINTSCALE, L"Set Print Scale...");
-        filemenu->Append(A_PREVIEW, L"Print preview...");
-        filemenu->Append(A_PRINT, L"&Print...\tCTRL+p");
+        MyAppend(filemenu, A_PAGESETUP, L"Page Setup...");
+        MyAppend(filemenu, A_PRINTSCALE, L"Set Print Scale...");
+        MyAppend(filemenu, A_PREVIEW, L"Print preview...");
+        MyAppend(filemenu, A_PRINT, L"&Print...\tCTRL+p");
         filemenu->AppendSeparator();
         filemenu->AppendSubMenu(expmenu, L"Export &view as");
         filemenu->AppendSubMenu(impmenu, L"Import file from");
         filemenu->AppendSeparator();
-        filemenu->Append(A_EXIT, L"&Exit\tCTRL+q");
+        MyAppend(filemenu, A_EXIT, L"&Exit\tCTRL+q");
 
         wxMenu *editmenu;
         loop(twoeditmenus, 2)
         {
             wxMenu *sizemenu = new wxMenu();
-            sizemenu->Append(A_INCSIZE, L"&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP");
-            sizemenu->Append(A_DECSIZE, L"&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN");
-            sizemenu->Append(A_RESETSIZE, L"&Reset text sizes\tSHIFT+CTRL+s");
-            sizemenu->Append(A_MINISIZE, L"&Shrink text of all sub-grids\tSHIFT+CTRL+m");
+            MyAppend(sizemenu, A_INCSIZE, L"&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP");
+            MyAppend(sizemenu, A_DECSIZE, L"&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN");
+            MyAppend(sizemenu, A_RESETSIZE, L"&Reset text sizes\tSHIFT+CTRL+s");
+            MyAppend(sizemenu, A_MINISIZE, L"&Shrink text of all sub-grids\tSHIFT+CTRL+m");
             sizemenu->AppendSeparator();
-            sizemenu->Append(A_INCWIDTH, L"Increase column width (ALT+mousewheel)\tALT+PGUP");
-            sizemenu->Append(A_DECWIDTH, L"Decrease column width (ALT+mousewheel)\tALT+PGDN");
-            sizemenu->Append(A_INCWIDTHNH, L"Increase column width (no sub grids)\tCTRL+ALT+PGUP");
-            sizemenu->Append(A_DECWIDTHNH, L"Decrease column width (no sub grids)\tCTRL+ALT+PGDN");
-            sizemenu->Append(A_RESETWIDTH, L"Reset column widths\tSHIFT+CTRL+w");
+            MyAppend(sizemenu, A_INCWIDTH, L"Increase column width (ALT+mousewheel)\tALT+PGUP");
+            MyAppend(sizemenu, A_DECWIDTH, L"Decrease column width (ALT+mousewheel)\tALT+PGDN");
+            MyAppend(sizemenu, A_INCWIDTHNH, L"Increase column width (no sub grids)\tCTRL+ALT+PGUP");
+            MyAppend(sizemenu, A_DECWIDTHNH, L"Decrease column width (no sub grids)\tCTRL+ALT+PGDN");
+            MyAppend(sizemenu, A_RESETWIDTH, L"Reset column widths\tSHIFT+CTRL+w");
 
             wxMenu *bordmenu = new wxMenu();
-            bordmenu->Append(A_BORD1, L"&1");
-            bordmenu->Append(A_BORD2, L"&2");
-            bordmenu->Append(A_BORD3, L"&3");
-            bordmenu->Append(A_BORD4, L"&4");
-            bordmenu->Append(A_BORD5, L"&5");
+            MyAppend(bordmenu, A_BORD1, L"&1");
+            MyAppend(bordmenu, A_BORD2, L"&2");
+            MyAppend(bordmenu, A_BORD3, L"&3");
+            MyAppend(bordmenu, A_BORD4, L"&4");
+            MyAppend(bordmenu, A_BORD5, L"&5");
 
             wxMenu *selmenu = new wxMenu();
-            selmenu->Append(A_NEXT, L"Move to next cell\tTAB");
-            selmenu->Append(A_PREV, L"Move to previous cell\tSHIFT+TAB");
+            MyAppend(selmenu, A_NEXT, L"Move to next cell\tTAB");
+            MyAppend(selmenu, A_PREV, L"Move to previous cell\tSHIFT+TAB");
             selmenu->AppendSeparator();
-            selmenu->Append(A_SELALL, L"Select &all in current grid\tCTRL+a");
+            MyAppend(selmenu, A_SELALL, L"Select &all in current grid\tCTRL+a");
             selmenu->AppendSeparator();
-            selmenu->Append(A_LEFT, L"Move Selection Left\tLEFT");
-            selmenu->Append(A_RIGHT, L"Move Selection Right\tRIGHT");
-            selmenu->Append(A_UP, L"Move Selection Up\tUP");
-            selmenu->Append(A_DOWN, L"Move Selection Down\tDOWN");
+            MyAppend(selmenu, A_LEFT, L"Move Selection Left\tLEFT");
+            MyAppend(selmenu, A_RIGHT, L"Move Selection Right\tRIGHT");
+            MyAppend(selmenu, A_UP, L"Move Selection Up\tUP");
+            MyAppend(selmenu, A_DOWN, L"Move Selection Down\tDOWN");
             selmenu->AppendSeparator();
-            selmenu->Append(A_MLEFT, L"Move Cells Left\tCTRL+LEFT");
-            selmenu->Append(A_MRIGHT, L"Move Cells Right\tCTRL+RIGHT");
-            selmenu->Append(A_MUP, L"Move Cells Up\tCTRL+UP");
-            selmenu->Append(A_MDOWN, L"Move Cells Down\tCTRL+DOWN");
+            MyAppend(selmenu, A_MLEFT, L"Move Cells Left\tCTRL+LEFT");
+            MyAppend(selmenu, A_MRIGHT, L"Move Cells Right\tCTRL+RIGHT");
+            MyAppend(selmenu, A_MUP, L"Move Cells Up\tCTRL+UP");
+            MyAppend(selmenu, A_MDOWN, L"Move Cells Down\tCTRL+DOWN");
             selmenu->AppendSeparator();
-            selmenu->Append(A_SLEFT, L"Extend Selection Left\tSHIFT+LEFT");
-            selmenu->Append(A_SRIGHT, L"Extend Selection Right\tSHIFT+RIGHT");
-            selmenu->Append(A_SUP, L"Extend Selection Up\tSHIFT+UP");
-            selmenu->Append(A_SDOWN, L"Extend Selection Down\tSHIFT+DOWN");
-            selmenu->Append(A_SCOLS, L"Extend Selection Full Columns");
-            selmenu->Append(A_SROWS, L"Extend Selection Full Rows");
+            MyAppend(selmenu, A_SLEFT, L"Extend Selection Left\tSHIFT+LEFT");
+            MyAppend(selmenu, A_SRIGHT, L"Extend Selection Right\tSHIFT+RIGHT");
+            MyAppend(selmenu, A_SUP, L"Extend Selection Up\tSHIFT+UP");
+            MyAppend(selmenu, A_SDOWN, L"Extend Selection Down\tSHIFT+DOWN");
+            MyAppend(selmenu, A_SCOLS, L"Extend Selection Full Columns");
+            MyAppend(selmenu, A_SROWS, L"Extend Selection Full Rows");
             selmenu->AppendSeparator();
-            selmenu->Append(A_CANCELEDIT, L"Select &Parent\tESC");
-            selmenu->Append(A_ENTERGRID, L"Select First &Child\tSHIFT+ENTER");
+            MyAppend(selmenu, A_CANCELEDIT, L"Select &Parent\tESC");
+            MyAppend(selmenu, A_ENTERGRID, L"Select First &Child\tSHIFT+ENTER");
             selmenu->AppendSeparator();
-            selmenu->Append(A_LINK, L"Go To &Matching Cell\tF6");
+            MyAppend(selmenu, A_LINK, L"Go To &Matching Cell\tF6");
 
             wxMenu *temenu = new wxMenu();
-            temenu->Append(A_LEFT, L"Cursor Left\tLEFT");
-            temenu->Append(A_RIGHT, L"Cursor Right\tRIGHT");
-            temenu->Append(A_MLEFT, L"Word Left\tCTRL+LEFT");
-            temenu->Append(A_MRIGHT, L"Word Right\tCTRL+RIGHT");
+            MyAppend(temenu, A_LEFT, L"Cursor Left\tLEFT");
+            MyAppend(temenu, A_RIGHT, L"Cursor Right\tRIGHT");
+            MyAppend(temenu, A_MLEFT, L"Word Left\tCTRL+LEFT");
+            MyAppend(temenu, A_MRIGHT, L"Word Right\tCTRL+RIGHT");
             temenu->AppendSeparator();
-            temenu->Append(A_SLEFT, L"Extend Selection Left\tSHIFT+LEFT");
-            temenu->Append(A_SRIGHT, L"Extend Selection Right\tSHIFT+RIGHT");
-            temenu->Append(A_SCLEFT, L"Extend Selection Word Left\tSHIFT+CTRL+LEFT");
-            temenu->Append(A_SCRIGHT, L"Extend Selection Word Right\tSHIFT+CTRL+RIGHT");
-            temenu->Append(A_SHOME, L"Extend Selection to Start\tSHIFT+HOME");
-            temenu->Append(A_SEND, L"Extend Selection to End\tSHIFT+END");
+            MyAppend(temenu, A_SLEFT, L"Extend Selection Left\tSHIFT+LEFT");
+            MyAppend(temenu, A_SRIGHT, L"Extend Selection Right\tSHIFT+RIGHT");
+            MyAppend(temenu, A_SCLEFT, L"Extend Selection Word Left\tSHIFT+CTRL+LEFT");
+            MyAppend(temenu, A_SCRIGHT, L"Extend Selection Word Right\tSHIFT+CTRL+RIGHT");
+            MyAppend(temenu, A_SHOME, L"Extend Selection to Start\tSHIFT+HOME");
+            MyAppend(temenu, A_SEND, L"Extend Selection to End\tSHIFT+END");
             temenu->AppendSeparator();
-            temenu->Append(A_HOME, L"Start of line of text\tHOME");
-            temenu->Append(A_END, L"End of line of text\tEND");
-            temenu->Append(A_CHOME, L"Start of text\tCTRL+HOME");
-            temenu->Append(A_CEND, L"End of text\tCTRL+END");
+            MyAppend(temenu, A_HOME, L"Start of line of text\tHOME");
+            MyAppend(temenu, A_END, L"End of line of text\tEND");
+            MyAppend(temenu, A_CHOME, L"Start of text\tCTRL+HOME");
+            MyAppend(temenu, A_CEND, L"End of text\tCTRL+END");
             temenu->AppendSeparator();
-            temenu->Append(A_ENTERCELL, L"Enter/exit text edit mode\tENTER");
-            temenu->Append(A_ENTERCELL, L"Enter/exit text edit mode\tF2");
-            temenu->Append(A_CANCELEDIT, L"Cancel text edits\tESC");
+            MyAppend(temenu, A_ENTERCELL, L"Enter/exit text edit mode\tENTER");
+            MyAppend(temenu, A_ENTERCELL, L"Enter/exit text edit mode\tF2");
+            MyAppend(temenu, A_CANCELEDIT, L"Cancel text edits\tESC");
 
             wxMenu *stmenu = new wxMenu();
-            stmenu->Append(A_BOLD, L"Toggle cell &BOLD\tCTRL+b");
-            stmenu->Append(A_ITALIC, L"Toggle cell &ITALIC\tCTRL+i");
-            stmenu->Append(A_TT, L"Toggle cell &typewriter");
-            stmenu->Append(A_UNDERL, L"Toggle cell &underlined\tCTRL+u");
-            stmenu->Append(A_STRIKET, L"Toggle cell &strikethrough\tCTRL+t");
+            MyAppend(stmenu, A_BOLD, L"Toggle cell &BOLD\tCTRL+b");
+            MyAppend(stmenu, A_ITALIC, L"Toggle cell &ITALIC\tCTRL+i");
+            MyAppend(stmenu, A_TT, L"Toggle cell &typewriter");
+            MyAppend(stmenu, A_UNDERL, L"Toggle cell &underlined\tCTRL+u");
+            MyAppend(stmenu, A_STRIKET, L"Toggle cell &strikethrough\tCTRL+t");
             stmenu->AppendSeparator();
-            stmenu->Append(A_RESETSTYLE, L"&Reset text styles\tSHIFT+CTRL+r");
-            stmenu->Append(A_RESETCOLOR, L"Reset &colors\tSHIFT+CTRL+c");
+            MyAppend(stmenu, A_RESETSTYLE, L"&Reset text styles\tSHIFT+CTRL+r");
+            MyAppend(stmenu, A_RESETCOLOR, L"Reset &colors\tSHIFT+CTRL+c");
 
             wxMenu *tagmenu = new wxMenu();
-            tagmenu->Append(A_TAGADD, L"&Add Cell Text as Tag");
-            tagmenu->Append(A_TAGREMOVE, L"&Remove Cell Text from Tags");
-            tagmenu->Append(A_NOP, L"&Set Cell Text to tag (use CTRL+RMB)",
+            MyAppend(tagmenu, A_TAGADD, L"&Add Cell Text as Tag");
+            MyAppend(tagmenu, A_TAGREMOVE, L"&Remove Cell Text from Tags");
+            MyAppend(tagmenu, A_NOP, L"&Set Cell Text to tag (use CTRL+RMB)",
                             L"Hold CTRL while pressing right mouse button to quickly set a tag for the current cell "
                             L"using a popup menu");
 
             wxMenu *orgmenu = new wxMenu();
-            orgmenu->Append(A_TRANSPOSE, L"&Transpose\tSHIFT+CTRL+t", L"changes the orientation of a grid");
-            orgmenu->Append(A_SORT, L"Sort &Ascending",
+            MyAppend(orgmenu, A_TRANSPOSE, L"&Transpose\tSHIFT+CTRL+t", L"changes the orientation of a grid");
+            MyAppend(orgmenu, A_SORT, L"Sort &Ascending",
                             L"Make a 1xN selection to indicate which column to sort on, and which rows to affect");
-            orgmenu->Append(A_SORTD, L"Sort &Descending",
+            MyAppend(orgmenu, A_SORTD, L"Sort &Descending",
                             L"Make a 1xN selection to indicate which column to sort on, and which rows to affect");
-            orgmenu->Append(A_HSWAP, L"Hierarchy &Swap\tF8",
+            MyAppend(orgmenu, A_HSWAP, L"Hierarchy &Swap\tF8",
                             L"Swap all cells with this text at this level (or above) with the parent");
-            orgmenu->Append(A_HIFY, L"&Hierarchify",
+            MyAppend(orgmenu, A_HIFY, L"&Hierarchify",
                             L"Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, "
                             L"useful to convert data from spreadsheets");
-            orgmenu->Append(A_FLATTEN, L"&Flatten",
+            MyAppend(orgmenu, A_FLATTEN, L"&Flatten",
                             L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful "
                             L"for export to spreadsheets");
 
             wxMenu *imgmenu = new wxMenu();
-            imgmenu->Append(A_IMAGE, L"&Add Image", L"Adds an image to the selected cell");
-            imgmenu->Append(A_IMAGESC, L"&Scale Image", L"Change the image size if it is too big or too small");
-            imgmenu->Append(A_IMAGER, L"&Remove Image(s)", L"Remove image(s) from the selected cells");
+            MyAppend(imgmenu, A_IMAGE, L"&Add Image", L"Adds an image to the selected cell");
+            MyAppend(imgmenu, A_IMAGESC, L"&Scale Image", L"Change the image size if it is too big or too small");
+            MyAppend(imgmenu, A_IMAGER, L"&Remove Image(s)", L"Remove image(s) from the selected cells");
 
             wxMenu *navmenu = new wxMenu();
-            navmenu->Append(A_BROWSE, L"Open link in &browser\tF5",
+            MyAppend(navmenu, A_BROWSE, L"Open link in &browser\tF5",
                             L"Opens up the text from the selected cell in browser (should start be a valid URL)");
-            navmenu->Append(A_BROWSEF, L"Open &file\tF4",
+            MyAppend(navmenu, A_BROWSEF, L"Open &file\tF4",
                             L"Opens up the text from the selected cell in default application for the file type");
 
             wxMenu *laymenu = new wxMenu();
-            laymenu->Append(A_V_GS, L"Vertical Layout with Grid Style Rendering\tALT+1");
-            laymenu->Append(A_V_BS, L"Vertical Layout with Bubble Style Rendering\tALT+2");
-            laymenu->Append(A_V_LS, L"Vertical Layout with Line Style Rendering\tALT+3");
+            MyAppend(laymenu, A_V_GS, L"Vertical Layout with Grid Style Rendering\tALT+1");
+            MyAppend(laymenu, A_V_BS, L"Vertical Layout with Bubble Style Rendering\tALT+2");
+            MyAppend(laymenu, A_V_LS, L"Vertical Layout with Line Style Rendering\tALT+3");
             laymenu->AppendSeparator();
-            laymenu->Append(A_H_GS, L"Horizontal Layout with Grid Style Rendering\tALT+4");
-            laymenu->Append(A_H_BS, L"Horizontal Layout with Bubble Style Rendering\tALT+5");
-            laymenu->Append(A_H_LS, L"Horizontal Layout with Line Style Rendering\tALT+6");
+            MyAppend(laymenu, A_H_GS, L"Horizontal Layout with Grid Style Rendering\tALT+4");
+            MyAppend(laymenu, A_H_BS, L"Horizontal Layout with Bubble Style Rendering\tALT+5");
+            MyAppend(laymenu, A_H_LS, L"Horizontal Layout with Line Style Rendering\tALT+6");
             laymenu->AppendSeparator();
-            laymenu->Append(A_GS, L"Grid Style Rendering\tALT+7");
-            laymenu->Append(A_BS, L"Bubble Style Rendering\tALT+8");
-            laymenu->Append(A_LS, L"Line Style Rendering\tALT+9");
+            MyAppend(laymenu, A_GS, L"Grid Style Rendering\tALT+7");
+            MyAppend(laymenu, A_BS, L"Bubble Style Rendering\tALT+8");
+            MyAppend(laymenu, A_LS, L"Line Style Rendering\tALT+9");
             laymenu->AppendSeparator();
-            laymenu->Append(A_TEXTGRID, L"Toggle Vertical Layout\tF7",
+            MyAppend(laymenu, A_TEXTGRID, L"Toggle Vertical Layout\tF7",
                             L"Make a hierarchy layout more vertical (default) or more horizontal");
 
             editmenu = new wxMenu();
-            editmenu->Append(A_CUT, L"Cu&t\tCTRL+x");
-            editmenu->Append(A_COPY, L"&Copy\tCTRL+c");
-            editmenu->Append(A_COPYCT, L"Copy As Continuous Text");
-            editmenu->Append(A_PASTE, L"&Paste\tCTRL+v");
-            editmenu->Append(A_PASTESTYLE, L"Paste Style Only\tCTRL+SHIFT+v",
+            MyAppend(editmenu, A_CUT, L"Cu&t\tCTRL+x");
+            MyAppend(editmenu, A_COPY, L"&Copy\tCTRL+c");
+            MyAppend(editmenu, A_COPYCT, L"Copy As Continuous Text");
+            MyAppend(editmenu, A_PASTE, L"&Paste\tCTRL+v");
+            MyAppend(editmenu, A_PASTESTYLE, L"Paste Style Only\tCTRL+SHIFT+v",
                              L"only sets the colors and style of the copied cell, and keeps the text");
             editmenu->AppendSeparator();
-            editmenu->Append(A_UNDO, L"&Undo\tCTRL+z", L"revert the changes, one step at a time");
-            editmenu->Append(A_REDO, L"&Redo\tCTRL+y", L"redo any undo steps, if you haven't made changes since");
+            MyAppend(editmenu, A_UNDO, L"&Undo\tCTRL+z", L"revert the changes, one step at a time");
+            MyAppend(editmenu, A_REDO, L"&Redo\tCTRL+y", L"redo any undo steps, if you haven't made changes since");
             editmenu->AppendSeparator();
-            editmenu->Append(A_DELETE, L"&Delete After\tDEL",
+            MyAppend(editmenu, A_DELETE, L"&Delete After\tDEL",
                              L"Deletes the column of cells after the selected grid line, or the row below");
-            editmenu->Append(A_BACKSPACE, L"Delete Before\tBACK",
+            MyAppend(editmenu, A_BACKSPACE, L"Delete Before\tBACK",
                              L"Deletes the column of cells before the selected grid line, or the row above");
             editmenu->AppendSeparator();
-            editmenu->Append(A_NEWGRID,
+            MyAppend(editmenu, A_NEWGRID,
                              L"&Insert New Grid"
                              #ifdef __WXMAC__
                              L"\tCTRL+g"
@@ -344,10 +367,10 @@ struct MyFrame : wxFrame
                              #endif
                              ,
                              L"Adds a grid to the selected cell");
-            editmenu->Append(A_WRAP, L"&Wrap in new parent\tF9",
+            MyAppend(editmenu, A_WRAP, L"&Wrap in new parent\tF9",
                              L"Creates a new level of hierarchy around the current selection");
             editmenu->AppendSeparator();
-            editmenu->Append(A_FOLD,
+            MyAppend(editmenu, A_FOLD,
                              L"Toggle Fold\t"
                              #ifndef WIN32
                              L"CTRL+F10",  // F10 is tied to the OS on both Ubuntu and OS X, and SHIFT+F10 is now right
@@ -372,34 +395,34 @@ struct MyFrame : wxFrame
         }
 
         wxMenu *semenu = new wxMenu();
-        semenu->Append(A_SEARCHF, L"&Search\tCTRL+f");
-        semenu->Append(A_SEARCHNEXT, L"&Go To Next Search Result\tF3");
-        semenu->Append(A_REPLACEONCE, L"&Replace in Current Selection\tCTRL+h");
-        semenu->Append(A_REPLACEONCEJ, L"&Replace in Current Selection & Jump Next\tCTRL+j");
-        semenu->Append(A_REPLACEALL, L"Replace &All");
+        MyAppend(semenu, A_SEARCHF, L"&Search\tCTRL+f");
+        MyAppend(semenu, A_SEARCHNEXT, L"&Go To Next Search Result\tF3");
+        MyAppend(semenu, A_REPLACEONCE, L"&Replace in Current Selection\tCTRL+h");
+        MyAppend(semenu, A_REPLACEONCEJ, L"&Replace in Current Selection & Jump Next\tCTRL+j");
+        MyAppend(semenu, A_REPLACEALL, L"Replace &All");
 
         wxMenu *scrollmenu = new wxMenu();
-        scrollmenu->Append(A_AUP, L"Scroll Up (mousewheel)\tPGUP");
-        scrollmenu->Append(A_AUP, L"Scroll Up (mousewheel)\tALT+UP");
-        scrollmenu->Append(A_ADOWN, L"Scroll Down (mousewheel)\tPGDN");
-        scrollmenu->Append(A_ADOWN, L"Scroll Down (mousewheel)\tALT+DOWN");
-        scrollmenu->Append(A_ALEFT, L"Scroll Left\tALT+LEFT");
-        scrollmenu->Append(A_ARIGHT, L"Scroll Right\tALT+RIGHT");
+        MyAppend(scrollmenu, A_AUP, L"Scroll Up (mousewheel)\tPGUP");
+        MyAppend(scrollmenu, A_AUP, L"Scroll Up (mousewheel)\tALT+UP");
+        MyAppend(scrollmenu, A_ADOWN, L"Scroll Down (mousewheel)\tPGDN");
+        MyAppend(scrollmenu, A_ADOWN, L"Scroll Down (mousewheel)\tALT+DOWN");
+        MyAppend(scrollmenu, A_ALEFT, L"Scroll Left\tALT+LEFT");
+        MyAppend(scrollmenu, A_ARIGHT, L"Scroll Right\tALT+RIGHT");
 
         wxMenu *filtermenu = new wxMenu();
-        filtermenu->Append(A_FILTEROFF, L"Turn filter &off");
-        filtermenu->Append(A_FILTERS, L"Show only cells in current search");
-        filtermenu->Append(A_FILTER5, L"Show 5% of last edits");
-        filtermenu->Append(A_FILTER10, L"Show 10% of last edits");
-        filtermenu->Append(A_FILTER20, L"Show 20% of last edits");
-        filtermenu->Append(A_FILTER50, L"Show 50% of last edits");
-        filtermenu->Append(A_FILTERM, L"Show 1% more than the last filter");
-        filtermenu->Append(A_FILTERL, L"Show 1% less than the last filter");
+        MyAppend(filtermenu, A_FILTEROFF, L"Turn filter &off");
+        MyAppend(filtermenu, A_FILTERS, L"Show only cells in current search");
+        MyAppend(filtermenu, A_FILTER5, L"Show 5% of last edits");
+        MyAppend(filtermenu, A_FILTER10, L"Show 10% of last edits");
+        MyAppend(filtermenu, A_FILTER20, L"Show 20% of last edits");
+        MyAppend(filtermenu, A_FILTER50, L"Show 50% of last edits");
+        MyAppend(filtermenu, A_FILTERM, L"Show 1% more than the last filter");
+        MyAppend(filtermenu, A_FILTERL, L"Show 1% less than the last filter");
 
         wxMenu *viewmenu = new wxMenu();
-        viewmenu->Append(A_ZOOMIN, L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP");
-        viewmenu->Append(A_ZOOMOUT, L"Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN");
-        viewmenu->Append(A_NEXTFILE,
+        MyAppend(viewmenu, A_ZOOMIN, L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP");
+        MyAppend(viewmenu, A_ZOOMOUT, L"Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN");
+        MyAppend(viewmenu, A_NEXTFILE,
                          L"Switch to &next file/tab"
                          #ifndef __WXGTK__
                          // On Linux, this conflicts with CTRL+I, see Document::Key()
@@ -407,15 +430,15 @@ struct MyFrame : wxFrame
                          L"\tCTRL+TAB"
                          #endif
                          );
-        viewmenu->Append(A_PREVFILE, L"Switch to &previous file/tab\tSHIFT+CTRL+TAB");
-        viewmenu->Append(A_FULLSCREEN,
+        MyAppend(viewmenu, A_PREVFILE, L"Switch to &previous file/tab\tSHIFT+CTRL+TAB");
+        MyAppend(viewmenu, A_FULLSCREEN,
                          L"Toggle &Fullscreen View\t"
                          #ifdef __WXMAC__
                          L"CTRL+F11");
                          #else
                          L"F11");
                          #endif
-        viewmenu->Append(A_SCALED,
+        MyAppend(viewmenu, A_SCALED,
                          L"Toggle &Scaled Presentation View\t"
                          #ifdef __WXMAC__
                          L"CTRL+F12");
@@ -436,10 +459,11 @@ struct MyFrame : wxFrame
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
         wxMenu *optmenu = new wxMenu();
-        optmenu->Append(A_DEFFONT, L"Pick Default Font...");
-        optmenu->Append(A_CUSTCOL, L"Pick Custom &Color...");
-        optmenu->Append(A_COLCELL, L"&Set Custom Color From Cell BG");
-        optmenu->Append(A_DEFBGCOL, L"Pick Document Background...");
+        MyAppend(optmenu, A_DEFFONT, L"Pick Default Font...");
+        MyAppend(optmenu, A_CUSTKEY, L"Change a key binding...");
+        MyAppend(optmenu, A_CUSTCOL, L"Pick Custom &Color...");
+        MyAppend(optmenu, A_COLCELL, L"&Set Custom Color From Cell BG");
+        MyAppend(optmenu, A_DEFBGCOL, L"Pick Document Background...");
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_SHOWSBAR, L"Show Statusbar");
         optmenu->Check(A_SHOWSBAR, showsbar);
@@ -478,22 +502,22 @@ struct MyFrame : wxFrame
         optmenu->AppendSubMenu(roundmenu, L"&Roundness of grid borders...");
 
         wxMenu *markmenu = new wxMenu();
-        markmenu->Append(A_MARKDATA, L"&Data");
-        markmenu->Append(A_MARKCODE, L"&Operation");
-        markmenu->Append(A_MARKVARD, L"Variable &Assign");
-        markmenu->Append(A_MARKVARU, L"Variable &Read");
-        markmenu->Append(A_MARKVIEWH, L"&Horizontal View");
-        markmenu->Append(A_MARKVIEWV, L"&Vertical View");
+        MyAppend(markmenu, A_MARKDATA, L"&Data");
+        MyAppend(markmenu, A_MARKCODE, L"&Operation");
+        MyAppend(markmenu, A_MARKVARD, L"Variable &Assign");
+        MyAppend(markmenu, A_MARKVARU, L"Variable &Read");
+        MyAppend(markmenu, A_MARKVIEWH, L"&Horizontal View");
+        MyAppend(markmenu, A_MARKVIEWV, L"&Vertical View");
 
         wxMenu *langmenu = new wxMenu();
-        langmenu->Append(A_RUN, L"&Run");
+        MyAppend(langmenu, A_RUN, L"&Run");
         langmenu->AppendSubMenu(markmenu, L"&Mark as");
-        langmenu->Append(A_CLRVIEW, L"&Clear Views");
+        MyAppend(langmenu, A_CLRVIEW, L"&Clear Views");
 
         wxMenu *helpmenu = new wxMenu();
-        helpmenu->Append(A_ABOUT, L"&About...");
-        helpmenu->Append(A_HELPI, L"Load interactive &tutorial...\tF1");
-        helpmenu->Append(A_HELP, L"View tutorial &web page...");
+        MyAppend(helpmenu, A_ABOUT, L"&About...");
+        MyAppend(helpmenu, A_HELPI, L"Load interactive &tutorial...\tF1");
+        MyAppend(helpmenu, A_HELP, L"View tutorial &web page...");
 
         wxAcceleratorEntry entries[3];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, A_CUT);
