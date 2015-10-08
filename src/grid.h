@@ -1080,14 +1080,18 @@ struct Grid
     {
         Cell *selcell = NULL;
 
+        bool done = false;
+
     lookformore:
-        foreachcell(c) if (c->grid)
+        foreachcell(c) if (c->grid && !done)
         {
             Cell *f = c->grid->FindExact(tag);
             if (f)
             {
                 // add all parent tags as extra hierarchy inside the cell
                 for (Cell *p = f->parent; p != cell; p = p->parent) {
+                    // Special case check: if parents have same name, this would cause infinite swapping.
+                    if (p->text.t == tag) done = true;
                     Cell *t = new Cell(f, p);
                     t->text = p->text;
                     t->text.cell = t;

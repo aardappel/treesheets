@@ -1,5 +1,9 @@
 [ check google moderator for new feature requests ]
 
+- allow dropdowns to set their current value also on single click.
+
+- allow key binding thru CTRL+menu item click? There's no way to test for ctrl in the event.
+
 - wordcount feature, for all, and also shown for current cell
 
 - make LEFT on the top dotted line go to parent (and maybe UP and leftmost dotted line).
