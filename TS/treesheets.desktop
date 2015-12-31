@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=TreeSheets
+Comment=A hierarhical spreadsheet / outliner productivity tool.
+TryExec=treesheets
+Exec=treesheets %f
+Icon=treesheets
