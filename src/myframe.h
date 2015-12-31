@@ -917,8 +917,15 @@ struct MyFrame : wxFrame
                 break;
 
             case A_SEARCHF:
-                filter->SetFocus();
-                filter->SetSelection(0, 1000);
+                if (filter)
+                {
+                    filter->SetFocus();
+                    filter->SetSelection(0, 1000);
+                }
+                else
+                {
+                    sw->Status("Please enable (Options -> Show Toolbar) to use search");
+                }
                 break;
 
             #ifdef __WXMAC__
