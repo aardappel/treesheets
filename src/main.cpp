@@ -187,6 +187,7 @@ struct treesheets
         A_SROWS,
         A_SHOME,
         A_SEND,
+        A_BORD0,
         A_BORD1,
         A_BORD2,
         A_BORD3,

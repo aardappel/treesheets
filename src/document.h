@@ -1502,13 +1502,14 @@ struct Document
                 Refresh();
                 return NULL;
 
+            case A_BORD0:
             case A_BORD1:
             case A_BORD2:
             case A_BORD3:
             case A_BORD4:
             case A_BORD5:
                 selected.g->cell->AddUndo(this);
-                selected.g->SetBorder(k - A_BORD1 + 2, selected);
+                selected.g->SetBorder(k - A_BORD0 + 1, selected);
                 selected.g->cell->ResetChildren();
                 Refresh();
                 return NULL;
