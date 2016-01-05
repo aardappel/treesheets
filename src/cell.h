@@ -466,7 +466,7 @@ struct Cell
         ResetLayout();
         if (c->HasText())
         {
-            if (!HasText())
+            if (!HasText() || !s.TextEdit())
             {
                 cellcolor = c->cellcolor;
                 textcolor = c->textcolor;
