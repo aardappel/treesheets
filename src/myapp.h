@@ -27,6 +27,9 @@ struct MyApp : wxApp
         wxDisableAsserts();
         #endif
 
+        // set locale for the correct handling of non-latin symbols
+        std::setlocale(LC_ALL,"");
+
         bool portable = false;
         wxString filename;
         for (int i = 1; i < argc; i++)

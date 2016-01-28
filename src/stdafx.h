@@ -57,6 +57,8 @@
 
 #include <wx/display.h>
 
+#include <clocale>
+
 //#include <wx/uiaction.h>
 
 //#include <wx/overlay.h>
