@@ -6,7 +6,7 @@ WX_CXXFLAGS=	`$(WX_CONFIG) --cxxflags`
 WX_LIBS=	`$(WX_CONFIG) --libs aui adv core xml net`
 PACKAGE_VERSION?=	__DATE__
 CXX?=	c++
-CXXFLAGS+=	-DPACKAGE_VERSION=$(PACKAGE_VERSION) $(WX_CXXFLAGS)
+CXXFLAGS+=	-DPACKAGE_VERSION=$(PACKAGE_VERSION) -std=c++11 $(WX_CXXFLAGS)
 LDFLAGS+=	$(WX_LIBS)
 
 ARCH=	$(firstword $(shell uname -m))
