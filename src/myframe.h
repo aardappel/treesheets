@@ -1,7 +1,7 @@
 struct MyFrame : wxFrame
 {
     typedef std::vector<std::pair<wxString, wxString> > MenuString;
-    typedef std::vector<std::pair<wxString, wxString> >::iterator MenuStringIterator;
+    typedef MenuString::iterator MenuStringIterator;
     wxMenu *editmenupopup;
     wxString exepath_;
     wxFileHistory filehistory;

@@ -1225,7 +1225,7 @@ struct Document
             case A_CUSTKEY:
             {
                 wxArrayString strs;
-                MyFrame::MenuString & ms = sys->frame->menustrings;
+                MyFrame::MenuString &ms = sys->frame->menustrings;
                 for (MyFrame::MenuStringIterator it = ms.begin(); it != ms.end(); ++it) strs.push_back(it->first);
                 wxSingleChoiceDialog choice(sys->frame, L"Please pick a menu item to change the key binding for",
                                             L"Key binding", strs);
