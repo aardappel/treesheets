@@ -1,5 +1,7 @@
 struct MyFrame : wxFrame
 {
+    typedef std::vector<std::pair<wxString, wxString> > MenuString;
+    typedef MenuString::iterator MenuStringIterator;
     wxMenu *editmenupopup;
     wxString exepath_;
     wxFileHistory filehistory;
@@ -33,13 +35,13 @@ struct MyFrame : wxFrame
         return exepath_ + "/" + relpath;
     }
 
-    std::vector<std::pair<wxString, wxString>> menustrings;
+    MenuString menustrings;
 
     void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"")
     {
         wxString item = contents;
         wxString key = L"";
-        auto pos = contents.Find("\t");
+        int pos = contents.Find("\t");
         if (pos >= 0)
         {
             item = contents.Mid(0, pos);
@@ -48,7 +50,7 @@ struct MyFrame : wxFrame
 
         key = sys->cfg->Read(item, key);
 
-        auto newcontents = item;
+        wxString newcontents = item;
         if (key.Length()) newcontents += "\t" + key;
 
         menu->Append(tag, newcontents, help);
@@ -647,7 +649,7 @@ struct MyFrame : wxFrame
         const int screenx = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
         const int screeny = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
         */
-        auto disprect = wxDisplay(wxDisplay::GetFromWindow(this)).GetClientArea();
+        wxRect disprect = wxDisplay(wxDisplay::GetFromWindow(this)).GetClientArea();
         const int screenx = disprect.width - disprect.x;
         const int screeny = disprect.height - disprect.y;
 

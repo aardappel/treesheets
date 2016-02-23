@@ -241,7 +241,7 @@ struct System
                         wxDataInputStream dis(fis);
                         if (versionlastloaded < 9) dis.ReadString();
                         wxImage im;
-                        auto beforepng = fis.TellI();
+                        off_t beforepng = fis.TellI();
                         bool ok = im.LoadFile(fis);
                         // ok = false;
                         if (!ok)
@@ -258,7 +258,7 @@ struct System
                             dis.BigEndianOrdered(true);
                             for (;;)  // Skip all chunks.
                             {
-                                auto len = dis.Read32();
+                                wxInt32 len = dis.Read32();
                                 char fourcc[4];
                                 fis.Read(fourcc, 4);
                                 fis.SeekI(len, wxFromCurrent);  // skip data

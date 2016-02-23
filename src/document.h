@@ -1225,18 +1225,18 @@ struct Document
             case A_CUSTKEY:
             {
                 wxArrayString strs;
-                auto &ms = sys->frame->menustrings;
-                for (auto it = ms.begin(); it != ms.end(); ++it) strs.push_back(it->first);
+                MyFrame::MenuString &ms = sys->frame->menustrings;
+                for (MyFrame::MenuStringIterator it = ms.begin(); it != ms.end(); ++it) strs.push_back(it->first);
                 wxSingleChoiceDialog choice(sys->frame, L"Please pick a menu item to change the key binding for",
                                             L"Key binding", strs);
                 if (choice.ShowModal() == wxID_OK)
                 {
-                    auto sel = choice.GetSelection();
+                    int sel = choice.GetSelection();
                     wxTextEntryDialog textentry(sys->frame, "Please enter the new key binding string", "Key binding",
                                                 ms[sel].second);
                     if (textentry.ShowModal() == wxID_OK)
                     {
-                        auto key = textentry.GetValue();
+                        wxString key = textentry.GetValue();
                         ms[sel].second = key;
 
                         sys->cfg->Write(ms[sel].first, key);
