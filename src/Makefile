@@ -32,9 +32,6 @@ all: $(SRCS) $(APPNAME)
 $(APPNAME): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@
 
-.o:
-	$(CXX) $(CXXFLAGS) $< -o $@
-
 install: all
 	cp -f $(APPNAME) ../TS
 
