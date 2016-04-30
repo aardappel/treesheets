@@ -1,5 +1,20 @@
 [ check google moderator for new feature requests ]
 
+- should really fix the fold icon overlapping with images.
+  maybe at least can use simply no fold icon for cells with an image.
+
+- bug: reordering the tabs can disable editing (no selection)
+  - similarly, closing a sheet can make others uneditable.
+
+- bug: insert text in cell, then INS, then Ctrl-Z: undoes also text
+
+- bug: F6 does not find all occurrences (see Evelien's example).
+
+- Have a version of F6 that goes backwards?
+
+- fix lack of change detection on OS X / Linux, since more people use it with DropBox now.
+  - Check if wxWidgets file system monitoring works now, or emulate by polling.
+
 - allow dropdowns to set their current value also on single click.
 
 - allow key binding thru CTRL+menu item click? There's no way to test for ctrl in the event.
@@ -20,8 +35,6 @@
 - "Wrap in Parent" doesn't respect the border color much like INS used to not do.
 
 - Alt+scrollwheel doesn't seem to get recorded as undoable
-
-- get it in Ubuntu Software Center? failing that, get a .deb download?
 
 - CTRL+g same as INS on other platforms
 
@@ -45,6 +58,7 @@
   - could switch to using sbimage for PNG loading, probably more robust.
 
 - spellchecker
+
 - print options: scale/position control, and some form of pagination
 
 - add a way to copy only the image from a cell
