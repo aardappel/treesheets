@@ -1,7 +1,6 @@
 language: cpp
 dist: trusty
-compiler:
-- gcc
-os:
-- linux
+compiler: gcc
+os: linux
 script: cd src && make
+install: true
