@@ -1,6 +1,7 @@
 language: cpp
+sudo: required
 dist: trusty
 compiler: gcc
 os: linux
-script: cd src && make
+script: sudo apt-get install -y libwxgtk3.0-dev && cd src && make
 install: true
