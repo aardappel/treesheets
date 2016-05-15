@@ -3,5 +3,6 @@ sudo: required
 dist: trusty
 compiler: gcc
 os: linux
-script: sudo apt-get install -y libwxgtk3.0-dev && cd src && make
-install: true
+install: sudo apt-get install -y libwxgtk3.0-dev
+script: cd src && make
+
