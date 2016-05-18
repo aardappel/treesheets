@@ -1,9 +1,12 @@
 Welcome to the source distribution of TreeSheets!
+=================================================
 
 This contains all the files needed to build TreeSheets for various platforms.
-If instead you just want to USE TreeSheets, you may be better off with the binaries available on http://treesheets.com/
+If instead you just want to USE TreeSheets, you may be better off with the binaries available on http://strlen.com/treesheets/
 
 TreeSheets has been licensed under the ZLIB license (see ZLIB_LICENSE.txt).
+
+[![Build Status](https://travis-ci.org/aardappel/treesheets.svg?branch=master)](https://travis-ci.org/aardappel/treesheets)
 
 src contains all source code. The code is dense, terse, and with few comments, typical for a codebase that was never
 intended to be used by more than one person (me). On the positive side, you'll find the code very small and simple,
@@ -16,7 +19,7 @@ TODO.txt is the random notes I kept on ideas of myself and others on what future
 
 
 Building:
-=========
+---------
 Note that YOU are responsible to know how to use compilers and C++, the hints below are all the help I will give you:
 
 All Platforms:
@@ -25,6 +28,7 @@ All Platforms:
   adventurous.
 
 Windows:
+
 - Make sure your wxWidgets folder sits parallel to the src folder, that way the TreeSheets project will pick
   it up without further modifications
 - (if from git): copy include\wx\msw\setup0.h to include\wx\msw\setup.h
@@ -43,6 +47,7 @@ Windows:
 - to distribute, build an installer with TS_installer.nsi (requires nsis.sourceforge.net)
 
 Linux:
+
 - build wxWidgets as usual on linux, but use these arguments to configure:
   --enable-unicode --enable-optimize=-O2 --disable-shared
 - in the src folder "make" should now compile treesheets without errors,
@@ -50,6 +55,7 @@ Linux:
 - "make dist-release" to tgz this folder (to the parent dir) to distribute.
 
 OSX:
+
 - build wxWidgets as follows:
 - inside the wxWidgets dir:
 - mkdir build_osx
@@ -63,7 +69,7 @@ OSX:
 
 
 Contributing:
-=============
+-------------
 I welcome contributions, especially in the form of neatly prepared pull requests. The main thing to keep in mind when
 contributing is to keep as close as you can to both the format and the spirit of the existing code, even if it goes
 against the grain of how you program normally. That means not only using the same formatting and naming conventions
