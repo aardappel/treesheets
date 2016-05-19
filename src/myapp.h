@@ -14,6 +14,7 @@ struct MyApp : wxApp
     MyFrame *frame;
     wxSingleInstanceChecker *checker;
     IPCServer *serv;
+    wxLocale locale;
 
     MyApp() : checker(NULL), frame(NULL), serv(NULL) {}
     bool OnInit()
@@ -27,8 +28,11 @@ struct MyApp : wxApp
         wxDisableAsserts();
         #endif
 
-        // set locale for the correct handling of non-latin symbols
-        std::setlocale(LC_CTYPE,"");
+        locale.Init();
+        // wxWidgets forces the use of LC_ALL, and doesn't allow use of setlocale without a wxLocale
+        // so to get what we want, we reset back to C locale first.
+        std::setlocale(LC_ALL, "C");
+        std::setlocale(LC_CTYPE, "");  // correct handling of non-latin symbols
 
         bool portable = false;
         wxString filename;

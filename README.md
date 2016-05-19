@@ -32,7 +32,7 @@ Windows:
 - Make sure your wxWidgets folder sits parallel to the src folder, that way the TreeSheets project will pick
   it up without further modifications
 - (if from git): copy include\wx\msw\setup0.h to include\wx\msw\setup.h
-- Inside wxWidgets/build/msw, open wx_vc10.sln with Visual Studio 2010
+- Inside wxWidgets/build/msw, open wx_vc14.sln with Visual Studio 2015
 - Select all projects in the solution explorer, and go to properties:
   Set configuration to debug,   and C/C++ -> Code Generation -> Runtime library
   to Multithreaded Debug
@@ -41,7 +41,7 @@ Windows:
 - build solution in both debug and release
   (if fails, may have to build again)
 - close the wxWidgets sln
-- "treesheets" contains the Visual Studio 2010 files for treesheets, open the .sln.
+- "treesheets" contains the Visual Studio 2015 files for treesheets, open the .sln.
   If you've done the above correctly, TreeSheets will now compile and pick up
   the wxWidgets libraries.
 - to distribute, build an installer with TS_installer.nsi (requires nsis.sourceforge.net)
