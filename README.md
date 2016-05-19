@@ -23,7 +23,7 @@ Building:
 Note that YOU are responsible to know how to use compilers and C++, the hints below are all the help I will give you:
 
 All Platforms:
-- TreeSheets requires wxWidgets 3.0.1 or better.
+- TreeSheets requires wxWidgets 3.1 or better.
   Preferrably the last public release, or bleeding edge from https://github.com/wxWidgets/wxWidgets.git if you're
   adventurous.
 
@@ -60,7 +60,7 @@ OSX:
 - inside the wxWidgets dir:
 - mkdir build_osx
 - cd build_osx
-- ../configure --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa CFLAGS="-arch i386" CXXFLAGS="-arch i386" CPPFLAGS="-arch i386" LDFLAGS="-arch i386" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk --with-macosx-version-min=10.6
+- ../configure --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa CFLAGS="-arch i386" CXXFLAGS="-arch i386 -stdlib=libc++" CPPFLAGS="-arch i386" LDFLAGS="-arch i386 -stdlib=libc++" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386 -stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk --with-macosx-version-min=10.7 CC=clang CXX=clang++
 - make
 - sudo make install
 - use the xcode project in osx/TreeSheets to build treesheets. put the resulting

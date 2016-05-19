@@ -310,7 +310,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -323,28 +324,28 @@
 					__WXOSX_COCOA__,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.0",
-					"/usr/local/include/wx-3.0",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.1",
+					"/usr/local/include/wx-3.1",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-3.0.a",
-					"/usr/local/lib/libwx_baseu_net-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-3.0.a",
-					"/usr/local/lib/libwx_baseu_xml-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-3.0.a",
-					"/usr/local/lib/libwx_baseu-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.1.a",
+					"/usr/local/lib/libwx_baseu_net-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.1.a",
+					"/usr/local/lib/libwx_baseu_xml-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.1.a",
+					"/usr/local/lib/libwx_baseu-3.1.a",
 					"-lexpat",
-					"-lwxregexu-3.0",
-					"-lwxtiff-3.0",
-					"-lwxjpeg-3.0",
-					"-lwxpng-3.0",
+					"-lwxregexu-3.1",
+					"-lwxtiff-3.1",
+					"-lwxjpeg-3.1",
+					"-lwxpng-3.1",
 					"-lz",
 					"-lpthread",
 					"-liconv",
@@ -360,7 +361,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -371,28 +373,28 @@
 					__WXOSX_COCOA__,
 				);
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.0",
-					"/usr/local/include/wx-3.0",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.1",
+					"/usr/local/include/wx-3.1",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-3.0.a",
-					"/usr/local/lib/libwx_baseu_net-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-3.0.a",
-					"/usr/local/lib/libwx_baseu_xml-3.0.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-3.0.a",
-					"/usr/local/lib/libwx_baseu-3.0.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.1.a",
+					"/usr/local/lib/libwx_baseu_net-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.1.a",
+					"/usr/local/lib/libwx_baseu_xml-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.1.a",
+					"/usr/local/lib/libwx_baseu-3.1.a",
 					"-lexpat",
-					"-lwxregexu-3.0",
-					"-lwxtiff-3.0",
-					"-lwxjpeg-3.0",
-					"-lwxpng-3.0",
+					"-lwxregexu-3.1",
+					"-lwxtiff-3.1",
+					"-lwxjpeg-3.1",
+					"-lwxpng-3.1",
 					"-lz",
 					"-lpthread",
 					"-liconv",
