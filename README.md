@@ -32,6 +32,8 @@ Windows:
 - Make sure your wxWidgets folder sits parallel to the src folder, that way the TreeSheets project will pick
   it up without further modifications
 - (if from git): copy include\wx\msw\setup0.h to include\wx\msw\setup.h
+- (on Windows): comment out the big ifdef inside src/msw/dc.cpp/AlphaBlt.
+  see: http://trac.wxwidgets.org/ticket/14403
 - Inside wxWidgets/build/msw, open wx_vc14.sln with Visual Studio 2015
 - Select all projects in the solution explorer, and go to properties:
   Set configuration to debug,   and C/C++ -> Code Generation -> Runtime library

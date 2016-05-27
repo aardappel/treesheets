@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>boar</ProjectName>
+    <ProjectName>treesheets</ProjectName>
     <ProjectGuid>{A4C3C894-079D-4C11-9AE1-CA41875A4AFC}</ProjectGuid>
     <RootNamespace>boar</RootNamespace>
     <Keyword>Win32Proj</Keyword>
