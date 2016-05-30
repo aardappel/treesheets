@@ -14,7 +14,7 @@ struct MyApp : wxApp
     MyFrame *frame;
     wxSingleInstanceChecker *checker;
     IPCServer *serv;
-    wxLocale locale;
+    //wxLocale locale;
 
     MyApp() : checker(NULL), frame(NULL), serv(NULL) {}
     bool OnInit()
@@ -24,14 +24,15 @@ struct MyApp : wxApp
         #endif
         ASSERT(wxUSE_UNICODE);
 
-        #ifdef __WXMAC__
+        //#ifdef __WXMAC__
+        // Now needed on WIN32 as well, because of all the locale related asserts. sigh.
         wxDisableAsserts();
-        #endif
+        //#endif
 
-        locale.Init();
-        // wxWidgets forces the use of LC_ALL, and doesn't allow use of setlocale without a wxLocale
-        // so to get what we want, we reset back to C locale first.
-        std::setlocale(LC_ALL, "C");
+        //locale.Init();
+        //// wxWidgets forces the use of LC_ALL, and doesn't allow use of setlocale without a wxLocale
+        //// so to get what we want, we reset back to C locale first.
+        //std::setlocale(LC_ALL, "C");
         std::setlocale(LC_CTYPE, "");  // correct handling of non-latin symbols
 
         bool portable = false;
