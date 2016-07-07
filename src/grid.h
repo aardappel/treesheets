@@ -31,6 +31,11 @@ struct Grid
             for (int x = 0; x < xs; x++)  \
                 for (bool _f = true; _f;) \
                     for (Cell *&c = C(x, y); _f; _f = false)
+    #define foreachcellrev(c)                 \
+        for (int y = ys - 1; y >= 0; y--)     \
+            for (int x = xs - 1; x >= 0; x--) \
+                for (bool _f = true; _f;)     \
+                    for (Cell *&c = C(x, y); _f; _f = false)
     #define foreachcelly(c)           \
         for (int y = 0; y < ys; y++)  \
             for (bool _f = true; _f;) \
@@ -353,9 +358,16 @@ struct Grid
         }
     }
 
-    Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch)
+    Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch, bool forward)
     {
-        foreachcell(c) best = c->FindLink(s, link, best, lastthis, stylematch);
+        if (forward)
+        {
+            foreachcell(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward);
+        }
+        else
+        {
+            foreachcellrev(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward);
+        }
         return best;
     }
 

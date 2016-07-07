@@ -499,9 +499,9 @@ struct Cell
         return best;
     }
 
-    Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch)
+    Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch, bool forward)
     {
-        if (grid) best = grid->FindLink(s, link, best, lastthis, stylematch);
+        if (grid) best = grid->FindLink(s, link, best, lastthis, stylematch, forward);
         if (link == this)
         {
             lastthis = true;

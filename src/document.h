@@ -1684,9 +1684,10 @@ struct Document
                 return NULL;
 
             case A_LINK:
+            case A_LINKREV:
             {
                 bool t1 = false, t2 = false;
-                Cell *link = rootgrid->FindLink(selected, c, NULL, t1, t2);
+                Cell *link = rootgrid->FindLink(selected, c, NULL, t1, t2, k == A_LINK);
                 if (!link) return "no matching cell found!";
                 selected = link->parent->grid->FindCell(link);
                 ScrollOrZoom(dc, true);

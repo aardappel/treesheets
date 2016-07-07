@@ -263,6 +263,7 @@ struct MyFrame : wxFrame
             MyAppend(selmenu, A_ENTERGRID, L"Select First &Child\tSHIFT+ENTER");
             selmenu->AppendSeparator();
             MyAppend(selmenu, A_LINK, L"Go To &Matching Cell\tF6");
+            MyAppend(selmenu, A_LINKREV, L"Go To Matching Cell (Reverse)\tSHIFT+F6");
 
             wxMenu *temenu = new wxMenu();
             MyAppend(temenu, A_LEFT, L"Cursor Left\tLEFT");
