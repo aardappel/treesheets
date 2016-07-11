@@ -650,7 +650,8 @@ struct MyFrame : wxFrame
         const int screenx = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
         const int screeny = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
         */
-        wxRect disprect = wxDisplay(wxDisplay::GetFromWindow(this)).GetClientArea();
+        int display_id = wxDisplay::GetFromWindow(this);
+        wxRect disprect = wxDisplay(display_id == wxNOT_FOUND ? 0 : display_id).GetClientArea();
         const int screenx = disprect.width - disprect.x;
         const int screeny = disprect.height - disprect.y;
 
