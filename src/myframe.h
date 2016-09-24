@@ -496,6 +496,8 @@ struct MyFrame : wxFrame
                                  L"Reloads when another computer has changed a file (if you have made changes, asks)");
         optmenu->Check(A_FSWATCH, sys->fswatch);
         #endif
+        optmenu->AppendCheckItem(A_AUTOEXPORT, L"Automatically export a .html on every save");
+        optmenu->Check(A_AUTOEXPORT, sys->autohtmlexport);
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_CENTERED, L"Render document centered");
         optmenu->Check(A_CENTERED, sys->centered);
@@ -910,6 +912,9 @@ struct MyFrame : wxFrame
             case A_FSWATCH:
                 sys->cfg->Write(L"fswatch", sys->fswatch = ce.IsChecked());
                 sw->Status("change will take effect next run of TreeSheets");
+                break;
+            case A_AUTOEXPORT:
+                sys->cfg->Write(L"autohtmlexport", sys->autohtmlexport = ce.IsChecked());
                 break;
             case A_FASTRENDER:
                 sys->cfg->Write(L"fastrender", sys->fastrender = ce.IsChecked());

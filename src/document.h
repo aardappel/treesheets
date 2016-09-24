@@ -234,6 +234,11 @@ struct Document
             if (::wxFileExists(sys->TmpName(filename))) ::wxRemoveFile(sys->TmpName(filename));
         }
 
+        if (sys->autohtmlexport)
+        {
+            ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT);
+        }
+
         UpdateFileName(page);
 
         if (success) *success = true;
@@ -792,11 +797,15 @@ struct Document
         return NULL;
     }
 
-    const char *Export(wxDC &dc, const wxChar *fmt, const wxChar *pat, const wxChar *msg, int k)
+    const char *Export(const wxChar *fmt, const wxChar *pat, const wxChar *msg, int k)
     {
         wxString fn = ::wxFileSelector(msg, L"", L"", fmt, pat, wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return "export cancelled";
+        return ExportFile(fn, k);
+    }
 
+    const char *ExportFile(wxString &fn, int k)
+    {
         if (k == A_EXPCSV)
         {
             int maxdepth = 0, leaves = 0;
@@ -996,12 +1005,12 @@ struct Document
             case A_SAVE: return Save(false);
             case A_SAVEAS: return Save(true);
 
-            case A_EXPXML: return Export(dc, L"xml", L"*.xml", L"Choose XML file to write", k);
+            case A_EXPXML: return Export(L"xml", L"*.xml", L"Choose XML file to write", k);
             case A_EXPHTMLT:
-            case A_EXPHTMLO: return Export(dc, L"html", L"*.html", L"Choose HTML file to write", k);
-            case A_EXPTEXT: return Export(dc, L"txt", L"*.txt", L"Choose Text file to write", k);
-            case A_EXPIMAGE: return Export(dc, L"png", L"*.png", L"Choose PNG file to write", k);
-            case A_EXPCSV: return Export(dc, L"csv", L"*.csv", L"Choose CSV file to write", k);
+            case A_EXPHTMLO: return Export(L"html", L"*.html", L"Choose HTML file to write", k);
+            case A_EXPTEXT: return Export(L"txt", L"*.txt", L"Choose Text file to write", k);
+            case A_EXPIMAGE: return Export(L"png", L"*.png", L"Choose PNG file to write", k);
+            case A_EXPCSV: return Export(L"csv", L"*.csv", L"Choose CSV file to write", k);
 
             case A_IMPXML:
             case A_IMPXMLA:

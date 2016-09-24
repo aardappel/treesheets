@@ -49,6 +49,7 @@ struct System
     bool singletray;
     bool centered;
     bool fswatch;
+    bool autohtmlexport;
 
     int sortcolumn, sortxs, sortdescending;
 
@@ -100,6 +101,7 @@ struct System
           singletray(false),
           centered(true),
           fswatch(false),
+          autohtmlexport(false),
           insidefiledialog(false)
     {
         static const wxDash glpattern[] = {1, 3};
@@ -121,6 +123,7 @@ struct System
         cfg->Read(L"singletray", &singletray, singletray);
         cfg->Read(L"centered", &centered, centered);
         cfg->Read(L"fswatch", &fswatch, fswatch);
+        cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
 
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
 
