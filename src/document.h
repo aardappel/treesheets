@@ -804,7 +804,7 @@ struct Document
         return ExportFile(fn, k);
     }
 
-    const char *ExportFile(wxString &fn, int k)
+    const char *ExportFile(const wxString &fn, int k)
     {
         if (k == A_EXPCSV)
         {
