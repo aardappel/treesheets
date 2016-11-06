@@ -819,7 +819,7 @@ struct Document
             maxx = layoutxs;
             maxy = layoutys;
             originx = originy = 0;
-            wxBitmap bm(maxx, maxy);
+            wxBitmap bm(maxx, maxy, 24);
 
             wxMemoryDC mdc(bm);
             DrawRectangle(mdc, Background(), 0, 0, maxx, maxy);
