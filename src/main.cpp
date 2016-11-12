@@ -7,8 +7,7 @@
 
 //#define SIMPLERENDER // for testing
 
-void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline = false)
-{
+void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline = false) {
     if (outline)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     else
@@ -17,21 +16,17 @@ void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline 
     dc.DrawRectangle(x, y, xs, ys);
 }
 
-void DrawLine(wxDC &dc, uint c, int x, int y, int xd, int yd)
-{
+void DrawLine(wxDC &dc, uint c, int x, int y, int xd, int yd) {
     dc.SetPen(wxPen(wxColour(c)));
     dc.DrawLine(x, y, x + xd, y + yd);
 }
 
-void MyDrawText(wxDC &dc, const wxString &s, wxCoord x, wxCoord y, wxCoord w, wxCoord h)
-{
-    #ifdef __WXMSW__  // this special purpose implementation is because the MSW implementation calls TextExtent, which costs
+void MyDrawText(wxDC &dc, const wxString &s, wxCoord x, wxCoord y, wxCoord w, wxCoord h) {
+    #ifdef __WXMSW__  // this special purpose implementation is because the MSW implementation calls
+                      // TextExtent, which costs
                       // 25% of all cpu time
-    // wxMSWDCImpl *impl = (wxMSWDCImpl *)dc.GetImpl();
-    // impl->DrawAnyText(s, x, y);   // protected, sigh
     dc.CalcBoundingBox(x, y);
     dc.CalcBoundingBox(x + w, y + h);
-
     HDC hdc = (HDC)dc.GetHDC();
     ::SetTextColor(hdc, dc.GetTextForeground().GetPixel());
     ::SetBkColor(hdc, dc.GetTextBackground().GetPixel());
@@ -41,7 +36,6 @@ void MyDrawText(wxDC &dc, const wxString &s, wxCoord x, wxCoord y, wxCoord w, wx
     #endif
 }
 
-// int g_grid_outer_spacing = 3;
 int g_grid_margin = 1;
 int g_cell_margin = 2;
 int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -55,29 +49,20 @@ int g_grid_left_offset = 15;
 int g_scrollratecursor = 240;  // FIXME: must be configurable
 int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
 
-static uint celltextcolors[] =
-{
+static uint celltextcolors[] = {
     0xFFFFFF,  // CUSTOM COLOR!
-    0xFFFFFF, 0x000000, 0x202020, 0x404040, 0x606060, 0x808080, 0xA0A0A0, 0xC0C0C0, 0xD0D0D0, 0xE0E0E0, 0xE8E8E8,
-    0x000080, 0x0000FF, 0x8080FF, 0xC0C0FF, 0xC0C0E0, 0x008000, 0x00FF00, 0x80FF80, 0xC0FFC0, 0xC0E0C0, 0x800000,
-    0xFF0000, 0xFF8080, 0xFFC0C0, 0xE0C0C0, 0x800080, 0xFF00FF, 0xFF80FF, 0xFFC0FF, 0xE0C0E0, 0x008080, 0x00FFFF,
-    0x80FFFF, 0xC0FFFF, 0xC0E0E0, 0x808000, 0xFFFF00, 0xFFFF80, 0xFFFFC0, 0xE0E0C0,
+    0xFFFFFF, 0x000000, 0x202020, 0x404040, 0x606060, 0x808080, 0xA0A0A0, 0xC0C0C0, 0xD0D0D0,
+    0xE0E0E0, 0xE8E8E8, 0x000080, 0x0000FF, 0x8080FF, 0xC0C0FF, 0xC0C0E0, 0x008000, 0x00FF00,
+    0x80FF80, 0xC0FFC0, 0xC0E0C0, 0x800000, 0xFF0000, 0xFF8080, 0xFFC0C0, 0xE0C0C0, 0x800080,
+    0xFF00FF, 0xFF80FF, 0xFFC0FF, 0xE0C0E0, 0x008080, 0x00FFFF, 0x80FFFF, 0xC0FFFF, 0xC0E0E0,
+    0x808000, 0xFFFF00, 0xFFFF80, 0xFFFFC0, 0xE0E0C0,
 };
 #define CUSTOMCOLORIDX 0
 
-struct treesheets
-{
-    enum
-    {
-        TS_VERSION = 17,
-        TS_TEXT = 0,
-        TS_GRID,
-        TS_BOTH,
-        TS_NEITHER
-    };
+struct treesheets {
+    enum { TS_VERSION = 17, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
-    enum
-    {
+    enum {
         A_NEW = 500,
         A_OPEN,
         A_CLOSE,
@@ -227,7 +212,6 @@ struct treesheets
         A_DECWIDTHNH,
         A_ZOOMSCR,
         A_ICONSET,
-
         A_V_GS,
         A_V_BS,
         A_V_LS,
@@ -237,7 +221,6 @@ struct treesheets
         A_GS,
         A_BS,
         A_LS,
-
         A_RESETSIZE,
         A_RESETWIDTH,
         A_RESETSTYLE,
@@ -259,13 +242,11 @@ struct treesheets
         A_MINISIZE,
         A_CUSTKEY,
         A_AUTOEXPORT,
-
         A_NOP,
         A_TAGSET = 1000  // and all values from here on
     };
 
-    enum
-    {
+    enum {
         STYLE_BOLD = 1,
         STYLE_ITALIC = 2,
         STYLE_FIXED = 4,

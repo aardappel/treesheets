@@ -2,8 +2,6 @@
 #include <wx/wx.h>
 #include <wx/dir.h>
 
-//#include <stdio.h>
-//#include <stdlib.h>
 #include <ctype.h>
 
 #include <wx/zstream.h>
@@ -26,7 +24,7 @@
 #include <wx/msw/dc.h>
 #endif
 #include <wx/fontdlg.h>
-#include <wx/colordlg.h> 
+#include <wx/colordlg.h>
 
 #include <wx/filename.h>
 
@@ -58,11 +56,6 @@
 #include <wx/display.h>
 
 #include <clocale>
-
-//#include <wx/uiaction.h>
-
-//#include <wx/overlay.h>
-//#include <wx/richtext/richtextctrl.h>
 
 #ifdef WIN32
     #define FSWATCH

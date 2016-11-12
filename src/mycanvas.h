@@ -1,5 +1,4 @@
-struct TSCanvas : public wxScrolledWindow
-{
+struct TSCanvas : public wxScrolledWindow {
     MyFrame *frame;
     Document *doc;
 
@@ -10,26 +9,25 @@ struct TSCanvas : public wxScrolledWindow
 
     TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
         : frame(fr),
-          wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size, wxScrolledWindowStyle | wxWANTS_CHARS),
+          wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size,
+                           wxScrolledWindowStyle | wxWANTS_CHARS),
           mousewheelaccum(0),
           doc(NULL),
-          lastrmbwaswithctrl(false)
-    {
+          lastrmbwaswithctrl(false) {
         SetBackgroundStyle(wxBG_STYLE_CUSTOM);
         SetBackgroundColour(*wxWHITE);
         DisableKeyboardScrolling();
-        // Without this, ScrolledWindow does its own scrolling upon mousewheel events, which interferes with our own.
+        // Without this, ScrolledWindow does its own scrolling upon mousewheel events, which
+        // interferes with our own.
         EnableScrolling(false, false);
     }
 
-    ~TSCanvas()
-    {
+    ~TSCanvas() {
         DELETEP(doc);
         frame = NULL;
     }
 
-    void OnPaint(wxPaintEvent &event)
-    {
+    void OnPaint(wxPaintEvent &event) {
         auto sz = GetClientSize();
         wxBitmap buffer(sz.GetX(), sz.GetY(), 24);
         wxBufferedPaintDC dc(this, buffer);
@@ -37,22 +35,19 @@ struct TSCanvas : public wxScrolledWindow
         doc->Draw(dc);
     };
 
-    void UpdateHover(int mx, int my, wxDC &dc)
-    {
+    void UpdateHover(int mx, int my, wxDC &dc) {
         int x, y;
         CalcUnscrolledPosition(mx, my, &x, &y);
         DoPrepareDC(dc);
         doc->Hover(x / doc->currentviewscale, y / doc->currentviewscale, dc);
     }
 
-    void OnMotion(wxMouseEvent &me)
-    {
+    void OnMotion(wxMouseEvent &me) {
         wxClientDC dc(this);
         UpdateHover(me.GetX(), me.GetY(), dc);
         if (me.LeftIsDown() || me.RightIsDown())
             Status(doc->Drag(dc));
-        else if (me.MiddleIsDown())
-        {
+        else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         }
@@ -60,17 +55,18 @@ struct TSCanvas : public wxScrolledWindow
         lastmousepos = me.GetPosition();
     }
 
-    void SelectClick(int mx, int my, bool right, int isctrlshift)
-    {
-        if (mx < 0 || my < 0) return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
+    void SelectClick(int mx, int my, bool right, int isctrlshift) {
+        if (mx < 0 || my < 0)
+            return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
         wxClientDC dc(this);
         UpdateHover(mx, my, dc);
         Status(doc->Select(dc, right, isctrlshift));
     }
 
-    void OnLeftDown(wxMouseEvent &me)
-    {
-        #ifndef __WXMSW__  // seems to not want to give the sw focus otherwise (thinks its already in focus when its not?)
+    void OnLeftDown(wxMouseEvent &me) {
+        #ifndef __WXMSW__
+        // seems to not want to give the sw focus otherwise (thinks its already in focus
+        // when its not?)
         if (frame->filter) frame->filter->SetFocus();
         #endif
         SetFocus();
@@ -80,13 +76,11 @@ struct TSCanvas : public wxScrolledWindow
             SelectClick(me.GetX(), me.GetY(), false, me.CmdDown() + me.AltDown() * 2);
     }
 
-    void OnLeftUp(wxMouseEvent &me)
-    {
+    void OnLeftUp(wxMouseEvent &me) {
         if (me.CmdDown() || me.AltDown()) doc->SelectUp();
     }
 
-    void OnRightDown(wxMouseEvent &me)
-    {
+    void OnRightDown(wxMouseEvent &me) {
         SetFocus();
         SelectClick(me.GetX(), me.GetY(), true, 0);
         lastrmbwaswithctrl = me.CmdDown();
@@ -95,16 +89,14 @@ struct TSCanvas : public wxScrolledWindow
         #endif
     }
 
-    void OnLeftDoubleClick(wxMouseEvent &me)
-    {
+    void OnLeftDoubleClick(wxMouseEvent &me) {
         wxClientDC dc(this);
         UpdateHover(me.GetX(), me.GetY(), dc);
         Status(doc->DoubleClick(dc));
     }
 
     void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }
-    void OnChar(wxKeyEvent &ce)
-    {
+    void OnChar(wxKeyEvent &ce) {
         /*
         if (sys->insidefiledialog)
         {
@@ -113,11 +105,11 @@ struct TSCanvas : public wxScrolledWindow
         }
         */
 
-        // Without this check, Alt+F (keyboard menu nav) Alt+1..6 (style changes), Alt+cursor (scrolling) don't work.
+        // Without this check, Alt+F (keyboard menu nav) Alt+1..6 (style changes), Alt+cursor
+        // (scrolling) don't work.
         // The 128 makes sure unicode entry on e.g. Polish keyboards still works.
         // (on Linux in particular).
-        if (ce.AltDown() && ce.GetUnicodeKey() < 128)
-        {
+        if (ce.AltDown() && ce.GetUnicodeKey() < 128) {
             ce.Skip();
             return;
         }
@@ -125,19 +117,17 @@ struct TSCanvas : public wxScrolledWindow
         wxClientDC dc(this);
         DoPrepareDC(dc);
         bool unprocessed = false;
-        Status(
-            doc->Key(dc, ce.GetUnicodeKey(), ce.GetKeyCode(), ce.AltDown(), ce.CmdDown(), ce.ShiftDown(), unprocessed));
+        Status(doc->Key(dc, ce.GetUnicodeKey(), ce.GetKeyCode(), ce.AltDown(), ce.CmdDown(),
+                        ce.ShiftDown(), unprocessed));
         if (unprocessed) ce.Skip();
     }
 
-    void OnMouseWheel(wxMouseEvent &me)
-    {
+    void OnMouseWheel(wxMouseEvent &me) {
         bool ctrl = me.CmdDown();
         if (sys->zoomscroll) ctrl = !ctrl;
         // wxLogError(L"%d %d %d\n", me.AltDown(), me.ShiftDown(), me.CmdDown());
         wxClientDC dc(this);
-        if (me.AltDown() || ctrl || me.ShiftDown())
-        {
+        if (me.AltDown() || ctrl || me.ShiftDown()) {
             mousewheelaccum += me.GetWheelRotation();
             int steps = mousewheelaccum / me.GetWheelDelta();
             if (!steps) return;
@@ -145,37 +135,28 @@ struct TSCanvas : public wxScrolledWindow
 
             UpdateHover(me.GetX(), me.GetY(), dc);
             Status(doc->Wheel(dc, steps, me.AltDown(), ctrl, me.ShiftDown()));
-        }
-        else if (me.GetWheelAxis())
-        {
+        } else if (me.GetWheelAxis()) {
             CursorScroll(me.GetWheelRotation() * g_scrollratewheel, 0);
             UpdateHover(me.GetX(), me.GetY(), dc);
-        }
-        else
-        {
+        } else {
             CursorScroll(0, -me.GetWheelRotation() * g_scrollratewheel);
             UpdateHover(me.GetX(), me.GetY(), dc);
         }
     }
 
     void OnSize(wxSizeEvent &se) { doc->Refresh(); }
-    void OnContextMenuClick(wxContextMenuEvent &cme)
-    {
-        if (lastrmbwaswithctrl)
-        {
+    void OnContextMenuClick(wxContextMenuEvent &cme) {
+        if (lastrmbwaswithctrl) {
             wxMenu *tagmenu = new wxMenu();
             doc->RecreateTagMenu(*tagmenu);
             PopupMenu(tagmenu);
             delete tagmenu;
-        }
-        else
-        {
+        } else {
             PopupMenu(frame->editmenupopup);
         }
     }
 
-    void CursorScroll(int dx, int dy)
-    {
+    void CursorScroll(int dx, int dy) {
         int x, y;
         GetViewStart(&x, &y);
         x += dx;
@@ -185,10 +166,11 @@ struct TSCanvas : public wxScrolledWindow
         // EnableScrolling(false, false);
     }
 
-    void Status(const char *msg = NULL)
-    {
-        if (frame->GetStatusBar() && (!msg || *msg)) frame->SetStatusText(msg ? wxString::Format(L"%s", msg) : L"", 0);
-        // using Format instead of FromAscii since the latter doesn't deal with >128 international ascii chars
+    void Status(const char *msg = NULL) {
+        if (frame->GetStatusBar() && (!msg || *msg))
+            frame->SetStatusText(msg ? wxString::Format(L"%s", msg) : L"", 0);
+        // using Format instead of FromAscii since the latter doesn't deal with >128 international
+        // ascii chars
     }
 
     DECLARE_EVENT_TABLE()

@@ -1,7 +1,6 @@
 
 BEGIN_EVENT_TABLE(treesheets::MyFrame, wxFrame)
   EVT_SIZING(treesheets::MyFrame::OnSizing)
-  //EVT_SIZE(treesheets::MyFrame::OnSize)
   EVT_MENU(wxID_ANY, treesheets::MyFrame::OnMenu)
   EVT_TEXT(A_SEARCH, treesheets::MyFrame::OnSearch)
   EVT_CLOSE(treesheets::MyFrame::OnClosing)
@@ -14,7 +13,6 @@ BEGIN_EVENT_TABLE(treesheets::MyFrame, wxFrame)
   EVT_ICONIZE(treesheets::MyFrame::OnIconize)
   EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, treesheets::MyFrame::OnTabChange)
   EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, treesheets::MyFrame::OnTabClose)
-  //EVT_MOUSEWHEEL(treesheets::MyFrame::OnMouseWheel)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(treesheets::MyApp, wxApp)
@@ -37,17 +35,3 @@ END_EVENT_TABLE()
 BEGIN_EVENT_TABLE(treesheets::ThreeChoiceDialog, wxDialog)
     EVT_BUTTON(wxID_ANY, treesheets::ThreeChoiceDialog::OnButton)
 END_EVENT_TABLE()
-
-/*
-BEGIN_EVENT_TABLE(treesheets::MyFSWatch, wxFileSystemWatcher)
-    EVT_FSWATCHER(wxID_ANY, treesheets::MyFSWatch::OnFileChanged)
-END_EVENT_TABLE()
-*/
-
-/*
-IMPLEMENT_DYNAMIC_CLASS (treesheets::CTransparentStaticText, wxStaticText)
-
-BEGIN_EVENT_TABLE(treesheets::CTransparentStaticText, wxStaticText)
-    EVT_PAINT(treesheets::CTransparentStaticText::OnPaint)
-END_EVENT_TABLE()
-*/

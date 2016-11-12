@@ -2,14 +2,11 @@ typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;
 
-//#define MAXINT 0x7FFFFFFF
-
 #ifdef _DEBUG
 #define ASSERT(c) assert(c)
 #else
 #define ASSERT(c) \
-    if (c) {      \
-    }
+    if (c) {}
 #endif
 
 #define loop(i, m) for (int i = 0; i < int(m); i++)
@@ -65,8 +62,7 @@ typedef unsigned int uint;
 #endif
 
 template <class T>
-inline void swap_(T &a, T &b)
-{
+inline void swap_(T &a, T &b) {
     T c = a;
     a = b;
     b = c;
@@ -80,10 +76,10 @@ inline void swap_(T &a, T &b)
 #endif
 
 // from boost, stops a class from being accidental victim to default copy + destruct twice problem
-// class that inherits from NonCopyable will work correctly with Vector, but give compile time error with std::vector
+// class that inherits from NonCopyable will work correctly with Vector, but give compile time error
+// with std::vector
 
-class NonCopyable
-{
+class NonCopyable {
     NonCopyable(const NonCopyable &);
     const NonCopyable &operator=(const NonCopyable &);
 
@@ -95,120 +91,109 @@ class NonCopyable
 // helper function for containers below to delete members if they are of pointer type only
 
 template <class X>
-void DelPtr(X &)
-{
-}
+void DelPtr(X &) {}
 template <class X>
-void DelPtr(X *&m)
-{
+void DelPtr(X *&m) {
     DELETEP(m);
 }
 
 // replacement for STL vector
 
-// for any T that has a non-trivial destructor, STL requires a correct copy constructor / assignment op
+// for any T that has a non-trivial destructor, STL requires a correct copy constructor / assignment
+// op
 // or otherwise it will free things twice on a reallocate/by value push_back.
 // The vector below will behave correctly irrespective of whether a copy constructor is available
 // or not and avoids the massive unnecessary (de/re)allocations the STL forces you to.
 // The class itself never calls T's copy constructor, however the user of the class is still
-// responsable for making sure of correct copying of elements obtained from the vector, or setting NonCopyable
+// responsable for making sure of correct copying of elements obtained from the vector, or setting
+// NonCopyable
 
 // also automatically deletes pointer members and other neat things
 
 template <class T>
-class Vector : public NonCopyable
-{
+class Vector : public NonCopyable {
     T *buf;
     uint alen, ulen;
 
-    void reallocate(uint n)
-    {
+    void reallocate(uint n) {
         ASSERT(n > ulen);
         T *obuf = buf;
-        buf = (T *)malloc(sizeof(T) * (alen = n));  // use malloc instead of new to avoid constructor
+        // use malloc instead of new to avoid constructor
+        buf = (T *)malloc(sizeof(T) * (alen = n));
         ASSERT(buf);
         if (ulen) memcpy(buf, obuf, ulen * sizeof(T));  // memcpy avoids copy constructor
         if (obuf) free(obuf);
     }
 
-    T &push_nocons()
-    {
+    T &push_nocons() {
         if (ulen == alen) reallocate(alen * 2);
         return buf[ulen++];
     }
 
-    void destruct(uint i)
-    {
+    void destruct(uint i) {
         buf[i].~T();
         DelPtr(buf[i]);
     }
 
     public:
-    T &operator[](uint i)
-    {
+    T &operator[](uint i) {
         ASSERT(i < ulen);
         return buf[i];
     }
-    T &operator[](uint i) const
-    {
+    T &operator[](uint i) const {
         ASSERT(i < ulen);
         return buf[i];
     }
 
     Vector() { new (this) Vector(8); }
     Vector(uint n) : ulen(0), buf(NULL) { reallocate(n); }
-    Vector(uint n, int c)
-    {
+    Vector(uint n, int c) {
         new (this) Vector(n);
         loop(i, c) push();
     }
-    ~Vector()
-    {
+    ~Vector() {
         setsize(0);
         free(buf);
     }
 
-    T &push() { return *new (&push_nocons()) T; }  // only way to create an element, to avoid copy constructor
+    T &push() {
+        return *new (&push_nocons()) T;
+    }  // only way to create an element, to avoid copy constructor
 
     T *getbuf() { return buf; }
     T &last() { return (*this)[ulen - 1]; }
     T &pop() { return buf[--ulen]; }
-    void drop()
-    {
+    void drop() {
         ASSERT(ulen);
         destruct(--ulen);
     }
     bool empty() { return ulen == 0; }
     int size() { return ulen; }
 
-    void setsize(uint i)
-    {
+    void setsize(uint i) {
         while (ulen > i) drop();
     }  // explicitly destruct elements
-    void setsize_nd(uint i)
-    {
+    void setsize_nd(uint i) {
         while (ulen > i) pop();
     }
 
-    void sort(void *cf) { qsort(buf, ulen, sizeof(T), (int(__cdecl *)(const void *, const void *))cf); }
+    void sort(void *cf) {
+        qsort(buf, ulen, sizeof(T), (int(__cdecl *)(const void *, const void *))cf);
+    }
 
-    void add_unique(T x)
-    {
+    void add_unique(T x) {
         loop(i, ulen) if (buf[i] == x) return;
         push() = x;
     }
 
-    void remove(uint i)
-    {
+    void remove(uint i) {
         ASSERT(i < ulen);
         destruct(i);
         memmove(buf + i, buf + i + 1, sizeof(T) * (ulen-- - i - 1));
     }
 
-    void removeobj(T o)
-    {
-        loop(i, ulen) if (buf[i] == o)
-        {
+    void removeobj(T o) {
+        loop(i, ulen) if (buf[i] == o) {
             remove(i);
             return;
         }
@@ -217,8 +202,7 @@ class Vector : public NonCopyable
     void append(Vector<T> &o) { loopv(i, o) push() = o[i]; }
 };
 
-class MTRnd
-{
+class MTRnd {
     const static uint N = 624;
     const static uint M = 397;
     const static uint K = 0x9908B0DFU;
@@ -236,23 +220,22 @@ class MTRnd
     public:
     MTRnd() : left(-1) {}
 
-    void SeedMT(uint seed)
-    {
+    void SeedMT(uint seed) {
         uint x = (seed | 1U) & 0xFFFFFFFFU, *s = state;
         int j;
         for (left = 0, *s++ = x, j = N; --j; *s++ = (x *= 69069U) & 0xFFFFFFFFU)
             ;
     }
 
-    uint ReloadMT()
-    {
+    uint ReloadMT() {
         uint *p0 = state, *p2 = state + 2, *pM = state + M, s0, s1;
         int j;
         if (left < -1) SeedMT(4357U);
         left = N - 1, next = state + 1;
         for (s0 = state[0], s1 = state[1], j = N - M + 1; --j; s0 = s1, s1 = *p2++)
             *p0++ = *pM++ ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
-        for (pM = state, j = M; --j; s0 = s1, s1 = *p2++) *p0++ = *pM++ ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
+        for (pM = state, j = M; --j; s0 = s1, s1 = *p2++)
+            *p0++ = *pM++ ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
         s1 = state[0], *p0 = *pM ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
         s1 ^= (s1 >> 11);
         s1 ^= (s1 << 7) & 0x9D2C5680U;
@@ -260,8 +243,7 @@ class MTRnd
         return (s1 ^ (s1 >> 18));
     }
 
-    uint RandomMT()
-    {
+    uint RandomMT() {
         uint y;
         if (--left < 0) return (ReloadMT());
         y = *next++;
@@ -277,9 +259,17 @@ class MTRnd
 // for use with vc++ crtdbg
 
 #ifdef _DEBUG
-inline void *__cdecl operator new(size_t n, const char *fn, int l) { return ::operator new(n, 1, fn, l); }
-inline void *__cdecl operator new[](size_t n, const char *fn, int l) { return ::operator new[](n, 1, fn, l); }
-inline void __cdecl operator delete(void *p, const char *fn, int l) { ::operator delete(p, 1, fn, l); }
-inline void __cdecl operator delete[](void *p, const char *fn, int l) { ::operator delete[](p, 1, fn, l); }
+inline void *__cdecl operator new(size_t n, const char *fn, int l) {
+    return ::operator new(n, 1, fn, l);
+}
+inline void *__cdecl operator new[](size_t n, const char *fn, int l) {
+    return ::operator new[](n, 1, fn, l);
+}
+inline void __cdecl operator delete(void *p, const char *fn, int l) {
+    ::operator delete(p, 1, fn, l);
+}
+inline void __cdecl operator delete[](void *p, const char *fn, int l) {
+    ::operator delete[](p, 1, fn, l);
+}
 #define new new (__FILE__, __LINE__)
 #endif
