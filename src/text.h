@@ -21,6 +21,15 @@ struct Text {
         WasEdited();
     }
 
+    size_t EstimatedMemoryUse() {
+        return sizeof(Text) + t.Length() *
+            #if wxUSE_UNICODE
+            sizeof(wchar_t);
+            #else
+            sizeof(char);
+            #endif
+    }
+
     double GetNum() {
         wxChar *end;
         double r = wcstod(t.c_str(), &end); /*HUGE_VAL*/

@@ -105,6 +105,12 @@ struct Grid {
         return cl;
     }
 
+    size_t EstimatedMemoryUse() {
+        size_t sum = 0;
+        foreachcell(c) sum += c->EstimatedMemoryUse();
+        return sizeof(Grid) + xs * ys * sizeof(Cell *) + sum;
+    }
+
     void SetOrient() {
         if (xs > ys) horiz = true;
         if (ys > xs) horiz = false;

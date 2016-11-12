@@ -6,8 +6,9 @@ struct UndoItem {
     Vector<Selection> path, selpath;
     Selection sel;
     Cell *clone;
+    size_t estimated_size;
 
-    UndoItem() : clone(NULL) {}
+    UndoItem() : clone(NULL), estimated_size(0) {}
     ~UndoItem() { DELETEP(clone); }
 };
 
@@ -687,7 +688,6 @@ struct Document {
                         L"<!ELEMENT grid (row*)>\n"
                         L"<!ELEMENT row (cell*)>\n"
                         L"]>\n");
-                    // wxLogError(L"c: %s ()", content);
                     dos.WriteString(content);
                     break;
                 case A_EXPHTMLT:
@@ -1704,13 +1704,30 @@ struct Document {
             UpdateFileName();
         }
         if (LastUndoSameCell(c)) return;
-        // FIXME: make this limited in memory usage by counting sizes of cloned cells.
         UndoItem *ui = new UndoItem();
         undolist.push() = ui;
         ui->clone = c->Clone(NULL);
+        ui->estimated_size = c->EstimatedMemoryUse();
+        //wxLogError(L"undo size: %d", ui->estimated_size);
         ui->sel = selected;
         CreatePath(c, ui->path);
         if (selected.g) CreatePath(selected.g->cell, ui->selpath);
+        size_t total_usage = 0;
+        size_t old_list_size = undolist.size();
+        // Cull undolist. Always at least keeps last item.
+        for (int i = (int)undolist.size() - 1; i >= 0; i--) {
+            // Cull old items if using more than 25MB or 100 items, whichever comes first.
+            // TODO: make configurable?
+            if (total_usage < 25 * 1024 * 1024 && undolist.size() - i < 100) {
+                total_usage += undolist[i]->estimated_size;
+            } else {
+                undolist.remove(0, i + 1);
+                //wxLogError(L"dropped %d items", i + 1);
+                break;
+            }
+        }
+        size_t items_culled = old_list_size - undolist.size();
+        undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
     void Undo(wxDC &dc, Vector<UndoItem *> &fromlist, Vector<UndoItem *> &tolist,

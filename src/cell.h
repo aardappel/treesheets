@@ -84,6 +84,10 @@ struct Cell {
         return rs;
     }
 
+    size_t EstimatedMemoryUse() {
+        return sizeof(Cell) + text.EstimatedMemoryUse() + (grid ? grid->EstimatedMemoryUse() : 0);
+    }
+
     void Layout(Document *doc, wxDC &dc, int depth, int maxcolwidth, bool forcetiny) {
         tiny = (text.filtered && !grid) || forcetiny ||
                doc->PickFont(dc, depth, text.relsize, text.stylebits);

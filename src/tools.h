@@ -189,7 +189,15 @@ class Vector : public NonCopyable {
     void remove(uint i) {
         ASSERT(i < ulen);
         destruct(i);
-        memmove(buf + i, buf + i + 1, sizeof(T) * (ulen-- - i - 1));
+        ulen--;
+        memmove(buf + i, buf + i + 1, sizeof(T) * (ulen - i));
+    }
+
+    void remove(uint i, uint n) {
+        ASSERT(i + n <= ulen);
+        for (uint d = i; d < i + n; d++) destruct(d);
+        ulen -= n;
+        memmove(buf + i, buf + i + n, sizeof(T) * (ulen - i));
     }
 
     void removeobj(T o) {
