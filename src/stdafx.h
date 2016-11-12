@@ -60,9 +60,7 @@
 #ifdef WIN32
     #define FSWATCH
 #endif
-#ifdef FSWATCH
-    #include <wx/fswatcher.h>
-#endif
+#include <wx/fswatcher.h>
 
 WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 
