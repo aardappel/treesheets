@@ -1,3 +1,33 @@
+
+static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline = false) {
+    if (outline)
+        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    else
+        dc.SetBrush(wxBrush(wxColour(c)));
+    dc.SetPen(wxPen(wxColour(c)));
+    dc.DrawRectangle(x, y, xs, ys);
+}
+
+static void DrawLine(wxDC &dc, uint c, int x, int y, int xd, int yd) {
+    dc.SetPen(wxPen(wxColour(c)));
+    dc.DrawLine(x, y, x + xd, y + yd);
+}
+
+static void MyDrawText(wxDC &dc, const wxString &s, wxCoord x, wxCoord y, wxCoord w, wxCoord h) {
+    #ifdef __WXMSW__  // this special purpose implementation is because the MSW implementation calls
+                      // TextExtent, which costs
+                      // 25% of all cpu time
+    dc.CalcBoundingBox(x, y);
+    dc.CalcBoundingBox(x + w, y + h);
+    HDC hdc = (HDC)dc.GetHDC();
+    ::SetTextColor(hdc, dc.GetTextForeground().GetPixel());
+    ::SetBkColor(hdc, dc.GetTextBackground().GetPixel());
+    ::ExtTextOut(hdc, x, y, 0, NULL, s.c_str(), s.length(), NULL);
+    #else
+    dc.DrawText(s, x, y);
+    #endif
+}
+
 struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data){};
 

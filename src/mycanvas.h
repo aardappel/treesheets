@@ -125,7 +125,6 @@ struct TSCanvas : public wxScrolledWindow {
     void OnMouseWheel(wxMouseEvent &me) {
         bool ctrl = me.CmdDown();
         if (sys->zoomscroll) ctrl = !ctrl;
-        // wxLogError(L"%d %d %d\n", me.AltDown(), me.ShiftDown(), me.CmdDown());
         wxClientDC dc(this);
         if (me.AltDown() || ctrl || me.ShiftDown()) {
             mousewheelaccum += me.GetWheelRotation();
