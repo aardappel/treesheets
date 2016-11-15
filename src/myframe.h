@@ -14,7 +14,7 @@ struct MyFrame : wxFrame {
     wxAuiNotebook *nb;
     wxAuiManager *aui;
     wxBitmap line_nw, line_sw;
-    wxImage foldicon;
+    wxBitmap foldicon;
     bool fromclosebox;
     wxApp *app;
     wxFileSystemWatcher *watcher;
@@ -96,13 +96,15 @@ struct MyFrame : wxFrame {
         icons.AddIcon(iconbig);
         SetIcons(icons);
 
+        wxImage foldiconi;
         if (!line_nw.LoadFile(GetPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG) ||
             !line_sw.LoadFile(GetPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG) ||
-            !foldicon.LoadFile(GetPath(L"images/nuvola/fold.png"))) {
+            !foldiconi.LoadFile(GetPath(L"images/nuvola/fold.png"))) {
             wxMessageBox(L"Error loading core data file (TreeSheets not installed correctly?)",
                          L"Initialization Error", wxOK, this);
             // FIXME: what is the correct way to exit?
         }
+        foldicon = wxBitmap(foldiconi);
 
         if (sys->singletray)
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,

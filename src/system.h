@@ -528,19 +528,19 @@ struct System {
         return imagelist.size() - 1;
     }
 
-    void ImageSize(Image *image, int &xs, int &ys) {
-        if (!image) return;
-        xs = image->bm.GetWidth();
-        ys = image->bm.GetHeight();
+    void ImageSize(wxBitmap *bm, int &xs, int &ys) {
+        if (!bm) return;
+        xs = bm->GetWidth();
+        ys = bm->GetHeight();
     }
 
-    void ImageDraw(Image *image, wxDC &dc, int x, int y, int xs, int ys) {
-        double xscale = xs / (double)image->bm.GetWidth();
-        double yscale = ys / (double)image->bm.GetHeight();
+    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y, int xs, int ys) {
+        double xscale = xs / (double)bm->GetWidth();
+        double yscale = ys / (double)bm->GetHeight();
         double prevx, prevy;
         dc.GetUserScale(&prevx, &prevy);
         dc.SetUserScale(xscale * prevx, yscale * prevy);
-        dc.DrawBitmap(image->bm, x / xscale, y / yscale);
+        dc.DrawBitmap(*bm, x / xscale, y / yscale);
         dc.SetUserScale(prevx, prevy);
     }
 };

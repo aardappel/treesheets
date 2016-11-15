@@ -559,7 +559,14 @@ struct Grid {
             if (sys->versionlastloaded >= 11) {
                 cell->verticaltextandgrid = dis.Read8() != 0;
                 if (sys->versionlastloaded >= 13) {
-                    if (sys->versionlastloaded >= 16) { folded = dis.Read8() != 0; }
+                    if (sys->versionlastloaded >= 16) {
+                        folded = dis.Read8() != 0;
+                        if (folded && sys->versionlastloaded <= 17) {
+                            // Before v18, folding would use the image slot. So if this cell
+                            // contains an image, clear it.
+                            cell->text.image = nullptr;
+                        }
+                    }
                     loop(x, xs) colwidths[x] = dis.Read32();
                 }
             }

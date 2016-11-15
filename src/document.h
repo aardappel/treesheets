@@ -265,7 +265,6 @@ struct Document {
         for (Cell *cg = selected.g->cell; cg; cg = cg->parent)
             if (cg->grid->folded) {
                 cg->grid->folded = false;
-                cg->text.image = NULL;
                 cg->ResetLayout();
                 cg->ResetChildren();
             }
@@ -1363,13 +1362,7 @@ struct Document {
             case A_FOLD:
                 loopallcellsselnorec(c) if (c->grid) {
                     c->AddUndo(this);
-                    if (c->grid->folded) {
-                        c->text.image = NULL;
-                        c->grid->folded = false;
-                    } else {
-                        SetImageBM(c, sys->frame->foldicon);
-                        c->grid->folded = true;
-                    }
+                    c->grid->folded = !c->grid->folded;
                     c->ResetChildren();
                 }
                 Refresh();
@@ -1768,7 +1761,6 @@ struct Document {
 
     void SetImageBM(Cell *c, const wxImage &im) {
         c->text.image = sys->imagelist[sys->AddImageToList(im)];
-        // c->text.relsize = 0;
     }
 
     bool LoadImageIntoCell(const wxString &fn, Cell *c) {

@@ -92,7 +92,7 @@ struct Cell {
         tiny = (text.filtered && !grid) || forcetiny ||
                doc->PickFont(dc, depth, text.relsize, text.stylebits);
         int ixs = 0, iys = 0;
-        if (!tiny) sys->ImageSize(text.image, ixs, iys);
+        if (!tiny) sys->ImageSize(text.Image(), ixs, iys);
         int leftoffset = 0;
         if (!HasText()) {
             if (!ixs || !iys) {
