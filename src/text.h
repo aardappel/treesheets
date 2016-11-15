@@ -21,7 +21,7 @@ struct Text {
         WasEdited();
     }
 
-    wxBitmap *Image() {
+    wxBitmap *DisplayImage() {
         return cell->grid && cell->grid->folded
             ? &sys->frame->foldicon
             : (image ? &image->bm : nullptr);
@@ -173,10 +173,10 @@ struct Text {
     int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
                int maxcolwidth) {
         int ixs = 0, iys = 0;
-        if (!cell->tiny) sys->ImageSize(Image(), ixs, iys);
+        if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
 
         if (ixs && iys) {
-            sys->ImageDraw(Image(), dc, bx + 1 + g_margin_extra,
+            sys->ImageDraw(DisplayImage(), dc, bx + 1 + g_margin_extra,
                            by + (cell->tys - iys) / 2 + g_margin_extra, ixs, iys);
             ixs += 2;
             iys += 2;
@@ -253,7 +253,7 @@ struct Text {
         by -= g_margin_extra;
 
         int ixs = 0, iys = 0;
-        if (!cell->tiny) sys->ImageSize(Image(), ixs, iys);
+        if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
         if (ixs) ixs += 2;
 
         doc->PickFont(dc, cell->Depth() - doc->drawpath.size(), relsize, stylebits);
@@ -281,7 +281,7 @@ struct Text {
     void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color, bool cursoronly,
                     int maxcolwidth) {
         int ixs = 0, iys = 0;
-        if (!cell->tiny) sys->ImageSize(Image(), ixs, iys);
+        if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
         if (ixs) ixs += 2;
         doc->PickFont(dc, cell->Depth() - doc->drawpath.size(), relsize, stylebits);
         int h = dc.GetCharHeight();
