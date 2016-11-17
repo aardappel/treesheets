@@ -91,11 +91,8 @@ struct Document {
     #define loopallcells(c)     \
         CollectCells(rootgrid); \
         loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = NULL)
-    #define loopallcellssel(c) \
-        CollectCellsSel();     \
-        loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = NULL)
-    #define loopallcellsselnorec(c) \
-        CollectCellsSel(false);     \
+    #define loopallcellssel(c, rec) \
+        CollectCellsSel(rec);     \
         loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = NULL)
 
     Document()
@@ -1123,7 +1120,7 @@ struct Document {
                 if (wxTheClipboard->Open()) {
                     wxString s;
                     if (k == A_COPYCT) {
-                        loopallcellssel(c) if (c->text.t.Len()) s += c->text.t + " ";
+                        loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
                     } else {
                         s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
                     }
@@ -1190,7 +1187,7 @@ struct Document {
                     case A_MARKCODE: newcelltype = CT_CODE; break;
                 }
                 selected.g->cell->AddUndo(this);
-                loopallcellsselnorec(c) {
+                loopallcellssel(c, false) {
                     c->celltype =
                         (newcelltype == CT_CODE) ? sys->ev.InferCellType(c->text) : newcelltype;
                     Refresh();
@@ -1324,7 +1321,9 @@ struct Document {
             case A_RESETSIZE:
             case A_RESETWIDTH:
             case A_RESETSTYLE:
-            case A_RESETCOLOR: selected.g->cell->AddUndo(this); loopallcellssel(c) switch (k) {
+            case A_RESETCOLOR:
+                selected.g->cell->AddUndo(this);
+                loopallcellssel(c, true) switch (k) {
                     case A_RESETSIZE: c->text.relsize = 0; break;
                     case A_RESETWIDTH:
                         if (c->grid) c->grid->InitColWidths();
@@ -1360,9 +1359,11 @@ struct Document {
             }
 
             case A_FOLD:
-                loopallcellsselnorec(c) if (c->grid) {
+            case A_FOLDALL:
+            case A_UNFOLDALL:
+                loopallcellssel(c, k != A_FOLD) if (c->grid) {
                     c->AddUndo(this);
-                    c->grid->folded = !c->grid->folded;
+                    c->grid->folded = k == A_FOLD ? !c->grid->folded : k == A_FOLDALL;
                     c->ResetChildren();
                 }
                 Refresh();
@@ -1774,7 +1775,7 @@ struct Document {
 
     void ImageChange(wxString &fn) {
         selected.g->cell->AddUndo(this);
-        loopallcellsselnorec(c) LoadImageIntoCell(fn, c);
+        loopallcellssel(c, false) LoadImageIntoCell(fn, c);
         Refresh();
     }
 
@@ -1806,7 +1807,7 @@ struct Document {
         c->CollectCells(itercells);
     }
 
-    void CollectCellsSel(bool recurse = true) {
+    void CollectCellsSel(bool recurse) {
         itercells.setsize_nd(0);
         if (selected.g) selected.g->CollectCellsSel(itercells, selected, recurse);
     }

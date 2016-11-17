@@ -362,6 +362,10 @@ struct MyFrame : wxFrame {
                      L"F10",
                      #endif
                      L"Toggles showing the grid of the selected cell(s)");
+            MyAppend(editmenu, A_FOLDALL, L"Fold All\tCTRL+SHIFT+F10",
+                L"Folds the grid of the selected cell(s) recursively");
+            MyAppend(editmenu, A_UNFOLDALL, L"Unfold All\tCTRL+ALT+F10",
+                L"Unfolds the grid of the selected cell(s) recursively");
             editmenu->AppendSeparator();
             editmenu->AppendSubMenu(selmenu, L"&Selection...");
             editmenu->AppendSubMenu(orgmenu, L"&Grid Reorganization...");

@@ -202,6 +202,8 @@ enum {
     A_SORTD,
     A_STRIKET,
     A_FOLD,
+    A_FOLDALL,
+    A_UNFOLDALL,
     A_IMAGESC,
     A_HELPI,
     A_REDO,
