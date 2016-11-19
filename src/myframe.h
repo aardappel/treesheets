@@ -646,11 +646,13 @@ struct MyFrame : wxFrame {
         aui->AddPane(nb, wxCENTER);
         aui->Update();
 
+        /*
         #ifdef FSWATCH
         watcher = new wxFileSystemWatcher();
         watcher->SetOwner(this);
         Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
         #endif
+        */
 
         Show(TRUE);
 
@@ -660,6 +662,15 @@ struct MyFrame : wxFrame {
         SetFileAssoc(exename);
 
         wxSafeYield();
+    }
+    
+    void AppOnEventLoopEnter()
+    {
+        #ifdef FSWATCH
+        watcher = new wxFileSystemWatcher();
+        watcher->SetOwner(this);
+        Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
+        #endif
     }
 
     ~MyFrame() {
@@ -1005,14 +1016,20 @@ struct MyFrame : wxFrame {
 
     #ifdef FSWATCH
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
-        if (event.GetChangeType() != wxFSW_EVENT_MODIFY || watcherwaitingforuser) return;
+        // 0xF == create/delete/rename/modify
+        if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser) return;
 
-        wxString &modfile = event.GetPath().GetFullPath();
+        // On some platforms, this event triggers on the .bak instead of the .cts, so compare
+        // without extension.
+        const wxString &modfile = event.GetPath().GetFullPath();
+        const wxString &modfilenoext = event.GetPath().GetPathWithSep() + event.GetPath().GetName();
 
         if (nb) {
             loop(i, nb->GetPageCount()) {
                 Document *doc = ((TSCanvas *)nb->GetPage(i))->doc;
-                if (doc->filename == modfile) {
+                const wxString &docfilenoext = wxFileName(doc->filename).GetPathWithSep() +
+                                               wxFileName(doc->filename).GetName();
+                if (docfilenoext == modfilenoext) {
                     wxDateTime modtime = wxFileName(modfile).GetModificationTime();
                     if (modtime == doc->lastmodificationtime) { return; }
 
@@ -1042,6 +1059,18 @@ struct MyFrame : wxFrame {
                                                wxYES_NO | wxICON_QUESTION, this);
                         watcherwaitingforuser = false;
                         if (res != wxYES) return;
+                    }
+                    else
+                    {
+                        #ifdef __WXMAC__
+                        // For some reason on mac, it only detects changes to the .bak, and thus may trigger
+                        // a reload before the corresponding .cts has been written.
+                        // As a kludgy workaround, we wait a few seconds.
+                        // Sleeping freezes up the app, but we assume that if files are being modified from
+                        // outside the app, the app is not being used actively.
+                        GetCurTab()->Status("Waiting to reload..");
+                        wxSleep(5);
+                        #endif
                     }
 
                     const char *msg = sys->LoadDB(doc->filename, false, true);

@@ -60,7 +60,7 @@ OSX:
 - inside the wxWidgets dir:
 - mkdir build_osx
 - cd build_osx
-- ../configure --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa CFLAGS="-arch i386" CXXFLAGS="-arch i386 -stdlib=libc++" CPPFLAGS="-arch i386" LDFLAGS="-arch i386 -stdlib=libc++" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386 -stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk --with-macosx-version-min=10.7 CC=clang CXX=clang++
+- ../configure --enable-unicode --enable-optimize=-O2 --disable-shared --with-osx_cocoa CFLAGS="-arch i386" CXXFLAGS="-arch i386 -stdlib=libc++" CPPFLAGS="-arch i386" LDFLAGS="-arch i386 -stdlib=libc++" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386 -stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk --with-macosx-version-min=10.7 --disable-mediactrl CC=clang CXX=clang++
 - make
 - sudo make install
 - use the xcode project in osx/TreeSheets to build treesheets. put the resulting

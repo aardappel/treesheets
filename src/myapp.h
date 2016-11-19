@@ -11,9 +11,11 @@ struct MyApp : wxApp {
     MyFrame *frame;
     wxSingleInstanceChecker *checker;
     IPCServer *serv;
+    wxString filename;
+    bool initateventloop;
     // wxLocale locale;
 
-    MyApp() : checker(NULL), frame(NULL), serv(NULL) {}
+    MyApp() : checker(NULL), frame(NULL), serv(NULL), initateventloop(false) {}
     bool OnInit() {
         #if wxUSE_UNICODE == 0
         #error "must use unicode version of wx libs to ensure data integrity of .cts files"
@@ -33,7 +35,6 @@ struct MyApp : wxApp {
         std::setlocale(LC_CTYPE, "");  // correct handling of non-latin symbols
 
         bool portable = false;
-        wxString filename;
         for (int i = 1; i < argc; i++) {
             if (argv[i][0] == '-') {
                 switch ((int)argv[i][1]) {
@@ -57,12 +58,21 @@ struct MyApp : wxApp {
         sys = new System(portable);
         frame = new MyFrame(argv[0], this);
         SetTopWindow(frame);
-        sys->Init(filename);
 
         serv = new IPCServer();
         serv->Create(L"4242");
 
         return true;
+    }
+    
+    void OnEventLoopEnter(wxEventLoopBase* WXUNUSED(loop))
+    {
+        if (!initateventloop)
+        {
+            initateventloop = true;
+            frame->AppOnEventLoopEnter();
+            sys->Init(filename);
+        }
     }
 
     int OnExit() {

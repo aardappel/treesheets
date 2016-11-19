@@ -57,9 +57,9 @@
 
 #include <clocale>
 
-#ifdef WIN32
+//#ifdef WIN32
     #define FSWATCH
-#endif
+//#endif
 #include <wx/fswatcher.h>
 
 WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
