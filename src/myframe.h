@@ -474,12 +474,10 @@ struct MyFrame : wxFrame {
         optmenu->Check(A_MAKEBAKS, sys->makebaks);
         optmenu->AppendCheckItem(A_AUTOSAVE, L"Autosave to .tmp");
         optmenu->Check(A_AUTOSAVE, sys->autosave);
-        #ifdef FSWATCH
         optmenu->AppendCheckItem(
             A_FSWATCH, L"Auto reload documents",
             L"Reloads when another computer has changed a file (if you have made changes, asks)");
         optmenu->Check(A_FSWATCH, sys->fswatch);
-        #endif
         optmenu->AppendCheckItem(A_AUTOEXPORT, L"Automatically export a .html on every save");
         optmenu->Check(A_AUTOEXPORT, sys->autohtmlexport);
         optmenu->AppendSeparator();
@@ -646,14 +644,6 @@ struct MyFrame : wxFrame {
         aui->AddPane(nb, wxCENTER);
         aui->Update();
 
-        /*
-        #ifdef FSWATCH
-        watcher = new wxFileSystemWatcher();
-        watcher->SetOwner(this);
-        Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
-        #endif
-        */
-
         Show(TRUE);
 
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
@@ -666,11 +656,10 @@ struct MyFrame : wxFrame {
 
     void AppOnEventLoopEnter()
     {
-        #ifdef FSWATCH
+        // Have to do this here, if we do it in the Frame constructor above, it crashes on OS X.
         watcher = new wxFileSystemWatcher();
         watcher->SetOwner(this);
         Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
-        #endif
     }
 
     ~MyFrame() {
@@ -1014,7 +1003,6 @@ struct MyFrame : wxFrame {
         #endif
     }
 
-    #ifdef FSWATCH
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
         // 0xF == create/delete/rename/modify
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
@@ -1064,7 +1052,6 @@ struct MyFrame : wxFrame {
             }
         }
     }
-    #endif
 
     DECLARE_EVENT_TABLE()
 };

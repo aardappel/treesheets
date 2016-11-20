@@ -97,7 +97,7 @@ struct System {
           minclose(false),
           singletray(false),
           centered(true),
-          fswatch(false),
+          fswatch(true),
           autohtmlexport(false),
           insidefiledialog(false) {
         static const wxDash glpattern[] = {1, 3};
@@ -315,11 +315,8 @@ struct System {
     void FileUsed(const wxString &filename, Document *doc) {
         frame->filehistory.AddFileToHistory(filename);
         RememberOpenFiles();
-
-        #ifdef FSWATCH
         if (fswatch) {
             doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
-
             const wxString &d =
                 wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
             if (watchedpaths.find(d) == watchedpaths.end()) {
@@ -327,7 +324,6 @@ struct System {
                 frame->watcher->Add(wxFileName(d), wxFSW_EVENT_ALL);
             }
         }
-        #endif
     }
 
     const char *Open(const wxString &fn) {
