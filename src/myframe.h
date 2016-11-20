@@ -1031,24 +1031,21 @@ struct MyFrame : wxFrame {
                                                wxFileName(doc->filename).GetName();
                 if (docfilenoext == modfilenoext) {
                     wxDateTime modtime = wxFileName(modfile).GetModificationTime();
-                    if (modtime == doc->lastmodificationtime) { return; }
-
+                    // Compare with last modified to not trigger ourselves.
+                    // Sadly this is very inexact on mac for some reason. So be conservative.
+                    if (abs(modtime.GetTicks() - doc->lastmodificationtime.GetTicks()) < 10) {
+                        return;
+                    }
                     if (doc->modified) {
-                        // TODO:
-                        // this dialog is problematic since it may be on an unattended computer and
-                        // more of these events
-                        // may fire.
-                        // since the occurrence of this situation is rare, it may be better to just
-                        // take the most
-                        // recently changed version (which is the one that has just been modified on
-                        // disk)
-                        // this potentially throws away local changes, but this can only happen if
-                        // the user left changes
-                        // unsaved, then decided to go edit an older version on another computer
-
+                        // TODO: this dialog is problematic since it may be on an unattended
+                        // computer and more of these events may fire. since the occurrence of this
+                        // situation is rare, it may be better to just take the most
+                        // recently changed version (which is the one that has just been modified
+                        // on disk) this potentially throws away local changes, but this can only
+                        // happen if the user left changes unsaved, then decided to go edit an older
+                        // version on another computer.
                         // for now, we leave this code active, and guard it with
                         // watcherwaitingforuser
-
                         wxString msg = wxString::Format(
                             L"%s\nhas been modified on disk by another program / computer:\nWould "
                             L"you like to discard "
@@ -1059,20 +1056,17 @@ struct MyFrame : wxFrame {
                                                wxYES_NO | wxICON_QUESTION, this);
                         watcherwaitingforuser = false;
                         if (res != wxYES) return;
-                    }
-                    else
-                    {
+                    } else {
                         #ifdef __WXMAC__
-                        // For some reason on mac, it only detects changes to the .bak, and thus may trigger
-                        // a reload before the corresponding .cts has been written.
+                        // For some reason on mac, it only detects changes to the .bak, and thus may
+                        // trigger a reload before the corresponding .cts has been written.
                         // As a kludgy workaround, we wait a few seconds.
-                        // Sleeping freezes up the app, but we assume that if files are being modified from
-                        // outside the app, the app is not being used actively.
+                        // Sleeping freezes up the app, but we assume that if files are being
+                        // modified from outside the app, the app is not being used actively.
                         GetCurTab()->Status("Waiting to reload..");
                         wxSleep(5);
                         #endif
                     }
-
                     const char *msg = sys->LoadDB(doc->filename, false, true);
                     assert(msg);
                     if (*msg) {

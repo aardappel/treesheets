@@ -1,7 +1,7 @@
 [ check google moderator for new feature requests ]
 
-- should really fix the fold icon overlapping with images.
-  maybe at least can use simply no fold icon for cells with an image.
+- OSX: figure out how to do retina text rendering.
+  https://forums.wxwidgets.org/viewtopic.php?f=23&t=42806&p=173880#p173880
 
 - bug: reordering the tabs can disable editing (no selection)
   - similarly, closing a sheet can make others uneditable.
