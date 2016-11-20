@@ -663,7 +663,7 @@ struct MyFrame : wxFrame {
 
         wxSafeYield();
     }
-    
+
     void AppOnEventLoopEnter()
     {
         #ifdef FSWATCH
@@ -1017,70 +1017,68 @@ struct MyFrame : wxFrame {
     #ifdef FSWATCH
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
         // 0xF == create/delete/rename/modify
-        if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser) return;
+        if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
 
         // On some platforms, this event triggers on the .bak instead of the .cts, so compare
         // without extension.
         const wxString &modfile = event.GetPath().GetFullPath();
         const wxString &modfilenoext = event.GetPath().GetPathWithSep() + event.GetPath().GetName();
 
-        if (nb) {
-            loop(i, nb->GetPageCount()) {
-                Document *doc = ((TSCanvas *)nb->GetPage(i))->doc;
-                const wxString &docfilenoext = wxFileName(doc->filename).GetPathWithSep() +
-                                               wxFileName(doc->filename).GetName();
-                if (docfilenoext == modfilenoext) {
-                    wxDateTime modtime = wxFileName(modfile).GetModificationTime();
-                    // Compare with last modified to not trigger ourselves.
-                    // Sadly this is very inexact on mac for some reason. So be conservative.
-                    if (abs(modtime.GetTicks() - doc->lastmodificationtime.GetTicks()) < 10) {
-                        return;
-                    }
-                    if (doc->modified) {
-                        // TODO: this dialog is problematic since it may be on an unattended
-                        // computer and more of these events may fire. since the occurrence of this
-                        // situation is rare, it may be better to just take the most
-                        // recently changed version (which is the one that has just been modified
-                        // on disk) this potentially throws away local changes, but this can only
-                        // happen if the user left changes unsaved, then decided to go edit an older
-                        // version on another computer.
-                        // for now, we leave this code active, and guard it with
-                        // watcherwaitingforuser
-                        wxString msg = wxString::Format(
-                            L"%s\nhas been modified on disk by another program / computer:\nWould "
-                            L"you like to discard "
-                            L"your changes and re-load from disk?",
-                            doc->filename);
-                        watcherwaitingforuser = true;
-                        int res = wxMessageBox(msg, L"File modification conflict!",
-                                               wxYES_NO | wxICON_QUESTION, this);
-                        watcherwaitingforuser = false;
-                        if (res != wxYES) return;
-                    } else {
-                        #ifdef __WXMAC__
-                        // For some reason on mac, it only detects changes to the .bak, and thus may
-                        // trigger a reload before the corresponding .cts has been written.
-                        // As a kludgy workaround, we wait a few seconds.
-                        // Sleeping freezes up the app, but we assume that if files are being
-                        // modified from outside the app, the app is not being used actively.
-                        GetCurTab()->Status("Waiting to reload..");
-                        wxSleep(5);
-                        #endif
-                    }
-                    const char *msg = sys->LoadDB(doc->filename, false, true);
-                    assert(msg);
-                    if (*msg) {
-                        GetCurTab()->Status(msg);
-                    } else {
-                        loop(j, nb->GetPageCount()) if (((TSCanvas *)nb->GetPage(j))->doc == doc)
-                            nb->DeletePage(j);
-                        ::wxRemoveFile(sys->TmpName(modfile));
-                        GetCurTab()->Status(
-                            "File has been re-loaded because of modifications of another program / "
-                            "computer");
-                    }
+        loop(i, nb->GetPageCount()) {
+            Document *doc = ((TSCanvas *)nb->GetPage(i))->doc;
+            const wxString &docfilenoext = wxFileName(doc->filename).GetPathWithSep() +
+                                            wxFileName(doc->filename).GetName();
+            if (docfilenoext == modfilenoext) {
+                wxDateTime modtime = wxFileName(modfile).GetModificationTime();
+                // Compare with last modified to not trigger ourselves.
+                // Sadly this is very inexact on mac for some reason. So be conservative.
+                if (abs(modtime.GetTicks() - doc->lastmodificationtime.GetTicks()) < 10) {
                     return;
                 }
+                if (doc->modified) {
+                    // TODO: this dialog is problematic since it may be on an unattended
+                    // computer and more of these events may fire. since the occurrence of this
+                    // situation is rare, it may be better to just take the most
+                    // recently changed version (which is the one that has just been modified
+                    // on disk) this potentially throws away local changes, but this can only
+                    // happen if the user left changes unsaved, then decided to go edit an older
+                    // version on another computer.
+                    // for now, we leave this code active, and guard it with
+                    // watcherwaitingforuser
+                    wxString msg = wxString::Format(
+                        L"%s\nhas been modified on disk by another program / computer:\nWould "
+                        L"you like to discard "
+                        L"your changes and re-load from disk?",
+                        doc->filename);
+                    watcherwaitingforuser = true;
+                    int res = wxMessageBox(msg, L"File modification conflict!",
+                                            wxYES_NO | wxICON_QUESTION, this);
+                    watcherwaitingforuser = false;
+                    if (res != wxYES) return;
+                } else {
+                    #ifdef __WXMAC__
+                    // For some reason on mac, it only detects changes to the .bak, and thus may
+                    // trigger a reload before the corresponding .cts has been written.
+                    // As a kludgy workaround, we wait a few seconds.
+                    // Sleeping freezes up the app, but we assume that if files are being
+                    // modified from outside the app, the app is not being used actively.
+                    GetCurTab()->Status("Waiting to reload..");
+                    wxSleep(5);
+                    #endif
+                }
+                const char *msg = sys->LoadDB(doc->filename, false, true);
+                assert(msg);
+                if (*msg) {
+                    GetCurTab()->Status(msg);
+                } else {
+                    loop(j, nb->GetPageCount()) if (((TSCanvas *)nb->GetPage(j))->doc == doc)
+                        nb->DeletePage(j);
+                    ::wxRemoveFile(sys->TmpName(modfile));
+                    GetCurTab()->Status(
+                        "File has been re-loaded because of modifications of another program / "
+                        "computer");
+                }
+                return;
             }
         }
     }

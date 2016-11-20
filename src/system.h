@@ -324,9 +324,7 @@ struct System {
                 wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
             if (watchedpaths.find(d) == watchedpaths.end()) {
                 watchedpaths[d] = true;
-                // wxDisableAsserts();     // will complain about double add otherwise
-                frame->watcher->Add(wxFileName(d), wxFSW_EVENT_MODIFY);
-                // wxSetDefaultAssertHandler();
+                frame->watcher->Add(wxFileName(d), wxFSW_EVENT_ALL);
             }
         }
         #endif
