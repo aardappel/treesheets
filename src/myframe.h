@@ -1018,21 +1018,13 @@ struct MyFrame : wxFrame {
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
         // 0xF == create/delete/rename/modify
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
-
-        // On some platforms, this event triggers on the .bak instead of the .cts, so compare
-        // without extension.
         const wxString &modfile = event.GetPath().GetFullPath();
-        const wxString &modfilenoext = event.GetPath().GetPathWithSep() + event.GetPath().GetName();
-
         loop(i, nb->GetPageCount()) {
             Document *doc = ((TSCanvas *)nb->GetPage(i))->doc;
-            const wxString &docfilenoext = wxFileName(doc->filename).GetPathWithSep() +
-                                            wxFileName(doc->filename).GetName();
-            if (docfilenoext == modfilenoext) {
+            if (modfile == doc->filename) {
                 wxDateTime modtime = wxFileName(modfile).GetModificationTime();
-                // Compare with last modified to not trigger ourselves.
-                // Sadly this is very inexact on mac for some reason. So be conservative.
-                if (abs(modtime.GetTicks() - doc->lastmodificationtime.GetTicks()) < 10) {
+                // Compare with last modified to trigger multiple times.
+                if (modtime == doc->lastmodificationtime) {
                     return;
                 }
                 if (doc->modified) {
@@ -1055,16 +1047,6 @@ struct MyFrame : wxFrame {
                                             wxYES_NO | wxICON_QUESTION, this);
                     watcherwaitingforuser = false;
                     if (res != wxYES) return;
-                } else {
-                    #ifdef __WXMAC__
-                    // For some reason on mac, it only detects changes to the .bak, and thus may
-                    // trigger a reload before the corresponding .cts has been written.
-                    // As a kludgy workaround, we wait a few seconds.
-                    // Sleeping freezes up the app, but we assume that if files are being
-                    // modified from outside the app, the app is not being used actively.
-                    GetCurTab()->Status("Waiting to reload..");
-                    wxSleep(5);
-                    #endif
                 }
                 const char *msg = sys->LoadDB(doc->filename, false, true);
                 assert(msg);
