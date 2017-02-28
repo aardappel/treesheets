@@ -2,11 +2,12 @@
 Version=1.0
 Type=Application
 Name=TreeSheets
+GenericName=Treesheets
 Comment=A hierarhical spreadsheet / outliner productivity tool.
 TryExec=treesheets
 Exec=treesheets %f
 Terminal=false
-Icon=treesheets
+Icon=images/treesheets.svg
 MimeType=application/x-treesheets;
 Categories=Office;
 Keywords=Mindmaps; Knowledge management; Organize information; Brainstorming; Hierarchical spreadsheet;
