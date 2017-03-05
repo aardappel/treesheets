@@ -510,9 +510,6 @@ struct Document {
             int drx = max(layoutxs, maxx);
             int dry = max(layoutys, maxy);
             sw->SetVirtualSize(drx, dry);
-            #ifdef __WXMAC__
-            DrawRectangle(dc, Background(), 0, 0, drx, dry);
-            #endif
             sw->CalcUnscrolledPosition(0, 0, &originx, &originy);
             maxx += originx;
             maxy += originy;
