@@ -59,6 +59,8 @@
 
 #include <wx/fswatcher.h>
 
+#include <wx/stdpaths.h>
+
 WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 
 #include <new>
