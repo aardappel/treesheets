@@ -168,7 +168,14 @@ struct System {
         savechecker.Start(1000);
     }
 
-    void LoadTut() { LoadDB(frame->GetPath(L"examples/tutorial.cts")); }
+    void LoadTut() {
+        auto lang = frame->app->locale.GetCanonicalName();
+        lang.Truncate(2);
+        if (LoadDB(frame->GetPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+            LoadDB(frame->GetPath(L"examples/tutorial.cts"));
+        }
+    }
+
     Cell *&InitDB(int sizex, int sizey = 0) {
         Cell *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
