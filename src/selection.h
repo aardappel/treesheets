@@ -27,8 +27,8 @@ class Selection {
         ys = g->ys;
     }
 
-    Cell *GetCell() const { return g && xs == 1 && ys == 1 ? g->C(x, y) : NULL; }
-    Cell *GetFirst() const { return g && xs >= 1 && ys >= 1 ? g->C(x, y) : NULL; }
+    Cell *GetCell() const { return g && xs == 1 && ys == 1 ? g->C(x, y) : nullptr; }
+    Cell *GetFirst() const { return g && xs >= 1 && ys >= 1 ? g->C(x, y) : nullptr; }
     bool EqLoc(const Selection &s) {
         return g == s.g && x == s.x && y == s.y && xs == s.xs && ys == s.ys;
     }
@@ -108,7 +108,8 @@ class Selection {
     }
 
     int MaxCursor() { return int(GetCell()->text.t.Len()); }
-    char *Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
+
+    void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
               int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
             g->cell->AddUndo(doc);
@@ -116,7 +117,7 @@ class Selection {
             g->Move(dx, dy, *this);
             x = (x + dx + g->xs) % g->xs;
             y = (y + dy + g->ys) % g->ys;
-            if (x + xs > g->xs || y + ys > g->ys) g = NULL;
+            if (x + xs > g->xs || y + ys > g->ys) g = nullptr;
 
             doc->ScrollIfSelectionOutOfView(dc, *this, true);
         } else {
@@ -170,7 +171,7 @@ class Selection {
                     if (y + ys > g->ys) ys--;
                     if (!xs) firstdx = 0;
                     if (!ys) firstdy = 0;
-                    if (!xs && !ys) g = NULL;
+                    if (!xs && !ys) g = nullptr;
                 }
             } else {
                 if (vs) {
@@ -259,22 +260,24 @@ class Selection {
             }
             doc->DrawSelectMove(dc, *this);
         };
-        return NULL;
     }
 
-    char *Cursor(Document *doc, int k, bool ctrl, bool shift, wxDC &dc, bool exitedit = false) {
+    void Cursor(Document *doc, int k, bool ctrl, bool shift, wxDC &dc,
+                         bool exitedit = false) {
         switch (k) {
-            case A_UP: return Dir(doc, ctrl, shift, dc, 0, -1, y, ys, xs, y != 0, y != 0, exitedit);
+            case A_UP:
+                Dir(doc, ctrl, shift, dc, 0, -1, y, ys, xs, y != 0, y != 0, exitedit);
+                break;
             case A_DOWN:
-                return Dir(doc, ctrl, shift, dc, 0, 1, y, ys, xs, y < g->ys, y < g->ys - 1,
-                           exitedit);
+                Dir(doc, ctrl, shift, dc, 0, 1, y, ys, xs, y < g->ys, y < g->ys - 1, exitedit);
+                break;
             case A_LEFT:
-                return Dir(doc, ctrl, shift, dc, -1, 0, x, xs, ys, x != 0, x != 0, exitedit);
+                Dir(doc, ctrl, shift, dc, -1, 0, x, xs, ys, x != 0, x != 0, exitedit);
+                break;
             case A_RIGHT:
-                return Dir(doc, ctrl, shift, dc, 1, 0, x, xs, ys, x < g->xs, x < g->xs - 1,
-                           exitedit);
+                Dir(doc, ctrl, shift, dc, 1, 0, x, xs, ys, x < g->xs, x < g->xs - 1, exitedit);
+                break;
         }
-        return NULL;
     }
 
     void Next(Document *doc, wxDC &dc, bool backwards) {
@@ -303,7 +306,7 @@ class Selection {
         doc->DrawSelectMove(dc, *this);
     }
 
-    const char *Wrap(Document *doc) {
+    const wxChar *Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
         g->cell->AddUndo(doc);
         Cell *np = g->CloneSel(*this);
@@ -325,7 +328,7 @@ class Selection {
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
         doc->Refresh();
-        return NULL;
+        return nullptr;
     }
 
     Cell *ThinExpand(Document *doc) {
@@ -343,7 +346,7 @@ class Selection {
         return GetCell();
     }
 
-    const char *HomeEnd(Document *doc, wxDC &dc, bool ishome) {
+    void HomeEnd(Document *doc, wxDC &dc, bool ishome) {
         doc->DrawSelect(dc, *this);
         xs = ys = 1;
         if (ishome)
@@ -353,6 +356,5 @@ class Selection {
             y = g->ys - 1;
         }
         doc->DrawSelectMove(dc, *this);
-        return NULL;
     }
 };

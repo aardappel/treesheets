@@ -13,26 +13,33 @@ struct MyApp : wxApp {
     IPCServer *serv;
     wxString filename;
     bool initateventloop;
-    // wxLocale locale;
+    wxLocale locale;
 
-    MyApp() : checker(NULL), frame(NULL), serv(NULL), initateventloop(false) {}
+    MyApp() : checker(nullptr), frame(nullptr), serv(nullptr), initateventloop(false) {}
+
+    void AddTranslation(const wxString &basepath) {
+        #ifdef __WXGTK__
+            locale.AddCatalogLookupPathPrefix(L"/usr");
+            locale.AddCatalogLookupPathPrefix(L"/usr/local");
+            auto paths = (wxStandardPaths *)&wxStandardPaths::Get();
+            wxString prefix = paths->GetInstallPrefix();
+            locale.AddCatalogLookupPathPrefix(prefix);
+        #endif
+        locale.AddCatalogLookupPathPrefix(basepath);
+        locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
+    }
+
     bool OnInit() {
         #if wxUSE_UNICODE == 0
         #error "must use unicode version of wx libs to ensure data integrity of .cts files"
         #endif
         ASSERT(wxUSE_UNICODE);
 
-        //#ifdef __WXMAC__
-        // Now needed on WIN32 as well, because of all the locale related asserts. sigh.
+        #ifdef __WXMAC__
         wxDisableAsserts();
-        //#endif
+        #endif
 
-        // locale.Init();
-        //// wxWidgets forces the use of LC_ALL, and doesn't allow use of setlocale without a
-        ///wxLocale
-        //// so to get what we want, we reset back to C locale first.
-        // std::setlocale(LC_ALL, "C");
-        std::setlocale(LC_CTYPE, "");  // correct handling of non-latin symbols
+        locale.Init();
 
         bool portable = false;
         for (int i = 1; i < argc; i++) {
@@ -64,7 +71,7 @@ struct MyApp : wxApp {
 
         return true;
     }
-    
+
     void OnEventLoopEnter(wxEventLoopBase* WXUNUSED(loop))
     {
         if (!initateventloop)

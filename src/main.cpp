@@ -237,6 +237,7 @@ struct treesheets {
 
     struct System;
 
+    struct MyApp;
     struct MyFrame;
     struct TSCanvas;
 
@@ -257,7 +258,7 @@ struct treesheets {
     #include "myapp.h"
 };
 
-treesheets::System *treesheets::sys = NULL;
+treesheets::System *treesheets::sys = nullptr;
 
 IMPLEMENT_APP(treesheets::MyApp)
 

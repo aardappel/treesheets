@@ -5,12 +5,12 @@
 struct Operation {
     const char *args;
 
-    virtual Cell *run() { return NULL; }
+    virtual Cell *run() { return nullptr; }
     virtual double runn(double a) { return 0; }
-    virtual Cell *runt(Text *t) { return NULL; }
-    virtual Cell *runl(Grid *l) { return NULL; }
-    virtual Cell *rung(Grid *g) { return NULL; }
-    virtual Cell *runc(Cell *c) { return NULL; }
+    virtual Cell *runt(Text *t) { return nullptr; }
+    virtual Cell *runl(Grid *l) { return nullptr; }
+    virtual Cell *rung(Grid *g) { return nullptr; }
+    virtual Cell *runc(Cell *c) { return nullptr; }
     virtual double runnn(double a, double b) { return 0; }
 };
 
@@ -85,7 +85,7 @@ struct Evaluator {
 
     Cell *Lookup(wxString &name) {
         wxHashMapCell::iterator lookup = vars.find(name);
-        return (lookup != vars.end()) ? lookup->second->Clone(NULL) : NULL;
+        return (lookup != vars.end()) ? lookup->second->Clone(nullptr) : nullptr;
     }
 
     bool IsValidSymbol(wxString const &symbol) const { return !symbol.IsEmpty(); }
@@ -100,8 +100,8 @@ struct Evaluator {
     }
 
     void Assign(Cell const *sym, Cell const *val) {
-        this->SetSymbol(sym->text.t, val->Clone(NULL));
-        if (sym->grid && val->grid) this->DestructuringAssign(sym->grid, val->Clone(NULL));
+        this->SetSymbol(sym->text.t, val->Clone(nullptr));
+        if (sym->grid && val->grid) this->DestructuringAssign(sym->grid, val->Clone(nullptr));
     }
 
     void DestructuringAssign(Grid const *names, Cell *val) {
@@ -111,7 +111,7 @@ struct Evaluator {
             loop(x, ng->xs) loop(y, ng->ys) {
                 Cell *nc = ng->C(x, y);
                 Cell *vc = vg->C(x, y);
-                this->SetSymbol(nc->text.t, vc->Clone(NULL));
+                this->SetSymbol(nc->text.t, vc->Clone(nullptr));
             }
         }
         DELETEP(val);
@@ -143,7 +143,7 @@ struct Evaluator {
                     Vector<Grid *> gs;
                     g->Split(gs, vert);
                     g = new Grid(vert ? gs.size() : 1, vert ? 1 : gs.size());
-                    Cell *c = new Cell(NULL, left, CT_DATA, g);
+                    Cell *c = new Cell(nullptr, left, CT_DATA, g);
                     loopv(i, gs) g->C(vert ? i : 0, vert ? 0 : i) = op->runl(gs[i])->SetParent(c);
                     gs.setsize_nd(0);
                     return c;
@@ -169,19 +169,19 @@ struct Evaluator {
                     t1.SetNum(op->runnn(t1.GetNum(), t2.GetNum()));
                 else if (g1 && g2 && g1->xs == g2->xs && g1->ys == g2->ys) {
                     Grid *g = new Grid(g1->xs, g1->ys);
-                    Cell *c = new Cell(NULL, left, CT_DATA, g);
+                    Cell *c = new Cell(nullptr, left, CT_DATA, g);
                     loop(x, g->xs) loop(y, g->ys) {
                         Cell *&c1 = g1->C(x, y);
                         Cell *&c2 = g2->C(x, y);
                         g->C(x, y) = Execute(op, c1, c2)->SetParent(c);
-                        c1 = c2 = NULL;
+                        c1 = c2 = nullptr;
                     }
                     delete g1;
                     delete g2;
                     return c;
                 } else if (g1 && t2.t.Len()) {
                     foreachcellingrid(c, g1) c =
-                        Execute(op, c, right->Clone(NULL))->SetParent(left);
+                        Execute(op, c, right->Clone(nullptr))->SetParent(left);
                 }
                 break;
         }

@@ -12,7 +12,7 @@ struct TSCanvas : public wxScrolledWindow {
           wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size,
                            wxScrolledWindowStyle | wxWANTS_CHARS),
           mousewheelaccum(0),
-          doc(NULL),
+          doc(nullptr),
           lastrmbwaswithctrl(false) {
         SetBackgroundStyle(wxBG_STYLE_CUSTOM);
         SetBackgroundColour(*wxWHITE);
@@ -24,7 +24,7 @@ struct TSCanvas : public wxScrolledWindow {
 
     ~TSCanvas() {
         DELETEP(doc);
-        frame = NULL;
+        frame = nullptr;
     }
 
     void OnPaint(wxPaintEvent &event) {
@@ -49,9 +49,9 @@ struct TSCanvas : public wxScrolledWindow {
     void OnMotion(wxMouseEvent &me) {
         wxClientDC dc(this);
         UpdateHover(me.GetX(), me.GetY(), dc);
-        if (me.LeftIsDown() || me.RightIsDown())
-            Status(doc->Drag(dc));
-        else if (me.MiddleIsDown()) {
+        if (me.LeftIsDown() || me.RightIsDown()) {
+            doc->Drag(dc);
+        } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         }
@@ -64,7 +64,7 @@ struct TSCanvas : public wxScrolledWindow {
             return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
         wxClientDC dc(this);
         UpdateHover(mx, my, dc);
-        Status(doc->Select(dc, right, isctrlshift));
+        doc->Select(dc, right, isctrlshift);
     }
 
     void OnLeftDown(wxMouseEvent &me) {
@@ -169,11 +169,9 @@ struct TSCanvas : public wxScrolledWindow {
         // EnableScrolling(false, false);
     }
 
-    void Status(const char *msg = NULL) {
+    void Status(const wxChar *msg = nullptr) {
         if (frame->GetStatusBar() && (!msg || *msg))
-            frame->SetStatusText(msg ? wxString::Format(L"%s", msg) : L"", 0);
-        // using Format instead of FromAscii since the latter doesn't deal with >128 international
-        // ascii chars
+            frame->SetStatusText(msg ? msg : L"", 0);
     }
 
     DECLARE_EVENT_TABLE()

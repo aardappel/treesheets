@@ -29,14 +29,14 @@ typedef unsigned int uint;
     {                 \
         if (p) {      \
             delete p; \
-            p = NULL; \
+            p = nullptr; \
         }             \
     }
 #define DELETEA(a)      \
     {                   \
         if (a) {        \
             delete[] a; \
-            a = NULL;   \
+            a = nullptr;   \
         }               \
     }
 
@@ -146,7 +146,7 @@ class Vector : public NonCopyable {
     }
 
     Vector() { new (this) Vector(8); }
-    Vector(uint n) : ulen(0), buf(NULL) { reallocate(n); }
+    Vector(uint n) : ulen(0), buf(nullptr) { reallocate(n); }
     Vector(uint n, int c) {
         new (this) Vector(n);
         loop(i, c) push();

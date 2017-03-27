@@ -65,6 +65,10 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 
 #include <vector>
 
+#include <locale>
+
+#include <sstream>
+
 #include "tools.h"
 
 

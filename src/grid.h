@@ -54,17 +54,17 @@ struct Grid {
                 for (bool _f = true; _f;)   \
                     for (Cell *&c = g->C(x, y); _f; _f = false)
 
-    Grid(int _xs, int _ys, Cell *_c = NULL)
+    Grid(int _xs, int _ys, Cell *_c = nullptr)
         : cell(_c),
           xs(_xs),
           ys(_ys),
           cells(new Cell *[_xs * _ys]),
-          colwidths(NULL),
+          colwidths(nullptr),
           user_grid_outer_spacing(3),
           bordercolor(0xA0A0A0),
           horiz(false),
           folded(false) {
-        foreachcell(c) c = NULL;
+        foreachcell(c) c = nullptr;
         InitColWidths();
         SetOrient();
     }
@@ -75,7 +75,7 @@ struct Grid {
         delete[] colwidths;
     }
 
-    void InitCells(Cell *clonestylefrom = NULL) {
+    void InitCells(Cell *clonestylefrom = nullptr) {
         foreachcell(c) c = new Cell(cell, clonestylefrom);
     }
     void CloneStyleFrom(Grid *o) {
@@ -100,7 +100,7 @@ struct Grid {
     }
 
     Cell *CloneSel(const Selection &s) {
-        Cell *cl = new Cell(NULL, s.g->cell, CT_DATA, new Grid(s.xs, s.ys));
+        Cell *cl = new Cell(nullptr, s.g->cell, CT_DATA, new Grid(s.xs, s.ys));
         foreachcellinsel(c, s) cl->grid->C(x - s.x, y - s.y) = c->Clone(cl);
         return cl;
     }
@@ -513,7 +513,7 @@ struct Grid {
             rs = lastsize;
     }
 
-    void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = NULL) {
+    void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
         int relsize = 0;
         IdealRelSize(relsize, true);
         Cell **ocells = cells;
@@ -640,7 +640,7 @@ struct Grid {
     }
 
     void MergeWithParent(Grid *p, Selection &s) {
-        cell->grid = NULL;
+        cell->grid = nullptr;
         foreachcell(c) {
             if (x + s.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
             if (y + s.y >= p->ys) p->InsertCells(-1, p->ys, 0, 1);
@@ -656,7 +656,7 @@ struct Grid {
             delete pc;
             p->C(x + s.x, y + s.y) = c;
             c->parent = p->cell;
-            c = NULL;
+            c = nullptr;
         }
         s.g = p;
         s.xs += xs - 1;
@@ -664,12 +664,11 @@ struct Grid {
         delete this;
     }
 
-    char *SetStyle(Document *doc, Selection &s, int sb) {
+    void SetStyle(Document *doc, Selection &s, int sb) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, s) c->text.stylebits ^= sb;
         doc->Refresh();
-        return NULL;
     }
 
     void ColorChange(Document *doc, int which, uint color, Selection &s) {
@@ -748,10 +747,10 @@ struct Grid {
                 // subgrid.
                 if (!tmpacc->grid && tmpacc->text.t.IsEmpty()) {
                     tmpacc = c->Eval(ev);
-                    if (!tmpacc) { return NULL; }
+                    if (!tmpacc) { return nullptr; }
                 }
                 // Assign the current data temporary to the text
-                ev.Assign(c, tmpacc->Clone(NULL));
+                ev.Assign(c, tmpacc->Clone(nullptr));
                 // Pass the original data onwards
                 return tmpacc;
             }
@@ -760,7 +759,7 @@ struct Grid {
             case CT_VIEWH:
                 if (vert ? ct == CT_VIEWH : ct == CT_VIEWV) {
                     DELETEP(acc);
-                    return c->Clone(NULL);
+                    return c->Clone(nullptr);
                 }
                 delete c;
                 c = acc ? acc->Clone(cell) : new Cell(cell);
@@ -770,21 +769,21 @@ struct Grid {
             case CT_CODE: {
                 Operation *op = ev.FindOp(c->text.t);
                 switch (op ? strlen(op->args) : -1) {
-                    default: DELETEP(acc); return NULL;
+                    default: DELETEP(acc); return nullptr;
                     case 0: DELETEP(acc); return ev.Execute(op);
-                    case 1: return acc ? ev.Execute(op, acc) : NULL;
+                    case 1: return acc ? ev.Execute(op, acc) : nullptr;
                     case 2:
                         if (vert)
-                            return acc && y + 1 < ys ? ev.Execute(op, acc, C(x, ++y)) : NULL;
+                            return acc && y + 1 < ys ? ev.Execute(op, acc, C(x, ++y)) : nullptr;
                         else
-                            return acc && x + 1 < xs ? ev.Execute(op, acc, C(++x, y)) : NULL;
+                            return acc && x + 1 < xs ? ev.Execute(op, acc, C(++x, y)) : nullptr;
                     case 3:
                         if (vert)
                             return acc && y + 2 < ys ? (y += 2),
-                                   ev.Execute(op, acc, C(x, y - 2), C(x, y - 1)) : NULL;
+                                   ev.Execute(op, acc, C(x, y - 2), C(x, y - 1)) : nullptr;
                         else
                             return acc && x + 2 < xs ? (x += 2),
-                                   ev.Execute(op, acc, C(x - 2, y), C(x - 1, y)) : NULL;
+                                   ev.Execute(op, acc, C(x - 2, y), C(x - 1, y)) : nullptr;
                 }
             }
             // Var read, Data
@@ -793,7 +792,7 @@ struct Grid {
     }
 
     Cell *Eval(Evaluator &ev) {
-        Cell *acc = NULL;     // Actual/Accumulating data temporary
+        Cell *acc = nullptr;     // Actual/Accumulating data temporary
         bool alldata = true;  // Is the grid all data?
         // Do left to right processing
         if (xs > 1 || ys == 1) foreachcell(c) {
@@ -808,7 +807,7 @@ struct Grid {
         // If all data is true then we can exit now.
         if (alldata) {
             DELETEP(acc);
-            Cell *result = cell->Clone(NULL);  // Potential result if all data.
+            Cell *result = cell->Clone(nullptr);  // Potential result if all data.
             foreachcellingrid(c, result->grid) {
                 Cell *temp = c->Eval(ev);
                 DELETEP(c);
@@ -824,7 +823,7 @@ struct Grid {
         foreachcell(c) {
             Grid *g = gs[vert ? x : y];
             g->cells[vert ? y : x] = c->SetParent(g->cell);
-            c = NULL;
+            c = nullptr;
         }
         delete this;
     }
@@ -873,11 +872,11 @@ struct Grid {
             Cell *f = c->FindExact(s);
             if (f) return f;
         }
-        return NULL;
+        return nullptr;
     }
 
     Selection HierarchySwap(wxString tag) {
-        Cell *selcell = NULL;
+        Cell *selcell = nullptr;
         bool done = false;
         lookformore:
         foreachcell(c) if (c->grid && !done) {
@@ -921,25 +920,25 @@ struct Grid {
     }
 
     Cell *DeleteTagParent(Cell *tag, Cell *basecell, Cell *found) {
-        ReplaceCell(tag, NULL);
+        ReplaceCell(tag, nullptr);
         if (xs * ys == 1) {
             if (cell != basecell) {
-                cell->grid = NULL;
+                cell->grid = nullptr;
                 delete this;
             }
             Cell *next = tag->parent;
             if (tag != found) delete tag;
             return next;
         } else
-            foreachcell(c) if (c == NULL) {
+            foreachcell(c) if (c == nullptr) {
                 if (ys > 1)
                     DeleteCells(-1, y, 0, -1);
                 else
                     DeleteCells(x, -1, -1, 0);
-                return NULL;
+                return nullptr;
             }
         ASSERT(0);
-        return NULL;
+        return nullptr;
     }
 
     void MergeTagCell(Cell *f, Cell *&selcell) {
@@ -952,7 +951,7 @@ struct Grid {
                 } else {
                     c->grid = f->grid;
                     c->grid->ReParent(c);
-                    f->grid = NULL;
+                    f->grid = nullptr;
                 }
                 delete f;
             }
@@ -965,7 +964,7 @@ struct Grid {
     void MergeTagAll(Cell *into) {
         foreachcell(c) {
             into->grid->MergeTagCell(c, into /*dummy*/);
-            c = NULL;
+            c = nullptr;
         }
     }
 
@@ -980,7 +979,7 @@ struct Grid {
 
     void Hierarchify(Document *doc) {
         loop(y, ys) {
-            Cell *rest = NULL;
+            Cell *rest = nullptr;
             if (xs > 1) {
                 Selection s(this, 1, y, xs - 1, 1);
                 rest = CloneSel(s);
@@ -1016,7 +1015,7 @@ struct Grid {
 
     void MergeRow(Grid *tm) {
         ASSERT(xs == tm->xs && tm->ys == 1);
-        InsertCells(-1, ys, 0, 1, NULL);
+        InsertCells(-1, ys, 0, 1, nullptr);
         loop(x, xs) {
             swap_(C(x, ys - 1), tm->C(x, 0));
             C(x, ys - 1)->parent = cell;
@@ -1068,5 +1067,5 @@ struct Grid {
         }
     }
 
-    void ClearImages(Selection &s) { foreachcellinsel(c, s) c->text.image = NULL; }
+    void ClearImages(Selection &s) { foreachcellinsel(c, s) c->text.image = nullptr; }
 };

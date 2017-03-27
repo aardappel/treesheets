@@ -67,7 +67,7 @@ struct System {
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
                              L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
                        : (wxConfigBase *)new wxConfig(L"TreeSheets")),
-          cellclipboard(NULL),
+          cellclipboard(nullptr),
           defaultfont(
             #ifdef WIN32
               L"Lucida Sans Unicode"
@@ -170,7 +170,7 @@ struct System {
 
     void LoadTut() { LoadDB(frame->GetPath(L"examples/tutorial.cts")); }
     Cell *&InitDB(int sizex, int sizey = 0) {
-        Cell *c = new Cell(NULL, NULL, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
+        Cell *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
         Document *doc = NewTabDoc();
@@ -185,36 +185,36 @@ struct System {
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    const char *LoadDB(const wxString &filename, bool frominit = false, bool fromreload = false) {
+    const wxChar *LoadDB(const wxString &filename, bool frominit = false, bool fromreload = false) {
         wxString fn = filename;
         bool loadedfromtmp = false;
 
         if (!fromreload) {
-            if (frame->GetTabByFileName(filename)) return NULL;  //"this file is already loaded";
+            if (frame->GetTabByFileName(filename)) return nullptr;  //"this file is already loaded";
 
             if (::wxFileExists(TmpName(filename))) {
                 if (::wxMessageBox(
-                        L"A temporary autosave file exists, would you like to load it instead?",
-                        L"Autosave load", wxYES_NO, frame) == wxYES) {
+                        _(L"A temporary autosave file exists, would you like to load it instead?"),
+                        _(L"Autosave load"), wxYES_NO, frame) == wxYES) {
                     fn = TmpName(filename);
                     loadedfromtmp = true;
                 }
             }
         }
 
-        Document *doc = NULL;
+        Document *doc = nullptr;
         bool anyimagesfailed = false;
 
         {  // limit destructors
             wxBusyCursor wait;
             wxFFileInputStream fis(fn);
-            if (!fis.IsOk()) return "cannot open file";
+            if (!fis.IsOk()) return _(L"Cannot open file.");
 
             char buf[4];
             fis.Read(buf, 4);
-            if (strncmp(buf, "TSFF", 4)) return "not a TreeSheets file";
+            if (strncmp(buf, "TSFF", 4)) return _(L"Not a TreeSheets file.");
             fis.Read(&versionlastloaded, 1);
-            if (versionlastloaded > TS_VERSION) return "file of newer version";
+            if (versionlastloaded > TS_VERSION) return _(L"File of newer version.");
 
             fakelasteditonload = wxDateTime::Now().GetValue();
 
@@ -234,13 +234,13 @@ struct System {
                             // Uhoh.. the decoder failed. Try to save the situation by skipping this
                             // PNG.
                             anyimagesfailed = true;
-                            if (beforepng == wxInvalidOffset) return "cannot tell/seek document?";
+                            if (beforepng == wxInvalidOffset) return _(L"Cannot tell/seek document?");
                             fis.SeekI(beforepng);
                             // Now try to skip past this PNG
                             uchar header[8];
                             fis.Read(header, 8);
                             uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
-                            if (memcmp(header, expected, 8)) return "corrupt PNG header";
+                            if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
                             dis.BigEndianOrdered(true);
                             for (;;)  // Skip all chunks.
                             {
@@ -263,11 +263,11 @@ struct System {
 
                     case 'D': {
                         wxZlibInputStream zis(fis);
-                        if (!zis.IsOk()) return "cannot decompress file";
+                        if (!zis.IsOk()) return _(L"Cannot decompress file.");
                         wxDataInputStream dis(zis);
                         int numcells = 0, textbytes = 0;
-                        Cell *root = Cell::LoadWhich(dis, NULL, numcells, textbytes);
-                        if (!root) return "file corrupted!";
+                        Cell *root = Cell::LoadWhich(dis, nullptr, numcells, textbytes);
+                        if (!root) return _(L"File corrupted!");
 
                         doc = NewTabDoc(true);
                         if (loadedfromtmp) {
@@ -285,14 +285,14 @@ struct System {
                             }
                         }
 
-                        doc->sw->Status(wxString::Format(L"loaded %s (%d cells, %d characters)",
+                        doc->sw->Status(wxString::Format(_(L"Loaded %s (%d cells, %d characters)."),
                                                          filename.c_str(), numcells, textbytes)
                                             .c_str());
 
                         goto done;
                     }
 
-                    default: return "corrupt block header";
+                    default: return _(L"Corrupt block header.");
                 }
             }
         }
@@ -305,11 +305,11 @@ struct System {
 
         if (anyimagesfailed)
             wxMessageBox(
-                L"PNG decode failed on some images in this document\nThey have been replaced by "
-                L"red squares.",
-                "PNG decoder failure", wxOK, frame);
+                _(L"PNG decode failed on some images in this document\nThey have been replaced by "
+                  L"red squares."),
+                _(L"PNG decoder failure"), wxOK, frame);
 
-        return "";
+        return L"";
     }
 
     void FileUsed(const wxString &filename, Document *doc) {
@@ -326,13 +326,13 @@ struct System {
         }
     }
 
-    const char *Open(const wxString &fn) {
+    const wxChar *Open(const wxString &fn) {
         if (!fn.empty()) {
-            const char *msg = LoadDB(fn);
-            if (msg && *msg) wxMessageBox(wxString::FromAscii(msg), fn.wx_str(), wxOK, frame);
+            auto msg = LoadDB(fn);
+            if (msg && *msg) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
             return msg;
         }
-        return "open file cancelled";
+        return _(L"Open file cancelled.");
     }
 
     void RememberOpenFiles() {
@@ -355,10 +355,10 @@ struct System {
         if (frame->GetStatusBar()) {
             Cell *c = s.GetCell();
             if (c && s.xs) {
-                frame->SetStatusText(wxString::Format(L"Size %d", -c->text.relsize), 3);
-                frame->SetStatusText(wxString::Format(L"Width %d", s.g->colwidths[s.x]), 2);
+                frame->SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
+                frame->SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
                 frame->SetStatusText(
-                    wxString::Format(L"Edited %s", c->text.lastedit.FormatDate().c_str()), 1);
+                    wxString::Format(_(L"Edited %s"), c->text.lastedit.FormatDate().c_str()), 1);
             }
         }
     }
@@ -369,8 +369,8 @@ struct System {
         }
     }
 
-    const char *Import(int k) {
-        wxString fn = ::wxFileSelector(L"Please select file to import:", L"", L"", L"", L"*.*",
+    const wxChar *Import(int k) {
+        wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
             wxBusyCursor wait;
@@ -383,10 +383,10 @@ struct System {
                     Cell *c = *r->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        *r->grid->cells = NULL;
+                        *r->grid->cells = nullptr;
                         delete r;
                         r = c;
-                        c->parent = NULL;
+                        c->parent = nullptr;
                     }
                     break;
                 }
@@ -415,13 +415,13 @@ struct System {
             frame->GetCurTab()->doc->ChangeFileName(fn.BeforeLast(L'.').Append(L".cts"));
             frame->GetCurTab()->doc->ClearSelectionRefresh();
         }
-        return NULL;
+        return nullptr;
     problem:
-        wxMessageBox(L"couldn't import file!", fn, wxOK, frame);
-        return "file load error";
+        wxMessageBox(_(L"couldn't import file!"), fn, wxOK, frame);
+        return _(L"File load error.");
     }
 
-    int GetXMLNodes(wxXmlNode *n, Vector<wxXmlNode *> &ns, Vector<wxXmlAttribute *> *ps = NULL,
+    int GetXMLNodes(wxXmlNode *n, Vector<wxXmlNode *> &ns, Vector<wxXmlAttribute *> *ps = nullptr,
                     bool attributestoo = false) {
         for (wxXmlNode *child = n->GetChildren(); child; child = child->GetNext()) {
             if (child->GetType() == wxXML_ELEMENT_NODE) ns.push() = child;

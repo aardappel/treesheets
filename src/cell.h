@@ -31,7 +31,8 @@ struct Cell {
     bool verticaltextandgrid;
     wxUint8 drawstyle;
 
-    Cell(Cell *_p = NULL, Cell const *_clonefrom = NULL, int _ct = CT_DATA, Grid *_g = NULL)
+    Cell(Cell *_p = nullptr, Cell const *_clonefrom = nullptr, int _ct = CT_DATA,
+         Grid *_g = nullptr)
         : parent(_p),
           sx(0),
           sy(0),
@@ -59,7 +60,7 @@ struct Cell {
     void Clear() {
         DELETEP(grid);
         text.t.Clear();
-        text.image = NULL;
+        text.image = nullptr;
         Reset();
     }
 
@@ -147,7 +148,8 @@ struct Cell {
         uint parentcolor = doc->Background();
         if (parent && this != doc->curdrawroot) {
             Cell *p = parent;
-            while (p && p->drawstyle == DS_BLOBLINE) p = p == doc->curdrawroot ? NULL : p->parent;
+            while (p && p->drawstyle == DS_BLOBLINE)
+                p = p == doc->curdrawroot ? nullptr : p->parent;
             if (p) parentcolor = p->actualcellcolor;
         }
         if (drawstyle == DS_GRID && actualcellcolor != parentcolor) {
@@ -189,7 +191,7 @@ struct Cell {
 
     /* Clones _p making a new copy of it. This does not mutate the called on cell */
     Cell *Clone(Cell *_p) const {
-        Cell *c = new Cell(_p, this, celltype, grid ? new Grid(grid->xs, grid->ys) : NULL);
+        Cell *c = new Cell(_p, this, celltype, grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
         c->text.cell = c;
         if (grid) {
@@ -330,12 +332,12 @@ struct Cell {
         Grid *g = new Grid(xs, dis.Read32());
         grid = g;
         g->cell = this;
-        if (!g->LoadContents(dis, numcells, textbytes)) return NULL;
+        if (!g->LoadContents(dis, numcells, textbytes)) return nullptr;
         return this;
     }
 
     static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes) {
-        Cell *c = new Cell(_p, NULL, dis.Read8());
+        Cell *c = new Cell(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
             c->cellcolor = dis.Read32() & 0xFFFFFF;
@@ -351,7 +353,7 @@ struct Cell {
                 if (ts == TS_TEXT) return c;
             case TS_GRID: return c->LoadGrid(dis, numcells, textbytes);
             case TS_NEITHER: return c;
-            default: return NULL;
+            default: return nullptr;
         }
     }
 
@@ -401,7 +403,7 @@ struct Cell {
         if (link->text.ToText(0, s, A_EXPTEXT) == text.t) {
             if (link->text.stylebits != text.stylebits || link->cellcolor != cellcolor ||
                 link->textcolor != textcolor) {
-                if (!stylematch) best = NULL;
+                if (!stylematch) best = nullptr;
                 stylematch = true;
             } else if (stylematch) {
                 return best;
@@ -419,7 +421,10 @@ struct Cell {
         text.ReplaceStr(str);
     }
 
-    Cell *FindExact(wxString &s) { return text.t == s ? this : (grid ? grid->FindExact(s) : NULL); }
+    Cell *FindExact(wxString &s) {
+        return text.t == s ? this : (grid ? grid->FindExact(s) : nullptr);
+    }
+
     void ImageRefCount() {
         if (grid) grid->ImageRefCount();
         if (text.image) text.image->trefc++;

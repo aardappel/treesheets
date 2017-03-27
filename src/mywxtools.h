@@ -22,7 +22,7 @@ static void MyDrawText(wxDC &dc, const wxString &s, wxCoord x, wxCoord y, wxCoor
     HDC hdc = (HDC)dc.GetHDC();
     ::SetTextColor(hdc, dc.GetTextForeground().GetPixel());
     ::SetBkColor(hdc, dc.GetTextBackground().GetPixel());
-    ::ExtTextOut(hdc, x, y, 0, NULL, s.c_str(), s.length(), NULL);
+    ::ExtTextOut(hdc, x, y, 0, nullptr, s.c_str(), s.length(), nullptr);
     #else
     dc.DrawText(s, x, y);
     #endif
@@ -38,7 +38,7 @@ struct DropTarget : wxDropTarget {
         return sw->doc->hover.g ? wxDragCopy : wxDragNone;
     }
 
-    bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != NULL; }
+    bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
         TSCanvas *sw = sys->frame->GetCurTab();
