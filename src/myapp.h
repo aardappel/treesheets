@@ -38,6 +38,18 @@ struct MyApp : wxApp {
         wxDisableAsserts();
         #endif
 
+        #ifdef __WXMSW__
+            // wxWidgets should really be doing this itself, but it doesn't (or expects you to
+            // want to use a manifest), so we have to call it ourselves.
+            typedef BOOL (*SetProcessDPIAwareFunc)();
+            auto udll = LoadLibrary(L"User32.dll");
+            if (udll) {
+                auto f = (SetProcessDPIAwareFunc)GetProcAddress(udll, "SetProcessDPIAware");
+                if (f) f();
+                FreeLibrary(udll);
+            }
+        #endif
+
         locale.Init();
 
         bool portable = false;
@@ -53,8 +65,8 @@ struct MyApp : wxApp {
 
         const wxString name =
             wxString::Format(L".treesheets-single-instance-check-%s", wxGetUserId().c_str());
-        checker = new wxSingleInstanceChecker(name);
-        if (checker->IsAnotherRunning()) {
+        wxSingleInstanceChecker checker(name);
+        if (checker.IsAnotherRunning()) {
             wxClient client;
             client.MakeConnection(L"localhost", L"4242",
                                   filename.Len() ? filename.wc_str() : L"*");  // fire and forget

@@ -6,8 +6,15 @@ struct Image {
     int savedindex;
     int checksum;
 
-    Image(wxBitmap _bm, int _cs) : bm(_bm), checksum(_cs) {}
-    void Scale(float sc) {
+    // This indicates a relative scale, where 1.0 means bitmap pixels match display pixels on
+    // a low res 96 dpi display. On a high dpi screen it will look scaled up. Higher values
+    // look better on most screens.
+    // This is all relative to GetContentScalingFactor.
+    double display_scale;
+
+    Image(wxBitmap _bm, int _cs, double _sc) : bm(_bm), checksum(_cs), display_scale(_sc) {}
+
+    void Scale(double sc) {
         bm = wxBitmap(bm.ConvertToImage().Scale(bm.GetWidth() * sc, bm.GetHeight() * sc,
                                                 wxIMAGE_QUALITY_HIGH));
     }
@@ -234,6 +241,7 @@ struct System {
                         wxDataInputStream dis(fis);
                         if (versionlastloaded < 9) dis.ReadString();
                         wxImage im;
+                        double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         off_t beforepng = fis.TellI();
                         bool ok = im.LoadFile(fis);
                         // ok = false;
@@ -264,7 +272,7 @@ struct System {
                             im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0,
                                       0);  // Set to red to indicate error.
                         }
-                        loadimageids.push() = AddImageToList(im);
+                        loadimageids.push() = AddImageToList(im, sc);
                         break;
                     }
 
@@ -516,7 +524,7 @@ struct System {
         return (int)as.size();
     }
 
-    int AddImageToList(const wxImage &im) {
+    int AddImageToList(const wxImage &im, double sc) {
         uint *p = (uint *)im.GetData();
         uint checksum = im.GetWidth() | (im.GetHeight() << 16);
         loop(i, im.GetWidth() * im.GetHeight() * 3 / 4) checksum ^= *p++;
@@ -525,17 +533,18 @@ struct System {
             if (imagelist[i]->checksum == checksum) return i;
         }
 
-        imagelist.push() = new Image(wxBitmap(im), checksum);
+        imagelist.push() = new Image(wxBitmap(im), checksum, sc);
         return imagelist.size() - 1;
     }
 
-    void ImageSize(wxBitmap *bm, int &xs, int &ys) {
-        if (!bm) return;
-        xs = bm->GetWidth();
-        ys = bm->GetHeight();
+    void ImageSize(const std::pair<wxBitmap *, double> &bs, int &xs, int &ys) {
+        if (!bs.first) return;
+        xs = bs.first->GetWidth() * frame->csf / bs.second;
+        ys = bs.first->GetHeight() * frame->csf / bs.second;
     }
 
-    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y, int xs, int ys) {
+    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y,
+                   int xs, int ys) {
         double xscale = xs / (double)bm->GetWidth();
         double yscale = ys / (double)bm->GetHeight();
         double prevx, prevy;

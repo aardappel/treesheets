@@ -177,6 +177,7 @@ struct Document {
                 Image &image = *sys->imagelist[i];
                 if (image.trefc) {
                     fos.Write("I", 1);
+                    sos.WriteDouble(image.display_scale);
                     wxImage im = image.bm.ConvertToImage();
                     im.SaveFile(fos, wxBITMAP_TYPE_PNG);
                     image.savedindex = realindex++;
@@ -1272,7 +1273,7 @@ struct Document {
                     ::wxFileSelector(_(L"Please select an image file:"), L"", L"", L"", L"*.*",
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 c->AddUndo(this);
-                LoadImageIntoCell(fn, c);
+                LoadImageIntoCell(fn, c, sys->frame->csf);
                 Refresh();
                 return nullptr;
             }
@@ -1456,13 +1457,24 @@ struct Document {
                 return nullptr;
             }
 
-            case A_IMAGESC: {
+            case A_IMAGESCP:
+            case A_IMAGESCF:
+            case A_IMAGESCN: {
                 if (!c->text.image) return _(L"No image in this cell.");
-                long v = wxGetNumberFromUser(
-                    _(L"Please enter the percentage you want the image scaled by:"), L"%",
-                    _(L"Image Resize"), 50, 5, 200, sys->frame);
-                if (v < 0) return nullptr;
-                c->text.image->Scale(v / 100.0f);
+                if (k == A_IMAGESCN) {
+                    c->text.image->display_scale = sys->frame->csf;
+                } else {
+                    long v = wxGetNumberFromUser(
+                        _(L"Please enter the percentage you want the image scaled by:"), L"%",
+                        _(L"Image Resize"), 50, 5, 400, sys->frame);
+                    if (v < 0) return nullptr;
+                    auto sc = v / 100.0;
+                    if (k == A_IMAGESCP) {
+                        c->text.image->Scale(sc);
+                    } else {
+                        c->text.image->display_scale /= sc;
+                    }
+                }
                 c->ResetLayout();
                 Refresh();
                 return nullptr;
@@ -1610,7 +1622,7 @@ struct Document {
                 if (as.size()) {
                     if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
                     c->AddUndo(this);
-                    if (!LoadImageIntoCell(as[0], c)) PasteSingleText(c, as[0]);
+                    if (!LoadImageIntoCell(as[0], c, sys->frame->csf)) PasteSingleText(c, as[0]);
                     Refresh();
                 }
                 break;
@@ -1620,7 +1632,7 @@ struct Document {
             case wxDF_TIFF:
                 if (dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                     c->AddUndo(this);
-                    SetImageBM(c, dataobji->GetBitmap().ConvertToImage());
+                    SetImageBM(c, dataobji->GetBitmap().ConvertToImage(), sys->frame->csf);
                     dataobji->SetBitmap(wxNullBitmap);
                     c->Reset();
                     Refresh();
@@ -1775,22 +1787,23 @@ struct Document {
             this, which, idx == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[idx], selected);
     }
 
-    void SetImageBM(Cell *c, const wxImage &im) {
-        c->text.image = sys->imagelist[sys->AddImageToList(im)];
+    void SetImageBM(Cell *c, const wxImage &im, double sc) {
+        c->text.image = sys->imagelist[sys->AddImageToList(im, sc)];
     }
 
-    bool LoadImageIntoCell(const wxString &fn, Cell *c) {
+    bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        SetImageBM(c, im);
+        SetImageBM(c, im, sc);
         c->Reset();
         return true;
     }
 
-    void ImageChange(wxString &fn) {
+    void ImageChange(wxString &fn, double sc) {
+        if (!selected.g) return;
         selected.g->cell->AddUndo(this);
-        loopallcellssel(c, false) LoadImageIntoCell(fn, c);
+        loopallcellssel(c, false) LoadImageIntoCell(fn, c, sc);
         Refresh();
     }
 

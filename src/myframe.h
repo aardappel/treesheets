@@ -19,6 +19,7 @@ struct MyFrame : wxFrame {
     MyApp *app;
     wxFileSystemWatcher *watcher;
     bool watcherwaitingforuser;
+    double csf;
 
     wxString GetPath(const wxString &relpath) {
         if (!exepath_.Length()) return relpath;
@@ -83,6 +84,9 @@ struct MyFrame : wxFrame {
         wxLogError(L"locale: %s", std::setlocale(LC_CTYPE, nullptr));
 
         app->AddTranslation(GetPath("translations"));
+
+        csf = GetContentScaleFactor();
+        wxLogError(L"content scale: %f", csf);
 
         wxInitAllImageHandlers();
 
@@ -298,8 +302,15 @@ struct MyFrame : wxFrame {
 
             wxMenu *imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _(L"&Add Image"), _(L"Adds an image to the selected cell"));
-            MyAppend(imgmenu, A_IMAGESC, _(L"&Scale Image"),
-                     _(L"Change the image size if it is too big or too small"));
+            MyAppend(imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels)"),
+                     _(L"Change the image size if it is too big, by reducing the amount of "
+                       L"pixels"));
+            MyAppend(imgmenu, A_IMAGESCF, _(L"&Scale Image (display only)"),
+                     _(L"Change the image size if it is too big or too small, by changing the size "
+                       L"shown on screen. Applies to all uses of this image."));
+            MyAppend(imgmenu, A_IMAGESCN, _(L"&Reset Scale (display only)"),
+                     _(L"Change the scale to match DPI of the current display. "
+                       L"Applies to all uses of this image."));
             MyAppend(imgmenu, A_IMAGER, _(L"&Remove Image(s)"),
                      _(L"Remove image(s) from the selected cells"));
 
@@ -554,45 +565,47 @@ struct MyFrame : wxFrame {
 
             wxString iconpath =
                 GetPath(iconset ? L"images/webalys/toolbar/" : L"images/nuvola/toolbar/");
-            tb->SetToolBitmapSize(iconset ? wxSize(18, 18) : wxSize(22, 22));
+            tb->SetToolBitmapSize((iconset ? wxSize(18, 18) : wxSize(22, 22)) * csf);
 
-            AddTBIcon(tb, _(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.png");
-            AddTBIcon(tb, _(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.png");
-            AddTBIcon(tb, _(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.png");
-            AddTBIcon(tb, _(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.png");
+            double sc = iconset ? 1.0 : 22.0 / 48.0;
+
+            AddTBIcon(tb, sc, _(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.png");
+            AddTBIcon(tb, sc, _(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.png");
+            AddTBIcon(tb, sc, _(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.png");
+            AddTBIcon(tb, sc, _(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.png");
             SEPARATOR;
-            AddTBIcon(tb, _(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.png");
-            AddTBIcon(tb, _(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.png");
-            AddTBIcon(tb, _(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.png");
+            AddTBIcon(tb, sc, _(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.png");
+            AddTBIcon(tb, sc, _(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.png");
+            AddTBIcon(tb, sc, _(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.png");
             SEPARATOR;
-            AddTBIcon(tb, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.png");
-            AddTBIcon(tb, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.png");
+            AddTBIcon(tb, sc, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.png");
+            AddTBIcon(tb, sc, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.png");
             SEPARATOR;
-            AddTBIcon(tb, _(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.png");
-            AddTBIcon(tb, _(L"Add Image"), A_IMAGE, iconpath + L"image.png");
+            AddTBIcon(tb, sc, _(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.png");
+            AddTBIcon(tb, sc, _(L"Add Image"), A_IMAGE, iconpath + L"image.png");
             SEPARATOR;
-            AddTBIcon(tb, _(L"Run"), A_RUN, iconpath + L"run.png");
+            AddTBIcon(tb, sc, _(L"Run"), A_RUN, iconpath + L"run.png");
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
             tb->AddControl(filter =
-                               new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, wxSize(80, 24)));
+                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, wxSize(80, 22) * csf));
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
-            tb->AddControl(
-                replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, wxSize(60, 24)));
+            tb->AddControl(replaces =
+                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, wxSize(60, 22) * csf));
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
-            tb->AddControl(new ColorDropdown(tb, A_CELLCOLOR, 1));
+            tb->AddControl(new ColorDropdown(tb, A_CELLCOLOR, csf, 1));
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
-            tb->AddControl(new ColorDropdown(tb, A_TEXTCOLOR, 2));
+            tb->AddControl(new ColorDropdown(tb, A_TEXTCOLOR, csf, 2));
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
-            tb->AddControl(new ColorDropdown(tb, A_BORDCOLOR, 7));
+            tb->AddControl(new ColorDropdown(tb, A_BORDCOLOR, csf, 7));
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
             wxString imagepath = GetPath("images/nuvola/dropdown/");
-            idd = new ImageDropdown(tb, imagepath);
+            idd = new ImageDropdown(tb, imagepath, csf);
             tb->AddControl(idd);
             tb->Realize();
         }
@@ -747,10 +760,13 @@ struct MyFrame : wxFrame {
         nb->SetPageText(page, (fn.empty() ? L"<unnamed>" : wxFileName(fn).GetName()) + mods);
     }
 
-    void AddTBIcon(wxToolBar *tb, const wxChar *name, int action, wxString file) {
+    void AddTBIcon(wxToolBar *tb, double sc, const wxChar *name, int action, wxString file) {
         wxBitmap bm;
-        if (bm.LoadFile(file, wxBITMAP_TYPE_PNG))
+        if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
+            auto ns = bm.GetSize() * csf * sc;
+            bm = wxBitmap(bm.ConvertToImage().Scale(ns.GetX(), ns.GetY(), wxIMAGE_QUALITY_HIGH));
             tb->AddTool(action, name, bm, bm, wxITEM_NORMAL, name);
+        }
     }
 
     void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
@@ -918,7 +934,7 @@ struct MyFrame : wxFrame {
         ReFocus();
     }
     void OnDDImage(wxCommandEvent &ce) {
-        GetCurTab()->doc->ImageChange(idd->as[ce.GetInt()]);
+        GetCurTab()->doc->ImageChange(idd->as[ce.GetInt()], dd_icon_res_scale);
         ReFocus();
     }
 
