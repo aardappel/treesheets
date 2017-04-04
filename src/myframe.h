@@ -81,12 +81,14 @@ struct MyFrame : wxFrame {
 
         wxLog::SetActiveTarget(new MyLog());
 
-        wxLogError(L"locale: %s", std::setlocale(LC_CTYPE, nullptr));
+        wxLogMessage(L"%s", wxVERSION_STRING);
+
+        wxLogMessage(L"locale: %s", std::setlocale(LC_CTYPE, nullptr));
 
         app->AddTranslation(GetPath("translations"));
 
         csf = GetContentScaleFactor();
-        wxLogError(L"content scale: %f", csf);
+        wxLogMessage(L"content scale: %f", csf);
         #ifdef __WXMSW__
             // On Windows, I get csf == 3 on my 4K screen. With this factor set, bitmaps display
             // At their same physical sizes as when TreeSheets was a non-DPI-aware app, and
