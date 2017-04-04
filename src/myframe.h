@@ -100,6 +100,9 @@ struct MyFrame : wxFrame {
             csf = 1.0;
             // FIXME: This gives us low res images even though the display is capable of better!
             // Apparently still not fixed: http://trac.wxwidgets.org/ticket/15808
+            // wxBitmap::CreateScaled could be the way to solve this, but it is not obvious
+            // how to use it, since you can't pass this scale to LoadFile etc. Could possibly
+            // blit it over via a MemoryDC?
         #endif
         #ifdef __WXGTK__
             // Currently on Linux csf is always 1, so this is useless.
@@ -588,22 +591,42 @@ struct MyFrame : wxFrame {
 
             double sc = iconset ? 1.0 : 22.0 / 48.0;
 
-            AddTBIcon(tb, sc, _(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.png");
-            AddTBIcon(tb, sc, _(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.png");
-            AddTBIcon(tb, sc, _(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.png");
-            AddTBIcon(tb, sc, _(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.png");
+            auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
+                wxBitmap bm;
+                if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
+                    auto ns = bm.GetSize() * csf * sc;
+                    bm = wxBitmap(bm.ConvertToImage().Scale(ns.GetX(), ns.GetY(), wxIMAGE_QUALITY_HIGH));
+                    /*
+                    wxBitmap sbm;
+                    sbm.CreateScaled(bm.GetWidth() / csf, bm.GetHeight() / csf, bm.GetDepth(), csf);
+                    wxMemoryDC sdc(sbm);
+                    //wxMemoryDC dc(bm);
+                    sdc.SetBackground(wxBrush(toolbgcol));
+                    sdc.Clear();
+                    //sdc.Blit(0, 0, bm.GetWidth(), bm.GetHeight(), &dc, 0, 0, wxCOPY);
+                    sdc.DrawBitmap(bm, wxPoint(0, 0));
+                    bm = sbm;
+                    */
+                    tb->AddTool(action, name, bm, bm, wxITEM_NORMAL, name);
+                }
+            };
+
+            AddTBIcon(_(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.png");
+            AddTBIcon(_(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.png");
+            AddTBIcon(_(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.png");
+            AddTBIcon(_(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.png");
             SEPARATOR;
-            AddTBIcon(tb, sc, _(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.png");
-            AddTBIcon(tb, sc, _(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.png");
-            AddTBIcon(tb, sc, _(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.png");
+            AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.png");
+            AddTBIcon(_(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.png");
+            AddTBIcon(_(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.png");
             SEPARATOR;
-            AddTBIcon(tb, sc, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.png");
-            AddTBIcon(tb, sc, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.png");
+            AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.png");
+            AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.png");
             SEPARATOR;
-            AddTBIcon(tb, sc, _(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.png");
-            AddTBIcon(tb, sc, _(L"Add Image"), A_IMAGE, iconpath + L"image.png");
+            AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.png");
+            AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath + L"image.png");
             SEPARATOR;
-            AddTBIcon(tb, sc, _(L"Run"), A_RUN, iconpath + L"run.png");
+            AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.png");
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
             tb->AddControl(filter =
@@ -777,15 +800,6 @@ struct MyFrame : wxFrame {
         if (page < 0) return;
         if (page == nb->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
         nb->SetPageText(page, (fn.empty() ? L"<unnamed>" : wxFileName(fn).GetName()) + mods);
-    }
-
-    void AddTBIcon(wxToolBar *tb, double sc, const wxChar *name, int action, wxString file) {
-        wxBitmap bm;
-        if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
-            auto ns = bm.GetSize() * csf * sc;
-            bm = wxBitmap(bm.ConvertToImage().Scale(ns.GetX(), ns.GetY(), wxIMAGE_QUALITY_HIGH));
-            tb->AddTool(action, name, bm, bm, wxITEM_NORMAL, name);
-        }
     }
 
     void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
