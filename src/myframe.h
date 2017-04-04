@@ -87,6 +87,23 @@ struct MyFrame : wxFrame {
 
         csf = GetContentScaleFactor();
         wxLogError(L"content scale: %f", csf);
+        #ifdef __WXMSW__
+            // On Windows, I get csf == 3 on my 4K screen. With this factor set, bitmaps display
+            // At their same physical sizes as when TreeSheets was a non-DPI-aware app, and
+            // extra resolution is used.
+        #endif
+        #ifdef __WXMAC__
+            // Typically csf == 2 on a retina mac. But on the mac, unlike Windows, image rendering
+            // *already* does scaling, and no way to turn that behavior off for now?
+            csf = 1.0;
+            // FIXME: This gives us low res images even though the display is capable of better!
+            // Apparently still not fixed: http://trac.wxwidgets.org/ticket/15808
+        #endif
+        #ifdef __WXGTK__
+            // Currently on Linux csf is always 1, so this is useless.
+            // FIXME: On a high-DPI display we get low res images even though the display is
+            // capable of better!
+        #endif
 
         wxInitAllImageHandlers();
 
