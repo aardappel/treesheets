@@ -90,9 +90,9 @@ struct MyFrame : wxFrame {
         csf = GetContentScaleFactor();
         wxLogMessage(L"content scale: %f", csf);
         #ifdef __WXMSW__
-            // On Windows, I get csf == 3 on my 4K screen. With this factor set, bitmaps display
-            // At their same physical sizes as when TreeSheets was a non-DPI-aware app, and
-            // extra resolution is used.
+            // On Windows, I get csf == 1.25, as indicated in the display properties.
+            // With this factor set, bitmaps display. At their same physical sizes as when
+            // TreeSheets was a non-DPI-aware app, and extra resolution is used.
         #endif
         #ifdef __WXMAC__
             // Typically csf == 2 on a retina mac. But on the mac, unlike Windows, image rendering
@@ -135,6 +135,7 @@ struct MyFrame : wxFrame {
             // FIXME: what is the correct way to exit?
         }
         foldicon = wxBitmap(foldiconi);
+        ScaleBitmap(foldicon, csf / 3.0, foldicon);
 
         if (sys->singletray)
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
@@ -587,15 +588,16 @@ struct MyFrame : wxFrame {
 
             wxString iconpath =
                 GetPath(iconset ? L"images/webalys/toolbar/" : L"images/nuvola/toolbar/");
-            tb->SetToolBitmapSize((iconset ? wxSize(18, 18) : wxSize(22, 22)) * csf);
+            auto sz = (iconset ? wxSize(18, 18) : wxSize(22, 22)) * csf;
+            tb->SetToolBitmapSize(sz);
 
             double sc = iconset ? 1.0 : 22.0 / 48.0;
 
             auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
                 wxBitmap bm;
                 if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
-                    auto ns = bm.GetSize() * csf * sc;
-                    bm = wxBitmap(bm.ConvertToImage().Scale(ns.GetX(), ns.GetY(), wxIMAGE_QUALITY_HIGH));
+                    auto ns = csf * sc;
+                    ScaleBitmap(bm, ns, bm);
                     /*
                     wxBitmap sbm;
                     sbm.CreateScaled(bm.GetWidth() / csf, bm.GetHeight() / csf, bm.GetDepth(), csf);

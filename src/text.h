@@ -21,12 +21,10 @@ struct Text {
         WasEdited();
     }
 
-    std::pair<wxBitmap *, double> DisplayImage() {
+    wxBitmap * DisplayImage() {
         return cell->grid && cell->grid->folded
-            ? std::make_pair(&sys->frame->foldicon, 3.0)
-            : (image
-                ? std::make_pair(&image->bm, image->display_scale)
-                : std::make_pair(nullptr, 1.0));
+            ? &sys->frame->foldicon
+            : (image ? &image->Display() : nullptr);
     }
 
     size_t EstimatedMemoryUse() {
@@ -181,8 +179,8 @@ struct Text {
         if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
 
         if (ixs && iys) {
-            sys->ImageDraw(DisplayImage().first, dc, bx + 1 + g_margin_extra,
-                           by + (cell->tys - iys) / 2 + g_margin_extra, ixs, iys);
+            sys->ImageDraw(DisplayImage(), dc, bx + 1 + g_margin_extra,
+                           by + (cell->tys - iys) / 2 + g_margin_extra);
             ixs += 2;
             iys += 2;
         }

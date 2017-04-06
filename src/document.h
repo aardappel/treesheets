@@ -178,7 +178,7 @@ struct Document {
                 if (image.trefc) {
                     fos.Write("I", 1);
                     sos.WriteDouble(image.display_scale);
-                    wxImage im = image.bm.ConvertToImage();
+                    wxImage im = image.bm_orig.ConvertToImage();
                     im.SaveFile(fos, wxBITMAP_TYPE_PNG);
                     image.savedindex = realindex++;
                 }

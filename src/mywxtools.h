@@ -128,7 +128,8 @@ struct ImagePopup : wxVListBoxComboPopup {
 };
 
 struct ImageDropdown : wxOwnerDrawnComboBox {
-    Vector<wxBitmap *> bitmaps;  // FIXME: delete these somewhere
+    // FIXME: delete these somewhere
+    Vector<wxBitmap *> bitmaps_display;
     wxArrayString as;
     double csf;
     const int image_space = 22;
@@ -137,9 +138,11 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         csf = _csf;
         wxString f = wxFindFirstFile(path + L"*.*");
         while (!f.empty()) {
-            wxBitmap *bm = new wxBitmap();
-            if (bm->LoadFile(f, wxBITMAP_TYPE_PNG)) {
-                bitmaps.push() = bm;
+            wxBitmap bm;
+            if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
+                auto dbm = new wxBitmap();
+                ScaleBitmap(bm, csf / dd_icon_res_scale, *dbm);
+                bitmaps_display.push() = dbm;
                 as.Add(f);
             }
             f = wxFindNextFile();
@@ -159,8 +162,13 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        auto bm = bitmaps[item];
-        sys->ImageDraw(bm, dc, rect.x + 3 * csf, rect.y + 3 * csf,
-            bm->GetWidth() * csf / dd_icon_res_scale, bm->GetHeight() * csf / dd_icon_res_scale);
+        auto bm = bitmaps_display[item];
+        sys->ImageDraw(bm, dc, rect.x + 3 * csf, rect.y + 3 * csf);
     }
 };
+
+static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
+    dest = wxBitmap(src.ConvertToImage().Scale(src.GetWidth() * sc, src.GetHeight() * sc,
+                    wxIMAGE_QUALITY_HIGH));
+}
+

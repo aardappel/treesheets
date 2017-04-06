@@ -1,6 +1,7 @@
 
 struct Image {
-    wxBitmap bm;
+    wxBitmap bm_orig;
+    wxBitmap bm_display;
 
     int trefc;
     int savedindex;
@@ -12,11 +13,18 @@ struct Image {
     // This is all relative to GetContentScalingFactor.
     double display_scale;
 
-    Image(wxBitmap _bm, int _cs, double _sc) : bm(_bm), checksum(_cs), display_scale(_sc) {}
+    Image(wxBitmap _bm, int _cs, double _sc) : bm_orig(_bm), checksum(_cs), display_scale(_sc) {}
 
     void Scale(double sc) {
-        bm = wxBitmap(bm.ConvertToImage().Scale(bm.GetWidth() * sc, bm.GetHeight() * sc,
-                                                wxIMAGE_QUALITY_HIGH));
+        ScaleBitmap(bm_orig, sc, bm_orig);
+        bm_display = wxNullBitmap;
+    }
+
+    wxBitmap &Display() {
+        if (!bm_display.IsOk()) {
+            ScaleBitmap(bm_orig, 1.0 / display_scale * sys->frame->csf, bm_display);
+        }
+        return bm_display;
     }
 };
 
@@ -537,20 +545,13 @@ struct System {
         return imagelist.size() - 1;
     }
 
-    void ImageSize(const std::pair<wxBitmap *, double> &bs, int &xs, int &ys) {
-        if (!bs.first) return;
-        xs = bs.first->GetWidth() * frame->csf / bs.second;
-        ys = bs.first->GetHeight() * frame->csf / bs.second;
+    void ImageSize(wxBitmap *bm, int &xs, int &ys) {
+        if (!bm) return;
+        xs = bm->GetWidth();
+        ys = bm->GetHeight();
     }
 
-    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y,
-                   int xs, int ys) {
-        double xscale = xs / (double)bm->GetWidth();
-        double yscale = ys / (double)bm->GetHeight();
-        double prevx, prevy;
-        dc.GetUserScale(&prevx, &prevy);
-        dc.SetUserScale(xscale * prevx, yscale * prevy);
-        dc.DrawBitmap(*bm, x / xscale, y / yscale);
-        dc.SetUserScale(prevx, prevy);
+    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) {
+        dc.DrawBitmap(*bm, x, y);
     }
 };
