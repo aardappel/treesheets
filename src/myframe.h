@@ -19,7 +19,7 @@ struct MyFrame : wxFrame {
     MyApp *app;
     wxFileSystemWatcher *watcher;
     bool watcherwaitingforuser;
-    double csf;
+    double csf, csf_orig;
 
     wxString GetPath(const wxString &relpath) {
         if (!exepath_.Length()) return relpath;
@@ -89,6 +89,7 @@ struct MyFrame : wxFrame {
 
         csf = GetContentScaleFactor();
         wxLogMessage(L"content scale: %f", csf);
+        csf_orig = csf;
         #ifdef __WXMSW__
             // On Windows, I get csf == 1.25, as indicated in the display properties.
             // With this factor set, bitmaps display. At their same physical sizes as when
@@ -596,19 +597,9 @@ struct MyFrame : wxFrame {
             auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
                 wxBitmap bm;
                 if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
-                    auto ns = csf * sc;
+                    auto ns = csf_orig * sc;
                     ScaleBitmap(bm, ns, bm);
-                    /*
-                    wxBitmap sbm;
-                    sbm.CreateScaled(bm.GetWidth() / csf, bm.GetHeight() / csf, bm.GetDepth(), csf);
-                    wxMemoryDC sdc(sbm);
-                    //wxMemoryDC dc(bm);
-                    sdc.SetBackground(wxBrush(toolbgcol));
-                    sdc.Clear();
-                    //sdc.Blit(0, 0, bm.GetWidth(), bm.GetHeight(), &dc, 0, 0, wxCOPY);
-                    sdc.DrawBitmap(bm, wxPoint(0, 0));
-                    bm = sbm;
-                    */
+                    MakeInternallyScaled(bm, tb->GetBackgroundColour(), csf_orig);
                     tb->AddTool(action, name, bm, bm, wxITEM_NORMAL, name);
                 }
             };
@@ -649,7 +640,7 @@ struct MyFrame : wxFrame {
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
             wxString imagepath = GetPath("images/nuvola/dropdown/");
-            idd = new ImageDropdown(tb, imagepath, csf);
+            idd = new ImageDropdown(tb, imagepath);
             tb->AddControl(idd);
             tb->Realize();
         }

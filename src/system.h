@@ -23,6 +23,8 @@ struct Image {
     wxBitmap &Display() {
         if (!bm_display.IsOk()) {
             ScaleBitmap(bm_orig, 1.0 / display_scale * sys->frame->csf, bm_display);
+            // FIXME: this won't work because it will ignore the cell's bg color.
+            //MakeInternallyScaled(bm_display, *wxWHITE, sys->frame->csf_orig);
         }
         return bm_display;
     }

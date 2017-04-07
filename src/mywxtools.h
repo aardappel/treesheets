@@ -131,17 +131,19 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     // FIXME: delete these somewhere
     Vector<wxBitmap *> bitmaps_display;
     wxArrayString as;
-    double csf;
+    double csf, csf_orig;
     const int image_space = 22;
 
-    ImageDropdown(wxWindow *parent, wxString &path, double _csf) {
-        csf = _csf;
+    ImageDropdown(wxWindow *parent, wxString &path) {
+        csf = sys->frame->csf;
+        csf_orig = sys->frame->csf;
         wxString f = wxFindFirstFile(path + L"*.*");
         while (!f.empty()) {
             wxBitmap bm;
             if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
                 auto dbm = new wxBitmap();
-                ScaleBitmap(bm, csf / dd_icon_res_scale, *dbm);
+                ScaleBitmap(bm, csf_orig / dd_icon_res_scale, *dbm);
+                MakeInternallyScaled(*dbm, *wxWHITE, csf_orig);
                 bitmaps_display.push() = dbm;
                 as.Add(f);
             }
@@ -172,3 +174,19 @@ static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
                     wxIMAGE_QUALITY_HIGH));
 }
 
+static void MakeInternallyScaled(wxBitmap &bm, const wxColour bg, double sc) {
+    #ifdef __WXMAC__
+        // What a mess.. is there a simpler way?
+        wxBitmap sbm;
+        sbm.CreateScaled(bm.GetWidth() / sc, bm.GetHeight() / sc, bm.GetDepth(), sc);
+        wxMemoryDC sdc(sbm);
+        //wxMemoryDC dc(bm);
+        // FIXME: this should really be transparent.
+        sdc.SetBackground(wxBrush(bg));
+        sdc.Clear();
+        //sdc.Blit(0, 0, bm.GetWidth(), bm.GetHeight(), &dc, 0, 0, wxCOPY);
+        sdc.SetUserScale(1.0 / sc, 1.0 / sc);
+        sdc.DrawBitmap(bm, wxPoint(0, 0));
+        bm = sbm;
+    #endif
+}

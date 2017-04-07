@@ -21,6 +21,7 @@
 		33306EFC1769625C00AF5315 /* readme.html in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF81769625C00AF5315 /* readme.html */; };
 		33306EFF1769648100AF5315 /* App.icns in Resources */ = {isa = PBXBuildFile; fileRef = 33306EFE1769648100AF5315 /* App.icns */; };
 		33306F01176965AD00AF5315 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 33306F00176965AD00AF5315 /* TODO.txt */; };
+		33820B9E1E97123400D2DF4E /* translations in Resources */ = {isa = PBXBuildFile; fileRef = 33820B9D1E97123400D2DF4E /* translations */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +58,7 @@
 		33306EF81769625C00AF5315 /* readme.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = readme.html; path = ../../TS/readme.html; sourceTree = "<group>"; };
 		33306EFE1769648100AF5315 /* App.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = App.icns; sourceTree = "<group>"; };
 		33306F00176965AD00AF5315 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO.txt; path = ../../TODO.txt; sourceTree = "<group>"; };
+		33820B9D1E97123400D2DF4E /* translations */ = {isa = PBXFileReference; lastKnownFileType = folder; name = translations; path = ../../TS/translations; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 		33306EB217695BE000AF5315 = {
 			isa = PBXGroup;
 			children = (
+				33820B9D1E97123400D2DF4E /* translations */,
 				33306F00176965AD00AF5315 /* TODO.txt */,
 				33306EFE1769648100AF5315 /* App.icns */,
 				33306EFD1769626D00AF5315 /* bundle resources */,
@@ -214,6 +217,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33820B9E1E97123400D2DF4E /* translations in Resources */,
 				33306EF91769625C00AF5315 /* images in Resources */,
 				33306EFA1769625C00AF5315 /* docs in Resources */,
 				33306EFB1769625C00AF5315 /* examples in Resources */,
