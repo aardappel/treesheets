@@ -188,15 +188,14 @@ struct Text {
         if (t.empty()) return iys;
 
         doc->PickFont(dc, depth, relsize, stylebits);
-        bool tiny = cell->tiny;
 
-        int h = tiny ? 1 : dc.GetCharHeight();
+        int h = cell->tiny ? 1 : dc.GetCharHeight();
         leftoffset = h;
         int i = 0;
         int lines = 0;
         bool searchfound = IsInSearch();
         bool istag = cell->IsTag(doc);
-        if (tiny) {
+        if (cell->tiny) {
             if (searchfound)
                 dc.SetPen(*wxRED_PEN);
             else if (filtered)
@@ -209,9 +208,13 @@ struct Text {
         for (;;) {
             wxString curl = GetLine(i, maxcolwidth);
             if (!curl.Len()) break;
-            if (tiny) {
+            if (cell->tiny) {
                 if (sys->fastrender) {
                     dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + curl.Len(), by + lines * h);
+                    /*
+                    wxPoint points[] = { wxPoint(bx + ixs, by + lines * h), wxPoint(bx + ixs + curl.Len(), by + lines * h) };
+                    dc.DrawLines(1, points, 0, 0);
+                     */
                 } else {
                     int word = 0;
                     loop(p, (int)curl.Len() + 1) {
@@ -325,8 +328,10 @@ struct Text {
                             cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra, 2,
                             h - 2);
                         #else
-                        DrawLine(dc, 0xFFFFFF, cell->GetX(doc) + x + 2 + ixs + g_margin_extra,
-                                 cell->GetY(doc) + l * h + cell->ycenteroff + g_margin_extra, 0, h);
+                            auto lx = cell->GetX(doc) + x + 2 + ixs + g_margin_extra;
+                            auto ly = cell->GetY(doc) + l * h + cell->ycenteroff + g_margin_extra;
+                            dc.SetPen(wxPen(wxColour(0xFFFFFF)));
+                            dc.DrawLine(lx, ly, lx, ly + h);
                         #endif
                     break;
                 }

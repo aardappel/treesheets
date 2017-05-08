@@ -192,6 +192,7 @@ struct Grid {
                         }
                 }
             };
+            // FIXME: this should not run under fastrender?
             if (view_grid_outer_spacing && cell->cellcolor != 0xFFFFFF) {
                 dc.SetPen(*wxWHITE_PEN);
                 drawlines();

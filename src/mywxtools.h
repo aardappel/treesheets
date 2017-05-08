@@ -8,11 +8,6 @@ static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool o
     dc.DrawRectangle(x, y, xs, ys);
 }
 
-static void DrawLine(wxDC &dc, uint c, int x, int y, int xd, int yd) {
-    dc.SetPen(wxPen(wxColour(c)));
-    dc.DrawLine(x, y, x + xd, y + yd);
-}
-
 static void MyDrawText(wxDC &dc, const wxString &s, wxCoord x, wxCoord y, wxCoord w, wxCoord h) {
     #ifdef __WXMSW__  // this special purpose implementation is because the MSW implementation calls
                       // TextExtent, which costs
