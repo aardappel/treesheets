@@ -321,7 +321,7 @@ struct Text {
                     ls.Truncate(s.cursor - start);
                     int x;
                     dc.GetTextExtent(ls, &x, nullptr);
-                    if (doc->blink)
+                    if (doc->blink) {
                         #ifdef SIMPLERENDER
                         DrawRectangle(
                             dc, color, cell->GetX(doc) + x + 1 + ixs + g_margin_extra,
@@ -333,6 +333,7 @@ struct Text {
                             dc.SetPen(wxPen(wxColour(0xFFFFFF)));
                             dc.DrawLine(lx, ly, lx, ly + h);
                         #endif
+                    }
                     break;
                 }
 
