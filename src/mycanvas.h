@@ -14,7 +14,7 @@ struct TSCanvas : public wxScrolledWindow {
           mousewheelaccum(0),
           doc(nullptr),
           lastrmbwaswithctrl(false) {
-        SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+        SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetBackgroundColour(*wxWHITE);
         DisableKeyboardScrolling();
         // Without this, ScrolledWindow does its own scrolling upon mousewheel events, which

@@ -104,11 +104,7 @@ struct System {
           makebaks(true),
           totray(false),
           autosave(true),
-          #ifdef __WXMAC__
-            fastrender(true),
-          #else
-            fastrender(false),
-          #endif
+          fastrender(true),
           zoomscroll(false),
           thinselc(true),
           minclose(false),
