@@ -12,8 +12,7 @@ notifications:
 cache:
   directories:
     - wxWidgets
-    - wxWidgets/buid_osx
-
+    - wxWidgets/build_osx
 
 language: cpp
 os:
