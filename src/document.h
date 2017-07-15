@@ -203,7 +203,7 @@ struct Document {
             sys->FileUsed(filename, this);
             if (::wxFileExists(sys->TmpName(filename))) ::wxRemoveFile(sys->TmpName(filename));
         }
-        if (sys->autohtmlexport) { ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT); }
+        if (sys->autohtmlexport) { ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT, false); }
         UpdateFileName(page);
         if (success) *success = true;
         return _(L"File saved succesfully.");
@@ -645,13 +645,14 @@ struct Document {
         wxString fn = ::wxFileSelector(msg, L"", L"", fmt, pat,
                                        wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Export cancelled.");
-        return ExportFile(fn, k);
+        return ExportFile(fn, k, true);
     }
 
-    const wxChar *ExportFile(const wxString &fn, int k) {
+    const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
+        auto root = currentview ? curdrawroot : rootgrid;
         if (k == A_EXPCSV) {
             int maxdepth = 0, leaves = 0;
-            curdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
+            root->MaxDepthLeaves(0, maxdepth, leaves);
             if (maxdepth > 1)
                 return _(L"Cannot export grid that is not flat (zoom the view to the desired grid, "
                          L"and/or use Flatten).");
@@ -673,7 +674,7 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            wxString content = curdrawroot->ToText(0, Selection(), k, this);
+            wxString content = root->ToText(0, Selection(), k, this);
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(
