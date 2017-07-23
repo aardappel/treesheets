@@ -37,6 +37,8 @@ struct Document {
     wxTextDataObject *dataobjt;
     wxBitmapDataObject *dataobji;
     wxFileDataObject *dataobjf;
+    //wxHTMLDataObject *dataobjh;
+    //wxRichTextBufferDataObject *dataobjr;
 
     struct MyPrintout : wxPrintout {
         Document *doc;
@@ -120,6 +122,8 @@ struct Document {
         dataobjc->Add(dataobji = new wxBitmapDataObject());
         dataobjc->Add(dataobjt = new wxTextDataObject());
         dataobjc->Add(dataobjf = new wxFileDataObject());
+        //dataobjc->Add(dataobjh = new wxHTMLDataObject(), true);  // Prefer HTML over text, doesn't seem to work.
+        //dataobjc->Add(dataobjr = new wxRichTextBufferDataObject());
         ResetFont();
         pageSetupData = printData;
         pageSetupData.SetMarginTopLeft(wxPoint(15, 15));
@@ -1639,6 +1643,17 @@ struct Document {
                     Refresh();
                 }
                 break;
+            /*
+            case wxDF_HTML: {
+                auto s = dataobjh->GetHTML();
+                // Would have to somehow parse HTML here to get images and styled text.
+                break;
+            }
+            case wxDF_RTF: {
+                // Would have to somehow parse RTF here to get images and styled text.
+                break;
+            }
+            */
             default:  // several text formats
                 if (dataobjt->GetText() != wxEmptyString) {
                     wxString s = dataobjt->GetText();
