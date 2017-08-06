@@ -1055,7 +1055,9 @@ struct MyFrame : wxFrame {
             if (modfile == doc->filename) {
                 wxDateTime modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
-                if (modtime == doc->lastmodificationtime) {
+                if (!modtime.IsValid() ||
+                    !doc->lastmodificationtime.IsValid() ||
+                    modtime == doc->lastmodificationtime) {
                     return;
                 }
                 if (doc->modified) {
