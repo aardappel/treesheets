@@ -207,6 +207,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\src\StackWalker\StackWalker.cpp" />
+    <ClCompile Include="..\src\StackWalker\StackWalkerHelpers.cpp" />
     <ClCompile Include="..\src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -215,6 +217,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\StackWalker\StackWalker.h" />
+    <ClInclude Include="..\src\StackWalker\StackWalkerHelpers.h" />
     <ClInclude Include="..\src\stdafx.h" />
     <ClInclude Include="..\src\tools.h" />
     <ClInclude Include="..\src\cell.h" />

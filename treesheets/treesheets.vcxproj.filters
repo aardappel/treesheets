@@ -13,6 +13,9 @@
     <Filter Include="data">
       <UniqueIdentifier>{0aa8c6f3-6433-4862-a6a0-6dafbe5877bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="std\StackWalker">
+      <UniqueIdentifier>{9b8cdb4f-6231-4699-9022-2cefe3c2d3eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -20,6 +23,12 @@
     </ClCompile>
     <ClCompile Include="..\src\stdafx.cpp">
       <Filter>std</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\StackWalker\StackWalker.cpp">
+      <Filter>std\StackWalker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\StackWalker\StackWalkerHelpers.cpp">
+      <Filter>std\StackWalker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +74,12 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\src\mywxtools.h">
       <Filter>wxwidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\StackWalker\StackWalker.h">
+      <Filter>std\StackWalker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\StackWalker\StackWalkerHelpers.h">
+      <Filter>std\StackWalker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

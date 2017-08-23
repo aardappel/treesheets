@@ -19,11 +19,13 @@
 #include <wx/config.h>
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
-#ifdef WIN32
-#include <wx/msw/regconf.h>
-#include <wx/msw/dc.h>
-#include <WinUser.h>
+
+#ifdef _WIN32
+    #include <wx/msw/regconf.h>
+    #include <wx/msw/dc.h>
+    #include <WinUser.h>
 #endif
+
 #include <wx/fontdlg.h>
 #include <wx/colordlg.h>
 
@@ -77,6 +79,7 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 #include "tools.h"
 
 
-#ifdef WIN32
+#ifdef _WIN32
     #include "..\treesheets\resource.h"
+    #include "StackWalker\StackWalkerHelpers.h"
 #endif
