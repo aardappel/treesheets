@@ -1493,9 +1493,10 @@ struct Document {
 
             case A_LINK:
             case A_LINKREV: {
+                if (!c->text.t.Len()) return _(L"No text in this cell.");
                 bool t1 = false, t2 = false;
                 Cell *link = rootgrid->FindLink(selected, c, nullptr, t1, t2, k == A_LINK);
-                if (!link) return _(L"No matching cell found!");
+                if (!link || !link->parent) return _(L"No matching cell found!");
                 selected = link->parent->grid->FindCell(link);
                 ScrollOrZoom(dc, true);
                 return nullptr;
