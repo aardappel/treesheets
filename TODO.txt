@@ -1,5 +1,11 @@
 [ check google moderator for new feature requests ]
 
+- bug: if you paste a size 0 cell into, say, a size -5 new parent, the cell that is being pasted
+  is set to -5 but all its children stay at 0, making for weird rendering.
+
+- bug: if you press "run", it can affect text size, and doesn't undo.
+  - maybe should remove "run" from the toolbar.
+
 - OSX: figure out how to do retina text rendering.
   https://forums.wxwidgets.org/viewtopic.php?f=23&t=42806&p=173880#p173880
 
