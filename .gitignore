@@ -10,3 +10,5 @@ osx/TreeSheets/TreeSheets.xcodeproj/project.xcworkspace/xcuserdata/
 *.ilk
 *.pdb
 *.bak
+
+TreeSheets/\.vs/treesheets/v15/
