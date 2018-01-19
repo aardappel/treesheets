@@ -1508,7 +1508,9 @@ struct Document {
                 Cell *pp = c->parent->parent;
                 if (!pp) return _(L"Cannot move this cell up in the hierarchy.");
                 if (pp->grid->xs != 1 && pp->grid->ys != 1)
-                    return _(L"Can only move this cell into an Nx1 or 1xN grid.");
+                    return _(L"Can only move this cell into a Nx1 or 1xN grid.");
+                if (c->parent->grid->xs != 1 && c->parent->grid->ys != 1)
+                    return _(L"Can only move this cell from a Nx1 or 1xN grid.");
                 pp->AddUndo(this);
                 selected = pp->grid->HierarchySwap(c->text.t);
                 pp->ResetChildren();
