@@ -1486,7 +1486,7 @@ struct Document {
             }
 
             case A_ENTERGRID:
-                if (!c->grid) return NoGrid();
+                if (!c->grid) Action(dc, A_NEWGRID);
                 selected = Selection(c->grid, 0, 0, 1, 1);
                 ScrollOrZoom(dc, true);
                 return nullptr;
