@@ -179,6 +179,8 @@ struct System {
 
         frame->bt.Start(400);
         savechecker.Start(1000);
+
+        ScriptInit(frame);
     }
 
     void LoadTut() {

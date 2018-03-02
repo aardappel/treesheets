@@ -12,3 +12,7 @@ osx/TreeSheets/TreeSheets.xcodeproj/project.xcworkspace/xcuserdata/
 *.bak
 
 TreeSheets/\.vs/treesheets/v15/
+
+build/treesheets/language/
+
+TS/scripts/\.con\.log

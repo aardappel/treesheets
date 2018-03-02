@@ -75,6 +75,22 @@ inline void swap_(T &a, T &b) {
 #pragma warning(disable : 4996)  // 'strncpy' was declared deprecated
 #endif
 
+inline uchar *loadfile(const char *fn, size_t *lenret = nullptr) {
+    FILE *f = fopen(fn, "rb");
+    if (!f) return nullptr;
+    fseek(f, 0, SEEK_END);
+    size_t len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    uchar *buf = (uchar *)malloc(len+1);
+    if (!buf) { fclose(f); return nullptr; }
+    buf[len] = 0;
+    size_t rlen = fread(buf, 1, len, f);
+    fclose(f);
+    if (len!=rlen || len<=0) { free(buf); return nullptr; }
+    if (lenret) *lenret = len;
+    return buf;
+}
+
 // from boost, stops a class from being accidental victim to default copy + destruct twice problem
 // class that inherits from NonCopyable will work correctly with Vector, but give compile time error
 // with std::vector

@@ -492,8 +492,8 @@ struct Grid {
     }
 
     void DelSelf(Document *doc, Selection &s) {
-        if (!cell->parent || cell == doc->curdrawroot)
-            return;  // FIXME, if drawroot, auto zoom out instead (needs dc)
+        for (auto c = doc->curdrawroot; c; c = c->parent)
+            if (c == cell) return;  // FIXME, if drawroot, auto zoom out instead (needs dc)
         s = cell->parent->grid->FindCell(cell);
         Grid *&pthis = cell->grid;
         DELETEP(pthis);

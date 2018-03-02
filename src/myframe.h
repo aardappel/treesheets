@@ -20,6 +20,7 @@ struct MyFrame : wxFrame {
     wxFileSystemWatcher *watcher;
     bool watcherwaitingforuser;
     double csf, csf_orig;
+    std::vector<std::string> scripts_in_menu;
 
     wxString GetPath(const wxString &relpath) {
         if (!exepath_.Length()) return relpath;
@@ -524,6 +525,24 @@ struct MyFrame : wxFrame {
         optmenu->Check(A_ICONSET, iconset);
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
 
+        wxMenu *scriptmenu = new wxMenu();
+        auto scriptpath = GetPath("scripts/");
+        wxString sf = wxFindFirstFile(scriptpath + L"*.lobster");
+        int sidx = 0;
+        while (!sf.empty()) {
+            auto fn = wxFileName::FileName(sf).GetFullName();
+            auto ms = fn.BeforeFirst('.');
+            if (sidx < 26) {
+                ms += L"\tCTRL+SHIFT+ALT+";
+                ms += wxChar('A' + sidx);
+            }
+            MyAppend(scriptmenu, A_SCRIPT + sidx, ms);
+            auto ss = fn.utf8_str();
+            scripts_in_menu.push_back(std::string(ss.data(), ss.length()));
+            sf = wxFindNextFile();
+            sidx++;
+        }
+
         wxMenu *markmenu = new wxMenu();
         MyAppend(markmenu, A_MARKDATA, _(L"&Data"));
         MyAppend(markmenu, A_MARKCODE, _(L"&Operation"));
@@ -556,6 +575,7 @@ struct MyFrame : wxFrame {
             menubar->Append(semenu, _(L"&Search"));
             menubar->Append(viewmenu, _(L"&View"));
             menubar->Append(optmenu, _(L"&Options"));
+            menubar->Append(scriptmenu, _(L"Script"));
             menubar->Append(langmenu, _(L"&Program"));
             menubar->Append(helpmenu,
                             #ifdef __WXMAC__
@@ -923,8 +943,11 @@ struct MyFrame : wxFrame {
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
                     sw->Status(sys->Open(f));
-                } else if (ce.GetId() >= A_TAGSET) {
+                } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
+                } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
+                    auto msg = tssi.ScriptRun(scripts_in_menu[ce.GetId() - A_SCRIPT].c_str());
+                    sw->Status(wxString(msg));
                 } else {
                     sw->Status(sw->doc->Action(dc, ce.GetId()));
                     break;

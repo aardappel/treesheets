@@ -16,6 +16,9 @@
     <Filter Include="std\StackWalker">
       <UniqueIdentifier>{9b8cdb4f-6231-4699-9022-2cefe3c2d3eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="script">
+      <UniqueIdentifier>{ce2a8986-7979-4f28-a5b2-4e94d938f4a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -29,6 +32,9 @@
     </ClCompile>
     <ClCompile Include="..\src\StackWalker\StackWalkerHelpers.cpp">
       <Filter>std\StackWalker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lobster_impl.cpp">
+      <Filter>script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +86,12 @@
     </ClInclude>
     <ClInclude Include="..\src\StackWalker\StackWalkerHelpers.h">
       <Filter>std\StackWalker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\script_interface.h">
+      <Filter>script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\treesheets_impl.h">
+      <Filter>script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

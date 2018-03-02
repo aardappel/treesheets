@@ -217,7 +217,9 @@ enum {
     A_CUSTKEY,
     A_AUTOEXPORT,
     A_NOP,
-    A_TAGSET = 1000  // and all values from here on
+    A_TAGSET = 1000,  // and all values from here on
+    A_SCRIPT = 2000,  // and all values from here on
+    A_MAXACTION = 3000
 };
 
 enum {
@@ -228,7 +230,13 @@ enum {
     STYLE_STRIKETHRU = 16
 };
 
+#include "script_interface.h"
+
+using namespace script;
+
 struct treesheets {
+    struct TreeSheetsScriptImpl;
+
     struct Cell;
     struct Grid;
     struct Text;
@@ -244,6 +252,8 @@ struct treesheets {
     struct TSCanvas;
 
     static System *sys;
+
+    #include "treesheets_impl.h"
 
     #include "selection.h"
     #include "text.h"
@@ -261,6 +271,7 @@ struct treesheets {
 };
 
 treesheets::System *treesheets::sys = nullptr;
+treesheets::TreeSheetsScriptImpl treesheets::tssi;
 
 IMPLEMENT_APP(treesheets::MyApp)
 
