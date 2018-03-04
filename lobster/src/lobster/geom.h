@@ -240,15 +240,17 @@ template<typename T, int N> inline vec<int, N> fceil(const vec<T,N> &v) { DOVECR
 template<typename T, int N> inline vec<int, N> ffloor(const vec<T,N> &v) { DOVECRI(ffloor(v[i])); }
 template<typename T, int N> inline vec<T, N> round(const vec<T, N> &v) { DOVECR(roundf(v[i])); }
 
+template<typename T> inline T clamp(T v, T lo, T hi) {
+    static_assert(is_scalar<T>(), "");
+    return std::min(hi, std::max(lo, v));
+}
+    
 template<typename T, int N> inline vec<T, N> clamp(const vec<T, N> &v, const vec<T, N> &lo,
                                                    const vec<T, N> &hi) {
     DOVECR(clamp(v[i], lo[i], hi[i]));
 }
 template<typename T, int N> inline vec<T, N> clamp(const vec<T, N> &v, T lo, T hi) {
     DOVECR(clamp(v[i], lo, hi));
-}
-template<typename T> inline T clamp(T v, T lo, T hi) {
-    return std::min(hi, std::max(lo, v));
 }
 
 template<typename T, int N, typename R> inline vec<float, N> rndunitvec(RandomNumberGenerator<R> &r) {

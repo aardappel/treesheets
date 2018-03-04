@@ -22,6 +22,16 @@
 		33306EFF1769648100AF5315 /* App.icns in Resources */ = {isa = PBXBuildFile; fileRef = 33306EFE1769648100AF5315 /* App.icns */; };
 		33306F01176965AD00AF5315 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 33306F00176965AD00AF5315 /* TODO.txt */; };
 		33820B9E1E97123400D2DF4E /* translations in Resources */ = {isa = PBXBuildFile; fileRef = 33820B9D1E97123400D2DF4E /* translations */; };
+		3387001E204C5FE700612ED7 /* vmlog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFE1204C5FE400612ED7 /* vmlog.cpp */; };
+		3387002B204C5FE700612ED7 /* vm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFEE204C5FE500612ED7 /* vm.cpp */; };
+		3387002E204C5FE700612ED7 /* compiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFF1204C5FE500612ED7 /* compiler.cpp */; };
+		3387002F204C5FE700612ED7 /* builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFF2204C5FE500612ED7 /* builtins.cpp */; };
+		33870031204C5FE700612ED7 /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFF4204C5FE600612ED7 /* file.cpp */; };
+		33870032204C5FE700612ED7 /* vmdata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFF5204C5FE600612ED7 /* vmdata.cpp */; };
+		33870034204C5FE700612ED7 /* lobsterreader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33870019204C5FE600612ED7 /* lobsterreader.cpp */; };
+		33870037204C5FE700612ED7 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387001C204C5FE600612ED7 /* platform.cpp */; };
+		3387003A204C67AF00612ED7 /* scripts in Resources */ = {isa = PBXBuildFile; fileRef = 33870039204C67AE00612ED7 /* scripts */; };
+		3387FFDF204C5FBF00612ED7 /* lobster_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFDC204C5FBE00612ED7 /* lobster_impl.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +69,41 @@
 		33306EFE1769648100AF5315 /* App.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = App.icns; sourceTree = "<group>"; };
 		33306F00176965AD00AF5315 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO.txt; path = ../../TODO.txt; sourceTree = "<group>"; };
 		33820B9D1E97123400D2DF4E /* translations */ = {isa = PBXFileReference; lastKnownFileType = folder; name = translations; path = ../../TS/translations; sourceTree = "<group>"; };
+		33870001204C5FE600612ED7 /* ttypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ttypes.h; sourceTree = "<group>"; };
+		33870002204C5FE600612ED7 /* vmdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vmdata.h; sourceTree = "<group>"; };
+		33870003204C5FE600612ED7 /* node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = node.h; sourceTree = "<group>"; };
+		33870004204C5FE600612ED7 /* wentropy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wentropy.h; sourceTree = "<group>"; };
+		33870008204C5FE600612ED7 /* codegen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = codegen.h; sourceTree = "<group>"; };
+		33870009204C5FE600612ED7 /* unicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unicode.h; sourceTree = "<group>"; };
+		3387000A204C5FE600612ED7 /* optimizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = optimizer.h; sourceTree = "<group>"; };
+		3387000D204C5FE600612ED7 /* lex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lex.h; sourceTree = "<group>"; };
+		3387000E204C5FE600612ED7 /* disasm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = disasm.h; sourceTree = "<group>"; };
+		3387000F204C5FE600612ED7 /* tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tools.h; sourceTree = "<group>"; };
+		33870010204C5FE600612ED7 /* idents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = idents.h; sourceTree = "<group>"; };
+		33870012204C5FE600612ED7 /* vm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vm.h; sourceTree = "<group>"; };
+		33870013204C5FE600612ED7 /* bytecode_generated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bytecode_generated.h; sourceTree = "<group>"; };
+		33870014204C5FE600612ED7 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+		33870015204C5FE600612ED7 /* il.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = il.h; sourceTree = "<group>"; };
+		33870018204C5FE600612ED7 /* geom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geom.h; sourceTree = "<group>"; };
+		33870019204C5FE600612ED7 /* lobsterreader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lobsterreader.cpp; path = ../../lobster/src/lobsterreader.cpp; sourceTree = "<group>"; };
+		3387001C204C5FE600612ED7 /* platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platform.cpp; path = ../../lobster/src/platform.cpp; sourceTree = "<group>"; };
+		33870039204C67AE00612ED7 /* scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = scripts; path = ../../TS/scripts; sourceTree = "<group>"; };
+		3387FFDC204C5FBE00612ED7 /* lobster_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lobster_impl.cpp; path = ../../src/lobster_impl.cpp; sourceTree = "<group>"; };
+		3387FFDD204C5FBF00612ED7 /* script_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = script_interface.h; path = ../../src/script_interface.h; sourceTree = "<group>"; };
+		3387FFDE204C5FBF00612ED7 /* treesheets_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = treesheets_impl.h; path = ../../src/treesheets_impl.h; sourceTree = "<group>"; };
+		3387FFE1204C5FE400612ED7 /* vmlog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmlog.cpp; path = ../../lobster/src/vmlog.cpp; sourceTree = "<group>"; };
+		3387FFEE204C5FE500612ED7 /* vm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vm.cpp; path = ../../lobster/src/vm.cpp; sourceTree = "<group>"; };
+		3387FFF1204C5FE500612ED7 /* compiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = compiler.cpp; path = ../../lobster/src/compiler.cpp; sourceTree = "<group>"; };
+		3387FFF2204C5FE500612ED7 /* builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = builtins.cpp; path = ../../lobster/src/builtins.cpp; sourceTree = "<group>"; };
+		3387FFF4204C5FE600612ED7 /* file.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = file.cpp; path = ../../lobster/src/file.cpp; sourceTree = "<group>"; };
+		3387FFF5204C5FE600612ED7 /* vmdata.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmdata.cpp; path = ../../lobster/src/vmdata.cpp; sourceTree = "<group>"; };
+		3387FFF8204C5FE600612ED7 /* slaballoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = slaballoc.h; sourceTree = "<group>"; };
+		3387FFF9204C5FE600612ED7 /* typecheck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = typecheck.h; sourceTree = "<group>"; };
+		3387FFFA204C5FE600612ED7 /* tocpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tocpp.h; sourceTree = "<group>"; };
+		3387FFFC204C5FE600612ED7 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		3387FFFD204C5FE600612ED7 /* compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compiler.h; sourceTree = "<group>"; };
+		3387FFFE204C5FE600612ED7 /* natreg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = natreg.h; sourceTree = "<group>"; };
+		3387FFFF204C5FE600612ED7 /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +126,8 @@
 		33306EB217695BE000AF5315 = {
 			isa = PBXGroup;
 			children = (
+				33870039204C67AE00612ED7 /* scripts */,
+				3387FFDB204C5F9200612ED7 /* ScriptBinding */,
 				33820B9D1E97123400D2DF4E /* translations */,
 				33306F00176965AD00AF5315 /* TODO.txt */,
 				33306EFE1769648100AF5315 /* App.icns */,
@@ -166,6 +213,64 @@
 			name = "bundle resources";
 			sourceTree = "<group>";
 		};
+		3387FFDB204C5F9200612ED7 /* ScriptBinding */ = {
+			isa = PBXGroup;
+			children = (
+				3387FFE0204C5FC800612ED7 /* Lobster */,
+				3387FFDC204C5FBE00612ED7 /* lobster_impl.cpp */,
+				3387FFDD204C5FBF00612ED7 /* script_interface.h */,
+				3387FFDE204C5FBF00612ED7 /* treesheets_impl.h */,
+			);
+			name = ScriptBinding;
+			sourceTree = "<group>";
+		};
+		3387FFE0204C5FC800612ED7 /* Lobster */ = {
+			isa = PBXGroup;
+			children = (
+				3387FFF2204C5FE500612ED7 /* builtins.cpp */,
+				3387FFF1204C5FE500612ED7 /* compiler.cpp */,
+				3387FFF4204C5FE600612ED7 /* file.cpp */,
+				3387FFF7204C5FE600612ED7 /* lobster */,
+				33870019204C5FE600612ED7 /* lobsterreader.cpp */,
+				3387001C204C5FE600612ED7 /* platform.cpp */,
+				3387FFEE204C5FE500612ED7 /* vm.cpp */,
+				3387FFF5204C5FE600612ED7 /* vmdata.cpp */,
+				3387FFE1204C5FE400612ED7 /* vmlog.cpp */,
+			);
+			name = Lobster;
+			sourceTree = "<group>";
+		};
+		3387FFF7204C5FE600612ED7 /* lobster */ = {
+			isa = PBXGroup;
+			children = (
+				3387FFF8204C5FE600612ED7 /* slaballoc.h */,
+				3387FFF9204C5FE600612ED7 /* typecheck.h */,
+				3387FFFA204C5FE600612ED7 /* tocpp.h */,
+				3387FFFC204C5FE600612ED7 /* stdafx.h */,
+				3387FFFD204C5FE600612ED7 /* compiler.h */,
+				3387FFFE204C5FE600612ED7 /* natreg.h */,
+				3387FFFF204C5FE600612ED7 /* parser.h */,
+				33870001204C5FE600612ED7 /* ttypes.h */,
+				33870002204C5FE600612ED7 /* vmdata.h */,
+				33870003204C5FE600612ED7 /* node.h */,
+				33870004204C5FE600612ED7 /* wentropy.h */,
+				33870008204C5FE600612ED7 /* codegen.h */,
+				33870009204C5FE600612ED7 /* unicode.h */,
+				3387000A204C5FE600612ED7 /* optimizer.h */,
+				3387000D204C5FE600612ED7 /* lex.h */,
+				3387000E204C5FE600612ED7 /* disasm.h */,
+				3387000F204C5FE600612ED7 /* tools.h */,
+				33870010204C5FE600612ED7 /* idents.h */,
+				33870012204C5FE600612ED7 /* vm.h */,
+				33870013204C5FE600612ED7 /* bytecode_generated.h */,
+				33870014204C5FE600612ED7 /* platform.h */,
+				33870015204C5FE600612ED7 /* il.h */,
+				33870018204C5FE600612ED7 /* geom.h */,
+			);
+			name = lobster;
+			path = ../../lobster/src/lobster;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -217,6 +322,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3387003A204C67AF00612ED7 /* scripts in Resources */,
 				33820B9E1E97123400D2DF4E /* translations in Resources */,
 				33306EF91769625C00AF5315 /* images in Resources */,
 				33306EFA1769625C00AF5315 /* docs in Resources */,
@@ -235,7 +341,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3387002E204C5FE700612ED7 /* compiler.cpp in Sources */,
+				33870037204C5FE700612ED7 /* platform.cpp in Sources */,
+				33870034204C5FE700612ED7 /* lobsterreader.cpp in Sources */,
 				33306EDC17695C5500AF5315 /* main.cpp in Sources */,
+				33870031204C5FE700612ED7 /* file.cpp in Sources */,
+				3387001E204C5FE700612ED7 /* vmlog.cpp in Sources */,
+				3387FFDF204C5FBF00612ED7 /* lobster_impl.cpp in Sources */,
+				3387002B204C5FE700612ED7 /* vm.cpp in Sources */,
+				3387002F204C5FE700612ED7 /* builtins.cpp in Sources */,
+				33870032204C5FE700612ED7 /* vmdata.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,7 +371,7 @@
 		33306ED617695BE000AF5315 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -279,16 +394,22 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../lobster/src,
+					../../lobster/include,
+				);
+				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx10.6;
+				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
 			};
 			name = Debug;
 		};
 		33306ED717695BE000AF5315 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -305,8 +426,14 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../lobster/src,
+					../../lobster/include,
+				);
+				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx10.6;
+				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
 			};
 			name = Release;
 		};
