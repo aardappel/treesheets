@@ -2,7 +2,6 @@
 #
 #     cd <into-treesheets-source>
 #     cmake -H. -Bb -DCMAKE_BUILD_TYPE=Release \
-#         -DCMAKE_INSTALL_PREFIX=$PWD/i \
 #         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
 #     cmake --build b --target install
 #
@@ -10,7 +9,6 @@
 #
 #     cd <into-treesheets-source>
 #     cmake -H. -Bb -GXcode \
-#         -DCMAKE_INSTALL_PREFIX=$PWD/i \
 #         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
 #     cmake --build b --config Release --target install
 #
@@ -28,10 +26,21 @@ project(treesheets)
 
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/TS)
+
 find_package(wxWidgets REQUIRED aui adv core xml net)
 include(${wxWidgets_USE_FILE})
 
-file(GLOB sources src/*.cpp src/*.h)
+file(GLOB sources src/*.cpp src/*.h
+        lobster/src/builtins.cpp
+        lobster/src/compiler.cpp
+        lobster/src/file.cpp
+        lobster/src/lobsterreader.cpp
+        lobster/src/platform.cpp
+        lobster/src/vm.cpp
+        lobster/src/vmdata.cpp
+        lobster/src/vmlog.cpp)
+include_directories(lobster/include lobster/src)
 add_executable(treesheets ${sources})
 
 target_link_libraries(treesheets PRIVATE ${wxWidgets_LIBRARIES})
