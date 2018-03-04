@@ -70,7 +70,12 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 
 #include <vector>
 #include <string>
-#include <string_view>
+#if __has_include("string_view")
+    #include <string_view>
+#else
+    #include <experimental/string_view>
+    namespace std { using namespace std::experimental; }
+#endif
 
 #include <utility>
 

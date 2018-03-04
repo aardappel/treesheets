@@ -56,6 +56,13 @@
 #include <iostream>
 #include <iomanip>
 
+#if __has_include("string_view")
+    #include <string_view>
+#else
+    #include <experimental/string_view>
+    namespace std { using namespace std::experimental; }
+#endif
+
 using namespace std;
 
 typedef unsigned char uchar;

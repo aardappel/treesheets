@@ -13,7 +13,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
         bool dump_builtins = false;
         #ifdef _DEBUG
-            dump_builtins = true;
+            //dump_builtins = true;
         #endif
 
         auto err = RunLobster(filename, nullptr, dump_builtins);

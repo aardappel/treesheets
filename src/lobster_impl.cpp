@@ -110,14 +110,14 @@ void AddTreeSheets() {
              "completely empty, or the entire grid.");
 
     STARTDECL(ts_set_background_color) (Value &col) {
-        si->SetBackgroundColor(*(uint *)quantizec(ValueDecToF<3>(col)).data());
+        si->SetBackgroundColor(*(uint *)quantizec(ValueDecToFLT<3>(col)).data());
         return Value();
     }
     ENDDECL1(ts_set_background_color, "col", "F}:4", "",
              "sets the background color of the current cell");
 
     STARTDECL(ts_set_text_color) (Value &col) {
-        si->SetTextColor(*(uint *)quantizec(ValueDecToF<3>(col)).data());
+        si->SetTextColor(*(uint *)quantizec(ValueDecToFLT<3>(col)).data());
         return Value();
     }
     ENDDECL1(ts_set_text_color, "col", "F}:4", "",

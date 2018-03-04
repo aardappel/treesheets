@@ -547,10 +547,12 @@ void AddBuiltins() {
         for (auto p = s.sval()->str();;) {
             auto loc = strpbrk(p, set.sval()->str());
             if (loc) {
-                out += string_view(p, loc - p);
-                out += prefix.sval()->strv();
+                out.append(p, loc);
+                auto presv = prefix.sval()->strv();
+                out.append(presv.data(), presv.size());
                 out += *loc++;
-                out += postfix.sval()->strv();
+                auto postsv = postfix.sval()->strv();
+                out.append(postsv.data(), postsv.size());
                 p = loc;
             } else {
                 out += p;
@@ -568,9 +570,11 @@ void AddBuiltins() {
 
     STARTDECL(concatstring) (Value &v, Value &sep) {
         string s;
+        auto sepsv = sep.sval()->strv();
         for (intp i = 0; i < v.vval()->len; i++) {
-            if (i) s += sep.sval()->strv();
-            s += v.vval()->At(i).sval()->strv();
+            if (i) s.append(sepsv.data(), sepsv.size());
+            auto esv = v.vval()->At(i).sval()->strv();
+            s.append(esv.data(), esv.size());
         }
         v.DECRT();
         sep.DECRT();
