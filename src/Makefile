@@ -30,13 +30,13 @@ SRCS=	main.cpp \
         ../lobster/src/vmlog.cpp
 OBJS=	$(SRCS:.cpp=.o)
 
+all: $(SRCS) $(APPNAME)
+
 release: CXXFLAGS+= -O3
 release: install clean
 
 debug: CXXFLAGS+= -g
 debug: install clean
-
-all: $(SRCS) $(APPNAME)
 
 $(APPNAME): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@
