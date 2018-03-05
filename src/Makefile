@@ -6,7 +6,7 @@ WX_CXXFLAGS=	`$(WX_CONFIG) --cxxflags`
 WX_LIBS=	`$(WX_CONFIG) --libs aui adv core xml net`
 PACKAGE_VERSION?=	__DATE__
 CXX?=	c++
-CXXFLAGS+=	-DPACKAGE_VERSION=$(PACKAGE_VERSION) -std=c++1y $(WX_CXXFLAGS) -I ../lobster/include -I ../lobster/src
+CXXFLAGS+=	-DPACKAGE_VERSION=$(PACKAGE_VERSION) -std=c++17 $(WX_CXXFLAGS) -I ../lobster/include -I ../lobster/src
 LDFLAGS+=	$(WX_LIBS)
 
 ARCH=	$(firstword $(shell uname -m))

@@ -51,8 +51,8 @@ before_install:
 
 install:
   - if  [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      sudo apt-get install -qq g++-6;
-      sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90;
+      sudo apt-get install -qq g++-7;
+      sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90;
     fi
   - if  [[ -n "$RMRF_WXWIDGETS" ]]; then rm -rf wxWidgets ; fi
   - if  [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
