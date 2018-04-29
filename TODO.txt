@@ -1,5 +1,14 @@
 [ check google moderator for new feature requests ]
 
+- an auto-import/merge of an external file (e.g. a text file)
+  The contents of a grid would automatically be replaced by whatever is in that text file,
+  and maybe auto-exported when modified?
+  This allows TreeSheets to be a "dashboard" for external files, generated/edited by external
+  programs.
+
+- A preview (particularly for images) of external (http & file) links, either on hover over, or
+  even in-line. Makes for a nice alternative to inline images if there's a lot of them.
+
 - bug: if you paste a size 0 cell into, say, a size -5 new parent, the cell that is being pasted
   is set to -5 but all its children stay at 0, making for weird rendering.
 
@@ -48,7 +57,7 @@
 
 - if it fails to load its icon files, it should check in the current directory - would simplify command line usage.
 
-- non-windows platforms: wxIsalnum not returning true for certain unicode chars? xxxxxx xxxxxxxx xxxxxx Féretro xxxxx
+- non-windows platforms: wxIsalnum not returning true for certain unicode chars? xxxxxx xxxxxxxx xxxxxx Fï¿½retro xxxxx
 - some people have locale settings that makes it break words in the middle.
   maybe do word splits based on ispunct etc instead?
 
