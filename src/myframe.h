@@ -803,7 +803,7 @@ struct MyFrame : wxFrame {
     }
 
     void CycleTabs(int offset = 1) {
-        int numtabs = nb->GetPageCount();
+        auto numtabs = (int)nb->GetPageCount();
         offset = ((offset >= 0) ? 1 : numtabs - 1);  // normalize to non-negative wrt modulo
         nb->SetSelection((nb->GetSelection() + offset) % numtabs);
     }

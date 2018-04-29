@@ -210,7 +210,7 @@ struct Text {
             if (!curl.Len()) break;
             if (cell->tiny) {
                 if (sys->fastrender) {
-                    dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + curl.Len(), by + lines * h);
+                    dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + (int)curl.Len(), by + lines * h);
                     /*
                     wxPoint points[] = { wxPoint(bx + ixs, by + lines * h), wxPoint(bx + ixs + curl.Len(), by + lines * h) };
                     dc.DrawLines(1, points, 0, 0);
@@ -368,7 +368,7 @@ struct Text {
         RangeSelRemove(s);
         SetRelSize();
         t.insert(s.cursor, ins);
-        s.cursor = s.cursorend = s.cursor + ins.Len();
+        s.cursor = s.cursorend = s.cursor + (int)ins.Len();
     }
 
     void Delete(Selection &s) {

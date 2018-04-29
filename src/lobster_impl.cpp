@@ -100,8 +100,8 @@ void AddTreeSheets() {
              "insert n rows before row r in an existing grid.");
 
     STARTDECL(ts_delete) (Value &pos, Value &size) {
-        auto p = ValueDecToI<2>(pos);
-        auto s = ValueDecToI<2>(size);
+        auto p = ValueDecToINT<2>(pos);
+        auto s = ValueDecToINT<2>(size);
         si->Delete(p.x, p.y, s.x, s.y);
         return Value();
     }

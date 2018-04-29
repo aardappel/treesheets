@@ -223,7 +223,7 @@ template<typename T> string to_string_float(T x, int decimals = -1) {
     // There's no way to tell it to just output however many decimals are actually significant,
     // sigh. Once you turn on fixed, it will default to 5 or 6, depending on platform, for both
     // float and double. So we set our own more useful defaults:
-    size_t default_precision = sizeof(T) == sizeof(float) ? 6 : 12;
+    int default_precision = sizeof(T) == sizeof(float) ? 6 : 12;
     ss << std::setprecision(decimals <= 0 ? default_precision : decimals);
     ss << x;
     auto s = ss.str();

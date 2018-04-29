@@ -372,7 +372,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -399,10 +399,11 @@
 					../../lobster/include,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -410,7 +411,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -431,16 +432,17 @@
 					../../lobster/include,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				SDKROOT = macosx10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
 		33306ED917695BE000AF5315 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -454,6 +456,8 @@
 					__WXOSX__,
 					__WXOSX_COCOA__,
 				);
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
 					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.1",
 					"/usr/local/include/wx-3.1",
@@ -483,7 +487,8 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				VALID_ARCHS = i386;
+				VALID_ARCHS = x86_64;
+				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -491,7 +496,7 @@
 		33306EDA17695BE000AF5315 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -503,6 +508,8 @@
 					__WXOSX__,
 					__WXOSX_COCOA__,
 				);
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
 					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.1",
 					"/usr/local/include/wx-3.1",
@@ -532,7 +539,8 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				VALID_ARCHS = i386;
+				VALID_ARCHS = x86_64;
+				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

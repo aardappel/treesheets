@@ -865,7 +865,7 @@ struct Document {
             }
 
             case A_NEW: {
-                int size = ::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
+                int size = (int)::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
                                                  _(L"size:"), _(L"New Sheet"), 10, 1, 25, sys->frame);
                 if (size < 0) return _(L"New file cancelled.");
                 sys->InitDB(size);
@@ -936,7 +936,7 @@ struct Document {
             }
 
             case A_PRINTSCALE: {
-                printscale = ::wxGetNumberFromUser(
+                printscale = (uint)::wxGetNumberFromUser(
                     _(L"How many pixels wide should a page be? (0 for auto fit)"), _(L"scale:"),
                     _(L"Set Print Scale"), 0, 0, 5000, sys->frame);
                 return nullptr;
@@ -1267,7 +1267,7 @@ struct Document {
                 if (selected.TextEdit()) {
                     selected.Cursor(this, A_DOWN, false, false, dc, true);
                 } else {
-                    selected.EnterEdit(this, 0, c->text.t.Len());
+                    selected.EnterEdit(this, 0, (int)c->text.t.Len());
                     Refresh();
                 }
                 return nullptr;
@@ -1550,7 +1550,7 @@ struct Document {
                 return nullptr;
             case A_SEND:
                 DrawSelect(dc, selected);
-                selected.cursorend = c->text.t.Len();
+                selected.cursorend = (int)c->text.t.Len();
                 DrawSelectMove(dc, selected);
                 return nullptr;
 
