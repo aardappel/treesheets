@@ -16,11 +16,11 @@
 #include "lobster/glinterface.h"
 #include "lobster/glincludes.h"
 
-uint GenBO(GLenum type, size_t elemsize, size_t count, const void *data) {
+uint GenBO_(GLenum type, size_t bytesize, const void *data) {
     uint bo;
     GL_CALL(glGenBuffers(1, &bo));
     GL_CALL(glBindBuffer(type, bo));
-    GL_CALL(glBufferData(type, elemsize * count, data, GL_STATIC_DRAW));
+    GL_CALL(glBufferData(type, bytesize, data, GL_STATIC_DRAW));
     return bo;
 }
 
@@ -28,10 +28,10 @@ void DeleteBO(uint id) {
     GL_CALL(glDeleteBuffers(1, &id));
 }
 
-size_t AttribsSize(const char *fmt) {
+size_t AttribsSize(string_view fmt) {
     size_t size = 0;
-    while (*fmt) {
-        switch (*fmt++) {
+    for (auto c : fmt) {
+        switch (c) {
             case 'P': case 'N':           size += 12; break;
             case 'p': case 'n': case 'T': size +=  8; break;
             case 'C': case 'W': case 'I': size +=  4; break;
@@ -51,8 +51,8 @@ GLenum GetPrimitive(Primitive prim) {
     }
 }
 
-Surface::Surface(const int *indices, size_t _nidx, Primitive _prim) : numidx(_nidx), prim(_prim) {
-    ibo = GenBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(int), numidx, indices);
+Surface::Surface(span<int> indices, Primitive _prim) : numidx(indices.size()), prim(_prim) {
+    ibo = GenBO(GL_ELEMENT_ARRAY_BUFFER, indices);
 }
 
 void Surface::Render(Shader *sh) {
@@ -65,18 +65,15 @@ Surface::~Surface() {
     GL_CALL(glDeleteBuffers(1, &ibo));
 }
 
-Geometry::Geometry(const void *verts1, size_t _nverts, size_t vertsize1, const char *_fmt,
-                   const void *verts2, size_t vertsize2)
-    : vertsize(vertsize1), fmt(_fmt), vbo1(0), vbo2(0), vao(0), nverts(_nverts) {
-    vbo1 = GenBO(GL_ARRAY_BUFFER, vertsize1, nverts, verts1);
-    if (verts2) vbo2 = GenBO(GL_ARRAY_BUFFER, vertsize2, nverts, verts2);
+void Geometry::Init(const void *verts1, const void *verts2) {
+    vbo1 = GenBO_(GL_ARRAY_BUFFER, vertsize1 * nverts, verts1);
+    if (verts2) vbo2 = GenBO_(GL_ARRAY_BUFFER, vertsize2 * nverts, verts2);
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo1));
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
     size_t offset = 0;
     size_t vs = vertsize1;
-    while (*_fmt) {
-        auto attr = *_fmt++;
+    for (auto attr : fmt) {
         switch (attr) {
             #define SETATTRIB(idx, comps, type, norm, size) \
                 GL_CALL(glEnableVertexAttribArray(idx)); \
@@ -92,7 +89,7 @@ Geometry::Geometry(const void *verts1, size_t _nverts, size_t vertsize1, const c
             case 'W': SETATTRIB(4, 4, GL_UNSIGNED_BYTE, true,   4)
             case 'I': SETATTRIB(5, 4, GL_UNSIGNED_BYTE, false,  4)
             default:
-                Output(OUTPUT_ERROR, "unknow attribute type: \"%c\"", attr);
+                Output(OUTPUT_ERROR, "unknown attribute type: ", string() + attr);
                 assert(false);
         }
         if (vbo2) {
@@ -149,9 +146,9 @@ Mesh::~Mesh() {
 
 bool Geometry::WritePLY(string &s, size_t nindices) {
     #ifndef PLATFORM_ES3
-    s += "ply\n"
-         "format binary_little_endian 1.0\n"
-         "element vertex " + to_string(nverts) + "\n";
+    s += cat("ply\n"
+             "format binary_little_endian 1.0\n"
+             "element vertex ", nverts, "\n");
     for (auto fc : fmt) {
         switch (fc) {
             case 'P': s += "property float x\nproperty float y\nproperty float z\n"; break;
@@ -168,10 +165,10 @@ bool Geometry::WritePLY(string &s, size_t nindices) {
             default: assert(0);
         }
     }
-    s += "element face " + to_string(nindices / 3) + "\n"
-         "property list int int vertex_index\n"
-         "end_header\n";
-    vector<uchar> vdata(nverts * vertsize);
+    s += cat("element face ", nindices / 3, "\n"
+             "property list int int vertex_index\n"
+             "end_header\n");
+    vector<uchar> vdata(nverts * vertsize1);
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo1));
     GL_CALL(glGetBufferSubData(GL_ARRAY_BUFFER, 0, vdata.size(), vdata.data()));
     s.insert(s.end(), vdata.begin(), vdata.end());
@@ -179,7 +176,7 @@ bool Geometry::WritePLY(string &s, size_t nindices) {
     #else
     (void)s;
     (void)nindices;
-	(void)vertsize;
+	(void)vertsize1;
     return false;
     #endif
 }
@@ -208,7 +205,7 @@ bool Mesh::SaveAsPLY(const char *filename) {
     string s;
     if (!geom->WritePLY(s, nindices)) return false;
     for (auto &surf : surfs) surf->WritePLY(s);
-    return WriteFile(filename, true, s.c_str(), s.size());
+    return WriteFile(filename, true, s);
 }
 
 void SetPointSprite(float scale) {
@@ -218,62 +215,43 @@ void SetPointSprite(float scale) {
         // glTexEnvi(GL_POINT_SPRITE_OES, GL_COORD_REPLACE_OES, GL_TRUE);
     #else
         #ifndef __APPLE__
-            GL_CALL(glEnable(GL_POINT_SPRITE));
-            GL_CALL(glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE));
+            // GL_CALL(glEnable(GL_POINT_SPRITE));
+            // GL_CALL(glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE));
         #endif
         GL_CALL(glEnable(GL_VERTEX_PROGRAM_POINT_SIZE));
     #endif
 }
 
-void RenderArray(Primitive prim, int vcount, Geometry *geom) {
+void RenderArray(Primitive prim, Geometry *geom, uint ibo, size_t tcount) {
     GLenum glprim = GetPrimitive(prim);
     geom->RenderSetup();
-    GL_CALL(glDrawArrays(glprim, 0, vcount));
-}
-
-void RenderArray(Primitive prim, int tcount, Geometry *geom, uint ibo) {
-    GLenum glprim = GetPrimitive(prim);
-    geom->RenderSetup();
-    GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    GL_CALL(glDrawElements(glprim, tcount, GL_UNSIGNED_INT, 0));
-}
-
-void RenderArraySlow(Primitive prim, int tcount, int vcount, const char *fmt,
-                     int vertsize1, void *vbuf1, int *ibuf) {
-    auto geom = new Geometry(vbuf1, vcount, vertsize1, fmt, nullptr, 0);
-    uint ibo = GenBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(int), tcount, ibuf);
-    RenderArray(prim, tcount, geom, ibo);
-    GL_CALL(glDeleteBuffers(1, &ibo));
-    delete geom;
-}
-
-void RenderArraySlow(Primitive prim, int vcount, const char *fmt,
-    int vertsize1, void *vbuf1, int vertsize2, void *vbuf2) {
-    auto geom = new Geometry(vbuf1, vcount, vertsize1, fmt, vbuf2, vertsize2);
-    RenderArray(prim, vcount, geom);
-    delete geom;
+    if (ibo) {
+        GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+        GL_CALL(glDrawElements(glprim, (GLsizei)tcount, GL_UNSIGNED_INT, 0));
+    } else {
+        GL_CALL(glDrawArrays(glprim, 0, (GLsizei)geom->nverts));
+    }
 }
 
 void GeometryCache::RenderUnitSquare(Shader *sh, Primitive prim, bool centered) {
-    int quadsize = sizeof(float) * 5;
     if (!quadgeom[centered]) {
-        static float vb_square[20] = {
-            0, 0, 0, 0, 0,
-            0, 1, 0, 0, 1,
-            1, 1, 0, 1, 1,
-            1, 0, 0, 1, 0,
+        static SpriteVert vb_square[4] = {
+            SpriteVert{ float2(0, 0), float2(0, 0) },
+            SpriteVert{ float2(0, 1), float2(0, 1) },
+            SpriteVert{ float2(1, 1), float2(1, 1) },
+            SpriteVert{ float2(1, 0), float2(1, 0) },
         };
-        static float vb_square_centered[20] = {
-            -1, -1, 0, 0, 0,
-            -1,  1, 0, 0, 1,
-             1,  1, 0, 1, 1,
-             1, -1, 0, 1, 0,
+        static SpriteVert vb_square_centered[4] = {
+            SpriteVert{ float2(-1, -1), float2(0, 0) },
+            SpriteVert{ float2(-1,  1), float2(0, 1) },
+            SpriteVert{ float2( 1,  1), float2(1, 1) },
+            SpriteVert{ float2( 1, -1), float2(1, 0) },
         };
         quadgeom[centered] =
-            new Geometry(centered ? vb_square_centered : vb_square, 4, quadsize, "PT");
+            new Geometry(make_span(centered ? vb_square_centered : vb_square, 4), "pT");
     }
     sh->Set();
-    RenderArray(prim, 4, quadgeom[centered]);
+    RenderArray(prim, quadgeom[centered]);
 }
 
 void GeometryCache::RenderQuad(Shader *sh, Primitive prim, bool centered, const float4x4 &trans) {
@@ -332,30 +310,29 @@ void GeometryCache::RenderUnitCube(Shader *sh, int inside) {
                 verts.push_back(vert);
             }
         }
-        cube_geom[inside] = new Geometry(verts.data(), 24, sizeof(cvert), "PNT");
-        cube_ibo[inside] = GenBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(int), 36, triangles.data());
+        cube_geom[inside] = new Geometry(make_span(verts), "PNT");
+        cube_ibo[inside] = GenBO(GL_ELEMENT_ARRAY_BUFFER, make_span(triangles));
     }
     sh->Set();
-    RenderArray(PRIM_TRIS, 36, cube_geom[inside], cube_ibo[inside]);
+    RenderArray(PRIM_TRIS, cube_geom[inside], cube_ibo[inside], 36);
 }
 
 void GeometryCache::RenderCircle(Shader *sh, Primitive prim, int segments, float radius) {
     assert(segments >= 3);
     auto &geom = circlevbos[segments];
     if (!geom) {
-        auto vbuf = new float3[segments];
+        vector<float3> vbuf(segments);
         float step = PI * 2 / segments;
         for (int i = 0; i < segments; i++) {
             // + 1 to reduce "aliasing" from exact 0 / 90 degrees points
             vbuf[i] = float3(sinf(i * step + 1),
                              cosf(i * step + 1), 0);
         }
-        geom = new Geometry(vbuf, segments, sizeof(float3), "P");
-        delete[] vbuf;
+        geom = new Geometry(make_span(vbuf), "P");
     }
     Transform2D(float4x4(float4(float2_1 * radius, 1)), [&]() {
         sh->Set();
-        RenderArray(prim, segments, geom);
+        RenderArray(prim, geom);
     });
 }
 
@@ -366,8 +343,8 @@ void GeometryCache::RenderOpenCircle(Shader *sh, int segments, float radius, flo
     auto nverts = segments * 2;
     auto nindices = segments * 6;
     if (!vibo.first) {
-        auto vbuf = new float3[nverts];
-        auto ibuf = new int[nindices];
+        vector<float3> vbuf(nverts);
+        vector<int> ibuf(nindices);
         float step = PI * 2 / segments;
         float inner = 1 - thickness;
         for (int i = 0; i < segments; i++) {
@@ -383,14 +360,12 @@ void GeometryCache::RenderOpenCircle(Shader *sh, int segments, float radius, flo
             ibuf[i * 6 + 4] = ((i + 1) * 2 + 1) % nverts;
             ibuf[i * 6 + 5] = ((i + 1) * 2 + 0) % nverts;
         }
-        vibo.first = new Geometry(vbuf, nverts, sizeof(float3), "P");
-        vibo.second = GenBO(GL_ELEMENT_ARRAY_BUFFER, sizeof(int), nindices, ibuf);
-        delete[] vbuf;
-        delete[] ibuf;
+        vibo.first = new Geometry(make_span(vbuf), "P");
+        vibo.second = GenBO(GL_ELEMENT_ARRAY_BUFFER, make_span(ibuf));
     }
     Transform2D(float4x4(float4(float2_1 * radius, 1)), [&]() {
         sh->Set();
-        RenderArray(PRIM_TRIS, nindices, vibo.first, vibo.second);
+        RenderArray(PRIM_TRIS, vibo.first, vibo.second, nindices);
     });
 }
 

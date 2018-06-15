@@ -23,6 +23,8 @@ md include\flatbuffers
 xcopy %source%\dev\include\flatbuffers\*.* include\flatbuffers
 md include\StackWalker
 xcopy %source%\dev\include\StackWalker\*.* include\StackWalker
+md include\gsl
+xcopy %source%\dev\include\gsl\*.* include\gsl
 md ..\TS\scripts\include
 xcopy %source%\lobster\include\stdtype.lobster ..\TS\scripts\include
 xcopy %source%\lobster\include\std.lobster ..\TS\scripts\include

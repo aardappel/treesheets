@@ -48,6 +48,7 @@ namespace lobster {
     TOK(T_LOGASSIGN, "?=") \
     TOK(T_DEF, ":=") \
     TOK(T_DOT, ".") \
+    TOK(T_DOTDOT, "..") \
     TOK(T_DOTMAYBE, "?.") \
     TOK(T_CODOT, "->") \
     TOK(T_INT, "integer literal") \
@@ -93,8 +94,11 @@ namespace lobster {
     TOK(T_RESOURCE, "resource") \
     TOK(T_ENUM, "enum") \
     TOK(T_VAR, "var") \
-    TOK(T_CONST, "const") \
-    TOK(T_PAKFILE, "pakfile")
+    TOK(T_CONST, "let") \
+    TOK(T_PAKFILE, "pakfile") \
+    TOK(T_SWITCH, "switch") \
+    TOK(T_CASE, "case") \
+    TOK(T_DEFAULT, "default")
 
 enum TType {
     #define TOK(ENUM, STR) ENUM,

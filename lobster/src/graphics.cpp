@@ -97,7 +97,8 @@ float2 localfingerpos(int i) {
 
 Value PushTransform(const float4x4 &forward, const float4x4 &backward, const Value &body) {
     if (body.True()) {
-        g_vm->Push(Value(g_vm->NewString((char *)&otransforms, sizeof(objecttransforms))));
+        g_vm->Push(Value(g_vm->NewString(string_view((char *)&otransforms,
+                                                     sizeof(objecttransforms)))));
     }
     AppendTransform(forward, backward);
     return body;
@@ -121,7 +122,7 @@ Mesh *CreatePolygon(Value &vl) {
     TestGL();
     auto len = vl.vval()->len;
     if (len < 3) g_vm->BuiltinError("polygon: must have at least 3 verts");
-    auto vbuf = new BasicVert[len];
+    vector<BasicVert> vbuf(len);
     for (int i = 0; i < len; i++) vbuf[i].pos = ValueToFLT<3>(vl.vval()->At(i));
     auto v1 = vbuf[1].pos - vbuf[0].pos;
     auto v2 = vbuf[2].pos - vbuf[0].pos;
@@ -131,8 +132,7 @@ Mesh *CreatePolygon(Value &vl) {
         vbuf[i].tc = vbuf[i].pos.xy();
         vbuf[i].col = byte4_255;
     }
-    auto m = new Mesh(new Geometry(vbuf, len, sizeof(BasicVert), "PNTC"), polymode);
-    delete[] vbuf;
+    auto m = new Mesh(new Geometry(make_span(vbuf), "PNTC"), polymode);
     return m;
 }
 
@@ -141,7 +141,7 @@ Value SetUniform(Value &name, const float *data, int len, bool ignore_errors) {
     currentshader->Activate();
     auto ok = currentshader->SetUniform(name.sval()->str(), data, len);
     if (!ok && !ignore_errors)
-        g_vm->Error("failed to set uniform: " + string(name.sval()->str()));
+        g_vm->Error("failed to set uniform: " + name.sval()->strv());
     name.DECRT();
     return Value(ok);
 }
@@ -159,7 +159,7 @@ void AddGraphics() {
             err = LoadMaterialFile("shaders/default.materials");
         }
         if (!err.empty()) {
-            Output(OUTPUT_INFO, err.c_str());
+            Output(OUTPUT_INFO, err);
             return Value(g_vm->NewString(err));
         }
         colorshader = LookupShader("color");
@@ -198,7 +198,7 @@ void AddGraphics() {
             // Here we have to something hacky: emscripten requires us to not take over the main
             // loop. So we use this exception to suspend the VM right inside the gl_frame() call.
             // FIXME: do this at the start of the frame instead?
-            throw string("SUSPEND-VM-MAINLOOP");
+            THROW_OR_ABORT(string("SUSPEND-VM-MAINLOOP"));
         #endif
         auto cb = GraphicsFrameStart();
         return Value(!cb);
@@ -554,7 +554,7 @@ void AddGraphics() {
         /*
         #ifdef PLATFORM_TOUCH
         // Inefficient for fingers other than 0, which is going to be rare.
-        auto ks = i ? GetKS((string("mouse1") + (char)('0' + i)).c_str()) : GetKS("mouse1");
+        auto ks = i ? GetKS((string_view("mouse1") + (char)('0' + i)).c_str()) : GetKS("mouse1");
         // On mobile, if the finger just went down, we wont have meaningfull lastframehitsize, so if
         // the programmer checks for the combination of gl_hit and gl_wentdown, that would fail.
         // Instead, we bypass that check.
@@ -580,6 +580,30 @@ void AddGraphics() {
     ENDDECL2(gl_rect, "size,centered", "F}I?", "F}",
         "renders a rectangle (0,0)..(1,1) (or (-1,-1)..(1,1) when centered), scaled by the given"
         " size. returns the argument.");
+
+    STARTDECL(gl_recttccol) (Value &size, Value &tc, Value &tcdim, Value &cols) {
+        TestGL();
+        auto sz = ValueDecToFLT<2>(size);
+        auto t = ValueDecToFLT<2>(tc);
+        auto td = ValueDecToFLT<2>(tcdim);
+        auto te = t + td;
+        struct Vert { float x, y, z, u, v; byte4 c; };
+        Vert vb_square[4] = {
+            #define _GETCOL(N) \
+                cols.vval()->len > N ? quantizec(ValueToFLT<4>(cols.vval()->At(N))) : byte4_255
+            { 0,    0,    0, t.x,  t.y,  _GETCOL(0) },
+            { 0,    sz.y, 0, t.x,  te.y, _GETCOL(1) },
+            { sz.x, sz.y, 0, te.x, te.y, _GETCOL(2) },
+            { sz.x, 0,    0, te.x, t.y,  _GETCOL(3) }
+        };
+        currentshader->Set();
+        RenderArraySlow(PRIM_FAN, make_span(vb_square, 4), "PTC");
+        cols.DECRT();
+        return Value();
+    }
+    ENDDECL4(gl_recttccol, "size,tc,tcsize,cols", "F}:2F}:2F}:2F}:4]", "",
+             "Like gl_rect renders a sized quad, but allows you to specify texture coordinates and"
+             " optionally colors (empty list for all white). Slow.");
 
     STARTDECL(gl_unit_square) (Value &centered) {
         TestGL();
@@ -633,8 +657,8 @@ void AddGraphics() {
         auto nattr = format.sval()->len;
         if (nattr < 1 || nattr > 10)
             g_vm->BuiltinError("newmesh: illegal format/attributes size");
-        auto fmt = format.sval()->str();
-        if (nattr != (int)strspn(fmt, "PCTN") || fmt[0] != 'P')
+        auto fmt = format.sval()->strv();
+        if (nattr != (int)strspn(fmt.data(), "PCTN") || fmt[0] != 'P')
             g_vm->BuiltinError("newmesh: illegal format characters (only PCTN allowed), P must be"
                                " first");
         intp nverts = positions.vval()->len;
@@ -654,35 +678,34 @@ void AddGraphics() {
         for (intp i = 0; i < nverts; i++) {
             auto start = &verts[i * vsize];
             auto p = start;
-            auto fmt_it = fmt;
             float3 pos;
             int texcoordn = 0;
-            while (*fmt_it) {
-                switch (*fmt_it++) {
+            for (auto c : fmt) {
+                switch (c) {
                     case 'P':
-                        *((float3 *&)p)++ = pos = ValueToFLT<3>(positions.vval()->At(i));
+                        WriteMemInc(p, pos = ValueToFLT<3>(positions.vval()->At(i)));
                         break;
                     case 'C':
-                        *((byte4  *&)p)++ =
+                        WriteMemInc(p,
                             i < colors.vval()->len
                                 ? quantizec(ValueToFLT<4>(colors.vval()->At(i), 1))
-                                : byte4_255;
+                                : byte4_255);
                         break;
                     case 'T': {
                         auto &texcoords = texcoordn ? texcoords2 : texcoords1;
-                        *((float2 *&)p)++ =
+                        WriteMemInc(p,
                             i < texcoords.vval()->len
                                 ? ValueToFLT<2>(texcoords.vval()->At(i), 0)
-                                : pos.xy();
+                                : pos.xy());
                         texcoordn++;
                         break;
                     }
                     case 'N':
                         if (!normals.vval()->len) normal_offset = p - start;
-                        *((float3 *&)p)++ =
+                        WriteMemInc(p,
                             i < normals.vval()->len
                                 ? ValueToFLT<3>(normals.vval()->At(i), 0)
-                                : float3_0;
+                                : float3_0);
                         break;
                     default: assert(0);
                 }
@@ -690,12 +713,12 @@ void AddGraphics() {
         }
         if (normal_offset) {
             // if no normals were specified, generate them.
-            normalize_mesh(&idxs[0], idxs.size(), verts, nverts, vsize, normal_offset);
+            normalize_mesh(make_span(idxs), verts, nverts, vsize, normal_offset);
         }
         // FIXME: make meshes into points in a more general way.
-        auto m = new Mesh(new Geometry(verts, nverts, vsize, fmt),
+        auto m = new Mesh(new Geometry(make_span(verts, nverts * vsize), fmt, span<uchar>(), vsize),
                           indices.True() ? PRIM_TRIS : PRIM_POINT);
-        if (idxs.size()) m->surfs.push_back(new Surface(&idxs[0], idxs.size()));
+        if (idxs.size()) m->surfs.push_back(new Surface(make_span(idxs)));
         delete[] verts;
         format.DECRT();
         positions.DECRT();
@@ -777,7 +800,7 @@ void AddGraphics() {
     STARTDECL(gl_setshader) (Value &shader) {
         TestGL();
         auto sh = LookupShader(shader.sval()->str());
-        if (!sh) g_vm->BuiltinError(string("no such shader: ") + shader.sval()->str());
+        if (!sh) g_vm->BuiltinError("no such shader: " + shader.sval()->strv());
         shader.DECRT();
         currentshader = sh;
         return Value();
@@ -996,7 +1019,7 @@ void AddGraphics() {
         if (!numpixels) return Value();
         auto buf = ReadTexture(tex);
         if (!buf) return Value();
-        auto s = g_vm->NewString((char *)buf, numpixels * 4);
+        auto s = g_vm->NewString(string_view((char *)buf, numpixels * 4));
         delete[] buf;
         return Value(s);
     }
@@ -1040,7 +1063,7 @@ void AddGraphics() {
         auto len = pos.vval()->len;
         if (len != tile.vval()->len)
             g_vm->BuiltinError("rendertiles: vectors of different size");
-        auto vbuf = new SpriteVert[len * 6];
+        vector<SpriteVert> vbuf(len * 6);
         for (intp i = 0; i < len; i++) {
             auto p = ValueToFLT<2>(pos.vval()->At(i));
             auto t = float2(ValueToI<2>(tile.vval()->At(i))) / msize;
@@ -1060,8 +1083,7 @@ void AddGraphics() {
         pos.DECRT();
         tile.DECRT();
         currentshader->Set();
-        RenderArraySlow(PRIM_TRIS, (int)len * 6, "pT", sizeof(SpriteVert), vbuf);
-        delete[] vbuf;
+        RenderArraySlow(PRIM_TRIS, make_span(vbuf), "pT");
         return Value();
     }
     ENDDECL3(gl_rendertiles, "positions,tilecoords,mapsize", "F}:2]I}:2]I}:2", "",
@@ -1069,25 +1091,6 @@ void AddGraphics() {
         " Positions may be anywhere. Tile coordinates are inside the texture map, map size is"
         " the amount of tiles in the texture. Tiles may overlap, they are drawn in order."
         " Before calling this, make sure to have the texture set and a textured shader");
-
-    STARTDECL(gl_recttc) (Value &size, Value &tc, Value &tcdim) {
-        TestGL();
-        auto sz = ValueDecToFLT<2>(size);
-        auto t = ValueDecToFLT<2>(tc);
-        auto td = ValueDecToFLT<2>(tcdim);
-        auto te = t + td;
-        float vb_square[20] = {
-            0,      0,      0, t.x,  t.y,
-            0,      sz.y, 0, t.x,  te.y,
-            sz.x, sz.y, 0, te.x, te.y,
-            sz.x, 0,      0, te.x, t.y,
-        };
-        currentshader->Set();
-        RenderArraySlow(PRIM_FAN, 4, "PT", sizeof(float) * 5, vb_square);
-        return Value();
-    }
-    ENDDECL3(gl_recttc, "size,tc,tcsize", "F}:2F}:2F}:2", "",
-        "Like gl_rect renders a sized quad, but allows you to specify texture coordinates. Slow.");
 
     STARTDECL(gl_debug_grid) (Value &num, Value &dist, Value &thickness) {
         TestGL();

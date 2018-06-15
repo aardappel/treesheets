@@ -89,7 +89,7 @@ struct ValueParser {
 
     void ExpectType(ValueType given, ValueType needed) {
         if (given != needed) {
-            lex.Error(string("type ") +
+            lex.Error("type " +
                       BaseTypeName(needed) +
                       " required, " +
                       BaseTypeName(given) +
@@ -106,19 +106,19 @@ struct ValueParser {
         switch (lex.token) {
             case T_INT: {
                 ExpectType(V_INT, vt);
-                int i = atoi(lex.sattr.c_str());
+                auto i = lex.IntVal();
                 lex.Next();
                 return Value(i);
             }
             case T_FLOAT: {
                 ExpectType(V_FLOAT, vt);
-                double f = atof(lex.sattr.c_str());
+                auto f = strtod(lex.sattr.data(), nullptr);
                 lex.Next();
                 return Value((float)f);
             }
             case T_STR: {
                 ExpectType(V_STRING, vt);
-                string s = lex.sattr;
+                string s = lex.StringVal();
                 lex.Next();
                 auto str = g_vm->NewString(s);
                 str->Inc();
@@ -147,7 +147,7 @@ struct ValueParser {
             }
             case T_IDENT: {
                 ExpectType(V_STRUCT, vt);
-                string sname = lex.sattr;
+                auto sname = lex.sattr;
                 lex.Next();
                 Expect(T_LEFTCURLY);
                 auto name = g_vm->StructName(ti);
@@ -173,15 +173,20 @@ struct ValueParser {
 };
 
 static Value ParseData(type_elem_t typeoff, char *inp) {
-    try {
+    #ifdef USE_EXCEPTION_HANDLING
+    try
+    #endif
+    {
         ValueParser parser(inp);
         g_vm->Push(parser.Parse(typeoff));
         return Value();
     }
+    #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
         g_vm->Push(Value());
         return Value(g_vm->NewString(s));
     }
+    #endif
 }
 
 void AddReader() {

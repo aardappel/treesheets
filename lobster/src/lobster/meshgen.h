@@ -25,7 +25,7 @@ struct mgvert {
 };
 
 inline void RecomputeNormals(vector<int> &triangles, vector<mgvert> &verts) {
-    normalize_mesh(triangles.data(), triangles.size(), verts.data(), verts.size(), sizeof(mgvert),
+    normalize_mesh(make_span(triangles), verts.data(), verts.size(), sizeof(mgvert),
                    (uchar *)&verts.data()->norm - (uchar *)&verts.data()->pos, false);
 };
 

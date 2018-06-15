@@ -75,7 +75,7 @@ struct Surface : Textured {
     string name;
     Primitive prim;
 
-    Surface(const int *indices, size_t _nidx, Primitive _prim = PRIM_TRIS);
+    Surface(span<int> indices, Primitive _prim = PRIM_TRIS);
     ~Surface();
 
     void Render(Shader *sh);
@@ -100,16 +100,25 @@ struct SpriteVert {   // "pT"
 };
 
 class Geometry  {
-    const size_t vertsize;
+    const size_t vertsize1, vertsize2;
     string fmt;
     uint vbo1, vbo2, vao;
 
     public:
     const size_t nverts;
 
-    Geometry(const void *verts1, size_t _nverts, size_t vertsize1, const char *_fmt,
-             const void *verts2 = nullptr, size_t vertsize2 = 0);
+    template<typename T, typename U = float>
+    Geometry(span<T> verts1, string_view _fmt, span<U> verts2 = span<float>(),
+             size_t elem_multiple = 1)
+        : vertsize1(sizeof(T) * elem_multiple), vertsize2(sizeof(U) * elem_multiple), fmt(_fmt),
+          vbo1(0), vbo2(0), vao(0), nverts(verts1.size() / elem_multiple) {
+        assert(verts2.empty() || verts2.size() == verts1.size());
+        Init(verts1.data(), verts2.data());
+    }
+
     ~Geometry();
+
+    void Init(const void *verts1, const void *verts2);
 
     void RenderSetup();
     void BindAsSSBO(uint bind_point_index);
@@ -196,12 +205,24 @@ extern bool SwitchToFrameBuffer(const Texture &tex, bool depth = false, int tf =
 
 extern uchar *ReadPixels(const int2 &pos, const int2 &size);
 
-extern uint GenBO(uint type, size_t elemsize, size_t count, const void *data);
+extern uint GenBO_(uint type, size_t bytesize, const void *data);
+template <typename T> uint GenBO(uint type, span<T> d) {
+    return GenBO_(type, sizeof(T) * d.size(), d.data());
+}
 extern void DeleteBO(uint id);
-extern void RenderArraySlow(Primitive prim, int tcount, int vcount, const char *fmt, int vertsize,
-                            void *vbuf1, int *ibuf);
-extern void RenderArraySlow(Primitive prim, int vcount, const char *fmt, int vertsize,
-                            void *vbuf1, int vertsize2 = 0, void *vbuf2 = nullptr);
+extern void RenderArray(Primitive prim, Geometry *geom, uint ibo = 0, size_t tcount = 0);
+
+template<typename T, typename U = float>
+void RenderArraySlow(Primitive prim, span<T> vbuf1, string_view fmt,
+                     span<int> ibuf = span<int>(), span<U> vbuf2 = span<float>()) {
+    Geometry geom(vbuf1, fmt, vbuf2);
+    if (ibuf.empty()) {
+        RenderArray(prim, &geom);
+    } else {
+        Surface surf(make_span(ibuf), prim);
+        RenderArray(prim, &geom, surf.ibo, ibuf.size());
+    }
+}
 
 struct GeometryCache {
     Geometry *quadgeom[2] = { nullptr, nullptr };
@@ -223,7 +244,7 @@ struct GeometryCache {
     void RenderOpenCircle(Shader *sh, int segments, float radius, float thickness);
 };
 
-extern size_t AttribsSize(const char *fmt);
+extern size_t AttribsSize(string_view fmt);
 
 extern Mesh *LoadIQM(const char *filename);
 

@@ -26,9 +26,21 @@ namespace lobster {
 #define RTT_TYPE_ERRORS 0
 #endif
 
+// These are used with VM_COMPILED_CODE_MODE
+#define VM_DISPATCH_TRAMPOLINE 1
+#define VM_DISPATCH_SWITCH_GOTO 2
+#define VM_DISPATCH_METHOD VM_DISPATCH_TRAMPOLINE
+
 // Typedefs to make pointers and scalars the same size.
-#if !defined(FORCE_32_BIT_MODEL) && (_WIN64 || __amd64__ || __x86_64__ || __ppc64__ || __LP64__)
-    #define VALUE_MODEL_64 1 
+#if _WIN64 || __amd64__ || __x86_64__ || __ppc64__ || __LP64__
+    #if !defined(VM_COMPILED_CODE_MODE) || VM_DISPATCH_METHOD != VM_DISPATCH_TRAMPOLINE
+        //#define FORCE_32_BIT_MODEL
+    #endif
+    #ifndef FORCE_32_BIT_MODEL
+        #define VALUE_MODEL_64 1
+    #else
+        #define VALUE_MODEL_64 0
+    #endif
 #else
     #define VALUE_MODEL_64 0
 #endif
@@ -42,10 +54,6 @@ namespace lobster {
     typedef uint32_t uintp;
     typedef float floatp;
 #endif
-
-// FIXME: if FORCE_32_BIT_MODEL is on, we need to define a bounded 32-bit pointer for 64-bit systems.
-static_assert(sizeof(intp) == sizeof(floatp) && sizeof(intp) == sizeof(void *),
-              "typedefs need fixing");
 
 typedef vec<floatp, 2> floatp2;
 typedef vec<floatp, 3> floatp3;
@@ -93,7 +101,7 @@ inline bool IsRef    (ValueType t) { return t <  V_NIL; }
 inline bool IsRefNil (ValueType t) { return t <= V_NIL; }
 inline bool IsRuntime(ValueType t) { return t < V_VAR; }
 
-inline const char *BaseTypeName(ValueType t) {
+inline string_view BaseTypeName(ValueType t) {
     static const char *typenames[] = {
         "any", "<value_buffer>", "<stackframe_buffer>",
         "boxed_float", "boxed_int", "resource", "coroutine", "string", "struct", "vector",
@@ -162,11 +170,6 @@ struct PrintPrefs {
           anymark(_anymark) {}
 };
 
-#define VM_DISPATCH_TRAMPOLINE 1
-#define VM_DISPATCH_SWITCH_GOTO 2
-
-#define VM_DISPATCH_METHOD VM_DISPATCH_TRAMPOLINE
-
 typedef void *(*block_base_t)();
 #if VM_DISPATCH_METHOD == VM_DISPATCH_TRAMPOLINE
     typedef block_base_t block_t;
@@ -206,7 +209,7 @@ struct RefObj : DynAlloc {
         refc = -(++cycles);
     }
 
-    string CycleStr() const { return "_" + to_string(-refc) + "_"; }
+    void CycleStr(ostringstream &ss) const { ss << "_" << -refc << "_"; }
 
     void DECDELETE(bool deref);
     void Mark();
@@ -214,7 +217,7 @@ struct RefObj : DynAlloc {
 };
 
 extern bool RefEqual(const RefObj *a, const RefObj *b, bool structural);
-extern string RefToString(const RefObj *ro, PrintPrefs &pp);
+extern void RefToString(ostringstream &ss, const RefObj *ro, PrintPrefs &pp);
 
 struct BoxedInt : RefObj {
     intp val;
@@ -236,7 +239,7 @@ struct LString : RefObj {
     char *str() { return (char *)(this + 1); }
     string_view strv() { return string_view(str(), len); }
 
-    string ToString(PrintPrefs &pp);
+    void ToString(ostringstream &ss, PrintPrefs &pp);
 
     void DeleteSelf() { vmpool->dealloc(this, sizeof(LString) + len + 1); }
 
@@ -272,19 +275,23 @@ struct InsPtr {
     #ifdef VM_COMPILED_CODE_MODE
         block_t f;
         explicit InsPtr(block_t _f) : f(_f) {}
+        static_assert(sizeof(block_t) == sizeof(intp), "");
     #else
-        const int *f;
-        explicit InsPtr(const int *_f) : f(_f) {}
+        intp f;
+        explicit InsPtr(intp _f) : f(_f) {}
+        #ifdef FORCE_32_BIT_MODEL
+            explicit InsPtr(ptrdiff_t _f) : f((intp)_f) {}
+        #endif
     #endif
     InsPtr() : f(0) {}
     bool operator==(const InsPtr o) const { return f == o.f; }
 };
 
-void GVMAssert(bool ok, const char *what);
+void GVMAssert(const char *what);
 
 #if RTT_ENABLED
     #if RTT_TYPE_ERRORS
-        #define TYPE_ASSERT(cond) GVMAssert(cond, #cond)
+        #define TYPE_ASSERT(cond) if (!(cond)) GVMAssert(#cond)
     #else
         #define TYPE_ASSERT(cond) assert(cond)
     #endif
@@ -294,6 +301,51 @@ void GVMAssert(bool ok, const char *what);
     #define TYPE_INIT(t)
 #endif
 
+// These pointer types are for use inside Value below. In most other parts of the code we
+// use naked pointers.
+#ifndef FORCE_32_BIT_MODEL
+    // We use regular pointers of the current architecture.
+    typedef LString *LStringPtr;
+    typedef LVector *LVectorPtr;
+    typedef LStruct *LStructPtr;
+    typedef LCoRoutine *LCoRoutinePtr;
+    typedef LResource *LResourcePtr;
+    typedef BoxedInt *BoxedIntPtr;
+    typedef BoxedFloat *BoxedFloatPtr;
+    typedef RefObj *RefObjPtr;
+#else
+    // We use a compressed pointer to fit in 32-bit on a 64-bit build.
+    // These are shifted by COMPRESS_BITS, so for 3 we can address the bottom 32GB of the
+    // address space. The memory allocator for these values must guarantee we only allocate
+    // from that region, by using mmap or similar.
+    template<typename T> class CompressedPtr {
+        uint32_t c;
+        enum { COMPRESS_BITS = 3, COMPRESS_MASK = (1 << COMPRESS_BITS) - 1 };
+      public:
+        CompressedPtr(const T *p) {
+            auto bits = (size_t)p;
+            assert(!(bits & COMPRESS_MASK));  // Must not have low bits set.
+            bits >>= COMPRESS_BITS;
+            assert(!(bits >> 32));  // Must not have high bits set.
+            c = (uint32_t)bits;
+        }
+        T *get() const { return (T *)(((size_t)c) << COMPRESS_BITS); }
+        operator T *() const { return get(); }
+        T *operator->() const { return get(); }
+    };
+    typedef CompressedPtr<LString> LStringPtr;
+    typedef CompressedPtr<LVector> LVectorPtr;
+    typedef CompressedPtr<LStruct> LStructPtr;
+    typedef CompressedPtr<LCoRoutine> LCoRoutinePtr;
+    typedef CompressedPtr<LResource> LResourcePtr;
+    typedef CompressedPtr<BoxedInt> BoxedIntPtr;
+    typedef CompressedPtr<BoxedFloat> BoxedFloatPtr;
+    typedef CompressedPtr<RefObj> RefObjPtr;
+#endif
+
+static_assert(sizeof(intp) == sizeof(floatp) && sizeof(intp) == sizeof(RefObjPtr),
+              "typedefs need fixing");
+
 struct Value {
     #if RTT_ENABLED
     ValueType type;
@@ -301,24 +353,27 @@ struct Value {
 
     private:
     union {
+        // All these types can be defined to be either all 32 or 64-bit, depending on the
+        // compilation mode.
+
         // Unboxed values.
         intp ival_;      // scalars stored as pointer-sized versions.
         floatp fval_;
         InsPtr ip_;  // Never gets converted to any, so no boxed version available.
 
         // Reference values (includes NULL if nillable version).
-        LString *sval_;
-        LVector *vval_;
-        LStruct *stval_;
-        LCoRoutine *cval_;
-        LResource *xval_;
+        LStringPtr sval_;
+        LVectorPtr vval_;
+        LStructPtr stval_;
+        LCoRoutinePtr cval_;
+        LResourcePtr xval_;
 
         // Boxed scalars (never NULL)
-        BoxedInt *bival_;
-        BoxedFloat *bfval_;
+        BoxedIntPtr bival_;
+        BoxedFloatPtr bfval_;
 
         // Generic reference access.
-        RefObj *ref_;
+        RefObjPtr ref_;
     };
     public:
 
@@ -371,7 +426,7 @@ struct Value {
     inline void DECRTNIL() const { if (ref_) DECRT(); }
     inline void DECTYPE(ValueType t) const { if (IsRefNil(t)) DECRTNIL(); }
 
-    string ToString(ValueType vtype, PrintPrefs &pp) const;
+    void ToString(ostringstream &ss, ValueType vtype, PrintPrefs &pp) const;
     bool Equal(ValueType vtype, const Value &o, ValueType otype, bool structural) const;
     void Mark(ValueType vtype);
     void MarkRef();
@@ -417,7 +472,7 @@ struct LStruct : RefObj {
 
     ValueType ElemType(intp i) const;
 
-    string ToString(PrintPrefs &pp);
+    void ToString(ostringstream &ss, PrintPrefs &pp);
 
     bool Equal(const LStruct &o) {
         // RefObj::Equal has already guaranteed the typeoff's are the same.
@@ -440,11 +495,7 @@ struct LStruct : RefObj {
     void Init(Value *from, intp len, bool inc) {
         assert(len && len == Len());
         memcpy(&At(0), from, len * sizeof(Value));
-        if (inc) for (intp i = 0; i < len; i++) AtInc(i);
-    }
-
-    Value &AtInc(intp i) const {
-        return At(i).INCTYPE(ElemType(i));
+        if (inc) for (intp i = 0; i < len; i++) At(i).INCTYPE(ElemType(i));
     }
 
     void Mark() {
@@ -455,13 +506,12 @@ struct LStruct : RefObj {
 
 struct LVector : RefObj {
     intp len;    // has to match the Value integer type, since we allow the length to be obtained
+    intp maxl;
 
     private:
     Value *v;   // use At()
 
     public:
-    intp maxl;
-
     LVector(intp _initial, intp _max, type_elem_t _tti);
 
     ~LVector() { assert(0); }   // destructed by DECREF
@@ -525,7 +575,7 @@ struct LVector : RefObj {
 
     void Append(LVector *from, intp start, intp amount);
 
-    string ToString(PrintPrefs &pp);
+    void ToString(ostringstream &ss, PrintPrefs &pp);
 
     bool Equal(const LVector &o) {
         // RefObj::Equal has already guaranteed the typeoff's are the same.
@@ -554,10 +604,6 @@ struct LVector : RefObj {
                 At(i).INCRTNIL();
     }
 
-    Value &AtInc(intp i) const {
-        return At(i).INCTYPE(ElemType());
-    }
-
     void Mark() {
         auto et = ElemType();
         if (IsRefNil(et))
@@ -565,6 +611,10 @@ struct LVector : RefObj {
                 At(i).Mark(et);
     }
 };
+
+inline string_view flat_string_view(const flatbuffers::String *s) {
+    return string_view(s->c_str(), s->size());
+}
 
 struct VMLog {
     struct LogVar {
@@ -640,22 +690,52 @@ struct VM {
 
     VMLog vml;
 
+    ostringstream ss_reuse;
+
     bool trace;
     bool trace_tail;
-    string trace_output;
+    vector<ostringstream> trace_output;
+    size_t trace_ring_idx;
 
     int64_t vm_count_ins;
     int64_t vm_count_fcalls;
     int64_t vm_count_bcalls;
 
-    typedef void (VM::* f_ins_pointer)();
+    #ifndef VM_COMPILED_CODE_MODE
+        //#define VM_INS_SWITCH
+    #endif
+
+    //#define VM_ERROR_RET_EXPERIMENT
+    #if defined(VM_ERROR_RET_EXPERIMENT) && !defined(VM_COMPILED_CODE_MODE)
+        #define VM_INS_RET bool
+        #ifdef VM_INS_SWITCH
+            #define VM_RET break
+            #define VM_TERMINATE return
+        #else
+            #define VM_RET return false
+            #define VM_TERMINATE return true
+        #endif
+    #else 
+        #define VM_INS_RET void
+        #ifdef VM_INS_SWITCH
+            #define VM_RET break
+            #define VM_TERMINATE return
+        #else
+            #define VM_RET
+            #define VM_TERMINATE
+        #endif
+    #endif
+
+    #ifndef VM_INS_SWITCH
+    typedef VM_INS_RET (VM::* f_ins_pointer)();
     f_ins_pointer f_ins_pointers[IL_MAX_OPS];
+    #endif
 
     const void *compiled_code_ip;
 
     const vector<string> &program_args;
 
-    VM(const char *_pn, string &_bytecode_buffer, const void *entry_point,
+    VM(string_view _pn, string &_bytecode_buffer, const void *entry_point,
        const void *static_bytecode, const vector<string> &args);
     ~VM();
 
@@ -665,7 +745,7 @@ struct VM {
     const TypeInfo &GetVarTypeInfo(int varidx);
 
     void SetMaxStack(int ms) { maxstacksize = ms; }
-    const char *GetProgramName() { return programname.c_str(); }
+    string_view GetProgramName() { return programname; }
 
     type_elem_t GetIntVectorType(int which);
     type_elem_t GetFloatVectorType(int which);
@@ -679,17 +759,15 @@ struct VM {
     BoxedFloat *NewFloat(floatp f);
     LResource *NewResource(void *v, const ResourceType *t);
     LString *NewString(size_t l);
-    LString *NewString(const char *c, size_t l);
-    LString *NewString(const string &s);
-    LString *NewString(const char *c1, size_t l1, const char *c2, size_t l2);
+    LString *NewString(string_view s);
+    LString *NewString(string_view s1, string_view s2);
 
     Value Error(string err, const RefObj *a = nullptr, const RefObj *b = nullptr);
     Value BuiltinError(string err) { return Error(err); }
-    void VMAssert(bool ok, const char *what);
-    void VMAssert(bool ok, const char *what, const RefObj *a, const RefObj *b);
+    void VMAssert(const char *what);
+    void VMAssert(const char *what, const RefObj *a, const RefObj *b);
 
-    string ValueDBG(const RefObj *a);
-    string DumpVar(const Value &x, size_t idx, bool dumpglobals);
+    void DumpVar(ostringstream &ss, const Value &x, size_t idx, bool dumpglobals);
 
     void EvalMulti(const int *mip, int definedfunction, const int *call_arg_types,
                    block_t comp_retip, int tempmask);
@@ -699,16 +777,16 @@ struct VM {
     #ifdef VM_COMPILED_CODE_MODE
         #define VM_OP_ARGS const int *ip
         #define VM_OP_ARGS_CALL const int *ip, block_t fcont
-        #define VM_JUMP_RET bool
+        #define VM_JMP_RET bool
     #else
         #define VM_OP_ARGS
         #define VM_OP_ARGS_CALL
-        #define VM_JUMP_RET void
+        #define VM_JMP_RET VM_INS_RET
     #endif
 
     void JumpTo(InsPtr j);
     InsPtr GetIP();
-    int VarCleanup(string *error, int towhere);
+    int VarCleanup(ostringstream *error, int towhere);
     void StartStackFrame(int definedfunction, InsPtr retip, int tempmask);
     void FunIntroPre(InsPtr fun);
     void FunIntro(VM_OP_ARGS);
@@ -724,20 +802,23 @@ struct VM {
 
     void EndEval(Value &ret, ValueType vt);
 
-    #define F(N, A) void F_##N(VM_OP_ARGS);
-        ILBASENAMES
-    #undef F
-    #define F(N, A) void F_##N(VM_OP_ARGS_CALL);
-        ILCALLNAMES
-    #undef F
-    #define F(N, A) VM_JUMP_RET F_##N();
-        ILJUMPNAMES
-    #undef F
+    #ifndef VM_INS_SWITCH
+        #define F(N, A) VM_INS_RET F_##N(VM_OP_ARGS);
+            ILBASENAMES
+        #undef F
+        #define F(N, A) VM_INS_RET F_##N(VM_OP_ARGS_CALL);
+            ILCALLNAMES
+        #undef F
+        #define F(N, A) VM_JMP_RET F_##N();
+            ILJUMPNAMES
+        #undef F
+    #endif
 
     void EvalProgram();
+    void EvalProgramInner();
 
-    void PushDerefField(int i);
-    void PushDerefIdxVector(intp i);
+    void PushDerefIdxVectorSc(intp i);
+    void PushDerefIdxVectorRef(intp i);
     void PushDerefIdxStruct(intp i);
     void PushDerefIdxString(intp i);
     void LvalueIdxVector(int lvalop, intp i);
@@ -756,8 +837,8 @@ struct VM {
     void Push(const Value &v);
     Value Pop();
 
-    string StructName(const TypeInfo &ti);
-    const char *ReverseLookupType(uint v);
+    string_view StructName(const TypeInfo &ti);
+    string_view ReverseLookupType(uint v);
     void Trace(bool on, bool tail) { trace = on; trace_tail = tail; }
     double Time() { return SecondsSinceStart(); }
 
@@ -831,18 +912,16 @@ template <int N> inline Value ToValueFLT(const vec<float, N> &v, int maxelems = 
     return ToValueF<N>(vec<floatp, N>(v), maxelems);
 }
 
-
-
 inline intp RangeCheck(const Value &idx, intp range, intp bias = 0) {
     auto i = idx.ival();
     if (i < bias || i >= bias + range)
-        g_vm->BuiltinError("index out of range [" + to_string(bias) + ".." +
-                           to_string(bias + range) + "): " + to_string(i));
+        g_vm->BuiltinError(cat("index out of range [", bias, "..", bias + range, "): ", i));
     return i;
 }
 
-inline const char *IdName(const bytecode::BytecodeFile *bcf, int i) {
-    return bcf->idents()->Get(bcf->specidents()->Get(i)->ididx())->name()->c_str();
+inline string_view IdName(const bytecode::BytecodeFile *bcf, int i) {
+    auto s = bcf->idents()->Get(bcf->specidents()->Get(i)->ididx())->name();
+    return flat_string_view(s);
 }
 
 template<typename T> inline T GetResourceDec(Value &val, const ResourceType *type) {
@@ -854,7 +933,7 @@ template<typename T> inline T GetResourceDec(Value &val, const ResourceType *typ
         g_vm->BuiltinError("cannot use temporary resource (store it first)");
     val.DECRT();
     if (x->type != type)
-        g_vm->BuiltinError(string("needed resource type: ") + type->name + ", got: " +
+        g_vm->BuiltinError(string_view("needed resource type: ") + type->name + ", got: " +
             x->type->name);
     return (T)x->val;
 }
@@ -866,7 +945,7 @@ inline vector<string> VectorOfStrings(Value &v) {
     return r;
 }
 
-void EscapeAndQuote(const string &s, string &r);
+void EscapeAndQuote(string_view s, ostringstream &ss);
 
 struct LCoRoutine : RefObj {
     bool active;       // Goes to false when it has hit the end of the coroutine instead of a yield.
@@ -1024,7 +1103,7 @@ struct LCoRoutine : RefObj {
         auto &var = AccessVar(i);
         // FIXME: For testing.
         if(vt != var.type && var.type != V_NIL && !(vt == V_VECTOR && var.type == V_STRUCT)) {
-            Output(OUTPUT_INFO, "coro elem %s != %s", vti.Debug().c_str(), BaseTypeName(var.type));
+            Output(OUTPUT_INFO, "coro elem ", vti.Debug(), " != ", BaseTypeName(var.type));
             assert(false);
         }
         #endif

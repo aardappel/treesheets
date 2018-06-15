@@ -121,12 +121,12 @@ uint NumHWThreads() { return hwthreads; }
 uint NumHWCores() { return hwcores; }
 
 
-string StripFilePart(const char *filepath) {
-    auto fpos = strrchr(filepath, FILESEP);
-    return fpos ? string(filepath, fpos - filepath + 1) : "";
+string_view StripFilePart(string_view filepath) {
+    auto fpos = filepath.find_last_of(FILESEP);
+    return fpos != string_view::npos ? filepath.substr(0, fpos + 1) : "";
 }
 
-string StripDirPart(const char *filepath) {
+const char *StripDirPart(const char *filepath) {
     auto fpos = strrchr(filepath, FILESEP);
     if (!fpos) fpos = strrchr(filepath, ':');
     return fpos ? fpos + 1 : filepath;
@@ -138,8 +138,8 @@ bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bu
     InitCPU();
     exefile = SanitizePath(exefilepath);
     cur_loader = loader;
-    datadir = StripFilePart(exefile.c_str());
-    auxdir = auxfilepath ? StripFilePart(SanitizePath(auxfilepath).c_str()) : datadir;
+    datadir = StripFilePart(exefile);
+    auxdir = auxfilepath ? StripFilePart(SanitizePath(auxfilepath)) : datadir;
     writedir = auxdir;
     // FIXME: use SDL_GetBasePath() instead?
     #ifdef _WIN32
@@ -156,7 +156,7 @@ bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bu
             CFRelease(resourcesURL);
             if (!res)
                 return false;
-            datadir = string(path) + "/";
+            datadir = string_view(path) + "/";
             #ifdef __IOS__
                 // There's probably a better way to do this in CF.
                 writedir = StripFilePart(path) + "Documents/";
@@ -174,8 +174,8 @@ bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bu
         auto externalstoragepath = SDL_AndroidGetExternalStoragePath();
         Output(OUTPUT_INFO, internalstoragepath);
         Output(OUTPUT_INFO, externalstoragepath);
-        if (internalstoragepath) datadir = internalstoragepath + string("/");
-        if (externalstoragepath) writedir = externalstoragepath + string("/");
+        if (internalstoragepath) datadir = internalstoragepath + string_view("/");
+        if (externalstoragepath) writedir = externalstoragepath + string_view("/");
         // For some reason, the above SDL functionality doesn't actually work,
         // we have to use the relative path only to access APK files:
         datadir = "";
@@ -185,29 +185,34 @@ bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bu
     return true;
 }
 
-string SanitizePath(const char *path) {
+string SanitizePath(string_view path) {
     string r;
-    while (*path) {
-        if (*path == '\\' || *path == '/') r += FILESEP;
-        else r += *path;
-        path++;
+    for (auto c : path) {
+        r += c == '\\' || c == '/' ? FILESEP : c;
     }
     return r;
 }
 
-map<string, tuple<string, int64_t, int64_t, int64_t>> pakfile_registry;
+map<string, tuple<string, int64_t, int64_t, int64_t>, less<>> pakfile_registry;
 
-void AddPakFileEntry(const char *pakfilename, const char *relfilename, int64_t off,
+void AddPakFileEntry(string_view pakfilename, string_view relfilename, int64_t off,
                      int64_t len, int64_t uncompressed) {
-    pakfile_registry[relfilename] = make_tuple(pakfilename, off, len, uncompressed);
+    pakfile_registry[string(relfilename)] = make_tuple(pakfilename, off, len, uncompressed);
 }
 
-int64_t LoadFile(const char *relfilename, string *dest, int64_t start, int64_t len) {
+int64_t LoadFileFromAny(string_view srelfilename, string *dest, int64_t start, int64_t len) {
+    auto l = cur_loader(auxdir + srelfilename, dest, start, len);
+    if (l >= 0) return l;
+    l = cur_loader(datadir + srelfilename, dest, start, len);
+    if (l >= 0) return l;
+    return cur_loader(writedir + srelfilename, dest, start, len);
+}
+
+int64_t LoadFile(string_view relfilename, string *dest, int64_t start, int64_t len) {
     assert(cur_loader);
     auto it = pakfile_registry.find(relfilename);
     if (it != pakfile_registry.end()) {
-        auto l = cur_loader((datadir + get<0>(it->second)).c_str(), dest, get<1>(it->second),
-                              get<2>(it->second));
+        auto l = LoadFileFromAny(get<0>(it->second), dest, get<1>(it->second), get<2>(it->second));
         if (l >= 0) {
             auto uncompressed = get<3>(it->second);
             if (uncompressed >= 0) {
@@ -221,30 +226,25 @@ int64_t LoadFile(const char *relfilename, string *dest, int64_t start, int64_t l
             }
         }
     }
-    if (len > 0) Output(OUTPUT_INFO, "load: %s", relfilename);
-    auto srfn = SanitizePath(relfilename);
-    auto l = cur_loader((auxdir + srfn).c_str(), dest, start, len);
-    if (l >= 0) return l;
-    l = cur_loader((datadir + srfn).c_str(), dest, start, len);
-    if (l >= 0) return l;
-    return cur_loader((writedir + srfn).c_str(), dest, start, len);
+    if (len > 0) Output(OUTPUT_INFO, "load: ", relfilename);
+    return LoadFileFromAny(SanitizePath(relfilename), dest, start, len);
 }
 
-FILE *OpenForWriting(const char *relfilename, bool binary) {
+FILE *OpenForWriting(string_view relfilename, bool binary) {
     return fopen((writedir + SanitizePath(relfilename)).c_str(), binary ? "wb" : "w");
 }
 
-bool WriteFile(const char *relfilename, bool binary, const char *data, size_t len) {
+bool WriteFile(string_view relfilename, bool binary, string_view contents) {
     FILE *f = OpenForWriting(relfilename, binary);
     size_t written = 0;
     if (f) {
-        written = fwrite(data, len, 1, f);
+        written = fwrite(contents.data(), contents.size(), 1, f);
         fclose(f);
     }
     return written == 1;
 }
 
-bool ScanDirAbs(const char *absdir, vector<pair<string, int64_t>> &dest) {
+bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest) {
     string folder = SanitizePath(absdir);
     #ifdef _WIN32
         WIN32_FIND_DATA fdata;
@@ -277,7 +277,7 @@ bool ScanDirAbs(const char *absdir, vector<pair<string, int64_t>> &dest) {
                 string cFileName = xFileName.substr(xFileName.find_last_of('/') + 1);
                 struct stat st;
                 stat(gl.gl_pathv[fi], &st);
-                dest.push_back(make_pair(cFileName.c_str(), isDir ? -1 : (int64_t)st.st_size));
+                dest.push_back(make_pair(cFileName, isDir ? -1 : (int64_t)st.st_size));
             }
             globfree(&gl);
             return true;
@@ -286,23 +286,17 @@ bool ScanDirAbs(const char *absdir, vector<pair<string, int64_t>> &dest) {
     return false;
 }
 
-bool ScanDir(const char *reldir, vector<pair<string, int64_t>> &dest) {
+bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest) {
     auto srfn = SanitizePath(reldir);
-    return ScanDirAbs((auxdir + srfn).c_str(), dest) ||
-           ScanDirAbs((datadir + srfn).c_str(), dest) ||
-           ScanDirAbs((writedir + srfn).c_str(), dest);
+    return ScanDirAbs(auxdir + srfn, dest) ||
+           ScanDirAbs(datadir + srfn, dest) ||
+           ScanDirAbs(writedir + srfn, dest);
 }
 
 OutputType min_output_level = OUTPUT_WARN;
 
-void Output(OutputType ot, const char *msg, ...) {
+void Output(OutputType ot, const char *buf) {
     if (ot < min_output_level) return;
-    va_list args;
-    va_start(args, msg);
-    char buf[1024 * 4];
-    vsnprintf(buf, sizeof(buf), msg, args);
-    buf[sizeof(buf) - 1] = 0;
-    va_end(args);
     #ifdef __ANDROID__
         auto tag = "lobster";
         switch (ot) {

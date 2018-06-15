@@ -328,7 +328,7 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
                     auto &dv1 = dv[i1];
                     auto &dv2 = dv[i2];
                     #ifndef __EMSCRIPTEN__  // FIXME
-                        assert(dv1.dist * dv2.dist < 0);
+                        assert(dv1.dist * dv2.dist <= 0);
                     #endif
                     edges.push_back(verts2edge(p1, p2, dv1, dv2));
                 }
@@ -584,12 +584,12 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
     Output(OUTPUT_DEBUG, "meshgen verts = %lu, edgeverts = %lu, tris = %lu, mctris = %lu,"
            " scale = %f\n", verts.size(), edges.size(), triangles.size() / 3,
            mctriangles.size() / 3, gridscale);
-    auto m = new Mesh(new Geometry(verts.data(), verts.size(), sizeof(mgvert), "PNC"),
+    auto m = new Mesh(new Geometry(make_span(verts), "PNC"),
                       pointmode ? PRIM_POINT : PRIM_TRIS);
     if (pointmode) {
         m->pointsize = 1000 / gridscale;
     } else {
-        m->surfs.push_back(new Surface(triangles.data(), triangles.size(), PRIM_TRIS));
+        m->surfs.push_back(new Surface(make_span(triangles), PRIM_TRIS));
     }
     return m;
 }
@@ -814,7 +814,8 @@ void AddMeshGen() {
         " when a body is given, restores the previous transform afterwards");
 
     STARTDECL(mg_rotate) (Value &axis, Value &angle, Value &body) {
-        if (body.True()) g_vm->Push(Value(g_vm->NewString((char *)&currot, sizeof(float3x3))));
+        if (body.True()) g_vm->Push(Value(g_vm->NewString(string_view((char *)&currot,
+                                                                      sizeof(float3x3)))));
         auto v = ValueDecToFLT<3>(axis);
         currot *= float3x3(angle.fltval() * RAD, v);
         return body;

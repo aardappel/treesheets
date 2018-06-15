@@ -100,71 +100,55 @@ template<typename T> T *Prev(T *n) { return (T *)n->prev; }
 #define loopdllistreverse(L, n) \
     for (auto n = (L).Prev(), p = Prev(n); n != (void *)&(L); (n = p),(p = Prev(n)))
 
-inline uchar *loadfile(const char *fn, size_t *lenret = nullptr) {
-    FILE *f = fopen(fn, "rb");
-    if (!f) return nullptr;
-    fseek(f, 0, SEEK_END);
-    size_t len = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    uchar *buf = (uchar *)malloc(len+1);
-    if (!buf) { fclose(f); return nullptr; }
-    buf[len] = 0;
-    size_t rlen = fread(buf, 1, len, f);
-    fclose(f);
-    if (len!=rlen || len<=0) { free(buf); return nullptr; }
-    if (lenret) *lenret = len;
-    return buf;
-}
-
 class MersenneTwister          {
     const static uint N = 624;
     const static uint M = 397;
     const static uint K = 0x9908B0DFU;
 
-    uint hiBit(uint u)  { return u & 0x80000000U; }
-    uint loBit(uint u)  { return u & 0x00000001U; }
+    uint hiBit(uint u) { return u & 0x80000000U; }
+    uint loBit(uint u) { return u & 0x00000001U; }
     uint loBits(uint u) { return u & 0x7FFFFFFFU; }
 
-    uint mixBits(uint u, uint v) { return hiBit(u)|loBits(v); }
+    uint mixBits(uint u, uint v) { return hiBit(u) | loBits(v); }
 
-    uint state[N+1];
+    uint state[N + 1];
     uint *next;
     int left;
 
     public:
-
     MersenneTwister() : left(-1) {}
 
     void Seed(uint seed) {
         uint x = (seed | 1U) & 0xFFFFFFFFU, *s = state;
         int j;
-        for(left=0, *s++=x, j=N; --j; *s++ = (x*=69069U) & 0xFFFFFFFFU);
+        for (left = 0, *s++ = x, j = N; --j; *s++ = (x *= 69069U) & 0xFFFFFFFFU)
+            ;
     }
 
     uint Reload() {
-        uint *p0=state, *p2=state+2, *pM=state+M, s0, s1;
+        uint *p0 = state, *p2 = state + 2, *pM = state + M, s0, s1;
         int j;
-        if(left < -1) Seed(4357U);
-        left=N-1, next=state+1;
-        for(s0=state[0], s1=state[1], j=N-M+1; --j; s0=s1, s1=*p2++)
+        if (left < -1) Seed(4357U);
+        left = N - 1, next = state + 1;
+        for (s0 = state[0], s1 = state[1], j = N - M + 1; --j; s0 = s1, s1 = *p2++)
             *p0++ = *pM++ ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
-        for(pM=state, j=M; --j; s0=s1, s1=*p2++)
+        for (pM = state, j = M; --j; s0 = s1, s1 = *p2++)
             *p0++ = *pM++ ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
-        s1=state[0], *p0 = *pM ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
+        s1 = state[0], *p0 = *pM ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
         s1 ^= (s1 >> 11);
-        s1 ^= (s1 <<  7) & 0x9D2C5680U;
+        s1 ^= (s1 << 7) & 0x9D2C5680U;
         s1 ^= (s1 << 15) & 0xEFC60000U;
-        return(s1 ^ (s1 >> 18));
+        return (s1 ^ (s1 >> 18));
     }
 
     uint Random() {
         uint y;
-        if(--left < 0) return(Reload());
-        y  = *next++;
+        if (--left < 0) return (Reload());
+        y = *next++;
         y ^= (y >> 11);
-        y ^= (y <<  7) & 0x9D2C5680U;
+        y ^= (y << 7) & 0x9D2C5680U;
         y ^= (y << 15) & 0xEFC60000U;
-        return(y ^ (y >> 18));
+        return (y ^ (y >> 18));
     }
 
     void ReSeed(uint seed) {
@@ -174,17 +158,14 @@ class MersenneTwister          {
     }
 };
 
-
 class PCG32 {
     // This is apparently better than the Mersenne Twister, and its also smaller/faster!
     // Adapted from *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
     // Licensed under Apache License 2.0 (NO WARRANTY, etc. see website).
-
     uint64_t state;
     uint64_t inc;
 
     public:
-
     PCG32() : state(0xABADCAFEDEADBEEF), inc(0xDEADBABEABADD00D) {}
 
     uint32_t Random() {
@@ -197,7 +178,10 @@ class PCG32 {
         return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
     }
 
-    void ReSeed(uint32_t s) { state = s; inc = 0xDEADBABEABADD00D; }
+    void ReSeed(uint32_t s) {
+        state = s;
+        inc = 0xDEADBABEABADD00D;
+    }
 };
 
 template<typename T> struct RandomNumberGenerator {
@@ -211,19 +195,41 @@ template<typename T> struct RandomNumberGenerator {
     double rnddouble() { return rnd.Random() * (1.0 / 4294967296.0); }
     float rndfloat() { return (float)rnddouble(); } // FIXME: performance?
     float rndfloatsigned() { return (float)(rnddouble() * 2 - 1); }
+
+    double n2 = 0.0;
+    bool n2_cached = false;
+    // Returns gaussian with stddev of 1 and mean of 0.
+    // Box Muller method.
+    double rndgaussian() {
+        n2_cached = !n2_cached;
+        if (n2_cached) {
+            double x, y, r;
+            do {
+                x = 2.0 * rnddouble() - 1;
+                y = 2.0 * rnddouble() - 1;
+                r = x * x + y * y;
+            } while (r == 0.0 || r > 1.0);
+            double d = sqrt(-2.0 * log(r) / r);
+            double n1 = x * d;
+            n2 = y * d;
+            return n1;
+        } else {
+            return n2;
+        }
+    }
 };
 
 // Special case for to_string to get exact float formatting we need.
 template<typename T> string to_string_float(T x, int decimals = -1) {
-    // stringstream gives more consistent cross-platform results than to_string() for floats, and
+    // ostringstream gives more consistent cross-platform results than to_string() for floats, and
     // can at least be configured to turn scientific notation off.
-    std::stringstream ss;
+    ostringstream ss;
     // Suppress scientific notation.
     ss << std::fixed;
     // There's no way to tell it to just output however many decimals are actually significant,
     // sigh. Once you turn on fixed, it will default to 5 or 6, depending on platform, for both
     // float and double. So we set our own more useful defaults:
-    int default_precision = sizeof(T) == sizeof(float) ? 6 : 12;
+    size_t default_precision = sizeof(T) == sizeof(float) ? 6 : 12;
     ss << std::setprecision(decimals <= 0 ? default_precision : decimals);
     ss << x;
     auto s = ss.str();
@@ -241,10 +247,8 @@ template<typename T> string to_string_float(T x, int decimals = -1) {
     return s;
 }
 
-inline string to_string_hex(size_t x) {
-    stringstream ss;
-    ss << "0x" << std::hex << x;
-    return ss.str();
+inline void to_string_hex(ostringstream &ss, size_t x) {
+    ss << "0x" << std::hex << x << std::dec;
 }
 
 /* Accumulator: a container that is great for accumulating data like std::vector,
@@ -701,3 +705,57 @@ inline int PopCount64(uint64_t val) {
         return __builtin_popcountll(val);
     #endif
 }
+
+
+// string & string_view helpers.
+
+inline string operator+(string_view a, string_view b) {
+    string r;
+    r.reserve(a.size() + b.size());
+    r += a;
+    r += b;
+    return r;
+}
+
+inline void cat_helper(stringstream &) {}
+template<typename T, typename ...Ts> void cat_helper(stringstream &ss, const T &t, const Ts&... args) {
+    ss << t;
+    cat_helper(ss, args...);
+}
+template<typename ...Ts> string cat(const Ts&... args) {
+    stringstream ss;
+    cat_helper(ss, args...);
+    return ss.str();
+}
+
+
+// Strict aliasing safe memory reading and writing.
+// memcpy with a constant size is replaced by a single instruction in VS release mode, and for
+// clang/gcc always.
+
+template<typename T> T ReadMem(const void *p) {
+    T dest;
+    memcpy(&dest, p, sizeof(T));
+    return dest;
+}
+
+template<typename T> void WriteMemInc(uchar *&dest, const T &src) {
+    memcpy(dest, &src, sizeof(T));
+    dest += sizeof(T);
+}
+
+
+#define DEFINE_BITWISE_OPERATORS_FOR_ENUM(T) \
+    inline T operator~ (T a) { return (T)~(int)a; } \
+    inline T operator| (T a, T b) { return (T)((int)a | (int)b); } \
+    inline T operator& (T a, T b) { return (T)((int)a & (int)b); } \
+    inline T &operator|= (T &a, T b) { return (T &)((int &)a |= (int)b); } \
+    inline T &operator&= (T &a, T b) { return (T &)((int &)a &= (int)b); }
+
+#define USE_EXCEPTION_HANDLING
+#ifdef USE_EXCEPTION_HANDLING
+    #define THROW_OR_ABORT(X) { throw (X); }
+#else
+    #define THROW_OR_ABORT(X) { printf("%s\n", (X).c_str()); abort(); }
+#endif
+

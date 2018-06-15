@@ -32,7 +32,7 @@ struct SteamState {
 
 void SteamState::OnGameOverlayActivated(GameOverlayActivated_t *callback) {
     steamoverlayactive = callback->m_bActive;
-    Output(OUTPUT_INFO, "steam overlay toggle: %d", steamoverlayactive);
+    Output(OUTPUT_INFO, "steam overlay toggle: ", steamoverlayactive);
 }
 
 void SteamState::OnScreenshotRequested(ScreenshotRequested_t *) {
@@ -44,7 +44,7 @@ void SteamState::OnScreenshotRequested(ScreenshotRequested_t *) {
 }
 
 extern "C" void __cdecl SteamAPIDebugTextHook(int severity, const char *debugtext) {
-    Output(severity ? OUTPUT_WARN : OUTPUT_INFO, "%s", debugtext);
+    Output(severity ? OUTPUT_WARN : OUTPUT_INFO, debugtext);
 }
 
 SteamState *steam = nullptr;
@@ -73,7 +73,7 @@ int SteamInit(uint appid, bool screenshots) {
             }
         #endif
         bool steaminit = SteamAPI_Init();
-        Output(OUTPUT_INFO, "Steam init: %d", steaminit);
+        Output(OUTPUT_INFO, "Steam init: ", steaminit);
         if (!steaminit) return 0;
         SteamUtils()->SetWarningMessageHook(&SteamAPIDebugTextHook);
         steam = new SteamState();
@@ -180,7 +180,7 @@ void AddSteam() {
         auto s = contents.sval();
         auto ok = SteamWriteFile(fn, s->str(), s->len);
         if (!ok) {
-            ok = WriteFile(fn, true, s->str(), s->len);
+            ok = WriteFile(fn, true, s->strv());
         }
         file.DECRT();
         contents.DECRT();

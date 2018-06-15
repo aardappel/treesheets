@@ -67,7 +67,7 @@ Texture CreateTexture(const uchar *buf, const int *dim, int tf) {
     if (tf & TF_FLOAT) {
         #ifdef PLATFORM_WINNIX
             internalformat = tf & TF_SINGLE_CHANNEL ? GL_R32F : GL_RGBA32F;
-            bufferformat = internalformat;
+            bufferformat = tf & TF_SINGLE_CHANNEL ? GL_RED : GL_RGBA;
             buffersize = tf & TF_SINGLE_CHANNEL ? sizeof(float) : sizeof(float4);
             buffercomponent = GL_FLOAT;
         #else

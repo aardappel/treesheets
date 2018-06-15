@@ -1033,7 +1033,7 @@ BOOL StackWalker::ShowCallstack(HANDLE hThread, const CONTEXT *context, PReadPro
   {
     // If no context is provided, capture the context
     // See: https://stackwalker.codeplex.com/discussions/446958
-#if _WIN32_WINNT <= 0x0501
+#if true || _WIN32_WINNT <= 0x0501
       // If we need to support XP, we need to use the "old way", because "GetThreadId" is not available!
     if (hThread == GetCurrentThread())
 #else

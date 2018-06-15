@@ -30,7 +30,7 @@ struct ScriptInterface {
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
 };
 
-typedef int64_t(*ScriptLoader)(const char *absfilename, std::string *dest, int64_t start,
+typedef int64_t(*ScriptLoader)(std::string_view absfilename, std::string *dest, int64_t start,
                                int64_t len);
 
 extern std::string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *auxfilepath,

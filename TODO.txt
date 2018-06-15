@@ -1,5 +1,10 @@
 [ check google moderator for new feature requests ]
 
+- when pasting/typing in new cell, don't use average size or size above, prefer size to right or
+  below.
+
+- a way to set vertical spacing on fonts
+
 - an auto-import/merge of an external file (e.g. a text file)
   The contents of a grid would automatically be replaced by whatever is in that text file,
   and maybe auto-exported when modified?

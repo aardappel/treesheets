@@ -179,8 +179,8 @@ int updatedragpos(SDL_TouchFingerEvent &e, Uint32 et) {
 
 
 string SDLError(const char *msg) {
-    string s = string(msg) + ": " + SDL_GetError();
-    Output(OUTPUT_WARN, s.c_str());
+    string s = string_view(msg) + ": " + SDL_GetError();
+    Output(OUTPUT_WARN, s);
     SDLShutdown();
     return s;
 }
@@ -247,7 +247,7 @@ void SDLRequireGLVersion(int major, int minor) {
     #ifdef PLATFORM_WINNIX
         gl_major = major;
         gl_minor = minor;
-        glslversion = to_string(major) + to_string(minor) + "0";
+        glslversion = cat(major, minor, "0");
     #endif
 };
 
@@ -293,13 +293,13 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
         for (int i = 0; i < modes; i++) {
             SDL_DisplayMode mode;
             SDL_GetDisplayMode(0, i, &mode);
-            Output(OUTPUT_INFO, "mode: %d %d", mode.w, mode.h);
+            Output(OUTPUT_INFO, "mode: ", mode.w, " ", mode.h);
             if (landscape ? mode.w > screensize.x : mode.h > screensize.y) {
                 screensize = int2(mode.w, mode.h);
             }
         }
 
-        Output(OUTPUT_INFO, "chosen resolution: %d %d", screensize.x, screensize.y);
+        Output(OUTPUT_INFO, "chosen resolution: ", screensize.x, " ", screensize.y);
         Output(OUTPUT_INFO, "SDL about to create window...");
 
         _sdl_window = SDL_CreateWindow(title,
@@ -320,7 +320,7 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
                 96.0f;
             #endif
         if (SDL_GetDisplayDPI(display, NULL, &dpi, NULL)) dpi = default_dpi;
-        Output(OUTPUT_INFO, "dpi: %f", dpi);
+        Output(OUTPUT_INFO, cat("dpi: ", dpi));
         screensize = desired_screensize * int(dpi) / int(default_dpi);
         _sdl_window = SDL_CreateWindow(title,
                                        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -330,7 +330,7 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
                                             (isfullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     #endif
     ScreenSizeChanged();
-    Output(OUTPUT_INFO, "obtained resolution: %d %d", screensize.x, screensize.y);
+    Output(OUTPUT_INFO, "obtained resolution: ", screensize.x, " ", screensize.y);
 
     if (!_sdl_window)
         return SDLError("Unable to create window");
@@ -353,9 +353,11 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
     for(int i = 0; i < SDL_NumJoysticks(); i++) {
         SDL_Joystick *joy = SDL_JoystickOpen(i);
         if (joy) {
-            Output(OUTPUT_INFO, "Detected joystick: %s (%d axes, %d buttons, %d balls, %d hats)",
-                                SDL_JoystickName(joy), SDL_JoystickNumAxes(joy), SDL_JoystickNumButtons(joy),
-                                SDL_JoystickNumBalls(joy), SDL_JoystickNumHats(joy));
+            Output(OUTPUT_INFO, "Detected joystick: ", SDL_JoystickName(joy), " (",
+                                SDL_JoystickNumAxes(joy), " axes, ",
+                                SDL_JoystickNumButtons(joy), " buttons, ",
+                                SDL_JoystickNumBalls(joy), " balls, ",
+                                SDL_JoystickNumHats(joy), " hats)");
         };
     };
 
@@ -373,8 +375,8 @@ double GetSeconds() { return (double)(SDL_GetPerformanceCounter() - timestart) /
 
 void SDLShutdown() {
     // FIXME: SDL gives ERROR: wglMakeCurrent(): The handle is invalid. upon SDL_GL_DeleteContext
-    if (_sdl_context) /*SDL_GL_DeleteContext(_sdl_context);*/ _sdl_context = nullptr;
-    if (_sdl_window)  SDL_DestroyWindow(_sdl_window);     _sdl_window = nullptr;
+    if (_sdl_context) { /*SDL_GL_DeleteContext(_sdl_context);*/ _sdl_context = nullptr; }
+    if (_sdl_window) { SDL_DestroyWindow(_sdl_window); _sdl_window = nullptr; }
 
     SDL_Quit();
 }
@@ -634,11 +636,16 @@ void SDLMessageBox(const char *title, const char *msg) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, _sdl_window);
 }
 
-int64_t SDLLoadFile(const char *absfilename, string *dest, int64_t start, int64_t len) {
-    Output(OUTPUT_INFO, "SDLLoadFile: %s", absfilename);
-    auto f = SDL_RWFromFile(absfilename, "rb");
+int64_t SDLLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len) {
+    Output(OUTPUT_INFO, "SDLLoadFile: ", absfilename);
+    auto f = SDL_RWFromFile(absfilename.data(), "rb");
     if (!f) return -1;
     auto filelen = SDL_RWseek(f, 0, RW_SEEK_END);
+    if (filelen < 0 || filelen == LLONG_MAX) {
+        // If SDL_RWseek fails it is supposed to return -1, but on Linux it returns LLONG_MAX instead.
+        SDL_RWclose(f);
+        return -1;
+    }
     if (!len) {  // Just the file length requested.
         SDL_RWclose(f);
         return filelen;
@@ -696,28 +703,37 @@ void EngineExit(int code) {
 }
 
 void one_frame_callback() {
-    try {
+    #ifdef USE_EXCEPTION_HANDLING
+    try
+    #endif
+    {
         GraphicsFrameStart();
         assert(lobster::g_vm);
         lobster::g_vm->OneMoreFrame();
         // If this returns, we didn't hit a gl_frame() again and exited normally.
         EngineExit(0);
     }
+    #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
         if (s != "SUSPEND-VM-MAINLOOP") {
             // An actual error.
-            Output(OUTPUT_ERROR, s.c_str());
+            Output(OUTPUT_ERROR, s);
             EngineExit(1);
         }
     }
+    #endif
 }
 
 bool EngineRunByteCode(const char *fn, string &bytecode, const void *entry_point,
                        const void *static_bytecode, const vector<string> &program_args) {
-    try {
-        lobster::RunBytecode(fn ? StripDirPart(fn).c_str() : "", bytecode, entry_point,
+    #ifdef USE_EXCEPTION_HANDLING
+    try
+    #endif
+    {
+        lobster::RunBytecode(fn ? StripDirPart(fn) : "", bytecode, entry_point,
                              static_bytecode, program_args);
     }
+    #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
         #ifdef USE_MAIN_LOOP_CALLBACK
         if (s == "SUSPEND-VM-MAINLOOP") {
@@ -739,9 +755,10 @@ bool EngineRunByteCode(const char *fn, string &bytecode, const void *entry_point
             if (lobster::g_vm) delete lobster::g_vm;
             lobster::g_vm = nullptr;
             // An actual error.
-            throw s;
+            THROW_OR_ABORT(s);
         }
     }
+    #endif
 
     delete lobster::g_vm;
     lobster::g_vm = nullptr;
@@ -753,7 +770,10 @@ int EngineRunCompiledCodeMain(int argc, char *argv[], const void *entry_point, c
 
     min_output_level = OUTPUT_INFO;
 
-    try {
+    #ifdef USE_EXCEPTION_HANDLING
+    try
+    #endif
+    {
         InitPlatform ("../../lobster/", "", false, SDLLoadFile);  // FIXME
         RegisterCoreEngineBuiltins();
 
@@ -763,11 +783,12 @@ int EngineRunCompiledCodeMain(int argc, char *argv[], const void *entry_point, c
         if (EngineRunByteCode(argv[0], empty, entry_point, bytecodefb, args))
             return 0;  // Emscripten.
     }
+    #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
-        Output(OUTPUT_ERROR, s.c_str());
+        Output(OUTPUT_ERROR, s);
         EngineExit(1);
     }
-
+    #endif
     EngineExit(0);
     return 0;
 }

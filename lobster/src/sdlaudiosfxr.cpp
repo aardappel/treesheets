@@ -31,7 +31,7 @@ struct Sound {
 
 unordered_map<string, Sound> sound_files;
 
-Mix_Chunk *RenderSFXR(const string &buf) {
+Mix_Chunk *RenderSFXR(string_view buf) {
     int wave_type = 0;
 
     float p_base_freq = 0.3f;
@@ -104,8 +104,9 @@ Mix_Chunk *RenderSFXR(const string &buf) {
     int arp_limit;
     double arp_mod;
 
-    auto file = buf.c_str();
+    auto file = buf.data();
     auto fread_mem = [&](auto &dest) {
+        assert(file < buf.data() + buf.size());
         memcpy(&dest, file, sizeof(dest));
         file += sizeof(dest);
     };
@@ -351,7 +352,7 @@ Mix_Chunk *RenderSFXR(const string &buf) {
     return chunk;
 }
 
-Sound *LoadSound(const char* filename, bool sfxr) {
+Sound *LoadSound(const char *filename, bool sfxr) {
     auto it = sound_files.find(filename);
     if (it != sound_files.end()) {
         return &it->second;
@@ -378,7 +379,7 @@ bool SDLSoundInit() {
     if (sound_init) return true;
 
     for (int i = 0; i < SDL_GetNumAudioDrivers(); ++i) {
-        Output(OUTPUT_INFO, "Audio driver available %s", SDL_GetAudioDriver(i));
+        Output(OUTPUT_INFO, "Audio driver available ", SDL_GetAudioDriver(i));
     }
 
     if (SDL_InitSubSystem(SDL_INIT_AUDIO))
@@ -387,19 +388,19 @@ bool SDLSoundInit() {
     #ifdef _WIN32
         // It defaults to wasapi which doesn't output any sound?
         auto err = SDL_AudioInit("directsound");
-        if (err) Output(OUTPUT_INFO, "Forcing driver failed %d", err);
+        if (err) Output(OUTPUT_INFO, "Forcing driver failed", err);
     #endif
 
     int count = SDL_GetNumAudioDevices(0);
     for (int i = 0; i < count; ++i) {
-        Output(OUTPUT_INFO, "Audio device %d: %s", i, SDL_GetAudioDeviceName(i, 0));
+        Output(OUTPUT_INFO, "Audio device ", i, ":", SDL_GetAudioDeviceName(i, 0));
     }
 
     Mix_Init(0);
     // For some reason this distorts when set to 44100 and samples at 22050 are played.
     // Also SFXR seems hard-coded to 22050, so that's what we'll use for now.
     if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) == -1) {
-        Output(OUTPUT_ERROR, "Mix_OpenAudio: %s\n", Mix_GetError());
+        Output(OUTPUT_ERROR, "Mix_OpenAudio: ", Mix_GetError());
         return false;
     }
     // This seems to be needed to not distort when multiple sounds are played.

@@ -86,7 +86,7 @@ inline void PolyReduce(vector<int> &triangles, vector<mgvert> &verts) {
                 }
             }
         }
-        //Output(OUTPUT_DEBUG, "flipped tris: %d\n", flipped);
+        //Output(OUTPUT_DEBUG, "flipped tris: ", flipped);
         for (size_t t = 0; t < triangles.size(); t += 3) {
             int keep = -1;
             for (int i = 0; i < 3; i++) {
@@ -124,7 +124,7 @@ inline void PolyReduce(vector<int> &triangles, vector<mgvert> &verts) {
             }
         }
         auto polysreduced = (triangles.size() - writep) / 3;
-        //Output(OUTPUT_DEBUG, "reduced tris: %d\n", polysreduced);
+        //Output(OUTPUT_DEBUG, "reduced tris: ", polysreduced);
         triangles.erase(triangles.begin() + writep, triangles.end());
         for (size_t t = 0; t < triangles.size(); t++) {
             if (vertmap[triangles[t]] >= 0 && vertmap[triangles[t]] < triangles[t])

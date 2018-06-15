@@ -45,7 +45,7 @@ extern void SDLMessageBox(const char *title, const char *msg);
 extern bool SDLPlaySound(const char *filename, bool sfxr, int vol = 128);
 extern void SDLSoundClose();
 
-extern int64_t SDLLoadFile(const char *absfilename, string *dest, int64_t start, int64_t len);
+extern int64_t SDLLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len);
 
 extern bool ScreenShot(const char *filename);
 

@@ -104,10 +104,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 };
 
-static int64_t TreeSheetsLoader(const char *absfilename, std::string *dest, int64_t start,
+static int64_t TreeSheetsLoader(std::string_view absfilename, std::string *dest, int64_t start,
                                 int64_t len) {
     size_t l = 0;
-    auto buf = (char *)loadfile(absfilename, &l);
+    auto buf = (char *)loadfile(std::string(absfilename).c_str(), &l);
     if (!buf) return -1;
     dest->assign(buf, l);
     free(buf);

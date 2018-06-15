@@ -21,6 +21,7 @@
 #ifdef USE_FREETYPE
     #include <ft2build.h>
     #include FT_FREETYPE_H
+    #include FT_STROKER_H
 #else
     #define STB_TRUETYPE_IMPLEMENTATION
     #define STBTT_STATIC
@@ -29,12 +30,14 @@
 
 #include "lobster/unicode.h"
 
+FT_Library library = nullptr;
+
 BitmapFont::~BitmapFont() {
     DeleteTexture(tex);
 }
 
-BitmapFont::BitmapFont(OutlineFont *_font, int _size)
-    : height(0), usedcount(1), size(_size), font(_font) {}
+BitmapFont::BitmapFont(OutlineFont *_font, int _size, float _osize)
+    : height(0), usedcount(1), size(_size), outlinesize(_osize), font(_font) {}
 
 bool BitmapFont::CacheChars(const char *text) {
     usedcount++;
@@ -46,6 +49,13 @@ bool BitmapFont::CacheChars(const char *text) {
     if (FT_Set_Pixel_Sizes((FT_Face)font->fthandle, 0, size))
         return false;
     auto face = (FT_Face)font->fthandle;
+    const int outline_passes = outlinesize > 0 ? 2 : 1;
+    FT_Stroker stroker = nullptr;
+    if (outline_passes > 1) {
+        FT_Stroker_New(library, &stroker);
+        FT_Stroker_Set(stroker, FT_Fixed(outlinesize * 64), FT_STROKER_LINECAP_ROUND,
+                       FT_STROKER_LINEJOIN_ROUND, 0);
+    }
     const int margin = 3;
     int texh = 0;
     int texw = MaxTextureSize();
@@ -56,15 +66,20 @@ bool BitmapFont::CacheChars(const char *text) {
         auto char_index = FT_Get_Char_Index(face, i);
         FT_Load_Glyph(face, char_index, FT_LOAD_DEFAULT);
         // FIXME: Can we avoid doing this twice?
-        FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+        FT_Glyph glyph;
+        FT_Get_Glyph(face->glyph, &glyph);
+        if (stroker) FT_Glyph_StrokeBorder(&glyph, stroker, false, true);
+        FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
+        FT_BitmapGlyph bglyph = (FT_BitmapGlyph)glyph;
         auto advance = (face->glyph->metrics.horiAdvance >> 6) + margin;
         if (advance > space_on_line) {
             space_on_line = texw - margin;
             ++lines;
         }
         space_on_line -= advance;
-        max_ascent = max(face->glyph->bitmap_top, max_ascent);
-        max_descent = max((int)face->glyph->bitmap.rows - face->glyph->bitmap_top, max_descent);
+        max_ascent = max(bglyph->top, max_ascent);
+        max_descent = max((int)bglyph->bitmap.rows - bglyph->top, max_descent);
+        FT_Done_Glyph(glyph);
     }
     height = max_ascent + max_descent;
     auto needed_image_height = (max_ascent + max_descent + margin) * lines + margin;
@@ -73,29 +88,55 @@ bool BitmapFont::CacheChars(const char *text) {
         texh *= 2;
     uchar *image = new uchar[texh * texw * 4];
     memset(image, 0, texh * texw * 4);
-    auto x = margin, y = margin + max_ascent;
-    for (int i : font->unicodetable) {
-        auto char_index = FT_Get_Char_Index(face, i);
-        FT_Load_Glyph(face, char_index, FT_LOAD_DEFAULT);
-        FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
-        auto advance = (face->glyph->metrics.horiAdvance >> 6) + margin;
-        if (advance > texw - x) {
-            x = margin;
-            y += (max_ascent + max_descent + margin);
-        }
-        positions.push_back(int3(x, y - max_ascent, advance - margin));
-        for (int row = 0; row < (int)face->glyph->bitmap.rows; ++row) {
-            for (int pixel = 0; pixel < (int)face->glyph->bitmap.width; ++pixel) {
-                auto p = image + ((x + face->glyph->bitmap_left + pixel) +
-                                    (y - face->glyph->bitmap_top + row) * texw) * 4;
-                *p++ = 0xFF;    // FIXME: wastefull
-                *p++ = 0xFF;
-                *p++ = 0xFF;
-                *p++ = face->glyph->bitmap.buffer[pixel + row * face->glyph->bitmap.pitch];
+    for (int pass = 0; pass < outline_passes; pass++) {
+        auto x = margin, y = margin + max_ascent;
+        for (int i : font->unicodetable) {
+            auto char_index = FT_Get_Char_Index(face, i);
+            FT_Load_Glyph(face, char_index, FT_LOAD_DEFAULT);
+            FT_Glyph glyph;
+            FT_Get_Glyph(face->glyph, &glyph);
+            if (!pass && stroker) FT_Glyph_StrokeBorder(&glyph, stroker, false, true);
+            FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
+            FT_BitmapGlyph bglyph = (FT_BitmapGlyph)glyph;
+            auto advance = (face->glyph->metrics.horiAdvance >> 6) + margin;
+            if (advance > texw - x) {
+                x = margin;
+                y += (max_ascent + max_descent + margin);
             }
+            if (!pass) positions.push_back(int3(x, y - max_ascent, advance - margin));
+            for (int row = 0; row < (int)bglyph->bitmap.rows; ++row) {
+                for (int pixel = 0; pixel < (int)bglyph->bitmap.width; ++pixel) {
+                    auto p = image + ((x + bglyph->left + pixel) +
+                        (y - bglyph->top + row) * texw) * 4;
+                    auto alpha = bglyph->bitmap.buffer[pixel + row * bglyph->bitmap.pitch];
+                    if (outline_passes > 1) {
+                        if (!pass) {
+                            *p++ = 0x00;
+                            *p++ = 0x00;
+                            *p++ = 0x00;
+                            *p++ = alpha;
+                        } else {
+                            auto cur_alpha = p[3];
+                            auto max_alpha = max(cur_alpha, alpha);
+                            auto col = (uchar)mix(0x00, 0xFF, alpha / 255.0f);
+                            *p++ = col;
+                            *p++ = col;
+                            *p++ = col;
+                            *p++ = max_alpha;
+                        }
+                    } else {
+                        *p++ = 0xFF;    // FIXME: wastefull
+                        *p++ = 0xFF;
+                        *p++ = 0xFF;
+                        *p++ = alpha;
+                    }
+                }
+            }
+            x += advance;
+            FT_Done_Glyph(glyph);
         }
-        x += advance;
     }
+    if (stroker) FT_Stroker_Done(stroker);
     tex = CreateTexture(image, int2(texw, texh).data(), TF_CLAMP | TF_NOMIPMAP);
     delete[] image;
     return true;
@@ -108,12 +149,12 @@ void BitmapFont::RenderText(const char *text) {
     int len = StrLenUTF8(text);
     if (len <= 0)
         return;
-    auto vbuf = new PT[len * 4];
-    auto ibuf = new int[len * 6];
+    vector<PT> vbuf(len * 4);
+    vector<int> ibuf(len * 6);
     auto x = 0.0f;
     auto y = 0.0f;
     float fontheighttex = height / float(tex.size.y);
-    auto idx = ibuf;
+    int idx = 0;
     for (int i = 0; i < len; i++) {
         int c = FromUTF8(text);
         int3 &pos = positions[font->unicodemap[c]];
@@ -130,18 +171,16 @@ void BitmapFont::RenderText(const char *text) {
                                 v2.p = float3(x + advance, y + height, 0);
         auto &v3 = vbuf[j + 3]; v3.t = float2(x2, y1);
                                 v3.p = float3(x + advance, y, 0);
-        *idx++ = j + 0;
-        *idx++ = j + 1;
-        *idx++ = j + 2;
-        *idx++ = j + 2;
-        *idx++ = j + 3;
-        *idx++ = j + 0;
+        ibuf[idx++] = j + 0;
+        ibuf[idx++] = j + 1;
+        ibuf[idx++] = j + 2;
+        ibuf[idx++] = j + 2;
+        ibuf[idx++] = j + 3;
+        ibuf[idx++] = j + 0;
         x += advance;
     }
     SetTexture(0, tex);
-    RenderArraySlow(PRIM_TRIS, len * 6, len * 4, "PT", sizeof(PT), vbuf, ibuf);
-    delete[] ibuf;
-    delete[] vbuf;
+    RenderArraySlow(PRIM_TRIS, make_span(vbuf), "PT", make_span(ibuf));
 }
 
 const int2 BitmapFont::TextSize(const char *text) {
@@ -155,9 +194,7 @@ const int2 BitmapFont::TextSize(const char *text) {
     }
 }
 
-FT_Library library = nullptr;
-
-OutlineFont *LoadFont(const char *name) {
+OutlineFont *LoadFont(string_view name) {
     FT_Error err = 0;
     if (!library) err = FT_Init_FreeType(&library);
     if (!err) {

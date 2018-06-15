@@ -14,7 +14,7 @@
 
 namespace lobster {
 
-extern void Compile(const char *fn, const char *stringsource, string &bytecode,
+extern void Compile(string_view fn, const char *stringsource, string &bytecode,
                     string *parsedump = nullptr, string *pakfile = nullptr,
                     bool dump_builtins = false, bool dump_names = false);
 extern bool LoadPakDir(const char *lpak);
@@ -22,6 +22,6 @@ extern bool LoadByteCode(string &bytecode);
 extern void RegisterBuiltin(const char *name, void (* regfun)());
 extern void RegisterCoreLanguageBuiltins();
 
-extern void ToCPP(string &s, const string &bytecode_buffer);
+extern void ToCPP(ostringstream &ss, string_view bytecode_buffer);
 
 }

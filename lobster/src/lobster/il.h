@@ -17,8 +17,13 @@
 
 namespace lobster {
 
-const int LOBSTER_BYTECODE_FORMAT_VERSION = 11;
+const int LOBSTER_BYTECODE_FORMAT_VERSION = 13;
 const int MAX_RETURN_VALUES = 16;
+
+// Any type specialized ops below must always have this ordering.
+enum MathOp {
+    MOP_ADD, MOP_SUB, MOP_MUL, MOP_DIV, MOP_MOD, MOP_LT, MOP_GT, MOP_LE, MOP_GE, MOP_EQ, MOP_NE
+};
 
 #define ILBASENAMES \
     F(PUSHINT, 1) \
@@ -28,8 +33,10 @@ const int MAX_RETURN_VALUES = 16;
     F(PUSHNIL, 0) \
     F(PUSHVAR, 1) F(PUSHVARREF, 1) F(LVALVAR, 2) \
     F(VPUSHIDXI, 0) F(VPUSHIDXV, 0) F(NPUSHIDXI, 0) F(SPUSHIDXI, 0) \
+    F(VPUSHIDXIREF, 0) F(VPUSHIDXVREF, 0) \
     F(VLVALIDXI, 1) F(NLVALIDXI, 1) F(LVALIDXV, 1) \
-    F(PUSHFLD, 1) F(PUSHFLDM, 1) F(LVALFLD, 2) \
+    F(PUSHFLD, 1) F(LVALFLD, 2) \
+    F(PUSHFLDREF, 1) F(PUSHFLDMREF, 1) \
     F(PUSHLOC, 1) F(LVALLOC, 2) \
     F(BCALLRET0, 1) F(BCALLREF0, 1) F(BCALLUNB0, 1) \
     F(BCALLRET1, 1) F(BCALLREF1, 1) F(BCALLUNB1, 1) \
@@ -44,7 +51,7 @@ const int MAX_RETURN_VALUES = 16;
     F(NEWVEC, 2) F(NEWSTRUCT, 1) \
     F(POP, 0) F(POPREF, 0) \
     F(DUP, 0) F(DUPREF, 0) \
-    F(EXIT, 1) \
+    F(EXIT, 1) F(ABORT, 0) \
     F(IADD, 0)  F(ISUB, 0)  F(IMUL, 0)  F(IDIV, 0)  F(IMOD, 0) \
     F(ILT, 0)  F(IGT, 0)  F(ILE, 0)  F(IGE, 0)  F(IEQ, 0) F(INE, 0) \
     F(FADD, 0)  F(FSUB, 0)  F(FMUL, 0)  F(FDIV, 0)  F(FMOD, 0) \
@@ -67,7 +74,7 @@ const int MAX_RETURN_VALUES = 16;
     F(RETURN, 3) \
     F(ISTYPE, 1) F(COCL, 0) F(COEND, 0) \
     F(LOGREAD, 1) F(LOGWRITE, 2) \
-    F(FORLOOPI, 0) F(IFORELEM, 0) F(SFORELEM, 0) F(VFORELEM, 0) F(NFORELEM, 0)
+    F(FORLOOPI, 0) F(IFORELEM, 0) F(SFORELEM, 0) F(VFORELEM, 0) F(VFORELEMREF, 0) F(NFORELEM, 0)
 
 #define ILCALLNAMES \
     F(CALL, 3) F(CALLMULTI, -1) F(CALLV, 1) F(CALLVCOND, 1) \

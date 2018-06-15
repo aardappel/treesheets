@@ -13,31 +13,31 @@
 // limitations under the License.
 
 // Platform independent file access:
-typedef int64_t (* FileLoader)(const char *absfilename, string *dest, int64_t start, int64_t len);
+typedef int64_t (* FileLoader)(string_view absfilename, string *dest, int64_t start, int64_t len);
 
 // Call this at init to determine default folders to load stuff from.
 // Also initializes anything else functions in this file need.
 extern bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bundle,
                              FileLoader loader);
 
-extern string StripFilePart(const char *filepath);
-extern string StripDirPart(const char *filepath);
+extern string_view StripFilePart(string_view filepath);
+extern const char *StripDirPart(const char *filepath);
 
 // Read all or part of a file.
 // To read the whole file, pass -1 for len.
 // To just obtain the file length but don't do any reading, pass 0 for len.
 // Returns file length or read length, or -1 if failed.
-extern int64_t LoadFile(const char *relfilename, string *dest, int64_t start = 0, int64_t len = -1);
+extern int64_t LoadFile(string_view relfilename, string *dest, int64_t start = 0, int64_t len = -1);
 
-extern FILE *OpenForWriting(const char *relfilename, bool binary);
-extern bool WriteFile(const char *relfilename, bool binary, const char *data, size_t len);
-extern string SanitizePath(const char *path);
+extern FILE *OpenForWriting(string_view relfilename, bool binary);
+extern bool WriteFile(string_view relfilename, bool binary, string_view contents);
+extern string SanitizePath(string_view path);
 
-extern void AddPakFileEntry(const char *pakfilename, const char *relfilename, int64_t off,
+extern void AddPakFileEntry(string_view pakfilename, string_view relfilename, int64_t off,
                             int64_t len, int64_t uncompressed);
 
-extern bool ScanDir(const char *reldir, vector<pair<string, int64_t>> &dest);
-extern bool ScanDirAbs(const char *absdir, vector<pair<string, int64_t>> &dest);
+extern bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest);
+extern bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest);
 
 // Logging:
 
@@ -57,7 +57,11 @@ enum OutputType {
 
 extern OutputType min_output_level;  // Defaults to showing OUTPUT_WARN and up.
 
-extern void Output(OutputType ot, const char *msg, ...);
+extern void Output(OutputType ot, const char *buf);
+inline void Output(OutputType ot, const string &buf) { Output(ot, buf.c_str()); };
+template<typename ...Ts> void Output(OutputType ot, const Ts&... args) {
+    if (ot >= min_output_level) Output(ot, cat(args...).c_str());
+}
 
 // Time:
 extern double SecondsSinceStart();

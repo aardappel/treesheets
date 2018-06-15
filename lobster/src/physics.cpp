@@ -41,6 +41,14 @@ b2World *world = nullptr;
 b2ParticleSystem *particlesystem = nullptr;
 Renderable *particlematerial = nullptr;
 
+b2Vec2 Float2ToB2(const float2 &v) { return b2Vec2(v.x, v.y); }
+float2 B2ToFloat2(const b2Vec2 &v) { return float2(v.x, v.y); }
+
+b2Vec2 ValueDecToB2(Value &vec) {
+    auto v = ValueDecToFLT<2>(vec);
+    return Float2ToB2(v);
+}
+
 struct PhysicsObject {
     Renderable r;
     b2Fixture *fixture;
@@ -54,6 +62,7 @@ struct PhysicsObject {
         if (!body->GetFixtureList()) world->DestroyBody(body);
         if (particle_contacts) delete particle_contacts;
     }
+    float2 Pos() { return B2ToFloat2(fixture->GetBody()->GetPosition()); }
 };
 
 static ResourceType physics_type = { "physical", [](void *v) { delete ((PhysicsObject *)v); } };
@@ -88,14 +97,6 @@ void CheckParticles(float size = 0.1f) {
 		particlesystem = world->CreateParticleSystem(&psd);
 		particlematerial = new Renderable("color_attr");
 	}
-}
-
-b2Vec2 Float2ToB2(const float2 &v) { return b2Vec2(v.x, v.y); }
-float2 B2ToFloat2(const b2Vec2 &v) { return float2(v.x, v.y); }
-
-b2Vec2 ValueDecToB2(Value &vec) {
-	auto v = ValueDecToFLT<2>(vec);
-	return Float2ToB2(v);
 }
 
 b2Body &GetBody(Value &id, Value &position) {
@@ -219,6 +220,12 @@ void AddPhysics() {
         "sets a shape (or nil for particles) to be rendered with a particular texture"
         " (assigned to a texture unit, default 0).");
 
+    STARTDECL(ph_getposition) (Value &fixture_id) {
+        return Value(ToValueFLT(GetObject(fixture_id).Pos()));
+    }
+    ENDDECL1(ph_getposition, "id", "X", "F}:2",
+             "gets a shape's position.");
+
     STARTDECL(ph_createparticle) (Value &position, Value &velocity, Value &color, Value &type) {
         CheckParticles();
         b2ParticleDef pd;
@@ -293,6 +300,31 @@ void AddPhysics() {
         "gets the particle indices that are currently contacting a giving physics object."
         " Call after step(). Indices may be invalid after next step().");
 
+    STARTDECL(ph_raycast) (Value &p1, Value &p2, Value &n) {
+        CheckPhysics();
+        auto p1v = ValueDecToB2(p1);
+        auto p2v = ValueDecToB2(p2);
+        auto v = g_vm->NewVec(0, max(n.ival(), (intp)1), TYPE_ELEM_VECTOR_OF_INT);
+        if (!particlesystem) return Value(v);
+        struct callback : b2RayCastCallback {
+            LVector *v;
+            float ReportParticle(const b2ParticleSystem *, int i, const b2Vec2 &, const b2Vec2 &,
+                                 float) {
+                v->Push(Value(i));
+                return v->len == v->maxl ? -1.0f : 1.0f; 
+            }
+            float ReportFixture(b2Fixture *, const b2Vec2 &, const b2Vec2 &, float) {
+                return -1.0f;
+            }
+            callback(LVector *_v) : v(_v) {}
+        } cb(v);
+        particlesystem->RayCast(&cb, p1v, p2v);
+        return Value(v);
+    }
+    ENDDECL3(ph_raycast, "p1,p2,n", "F}:2F}:2I", "I]",
+             "returns a vector of the first n particle ids that intersect a ray from p1 to p2,"
+             " not including particles that overlap p1.");
+
     STARTDECL(ph_deleteparticle) (Value &i) {
         CheckPhysics();
         particlesystem->DestroyParticle(i.intval());
@@ -301,6 +333,14 @@ void AddPhysics() {
     ENDDECL1(ph_deleteparticle, "i", "I", "",
         "deletes given particle. Deleting particles causes indices to be invalidated at next"
         " step().");
+
+    STARTDECL(ph_getparticleposition) (Value &i) {
+        CheckPhysics();
+        auto pos = B2ToFloat2(particlesystem->GetPositionBuffer()[i.ival()]);
+        return Value(ToValueFLT(pos));
+    }
+    ENDDECL1(ph_getparticleposition, "i", "I", "F}:2",
+             "gets a particle's position.");
 
     STARTDECL(ph_render) () {
 		CheckPhysics();
@@ -319,9 +359,11 @@ void AddPhysics() {
 					case b2Shape::e_polygon: {
                         r.Set();
                         auto polyshape = (b2PolygonShape *)fixture->GetShape();
-						RenderArraySlow(PRIM_FAN, polyshape->m_count, "pn",
-                                        sizeof(b2Vec2), polyshape->m_vertices,
-							            sizeof(b2Vec2), polyshape->m_normals);
+						RenderArraySlow(PRIM_FAN,
+                                        make_span(polyshape->m_vertices, polyshape->m_count),
+                                        "pn",
+							            span<int>(),
+                                        make_span(polyshape->m_normals, polyshape->m_count));
 						break;
 					}
 					case b2Shape::e_circle: {
@@ -350,17 +392,19 @@ void AddPhysics() {
     STARTDECL(ph_renderparticles) (Value &particlescale) {
         CheckPhysics();
         if (!particlesystem) return Value();
-        //Output(OUTPUT_DEBUG, "rendering particles: %d", particlesystem->GetParticleCount());
+        //Output(OUTPUT_DEBUG, "rendering particles: ", particlesystem->GetParticleCount());
         auto verts = (float2 *)particlesystem->GetPositionBuffer();
         auto colors = (byte4 *)particlesystem->GetColorBuffer();
         auto scale = length(otransforms.object2view[0].xy());
         SetPointSprite(scale * particlesystem->GetRadius() * particlescale.fltval());
         particlematerial->Set();
-        RenderArraySlow(PRIM_POINT, particlesystem->GetParticleCount(), "pC", sizeof(float2), verts,
-                        sizeof(byte4), colors);
+        RenderArraySlow(PRIM_POINT,
+                        make_span(verts, particlesystem->GetParticleCount()),
+                        "pC",
+                        span<int>(),
+                        make_span(colors, particlesystem->GetParticleCount()));
         return Value();
     }
     ENDDECL1(ph_renderparticles, "scale", "F", "",
         "render all particles, with the given scale.");
-
 }

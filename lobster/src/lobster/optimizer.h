@@ -30,7 +30,7 @@ struct Optimizer {
                 }
             }
         }
-        Output(OUTPUT_INFO, "optimizer: %d passes, %d optimizations", i, total_changes);
+        Output(OUTPUT_INFO, "optimizer: ", i, " passes, ", total_changes, " optimizations");
         assert(i);  // Must run at least one pass.
     }
 
@@ -61,6 +61,9 @@ struct Optimizer {
                     if (!call->sf->typechecked) {
                         // Typechecker did not typecheck this function for use in this if-then,
                         // but neither did any other instances, so it can be removed.
+                        // Since this function is not specialized, it may be referenced by
+                        // multiple specialized parents, so we don't care if it was already
+                        // removed.
                         call->sf->parent->RemoveSubFunction(call->sf);
                         call->sf = nullptr;
                     }
@@ -148,7 +151,9 @@ struct Optimizer {
             list->children.insert(list->children.end(), sf.body->children.begin(),
                                   sf.body->children.end());
             sf.body->children.clear();
-            sf.parent->RemoveSubFunction(&sf);
+            bool wasremoved = sf.parent->RemoveSubFunction(&sf);
+            assert(wasremoved);
+            (void)wasremoved;
         } else {
             for (auto c : sf.body->children) {
                 auto nc = c->Clone();

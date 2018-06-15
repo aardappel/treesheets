@@ -27,8 +27,8 @@ struct Node {
     virtual Node **Children() { return nullptr; }
     virtual Node *Clone() = 0;
     virtual bool IsConstInit() const { return false; }
-    virtual const char *Name() const = 0;
-    virtual string Dump() const { return Name(); }
+    virtual string_view Name() const = 0;
+    virtual void Dump(ostringstream &ss) const { ss << Name(); }
     void Iterate(IterateFun f) {
         f(this);
         auto ch = Children();
@@ -64,7 +64,7 @@ template<typename T> T *DoClone(T *dest, T *src) {
 }
 
 #define SHARED_SIGNATURE(NAME, STR, SE) \
-    const char *Name() const { return STR; } \
+    string_view Name() const { return STR; } \
     bool SideEffect() const { return SE; } \
     Node *TypeCheck(TypeChecker &tc, bool reqret); \
     void Generate(CodeGen &cg, int retval) const; \
@@ -97,16 +97,18 @@ struct NAME : Unary { \
     METHODS \
 };
 
-#define BINARY_NODE(NAME, STR, SE, A, B, METHODS) \
+#define BINARY_NODE_T(NAME, STR, SE, AT, A, BT, B, METHODS) \
 struct NAME : Node { \
-    Node *A, *B; \
-    NAME(const Line &ln, Node *_a, Node *_b) : Node(ln), A(_a), B(_b) {}; \
+    AT *A; BT *B; \
+    NAME(const Line &ln, AT *_a, BT *_b) : Node(ln), A(_a), B(_b) {}; \
     ~NAME() { delete A; delete B; } \
     size_t Arity() const { return 2; } \
-    Node **Children() { return &A; } \
+    Node **Children() { return (Node **)&A; } \
     SHARED_SIGNATURE(NAME, STR, SE) \
     METHODS \
 };
+#define BINARY_NODE(NAME, STR, SE, A, B, METHODS) \
+    BINARY_NODE_T(NAME, STR, SE, Node, A, Node, B, METHODS)
 
 #define BINOP_NODE(NAME, STR, SE, METHODS) \
 struct NAME : BinOp { \
@@ -141,7 +143,7 @@ struct NAME : Node { \
 struct TypeAnnotation : Node {
     TypeRef giventype;
     TypeAnnotation(const Line &ln, TypeRef tr) : Node(ln), giventype(tr) {}
-    string Dump() const { return TypeName(giventype); }
+    void Dump(ostringstream &ss) const { ss << TypeName(giventype); }
     SHARED_SIGNATURE(TypeAnnotation, "type", false)
 };
 
@@ -205,6 +207,9 @@ BINARY_NODE(For, "for", false, iter, body, )
 ZERO_NODE(ForLoopElem, "for loop element", false, )
 ZERO_NODE(ForLoopCounter, "for loop counter", false, )
 NARY_NODE(Inlined, "inlined", false, )
+BINARY_NODE_T(Switch, "switch", false, Node, value, List, cases, )
+BINARY_NODE_T(Case, "case", false, List, pattern, Node, body, )
+BINARY_NODE(Range, "range", false, start, end, )
 
 struct Nil : Node {
 	TypeRef giventype;
@@ -221,7 +226,7 @@ struct IdentRef : Node {
     IdentRef(const Line &ln, SpecIdent *_sid)
         : Node(ln), sid(_sid) {}
     bool IsConstInit() const { return sid->id->static_constant; }
-    string Dump() const { return sid->id->name; }
+    void Dump(ostringstream &ss) const { ss << sid->id->name; }
     SHARED_SIGNATURE(IdentRef, TName(T_IDENT), false)
 };
 
@@ -229,7 +234,7 @@ struct IntConstant : Node {
     int64_t integer;
     IntConstant(const Line &ln, int64_t i) : Node(ln), integer(i) {}
     bool IsConstInit() const { return true; }
-    string Dump() const { return to_string(integer); }
+    void Dump(ostringstream &ss) const { ss << integer; }
     bool ConstVal(TypeChecker &, Value &val) const {
         val = Value(integer);  // FIXME: this clips.
         return true;
@@ -241,7 +246,7 @@ struct FloatConstant : Node {
     double flt;
     FloatConstant(const Line &ln, double f) : Node(ln), flt(f) {}
     bool IsConstInit() const { return true; }
-    string Dump() const { return to_string(flt); }
+    void Dump(ostringstream &ss) const { ss << flt; }
     bool ConstVal(TypeChecker &, Value &val) const {
         val = Value(flt);
         return true;
@@ -251,16 +256,16 @@ struct FloatConstant : Node {
 
 struct StringConstant : Node {
     string str;
-    StringConstant(const Line &ln, const string &s) : Node(ln), str(s) {}
+    StringConstant(const Line &ln, string_view s) : Node(ln), str(s) {}
     bool IsConstInit() const { return true; }
-    string Dump() const { return string("\"") + str + "\""; }
+    void Dump(ostringstream &ss) const { EscapeAndQuote(str, ss); }
     SHARED_SIGNATURE(StringConstant, TName(T_STR), false)
 };
 
 struct StructRef : Node {
     Struct *st;
     StructRef(const Line &ln, Struct *_st) : Node(ln), st(_st) {}
-    string Dump() const { return "struct " + st->name; }
+    void Dump(ostringstream &ss) const { ss << "struct " << st->name; }
     SHARED_SIGNATURE(StructRef, TName(T_STRUCT), false)
 };
 
@@ -268,14 +273,16 @@ struct FunRef : Node {
     SubFunction *sf;
     FunRef(const Line &ln, SubFunction *_sf) : Node(ln), sf(_sf) {}
     bool IsConstInit() const { return true; }
-    string Dump() const { return sf ? "(def " + sf->parent->name + ")" : "<>"; }
+    void Dump(ostringstream &ss) const {
+        if (sf) ss << "(def " << sf->parent->name << ")"; else ss << "<>";
+    }
     SHARED_SIGNATURE(FunRef, TName(T_FUN), false)
 };
 
 struct NativeRef : Node {
     NativeFun *nf;
     NativeRef(const Line &ln, NativeFun *_nf) : Node(ln), nf(_nf) {}
-    string Dump() const { return nf->name; }
+    void Dump(ostringstream &ss) const { ss << nf->name; }
     SHARED_SIGNATURE(NativeRef, "native function", true)
 };
 
@@ -294,7 +301,7 @@ struct Constructor : List {
 struct Call : List {
     SubFunction *sf;
     Call(const Line &ln, SubFunction *_sf) : List(ln), sf(_sf) {};
-    string Dump() const { return sf->parent->name; }
+    void Dump(ostringstream &ss) const { ss << sf->parent->name; }
     SHARED_SIGNATURE(Call, "call", true)
 };
 
@@ -302,14 +309,14 @@ struct DynCall : Call {
     SpecIdent *sid;
     DynCall(const Line &ln, SubFunction *_sf, SpecIdent *_sid)
         : Call(ln, _sf), sid(_sid) {};
-    string Dump() const { return sid->id->name; }
+    void Dump(ostringstream &ss) const { ss << sid->id->name; }
     SHARED_SIGNATURE(DynCall, "dynamic call", true)
 };
 
 struct NativeCall : List {
     NativeFun *nf;
     NativeCall(const Line &ln, NativeFun *_nf) : List(ln), nf(_nf) {};
-    string Dump() const { return nf->name; }
+    void Dump(ostringstream &ss) const { ss << nf->name; }
     SHARED_SIGNATURE(NativeCall, "native call", true)
 };
 
@@ -328,10 +335,9 @@ struct AssignList : Unary {
     vector<SpecIdent *> sids;
     AssignList(const Line &ln, SpecIdent *sid, Node *_a)
         : Unary(ln, _a) { if (sid) sids.push_back(sid); }
-    string Dump() const {
-        string s;
-        for (auto sid : sids) s += sid->id->name + " ";
-        return s + Name();
+    void Dump(ostringstream &ss) const {
+        for (auto sid : sids) ss << sid->id->name << " ";
+        ss << Name();
     }
     SHARED_SIGNATURE(AssignList, "assign list", true)
 };
@@ -348,53 +354,48 @@ struct Dot : Unary {
     bool maybe;
     Dot(const Line &ln, Node *_a, SharedField *_fld, bool _maybe)
         : Unary(ln, _a), fld(_fld), maybe(_maybe) {}
-    string Dump() const { return Name() + fld->name; }
+    void Dump(ostringstream &ss) const { ss << Name() << fld->name; }
     SHARED_SIGNATURE(Dot, TName(maybe ? T_DOTMAYBE : T_DOT), false)
 };
 
 struct IsType : Unary {
     TypeRef giventype;
     IsType(const Line &ln, Node *_a, TypeRef t) : Unary(ln, _a), giventype(t) {}
-    string Dump() const { return Name() + (":" + TypeName(giventype)); }
+    void Dump(ostringstream &ss) const { ss << Name() << ":" << TypeName(giventype); }
     CONSTVALMETHOD
     SHARED_SIGNATURE(IsType, TName(T_IS), false)
 };
 
 inline string Dump(Node &n, int indent) {
-    string s = n.Dump();
+    ostringstream ss;
+    n.Dump(ss);
+    string s = ss.str();
     auto arity = n.Arity();
     if (!arity) return s;
     bool ml = false;
-    bool islist = Is<List>(&n);
-    auto indenb = indent - islist * 2;
     auto ch = n.Children();
-    vector<string> ss;
+    vector<string> sv;
     size_t total = 0;
     for (size_t i = 0; i < arity; i++) {
-        auto a = Dump(*ch[i], (i ? indent : indenb) + 2);
-        if (ch[i]->exptype->t != V_ANY) {
-            a += ":";
-            a += TypeName(ch[i]->exptype);
-        }
+        auto a = Dump(*ch[i], indent + 2);
+        a += ":";
+        a += TypeName(ch[i]->exptype);
         if (a[0] == ' ') ml = true;
         total += a.length();
-        ss.push_back(a);
+        sv.push_back(a);
     }
     if (total > 60) ml = true;
     if (ml) {
-        for (size_t i = 0; i < ss.size(); i++) {
-            if (ss[i][0] != ' ') ss[i] = string((i ? indent : indenb) + 2, ' ') + ss[i];
+        s = string(indent, ' ') + "(" + s;
+        s += "\n";
+        for (size_t i = 0; i < arity; i++) {
+            if (i) s += "\n";
+            if (sv[i][0] != ' ') s += string(indent + 2, ' ');
+            s += sv[i];
         }
-        if (islist) {
-            s = "";
-        } else {
-            s = string(indent, ' ') + s;
-            s += "\n";
-        }
-        for (size_t i = 0; i < arity; i++) { if (i) s += "\n"; s += ss[i]; }
-        return s;
+        return s + ")";
     } else {
-        for (size_t i = 0; i < arity; i++) s += " " + ss[i];
+        for (size_t i = 0; i < arity; i++) s += " " + sv[i];
         return "(" + s + ")";
     }
 }

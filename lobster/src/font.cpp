@@ -25,6 +25,7 @@ using namespace lobster;
 map<string, BitmapFont *> fontcache;
 BitmapFont *curfont = nullptr;
 int curfontsize = -1;
+float curoutlinesize = 0;
 int maxfontsize = 128;
 
 map<string, OutlineFont *> loadedfaces;
@@ -57,7 +58,7 @@ void FontCleanup() {
 }
 
 void AddFont() {
-    STARTDECL(gl_setfontname) (Value &fname)    {
+    STARTDECL(gl_setfontname) (Value &fname) {
         extern void TestGL(); TestGL();
         string piname = fname.sval()->str();
         fname.DECRT();
@@ -69,7 +70,7 @@ void AddFont() {
         }
         texturedshader = LookupShader("textured");
         assert(texturedshader);
-        curface = LoadFont(piname.c_str());
+        curface = LoadFont(piname);
         if (curface)  {
             curfacename = piname;
             loadedfaces[piname] = curface;
@@ -82,27 +83,32 @@ void AddFont() {
         "sets a freetype/OTF/TTF font as current (and loads it from disk the first time). returns"
         " true if success.");
 
-    STARTDECL(gl_setfontsize) (Value &fontsize)  {
+    STARTDECL(gl_setfontsize) (Value &fontsize, Value &outlinesize) {
         if (!curface) g_vm->BuiltinError("gl_setfontsize: no current font set with gl_setfontname");
+        float osize = min(16.0f, max(0.0f, outlinesize.fltval()));
         int size = max(1, fontsize.intval());
         int csize = min(size, maxfontsize);
+        if (osize > 0 && csize != size) osize = osize * csize / size;
         string fontname = curfacename;
         fontname += to_string(csize);
+        fontname += "_";
+        fontname += to_string_float(osize);
+        curfontsize = size;
+        curoutlinesize = osize;
         auto fontelem = fontcache.find(fontname);
         if (fontelem != fontcache.end()) {
             curfont = fontelem->second;
-            curfontsize = size;
             return Value(true);
         }
-        curfont = new BitmapFont(curface, csize);
+        curfont = new BitmapFont(curface, csize, osize);
         fontcache.insert(make_pair(fontname, curfont));
-        curfontsize = size;
         return Value(true);
     }
-    ENDDECL1(gl_setfontsize, "size", "I", "I",
+    ENDDECL2(gl_setfontsize, "size,outlinesize", "IF?", "I",
         "sets the font for rendering into this fontsize (in pixels). caches into a texture first"
         " time this size is used, flushes from cache if this size is not used an entire frame. font"
         " rendering will look best if using 1:1 pixels (careful with gl_scale/gl_translate)."
+        " an optional outlinesize will give the font a black outline."
         " returns true if success");
 
     STARTDECL(gl_setmaxfontsize) (Value &fontsize) {
@@ -116,6 +122,10 @@ void AddFont() {
     STARTDECL(gl_getfontsize) () { return Value(curfontsize); }
     ENDDECL0(gl_getfontsize, "", "", "I",
         "the current font size");
+
+    STARTDECL(gl_getoutlinesize) () { return Value(curoutlinesize); }
+    ENDDECL0(gl_getoutlinesize, "", "", "F",
+             "the current font size");
 
     STARTDECL(gl_text) (Value &s) {
         auto f = curfont;

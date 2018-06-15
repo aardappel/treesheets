@@ -89,6 +89,7 @@ def xy_rndi(n):  xy  { rnd(n.x), rnd(n.y) }
 def xyz_rndi(n): xyz { rnd(n.x), rnd(n.y), rnd(n.x) }
 
 def forxy(v, fun): for(v.y) y: for(v.x) x: fun(xy { x, y })
+def foryx(v, fun): for(v.x) x: for(v.y) y: fun(xy { x, y })
 def mapxy(v, fun): map(v.y) y: map(v.x) x: fun(xy { x, y })
 
 def forxyz(v, fun): for(v.z) z: for(v.y) y: for(v.x) x: fun(xyz { x, y, z })

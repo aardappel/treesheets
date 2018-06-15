@@ -130,7 +130,7 @@ void OpenGLInit(int samples) {
                 union { void *proc; type fun; } funcast; /* regular cast causes gcc warning */ \
                 funcast.proc = SDL_GL_GetProcAddress(#name); \
                 name = funcast.fun; \
-                if (!name && needed) throw string("no " #name); \
+                if (!name && needed) THROW_OR_ABORT(string("no " #name)); \
             }
         GLBASEEXTS GLEXTS
         #undef GLEXT
@@ -172,7 +172,6 @@ void LogGLError(const char *file, int line, const char *call) {
             err_str = "GL_OUT_OF_MEMORY";
             break;
     }
-    Output(OUTPUT_ERROR, "%s(%d): OpenGL Error: %s from %s", file, line,
-        err_str, call);
+    Output(OUTPUT_ERROR, file, "(", line, "): OpenGL Error: ", err_str, " from ", call);
     assert(false);
 }

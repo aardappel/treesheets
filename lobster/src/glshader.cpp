@@ -42,11 +42,10 @@ string GLSLError(uint obj, bool isprogram, const char *source) {
         err += log;
         int i = 0;
         if (source) for (;;) {
-            err += to_string(++i);
-            err += ": ";
+            err += cat(++i, ": ");
             const char *next = strchr(source, '\n');
-            if (next) { err += string(source, next - source + 1); source = next + 1; }
-            else { err += string(source) + "\n"; break; }
+            if (next) { err += string_view(source, next - source + 1); source = next + 1; }
+            else { err += string_view(source) + "\n"; break; }
         }
         delete[] log;
         return err;
@@ -79,7 +78,7 @@ string ParseMaterialFile(char *mbuf) {
     auto word = [&]() {
         p += strspn(p, " \t\r");
         size_t len = strcspn(p, " \t\r\0");
-        last = string(p, len);
+        last = string_view(p, len);
         p += len;
     };
     auto finish = [&]() -> bool {
@@ -105,8 +104,8 @@ string ParseMaterialFile(char *mbuf) {
                     #ifdef __APPLE__
                     auto supported = glGetString(GL_SHADING_LANGUAGE_VERSION);
                     // Apple randomly changes what it supports, so just ask for that.
-                    header += string("#version ") + char(supported[0]) + char(supported[2]) +
-                              char(supported[3]) + "\n";
+                    header += string_view("#version ") + string_view((const char *)supported, 1) +
+                              string_view((const char *)supported + 2, 2) + "\n";
                     #else
                     extern string glslversion;
                     header += "#version " + glslversion + "\n";
@@ -200,8 +199,8 @@ string ParseMaterialFile(char *mbuf) {
                         }
                         auto unit = atoi(p);
                         if (accum == &compute) {
-                            decl += "layout(binding = " + to_string(unit) + ", " +
-                                    (floatingp ? "rgba32f" : "rgba8") + ") ";
+                            decl += cat("layout(binding = ", unit, ", ", 
+                                        (floatingp ? "rgba32f" : "rgba8"), ") ");
                         }
                         decl += "uniform ";
                         decl += accum == &compute ? (cubemap ? "imageCube" : "image2D")
@@ -233,7 +232,7 @@ string ParseMaterialFile(char *mbuf) {
                         return "input " + last + " can only use 1..4 components";
                     }
                     last = last.substr(0, pos - last.c_str());
-                    string d = " vec" + to_string(comp) + " " + last + ";\n";
+                    string d = cat(" vec", comp, " ", last, ";\n");
                     if (accum == &vertex) vdecl += "in" + d;
                     else { vdecl += "out" + d; pdecl += "in" + d; }
                 }
@@ -252,7 +251,8 @@ string ParseMaterialFile(char *mbuf) {
                 defines += "#define " + def + "\n";
             } else {
                 if (!accum)
-                    return "GLSL code outside of FUNCTIONS/VERTEX/PIXEL block: " + string(start);
+                    return "GLSL code outside of FUNCTIONS/VERTEX/PIXEL block: " +
+                           string_view(start);
                 *accum += start;
                 *accum += "\n";
             }
@@ -267,7 +267,7 @@ string ParseMaterialFile(char *mbuf) {
 
 string LoadMaterialFile(const char *mfile) {
     string mbuf;
-    if (LoadFile(mfile, &mbuf) < 0) return string("cannot load material file: ") + mfile;
+    if (LoadFile(mfile, &mbuf) < 0) return string_view("cannot load material file: ") + mfile;
     auto err = ParseMaterialFile((char *)mbuf.c_str());
     return err;
 }
@@ -276,9 +276,9 @@ string Shader::Compile(const char *name, const char *vscode, const char *pscode)
     program = glCreateProgram();
     string err;
     vs = CompileGLSLShader(GL_VERTEX_SHADER,   program, vscode, err);
-    if (!vs) return string("couldn't compile vertex shader: ") + name + "\n" + err;
+    if (!vs) return string_view("couldn't compile vertex shader: ") + name + "\n" + err;
     ps = CompileGLSLShader(GL_FRAGMENT_SHADER, program, pscode, err);
-    if (!ps) return string("couldn't compile pixel shader: ") + name + "\n" + err;
+    if (!ps) return string_view("couldn't compile pixel shader: ") + name + "\n" + err;
     GL_CALL(glBindAttribLocation(program, 0, "apos"));
     GL_CALL(glBindAttribLocation(program, 1, "anormal"));
     GL_CALL(glBindAttribLocation(program, 2, "atc"));
@@ -294,7 +294,7 @@ string Shader::Compile(const char *name, const char *cscode) {
         program = glCreateProgram();
         string err;
         cs = CompileGLSLShader(GL_COMPUTE_SHADER, program, cscode, err);
-        if (!cs) return string("couldn't compile compute shader: ") + name + "\n" + err;
+        if (!cs) return string_view("couldn't compile compute shader: ") + name + "\n" + err;
         Link(name);
         return "";
     #else
@@ -308,7 +308,7 @@ void Shader::Link(const char *name) {
     GL_CALL(glGetProgramiv(program, GL_LINK_STATUS, &status));
     if (status != GL_TRUE) {
         GLSLError(program, true, nullptr);
-        throw string("linking failed for shader: ") + name;
+        THROW_OR_ABORT(string_view("linking failed for shader: ") + name);
     }
     mvp_i          = glGetUniformLocation(program, "mvp");
     col_i          = glGetUniformLocation(program, "col");
@@ -320,11 +320,10 @@ void Shader::Link(const char *name) {
     pointscale_i   = glGetUniformLocation(program, "pointscale");
     Activate();
     for (int i = 0; i < MAX_SAMPLERS; i++) {
-        auto is = to_string(i);
-        auto loc = glGetUniformLocation(program, ("tex" + is).c_str());
+        auto loc = glGetUniformLocation(program, cat("tex", i).c_str());
         if (loc < 0) {
-            loc = glGetUniformLocation(program, ("texcube" + is).c_str());
-            if (loc < 0) loc = glGetUniformLocation(program, ("tex3d" + is).c_str());
+            loc = glGetUniformLocation(program, cat("texcube", i).c_str());
+            if (loc < 0) loc = glGetUniformLocation(program, cat("tex3d", i).c_str());
         }
         if (loc >= 0) {
             glUniform1i(loc, i);
@@ -428,13 +427,13 @@ uint UniformBufferObject(Shader *sh, const void *data, size_t len, const char *u
                 ? glGetProgramResourceIndex(sh->program, GL_SHADER_STORAGE_BLOCK, uniformblockname)
                 : glGetUniformBlockIndex(sh->program, uniformblockname);
 
-            GLint maxsize;
+            GLint maxsize = 0;
             // FIXME: call glGetInteger64v if we ever want buffers >2GB.
             if (ssbo) glGetIntegerv(GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &maxsize);
             else glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &maxsize);
-            if (idx != GL_INVALID_INDEX && len <= maxsize) {
+            if (idx != GL_INVALID_INDEX && len <= size_t(maxsize)) {
                 auto type = ssbo ? GL_SHADER_STORAGE_BUFFER : GL_UNIFORM_BUFFER;
-                bo = GenBO(type, 1, len, data);
+                bo = GenBO_(type, len, data);
                 GL_CALL(glBindBuffer(type, 0));
                 static GLuint bo_binding_point_index = 0;
                 bo_binding_point_index++;  // FIXME: how do we allocate these properly?
@@ -465,7 +464,7 @@ bool Shader::Dump(const char *filename, bool stripnonascii) {
 	#ifndef __EMSCRIPTEN__
 		int len = 0;
 		GL_CALL(glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &len));
-		vector<char> buf;
+		string buf;
 		buf.resize(len);
 		GLenum format = 0;
 		GL_CALL(glGetProgramBinary(program, len, nullptr, &format, buf.data()));
@@ -474,7 +473,7 @@ bool Shader::Dump(const char *filename, bool stripnonascii) {
 				return (c < ' ' || c > '~') && c != '\n' && c != '\t';
 			}), buf.end());
 		}
-		return WriteFile(filename, true, buf.data(), buf.size());
+		return WriteFile(filename, true, buf);
 	#else
 		return false;
 	#endif

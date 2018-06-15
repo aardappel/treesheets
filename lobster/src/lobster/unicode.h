@@ -23,7 +23,7 @@ inline int ToUTF8(int u, char *out /* must have space for 7 chars */) {
             *out++ = char((0xFE << (maxbits - remainbits)) + (u >> remainbits));      // first byte
             for (int j = i - 1; j >= 0; j--) *out++ = ((u >> (j * 6)) & 0x3F) | 0x80; // other bytes
             *out++ = 0;     // terminate it
-            return i + 1;   // strlen
+            return i + 1;   // len
         }
     }
     assert(0);  // impossible to arrive here
@@ -88,8 +88,8 @@ inline void utf8test() {
     ToUTF8(0x24B62, buf); assert(!strcmp(buf, "\xF0\xA4\xAD\xA2"));
 
     assert(ToUTF8(L"\u30E6\u30FC\u30B6\u30FC\u5225\u30B5\u30A4\u30C8") ==
-           string("\xe3\x83\xa6\xe3\x83\xbc\xe3\x82\xb6\xe3\x83\xbc\xe5\x88\xa5\xe3\x82\xb5\xe3\x82"
-                  "\xa4\xe3\x83\x88"));
+           "\xe3\x83\xa6\xe3\x83\xbc\xe3\x82\xb6\xe3\x83\xbc\xe5\x88\xa5\xe3\x82\xb5\xe3\x82"
+           "\xa4\xe3\x83\x88");
 
     const char *p;
     p = "\x24";             assert(FromUTF8(p) == 0x24    && !*p);
@@ -101,5 +101,5 @@ inline void utf8test() {
     wstring dest;
     assert(FromUTF8("\xe3\x83\xa6\xe3\x83\xbc\xe3\x82\xb6\xe3\x83\xbc\xe5\x88"
                     "\xa5\xe3\x82\xb5\xe3\x82\xa4\xe3\x83\x88\x00", dest));
-    assert(dest == wstring(L"\u30E6\u30FC\u30B6\u30FC\u5225\u30B5\u30A4\u30C8"));
+    assert(dest == L"\u30E6\u30FC\u30B6\u30FC\u5225\u30B5\u30A4\u30C8");
 }

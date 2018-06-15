@@ -61,7 +61,7 @@ template<typename T> Value BinarySearch(Value &l, Value &key, T comparefun) {
 
 Value ReplaceStruct(Value &l, Value &i, Value &a) {
     auto len = l.stval()->Len();
-    if (i.ival() < 0 || i.ival() >= len) g_vm->BuiltinError("replace: index out of range");
+    if ((uintp)i.ival() >= (uintp)len) g_vm->BuiltinError("replace: index out of range");
     auto nv = g_vm->NewStruct(len, l.stval()->tti);
     if (len) nv->Init(&l.stval()->At(0), len, true);
     l.DECRT();
@@ -72,7 +72,10 @@ Value ReplaceStruct(Value &l, Value &i, Value &a) {
 
 void AddBuiltins() {
     STARTDECL(print) (Value &a) {
-        Output(OUTPUT_PROGRAM, "%s", RefToString(a.ref(), g_vm->programprintprefs).c_str());
+        g_vm->ss_reuse.str(string());
+        g_vm->ss_reuse.clear();
+        RefToString(g_vm->ss_reuse, a.refnil(), g_vm->programprintprefs);
+        Output(OUTPUT_PROGRAM, g_vm->ss_reuse.str());
         return a;
     }
     ENDDECL1(print, "x", "A", "A1",
@@ -80,7 +83,10 @@ void AddBuiltins() {
 
     STARTDECL(string) (Value &a) {
         if (a.ref() && a.ref()->tti == TYPE_ELEM_STRING) return a;
-        auto str = g_vm->NewString(RefToString(a.ref(), g_vm->programprintprefs));
+        g_vm->ss_reuse.str(string());
+        g_vm->ss_reuse.clear();
+        RefToString(g_vm->ss_reuse, a.refnil(), g_vm->programprintprefs);
+        auto str = g_vm->NewString(g_vm->ss_reuse.str());
         a.DECRT();
         return str;
     }
@@ -123,7 +129,7 @@ void AddBuiltins() {
         if (!fgets(buf, MAXSIZE, stdin)) buf[0] = 0;
         buf[MAXSIZE - 1] = 0;
         for (int i = 0; i < MAXSIZE; i++) if (buf[i] == '\n') { buf[i] = 0; break; }
-        return Value(g_vm->NewString(buf, strlen(buf)));
+        return Value(g_vm->NewString(buf));
     }
     ENDDECL0(getline, "", "", "S",
         "reads a string from the console if possible (followed by enter)");
@@ -262,7 +268,7 @@ void AddBuiltins() {
     // FIXME: duplication with ReplaceStruct.
     STARTDECL(replace) (Value &l, Value &i, Value &a) {
         auto len = l.vval()->len;
-        if (i.ival() < 0 || i.ival() >= len) g_vm->BuiltinError("replace: index out of range");
+        if ((uintp)i.ival() >= (uintp)len) g_vm->BuiltinError("replace: index out of range");
         auto nv = g_vm->NewVec(len, len, l.vval()->tti);
         if (len) nv->Init(&l.vval()->At(0), true);
         l.DECRT();
@@ -287,9 +293,8 @@ void AddBuiltins() {
         auto amount = max(n.ival(), (intp)1);
         if (n.ival() < 0 || amount > l.vval()->len || i.ival() < 0 ||
             i.ival() > l.vval()->len - amount)
-            g_vm->BuiltinError("remove: index (" + to_string(i.ival()) +
-                               ") or n (" + to_string(amount) +
-                               ") out of range (" + to_string(l.vval()->len) + ")");
+            g_vm->BuiltinError(cat("remove: index (", i.ival(), ") or n (", amount,
+                                   ") out of range (", l.vval()->len, ")"));
         auto v = l.vval()->Remove(i.ival(), amount, 1);
         l.DECRT();
         return v;
@@ -420,7 +425,7 @@ void AddBuiltins() {
         if (start < 0 || start + size > l.sval()->len)
             g_vm->BuiltinError("substring: values out of range");
 
-        auto ns = g_vm->NewString(l.sval()->str() + start, size);
+        auto ns = g_vm->NewString(string_view(l.sval()->str() + start, size));
         l.DECRT();
         return Value(ns);
     }
@@ -437,7 +442,7 @@ void AddBuiltins() {
         "converts a string to an int. returns 0 if no numeric data could be parsed");
 
     STARTDECL(string2float) (Value &s) {
-        auto f = (float)atof(s.sval()->str());
+        auto f = strtod(s.sval()->str(), nullptr);
         s.DECRT();
         return Value(f);
     }
@@ -458,7 +463,7 @@ void AddBuiltins() {
             auto delim = p + strcspn(p, dl);
             auto end = delim;
             while (end > p && strspn1(end[-1], ws)) end--;
-            v->Push(g_vm->NewString(p, end - p));
+            v->Push(g_vm->NewString(string_view(p, end - p)));
             p = delim + strspn(delim, dl);
             p += strspn(p, ws);
         }
@@ -519,7 +524,7 @@ void AddBuiltins() {
         " (2..36, e.g. 16 for hex) and outputting a minimum of characters (padding with 0).");
 
     STARTDECL(lowercase) (Value &s) {
-        auto ns = g_vm->NewString(s.sval()->str(), s.sval()->len);
+        auto ns = g_vm->NewString(s.sval()->strv());
         for (auto p = ns->str(); *p; p++) {
             // This is unicode-safe, since all unicode chars are in bytes >= 128
             if (*p >= 'A' && *p <= 'Z') *p += 'a' - 'A';
@@ -531,7 +536,7 @@ void AddBuiltins() {
              "converts a UTF-8 string from any case to lower case, affecting only A-Z");
 
     STARTDECL(uppercase) (Value &s) {
-        auto ns = g_vm->NewString(s.sval()->str(), s.sval()->len);
+        auto ns = g_vm->NewString(s.sval()->strv());
         for (auto p = ns->str(); *p; p++) {
             // This is unicode-safe, since all unicode chars are in bytes >= 128
             if (*p >= 'a' && *p <= 'z') *p -= 'a' - 'A';
@@ -640,7 +645,7 @@ void AddBuiltins() {
     ENDDECL1(fraction, "v", "F}", "F}",
         "returns the fractional part of a vector of floats");
 
-    STARTDECL(float) (Value &a) { return Value(float(a.ival())); }
+    STARTDECL(float) (Value &a) { return Value(floatp(a.ival())); }
     ENDDECL1(float, "i", "I", "F",
         "converts an int to float");
     STARTDECL(float) (Value &a) { VECTOROPT(floatp(f.ival()), g_vm->GetFloatVectorType((int)len)); }
@@ -721,14 +726,17 @@ void AddBuiltins() {
     STARTDECL(rnd) (Value &a) { VECTOROP(rnd(max(1, (int)f.ival()))); }
     ENDDECL1(rnd, "max", "I}", "I}",
         "a random vector within the range of an input vector.");
-    STARTDECL(rndfloat)() { return Value((float)rnd.rnddouble()); }
+    STARTDECL(rndfloat)() { return Value(rnd.rnddouble()); }
     ENDDECL0(rndfloat, "", "", "F",
-        "a random float [0..1)");
+             "a random float [0..1)");
+    STARTDECL(rndgaussian)() { return Value(rnd.rndgaussian()); }
+    ENDDECL0(rndgaussian, "", "", "F",
+             "a random float in a gaussian distribution with mean 0 and stddev 1");
     STARTDECL(rndseed) (Value &seed) { rnd.seed((int)seed.ival()); return Value(); }
     ENDDECL1(rndseed, "seed", "I", "",
         "explicitly set a random seed for reproducable randomness");
 
-    STARTDECL(div) (Value &a, Value &b) { return Value(float(a.ival()) / float(b.ival())); }
+    STARTDECL(div) (Value &a, Value &b) { return Value(floatp(a.ival()) / floatp(b.ival())); }
     ENDDECL2(div, "a,b", "II", "F",
         "forces two ints to be divided as floats");
 
@@ -1030,7 +1038,7 @@ void AddBuiltins() {
         "returns if the VM is running in compiled mode (Lobster -> C++).");
 
     STARTDECL(seconds_elapsed) () {
-        return Value((float)g_vm->Time());
+        return Value(g_vm->Time());
     }
     ENDDECL0(seconds_elapsed, "", "", "F",
         "seconds since program start as a float, unlike gl_time() it is calculated every time it is"

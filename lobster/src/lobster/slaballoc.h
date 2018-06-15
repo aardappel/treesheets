@@ -280,16 +280,11 @@ class SlabAlloc {
 
     // Convenient string allocation, dealloc with dealloc_sized.
 
-    char *alloc_string_sized(const char *from) {
-        char *buf = (char *)alloc_sized(strlen(from) + 1);
-        strcpy(buf, from);
-        return buf;
-    }
-
-    char *alloc_string_sized(const string &from) {
-        auto len = from.size() + 1;
-        char *buf = (char *)alloc_sized(len);
-        memcpy(buf, from.c_str(), len);
+    char *alloc_string_sized(string_view from) {
+        auto len = from.size();
+        char *buf = (char *)alloc_sized(len + 1);
+        memcpy(buf, from.data(), len);
+        buf[len] = 0;
         return buf;
     }
 
@@ -394,8 +389,8 @@ class SlabAlloc {
                     totalwaste += waste;
                     totalallocs += stats[i];
                     if (full || num) {
-                        Output(OUTPUT_INFO, "bucket %d -> freelist %lu (%lu k), %lld total allocs",
-                                            i*ALIGN, num, waste, stats[i]);
+                        Output(OUTPUT_INFO, "bucket ", i * ALIGN, " -> freelist ", num, " (",
+                                            waste, " k), ", stats[i], " total allocs");
                     }
                 }
             #endif
@@ -405,9 +400,9 @@ class SlabAlloc {
         loopdllist(usedpages, h) numused++;
         loopdllist(largeallocs, n) numlarge++;
         if (full || numused || numlarge || totalallocs) {
-            Output(OUTPUT_INFO, "totalwaste %lu k, pages %d empty / %d used, %d big alloc live,"
-                         " %lld total allocs made, %lld big allocs made",
-                         totalwaste, numfree, numused, numlarge, totalallocs, statbig);
+            Output(OUTPUT_INFO, "totalwaste ", totalwaste, " k, pages ", numfree, " empty / ",
+                                numused, " used, ", numlarge, " big alloc live, ", totalallocs,
+                                " total allocs made, ", statbig, " big allocs made");
         }
     }
 };

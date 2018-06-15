@@ -99,8 +99,8 @@ template<typename T, int N> struct vec : basevec<T, N> {
     vec(const vec<T,3> &v, T e) { DOVEC(c[i] = i < 3 ? v[i] : e); }
     vec(const vec<T,2> &v, T e) { DOVEC(c[i] = i < 2 ? v[i] : e); }
 
-    vec<T,3>   xyz()  const { assert(N == 4); return vec<T,3>(c); }
-    vec<T,2>   xy()   const { assert(N == 3); return vec<T,2>(c); }
+    vec<T,3>   xyz()     const { assert(N == 4); return vec<T,3>(c); }
+    vec<T,2>   xy()      const { assert(N >= 3); return vec<T,2>(c); }
     pair<T, T> to_pair() const { assert(N == 2); return make_pair(x, y); }
 
     vec operator+(const vec &v) const { DOVECR(c[i] + v[i]); }
@@ -178,7 +178,7 @@ template<typename T, int N> struct vec : basevec<T, N> {
 };
 
 
-template<typename T> inline T mix(T a, T b, float f) { return a * (1 - f) + b * f; }
+template<typename T> inline T mix(T a, T b, float f) { return (T)(a * (1 - f) + b * f); }
 
 // Rational replacement for powf (when t = 0..1), due to
 // "Ratioquadrics: An Alternative Model for Superquadrics"
@@ -244,7 +244,6 @@ template<typename T> inline T clamp(T v, T lo, T hi) {
     static_assert(is_scalar<T>(), "");
     return std::min(hi, std::max(lo, v));
 }
-    
 template<typename T, int N> inline vec<T, N> clamp(const vec<T, N> &v, const vec<T, N> &lo,
                                                    const vec<T, N> &hi) {
     DOVECR(clamp(v[i], lo[i], hi[i]));
@@ -851,12 +850,12 @@ inline bool clamp_bb(const float3 &bbmin, const float3 &bbmax, const float3 &ray
     return ok;
 }
 
-inline void normalize_mesh(int *idxs, size_t idxlen, void *verts, size_t vertlen, size_t vsize,
+inline void normalize_mesh(span<int> idxs, void *verts, size_t vertlen, size_t vsize,
                            size_t normaloffset, bool ignore_bad_tris = true) {
     for (size_t i = 0; i < vertlen; i++) {
         *(float3 *)((uchar *)verts + i * vsize + normaloffset) = float3_0;
     }
-    for (size_t t = 0; t < idxlen; t += 3) {
+    for (size_t t = 0; t < idxs.size(); t += 3) {
         int v1i = idxs[t + 0];
         int v2i = idxs[t + 1];
         int v3i = idxs[t + 2];

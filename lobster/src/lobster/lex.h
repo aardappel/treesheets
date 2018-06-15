@@ -24,52 +24,54 @@ struct Line {
 };
 
 struct LoadedFile : Line {
-    const char *p, *linestart, *tokenstart, *stringsource;
+    const char *p, *linestart, *tokenstart;
     shared_ptr<string> source;
     TType token;
     int errorline;  // line before, if current token crossed a line
     bool islf;
     bool cont;
-    string sattr;
+    string_view sattr;
     size_t whitespacebefore;
 
     vector<pair<char, char>> bracketstack;
     vector<pair<int, bool>> indentstack;
     const char *prevline, *prevlinetok;
 
-    struct Tok { TType t; string a; };
+    struct Tok { TType t; string_view a; };
 
     vector<Tok> gentokens;
 
-    LoadedFile(const char *fn, vector<string> &fns, const char *_ss)
-        : Line(1, (int)fns.size()), tokenstart(nullptr), stringsource(_ss),
+    LoadedFile(string_view fn, vector<string> &fns, const char *stringsource)
+        : Line(1, (int)fns.size()), tokenstart(nullptr),
           source(new string()), token(T_NONE),
           errorline(1), islf(false), cont(false), whitespacebefore(0),
           prevline(nullptr), prevlinetok(nullptr) {
         if (stringsource) {
-            linestart = p = stringsource;
+            *source.get() = stringsource;
         } else {
-            if (LoadFile((string("include/") + fn).c_str(), source.get()) < 0 &&
+            if (LoadFile("include/" + fn, source.get()) < 0 &&
                 LoadFile(fn, source.get()) < 0) {
-                throw string("can't open file: ") + fn;
+                THROW_OR_ABORT("can't open file: " + fn);
             }
-            linestart = p = source.get()->c_str();
         }
+        linestart = p = source.get()->c_str();
 
         indentstack.push_back(make_pair(0, false));
 
-        fns.push_back(fn);
+        fns.push_back(string(fn));
     }
 };
 
 struct Lex : LoadedFile {
     vector<LoadedFile> parentfiles;
-    set<string, less<string>> allfiles;
+    set<string, less<>> allfiles;
+    vector<shared_ptr<string>> allsources;
 
     vector<string> &filenames;
 
-    Lex(const char *fn, vector<string> &fns, const char *_ss = nullptr)
+    Lex(string_view fn, vector<string> &fns, const char *_ss = nullptr)
         : LoadedFile(fn, fns, _ss), filenames(fns) {
+        allsources.push_back(source);
         FirstToken();
     }
 
@@ -78,13 +80,14 @@ struct Lex : LoadedFile {
         if (token == T_LINEFEED) Next();
     }
 
-    void Include(const char *_fn) {
+    void Include(string_view _fn) {
         if (allfiles.find(_fn) != allfiles.end()) {
             return;
         }
-        allfiles.insert(_fn);
+        allfiles.insert(string(_fn));
         parentfiles.push_back(*this);
         *((LoadedFile *)this) = LoadedFile(_fn, filenames, nullptr);
+        allsources.push_back(source);
         FirstToken();
     }
 
@@ -93,16 +96,16 @@ struct Lex : LoadedFile {
         parentfiles.pop_back();
     }
 
-    void Push(TType t, const string &a = string()) {
+    void Push(TType t, string_view a = string_view()) {
         Tok tok;
         tok.t = t;
-        tok.a = a;
+        if (a.data()) tok.a = a;
         gentokens.push_back(tok);
     }
 
     void PushCur() { Push(token, sattr); }
 
-    void Undo(TType t, const string &a = string()) {
+    void Undo(TType t, string_view a = string_view()) {
         PushCur();
         Push(t, a);
         Next();
@@ -267,12 +270,12 @@ struct Lex : LoadedFile {
 
             case '\"':
             case '\'':
-                return LexString(c);
+                return SkipString(c);
 
             default: {
                 if (isalpha(c) || c == '_' || c < 0) {
                     while (isalnum(*p) || *p == '_' || *p < 0) p++;
-                    sattr = string(tokenstart, p);
+                    sattr = string_view(tokenstart, p - tokenstart);
                     if      (sattr == "nil")       return T_NIL;
                     else if (sattr == "true")      { sattr = "1"; return T_INT; }
                     else if (sattr == "false")     { sattr = "0"; return T_INT; }
@@ -294,27 +297,39 @@ struct Lex : LoadedFile {
                     else if (sattr == "enum")      return T_ENUM;
                     else if (sattr == "typeof")    return T_TYPEOF;
                     else if (sattr == "var")       return T_VAR;
-                    else if (sattr == "const")     return T_CONST;
+                    else if (sattr == "let")       return T_CONST;
                     else if (sattr == "pakfile")   return T_PAKFILE;
+                    else if (sattr == "switch")    return T_SWITCH;
+                    else if (sattr == "case")      return T_CASE;
+                    else if (sattr == "default")   return T_DEFAULT;
                     else if (sattr == "not")       return T_NOT;
                     else if (sattr == "and")       { cont = true; return T_AND; }
                     else if (sattr == "or")        { cont = true; return T_OR; }
                     else return T_IDENT;
                 }
-                if (isdigit(c) || (c == '.' && isdigit(*p))) {
+                bool isfloat = c == '.' && *p != '.';
+                if (isdigit(c) || (isfloat && isdigit(*p))) {
                     if (c == '0' && *p == 'x') {
                         p++;
-                        int val = 0;
-                        while (isxdigit(*p)) val = (val << 4) | HexDigit(*p++);
-                        sattr = to_string(val);
+                        while (isxdigit(*p)) p++;
+                        sattr = string_view(tokenstart, p - tokenstart);
                         return T_INT;
+                    } else {
+                        for (;;) {
+                            auto isdot = *p == '.' && *(p + 1) != '.' && !isalpha(*(p + 1));
+                            if (isdot) isfloat = true;
+                            if (!isdigit(*p) && !isdot) break;
+                            p++;
+                        }
+                        sattr = string_view(tokenstart, p - tokenstart);
+                        return isfloat ? T_FLOAT : T_INT;
                     }
-                    while (isdigit(*p) || (*p=='.' && !isalpha(*(p + 1)))) p++;
-                    sattr = string(tokenstart, p);
-                    return strchr(sattr.c_str(), '.') ? T_FLOAT : T_INT;
                 }
-                if (c == '.') return T_DOT;
-                auto tok = c <= ' ' ? "[ascii " + to_string(c) + "]" : string("") + c;
+                if (c == '.') {
+                    if (*p == '.') { p++; return T_DOTDOT; }
+                    return T_DOT;
+                }
+                auto tok = c <= ' ' ? cat("[ascii ", int(c), "]") : cat(int(c));
                 Error("illegal token: " + tok);
                 return T_NONE;
             }
@@ -327,9 +342,9 @@ struct Lex : LoadedFile {
         return -1;
     }
 
-    TType LexString(int initial) {
+    TType SkipString(char initial) {
+        auto start = p - 1;
         char c = 0;
-        sattr = "";
         // Check if its a multi-line constant.
         if (initial == '\"' && p[0] == '\"' && p[1] == '\"') {
             p += 2;
@@ -338,27 +353,22 @@ struct Lex : LoadedFile {
                     case '\0':
                         Error("end of file found in multi-line string constant");
                         break;
-                    case '\r':  // Don't want these in our string constants.
-                        break;
                     case '\n':
                         line++;
-                        sattr += c;
                         break;
                     case '\"':
                         if (p[0] == '\"' && p[1] == '\"') {
                             p += 2;
+                            sattr = string_view(start, p - start);
                             return T_STR;
                         }
-                        // FALL-THRU:
-                    default:
-                        sattr += c;
-                        break;
                 }
             }
         }
         // Regular string or character constant.
         while ((c = *p++) != initial) switch (c) {
             case 0:
+            case '\r':
             case '\n':
                 p--;
                 Error("end of line found in string constant");
@@ -366,7 +376,47 @@ struct Lex : LoadedFile {
             case '\"':
                 Error("\' and \" should be prefixed with a \\ in a string constant");
             case '\\':
-                switch(c = *p++) {
+                switch(*p) {
+                    case '\\':
+                    case '\"':
+                    case '\'': p++;
+                };
+                break;
+            default:
+                if (c < ' ') Error("unprintable character in string constant");
+        };
+        sattr = string_view(start, p - start);
+        return initial == '\"' ? T_STR : T_INT;
+    }
+
+    int64_t IntVal() {
+        if (sattr[0] == '\'') {
+            auto s = StringVal();
+            if (s.size() > 4) Error("character constant too long");
+            int64_t ival = 0;
+            for (auto c : s) ival = (ival << 8) + c;
+            return ival;
+        } else if (sattr[0] == '0' && sattr.size() > 1 && sattr[1] == 'x') {
+            // Test for hex explicitly since we don't want to allow octal parsing.
+            return strtoll(sattr.data(), nullptr, 16);
+        } else {
+            return strtoll(sattr.data(), nullptr, 10);
+        }
+    }
+
+    string StringVal() {
+        auto s = sattr.data();
+        auto initial = *s++;
+        // Check if its a multi-line constant.
+        if (initial == '\"' && s[0] == '\"' && s[1] == '\"') {
+            return string(s + 2, sattr.data() + sattr.size() - 3);
+        }
+        // Regular string or character constant.
+        string r;
+        char c = 0;
+        while ((c = *s++) != initial) switch (c) {
+            case '\\':
+                switch(c = *s++) {
                     case 'n': c = '\n'; break;
                     case 't': c = '\t'; break;
                     case 'r': c = '\r'; break;
@@ -374,54 +424,45 @@ struct Lex : LoadedFile {
                     case '\"':
                     case '\'': break;
                     case 'x':
-                        if (!isxdigit(*p) || !isxdigit(p[1]))
+                        if (!isxdigit(*s) || !isxdigit(s[1]))
                             Error("illegal hexadecimal escape code in string constant");
-                        c = HexDigit(*p++) << 4;
-                        c |= HexDigit(*p++);
+                        c = HexDigit(*s++) << 4;
+                        c |= HexDigit(*s++);
                         break;
                     default:
-                        p--;
+                        s--;
                         Error("unknown control code in string constant");
                 };
-                sattr += c;
+                r += c;
                 break;
             default:
-                if (c<' ') Error("unprintable character in string constant");
-                sattr += c;
+                r += c;
         };
-        if (initial == '\"') {
-            return T_STR;
-        } else {
-            if (sattr.size() > 4) Error("character constant too long");
-            int ival = 0;
-            for (auto c : sattr) ival = (ival << 8) + c;
-            sattr = to_string(ival);
-            return T_INT;
-        };
+        return r;
     };
 
-    string TokStr(TType t = T_NONE) {
+    string_view TokStr(TType t = T_NONE) {
         if (t == T_NONE) {
             t = token;
             switch (t) {
                 case T_IDENT:
                 case T_FLOAT:
-                case T_INT: return sattr;
-                case T_STR:  // FIXME: will not deal with other escape codes, use ToString code
-                             return "\"" + sattr + "\"";
+                case T_INT:
+                case T_STR:
+                    return sattr;
             }
         }
         return TName(t);
     }
 
     string Location(const Line &ln) {
-        return filenames[ln.fileidx] + "(" + to_string(ln.line) + ")";
+        return cat(filenames[ln.fileidx], "(", ln.line, ")");
     }
 
-    void Error(string err, const Line *ln = nullptr) {
-        err = Location(ln ? *ln : Line(errorline, fileidx)) + ": error: " + err;
-        //Output(OUTPUT_DEBUG, "%s", err.c_str());
-        throw err;
+    void Error(string_view msg, const Line *ln = nullptr) {
+        auto err = Location(ln ? *ln : Line(errorline, fileidx)) + ": error: " + msg;
+        //Output(OUTPUT_DEBUG, err);
+        THROW_OR_ABORT(err);
     }
 };
 

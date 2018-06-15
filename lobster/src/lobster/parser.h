@@ -19,20 +19,20 @@ struct Parser {
     List *root;
     SymbolTable &st;
     vector<Function *> functionstack;
-    vector<string> trailingkeywordedfunctionvaluestack;
-    struct ForwardFunctionCall { string idname; size_t maxscopelevel; Call *n; };
+    vector<string_view> trailingkeywordedfunctionvaluestack;
+    struct ForwardFunctionCall { string_view idname; size_t maxscopelevel; Call *n; };
     vector<ForwardFunctionCall> forwardfunctioncalls;
     bool call_noparens;
     set<string> pakfiles;
 
-    Parser(const char *_src, SymbolTable &_st, const char *_stringsource)
+    Parser(string_view _src, SymbolTable &_st, const char *_stringsource)
         : lex(_src, _st.filenames, _stringsource), root(nullptr), st(_st), call_noparens(false) {}
 
     ~Parser() {
         delete root;
     }
 
-    void Error(string err, const Node *what = nullptr) {
+    void Error(string_view err, const Node *what = nullptr) {
         lex.Error(err, what ? &what->line : nullptr);
     }
 
@@ -45,16 +45,15 @@ struct Parser {
 
         lex.Include("stdtype.lobster");
 
-        sf->body = ParseStatements();
+        sf->body = ParseStatements(T_ENDOFFILE);
         st.ScopeCleanup();
         root = (new List(lex))
             ->Add(new FunRef(lex, sf))
             ->Add(new Call(lex, sf));
-        Expect(T_ENDOFFILE);
         assert(forwardfunctioncalls.empty());
     }
 
-    List *ParseStatements() {
+    List *ParseStatements(TType terminator) {
         auto list = new List(lex);
         for (;;) {
             ParseTopExp(list);
@@ -66,6 +65,7 @@ struct Parser {
             }
             if (Either(T_ENDOFFILE, T_DEDENT)) break;
         }
+        Expect(terminator);
         ResolveForwardFunctionCalls();
         for (auto def : list->children) {
             if (auto sr = Is<StructRef>(def)) {
@@ -113,7 +113,7 @@ struct Parser {
         }
     }
 
-    SpecIdent *DefineWith(const string &idname, bool isprivate, bool isdef, bool islogvar) {
+    SpecIdent *DefineWith(string_view idname, bool isprivate, bool isdef, bool islogvar) {
         auto id = isdef ? st.LookupDef(idname, lex.errorline, lex, false, true, false)
                         : st.LookupUse(idname, lex);
         if (islogvar) st.MakeLogVar(id);
@@ -124,11 +124,11 @@ struct Parser {
         return id->cursid;
     }
 
-    AssignList *RecMultiDef(const string &idname, bool isprivate, int nids, bool &isdef,
+    AssignList *RecMultiDef(string_view idname, bool isprivate, int nids, bool &isdef,
                             bool &islogvar) {
         AssignList *al = nullptr;
         if (IsNextId()) {
-            string id2 = lastid;
+            auto id2 = lastid;
             nids++;
             if (Either(T_DEF, T_LOGASSIGN, T_ASSIGN)) {
                 isdef = lex.token != T_ASSIGN;
@@ -169,10 +169,10 @@ struct Parser {
                 if (isprivate)
                     Error("include cannot be private");
                 lex.Next();
-                string fn = lex.sattr;
+                string fn = lex.StringVal();
                 Expect(T_STR);
                 Expect(T_LINEFEED);
-                lex.Include((char *)fn.c_str());
+                lex.Include(fn);
                 ParseTopExp(list);
                 break;
             }
@@ -186,14 +186,14 @@ struct Parser {
             case T_ENUM: {
                 lex.Next();
                 bool incremental = IsNext(T_PLUS) || !IsNext(T_MULT);
-                int cur = incremental ? 0 : 1;
+                int64_t cur = incremental ? 0 : 1;
                 for (;;) {
                     ExpectId();
                     auto id = st.LookupDef(lastid, lex.errorline, lex, false, true, false);
                     id->constant = true;
                     if (isprivate) id->isprivate = true;
                     if (IsNext(T_ASSIGN)) {
-                        cur = atoi(lex.sattr.c_str());
+                        cur = lex.IntVal();
                         Expect(T_INT);
                     }
                     list->Add(new Define(lex, id->cursid, new IntConstant(lex, cur), nullptr));
@@ -252,7 +252,7 @@ struct Parser {
         };
         size_t specializer_i = 0;
         auto specialize_field = [&] (Field &field) {
-            if (field.flags & AF_ANYTYPE) {
+            if (field.flags & AF_GENERIC) {
                 if (specializer_i >= spectypes.size()) Error("too few type specializers");
                 auto &p = spectypes[specializer_i++];
                 field.type = p.first;
@@ -276,7 +276,7 @@ struct Parser {
             if (isprivate != sup->isprivate)
                 Error("specialization must have same privacy level");
             for (auto &field : struc->fields.v) {
-                // We don't reset AF_ANYTYPE here, because its used to know which fields to select
+                // We don't reset AF_GENERIC here, because its used to know which fields to select
                 // a specialization on.
                 specialize_field(field);
                 struc->Resolve(field);
@@ -303,7 +303,6 @@ struct Parser {
                 parse_sup();
                 parse_specializers();
             }
-            int fieldid = 0;
             if (sup) {
                 struc->superclass = sup;
                 for (auto &fld : sup->fields.v) {
@@ -313,7 +312,6 @@ struct Parser {
                     if (spectypes.size()) specialize_field(field);
                     if (st.IsGeneric(field.type)) struc->generic = true;
                 }
-                fieldid = (int)sup->fields.size();
             }
             bool fieldsdone = false;
             auto finishfields = [&]() {
@@ -322,7 +320,7 @@ struct Parser {
                     // and may refer to itself.
                     for (auto &field : struc->fields.v) {
                         if (st.IsGeneric(field.type) && field.fieldref < 0)
-                            field.flags = AF_ANYTYPE;
+                            field.flags = AF_GENERIC;
                     }
                     fieldsdone = true;
                 }
@@ -342,7 +340,8 @@ struct Parser {
                     }
                     Node *defaultval = IsNext(T_ASSIGN) ? ParseExp() : nullptr;
                     bool generic = st.IsGeneric(type) && fieldref < 0; // && !defaultval;
-                    struc->fields.v.push_back(Field(&sfield, type, generic, fieldref, defaultval));
+                    struc->fields.v.push_back(Field(&sfield, type,
+                        (generic ? AF_GENERIC : AF_NONE), fieldref, defaultval));
                     if (generic) struc->generic = true;
                 }
             }, T_LEFTCURLY, T_RIGHTCURLY);
@@ -401,39 +400,44 @@ struct Parser {
     }
 
     Node *ParseNamedFunctionDefinition(bool isprivate, Struct *self) {
-        string idname = ExpectId();
+        auto idname = ExpectId();
         if (natreg.FindNative(idname))
             Error("cannot override built-in function: " + idname);
         return ParseFunction(&idname, isprivate, true, true, "", false, false, self);
     }
 
-    Node *ParseFunction(const string *name,
+    Node *ParseFunction(string_view *name,
                         bool isprivate, bool parens, bool parseargs,
-                        const string &context,
+                        string_view context,
                         bool expfunval = false, bool parent_noparens = false, Struct *self = nullptr) {
         auto sf = st.ScopeStart();
         if (parens) Expect(T_LEFTPAREN);
         size_t nargs = 0;
+        auto SetArgFlags = [&](Arg &arg, bool withtype) {
+            if (!st.IsGeneric(arg.type)) arg.flags &= ~AF_GENERIC;
+            if (withtype) arg.flags |= AF_WITHTYPE;
+        };
         if (self) {
             nargs++;
             auto id = st.LookupDef("this", lex.errorline, lex, false, false, true);
-            auto type = &self->thistype;
-            st.AddWithStruct(type, id, lex);
-            sf->args.v.back().SetType(type, st.IsGeneric(type), true);
+            auto &arg = sf->args.v.back();
+            arg.type = &self->thistype;
+            st.AddWithStruct(arg.type, id, lex);
+            SetArgFlags(arg, true);
         }
         if (lex.token != T_RIGHTPAREN && parseargs) {
             for (;;) {
                 ExpectId();
                 nargs++;
                 auto id = st.LookupDef(lastid, lex.errorline, lex, false, false, false);
-                TypeRef type;
+                auto &arg = sf->args.v.back();
                 bool withtype = lex.token == T_TYPEIN;
                 if (parens && (lex.token == T_COLON || withtype)) {
                     lex.Next();
-                    ParseType(type, withtype);
-                    if (withtype) st.AddWithStruct(type, id, lex);
+                    ParseType(arg.type, withtype, nullptr, nullptr, &sf->args.v.back());
+                    if (withtype) st.AddWithStruct(arg.type, id, lex);
                 }
-                sf->args.v.back().SetType(type, st.IsGeneric(type), withtype);
+                SetArgFlags(arg, withtype);
                 if (!IsNext(T_COMMA)) break;
             }
         }
@@ -448,7 +452,7 @@ struct Parser {
             // Any untyped args truely mean "any", they should not be specialized (we wouldn't know
             // which specialization that refers to).
             for (auto &arg : f.subf->args.v) {
-                if (arg.flags & AF_ANYTYPE) arg.flags = AF_NONE;
+                if (arg.flags & AF_GENERIC) arg.flags = AF_NONE;
             }
             ParseType(sf->returntypes[0], false, nullptr, sf);
         } else {
@@ -475,8 +479,7 @@ struct Parser {
             if (expfunval) {
                 sf->body = (new List(lex))->Add(ParseExp(parent_noparens));
             } else if (IsNext(T_INDENT)) {
-                sf->body = ParseStatements();
-                Expect(T_DEDENT);
+                sf->body = ParseStatements(T_DEDENT);
             } else {
                 sf->body = (new List(lex))->Add(ParseExpStat());
             }
@@ -508,7 +511,7 @@ struct Parser {
     }
 
     int ParseType(TypeRef &dest, bool withtype, Struct *fieldrefstruct = nullptr,
-                  SubFunction *sfreturntype = nullptr) {
+                  SubFunction *sfreturntype = nullptr, Arg *funarg = nullptr) {
         switch(lex.token) {
             case T_INTTYPE:   dest = type_int;        lex.Next(); break;
             case T_FLOATTYPE: dest = type_float;      lex.Next(); break;
@@ -520,13 +523,18 @@ struct Parser {
                 if (fieldrefstruct) {
                     for (auto &field : fieldrefstruct->fields.v) {
                         if (field.id->name == lex.sattr) {
-                            if (!(field.flags & AF_ANYTYPE))
+                            if (!(field.flags & AF_GENERIC))
                                 Error("field reference must be to generic field: " + lex.sattr);
                             lex.Next();
                             dest = field.type;
                             return int(&field - &fieldrefstruct->fields.v[0]);
                         }
                     }
+                }
+                if (funarg && lex.sattr == "lazy_expression") {  // TODO: make keyword?
+                    lex.Next();
+                    funarg->flags = ArgFlags(funarg->flags | AF_EXPFUNVAL);
+                    return -1;
                 }
                 auto f = st.FindFunction(lex.sattr);
                 if (f && f->istype) {
@@ -566,7 +574,7 @@ struct Parser {
         return -1;
     }
 
-    void ParseFunArgs(List *list, bool coroutine, Node *derefarg, const char *fname = "",
+    void ParseFunArgs(List *list, bool coroutine, Node *derefarg, string_view fname = "",
                       GenericArgs *args = nullptr, bool noparens = false) {
         if (derefarg) {
             CheckArg(args, 0, fname);
@@ -581,7 +589,7 @@ struct Parser {
     }
 
     void ParseFunArgsRec(List *list, bool coroutine, bool needscomma, GenericArgs *args,
-                         size_t thisarg, const char *fname, bool noparens) {
+                         size_t thisarg, string_view fname, bool noparens) {
         if (!noparens && IsNext(T_RIGHTPAREN)) {
             if (call_noparens) {
                 // Don't unnecessarily parse funvals. Means "if f(x):" parses as expected.
@@ -592,7 +600,7 @@ struct Parser {
         }
         if (needscomma) Expect(T_COMMA);
         CheckArg(args, thisarg, fname);
-        if (args && args->GetType(thisarg)->flags == NF_EXPFUNVAL) {
+        if (args && (args->GetType(thisarg)->flags & AF_EXPFUNVAL)) {
             list->Add(ParseFunction(nullptr, false, false, false, args->GetName(thisarg), true,
                                     noparens));
         } else {
@@ -607,13 +615,13 @@ struct Parser {
         }
     }
 
-    void CheckArg(GenericArgs *args, size_t thisarg, const char *fname) {
+    void CheckArg(GenericArgs *args, size_t thisarg, string_view fname) {
         if (args && thisarg == args->size())
-            Error("too many arguments passed to function " + string(fname));
+            Error("too many arguments passed to function " + fname);
     }
 
     void ParseTrailingFunctionValues(List *list, bool coroutine, GenericArgs *args, size_t thisarg,
-                                     const char *fname) {
+                                     string_view fname) {
         if (args && thisarg + 1 < args->size())
             trailingkeywordedfunctionvaluestack.push_back(args->GetName(thisarg + 1));
         auto name = args && thisarg < args->size() ? args->GetName(thisarg) : "";
@@ -676,8 +684,8 @@ struct Parser {
 
     void ReturnValues(Function &f, int nrv) {
         if (f.nretvals && f.nretvals != nrv)
-            Error(string("all return statements of this function must return the same number of"
-                         " return values. previously: ") + to_string(f.nretvals));
+            Error(cat("all return statements of this function must return the same number of"
+                      " return values. previously: ", f.nretvals));
         f.nretvals = nrv;
     }
 
@@ -820,7 +828,7 @@ struct Parser {
         else if (!Is<DefaultVal>(funval))
             Error("illegal body", funval);
         if (clnargs > maxargs)
-            Error("body has " + to_string(clnargs - maxargs) + " parameters too many", funval);
+            Error(cat("body has ", clnargs - maxargs, " parameters too many"), funval);
         if (Is<DefaultVal>(funval)) return funval;
         assert(fr);
         auto call = new Call(lex, fr->sf);
@@ -832,11 +840,11 @@ struct Parser {
         return call;
     }
 
-    Node *ParseFunctionCall(Function *f, NativeFun *nf, const string &idname, Node *firstarg,
+    Node *ParseFunctionCall(Function *f, NativeFun *nf, string_view idname, Node *firstarg,
                             bool coroutine, bool noparens) {
         if (nf) {
             auto nc = new NativeCall(lex, nf);
-            ParseFunArgs(nc, coroutine, firstarg, idname.c_str(), &nf->args, noparens);
+            ParseFunArgs(nc, coroutine, firstarg, idname, &nf->args, noparens);
             size_t i = 0;
             for (auto &arg : nf->args.v) {
                 if (i >= nc->Arity()) {
@@ -895,7 +903,7 @@ struct Parser {
                     firstarg = new IdentRef(lex, wse->second->cursid);
                 }
             }
-            ParseFunArgs(call, coroutine, firstarg, idname.c_str(), &bestf->subf->args, noparens);
+            ParseFunArgs(call, coroutine, firstarg, idname, &bestf->subf->args, noparens);
             auto nargs = call->Arity();
             f = FindFunctionWithNargs(f, nargs, idname, nullptr);
             call->sf = f->subf;
@@ -914,13 +922,11 @@ struct Parser {
         }
     }
 
-    Function *FindFunctionWithNargs(Function *f, size_t nargs, const string &idname,
-                                    Node *errnode) {
+    Function *FindFunctionWithNargs(Function *f, size_t nargs, string_view idname, Node *errnode) {
         for (; f; f = f->sibf)
             if (f->nargs() == nargs)
                 return f;
-        Error("no version of function " + idname + " takes " + to_string(nargs) + " arguments",
-              errnode);
+        Error(cat("no version of function ", idname, " takes ", nargs, " arguments"), errnode);
         return nullptr;
     }
 
@@ -1007,17 +1013,17 @@ struct Parser {
     Node *ParseFactor() {
         switch (lex.token) {
             case T_INT: {
-                int64_t i = atoll(lex.sattr.c_str());
+                auto i = lex.IntVal();
                 lex.Next();
                 return new IntConstant(lex, i);
             }
             case T_FLOAT: {
-                double f = atof(lex.sattr.c_str());
+                auto f = strtod(lex.sattr.data(), nullptr);
                 lex.Next();
                 return new FloatConstant(lex, f);
             }
             case T_STR: {
-                string s = lex.sattr;
+                string s = lex.StringVal();
                 lex.Next();
                 return new StringConstant(lex, s);
             }
@@ -1054,7 +1060,7 @@ struct Parser {
             }
             case T_COROUTINE: {
                 lex.Next();
-                string idname = ExpectId();
+                auto idname = ExpectId();
                 auto n = ParseFunctionCall(st.FindFunction(idname), nullptr, idname, nullptr, true,
                                            false);
                 if (auto call = Is<Call>(n)) {
@@ -1069,7 +1075,7 @@ struct Parser {
             case T_ANYTYPE: {
                 // These are also used as built-in functions, so allow them to function as
                 // identifier for calls.
-                string idname = lex.sattr;
+                auto idname = lex.sattr;
                 lex.Next();
                 if (lex.token != T_LEFTPAREN) Error("type used as expression");
                 return IdentFactor(idname);
@@ -1092,16 +1098,51 @@ struct Parser {
                 return new TypeOf(lex, tn);
             }
             case T_IDENT: {
-                string idname = lex.sattr;
+                auto idname = lex.sattr;
                 lex.Next();
                 return IdentFactor(idname);
             }
             case T_PAKFILE: {
                 lex.Next();
-                string s = lex.sattr;
+                string s = lex.StringVal();
                 Expect(T_STR);
                 pakfiles.insert(s);
                 return new StringConstant(lex, s);
+            }
+            case T_SWITCH: {
+                lex.Next();
+                auto value = ParseExp();
+                Expect(T_COLON);
+                Expect(T_INDENT);
+                bool have_default = false;
+                auto cases = new List(lex);
+                for (;;) {
+                    List *pattern = new List(lex);
+                    if (lex.token == T_DEFAULT) {
+                        if (have_default) Error("cannot have more than one default in a switch");
+                        lex.Next();
+                        have_default = true;
+                    } else {
+                        Expect(T_CASE);
+                        for (;;) {
+                            auto f = ParseDeref();
+                            if (lex.token == T_DOTDOT) {
+                                lex.Next();
+                                f = new Range(lex, f, ParseDeref());
+                            }
+                            pattern->Add(f);
+                            if (lex.token == T_COLON) break;
+                            Expect(T_COMMA);
+                        }
+                    }
+                    auto body = BuiltinControlClosure(
+                        ParseFunction(nullptr, false, false, false, "case"), 0);
+                    cases->Add(new Case(lex, pattern, body));
+                    if (!IsNext(T_LINEFEED)) break;
+                    if (lex.token == T_DEDENT) break;
+                }
+                Expect(T_DEDENT);
+                return new Switch(lex, value, cases);
             }
             default:
                 Error("illegal start of expression: " + lex.TokStr());
@@ -1109,7 +1150,7 @@ struct Parser {
         }
     }
 
-    Node *IdentFactor(const string &idname) {
+    Node *IdentFactor(string_view idname) {
         if (IsNext(T_LEFTCURLY)) {
             auto &struc = st.StructUse(idname, lex);
             vector<Node *> exps(struc.fields.size(), nullptr);
@@ -1191,7 +1232,7 @@ struct Parser {
         return isnext;
     }
 
-    string lastid;
+    string_view lastid;
 
     bool IsNextId() {
         if (lex.token != T_IDENT) return false;
@@ -1200,7 +1241,7 @@ struct Parser {
         return true;
     }
 
-    const string &ExpectId() {
+    string_view ExpectId() {
         lastid = lex.sattr;
         Expect(T_IDENT);
         return lastid;
@@ -1227,7 +1268,9 @@ struct Parser {
                     for (auto &arg : sf->args.v) {
                         s += arg.sid->id->name + ":" + TypeName(arg.type) + " ";
                     }
-                    s += ")\n";
+                    s += ") ->";
+                    for (auto &ret : sf->returntypes) s += " " + TypeName(ret);
+                    s += "\n";
                     if (sf->body) s += Dump(*sf->body, 4);
                     s += "\n\n";
                 }

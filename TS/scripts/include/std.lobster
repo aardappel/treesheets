@@ -74,12 +74,12 @@ def weightedpick(list, zero, wf):
     // arg would be better here.
     weights := fold(list, zero): _a + wf(_x)
     assert(weights)
-    pick := rndfloat() * weights
+    pick := if zero is float: rndfloat() * weights else: rnd(weights)  // compile-time if!
     acc := zero
-    i := list.find():
-        acc += wf(_)
-        pick < acc
-    list[i]
+    for(list) x:
+        acc += wf(x)
+        if pick < acc: return x
+    list.top()  // just in case float precision causes pick == weights.
 
 def sum(xs):     fold(xs, 0): _x + _y
 def product(xs): fold(xs, 1): _x * _y

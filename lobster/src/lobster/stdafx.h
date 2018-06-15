@@ -49,6 +49,12 @@
 #include <array>
 #include <type_traits>
 
+#if defined(__has_include) && __has_include(<string_view>)
+    #include <string_view>
+#else
+    #include <experimental/string_view>
+#endif
+
 #include <thread>
 #include <future>
 
@@ -56,14 +62,11 @@
 #include <iostream>
 #include <iomanip>
 
-#if __has_include("string_view")
-    #include <string_view>
-#else
-    #include <experimental/string_view>
-    namespace std { using namespace std::experimental; }
-#endif
-
 using namespace std;
+
+#include "gsl/gsl-lite.hpp"
+
+using namespace gsl;
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -76,8 +79,8 @@ typedef unsigned int uint;
 
 // Our universally used headers.
 #include "wentropy.h"
-#include "platform.h"
 #include "tools.h"
+#include "platform.h"
 #include "slaballoc.h"
 #include "geom.h"
 

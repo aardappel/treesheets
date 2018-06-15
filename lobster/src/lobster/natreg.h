@@ -20,7 +20,7 @@ struct Named {
     bool isprivate;
 
     Named() : idx(-1), isprivate(false) {}
-    Named(const string &_name, int _idx = 0) : name(_name), idx(_idx), isprivate(false) {}
+    Named(string_view _name, int _idx = 0) : name(_name), idx(_idx), isprivate(false) {}
 };
 
 struct SubFunction;
@@ -147,8 +147,8 @@ extern TypeRef type_typeid;
 
 enum ArgFlags {
     AF_NONE = 0,
-    NF_EXPFUNVAL = 1,
-    AF_ANYTYPE = 2,
+    AF_EXPFUNVAL = 1,
+    AF_GENERIC = 2,
     NF_SUBARG1 = 4,
     NF_SUBARG2 = 8,
     NF_SUBARG3 = 16,
@@ -156,6 +156,7 @@ enum ArgFlags {
     NF_CORESUME = 64,
     AF_WITHTYPE = 128
 };
+DEFINE_BITWISE_OPERATORS_FOR_ENUM(ArgFlags)
 
 struct Ident;
 struct SpecIdent;
@@ -166,12 +167,7 @@ struct Typed {
 
     Typed() : flags(AF_NONE) {}
     Typed(const Typed &o) : type(o.type), flags(o.flags) {}
-    Typed(TypeRef _type, bool generic, bool withtype) { SetType(_type, generic, withtype); }
-
-    void SetType(TypeRef _type, bool generic, bool withtype) {
-        type = _type;
-        flags = ArgFlags((generic ? AF_ANYTYPE : AF_NONE) | (withtype ? AF_WITHTYPE : AF_NONE));
-    }
+    Typed(TypeRef _type, ArgFlags _flags) : type(_type), flags(_flags) {}
 };
 
 struct Narg : Typed {
@@ -198,12 +194,12 @@ struct Narg : Typed {
         while (*tid && !isalpha(*tid)) {
             switch (auto c = *tid++) {
                 case 0: break;
-                case '1': flags = ArgFlags(flags | NF_SUBARG1); break;
-                case '2': flags = ArgFlags(flags | NF_SUBARG2); break;
-                case '3': flags = ArgFlags(flags | NF_SUBARG3); break;
-                case '*': flags = ArgFlags(flags | NF_ANYVAR); break;
-                case '@': flags = ArgFlags(flags | NF_EXPFUNVAL); break;
-                case '%': flags = ArgFlags(flags | NF_CORESUME); break; // FIXME: make a vm op.
+                case '1': flags = flags | NF_SUBARG1; break;
+                case '2': flags = flags | NF_SUBARG2; break;
+                case '3': flags = flags | NF_SUBARG3; break;
+                case '*': flags = flags | NF_ANYVAR; break;
+                case '@': flags = flags | AF_EXPFUNVAL; break;
+                case '%': flags = flags | NF_CORESUME; break; // FIXME: make a vm op.
                 case ']':
                 case '}':
                     typestorage.push_back(Type());
@@ -222,7 +218,7 @@ struct Narg : Typed {
 };
 
 struct GenericArgs {
-    virtual string GetName(size_t i) const = 0;
+    virtual string_view GetName(size_t i) const = 0;
     virtual const Typed *GetType(size_t i) const = 0;
     virtual size_t size() const = 0;
 };
@@ -235,7 +231,7 @@ struct NargVector : GenericArgs {
 
     size_t size() const { return v.size(); }
     const Typed *GetType(size_t i) const { return &v[i]; }
-    string GetName(size_t i) const {
+    string_view GetName(size_t i) const {
         auto ids = idlist;
         for (;;) {
             const char *idend = strchr(ids, ',');
@@ -244,7 +240,7 @@ struct NargVector : GenericArgs {
                 assert(!i);
                 idend = ids + strlen(ids);
             }
-            if (!i--) return string(ids, idend);
+            if (!i--) return string_view(ids, idend - ids);
             ids = idend + 1;
         }
     }
@@ -283,7 +279,7 @@ struct NativeFun : Named {
     NativeFun(const char *_name, BuiltinPtr f, const char *_ids, const char *typeids,
               const char *rets, int nargs, const char *_help, bool _has_body, void (*_cont1)(),
               list<Type> &typestorage)
-        : Named(string(_name), 0), fun(f), args(nargs, _ids), retvals(0, nullptr),
+        : Named(_name, 0), fun(f), args(nargs, _ids), retvals(0, nullptr),
           has_body(_has_body), cont1(_cont1), help(_help), subsystemid(-1), overloads(nullptr),
           first(this) {
         auto TypeLen = [](const char *s) { int i = 0; while (*s) if(isalpha(*s++)) i++; return i; };
@@ -302,7 +298,7 @@ struct NativeFun : Named {
 
 struct NativeRegistry {
     vector<NativeFun *> nfuns;
-    unordered_map<string, NativeFun *> nfunlookup;
+    unordered_map<string_view, NativeFun *> nfunlookup;  // Key points to value!
     vector<string> subsystems;
     list<Type> typestorage;  // For any native functions with types that rely on Wrap().
 
@@ -315,7 +311,7 @@ struct NativeRegistry {
     void Register(NativeFun *nf) {
         nf->idx = (int)nfuns.size();
         nf->subsystemid = (int)subsystems.size() - 1;
-        auto existing = nfunlookup[nf->name];
+        auto existing = FindNative(nf->name);
         if (existing) {
             if (/*nf->args.v.size() != existing->args.v.size() ||
                 nf->retvals.v.size() != existing->retvals.v.size() || */
@@ -323,18 +319,18 @@ struct NativeRegistry {
                 nf->has_body != existing->has_body) {
                 // Must have similar signatures.
                 assert(0);
-                throw "native library name clash: " + nf->name;
+                THROW_OR_ABORT("native library name clash: " + nf->name);
             }
             nf->overloads = existing->overloads;
             existing->overloads = nf;
             nf->first = existing->first;
         } else {
-            nfunlookup[nf->name] = nf;
+            nfunlookup[nf->name /* must be in value */] = nf;
         }
         nfuns.push_back(nf);
     }
 
-    NativeFun *FindNative(const string &name) {
+    NativeFun *FindNative(string_view name) {
         auto it = nfunlookup.find(name);
         return it != nfunlookup.end() ? it->second : nullptr;
     }

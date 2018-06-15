@@ -38,7 +38,7 @@ namespace lobster {
 void AddFile() {
     STARTDECL(scan_folder) (Value &fld, Value &divisor) {
         vector<pair<string, int64_t>> dir;
-        auto ok = ScanDirAbs(fld.sval()->str(), dir);
+        auto ok = ScanDirAbs(fld.sval()->strv(), dir);
         fld.DECRT();
         if (!ok) {
             g_vm->Push(Value());
@@ -48,7 +48,7 @@ void AddFile() {
         auto nlist = (LVector *)g_vm->NewVec(0, 0, TYPE_ELEM_VECTOR_OF_STRING);
         auto slist = (LVector *)g_vm->NewVec(0, 0, TYPE_ELEM_VECTOR_OF_INT);
         for (auto &p : dir) {
-            nlist->Push(Value(g_vm->NewString(p.first.c_str(), strlen(p.first.c_str()))));
+            nlist->Push(Value(g_vm->NewString(p.first)));
             auto size = p.second;
             if (size >= 0) {
                 size /= divisor.ival();
@@ -67,7 +67,7 @@ void AddFile() {
 
     STARTDECL(read_file) (Value &file) {
         string buf;
-        auto l = LoadFile(file.sval()->str(), &buf);
+        auto l = LoadFile(file.sval()->strv(), &buf);
         file.DECRT();
         if (l < 0) return Value();
         auto s = g_vm->NewString(buf);
@@ -78,7 +78,7 @@ void AddFile() {
         " you may use either \\ or / as path separators");
 
     STARTDECL(write_file) (Value &file, Value &contents) {
-        auto ok = WriteFile(file.sval()->str(), true, contents.sval()->str(), contents.sval()->len);
+        auto ok = WriteFile(file.sval()->strv(), true, contents.sval()->strv());
         file.DECRT();
         contents.DECRT();
         return Value(ok);

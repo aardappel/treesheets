@@ -39,7 +39,7 @@ struct Ident : Named {
 
     SpecIdent *cursid;
 
-    Ident(const string &_name, int _l, int _idx, size_t _sl)
+    Ident(string_view _name, int _l, int _idx, size_t _sl)
         : Named(_name, _idx), line(_l),
           scopelevel(_sl), sf_def(nullptr),
           single_assignment(true), constant(false), static_constant(false), anonymous_arg(false),
@@ -71,7 +71,7 @@ struct SpecIdent {
 
 // Only still needed because we have no idea which struct it refers to at parsing time.
 struct SharedField : Named {
-    SharedField(const string &_name, int _idx) : Named(_name, _idx) {}
+    SharedField(string_view _name, int _idx) : Named(_name, _idx) {}
     SharedField() : SharedField("", 0) {}
 };
 
@@ -81,8 +81,8 @@ struct Field : Typed {
     Node *defaultval;
 
     Field() : Typed(), id(nullptr), fieldref(-1), defaultval(nullptr) {}
-    Field(SharedField *_id, TypeRef _type, bool _generic, int _fieldref, Node *_defaultval)
-        : Typed(_type, _generic, false), id(_id),
+    Field(SharedField *_id, TypeRef _type, ArgFlags _flags, int _fieldref, Node *_defaultval)
+        : Typed(_type, _flags), id(_id),
           fieldref(_fieldref), defaultval(_defaultval) {}
     Field(const Field &o);
     ~Field();
@@ -95,7 +95,7 @@ struct FieldVector : GenericArgs {
 
     size_t size() const { return v.size(); }
     const Typed *GetType(size_t i) const { return &v[i]; }
-    string GetName(size_t i) const { return v[i].id->name; }
+    string_view GetName(size_t i) const { return v[i].id->name; }
 };
 
 struct Struct : Named {
@@ -110,7 +110,7 @@ struct Struct : Named {
     TypeRef sametype;      // If all fields are int/float, this allows vector ops.
     type_elem_t typeinfo;  // Runtime type.
 
-    Struct(const string &_name, int _idx)
+    Struct(string_view _name, int _idx)
         : Named(_name, _idx), fields(0), next(nullptr), first(this), superclass(nullptr),
           firstsubclass(nullptr), nextsubclass(nullptr),
           readonly(false), generic(false), predeclaration(false),
@@ -158,8 +158,7 @@ struct Arg : Typed {
 
     Arg() : Typed(), sid(nullptr) {}
     Arg(const Arg &o) : Typed(o), sid(o.sid) {}
-    Arg(SpecIdent *_sid, TypeRef _type, bool generic, bool withtype)
-        : sid(_sid) { SetType(_type, generic, withtype); }
+    Arg(SpecIdent *_sid, TypeRef _type, ArgFlags _flags) : Typed(_type, _flags), sid(_sid) {}
 };
 
 struct ArgVector : GenericArgs {
@@ -169,7 +168,7 @@ struct ArgVector : GenericArgs {
 
     size_t size() const { return v.size(); }
     const Typed *GetType(size_t i) const { return &v[i]; }
-    string GetName(size_t i) const { return v[i].sid->id->name; }
+    string_view GetName(size_t i) const { return v[i].sid->id->name; }
 
     bool Add(const Arg &in) {
         for (auto &arg : v)
@@ -244,7 +243,7 @@ struct Function : Named {
     // 0 implies 1, all function return at least 1 value.
     int nretvals;
 
-    Function(const string &_name, int _idx, size_t _sl)
+    Function(string_view _name, int _idx, size_t _sl)
      : Named(_name, _idx), bytecodestart(0),  subf(nullptr), sibf(nullptr),
        multimethod(false), anonymous(false), istype(false), orig_args(0),
        scopelevel(_sl), nretvals(0) {
@@ -259,13 +258,13 @@ struct Function : Named {
         return sum;
     }
 
-    void RemoveSubFunction(SubFunction *sf) {
+    bool RemoveSubFunction(SubFunction *sf) {
         for (auto sfp = &subf; *sfp; sfp = &(*sfp)->next) if (*sfp == sf) {
             *sfp = sf->next;
             sf->next = nullptr;
-            return;
+            return true;
         }
-        assert(false);
+        return false;
     }
 
     flatbuffers::Offset<bytecode::Function> Serialize(flatbuffers::FlatBufferBuilder &fbb) {
@@ -274,18 +273,18 @@ struct Function : Named {
 };
 
 struct SymbolTable {
-    unordered_map<string, Ident *> idents;
+    unordered_map<string_view, Ident *> idents;  // Key points to value!
     vector<Ident *> identtable;
     vector<Ident *> identstack;
     vector<SpecIdent *> specidents;
 
-    unordered_map<string, Struct *> structs;
+    unordered_map<string_view, Struct *> structs;  // Key points to value!
     vector<Struct *> structtable;
 
-    unordered_map<string, SharedField *> fields;
+    unordered_map<string_view, SharedField *> fields;  // Key points to value!
     vector<SharedField *> fieldtable;
 
-    unordered_map<string, Function *> functions;
+    unordered_map<string_view, Function *> functions;  // Key points to value!
     vector<Function *> functiontable;
     vector<SubFunction *> subfunctiontable;
     SubFunction *toplevel;
@@ -319,17 +318,17 @@ struct SymbolTable {
         for (auto t  : typelist)         delete t;
     }
 
-    Ident *Lookup(const string &name) {
+    Ident *Lookup(string_view name) {
         auto it = idents.find(name);
         return it == idents.end() ? nullptr : it->second;
     }
 
-    Ident *LookupAny(const string &name) {
+    Ident *LookupAny(string_view name) {
         for (auto id : identtable) if (id->name == name) return id;
         return nullptr;
     }
 
-    Ident *LookupDef(const string &name, int line, Lex &lex, bool anonymous_arg, bool islocal,
+    Ident *LookupDef(string_view name, int line, Lex &lex, bool anonymous_arg, bool islocal,
                      bool withtype) {
         auto sf = defsubfunctionstack.back();
         auto existing_ident = Lookup(name);
@@ -341,25 +340,26 @@ struct SymbolTable {
         ident->anonymous_arg = anonymous_arg;
         ident->sf_def = sf;
         ident->cursid = NewSid(ident);
-        (islocal ? sf->locals : sf->args).v.push_back(Arg(ident->cursid, type_any, true, withtype));
+        (islocal ? sf->locals : sf->args).v.push_back(
+            Arg(ident->cursid, type_any, AF_GENERIC | (withtype ? AF_WITHTYPE : AF_NONE)));
         if (existing_ident) {
             lex.Error("identifier redefinition / shadowing: " + ident->name);
         }
-        idents[name] = ident;
+        idents[ident->name /* must be in value */] = ident;
         identstack.push_back(ident);
         identtable.push_back(ident);
         return ident;
     }
 
-    Ident *LookupDynScopeRedef(const string &name, Lex &lex) {
+    Ident *LookupDynScopeRedef(string_view name, Lex &lex) {
         auto ident = Lookup(name);
         if (!ident)
             lex.Error("lhs of <- must refer to existing variable: " + name);
-        defsubfunctionstack.back()->dynscoperedefs.Add(Arg(ident->cursid, type_any, true, false));
+        defsubfunctionstack.back()->dynscoperedefs.Add(Arg(ident->cursid, type_any, AF_GENERIC));
         return ident;
     }
 
-    Ident *LookupUse(const string &name, Lex &lex) {
+    Ident *LookupUse(string_view name, Lex &lex) {
         auto id = Lookup(name);
         if (!id)
             lex.Error("unknown identifier: " + name);
@@ -377,7 +377,7 @@ struct SymbolTable {
         withstack.push_back(make_pair(t, id));
     }
 
-    SharedField *LookupWithStruct(const string &name, Lex &lex, Ident *&id) {
+    SharedField *LookupWithStruct(string_view name, Lex &lex, Ident *&id) {
         auto fld = FieldUse(name);
         if (!fld) return nullptr;
         assert(!id);
@@ -432,7 +432,7 @@ struct SymbolTable {
 
     void UnregisterFun(Function *f) {
         auto it = functions.find(f->name);
-        if (it != functions.end())  // it can already have been remove by another variation
+        if (it != functions.end())  // it can already have been removed by another variation
             functions.erase(it);
     }
 
@@ -446,23 +446,24 @@ struct SymbolTable {
         }
     }
 
-    Struct &StructDecl(const string &name, Lex &lex) {
-        Struct *st = structs[name];
-        if (st) {
-            if (!st->predeclaration) lex.Error("double declaration of type: " + name);
-            st->predeclaration = false;
+    Struct &StructDecl(string_view name, Lex &lex) {
+        auto stit = structs.find(name);
+        if (stit != structs.end()) {
+            if (!stit->second->predeclaration) lex.Error("double declaration of type: " + name);
+            stit->second->predeclaration = false;
+            return *stit->second;
         } else {
-            st = new Struct(name, (int)structtable.size());
-            structs[name] = st;
+            auto st = new Struct(name, (int)structtable.size());
+            structs[st->name /* must be in value */] = st;
             structtable.push_back(st);
+            return *st;
         }
-        return *st;
     }
 
-    Struct &StructUse(const string &name, Lex &lex) {
-        Struct *st = structs[name];
-        if (!st) lex.Error("unknown type: " + name);
-        return *st;
+    Struct &StructUse(string_view name, Lex &lex) {
+        auto stit = structs.find(name);
+        if (stit == structs.end()) lex.Error("unknown type: " + name);
+        return *stit->second;
     }
 
     bool IsSuperTypeOrSame(const Struct *sup, const Struct *sub) {
@@ -481,17 +482,16 @@ struct SymbolTable {
         return a;
     }
 
-    SharedField &FieldDecl(const string &name) {
-        SharedField *fld = fields[name];
-        if (!fld) {
-            fld = new SharedField(name, (int)fieldtable.size());
-            fields[name] = fld;
-            fieldtable.push_back(fld);
-        }
+    SharedField &FieldDecl(string_view name) {
+        auto fld = FieldUse(name);
+        if (fld) return *fld;
+        fld = new SharedField(name, (int)fieldtable.size());
+        fields[fld->name /* must be in value */] = fld;
+        fieldtable.push_back(fld);
         return *fld;
     }
 
-    SharedField *FieldUse(const string &name) {
+    SharedField *FieldUse(string_view name) {
         auto it = fields.find(name);
         return it != fields.end() ? it->second : nullptr;
     }
@@ -502,14 +502,14 @@ struct SymbolTable {
         return sf;
     }
 
-    Function &CreateFunction(const string &name, const string &context) {
-        auto fname = name.length() ? name : "function" + to_string(functiontable.size()) + context;
+    Function &CreateFunction(string_view name, string_view context) {
+        auto fname = name.length() ? string(name) : cat("function", functiontable.size(), context);
         auto f = new Function(fname, (int)functiontable.size(), scopelevels.size());
         functiontable.push_back(f);
         return *f;
     }
 
-    Function &FunctionDecl(const string &name, size_t nargs, Lex &lex) {
+    Function &FunctionDecl(string_view name, size_t nargs, Lex &lex) {
         auto fit = functions.find(name);
         if (fit != functions.end()) {
             if (fit->second->scopelevel != scopelevels.size())
@@ -524,12 +524,12 @@ struct SymbolTable {
             f.sibf = fit->second->sibf;
             fit->second->sibf = &f;
         } else {
-            functions[name] = &f;
+            functions[f.name /* must be in value */] = &f;
         }
         return f;
     }
 
-    Function *FindFunction(const string &name) {
+    Function *FindFunction(string_view name) {
         auto it = functions.find(name);
         return it != functions.end() ? it->second : nullptr;
     }
@@ -560,11 +560,6 @@ struct SymbolTable {
         typelist.push_back(t);
         return t;
     }
-
-    bool          ReadOnlyIdent        (size_t v) const { return identtable[v]->constant; }
-    const string &ReverseLookupIdent   (size_t v) const { return identtable[v]->name;     }
-    const string &ReverseLookupType    (size_t v) const { return structtable[v]->name;    }
-    const string &ReverseLookupFunction(size_t v) const { return functiontable[v]->name;  }
 
     bool RegisterTypeVector(vector<TypeRef> *sv, const char **names) {
         if (sv[0].size()) return true;  // Already initialized.
@@ -618,7 +613,7 @@ struct SymbolTable {
                    vector<type_elem_t> &vfloat_typeoffsets,
                    vector<bytecode::LineInfo> &linenumbers,
                    vector<bytecode::SpecIdent> &sids,
-                   vector<const char *> &stringtable,
+                   vector<string_view> &stringtable,
                    vector<int> &speclogvars,
                    string &bytecode) {
         flatbuffers::FlatBufferBuilder fbb;
@@ -636,7 +631,9 @@ struct SymbolTable {
             fbb.CreateVector(code_attr),
             fbb.CreateVector((vector<int> &)typetable),
             fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(stringtable.size(),
-                [&](size_t i) { return fbb.CreateString(stringtable[i]); }
+                [&](size_t i) {
+                    return fbb.CreateString(stringtable[i].data(), stringtable[i].size());
+                }
             ),
             fbb.CreateVectorOfStructs(linenumbers),
             fbb.CreateVector(fns),
@@ -677,7 +674,7 @@ inline string TypeName(TypeRef type, int flen = 0, const SymbolTable *st = nullp
             ? "coroutine(" + type->sf->parent->name + ")"
             : "coroutine";
     default:
-        return BaseTypeName(type->t);
+        return string(BaseTypeName(type->t));
     }
 }
 
