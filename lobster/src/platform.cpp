@@ -212,15 +212,15 @@ int64_t LoadFile(string_view relfilename, string *dest, int64_t start, int64_t l
     assert(cur_loader);
     auto it = pakfile_registry.find(relfilename);
     if (it != pakfile_registry.end()) {
-        auto l = LoadFileFromAny(get<0>(it->second), dest, get<1>(it->second), get<2>(it->second));
+        auto &[fname, foff, flen, funcompressed] = it->second;
+        auto l = LoadFileFromAny(fname, dest, foff, flen);
         if (l >= 0) {
-            auto uncompressed = get<3>(it->second);
-            if (uncompressed >= 0) {
+            if (funcompressed >= 0) {
                 string uncomp;
                 WEntropyCoder<false>((const uchar *)dest->c_str(), dest->length(),
-                                     (size_t)uncompressed, uncomp);
+                                     (size_t)funcompressed, uncomp);
                 dest->swap(uncomp);
-                return uncompressed;
+                return funcompressed;
             } else {
                 return l;
             }
@@ -244,6 +244,9 @@ bool WriteFile(string_view relfilename, bool binary, string_view contents) {
     return written == 1;
 }
 
+// TODO: can now replace all this platform specific stuff with std::filesystem code.
+// https://github.com/tvaneerd/cpp17_in_TTs/blob/master/ALL_IN_ONE.md
+// http://en.cppreference.com/w/cpp/experimental/fs
 bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest) {
     string folder = SanitizePath(absdir);
     #ifdef _WIN32
@@ -256,10 +259,10 @@ bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest) {
                         (static_cast<ULONGLONG>(fdata.nFileSizeHigh) << (sizeof(uint) * 8)) |
                         fdata.nFileSizeLow;
                     dest.push_back(
-                        make_pair(fdata.cFileName,
-                                  fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY
-                                      ? -1
-                                      : (int64_t)size));
+                        { fdata.cFileName,
+                          fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY
+                              ? -1
+                              : (int64_t)size });
                 }
             }
             while(FindNextFile(fh, &fdata));
@@ -277,7 +280,7 @@ bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest) {
                 string cFileName = xFileName.substr(xFileName.find_last_of('/') + 1);
                 struct stat st;
                 stat(gl.gl_pathv[fi], &st);
-                dest.push_back(make_pair(cFileName, isDir ? -1 : (int64_t)st.st_size));
+                dest.push_back({ cFileName, isDir ? -1 : (int64_t)st.st_size });
             }
             globfree(&gl);
             return true;

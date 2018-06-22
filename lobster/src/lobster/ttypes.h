@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_TTYPES
+#define LOBSTER_TTYPES
+
 namespace lobster {
 
 #define TTYPES_LIST \
@@ -116,3 +119,5 @@ inline const char *TName(TType t) {
 }
 
 }  // namespace lobster
+
+#endif  // LOBSTER_TTYPES

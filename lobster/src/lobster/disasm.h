@@ -12,9 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_DISASM
+#define LOBSTER_DISASM
+
+#include "natreg.h"
+#define FLATBUFFERS_DEBUG_VERIFICATION_FAILURE
+#include "lobster/bytecode_generated.h"
+
 namespace lobster {
 
-static const bytecode::LineInfo *LookupLine(const int *ip, const int *code,
+inline string_view flat_string_view(const flatbuffers::String *s) {
+    return string_view(s->c_str(), s->size());
+}
+
+inline string_view IdName(const bytecode::BytecodeFile *bcf, int i) {
+    auto s = bcf->idents()->Get(bcf->specidents()->Get(i)->ididx())->name();
+    return flat_string_view(s);
+}
+
+inline const bytecode::LineInfo *LookupLine(const int *ip, const int *code,
                                             const bytecode::BytecodeFile *bcf) {
     auto lineinfo = bcf->lineinfo();
     int pos = int(ip - code);
@@ -33,14 +49,14 @@ static const bytecode::LineInfo *LookupLine(const int *ip, const int *code,
     }
 }
 
-static void LvalDisAsm(ostringstream &ss, const int *&ip) {
+inline void LvalDisAsm(ostringstream &ss, const int *&ip) {
     #define F(N) #N,
     static const char *lvonames[] = { LVALOPNAMES };
     #undef F
     ss << lvonames[*ip++] << ' ';
 }
 
-static const int *DisAsmIns(ostringstream &ss, const int *ip, const int *code,
+inline const int *DisAsmIns(NativeRegistry &natreg, ostringstream &ss, const int *ip, const int *code,
                             const type_elem_t *typetable, const bytecode::BytecodeFile *bcf) {
     auto ilnames = ILNames();
     auto li = LookupLine(ip, code, bcf);
@@ -219,7 +235,7 @@ static const int *DisAsmIns(ostringstream &ss, const int *ip, const int *code,
     return ip;
 }
 
-void DisAsm(ostringstream &ss, string_view bytecode_buffer) {
+inline void DisAsm(NativeRegistry &natreg, ostringstream &ss, string_view bytecode_buffer) {
     auto bcf = bytecode::GetBytecodeFile(bytecode_buffer.data());
     assert(FLATBUFFERS_LITTLEENDIAN);
     auto code = (const int *)bcf->bytecode()->Data();  // Assumes we're on a little-endian machine.
@@ -227,10 +243,12 @@ void DisAsm(ostringstream &ss, string_view bytecode_buffer) {
     auto len = bcf->bytecode()->Length();
     const int *ip = code;
     while (ip < code + len) {
-        ip = DisAsmIns(ss, ip, code, typetable, bcf);
+        ip = DisAsmIns(natreg, ss, ip, code, typetable, bcf);
         ss << "\n";
         if (!ip) break;
     }
 }
 
 }  // namespace lobster
+
+#endif  // LOBSTER_DISASM

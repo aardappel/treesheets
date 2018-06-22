@@ -14,17 +14,16 @@
 
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 #include "lobster/sdlinterface.h"
 
 using namespace lobster;
 
-void AddSound() {
-    STARTDECL(play_wav) (Value &ins, Value &vol) {
+void AddSound(NativeRegistry &natreg) {
+    STARTDECL(play_wav) (VM &vm, Value &ins, Value &vol) {
         bool ok = SDLPlaySound(ins.sval()->str(), false, vol.True() ? vol.intval() : 128);
-        ins.DECRT();
+        ins.DECRT(vm);
         return Value(ok);
     }
     ENDDECL2(play_wav, "filename,volume", "SI?", "I",
@@ -32,9 +31,9 @@ void AddSound() {
         " will automatically be converted on first load). volume in range 1..128, or omit for max."
         " returns false on error");
 
-    STARTDECL(play_sfxr) (Value &ins, Value &vol) {
+    STARTDECL(play_sfxr) (VM &vm, Value &ins, Value &vol) {
         bool ok = SDLPlaySound(ins.sval()->str(), true, vol.True() ? vol.intval() : 128);
-        ins.DECRT();
+        ins.DECRT(vm);
         return Value(ok);
     }
     ENDDECL2(play_sfxr, "filename,volume", "SI?", "I",

@@ -14,15 +14,9 @@
 
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
-#include "lobster/natreg.h"
-
 #include "lobster/disasm.h"
 
 namespace lobster {
-
-VM *g_vm = nullptr;                  // set during the lifetime of a VM object
-SlabAlloc *vmpool = nullptr;         // set during the lifetime of a VM object
 
 #ifdef _DEBUG
     #define VM_PROFILER              // tiny VM slowdown and memory usage when enabled
@@ -52,9 +46,9 @@ enum {
 #define POPN(n) (sp -= (n))
 #define TOPPTR() (stack + sp + 1)
 
-VM::VM(string_view _pn, string &_bytecode_buffer, const void *entry_point,
+VM::VM(NativeRegistry &natreg, string_view _pn, string &_bytecode_buffer, const void *entry_point,
        const void *static_bytecode, const vector<string> &args)
-      : stack(nullptr), stacksize(0), maxstacksize(DEFMAXSTACKSIZE), sp(-1),
+      : natreg(natreg), stack(nullptr), stacksize(0), maxstacksize(DEFMAXSTACKSIZE), sp(-1),
         #ifdef VM_COMPILED_CODE_MODE
             next_call_target(0), next_mm_table(nullptr), next_mm_call(nullptr),
         #else
@@ -69,9 +63,8 @@ VM::VM(string_view _pn, string &_bytecode_buffer, const void *entry_point,
         trace(false), trace_tail(false), trace_ring_idx(0),
         vm_count_ins(0), vm_count_fcalls(0), vm_count_bcalls(0),
         compiled_code_ip(entry_point), program_args(args) {
-    assert(vmpool == nullptr);
-    vmpool = new SlabAlloc();
-    bcf = bytecode::GetBytecodeFile(static_bytecode ? static_bytecode : bytecode_buffer.data());
+    auto bcfb = (uchar *)(static_bytecode ? static_bytecode : bytecode_buffer.data());
+    bcf = bytecode::GetBytecodeFile(bcfb);
     if (bcf->bytecode_version() != LOBSTER_BYTECODE_FORMAT_VERSION)
         THROW_OR_ABORT(string("bytecode is from a different version of Lobster"));
     codelen = bcf->bytecode()->Length();
@@ -97,7 +90,7 @@ VM::VM(string_view _pn, string &_bytecode_buffer, const void *entry_point,
         byteprofilecounts = new uint64_t[codelen];
         memset(byteprofilecounts, 0, sizeof(uint64_t) * codelen);
     #endif
-    vml.LogInit(bcf);
+    vml.LogInit(bcfb);
     #ifndef VM_INS_SWITCH
         #ifdef VM_COMPILED_CODE_MODE
             #define F(N, A) f_ins_pointers[IL_##N] = nullptr;
@@ -107,20 +100,12 @@ VM::VM(string_view _pn, string &_bytecode_buffer, const void *entry_point,
         ILNAMES
         #undef F
     #endif
-    assert(g_vm == nullptr);
-    g_vm = this;
 }
 
 VM::~VM() {
-    assert(g_vm == this);
-    g_vm = nullptr;
     if (stack) delete[] stack;
     if (vars)  delete[] vars;
     if (byteprofilecounts) delete[] byteprofilecounts;
-    if (vmpool) {
-        delete vmpool;
-        vmpool = nullptr;
-    }
 }
 
 void VM::OneMoreFrame() {
@@ -155,7 +140,7 @@ static bool _LeakSorter(void *va, void *vb) {
 
 void VM::DumpLeaks() {
     vector<void *> leaks;
-    vmpool->findleaks([&](void *p) { leaks.push_back(p); });
+    pool.findleaks([&](void *p) { leaks.push_back(p); });
     if (!leaks.empty()) {
         Output(OUTPUT_ERROR, "LEAKS FOUND (this indicates cycles in your object graph, or a bug in"
                              " Lobster, details in leaks.txt)");
@@ -166,7 +151,7 @@ void VM::DumpLeaks() {
         leakpp.cycles = 0;
         for (auto p : leaks) {
             auto ro = (RefObj *)p;
-            switch(ro->ti().t) {
+            switch(ro->ti(*this).t) {
                 case V_VALUEBUF:
                 case V_STACKFRAMEBUF:
                     break;
@@ -179,7 +164,7 @@ void VM::DumpLeaks() {
                     ostringstream ss;
                     ro->CycleStr(ss);
                     ss << " = ";
-                    RefToString(ss, ro, leakpp);
+                    RefToString(*this, ss, ro, leakpp);
                     ss << "\n";
                     break;
                 }
@@ -188,35 +173,35 @@ void VM::DumpLeaks() {
         }
         WriteFile("leaks.txt", false, s);
     }
-    vmpool->printstats(false);
+    pool.printstats(false);
 }
 
 #undef new
 LVector *VM::NewVec(intp initial, intp max, type_elem_t tti) {
     assert(GetTypeInfo(tti).t == V_VECTOR);
-    return new (vmpool->alloc_small(sizeof(LVector))) LVector(initial, max, tti);
+    return new (pool.alloc_small(sizeof(LVector))) LVector(*this, initial, max, tti);
 }
 LStruct *VM::NewStruct(intp max, type_elem_t tti) {
     assert(GetTypeInfo(tti).t == V_STRUCT);
-    return new (vmpool->alloc(sizeof(LStruct) + sizeof(Value) * max)) LStruct(tti);
+    return new (pool.alloc(sizeof(LStruct) + sizeof(Value) * max)) LStruct(tti);
 }
 LString *VM::NewString(size_t l) {
-    return new (vmpool->alloc(sizeof(LString) + l + 1)) LString((int)l);
+    return new (pool.alloc(sizeof(LString) + l + 1)) LString((int)l);
 }
 LCoRoutine *VM::NewCoRoutine(InsPtr rip, const int *vip, LCoRoutine *p, type_elem_t cti) {
     assert(GetTypeInfo(cti).t == V_COROUTINE);
-    return new (vmpool->alloc(sizeof(LCoRoutine)))
+    return new (pool.alloc(sizeof(LCoRoutine)))
                LCoRoutine(sp + 2 /* top of sp + pushed coro */, (int)stackframes.size(), rip, vip, p,
                          cti);
 }
 BoxedInt *VM::NewInt(intp i) {
-    return new (vmpool->alloc(sizeof(BoxedInt))) BoxedInt(i);
+    return new (pool.alloc(sizeof(BoxedInt))) BoxedInt(i);
 }
 BoxedFloat *VM::NewFloat(floatp f) {
-    return new (vmpool->alloc(sizeof(BoxedFloat))) BoxedFloat(f);
+    return new (pool.alloc(sizeof(BoxedFloat))) BoxedFloat(f);
 }
 LResource *VM::NewResource(void *v, const ResourceType *t) {
-    return new (vmpool->alloc(sizeof(LResource))) LResource(v, t);
+    return new (pool.alloc(sizeof(LResource))) LResource(v, t);
 }
 #ifdef _WIN32
 #ifdef _DEBUG
@@ -256,15 +241,15 @@ Value VM::Error(string err, const RefObj *a, const RefObj *b) {
         ss << flat_string_view(bcf->filenames()->Get(li->fileidx())) << '(' << li->line() << "): ";
     #endif
     ss << "VM error: " << err;
-    if (a) { ss << "\n   arg: "; RefToString(ss, a, debugpp); }
-    if (b) { ss << "\n   arg: "; RefToString(ss, b, debugpp); }
+    if (a) { ss << "\n   arg: "; RefToString(*this, ss, a, debugpp); }
+    if (b) { ss << "\n   arg: "; RefToString(*this, ss, b, debugpp); }
     while (sp >= 0 && (!stackframes.size() || sp != stackframes.back().spstart)) {
         // Sadly can't print this properly.
         ss << "\n   stack: ";
         to_string_hex(ss, (size_t)TOP().any());
-        if (vmpool->pointer_is_in_allocator(TOP().any())) {
+        if (pool.pointer_is_in_allocator(TOP().any())) {
             ss << ", maybe: ";
-            RefToString(ss, TOP().ref(), debugpp);
+            RefToString(*this, ss, TOP().ref(), debugpp);
         }
         POP();  // We don't DEC here, as we can't know what type it is.
                 // This is ok, as we ignore leaks in case of an error anyway.
@@ -321,7 +306,7 @@ void VM::DumpVar(ostringstream &ss, const Value &x, size_t idx, bool dumpglobals
         if (static_type != x.type) return;  // Likely uninitialized.
     #endif
     ss << "\n   " << name << " = ";
-    x.ToString(ss, static_type, debugpp);
+    x.ToString(*this, ss, static_type, debugpp);
 }
 
 void VM::EvalMulti(const int *mip, int definedfunction, const int *call_arg_types,
@@ -363,7 +348,7 @@ void VM::EvalMulti(const int *mip, int definedfunction, const int *call_arg_type
     for (int j = 0; j < nargs; j++) {
         auto &ti = GetTypeInfo((type_elem_t)call_arg_types[j]);
         Value &v = stack[sp - nargs + j + 1];
-        argtypes += ProperTypeName(IsRef(ti.t) && v.ref() ? v.ref()->ti() : ti);
+        argtypes += ProperTypeName(IsRef(ti.t) && v.ref() ? v.ref()->ti(*this) : ti);
         if (j < nargs - 1) argtypes += ", ";
     }
     Error("the call " + flat_string_view(bcf->functions()->Get(definedfunction)->name()) + "(" +
@@ -376,7 +361,7 @@ void VM::FinalStackVarsCleanup() {
         auto sid = bcf->specidents()->Get((uint)i);
         //Output(OUTPUT_INFO, "destructing: ",
         //                    flat_string_view(bcf->idents()->Get(sid->ididx())->name()));
-        vars[i].DECTYPE(GetTypeInfo((type_elem_t)sid->typeidx()).t);
+        vars[i].DECTYPE(*this, GetTypeInfo((type_elem_t)sid->typeidx()).t);
     }
     #ifdef _DEBUG
         Output(OUTPUT_INFO, "stack at its highest was: ", maxsp);
@@ -411,13 +396,13 @@ int VM::VarCleanup(ostringstream *error, int towhere) {
     while (ndef--) {
         auto i = *--defvars;
         if (error) DumpVar(*error, vars[i], i, false);
-        else vars[i].DECTYPE(GetVarTypeInfo(i).t);
+        else vars[i].DECTYPE(*this, GetVarTypeInfo(i).t);
         vars[i] = POP();
     }
     while (nargs--) {
         auto i = *--freevars;
         if (error) DumpVar(*error, vars[i], i, false);
-        else vars[i].DECTYPE(GetVarTypeInfo(i).t);
+        else vars[i].DECTYPE(*this, GetVarTypeInfo(i).t);
         vars[i] = POP();
     }
     JumpTo(stf.retip);
@@ -429,7 +414,7 @@ int VM::VarCleanup(ostringstream *error, int towhere) {
         if (tempmask && !error) {
             for (uint i = 0; i < (uint)min(32, sp - untilsp); i++)
                 if (((uint)tempmask) & (1u << i))
-                    stack[untilsp + 1 + i].DECRTNIL();
+                    stack[untilsp + 1 + i].DECRTNIL(*this);
         }
         sp = untilsp;
     }
@@ -531,7 +516,7 @@ void VM::CoVarCleanup(LCoRoutine *co) {
             // There are temps from an enclosing for loop on the stack.
             for (int i = 0; i < sp - stf.spstart; i++)
                 if (co->tm & (1 << i))
-                    stack[stf.spstart + 1 + i].DECRTNIL();
+                    stack[stf.spstart + 1 + i].DECRTNIL(*this);
             sp = stf.spstart;
         }
         // Save the ip, because VarCleanup will jump to it.
@@ -564,7 +549,7 @@ void VM::CoNew(VM_OP_ARGS_CALL) {
     auto ctidx = (type_elem_t)*ip++;
     CoNonRec(ip);
     curcoroutine = NewCoRoutine(returnip, ip, curcoroutine, ctidx);
-    curcoroutine->BackupParentVars(vars);
+    curcoroutine->BackupParentVars(*this, vars);
     int nvars = *ip++;
     ip += nvars;
     // Always have the active coroutine at top of the stack, retaining 1 refcount. This is
@@ -574,7 +559,7 @@ void VM::CoNew(VM_OP_ARGS_CALL) {
 }
 
 void VM::CoSuspend(InsPtr retip) {
-    int newtop = curcoroutine->Suspend(sp + 1, stack, stackframes, retip, curcoroutine);
+    int newtop = curcoroutine->Suspend(*this, sp + 1, stack, stackframes, retip, curcoroutine);
     JumpTo(retip);
     sp = newtop - 1; // top of stack is now coro value from create or resume
 }
@@ -628,7 +613,7 @@ void VM::CoResume(LCoRoutine *co) {
     VMASSERT(curcoroutine->stackcopymax >=  *curcoroutine->varip);
     curcoroutine->stackcopylen = *curcoroutine->varip;
     //curcoroutine->BackupParentVars(vars);
-    POP().DECTYPE(GetTypeInfo(curcoroutine->ti().yieldtype).t);    // previous current value
+    POP().DECTYPE(*this, GetTypeInfo(curcoroutine->ti(*this).yieldtype).t);    // previous current value
     for (int i = *curcoroutine->varip; i > 0; i--) {
         auto &var = vars[curcoroutine->varip[i]];
         // No INC, since parent is still on the stack and hold ref for us.
@@ -640,9 +625,9 @@ void VM::CoResume(LCoRoutine *co) {
 
 void VM::EndEval(Value &ret, ValueType vt) {
     ostringstream ss;
-    ret.ToString(ss, vt, programprintprefs);
+    ret.ToString(*this, ss, vt, programprintprefs);
     evalret = ss.str();
-    ret.DECTYPE(vt);
+    ret.DECTYPE(*this, vt);
     assert(sp == -1);
     FinalStackVarsCleanup();
     vml.LogCleanup();
@@ -718,7 +703,7 @@ void VM::EvalProgramInner() {
     for (;;) {
         #ifdef VM_COMPILED_CODE_MODE
             #if VM_DISPATCH_METHOD == VM_DISPATCH_TRAMPOLINE
-                compiled_code_ip = ((block_t)compiled_code_ip)();
+                compiled_code_ip = ((block_t)compiled_code_ip)(*this);
             #elif VM_DISPATCH_METHOD == VM_DISPATCH_SWITCH_GOTO
                 ((block_base_t)compiled_code_ip)();
                 assert(false);  // Should not return here.
@@ -731,17 +716,17 @@ void VM::EvalProgramInner() {
                     if (trace_ring_idx == trace_size) trace_ring_idx = 0;
                     auto &ss = trace_output[trace_ring_idx++];
                     ss.str(string());
-                    DisAsmIns(ss, ip, codestart, typetable, bcf);
+                    DisAsmIns(natreg, ss, ip, codestart, typetable, bcf);
                     ss << " [" << (sp + 1) << "] - ";
                     #if RTT_ENABLED
                     if (sp >= 0) {
                         auto x = TOP();
-                        x.ToString(ss, x.type, debugpp);
+                        x.ToString(*this, ss, x.type, debugpp);
                     }
                     if (sp >= 1) {
                         auto x = TOPM(1);
                         ss << ' ';
-                        x.ToString(ss, x.type, debugpp);
+                        x.ToString(*this, ss, x.type, debugpp);
                     }
                     #endif
                     if (trace_tail) {
@@ -938,7 +923,7 @@ VM_DEF_INS(EXIT) {
 
 VM_DEF_INS(CONT1) {
     auto nf = natreg.nfuns[*ip++];
-    nf->cont1();
+    nf->cont1(*this);
     VM_RET;
 }
 
@@ -955,40 +940,41 @@ VM_DEF_INS(CONT1) {
     FOR_INIT; \
     auto &iter = TOP(); \
     auto &i = TOPM(1); \
-    TYPE_ASSERT(i.type == V_INT); \
+    assert(i.type == V_INT); \
     i.setival(i.ival() + 1); \
     intp len = 0; \
     if (i.ival() < (len = (L))) { \
         FOR_CONTINUE; \
     } else { \
-        if (iterref) TOP().DECRT(); \
+        if (iterref) TOP().DECRT(*this); \
         (void)POP(); /* iter */ \
         (void)POP(); /* i */ \
         FOR_FINISHED; \
     } \
     VM_RET; \
 }
-#define FORELEM(V) \
+#define FORELEM(L, V) \
     auto &iter = TOP(); (void)iter; \
     auto &i = TOPM(1); \
-    TYPE_ASSERT(i.type == V_INT); \
+    assert(i.type == V_INT); \
+    assert(i.ival() < L); \
     V; \
     VM_RET;
 
 VM_DEF_JMP(IFOR) { FORLOOP(iter.ival(), false); }
 VM_DEF_JMP(VFOR) { FORLOOP(iter.vval()->len, true); }
-VM_DEF_JMP(NFOR) { FORLOOP(iter.stval()->Len(), true); }
+VM_DEF_JMP(NFOR) { FORLOOP(iter.stval()->Len(*this), true); }
 VM_DEF_JMP(SFOR) { FORLOOP(iter.sval()->len, true); }
 
-VM_DEF_INS(IFORELEM)    { FORELEM(PUSH(i)); }
-VM_DEF_INS(VFORELEM)    { FORELEM(PUSH(iter.vval()->At(i.ival()))); }
-VM_DEF_INS(VFORELEMREF) { FORELEM(auto el = iter.vval()->At(i.ival()); el.INCRTNIL(); PUSH(el)); }
-VM_DEF_INS(NFORELEM)    { FORELEM(PUSH(iter.stval()->At(i.ival()))); }
-VM_DEF_INS(SFORELEM)    { FORELEM(PUSH(Value((int)((uchar *)iter.sval()->str())[i.ival()]))); }
+VM_DEF_INS(IFORELEM)    { FORELEM(iter.ival(), PUSH(i)); }
+VM_DEF_INS(VFORELEM)    { FORELEM(iter.vval()->len, PUSH(iter.vval()->At(i.ival()))); }
+VM_DEF_INS(VFORELEMREF) { FORELEM(iter.vval()->len, auto el = iter.vval()->At(i.ival()); el.INCRTNIL(); PUSH(el)); }
+VM_DEF_INS(NFORELEM)    { FORELEM(iter.stval()->Len(*this), PUSH(iter.stval()->AtS(i.ival()))); }
+VM_DEF_INS(SFORELEM)    { FORELEM(iter.sval()->len, PUSH(Value((int)((uchar *)iter.sval()->str())[i.ival()]))); }
 
 VM_DEF_INS(FORLOOPI) {
     auto &i = TOPM(1);  // This relies on for being inlined, otherwise it would be 2.
-    TYPE_ASSERT(i.type == V_INT);
+    assert(i.type == V_INT);
     PUSH(i);
     VM_RET;
 }
@@ -1004,23 +990,23 @@ VM_DEF_INS(FORLOOPI) {
 
 #define BCALLOP(N,DECLS,ARGS) \
     BCALLOPH(RET,N,DECLS,ARGS,PUSH(v);BCallRetCheck(nf)) \
-    BCALLOPH(REF,N,DECLS,ARGS,v.DECRTNIL()) \
+    BCALLOPH(REF,N,DECLS,ARGS,v.DECRTNIL(*this)) \
     BCALLOPH(UNB,N,DECLS,ARGS,(void)v)
 
-BCALLOP(0, {}, ());
-BCALLOP(1, auto a0 = POP(), (a0));
-BCALLOP(2, auto a1 = POP();auto a0 = POP(), (a0, a1));
-BCALLOP(3, auto a2 = POP();auto a1 = POP();auto a0 = POP(), (a0, a1, a2));
-BCALLOP(4, auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (a0, a1, a2, a3));
-BCALLOP(5, auto a4 = POP();auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (a0, a1, a2, a3, a4));
-BCALLOP(6, auto a5 = POP();auto a4 = POP();auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (a0, a1, a2, a3, a4, a5));
-BCALLOP(7, auto a6 = POP();auto a5 = POP();auto a4 = POP();auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (a0, a1, a2, a3, a4, a5, a6));
+BCALLOP(0, {}, (*this));
+BCALLOP(1, auto a0 = POP(), (*this, a0));
+BCALLOP(2, auto a1 = POP();auto a0 = POP(), (*this, a0, a1));
+BCALLOP(3, auto a2 = POP();auto a1 = POP();auto a0 = POP(), (*this, a0, a1, a2));
+BCALLOP(4, auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (*this, a0, a1, a2, a3));
+BCALLOP(5, auto a4 = POP();auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (*this, a0, a1, a2, a3, a4));
+BCALLOP(6, auto a5 = POP();auto a4 = POP();auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (*this, a0, a1, a2, a3, a4, a5));
+BCALLOP(7, auto a6 = POP();auto a5 = POP();auto a4 = POP();auto a3 = POP();auto a2 = POP();auto a1 = POP();auto a0 = POP(), (*this, a0, a1, a2, a3, a4, a5, a6));
 
 VM_DEF_INS(NEWVEC) {
     auto type = (type_elem_t)*ip++;
     auto len = *ip++;
     auto vec = NewVec(len, len, type);
-    if (len) vec->Init(TOPPTR() - len, false);
+    if (len) vec->Init(*this, TOPPTR() - len, false);
     POPN(len);
     PUSH(Value(vec));
     VM_RET;
@@ -1030,44 +1016,44 @@ VM_DEF_INS(NEWSTRUCT) {
     auto type = (type_elem_t)*ip++;
     auto len = GetTypeInfo(type).len;
     auto vec = NewStruct(len, type);
-    if (len) vec->Init(TOPPTR() - len, len, false);
+    if (len) vec->Init(*this, TOPPTR() - len, len, false);
     POPN(len);
     PUSH(Value(vec));
     VM_RET;
 }
 
 VM_DEF_INS(POP)    { POP(); VM_RET; }
-VM_DEF_INS(POPREF) { POP().DECRTNIL(); VM_RET; }
+VM_DEF_INS(POPREF) { POP().DECRTNIL(*this); VM_RET; }
 
 VM_DEF_INS(DUP)    { auto x = TOP();            PUSH(x); VM_RET; }
 VM_DEF_INS(DUPREF) { auto x = TOP().INCRTNIL(); PUSH(x); VM_RET; }
 
-#define REFOP(exp) { res = exp; a.DECRTNIL(); b.DECRTNIL(); }
+#define REFOP(exp) { res = exp; a.DECRTNIL(*this); b.DECRTNIL(*this); }
 #define GETARGS() Value b = POP(); Value a = POP()
 #define TYPEOP(op, extras, field, errstat) Value res; errstat; \
     if (extras & 1 && b.field == 0) Div0(); res = a.field op b.field;
 
 #define _IOP(op, extras) \
-    TYPEOP(op, extras, ival(), VMASSERT(a.type == V_INT && b.type == V_INT))
+    TYPEOP(op, extras, ival(), assert(a.type == V_INT && b.type == V_INT))
 #define _FOP(op, extras) \
-    TYPEOP(op, extras, fval(), VMASSERT(a.type == V_FLOAT && b.type == V_FLOAT))
+    TYPEOP(op, extras, fval(), assert(a.type == V_FLOAT && b.type == V_FLOAT))
 
-#define _VELEM(a, i, isfloat, T) (isfloat ? (T)a.stval()->At(i).fval() : (T)a.stval()->At(i).ival())
+#define _VELEM(a, i, isfloat, T) (isfloat ? (T)a.stval()->AtS(i).fval() : (T)a.stval()->AtS(i).ival())
 #define _VOP(op, extras, T, isfloat, withscalar, comp) Value res; { \
-    auto len = a.stval()->Len(); \
-    assert(withscalar || b.stval()->Len() == len); \
-    auto v = NewStruct(len, comp ? GetIntVectorType((int)a.stval()->Len()) : a.stval()->tti); \
+    auto len = a.stval()->Len(*this); \
+    assert(withscalar || b.stval()->Len(*this) == len); \
+    auto v = NewStruct(len, comp ? GetIntVectorType((int)len) : a.stval()->tti); \
     res = Value(v); \
     for (intp j = 0; j < len; j++) { \
         if (withscalar) VMTYPEEQ(b, isfloat ? V_FLOAT : V_INT) \
-        else VMTYPEEQ(b.stval()->At(j), isfloat ? V_FLOAT : V_INT); \
+        else VMTYPEEQ(b.stval()->AtS(j), isfloat ? V_FLOAT : V_INT); \
         auto bv = withscalar ? (isfloat ? (T)b.fval() : (T)b.ival()) : _VELEM(b, j, isfloat, T); \
         if (extras&1 && bv == 0) Div0(); \
-        VMTYPEEQ(a.stval()->At(j), isfloat ? V_FLOAT : V_INT); \
-        v->At(j) = Value(_VELEM(a, j, isfloat, T) op bv); \
+        VMTYPEEQ(a.stval()->AtS(j), isfloat ? V_FLOAT : V_INT); \
+        v->AtS(j) = Value(_VELEM(a, j, isfloat, T) op bv); \
     } \
-    a.DECRT(); \
-    if (!withscalar) b.DECRT(); \
+    a.DECRT(*this); \
+    if (!withscalar) b.DECRT(*this); \
 }
 #define _IVOP(op, extras, withscalar, icomp) _VOP(op, extras, intp, false, withscalar, icomp)
 #define _FVOP(op, extras, withscalar, fcomp) _VOP(op, extras, floatp, true, withscalar, fcomp)
@@ -1189,13 +1175,13 @@ VM_DEF_INS(FUMINUS) { Value a = POP(); PUSH(Value(-a.fval())); VM_RET; }
 #define VUMINUS(isfloat, type) { \
     Value a = POP(); \
     Value res; \
-    auto len = a.stval()->Len(); \
+    auto len = a.stval()->Len(*this); \
     res = Value(NewStruct(len, a.stval()->tti)); \
     for (intp i = 0; i < len; i++) { \
-        VMTYPEEQ(a.stval()->At(i), isfloat ? V_FLOAT : V_INT); \
-        res.stval()->At(i) = Value(-_VELEM(a, i, isfloat, type)); \
+        VMTYPEEQ(a.stval()->AtS(i), isfloat ? V_FLOAT : V_INT); \
+        res.stval()->AtS(i) = Value(-_VELEM(a, i, isfloat, type)); \
     } \
-    a.DECRT(); \
+    a.DECRT(*this); \
     PUSH(res); \
     VM_RET; \
     }
@@ -1211,7 +1197,7 @@ VM_DEF_INS(LOGNOTREF) {
     Value a = POP();
     bool b = a.True();
     PUSH(!b);
-    if (b) a.DECRT();
+    if (b) a.DECRT(*this);
     VM_RET; 
 }
 
@@ -1232,12 +1218,12 @@ VM_DEF_INS(I2F) {
 
 VM_DEF_INS(A2S) {
     Value a = POP();
-    TYPE_ASSERT(IsRefNil(a.type));
-    g_vm->ss_reuse.str(string());
-    g_vm->ss_reuse.clear();
-    a.ToString(g_vm->ss_reuse, a.ref() ? a.ref()->ti().t : V_NIL, programprintprefs);
-    PUSH(NewString(g_vm->ss_reuse.str()));
-    a.DECRTNIL();
+    assert(IsRefNil(a.type));
+    ss_reuse.str(string());
+    ss_reuse.clear();
+    a.ToString(*this, ss_reuse, a.ref() ? a.ref()->ti(*this).t : V_NIL, programprintprefs);
+    PUSH(NewString(ss_reuse.str()));
+    a.DECRTNIL(*this);
     VM_RET;
 }
 
@@ -1264,7 +1250,7 @@ VM_DEF_INS(E2B) {
 VM_DEF_INS(E2BREF) {
     Value a = POP();
     PUSH(a.True());
-    a.DECRTNIL();
+    a.DECRTNIL(*this);
     VM_RET;
 }
 
@@ -1275,18 +1261,20 @@ VM_DEF_INS(PUSHFLD) {
     auto i = *ip++;
     Value r = POP();
     VMASSERT(r.ref());
-    PUSH(r.stval()->At(i));
-    r.DECRT();
+    assert(i < r.stval()->Len(*this));
+    PUSH(r.stval()->AtS(i));
+    r.DECRT(*this);
     VM_RET;
 }
 VM_DEF_INS(PUSHFLDREF) {
     auto i = *ip++;
     Value r = POP();
     VMASSERT(r.ref());
-    auto el = r.stval()->At(i);
+    assert(i < r.stval()->Len(*this));
+    auto el = r.stval()->AtS(i);
     el.INCRTNIL();
     PUSH(el);
-    r.DECRT();
+    r.DECRT(*this);
     VM_RET;
 }
 VM_DEF_INS(PUSHFLDMREF) {
@@ -1295,10 +1283,11 @@ VM_DEF_INS(PUSHFLDMREF) {
     if (!r.ref()) {
         PUSH(r);
     } else {
-        auto el = r.stval()->At(i);
+        assert(i < r.stval()->Len(*this));
+        auto el = r.stval()->AtS(i);
         el.INCRTNIL();
         PUSH(el);
-        r.DECRT();
+        r.DECRT(*this);
     }
     VM_RET;
 }
@@ -1314,9 +1303,9 @@ VM_DEF_INS(PUSHLOC) {
     int i = *ip++;
     Value coro = POP();
     VMTYPEEQ(coro, V_COROUTINE);
-    PUSH(coro.cval()->GetVar(i));
+    PUSH(coro.cval()->GetVar(*this, i));
     TOP().INCTYPE(GetVarTypeInfo(i).t);
-    coro.DECRT();
+    coro.DECRT(*this);
     VM_RET;
 }
 
@@ -1325,9 +1314,9 @@ VM_DEF_INS(LVALLOC) {
     int i = *ip++;
     Value coro = POP();
     VMTYPEEQ(coro, V_COROUTINE);
-    Value &a = coro.cval()->GetVar(i);
+    Value &a = coro.cval()->GetVar(*this, i);
     LvalueOp(lvalop, a);
-    coro.DECRT();
+    coro.DECRT(*this);
     VM_RET;
 }
 
@@ -1356,11 +1345,11 @@ GJUMP(JUMPFAILR     , auto x = POP(),             , !x.True(), PUSH(x)      ,   
 GJUMP(JUMPFAILN     , auto x = POP(),             , !x.True(), PUSH(Value()),             )
 GJUMP(JUMPNOFAIL    , auto x = POP(),             ,  x.True(),              ,             )
 GJUMP(JUMPNOFAILR   , auto x = POP(),             ,  x.True(), PUSH(x)      ,             )
-GJUMP(JUMPFAILREF   , auto x = POP(), x.DECRTNIL(), !x.True(),              ,             )
-GJUMP(JUMPFAILRREF  , auto x = POP(),             , !x.True(), PUSH(x)      , x.DECRTNIL())
-GJUMP(JUMPFAILNREF  , auto x = POP(), x.DECRTNIL(), !x.True(), PUSH(Value()),             )
-GJUMP(JUMPNOFAILREF , auto x = POP(), x.DECRTNIL(),  x.True(),              ,             )
-GJUMP(JUMPNOFAILRREF, auto x = POP(),             ,  x.True(), PUSH(x)      , x.DECRTNIL())
+GJUMP(JUMPFAILREF   , auto x = POP(), x.DECRTNIL(*this), !x.True(),              ,             )
+GJUMP(JUMPFAILRREF  , auto x = POP(),             , !x.True(), PUSH(x)      , x.DECRTNIL(*this))
+GJUMP(JUMPFAILNREF  , auto x = POP(), x.DECRTNIL(*this), !x.True(), PUSH(Value()),             )
+GJUMP(JUMPNOFAILREF , auto x = POP(), x.DECRTNIL(*this),  x.True(),              ,             )
+GJUMP(JUMPNOFAILRREF, auto x = POP(),             ,  x.True(), PUSH(x)      , x.DECRTNIL(*this))
 
 VM_DEF_INS(ISTYPE) {
     auto to = (type_elem_t)*ip++;
@@ -1368,7 +1357,7 @@ VM_DEF_INS(ISTYPE) {
     // Optimizer guarantees we don't have to deal with scalars.
     if (v.refnil()) PUSH(v.ref()->tti == to);
     else PUSH(GetTypeInfo(to).t == V_NIL);  // FIXME: can replace by fixed type_elem_t ?
-    v.DECRTNIL();
+    v.DECRTNIL(*this);
     VM_RET;
 }
 
@@ -1415,7 +1404,7 @@ void VM::PushDerefIdxVectorSc(intp i) {
     VMASSERT(r.ref());
     RANGECHECK(i, r.vval()->len, r.vval());
     PUSH(r.vval()->At(i));
-    r.DECRT();
+    r.DECRT(*this);
 }
 
 void VM::PushDerefIdxVectorRef(intp i) {
@@ -1425,15 +1414,15 @@ void VM::PushDerefIdxVectorRef(intp i) {
     auto el = r.vval()->At(i);
     el.INCRTNIL();
     PUSH(el);
-    r.DECRT();
+    r.DECRT(*this);
 }
 
 void VM::PushDerefIdxStruct(intp i) {
     Value r = POP();
     VMASSERT(r.ref());
-    RANGECHECK(i, r.stval()->Len(), r.stval());
-    PUSH(r.stval()->At(i));
-    r.DECRT();
+    RANGECHECK(i, r.stval()->Len(*this), r.stval());
+    PUSH(r.stval()->AtS(i));
+    r.DECRT(*this);
 }
 
 void VM::PushDerefIdxString(intp i) {
@@ -1441,7 +1430,7 @@ void VM::PushDerefIdxString(intp i) {
     VMASSERT(r.ref());
     RANGECHECK(i, r.sval()->len, r.sval());
     PUSH(Value((int)((uchar *)r.sval()->str())[i]));
-    r.DECRT();
+    r.DECRT(*this);
 }
 
 void VM::LvalueIdxVector(int lvalop, intp i) {
@@ -1449,23 +1438,23 @@ void VM::LvalueIdxVector(int lvalop, intp i) {
     RANGECHECK(i, vec.vval()->len, vec.vval());
     Value &a = vec.vval()->At(i);
     LvalueOp(lvalop, a);
-    vec.DECRT();
+    vec.DECRT(*this);
 }
 
 void VM::LvalueIdxStruct(int lvalop, intp i) {
     Value vec = POP();
-    RANGECHECK(i, vec.stval()->Len(), vec.stval());
-    Value &a = vec.stval()->At(i);
+    RANGECHECK(i, vec.stval()->Len(*this), vec.stval());
+    Value &a = vec.stval()->AtS(i);
     LvalueOp(lvalop, a);
-    vec.DECRT();
+    vec.DECRT(*this);
 }
 
 void VM::LvalueField(int lvalop, intp i) {
     Value vec = POP();
-    RANGECHECK(i, vec.stval()->Len(), vec.stval());
-    Value &a = vec.stval()->At(i);
+    RANGECHECK(i, vec.stval()->Len(*this), vec.stval());
+    Value &a = vec.stval()->AtS(i);
     LvalueOp(lvalop, a);
-    vec.DECRT();
+    vec.DECRT(*this);
 }
 
 void VM::LvalueOp(int op, Value &a) {
@@ -1532,8 +1521,8 @@ void VM::LvalueOp(int op, Value &a) {
 
         case LVO_WRITE:     { Value  b = POP();                          a = b; break; }
         case LVO_WRITER:    { Value &b = TOP();                          a = b; break; }
-        case LVO_WRITEREF:  { Value  b = POP();            a.DECRTNIL(); a = b; break; }
-        case LVO_WRITERREF: { Value &b = TOP().INCRTNIL(); a.DECRTNIL(); a = b; break; }
+        case LVO_WRITEREF:  { Value  b = POP();            a.DECRTNIL(*this); a = b; break; }
+        case LVO_WRITERREF: { Value &b = TOP().INCRTNIL(); a.DECRTNIL(*this); a = b; break; }
 
         #define PPOP(ret, op, pre, accessor) { \
             if (ret && !pre) PUSH(a); \
@@ -1567,8 +1556,8 @@ string VM::ProperTypeName(const TypeInfo &ti) {
         case V_STRUCT: return string(ReverseLookupType(ti.structidx));
         case V_NIL: return ProperTypeName(GetTypeInfo(ti.subt)) + "?";
         case V_VECTOR: return "[" + ProperTypeName(GetTypeInfo(ti.subt)) + "]";
+        default: return string(BaseTypeName(ti.t));
     }
-    return string(BaseTypeName(ti.t));
 }
 
 void VM::BCallProf() {
@@ -1586,9 +1575,9 @@ void VM::BCallRetCheck(const NativeFun *nf) {
             for (size_t i = 0; i < nf->retvals.v.size(); i++) {
                 auto t = (TOPPTR() - nf->retvals.v.size() + i)->type;
                 auto u = nf->retvals.v[i].type->t;
-                TYPE_ASSERT(t == u || u == V_ANY || u == V_NIL || (u == V_VECTOR && t == V_STRUCT));
+                assert(t == u || u == V_ANY || u == V_NIL || (u == V_VECTOR && t == V_STRUCT));
             }
-            TYPE_ASSERT(nf->retvals.v.size() || TOP().type == V_NIL);
+            assert(nf->retvals.v.size() || TOP().type == V_NIL);
         }
     #else
         (void)nf;
@@ -1597,16 +1586,16 @@ void VM::BCallRetCheck(const NativeFun *nf) {
 
 intp VM::GrabIndex(const Value &idx) {
     auto &v = TOP();
-    for (auto i = idx.stval()->Len() - 1; ; i--) {
-        auto sidx = idx.stval()->At(i);
+    for (auto i = idx.stval()->Len(*this) - 1; ; i--) {
+        auto sidx = idx.stval()->AtS(i);
         VMTYPEEQ(sidx, V_INT);
         if (!i) {
-            idx.DECRT();
+            idx.DECRT(*this);
             return sidx.ival();
         }
         RANGECHECK(sidx.ival(), v.vval()->len, v.vval());
         auto nv = v.vval()->At(sidx.ival()).INCRT();
-        v.DECRT();
+        v.DECRT(*this);
         v = nv;
     }
 }
@@ -1632,11 +1621,11 @@ int VM::GC() {  // shouldn't really be used, but just in case
         if (stack[i].True())  // Typically all nil
             Error("collect_garbage() must be called from a top level function");
     }
-    for (uint i = 0; i < bcf->specidents()->size(); i++) vars[i].Mark(GetVarTypeInfo(i).t);
+    for (uint i = 0; i < bcf->specidents()->size(); i++) vars[i].Mark(*this, GetVarTypeInfo(i).t);
     vml.LogMark();
     vector<RefObj *> leaks;
     int total = 0;
-    vmpool->findleaks([&](void *p) {
+    pool.findleaks([&](void *p) {
         total++;
         auto r = (RefObj *)p;
         if (r->tti == TYPE_ELEM_VALUEBUF ||
@@ -1647,16 +1636,9 @@ int VM::GC() {  // shouldn't really be used, but just in case
     for (auto p : leaks) {
         auto ro = (RefObj *)p;
         ro->refc = 0;
-        ro->DECDELETE(false);
+        ro->DECDELETE(*this, false);
     }
     return (int)leaks.size();
-}
-
-void RunBytecode(string_view programname, string &bytecode, const void *entry_point,
-                 const void *static_bytecode, const vector<string> &program_args) {
-    // Sets up g_vm
-    new VM(programname, bytecode, entry_point, static_bytecode, program_args);
-    g_vm->EvalProgram();
 }
 
 }  // namespace lobster

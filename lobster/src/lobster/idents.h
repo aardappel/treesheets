@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_IDENTS
+#define LOBSTER_IDENTS
+
+#include "lobster/natreg.h"
+
+#define FLATBUFFERS_DEBUG_VERIFICATION_FAILURE
+#include "lobster/bytecode_generated.h"
+
 namespace lobster {
 
 struct NativeFun;
@@ -374,17 +382,17 @@ struct SymbolTable {
         // FIXME: should also check if variables have already been defined in this scope that clash
         // with the struct, or do so in LookupUse
         assert(t->struc);
-        withstack.push_back(make_pair(t, id));
+        withstack.push_back({ t, id });
     }
 
     SharedField *LookupWithStruct(string_view name, Lex &lex, Ident *&id) {
         auto fld = FieldUse(name);
         if (!fld) return nullptr;
         assert(!id);
-        for (auto &wp : withstack) {
-            if (wp.first->struc->Has(fld) >= 0) {
+        for (auto &[wtype, wid] : withstack) {
+            if (wtype->struc->Has(fld) >= 0) {
                 if (id) lex.Error("access to ambiguous field: " + fld->name);
-                id = wp.second;
+                id = wid;
             }
         }
         return id ? fld : nullptr;
@@ -679,3 +687,5 @@ inline string TypeName(TypeRef type, int flen = 0, const SymbolTable *st = nullp
 }
 
 }  // namespace lobster
+
+#endif  // LOBSTER_IDENTS

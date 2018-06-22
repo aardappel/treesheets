@@ -14,7 +14,6 @@
 
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 #include "lobster/glinterface.h"
@@ -57,11 +56,11 @@ void FontCleanup() {
     FTClosedown();
 }
 
-void AddFont() {
-    STARTDECL(gl_setfontname) (Value &fname) {
-        extern void TestGL(); TestGL();
+void AddFont(NativeRegistry &natreg) {
+    STARTDECL(gl_setfontname) (VM &vm, Value &fname) {
+        extern void TestGL(VM &vm); TestGL(vm);
         string piname = fname.sval()->str();
-        fname.DECRT();
+        fname.DECRT(vm);
         auto faceit = loadedfaces.find(piname);
         if (faceit != loadedfaces.end()) {
             curface = faceit->second;
@@ -83,8 +82,8 @@ void AddFont() {
         "sets a freetype/OTF/TTF font as current (and loads it from disk the first time). returns"
         " true if success.");
 
-    STARTDECL(gl_setfontsize) (Value &fontsize, Value &outlinesize) {
-        if (!curface) g_vm->BuiltinError("gl_setfontsize: no current font set with gl_setfontname");
+    STARTDECL(gl_setfontsize) (VM &vm, Value &fontsize, Value &outlinesize) {
+        if (!curface) vm.BuiltinError("gl_setfontsize: no current font set with gl_setfontname");
         float osize = min(16.0f, max(0.0f, outlinesize.fltval()));
         int size = max(1, fontsize.intval());
         int csize = min(size, maxfontsize);
@@ -101,7 +100,7 @@ void AddFont() {
             return Value(true);
         }
         curfont = new BitmapFont(curface, csize, osize);
-        fontcache.insert(make_pair(fontname, curfont));
+        fontcache.insert({ fontname, curfont });
         return Value(true);
     }
     ENDDECL2(gl_setfontsize, "size,outlinesize", "IF?", "I",
@@ -111,7 +110,7 @@ void AddFont() {
         " an optional outlinesize will give the font a black outline."
         " returns true if success");
 
-    STARTDECL(gl_setmaxfontsize) (Value &fontsize) {
+    STARTDECL(gl_setmaxfontsize) (VM &, Value &fontsize) {
         maxfontsize = fontsize.intval();
         return Value(0);
     }
@@ -119,17 +118,17 @@ void AddFont() {
         "sets the max font size to render to bitmaps. any sizes specified over that by setfontsize"
         " will still work but cause scaled rendering. default 128");
 
-    STARTDECL(gl_getfontsize) () { return Value(curfontsize); }
+    STARTDECL(gl_getfontsize) (VM &) { return Value(curfontsize); }
     ENDDECL0(gl_getfontsize, "", "", "I",
         "the current font size");
 
-    STARTDECL(gl_getoutlinesize) () { return Value(curoutlinesize); }
+    STARTDECL(gl_getoutlinesize) (VM &) { return Value(curoutlinesize); }
     ENDDECL0(gl_getoutlinesize, "", "", "F",
              "the current font size");
 
-    STARTDECL(gl_text) (Value &s) {
+    STARTDECL(gl_text) (VM &vm, Value &s) {
         auto f = curfont;
-        if (!f) { s.DECRT(); return g_vm->BuiltinError("gl_text: no font size set"); }
+        if (!f) { s.DECRT(vm); return vm.BuiltinError("gl_text: no font size set"); }
         if (!s.sval()->len) return s;
         float4x4 oldobject2view;
         if (curfontsize > maxfontsize) {
@@ -145,15 +144,15 @@ void AddFont() {
     ENDDECL1(gl_text, "text", "S", "S",
         "renders a text with the current font (at the current coordinate origin)");
 
-    STARTDECL(gl_textsize) (Value &s) {
+    STARTDECL(gl_textsize) (VM &vm, Value &s) {
         auto f = curfont;
-        if (!f) { s.DECRT(); return g_vm->BuiltinError("gl_textsize: no font size set"); }
+        if (!f) { s.DECRT(vm); return vm.BuiltinError("gl_textsize: no font size set"); }
         auto size = f->TextSize(s.sval()->str());
-        s.DECRT();
+        s.DECRT(vm);
         if (curfontsize > maxfontsize) {
             size = fceil(float2(size) * float(curfontsize) / float(maxfontsize));
         }
-        return ToValueINT(size);
+        return ToValueINT(vm, size);
     }
     ENDDECL1(gl_textsize, "text", "S", "I}:2",
         "the x/y size in pixels the given text would need");

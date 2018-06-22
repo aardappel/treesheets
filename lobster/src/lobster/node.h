@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_NODE
+#define LOBSTER_NODE
+
 namespace lobster {
 
 typedef const function<void (Node *)> &IterateFun;
@@ -401,3 +404,5 @@ inline string Dump(Node &n, int indent) {
 }
 
 }  // namespace lobster
+
+#endif  // LOBSTER_NODE

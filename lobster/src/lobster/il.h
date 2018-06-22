@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_IL
+#define LOBSTER_IL
+
 // FlatBuffers takes care of backwards compatibility of all metadata, but not the actual bytecode.
 // This needs to be bumped each time we make changes to the format.
 
@@ -139,3 +142,5 @@ inline const int *ILArity() {
 }
 
 }
+
+#endif  // LOBSTER_IL

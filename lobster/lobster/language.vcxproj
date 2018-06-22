@@ -287,7 +287,6 @@
     <ClInclude Include="..\src\lobster\ttypes.h" />
     <ClInclude Include="..\src\lobster\typecheck.h" />
     <ClInclude Include="..\src\lobster\unicode.h" />
-    <ClInclude Include="..\src\lobster\vm.h" />
     <ClInclude Include="..\src\lobster\vmdata.h" />
     <ClInclude Include="..\src\lobster\wentropy.h" />
   </ItemGroup>

@@ -242,8 +242,8 @@ struct TypeChecker {
                                      (sub->sf == type->sf ||
                                       (!sub->sf && ConvertsTo(type->sf->coresumetype,
                                                               NewNilTypeVar(), false)));
+            default:          return false;
         }
-        return false;
     }
 
     TypeRef Union(const Node *a, const Node *b, bool coercions) {
@@ -360,6 +360,8 @@ struct TypeChecker {
                     return;
                 }
                 break;
+            default:
+                ;
         }
         error:
         TypeError(TypeName(sub), a->exptype, *a, argname, context);
@@ -1143,7 +1145,7 @@ struct TypeChecker {
         size_t orignodes = 0, clonenodes = 0;
         typedef pair<size_t, Function *> Pair;
         vector<Pair> funstats;
-        for (auto f : st.functiontable) funstats.push_back(make_pair(0, f));
+        for (auto f : st.functiontable) funstats.push_back({ 0, f });
         for (auto sf : st.subfunctiontable) {
             auto count = sf->body ? sf->body->Count() : 0;
             if (sf->parent->multimethod) {
@@ -1163,11 +1165,11 @@ struct TypeChecker {
         Output(OUTPUT_INFO, "Node count: orig: ", orignodes, ", cloned: ", clonenodes);
         sort(funstats.begin(), funstats.end(),
             [](const Pair &a, const Pair &b) { return a.first > b.first; });
-        for (auto &p : funstats) if (p.first > orignodes / 100) {
-            auto &pos = p.second->subf->body->line;
-            Output(OUTPUT_INFO, "Most clones: ", p.second->name, " (", st.filenames[pos.fileidx],
-                                ":", pos.line, ") -> ", p.first, " nodes accross ",
-                                p.second->NumSubf() - 1, " clones (+1 orig)");
+        for (auto &[fsize, f] : funstats) if (fsize > orignodes / 100) {
+            auto &pos = f->subf->body->line;
+            Output(OUTPUT_INFO, "Most clones: ", f->name, " (", st.filenames[pos.fileidx],
+                                ":", pos.line, ") -> ", fsize, " nodes accross ",
+                                f->NumSubf() - 1, " clones (+1 orig)");
         }
     }
 };

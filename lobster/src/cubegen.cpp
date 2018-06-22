@@ -1,6 +1,5 @@
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 #include "lobster/glinterface.h"
@@ -99,8 +98,8 @@ struct Voxels {
 
 static ResourceType voxel_type = { "voxels", [](void *v) { delete (Voxels *)v; } };
 
-Voxels &GetVoxels(Value &res) {
-    return *GetResourceDec<Voxels *>(res, &voxel_type);
+Voxels &GetVoxels(VM &vm, Value &res) {
+    return *GetResourceDec<Voxels *>(vm, res, &voxel_type);
 }
 
 void CubeGenClear() {
@@ -112,37 +111,37 @@ Voxels *NewWorld(const int3 &size) {
     return v;
 }
 
-void AddCubeGen() {
-    STARTDECL(cg_init) (Value &size) {
-        auto v = NewWorld(ValueDecToINT<3>(size));
-        return Value(g_vm->NewResource(v, &voxel_type));
+void AddCubeGen(NativeRegistry &natreg) {
+    STARTDECL(cg_init) (VM &vm, Value &size) {
+        auto v = NewWorld(ValueDecToINT<3>(vm, size));
+        return Value(vm.NewResource(v, &voxel_type));
     }
     ENDDECL1(cg_init, "size", "I]:3", "X",
         "initializes a new, empty 3D cube block. 1 byte per cell, careful with big sizes :)"
         " returns the block");
 
-    STARTDECL(cg_size) (Value &wid) {
-        return Value(ToValueINT(GetVoxels(wid).grid.dim));
+    STARTDECL(cg_size) (VM &vm, Value &wid) {
+        return Value(ToValueINT(vm, GetVoxels(vm, wid).grid.dim));
     }
     ENDDECL1(cg_size, "block", "X", "I]:3",
         "returns the current block size");
 
-    STARTDECL(cg_set) (Value &wid, Value &pos, Value &size, Value &color) {
-        auto p = ValueDecToINT<3>(pos);
-        auto sz = ValueDecToINT<3>(size);
-        GetVoxels(wid).Set(p, sz, (uchar)color.ival());
+    STARTDECL(cg_set) (VM &vm, Value &wid, Value &pos, Value &size, Value &color) {
+        auto p = ValueDecToINT<3>(vm, pos);
+        auto sz = ValueDecToINT<3>(vm, size);
+        GetVoxels(vm, wid).Set(p, sz, (uchar)color.ival());
         return Value();
     }
     ENDDECL4(cg_set, "block,pos,size,paletteindex", "XI]:3I]:3I", "",
         "sets a range of cubes to palette index. index 0 is considered empty space."
         "Coordinates automatically clipped to the size of the grid");
 
-    STARTDECL(cg_copy) (Value &wid, Value &pos, Value &size, Value &dest, Value &flip) {
-        auto p = ValueDecToINT<3>(pos);
-        auto sz = ValueDecToINT<3>(size);
-        auto d = ValueDecToINT<3>(dest);
-        auto fl = ValueDecToINT<3>(flip);
-        GetVoxels(wid).Copy(p, sz, d, fl);
+    STARTDECL(cg_copy) (VM &vm, Value &wid, Value &pos, Value &size, Value &dest, Value &flip) {
+        auto p = ValueDecToINT<3>(vm, pos);
+        auto sz = ValueDecToINT<3>(vm, size);
+        auto d = ValueDecToINT<3>(vm, dest);
+        auto fl = ValueDecToINT<3>(vm, flip);
+        GetVoxels(vm, wid).Copy(p, sz, d, fl);
         return Value();
     }
     ENDDECL5(cg_copy, "block,pos,size,dest,flip", "XI]:3I]:3I]:3I]:3", "",
@@ -150,23 +149,23 @@ void AddCubeGen() {
         " each component, indicating the step from dest."
         " Coordinates automatically clipped to the size of the grid");
 
-    STARTDECL(cg_color_to_palette) (Value &wid, Value &color) {
-        return Value(GetVoxels(wid).Color2Palette(float4(ValueDecToF<4>(color))));
+    STARTDECL(cg_color_to_palette) (VM &vm, Value &wid, Value &color) {
+        return Value(GetVoxels(vm, wid).Color2Palette(float4(ValueDecToF<4>(vm, color))));
     }
     ENDDECL2(cg_color_to_palette, "block,color", "XF]:4", "I",
         "converts a color to a palette index. alpha < 0.5 is considered empty space."
         " note: this is fast for the default palette, slow otherwise.");
 
-    STARTDECL(cg_palette_to_color) (Value &wid, Value &pal) {
+    STARTDECL(cg_palette_to_color) (VM &vm, Value &wid, Value &pal) {
         auto p = uchar(pal.ival());
-        return Value(ToValueFLT(color2vec(GetVoxels(wid).palette[p])));
+        return Value(ToValueFLT(vm, color2vec(GetVoxels(vm, wid).palette[p])));
     }
     ENDDECL2(cg_palette_to_color, "block,paletteindex", "XI", "F]:4",
         "converts a palette index to a color. empty space (index 0) will have 0 alpha");
 
-    STARTDECL(cg_copy_palette) (Value &fromworld, Value &toworld) {
-        auto &w1 = GetVoxels(fromworld);
-        auto &w2 = GetVoxels(toworld);
+    STARTDECL(cg_copy_palette) (VM &vm, Value &fromworld, Value &toworld) {
+        auto &w1 = GetVoxels(vm, fromworld);
+        auto &w2 = GetVoxels(vm, toworld);
         w2.palette.clear();
         w2.palette.insert(w2.palette.end(), w1.palette.begin(), w1.palette.end());
         return Value();
@@ -174,8 +173,8 @@ void AddCubeGen() {
     ENDDECL2(cg_copy_palette, "fromworld,toworld", "XX", "",
         "");
 
-    STARTDECL(cg_create_mesh) (Value &wid) {
-        auto &v = GetVoxels(wid);
+    STARTDECL(cg_create_mesh) (VM &vm, Value &wid) {
+        auto &v = GetVoxels(vm, wid);
         static int3 neighbors[] = {
             int3(1, 0, 0), int3(-1,  0,  0),
             int3(0, 1, 0), int3( 0, -1,  0),
@@ -258,13 +257,13 @@ void AddCubeGen() {
                           PRIM_TRIS);
         m->surfs.push_back(new Surface(make_span(triangles), PRIM_TRIS));
         extern ResourceType mesh_type;
-        return Value(g_vm->NewResource(m, &mesh_type));
+        return Value(vm.NewResource(m, &mesh_type));
     }
     ENDDECL1(cg_create_mesh, "block", "X", "X",
         "converts block to a mesh");
 
-    STARTDECL(cg_create_3d_texture) (Value &wid, Value &textureflags, Value &monochrome) {
-        auto &v = GetVoxels(wid);
+    STARTDECL(cg_create_3d_texture) (VM &vm, Value &wid, Value &textureflags, Value &monochrome) {
+        auto &v = GetVoxels(vm, wid);
         auto mipsizes = 0;
         for (auto d = v.grid.dim; d.x; d /= 2) mipsizes += d.volume();
         auto buf = new uchar[mipsizes];
@@ -306,17 +305,17 @@ void AddCubeGen() {
             TF_BUFFER_HAS_MIPS | textureflags.intval());
         delete[] buf;
         extern ResourceType texture_type;
-        return Value(g_vm->NewResource(new Texture(tex), &texture_type));
+        return Value(vm.NewResource(new Texture(tex), &texture_type));
     }
     ENDDECL3(cg_create_3d_texture, "block,textureformat,monochrome", "XII?", "X",
         "returns the new texture, for format, pass flags you want in addition to"
         " 3d|single_channel|has_mips");
 
-    STARTDECL(cg_load_vox) (Value &name) {
+    STARTDECL(cg_load_vox) (VM &vm, Value &name) {
         auto namep = name.sval()->str();
         string buf;
         auto l = LoadFile(namep, &buf);
-        name.DECRT();
+        name.DECRT(vm);
         if (l < 0) return Value(0);
         if (strncmp(buf.c_str(), "VOX ", 4)) return Value();
         int3 size = int3_0;
@@ -351,16 +350,16 @@ void AddCubeGen() {
             }
             p += contentlen;
         }
-        return Value(g_vm->NewResource(voxels, &voxel_type));
+        return Value(vm.NewResource(voxels, &voxel_type));
     }
     ENDDECL1(cg_load_vox, "name", "S", "X?",
         "loads a file in the .vox format (MagicaVoxel). returns block or nil if file failed to"
         " load");
 
-    STARTDECL(cg_save_vox) (Value &wid, Value &name) {
-        auto &v = GetVoxels(wid);
+    STARTDECL(cg_save_vox) (VM &vm, Value &wid, Value &name) {
+        auto &v = GetVoxels(vm, wid);
         if (!(v.grid.dim < 256)) {
-            name.DECRT();
+            name.DECRT(vm);
             return Value(false);
         }
         vector<byte4> voxels;
@@ -374,7 +373,7 @@ void AddCubeGen() {
             }
         }
         FILE *f = OpenForWriting(name.sval()->strv(), true);
-        name.DECRT();
+        name.DECRT(vm);
         if (!f) return Value(false);
         auto wint = [&](int i) { fwrite(&i, 4, 1, f); };
         auto wstr = [&](const char *s) { fwrite(s, 4, 1, f); };

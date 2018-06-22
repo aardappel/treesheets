@@ -338,8 +338,7 @@ void GeometryCache::RenderCircle(Shader *sh, Primitive prim, int segments, float
 
 void GeometryCache::RenderOpenCircle(Shader *sh, int segments, float radius, float thickness) {
     assert(segments >= 3);
-    auto vbo_type = make_pair(segments, thickness);
-    auto &vibo = opencirclevbos[vbo_type];
+    auto &vibo = opencirclevbos[{ segments, thickness }];
     auto nverts = segments * 2;
     auto nindices = segments * 6;
     if (!vibo.first) {

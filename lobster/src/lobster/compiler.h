@@ -12,16 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_COMPILER
+#define LOBSTER_COMPILER
+
+#include "lobster/natreg.h"
+
 namespace lobster {
 
-extern void Compile(string_view fn, const char *stringsource, string &bytecode,
-                    string *parsedump = nullptr, string *pakfile = nullptr,
+extern void Compile(NativeRegistry &natreg, string_view fn, const char *stringsource,
+                    string &bytecode, string *parsedump = nullptr, string *pakfile = nullptr,
                     bool dump_builtins = false, bool dump_names = false);
 extern bool LoadPakDir(const char *lpak);
 extern bool LoadByteCode(string &bytecode);
-extern void RegisterBuiltin(const char *name, void (* regfun)());
-extern void RegisterCoreLanguageBuiltins();
+extern void RegisterBuiltin(NativeRegistry &natreg, const char *name,
+                            void (* regfun)(NativeRegistry &));
+extern void RegisterCoreLanguageBuiltins(NativeRegistry &natreg);
 
-extern void ToCPP(ostringstream &ss, string_view bytecode_buffer);
+extern void ToCPP(NativeRegistry &natreg, ostringstream &ss, string_view bytecode_buffer);
 
 }
+
+#endif  // LOBSTER_COMPILER

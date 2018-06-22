@@ -14,7 +14,6 @@
 
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 #include "lobster/glinterface.h"
@@ -141,8 +140,8 @@ bool OverlayActive() {
 
 using namespace lobster;
 
-void AddSteam() {
-    STARTDECL(steam_init) (Value &appid, Value &ss) {
+void AddSteam(NativeRegistry &natreg) {
+    STARTDECL(steam_init) (VM &, Value &appid, Value &ss) {
         return Value(SteamInit((uint)appid.ival(), ss.True()));
     }
     ENDDECL2(steam_init, "appid,allowscreenshots", "II", "I",
@@ -153,21 +152,21 @@ void AddSteam() {
         " called even if steam isn't active."
         " allowscreenshots automatically uploads screenshots to steam (triggered by steam).");
 
-    STARTDECL(steam_overlay) () {
+    STARTDECL(steam_overlay) (VM &) {
         return Value(OverlayActive());
     }
     ENDDECL0(steam_overlay, "", "", "I",
         "returns true if the steam overlay is currently on (you may want to auto-pause if so)");
 
-    STARTDECL(steam_username) () {
-        return Value(g_vm->NewString(UserName()));
+    STARTDECL(steam_username) (VM &vm) {
+        return Value(vm.NewString(UserName()));
     }
     ENDDECL0(steam_username, "", "", "S",
         "returns the name of the steam user, or empty string if not available.");
 
-    STARTDECL(steam_unlock_achievement) (Value &name) {
+    STARTDECL(steam_unlock_achievement) (VM &vm, Value &name) {
         auto ok = UnlockAchievement(name.sval()->str());
-        name.DECRT();
+        name.DECRT(vm);
         return Value(ok);
     }
     ENDDECL1(steam_unlock_achievement, "achievementname", "S", "I",
@@ -175,29 +174,29 @@ void AddSteam() {
         " Will also Q-up saving achievement to Steam."
         " Returns true if succesful.");
 
-    STARTDECL(steam_write_file) (Value &file, Value &contents) {
+    STARTDECL(steam_write_file) (VM &vm, Value &file, Value &contents) {
         auto fn = file.sval()->str();
         auto s = contents.sval();
         auto ok = SteamWriteFile(fn, s->str(), s->len);
         if (!ok) {
             ok = WriteFile(fn, true, s->strv());
         }
-        file.DECRT();
-        contents.DECRT();
+        file.DECRT(vm);
+        contents.DECRT(vm);
         return Value(ok);
     }
     ENDDECL2(steam_write_file, "file,contents", "SS", "I",
         "writes a file with the contents of a string to the steam cloud, or local storage if that"
         " fails, returns false if writing wasn't possible at all");
 
-    STARTDECL(steam_read_file) (Value &file) {
+    STARTDECL(steam_read_file) (VM &vm, Value &file) {
         auto fn = file.sval()->str();
         string buf;
         auto len = SteamReadFile(fn, buf);
         if (!len) len = (int)LoadFile(fn, &buf);
-        file.DECRT();
+        file.DECRT(vm);
         if (len < 0) return Value();
-        auto s = g_vm->NewString(buf);
+        auto s = vm.NewString(buf);
         return Value(s);
     }
     ENDDECL1(steam_read_file, "file", "S", "S?",

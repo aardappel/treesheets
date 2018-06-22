@@ -1,6 +1,5 @@
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 #include "lobster/glinterface.h"
@@ -644,8 +643,8 @@ Value AddShape(ImplicitFunction *f) {
     return Value();
 }
 
-void AddMeshGen() {
-    STARTDECL(mg_sphere) (Value &rad) {
+void AddMeshGen(NativeRegistry &natreg) {
+    STARTDECL(mg_sphere) (VM &, Value &rad) {
         auto s = new IFSphere();
         s->rad = rad.fltval();
         return AddShape(s);
@@ -653,15 +652,15 @@ void AddMeshGen() {
     ENDDECL1(mg_sphere, "radius", "F", "",
         "a sphere");
 
-    STARTDECL(mg_cube) (Value &ext) {
+    STARTDECL(mg_cube) (VM &vm, Value &ext) {
         auto c = new IFCube();
-        c->extents = ValueDecToFLT<3>(ext);
+        c->extents = ValueDecToFLT<3>(vm, ext);
         return AddShape(c);
     }
     ENDDECL1(mg_cube,  "extents", "F}:3", "",
         "a cube (extents are size from center)");
 
-    STARTDECL(mg_cylinder) (Value &radius, Value &height) {
+    STARTDECL(mg_cylinder) (VM &, Value &radius, Value &height) {
         auto c = new IFCylinder();
         c->radius = radius.fltval();
         c->height = height.fltval();
@@ -670,7 +669,7 @@ void AddMeshGen() {
     ENDDECL2(mg_cylinder, "radius,height", "FF", "",
         "a unit cylinder (height is from center)");
 
-    STARTDECL(mg_tapered_cylinder) (Value &bot, Value &top, Value &height) {
+    STARTDECL(mg_tapered_cylinder) (VM &, Value &bot, Value &top, Value &height) {
         auto tc = new IFTaperedCylinder();
         tc->bot = bot.fltval();
         tc->top = top.fltval();
@@ -680,23 +679,23 @@ void AddMeshGen() {
     ENDDECL3(mg_tapered_cylinder, "bot,top,height", "FFF", "",
         "a cyclinder where you specify the top and bottom radius (height is from center)");
 
-    STARTDECL(mg_superquadric) (Value &exps, Value &scale) {
+    STARTDECL(mg_superquadric) (VM &vm, Value &exps, Value &scale) {
         auto sq = new IFSuperQuadric();
-        sq->exp = ValueDecToFLT<3>(exps);
-        sq->scale = ValueDecToFLT<3>(scale);
+        sq->exp = ValueDecToFLT<3>(vm, exps);
+        sq->scale = ValueDecToFLT<3>(vm, scale);
         return AddShape(sq);
     }
     ENDDECL2(mg_superquadric, "exponents,scale", "F}:3F}:3", "",
         "a super quadric. specify an exponent of 2 for spherical, higher values for rounded"
         " squares");
 
-    STARTDECL(mg_superquadric_non_uniform) (Value &posexps, Value &negexps, Value &posscale,
+    STARTDECL(mg_superquadric_non_uniform) (VM &vm, Value &posexps, Value &negexps, Value &posscale,
         Value &negscale) {
         auto sq = new IFSuperQuadricNonUniform();
-        sq->exppos   = ValueDecToFLT<3>(posexps);
-        sq->expneg   = ValueDecToFLT<3>(negexps);
-        sq->scalepos = max(float3(0.01f), ValueDecToFLT<3>(posscale));
-        sq->scaleneg = max(float3(0.01f), ValueDecToFLT<3>(negscale));
+        sq->exppos   = ValueDecToFLT<3>(vm, posexps);
+        sq->expneg   = ValueDecToFLT<3>(vm, negexps);
+        sq->scalepos = max(float3(0.01f), ValueDecToFLT<3>(vm, posscale));
+        sq->scaleneg = max(float3(0.01f), ValueDecToFLT<3>(vm, negscale));
 
         return AddShape(sq);
     }
@@ -706,16 +705,16 @@ void AddMeshGen() {
         "a superquadric that allows you to specify exponents and sizes in all 6 directions"
         " independently for maximum modelling possibilities");
 
-    STARTDECL(mg_supertoroid) (Value &r, Value &exps) {
+    STARTDECL(mg_supertoroid) (VM &vm, Value &r, Value &exps) {
         auto t = new IFSuperToroid();
         t->r = r.fltval();
-        t->exp = ValueDecToFLT<3>(exps);
+        t->exp = ValueDecToFLT<3>(vm, exps);
         return AddShape(t);
     }
     ENDDECL2(mg_supertoroid, "R,exponents", "FF}:3", "",
         "a super toroid. R is the distance from the origin to the center of the ring.");
 
-    STARTDECL(mg_landscape) (Value &zscale, Value &xyscale) {
+    STARTDECL(mg_landscape) (VM &, Value &zscale, Value &xyscale) {
         auto ls = new IFLandscape();
         ls->zscale = zscale.fltval();
         ls->xyscale = xyscale.fltval();
@@ -723,7 +722,7 @@ void AddMeshGen() {
     } ENDDECL2(mg_landscape, "zscale,xyscale", "FF", "",
         "a simplex landscape of unit size");
 
-    STARTDECL(mg_set_polygonreduction) (Value &_polyreductionpasses, Value &_epsilon,
+    STARTDECL(mg_set_polygonreduction) (VM &, Value &_polyreductionpasses, Value &_epsilon,
                                         Value &_maxtricornerdot) {
         polyreductionpasses = _polyreductionpasses.intval();
         epsilon = _epsilon.fltval();
@@ -737,7 +736,7 @@ void AddMeshGen() {
         " tradeoff, lower to get more compression. maxtricornerdot avoid very thin triangles, use"
         " 0.95 as a good tradeoff, up to 0.99 to get more compression");
 
-    STARTDECL(mg_set_colornoise) (Value &_noiseintensity, Value &_noisestretch) {
+    STARTDECL(mg_set_colornoise) (VM &, Value &_noiseintensity, Value &_noisestretch) {
         noisestretch = _noisestretch.fltval();
         noiseintensity = _noiseintensity.fltval();
         return Value();
@@ -746,7 +745,7 @@ void AddMeshGen() {
         "applies simplex noise to the colors of the model. try 0.3 for intensity."
         " stretch scales the pattern over the model");
 
-    STARTDECL(mg_set_vertrandomize) (Value &factor) {
+    STARTDECL(mg_set_vertrandomize) (VM &, Value &factor) {
         randomizeverts = factor.fltval();
         return Value();
     }
@@ -755,18 +754,18 @@ void AddMeshGen() {
         " polygons produced by the algorithm. try 0.15. note that any setting other than 0 will"
         " likely counteract the polygon reduction algorithm");
 
-    STARTDECL(mg_set_pointmode) (Value &aspoints) {
+    STARTDECL(mg_set_pointmode) (VM &, Value &aspoints) {
         pointmode = aspoints.True();
         return Value();
     }
     ENDDECL1(mg_set_pointmode, "on", "I", "",
              "generates a point mesh instead of polygons");
 
-    STARTDECL(mg_polygonize) (Value &subdiv) {
+    STARTDECL(mg_polygonize) (VM &vm, Value &subdiv) {
         auto mesh = eval_and_polygonize(root, subdiv.intval());
         MeshGenClear();
         extern ResourceType mesh_type;
-        return Value(g_vm->NewResource(mesh, &mesh_type));
+        return Value(vm.NewResource(mesh, &mesh_type));
     }
     ENDDECL1(mg_polygonize, "subdiv", "I", "X",
         "returns a generated mesh from past mg_ commands."
@@ -774,83 +773,83 @@ void AddMeshGen() {
         " model), try 30.. 300 depending on the subject."
         " values much higher than that will likely make you run out of memory (or take very long).");
 
-    STARTDECL(mg_translate) (Value &vec, Value &body) {
-        if (body.True()) g_vm->Push(ToValueFLT(curorig));
-        auto v = ValueDecToFLT<3>(vec);
+    STARTDECL(mg_translate) (VM &vm, Value &vec, Value &body) {
+        if (body.True()) vm.Push(ToValueFLT(vm, curorig));
+        auto v = ValueDecToFLT<3>(vm, vec);
         // FIXME: not good enough if non-uniform scale, might as well forbid that before any trans
         curorig += currot * (v * cursize);
         return body;
     }
-    MIDDECL(mg_translate) () {
-        curorig = ValueDecToFLT<3>(g_vm->Pop());
+    MIDDECL(mg_translate) (VM &vm) {
+        curorig = ValueDecToFLT<3>(vm, vm.Pop());
     }
     ENDDECL2CONTEXIT(mg_translate, "vec,body", "F}:3C?", "",
         "translates the current coordinate system along a vector. when a body is given,"
         " restores the previous transform afterwards");
 
-    STARTDECL(mg_scale) (Value &f, Value &body) {
-        if (body.True()) g_vm->Push(ToValueFLT(cursize));
+    STARTDECL(mg_scale) (VM &vm, Value &f, Value &body) {
+        if (body.True()) vm.Push(ToValueFLT(vm, cursize));
         cursize *= f.fltval();
         return body;
     }
-    MIDDECL(mg_scale) () {
-        cursize = ValueDecToFLT<3>(g_vm->Pop());
+    MIDDECL(mg_scale) (VM &vm) {
+        cursize = ValueDecToFLT<3>(vm, vm.Pop());
     }
     ENDDECL2CONTEXIT(mg_scale, "f,body", "FC?", "",
         "scales the current coordinate system by the given factor."
         " when a body is given, restores the previous transform afterwards");
 
-    STARTDECL(mg_scalevec) (Value &vec, Value &body) {
-        if (body.True()) g_vm->Push(ToValueFLT(cursize));
-        auto v = ValueDecToFLT<3>(vec);
+    STARTDECL(mg_scalevec) (VM &vm, Value &vec, Value &body) {
+        if (body.True()) vm.Push(ToValueFLT(vm, cursize));
+        auto v = ValueDecToFLT<3>(vm, vec);
         cursize *= v;
         return body;
     }
-    MIDDECL(mg_scalevec) () {
-        cursize = ValueDecToFLT<3>(g_vm->Pop());
+    MIDDECL(mg_scalevec) (VM &vm) {
+        cursize = ValueDecToFLT<3>(vm, vm.Pop());
     }
     ENDDECL2CONTEXIT(mg_scalevec, "vec,body", "F}:3C?", "",
         "non-unimformly scales the current coordinate system using individual factors per axis."
         " when a body is given, restores the previous transform afterwards");
 
-    STARTDECL(mg_rotate) (Value &axis, Value &angle, Value &body) {
-        if (body.True()) g_vm->Push(Value(g_vm->NewString(string_view((char *)&currot,
+    STARTDECL(mg_rotate) (VM &vm, Value &axis, Value &angle, Value &body) {
+        if (body.True()) vm.Push(Value(vm.NewString(string_view((char *)&currot,
                                                                       sizeof(float3x3)))));
-        auto v = ValueDecToFLT<3>(axis);
+        auto v = ValueDecToFLT<3>(vm, axis);
         currot *= float3x3(angle.fltval() * RAD, v);
         return body;
     }
-    MIDDECL(mg_rotate) () {
-        auto s = g_vm->Pop();
-        TYPE_ASSERT(s.type == V_STRING);
+    MIDDECL(mg_rotate) (VM &vm) {
+        auto s = vm.Pop();
+        assert(s.type == V_STRING);
         assert(s.sval()->len == sizeof(float3x3));
         currot = *(float3x3 *)s.sval()->str();
-        s.DECRT();
+        s.DECRT(vm);
     }
     ENDDECL3CONTEXIT(mg_rotate, "axis,angle,body", "F}:3FC?", "",
         "rotates using axis/angle. when a body is given, restores the previous transform"
         " afterwards");
 
-    STARTDECL(mg_color) (Value &vec, Value &body) {
-        if (body.True()) g_vm->Push(ToValueFLT(curcol));
-        curcol = ValueDecToFLT<4>(vec);
+    STARTDECL(mg_color) (VM &vm, Value &vec, Value &body) {
+        if (body.True()) vm.Push(ToValueFLT(vm, curcol));
+        curcol = ValueDecToFLT<4>(vm, vec);
         return body;
     }
-    MIDDECL(mg_color) () {
-        curcol = ValueDecToFLT<4>(g_vm->Pop());
+    MIDDECL(mg_color) (VM &vm) {
+        curcol = ValueDecToFLT<4>(vm, vm.Pop());
     }
     ENDDECL2CONTEXIT(mg_color, "color,body", "F}:4C?", "",
         "sets the color, where an alpha of 1 means to add shapes to the scene (union), and 0"
         " substracts them (carves). when a body is given, restores the previous color afterwards.");
 
-    STARTDECL(mg_smooth) (Value &smooth, Value &body) {
-        if (body.True()) g_vm->Push(Value(cursmoothmink));
+    STARTDECL(mg_smooth) (VM &vm, Value &smooth, Value &body) {
+        if (body.True()) vm.Push(Value(cursmoothmink));
         cursmoothmink = smooth.fltval();
         return body;
     }
-    MIDDECL(mg_smooth) () {
-        auto smooth = g_vm->Pop();
-        TYPE_ASSERT(smooth.type == V_FLOAT);
+    MIDDECL(mg_smooth) (VM &vm) {
+        auto smooth = vm.Pop();
+        assert(smooth.type == V_FLOAT);
         cursmoothmink = smooth.fltval();
     }
     ENDDECL2CONTEXIT(mg_smooth, "smooth,body", "FC?", "",

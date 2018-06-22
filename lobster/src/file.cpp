@@ -14,7 +14,6 @@
 
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 #include "stdint.h"
@@ -35,28 +34,27 @@
 
 namespace lobster {
 
-void AddFile() {
-    STARTDECL(scan_folder) (Value &fld, Value &divisor) {
+void AddFile(NativeRegistry &natreg) {
+    STARTDECL(scan_folder) (VM &vm, Value &fld, Value &divisor) {
         vector<pair<string, int64_t>> dir;
         auto ok = ScanDirAbs(fld.sval()->strv(), dir);
-        fld.DECRT();
+        fld.DECRT(vm);
         if (!ok) {
-            g_vm->Push(Value());
+            vm.Push(Value());
             return Value();
         }
         if (divisor.ival() <= 0) divisor.setival(1);
-        auto nlist = (LVector *)g_vm->NewVec(0, 0, TYPE_ELEM_VECTOR_OF_STRING);
-        auto slist = (LVector *)g_vm->NewVec(0, 0, TYPE_ELEM_VECTOR_OF_INT);
-        for (auto &p : dir) {
-            nlist->Push(Value(g_vm->NewString(p.first)));
-            auto size = p.second;
+        auto nlist = (LVector *)vm.NewVec(0, 0, TYPE_ELEM_VECTOR_OF_STRING);
+        auto slist = (LVector *)vm.NewVec(0, 0, TYPE_ELEM_VECTOR_OF_INT);
+        for (auto &[name, size] : dir) {
+            nlist->Push(vm, Value(vm.NewString(name)));
             if (size >= 0) {
                 size /= divisor.ival();
                 if (sizeof(intp) == sizeof(int) && size > 0x7FFFFFFF) size = 0x7FFFFFFF;
             }
-            slist->Push(Value(size));
+            slist->Push(vm, Value(size));
         }
-        g_vm->Push(Value(nlist));
+        vm.Push(Value(nlist));
         return Value(slist);
     }
     ENDDECL2(scan_folder, "folder,divisor", "SI", "S]?I]?",
@@ -65,22 +63,22 @@ void AddFile() {
         " Specify 1 as divisor to get sizes in bytes, 1024 for kb etc. Values > 0x7FFFFFFF will be"
         " clamped in 32-bit builds. Returns nil if folder couldn't be scanned.");
 
-    STARTDECL(read_file) (Value &file) {
+    STARTDECL(read_file) (VM &vm, Value &file) {
         string buf;
         auto l = LoadFile(file.sval()->strv(), &buf);
-        file.DECRT();
+        file.DECRT(vm);
         if (l < 0) return Value();
-        auto s = g_vm->NewString(buf);
+        auto s = vm.NewString(buf);
         return Value(s);
     }
     ENDDECL1(read_file, "file", "S", "S?",
         "returns the contents of a file as a string, or nil if the file can't be found."
         " you may use either \\ or / as path separators");
 
-    STARTDECL(write_file) (Value &file, Value &contents) {
+    STARTDECL(write_file) (VM &vm, Value &file, Value &contents) {
         auto ok = WriteFile(file.sval()->strv(), true, contents.sval()->strv());
-        file.DECRT();
-        contents.DECRT();
+        file.DECRT(vm);
+        contents.DECRT(vm);
         return Value(ok);
     }
     ENDDECL2(write_file, "file,contents", "SS", "I",

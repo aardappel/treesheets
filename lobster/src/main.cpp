@@ -15,7 +15,9 @@
 #include "lobster/stdafx.h"
 
 #include "lobster/compiler.h"
-#include "lobster/vm.h"
+#include "lobster/disasm.h"
+
+#include "lobster/engine.h"
 
 // FIXME: This makes SDL not modular, but without it it will miss the SDLMain indirection.
 #include "lobster/sdlincludes.h"
@@ -40,7 +42,6 @@ int main(int argc, char* argv[]) {
     try
     #endif
     {
-        RegisterCoreEngineBuiltins();
         bool parsedump = false;
         bool disasm = false;
         bool to_cpp = false;
@@ -95,8 +96,13 @@ int main(int argc, char* argv[]) {
         #ifdef __IOS__
             //fn = "totslike.lobster";  // FIXME: temp solution
         #endif
+
         if (!InitPlatform(argv[0], fn ? fn : default_lpak, from_bundle, SDLLoadFile))
             THROW_OR_ABORT(string("cannot find location to read/write data on this platform!"));
+
+        NativeRegistry natreg;
+        RegisterCoreEngineBuiltins(natreg);
+
         string bytecode;
         if (!fn) {
             if (!LoadPakDir(default_lpak))
@@ -109,7 +115,7 @@ int main(int argc, char* argv[]) {
             Output(OUTPUT_INFO, "compiling...");
             string dump;
             string pakfile;
-            Compile(StripDirPart(fn), nullptr, bytecode, parsedump ? &dump : nullptr,
+            Compile(natreg, StripDirPart(fn), nullptr, bytecode, parsedump ? &dump : nullptr,
                 lpak ? &pakfile : nullptr, dump_builtins, dump_names);
             if (parsedump) {
                 WriteFile("parsedump.txt", false, dump);
@@ -121,7 +127,7 @@ int main(int argc, char* argv[]) {
         }
         if (disasm) {
             ostringstream ss;
-            DisAsm(ss, bytecode);
+            DisAsm(natreg, ss, bytecode);
             WriteFile("disasm.txt", false, ss.str());
         }
         if (to_cpp) {
@@ -130,13 +136,12 @@ int main(int argc, char* argv[]) {
                             "../dev/compiled_lobster/src/compiled_lobster.cpp").c_str(), "w");
             if (f) {
                 ostringstream ss;
-                ToCPP(ss, bytecode);
+                ToCPP(natreg, ss, bytecode);
                 fputs(ss.str().c_str(), f);
                 fclose(f);
             }
         } else {
-            if (EngineRunByteCode(fn, bytecode, nullptr, nullptr, program_args))
-                return 0;  // Emscripten inverted control.
+            EngineRunByteCode(natreg, fn, bytecode, nullptr, nullptr, program_args);
         }
     }
     #ifdef USE_EXCEPTION_HANDLING

@@ -21,8 +21,8 @@ namespace geom {
 
 // Compile time unrolled loops for 2..4 components.
 #define DOVEC(F)  { const int i = 0; F; \
-                  { const int i = 1; F; if (N > 2) \
-                  { const int i = 2; F; if (N > 3) \
+                  { const int i = 1; F; if constexpr (N > 2) \
+                  { const int i = 2; F; if constexpr (N > 3) \
                   { const int i = 3; F; } } } }
 
 #define DOVECR(F) { vec<T, N> _t; DOVEC(_t[i] = F); return _t; }
@@ -84,8 +84,11 @@ template<typename T, int N> struct vec : basevec<T, N> {
 
     template<typename U> explicit vec(const vec<U,N> &v) { DOVEC(c[i] = (T)v[i]); }
 
-    vec(T _x, T _y, T _z, T _w) { x = _x; y = _y; assert(N == 4); c[2] = _z; c[3] = _w; }
-    vec(T _x, T _y, T _z)       { x = _x; y = _y; assert(N == 3); c[2] = _z; }
+    vec(T _x, T _y, T _z, T _w) { x = _x; y = _y; assert(N == 4);
+                                  if constexpr (N > 2) c[2] = _z; else (void)_z;
+                                  if constexpr (N > 3) c[3] = _w; else (void)_w; }
+    vec(T _x, T _y, T _z)       { x = _x; y = _y; assert(N == 3);
+                                  if constexpr (N > 2) c[2] = _z; else (void)_z; }
     vec(T _x, T _y)             { x = _x; y = _y; assert(N == 2); }
     vec(const pair<T, T> &p)    { x = p.first; y = p.second; assert(N == 2); }
 
@@ -101,7 +104,7 @@ template<typename T, int N> struct vec : basevec<T, N> {
 
     vec<T,3>   xyz()     const { assert(N == 4); return vec<T,3>(c); }
     vec<T,2>   xy()      const { assert(N >= 3); return vec<T,2>(c); }
-    pair<T, T> to_pair() const { assert(N == 2); return make_pair(x, y); }
+    pair<T, T> to_pair() const { assert(N == 2); return { x, y }; }
 
     vec operator+(const vec &v) const { DOVECR(c[i] + v[i]); }
     vec operator-(const vec &v) const { DOVECR(c[i] - v[i]); }

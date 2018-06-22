@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_NATREG
+#define LOBSTER_NATREG
+
+#include "lobster/vmdata.h"
+
 namespace lobster {
 
 struct Named {
@@ -248,14 +253,14 @@ struct NargVector : GenericArgs {
 
 struct BuiltinPtr {
     union  {
-        Value (*f0)();
-        Value (*f1)(Value &);
-        Value (*f2)(Value &, Value &);
-        Value (*f3)(Value &, Value &, Value &);
-        Value (*f4)(Value &, Value &, Value &, Value &);
-        Value (*f5)(Value &, Value &, Value &, Value &, Value &);
-        Value (*f6)(Value &, Value &, Value &, Value &, Value &, Value &);
-        Value (*f7)(Value &, Value &, Value &, Value &, Value &, Value &, Value &);
+        Value (*f0)(VM &vm);
+        Value (*f1)(VM &vm, Value &);
+        Value (*f2)(VM &vm, Value &, Value &);
+        Value (*f3)(VM &vm, Value &, Value &, Value &);
+        Value (*f4)(VM &vm, Value &, Value &, Value &, Value &);
+        Value (*f5)(VM &vm, Value &, Value &, Value &, Value &, Value &);
+        Value (*f6)(VM &vm, Value &, Value &, Value &, Value &, Value &, Value &);
+        Value (*f7)(VM &vm, Value &, Value &, Value &, Value &, Value &, Value &, Value &);
     };
 };
 
@@ -267,7 +272,7 @@ struct NativeFun : Named {
     NargVector args, retvals;
 
     bool has_body;
-    void (*cont1)();
+    void (*cont1)(VM &);
 
     const char *idlist;
     const char *help;
@@ -277,7 +282,7 @@ struct NativeFun : Named {
     NativeFun *overloads, *first;
 
     NativeFun(const char *_name, BuiltinPtr f, const char *_ids, const char *typeids,
-              const char *rets, int nargs, const char *_help, bool _has_body, void (*_cont1)(),
+              const char *rets, int nargs, const char *_help, bool _has_body, void (*_cont1)(VM &),
               list<Type> &typestorage)
         : Named(_name, 0), fun(f), args(nargs, _ids), retvals(0, nullptr),
           has_body(_has_body), cont1(_cont1), help(_help), subsystemid(-1), overloads(nullptr),
@@ -336,8 +341,6 @@ struct NativeRegistry {
     }
 };
 
-extern NativeRegistry natreg;
-
 #define STARTDECL(name) { struct ___##name { static Value s_##name
 
 #define MIDDECL(name) static void mid_##name
@@ -369,3 +372,5 @@ extern NativeRegistry natreg;
     ENDDECL_(name, ids, types, rets, help, 3, NCM_CONT_EXIT, &___##name::mid_##name)
 
 }  // namespace lobster
+
+#endif  // LOBSTER_NATREG

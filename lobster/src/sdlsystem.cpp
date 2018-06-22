@@ -19,13 +19,6 @@
 
 #include "lobster/glinterface.h"
 
-#include "lobster/compiler.h"  // For RegisterBuiltin().
-#include "lobster/vm.h"
-#include "lobster/vmdata.h"
-#ifdef __EMSCRIPTEN__
-#include "emscripten.h"
-#endif
-
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #ifdef _WIN32
   #pragma warning(push)
@@ -107,11 +100,10 @@ Finger fingers[MAXFINGERS];
 
 
 void updatebutton(string &name, bool on, int posfinger) {
-    auto kmit = keymap.find(name);
-    auto ks = &(kmit != keymap.end() ? kmit : keymap.insert(make_pair(name, KeyState())).first)->second;
-    ks->button.Set(on);
-    ks->lasttime[on] = lasttime;
-    ks->lastpos[on] = fingers[posfinger].mousepos;
+    auto &ks = keymap[name];
+    ks.button.Set(on);
+    ks.lasttime[on] = lasttime;
+    ks.lastpos[on] = fingers[posfinger].mousepos;
 }
 
 void updatemousebutton(int button, int finger, bool on) {
@@ -579,7 +571,7 @@ double SDLDeltaTime() { return frametime; }
 
 TimeBool8 GetKS(const char *name) {
     auto ks = keymap.find(name);
-    if (ks == keymap.end()) return TimeBool8();
+    if (ks == keymap.end()) return {};
     #ifdef PLATFORM_TOUCH
         // delayed results by one frame, that way they get 1 frame over finger hovering over target,
         // which makes gl_hit work correctly
@@ -678,117 +670,3 @@ int SDLScreenDPI(int screen) {
            : (int)(ddpi + 0.5f);
 }
 
-void RegisterCoreEngineBuiltins() {
-    lobster::RegisterCoreLanguageBuiltins();
-
-    extern void AddGraphics(); lobster::RegisterBuiltin("graphics",  AddGraphics);
-    extern void AddFont();     lobster::RegisterBuiltin("font",      AddFont);
-    extern void AddSound();    lobster::RegisterBuiltin("sound",     AddSound);
-    extern void AddPhysics();  lobster::RegisterBuiltin("physics",   AddPhysics);
-    extern void AddNoise();    lobster::RegisterBuiltin("noise",     AddNoise);
-    extern void AddMeshGen();  lobster::RegisterBuiltin("meshgen",   AddMeshGen);
-    extern void AddCubeGen();  lobster::RegisterBuiltin("cubegen",   AddCubeGen);
-    extern void AddVR();       lobster::RegisterBuiltin("vr",        AddVR);
-    extern void AddSteam();    lobster::RegisterBuiltin("steam",     AddSteam);
-}
-
-void EngineExit(int code) {
-    GraphicsShutDown();
-
-    #ifdef __EMSCRIPTEN__
-        emscripten_force_exit(code);
-    #endif
-
-    exit(code); // Needed at least on iOS to forcibly shut down the wrapper main()
-}
-
-void one_frame_callback() {
-    #ifdef USE_EXCEPTION_HANDLING
-    try
-    #endif
-    {
-        GraphicsFrameStart();
-        assert(lobster::g_vm);
-        lobster::g_vm->OneMoreFrame();
-        // If this returns, we didn't hit a gl_frame() again and exited normally.
-        EngineExit(0);
-    }
-    #ifdef USE_EXCEPTION_HANDLING
-    catch (string &s) {
-        if (s != "SUSPEND-VM-MAINLOOP") {
-            // An actual error.
-            Output(OUTPUT_ERROR, s);
-            EngineExit(1);
-        }
-    }
-    #endif
-}
-
-bool EngineRunByteCode(const char *fn, string &bytecode, const void *entry_point,
-                       const void *static_bytecode, const vector<string> &program_args) {
-    #ifdef USE_EXCEPTION_HANDLING
-    try
-    #endif
-    {
-        lobster::RunBytecode(fn ? StripDirPart(fn) : "", bytecode, entry_point,
-                             static_bytecode, program_args);
-    }
-    #ifdef USE_EXCEPTION_HANDLING
-    catch (string &s) {
-        #ifdef USE_MAIN_LOOP_CALLBACK
-        if (s == "SUSPEND-VM-MAINLOOP") {
-            // emscripten requires that we don't control the main loop.
-            // We just got to the start of the first frame inside gl_frame(), and the VM is suspended.
-            // Install the one-frame callback:
-            #ifdef __EMSCRIPTEN__
-            emscripten_set_main_loop(one_frame_callback, 0, false);
-            // Return from main() here (!) since we don't actually want to run any shutdown code yet.
-            assert(lobster::g_vm);
-            return true;
-            #else
-            // Emulate this behavior so we can debug it.
-            while (g_vm->evalret == "") one_frame_callback();
-            #endif
-        } else
-        #endif
-        {
-            if (lobster::g_vm) delete lobster::g_vm;
-            lobster::g_vm = nullptr;
-            // An actual error.
-            THROW_OR_ABORT(s);
-        }
-    }
-    #endif
-
-    delete lobster::g_vm;
-    lobster::g_vm = nullptr;
-    return false;
-}
-
-int EngineRunCompiledCodeMain(int argc, char *argv[], const void *entry_point, const void *bytecodefb) {
-    (void)argc;
-
-    min_output_level = OUTPUT_INFO;
-
-    #ifdef USE_EXCEPTION_HANDLING
-    try
-    #endif
-    {
-        InitPlatform ("../../lobster/", "", false, SDLLoadFile);  // FIXME
-        RegisterCoreEngineBuiltins();
-
-        string empty;
-        vector<string> args;
-        for (int arg = 1; arg < argc; arg++) { args.push_back(argv[arg]); }
-        if (EngineRunByteCode(argv[0], empty, entry_point, bytecodefb, args))
-            return 0;  // Emscripten.
-    }
-    #ifdef USE_EXCEPTION_HANDLING
-    catch (string &s) {
-        Output(OUTPUT_ERROR, s);
-        EngineExit(1);
-    }
-    #endif
-    EngineExit(0);
-    return 0;
-}

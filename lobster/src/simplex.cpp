@@ -1,6 +1,5 @@
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 using namespace lobster;
@@ -406,9 +405,9 @@ float SimplexNoise(const int octaves, const float persistence, const float scale
     return total / maxAmplitude;
 }
 
-void AddNoise() {
-    STARTDECL(simplex) (Value &pos, Value &octaves, Value &scale, Value &persistence) {
-        auto v = ValueDecToF<4>(pos);
+void AddNoise(NativeRegistry &natreg) {
+    STARTDECL(simplex) (VM &vm, Value &pos, Value &octaves, Value &scale, Value &persistence) {
+        auto v = ValueDecToF<4>(vm, pos);
         // TODO: if performance is ever an issue, could add an arg to indicate 2/3/4d version
         return Value(SimplexNoise(octaves.intval(), persistence.fltval(), scale.fltval(), float4(v)));
     }

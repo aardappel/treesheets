@@ -14,6 +14,9 @@
 
 namespace lobster {
 
+#define FLATBUFFERS_DEBUG_VERIFICATION_FAILURE
+#include "lobster/bytecode_generated.h"
+
 struct CodeGen  {
     vector<int> code;
     vector<uchar> code_attr;
@@ -181,13 +184,12 @@ struct CodeGen  {
         Emit(IL_EXIT, GetTypeTableOffset(parser.root->children.back()->exptype));
         SplitAttr(Pos());  // Allow off by one indexing.
         linenumbernodes.pop_back();
-        for (auto &fixup : call_fixups) {
-            auto &sf = *fixup.second;
-            auto &f = *sf.parent;
-            auto bytecodestart = f.multimethod ? f.bytecodestart : sf.subbytecodestart;
+        for (auto &[loc, sf] : call_fixups) {
+            auto f = sf->parent;
+            auto bytecodestart = f->multimethod ? f->bytecodestart : sf->subbytecodestart;
             if (!bytecodestart) bytecodestart = dummyfun;
-            assert(!code[fixup.first]);
-            code[fixup.first] = bytecodestart;
+            assert(!code[loc]);
+            code[loc] = bytecodestart;
         }
     }
 
@@ -327,7 +329,7 @@ struct CodeGen  {
 
     void GenFixup(const SubFunction *sf) {
         assert(sf->body);
-        if (!sf->subbytecodestart) call_fixups.push_back(make_pair(Pos() - 1, sf));
+        if (!sf->subbytecodestart) call_fixups.push_back({ Pos() - 1, sf });
     }
 
     const Node *GenArgs(const List *list, size_t &nargs, const Node *parent = nullptr) {

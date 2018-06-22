@@ -68,6 +68,8 @@ using namespace std;
 
 using namespace gsl;
 
+#include "flatbuffers/flatbuffers.h"
+
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;

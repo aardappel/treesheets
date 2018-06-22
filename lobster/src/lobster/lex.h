@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_LEX
+#define LOBSTER_LEX
+
+#include "lobster/ttypes.h"
+
 namespace lobster {
 
 struct Line {
@@ -56,7 +61,7 @@ struct LoadedFile : Line {
         }
         linestart = p = source.get()->c_str();
 
-        indentstack.push_back(make_pair(0, false));
+        indentstack.push_back({ 0, false });
 
         fns.push_back(string(fn));
     }
@@ -140,14 +145,14 @@ struct Lex : LoadedFile {
                 if (indent < indentstack.back().first)
                     Error("line continuation can't indent less than the previous line");
                 if (indent > indentstack.back().first)
-                    indentstack.push_back(make_pair(indent, true));
+                    indentstack.push_back({ indent, true });
                 return;
             }
             PushCur();
             tryagain:
             if (indent != indentstack.back().first) {
                 if (indent > indentstack.back().first) {
-                    indentstack.push_back(make_pair(indent, false));
+                    indentstack.push_back({ indent, false });
                     Push(T_INDENT);
                 } else {
                     bool iscont = false;
@@ -202,9 +207,9 @@ struct Lex : LoadedFile {
             case '\n': line++; islf = bracketstack.empty(); linestart = p; break;
             case ' ': case '\t': case '\r': case '\f': whitespacebefore++; break;
 
-            case '(': bracketstack.push_back(make_pair(c, ')')); return T_LEFTPAREN;
-            case '[': bracketstack.push_back(make_pair(c, ']')); return T_LEFTBRACKET;
-            case '{': bracketstack.push_back(make_pair(c, '}')); return T_LEFTCURLY;
+            case '(': bracketstack.push_back({ c, ')' }); return T_LEFTPAREN;
+            case '[': bracketstack.push_back({ c, ']' }); return T_LEFTBRACKET;
+            case '{': bracketstack.push_back({ c, '}' }); return T_LEFTCURLY;
             case ')': PopBracket(c); return T_RIGHTPAREN;
             case ']': PopBracket(c); return T_RIGHTBRACKET;
             case '}': PopBracket(c); return T_RIGHTCURLY;
@@ -442,17 +447,16 @@ struct Lex : LoadedFile {
     };
 
     string_view TokStr(TType t = T_NONE) {
-        if (t == T_NONE) {
-            t = token;
-            switch (t) {
-                case T_IDENT:
-                case T_FLOAT:
-                case T_INT:
-                case T_STR:
-                    return sattr;
-            }
+        if (t == T_NONE) t = token;
+        switch (t) {
+            case T_IDENT:
+            case T_FLOAT:
+            case T_INT:
+            case T_STR:
+                return sattr;
+            default:
+                return TName(t);
         }
-        return TName(t);
     }
 
     string Location(const Line &ln) {
@@ -467,3 +471,5 @@ struct Lex : LoadedFile {
 };
 
 }  // namespace lobster
+
+#endif  // LOBSTER_LEX

@@ -82,9 +82,6 @@
     <ClInclude Include="..\src\lobster\vmdata.h">
       <Filter>dvm</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\lobster\vm.h">
-      <Filter>dvm</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\lobster\disasm.h">
       <Filter>dvm</Filter>
     </ClInclude>

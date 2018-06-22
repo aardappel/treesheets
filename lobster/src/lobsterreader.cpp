@@ -14,24 +14,22 @@
 
 #include "lobster/stdafx.h"
 
-#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
-#include "lobster/ttypes.h"
 #include "lobster/lex.h"
 
 namespace lobster {
 
 struct ValueParser {
     vector<string> filenames;
-    vector<RefObj *> allocated;
+    vector<Value> allocated;
     Lex lex;
+    VM &vm;
 
-    ValueParser(char *_src) : lex("string", filenames, _src) {
-    }
+    ValueParser(VM &vm, char *_src) : lex("string", filenames, _src), vm(vm) {}
 
     ~ValueParser() {
-        for (auto lo : allocated) lo->Dec();
+        for (auto v : allocated) v.DECRT(vm);
     }
 
     Value Parse(type_elem_t typeoff) {
@@ -44,12 +42,12 @@ struct ValueParser {
     Value ParseElems(TType end, type_elem_t typeoff, int numelems = -1) {  // Vector or struct.
         Gobble(T_LINEFEED);
         vector<Value> elems;
-        auto &ti = g_vm->GetTypeInfo(typeoff);
+        auto &ti = vm.GetTypeInfo(typeoff);
         if (lex.token == end) lex.Next();
         else {
             for (;;) {
                 if ((int)elems.size() == numelems) {
-                    ParseFactor(TYPE_ELEM_ANY).DECRT();  // Ignore the value.
+                    ParseFactor(TYPE_ELEM_ANY).DECRT(vm);  // Ignore the value.
                 } else {
                     elems.push_back(
                         ParseFactor(ti.t == V_VECTOR ? ti.subt : ti.elems[elems.size()]));
@@ -63,7 +61,7 @@ struct ValueParser {
         }
         if (numelems >= 0) {
             while ((int)elems.size() < numelems) {
-                switch (ti.elems[elems.size()]) {
+                switch (vm.GetTypeInfo(ti.elems[elems.size()]).t) {
                     case V_INT:   elems.push_back(Value(0)); break;
                     case V_FLOAT: elems.push_back(Value(0.0f)); break;
                     case V_NIL:   elems.push_back(Value()); break;
@@ -71,19 +69,19 @@ struct ValueParser {
                 }
             }
         }
-        RefObj *ro;
+        Value v;
         if (end == T_RIGHTCURLY) {
-            auto vec = g_vm->NewStruct((intp)elems.size(), typeoff);
-            if (elems.size()) vec->Init(elems.data(), (intp)elems.size(), false);
-            ro = vec;
+            auto vec = vm.NewStruct((intp)elems.size(), typeoff);
+            if (elems.size()) vec->Init(vm, elems.data(), (intp)elems.size(), false);
+            v = Value(vec);
         } else {
-            auto vec = g_vm->NewVec((intp)elems.size(), (intp)elems.size(), typeoff);
-            if (elems.size()) vec->Init(elems.data(), false);
-            ro = vec;
+            auto vec = vm.NewVec((intp)elems.size(), (intp)elems.size(), typeoff);
+            if (elems.size()) vec->Init(vm, elems.data(), false);
+            v = Value(vec);
         }
-        ro->Inc();
-        allocated.push_back(ro);
-        return Value(ro);
+        v.INCRT();
+        allocated.push_back(v);
+        return v;
 
     }
 
@@ -98,7 +96,7 @@ struct ValueParser {
     }
 
     Value ParseFactor(type_elem_t typeoff) {
-        auto &ti = g_vm->GetTypeInfo(typeoff);
+        auto &ti = vm.GetTypeInfo(typeoff);
         auto vt = ti.t;
         // TODO: also support boxed parsing as V_ANY.
         // means boxing int/float, deducing runtime type for V_VECTOR, and finding the existing
@@ -120,7 +118,7 @@ struct ValueParser {
                 ExpectType(V_STRING, vt);
                 string s = lex.StringVal();
                 lex.Next();
-                auto str = g_vm->NewString(s);
+                auto str = vm.NewString(s);
                 str->Inc();
                 allocated.push_back(str);
                 return Value(str);
@@ -150,7 +148,7 @@ struct ValueParser {
                 auto sname = lex.sattr;
                 lex.Next();
                 Expect(T_LEFTCURLY);
-                auto name = g_vm->StructName(ti);
+                auto name = vm.StructName(ti);
                 if (name != sname)
                     lex.Error("struct type " + name + " required, " + sname + " given");
                 return ParseElems(T_RIGHTCURLY, typeoff, ti.len);
@@ -172,27 +170,27 @@ struct ValueParser {
     }
 };
 
-static Value ParseData(type_elem_t typeoff, char *inp) {
+static Value ParseData(VM &vm, type_elem_t typeoff, char *inp) {
     #ifdef USE_EXCEPTION_HANDLING
     try
     #endif
     {
-        ValueParser parser(inp);
-        g_vm->Push(parser.Parse(typeoff));
+        ValueParser parser(vm, inp);
+        vm.Push(parser.Parse(typeoff));
         return Value();
     }
     #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
-        g_vm->Push(Value());
-        return Value(g_vm->NewString(s));
+        vm.Push(Value());
+        return Value(vm.NewString(s));
     }
     #endif
 }
 
-void AddReader() {
-    STARTDECL(parse_data) (Value &type, Value &ins) {
-        Value v = ParseData((type_elem_t)type.ival(), ins.sval()->str());
-        ins.DECRT();
+void AddReader(NativeRegistry &natreg) {
+    STARTDECL(parse_data) (VM &vm, Value &type, Value &ins) {
+        Value v = ParseData(vm, (type_elem_t)type.ival(), ins.sval()->str());
+        ins.DECRT(vm);
         return v;
     }
     ENDDECL2(parse_data, "typeid,stringdata", "TS", "A1?S?",
