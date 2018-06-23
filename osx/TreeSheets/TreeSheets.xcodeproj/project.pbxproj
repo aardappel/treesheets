@@ -443,12 +443,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_DEBUG=1",
 					"DEBUG=1",
 					"$(inherited)",
 					"_FILE_OFFSET_BITS=64",
@@ -464,6 +465,7 @@
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
 					"/usr/local/lib/libwx_osx_cocoau_xrc-3.1.a",
@@ -497,7 +499,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -516,6 +518,7 @@
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
 					"/usr/local/lib/libwx_osx_cocoau_xrc-3.1.a",
