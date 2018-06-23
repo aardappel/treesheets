@@ -123,7 +123,7 @@
         GLEXTS
     #undef GLEXT
 #endif
-#if defined(_DEBUG)
+#if !defined(NDEBUG)
     #define LOG_GL_ERRORS
 #endif
 #ifdef LOG_GL_ERRORS

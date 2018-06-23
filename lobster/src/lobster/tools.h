@@ -129,12 +129,14 @@ class MersenneTwister          {
         uint *p0 = state, *p2 = state + 2, *pM = state + M, s0, s1;
         int j;
         if (left < -1) Seed(4357U);
-        left = N - 1, next = state + 1;
+        left = N - 1;
+        next = state + 1;
         for (s0 = state[0], s1 = state[1], j = N - M + 1; --j; s0 = s1, s1 = *p2++)
             *p0++ = *pM++ ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
         for (pM = state, j = M; --j; s0 = s1, s1 = *p2++)
             *p0++ = *pM++ ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
-        s1 = state[0], *p0 = *pM ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
+        s1 = state[0];
+        *p0 = *pM ^ (mixBits(s0, s1) >> 1) ^ (loBit(s1) ? K : 0U);
         s1 ^= (s1 >> 11);
         s1 ^= (s1 << 7) & 0x9D2C5680U;
         s1 ^= (s1 << 15) & 0xEFC60000U;
@@ -229,7 +231,7 @@ template<typename T> string to_string_float(T x, int decimals = -1) {
     // There's no way to tell it to just output however many decimals are actually significant,
     // sigh. Once you turn on fixed, it will default to 5 or 6, depending on platform, for both
     // float and double. So we set our own more useful defaults:
-    size_t default_precision = sizeof(T) == sizeof(float) ? 6 : 12;
+    int default_precision = sizeof(T) == sizeof(float) ? 6 : 12;
     ss << std::setprecision(decimals <= 0 ? default_precision : decimals);
     ss << x;
     auto s = ss.str();

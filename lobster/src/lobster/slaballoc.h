@@ -49,7 +49,7 @@ alloc_sized/dealloc_sized instead do store the size, if a more drop-in replaceme
 is desired.
 */
 
-#ifdef _DEBUG
+#ifndef NDEBUG
     // Uncomment if debugging with crtdbg functionality is required (for finding memory corruption).
     //#define PASSTHRUALLOC
     #define COLLECT_STATS
@@ -203,7 +203,7 @@ class SlabAlloc {
             return;
         #endif
         PageHeader *page = ppage(p);
-        #ifdef _DEBUG
+        #ifndef NDEBUG
             memset(p, 0xBA, page->size);
         #endif
         int b = page->size >> ALIGNBITS;

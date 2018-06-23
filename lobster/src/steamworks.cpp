@@ -63,7 +63,7 @@ void SteamShutDown() {
 int SteamInit(uint appid, bool screenshots) {
     SteamShutDown();
     #ifdef PLATFORM_STEAMWORKS
-        #ifdef _DEBUG
+        #ifndef NDEBUG
             (void)appid;
         #else
             if (appid && SteamAPI_RestartAppIfNecessary(appid)) {

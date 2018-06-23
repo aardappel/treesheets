@@ -74,7 +74,7 @@ template<typename T, int N> struct vec : basevec<T, N> {
     using basevec<T, N>::y;
 
     vec() {
-        #ifdef _DEBUG
+        #ifndef NDEBUG
         DOVEC(default_debug_value(c[i]));
         #endif
     }

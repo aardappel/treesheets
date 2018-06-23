@@ -18,7 +18,7 @@
 
 namespace lobster {
 
-#ifdef _DEBUG
+#ifndef NDEBUG
     #define VM_PROFILER              // tiny VM slowdown and memory usage when enabled
 #endif
 
@@ -204,7 +204,7 @@ LResource *VM::NewResource(void *v, const ResourceType *t) {
     return new (pool.alloc(sizeof(LResource))) LResource(v, t);
 }
 #ifdef _WIN32
-#ifdef _DEBUG
+#ifndef NDEBUG
 #define new DEBUG_NEW
 #endif
 #endif
@@ -283,7 +283,7 @@ void VM::VMAssert(const char *what, const RefObj *a, const RefObj *b)  {
     Error(string("VM internal assertion failure: ") + what, a, b);
 }
 
-#if defined(_DEBUG) && RTT_ENABLED
+#if !defined(NDEBUG) && RTT_ENABLED
     #define STRINGIFY(x) #x
     #define TOSTRING(x) STRINGIFY(x)
     #define VMASSERT(test) { if (!(test)) VMAssert(__FILE__ ": " TOSTRING(__LINE__) ": " #test); }
@@ -363,7 +363,7 @@ void VM::FinalStackVarsCleanup() {
         //                    flat_string_view(bcf->idents()->Get(sid->ididx())->name()));
         vars[i].DECTYPE(*this, GetTypeInfo((type_elem_t)sid->typeidx()).t);
     }
-    #ifdef _DEBUG
+    #ifndef NDEBUG
         Output(OUTPUT_INFO, "stack at its highest was: ", maxsp);
     #endif
 }
@@ -477,7 +477,7 @@ void VM::FunIntro(VM_OP_ARGS) {
     auto &stf = stackframes.back();
     stf.funstart = funstart;
     stf.spstart = sp;
-    #ifdef _DEBUG
+    #ifndef NDEBUG
         if (sp > maxsp) maxsp = sp;
     #endif
 }
@@ -709,7 +709,7 @@ void VM::EvalProgramInner() {
                 assert(false);  // Should not return here.
             #endif
         #else
-            #ifdef _DEBUG
+            #ifndef NDEBUG
                 if (trace) {
                     size_t trace_size = trace_tail ? 50 : 1;
                     if (trace_output.size() < trace_size) trace_output.resize(trace_size);
@@ -744,7 +744,7 @@ void VM::EvalProgramInner() {
                 vm_count_ins++;
             #endif
             auto op = *ip++;
-            #ifdef _DEBUG
+            #ifndef NDEBUG
                 if (op < 0 || op >= IL_MAX_OPS)
                     Error(cat("bytecode format problem: ", op));
             #endif
