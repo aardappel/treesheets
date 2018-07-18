@@ -79,7 +79,7 @@ struct Document {
 
     bool searchfilter;
 
-    wxHashMapBool tags;
+    std::map<wxString, bool> tags;
 
     int editfilter;
 
@@ -192,8 +192,7 @@ struct Document {
             if (!zos.IsOk()) return _(L"Zlib error while writing file.");
             wxDataOutputStream dos(zos);
             rootgrid->Save(dos);
-            wxHashMapBool::iterator tagit;
-            for (tagit = tags.begin(); tagit != tags.end(); ++tagit) {
+            for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit) {
                 dos.WriteString(tagit->first);
             }
             dos.WriteString(wxEmptyString);
@@ -1827,15 +1826,13 @@ struct Document {
     }
 
     void RecreateTagMenu(wxMenu &menu) {
-        wxHashMapBool::iterator tagit;
         int i = A_TAGSET;
-        for (tagit = tags.begin(); tagit != tags.end(); ++tagit) { menu.Append(i++, tagit->first); }
+        for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit) { menu.Append(i++, tagit->first); }
     }
 
     const wxChar *TagSet(int tagno) {
-        wxHashMapBool::iterator tagit;
         int i = 0;
-        for (tagit = tags.begin(); tagit != tags.end(); ++tagit)
+        for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit)
             if (i++ == tagno) {
                 Cell *c = selected.GetCell();
                 if (!c) return OneCell();
