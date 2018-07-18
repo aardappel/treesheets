@@ -1474,9 +1474,9 @@ struct Document {
                     if (v < 0) return nullptr;
                     auto sc = v / 100.0;
                     if (k == A_IMAGESCP) {
-                        c->text.image->Scale(sc);
+                        c->text.image->BitmapScale(sc);
                     } else {
-                        c->text.image->display_scale /= sc;
+                        c->text.image->DisplayScale(sc);
                     }
                 }
                 c->ResetLayout();

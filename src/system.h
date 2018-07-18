@@ -15,8 +15,13 @@ struct Image {
 
     Image(wxBitmap _bm, int _cs, double _sc) : bm_orig(_bm), checksum(_cs), display_scale(_sc) {}
 
-    void Scale(double sc) {
+    void BitmapScale(double sc) {
         ScaleBitmap(bm_orig, sc, bm_orig);
+        bm_display = wxNullBitmap;
+    }
+
+    void DisplayScale(double sc) {
+        display_scale /= sc;
         bm_display = wxNullBitmap;
     }
 
