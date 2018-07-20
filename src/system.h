@@ -25,6 +25,11 @@ struct Image {
         bm_display = wxNullBitmap;
     }
 
+    void ResetScale(double sc) {
+        display_scale = sc;
+        bm_display = wxNullBitmap;
+    }
+
     wxBitmap &Display() {
         if (!bm_display.IsOk()) {
             ScaleBitmap(bm_orig, 1.0 / display_scale * sys->frame->csf, bm_display);

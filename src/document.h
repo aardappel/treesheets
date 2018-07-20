@@ -1466,7 +1466,7 @@ struct Document {
             case A_IMAGESCN: {
                 if (!c->text.image) return _(L"No image in this cell.");
                 if (k == A_IMAGESCN) {
-                    c->text.image->display_scale = sys->frame->csf;
+                    c->text.image->ResetScale(sys->frame->csf);
                 } else {
                     long v = wxGetNumberFromUser(
                         _(L"Please enter the percentage you want the image scaled by:"), L"%",
