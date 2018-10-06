@@ -713,7 +713,8 @@ struct Document {
     const wxChar *Save(bool saveas, bool *success = nullptr) {
         if (!saveas && !filename.empty()) { return SaveDB(success); }
         wxString fn =
-            ::wxFileSelector(_(L"Choose TreeSheets file to save:"), L"", L"", L"cts", L"*.cts",
+            ::wxFileSelector(_(L"Choose TreeSheets file to save:"), L"", L"", L"cts",
+                             L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*",
                              wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Save cancelled.");  // avoid name being set to ""
         ChangeFileName(fn);
@@ -842,8 +843,9 @@ struct Document {
 
             case A_OPEN: {
                 wxString fn =
-                    ::wxFileSelector(_(L"Please select a TreeSheets file to load:"), L"", L"", L"cts",
-                                     L"*.cts", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+                    ::wxFileSelector(_(L"Please select a TreeSheets file to load:"), L"", L"",
+                                     L"cts", L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*",
+                                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 return sys->Open(fn);
             }
 
