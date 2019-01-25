@@ -239,12 +239,6 @@ struct Text {
                 int tx = bx + 2 + ixs;
                 int ty = by + lines * h;
                 MyDrawText(dc, curl, tx + g_margin_extra, ty + g_margin_extra, cell->sx, h);
-                if (stylebits & STYLE_STRIKETHRU) {
-                    int txs, tys;
-                    dc.GetTextExtent(curl, &txs, &tys);
-                    dc.SetPen(*wxGREY_PEN);
-                    dc.DrawLine(tx, ty + h / 2, tx + txs, ty + h / 2);
-                }
                 if (searchfound || filtered || istag || cell->textcolor)
                     dc.SetTextForeground(*wxBLACK);
             }

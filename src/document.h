@@ -557,13 +557,14 @@ struct Document {
     bool PickFont(wxDC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
-            dc.SetFont(
-                wxFont(textsize - (while_printing || scaledviewingmode),
-                       stylebits & STYLE_FIXED ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
-                       stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-                       stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-                       (stylebits & STYLE_UNDERLINE) != 0,
-                       stylebits & STYLE_FIXED ? L"" : sys->defaultfont));
+            wxFont font(textsize - (while_printing || scaledviewingmode),
+                   stylebits & STYLE_FIXED ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
+                   stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+                   stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+                   (stylebits & STYLE_UNDERLINE) != 0,
+                   stylebits & STYLE_FIXED ? L"" : sys->defaultfont);
+            if (stylebits & STYLE_STRIKETHRU) font.SetStrikethrough(true);
+            dc.SetFont(font);
             lasttextsize = textsize;
             laststylebits = stylebits;
         }
