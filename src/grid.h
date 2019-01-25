@@ -499,23 +499,10 @@ struct Grid {
         DELETEP(pthis);
     }
 
-    void IdealRelSize(int &rs, bool wantsize = false) {
-        int relsize = 0, numsize = 0, lastsize = 0;
-        foreachcell(c) {
-            Text &t = c->text;
-            relsize += t.relsize * (int)t.t.Len();
-            numsize += (int)t.t.Len();
-            lastsize = t.relsize;
-        }
-        if (numsize)
-            rs = (relsize / (float)numsize) + (relsize >= 0 ? 0.5f : -0.5f);
-        else if (wantsize)
-            rs = lastsize;
-    }
-
     void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
-        int relsize = 0;
-        IdealRelSize(relsize, true);
+        assert(((dx < 0) == (nxs == 0)) && 
+               ((dy < 0) == (nys == 0)));
+        assert(nxs + nys == 1);
         Cell **ocells = cells;
         cells = new Cell *[(xs + nxs) * (ys + nys)];
         int *ocw = colwidths;
@@ -528,10 +515,10 @@ struct Grid {
             if (nc)
                 c = nc;
             else {
-                Cell *colcell = ocells[(nxs ? (dx ? dx - 1 : dx) : x) +
-                                       (nxs ? y : (dy ? dy - 1 : dy)) * (xs - nxs)];
+                Cell *colcell = ocells[(nxs ? min(dx, xs - nxs - 1) : x) +
+                                       (nxs ? y : min(dy, ys - nys - 1)) * (xs - nxs)];
                 c = new Cell(cell, colcell);
-                c->text.relsize = relsize;
+                c->text.relsize = colcell->text.relsize;
             }
         }
         else c = *ncp++;

@@ -69,12 +69,12 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void InsertColumns(int x, int n) {
         if (cur->grid && x >= 0 && x <= cur->grid->xs && n > 0 && n < max_new_grid_dim)
-            cur->grid->InsertCells(x, -1, n, 0);
+            cur->grid->InsertCells(x, -1, 1 /* FIXME n */, 0);
     }
 
     void InsertRows(int y, int n) {
         if (cur->grid && y >= 0 && y <= cur->grid->ys && n > 0 && n < max_new_grid_dim)
-            cur->grid->InsertCells(-1, y, 0, n);
+            cur->grid->InsertCells(-1, y, 0, 1 /* FIXME n */);
     }
 
     void Delete(int x, int y, int xs, int ys) {
