@@ -313,8 +313,9 @@ struct Document {
         ResetFont();
         Selection prev = hover;
         hover = Selection();
-        WalkPath(drawpath)->grid->FindXY(this, x - centerx / currentviewscale - hierarchysize,
-                                         y - centery / currentviewscale - hierarchysize, dc);
+        auto drawroot = WalkPath(drawpath);
+        if (drawroot->grid) drawroot->grid->FindXY(this, x - centerx / currentviewscale - hierarchysize,
+                                                   y - centery / currentviewscale - hierarchysize, dc);
         if (!(prev == hover)) {
             if (prev.g) prev.g->DrawHover(this, dc, prev);
             if (hover.g) hover.g->DrawHover(this, dc, hover);
@@ -387,12 +388,12 @@ struct Document {
             CreatePath(c && c->grid ? c : selected.g->cell, drawpath);
         } else if (dir < 0) {
             Cell *drawroot = WalkPath(drawpath);
-            if (drawroot->grid->folded && selectionmaybedrawroot)
+            if (drawroot->grid && drawroot->grid->folded && selectionmaybedrawroot)
                 selected = drawroot->parent->grid->FindCell(drawroot);
         }
         while (len < drawpath.size()) drawpath.remove(0);
         Cell *drawroot = WalkPath(drawpath);
-        if (selected.GetCell() == drawroot) {
+        if (selected.GetCell() == drawroot && drawroot->grid) {
             selected = Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys);
         }
         drawroot->ResetLayout();
@@ -1779,7 +1780,7 @@ struct Document {
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
         UndoItem *ui = fromlist.pop();
         Cell *c = WalkPath(ui->path);
-        if (c->parent) {
+        if (c->parent && c->parent->grid) {
             c->parent->grid->ReplaceCell(c, ui->clone);
             ui->clone->parent = c->parent;
         } else
