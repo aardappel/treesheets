@@ -92,7 +92,7 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ColorPopup(this));
         SetSelection(sel);
-        SetPopupMaxHeight(2000);
+        SetPopupMaxHeight(wxDisplay().GetGeometry().GetHeight() * 3 / 4);
     }
 
     wxCoord OnMeasureItem(size_t item) const { return 22 * csf; }
@@ -149,7 +149,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ImagePopup());
         SetSelection(0);
-        SetPopupMaxHeight(2000);
+        SetPopupMaxHeight(wxDisplay().GetGeometry().GetHeight() * 3 / 4);
     }
 
     wxCoord OnMeasureItem(size_t item) const { return image_space * csf; }

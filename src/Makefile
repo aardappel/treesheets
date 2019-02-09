@@ -6,7 +6,7 @@ WX_CXXFLAGS=	`$(WX_CONFIG) --cxxflags`
 WX_LIBS=	`$(WX_CONFIG) --libs aui adv core xml net`
 PACKAGE_VERSION?=	__DATE__
 CXX?=	c++
-CXXFLAGS+=	-DPACKAGE_VERSION=$(PACKAGE_VERSION) -std=c++11 $(WX_CXXFLAGS)
+CXXFLAGS+=	-DPACKAGE_VERSION=$(PACKAGE_VERSION) -std=c++17 $(WX_CXXFLAGS) -I ../lobster/include -I ../lobster/src
 LDFLAGS+=	$(WX_LIBS)
 
 ARCH=	$(firstword $(shell uname -m))
@@ -18,16 +18,25 @@ DIST_CMD?=	tar
 DIST_ARGS?=	-caf
 
 APPNAME=	treesheets
-SRCS=	main.cpp
+SRCS=	main.cpp \
+        lobster_impl.cpp \
+        ../lobster/src/builtins.cpp \
+        ../lobster/src/compiler.cpp \
+        ../lobster/src/file.cpp \
+        ../lobster/src/lobsterreader.cpp \
+        ../lobster/src/platform.cpp \
+        ../lobster/src/vm.cpp \
+        ../lobster/src/vmdata.cpp \
+        ../lobster/src/vmlog.cpp
 OBJS=	$(SRCS:.cpp=.o)
+
+all: $(SRCS) $(APPNAME)
 
 release: CXXFLAGS+= -O3
 release: install clean
 
 debug: CXXFLAGS+= -g
 debug: install clean
-
-all: $(SRCS) $(APPNAME)
 
 $(APPNAME): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@

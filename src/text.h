@@ -210,7 +210,7 @@ struct Text {
             if (!curl.Len()) break;
             if (cell->tiny) {
                 if (sys->fastrender) {
-                    dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + curl.Len(), by + lines * h);
+                    dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + (int)curl.Len(), by + lines * h);
                     /*
                     wxPoint points[] = { wxPoint(bx + ixs, by + lines * h), wxPoint(bx + ixs + curl.Len(), by + lines * h) };
                     dc.DrawLines(1, points, 0, 0);
@@ -239,12 +239,6 @@ struct Text {
                 int tx = bx + 2 + ixs;
                 int ty = by + lines * h;
                 MyDrawText(dc, curl, tx + g_margin_extra, ty + g_margin_extra, cell->sx, h);
-                if (stylebits & STYLE_STRIKETHRU) {
-                    int txs, tys;
-                    dc.GetTextExtent(curl, &txs, &tys);
-                    dc.SetPen(*wxGREY_PEN);
-                    dc.DrawLine(tx, ty + h / 2, tx + txs, ty + h / 2);
-                }
                 if (searchfound || filtered || istag || cell->textcolor)
                     dc.SetTextForeground(*wxBLACK);
             }
@@ -359,16 +353,27 @@ struct Text {
         }
         return false;
     }
-    void SetRelSize() {
-        if (t.Len() == 0 && cell->parent) cell->parent->grid->IdealRelSize(relsize);
+
+    void SetRelSize(Selection &s) {
+        if (t.Len() || !cell->parent) return;
+        int dd[] = { 0, 1, 1, 0, 0, -1, -1, 0 };
+        for (int i = 0; i < 4; i++) {
+            int x = max(0, min(s.x + dd[i * 2], s.g->xs - 1));
+            int y = max(0, min(s.y + dd[i * 2 + 1], s.g->ys - 1));
+            auto c = s.g->C(x, y);
+            if (c->text.t.Len()) {
+                relsize = c->text.relsize;
+                break;
+            }
+        }
     }
 
     void Insert(Document *doc, const wxString &ins, Selection &s) {
         if (!s.TextEdit()) Clear(doc, s);
         RangeSelRemove(s);
-        SetRelSize();
+        SetRelSize(s);
         t.insert(s.cursor, ins);
-        s.cursor = s.cursorend = s.cursor + ins.Len();
+        s.cursor = s.cursorend = s.cursor + (int)ins.Len();
     }
 
     void Delete(Selection &s) {
@@ -384,7 +389,7 @@ struct Text {
     }
     void Key(int k, Selection &s) {
         RangeSelRemove(s);
-        SetRelSize();
+        SetRelSize(s);
         t.insert(s.cursor++, 1, k);
         s.cursorend = s.cursor;
     }

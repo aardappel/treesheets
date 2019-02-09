@@ -15,8 +15,18 @@ struct Image {
 
     Image(wxBitmap _bm, int _cs, double _sc) : bm_orig(_bm), checksum(_cs), display_scale(_sc) {}
 
-    void Scale(double sc) {
+    void BitmapScale(double sc) {
         ScaleBitmap(bm_orig, sc, bm_orig);
+        bm_display = wxNullBitmap;
+    }
+
+    void DisplayScale(double sc) {
+        display_scale /= sc;
+        bm_display = wxNullBitmap;
+    }
+
+    void ResetScale(double sc) {
+        display_scale = sc;
         bm_display = wxNullBitmap;
     }
 
@@ -120,7 +130,7 @@ struct System {
         pen_thinselect.SetDashes(2, tspattern);
         pen_thinselect.SetStyle(wxPENSTYLE_USER_DASH);
 
-        roundness = cfg->Read(L"roundness", roundness);
+        roundness = (int)cfg->Read(L"roundness", roundness);
         defaultfont = cfg->Read(L"defaultfont", defaultfont);
         cfg->Read(L"makebaks", &makebaks, makebaks);
         cfg->Read(L"totray", &totray, totray);
@@ -163,7 +173,7 @@ struct System {
         if (filename.Len()) LoadDB(filename);
 
         if (!frame->nb->GetPageCount()) {
-            int numfiles = cfg->Read(L"numopenfiles", (long)0);
+            int numfiles = (int)cfg->Read(L"numopenfiles", (long)0);
             loop(i, numfiles) {
                 wxString fn;
                 cfg->Read(wxString::Format(L"lastopenfile_%d", i), &fn);
@@ -179,6 +189,8 @@ struct System {
 
         frame->bt.Start(400);
         savechecker.Start(1000);
+
+        ScriptInit(frame);
     }
 
     void LoadTut() {
@@ -357,7 +369,7 @@ struct System {
     }
 
     void RememberOpenFiles() {
-        int n = frame->nb->GetPageCount();
+        int n = (int)frame->nb->GetPageCount();
         int namedfiles = 0;
 
         loop(i, n) {
@@ -426,9 +438,9 @@ struct System {
                                 Cell *r = InitDB(1);
                                 FillRows(r->grid, as, CountCol(as[0]), 0, 0);
                             }; break;
-                            case A_IMPTXTC: InitDB(1, as.size())->grid->CSVImport(as, L','); break;
-                            case A_IMPTXTS: InitDB(1, as.size())->grid->CSVImport(as, L';'); break;
-                            case A_IMPTXTT: InitDB(1, as.size())->grid->CSVImport(as, L'\t'); break;
+                            case A_IMPTXTC: InitDB(1, (int)as.size())->grid->CSVImport(as, L','); break;
+                            case A_IMPTXTS: InitDB(1, (int)as.size())->grid->CSVImport(as, L';'); break;
+                            case A_IMPTXTT: InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t'); break;
                         }
                     break;
                 }

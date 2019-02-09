@@ -37,6 +37,8 @@ struct Document {
     wxTextDataObject *dataobjt;
     wxBitmapDataObject *dataobji;
     wxFileDataObject *dataobjf;
+    //wxHTMLDataObject *dataobjh;
+    //wxRichTextBufferDataObject *dataobjr;
 
     struct MyPrintout : wxPrintout {
         Document *doc;
@@ -77,7 +79,7 @@ struct Document {
 
     bool searchfilter;
 
-    wxHashMapBool tags;
+    std::map<wxString, bool> tags;
 
     int editfilter;
 
@@ -120,6 +122,8 @@ struct Document {
         dataobjc->Add(dataobji = new wxBitmapDataObject());
         dataobjc->Add(dataobjt = new wxTextDataObject());
         dataobjc->Add(dataobjf = new wxFileDataObject());
+        //dataobjc->Add(dataobjh = new wxHTMLDataObject(), true);  // Prefer HTML over text, doesn't seem to work.
+        //dataobjc->Add(dataobjr = new wxRichTextBufferDataObject());
         ResetFont();
         pageSetupData = printData;
         pageSetupData.SetMarginTopLeft(wxPoint(15, 15));
@@ -188,8 +192,7 @@ struct Document {
             if (!zos.IsOk()) return _(L"Zlib error while writing file.");
             wxDataOutputStream dos(zos);
             rootgrid->Save(dos);
-            wxHashMapBool::iterator tagit;
-            for (tagit = tags.begin(); tagit != tags.end(); ++tagit) {
+            for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit) {
                 dos.WriteString(tagit->first);
             }
             dos.WriteString(wxEmptyString);
@@ -203,7 +206,7 @@ struct Document {
             sys->FileUsed(filename, this);
             if (::wxFileExists(sys->TmpName(filename))) ::wxRemoveFile(sys->TmpName(filename));
         }
-        if (sys->autohtmlexport) { ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT); }
+        if (sys->autohtmlexport) { ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT, false); }
         UpdateFileName(page);
         if (success) *success = true;
         return _(L"File saved succesfully.");
@@ -310,8 +313,9 @@ struct Document {
         ResetFont();
         Selection prev = hover;
         hover = Selection();
-        WalkPath(drawpath)->grid->FindXY(this, x - centerx / currentviewscale - hierarchysize,
-                                         y - centery / currentviewscale - hierarchysize, dc);
+        auto drawroot = WalkPath(drawpath);
+        if (drawroot->grid) drawroot->grid->FindXY(this, x - centerx / currentviewscale - hierarchysize,
+                                                   y - centery / currentviewscale - hierarchysize, dc);
         if (!(prev == hover)) {
             if (prev.g) prev.g->DrawHover(this, dc, prev);
             if (hover.g) hover.g->DrawHover(this, dc, hover);
@@ -384,12 +388,12 @@ struct Document {
             CreatePath(c && c->grid ? c : selected.g->cell, drawpath);
         } else if (dir < 0) {
             Cell *drawroot = WalkPath(drawpath);
-            if (drawroot->grid->folded && selectionmaybedrawroot)
+            if (drawroot->grid && drawroot->grid->folded && selectionmaybedrawroot)
                 selected = drawroot->parent->grid->FindCell(drawroot);
         }
         while (len < drawpath.size()) drawpath.remove(0);
         Cell *drawroot = WalkPath(drawpath);
-        if (selected.GetCell() == drawroot) {
+        if (selected.GetCell() == drawroot && drawroot->grid) {
             selected = Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys);
         }
         drawroot->ResetLayout();
@@ -554,13 +558,14 @@ struct Document {
     bool PickFont(wxDC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
-            dc.SetFont(
-                wxFont(textsize - (while_printing || scaledviewingmode),
-                       stylebits & STYLE_FIXED ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
-                       stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-                       stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-                       (stylebits & STYLE_UNDERLINE) != 0,
-                       stylebits & STYLE_FIXED ? L"" : sys->defaultfont));
+            wxFont font(textsize - (while_printing || scaledviewingmode),
+                   stylebits & STYLE_FIXED ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
+                   stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+                   stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+                   (stylebits & STYLE_UNDERLINE) != 0,
+                   stylebits & STYLE_FIXED ? L"" : sys->defaultfont);
+            if (stylebits & STYLE_STRIKETHRU) font.SetStrikethrough(true);
+            dc.SetFont(font);
             lasttextsize = textsize;
             laststylebits = stylebits;
         }
@@ -645,13 +650,14 @@ struct Document {
         wxString fn = ::wxFileSelector(msg, L"", L"", fmt, pat,
                                        wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Export cancelled.");
-        return ExportFile(fn, k);
+        return ExportFile(fn, k, true);
     }
 
-    const wxChar *ExportFile(const wxString &fn, int k) {
+    const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
+        auto root = currentview ? curdrawroot : rootgrid;
         if (k == A_EXPCSV) {
             int maxdepth = 0, leaves = 0;
-            curdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
+            root->MaxDepthLeaves(0, maxdepth, leaves);
             if (maxdepth > 1)
                 return _(L"Cannot export grid that is not flat (zoom the view to the desired grid, "
                          L"and/or use Flatten).");
@@ -673,7 +679,7 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            wxString content = curdrawroot->ToText(0, Selection(), k, this);
+            wxString content = root->ToText(0, Selection(), k, this);
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(
@@ -709,7 +715,8 @@ struct Document {
     const wxChar *Save(bool saveas, bool *success = nullptr) {
         if (!saveas && !filename.empty()) { return SaveDB(success); }
         wxString fn =
-            ::wxFileSelector(_(L"Choose TreeSheets file to save:"), L"", L"", L"cts", L"*.cts",
+            ::wxFileSelector(_(L"Choose TreeSheets file to save:"), L"", L"", L"cts",
+                             L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*",
                              wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Save cancelled.");  // avoid name being set to ""
         ChangeFileName(fn);
@@ -838,8 +845,9 @@ struct Document {
 
             case A_OPEN: {
                 wxString fn =
-                    ::wxFileSelector(_(L"Please select a TreeSheets file to load:"), L"", L"", L"cts",
-                                     L"*.cts", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+                    ::wxFileSelector(_(L"Please select a TreeSheets file to load:"), L"", L"",
+                                     L"cts", L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*",
+                                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 return sys->Open(fn);
             }
 
@@ -860,7 +868,7 @@ struct Document {
             }
 
             case A_NEW: {
-                int size = ::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
+                int size = (int)::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
                                                  _(L"size:"), _(L"New Sheet"), 10, 1, 25, sys->frame);
                 if (size < 0) return _(L"New file cancelled.");
                 sys->InitDB(size);
@@ -931,7 +939,7 @@ struct Document {
             }
 
             case A_PRINTSCALE: {
-                printscale = ::wxGetNumberFromUser(
+                printscale = (uint)::wxGetNumberFromUser(
                     _(L"How many pixels wide should a page be? (0 for auto fit)"), _(L"scale:"),
                     _(L"Set Print Scale"), 0, 0, 5000, sys->frame);
                 return nullptr;
@@ -1262,7 +1270,7 @@ struct Document {
                 if (selected.TextEdit()) {
                     selected.Cursor(this, A_DOWN, false, false, dc, true);
                 } else {
-                    selected.EnterEdit(this, 0, c->text.t.Len());
+                    selected.EnterEdit(this, 0, (int)c->text.t.Len());
                     Refresh();
                 }
                 return nullptr;
@@ -1462,7 +1470,7 @@ struct Document {
             case A_IMAGESCN: {
                 if (!c->text.image) return _(L"No image in this cell.");
                 if (k == A_IMAGESCN) {
-                    c->text.image->display_scale = sys->frame->csf;
+                    c->text.image->ResetScale(sys->frame->csf);
                 } else {
                     long v = wxGetNumberFromUser(
                         _(L"Please enter the percentage you want the image scaled by:"), L"%",
@@ -1470,9 +1478,9 @@ struct Document {
                     if (v < 0) return nullptr;
                     auto sc = v / 100.0;
                     if (k == A_IMAGESCP) {
-                        c->text.image->Scale(sc);
+                        c->text.image->BitmapScale(sc);
                     } else {
-                        c->text.image->display_scale /= sc;
+                        c->text.image->DisplayScale(sc);
                     }
                 }
                 c->ResetLayout();
@@ -1481,16 +1489,17 @@ struct Document {
             }
 
             case A_ENTERGRID:
-                if (!c->grid) return NoGrid();
+                if (!c->grid) Action(dc, A_NEWGRID);
                 selected = Selection(c->grid, 0, 0, 1, 1);
                 ScrollOrZoom(dc, true);
                 return nullptr;
 
             case A_LINK:
             case A_LINKREV: {
+                if (!c->text.t.Len()) return _(L"No text in this cell.");
                 bool t1 = false, t2 = false;
                 Cell *link = rootgrid->FindLink(selected, c, nullptr, t1, t2, k == A_LINK);
-                if (!link) return _(L"No matching cell found!");
+                if (!link || !link->parent) return _(L"No matching cell found!");
                 selected = link->parent->grid->FindCell(link);
                 ScrollOrZoom(dc, true);
                 return nullptr;
@@ -1502,7 +1511,9 @@ struct Document {
                 Cell *pp = c->parent->parent;
                 if (!pp) return _(L"Cannot move this cell up in the hierarchy.");
                 if (pp->grid->xs != 1 && pp->grid->ys != 1)
-                    return _(L"Can only move this cell into an Nx1 or 1xN grid.");
+                    return _(L"Can only move this cell into a Nx1 or 1xN grid.");
+                if (c->parent->grid->xs != 1 && c->parent->grid->ys != 1)
+                    return _(L"Can only move this cell from a Nx1 or 1xN grid.");
                 pp->AddUndo(this);
                 selected = pp->grid->HierarchySwap(c->text.t);
                 pp->ResetChildren();
@@ -1542,7 +1553,7 @@ struct Document {
                 return nullptr;
             case A_SEND:
                 DrawSelect(dc, selected);
-                selected.cursorend = c->text.t.Len();
+                selected.cursorend = (int)c->text.t.Len();
                 DrawSelectMove(dc, selected);
                 return nullptr;
 
@@ -1638,6 +1649,17 @@ struct Document {
                     Refresh();
                 }
                 break;
+            /*
+            case wxDF_HTML: {
+                auto s = dataobjh->GetHTML();
+                // Would have to somehow parse HTML here to get images and styled text.
+                break;
+            }
+            case wxDF_RTF: {
+                // Would have to somehow parse RTF here to get images and styled text.
+                break;
+            }
+            */
             default:  // several text formats
                 if (dataobjt->GetText() != wxEmptyString) {
                     wxString s = dataobjt->GetText();
@@ -1758,7 +1780,7 @@ struct Document {
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
         UndoItem *ui = fromlist.pop();
         Cell *c = WalkPath(ui->path);
-        if (c->parent) {
+        if (c->parent && c->parent->grid) {
             c->parent->grid->ReplaceCell(c, ui->clone);
             ui->clone->parent = c->parent;
         } else
@@ -1808,15 +1830,13 @@ struct Document {
     }
 
     void RecreateTagMenu(wxMenu &menu) {
-        wxHashMapBool::iterator tagit;
         int i = A_TAGSET;
-        for (tagit = tags.begin(); tagit != tags.end(); ++tagit) { menu.Append(i++, tagit->first); }
+        for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit) { menu.Append(i++, tagit->first); }
     }
 
     const wxChar *TagSet(int tagno) {
-        wxHashMapBool::iterator tagit;
         int i = 0;
-        for (tagit = tags.begin(); tagit != tags.end(); ++tagit)
+        for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit)
             if (i++ == tagno) {
                 Cell *c = selected.GetCell();
                 if (!c) return OneCell();

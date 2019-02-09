@@ -39,6 +39,8 @@ struct MyApp : wxApp {
         #endif
 
         #ifdef __WXMSW__
+            InitUnhandledExceptionFilter();
+
             // wxWidgets should really be doing this itself, but it doesn't (or expects you to
             // want to use a manifest), so we have to call it ourselves.
             #ifndef DPI_ENUMS_DECLARED

@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "treesheets", "treesheets.vcxproj", "{A4C3C894-079D-4C11-9AE1-CA41875A4AFC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "language", "..\lobster\lobster\language.vcxproj", "{2C576764-3A5A-4CCD-B50D-C7C9C0349282}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +23,19 @@ Global
 		{A4C3C894-079D-4C11-9AE1-CA41875A4AFC}.Release|Win32.Build.0 = Release|Win32
 		{A4C3C894-079D-4C11-9AE1-CA41875A4AFC}.Release|x64.ActiveCfg = Release|x64
 		{A4C3C894-079D-4C11-9AE1-CA41875A4AFC}.Release|x64.Build.0 = Release|x64
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Debug|Win32.Build.0 = Debug|Win32
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Debug|x64.ActiveCfg = Debug|x64
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Debug|x64.Build.0 = Debug|x64
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Release|Win32.ActiveCfg = Release|Win32
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Release|Win32.Build.0 = Release|Win32
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Release|x64.ActiveCfg = Release|x64
+		{2C576764-3A5A-4CCD-B50D-C7C9C0349282}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A5A2EFA-7453-4F36-B5F1-CF8157DCE114}
 	EndGlobalSection
 EndGlobal
