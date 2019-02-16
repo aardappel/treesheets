@@ -264,13 +264,18 @@ struct Document {
 
     void ScrollOrZoom(wxDC &dc, bool zoomiftiny = false) {
         if (!selected.g) return;
-        for (Cell *cg = selected.g->cell; cg; cg = cg->parent)
+        Cell *drawroot = WalkPath(drawpath);
+        // If we jumped to a cell which may be insided a folded cell, we have to unfold it
+        // because the rest of the code doesn't deal with a selection that is invisible :)
+        for (Cell *cg = selected.g->cell; cg; cg = cg->parent) {
+            // Unless we're under the drawroot, no need to unfold further.
+            if (cg == drawroot) break;
             if (cg->grid->folded) {
                 cg->grid->folded = false;
                 cg->ResetLayout();
                 cg->ResetChildren();
             }
-        Cell *drawroot = WalkPath(drawpath);
+        }
         for (Cell *cg = selected.g->cell; cg; cg = cg->parent)
             if (cg == drawroot) {
                 if (zoomiftiny) ZoomTiny(dc);
