@@ -1,0 +1,24 @@
+---
+BasedOnStyle: Google
+---
+Language: Cpp
+IndentWidth: 4
+ColumnLimit: 100
+UseTab: Never
+AccessModifierOffset: 0
+AlignTrailingComments: true
+AllowShortBlocksOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine : All
+AllowShortLoopsOnASingleLine: true
+BinPackParameters: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+IndentCaseLabels: true
+NamespaceIndentation: None
+PointerAlignment: Right
+SpaceBeforeParens: ControlStatements
+SpaceAfterTemplateKeyword: false
+Standard: Cpp11
+Cpp11BracedListStyle: false
+IndentPPDirectives: AfterHash
+AlwaysBreakTemplateDeclarations: false
