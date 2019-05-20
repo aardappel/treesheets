@@ -14,7 +14,6 @@
 		33306EF117695EE900AF5315 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEC17695EE900AF5315 /* Carbon.framework */; };
 		33306EF217695EE900AF5315 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EED17695EE900AF5315 /* IOKit.framework */; };
 		33306EF317695EE900AF5315 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEE17695EE900AF5315 /* OpenGL.framework */; };
-		33306EF417695EE900AF5315 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEF17695EE900AF5315 /* QuickTime.framework */; };
 		33306EF91769625C00AF5315 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF51769625C00AF5315 /* images */; };
 		33306EFA1769625C00AF5315 /* docs in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF61769625C00AF5315 /* docs */; };
 		33306EFB1769625C00AF5315 /* examples in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF71769625C00AF5315 /* examples */; };
@@ -115,7 +114,6 @@
 				33306EF117695EE900AF5315 /* Carbon.framework in Frameworks */,
 				33306EF217695EE900AF5315 /* IOKit.framework in Frameworks */,
 				33306EF317695EE900AF5315 /* OpenGL.framework in Frameworks */,
-				33306EF417695EE900AF5315 /* QuickTime.framework in Frameworks */,
 				33306EBF17695BE000AF5315 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +303,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 33306EB217695BE000AF5315;
@@ -480,7 +479,6 @@
 					"/usr/local/lib/libwx_baseu-3.1.a",
 					"-lexpat",
 					"-lwxregexu-3.1",
-					"-lwxtiff-3.1",
 					"-lwxjpeg-3.1",
 					"-lwxpng-3.1",
 					"-lz",
@@ -533,7 +531,6 @@
 					"/usr/local/lib/libwx_baseu-3.1.a",
 					"-lexpat",
 					"-lwxregexu-3.1",
-					"-lwxtiff-3.1",
 					"-lwxjpeg-3.1",
 					"-lwxpng-3.1",
 					"-lz",
