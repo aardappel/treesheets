@@ -25,23 +25,23 @@ sudo: required
 compiler: gcc
 
 env:
-  - RMRF_WXWIDGETS="" WXLIB="libwxgtk3.1-dev"
+  - WXLIB="libwxgtk3.1-dev"
 
 matrix:
   allow_failures:
     - os: linux
-      env: RMRF_WXWIDGETS="" WXLIB="libwxgtk3.1-dev"
+      env: WXLIB="libwxgtk3.1-dev"
   include:
     - os: linux
-      env: RMRF_WXWIDGETS="" WXLIB="libwxgtk3.0-dev"
+      env: WXLIB="libwxgtk3.0-dev"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode9.4
       compiler: gcc clang
-      env: RMRF_WXWIDGETS="Y" WXLIB="libwxgtk3.1-dev"
+      env: WXLIB="libwxgtk3.1-dev"
   exclude:
     - os: osx
       compiler: gcc
-      env: RMRF_WXWIDGETS="" WXLIB="libwxgtk3.1-dev"
+      env: WXLIB="libwxgtk3.1-dev"
 
 before_install:
   - if  [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -54,8 +54,8 @@ install:
       sudo apt-get install -qq g++-7;
       sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90;
     fi
-  - if  [[ -n "$RMRF_WXWIDGETS" ]]; then rm -rf wxWidgets ; fi
   - if  [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      rm -rf wxWidgets;
       if  [[ ! -d wxWidgets ]]; then
          git submodule init &&
          git submodule add -f https://github.com/wxWidgets/wxWidgets.git;
@@ -65,8 +65,8 @@ install:
          mkdir -p wxWidgets/build_osx ;
       fi;
       pushd wxWidgets/build_osx &&
-      ../configure --enable-unicode --disable-shared --with-osx_cocoa --without-libtiff CFLAGS="-arch i386" CXXFLAGS="-arch i386 -stdlib=libc++" CPPFLAGS="-arch i386" LDFLAGS="-arch i386 -stdlib=libc++" OBJCFLAGS="-arch i386" OBJCXXFLAGS="-arch i386 -stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk --with-macosx-version-min=10.7 CC=clang CXX=clang++ &&
-      make -j 4 &&
+      ../configure --enable-unicode --disable-shared --with-osx_cocoa --without-libtiff CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk --with-macosx-version-min=10.7 CC=clang CXX=clang++ &&
+      make &&
       sudo make install &&
       popd ;
     else
