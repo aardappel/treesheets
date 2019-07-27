@@ -349,7 +349,7 @@ struct Document {
         Cell *tc = begindrag.ThinExpand(this);
         selected = begindrag;
         if (tc) {
-            tc->Paste(this, c->Clone(nullptr), begindrag);
+            tc->Paste(this, c, begindrag);
             if (isctrlshiftdrag == 1) {
                 c->parent->AddUndo(this);
                 Selection cs = c->parent->grid->FindCell(c);

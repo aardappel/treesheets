@@ -362,7 +362,7 @@ struct Cell {
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 
-    void Paste(Document *doc, Cell *c, Selection &s) {
+    void Paste(Document *doc, const Cell *c, Selection &s) {
         parent->AddUndo(doc);
         ResetLayout();
         if (c->HasText()) {
