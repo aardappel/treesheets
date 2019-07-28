@@ -355,7 +355,7 @@ struct Document {
                 Selection cs = c->parent->grid->FindCell(c);
                 c->parent->grid->MultiCellDeleteSub(this, cs);
             }
-            hover = selected = tc->parent->grid->FindCell(tc);
+            hover = selected = tc->parent ? tc->parent->grid->FindCell(tc) : Selection();
         }
         Refresh();
     }
