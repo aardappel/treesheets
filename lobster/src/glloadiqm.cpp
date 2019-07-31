@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// IQM model loader, see: http://lee.fov120.com/iqm/
+// IQM model loader, see: http://sauerbraten.org/iqm/ https://github.com/lsalzman/iqm
 
 #include "lobster/stdafx.h"
 #include "lobster/glinterface.h"
@@ -303,7 +303,7 @@ bool loadiqmanims(const iqmheader &hdr, const char *buf) {
     return true;
 }
 
-bool loadiqm(const char *filename) {
+bool loadiqm(string_view filename) {
     if(LoadFile(filename, &filebuffer) < 0) return false;
     iqmheader hdr = *(iqmheader *)filebuffer.c_str();
     if(memcmp(hdr.magic, IQM_MAGIC, sizeof(hdr.magic)))
@@ -318,7 +318,7 @@ bool loadiqm(const char *filename) {
     return true;
 }
 
-Mesh *LoadIQM(const char *filename) {
+Mesh *LoadIQM(string_view filename) {
     if (!loadiqm(filename)) {
         cleanupiqm();
         return nullptr;
@@ -349,7 +349,7 @@ Mesh *LoadIQM(const char *filename) {
         mesh->numbones = numjoints;
         mesh->numframes = numframes;
         auto mats = new float3x4[numjoints * numframes];
-        memcpy(mats, frames, sizeof(float3x4) * numjoints * numframes);
+        t_memcpy(mats, frames, numjoints * numframes);
         mesh->mats = mats;
     }
     cleanupiqm();

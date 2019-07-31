@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define DECLSPEC 
+#define DECLSPEC
 #define SDL_NO_COMPAT
 // hack: so we can share one include folder for SDL
 #ifdef __APPLE__

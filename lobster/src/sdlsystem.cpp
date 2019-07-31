@@ -64,7 +64,7 @@ struct KeyState {
     }
 };
 
-unordered_map<string, KeyState> keymap;
+map<string, KeyState, less<>> keymap;
 
 int mousewheeldelta = 0;
 
@@ -73,6 +73,7 @@ int skipmousemotion = 3;
 double frametime = 1.0f / 60.0f, lasttime = 0;
 uint64_t timefreq = 0, timestart = 0;
 int frames = 0;
+vector<float> frametimelog;
 
 int2 screensize = int2_0;
 int2 inputscale = int2_1;
@@ -172,7 +173,7 @@ int updatedragpos(SDL_TouchFingerEvent &e, Uint32 et) {
 
 string SDLError(const char *msg) {
     string s = string_view(msg) + ": " + SDL_GetError();
-    Output(OUTPUT_WARN, s);
+    LOG_WARN(s);
     SDLShutdown();
     return s;
 }
@@ -243,7 +244,7 @@ void SDLRequireGLVersion(int major, int minor) {
     #endif
 };
 
-string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscreen, int vsync,
+string SDLInit(string_view title, const int2 &desired_screensize, bool isfullscreen, int vsync,
                int samples) {
     MakeDPIAware();
     //SDL_SetMainReady();
@@ -253,14 +254,12 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
 
     SDL_SetEventFilter(SDLHandleAppEvents, nullptr);
 
-    Output(OUTPUT_INFO, "SDL initialized...");
+    LOG_INFO("SDL initialized...");
 
     SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
 
-    #ifndef __EMSCRIPTEN__
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, gl_major);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, gl_minor);
-    #endif
     #ifdef PLATFORM_ES3
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     #else
@@ -276,7 +275,7 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    Output(OUTPUT_INFO, "SDL about to figure out display mode...");
+    LOG_INFO("SDL about to figure out display mode...");
 
     #ifdef PLATFORM_ES3
         landscape = desired_screensize.x >= desired_screensize.y;
@@ -285,21 +284,21 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
         for (int i = 0; i < modes; i++) {
             SDL_DisplayMode mode;
             SDL_GetDisplayMode(0, i, &mode);
-            Output(OUTPUT_INFO, "mode: ", mode.w, " ", mode.h);
+            LOG_INFO("mode: ", mode.w, " ", mode.h);
             if (landscape ? mode.w > screensize.x : mode.h > screensize.y) {
                 screensize = int2(mode.w, mode.h);
             }
         }
 
-        Output(OUTPUT_INFO, "chosen resolution: ", screensize.x, " ", screensize.y);
-        Output(OUTPUT_INFO, "SDL about to create window...");
+        LOG_INFO("chosen resolution: ", screensize.x, " ", screensize.y);
+        LOG_INFO("SDL about to create window...");
 
-        _sdl_window = SDL_CreateWindow(title,
+        _sdl_window = SDL_CreateWindow(null_terminated(title),
                                         0, 0,
                                         screensize.x, screensize.y,
                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 
-        Output(OUTPUT_INFO, _sdl_window ? "SDL window passed..." : "SDL window FAILED...");
+        LOG_INFO(_sdl_window ? "SDL window passed..." : "SDL window FAILED...");
 
         if (landscape) SDL_SetHint("SDL_HINT_ORIENTATIONS", "LandscapeLeft LandscapeRight");
     #else
@@ -312,9 +311,9 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
                 96.0f;
             #endif
         if (SDL_GetDisplayDPI(display, NULL, &dpi, NULL)) dpi = default_dpi;
-        Output(OUTPUT_INFO, cat("dpi: ", dpi));
+        LOG_INFO(cat("dpi: ", dpi));
         screensize = desired_screensize * int(dpi) / int(default_dpi);
-        _sdl_window = SDL_CreateWindow(title,
+        _sdl_window = SDL_CreateWindow(null_terminated(title),
                                        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                        screensize.x, screensize.y,
                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE |
@@ -322,19 +321,19 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
                                             (isfullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     #endif
     ScreenSizeChanged();
-    Output(OUTPUT_INFO, "obtained resolution: ", screensize.x, " ", screensize.y);
+    LOG_INFO("obtained resolution: ", screensize.x, " ", screensize.y);
 
     if (!_sdl_window)
         return SDLError("Unable to create window");
 
-    Output(OUTPUT_INFO, "SDL window opened...");
+    LOG_INFO("SDL window opened...");
 
 
     _sdl_context = SDL_GL_CreateContext(_sdl_window);
-    Output(OUTPUT_INFO, _sdl_context ? "SDL context passed..." : "SDL context FAILED...");
+    LOG_INFO(_sdl_context ? "SDL context passed..." : "SDL context FAILED...");
     if (!_sdl_context) return SDLError("Unable to create OpenGL context");
 
-    Output(OUTPUT_INFO, "SDL OpenGL context created...");
+    LOG_INFO("SDL OpenGL context created...");
 
     #ifndef __IOS__
         SDL_GL_SetSwapInterval(vsync);
@@ -345,7 +344,7 @@ string SDLInit(const char *title, const int2 &desired_screensize, bool isfullscr
     for(int i = 0; i < SDL_NumJoysticks(); i++) {
         SDL_Joystick *joy = SDL_JoystickOpen(i);
         if (joy) {
-            Output(OUTPUT_INFO, "Detected joystick: ", SDL_JoystickName(joy), " (",
+            LOG_INFO("Detected joystick: ", SDL_JoystickName(joy), " (",
                                 SDL_JoystickNumAxes(joy), " axes, ",
                                 SDL_JoystickNumButtons(joy), " buttons, ",
                                 SDL_JoystickNumBalls(joy), " balls, ",
@@ -374,17 +373,19 @@ void SDLShutdown() {
 }
 
 // Used to update the time when SDL isn't running.
-void SDLFakeFrame(double delta) {
+void SDLUpdateTime(double delta) {
     frametime = delta;
     lasttime += delta;
     frames++;
+    frametimelog.push_back((float)delta);
+    if (frametimelog.size() > 64) frametimelog.erase(frametimelog.begin());
 }
+
+vector<float> &SDLGetFrameTimeLog() { return frametimelog; }
 
 bool SDLFrame() {
     auto millis = GetSeconds();
-    frametime = millis - lasttime;
-    lasttime = millis;
-    frames++;
+    SDLUpdateTime(millis - lasttime);
 
     for (auto &it : keymap) it.second.FrameReset();
 
@@ -406,140 +407,151 @@ bool SDLFrame() {
     bool closebutton = false;
 
     SDL_Event event;
-    while(SDL_PollEvent(&event)) switch(event.type) {
-        case SDL_QUIT:
-            closebutton = true;
-            break;
+    while(SDL_PollEvent(&event)) {
+        extern pair<bool, bool> IMGUIEvent(SDL_Event *event);
+        auto nomousekeyb = IMGUIEvent(&event);
+        switch(event.type) {
+            case SDL_QUIT:
+                closebutton = true;
+                break;
 
-        case SDL_KEYDOWN:
-        case SDL_KEYUP: {
-            const char *kn = SDL_GetKeyName(event.key.keysym.sym);
-            if (!*kn) break;
-            string name = kn;
-            std::transform(name.begin(), name.end(), name.begin(),
-                           [](char c) { return (char)::tolower(c); });
-            updatebutton(name, event.key.state==SDL_PRESSED, 0);
-            if (event.type == SDL_KEYDOWN) {
-                // Built-in key-press functionality.
-                switch (event.key.keysym.sym) {
-                    case SDLK_PRINTSCREEN:
-                        ScreenShot(("screenshot-" + GetDateTime() + ".jpg").c_str());
+            case SDL_KEYDOWN:
+            case SDL_KEYUP: {
+                if (nomousekeyb.second) break;
+                const char *kn = SDL_GetKeyName(event.key.keysym.sym);
+                if (!*kn) break;
+                string name = kn;
+                std::transform(name.begin(), name.end(), name.begin(),
+                               [](char c) { return (char)::tolower(c); });
+                updatebutton(name, event.key.state==SDL_PRESSED, 0);
+                if (event.type == SDL_KEYDOWN) {
+                    // Built-in key-press functionality.
+                    switch (event.key.keysym.sym) {
+                        case SDLK_PRINTSCREEN:
+                            ScreenShot("screenshot-" + GetDateTime() + ".jpg");
+                            break;
+                    }
+                }
+                break;
+            }
+
+            // This #ifdef is needed, because on e.g. OS X we'd otherwise get SDL_FINGERDOWN in addition to SDL_MOUSEBUTTONDOWN on laptop touch pads.
+            #ifdef PLATFORM_TOUCH
+
+            // FIXME: if we're in cursor==0 mode, only update delta, not position
+            case SDL_FINGERDOWN: {
+                if (nomousekeyb.first) break;
+                int i = updatedragpos(event.tfinger, event.type);
+                updatemousebutton(1, i, true);
+                break;
+            }
+            case SDL_FINGERUP: {
+                if (nomousekeyb.first) break;
+                int i = findfinger(event.tfinger.fingerId, true);
+                updatemousebutton(1, i, false);
+                break;
+            }
+
+            case SDL_FINGERMOTION: {
+                if (nomousekeyb.first) break;
+                updatedragpos(event.tfinger, event.type);
+                break;
+            }
+
+            #else
+
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP: {
+                if (nomousekeyb.first) break;
+                updatemousebutton(event.button.button, 0, event.button.state != 0);
+                if (cursor) {
+                    fingers[0].mousepos = int2(event.button.x, event.button.y) * inputscale;
+                }
+                break;
+            }
+
+            case SDL_MOUSEMOTION:
+                if (nomousekeyb.first) break;
+                fingers[0].mousedelta += int2(event.motion.xrel, event.motion.yrel);
+                if (cursor) {
+                    fingers[0].mousepos = int2(event.motion.x, event.motion.y) * inputscale;
+                } else {
+                    //if (skipmousemotion) { skipmousemotion--; break; }
+                    //if (event.motion.x == screensize.x / 2 && event.motion.y == screensize.y / 2) break;
+
+                    //auto delta = int3(event.motion.xrel, event.motion.yrel);
+                    //fingers[0].mousedelta += delta;
+
+                    //auto delta = int3(event.motion.x, event.motion.y) - screensize / 2;
+                    //fingers[0].mousepos -= delta;
+
+                    //SDL_WarpMouseInWindow(_sdl_window, screensize.x / 2, screensize.y / 2);
+                }
+                break;
+
+            case SDL_MOUSEWHEEL: {
+                if (nomousekeyb.first) break;
+                if (event.wheel.which == SDL_TOUCH_MOUSEID) break;  // Emulated scrollwheel on touch devices?
+                auto y = event.wheel.y;
+                #ifdef __EMSCRIPTEN__
+                    y = y > 0 ? 1 : -1;  // For some reason, it defaults to 10 / -10 ??
+                #endif
+                mousewheeldelta += event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -y : y;
+                break;
+            }
+
+            #endif
+
+            case SDL_JOYAXISMOTION: {
+                const int deadzone = 800; // FIXME
+                if (event.jaxis.axis < MAXAXES) {
+                    joyaxes[event.jaxis.axis] = abs(event.jaxis.value) > deadzone ? event.jaxis.value / (float)0x8000 : 0;
+                };
+                break;
+            }
+
+            case SDL_JOYHATMOTION:
+                break;
+
+            case SDL_JOYBUTTONDOWN:
+            case SDL_JOYBUTTONUP: {
+                string name = "joy";
+                name += '0' + (char)event.jbutton.button;
+                updatebutton(name, event.jbutton.state == SDL_PRESSED, 0);
+                break;
+            }
+
+            case SDL_WINDOWEVENT:
+                switch (event.window.event) {
+                    case SDL_WINDOWEVENT_RESIZED: {
+                        ScreenSizeChanged();
+                        // reload and bind shaders/textures here
+                        break;
+                    }
+                    case SDL_WINDOWEVENT_LEAVE:
+                        // never gets hit?
+                        /*
+                        for (int i = 1; i <= 5; i++)
+                            updatemousebutton(i, false);
+                        */
                         break;
                 }
-            }
-            break;
+                break;
+
+            case SDL_WINDOWEVENT_MINIMIZED:
+                //minimized = true;
+                break;
+
+            case SDL_WINDOWEVENT_MAXIMIZED:
+            case SDL_WINDOWEVENT_RESTORED:
+                /*
+                #ifdef __IOS__
+                    SDL_Delay(10);  // IOS crashes in SDL_GL_SwapWindow if we start rendering straight away
+                #endif
+                minimized = false;
+                */
+                break;
         }
-
-        // This #ifdef is needed, because on e.g. OS X we'd otherwise get SDL_FINGERDOWN in addition to SDL_MOUSEBUTTONDOWN on laptop touch pads.
-        #ifdef PLATFORM_TOUCH
-
-        // FIXME: if we're in cursor==0 mode, only update delta, not position
-        case SDL_FINGERDOWN: {
-            int i = updatedragpos(event.tfinger, event.type);
-            updatemousebutton(1, i, true);
-            break;
-        }
-        case SDL_FINGERUP: {
-            int i = findfinger(event.tfinger.fingerId, true);
-            updatemousebutton(1, i, false);
-            break;
-        }
-
-        case SDL_FINGERMOTION: {
-            updatedragpos(event.tfinger, event.type);
-            break;
-        }
-
-        #else
-
-        case SDL_MOUSEBUTTONDOWN:
-        case SDL_MOUSEBUTTONUP: {
-            updatemousebutton(event.button.button, 0, event.button.state != 0);
-            if (cursor) {
-                fingers[0].mousepos = int2(event.button.x, event.button.y) * inputscale;
-            }
-            break;
-        }
-
-        case SDL_MOUSEMOTION:
-            fingers[0].mousedelta += int2(event.motion.xrel, event.motion.yrel);
-            if (cursor) {
-                fingers[0].mousepos = int2(event.motion.x, event.motion.y) * inputscale;
-            } else {
-                //if (skipmousemotion) { skipmousemotion--; break; }
-                //if (event.motion.x == screensize.x / 2 && event.motion.y == screensize.y / 2) break;
-
-                //auto delta = int3(event.motion.xrel, event.motion.yrel);
-                //fingers[0].mousedelta += delta;
-
-                //auto delta = int3(event.motion.x, event.motion.y) - screensize / 2;
-                //fingers[0].mousepos -= delta;
-
-                //SDL_WarpMouseInWindow(_sdl_window, screensize.x / 2, screensize.y / 2);
-            }
-            break;
-
-        case SDL_MOUSEWHEEL: {
-            if (event.wheel.which == SDL_TOUCH_MOUSEID) break;  // Emulated scrollwheel on touch devices?
-            auto y = event.wheel.y;
-            #ifdef __EMSCRIPTEN__
-                y = y > 0 ? 1 : -1;  // For some reason, it defaults to 10 / -10 ??
-            #endif
-            mousewheeldelta += event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -y : y;
-            break;
-        }
-
-        #endif
-
-        case SDL_JOYAXISMOTION: {
-            const int deadzone = 800; // FIXME
-            if (event.jaxis.axis < MAXAXES) {
-                joyaxes[event.jaxis.axis] = abs(event.jaxis.value) > deadzone ? event.jaxis.value / (float)0x8000 : 0;
-            };
-            break;
-        }
-
-        case SDL_JOYHATMOTION:
-            break;
-
-        case SDL_JOYBUTTONDOWN:
-        case SDL_JOYBUTTONUP: {
-            string name = "joy";
-            name += '0' + (char)event.jbutton.button;
-            updatebutton(name, event.jbutton.state == SDL_PRESSED, 0);
-            break;
-        }
-
-        case SDL_WINDOWEVENT:
-            switch (event.window.event) {
-                case SDL_WINDOWEVENT_RESIZED: {
-                    ScreenSizeChanged();
-                    // reload and bind shaders/textures here
-                    break;
-                }
-                case SDL_WINDOWEVENT_LEAVE:
-                    // never gets hit?
-                    /*
-                    for (int i = 1; i <= 5; i++)
-                        updatemousebutton(i, false);
-                    */
-                    break;
-            }
-            break;
-
-        case SDL_WINDOWEVENT_MINIMIZED:
-            //minimized = true;
-            break;
-
-        case SDL_WINDOWEVENT_MAXIMIZED:
-        case SDL_WINDOWEVENT_RESTORED:
-            /*
-            #ifdef __IOS__
-                SDL_Delay(10);  // IOS crashes in SDL_GL_SwapWindow if we start rendering straight away
-            #endif
-            minimized = false;
-            */
-            break;
     }
 
     // simulate mouse up events, since SDL won't send any if the mouse leaves the window while down
@@ -569,7 +581,7 @@ void SDLWindowMinMax(int dir) {
 double SDLTime() { return lasttime; }
 double SDLDeltaTime() { return frametime; }
 
-TimeBool8 GetKS(const char *name) {
+TimeBool8 GetKS(string_view name) {
     auto ks = keymap.find(name);
     if (ks == keymap.end()) return {};
     #ifdef PLATFORM_TOUCH
@@ -583,18 +595,17 @@ TimeBool8 GetKS(const char *name) {
     #endif
 }
 
-double GetKeyTime(const char *name, int on) {
+double GetKeyTime(string_view name, int on) {
     auto ks = keymap.find(name);
     return ks == keymap.end() ? -3600 : ks->second.lasttime[on];
 }
 
-int2 GetKeyPos(const char *name, int on) {
+int2 GetKeyPos(string_view name, int on) {
     auto ks = keymap.find(name);
     return ks == keymap.end() ? int2(-1, -1) : ks->second.lastpos[on];
 }
 
-void SDLTitle(const char *title) { SDL_SetWindowTitle(_sdl_window, title); }
-
+void SDLTitle(string_view title) { SDL_SetWindowTitle(_sdl_window, null_terminated(title)); }
 
 int SDLWheelDelta() { return mousewheeldelta; }
 bool SDLIsMinimized() { return minimized; }
@@ -609,10 +620,7 @@ bool SDLCursor(bool on) {
         } else {
             if (fullscreen) SDL_SetWindowGrab(_sdl_window, SDL_TRUE);
             SDL_ShowCursor(0);
-            #if defined(_WIN32) || defined(__APPLE__)
-            // This is broken on Linux, gives bogus xrel/yrel in SDL_MOUSEMOVE
             SDL_SetRelativeMouseMode(SDL_TRUE);
-            #endif
             clearfingers(false);
         }
     }
@@ -624,13 +632,13 @@ bool SDLGrab(bool on) {
     return SDL_GetWindowGrab(_sdl_window) == SDL_TRUE;
 }
 
-void SDLMessageBox(const char *title, const char *msg) {
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, _sdl_window);
+void SDLMessageBox(string_view title, string_view msg) {
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, null_terminated<0>(title), null_terminated<1>(msg), _sdl_window);
 }
 
 int64_t SDLLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len) {
-    Output(OUTPUT_INFO, "SDLLoadFile: ", absfilename);
-    auto f = SDL_RWFromFile(absfilename.data(), "rb");
+    LOG_INFO("SDLLoadFile: ", absfilename);
+    auto f = SDL_RWFromFile(null_terminated(absfilename), "rb");
     if (!f) return -1;
     auto filelen = SDL_RWseek(f, 0, RW_SEEK_END);
     if (filelen < 0 || filelen == LLONG_MAX) {
@@ -650,9 +658,10 @@ int64_t SDLLoadFile(string_view absfilename, string *dest, int64_t start, int64_
     return len != (int64_t)rlen ? -1 : len;
 }
 
-bool ScreenShot(const char *filename) {
+bool ScreenShot(string_view filename) {
     auto pixels = ReadPixels(int2(0), screensize);
-    auto ok = stbi_write_png(filename, screensize.x, screensize.y, 3, pixels, screensize.x * 3);
+    auto ok = stbi_write_png(null_terminated(filename), screensize.x, screensize.y, 3, pixels,
+                             screensize.x * 3);
     delete[] pixels;
     return ok != 0;
 }
@@ -669,4 +678,3 @@ int SDLScreenDPI(int screen) {
            ? 0  // Screen not present.
            : (int)(ddpi + 0.5f);
 }
-

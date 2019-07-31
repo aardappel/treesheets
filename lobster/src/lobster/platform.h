@@ -16,9 +16,14 @@
 typedef int64_t (* FileLoader)(string_view absfilename, string *dest, int64_t start, int64_t len);
 
 // Call this at init to determine default folders to load stuff from.
-// Also initializes anything else functions in this file need.
-extern bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bundle,
+string GetMainDirFromExePath(const char *argv_0);
+// Then pass the result as maindir to InitPlatform.
+// This also initializes anything else functions in this file need.
+extern bool InitPlatform(string maindir, const char *auxfilepath, bool from_bundle,
                              FileLoader loader);
+extern void AddDataDir(string_view path);  // Any additional dirs besides the above.
+extern string_view ProjectDir();
+extern string_view MainDir();
 
 extern string_view StripFilePart(string_view filepath);
 extern const char *StripDirPart(const char *filepath);
@@ -27,10 +32,16 @@ extern const char *StripDirPart(const char *filepath);
 // To read the whole file, pass -1 for len.
 // To just obtain the file length but don't do any reading, pass 0 for len.
 // Returns file length or read length, or -1 if failed.
-extern int64_t LoadFile(string_view relfilename, string *dest, int64_t start = 0, int64_t len = -1);
+extern int64_t LoadFile(string_view relfilename, string *dest, int64_t start = 0, int64_t len = -1,
+                        bool binary = true);
+
+// fopen based implementation of FileLoader above to pass to InitPlatform if needed.
+extern int64_t DefaultLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len);
 
 extern FILE *OpenForWriting(string_view relfilename, bool binary);
 extern bool WriteFile(string_view relfilename, bool binary, string_view contents);
+extern bool FileExists(string_view relfilename);
+extern bool FileDelete(string_view relfilename);
 extern string SanitizePath(string_view path);
 
 extern void AddPakFileEntry(string_view pakfilename, string_view relfilename, int64_t off,
@@ -57,11 +68,22 @@ enum OutputType {
 
 extern OutputType min_output_level;  // Defaults to showing OUTPUT_WARN and up.
 
-extern void Output(OutputType ot, const char *buf);
-inline void Output(OutputType ot, const string &buf) { Output(ot, buf.c_str()); };
-template<typename ...Ts> void Output(OutputType ot, const Ts&... args) {
-    if (ot >= min_output_level) Output(ot, cat(args...).c_str());
+extern void LogOutput(OutputType ot, const char *buf);
+inline void LogOutput(OutputType ot, const string &buf) { LogOutput(ot, buf.c_str()); };
+template<typename ...Ts> void LogOutput(OutputType ot, const Ts&... args) {
+    if (ot >= min_output_level) LogOutput(ot, cat(args...).c_str());
 }
+// This is to make it lazy: arguments are not constructed at all if level is too low.
+#define LOG_DEBUG(...)   { if (min_output_level <= OUTPUT_DEBUG) \
+                               LogOutput(OUTPUT_DEBUG, __VA_ARGS__); }
+#define LOG_INFO(...)    { if (min_output_level <= OUTPUT_INFO) \
+                               LogOutput(OUTPUT_INFO, __VA_ARGS__); }
+#define LOG_WARN(...)    { if (min_output_level <= OUTPUT_WARN) \
+                               LogOutput(OUTPUT_WARN, __VA_ARGS__); }
+#define LOG_PROGRAM(...) { if (min_output_level <= OUTPUT_PROGRAM) \
+                               LogOutput(OUTPUT_PROGRAM, __VA_ARGS__); }
+#define LOG_ERROR(...)   { if (min_output_level <= OUTPUT_ERROR) \
+                               LogOutput(OUTPUT_ERROR, __VA_ARGS__); }
 
 // Time:
 extern double SecondsSinceStart();
@@ -72,6 +94,7 @@ extern uint NumHWCores();
 
 // Misc:
 extern void ConditionalBreakpoint(bool shouldbreak);
+extern void CountingBreakpoint(int i = -1);
 extern void MakeDPIAware();
 
 extern string GetDateTime();
@@ -90,7 +113,7 @@ extern void SetConsole(bool on);
 	#define PLATFORM_WINNIX
 #endif
 
-#if defined(_WIN32)  // FIXME: Also make work on Linux/OS X.
+#if defined(_WIN32) && !defined(SKIP_SDKS)  // FIXME: Also make work on Linux/OS X.
     #define PLATFORM_VR
     #define PLATFORM_STEAMWORKS
 #endif

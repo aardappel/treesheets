@@ -12,6 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+template<typename T, typename S> void t_memcpy(T *dest, const T *src, S n) {
+    memcpy(dest, src, n * sizeof(T));
+}
+
+template<typename T, typename S> void t_memmove(T *dest, const T *src, S n) {
+    memmove(dest, src, n * sizeof(T));
+}
+
+template<typename T, typename S> void ts_memcpy(T *dest, const T *src, S n) {
+    if (n) {
+        *dest++ = *src++;
+        if (n > 1) {
+            *dest++ = *src++;
+            if (n > 2) {
+                *dest++ = *src++;
+                if (n > 3) {
+                    *dest++ = *src++;
+                    for (S i = 4; i < n; i++) *dest++ = *src++;
+                }
+            }
+        }
+    }
+}
+
+template<typename T, typename S> void tsnz_memcpy(T *dest, const T *src, S n) {
+    assert(n);
+    *dest++ = *src++;
+    if (n > 1) {
+        *dest++ = *src++;
+        if (n > 2) {
+            *dest++ = *src++;
+            if (n > 3) {
+                *dest++ = *src++;
+                for (S i = 4; i < n; i++) *dest++ = *src++;
+            }
+        }
+    }
+}
+
 // Doubly linked list.
 // DLNodeRaw does not initialize nor assumes initialization, so can be used in
 // situations where memory is already allocated DLNodeBase is meant to be a base
@@ -113,10 +153,9 @@ class MersenneTwister          {
 
     uint state[N + 1];
     uint *next;
-    int left;
+    int left = -1;
 
     public:
-    MersenneTwister() : left(-1) {}
 
     void Seed(uint seed) {
         uint x = (seed | 1U) & 0xFFFFFFFFU, *s = state;
@@ -164,11 +203,10 @@ class PCG32 {
     // This is apparently better than the Mersenne Twister, and its also smaller/faster!
     // Adapted from *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
     // Licensed under Apache License 2.0 (NO WARRANTY, etc. see website).
-    uint64_t state;
-    uint64_t inc;
+    uint64_t state = 0xABADCAFEDEADBEEF;
+    uint64_t inc = 0xDEADBABEABADD00D;
 
     public:
-    PCG32() : state(0xABADCAFEDEADBEEF), inc(0xDEADBABEABADD00D) {}
 
     uint32_t Random() {
         uint64_t oldstate = state;
@@ -195,14 +233,14 @@ template<typename T> struct RandomNumberGenerator {
     int operator()() { return rnd.Random(); }
 
     double rnddouble() { return rnd.Random() * (1.0 / 4294967296.0); }
-    float rndfloat() { return (float)rnddouble(); } // FIXME: performance?
+    float rnd_float() { return (float)rnddouble(); } // FIXME: performance?
     float rndfloatsigned() { return (float)(rnddouble() * 2 - 1); }
 
     double n2 = 0.0;
     bool n2_cached = false;
     // Returns gaussian with stddev of 1 and mean of 0.
     // Box Muller method.
-    double rndgaussian() {
+    double rnd_gaussian() {
         n2_cached = !n2_cached;
         if (n2_cached) {
             double x, y, r;
@@ -240,7 +278,7 @@ template<typename T> string to_string_float(T x, int decimals = -1) {
         size_t max_significant = default_precision;
         max_significant += 2;  // "0."
         if (s[0] == '-') max_significant++;
-        if (s.length() > max_significant) s.erase(max_significant);
+        while (s.length() > max_significant && s.back() != '.') s.pop_back();
         // Now strip unnecessary trailing zeroes.
         while (s.back() == '0') s.pop_back();
         // If there were only zeroes, keep at least 1.
@@ -269,16 +307,16 @@ template <typename T> class Accumulator {
         T *Elems() { return this + 1; }
     };
 
-    Buf *first, *last, *iterator;
+    Buf *first = nullptr, *last = nullptr, *iterator = nullptr;
     size_t mingrowth;
-    size_t totalsize;
+    size_t totalsize = 0;
 
     Buf *NewBuf(size_t _size, size_t numelems, T *elems, Buf *_next) {
         Buf *buf = (Buf *)malloc(sizeof(Buf) + sizeof(T) * _size);
         buf->size = _size;
         buf->unused = _size - numelems;
         buf->next = _next;
-        memcpy(buf->Elems(), elems, sizeof(T) * numelems);
+        t_memcpy(buf->Elems(), elems, numelems);
         return buf;
     }
 
@@ -287,9 +325,7 @@ template <typename T> class Accumulator {
     Accumulator &operator=(const Accumulator &);
 
     public:
-    Accumulator(size_t _mingrowth = 1024)
-        : first(nullptr), last(nullptr), iterator(nullptr),
-          mingrowth(_mingrowth), totalsize(0) {}
+    Accumulator(size_t _mingrowth = 1024) : mingrowth(_mingrowth) {}
 
     ~Accumulator() {
         while (first) {
@@ -309,7 +345,7 @@ template <typename T> class Accumulator {
         if (last && last->unused) {
             size_t fit = min(amount, last->unused);
             // Note: copy constructor skipped, if any.
-            memcpy(last->Elems() + (last->size - last->unused), newelems, sizeof(T) * fit);
+            t_memcpy(last->Elems() + (last->size - last->unused), newelems, fit);
             last->unused -= fit;
             amount -= fit;
         }
@@ -351,7 +387,7 @@ template <typename T> class Accumulator {
         size_t size;
         ResetIterator();
         while((size = Iterate(buf))) {
-            memcpy(dest, buf, size * sizeof(T));
+            t_memcpy(dest, buf, size);
             dest += size;
         }
     }
@@ -392,11 +428,11 @@ template <typename T> class IntResourceManager {
     };
 
     vector<Elem> elems;
-    size_t firstfree;
+    size_t firstfree = size_t(-1);
 
     public:
 
-    IntResourceManager() : firstfree(size_t(-1)) {
+    IntResourceManager() {
         // A nullptr item at index 0 that can never be allocated/deleted.
         elems.push_back(Elem());
     }
@@ -445,7 +481,7 @@ template <typename T> class IntResourceManager {
 // pointing inside of another allocation, will assert on Add).
 template <typename T> class IntResourceManagerCompact {
     vector<T *> elems;
-    size_t firstfree;
+    size_t firstfree = SIZE_MAX;
     const function<void(T *e)> deletefun;
 
     // Free slots have their lowest bit set, and represent an index (shifted by 1).
@@ -457,7 +493,7 @@ template <typename T> class IntResourceManagerCompact {
     public:
 
     IntResourceManagerCompact(const function<void(T *e)> &_df)
-        : firstfree(SIZE_MAX), deletefun(_df) {
+        : deletefun(_df) {
         // Slot 0 is permanently blocked, so can be used to denote illegal index.
         elems.push_back(nullptr);
     }
@@ -574,6 +610,34 @@ range_wrapper<T> range(const T &end) {
 
 */
 
+// From: http://reedbeta.com/blog/python-like-enumerate-in-cpp17/
+
+template <typename T,
+          typename TIter = decltype(std::begin(std::declval<T>())),
+          typename = decltype(std::end(std::declval<T>()))>
+          constexpr auto enumerate(T && iterable) {
+    struct iterator {
+        size_t i;
+        TIter iter;
+        bool operator != (const iterator & other) const { return iter != other.iter; }
+        void operator ++ () { ++i; ++iter; }
+        auto operator * () const { return std::tie(i, *iter); }
+    };
+    struct iterable_wrapper {
+        T iterable;
+        auto begin() { return iterator{ 0, std::begin(iterable) }; }
+        auto end() { return iterator{ 0, std::end(iterable) }; }
+    };
+    return iterable_wrapper{ std::forward<T>(iterable) };
+}
+
+// --- Reversed iterable
+
+template<typename T> struct reversion_wrapper { T& iterable; };
+template<typename T> auto begin(reversion_wrapper<T> w) { return rbegin(w.iterable); }
+template<typename T> auto end(reversion_wrapper<T> w) { return rend(w.iterable); }
+template<typename T> reversion_wrapper<T> reverse(T &&iterable) { return { iterable }; }
+
 // Stops a class from being accidental victim to default copy + destruct twice problem.
 
 class NonCopyable        {
@@ -657,10 +721,10 @@ template<typename T> class TimeBool {
 
 typedef TimeBool<char> TimeBool8;
 
-inline uint FNV1A(const char *s) {
+inline uint FNV1A(string_view s) {
     uint hash = 0x811C9DC5;
-    for (auto c = s; *c; ++c) {
-        hash ^= (uchar)*c;
+    for (auto c : s) {
+        hash ^= (uchar)c;
         hash *= 0x01000193;
     }
     return hash;
@@ -677,6 +741,14 @@ template<typename T, typename U> const T *Is(const U *o) {
     return typeid(T) == typeid(*o) ? static_cast<const T *>(o) : nullptr;
 }
 
+template<typename T, typename U> T *Is(U &o) {
+    return typeid(T) == typeid(o) ? static_cast<T *>(&o) : nullptr;
+}
+
+template<typename T, typename U> const T *Is(const U &o) {
+    return typeid(T) == typeid(o) ? static_cast<const T *>(&o) : nullptr;
+}
+
 template<typename T, typename U> T *AssertIs(U *o) {
     assert(typeid(T) == typeid(*o));
     return static_cast<T *>(o);
@@ -688,7 +760,7 @@ template<typename T, typename U> const T *AssertIs(const U *o) {
 }
 
 
-inline int PopCount32(uint val) {
+inline int PopCount(uint32_t val) {
     #ifdef _WIN32
         return (int)__popcnt(val);
     #else
@@ -696,7 +768,7 @@ inline int PopCount32(uint val) {
     #endif
 }
 
-inline int PopCount64(uint64_t val) {
+inline int PopCount(uint64_t val) {
     #ifdef _WIN32
         #ifdef _WIN64
             return (int)__popcnt64(val);
@@ -730,6 +802,29 @@ template<typename ...Ts> string cat(const Ts&... args) {
     return ss.str();
 }
 
+// This method is in C++20, but quite essential.
+inline bool starts_with(string_view sv, string_view start) {
+    return start.size() <= sv.size() && sv.substr(0, start.size()) == start;
+}
+
+// Efficient passing of string_view to old APIs wanting a null-terminated
+// const char *: only go thru a string if not null-terminated already, which is
+// often the case.
+// NOTE: uses static string, so to call twice inside the same statement supply
+// template args <0>, <1> etc.
+template<int I = 0> const char *null_terminated(string_view sv) {
+  if (!sv.data()[sv.size()]) return sv.data();
+  static string temp;
+  temp = sv;
+  return temp.data();
+}
+
+template<typename T> T parse_int(string_view sv, int base = 10, char **end = nullptr) {
+  // This should be using from_chars(), which apparently is not supported by
+  // gcc/clang yet :(
+  return (T)strtoll(null_terminated(sv), end, base);
+}
+
 
 // Strict aliasing safe memory reading and writing.
 // memcpy with a constant size is replaced by a single instruction in VS release mode, and for
@@ -741,11 +836,18 @@ template<typename T> T ReadMem(const void *p) {
     return dest;
 }
 
+template<typename T> T ReadMemInc(const uchar *&p) {
+    T dest = ReadMem<T>(p);
+    p += sizeof(T);
+    return dest;
+}
+
 template<typename T> void WriteMemInc(uchar *&dest, const T &src) {
     memcpy(dest, &src, sizeof(T));
     dest += sizeof(T);
 }
 
+// Enum operators.
 
 #define DEFINE_BITWISE_OPERATORS_FOR_ENUM(T) \
     inline T operator~ (T a) { return (T)~(int)a; } \
@@ -754,10 +856,18 @@ template<typename T> void WriteMemInc(uchar *&dest, const T &src) {
     inline T &operator|= (T &a, T b) { return (T &)((int &)a |= (int)b); } \
     inline T &operator&= (T &a, T b) { return (T &)((int &)a &= (int)b); }
 
-#define USE_EXCEPTION_HANDLING
+#ifndef DISABLE_EXCEPTION_HANDLING
+    #define USE_EXCEPTION_HANDLING
+#endif
+
 #ifdef USE_EXCEPTION_HANDLING
     #define THROW_OR_ABORT(X) { throw (X); }
 #else
     #define THROW_OR_ABORT(X) { printf("%s\n", (X).c_str()); abort(); }
 #endif
 
+
+inline void unit_test_tools() {
+    assert(strcmp(null_terminated<0>(string_view("aa", 1)),
+                  null_terminated<1>(string_view("bb", 1))) != 0);
+}

@@ -172,6 +172,6 @@ void LogGLError(const char *file, int line, const char *call) {
             err_str = "GL_OUT_OF_MEMORY";
             break;
     }
-    Output(OUTPUT_ERROR, file, "(", line, "): OpenGL Error: ", err_str, " from ", call);
+    LOG_ERROR(file, "(", line, "): OpenGL Error: ", err_str, " from ", call);
     assert(false);
 }

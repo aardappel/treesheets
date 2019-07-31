@@ -48,6 +48,8 @@
 #include <functional>
 #include <array>
 #include <type_traits>
+#include <memory>
+#include <optional>
 
 #if defined(__has_include) && __has_include(<string_view>)
     #include <string_view>
@@ -94,4 +96,8 @@ using namespace geom;
     #define VM_COMPILED_CODE_MODE
 #endif
 
-
+#ifndef LOBSTER_ENGINE
+    // By default, build Lobster assuming it comes with the default engine.
+    // Build systems can override this for a console-only build.
+    #define LOBSTER_ENGINE 1
+#endif

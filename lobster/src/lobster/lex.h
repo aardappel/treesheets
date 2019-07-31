@@ -29,32 +29,29 @@ struct Line {
 };
 
 struct LoadedFile : Line {
-    const char *p, *linestart, *tokenstart;
-    shared_ptr<string> source;
-    TType token;
-    int errorline;  // line before, if current token crossed a line
-    bool islf;
-    bool cont;
+    const char *p, *linestart, *tokenstart = nullptr;
+    shared_ptr<string> source { new string() };
+    TType token = T_NONE;
+    int tokline = 1;  // line before, if current token crossed a line
+    bool islf = false;
+    bool cont = false;
     string_view sattr;
-    size_t whitespacebefore;
+    size_t whitespacebefore = 0;
 
     vector<pair<char, char>> bracketstack;
     vector<pair<int, bool>> indentstack;
-    const char *prevline, *prevlinetok;
+    const char *prevline = nullptr, *prevlinetok = nullptr;
 
     struct Tok { TType t; string_view a; };
 
     vector<Tok> gentokens;
 
-    LoadedFile(string_view fn, vector<string> &fns, const char *stringsource)
-        : Line(1, (int)fns.size()), tokenstart(nullptr),
-          source(new string()), token(T_NONE),
-          errorline(1), islf(false), cont(false), whitespacebefore(0),
-          prevline(nullptr), prevlinetok(nullptr) {
-        if (stringsource) {
+    LoadedFile(string_view fn, vector<string> &fns, string_view stringsource)
+        : Line(1, (int)fns.size()) {
+        if (!stringsource.empty()) {
             *source.get() = stringsource;
         } else {
-            if (LoadFile("include/" + fn, source.get()) < 0 &&
+            if (LoadFile("modules/" + fn, source.get()) < 0 &&
                 LoadFile(fn, source.get()) < 0) {
                 THROW_OR_ABORT("can't open file: " + fn);
             }
@@ -74,7 +71,7 @@ struct Lex : LoadedFile {
 
     vector<string> &filenames;
 
-    Lex(string_view fn, vector<string> &fns, const char *_ss = nullptr)
+    Lex(string_view fn, vector<string> &fns, string_view _ss = {})
         : LoadedFile(fn, fns, _ss), filenames(fns) {
         allsources.push_back(source);
         FirstToken();
@@ -91,7 +88,7 @@ struct Lex : LoadedFile {
         }
         allfiles.insert(string(_fn));
         parentfiles.push_back(*this);
-        *((LoadedFile *)this) = LoadedFile(_fn, filenames, nullptr);
+        *((LoadedFile *)this) = LoadedFile(_fn, filenames, {});
         allsources.push_back(source);
         FirstToken();
     }
@@ -101,7 +98,7 @@ struct Lex : LoadedFile {
         parentfiles.pop_back();
     }
 
-    void Push(TType t, string_view a = string_view()) {
+    void Push(TType t, string_view a = {}) {
         Tok tok;
         tok.t = t;
         if (a.data()) tok.a = a;
@@ -110,7 +107,7 @@ struct Lex : LoadedFile {
 
     void PushCur() { Push(token, sattr); }
 
-    void Undo(TType t, string_view a = string_view()) {
+    void Undo(TType t, string_view a = {}) {
         PushCur();
         Push(t, a);
         Next();
@@ -174,6 +171,8 @@ struct Lex : LoadedFile {
         }
     }
 
+    void OverrideCont(bool c) { cont = c; }
+
     void PopBracket(char c) {
         if (bracketstack.empty())
             Error(string("unmatched \'") + c + "\'");
@@ -184,7 +183,7 @@ struct Lex : LoadedFile {
     }
 
     TType NextToken() {
-        errorline = line;
+        line = tokline;
         islf = false;
         whitespacebefore = 0;
         char c;
@@ -204,7 +203,7 @@ struct Lex : LoadedFile {
                     return parentfiles.empty() ? T_ENDOFFILE : T_ENDOFINCLUDE;
                 }
 
-            case '\n': line++; islf = bracketstack.empty(); linestart = p; break;
+            case '\n': tokline++; islf = bracketstack.empty(); linestart = p; break;
             case ' ': case '\t': case '\r': case '\f': whitespacebefore++; break;
 
             case '(': bracketstack.push_back({ c, ')' }); return T_LEFTPAREN;
@@ -227,8 +226,7 @@ struct Lex : LoadedFile {
             case '*':                      cont = true; second('=', T_MULTEQ); return T_MULT;
             case '%':                      cont = true; second('=', T_MODEQ); return T_MOD;
 
-            case '<': cont = true; second('=', T_LTEQ); second('<', T_ASL);
-                                                        second('-', T_DYNASSIGN); return T_LT;
+            case '<': cont = true; second('=', T_LTEQ); second('<', T_ASL); return T_LT;
             case '=': cont = true; second('=', T_EQ);   return T_ASSIGN;
             case '!': cont = true; second('=', T_NEQ);  cont = false; return T_NOT;
             case '>': cont = true; second('=', T_GTEQ); second('>', T_ASR); return T_GT;
@@ -238,15 +236,13 @@ struct Lex : LoadedFile {
             case '^': cont = true; return T_XOR;
             case '~': cont = true; return T_NEG;
 
-            case '?': cont = true; second('=', T_LOGASSIGN); second('.', T_DOTMAYBE); cont = false;
+            case '?': cont = true; second('=', T_LOGASSIGN); cont = false;
                       return T_QUESTIONMARK;
 
             case ':':
                 cont = true;
-                secondb('=', T_DEF, second('=', T_DEFCONST));
                 if (*p == ':') {
                     p++;
-                    second('=', T_DEFTYPEIN);
                     return T_TYPEIN;
                 };
                 cont = false;
@@ -263,7 +259,7 @@ struct Lex : LoadedFile {
                     for (;;) {
                         p++;
                         if (*p == '\0') Error("end of file in multi-line comment");
-                        if (*p == '\n') line++;
+                        if (*p == '\n') tokline++;
                         if (*p == '*' && *(p + 1) == '/') { p += 2; break; }
                     }
                     linestart = p;  // not entirely correct, but best we can do
@@ -281,35 +277,37 @@ struct Lex : LoadedFile {
                 if (isalpha(c) || c == '_' || c < 0) {
                     while (isalnum(*p) || *p == '_' || *p < 0) p++;
                     sattr = string_view(tokenstart, p - tokenstart);
-                    if      (sattr == "nil")       return T_NIL;
-                    else if (sattr == "true")      { sattr = "1"; return T_INT; }
-                    else if (sattr == "false")     { sattr = "0"; return T_INT; }
-                    else if (sattr == "return")    return T_RETURN;
-                    else if (sattr == "struct")    return T_STRUCT;
-                    else if (sattr == "value")     return T_VALUE;
-                    else if (sattr == "include")   return T_INCLUDE;
-                    else if (sattr == "int")       return T_INTTYPE;
-                    else if (sattr == "float")     return T_FLOATTYPE;
-                    else if (sattr == "string")    return T_STRTYPE;
-                    else if (sattr == "any")       return T_ANYTYPE;
-                    else if (sattr == "def")       return T_FUN;
-                    else if (sattr == "is")        return T_IS;
-                    else if (sattr == "from")      return T_FROM;
-                    else if (sattr == "program")   return T_PROGRAM;
-                    else if (sattr == "private")   return T_PRIVATE;
-                    else if (sattr == "coroutine") return T_COROUTINE;
-                    else if (sattr == "resource")  return T_RESOURCE;
-                    else if (sattr == "enum")      return T_ENUM;
-                    else if (sattr == "typeof")    return T_TYPEOF;
-                    else if (sattr == "var")       return T_VAR;
-                    else if (sattr == "let")       return T_CONST;
-                    else if (sattr == "pakfile")   return T_PAKFILE;
-                    else if (sattr == "switch")    return T_SWITCH;
-                    else if (sattr == "case")      return T_CASE;
-                    else if (sattr == "default")   return T_DEFAULT;
-                    else if (sattr == "not")       return T_NOT;
-                    else if (sattr == "and")       { cont = true; return T_AND; }
-                    else if (sattr == "or")        { cont = true; return T_OR; }
+                    if      (sattr == "nil")                return T_NIL;
+                    else if (sattr == "return")             return T_RETURN;
+                    else if (sattr == "class")              return T_CLASS;
+                    else if (sattr == "struct")             return T_STRUCT;
+                    else if (sattr == "import")             return T_INCLUDE;
+                    else if (sattr == "int")                return T_INTTYPE;
+                    else if (sattr == "float")              return T_FLOATTYPE;
+                    else if (sattr == "string")             return T_STRTYPE;
+                    else if (sattr == "any")                return T_ANYTYPE;
+                    else if (sattr == "void")               return T_VOIDTYPE;
+                    else if (sattr == "lazy_expression")    return T_LAZYEXP;
+                    else if (sattr == "def")                return T_FUN;
+                    else if (sattr == "is")                 return T_IS;
+                    else if (sattr == "from")               return T_FROM;
+                    else if (sattr == "program")            return T_PROGRAM;
+                    else if (sattr == "private")            return T_PRIVATE;
+                    else if (sattr == "coroutine")          return T_COROUTINE;
+                    else if (sattr == "resource")           return T_RESOURCE;
+                    else if (sattr == "enum")               return T_ENUM;
+                    else if (sattr == "enum_flags")         return T_ENUM_FLAGS;
+                    else if (sattr == "typeof")             return T_TYPEOF;
+                    else if (sattr == "var")                return T_VAR;
+                    else if (sattr == "let")                return T_CONST;
+                    else if (sattr == "pakfile")            return T_PAKFILE;
+                    else if (sattr == "switch")             return T_SWITCH;
+                    else if (sattr == "case")               return T_CASE;
+                    else if (sattr == "default")            return T_DEFAULT;
+                    else if (sattr == "namespace")          return T_NAMESPACE;
+                    else if (sattr == "not")                return T_NOT;
+                    else if (sattr == "and")                { cont = true; return T_AND; }
+                    else if (sattr == "or")                 { cont = true; return T_OR; }
                     else return T_IDENT;
                 }
                 bool isfloat = c == '.' && *p != '.';
@@ -320,11 +318,16 @@ struct Lex : LoadedFile {
                         sattr = string_view(tokenstart, p - tokenstart);
                         return T_INT;
                     } else {
-                        for (;;) {
-                            auto isdot = *p == '.' && *(p + 1) != '.' && !isalpha(*(p + 1));
-                            if (isdot) isfloat = true;
-                            if (!isdigit(*p) && !isdot) break;
+                        while (isdigit(*p)) p++;
+                        if (!isfloat && *p == '.' && *(p + 1) != '.' && !isalpha(*(p + 1))) {
                             p++;
+                            isfloat = true;
+                            while (isdigit(*p)) p++;
+                        }
+                        if (isfloat && (*p == 'e' || *p == 'E')) {
+                            p++;
+                            if (*p == '+' || *p == '-') p++;
+                            while (isdigit(*p)) p++;
                         }
                         sattr = string_view(tokenstart, p - tokenstart);
                         return isfloat ? T_FLOAT : T_INT;
@@ -332,9 +335,12 @@ struct Lex : LoadedFile {
                 }
                 if (c == '.') {
                     if (*p == '.') { p++; return T_DOTDOT; }
+                    islf = false;  // Support "builder" APIs.
                     return T_DOT;
                 }
-                auto tok = c <= ' ' ? cat("[ascii ", int(c), "]") : cat(int(c));
+                auto tok = c < ' ' || c >= 127
+                    ? cat("[ascii ", int(c), "]")
+                    : cat('\'', char(c), '\'');
                 Error("illegal token: " + tok);
                 return T_NONE;
             }
@@ -359,7 +365,7 @@ struct Lex : LoadedFile {
                         Error("end of file found in multi-line string constant");
                         break;
                     case '\n':
-                        line++;
+                        tokline++;
                         break;
                     case '\"':
                         if (p[0] == '\"' && p[1] == '\"') {
@@ -403,18 +409,27 @@ struct Lex : LoadedFile {
             return ival;
         } else if (sattr[0] == '0' && sattr.size() > 1 && sattr[1] == 'x') {
             // Test for hex explicitly since we don't want to allow octal parsing.
-            return strtoll(sattr.data(), nullptr, 16);
+            return parse_int<int64_t>(sattr, 16);
         } else {
-            return strtoll(sattr.data(), nullptr, 10);
+            return parse_int<int64_t>(sattr);
         }
     }
 
     string StringVal() {
-        auto s = sattr.data();
+        auto s = sattr.data();  // This is ok, because has been parsed before and is inside buf.
         auto initial = *s++;
         // Check if its a multi-line constant.
         if (initial == '\"' && s[0] == '\"' && s[1] == '\"') {
-            return string(s + 2, sattr.data() + sattr.size() - 3);
+            auto start = s + 2;
+            if (*start == '\r') start++;
+            if (*start == '\n') start++;
+            auto end = sattr.data() + sattr.size() - 3;
+            string r;
+            r.reserve(end - start);
+            for (auto c : string_view(start, end - start)) {
+                if (c != '\r') r += c;
+            }
+            return r;
         }
         // Regular string or character constant.
         string r;
@@ -446,16 +461,19 @@ struct Lex : LoadedFile {
         return r;
     };
 
-    string_view TokStr(TType t = T_NONE) {
-        if (t == T_NONE) t = token;
-        switch (t) {
+    string_view TokStr(TType t) {
+        return TName(t);
+    }
+
+    string_view TokStr() {
+        switch (token) {
             case T_IDENT:
             case T_FLOAT:
             case T_INT:
             case T_STR:
                 return sattr;
             default:
-                return TName(t);
+                return TName(token);
         }
     }
 
@@ -464,9 +482,13 @@ struct Lex : LoadedFile {
     }
 
     void Error(string_view msg, const Line *ln = nullptr) {
-        auto err = Location(ln ? *ln : Line(errorline, fileidx)) + ": error: " + msg;
-        //Output(OUTPUT_DEBUG, err);
+        auto err = Location(ln ? *ln : *this) + ": error: " + msg;
+        //LOG_DEBUG(err);
         THROW_OR_ABORT(err);
+    }
+
+    void Warn(string_view msg, const Line *ln = nullptr) {
+        LOG_WARN(Location(ln ? *ln : *this) + ": warning: " + msg);
     }
 };
 

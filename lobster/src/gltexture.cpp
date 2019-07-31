@@ -119,7 +119,7 @@ Texture CreateTexture(const uchar *buf, const int *dim, int tf) {
     return Texture(id, int3(dim));
 }
 
-Texture CreateTextureFromFile(const char *name, int tf) {
+Texture CreateTextureFromFile(string_view name, int tf) {
     tf &= ~TF_FLOAT;  // Not supported yet.
     string fbuf;
     if (LoadFile(name, &fbuf) < 0)

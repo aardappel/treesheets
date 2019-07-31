@@ -20,11 +20,13 @@ namespace lobster {
 typedef const function<void (Node *)> &IterateFun;
 
 struct TypeChecker;
+struct Optimizer;
 struct CodeGen;
 
 struct Node {
-    Line line;
+    Line line { 0, 0 };
     TypeRef exptype;
+    Lifetime lt = LT_UNDEF;
     virtual ~Node() {};
     virtual size_t Arity() const { return 0; }
     virtual Node **Children() { return nullptr; }
@@ -53,12 +55,31 @@ struct Node {
     // If it returns true, sets val to a value that gives the correct True().
     // Also sets correct scalar values.
     virtual bool ConstVal(TypeChecker &, Value &) const { return false; }
-    virtual Node *TypeCheck(TypeChecker &tc, bool reqret) = 0;
-    virtual void Generate(CodeGen &cg, int retval) const = 0;
+    virtual Node *TypeCheck(TypeChecker &tc, size_t reqret) = 0;
+    virtual Node *Optimize(Optimizer &opt, Node *parent_maybe);
+    virtual void Generate(CodeGen &cg, size_t retval) const = 0;
   protected:
     Node(const Line &ln) : line(ln) {}
-    Node() : line(0, 0) {}
+    Node() = default;
 };
+
+struct TypeLT {
+    TypeRef type;
+    Lifetime lt;
+
+    TypeLT(TypeRef type, Lifetime lt)
+        : type(type), lt(lt) {}
+
+    TypeLT(const SpecIdent &sid)
+        : type(sid.type), lt(sid.lt) {}
+
+    TypeLT(const Node &n, size_t i)
+        : type(n.exptype->Get(i)), lt(n.exptype->GetLifetime(i, n.lt)) {}
+
+    TypeLT(const SubFunction &sf, size_t i)
+        : type(sf.returntype->Get(i)), lt(sf.ltret) {}
+};
+
 
 template<typename T> T *DoClone(T *dest, T *src) {
     *dest = *src;  // Copy contructor copies all values & non-owned.
@@ -66,14 +87,16 @@ template<typename T> T *DoClone(T *dest, T *src) {
     return dest;
 }
 
-#define SHARED_SIGNATURE(NAME, STR, SE) \
+#define SHARED_SIGNATURE_NO_TT(NAME, STR, SE) \
     string_view Name() const { return STR; } \
     bool SideEffect() const { return SE; } \
-    Node *TypeCheck(TypeChecker &tc, bool reqret); \
-    void Generate(CodeGen &cg, int retval) const; \
+    void Generate(CodeGen &cg, size_t retval) const; \
     Node *Clone() { return DoClone<NAME>(new NAME(), this); } \
   protected: \
     NAME() {};  // Only used by clone.
+#define SHARED_SIGNATURE(NAME, STR, SE) \
+    Node *TypeCheck(TypeChecker &tc, size_t reqret); \
+    SHARED_SIGNATURE_NO_TT(NAME, STR, SE)
 
 #define ZERO_NODE(NAME, STR, SE, METHODS) \
 struct NAME : Node { \
@@ -98,6 +121,11 @@ struct NAME : Unary { \
     NAME(const Line &ln, Node *_a) : Unary(ln, _a) {} \
     SHARED_SIGNATURE(NAME, STR, SE) \
     METHODS \
+};
+#define COER_NODE(NAME, STR) \
+struct NAME : Coercion { \
+    NAME(const Line &ln, Node *_a) : Coercion(ln, _a) {} \
+    SHARED_SIGNATURE_NO_TT(NAME, STR, false) \
 };
 
 #define BINARY_NODE_T(NAME, STR, SE, AT, A, BT, B, METHODS) \
@@ -151,11 +179,13 @@ struct TypeAnnotation : Node {
 };
 
 #define CONSTVALMETHOD bool ConstVal(TypeChecker &tc, Value &val) const;
+#define OPTMETHOD Node *Optimize(Optimizer &opt, Node *parent_maybe);
 
 // generic node types
 NARY_NODE(List, "list", false, )
 UNARY_NODE(Unary, "unary", false, child, )
 BINARY_NODE(BinOp, "binop", false, left, right, )
+UNOP_NODE(Coercion, "coercion", false, )
 
 BINOP_NODE(Plus, TName(T_PLUS), false, )
 BINOP_NODE(Minus, TName(T_MINUS), false, )
@@ -185,7 +215,6 @@ UNARY_NODE(Negate, TName(T_NEG), false, child, )
 BINOP_NODE(ShiftLeft, TName(T_ASL), false, )
 BINOP_NODE(ShiftRight, TName(T_ASR), false, )
 BINOP_NODE(Assign, TName(T_ASSIGN), true, )
-BINOP_NODE(DynAssign, TName(T_DYNASSIGN), true, )
 BINOP_NODE(LogAssign, TName(T_LOGASSIGN), true, )
 BINARY_NODE(CoDot, TName(T_CODOT), false, coroutine, variable, )
 ZERO_NODE(DefaultVal, "default value", false, )
@@ -198,13 +227,11 @@ BINARY_NODE(Indexing, "indexing operation", false, object, index, )
 UNOP_NODE(PostIncr, TName(T_INCR), true, )
 UNOP_NODE(PostDecr, TName(T_DECR), true, )
 UNARY_NODE(UnaryMinus, TName(T_MINUS), false, child, )
-UNOP_NODE(ToFloat, "tofloat", false, )
-UNOP_NODE(ToString, "tostring", false, )
-UNOP_NODE(ToAny, "toany", false, )
-UNOP_NODE(ToNil, "tonil", false, )
-UNOP_NODE(ToBool, "tobool", false, )
-UNOP_NODE(ToInt, "toint", false, )
-TERNARY_NODE(If, "if", false, condition, truepart, falsepart, )
+COER_NODE(ToFloat, "tofloat")
+COER_NODE(ToString, "tostring")
+COER_NODE(ToBool, "tobool")
+COER_NODE(ToInt, "toint")
+TERNARY_NODE(If, "if", false, condition, truepart, falsepart, OPTMETHOD)
 BINARY_NODE(While, "while", false, condition, body, )
 BINARY_NODE(For, "for", false, iter, body, )
 ZERO_NODE(ForLoopElem, "for loop element", false, )
@@ -215,7 +242,7 @@ BINARY_NODE_T(Case, "case", false, List, pattern, Node, body, )
 BINARY_NODE(Range, "range", false, start, end, )
 
 struct Nil : Node {
-	TypeRef giventype;
+    TypeRef giventype;
     Nil(const Line &ln, TypeRef tr) : Node(ln), giventype(tr) {}
     bool ConstVal(TypeChecker &, Value &val) const {
         val = Value();
@@ -235,9 +262,10 @@ struct IdentRef : Node {
 
 struct IntConstant : Node {
     int64_t integer;
-    IntConstant(const Line &ln, int64_t i) : Node(ln), integer(i) {}
+    EnumVal *from;
+    IntConstant(const Line &ln, int64_t i) : Node(ln), integer(i), from(nullptr) {}
     bool IsConstInit() const { return true; }
-    void Dump(ostringstream &ss) const { ss << integer; }
+    void Dump(ostringstream& ss) const { if (from) ss << from->name; else ss << integer; }
     bool ConstVal(TypeChecker &, Value &val) const {
         val = Value(integer);  // FIXME: this clips.
         return true;
@@ -265,11 +293,18 @@ struct StringConstant : Node {
     SHARED_SIGNATURE(StringConstant, TName(T_STR), false)
 };
 
-struct StructRef : Node {
-    Struct *st;
-    StructRef(const Line &ln, Struct *_st) : Node(ln), st(_st) {}
-    void Dump(ostringstream &ss) const { ss << "struct " << st->name; }
-    SHARED_SIGNATURE(StructRef, TName(T_STRUCT), false)
+struct EnumRef : Node {
+    Enum *e;
+    EnumRef(const Line &ln, Enum *_e) : Node(ln), e(_e) {}
+    void Dump(ostringstream &ss) const { ss << "enum" << e->name; }
+    SHARED_SIGNATURE(EnumRef, TName(T_ENUM), false)
+};
+
+struct UDTRef : Node {
+    UDT *udt;
+    UDTRef(const Line &ln, UDT *_udt) : Node(ln), udt(_udt) {}
+    void Dump(ostringstream &ss) const { ss << (udt->is_struct ? "struct " : "class ") << udt->name; }
+    SHARED_SIGNATURE(UDTRef, TName(T_CLASS), false)
 };
 
 struct FunRef : Node {
@@ -277,16 +312,19 @@ struct FunRef : Node {
     FunRef(const Line &ln, SubFunction *_sf) : Node(ln), sf(_sf) {}
     bool IsConstInit() const { return true; }
     void Dump(ostringstream &ss) const {
-        if (sf) ss << "(def " << sf->parent->name << ")"; else ss << "<>";
+        ss << "(def " << sf->parent->name << ")";
     }
     SHARED_SIGNATURE(FunRef, TName(T_FUN), false)
 };
 
-struct NativeRef : Node {
-    NativeFun *nf;
-    NativeRef(const Line &ln, NativeFun *_nf) : Node(ln), nf(_nf) {}
-    void Dump(ostringstream &ss) const { ss << nf->name; }
-    SHARED_SIGNATURE(NativeRef, "native function", true)
+// This is either a Dot, Call, or NativeCall, to be specialized by the typechecker
+struct GenericCall : List {
+    string_view name;
+    SubFunction *sf;  // Need to store this, since only parser tracks scopes.
+    bool dotnoparens;
+    GenericCall(const Line &ln, string_view name, SubFunction *sf, bool dotnoparens)
+        : List(ln), name(name), sf(sf), dotnoparens(dotnoparens) {};
+    SHARED_SIGNATURE(GenericCall, "generic call", true)
 };
 
 struct Constructor : List {
@@ -301,31 +339,43 @@ struct Constructor : List {
     SHARED_SIGNATURE(Constructor, "constructor", false)
 };
 
-struct Call : List {
-    SubFunction *sf;
-    Call(const Line &ln, SubFunction *_sf) : List(ln), sf(_sf) {};
+struct Call : GenericCall {
+    int vtable_idx = -1;
+    explicit Call(GenericCall &gc)
+        : GenericCall(gc.line, gc.name, gc.sf, gc.dotnoparens) {};
+    Call(Line &ln, SubFunction *sf) : GenericCall(ln, sf->parent->name, sf, false) {};
     void Dump(ostringstream &ss) const { ss << sf->parent->name; }
-    SHARED_SIGNATURE(Call, "call", true)
+    void TypeCheckSpecialized(TypeChecker &tc, size_t reqret);
+    SHARED_SIGNATURE_NO_TT(Call, "call", true)
+    OPTMETHOD
 };
 
-struct DynCall : Call {
+struct DynCall : List {
+    SubFunction *sf;
     SpecIdent *sid;
     DynCall(const Line &ln, SubFunction *_sf, SpecIdent *_sid)
-        : Call(ln, _sf), sid(_sid) {};
+        : List(ln), sf(_sf), sid(_sid) {};
     void Dump(ostringstream &ss) const { ss << sid->id->name; }
     SHARED_SIGNATURE(DynCall, "dynamic call", true)
+    OPTMETHOD
 };
 
-struct NativeCall : List {
+struct NativeCall : GenericCall {
     NativeFun *nf;
-    NativeCall(const Line &ln, NativeFun *_nf) : List(ln), nf(_nf) {};
+    TypeRef nattype = nullptr;
+    Lifetime natlt = LT_UNDEF;
+    NativeCall(NativeFun *_nf, GenericCall &gc)
+        : GenericCall(gc.line, gc.name, gc.sf, gc.dotnoparens), nf(_nf) {};
     void Dump(ostringstream &ss) const { ss << nf->name; }
-    SHARED_SIGNATURE(NativeCall, "native call", true)
+    void TypeCheckSpecialized(TypeChecker &tc, size_t reqret);
+    SHARED_SIGNATURE_NO_TT(NativeCall, "native call", true)
 };
 
 struct Return : Unary {
-    int subfunction_idx;
-    Return(const Line &ln, Node *_a, int sfi) : Unary(ln, _a), subfunction_idx(sfi) {}
+    SubFunction *sf;
+    bool make_void;
+    Return(const Line &ln, Node *_a, SubFunction *sf, bool make_void)
+        : Unary(ln, _a), sf(sf), make_void(make_void) {}
     SHARED_SIGNATURE(Return, TName(T_RETURN), true)
 };
 
@@ -334,31 +384,35 @@ struct MultipleReturn : List {
     SHARED_SIGNATURE(MultipleReturn, "multiple return", false)
 };
 
-struct AssignList : Unary {
-    vector<SpecIdent *> sids;
-    AssignList(const Line &ln, SpecIdent *sid, Node *_a)
-        : Unary(ln, _a) { if (sid) sids.push_back(sid); }
+struct AssignList : List {
+    AssignList(const Line &ln, Node *a) : List(ln) {
+        children.push_back(a);
+    }
     void Dump(ostringstream &ss) const {
-        for (auto sid : sids) ss << sid->id->name << " ";
-        ss << Name();
+        for (auto e : children) ss << e << " ";
     }
     SHARED_SIGNATURE(AssignList, "assign list", true)
 };
 
-struct Define : AssignList {
-    TypeRef giventype;
-    Define(const Line &ln, SpecIdent *sid, Node *_a, TypeRef gt)
-        : AssignList(ln, sid, _a), giventype(gt) {}
-    SHARED_SIGNATURE(Define, TName(T_DEF), true)
+struct Define : Unary {
+    vector<pair<SpecIdent *, TypeRef>> sids;
+    Define(const Line &ln, SpecIdent *sid, Node *_a) : Unary(ln, _a) {
+        if (sid) sids.push_back({ sid, nullptr });
+    }
+    void Dump(ostringstream &ss) const {
+        for (auto p : sids) ss << p.first->id->name << " ";
+        ss << Name();
+    }
+    SHARED_SIGNATURE(Define, "var", true)
 };
 
-struct Dot : Unary {
-    SharedField *fld;
-    bool maybe;
-    Dot(const Line &ln, Node *_a, SharedField *_fld, bool _maybe)
-        : Unary(ln, _a), fld(_fld), maybe(_maybe) {}
+struct Dot : GenericCall {
+    SharedField *fld;  // FIXME
+    Dot(SharedField *_fld, GenericCall &gc)
+        : GenericCall(gc.line, gc.name, gc.sf, gc.dotnoparens), fld(_fld) {}
     void Dump(ostringstream &ss) const { ss << Name() << fld->name; }
-    SHARED_SIGNATURE(Dot, TName(maybe ? T_DOTMAYBE : T_DOT), false)
+    void TypeCheckSpecialized(TypeChecker &tc, size_t reqret);
+    SHARED_SIGNATURE_NO_TT(Dot, TName(T_DOT), false)
 };
 
 struct IsType : Unary {
@@ -367,9 +421,31 @@ struct IsType : Unary {
     void Dump(ostringstream &ss) const { ss << Name() << ":" << TypeName(giventype); }
     CONSTVALMETHOD
     SHARED_SIGNATURE(IsType, TName(T_IS), false)
+    OPTMETHOD
 };
 
-inline string Dump(Node &n, int indent) {
+struct EnumCoercion : Unary {
+    Enum *e;
+    EnumCoercion(const Line &ln, Node *_a, Enum *e) : Unary(ln, _a), e(e) {}
+    void Dump(ostringstream &ss) const { ss << e->name; }
+    CONSTVALMETHOD
+    SHARED_SIGNATURE(EnumCoercion, e->name, false)
+};
+
+struct ToLifetime : Coercion {
+    uint64_t incref, decref;
+    ToLifetime(const Line &ln, Node *_a, uint64_t incref, uint64_t decref)
+        : Coercion(ln, _a), incref(incref), decref(decref) {}
+    void Dump(ostringstream &ss) const { ss << Name() << "<" << incref << "|" << decref << ">"; }
+    SHARED_SIGNATURE_NO_TT(ToLifetime, "lifetime change", true)
+};
+
+template<typename T> Node *Forward(Node *n) {
+    if (auto t = Is<T>(n)) return t->child;
+    return n;
+}
+
+inline string DumpNode(Node &n, int indent, bool single_line) {
     ostringstream ss;
     n.Dump(ss);
     string s = ss.str();
@@ -380,7 +456,7 @@ inline string Dump(Node &n, int indent) {
     vector<string> sv;
     size_t total = 0;
     for (size_t i = 0; i < arity; i++) {
-        auto a = Dump(*ch[i], indent + 2);
+        auto a = DumpNode(*ch[i], indent + 2, single_line);
         a += ":";
         a += TypeName(ch[i]->exptype);
         if (a[0] == ' ') ml = true;
@@ -388,7 +464,7 @@ inline string Dump(Node &n, int indent) {
         sv.push_back(a);
     }
     if (total > 60) ml = true;
-    if (ml) {
+    if (ml && !single_line) {
         s = string(indent, ' ') + "(" + s;
         s += "\n";
         for (size_t i = 0; i < arity; i++) {

@@ -14,40 +14,41 @@
 
 // simple interface for SDL (that doesn't depend on its headers)
 
-extern string SDLInit(const char *title, const int2 &screensize, bool fullscreen, int vsync,
+extern string SDLInit(string_view title, const int2 &screensize, bool fullscreen, int vsync,
                       int samples);
 extern void SDLRequireGLVersion(int major, int minor);
 extern bool SDLFrame();
-extern void SDLFakeFrame(double delta);
 extern void SDLShutdown();
-extern void SDLTitle(const char *title);
+extern void SDLTitle(string_view title);
 extern bool SDLIsMinimized();
 extern void SDLWindowMinMax(int dir);
 
 extern const int2 &GetScreenSize();
 
 extern const int2 &GetFinger(int i, bool delta);
-extern TimeBool8 GetKS(const char *name);
-extern double GetKeyTime(const char *name, int on);
-extern int2 GetKeyPos(const char *name, int on);
+extern TimeBool8 GetKS(string_view name);
+extern double GetKeyTime(string_view name, int on);
+extern int2 GetKeyPos(string_view name, int on);
 extern float GetJoyAxis(int i);
 
 extern double SDLTime();
 extern double SDLDeltaTime();
+extern void SDLUpdateTime(double delta);
+extern vector<float> &SDLGetFrameTimeLog();
 
 extern int SDLWheelDelta();
 
 extern bool SDLCursor(bool on);
 extern bool SDLGrab(bool on);
 
-extern void SDLMessageBox(const char *title, const char *msg);
+extern void SDLMessageBox(string_view title, string_view msg);
 
-extern bool SDLPlaySound(const char *filename, bool sfxr, int vol = 128);
+extern bool SDLPlaySound(string_view filename, bool sfxr, int vol = 128);
 extern void SDLSoundClose();
 
 extern int64_t SDLLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len);
 
-extern bool ScreenShot(const char *filename);
+extern bool ScreenShot(string_view filename);
 
 extern void SDLTestMode();
 

@@ -28,30 +28,24 @@ struct SymbolTable;
 struct Node;
 struct List;
 
+struct Function;
 struct SubFunction;
 
 struct SpecIdent;
 
 struct Ident : Named {
-    int line;
     size_t scopelevel;
 
-    // TODO: remove this from Ident, only makes sense during parsing really.
-    SubFunction *sf_def;    // Where it is defined, including anonymous functions.
+    bool single_assignment = true;  // not declared const but def only, exp may or may not be const
+    bool constant = false;          // declared const
+    bool static_constant = false;   // not declared const but def only, exp is const.
+    bool anonymous_arg = false;
+    bool logvar = false;
 
-    bool single_assignment;
-    bool constant;
-    bool static_constant;
-    bool anonymous_arg;
-    bool logvar;
+    SpecIdent *cursid = nullptr;
 
-    SpecIdent *cursid;
-
-    Ident(string_view _name, int _l, int _idx, size_t _sl)
-        : Named(_name, _idx), line(_l),
-          scopelevel(_sl), sf_def(nullptr),
-          single_assignment(true), constant(false), static_constant(false), anonymous_arg(false),
-          logvar(false), cursid(nullptr) {}
+    Ident(string_view _name, int _idx, size_t _sl)
+        : Named(_name, _idx), scopelevel(_sl) {}
 
     void Assign(Lex &lex) {
         single_assignment = false;
@@ -60,21 +54,50 @@ struct Ident : Named {
     }
 
     flatbuffers::Offset<bytecode::Ident> Serialize(flatbuffers::FlatBufferBuilder &fbb,
-                                                   SubFunction *toplevel) {
-        return bytecode::CreateIdent(fbb, fbb.CreateString(name), constant, sf_def == toplevel);
+                                                   bool is_top_level) {
+        return bytecode::CreateIdent(fbb, fbb.CreateString(name), constant, is_top_level);
     }
 };
 
 struct SpecIdent {
     Ident *id;
     TypeRef type;
-    int logvaridx;
-    int sidx;
+    Lifetime lt = LT_UNDEF;
+    bool consume_on_last_use = false;
+    int logvaridx = -1;
+    int idx, sidx = -1;     // Into specidents, and into vm ordering.
+    SubFunction *sf_def = nullptr;  // Where it is defined, including anonymous functions.
 
-    SpecIdent(Ident *_id, TypeRef _type)
-        : id(_id), type(_type), logvaridx(-1), sidx(-1) {}
+    SpecIdent(Ident *_id, TypeRef _type, int idx)
+        : id(_id), type(_type), idx(idx){}
     int Idx() { assert(sidx >= 0); return sidx; }
     SpecIdent *&Current() { return id->cursid; }
+};
+
+struct Enum;
+
+struct EnumVal : Named {
+    int64_t val = 0;
+    Enum *e = nullptr;
+
+    EnumVal(string_view _name, int _idx) : Named(_name, _idx) {}
+};
+
+struct Enum : Named {
+    vector<unique_ptr<EnumVal>> vals;
+    Type thistype;
+
+    Enum(string_view _name, int _idx) : Named(_name, _idx) {
+        thistype = Type { this };
+    }
+
+    flatbuffers::Offset<bytecode::Enum> Serialize(flatbuffers::FlatBufferBuilder &fbb) {
+        vector<flatbuffers::Offset<bytecode::EnumVal>> valoffsets;
+        for (auto &v : vals)
+            valoffsets.push_back(
+                bytecode::CreateEnumVal(fbb, fbb.CreateString(v->name), v->val));
+        return bytecode::CreateEnum(fbb, fbb.CreateString(name), fbb.CreateVector(valoffsets));
+    }
 };
 
 // Only still needed because we have no idea which struct it refers to at parsing time.
@@ -83,15 +106,17 @@ struct SharedField : Named {
     SharedField() : SharedField("", 0) {}
 };
 
-struct Field : Typed {
-    SharedField *id;
-    int fieldref;
-    Node *defaultval;
+struct Field {
+    TypeRef type;
+    SharedField *id = nullptr;
+    int genericref = -1;
+    Node *defaultval = nullptr;
+    int slot = -1;
 
-    Field() : Typed(), id(nullptr), fieldref(-1), defaultval(nullptr) {}
-    Field(SharedField *_id, TypeRef _type, ArgFlags _flags, int _fieldref, Node *_defaultval)
-        : Typed(_type, _flags), id(_id),
-          fieldref(_fieldref), defaultval(_defaultval) {}
+    Field() = default;
+    Field(SharedField *_id, TypeRef _type, int _genericref, Node *_defaultval)
+        : type(_type), id(_id),
+        genericref(_genericref), defaultval(_defaultval) {}
     Field(const Field &o);
     ~Field();
 };
@@ -99,52 +124,68 @@ struct Field : Typed {
 struct FieldVector : GenericArgs {
     vector<Field> v;
 
-    FieldVector(int nargs) : v(nargs) {}
+    FieldVector(size_t nargs) : v(nargs) {}
 
     size_t size() const { return v.size(); }
-    const Typed *GetType(size_t i) const { return &v[i]; }
+    TypeRef GetType(size_t i) const { return v[i].type; }
+    ArgFlags GetFlags(size_t) const { return AF_NONE; }
     string_view GetName(size_t i) const { return v[i].id->name; }
 };
 
-struct Struct : Named {
-    FieldVector fields;
-    Struct *next, *first;
-    Struct *superclass;
-    Struct *firstsubclass, *nextsubclass;  // Used in codegen.
-    bool readonly;
-    bool generic;
-    bool predeclaration;
-    Type thistype;         // convenient place to store the type corresponding to this.
-    TypeRef sametype;      // If all fields are int/float, this allows vector ops.
-    type_elem_t typeinfo;  // Runtime type.
+struct GenericParameter {
+    string_view name;
+};
 
-    Struct(string_view _name, int _idx)
-        : Named(_name, _idx), fields(0), next(nullptr), first(this), superclass(nullptr),
-          firstsubclass(nullptr), nextsubclass(nullptr),
-          readonly(false), generic(false), predeclaration(false),
-          thistype(V_STRUCT, this),
-          sametype(type_any),
-          typeinfo((type_elem_t)-1) {}
-    Struct() : Struct("", 0) {}
+struct DispatchEntry {
+    SubFunction *sf = nullptr;
+    bool is_dispatch_root = false;
+    // Shared return type if root of dispatch.
+    TypeRef returntype = nullptr;
+};
+
+struct UDT : Named {
+    FieldVector fields { 0 };
+    vector<GenericParameter> generics;
+    UDT *next = nullptr, *first = this;  // Specializations
+    UDT *superclass = nullptr;
+    bool is_struct = false, hasref = false;
+    bool predeclaration = false;
+    bool constructed = false;  // Is this instantiated anywhere in the code?
+    Type thistype;  // convenient place to store the type corresponding to this.
+    TypeRef sametype = type_undefined;  // If all fields are int/float, this allows vector ops.
+    type_elem_t typeinfo = (type_elem_t)-1;  // Runtime type.
+    int numslots = -1;
+    int vtable_start = -1;
+    vector<UDT *> subudts;  // Including self.
+    // Subset of methods that participate in dynamic dispatch. Order in this table determines
+    // vtable layout and is compatible with sub/super classes.
+    // Multiple specializations of a method may be in here.
+    // Methods whose dispatch can be determined statically for the current program do not end up
+    // in here.
+    vector<DispatchEntry> dispatch;
+
+    UDT(string_view _name, int _idx, bool is_struct) : Named(_name, _idx), is_struct(is_struct) {
+        thistype = is_struct ? Type { V_STRUCT_R, this } : Type { V_CLASS, this };
+    }
 
     int Has(SharedField *fld) {
         for (auto &uf : fields.v) if (uf.id == fld) return int(&uf - &fields.v[0]);
         return -1;
     }
 
-    Struct *CloneInto(Struct *st) {
+    UDT *CloneInto(UDT *st) {
         *st = *this;
-        st->thistype = Type(V_STRUCT, st);
+        st->thistype.udt = st;
         st->next = next;
         st->first = first;
         next = st;
         return st;
     }
 
-    bool IsSpecialization(Struct *other) {
-        if (generic) {
-            for (auto struc = first->next; struc; struc = struc->next)
-                if (struc == other)
+    bool IsSpecialization(UDT *other) {
+        if (!generics.empty()) {
+            for (auto udt = first->next; udt; udt = udt->next)
+                if (udt == other)
                     return true;
             return false;
         } else {
@@ -152,19 +193,53 @@ struct Struct : Named {
         }
     }
 
-    void Resolve(Field &field) {
-        if (field.fieldref >= 0) field.type = fields.v[field.fieldref].type;
+    int NumSuperTypes() {
+        int n = 0;
+        for (auto t = superclass; t; t = t->superclass) n++;
+        return n;
     }
 
-    flatbuffers::Offset<bytecode::Struct> Serialize(flatbuffers::FlatBufferBuilder &fbb) {
-        return bytecode::CreateStruct(fbb, fbb.CreateString(name), idx, (int)fields.size());
+    bool ComputeSizes(int depth = 0) {
+        if (numslots >= 0) return true;
+        if (depth > 16) return false;  // Simple protection against recursive references.
+        int size = 0;
+        for (auto &uf : fields.v) {
+            uf.slot = size;
+            if (IsStruct(uf.type->t)) {
+                if (!uf.type->udt->ComputeSizes(depth + 1)) return false;
+                size += uf.type->udt->numslots;
+            } else {
+                size++;
+            }
+        }
+        numslots = size;
+        return true;
+    }
+
+    flatbuffers::Offset<bytecode::UDT> Serialize(flatbuffers::FlatBufferBuilder &fbb) {
+        vector<flatbuffers::Offset<bytecode::Field>> fieldoffsets;
+        for (auto f : fields.v)
+            fieldoffsets.push_back(
+                bytecode::CreateField(fbb, fbb.CreateString(f.id->name), f.slot));
+        return bytecode::CreateUDT(fbb, fbb.CreateString(name), idx,
+                                        fbb.CreateVector(fieldoffsets), numslots);
     }
 };
 
-struct Arg : Typed {
-    SpecIdent *sid;
+inline int ValWidth(TypeRef type) { return IsStruct(type->t) ? type->udt->numslots : 1; }
 
-    Arg() : Typed(), sid(nullptr) {}
+inline const Field *FindSlot(const UDT &udt, int i) {
+    for (auto &f : udt.fields.v) if (i >= f.slot && i < f.slot + ValWidth(f.type)) {
+        return IsStruct(f.type->t) ? FindSlot(*f.type->udt, i - f.slot) : &f;
+    }
+    assert(false);
+    return nullptr;
+}
+
+struct Arg : Typed {
+    SpecIdent *sid = nullptr;
+
+    Arg() = default;
     Arg(const Arg &o) : Typed(o), sid(o.sid) {}
     Arg(SpecIdent *_sid, TypeRef _type, ArgFlags _flags) : Typed(_type, _flags), sid(_sid) {}
 };
@@ -172,10 +247,11 @@ struct Arg : Typed {
 struct ArgVector : GenericArgs {
     vector<Arg> v;
 
-    ArgVector(int nargs) : v(nargs) {}
+    ArgVector(size_t nargs) : v(nargs) {}
 
     size_t size() const { return v.size(); }
-    const Typed *GetType(size_t i) const { return &v[i]; }
+    TypeRef GetType(size_t i) const { return v[i].type; }
+    ArgFlags GetFlags(size_t i) const { return v[i].flags; }
     string_view GetName(size_t i) const { return v[i].sid->id->name; }
 
     bool Add(const Arg &in) {
@@ -191,34 +267,34 @@ struct Function;
 
 struct SubFunction {
     int idx;
-    ArgVector args;
-    ArgVector locals;
-    ArgVector dynscoperedefs; // any lhs of <-
-    ArgVector freevars;       // any used from outside this scope, could overlap with dynscoperedefs
-    vector<TypeRef> returntypes;
-    bool reqret;  // Do the caller(s) want values to be returned?
-    bool iscoroutine;
-    ArgVector coyieldsave;
+    ArgVector args { 0 };
+    ArgVector locals { 0 };
+    ArgVector freevars { 0 };       // any used from outside this scope
+    TypeRef fixedreturntype = nullptr;
+    TypeRef returntype = type_undefined;
+    size_t num_returns = 0;
+    size_t reqret = 0;  // Do the caller(s) want values to be returned?
+    const Lifetime ltret = LT_KEEP;
+    vector<pair<const SubFunction *, TypeRef>> reuse_return_events;
+    bool isrecursivelycalled = false;
+    bool iscoroutine = false;
+    ArgVector coyieldsave { 0 };
     TypeRef coresumetype;
-    type_elem_t cotypeinfo;
-    List *body;
-    SubFunction *next;
-    Function *parent;
-    int subbytecodestart;
-    bool typechecked, freevarchecked, mustspecialize, fixedreturntype, logvarcallgraph;
-    int numcallers;
-    Type thistype;       // convenient place to store the type corresponding to this
+    type_elem_t cotypeinfo = (type_elem_t)-1;
+    List *body = nullptr;
+    SubFunction *next = nullptr;
+    Function *parent = nullptr;
+    int subbytecodestart = 0;
+    bool typechecked = false;
+    bool freevarchecked = false;
+    bool mustspecialize = false;
+    bool logvarcallgraph = false;
+    bool isdynamicfunctionvalue = false;
+    UDT *method_of = nullptr;
+    int numcallers = 0;
+    Type thistype { V_FUNCTION, this };  // convenient place to store the type corresponding to this
 
-    SubFunction(int _idx)
-        : idx(_idx),
-          args(0), locals(0), dynscoperedefs(0), freevars(0), reqret(true),
-          iscoroutine(false), coyieldsave(0), cotypeinfo((type_elem_t)-1),
-          body(nullptr), next(nullptr), parent(nullptr), subbytecodestart(0),
-          typechecked(false), freevarchecked(false), mustspecialize(false),
-          fixedreturntype(false), logvarcallgraph(false), numcallers(0),
-          thistype(V_FUNCTION, this) {
-        returntypes.push_back(type_any);  // functions always have at least 1 return value.
-    }
+    SubFunction(int _idx) : idx(_idx) {}
 
     void SetParent(Function &f, SubFunction *&link) {
         parent = &f;
@@ -230,47 +306,42 @@ struct SubFunction {
 };
 
 struct Function : Named {
-    int bytecodestart;
+    // Start of all SubFunctions sequentially.
+    int bytecodestart = 0;
     // functions with the same name and args, but different types (dynamic dispatch |
     // specialization)
-    SubFunction *subf;
+    vector<SubFunction *> overloads;
     // functions with the same name but different number of args (overloaded)
-    Function *sibf;
-    // if false, subfunctions can be generated by type specialization as opposed to programmer
-    // implemented dynamic dispatch
-    bool multimethod;
-    TypeRef multimethodretval;
+    Function *sibf = nullptr;
     // does not have a programmer specified name
-    bool anonymous;
+    bool anonymous = false;
     // its merely a function type, has no body, but does have a set return type.
-    bool istype;
+    bool istype = false;
     // Store the original types the function was declared with, before specialization.
-    ArgVector orig_args;
+    ArgVector orig_args { 0 };
     size_t scopelevel;
-    // 0 for anonymous functions, and for named functions to indicate no return has happened yet.
-    // 0 implies 1, all function return at least 1 value.
-    int nretvals;
 
     Function(string_view _name, int _idx, size_t _sl)
-     : Named(_name, _idx), bytecodestart(0),  subf(nullptr), sibf(nullptr),
-       multimethod(false), anonymous(false), istype(false), orig_args(0),
-       scopelevel(_sl), nretvals(0) {
-    }
+        : Named(_name, _idx), scopelevel(_sl) {}
     ~Function() {}
 
-    size_t nargs() { return subf->args.v.size(); }
+    size_t nargs() const { return overloads[0]->args.v.size(); }
 
     int NumSubf() {
         int sum = 0;
-        for (auto sf = subf; sf; sf = sf->next) sum++;
+        for (auto sf : overloads) for (; sf; sf = sf->next) sum++;
         return sum;
     }
 
     bool RemoveSubFunction(SubFunction *sf) {
-        for (auto sfp = &subf; *sfp; sfp = &(*sfp)->next) if (*sfp == sf) {
-            *sfp = sf->next;
-            sf->next = nullptr;
-            return true;
+        for (auto &sfh : overloads) {
+            for (auto sfp = &sfh; *sfp; sfp = &(*sfp)->next) {
+                if (*sfp == sf) {
+                    *sfp = sf->next;
+                    sf->next = nullptr;
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -286,8 +357,8 @@ struct SymbolTable {
     vector<Ident *> identstack;
     vector<SpecIdent *> specidents;
 
-    unordered_map<string_view, Struct *> structs;  // Key points to value!
-    vector<Struct *> structtable;
+    unordered_map<string_view, UDT *> udts;  // Key points to value!
+    vector<UDT *> udttable;
 
     unordered_map<string_view, SharedField *> fields;  // Key points to value!
     vector<SharedField *> fieldtable;
@@ -295,40 +366,76 @@ struct SymbolTable {
     unordered_map<string_view, Function *> functions;  // Key points to value!
     vector<Function *> functiontable;
     vector<SubFunction *> subfunctiontable;
-    SubFunction *toplevel;
+    SubFunction *toplevel = nullptr;
+
+    unordered_map<string_view, Enum *> enums;  // Key points to value!
+    unordered_map<string_view, EnumVal *> enumvals;  // Key points to value!
+    vector<Enum *> enumtable;
 
     vector<string> filenames;
 
     vector<size_t> scopelevels;
 
-    typedef pair<TypeRef, Ident *> WithStackElem;
+    struct WithStackElem { TypeRef type; Ident *id = nullptr; SubFunction *sf = nullptr; };
     vector<WithStackElem> withstack;
     vector<size_t> withstacklevels;
 
     enum { NUM_VECTOR_TYPE_WRAPPINGS = 3 };
     vector<TypeRef> default_int_vector_types[NUM_VECTOR_TYPE_WRAPPINGS],
                     default_float_vector_types[NUM_VECTOR_TYPE_WRAPPINGS];
+    Enum *default_bool_type = nullptr;
 
     // Used during parsing.
     vector<SubFunction *> defsubfunctionstack;
 
-    vector<Type *> typelist;
+    vector<Type *> typelist;  // Used for constructing new vector types, variables, etc.
+    vector<vector<Type::TupleElem> *> tuplelist;
 
-    SymbolTable() : toplevel(nullptr) {}
+    string current_namespace;
+    // FIXME: because we cleverly use string_view's into source code everywhere, we now have
+    // no way to refer to constructed strings, and need to store them seperately :(
+    // TODO: instead use larger buffers and constuct directly into those, so no temp string?
+    vector<const char *> stored_names;
 
     ~SymbolTable() {
-        for (auto id : identtable)       delete id;
-        for (auto sid : specidents)      delete sid;
-        for (auto st : structtable)      delete st;
-        for (auto f  : functiontable)    delete f;
-        for (auto sf : subfunctiontable) delete sf;
-        for (auto f  : fieldtable)       delete f;
-        for (auto t  : typelist)         delete t;
+        for (auto id  : identtable)       delete id;
+        for (auto sid : specidents)       delete sid;
+        for (auto u   : udttable)         delete u;
+        for (auto f   : functiontable)    delete f;
+        for (auto e   : enumtable)        delete e;
+        for (auto sf  : subfunctiontable) delete sf;
+        for (auto f   : fieldtable)       delete f;
+        for (auto t   : typelist)         delete t;
+        for (auto t   : tuplelist)        delete t;
+        for (auto n   : stored_names)     delete[] n;
+    }
+
+    string NameSpaced(string_view name) {
+        assert(!current_namespace.empty());
+        return cat(current_namespace, "_", name);
+    }
+
+    string_view StoreName(const string &s) {
+        auto buf = new char[s.size()];
+        memcpy(buf, s.data(), s.size());  // Look ma, no terminator :)
+        stored_names.push_back(buf);
+        return string_view(buf, s.size());
+    }
+
+    string_view MaybeNameSpace(string_view name, bool other_conditions) {
+        return other_conditions && !current_namespace.empty() && scopelevels.size() == 1
+            ? StoreName(NameSpaced(name))
+            : name;
     }
 
     Ident *Lookup(string_view name) {
         auto it = idents.find(name);
-        return it == idents.end() ? nullptr : it->second;
+        if (it != idents.end()) return it->second;
+        if (!current_namespace.empty()) {
+            auto it = idents.find(NameSpaced(name));
+            if (it != idents.end()) return it->second;
+        }
+        return nullptr;
     }
 
     Ident *LookupAny(string_view name) {
@@ -336,18 +443,24 @@ struct SymbolTable {
         return nullptr;
     }
 
-    Ident *LookupDef(string_view name, int line, Lex &lex, bool anonymous_arg, bool islocal,
+    Ident *NewId(string_view name, SubFunction *sf) {
+        auto ident = new Ident(name, (int)identtable.size(), scopelevels.size());
+        ident->cursid = NewSid(ident, sf);
+        identtable.push_back(ident);
+        return ident;
+    }
+
+    Ident *LookupDef(string_view name, Lex &lex, bool anonymous_arg, bool islocal,
                      bool withtype) {
         auto sf = defsubfunctionstack.back();
         auto existing_ident = Lookup(name);
-        if (anonymous_arg && existing_ident && existing_ident->sf_def == sf) return existing_ident;
+        if (anonymous_arg && existing_ident && existing_ident->cursid->sf_def == sf)
+            return existing_ident;
         Ident *ident = nullptr;
         if (LookupWithStruct(name, lex, ident))
             lex.Error("cannot define variable with same name as field in this scope: " + name);
-        ident = new Ident(name, line, (int)identtable.size(), scopelevels.size());
+        ident = NewId(name, sf);
         ident->anonymous_arg = anonymous_arg;
-        ident->sf_def = sf;
-        ident->cursid = NewSid(ident);
         (islocal ? sf->locals : sf->args).v.push_back(
             Arg(ident->cursid, type_any, AF_GENERIC | (withtype ? AF_WITHTYPE : AF_NONE)));
         if (existing_ident) {
@@ -355,15 +468,6 @@ struct SymbolTable {
         }
         idents[ident->name /* must be in value */] = ident;
         identstack.push_back(ident);
-        identtable.push_back(ident);
-        return ident;
-    }
-
-    Ident *LookupDynScopeRedef(string_view name, Lex &lex) {
-        auto ident = Lookup(name);
-        if (!ident)
-            lex.Error("lhs of <- must refer to existing variable: " + name);
-        defsubfunctionstack.back()->dynscoperedefs.Add(Arg(ident->cursid, type_any, AF_GENERIC));
         return ident;
     }
 
@@ -374,34 +478,34 @@ struct SymbolTable {
         return id;
     }
 
-    void AddWithStruct(TypeRef t, Ident *id, Lex &lex) {
-        if (t->t != V_STRUCT) lex.Error(":: can only be used with struct/value types");
+    void AddWithStruct(TypeRef t, Ident *id, Lex &lex, SubFunction *sf) {
+        if (!IsUDT(t->t)) lex.Error(":: can only be used with struct/value types");
         for (auto &wp : withstack)
-            if (wp.first->struc == t->struc)
+            if (wp.type->udt == t->udt)
                 lex.Error("type used twice in the same scope with ::");
         // FIXME: should also check if variables have already been defined in this scope that clash
         // with the struct, or do so in LookupUse
-        assert(t->struc);
-        withstack.push_back({ t, id });
+        assert(t->udt);
+        withstack.push_back({ t, id, sf });
     }
 
     SharedField *LookupWithStruct(string_view name, Lex &lex, Ident *&id) {
         auto fld = FieldUse(name);
         if (!fld) return nullptr;
         assert(!id);
-        for (auto &[wtype, wid] : withstack) {
-            if (wtype->struc->Has(fld) >= 0) {
+        for (auto &wse : withstack) {
+            if (wse.type->udt->Has(fld) >= 0) {
                 if (id) lex.Error("access to ambiguous field: " + fld->name);
-                id = wid;
+                id = wse.id;
             }
         }
         return id ? fld : nullptr;
     }
 
-    WithStackElem *GetWithStackBack() {
+    WithStackElem GetWithStackBack() {
         return withstack.size()
-            ? &withstack.back()
-            : nullptr;
+            ? withstack.back()
+            : WithStackElem();
     }
 
     void MakeLogVar(Ident *id) {
@@ -432,10 +536,10 @@ struct SymbolTable {
         withstacklevels.pop_back();
     }
 
-    void UnregisterStruct(const Struct *st, Lex &lex) {
+    void UnregisterStruct(const UDT *st, Lex &lex) {
         if (st->predeclaration) lex.Error("pre-declared struct never defined: " + st->name);
-        auto it = structs.find(st->name);
-        if (it != structs.end()) structs.erase(it);
+        auto it = udts.find(st->name);
+        if (it != udts.end()) udts.erase(it);
     }
 
     void UnregisterFun(Function *f) {
@@ -444,7 +548,19 @@ struct SymbolTable {
             functions.erase(it);
     }
 
+    void UnregisterEnum(Enum *e) {
+        for (auto &ev : e->vals) {
+            auto it = enumvals.find(ev->name);
+            assert(it != enumvals.end());
+            enumvals.erase(it);
+        }
+        auto it = enums.find(e->name);
+        assert(it != enums.end());
+        enums.erase(it);
+    }
+
     void EndOfInclude() {
+        current_namespace.clear();
         auto it = idents.begin();
         while (it != idents.end()) {
             if (it->second->isprivate) {
@@ -454,38 +570,84 @@ struct SymbolTable {
         }
     }
 
-    Struct &StructDecl(string_view name, Lex &lex) {
-        auto stit = structs.find(name);
-        if (stit != structs.end()) {
-            if (!stit->second->predeclaration) lex.Error("double declaration of type: " + name);
-            stit->second->predeclaration = false;
-            return *stit->second;
-        } else {
-            auto st = new Struct(name, (int)structtable.size());
-            structs[st->name /* must be in value */] = st;
-            structtable.push_back(st);
-            return *st;
+    Enum *EnumLookup(string_view name, Lex &lex, bool decl) {
+        auto eit = enums.find(name);
+        if (eit != enums.end()) {
+            if (decl) lex.Error("double declaration of enum: " + name);
+            return eit->second;
         }
+        if (!decl) {
+            if (!current_namespace.empty()) {
+                eit = enums.find(NameSpaced(name));
+                if (eit != enums.end()) return eit->second;
+            }
+            return nullptr;
+        }
+        auto e = new Enum(name, (int)enumtable.size());
+        enumtable.push_back(e);
+        enums[e->name /* must be in value */] = e;
+        return e;
     }
 
-    Struct &StructUse(string_view name, Lex &lex) {
-        auto stit = structs.find(name);
-        if (stit == structs.end()) lex.Error("unknown type: " + name);
-        return *stit->second;
+    EnumVal *EnumValLookup(string_view name, Lex &lex, bool decl) {
+        auto evit = enumvals.find(name);
+        if (evit != enumvals.end()) {
+            if (decl) lex.Error("double declaration of enum value: " + name);
+            return evit->second;
+        }
+        if (!decl) {
+            if (!current_namespace.empty()) {
+                evit = enumvals.find(NameSpaced(name));
+                if (evit != enumvals.end()) return evit->second;
+            }
+            return nullptr;
+        }
+        auto ev = new EnumVal(name, 0);
+        enumvals[ev->name /* must be in value */] = ev;
+        return ev;
     }
 
-    bool IsSuperTypeOrSame(const Struct *sup, const Struct *sub) {
-        for (auto t = sub; t; t = t->superclass)
-            if (t == sup)
-                return true;
-        return false;
+    UDT &StructDecl(string_view name, Lex &lex, bool is_struct) {
+        auto uit = udts.find(name);
+        if (uit != udts.end()) {
+            if (!uit->second->predeclaration)
+                lex.Error("double declaration of type: " + name);
+            if (uit->second->is_struct != is_struct)
+                lex.Error("class/struct previously declared as different kind");
+            uit->second->predeclaration = false;
+            return *uit->second;
+        }
+        auto st = new UDT(name, (int)udttable.size(), is_struct);
+        udts[st->name /* must be in value */] = st;
+        udttable.push_back(st);
+        return *st;
     }
 
-    const Struct *CommonSuperType(const Struct *a, const Struct *b) {
+    UDT &StructUse(string_view name, Lex &lex) {
+        auto uit = udts.find(name);
+        if (uit != udts.end()) return *uit->second;
+        if (!current_namespace.empty()) {
+            uit = udts.find(NameSpaced(name));
+            if (uit != udts.end()) return *uit->second;
+        }
+        lex.Error("unknown type: " + name);
+        return *uit->second;
+    }
+
+    int SuperDistance(const UDT *sup, const UDT *sub) {
+        int dist = 0;
+        for (auto t = sub; t; t = t->superclass) {
+            if (t == sup) return dist;
+            dist++;
+        }
+        return -1;
+    }
+
+    const UDT *CommonSuperType(const UDT *a, const UDT *b) {
         if (a != b) for (;;) {
             a = a->superclass;
             if (!a) return nullptr;
-            if (IsSuperTypeOrSame(a, b)) break;
+            if (SuperDistance(a, b) >= 0) break;
         }
         return a;
     }
@@ -539,34 +701,44 @@ struct SymbolTable {
 
     Function *FindFunction(string_view name) {
         auto it = functions.find(name);
-        return it != functions.end() ? it->second : nullptr;
+        if (it != functions.end()) return it->second;
+        if (!current_namespace.empty()) {
+            auto it = functions.find(NameSpaced(name));
+            if (it != functions.end()) return it->second;
+        }
+        return nullptr;
     }
 
-    SpecIdent *NewSid(Ident *id, TypeRef type = nullptr) {
-        auto sid = new SpecIdent(id, type);
+    SpecIdent *NewSid(Ident *id, SubFunction *sf, TypeRef type = nullptr) {
+        auto sid = new SpecIdent(id, type, (int)specidents.size());
+        sid->sf_def = sf;
         specidents.push_back(sid);
         return sid;
     }
 
-    void CloneSids(ArgVector &av) {
-        for (auto &a : av.v) a.sid = NewSid(a.sid->id);
+    void CloneSids(ArgVector &av, SubFunction *sf) {
+        for (auto &a : av.v) {
+            a.sid = NewSid(a.sid->id, sf);
+        }
     }
 
     void CloneIds(SubFunction &sf, const SubFunction &o) {
-        sf.args = o.args;                     CloneSids(sf.args);
-        sf.locals = o.locals;                 CloneSids(sf.locals);
-        sf.dynscoperedefs = o.dynscoperedefs; // Set to correct one in TypeCheckFunctionDef.
+        sf.args = o.args;     CloneSids(sf.args, &sf);
+        sf.locals = o.locals; CloneSids(sf.locals, &sf);
         // Don't clone freevars, these will be accumulated in the new copy anew.
     }
 
     Type *NewType() {
-        // FIXME: this potentially generates quite a bit of "garbage".
-        // Instead, we could hash these, or store common type variants inside Struct etc.
-        // A quick test revealed that 10% of nodes cause one of these to be allocated, so probably
-        // not worth optimizing.
+        // These get allocated for very few nodes, given that most types are shared or stored in
+        // their own struct.
         auto t = new Type();
         typelist.push_back(t);
         return t;
+    }
+
+    TypeRef Wrap(TypeRef elem, ValueType with) {
+        auto wt = WrapKnown(elem, with);
+        return !wt.Null() ? wt : elem->Wrap(NewType(), with);
     }
 
     bool RegisterTypeVector(vector<TypeRef> *sv, const char **names) {
@@ -577,10 +749,10 @@ struct SymbolTable {
         }
         for (auto name = names; *name; name++) {
             // Can't use stucts.find, since all are out of scope.
-            for (auto struc : structtable) if (struc->name == *name) {
+            for (auto udt : udttable) if (udt->name == *name) {
                 for (size_t i = 0; i < NUM_VECTOR_TYPE_WRAPPINGS; i++) {
-                    auto vt = &struc->thistype;
-                    for (size_t j = 0; j < i; j++) vt = vt->Wrap(NewType());
+                    auto vt = TypeRef(&udt->thistype);
+                    for (size_t j = 0; j < i; j++) vt = Wrap(vt, V_VECTOR);
                     sv[i].push_back(vt);
                 }
                 goto found;
@@ -591,15 +763,22 @@ struct SymbolTable {
         return true;
     }
 
-    bool RegisterDefaultVectorTypes() {
+    bool RegisterDefaultTypes() {
         // TODO: This isn't great hardcoded in the compiler, would be better if it was declared in
         // lobster code.
+        for (auto e : enumtable) {
+            if (e->name == "bool") {
+                default_bool_type = e;
+                break;
+            }
+        }
         static const char *default_int_vector_type_names[]   =
             { "xy_i", "xyz_i", "xyzw_i", nullptr };
         static const char *default_float_vector_type_names[] =
             { "xy_f", "xyz_f", "xyzw_f", nullptr };
         return RegisterTypeVector(default_int_vector_types, default_int_vector_type_names) &&
-               RegisterTypeVector(default_float_vector_types, default_float_vector_type_names);
+               RegisterTypeVector(default_float_vector_types, default_float_vector_type_names) &&
+               default_bool_type;
     }
 
     TypeRef VectorType(TypeRef vt, size_t level, int arity) const {
@@ -611,7 +790,31 @@ struct SymbolTable {
     bool IsGeneric(TypeRef type) {
         if (type->t == V_ANY) return true;
         auto u = type->UnWrapped();
-        return u->t == V_STRUCT && u->struc->generic;
+        return IsUDT(u->t) && !u->udt->generics.empty();
+    }
+
+    // This one is used to sort types for multi-dispatch.
+    bool IsLessGeneralThan(const Type &a, const Type &b) const {
+        if (a.t != b.t) return a.t > b.t;
+        switch (a.t) {
+            case V_VECTOR:
+            case V_NIL:
+                return IsLessGeneralThan(*a.sub, *b.sub);
+            case V_FUNCTION:
+                return a.sf->idx < b.sf->idx;
+            case V_STRUCT_R:
+            case V_STRUCT_S:
+            case V_CLASS: {
+                if (a.udt == b.udt) return false;
+                auto ans = a.udt->NumSuperTypes();
+                auto bns = b.udt->NumSuperTypes();
+                return ans != bns
+                    ? ans > bns
+                    : a.udt->idx < b.udt->idx;
+            }
+            default:
+                return false;
+        }
     }
 
     void Serialize(vector<int> &code,
@@ -623,16 +826,19 @@ struct SymbolTable {
                    vector<bytecode::SpecIdent> &sids,
                    vector<string_view> &stringtable,
                    vector<int> &speclogvars,
-                   string &bytecode) {
+                   string &bytecode,
+                   vector<int> &vtables) {
         flatbuffers::FlatBufferBuilder fbb;
         vector<flatbuffers::Offset<flatbuffers::String>> fns;
         for (auto &f : filenames) fns.push_back(fbb.CreateString(f));
         vector<flatbuffers::Offset<bytecode::Function>> functionoffsets;
         for (auto f : functiontable) functionoffsets.push_back(f->Serialize(fbb));
-        vector<flatbuffers::Offset<bytecode::Struct>> structoffsets;
-        for (auto s : structtable) structoffsets.push_back(s->Serialize(fbb));
+        vector<flatbuffers::Offset<bytecode::UDT>> udtoffsets;
+        for (auto u : udttable) udtoffsets.push_back(u->Serialize(fbb));
         vector<flatbuffers::Offset<bytecode::Ident>> identoffsets;
-        for (auto i : identtable) identoffsets.push_back(i->Serialize(fbb, toplevel));
+        for (auto i : identtable) identoffsets.push_back(i->Serialize(fbb, i->cursid->sf_def == toplevel));
+        vector<flatbuffers::Offset<bytecode::Enum>> enumoffsets;
+        for (auto e : enumtable) enumoffsets.push_back(e->Serialize(fbb));
         auto bcf = bytecode::CreateBytecodeFile(fbb,
             LOBSTER_BYTECODE_FORMAT_VERSION,
             fbb.CreateVector(code),
@@ -646,12 +852,14 @@ struct SymbolTable {
             fbb.CreateVectorOfStructs(linenumbers),
             fbb.CreateVector(fns),
             fbb.CreateVector(functionoffsets),
-            fbb.CreateVector(structoffsets),
+            fbb.CreateVector(udtoffsets),
             fbb.CreateVector(identoffsets),
             fbb.CreateVectorOfStructs(sids),
             fbb.CreateVector((vector<int> &)vint_typeoffsets),
             fbb.CreateVector((vector<int> &)vfloat_typeoffsets),
-            fbb.CreateVector(speclogvars));
+            fbb.CreateVector(speclogvars),
+            fbb.CreateVector(enumoffsets),
+            fbb.CreateVector(vtables));
         bytecode::FinishBytecodeFileBuffer(fbb, bcf);
         bytecode.assign(fbb.GetBufferPointer(), fbb.GetBufferPointer() + fbb.GetSize());
     }
@@ -659,30 +867,43 @@ struct SymbolTable {
 
 inline string TypeName(TypeRef type, int flen = 0, const SymbolTable *st = nullptr) {
     switch (type->t) {
-    case V_STRUCT:
-        return type->struc->name;
-    case V_VECTOR:
-        return flen && type->Element()->Numeric()
-            ? (flen < 0
-                ? (type->Element()->t == V_INT ? "xy_z_w_i" : "xy_z_w_f")  // FIXME: better names?
-                : TypeName(st->VectorType(type, 0, flen)))
-            : (type->Element()->t == V_VAR
-                ? "[]"
-                : "[" + TypeName(type->Element(), flen, st) + "]");
-    case V_FUNCTION:
-        return type->sf // || type->sf->anonymous
-            ? type->sf->parent->name
-            : "function";
-    case V_NIL:
-        return type->Element()->t == V_VAR
-            ? "nil"
-            : TypeName(type->Element(), flen, st) + "?";
-    case V_COROUTINE:
-        return type->sf
-            ? "coroutine(" + type->sf->parent->name + ")"
-            : "coroutine";
-    default:
-        return string(BaseTypeName(type->t));
+        case V_STRUCT_R:
+        case V_STRUCT_S:
+        case V_CLASS:
+            return type->udt->name;
+        case V_VECTOR:
+            return flen && type->Element()->Numeric()
+                ? (flen < 0
+                    ? (type->Element()->t == V_INT ? "vec_i" : "vec_f")  // FIXME: better names?
+                    : TypeName(st->VectorType(type, 0, flen)))
+                : (type->Element()->t == V_VAR
+                    ? "[]"
+                    : "[" + TypeName(type->Element(), flen, st) + "]");
+        case V_FUNCTION:
+            return type->sf // || type->sf->anonymous
+                ? type->sf->parent->name
+                : "function";
+        case V_NIL:
+            return type->Element()->t == V_VAR
+                ? "nil"
+                : TypeName(type->Element(), flen, st) + "?";
+        case V_COROUTINE:
+            return type->sf
+                ? "coroutine(" + type->sf->parent->name + ")"
+                : "coroutine";
+        case V_TUPLE: {
+            string s = "(";
+            for (auto [i, te] : enumerate(*type->tup)) {
+                if (i) s += ", ";
+                s += TypeName(te.type);
+            }
+            s += ")";
+            return s;
+        }
+        case V_INT:
+            return type->e ? type->e->name : "int";
+        default:
+            return string(BaseTypeName(type->t));
     }
 }
 

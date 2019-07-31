@@ -37,7 +37,7 @@ void VMLog::LogInit(const uchar *bcfb) {
 void VMLog::LogPurge() {
     for (auto &l : logvars) {
         if (IsRefNil(l.type->t)) {
-            for (size_t i = l.read; i < l.values.size(); i++) l.values[i].DECRTNIL(vm);
+            for (size_t i = l.read; i < l.values.size(); i++) l.values[i].LTDECRTNIL(vm);
         }
         l.values.resize(l.read);
     }
@@ -54,13 +54,13 @@ Value VMLog::LogGet(Value def, int idx) {
     if (l.read == l.values.size()) {  // Value doesn't exist yet.
         // Already write value, so it can be written to regardless of wether it existed or not.
         l.values.push_back(def);
-        if (isref) def.INCRTNIL();
+        if (isref) { def.LTINCRTNIL(); }
         l.read++;
         return def;
     } else {
         // Get existing value, ignore default.
         auto v = l.values[l.read++];
-        if (isref) { v.INCRTNIL(); def.DECRTNIL(vm); }
+        if (isref) { v.LTINCRTNIL(); def.LTDECRTNIL(vm); }
         return v;
     }
 }
@@ -70,19 +70,13 @@ void VMLog::LogWrite(Value newval, int idx) {
     bool isref = IsRefNil(l.type->t);
     assert(l.read > 0);
     auto &slot = l.values[l.read - 1];
-    if (isref) { slot.DECRTNIL(vm); newval.INCRTNIL(); }
+    if (isref) { newval.LTINCRTNIL(); slot.LTDECRTNIL(vm); }
     slot = newval;
 }
 
 void VMLog::LogCleanup() {
     for (auto &l : logvars) l.read = 0;
     LogPurge();
-}
-
-void VMLog::LogMark() {
-    for (auto &l : logvars) {
-        if (IsRefNil(l.type->t)) for (auto v : l.values) v.MarkRef(vm);
-    }
 }
 
 }  // namespace lobster

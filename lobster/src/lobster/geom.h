@@ -31,6 +31,7 @@ namespace geom {
 #define DOVECB(I,F) { bool _ = I; DOVEC(_ = F); return _; }
 
 union int2float { int i; float f; };
+union int2float64 { int64_t i; double f; };
 inline void default_debug_value(float   &a) { int2float nan; nan.i = 0x7F800001; a = nan.f; }
 inline void default_debug_value(double  &a) { int2float nan; nan.i = 0x7F800001; a = nan.f; }
 inline void default_debug_value(int     &a) { a = 0x1BADCAFE; }
@@ -44,30 +45,30 @@ template<typename T, int N> struct basevec {
 };
 
 template<typename T> struct basevec<T, 2> {
-	union {
-		T c[2];
-		struct { T x; T y; };
-	};
+  union {
+    T c[2];
+    struct { T x; T y; };
+  };
 };
 
 template<typename T> struct basevec<T, 3> {
-	union {
-		T c[3];
-		struct { T x; T y; T z; };
-	};
+  union {
+    T c[3];
+    struct { T x; T y; T z; };
+  };
 };
 
 template<typename T> struct basevec<T, 4> {
-	union {
-		T c[4];
-		struct { T x; T y; T z; T w; };
-	};
+  union {
+    T c[4];
+    struct { T x; T y; T z; T w; };
+  };
 };
 
 template<typename T, int N> struct vec : basevec<T, N> {
     enum { NUM_ELEMENTS = N };
     typedef T CTYPE;
-    
+
     // Clang needs these, but VS is cool without them?
     using basevec<T, N>::c;
     using basevec<T, N>::x;
@@ -110,6 +111,7 @@ template<typename T, int N> struct vec : basevec<T, N> {
     vec operator-(const vec &v) const { DOVECR(c[i] - v[i]); }
     vec operator*(const vec &v) const { DOVECR(c[i] * v[i]); }
     vec operator/(const vec &v) const { DOVECR(c[i] / v[i]); }
+    vec operator%(const vec &v) const { DOVECR(c[i] % v[i]); }
 
     vec operator+(T e) const { DOVECR(c[i] + e); }
     vec operator-(T e) const { DOVECR(c[i] - e); }
@@ -191,8 +193,24 @@ template<typename T> inline T mix(T a, T b, float f) { return (T)(a * (1 - f) + 
 //}
 inline float rpowf(float t, float e) { return expf(e * logf(t)); }
 
+// Exponentiation by squaring for integer types.
+template<typename T> T ipow(T base, T exp) {
+    assert(exp >= 0);
+    T result = 1;
+    for (;;) {
+        if (exp & 1) result *= base;
+        exp >>= 1;
+        if (!exp) return result;
+        base *= base;
+    }
+}
+
 template<typename T> int ffloor(T f) { int i = (int)f; return i - (f < i); }
 template<typename T> int fceil(T f) { int i = (int)f; return i + (f > i); }
+
+template<typename T> int signum(T val) {
+    return (T(0) < val) - (val < T(0));
+}
 
 template<typename T, int N> inline vec<T,N> operator+(T f, const vec<T,N> &v) { DOVECR(f + v[i]); }
 template<typename T, int N> inline vec<T,N> operator-(T f, const vec<T,N> &v) { DOVECR(f - v[i]); }
@@ -208,6 +226,9 @@ template<typename T, int N> inline vec<T,N> normalize(const vec<T,N> &v) { retur
 template<typename T, int N> inline vec<T,N> abs(const vec<T,N> &v) { DOVECR(fabsf(v[i])); }
 template<typename T, int N> inline vec<T,N> sign(const vec<T,N> &v) {
     DOVECR((T)(v[i] >= 0 ? 1 : -1));
+}
+template<typename T, int N> inline vec<int,N> signum(const vec<T,N> &v) {
+    DOVECR(signum(v[i]));
 }
 template<typename T, int N> inline vec<T,N> min(const vec<T,N> &a, const vec<T,N> &b) {
     DOVECR(std::min(a[i], b[i]));
@@ -256,10 +277,14 @@ template<typename T, int N> inline vec<T, N> clamp(const vec<T, N> &v, T lo, T h
 }
 
 template<typename T, int N, typename R> inline vec<float, N> rndunitvec(RandomNumberGenerator<R> &r) {
-    DOVECR(r.rndfloat());
+    DOVECR(r.rnd_float());
 }
 template<typename T, int N, typename R> inline vec<float, N> rndsignedvec(RandomNumberGenerator<R> &r) {
     DOVECR(r.rndfloatsigned());
+}
+template<typename T, int N, typename R> inline vec<int, N> rndivec(RandomNumberGenerator<R> &r,
+                                                                   const vec<int, N> &max) {
+    DOVECR(r(max[i]));
 }
 
 #undef DOVEC
@@ -438,9 +463,9 @@ template<typename T, int C, int R> class matrix {
     void set(int i, const V &v) { m[i] = v; }
 
     vec<T,C> row(int i) const {
-        if (C == 2) return vec<T,C>(m[0][i], m[1][i]);
-        if (C == 3) return vec<T,C>(m[0][i], m[1][i], m[2][i]);
-        if (C == 4) return vec<T,C>(m[0][i], m[1][i], m[2][i], m[3][i]);
+        if constexpr (C == 2) return vec<T,C>(m[0][i], m[1][i]);
+        if constexpr (C == 3) return vec<T,C>(m[0][i], m[1][i], m[2][i]);
+        if constexpr (C == 4) return vec<T,C>(m[0][i], m[1][i], m[2][i], m[3][i]);
     }
 
     matrix<T,R,C> transpose() const {
@@ -782,10 +807,10 @@ inline float4x4 ortho(float left, float right, float bottom, float top, float zn
 inline byte4 quantizec(const float3 &v) { return byte4(float4(v, 1) * 255); }
 inline byte4 quantizec(const float4 &v) { return byte4(v            * 255); }
 
-inline float4 color2vec(byte4 &col) { return float4(col) / 255; }
+inline float4 color2vec(const byte4 &col) { return float4(col) / 255; }
 
 // Spline interpolation.
-template <typename T> inline vec<T, 3> cardinalspline(const vec<T, 3> &z, const vec<T, 3> &a,
+template <typename T> inline vec<T, 3> cardinal_spline(const vec<T, 3> &z, const vec<T, 3> &a,
                                                       const vec<T, 3> &b, const vec<T, 3> &c,
                                                       T s, T tension = 0.5) {
     T s2 = s*s;
@@ -887,6 +912,6 @@ inline void normalize_mesh(span<int> idxs, void *verts, size_t vertlen, size_t v
             norm = normalize(norm);
     }
 }
-    
+
 }  // namespace geom
 

@@ -56,28 +56,29 @@ is desired.
 #endif
 
 class SlabAlloc {
-    // Must be ^2. lower means more blocks have to go thru the traditional allocator (slower).
-    // Higher means you may get pages with only few allocs of that unique size (memory wasted).
-    // On 32bit, 32 means all allocations <= 256 bytes go into buckets (in increments of 8 bytes
-    // each).
-    enum { MAXBUCKETS = 32 };
-    // Depends on how much you want to take from the OS at once: PAGEATONCE*PAGESIZEF
-    // You will waste 1 page to alignment with MAXBUCKETS at 32 on a 32bit system, PAGESIZEF is
-    // 2048, so this is 202k.
-    enum { PAGESATONCE = 101 };
-
-    // "64bit should be enough for everyone". Everything is twice as big on 64bit: alignment,
-    // memory blocks, and pages.
-    enum { PTRBITS = sizeof(char *)==4 ? 2 : 3 };
-    // Must fit 2 pointers in smallest block for doubly linked list.
-    enum { ALIGNBITS = PTRBITS+1 };
-    enum { ALIGN = 1<<ALIGNBITS };
-    enum { ALIGNMASK = ALIGN-1 };
-    enum { MAXREUSESIZE = (MAXBUCKETS-1)*ALIGN };
-    // The largest block will fit almost 8 times.
-    enum { PAGESIZEF = MAXBUCKETS*ALIGN*8 };
-    enum { PAGEMASK = (~(PAGESIZEF-1)) };
-    enum { PAGEBLOCKSIZE = PAGESIZEF*PAGESATONCE };
+    enum {
+        // Must be ^2. lower means more blocks have to go thru the traditional allocator (slower).
+        // Higher means you may get pages with only few allocs of that unique size (memory wasted).
+        // On 32bit, 32 means all allocations <= 256 bytes go into buckets (in increments of 8 bytes
+        // each).
+        MAXBUCKETS = 32,
+        // Depends on how much you want to take from the OS at once: PAGEATONCE*PAGESIZEF
+        // You will waste 1 page to alignment with MAXBUCKETS at 32 on a 32bit system, PAGESIZEF is
+        // 2048, so this is 202k.
+        PAGESATONCE = 101,
+        // "64bit should be enough for everyone". Everything is twice as big on 64bit: alignment,
+        // memory blocks, and pages.
+        PTRBITS = sizeof(char *) == 4 ? 2 : 3,
+        // Must fit 2 pointers in smallest block for doubly linked list.
+        ALIGNBITS = PTRBITS + 1,
+        ALIGN = 1 << ALIGNBITS,
+        ALIGNMASK = ALIGN - 1,
+        MAXREUSESIZE = (MAXBUCKETS - 1) * ALIGN,
+        // The largest block will fit almost 8 times.
+        PAGESIZEF = MAXBUCKETS * ALIGN * 8,
+        PAGEMASK = (~(PAGESIZEF - 1)),
+        PAGEBLOCKSIZE = PAGESIZEF * PAGESATONCE,
+    };
 
     struct PageHeader : DLNodeRaw {
         int refc;
@@ -298,10 +299,6 @@ class SlabAlloc {
         return (T *)alloc_small(sizeof(T));
     }
 
-    template<typename T> T *create_obj_small() {
-        return new (alloc_obj_small<T>()) T();
-    }
-
     template<typename T> T *clone_obj_small(const T *from) {
         assert(from);
         auto to = (T *)alloc_small(sizeof(T));
@@ -355,7 +352,8 @@ class SlabAlloc {
         return false;
     }
 
-    template<typename T> void findleaks(T leakcallback) {
+    vector<void *> findleaks() {
+        vector<void *> leaks;
         loopdllist(usedpages, h) {
             h->isfree = (char *)calloc(numobjs(h->size), 1);
         }
@@ -368,13 +366,14 @@ class SlabAlloc {
         loopdllist(usedpages, h) {
             for (int i = 0; i < numobjs(h->size); i++) {
                 if (!h->isfree[i]) {
-                    leakcallback(((char *)(h + 1)) + i * h->size);
+                    leaks.push_back(((char *)(h + 1)) + i * h->size);
                 }
             }
             free(h->isfree);
             h->isfree = nullptr;
         }
-        loopdllist(largeallocs, n) leakcallback(n + 1);
+        loopdllist(largeallocs, n) leaks.push_back(n + 1);
+        return leaks;
     }
 
     void printstats(bool full = false) {
@@ -389,7 +388,7 @@ class SlabAlloc {
                     totalwaste += waste;
                     totalallocs += stats[i];
                     if (full || num) {
-                        Output(OUTPUT_INFO, "bucket ", i * ALIGN, " -> freelist ", num, " (",
+                        LOG_INFO("bucket ", i * ALIGN, " -> freelist ", num, " (",
                                             waste, " k), ", stats[i], " total allocs");
                     }
                 }
@@ -400,7 +399,7 @@ class SlabAlloc {
         loopdllist(usedpages, h) numused++;
         loopdllist(largeallocs, n) numlarge++;
         if (full || numused || numlarge || totalallocs) {
-            Output(OUTPUT_INFO, "totalwaste ", totalwaste, " k, pages ", numfree, " empty / ",
+            LOG_INFO("totalwaste ", totalwaste, " k, pages ", numfree, " empty / ",
                                 numused, " used, ", numlarge, " big alloc live, ", totalallocs,
                                 " total allocs made, ", statbig, " big allocs made");
         }

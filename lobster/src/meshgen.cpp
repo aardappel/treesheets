@@ -1,3 +1,17 @@
+// Copyright 2014 Wouter van Oortmerssen. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "lobster/stdafx.h"
 
 #include "lobster/natreg.h"
@@ -7,6 +21,7 @@
 #include "lobster/meshgen.h"
 #include "lobster/mctables.h"
 #include "lobster/polyreduce.h"
+#include "lobster/cubegen.h"
 
 #include "lobster/simplex.h"
 
@@ -270,21 +285,29 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
     bool flat_triangles_opt = true;
     bool simple_occlusion = false;
     bool marching_cubes = true;
-    auto verts2edge = [&](const int3 &p1, const int3 &p2, const DistVert &dv1, const DistVert &dv2) {
+    bool snap_to_mid = false;
+    if (snap_to_mid) mesh_displacent = false;
+    auto verts2edge = [&](const int3 &p1, const int3 &p2, DistVert &dv1, DistVert &dv2) {
         auto wp1 = grid_to_world(p1);
         auto wp2 = grid_to_world(p2);
         float3 mid;
         int3 iclosest;
-        if (abs(dv1.dist) < 0.00001f || abs(dv2.dist - dv1.dist) < 0.00001f) {
-            mid = wp1;
+        if (snap_to_mid) {
+            // FIXME: this create null-area triangles that should be removed.
+            mid = (wp1 + wp2) / 2;
             iclosest = p1;
-        } else if (abs(dv2.dist) < 0.00001f) {
-            mid = wp2;
-            iclosest = p2;
         } else {
-            auto mu = -dv1.dist / (dv2.dist - dv1.dist);
-            mid = wp1 + mu * (wp2 - wp1);
-            iclosest = abs(mu) < 0.5 ? p1 : p2;
+            if (abs(dv1.dist) < 0.00001f || abs(dv2.dist - dv1.dist) < 0.00001f) {
+                mid = wp1;
+                iclosest = p1;
+            } else if (abs(dv2.dist) < 0.00001f) {
+                mid = wp2;
+                iclosest = p2;
+            } else {
+                auto mu = -dv1.dist / (dv2.dist - dv1.dist);
+                mid = wp1 + mu * (wp2 - wp1);
+                iclosest = abs(mu) < 0.5 ? p1 : p2;
+            }
         }
         return edge(iclosest, mid, dv1.dist < dv2.dist ? dv1.color : dv2.color);
     };
@@ -580,7 +603,7 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
         }
         delete[] cfactor;
     }
-    Output(OUTPUT_DEBUG, "meshgen verts = %lu, edgeverts = %lu, tris = %lu, mctris = %lu,"
+    LOG_DEBUG("meshgen verts = %lu, edgeverts = %lu, tris = %lu, mctris = %lu,"
            " scale = %f\n", verts.size(), edges.size(), triangles.size() / 3,
            mctriangles.size() / 3, gridscale);
     auto m = new Mesh(new Geometry(make_span(verts), "PNC"),
@@ -591,19 +614,6 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
         m->surfs.push_back(new Surface(make_span(triangles), PRIM_TRIS));
     }
     return m;
-}
-
-Mesh *eval_and_polygonize(ImplicitFunction *root, const int targetgridsize) {
-    auto scenesize = root->Size() * 2;
-    float biggestdim = max(scenesize.x, max(scenesize.y, scenesize.z));
-    auto gridscale = targetgridsize / biggestdim;
-    auto gridsize = int3(scenesize * gridscale + float3(2.5f));
-    auto gridtrans = (float3(gridsize) - 1) / 2 - root->orig * gridscale;
-    auto distgrid = new DistGrid(gridsize, DistVert());
-    ThreadPool threadpool(NumHWThreads());
-    root->FillGrid(int3(0), gridsize, distgrid, float3(gridscale), gridtrans, float3x3_1,
-                   threadpool);
-    return polygonize_mc(gridsize, gridscale, gridtrans, distgrid, id_grid_to_world);
 }
 
 Group *root = nullptr;
@@ -643,216 +653,242 @@ Value AddShape(ImplicitFunction *f) {
     return Value();
 }
 
-void AddMeshGen(NativeRegistry &natreg) {
-    STARTDECL(mg_sphere) (VM &, Value &rad) {
+Value eval_and_polygonize(VM &vm, int targetgridsize, int zoffset, bool do_poly) {
+    auto scenesize = root->Size() * 2;
+    float biggestdim = max(scenesize.x, max(scenesize.y, scenesize.z));
+    auto gridscale = targetgridsize / biggestdim;
+    auto gridsize = int3(scenesize * gridscale + float3(2.001f));
+    auto gridtrans = (float3(gridsize) - 1) / 2 - root->orig * gridscale;
+    auto distgrid = new DistGrid(gridsize, DistVert());
+    ThreadPool threadpool(NumHWThreads());
+    root->FillGrid(int3(0), gridsize, distgrid, float3(gridscale), gridtrans, float3x3_1,
+        threadpool);
+    if (do_poly) {
+        auto mesh = polygonize_mc(gridsize, gridscale, gridtrans, distgrid, id_grid_to_world);
+        MeshGenClear();
+        extern ResourceType mesh_type;
+        return Value(vm.NewResource(mesh, &mesh_type));
+    } else {
+        auto cg = CubesFromMeshGen(vm, *distgrid, targetgridsize, zoffset);
+        MeshGenClear();
+        delete distgrid;
+        return cg;
+    }
+}
+
+void AddMeshGen(NativeRegistry &nfr) {
+
+nfr("mg_sphere", "radius", "F", "",
+    "a sphere",
+    [](VM &, Value &rad) {
         auto s = new IFSphere();
         s->rad = rad.fltval();
         return AddShape(s);
-    }
-    ENDDECL1(mg_sphere, "radius", "F", "",
-        "a sphere");
+    });
 
-    STARTDECL(mg_cube) (VM &vm, Value &ext) {
+nfr("mg_cube", "extents", "F}:3", "",
+    "a cube (extents are size from center)",
+    [](VM &vm) {
         auto c = new IFCube();
-        c->extents = ValueDecToFLT<3>(vm, ext);
-        return AddShape(c);
-    }
-    ENDDECL1(mg_cube,  "extents", "F}:3", "",
-        "a cube (extents are size from center)");
+        c->extents = vm.PopVec<float3>();
+        vm.Push(AddShape(c));
+    });
 
-    STARTDECL(mg_cylinder) (VM &, Value &radius, Value &height) {
+nfr("mg_cylinder", "radius,height", "FF", "",
+    "a unit cylinder (height is from center)",
+    [](VM &, Value &radius, Value &height) {
         auto c = new IFCylinder();
         c->radius = radius.fltval();
         c->height = height.fltval();
         return AddShape(c);
-    }
-    ENDDECL2(mg_cylinder, "radius,height", "FF", "",
-        "a unit cylinder (height is from center)");
+    });
 
-    STARTDECL(mg_tapered_cylinder) (VM &, Value &bot, Value &top, Value &height) {
+nfr("mg_tapered_cylinder", "bot,top,height", "FFF", "",
+    "a cyclinder where you specify the top and bottom radius (height is from center)",
+    [](VM &, Value &bot, Value &top, Value &height) {
         auto tc = new IFTaperedCylinder();
         tc->bot = bot.fltval();
         tc->top = top.fltval();
         tc->height = height.fltval();
         return AddShape(tc);
-    }
-    ENDDECL3(mg_tapered_cylinder, "bot,top,height", "FFF", "",
-        "a cyclinder where you specify the top and bottom radius (height is from center)");
+    });
 
-    STARTDECL(mg_superquadric) (VM &vm, Value &exps, Value &scale) {
+nfr("mg_superquadric", "exponents,scale", "F}:3F}:3", "",
+    "a super quadric. specify an exponent of 2 for spherical, higher values for rounded"
+    " squares",
+    [](VM &vm) {
         auto sq = new IFSuperQuadric();
-        sq->exp = ValueDecToFLT<3>(vm, exps);
-        sq->scale = ValueDecToFLT<3>(vm, scale);
-        return AddShape(sq);
-    }
-    ENDDECL2(mg_superquadric, "exponents,scale", "F}:3F}:3", "",
-        "a super quadric. specify an exponent of 2 for spherical, higher values for rounded"
-        " squares");
+        sq->scale = vm.PopVec<float3>();
+        sq->exp = vm.PopVec<float3>();
+        AddShape(sq);
+    });
 
-    STARTDECL(mg_superquadric_non_uniform) (VM &vm, Value &posexps, Value &negexps, Value &posscale,
-        Value &negscale) {
+nfr("mg_superquadric_non_uniform", "posexponents,negexponents,posscale,negscale", "F}:3F}:3F}:3F}:3", "",
+    "a superquadric that allows you to specify exponents and sizes in all 6 directions"
+    " independently for maximum modelling possibilities",
+    [](VM &vm) {
         auto sq = new IFSuperQuadricNonUniform();
-        sq->exppos   = ValueDecToFLT<3>(vm, posexps);
-        sq->expneg   = ValueDecToFLT<3>(vm, negexps);
-        sq->scalepos = max(float3(0.01f), ValueDecToFLT<3>(vm, posscale));
-        sq->scaleneg = max(float3(0.01f), ValueDecToFLT<3>(vm, negscale));
+        sq->scaleneg = max(float3(0.01f), vm.PopVec<float3>());
+        sq->scalepos = max(float3(0.01f), vm.PopVec<float3>());
+        sq->expneg   = vm.PopVec<float3>();
+        sq->exppos   = vm.PopVec<float3>();
+        AddShape(sq);
+    });
 
-        return AddShape(sq);
-    }
-    ENDDECL4(mg_superquadric_non_uniform, "posexponents,negexponents,posscale,negscale",
-        "F}:3F}:3F}:3F}:3",
-        "",
-        "a superquadric that allows you to specify exponents and sizes in all 6 directions"
-        " independently for maximum modelling possibilities");
-
-    STARTDECL(mg_supertoroid) (VM &vm, Value &r, Value &exps) {
+nfr("mg_supertoroid", "R,exponents", "FF}:3", "",
+    "a super toroid. R is the distance from the origin to the center of the ring.",
+    [](VM &vm) {
         auto t = new IFSuperToroid();
-        t->r = r.fltval();
-        t->exp = ValueDecToFLT<3>(vm, exps);
-        return AddShape(t);
-    }
-    ENDDECL2(mg_supertoroid, "R,exponents", "FF}:3", "",
-        "a super toroid. R is the distance from the origin to the center of the ring.");
+        t->exp = vm.PopVec<float3>();
+        t->r = vm.Pop().fltval();
+        AddShape(t);
+    });
 
-    STARTDECL(mg_landscape) (VM &, Value &zscale, Value &xyscale) {
+nfr("mg_landscape", "zscale,xyscale", "FF", "",
+    "a simplex landscape of unit size",
+    [](VM &, Value &zscale, Value &xyscale) {
         auto ls = new IFLandscape();
         ls->zscale = zscale.fltval();
         ls->xyscale = xyscale.fltval();
         return AddShape(ls);
-    } ENDDECL2(mg_landscape, "zscale,xyscale", "FF", "",
-        "a simplex landscape of unit size");
+    });
 
-    STARTDECL(mg_set_polygonreduction) (VM &, Value &_polyreductionpasses, Value &_epsilon,
+nfr("mg_set_polygon_reduction", "polyreductionpasses,epsilon,maxtricornerdot", "IFF", "",
+    "controls the polygon reduction algorithm. set polyreductionpasses to 0 for off, 100 for"
+    " max compression, or low values for generation speed or to keep the mesh uniform. epsilon"
+    " determines how flat adjacent triangles must be to be reduced, use 0.98 as a good"
+    " tradeoff, lower to get more compression. maxtricornerdot avoid very thin triangles, use"
+    " 0.95 as a good tradeoff, up to 0.99 to get more compression",
+    [](VM &, Value &_polyreductionpasses, Value &_epsilon,
                                         Value &_maxtricornerdot) {
         polyreductionpasses = _polyreductionpasses.intval();
         epsilon = _epsilon.fltval();
         maxtricornerdot = _maxtricornerdot.fltval();
         return Value();
-    }
-    ENDDECL3(mg_set_polygonreduction, "polyreductionpasses,epsilon,maxtricornerdot", "IFF", "",
-        "controls the polygon reduction algorithm. set polyreductionpasses to 0 for off, 100 for"
-        " max compression, or low values for generation speed or to keep the mesh uniform. epsilon"
-        " determines how flat adjacent triangles must be to be reduced, use 0.98 as a good"
-        " tradeoff, lower to get more compression. maxtricornerdot avoid very thin triangles, use"
-        " 0.95 as a good tradeoff, up to 0.99 to get more compression");
+    });
 
-    STARTDECL(mg_set_colornoise) (VM &, Value &_noiseintensity, Value &_noisestretch) {
+nfr("mg_set_color_noise", "noiseintensity,noisestretch", "FF", "",
+    "applies simplex noise to the colors of the model. try 0.3 for intensity."
+    " stretch scales the pattern over the model",
+    [](VM &, Value &_noiseintensity, Value &_noisestretch) {
         noisestretch = _noisestretch.fltval();
         noiseintensity = _noiseintensity.fltval();
         return Value();
-    }
-    ENDDECL2(mg_set_colornoise, "noiseintensity,noisestretch", "FF", "",
-        "applies simplex noise to the colors of the model. try 0.3 for intensity."
-        " stretch scales the pattern over the model");
+    });
 
-    STARTDECL(mg_set_vertrandomize) (VM &, Value &factor) {
+nfr("mg_set_vertex_randomize", "factor", "F", "",
+    "randomizes all verts produced to give a more organic look and to hide the inherent messy"
+    " polygons produced by the algorithm. try 0.15. note that any setting other than 0 will"
+    " likely counteract the polygon reduction algorithm",
+    [](VM &, Value &factor) {
         randomizeverts = factor.fltval();
         return Value();
-    }
-    ENDDECL1(mg_set_vertrandomize, "factor", "F", "",
-        "randomizes all verts produced to give a more organic look and to hide the inherent messy"
-        " polygons produced by the algorithm. try 0.15. note that any setting other than 0 will"
-        " likely counteract the polygon reduction algorithm");
+    });
 
-    STARTDECL(mg_set_pointmode) (VM &, Value &aspoints) {
+nfr("mg_set_point_mode", "on", "B", "",
+    "generates a point mesh instead of polygons",
+    [](VM &, Value &aspoints) {
         pointmode = aspoints.True();
         return Value();
-    }
-    ENDDECL1(mg_set_pointmode, "on", "I", "",
-             "generates a point mesh instead of polygons");
+    });
 
-    STARTDECL(mg_polygonize) (VM &vm, Value &subdiv) {
-        auto mesh = eval_and_polygonize(root, subdiv.intval());
-        MeshGenClear();
-        extern ResourceType mesh_type;
-        return Value(vm.NewResource(mesh, &mesh_type));
-    }
-    ENDDECL1(mg_polygonize, "subdiv", "I", "X",
-        "returns a generated mesh from past mg_ commands."
-        " subdiv determines detail and number of polygons (relative to the largest dimension of the"
-        " model), try 30.. 300 depending on the subject."
-        " values much higher than that will likely make you run out of memory (or take very long).");
+nfr("mg_polygonize", "subdiv", "I", "R",
+    "returns a generated mesh from past mg_ commands."
+    " subdiv determines detail and number of polygons (relative to the largest dimension of the"
+    " model), try 30.. 300 depending on the subject."
+    " values much higher than that will likely make you run out of memory (or take very long).",
+    [](VM &vm, Value &subdiv) {
+        return eval_and_polygonize(vm, subdiv.intval(), 0, true);
+    });
 
-    STARTDECL(mg_translate) (VM &vm, Value &vec, Value &body) {
-        if (body.True()) vm.Push(ToValueFLT(vm, curorig));
-        auto v = ValueDecToFLT<3>(vm, vec);
+nfr("mg_convert_to_cubes", "subdiv,zoffset", "II", "R",
+    "returns a cubegen block (see cg_ functions) from past mg_ commands."
+    " subdiv determines detail and number of cubes (relative to the largest dimension of the"
+    " model).",
+    [](VM &vm, Value &subdiv, Value &zoffset) {
+        return eval_and_polygonize(vm, subdiv.intval(), zoffset.intval(), false);
+    });
+
+nfr("mg_translate", "vec,body", "F}:3L?", "",
+    "translates the current coordinate system along a vector. when a body is given,"
+    " restores the previous transform afterwards",
+    [](VM &vm) {
+        auto body = vm.Pop();
+        auto v = vm.PopVec<float3>();
+        if (body.True()) vm.PushAnyAsString(curorig);
         // FIXME: not good enough if non-uniform scale, might as well forbid that before any trans
         curorig += currot * (v * cursize);
-        return body;
-    }
-    MIDDECL(mg_translate) (VM &vm) {
-        curorig = ValueDecToFLT<3>(vm, vm.Pop());
-    }
-    ENDDECL2CONTEXIT(mg_translate, "vec,body", "F}:3C?", "",
-        "translates the current coordinate system along a vector. when a body is given,"
-        " restores the previous transform afterwards");
+        vm.Push(body);
+    }, [](VM &vm) {
+        vm.PopAnyFromString(curorig);
+    });
 
-    STARTDECL(mg_scale) (VM &vm, Value &f, Value &body) {
-        if (body.True()) vm.Push(ToValueFLT(vm, cursize));
-        cursize *= f.fltval();
-        return body;
-    }
-    MIDDECL(mg_scale) (VM &vm) {
-        cursize = ValueDecToFLT<3>(vm, vm.Pop());
-    }
-    ENDDECL2CONTEXIT(mg_scale, "f,body", "FC?", "",
-        "scales the current coordinate system by the given factor."
-        " when a body is given, restores the previous transform afterwards");
+nfr("mg_scale", "f,body", "FL?", "",
+    "scales the current coordinate system by the given factor."
+    " when a body is given, restores the previous transform afterwards",
+    [](VM &vm) {
+        auto body = vm.Pop();
+        auto f = vm.Pop().fltval();
+        if (body.True()) vm.PushAnyAsString(cursize);
+        cursize *= f;
+        vm.Push(body);
+    }, [](VM &vm) {
+        vm.PopAnyFromString(cursize);
+    });
 
-    STARTDECL(mg_scalevec) (VM &vm, Value &vec, Value &body) {
-        if (body.True()) vm.Push(ToValueFLT(vm, cursize));
-        auto v = ValueDecToFLT<3>(vm, vec);
+nfr("mg_scale_vec", "vec,body", "F}:3L?", "",
+    "non-unimformly scales the current coordinate system using individual factors per axis."
+    " when a body is given, restores the previous transform afterwards",
+    [](VM &vm) {
+        auto body = vm.Pop();
+        auto v = vm.PopVec<float3>();
+        if (body.True()) vm.PushAnyAsString(cursize);
         cursize *= v;
-        return body;
-    }
-    MIDDECL(mg_scalevec) (VM &vm) {
-        cursize = ValueDecToFLT<3>(vm, vm.Pop());
-    }
-    ENDDECL2CONTEXIT(mg_scalevec, "vec,body", "F}:3C?", "",
-        "non-unimformly scales the current coordinate system using individual factors per axis."
-        " when a body is given, restores the previous transform afterwards");
+        vm.Push(body);
+    }, [](VM &vm) {
+        vm.PopAnyFromString(cursize);
+    });
 
-    STARTDECL(mg_rotate) (VM &vm, Value &axis, Value &angle, Value &body) {
-        if (body.True()) vm.Push(Value(vm.NewString(string_view((char *)&currot,
-                                                                      sizeof(float3x3)))));
-        auto v = ValueDecToFLT<3>(vm, axis);
-        currot *= float3x3(angle.fltval() * RAD, v);
-        return body;
-    }
-    MIDDECL(mg_rotate) (VM &vm) {
-        auto s = vm.Pop();
-        assert(s.type == V_STRING);
-        assert(s.sval()->len == sizeof(float3x3));
-        currot = *(float3x3 *)s.sval()->str();
-        s.DECRT(vm);
-    }
-    ENDDECL3CONTEXIT(mg_rotate, "axis,angle,body", "F}:3FC?", "",
-        "rotates using axis/angle. when a body is given, restores the previous transform"
-        " afterwards");
+nfr("mg_rotate", "axis,angle,body", "F}:3FL?", "",
+    "rotates using axis/angle. when a body is given, restores the previous transform"
+    " afterwards",
+    [](VM &vm) {
+        auto body = vm.Pop();
+        auto angle = vm.Pop().fltval();
+        auto axis = vm.PopVec<float3>();
+        if (body.True()) vm.PushAnyAsString(currot);
+        currot *= float3x3(angle * RAD, axis);
+        vm.Push(body);
+    }, [](VM &vm) {
+        vm.PopAnyFromString(currot);
+    });
 
-    STARTDECL(mg_color) (VM &vm, Value &vec, Value &body) {
-        if (body.True()) vm.Push(ToValueFLT(vm, curcol));
-        curcol = ValueDecToFLT<4>(vm, vec);
-        return body;
-    }
-    MIDDECL(mg_color) (VM &vm) {
-        curcol = ValueDecToFLT<4>(vm, vm.Pop());
-    }
-    ENDDECL2CONTEXIT(mg_color, "color,body", "F}:4C?", "",
-        "sets the color, where an alpha of 1 means to add shapes to the scene (union), and 0"
-        " substracts them (carves). when a body is given, restores the previous color afterwards.");
+nfr("mg_color", "color,body", "F}:4L?", "",
+    "sets the color, where an alpha of 1 means to add shapes to the scene (union), and 0"
+    " substracts them (carves). when a body is given, restores the previous color afterwards.",
+    [](VM &vm) {
+        auto body = vm.Pop();
+        auto v = vm.PopVec<float4>();
+        if (body.True()) vm.PushAnyAsString(curcol);
+        curcol = v;
+        vm.Push(body);
+    }, [](VM &vm) {
+        vm.PopAnyFromString(curcol);
+    });
 
-    STARTDECL(mg_smooth) (VM &vm, Value &smooth, Value &body) {
+nfr("mg_smooth", "smooth,body", "FL?", "",
+    "sets the smoothness in terms of the range of distance from the shape smoothing happens."
+    " when a body is given, restores the previous value afterwards.",
+    [](VM &vm) {
+        auto body = vm.Pop();
+        auto smooth = vm.Pop().fltval();
         if (body.True()) vm.Push(Value(cursmoothmink));
-        cursmoothmink = smooth.fltval();
-        return body;
-    }
-    MIDDECL(mg_smooth) (VM &vm) {
+        cursmoothmink = smooth;
+        vm.Push(body);
+    }, [](VM &vm) {
         auto smooth = vm.Pop();
         assert(smooth.type == V_FLOAT);
         cursmoothmink = smooth.fltval();
-    }
-    ENDDECL2CONTEXIT(mg_smooth, "smooth,body", "FC?", "",
-        "sets the smoothness in terms of the range of distance from the shape smoothing happens."
-        " when a body is given, restores the previous value afterwards.");
-}
+    });
+
+}  // AddMeshGen

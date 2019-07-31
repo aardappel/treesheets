@@ -27,23 +27,22 @@ enum Primitive { PRIM_TRIS, PRIM_FAN, PRIM_LOOP, PRIM_POINT };
 
 // Meant to be passed by value.
 struct Texture {
-    uint id;
-    int3 size;
+    uint id = 0;
+    int3 size { 0 };
 
-    Texture() : id(0), size(0) {}
+    Texture() = default;
     Texture(int _id, const int2 &_size) : id(_id), size(int3(_size, 0)) {}
     Texture(int _id, const int3 &_size) : id(_id), size(_size) {}
 };
 
 struct Shader {
-    uint vs, ps, cs, program;
+    uint vs = 0, ps = 0, cs = 0, program = 0;
     int mvp_i, col_i, camera_i, light1_i, lightparams1_i, texturesize_i,
         bones_i, pointscale_i;
-    int max_tex_defined;
+    int max_tex_defined = 0;
 
     enum { MAX_SAMPLERS = 32 };
 
-    Shader() : vs(0), ps(0), cs(0), program(0), max_tex_defined(0) {}
     ~Shader();
 
     string Compile(const char *name, const char *vscode, const char *pscode);
@@ -53,11 +52,11 @@ struct Shader {
     void Set();                                 // Activate + sets common uniforms.
     void SetAnim(float3x4 *bones, int num);     // Optionally, after Activate().
     void SetTextures(const vector<Texture> &textures);  // Optionally, after Activate().
-    bool SetUniform(const char *name,           // Optionally, after Activate().
+    bool SetUniform(string_view name,           // Optionally, after Activate().
                     const float *val,
                     int components, int elements = 1);
-    bool SetUniformMatrix(const char *name, const float *val, int components, int elements = 1);
-    bool Dump(const char *filename, bool stripnonascii);
+    bool SetUniformMatrix(string_view name, const float *val, int components, int elements = 1);
+    bool Dump(string_view filename, bool stripnonascii);
 };
 
 struct Textured {
@@ -102,7 +101,7 @@ struct SpriteVert {   // "pT"
 class Geometry  {
     const size_t vertsize1, vertsize2;
     string fmt;
-    uint vbo1, vbo2, vao;
+    uint vbo1 = 0, vbo2 = 0, vao = 0;
 
     public:
     const size_t nverts;
@@ -111,7 +110,7 @@ class Geometry  {
     Geometry(span<T> verts1, string_view _fmt, span<U> verts2 = span<float>(),
              size_t elem_multiple = 1)
         : vertsize1(sizeof(T) * elem_multiple), vertsize2(sizeof(U) * elem_multiple), fmt(_fmt),
-          vbo1(0), vbo2(0), vao(0), nverts(verts1.size() / elem_multiple) {
+          nverts(verts1.size() / elem_multiple) {
         assert(verts2.empty() || verts2.size() == verts1.size());
         Init(verts1.data(), verts2.data());
     }
@@ -121,7 +120,7 @@ class Geometry  {
     void Init(const void *verts1, const void *verts2);
 
     void RenderSetup();
-    void BindAsSSBO(uint bind_point_index);
+    void BindAsSSBO(Shader *sh, string_view name);
     bool WritePLY(string &s, size_t nindices);
 };
 
@@ -129,18 +128,17 @@ struct Mesh {
     Geometry *geom;
     vector<Surface *> surfs;
     Primitive prim;  // If surfs is empty, this determines how to draw the verts.
-    float pointsize;  // if prim == PRIM_POINT
-    int numframes, numbones;
-    float3x4 *mats;
-    float curanim;
+    float pointsize = 1;  // if prim == PRIM_POINT
+    int numframes = 0, numbones = 0;
+    float3x4 *mats = nullptr;
+    float curanim = 0;
 
     Mesh(Geometry *_g, Primitive _prim = PRIM_FAN)
-        : geom(_g), prim(_prim), pointsize(1.0f), numframes(0), numbones(0), mats(nullptr),
-          curanim(0) {}
+        : geom(_g), prim(_prim) {}
     ~Mesh();
 
     void Render(Shader *sh);
-    bool SaveAsPLY(const char *filename);
+    bool SaveAsPLY(string_view filename);
 };
 
 struct Light {
@@ -164,16 +162,15 @@ extern void SetPointSprite(float size);
 
 extern void AppendTransform(const float4x4 &forward, const float4x4 &backward);
 
-extern string LoadMaterialFile(const char *mfile);
-extern string ParseMaterialFile(char *mfile);
-extern Shader *LookupShader(const char *name);
+extern string LoadMaterialFile(string_view mfile);
+extern string ParseMaterialFile(string_view mfile);
+extern Shader *LookupShader(string_view name);
 extern void ShaderShutDown();
 
 extern void DispatchCompute(const int3 &groups);
 extern void SetImageTexture(uint textureunit, const Texture &tex, int tf);
 extern uint UniformBufferObject(Shader *sh, const void *data, size_t len,
-                                const char *uniformblockname, bool ssbo);
-extern void BindVBOAsSSBO(uint bind_point_index, uint vbo);
+                                string_view uniformblockname, bool ssbo, uint bo);
 
 // These must correspond to the constants in color.lobster
 enum TextureFlag {
@@ -193,7 +190,7 @@ enum TextureFlag {
 };
 
 extern Texture CreateTexture(const uchar *buf, const int *dim, int tf = TF_NONE);
-extern Texture CreateTextureFromFile(const char *name, int tf = TF_NONE);
+extern Texture CreateTextureFromFile(string_view name, int tf = TF_NONE);
 extern Texture CreateBlankTexture(const int2 &size, const float4 &color, int tf = TF_NONE);
 extern void DeleteTexture(Texture &id);
 extern void SetTexture(int textureunit, const Texture &tex, int tf = TF_NONE);
@@ -219,7 +216,7 @@ void RenderArraySlow(Primitive prim, span<T> vbuf1, string_view fmt,
     if (ibuf.empty()) {
         RenderArray(prim, &geom);
     } else {
-        Surface surf(make_span(ibuf), prim);
+        Surface surf(ibuf, prim);
         RenderArray(prim, &geom, surf.ibo, ibuf.size());
     }
 }
@@ -246,7 +243,7 @@ struct GeometryCache {
 
 extern size_t AttribsSize(string_view fmt);
 
-extern Mesh *LoadIQM(const char *filename);
+extern Mesh *LoadIQM(string_view filename);
 
 extern float4x4 view2clip;
 

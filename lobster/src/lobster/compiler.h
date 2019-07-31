@@ -19,17 +19,25 @@
 
 namespace lobster {
 
-extern void Compile(NativeRegistry &natreg, string_view fn, const char *stringsource,
-                    string &bytecode, string *parsedump = nullptr, string *pakfile = nullptr,
-                    bool dump_builtins = false, bool dump_names = false);
+enum { RUNTIME_NO_ASSERT, RUNTIME_ASSERT, RUNTIME_ASSERT_PLUS };
+
+extern void Compile(NativeRegistry &natreg, string_view fn, string_view stringsource,
+                    string &bytecode, string *parsedump, string *pakfile,
+                    bool dump_builtins, bool dump_names, bool return_value, int runtime_checks);
 extern bool LoadPakDir(const char *lpak);
 extern bool LoadByteCode(string &bytecode);
 extern void RegisterBuiltin(NativeRegistry &natreg, const char *name,
                             void (* regfun)(NativeRegistry &));
 extern void RegisterCoreLanguageBuiltins(NativeRegistry &natreg);
 
-extern void ToCPP(NativeRegistry &natreg, ostringstream &ss, string_view bytecode_buffer);
+extern VMArgs CompiledInit(int argc, char *argv[], const void *entry_point, const void *bytecodefb,
+                           size_t static_size, const lobster::block_t *vtables, FileLoader loader,
+                           NativeRegistry &nfr);
 
-}
+extern "C" int ConsoleRunCompiledCodeMain(int argc, char *argv[], const void *entry_point,
+                                          const void *bytecodefb, size_t static_size,
+                                          const lobster::block_t *vtables);
+
+}  // namespace lobster
 
 #endif  // LOBSTER_COMPILER

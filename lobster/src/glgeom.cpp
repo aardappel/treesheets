@@ -89,7 +89,7 @@ void Geometry::Init(const void *verts1, const void *verts2) {
             case 'W': SETATTRIB(4, 4, GL_UNSIGNED_BYTE, true,   4)
             case 'I': SETATTRIB(5, 4, GL_UNSIGNED_BYTE, false,  4)
             default:
-                Output(OUTPUT_ERROR, "unknown attribute type: ", string() + attr);
+                LOG_ERROR("unknown attribute type: ", string() + attr);
                 assert(false);
         }
         if (vbo2) {
@@ -111,8 +111,8 @@ Geometry::~Geometry() {
     GL_CALL(glDeleteVertexArrays(1, &vao));
 }
 
-void Geometry::BindAsSSBO(uint bind_point_index) {
-    BindVBOAsSSBO(bind_point_index, vbo1);
+void Geometry::BindAsSSBO(Shader *sh, string_view name) {
+    UniformBufferObject(sh, nullptr, 0, name, true, vbo1);
     assert(!vbo2);
 }
 
@@ -199,7 +199,7 @@ void Surface::WritePLY(string &s) {
     #endif
 }
 
-bool Mesh::SaveAsPLY(const char *filename) {
+bool Mesh::SaveAsPLY(string_view filename) {
     size_t nindices = 0;
     for (auto &surf : surfs) nindices += surf->numidx;
     string s;

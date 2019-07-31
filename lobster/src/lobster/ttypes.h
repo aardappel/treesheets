@@ -31,7 +31,7 @@ namespace lobster {
     TOK(T_MODEQ, "%=") \
     TOK(T_AND, "and") \
     TOK(T_OR, "or") \
-    TOK(T_NOT, "~") \
+    TOK(T_NOT, "not") \
     TOK(T_INCR, "++") \
     TOK(T_DECR, "--") \
     TOK(T_EQ, "==") \
@@ -47,12 +47,9 @@ namespace lobster {
     TOK(T_ASL, "<<") \
     TOK(T_ASR, ">>") \
     TOK(T_ASSIGN, "=") \
-    TOK(T_DYNASSIGN, "<-") \
     TOK(T_LOGASSIGN, "?=") \
-    TOK(T_DEF, ":=") \
     TOK(T_DOT, ".") \
     TOK(T_DOTDOT, "..") \
-    TOK(T_DOTMAYBE, "?.") \
     TOK(T_CODOT, "->") \
     TOK(T_INT, "integer literal") \
     TOK(T_FLOAT, "floating point literal") \
@@ -60,7 +57,7 @@ namespace lobster {
     TOK(T_NIL, "nil") \
     TOK(T_DEFAULTVAL, "default value") \
     TOK(T_IDENT, "identifier") \
-    TOK(T_STRUCT, "struct") \
+    TOK(T_CLASS, "class") \
     TOK(T_FUN, "def") \
     TOK(T_RETURN, "return") \
     TOK(T_IS, "is") \
@@ -82,26 +79,28 @@ namespace lobster {
     TOK(T_QUESTIONMARK, "?") \
     TOK(T_COMMA, ",") \
     TOK(T_COLON, ":") \
-    TOK(T_DEFCONST, ":==") \
-    TOK(T_DEFTYPEIN, "::=") \
     TOK(T_TYPEIN, "::") \
-    TOK(T_VALUE, "value") \
+    TOK(T_STRUCT, "struct") \
     TOK(T_INCLUDE, "include") \
     TOK(T_INTTYPE, "int") \
     TOK(T_FLOATTYPE, "float") \
     TOK(T_STRTYPE, "string") \
     TOK(T_ANYTYPE, "any") \
+    TOK(T_VOIDTYPE, "void") \
+    TOK(T_LAZYEXP, "lazy_expression") \
     TOK(T_FROM, "from") \
     TOK(T_PROGRAM, "program") \
     TOK(T_PRIVATE, "private") \
     TOK(T_RESOURCE, "resource") \
     TOK(T_ENUM, "enum") \
+    TOK(T_ENUM_FLAGS, "enum_flags") \
     TOK(T_VAR, "var") \
     TOK(T_CONST, "let") \
     TOK(T_PAKFILE, "pakfile") \
     TOK(T_SWITCH, "switch") \
     TOK(T_CASE, "case") \
-    TOK(T_DEFAULT, "default")
+    TOK(T_DEFAULT, "default") \
+    TOK(T_NAMESPACE, "namespace")
 
 enum TType {
     #define TOK(ENUM, STR) ENUM,

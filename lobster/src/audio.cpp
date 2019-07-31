@@ -20,23 +20,23 @@
 
 using namespace lobster;
 
-void AddSound(NativeRegistry &natreg) {
-    STARTDECL(play_wav) (VM &vm, Value &ins, Value &vol) {
-        bool ok = SDLPlaySound(ins.sval()->str(), false, vol.True() ? vol.intval() : 128);
-        ins.DECRT(vm);
-        return Value(ok);
-    }
-    ENDDECL2(play_wav, "filename,volume", "SI?", "I",
-        "plays a sound defined by a wav file (RAW or MS-ADPCM, any bitrate other than 22050hz 16bit"
-        " will automatically be converted on first load). volume in range 1..128, or omit for max."
-        " returns false on error");
+void AddSound(NativeRegistry &nfr) {
 
-    STARTDECL(play_sfxr) (VM &vm, Value &ins, Value &vol) {
-        bool ok = SDLPlaySound(ins.sval()->str(), true, vol.True() ? vol.intval() : 128);
-        ins.DECRT(vm);
+nfr("play_wav", "filename,volume", "SI?", "B",
+    "plays a sound defined by a wav file (RAW or MS-ADPCM, any bitrate other than 22050hz 16bit"
+    " will automatically be converted on first load). volume in range 1..128, or omit for max."
+    " returns false on error",
+    [](VM &, Value &ins, Value &vol) {
+        bool ok = SDLPlaySound(ins.sval()->strv(), false, vol.True() ? vol.intval() : 128);
         return Value(ok);
-    }
-    ENDDECL2(play_sfxr, "filename,volume", "SI?", "I",
-        "plays a synth sound defined by a .sfs file (use http://www.drpetter.se/project_sfxr.html"
-        " to generate these). volume in range 1..128, or omit for max. returns false on error");
+    });
+
+nfr("play_sfxr", "filename,volume", "SI?", "B",
+    "plays a synth sound defined by a .sfs file (use http://www.drpetter.se/project_sfxr.html"
+    " to generate these). volume in range 1..128, or omit for max. returns false on error",
+    [](VM &, Value &ins, Value &vol) {
+        bool ok = SDLPlaySound(ins.sval()->strv(), true, vol.True() ? vol.intval() : 128);
+        return Value(ok);
+    });
+
 }

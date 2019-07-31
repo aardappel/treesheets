@@ -405,13 +405,23 @@ float SimplexNoise(const int octaves, const float persistence, const float scale
     return total / maxAmplitude;
 }
 
-void AddNoise(NativeRegistry &natreg) {
-    STARTDECL(simplex) (VM &vm, Value &pos, Value &octaves, Value &scale, Value &persistence) {
-        auto v = ValueDecToF<4>(vm, pos);
-        // TODO: if performance is ever an issue, could add an arg to indicate 2/3/4d version
-        return Value(SimplexNoise(octaves.intval(), persistence.fltval(), scale.fltval(), float4(v)));
-    }
-    ENDDECL4(simplex, "pos,octaves,scale,persistence", "F}IFF", "F",
-        "returns a simplex noise value [-1..1] given a 2D/3D or 4D location, the number of octaves"
-        " (try 8), a scale (try 1), and persistence from one octave to the next (try 0.5)");
-}
+void AddNoise(NativeRegistry &nfr) {
+
+nfr("simplex", "pos,octaves,scale,persistence", "F}IFF", "F",
+    "returns a simplex noise value [-1..1] given a 2D/3D or 4D location, the number of octaves"
+    " (try 8), a scale (try 1), and persistence from one octave to the next (try 0.5)",
+    [](VM &vm) {
+        auto persistence = vm.Pop().fltval();
+        auto scale = vm.Pop().fltval();
+        auto octaves = vm.Pop().intval();
+        auto len = vm.Top().ival();
+        auto v = vm.PopVec<float4>();
+        switch (len) {
+            case 2: vm.Push(SimplexNoise(octaves, persistence, scale, v.xy())); break;
+            case 3: vm.Push(SimplexNoise(octaves, persistence, scale, v.xyz())); break;
+            case 4: vm.Push(SimplexNoise(octaves, persistence, scale, v)); break;
+            default: assert(false);
+        }
+    });
+
+}  // AddNoise

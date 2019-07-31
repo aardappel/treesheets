@@ -3,6 +3,7 @@ rem First delete the existing clone to leave no unused files.
 rmdir /s /q src
 rmdir /s /q lobster
 rmdir /s /q include
+rmdir /s /q external
 rmdir /s /q ..\TS\scripts\include
 
 rem Copy selected dirs we need to build just the language core.
@@ -21,13 +22,16 @@ xcopy %source%\dev\lobster\language.vcxproj.filters lobster
 md include
 md include\flatbuffers
 xcopy %source%\dev\include\flatbuffers\*.* include\flatbuffers
+md external
+md external\flatbuffers
+md external\flatbuffers\src
+xcopy %source%\dev\external\flatbuffers\src\*.* external\flatbuffers\src
 md include\StackWalker
 xcopy %source%\dev\include\StackWalker\*.* include\StackWalker
 md include\gsl
 xcopy %source%\dev\include\gsl\*.* include\gsl
-md ..\TS\scripts\include
-xcopy %source%\lobster\include\stdtype.lobster ..\TS\scripts\include
-xcopy %source%\lobster\include\std.lobster ..\TS\scripts\include
-xcopy %source%\lobster\include\vec.lobster ..\TS\scripts\include
-xcopy %source%\lobster\include\color.lobster ..\TS\scripts\include
-
+md ..\TS\scripts\modules
+xcopy %source%\modules\stdtype.lobster ..\TS\scripts\modules
+xcopy %source%\modules\std.lobster ..\TS\scripts\modules
+xcopy %source%\modules\vec.lobster ..\TS\scripts\modules
+xcopy %source%\modules\color.lobster ..\TS\scripts\modules

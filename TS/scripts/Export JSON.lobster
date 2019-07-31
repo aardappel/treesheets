@@ -8,18 +8,18 @@
 
 // Also a nice simple example on how to recurse through a TreeSheet in script.
 
-include "std.lobster"
+import std
 
-out := []
+let out = []
 
 def add_text(s):
     out.push("\"")
     // \ and " need to be escaped in JSON:
-    out.push(escapestring(s, "\\\"", "\\", ""))
+    out.push(escape_string(s, "\\\"", "\\", ""))
     out.push("\"")
 
 def add_indent(indent):
-    out.push(concatstring(map(indent): "  ", ""))
+    out.push(concat_string(map(indent): "  ", ""))
 
 def add_cell(indent):
     out.push("[\n")
@@ -38,11 +38,11 @@ def add_cell(indent):
     add_indent(indent)
     out.push("]")
 
-fn := ts_get_filename_from_user(true)
+let fn = ts_get_filename_from_user(true)
 if fn.length:
     ts_goto_root()  // This the default, here just for clarity.
     add_cell(0)
-    ok := write_file(fn, concatstring(out, ""))
+    let ok = write_file(fn, concat_string(out, ""))
     ts_set_status_message("JSON export " + if ok: "succesful" else: "failed!")
 else:
     ts_set_status_message("export cancelled")

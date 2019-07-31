@@ -23,20 +23,24 @@
 
 #include "lobster/sdlinterface.h"
 
+#include "lobster/engine.h"
+
 using namespace lobster;
 
-void RegisterCoreEngineBuiltins(NativeRegistry &natreg) {
-    lobster::RegisterCoreLanguageBuiltins(natreg);
+void RegisterCoreEngineBuiltins(NativeRegistry &nfr) {
+    lobster::RegisterCoreLanguageBuiltins(nfr);
 
-    extern void AddGraphics(NativeRegistry &natreg); lobster::RegisterBuiltin(natreg, "graphics",  AddGraphics);
-    extern void AddFont(NativeRegistry &natreg);     lobster::RegisterBuiltin(natreg, "font",      AddFont);
-    extern void AddSound(NativeRegistry &natreg);    lobster::RegisterBuiltin(natreg, "sound",     AddSound);
-    extern void AddPhysics(NativeRegistry &natreg);  lobster::RegisterBuiltin(natreg, "physics",   AddPhysics);
-    extern void AddNoise(NativeRegistry &natreg);    lobster::RegisterBuiltin(natreg, "noise",     AddNoise);
-    extern void AddMeshGen(NativeRegistry &natreg);  lobster::RegisterBuiltin(natreg, "meshgen",   AddMeshGen);
-    extern void AddCubeGen(NativeRegistry &natreg);  lobster::RegisterBuiltin(natreg, "cubegen",   AddCubeGen);
-    extern void AddVR(NativeRegistry &natreg);       lobster::RegisterBuiltin(natreg, "vr",        AddVR);
-    extern void AddSteam(NativeRegistry &natreg);    lobster::RegisterBuiltin(natreg, "steam",     AddSteam);
+    extern void AddGraphics(NativeRegistry &nfr); lobster::RegisterBuiltin(nfr, "graphics",  AddGraphics);
+    extern void AddFont(NativeRegistry &nfr);     lobster::RegisterBuiltin(nfr, "font",      AddFont);
+    extern void AddSound(NativeRegistry &nfr);    lobster::RegisterBuiltin(nfr, "sound",     AddSound);
+    extern void AddPhysics(NativeRegistry &nfr);  lobster::RegisterBuiltin(nfr, "physics",   AddPhysics);
+    extern void AddNoise(NativeRegistry &nfr);    lobster::RegisterBuiltin(nfr, "noise",     AddNoise);
+    extern void AddMeshGen(NativeRegistry &nfr);  lobster::RegisterBuiltin(nfr, "meshgen",   AddMeshGen);
+    extern void AddCubeGen(NativeRegistry &nfr);  lobster::RegisterBuiltin(nfr, "cubegen",   AddCubeGen);
+    extern void AddOcTree(NativeRegistry &nfr);   lobster::RegisterBuiltin(nfr, "octree",    AddOcTree);
+    extern void AddVR(NativeRegistry &nfr);       lobster::RegisterBuiltin(nfr, "vr",        AddVR);
+    extern void AddSteam(NativeRegistry &nfr);    lobster::RegisterBuiltin(nfr, "steam",     AddSteam);
+    extern void AddIMGUI(NativeRegistry &nfr);    lobster::RegisterBuiltin(nfr, "imgui",     AddIMGUI);
 }
 
 void EngineSuspendIfNeeded() {
@@ -62,7 +66,7 @@ void one_frame_callback(void *arg) {
     auto &vm = *(lobster::VM *)arg;
     #ifdef USE_EXCEPTION_HANDLING
     try
-        #endif
+    #endif
     {
         GraphicsFrameStart();
         vm.vml.LogFrame();
@@ -74,20 +78,18 @@ void one_frame_callback(void *arg) {
     catch (string &s) {
         if (s != "SUSPEND-VM-MAINLOOP") {
             // An actual error.
-            Output(OUTPUT_ERROR, s);
+            LOG_ERROR(s);
             EngineExit(1);
         }
     }
     #endif
 }
 
-void EngineRunByteCode(NativeRegistry &natreg, const char *fn, string &bytecode, const void *entry_point,
-                       const void *static_bytecode, const vector<string> &program_args) {
-    lobster::VM vm(natreg, fn ? StripDirPart(fn) : "", bytecode, entry_point,
-                   static_bytecode, program_args);
+void EngineRunByteCode(VMArgs &&vmargs) {
+    lobster::VM vm(std::move(vmargs));
     #ifdef USE_EXCEPTION_HANDLING
     try
-        #endif
+    #endif
     {
         vm.EvalProgram();
     }
@@ -112,7 +114,7 @@ void EngineRunByteCode(NativeRegistry &natreg, const char *fn, string &bytecode,
             while (vm.evalret == "") one_frame_callback(&vm);
             #endif
         } else
-            #endif
+        #endif
         {
             // An actual error.
             THROW_OR_ABORT(s);
@@ -121,27 +123,21 @@ void EngineRunByteCode(NativeRegistry &natreg, const char *fn, string &bytecode,
     #endif
 }
 
-int EngineRunCompiledCodeMain(int argc, char *argv[], const void *entry_point, const void *bytecodefb) {
-    (void)argc;
-
-    min_output_level = OUTPUT_INFO;
-
+extern "C" int EngineRunCompiledCodeMain(int argc, char *argv[], const void *entry_point,
+                                         const void *bytecodefb, size_t static_size,
+                                         const lobster::block_t *vtables) {
     #ifdef USE_EXCEPTION_HANDLING
     try
-        #endif
+    #endif
     {
-        InitPlatform ("../../lobster/", "", false, SDLLoadFile);  // FIXME
-        NativeRegistry natreg;
-        RegisterCoreEngineBuiltins(natreg);
-
-        string empty;
-        vector<string> args;
-        for (int arg = 1; arg < argc; arg++) { args.push_back(argv[arg]); }
-        EngineRunByteCode(natreg, argv[0], empty, entry_point, bytecodefb, args);
+        NativeRegistry nfr;
+        RegisterCoreEngineBuiltins(nfr);
+        EngineRunByteCode(CompiledInit(argc, argv, entry_point, bytecodefb, static_size, vtables,
+                                       SDLLoadFile, nfr));
     }
     #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
-        Output(OUTPUT_ERROR, s);
+        LOG_ERROR(s);
         EngineExit(1);
     }
     #endif

@@ -34,6 +34,10 @@
     #define FILESEP '/'
 #endif
 
+#ifdef __linux__
+    #include <unistd.h>
+#endif
+
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
 #ifndef __IOS__
@@ -46,16 +50,22 @@
 #include "sdlincludes.h"  // FIXME
 #endif
 
-// Main dir to load files relative to, on windows this is where lobster.exe resides, on apple
-// platforms it's the Resource folder in the bundle.
-string datadir;
-// Auxiliary dir to load files from, this is where the bytecode file you're running or the main
-// .lobster file you're compiling reside.
-string auxdir;
-// Folder to write to, usually the same as auxdir, special folder on mobile platforms.
-string writedir;
+// Dirs to load files relative to, they typically contain, and will be searched in this order:
+// - The project specific files. This is where the bytecode file you're running or the main
+//   .lobster file you're compiling reside.
+// - The standard lobster files. On windows this is where lobster.exe resides, on apple
+//   platforms it's the Resource folder in the bundle.
+// - The same as writedir below (to be able to load files the program has been written).
+// - Any additional dirs declared with "include from".
+vector<string> data_dirs;
 
-string exefile;
+// Folder to write to, usually the same as project dir, special folder on mobile platforms.
+string write_dir;
+
+string maindir;
+string projectdir;
+string_view ProjectDir() { return projectdir; }
+string_view MainDir() { return maindir; }
 
 FileLoader cur_loader = nullptr;
 
@@ -132,19 +142,61 @@ const char *StripDirPart(const char *filepath) {
     return fpos ? fpos + 1 : filepath;
 }
 
-bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bundle,
+string_view StripTrailing(string_view in, string_view tail) {
+    if (in.size() >= tail.size() && in.substr(in.size() - tail.size()) == tail)
+        return in.substr(0, in.size() - tail.size());
+    return in;
+}
+
+string GetMainDirFromExePath(const char *argv_0) {
+    string md = SanitizePath(argv_0);
+    #ifdef _WIN32
+        // Windows can pass just the exe name without a full path, which is useless.
+        char winfn[MAX_PATH + 1];
+        GetModuleFileName(NULL, winfn, MAX_PATH + 1);
+        md = winfn;
+    #endif
+    #ifdef __linux__
+        char path[PATH_MAX];
+        ssize_t length = readlink("/proc/self/exe", path, sizeof(path)-1);
+        if (length != -1) {
+          path[length] = '\0';
+          md = string(path);
+        }
+    #endif
+    md = StripTrailing(StripTrailing(StripFilePart(md), "bin/"), "bin\\");
+    return md;
+}
+
+int64_t DefaultLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len) {
+    LOG_INFO("DefaultLoadFile: ", absfilename);
+    auto f = fopen(null_terminated(absfilename), "rb");
+    if (!f) return -1;
+    if (fseek(f, 0, SEEK_END)) {
+        fclose(f);
+        return -1;
+    }
+    auto filelen = ftell(f);
+    if (!len) {  // Just the file length requested.
+        fclose(f);
+        return filelen;
+    }
+    if (len < 0) len = filelen;
+    fseek(f, (long)start, SEEK_SET);  // FIXME: 32-bit on WIN32.
+    dest->resize((size_t)len);
+    auto rlen = fread(&(*dest)[0], 1, (size_t)len, f);
+    fclose(f);
+    return len != (int64_t)rlen ? -1 : len;
+}
+
+bool InitPlatform(string _maindir, const char *auxfilepath, bool from_bundle,
                       FileLoader loader) {
+    maindir = _maindir;
     InitTime();
     InitCPU();
-    exefile = SanitizePath(exefilepath);
     cur_loader = loader;
-    datadir = StripFilePart(exefile);
-    auxdir = auxfilepath ? StripFilePart(SanitizePath(auxfilepath)) : datadir;
-    writedir = auxdir;
     // FIXME: use SDL_GetBasePath() instead?
-    #ifdef _WIN32
-        have_console = GetConsoleWindow() != nullptr;
-    #elif defined(__APPLE__)
+    #if defined(__APPLE__)
         if (from_bundle) {
             have_console = false;
             // Default data dir is the Resources folder inside the .app bundle.
@@ -156,33 +208,60 @@ bool InitPlatform(const char *exefilepath, const char *auxfilepath, bool from_bu
             CFRelease(resourcesURL);
             if (!res)
                 return false;
-            datadir = string_view(path) + "/";
+            auto resources_dir = string(path) + "/";
+            data_dirs.push_back(resources_dir);
             #ifdef __IOS__
                 // There's probably a better way to do this in CF.
-                writedir = StripFilePart(path) + "Documents/";
+                write_dir = StripFilePart(path) + "Documents/";
+                data_dirs.push_back(write_dir);
             #else
                 // FIXME: This should probably be ~/Library/Application Support/AppName,
                 // but for now this works for non-app store apps.
-                writedir = datadir;
+                write_dir = resources_dir;
             #endif
+            return true;
         }
-    #elif defined(__ANDROID__)
+    #else
+        (void)from_bundle;
+    #endif
+    #if defined(__ANDROID__)
         // FIXME: removed SDL dependency for other platforms. So on Android, move calls to
         // SDL_AndroidGetInternalStoragePath into SDL and pass the results into here somehow.
         SDL_Init(0); // FIXME: Is this needed? bad dependency.
         auto internalstoragepath = SDL_AndroidGetInternalStoragePath();
         auto externalstoragepath = SDL_AndroidGetExternalStoragePath();
-        Output(OUTPUT_INFO, internalstoragepath);
-        Output(OUTPUT_INFO, externalstoragepath);
-        if (internalstoragepath) datadir = internalstoragepath + string_view("/");
-        if (externalstoragepath) writedir = externalstoragepath + string_view("/");
+        LOG_INFO(internalstoragepath);
+        LOG_INFO(externalstoragepath);
+        if (internalstoragepath) data_dirs.push_back(internalstoragepath + string_view("/"));
+        if (externalstoragepath) write_dir = externalstoragepath + string_view("/");
         // For some reason, the above SDL functionality doesn't actually work,
         // we have to use the relative path only to access APK files:
-        datadir = "";
-        auxdir = writedir;
+        data_dirs.clear();  // FIXME.
+        data_dirs.push_back("");
+        data_dirs.push_back(write_dir);
+    #else  // Linux, Windows, and OS X console mode.
+
+        if (auxfilepath) {
+            projectdir = StripFilePart(SanitizePath(auxfilepath));
+            data_dirs.push_back(projectdir);
+            write_dir = projectdir;
+        } else {
+            write_dir = maindir;
+        }
+        data_dirs.push_back(maindir);
+        #ifdef PLATFORM_DATADIR
+            data_dirs.push_back(PLATFORM_DATADIR);
+        #endif
+        #ifdef _WIN32
+            have_console = GetConsoleWindow() != nullptr;
+        #endif
     #endif
-    (void)from_bundle;
     return true;
+}
+
+void AddDataDir(string_view path) {
+    for (auto &dir : data_dirs) if (dir == path) return;
+    data_dirs.push_back(projectdir + SanitizePath(path));
 }
 
 string SanitizePath(string_view path) {
@@ -201,14 +280,23 @@ void AddPakFileEntry(string_view pakfilename, string_view relfilename, int64_t o
 }
 
 int64_t LoadFileFromAny(string_view srelfilename, string *dest, int64_t start, int64_t len) {
-    auto l = cur_loader(auxdir + srelfilename, dest, start, len);
-    if (l >= 0) return l;
-    l = cur_loader(datadir + srelfilename, dest, start, len);
-    if (l >= 0) return l;
-    return cur_loader(writedir + srelfilename, dest, start, len);
+    for (auto &dir : data_dirs) {
+        auto l = cur_loader(dir + srelfilename, dest, start, len);
+        if (l >= 0) return l;
+    }
+    return -1;
 }
 
-int64_t LoadFile(string_view relfilename, string *dest, int64_t start, int64_t len) {
+// We don't generally load in ways that allow stdio text mode conversions, so this function
+// emulates them at best effort.
+void TextModeConvert(string &s, bool binary) {
+    if (binary) return;
+    #ifdef _WIN32
+        s.erase(remove(s.begin(), s.end(), '\r'), s.end());
+    #endif
+}
+
+int64_t LoadFile(string_view relfilename, string *dest, int64_t start, int64_t len, bool binary) {
     assert(cur_loader);
     auto it = pakfile_registry.find(relfilename);
     if (it != pakfile_registry.end()) {
@@ -220,18 +308,28 @@ int64_t LoadFile(string_view relfilename, string *dest, int64_t start, int64_t l
                 WEntropyCoder<false>((const uchar *)dest->c_str(), dest->length(),
                                      (size_t)funcompressed, uncomp);
                 dest->swap(uncomp);
+                TextModeConvert(*dest, binary);
                 return funcompressed;
             } else {
+                TextModeConvert(*dest, binary);
                 return l;
             }
         }
     }
-    if (len > 0) Output(OUTPUT_INFO, "load: ", relfilename);
-    return LoadFileFromAny(SanitizePath(relfilename), dest, start, len);
+    if (len > 0) LOG_INFO("load: ", relfilename);
+    auto size = LoadFileFromAny(SanitizePath(relfilename), dest, start, len);
+    TextModeConvert(*dest, binary);
+    return size;
+}
+
+string WriteFileName(string_view relfilename) {
+    return write_dir + SanitizePath(relfilename);
 }
 
 FILE *OpenForWriting(string_view relfilename, bool binary) {
-    return fopen((writedir + SanitizePath(relfilename)).c_str(), binary ? "wb" : "w");
+    auto fn = WriteFileName(relfilename);
+    LOG_INFO("write: ", fn);
+    return fopen(fn.c_str(), binary ? "wb" : "w");
 }
 
 bool WriteFile(string_view relfilename, bool binary, string_view contents) {
@@ -242,6 +340,16 @@ bool WriteFile(string_view relfilename, bool binary, string_view contents) {
         fclose(f);
     }
     return written == 1;
+}
+
+bool FileExists(string_view relfilename) {
+    auto f = fopen(WriteFileName(relfilename).c_str(), "rb");
+    if (f) fclose(f);
+    return f;
+}
+
+bool FileDelete(string_view relfilename) {
+    return remove(WriteFileName(relfilename).c_str()) == 0;
 }
 
 // TODO: can now replace all this platform specific stuff with std::filesystem code.
@@ -291,14 +399,15 @@ bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest) {
 
 bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest) {
     auto srfn = SanitizePath(reldir);
-    return ScanDirAbs(auxdir + srfn, dest) ||
-           ScanDirAbs(datadir + srfn, dest) ||
-           ScanDirAbs(writedir + srfn, dest);
+    for (auto &dir : data_dirs) {
+        if (ScanDirAbs(dir + srfn, dest)) return true;
+    }
+    return false;
 }
 
 OutputType min_output_level = OUTPUT_WARN;
 
-void Output(OutputType ot, const char *buf) {
+void LogOutput(OutputType ot, const char *buf) {
     if (ot < min_output_level) return;
     #ifdef __ANDROID__
         auto tag = "lobster";
@@ -310,7 +419,6 @@ void Output(OutputType ot, const char *buf) {
             case OUTPUT_ERROR:   __android_log_print(ANDROID_LOG_ERROR, tag, "%s", buf); break;
         }
     #elif defined(_WIN32)
-        OutputDebugStringA("LOG: ");
         OutputDebugStringA(buf);
         OutputDebugStringA("\n");
         if (ot >= OUTPUT_INFO) {
@@ -323,7 +431,7 @@ void Output(OutputType ot, const char *buf) {
         printf("%s\n", buf);
     #endif
     if (!have_console) {
-        auto f = fopen((exefile + ".con.log").c_str(), "a");
+        auto f = fopen((maindir + "lobster.exe.con.log").c_str(), "a");
         if (f) {
             fputs(buf, f);
             fputs("\n", f);
@@ -341,6 +449,13 @@ void ConditionalBreakpoint(bool shouldbreak) {
             __builtin_trap();
         #endif
     }
+}
+
+// Insert without args to find out which iteration it gets to, then insert that iteration number.
+void CountingBreakpoint(int i) {
+    static int j = 0;
+    if (i < 0) LOG_DEBUG("counting breakpoint: ", j);
+    ConditionalBreakpoint(j++ == i);
 }
 
 void MakeDPIAware() {

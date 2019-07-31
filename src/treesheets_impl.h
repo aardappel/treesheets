@@ -16,7 +16,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             //dump_builtins = true;
         #endif
 
-        auto err = RunLobster(filename, nullptr, dump_builtins);
+        auto err = RunLobster(filename, {}, dump_builtins);
 
         doc = nullptr;
         cur = nullptr;
@@ -118,6 +118,6 @@ static TreeSheetsScriptImpl tssi;
 
 static void ScriptInit(MyFrame *frame) {
     auto serr = InitLobster(&tssi, frame->GetPath("scripts/"), "", false, TreeSheetsLoader);
-    if (!serr.empty()) 
+    if (!serr.empty())
         frame->GetCurTab()->Status(wxString("Script system could not initialize: " + serr));
 }

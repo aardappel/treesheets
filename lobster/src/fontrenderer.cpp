@@ -37,9 +37,9 @@ BitmapFont::~BitmapFont() {
 }
 
 BitmapFont::BitmapFont(OutlineFont *_font, int _size, float _osize)
-    : height(0), usedcount(1), size(_size), outlinesize(_osize), font(_font) {}
+    : size(_size), outlinesize(_osize), font(_font) {}
 
-bool BitmapFont::CacheChars(const char *text) {
+bool BitmapFont::CacheChars(string_view text) {
     usedcount++;
     font->EnsureCharsPresent(text);
     if (positions.size() == font->unicodetable.size())
@@ -142,7 +142,7 @@ bool BitmapFont::CacheChars(const char *text) {
     return true;
 }
 
-void BitmapFont::RenderText(const char *text) {
+void BitmapFont::RenderText(string_view text) {
     if (!CacheChars(text))
         return;
     struct PT { float3 p; float2 t; };
@@ -183,7 +183,7 @@ void BitmapFont::RenderText(const char *text) {
     RenderArraySlow(PRIM_TRIS, make_span(vbuf), "PT", make_span(ibuf));
 }
 
-const int2 BitmapFont::TextSize(const char *text) {
+const int2 BitmapFont::TextSize(string_view text) {
     if (!CacheChars(text))
         return int2_0;
     auto x = 0;
@@ -213,7 +213,27 @@ OutlineFont::~OutlineFont() {
     FT_Done_Face((FT_Face)fthandle);
 }
 
-bool OutlineFont::EnsureCharsPresent(const char *utf8str) {
+string OutlineFont::GetName(uint i) {
+    char buf[256];
+    FT_Get_Glyph_Name((FT_Face)fthandle, i, buf, sizeof(buf));
+    return buf;
+}
+
+uint OutlineFont::GetCharCode(string_view name) {
+    auto glyphi = FT_Get_Name_Index((FT_Face)fthandle, (char *)null_terminated(name));
+    if (!glyphi) return 0;
+    if (glyph_to_char.empty()) {
+        uint cgi = 0;
+        auto c = FT_Get_First_Char((FT_Face)fthandle, &cgi);
+        while (cgi) {
+            glyph_to_char[cgi] = c;
+            c = FT_Get_Next_Char((FT_Face)fthandle, c, &cgi);
+        }
+    }
+    return glyph_to_char[glyphi];
+}
+
+bool OutlineFont::EnsureCharsPresent(string_view utf8str) {
     bool anynew = false;
     for (;;) {
         int uc = FromUTF8(utf8str);

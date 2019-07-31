@@ -31,11 +31,11 @@ struct SteamState {
 
 void SteamState::OnGameOverlayActivated(GameOverlayActivated_t *callback) {
     steamoverlayactive = callback->m_bActive;
-    Output(OUTPUT_INFO, "steam overlay toggle: ", steamoverlayactive);
+    LOG_INFO("steam overlay toggle: ", steamoverlayactive);
 }
 
 void SteamState::OnScreenshotRequested(ScreenshotRequested_t *) {
-    Output(OUTPUT_INFO, "steam screenshot requested");
+    LOG_INFO("steam screenshot requested");
     auto size = GetScreenSize();
     auto pixels = ReadPixels(int2(0), size);
     SteamScreenshots()->WriteScreenshot(pixels, size.x * size.y * 3, size.x, size.y);
@@ -43,7 +43,7 @@ void SteamState::OnScreenshotRequested(ScreenshotRequested_t *) {
 }
 
 extern "C" void __cdecl SteamAPIDebugTextHook(int severity, const char *debugtext) {
-    Output(severity ? OUTPUT_WARN : OUTPUT_INFO, debugtext);
+    if (severity) LOG_WARN(debugtext) else LOG_INFO(debugtext);
 }
 
 SteamState *steam = nullptr;
@@ -67,12 +67,12 @@ int SteamInit(uint appid, bool screenshots) {
             (void)appid;
         #else
             if (appid && SteamAPI_RestartAppIfNecessary(appid)) {
-                Output(OUTPUT_INFO, "Not started from Steam");
+                LOG_INFO("Not started from Steam");
                 return -1;
             }
         #endif
         bool steaminit = SteamAPI_Init();
-        Output(OUTPUT_INFO, "Steam init: ", steaminit);
+        LOG_INFO("Steam init: ", steaminit);
         if (!steaminit) return 0;
         SteamUtils()->SetWarningMessageHook(&SteamAPIDebugTextHook);
         steam = new SteamState();
@@ -97,10 +97,10 @@ const char *UserName() {
     return "";
 }
 
-bool UnlockAchievement(const char *name) {
+bool UnlockAchievement(string_view name) {
     #ifdef PLATFORM_STEAMWORKS
         if (steam) {
-            auto ok = SteamUserStats()->SetAchievement(name);
+            auto ok = SteamUserStats()->SetAchievement(null_terminated(name));
             return SteamUserStats()->StoreStats() && ok;  // Force this to run.
         }
     #else
@@ -109,23 +109,23 @@ bool UnlockAchievement(const char *name) {
     return false;
 }
 
-int SteamReadFile(const char *fn, string &buf) {
+int SteamReadFile(string_view fn, string &buf) {
     #ifdef PLATFORM_STEAMWORKS
         if (steam) {
-            auto len = SteamRemoteStorage()->GetFileSize(fn);
+            auto len = SteamRemoteStorage()->GetFileSize(null_terminated(fn));
             if (len) {
                 buf.resize(len);
-                return SteamRemoteStorage()->FileRead(fn, (void *)buf.data(), len);
+                return SteamRemoteStorage()->FileRead(null_terminated(fn), (void *)buf.data(), len);
             }
         }
     #endif  // PLATFORM_STEAMWORKS
     return 0;
 }
 
-bool SteamWriteFile(const char *fn, const void *buf, size_t len) {
+bool SteamWriteFile(string_view fn, string_view buf) {
     #ifdef PLATFORM_STEAMWORKS
         if (steam) {
-            return SteamRemoteStorage()->FileWrite(fn, buf, (int)len);
+            return SteamRemoteStorage()->FileWrite(null_terminated(fn), buf.data(), (int)buf.size());
         }
     #endif  // PLATFORM_STEAMWORKS
     return false;
@@ -140,67 +140,65 @@ bool OverlayActive() {
 
 using namespace lobster;
 
-void AddSteam(NativeRegistry &natreg) {
-    STARTDECL(steam_init) (VM &, Value &appid, Value &ss) {
+void AddSteam(NativeRegistry &nfr) {
+
+nfr("steam_init", "appid,allowscreenshots", "IB", "I",
+    "initializes SteamWorks. returns 1 if succesful, 0 on failure. Specify a non-0 appid if you"
+    " want to restart from steam if this wasn't started from steam (the return value in this"
+    " case will be -1 to indicate you should terminate this instance). If you don't specify an"
+    " appid here or in steam_appid.txt, init will likely fail. The other functions can still be"
+    " called even if steam isn't active."
+    " allowscreenshots automatically uploads screenshots to steam (triggered by steam).",
+    [](VM &, Value &appid, Value &ss) {
         return Value(SteamInit((uint)appid.ival(), ss.True()));
-    }
-    ENDDECL2(steam_init, "appid,allowscreenshots", "II", "I",
-        "initializes SteamWorks. returns 1 if succesful, 0 on failure. Specify a non-0 appid if you"
-        " want to restart from steam if this wasn't started from steam (the return value in this"
-        " case will be -1 to indicate you should terminate this instance). If you don't specify an"
-        " appid here or in steam_appid.txt, init will likely fail. The other functions can still be"
-        " called even if steam isn't active."
-        " allowscreenshots automatically uploads screenshots to steam (triggered by steam).");
+    });
 
-    STARTDECL(steam_overlay) (VM &) {
+nfr("steam_overlay", "", "", "B",
+    "returns true if the steam overlay is currently on (you may want to auto-pause if so)",
+    [](VM &) {
         return Value(OverlayActive());
-    }
-    ENDDECL0(steam_overlay, "", "", "I",
-        "returns true if the steam overlay is currently on (you may want to auto-pause if so)");
+    });
 
-    STARTDECL(steam_username) (VM &vm) {
+nfr("steam_username", "", "", "S",
+    "returns the name of the steam user, or empty string if not available.",
+    [](VM &vm) {
         return Value(vm.NewString(UserName()));
-    }
-    ENDDECL0(steam_username, "", "", "S",
-        "returns the name of the steam user, or empty string if not available.");
+    });
 
-    STARTDECL(steam_unlock_achievement) (VM &vm, Value &name) {
-        auto ok = UnlockAchievement(name.sval()->str());
-        name.DECRT(vm);
+nfr("steam_unlock_achievement", "achievementname", "S", "B",
+    "Unlocks an achievement and shows the achievement overlay if not already achieved before."
+    " Will also Q-up saving achievement to Steam."
+    " Returns true if succesful.",
+    [](VM &, Value &name) {
+        auto ok = UnlockAchievement(name.sval()->strv());
         return Value(ok);
-    }
-    ENDDECL1(steam_unlock_achievement, "achievementname", "S", "I",
-        "Unlocks an achievement and shows the achievement overlay if not already achieved before."
-        " Will also Q-up saving achievement to Steam."
-        " Returns true if succesful.");
+    });
 
-    STARTDECL(steam_write_file) (VM &vm, Value &file, Value &contents) {
-        auto fn = file.sval()->str();
+nfr("steam_write_file", "file,contents", "SS", "B",
+    "writes a file with the contents of a string to the steam cloud, or local storage if that"
+    " fails, returns false if writing wasn't possible at all",
+    [](VM &, Value &file, Value &contents) {
+        auto fn = file.sval()->strv();
         auto s = contents.sval();
-        auto ok = SteamWriteFile(fn, s->str(), s->len);
+        auto ok = SteamWriteFile(fn, s->strv());
         if (!ok) {
             ok = WriteFile(fn, true, s->strv());
         }
-        file.DECRT(vm);
-        contents.DECRT(vm);
         return Value(ok);
-    }
-    ENDDECL2(steam_write_file, "file,contents", "SS", "I",
-        "writes a file with the contents of a string to the steam cloud, or local storage if that"
-        " fails, returns false if writing wasn't possible at all");
+    });
 
-    STARTDECL(steam_read_file) (VM &vm, Value &file) {
-        auto fn = file.sval()->str();
+nfr("steam_read_file", "file", "S", "S?",
+    "returns the contents of a file as a string from the steam cloud if available, or otherwise"
+    " from local storage, or nil if the file can't be found at all.",
+    [](VM &vm, Value &file) {
+        auto fn = file.sval()->strv();
         string buf;
         auto len = SteamReadFile(fn, buf);
         if (!len) len = (int)LoadFile(fn, &buf);
-        file.DECRT(vm);
         if (len < 0) return Value();
         auto s = vm.NewString(buf);
         return Value(s);
-    }
-    ENDDECL1(steam_read_file, "file", "S", "S?",
-        "returns the contents of a file as a string from the steam cloud if available, or otherwise"
-        " from local storage, or nil if the file can't be found at all.");
-}
+    });
+
+}  // AddSteam
 

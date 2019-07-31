@@ -1,3 +1,19 @@
+// Copyright 2014 Wouter van Oortmerssen. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#ifndef LOBSTER_3DGRID_H
+#define LOBSTER_3DGRID_H
 
 // A basic 3D grid, with individually allocated YZ arrays.
 // Make Z your inner loop when accessing this.
@@ -37,6 +53,23 @@ template<typename T> class Chunk3DGrid : NonCopyable {
                 }
             }
         }
+    }
+
+    void Shrink(const int3 &ndim) {
+        assert(ndim <= dim);
+        for (auto [i, p] : enumerate(grid)) if ((int)i >= ndim.x) delete[] p;
+        grid.resize(ndim.x);
+        for (auto &p : grid) {
+            auto n = new T[ndim.x * ndim.y];
+            for (int y = 0; y < ndim.y; y++) {
+                for (int z = 0; z < ndim.z; z++) {
+                    n[y * ndim.z + z] = p[y * dim.z + z];
+                }
+            }
+            delete p;
+            p = n;
+        }
+        dim = ndim;
     }
 };
 
@@ -93,11 +126,11 @@ template<typename T> class RLE3DGrid : NonCopyable {
 
     template<typename F> void CopyCurrent(int change, const int3 &pos, F f) {
         auto rle = alloc.alloc_array<RLEItem>(CurSize() + change);
-        memcpy(rle, cur, (it - cur) * sizeof(RLEItem));
+        t_memcpy(rle, cur, it - cur);
         rle[0].count += change;
         auto nit = rle + (it - cur);
         f(nit);
-        memcpy(nit + 2 + change, it + 2, (CurSize() - (it - cur + 2)) * sizeof(RLEItem));
+        t_memcpy(nit + 2 + change, it + 2, CurSize() - (it - cur + 2));
         alloc.dealloc_array(cur, CurSize());
         GridLoc(pos.xy()) = rle;
         cur = rle;
@@ -174,3 +207,4 @@ template<typename T> class RLE3DGrid : NonCopyable {
     }
 };
 
+#endif  // LOBSTER_3DGRID_H

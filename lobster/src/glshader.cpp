@@ -17,9 +17,9 @@
 #include "lobster/glincludes.h"
 #include "lobster/sdlinterface.h"
 
-unordered_map<string, Shader *> shadermap;
+map<string, Shader *, less<>> shadermap;
 
-Shader *LookupShader(const char *name) {
+Shader *LookupShader(string_view name) {
     auto shi = shadermap.find(name);
     if (shi != shadermap.end()) return shi->second;
     return nullptr;
@@ -68,18 +68,18 @@ uint CompileGLSLShader(GLenum type, uint program, const GLchar *source, string &
     return 0;
 }
 
-string ParseMaterialFile(char *mbuf) {
+string ParseMaterialFile(string_view mbuf) {
     auto p = mbuf;
     string err;
-    string last;
+    string_view last;
     string defines;
     string vfunctions, pfunctions, cfunctions, vertex, pixel, compute, vdecl, pdecl, csdecl, shader;
     string *accum = nullptr;
     auto word = [&]() {
-        p += strspn(p, " \t\r");
-        size_t len = strcspn(p, " \t\r\0");
-        last = string_view(p, len);
-        p += len;
+        p.remove_prefix(min(p.find_first_not_of(" \t\r"), p.size()));
+        size_t len = min(p.find_first_of(" \t\r"), p.size());
+        last = p.substr(0, len);
+        p.remove_prefix(len);
     };
     auto finish = [&]() -> bool {
         if (!shader.empty()) {
@@ -129,9 +129,8 @@ string ParseMaterialFile(char *mbuf) {
     };
     for (;;) {
         auto start = p;
-        auto end = p + strcspn(p, "\n\0");
-        bool eof = !*end;
-        *end = 0;
+        p.remove_suffix(p.size() - min(p.find_first_of("\n"), p.size()));
+        auto line = p;
         word();
         if (!last.empty()) {
             if (last == "VERTEXFUNCTIONS")  {
@@ -180,26 +179,27 @@ string ParseMaterialFile(char *mbuf) {
                     // FIXME: Make configurable.
                     else if (last == "bones")        decl += "uniform vec4 bones[230];\n";
                     else if (last == "pointscale")   decl += "uniform float pointscale;\n";
-                    else if (!strncmp(last.c_str(), "tex", 3)) {
-                        auto p = last.c_str() + 3;
+                    else if (last.substr(0, 3) == "tex") {
+                        auto tp = last;
+                        tp.remove_prefix(3);
                         bool cubemap = false;
                         bool floatingp = false;
                         bool d3 = false;
-                        if (!strncmp(p, "cube", 4)) {
-                            p += 4;
+                        if (starts_with(tp, "cube")) {
+                            tp.remove_prefix(4);
                             cubemap = true;
                         }
-                        if (!strncmp(p, "3d", 2)) {
-                            p += 2;
+                        if (starts_with(tp, "3d")) {
+                            tp.remove_prefix(2);
                             d3 = true;
                         }
-                        if (*p == 'f') {
-                            p++;
+                        if (starts_with(tp, "f")) {
+                            tp.remove_prefix(1);
                             floatingp = true;
                         }
-                        auto unit = atoi(p);
+                        auto unit = parse_int<int>(tp);
                         if (accum == &compute) {
-                            decl += cat("layout(binding = ", unit, ", ", 
+                            decl += cat("layout(binding = ", unit, ", ",
                                         (floatingp ? "rgba32f" : "rgba8"), ") ");
                         }
                         decl += "uniform ";
@@ -222,16 +222,16 @@ string ParseMaterialFile(char *mbuf) {
                 for (;;) {
                     word();
                     if (last.empty()) break;
-                    auto pos = strstr(last.c_str(), ":");
-                    if (!pos) {
+                    auto pos = last.find_first_of(":");
+                    if (pos == string_view::npos) {
                         return "input " + last +
                                " doesn't specify number of components, e.g. anormal:3";
                     }
-                    int comp = atoi(pos + 1);
+                    int comp = parse_int<int>(last.substr(pos + 1));
                     if (comp <= 0 || comp > 4) {
                         return "input " + last + " can only use 1..4 components";
                     }
-                    last = last.substr(0, pos - last.c_str());
+                    last = last.substr(0, pos);
                     string d = cat(" vec", comp, " ", last, ";\n");
                     if (accum == &vertex) vdecl += "in" + d;
                     else { vdecl += "out" + d; pdecl += "in" + d; }
@@ -247,28 +247,26 @@ string ParseMaterialFile(char *mbuf) {
                 auto def = last;
                 word();
                 auto val = last;
-                if (!val.empty()) def += " " + val;
-                defines += "#define " + def + "\n";
+                defines += "#define " + (val.empty() ? def : def + " " + val) + "\n";
             } else {
                 if (!accum)
-                    return "GLSL code outside of FUNCTIONS/VERTEX/PIXEL block: " +
-                           string_view(start);
-                *accum += start;
+                    return "GLSL code outside of FUNCTIONS/VERTEX/PIXEL block: " + line;
+                *accum += line;
                 *accum += "\n";
             }
         }
-        if (eof) break;
-        *end = '\n';
-        p = end + 1;
+        if (line.size() == start.size()) break;
+        start.remove_prefix(line.size() + 1);
+        p = start;
     }
     finish();
     return err;
 }
 
-string LoadMaterialFile(const char *mfile) {
+string LoadMaterialFile(string_view mfile) {
     string mbuf;
     if (LoadFile(mfile, &mbuf) < 0) return string_view("cannot load material file: ") + mfile;
-    auto err = ParseMaterialFile((char *)mbuf.c_str());
+    auto err = ParseMaterialFile(mbuf);
     return err;
 }
 
@@ -377,8 +375,8 @@ void Shader::SetTextures(const vector<Texture> &textures) {
     }
 }
 
-bool Shader::SetUniform(const char *name, const float *val, int components, int elements) {
-    auto loc = glGetUniformLocation(program, name);
+bool Shader::SetUniform(string_view name, const float *val, int components, int elements) {
+    auto loc = glGetUniformLocation(program, null_terminated(name));
     if (loc < 0) return false;
     switch (components) {
         case 1: GL_CALL(glUniform1fv(loc, elements, val)); return true;
@@ -389,8 +387,8 @@ bool Shader::SetUniform(const char *name, const float *val, int components, int 
     }
 }
 
-bool Shader::SetUniformMatrix(const char *name, const float *val, int components, int elements) {
-    auto loc = glGetUniformLocation(program, name);
+bool Shader::SetUniformMatrix(string_view name, const float *val, int components, int elements) {
+    auto loc = glGetUniformLocation(program, null_terminated(name));
     if (loc < 0) return false;
     switch (components) {
         case 4:  GL_CALL(glUniformMatrix2fv(loc, elements, false, val)); return true;
@@ -416,16 +414,22 @@ void DispatchCompute(const int3 &groups) {
 
 // Simple function for getting some uniform / shader storage attached to a shader. Should ideally
 // be split up for more flexibility.
-uint UniformBufferObject(Shader *sh, const void *data, size_t len, const char *uniformblockname,
-                         bool ssbo) {
-    GLuint bo = 0;
+// Use this for reusing BO's for now:
+map<string, pair<uint, uint>, less<>> ubomap;
+// Note that bo_binding_point_index is assigned automatically based on unique block names.
+// You can also specify these in the shader using `binding=`, but GL doesn't seem to have a way
+// to retrieve these programmatically.
+// If data is nullptr, bo is used instead.
+uint UniformBufferObject(Shader *sh, const void *data, size_t len, string_view uniformblockname,
+                         bool ssbo, uint bo) {
     #ifdef PLATFORM_WINNIX
         if (sh && glGetProgramResourceIndex && glShaderStorageBlockBinding && glBindBufferBase &&
                   glUniformBlockBinding && glGetUniformBlockIndex) {
             sh->Activate();
             auto idx = ssbo
-                ? glGetProgramResourceIndex(sh->program, GL_SHADER_STORAGE_BLOCK, uniformblockname)
-                : glGetUniformBlockIndex(sh->program, uniformblockname);
+                ? glGetProgramResourceIndex(sh->program, GL_SHADER_STORAGE_BLOCK,
+                                            null_terminated(uniformblockname))
+                : glGetUniformBlockIndex(sh->program, null_terminated(uniformblockname));
 
             GLint maxsize = 0;
             // FIXME: call glGetInteger64v if we ever want buffers >2GB.
@@ -433,10 +437,20 @@ uint UniformBufferObject(Shader *sh, const void *data, size_t len, const char *u
             else glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &maxsize);
             if (idx != GL_INVALID_INDEX && len <= size_t(maxsize)) {
                 auto type = ssbo ? GL_SHADER_STORAGE_BUFFER : GL_UNIFORM_BUFFER;
-                bo = GenBO_(type, len, data);
+                static uint binding_point_index_alloc = 0;
+                auto it = ubomap.find(uniformblockname);
+                uint bo_binding_point_index = 0;
+                if (it == ubomap.end()) {
+                    if (data) bo = GenBO_(type, len, data);
+                    bo_binding_point_index = binding_point_index_alloc++;
+                    ubomap[string(uniformblockname)] = { bo, bo_binding_point_index };
+				} else {
+                    if (data) bo = it->second.first;
+                    bo_binding_point_index = it->second.second;
+                    glBindBuffer(type, bo);
+                    if (data) glBufferData(type, len, data, GL_STATIC_DRAW);
+                }
                 GL_CALL(glBindBuffer(type, 0));
-                static GLuint bo_binding_point_index = 0;
-                bo_binding_point_index++;  // FIXME: how do we allocate these properly?
                 GL_CALL(glBindBufferBase(type, bo_binding_point_index, bo));
                 if (ssbo) GL_CALL(glShaderStorageBlockBinding(sh->program, idx,
                                                               bo_binding_point_index));
@@ -449,32 +463,24 @@ uint UniformBufferObject(Shader *sh, const void *data, size_t len, const char *u
     return bo;
 }
 
-void BindVBOAsSSBO(uint bind_point_index, uint vbo) {
-    #ifdef PLATFORM_WINNIX
-        if (glBindBufferBase) {
-            GL_CALL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bind_point_index, vbo));
-        }
-    #endif
-}
-
-bool Shader::Dump(const char *filename, bool stripnonascii) {
-	#ifdef PLATFORM_WINNIX
-		if (!glGetProgramBinary) return false;
-	#endif
-	#ifndef __EMSCRIPTEN__
-		int len = 0;
-		GL_CALL(glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &len));
-		string buf;
-		buf.resize(len);
-		GLenum format = 0;
-		GL_CALL(glGetProgramBinary(program, len, nullptr, &format, buf.data()));
-		if (stripnonascii) {
-			buf.erase(remove_if(buf.begin(), buf.end(), [](char c) {
-				return (c < ' ' || c > '~') && c != '\n' && c != '\t';
-			}), buf.end());
-		}
-		return WriteFile(filename, true, buf);
-	#else
-		return false;
-	#endif
+bool Shader::Dump(string_view filename, bool stripnonascii) {
+  #ifdef PLATFORM_WINNIX
+    if (!glGetProgramBinary) return false;
+  #endif
+  #ifndef __EMSCRIPTEN__
+    int len = 0;
+    GL_CALL(glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &len));
+    string buf;
+    buf.resize(len);
+    GLenum format = 0;
+    GL_CALL(glGetProgramBinary(program, len, nullptr, &format, buf.data()));
+    if (stripnonascii) {
+      buf.erase(remove_if(buf.begin(), buf.end(), [](char c) {
+        return (c < ' ' || c > '~') && c != '\n' && c != '\t';
+      }), buf.end());
+    }
+    return WriteFile(filename, true, buf);
+  #else
+    return false;
+  #endif
 }

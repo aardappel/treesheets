@@ -15,239 +15,29 @@
 #ifndef LOBSTER_DISASM
 #define LOBSTER_DISASM
 
-#include "natreg.h"
+#include "lobster/natreg.h"
+
 #define FLATBUFFERS_DEBUG_VERIFICATION_FAILURE
 #include "lobster/bytecode_generated.h"
 
 namespace lobster {
 
-inline string_view flat_string_view(const flatbuffers::String *s) {
-    return string_view(s->c_str(), s->size());
+inline string IdName(const bytecode::BytecodeFile *bcf, int i) {
+    auto idx = bcf->specidents()->Get(i)->ididx();
+    int j = i;
+    // FIXME: this theoretically can span 2 specializations of the same var.
+    while (j && bcf->specidents()->Get(j - 1)->ididx() == idx) j--;
+    auto basename = bcf->idents()->Get(idx)->name()->string_view();
+    return j == i ? string(basename) : cat(basename, '+', i - j);
 }
 
-inline string_view IdName(const bytecode::BytecodeFile *bcf, int i) {
-    auto s = bcf->idents()->Get(bcf->specidents()->Get(i)->ididx())->name();
-    return flat_string_view(s);
-}
+const bytecode::LineInfo *LookupLine(const int *ip, const int *code,
+                                     const bytecode::BytecodeFile *bcf);
 
-inline const bytecode::LineInfo *LookupLine(const int *ip, const int *code,
-                                            const bytecode::BytecodeFile *bcf) {
-    auto lineinfo = bcf->lineinfo();
-    int pos = int(ip - code);
-    int start = 0;
-    auto size = lineinfo->size();
-    assert(size);
-    for (;;) {  // quick hardcoded binary search
-        if (size == 1) return lineinfo->Get(start);
-        auto nsize = size / 2;
-        if (lineinfo->Get(start + nsize)->bytecodestart() <= pos) {
-            start += nsize;
-            size -= nsize;
-        } else {
-            size = nsize;
-        }
-    }
-}
+const int *DisAsmIns(NativeRegistry &natreg, ostringstream &ss, const int *ip, const int *code,
+                     const type_elem_t *typetable, const bytecode::BytecodeFile *bcf);
 
-inline void LvalDisAsm(ostringstream &ss, const int *&ip) {
-    #define F(N) #N,
-    static const char *lvonames[] = { LVALOPNAMES };
-    #undef F
-    ss << lvonames[*ip++] << ' ';
-}
-
-inline const int *DisAsmIns(NativeRegistry &natreg, ostringstream &ss, const int *ip, const int *code,
-                            const type_elem_t *typetable, const bytecode::BytecodeFile *bcf) {
-    auto ilnames = ILNames();
-    auto li = LookupLine(ip, code, bcf);
-    // FIXME: some indication of the filename, maybe with a table index?
-    ss << "I " << int(ip - code) << " \tL " << li->line() << " \t";
-    if (*ip < 0 || *ip >= IL_MAX_OPS) {
-        ss << "ILLEGAL INSTRUCTION: " << *ip;
-        return nullptr;
-    }
-    ss << ilnames[*ip] << ' ';
-    int opc = *ip++;
-    if (opc < 0 || opc >= IL_MAX_OPS) {
-        ss << opc << " ?";
-        return ip;
-    }
-    switch(opc) {
-        case IL_PUSHINT:
-        case IL_PUSHFUN:
-        case IL_CONT1:
-        case IL_JUMP:
-        case IL_JUMPFAIL:
-        case IL_JUMPFAILR:
-        case IL_JUMPFAILN:
-        case IL_JUMPNOFAIL:
-        case IL_JUMPNOFAILR:
-        case IL_JUMPFAILREF:
-        case IL_JUMPFAILRREF:
-        case IL_JUMPFAILNREF:
-        case IL_JUMPNOFAILREF:
-        case IL_JUMPNOFAILRREF:
-        case IL_LOGREAD:
-        case IL_ISTYPE:
-        case IL_EXIT:
-        case IL_IFOR:
-        case IL_VFOR:
-        case IL_SFOR:
-        case IL_NFOR:
-        case IL_YIELD:
-        case IL_FUNEND:
-            ss << *ip++;
-            break;
-
-        case IL_PUSHINT64: {
-            int64_t v = (uint)*ip++;
-            v |= ((int64_t)*ip++) << 32;
-            ss << v;
-            break;
-        }
-
-        case IL_LOGWRITE:
-            ss << *ip++ << ' ';
-            ss << *ip++;
-            break;
-
-        case IL_RETURN: {
-            auto id = *ip++;
-            ip++;  // retvals
-            ip++;  // rettype
-            if (id >= 0) ss << flat_string_view(bcf->functions()->Get(id)->name());
-            else ss << id;
-            break;
-        }
-
-        case IL_CALLV:
-        case IL_CALLVCOND:
-            ss << "m:" << *ip++;
-            break;
-
-        case IL_CALL:
-        case IL_CALLMULTI: {
-            auto id = *ip++;
-            auto bc = *ip++;
-            auto tm = *ip++;
-            auto nargs = code[bc + (opc == IL_CALLMULTI ? 2 : 1)];
-            if (opc == IL_CALLMULTI) ip += nargs;  // arg types.
-            ss << nargs << ' ' << flat_string_view(bcf->functions()->Get(id)->name());
-            ss << ' ' << bc << " m:" << tm;
-            break;
-        }
-
-        case IL_NEWVEC: {
-            ip++;  // ti
-            auto nargs = *ip++;
-            ss << "vector " << nargs;
-            break;
-        }
-        case IL_NEWSTRUCT: {
-            auto ti = (TypeInfo *)(typetable + *ip++);
-            ss << flat_string_view(bcf->structs()->Get(ti->structidx)->name());
-            break;
-        }
-
-        case IL_BCALLRET0:
-        case IL_BCALLRET1:
-        case IL_BCALLRET2:
-        case IL_BCALLRET3:
-        case IL_BCALLRET4:
-        case IL_BCALLRET5:
-        case IL_BCALLRET6:
-        case IL_BCALLREF0:
-        case IL_BCALLREF1:
-        case IL_BCALLREF2:
-        case IL_BCALLREF3:
-        case IL_BCALLREF4:
-        case IL_BCALLREF5:
-        case IL_BCALLREF6:
-        case IL_BCALLUNB0:
-        case IL_BCALLUNB1:
-        case IL_BCALLUNB2:
-        case IL_BCALLUNB3:
-        case IL_BCALLUNB4:
-        case IL_BCALLUNB5:
-        case IL_BCALLUNB6: {
-            int a = *ip++;
-            ss << natreg.nfuns[a]->name;
-            break;
-        }
-
-        case IL_LVALVAR:
-            LvalDisAsm(ss, ip);
-        case IL_PUSHVAR:
-        case IL_PUSHVARREF:
-            ss << IdName(bcf, *ip++);
-            break;
-
-        case IL_LVALFLD:
-        case IL_LVALLOC:
-           LvalDisAsm(ss, ip);
-        case IL_PUSHFLD:
-        case IL_PUSHFLDREF:
-        case IL_PUSHFLDMREF:
-        case IL_PUSHLOC:
-            ss << *ip++;
-            break;
-
-        case IL_VLVALIDXI:
-        case IL_NLVALIDXI:
-        case IL_LVALIDXV:
-            LvalDisAsm(ss, ip);
-            break;
-
-        case IL_PUSHFLT:
-            ss << *(float *)ip;
-            ip++;
-            break;
-
-        case IL_PUSHSTR:
-            EscapeAndQuote(flat_string_view(bcf->stringtable()->Get(*ip++)), ss);
-            break;
-
-        case IL_FUNSTART: {
-            int n = *ip++;
-            while (n--) ss << IdName(bcf, *ip++) << ' ';
-            n = *ip++;
-            ss << "=> ";
-            while (n--) ss << IdName(bcf, *ip++) << ' ';
-            break;
-        }
-
-        case IL_CORO: {
-            ss << *ip++;
-            ip++;  // typeinfo
-            int n = *ip++;
-            for (int i = 0; i < n; i++) ss <<" v" << *ip++;
-            break;
-        }
-
-        case IL_FUNMULTI: {
-            auto n = *ip++;
-            auto nargs = *ip++;
-            ss << n << ' ' << nargs;
-            ip += (nargs + 1) * n;
-            break;
-        }
-    }
-    return ip;
-}
-
-inline void DisAsm(NativeRegistry &natreg, ostringstream &ss, string_view bytecode_buffer) {
-    auto bcf = bytecode::GetBytecodeFile(bytecode_buffer.data());
-    assert(FLATBUFFERS_LITTLEENDIAN);
-    auto code = (const int *)bcf->bytecode()->Data();  // Assumes we're on a little-endian machine.
-    auto typetable = (const type_elem_t *)bcf->typetable()->Data();  // Same.
-    auto len = bcf->bytecode()->Length();
-    const int *ip = code;
-    while (ip < code + len) {
-        ip = DisAsmIns(natreg, ss, ip, code, typetable, bcf);
-        ss << "\n";
-        if (!ip) break;
-    }
-}
+void DisAsm(NativeRegistry &natreg, ostringstream &ss, string_view bytecode_buffer);
 
 }  // namespace lobster
 
