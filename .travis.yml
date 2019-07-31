@@ -35,7 +35,7 @@ matrix:
     - os: linux
       env: WXLIB="libwxgtk3.0-dev"
     - os: osx
-      osx_image: xcode9.4
+      osx_image: xcode10.2
       compiler: gcc clang
       env: WXLIB="libwxgtk3.1-dev"
   exclude:
@@ -65,7 +65,7 @@ install:
          mkdir -p wxWidgets/build_osx ;
       fi;
       pushd wxWidgets/build_osx &&
-      ../configure --enable-unicode --disable-shared --with-osx_cocoa --without-libtiff CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk --with-macosx-version-min=10.7 CC=clang CXX=clang++ &&
+      ../configure --enable-unicode --disable-shared --with-osx_cocoa --without-libtiff CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk --with-macosx-version-min=10.7 CC=clang CXX=clang++ &&
       make &&
       sudo make install &&
       popd ;
@@ -82,6 +82,5 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       xcodebuild -project osx/TreeSheets/TreeSheets.xcodeproj ;
     else
-      cd src &&
-      make -j 4;
+      cmake . && make -j 4;
     fi
