@@ -209,6 +209,7 @@ struct Cell {
         parent = g;
         return this;
     }
+    bool IsParentOf(const Cell *c) { return c->parent == this || (c->parent && IsParentOf(c->parent)); }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
     wxString ToText(int indent, const Selection &s, int format, Document *doc) {
@@ -375,11 +376,14 @@ struct Cell {
         }
         if (c->text.image) text.image = c->text.image;
         if (c->grid) {
+            auto cg = new Grid(c->grid->xs, c->grid->ys);
+            c->grid->Clone(cg);
+            // Note: deleting grid may invalidate c if its a child of grid, so clear it.
+            c = nullptr;
             DELETEP(grid);  // FIXME: could merge instead?
-            grid = new Grid(c->grid->xs, c->grid->ys);
+            grid = cg;
             grid->cell = this;
-            c->grid->Clone(grid);
-            if (!HasText()) grid->MergeWithParent(parent->grid, s);
+            if (!HasText()) grid->MergeWithParent(parent->grid, s);  // deletes grid/this.
         }
     }
 

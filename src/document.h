@@ -349,13 +349,16 @@ struct Document {
         Cell *tc = begindrag.ThinExpand(this);
         selected = begindrag;
         if (tc) {
+            auto is_parent = tc->IsParentOf(c);
+            auto tc_parent = tc->parent;  // tc may be deleted.
             tc->Paste(this, c, begindrag);
-            if (isctrlshiftdrag == 1) {
+            // If is_parent, c has been deleted already.
+            if (isctrlshiftdrag == 1 && !is_parent) {
                 c->parent->AddUndo(this);
                 Selection cs = c->parent->grid->FindCell(c);
                 c->parent->grid->MultiCellDeleteSub(this, cs);
             }
-            hover = selected = tc->parent ? tc->parent->grid->FindCell(tc) : Selection();
+            hover = selected = tc_parent ? tc_parent->grid->FindCell(tc) : Selection();
         }
         Refresh();
     }
