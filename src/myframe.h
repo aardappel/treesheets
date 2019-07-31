@@ -118,6 +118,11 @@ struct MyFrame : wxFrame {
         wxIcon iconbig;
         icon.LoadFile(GetPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG);
         iconbig.LoadFile(GetPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG);
+        if (!icon.IsOk() || !iconbig.IsOk()) {
+            wxMessageBox(_(L"Error loading core data file (TreeSheets not installed correctly?)"),
+                         _(L"Initialization Error"), wxOK, this);
+            exit(1);
+        }
         #ifdef WIN32
         int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
         int iconlarge = ::GetSystemMetrics(SM_CXICON);
@@ -129,13 +134,9 @@ struct MyFrame : wxFrame {
         SetIcons(icons);
 
         wxImage foldiconi;
-        if (!line_nw.LoadFile(GetPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG) ||
-            !line_sw.LoadFile(GetPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG) ||
-            !foldiconi.LoadFile(GetPath(L"images/nuvola/fold.png"))) {
-            wxMessageBox(_(L"Error loading core data file (TreeSheets not installed correctly?)"),
-                         _(L"Initialization Error"), wxOK, this);
-            // FIXME: what is the correct way to exit?
-        }
+        line_nw.LoadFile(GetPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
+        line_sw.LoadFile(GetPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
+        foldiconi.LoadFile(GetPath(L"images/nuvola/fold.png"));
         foldicon = wxBitmap(foldiconi);
         ScaleBitmap(foldicon, csf / 3.0, foldicon);
 

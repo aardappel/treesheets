@@ -50,12 +50,12 @@ Windows:
 Linux:
 
 - Using the version of  wxWidgets from https://github.com/wxWidgets/wxWidgets.git
-  - There is no `--enable-unicode`, unicode is the default and can only be disabled
-  - There is no `--enable-optimization` in the configure options
-  - The only option as per the original README.md is now `--disabled-shared`
-- in the `src` folder `make -j8` should now compile treesheets without errors,
-  and place the exe in the `TS` folder.
-- `make dist-release` to tgz this folder (to the parent dir) to distribute.
+  - Follow the instructions to build there, but add `--enable-unicode` and
+   `--disabled-shared` to the `configure` step.
+- Build with `cmake -DCMAKE_BUILD_TYPE=Release .` or similar. Note that you must
+  currently use an "in tree" build, since TreeSheets will look for its files
+  relative to the binary.
+- There is also a `src/Makefile`, this is deprecated.
 
 OSX:
 

@@ -24,5 +24,8 @@ CMakeCache.txt
 CMakeFiles/**
 Makefile
 cmake_install.cmake
+CMakeLists.txt.user
 
 TreeSheets/.vs
+
+treesheets.cbp
