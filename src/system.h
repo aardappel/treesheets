@@ -445,7 +445,7 @@ struct System {
                     break;
                 }
             }
-            frame->GetCurTab()->doc->ChangeFileName(fn.BeforeLast(L'.').Append(L".cts"));
+            frame->GetCurTab()->doc->ChangeFileName(fn.Find(L'.') >= 0 ? fn.BeforeLast(L'.') : fn, true);
             frame->GetCurTab()->doc->ClearSelectionRefresh();
         }
         return nullptr;

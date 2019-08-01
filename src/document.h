@@ -140,7 +140,7 @@ struct Document {
     void InitWith(Cell *r, wxString filename) {
         rootgrid = r;
         selected = Selection(r->grid, 0, 0, 1, 1);
-        ChangeFileName(filename);
+        ChangeFileName(filename, false);
     }
 
     void UpdateFileName(int page = -1) {
@@ -148,8 +148,12 @@ struct Document {
                                  page);
     }
 
-    void ChangeFileName(const wxString &fn) {
+    void ChangeFileName(const wxString &fn, bool checkext) {
         filename = fn;
+        if (checkext) {
+            wxFileName wxfn(filename);
+            if (!wxfn.HasExt()) filename.Append(L".cts");
+        }
         UpdateFileName();
     }
 
@@ -727,7 +731,7 @@ struct Document {
                              L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*",
                              wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Save cancelled.");  // avoid name being set to ""
-        ChangeFileName(fn);
+        ChangeFileName(fn, true);
         return SaveDB(success);
     }
 
