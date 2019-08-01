@@ -1236,11 +1236,10 @@ struct Document {
                 if (selected.TextEdit()) break;
                 if (selected.g->cell->parent) {
                     selected = selected.g->cell->parent->grid->FindCell(selected.g->cell);
-                    ScrollOrZoom(dc);
                 } else {
                     selected.SelAll();
-                    Refresh();
                 }
+                ScrollOrZoom(dc);
                 return nullptr;
 
             case A_NEWGRID:
@@ -1252,13 +1251,12 @@ struct Document {
                     c->AddUndo(this);
                     c->AddGrid();
                     selected = Selection(c->grid, 0, 0, 1, 1);
-                    Refresh();
+                    DrawSelectMove(dc, selected, true);
                 }
                 return nullptr;
 
             case A_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
-
                 if (wxTheClipboard->Open()) {
                     wxTheClipboard->GetData(*dataobjc);
                     PasteOrDrop();
@@ -1283,7 +1281,7 @@ struct Document {
                     selected.Cursor(this, A_DOWN, false, false, dc, true);
                 } else {
                     selected.EnterEdit(this, 0, (int)c->text.t.Len());
-                    Refresh();
+                    DrawSelectMove(dc, selected, true);
                 }
                 return nullptr;
 
