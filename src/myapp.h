@@ -9,13 +9,13 @@ struct IPCServer : wxServer {
 
 struct MyApp : wxApp {
     MyFrame *frame;
-    wxSingleInstanceChecker *checker;
     IPCServer *serv;
     wxString filename;
     bool initateventloop;
     wxLocale locale;
+    wxSingleInstanceChecker *instance_checker = nullptr;
 
-    MyApp() : checker(nullptr), frame(nullptr), serv(nullptr), initateventloop(false) {}
+    MyApp() : frame(nullptr), serv(nullptr), initateventloop(false) {}
 
     void AddTranslation(const wxString &basepath) {
         #ifdef __WXGTK__
@@ -90,10 +90,8 @@ struct MyApp : wxApp {
             }
         }
 
-        const wxString name =
-            wxString::Format(L".treesheets-single-instance-check-%s", wxGetUserId().c_str());
-        wxSingleInstanceChecker checker(name);
-        if (checker.IsAnotherRunning()) {
+        instance_checker = new wxSingleInstanceChecker();
+        if (instance_checker->IsAnotherRunning()) {
             wxClient client;
             client.MakeConnection(L"localhost", L"4242",
                                   filename.Len() ? filename.wc_str() : L"*");  // fire and forget
@@ -123,7 +121,7 @@ struct MyApp : wxApp {
     int OnExit() {
         DELETEP(serv);
         DELETEP(sys);
-        DELETEP(checker);
+        DELETEP(instance_checker);
         return 0;
     }
 
