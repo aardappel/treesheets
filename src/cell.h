@@ -377,12 +377,12 @@ struct Cell {
         if (c->text.image) text.image = c->text.image;
         if (c->grid) {
             auto cg = new Grid(c->grid->xs, c->grid->ys);
+            cg->cell = this;
             c->grid->Clone(cg);
             // Note: deleting grid may invalidate c if its a child of grid, so clear it.
             c = nullptr;
             DELETEP(grid);  // FIXME: could merge instead?
             grid = cg;
-            grid->cell = this;
             if (!HasText()) grid->MergeWithParent(parent->grid, s);  // deletes grid/this.
         }
     }
