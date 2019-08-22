@@ -35,8 +35,8 @@ include(${wxWidgets_USE_FILE})
 file(GLOB sources src/*.cpp src/*.h
         lobster/external/flatbuffers/src/*.cpp
         lobster/src/builtins.cpp
-        lobster/src/disasm.cpp
         lobster/src/compiler.cpp
+        lobster/src/disasm.cpp
         lobster/src/file.cpp
         lobster/src/lobsterreader.cpp
         lobster/src/platform.cpp
