@@ -20,8 +20,12 @@ DIST_ARGS?=	-caf
 APPNAME=	treesheets
 SRCS=	main.cpp \
         lobster_impl.cpp \
+        ../lobster/external/flatbuffers/src/idl_gen_text.cpp \
+        ../lobster/external/flatbuffers/src/idl_parser.cpp \
+        ../lobster/external/flatbuffers/src/util.cpp \
         ../lobster/src/builtins.cpp \
         ../lobster/src/compiler.cpp \
+        ../lobster/src/disasm.cpp \
         ../lobster/src/file.cpp \
         ../lobster/src/lobsterreader.cpp \
         ../lobster/src/platform.cpp \
