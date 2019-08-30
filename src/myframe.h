@@ -1001,7 +1001,7 @@ struct MyFrame : wxFrame {
 
     void OnIconize(wxIconizeEvent &me) {
         if (me.IsIconized()) {
-            #ifdef WIN32
+            #ifndef __WXMAC__
             if (sys->totray) {
                 tbi.SetIcon(icon, L"TreeSheets");
                 Show(false);
@@ -1009,6 +1009,11 @@ struct MyFrame : wxFrame {
             }
             #endif
         } else {
+            #ifdef __WXGTK__
+            if (sys->totray) {
+                Show(true);
+            }
+            #endif
             if (GetCurTab()) GetCurTab()->SetFocus();
         }
     }
