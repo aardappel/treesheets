@@ -1,9 +1,9 @@
 # Add [ci skip] to the commit message to prevent test execution
 # whitelist
 branches:
-  only:
-    - master
-    - testing
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)/
 
 notifications:
   slack:
@@ -79,8 +79,37 @@ install:
     fi
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      xcodebuild -project osx/TreeSheets/TreeSheets.xcodeproj ;
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      xcodebuild -project osx/TreeSheets/TreeSheets.xcodeproj
     else
-      cmake . && make -j 4;
+      cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+      make -j$(nproc)
+      make DESTDIR=appdir -j$(nproc) install
+      wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+      chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+      # FIXME: The following reshuffling can be removed once https://github.com/aardappel/treesheets/issues/133 is resolved
+      mkdir -p appdir/usr/share/applications # FIXME
+      mv appdir/usr/treesheets.desktop appdir/usr/share/applications/ # FIXME
+      sed -i -e 's|^Exec=.*|Exec=treesheets|g' appdir/usr/share/applications/treesheets.desktop
+      sed -i -e 's|^Icon=.*|Icon=treesheets|g' appdir/usr/share/applications/treesheets.desktop
+      mkdir -p appdir/usr/bin/ # FIXME
+      mv appdir/usr/docs appdir/usr/bin/ # FIXME
+      mv appdir/usr/examples appdir/usr/bin/ # FIXME
+      mv appdir/usr/treesheets appdir/usr/bin/ # FIXME
+      mv appdir/usr/translations appdir/usr/bin/ # FIXME
+      strip TS/treesheets # FIXME
+      cp TS/treesheets appdir/usr/bin/ # FIXME
+      ls -lh appdir/usr/bin/treesheets && chmod a+x appdir/usr/bin/treesheets
+      mv appdir/usr/scripts appdir/usr/bin/ # FIXME
+      mv appdir/usr/images appdir/usr/bin/ # FIXME
+      mkdir -p appdir/usr/share/icons/hicolor/scalable/apps/ # FIXME
+      cp appdir/usr/bin/images/treesheets.svg appdir/usr/share/icons/hicolor/scalable/apps/ # FIXME
+      ( cd appdir ; ln -s usr/bin/docs/ usr/bin/examples/ usr/bin/images/ usr/bin/scripts/ usr/bin/translations/ . )
+      sed -i -e 's|1011|1002|g' appdir/usr/bin/treesheets # https://github.com/aardappel/treesheets/issues/130#issuecomment-528075693
+      cp AppImage/AppRun appdir/ ; chmod +x appdir/AppRun # https://github.com/aardappel/treesheets/issues/130#issuecomment-528079076
+      find appdir/
+      ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
+      wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+      bash upload.sh TreeSheets*.AppImage*  
     fi
