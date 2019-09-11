@@ -98,8 +98,20 @@ struct MyApp : wxApp {
             return false;
         }
 
+        auto exepath = argv[0];
+        #ifdef __WXGTK__
+            // argv[0] could be relative, this is apparently a more robust way to get the
+            // full path.
+            char path[PATH_MAX];
+            auto len = readlink("/proc/self/exe", path, PATH_MAX - 1);
+            if (len >= 0) {
+                path[len] = 0;
+                exepath = path;
+            }
+        #endif
+
         sys = new System(portable);
-        frame = new MyFrame(argv[0], this);
+        frame = new MyFrame(exepath, this);
         SetTopWindow(frame);
 
         serv = new IPCServer();
