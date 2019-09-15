@@ -107,7 +107,6 @@ script:
       cp appdir/usr/bin/images/treesheets.svg appdir/usr/share/icons/hicolor/scalable/apps/ # FIXME
       ( cd appdir ; ln -s usr/bin/docs/ usr/bin/examples/ usr/bin/images/ usr/bin/scripts/ usr/bin/translations/ . )
       sed -i -e 's|1011|1002|g' appdir/usr/bin/treesheets # https://github.com/aardappel/treesheets/issues/130#issuecomment-528075693
-      cp AppImage/AppRun appdir/ ; chmod +x appdir/AppRun # https://github.com/aardappel/treesheets/issues/130#issuecomment-528079076
       find appdir/
       ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
       wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
