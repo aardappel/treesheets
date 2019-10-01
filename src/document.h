@@ -893,7 +893,9 @@ struct Document {
                 info.SetName(L"TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));
                 info.SetCopyright(L"(C) 2009 Wouter van Oortmerssen");
-                info.SetDescription(_(L"The Free Form Hierarchical Information Organizer"));
+                wxString desc = wxString::Format(L"%s\n\n%s " wxVERSION_STRING,
+                                     _(L"The Free Form Hierarchical Information Organizer"), _(L"Uses"));
+                info.SetDescription(desc);
                 wxAboutBox(info);
                 return nullptr;
             }
