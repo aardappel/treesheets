@@ -61,6 +61,8 @@ enum {
     A_TRANSPOSE,
     A_DELETE,
     A_BACKSPACE,
+    A_DELETE_WORD,
+    A_BACKSPACE_WORD,
     A_LEFT,
     A_RIGHT,
     A_UP,

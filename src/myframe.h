@@ -381,6 +381,10 @@ struct MyFrame : wxFrame {
             MyAppend(
                 editmenu, A_BACKSPACE, _(L"Delete Before\tBACK"),
                 _(L"Deletes the column of cells before the selected grid line, or the row above"));
+            MyAppend(editmenu, A_DELETE_WORD, _(L"Delete Word After\tCTRL+DEL"),
+                     _(L"Deletes the entire word after the cursor"));
+            MyAppend(editmenu, A_BACKSPACE_WORD, _(L"Delete Word Before\tCTRL+BACK"),
+                     _(L"Deletes the entire word before the cursor"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_NEWGRID,
                      #ifdef __WXMAC__
