@@ -314,9 +314,9 @@ nfr("im_tooltip", "label", "S", "", "",
     });
 
 nfr("im_checkbox", "label,bool", "SI", "I2", "",
-    [](VM &vm, Value &text, Value &boolean) {
+    [](VM &vm, Value &text, Value &boolval) {
         IsInit(vm);
-        bool b = boolean.True();
+        bool b = boolval.True();
         ImGui::Checkbox(text.sval()->data(), &b);
         return Value(b);
     });

@@ -130,12 +130,10 @@ Mesh *CreatePolygon(VM &vm, Value &vl) {
     return m;
 }
 
-Value SetUniform(VM &vm, const Value &name, const float *data, int len, bool ignore_errors) {
+Value SetUniform(VM &vm, const Value &name, const float *data, int len) {
     TestGL(vm);
     currentshader->Activate();
     auto ok = currentshader->SetUniform(name.sval()->strv(), data, len);
-    if (!ok && !ignore_errors)
-        vm.Error("failed to set uniform: " + name.sval()->strv());
     return Value(ok);
 }
 
@@ -186,7 +184,7 @@ nfr("gl_load_materials", "materialdefs,inline", "SI?", "S?",
 
 nfr("gl_frame", "", "", "B",
     "advances rendering by one frame, swaps buffers, and collects new input events."
-    " returns true if the closebutton on the window was pressed",
+    " returns false if the closebutton on the window was pressed",
     [](VM &vm) {
         TestGL(vm);
         EngineSuspendIfNeeded();
@@ -724,7 +722,6 @@ nfr("gl_new_mesh", "format,positions,colors,normals,texcoords1,texcoords2,indice
             // if no normals were specified, generate them.
             normalize_mesh(make_span(idxs), verts, nverts, vsize, normal_offset);
         }
-        // FIXME: make meshes into points in a more general way.
         auto m = new Mesh(new Geometry(make_span(verts, nverts * vsize), fmt, span<uchar>(), vsize),
                           indices.True() ? PRIM_TRIS : PRIM_POINT);
         if (idxs.size()) m->surfs.push_back(new Surface(make_span(idxs)));
@@ -780,6 +777,16 @@ nfr("gl_save_mesh", "m,name", "RS", "B",
         return Value(ok);
     });
 
+nfr("gl_mesh_pointsize", "m,pointsize", "RF", "",
+    "sets the pointsize for this mesh. "
+    "the mesh must have been created with indices = nil for point rendering to be used. "
+    "you also want to use a shader that works with points, such as color_attr_particle.",
+    [](VM &vm, Value &i, Value &ps) {
+        auto &m = GetMesh(vm, i);
+        m.pointsize = ps.fltval();
+        return Value();
+    });
+
 nfr("gl_set_shader", "shader", "S", "",
     "changes the current shader. shaders must reside in the shaders folder, builtin ones are:"
     " color / textured / phong",
@@ -791,23 +798,22 @@ nfr("gl_set_shader", "shader", "S", "",
         return Value();
     });
 
-nfr("gl_set_uniform", "name,value,ignore_errors", "SF}I?", "B",
+nfr("gl_set_uniform", "name,value", "SF}", "B",
     "set a uniform on the current shader. size of float vector must match size of uniform"
-    " in the shader.",
+    " in the shader. returns false on error.",
     [](VM &vm) {
-        auto ignore_errors = vm.Pop().True();
         auto len = vm.Top().intval();
         auto v = vm.PopVec<float4>();
-        auto r = SetUniform(vm, vm.Pop(), v.begin(), len, ignore_errors);
+        auto r = SetUniform(vm, vm.Pop(), v.begin(), len);
         vm.Push(r);
     });
 
-nfr("gl_set_uniform", "name,value,ignore_errors", "SFI?", "B",
+nfr("gl_set_uniform", "name,value", "SF", "B",
     "set a uniform on the current shader. uniform"
-    " in the shader must be a single float.",
-    [](VM &vm, Value &name, Value &vec, Value &ignore_errors) {
+    " in the shader must be a single float. returns false on error.",
+    [](VM &vm, Value &name, Value &vec) {
         auto f = vec.fltval();
-        return SetUniform(vm, name, &f, 1, ignore_errors.True());
+        return SetUniform(vm, name, &f, 1);
     });
 
 nfr("gl_set_uniform_array", "name,value", "SF}:4]", "B",

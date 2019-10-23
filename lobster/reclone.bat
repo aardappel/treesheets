@@ -4,7 +4,7 @@ rmdir /s /q src
 rmdir /s /q lobster
 rmdir /s /q include
 rmdir /s /q external
-rmdir /s /q ..\TS\scripts\include
+rmdir /s /q ..\TS\scripts\modules
 
 rem Copy selected dirs we need to build just the language core.
 

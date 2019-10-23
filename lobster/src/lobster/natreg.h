@@ -108,6 +108,7 @@ struct Type {
     }
 
     Type *Wrap(Type *dest, ValueType with) const {
+        assert(dest != this);
         *dest = Type(with, this);
         return dest;
     }

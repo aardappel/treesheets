@@ -29,3 +29,6 @@ CMakeLists.txt.user
 TreeSheets/.vs
 
 treesheets.cbp
+TreeSheets/x64
+*.ipdb
+*.iobj

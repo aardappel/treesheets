@@ -321,23 +321,23 @@ nfr("slice", "xs,start,size", "A]*II", "A]1",
 nfr("any", "xs", "I}", "B",
     "returns wether any elements of the numeric struct are true values",
     [](VM &vm) {
-        auto r = false; 
-        auto l = vm.Pop().ival(); 
-        for (intp i = 0; i < l; i++) { 
+        auto r = false;
+        auto l = vm.Pop().ival();
+        for (intp i = 0; i < l; i++) {
             if (vm.Pop().True()) r = true;
-        } 
+        }
         vm.Push(r);
     });
 
 nfr("any", "xs", "A]*", "B",
     "returns wether any elements of the vector are true values",
     [](VM &, Value &v) {
-        Value r(false); 
-        intp l = v.vval()->len; 
-        for (auto i = 0; i < l; i++) { 
-            if (v.vval()->At(i).True()) { r = Value(true); break; } 
-        } 
-        return r; 
+        Value r(false);
+        intp l = v.vval()->len;
+        for (auto i = 0; i < l; i++) {
+            if (v.vval()->At(i).True()) { r = Value(true); break; }
+        }
+        return r;
     });
 
 nfr("all", "xs", "I}", "B",
@@ -1005,7 +1005,7 @@ nfr("circles_within_range", "dist,positions,radiuses,positions2,radiuses2,gridsi
             n.next = nullptr;
         }
         vector<Node *> cells(ncelld.x * ncelld.y, nullptr);
-        auto wsize = maxpos - minpos;
+        auto wsize = max(maxpos - minpos, floatp2(0.0001f));  // Avoid either dim being 0.
         wsize *= 1.00001f;  // No objects may fall exactly on the far border.
         auto tocellspace = [&](const floatp2 &pos) {
             return intp2((pos - minpos) / wsize * floatp2(ncelld));

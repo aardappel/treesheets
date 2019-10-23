@@ -328,10 +328,6 @@ Value VM::Error(string err, const RefObj *a, const RefObj *b) {
         #endif
         VarCleanup<1>(ss.tellp() < 10000 ? &ss : nullptr, -2 /* clean up temps always */);
     }
-    ss << "\nglobals:";
-    for (size_t i = 0; i < bcf->specidents()->size(); ) {
-        i += DumpVar(ss, vars[i], i, true);
-    }
     THROW_OR_ABORT(ss.str());
 }
 
@@ -355,10 +351,13 @@ void VM::VMAssert(const char *what, const RefObj *a, const RefObj *b)  {
     #define VMTYPEEQ(val, vt) { (void)(val); (void)(vt); }
 #endif
 
-int VM::DumpVar(ostringstream &ss, const Value &x, size_t idx, bool dumpglobals) {
+int VM::DumpVar(ostringstream &ss, const Value &x, size_t idx) {
     auto sid = bcf->specidents()->Get((uint)idx);
     auto id = bcf->idents()->Get(sid->ididx());
-    if (id->readonly() || id->global() != dumpglobals) return 1;
+    // FIXME: this is not ideal, it filters global "let" declared vars.
+    // It should probably instead filter global let vars whose values are entirely
+    // constructors, and which are never written to.
+    if (id->readonly() && id->global()) return 1;
     auto name = id->name()->string_view();
     auto &ti = GetVarTypeInfo((int)idx);
     #if RTT_ENABLED
@@ -414,11 +413,11 @@ template<int is_error> int VM::VarCleanup(ostringstream *error, int towhere) {
         // Do this first, since values may get deleted below.
         for (int j = 0; j < ndef; ) {
             auto i = *(defvars - j - 1);
-            j += DumpVar(*error, vars[i], i, false);
+            j += DumpVar(*error, vars[i], i);
         }
         for (int j = 0; j < nargs; ) {
             auto i = *(freevars - j - 1);
-            j += DumpVar(*error, vars[i], i, false);
+            j += DumpVar(*error, vars[i], i);
         }
     }
     for (int i = 0; i < nkeepvars; i++) VM_POP().LTDECRTNIL(*this);
@@ -948,7 +947,7 @@ VM_JMP_RET VM::ForLoop(intp len) {
         auto cont = *ip++;
     #endif
     auto &i = VM_TOPM(1);
-    assert(i.type == V_INT);
+    TYPE_ASSERT(i.type == V_INT);
     i.setival(i.ival() + 1);
     if (i.ival() < len) {
         #ifdef VM_COMPILED_CODE_MODE
@@ -981,7 +980,7 @@ VM_INS_RET VM::U_SFORELEM()    { FORELEM(iter.sval()->len); VM_PUSH(Value((int)(
 
 VM_INS_RET VM::U_FORLOOPI() {
     auto &i = VM_TOPM(1);  // This relies on for being inlined, otherwise it would be 2.
-    assert(i.type == V_INT);
+    TYPE_ASSERT(i.type == V_INT);
     VM_PUSH(i);
     VM_RET;
 }
@@ -1083,9 +1082,9 @@ VM_INS_RET VM::U_DUP()    { auto x = VM_TOP(); VM_PUSH(x); VM_RET; }
     if (extras & 1 && b.field == 0) Div0(); res = a.field op b.field;
 
 #define _IOP(op, extras) \
-    TYPEOP(op, extras, ival(), assert(a.type == V_INT && b.type == V_INT))
+    TYPEOP(op, extras, ival(), TYPE_ASSERT(a.type == V_INT && b.type == V_INT))
 #define _FOP(op, extras) \
-    TYPEOP(op, extras, fval(), assert(a.type == V_FLOAT && b.type == V_FLOAT))
+    TYPEOP(op, extras, fval(), TYPE_ASSERT(a.type == V_FLOAT && b.type == V_FLOAT))
 
 #define _GETA() VM_TOPPTR() - len
 #define _VOP(op, extras, V_T, field, withscalar, geta) { \
@@ -1602,7 +1601,7 @@ LVALCASES(FDIVR  , _FOP(/, 1); a = res; VM_PUSH(res))
 LVALCASESTR(SADD , _SCAT(),    a = res;          )
 LVALCASESTR(SADDR, _SCAT(),    a = res; VM_PUSH(res))
 
-#define OVERWRITE_VAR(a, b) { assert(a.type == b.type || a.type == V_NIL || b.type == V_NIL); a = b; }
+#define OVERWRITE_VAR(a, b) { TYPE_ASSERT(a.type == b.type || a.type == V_NIL || b.type == V_NIL); a = b; }
 
 void VM::LV_WRITE    (Value &a) { auto  b = VM_POP();                      OVERWRITE_VAR(a, b); }
 void VM::LV_WRITER   (Value &a) { auto &b = VM_TOP();                      OVERWRITE_VAR(a, b); }
@@ -1667,9 +1666,11 @@ void VM::BCallRetCheck(const NativeFun *nf) {
         // values.
         if (!nf->cont1) {
             for (size_t i = 0; i < nf->retvals.v.size(); i++) {
+                #ifndef NDEBUG
                 auto t = (VM_TOPPTR() - nf->retvals.v.size() + i)->type;
                 auto u = nf->retvals.v[i].type->t;
                 assert(t == u || u == V_ANY || u == V_NIL || (u == V_VECTOR && IsUDT(t)));
+                #endif
             }
             assert(nf->retvals.v.size() || VM_TOP().type == V_NIL);
         }

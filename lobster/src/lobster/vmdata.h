@@ -338,8 +338,10 @@ struct InsPtr {
 
 #if RTT_ENABLED
     #define TYPE_INIT(t) type(t),
+    #define TYPE_ASSERT(c) assert(c)
 #else
     #define TYPE_INIT(t)
+    #define TYPE_ASSERT(c)
 #endif
 
 // These pointer types are for use inside Value below. In most other parts of the code we
@@ -416,28 +418,28 @@ struct Value {
     public:
 
     // These asserts help track down any invalid code generation issues.
-    intp        ival  () const { assert(type == V_INT);        return ival_;        }
-    floatp      fval  () const { assert(type == V_FLOAT);      return fval_;        }
-    int         intval() const { assert(type == V_INT);        return (int)ival_;   }
-    float       fltval() const { assert(type == V_FLOAT);      return (float)fval_; }
-    LString    *sval  () const { assert(type == V_STRING);     return sval_;        }
-    LVector    *vval  () const { assert(type == V_VECTOR);     return vval_;        }
-    LObject    *oval  () const { assert(type == V_CLASS);      return oval_;        }
-    LCoRoutine *cval  () const { assert(type == V_COROUTINE);  return cval_;        }
-    LResource  *xval  () const { assert(type == V_RESOURCE);   return xval_;        }
-    RefObj     *ref   () const { assert(IsRef(type));          return ref_;         }
-    RefObj     *refnil() const { assert(IsRefNil(type));       return ref_;         }
-    InsPtr      ip    () const { assert(type >= V_FUNCTION);   return ip_;          }
-    void       *any   () const {                               return ref_;         }
-    TypeInfo   *tival () const { assert(type == V_STRUCT_S);   return ti_;        }
+    intp        ival  () const { TYPE_ASSERT(type == V_INT);        return ival_;        }
+    floatp      fval  () const { TYPE_ASSERT(type == V_FLOAT);      return fval_;        }
+    int         intval() const { TYPE_ASSERT(type == V_INT);        return (int)ival_;   }
+    float       fltval() const { TYPE_ASSERT(type == V_FLOAT);      return (float)fval_; }
+    LString    *sval  () const { TYPE_ASSERT(type == V_STRING);     return sval_;        }
+    LVector    *vval  () const { TYPE_ASSERT(type == V_VECTOR);     return vval_;        }
+    LObject    *oval  () const { TYPE_ASSERT(type == V_CLASS);      return oval_;        }
+    LCoRoutine *cval  () const { TYPE_ASSERT(type == V_COROUTINE);  return cval_;        }
+    LResource  *xval  () const { TYPE_ASSERT(type == V_RESOURCE);   return xval_;        }
+    RefObj     *ref   () const { TYPE_ASSERT(IsRef(type));          return ref_;         }
+    RefObj     *refnil() const { TYPE_ASSERT(IsRefNil(type));       return ref_;         }
+    InsPtr      ip    () const { TYPE_ASSERT(type >= V_FUNCTION);   return ip_;          }
+    void       *any   () const {                                    return ref_;         }
+    TypeInfo   *tival () const { TYPE_ASSERT(type == V_STRUCT_S);   return ti_;          }
 
     template<typename T> T ifval() const {
-        if constexpr (is_floating_point<T>()) { assert(type == V_FLOAT); return (T)fval_; }
-        else                                  { assert(type == V_INT);   return (T)ival_; }
+        if constexpr (is_floating_point<T>()) { TYPE_ASSERT(type == V_FLOAT); return (T)fval_; }
+        else                                  { TYPE_ASSERT(type == V_INT);   return (T)ival_; }
     }
 
-    void setival(intp i)   { assert(type == V_INT);   ival_ = i; }
-    void setfval(floatp f) { assert(type == V_FLOAT); fval_ = f; }
+    void setival(intp i)   { TYPE_ASSERT(type == V_INT);   ival_ = i; }
+    void setfval(floatp f) { TYPE_ASSERT(type == V_FLOAT); fval_ = f; }
 
     inline Value()                   : TYPE_INIT(V_NIL)        ref_(nullptr)    {}
     inline Value(int i)              : TYPE_INIT(V_INT)        ival_(i)         {}
@@ -462,7 +464,7 @@ struct Value {
     inline bool True() const { return ival_ != 0; }
 
     inline Value &LTINCRT() {
-        assert(IsRef(type) && ref_);
+        TYPE_ASSERT(IsRef(type) && ref_);
         ref_->Inc();
         return *this;
     }
@@ -476,7 +478,7 @@ struct Value {
     }
 
     inline void LTDECRT(VM &vm) const {  // we already know its a ref type
-        assert(IsRef(type) && ref_);
+        TYPE_ASSERT(IsRef(type) && ref_);
         ref_->Dec(vm);
     }
     inline void LTDECRTNIL(VM &vm) const {
@@ -709,9 +711,9 @@ struct TupleSpace {
     };
     vector<TupleType> tupletypes;
 
-    atomic<bool> alive = true;
+    atomic<bool> alive;
 
-    TupleSpace(size_t numstructs) : tupletypes(numstructs) {}
+    TupleSpace(size_t numstructs) : tupletypes(numstructs), alive(true) {}
 
     ~TupleSpace() {
         for (auto &tt : tupletypes) for (auto p : tt.tuples) delete[] p;
@@ -846,7 +848,7 @@ struct VM : VMArgs {
     void VMAssert(const char *what);
     void VMAssert(const char *what, const RefObj *a, const RefObj *b);
 
-    int DumpVar(ostringstream &ss, const Value &x, size_t idx, bool dumpglobals);
+    int DumpVar(ostringstream &ss, const Value &x, size_t idx);
 
     void FinalStackVarsCleanup();
 

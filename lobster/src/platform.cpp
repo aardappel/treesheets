@@ -47,7 +47,7 @@
 
 #ifdef __ANDROID__
 #include <android/log.h>
-#include "sdlincludes.h"  // FIXME
+#include "lobster/sdlincludes.h"  // FIXME
 #endif
 
 // Dirs to load files relative to, they typically contain, and will be searched in this order:

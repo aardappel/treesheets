@@ -27,7 +27,12 @@ inline string IdName(const bytecode::BytecodeFile *bcf, int i) {
     int j = i;
     // FIXME: this theoretically can span 2 specializations of the same var.
     while (j && bcf->specidents()->Get(j - 1)->ididx() == idx) j--;
-    auto basename = bcf->idents()->Get(idx)->name()->string_view();
+    auto basename = bcf->idents()->Get(idx)->name()->
+    #ifdef __ANDROID__
+        str();
+    #else
+        string_view();
+    #endif
     return j == i ? string(basename) : cat(basename, '+', i - j);
 }
 

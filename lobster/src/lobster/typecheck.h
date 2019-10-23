@@ -274,6 +274,9 @@ struct TypeChecker {
                 *(Type *)&*v = *type;  // Overwrite Type struct!
                 v = next;
             } while (&*v != &*hasvar);  // Force TypeRef pointer comparison.
+            // TODO: A fundamental problem with this overwriting is that we have to rely on
+            // the caller to not allow to create non-sensical types, like a nil of nil,
+            // but we can't assert that this isn't happening without knowing the parent of hasvar.
         }
     }
 
@@ -285,7 +288,7 @@ struct TypeChecker {
         }
         switch (sub->t) {
             case V_VOID:      return coercions;
-            case V_VAR:       UnifyVar(type, sub); return true;
+            case V_VAR:       if (unifications) UnifyVar(type, sub); return unifications;
             case V_FLOAT:     return type->t == V_INT && coercions;
             case V_INT:       return (type->t == V_TYPEID && coercions) ||
                                      (type->t == V_INT && !sub->e);
@@ -1352,7 +1355,7 @@ struct TypeChecker {
         // Early out, numeric types are not nillable, nor do they make any sense for "is"
         auto &type = left.now;
         if (type->Numeric()) return type;
-        for (auto flow : reverse(flowstack)) {
+        for (auto &flow : reverse(flowstack)) {
             if (flow.sid == left.sid) {
                 if (left.derefs.empty()) {
                     if (flow.derefs.empty()) {
@@ -1371,7 +1374,7 @@ struct TypeChecker {
             }
             continue;
             found:
-            if (!ConvertsTo(overwritetype, flow.now, coercions)) {
+            if (!ConvertsTo(overwritetype, flow.now, coercions, false)) {
                 // FLow based promotion is invalidated.
                 flow.now = flow.old;
                 // TODO: It be cool to instead overwrite with whatever type is currently being
