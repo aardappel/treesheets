@@ -55,6 +55,7 @@ enum {
     A_EXPXML,
     A_EXPHTMLT,
     A_EXPHTMLO,
+    A_EXPHTMLB,
     A_EXPTEXT,
     A_ZOOMIN,
     A_ZOOMOUT,

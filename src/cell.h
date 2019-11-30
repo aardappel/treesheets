@@ -260,6 +260,10 @@ struct Cell {
             str.Prepend(L"<td style=\"" + style + L"\">");
             str.Append(L' ', indent);
             str.Append(L"</td>\n");
+        } else if (format == A_EXPHTMLB && (text.t.Len() || grid) && this != doc->curdrawroot) {
+            str.Prepend(L"<li>");
+            str.Append(L' ', indent);
+            str.Append(L"</li>\n");
         } else if (format == A_EXPHTMLO && text.t.Len()) {
             wxString h = wxString(L"h") + wxChar(L'0' + indent / 2) + L">";
             str.Prepend(L"<" + h);

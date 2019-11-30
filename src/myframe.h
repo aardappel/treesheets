@@ -167,6 +167,8 @@ struct MyFrame : wxFrame {
         MyAppend(expmenu, A_EXPHTMLT, _(L"&HTML (Tables+Styling)..."),
                  _(L"Export the current view as HTML using nested tables, that will look somewhat "
                    L"like the TreeSheet"));
+        MyAppend(expmenu, A_EXPHTMLB, _(L"HTML (&Bullet points)..."),
+                 _(L"Export the current view as HTML as nested bullet points."));
         MyAppend(expmenu, A_EXPHTMLO, _(L"HTML (&Outline)..."),
                  _(L"Export the current view as HTML as nested headers, suitable for importing into "
                    L"Word's outline mode"));

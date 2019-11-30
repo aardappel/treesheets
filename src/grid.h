@@ -500,7 +500,7 @@ struct Grid {
     }
 
     void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
-        assert(((dx < 0) == (nxs == 0)) && 
+        assert(((dx < 0) == (nxs == 0)) &&
                ((dy < 0) == (nys == 0)));
         assert(nxs + nys == 1);
         Cell **ocells = cells;
@@ -562,13 +562,17 @@ struct Grid {
         return true;
     }
 
-    void Formatter(wxString &r, int format, int indent, const wxChar *xml, const wxChar *html) {
+    void Formatter(wxString &r, int format, int indent, const wxChar *xml, const wxChar *html,
+                   const wxChar *htmlb) {
         if (format == A_EXPXML) {
             r.Append(L' ', indent);
             r.Append(xml);
         } else if (format == A_EXPHTMLT) {
             r.Append(L' ', indent);
             r.Append(html);
+        } else if (format == A_EXPHTMLB && *htmlb) {
+            r.Append(L' ', indent);
+            r.Append(htmlb);
         }
     }
 
@@ -578,21 +582,23 @@ struct Grid {
 
     wxString ConvertToText(const Selection &s, int indent, int format, Document *doc) {
         wxString r;
-        Formatter(r, format, indent, L"<grid>\n",
-                  wxString::Format(
-                      L"<table cellspacing=0 cellpadding=3 style=\"border-width: %dpt; border-style: solid; font-size: %dpt;\">\n",
-                      cell == doc->rootgrid ? 0 : // Until the user_grid_outer_spacing of the root cell can be adjusted,
-                                                  // using its default value doesn't make sense here
-                          user_grid_outer_spacing-1,
-                      12 - indent / 2)
-                      .wc_str());
+        const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
+        const int font_size = 14 - indent / 2;
+        const int grid_border_width =
+            cell == doc->rootgrid ? root_grid_spacing : user_grid_outer_spacing - 1;
+        Formatter(r, format, indent,
+                  L"<grid>\n",
+                  wxString::Format(L"<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
+                      grid_border_width, font_size).wc_str(),
+                  wxString::Format(L"<ul style=\"font-size: %dpt;\">\n",
+                      font_size).wc_str());
         foreachcellinsel(c, s) {
-            if (x == 0) Formatter(r, format, indent, L"<row>\n", L"<tr valign=top>\n");
+            if (x == 0) Formatter(r, format, indent, L"<row>\n", L"<tr valign=top>\n", L"");
             r.Append(c->ToText(indent, s, format, doc));
             if (format == A_EXPCSV) r.Append(x == xs - 1 ? '\n' : ',');
-            if (x == xs - 1) Formatter(r, format, indent, L"</row>\n", L"</tr>\n");
+            if (x == xs - 1) Formatter(r, format, indent, L"</row>\n", L"</tr>\n", L"");
         }
-        Formatter(r, format, indent, L"</grid>\n", L"</table>\n");
+        Formatter(r, format, indent, L"</grid>\n", L"</table>\n", L"</ul>\n");
         return r;
     }
 

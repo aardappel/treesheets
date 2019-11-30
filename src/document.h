@@ -704,11 +704,16 @@ struct Document {
                     dos.WriteString(content);
                     break;
                 case A_EXPHTMLT:
+                case A_EXPHTMLB:
                 case A_EXPHTMLO:
                     dos.WriteString(
-                        L"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 "
-                        L"Final//EN\">\n<html>\n<head>\n<title>export of "
-                        L"TreeSheets file ");
+                        L"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
+                        L"<html>\n<head>\n<style>\n"
+                        L"body { font-family: sans-serif; }\n"
+                        L"table, th, td { border: 1px solid grey; border-collapse: collapse;"
+                        L" padding: 3px; }\n"
+                        L"li { }\n</style>\n"
+                        L"<title>export of TreeSheets file ");
                     dos.WriteString(filename);
                     dos.WriteString(
                         L"</title>\n<meta http-equiv=\"Content-Type\" content=\"text/html; "
@@ -843,6 +848,7 @@ struct Document {
 
             case A_EXPXML: return Export(L"xml", L"*.xml", _(L"Choose XML file to write"), k);
             case A_EXPHTMLT:
+            case A_EXPHTMLB:
             case A_EXPHTMLO: return Export(L"html", L"*.html", _(L"Choose HTML file to write"), k);
             case A_EXPTEXT: return Export(L"txt", L"*.txt", _(L"Choose Text file to write"), k);
             case A_EXPIMAGE: return Export(L"png", L"*.png", _(L"Choose PNG file to write"), k);
