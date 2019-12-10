@@ -82,7 +82,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       xcodebuild -project osx/TreeSheets/TreeSheets.xcodeproj
-    else
+    elif [[ "$TRAVIS_OS_NAME" == "linux" && "$WXLIB" == "libwxgtk3.0-dev" ]]; then
       cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
       make -j$(nproc)
       make DESTDIR=appdir -j$(nproc) install
@@ -114,5 +114,5 @@ script:
       find appdir/
       ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
       wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-      bash upload.sh TreeSheets*.AppImage*  
+      bash upload.sh TreeSheets*.AppImage*
     fi
