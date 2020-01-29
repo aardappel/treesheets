@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: SIMPLIFIED CHINESE <LL@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=GB2312\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2.4\n"
 
@@ -25,240 +25,240 @@ msgid ""
 "Would you like to discard your changes and re-load from disk?"
 msgstr ""
 "%s\n"
-"å·²è¢«å¦ä¸€ä¸ªç¨‹åº/è®¡ç®—æœºä¿®æ”¹ä¸Šï¼š\n"
-"æ˜¯å¦è¦æ”¾å¼ƒæ‰€åšçš„æ›´æ”¹å¹¶ä»ç£ç›˜é‡æ–°åŠ è½½ï¼Ÿ"
+"ÒÑ±»ÁíÒ»¸ö³ÌĞò/¼ÆËã»úĞŞ¸ÄÉÏ£º\n"
+"ÊÇ·ñÒª·ÅÆúËù×öµÄ¸ü¸Ä²¢´Ó´ÅÅÌÖØĞÂ¼ÓÔØ£¿"
 
 #: myframe.h:504
 msgid "&About..."
-msgstr "å…³äº(&A)..."
+msgstr "¹ØÓÚ(&A)..."
 
 #: myframe.h:270
 msgid "&Add Cell Text as Tag"
-msgstr "å°†å•å…ƒæ ¼æ–‡æœ¬æ·»åŠ ä¸ºæ ‡è®°(&A)"
+msgstr "½«µ¥Ôª¸ñÎÄ±¾Ìí¼ÓÎª±ê¼Ç(&A)"
 
 #: myframe.h:298
 msgid "&Add Image"
-msgstr "æ·»åŠ å›¾åƒ(&A)"
+msgstr "Ìí¼ÓÍ¼Ïñ(&A)"
 
 #: myframe.h:374
 msgid "&Browsing..."
-msgstr "æµè§ˆ(&B)..."
+msgstr "ä¯ÀÀ(&B)..."
 
 #: myframe.h:501
 msgid "&Clear Views"
-msgstr "æ¸…æ™°çš„è§†å›¾(&C)"
+msgstr "ÇåÎúµÄÊÓÍ¼(&C)"
 
 #: myframe.h:169
 msgid "&Close\tCTRL+w"
-msgstr "å…³é—­(&C)\tCTRL+w"
+msgstr "¹Ø±Õ(&C)\tCTRL+w"
 
 #: myframe.h:145
 msgid "&Comma delimited text (CSV)..."
-msgstr "é€—å·åˆ†éš”æ–‡æœ¬ (CSV)(&C)..."
+msgstr "¶ººÅ·Ö¸ôÎÄ±¾ (CSV)(&C)..."
 
 #: myframe.h:330
 msgid "&Copy\tCTRL+c"
-msgstr "å¤åˆ¶(&C)\tCTRL+c"
+msgstr "¸´ÖÆ(&C)\tCTRL+c"
 
 #: myframe.h:491
 msgid "&Data"
-msgstr "æ•°æ®(&D)"
+msgstr "Êı¾İ(&D)"
 
 #: myframe.h:188
 msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
-msgstr "å‡å°æ–‡å­—å¤§å° (shift é¼ æ ‡æ»šè½®)(&D)\tSHIFT+PGDN"
+msgstr "¼õĞ¡ÎÄ×Ö´óĞ¡ (shift Êó±ê¹öÂÖ)(&D)\tSHIFT+PGDN"
 
 #: myframe.h:340
 msgid "&Delete After\tDEL"
-msgstr "åˆ é™¤å(&D)\tDEL"
+msgstr "É¾³ıºó(&D)\tDEL"
 
 #: myframe.h:518
 msgid "&Edit"
-msgstr "ç¼–è¾‘(&E)"
+msgstr "±à¼­(&E)"
 
 #: myframe.h:182
 msgid "&Exit\tCTRL+q"
-msgstr "é€€å‡º(&E)\tCTRL+q"
+msgstr "ÍË³ö(&E)\tCTRL+q"
 
 #: myframe.h:517
 msgid "&File"
-msgstr "æ–‡ä»¶(&F)"
+msgstr "ÎÄ¼ş(&F)"
 
 #: myframe.h:292
 msgid "&Flatten"
-msgstr "æ‰å¹³åŒ–(&F)"
+msgstr "±âÆ½»¯(&F)"
 
 #: myframe.h:386
 msgid "&Go To Next Search Result\tF3"
-msgstr "è½¬åˆ°ä¸‹ä¸€ä¸ªæœç´¢ç»“æœ(&G)\tF3"
+msgstr "×ªµ½ÏÂÒ»¸öËÑË÷½á¹û(&G)\tF3"
 
 #: myframe.h:371
 msgid "&Grid Reorganization..."
-msgstr "ç½‘æ ¼é‡ç»„(&G)..."
+msgstr "Íø¸ñÖØ×é(&G)..."
 
 #: myframe.h:135
 msgid "&HTML (Tables+Styling)..."
-msgstr "HTML (è¡¨æ ¼+æ ·å¼)(&H)..."
+msgstr "HTML (±í¸ñ+ÑùÊ½)(&H)..."
 
 #: myframe.h:527
 msgid "&Help"
-msgstr "å¸®åŠ©(&H)"
+msgstr "°ïÖú(&H)"
 
 #: myframe.h:288
 msgid "&Hierarchify"
-msgstr "å±‚æ¬¡ç»“æ„(&H)"
+msgstr "²ã´Î½á¹¹(&H)"
 
 #: myframe.h:495
 msgid "&Horizontal View"
-msgstr "æ°´å¹³è§†å›¾(&H)"
+msgstr "Ë®Æ½ÊÓÍ¼(&H)"
 
 #: myframe.h:149
 msgid "&Image..."
-msgstr "å›¾åƒ(&I)..."
+msgstr "Í¼Ïñ(&I)..."
 
 #: myframe.h:373
 msgid "&Images..."
-msgstr "å›¾åƒ(&I)..."
+msgstr "Í¼Ïñ(&I)..."
 
 #: myframe.h:187
 msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
-msgstr "å¢åŠ æ–‡å­—å¤§å° (shift é¼ æ ‡æ»šè½®)(&I)\tSHIFT+PGUP"
+msgstr "Ôö¼ÓÎÄ×Ö´óĞ¡ (shift Êó±ê¹öÂÖ)(&I)\tSHIFT+PGUP"
 
 #: myframe.h:348
 msgid "&Insert New Grid\tCTRL+g"
-msgstr "æ’å…¥æ–°ç½‘æ ¼(&I)\tCTRL+g"
+msgstr "²åÈëĞÂÍø¸ñ(&I)\tCTRL+g"
 
 #: myframe.h:350
 msgid "&Insert New Grid\tINS"
-msgstr "æ’å…¥æ–°ç½‘æ ¼(&I)\tINS"
+msgstr "²åÈëĞÂÍø¸ñ(&I)\tINS"
 
 #: myframe.h:372
 msgid "&Layout && Render Style..."
-msgstr "å¸ƒå±€æ¸²æŸ“æ ·å¼(&L)..."
+msgstr "²¼¾ÖäÖÈ¾ÑùÊ½(&L)..."
 
 #: myframe.h:500
 msgid "&Mark as"
-msgstr "æ ‡è®°ä¸º(&M)"
+msgstr "±ê¼ÇÎª(&M)"
 
 #: myframe.h:167
 msgid "&New\tCTRL+n"
-msgstr "æ–°å»º(&N)\tCTRL+n"
+msgstr "ĞÂ½¨(&N)\tCTRL+n"
 
 #: myframe.h:168
 msgid "&Open...\tCTRL+o"
-msgstr "æ‰“å¼€(&O)...\tCTRL+o"
+msgstr "´ò¿ª(&O)...\tCTRL+o"
 
 #: myframe.h:492
 msgid "&Operation"
-msgstr "æ“ä½œ(&O)"
+msgstr "²Ù×÷(&O)"
 
 #: myframe.h:521
 msgid "&Options"
-msgstr "é€‰é¡¹(&O)"
+msgstr "Ñ¡Ïî(&O)"
 
 #: myframe.h:332
 msgid "&Paste\tCTRL+v"
-msgstr "ç²˜è´´(&P)\tCTRL+v"
+msgstr "Õ³Ìù(&P)\tCTRL+v"
 
 #: myframe.h:177
 msgid "&Print...\tCTRL+p"
-msgstr "æ‰“å°(&P)...\tCTRL+p"
+msgstr "´òÓ¡(&P)...\tCTRL+p"
 
 #: myframe.h:522
 msgid "&Program"
-msgstr "ç¨‹åº(&P)"
+msgstr "³ÌĞò(&P)"
 
 #: myframe.h:170
 msgid "&Recent files"
-msgstr "æœ€è¿‘çš„æ–‡ä»¶(&R)"
+msgstr "×î½üµÄÎÄ¼ş(&R)"
 
 #: myframe.h:337
 msgid "&Redo\tCTRL+y"
-msgstr "é‡åš(&R)\tCTRL+y"
+msgstr "ÖØ×ö(&R)\tCTRL+y"
 
 #: myframe.h:271
 msgid "&Remove Cell Text from Tags"
-msgstr "ä»æ ‡ç­¾ä¸­åˆ é™¤å•å…ƒæ ¼æ–‡æœ¬(&R)"
+msgstr "´Ó±êÇ©ÖĞÉ¾³ıµ¥Ôª¸ñÎÄ±¾(&R)"
 
 #: myframe.h:301
 msgid "&Remove Image(s)"
-msgstr "åˆ é™¤å›¾åƒ(&R)"
+msgstr "É¾³ıÍ¼Ïñ(&R)"
 
 #: myframe.h:387
 msgid "&Replace in Current Selection\tCTRL+h"
-msgstr "åœ¨å½“å‰é€‰æ‹©ä¸­æ›¿æ¢(&R)\tCTRL+h"
+msgstr "ÔÚµ±Ç°Ñ¡ÔñÖĞÌæ»»(&R)\tCTRL+h"
 
 #: myframe.h:388
 msgid "&Replace in Current Selection & Jump Next\tCTRL+j"
-msgstr "æ›¿æ¢åœ¨å½“å‰é€‰æ‹©è·³è½¬ä¸‹ä¸€æ­¥(&R)\tCTRL+j"
+msgstr "Ìæ»»ÔÚµ±Ç°Ñ¡ÔñÌø×ªÏÂÒ»²½(&R)\tCTRL+j"
 
 #: myframe.h:189
 msgid "&Reset text sizes\tSHIFT+CTRL+s"
-msgstr "é‡ç½®æ–‡æœ¬å¤§å°(&R)\tSHIFT+CTRL+s"
+msgstr "ÖØÖÃÎÄ±¾´óĞ¡(&R)\tSHIFT+CTRL+s"
 
 #: myframe.h:266
 msgid "&Reset text styles\tSHIFT+CTRL+r"
-msgstr "é‡ç½®æ–‡æœ¬æ ·å¼(&R)\tSHIFT+CTRL+r"
+msgstr "ÖØÖÃÎÄ±¾ÑùÊ½(&R)\tSHIFT+CTRL+r"
 
 #: myframe.h:488
 msgid "&Roundness of grid borders..."
-msgstr "ç½‘æ ¼è¾¹ç•Œçš„åœ†åº¦(&R)..."
+msgstr "Íø¸ñ±ß½çµÄÔ²¶È(&R)..."
 
 #: myframe.h:499
 msgid "&Run"
-msgstr "è¿è¡Œ(&R)"
+msgstr "ÔËĞĞ(&R)"
 
 #: myframe.h:171
 msgid "&Save\tCTRL+s"
-msgstr "ä¿å­˜(&S)\tCTRL+s"
+msgstr "±£´æ(&S)\tCTRL+s"
 
 #: myframe.h:299
 msgid "&Scale Image"
-msgstr "ç¼©æ”¾å›¾åƒ(&S)"
+msgstr "Ëõ·ÅÍ¼Ïñ(&S)"
 
 #: myframe.h:519
 msgid "&Search"
-msgstr "æœç´¢(&S)"
+msgstr "ËÑË÷(&S)"
 
 #: myframe.h:385
 msgid "&Search\tCTRL+f"
-msgstr "æœç´¢(&S)\tCTRL+f"
+msgstr "ËÑË÷(&S)\tCTRL+f"
 
 #: myframe.h:370
 msgid "&Selection..."
-msgstr "é€‰æ‹©...(&S)"
+msgstr "Ñ¡Ôñ...(&S)"
 
 #: myframe.h:272
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "å°†å•å…ƒæ ¼æ–‡æœ¬è®¾ç½®ä¸ºæ ‡è®° (ä½¿ç”¨ CTRL+RMB)(&S)"
+msgstr "½«µ¥Ôª¸ñÎÄ±¾ÉèÖÃÎª±ê¼Ç (Ê¹ÓÃ CTRL+RMB)(&S)"
 
 #: myframe.h:450
 msgid "&Set Custom Color From Cell BG"
-msgstr "ä»å•å…ƒæ ¼ bg è®¾ç½®è‡ªå®šä¹‰é¢œè‰²(&S)"
+msgstr "´Óµ¥Ôª¸ñ bg ÉèÖÃ×Ô¶¨ÒåÑÕÉ«(&S)"
 
 #: myframe.h:190
 msgid "&Shrink text of all sub-grids\tSHIFT+CTRL+m"
-msgstr "æ”¶ç¼©æ‰€æœ‰å­ç½‘æ ¼çš„æ–‡æœ¬(&S)\tSHIFT+CTRL+m"
+msgstr "ÊÕËõËùÓĞ×ÓÍø¸ñµÄÎÄ±¾(&S)\tSHIFT+CTRL+m"
 
 #: myframe.h:278
 msgid "&Transpose\tSHIFT+CTRL+t"
-msgstr "ç§»ä½(&T)\tSHIFT+CTRL+t"
+msgstr "ÒÆÎ»(&T)\tSHIFT+CTRL+t"
 
 #: myframe.h:336
 msgid "&Undo\tCTRL+z"
-msgstr "æ’¤æ¶ˆ(&U)\tCTRL+z"
+msgstr "³·Ïû(&U)\tCTRL+z"
 
 #: myframe.h:496
 msgid "&Vertical View"
-msgstr "å‚ç›´è§†å›¾(&V)"
+msgstr "´¹Ö±ÊÓÍ¼(&V)"
 
 #: myframe.h:520
 msgid "&View"
-msgstr "è§†å›¾(&V)"
+msgstr "ÊÓÍ¼(&V)"
 
 #: myframe.h:353
 msgid "&Wrap in new parent\tF9"
-msgstr "åŒ…è£…åœ¨æ–°çš„çˆ¶é¡¹ä¸­(&W)\tF9"
+msgstr "°ü×°ÔÚĞÂµÄ¸¸ÏîÖĞ(&W)\tF9"
 
 #: myframe.h:132
 msgid "&XML..."
@@ -266,400 +266,400 @@ msgstr "XML...(&X)"
 
 #: document.h:1013
 msgid "1:1 scale restored."
-msgstr "å·²æ¢å¤ 1:1 æ¯”ä¾‹ã€‚"
+msgstr "ÒÑ»Ö¸´ 1:1 ±ÈÀı¡£"
 
 #: system.h:197
 msgid "A temporary autosave file exists, would you like to load it instead?"
-msgstr "å­˜åœ¨ä¸´æ—¶è‡ªåŠ¨ä¿å­˜æ–‡ä»¶ï¼Œæ˜¯å¦è¦æ”¹ä¸ºåŠ è½½è¯¥æ–‡ä»¶ï¼Ÿ"
+msgstr "´æÔÚÁÙÊ±×Ô¶¯±£´æÎÄ¼ş£¬ÊÇ·ñÒª¸ÄÎª¼ÓÔØ¸ÃÎÄ¼ş£¿"
 
 #: myframe.h:570
 msgid "Add Image"
-msgstr "æ·»åŠ å›¾åƒ"
+msgstr "Ìí¼ÓÍ¼Ïñ"
 
 #: myframe.h:352
 msgid "Adds a grid to the selected cell"
-msgstr "å°†ç½‘æ ¼æ·»åŠ åˆ°é€‰å®šçš„å•å…ƒæ ¼"
+msgstr "½«Íø¸ñÌí¼Óµ½Ñ¡¶¨µÄµ¥Ôª¸ñ"
 
 #: myframe.h:298
 msgid "Adds an image to the selected cell"
-msgstr "å°†å›¾åƒæ·»åŠ åˆ°é€‰å®šçš„å•å…ƒæ ¼"
+msgstr "½«Í¼ÏñÌí¼Óµ½Ñ¡¶¨µÄµ¥Ôª¸ñ"
 
 #: myframe.h:476
 msgid "Auto reload documents"
-msgstr "è‡ªåŠ¨é‡æ–°åŠ è½½æ–‡æ¡£"
+msgstr "×Ô¶¯ÖØĞÂ¼ÓÔØÎÄµµ"
 
 #: myframe.h:479
 msgid "Automatically export a .html on every save"
-msgstr "æ¯æ¬¡ä¿å­˜æ—¶è‡ªåŠ¨å¯¼å‡º .html"
+msgstr "Ã¿´Î±£´æÊ±×Ô¶¯µ¼³ö .html"
 
 #: system.h:198
 msgid "Autosave load"
-msgstr "è‡ªåŠ¨ä¿å­˜è´Ÿè½½"
+msgstr "×Ô¶¯±£´æ¸ºÔØ"
 
 #: myframe.h:473
 msgid "Autosave to .tmp"
-msgstr "è‡ªåŠ¨ä¿å­˜åˆ° .tmp"
+msgstr "×Ô¶¯±£´æµ½ .tmp"
 
 #: myframe.h:486
 msgid "Black and white toolbar icons"
-msgstr "é»‘ç™½å·¥å…·æ å›¾æ ‡"
+msgstr "ºÚ°×¹¤¾ßÀ¸Í¼±ê"
 
 #: myframe.h:588
 msgid "Border "
-msgstr "è¾¹æ¡† "
+msgstr "±ß¿ò "
 
 #: myframe.h:322
 msgid "Bubble Style Rendering\tALT+8"
-msgstr "æ°”æ³¡é£æ ¼æ¸²æŸ“\tALT+8"
+msgstr "ÆøÅİ·ç¸ñäÖÈ¾\tALT+8"
 
 #: document.h:1493
 msgid "Can only move this cell into an Nx1 or 1xN grid."
-msgstr "åªèƒ½å°†æ­¤å•å…ƒæ ¼ç§»åŠ¨åˆ° nx1 æˆ–1xn ç½‘æ ¼ä¸­ã€‚"
+msgstr "Ö»ÄÜ½«´Ëµ¥Ôª¸ñÒÆ¶¯µ½ nx1 »ò1xn Íø¸ñÖĞ¡£"
 
 #: document.h:1660
 msgid "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect"
-msgstr "æ— æ³•æ’åºï¼šé€‰æ‹©ä¸€å— 1xN åŒºåŸŸä»¥æŒ‡æ˜éœ€è¦æ’åºçš„åˆ—ï¼Œä»¥åŠå—å½±å“çš„è¡Œ"
+msgstr "ÎŞ·¨ÅÅĞò£ºÑ¡ÔñÒ»¿é 1xN ÇøÓòÒÔÖ¸Ã÷ĞèÒªÅÅĞòµÄÁĞ£¬ÒÔ¼°ÊÜÓ°ÏìµÄĞĞ"
 
 #: document.h:601
 msgid "Cancel"
-msgstr "å–æ¶ˆ"
+msgstr "È¡Ïû"
 
 #: myframe.h:257
 msgid "Cancel text edits\tESC"
-msgstr "å–æ¶ˆæ–‡æœ¬ç¼–è¾‘\tESC"
+msgstr "È¡ÏûÎÄ±¾±à¼­\tESC"
 
 #: system.h:266
 msgid "Cannot decompress file."
-msgstr "æ— æ³•è§£å‹ç¼©æ–‡ä»¶ã€‚"
+msgstr "ÎŞ·¨½âÑ¹ËõÎÄ¼ş¡£"
 
 #: document.h:1611
 msgid "Cannot drag & drop more than 1 file."
-msgstr "æ— æ³•æ‹–æ”¾è¶…è¿‡ 1 ä¸ªæ–‡ä»¶ã€‚"
+msgstr "ÎŞ·¨ÍÏ·Å³¬¹ı 1 ¸öÎÄ¼ş¡£"
 
 #: document.h:655
 msgid "Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten)."
-msgstr "æ— æ³•å¯¼å‡ºä¸å¹³å¦çš„ç½‘æ ¼ (å°†è§†å›¾ç¼©æ”¾åˆ°æ‰€éœ€çš„ç½‘æ ¼ï¼Œæˆ–ä½¿ç”¨ \"å¹³å±•\")ã€‚"
+msgstr "ÎŞ·¨µ¼³ö²»Æ½Ì¹µÄÍø¸ñ (½«ÊÓÍ¼Ëõ·Åµ½ËùĞèµÄÍø¸ñ£¬»òÊ¹ÓÃ \"Æ½Õ¹\")¡£"
 
 #: document.h:1455
 msgid "Cannot find file."
-msgstr "æ‰¾ä¸åˆ°æ–‡ä»¶ã€‚"
+msgstr "ÕÒ²»µ½ÎÄ¼ş¡£"
 
 #: document.h:1448
 msgid "Cannot launch browser for this link."
-msgstr "æ— æ³•å¯åŠ¨æ­¤é“¾æ¥çš„æµè§ˆå™¨ã€‚"
+msgstr "ÎŞ·¨Æô¶¯´ËÁ´½ÓµÄä¯ÀÀÆ÷¡£"
 
 #: document.h:1491
 msgid "Cannot move this cell up in the hierarchy."
-msgstr "æ— æ³•åœ¨å±‚æ¬¡ç»“æ„ä¸­å‘ä¸Šç§»åŠ¨æ­¤å•å…ƒæ ¼ã€‚"
+msgstr "ÎŞ·¨ÔÚ²ã´Î½á¹¹ÖĞÏòÉÏÒÆ¶¯´Ëµ¥Ôª¸ñ¡£"
 
 #: system.h:211
 msgid "Cannot open file."
-msgstr "æ— æ³•æ‰“å¼€æ–‡ä»¶ã€‚"
+msgstr "ÎŞ·¨´ò¿ªÎÄ¼ş¡£"
 
 #: system.h:237
 msgid "Cannot tell/seek document?"
-msgstr "æ— æ³•æ‰¾åˆ°æ–‡ä»¶ï¼Ÿ"
+msgstr "ÎŞ·¨ÕÒµ½ÎÄ¼ş£¿"
 
 #: myframe.h:582
 msgid "Cell "
-msgstr "å•å…ƒæ ¼ "
+msgstr "µ¥Ôª¸ñ "
 
 #: myframe.h:448
 msgid "Change a key binding..."
-msgstr "æ›´æ”¹å¯†é’¥ç»‘å®š..."
+msgstr "¸ü¸ÄÃÜÔ¿°ó¶¨..."
 
 #: myframe.h:300
 msgid "Change the image size if it is too big or too small"
-msgstr "å¦‚æœå›¾åƒå¤ªå¤§æˆ–å¤ªå°ï¼Œè¯·æ›´æ”¹å›¾åƒå¤§å°"
+msgstr "Èç¹ûÍ¼ÏñÌ«´ó»òÌ«Ğ¡£¬Çë¸ü¸ÄÍ¼Ïñ´óĞ¡"
 
 #: document.h:600
 msgid "Changes have been made, are you sure you wish to continue?"
-msgstr "å·²è¿›è¡Œæ›´æ”¹ï¼Œæ‚¨ç¡®å®šè¦ç»§ç»­å—ï¼Ÿ"
+msgstr "ÒÑ½øĞĞ¸ü¸Ä£¬ÄúÈ·¶¨Òª¼ÌĞøÂğ£¿"
 
 #: document.h:829
 msgid "Choose CSV file to write"
-msgstr "é€‰æ‹©è¦å†™å…¥çš„ CSV æ–‡ä»¶"
+msgstr "Ñ¡ÔñÒªĞ´ÈëµÄ CSV ÎÄ¼ş"
 
 #: document.h:826
 msgid "Choose HTML file to write"
-msgstr "é€‰æ‹©è¦å†™å…¥çš„ HTML æ–‡ä»¶"
+msgstr "Ñ¡ÔñÒªĞ´ÈëµÄ HTML ÎÄ¼ş"
 
 #: document.h:828
 msgid "Choose PNG file to write"
-msgstr "é€‰æ‹©è¦å†™å…¥çš„ PNG æ–‡ä»¶"
+msgstr "Ñ¡ÔñÒªĞ´ÈëµÄ PNG ÎÄ¼ş"
 
 #: document.h:827
 msgid "Choose Text file to write"
-msgstr "é€‰æ‹©è¦å†™å…¥çš„æ–‡æœ¬æ–‡ä»¶"
+msgstr "Ñ¡ÔñÒªĞ´ÈëµÄÎÄ±¾ÎÄ¼ş"
 
 #: document.h:711
 msgid "Choose TreeSheets file to save:"
-msgstr "é€‰æ‹©â€œæ ‘è¡¨æ ¼â€æ–‡ä»¶ä»¥ä¿å­˜ï¼š"
+msgstr "Ñ¡Ôñ¡°Ê÷±í¸ñ¡±ÎÄ¼şÒÔ±£´æ£º"
 
 #: document.h:824
 msgid "Choose XML file to write"
-msgstr "é€‰æ‹©è¦ç¼–å†™çš„ XML æ–‡ä»¶"
+msgstr "Ñ¡ÔñÒª±àĞ´µÄ XML ÎÄ¼ş"
 
 #: document.h:419
 msgid "Column width decreased."
-msgstr "åˆ—å®½åº¦å·²å‡å°ã€‚"
+msgstr "ÁĞ¿í¶ÈÒÑ¼õĞ¡¡£"
 
 #: document.h:419
 msgid "Column width increased."
-msgstr "åˆ—å®½åº¦å·²å¢åŠ ã€‚"
+msgstr "ÁĞ¿í¶ÈÒÑÔö¼Ó¡£"
 
 #: myframe.h:158
 msgid "Comma delimited text (CSV)..."
-msgstr "é€—å·åˆ†éš”æ–‡æœ¬ (CSV)..."
+msgstr "¶ººÅ·Ö¸ôÎÄ±¾ (CSV)..."
 
 #: myframe.h:289
 msgid "Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"
-msgstr "å°†æ¯åˆ—é‡å¤å…ƒç´ çš„ NxN ç½‘æ ¼è½¬æ¢ä¸ºå…·æœ‰å±‚æ¬¡ç»“æ„çš„ 1xN ç½‘æ ¼ï¼Œå¯ç”¨äºä»ç”µå­è¡¨æ ¼ä¸­è½¬æ¢æ•°æ®"
+msgstr "½«Ã¿ÁĞÖØ¸´ÔªËØµÄ NxN Íø¸ñ×ª»»Îª¾ßÓĞ²ã´Î½á¹¹µÄ 1xN Íø¸ñ£¬¿ÉÓÃÓÚ´Óµç×Ó±í¸ñÖĞ×ª»»Êı¾İ"
 
 #: myframe.h:563
 msgid "Copy (CTRL+c)"
-msgstr "å¤åˆ¶ (CTRL+c)"
+msgstr "¸´ÖÆ (CTRL+c)"
 
 #: myframe.h:331
 msgid "Copy As Continuous Text"
-msgstr "å¤åˆ¶ä¸ºè¿ç»­æ–‡æœ¬"
+msgstr "¸´ÖÆÎªÁ¬ĞøÎÄ±¾"
 
 #: system.h:243
 msgid "Corrupt PNG header."
-msgstr "æŸåçš„ PNG æ ‡å¤´ã€‚"
+msgstr "Ëğ»µµÄ PNG ±êÍ·¡£"
 
 #: system.h:295
 msgid "Corrupt block header."
-msgstr "æŸåçš„å—æ ‡å¤´ã€‚"
+msgstr "Ëğ»µµÄ¿é±êÍ·¡£"
 
 #: myframe.h:471
 msgid "Create .bak files"
-msgstr "åˆ›å»º .bak æ–‡ä»¶"
+msgstr "´´½¨ .bak ÎÄ¼ş"
 
 #: myframe.h:354
 msgid "Creates a new level of hierarchy around the current selection"
-msgstr "å›´ç»•å½“å‰æ‰€é€‰å†…å®¹åˆ›å»ºæ–°çº§åˆ«çš„å±‚æ¬¡ç»“æ„"
+msgstr "Î§ÈÆµ±Ç°ËùÑ¡ÄÚÈİ´´½¨ĞÂ¼¶±ğµÄ²ã´Î½á¹¹"
 
 #: myframe.h:329
 msgid "Cu&t\tCTRL+x"
-msgstr "å‰ªåˆ‡(&T)\tCTRL+x"
+msgstr "¼ôÇĞ(&T)\tCTRL+x"
 
 #: myframe.h:238
 msgid "Cursor Left\tLEFT"
-msgstr "å…‰æ ‡å·¦ä¾§\tLEFT"
+msgstr "¹â±ê×ó²à\tLEFT"
 
 #: myframe.h:239
 msgid "Cursor Right\tRIGHT"
-msgstr "å…‰æ ‡å³ä¾§\tRIGHT"
+msgstr "¹â±êÓÒ²à\tRIGHT"
 
 #: myframe.h:193
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
-msgstr "å‡å°åˆ—å®½åº¦ (alt é¼ æ ‡æ»šè½®)\tALT+PGDN"
+msgstr "¼õĞ¡ÁĞ¿í¶È (alt Êó±ê¹öÂÖ)\tALT+PGDN"
 
 #: myframe.h:197
 msgid "Decrease column width (no sub grids)\tCTRL+ALT+PGDN"
-msgstr "å‡å°åˆ—å®½åº¦ (æ— å­ç½‘æ ¼)\tCTRL+ALT+PGDN"
+msgstr "¼õĞ¡ÁĞ¿í¶È (ÎŞ×ÓÍø¸ñ)\tCTRL+ALT+PGDN"
 
 #: myframe.h:343
 msgid "Delete Before\tBACK"
-msgstr "è¿”å›å‰åˆ é™¤"
+msgstr "·µ»ØÇ°É¾³ı"
 
 #: myframe.h:341
 msgid "Deletes the column of cells after the selected grid line, or the row below"
-msgstr "åˆ é™¤é€‰å®šç½‘æ ¼çº¿ä¹‹åçš„å•å…ƒæ ¼åˆ—ï¼Œæˆ–åˆ é™¤ä¸‹é¢çš„è¡Œ"
+msgstr "É¾³ıÑ¡¶¨Íø¸ñÏßÖ®ºóµÄµ¥Ôª¸ñÁĞ£¬»òÉ¾³ıÏÂÃæµÄĞĞ"
 
 #: myframe.h:344
 msgid "Deletes the column of cells before the selected grid line, or the row above"
-msgstr "åˆ é™¤é€‰å®šç½‘æ ¼çº¿ä¹‹å‰çš„å•å…ƒæ ¼åˆ—ï¼Œæˆ–ä¸Šé¢çš„è¡Œ"
+msgstr "É¾³ıÑ¡¶¨Íø¸ñÏßÖ®Ç°µÄµ¥Ôª¸ñÁĞ£¬»òÉÏÃæµÄĞĞ"
 
 #: document.h:601
 msgid "Discard Changes"
-msgstr "æ”¾å¼ƒæ›´æ”¹"
+msgstr "·ÅÆú¸ü¸Ä"
 
 #: system.h:361
 #, c-format
 msgid "Edited %s"
-msgstr "å·²ä¿®æ”¹ %s"
+msgstr "ÒÑĞŞ¸Ä %s"
 
 #: document.h:1503
 msgid "Empty strings cannot be tags."
-msgstr "ç©ºå­—ç¬¦ä¸²ä¸èƒ½æ˜¯æ ‡è®°ã€‚"
+msgstr "¿Õ×Ö·û´®²»ÄÜÊÇ±ê¼Ç¡£"
 
 #: myframe.h:251
 msgid "End of line of text\tEND"
-msgstr "æ–‡æœ¬è¡Œçš„ç»“å°¾\tEND"
+msgstr "ÎÄ±¾ĞĞµÄ½áÎ²\tEND"
 
 #: myframe.h:253
 msgid "End of text\tCTRL+END"
-msgstr "æ–‡æœ¬çš„ç»“å°¾\tCTRL+END"
+msgstr "ÎÄ±¾µÄ½áÎ²\tCTRL+END"
 
 #: myframe.h:255
 msgid "Enter/exit text edit mode\tENTER"
-msgstr "è¾“å…¥/é€€å‡ºæ–‡æœ¬ç¼–è¾‘æ¨¡å¼\tENTER"
+msgstr "ÊäÈë/ÍË³öÎÄ±¾±à¼­Ä£Ê½\tENTER"
 
 #: myframe.h:256
 msgid "Enter/exit text edit mode\tF2"
-msgstr "è¾“å…¥/é€€å‡ºæ–‡æœ¬ç¼–è¾‘æ¨¡å¼\tF2"
+msgstr "ÊäÈë/ÍË³öÎÄ±¾±à¼­Ä£Ê½\tF2"
 
 #: document.h:671
 msgid "Error exporting file!"
-msgstr "å¯¼å‡ºæ–‡ä»¶æ—¶å‡ºé”™ï¼"
+msgstr "µ¼³öÎÄ¼şÊ±³ö´í£¡"
 
 #: myframe.h:105
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr "åŠ è½½æ ¸å¿ƒæ•°æ®æ–‡ä»¶æ—¶å‡ºé”™ (æ ‘è¡¨æ ¼å®‰è£…ä¸æ­£ç¡®ï¼Ÿ)"
+msgstr "¼ÓÔØºËĞÄÊı¾İÎÄ¼şÊ±³ö´í (Ê÷±í¸ñ°²×°²»ÕıÈ·£¿)"
 
 #: document.h:667
 msgid "Error writing PNG file!"
-msgstr "å†™å…¥ PNG æ–‡ä»¶æ—¶å‡ºé”™ï¼"
+msgstr "Ğ´Èë PNG ÎÄ¼şÊ±³ö´í£¡"
 
 #: document.h:165
 msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr "å†™å…¥æ ‘è¡¨æ ¼æ–‡ä»¶æ—¶å‡ºé”™!(å°è¯•åœ¨æ–°æ–‡ä»¶åä¸‹ä¿å­˜)ã€‚"
+msgstr "Ğ´ÈëÊ÷±í¸ñÎÄ¼şÊ±³ö´í!(³¢ÊÔÔÚĞÂÎÄ¼şÃûÏÂ±£´æ)¡£"
 
 #: document.h:672
 msgid "Error writing to file!"
-msgstr "å†™å…¥æ–‡ä»¶æ—¶å‡ºé”™ï¼"
+msgstr "Ğ´ÈëÎÄ¼şÊ±³ö´í£¡"
 
 #: document.h:167
 msgid "Error writing to file."
-msgstr "å†™å…¥æ–‡ä»¶æ—¶å‡ºé”™ã€‚"
+msgstr "Ğ´ÈëÎÄ¼şÊ±³ö´í¡£"
 
 #: document.h:803
 msgid "Evaluation finished."
-msgstr "è¯„ä¼°å®Œæˆã€‚"
+msgstr "ÆÀ¹ÀÍê³É¡£"
 
 #: myframe.h:179
 msgid "Export &view as"
-msgstr "å¯¼å‡ºè§†å›¾ä¸º(&V)"
+msgstr "µ¼³öÊÓÍ¼Îª(&V)"
 
 #: document.h:646
 msgid "Export cancelled."
-msgstr "å¯¼å‡ºå·²å–æ¶ˆã€‚"
+msgstr "µ¼³öÒÑÈ¡Ïû¡£"
 
 #: myframe.h:146
 msgid "Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr "å°†å½“å‰è§†å›¾å¯¼å‡ºä¸º CSVã€‚é€‚ç”¨äºç”µå­è¡¨æ ¼å’Œæ•°æ®åº“ã€‚ä»…é€‚ç”¨äºæ²¡æœ‰å­ç½‘æ ¼çš„ç½‘æ ¼ï¼ˆå¦‚æœ‰éœ€è¦ï¼Œè¯·é¦–å…ˆä½¿ç”¨ flatten æ“ä½œï¼‰"
+msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎª CSV¡£ÊÊÓÃÓÚµç×Ó±í¸ñºÍÊı¾İ¿â¡£½öÊÊÓÃÓÚÃ»ÓĞ×ÓÍø¸ñµÄÍø¸ñ£¨ÈçÓĞĞèÒª£¬ÇëÊ×ÏÈÊ¹ÓÃ flatten ²Ù×÷£©"
 
 #: myframe.h:139
 msgid "Export the current view as HTML as nested headers, suitable for importing into Word's outline mode"
-msgstr "å°†å½“å‰è§†å›¾å¯¼å‡ºä¸ºåµŒå¥—æ ‡å¤´çš„ HTMLï¼Œé€‚åˆå¯¼å…¥åˆ° Word çš„å¤§çº²æ¨¡å¼ä¸­"
+msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎªÇ¶Ì×±êÍ·µÄ HTML£¬ÊÊºÏµ¼Èëµ½ Word µÄ´ó¸ÙÄ£Ê½ÖĞ"
 
 #: myframe.h:136
 msgid "Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet"
-msgstr "ä½¿ç”¨åµŒå¥—è¡¨å°†å½“å‰è§†å›¾å¯¼å‡ºä¸º HTMLï¼Œè¿™çœ‹èµ·æ¥æœ‰ç‚¹åƒæ ‘è¡¨"
+msgstr "Ê¹ÓÃÇ¶Ì×±í½«µ±Ç°ÊÓÍ¼µ¼³öÎª HTML£¬Õâ¿´ÆğÀ´ÓĞµãÏñÊ÷±í"
 
 #: myframe.h:133
 msgid "Export the current view as XML (which can also be reimported without losing structure)"
-msgstr "å°†å½“å‰è§†å›¾å¯¼å‡ºä¸º XML (ä¹Ÿå¯ä»¥åœ¨ä¸ä¸¢å¤±ç»“æ„çš„æƒ…å†µä¸‹é‡æ–°å¯¼å…¥)"
+msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎª XML (Ò²¿ÉÒÔÔÚ²»¶ªÊ§½á¹¹µÄÇé¿öÏÂÖØĞÂµ¼Èë)"
 
 #: myframe.h:150
 msgid "Export the current view as an image. Useful for faithfull renderings of the TreeSheet, and programs that don't accept any of the above options"
-msgstr "å°†å½“å‰è§†å›¾å¯¼å‡ºä¸ºå›¾åƒã€‚é€‚ç”¨äºæ ‘è¡¨çš„å®Œæ•´æ¸²æŸ“ï¼Œä»¥åŠä¸æ¥å—ä¸Šè¿°ä»»ä½•é€‰é¡¹çš„ç¨‹åº"
+msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎªÍ¼Ïñ¡£ÊÊÓÃÓÚÊ÷±íµÄÍêÕûäÖÈ¾£¬ÒÔ¼°²»½ÓÊÜÉÏÊöÈÎºÎÑ¡ÏîµÄ³ÌĞò"
 
 #: myframe.h:142
 msgid "Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"
-msgstr "å°†å½“å‰è§†å›¾å¯¼å‡ºä¸ºæ ‘ç»“æ„åŒ–æ–‡æœ¬ï¼Œå¯¹æ¯ä¸ªç¼©è¿›çº§åˆ«ä½¿ç”¨ç©ºæ ¼ã€‚é€‚ç”¨äºå¯¼å…¥æ€ç»´ç®¡ç†äººå‘˜å’Œä¸€èˆ¬æ–‡æœ¬ç¨‹åº"
+msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎªÊ÷½á¹¹»¯ÎÄ±¾£¬¶ÔÃ¿¸öËõ½ø¼¶±ğÊ¹ÓÃ¿Õ¸ñ¡£ÊÊÓÃÓÚµ¼ÈëË¼Î¬¹ÜÀíÈËÔ±ºÍÒ»°ãÎÄ±¾³ÌĞò"
 
 #: myframe.h:227
 msgid "Extend Selection Down\tSHIFT+DOWN"
-msgstr "å‘ä¸‹æ‰©å±•æ‰€é€‰å†…å®¹\tSHIFT+DOWN"
+msgstr "ÏòÏÂÀ©Õ¹ËùÑ¡ÄÚÈİ\tSHIFT+DOWN"
 
 #: myframe.h:228
 msgid "Extend Selection Full Columns"
-msgstr "æ‰©å±•æ‰€é€‰å†…å®¹çš„å®Œæ•´åˆ—"
+msgstr "À©Õ¹ËùÑ¡ÄÚÈİµÄÍêÕûÁĞ"
 
 #: myframe.h:229
 msgid "Extend Selection Full Rows"
-msgstr "æ‰©å±•æ‰€é€‰å†…å®¹çš„å®Œæ•´è¡Œ"
+msgstr "À©Õ¹ËùÑ¡ÄÚÈİµÄÍêÕûĞĞ"
 
 #: myframe.h:224 myframe.h:243
 msgid "Extend Selection Left\tSHIFT+LEFT"
-msgstr "å‘å·¦æ‰©å±•æ‰€é€‰å†…å®¹\tSHIFT+LEFT"
+msgstr "Ïò×óÀ©Õ¹ËùÑ¡ÄÚÈİ\tSHIFT+LEFT"
 
 #: myframe.h:225 myframe.h:244
 msgid "Extend Selection Right\tSHIFT+RIGHT"
-msgstr "æ‰©å±•é€‰æ‹©æƒé™\tSHIFT+RIGHT"
+msgstr "À©Õ¹Ñ¡ÔñÈ¨ÏŞ\tSHIFT+RIGHT"
 
 #: myframe.h:226
 msgid "Extend Selection Up\tSHIFT+UP"
-msgstr "å‘ä¸Šæ‰©å±•é€‰æ‹©\tSHIFT+UP"
+msgstr "ÏòÉÏÀ©Õ¹Ñ¡Ôñ\tSHIFT+UP"
 
 #: myframe.h:245
 msgid "Extend Selection Word Left\tSHIFT+CTRL+LEFT"
-msgstr "å‘å·¦æ‰©å±•é€‰æ‹©è¯\tSHIFT+CTRL+LEFT"
+msgstr "Ïò×óÀ©Õ¹Ñ¡Ôñ´Ê\tSHIFT+CTRL+LEFT"
 
 #: myframe.h:246
 msgid "Extend Selection Word Right\tSHIFT+CTRL+RIGHT"
-msgstr "å‘å³æ‰©å±•é€‰æ‹©è¯\tSHIFT+CTRL+RIGHT"
+msgstr "ÏòÓÒÀ©Õ¹Ñ¡Ôñ´Ê\tSHIFT+CTRL+RIGHT"
 
 #: myframe.h:248
 msgid "Extend Selection to End\tSHIFT+END"
-msgstr "å°†æ‰€é€‰å†…å®¹æ‰©å±•åˆ°ç»“æŸ\tSHIFT+END"
+msgstr "½«ËùÑ¡ÄÚÈİÀ©Õ¹µ½½áÊø\tSHIFT+END"
 
 #: myframe.h:247
 msgid "Extend Selection to Start\tSHIFT+HOME"
-msgstr "å°†æ‰€é€‰å†…å®¹æ‰©å±•åˆ° \"å¼€å§‹\"\tSHIFT+HOME"
+msgstr "½«ËùÑ¡ÄÚÈİÀ©Õ¹µ½ \"¿ªÊ¼\"\tSHIFT+HOME"
 
 #: myframe.h:484
 msgid "Faster line rendering"
-msgstr "æ›´å¿«çš„çº¿æ¸²æŸ“"
+msgstr "¸ü¿ìµÄÏßäÖÈ¾"
 
 #: myframe.h:457
 msgid "File Tabs on the bottom"
-msgstr "åº•éƒ¨çš„æ–‡ä»¶é€‰é¡¹å¡"
+msgstr "µ×²¿µÄÎÄ¼şÑ¡Ïî¿¨"
 
 #: system.h:270
 msgid "File corrupted!"
-msgstr "æ–‡ä»¶å·²æŸåï¼"
+msgstr "ÎÄ¼şÒÑËğ»µ£¡"
 
 #: document.h:705
 msgid "File exported successfully."
-msgstr "æ–‡ä»¶å·²æˆåŠŸå¯¼å‡ºã€‚"
+msgstr "ÎÄ¼şÒÑ³É¹¦µ¼³ö¡£"
 
 #: myframe.h:1047
 msgid "File has been re-loaded because of modifications of another program / computer"
-msgstr "ç”±äºå¦ä¸€ä¸ªç¨‹åº/è®¡ç®—æœºçš„ä¿®æ”¹ï¼Œæ–‡ä»¶å·²é‡æ–°åŠ è½½"
+msgstr "ÓÉÓÚÁíÒ»¸ö³ÌĞò/¼ÆËã»úµÄĞŞ¸Ä£¬ÎÄ¼şÒÑÖØĞÂ¼ÓÔØ"
 
 #: system.h:421
 msgid "File load error."
-msgstr "æ–‡ä»¶åŠ è½½é”™è¯¯ã€‚"
+msgstr "ÎÄ¼ş¼ÓÔØ´íÎó¡£"
 
 #: myframe.h:1033
 msgid "File modification conflict!"
-msgstr "æ–‡ä»¶ä¿®æ”¹å†²çªï¼"
+msgstr "ÎÄ¼şĞŞ¸Ä³åÍ»£¡"
 
 #: system.h:217
 msgid "File of newer version."
-msgstr "è¾ƒæ–°ç‰ˆæœ¬çš„æ–‡ä»¶ã€‚"
+msgstr "½ÏĞÂ°æ±¾µÄÎÄ¼ş¡£"
 
 #: document.h:208
 msgid "File saved succesfully."
-msgstr "æˆåŠŸä¿å­˜çš„æ–‡ä»¶ã€‚"
+msgstr "³É¹¦±£´æµÄÎÄ¼ş¡£"
 
 #: myframe.h:434
 msgid "Filter..."
-msgstr "æ»¤æ³¢å™¨..."
+msgstr "ÂË²¨Æ÷..."
 
 #: myframe.h:365
 msgid "Fold All\tCTRL+SHIFT+F10"
-msgstr "æŠ˜å å…¨éƒ¨\tCTRL+SHIFT+F10"
+msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
 
 #: myframe.h:366
 msgid "Folds the grid of the selected cell(s) recursively"
-msgstr "é€’å½’æŠ˜å é€‰å®šå•å…ƒæ ¼çš„ç½‘æ ¼"
+msgstr "µİ¹éÕÛµşÑ¡¶¨µ¥Ôª¸ñµÄÍø¸ñ"
 
 #: myframe.h:234
 msgid "Go To &Matching Cell\tF6"
-msgstr "è½¬åˆ°åŒ¹é…å•å…ƒæ ¼(&M)\tF6"
+msgstr "×ªµ½Æ¥Åäµ¥Ôª¸ñ(&M)\tF6"
 
 #: myframe.h:235
 msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
-msgstr "è½¬åˆ°åŒ¹é…å•å…ƒæ ¼ (åå‘)\tSHIFT+F6"
+msgstr "×ªµ½Æ¥Åäµ¥Ôª¸ñ (·´Ïò)\tSHIFT+F6"
 
 #: myframe.h:321
 msgid "Grid Style Rendering\tALT+7"
-msgstr "ç½‘æ ¼æ ·å¼æ¸²æŸ“\tALT+7"
+msgstr "Íø¸ñÑùÊ½äÖÈ¾\tALT+7"
 
 #: myframe.h:138
 msgid "HTML (&Outline)..."
@@ -667,705 +667,705 @@ msgstr "HTML (&O)..."
 
 #: myframe.h:286
 msgid "Hierarchy &Swap\tF8"
-msgstr "å±‚æ¬¡ç»“æ„äº¤æ¢(&S)\tF8"
+msgstr "²ã´Î½á¹¹½»»»(&S)\tF8"
 
 #: myframe.h:273
 msgid "Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"
-msgstr "æŒ‰ä½ CTRL é”®ï¼ŒåŒæ—¶ä½¿ç”¨å¼¹å‡ºèœå•å¿«é€Ÿè®¾ç½®å½“å‰å•å…ƒæ ¼çš„æ ‡è®°"
+msgstr "°´×¡ CTRL ¼ü£¬Í¬Ê±Ê¹ÓÃµ¯³ö²Ëµ¥¿ìËÙÉèÖÃµ±Ç°µ¥Ôª¸ñµÄ±ê¼Ç"
 
 #: myframe.h:318
 msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
-msgstr "å…·æœ‰æ°”æ³¡æ ·å¼æ¸²æŸ“çš„æ°´å¹³å¸ƒå±€\tALT+5"
+msgstr "¾ßÓĞÆøÅİÑùÊ½äÖÈ¾µÄË®Æ½²¼¾Ö\tALT+5"
 
 #: myframe.h:317
 msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
-msgstr "å…·æœ‰ç½‘æ ¼æ ·å¼æ¸²æŸ“çš„æ°´å¹³å¸ƒå±€\tALT+4"
+msgstr "¾ßÓĞÍø¸ñÑùÊ½äÖÈ¾µÄË®Æ½²¼¾Ö\tALT+4"
 
 #: myframe.h:319
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
-msgstr "å…·æœ‰çº¿æ¡æ ·å¼æ¸²æŸ“çš„æ°´å¹³å¸ƒå±€\tALT+6"
+msgstr "¾ßÓĞÏßÌõÑùÊ½äÖÈ¾µÄË®Æ½²¼¾Ö\tALT+6"
 
 #: document.h:934
 msgid "How many pixels wide should a page be? (0 for auto fit)"
-msgstr "ä¸€ä¸ªé¡µé¢åº”è¯¥æœ‰å¤šå°‘åƒç´ å®½ï¼Ÿ(0 ä¸ºè‡ªåŠ¨é…åˆ)"
+msgstr "Ò»¸öÒ³ÃæÓ¦¸ÃÓĞ¶àÉÙÏñËØ¿í£¿(0 Îª×Ô¶¯ÅäºÏ)"
 
 #: myframe.h:591
 msgid "Image "
-msgstr "å›¾åƒ "
+msgstr "Í¼Ïñ "
 
 #: document.h:1463
 msgid "Image Resize"
-msgstr "å›¾åƒè°ƒæ•´å¤§å°"
+msgstr "Í¼Ïñµ÷Õû´óĞ¡"
 
 #: myframe.h:180
 msgid "Import file from"
-msgstr "ä»å¯¼å…¥æ–‡ä»¶"
+msgstr "´Óµ¼ÈëÎÄ¼ş"
 
 #: myframe.h:192
 msgid "Increase column width (ALT+mousewheel)\tALT+PGUP"
-msgstr "å¢åŠ åˆ—å®½åº¦ (alt é¼ æ ‡æ»šè½®)\tALT+PGUP"
+msgstr "Ôö¼ÓÁĞ¿í¶È (alt Êó±ê¹öÂÖ)\tALT+PGUP"
 
 #: myframe.h:195
 msgid "Increase column width (no sub grids)\tCTRL+ALT+PGUP"
-msgstr "å¢åŠ åˆ—å®½åº¦ (æ— å­ç½‘æ ¼)\tCTRL+ALT+PGUP"
+msgstr "Ôö¼ÓÁĞ¿í¶È (ÎŞ×ÓÍø¸ñ)\tCTRL+ALT+PGUP"
 
 #: myframe.h:141
 msgid "Indented &Text..."
-msgstr "æ–‡æœ¬ç¼©è¿›(&T)..."
+msgstr "ÎÄ±¾Ëõ½ø(&T)..."
 
 #: myframe.h:157
 msgid "Indented text..."
-msgstr "æ–‡æœ¬ç¼©è¿›..."
+msgstr "ÎÄ±¾Ëõ½ø..."
 
 #: myframe.h:106
 msgid "Initialization Error"
-msgstr "åˆå§‹åŒ–é”™è¯¯"
+msgstr "³õÊ¼»¯´íÎó"
 
 #: document.h:1558
 msgid "Internal error: unimplemented operation!"
-msgstr "å†…éƒ¨é”™è¯¯ï¼šæœªå®ç°çš„æ“ä½œï¼"
+msgstr "ÄÚ²¿´íÎó£ºÎ´ÊµÏÖµÄ²Ù×÷£¡"
 
 #: document.h:1049
 msgid "Key binding"
-msgstr "é”®ç»‘å®š"
+msgstr "¼ü°ó¶¨"
 
 #: document.h:1063
 msgid "Keybinding cancelled."
-msgstr "å–æ¶ˆäº†ç»‘å®šã€‚"
+msgstr "È¡ÏûÁË°ó¶¨¡£"
 
 #: myframe.h:323
 msgid "Line Style Rendering\tALT+9"
-msgstr "çº¿æ¡æ ·å¼æ¸²æŸ“\tALT+9"
+msgstr "ÏßÌõÑùÊ½äÖÈ¾\tALT+9"
 
 #: myframe.h:505
 msgid "Load interactive &tutorial...\tF1"
-msgstr "åŠ è½½äº¤äº’å¼æ•™ç¨‹(&T)...\tF1"
+msgstr "¼ÓÔØ½»»¥Ê½½Ì³Ì(&T)...\tF1"
 
 #: system.h:288
 #, c-format
 msgid "Loaded %s (%d cells, %d characters)."
-msgstr "åŠ è½½%s (%d å•å…ƒæ ¼ï¼Œ%d å­—ç¬¦)ã€‚"
+msgstr "¼ÓÔØ%s (%d µ¥Ôª¸ñ£¬%d ×Ö·û)¡£"
 
 #: myframe.h:281 myframe.h:284
 msgid "Make a 1xN selection to indicate which column to sort on, and which rows to affect"
-msgstr "é€‰å®šä¸€å— 1xN åŒºåŸŸä»¥æŒ‡æ˜è¦å¯¹å“ªä¸€åˆ—è¿›è¡Œæ’åºï¼Œä»¥åŠå“ªäº›è¡Œå—å½±å“"
+msgstr "Ñ¡¶¨Ò»¿é 1xN ÇøÓòÒÔÖ¸Ã÷Òª¶ÔÄÄÒ»ÁĞ½øĞĞÅÅĞò£¬ÒÔ¼°ÄÄĞ©ĞĞÊÜÓ°Ïì"
 
 #: myframe.h:326
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
-msgstr "ä½¿å±‚æ¬¡ç»“æ„å¸ƒå±€æ›´å‚ç›´ (é»˜è®¤) æˆ–æ›´æ°´å¹³"
+msgstr "Ê¹²ã´Î½á¹¹²¼¾Ö¸ü´¹Ö± (Ä¬ÈÏ) »ò¸üË®Æ½"
 
 #: myframe.h:461
 msgid "Minimize on close"
-msgstr "å…³é—­æ—¶æœ€å°åŒ–"
+msgstr "¹Ø±ÕÊ±×îĞ¡»¯"
 
 #: myframe.h:459
 msgid "Minimize to tray"
-msgstr "æœ€å°åŒ–åˆ°æ‰˜ç›˜"
+msgstr "×îĞ¡»¯µ½ÍĞÅÌ"
 
 #: myframe.h:222
 msgid "Move Cells Down\tCTRL+DOWN"
-msgstr "å‘ä¸‹ç§»åŠ¨å•å…ƒæ ¼\tCTRL+DOWN"
+msgstr "ÏòÏÂÒÆ¶¯µ¥Ôª¸ñ\tCTRL+DOWN"
 
 #: myframe.h:219
 msgid "Move Cells Left\tCTRL+LEFT"
-msgstr "å‘å·¦ç§»åŠ¨å•å…ƒæ ¼\tCTRL+LEFT"
+msgstr "Ïò×óÒÆ¶¯µ¥Ôª¸ñ\tCTRL+LEFT"
 
 #: myframe.h:220
 msgid "Move Cells Right\tCTRL+RIGHT"
-msgstr "å‘å³ç§»åŠ¨å•å…ƒæ ¼\tCTRL+RIGHT"
+msgstr "ÏòÓÒÒÆ¶¯µ¥Ôª¸ñ\tCTRL+RIGHT"
 
 #: myframe.h:221
 msgid "Move Cells Up\tCTRL+UP"
-msgstr "å‘ä¸Šç§»åŠ¨å•å…ƒæ ¼\tCTRL+UP"
+msgstr "ÏòÉÏÒÆ¶¯µ¥Ôª¸ñ\tCTRL+UP"
 
 #: myframe.h:217
 msgid "Move Selection Down\tDOWN"
-msgstr "å‘ä¸‹ç§»åŠ¨æ‰€é€‰å†…å®¹\tDOWN"
+msgstr "ÏòÏÂÒÆ¶¯ËùÑ¡ÄÚÈİ\tDOWN"
 
 #: myframe.h:214
 msgid "Move Selection Left\tLEFT"
-msgstr "å‘å·¦ç§»åŠ¨æ‰€é€‰å†…å®¹\tLEFT"
+msgstr "Ïò×óÒÆ¶¯ËùÑ¡ÄÚÈİ\tLEFT"
 
 #: myframe.h:215
 msgid "Move Selection Right\tRIGHT"
-msgstr "å‘å³ç§»åŠ¨é€‰æ‹©\tRIGHT"
+msgstr "ÏòÓÒÒÆ¶¯Ñ¡Ôñ\tRIGHT"
 
 #: myframe.h:216
 msgid "Move Selection Up\tUP"
-msgstr "ä¸Šç§»æ‰€é€‰å†…å®¹\tUP"
+msgstr "ÉÏÒÆËùÑ¡ÄÚÈİ\tUP"
 
 #: myframe.h:209
 msgid "Move to next cell\tTAB"
-msgstr "ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªå•å…ƒæ ¼\tTAB"
+msgstr "ÒÆ¶¯µ½ÏÂÒ»¸öµ¥Ôª¸ñ\tTAB"
 
 #: myframe.h:210
 msgid "Move to previous cell\tSHIFT+TAB"
-msgstr "ç§»åŠ¨åˆ°ä¸Šä¸€ä¸ªå•å…ƒæ ¼\tSHIFT+TAB"
+msgstr "ÒÆ¶¯µ½ÉÏÒ»¸öµ¥Ôª¸ñ\tSHIFT+TAB"
 
 #: document.h:1060
 msgid "NOTE: key binding will take effect next run of TreeSheets."
-msgstr "æ³¨ï¼šé”®ç»‘å®šå°†åœ¨ä¸‹ä¸€æ¬¡è¿è¡Œçš„æ ‘è¡¨ä¸­ç”Ÿæ•ˆã€‚"
+msgstr "×¢£º¼ü°ó¶¨½«ÔÚÏÂÒ»´ÎÔËĞĞµÄÊ÷±íÖĞÉúĞ§¡£"
 
 #: myframe.h:468
 msgid "Navigate in between cells with cursor keys"
-msgstr "ä½¿ç”¨å…‰æ ‡é”®åœ¨å•å…ƒæ ¼ä¹‹é—´å¯¼èˆª"
+msgstr "Ê¹ÓÃ¹â±ê¼üÔÚµ¥Ôª¸ñÖ®¼äµ¼º½"
 
 #: myframe.h:557
 msgid "New (CTRL+n)"
-msgstr "æ–°å»º (CTRL+n)"
+msgstr "ĞÂ½¨ (CTRL+n)"
 
 #: myframe.h:569
 msgid "New Grid (INS)"
-msgstr "æ–°ç½‘æ ¼ (ins)"
+msgstr "ĞÂÍø¸ñ (ins)"
 
 #: document.h:863
 msgid "New Sheet"
-msgstr "æ–°å·¥ä½œè¡¨"
+msgstr "ĞÂ¹¤×÷±í"
 
 #: document.h:864
 msgid "New file cancelled."
-msgstr "æ–°æ–‡ä»¶å·²å–æ¶ˆã€‚"
+msgstr "ĞÂÎÄ¼şÒÑÈ¡Ïû¡£"
 
 #: document.h:1460
 msgid "No image in this cell."
-msgstr "æ­¤å•å…ƒæ ¼ä¸­æ²¡æœ‰å›¾åƒã€‚"
+msgstr "´Ëµ¥Ôª¸ñÖĞÃ»ÓĞÍ¼Ïñ¡£"
 
 #: document.h:1567
 msgid "No matches for search."
-msgstr "æ²¡æœ‰ç”¨äºæœç´¢çš„åŒ¹é…é¡¹ã€‚"
+msgstr "Ã»ÓĞÓÃÓÚËÑË÷µÄÆ¥ÅäÏî¡£"
 
 #: document.h:1481
 msgid "No matching cell found!"
-msgstr "æ‰¾ä¸åˆ°åŒ¹é…çš„å•å…ƒæ ¼ï¼"
+msgstr "ÕÒ²»µ½Æ¥ÅäµÄµ¥Ôª¸ñ£¡"
 
 #: document.h:1563
 msgid "No search string."
-msgstr "æ²¡æœ‰æœç´¢å­—ç¬¦ä¸²ã€‚"
+msgstr "Ã»ÓĞËÑË÷×Ö·û´®¡£"
 
 #: document.h:999 document.h:1293
 msgid "No search."
-msgstr "ä¸æœç´¢ã€‚"
+msgstr "²»ËÑË÷¡£"
 
 #: document.h:1252
 msgid "No style to paste."
-msgstr "æ²¡æœ‰è¦ç²˜è´´çš„æ ·å¼ã€‚"
+msgstr "Ã»ÓĞÒªÕ³ÌùµÄÑùÊ½¡£"
 
 #: document.h:1114
 msgid "No text selected."
-msgstr "æœªé€‰æ‹©æ–‡æœ¬ã€‚"
+msgstr "Î´Ñ¡ÔñÎÄ±¾¡£"
 
 #: system.h:215
 msgid "Not a TreeSheets file."
-msgstr "ä¸æ˜¯ \"æ ‘è¡¨\" æ–‡ä»¶ã€‚"
+msgstr "²»ÊÇ \"Ê÷±í\" ÎÄ¼ş¡£"
 
 #: document.h:818
 msgid "Nothing more to redo."
-msgstr "æ²¡æœ‰ä»€ä¹ˆå¯é‡åšçš„äº†ã€‚"
+msgstr "Ã»ÓĞÊ²Ã´¿ÉÖØ×öµÄÁË¡£"
 
 #: document.h:810
 msgid "Nothing more to undo."
-msgstr "æ²¡æœ‰æ›´å¤šçš„æ’¤æ¶ˆã€‚"
+msgstr "Ã»ÓĞ¸ü¶àµÄ³·Ïû¡£"
 
 #: document.h:1011
 msgid "Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal."
-msgstr "ç°åœ¨æŸ¥çœ‹æ ‘æ¿ä»¥å®Œå…¨é€‚åˆå±å¹•ï¼ŒæŒ‰ F12 è¿”å›æ­£å¸¸çŠ¶æ€ã€‚"
+msgstr "ÏÖÔÚ²é¿´Ê÷°åÒÔÍêÈ«ÊÊºÏÆÁÄ»£¬°´ F12 ·µ»ØÕı³£×´Ì¬¡£"
 
 #: myframe.h:308
 msgid "Open &file\tF4"
-msgstr "æ‰“å¼€æ–‡ä»¶(&F)\tF4"
+msgstr "´ò¿ªÎÄ¼ş(&F)\tF4"
 
 #: myframe.h:558
 msgid "Open (CTRL+o)"
-msgstr "æ‰“å¼€ (CTRL+o)"
+msgstr "´ò¿ª (CTRL+o)"
 
 #: system.h:335
 msgid "Open file cancelled."
-msgstr "æ‰“å¼€æ–‡ä»¶å·²å–æ¶ˆã€‚"
+msgstr "´ò¿ªÎÄ¼şÒÑÈ¡Ïû¡£"
 
 #: myframe.h:305
 msgid "Open link in &browser\tF5"
-msgstr "åœ¨æµè§ˆå™¨ä¸­æ‰“å¼€é“¾æ¥(&B)\tF5"
+msgstr "ÔÚä¯ÀÀÆ÷ÖĞ´ò¿ªÁ´½Ó(&B)\tF5"
 
 #: myframe.h:306
 msgid "Opens up the text from the selected cell in browser (should start be a valid URL)"
-msgstr "åœ¨æµè§ˆå™¨ä¸­æ‰“å¼€é€‰å®šå•å…ƒæ ¼ä¸­çš„æ–‡æœ¬ (å¼€å§‹æ—¶åº”è¯¥æ˜¯æœ‰æ•ˆçš„ url)"
+msgstr "ÔÚä¯ÀÀÆ÷ÖĞ´ò¿ªÑ¡¶¨µ¥Ôª¸ñÖĞµÄÎÄ±¾ (¿ªÊ¼Ê±Ó¦¸ÃÊÇÓĞĞ§µÄ url)"
 
 #: myframe.h:309
 msgid "Opens up the text from the selected cell in default application for the file type"
-msgstr "åœ¨æ–‡ä»¶ç±»å‹çš„é»˜è®¤åº”ç”¨ç¨‹åºä¸­æ‰“å¼€é€‰å®šå•å…ƒæ ¼ä¸­çš„æ–‡æœ¬"
+msgstr "ÔÚÎÄ¼şÀàĞÍµÄÄ¬ÈÏÓ¦ÓÃ³ÌĞòÖĞ´ò¿ªÑ¡¶¨µ¥Ôª¸ñÖĞµÄÎÄ±¾"
 
 #: system.h:308
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
 msgstr ""
-"PNG è§£ç æœ¬æ–‡æ¡£ä¸­çš„æŸäº›å›¾åƒæ—¶å¤±è´¥\n"
-"å®ƒä»¬å·²è¢«çº¢è‰²æ–¹å—æ‰€å–ä»£ã€‚"
+"PNG ½âÂë±¾ÎÄµµÖĞµÄÄ³Ğ©Í¼ÏñÊ±Ê§°Ü\n"
+"ËüÃÇÒÑ±»ºìÉ«·½¿éËùÈ¡´ú¡£"
 
 #: system.h:310
 msgid "PNG decoder failure"
-msgstr "PNG è§£ç å™¨æ•…éšœ"
+msgstr "PNG ½âÂëÆ÷¹ÊÕÏ"
 
 #: myframe.h:174
 msgid "Page Setup..."
-msgstr "é¡µé¢è®¾ç½®..."
+msgstr "Ò³ÃæÉèÖÃ..."
 
 #: myframe.h:564
 msgid "Paste (CTRL+v)"
-msgstr "ç²˜è´´ (CTRL+v)"
+msgstr "Õ³Ìù (CTRL+v)"
 
 #: myframe.h:333
 msgid "Paste Style Only\tCTRL+SHIFT+v"
-msgstr "ä»…ç²˜è´´æ ·å¼\tCTRL+SHIFT+v"
+msgstr "½öÕ³ÌùÑùÊ½\tCTRL+SHIFT+v"
 
 #: myframe.h:449
 msgid "Pick Custom &Color..."
-msgstr "é€‰æ‹©è‡ªå®šä¹‰é¢œè‰²(&C)..."
+msgstr "Ñ¡Ôñ×Ô¶¨ÒåÑÕÉ«(&C)..."
 
 #: myframe.h:447
 msgid "Pick Default Font..."
-msgstr "é€‰æ‹©é»˜è®¤å­—ä½“..."
+msgstr "Ñ¡ÔñÄ¬ÈÏ×ÖÌå..."
 
 #: myframe.h:451
 msgid "Pick Document Background..."
-msgstr "é€‰æ‹©æ–‡æ¡£èƒŒæ™¯..."
+msgstr "Ñ¡ÔñÎÄµµ±³¾°..."
 
 #: myframe.h:862
 msgid "Please enable (Options -> Show Toolbar) to use search."
-msgstr "è¯·å¯ç”¨ (é€‰é¡¹-> æ˜¾ç¤ºå·¥å…·æ ) ä»¥ä½¿ç”¨æœç´¢ã€‚"
+msgstr "ÇëÆôÓÃ (Ñ¡Ïî-> ÏÔÊ¾¹¤¾ßÀ¸) ÒÔÊ¹ÓÃËÑË÷¡£"
 
 #: document.h:1462
 msgid "Please enter the percentage you want the image scaled by:"
-msgstr "è¯·è¾“å…¥è¦æŒ‰ä»¥ä¸‹æ–¹å¼ç¼©æ”¾å›¾åƒçš„ç™¾åˆ†æ¯”ï¼š"
+msgstr "ÇëÊäÈëÒª°´ÒÔÏÂ·½Ê½Ëõ·ÅÍ¼ÏñµÄ°Ù·Ö±È£º"
 
 #: document.h:1048
 msgid "Please pick a menu item to change the key binding for"
-msgstr "è¯·é€‰æ‹©ä¸€ä¸ªèœå•é¡¹æ¥æ›´æ”¹çš„é”®ç»‘å®š"
+msgstr "ÇëÑ¡ÔñÒ»¸ö²Ëµ¥ÏîÀ´¸ü¸ÄµÄ¼ü°ó¶¨"
 
 #: document.h:840
 msgid "Please select a TreeSheets file to load:"
-msgstr "è¯·é€‰æ‹©è¦åŠ è½½çš„æ ‘è¡¨æ ¼æ–‡ä»¶ï¼š"
+msgstr "ÇëÑ¡ÔñÒª¼ÓÔØµÄÊ÷±í¸ñÎÄ¼ş£º"
 
 #: document.h:1272
 msgid "Please select an image file:"
-msgstr "è¯·é€‰æ‹©å›¾åƒæ–‡ä»¶ï¼š"
+msgstr "ÇëÑ¡ÔñÍ¼ÏñÎÄ¼ş£º"
 
 #: system.h:373
 msgid "Please select file to import:"
-msgstr "è¯·é€‰æ‹©è¦å¯¼å…¥çš„æ–‡ä»¶ï¼š"
+msgstr "ÇëÑ¡ÔñÒªµ¼ÈëµÄÎÄ¼ş£º"
 
 #: myframe.h:855
 msgid "Press F11 to exit fullscreen mode."
-msgstr "æŒ‰ f11 é€€å‡ºå…¨å±æ¨¡å¼ã€‚"
+msgstr "°´ f11 ÍË³öÈ«ÆÁÄ£Ê½¡£"
 
 #: document.h:943
 msgid "Print Preview"
-msgstr "æ‰“å°é¢„è§ˆ"
+msgstr "´òÓ¡Ô¤ÀÀ"
 
 #: myframe.h:176
 msgid "Print preview..."
-msgstr "æ‰“å°é¢„è§ˆ..."
+msgstr "´òÓ¡Ô¤ÀÀ..."
 
 #: myframe.h:437
 msgid "Radius &0"
-msgstr "åŠå¾„0(&0)"
+msgstr "°ë¾¶0(&0)"
 
 #: myframe.h:438
 msgid "Radius &1"
-msgstr "åŠå¾„1(&1)"
+msgstr "°ë¾¶1(&1)"
 
 #: myframe.h:439
 msgid "Radius &2"
-msgstr "åŠå¾„2(&2)"
+msgstr "°ë¾¶2(&2)"
 
 #: myframe.h:440
 msgid "Radius &3"
-msgstr "åŠå¾„3(&3)"
+msgstr "°ë¾¶3(&3)"
 
 #: myframe.h:441
 msgid "Radius &4"
-msgstr "åŠå¾„4(&4)"
+msgstr "°ë¾¶4(&4)"
 
 #: myframe.h:442
 msgid "Radius &5"
-msgstr "åŠå¾„5(&5)"
+msgstr "°ë¾¶5(&5)"
 
 #: myframe.h:443
 msgid "Radius &6"
-msgstr "åŠå¾„6(&6)"
+msgstr "°ë¾¶6(&6)"
 
 #: myframe.h:477
 #, fuzzy
 msgid "Reloads when another computer has changed a file (if you have made changes, asks)"
-msgstr "å½“å¦ä¸€å°è®¡ç®—æœºæ›´æ”¹äº†æ–‡ä»¶æ—¶é‡æ–°åŠ è½½ (å¦‚æœæ‚¨è¿›è¡Œäº†æ›´æ”¹ï¼Œè¯·è¯¢é—®)"
+msgstr "µ±ÁíÒ»Ì¨¼ÆËã»ú¸ü¸ÄÁËÎÄ¼şÊ±ÖØĞÂ¼ÓÔØ (Èç¹ûÄú½øĞĞÁË¸ü¸Ä£¬ÇëÑ¯ÎÊ)"
 
 #: myframe.h:302
 msgid "Remove image(s) from the selected cells"
-msgstr "ä»é€‰å®šå•å…ƒæ ¼ä¸­åˆ é™¤å›¾åƒ"
+msgstr "´ÓÑ¡¶¨µ¥Ôª¸ñÖĞÉ¾³ıÍ¼Ïñ"
 
 #: myframe.h:482
 msgid "Render document centered"
-msgstr "å‘ˆç°æ–‡æ¡£å±…ä¸­"
+msgstr "³ÊÏÖÎÄµµ¾ÓÖĞ"
 
 #: myframe.h:578
 msgid "Replace "
-msgstr "å–ä»£ "
+msgstr "È¡´ú "
 
 #: myframe.h:389
 msgid "Replace &All"
-msgstr "å…¨éƒ¨æ›¿æ¢(&A)"
+msgstr "È«²¿Ìæ»»(&A)"
 
 #: myframe.h:267
 msgid "Reset &colors\tSHIFT+CTRL+c"
-msgstr "é‡ç½®é¢œè‰²(&C)\tSHIFT+CTRL+c"
+msgstr "ÖØÖÃÑÕÉ«(&C)\tSHIFT+CTRL+c"
 
 #: myframe.h:198
 msgid "Reset column widths\tSHIFT+CTRL+w"
-msgstr "é‡ç½®åˆ—å®½åº¦\tSHIFT+CTRL+w"
+msgstr "ÖØÖÃÁĞ¿í¶È\tSHIFT+CTRL+w"
 
 #: myframe.h:572
 msgid "Run"
-msgstr "è¿è¡Œ"
+msgstr "ÔËĞĞ"
 
 #: myframe.h:172
 msgid "Save &As..."
-msgstr "å¦å­˜ä¸º(&A)..."
+msgstr "Áí´æÎª(&A)..."
 
 #: myframe.h:559
 msgid "Save (CTRL+s)"
-msgstr "ä¿å­˜ (CTRL+s)"
+msgstr "±£´æ (CTRL+s)"
 
 #: myframe.h:560
 msgid "Save As"
-msgstr "å¦å­˜ä¸º"
+msgstr "Áí´æÎª"
 
 #: document.h:601
 msgid "Save and Close"
-msgstr "ä¿å­˜å¹¶å…³é—­"
+msgstr "±£´æ²¢¹Ø±Õ"
 
 #: document.h:153 document.h:713
 msgid "Save cancelled."
-msgstr "ä¿å­˜å·²å–æ¶ˆã€‚"
+msgstr "±£´æÒÑÈ¡Ïû¡£"
 
 #: myframe.h:395
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
-msgstr "å‘ä¸‹æ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tALT+DOWN"
+msgstr "ÏòÏÂ¹ö¶¯ (Êó±ê¹öÂÖ)\tALT+DOWN"
 
 #: myframe.h:394
 msgid "Scroll Down (mousewheel)\tPGDN"
-msgstr "å‘ä¸‹æ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tPGDN"
+msgstr "ÏòÏÂ¹ö¶¯ (Êó±ê¹öÂÖ)\tPGDN"
 
 #: myframe.h:396
 msgid "Scroll Left\tALT+LEFT"
-msgstr "å‘å·¦æ»šåŠ¨\tALT+LEFT"
+msgstr "Ïò×ó¹ö¶¯\tALT+LEFT"
 
 #: myframe.h:397
 msgid "Scroll Right\tALT+RIGHT"
-msgstr "å‘å³æ»šåŠ¨\tALT+RIGHT"
+msgstr "ÏòÓÒ¹ö¶¯\tALT+RIGHT"
 
 #: myframe.h:433
 msgid "Scroll Sheet..."
-msgstr "æ»šåŠ¨è¡¨æ ¼..."
+msgstr "¹ö¶¯±í¸ñ..."
 
 #: myframe.h:393
 msgid "Scroll Up (mousewheel)\tALT+UP"
-msgstr "å‘ä¸Šæ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tALT+UP"
+msgstr "ÏòÉÏ¹ö¶¯ (Êó±ê¹öÂÖ)\tALT+UP"
 
 #: myframe.h:392
 msgid "Scroll Up (mousewheel)\tPGUP"
-msgstr "å‘ä¸Šæ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tPGUP"
+msgstr "ÏòÉÏ¹ö¶¯ (Êó±ê¹öÂÖ)\tPGUP"
 
 #: myframe.h:574
 msgid "Search "
-msgstr "æœç´¢ "
+msgstr "ËÑË÷ "
 
 #: myframe.h:231
 msgid "Select &Parent\tESC"
-msgstr "é€‰æ‹©çˆ¶é¡¹(&P)\tESC"
+msgstr "Ñ¡Ôñ¸¸Ïî(&P)\tESC"
 
 #: myframe.h:212
 msgid "Select &all in current grid\tCTRL+a"
-msgstr "åœ¨å½“å‰ç½‘æ ¼ä¸­é€‰æ‹©æ‰€æœ‰(&A)\tCTRL+a"
+msgstr "ÔÚµ±Ç°Íø¸ñÖĞÑ¡ÔñËùÓĞ(&A)\tCTRL+a"
 
 #: myframe.h:232
 msgid "Select First &Child\tSHIFT+ENTER"
-msgstr "é€‰æ‹©ç¬¬ä¸€ä¸ªå­é¡¹(&C)\tSHIFT+ENTER"
+msgstr "Ñ¡ÔñµÚÒ»¸ö×ÓÏî(&C)\tSHIFT+ENTER"
 
 #: document.h:1414
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr "é€‰å®šçš„ç½‘æ ¼ä¸æ˜¯è¡¨ï¼šå•å…ƒæ ¼ä¸èƒ½å·²ç»æœ‰å­ç½‘æ ¼ã€‚"
+msgstr "Ñ¡¶¨µÄÍø¸ñ²»ÊÇ±í£ºµ¥Ôª¸ñ²»ÄÜÒÑ¾­ÓĞ×ÓÍø¸ñ¡£"
 
 #: myframe.h:159
 msgid "Semi-Colon delimited text (CSV)..."
-msgstr "åŠå†’å·åˆ†éš”æ–‡æœ¬ (CSV)..."
+msgstr "°ëÃ°ºÅ·Ö¸ôÎÄ±¾ (CSV)..."
 
 #: myframe.h:378
 msgid "Set Grid Border Width..."
-msgstr "è®¾ç½®ç½‘æ ¼è¾¹æ¡†å®½åº¦..."
+msgstr "ÉèÖÃÍø¸ñ±ß¿ò¿í¶È..."
 
 #: document.h:935
 msgid "Set Print Scale"
-msgstr "è®¾ç½®æ‰“å°æ¯”ä¾‹"
+msgstr "ÉèÖÃ´òÓ¡±ÈÀı"
 
 #: myframe.h:175
 msgid "Set Print Scale..."
-msgstr "è®¾ç½®æ‰“å°æ¯”ä¾‹..."
+msgstr "ÉèÖÃ´òÓ¡±ÈÀı..."
 
 #: myframe.h:407
 #, c-format
 msgid "Show 1% less than the last filter"
-msgstr "æ˜¾ç¤ºæ¯”æœ€åä¸€ä¸ªç­›é€‰å™¨å°‘ 1%"
+msgstr "ÏÔÊ¾±È×îºóÒ»¸öÉ¸Ñ¡Æ÷ÉÙ 1%"
 
 #: myframe.h:406
 #, c-format
 msgid "Show 1% more than the last filter"
-msgstr "æ˜¾ç¤ºæ¯”æœ€åä¸€ä¸ªç­›é€‰å™¨å¤š 1%"
+msgstr "ÏÔÊ¾±È×îºóÒ»¸öÉ¸Ñ¡Æ÷¶à 1%"
 
 #: myframe.h:403
 #, c-format
 msgid "Show 10% of last edits"
-msgstr "æ˜¾ç¤ºä¸Šæ¬¡ç¼–è¾‘çš„ 10%"
+msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 10%"
 
 #: myframe.h:404
 #, c-format
 msgid "Show 20% of last edits"
-msgstr "æ˜¾ç¤ºä¸Šæ¬¡ç¼–è¾‘çš„ 20%"
+msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 20%"
 
 #: myframe.h:402
 #, c-format
 msgid "Show 5% of last edits"
-msgstr "æ˜¾ç¤ºä¸Šæ¬¡ç¼–è¾‘çš„ 5%"
+msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 5%"
 
 #: myframe.h:405
 #, c-format
 msgid "Show 50% of last edits"
-msgstr "æ˜¾ç¤ºä¸Šæ¬¡ç¼–è¾‘çš„ 50%"
+msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 50%"
 
 #: myframe.h:453
 msgid "Show Statusbar"
-msgstr "æ˜¾ç¤ºçŠ¶æ€æ "
+msgstr "ÏÔÊ¾×´Ì¬À¸"
 
 #: myframe.h:455
 msgid "Show Toolbar"
-msgstr "æ˜¾ç¤ºå·¥å…·æ "
+msgstr "ÏÔÊ¾¹¤¾ßÀ¸"
 
 #: myframe.h:401
 msgid "Show only cells in current search"
-msgstr "ä»…åœ¨å½“å‰æœç´¢ä¸­æ˜¾ç¤ºå•å…ƒæ ¼"
+msgstr "½öÔÚµ±Ç°ËÑË÷ÖĞÏÔÊ¾µ¥Ôª¸ñ"
 
 #: myframe.h:463
 msgid "Single click maximize from tray"
-msgstr "ä»æ‰˜ç›˜ä¸­å•å‡»æœ€å¤§åŒ–"
+msgstr "´ÓÍĞÅÌÖĞµ¥»÷×î´ó»¯"
 
 #: system.h:358
 #, c-format
 msgid "Size %d"
-msgstr "å°ºå¯¸ %d"
+msgstr "³ß´ç %d"
 
 #: myframe.h:280
 msgid "Sort &Ascending"
-msgstr "æ’åºå‡åº(&A)"
+msgstr "ÅÅĞòÉıĞò(&A)"
 
 #: myframe.h:283
 msgid "Sort &Descending"
-msgstr "æ’åºé™åº(&D)"
+msgstr "ÅÅĞò½µĞò(&D)"
 
 #: myframe.h:250
 msgid "Start of line of text\tHOME"
-msgstr "æ–‡æœ¬è¡Œçš„å¼€å§‹\tHOME"
+msgstr "ÎÄ±¾ĞĞµÄ¿ªÊ¼\tHOME"
 
 #: myframe.h:252
 msgid "Start of text\tCTRL+HOME"
-msgstr "æ–‡æœ¬çš„å¼€å§‹\tCTRL+HOME"
+msgstr "ÎÄ±¾µÄ¿ªÊ¼\tCTRL+HOME"
 
 #: myframe.h:287
 msgid "Swap all cells with this text at this level (or above) with the parent"
-msgstr "å°†æ­¤æ–‡æœ¬ä¸çˆ¶çº§ (æˆ–æ›´é«˜ç‰ˆæœ¬) çš„æ‰€æœ‰å•å…ƒæ ¼äº¤æ¢"
+msgstr "½«´ËÎÄ±¾Óë¸¸¼¶ (»ò¸ü¸ß°æ±¾) µÄËùÓĞµ¥Ôª¸ñ½»»»"
 
 #: myframe.h:466
 msgid "Swap mousewheel scrolling and zooming"
-msgstr "äº¤æ¢é¼ æ ‡æ»šè½®æ»šåŠ¨å’Œç¼©æ”¾"
+msgstr "½»»»Êó±ê¹öÂÖ¹ö¶¯ºÍËõ·Å"
 
 #: myframe.h:418
 msgid "Switch to &next file/tab"
-msgstr "åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªæ–‡ä»¶/é€‰é¡¹å¡(&N)"
+msgstr "ÇĞ»»µ½ÏÂÒ»¸öÎÄ¼ş/Ñ¡Ïî¿¨(&N)"
 
 #: myframe.h:414
 msgid "Switch to &next file/tab\tCTRL+TAB"
-msgstr "åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªæ–‡ä»¶/é€‰é¡¹å¡(&N)\tCTRL+TAB"
+msgstr "ÇĞ»»µ½ÏÂÒ»¸öÎÄ¼ş/Ñ¡Ïî¿¨(&N)\tCTRL+TAB"
 
 #: myframe.h:420
 msgid "Switch to &previous file/tab\tSHIFT+CTRL+TAB"
-msgstr "åˆ‡æ¢åˆ°ä»¥å‰çš„æ–‡ä»¶/é€‰é¡¹å¡(&P)\tSHIFT+CTRL+TAB"
+msgstr "ÇĞ»»µ½ÒÔÇ°µÄÎÄ¼ş/Ñ¡Ïî¿¨(&P)\tSHIFT+CTRL+TAB"
 
 #: myframe.h:160
 msgid "Tab delimited text..."
-msgstr "åˆ¶è¡¨ç¬¦åˆ†éš”çš„æ–‡æœ¬æ ¼å¼..."
+msgstr "ÖÆ±í·û·Ö¸ôµÄÎÄ±¾¸ñÊ½..."
 
 #: myframe.h:379
 msgid "Tag..."
-msgstr "æ ‡è®°..."
+msgstr "±ê¼Ç..."
 
 #: myframe.h:293
 msgid "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"
-msgstr "é‡‡ç”¨å±‚æ¬¡ç»“æ„ (åµŒå¥— 1xn æˆ– 1xN ç½‘æ ¼) å¹¶å°†å…¶è½¬æ¢ä¸ºå¹³é¢ 1xN ç½‘æ ¼ï¼Œå¯ç”¨äºå¯¼å‡ºåˆ°ç”µå­è¡¨æ ¼"
+msgstr "²ÉÓÃ²ã´Î½á¹¹ (Ç¶Ì× 1xn »ò 1xN Íø¸ñ) ²¢½«Æä×ª»»ÎªÆ½Ãæ 1xN Íø¸ñ£¬¿ÉÓÃÓÚµ¼³öµ½µç×Ó±í¸ñ"
 
 #: myframe.h:585
 msgid "Text "
-msgstr "æ–‡æœ¬ "
+msgstr "ÎÄ±¾ "
 
 #: myframe.h:375
 msgid "Text &Editing..."
-msgstr "æ–‡æœ¬ç¼–è¾‘(&E)..."
+msgstr "ÎÄ±¾±à¼­(&E)..."
 
 #: myframe.h:376
 msgid "Text Sizing..."
-msgstr "æ–‡æœ¬å¤§å°..."
+msgstr "ÎÄ±¾´óĞ¡..."
 
 #: myframe.h:377
 msgid "Text Style..."
-msgstr "æ–‡æœ¬æ ·å¼..."
+msgstr "ÎÄ±¾ÑùÊ½..."
 
 #: document.h:429
 msgid "Text size decreased."
-msgstr "æ–‡æœ¬å¤§å°å‡å°ã€‚"
+msgstr "ÎÄ±¾´óĞ¡¼õĞ¡¡£"
 
 #: document.h:429
 msgid "Text size increased."
-msgstr "æ–‡æœ¬å¤§å°å¢åŠ ã€‚"
+msgstr "ÎÄ±¾´óĞ¡Ôö¼Ó¡£"
 
 #: document.h:875
 msgid "The Free Form Hierarchical Information Organizer"
-msgstr "è‡ªç”±å½¢å¼åˆ†å±‚ä¿¡æ¯ç®¡ç†å™¨"
+msgstr "×ÔÓÉĞÎÊ½·Ö²ãĞÅÏ¢¹ÜÀíÆ÷"
 
 #: document.h:402
 msgid "This operation doesn't work on thin selections."
-msgstr "æ­¤æ“ä½œä¸é€‚ç”¨äºç²¾ç®€é€‰æ‹©ã€‚"
+msgstr "´Ë²Ù×÷²»ÊÊÓÃÓÚ¾«¼òÑ¡Ôñ¡£"
 
 #: document.h:403
 msgid "This operation requires a cell that contains a grid."
-msgstr "æ­¤æ“ä½œéœ€è¦ä¸€ä¸ªåŒ…å«ç½‘æ ¼çš„å•å…ƒæ ¼ã€‚"
+msgstr "´Ë²Ù×÷ĞèÒªÒ»¸ö°üº¬Íø¸ñµÄµ¥Ôª¸ñ¡£"
 
 #: document.h:400
 msgid "This operation requires a selection."
-msgstr "æ­¤æ“ä½œéœ€è¦é€‰æ‹©ã€‚"
+msgstr "´Ë²Ù×÷ĞèÒªÑ¡Ôñ¡£"
 
 #: document.h:401
 msgid "This operation works on a single selected cell only."
-msgstr "æ­¤æ“ä½œä»…é€‚ç”¨äºå•ä¸ªé€‰å®šçš„å•å…ƒæ ¼ã€‚"
+msgstr "´Ë²Ù×÷½öÊÊÓÃÓÚµ¥¸öÑ¡¶¨µÄµ¥Ôª¸ñ¡£"
 
 #: myframe.h:423
 msgid "Toggle &Fullscreen View\tCTRL+F11"
-msgstr "åˆ‡æ¢å…¨å±è§†å›¾(&F)\tCTRL+F11"
+msgstr "ÇĞ»»È«ÆÁÊÓÍ¼(&F)\tCTRL+F11"
 
 #: myframe.h:425
 msgid "Toggle &Fullscreen View\tF11"
-msgstr "åˆ‡æ¢å…¨å±è§†å›¾(&F)\tF11"
+msgstr "ÇĞ»»È«ÆÁÊÓÍ¼(&F)\tF11"
 
 #: myframe.h:429
 msgid "Toggle &Scaled Presentation View\tCTRL+F12"
-msgstr "åˆ‡æ¢ç¼©æ”¾çš„æ¼”ç¤ºæ–‡ç¨¿è§†å›¾(&S)\tCTRL+F12"
+msgstr "ÇĞ»»Ëõ·ÅµÄÑİÊ¾ÎÄ¸åÊÓÍ¼(&S)\tCTRL+F12"
 
 #: myframe.h:431
 msgid "Toggle &Scaled Presentation View\tF12"
-msgstr "åˆ‡æ¢ç¼©æ”¾çš„æ¼”ç¤ºæ–‡ç¨¿è§†å›¾(&S)\tF12"
+msgstr "ÇĞ»»Ëõ·ÅµÄÑİÊ¾ÎÄ¸åÊÓÍ¼(&S)\tF12"
 
 #: myframe.h:360
 msgid "Toggle Fold\tCTRL+F10"
-msgstr "åˆ‡æ¢æŠ˜å \tCTRL+F10"
+msgstr "ÇĞ»»ÕÛµş\tCTRL+F10"
 
 #: myframe.h:362
 msgid "Toggle Fold\tF10"
-msgstr "åˆ‡æ¢æŠ˜å \tF10"
+msgstr "ÇĞ»»ÕÛµş\tF10"
 
 #: myframe.h:325
 msgid "Toggle Vertical Layout\tF7"
-msgstr "åˆ‡æ¢å‚ç›´å¸ƒå±€\tF7"
+msgstr "ÇĞ»»´¹Ö±²¼¾Ö\tF7"
 
 #: myframe.h:260
 msgid "Toggle cell &BOLD\tCTRL+b"
-msgstr "åˆ‡æ¢å•å…ƒæ ¼(&B)\tCTRL+b"
+msgstr "ÇĞ»»µ¥Ôª¸ñ(&B)\tCTRL+b"
 
 #: myframe.h:261
 msgid "Toggle cell &ITALIC\tCTRL+i"
-msgstr "åˆ‡æ¢å•å…ƒæ ¼æ„å¤§åˆ©è¯­(&I)\tCTRL+i"
+msgstr "ÇĞ»»µ¥Ôª¸ñÒâ´óÀûÓï(&I)\tCTRL+i"
 
 #: myframe.h:264
 msgid "Toggle cell &strikethrough\tCTRL+t"
-msgstr "åˆ‡æ¢å•å…ƒæ ¼åˆ é™¤çº¿(&S)\tCTRL+t"
+msgstr "ÇĞ»»µ¥Ôª¸ñÉ¾³ıÏß(&S)\tCTRL+t"
 
 #: myframe.h:262
 msgid "Toggle cell &typewriter"
-msgstr "åˆ‡æ¢å•å…ƒæ ¼æ‰“å­—æœº(&T)"
+msgstr "ÇĞ»»µ¥Ôª¸ñ´ò×Ö»ú(&T)"
 
 #: myframe.h:263
 msgid "Toggle cell &underlined\tCTRL+u"
-msgstr "åˆ‡æ¢å¸¦ä¸‹åˆ’çº¿çš„å•å…ƒæ ¼(&U)\tCTRL+u"
+msgstr "ÇĞ»»´øÏÂ»®ÏßµÄµ¥Ôª¸ñ(&U)\tCTRL+u"
 
 #: myframe.h:364
 msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "åˆ‡æ¢æ˜¾ç¤ºæ‰€é€‰å•å…ƒæ ¼çš„ç½‘æ ¼"
+msgstr "ÇĞ»»ÏÔÊ¾ËùÑ¡µ¥Ôª¸ñµÄÍø¸ñ"
 
 #: myframe.h:400
 msgid "Turn filter &off"
-msgstr "å…³é—­è¿‡æ»¤å™¨(&O)"
+msgstr "¹Ø±Õ¹ıÂËÆ÷(&O)"
 
 #: myframe.h:562
 msgid "Undo (CTRL+z)"
-msgstr "æ’¤æ¶ˆ (CTRL+z)"
+msgstr "³·Ïû (CTRL+z)"
 
 #: myframe.h:367
 msgid "Unfold All\tCTRL+ALT+F10"
-msgstr "å…¨éƒ¨å±•å¼€\tCTRL+ALT+F10"
+msgstr "È«²¿Õ¹¿ª\tCTRL+ALT+F10"
 
 #: myframe.h:368
 msgid "Unfolds the grid of the selected cell(s) recursively"
-msgstr "é€’å½’å±•å¼€é€‰å®šå•å…ƒæ ¼çš„ç½‘æ ¼"
+msgstr "µİ¹éÕ¹¿ªÑ¡¶¨µ¥Ôª¸ñµÄÍø¸ñ"
 
 #: myframe.h:493
 msgid "Variable &Assign"
-msgstr "å˜é‡åˆ†é…(&A)"
+msgstr "±äÁ¿·ÖÅä(&A)"
 
 #: myframe.h:494
 msgid "Variable &Read"
-msgstr "å˜é‡è¯»å–(&R)"
+msgstr "±äÁ¿¶ÁÈ¡(&R)"
 
 #: myframe.h:314
 msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
-msgstr "å…·æœ‰æ°”æ³¡æ ·å¼æ¸²æŸ“çš„å‚ç›´å¸ƒå±€\tALT+2"
+msgstr "¾ßÓĞÆøÅİÑùÊ½äÖÈ¾µÄ´¹Ö±²¼¾Ö\tALT+2"
 
 #: myframe.h:313
 msgid "Vertical Layout with Grid Style Rendering\tALT+1"
-msgstr "å…·æœ‰ç½‘æ ¼æ ·å¼æ¸²æŸ“çš„å‚ç›´å¸ƒå±€\tALT+1"
+msgstr "¾ßÓĞÍø¸ñÑùÊ½äÖÈ¾µÄ´¹Ö±²¼¾Ö\tALT+1"
 
 #: myframe.h:315
 msgid "Vertical Layout with Line Style Rendering\tALT+3"
-msgstr "å…·æœ‰çº¿æ¡æ ·å¼æ¸²æŸ“çš„å‚ç›´å¸ƒå±€\tALT+3"
+msgstr "¾ßÓĞÏßÌõÑùÊ½äÖÈ¾µÄ´¹Ö±²¼¾Ö\tALT+3"
 
 #: myframe.h:506
 msgid "View tutorial &web page..."
-msgstr "æŸ¥çœ‹æ•™ç¨‹ç½‘é¡µ(&W)..."
+msgstr "²é¿´½Ì³ÌÍøÒ³(&W)..."
 
 #: document.h:862
 msgid "What size grid would you like to start with?"
-msgstr "æ‚¨å¸Œæœ›ä»ä»€ä¹ˆå°ºå¯¸çš„ç½‘æ ¼å¼€å§‹ï¼Ÿ"
+msgstr "ÄúÏ£Íû´ÓÊ²Ã´³ß´çµÄÍø¸ñ¿ªÊ¼£¿"
 
 #: system.h:359
 #, c-format
 msgid "Width %d"
-msgstr "å®½åº¦ %d"
+msgstr "¿í¶È %d"
 
 #: myframe.h:240
 msgid "Word Left\tCTRL+LEFT"
-msgstr "å·¦è¾¹çš„å•è¯\tCTRL+LEFT"
+msgstr "×ó±ßµÄµ¥´Ê\tCTRL+LEFT"
 
 #: myframe.h:241
 msgid "Word Right\tCTRL+RIGHT"
-msgstr "å³æ–‡å­—\tCTRL+RIGHT"
+msgstr "ÓÒÎÄ×Ö\tCTRL+RIGHT"
 
 #: myframe.h:156
 msgid "XML (attributes too, for OPML etc)..."
-msgstr "XML (å¸¦æœ‰å±æ€§, for OPML etc)..."
+msgstr "XML (´øÓĞÊôĞÔ, for OPML etc)..."
 
 #: myframe.h:155
 msgid "XML..."
@@ -1373,64 +1373,64 @@ msgstr "XML..."
 
 #: document.h:187
 msgid "Zlib error while writing file."
-msgstr "å†™å…¥æ–‡ä»¶æ—¶å‡ºç° zlib é”™è¯¯ã€‚"
+msgstr "Ğ´ÈëÎÄ¼şÊ±³öÏÖ zlib ´íÎó¡£"
 
 #: myframe.h:410
 msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
-msgstr "æ”¾å¤§ (CTRL+é¼ æ ‡æ»šè½®)(&I)\tCTRL+PGUP"
+msgstr "·Å´ó (CTRL+Êó±ê¹öÂÖ)(&I)\tCTRL+PGUP"
 
 #: myframe.h:411
 msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
-msgstr "ç¼©å° (CTRL+é¼ æ ‡æ»šè½®)(&O)\tCTRL+PGDN"
+msgstr "ËõĞ¡ (CTRL+Êó±ê¹öÂÖ)(&O)\tCTRL+PGDN"
 
 #: myframe.h:566
 msgid "Zoom In (CTRL+mousewheel)"
-msgstr "æ”¾å¤§ (CTRL+é¼ æ ‡æ»šè½®)"
+msgstr "·Å´ó (CTRL+Êó±ê¹öÂÖ)"
 
 #: myframe.h:567
 msgid "Zoom Out (CTRL+mousewheel)"
-msgstr "ç¼©å° (CTRL+é¼ æ ‡æ»šè½®)"
+msgstr "ËõĞ¡ (CTRL+Êó±ê¹öÂÖ)"
 
 #: document.h:434
 msgid "Zoomed in."
-msgstr "å·²æ”¾å¤§ã€‚"
+msgstr "ÒÑ·Å´ó¡£"
 
 #: document.h:434
 msgid "Zoomed out."
-msgstr "å·²ç¼©å°ã€‚"
+msgstr "ÒÑËõĞ¡¡£"
 
 #: myframe.h:807
 msgid "change will take effect next run of TreeSheets"
-msgstr "æ›´æ”¹å°†åœ¨ä¸‹ä¸€æ¬¡è¿è¡Œçš„æ ‘è¡¨ä¸­ç”Ÿæ•ˆ"
+msgstr "¸ü¸Ä½«ÔÚÏÂÒ»´ÎÔËĞĞµÄÊ÷±íÖĞÉúĞ§"
 
 #: myframe.h:279
 msgid "changes the orientation of a grid"
-msgstr "æ›´æ”¹ç½‘æ ¼çš„æ–¹å‘"
+msgstr "¸ü¸ÄÍø¸ñµÄ·½Ïò"
 
 #: system.h:420
 msgid "couldn't import file!"
-msgstr "æ— æ³•å¯¼å…¥æ–‡ä»¶ï¼"
+msgstr "ÎŞ·¨µ¼ÈëÎÄ¼ş£¡"
 
 #: myframe.h:334
 msgid "only sets the colors and style of the copied cell, and keeps the text"
-msgstr "ä»…è®¾ç½®å¤åˆ¶å•å…ƒæ ¼çš„é¢œè‰²å’Œæ ·å¼ï¼Œå¹¶ä¿ç•™æ–‡æœ¬"
+msgstr "½öÉèÖÃ¸´ÖÆµ¥Ôª¸ñµÄÑÕÉ«ºÍÑùÊ½£¬²¢±£ÁôÎÄ±¾"
 
 #: document.h:1514
 msgid "only works in cell text mode"
-msgstr "ä»…åœ¨å•å…ƒæ ¼æ–‡æœ¬æ¨¡å¼ä¸‹å·¥ä½œ"
+msgstr "½öÔÚµ¥Ôª¸ñÎÄ±¾Ä£Ê½ÏÂ¹¤×÷"
 
 #: myframe.h:338
 msgid "redo any undo steps, if you haven't made changes since"
-msgstr "é‡åšä»»ä½•æ’¤æ¶ˆæ­¥éª¤ï¼Œå¦‚æœä½ æ²¡æœ‰åšçš„æ›´æ”¹ï¼Œå› ä¸º"
+msgstr "ÖØ×öÈÎºÎ³·Ïû²½Öè£¬Èç¹ûÄãÃ»ÓĞ×öµÄ¸ü¸Ä£¬ÒòÎª"
 
 #: myframe.h:336
 msgid "revert the changes, one step at a time"
-msgstr "æ¢å¤æ›´æ”¹ï¼Œä¸€æ­¥ä¸€æ¬¡"
+msgstr "»Ö¸´¸ü¸Ä£¬Ò»²½Ò»´Î"
 
 #: document.h:934
 msgid "scale:"
-msgstr "è§„æ¨¡ï¼š"
+msgstr "¹æÄ££º"
 
 #: document.h:863
 msgid "size:"
-msgstr "å¤§å°ï¼š"
+msgstr "´óĞ¡£º"
