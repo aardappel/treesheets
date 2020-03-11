@@ -32,6 +32,7 @@ struct TSCanvas : public wxScrolledWindow {
             wxPaintDC dc(this);
         #else
             auto sz = GetClientSize();
+            if (sz.GetX() <= 0 || sz.GetY() <= 0) return;
             wxBitmap buffer(sz.GetX(), sz.GetY(), 24);
             wxBufferedPaintDC dc(this, buffer);
         #endif
