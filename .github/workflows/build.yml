@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cxx: [g++-9, clang++-9]
+    steps:
+    - uses: actions/checkout@v1
+    - name: install opengl
+      run: sudo apt-get install mesa-common-dev libgl1-mesa-dev libgl1-mesa-glx
+    - name: install gtk
+      run: sudo apt-get install libgtk-3-dev
+    - name: clone wxWidgets
+      run: git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
+    - name: build wxWidgets
+      run: |
+        mkdir -p wxWidgets/build_
+        cd wxWidgets/build_
+        ../configure --enable-unicode --disable-shared
+        make -j4
+    - name: install wxWidgets
+      run: |
+        cd wxWidgets/build_
+        sudo make install
+    - name: cmake
+      run: CXX=${{ matrix.cxx }} cmake -DCMAKE_BUILD_TYPE=Release .
+    - name: build TreeSheets
+      run: make -j4
+    - name: upload build artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: Linux TreeSheets ${{ matrix.cxx }}
+        path: TS
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.0
+    - name: clone wxWidgets
+      run: |
+        git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
+        copy wxWidgets\include\wx\msw\setup0.h wxWidgets\include\wx\msw\setup.h
+        Get-ChildItem 'wxWidgets\build\msw' -Filter *.vcxproj | Foreach-Object { (gc $PSItem.FullName) -replace '<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>', '<RuntimeLibrary>MultiThreaded</RuntimeLibrary>' | Out-File -encoding ASCII $PSItem.FullName }
+    - name: build wxWidgets
+      working-directory: wxWidgets
+      run: msbuild.exe build/msw/wx_vc14.sln /p:Configuration=Release /p:Platform=x64 /p:RuntimeLibrary=MultiThreaded
+    - name: build TreeSheets
+      run: |
+        msbuild.exe TreeSheets\treesheets.sln /p:Configuration=Release /p:Platform=x64
+        Remove-Item TS\*.pdb
+        Remove-Item TS\*.ipdb
+        Remove-Item TS\*.iobj
+    - name: upload build artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows TreeSheets
+        path: TS
+
+  build-mac:
+    name: Build Mac
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: clone wxWidgets
+      run: git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
+    - name: build wxWidgets
+      run: |
+        mkdir -p wxWidgets/build_
+        cd wxWidgets/build_
+        ../configure --enable-unicode --disable-shared --with-osx_cocoa --without-libtiff CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" --with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk --with-macosx-version-min=10.7 CC=clang CXX=clang++
+        make -j4
+    - name: install wxWidgets
+      run: |
+        cd wxWidgets/build_
+        sudo make install
+    - name: build TreeSheets
+      working-directory: osx/TreeSheets
+      run: |
+        xcodebuild -list
+        xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme TreeSheets -derivedDataPath build
+        rm -rf build/Build/Products/Release/TreeSheets.app.dSYM
+    - name: upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Mac TreeSheets
+        path: osx/TreeSheets/build/Build/Products/Release
