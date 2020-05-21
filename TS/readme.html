@@ -54,13 +54,15 @@
     }
 
     div#roundedbutton {
-      background: #DDD;
+      background: #888;
       float: left;
       text-align: center;
       font-family: Verdana, Arial, Helvetica, sans-serif;
     }
 
-    div#roundedbuttoncontent {}
+    div#roundedbuttoncontent {
+      color: #FFF
+    }
 
     b.brtop,
     b.brbottom {
@@ -73,7 +75,7 @@
       display: block;
       height: 1px;
       overflow: hidden;
-      background: #DDD
+      background: #888
     }
 
     b.br1 {
@@ -131,6 +133,10 @@
       border-style: none
     }
 
+    table {
+      color: #000
+    }
+
     -->
   </style>
 </head>
@@ -164,6 +170,13 @@
           D O W N L O A D :
 
           <table width="590" border="0" align="center" cellpadding="3" cellspacing="1">
+            <tr>
+              <td width="40%" bgcolor="#CCCCCC" colspan="2">
+                <div align="left">
+                  <span class="style13">Installers, official builds (infrequently updated):</span>
+                </div>
+              </td>
+            </tr>
             <tr>
               <td width="40%" bgcolor="#EEEEEE">
                 <div align="left">
@@ -205,6 +218,27 @@
                     <a href="https://pkgs.org/download/treesheets">pkgs.org</a>) or directly from this site
                     <a href="http://strlen.com/treesheets/treesheets_linux64.tar.gz">64bit</a>
                     <a href="http://strlen.com/treesheets/treesheets_linux.tar.gz">32bit</a>
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td width="40%" bgcolor="#CCCCCC" colspan="2">
+                <div align="left">
+                  <span class="style13">Bleeding edge continuous builds (no installer, always latest):</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td width="40%" bgcolor="#EEEEEE">
+                <div align="left">
+                  <span class="style13">Windows / OS X / Linux</span>
+                </div>
+              </td>
+              <td width="60%" bgcolor="#EEEEEE">
+                <div align="left">
+                  <span class="style13">
+                    Click on the latest commit with a green checkmark <a href="https://github.com/aardappel/treesheets/actions">here</a>, then select your platform.
                   </span>
                 </div>
               </td>
