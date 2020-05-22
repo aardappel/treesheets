@@ -146,6 +146,18 @@ nfr("ts_get_filename_from_user", "is_save", "I", "S",
         return Value(vm.NewString(si->GetFileNameFromUser(is_save.True())));
     });
 
+nfr("ts_get_filename", "", "", "S",
+    "gets the current documents file name.",
+    [](VM &vm) {
+        return Value(vm.NewString(si->GetFileName()));
+    });
+
+nfr("ts_load_document", "filename", "S", "B",
+    "loads a document, and makes it the active one. returns false if failed.",
+    [](VM &vm, Value &filename) {
+        return Value(si->LoadDocument(filename.sval()->data()));
+    });
+
 }
 
 NativeRegistry natreg;  // FIXME: global.

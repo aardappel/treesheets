@@ -5,11 +5,15 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     enum { max_new_grid_dim = 256 };  // Don't allow crazy sizes.
 
-    std::string ScriptRun(const char *filename) {
+    void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
         cur = doc->rootgrid;
 
         doc->AddUndo(cur);
+    }
+
+    std::string ScriptRun(const char *filename) {
+        SwitchToCurrentDoc();
 
         bool dump_builtins = false;
         #ifdef _DEBUG
@@ -22,6 +26,14 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         cur = nullptr;
 
         return err;
+    }
+
+    bool LoadDocument(const char *filename) {
+        auto msg = sys->LoadDB(filename);
+        if (*msg) return false;
+
+        SwitchToCurrentDoc();
+        return true;
     }
 
     void GoToRoot() { cur = doc->rootgrid; }
@@ -100,6 +112,11 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         else flags |= wxFD_OPEN | wxFD_FILE_MUST_EXIST;
         wxString fn = ::wxFileSelector(_(L"Choose file:"), L"", L"", L"", L"*.*", flags);
         auto s = fn.utf8_str();
+        return std::string(s.data(), s.length());
+    }
+
+    std::string GetFileName() {
+        auto s = doc->filename.utf8_str();
         return std::string(s.data(), s.length());
     }
 };

@@ -33,6 +33,8 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts_set_style_bits</b>(s<font color="#666666">:int</font>)</tt></td><td class="a">sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8, strikethru = 16) on the current cell.</td></tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts_set_status_message</b>(msg<font color="#666666">:string</font>)</tt></td><td class="a">sets the status message in TreeSheets.</td></tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts_get_filename_from_user</b>(is_save<font color="#666666">:int</font>) -> <font color="#666666">string</font></tt></td><td class="a">gets a filename using a file dialog. empty string if cancelled.</td></tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts_get_filename</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the current documents file name.</td></tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts_load_document</b>(filename<font color="#666666">:string</font>) -> <font color="#666666">int</font></tt></td><td class="a">loads a document, and makes it the active one. returns false if failed.</td></tr>
 </table>
 <h3>builtin</h3>
 <table class="a" border=1 cellspacing=0 cellpadding=4>

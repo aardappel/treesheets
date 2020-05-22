@@ -5,6 +5,7 @@ typedef std::pair<int, int> icoord;
 typedef std::pair<icoord, icoord> ibox;
 
 struct ScriptInterface {
+    virtual bool LoadDocument(const char *filename) = 0;
     virtual void GoToRoot() = 0;
     virtual void GoToView() = 0;
     virtual bool HasSelection() = 0;
@@ -28,6 +29,7 @@ struct ScriptInterface {
     virtual void SetStyle(int s) = 0;
     virtual void SetStatusMessage(std::string_view msg) = 0;
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
+    virtual std::string GetFileName() = 0;
 };
 
 typedef int64_t(*ScriptLoader)(std::string_view absfilename, std::string *dest, int64_t start,
