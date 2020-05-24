@@ -67,8 +67,18 @@ jobs:
     - name: upload build artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: Windows TreeSheets
+        name: Windows TreeSheets (no installer)
         path: TS
+    - name: Create installer
+      uses: joncloud/makensis-action@v2.0
+      with:
+        script-file: "TS_installer.nsi"
+        arguments: "/V3"
+    - name: upload build artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows TreeSheets (installer)
+        path: Treesheets_Setup.exe
 
   build-mac:
     name: Build Mac
