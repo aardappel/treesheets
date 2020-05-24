@@ -33,16 +33,16 @@ Windows:
 - Make sure your `wxWidgets` folder sits parallel to the `src` folder, that way the TreeSheets project will pick
   it up without further modifications
 - (If from git): Copy `include\wx\msw\setup0.h` to `include\wx\msw\setup.h`
-- Inside `wxWidgets/build/msw`, open `wx_vc14.sln` with Visual Studio 2017.
+- Inside `wxWidgets/build/msw`, open `wx_vc14.sln` with Visual Studio 2019.
 - Select all projects (except the project `_custom_build`) in the solution explorer, and go to properties:
   - Set configuration to debug, and C/C++ -> Code Generation -> Runtime library
     to Multithreaded Debug
   - Set configuration to release, and C/C++ -> Code Generation -> Runtime library
     to Multithreaded
-- Build solution in both Debug and Release
+- Build solution in both x64 Debug and Release
   (if fails, may have to build again)
 - Close the wxWidgets solution
-- "treesheets" contains the Visual Studio 2017 files for treesheets, open the .sln.
+- "treesheets" contains the Visual Studio 2019 files for treesheets, open the .sln.
   If you've done the above correctly, TreeSheets will now compile and pick up
   the wxWidgets libraries.
 - To distribute, build an installer with `TS_installer.nsi` (requires nsis.sourceforge.net)
