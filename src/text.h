@@ -337,12 +337,22 @@ struct Text {
         }
     }
 
-    void SelectWord(Selection &s) {
-        if (s.cursor >= (int)t.Len()) return;
-        s.cursorend = s.cursor + 1;
+    void ExpandToWord(Selection &s) {
         if (!wxIsalnum(t[s.cursor])) return;
         while (s.cursor > 0 && wxIsalnum(t[s.cursor - 1])) s.cursor--;
         while (s.cursorend < (int)t.Len() && wxIsalnum(t[s.cursorend])) s.cursorend++;
+    }
+
+    void SelectWord(Selection &s) {
+        if (s.cursor >= (int)t.Len()) return;
+        s.cursorend = s.cursor + 1;
+        ExpandToWord(s);
+    }
+
+    void SelectWordBefore(Selection &s) {
+        if (s.cursor <= 1) return;
+        s.cursorend = s.cursor--;
+        ExpandToWord(s);
     }
 
     bool RangeSelRemove(Selection &s) {
@@ -387,6 +397,14 @@ struct Text {
                 t.Remove(--s.cursor, 1);
                 --s.cursorend;
             };
+    }
+    void DeleteWord(Selection &s) {
+        SelectWord(s);
+        Delete(s);
+    }
+    void BackspaceWord(Selection &s) {
+        SelectWordBefore(s);
+        Backspace(s);
     }
     void Key(int k, Selection &s) {
         RangeSelRemove(s);

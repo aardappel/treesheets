@@ -1132,6 +1132,16 @@ struct Document {
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
+            case A_DELETE_WORD:
+                if (c && selected.TextEdit()) {
+                    if (selected.cursor == c->text.t.Len()) return nullptr;
+                    c->AddUndo(this);
+                    c->text.DeleteWord(selected);
+                    Refresh();
+                } 
+                ZoomOutIfNoGrid(dc);
+                return nullptr;
+
             case A_COPYCT:
             case A_CUT:
             case A_COPY:
@@ -1561,6 +1571,14 @@ struct Document {
                 else
                     Refresh();
                 selected.ExitEdit(this);
+                return nullptr;
+
+            case A_BACKSPACE_WORD:
+                if (selected.cursorend == 0) return nullptr;
+                c->AddUndo(this);
+                c->text.BackspaceWord(selected);
+                Refresh();
+                ZoomOutIfNoGrid(dc);
                 return nullptr;
 
             // FIXME: this functionality is really SCHOME, SHOME should be within line
