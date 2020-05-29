@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Name=TreeSheets
-GenericName=Treesheets
+GenericName=Spreadsheet
 Comment=A hierarhical spreadsheet / outliner productivity tool.
 TryExec=treesheets
 Exec=treesheets %f
