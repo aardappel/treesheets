@@ -98,6 +98,10 @@ struct MyApp : wxApp {
             return false;
         }
 
+        #if wxCHECK_VERSION(3, 1, 1)
+            wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
+        #endif
+
         auto exepath = argv[0];
         #ifdef __WXGTK__
             // argv[0] could be relative, this is apparently a more robust way to get the
