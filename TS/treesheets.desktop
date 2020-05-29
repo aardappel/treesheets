@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Name=TreeSheets
-GenericName=Spreadsheet
+GenericName=Hierarchical Spreadsheet
 GenericName[it]=Fogli di Calcolo
 Comment=A hierarchical spreadsheet / outliner productivity tool.
 TryExec=treesheets
