@@ -9,5 +9,5 @@ Exec=treesheets %f
 Terminal=false
 Icon=images/treesheets.svg
 MimeType=application/x-treesheets;
-Categories=Office;
+Categories=Office;Utility;Spreadsheet;TextEditor
 Keywords=Mindmaps; Knowledge management; Organize information; Brainstorming; Hierarchical spreadsheet;
