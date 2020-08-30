@@ -36,6 +36,7 @@ struct MyApp : wxApp {
 
         #ifdef __WXMAC__
         wxDisableAsserts();
+        //wxSystemOptions::SetOption("mac.toolbar.no-native", 1);
         #endif
 
         #ifdef __WXMSW__

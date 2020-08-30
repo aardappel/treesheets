@@ -282,7 +282,7 @@ class MTRnd {
 
 // for use with vc++ crtdbg
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(_WIN32)
 inline void *__cdecl operator new(size_t n, const char *fn, int l) {
     return ::operator new(n, 1, fn, l);
 }
