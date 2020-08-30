@@ -1138,7 +1138,7 @@ struct Document {
                     c->AddUndo(this);
                     c->text.DeleteWord(selected);
                     Refresh();
-                } 
+                }
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
@@ -1825,6 +1825,7 @@ struct Document {
         ui->clone = c;
         selected = ui->sel;
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
+        begindrag = selected;
         ui->sel = beforesel;
         ui->selpath.setsize(0);
         ui->selpath.append(beforepath);
