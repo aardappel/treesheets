@@ -10,5 +10,5 @@ Exec=treesheets %f
 Terminal=false
 Icon=images/treesheets.svg
 MimeType=application/x-treesheets;
-Categories=Office;Utility;Spreadsheet;TextEditor
+Categories=Office;Utility;Spreadsheet;TextEditor;
 Keywords=mindmaps;knowledge;organizer;organiser;information;brainstorming;pim;database;todo;
