@@ -505,9 +505,10 @@
 					"-lwxregexu-3.1",
 					"-lwxjpeg-3.1",
 					"-lwxpng-3.1",
-					"-lz",
+					"-lwxzlib-3.1",
 					"-lpthread",
 					"-liconv",
+					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -557,9 +558,10 @@
 					"-lwxregexu-3.1",
 					"-lwxjpeg-3.1",
 					"-lwxpng-3.1",
-					"-lz",
+					"-lwxzlib-3.1",
 					"-lpthread",
 					"-liconv",
+					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
