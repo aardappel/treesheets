@@ -647,9 +647,6 @@ struct MyFrame : wxFrame {
             AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath + L"image.png");
             SEPARATOR;
             AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.png");
-            #ifndef __WXMAC__
-            // FIXME: have to disable these for now on mac because of a new wxWidgets bug:
-            // https://trac.wxwidgets.org/ticket/18903
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
             tb->AddControl(filter =
@@ -658,7 +655,6 @@ struct MyFrame : wxFrame {
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
             tb->AddControl(replaces =
                 new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, wxSize(60, 22) * csf));
-            #endif
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
             tb->AddControl(new ColorDropdown(tb, A_CELLCOLOR, csf, 1));
