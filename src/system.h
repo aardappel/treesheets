@@ -222,7 +222,7 @@ struct System {
         bool loadedfromtmp = false;
 
         if (!fromreload) {
-            if (frame->GetTabByFileName(filename)) return nullptr;  //"this file is already loaded";
+            if (frame->GetTabByFileName(filename)) return L"";  //"this file is already loaded";
 
             if (::wxFileExists(TmpName(filename))) {
                 if (::wxMessageBox(
@@ -362,7 +362,8 @@ struct System {
     const wxChar *Open(const wxString &fn) {
         if (!fn.empty()) {
             auto msg = LoadDB(fn);
-            if (msg && *msg) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
+            assert(msg);
+            if (*msg) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
             return msg;
         }
         return _(L"Open file cancelled.");
