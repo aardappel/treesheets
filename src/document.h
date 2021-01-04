@@ -1633,12 +1633,7 @@ struct Document {
     uint PickColor(wxFrame *fr, uint defcol) {
         wxColour col = wxGetColourFromUser(fr, wxColour(defcol));
         if (col.IsOk())
-            return
-                #ifdef __WXMAC__
-                (col.Red() << 16) + (col.Green() << 8) + col.Blue();
-                #else
-                (col.Blue() << 16) + (col.Green() << 8) + col.Red();
-                #endif
+            return (col.Blue() << 16) + (col.Green() << 8) + col.Red();
         return -1;
     }
 
