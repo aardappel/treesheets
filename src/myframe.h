@@ -954,6 +954,7 @@ struct MyFrame : wxFrame {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
                     auto msg = tssi.ScriptRun(scripts_in_menu[ce.GetId() - A_SCRIPT].c_str());
+                    msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
                     sw->Status(wxString(msg));
                 } else {
                     sw->Status(sw->doc->Action(dc, ce.GetId()));

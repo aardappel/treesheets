@@ -315,7 +315,7 @@ Value VM::Error(string err, const RefObj *a, const RefObj *b) {
                 // This is ok, as we ignore leaks in case of an error anyway.
     }
     for (;;) {
-        if (!stackframes.size()) break;
+        if (!stackframes.size() || !stackframes.back().funstart) break;
         int deffun = *(stackframes.back().funstart);
         if (deffun >= 0) {
             ss << "\nin function: " << bcf->functions()->Get(deffun)->name()->string_view();
@@ -472,7 +472,8 @@ void VM::FunIntro(VM_OP_ARGS) {
         // per function call increment should be small
         // FIXME: not safe for untrusted scripts, could simply add lots of locals
         // could record max number of locals? not allow more than N locals?
-        if (stacksize >= maxstacksize) Error("stack overflow! (use set_max_stack_size() if needed)");
+        if (stacksize >= maxstacksize)
+            THROW_OR_ABORT(string("stack overflow! (use set_max_stack_size() if needed)"));
         auto nstack = new Value[stacksize *= 2];
         t_memcpy(nstack, stack, sp + 1);
         delete[] stack;

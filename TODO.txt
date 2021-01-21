@@ -1,5 +1,7 @@
 [ check google moderator for new feature requests ]
 
+- make script functions like ts_goto_child etc give an error if wrong index given rather than fail silently.
+
 - when pasting/typing in new cell, don't use average size or size above, prefer size to right or
   below.
 
