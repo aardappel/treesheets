@@ -603,7 +603,7 @@ struct MyFrame : wxFrame {
         }
 
         wxColour toolbgcol(iconset ? 0xF0ECE8 : 0xD8C7BC);
-              
+
         if (showtbar || mergetbar) {
             tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
             tb->SetOwnBackgroundColour(toolbgcol);
@@ -819,7 +819,7 @@ struct MyFrame : wxFrame {
         if (page < 0) page = nb->GetSelection();
         if (page < 0) return;
         if (page == nb->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
-        nb->SetPageText(page, (fn.empty() ? L"<unnamed>" : wxFileName(fn).GetName()) + mods);
+        nb->SetPageText(page, (fn.empty() ? wxString(L"<unnamed>") : wxFileName(fn).GetName()) + mods);
     }
 
     void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
@@ -1061,7 +1061,7 @@ struct MyFrame : wxFrame {
     }
 
     #ifdef WIN32
-    void SetRegKey(wxChar *key, wxString val) {
+    void SetRegKey(const wxChar *key, wxString val) {
         wxRegKey rk(key);
         rk.Create();
         rk.SetValue(L"", val);

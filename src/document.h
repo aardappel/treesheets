@@ -575,7 +575,7 @@ struct Document {
                    stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
                    stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
                    (stylebits & STYLE_UNDERLINE) != 0,
-                   stylebits & STYLE_FIXED ? L"" : sys->defaultfont);
+                   stylebits & STYLE_FIXED ? wxString(L"") : sys->defaultfont);
             if (stylebits & STYLE_STRIKETHRU) font.SetStrikethrough(true);
             dc.SetFont(font);
             lasttextsize = textsize;

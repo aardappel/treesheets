@@ -702,7 +702,7 @@ struct Grid {
                             if (s[i + 1] == '\"')
                                 word += s[++i];
                             else {
-                                s = s.size() == i + 1 ? L"" : s.Mid(i + 2);
+                                s = s.size() == i + 1 ? wxString(L"") : s.Mid(i + 2);
                                 break;
                             }
                         } else
