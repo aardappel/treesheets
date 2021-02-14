@@ -53,7 +53,6 @@ jobs:
     - name: clone wxWidgets
       run: |
         git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
-        copy wxWidgets\include\wx\msw\setup0.h wxWidgets\include\wx\msw\setup.h
         Get-ChildItem 'wxWidgets\build\msw' -Filter *.vcxproj | Foreach-Object { (gc $PSItem.FullName) -replace '<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>', '<RuntimeLibrary>MultiThreaded</RuntimeLibrary>' | Out-File -encoding ASCII $PSItem.FullName }
     - name: build wxWidgets
       working-directory: wxWidgets
