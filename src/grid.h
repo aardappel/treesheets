@@ -148,8 +148,9 @@ struct Grid {
         foreachcell(c) {
             c->ox = cx;
             c->oy = cy;
-            if (c->sy < ya[y] && c->drawstyle == DS_BLOBLINE) {
-                if (!c->grid && !c->ycenteroff) c->ycenteroff = (ya[y] - c->sy) / 2;
+            if (c->drawstyle == DS_BLOBLINE && !c->grid) {
+                assert(c->sy <= ya[y]);
+                c->ycenteroff = (ya[y] - c->sy) / 2;
             }
             c->sx = xa[x];
             c->sy = ya[y];
