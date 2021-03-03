@@ -248,8 +248,11 @@ struct Grid {
             if (cell->verticaltextandgrid) {
                 if (destylast > 0) dc.DrawLine(srcx, srcy, srcx, destylast);
             } else {
-                if (destyfirst >= 0 && destylast >= 0 && destyfirst < destylast)
+                if (destyfirst >= 0 && destylast >= 0 && destyfirst < destylast) {
+                    destyfirst = min(destyfirst, srcy);
+                    destylast = max(destylast, srcy);
                     dc.DrawLine(srcx, destyfirst, srcx, destylast);
+                }
             }
         }
         if (view_grid_outer_spacing && cell->drawstyle == DS_GRID) {
