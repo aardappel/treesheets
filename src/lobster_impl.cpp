@@ -26,8 +26,7 @@ nfr("ts_has_selection", "", "", "I",
     [](VM &) { return Value(si->HasSelection()); });
 
 nfr("ts_goto_selection", "", "", "",
-    "makes the current cell the one containing the selection, or does nothing on no"
-    "selection.",
+    "makes the current cell the one selected, or the first of a selection.",
     [](VM &) { si->GoToSelection(); return Value(); });
 
 nfr("ts_has_parent", "", "", "I",
@@ -81,17 +80,17 @@ nfr("ts_create_grid", "cols,rows", "II", "",
         return Value();
     });
 
-nfr("ts_insert_columns", "c,n", "II", "",
+nfr("ts_insert_column", "c", "I", "",
     "insert n columns before column c in an existing grid.",
-    [](VM &, Value &x, Value &n) {
-        si->InsertColumns(x.intval(), n.intval());
+    [](VM &, Value &x) {
+        si->InsertColumn(x.intval());
         return Value();
     });
 
-nfr("ts_insert_rows", "r,n", "II", "",
+nfr("ts_insert_row", "r", "I", "",
     "insert n rows before row r in an existing grid.",
-    [](VM &, Value &x, Value &n) {
-        si->InsertRows(x.intval(), n.intval());
+    [](VM &, Value &x) {
+        si->InsertRow(x.intval());
         return Value();
     });
 

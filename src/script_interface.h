@@ -20,8 +20,8 @@ struct ScriptInterface {
     virtual std::string GetText() = 0;
     virtual void SetText(std::string_view t) = 0;
     virtual void CreateGrid(int x, int n) = 0;
-    virtual void InsertColumns(int x, int n) = 0;
-    virtual void InsertRows(int y, int n) = 0;
+    virtual void InsertColumn(int x) = 0;
+    virtual void InsertRow(int y) = 0;
     virtual void Delete(int x, int y, int xs, int ys) = 0;
     virtual void SetBackgroundColor(uint col) = 0;
     virtual void SetTextColor(uint col) = 0;

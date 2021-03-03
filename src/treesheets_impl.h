@@ -22,6 +22,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
         auto err = RunLobster(filename, {}, dump_builtins);
 
+        doc->rootgrid->ResetChildren();
+        doc->Refresh();
+
         doc = nullptr;
         cur = nullptr;
 
@@ -39,7 +42,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void GoToRoot() { cur = doc->rootgrid; }
     void GoToView() { cur = doc->curdrawroot; }
     bool HasSelection() { return doc->selected.g; }
-    void GoToSelection() { if (doc->selected.g) cur = doc->selected.g->cell; }
+    void GoToSelection() {
+        auto c = doc->selected.GetFirst();
+        if (c) cur = c;
+    }
     bool HasParent() { return cur->parent; }
     void GoToParent() { if (cur->parent) cur = cur->parent; }
     int NumChildren() { return cur->grid ? cur->grid->xs * cur->grid->ys : 0; }
@@ -79,14 +85,14 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             cur->AddGrid(x, y);
     }
 
-    void InsertColumns(int x, int n) {
-        if (cur->grid && x >= 0 && x <= cur->grid->xs && n > 0 && n < max_new_grid_dim)
-            cur->grid->InsertCells(x, -1, 1 /* FIXME n */, 0);
+    void InsertColumn(int x) {
+        if (cur->grid && x >= 0 && x <= cur->grid->xs)
+            cur->grid->InsertCells(x, -1, 1, 0);
     }
 
-    void InsertRows(int y, int n) {
-        if (cur->grid && y >= 0 && y <= cur->grid->ys && n > 0 && n < max_new_grid_dim)
-            cur->grid->InsertCells(-1, y, 0, 1 /* FIXME n */);
+    void InsertRow(int y) {
+        if (cur->grid && y >= 0 && y <= cur->grid->ys)
+            cur->grid->InsertCells(-1, y, 0, 1);
     }
 
     void Delete(int x, int y, int xs, int ys) {
