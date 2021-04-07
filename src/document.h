@@ -749,6 +749,14 @@ struct Document {
         }
     }
 
+    static int CompareMenuString(const wxString &first, const wxString &second) {
+        auto a = first;
+        auto b = second;
+        if (a[0] == '&') a = a.Mid(1);
+        if (b[0] == '&') b = b.Mid(1);
+        return a.Cmp(b);
+    }
+
     const wxChar *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift,
                     bool &unprocessed) {
         Cell *c = selected.GetCell();
@@ -1073,9 +1081,12 @@ struct Document {
                 MyFrame::MenuString &ms = sys->frame->menustrings;
                 for (MyFrame::MenuStringIterator it = ms.begin(); it != ms.end(); ++it)
                     strs.push_back(it->first);
+                strs.Sort(CompareMenuString);
                 wxSingleChoiceDialog choice(
                     sys->frame, _(L"Please pick a menu item to change the key binding for"),
                     _(L"Key binding"), strs);
+                choice.SetSize(wxSize(500, 700));
+                choice.Centre();
                 if (choice.ShowModal() == wxID_OK) {
                     int sel = choice.GetSelection();
                     wxTextEntryDialog textentry(sys->frame,

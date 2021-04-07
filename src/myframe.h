@@ -232,12 +232,12 @@ struct MyFrame : wxFrame {
             MyAppend(sizemenu, A_RESETWIDTH, _(L"Reset column widths\tSHIFT+CTRL+w"));
 
             wxMenu *bordmenu = new wxMenu();
-            MyAppend(bordmenu, A_BORD0, L"&0\tCTRL+SHIFT+9");
-            MyAppend(bordmenu, A_BORD1, L"&1\tCTRL+SHIFT+1");
-            MyAppend(bordmenu, A_BORD2, L"&2\tCTRL+SHIFT+2");
-            MyAppend(bordmenu, A_BORD3, L"&3\tCTRL+SHIFT+3");
-            MyAppend(bordmenu, A_BORD4, L"&4\tCTRL+SHIFT+4");
-            MyAppend(bordmenu, A_BORD5, L"&5\tCTRL+SHIFT+5");
+            MyAppend(bordmenu, A_BORD0, L"Border &0\tCTRL+SHIFT+9");
+            MyAppend(bordmenu, A_BORD1, L"Border &1\tCTRL+SHIFT+1");
+            MyAppend(bordmenu, A_BORD2, L"Border &2\tCTRL+SHIFT+2");
+            MyAppend(bordmenu, A_BORD3, L"Border &3\tCTRL+SHIFT+3");
+            MyAppend(bordmenu, A_BORD4, L"Border &4\tCTRL+SHIFT+4");
+            MyAppend(bordmenu, A_BORD5, L"Border &5\tCTRL+SHIFT+5");
 
             wxMenu *selmenu = new wxMenu();
             MyAppend(selmenu, A_NEXT, _(L"Move to next cell\tTAB"));
