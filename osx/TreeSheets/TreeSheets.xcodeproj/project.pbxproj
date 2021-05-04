@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		330D5CE12641E0420010ADFE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 330D5CE02641E0420010ADFE /* QuartzCore.framework */; };
 		33306EBF17695BE000AF5315 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EBE17695BE000AF5315 /* Cocoa.framework */; };
 		33306EC917695BE000AF5315 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 33306EC717695BE000AF5315 /* InfoPlist.strings */; };
 		33306EDC17695C5500AF5315 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33306EDB17695C5500AF5315 /* main.cpp */; };
@@ -38,6 +39,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		330D5CE02641E0420010ADFE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		33306EBB17695BE000AF5315 /* TreeSheets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TreeSheets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		33306EBE17695BE000AF5315 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		33306EC117695BE000AF5315 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -120,6 +122,7 @@
 			files = (
 				33306EF017695EE900AF5315 /* AudioToolbox.framework in Frameworks */,
 				33306EF117695EE900AF5315 /* Carbon.framework in Frameworks */,
+				330D5CE12641E0420010ADFE /* QuartzCore.framework in Frameworks */,
 				33306EF217695EE900AF5315 /* IOKit.framework in Frameworks */,
 				33306EF317695EE900AF5315 /* OpenGL.framework in Frameworks */,
 				33306EBF17695BE000AF5315 /* Cocoa.framework in Frameworks */,
@@ -170,6 +173,7 @@
 		33306EBD17695BE000AF5315 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				330D5CE02641E0420010ADFE /* QuartzCore.framework */,
 				33306EEB17695EE900AF5315 /* AudioToolbox.framework */,
 				33306EEC17695EE900AF5315 /* Carbon.framework */,
 				33306EED17695EE900AF5315 /* IOKit.framework */,
@@ -422,7 +426,7 @@
 					../../lobster/include,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
@@ -455,7 +459,7 @@
 					../../lobster/include,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
 				VALID_ARCHS = x86_64;
@@ -487,7 +491,7 @@
 					"/usr/local/include/wx-3.1",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
@@ -540,7 +544,7 @@
 					"/usr/local/include/wx-3.1",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
