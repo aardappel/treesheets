@@ -81,22 +81,27 @@ struct MyApp : wxApp {
         locale.Init();
 
         bool portable = false;
+        bool single_instance = true;
         for (int i = 1; i < argc; i++) {
             if (argv[i][0] == '-') {
                 switch ((int)argv[i][1]) {
                     case 'p': portable = true; break;
+                    case 'i': single_instance = false; break;
                 }
             } else {
                 filename = argv[i];
             }
         }
 
-        instance_checker = new wxSingleInstanceChecker();
-        if (instance_checker->IsAnotherRunning()) {
-            wxClient client;
-            client.MakeConnection(L"localhost", L"4242",
-                                  filename.Len() ? filename.wc_str() : L"*");  // fire and forget
-            return false;
+        if (single_instance) {
+            instance_checker = new wxSingleInstanceChecker();
+            if (instance_checker->IsAnotherRunning()) {
+                wxClient client;
+                client.MakeConnection(
+                    L"localhost", L"4242",
+                    filename.Len() ? filename.wc_str() : L"*");  // fire and forget
+                return false;
+            }
         }
 
         #if wxCHECK_VERSION(3, 1, 1)
