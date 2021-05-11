@@ -317,17 +317,14 @@ struct Text {
                     int x;
                     dc.GetTextExtent(ls, &x, nullptr);
                     if (doc->blink) {
-                        #ifdef SIMPLERENDER
+                        #ifndef SIMPLERENDER
+                            // It will blink this on/off with xwXOR set in the caller.
+                            color = 0xFFFFFF;
+                        #endif
                         DrawRectangle(
                             dc, color, cell->GetX(doc) + x + 1 + ixs + g_margin_extra,
                             cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra, 2,
                             h - 2);
-                        #else
-                            auto lx = cell->GetX(doc) + x + 2 + ixs + g_margin_extra;
-                            auto ly = cell->GetY(doc) + l * h + cell->ycenteroff + g_margin_extra;
-                            dc.SetPen(wxPen(wxColour(0xFFFFFF)));
-                            dc.DrawLine(lx, ly, lx, ly + h);
-                        #endif
                     }
                     break;
                 }
