@@ -1802,9 +1802,9 @@ struct Document {
         size_t old_list_size = undolist.size();
         // Cull undolist. Always at least keeps last item.
         for (int i = (int)undolist.size() - 1; i >= 0; i--) {
-            // Cull old items if using more than 25MB or 100 items, whichever comes first.
+            // Cull old items if using more than 100MB or 1000 items, whichever comes first.
             // TODO: make configurable?
-            if (total_usage < 25 * 1024 * 1024 && undolist.size() - i < 100) {
+            if (total_usage < 100 * 1024 * 1024 && undolist.size() - i < 1000) {
                 total_usage += undolist[i]->estimated_size;
             } else {
                 undolist.remove(0, i + 1);
