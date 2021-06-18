@@ -816,8 +816,7 @@ struct Document {
             ShiftToCenter(dc);
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
-            if (!selected.TextEdit()) c->text.Clear(this, selected);
-            c->text.Key(uk, selected);
+            c->text.Key(this, uk, selected);
             ScrollIfSelectionOutOfView(dc, selected, true);
             return nullptr;
         }

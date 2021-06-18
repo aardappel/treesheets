@@ -377,11 +377,17 @@ struct Text {
     }
 
     void Insert(Document *doc, const wxString &ins, Selection &s) {
+        auto prevl = t.Len();
         if (!s.TextEdit()) Clear(doc, s);
         RangeSelRemove(s);
-        SetRelSize(s);
+        if (!prevl) SetRelSize(s);
         t.insert(s.cursor, ins);
         s.cursor = s.cursorend = s.cursor + (int)ins.Len();
+    }
+    void Key(Document *doc, int k, Selection &s) {
+        wxString ins;
+        ins += k;
+        Insert(doc, ins, s);
     }
 
     void Delete(Selection &s) {
@@ -402,12 +408,6 @@ struct Text {
     void BackspaceWord(Selection &s) {
         SelectWordBefore(s);
         Backspace(s);
-    }
-    void Key(int k, Selection &s) {
-        RangeSelRemove(s);
-        SetRelSize(s);
-        t.insert(s.cursor++, 1, k);
-        s.cursorend = s.cursor;
     }
 
     void ReplaceStr(const wxString &str) {
