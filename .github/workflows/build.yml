@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cxx: [g++-9, clang++-9]
+        cxx: [g++-10, clang++-12]
     steps:
     - uses: actions/checkout@v1
     - name: install opengl
