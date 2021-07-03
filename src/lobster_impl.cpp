@@ -157,6 +157,12 @@ nfr("ts_load_document", "filename", "S", "B",
         return Value(si->LoadDocument(filename.sval()->data()));
     });
 
+nfr("ts_set_window_size", "width,height", "II", "", "resizes the window",
+    [](VM &vm, Value &w, Value &h) {
+        si->SetWindowSize(w.intval(), h.intval());
+        return Value();
+    });
+
 }
 
 NativeRegistry natreg;  // FIXME: global.

@@ -21,6 +21,7 @@ struct MyFrame : wxFrame {
     bool watcherwaitingforuser;
     double csf, csf_orig;
     std::vector<std::string> scripts_in_menu;
+    bool zenmode;
 
     wxString GetPath(const wxString &relpath) {
         if (!exepath_.Length()) return relpath;
@@ -58,7 +59,8 @@ struct MyFrame : wxFrame {
           fromclosebox(true),
           app(_app),
           watcherwaitingforuser(false),
-          watcher(nullptr) {
+          watcher(nullptr),
+          zenmode(false) {
         sys->frame = this;
 
         exepath_ = wxFileName(exename).GetPath();
@@ -475,6 +477,7 @@ struct MyFrame : wxFrame {
                  #else
                  _(L"Toggle &Scaled Presentation View\tF12"));
                  #endif
+        MyAppend(viewmenu, A_ZEN_MODE, _(L"Toggle Zen Mode"));
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
 
@@ -924,6 +927,23 @@ struct MyFrame : wxFrame {
             case A_FULLSCREEN:
                 ShowFullScreen(!IsFullScreen());
                 if (IsFullScreen()) sw->Status(_(L"Press F11 to exit fullscreen mode."));
+                break;
+            case A_ZEN_MODE:
+                if (!IsFullScreen()) {
+                    wxToolBar *wtb = this->GetToolBar();
+                    wxStatusBar *wsb = this->GetStatusBar();
+                    if (wtb != nullptr)
+                        wtb->Show(zenmode);
+                    if (wsb != nullptr)
+                        wsb->Show(zenmode);
+                    this->SendSizeEvent();
+                    this->Refresh();
+                    if (wtb != nullptr)
+                        wtb->Refresh();
+                    if (wsb != nullptr)
+                        wsb->Refresh();
+                    zenmode = !zenmode;
+                }
                 break;
             case A_SEARCHF:
                 if (filter) {

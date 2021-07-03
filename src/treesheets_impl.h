@@ -112,6 +112,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         sys->frame->GetCurTab()->Status(ws);
     }
 
+    void SetWindowSize(int width, int height) {
+        sys->frame->SetSize(width, height);
+    }
+
     std::string GetFileNameFromUser(bool is_save) {
         int flags = wxFD_CHANGE_DIR;
         if (is_save) flags |= wxFD_OVERWRITE_PROMPT | wxFD_SAVE;
