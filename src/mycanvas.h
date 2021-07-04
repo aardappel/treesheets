@@ -101,7 +101,6 @@ struct TSCanvas : public wxScrolledWindow {
     }
 
     void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }
-
     void OnChar(wxKeyEvent &ce) {
         /*
         if (sys->insidefiledialog)
@@ -110,7 +109,7 @@ struct TSCanvas : public wxScrolledWindow {
             return;
         }
         */
-        
+
         // Without this check, Alt+F (keyboard menu nav) Alt+1..6 (style changes), Alt+cursor
         // (scrolling) don't work.
         // The 128 makes sure unicode entry on e.g. Polish keyboards still works.
@@ -119,7 +118,7 @@ struct TSCanvas : public wxScrolledWindow {
             ce.Skip();
             return;
         }
-       
+
         wxClientDC dc(this);
         DoPrepareDC(dc);
         bool unprocessed = false;
