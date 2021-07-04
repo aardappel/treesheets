@@ -1304,14 +1304,16 @@ struct Document {
                 return nullptr;
 
             case A_ENTERCELL:
+            case A_PROGRESSCELL: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (selected.TextEdit()) {
-                    selected.Cursor(this, A_DOWN, false, false, dc, true);
+                    selected.Cursor(this, (k==A_ENTERCELL ? A_DOWN : A_RIGHT), false, false, dc, true);
                 } else {
                     selected.EnterEdit(this, 0, (int)c->text.t.Len());
                     DrawSelectMove(dc, selected, true);
                 }
                 return nullptr;
+            }
 
             case A_IMAGE: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
