@@ -101,6 +101,7 @@ struct TSCanvas : public wxScrolledWindow {
     }
 
     void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }
+
     void OnChar(wxKeyEvent &ce) {
         /*
         if (sys->insidefiledialog)
@@ -114,7 +115,8 @@ struct TSCanvas : public wxScrolledWindow {
         // (scrolling) don't work.
         // The 128 makes sure unicode entry on e.g. Polish keyboards still works.
         // (on Linux in particular).
-        if ((ce.GetModifiers() == wxMOD_ALT) && (ce.GetUnicodeKey() < 128)) {
+        // Special case: ALT+RETURN shall be processed.
+        if (ce.GetKeyCode() != WXK_RETURN && (ce.GetModifiers() == wxMOD_ALT) && (ce.GetUnicodeKey() < 128)) {
             ce.Skip();
             return;
         }
