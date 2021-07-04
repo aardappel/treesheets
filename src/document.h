@@ -764,14 +764,7 @@ struct Document {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
                     return Action(dc, A_BACKSPACE);
-                case WXK_RETURN:
-                    if (shift) {
-                       return Action(dc, A_ENTERGRID);
-                    } else if (alt) {
-                        return Action(dc, A_PROGRESSCELL);
-                    } else {
-                        return Action(dc, A_ENTERCELL);
-                    }
+                case WXK_RETURN: return Action(dc, shift ? A_ENTERGRID : A_ENTERCELL);
                 case WXK_ESCAPE:  // docs say it can be used as a menu accelerator, but it does not
                                   // trigger from there?
                     return Action(dc, A_CANCELEDIT);
@@ -1311,19 +1304,10 @@ struct Document {
                 return nullptr;
 
             case A_ENTERCELL:
-                if (!(c = selected.ThinExpand(this))) return OneCell();
-                if (selected.TextEdit()) {
-                    selected.Cursor(this, A_DOWN, false, false, dc, true);
-                } else {
-                    selected.EnterEdit(this, 0, (int)c->text.t.Len());
-                    DrawSelectMove(dc, selected, true);
-                }
-                return nullptr;
-
             case A_PROGRESSCELL: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (selected.TextEdit()) {
-                    selected.Cursor(this, A_RIGHT, false, false, dc, true);
+                    selected.Cursor(this, (k==A_ENTERCELL ? A_DOWN : A_RIGHT), false, false, dc, true);
                 } else {
                     selected.EnterEdit(this, 0, (int)c->text.t.Len());
                     DrawSelectMove(dc, selected, true);

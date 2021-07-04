@@ -110,17 +110,16 @@ struct TSCanvas : public wxScrolledWindow {
             return;
         }
         */
-
+        
         // Without this check, Alt+F (keyboard menu nav) Alt+1..6 (style changes), Alt+cursor
         // (scrolling) don't work.
         // The 128 makes sure unicode entry on e.g. Polish keyboards still works.
         // (on Linux in particular).
-        // Special case: ALT+RETURN shall be processed.
-        if (ce.GetKeyCode() != WXK_RETURN && (ce.GetModifiers() == wxMOD_ALT) && (ce.GetUnicodeKey() < 128)) {
+        if ((ce.GetModifiers() == wxMOD_ALT) && (ce.GetUnicodeKey() < 128)) {
             ce.Skip();
             return;
         }
-
+       
         wxClientDC dc(this);
         DoPrepareDC(dc);
         bool unprocessed = false;
