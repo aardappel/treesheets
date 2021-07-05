@@ -201,6 +201,8 @@ struct System {
         }
     }
 
+    void LoadOpRef() { LoadDB(frame->GetPath(L"examples/operation-reference.cts")); }
+
     Cell *&InitDB(int sizex, int sizey = 0) {
         Cell *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
