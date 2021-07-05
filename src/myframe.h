@@ -555,22 +555,22 @@ struct MyFrame : wxFrame {
         }
 
         wxMenu *markmenu = new wxMenu();
-        MyAppend(markmenu, A_MARKDATA, _(L"&Data\tALT+d"));
-        MyAppend(markmenu, A_MARKCODE, _(L"&Operation\tALT+o"));
-        MyAppend(markmenu, A_MARKVARD, _(L"Variable &Assign\tALT+a"));
-        MyAppend(markmenu, A_MARKVARU, _(L"Variable &Read\tALT+r"));
-        MyAppend(markmenu, A_MARKVIEWH, _(L"&Horizontal View\tALT+."));
-        MyAppend(markmenu, A_MARKVIEWV, _(L"&Vertical View\tALT+,"));
+        MyAppend(markmenu, A_MARKDATA, _(L"&Data\tCTRL+ALT+d"));
+        MyAppend(markmenu, A_MARKCODE, _(L"&Operation\tCTRL+ALT+o"));
+        MyAppend(markmenu, A_MARKVARD, _(L"Variable &Assign\tCTRL+ALT+a"));
+        MyAppend(markmenu, A_MARKVARU, _(L"Variable &Read\tCTRL+ALT+r"));
+        MyAppend(markmenu, A_MARKVIEWH, _(L"&Horizontal View\tCTRL+ALT+."));
+        MyAppend(markmenu, A_MARKVIEWV, _(L"&Vertical View\tCTRL+ALT+,"));
 
         wxMenu *langmenu = new wxMenu();
-        MyAppend(langmenu, A_RUN, _(L"&Run\tALT+F5"));
+        MyAppend(langmenu, A_RUN, _(L"&Run\tCTRL+ALT+F5"));
         langmenu->AppendSubMenu(markmenu, _(L"&Mark as"));
         MyAppend(langmenu, A_CLRVIEW, _(L"&Clear Views"));
 
         wxMenu *helpmenu = new wxMenu();
         MyAppend(helpmenu, A_ABOUT, _(L"&About..."));
         MyAppend(helpmenu, A_HELPI, _(L"Load interactive &tutorial...\tF1"));
-        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...\tALT+F1"));
+        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...\tCTRL+ALT+F1"));
         MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
 
         wxAcceleratorEntry entries[3];
