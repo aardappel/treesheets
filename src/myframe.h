@@ -570,7 +570,7 @@ struct MyFrame : wxFrame {
         wxMenu *helpmenu = new wxMenu();
         MyAppend(helpmenu, A_ABOUT, _(L"&About..."));
         MyAppend(helpmenu, A_HELPI, _(L"Load interactive &tutorial...\tF1"));
-        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operator reference...\tALT+F1"));
+        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...\tALT+F1"));
         MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
 
         wxAcceleratorEntry entries[3];
