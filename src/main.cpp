@@ -213,6 +213,7 @@ enum {
     A_IMAGESCF,
     A_IMAGESCN,
     A_HELPI,
+    A_HELP_OP_REF,
     A_REDO,
     A_FSWATCH,
     A_DEFBGCOL,

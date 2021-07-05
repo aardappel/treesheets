@@ -915,6 +915,8 @@ struct Document {
 
             case A_HELPI: sys->LoadTut(); return nullptr;
 
+            case A_HELP_OP_REF: sys->LoadOpRef(); return nullptr;
+
             case A_HELP:
                 #ifdef __WXMAC__
                 wxLaunchDefaultBrowser(L"file://" +
