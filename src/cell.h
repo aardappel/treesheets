@@ -233,6 +233,11 @@ struct Cell {
                 str.Prepend(wxString() << textcolor);
                 str.Prepend(L" colorfg=\"");
             }
+            if (celltype != CT_DATA) {
+                str.Prepend(L"\"");
+                str.Prepend(wxString() << celltype);
+                str.Prepend(L" type=\"");
+            }
             str.Prepend(L"<cell");
             str.Append(L' ', indent);
             str.Append(L"</cell>\n");
