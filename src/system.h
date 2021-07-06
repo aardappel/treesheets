@@ -482,6 +482,7 @@ struct System {
             c->text.stylebits = wxAtoi(n->GetAttribute(L"stylebits", L"0"));
             c->cellcolor = wxAtoi(n->GetAttribute(L"colorbg", L"16777215"));
             c->textcolor = wxAtoi(n->GetAttribute(L"colorfg", L"0"));
+            c->celltype = wxAtoi(n->GetAttribute(L"type", L"0"));
         }
 
         Vector<wxXmlNode *> ns;
