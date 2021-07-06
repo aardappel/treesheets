@@ -309,7 +309,7 @@ class Selection {
     const wxChar *Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
         g->cell->AddUndo(doc);
-        Cell *np = g->CloneSel(*this);
+        auto np = g->CloneSel(*this).release();
         g->C(x, y)->text.t = ".";  // avoid this cell getting deleted
         if (xs > 1) {
             Selection s(g, x + 1, y, xs - 1, ys);

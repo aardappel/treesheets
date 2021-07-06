@@ -43,7 +43,7 @@ struct Text {
         return r;
     }
 
-    Cell *SetNum(double d) {
+    void SetNum(double d) {
         std::wstringstream ss;
         ss << std::fixed;
 
@@ -64,8 +64,6 @@ struct Text {
         if (s.back() == '.') s.pop_back();
 
         t = s;
-
-        return cell;
     }
 
     wxString htmlify(wxString &str) {
@@ -474,31 +472,25 @@ struct Text {
         lastedit = wxDateTime(time);
     }
 
-    Cell *Eval(Evaluator &ev) {
+    unique_ptr<Cell> Eval(Evaluator &ev) const {
         switch (cell->celltype) {
             // Load variable's data.
             case CT_VARU: {
-                Cell *temp = ev.Lookup(t);
-
-                if (!temp) {
-                    temp = cell->Clone(nullptr);
-                    temp->celltype = CT_DATA;
-                    temp->text.t = "**Variable Load Error**";
+                auto v = ev.Lookup(t);
+                if (!v) {
+                    v = cell->Clone(nullptr);
+                    v->celltype = CT_DATA;
+                    v->text.t = "**Variable Load Error**";
                 }
-
-                return temp;
+                return v;
             }
 
             // Return our current data.
-            case CT_DATA: return cell->Clone(nullptr);
+            case CT_DATA:
+                return cell->Clone(nullptr);
 
-            default: return nullptr;
+            default:
+                return nullptr;
         }
-    }
-
-    Cell *Graph() {
-        Cell *c = new Cell();
-        c->text.t.Append(L'|', (int)GetNum());
-        return c;
     }
 };

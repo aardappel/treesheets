@@ -50,7 +50,7 @@ struct System {
     Evaluator ev;
 
     wxString clipboardcopy;
-    Cell *cellclipboard;
+    unique_ptr<Cell> cellclipboard;
 
     Vector<Image *> imagelist;
     Vector<int> loadimageids;
@@ -94,7 +94,6 @@ struct System {
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
                              L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
                        : (wxConfigBase *)new wxConfig(L"TreeSheets")),
-          cellclipboard(nullptr),
           defaultfont(
             #ifdef WIN32
               L"Lucida Sans Unicode"
@@ -152,7 +151,6 @@ struct System {
 
     ~System() {
         DELETEP(cfg);
-        DELETEP(cellclipboard);
     }
 
     Document *NewTabDoc(bool append = false) {

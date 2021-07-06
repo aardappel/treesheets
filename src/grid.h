@@ -95,13 +95,13 @@ struct Grid {
         g->bordercolor = bordercolor;
         g->user_grid_outer_spacing = user_grid_outer_spacing;
         g->folded = folded;
-        foreachcell(c) g->C(x, y) = c->Clone(g->cell);
+        foreachcell(c) g->C(x, y) = c->Clone(g->cell).release();
         loop(x, xs) g->colwidths[x] = colwidths[x];
     }
 
-    Cell *CloneSel(const Selection &s) {
-        Cell *cl = new Cell(nullptr, s.g->cell, CT_DATA, new Grid(s.xs, s.ys));
-        foreachcellinsel(c, s) cl->grid->C(x - s.x, y - s.y) = c->Clone(cl);
+    unique_ptr<Cell> CloneSel(const Selection &s) {
+        auto cl = make_unique<Cell>(nullptr, s.g->cell, CT_DATA, new Grid(s.xs, s.ys));
+        foreachcellinsel(c, s) cl->grid->C(x - s.x, y - s.y) = c->Clone(cl.get()).release();
         return cl;
     }
 
@@ -732,8 +732,8 @@ struct Grid {
         ys = cy;  // throws memory away, but doesn't matter
     }
 
-    Cell *EvalGridCell(Evaluator &ev, Cell *&c, Cell *acc, int &x, int &y, bool &alldata,
-                       bool vert) {
+    unique_ptr<Cell> EvalGridCell(Evaluator &ev, Cell *&c, unique_ptr<Cell> acc, int &x, int &y,
+                                  bool &alldata, bool vert) {
         int ct = c->celltype;  // Type of subcell being evaluated
         // Update alldata condition (variable reads act like data)
         alldata = alldata && (ct == CT_DATA || ct == CT_VARU);
@@ -742,76 +742,95 @@ struct Grid {
             // Var assign
             case CT_VARD: {
                 if (vert) return acc;  // (Reject vertical assignments)
-                Cell *tmpacc = acc;
                 // If we have no data, lets see if we can generate something useful from the
                 // subgrid.
-                if (!tmpacc->grid && tmpacc->text.t.IsEmpty()) {
-                    tmpacc = c->Eval(ev);
-                    if (!tmpacc) { return nullptr; }
+                if (!acc->grid && acc->text.t.IsEmpty()) {
+                    acc = c->Eval(ev);
+                    if (!acc) { return nullptr; }
                 }
                 // Assign the current data temporary to the text
-                ev.Assign(c, tmpacc->Clone(nullptr));
+                ev.Assign(c, acc.get());
                 // Pass the original data onwards
-                return tmpacc;
+                return acc;
             }
             // View
             case CT_VIEWV:
             case CT_VIEWH:
                 if (vert ? ct == CT_VIEWH : ct == CT_VIEWV) {
-                    DELETEP(acc);
                     return c->Clone(nullptr);
                 }
                 delete c;
-                c = acc ? acc->Clone(cell) : new Cell(cell);
+                c = acc ? acc->Clone(cell).release() : new Cell(cell);
                 c->celltype = ct;
                 return acc;
             // Operation
             case CT_CODE: {
                 Operation *op = ev.FindOp(c->text.t);
                 switch (op ? strlen(op->args) : -1) {
-                    default: DELETEP(acc); return nullptr;
-                    case 0: DELETEP(acc); return ev.Execute(op);
-                    case 1: return acc ? ev.Execute(op, acc) : nullptr;
+                    default:
+                        return nullptr;
+                    case 0:
+                        return ev.Execute(op);
+                    case 1:
+                        return acc ? ev.Execute(op, move(acc)) : nullptr;
                     case 2:
-                        if (vert)
-                            return acc && y + 1 < ys ? ev.Execute(op, acc, C(x, ++y)) : nullptr;
-                        else
-                            return acc && x + 1 < xs ? ev.Execute(op, acc, C(++x, y)) : nullptr;
+                        if (vert) {
+                            if (acc && y + 1 < ys) {
+                                return ev.Execute(op, move(acc), C(x, ++y));
+                            } else {
+                                return nullptr;
+                            }
+                        } else {
+                            if (acc && x + 1 < xs) {
+                                return ev.Execute(op, move(acc), C(++x, y));
+                            } else {
+                                return nullptr;
+                            }
+                        }
                     case 3:
-                        if (vert)
-                            return acc && y + 2 < ys ? (y += 2),
-                                   ev.Execute(op, acc, C(x, y - 2), C(x, y - 1)) : nullptr;
-                        else
-                            return acc && x + 2 < xs ? (x += 2),
-                                   ev.Execute(op, acc, C(x - 2, y), C(x - 1, y)) : nullptr;
+                        if (vert) {
+                            if (acc && y + 2 < ys) {
+                                y += 2;
+                                return ev.Execute(op, move(acc), C(x, y - 2), C(x, y - 1));
+                            } else {
+                                return nullptr;
+                            }
+                        } else {
+                            if (acc && x + 2 < xs) {
+                                x += 2;
+                                return ev.Execute(op, move(acc), C(x - 2, y), C(x - 1, y));
+                            } else {
+                                return nullptr;
+                            }
+                        }
                 }
             }
             // Var read, Data
-            default: DELETEP(acc); return c->Eval(ev);
+            default:
+                return c->Eval(ev);
         }
     }
 
-    Cell *Eval(Evaluator &ev) {
-        Cell *acc = nullptr;     // Actual/Accumulating data temporary
+    unique_ptr<Cell> Eval(Evaluator &ev) {
+        unique_ptr<Cell> acc;  // Actual/Accumulating data temporary
         bool alldata = true;  // Is the grid all data?
         // Do left to right processing
         if (xs > 1 || ys == 1) foreachcell(c) {
-                if (x == 0) DELETEP(acc);
-                acc = EvalGridCell(ev, c, acc, x, y, alldata, false);
+                if (x == 0) acc.reset();
+                acc = EvalGridCell(ev, c, move(acc), x, y, alldata, false);
             }
         // Do top to bottom processing
         if (ys > 1) foreachcellcolumn(c) {
-                if (y == 0) DELETEP(acc);
-                acc = EvalGridCell(ev, c, acc, x, y, alldata, true);
+                if (y == 0) acc.reset();
+                acc = EvalGridCell(ev, c, move(acc), x, y, alldata, true);
             }
         // If all data is true then we can exit now.
         if (alldata) {
-            DELETEP(acc);
-            Cell *result = cell->Clone(nullptr);  // Potential result if all data.
+            auto result = cell->Clone(nullptr);  // Potential result if all data.
             foreachcellingrid(c, result->grid) {
-                Cell *temp = c->Eval(ev);
+                auto temp = c->Eval(ev);
                 DELETEP(c);
-                c = temp;
+                c = temp.release();
             }
             return result;
         }
@@ -825,21 +844,19 @@ struct Grid {
             g->cells[vert ? y : x] = c->SetParent(g->cell);
             c = nullptr;
         }
-        delete this;
     }
 
-    Cell *Sum() {
+    unique_ptr<Cell> Sum() {
         double total = 0;
         foreachcell(c) {
             if (c->HasText()) total += c->text.GetNum();
         }
-        delete this;
-        Cell *c = new Cell();
+        auto c = make_unique<Cell>();
         c->text.SetNum(total);
         return c;
     }
 
-    Cell *Transpose() {
+    void Transpose() {
         Cell **tr = new Cell *[xs * ys];
         foreachcell(c) tr[y + x * ys] = c;
         delete[] cells;
@@ -847,7 +864,6 @@ struct Grid {
         swap_(xs, ys);
         SetOrient();
         InitColWidths();
-        return cell;
     }
 
     static int sortfunc(const Cell **a, const Cell **b) {
@@ -979,7 +995,7 @@ struct Grid {
 
     void Hierarchify(Document *doc) {
         loop(y, ys) {
-            Cell *rest = nullptr;
+            unique_ptr<Cell> rest;
             if (xs > 1) {
                 Selection s(this, 1, y, xs - 1, 1);
                 rest = CloneSel(s);
@@ -991,7 +1007,7 @@ struct Grid {
                     if (rest) {
                         ASSERT(prev->grid);
                         prev->grid->MergeRow(rest->grid);
-                        delete rest;
+                        rest.reset();
                     }
 
                     Selection s(this, 0, y, xs, 1);
@@ -1003,7 +1019,6 @@ struct Grid {
             }
             if (rest) {
                 swap_(c->grid, rest->grid);
-                delete rest;
                 c->grid->ReParent(c);
             }
             done:;

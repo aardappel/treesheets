@@ -99,6 +99,7 @@
       <Filter>data</Filter>
     </None>
     <None Include="icon1.ico" />
+    <None Include="..\.clang-format" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="boar.rc" />

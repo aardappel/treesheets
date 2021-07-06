@@ -169,6 +169,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.clang-format" />
     <None Include="..\TODO.txt" />
     <None Include="icon1.ico" />
   </ItemGroup>

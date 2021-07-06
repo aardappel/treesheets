@@ -5,11 +5,10 @@
 struct UndoItem {
     Vector<Selection> path, selpath;
     Selection sel;
-    Cell *clone;
+    unique_ptr<Cell> clone;
     size_t estimated_size;
 
-    UndoItem() : clone(nullptr), estimated_size(0) {}
-    ~UndoItem() { DELETEP(clone); }
+    UndoItem() : estimated_size(0) {}
 };
 
 struct Document {
@@ -1157,7 +1156,6 @@ struct Document {
             case A_COPYCT:
             case A_CUT:
             case A_COPY:
-                DELETEP(sys->cellclipboard);
                 sys->clipboardcopy = wxEmptyString;
                 if (selected.Thin()) return NoThin();
 
@@ -1292,7 +1290,7 @@ struct Document {
                     PasteOrDrop();
                     wxTheClipboard->Close();
                 } else if (sys->cellclipboard) {
-                    c->Paste(this, sys->cellclipboard, selected);
+                    c->Paste(this, sys->cellclipboard.get(), selected);
                     Refresh();
                 }
                 return nullptr;
@@ -1300,7 +1298,7 @@ struct Document {
             case A_PASTESTYLE:
                 if (!sys->cellclipboard) return _(L"No style to paste.");
                 selected.g->cell->AddUndo(this);
-                selected.g->SetStyles(selected, sys->cellclipboard);
+                selected.g->SetStyles(selected, sys->cellclipboard.get());
                 selected.g->cell->ResetChildren();
                 Refresh();
                 return nullptr;
@@ -1709,7 +1707,7 @@ struct Document {
                 if (dataobjt->GetText() != wxEmptyString) {
                     wxString s = dataobjt->GetText();
                     if ((sys->clipboardcopy == s) && sys->cellclipboard) {
-                        c->Paste(this, sys->cellclipboard, selected);
+                        c->Paste(this, sys->cellclipboard.get(), selected);
                         Refresh();
                     } else {
                         const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
@@ -1825,13 +1823,14 @@ struct Document {
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
         UndoItem *ui = fromlist.pop();
         Cell *c = WalkPath(ui->path);
+        auto clone = ui->clone.release();
+        ui->clone.reset(c);
         if (c->parent && c->parent->grid) {
-            c->parent->grid->ReplaceCell(c, ui->clone);
-            ui->clone->parent = c->parent;
+            c->parent->grid->ReplaceCell(c, clone);
+            clone->parent = c->parent;
         } else
-            rootgrid = ui->clone;
-        ui->clone->ResetLayout();
-        ui->clone = c;
+            rootgrid = clone;
+        clone->ResetLayout();
         selected = ui->sel;
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
         begindrag = selected;

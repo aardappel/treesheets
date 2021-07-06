@@ -73,6 +73,7 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 #include <string_view>
 #include <map>
 #include <algorithm>
+#include <memory>
 
 #include <utility>
 
@@ -87,3 +88,5 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
     #include "..\treesheets\resource.h"
     #include "StackWalker\StackWalkerHelpers.h"
 #endif
+
+using namespace std;

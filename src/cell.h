@@ -31,7 +31,7 @@ struct Cell {
     bool verticaltextandgrid = true;
     wxUint8 drawstyle = DS_GRID;
 
-    Cell(Cell *_p = nullptr, Cell const *_clonefrom = nullptr, int _ct = CT_DATA,
+    Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
          Grid *_g = nullptr)
         : parent(_p),
           celltype(_ct),
@@ -178,11 +178,11 @@ struct Cell {
         text.stylebits = o->text.stylebits;
     }
 
-    /* Clones _p making a new copy of it. This does not mutate the called on cell */
-    Cell *Clone(Cell *_p) const {
-        Cell *c = new Cell(_p, this, celltype, grid ? new Grid(grid->xs, grid->ys) : nullptr);
+    unique_ptr<Cell> Clone(Cell *_parent) const {
+        auto c =
+            make_unique<Cell>(_parent, this, celltype, grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
-        c->text.cell = c;
+        c->text.cell = c.get();
         if (grid) {
             grid->Clone(c->grid);
         }
@@ -356,7 +356,7 @@ struct Cell {
         }
     }
 
-    Cell *Eval(Evaluator &ev) {
+    unique_ptr<Cell> Eval(Evaluator &ev) const {
         // Evaluates the internal grid if it exists, otherwise, evaluate the text.
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
@@ -469,5 +469,12 @@ struct Cell {
     void CollectCells(Vector<Cell *> &itercells, bool recurse = true) {
         itercells.push() = this;
         if (grid && recurse) grid->CollectCells(itercells);
+    }
+
+    Cell *Graph() {
+        auto n = (int)text.GetNum();
+        text.t.Clear();
+        text.t.Append(L'|', n);
+        return this;
     }
 };
