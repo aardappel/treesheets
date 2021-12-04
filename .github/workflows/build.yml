@@ -45,11 +45,11 @@ jobs:
 
   build-windows:
     name: Build Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v1
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.0.3
     - name: clone wxWidgets
       run: |
         git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
