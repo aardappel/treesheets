@@ -90,6 +90,10 @@ struct System {
         }
     } savechecker;
 
+    uint lastcellcolor = 0xFFFFFF;
+    uint lasttextcolor = 0;
+    uint lastbordcolor = 0xA0A0A0;
+
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
                              L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)

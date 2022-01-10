@@ -797,7 +797,7 @@ struct Document {
                         // Linux??
                         // They're both keycode 9 in defs.h
                         // We ignore it here, such that CTRL+I works, but it means only
-                        // SHIFT+CTRL+TAB works on Linux as
+                        // CTRL+SHIFT+TAB works on Linux as
                         // a way to switch tabs.
                         // Also, even though we ignore CTRL+TAB, and it is not assigned in the
                         // menus, it still has the
@@ -1031,6 +1031,16 @@ struct Document {
                 sys->cfg->Write(L"roundness", long(sys->roundness = k - A_ROUND0));
                 Refresh();
                 return nullptr;
+
+            case A_OPENCELLCOLOR:
+                if (sys->frame->celldd) sys->frame->celldd->ShowPopup();
+                break;
+            case A_OPENTEXTCOLOR:
+                if (sys->frame->textdd) sys->frame->textdd->ShowPopup();
+                break;
+            case A_OPENBORDCOLOR:
+                if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
+                break;
 
             case A_REPLACEALL: {
                 if (!sys->searchstring.Len()) return _(L"No search.");
@@ -1387,17 +1397,33 @@ struct Document {
             case A_RESETWIDTH:
             case A_RESETSTYLE:
             case A_RESETCOLOR:
+            case A_LASTCELLCOLOR:
+            case A_LASTTEXTCOLOR:
+            case A_LASTBORDCOLOR:
                 selected.g->cell->AddUndo(this);
                 loopallcellssel(c, true) switch (k) {
-                    case A_RESETSIZE: c->text.relsize = 0; break;
+                    case A_RESETSIZE:
+                        c->text.relsize = 0;
+                        break;
                     case A_RESETWIDTH:
                         if (c->grid) c->grid->InitColWidths();
                         break;
-                    case A_RESETSTYLE: c->text.stylebits = 0; break;
+                    case A_RESETSTYLE:
+                        c->text.stylebits = 0;
+                        break;
                     case A_RESETCOLOR:
                         c->cellcolor = 0xFFFFFF;
                         c->textcolor = 0;
                         if (c->grid) c->grid->bordercolor = 0xA0A0A0;
+                        break;
+                    case A_LASTCELLCOLOR:
+                        c->cellcolor = sys->lastcellcolor;
+                        break;
+                    case A_LASTTEXTCOLOR:
+                        c->textcolor = sys->lasttextcolor;
+                        break;
+                    case A_LASTBORDCOLOR:
+                        if (c->grid) c->grid->bordercolor = sys->lastbordcolor;
                         break;
                 }
                 selected.g->cell->ResetChildren();
@@ -1850,8 +1876,13 @@ struct Document {
 
     void ColorChange(int which, int idx) {
         if (!selected.g) return;
-        selected.g->ColorChange(
-            this, which, idx == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[idx], selected);
+        auto col = idx == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[idx];
+        switch (which) {
+            case A_CELLCOLOR: sys->lastcellcolor = col; break;
+            case A_TEXTCOLOR: sys->lasttextcolor = col; break;
+            case A_BORDCOLOR: sys->lastbordcolor = col; break;
+        }
+        selected.g->ColorChange(this, which, col, selected);
     }
 
     void SetImageBM(Cell *c, const wxImage &im, double sc) {

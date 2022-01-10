@@ -22,7 +22,10 @@ struct MyFrame : wxFrame {
     double csf, csf_orig;
     std::vector<std::string> scripts_in_menu;
     bool zenmode;
-
+    ColorDropdown *celldd = nullptr;
+    ColorDropdown *textdd = nullptr;
+    ColorDropdown *borddd = nullptr;
+    
     wxString GetPath(const wxString &relpath) {
         if (!exepath_.Length()) return relpath;
         return exepath_ + "/" + relpath;
@@ -222,8 +225,8 @@ struct MyFrame : wxFrame {
             wxMenu *sizemenu = new wxMenu();
             MyAppend(sizemenu, A_INCSIZE, _(L"&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"));
             MyAppend(sizemenu, A_DECSIZE, _(L"&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"));
-            MyAppend(sizemenu, A_RESETSIZE, _(L"&Reset text sizes\tSHIFT+CTRL+s"));
-            MyAppend(sizemenu, A_MINISIZE, _(L"&Shrink text of all sub-grids\tSHIFT+CTRL+m"));
+            MyAppend(sizemenu, A_RESETSIZE, _(L"&Reset text sizes\tCTRL+SHIFT+s"));
+            MyAppend(sizemenu, A_MINISIZE, _(L"&Shrink text of all sub-grids\tCTRL+SHIFT+m"));
             sizemenu->AppendSeparator();
             MyAppend(sizemenu, A_INCWIDTH, _(L"Increase column width (ALT+mousewheel)\tALT+PGUP"));
             MyAppend(sizemenu, A_DECWIDTH, _(L"Decrease column width (ALT+mousewheel)\tALT+PGDN"));
@@ -231,7 +234,7 @@ struct MyFrame : wxFrame {
                      _(L"Increase column width (no sub grids)\tCTRL+ALT+PGUP"));
             MyAppend(sizemenu, A_DECWIDTHNH,
                      _(L"Decrease column width (no sub grids)\tCTRL+ALT+PGDN"));
-            MyAppend(sizemenu, A_RESETWIDTH, _(L"Reset column widths\tSHIFT+CTRL+w"));
+            MyAppend(sizemenu, A_RESETWIDTH, _(L"Reset column widths\tCTRL+SHIFT+w"));
 
             wxMenu *bordmenu = new wxMenu();
             MyAppend(bordmenu, A_BORD0, L"Border &0\tCTRL+SHIFT+9");
@@ -278,8 +281,8 @@ struct MyFrame : wxFrame {
             temenu->AppendSeparator();
             MyAppend(temenu, A_SLEFT, _(L"Extend Selection Left\tSHIFT+LEFT"));
             MyAppend(temenu, A_SRIGHT, _(L"Extend Selection Right\tSHIFT+RIGHT"));
-            MyAppend(temenu, A_SCLEFT, _(L"Extend Selection Word Left\tSHIFT+CTRL+LEFT"));
-            MyAppend(temenu, A_SCRIGHT, _(L"Extend Selection Word Right\tSHIFT+CTRL+RIGHT"));
+            MyAppend(temenu, A_SCLEFT, _(L"Extend Selection Word Left\tCTRL+SHIFT+LEFT"));
+            MyAppend(temenu, A_SCRIGHT, _(L"Extend Selection Word Right\tCTRL+SHIFT+RIGHT"));
             MyAppend(temenu, A_SHOME, _(L"Extend Selection to Start\tSHIFT+HOME"));
             MyAppend(temenu, A_SEND, _(L"Extend Selection to End\tSHIFT+END"));
             temenu->AppendSeparator();
@@ -300,8 +303,15 @@ struct MyFrame : wxFrame {
             MyAppend(stmenu, A_UNDERL, _(L"Toggle cell &underlined\tCTRL+u"));
             MyAppend(stmenu, A_STRIKET, _(L"Toggle cell &strikethrough\tCTRL+t"));
             stmenu->AppendSeparator();
-            MyAppend(stmenu, A_RESETSTYLE, _(L"&Reset text styles\tSHIFT+CTRL+r"));
-            MyAppend(stmenu, A_RESETCOLOR, _(L"Reset &colors\tSHIFT+CTRL+c"));
+            MyAppend(stmenu, A_RESETSTYLE, _(L"&Reset text styles\tCTRL+SHIFT+r"));
+            MyAppend(stmenu, A_RESETCOLOR, _(L"Reset &colors\tCTRL+SHIFT+c"));
+            stmenu->AppendSeparator();
+            MyAppend(stmenu, A_LASTCELLCOLOR, _(L"Apply last cell color\tSHIFT+ALT+c"));
+            MyAppend(stmenu, A_LASTTEXTCOLOR, _(L"Apply last text color\tSHIFT+ALT+t"));
+            MyAppend(stmenu, A_LASTBORDCOLOR, _(L"Apply last border color\tSHIFT+ALT+b"));
+            MyAppend(stmenu, A_OPENCELLCOLOR, _(L"Open cell colors\tSHIFT+ALT+F9"));
+            MyAppend(stmenu, A_OPENTEXTCOLOR, _(L"Open text colors\tSHIFT+ALT+F10"));
+            MyAppend(stmenu, A_OPENBORDCOLOR, _(L"Open border colors\tSHIFT+ALT+F11"));
 
             wxMenu *tagmenu = new wxMenu();
             MyAppend(tagmenu, A_TAGADD, _(L"&Add Cell Text as Tag"));
@@ -312,7 +322,7 @@ struct MyFrame : wxFrame {
                        L"using a popup menu"));
 
             wxMenu *orgmenu = new wxMenu();
-            MyAppend(orgmenu, A_TRANSPOSE, _(L"&Transpose\tSHIFT+CTRL+t"),
+            MyAppend(orgmenu, A_TRANSPOSE, _(L"&Transpose\tCTRL+SHIFT+t"),
                      _(L"changes the orientation of a grid"));
             MyAppend(orgmenu, A_SORT, _(L"Sort &Ascending"),
                      _(L"Make a 1xN selection to indicate which column to sort on, and which rows to "
@@ -465,7 +475,7 @@ struct MyFrame : wxFrame {
                  // CTRL+SHIFT+TAB below still works, so that will have to be used to switch tabs.
                  _(L"Switch to &next file/tab"));
                  #endif
-        MyAppend(viewmenu, A_PREVFILE, _(L"Switch to &previous file/tab\tSHIFT+CTRL+TAB"));
+        MyAppend(viewmenu, A_PREVFILE, _(L"Switch to &previous file/tab\tCTRL+SHIFT+TAB"));
         MyAppend(viewmenu, A_FULLSCREEN,
                  #ifdef __WXMAC__
                  _(L"Toggle &Fullscreen View\tCTRL+F11"));
@@ -662,13 +672,16 @@ struct MyFrame : wxFrame {
                 new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, wxSize(60, 22) * csf));
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
-            tb->AddControl(new ColorDropdown(tb, A_CELLCOLOR, csf, 1));
+            celldd = new ColorDropdown(tb, A_CELLCOLOR, csf, 1);
+            tb->AddControl(celldd);
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
-            tb->AddControl(new ColorDropdown(tb, A_TEXTCOLOR, csf, 2));
+            textdd = new ColorDropdown(tb, A_TEXTCOLOR, csf, 2);
+            tb->AddControl(textdd);
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
-            tb->AddControl(new ColorDropdown(tb, A_BORDCOLOR, csf, 7));
+            borddd = new ColorDropdown(tb, A_BORDCOLOR, csf, 7);
+            tb->AddControl(borddd);
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
             wxString imagepath = GetPath("images/nuvola/dropdown/");
