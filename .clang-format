@@ -20,5 +20,5 @@ SpaceBeforeParens: ControlStatements
 SpaceAfterTemplateKeyword: false
 Standard: Cpp11
 Cpp11BracedListStyle: false
-IndentPPDirectives: AfterHash
+IndentPPDirectives: BeforeHash
 AlwaysBreakTemplateDeclarations: false
