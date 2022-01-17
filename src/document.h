@@ -1467,6 +1467,15 @@ struct Document {
                 if (selected.TextEdit()) break;
                 selected.HomeEnd(this, dc, k == A_HOME || k == A_CHOME);
                 return nullptr;
+
+            case A_IMAGESCN: {
+                loopallcellssel(c, true)
+                    if (c->text.image)
+                        c->text.image->ResetScale(sys->frame->csf);
+                selected.g->cell->ResetChildren();
+                Refresh();
+                return nullptr;
+            }
         }
 
         if (c || (!c && selected.IsAll())) {
@@ -1532,22 +1541,17 @@ struct Document {
             }
 
             case A_IMAGESCP:
-            case A_IMAGESCF:
-            case A_IMAGESCN: {
+            case A_IMAGESCF: {
                 if (!c->text.image) return _(L"No image in this cell.");
-                if (k == A_IMAGESCN) {
-                    c->text.image->ResetScale(sys->frame->csf);
+                long v = wxGetNumberFromUser(
+                    _(L"Please enter the percentage you want the image scaled by:"), L"%",
+                    _(L"Image Resize"), 50, 5, 400, sys->frame);
+                if (v < 0) return nullptr;
+                auto sc = v / 100.0;
+                if (k == A_IMAGESCP) {
+                    c->text.image->BitmapScale(sc);
                 } else {
-                    long v = wxGetNumberFromUser(
-                        _(L"Please enter the percentage you want the image scaled by:"), L"%",
-                        _(L"Image Resize"), 50, 5, 400, sys->frame);
-                    if (v < 0) return nullptr;
-                    auto sc = v / 100.0;
-                    if (k == A_IMAGESCP) {
-                        c->text.image->BitmapScale(sc);
-                    } else {
-                        c->text.image->DisplayScale(sc);
-                    }
+                    c->text.image->DisplayScale(sc);
                 }
                 c->ResetLayout();
                 Refresh();
