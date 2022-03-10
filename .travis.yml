@@ -83,9 +83,9 @@ script:
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       xcodebuild -project osx/TreeSheets/TreeSheets.xcodeproj
     elif [[ "$TRAVIS_OS_NAME" == "linux" && "$WXLIB" == "libwxgtk3.0-dev" ]]; then
-      cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
-      make -j$(nproc)
-      make DESTDIR=appdir -j$(nproc) install
+      cmake -S . -C _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+      make -C _build -j$(nproc)
+      make -C _build DESTDIR=appdir -j$(nproc) install
       wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
       chmod a+x linuxdeployqt-continuous-x86_64.AppImage
       # FIXME: The following reshuffling can be removed once https://github.com/aardappel/treesheets/issues/133 is resolved
@@ -98,8 +98,8 @@ script:
       mv appdir/usr/examples appdir/usr/bin/ # FIXME
       mv appdir/usr/treesheets appdir/usr/bin/ # FIXME
       mv appdir/usr/translations appdir/usr/bin/ # FIXME
-      strip TS/treesheets # FIXME
-      cp TS/treesheets appdir/usr/bin/ # FIXME
+      strip _build/treesheets # FIXME
+      cp _build/treesheets appdir/usr/bin/ # FIXME
       ls -lh appdir/usr/bin/treesheets && chmod a+x appdir/usr/bin/treesheets
       mv appdir/usr/scripts appdir/usr/bin/ # FIXME
       mv appdir/usr/images appdir/usr/bin/ # FIXME

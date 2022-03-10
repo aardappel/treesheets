@@ -1,16 +1,17 @@
 # Sample build with makefile generator
 #
 #     cd <into-treesheets-source>
-#     cmake -H. -Bb -DCMAKE_BUILD_TYPE=Release \
+#     cmake . -B _build -DCMAKE_BUILD_TYPE=Release \
+#         -DCMAKE_INSTALL_PREFIX=installed \
 #         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
-#     cmake --build b --target install
+#     cmake --build _build --target install
 #
 # Sample build with IDE generator, like Xcode
 #
 #     cd <into-treesheets-source>
-#     cmake -H. -Bb -GXcode \
+#     cmake -B _build -GXcode \
 #         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
-#     cmake --build b --config Release --target install
+#     cmake --build _build --config Release --target install
 #
 # Run program:
 #
@@ -26,8 +27,6 @@ project(treesheets)
 
 # set(CMAKE_CXX_STANDARD 17)  # this doesn't work correctly on all CMake versions :(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/TS)
 
 find_package(wxWidgets REQUIRED aui adv core xml net)
 include(${wxWidgets_USE_FILE})

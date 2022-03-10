@@ -52,9 +52,9 @@ Linux:
 - Using the version of  wxWidgets from https://github.com/wxWidgets/wxWidgets.git
   - Follow the instructions to build there, but add `--enable-unicode` and
    `--disabled-shared` to the `configure` step.
-- Build with `cmake -DCMAKE_BUILD_TYPE=Release .` or similar. Note that you must
-  currently use an "in tree" build, since TreeSheets will look for its files
-  relative to the binary.
+- Build with `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/treesheets` or similar.
+- Install using `sudo make -C _build install`. Note that, currently, everything is installed into the same directory,
+  since TreeSheets will look for its files relative to the binary.
 - There is also a `src/Makefile`, this is deprecated.
 
 OSX:
