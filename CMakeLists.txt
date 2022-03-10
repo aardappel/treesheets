@@ -25,6 +25,10 @@ cmake_minimum_required(VERSION 3.1)
 
 project(treesheets)
 
+if(NOT APPLE AND NOT WIN32)
+    include(GNUInstallDirs)
+endif()
+
 # set(CMAKE_CXX_STANDARD 17)  # this doesn't work correctly on all CMake versions :(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
@@ -47,5 +51,17 @@ add_executable(treesheets ${sources})
 
 target_link_libraries(treesheets PRIVATE ${wxWidgets_LIBRARIES})
 
-install(TARGETS treesheets DESTINATION .)
-install(DIRECTORY TS/ DESTINATION .)
+install(TARGETS treesheets DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY TS/docs DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(FILES TS/readme.html DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+install(DIRECTORY TS/examples DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY TS/images DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY TS/images DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY TS/scripts DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY TS/translations DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+if(NOT APPLE AND NOT WIN32)
+    install(FILES TS/images/treesheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+    install(FILES TS/treesheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+endif()

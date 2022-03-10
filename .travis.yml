@@ -89,10 +89,6 @@ script:
       wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
       chmod a+x linuxdeployqt-continuous-x86_64.AppImage
       # FIXME: The following reshuffling can be removed once https://github.com/aardappel/treesheets/issues/133 is resolved
-      mkdir -p appdir/usr/share/applications # FIXME
-      mv appdir/usr/treesheets.desktop appdir/usr/share/applications/ # FIXME
-      sed -i -e 's|^Exec=.*|Exec=treesheets|g' appdir/usr/share/applications/treesheets.desktop
-      sed -i -e 's|^Icon=.*|Icon=treesheets|g' appdir/usr/share/applications/treesheets.desktop
       mkdir -p appdir/usr/bin/ # FIXME
       mv appdir/usr/docs appdir/usr/bin/ # FIXME
       mv appdir/usr/examples appdir/usr/bin/ # FIXME
@@ -103,8 +99,6 @@ script:
       ls -lh appdir/usr/bin/treesheets && chmod a+x appdir/usr/bin/treesheets
       mv appdir/usr/scripts appdir/usr/bin/ # FIXME
       mv appdir/usr/images appdir/usr/bin/ # FIXME
-      mkdir -p appdir/usr/share/icons/hicolor/scalable/apps/ # FIXME
-      cp appdir/usr/bin/images/treesheets.svg appdir/usr/share/icons/hicolor/scalable/apps/ # FIXME
       ( cd appdir ; ln -s usr/bin/docs/ usr/bin/examples/ usr/bin/images/ usr/bin/scripts/ usr/bin/translations/ . )
       sed -i -e 's|1011|1002|g' appdir/usr/bin/treesheets # https://github.com/aardappel/treesheets/issues/130#issuecomment-528075693
       # Workaround to increase compatibility with older systems; see https://github.com/darealshinji/AppImageKit-checkrt for details
