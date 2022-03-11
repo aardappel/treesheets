@@ -26,6 +26,8 @@ cmake_minimum_required(VERSION 3.1)
 project(treesheets)
 
 if(NOT APPLE AND NOT WIN32)
+    set(TREESHEETS_RELOCATABLE_INSTALLATION OFF CACHE BOOL "Install data relative to the treesheets binary, instead of respecting the Filesystem Hierarchy Standard")
+
     include(GNUInstallDirs)
 endif()
 
@@ -50,6 +52,10 @@ include_directories(lobster/include lobster/src)
 add_executable(treesheets ${sources})
 
 target_link_libraries(treesheets PRIVATE ${wxWidgets_LIBRARIES})
+if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
+    # Apple and Windows always look to relative paths for locales.
+    target_compile_definitions(treesheets PRIVATE "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
+endif()
 
 install(TARGETS treesheets DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY TS/docs DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -59,7 +65,34 @@ install(DIRECTORY TS/examples DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY TS/images DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY TS/images DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY TS/scripts DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY TS/translations DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+# Install translations to correct platform-specific path.
+# See: https://docs.wxwidgets.org/trunk/overview_i18n.html#overview_i18n_mofiles
+file(
+    GLOB locales
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/TS/translations
+    TS/translations/*/ts.mo
+)
+list(
+    TRANSFORM locales
+    REPLACE "/ts\\.mo$" ""
+)
+if(APPLE OR WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
+    foreach(locale ${locales})
+        install(
+            FILES "TS/translations/${locale}/ts.mo"
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/translations/${locale}"
+        )
+    endforeach()
+else()
+    # Falling back to GNU scheme
+    foreach(locale ${locales})
+        install(
+            FILES "TS/translations/${locale}/ts.mo"
+            DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES"
+        )
+    endforeach()
+endif()
 
 if(NOT APPLE AND NOT WIN32)
     install(FILES TS/images/treesheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
