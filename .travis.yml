@@ -88,17 +88,6 @@ script:
       make -C _build DESTDIR=appdir -j$(nproc) install
       wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
       chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-      # FIXME: The following reshuffling can be removed once https://github.com/aardappel/treesheets/issues/133 is resolved
-      mkdir -p appdir/usr/bin/ # FIXME
-      mv appdir/usr/docs appdir/usr/bin/ # FIXME
-      mv appdir/usr/examples appdir/usr/bin/ # FIXME
-      mv appdir/usr/treesheets appdir/usr/bin/ # FIXME
-      strip _build/treesheets # FIXME
-      cp _build/treesheets appdir/usr/bin/ # FIXME
-      ls -lh appdir/usr/bin/treesheets && chmod a+x appdir/usr/bin/treesheets
-      mv appdir/usr/scripts appdir/usr/bin/ # FIXME
-      mv appdir/usr/images appdir/usr/bin/ # FIXME
-      ( cd appdir ; ln -s usr/bin/docs/ usr/bin/examples/ usr/bin/images/ usr/bin/scripts/ . )
       sed -i -e 's|1011|1002|g' appdir/usr/bin/treesheets # https://github.com/aardappel/treesheets/issues/130#issuecomment-528075693
       # Workaround to increase compatibility with older systems; see https://github.com/darealshinji/AppImageKit-checkrt for details
       mkdir -p appdir/usr/optional/ ; wget -c https://github.com/darealshinji/AppImageKit-checkrt/releases/download/continuous/exec-x86_64.so -O ./appdir/usr/optional/exec.so
