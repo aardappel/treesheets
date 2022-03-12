@@ -37,7 +37,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 find_package(wxWidgets REQUIRED aui adv core xml net)
 include(${wxWidgets_USE_FILE})
 
-file(GLOB sources src/*.cpp src/*.h
+file(
+    GLOB lobster_sources
         lobster/external/flatbuffers/src/*.cpp
         lobster/src/builtins.cpp
         lobster/src/compiler.cpp
@@ -47,11 +48,25 @@ file(GLOB sources src/*.cpp src/*.h
         lobster/src/platform.cpp
         lobster/src/vm.cpp
         lobster/src/vmdata.cpp
-        lobster/src/vmlog.cpp)
-include_directories(lobster/include lobster/src)
-add_executable(treesheets ${sources})
+        lobster/src/vmlog.cpp
+)
+add_library(lobster STATIC ${lobster_sources})
+target_include_directories(lobster PUBLIC lobster/include lobster/src)
 
-target_link_libraries(treesheets PRIVATE ${wxWidgets_LIBRARIES})
+add_library(lobster-impl STATIC src/lobster_impl.cpp)
+target_link_libraries(lobster-impl PRIVATE lobster)
+
+add_executable(
+    treesheets
+    src/main.cpp
+)
+
+target_link_libraries(
+    treesheets
+    PRIVATE
+        ${wxWidgets_LIBRARIES}
+        lobster-impl
+)
 if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_DOCDIR})
