@@ -426,7 +426,7 @@
 					../../lobster/include,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
@@ -459,7 +459,7 @@
 					../../lobster/include,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
 				VALID_ARCHS = x86_64;
@@ -491,7 +491,7 @@
 					"/usr/local/include/wx-3.1",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
@@ -544,7 +544,7 @@
 					"/usr/local/include/wx-3.1",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",

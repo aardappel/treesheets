@@ -26,9 +26,39 @@ struct MyFrame : wxFrame {
     ColorDropdown *textdd = nullptr;
     ColorDropdown *borddd = nullptr;
     
-    wxString GetPath(const wxString &relpath) {
-        if (!exepath_.Length()) return relpath;
-        return exepath_ + "/" + relpath;
+    wxString GetDocPath(const wxString &relpath) {
+        std::filesystem::path candidatePaths[] = {
+            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
+            #ifdef TREESHEETS_DOCDIR
+                std::filesystem::path(TREESHEETS_DOCDIR "/" + relpath.ToStdString()),
+            #endif
+        };
+        std::filesystem::path relativePath;
+        for (auto path : candidatePaths) {
+            relativePath = path;
+            if (std::filesystem::exists(relativePath)) {
+                break;
+            }
+        }
+
+        return wxString(relativePath.c_str());
+    }
+    wxString GetDataPath(const wxString &relpath) {
+        std::filesystem::path candidatePaths[] = {
+            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
+            #ifdef TREESHEETS_DATADIR
+                std::filesystem::path(TREESHEETS_DATADIR "/" + relpath.ToStdString()),
+            #endif
+        };
+        std::filesystem::path relativePath;
+        for (auto path : candidatePaths) {
+            relativePath = path;
+            if (std::filesystem::exists(relativePath)) {
+                break;
+            }
+        }
+
+        return wxString(relativePath.c_str());
     }
 
     MenuString menustrings;
@@ -91,7 +121,7 @@ struct MyFrame : wxFrame {
 
         wxLogMessage(L"locale: %s", std::setlocale(LC_CTYPE, nullptr));
 
-        app->AddTranslation(GetPath("translations"));
+        app->AddTranslation(GetDataPath("translations"));
 
         csf = GetContentScaleFactor();
         wxLogMessage(L"content scale: %f", csf);
@@ -121,8 +151,8 @@ struct MyFrame : wxFrame {
 
         wxIconBundle icons;
         wxIcon iconbig;
-        icon.LoadFile(GetPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG);
-        iconbig.LoadFile(GetPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG);
+        icon.LoadFile(GetDataPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG);
+        iconbig.LoadFile(GetDataPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG);
         if (!icon.IsOk() || !iconbig.IsOk()) {
             wxMessageBox(_(L"Error loading core data file (TreeSheets not installed correctly?)"),
                          _(L"Initialization Error"), wxOK, this);
@@ -139,9 +169,9 @@ struct MyFrame : wxFrame {
         SetIcons(icons);
 
         wxImage foldiconi;
-        line_nw.LoadFile(GetPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
-        line_sw.LoadFile(GetPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
-        foldiconi.LoadFile(GetPath(L"images/nuvola/fold.png"));
+        line_nw.LoadFile(GetDataPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
+        line_sw.LoadFile(GetDataPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
+        foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
         foldicon = wxBitmap(foldiconi);
         ScaleBitmap(foldicon, csf / 3.0, foldicon);
 
@@ -547,7 +577,7 @@ struct MyFrame : wxFrame {
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
 
         wxMenu *scriptmenu = new wxMenu();
-        auto scriptpath = GetPath("scripts/");
+        auto scriptpath = GetDataPath("scripts/");
         wxString sf = wxFindFirstFile(scriptpath + L"*.lobster");
         int sidx = 0;
         while (!sf.empty()) {
@@ -630,7 +660,7 @@ struct MyFrame : wxFrame {
             #endif
 
             wxString iconpath =
-                GetPath(iconset ? L"images/webalys/toolbar/" : L"images/nuvola/toolbar/");
+                GetDataPath(iconset ? L"images/webalys/toolbar/" : L"images/nuvola/toolbar/");
             auto sz = (iconset ? wxSize(18, 18) : wxSize(22, 22)) * csf;
             tb->SetToolBitmapSize(sz);
 
@@ -684,7 +714,7 @@ struct MyFrame : wxFrame {
             tb->AddControl(borddd);
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
-            wxString imagepath = GetPath("images/nuvola/dropdown/");
+            wxString imagepath = GetDataPath("images/nuvola/dropdown/");
             idd = new ImageDropdown(tb, imagepath);
             tb->AddControl(idd);
             tb->Realize();

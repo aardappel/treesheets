@@ -144,7 +144,7 @@ static int64_t TreeSheetsLoader(std::string_view absfilename, std::string *dest,
 static TreeSheetsScriptImpl tssi;
 
 static void ScriptInit(MyFrame *frame) {
-    auto serr = InitLobster(&tssi, frame->GetPath("scripts/"), "", false, TreeSheetsLoader);
+    auto serr = InitLobster(&tssi, frame->GetDataPath("scripts/"), "", false, TreeSheetsLoader);
     if (!serr.empty())
         frame->GetCurTab()->Status(wxString("Script system could not initialize: " + serr));
 }

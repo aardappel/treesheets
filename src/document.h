@@ -919,9 +919,9 @@ struct Document {
             case A_HELP:
                 #ifdef __WXMAC__
                 wxLaunchDefaultBrowser(L"file://" +
-                                       sys->frame->GetPath(L"docs/tutorial.html"));  // RbrtPntn
+                                       sys->frame->GetDocPath(L"docs/tutorial.html"));  // RbrtPntn
                 #else
-                wxLaunchDefaultBrowser(sys->frame->GetPath(L"docs/tutorial.html"));
+                wxLaunchDefaultBrowser(sys->frame->GetDocPath(L"docs/tutorial.html"));
                 #endif
                 return nullptr;
 

@@ -75,6 +75,7 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 #include <algorithm>
 #include <memory>
 
+#include <filesystem>
 #include <utility>
 
 #include <locale>

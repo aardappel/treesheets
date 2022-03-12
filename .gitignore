@@ -17,14 +17,18 @@ TreeSheets/\.vs/treesheets/v15/
 build/treesheets/language/
 
 TS/scripts/\.con\.log
+# In-tree build
 TS/treesheets
 TS/2
 
+# In-tree build CMake files
 CMakeCache.txt
 CMakeFiles/**
 Makefile
 cmake_install.cmake
 CMakeLists.txt.user
+# Build directory for out-of-tree builds
+_build/
 
 TreeSheets/.vs
 

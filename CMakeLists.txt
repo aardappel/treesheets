@@ -1,16 +1,17 @@
 # Sample build with makefile generator
 #
 #     cd <into-treesheets-source>
-#     cmake -H. -Bb -DCMAKE_BUILD_TYPE=Release \
+#     cmake . -B _build -DCMAKE_BUILD_TYPE=Release \
+#         -DCMAKE_INSTALL_PREFIX=installed \
 #         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
-#     cmake --build b --target install
+#     cmake --build _build --target install
 #
 # Sample build with IDE generator, like Xcode
 #
 #     cd <into-treesheets-source>
-#     cmake -H. -Bb -GXcode \
+#     cmake -B _build -GXcode \
 #         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
-#     cmake --build b --config Release --target install
+#     cmake --build _build --config Release --target install
 #
 # Run program:
 #
@@ -24,10 +25,14 @@ cmake_minimum_required(VERSION 3.1)
 
 project(treesheets)
 
+if(NOT APPLE AND NOT WIN32)
+    set(TREESHEETS_RELOCATABLE_INSTALLATION OFF CACHE BOOL "Install data relative to the treesheets binary, instead of respecting the Filesystem Hierarchy Standard")
+
+    include(GNUInstallDirs)
+endif()
+
 # set(CMAKE_CXX_STANDARD 17)  # this doesn't work correctly on all CMake versions :(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/TS)
 
 find_package(wxWidgets REQUIRED aui adv core xml net)
 include(${wxWidgets_USE_FILE})
@@ -47,6 +52,60 @@ include_directories(lobster/include lobster/src)
 add_executable(treesheets ${sources})
 
 target_link_libraries(treesheets PRIVATE ${wxWidgets_LIBRARIES})
+if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
+    set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
+    set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_DOCDIR})
+    set(TREESHEETS_FULL_DOCDIR ${CMAKE_INSTALL_FULL_DOCDIR})
+    set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME})
+    set(TREESHEETS_FULL_PKGDATADIR ${CMAKE_INSTALL_FULL_DATADIR}/${CMAKE_PROJECT_NAME})
 
-install(TARGETS treesheets DESTINATION .)
-install(DIRECTORY TS/ DESTINATION .)
+    # Apple and Windows always look to relative paths for locales.
+    target_compile_definitions(treesheets PRIVATE "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
+    target_compile_definitions(treesheets PRIVATE "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\"")
+    target_compile_definitions(treesheets PRIVATE "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\"")
+else()
+    set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
+    set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX})
+    set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_PREFIX})
+endif()
+
+install(TARGETS treesheets DESTINATION ${TREESHEETS_BINDIR})
+install(DIRECTORY TS/docs DESTINATION ${TREESHEETS_DOCDIR})
+install(FILES TS/readme.html DESTINATION ${TREESHEETS_DOCDIR})
+install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
+
+install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
+install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
+
+# Install translations to correct platform-specific path.
+# See: https://docs.wxwidgets.org/trunk/overview_i18n.html#overview_i18n_mofiles
+file(
+    GLOB locales
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/TS/translations
+    TS/translations/*/ts.mo
+)
+list(
+    TRANSFORM locales
+    REPLACE "/ts\\.mo$" ""
+)
+if(APPLE OR WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
+    foreach(locale ${locales})
+        install(
+            FILES "TS/translations/${locale}/ts.mo"
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/translations/${locale}"
+        )
+    endforeach()
+else()
+    # Falling back to GNU scheme
+    foreach(locale ${locales})
+        install(
+            FILES "TS/translations/${locale}/ts.mo"
+            DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES"
+        )
+    endforeach()
+endif()
+
+if(NOT APPLE AND NOT WIN32)
+    install(FILES TS/images/treesheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+    install(FILES TS/treesheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+endif()

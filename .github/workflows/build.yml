@@ -36,14 +36,16 @@ jobs:
         cd wxWidgets/build_
         sudo make install
     - name: cmake
-      run: CXX=${{ matrix.cxx }} cmake -DCMAKE_BUILD_TYPE=Release .
+      run: CXX=${{ matrix.cxx }} cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=TreeSheets-relocatable -DTREESHEETS_RELOCATABLE_INSTALLATION=ON
     - name: build TreeSheets
-      run: make -j4
+      run: make -C _build -j4
+    - name: install files
+      run: make -C _build install
     - name: upload build artifacts
       uses: actions/upload-artifact@v1
       with:
         name: Linux TreeSheets ${{ matrix.cxx }}
-        path: TS
+        path: TreeSheets-relocatable
 
   build-windows:
     name: Build Windows

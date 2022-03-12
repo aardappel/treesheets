@@ -21,6 +21,9 @@ struct MyApp : wxApp {
         #ifdef __WXGTK__
             locale.AddCatalogLookupPathPrefix(L"/usr");
             locale.AddCatalogLookupPathPrefix(L"/usr/local");
+            #ifdef LOCALEDIR
+                locale.AddCatalogLookupPathPrefix(LOCALEDIR);
+            #endif
             wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
             locale.AddCatalogLookupPathPrefix(prefix);
         #endif
