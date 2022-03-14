@@ -1171,8 +1171,10 @@ struct Document {
 
                 if (selected.TextEdit()) {
                     if (selected.cursor == selected.cursorend) return _(L"No text selected.");
-                } else if (k != A_COPYCT)
+                    sys->cellclipboard = nullptr;
+                } else if (k != A_COPYCT) {
                     sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
+                }
 
                 if (wxTheClipboard->Open()) {
                     wxString s;
