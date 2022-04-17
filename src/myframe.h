@@ -1122,7 +1122,7 @@ struct MyFrame : wxFrame {
                 }
             }
         bt.Stop();
-        sys->savechecker.Stop();
+        sys->every_second_timer.Stop();
         Destroy();
     }
 

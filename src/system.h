@@ -14,6 +14,8 @@ struct Image {
     // This is all relative to GetContentScalingFactor.
     double display_scale;
 
+    long last_display = 0;
+
     Image(wxBitmap _bm, int _cs, double _sc, vector<uint8_t> &&pd)
         : bm_orig(_bm), png_data(std::move(pd)), checksum(_cs), display_scale(_sc) {}
 
@@ -39,7 +41,14 @@ struct Image {
             // FIXME: this won't work because it will ignore the cell's bg color.
             //MakeInternallyScaled(bm_display, *wxWHITE, sys->frame->csf_orig);
         }
+        last_display = wxGetLocalTime();
         return bm_display;
+    }
+
+    void Purge() {
+        auto seconds_passed = wxGetLocalTime() - last_display;
+        if (seconds_passed > 10) bm_display = wxNullBitmap;
+        // TODO: we could even purge bm_orig for even greater memory savings if we have png_data.
     }
 };
 
@@ -86,12 +95,13 @@ struct System {
 
     bool insidefiledialog;
 
-    struct SaveChecker : wxTimer {
+    struct TimerStruct : wxTimer {
         void Notify() {
             sys->SaveCheck();
             sys->cfg->Flush();
+            sys->PurgeImages();
         }
-    } savechecker;
+    } every_second_timer;
 
     uint lastcellcolor = 0xFFFFFF;
     uint lasttextcolor = 0;
@@ -193,7 +203,7 @@ struct System {
         // Refresh();
 
         frame->bt.Start(400);
-        savechecker.Start(1000);
+        every_second_timer.Start(1000);
 
         ScriptInit(frame);
     }
@@ -423,6 +433,12 @@ struct System {
     void SaveCheck() {
         loop(i, frame->nb->GetPageCount()) {
             ((TSCanvas *)frame->nb->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
+        }
+    }
+
+    void PurgeImages() {
+        for (int i = 0; i < imagelist.size(); i++) {
+            imagelist[i]->Purge();
         }
     }
 
