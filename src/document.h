@@ -740,7 +740,7 @@ struct Document {
     }
 
     void AutoSave(bool minimized, int page) {
-        if (tmpsavesuccess && !filename.empty() && lastmodsinceautosave &&
+        if (sys->autosave && tmpsavesuccess && !filename.empty() && lastmodsinceautosave &&
             (lastmodsinceautosave + 60 < wxGetLocalTime() || lastsave + 300 < wxGetLocalTime() ||
              minimized)) {
             tmpsavesuccess = false;
