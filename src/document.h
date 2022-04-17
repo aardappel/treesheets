@@ -159,6 +159,8 @@ struct Document {
     const wxChar *SaveDB(bool *success, bool istempfile = false, int page = -1) {
         if (filename.empty()) return _(L"Save cancelled.");
 
+        auto start_saving_time = wxGetLocalTimeMillis();
+
         {  // limit destructors
             wxBusyCursor wait;
             if (!istempfile && sys->makebaks && ::wxFileExists(filename)) {
@@ -185,8 +187,14 @@ struct Document {
                 if (image.trefc) {
                     fos.Write("I", 1);
                     sos.WriteDouble(image.display_scale);
-                    wxImage im = image.bm_orig.ConvertToImage();
-                    im.SaveFile(fos, wxBITMAP_TYPE_PNG);
+                    if (image.png_data.empty()) {
+                        wxImage im = image.bm_orig.ConvertToImage();
+                        im.SaveFile(fos, wxBITMAP_TYPE_PNG);
+                    } else {
+                        // We have a copy of the PNG data loaded.. this is WAY faster
+                        // than recompressing (~30x on image heavy files).
+                        fos.Write(image.png_data.data(), image.png_data.size());
+                    }
                     image.savedindex = realindex++;
                 }
             }
@@ -202,6 +210,8 @@ struct Document {
         }
         lastmodsinceautosave = 0;
         lastsave = wxGetLocalTime();
+        auto end_saving_time = wxGetLocalTimeMillis();
+
         if (!istempfile) {
             undolistsizeatfullsave = undolist.size();
             modified = false;
@@ -212,7 +222,13 @@ struct Document {
         if (sys->autohtmlexport) { ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT, false); }
         UpdateFileName(page);
         if (success) *success = true;
-        return _(L"File saved succesfully.");
+
+        sw->Status(
+            wxString::Format(_(L"Saved %s succesfully (in %d milliseconds)."),
+                             filename.c_str(), (int)((end_saving_time - start_saving_time).GetValue()))
+                .c_str());
+
+        return _(L"");
     }
 
     void DrawSelect(wxDC &dc, Selection &s, bool refreshinstead = false, bool cursoronly = false) {
@@ -1892,7 +1908,8 @@ struct Document {
     }
 
     void SetImageBM(Cell *c, const wxImage &im, double sc) {
-        c->text.image = sys->imagelist[sys->AddImageToList(im, sc)];
+        vector<uint8_t> empty;
+        c->text.image = sys->imagelist[sys->AddImageToList(im, sc, std::move(empty))];
     }
 
     bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {

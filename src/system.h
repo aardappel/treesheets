@@ -2,9 +2,10 @@
 struct Image {
     wxBitmap bm_orig;
     wxBitmap bm_display;
+    vector<uint8_t> png_data;
 
-    int trefc;
-    int savedindex;
+    int trefc = 0;
+    int savedindex = -1;
     int checksum;
 
     // This indicates a relative scale, where 1.0 means bitmap pixels match display pixels on
@@ -13,10 +14,12 @@ struct Image {
     // This is all relative to GetContentScalingFactor.
     double display_scale;
 
-    Image(wxBitmap _bm, int _cs, double _sc) : bm_orig(_bm), checksum(_cs), display_scale(_sc) {}
+    Image(wxBitmap _bm, int _cs, double _sc, vector<uint8_t> &&pd)
+        : bm_orig(_bm), png_data(std::move(pd)), checksum(_cs), display_scale(_sc) {}
 
     void BitmapScale(double sc) {
         ScaleBitmap(bm_orig, sc, bm_orig);
+        png_data.clear();
         bm_display = wxNullBitmap;
     }
 
@@ -240,6 +243,7 @@ struct System {
 
         Document *doc = nullptr;
         bool anyimagesfailed = false;
+        auto start_loading_time = wxGetLocalTimeMillis();
 
         {  // limit destructors
             wxBusyCursor wait;
@@ -264,6 +268,7 @@ struct System {
                         if (versionlastloaded < 9) dis.ReadString();
                         wxImage im;
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
+                        vector<uint8_t> png_data;
                         off_t beforepng = fis.TellI();
                         bool ok = im.LoadFile(fis);
                         // ok = false;
@@ -293,8 +298,20 @@ struct System {
                             im.Create(sz, sz, false);
                             im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0,
                                       0);  // Set to red to indicate error.
+                        } else {
+                            // We loaded the PNG succesfully.
+                            // Also save a copy of PNG byte data, since re-compressing PNGs is slow, so
+                            // keeping this around speeds up saving a lot (~30x faster on image heavy files!).
+                            // (and should cost a fraction of the memory of the uncompressed image).
+                            off_t afterpng = fis.TellI();
+                            fis.SeekI(beforepng);
+                            auto sz = afterpng - beforepng;
+                            png_data.resize(sz);
+                            fis.Read(png_data.data(), png_data.size());
+                            if (!fis.IsOk()) png_data.clear();
+                            fis.SeekI(afterpng);
                         }
-                        loadimageids.push() = AddImageToList(im, sc);
+                        loadimageids.push() = AddImageToList(im, sc, std::move(png_data));
                         break;
                     }
 
@@ -322,8 +339,10 @@ struct System {
                             }
                         }
 
-                        doc->sw->Status(wxString::Format(_(L"Loaded %s (%d cells, %d characters)."),
-                                                         filename.c_str(), numcells, textbytes)
+                        auto end_loading_time = wxGetLocalTimeMillis();
+
+                        doc->sw->Status(wxString::Format(_(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
+                                filename.c_str(), numcells, textbytes, (int)((end_loading_time - start_loading_time).GetValue()))
                                             .c_str());
 
                         goto done;
@@ -548,7 +567,7 @@ struct System {
         return (int)as.size();
     }
 
-    int AddImageToList(const wxImage &im, double sc) {
+    int AddImageToList(const wxImage &im, double sc, vector<uint8_t> &&pd) {
         uint *p = (uint *)im.GetData();
         uint checksum = im.GetWidth() | (im.GetHeight() << 16);
         loop(i, im.GetWidth() * im.GetHeight() * 3 / 4) checksum ^= *p++;
@@ -557,7 +576,7 @@ struct System {
             if (imagelist[i]->checksum == checksum) return i;
         }
 
-        imagelist.push() = new Image(wxBitmap(im), checksum, sc);
+        imagelist.push() = new Image(wxBitmap(im), checksum, sc, std::move(pd));
         return imagelist.size() - 1;
     }
 
