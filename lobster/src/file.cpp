@@ -174,6 +174,23 @@ nfr("write_file", "file,contents,textmode", "SSI?", "B",
         return Value(ok);
     });
 
+nfr("launch_subprocess", "commandline,stdin", "S]S?", "IS",
+    "launches a sub process, with optionally a stdin for the process, and returns its"
+    " return code (or -1 if it couldn't launch at all), and any output",
+    [](StackPtr &sp, VM &vm) {
+        auto stdins = Pop(sp);
+        auto commandline = Pop(sp).vval();
+        vector<const char *> cmdl;
+        for (iint i = 0; i < commandline->len; i++) {
+            cmdl.push_back(commandline->At(i).sval()->data());
+        }
+        cmdl.push_back(nullptr);
+        string out;
+        auto ret = LaunchSubProcess(cmdl.data(), stdins.True() ? stdins.sval()->data() : nullptr, out);
+        Push(sp, ret);
+        Push(sp, vm.NewString(out));
+    });
+
 nfr("vector_to_buffer", "vec,width", "A]*I?", "S",
     "converts a vector of ints/floats (or structs of them) to a buffer, where"
     " each scalar is written with \"width\" bytes (1/2/4/8, default 4). Returns nil if the"

@@ -32,6 +32,7 @@ md include\StackWalker
 xcopy %source%\dev\include\StackWalker\*.* include\StackWalker
 md include\gsl
 xcopy %source%\dev\include\gsl\*.* include\gsl
+xcopy %source%\dev\include\subprocess.h include\
 md ..\TS\scripts\modules
 xcopy %source%\modules\stdtype.lobster ..\TS\scripts\modules
 xcopy %source%\modules\std.lobster ..\TS\scripts\modules

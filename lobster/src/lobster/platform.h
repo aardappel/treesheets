@@ -51,6 +51,8 @@ extern void AddPakFileEntry(string_view pakfilename, string_view relfilename, in
 extern bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest);
 extern bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest);
 
+extern iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out);
+
 // Logging:
 
 enum OutputType {

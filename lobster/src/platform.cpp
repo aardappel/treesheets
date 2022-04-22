@@ -53,6 +53,8 @@
     #include "lobster/sdlincludes.h"  // FIXME
 #endif
 
+#include "subprocess.h"
+
 // Dirs to load files relative to, they typically contain, and will be searched in this order:
 // - The project specific files. This is where the bytecode file you're running or the main
 //   .lobster file you're compiling reside.
@@ -530,4 +532,32 @@ void SetConsole(bool on) {
         if (on) AllocConsole();
         else FreeConsole();
     #endif
+}
+
+iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out) {
+    struct subprocess_s subprocess;
+    int result = subprocess_create(cmdl, 0, &subprocess);
+    if (result) return -1;
+    if (stdins) {
+        FILE *p_stdin = subprocess_stdin(&subprocess);
+        fputs(stdins, p_stdin);
+        fclose(p_stdin);
+    }
+    int process_return;
+    result = subprocess_join(&subprocess, &process_return);
+    if (result) {
+        subprocess_destroy(&subprocess);
+        return -1;
+    }
+    auto readall = [&](FILE *f) {
+        for (;;) {
+            auto c = getc(f);
+            if (c < 0) break;
+            out.push_back((char)c);
+        }
+    };
+    readall(subprocess_stdout(&subprocess));
+    readall(subprocess_stderr(&subprocess));
+    subprocess_destroy(&subprocess);
+    return process_return;
 }
