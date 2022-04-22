@@ -38,6 +38,10 @@ struct TSCanvas : public wxScrolledWindow {
         #endif
         // DoPrepareDC(dc);
         doc->Draw(dc);
+        // Display has been re-layouted, compute hover selection again.
+        doc->Hover(lastmousepos.x / doc->currentviewscale,
+                   lastmousepos.y / doc->currentviewscale,
+                   dc);
     };
 
     void UpdateHover(int mx, int my, wxDC &dc) {
