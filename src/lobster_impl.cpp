@@ -117,6 +117,12 @@ nfr("ts_set_text_color", "col", "F}:4", "",
         si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
+nfr("ts_set_border_color", "col", "F}:4", "", "sets the border color of the current grid",
+    [](StackPtr &sp, VM &vm) {
+        auto col = PopVec<float3>(sp);
+        si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
+    });
+
 nfr("ts_set_relative_size", "s", "I", "",
     "sets the relative size (0 is normal, -1 is smaller etc.) of the current cell",
     [](StackPtr &sp, VM &, Value &s) {
