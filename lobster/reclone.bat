@@ -26,6 +26,8 @@ md external
 md external\flatbuffers
 md external\flatbuffers\src
 xcopy %source%\dev\external\flatbuffers\src\*.* external\flatbuffers\src
+md external\libtcc
+xcopy %source%\dev\external\libtcc\*.* external\libtcc
 md include\StackWalker
 xcopy %source%\dev\include\StackWalker\*.* include\StackWalker
 md include\gsl

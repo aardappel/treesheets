@@ -39,6 +39,7 @@ extern int64_t LoadFile(string_view relfilename, string *dest, int64_t start = 0
 extern int64_t DefaultLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len);
 
 extern FILE *OpenForWriting(string_view relfilename, bool binary);
+extern FILE *OpenForReading(string_view relfilename, bool binary);
 extern bool WriteFile(string_view relfilename, bool binary, string_view contents);
 extern bool FileExists(string_view relfilename);
 extern bool FileDelete(string_view relfilename);
@@ -89,8 +90,8 @@ template<typename ...Ts> void LogOutput(OutputType ot, const Ts&... args) {
 extern double SecondsSinceStart();
 
 // CPU:
-extern uint NumHWThreads();
-extern uint NumHWCores();
+extern int NumHWThreads();
+extern int NumHWCores();
 
 // Misc:
 extern void ConditionalBreakpoint(bool shouldbreak);

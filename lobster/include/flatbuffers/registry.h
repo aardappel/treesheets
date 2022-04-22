@@ -17,6 +17,7 @@
 #ifndef FLATBUFFERS_REGISTRY_H_
 #define FLATBUFFERS_REGISTRY_H_
 
+#include "flatbuffers/base.h"
 #include "flatbuffers/idl.h"
 
 namespace flatbuffers {
@@ -40,13 +41,13 @@ class Registry {
   bool FlatBufferToText(const uint8_t *flatbuf, size_t len, std::string *dest) {
     // Get the identifier out of the buffer.
     // If the buffer is truncated, exit.
-    if (len < sizeof(uoffset_t) + FlatBufferBuilder::kFileIdentifierLength) {
+    if (len < sizeof(uoffset_t) + kFileIdentifierLength) {
       lasterror_ = "buffer truncated";
       return false;
     }
     std::string ident(
         reinterpret_cast<const char *>(flatbuf) + sizeof(uoffset_t),
-        FlatBufferBuilder::kFileIdentifierLength);
+        kFileIdentifierLength);
     // Load and parse the schema.
     Parser parser;
     if (!LoadSchema(ident, &parser)) return false;
@@ -72,7 +73,7 @@ class Registry {
       return DetachedBuffer();
     }
     // We have a valid FlatBuffer. Detach it from the builder and return.
-    return parser.builder_.ReleaseBufferPointer();
+    return parser.builder_.Release();
   }
 
   // Modify any parsing / output options used by the other functions.
@@ -103,7 +104,7 @@ class Registry {
     }
     // Parse schema.
     parser->opts = opts_;
-    if (!parser->Parse(schematext.c_str(), vector_data(include_paths_),
+    if (!parser->Parse(schematext.c_str(), include_paths_.data(),
                        schema.path_.c_str())) {
       lasterror_ = parser->error_;
       return false;

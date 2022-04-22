@@ -29,7 +29,11 @@ struct Line {
 };
 
 struct LoadedFile : Line {
-    const char *p, *linestart, *tokenstart = nullptr;
+    const char *p = nullptr;
+    const char *linestart = nullptr;
+    const char *tokenstart = nullptr;
+    const char *prevtokenstart = nullptr;
+    const char *prevtokenend = nullptr;
     shared_ptr<string> source { new string() };
     TType token = T_NONE;
     int tokline = 1;  // line before, if current token crossed a line
@@ -38,7 +42,11 @@ struct LoadedFile : Line {
     string_view sattr;
     size_t whitespacebefore = 0;
 
-    vector<pair<char, char>> bracketstack;
+    string sval;
+    int64_t ival;
+    double fval;
+
+    vector<pair<TType, TType>> bracketstack;
     vector<pair<int, bool>> indentstack;
     const char *prevline = nullptr, *prevlinetok = nullptr;
 
@@ -56,7 +64,7 @@ struct LoadedFile : Line {
                 THROW_OR_ABORT("can't open file: " + fn);
             }
         }
-        linestart = p = source.get()->c_str();
+        prevtokenstart = prevtokenend = tokenstart = linestart = p = source.get()->c_str();
 
         indentstack.push_back({ 0, false });
 
@@ -71,9 +79,12 @@ struct Lex : LoadedFile {
 
     vector<string> &filenames;
 
+    bool do_string_interpolation = true;
+
     Lex(string_view fn, vector<string> &fns, string_view _ss = {})
         : LoadedFile(fn, fns, _ss), filenames(fns) {
         allsources.push_back(source);
+        if (!fn.empty()) allfiles.insert(string(fn));
         FirstToken();
     }
 
@@ -122,6 +133,8 @@ struct Lex : LoadedFile {
         }
         bool lastcont = cont;
         cont = false;
+        prevtokenstart = tokenstart;
+        prevtokenend = p;
         token = NextToken();
         if (islf && token != T_ENDOFFILE && token != T_ENDOFINCLUDE) {
             int indent = (int)(tokenstart - linestart);
@@ -173,14 +186,21 @@ struct Lex : LoadedFile {
 
     void OverrideCont(bool c) { cont = c; }
 
-    void PopBracket(char c) {
+    void PopBracket(TType c) {
         if (bracketstack.empty())
-            Error(string("unmatched \'") + c + "\'");
+            Error("unmatched \'" + TokStr(c) + "\'");
         if (bracketstack.back().second != c)
-            Error(string("mismatched \'") + c + "\', expected \'" + bracketstack.back().second +
-                  "\'");
+            Error("mismatched \'" + TokStr(c) + "\', expected \'" +
+                  TokStr(bracketstack.back().second) + "\'");
         bracketstack.pop_back();
     }
+
+    // The ones from ctype.h assert on negative values, even though char is signed on most
+    // platforms?? And they contain a bunch of locale crap we don't care about.
+    static bool IsAlpha(char c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');  }
+    static bool IsDigit(char c) { return c >= '0' && c <= '9'; }
+    static bool IsXDigit(char c) { return IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'); }
+    static bool IsAlNum(char c) { return IsAlpha(c) || IsDigit(c); }
 
     TType NextToken() {
         line = tokline;
@@ -197,8 +217,8 @@ struct Lex : LoadedFile {
                     islf = false; // avoid indents being generated because of this dedent
                     return T_DEDENT;
                 } else {
-                    if (bracketstack.size())
-                        Error(string("unmatched \'") + bracketstack.back().first +
+                    if (!bracketstack.empty())
+                        Error("unmatched \'" + TokStr(bracketstack.back().first) +
                               "\' at end of file");
                     return parentfiles.empty() ? T_ENDOFFILE : T_ENDOFINCLUDE;
                 }
@@ -206,12 +226,18 @@ struct Lex : LoadedFile {
             case '\n': tokline++; islf = bracketstack.empty(); linestart = p; break;
             case ' ': case '\t': case '\r': case '\f': whitespacebefore++; break;
 
-            case '(': bracketstack.push_back({ c, ')' }); return T_LEFTPAREN;
-            case '[': bracketstack.push_back({ c, ']' }); return T_LEFTBRACKET;
-            case '{': bracketstack.push_back({ c, '}' }); return T_LEFTCURLY;
-            case ')': PopBracket(c); return T_RIGHTPAREN;
-            case ']': PopBracket(c); return T_RIGHTBRACKET;
-            case '}': PopBracket(c); return T_RIGHTCURLY;
+            case '(': bracketstack.push_back({ T_LEFTPAREN, T_RIGHTPAREN }); return T_LEFTPAREN;
+            case '[': bracketstack.push_back({ T_LEFTBRACKET, T_RIGHTBRACKET }); return T_LEFTBRACKET;
+            case '{': bracketstack.push_back({ T_LEFTCURLY, T_RIGHTCURLY }); return T_LEFTCURLY;
+            case ')': PopBracket(T_RIGHTPAREN); return T_RIGHTPAREN;
+            case ']': PopBracket(T_RIGHTBRACKET); return T_RIGHTBRACKET;
+            case '}':
+                if (!bracketstack.empty() && bracketstack.back().first == T_STR_INT_START &&
+                    do_string_interpolation) {
+                    PopBracket(T_STR_INT_END);
+                    return StringConstant(false, true);
+                }
+                PopBracket(T_RIGHTCURLY); return T_RIGHTCURLY;
 
             case ';': return T_SEMICOLON;
 
@@ -220,24 +246,64 @@ struct Lex : LoadedFile {
             #define secondb(s, t, b) if (*p == s) { p++; b; return t; }
             #define second(s, t) secondb(s, t, {})
 
-            case '+': second('+', T_INCR); cont = true; second('=', T_PLUSEQ); return T_PLUS;
-            case '-': second('-', T_DECR); cont = true; second('=', T_MINUSEQ);
-                                                        second('>', T_CODOT); return T_MINUS;
-            case '*':                      cont = true; second('=', T_MULTEQ); return T_MULT;
-            case '%':                      cont = true; second('=', T_MODEQ); return T_MOD;
+            case '+':
+                second('+', T_INCR);
+                cont = true;
+                second('=', T_PLUSEQ);
+                return T_PLUS;
+            case '-':
+                second('-', T_DECR);
+                cont = true;
+                second('=', T_MINUSEQ);
+                second('>', T_RETURNTYPE);
+                return T_MINUS;
+            case '*':
+                cont = true;
+                second('=', T_MULTEQ);
+                return T_MULT;
+            case '%':
+                cont = true;
+                second('=', T_MODEQ);
+                return T_MOD;
 
-            case '<': cont = true; second('=', T_LTEQ); second('<', T_ASL); return T_LT;
-            case '=': cont = true; second('=', T_EQ);   return T_ASSIGN;
-            case '!': cont = true; second('=', T_NEQ);  cont = false; return T_NOT;
-            case '>': cont = true; second('=', T_GTEQ); second('>', T_ASR); return T_GT;
+            case '<':
+                cont = true;
+                second('=', T_LTEQ);
+                secondb('<', T_ASL, second('=', T_ASLEQ));
+                return T_LT;
+            case '=':
+                cont = true;
+                second('=', T_EQ);
+                return T_ASSIGN;
+            case '!':
+                cont = true;
+                second('=', T_NEQ);
+                Error("use \"not\" instead of !");
+            case '>':
+                cont = true;
+                second('=', T_GTEQ);
+                secondb('>', T_ASR, second('=', T_ASREQ));
+                return T_GT;
 
-            case '&': cont = true; second('&', T_AND); return T_BITAND;
-            case '|': cont = true; second('|', T_OR);  return T_BITOR;
-            case '^': cont = true; return T_XOR;
-            case '~': cont = true; return T_NEG;
+            case '&':
+                cont = true;
+                second('=', T_ANDEQ);
+                secondb('&', T_AND, Error("use \"and\" instead of &&"));
+                return T_BITAND;
+            case '|':
+                cont = true;
+                second('=', T_OREQ);
+                secondb('|', T_OR, Error("use \"or\" instead of ||"));
+                return T_BITOR;
+            case '^':
+                cont = true;
+                second('=', T_XOREQ);
+                return T_XOR;
+            case '~':
+                cont = true;
+                return T_NEG;
 
-            case '?': cont = true; second('=', T_LOGASSIGN); cont = false;
-                      return T_QUESTIONMARK;
+            case '?': return T_QUESTIONMARK;
 
             case ':':
                 cont = true;
@@ -269,68 +335,119 @@ struct Lex : LoadedFile {
                     return T_DIV;
                 }
 
+            #undef second
+            #undef secondb
+
             case '\"':
             case '\'':
-                return SkipString(c);
+                return StringConstant(c == '\'', false);
 
             default: {
-                if (isalpha(c) || c == '_' || c < 0) {
-                    while (isalnum(*p) || *p == '_' || *p < 0) p++;
+                if (IsAlpha(c) || c == '_' || c < 0) {
+                    while (IsAlNum(*p) || *p == '_' || *p < 0) p++;
                     sattr = string_view(tokenstart, p - tokenstart);
-                    if      (sattr == "nil")                return T_NIL;
-                    else if (sattr == "return")             return T_RETURN;
-                    else if (sattr == "class")              return T_CLASS;
-                    else if (sattr == "struct")             return T_STRUCT;
-                    else if (sattr == "import")             return T_INCLUDE;
-                    else if (sattr == "int")                return T_INTTYPE;
-                    else if (sattr == "float")              return T_FLOATTYPE;
-                    else if (sattr == "string")             return T_STRTYPE;
-                    else if (sattr == "any")                return T_ANYTYPE;
-                    else if (sattr == "void")               return T_VOIDTYPE;
-                    else if (sattr == "lazy_expression")    return T_LAZYEXP;
-                    else if (sattr == "def")                return T_FUN;
-                    else if (sattr == "is")                 return T_IS;
-                    else if (sattr == "from")               return T_FROM;
-                    else if (sattr == "program")            return T_PROGRAM;
-                    else if (sattr == "private")            return T_PRIVATE;
-                    else if (sattr == "coroutine")          return T_COROUTINE;
-                    else if (sattr == "resource")           return T_RESOURCE;
-                    else if (sattr == "enum")               return T_ENUM;
-                    else if (sattr == "enum_flags")         return T_ENUM_FLAGS;
-                    else if (sattr == "typeof")             return T_TYPEOF;
-                    else if (sattr == "var")                return T_VAR;
-                    else if (sattr == "let")                return T_CONST;
-                    else if (sattr == "pakfile")            return T_PAKFILE;
-                    else if (sattr == "switch")             return T_SWITCH;
-                    else if (sattr == "case")               return T_CASE;
-                    else if (sattr == "default")            return T_DEFAULT;
-                    else if (sattr == "namespace")          return T_NAMESPACE;
-                    else if (sattr == "not")                return T_NOT;
-                    else if (sattr == "and")                { cont = true; return T_AND; }
-                    else if (sattr == "or")                 { cont = true; return T_OR; }
-                    else return T_IDENT;
+                    switch (sattr[0]) {
+                        case 'a':
+                            if (sattr == TName(T_AND)) { cont = true; return T_AND; }
+                            if (sattr == TName(T_ANYTYPE)) return T_ANYTYPE;
+                            break;
+                        case 'b':
+                            if (sattr == TName(T_BREAK)) return T_BREAK;
+                            break;
+                        case 'c':
+                            if (sattr == TName(T_CLASS)) return T_CLASS;
+                            if (sattr == TName(T_CASE)) return T_CASE;
+                            break;
+                        case 'd':
+                            if (sattr == TName(T_FUN)) return T_FUN;
+                            if (sattr == TName(T_DEFAULT)) return T_DEFAULT;
+                            break;
+                        case 'e':
+                            if (sattr == TName(T_ELSE)) return T_ELSE;
+                            if (sattr == TName(T_ELIF)) return T_ELIF;
+                            if (sattr == TName(T_ENUM)) return T_ENUM;
+                            if (sattr == TName(T_ENUM_FLAGS)) return T_ENUM_FLAGS;
+                            break;
+                        case 'f':
+                            if (sattr == TName(T_FLOATTYPE)) return T_FLOATTYPE;
+                            if (sattr == TName(T_FOR)) return T_FOR;
+                            if (sattr == TName(T_LAMBDA)) return T_LAMBDA;
+                            if (sattr == TName(T_FROM)) return T_FROM;
+                            break;
+                        case 'i':
+                            if (sattr == TName(T_INTTYPE)) return T_INTTYPE;
+                            if (sattr == TName(T_IF)) return T_IF;
+                            if (sattr == TName(T_INCLUDE)) return T_INCLUDE;
+                            if (sattr == TName(T_IS)) return T_IS;
+                            break;
+                        case 'l':
+                            if (sattr == TName(T_CONST)) return T_CONST;
+                            break;
+                        case 'n':
+                            if (sattr == TName(T_NIL)) return T_NIL;
+                            if (sattr == TName(T_NOT)) return T_NOT;
+                            if (sattr == TName(T_NAMESPACE)) return T_NAMESPACE;
+                            break;
+                        case 'o':
+                            if (sattr == TName(T_OR)) { cont = true; return T_OR; }
+                            if (sattr == TName(T_OPERATOR)) { cont = true; return T_OPERATOR; }
+                            break;
+                        case 'p':
+                            if (sattr == TName(T_PROGRAM)) return T_PROGRAM;
+                            if (sattr == TName(T_PRIVATE)) return T_PRIVATE;
+                            if (sattr == TName(T_PAKFILE)) return T_PAKFILE;
+                            break;
+                        case 'r':
+                            if (sattr == TName(T_RETURN)) return T_RETURN;
+                            if (sattr == TName(T_RESOURCE)) return T_RESOURCE;
+                            break;
+                        case 's':
+                            if (sattr == TName(T_STRUCT)) return T_STRUCT;
+                            if (sattr == TName(T_STRTYPE)) return T_STRTYPE;
+                            if (sattr == TName(T_SWITCH)) return T_SWITCH;
+                            if (sattr == TName(T_SUPER)) return T_SUPER;
+                            break;
+                        case 't':
+                            if (sattr == TName(T_TYPEOF)) return T_TYPEOF;
+                            break;
+                        case 'v':
+                            if (sattr == TName(T_VOIDTYPE)) return T_VOIDTYPE;
+                            if (sattr == TName(T_VAR)) return T_VAR;
+                            break;
+                        case 'w':
+                            if (sattr == TName(T_WHILE)) return T_WHILE;
+                            break;
+                    }
+                    return T_IDENT;
                 }
                 bool isfloat = c == '.' && *p != '.';
-                if (isdigit(c) || (isfloat && isdigit(*p))) {
+                if (IsDigit(c) || (isfloat && IsDigit(*p))) {
                     if (c == '0' && *p == 'x') {
                         p++;
-                        while (isxdigit(*p)) p++;
+                        while (IsXDigit(*p)) p++;
                         sattr = string_view(tokenstart, p - tokenstart);
+                        ival = parse_int<int64_t>(sattr, 16);
                         return T_INT;
                     } else {
-                        while (isdigit(*p)) p++;
-                        if (!isfloat && *p == '.' && *(p + 1) != '.' && !isalpha(*(p + 1))) {
+                        while (IsDigit(*p)) p++;
+                        if (!isfloat && *p == '.' && *(p + 1) != '.' && !IsAlpha(*(p + 1))) {
                             p++;
                             isfloat = true;
-                            while (isdigit(*p)) p++;
+                            while (IsDigit(*p)) p++;
                         }
                         if (isfloat && (*p == 'e' || *p == 'E')) {
                             p++;
                             if (*p == '+' || *p == '-') p++;
-                            while (isdigit(*p)) p++;
+                            while (IsDigit(*p)) p++;
                         }
                         sattr = string_view(tokenstart, p - tokenstart);
-                        return isfloat ? T_FLOAT : T_INT;
+                        if (isfloat) {
+                            fval = strtod(sattr.data(), nullptr);
+                            return T_FLOAT;
+                        } else {
+                            ival = parse_int<int64_t>(sattr);
+                            return T_INT;
+                        }
                     }
                 }
                 if (c == '.') {
@@ -340,32 +457,28 @@ struct Lex : LoadedFile {
                 }
                 auto tok = c < ' ' || c >= 127
                     ? cat("[ascii ", int(c), "]")
-                    : cat('\'', char(c), '\'');
+                    : cat("\'", string(1, char(c)), "\'");
                 Error("illegal token: " + tok);
                 return T_NONE;
             }
         }
     }
 
-    char HexDigit(char c) {
-        if (isdigit(c)) return c - '0';
-        if (isxdigit(c)) return c - (c < 'a' ? 'A' : 'a') + 10;
-        return -1;
-    }
-
-    TType SkipString(char initial) {
+    TType StringConstant(bool character_constant, bool interp) {
+        sval.clear();
         auto start = p - 1;
         char c = 0;
         // Check if its a multi-line constant.
-        if (initial == '\"' && p[0] == '\"' && p[1] == '\"') {
+        if (!interp && !character_constant && p[0] == '\"' && p[1] == '\"') {
             p += 2;
+            if (*p == '\r') p++;
+            if (*p == '\n') p++;
             for (;;) {
                 switch (c = *p++) {
                     case '\0':
                         Error("end of file found in multi-line string constant");
                         break;
-                    case '\n':
-                        tokline++;
+                    case '\r':
                         break;
                     case '\"':
                         if (p[0] == '\"' && p[1] == '\"') {
@@ -373,92 +486,111 @@ struct Lex : LoadedFile {
                             sattr = string_view(start, p - start);
                             return T_STR;
                         }
+                        sval += c;
+                        break;
+                    case '\n':
+                        tokline++;
+                        sval += c;
+                        break;
+                    default:
+                        sval += c;
+                        break;
                 }
             }
         }
         // Regular string or character constant.
-        while ((c = *p++) != initial) switch (c) {
+        for(;;) switch (c = *p++) {
             case 0:
             case '\r':
             case '\n':
                 p--;
                 Error("end of line found in string constant");
-            case '\'':
-            case '\"':
-                Error("\' and \" should be prefixed with a \\ in a string constant");
-            case '\\':
-                switch(*p) {
-                    case '\\':
-                    case '\"':
-                    case '\'': p++;
-                };
                 break;
-            default:
-                if (c < ' ') Error("unprintable character in string constant");
-        };
-        sattr = string_view(start, p - start);
-        return initial == '\"' ? T_STR : T_INT;
-    }
-
-    int64_t IntVal() {
-        if (sattr[0] == '\'') {
-            auto s = StringVal();
-            if (s.size() > 4) Error("character constant too long");
-            int64_t ival = 0;
-            for (auto c : s) ival = (ival << 8) + c;
-            return ival;
-        } else if (sattr[0] == '0' && sattr.size() > 1 && sattr[1] == 'x') {
-            // Test for hex explicitly since we don't want to allow octal parsing.
-            return parse_int<int64_t>(sattr, 16);
-        } else {
-            return parse_int<int64_t>(sattr);
-        }
-    }
-
-    string StringVal() {
-        auto s = sattr.data();  // This is ok, because has been parsed before and is inside buf.
-        auto initial = *s++;
-        // Check if its a multi-line constant.
-        if (initial == '\"' && s[0] == '\"' && s[1] == '\"') {
-            auto start = s + 2;
-            if (*start == '\r') start++;
-            if (*start == '\n') start++;
-            auto end = sattr.data() + sattr.size() - 3;
-            string r;
-            r.reserve(end - start);
-            for (auto c : string_view(start, end - start)) {
-                if (c != '\r') r += c;
-            }
-            return r;
-        }
-        // Regular string or character constant.
-        string r;
-        char c = 0;
-        while ((c = *s++) != initial) switch (c) {
-            case '\\':
-                switch(c = *s++) {
+            case '\'':
+                if (!character_constant)
+                    Error("\' should be prefixed with a \\ in a string constant");
+                sattr = string_view(start, p - start);
+                if (sval.size() > 4) Error("character constant too long");
+                ival = 0;
+                for (auto c : sval) ival = (ival << 8) + c;
+                return T_INT;
+            case '\"':
+                if (character_constant)
+                    Error("\" should be prefixed with a \\ in a character constant");
+                sattr = string_view(start, p - start);
+                return interp ? T_STR_INT_END : T_STR;
+            case '\\': {
+                auto HexDigit = [](char c) -> char {
+                    if (IsDigit(c)) return c - '0';
+                    assert(IsXDigit(c));
+                    return c - (c < 'a' ? 'A' : 'a') + 10;
+                };
+                switch (c = *p++) {
                     case 'n': c = '\n'; break;
                     case 't': c = '\t'; break;
                     case 'r': c = '\r'; break;
                     case '\\':
                     case '\"':
-                    case '\'': break;
-                    case 'x':
-                        if (!isxdigit(*s) || !isxdigit(s[1]))
-                            Error("illegal hexadecimal escape code in string constant");
-                        c = HexDigit(*s++) << 4;
-                        c |= HexDigit(*s++);
+                    case '\'':
+                    case '{':
+                    case '}':
                         break;
+                    case 'x':
+                        if (!IsXDigit(*p) || !IsXDigit(p[1]))
+                            Error("illegal hexadecimal escape code in string constant");
+                        c = HexDigit(*p++) << 4;
+                        c |= HexDigit(*p++);
+                        break;
+                    case 'u': {
+                        if (!IsXDigit(*p) || !IsXDigit(p[1]) || !IsXDigit(p[2]) || !IsXDigit(p[3]))
+                            Error("illegal unicode escape code in string constant");
+                        int i = HexDigit(*p++) << 12;
+                        i |= HexDigit(*p++) << 8;
+                        i |= HexDigit(*p++) << 4;
+                        i |= HexDigit(*p++);
+                        char buf[7];
+                        ToUTF8(i, buf);
+                        sval += buf;
+                        continue;
+                    }
                     default:
-                        s--;
+                        p--;
                         Error("unknown control code in string constant");
                 };
-                r += c;
+                sval += c;
+                break;
+            }
+            case '{':
+                if (!do_string_interpolation || character_constant) {
+                    sval += c;
+                } else if (*p == '{') {  // Escaped.
+                    sval += c;
+                    p++;
+                } else if (*p == '\"') {
+                    // Special purpose error for the common case of "{".
+                    Error("{ in string constant must be escaped as {{");
+                } else {
+                    sattr = string_view(start, p - start);
+                    bracketstack.push_back({ T_STR_INT_START, T_STR_INT_END });
+                    return interp ? T_STR_INT_MIDDLE : T_STR_INT_START;
+                }
+                break;
+            case '}':
+                if (!do_string_interpolation || character_constant) {
+                    sval += c;
+                } else if (*p == '}') {  // Escaped.
+                    sval += c;
+                    p++;
+                } else {
+                    Error("} in string constant must be escaped as }}");
+                }
                 break;
             default:
-                r += c;
+                // Allow UTF-8 chars.
+                if ((c >= 0 && c < ' ') || c == 127)
+                    Error("unprintable character in string constant");
+                sval += c;
         };
-        return r;
     };
 
     string_view TokStr(TType t) {
@@ -483,6 +615,20 @@ struct Lex : LoadedFile {
 
     void Error(string_view msg, const Line *ln = nullptr) {
         auto err = Location(ln ? *ln : *this) + ": error: " + msg;
+        if (!ln) {
+            auto begin = prevtokenstart;
+            auto end = prevtokenend;
+            while (begin > source.get()->c_str() && *(begin - 1) != '\n') begin--;
+            while (*end && *end != '\n' && *end != '\r') end++;
+            if (end - begin > 0) {
+                append(err, "\nin: ", string_view(begin, end - begin));
+                if (prevtokenend - prevtokenstart > 0) {
+                    append(err, "\nat: ");
+                    for (; begin < prevtokenstart; begin++) err.push_back(' ');
+                    for (; begin < prevtokenend; begin++) err.push_back('^');
+                }
+            }
+        }
         //LOG_DEBUG(err);
         THROW_OR_ABORT(err);
     }

@@ -24,6 +24,9 @@
     <Filter Include="tonative">
       <UniqueIdentifier>{849d593b-fb90-4a4d-89c5-66130f92b9a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tonative\libtcc">
+      <UniqueIdentifier>{544afcaf-5825-41a5-9db0-a44268869235}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -50,9 +53,6 @@
     <ClCompile Include="..\src\compiler.cpp">
       <Filter>compiler</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\vmlog.cpp">
-      <Filter>dvm</Filter>
-    </ClCompile>
     <ClCompile Include="..\external\flatbuffers\src\idl_gen_text.cpp">
       <Filter>compiler\builtins\flatbuffers</Filter>
     </ClCompile>
@@ -68,11 +68,11 @@
     <ClCompile Include="..\src\tocpp.cpp">
       <Filter>tonative</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\tonative.cpp">
-      <Filter>tonative</Filter>
+    <ClCompile Include="..\external\libtcc\libtcc.c">
+      <Filter>tonative\libtcc</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\towasm.cpp">
-      <Filter>tonative</Filter>
+    <ClCompile Include="..\src\tccbind.cpp">
+      <Filter>tonative\libtcc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +80,7 @@
     <None Include="..\src\bytecode.fbs">
       <Filter>common</Filter>
     </None>
+    <None Include="..\..\.editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
@@ -198,6 +199,12 @@
     </ClInclude>
     <ClInclude Include="..\src\lobster\wasm_binary_writer.h">
       <Filter>tonative</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lobster\vmops.h">
+      <Filter>dvm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lobster\constval.h">
+      <Filter>compiler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -21,24 +21,33 @@ struct OutlineFont {
     string fbuf;
     unordered_map<int, int> unicodemap;
     vector<int> unicodetable;
-    map<uint, uint> glyph_to_char;
+    map<int, int> glyph_to_char;
 
     OutlineFont(void *fth, string &fb) : fthandle(fth) { fbuf.swap(fb); }
     ~OutlineFont();
 
     bool EnsureCharsPresent(string_view utf8str);
-    string GetName(uint i);
-    uint GetCharCode(string_view name);
+    string GetName(int i);
+    int GetCharCode(string_view name);
 };
 
 struct BitmapFont {
     Texture tex;
-    vector<int3> positions;
-    int height = 0;
+    struct Glyph {
+        int x;
+        int y;
+        int advance;
+        int left;
+        int top;  // From baseline.
+        int width;
+        int height;
+    };
+    vector<Glyph> positions;
     int usedcount = 1;
-    int size;
-    float outlinesize;
-    OutlineFont *font;
+    int font_height = 0;
+    int max_ascent = 0;
+    float outlinesize = 0.0f;
+    OutlineFont *font = nullptr;
 
     ~BitmapFont();
     BitmapFont(OutlineFont *_font, int _size, float _osize);

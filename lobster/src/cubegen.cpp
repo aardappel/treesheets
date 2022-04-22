@@ -25,6 +25,8 @@
 
 namespace lobster {
 
+RandomNumberGenerator<PCG32> cg_rnd;
+
 const unsigned int default_palette[256] = {
     0x00000000, 0xffffffff, 0xffccffff, 0xff99ffff, 0xff66ffff, 0xff33ffff, 0xff00ffff, 0xffffccff,
     0xffccccff, 0xff99ccff, 0xff66ccff, 0xff33ccff, 0xff00ccff, 0xffff99ff, 0xffcc99ff, 0xff9999ff,
@@ -60,6 +62,104 @@ const unsigned int default_palette[256] = {
     0xffbbbbbb, 0xffaaaaaa, 0xff888888, 0xff777777, 0xff555555, 0xff444444, 0xff222222, 0xff111111
 };
 
+const uint8_t normal_table_size = 162;
+const float3 default_normals[normal_table_size] = {
+    { -0.525731f,  0.000000f,  0.850651f }, { -0.442863f,  0.238856f,  0.864188f }, 
+    { -0.295242f,  0.000000f,  0.955423f }, { -0.309017f,  0.500000f,  0.809017f }, 
+    { -0.162460f,  0.262866f,  0.951056f }, {  0.000000f,  0.000000f,  1.000000f }, 
+    {  0.000000f,  0.850651f,  0.525731f }, { -0.147621f,  0.716567f,  0.681718f }, 
+    {  0.147621f,  0.716567f,  0.681718f }, {  0.000000f,  0.525731f,  0.850651f }, 
+    {  0.309017f,  0.500000f,  0.809017f }, {  0.525731f,  0.000000f,  0.850651f }, 
+    {  0.295242f,  0.000000f,  0.955423f }, {  0.442863f,  0.238856f,  0.864188f }, 
+    {  0.162460f,  0.262866f,  0.951056f }, { -0.681718f,  0.147621f,  0.716567f }, 
+    { -0.809017f,  0.309017f,  0.500000f }, { -0.587785f,  0.425325f,  0.688191f }, 
+    { -0.850651f,  0.525731f,  0.000000f }, { -0.864188f,  0.442863f,  0.238856f }, 
+    { -0.716567f,  0.681718f,  0.147621f }, { -0.688191f,  0.587785f,  0.425325f }, 
+    { -0.500000f,  0.809017f,  0.309017f }, { -0.238856f,  0.864188f,  0.442863f }, 
+    { -0.425325f,  0.688191f,  0.587785f }, { -0.716567f,  0.681718f, -0.147621f }, 
+    { -0.500000f,  0.809017f, -0.309017f }, { -0.525731f,  0.850651f,  0.000000f }, 
+    {  0.000000f,  0.850651f, -0.525731f }, { -0.238856f,  0.864188f, -0.442863f }, 
+    {  0.000000f,  0.955423f, -0.295242f }, { -0.262866f,  0.951056f, -0.162460f }, 
+    {  0.000000f,  1.000000f,  0.000000f }, {  0.000000f,  0.955423f,  0.295242f }, 
+    { -0.262866f,  0.951056f,  0.162460f }, {  0.238856f,  0.864188f,  0.442863f }, 
+    {  0.262866f,  0.951056f,  0.162460f }, {  0.500000f,  0.809017f,  0.309017f }, 
+    {  0.238856f,  0.864188f, -0.442863f }, {  0.262866f,  0.951056f, -0.162460f }, 
+    {  0.500000f,  0.809017f, -0.309017f }, {  0.850651f,  0.525731f,  0.000000f }, 
+    {  0.716567f,  0.681718f,  0.147621f }, {  0.716567f,  0.681718f, -0.147621f }, 
+    {  0.525731f,  0.850651f,  0.000000f }, {  0.425325f,  0.688191f,  0.587785f }, 
+    {  0.864188f,  0.442863f,  0.238856f }, {  0.688191f,  0.587785f,  0.425325f }, 
+    {  0.809017f,  0.309017f,  0.500000f }, {  0.681718f,  0.147621f,  0.716567f }, 
+    {  0.587785f,  0.425325f,  0.688191f }, {  0.955423f,  0.295242f,  0.000000f }, 
+    {  1.000000f,  0.000000f,  0.000000f }, {  0.951056f,  0.162460f,  0.262866f }, 
+    {  0.850651f, -0.525731f,  0.000000f }, {  0.955423f, -0.295242f,  0.000000f }, 
+    {  0.864188f, -0.442863f,  0.238856f }, {  0.951056f, -0.162460f,  0.262866f }, 
+    {  0.809017f, -0.309017f,  0.500000f }, {  0.681718f, -0.147621f,  0.716567f }, 
+    {  0.850651f,  0.000000f,  0.525731f }, {  0.864188f,  0.442863f, -0.238856f }, 
+    {  0.809017f,  0.309017f, -0.500000f }, {  0.951056f,  0.162460f, -0.262866f }, 
+    {  0.525731f,  0.000000f, -0.850651f }, {  0.681718f,  0.147621f, -0.716567f }, 
+    {  0.681718f, -0.147621f, -0.716567f }, {  0.850651f,  0.000000f, -0.525731f }, 
+    {  0.809017f, -0.309017f, -0.500000f }, {  0.864188f, -0.442863f, -0.238856f }, 
+    {  0.951056f, -0.162460f, -0.262866f }, {  0.147621f,  0.716567f, -0.681718f }, 
+    {  0.309017f,  0.500000f, -0.809017f }, {  0.425325f,  0.688191f, -0.587785f }, 
+    {  0.442863f,  0.238856f, -0.864188f }, {  0.587785f,  0.425325f, -0.688191f }, 
+    {  0.688191f,  0.587785f, -0.425325f }, { -0.147621f,  0.716567f, -0.681718f }, 
+    { -0.309017f,  0.500000f, -0.809017f }, {  0.000000f,  0.525731f, -0.850651f }, 
+    { -0.525731f,  0.000000f, -0.850651f }, { -0.442863f,  0.238856f, -0.864188f }, 
+    { -0.295242f,  0.000000f, -0.955423f }, { -0.162460f,  0.262866f, -0.951056f }, 
+    {  0.000000f,  0.000000f, -1.000000f }, {  0.295242f,  0.000000f, -0.955423f }, 
+    {  0.162460f,  0.262866f, -0.951056f }, { -0.442863f, -0.238856f, -0.864188f }, 
+    { -0.309017f, -0.500000f, -0.809017f }, { -0.162460f, -0.262866f, -0.951056f }, 
+    {  0.000000f, -0.850651f, -0.525731f }, { -0.147621f, -0.716567f, -0.681718f }, 
+    {  0.147621f, -0.716567f, -0.681718f }, {  0.000000f, -0.525731f, -0.850651f }, 
+    {  0.309017f, -0.500000f, -0.809017f }, {  0.442863f, -0.238856f, -0.864188f }, 
+    {  0.162460f, -0.262866f, -0.951056f }, {  0.238856f, -0.864188f, -0.442863f }, 
+    {  0.500000f, -0.809017f, -0.309017f }, {  0.425325f, -0.688191f, -0.587785f }, 
+    {  0.716567f, -0.681718f, -0.147621f }, {  0.688191f, -0.587785f, -0.425325f }, 
+    {  0.587785f, -0.425325f, -0.688191f }, {  0.000000f, -0.955423f, -0.295242f }, 
+    {  0.000000f, -1.000000f,  0.000000f }, {  0.262866f, -0.951056f, -0.162460f }, 
+    {  0.000000f, -0.850651f,  0.525731f }, {  0.000000f, -0.955423f,  0.295242f }, 
+    {  0.238856f, -0.864188f,  0.442863f }, {  0.262866f, -0.951056f,  0.162460f }, 
+    {  0.500000f, -0.809017f,  0.309017f }, {  0.716567f, -0.681718f,  0.147621f }, 
+    {  0.525731f, -0.850651f,  0.000000f }, { -0.238856f, -0.864188f, -0.442863f }, 
+    { -0.500000f, -0.809017f, -0.309017f }, { -0.262866f, -0.951056f, -0.162460f }, 
+    { -0.850651f, -0.525731f,  0.000000f }, { -0.716567f, -0.681718f, -0.147621f }, 
+    { -0.716567f, -0.681718f,  0.147621f }, { -0.525731f, -0.850651f,  0.000000f }, 
+    { -0.500000f, -0.809017f,  0.309017f }, { -0.238856f, -0.864188f,  0.442863f }, 
+    { -0.262866f, -0.951056f,  0.162460f }, { -0.864188f, -0.442863f,  0.238856f }, 
+    { -0.809017f, -0.309017f,  0.500000f }, { -0.688191f, -0.587785f,  0.425325f }, 
+    { -0.681718f, -0.147621f,  0.716567f }, { -0.442863f, -0.238856f,  0.864188f }, 
+    { -0.587785f, -0.425325f,  0.688191f }, { -0.309017f, -0.500000f,  0.809017f }, 
+    { -0.147621f, -0.716567f,  0.681718f }, { -0.425325f, -0.688191f,  0.587785f }, 
+    { -0.162460f, -0.262866f,  0.951056f }, {  0.442863f, -0.238856f,  0.864188f }, 
+    {  0.162460f, -0.262866f,  0.951056f }, {  0.309017f, -0.500000f,  0.809017f }, 
+    {  0.147621f, -0.716567f,  0.681718f }, {  0.000000f, -0.525731f,  0.850651f }, 
+    {  0.425325f, -0.688191f,  0.587785f }, {  0.587785f, -0.425325f,  0.688191f }, 
+    {  0.688191f, -0.587785f,  0.425325f }, { -0.955423f,  0.295242f,  0.000000f }, 
+    { -0.951056f,  0.162460f,  0.262866f }, { -1.000000f,  0.000000f,  0.000000f }, 
+    { -0.850651f,  0.000000f,  0.525731f }, { -0.955423f, -0.295242f,  0.000000f }, 
+    { -0.951056f, -0.162460f,  0.262866f }, { -0.864188f,  0.442863f, -0.238856f }, 
+    { -0.951056f,  0.162460f, -0.262866f }, { -0.809017f,  0.309017f, -0.500000f }, 
+    { -0.864188f, -0.442863f, -0.238856f }, { -0.951056f, -0.162460f, -0.262866f }, 
+    { -0.809017f, -0.309017f, -0.500000f }, { -0.681718f,  0.147621f, -0.716567f }, 
+    { -0.681718f, -0.147621f, -0.716567f }, { -0.850651f,  0.000000f, -0.525731f }, 
+    { -0.688191f,  0.587785f, -0.425325f }, { -0.587785f,  0.425325f, -0.688191f }, 
+    { -0.425325f,  0.688191f, -0.587785f }, { -0.425325f, -0.688191f, -0.587785f }, 
+    { -0.587785f, -0.425325f, -0.688191f }, { -0.688191f, -0.587785f, -0.425325f }
+};
+
+uint8_t FindClosestNormal(float3 normal) {
+    float bestdot = -1;
+    uint8_t besti = 0;
+    for (uint8_t i = 0; i < normal_table_size; i++) {
+        auto d = dot(normal, default_normals[i]);
+        if (d > bestdot) {
+            bestdot = d;
+            besti = i;
+        }
+    }
+    return besti;
+}
+
 Voxels *NewWorld(const int3 &size, const byte4 *from_palette = nullptr) {
     auto v = new Voxels(size);
     if (!from_palette) from_palette = (byte4 *)default_palette;
@@ -76,7 +176,7 @@ Value CubesFromMeshGen(VM &vm, const DistGrid &grid, int targetgridsize, int zof
             for (int z = 0; z < v.grid.dim.z; z++) {
                 auto pos = int3(x, y, z);
                 auto spos = pos + off;
-                uchar np = transparant;
+                uint8_t np = transparant;
                 if (spos >= 0 && spos < grid.dim) {
                     auto &dgc = grid.Get(spos);
                     np = v.Color2Palette(float4(color2vec(dgc.color).xyz(), dgc.dist <= 0));
@@ -100,104 +200,147 @@ void AddCubeGen(NativeRegistry &nfr) {
 nfr("cg_init", "size", "I}:3", "R",
     "initializes a new, empty 3D cube block. 1 byte per cell, careful with big sizes :)"
     " returns the block",
-    [](VM &vm) {
-        auto v = NewWorld(vm.PopVec<int3>());
-        vm.Push(vm.NewResource(v, GetVoxelType()));
+    [](StackPtr &sp, VM &vm) {
+        auto v = NewWorld(PopVec<int3>(sp));
+        Push(sp, vm.NewResource(v, GetVoxelType()));
     });
 
 nfr("cg_size", "block", "R", "I}:3",
     "returns the current block size",
-    [](VM &vm) {
-        vm.PushVec(GetVoxels(vm, vm.Pop()).grid.dim);
+    [](StackPtr &sp, VM &vm) {
+        PushVec(sp, GetVoxels(vm, Pop(sp)).grid.dim);
     });
 
 nfr("cg_set", "block,pos,size,paletteindex", "RI}:3I}:3I", "",
     "sets a range of cubes to palette index. index 0 is considered empty space."
     "Coordinates automatically clipped to the size of the grid",
-    [](VM &vm) {
-        auto color = vm.Pop().ival();
-        auto size = vm.PopVec<int3>();
-        auto pos = vm.PopVec<int3>();
-        GetVoxels(vm, vm.Pop()).Set(pos, size, (uchar)color);
+    [](StackPtr &sp, VM &vm) {
+        auto color = Pop(sp).ival();
+        auto size = PopVec<int3>(sp);
+        auto pos = PopVec<int3>(sp);
+        auto res = Pop(sp);
+        GetVoxels(vm, res).Set(pos, size, (uint8_t)color);
+    });
+
+nfr("cg_get", "block,pos", "RI}:3", "I",
+    "sets a range of cubes to palette index. index 0 is considered empty space."
+    "Coordinates automatically clipped to the size of the grid",
+    [](StackPtr &sp, VM &vm) {
+        auto pos = PopVec<int3>(sp);
+        auto res = Pop(sp);
+        Push(sp, GetVoxels(vm, res).grid.Get(pos));
     });
 
 nfr("cg_copy", "block,pos,size,dest,flip", "RI}:3I}:3I}:3I}:3", "",
     "copy a range of cubes from pos to dest. flip can be 1 (regular copy), or -1 (mirror)for"
     " each component, indicating the step from dest."
     " Coordinates automatically clipped to the size of the grid",
-    [](VM &vm) {
-        auto fl = vm.PopVec<int3>();
-        auto d = vm.PopVec<int3>();
-        auto sz = vm.PopVec<int3>();
-        auto p = vm.PopVec<int3>();
-        GetVoxels(vm, vm.Pop()).Copy(p, sz, d, fl);
+    [](StackPtr &sp, VM &vm) {
+        auto fl = PopVec<int3>(sp);
+        auto d = PopVec<int3>(sp);
+        auto sz = PopVec<int3>(sp);
+        auto p = PopVec<int3>(sp);
+        auto res = Pop(sp);
+        GetVoxels(vm, res).Copy(p, sz, d, fl);
     });
 
 nfr("cg_clone", "block,pos,size", "RI}:3I}:3", "R",
     "clone a range of cubes from pos to a new block."
     " Coordinates automatically clipped to the size of the grid",
-    [](VM &vm) {
-        auto sz = vm.PopVec<int3>();
-        auto p = vm.PopVec<int3>();
-        auto &v = GetVoxels(vm, vm.Pop());
+    [](StackPtr &sp, VM &vm) {
+        auto sz = PopVec<int3>(sp);
+        auto p = PopVec<int3>(sp);
+        auto res = Pop(sp);
+        auto &v = GetVoxels(vm, res);
         auto nw = NewWorld(sz, v.palette.data());
         v.Clone(p, sz, nw);
-        vm.Push(vm.NewResource(nw, GetVoxelType()));
+        Push(sp, vm.NewResource(nw, GetVoxelType()));
     });
 
 nfr("cg_color_to_palette", "block,color", "RF}:4", "I",
     "converts a color to a palette index. alpha < 0.5 is considered empty space."
     " note: this is fast for the default palette, slow otherwise.",
-    [](VM &vm) {
-        auto color = vm.PopVec<float4>();
-        vm.Push(GetVoxels(vm, vm.Pop()).Color2Palette(color));
+    [](StackPtr &sp, VM &vm) {
+        auto color = PopVec<float4>(sp);
+        auto res = Pop(sp);
+        Push(sp, GetVoxels(vm, res).Color2Palette(color));
     });
 
 nfr("cg_palette_to_color", "block,paletteindex", "RI", "F}:4",
     "converts a palette index to a color. empty space (index 0) will have 0 alpha",
-    [](VM &vm) {
-        auto p = uchar(vm.Pop().ival());
-        vm.PushVec(color2vec(GetVoxels(vm, vm.Pop()).palette[p]));
+    [](StackPtr &sp, VM &vm) {
+        auto p = uint8_t(Pop(sp).ival());
+        auto res = Pop(sp);
+        PushVec(sp, color2vec(GetVoxels(vm, res).palette[p]));
     });
 
 nfr("cg_copy_palette", "fromworld,toworld", "RR", "", "",
-    [](VM &vm, Value &fromworld, Value &toworld) {
+    [](StackPtr &, VM &vm, Value &fromworld, Value &toworld) {
         auto &w1 = GetVoxels(vm, fromworld);
         auto &w2 = GetVoxels(vm, toworld);
         w2.palette.clear();
         w2.palette.insert(w2.palette.end(), w1.palette.begin(), w1.palette.end());
-        return Value();
+        return NilVal();
     });
 
-nfr("cg_resample_half", "fromworld", "R", "", "",
-    [](VM &vm, Value &world) {
-    auto &v = GetVoxels(vm, world);
-    for (int x = 0; x < v.grid.dim.x / 2; x++) {
-        for (int y = 0; y < v.grid.dim.y / 2; y++) {
-            for (int z = 0; z < v.grid.dim.z / 2; z++) {
-                auto pos = int3(x, y, z);
-                int4 acc(0);
-                for (int xd = 0; xd < 2; xd++) {
-                    for (int yd = 0; yd < 2; yd++) {
-                        for (int zd = 0; zd < 2; zd++) {
-                            auto d = int3(xd, yd, zd);
-                            auto c = v.grid.Get(pos * 2 + d);
-                            acc += int4(v.palette[c]);
+nfr("cg_sample_down", "scale,world", "IR", "", "",
+    [](StackPtr &, VM &vm, Value &scale, Value &world) {
+        auto sc = scale.intval();
+        if (sc < 2 || sc > 128)
+            vm.Error("cg_sample_down: scale out of range");
+        auto &v = GetVoxels(vm, world);
+        for (int x = 0; x < v.grid.dim.x / sc; x++) {
+            for (int y = 0; y < v.grid.dim.y / sc; y++) {
+                for (int z = 0; z < v.grid.dim.z / sc; z++) {
+                    auto pos = int3(x, y, z);
+                    int4 acc(0);
+                    for (int xd = 0; xd < sc; xd++) {
+                        for (int yd = 0; yd < sc; yd++) {
+                            for (int zd = 0; zd < sc; zd++) {
+                                auto d = int3(xd, yd, zd);
+                                auto c = v.grid.Get(pos * sc + d);
+                                acc += int4(v.palette[c]);  // FIXME: not SRGB aware.
+                            }
+                        }
+                    }
+                    auto np = v.Color2Palette(float4(acc) / float(sc * sc * sc * 255));
+                    v.grid.Get(pos) = np;
+                }
+            }
+        }
+        v.grid.Shrink(v.grid.dim / sc);
+        return NilVal();
+    });
+
+nfr("cg_scale_up", "scale,world", "IR", "R", "",
+    [](StackPtr &, VM &vm, Value &scale, Value &world) {
+        auto sc = scale.intval();
+        auto &v = GetVoxels(vm, world);
+        if (sc < 2 || sc > 256 || squaredlength(v.grid.dim) * sc > 2048)
+            vm.Error("cg_scale_up: scale out of range");
+        auto &d = *NewWorld(v.grid.dim * sc, v.palette.data());
+        for (int x = 0; x < v.grid.dim.x; x++) {
+            for (int y = 0; y < v.grid.dim.y; y++) {
+                for (int z = 0; z < v.grid.dim.z; z++) {
+                    auto pos = int3(x, y, z);
+                    auto p = v.grid.Get(pos);
+                    for (int xd = 0; xd < sc; xd++) {
+                        for (int yd = 0; yd < sc; yd++) {
+                            for (int zd = 0; zd < sc; zd++) {
+                                auto vd = int3(xd, yd, zd);
+                                d.grid.Get(pos * sc + vd) = p;
+                            }
                         }
                     }
                 }
-                auto np = v.Color2Palette(float4(acc) / (8 * 255));
-                v.grid.Get(pos) = np;
             }
         }
-    }
-    v.grid.Shrink(v.grid.dim / 2);
-    return Value();
-});
+        return Value(vm.NewResource(&d, GetVoxelType()));
+    });
 
 nfr("cg_create_mesh", "block", "R", "R",
     "converts block to a mesh",
-    [](VM &vm, Value &wid) {
+    [](StackPtr &, VM &vm, Value &wid) {
         auto &v = GetVoxels(vm, wid);
         static int3 neighbors[] = {
             int3(1, 0, 0), int3(-1,  0,  0),
@@ -214,7 +357,7 @@ nfr("cg_create_mesh", "block", "R", "R",
         bool optimize_verts = false;
         struct VKey {
             vec<short, 3> pos;
-            uchar pal, dir;
+            uint8_t pal, dir;
             bool operator==(const VKey &o) const {
                 return pos == o.pos && pal == o.pal && dir == o.dir;
             };
@@ -223,9 +366,8 @@ nfr("cg_create_mesh", "block", "R", "R",
             return k.pos.x ^ (k.pos.y << 3) ^ (k.pos.z << 6) ^ (k.pal << 3) ^ k.dir;
         };
         unordered_map<VKey, int, decltype(hasher)> vertlookup(optimize_verts ? 100000 : 10, hasher);
-        RandomNumberGenerator<PCG32> rnd;
         vector<float> rnd_offset(1024);
-        for (auto &f : rnd_offset) { f = (rnd.rnd_float() - 0.5f) * 0.15f; }
+        for (auto &f : rnd_offset) { f = cg_rnd.rnd_float_signed() * 0.075f; }
         // Woah nested loops!
         for (int x = 0; x < v.grid.dim.x; x++) {
             for (int y = 0; y < v.grid.dim.y; y++) {
@@ -246,7 +388,7 @@ nfr("cg_create_mesh", "block", "R", "R",
                                         vpos[d] = (face[vn] & (1 << (2 - d))) != 0;
                                     }
                                     vpos += pos;
-                                    VKey vkey { vec<short, 3>(vpos), c, (uchar)n };
+                                    VKey vkey { vec<short, 3>(vpos), c, (uint8_t)n };
                                     if (optimize_verts) {
                                         auto it = vertlookup.find(vkey);
                                         if (it != vertlookup.end()) {
@@ -273,13 +415,13 @@ nfr("cg_create_mesh", "block", "R", "R",
                 }
             }
         }
-        normalize_mesh(make_span(triangles), verts.data(), verts.size(),
-                       sizeof(cvert), (uchar *)&verts.data()->normal - (uchar *)&verts.data()->pos,
+        normalize_mesh(gsl::make_span(triangles), verts.data(), verts.size(),
+                       sizeof(cvert), (uint8_t *)&verts.data()->normal - (uint8_t *)&verts.data()->pos,
                        false);
         LOG_INFO("cubegen verts = ", verts.size(), ", tris = ", triangles.size() / 3);
-        auto m = new Mesh(new Geometry(make_span(verts), "PNC"),
+        auto m = new Mesh(new Geometry(gsl::make_span(verts), "PNC"),
                           PRIM_TRIS);
-        m->surfs.push_back(new Surface(make_span(triangles), PRIM_TRIS));
+        m->surfs.push_back(new Surface(gsl::make_span(triangles), PRIM_TRIS));
         extern ResourceType mesh_type;
         return Value(vm.NewResource(m, &mesh_type));
     });
@@ -287,11 +429,11 @@ nfr("cg_create_mesh", "block", "R", "R",
 nfr("cg_create_3d_texture", "block,textureformat,monochrome", "RII?", "R",
     "returns the new texture, for format, pass flags you want in addition to"
     " 3d|single_channel|has_mips",
-    [](VM &vm, Value &wid, Value &textureflags, Value &monochrome) {
+    [](StackPtr &, VM &vm, Value &wid, Value &textureflags, Value &monochrome) {
         auto &v = GetVoxels(vm, wid);
         auto mipsizes = 0;
         for (auto d = v.grid.dim; d.x; d /= 2) mipsizes += d.volume();
-        auto buf = new uchar[mipsizes];
+        auto buf = new uint8_t[mipsizes];
         v.grid.ToContinousGrid(buf);
         auto mipb = buf;
         for (auto db = v.grid.dim; db.x > 1; db /= 2) {
@@ -325,7 +467,7 @@ nfr("cg_create_3d_texture", "block,textureformat,monochrome", "RII?", "R",
         if (monochrome.True()) {
             for (int i = 0; i < mipsizes; i++) buf[i] = buf[i] ? 255 : 0;
         }
-        auto tex = CreateTexture(buf, v.grid.dim.data(),
+        auto tex = CreateTexture(buf, v.grid.dim,
             TF_3D | /*TF_NEAREST_MAG | TF_NEAREST_MIN | TF_CLAMP |*/ TF_SINGLE_CHANNEL |
             TF_BUFFER_HAS_MIPS | textureflags.intval());
         delete[] buf;
@@ -333,28 +475,35 @@ nfr("cg_create_3d_texture", "block,textureformat,monochrome", "RII?", "R",
         return Value(vm.NewResource(new Texture(tex), &texture_type));
     });
 
+// https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-file-format-vox.txt
 nfr("cg_load_vox", "name", "S", "R?",
     "loads a file in the .vox format (MagicaVoxel). returns block or nil if file failed to"
     " load",
-    [](VM &vm, Value &name) {
+    [](StackPtr &, VM &vm, Value &name) {
         auto namep = name.sval()->strv();
         string buf;
         auto l = LoadFile(namep, &buf);
         if (l < 0) return Value(0);
-        if (strncmp(buf.c_str(), "VOX ", 4)) return Value();
+        if (strncmp(buf.c_str(), "VOX ", 4)) return NilVal();
         int3 size = int3_0;
         Voxels *voxels = nullptr;
         auto p = buf.c_str() + 8;
+        bool chunks_skipped = false;
         while (p < buf.c_str() + buf.length()) {
             auto id = p;
             p += 4;
             auto contentlen = *((int *)p);
             p += 8;
             if (!strncmp(id, "SIZE", 4)) {
+                if (voxels) {
+                    // Multiple voxel models in this file, not currently supported.
+                    delete voxels;
+                    return NilVal();
+                }
                 size = int3((int *)p);
                 voxels = NewWorld(size);
             } else if (!strncmp(id, "RGBA", 4)) {
-                if (!voxels) return Value();
+                if (!voxels) return NilVal();
                 voxels->palette.clear();
                 voxels->palette.push_back(byte4_0);
                 voxels->palette.insert(voxels->palette.end(), (byte4 *)p, ((byte4 *)p) + 255);
@@ -365,27 +514,31 @@ nfr("cg_load_vox", "name", "S", "R?",
                     }
                 }
             } else if (!strncmp(id, "XYZI", 4)) {
-                if (!voxels) return Value();
+                if (!voxels) return NilVal();
                 auto numvoxels = *((int *)p);
                 for (int i = 0; i < numvoxels; i++) {
-                    auto vox = byte4((uchar *)(p + i * 4 + 4));
+                    auto vox = byte4((uint8_t *)(p + i * 4 + 4));
                     auto pos = int3(vox.xyz());
                     if (pos < voxels->grid.dim) voxels->grid.Get(pos) = vox.w;
                 }
+            } else if (!strncmp(id, "MAIN", 4)) {
+                // Ignore, wrapper around the above chunks.
+            } else {
+                chunks_skipped = true;
             }
             p += contentlen;
         }
+        if (!voxels) return NilVal();
+        voxels->chunks_skipped = chunks_skipped;
         return Value(vm.NewResource(voxels, GetVoxelType()));
     });
 
 nfr("cg_save_vox", "block,name", "RS", "B",
     "saves a file in the .vox format (MagicaVoxel). returns false if file failed to save."
     " this format can only save blocks < 256^3, will fail if bigger",
-    [](VM &vm, Value &wid, Value &name) {
+    [](StackPtr &, VM &vm, Value &wid, Value &name) {
         auto &v = GetVoxels(vm, wid);
-        if (!(v.grid.dim < 256)) {
-            return Value(false);
-        }
+        if (!(v.grid.dim < 256)) { return Value(false); }
         vector<byte4> voxels;
         for (int x = 0; x < v.grid.dim.x; x++) {
             for (int y = 0; y < v.grid.dim.y; y++) {
@@ -404,41 +557,52 @@ nfr("cg_save_vox", "block,name", "RS", "B",
         wint(150);
         wstr("MAIN");
         wint(0);
-        wint(24 /* SIZE */ + 12 + 1024 /* RGBA */ + 16 + (int)voxels.size() * 4 /* XYZI */);
+        int bsize = 24;                                 // SIZE chunk.
+        bsize += 16 + (int)voxels.size() * 4;           // XYZI chunk.
+        if (!v.is_default_palette) bsize += 12 + 1024;  // RGBA chunk.
+        wint(bsize);
         wstr("SIZE");
         wint(12);
         wint(0);
         wint(v.grid.dim.x);
         wint(v.grid.dim.y);
         wint(v.grid.dim.z);
-        wstr("RGBA");
-        wint(256 * 4);
-        wint(0);
-        fwrite(v.palette.data() + 1, 4, 255, f);
-        wint(0);
         wstr("XYZI");
         wint((int)voxels.size() * 4 + 4);
         wint(0);
         wint((int)voxels.size());
         fwrite(voxels.data(), 4, voxels.size(), f);
+        if (!v.is_default_palette) {
+            wstr("RGBA");
+            wint(256 * 4);
+            wint(0);
+            fwrite(v.palette.data() + 1, 4, 255, f);
+            wint(0);
+        }
         fclose(f);
         return Value(true);
     });
 
+nfr("cg_chunks_skipped", "block", "R", "B", "",
+    [](StackPtr &, VM &vm, Value &wid) {
+        auto &v = GetVoxels(vm, wid);
+        return Value(v.chunks_skipped);
+    });
+
 nfr("cg_get_buf", "block", "R", "S",
     "returns the data as a string of all palette indices, in z-major order",
-    [](VM &vm, Value &wid) {
+    [](StackPtr &, VM &vm, Value &wid) {
         auto &v = GetVoxels(vm, wid);
         auto buf = vm.NewString(v.grid.dim.volume());
-        v.grid.ToContinousGrid((uchar *)buf->strv().data());
+        v.grid.ToContinousGrid((uint8_t *)buf->strv().data());
         return Value(buf);
     });
 
 nfr("cg_average_surface_color", "world", "R", "F}:4", "",
-	[](VM &vm) {
-		auto &v = GetVoxels(vm, vm.Pop());
-		int3 col(0);
-		int nsurf = 0;
+	[](StackPtr &sp, VM &vm) {
+		auto &v = GetVoxels(vm, Pop(sp));
+		float3 col(0.0f);
+		float nsurf = 0;
 		int nvol = 0;
 		int3 neighbors[] = {
 			int3(0, 0, 1),  int3(0, 1, 0),  int3(1, 0, 0),
@@ -448,14 +612,14 @@ nfr("cg_average_surface_color", "world", "R", "F}:4", "",
 			for (int y = 0; y < v.grid.dim.y; y++) {
 				for (int z = 0; z < v.grid.dim.z; z++) {
 					auto pos = int3(x, y, z);
-					uchar c = v.grid.Get(pos);
-					if (c) {
+					uint8_t c = v.grid.Get(pos);
+					if (c != transparant) {
 						nvol++;
 						// Only count voxels that lay on the surface for color average.
 						for (int i = 0; i < 6; i++) {
 							auto p = pos + neighbors[i];
 							if (!(p >= 0) || !(p < v.grid.dim) || !v.grid.Get(p)) {
-								col += int3(v.palette[c].xyz());
+								col += from_srgb(float3(v.palette[c].xyz()) / 255.0f);
 								nsurf++;
 								break;
 							}
@@ -465,13 +629,28 @@ nfr("cg_average_surface_color", "world", "R", "F}:4", "",
 			}
 		}
 		if (nsurf) col /= nsurf;
-		vm.PushVec(nvol < v.grid.dim.volume() / 2 ? float4(0.0f)
-												  : float4(float3(col) / 255.0f, 1.0f));
+		PushVec(sp, nvol < v.grid.dim.volume() / 2 ? float4(0.0f) : float4(col, 1.0f));
 	});
+
+nfr("cg_num_solid", "world", "R", "I", "",
+    [](StackPtr &sp, VM &vm) {
+        auto &v = GetVoxels(vm, Pop(sp));
+        int nvol = 0;
+        for (int x = 0; x < v.grid.dim.x; x++) {
+            for (int y = 0; y < v.grid.dim.y; y++) {
+                for (int z = 0; z < v.grid.dim.z; z++) {
+                    auto pos = int3(x, y, z);
+                    uint8_t c = v.grid.Get(pos);
+                    if (c != transparant) nvol++;
+                }
+            }
+        }
+        Push(sp, nvol);
+    });
 
 nfr("cg_rotate", "block,n", "RI", "R",
     "returns a new block rotated by n 90 degree steps from the input",
-    [](VM &vm, Value &wid, Value &rots) {
+    [](StackPtr &, VM &vm, Value &wid, Value &rots) {
         auto &v = GetVoxels(vm, wid);
         auto n = rots.ival();
         auto &d = n == 1 || n == 3
@@ -481,7 +660,7 @@ nfr("cg_rotate", "block,n", "RI", "R",
         for (int x = 0; x < v.grid.dim.x; x++) {
             for (int y = 0; y < v.grid.dim.y; y++) {
                 for (int z = 0; z < v.grid.dim.z; z++) {
-                    uchar c = v.grid.Get(int3(x, y, z));
+                    uint8_t c = v.grid.Get(int3(x, y, z));
 					switch (n) {
                         case 1:
 							d.grid.Get(int3(v.grid.dim.y - y - 1, x, z)) = c;
@@ -504,30 +683,32 @@ nfr("cg_rotate", "block,n", "RI", "R",
 
 nfr("cg_simplex", "block,pos,size,spos,ssize,octaves,scale,persistence,solidcol,zscale,zbias", "RI}:3I}:3F}:3F}:3IFFIFF", "",
     "",
-    [](VM &vm) {
-        auto zbias = vm.Pop().fltval();
-        auto zscale = vm.Pop().fltval();
-        auto solidcol = vm.Pop().intval();
-        auto persistence = vm.Pop().fltval();
-        auto scale = vm.Pop().fltval();
-        auto octaves = vm.Pop().intval();
-        auto ssize = vm.PopVec<float3>();
-        auto spos = vm.PopVec<float3>();
-        auto sz = vm.PopVec<int3>();
-        auto p = vm.PopVec<int3>();
-        auto &v = GetVoxels(vm, vm.Pop());
-        v.Do(p, sz, [&](const int3 &pos, uchar &vox) {
+    [](StackPtr &sp, VM &vm) {
+        auto zbias = Pop(sp).fltval();
+        auto zscale = Pop(sp).fltval();
+        auto solidcol = Pop(sp).intval();
+        auto persistence = Pop(sp).fltval();
+        auto scale = Pop(sp).fltval();
+        auto octaves = Pop(sp).intval();
+        auto ssize = PopVec<float3>(sp);
+        auto spos = PopVec<float3>(sp);
+        auto sz = PopVec<int3>(sp);
+        auto p = PopVec<int3>(sp);
+        auto res = Pop(sp);
+        auto &v = GetVoxels(vm, res);
+        v.Do(p, sz, [&](const int3 &pos, uint8_t &vox) {
             auto sp = (float3(pos - p) + 0.5) / float3(sz) * ssize + spos;
             auto fun = SimplexNoise(octaves, persistence, scale, sp) + sp.z * zscale - zbias;
-            vox = uchar((fun < 0) * solidcol);
+            vox = uint8_t((fun < 0) * solidcol);
         });
     });
 
 nfr("cg_bounding_box", "world,minsolids", "RF", "I}:3I}:3",
     "",
-	[](VM &vm) {
-        auto minsolids = vm.Pop().fltval();
-		auto &v = GetVoxels(vm, vm.Pop());
+	[](StackPtr &sp, VM &vm) {
+        auto minsolids = Pop(sp).fltval();
+        auto res = Pop(sp);
+		auto &v = GetVoxels(vm, res);
         auto bmin = int3_0;
         auto bmax = v.grid.dim;
         auto bestsolids = 0.0f;
@@ -542,7 +723,7 @@ nfr("cg_bounding_box", "world,minsolids", "RF", "I}:3I}:3",
                     if (mm) tmin[c] = tmax[c] - 1;
                     else tmax[c] = tmin[c] + 1;
                     int solid = 0;
-                    v.Do(tmin, tmax - tmin, [&](const int3 &, uchar &vox) {
+                    v.Do(tmin, tmax - tmin, [&](const int3 &, uint8_t &vox) {
                         if (vox) solid++;
                     });
                     auto total = (tmax - tmin).volume();
@@ -563,8 +744,190 @@ nfr("cg_bounding_box", "world,minsolids", "RF", "I}:3I}:3",
                 break;
             }
         }
-        vm.PushVec(bmin);
-        vm.PushVec(bmax);
+        PushVec(sp, bmin);
+        PushVec(sp, bmax);
 	});
+
+nfr("cg_randomize", "world,rnd_range,cutoff,paletteindex,filter", "RIIII", "", "",
+    [](StackPtr &, VM &vm, Value &world, Value &rnd_range, Value &cutoff, Value &paletteindex, Value &filter) {
+        auto &v = GetVoxels(vm, world);
+        for (int x = 0; x < v.grid.dim.x; x++) {
+            for (int y = 0; y < v.grid.dim.y; y++) {
+                for (int z = 0; z < v.grid.dim.z; z++) {
+                    auto pos = int3(x, y, z);
+                    auto &p = v.grid.Get(pos);
+                    if (p != filter.ival() && cg_rnd.rnd_int(rnd_range.intval()) < cutoff.intval())
+                        p = (uint8_t)paletteindex.ival();
+                }
+            }
+        }
+        return NilVal();
+    });
+
+nfr("cg_erode", "world,minsolid,maxsolid", "RII", "R", "",
+    [](StackPtr &, VM &vm, Value &world, Value &minsolid, Value &maxsolid) {
+        auto &v = GetVoxels(vm, world);
+        auto &d = *NewWorld(v.grid.dim, v.palette.data());
+        for (int x = 0; x < v.grid.dim.x; x++) {
+            for (int y = 0; y < v.grid.dim.y; y++) {
+                for (int z = 0; z < v.grid.dim.z; z++) {
+                    auto pos = int3(x, y, z);
+                    auto p = v.grid.Get(pos);
+                    int nsolid = 0;
+                    uint8_t last_solid = 0;
+                    for (int xd = -1; xd <= 1; xd++) {
+                        for (int yd = -1; yd <= 1; yd++) {
+                            for (int zd = -1; zd <= 1; zd++) {
+                                auto vd = int3(xd, yd, zd);
+                                auto pp = pos + vd;
+                                if (pp >= 0 && pp < v.grid.dim) {
+                                    auto n = v.grid.Get(pp);
+                                    if (n) {
+                                        nsolid++;
+                                        last_solid = n;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (p && nsolid <= minsolid.intval()) p = 0;
+                    else if (!p && nsolid >= maxsolid.intval()) p = last_solid;
+                    d.grid.Get(pos) = p;
+                }
+            }
+        }
+        return Value(vm.NewResource(&d, GetVoxelType()));
+    });
+
+nfr("cg_normal_indices", "block,radius", "RI", "R",
+    "creates a new block with normal indices based on voxel surface shape."
+    "the indices refer to the associated pallette."
+    "empty voxels will have a 0 length normal."
+    "2 is a good radius that balances speed/quality, use 1 for speed, 3 for max quality",
+    [](StackPtr &sp, VM &vm) {
+        auto radius = Pop(sp).intval();
+        auto res = Pop(sp);
+        auto &v = GetVoxels(vm, res);
+        vector<byte4> normal_palette;
+        normal_palette.resize(256, quantizec(float3(0.5), 0));
+        for (uint8_t i = 0; i < normal_table_size; i++) {
+            normal_palette[i] = quantizec((default_normals[i] + 1) / 2, 0);
+        }
+        auto nw = NewWorld(v.grid.dim, normal_palette.data());
+        auto ComputeNormal = [&](int3 c, int rad) {
+            int3 normal = int3_0;
+            for (int x = -rad; x <= rad; x++) {
+                for (int y = -rad; y <= rad; y++) {
+                    for (int z = -rad; z <= rad; z++) {
+                        int3 s = int3(x, y, z) + c;
+                        if (s != c) {
+                            if (s < v.grid.dim && s >= 0 && v.grid.Get(s) != 0) {
+                                // normal -= s - c;
+                            } else {
+                                normal += s - c;
+                            }
+                        }
+                    }
+                }
+            }
+            return normal;
+        };
+        int3 neighbors[6] = {
+            int3(0, 0, 1),  int3(0, 0, -1), int3(0, 1, 0),
+            int3(0, -1, 0), int3(1, 0, 0),  int3(-1, 0, 0),
+        };
+        int num_surface_voxels = 0;
+        for (int x = 0; x < v.grid.dim.x; x++) {
+            for (int y = 0; y < v.grid.dim.y; y++) {
+                for (int z = 0; z < v.grid.dim.z; z++) {
+                    auto pos = int3(x, y, z);
+                    auto p = v.grid.Get(pos);
+                    if (!p) {
+                        // Empty cells don't need a normal.
+                        nw->grid.Get(pos) = 0xFF;
+                        continue;
+                    }
+                    // If the voxel is on the edge of the model it is visible.
+                    if (max(pos.eq(0)) != 1 && max(pos.eq(v.grid.dim - 1)) != 1) {
+                        // Check the 6 neighbors, if any are empty, it is visble.
+                        for (int i = 0; i < 6; i++) {
+                            if (v.grid.Get(pos + neighbors[i]) == 0) goto visible;
+                        }
+                        // Not visible, early out.
+                        nw->grid.Get(pos) = 0xFF;
+                        continue;
+                        visible:;
+                    }
+                    // For surface voxels we compute a normal.
+                    num_surface_voxels++;
+                    auto cn = ComputeNormal(pos, radius);
+                    if (manhattan(cn) <= 1) {
+                        // Most normals cancelled eachother out, let's try once more
+                        // with a wider radius.
+                        cn = ComputeNormal(pos, radius * 2);
+                    }
+                    if (manhattan(cn) == 0) {
+                        // This should be very rare in actual models, just use Z-up.
+                        cn = int3(0, 0, 1);
+                    }
+                    nw->grid.Get(pos) = FindClosestNormal(normalize(float3(cn)));
+                }
+            }
+        }
+        Push(sp, vm.NewResource(nw, GetVoxelType()));
+    });
+
+
+nfr("cg_load_image", "name,depth,edge,numtiles", "SIII}:2", "R]",
+    "loads an image file (same formats as gl_load_texture) and turns it into blocks."
+    " returns blocks or [] if file failed to load",
+    [](StackPtr &sp, VM &vm) {
+        auto numtiles = PopVec<int2>(sp);
+        auto edge = Pop(sp).intval();
+        auto depth = Pop(sp).intval();
+        auto name = Pop(sp).sval()->strv();
+        auto idim = int2_0;
+        auto buf = LoadImageFile(name, idim);
+        auto dim = idim / numtiles;
+        auto vec = vm.NewVec(0, numtiles.x * numtiles.y, TYPE_ELEM_VECTOR_OF_RESOURCE);
+        if (buf) {
+            for (int ty = 0; ty < numtiles.y; ty++) {
+                for (int tx = 0; tx < numtiles.x; tx++) {
+                    // FIXME: make orientation configurable.
+                    auto size = int3(dim.x, depth, dim.y);
+                    Voxels *voxels = NewWorld(size);
+                    int2 neighbors[] = { int2(0, 1), int2(0, -1), int2(1, 0), int2(-1, 0) };
+                    auto Get = [&](int2 p) {
+                        return ((byte4 *)buf)[(p.x + tx * dim.x) + (dim.y - p.y - 1 + ty * dim.y) * idim.x];
+                    };
+                    for (int y = 0; y < dim.y; y++) {
+                        for (int x = 0; x < dim.x; x++) {
+                            int ndist = 0;
+                            for (int e = 1; e <= edge; e++) {
+                                for (int c = 0; c < 4; c++) {
+                                    auto p = int2(x, y) + neighbors[c] * e;
+                                    if (!(p >= 0 && p < dim) || Get(p).w < 128) {
+                                        ndist = edge - e + 1;
+                                        goto done;
+                                    }
+                                }
+                            }
+                            done:
+                            auto col = color2vec(Get(int2(x, y)));
+                            auto pi = voxels->Color2Palette(col);
+                            for (int d = 0; d < depth; d++) {
+                                auto p = int3(x, d, y);
+                                auto dd = d < depth / 2 ? d : depth - 1 - d;
+                                voxels->grid.Get(p) = dd < ndist ? transparant : pi;
+                            }
+                        }
+                    }
+                    vec->Push(vm, vm.NewResource(voxels, GetVoxelType()));
+                }
+            }
+            FreeImageFromFile(buf);
+        }
+        Push(sp, vec);
+    });
 
 }  // AddCubeGen

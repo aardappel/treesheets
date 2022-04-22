@@ -39,7 +39,9 @@
     #ifdef _WIN32
         #define VC_EXTRALEAN
         #define WIN32_LEAN_AND_MEAN
-        #define NOMINMAX
+        #ifndef NOMINMAX
+            #define NOMINMAX
+        #endif
         #include <windows.h>
     #endif
     #include <GL/gl.h>
@@ -90,17 +92,25 @@
         GLEXT(PFNGLUNIFORM2FVARBPROC                 , glUniform2fv                    , 1) \
         GLEXT(PFNGLUNIFORM3FVARBPROC                 , glUniform3fv                    , 1) \
         GLEXT(PFNGLUNIFORM4FVARBPROC                 , glUniform4fv                    , 1) \
+        GLEXT(PFNGLUNIFORM1IVARBPROC                 , glUniform1iv                    , 1) \
+        GLEXT(PFNGLUNIFORM2IVARBPROC                 , glUniform2iv                    , 1) \
+        GLEXT(PFNGLUNIFORM3IVARBPROC                 , glUniform3iv                    , 1) \
+        GLEXT(PFNGLUNIFORM4IVARBPROC                 , glUniform4iv                    , 1) \
         GLEXT(PFNGLUNIFORM1IARBPROC                  , glUniform1i                     , 1) \
         GLEXT(PFNGLUNIFORMMATRIX2FVARBPROC           , glUniformMatrix2fv              , 1) \
+        GLEXT(PFNGLUNIFORMMATRIX2FVARBPROC/*type*/   , glUniformMatrix3x2fv            , 1) \
+        GLEXT(PFNGLUNIFORMMATRIX2FVARBPROC/*type*/   , glUniformMatrix2x3fv            , 1) \
         GLEXT(PFNGLUNIFORMMATRIX3FVARBPROC           , glUniformMatrix3fv              , 1) \
         GLEXT(PFNGLUNIFORMMATRIX4FVARBPROC           , glUniformMatrix4fv              , 1) \
         GLEXT(PFNGLUNIFORMMATRIX4FVARBPROC/*type*/   , glUniformMatrix3x4fv            , 1) \
+        GLEXT(PFNGLUNIFORMMATRIX4FVARBPROC/*type*/   , glUniformMatrix4x3fv            , 1) \
         GLEXT(PFNGLBINDATTRIBLOCATIONARBPROC         , glBindAttribLocation            , 1) \
         GLEXT(PFNGLGETATTRIBLOCATIONARBPROC          , glGetAttribLocation             , 1) \
         GLEXT(PFNGLGETACTIVEUNIFORMARBPROC           , glGetActiveUniform              , 1) \
         GLEXT(PFNGLBLENDEQUATIONSEPARATEPROC         , glBlendEquationSeparate         , 1) \
         GLEXT(PFNGLBLENDFUNCSEPARATEPROC             , glBlendFuncSeparate             , 1) \
         GLEXT(PFNGLBINDSAMPLERPROC                   , glBindSampler                   , 1) \
+        GLEXT(PFNGLDRAWELEMENTSBASEVERTEXPROC        , glDrawElementsBaseVertex        , 1) \
         GLEXT(PFNGLBINDRENDERBUFFERPROC              , glBindRenderbuffer              , 0) \
         GLEXT(PFNGLDELETERENDERBUFFERSPROC           , glDeleteRenderbuffers           , 0) \
         GLEXT(PFNGLBINDFRAMEBUFFERPROC               , glBindFramebuffer               , 0) \
@@ -124,7 +134,9 @@
         GLEXT(PFNGLGETPROGRAMBINARYPROC              , glGetProgramBinary              , 0) \
         GLEXT(PFNGLBINDBUFFERBASEPROC                , glBindBufferBase                , 0) \
         GLEXT(PFNGLMEMORYBARRIERPROC                 , glMemoryBarrier                 , 0) \
-        GLEXT(PFNGLMAPBUFFERRANGEPROC                , glMapBufferRange                , 0)
+        GLEXT(PFNGLMAPBUFFERRANGEPROC                , glMapBufferRange                , 0) \
+        GLEXT(PFNGLDEBUGMESSAGECALLBACKPROC          , glDebugMessageCallback          , 0) \
+        GLEXT(PFNGLDEBUGMESSAGEINSERTPROC            , glDebugMessageInsert            , 0)
     #define GLEXT(type, name, needed) extern type name;
         GLBASEEXTS
         GLEXTS
@@ -140,3 +152,6 @@
     #define GL_CHECK(what) (void)what
     #define GL_CALL(call) do { call; } while (0)
 #endif
+
+// Implementation-only enum.
+enum { VATRR_POS, VATRR_NOR, VATRR_TC1, VATRR_COL, VATRR_WEI, VATRR_IDX, VATRR_TC2 };

@@ -18,7 +18,7 @@
 namespace lobster {
 
 const bytecode::LineInfo *LookupLine(const int *ip, const int *code,
-                                            const bytecode::BytecodeFile *bcf) {
+                                     const bytecode::BytecodeFile *bcf) {
     auto lineinfo = bcf->lineinfo();
     int pos = int(ip - code);
     int start = 0;
@@ -36,73 +36,83 @@ const bytecode::LineInfo *LookupLine(const int *ip, const int *code,
     }
 }
 
-const int *DisAsmIns(NativeRegistry &nfr, ostringstream &ss, const int *ip, const int *code,
-                            const type_elem_t *typetable, const bytecode::BytecodeFile *bcf) {
+const int *DisAsmIns(NativeRegistry &nfr, string &sd, const int *ip, const int *code,
+                     const type_elem_t *typetable, const bytecode::BytecodeFile *bcf,
+                     int line) {
     auto ilnames = ILNames();
     auto ilarity = ILArity();
-    auto li = LookupLine(ip, code, bcf);
-    // FIXME: some indication of the filename, maybe with a table index?
-    ss << "I " << int(ip - code) << " \tL " << li->line() << " \t";
-    if (*ip < 0 || *ip >= IL_MAX_OPS) {
-        ss << "ILLEGAL INSTRUCTION: " << *ip;
-        return nullptr;
+    if (code) {
+        auto li = LookupLine(ip, code, bcf);
+        // FIXME: some indication of the filename, maybe with a table index?
+        append(sd, "I ", ip - code, " \t");
+        append(sd, "L ", li->line(), " \t");
+    } else if (line >= 0) {
+        append(sd, "L ", line, " \t");
     }
-    ss << ilnames[*ip] << ' ';
-    auto arity = ilarity[*ip];
     auto ins_start = ip;
     int opc = *ip++;
     if (opc < 0 || opc >= IL_MAX_OPS) {
-        ss << opc << " ?";
+        append(sd, "ILLEGAL INSTRUCTION: ", opc);
+        return nullptr;
+    }
+    if (opc < 0 || opc >= IL_MAX_OPS) {
+        append(sd, opc, " ?");
         return ip;
     }
-    int is_struct = 0;
+    auto arity = ilarity[opc];
+    int regs = *ip++;
+    append(sd, "R ", regs, "\t");
+    append(sd, ilnames[opc], " ");
     switch(opc) {
         case IL_PUSHINT64:
         case IL_PUSHFLT64: {
             auto a = *ip++;
             auto v = Int64FromInts(a, *ip++);
-            if (opc == IL_PUSHINT64) ss << v;
+            if (opc == IL_PUSHINT64) append(sd, v);
             else {
                 int2float64 i2f;
                 i2f.i = v;
-                ss << i2f.f;
+                sd += to_string_float(i2f.f);
             }
             break;
         }
 
-        case IL_LOGWRITE:
         case IL_KEEPREF:
-            ss << *ip++ << ' ';
-            ss << *ip++;
+        case IL_KEEPREFLOOP:
+            append(sd, *ip++, " ");
+            append(sd, *ip++);
             break;
 
         case IL_RETURN: {
             auto id = *ip++;
-            ip++;  // retvals
-            ss << bcf->functions()->Get(id)->name()->string_view();
+            auto nrets = *ip++;
+            append(sd, bcf->functions()->Get(id)->name()->string_view(), " ", nrets);
             break;
         }
 
         case IL_CALL: {
             auto bc = *ip++;
-            assert(code[bc] == IL_FUNSTART);
-            auto id = code[bc + 1];
-            auto nargs = code[bc];
-            ss << nargs << ' ' << bcf->functions()->Get(id)->name()->string_view();
-            ss << ' ' << bc;
+            if (code) {
+                assert(code[bc] == IL_FUNSTART);
+                auto id = code[bc + 2];
+                auto nargs = code[bc + 4];
+                append(sd, nargs, " ", bcf->functions()->Get(id)->name()->string_view(), " ", bc);
+            } else {
+                append(sd, " ", bc);
+            }
             break;
         }
 
         case IL_NEWVEC: {
             ip++;  // ti
             auto nargs = *ip++;
-            ss << "vector " << nargs;
+            append(sd, "vector ", nargs);
             break;
         }
         case IL_ST2S:
         case IL_NEWOBJECT: {
             auto ti = (TypeInfo *)(typetable + *ip++);
-            ss << bcf->udts()->Get(ti->structidx)->name()->string_view();
+            sd += bcf->udts()->Get(ti->structidx)->name()->string_view();
             break;
         }
 
@@ -113,96 +123,87 @@ const int *DisAsmIns(NativeRegistry &nfr, ostringstream &ss, const int *ip, cons
         case IL_BCALLRET3:
         case IL_BCALLRET4:
         case IL_BCALLRET5:
-        case IL_BCALLRET6:
-        case IL_BCALLREFV:
-        case IL_BCALLREF0:
-        case IL_BCALLREF1:
-        case IL_BCALLREF2:
-        case IL_BCALLREF3:
-        case IL_BCALLREF4:
-        case IL_BCALLREF5:
-        case IL_BCALLREF6:
-        case IL_BCALLUNBV:
-        case IL_BCALLUNB0:
-        case IL_BCALLUNB1:
-        case IL_BCALLUNB2:
-        case IL_BCALLUNB3:
-        case IL_BCALLUNB4:
-        case IL_BCALLUNB5:
-        case IL_BCALLUNB6: {
+        case IL_BCALLRET6: {
             int a = *ip++;
-            ss << nfr.nfuns[a]->name;
+            ip++;  // has_ret
+            sd += nfr.nfuns[a]->name;
             break;
         }
 
-        #undef LVAL
-        #define LVAL(N, V) case IL_VAR_##N: is_struct = V; goto var;
-            LVALOPNAMES
-        #undef LVAL
-        case IL_PUSHVARV:
-            is_struct = 1;
-        case IL_PUSHVAR:
-        var:
-            ss << IdName(bcf, *ip++);
-            if (is_struct) ss << ' ' << *ip++;
+        case IL_PUSHVARVL:
+        case IL_PUSHVARVF:
+            sd += IdName(bcf, *ip++, typetable, true);
+            append(sd, " ", *ip++);
+            break;
+
+        case IL_LVAL_VARL:
+        case IL_LVAL_VARF:
+        case IL_PUSHVARL:
+        case IL_PUSHVARF:
+            sd += IdName(bcf, *ip++, typetable, false);
             break;
 
         case IL_PUSHFLT:
-            ss << *(float *)ip;
+            sd += to_string_float(*(float *)ip);
             ip++;
             break;
 
         case IL_PUSHSTR:
-            EscapeAndQuote(bcf->stringtable()->Get(*ip++)->string_view(), ss);
+            EscapeAndQuote(bcf->stringtable()->Get(*ip++)->string_view(), sd);
             break;
 
-        case IL_FUNSTART: {
-            auto fidx = *ip++;
-            ss << (fidx >= 0 ? bcf->functions()->Get(fidx)->name()->string_view() : "__dummy");
-            ss << "(";
-            int n = *ip++;
-            while (n--) ss << IdName(bcf, *ip++) << ' ';
-            n = *ip++;
-            ss << "=> ";
-            while (n--) ss << IdName(bcf, *ip++) << ' ';
-            auto keepvars = *ip++;
-            if (keepvars) ss << "K:" << keepvars << ' ';
-            n = *ip++;  // owned
-            while (n--) ss << "O:" << IdName(bcf, *ip++) << ' ';
-            ss << ")";
+        case IL_JUMP_TABLE: {
+            auto mini = *ip++;
+            auto maxi = *ip++;
+            auto n = maxi - mini + 2;
+            append(sd, mini, "..", maxi, " [ ");
+            while (n--) append(sd, *ip++, " ");
+            sd += "]";
             break;
         }
 
-        case IL_CORO: {
-            ss << *ip++;
-            ip++;  // typeinfo
+        case IL_FUNSTART: {
+            auto fidx = *ip++;
+            sd += (fidx >= 0 ? bcf->functions()->Get(fidx)->name()->string_view() : "__dummy");
+            auto regs = *ip++;
+            sd += "(";
             int n = *ip++;
-            for (int i = 0; i < n; i++) ss <<" v" << *ip++;
+            while (n--) append(sd, IdName(bcf, *ip++, typetable, false), " ");
+            n = *ip++;
+            sd += "=> ";
+            while (n--) append(sd, IdName(bcf, *ip++, typetable, false), " ");
+            auto keepvars = *ip++;
+            if (keepvars) append(sd, "K:", keepvars, " ");
+            n = *ip++;  // owned
+            while (n--) append(sd, "O:", IdName(bcf, *ip++, typetable, false), " ");
+            append(sd, "R:", regs, " ");
+            sd += ")";
             break;
         }
 
         default:
             for (int i = 0; i < arity; i++) {
-                if (i) ss << ' ';
-                ss << *ip++;
+                if (i) sd += ' ';
+                append(sd, *ip++);
             }
             break;
     }
-    assert(arity == ILUNKNOWNARITY || ip - ins_start == arity + 1);
+    assert(arity == ILUNKNOWN || ip - ins_start == arity + 2);
     (void)ins_start;
     return ip;
 }
 
-void DisAsm(NativeRegistry &nfr, ostringstream &ss, string_view bytecode_buffer) {
+void DisAsm(NativeRegistry &nfr, string &sd, string_view bytecode_buffer) {
     auto bcf = bytecode::GetBytecodeFile(bytecode_buffer.data());
     assert(FLATBUFFERS_LITTLEENDIAN);
     auto code = (const int *)bcf->bytecode()->Data();  // Assumes we're on a little-endian machine.
     auto typetable = (const type_elem_t *)bcf->typetable()->Data();  // Same.
-    auto len = bcf->bytecode()->Length();
+    auto len = bcf->bytecode()->size();
     const int *ip = code;
     while (ip < code + len) {
-        ip = DisAsmIns(nfr, ss, ip, code, typetable, bcf);
-        ss << "\n";
+        if (*ip == IL_FUNSTART) sd += "------- ------- ---\n";
+        ip = DisAsmIns(nfr, sd, ip, code, typetable, bcf, -1);
+        sd += "\n";
         if (!ip) break;
     }
 }

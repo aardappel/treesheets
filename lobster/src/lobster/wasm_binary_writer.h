@@ -33,6 +33,11 @@
 
 namespace WASM {
 
+enum class Target {
+    Wasm32,
+    Wasm64
+};
+
 enum class Section {
     None = -1,
     Custom = 0,
@@ -61,6 +66,7 @@ enum {
 
 class BinaryWriter {
     std::vector<uint8_t> &buf;
+    Target target = Target::Wasm32;
     Section cur_section = Section::None;
     Section last_known_section = Section::None;
     size_t section_size = 0;
@@ -193,7 +199,8 @@ class BinaryWriter {
     };
 
 
-    void RelocULEB(uint8_t reloc_type, size_t sym_index, size_t target_index, bool is_function) {
+    void RelocULEB(uint8_t reloc_type, size_t sym_index, size_t target_index, bool is_function,
+                   bool is_typeindex) {
         code_relocs.push_back({ reloc_type,
                                 buf.size() - section_data,
                                 sym_index,
@@ -203,7 +210,7 @@ class BinaryWriter {
         // this value is stored in the relocation itself. But putting
         // a meaningful value here will help with reading the output of
         // objdump.
-        PatchULEB(PatchableLEB(), is_function ? sym_index : target_index);
+        PatchULEB(PatchableLEB(), is_function || is_typeindex ? sym_index : target_index);
     }
 
   public:
@@ -212,6 +219,8 @@ class BinaryWriter {
         Chars(std::string_view("\0asm", 4));
         UInt32(1);
     }
+
+    int32_t GetPtrSize() { return target == Target::Wasm32 ? 4 : 8; }
 
     // Call Begin/EndSection pairs for each segment type, in order.
     // In between, call the Add functions below corresponding to the section
@@ -403,12 +412,12 @@ class BinaryWriter {
     // fun_idx is 0..N-1 imports followed by N..M-1 defined functions.
     void EmitCall(size_t fun_idx) {
         UInt8(0x10);
-        RelocULEB(R_WASM_FUNCTION_INDEX_LEB, fun_idx, 0, true);
+        RelocULEB(R_WASM_FUNCTION_INDEX_LEB, fun_idx, 0, true, false);
     }
 
     void EmitCallIndirect(size_t type_index) {
         UInt8(0x11);
-        RelocULEB(R_WASM_TYPE_INDEX_LEB, 0, type_index, false);
+        RelocULEB(R_WASM_TYPE_INDEX_LEB, type_index, 0, false, true);
         ULEB(0);
     }
 
@@ -463,15 +472,18 @@ class BinaryWriter {
     void EmitF64Const(double v) { UInt8(0x44); UInt64(Bits<double, uint64_t>(v)); }
 
     // Getting the address of data in a data segment, encoded as a i32.const + reloc.
+    // FIXME: this emits the segment-relative addend, but the value inside the
+    // instructions needs to be section relative to not trigger LLD warnings.
+    // We don't know the size of the segments preceding this one though..
     void EmitI32ConstDataRef(size_t segment, size_t addend) {
         UInt8(0x41);
-        RelocULEB(R_WASM_MEMORY_ADDR_SLEB, segment, addend, false );
+        RelocULEB(R_WASM_MEMORY_ADDR_SLEB, segment, addend, false, false);
     }
 
     // fun_idx is 0..N-1 imports followed by N..M-1 defined functions.
     void EmitI32ConstFunctionRef(size_t fun_idx) {
         UInt8(0x41);
-        RelocULEB(R_WASM_TABLE_INDEX_SLEB, fun_idx, 0, true);
+        RelocULEB(R_WASM_TABLE_INDEX_SLEB, fun_idx, 0, true, false);
     }
 
     // --- COMPARISON OPERATORS ---

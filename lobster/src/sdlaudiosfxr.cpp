@@ -17,9 +17,15 @@
 #include "lobster/natreg.h"
 
 #include "lobster/sdlincludes.h"
+#include "lobster/sdlinterface.h"
 
 #include "SDL_mixer.h"
 #include "SDL_stdinc.h"
+
+#define STB_VORBIS_HEADER_ONLY 1
+#define STB_VORBIS_NO_STDIO 1
+#define STB_VORBIS_NO_PUSHDATA_API 1
+#include "stb/stb_vorbis.c"
 
 bool sound_init = false;
 
@@ -28,7 +34,26 @@ struct Sound {
     Sound() : chunk(nullptr, Mix_FreeChunk) {}
 };
 
+const int channel_num = 16; // number of mixer channels
+int sound_pri[channel_num] = {};
+uint64_t sound_age[channel_num] = {};
+uint64_t sounds_played = 0;
+
 map<string, Sound, less<>> sound_files;
+
+Mix_Chunk *AllocChunk(short *buf, size_t num_samples) {
+    Uint16 format;
+    Mix_QuerySpec(nullptr, &format, nullptr);
+    if (format != AUDIO_S16SYS) {
+        assert(false);
+        return nullptr;
+    }
+    auto sbuf = SDL_malloc(num_samples * 2);
+    memcpy(sbuf, buf, num_samples * 2);
+    auto chunk = Mix_QuickLoad_RAW((Uint8 *)sbuf, (Uint32)num_samples * 2);
+    chunk->allocated = 1;
+    return chunk;
+}
 
 Mix_Chunk *RenderSFXR(string_view buf) {
     int wave_type = 0;
@@ -336,22 +361,18 @@ Mix_Chunk *RenderSFXR(string_view buf) {
         float sample;
         auto gen = SynthSample(1, &sample);
         if (!gen) break;
-        synth.push_back((Sint16)(sample * 0x7FFF));
+        auto ss = (Sint16)(sample * 0x7FFF);
+        // FIXME: backwards way to make it 44100.
+        // Instead, make it actually synth at that rate.
+        if (!synth.empty()) synth.back() = (synth[synth.size() - 1] + ss) / 2;
+        synth.push_back(ss);
+        synth.push_back(0);
     }
-    Uint16 format;
-    Mix_QuerySpec(nullptr, &format, nullptr);
-    if (format != AUDIO_S16SYS) {
-        assert(false);
-        return nullptr;
-    }
-    auto sbuf = SDL_malloc(synth.size() * 2);
-    memcpy(sbuf, synth.data(), synth.size() * 2);
-    auto chunk = Mix_QuickLoad_RAW((Uint8 *)sbuf, (Uint32)synth.size() * 2);
-    chunk->allocated = 1;
-    return chunk;
+    synth.pop_back();
+    return AllocChunk(synth.data(), synth.size());
 }
 
-Sound *LoadSound(string_view filename, bool sfxr) {
+Sound *LoadSound(string_view filename, SoundType st) {
     auto it = sound_files.find(filename);
     if (it != sound_files.end()) {
         return &it->second;
@@ -359,13 +380,31 @@ Sound *LoadSound(string_view filename, bool sfxr) {
     string buf;
     if (LoadFile(filename, &buf) < 0)
         return nullptr;
-    Mix_Chunk *chunk;
-    if (!sfxr) {
-        auto rwops = SDL_RWFromMem((void *)buf.c_str(), (int)buf.length());
-        if (!rwops) return nullptr;
-        chunk = Mix_LoadWAV_RW(rwops, 1);
-    } else {
-        chunk = RenderSFXR(buf);
+    Mix_Chunk *chunk = nullptr;
+    switch (st) {
+        case SOUND_WAV: {
+            auto rwops = SDL_RWFromMem((void *)buf.c_str(), (int)buf.length());
+            if (!rwops) return nullptr;
+            chunk = Mix_LoadWAV_RW(rwops, 1);
+            break;
+        }
+        case SOUND_SFXR: {
+            chunk = RenderSFXR(buf);
+            break;
+        }
+        case SOUND_OGG: {
+            int channels = 0;
+            int sample_rate = 0;
+            short *out = nullptr;
+            auto read = stb_vorbis_decode_memory((const unsigned char *)buf.c_str(),
+                                                 (int)buf.length(), &channels, &sample_rate, &out);
+            if (read < 0)
+                return nullptr;
+            chunk = AllocChunk(out, read);
+            free(out);
+            break;
+        }
+
     }
     if (!chunk) return nullptr;
     //Mix_VolumeChunk(chunk, MIX_MAX_VOLUME / 2);
@@ -376,6 +415,11 @@ Sound *LoadSound(string_view filename, bool sfxr) {
 
 bool SDLSoundInit() {
     if (sound_init) return true;
+
+    #ifdef __EMSCRIPTEN__
+    // Distorted in firefox and no audio at all in chrome, disable for now.
+        return false;
+    #endif
 
     for (int i = 0; i < SDL_GetNumAudioDrivers(); ++i) {
         LOG_INFO("Audio driver available ", SDL_GetAudioDriver(i));
@@ -396,12 +440,11 @@ bool SDLSoundInit() {
     }
 
     Mix_Init(0);
-    // For some reason this distorts when set to 44100 and samples at 22050 are played.
-    // Also SFXR seems hard-coded to 22050, so that's what we'll use for now.
-    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) == -1) {
+    if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 1024) == -1) {
         LOG_ERROR("Mix_OpenAudio: ", Mix_GetError());
         return false;
     }
+    Mix_AllocateChannels(channel_num);
     // This seems to be needed to not distort when multiple sounds are played.
     Mix_Volume(-1, MIX_MAX_VOLUME / 2);
     sound_init = true;
@@ -417,18 +460,69 @@ void SDLSoundClose() {
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
-bool SDLPlaySound(string_view filename, bool sfxr, int vol) {
-    #ifdef __EMSCRIPTEN__
-    // Distorted in firefox and no audio at all in chrome, disable for now.
-    return false;
-    #endif
-
-    if (!SDLSoundInit())
-        return false;
-
-    auto snd = LoadSound(filename, sfxr);
-    if (snd) {
-        Mix_Volume(Mix_PlayChannel(-1, snd->chunk.get(), 0), vol);
-    }
-    return !!snd;
+int SDLLoadSound(string_view filename, SoundType st) {
+    if (!SDLSoundInit()) return 0;
+    return LoadSound(filename, st) != 0;
 }
+
+int SDLPlaySound(string_view filename, SoundType st, float vol, int loops, int pri) {
+    if (!SDLSoundInit()) return 0;
+    auto snd = LoadSound(filename, st);
+    if (!snd) return 0;
+    int ch = Mix_GroupAvailable(-1); // is there any free channel?
+    if (ch == -1) {
+        // no free channel -- find the lowest priority/oldest sound of all currently playing that are <= prio
+        int p = pri;
+        uint64_t sa = UINT64_MAX;
+        for (int i = 0; i < channel_num; i++) {
+            if (sound_pri[i] < p) {
+                ch = i;
+                p = sound_pri[i];
+                sa = sound_age[i]; // save sound age too in case multiple channels equal this new priority!
+            }
+            else if (sound_pri[i] == p && sound_age[i] < sa) {
+                ch = i;
+                sa = sound_age[i];
+            }
+        }
+        if (ch >= 0) Mix_HaltChannel(ch); // halt that channel
+    }
+    if (ch >= 0) {
+        Mix_PlayChannel(ch, snd->chunk.get(), loops);
+        Mix_Volume(ch, (int)(MIX_MAX_VOLUME * vol)); // set channel to default volume (max)
+        sound_pri[ch] = pri; // add priority to our array
+        sound_age[ch] = sounds_played++;
+    }
+    return ++ch; // we return channel numbers 1..8 rather than 0..7
+}
+
+void SDLHaltSound(int ch) {
+    ch--; // SDL_Mixer enmerates channels from 0, Lobster from 1
+    Mix_Resume(ch); // fix SDL bug not clearing the paused flag on halt by resuming (even if not paused) right before halt
+    Mix_HaltChannel(ch);
+}
+
+void SDLPauseSound(int ch) {
+    Mix_Pause(ch - 1);
+}
+
+int SDLSoundStatus(int ch) { // returns -1 for illegal channel index, 0 for available , 1 for playing, 2 for paused
+    int num_chn = Mix_AllocateChannels(-1); // called with -1 this returns the current number of channels
+    if (ch <= num_chn) return Mix_Playing(ch - 1) + Mix_Paused(ch - 1);
+    else return -1;
+}
+
+void SDLResumeSound(int ch) {
+    if (Mix_Paused(ch - 1) > 0) Mix_Resume(ch - 1); // this already tests for SDLSoundInit() etc.
+}
+
+void SDLSetVolume(int ch, float vol) {
+    Mix_Volume(ch - 1, (int)(MIX_MAX_VOLUME * vol));
+}
+
+// Implementation part of stb_vorbis.
+#undef STB_VORBIS_HEADER_ONLY
+#ifdef _MSC_VER
+    #pragma warning(disable : 4244 4457 4245 4701)
+#endif
+#include "stb/stb_vorbis.c"

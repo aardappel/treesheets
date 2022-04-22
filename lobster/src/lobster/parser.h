@@ -20,9 +20,9 @@ struct Parser {
     Node *root = nullptr;
     SymbolTable &st;
     vector<Function *> functionstack;
-    vector<string_view> trailingkeywordedfunctionvaluestack;
     struct ForwardFunctionCall {
         size_t maxscopelevel;
+        string call_namespace;
         GenericCall *n;
         bool has_firstarg;
         SymbolTable::WithStackElem wse;
@@ -30,6 +30,12 @@ struct Parser {
     vector<ForwardFunctionCall> forwardfunctioncalls;
     bool call_noparens = false;
     set<string> pakfiles;
+    struct BlockScope {
+        Block *block;
+        int for_nargs;
+        int implicits;
+    };
+    vector<BlockScope> block_stack;
 
     Parser(NativeRegistry &natreg, string_view _src, SymbolTable &_st, string_view _stringsource)
         : natreg(natreg), lex(_src, _st.filenames, _stringsource), st(_st) {}
@@ -38,34 +44,44 @@ struct Parser {
         delete root;
     }
 
-    void Error(string_view err, const Node *what = nullptr) {
-        lex.Error(err, what ? &what->line : nullptr);
+    template<typename... Ts> void Error(const Ts &...args) {
+        lex.Error(cat(args...), nullptr);
     }
 
-    void Warn(string_view warn, const Node *what = nullptr) {
-        lex.Warn(warn, what ? &what->line : nullptr);
+    template<typename... Ts> void ErrorAt(const Node *what, const Ts &...args) {
+        lex.Error(cat(args...), what ? &what->line : nullptr);
+    }
+
+    template<typename... Ts> void Warn(const Ts &...args) {
+        lex.Warn(cat(args...), nullptr);
+    }
+
+    template<typename... Ts> void WarnAt(const Node *what, const Ts &...args) {
+        lex.Warn(cat(args...), what ? &what->line : nullptr);
     }
 
     void Parse() {
-        auto sf = st.ScopeStart();
+        auto sf = st.FunctionScopeStart();
         st.toplevel = sf;
-        auto &f = st.CreateFunction("__top_level_expression", "");
-        f.overloads.push_back(nullptr);
-        sf->SetParent(f, f.overloads[0]);
+        auto &f = st.CreateFunction("__top_level_expression");
+        f.overloads.emplace_back(Overload {});
+        auto &ov = f.overloads[0];
+        sf->SetParent(f, ov.sf);
         f.anonymous = true;
         lex.Include("stdtype.lobster");
-        sf->body = ParseStatements(T_ENDOFFILE);
-        ImplicitReturn(sf);
-        st.ScopeCleanup();
+        ov.gbody = new Block(lex);
+        ParseStatements(ov.gbody, T_ENDOFFILE);
+        ImplicitReturn(ov);
+        st.FunctionScopeCleanup();
         root = new Call(lex, sf);
         assert(forwardfunctioncalls.empty());
     }
 
-    List *ParseStatements(TType terminator) {
-        auto list = new List(lex);
+    void ParseStatements(Block *block, TType terminator) {
         for (;;) {
-            ParseTopExp(list);
+            ParseTopExp(block);
             if (lex.token == T_ENDOFINCLUDE) {
+                ResolveForwardFunctionCalls(false);
                 st.EndOfInclude();
                 lex.PopIncludeContinue();
             } else if (!IsNext(T_LINEFEED)) {
@@ -73,46 +89,54 @@ struct Parser {
             }
             if (Either(T_ENDOFFILE, T_DEDENT)) break;
         }
-        auto b = list->children.back();
+        Expect(terminator);
+        auto b = block->children.back();
         if (Is<EnumRef>(b) || Is<UDTRef>(b) || Is<FunRef>(b) || Is<Define>(b)) {
-            if (terminator == T_ENDOFFILE) list->Add(new IntConstant(lex, 0));
+            if (terminator == T_ENDOFFILE) block->Add(new IntConstant(lex, 0));
             else Error("last expression in list can\'t be a definition");
         }
-        Expect(terminator);
-        CleanupStatements(list);
-        return list;
+        CleanupStatements(block);
     }
 
-    void CleanupStatements(List *list) {
-        ResolveForwardFunctionCalls();
-        list->children.erase(remove_if(list->children.begin(), list->children.end(),
-                                       [&](auto def) {
+    void CleanupStatements(Block *list) {
+        ResolveForwardFunctionCalls(true);
+        for (auto def : list->children) {
             if (auto er = Is<EnumRef>(def)) {
-                st.UnregisterEnum(er->e);
+                st.Unregister(er->e, st.enums);
             } else if (auto sr = Is<UDTRef>(def)) {
-                st.UnregisterStruct(sr->udt, lex);
+                if (sr->udt->predeclaration)
+                    Error("pre-declared struct ", Q(sr->udt->name), " never defined");
+                st.Unregister(sr->udt, st.udts);
             } else if (auto fr = Is<FunRef>(def)) {
                 auto f = fr->sf->parent;
-                if (!f->anonymous) st.UnregisterFun(f);
-                delete fr;
-                return true;
+                if (!f->anonymous) st.Unregister(f, st.functions);
             } else if (auto d = Is<Define>(def)) {
+                // For now, don't warn when declaring multiple vars and they are mixed const,
+                // since there is no way to use var for one and let for the other.
+                bool warn_all = true;
                 for (auto p : d->sids) {
                     auto id = p.first->id;
                     id->static_constant =
                         id->single_assignment && d->child->IsConstInit();
-                    if (id->single_assignment && !id->constant && d->line.fileidx == 0)
-                        Warn("use \'let\' to declare: " + id->name, d);
+                    if (!id->single_assignment || id->constant || d->line.fileidx != 0)
+                        warn_all = false;
+                    if (!id->read && !id->static_constant && id->scopelevel != 1 &&
+                        (id->name[0] != '_' || d->sids.size() == 1))
+                        Warn("unused variable ", Q(id->name));
+                }
+                if (warn_all) {
+                    for (auto p : d->sids) {
+                        WarnAt(d, "use ", Q("let"), " to declare ", Q(p.first->id->name));
+                    }
                 }
             } else if (auto r = Is<Return>(def)) {
                 if (r != list->children.back())
                     Error("return must be last in block");
             }
-            return false;
-        }), list->children.end());
+        };
     }
 
-    void ParseTopExp(List *list, bool isprivate = false) {
+    void ParseTopExp(Block *list, bool isprivate = false) {
         switch(lex.token) {
             case T_NAMESPACE:
                 if (st.scopelevels.size() != 1 || isprivate)
@@ -129,16 +153,16 @@ struct Parser {
                 break;
             case T_INCLUDE: {
                 if (isprivate)
-                    Error("include cannot be private");
+                    Error("import cannot be private");
                 lex.Next();
                 if (IsNext(T_FROM)) {
-                    auto fn = lex.StringVal();
+                    string fn = std::move(lex.sval);
                     Expect(T_STR);
                     AddDataDir(move(fn));
                 } else {
                     string fn;
                     if (lex.token == T_STR) {
-                        fn = lex.StringVal();
+                        fn = std::move(lex.sval);
                         lex.Next();
                     } else {
                         fn = lex.sattr;
@@ -172,24 +196,31 @@ struct Parser {
                 bool incremental = lex.token == T_ENUM;
                 lex.Next();
                 int64_t cur = incremental ? 0 : 1;
-                auto enumname = st.MaybeNameSpace(ExpectId(), !isprivate);
+                auto enumname = st.MaybeNameSpace(ExpectId(), true);
                 auto def = st.EnumLookup(enumname, lex, true);
-                def->isprivate = isprivate;  // FIXME: not used?
+                def->isprivate = isprivate;
+                def->flags = !incremental;
                 Expect(T_COLON);
                 Expect(T_INDENT);
                 for (;;) {
-                    auto evname = st.MaybeNameSpace(ExpectId(), !isprivate);
+                    auto evname = st.MaybeNameSpace(ExpectId(), true);
                     if (IsNext(T_ASSIGN)) {
-                        cur = lex.IntVal();
-                        Expect(T_INT);
+                        auto e = ParseExp();
+                        Value val = NilVal();
+                        auto t = e->ConstVal(nullptr, val);
+                        delete e;
+                        if (t != V_INT)
+                            Error("enum value expression must evaluate to an integer constant");
+                        cur = val.ival();
                     }
                     auto ev = st.EnumValLookup(evname, lex, true);
-                    ev->isprivate = isprivate;  // FIXME: not used?
+                    ev->isprivate = isprivate;
                     ev->val = cur;
                     ev->e = def;
                     def->vals.emplace_back(ev);
                     if (incremental) cur++; else cur *= 2;
-                    if (!IsNext(T_LINEFEED) || Either(T_ENDOFFILE, T_DEDENT)) break;
+                    if ((!IsNext(T_LINEFEED) && !IsNext(T_COMMA)) ||
+                        Either(T_ENDOFFILE, T_DEDENT)) break;
                 }
                 Expect(T_DEDENT);
                 list->Add(new EnumRef(lex, def));
@@ -199,26 +230,22 @@ struct Parser {
             case T_CONST: {
                 auto isconst = lex.token == T_CONST;
                 lex.Next();
-                auto def = new Define(lex, nullptr, nullptr);
+                auto def = new Define(lex, nullptr);
                 for (;;) {
                     auto idname = ExpectId();
                     bool withtype = lex.token == T_TYPEIN;
-                    TypeRef type = nullptr;
+                    UnresolvedTypeRef type = { nullptr };
                     if (lex.token == T_COLON || withtype) {
                         lex.Next();
-                        ParseType(type, withtype);
+                        type = ParseType(withtype);
                     }
-                    auto id = st.LookupDef(idname, lex, false, true, withtype);
+                    auto id = st.LookupDef(idname, lex, true, withtype);
                     if (isconst)  id->constant = true;
                     if (isprivate) id->isprivate = true;
                     def->sids.push_back({ id->cursid, type });
                     if (!IsNext(T_COMMA)) break;
                 }
-                if (IsNext(T_LOGASSIGN)) {
-                    for (auto p : def->sids) st.MakeLogVar(p.first->id);
-                } else {
-                    Expect(T_ASSIGN);
-                }
+                Expect(T_ASSIGN);
                 def->child = ParseMultiRet(ParseOpExp());
                 list->Add(def);
                 break;
@@ -246,39 +273,44 @@ struct Parser {
         }
     }
 
-    void ParseTypeDecl(bool is_struct, bool isprivate, List *parent_list) {
+    void ParseTypeDecl(bool is_struct, bool isprivate, Block *parent_list) {
         lex.Next();
-        auto sname = st.MaybeNameSpace(ExpectId(), !isprivate);
+        auto sname = st.MaybeNameSpace(ExpectId(), true);
         UDT *udt = &st.StructDecl(sname, lex, is_struct);
         auto parse_sup = [&] () {
             ExpectId();
             auto sup = &st.StructUse(lastid, lex);
-            if (sup == udt) Error("can\'t inherit from: " + lastid);
+            if (sup == udt) Error("can\'t inherit from ", Q(lastid));
             if (is_struct != sup->is_struct)
                 Error("class/struct must match parent");
+            sup->has_subclasses = true;
             return sup;
         };
         auto parse_specializers = [&] () {
             int i = 0;
             if (IsNext(T_LT)) {
+                size_t j = 0;
+                // Find first unbound generic.
+                while (j < udt->generics.size() && !udt->generics[j].giventype.utr.Null()) j++;
                 for (;;) {
-                    if (udt->generics.empty()) Error("too many type specializers");
-                    udt->generics.erase(udt->generics.begin());
-                    TypeRef type;
-                    ParseType(type, false);
-                    auto def = IsNext(T_ASSIGN) ? ParseFactor() : nullptr;
-                    for (auto &field : udt->fields.v) {
-                        if (field.genericref == i) {
-                            field.type = type;
-                            // We don't reset genericref here, because its used to know which
-                            // fields to select a specialization on.
-                            if (def) {
+                    if (j == udt->generics.size()) Error("too many type specializers");
+                    udt->generics[j].giventype = ParseType(false);
+                    if (IsNext(T_ASSIGN)) {
+                        // FIXME: this is a bit of a hack now. We allow default values to be
+                        // specified for specializers that apply to fields that have this type,
+                        // but given that typevars can be a subtype of a fields type, this is
+                        // now a bit odd.
+                        auto def = ParseFactor();
+                        for (auto &field : udt->fields) {
+                            if (field.giventype.utr->t == V_TYPEVAR &&
+                                field.giventype.utr->tv == udt->generics[j].tv) {
                                 if (field.defaultval) Error("field already has a default value");
                                 field.defaultval = def;
                             }
                         }
                     }
                     i++;
+                    j++;
                     if (lex.token == T_GT) {
                         lex.OverrideCont(false);  // T_GT here should not continue the line.
                         lex.Next();
@@ -292,31 +324,15 @@ struct Parser {
         if (IsNext(T_ASSIGN)) {
             // A specialization of an existing struct
             auto sup = parse_sup();
-            udt = sup->CloneInto(udt);
-            udt->idx = (int)st.udttable.size() - 1;
-            udt->name = sname;
+            udt = sup->CloneInto(udt, sname, st.udttable);
             if (!parse_specializers())
                 Error("no specialization types specified");
             if (isprivate != sup->isprivate)
                 Error("specialization must have same privacy level");
             if (sup->predeclaration)
                 Error("must specialization fully defined type");
-            if (udt->superclass) {
-                // This points to a generic version of the superclass of this class.
-                // See if we can find a matching specialization instead.
-                // FIXME: better to move this to start of typecheck just in case more to be
-                // declared.
-                auto sti = udt->superclass->next;
-                for (; sti; sti = sti->next) {
-                    for (size_t i = 0; i < sti->fields.size(); i++)
-                        if (sti->fields.v[i].type != udt->fields.v[i].type)
-                            goto fail;
-                    goto done;
-                    fail:;
-                }
-                done:
-                udt->superclass = sti;  // Either a match or nullptr.
-            }
+            if (udt->generics.back().giventype.utr.Null())
+                Error("missing specializers");
         } else if (Either(T_COLON, T_LT)) {
             // A regular struct declaration
             udt->isprivate = isprivate;
@@ -324,9 +340,9 @@ struct Parser {
                 for (;;) {
                     auto id = ExpectId();
                     for (auto &g : udt->generics)
-                        if (g.name == id)
+                        if (g.tv->name == id)
                             Error("re-declaration of generic type");
-                    udt->generics.push_back({ id });
+                    udt->generics.push_back({ st.NewGeneric(id), { nullptr }, nullptr });
                     if (IsNext(T_GT)) break;
                     Expect(T_COMMA);
                 }
@@ -334,155 +350,264 @@ struct Parser {
             Expect(T_COLON);
             if (lex.token == T_IDENT) {
                 auto sup = parse_sup();
-                if (sup) {
-                    if (sup->predeclaration) sup->predeclaration = false;  // Empty base class.
-                    udt->superclass = sup;
-                    udt->generics = sup->generics;
-                    for (auto &fld : sup->fields.v) {
-                        udt->fields.v.push_back(fld);
-                    }
+                if (sup->predeclaration) sup->predeclaration = false;  // Empty base class.
+                udt->resolved_superclass = sup;
+                udt->given_superclass = st.NewSpecUDT(sup);
+                udt->generics.insert(udt->generics.begin(), sup->generics.begin(),
+                                     sup->generics.end());
+                for (auto &fld : sup->fields) {
+                    udt->fields.push_back(fld);
                 }
                 parse_specializers();
+                if (udt->FullyBound()) {
+                    for (auto &g : udt->generics) {
+                        udt->given_superclass->spec_udt->specializers.push_back(&*g.giventype.utr);
+                    }
+                    udt->given_superclass->spec_udt->is_generic = true;
+                }
             }
             if (IsNext(T_INDENT)) {
                 bool fieldsdone = false;
+                st.bound_typevars_stack.push_back(&udt->generics);
                 for (;;) {
+                    bool member_private = IsNext(T_PRIVATE);
                     if (IsNext(T_FUN)) {
                         fieldsdone = true;
-                        parent_list->Add(ParseNamedFunctionDefinition(false, udt));
+                        parent_list->Add(ParseNamedFunctionDefinition(member_private, udt));
                     }
                     else {
                         if (fieldsdone) Error("fields must be declared before methods");
                         ExpectId();
                         auto &sfield = st.FieldDecl(lastid);
-                        TypeRef type = type_any;
-                        int genericref = -1;
+                        UnresolvedTypeRef type = { type_any };
                         if (IsNext(T_COLON)) {
-                            genericref = ParseType(type, false, udt);
+                            type = ParseType(false);
                         }
                         Node *defaultval = IsNext(T_ASSIGN) ? ParseExp() : nullptr;
-                        udt->fields.v.push_back(Field(&sfield, type, genericref, defaultval));
+                        if (type.utr->t == V_ANY && !defaultval)
+                            Error("must specify either type or default value");
+                        udt->fields.push_back(Field(&sfield, type, defaultval, member_private, lex));
                     }
                     if (!IsNext(T_LINEFEED) || Either(T_ENDOFFILE, T_DEDENT)) break;
                 }
                 Expect(T_DEDENT);
+                st.bound_typevars_stack.pop_back();
             }
-            if (udt->fields.v.empty() && udt->is_struct)
+            if (udt->fields.empty() && udt->is_struct)
                 Error("structs cannot be empty");
         } else {
             // A pre-declaration.
             udt->predeclaration = true;
         }
+        udt->is_generic = false;
+        udt->unspecialized.specializers.clear();
+        for (auto &g : udt->generics) {
+            auto type = g.giventype.utr.Null()
+                ? UnresolvedTypeRef { &g.tv->thistype }
+                : g.giventype;
+            // This test works correctly if a generic refers to its own struct, since either
+            // is_generic is still false, or it is already true if theres other generics.
+            if (st.IsGeneric(type)) udt->is_generic = true;
+            udt->unspecialized.specializers.push_back(&*type.utr);
+            g.resolvedtype = type.utr;
+        }
+        udt->unspecialized.is_generic = udt->is_generic;
         parent_list->Add(new UDTRef(lex, udt));
     }
 
     Node *ParseNamedFunctionDefinition(bool isprivate, UDT *self) {
-        // TODO: also exclude functions from namespacing whose first arg is a type namespaced to
-        // current namespace (which is same as !self).
-        auto idname = st.MaybeNameSpace(ExpectId(), !isprivate && !self);
-        if (natreg.FindNative(idname))
-            Error("cannot override built-in function: " + idname);
-        return ParseFunction(&idname, isprivate, true, true, "", false, false, self);
+        string idname;
+        if (IsNext(T_OPERATOR)) {
+            auto op = lex.token;
+            if ((op < T_PLUS || op > T_ASREQ) && op != T_LEFTBRACKET)
+                Error(cat("illegal token for operator overloading: ", TName(op)));
+            idname = cat(TName(T_OPERATOR), TName(op));
+            lex.Next();
+            if (op == T_LEFTBRACKET) {
+                Expect(T_RIGHTBRACKET);
+                idname += ']';
+            }
+        } else {
+            // TODO: also exclude functions from namespacing whose first arg is a type namespaced to
+            // current namespace (which is same as !self).
+            idname = st.MaybeNameSpace(ExpectId(), !self);
+        }
+        return ParseFunction(&idname, isprivate, true, true, self);
     }
 
-    void ImplicitReturn(SubFunction *sf) {
+    void ImplicitReturn(Overload &ov) {
         // Anonymous functions and one-liners have an implicit return value.
-        auto &stats = sf->body->children;
+        auto &stats = ov.gbody->children;
         if (!Is<Return>(stats.back())) {
             // Conversely, if named functions have no return at the end, we should
             // ensure any value accidentally available gets ignored and does not become a return
             // value.
-            auto make_void = !sf->parent->anonymous;
+            auto make_void = !ov.sf->parent->anonymous;
             // All function bodies end in return, simplifying code downstream.
-            stats.back() = new Return(stats.back()->line, stats.back(), sf, make_void);
+            stats.back() = new Return(stats.back()->line, stats.back(), ov.sf, make_void);
         }
     }
 
-    Node *ParseFunction(string_view *name,
-                        bool isprivate, bool parens, bool parseargs,
-                        string_view context,
-                        bool expfunval = false, bool parent_noparens = false, UDT *self = nullptr) {
-        auto sf = st.ScopeStart();
+    void GenImplicitGenericForLastArg() {
+        auto sf = st.defsubfunctionstack.back();
+        static const char *typevar_names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        string_view nn;
+        size_t gen_generics = 0;
+        {
+            again:
+            if (gen_generics == 26) Error("too many implicit generics");
+            nn = { typevar_names + gen_generics++, 1 };
+            for (auto &btv : sf->generics) if (btv.tv->name == nn) goto again;
+        }
+        auto ng = st.NewGeneric(nn);
+        sf->generics.push_back({ ng, { nullptr } });
+        sf->args.back().type = &ng->thistype;
+        sf->giventypes.push_back({ &ng->thistype });
+    }
+
+    void ParseBody(Block *block, int for_nargs) {
+        block_stack.push_back({ block, for_nargs, 0 });
+        if (IsNext(T_INDENT)) {
+            return ParseStatements(block, T_DEDENT);
+        } else {
+            block->children.push_back(ParseExpStat());
+            CleanupStatements(block);
+        }
+        block_stack.pop_back();
+    }
+
+    Node *ParseFunction(string *name, bool isprivate, bool parens, bool parseargs,
+                        UDT *self = nullptr) {
+        auto sf = st.FunctionScopeStart();
+        st.bound_typevars_stack.push_back(&sf->generics);
+        if (name) {
+            // Parse generic params if any.
+            // TODO: can this be extended to non-named functions syntactically?
+            if (IsNext(T_LT)) {
+                for (;;) {
+                    auto ng = st.NewGeneric(ExpectId());
+                    for (auto &btv : sf->generics) if (btv.tv->name == ng->name)
+                        Error("re-definition of generic ", Q(ng->name));
+                    sf->generics.push_back({ ng, { nullptr } });
+                    if (IsNext(T_GT)) break;
+                    Expect(T_COMMA);
+                }
+            }
+        }
         if (parens) Expect(T_LEFTPAREN);
         size_t nargs = 0;
-        auto SetArgFlags = [&](Arg &arg, bool withtype) {
-            if (!st.IsGeneric(arg.type)) arg.flags &= ~AF_GENERIC;
-            if (withtype) arg.flags |= AF_WITHTYPE;
-        };
         if (self) {
             nargs++;
-            auto id = st.LookupDef("this", lex, false, false, true);
-            auto &arg = sf->args.v.back();
-            arg.type = &self->thistype;
+            auto id = st.LookupDef("this", lex, false, true);
+            auto &arg = sf->args.back();
+            arg.type = &self->unspecialized_type;
+            sf->giventypes.push_back({ arg.type });
             st.AddWithStruct(arg.type, id, lex, sf);
-            SetArgFlags(arg, true);
+            arg.withtype = true;
         }
+        bool non_inline_method = false;
+        int first_default_arg = -1;
+        vector<Node *> default_args;
         if (lex.token != T_RIGHTPAREN && parseargs) {
             for (;;) {
                 ExpectId();
                 nargs++;
-                auto id = st.LookupDef(lastid, lex, false, false, false);
-                auto &arg = sf->args.v.back();
                 bool withtype = lex.token == T_TYPEIN;
+                auto id = st.LookupDef(lastid, lex, false, withtype);
+                auto &arg = sf->args.back();
                 if (parens && (lex.token == T_COLON || withtype)) {
                     lex.Next();
-                    ParseType(arg.type, withtype, nullptr, nullptr, &sf->args.v.back());
+                    arg.type = ParseType(withtype, nullptr).utr;
                     if (withtype) st.AddWithStruct(arg.type, id, lex, sf);
-                    if (nargs == 1 && IsUDT(arg.type->t)) self = arg.type->udt;
+                    if (nargs == 1 && arg.type->t == V_UUDT) {
+                        non_inline_method = true;
+                        self = arg.type->spec_udt->udt;
+                        st.bound_typevars_stack.push_back(&self->generics);
+                    }
+                    sf->giventypes.push_back({ arg.type });
+                } else {
+                    GenImplicitGenericForLastArg();
                 }
-                SetArgFlags(arg, withtype);
+                if (parens && IsNext(T_ASSIGN)) {
+                    if (first_default_arg < 0) first_default_arg = (int)sf->args.size() - 1;
+                    default_args.push_back(ParseExp());
+                } else {
+                    if (first_default_arg >= 0) Error("missing default argument");
+                }
                 if (!IsNext(T_COMMA)) break;
             }
         }
         if (parens) Expect(T_RIGHTPAREN);
         sf->method_of = self;
-        auto &f = name ? st.FunctionDecl(*name, nargs, lex) : st.CreateFunction("", context);
-        if (name && self) {
-            for (auto isf : f.overloads) {
-                if (isf->method_of == self) {
-                    // FIXME: this currently disallows static overloads on the other args, that
-                    // would be nice to add.
-                    Error("method " + *name + " already declared for type: " + self->name);
-                }
+        auto &f = name ? st.FunctionDecl(*name, nargs, lex) : st.CreateFunction("");
+        auto nf = natreg.FindNative(f.name);
+        if (nf && nf->args.size() >= nargs) {
+            // TODO: could allow less args if we check nf's default args.
+            Error("cannot override built-in function ", Q(f.name), " with same (or less) arity");
+        }
+        // Check default args are being used consistently with the overloads & siblings.
+        if (first_default_arg < 0) first_default_arg = (int)nargs;
+        if (f.overloads.empty()) {
+            f.first_default_arg = first_default_arg;
+            f.default_args = default_args;
+        } else {
+            if (f.first_default_arg != first_default_arg)
+                Error("number of default arguments must be the same as previous overload");
+            for (auto [i, da] : enumerate(f.default_args)) {
+                if (da && !da->Equal(default_args[i]))
+                    Error("default argument ", i + 1, " must be same as previous overload");
+                delete default_args[i];
             }
         }
-        f.overloads.push_back(nullptr);
-        sf->SetParent(f, f.overloads.back());
-        if (!expfunval) {
-            if (IsNext(T_CODOT)) {  // Return type decl.
-                ParseType(sf->fixedreturntype, false, nullptr, sf);
+        // Create the overload.
+        f.overloads.emplace_back(Overload {});
+        sf->SetParent(f, f.overloads.back().sf);
+        // Check if there's any overlap in default argument ranges.
+        auto ff = st.GetFirstFunction(f.name);
+        while (ff) {
+            if (ff != &f) {
+                if (first_default_arg <= (int)ff->nargs() &&
+                    ff->first_default_arg <= (int)f.nargs())
+                    Error("function ", Q(f.name), " with ", f.nargs(),
+                          " arguments is ambiguous with the ", ff->nargs(),
+                          " version because of default arguments");
+                if (ff->isprivate != isprivate)
+                    Error("inconsistent private annotation of same function with different number"
+                          " of arguments ", Q(*name));
             }
-            if (!IsNext(T_COLON)) {
-                if (lex.token == T_IDENT || !name) Expect(T_COLON);
-                if (f.istype || f.overloads.size() > 1)
-                    Error("redefinition of function type: " + *name);
-                f.istype = true;
-                sf->typechecked = true;
-                // Any untyped args truely mean "any", they should not be specialized (we wouldn't know
-                // which specialization that refers to).
-                for (auto &arg : sf->args.v) {
-                    if (arg.flags & AF_GENERIC) arg.flags = AF_NONE;
-                    // No idea what the function is going to be, so have to default to borrow.
-                    arg.sid->lt = LT_BORROW;
-                }
-                if (sf->fixedreturntype.Null()) Error("missing return type");
-                sf->returntype = sf->fixedreturntype;
-                sf->reqret = sf->returntype->NumValues();
+            ff = ff->sibf;
+        }
+        if (IsNext(T_RETURNTYPE)) {  // Return type decl.
+            sf->returngiventype = ParseTypes(sf, LT_KEEP);
+            sf->returntype = sf->returngiventype.utr;
+        }
+        if (!IsNext(T_COLON)) {
+            // This must be a function type.
+            if (lex.token == T_IDENT || !name) Expect(T_COLON);
+            if (f.istype || f.overloads.size() > 1)
+                Error("redefinition of function type ", Q(*name));
+            f.istype = true;
+            sf->typechecked = true;
+            for (auto [i, arg] : enumerate(sf->args)) {
+                if (st.IsGeneric(sf->giventypes[i]))
+                    Error("function type arguments can\'t be generic (missing ", Q(":"), " ?)");
+                // No idea what the function is going to be, so have to default to borrow.
+                arg.sid->lt = LT_BORROW;
             }
+            if (sf->returngiventype.utr.Null())
+                Error("missing return type or ", Q(":"), " in function definition header");
+            if (!sf->generics.empty())
+                Error("function type cannot have generics");
+            sf->reqret = sf->returntype->NumValues();
         }
         if (name) {
             if (f.overloads.size() > 1) {
                 // We could check here for "double declaration", but since that entails
                 // detecting what is a legit overload or not, this is in general better left to the
                 // type checker.
-                if (!f.nargs()) Error("double declaration: " + f.name);
-                for (auto [i, arg] : enumerate(sf->args.v)) {
-                    if (arg.flags & AF_GENERIC && !i)
-                        Error("first argument of overloaded function must be typed: " + f.name);
-                }
+                if (!f.nargs()) Error("double declaration of ", Q(f.name));
                 if (isprivate != f.isprivate)
-                    Error("inconsistent private annotation of multiple function implementations"
-                          " for: " + *name);
+                    Error("inconsistent private annotation of multiple overloads for ", Q(*name));
             }
             f.isprivate = isprivate;
             functionstack.push_back(&f);
@@ -491,61 +616,43 @@ struct Parser {
         }
         // Parse the body.
         if (!f.istype) {
-            if (expfunval) {
-                sf->body = (new List(lex))->Add(ParseExp(parent_noparens));
-            } else if (IsNext(T_INDENT)) {
-                sf->body = ParseStatements(T_DEDENT);
-            } else {
-                sf->body = new List(lex);
-                sf->body->children.push_back(ParseExpStat());
-                CleanupStatements(sf->body);
-            }
-            ImplicitReturn(sf);
+            auto block = new Block(lex);
+            f.overloads.back().gbody = block;
+            ParseBody(block, -1);
+            ImplicitReturn(f.overloads.back());
         }
-        for (auto &arg : sf->args.v) {
-            if (arg.sid->id->anonymous_arg) {
-                if (name) Error("cannot use anonymous argument: " + arg.sid->id->name +
-                    " in named function: " + f.name, sf->body);
-                if (nargs) Error("cannot mix anonymous argument: " + arg.sid->id->name +
-                    " with declared arguments in function", sf->body);
-            }
-        }
-        st.ScopeCleanup();
         if (name) functionstack.pop_back();
-        // Keep copy or arg types from before specialization.
-        f.orig_args = sf->args;  // not used for multimethods
+        if (non_inline_method) st.bound_typevars_stack.pop_back();
+        st.bound_typevars_stack.pop_back();
+        st.FunctionScopeCleanup();
         return new FunRef(lex, sf);
     }
 
-    int ParseType(TypeRef &dest, bool withtype, UDT *udt = nullptr,
-                  SubFunction *sfreturntype = nullptr, Arg *funarg = nullptr) {
+    UnresolvedTypeRef ParseTypes(SubFunction *sfreturntype, Lifetime lt) {
+        auto dest = ParseType(false, sfreturntype);
+        if (!IsNext(T_COMMA)) return dest;
+        vector<TypeRef> types;
+        types.push_back(dest.utr);
+        do {
+            types.push_back(ParseType(false, sfreturntype).utr);
+        } while (IsNext(T_COMMA));
+        dest = { st.NewTuple(types.size()) };
+        for (auto [i, type] : enumerate(types))
+            dest.utr->Set(i, &*type, IsRefNil(type->t) ? lt : LT_ANY);
+        return dest;
+    }
+
+    UnresolvedTypeRef ParseType(bool withtype, SubFunction *sfreturntype = nullptr) {
+        TypeRef dest;
         switch(lex.token) {
             case T_INTTYPE:   dest = type_int;        lex.Next(); break;
             case T_FLOATTYPE: dest = type_float;      lex.Next(); break;
             case T_STRTYPE:   dest = type_string;     lex.Next(); break;
-            case T_COROUTINE: dest = type_coroutine;  lex.Next(); break;
             case T_RESOURCE:  dest = type_resource;   lex.Next(); break;
-            case T_LAZYEXP: {
-                lex.Next();
-                if (!funarg) {
-                  Error("lazy_expression cannot be used outside function signature");
-                }
-                funarg->flags = ArgFlags(funarg->flags | AF_EXPFUNVAL);
-                return -1;
-            }
             case T_IDENT: {
-                if (udt) {
-                    for (auto [i, gen] : enumerate(udt->generics)) {
-                        if (gen.name == lex.sattr) {
-                            lex.Next();
-                            dest = type_undefined;
-                            return (int)i;
-                        }
-                    }
-                }
                 auto f = st.FindFunction(lex.sattr);
                 if (f && f->istype) {
-                    dest = &f->overloads[0]->thistype;
+                    dest = &f->overloads[0].sf->thistype;
                     lex.Next();
                     break;
                 }
@@ -555,14 +662,44 @@ struct Parser {
                     lex.Next();
                     break;
                 }
-                dest = &st.StructUse(lex.sattr, lex).thistype;
+                for (auto gv : reverse(st.bound_typevars_stack)) {
+                    for (auto &btv : *gv) {
+                        if (btv.tv->name == lex.sattr) {
+                            lex.Next();
+                            dest = &btv.tv->thistype;
+                            goto done;
+                        }
+                    }
+                }
+                dest = &st.StructUse(lex.sattr, lex).unspecialized_type;
                 lex.Next();
+                if (IsNext(T_LT)) {
+                    dest = st.NewSpecUDT(dest->spec_udt->udt);
+                    if (dest->spec_udt->udt->is_generic) dest->spec_udt->is_generic = true;
+                    for (;;) {
+                        auto s = ParseType(false);
+                        if (st.IsGeneric(s)) dest->spec_udt->is_generic = true;
+                        dest->spec_udt->specializers.push_back(&*s.utr);
+                        if (lex.token == T_GT) {
+                            // This may be the end of the line, so make sure Lex doesn't see it
+                            // as a GT op.
+                            lex.OverrideCont(false);
+                            lex.Next();
+                            break;
+                        }
+                        Expect(T_COMMA);
+                    }
+                } else {
+                    if (dest->spec_udt->udt->is_generic)
+                        Error("use of type ", Q(dest->spec_udt->udt->name),
+                              " requires specializers");
+                }
+                done:
                 break;
             }
             case T_LEFTBRACKET: {
                 lex.Next();
-                TypeRef elem;
-                ParseType(elem, false);
+                TypeRef elem = ParseType(false).utr;
                 Expect(T_RIGHTBRACKET);
                 dest = st.Wrap(elem, V_VECTOR);
                 break;
@@ -576,113 +713,16 @@ struct Parser {
                 }
                 // FALL-THRU:
             default:
-                Error("illegal type syntax: " + lex.TokStr());
+                Error("illegal type syntax: ", Q(lex.TokStr()));
         }
         if (IsNext(T_QUESTIONMARK)) {
-            if (!IsNillable(dest->t))
+            if (!st.IsNillable(dest) && dest->t != V_TYPEVAR)
                 Error("value types can\'t be made nilable");
             dest = st.Wrap(dest, V_NIL);
         }
-        if (withtype && !IsUDT(dest->t)) Error(":: must be used with a class type");
-        return -1;
-    }
-
-    void ParseFunArgs(List *list, bool coroutine, Node *derefarg, string_view fname = "",
-                      GenericArgs *args = nullptr, bool noparens = false) {
-        if (derefarg) {
-            CheckArg(args, 0, fname);
-            list->Add(derefarg);
-            if (IsNext(T_LEFTPAREN)) {
-                ParseFunArgsRec(list, false, false, args, 1, fname, noparens);
-            }
-        } else {
-            if (!noparens) Expect(T_LEFTPAREN);
-            ParseFunArgsRec(list, coroutine, false, args, 0, fname, noparens);
-        }
-    }
-
-    void ParseFunArgsRec(List *list, bool coroutine, bool needscomma, GenericArgs *args,
-                         size_t thisarg, string_view fname, bool noparens /* this call */) {
-        if (!noparens && IsNext(T_RIGHTPAREN)) {
-            if (call_noparens) {  // This call is an arg to a call that has no parens.
-                // Don't unnecessarily parse funvals. Means "if f(x):" parses as expected.
-                return;
-            }
-            ParseTrailingFunctionValues(list, coroutine, args, thisarg, fname);
-            return;
-        }
-        if (needscomma) Expect(T_COMMA);
-        CheckArg(args, thisarg, fname);
-        if (args && (args->GetFlags(thisarg) & AF_EXPFUNVAL)) {
-            list->Add(ParseFunction(nullptr, false, false, false, args->GetName(thisarg), true,
-                                    noparens));
-        } else {
-            list->Add(ParseExp(noparens));
-        }
-
-        if (noparens) {
-            if (lex.token == T_COLON)
-                ParseTrailingFunctionValues(list, coroutine, args, thisarg + 1, fname);
-        } else {
-            ParseFunArgsRec(list, coroutine, !noparens, args, thisarg + 1, fname, noparens);
-        }
-    }
-
-    void CheckArg(GenericArgs *args, size_t thisarg, string_view fname) {
-        if (args && thisarg == args->size())
-            Error("too many arguments passed to function " + fname);
-    }
-
-    void ParseTrailingFunctionValues(List *list, bool coroutine, GenericArgs *args, size_t thisarg,
-                                     string_view fname) {
-        if (args && thisarg + 1 < args->size())
-            trailingkeywordedfunctionvaluestack.push_back(args->GetName(thisarg + 1));
-        auto name = args && thisarg < args->size() ? args->GetName(thisarg) : "";
-        Node *e = nullptr;
-        switch (lex.token) {
-            case T_COLON:
-                e = ParseFunction(nullptr, false, false, false, name);
-                break;
-            case T_IDENT:
-                // skip if this function value starts with an ID that's equal to the parents next
-                // keyworded function val ID, e.g. "else" in: if(..): currentcall(..) else: ..
-                // FIXME: if you forget : after else, it is going to try to declare any following
-                // identifier as the first arg of a new function, leading to weird errors.
-                // Should ideally know here how many args to expect.
-                if (trailingkeywordedfunctionvaluestack.empty() ||
-                    trailingkeywordedfunctionvaluestack.back() != lex.sattr)
-                    e = ParseFunction(nullptr, false, false, true, name);
-                break;
-            case T_LEFTPAREN:
-                e = ParseFunction(nullptr, false, true, true, name);
-                break;
-            default:
-                break;
-        }
-        if (args && thisarg + 1 < args->size()) trailingkeywordedfunctionvaluestack.pop_back();
-        if (!e) {
-            if (coroutine) {
-                e = new CoClosure(lex);
-                coroutine = false;
-            } else {
-                return;
-            }
-        }
-        list->Add(e);
-        CheckArg(args, thisarg, fname);
-        thisarg++;
-        bool islf = lex.token == T_LINEFEED;
-        if (args && thisarg < args->size() && (lex.token == T_IDENT || islf)) {
-            if (islf) lex.Next();
-            if (lex.token == T_IDENT && args->GetName(thisarg) == lex.sattr) {
-                lex.Next();
-                ParseTrailingFunctionValues(list, coroutine, args, thisarg, fname);
-            } else {
-                lex.PushCur();
-                if (islf) lex.Push(T_LINEFEED);
-                lex.Next();
-            }
-        }
+        if (withtype && dest->t != V_UUDT)
+            Error(":: must be used with a class type");
+        return { dest };
     }
 
     Node *ParseMultiRet(Node *first) {
@@ -707,26 +747,31 @@ struct Parser {
             if (IsNext(T_FROM)) {
                 if(!IsNext(T_PROGRAM)) {
                     if (!IsNextId())
-                        Error("return from: must be followed by function identifier or"
-                              " \"program\"");
+                        Error(Q("return from"), " must be followed by function identifier or ",
+                              Q("program"));
                     auto f = st.FindFunction(lastid);
                     if (!f)
-                        Error("return from: not a known function");
+                        Error(Q(lastid), " is not a known function for use with ",
+                              Q("return from"));
                     if (f->sibf || f->overloads.size() > 1)
-                        Error("return from: function must have single implementation");
-                    sf = f->overloads[0];
+                        Error("function ", Q(lastid),
+                              " must have single implementation to be used with ",
+                              Q("return from"));
+                    sf = f->overloads[0].sf;
                 }
             } else {
                 if (functionstack.size())
-                    sf = functionstack.back()->overloads.back();
+                    sf = functionstack.back()->overloads.back().sf;
             }
             return new Return(lex, rv, sf, false);
+        } else if (IsNext(T_BREAK)) {
+            return new Break(lex);
         }
         auto e = ParseExp();
         while (IsNext(T_SEMICOLON)) {
             if (IsNext(T_LINEFEED)) {
                 // specialized error for all the C-style language users
-                Error("\';\' is not a statement terminator");
+                Error(Q(";"), " is not a statement terminator");
             }
             e = new Seq(lex, e, ParseExp());
         }
@@ -740,7 +785,7 @@ struct Parser {
     }
 
     void CheckOpEq(Node *e) {
-        if (!Is<IdentRef>(e) && !Is<CoDot>(e) && !Is<Indexing>(e) && !Is<GenericCall>(e))
+        if (!Is<IdentRef>(e) && !Is<Indexing>(e) && !Is<GenericCall>(e) && !Is<Dot>(e))
             Error("illegal left hand side of assignment");
         Modify(e);
         lex.Next();
@@ -756,11 +801,16 @@ struct Parser {
             case T_MULTEQ:  CheckOpEq(e); return new MultiplyEq(lex, e, ParseExp());
             case T_DIVEQ:   CheckOpEq(e); return new DivideEq(lex, e, ParseExp());
             case T_MODEQ:   CheckOpEq(e); return new ModEq(lex, e, ParseExp());
+            case T_ANDEQ:   CheckOpEq(e); return new AndEq(lex, e, ParseExp());
+            case T_OREQ:    CheckOpEq(e); return new OrEq(lex, e, ParseExp());
+            case T_XOREQ:   CheckOpEq(e); return new XorEq(lex, e, ParseExp());
+            case T_ASLEQ:   CheckOpEq(e); return new ShiftLeftEq(lex, e, ParseExp());
+            case T_ASREQ:   CheckOpEq(e); return new ShiftRightEq(lex, e, ParseExp());
             default:        return e;
         }
     }
 
-    Node *ParseOpExp(uint level = 6) {
+    Node *ParseOpExp(int level = 6) {
         static TType ops[][4] = {
             { T_MULT, T_DIV, T_MOD, T_NONE },
             { T_PLUS, T_MINUS, T_NONE, T_NONE },
@@ -819,145 +869,173 @@ struct Parser {
         }
     }
 
-    Node *BuiltinControlClosure(Node *funval, size_t maxargs) {
-        size_t clnargs = 0;
-        auto fr = Is<FunRef>(funval);
-        if (fr)
-            clnargs = fr->sf->parent->nargs();
-        else if (!Is<DefaultVal>(funval))
-            Error("illegal body", funval);
-        if (clnargs > maxargs)
-            Error(cat("body has ", clnargs - maxargs, " parameters too many"), funval);
-        if (Is<DefaultVal>(funval)) return funval;
-        assert(fr);
-        auto call = new Call(lex, fr->sf);
-        delete fr;
-        if (clnargs > 0) {
-            call->Add(new ForLoopElem(lex));
-            if (clnargs > 1) call->Add(new ForLoopCounter(lex));
-        }
-        return call;
-    }
-
-    Node *ParseFunctionCall(Function *f, NativeFun *nf, string_view idname, Node *firstarg,
-                            bool coroutine, bool noparens) {
-        auto wse = st.GetWithStackBack();
+    List *ParseFunctionCall(Function *f, NativeFun *nf, string_view idname, Node *firstarg,
+                            bool noparens, vector<UnresolvedTypeRef> *specializers) {
+        vector<Node *> list;
+        [&]() {
+            if (firstarg) {
+                list.push_back(firstarg);
+                if (!IsNext(T_LEFTPAREN)) return;
+            } else {
+                if (!noparens) Expect(T_LEFTPAREN);
+            }
+            // Parse regular arguments.
+            bool needscomma = false;
+            for (;;) {
+                if (!noparens && IsNext(T_RIGHTPAREN)) {
+                    if (call_noparens) {  // This call is an arg to a call that has no parens.
+                        // Don't unnecessarily parse funvals. Means "if f(x):" parses as expected.
+                        return;
+                    }
+                    break;
+                }
+                if (needscomma) Expect(T_COMMA);
+                list.push_back(ParseExp(noparens));
+                if (noparens) {
+                    if (lex.token == T_COLON) break;
+                    return;
+                } else {
+                    needscomma = true;
+                }
+            }
+            // Parse trailing function values.
+            for (;;) {
+                Node *e = nullptr;
+                switch (lex.token) {
+                    case T_COLON: e = ParseFunction(nullptr, false, false, false); break;
+                    case T_IDENT: e = ParseFunction(nullptr, false, false, true); break;
+                    case T_LEFTPAREN: e = ParseFunction(nullptr, false, true, true); break;
+                    default: return;
+                }
+                list.push_back(e);
+                auto islf = IsNext(T_LINEFEED);
+                if (!islf && lex.token != T_LAMBDA) { return; }
+                if (!IsNext(T_LAMBDA)) {
+                    lex.PushCur();
+                    if (islf) lex.Push(T_LINEFEED);
+                    lex.Next();
+                    return;
+                }
+            }
+        }();
         // FIXME: move more of the code below into the type checker, and generalize the remaining
         // code to be as little dependent as possible on wether nf or f are available.
         // It should only parse args and construct a GenericCall.
-
-        // We give precedence to builtins, unless we're calling a known function in a :: context.
-        if (nf && (!f || !wse.id)) {
-            auto nc = new GenericCall(lex, idname, nullptr, false);
-            ParseFunArgs(nc, coroutine, firstarg, idname, &nf->args, noparens);
-            for (auto [i, arg] : enumerate(nf->args.v)) {
+        auto wse = st.GetWithStackBack();
+        // We give precedence to builtins, unless
+        // - we're calling a known function in a :: context.
+        // - we have more args than the builtin, and a matching function.
+        if (nf &&
+            (!f || !wse.id || (f->overloads.size() == 1 && !f->overloads[0].sf->method_of)) &&
+            (!f || list.size() <= nf->args.size() || list.size() != f->nargs())) {
+            auto nc = new GenericCall(lex, idname, nullptr, false, false, specializers);
+            nc->children = list;
+            for (auto [i, arg] : enumerate(nf->args)) {
                 if (i >= nc->Arity()) {
                     auto &type = arg.type;
                     if (type->t == V_NIL) {
                         nc->Add(new DefaultVal(lex));
                     } else {
                         auto nargs = nc->Arity();
-                        for (auto ol = nf->overloads; ol; ol = ol->overloads) {
+                        for (auto &ol = nf->overloads; ol; ol = ol->overloads) {
                             // Typechecker will deal with it.
-                            if (ol->args.v.size() == nargs) goto argsok;
+                            if (ol->args.size() == nargs) goto argsok;
                         }
-                        Error("missing arg to builtin function: " + idname);
+                        Error("missing arg to builtin function ", Q(idname));
                     }
                 }
             }
             argsok:
-            // Special formats for these functions, for better type checking and performance
-            auto convertnc = [&](Node *e) {
-                nc->children.clear();
-                delete nc;
-                return e;
-            };
-            if (nf->name == "if") {
-                return convertnc(new If(lex, nc->children[0],
-                                             BuiltinControlClosure(nc->children[1], 0),
-                                             BuiltinControlClosure(nc->children[2], 0)));
-
-            } else if (nf->name == "while") {
-                return convertnc(new While(lex, BuiltinControlClosure(nc->children[0], 0),
-                                                BuiltinControlClosure(nc->children[1], 0)));
-            } else if (nf->name == "for") {
-                return convertnc(new For(lex, nc->children[0],
-                                              BuiltinControlClosure(nc->children[1], 2)));
-            }
             return nc;
         }
         auto id = st.Lookup(idname);
         // If both a var and a function are in scope, the deepest scope wins.
         // Note: <, because functions are inside their own scope.
         if (f && (!id || id->scopelevel < f->scopelevel)) {
-            if (f->istype) Error("can\'t call function type: " + f->name);
-            auto bestf = f;
-            for (auto fi = f->sibf; fi; fi = fi->sibf)
-                if (fi->nargs() > bestf->nargs()) bestf = fi;
-            auto call = new GenericCall(lex, idname, nullptr, false);
-            if (!firstarg) firstarg = SelfArg(f, wse);
-            ParseFunArgs(call, coroutine, firstarg, idname, &bestf->overloads.back()->args, noparens);
-            auto nargs = call->Arity();
-            f = FindFunctionWithNargs(f, nargs, idname, nullptr);
-            call->sf = f->overloads.back();
+            if (f->istype) Error("can\'t call function type ", Q(f->name));
+            auto call = new GenericCall(lex, idname, nullptr, false, false, specializers);
+            call->children = list;
+            if (!firstarg) {
+                SelfArg(f, wse, call->Arity(), call);
+            }
+            f = FindFunctionWithNargs(f, call, idname, nullptr);
+            call->sf = f->overloads.back().sf;
             return call;
         }
+        if (noparens) Error("call requires ()");
         if (id) {
             auto dc = new DynCall(lex, nullptr, id->cursid);
-            ParseFunArgs(dc, coroutine, firstarg);
+            dc->children = list;
             return dc;
         } else {
-            auto call = new GenericCall(lex, idname, nullptr, false);
-            ParseFunArgs(call, coroutine, firstarg);
-            ForwardFunctionCall ffc = { st.scopelevels.size(), call, !!firstarg, wse };
+            auto call = new GenericCall(lex, idname, nullptr, false, false, specializers);
+            call->children = list;
+            ForwardFunctionCall ffc = {
+                st.scopelevels.size(), st.current_namespace, call, !!firstarg, wse
+            };
             forwardfunctioncalls.push_back(ffc);
             return call;
         }
     }
 
-    IdentRef *SelfArg(const Function *f, const SymbolTable::WithStackElem &wse) {
-        if (f->nargs()) {
-            // If we're in the context of a withtype, calling a function that starts with an
-            // arg of the same type we pass it in automatically.
-            // This is maybe a bit very liberal, should maybe restrict it?
-            for (auto sf : f->overloads) {
-                if (wse.type == sf->args.v[0].type && sf->args.v[0].flags & AF_WITHTYPE) {
-                    if (wse.id && wse.sf->parent != f) {  // Not in recursive calls.
-                        return new IdentRef(lex, wse.id->cursid);
-                    }
-                    break;
+    void SelfArg(const Function *f, const SymbolTable::WithStackElem &wse, size_t nargs,
+                      GenericCall *call) {
+        if (nargs >= f->nargs()) return;
+        // If we're in the context of a withtype, calling a function that starts with an
+        // arg of the same type we pass it in automatically.
+        // This is maybe a bit very liberal, should maybe restrict it?
+        for (auto &ov : f->overloads) {
+            auto &arg0 = ov.sf->args[0];
+            if (arg0.type->t == V_UUDT &&
+                st.SuperDistance(arg0.type->spec_udt->udt, wse.udt) >= 0 &&
+                arg0.withtype) {
+                if (wse.id) {
+                    auto self = new IdentRef(lex, wse.id->cursid);
+                    call->children.insert(call->children.begin(), self);
+                    return;
                 }
+                break;
             }
         }
-        return nullptr;
+        return;
     }
 
-    Function *FindFunctionWithNargs(Function *f, size_t nargs, string_view idname, Node *errnode) {
-        for (; f; f = f->sibf)
-            if (f->nargs() == nargs)
+    Function *FindFunctionWithNargs(Function *f, GenericCall *call, string_view idname, Node *errnode) {
+        auto nargs = call->Arity();
+        for (; f; f = f->sibf) {
+            if (nargs <= f->nargs() && (int)nargs >= f->first_default_arg) {
+                for (size_t i = nargs; i < f->nargs(); i++) {
+                    call->children.push_back(f->default_args[i - f->first_default_arg]->Clone());
+                }
                 return f;
-        Error(cat("no version of function ", idname, " takes ", nargs, " arguments"), errnode);
+            }
+        }
+        ErrorAt(errnode, "no version of function ", Q(idname), " takes ", nargs, " arguments");
         return nullptr;
     }
 
-    void ResolveForwardFunctionCalls() {
+    void ResolveForwardFunctionCalls(bool error_on_not_found) {
         for (auto ffc = forwardfunctioncalls.begin(); ffc != forwardfunctioncalls.end(); ) {
             if (ffc->maxscopelevel >= st.scopelevels.size()) {
+                swap(ffc->call_namespace, st.current_namespace);
                 auto f = st.FindFunction(ffc->n->name);
+                swap(ffc->call_namespace, st.current_namespace);
                 if (f) {
                     if (!ffc->has_firstarg) {
-                        auto self = SelfArg(f, ffc->wse);
-                        if (self) ffc->n->children.insert(ffc->n->children.begin(), self);
+                        SelfArg(f, ffc->wse, ffc->n->Arity(), ffc->n);
                     }
                     ffc->n->sf = FindFunctionWithNargs(f,
-                        ffc->n->Arity(), ffc->n->name, ffc->n)->overloads.back();
+                        ffc->n, ffc->n->name, ffc->n)->overloads.back().sf;
                     ffc = forwardfunctioncalls.erase(ffc);
                     continue;
                 } else {
-                    if (st.scopelevels.size() == 1)
-                        Error("call to unknown function: " + ffc->n->name, ffc->n);
-                    // Prevent it being found in sibling scopes.
-                    ffc->maxscopelevel = st.scopelevels.size() - 1;
+                    if (st.scopelevels.size() == 1) {
+                        if (error_on_not_found)
+                            ErrorAt(ffc->n, "call to unknown function ", Q(ffc->n->name));
+                    } else {
+                        // Prevent it being found in sibling scopes.
+                        ffc->maxscopelevel = st.scopelevels.size() - 1;
+                    }
                 }
             }
             ffc++;
@@ -969,36 +1047,25 @@ struct Parser {
         // FIXME: it would be good to narrow the kind of factors these derefs can attach to,
         // since for some of them it makes no sense (e.g. function call with lambda args).
         for (;;) switch (lex.token) {
-            case T_DOT:
-            case T_CODOT: {
-                auto op = lex.token;
+            case T_DOT: {
                 lex.Next();
                 auto idname = ExpectId();
-                if (op == T_CODOT) {
-                    // Here we just look up ANY var with this name, only in the typechecker can we
-                    // know if it exists inside the coroutine. Can cause error if used before
-                    // coroutine is defined, error hopefully hints at that.
-                    auto id = st.LookupAny(idname);
-                    if (!id)
-                        Error("coroutines have no variable named: " + idname);
-                    n = new CoDot(lex, n, new IdentRef(lex, id->cursid));
-                } else {
-                    auto fld = st.FieldUse(idname);
-                    auto f = st.FindFunction(idname);
-                    auto nf = natreg.FindNative(idname);
-                    if (fld || f || nf) {
-                        if (fld && lex.token != T_LEFTPAREN) {
-                            auto dot = new GenericCall(lex,
-                                                       idname, f ? f->overloads.back() : nullptr,
-                                                       true);
-                            dot->Add(n);
-                            n = dot;
-                        } else {
-                            n = ParseFunctionCall(f, nf, idname, n, false, false);
-                        }
+                auto fld = st.FieldUse(idname);
+                auto f = st.FindFunction(idname);
+                auto nf = natreg.FindNative(idname);
+                if (fld || f || nf) {
+                    if (fld && lex.token != T_LEFTPAREN) {
+                        auto dot = new GenericCall(lex, idname,
+                                                   f ? f->overloads.back().sf : nullptr,
+                                                   true, false, nullptr);
+                        dot->Add(n);
+                        n = dot;
                     } else {
-                        Error("unknown field/function: " + idname);
+                        auto specializers = ParseSpecializers(f && !nf);
+                        n = ParseFunctionCall(f, nf, idname, n, false, &specializers);
                     }
+                } else {
+                    Error("unknown field/function ", Q(idname));
                 }
                 break;
             }
@@ -1024,8 +1091,9 @@ struct Parser {
                 return n;
             case T_IS: {
                 lex.Next();
-                auto is = new IsType(lex, n, TypeRef());
-                ParseType(is->giventype, false);
+                auto is = new IsType(lex, n);
+                is->giventype = ParseType(false);
+                is->resolvedtype = is->giventype.utr;
                 return is;
             }
             default:
@@ -1036,27 +1104,50 @@ struct Parser {
     Node *ParseFactor() {
         switch (lex.token) {
             case T_INT: {
-                auto i = lex.IntVal();
+                auto i = lex.ival;
                 lex.Next();
                 return new IntConstant(lex, i);
             }
             case T_FLOAT: {
-                auto f = strtod(lex.sattr.data(), nullptr);
+                auto f = lex.fval;
                 lex.Next();
                 return new FloatConstant(lex, f);
             }
             case T_STR: {
-                string s = lex.StringVal();
+                auto s = new StringConstant(lex, std::move(lex.sval));
                 lex.Next();
-                return new StringConstant(lex, s);
+                return s;
+            }
+            case T_STR_INT_START: {
+                Node *si = lex.sval.empty() ? nullptr : new StringConstant(lex, std::move(lex.sval));
+                lex.Next();
+                for (;;) {
+                    auto e = ParseOpExp();
+                    if (si) {
+                        si = new Plus(lex, si, e);
+                    } else {
+                        // We start with an exp, but we have to force this to be a string to ensure
+                        // all subsequent Plus ops are string concats.
+                        auto call = new NativeCall(natreg.FindNative("string"), lex);
+                        call->children.push_back(e);
+                        si = call;
+                    }
+                    if (!lex.sval.empty())
+                        si = new Plus(lex, si, new StringConstant(lex, std::move(lex.sval)));
+                    if (lex.token == T_STR_INT_MIDDLE) {
+                        lex.Next();
+                    } else {
+                        Expect(T_STR_INT_END);
+                        return si;
+                    }
+                }
             }
             case T_NIL: {
                 lex.Next();
-                auto n = new Nil(lex, nullptr);
-                if (IsNext(T_COLON)) {
-                    ParseType(n->giventype, false);
-                    if (!IsNillable(n->giventype->t)) Error("illegal nil type");
-                    n->giventype = st.Wrap(n->giventype, V_NIL);
+                auto n = new Nil(lex, { nullptr });
+                if (IsNext(T_TYPEIN)) {
+                    n->giventype = ParseType(false);
+                    n->giventype.utr = st.Wrap(n->giventype.utr, V_NIL);
                 }
                 return n;
             }
@@ -1068,26 +1159,20 @@ struct Parser {
             }
             case T_LEFTBRACKET: {
                 lex.Next();
-                auto constructor = new Constructor(lex, nullptr);
+                auto constructor = new Constructor(lex, { nullptr });
                 ParseVector([this, &constructor] () {
                     constructor->Add(this->ParseExp());
                 }, T_RIGHTBRACKET);
                 if (IsNext(T_TYPEIN)) {
-                    ParseType(constructor->giventype, false);
-                    constructor->giventype = st.Wrap(constructor->giventype, V_VECTOR);
+                    constructor->giventype = ParseType(false);
+                    constructor->giventype.utr = st.Wrap(constructor->giventype.utr, V_VECTOR);
                 }
                 return constructor;
             }
-            case T_FUN: {
+            case T_LAMBDA: {
                 lex.Next();
-                return ParseFunction(nullptr, false, true, true, "");
-            }
-            case T_COROUTINE: {
-                lex.Next();
-                auto idname = ExpectId();
-                auto n = ParseFunctionCall(st.FindFunction(idname), nullptr, idname, nullptr, true,
-                                           false);
-                return new CoRoutine(lex, n);
+                return ParseFunction(nullptr, false, lex.token == T_LEFTPAREN,
+                    lex.token != T_COLON);
             }
             case T_FLOATTYPE:
             case T_INTTYPE:
@@ -1100,12 +1185,8 @@ struct Parser {
                 if (lex.token != T_LEFTPAREN) Error("type used as expression");
                 return IdentFactor(idname);
             }
-            case T_TYPEOF: {  // "return", ident or type.
+            case T_TYPEOF: {  // ident or type.
                 lex.Next();
-                if (lex.token == T_RETURN) {
-                    lex.Next();
-                    return new TypeOf(lex, new DefaultVal(lex));
-                }
                 if (lex.token == T_IDENT) {
                     auto id = st.Lookup(lex.sattr);
                     if (id) {
@@ -1113,8 +1194,7 @@ struct Parser {
                         return new TypeOf(lex, new IdentRef(lex, id->cursid));
                     }
                 }
-                auto tn = new TypeAnnotation(lex, TypeRef());
-                ParseType(tn->giventype, false);
+                auto tn = new TypeAnnotation(lex, ParseType(false));
                 return new TypeOf(lex, tn);
             }
             case T_IDENT: {
@@ -1122,12 +1202,46 @@ struct Parser {
                 lex.Next();
                 return IdentFactor(idname);
             }
+            case T_SUPER: {
+                lex.Next();
+                auto idname = ExpectId();
+                auto n = ParseFunctionCall(st.FindFunction(idname), nullptr, idname, nullptr, false,
+                                           nullptr);
+                auto call = Is<GenericCall>(*n);
+                if (!call || !call->sf || !call->sf->method_of ||
+                    call->sf->method_of->given_superclass.Null()) {
+                    Error("super must be used on a method of a subclass");
+                }
+                call->super = true;
+                return n;
+            }
             case T_PAKFILE: {
                 lex.Next();
-                string s = lex.StringVal();
+                string s = std::move(lex.sval);
                 Expect(T_STR);
                 pakfiles.insert(s);
-                return new StringConstant(lex, s);
+                return new StringConstant(lex, std::move(s));
+            }
+            case T_IF: {
+                lex.Next();
+                return ParseIf();
+            }
+            case T_WHILE: {
+                lex.Next();
+                auto cond = ParseExp(true);
+                return new While(lex, cond, ParseBlock());
+            }
+            case T_FOR: {
+                lex.Next();
+                Node *iter;
+                if (IsNext(T_LEFTPAREN)) {
+                    iter = ParseExp(false);
+                    Expect(T_RIGHTPAREN);
+                    return new For(lex, iter, ParseBlock(0, true));
+                } else {
+                    iter = ParseExp(true);
+                    return new For(lex, iter, ParseBlock(0));
+                }
             }
             case T_SWITCH: {
                 lex.Next();
@@ -1145,19 +1259,17 @@ struct Parser {
                     } else {
                         Expect(T_CASE);
                         for (;;) {
-                            auto f = ParseDeref();
+                            auto f = ParseUnary();
                             if (lex.token == T_DOTDOT) {
                                 lex.Next();
-                                f = new Range(lex, f, ParseDeref());
+                                f = new Range(lex, f, ParseUnary());
                             }
                             pattern->Add(f);
                             if (lex.token == T_COLON) break;
                             Expect(T_COMMA);
                         }
                     }
-                    auto body = BuiltinControlClosure(
-                        ParseFunction(nullptr, false, false, false, "case"), 0);
-                    cases->Add(new Case(lex, pattern, body));
+                    cases->Add(new Case(lex, pattern, ParseBlock()));
                     if (!IsNext(T_LINEFEED)) break;
                     if (lex.token == T_DEDENT) break;
                 }
@@ -1165,9 +1277,66 @@ struct Parser {
                 return new Switch(lex, value, cases);
             }
             default:
-                Error("illegal start of expression: " + lex.TokStr());
+                Error("illegal start of expression: ", Q(lex.TokStr()));
                 return nullptr;
         }
+    }
+
+    Node *ParseIf() {
+        auto cond = ParseExp(true);
+        auto thenp = ParseBlock();
+        auto islf = IsNext(T_LINEFEED);
+        if (IsNext(T_ELIF)) {
+            return new IfElse(lex, cond, thenp, (new Block(lex))->Add(ParseIf()));
+        } else if (IsNext(T_ELSE)) {
+            return new IfElse(lex, cond, thenp, ParseBlock());
+        } else {
+            lex.PushCur();
+            if (islf) lex.Push(T_LINEFEED);
+            lex.Next();
+            return new IfThen(lex, cond, thenp);
+        }
+    }
+
+    void ForLoopVar(int existing, SpecIdent *sid, UnresolvedTypeRef type, vector<Node *> &list) {
+        Node *init = nullptr;
+        if (existing == 0)
+            init = new ForLoopElem(lex);
+        else if (existing == 1)
+            init = new ForLoopCounter(lex);
+        else
+            Error("for loop takes at most an element and index variable");
+        auto def = new Define(lex, init);
+        def->sids.push_back({ sid , type });
+        list.insert(list.begin() + existing, def);
+    }
+
+    Block *ParseBlock(int for_args = -1, bool parse_args = false) {
+        st.BlockScopeStart();
+        auto block = new Block(lex);
+        if (parse_args && lex.token != T_COLON) {
+            auto parens = IsNext(T_LEFTPAREN);
+            for (;;) {
+                ExpectId();
+                bool withtype = lex.token == T_TYPEIN;
+                auto id = st.LookupDef(lastid, lex, true, withtype);
+                id->single_assignment = false;  // Mostly to stop warning that it is constant.
+                UnresolvedTypeRef type = { nullptr };
+                if (parens && (lex.token == T_COLON || withtype)) {
+                    lex.Next();
+                    type = ParseType(withtype, nullptr);
+                    if (withtype) st.AddWithStruct(type.utr, id, lex, st.defsubfunctionstack.back());
+                }
+                ForLoopVar(for_args, id->cursid, type, block->children);
+                for_args++;
+                if (!IsNext(T_COMMA)) break;
+            }
+            if (parens) Expect(T_RIGHTPAREN);
+        }
+        Expect(T_COLON);
+        ParseBody(block, for_args);
+        st.BlockScopeCleanup();
+        return block;
     }
 
     void ParseVector(const function<void()> &f, TType closing) {
@@ -1180,19 +1349,46 @@ struct Parser {
         Expect(closing);
     }
 
+    vector<UnresolvedTypeRef> ParseSpecializers(bool likely_named_function) {
+        vector<UnresolvedTypeRef> specializers;
+        // Check for function call with generic params.
+        // This is not a great way to distinguish from < operator exps, but best we can do?
+        if (likely_named_function && lex.whitespacebefore == 0 && IsNext(T_LT)) {
+            for (;;) {
+                specializers.push_back(ParseType(false));
+                if (IsNext(T_GT)) break;
+                Expect(T_COMMA);
+            }
+        }
+        return specializers;
+    }
+
     Node *IdentFactor(string_view idname) {
-        if (IsNext(T_LEFTCURLY)) {
-            auto &udt = st.StructUse(idname, lex);
-            udt.constructed = true;
-            vector<Node *> exps(udt.fields.size(), nullptr);
+        // First see if this a type constructor.
+        auto udt = st.LookupStruct(idname);
+        UnresolvedTypeRef type = { nullptr };
+        if (udt && lex.token == T_LT) {
+            lex.Undo(T_IDENT, idname);
+            type = ParseType(false);
+        } else if (lex.token == T_LEFTCURLY) {
+            udt = &st.StructUse(idname, lex);
+            type = { st.NewSpecUDT(udt) };
+            type.utr->spec_udt->is_generic = udt->is_generic;
+        } else {
+            udt = nullptr;
+        }
+        if (udt) {
+            Expect(T_LEFTCURLY);
+            udt->constructed = true;
+            vector<Node *> exps(udt->fields.size(), nullptr);
             ParseVector([&] () {
                 auto id = lex.sattr;
                 if (IsNext(T_IDENT)) {
                     if (IsNext(T_COLON)) {
                         auto fld = st.FieldUse(id);
-                        auto field = udt.Has(fld);
-                        if (field < 0) Error("unknown field: " + id);
-                        if (exps[field]) Error("field initialized twice: " + id);
+                        auto field = udt->Has(fld);
+                        if (field < 0) Error("unknown field ", Q(id));
+                        if (exps[field]) Error("field ", Q(id), " initialized twice");
                         exps[field] = ParseExp();
                         return;
                     } else {
@@ -1202,7 +1398,7 @@ struct Parser {
                 // An initializer without a tag. Find first field without a default thats not
                 // set yet.
                 for (size_t i = 0; i < exps.size(); i++) {
-                    if (!exps[i] && !udt.fields.v[i].defaultval) {
+                    if (!exps[i] && !udt->fields[i].defaultval) {
                         exps[i] = ParseExp();
                         return;
                     }
@@ -1212,68 +1408,109 @@ struct Parser {
                 exps.push_back(ParseExp());
             }, T_RIGHTCURLY);
             // Now fill in defaults, check for missing fields, and construct list.
-            auto constructor = new Constructor(lex, &udt.thistype);
+            auto constructor = new Constructor(lex, type);
             for (size_t i = 0; i < exps.size(); i++) {
                 if (!exps[i]) {
-                    if (udt.fields.v[i].defaultval)
-                        exps[i] = udt.fields.v[i].defaultval->Clone();
+                    if (udt->fields[i].defaultval)
+                        exps[i] = udt->fields[i].defaultval->Clone();
                     else
-                        Error("field not initialized: " + udt.fields.v[i].id->name);
+                        Error("field ", Q(udt->fields[i].id->name), " not initialized");
                 }
                 constructor->Add(exps[i]);
             }
             return constructor;
-        } else {
-            // If we see "f(" the "(" is the start of an argument list, but for "f (", "(" is
-            // part of an expression of a single argument with no extra "()".
-            // This avoids things like "f (1 + 2) * 3" ("* 3" part of the single arg) being
-            // interpreted as "f(1 + 2) * 3" (not part of the arg).
-            // This is benign, since single arg calls with "()" work regardless of whitespace,
-            // and multi-arg calls with whitespace will now error on the first "," (since we
-            // don't have C's ","-operator).
-            auto nf = natreg.FindNative(idname);
-            auto f = st.FindFunction(idname);
-            auto e = st.EnumLookup(idname, lex, false);
-            if (lex.token == T_LEFTPAREN && lex.whitespacebefore == 0) {
-                if (e && !f && !nf) {
-                    lex.Next();
-                    auto ec = new EnumCoercion(lex, ParseExp(), e);
-                    Expect(T_RIGHTPAREN);
-                    return ec;
-                }
-                return ParseFunctionCall(f, nf, idname, nullptr, false, false);
-            }
-            // Check for implicit variable.
-            if (idname[0] == '_') {
-                return new IdentRef(lex, st.LookupDef(idname, lex, true, false, false)->cursid);
-            }
-            auto id = st.Lookup(idname);
-            // Check for function call without ().
-            if (!id && (nf || f) && lex.whitespacebefore > 0) {
-                return ParseFunctionCall(f, nf, idname, nullptr, false, true);
-            }
-            // Check for enum value.
-            auto ev = st.EnumValLookup(idname, lex, false);
-            if (ev) {
-                auto ic = new IntConstant(lex, ev->val);
-                ic->from = ev;
-                return ic;
-            }
-            return IdentUseOrWithStruct(idname);
         }
+        // If we see "f(" the "(" is the start of an argument list, but for "f (", "(" is
+        // part of an expression of a single argument with no extra "()".
+        // This avoids things like "f (1 + 2) * 3" ("* 3" part of the single arg) being
+        // interpreted as "f(1 + 2) * 3" (not part of the arg).
+        // This is benign, since single arg calls with "()" work regardless of whitespace,
+        // and multi-arg calls with whitespace will now error on the first "," (since we
+        // don't have C's ","-operator).
+        auto nf = natreg.FindNative(idname);
+        auto f = st.FindFunction(idname);
+        auto e = st.EnumLookup(idname, lex, false);
+        if (lex.token == T_LEFTPAREN && lex.whitespacebefore == 0) {
+            if (e && !f && !nf) {
+                lex.Next();
+                auto ec = new EnumCoercion(lex, ParseExp(), e);
+                Expect(T_RIGHTPAREN);
+                return ec;
+            }
+            return ParseFunctionCall(f, nf, idname, nullptr, false, nullptr);
+        }
+        auto specializers = ParseSpecializers(f && !nf && !e);
+        if (!specializers.empty())
+            return ParseFunctionCall(f, nf, idname, nullptr, false, &specializers);
+        // Check for implicit variable.
+        if (idname[0] == '_') {
+            if (block_stack.empty())
+                Error("cannot add implicit argument ", Q(idname), " at top level");
+            auto &bs = block_stack.back();
+            auto id = st.Lookup(idname);
+            auto sf = st.defsubfunctionstack.back();
+            if (!id || id->cursid->sf_def != sf) {
+                if (bs.for_nargs >= 0) {
+                    id = st.LookupDef(idname, lex, true, false);
+                    if (bs.for_nargs > 0) {
+                        Error("cannot add implicit argument ", Q(idname), " to ", Q("for"),
+                              " with existing arguments");
+                    }
+                    id->constant = true;
+                    ForLoopVar(bs.implicits, id->cursid, type, bs.block->children);
+                    bs.implicits++;
+                } else {
+                    id = st.LookupDef(idname, lex, false, false);
+                    if (st.defsubfunctionstack.size() <= 1)
+                        Error("cannot add implicit argument ", Q(idname), " to top level");
+                    if (!sf->parent->anonymous)
+                        Error("cannot use implicit argument ", Q(idname),
+                              " in named function ", Q(sf->parent->name));
+                    if (sf->args[0].sid->id->name[0] != '_')
+                        Error("cannot mix implicit argument ", Q(idname),
+                              " with declared arguments in function");
+                    if (st.defsubfunctionstack.back()->args.back().type->Equal(*type_any))
+                        GenImplicitGenericForLastArg();
+                }
+                id->Read();
+            }
+            return new IdentRef(lex, id->cursid);
+        }
+        auto id = st.Lookup(idname);
+        Ident *fieldid = nullptr;
+        auto field = st.LookupWithStruct(idname, lex, fieldid);
+        // Check for function call without ().
+        if (!id &&
+            !field &&
+            (nf || f) &&
+            lex.whitespacebefore > 0 &&
+            lex.token != T_LINEFEED) {
+            return ParseFunctionCall(f, nf, idname, nullptr, true, nullptr);
+        }
+        // Check for enum value.
+        auto ev = st.EnumValLookup(idname, lex, false);
+        if (ev) {
+            auto ic = new IntConstant(lex, ev->val);
+            ic->from = ev;
+            return ic;
+        }
+        return IdentUseOrWithStruct(idname, f || nf);
     }
 
-    Node *IdentUseOrWithStruct(string_view idname) {
+    Node *IdentUseOrWithStruct(string_view idname, bool could_be_function = false) {
         // Check for field reference in function with :: arguments.
         Ident *id = nullptr;
         auto fld = st.LookupWithStruct(idname, lex, id);
         if (fld) {
-            auto dot = new GenericCall(lex, idname, nullptr, true);
-            dot->Add(new IdentRef(lex, id->cursid));
-            return dot;
+            return new Dot(fld, lex, new IdentRef(lex, id->cursid));
         }
-        // It's a regular variable.
-        return new IdentRef(lex, st.LookupUse(idname, lex)->cursid);
+        // It's likely a regular variable.
+        id = st.Lookup(idname);
+        if (!id) {
+            if (could_be_function) Error("can\'t use named function ", Q(idname), " as value");
+            else Error("unknown identifier ", Q(idname));
+        }
+        return new IdentRef(lex, id->cursid);
     }
 
     bool IsNext(TType t) {
@@ -1306,25 +1543,25 @@ struct Parser {
 
     void Expect(TType t) {
         if (!IsNext(t))
-            Error(lex.TokStr(t) + " expected, found: " + lex.TokStr());
+            Error(Q(lex.TokStr(t)) + " expected, found " + Q(lex.TokStr()));
     }
 
     string DumpAll(bool onlytypechecked = false) {
         string s;
         for (auto f : st.functiontable) {
-            for (auto sf : f->overloads) {
-                for (; sf; sf = sf->next) {
-                    if (!onlytypechecked || sf->typechecked) {
-                        s += "FUNCTION: " + f->name + "(";
-                        for (auto &arg : sf->args.v) {
-                            s += arg.sid->id->name + ":" + TypeName(arg.type) + " ";
-                        }
-                        s += ") -> ";
-                        s += TypeName(sf->returntype);
-                        s += "\n";
-                        if (sf->body) s += DumpNode(*sf->body, 4, false);
-                        s += "\n\n";
+            for (auto &ov : f->overloads) {
+                auto sf = ov.sf;
+                assert(!sf->next);
+                if (!onlytypechecked || sf->typechecked) {
+                    s += "FUNCTION: " + f->name + "(";
+                    for (auto &arg : sf->args) {
+                        s += arg.sid->id->name + ":" + TypeName(arg.type) + " ";
                     }
+                    s += ") -> ";
+                    s += TypeName(sf->returntype);
+                    s += "\n";
+                    if (ov.gbody) s += DumpNode(*ov.gbody, 4, false);
+                    s += "\n\n";
                 }
             }
         }

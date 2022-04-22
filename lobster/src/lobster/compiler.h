@@ -23,20 +23,29 @@ enum { RUNTIME_NO_ASSERT, RUNTIME_ASSERT, RUNTIME_ASSERT_PLUS };
 
 extern void Compile(NativeRegistry &natreg, string_view fn, string_view stringsource,
                     string &bytecode, string *parsedump, string *pakfile,
-                    bool dump_builtins, bool dump_names, bool return_value, int runtime_checks);
+                    bool return_value, int runtime_checks);
+
+extern string RunTCC(NativeRegistry &nfr,
+                     string_view bytecode_buffer,
+                     string_view fn,
+                     const char *object_name /* save instead of run if non-null */,
+                     vector<string> &&program_args,
+                     TraceMode trace,
+                     bool compile_only,
+                     string &error);
+
 extern bool LoadPakDir(const char *lpak);
 extern bool LoadByteCode(string &bytecode);
 extern void RegisterBuiltin(NativeRegistry &natreg, const char *name,
                             void (* regfun)(NativeRegistry &));
 extern void RegisterCoreLanguageBuiltins(NativeRegistry &natreg);
 
-extern VMArgs CompiledInit(int argc, char *argv[], const void *entry_point, const void *bytecodefb,
-                           size_t static_size, const lobster::block_t *vtables, FileLoader loader,
-                           NativeRegistry &nfr);
+extern FileLoader EnginePreInit(NativeRegistry &nfr);
+extern "C" int RunCompiledCodeMain(int argc, const char * const *argv, const uint8_t *bytecodefb,
+                                   size_t static_size, const lobster::fun_base_t *vtables);
 
-extern "C" int ConsoleRunCompiledCodeMain(int argc, char *argv[], const void *entry_point,
-                                          const void *bytecodefb, size_t static_size,
-                                          const lobster::block_t *vtables);
+extern void DumpBuiltinNames(NativeRegistry &nfr);
+extern void DumpBuiltinDoc(NativeRegistry &nfr);
 
 }  // namespace lobster
 

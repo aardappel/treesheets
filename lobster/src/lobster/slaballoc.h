@@ -49,6 +49,11 @@ alloc_sized/dealloc_sized instead do store the size, if a more drop-in replaceme
 is desired.
 */
 
+#ifdef __SANITIZE_ADDRESS__
+    // This will help catch ASAN problems in the VM.
+    #define PASSTHRUALLOC
+#endif
+
 #ifndef NDEBUG
     // Uncomment if debugging with crtdbg functionality is required (for finding memory corruption).
     //#define PASSTHRUALLOC
@@ -56,122 +61,119 @@ is desired.
 #endif
 
 class SlabAlloc {
-    enum {
-        // Must be ^2. lower means more blocks have to go thru the traditional allocator (slower).
-        // Higher means you may get pages with only few allocs of that unique size (memory wasted).
-        // On 32bit, 32 means all allocations <= 256 bytes go into buckets (in increments of 8 bytes
-        // each).
-        MAXBUCKETS = 32,
-        // Depends on how much you want to take from the OS at once: PAGEATONCE*PAGESIZEF
-        // You will waste 1 page to alignment with MAXBUCKETS at 32 on a 32bit system, PAGESIZEF is
-        // 2048, so this is 202k.
-        PAGESATONCE = 101,
-        // "64bit should be enough for everyone". Everything is twice as big on 64bit: alignment,
-        // memory blocks, and pages.
-        PTRBITS = sizeof(char *) == 4 ? 2 : 3,
-        // Must fit 2 pointers in smallest block for doubly linked list.
-        ALIGNBITS = PTRBITS + 1,
-        ALIGN = 1 << ALIGNBITS,
-        ALIGNMASK = ALIGN - 1,
-        MAXREUSESIZE = (MAXBUCKETS - 1) * ALIGN,
-        // The largest block will fit almost 8 times.
-        PAGESIZEF = MAXBUCKETS * ALIGN * 8,
-        PAGEMASK = (~(PAGESIZEF - 1)),
-        PAGEBLOCKSIZE = PAGESIZEF * PAGESATONCE,
-    };
+    // Must be ^2. lower means more blocks have to go thru the traditional allocator (slower).
+    // Higher means you may get pages with only few allocs of that unique size (memory wasted).
+    // On 32bit, 32 means all allocations <= 256 bytes go into buckets (in increments of 8 bytes
+    // each).
+    static const iint MAXBUCKETS = 32;
+    // Depends on how much you want to take from the OS at once: PAGEATONCE*PAGESIZEF
+    // You will waste 1 page to alignment with MAXBUCKETS at 32 on a 32bit system, PAGESIZEF is
+    // 2048, so this is 202k.
+    static const iint PAGESATONCE = 101;
+    // "64bit should be enough for everyone". Everything is twice as big on 64bit: alignment,
+    // memory blocks, and pages.
+    static const iint PTRBITS = sizeof(void *) == 4 ? 2 : 3;
+    // Must fit 2 pointers in smallest block for doubly linked list.
+    static const iint ALIGNBITS = PTRBITS + 1;
+    static const iint ALIGN = 1 << ALIGNBITS;
+    static const iint ALIGNMASK = ALIGN - 1;
+    static const iint MAXREUSESIZE = (MAXBUCKETS - 1) * ALIGN;
+    // The largest block will fit almost 8 times.
+    static const iint PAGESIZEF = MAXBUCKETS * ALIGN * 8;
+    static const iint PAGEMASK = (~(PAGESIZEF - 1));
+    static const iint PAGEBLOCKSIZE = PAGESIZEF * PAGESATONCE;
 
     struct PageHeader : DLNodeRaw {
-        int refc;
-        int size;
+        iint refc;
+        iint size;
         char *isfree;
     };
 
-    inline int bucket(int s) {
-        return (s+ALIGNMASK)>>ALIGNBITS;
+    inline iint bucket(iint s) {
+        return (s + ALIGNMASK) >> ALIGNBITS;
     }
 
     inline PageHeader *ppage(const void *p) {
-        return (PageHeader *)(((size_t)p)&PAGEMASK);
+        return (PageHeader *)(((size_t)p) & (size_t)PAGEMASK);
     }
 
-    inline int numobjs(int size) { return (PAGESIZEF-sizeof(PageHeader))/size; }
+    inline iint numobjs(iint size) { return (PAGESIZEF - isizeof<PageHeader>()) / size; }
 
     DLList<DLNodeRaw> reuse[MAXBUCKETS];
     DLList<PageHeader> freepages, usedpages;
-    void **blocks;
+    void **blocks = nullptr;
 
     DLList<DLNodeRaw> largeallocs;
 
     #ifdef COLLECT_STATS
-    long long stats[MAXBUCKETS];
+    int64_t stats[MAXBUCKETS] = { 0 };
     #endif
-    long long statbig;
+    int64_t statbig = 0;
 
-    void putinbuckets(char *start, char *end, int b, int size) {
-        assert((int)sizeof(DLNodeRaw) <= size);
-        for (end -= size; start<=end; start += size) {
+    void putinbuckets(char *start, char *end, iint b, iint size) {
+        assert(isizeof<DLNodeRaw>() <= size);
+        for (end -= size; start <= end; start += size) {
             reuse[b].InsertAfterThis((DLNodeRaw *)start);
         }
     }
 
+    void oom() {
+        exit(0xBADA110C);
+    }
+
     void newpageblocks() {
         // If we could get page aligned memory here, that would be even better.
-        void **b = (void **)malloc(PAGEBLOCKSIZE+sizeof(void *));
-        assert(b);
+        auto b = (void **)malloc((size_t)PAGEBLOCKSIZE + sizeof(void *));
+        if (!b) oom();
         *b = (void *)blocks;
         blocks = b;
         b++;
-        char *first = ((char *)ppage(b))+PAGESIZEF;
-        for (int i = 0; i<PAGESATONCE-1; i++) {
-            PageHeader *p = (PageHeader *)(first+i*PAGESIZEF);
+        char *first = ((char *)ppage(b)) + PAGESIZEF;
+        for (iint i = 0; i < PAGESATONCE - 1; i++) {
+            PageHeader *p = (PageHeader *)(first + i * PAGESIZEF);
             freepages.InsertAfterThis(p);
         }
     }
 
-    void *newpage(int b) {
+    void newpage(iint b) {
         assert(b);
         if (freepages.Empty()) newpageblocks();
         PageHeader *page = freepages.Get();
         usedpages.InsertAfterThis(page);
         page->refc = 0;
         page->size = b*ALIGN;
-        putinbuckets((char *)(page+1), ((char *)page)+PAGESIZEF, b, page->size);
-        return alloc_small(page->size);
+        putinbuckets((char *)(page+1), ((char *)page) + PAGESIZEF, b, page->size);
     }
 
-    void freepage(PageHeader *page, int size) {
-        for (char *b = (char *)(page+1); b+size<=((char *)page)+PAGESIZEF; b += size)
+    void freepage(PageHeader *page, iint size) {
+        for (char *b = (char *)(page + 1); b + size <= ((char *)page) + PAGESIZEF; b += size) {
             ((DLNodeRaw *)b)->Remove();
+        }
         page->Remove();
         freepages.InsertAfterThis(page);
     }
 
-    void *alloc_large(size_t size) {
+    void *alloc_large(iint size) {
         statbig++;
-        DLNodeRaw *buf = (DLNodeRaw *)malloc(size + sizeof(DLNodeRaw));
+        auto buf = (DLNodeRaw *)malloc((size_t)size + sizeof(DLNodeRaw));
+        if (!buf) oom();
         largeallocs.InsertAfterThis(buf);
         return ++buf;
     }
 
     void dealloc_large(void *p) {
-        DLNodeRaw *buf = (DLNodeRaw *)p;
+        auto buf = (DLNodeRaw *)p;
         --buf;
         buf->Remove();
         free(buf);
     }
 
     public:
-    SlabAlloc() : blocks(nullptr), statbig(0) {
-        for (int i = 0; i<MAXBUCKETS; i++) {
-            #ifdef COLLECT_STATS
-                stats[i] = 0;
-            #endif
-        }
-    }
+    SlabAlloc() {}
 
     ~SlabAlloc() {
         while(blocks) {
-            void *next = *blocks;
+            auto next = *blocks;
             free(blocks);
             blocks = (void **)next;
         }
@@ -182,20 +184,19 @@ class SlabAlloc {
     // that your allocated size is <= MAXREUSESIZE (i.e. single objects).
     // They know their own size efficiently thanks to the pageheader, and are VERY fast.
 
-    void *alloc_small(size_t size) {
+    void *alloc_small(iint size) {
         #ifdef PASSTHRUALLOC
             return alloc_large(size);
-        #else
-        assert(size <= MAXREUSESIZE);     // If you hit this, use alloc() below instead.
-        int b = bucket((int)size);
+        #endif
+        assert(size <= MAXREUSESIZE);  // If you hit this, use alloc() below instead.
+        auto b = bucket(size);
         #ifdef COLLECT_STATS
             stats[b]++;
         #endif
-        if (reuse[b].Empty()) return newpage(b);
-        DLNodeRaw *r = reuse[b].Get();
+        if (reuse[b].Empty()) newpage(b);
+        auto r = reuse[b].Get();
         ppage(r)->refc++;
         return r;
-        #endif
     }
 
     void dealloc_small(void *p) {
@@ -205,37 +206,37 @@ class SlabAlloc {
         #endif
         PageHeader *page = ppage(p);
         #ifndef NDEBUG
-            memset(p, 0xBA, page->size);
+            memset(p, 0xBA, (size_t)page->size);
         #endif
-        int b = page->size >> ALIGNBITS;
+        auto b = page->size >> ALIGNBITS;
         reuse[b].InsertAfterThis((DLNodeRaw *)p);
         if (!--page->refc) freepage(page, page->size);
     }
 
-    size_t size_of_small_allocation(const void *p) {
+    iint size_of_small_allocation(const void *p) {
         return ppage(p)->size;
     }
 
-    template<typename T> size_t size_of_small_allocation_typed(const T *p) {
-        return size_of_small_allocation(p) / sizeof(T);
+    template<typename T> iint size_of_small_allocation_typed(const T *p) {
+        return size_of_small_allocation(p) / isizeof<T>();
     }
 
     // Unlike the _small functions, these functions can deal with any size,
     // but require you to know the size you allocated upon deallocation.
 
-    void *alloc(size_t size) {
+    void *alloc(iint size) {
         return size > MAXREUSESIZE ? alloc_large(size)
                                    : alloc_small(size);
     }
 
-    void dealloc(void *p, size_t size) {
+    void dealloc(void *p, iint size) {
         if (size > MAXREUSESIZE) dealloc_large(p);
         else                     dealloc_small(p);
     }
 
-    void *resize(void *p, size_t oldsize, size_t size) {
+    void *resize(void *p, iint oldsize, iint size) {
         void *np = alloc(size);
-        memcpy(np, p, size>oldsize ? oldsize : size);
+        memcpy(np, p, (size_t)(size > oldsize ? oldsize : size));
         dealloc(p, oldsize);
         return np;
     }
@@ -243,31 +244,31 @@ class SlabAlloc {
     // Versions of the above functions that track size for you, if you need drop-in free/malloc
     // style functionality.
 
-    void *alloc_sized(size_t size) {
-        size_t *p = (size_t *)alloc(size + sizeof(size_t));
+    void *alloc_sized(iint size) {
+        auto p = (iint *)alloc(size + isizeof<iint>());
         *p++ = size;  // Stores 2 sizes for big objects!
         return p;
     }
 
     void dealloc_sized(void *p) {
-        size_t *t = (size_t *)p;
-        size_t size = *--t;
-        size += sizeof(size_t);
+        auto t = (iint *)p;
+        auto size = *--t;
+        size += isizeof<size_t>();
         dealloc(t, size);
     }
 
-    static size_t size_of_allocation(const void *p) {
-        return ((size_t *)p)[-1];
+    static iint size_of_allocation(const void *p) {
+        return ((iint *)p)[-1];
     }
 
-    template<typename T> static size_t size_of_allocation_typed(const T *p) {
-        return size_of_allocation(p) / sizeof(T);
+    template<typename T> static iint size_of_allocation_typed(const T *p) {
+        return size_of_allocation(p) / isizeof<T>();
     }
 
-    void *resize_sized(void *p, size_t size) {
-        void *np = alloc_sized(size);
-        size_t oldsize = size_of_allocation(p);
-        memcpy(np, p, size>oldsize ? oldsize : size);
+    void *resize_sized(void *p, iint size) {
+        auto np = alloc_sized(size);
+        auto oldsize = size_of_allocation(p);
+        memcpy(np, p, (size_t)(size > oldsize ? oldsize : size));
         dealloc_sized(p);
         return np;
     }
@@ -275,28 +276,28 @@ class SlabAlloc {
     void *clone_sized(const void *p) {
         auto len = size_of_allocation(p);
         auto buf = alloc_sized(len);
-        memcpy(buf, p, len);
+        memcpy(buf, p, (size_t)len);
         return buf;
     }
 
     // Convenient string allocation, dealloc with dealloc_sized.
 
     char *alloc_string_sized(string_view from) {
-        auto len = from.size();
-        char *buf = (char *)alloc_sized(len + 1);
+        auto len = ssize(from);
+        auto buf = (char *)alloc_sized(len + 1);
         memcpy(buf, from.data(), len);
         buf[len] = 0;
         return buf;
     }
 
-    static size_t size_of_string(const void *p) {
+    static iint size_of_string(const void *p) {
         return size_of_allocation(p) - 1;
     }
 
     // Typed helpers.
 
     template<typename T> T *alloc_obj_small() {     // T must fit inside MAXREUSESIZE.
-        return (T *)alloc_small(sizeof(T));
+        return (T *)alloc_small(isizeof<T>());
     }
 
     template<typename T> T *clone_obj_small(const T *from) {
@@ -306,12 +307,12 @@ class SlabAlloc {
         return to;
     }
 
-    template<typename T> T *alloc_array(size_t numelems) {
-        return (T *)alloc(sizeof(T) * numelems);
+    template<typename T> T *alloc_array(iint numelems) {
+        return (T *)alloc(isizeof<T>() * numelems);
     }
 
-    template<typename T> void dealloc_array(T *array, size_t numelems) {
-        dealloc(array, sizeof(T) * numelems);
+    template<typename T> void dealloc_array(T *array, iint numelems) {
+        dealloc(array, isizeof<T>() * numelems);
     }
 
     // Clones anything regardless of what it is, finds out size itself.
@@ -319,7 +320,7 @@ class SlabAlloc {
         assert(from);
         auto sz = size_of_small_allocation(from);
         auto to = alloc_small(sz);
-        memcpy(to, from, sz);
+        memcpy(to, from, (size_t)sz);
         return to;
     }
 
@@ -332,15 +333,15 @@ class SlabAlloc {
 
     // Can get size of copied vector with size_of_allocation, and deallocate with dealloc_sized.
     template<typename T> T *vector_copy_sized(vector<T> from) {
-        auto buf = (T *)alloc_sized(sizeof(T) * from.size());
+        auto buf = (T *)alloc_sized(isizeof<T>() * isize(from));
         memcpy(buf, &from[0], sizeof(T) * from.size());
         return buf;
     }
 
     // For diagnostics and GC.
 
-    size_t count_small_allocs() {
-        size_t sum = 0;
+    iint count_small_allocs() {
+        iint sum = 0;
         loopdllist(usedpages, h) sum += h->refc;
         return sum;
     }
@@ -355,16 +356,16 @@ class SlabAlloc {
     vector<void *> findleaks() {
         vector<void *> leaks;
         loopdllist(usedpages, h) {
-            h->isfree = (char *)calloc(numobjs(h->size), 1);
+            h->isfree = (char *)calloc((size_t)numobjs(h->size), 1);
         }
-        for (int i = 0; i < MAXBUCKETS; i++) {
+        for (iint i = 0; i < MAXBUCKETS; i++) {
             loopdllist(reuse[i], n) {
                 PageHeader *page = ppage(n);
                 page->isfree[(((char *)n) - ((char *)(page + 1))) / (i * ALIGN)] = 1;
             }
         }
         loopdllist(usedpages, h) {
-            for (int i = 0; i < numobjs(h->size); i++) {
+            for (iint i = 0; i < numobjs(h->size); i++) {
                 if (!h->isfree[i]) {
                     leaks.push_back(((char *)(h + 1)) + i * h->size);
                 }
@@ -377,14 +378,14 @@ class SlabAlloc {
     }
 
     void printstats(bool full = false) {
-        size_t totalwaste = 0;
+        iint totalwaste = 0;
         long long totalallocs = 0;
-        for (int i = 0; i<MAXBUCKETS; i++) {
-            size_t num = 0;
+        for (iint i = 0; i < MAXBUCKETS; i++) {
+            iint num = 0;
             loopdllist(reuse[i], n) num++;
             #ifdef COLLECT_STATS
                 if (num || stats[i]) {
-                    size_t waste = (i*ALIGN*num+512)/1024;
+                    auto waste = (i * ALIGN * num + 512)/1024;
                     totalwaste += waste;
                     totalallocs += stats[i];
                     if (full || num) {
@@ -394,7 +395,7 @@ class SlabAlloc {
                 }
             #endif
         }
-        int numfree = 0, numused = 0, numlarge = 0;
+        iint numfree = 0, numused = 0, numlarge = 0;
         loopdllist(freepages, h) numfree++;
         loopdllist(usedpages, h) numused++;
         loopdllist(largeallocs, n) numlarge++;

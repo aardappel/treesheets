@@ -25,7 +25,7 @@ map<string, BitmapFont *> fontcache;
 BitmapFont *curfont = nullptr;
 int curfontsize = -1;
 float curoutlinesize = 0;
-int maxfontsize = 128;
+int maxfontsize = 256;
 
 map<string, OutlineFont *, less<>> loadedfaces;
 OutlineFont *curface = nullptr;
@@ -61,7 +61,7 @@ void AddFont(NativeRegistry &nfr) {
 nfr("gl_set_font_name", "filename", "S", "B",
     "sets a freetype/OTF/TTF font as current (and loads it from disk the first time). returns"
     " true if success.",
-    [](VM &vm, Value &fname) {
+    [](StackPtr &, VM &vm, Value &fname) {
         extern void TestGL(VM &vm); TestGL(vm);
         auto piname = string(fname.sval()->strv());
         auto faceit = loadedfaces.find(piname);
@@ -87,8 +87,9 @@ nfr("gl_set_font_size", "size,outlinesize", "IF?", "B",
     " time this size is used, flushes from cache if this size is not used an entire frame. font"
     " rendering will look best if using 1:1 pixels (careful with gl_scale/gl_translate)."
     " an optional outlinesize will give the font a black outline."
+    " make sure to call this every frame."
     " returns true if success",
-    [](VM &vm, Value &fontsize, Value &outlinesize) {
+    [](StackPtr &, VM &vm, Value &fontsize, Value &outlinesize) {
         if (!curface) vm.BuiltinError("gl_set_font_size: no current font set with gl_set_font_name");
         float osize = min(16.0f, max(0.0f, outlinesize.fltval()));
         int size = max(1, fontsize.intval());
@@ -112,60 +113,60 @@ nfr("gl_set_font_size", "size,outlinesize", "IF?", "B",
 
 nfr("gl_set_max_font_size", "size", "I", "",
     "sets the max font size to render to bitmaps. any sizes specified over that by setfontsize"
-    " will still work but cause scaled rendering. default 128",
-    [](VM &, Value &fontsize) {
+    " will still work but cause scaled rendering. default 256",
+    [](StackPtr &, VM &, Value &fontsize) {
         maxfontsize = fontsize.intval();
-        return Value();
+        return NilVal();
     });
 
 nfr("gl_get_font_size", "", "", "I",
     "the current font size",
-    [](VM &) { return Value(curfontsize); });
+    [](StackPtr &, VM &) { return Value(curfontsize); });
 
 nfr("gl_get_outline_size", "", "", "F",
     "the current font size",
-    [](VM &) { return Value(curoutlinesize); });
+    [](StackPtr &, VM &) { return Value(curoutlinesize); });
 
 nfr("gl_text", "text", "S", "Sb",
     "renders a text with the current font (at the current coordinate origin)",
-    [](VM &vm, Value &s) {
+    [](StackPtr &, VM &vm, Value &s) {
         auto f = curfont;
-        if (!f) return vm.BuiltinError("gl_text: no font size set");
+        if (!f) return vm.BuiltinError("gl_text: no font / font size set");
         if (!s.sval()->len) return s;
         float4x4 oldobject2view;
         if (curfontsize > maxfontsize) {
-            oldobject2view = otransforms.object2view;
-            otransforms.object2view *= scaling(curfontsize / float(maxfontsize));
+            oldobject2view = otransforms.object2view();
+            otransforms.set_object2view(otransforms.object2view() * scaling(curfontsize / float(maxfontsize)));
         }
         SetTexture(0, f->tex);
         texturedshader->Set();
         f->RenderText(s.sval()->strv());
-        if (curfontsize > maxfontsize) otransforms.object2view = oldobject2view;
+        if (curfontsize > maxfontsize) otransforms.set_object2view(oldobject2view);
         return s;
     });
 
 nfr("gl_text_size", "text", "S", "I}:2",
     "the x/y size in pixels the given text would need",
-    [](VM &vm) {
+    [](StackPtr &sp, VM &vm) {
         auto f = curfont;
-        if (!f) vm.BuiltinError("gl_text_size: no font size set");
-        auto size = f->TextSize(vm.Pop().sval()->strv());
+        if (!f) vm.BuiltinError("gl_text_size: no font / font size set");
+        auto size = f->TextSize(Pop(sp).sval()->strv());
         if (curfontsize > maxfontsize) {
             size = fceil(float2(size) * float(curfontsize) / float(maxfontsize));
         }
-        vm.PushVec(size);
+        PushVec(sp, size);
     });
 
 nfr("gl_get_glyph_name", "i", "I", "S",
     "the name of a glyph index, or empty string if the font doesn\'t have names",
-    [](VM &vm, Value &i) {
-        return Value(vm.NewString(curface ? curface->GetName((uint)i.ival()) : ""));
+    [](StackPtr &, VM &vm, Value &i) {
+        return Value(vm.NewString(curface ? curface->GetName(i.intval()) : ""));
     });
 
 nfr("gl_get_char_code", "name", "S", "I",
     "the char code of a glyph by specifying its name, or 0 if it can not be found"
     " (or if the font doesn\'t have names)",
-    [](VM &, Value &n) {
+    [](StackPtr &, VM &, Value &n) {
         return Value(curface ? curface->GetCharCode(n.sval()->strv()) : 0);
     });
 

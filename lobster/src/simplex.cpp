@@ -410,16 +410,16 @@ void AddNoise(NativeRegistry &nfr) {
 nfr("simplex", "pos,octaves,scale,persistence", "F}IFF", "F",
     "returns a simplex noise value [-1..1] given a 2D/3D or 4D location, the number of octaves"
     " (try 8), a scale (try 1), and persistence from one octave to the next (try 0.5)",
-    [](VM &vm) {
-        auto persistence = vm.Pop().fltval();
-        auto scale = vm.Pop().fltval();
-        auto octaves = vm.Pop().intval();
-        auto len = vm.Top().ival();
-        auto v = vm.PopVec<float4>();
+    [](StackPtr &sp, VM &) {
+        auto persistence = Pop(sp).fltval();
+        auto scale = Pop(sp).fltval();
+        auto octaves = Pop(sp).intval();
+        auto len = Top(sp).ival();
+        auto v = PopVec<float4>(sp);
         switch (len) {
-            case 2: vm.Push(SimplexNoise(octaves, persistence, scale, v.xy())); break;
-            case 3: vm.Push(SimplexNoise(octaves, persistence, scale, v.xyz())); break;
-            case 4: vm.Push(SimplexNoise(octaves, persistence, scale, v)); break;
+            case 2: Push(sp,  SimplexNoise(octaves, persistence, scale, v.xy())); break;
+            case 3: Push(sp,  SimplexNoise(octaves, persistence, scale, v.xyz())); break;
+            case 4: Push(sp,  SimplexNoise(octaves, persistence, scale, v)); break;
             default: assert(false);
         }
     });

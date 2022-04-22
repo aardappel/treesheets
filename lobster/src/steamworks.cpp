@@ -60,13 +60,13 @@ void SteamShutDown() {
     #endif  // PLATFORM_STEAMWORKS
 }
 
-int SteamInit(uint appid, bool screenshots) {
+int SteamInit(iint appid, bool screenshots) {
     SteamShutDown();
     #ifdef PLATFORM_STEAMWORKS
         #ifndef NDEBUG
             (void)appid;
         #else
-            if (appid && SteamAPI_RestartAppIfNecessary(appid)) {
+            if (appid && SteamAPI_RestartAppIfNecessary((uint32_t)appid)) {
                 LOG_INFO("Not started from Steam");
                 return -1;
             }
@@ -149,19 +149,19 @@ nfr("steam_init", "appid,allowscreenshots", "IB", "I",
     " appid here or in steam_appid.txt, init will likely fail. The other functions can still be"
     " called even if steam isn't active."
     " allowscreenshots automatically uploads screenshots to steam (triggered by steam).",
-    [](VM &, Value &appid, Value &ss) {
-        return Value(SteamInit((uint)appid.ival(), ss.True()));
+    [](StackPtr &, VM &, Value &appid, Value &ss) {
+        return Value(SteamInit(appid.ival(), ss.True()));
     });
 
 nfr("steam_overlay", "", "", "B",
     "returns true if the steam overlay is currently on (you may want to auto-pause if so)",
-    [](VM &) {
+    [](StackPtr &, VM &) {
         return Value(OverlayActive());
     });
 
 nfr("steam_username", "", "", "S",
     "returns the name of the steam user, or empty string if not available.",
-    [](VM &vm) {
+    [](StackPtr &, VM &vm) {
         return Value(vm.NewString(UserName()));
     });
 
@@ -169,7 +169,7 @@ nfr("steam_unlock_achievement", "achievementname", "S", "B",
     "Unlocks an achievement and shows the achievement overlay if not already achieved before."
     " Will also Q-up saving achievement to Steam."
     " Returns true if succesful.",
-    [](VM &, Value &name) {
+    [](StackPtr &, VM &, Value &name) {
         auto ok = UnlockAchievement(name.sval()->strv());
         return Value(ok);
     });
@@ -177,7 +177,7 @@ nfr("steam_unlock_achievement", "achievementname", "S", "B",
 nfr("steam_write_file", "file,contents", "SS", "B",
     "writes a file with the contents of a string to the steam cloud, or local storage if that"
     " fails, returns false if writing wasn't possible at all",
-    [](VM &, Value &file, Value &contents) {
+    [](StackPtr &, VM &, Value &file, Value &contents) {
         auto fn = file.sval()->strv();
         auto s = contents.sval();
         auto ok = SteamWriteFile(fn, s->strv());
@@ -190,12 +190,12 @@ nfr("steam_write_file", "file,contents", "SS", "B",
 nfr("steam_read_file", "file", "S", "S?",
     "returns the contents of a file as a string from the steam cloud if available, or otherwise"
     " from local storage, or nil if the file can't be found at all.",
-    [](VM &vm, Value &file) {
+    [](StackPtr &, VM &vm, Value &file) {
         auto fn = file.sval()->strv();
         string buf;
         auto len = SteamReadFile(fn, buf);
         if (!len) len = (int)LoadFile(fn, &buf);
-        if (len < 0) return Value();
+        if (len < 0) return NilVal();
         auto s = vm.NewString(buf);
         return Value(s);
     });

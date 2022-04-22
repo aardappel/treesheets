@@ -1,7 +1,7 @@
 // standard functions that build on top of the builtin functions useful for almost all programs
 
 def map(xs, fun):
-    let r = vector_reserve(typeof return, xs.length)
+    let r = [].vector_capacity(xs.length)
     for(xs) x, i:
         r.push(fun(x, i))
     return r
@@ -32,6 +32,16 @@ def partition(xs, fun):
             f.push(x)
     return t, f
 
+def partition_indices(xs, fun):
+    let t = []
+    let f = []
+    for(xs) x, i:
+        if fun(x, i):
+            t.push(i)
+        else:
+            f.push(i)
+    return t, f
+
 def exists(xs, fun):
     for(xs) x, i:
         if fun(x, i):
@@ -48,6 +58,10 @@ def fold2(xs, acc1, acc2, fun):
     for xs:
         acc1, acc2 = fun(acc1, acc2, _)
     return acc1, acc2
+
+def fold_reverse(xs, acc, fun):
+    for xs.length: acc = fun(acc, xs[xs.length - 1 - _])
+    return acc
 
 def reduce(xs, fun):
     assert xs.length
@@ -68,9 +82,9 @@ def find(xs, fun):
     for(xs) x, i: if fun(x): return i
     return -1
 
-// return element for which fun returns biggest float value.
-def find_best(xs, fun):
-    var best = 0.0
+// return element index for which fun returns biggest value of type R (float or int).
+def find_best<R>(xs, fun):
+    var best:R = 0
     var i = -1
     for(xs) x, j:
         let v = fun(x)
@@ -79,24 +93,32 @@ def find_best(xs, fun):
             best = v
     return i
 
-def weighted_pick(list, zero, wf):
-    // FIXME: "zero" is an easy way to select float vs int implementation, explicit template
-    // arg would be better here.
-    let weights = fold(list, zero): _a + wf(_x)
+// Given a function that produces a weight (float or int, specified as R) for each list element,
+// return a random pick that takes that weight into account.
+def weighted_pick<R, T>(list:[T], wf):
+    let weights = fold<[T], R>(list, 0): _a + wf(_x)
     assert(weights)
-    let pick = if zero is float: rnd_float() * weights else: rnd(weights)  // compile-time if!
-    var acc = zero
+    var acc:R = 0
+    let pick = if acc is float: rnd_float() * weights else: rnd(weights)  // compile-time if!
     for(list) x:
         acc += wf(x)
         if pick < acc: return x
     return list.top()  // just in case float precision causes pick == weights.
 
-def sum(xs):     return fold(xs, 0): _x + _y
-def product(xs): return fold(xs, 1): _x * _y
+// These work on int or float vectors.
+def sum<T>(xs:[T]):     return fold<[T], T>(xs, 0): _x + _y
+def product<T>(xs:[T]): return fold<[T], T>(xs, 1): _x * _y
 
 def zip(xs, ys): return map xs.length: [ xs[_], ys[_] ]
 
-def reverse(xs, fun): for(xs.length) i: fun(xs[xs.length - i - 1])
+def reverse(xs, fun): for(xs.length) i:
+    let j = xs.length - i - 1
+    fun(xs[j], j)
+
+def reverse_map(xs, fun): return map(xs.length) i:
+    let j = xs.length - i - 1
+    fun(xs[j], j)
+
 def reverse_list(xs): return map(xs.length) i: xs[xs.length - i - 1]
 
 def flatten(xs): return fold(xs, []): append(_a, _b)
@@ -106,7 +128,10 @@ def split(l, f):
     for(l) e: r[f(e)].push(e)
     return r
 
-def qsort(xs, lt):
+def rnd_pick(xs): return xs[rnd(xs.length)]
+def rnd_pick2(xs): return rnd_pick(rnd_pick(xs))
+
+def qsort<T>(xs:[T], lt) -> [T]:
     if xs.length <= 1:
         return xs
     else:
@@ -117,7 +142,7 @@ def qsort(xs, lt):
                              qsort(f2, lt))
 
 def qsort_in_place(xs, lt):
-    def rec(s, e):
+    def rec(s, e) -> void:
         let l = e - s
         if l > 1:
             let pivot = xs[s]
@@ -151,7 +176,7 @@ def insert_ordered(xs, x, lt):
             return
     xs.push(x)
 
-def randomize(xs):
+def shuffle(xs):
     for(xs) x, i:
         if i:
             let j = rnd(i + 1)
@@ -182,28 +207,20 @@ def collect(hof):
     hof(): list.push(_)
     return list
 
-// coroutine utility functions:
-
-// generally don't want to use this function, since you'd be better off directly using the HOF the coroutine is based on
-def coroutine_for(co, f):
-    while co.active:
-        f(co.return_value)
-        co.resume
-    return co.return_value
-
-// builtin for() made useful as a coroutine.
-def cofor(n, f):
-    for n: f(_)
-
 // error checking
 
 def fatal_exit(msg):
-    print "fatal error: " + msg
+    print "fatal error: {msg}"
     return from program
 
 def fatal(msg):
     if msg: fatal_exit(msg)
 
 def check(val, msg):
-    if !val: fatal_exit(msg)
+    if not val: fatal_exit(msg)
     else: return val
+
+// print helpers
+
+def print(a, b):
+    print "{a} {b}"

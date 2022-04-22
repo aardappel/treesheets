@@ -17,6 +17,7 @@
 #include "lobster/glincludes.h"
 #include "lobster/glinterface.h"
 #include "lobster/sdlincludes.h"
+#include "lobster/sdlinterface.h"
 
 #ifdef PLATFORM_WINNIX
 #define GLEXT(type, name, needed) type name = nullptr;
@@ -31,14 +32,10 @@ vector<Light> lights;
 float pointscale = 1.0f;
 float custompointscale = 1.0f;
 bool mode2d = true;
+bool mode_srgb = false;
 GeometryCache *geomcache = nullptr;
 
-void AppendTransform(const float4x4 &forward, const float4x4 &backward) {
-    otransforms.object2view *= forward;
-    otransforms.view2object = backward * otransforms.view2object;
-}
-
-int SetBlendMode(BlendMode mode) {
+BlendMode SetBlendMode(BlendMode mode) {
     static BlendMode curblendmode = BLEND_NONE;
     if (mode == curblendmode) return curblendmode;
     switch (mode) {
@@ -66,7 +63,7 @@ int SetBlendMode(BlendMode mode) {
             GL_CALL(glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA));
             break;
     }
-    int old = curblendmode;
+    BlendMode old = curblendmode;
     curblendmode = mode;
     return old;
 }
@@ -74,6 +71,27 @@ int SetBlendMode(BlendMode mode) {
 void ClearFrameBuffer(const float3 &c) {
     GL_CALL(glClearColor(c.x, c.y, c.z, 1.0));
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+}
+
+void SetScissorRect(int2 topleft, int2 size, pair<int2, int2>& prev) {
+    int2 scrnsz = GetScreenSize();
+    GLboolean enabled;
+
+    GL_CALL(glGetBooleanv(GL_SCISSOR_TEST, &enabled));
+    if (enabled) {
+        GL_CALL(glGetIntegerv(GL_SCISSOR_BOX, (GLint*)prev.first.data())); 
+    } else {
+        prev = {int2_0, scrnsz};
+    }
+
+    if (topleft.x == 0 && topleft.y == 0 && size == scrnsz) {
+        GL_CALL(glDisable(GL_SCISSOR_TEST));
+    } else {
+        // Always get bitten by this, glScissor x & y are BOTTOM left, not top left.
+        GL_CALL(glScissor((GLint)topleft.x, (GLint)(scrnsz.y - (topleft.y + size.y)), 
+                         (GLint)size.x, (GLint)size.y));
+        GL_CALL(glEnable(GL_SCISSOR_TEST));
+    }
 }
 
 void Set2DMode(const int2 &ssize, bool lh, bool depthtest) {
@@ -105,9 +123,10 @@ void Set3DMode(float fovy, float ratio, float znear, float zfar) {
 }
 
 bool Is2DMode() { return mode2d; }
+bool IsSRGBMode() { return mode_srgb; }
 
-uchar *ReadPixels(const int2 &pos, const int2 &size) {
-    uchar *pixels = new uchar[size.x * size.y * 3];
+uint8_t *ReadPixels(const int2 &pos, const int2 &size) {
+    auto pixels = new uint8_t[size.x * size.y * 3];
     for (int y = 0; y < size.y; y++)
         GL_CALL(glReadPixels(pos.x, pos.y + size.y - y - 1, size.x, 1, GL_RGB, GL_UNSIGNED_BYTE,
                              pixels + y * (size.x * 3)));
@@ -115,14 +134,36 @@ uchar *ReadPixels(const int2 &pos, const int2 &size) {
 }
 
 void OpenGLFrameStart(const int2 &ssize) {
+    GL_CALL(glDisable(GL_SCISSOR_TEST));
     GL_CALL(glViewport(0, 0, ssize.x, ssize.y));
     SetBlendMode(BLEND_ALPHA);
     curcolor = float4(1);
     lights.clear();
 }
 
-void OpenGLInit(int samples) {
+void OpenGLFrameEnd() {
+    //uint8_t pixel[4];
+    //glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+    //glFlush();
+    //glFinish();
+}
+
+#ifdef PLATFORM_WINNIX
+void DebugCallBack(GLenum, GLenum, GLuint, GLenum severity, GLsizei length,
+                   const GLchar *message, const void *) {
+    auto ll = OUTPUT_INFO;
+    if (severity == GL_DEBUG_SEVERITY_HIGH) ll = OUTPUT_ERROR;
+    else if (severity == GL_DEBUG_SEVERITY_MEDIUM) ll = OUTPUT_WARN;
+    if (ll < min_output_level) return;
+    LogOutput(ll, "GLDEBUG: ", string_view(message, length));
+}
+#endif
+
+string OpenGLInit(int samples, bool srgb) {
     GL_CHECK("before_init");
+    LOG_INFO((const char *)glGetString(GL_VENDOR), " - ",
+             (const char *)glGetString(GL_RENDERER), " - ",
+             (const char *)glGetString(GL_VERSION));
     // If not called, flashes red framebuffer on OS X before first gl_clear() is called.
     ClearFrameBuffer(float3_0);
     #ifdef PLATFORM_WINNIX
@@ -130,20 +171,31 @@ void OpenGLInit(int samples) {
                 union { void *proc; type fun; } funcast; /* regular cast causes gcc warning */ \
                 funcast.proc = SDL_GL_GetProcAddress(#name); \
                 name = funcast.fun; \
-                if (!name && needed) THROW_OR_ABORT(string("no " #name)); \
+                if (!name && needed) return "no " #name; \
             }
         GLBASEEXTS GLEXTS
         #undef GLEXT
+        glEnable(GL_DEBUG_OUTPUT);
+        if (glDebugMessageCallback && glDebugMessageInsert) {
+            glDebugMessageCallback(DebugCallBack, nullptr);
+            glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0,
+                                 GL_DEBUG_SEVERITY_NOTIFICATION, 2, "on");
+        }
     #endif
     #ifndef PLATFORM_ES3
         GL_CALL(glEnable(GL_LINE_SMOOTH));
         GL_CALL(glHint(GL_LINE_SMOOTH_HINT, GL_NICEST));
         GL_CALL(glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST));
         if (samples > 1) GL_CALL(glEnable(GL_MULTISAMPLE));
+        if (srgb) {
+            GL_CALL(glEnable(GL_FRAMEBUFFER_SRGB));
+            mode_srgb = true;
+        }
     #endif
     GL_CALL(glCullFace(GL_FRONT));
     assert(!geomcache);
     geomcache = new GeometryCache();
+    return "";
 }
 
 void OpenGLCleanup() {
@@ -175,3 +227,11 @@ void LogGLError(const char *file, int line, const char *call) {
     LOG_ERROR(file, "(", line, "): OpenGL Error: ", err_str, " from ", call);
     assert(false);
 }
+
+#ifdef _WIN32
+// This magically forces GL to pick dedicated over integrated?
+extern "C" {
+_declspec(dllexport) DWORD NvOptimusEnablement = 1;
+_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+#endif

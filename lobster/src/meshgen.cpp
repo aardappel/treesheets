@@ -50,33 +50,33 @@ float3 rotated_size(const float3x3 &rot, const float3 &size) {
 }
 
 struct ImplicitFunction {
-    float3 orig;
-    float3 size;
-    float3x3 rot;
-    float4 material;
-    float smoothmink;
+    float3 orig = float3_0;
+    float3 size = float3_1;
+    float3x3 rot = float3x3_1;
+    float4 material = float4_1;
+    float smoothmink = 1.0f;
 
     virtual ~ImplicitFunction() {}
 
-    inline float Eval(const float3 & /*pos*/) const = delete;
-
-    float3 Sized(const float3 &unit_size) { return unit_size * size + smoothmink; }
+    float3 Sized(const float3 &unit_size) const { return unit_size * size + smoothmink; }
     virtual float3 Size() { return Sized(float3_1); };
-    virtual void FillGrid(const int3 &start, const int3 &end, DistGrid *distgrid,
-                          const float3 &gridscale, const float3 &gridtrans,
-                          const float3x3 &gridrot, ThreadPool &threadpool) const = 0;
+    virtual void FillGrid(const int3 &, const int3 &, DistGrid *,
+                          const float3 &, const float3 &,
+                          const float3x3 &, ThreadPool &) const {};
 };
 
 static int3 axesi[] = { int3(1, 0, 0), int3(0, 1, 0), int3(0, 0, 1) };
 
 float max_smoothmink = 0;
 
+static const float grid_epsilon = 0.01f;
+
 // use curiously recurring template pattern to allow implicit function to be inlined in
 // rasterization loop
 template<typename T> struct ImplicitFunctionImpl : ImplicitFunction {
     void FillGrid(const int3 &start, const int3 &end, DistGrid *distgrid,
                   const float3 &gridscale, const float3 &gridtrans,
-                  const float3x3 &gridrot, ThreadPool &threadpool) const {
+                  const float3x3 &gridrot, ThreadPool &threadpool) const override {
         assert(end <= distgrid->dim && int3(0) <= start);
         auto uniform_scale = average(size);
         max_smoothmink = max(max_smoothmink, uniform_scale * smoothmink);
@@ -124,7 +124,7 @@ struct IFSphere : ImplicitFunctionImpl<IFSphere> {
         return length(pos) - rad;
     }
 
-    float3 Size() { return Sized(float3(rad)); }
+    float3 Size() override { return Sized(float3(rad)); }
 };
 
 struct IFCube : ImplicitFunctionImpl<IFCube> {
@@ -136,7 +136,7 @@ struct IFCube : ImplicitFunctionImpl<IFCube> {
         return length(max(d, float3_0)) + max(min(d, float3_0));
     }
 
-    float3 Size() { return Sized(extents); }
+    float3 Size() override { return Sized(extents); }
 };
 
 struct IFCylinder : ImplicitFunctionImpl<IFCylinder> {
@@ -146,7 +146,7 @@ struct IFCylinder : ImplicitFunctionImpl<IFCylinder> {
         return max(length(pos.xy()) - radius, abs(pos.z) - height);
     }
 
-    float3 Size() { return Sized(float3(radius, radius, height)); }
+    float3 Size() override { return Sized(float3(radius, radius, height)); }
 };
 
 struct IFTaperedCylinder : ImplicitFunctionImpl<IFTaperedCylinder> {
@@ -159,7 +159,7 @@ struct IFTaperedCylinder : ImplicitFunctionImpl<IFTaperedCylinder> {
         return max(abs(pos.z) - height, dot(xy, xy) - r * r);
     }
 
-    float3 Size() {
+    float3 Size() override {
         auto rad = max(top, bot);
         return Sized(float3(rad, rad, height));
     }
@@ -174,7 +174,7 @@ struct IFSuperQuadric : ImplicitFunctionImpl<IFSuperQuadric> {
         return dot(pow(abs(pos) / scale, exp), float3_1) - 1;
     }
 
-    float3 Size() { return Sized(scale); }
+    float3 Size() override { return Sized(scale); }
 };
 
 struct IFSuperQuadricNonUniform : ImplicitFunctionImpl<IFSuperQuadricNonUniform> {
@@ -189,7 +189,7 @@ struct IFSuperQuadricNonUniform : ImplicitFunctionImpl<IFSuperQuadricNonUniform>
         return max(max(p), dot(pow(p, e), float3_1)) - 1;
     }
 
-    float3 Size() { return Sized(max(scalepos, scaleneg)); }
+    float3 Size() override { return Sized(max(scalepos, scaleneg)); }
 };
 
 struct IFSuperToroid : ImplicitFunctionImpl<IFSuperToroid> {
@@ -202,7 +202,7 @@ struct IFSuperToroid : ImplicitFunctionImpl<IFSuperToroid> {
         return powf(fabsf(xy), exp.z) + p.z - 1;
     }
 
-    float3 Size() { return Sized(float3(r * 2 + 1, r * 2 + 1, 1)); }
+    float3 Size() override { return Sized(float3(r * 2 + 1, r * 2 + 1, 1)); }
 };
 
 struct IFLandscape : ImplicitFunctionImpl<IFLandscape> {
@@ -228,7 +228,7 @@ struct Group : ImplicitFunctionImpl<Group> {
 
     static inline float Eval(const float3 & /*pos*/) { return 0.0f; }
 
-    float3 Size() {
+    float3 Size() override {
         float3 p1, p2;
         for (auto c : children) {
             auto csz = c->Size();
@@ -244,15 +244,15 @@ struct Group : ImplicitFunctionImpl<Group> {
     void FillGrid(const int3 & /*start*/, const int3 & /*end*/, DistGrid *distgrid,
                   const float3 &gridscale, const float3 &gridtrans,
                   const float3x3 & /*gridrot*/,
-                  ThreadPool &threadpool) const {
+                  ThreadPool &threadpool) const override {
         for (auto c : children) {
             auto csize = c->Size();
             if (dot(csize, gridscale) > 3) {
                 auto trans = gridtrans + c->orig * gridscale;
                 auto scale = gridscale * c->size;
                 auto rsize = rotated_size(c->rot, csize);
-                auto start = int3(trans - rsize * gridscale - 0.01f);
-                auto end   = int3(trans + rsize * gridscale + 2.01f);
+                auto start = int3(trans - rsize * gridscale - grid_epsilon);
+                auto end   = int3(trans + rsize * gridscale + grid_epsilon + 2.0f);
                 auto bs    = end - start;
                 if (bs > 1) c->FillGrid(start, end, distgrid, scale, trans, c->rot, threadpool);
             }
@@ -495,7 +495,7 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
                         auto &v = verts.back();
                         v.pos = c.accum;
                         v.norm = float3_0;
-                        v.col = quantizec(c.col);
+                        v.col = quantizec(c.col, 1);
                     }
                     triangles.push_back(c.n);
                 }
@@ -574,7 +574,7 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
                             SimplexNoise(octaves, persistence, scale, float4(v.pos, 0.3f / scale)),
                             SimplexNoise(octaves, persistence, scale, float4(v.pos, 0.6f / scale)));
             v.col = quantizec(color2vec(v.col).xyz() *
-                              (float3_1 - (n + float3_1) / 2 * noiseintensity));
+                              (float3_1 - (n + float3_1) / 2 * noiseintensity), 1);
         }
     }
     /////////// MODULATE LIGHTING BY CREASE FACTOR
@@ -606,32 +606,27 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
     LOG_DEBUG("meshgen verts = %lu, edgeverts = %lu, tris = %lu, mctris = %lu,"
            " scale = %f\n", verts.size(), edges.size(), triangles.size() / 3,
            mctriangles.size() / 3, gridscale);
-    auto m = new Mesh(new Geometry(make_span(verts), "PNC"),
+    auto m = new Mesh(new Geometry(gsl::make_span(verts), "PNC"),
                       pointmode ? PRIM_POINT : PRIM_TRIS);
     if (pointmode) {
         m->pointsize = 1000 / gridscale;
     } else {
-        m->surfs.push_back(new Surface(make_span(triangles), PRIM_TRIS));
+        m->surfs.push_back(new Surface(gsl::make_span(triangles), PRIM_TRIS));
     }
     return m;
 }
 
 Group *root = nullptr;
 Group *curgroup = nullptr;
-float3 cursize = float3_1;
-float3 curorig = float3_0;
-float3x3 currot  = float3x3_1;
-float cursmoothmink = 1.0f;
-float4 curcol = float4_1;
+ImplicitFunction cur;
+vector<ImplicitFunction> fstack;
 
 void MeshGenClear() {
     if (root) delete root;
     root = curgroup = nullptr;
-    cursize = float3_1;
-    curorig = float3_0;
-    currot = float3x3_1;
-    curcol = float4_1;
+    cur = ImplicitFunction();
     max_smoothmink = 0;
+    fstack.clear();
 }
 
 Group *GetGroup() {
@@ -644,23 +639,25 @@ Group *GetGroup() {
 }
 
 Value AddShape(ImplicitFunction *f) {
-    f->size = cursize;
-    f->orig = curorig;
-    f->rot  = currot;
-    f->material = curcol;
-    f->smoothmink = cursmoothmink;
+    f->size = cur.size;
+    f->orig = cur.orig;
+    f->rot  = cur.rot;
+    f->material = cur.material;
+    f->smoothmink = cur.smoothmink;
     GetGroup()->children.push_back(f);
-    return Value();
+    return NilVal();
 }
 
 Value eval_and_polygonize(VM &vm, int targetgridsize, int zoffset, bool do_poly) {
     auto scenesize = root->Size() * 2;
     float biggestdim = max(scenesize.x, max(scenesize.y, scenesize.z));
     auto gridscale = targetgridsize / biggestdim;
-    auto gridsize = int3(scenesize * gridscale + float3(2.001f));
+    // Add a boundary of 1 cell in all directions, and additionally 10xepsilon to ensure
+    // shapes always fit in the grid, even with some float imprecision.
+    auto gridsize = int3(scenesize * gridscale + float3(grid_epsilon * 10.0f + 2.0f));
     auto gridtrans = (float3(gridsize) - 1) / 2 - root->orig * gridscale;
     auto distgrid = new DistGrid(gridsize, DistVert());
-    ThreadPool threadpool(NumHWThreads());
+    ThreadPool threadpool((size_t)NumHWThreads());
     root->FillGrid(int3(0), gridsize, distgrid, float3(gridscale), gridtrans, float3x3_1,
         threadpool);
     if (do_poly) {
@@ -680,7 +677,7 @@ void AddMeshGen(NativeRegistry &nfr) {
 
 nfr("mg_sphere", "radius", "F", "",
     "a sphere",
-    [](VM &, Value &rad) {
+    [](StackPtr &, VM &, Value &rad) {
         auto s = new IFSphere();
         s->rad = rad.fltval();
         return AddShape(s);
@@ -688,15 +685,15 @@ nfr("mg_sphere", "radius", "F", "",
 
 nfr("mg_cube", "extents", "F}:3", "",
     "a cube (extents are size from center)",
-    [](VM &vm) {
+    [](StackPtr &sp, VM &) {
         auto c = new IFCube();
-        c->extents = vm.PopVec<float3>();
-        vm.Push(AddShape(c));
+        c->extents = PopVec<float3>(sp);
+        Push(sp,  AddShape(c));
     });
 
 nfr("mg_cylinder", "radius,height", "FF", "",
     "a unit cylinder (height is from center)",
-    [](VM &, Value &radius, Value &height) {
+    [](StackPtr &, VM &, Value &radius, Value &height) {
         auto c = new IFCylinder();
         c->radius = radius.fltval();
         c->height = height.fltval();
@@ -705,7 +702,7 @@ nfr("mg_cylinder", "radius,height", "FF", "",
 
 nfr("mg_tapered_cylinder", "bot,top,height", "FFF", "",
     "a cyclinder where you specify the top and bottom radius (height is from center)",
-    [](VM &, Value &bot, Value &top, Value &height) {
+    [](StackPtr &, VM &, Value &bot, Value &top, Value &height) {
         auto tc = new IFTaperedCylinder();
         tc->bot = bot.fltval();
         tc->top = top.fltval();
@@ -716,37 +713,37 @@ nfr("mg_tapered_cylinder", "bot,top,height", "FFF", "",
 nfr("mg_superquadric", "exponents,scale", "F}:3F}:3", "",
     "a super quadric. specify an exponent of 2 for spherical, higher values for rounded"
     " squares",
-    [](VM &vm) {
+    [](StackPtr &sp, VM &) {
         auto sq = new IFSuperQuadric();
-        sq->scale = vm.PopVec<float3>();
-        sq->exp = vm.PopVec<float3>();
+        sq->scale = PopVec<float3>(sp);
+        sq->exp = PopVec<float3>(sp);
         AddShape(sq);
     });
 
 nfr("mg_superquadric_non_uniform", "posexponents,negexponents,posscale,negscale", "F}:3F}:3F}:3F}:3", "",
     "a superquadric that allows you to specify exponents and sizes in all 6 directions"
     " independently for maximum modelling possibilities",
-    [](VM &vm) {
+    [](StackPtr &sp, VM &) {
         auto sq = new IFSuperQuadricNonUniform();
-        sq->scaleneg = max(float3(0.01f), vm.PopVec<float3>());
-        sq->scalepos = max(float3(0.01f), vm.PopVec<float3>());
-        sq->expneg   = vm.PopVec<float3>();
-        sq->exppos   = vm.PopVec<float3>();
+        sq->scaleneg = max(float3(0.01f), PopVec<float3>(sp));
+        sq->scalepos = max(float3(0.01f), PopVec<float3>(sp));
+        sq->expneg   = PopVec<float3>(sp);
+        sq->exppos   = PopVec<float3>(sp);
         AddShape(sq);
     });
 
 nfr("mg_supertoroid", "R,exponents", "FF}:3", "",
     "a super toroid. R is the distance from the origin to the center of the ring.",
-    [](VM &vm) {
+    [](StackPtr &sp, VM &) {
         auto t = new IFSuperToroid();
-        t->exp = vm.PopVec<float3>();
-        t->r = vm.Pop().fltval();
+        t->exp = PopVec<float3>(sp);
+        t->r = Pop(sp).fltval();
         AddShape(t);
     });
 
 nfr("mg_landscape", "zscale,xyscale", "FF", "",
     "a simplex landscape of unit size",
-    [](VM &, Value &zscale, Value &xyscale) {
+    [](StackPtr &, VM &, Value &zscale, Value &xyscale) {
         auto ls = new IFLandscape();
         ls->zscale = zscale.fltval();
         ls->xyscale = xyscale.fltval();
@@ -759,37 +756,37 @@ nfr("mg_set_polygon_reduction", "polyreductionpasses,epsilon,maxtricornerdot", "
     " determines how flat adjacent triangles must be to be reduced, use 0.98 as a good"
     " tradeoff, lower to get more compression. maxtricornerdot avoid very thin triangles, use"
     " 0.95 as a good tradeoff, up to 0.99 to get more compression",
-    [](VM &, Value &_polyreductionpasses, Value &_epsilon,
+    [](StackPtr &, VM &, Value &_polyreductionpasses, Value &_epsilon,
                                         Value &_maxtricornerdot) {
         polyreductionpasses = _polyreductionpasses.intval();
         epsilon = _epsilon.fltval();
         maxtricornerdot = _maxtricornerdot.fltval();
-        return Value();
+        return NilVal();
     });
 
 nfr("mg_set_color_noise", "noiseintensity,noisestretch", "FF", "",
     "applies simplex noise to the colors of the model. try 0.3 for intensity."
     " stretch scales the pattern over the model",
-    [](VM &, Value &_noiseintensity, Value &_noisestretch) {
+    [](StackPtr &, VM &, Value &_noiseintensity, Value &_noisestretch) {
         noisestretch = _noisestretch.fltval();
         noiseintensity = _noiseintensity.fltval();
-        return Value();
+        return NilVal();
     });
 
 nfr("mg_set_vertex_randomize", "factor", "F", "",
     "randomizes all verts produced to give a more organic look and to hide the inherent messy"
     " polygons produced by the algorithm. try 0.15. note that any setting other than 0 will"
     " likely counteract the polygon reduction algorithm",
-    [](VM &, Value &factor) {
+    [](StackPtr &, VM &, Value &factor) {
         randomizeverts = factor.fltval();
-        return Value();
+        return NilVal();
     });
 
 nfr("mg_set_point_mode", "on", "B", "",
     "generates a point mesh instead of polygons",
-    [](VM &, Value &aspoints) {
+    [](StackPtr &, VM &, Value &aspoints) {
         pointmode = aspoints.True();
-        return Value();
+        return NilVal();
     });
 
 nfr("mg_polygonize", "subdiv", "I", "R",
@@ -797,7 +794,7 @@ nfr("mg_polygonize", "subdiv", "I", "R",
     " subdiv determines detail and number of polygons (relative to the largest dimension of the"
     " model), try 30.. 300 depending on the subject."
     " values much higher than that will likely make you run out of memory (or take very long).",
-    [](VM &vm, Value &subdiv) {
+    [](StackPtr &, VM &vm, Value &subdiv) {
         return eval_and_polygonize(vm, subdiv.intval(), 0, true);
     });
 
@@ -805,90 +802,69 @@ nfr("mg_convert_to_cubes", "subdiv,zoffset", "II", "R",
     "returns a cubegen block (see cg_ functions) from past mg_ commands."
     " subdiv determines detail and number of cubes (relative to the largest dimension of the"
     " model).",
-    [](VM &vm, Value &subdiv, Value &zoffset) {
+    [](StackPtr &, VM &vm, Value &subdiv, Value &zoffset) {
         return eval_and_polygonize(vm, subdiv.intval(), zoffset.intval(), false);
     });
 
-nfr("mg_translate", "vec,body", "F}:3L?", "",
-    "translates the current coordinate system along a vector. when a body is given,"
-    " restores the previous transform afterwards",
-    [](VM &vm) {
-        auto body = vm.Pop();
-        auto v = vm.PopVec<float3>();
-        if (body.True()) vm.PushAnyAsString(curorig);
+nfr("mg_translate", "vec", "F}:3", "",
+    "translates the current coordinate system along a vector",
+    [](StackPtr &sp, VM &) {
+        auto v = PopVec<float3>(sp);
         // FIXME: not good enough if non-uniform scale, might as well forbid that before any trans
-        curorig += currot * (v * cursize);
-        vm.Push(body);
-    }, [](VM &vm) {
-        vm.PopAnyFromString(curorig);
+        cur.orig += cur.rot * (v * cur.size);
     });
 
-nfr("mg_scale", "f,body", "FL?", "",
-    "scales the current coordinate system by the given factor."
-    " when a body is given, restores the previous transform afterwards",
-    [](VM &vm) {
-        auto body = vm.Pop();
-        auto f = vm.Pop().fltval();
-        if (body.True()) vm.PushAnyAsString(cursize);
-        cursize *= f;
-        vm.Push(body);
-    }, [](VM &vm) {
-        vm.PopAnyFromString(cursize);
+nfr("mg_scale", "f", "F", "",
+    "scales the current coordinate system by the given factor",
+    [](StackPtr &sp, VM &) {
+        auto f = Pop(sp).fltval();
+        cur.size *= f;
     });
 
-nfr("mg_scale_vec", "vec,body", "F}:3L?", "",
-    "non-unimformly scales the current coordinate system using individual factors per axis."
-    " when a body is given, restores the previous transform afterwards",
-    [](VM &vm) {
-        auto body = vm.Pop();
-        auto v = vm.PopVec<float3>();
-        if (body.True()) vm.PushAnyAsString(cursize);
-        cursize *= v;
-        vm.Push(body);
-    }, [](VM &vm) {
-        vm.PopAnyFromString(cursize);
+nfr("mg_scale_vec", "vec", "F}:3", "",
+    "non-unimformly scales the current coordinate system using individual factors per axis",
+    [](StackPtr &sp, VM &) {
+        auto v = PopVec<float3>(sp);
+        cur.size *= v;
     });
 
-nfr("mg_rotate", "axis,angle,body", "F}:3FL?", "",
-    "rotates using axis/angle. when a body is given, restores the previous transform"
-    " afterwards",
-    [](VM &vm) {
-        auto body = vm.Pop();
-        auto angle = vm.Pop().fltval();
-        auto axis = vm.PopVec<float3>();
-        if (body.True()) vm.PushAnyAsString(currot);
-        currot *= float3x3(angle * RAD, axis);
-        vm.Push(body);
-    }, [](VM &vm) {
-        vm.PopAnyFromString(currot);
+nfr("mg_rotate", "axis,angle", "F}:3F", "",
+    "rotates using axis/angle",
+    [](StackPtr &sp, VM &) {
+        auto angle = Pop(sp).fltval();
+        auto axis = PopVec<float3>(sp);
+        cur.rot *= float3x3(angle * RAD, axis);
     });
 
-nfr("mg_color", "color,body", "F}:4L?", "",
+nfr("mg_color", "color", "F}:4", "",
     "sets the color, where an alpha of 1 means to add shapes to the scene (union), and 0"
-    " substracts them (carves). when a body is given, restores the previous color afterwards.",
-    [](VM &vm) {
-        auto body = vm.Pop();
-        auto v = vm.PopVec<float4>();
-        if (body.True()) vm.PushAnyAsString(curcol);
-        curcol = v;
-        vm.Push(body);
-    }, [](VM &vm) {
-        vm.PopAnyFromString(curcol);
+    " substracts them (carves)",
+    [](StackPtr &sp, VM &) {
+        auto v = PopVec<float4>(sp);
+        cur.material = v;
     });
 
-nfr("mg_smooth", "smooth,body", "FL?", "",
-    "sets the smoothness in terms of the range of distance from the shape smoothing happens."
-    " when a body is given, restores the previous value afterwards.",
-    [](VM &vm) {
-        auto body = vm.Pop();
-        auto smooth = vm.Pop().fltval();
-        if (body.True()) vm.Push(Value(cursmoothmink));
-        cursmoothmink = smooth;
-        vm.Push(body);
-    }, [](VM &vm) {
-        auto smooth = vm.Pop();
-        assert(smooth.type == V_FLOAT);
-        cursmoothmink = smooth.fltval();
+nfr("mg_smooth", "smooth", "F", "",
+    "sets the smoothness in terms of the range of distance from the shape smoothing happens,"
+    " defaults to 1.0",
+    [](StackPtr &sp, VM &) {
+        auto smooth = Pop(sp).fltval();
+        cur.smoothmink = smooth;
+    });
+
+nfr("mg_push_transform", "", "", "",
+    "save the current state of the transform",
+    [](StackPtr &, VM &) {
+        fstack.push_back(cur);
+    });
+
+nfr("mg_pop_transform", "", "", "",
+    "restore a previous state of the transform",
+    [](StackPtr &, VM &) {
+        if (!fstack.empty()) {
+            cur = fstack.back();
+            fstack.pop_back();
+        }
     });
 
 }  // AddMeshGen

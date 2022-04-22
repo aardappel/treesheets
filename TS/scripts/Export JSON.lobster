@@ -21,7 +21,7 @@ def add_text(s):
 def add_indent(indent):
     out.push(concat_string(map(indent): "  ", ""))
 
-def add_cell(indent):
+def add_cell(indent) -> void:
     out.push("[\n")
     add_indent(indent + 1)
     add_text(ts_get_text())
@@ -38,11 +38,11 @@ def add_cell(indent):
     add_indent(indent)
     out.push("]")
 
-let fn = ts_get_filename_from_user(true)
-if fn.length:
+let filename = ts_get_filename_from_user(true)
+if filename.length:
     ts_goto_root()  // This the default, here just for clarity.
     add_cell(0)
-    let ok = write_file(fn, concat_string(out, ""))
+    let ok = write_file(filename, concat_string(out, ""))
     ts_set_status_message("JSON export " + if ok: "succesful" else: "failed!")
 else:
     ts_set_status_message("export cancelled")

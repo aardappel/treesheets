@@ -19,224 +19,479 @@
 
 namespace lobster {
 
-class CPPGenerator : public NativeGenerator {
-    ostringstream &ss;
-    const int dispatch = VM_DISPATCH_METHOD;
-    int current_block_id = -1;
-    int tail_calls_in_a_row = 0;
+string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bool cpp) {
+    auto bcf = bytecode::GetBytecodeFile(bytecode_buffer.data());
+    if (!FLATBUFFERS_LITTLEENDIAN) return "native code gen requires little endian";
+    auto code = (const int *)bcf->bytecode()->Data();  // Assumes we're on a little-endian machine.
+    auto typetable = (const type_elem_t *)bcf->typetable()->Data();  // Same.
+    auto function_lookup = CreateFunctionLookUp(bcf);
+    auto specidents = bcf->specidents();
 
-    string_view Block() {
-        return dispatch == VM_DISPATCH_TRAMPOLINE ? "block" : "";
-    }
-
-    void JumpInsVar() {
-        if (dispatch == VM_DISPATCH_TRAMPOLINE) {
-            ss << "return (void *)vm.next_call_target;";
-        } else if (dispatch == VM_DISPATCH_SWITCH_GOTO) {
-            ss << "{ ip = vm.next_call_target; continue; }";
-        }
-    }
-
-  public:
-
-    explicit CPPGenerator(ostringstream &ss) : ss(ss) {}
-
-    void FileStart() override {
-        ss <<
+    if (cpp) {
+        sd +=
             "#include \"lobster/stdafx.h\"\n"
             "#include \"lobster/vmdata.h\"\n"
-            #if LOBSTER_ENGINE
-                "#include \"lobster/engine.h\"\n"
-            #else
-                "#include \"lobster/compiler.h\"\n"
+            "#include \"lobster/vmops.h\"\n"
+            "#include \"lobster/compiler.h\"\n"
+            "\n"
+            "typedef lobster::Value Value;\n"
+            "typedef lobster::StackPtr StackPtr;\n"
+            "typedef lobster::VM &VMRef;\n"
+            "typedef lobster::fun_base_t fun_base_t;\n"
+            "\n"
+            "#if LOBSTER_ENGINE\n"
+            "    // FIXME: This makes SDL not modular, but without it it will miss the SDLMain indirection.\n"
+            "    #include \"lobster/sdlincludes.h\"\n"
+            "    #include \"lobster/sdlinterface.h\"\n"
+            "    extern \"C\" void GLFrame(StackPtr sp, VMRef vm);\n"
+            "#endif\n"
+            "\n"
+            ;
+    } else {
+        sd +=
+            // This needs to correspond to the C++ Value, enforced in Entry().
+            "typedef struct {\n"
+            "    union {\n"
+            "        long long ival;\n"
+            "        double fval;\n"
+            "        void *rval;\n"
+            "    };\n"
+            #if RTT_ENABLED
+            "    int type;\n"
             #endif
+            "} Value;\n"
+            "typedef Value *StackPtr;\n"
+            "typedef void *VMRef;\n"
+            "typedef void(*fun_base_t)(VMRef, StackPtr);\n"
+            "#define Pop(sp) (*--(sp))\n"
+            "#define Push(sp, V) (*(sp)++ = (V))\n"
+            "#define TopM(sp, N) (*((sp) - (N) - 1))\n"
             "\n"
-            "#ifndef VM_COMPILED_CODE_MODE\n"
-            "    #error VM_COMPILED_CODE_MODE must be set for the entire code base.\n"
-            "#endif\n"
-            "\n"
-            "#ifdef _WIN32\n"
-            "    #pragma warning (disable: 4102)  // Unused label.\n"
-            "#endif\n"
-            "\n";
+            ;
+
+        auto args = [&](int A) {
+            for (int i = 0; i < A; i++) sd += ", int";
+        };
+
+        #define F(N, A, USE, DEF) \
+            sd += "void U_" #N "(VMRef, StackPtr"; args(A); sd += ");\n";
+            ILBASENAMES
+        #undef F
+        #define F(N, A, USE, DEF) \
+            sd += "void U_" #N "(VMRef, StackPtr"; args(A); sd += ", fun_base_t);\n";
+            ILCALLNAMES
+        #undef F
+        #define F(N, A, USE, DEF) \
+            sd += "void U_" #N "(VMRef, StackPtr, const int *);\n";
+            ILVARARGNAMES
+        #undef F
+        #define F(N, A, USE, DEF) \
+            sd += "int U_" #N "(VMRef, StackPtr);\n";
+            ILJUMPNAMES1
+        #undef F
+        #define F(N, A, USE, DEF) \
+            sd += "int U_" #N "(VMRef, StackPtr, int);\n";
+            ILJUMPNAMES2
+        #undef F
+
+        sd += "extern fun_base_t GetNextCallTarget(VMRef);\n"
+              "extern void Entry(int);\n"
+              "extern void GLFrame(StackPtr, VMRef);\n"
+              "extern void SwapVars(VMRef, int, StackPtr, int);\n"
+              "extern void BackupVar(VMRef, int);\n"
+              "extern void NilVal(Value *);\n"
+              "extern void DecOwned(VMRef, int);\n"
+              "extern void DecVal(VMRef, Value);\n"
+              "extern void RestoreBackup(VMRef, int);\n"
+              "extern StackPtr PopArg(VMRef, int, StackPtr);\n"
+              "extern void SetLVal(VMRef, Value *);\n"
+              "\n";
     }
 
-    void DeclareBlock(int id) override {
-        if (dispatch == VM_DISPATCH_TRAMPOLINE) {
-            ss << "static void *block" << id << "(lobster::VM &);\n";
+    vector<int> var_to_local;
+    var_to_local.resize(specidents->size(), -1);
+    int numlocals = -1;
+
+    auto len = bcf->bytecode()->size();
+    auto ip = code;
+    // Skip past 1st jump.
+    assert(*ip == IL_JUMP);
+    ip += 2;
+    auto starting_ip = code + *ip++;
+    int starting_point = -1;
+    while (ip < code + len) {
+        int id = (int)(ip - code);
+        if (*ip == IL_FUNSTART || ip == starting_ip) {
+            append(sd, "static void fun_", id, "(VMRef, StackPtr);\n");
+            starting_point = id;
         }
-    }
-
-    void BeforeBlocks(int start_id, string_view /*bytecode_buffer*/) override {
-        ss << "\n";
-        if (dispatch == VM_DISPATCH_SWITCH_GOTO) {
-            ss << "static void *one_gigantic_function(lobster::VM &vm) {\n";
-            ss << "  lobster::block_t ip = " << start_id;
-            ss << ";\n  for(;;) switch(ip) {\n    default: assert(false); continue;\n";
+        if ((false)) {  // Debug corrupt bytecode.
+            string da;
+            DisAsmIns(natreg, da, ip, code, typetable, bcf, -1);
+            LOG_DEBUG(da);
         }
-    }
-
-    void FunStart(const bytecode::Function *f) override {
-        ss << "\n";
-        if (f) ss << "// " << f->name()->string_view() << "\n";
-    }
-
-    void BlockStart(int id) override {
-        if (dispatch == VM_DISPATCH_TRAMPOLINE) {
-            ss << "static void *block" << id << "(lobster::VM &vm) {\n";
-        } else if (dispatch == VM_DISPATCH_SWITCH_GOTO) {
-            ss << "  case " << id << ": block_label" << id << ":\n";
+        int opc = *ip++;
+        if (opc < 0 || opc >= IL_MAX_OPS) {
+            return cat("Corrupt bytecode: ", opc, " at: ", id);
         }
+        int regso = -1;
+        ParseOpAndGetArity(opc, ip, regso);
     }
-
-    void InstStart() override {
-        ss << "    { ";
-    }
-
-    void EmitJump(int id) override {
-        if (dispatch == VM_DISPATCH_TRAMPOLINE) {
-            // FIXME: if we make all forward calls tail calls, then under
-            // WASM/Emscripten/V8, we occasionally run out of stack.
-            // This bounds the number of tail calls in a simple way,
-            // but this is not correct, in that call targets are not necessarily
-            // in linear order, though it should catch most long runs of calls.
-            // We really need to do this with an algorithm that better understands
-            // the call structure instead. Hopefully this bounding will allow
-            // us to keep some of the performance advantage of tail calls vs
-            // not doing them at all.
-            if (tail_calls_in_a_row > 10 || id <= current_block_id) {
-                // A backwards jump, go via the trampoline to be safe
-                // (just in-case the compiler doesn't optimize tail calls).
-                ss << "return (void *)block" << id << ";";
-                tail_calls_in_a_row = 0;
+    sd += "\n";
+    vector<const int *> jumptables;
+    ip = code + 3;  // Past first IL_JUMP.
+    const int *funstart = nullptr;
+    int nkeepvars = 0;
+    int ndefsave = 0;
+    string sdt, sp;
+    int opc = -1;
+    const int *args = nullptr;
+    auto comment = [&](string_view c) { append(sd, " // ", c); };
+    while (ip < code + len) {
+        int id = (int)(ip - code);
+        bool is_start = ip == starting_ip;
+        opc = *ip++;
+        args = ip + 1;
+        if (opc == IL_FUNSTART || is_start) {
+            funstart = args;
+            nkeepvars = 0;
+            ndefsave = 0;
+            sdt.clear();
+            auto it = function_lookup.find(id);
+            auto f = it != function_lookup.end() ? it->second : nullptr;
+            sd += "\n";
+            if (f) append(sd, "// ", f->name()->string_view(), "\n");
+            append(sd, "static void fun_", id, "(VMRef vm, StackPtr psp) {\n");
+            if (opc == IL_FUNSTART) {
+                auto fip = funstart;
+                fip++;  // definedfunction
+                auto regs_max = *fip++;
+                auto nargs_fun = *fip++;
+                auto nargs = fip;
+                fip += nargs_fun;
+                ndefsave = *fip++;
+                auto defs = fip;
+                fip += ndefsave;
+                nkeepvars = *fip++;
+                #ifndef NDEBUG
+                    var_to_local.clear();
+                    var_to_local.resize(specidents->size(), -1);
+                #endif
+                numlocals = 0;
+                for (int j = 0; j < 2; j++) {
+                    auto vars = j ? defs : nargs;
+                    auto len = j ? ndefsave : nargs_fun;
+                    for (int i = 0; i < len; i++) {
+                        auto varidx = vars[i];
+                        if (!specidents->Get(varidx)->used_as_freevar()) {
+                            var_to_local[varidx] = numlocals++;
+                        }
+                    }
+                }
+                // FIXME: don't emit array.
+                // (there may be functions that don't use regs yet still refer to sp?)
+                append(sd, "    Value regs[", std::max(1, regs_max), "];\n");
+                if (!regs_max) append(sd, "    (void)regs;\n");
+                if (nkeepvars) append(sd, "    Value keepvar[", nkeepvars, "];\n");
+                if (numlocals) append(sd, "    Value locals[", numlocals, "];\n");
             } else {
-                // A forwards call, should be safe to tail-call.
-                ss << "return block" << id << "(vm);";
-                tail_calls_in_a_row++;
+                // Final program return at most 1 value.
+                append(sd, "    Value regs[1];\n");
             }
-        } else if (dispatch == VM_DISPATCH_SWITCH_GOTO) {
-            ss << "goto block_label" << id << ";";
-        }
-    }
-
-    void EmitConditionalJump(int opc, int id) override {
-        ss << "if (vm.F_" << ILNames()[opc] << "()) ";
-        EmitJump(id);
-    }
-
-    void EmitOperands(const char * /*base*/, const int *args, int arity, bool is_vararg) override {
-        if (is_vararg && arity) {
-            ss << "static int args[] = {";
-            for (int i = 0; i < arity; i++) {
-                if (i) ss << ", ";
-                ss << args[i];
+            if (opc == IL_FUNSTART) {
+                auto fip = funstart;
+                fip++;  // definedfunction
+                fip++;  // regs_max.
+                auto nargs_fun = *fip++;
+                for (int i = 0; i < nargs_fun; i++) {
+                    auto varidx = fip[i];
+                    if (specidents->Get(varidx)->used_as_freevar()) {
+                        append(sd, "    SwapVars(vm, ", varidx, ", psp, ", nargs_fun - i, ");\n");
+                    } else {
+                        append(sd, "    locals[", var_to_local[varidx], "] = *(psp - ", nargs_fun - i, ");\n");
+                    }
+                }
+                fip += nargs_fun;
+                ndefsave = *fip++;
+                for (int i = 0; i < ndefsave; i++) {
+                    // for most locals, this just saves an nil, only in recursive cases it has an actual
+                    // value.
+                    auto varidx = *fip++;
+                    if (specidents->Get(varidx)->used_as_freevar()) {
+                        append(sd, "    BackupVar(vm, ", varidx, ");\n");
+                    } else {
+                        // FIXME: it should even be unnecessary to initialize them, but its possible
+                        // there is a return before they're fully initialized, and then the decr of
+                        // owned vars may cause these to be accessed.
+                        if (cpp)
+                            append(sd, "    locals[", var_to_local[varidx], "] = lobster::NilVal();\n");  // FIXME ns
+                        else
+                            append(sd, "    NilVal(&locals[", var_to_local[varidx], "]);\n");
+                    }
+                }
+                nkeepvars = *fip++;
+                for (int i = 0; i < nkeepvars; i++) {
+                    if (cpp) append(sd, "    keepvar[", i, "] = lobster::NilVal();\n");  // FIXME ns
+                    else append(sd, "    NilVal(&keepvar[", i, "]);\n");
+                }
             }
-            ss << "}; ";
         }
-    }
+        int regso = -1;
+        auto arity = ParseOpAndGetArity(opc, ip, regso);
+        if (opc == IL_FUNSTART) continue;
+        append(sd, "    ");
+        sp = cat("regs + ", regso);
 
-    void SetNextCallTarget(int id) override {
-        ss << "vm.next_call_target = " << Block() << id << "; ";
-    }
-
-    void EmitGenericInst(int opc, const int *args, int arity, bool is_vararg, int target) override {
-        ss << "vm.U_" << ILNames()[opc] << "(";
-        if (is_vararg) {
-            ss << "args";
-        } else {
-            for (int i = 0; i < arity; i++) {
-                if (i) ss << ", ";
-                ss << args[i];
+        switch (opc) {
+            case IL_PUSHVARL:
+                append(sd, "regs[", regso, "] = locals[", var_to_local[args[0]], "];");
+                comment(IdName(bcf, args[0], typetable, false));
+                break;
+            case IL_PUSHVARVL:
+                for (int i = 0; i < args[1]; i++) {
+                    append(sd, "regs[", regso + i, "] = locals[", var_to_local[args[0] + i], "];");
+                }
+                comment(IdName(bcf, args[0], typetable, true));
+                break;
+            case IL_LVAL_VARL:
+                append(sd, "SetLVal(vm, &locals[", var_to_local[args[0]], "]);");
+                comment(IdName(bcf, args[0], typetable, false));
+                break;
+            case IL_JUMP:
+                append(sd, "goto block", args[0], ";");
+                break;
+            case IL_JUMPFAIL:
+            case IL_JUMPFAILR:
+            case IL_JUMPNOFAIL:
+            case IL_JUMPNOFAILR:
+            case IL_IFOR:
+            case IL_SFOR:
+            case IL_VFOR:
+            case IL_JUMPIFUNWOUND: {
+                auto id = args[opc == IL_JUMPIFUNWOUND ? 1 : 0];
+                assert(id >= 0);
+                auto df = opc == IL_JUMPIFUNWOUND ? args[0] : -1;
+                append(sd, "if (!U_", ILNames()[opc], "(vm, ", sp);
+                if (df >= 0) append(sd, ", ", df);
+                append(sd, ")) goto block", id, ";");
+                break;
             }
-        }
-        if (target >= 0) {
-            if (arity) ss << ", ";
-            ss << Block() << target;
-        }
-        ss << ");";
-    }
-
-    void EmitCall(int id) override {
-        ss << " ";
-        EmitJump(id);
-    }
-
-    void EmitCallIndirect() override {
-        ss << " ";
-        JumpInsVar();
-    }
-
-    void EmitCallIndirectNull() override {
-        ss << " if (vm.next_call_target) ";
-        JumpInsVar();
-    }
-
-    void InstEnd() override {
-        ss << " }\n";
-    }
-
-    void BlockEnd(int id, bool already_returned, bool is_exit) override {
-        if (dispatch == VM_DISPATCH_TRAMPOLINE) {
-            if (!already_returned) {
-                ss << "    { ";
-                if (is_exit) JumpInsVar(); else EmitJump(id);
-                ss << " }\n";
+            case IL_BLOCK_START:
+                // FIXME: added ";" because blocks may end up just before "}" at the end of a
+                // switch, and generate warnings/errors. Ideally not generate this block at all.
+                append(sd, "block", id, ":;");
+                break;
+            case IL_JUMP_TABLE:
+                if (cpp) {
+                    append(sd, "switch (regs[", regso - 1, "].ival()) {");
+                } else {
+                    append(sd, "{ long long top = regs[", regso - 1, "].ival; switch (top) {");
+                }
+                jumptables.push_back(args);
+                break;
+            case IL_JUMP_TABLE_CASE_START: {
+                auto t = jumptables.back();
+                auto mini = *t++;
+                auto maxi = *t++;
+                for (auto i = mini; i <= maxi; i++) {
+                    if (*t++ == id) append(sd, "case ", i, ":");
+                }
+                if (*t++ == id) append(sd, "default:");
+                break;
             }
-            ss << "}\n";
+            case IL_JUMP_TABLE_END: {
+                if (cpp) sd += "} // switch";
+                else sd += "}} // switch";
+                jumptables.pop_back();
+                break;
+            }
+            case IL_BCALLRETV:
+            case IL_BCALLRET0:
+            case IL_BCALLRET1:
+            case IL_BCALLRET2:
+            case IL_BCALLRET3:
+            case IL_BCALLRET4:
+            case IL_BCALLRET5:
+            case IL_BCALLRET6:
+            case IL_BCALLRET7:
+                if (natreg.nfuns[args[0]]->IsGLFrame()) {
+                    append(sd, "GLFrame(", sp, ", vm);");
+                } else {
+                    append(sd, "U_", ILNames()[opc], "(vm, ", sp, ", ", args[0], ", ", args[1], ");");
+                    comment(natreg.nfuns[args[0]]->name);
+                }
+                break;
+            case IL_RETURN:
+            case IL_RETURNANY: {
+                // FIXME: emit epilogue stuff only once at end of function.
+                auto fip = funstart;
+                fip++;  // function id.
+                fip++;  // regs_max.
+                auto nargs = *fip++;
+                auto freevars = fip + nargs;
+                fip += nargs;
+                auto ndef = *fip++;
+                auto defvars = fip;
+                fip += ndef;
+                fip++;  // nkeepvars, already parsed above
+                int nrets;
+                if (opc == IL_RETURN) {
+                    nrets = args[1];
+                    append(sd, "U_RETURN(vm, 0, ", args[0], ", ", nrets, ");");
+                } else {
+                    nrets = args[0];
+                    append(sd, "U_RETURNANY(vm, 0, ", nrets, ", ", args[1], ");");
+                }
+                auto ownedvars = *fip++;
+                for (int i = 0; i < ownedvars; i++) {
+                    auto varidx = *fip++;
+                    if (specidents->Get(varidx)->used_as_freevar()) {
+                        append(sd, "\n    DecOwned(vm, ", varidx, ");");
+                    } else {
+                        append(sd, "\n    DecVal(vm, locals[", var_to_local[varidx], "]);");
+                    }
+                }
+                while (nargs--) {
+                    auto varidx = *--freevars;
+                    if (specidents->Get(varidx)->used_as_freevar()) {
+                        append(sd, "\n    psp = PopArg(vm, ", varidx, ", psp);");
+                    } else {
+                        // TODO: move to when we obtain the arg?
+                        append(sd, "\n    Pop(psp);");
+                    }
+                }
+                auto unwind_diff = opc == IL_RETURNANY ? nrets - args[1] : 0;
+                for (int i = 0; i < nrets; i++) {
+                    append(sd, "\n    Push(psp, regs[", regso - nrets + i + unwind_diff, "]);");
+                }
+                sdt.clear();  // FIXME: remove
+                for (int i = ndef - 1; i >= 0; i--) {
+                    auto varidx = defvars[i];
+                    if (specidents->Get(varidx)->used_as_freevar()) {
+                        append(sdt, "    RestoreBackup(vm, ", varidx, ");\n");
+                    }
+                }
+                if (opc == IL_RETURN) {
+                    append(sd, "\n    goto epilogue;");
+                }
+                break;
+            }
+            case IL_SAVERETS:  // FIXME: remove
+                append(sd, "goto epilogue;");
+                break;
+            case IL_KEEPREFLOOP:
+                append(sd, "DecVal(vm, keepvar[", args[1], "]); ");
+                // fall-through:
+            case IL_KEEPREF:
+                append(sd, "keepvar[", args[1], "] = TopM(", sp, ", ", args[0], ");");
+                break;
+            case IL_PUSHFUN:
+                append(sd, "U_PUSHFUN(vm, ", sp, ", 0, ", "fun_", args[0], ");");
+                break;
+            case IL_CALL: {
+                append(sd, "fun_", args[0], "(vm, ", sp, ");");
+                auto fs = code + args[0];
+                assert(*fs == IL_FUNSTART);
+                fs += 2;
+                comment("call: " + bcf->functions()->Get(*fs)->name()->string_view());
+                break;
+            }
+            case IL_CALLV:
+                append(sd, "U_CALLV(vm, ", sp, "); ");
+                if (cpp) append(sd, "vm.next_call_target(vm, regs + ", regso - 1, ");");
+                else append(sd, "GetNextCallTarget(vm)(vm, regs + ", regso - 1, ");");
+                break;
+            case IL_DDCALL:
+                append(sd, "U_DDCALL(vm, ", sp, ", ", args[0], ", ", args[1], "); ");
+                if (cpp) append(sd, "vm.next_call_target(vm, ", sp, ");");
+                else append(sd, "GetNextCallTarget(vm)(vm, ", sp, ");");
+                break;
+            default:
+                assert(ILArity()[opc] != ILUNKNOWN);
+                append(sd, "U_", ILNames()[opc], "(vm, ", sp, "");
+                for (int i = 0; i < arity; i++) {
+                    sd += ", ";
+                    append(sd, args[i]);
+                }
+                sd += ");";
+                switch (opc) {
+                    case IL_PUSHVARF:
+                    case IL_PUSHVARVF:
+                    case IL_LVAL_VARF:
+                        comment(IdName(bcf, args[0], typetable, false));
+                        break;
+                    case IL_PUSHSTR: {
+                        auto sv = bcf->stringtable()->Get(args[0])->string_view();
+                        sv = sv.substr(0, 50);
+                        string q;
+                        EscapeAndQuote(sv, q);
+                        comment(q);
+                        break;
+                    }
+                    case IL_ISTYPE:
+                    case IL_NEWOBJECT:
+                    case IL_ST2S:
+                        auto ti = ((TypeInfo *)(typetable + args[0]));
+                        if (IsUDT(ti->t))
+                            comment(bcf->udts()->Get(ti->structidx)->name()->string_view());
+                        break;
+                }
+                break;
+        }
+
+        sd += "\n";
+        if (ip == code + len || *ip == IL_FUNSTART || ip == starting_ip) {
+            if (opc != IL_EXIT && opc != IL_ABORT) sd += "    epilogue:;\n";
+            if (!sdt.empty()) append(sd, sdt);
+            for (int i = 0; i < nkeepvars; i++) {
+                append(sd, "    DecVal(vm, keepvar[", i, "]);\n");
+            }
+            sd += "}\n";
         }
     }
 
-    void CodeEnd() override {
-        if (dispatch == VM_DISPATCH_SWITCH_GOTO) {
-            ss << "}\n}\n";  // End of gigantic function.
-        }
+    if (cpp) sd += "\nstatic";
+    else sd += "\nextern ";
+    sd += " const fun_base_t vtables[] = {\n";
+    for (auto id : *bcf->vtables()) {
+        sd += "    ";
+        if (id >= 0) append(sd, "fun_", id);
+        else sd += "0";
+        sd += ",\n";
     }
+    sd += "    0\n};\n";  // Make sure table is never empty.
 
-    void VTables(vector<int> &vtables) override {
-        ss << "\nstatic const lobster::block_t vtables[] = {\n";
-        for (auto id : vtables) {
-            ss << "    ";
-            if (id >= 0) ss << Block() << id;
-            else ss << "0";
-            ss << ",\n";
-        }
-        ss << "};\n";
-    }
-
-    void FileEnd(int start_id, string_view bytecode_buffer) override {
-        // FIXME: this obviously does NOT need to include the actual bytecode, just the metadata.
-        // in fact, it be nice if those were in readable format in the generated code.
-        ss << "\nstatic const int bytecodefb[] = {";
+    if (cpp) {
+        // Output only the metadata part of the bytecode, not the bytecode itself.
+        // TODO: it be nice if this metadate were in readable format in the generated code.
+        sd += "\nstatic const int bytecodefb[] = {";
         auto bytecode_ints = (const int *)bytecode_buffer.data();
-        for (size_t i = 0; i < bytecode_buffer.length() / sizeof(int); i++) {
-            if ((i & 0xF) == 0) ss << "\n  ";
-            ss << bytecode_ints[i] << ", ";
+        for (size_t i = 0; i < size_t(code - bytecode_ints); i++) {
+            if ((i & 0xF) == 0) sd += "\n ";
+            auto x = bytecode_ints[i];
+            sd += " ";
+            if (x < 0x10000 && x > -0x10000) {
+                append(sd, x);
+            } else {
+                if (x < 0) sd += "(int)";
+                to_string_hex(sd, (uint32_t)x);
+            }
+            sd += ",";
         }
-        ss << "\n};\n\n";
-        ss << "int main(int argc, char *argv[]){\n";
-        ss << "    return ";
-        #if LOBSTER_ENGINE
-            ss << "EngineRunCompiledCodeMain";
-        #else
-            ss << "ConsoleRunCompiledCodeMain";
-        #endif
-        ss << "(argc, argv, (void *)";
-        if (dispatch == VM_DISPATCH_SWITCH_GOTO) {
-            ss << "one_gigantic_function";
-        } else if (dispatch == VM_DISPATCH_TRAMPOLINE) {
-            ss << Block() << start_id;
-        }
-        ss << ", bytecodefb, " << bytecode_buffer.size() << ", vtables);\n}\n";
+        sd += "\n};\n\n";
+    }
+    if (cpp) sd += "extern \"C\" ";
+    sd += "void compiled_entry_point(VMRef vm, StackPtr sp) {\n";
+    if (!cpp) sd += "    Entry(sizeof(Value));\n";
+    append(sd, "    fun_", starting_point, "(vm, sp);\n}\n\n");
+    if (cpp) {
+        sd += "int main(int argc, char *argv[]) {\n";
+        sd += "    // This is hard-coded to call compiled_entry_point()\n";
+        sd += "    return RunCompiledCodeMain(argc, argv, ";
+        append(sd, "(uint8_t *)bytecodefb, ", bytecode_buffer.size(), ", vtables);\n}\n");
     }
 
-    void Annotate(string_view comment) override {
-        ss << " /* " << comment << " */";
-    }
-};
-
-string ToCPP(NativeRegistry &natreg, ostringstream &ss, string_view bytecode_buffer) {
-    CPPGenerator cppgen(ss);
-    return ToNative(natreg, cppgen, bytecode_buffer);
+    return "";
 }
 
 }  // namespace lobster

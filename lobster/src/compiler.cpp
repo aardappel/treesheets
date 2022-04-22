@@ -24,8 +24,10 @@
 
 #include "lobster/parser.h"
 #include "lobster/typecheck.h"
+#include "lobster/constval.h"
 #include "lobster/optimizer.h"
 #include "lobster/codegen.h"
+#include "lobster/tonative.h"
 
 namespace lobster {
 
@@ -33,15 +35,14 @@ const Type g_type_int(V_INT);
 const Type g_type_float(V_FLOAT);
 const Type g_type_string(V_STRING);
 const Type g_type_any(V_ANY);
+const Type g_type_vector_any(V_VECTOR, &g_type_any);
 const Type g_type_vector_int(V_VECTOR, &g_type_int);
 const Type g_type_vector_float(V_VECTOR, &g_type_float);
 const Type g_type_function_null(V_FUNCTION);
-const Type g_type_function_cocl(V_YIELD);
-const Type g_type_coroutine(V_COROUTINE);
 const Type g_type_resource(V_RESOURCE);
-const Type g_type_typeid(V_TYPEID);
+const Type g_type_vector_resource(V_VECTOR, &g_type_resource);
+const Type g_type_typeid(V_TYPEID, &g_type_any);
 const Type g_type_void(V_VOID);
-const Type g_type_function_void(V_VOID, &g_type_function_null);
 const Type g_type_undefined(V_UNDEFINED);
 
 TypeRef type_int = &g_type_int;
@@ -51,15 +52,12 @@ TypeRef type_any = &g_type_any;
 TypeRef type_vector_int = &g_type_vector_int;
 TypeRef type_vector_float = &g_type_vector_float;
 TypeRef type_function_null = &g_type_function_null;
-TypeRef type_function_cocl = &g_type_function_cocl;
-TypeRef type_coroutine = &g_type_coroutine;
 TypeRef type_resource = &g_type_resource;
+TypeRef type_vector_resource = &g_type_vector_resource;
 TypeRef type_typeid = &g_type_typeid;
 TypeRef type_void = &g_type_void;
-TypeRef type_function_void = &g_type_function_void;
 TypeRef type_undefined = &g_type_undefined;
 
-const Type g_type_vector_any(V_VECTOR, &g_type_any);
 const Type g_type_vector_string(V_VECTOR, &g_type_string);
 const Type g_type_vector_vector_int(V_VECTOR, &g_type_vector_int);
 const Type g_type_vector_vector_float(V_VECTOR, &g_type_vector_float);
@@ -68,13 +66,14 @@ const Type g_type_vector_vector_vector_float(V_VECTOR, &g_type_vector_vector_flo
 TypeRef WrapKnown(TypeRef elem, ValueType with) {
     if (with == V_VECTOR) {
         switch (elem->t) {
-            case V_ANY:    return &g_type_vector_any;
-            case V_INT:    return elem->e ? nullptr : type_vector_int;
-            case V_FLOAT:  return type_vector_float;
-            case V_STRING: return &g_type_vector_string;
-            case V_VECTOR: switch (elem->sub->t) {
-                case V_INT:   return &g_type_vector_vector_int;
-                case V_FLOAT: return &g_type_vector_vector_float;
+            case V_ANY:      return &g_type_vector_any;
+            case V_INT:      return elem->e ? nullptr : type_vector_int;
+            case V_FLOAT:    return type_vector_float;
+            case V_STRING:   return &g_type_vector_string;
+            case V_RESOURCE: return &g_type_vector_resource;
+            case V_VECTOR:   switch (elem->sub->t) {
+                case V_INT:    return elem->sub->e ? nullptr : &g_type_vector_vector_int;
+                case V_FLOAT:  return &g_type_vector_vector_float;
                 case V_VECTOR: switch (elem->sub->sub->t) {
                     case V_FLOAT: return &g_type_vector_vector_vector_float;
                     default: return nullptr;
@@ -91,9 +90,8 @@ TypeRef WrapKnown(TypeRef elem, ValueType with) {
             case V_STRING:    { static const Type t(V_NIL, &g_type_string); return &t; }
             case V_FUNCTION:  { static const Type t(V_NIL, &g_type_function_null); return &t; }
             case V_RESOURCE:  { static const Type t(V_NIL, &g_type_resource); return &t; }
-            case V_COROUTINE: { static const Type t(V_NIL, &g_type_coroutine); return &t; }
             case V_VECTOR: switch (elem->sub->t) {
-                case V_INT:    { static const Type t(V_NIL, &g_type_vector_int); return &t; }
+                case V_INT:    { static const Type t(V_NIL, &g_type_vector_int); return elem->sub->e ? nullptr : &t; }
                 case V_FLOAT:  { static const Type t(V_NIL, &g_type_vector_float); return &t; }
                 case V_STRING: { static const Type t(V_NIL, &g_type_vector_string); return &t; }
                 default: return nullptr;
@@ -112,14 +110,14 @@ bool IsCompressed(string_view filename) {
     return ext == ".lbc" || ext == ".lobster" || ext == ".materials";
 }
 
-static const uchar *magic = (uchar *)"LPAK";
+static const uint8_t *magic = (uint8_t *)"LPAK";
 static const size_t magic_size = 4;
 static const size_t header_size = magic_size + sizeof(int64_t) * 3;
 static const char *bcname = "bytecode.lbc";
 
 template <typename T> int64_t LE(T x) { return flatbuffers::EndianScalar((int64_t)x); };
 
-void BuildPakFile(string &pakfile, string &bytecode, set<string> &files) {
+string BuildPakFile(string &pakfile, string &bytecode, set<string> &files) {
     // All offsets in 64bit, just in-case we ever want pakfiles > 4GB :)
     // Since we're building this in memory, they can only be created by a 64bit build.
     vector<int64_t> filestarts;
@@ -132,7 +130,7 @@ void BuildPakFile(string &pakfile, string &bytecode, set<string> &files) {
         LOG_INFO("adding to pakfile: ", filename);
         if (IsCompressed(filename)) {
             string out;
-            WEntropyCoder<true>((uchar *)buf.data(), buf.length(), buf.length(), out);
+            WEntropyCoder<true>((uint8_t *)buf.data(), buf.length(), buf.length(), out);
             pakfile += out;
             uncompressed.push_back(buf.length());
         } else {
@@ -154,7 +152,7 @@ void BuildPakFile(string &pakfile, string &bytecode, set<string> &files) {
         } else {
             vector<pair<string, int64_t>> dir;
             if (!ScanDir(filename, dir))
-                THROW_OR_ABORT("cannot load file/dir for pakfile: " + filename);
+                return "cannot load file/dir for pakfile: " + filename;
             for (auto &[name, size] : dir) {
                 auto fn = filename + name;
                 if (size >= 0 && LoadFile(fn, &buf) >= 0)
@@ -169,22 +167,23 @@ void BuildPakFile(string &pakfile, string &bytecode, set<string> &files) {
         pakfile.insert(pakfile.end(), filename.c_str(), filename.c_str() + filename.length() + 1);
     }
     // Then the starting offsets and other data:
-    pakfile.insert(pakfile.end(), (uchar *)uncompressed.data(),
-        (uchar *)(uncompressed.data() + uncompressed.size()));
-    pakfile.insert(pakfile.end(), (uchar *)filestarts.data(),
-        (uchar *)(filestarts.data() + filestarts.size()));
-    pakfile.insert(pakfile.end(), (uchar *)namestarts.data(),
-        (uchar *)(namestarts.data() + namestarts.size()));
+    pakfile.insert(pakfile.end(), (uint8_t *)uncompressed.data(),
+        (uint8_t *)(uncompressed.data() + uncompressed.size()));
+    pakfile.insert(pakfile.end(), (uint8_t *)filestarts.data(),
+        (uint8_t *)(filestarts.data() + filestarts.size()));
+    pakfile.insert(pakfile.end(), (uint8_t *)namestarts.data(),
+        (uint8_t *)(namestarts.data() + namestarts.size()));
     auto num = LE(filestarts.size());
     // Finally the "header" (or do we call this a "tailer" ? ;)
     auto header_start = pakfile.size();
     auto version = LE(1);
-    pakfile.insert(pakfile.end(), (uchar *)&num, (uchar *)(&num + 1));
-    pakfile.insert(pakfile.end(), (uchar *)&dirstart, (uchar *)(&dirstart + 1));
-    pakfile.insert(pakfile.end(), (uchar *)&version, (uchar *)(&version + 1));
+    pakfile.insert(pakfile.end(), (uint8_t *)&num, (uint8_t *)(&num + 1));
+    pakfile.insert(pakfile.end(), (uint8_t *)&dirstart, (uint8_t *)(&dirstart + 1));
+    pakfile.insert(pakfile.end(), (uint8_t *)&version, (uint8_t *)(&version + 1));
     pakfile.insert(pakfile.end(), magic, magic + magic_size);
     assert(pakfile.size() - header_start == header_size);
     (void)header_start;
+    return "";
 }
 
 // This just loads the directory part of a pakfile such that subsequent LoadFile calls know how
@@ -202,7 +201,7 @@ bool LoadPakDir(const char *lpak) {
         memcpy(&r, p, sizeof(int64_t));
         return LE(r);
     };
-    auto num = (size_t)read_unaligned64(header.c_str());
+    auto num = read_unaligned64(header.c_str());
     auto dirstart = read_unaligned64((int64_t *)header.c_str() + 1);
     auto version = read_unaligned64((int64_t *)header.c_str() + 2);
     if (version > 1) return false;
@@ -213,7 +212,7 @@ bool LoadPakDir(const char *lpak) {
     auto namestarts = (int64_t *)(dir.c_str() + dir.length()) - num;
     auto filestarts = namestarts - num;
     auto uncompressed = filestarts - num;
-    for (size_t i = 0; i < num; i++) {
+    for (int64_t i = 0; i < num; i++) {
         auto name = string_view(dir.c_str() + (read_unaligned64(namestarts + i) - dirstart));
         auto off = read_unaligned64(filestarts + i);
         auto end = i < num + 1 ? read_unaligned64(filestarts + i + 1) : dirstart;
@@ -226,7 +225,7 @@ bool LoadPakDir(const char *lpak) {
 
 bool LoadByteCode(string &bytecode) {
     if (LoadFile(bcname, &bytecode) < 0) return false;
-    flatbuffers::Verifier verifier((const uchar *)bytecode.c_str(), bytecode.length());
+    flatbuffers::Verifier verifier((const uint8_t *)bytecode.c_str(), bytecode.length());
     auto ok = bytecode::VerifyBytecodeFileBuffer(verifier);
     assert(ok);
     return ok;
@@ -239,14 +238,19 @@ void RegisterBuiltin(NativeRegistry &nfr, const char *name,
     regfun(nfr);
 }
 
-void DumpBuiltins(NativeRegistry &nfr, bool justnames, const SymbolTable &st) {
+void DumpBuiltinNames(NativeRegistry &nfr) {
     string s;
-    if (justnames) {
-        for (auto nf : nfr.nfuns) { s += nf->name; s += "|"; }
-        WriteFile("builtin_functions_names.txt", false, s);
-        return;
+    for (auto nf : nfr.nfuns) {
+        if (nfr.subsystems[nf->subsystemid] == "plugin") continue;
+        s += nf->name;
+        s += "|";
     }
-    s = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
+    WriteFile("builtin_functions_names.txt", false, s);
+}
+
+void DumpBuiltinDoc(NativeRegistry &nfr) {
+    string s =
+        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
         "<html>\n<head>\n<title>lobster builtin function reference</title>\n"
         "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n"
         "<style type=\"text/css\">"
@@ -258,6 +262,7 @@ void DumpBuiltins(NativeRegistry &nfr, bool justnames, const SymbolTable &st) {
     int cursubsystem = -1;
     bool tablestarted = false;
     for (auto nf : nfr.nfuns) {
+        if (nfr.subsystems[nf->subsystemid] == "plugin") continue;
         if (nf->subsystemid != cursubsystem) {
             if (tablestarted) s += "</table>\n";
             tablestarted = false;
@@ -270,11 +275,11 @@ void DumpBuiltins(NativeRegistry &nfr, bool justnames, const SymbolTable &st) {
         }
         s += cat("<tr class=\"a\" valign=top><td class=\"a\"><tt><b>", nf->name, "</b>(");
         int last_non_nil = -1;
-        for (auto [i, a] : enumerate(nf->args.v)) {
+        for (auto [i, a] : enumerate(nf->args)) {
             if (a.type->t != V_NIL) last_non_nil = (int)i;
         }
-        for (auto [i, a] : enumerate(nf->args.v)) {
-            auto argname = nf->args.GetName(i);
+        for (auto [i, a] : enumerate(nf->args)) {
+            auto argname = nf->args[i].name;
             if (i) s +=  ", ";
             s += argname;
             s += "<font color=\"#666666\">";
@@ -282,20 +287,20 @@ void DumpBuiltins(NativeRegistry &nfr, bool justnames, const SymbolTable &st) {
                 s += ":";
                 s += a.flags & NF_BOOL
                     ? "bool"
-                    : TypeName(a.type->ElementIfNil(), a.fixed_len, &st);
+                    : TypeName(a.type->ElementIfNil(), a.fixed_len);
             }
             s += "</font>";
             if (a.type->t == V_NIL && (int)i > last_non_nil)
                 s += a.type->sub->Numeric() ? " = 0" : " = nil";
         }
         s += ")";
-        if (nf->retvals.v.size()) {
+        if (nf->retvals.size()) {
             s += " -> ";
-            for (auto [i, a] : enumerate(nf->retvals.v)) {
+            for (auto [i, a] : enumerate(nf->retvals)) {
                 s += "<font color=\"#666666\">";
-                s += TypeName(a.type, a.fixed_len, &st);
+                s += TypeName(a.type, a.fixed_len);
                 s += "</font>";
-                if (i < nf->retvals.v.size() - 1) s += ", ";
+                if (i < nf->retvals.size() - 1) s += ", ";
             }
         }
         s += cat("</tt></td><td class=\"a\">", nf->help, "</td></tr>\n");
@@ -305,49 +310,92 @@ void DumpBuiltins(NativeRegistry &nfr, bool justnames, const SymbolTable &st) {
 }
 
 void Compile(NativeRegistry &nfr, string_view fn, string_view stringsource, string &bytecode,
-    string *parsedump, string *pakfile, bool dump_builtins, bool dump_names, bool return_value,
+    string *parsedump, string *pakfile, bool return_value,
     int runtime_checks) {
     SymbolTable st;
     Parser parser(nfr, fn, st, stringsource);
     parser.Parse();
     TypeChecker tc(parser, st, return_value);
-    // Optimizer is not optional, must always run at least one pass, since TypeChecker and CodeGen
+    // Optimizer is not optional, must always run, since TypeChecker and CodeGen
     // rely on it culling const if-thens and other things.
     Optimizer opt(parser, st, tc);
     if (parsedump) *parsedump = parser.DumpAll(true);
     CodeGen cg(parser, st, return_value, runtime_checks);
-    st.Serialize(cg.code, cg.code_attr, cg.type_table, cg.vint_typeoffsets, cg.vfloat_typeoffsets,
-        cg.lineinfo, cg.sids, cg.stringtable, cg.speclogvars, bytecode, cg.vtables);
-    if (pakfile) BuildPakFile(*pakfile, bytecode, parser.pakfiles);
-    if (dump_builtins) DumpBuiltins(nfr, false, st);
-    if (dump_names) DumpBuiltins(nfr, true, st);
+    st.Serialize(cg.code, cg.type_table,
+        cg.lineinfo, cg.sids, cg.stringtable, bytecode, cg.vtables);
+    if (pakfile) {
+        auto err = BuildPakFile(*pakfile, bytecode, parser.pakfiles);
+        if (!err.empty()) THROW_OR_ABORT(err);
+    }
 }
 
-Value CompileRun(VM &parent_vm, Value &source, bool stringiscode, const vector<string> &args) {
+string RunTCC(NativeRegistry &nfr, string_view bytecode_buffer, string_view fn,
+              const char *object_name, vector<string> &&program_args, TraceMode trace,
+              bool compile_only, string &error) {
+    string sd;
+    error = ToCPP(nfr, sd, bytecode_buffer, false);
+    if (!error.empty()) return "";
+    #if VM_JIT_MODE
+        const char *export_names[] = { "compiled_entry_point", "vtables", nullptr };
+        auto start_time = SecondsSinceStart();
+        string ret;
+        auto ok = RunC(sd.c_str(), object_name, error, vm_ops_jit_table, export_names,
+            [&](void **exports) -> bool {
+                LOG_INFO("time to tcc (seconds): ", SecondsSinceStart() - start_time);
+                if (compile_only) return true;
+                auto vmargs = VMArgs {
+                    nfr, fn, (uint8_t *)bytecode_buffer.data(),
+                    bytecode_buffer.size(), std::move(program_args),
+                    (fun_base_t *)exports[1], (fun_base_t)exports[0], trace
+                };
+                lobster::VMAllocator vma(std::move(vmargs));
+                vma.vm->EvalProgram();
+                ret = vma.vm->evalret;
+                return true;
+            });
+        if (!ok || !error.empty()) {
+            // So we can see what the problem is..
+            FILE *f = fopen((MainDir() + "compiled_lobster_jit_debug.c").c_str(), "w");
+            if (f) {
+                fputs(sd.c_str(), f);
+                fclose(f);
+            }
+            error = "libtcc JIT error: " + string(fn) + ":\n" + error;
+            return "";
+        } else {
+            return ret;
+        }
+    #else
+        (void)fn;
+        (void)object_name;
+        (void)program_args;
+        (void)trace;
+        (void)compile_only;
+        error = "cannot JIT code: libtcc not enabled";
+        return "";
+    #endif
+}
+
+Value CompileRun(VM &parent_vm, StackPtr &parent_sp, Value &source, bool stringiscode,
+                 vector<string> &&args) {
     string_view fn = stringiscode ? "string" : source.sval()->strv();  // fixme: datadir + sanitize?
     #ifdef USE_EXCEPTION_HANDLING
     try
     #endif
     {
-        auto vmargs = VMArgs {
-            parent_vm.nfr, fn, {}, nullptr, nullptr, 0, args
-        };
+        string bytecode_buffer;
         Compile(parent_vm.nfr, fn, stringiscode ? source.sval()->strv() : string_view(),
-                vmargs.bytecode_buffer, nullptr, nullptr, false, false, true, RUNTIME_ASSERT);
-        #ifdef VM_COMPILED_CODE_MODE
-            // FIXME: Sadly since we modify how the VM operates under compiled code, we can't run in
-            // interpreted mode anymore.
-            THROW_OR_ABORT(string("cannot execute bytecode in compiled mode"));
-        #endif
-        VM vm(std::move(vmargs));
-        vm.EvalProgram();
-        auto ret = vm.evalret;
-        parent_vm.Push(Value(parent_vm.NewString(ret)));
-        return Value();
+                bytecode_buffer, nullptr, nullptr, true, RUNTIME_ASSERT);
+        string error;
+        auto ret = RunTCC(parent_vm.nfr, bytecode_buffer, fn, nullptr, std::move(args),
+                          TraceMode::OFF, false, error);
+        if (!error.empty()) THROW_OR_ABORT(error);
+        Push(parent_sp, Value(parent_vm.NewString(ret)));
+        return NilVal();
     }
     #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
-        parent_vm.Push(Value(parent_vm.NewString("nil")));
+        Push(parent_sp, Value(parent_vm.NewString("nil")));
         return Value(parent_vm.NewString(s));
     }
     #endif
@@ -361,14 +409,14 @@ nfr("compile_run_code", "code,args", "SS]", "SS?",
     " with an error string as second return value, or nil if none. using parse_data(),"
     " two program can communicate more complex data structures even if they don't have the same"
     " version of struct definitions.",
-    [](VM &vm, Value &filename, Value &args) {
-        return CompileRun(vm, filename, true, ValueToVectorOfStrings(args));
+    [](StackPtr &sp, VM &vm, Value &filename, Value &args) {
+        return CompileRun(vm, sp, filename, true, ValueToVectorOfStrings(args));
     });
 
 nfr("compile_run_file", "filename,args", "SS]", "SS?",
     "same as compile_run_code(), only now you pass a filename.",
-    [](VM &vm, Value &filename, Value &args) {
-        return CompileRun(vm, filename, false, ValueToVectorOfStrings( args));
+    [](StackPtr &sp, VM &vm, Value &filename, Value &args) {
+        return CompileRun(vm, sp, filename, false, ValueToVectorOfStrings( args));
     });
 
 }
@@ -380,31 +428,30 @@ void RegisterCoreLanguageBuiltins(NativeRegistry &nfr) {
     extern void AddReader(NativeRegistry &nfr);   RegisterBuiltin(nfr, "parsedata", AddReader);
 }
 
-VMArgs CompiledInit(int argc, char *argv[], const void *entry_point, const void *bytecodefb,
-                    size_t static_size, const lobster::block_t *vtables, FileLoader loader,
-                    NativeRegistry &nfr) {
-    min_output_level = OUTPUT_INFO;
-    InitPlatform("../../", "", false, loader);  // FIXME: path.
-    auto vmargs = VMArgs {
-        nfr, StripDirPart(argv[0]), {}, entry_point, bytecodefb, static_size, {},
-        vtables, TraceMode::OFF
-    };
-    for (int arg = 1; arg < argc; arg++) { vmargs.program_args.push_back(argv[arg]); }
-    return vmargs;
+#if !LOBSTER_ENGINE
+FileLoader EnginePreInit(NativeRegistry &) {
+    return DefaultLoadFile;
 }
+#endif
 
-extern "C" int ConsoleRunCompiledCodeMain(int argc, char *argv[], const void *entry_point,
-                                          const void *bytecodefb, size_t static_size,
-                                          const lobster::block_t *vtables) {
+extern "C" int RunCompiledCodeMain(int argc, const char * const *argv, const uint8_t *bytecodefb,
+                                   size_t static_size, const lobster::fun_base_t *vtables) {
     #ifdef USE_EXCEPTION_HANDLING
     try
     #endif
     {
         NativeRegistry nfr;
         RegisterCoreLanguageBuiltins(nfr);
-        lobster::VM vm(CompiledInit(argc, argv, entry_point, bytecodefb, static_size, vtables,
-                                    DefaultLoadFile, nfr));
-        vm.EvalProgram();
+        auto loader = EnginePreInit(nfr);
+        min_output_level = OUTPUT_WARN;
+        InitPlatform("../../", "", false, loader);  // FIXME: path.
+        auto vmargs = VMArgs {
+            nfr, StripDirPart(argv[0]), bytecodefb, static_size, {},
+            vtables, nullptr, TraceMode::OFF
+        };
+        for (int arg = 1; arg < argc; arg++) { vmargs.program_args.push_back(argv[arg]); }
+        lobster::VMAllocator vma(std::move(vmargs));
+        vma.vm->EvalProgram();
     }
     #ifdef USE_EXCEPTION_HANDLING
     catch (string &s) {
@@ -415,12 +462,37 @@ extern "C" int ConsoleRunCompiledCodeMain(int argc, char *argv[], const void *en
     return 0;
 }
 
-SubFunction::~SubFunction() { delete body; }
+SubFunction::~SubFunction() { if (sbody) delete sbody; }
 
 Field::~Field() { delete defaultval; }
 
 Field::Field(const Field &o)
-    : type(o.type), id(o.id), genericref(o.genericref),
-      defaultval(o.defaultval ? o.defaultval->Clone() : nullptr) {}
+    : giventype(o.giventype), resolvedtype(o.resolvedtype), id(o.id),
+      defaultval(o.defaultval ? o.defaultval->Clone() : nullptr), isprivate(o.isprivate),
+      defined_in(o.defined_in) {}
 
+Function::~Function() {
+    for (auto da : default_args) delete da;
 }
+
+Overload::~Overload() {
+    delete gbody;
+}
+
+bool SpecUDT::Equal(const SpecUDT &o) const {
+    if (udt != o.udt ||
+        is_generic != o.is_generic ||
+        specializers.size() != o.specializers.size()) return false;
+    for (auto [i, s] : enumerate(specializers)) {
+        if (!s->Equal(*o.specializers[i])) return false;
+    }
+    return true;
+}
+
+}  // namespace lobster
+
+
+#if STACK_PROFILING_ON
+    vector<StackProfile> stack_profiles;
+#endif
+

@@ -22,26 +22,26 @@
 
 struct iqmheader {
     char magic[16];
-    uint version;
-    uint filesize;
-    uint flags;
-    uint num_text, ofs_text;
-    uint num_meshes, ofs_meshes;
-    uint num_vertexarrays, num_vertexes, ofs_vertexarrays;
-    uint num_triangles, ofs_triangles, ofs_adjacency;
-    uint num_joints, ofs_joints;
-    uint num_poses, ofs_poses;
-    uint num_anims, ofs_anims;
-    uint num_frames, num_framechannels, ofs_frames, ofs_bounds;
-    uint num_comment, ofs_comment;
-    uint num_extensions, ofs_extensions;
+    uint32_t version;
+    uint32_t filesize;
+    uint32_t flags;
+    uint32_t num_text, ofs_text;
+    uint32_t num_meshes, ofs_meshes;
+    uint32_t num_vertexarrays, num_vertexes, ofs_vertexarrays;
+    uint32_t num_triangles, ofs_triangles, ofs_adjacency;
+    uint32_t num_joints, ofs_joints;
+    uint32_t num_poses, ofs_poses;
+    uint32_t num_anims, ofs_anims;
+    uint32_t num_frames, num_framechannels, ofs_frames, ofs_bounds;
+    uint32_t num_comment, ofs_comment;
+    uint32_t num_extensions, ofs_extensions;
 };
 
 struct iqmmesh {
-    uint name;
-    uint material;
-    uint first_vertex, num_vertexes;
-    uint first_triangle, num_triangles;
+    uint32_t name;
+    uint32_t material;
+    uint32_t first_vertex, num_vertexes;
+    uint32_t first_triangle, num_triangles;
 };
 
 enum {
@@ -68,27 +68,27 @@ enum {
 };
 
 struct iqmtriangle {
-    uint vertex[3];
+    uint32_t vertex[3];
 };
 
 struct iqmjoint {
-    uint name;
+    uint32_t name;
     int parent;
     float translate[3], rotate[4], scale[3];
 };
 
 struct iqmpose {
     int parent;
-    uint mask;
+    uint32_t mask;
     float channeloffset[10];
     float channelscale[10];
 };
 
 struct iqmanim {
-    uint name;
-    uint first_frame, num_frames;
+    uint32_t name;
+    uint32_t first_frame, num_frames;
     float framerate;
-    uint flags;
+    uint32_t flags;
 };
 
 enum {
@@ -96,11 +96,11 @@ enum {
 };
 
 struct iqmvertexarray {
-    uint type;
-    uint flags;
-    uint format;
-    uint size;
-    uint offset;
+    uint32_t type;
+    uint32_t flags;
+    uint32_t format;
+    uint32_t size;
+    uint32_t offset;
 };
 
 struct iqmbounds {
@@ -108,17 +108,17 @@ struct iqmbounds {
     float xyradius, radius;
 };
 
-inline bool islittleendian() { static const int val = 1; return *(const uchar *)&val != 0; }
+inline bool islittleendian() { static const int val = 1; return *(const uint8_t *)&val != 0; }
 
-inline ushort endianswap16(ushort n) { return (n<<8) | (n>>8); }
-inline uint endianswap32(uint n) { return (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000); }
+inline uint16_t endianswap16(uint16_t n) { return (n<<8) | (n>>8); }
+inline uint32_t endianswap32(uint32_t n) { return (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000); }
 
 template<class T> inline T endianswap(T n) {
-    union { T t; uint i; } conv; conv.t = n; conv.i = endianswap32(conv.i); return conv.t;
+    union { T t; uint32_t i; } conv; conv.t = n; conv.i = endianswap32(conv.i); return conv.t;
 }
-template<> inline ushort endianswap<ushort>(ushort n) { return endianswap16(n); }
+template<> inline uint16_t endianswap<uint16_t>(uint16_t n) { return endianswap16(n); }
 template<> inline short endianswap<short>(short n) { return endianswap16(n); }
-template<> inline uint endianswap<uint>(uint n) { return endianswap32(n); }
+template<> inline uint32_t endianswap<uint32_t>(uint32_t n) { return endianswap32(n); }
 template<> inline int endianswap<int>(int n) { return endianswap32(n); }
 
 template<class T> inline void endianswap(T *buf, int len) {
@@ -144,7 +144,7 @@ template<class T> T getbig(FILE *f) { return bigswap(getval<T>(f)); }
 static string filebuffer;
 static float *inposition = nullptr, *innormal = nullptr, *intangent = nullptr,
              *intexcoord = nullptr;
-static uchar *inblendindex = nullptr, *inblendweight = nullptr, *incolor = nullptr;
+static uint8_t *inblendindex = nullptr, *inblendweight = nullptr, *incolor = nullptr;
 static int nummeshes = 0, numtris = 0, numverts = 0, numjoints = 0, numframes = 0, numanims = 0;
 static iqmtriangle *tris = nullptr, *adjacency = nullptr;
 static iqmmesh *meshes = nullptr;
@@ -184,17 +184,17 @@ void cleanupiqm() {
 }
 
 bool loadiqmmeshes(const iqmheader &hdr, const char *buf) {
-    lilswap((uint *)&buf[hdr.ofs_vertexarrays],
-            hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
-    lilswap((uint *)&buf[hdr.ofs_triangles],
-            hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
-    lilswap((uint *)&buf[hdr.ofs_meshes],
-            hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint));
-    lilswap((uint *)&buf[hdr.ofs_joints],
-            hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
+    lilswap((uint32_t *)&buf[hdr.ofs_vertexarrays],
+            hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint32_t));
+    lilswap((uint32_t *)&buf[hdr.ofs_triangles],
+            hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint32_t));
+    lilswap((uint32_t *)&buf[hdr.ofs_meshes],
+            hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint32_t));
+    lilswap((uint32_t *)&buf[hdr.ofs_joints],
+            hdr.num_joints*sizeof(iqmjoint)/sizeof(uint32_t));
     if(hdr.ofs_adjacency)
-        lilswap((uint *)&buf[hdr.ofs_adjacency],
-                hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+        lilswap((uint32_t *)&buf[hdr.ofs_adjacency],
+                hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint32_t));
     nummeshes = hdr.num_meshes;
     numtris   = hdr.num_triangles;
     numverts  = hdr.num_vertexes;
@@ -224,15 +224,15 @@ bool loadiqmmeshes(const iqmheader &hdr, const char *buf) {
                 break;
             case IQM_BLENDINDEXES:
                 if(va.format != IQM_UBYTE || va.size != 4) return false;
-                inblendindex = (uchar *)&buf[va.offset];
+                inblendindex = (uint8_t *)&buf[va.offset];
                 break;
             case IQM_BLENDWEIGHTS:
                 if(va.format != IQM_UBYTE || va.size != 4) return false;
-                inblendweight = (uchar *)&buf[va.offset];
+                inblendweight = (uint8_t *)&buf[va.offset];
                 break;
             case IQM_COLOR:
                 if(va.format != IQM_UBYTE || va.size != 4) return false;
-                incolor = (uchar *)&buf[va.offset];
+                incolor = (uint8_t *)&buf[va.offset];
                 break;
         }
     }
@@ -261,17 +261,17 @@ bool loadiqmmeshes(const iqmheader &hdr, const char *buf) {
 
 bool loadiqmanims(const iqmheader &hdr, const char *buf) {
     if((int)hdr.num_poses != numjoints) return false;
-    lilswap((uint *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint));
-    lilswap((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
-    lilswap((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
+    lilswap((uint32_t *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint32_t));
+    lilswap((uint32_t *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint32_t));
+    lilswap((uint16_t *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
     if(hdr.ofs_bounds)
-        lilswap((uint *)&buf[hdr.ofs_bounds], hdr.num_frames*sizeof(iqmbounds)/sizeof(uint));
+        lilswap((uint32_t *)&buf[hdr.ofs_bounds], hdr.num_frames*sizeof(iqmbounds)/sizeof(uint32_t));
     numanims = hdr.num_anims;
     numframes = hdr.num_frames;
     anims = (iqmanim *)&buf[hdr.ofs_anims];
     poses = (iqmpose *)&buf[hdr.ofs_poses];
     frames = new float3x4[hdr.num_frames * hdr.num_poses];
-    ushort *framedata = (ushort *)&buf[hdr.ofs_frames];
+    uint16_t *framedata = (uint16_t *)&buf[hdr.ofs_frames];
     if(hdr.ofs_bounds) bounds = (iqmbounds *)&buf[hdr.ofs_bounds];
     for(int i = 0; i < (int)hdr.num_frames; i++) {
         for(int j = 0; j < (int)hdr.num_poses; j++) {
@@ -308,7 +308,7 @@ bool loadiqm(string_view filename) {
     iqmheader hdr = *(iqmheader *)filebuffer.c_str();
     if(memcmp(hdr.magic, IQM_MAGIC, sizeof(hdr.magic)))
         return false;
-    lilswap(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
+    lilswap(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint32_t));
     if(hdr.version != IQM_VERSION)
         return false;
     if(filebuffer.length() != hdr.filesize || hdr.filesize > (16<<20))
@@ -335,13 +335,13 @@ Mesh *LoadIQM(string_view filename) {
         v.indices = inblendindex  ? *(byte4  *)&inblendindex [i * 4] : byte4_0;
     }
     if (!innormal)
-        normalize_mesh(make_span((int *)tris, numtris * 3), verts.data(), numverts, sizeof(AnimVert),
-                       (uchar *)&verts[0].norm - (uchar *)&verts[0].pos);
-    auto geom = new Geometry(make_span(verts), "PNTCWI");
+        normalize_mesh(gsl::make_span((int *)tris, numtris * 3), verts.data(), numverts, sizeof(AnimVert),
+                       (uint8_t *)&verts[0].norm - (uint8_t *)&verts[0].pos);
+    auto geom = new Geometry(gsl::make_span(verts), "PNTCWI");
     auto mesh = new Mesh(geom);
     for (int i = 0; i < nummeshes; i++) {
         auto surf =
-            new Surface(make_span((int *)(tris + meshes[i].first_triangle), meshes[i].num_triangles * 3));
+            new Surface(gsl::make_span((int *)(tris + meshes[i].first_triangle), meshes[i].num_triangles * 3));
         surf->name = textures[i];
         mesh->surfs.push_back(surf);
     }

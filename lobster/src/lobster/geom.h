@@ -12,106 +12,157 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef LOBSTER_GEOM
+#define LOBSTER_GEOM
+
 namespace geom {
 
 #define PI 3.14159265f
-#define RAD (PI/180.0f)
+#define RAD (PI / 180.0f)
 
-// vec: supports 2..4 components of any numerical type.
+// vec: supports 1..4 components of any numerical type.
 
-// Compile time unrolled loops for 2..4 components.
-#define DOVEC(F)  { const int i = 0; F; \
-                  { const int i = 1; F; if constexpr (N > 2) \
-                  { const int i = 2; F; if constexpr (N > 3) \
-                  { const int i = 3; F; } } } }
+// Compile time unrolled loops for 1..4 components,
+#define DOVEC(F) {                     \
+        const int i = 0;               \
+        F;                             \
+        if constexpr (N > 1) {         \
+            const int i = 1;           \
+            F;                         \
+            if constexpr (N > 2) {     \
+                const int i = 2;       \
+                F;                     \
+                if constexpr (N > 3) { \
+                    const int i = 3;   \
+                    F;                 \
+                }                      \
+            }                          \
+        }                              \
+    }
 
-#define DOVECR(F) { vec<T, N> _t; DOVEC(_t[i] = F); return _t; }
-#define DOVECRI(F) { vec<int, N> _t; DOVEC(_t[i] = F); return _t; }
-#define DOVECF(I,F) { T _ = I; DOVEC(_ = F); return _; }
-#define DOVECB(I,F) { bool _ = I; DOVEC(_ = F); return _; }
+#define DOVECR(F) { vec<T, N> _t; DOVEC(_t.c[i] = F); return _t; }
+#define DOVECRI(F) { vec<int, N> _t; DOVEC(_t.c[i] = F); return _t; }
+#define DOVECF(I, F) { T _ = I; DOVEC(_ = F); return _; }
+#define DOVECB(I, F) { bool _ = I; DOVEC(_ = F); return _; }
 
 union int2float { int i; float f; };
 union int2float64 { int64_t i; double f; };
 inline void default_debug_value(float   &a) { int2float nan; nan.i = 0x7F800001; a = nan.f; }
 inline void default_debug_value(double  &a) { int2float nan; nan.i = 0x7F800001; a = nan.f; }
-inline void default_debug_value(int     &a) { a = 0x1BADCAFE; }
 inline void default_debug_value(int64_t &a) { a = 0x1BADCAFEABADD00D; }
-inline void default_debug_value(short   &a) { a = 0x1BAD; }
-inline void default_debug_value(uchar   &a) { a = 0x1B; }
+inline void default_debug_value(int32_t &a) { a = 0x1BADCAFE; }
+inline void default_debug_value(uint16_t&a) { a = 0x1BAD; }
+inline void default_debug_value(uint8_t &a) { a = 0x1B; }
 
 template<typename T, int C, int R> class matrix;
 
 template<typename T, int N> struct basevec {
 };
 
+template<typename T> struct basevec<T, 1> {
+    union {
+        T c[1];
+        struct { T x; };
+    };
+};
+
 template<typename T> struct basevec<T, 2> {
-  union {
-    T c[2];
-    struct { T x; T y; };
-  };
+    union {
+        T c[2];
+        struct { T x; T y; };
+    };
 };
 
 template<typename T> struct basevec<T, 3> {
-  union {
-    T c[3];
-    struct { T x; T y; T z; };
-  };
+    union {
+        T c[3];
+        struct { T x; T y; T z; };
+    };
 };
 
 template<typename T> struct basevec<T, 4> {
-  union {
-    T c[4];
-    struct { T x; T y; T z; T w; };
-  };
+    union {
+        T c[4];
+        struct { T x; T y; T z; T w; };
+    };
 };
 
 template<typename T, int N> struct vec : basevec<T, N> {
     enum { NUM_ELEMENTS = N };
     typedef T CTYPE;
 
-    // Clang needs these, but VS is cool without them?
     using basevec<T, N>::c;
-    using basevec<T, N>::x;
-    using basevec<T, N>::y;
 
     vec() {
         #ifndef NDEBUG
-        DOVEC(default_debug_value(c[i]));
+            DOVEC(default_debug_value(c[i]));
         #endif
     }
 
-    explicit vec(T e)         { DOVEC(c[i] = e); }
-    explicit vec(const T *v)  { DOVEC(c[i] = v[i]); }
+    explicit vec(T e) {
+        DOVEC(c[i] = e);
+    }
+    explicit vec(const T *v) {
+        DOVEC(c[i] = v[i]);
+    }
 
-    template<typename U> explicit vec(const vec<U,N> &v) { DOVEC(c[i] = (T)v[i]); }
+    template<typename U> explicit vec(const vec<U,N> &v) {
+        DOVEC(c[i] = (T)v.c[i]);
+    }
 
-    vec(T _x, T _y, T _z, T _w) { x = _x; y = _y; assert(N == 4);
-                                  if constexpr (N > 2) c[2] = _z; else (void)_z;
-                                  if constexpr (N > 3) c[3] = _w; else (void)_w; }
-    vec(T _x, T _y, T _z)       { x = _x; y = _y; assert(N == 3);
-                                  if constexpr (N > 2) c[2] = _z; else (void)_z; }
-    vec(T _x, T _y)             { x = _x; y = _y; assert(N == 2); }
-    vec(const pair<T, T> &p)    { x = p.first; y = p.second; assert(N == 2); }
+    vec(T _x, T _y, T _z, T _w) {
+        assert(N == 4);
+        c[0] = _x;
+        c[1] = _y;
+        c[2] = _z;
+        c[3] = _w;
+    }
+    vec(T _x, T _y, T _z) {
+        assert(N == 3);
+        c[0] = _x;
+        c[1] = _y;
+        c[2] = _z;
+    }
+    vec(T _x, T _y) {
+        assert(N == 2);
+        c[0] = _x;
+        c[1] = _y;
+    }
+    vec(const pair<T, T> &p) {
+        assert(N == 2);
+        c[0] = p.first;
+        c[1] = p.second;
+    }
 
     const T *data()  const { return c; }
     const T *begin() const { return c; }
     const T *end()   const { return c + N; }
 
-    T operator[](size_t i) const { return c[i]; }
-    T &operator[](size_t i) { return c[i]; }
+    T operator[](int i) const {
+        assert(i < N);
+        return c[i];
+    }
+    T &operator[](int i) {
+        assert(i < N);
+        return c[i];
+    }
 
-    vec(const vec<T,3> &v, T e) { DOVEC(c[i] = i < 3 ? v[i] : e); }
-    vec(const vec<T,2> &v, T e) { DOVEC(c[i] = i < 2 ? v[i] : e); }
+    vec(const vec<T, 3> &v, T e) {
+        DOVEC(if constexpr (i < 3) c[i] = v.c[i]; else c[i] = e);
+    }
+    vec(const vec<T, 2> &v, T e) {
+        DOVEC(if constexpr (i < 2) c[i] = v.c[i]; else c[i] = e);
+    }
 
     vec<T,3>   xyz()     const { assert(N == 4); return vec<T,3>(c); }
     vec<T,2>   xy()      const { assert(N >= 3); return vec<T,2>(c); }
-    pair<T, T> to_pair() const { assert(N == 2); return { x, y }; }
+    pair<T, T> to_pair() const { assert(N == 2); return { c[0], c[1] }; }
 
-    vec operator+(const vec &v) const { DOVECR(c[i] + v[i]); }
-    vec operator-(const vec &v) const { DOVECR(c[i] - v[i]); }
-    vec operator*(const vec &v) const { DOVECR(c[i] * v[i]); }
-    vec operator/(const vec &v) const { DOVECR(c[i] / v[i]); }
-    vec operator%(const vec &v) const { DOVECR(c[i] % v[i]); }
+    vec operator+(const vec &v) const { DOVECR(c[i] + v.c[i]); }
+    vec operator-(const vec &v) const { DOVECR(c[i] - v.c[i]); }
+    vec operator*(const vec &v) const { DOVECR(c[i] * v.c[i]); }
+    vec operator/(const vec &v) const { DOVECR(c[i] / v.c[i]); }
+    vec operator%(const vec &v) const { DOVECR(c[i] % v.c[i]); }
 
     vec operator+(T e) const { DOVECR(c[i] + e); }
     vec operator-(T e) const { DOVECR(c[i] - e); }
@@ -125,10 +176,10 @@ template<typename T, int N> struct vec : basevec<T, N> {
 
     vec operator-() const { DOVECR(-c[i]); }
 
-    vec &operator+=(const vec &v) { DOVEC(c[i] += v[i]); return *this; }
-    vec &operator-=(const vec &v) { DOVEC(c[i] -= v[i]); return *this; }
-    vec &operator*=(const vec &v) { DOVEC(c[i] *= v[i]); return *this; }
-    vec &operator/=(const vec &v) { DOVEC(c[i] /= v[i]); return *this; }
+    vec &operator+=(const vec &v) { DOVEC(c[i] += v.c[i]); return *this; }
+    vec &operator-=(const vec &v) { DOVEC(c[i] -= v.c[i]); return *this; }
+    vec &operator*=(const vec &v) { DOVEC(c[i] *= v.c[i]); return *this; }
+    vec &operator/=(const vec &v) { DOVEC(c[i] /= v.c[i]); return *this; }
 
     vec &operator+=(T e) { DOVEC(c[i] += e); return *this; }
     vec &operator-=(T e) { DOVEC(c[i] -= e); return *this; }
@@ -137,22 +188,22 @@ template<typename T, int N> struct vec : basevec<T, N> {
     vec &operator&=(T e) { DOVEC(c[i] &= e); return *this; }
 
     bool operator<=(const vec &v) const {
-        DOVECB(true, _ && c[i] <= v[i]);
+        DOVECB(true, _ && c[i] <= v.c[i]);
     }
     bool operator< (const vec &v) const {
-        DOVECB(true, _ && c[i] <  v[i]);
+        DOVECB(true, _ && c[i] < v.c[i]);
     }
     bool operator>=(const vec &v) const {
-        DOVECB(true, _ && c[i] >= v[i]);
+        DOVECB(true, _ && c[i] >= v.c[i]);
     }
     bool operator> (const vec &v) const {
-        DOVECB(true, _ && c[i] >  v[i]);
+        DOVECB(true, _ && c[i] > v.c[i]);
     }
     bool operator==(const vec &v) const {
-        DOVECB(true, _ && c[i] == v[i]);
+        DOVECB(true, _ && c[i] == v.c[i]);
     }
     bool operator!=(const vec &v) const {
-        DOVECB(false, _ || c[i] != v[i]);
+        DOVECB(false, _ || c[i] != v.c[i]);
     }
 
     bool operator<=(T e) const { DOVECB(true, _ && c[i] <= e); }
@@ -169,7 +220,16 @@ template<typename T, int N> struct vec : basevec<T, N> {
     vec<int, N> eq (T e) const { DOVECRI(c[i] == e); }
     vec<int, N> ne (T e) const { DOVECRI(c[i] != e); }
 
-    vec iflt(T e, const vec &a, const vec &b) const { DOVECR(c[i] < e ? a[i] : b[i]); }
+    vec<int, N> lte(const vec &v) const { DOVECRI(c[i] <= v.c[i]); }
+    vec<int, N> lt (const vec &v) const { DOVECRI(c[i] <  v.c[i]); }
+    vec<int, N> gte(const vec &v) const { DOVECRI(c[i] >= v.c[i]); }
+    vec<int, N> gt (const vec &v) const { DOVECRI(c[i] >  v.c[i]); }
+    vec<int, N> eq (const vec &v) const { DOVECRI(c[i] == v.c[i]); }
+    vec<int, N> ne (const vec &v) const { DOVECRI(c[i] != v.c[i]); }
+
+    vec iflt(T e, const vec &a, const vec &b) const {
+        DOVECR(c[i] < e ? a.c[i] : b.c[i]);
+    }
 
     string to_string() const {
         string s = "(";
@@ -212,57 +272,70 @@ template<typename T> int signum(T val) {
     return (T(0) < val) - (val < T(0));
 }
 
-template<typename T, int N> inline vec<T,N> operator+(T f, const vec<T,N> &v) { DOVECR(f + v[i]); }
-template<typename T, int N> inline vec<T,N> operator-(T f, const vec<T,N> &v) { DOVECR(f - v[i]); }
-template<typename T, int N> inline vec<T,N> operator*(T f, const vec<T,N> &v) { DOVECR(f * v[i]); }
-template<typename T, int N> inline vec<T,N> operator/(T f, const vec<T,N> &v) { DOVECR(f / v[i]); }
+template<typename T, int N> inline vec<T,N> operator+(T f, const vec<T,N> &v) { DOVECR(f + v.c[i]); }
+template<typename T, int N> inline vec<T,N> operator-(T f, const vec<T,N> &v) { DOVECR(f - v.c[i]); }
+template<typename T, int N> inline vec<T,N> operator*(T f, const vec<T,N> &v) { DOVECR(f * v.c[i]); }
+template<typename T, int N> inline vec<T,N> operator/(T f, const vec<T,N> &v) { DOVECR(f / v.c[i]); }
 
 template<typename T, int N> inline T dot(const vec<T,N> &a, const vec<T,N> &b) {
-    DOVECF(0, _ + a[i] * b[i]);
+    DOVECF(0, _ + a.c[i] * b.c[i]);
 }
 template<typename T, int N> inline T squaredlength(const vec<T,N> &v) { return dot(v, v); }
 template<typename T, int N> inline T length(const vec<T,N> &v) { return sqrt(squaredlength(v)); }
 template<typename T, int N> inline vec<T,N> normalize(const vec<T,N> &v) { return v / length(v); }
-template<typename T, int N> inline vec<T,N> abs(const vec<T,N> &v) { DOVECR(fabsf(v[i])); }
+template<typename T, int N> inline vec<T,N> abs(const vec<T,N> &v) { DOVECR(fabsf(v.c[i])); }
 template<typename T, int N> inline vec<T,N> sign(const vec<T,N> &v) {
-    DOVECR((T)(v[i] >= 0 ? 1 : -1));
+    DOVECR((T)(v.c[i] >= 0 ? 1 : -1));
 }
 template<typename T, int N> inline vec<int,N> signum(const vec<T,N> &v) {
-    DOVECR(signum(v[i]));
+    DOVECR(signum(v.c[i]));
 }
 template<typename T, int N> inline vec<T,N> min(const vec<T,N> &a, const vec<T,N> &b) {
-    DOVECR(std::min(a[i], b[i]));
+    DOVECR(std::min(a.c[i], b.c[i]));
 }
 template<typename T, int N> inline vec<T,N> max(const vec<T,N> &a, const vec<T,N> &b) {
-    DOVECR(std::max(a[i], b[i]));
+    DOVECR(std::max(a.c[i], b.c[i]));
 }
 template<typename T, int N> inline vec<T,N> pow(const vec<T,N> &a, const vec<T,N> &b) {
-    DOVECR(powf(a[i], b[i]));
+    DOVECR(powf(a.c[i], b.c[i]));
 }
 template<typename T, int N> inline vec<T,N> rpow(const vec<T,N> &a, const vec<T,N> &b) {
-    DOVECR(rpowf(a[i], b[i]));
+    DOVECR(rpowf(a.c[i], b.c[i]));
+}
+
+template<typename T, int N> inline vec<T, N> from_srgb(const vec<T, N> &a) {
+    DOVECR(powf(a.c[i], 2.2f));
+}
+template<typename T, int N> inline vec<T, N> to_srgb(const vec<T, N> &a) {
+    DOVECR(powf(a.c[i], 1.0f / 2.2f));
 }
 
 template<typename T, int N> inline T min(const vec<T,N> &a) {
-    DOVECF(FLT_MAX, std::min(a[i], _));
+    DOVECF(std::numeric_limits<T>::max(), std::min(a.c[i], _));
 }
 template<typename T, int N> inline T max(const vec<T,N> &a) {
-    DOVECF(-FLT_MAX, std::max(a[i], _));
+    DOVECF(-std::numeric_limits<T>::max(), std::max(a.c[i], _));
 }
 
 template<typename T, int N> inline T sum(const vec<T,N> &a) {
-    DOVECF(0, _ + a[i]);
+    DOVECF(0, _ + a.c[i]);
 }
 template<typename T, int N> inline T average(const vec<T,N> &a) {
     return sum(a) / N;
 }
 template<typename T, int N> inline T manhattan(const vec<T, N> &a) {
-    DOVECF(0, _ + std::abs(a[i]));
+    DOVECF(0, _ + std::abs(a.c[i]));
 }
 
-template<typename T, int N> inline vec<int, N> fceil(const vec<T,N> &v) { DOVECRI(fceil(v[i])); }
-template<typename T, int N> inline vec<int, N> ffloor(const vec<T,N> &v) { DOVECRI(ffloor(v[i])); }
-template<typename T, int N> inline vec<T, N> round(const vec<T, N> &v) { DOVECR(roundf(v[i])); }
+template<typename T, int N> inline vec<int, N> fceil(const vec<T, N> &v) {
+    DOVECRI(fceil(v.c[i]));
+}
+template<typename T, int N> inline vec<int, N> ffloor(const vec<T, N> &v) {
+    DOVECRI(ffloor(v.c[i]));
+}
+template<typename T, int N> inline vec<T, N> round(const vec<T, N> &v) {
+    DOVECR(roundf(v.c[i]));
+}
 
 template<typename T> inline T clamp(T v, T lo, T hi) {
     static_assert(is_scalar<T>(), "");
@@ -270,25 +343,28 @@ template<typename T> inline T clamp(T v, T lo, T hi) {
 }
 template<typename T, int N> inline vec<T, N> clamp(const vec<T, N> &v, const vec<T, N> &lo,
                                                    const vec<T, N> &hi) {
-    DOVECR(clamp(v[i], lo[i], hi[i]));
+    DOVECR(clamp(v.c[i], lo.c[i], hi.c[i]));
 }
 template<typename T, int N> inline vec<T, N> clamp(const vec<T, N> &v, T lo, T hi) {
-    DOVECR(clamp(v[i], lo, hi));
+    DOVECR(clamp(v.c[i], lo, hi));
 }
 
 template<typename T, int N, typename R> inline vec<float, N> rndunitvec(RandomNumberGenerator<R> &r) {
     DOVECR(r.rnd_float());
 }
 template<typename T, int N, typename R> inline vec<float, N> rndsignedvec(RandomNumberGenerator<R> &r) {
-    DOVECR(r.rndfloatsigned());
+    DOVECR(r.rnd_float_signed());
 }
 template<typename T, int N, typename R> inline vec<int, N> rndivec(RandomNumberGenerator<R> &r,
                                                                    const vec<int, N> &max) {
-    DOVECR(r(max[i]));
+    DOVECR(r.rnd_int(max[i]));
 }
 
 #undef DOVEC
 #undef DOVECR
+#undef DOVECRI
+#undef DOVECF
+#undef DOVECB
 
 typedef vec<float, 2> float2;
 typedef vec<float, 3> float3;
@@ -298,7 +374,15 @@ typedef vec<int, 2> int2;
 typedef vec<int, 3> int3;
 typedef vec<int, 4> int4;
 
-typedef vec<uchar,4> byte4;
+typedef vec<double, 2> double2;
+typedef vec<double, 3> double3;
+typedef vec<double, 4> double4;
+
+typedef vec<iint, 2> iint2;
+typedef vec<iint, 3> iint3;
+typedef vec<iint, 4> iint4;
+
+typedef vec<uint8_t, 4> byte4;
 
 const float4 float4_0 = float4(0.0f);
 const float4 float4_1 = float4(1.0f);
@@ -320,9 +404,17 @@ const int2 int2_1 = int2(1);
 const int3 int3_0 = int3(0);
 const int3 int3_1 = int3(1);
 
+const double4 double4_0 = double4(0.0);
+const double3 double3_0 = double3(0.0);
+const double2 double2_0 = double2(0.0);
 
-const byte4 byte4_0   = byte4((uchar)0);
-const byte4 byte4_255 = byte4((uchar)255);
+const iint2 iint2_0 = iint2(0_L);
+const iint2 iint2_1 = iint2(1_L);
+const iint3 iint3_0 = iint3(0_L);
+
+const byte4 byte4_0   = byte4((uint8_t)0);
+const byte4 byte4_255 = byte4((uint8_t)255);
+
 
 template<typename T> vec<T, 3> cross(const vec<T, 3> &a, const vec<T, 3> &b) {
     return vec<T, 3>(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
@@ -345,9 +437,17 @@ inline float smoothmax(float a, float b, float r) {
     return std::min(-r, std::max(a, b)) + length(u);
 }
 
+inline float smoothstep(float x) {
+    return x * x * (3 - 2 * x);
+}
+
+inline float smootherstep(float x) {
+    return x * x * x * (x * (x * 6 - 15) + 10);
+}
+
 template<typename T> inline float3 random_point_in_sphere(RandomNumberGenerator<T> &r) {
     for (;;) {
-        const float3 p(r.rndfloatsigned(), r.rndfloatsigned(), r.rndfloatsigned());
+        auto p = rndsignedvec<float, 3, T>(r);
         if (dot(p, p) < 1.f)
             return p;
     }
@@ -403,23 +503,21 @@ template<typename T, int C, int R> class matrix {
     matrix() {}
 
     explicit matrix(T e) {
-        /* this used to be the following code that triggered a codegen bug in VS2017 (version 15.3)
-           release mode. Fixed in 15.4. Can reinstate in the future once 15.3 is unlikely in use anymore?
-            for (int x = 0; x < C; x++)
-                for (int y = 0; y < R; y++)
-                    m[x].c[y] = e * (T)(x == y);
-        */
-        memset(this, 0, sizeof(*this));
-        for (int x = 0; x < std::min(C, R); x++) m[x].c[x] = e;
+        for (int x = 0; x < C; x++)
+            for (int y = 0; y < R; y++)
+                m[x].c[y] = e * (T)(x == y);
     }
 
     explicit matrix(const V &v) {
-        memset(this, 0, sizeof(*this));
-        for (int x = 0; x < std::min(C, R); x++) m[x].c[x] = v[x];
+        for (int x = 0; x < C; x++)
+            for (int y = 0; y < R; y++)
+                m[x].c[y] = x == y ? v[x] : 0;
     }
 
     explicit matrix(const T *mat_data) {
-        memcpy(this, mat_data, sizeof(T) * R * C);
+        for (int x = 0; x < C; x++)
+            for (int y = 0; y < R; y++)
+                m[x].c[y] = *mat_data++;
     }
 
     matrix(V x, V y, V z, V w) { assert(C == 4); m[0] = x; m[1] = y; m[2] = z; m[3] = w; }
@@ -462,10 +560,10 @@ template<typename T, int C, int R> class matrix {
     // not an operator on purpose, don't use outside this header
     void set(int i, const V &v) { m[i] = v; }
 
-    vec<T,C> row(int i) const {
-        if constexpr (C == 2) return vec<T,C>(m[0][i], m[1][i]);
-        if constexpr (C == 3) return vec<T,C>(m[0][i], m[1][i], m[2][i]);
-        if constexpr (C == 4) return vec<T,C>(m[0][i], m[1][i], m[2][i], m[3][i]);
+    vec<T, C> row(size_t i) const {
+        if constexpr (C == 2) return vec<T,C>(m[0].c[i], m[1].c[i]);
+        if constexpr (C == 3) return vec<T,C>(m[0].c[i], m[1].c[i], m[2].c[i]);
+        if constexpr (C == 4) return vec<T,C>(m[0].c[i], m[1].c[i], m[2].c[i], m[3].c[i]);
     }
 
     matrix<T,R,C> transpose() const {
@@ -476,7 +574,8 @@ template<typename T, int C, int R> class matrix {
 
     V operator*(const vec<T,C> &v) const {
         V res(0.0f);
-        for (int i = 0; i < C; i++) res += m[i] * v[i];
+        for (int i = 0; i < C; i++)
+            res += m[i] * v.c[i];
         return res;
     }
 
@@ -555,42 +654,42 @@ inline float4x4 scaling(float s) {
 
 inline float4x4 scaling(const float3 &s) {
     return float4x4(
-        float4(s.x, 0, 0, 0),
-        float4(0, s.y, 0, 0),
-        float4(0, 0, s.z, 0),
-        float4(0, 0, 0, 1));
+        float4(s.x, 0,   0,   0),
+        float4(0,   s.y, 0,   0),
+        float4(0,   0,   s.z, 0),
+        float4(0,   0,   0,   1));
 }
 
 inline float4x4 rotationX(const float2 &v) {
     return float4x4(
-        float4(1, 0,     0,     0),
-        float4(0, v.x, v.y, 0),
-        float4(0,-v.y, v.x, 0),
-        float4(0, 0,     0,     1));
+        float4(1,  0,   0,   0),
+        float4(0,  v.x, v.y, 0),
+        float4(0, -v.y, v.x, 0),
+        float4(0,  0,   0,   1));
 }
 
 inline float4x4 rotationY(const float2 &v) {
     return float4x4(
-        float4(v.x, 0,-v.y, 0),
-        float4(0,     1, 0,     0),
-        float4(v.y, 0, v.x, 0),
-        float4(0,     0, 0,     1));
+        float4(v.x, 0, -v.y, 0),
+        float4(0,   1,  0,   0),
+        float4(v.y, 0,  v.x, 0),
+        float4(0,   0,  0,   1));
 }
 
 inline float4x4 rotationZ(const float2 &v) {
     return float4x4(
         float4( v.x, v.y, 0, 0),
         float4(-v.y, v.x, 0, 0),
-        float4( 0,     0,     1, 0),
-        float4( 0,     0,     0, 1));
+        float4( 0,   0,   1, 0),
+        float4( 0,   0,   0, 1));
 }
 
 inline float4x4 rotation3D(const float3 &v) {
     return float4x4(
-        float4( 0,     -v.z,  v.y, 0),
-        float4( v.z,  0,     -v.x, 0),
-        float4(-v.y,  v.x,  0,     0),
-        float4( 0,      0,      0,     1));
+        float4( 0,   -v.z,  v.y, 0),
+        float4( v.z,  0,   -v.x, 0),
+        float4(-v.y,  v.x,  0,   0),
+        float4( 0,    0,    0,   1));
 }
 
 inline float4x4 rotationX(float a) { return rotationX(float2(cosf(a), sinf(a))); }
@@ -804,48 +903,59 @@ inline float4x4 ortho(float left, float right, float bottom, float top, float zn
     );
 }
 
-inline byte4 quantizec(const float3 &v) { return byte4(float4(v, 1) * 255); }
-inline byte4 quantizec(const float4 &v) { return byte4(v            * 255); }
+inline byte4 quantizec(const float3 &v, float w) { return byte4(float4(v, w) * 255); }
+inline byte4 quantizec(const float4 &v) { return byte4(v * 255); }
 
 inline float4 color2vec(const byte4 &col) { return float4(col) / 255; }
 
 // Spline interpolation.
-template <typename T> inline vec<T, 3> cardinal_spline(const vec<T, 3> &z, const vec<T, 3> &a,
-                                                      const vec<T, 3> &b, const vec<T, 3> &c,
-                                                      T s, T tension = 0.5) {
-    T s2 = s*s;
-    T s3 = s*s2;
-    return a                 * ( 2*s3 - 3*s2 + 1) +
-           b                 * (-2*s3 + 3*s2    ) +
-           (b - z) * tension * (   s3 - 2*s2 + s) +
-           (c - a) * tension * (   s3 -   s2    );
+template<typename T>
+inline vec<T, 3> cardinal_spline(const vec<T, 3> &z, const vec<T, 3> &a, const vec<T, 3> &b,
+                                 const vec<T, 3> &c, T s, T tension = 0.5) {
+    T s2 = s * s;
+    T s3 = s * s2;
+    return a * (2 * s3 - 3 * s2 + 1) + b * (-2 * s3 + 3 * s2) +
+           (b - z) * tension * (s3 - 2 * s2 + s) + (c - a) * tension * (s3 - s2);
 }
 
 inline float triangle_area(const float3 &a, const float3 &b, const float3 &c) {
     return length(cross(b - a, c - a)) / 2;
 }
 
-template<typename T> bool line_intersect(const vec<T, 2> &l1a, const vec<T, 2> &l1b, const vec<T, 2> &l2a,
-                           const vec<T, 2> &l2b, vec<T, 2> *out = nullptr) {
+template<typename T>
+bool line_intersect(const vec<T, 2> &l1a, const vec<T, 2> &l1b, const vec<T, 2> &l2a,
+                    const vec<T, 2> &l2b, vec<T, 2> *out = nullptr) {
     vec<T, 2> a(l1b - l1a);
     vec<T, 2> b(l2b - l2a);
     vec<T, 2> aperp(-a.y, a.x);
     auto f = dot(aperp, b);
-    if (!f) return false;     // Parallel.
+    if (!f) return false;  // Parallel.
     vec<T, 2> c(l2b - l1b);
     vec<T, 2> bperp(-b.y, b.x);
     auto aa = dot(aperp, c);
     auto bb = dot(bperp, c);
-    if(f < 0) {
-        if(aa > 0 || bb > 0 || aa < f || bb < f) return false;
+    if (f < 0) {
+        if (aa > 0 || bb > 0 || aa < f || bb < f) return false;
     } else {
-        if(aa < 0 || bb < 0 || aa > f || bb > f) return false;
+        if (aa < 0 || bb < 0 || aa > f || bb > f) return false;
     }
-    if(out) {
+    if (out) {
         auto lerp = 1.0f - (aa / f);
         *out = ((l2b - l2a) * lerp) + l2a;
     }
     return true;
+}
+
+// Vector from a point to the closest point on a box.
+template<typename T, int N>
+const vec<T, N> point_to_box(const vec<T, N> &p, const vec<T, N> &bmin, const vec<T, N> &bmax) {
+    return std::max(bmin - p, std::max(vec<T, N>((T)0), p - bmax));
+}
+
+template<typename T, int N>
+bool boxes_intersect(const vec<T, N> &b1min, const vec<T, N> &b1max,
+    const vec<T, N> &b2min, const vec<T, N> &b2max) {
+    return b1min <= b2max && b2min <= b1max;
 }
 
 // Return the enter and exit t value.
@@ -878,21 +988,41 @@ inline bool clamp_bb(const float3 &bbmin, const float3 &bbmax, const float3 &ray
     return ok;
 }
 
-inline void normalize_mesh(span<int> idxs, void *verts, size_t vertlen, size_t vsize,
+struct sphere {
+    float3 center;
+    float rad;
+};
+
+inline sphere bounding_sphere(sphere a, sphere b) {
+    float dist = length(a.center - b.center);
+    // <= accounts for equal rad & pos.
+    if (a.rad + dist <= b.rad) {
+        return b;
+    } else if (b.rad + dist <= a.rad) {
+        return a;
+    } else {
+        assert(dist);
+        auto rad = (a.rad + b.rad + dist) / 2;
+        auto center = a.center + (b.center - a.center) * ((rad - a.rad) / dist);
+        return sphere { center, rad };
+    }
+}
+
+inline void normalize_mesh(gsl::span<int> idxs, void *verts, size_t vertlen, size_t vsize,
                            size_t normaloffset, bool ignore_bad_tris = true) {
     for (size_t i = 0; i < vertlen; i++) {
-        *(float3 *)((uchar *)verts + i * vsize + normaloffset) = float3_0;
+        *(float3 *)((uint8_t *)verts + i * vsize + normaloffset) = float3_0;
     }
     for (size_t t = 0; t < idxs.size(); t += 3) {
         int v1i = idxs[t + 0];
         int v2i = idxs[t + 1];
         int v3i = idxs[t + 2];
-        float3 &v1p = *(float3 *)((uchar *)verts + v1i * vsize);
-        float3 &v2p = *(float3 *)((uchar *)verts + v2i * vsize);
-        float3 &v3p = *(float3 *)((uchar *)verts + v3i * vsize);
-        float3 &v1n = *(float3 *)((uchar *)verts + v1i * vsize + normaloffset);
-        float3 &v2n = *(float3 *)((uchar *)verts + v2i * vsize + normaloffset);
-        float3 &v3n = *(float3 *)((uchar *)verts + v3i * vsize + normaloffset);
+        float3 &v1p = *(float3 *)((uint8_t *)verts + v1i * vsize);
+        float3 &v2p = *(float3 *)((uint8_t *)verts + v2i * vsize);
+        float3 &v3p = *(float3 *)((uint8_t *)verts + v3i * vsize);
+        float3 &v1n = *(float3 *)((uint8_t *)verts + v1i * vsize + normaloffset);
+        float3 &v2n = *(float3 *)((uint8_t *)verts + v2i * vsize + normaloffset);
+        float3 &v3n = *(float3 *)((uint8_t *)verts + v3i * vsize + normaloffset);
         if (v1p != v2p && v1p != v3p && v2p != v3p) {
             float3 v12 = normalize(v2p - v1p);
             float3 v13 = normalize(v3p - v1p);
@@ -907,7 +1037,7 @@ inline void normalize_mesh(span<int> idxs, void *verts, size_t vertlen, size_t v
         }
     }
     for (size_t i = 0; i < vertlen; i++) {
-        float3 &norm = *(float3 *)((uchar *)verts + i * vsize + normaloffset);
+        float3 &norm = *(float3 *)((uint8_t *)verts + i * vsize + normaloffset);
         if (norm != float3_0)
             norm = normalize(norm);
     }
@@ -915,3 +1045,4 @@ inline void normalize_mesh(span<int> idxs, void *verts, size_t vertlen, size_t v
 
 }  // namespace geom
 
+#endif  // LOBSTER_GEOM

@@ -19,13 +19,17 @@
 
 #include "lobster/glinterface.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#ifdef _WIN32
+#ifdef _MSC_VER
   #pragma warning(push)
   #pragma warning(disable: 4244)
 #endif
 #include "stb/stb_image_write.h"
-#ifdef _WIN32
+#ifdef _MSC_VER
   #pragma warning(pop)
 #endif
 
@@ -50,6 +54,7 @@ right meta left meta left super right super alt gr compose help print screen sys
 
 struct KeyState {
     TimeBool8 button;
+    bool repeat = false;
 
     double lasttime[2];
     int2 lastpos[2];
@@ -61,10 +66,13 @@ struct KeyState {
 
     void FrameReset() {
         button.Advance();
+        repeat = false;
     }
 };
 
 map<string, KeyState, less<>> keymap;
+
+TextInput textinput;
 
 int mousewheeldelta = 0;
 
@@ -100,18 +108,19 @@ const int MAXFINGERS = 10;
 Finger fingers[MAXFINGERS];
 
 
-void updatebutton(string &name, bool on, int posfinger) {
+void updatebutton(string &name, bool on, int posfinger, bool repeat) {
     auto &ks = keymap[name];
     ks.button.Set(on);
     ks.lasttime[on] = lasttime;
     ks.lastpos[on] = fingers[posfinger].mousepos;
+    ks.repeat = repeat;
 }
 
 void updatemousebutton(int button, int finger, bool on) {
     string name = "mouse";
     name += '0' + (char)button;
     if (finger) name += '0' + (char)finger;
-    updatebutton(name, on, finger);
+    updatebutton(name, on, finger, false);
 }
 
 void clearfingers(bool delta) {
@@ -170,6 +179,8 @@ int updatedragpos(SDL_TouchFingerEvent &e, Uint32 et) {
     return 0;
 }
 
+string dropped_file;
+string &GetDroppedFile() { return dropped_file; }
 
 string SDLError(const char *msg) {
     string s = string_view(msg) + ": " + SDL_GetError();
@@ -244,8 +255,7 @@ void SDLRequireGLVersion(int major, int minor) {
     #endif
 };
 
-string SDLInit(string_view title, const int2 &desired_screensize, bool isfullscreen, int vsync,
-               int samples) {
+string SDLInit(string_view title, const int2 &desired_screensize, InitFlags flags, int samples) {
     MakeDPIAware();
     //SDL_SetMainReady();
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER /* | SDL_INIT_AUDIO*/) < 0) {
@@ -272,15 +282,23 @@ string SDLInit(string_view title, const int2 &desired_screensize, bool isfullscr
 
     //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);      // set this if we're in 2D mode for speed on mobile?
     SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);    // because we redraw the screen each frame
-
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    #ifndef __EMSCRIPTEN__ // FIXME: https://github.com/emscripten-ports/SDL2/issues/86
+        if (flags & INIT_LINEAR_COLOR) SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
+    #endif
+
+    #ifdef _DEBUG
+        // Hopefully get some more validation out of OpenGL.
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+    #endif
 
     LOG_INFO("SDL about to figure out display mode...");
 
+    // FIXME: for emscripten, this picks screen size, not browser window size, and doesn't resize.
     #ifdef PLATFORM_ES3
         landscape = desired_screensize.x >= desired_screensize.y;
         int modes = SDL_GetNumDisplayModes(0);
-        screensize = int2(1920, 1080);
+        screensize = int2(320, 200);
         for (int i = 0; i < modes; i++) {
             SDL_DisplayMode mode;
             SDL_GetDisplayMode(0, i, &mode);
@@ -289,17 +307,16 @@ string SDLInit(string_view title, const int2 &desired_screensize, bool isfullscr
                 screensize = int2(mode.w, mode.h);
             }
         }
-
         LOG_INFO("chosen resolution: ", screensize.x, " ", screensize.y);
         LOG_INFO("SDL about to create window...");
-
+        auto wflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
+        #ifdef __EMSCRIPTEN__
+            wflags |= SDL_WINDOW_RESIZABLE;
+        #endif
         _sdl_window = SDL_CreateWindow(null_terminated(title),
-                                        0, 0,
-                                        screensize.x, screensize.y,
-                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
-
+                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                       screensize.x, screensize.y, wflags);
         LOG_INFO(_sdl_window ? "SDL window passed..." : "SDL window FAILED...");
-
         if (landscape) SDL_SetHint("SDL_HINT_ORIENTATIONS", "LandscapeLeft LandscapeRight");
     #else
         int display = 0;  // FIXME: we're not dealing with multiple displays.
@@ -318,7 +335,9 @@ string SDLInit(string_view title, const int2 &desired_screensize, bool isfullscr
                                        screensize.x, screensize.y,
                                        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE |
                                        SDL_WINDOW_ALLOW_HIGHDPI |
-                                            (isfullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
+                                            (flags & INIT_FULLSCREEN
+                                                ? SDL_WINDOW_FULLSCREEN_DESKTOP
+                                                : 0));
     #endif
     ScreenSizeChanged();
     LOG_INFO("obtained resolution: ", screensize.x, " ", screensize.y);
@@ -336,7 +355,7 @@ string SDLInit(string_view title, const int2 &desired_screensize, bool isfullscr
     LOG_INFO("SDL OpenGL context created...");
 
     #ifndef __IOS__
-        SDL_GL_SetSwapInterval(vsync);
+        if (SDL_GL_SetSwapInterval(flags & INIT_NO_VSYNC ? 0 : -1) < 0) SDL_GL_SetSwapInterval(1);
     #endif
 
     SDL_JoystickEventState(SDL_ENABLE);
@@ -357,9 +376,7 @@ string SDLInit(string_view title, const int2 &desired_screensize, bool isfullscr
 
     lasttime = -0.02f;    // ensure first frame doesn't get a crazy delta
 
-    OpenGLInit(samples);
-
-    return "";
+    return OpenGLInit(samples, flags & INIT_LINEAR_COLOR);
 }
 
 double GetSeconds() { return (double)(SDL_GetPerformanceCounter() - timestart) / (double)timefreq; }
@@ -372,35 +389,33 @@ void SDLShutdown() {
     SDL_Quit();
 }
 
-// Used to update the time when SDL isn't running.
-void SDLUpdateTime(double delta) {
-    frametime = delta;
-    lasttime += delta;
-    frames++;
-    frametimelog.push_back((float)delta);
-    if (frametimelog.size() > 64) frametimelog.erase(frametimelog.begin());
-}
-
 vector<float> &SDLGetFrameTimeLog() { return frametimelog; }
 
 bool SDLFrame() {
-    auto millis = GetSeconds();
-    SDLUpdateTime(millis - lasttime);
+    if (minimized) {
+        SDL_Delay(10);  // save CPU/battery
+    } else {
+        #ifndef __EMSCRIPTEN__
+            SDL_GL_SwapWindow(_sdl_window);
+        #else
+            emscripten_sleep(0);
+        #endif
+    }
+
+    frametime = GetSeconds() - lasttime;
+    lasttime += frametime;
+    // Let's not run slower than this, very long pauses can cause animation & gameplay glitches.
+    const double minfps = 5.0;
+    frametime = min(1.0 / minfps, frametime);
+    frames++;
+    frametimelog.push_back((float)frametime);
+    if (frametimelog.size() > 64) frametimelog.erase(frametimelog.begin());
 
     for (auto &it : keymap) it.second.FrameReset();
 
     mousewheeldelta = 0;
     clearfingers(true);
-
-    if (minimized) {
-        SDL_Delay(10);  // save CPU/battery
-    } else {
-        #ifndef __EMSCRIPTEN__
-        SDL_GL_SwapWindow(_sdl_window);
-        #endif
-    }
-
-    //SDL_Delay(1000);
+    dropped_file.clear();
 
     if (!cursor) clearfingers(false);
 
@@ -423,7 +438,7 @@ bool SDLFrame() {
                 string name = kn;
                 std::transform(name.begin(), name.end(), name.begin(),
                                [](char c) { return (char)::tolower(c); });
-                updatebutton(name, event.key.state==SDL_PRESSED, 0);
+                updatebutton(name, event.key.state==SDL_PRESSED, 0, event.key.repeat);
                 if (event.type == SDL_KEYDOWN) {
                     // Built-in key-press functionality.
                     switch (event.key.keysym.sym) {
@@ -517,7 +532,7 @@ bool SDLFrame() {
             case SDL_JOYBUTTONUP: {
                 string name = "joy";
                 name += '0' + (char)event.jbutton.button;
-                updatebutton(name, event.jbutton.state == SDL_PRESSED, 0);
+                updatebutton(name, event.jbutton.state == SDL_PRESSED, 0, false);
                 break;
             }
 
@@ -550,6 +565,21 @@ bool SDLFrame() {
                 #endif
                 minimized = false;
                 */
+                break;
+
+            case SDL_DROPFILE:
+                dropped_file = event.drop.file;
+                SDL_free(event.drop.file);
+                break;
+
+            case SDL_TEXTINPUT:
+                textinput.text += event.text.text;
+                break;
+
+            case SDL_TEXTEDITING:
+                textinput.editing = event.edit.text;
+                textinput.cursor = event.edit.start;
+                textinput.len = event.edit.length;
                 break;
         }
     }
@@ -593,6 +623,12 @@ TimeBool8 GetKS(string_view name) {
     #else
         return ks->second.button;
     #endif
+}
+
+bool KeyRepeat(string_view name) {
+    auto ks = keymap.find(name);
+    if (ks == keymap.end()) return {};
+    return ks->second.repeat;
 }
 
 double GetKeyTime(string_view name, int on) {
@@ -677,4 +713,23 @@ int SDLScreenDPI(int screen) {
     return screen >= screens
            ? 0  // Screen not present.
            : (int)(ddpi + 0.5f);
+}
+
+void SDLStartTextInput(int2 pos, int2 size) {
+    SDL_StartTextInput();
+    SDL_Rect rect = { pos.x, pos.y, size.x, size.y };
+    SDL_SetTextInputRect(&rect);
+    textinput = TextInput();
+}
+
+TextInput &SDLTextInputState() {
+    return textinput;
+}
+
+void SDLTextInputSet(string_view t) {
+    textinput.text = t;
+}
+
+void SDLEndTextInput() {
+    SDL_StopTextInput();
 }

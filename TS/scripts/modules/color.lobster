@@ -6,6 +6,7 @@ struct color:
     blue:float
     alpha:float
 
+let color_clear = color { 0, 0, 0, 0 }
 let color_black = color { 0, 0, 0, 1 }
 let color_white = color { 1, 1, 1, 1 }
 
@@ -43,3 +44,6 @@ let color_springgreen = color { 0,   1,   0.5, 1 }
 let color_dodgerblue  = color { 0,   0.5, 1,   1 }
 let color_pink_violet = color { 1,   0,   0.5, 1 }
 let color_blue_violet = color { 0.5, 0,   1,   1 }
+
+def from_srgb(col): return pow(col, 2.2)
+def to_srgb(col): return pow(col, 1.0 / 2.2)

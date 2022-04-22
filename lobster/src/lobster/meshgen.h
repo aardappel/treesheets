@@ -41,8 +41,8 @@ struct mgvert {
 };
 
 inline void RecomputeNormals(vector<int> &triangles, vector<mgvert> &verts) {
-    normalize_mesh(make_span(triangles), verts.data(), verts.size(), sizeof(mgvert),
-                   (uchar *)&verts.data()->norm - (uchar *)&verts.data()->pos, false);
+    normalize_mesh(gsl::make_span(triangles), verts.data(), verts.size(), sizeof(mgvert),
+                   (uint8_t *)&verts.data()->norm - (uint8_t *)&verts.data()->pos, false);
 };
 
 extern Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtrans,

@@ -24,8 +24,6 @@ template<typename T> class Chunk3DGrid : NonCopyable {
     private:
     vector<T *> grid;
 
-    T &Access(const int3 &pos) const { return grid[pos.x][pos.y * dim.z + pos.z]; }
-
     public:
     Chunk3DGrid(const int3 &_dim, T default_val) : dim(_dim) {
         grid.resize(dim.x, nullptr);
@@ -41,7 +39,7 @@ template<typename T> class Chunk3DGrid : NonCopyable {
     }
 
     T &Get(const int3 &pos) const {
-        return Access(pos);
+        return grid[pos.x][pos.y * dim.z + pos.z];
     }
 
     // This creates a Z-major continuous buffer, whereas the original data is X-major.
