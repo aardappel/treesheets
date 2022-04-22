@@ -310,9 +310,8 @@ struct Document {
     void ZoomTiny(wxDC &dc) {
         Cell *c = selected.GetCell();
         if (c && c->tiny) {
-            int rels = c->text.relsize;
-            while (FontIsMini(TextSize(c->Depth(), rels))) rels--;
-            Zoom(c->text.relsize - rels, dc);  // seems to leave selection box in a weird location?
+            Zoom(1, dc);  // seems to leave selection box in a weird location?
+            if (selected.GetCell() != c) ZoomTiny(dc);
         }
     }
 
@@ -422,6 +421,7 @@ struct Document {
         while (len < drawpath.size()) drawpath.remove(0);
         Cell *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
+            // We can't have the drawroot selected, so we must move the selection to the children.
             selected = Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys);
         }
         drawroot->ResetLayout();
