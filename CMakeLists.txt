@@ -49,6 +49,8 @@ file(
         lobster/src/vm.cpp
         lobster/src/vmdata.cpp
         lobster/src/vmlog.cpp
+        lobster/src/tocpp.cpp
+        lobster/src/tccbind.cpp
 )
 add_library(lobster STATIC ${lobster_sources})
 target_include_directories(lobster PUBLIC lobster/include lobster/src)
