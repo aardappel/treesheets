@@ -119,6 +119,7 @@ class Selection {
             y = (y + dy + g->ys) % g->ys;
             if (x + xs > g->xs || y + ys > g->ys) g = nullptr;
 
+            g->cell->ResetChildren();
             doc->ScrollIfSelectionOutOfView(dc, *this, true);
         } else {
             doc->DrawSelect(dc, *this);
