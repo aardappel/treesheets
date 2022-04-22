@@ -7,6 +7,7 @@ struct UndoItem {
     Selection sel;
     unique_ptr<Cell> clone;
     size_t estimated_size;
+    uintptr_t cloned_from;  // May be dead.
 
     UndoItem() : estimated_size(0) {}
 };
@@ -441,8 +442,7 @@ struct Document {
         if (alt) {
             if (!selected.g) return NoSel();
             if (selected.xs > 0) {
-                // FIXME: should do undo, but this is a lot of undos that need to coalesced, same
-                // for relsize
+                if (!LastUndoSameCellAny(selected.g->cell)) selected.g->cell->AddUndo(this);
                 selected.g->ResizeColWidths(dir, selected, hierarchical);
                 selected.g->cell->ResetLayout();
                 selected.g->cell->ResetChildren();
@@ -1626,7 +1626,7 @@ struct Document {
 
         switch (k) {
             case A_CANCELEDIT:
-                if (LastUndoSameCell(c))
+                if (LastUndoSameCellTextEdit(c))
                     Undo(dc, undolist, redolist);
                 else
                     Refresh();
@@ -1824,7 +1824,12 @@ struct Document {
         return c;
     }
 
-    bool LastUndoSameCell(Cell *c) {
+    bool LastUndoSameCellAny(Cell *c) {
+        return undolist.size() && undolist.size() != undolistsizeatfullsave &&
+               undolist.last()->cloned_from == (uintptr_t)c;
+    }
+
+    bool LastUndoSameCellTextEdit(Cell *c) {
         // hacky way to detect word boundaries to stop coalescing, but works, and
         // not a big deal if selected is not actually related to this cell
         return undolist.size() && !c->grid && undolist.size() != undolistsizeatfullsave &&
@@ -1839,12 +1844,13 @@ struct Document {
             modified = true;
             UpdateFileName();
         }
-        if (LastUndoSameCell(c)) return;
+        if (LastUndoSameCellTextEdit(c)) return;
         UndoItem *ui = new UndoItem();
         undolist.push() = ui;
         ui->clone = c->Clone(nullptr);
         ui->estimated_size = c->EstimatedMemoryUse();
         ui->sel = selected;
+        ui->cloned_from = (uintptr_t)c;
         CreatePath(c, ui->path);
         if (selected.g) CreatePath(selected.g->cell, ui->selpath);
         size_t total_usage = 0;
