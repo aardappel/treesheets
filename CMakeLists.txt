@@ -51,9 +51,10 @@ file(
         lobster/src/vmlog.cpp
         lobster/src/tocpp.cpp
         lobster/src/tccbind.cpp
+        lobster/external/libtcc/libtcc.c
 )
 add_library(lobster STATIC ${lobster_sources})
-target_include_directories(lobster PUBLIC lobster/include lobster/src)
+target_include_directories(lobster PUBLIC lobster/include lobster/src lobster/external/libtcc)
 
 add_library(lobster-impl STATIC src/lobster_impl.cpp)
 target_link_libraries(lobster-impl PRIVATE lobster)
