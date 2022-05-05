@@ -119,7 +119,8 @@ class Selection {
             y = (y + dy + g->ys) % g->ys;
             if (x + xs > g->xs || y + ys > g->ys) g = nullptr;
 
-            g->cell->ResetChildren();
+            // FIXME: this is null in the case of a whole column selection, and doesn't do the right thing.
+            if (g) g->cell->ResetChildren();
             doc->ScrollIfSelectionOutOfView(dc, *this, true);
         } else {
             doc->DrawSelect(dc, *this);
