@@ -500,6 +500,7 @@ struct Grid {
             doc->drawpath.pop();
             doc->curdrawroot = doc->WalkPath(doc->drawpath);
         }
+        if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);
         Grid *&pthis = cell->grid;
         DELETEP(pthis);
