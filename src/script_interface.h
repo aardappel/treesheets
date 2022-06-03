@@ -40,5 +40,6 @@ typedef int64_t(*ScriptLoader)(std::string_view absfilename, std::string *dest, 
 extern std::string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *auxfilepath,
                                bool from_bundle, ScriptLoader sl);
 extern std::string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins);
+extern void TSDumpBuiltinDoc();
 
 }

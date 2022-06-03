@@ -204,8 +204,6 @@ struct System {
 
         frame->bt.Start(400);
         every_second_timer.Start(1000);
-
-        ScriptInit(frame);
     }
 
     void LoadTut() {

@@ -85,11 +85,13 @@ struct MyApp : wxApp {
 
         bool portable = false;
         bool single_instance = true;
+        bool dump_builtins = false;
         for (int i = 1; i < argc; i++) {
             if (argv[i][0] == '-') {
                 switch ((int)argv[i][1]) {
                     case 'p': portable = true; break;
                     case 'i': single_instance = false; break;
+                    case 'd': dump_builtins = true; single_instance = false; break;
                 }
             } else {
                 filename = argv[i];
@@ -125,6 +127,17 @@ struct MyApp : wxApp {
 
         sys = new System(portable);
         frame = new MyFrame(exepath, this);
+
+        auto serr = ScriptInit(frame->GetDataPath("scripts/"));
+        if (!serr.empty()) {
+            wxLogFatalError(L"Script system could not initialize: %s", serr);
+            return false;
+        }
+        if (dump_builtins) {
+            TSDumpBuiltinDoc();
+            return false;
+        }
+
         SetTopWindow(frame);
 
         serv = new IPCServer();
