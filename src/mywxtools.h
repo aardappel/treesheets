@@ -8,6 +8,12 @@ static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool o
     dc.DrawRectangle(x, y, xs, ys);
 }
 
+static void DrawRoundedRectangle(wxDC &dc, int x, int y, int xs, int ys, double rad) {
+    // FIXME: this seems entirely broken on latest wxWidgets, not sure why.
+    //dc.DrawRoundedRectangle(x, y, xs, ys, rad);
+    dc.DrawRectangle(x, y, xs, ys);
+}
+
 struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data){};
 

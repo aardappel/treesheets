@@ -154,10 +154,10 @@ struct Cell {
             dc.SetPen(wxPen(actualcellcolor));
 
             if (drawstyle == DS_BLOBSHIER)
-                dc.DrawRoundedRectangle(bx - cell_margin, by - cell_margin, minx + cell_margin * 2,
+                DrawRoundedRectangle(dc, bx - cell_margin, by - cell_margin, minx + cell_margin * 2,
                                         miny + cell_margin * 2, sys->roundness);
             else if (HasHeader())
-                dc.DrawRoundedRectangle(bx - cell_margin + g_margin_extra / 2,
+                DrawRoundedRectangle(dc, bx - cell_margin + g_margin_extra / 2,
                                         by - cell_margin + ycenteroff + g_margin_extra / 2,
                                         txs + cell_margin * 2 + g_margin_extra,
                                         tys + cell_margin * 2 + g_margin_extra, sys->roundness);

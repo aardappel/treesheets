@@ -258,11 +258,15 @@ struct Grid {
         if (view_grid_outer_spacing && cell->drawstyle == DS_GRID) {
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
             dc.SetPen(wxPen(wxColour(bordercolor)));
-            loop(i, view_grid_outer_spacing - 1) dc.DrawRoundedRectangle(
-                bx + xoff + view_grid_outer_spacing - i, by + yoff + view_grid_outer_spacing - i,
-                maxx - xoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
-                maxy - yoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
-                sys->roundness + i);
+            loop(i, view_grid_outer_spacing - 1) {
+                DrawRoundedRectangle(
+                    dc,
+                    bx + xoff + view_grid_outer_spacing - i,
+                    by + yoff + view_grid_outer_spacing - i,
+                    maxx - xoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
+                    maxy - yoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
+                    sys->roundness + i);
+            }
         }
     }
 
