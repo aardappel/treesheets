@@ -237,7 +237,7 @@ struct Text {
                     dc.SetTextForeground(cell->textcolor);  // FIXME: clean up
                 int tx = bx + 2 + ixs;
                 int ty = by + lines * h;
-                MyDrawText(dc, curl, tx + g_margin_extra, ty + g_margin_extra, cell->sx, h);
+                dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
                 if (searchfound || filtered || istag || cell->textcolor)
                     dc.SetTextForeground(*wxBLACK);
             }

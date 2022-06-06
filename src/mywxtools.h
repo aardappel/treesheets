@@ -8,21 +8,6 @@ static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool o
     dc.DrawRectangle(x, y, xs, ys);
 }
 
-static void MyDrawText(wxDC &dc, const wxString &s, wxCoord x, wxCoord y, wxCoord w, wxCoord h) {
-    #ifdef __WXMSW__  // this special purpose implementation is because the MSW implementation calls
-                      // TextExtent, which costs
-                      // 25% of all cpu time
-    dc.CalcBoundingBox(x, y);
-    dc.CalcBoundingBox(x + w, y + h);
-    HDC hdc = (HDC)dc.GetHDC();
-    ::SetTextColor(hdc, dc.GetTextForeground().GetPixel());
-    ::SetBkColor(hdc, dc.GetTextBackground().GetPixel());
-    ::ExtTextOut(hdc, x, y, 0, nullptr, s.c_str(), s.length(), nullptr);
-    #else
-    dc.DrawText(s, x, y);
-    #endif
-}
-
 struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data){};
 
