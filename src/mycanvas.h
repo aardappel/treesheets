@@ -39,9 +39,12 @@ struct TSCanvas : public wxScrolledWindow {
         // DoPrepareDC(dc);
         doc->Draw(dc);
         // Display has been re-layouted, compute hover selection again.
+        // TODO: lastmousepos doesn't seem correct anymore after a scroll operation in latest wxWidgets.
+        /*
         doc->Hover(lastmousepos.x / doc->currentviewscale,
                    lastmousepos.y / doc->currentviewscale,
                    dc);
+        */
     };
 
     void UpdateHover(int mx, int my, wxDC &dc) {
@@ -60,7 +63,6 @@ struct TSCanvas : public wxScrolledWindow {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         }
-
         lastmousepos = me.GetPosition();
     }
 
@@ -162,6 +164,10 @@ struct TSCanvas : public wxScrolledWindow {
         } else {
             PopupMenu(frame->editmenupopup);
         }
+    }
+
+    void OnScrollWin(wxScrollWinEvent &) {
+        // This only gets called when scrolling using the scroll bar, not with mousewheel.
     }
 
     void CursorScroll(int dx, int dy) {

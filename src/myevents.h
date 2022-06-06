@@ -30,6 +30,7 @@ BEGIN_EVENT_TABLE(treesheets::TSCanvas, wxScrolledWindow)
   EVT_KEY_DOWN(treesheets::TSCanvas::OnKeyDown)
   EVT_CONTEXT_MENU(treesheets::TSCanvas::OnContextMenuClick)
   EVT_SIZE(treesheets::TSCanvas::OnSize)
+  EVT_SCROLLWIN(treesheets::TSCanvas::OnScrollWin)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(treesheets::ThreeChoiceDialog, wxDialog)
