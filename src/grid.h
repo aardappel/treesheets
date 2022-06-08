@@ -259,8 +259,7 @@ struct Grid {
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
             dc.SetPen(wxPen(wxColour(bordercolor)));
             loop(i, view_grid_outer_spacing - 1) {
-                DrawRoundedRectangle(
-                    dc,
+                dc.DrawRoundedRectangle(
                     bx + xoff + view_grid_outer_spacing - i,
                     by + yoff + view_grid_outer_spacing - i,
                     maxx - xoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
