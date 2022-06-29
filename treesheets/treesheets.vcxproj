@@ -72,7 +72,7 @@
       <AdditionalIncludeDirectories>C:\Program Files\wxWidgets-2.8.8\include\;C:\Program Files\wxWidgets-2.8.8\lib\vc_lib\mswd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>../build/treesheets/language/languageDBG64.lib;libcmtd.lib;libcpmtd.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw31ud_core.lib;wxbase31ud.lib;opengl32.lib;wxmsw31ud_gl.lib;wxmsw31ud_adv.lib;wxpngd.lib;wxzlibd.lib;wxjpegd.lib;wxtiffd.lib;wxbase31ud_xml.lib;wxexpatd.lib;wxmsw31ud_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../build/treesheets/language/languageDBG64.lib;libcmtd.lib;libcpmtd.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw32ud_core.lib;wxbase32ud.lib;opengl32.lib;wxmsw32ud_gl.lib;wxmsw32ud_adv.lib;wxpngd.lib;wxzlibd.lib;wxjpegd.lib;wxtiffd.lib;wxbase32ud_xml.lib;wxexpatd.lib;wxmsw32ud_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\TS\TreeSheetsDBG.exe</OutputFile>
       <AdditionalLibraryDirectories>..\wxWidgets\lib\vc_x64_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -100,7 +100,7 @@
       <AdditionalIncludeDirectories>C:\Program Files\wxWidgets-2.8.8\include\;C:\Program Files\wxWidgets-2.8.8\lib\vc_lib\msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>../build/treesheets/language/language64.lib;libcmt.lib;libcpmt.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw31u_core.lib;wxbase31u.lib;wxmsw31u_adv.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;wxbase31u_xml.lib;wxexpat.lib;wxmsw31u_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../build/treesheets/language/language64.lib;libcmt.lib;libcpmt.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxmsw32u_core.lib;wxbase32u.lib;wxmsw32u_adv.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;wxbase32u_xml.lib;wxexpat.lib;wxmsw32u_aui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\TS\TreeSheets.exe</OutputFile>
       <AdditionalLibraryDirectories>..\wxWidgets\lib\vc_x64_lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
