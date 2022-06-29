@@ -102,7 +102,7 @@ def forxyz(v, fun): for(v.z) z: for(v.y) y: for(v.x) x: fun(xyz { x, y, z })
 def mapxyz(v, fun): return map(v.z) z: map(v.y) y: map(v.x) x: fun(xyz { x, y, z })
 
 def vecfromyawpitch(yaw, pitch, move, strafe):
-    return (xyz(sincos(yaw + 90/* start from Y rather than X axis */), 0.0) *
+    return (xyz(sincos(yaw + 90.0/* start from Y rather than X axis */), 0.0) *
         cos(pitch) + xyz_z * sin(pitch)) * move + xyz(sincos(yaw), 0.0) * strafe
 
 def rotate2D(v, angle):

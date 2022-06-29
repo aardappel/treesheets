@@ -83,9 +83,14 @@ const int *DisAsmIns(NativeRegistry &nfr, string &sd, const int *ip, const int *
             append(sd, *ip++);
             break;
 
-        case IL_RETURN: {
-            auto id = *ip++;
+        case IL_RETURNLOCAL: {
             auto nrets = *ip++;
+            append(sd, nrets);
+            break;
+        }
+        case IL_RETURNNONLOCAL: {
+            auto nrets = *ip++;
+            auto id = *ip++;
             append(sd, bcf->functions()->Get(id)->name()->string_view(), " ", nrets);
             break;
         }

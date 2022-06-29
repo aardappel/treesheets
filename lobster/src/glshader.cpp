@@ -41,11 +41,21 @@ string GLSLError(int obj, bool isprogram, const char *source) {
         string err = "GLSL ERROR: ";
         err += log;
         int i = 0;
-        if (source) for (;;) {
-            err += cat(++i, ": ");
-            const char *next = strchr(source, '\n');
-            if (next) { err += string_view(source, next - source + 1); source = next + 1; }
-            else { err += string_view(source) + "\n"; break; }
+        if (source) {
+            for (;;) {
+                err += cat(++i, ": ");
+                const char *next = strchr(source, '\n');
+                if (next) {
+                    err += string_view(source, next - source + 1);
+                    source = next + 1;
+                } else {
+                    err += string_view(source) + "\n";
+                    break;
+                }
+            }
+            // repeat the error, since source often long, to avoid scrolling.
+            err += "GLSL ERROR: ";
+            err += log;
         }
         delete[] log;
         return err;

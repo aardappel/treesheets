@@ -38,6 +38,7 @@ struct CodeGen  {
     vector<ILOP> tstack;
     size_t tstack_max = 0;
     int dummyfun = -1;
+    const SubFunction *cursf = nullptr;
 
     int Pos() { return (int)code.size(); }
 
@@ -123,9 +124,9 @@ struct CodeGen  {
 
     void PushFields(UDT *udt, vector<type_elem_t> &tt, type_elem_t parent = (type_elem_t)-1) {
         for (auto &field : udt->fields) {
-            auto ti = GetTypeTableOffset(field.resolvedtype);
-            if (IsStruct(field.resolvedtype->t)) {
-                PushFields(field.resolvedtype->udt, tt, parent < 0 ? ti : parent);
+            auto ti = GetTypeTableOffset(field.resolvedtype());
+            if (IsStruct(field.resolvedtype()->t)) {
+                PushFields(field.resolved_udt(), tt, parent < 0 ? ti : parent);
             } else {
                 tt.insert(tt.begin() + (ssize(tt) - ti_num_udt_fields) / ti_num_udt_per_field +
                           ti_num_udt_fields, ti);
@@ -202,7 +203,6 @@ struct CodeGen  {
                                                             GetTypeTableOffset(type_resource);
                                                             GetTypeTableOffset(type_any);
         Type type_valuebuf(V_VALUEBUF);                     GetTypeTableOffset(&type_valuebuf);
-        Type type_stackframebuf(V_STACKFRAMEBUF);           GetTypeTableOffset(&type_stackframebuf);
                                                             GetTypeTableOffset(type_vector_int);
                                                             GetTypeTableOffset(type_vector_float);
         Type type_vec_str(V_VECTOR, &*type_string);         GetTypeTableOffset(&type_vec_str);
@@ -305,6 +305,7 @@ struct CodeGen  {
 
     void GenScope(SubFunction &sf) {
         if (sf.subbytecodestart > 0) return;
+        cursf = &sf;
         keepvars = 0;
         tstack_max = 0;
         sf.subbytecodestart = Pos();
@@ -331,9 +332,9 @@ struct CodeGen  {
                     Emit(arg.sid->Idx() + i);
                     nvars++;
                     if (ShouldDec(IsStruct(arg.sid->type->t)
-                                  ? TypeLT { FindSlot(*arg.sid->type->udt, i)->resolvedtype,
+                                      ? TypeLT{ FindSlot(*arg.sid->type->udt, i)->resolvedtype(),
                                              arg.sid->lt }
-                                  : TypeLT { *arg.sid }) && (!ir || arg.sid != ir->sid)) {
+                                      : TypeLT { *arg.sid }) && (!ir || arg.sid != ir->sid)) {
                         ownedvars.push_back(arg.sid->Idx() + i);
                     }
                 }
@@ -364,6 +365,7 @@ struct CodeGen  {
         code[regspos] = (int)tstack_max;
         code[keepvarspos] = keepvars;
         linenumbernodes.pop_back();
+        cursf = nullptr;
     }
 
     // This must be called explicitly when any values are consumed.
@@ -383,24 +385,25 @@ struct CodeGen  {
         if (!code[pos]) call_fixups.push_back({ pos, sf });
     }
 
-    void GenUnwind(const SubFunction &sf, const SubFunction &sf_to, int nretslots_norm) {
+    void GenUnwind(const SubFunction &sf, int nretslots_unwind_max, int nretslots_norm) {
         // We're in an odd position here, because what is on the stack can either be from
         // the function we're calling (if we're not falling thru) or from any function above it
-        // with different number of return values.
+        // with different number of return values (and there can be multiple such paths, with
+        // different retvals, hence "max").
         // Then, below it, may be temps.
         // If we're falling thru, we actually want to 1) unwind, 2) copy rets, 3) pop temps
         // We manage the tstack as if we're not falling thru.
-        auto nretslots_unwind = ValWidthMulti(sf_to.returntype, sf_to.returntype->NumValues());
         // Need to ensure there's enough space for either path.
-        for (int i = nretslots_norm; i < nretslots_unwind; i++) PushTemp(IL_CALL);
+        for (int i = nretslots_norm; i < nretslots_unwind_max; i++)
+            PushTemp(IL_CALL);
         EmitOp(IL_JUMPIFUNWOUND);
         Emit(sf.parent->idx);
         Emit(0);
-        for (int i = nretslots_norm; i < nretslots_unwind; i++) PopTemp();
+        for (int i = nretslots_norm; i < nretslots_unwind_max; i++)
+            PopTemp();
         auto loc = Pos();
         auto tstackbackup = tstack;
         EmitOp(IL_RETURNANY);
-        Emit(nretslots_unwind);
         Emit(nretslots_norm);
         for (auto &tse : reverse(temptypestack)) {
             GenPop(tse);
@@ -429,8 +432,8 @@ struct CodeGen  {
             EmitOp(IL_CALL, inw, outw);
             Emit(sf.subbytecodestart);
             GenFixup(&sf);
-            if (sf.returned_thru_to) {
-                GenUnwind(sf, *sf.returned_thru_to, outw);
+            if (sf.returned_thru_to_max >= 0) {
+                GenUnwind(sf, sf.returned_thru_to_max, outw);
             }
         } else {
             EmitOp(IL_DDCALL, inw, outw);
@@ -442,9 +445,9 @@ struct CodeGen  {
             assert(IsUDT(dispatch_type->t));
             auto &de = dispatch_type->udt->dispatch[call.vtable_idx];
             assert(de.is_dispatch_root && !de.returntype.Null() && de.subudts_size);
-            if (de.returned_thru_to) {
+            if (de.returned_thru_to_max >= 0) {
                 // This works because all overloads of a DD sit under a single Function.
-                GenUnwind(sf, *de.returned_thru_to, outw);
+                GenUnwind(sf, de.returned_thru_to_max, outw);
             }
         }
         auto nretvals = sf.returntype->NumValues();
@@ -489,7 +492,7 @@ struct CodeGen  {
             if (typelt.type->t == V_STRUCT_R) {
                 // TODO: alternatively emit a single op with a list or bitmask? see EmitBitMaskForRefStuct
                 for (int j = typelt.type->udt->numslots - 1; j >= 0; j--) {
-                    EmitOp(IsRefNil(FindSlot(*typelt.type->udt, j)->resolvedtype->t) ? IL_POPREF
+                    EmitOp(IsRefNil(FindSlot(*typelt.type->udt, j)->resolvedtype()->t) ? IL_POPREF
                                                                                      : IL_POP);
                 }
             } else {
@@ -554,7 +557,7 @@ struct CodeGen  {
     int ComputeBitMask(const UDT &udt, const Node *errloc) {
         int bits = 0;
         for (int j = 0; j < udt.numslots; j++) {
-            if (IsRefNil(FindSlot(udt, j)->resolvedtype->t)) {
+            if (IsRefNil(FindSlot(udt, j)->resolvedtype()->t)) {
                 if (j > 31)
                     parser.ErrorAt(errloc, "internal error: struct with too many reference fields");
                 bits |= 1 << j;
@@ -634,7 +637,7 @@ struct CodeGen  {
             TakeTemp(take_temp + 1, true);
             EmitOp(IL_LVAL_FLD);
             Emit(field.slot);
-            GenLvalRet(field.resolvedtype);
+            GenLvalRet(field.resolvedtype());
         } else if (auto indexing = Is<Indexing>(lval)) {
             Gen(indexing->object, 1);
             Gen(indexing->index, 1);
@@ -954,7 +957,7 @@ void Dot::Generate(CodeGen &cg, size_t retval) const {
     assert(idx >= 0);
     auto &field = stype->udt->fields[idx];
     assert(field.slot >= 0);
-    cg.GenPushField(retval, child, stype, field.resolvedtype, field.slot);
+    cg.GenPushField(retval, child, stype, field.resolvedtype(), field.slot);
 }
 
 void Indexing::Generate(CodeGen &cg, size_t retval) const {
@@ -1143,7 +1146,7 @@ void ToLifetime::Generate(CodeGen &cg, size_t retval) const {
                 if (type->t == V_STRUCT_R) {
                     // TODO: alternatively emit a single op with a list or bitmask? see EmitBitMaskForRefStuct
                     for (int j = 0; j < type->udt->numslots; j++) {
-                        if (IsRefNil(FindSlot(*type->udt, j)->resolvedtype->t)) {
+                        if (IsRefNil(FindSlot(*type->udt, j)->resolvedtype()->t)) {
                             cg.EmitOp(IL_INCREF);
                             cg.Emit(stack_offset + type->udt->numslots - 1 - j);
                         }
@@ -1158,7 +1161,7 @@ void ToLifetime::Generate(CodeGen &cg, size_t retval) const {
                 if (type->t == V_STRUCT_R) {
                     // TODO: alternatively emit a single op with a list or bitmask? see EmitBitMaskForRefStuct
                     for (int j = 0; j < type->udt->numslots; j++) {
-                        if (IsRefNil(FindSlot(*type->udt, j)->resolvedtype->t))
+                        if (IsRefNil(FindSlot(*type->udt, j)->resolvedtype()->t))
                             cg.EmitKeep(stack_offset + j, 0);
                     }
                 } else {
@@ -1706,7 +1709,7 @@ void IsType::Generate(CodeGen &cg, size_t retval) const {
     if (retval) {
         cg.TakeTemp(1, false);
         cg.EmitOp(IL_ISTYPE);
-        cg.Emit(cg.GetTypeTableOffset(resolvedtype));
+        cg.Emit(cg.GetTypeTableOffset(gr.resolvedtype()));
     }
 }
 
@@ -1749,15 +1752,23 @@ void Return::Generate(CodeGen &cg, size_t retval) const {
     // of the functions in between here and the function returned to.
     // Actually, doesn't work with DDCALL and RETURN_THRU.
     // FIXME: shouldn't need any type here if V_VOID, but nretvals is at least 1 ?
-    cg.EmitOp(IL_RETURN, nretslots);
-    cg.Emit(sf->parent->idx);
-    cg.Emit(nretslots);
+    if (sf == cg.cursf && sf->returned_thru_to_max < 0) {
+        cg.EmitOp(IL_RETURNLOCAL, nretslots);
+        cg.Emit(nretslots);
+    } else {
+        // This is for both if the return itself is non-local, or if the destination has
+        // an unwind check, could potentially split those up further.
+        cg.EmitOp(IL_RETURNNONLOCAL, nretslots);
+        cg.Emit(nretslots);
+        cg.Emit(sf->parent->idx);
+    }
+
     cg.temptypestack = typestackbackup;
     cg.tstack = tstackbackup;
     // We can promise to be providing whatever retvals the caller wants.
     for (size_t i = 0; i < retval; i++) {
         cg.rettypes.push_back({ type_undefined, LT_ANY });
-        cg.PushTemp(IL_RETURN);  // FIXME: is this necessary? do more generally?
+        cg.PushTemp(IL_RETURNLOCAL);  // FIXME: is this necessary? do more generally?
     }
 }
 

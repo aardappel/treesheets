@@ -45,14 +45,22 @@ namespace geom {
 #define DOVECF(I, F) { T _ = I; DOVEC(_ = F); return _; }
 #define DOVECB(I, F) { bool _ = I; DOVEC(_ = F); return _; }
 
+
+template<typename T> void default_debug_value(T &a) {
+    a = (T)(0xABADCAFEDEADBEEF >> ((8 - sizeof(T)) * 8));
+}
 union int2float { int i; float f; };
+template<> inline void default_debug_value<float>(float &a) {
+    int2float nan;
+    nan.i = 0x7Fc00000;
+    a = nan.f;
+}
 union int2float64 { int64_t i; double f; };
-inline void default_debug_value(float   &a) { int2float nan; nan.i = 0x7F800001; a = nan.f; }
-inline void default_debug_value(double  &a) { int2float nan; nan.i = 0x7F800001; a = nan.f; }
-inline void default_debug_value(int64_t &a) { a = 0x1BADCAFEABADD00D; }
-inline void default_debug_value(int32_t &a) { a = 0x1BADCAFE; }
-inline void default_debug_value(uint16_t&a) { a = 0x1BAD; }
-inline void default_debug_value(uint8_t &a) { a = 0x1B; }
+template<> inline void default_debug_value<double>(double &a) {
+    int2float64 nan;
+    nan.i = 0x7ff8000000000000;
+    a = nan.f;
+}
 
 template<typename T, int C, int R> class matrix;
 
@@ -111,25 +119,25 @@ template<typename T, int N> struct vec : basevec<T, N> {
     }
 
     vec(T _x, T _y, T _z, T _w) {
-        assert(N == 4);
+        static_assert(N == 4);
         c[0] = _x;
         c[1] = _y;
         c[2] = _z;
         c[3] = _w;
     }
     vec(T _x, T _y, T _z) {
-        assert(N == 3);
+        static_assert(N == 3);
         c[0] = _x;
         c[1] = _y;
         c[2] = _z;
     }
     vec(T _x, T _y) {
-        assert(N == 2);
+        static_assert(N == 2);
         c[0] = _x;
         c[1] = _y;
     }
     vec(const pair<T, T> &p) {
-        assert(N == 2);
+        static_assert(N == 2);
         c[0] = p.first;
         c[1] = p.second;
     }
@@ -139,11 +147,11 @@ template<typename T, int N> struct vec : basevec<T, N> {
     const T *end()   const { return c + N; }
 
     T operator[](int i) const {
-        assert(i < N);
+        assert((i >= 0) && (i < N));
         return c[i];
     }
     T &operator[](int i) {
-        assert(i < N);
+        assert((i >= 0) && (i < N));
         return c[i];
     }
 
@@ -154,9 +162,9 @@ template<typename T, int N> struct vec : basevec<T, N> {
         DOVEC(if constexpr (i < 2) c[i] = v.c[i]; else c[i] = e);
     }
 
-    vec<T,3>   xyz()     const { assert(N == 4); return vec<T,3>(c); }
-    vec<T,2>   xy()      const { assert(N >= 3); return vec<T,2>(c); }
-    pair<T, T> to_pair() const { assert(N == 2); return { c[0], c[1] }; }
+    vec<T,3>   xyz()     const { static_assert(N == 4); return vec<T,3>(c); }
+    vec<T,2>   xy()      const { static_assert(N >= 3); return vec<T,2>(c); }
+    pair<T, T> to_pair() const { static_assert(N == 2); return { c[0], c[1] }; }
 
     vec operator+(const vec &v) const { DOVECR(c[i] + v.c[i]); }
     vec operator-(const vec &v) const { DOVECR(c[i] - v.c[i]); }
@@ -242,6 +250,65 @@ template<typename T, int N> struct vec : basevec<T, N> {
     template<typename T2, int C, int R> friend class matrix;
 };
 
+template<typename T, int N> struct vec_iterator {
+    vec<T, N> min;
+    vec<T, N> max;
+    vec<T, N> value;
+
+    vec_iterator(vec<T, N> min, vec<T, N> max) : min(min), max(max), value(min) {}
+    vec_iterator(vec<T, N> min, vec<T, N> max, vec<T, N> value)
+        : min(min), max(max), value(value) {}
+
+    vec<T, N> &operator*() {
+        return value;
+    }
+    vec<T, N> *operator->() {
+        return &value;
+    }
+
+    vec_iterator &operator++() {
+        for (int i = 0; i < N; ++i) {
+            auto &d = value[i];
+            d++;
+            if (d < max[i]) return *this;
+            d = min[i];
+        }
+        return *this;
+    }
+    vec_iterator &operator--() {
+        for (int i = 0; i < N; ++i) {
+            auto &d = value[i];
+            d--;
+            if (d >= min[i]) return *this;
+            d = max[i] - 1;
+        }
+        return *this;
+    }
+    vec_iterator operator++(int) {
+        auto tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+    vec_iterator operator--(int) {
+        auto tmp = *this;
+        --(*this);
+        return tmp;
+    }
+
+    vec_iterator begin() {
+        return vec_iterator(min, max, min);
+    }
+    vec_iterator end() {
+        return vec_iterator(min, max, max - vec<T, N>(1));
+    }
+
+    friend bool operator==(const vec_iterator &a, const vec_iterator &b) {
+        return a.value == b.value;
+    };
+    friend bool operator!=(const vec_iterator &a, const vec_iterator &b) {
+        return a.value != b.value;
+    };
+};
 
 template<typename T> inline T mix(T a, T b, float f) { return (T)(a * (1 - f) + b * f); }
 
@@ -267,6 +334,11 @@ template<typename T> T ipow(T base, T exp) {
 
 template<typename T> int ffloor(T f) { int i = (int)f; return i - (f < i); }
 template<typename T> int fceil(T f) { int i = (int)f; return i + (f > i); }
+
+template<typename T> bool in_range(T x, T range, T bias = 0) {
+    return x >= bias && x < bias + range;
+}
+
 
 template<typename T> int signum(T val) {
     return (T(0) < val) - (val < T(0));
@@ -349,6 +421,11 @@ template<typename T, int N> inline vec<T, N> clamp(const vec<T, N> &v, T lo, T h
     DOVECR(clamp(v.c[i], lo, hi));
 }
 
+template<typename T, int N> inline bool in_range(const vec<T, N> &v, const vec<T, N> &range,
+                                                   const vec<T, N> &bias = vec<T, N>(0)) {
+    DOVECB(true, _ && v[i] >= bias.c[i] && v[i] < (bias.c[i] + range.c[i]));
+}
+
 template<typename T, int N, typename R> inline vec<float, N> rndunitvec(RandomNumberGenerator<R> &r) {
     DOVECR(r.rnd_float());
 }
@@ -383,6 +460,8 @@ typedef vec<iint, 3> iint3;
 typedef vec<iint, 4> iint4;
 
 typedef vec<uint8_t, 4> byte4;
+
+typedef vec<size_t, 2> size_t2;
 
 const float4 float4_0 = float4(0.0f);
 const float4 float4_1 = float4(1.0f);
@@ -520,13 +599,13 @@ template<typename T, int C, int R> class matrix {
                 m[x].c[y] = *mat_data++;
     }
 
-    matrix(V x, V y, V z, V w) { assert(C == 4); m[0] = x; m[1] = y; m[2] = z; m[3] = w; }
-    matrix(V x, V y, V z)      { assert(C == 3); m[0] = x; m[1] = y; m[2] = z; }
-    matrix(V x, V y)           { assert(C == 2); m[0] = x; m[1] = y; }
+    matrix(V x, V y, V z, V w) { static_assert(C == 4); m[0] = x; m[1] = y; m[2] = z; m[3] = w; }
+    matrix(V x, V y, V z)      { static_assert(C == 3); m[0] = x; m[1] = y; m[2] = z; }
+    matrix(V x, V y)           { static_assert(C == 2); m[0] = x; m[1] = y; }
 
     matrix(float a, const float3 &v) {
-        assert(C >= 3);
-        assert(R >= 3);
+        static_assert(C >= 3);
+        static_assert(R >= 3);
 
         *this = matrix(1);
 
@@ -972,7 +1051,7 @@ inline float2 ray_bb_intersect(const float3 &bbmin, const float3 &bbmax,
     return float2(tmin, tmax);
 }
 
-// Call this on the result of ray_bb_intersect() if it isn't known wether there is an intersection.
+// Call this on the result of ray_bb_intersect() if it isn't known whether there is an intersection.
 inline bool does_intersect(const float2 &minmax) {
     return minmax.y >= std::max(minmax.x, 0.0f);
 }

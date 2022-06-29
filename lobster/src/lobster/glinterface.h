@@ -29,10 +29,17 @@ enum Primitive { PRIM_TRIS, PRIM_FAN, PRIM_LOOP, PRIM_POINT };
 struct Texture {
     int id = 0;
     int3 size { 0 };
+    int elemsize = sizeof(byte4);
 
     Texture() = default;
-    Texture(int _id, const int2 &_size) : id(_id), size(int3(_size, 0)) {}
-    Texture(int _id, const int3 &_size) : id(_id), size(_size) {}
+    Texture(int _id, const int2 &_size, int es)
+        : id(_id), size(int3(_size, 0)), elemsize(es) {}
+    Texture(int _id, const int3 &_size, int es)
+        : id(_id), size(_size), elemsize(es) {}
+
+    size_t2 MemoryUsage() {
+        return { sizeof(Texture), size_t(max(size, int3_1).volume() * elemsize) };
+    }
 };
 
 struct Shader {
@@ -82,6 +89,10 @@ struct Surface : Textured {
 
     void Render(Shader *sh);
     void WritePLY(string &s);
+
+    size_t2 MemoryUsage() {
+        return { sizeof(Surface) + textures.size() * sizeof(Texture), numidx * sizeof(int) };
+    }
 };
 
 struct BasicVert {   // common generic format: "PNTC"
@@ -125,6 +136,12 @@ class Geometry  {
     void RenderSetup();
     void BindAsSSBO(Shader *sh, string_view name);
     bool WritePLY(string &s, size_t nindices);
+
+    size_t2 MemoryUsage() {
+        auto gpu = vertsize1 * nverts;
+        if (vbo2) gpu += vertsize2 * nverts;
+        return { sizeof(Geometry), gpu };
+    }
 };
 
 struct Mesh {
@@ -142,6 +159,13 @@ struct Mesh {
 
     void Render(Shader *sh);
     bool SaveAsPLY(string_view filename);
+
+    size_t2 MemoryUsage() {
+        auto usage = size_t2(sizeof(Mesh) + numframes * numbones * sizeof(float3x4), 0);
+        usage += geom->MemoryUsage();
+        for (auto s : surfs) usage += s->MemoryUsage();
+        return usage;
+    }
 };
 
 struct Light {
@@ -158,8 +182,8 @@ extern void LogGLError(const char *file, int line, const char *call);
 extern void SetScissorRect(int2 topleft, int2 size, pair<int2,int2>& prev);
 
 extern void Set2DMode(const int2 &ssize, bool lh, bool depthtest = false);
-extern void Set3DMode(float fovy, float ratio, float znear, float zfar);
-extern void Set3DOrtho(const float3 &center, const float3 &extends);
+extern void Set3DMode(float fovy, int2 fbo, int2 fbs, float znear, float zfar);
+extern void Set3DOrtho(const int2 &ssize, const float3 &center, const float3 &extends);
 extern bool Is2DMode();
 extern bool IsSRGBMode();
 extern void ClearFrameBuffer(const float3 &c);

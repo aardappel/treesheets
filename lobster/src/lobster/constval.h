@@ -117,13 +117,13 @@ ValueType IsType::ConstVal(TypeChecker *tc, Value &val) const {
     // If the exp type is compile-time equal, this is compile-time true,
     // except for class types that have sub-classes, since we don't know if
     // the runtime type would be equal.
-    if ((child->exptype->Equal(*resolvedtype) &&
-         (resolvedtype->t != V_CLASS || !resolvedtype->udt->has_subclasses)) ||
-        resolvedtype->t == V_ANY) {
+    if ((child->exptype->Equal(*gr.resolvedtype()) &&
+         (gr.resolvedtype()->t != V_CLASS || !gr.resolved_udt()->has_subclasses)) ||
+        gr.resolvedtype()->t == V_ANY) {
         val = Value(true);
         return V_INT;
     }
-    if (!tc->ConvertsTo(resolvedtype, child->exptype, CF_UNIFICATION)) {
+    if (!tc->ConvertsTo(gr.resolvedtype(), child->exptype, CF_UNIFICATION)) {
         val = Value(false);
         return V_INT;
     }

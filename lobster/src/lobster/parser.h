@@ -68,7 +68,7 @@ struct Parser {
         auto &ov = f.overloads[0];
         sf->SetParent(f, ov.sf);
         f.anonymous = true;
-        lex.Include("stdtype.lobster");
+        lex.Include("stdtype.lobster", false);
         ov.gbody = new Block(lex);
         ParseStatements(ov.gbody, T_ENDOFFILE);
         ImplicitReturn(ov);
@@ -342,7 +342,7 @@ struct Parser {
                     for (auto &g : udt->generics)
                         if (g.tv->name == id)
                             Error("re-declaration of generic type");
-                    udt->generics.push_back({ st.NewGeneric(id), { nullptr }, nullptr });
+                    udt->generics.push_back({ { nullptr }, st.NewGeneric(id) });
                     if (IsNext(T_GT)) break;
                     Expect(T_COMMA);
                 }
@@ -351,8 +351,8 @@ struct Parser {
             if (lex.token == T_IDENT) {
                 auto sup = parse_sup();
                 if (sup->predeclaration) sup->predeclaration = false;  // Empty base class.
-                udt->resolved_superclass = sup;
-                udt->given_superclass = st.NewSpecUDT(sup);
+                udt->superclass.set_resolvedtype(&sup->thistype);
+                udt->superclass.giventype = { st.NewSpecUDT(sup) };
                 udt->generics.insert(udt->generics.begin(), sup->generics.begin(),
                                      sup->generics.end());
                 for (auto &fld : sup->fields) {
@@ -361,9 +361,9 @@ struct Parser {
                 parse_specializers();
                 if (udt->FullyBound()) {
                     for (auto &g : udt->generics) {
-                        udt->given_superclass->spec_udt->specializers.push_back(&*g.giventype.utr);
+                        udt->superclass.giventype.utr->spec_udt->specializers.push_back(&*g.giventype.utr);
                     }
-                    udt->given_superclass->spec_udt->is_generic = true;
+                    udt->superclass.giventype.utr->spec_udt->is_generic = true;
                 }
             }
             if (IsNext(T_INDENT)) {
@@ -409,7 +409,7 @@ struct Parser {
             // is_generic is still false, or it is already true if theres other generics.
             if (st.IsGeneric(type)) udt->is_generic = true;
             udt->unspecialized.specializers.push_back(&*type.utr);
-            g.resolvedtype = type.utr;
+            g.set_resolvedtype(type.utr);
         }
         udt->unspecialized.is_generic = udt->is_generic;
         parent_list->Add(new UDTRef(lex, udt));
@@ -460,7 +460,7 @@ struct Parser {
             for (auto &btv : sf->generics) if (btv.tv->name == nn) goto again;
         }
         auto ng = st.NewGeneric(nn);
-        sf->generics.push_back({ ng, { nullptr } });
+        sf->generics.push_back({ { nullptr }, ng });
         sf->args.back().type = &ng->thistype;
         sf->giventypes.push_back({ &ng->thistype });
     }
@@ -488,7 +488,7 @@ struct Parser {
                     auto ng = st.NewGeneric(ExpectId());
                     for (auto &btv : sf->generics) if (btv.tv->name == ng->name)
                         Error("re-definition of generic ", Q(ng->name));
-                    sf->generics.push_back({ ng, { nullptr } });
+                    sf->generics.push_back({ { nullptr }, ng });
                     if (IsNext(T_GT)) break;
                     Expect(T_COMMA);
                 }
@@ -648,7 +648,19 @@ struct Parser {
             case T_INTTYPE:   dest = type_int;        lex.Next(); break;
             case T_FLOATTYPE: dest = type_float;      lex.Next(); break;
             case T_STRTYPE:   dest = type_string;     lex.Next(); break;
-            case T_RESOURCE:  dest = type_resource;   lex.Next(); break;
+            case T_RESOURCE: {
+                lex.Next();
+                Expect(T_LT);
+                auto id = ExpectId();
+                auto rt = LookupResourceType(id);
+                if (!rt) Error("unknown resource type ", Q(id));
+                // This may be the end of the line, so make sure Lex doesn't see it
+                // as a GT op.
+                lex.OverrideCont(false);
+                Expect(T_GT);
+                dest = &rt->thistype;
+                break;
+            }
             case T_IDENT: {
                 auto f = st.FindFunction(lex.sattr);
                 if (f && f->istype) {
@@ -919,7 +931,7 @@ struct Parser {
             }
         }();
         // FIXME: move more of the code below into the type checker, and generalize the remaining
-        // code to be as little dependent as possible on wether nf or f are available.
+        // code to be as little dependent as possible on whether nf or f are available.
         // It should only parse args and construct a GenericCall.
         auto wse = st.GetWithStackBack();
         // We give precedence to builtins, unless
@@ -1091,9 +1103,7 @@ struct Parser {
                 return n;
             case T_IS: {
                 lex.Next();
-                auto is = new IsType(lex, n);
-                is->giventype = ParseType(false);
-                is->resolvedtype = is->giventype.utr;
+                auto is = new IsType(lex, n, ParseType(false));
                 return is;
             }
             default:
@@ -1209,7 +1219,7 @@ struct Parser {
                                            nullptr);
                 auto call = Is<GenericCall>(*n);
                 if (!call || !call->sf || !call->sf->method_of ||
-                    call->sf->method_of->given_superclass.Null()) {
+                    call->sf->method_of->superclass.giventype.utr.Null()) {
                     Error("super must be used on a method of a subclass");
                 }
                 call->super = true;

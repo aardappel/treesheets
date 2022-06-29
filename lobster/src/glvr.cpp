@@ -181,7 +181,7 @@ void VREye(int eye, float znear, float zfar) {
     SwitchToFrameBuffer(mstex[eye], GetScreenSize(), true, mstf, retex[eye]);
     auto proj =
         FromOpenVR(vrsys->GetProjectionMatrix((vr::EVREye)eye, znear, zfar));
-    Set3DMode(80, 1, znear, zfar);
+    Set3DMode(80, int2_0, GetScreenSize(), znear, zfar);
     view2clip = proj;  // Override the projection set by Set3DMode
     auto eye2head = FromOpenVR(vrsys->GetEyeToHeadTransform((vr::EVREye)eye));
     auto vrview = eye2head;
@@ -342,7 +342,7 @@ nfr("vr_motion_controller", "n", "I", "",
         otransforms.append_object2view(mcd ? mcd->mat : float4x4_1);
     });
 
-nfr("vr_create_motion_controller_mesh", "n", "I", "R?",
+nfr("vr_create_motion_controller_mesh", "n", "I", "R:mesh?",
     "returns the mesh for motion controller n, or nil if not available",
     [](StackPtr &, VM &vm, Value &mc) {
         auto mcd = GetMC(mc);
@@ -350,6 +350,8 @@ nfr("vr_create_motion_controller_mesh", "n", "I", "R?",
         return mcd ? Value(vm.NewResource(VRCreateMesh(mcd->device), &mesh_type)) : NilVal();
     });
 
+// TODO: make it return an "up" value much like gl_button, since this doesn't represent
+// down+up in the same frame.
 nfr("vr_motion_controller_button", "n,button", "IS", "I",
     "returns the button state for motion controller n."
     " isdown: >= 1, wentdown: == 1, wentup: == 0, isup: <= 0."
@@ -358,10 +360,10 @@ nfr("vr_motion_controller_button", "n,button", "IS", "I",
         #ifdef PLATFORM_VR
             auto mcd = GetMC(mc);
             auto mask = ButtonMaskFromId(GetButtonId(vm, button));
-            if (!mcd) return Value(TimeBool8().Step());
+            if (!mcd) return Value(-1);
             auto masknow = mcd->state.ulButtonPressed & mask;
             auto maskbef = mcd->laststate.ulButtonPressed & mask;
-            return Value(TimeBool8(masknow != 0, maskbef != 0).Step());
+            return Value(int(masknow != 0) * 2 - int(!(maskbef != 0)));
         #else
             return Value(0);
         #endif

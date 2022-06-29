@@ -192,7 +192,7 @@ def return_after(v, f):
     f()
     return v
 
-def do(f): f()  // Useful to create a scope where there is none.
+def do(f): return f()  // Useful to create a scope where there is none.
 
 def for_bias (num, bias,  fun): for num: fun(_ + bias)
 def for_scale(num, scale, fun): for num: fun(_ * scale)

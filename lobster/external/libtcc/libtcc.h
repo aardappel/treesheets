@@ -13,6 +13,8 @@ struct TCCState;
 
 typedef struct TCCState TCCState;
 
+typedef void (*TCCErrorFunc)(void *opaque, const char *msg);
+
 /* create a new TCC compilation context */
 LIBTCCAPI TCCState *tcc_new(void);
 
@@ -23,8 +25,13 @@ LIBTCCAPI void tcc_delete(TCCState *s);
 LIBTCCAPI void tcc_set_lib_path(TCCState *s, const char *path);
 
 /* set error/warning display callback */
-LIBTCCAPI void tcc_set_error_func(TCCState *s, void *error_opaque,
-    void (*error_func)(void *opaque, const char *msg));
+LIBTCCAPI void tcc_set_error_func(TCCState *s, void *error_opaque, TCCErrorFunc error_func);
+
+/* return error/warning callback */
+LIBTCCAPI TCCErrorFunc tcc_get_error_func(TCCState *s);
+
+/* return error/warning callback opaque pointer */
+LIBTCCAPI void *tcc_get_error_opaque(TCCState *s);
 
 /* set options as from command line (multiple supported) */
 LIBTCCAPI void tcc_set_options(TCCState *s, const char *str);
@@ -38,7 +45,7 @@ LIBTCCAPI int tcc_add_include_path(TCCState *s, const char *pathname);
 /* add in system include path */
 LIBTCCAPI int tcc_add_sysinclude_path(TCCState *s, const char *pathname);
 
-/* define preprocessor symbol 'sym'. Can put optional value */
+/* define preprocessor symbol 'sym'. value can be NULL, sym can be "sym=val" */
 LIBTCCAPI void tcc_define_symbol(TCCState *s, const char *sym, const char *value);
 
 /* undefine preprocess symbol 'sym' */
@@ -92,6 +99,10 @@ LIBTCCAPI int tcc_relocate(TCCState *s1, void *ptr);
 
 /* return symbol value or NULL if not found */
 LIBTCCAPI void *tcc_get_symbol(TCCState *s, const char *name);
+
+/* return symbol value or NULL if not found */
+LIBTCCAPI void tcc_list_symbols(TCCState *s, void *ctx,
+    void (*symbol_cb)(void *ctx, const char *name, const void *val));
 
 #ifdef __cplusplus
 }

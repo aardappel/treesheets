@@ -173,11 +173,21 @@ VM_INLINE void U_DDCALL(VM &vm, StackPtr sp, int vtable_idx, int stack_idx) {
 VM_INLINE void U_FUNSTART(VM &, StackPtr, const int *) {
 }
 
-VM_INLINE void U_RETURN(VM &vm, StackPtr, int df, int /*nrv*/) {
-    vm.ret_unwind_to = df;  // FIXME: most returns don't need this.
+VM_INLINE void U_RETURNLOCAL(VM &vm, StackPtr, int /*nrv*/) {
+    #ifndef NDEBUG
+        vm.ret_unwind_to = -9;
+        vm.ret_slots = -9;
+    #else
+        (void)vm;
+    #endif
 }
 
-VM_INLINE void U_RETURNANY(VM &, StackPtr, int /*nretslots_unwind*/, int /*nretslots_norm*/) {
+VM_INLINE void U_RETURNNONLOCAL(VM &vm, StackPtr, int nrv, int df) {
+    vm.ret_unwind_to = df;
+    vm.ret_slots = nrv;
+}
+
+VM_INLINE void U_RETURNANY(VM &, StackPtr, int /*nretslots_norm*/) {
 }
 
 VM_INLINE void U_SAVERETS(VM &, StackPtr) {
@@ -692,6 +702,7 @@ VM_INLINE bool U_JUMPNOFAILR(VM &, StackPtr sp) {
 }
 
 VM_INLINE bool U_JUMPIFUNWOUND(VM &vm, StackPtr, int df) {
+    assert(vm.ret_unwind_to >= 0);
     return vm.ret_unwind_to != df;
 }
 

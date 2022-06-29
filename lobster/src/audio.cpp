@@ -129,4 +129,15 @@ nfr("sound_volume", "channel,volume", "IF", "",
         return NilVal();
     });
 
+nfr("sound_position", "channel,vecfromlistener,listenerfwd,attnscale", "IF}:3F}:3F", "",
+    "sets the channel volume and panning according to sound in a game world relative to"
+    " the listener.",
+    [](StackPtr &sp, VM &) {
+        auto scale = Pop(sp).fltval();
+        auto fwd = PopVec<float3>(sp);
+        auto src = PopVec<float3>(sp);
+        auto ch_idx = Pop(sp).intval();
+        if (ch_idx > 0)
+            SDLSetPosition(ch_idx, src, fwd, scale);
+    });
 }

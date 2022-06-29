@@ -194,8 +194,8 @@ string RunLobster(std::string_view filename, std::string_view code, bool dump_bu
         string bytecode;
         Compile(natreg, filename, code, bytecode, nullptr, nullptr,
                 false, RUNTIME_ASSERT);
-        auto ret = RunTCC(natreg, bytecode, filename, nullptr, {},
-                          TraceMode::OFF, false, err);
+        auto ret = RunTCC(natreg, bytecode, filename, nullptr, {}, TraceMode::OFF, false, err,
+                          RUNTIME_ASSERT_PLUS, true);
     } catch (string &s) {
         err = s;
     }
@@ -205,3 +205,12 @@ string RunLobster(std::string_view filename, std::string_view code, bool dump_bu
 void TSDumpBuiltinDoc() { DumpBuiltinDoc(natreg); }
 
 }
+
+namespace lobster {
+
+FileLoader EnginePreInit(NativeRegistry &) { return DefaultLoadFile; }
+
+}  // namespace lobster
+
+extern "C" void GLFrame(StackPtr, VM &) {}
+

@@ -67,13 +67,26 @@ struct PhysicsObject {
         if (!body->GetFixtureList()) world->DestroyBody(body);
         if (particle_contacts) delete particle_contacts;
     }
-    float2 Pos() { return B2ToFloat2(fixture->GetBody()->GetPosition()); }
+
+    float2 Pos() {
+        return B2ToFloat2(fixture->GetBody()->GetPosition());
+    }
+
+    size_t2 MemoryUsage() {
+        // FIXME: this is very inexact.
+        return { sizeof(PhysicsObject) + sizeof(b2Fixture), 0 };
+    }
 };
 
-static ResourceType physics_type = { "physical", [](void *v) { delete ((PhysicsObject *)v); } };
+static ResourceType physics_type = {
+    "fixture",
+    [](void *v) { delete ((PhysicsObject *)v); },
+    nullptr,
+    [](void *m) { return ((PhysicsObject *)m)->MemoryUsage(); }
+};
 
-PhysicsObject &GetObject(VM &vm, const Value &res) {
-    return *GetResourceDec<PhysicsObject *>(vm, res, &physics_type);
+PhysicsObject &GetObject(const Value &res) {
+    return *GetResourceDec<PhysicsObject *>(res, &physics_type);
 }
 
 void CleanPhysics() {
@@ -104,9 +117,9 @@ void CheckParticles(float size = 0.1f) {
     }
 }
 
-b2Body &GetBody(StackPtr &, VM &vm, Value &id, float2 wpos) {
+b2Body &GetBody(StackPtr &, VM &, Value &id, float2 wpos) {
     CheckPhysics();
-    b2Body *body = id.True() ? GetObject(vm, id).fixture->GetBody() : nullptr;
+    b2Body *body = id.True() ? GetObject(id).fixture->GetBody() : nullptr;
     if (!body) {
         b2BodyDef bd;
         bd.type = b2_staticBody;
@@ -127,9 +140,9 @@ b2Vec2 OptionalOffset(StackPtr &sp) {
     return Top(sp).True() ? PopB2(sp) : (Pop(sp), b2Vec2_zero);
 }
 
-Renderable &GetRenderable(VM &vm, const Value &id) {
+Renderable &GetRenderable(VM &, const Value &id) {
     CheckPhysics();
-    return id.True() ? GetObject(vm, id).r : *particlematerial;
+    return id.True() ? GetObject(id).r : *particlematerial;
 }
 
 extern int GetSampler(VM &vm, Value &i);  // from graphics
@@ -142,7 +155,7 @@ nfr("ph_initialize", "gravityvector", "F}:2", "",
         InitPhysics(PopVec<float2>(sp));
     });
 
-nfr("ph_create_box", "position,size,offset,rotation,attachto", "F}:2F}:2F}:2?F?R?", "R",
+nfr("ph_create_box", "position,size,offset,rotation,attachto", "F}:2F}:2F}:2?F?R:fixture?", "R:fixture",
     "creates a physical box shape in the world at position, with size the half-extends around"
     " the center, offset from the center if needed, at a particular rotation (in degrees)."
     " attachto is a previous physical object to attach this one to, to become a combined"
@@ -159,7 +172,7 @@ nfr("ph_create_box", "position,size,offset,rotation,attachto", "F}:2F}:2F}:2?F?R
         Push(sp,  CreateFixture(vm, body, shape));
     });
 
-nfr("ph_create_circle", "position,radius,offset,attachto", "F}:2FF}:2?R?", "R",
+nfr("ph_create_circle", "position,radius,offset,attachto", "F}:2FF}:2?R:fixture?", "R:fixture",
     "creates a physical circle shape in the world at position, with the given radius, offset"
     " from the center if needed. attachto is a previous physical object to attach this one to,"
     " to become a combined physical body.",
@@ -175,7 +188,7 @@ nfr("ph_create_circle", "position,radius,offset,attachto", "F}:2FF}:2?R?", "R",
         Push(sp,  CreateFixture(vm, body, shape));
     });
 
-nfr("ph_create_polygon", "position,vertices,attachto", "F}:2F}:2]R?", "R",
+nfr("ph_create_polygon", "position,vertices,attachto", "F}:2F}:2]R:fixture?", "R:fixture",
     "creates a polygon circle shape in the world at position, with the given list of vertices."
     " attachto is a previous physical object to attach this one to, to become a combined"
     " physical body.",
@@ -195,38 +208,38 @@ nfr("ph_create_polygon", "position,vertices,attachto", "F}:2F}:2]R?", "R",
         Push(sp,  CreateFixture(vm, body, shape));
     });
 
-nfr("ph_dynamic", "shape,on", "RB", "",
+nfr("ph_dynamic", "shape,on", "R:fixtureB", "",
     "makes a shape dynamic (on = true) or not.",
-    [](StackPtr &, VM &vm, Value &fixture_id, Value &on) {
+    [](StackPtr &, VM &, Value &fixture_id, Value &on) {
         CheckPhysics();
-        GetObject(vm, fixture_id)
+        GetObject(fixture_id)
             .fixture->GetBody()
             ->SetType(on.ival() ? b2_dynamicBody : b2_staticBody);
         return NilVal();
     });
 
-nfr("ph_set_linear_velocity", "id,velocity", "RF}:2", "",
+nfr("ph_set_linear_velocity", "id,velocity", "R:fixtureF}:2", "",
     "sets the linear velocity of a shape's center of mass.",
-    [](StackPtr &sp, VM &vm) {
+    [](StackPtr &sp, VM &) {
         CheckPhysics();
         auto vel = PopB2(sp);
         auto id = Pop(sp);
-        GetObject(vm, id)
+        GetObject(id)
             .fixture->GetBody()
             ->SetLinearVelocity(vel);
     });
 
-nfr("ph_apply_linear_impulse_to_center", "id,impulse", "RF}:2", "",
+nfr("ph_apply_linear_impulse_to_center", "id,impulse", "R:fixtureF}:2", "",
     "applies a linear impulse to a shape at its center of mass.",
-    [](StackPtr &sp, VM &vm) {
+    [](StackPtr &sp, VM &) {
         CheckPhysics();
         auto imp = PopB2(sp);
         auto id = Pop(sp);
-        auto body = GetObject(vm, id).fixture->GetBody();
+        auto body = GetObject(id).fixture->GetBody();
         body->ApplyLinearImpulse(imp, body->GetWorldCenter(), true);
     });
 
-nfr("ph_set_color", "id,color", "R?F}:4", "",
+nfr("ph_set_color", "id,color", "R:fixture?F}:4", "",
     "sets a shape (or nil for particles) to be rendered with a particular color.",
     [](StackPtr &sp, VM &vm) {
         auto c = PopVec<float4>(sp);
@@ -235,7 +248,7 @@ nfr("ph_set_color", "id,color", "R?F}:4", "",
         r.color = c;
     });
 
-nfr("ph_set_shader", "id,shadername", "R?S", "",
+nfr("ph_set_shader", "id,shadername", "R:fixture?S", "",
     "sets a shape (or nil for particles) to be rendered with a particular shader.",
     [](StackPtr &, VM &vm, Value &fixture_id, Value &shader) {
         auto &r = GetRenderable(vm, fixture_id);
@@ -244,28 +257,28 @@ nfr("ph_set_shader", "id,shadername", "R?S", "",
         return NilVal();
     });
 
-nfr("ph_set_texture", "id,tex,texunit", "R?RI?", "",
+nfr("ph_set_texture", "id,tex,texunit", "R:fixture?R:textureI?", "",
     "sets a shape (or nil for particles) to be rendered with a particular texture"
     " (assigned to a texture unit, default 0).",
     [](StackPtr &, VM &vm, Value &fixture_id, Value &tex, Value &tex_unit) {
         auto &r = GetRenderable(vm, fixture_id);
-        extern Texture GetTexture(VM &vm, const Value &res);
-        r.Get(GetSampler(vm, tex_unit)) = GetTexture(vm, tex);
+        extern Texture GetTexture(const Value &res);
+        r.Get(GetSampler(vm, tex_unit)) = GetTexture(tex);
         return NilVal();
     });
 
-nfr("ph_get_position", "id", "R", "F}:2",
+nfr("ph_get_position", "id", "R:fixture", "F}:2",
     "gets a shape's position.",
-    [](StackPtr &sp, VM &vm) {
+    [](StackPtr &sp, VM &) {
         auto id = Pop(sp);
-        PushVec(sp, GetObject(vm, id).Pos());
+        PushVec(sp, GetObject(id).Pos());
     });
 
-nfr("ph_get_mass", "id", "R", "F",
+nfr("ph_get_mass", "id", "R:fixture", "F",
     "gets a shape's mass.",
-    [](StackPtr &sp, VM &vm) {
+    [](StackPtr &sp, VM &) {
         auto id = Pop(sp);
-        Push(sp, GetObject(vm, id).fixture->GetBody()->GetMass());
+        Push(sp, GetObject(id).fixture->GetBody()->GetMass());
     });
 
 nfr("ph_create_particle", "position,velocity,color,flags", "F}:2F}:2F}:4I?", "I",
@@ -328,12 +341,12 @@ nfr("ph_step", "seconds,viter,piter", "FII", "",
         return NilVal();
     });
 
-nfr("ph_particle_contacts", "id", "R", "I]",
+nfr("ph_particle_contacts", "id", "R:fixture", "I]",
     "gets the particle indices that are currently contacting a giving physics object."
     " Call after step(). Indices may be invalid after next step().",
     [](StackPtr &, VM &vm, Value &id) {
         CheckPhysics();
-        auto &po = GetObject(vm, id);
+        auto &po = GetObject(id);
         if (!po.particle_contacts) po.particle_contacts = new vector<int>();
         auto numelems = (int)po.particle_contacts->size();
         auto v = vm.NewVec(numelems, numelems, TYPE_ELEM_VECTOR_OF_INT);

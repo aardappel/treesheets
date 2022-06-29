@@ -12,14 +12,14 @@ Features:
   -O0'.
 
 - UNLIMITED! Any C dynamic library can be used directly. TCC is
-  heading torward full ISOC99 compliance. TCC can of course compile
+  heading toward full ISOC99 compliance. TCC can of course compile
   itself.
 
 - SAFE! tcc includes an optional memory and bound checker. Bound
   checked code can be mixed freely with standard code.
 
 - Compile and execute C source directly. No linking or assembly
-  necessary. Full C preprocessor included. 
+  necessary. Full C preprocessor included.
 
 - C script supported : just add '#!/usr/local/bin/tcc -run' at the first
   line of your C source, and execute it directly from the command
@@ -28,14 +28,15 @@ Features:
 Documentation:
 -------------
 
-1) Installation on a i386/x86_64/arm Linux/OSX/FreeBSD host
+1) Installation on a i386/x86_64/arm/aarch64/riscv64
+   Linux/macOS/FreeBSD/NetBSD/OpenBSD hosts.
 
    ./configure
    make
    make test
    make install
 
-   Notes: For OSX and FreeBSD, gmake should be used instead of make.
+   Notes: For FreeBSD, NetBSD and OpenBSD, gmake should be used instead of make.
    For Windows read tcc-win32.txt.
 
 makeinfo must be installed to compile the doc.  By default, tcc is

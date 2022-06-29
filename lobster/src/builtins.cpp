@@ -326,7 +326,7 @@ nfr("slice", "xs,start,size", "A]*II", "A]1",
     });
 
 nfr("any", "xs", "A]*", "B",
-    "returns wether any elements of the vector are true values",
+    "returns whether any elements of the vector are true values",
     [](StackPtr &, VM &, Value &v) {
         Value r(false);
         iint l = v.vval()->len;
@@ -337,7 +337,7 @@ nfr("any", "xs", "A]*", "B",
     });
 
 nfr("any", "xs", "I}", "B",
-    "returns wether any elements of the numeric struct are true values",
+    "returns whether any elements of the numeric struct are true values",
     [](StackPtr &sp, VM &) {
         auto r = false;
         auto l = Pop(sp).ival();
@@ -348,7 +348,7 @@ nfr("any", "xs", "I}", "B",
     });
 
 nfr("all", "xs", "A]*", "B",
-    "returns wether all elements of the vector are true values",
+    "returns whether all elements of the vector are true values",
     [](StackPtr &, VM &, Value &v) {
         Value r(true);
         for (iint i = 0; i < v.vval()->len; i++) {
@@ -358,7 +358,7 @@ nfr("all", "xs", "A]*", "B",
     });
 
 nfr("all", "xs", "I}", "B",
-    "returns wether all elements of the numeric struct are true values",
+    "returns whether all elements of the numeric struct are true values",
     [](StackPtr &sp, VM &) {
         auto r = true;
         auto l = Pop(sp).ival();
@@ -746,6 +746,20 @@ nfr("magnitude", "v", "F}", "F",
         Push(sp, a.length());
     });
 
+nfr("magnitude_squared", "v", "F}", "F",
+    "the geometric length of a vector squared",
+    [](StackPtr &sp, VM &) {
+        auto a = DangleVec<double>(sp);
+        Push(sp, a.length_squared());
+    });
+
+nfr("magnitude_squared", "v", "I}", "I",
+    "the geometric length of a vector squared",
+    [](StackPtr &sp, VM &) {
+        auto a = DangleVec<iint>(sp);
+        Push(sp, a.length_squared());
+    });
+
 nfr("manhattan", "v", "I}", "I",
     "the manhattan distance of a vector",
     [](StackPtr &sp, VM &) {
@@ -759,6 +773,18 @@ nfr("cross", "a,b", "F}:3F}:3", "F}:3",
         auto b = PopVec<double3>(sp);
         auto a = PopVec<double3>(sp);
         PushVec(sp, cross(a, b));
+    });
+
+nfr("volume", "v", "F}", "F", "the volume of the area spanned by the vector",
+    [](StackPtr &sp, VM &) {
+        auto a = DangleVec<double>(sp);
+        Push(sp, a.volume());
+    });
+
+nfr("volume", "v", "I}", "I", "the volume of the area spanned by the vector",
+    [](StackPtr &sp, VM &) {
+        auto a = DangleVec<iint>(sp);
+        Push(sp, a.volume());
     });
 
 nfr("rnd", "max", "I", "I",
@@ -1186,13 +1212,13 @@ nfr("hash", "v", "I}", "I",
     "hashes a int vector into a positive int",
     [](StackPtr &sp, VM &vm) {
         auto a = DangleVec<iint>(sp);
-        Push(sp, positive_bits(a.hash(vm, V_INT)));
+        Push(sp, positive_bits(a.Hash(vm, V_INT)));
     });
 nfr("hash", "v", "F}", "I",
     "hashes a float vector into a positive int",
     [](StackPtr &sp, VM &vm) {
         auto a = DangleVec<double>(sp);
-        Push(sp, positive_bits(a.hash(vm, V_FLOAT)));
+        Push(sp, positive_bits(a.Hash(vm, V_FLOAT)));
     });
 
 nfr("program_name", "", "", "S",
@@ -1251,10 +1277,26 @@ nfr("date_time_string", "utc", "B?", "S",
     });
 
 nfr("assert", "condition", "A*", "Ab1",
-    "halts the program with an assertion failure if passed false. returns its input",
+    "halts the program with an assertion failure if passed false. returns its input."
+    " runtime errors like this will contain a stack trace if --runtime-verbose is on.",
     [](StackPtr &, VM &vm, Value &c) {
         if (c.False()) vm.BuiltinError("assertion failed");
         return c;
+    });
+
+nfr("get_stack_trace", "", "", "S",
+    "gets a stack trace of the current location of the program (needs --runtime-verbose)"
+    " without actually stopping the program.",
+    [](StackPtr &, VM &vm) {
+        string sd;
+        vm.DumpStackTrace(sd);
+        return Value(vm.NewString(sd));
+    });
+
+nfr("get_memory_usage", "n", "I", "S",
+    "gets a text showing the top n object types that are using the most memory.",
+    [](StackPtr &, VM &vm, Value &n) {
+        return Value(vm.NewString(vm.MemoryUsage(n.intval())));
     });
 
 nfr("pass", "", "", "",
@@ -1299,7 +1341,7 @@ nfr("thread_information", "", "", "II",
     });
 
 nfr("is_worker_thread", "", "", "B",
-    "wether the current thread is a worker thread",
+    "whether the current thread is a worker thread",
     [](StackPtr &, VM &vm) {
         return Value(vm.is_worker);
     });
@@ -1321,7 +1363,7 @@ nfr("stop_worker_threads", "", "", "",
     });
 
 nfr("workers_alive", "", "", "B",
-    "wether workers should continue doing work. returns false after"
+    "whether workers should continue doing work. returns false after"
             " stop_worker_threads() has been called.",
     [](StackPtr &, VM &vm) {
         return Value(vm.tuple_space && vm.tuple_space->alive);

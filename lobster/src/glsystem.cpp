@@ -74,7 +74,7 @@ void ClearFrameBuffer(const float3 &c) {
 }
 
 void SetScissorRect(int2 topleft, int2 size, pair<int2, int2>& prev) {
-    int2 scrnsz = GetScreenSize();
+    int2 scrnsz = GetFrameBufferSize(GetScreenSize());
     GLboolean enabled;
 
     GL_CALL(glGetBooleanv(GL_SCISSOR_TEST, &enabled));
@@ -98,15 +98,17 @@ void Set2DMode(const int2 &ssize, bool lh, bool depthtest) {
     GL_CALL(glDisable(GL_CULL_FACE));
     if (depthtest) GL_CALL(glEnable(GL_DEPTH_TEST));
     else GL_CALL(glDisable(GL_DEPTH_TEST));
+    glViewport(0, 0, ssize.x, ssize.y);
     otransforms = objecttransforms();
     auto y = (float)ssize.y;
     view2clip = ortho(0, (float)ssize.x, lh ? y : 0, lh ? 0 : y, 1, -1);
     mode2d = true;
 }
 
-void Set3DOrtho(const float3 &center, const float3 &extends) {
+void Set3DOrtho(const int2 &ssize, const float3 &center, const float3 &extends) {
     GL_CALL(glEnable(GL_DEPTH_TEST));
     GL_CALL(glEnable(GL_CULL_FACE));
+    glViewport(0, 0, ssize.x, ssize.y);
     otransforms = objecttransforms();
     auto p = center + extends;
     auto m = center - extends;
@@ -114,10 +116,12 @@ void Set3DOrtho(const float3 &center, const float3 &extends) {
     mode2d = false;
 }
 
-void Set3DMode(float fovy, float ratio, float znear, float zfar) {
+void Set3DMode(float fovy, int2 fbo, int2 fbs, float znear, float zfar) {
     GL_CALL(glEnable(GL_DEPTH_TEST));
     GL_CALL(glEnable(GL_CULL_FACE));
+    glViewport(fbo.x, fbo.y, fbs.x, fbs.y);
     otransforms = objecttransforms();
+    float ratio = fbs.x / (float)fbs.y;
     view2clip = perspective(fovy, ratio, znear, zfar, 1);
     mode2d = false;
 }
@@ -151,10 +155,14 @@ void OpenGLFrameEnd() {
 #ifdef PLATFORM_WINNIX
 void DebugCallBack(GLenum, GLenum, GLuint, GLenum severity, GLsizei length,
                    const GLchar *message, const void *) {
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return;  // Spam.
     auto ll = OUTPUT_INFO;
     if (severity == GL_DEBUG_SEVERITY_HIGH) ll = OUTPUT_ERROR;
     else if (severity == GL_DEBUG_SEVERITY_MEDIUM) ll = OUTPUT_WARN;
     if (ll < min_output_level) return;
+    // These messages are useless too, as they're hard to correlate to what needs to be
+    // reordered in Lobster code to make them go away.
+    if (strstr(message, "being recompiled based on GL state")) return;
     LogOutput(ll, "GLDEBUG: ", string_view(message, length));
 }
 #endif

@@ -28,21 +28,29 @@ float3 lasthitsize = float3_0;
 float3 lastframehitsize = float3_0;
 bool graphics_initialized = false;
 
-ResourceType mesh_type = { "mesh", [](void *m) {
-    delete (Mesh *)m;
-} };
+ResourceType mesh_type = {
+    "mesh",
+    [](void *m) { delete (Mesh *)m; },
+    nullptr,
+    [](void *m) { return ((Mesh *)m)->MemoryUsage(); }
+};
 
-ResourceType texture_type = { "texture", [](void *t) {
-    auto tex = (Texture *)t;
-    DeleteTexture(*tex);
-    delete tex;
-} };
+ResourceType texture_type = {
+    "texture",
+    [](void *t) {
+        auto tex = (Texture *)t;
+        DeleteTexture(*tex);
+        delete tex;
+    },
+    nullptr,
+    [](void *t) { return ((Texture *)t)->MemoryUsage(); }
+};
 
-Mesh &GetMesh(VM &vm, Value &res) {
-    return *GetResourceDec<Mesh *>(vm, res, &mesh_type);
+Mesh &GetMesh(Value &res) {
+    return *GetResourceDec<Mesh *>(res, &mesh_type);
 }
-Texture GetTexture(VM &vm, const Value &res) {
-    auto tex = GetResourceDec<Texture *>(vm, res, &texture_type);
+Texture GetTexture(const Value &res) {
+    auto tex = GetResourceDec<Texture *>(res, &texture_type);
     return tex ? *tex : Texture();
 }
 
@@ -241,34 +249,38 @@ nfr("gl_visible", "", "", "B",
 
 nfr("gl_cursor", "on", "B", "B",
     "default the cursor is visible, turn off for implementing FPS like control schemes. return"
-    " wether it's on.",
+    " whether it's on.",
     [](StackPtr &, VM &vm, Value &on) {
         TestGL(vm);
         return Value(SDLCursor(on.ival() != 0));
     });
 
 nfr("gl_grab", "on", "B", "B",
-    "grabs the mouse when the window is active. return wether it's on.",
+    "grabs the mouse when the window is active. return whether it's on.",
     [](StackPtr &, VM &vm, Value &on) {
         TestGL(vm);
         return Value(SDLGrab(on.ival() != 0));
     });
 
-nfr("gl_button", "name", "S", "I",
-    "returns the state of a key/mousebutton/finger."
-    " isdown: >= 1, wentdown: == 1, wentup: == 0, isup: <= 0."
-    " (pass a string like mouse1/mouse2/mouse3/escape/space/up/down/a/b/f1/joy1 etc."
-    " mouse11 and on are additional fingers)",
-    [](StackPtr &, VM &, Value &name) {
+nfr("gl_button", "name", "S", "II",
+    "returns the number of frames a key/mousebutton/finger has been down."
+    " went down this frame: == 1, is already down: >= 1, not down: == 0."
+    " the second return value is the same, but for the up direction:"
+    " went up this frame: == 1, is already up: >= 1, not up: == 0."
+    " it is possible both happen inside one frame, i.e. down==1 and up==1! "
+    " for name, pass a string like mouse1/mouse2/mouse3/escape/space/up/down/a/b/f1/joy1 etc."
+    " mouse11 and on are additional fingers",
+    [](StackPtr &sp, VM &, Value &name) {
         auto ks = GetKS(name.sval()->strv());
-        return Value(ks.Step());
+        Push(sp, ks.first);
+        return Value(ks.second);
     });
 
 nfr("gl_key_repeat", "name", "S", "B",
     "returns if a key was a key repeat (went down, or is down with a key repeat)",
     [](StackPtr &, VM &, Value &name) {
         auto ks = GetKS(name.sval()->strv());
-        return Value(ks.Step() == 1 || (ks.Step() > 1 && KeyRepeat(name.sval()->strv())));
+        return Value(ks.first == 1 || (ks.first > 1 && KeyRepeat(name.sval()->strv())));
     });
 
 nfr("gl_start_text_input", "pos,size", "I}:2I}:2", "",
@@ -307,7 +319,7 @@ nfr("gl_end_text_input", "", "", "",
     });
 
 nfr("gl_touchscreen", "", "", "B",
-    "wether a you\'re getting input from a touch screen (as opposed to mouse & keyboard)",
+    "whether a you\'re getting input from a touch screen (as opposed to mouse & keyboard)",
     [](StackPtr &, VM &) {
         #ifdef PLATFORM_TOUCH
             return Value(true);
@@ -556,7 +568,7 @@ nfr("gl_line_mode", "on", "I", "I",
     });
 
 nfr("gl_hit", "vec,i", "F}I", "B",
-    "wether the mouse/finger is inside of the rectangle specified in terms of the current"
+    "whether the mouse/finger is inside of the rectangle specified in terms of the current"
     " transform (for touch screens only if the corresponding gl_isdown is true). Only true if"
     " the last rectangle for which gl_hit was true last frame is of the same size as this one"
     " (allows you to safely test in most cases of overlapping rendering)",
@@ -637,14 +649,21 @@ nfr("gl_line", "start,end,thickness", "F}F}1F", "",
         else geomcache->RenderLine3D(currentshader, v1, v2, float3_0, thickness);
     });
 
-nfr("gl_perspective", "fovy,znear,zfar", "FFF", "",
+nfr("gl_perspective", "fovy,znear,zfar,frame_buffer_size,frame_buffer_offset", "FFFI}:2?I}:2?", "",
     "changes from 2D mode (default) to 3D right handed perspective mode with vertical fov (try"
     " 60), far plane (furthest you want to be able to render, try 1000) and near plane (try"
-    " 1)",
-    [](StackPtr &, VM &, Value &fovy, Value &znear, Value &zfar) {
-        Set3DMode(fovy.fltval() * RAD, GetScreenSize().x / (float)GetScreenSize().y, znear.fltval(),
-                  zfar.fltval());
-        return NilVal();
+    " 1). Optionally specify a framebuffer size to override the current gl_framebuffer_size",
+    [](StackPtr &sp, VM &) {
+        int2 fbo = Top(sp).True()
+            ? PopVec<int2>(sp)
+            : (Pop(sp), int2_0);
+        int2 fbs = Top(sp).True()
+            ? PopVec<int2>(sp)
+            : (Pop(sp), GetFrameBufferSize(GetScreenSize()) - fbo);
+        auto zfar = Pop(sp).fltval();
+        auto znear = Pop(sp).fltval();
+        auto fovy = Pop(sp).fltval();
+        Set3DMode(fovy * RAD, fbo, fbs, znear, zfar);
     });
 
 nfr("gl_ortho", "rh,depth", "I?I?", "",
@@ -663,10 +682,10 @@ nfr("gl_ortho3d", "center,extends", "F}:3F}:3", "",
     [](StackPtr &sp, VM &) {
         auto extends = PopVec<float3>(sp);
         auto center = PopVec<float3>(sp);
-        Set3DOrtho(center, extends);
+        Set3DOrtho(GetFrameBufferSize(GetScreenSize()), center, extends);
     });
 
-nfr("gl_new_poly", "positions", "F}]", "R",
+nfr("gl_new_poly", "positions", "F}]", "R:mesh",
     "creates a mesh out of a loop of points, much like gl_polygon."
     " gl_line_mode determines how this gets drawn (fan or loop)."
     " automatically generates texcoords and normals."
@@ -676,7 +695,7 @@ nfr("gl_new_poly", "positions", "F}]", "R",
         return Value(vm.NewResource(m, &mesh_type));
     });
 
-nfr("gl_new_mesh", "format,positions,colors,normals,texcoords1,texcoords2,indices", "SF}:3]F}:4]F}:3]F}:2]F}:2]I]?", "R",
+nfr("gl_new_mesh", "format,positions,colors,normals,texcoords1,texcoords2,indices", "SF}:3]F}:4]F}:3]F}:2]F}:2]I]?", "R:mesh",
     "creates a new vertex buffer and returns an integer id (1..) for it."
     " format must be made up of characters P (position), C (color), T (texcoord), N (normal)."
     " indices may be []. positions is obligatory."
@@ -758,7 +777,7 @@ nfr("gl_new_mesh", "format,positions,colors,normals,texcoords1,texcoords2,indice
         return Value(vm.NewResource(m, &mesh_type));
     });
 
-nfr("gl_new_mesh_iqm", "filename", "S", "R?",
+nfr("gl_new_mesh_iqm", "filename", "S", "R:mesh?",
     "load a .iqm file into a mesh, returns mesh or nil on failure to load.",
     [](StackPtr &, VM &vm, Value &fn) {
         TestGL(vm);
@@ -766,52 +785,52 @@ nfr("gl_new_mesh_iqm", "filename", "S", "R?",
         return m ? Value(vm.NewResource(m, &mesh_type)) : NilVal();
     });
 
-nfr("gl_mesh_parts", "m", "R", "S]",
+nfr("gl_mesh_parts", "m", "R:mesh", "S]",
     "returns an array of names of all parts of mesh m (names may be empty)",
     [](StackPtr &, VM &vm, Value &i) {
-        auto &m = GetMesh(vm, i);
+        auto &m = GetMesh(i);
         auto v = (LVector *)vm.NewVec(0, (int)m.surfs.size(), TYPE_ELEM_VECTOR_OF_STRING);
         for (auto s : m.surfs) v->Push(vm, Value(vm.NewString(s->name)));
         return Value(v);
     });
 
-nfr("gl_mesh_size", "m", "R", "I",
+nfr("gl_mesh_size", "m", "R:mesh", "I",
     "returns the number of verts in this mesh",
-    [](StackPtr &, VM &vm, Value &i) {
-        auto &m = GetMesh(vm, i);
+    [](StackPtr &, VM &, Value &i) {
+        auto &m = GetMesh(i);
         return Value((int)m.geom->nverts);
     });
 
-nfr("gl_animate_mesh", "m,frame", "RF", "",
+nfr("gl_animate_mesh", "m,frame", "R:meshF", "",
     "set the frame for animated mesh m",
-    [](StackPtr &, VM &vm, Value &i, Value &f) {
-        GetMesh(vm, i).curanim = f.fltval();
+    [](StackPtr &, VM &, Value &i, Value &f) {
+        GetMesh(i).curanim = f.fltval();
         return NilVal();
     });
 
-nfr("gl_render_mesh", "m", "R", "",
+nfr("gl_render_mesh", "m", "R:mesh", "",
     "renders the specified mesh",
     [](StackPtr &, VM &vm, Value &i) {
         TestGL(vm);
-        GetMesh(vm, i).Render(currentshader);
+        GetMesh(i).Render(currentshader);
         return NilVal();
     });
 
-nfr("gl_save_mesh", "m,name", "RS", "B",
+nfr("gl_save_mesh", "m,name", "R:meshS", "B",
     "saves the specified mesh to a file in the PLY format. useful if the mesh was generated"
     " procedurally. returns false if the file could not be written",
     [](StackPtr &, VM &vm, Value &i, Value &name) {
         TestGL(vm);
-        bool ok = GetMesh(vm, i).SaveAsPLY(name.sval()->strv());
+        bool ok = GetMesh(i).SaveAsPLY(name.sval()->strv());
         return Value(ok);
     });
 
-nfr("gl_mesh_pointsize", "m,pointsize", "RF", "",
+nfr("gl_mesh_pointsize", "m,pointsize", "R:meshF", "",
     "sets the pointsize for this mesh. "
     "the mesh must have been created with indices = nil for point rendering to be used. "
     "you also want to use a shader that works with points, such as color_attr_particle.",
-    [](StackPtr &, VM &vm, Value &i, Value &ps) {
-        auto &m = GetMesh(vm, i);
+    [](StackPtr &, VM &, Value &i, Value &ps) {
+        auto &m = GetMesh(i);
         m.pointsize = ps.fltval();
         return NilVal();
     });
@@ -917,12 +936,12 @@ nfr("gl_delete_buffer_object", "id", "I", "",
         return NilVal();
     });
 
-nfr("gl_bind_mesh_to_compute", "mesh,name", "R?S", "",
+nfr("gl_bind_mesh_to_compute", "mesh,name", "R:mesh?S", "",
     "Bind the vertex data of a mesh to a SSBO binding of a compute shader. Pass a nil mesh to"
     " unbind.",
     [](StackPtr &, VM &vm, Value &mesh, Value &name) {
         TestGL(vm);
-        if (mesh.True()) GetMesh(vm, mesh).geom->BindAsSSBO(currentshader, name.sval()->strv());
+        if (mesh.True()) GetMesh(mesh).geom->BindAsSSBO(currentshader, name.sval()->strv());
         else UniformBufferObject(currentshader, nullptr, 0, -1, name.sval()->strv(), true, 0);
         return NilVal();
     });
@@ -956,7 +975,7 @@ nfr("gl_blend", "on", "I", "I",
         Push(sp, old);
     });
 
-nfr("gl_load_texture", "name,textureformat", "SI?", "R?",
+nfr("gl_load_texture", "name,textureformat", "SI?", "R:texture?",
     "returns texture if succesfully loaded from file name, otherwise nil."
     " see texture.lobster for texture format. If textureformat includes cubemap,"
     " will load 6 images with \"_ft\" etc inserted before the \".\" in the filename."
@@ -968,34 +987,34 @@ nfr("gl_load_texture", "name,textureformat", "SI?", "R?",
         return tex.id ? vm.NewResource(new Texture(tex), &texture_type) : NilVal();
     });
 
-nfr("gl_set_primitive_texture", "i,tex,textureformat", "IRI?", "I",
+nfr("gl_set_primitive_texture", "i,tex,textureformat", "IR:textureI?", "I",
     "sets texture unit i to texture (for use with rect/circle/polygon/line)",
     [](StackPtr &, VM &vm, Value &i, Value &id, Value &tf) {
         TestGL(vm);
-        return Value(SetTexture(GetSampler(vm, i), GetTexture(vm, id), tf.intval()));
+        return Value(SetTexture(GetSampler(vm, i), GetTexture(id), tf.intval()));
     });
 
-nfr("gl_set_mesh_texture", "mesh,part,i,texture", "RIIR", "",
+nfr("gl_set_mesh_texture", "mesh,part,i,texture", "R:meshIIR:texture", "",
     "sets texture unit i to texture for a mesh and part (0 if not a multi-part mesh)",
     [](StackPtr &, VM &vm, Value &mid, Value &part, Value &i, Value &id) {
-        auto &m = GetMesh(vm, mid);
+        auto &m = GetMesh(mid);
         if (part.ival() < 0 || part.ival() >= (int)m.surfs.size())
             vm.BuiltinError("setmeshtexture: illegal part index");
-        m.surfs[part.ival()]->Get(GetSampler(vm, i)) = GetTexture(vm, id);
+        m.surfs[part.ival()]->Get(GetSampler(vm, i)) = GetTexture(id);
         return NilVal();
     });
 
-nfr("gl_set_image_texture", "i,tex,textureformat", "IRI", "",
+nfr("gl_set_image_texture", "i,tex,textureformat", "IR:textureI", "",
     "sets image unit i to texture (for use with compute). texture format must be the same"
     " as what you specified in gl_load_texture / gl_create_texture,"
     " with optionally writeonly/readwrite flags.",
     [](StackPtr &, VM &vm, Value &i, Value &id, Value &tf) {
         TestGL(vm);
-        SetImageTexture(GetSampler(vm, i), GetTexture(vm, id), tf.intval());
+        SetImageTexture(GetSampler(vm, i), GetTexture(id), tf.intval());
         return NilVal();
     });
 
-nfr("gl_create_texture", "matrix,textureformat", "F}:4]]I?", "R",
+nfr("gl_create_texture", "matrix,textureformat", "F}:4]]I?", "R:texture",
     "creates a texture from a 2d array of color vectors."
     " see texture.lobster for texture format",
     [](StackPtr &, VM &vm, Value &matv, Value &tf) {
@@ -1020,7 +1039,7 @@ nfr("gl_create_texture", "matrix,textureformat", "F}:4]]I?", "R",
         return Value(vm.NewResource(new Texture(tex), &texture_type));
     });
 
-nfr("gl_create_blank_texture", "size,color,textureformat", "I}:2F}:4I?", "R",
+nfr("gl_create_blank_texture", "size,color,textureformat", "I}:2F}:4I?", "R:texture",
     "creates a blank texture (for use as frame buffer or with compute shaders)."
     " see texture.lobster for texture format",
     [](StackPtr &sp, VM &vm) {
@@ -1032,19 +1051,19 @@ nfr("gl_create_blank_texture", "size,color,textureformat", "I}:2F}:4I?", "R",
         Push(sp,  vm.NewResource(new Texture(tex), &texture_type));
     });
 
-nfr("gl_texture_size", "tex", "R", "I}:2",
+nfr("gl_texture_size", "tex", "R:texture", "I}:2",
     "returns the size of a texture",
     [](StackPtr &sp, VM &vm) {
         TestGL(vm);
         auto v = Pop(sp);
-        PushVec(sp, GetTexture(vm, v).size.xy());
+        PushVec(sp, GetTexture(v).size.xy());
     });
 
-nfr("gl_read_texture", "tex", "R", "S?",
+nfr("gl_read_texture", "tex", "R:texture", "S?",
     "read back RGBA texture data into a string or nil on failure",
     [](StackPtr &, VM &vm, Value &t) {
         TestGL(vm);
-        auto tex = GetTexture(vm, t);
+        auto tex = GetTexture(t);
         auto numpixels = tex.size.x * tex.size.y;
         if (!numpixels) return NilVal();
         auto buf = ReadTexture(tex);
@@ -1054,7 +1073,8 @@ nfr("gl_read_texture", "tex", "R", "S?",
         return Value(s);
     });
 
-nfr("gl_switch_to_framebuffer", "tex,hasdepth,textureformat,resolvetex,depthtex", "R?I?I?R?R?", "B",
+nfr("gl_switch_to_framebuffer", "tex,hasdepth,textureformat,resolvetex,depthtex",
+    "R:texture?I?I?R:texture?R:texture?", "B",
     "switches to a new framebuffer, that renders into the given texture."
     " also allocates a depth buffer for it if depth is true."
     " pass the textureformat that was used for this texture."
@@ -1065,10 +1085,17 @@ nfr("gl_switch_to_framebuffer", "tex,hasdepth,textureformat,resolvetex,depthtex"
     [](StackPtr &, VM &vm, Value &t, Value &depth, Value &tf, Value &retex,
                                        Value &depthtex) {
         TestGL(vm);
-        auto tex = GetTexture(vm, t);
+        auto tex = GetTexture(t);
         return Value(SwitchToFrameBuffer(tex, GetScreenSize(),
-                                         depth.True(), tf.intval(), GetTexture(vm, retex),
-                                         GetTexture(vm, depthtex)));
+                                         depth.True(), tf.intval(), GetTexture(retex),
+                                         GetTexture(depthtex)));
+    });
+
+nfr("gl_framebuffer_size", "", "", "I}:2",
+    "a vector representing the size (in pixels) of the framebuffer, according to the last call"
+    " to gl_switch_to_framebuffer, or same as gl_window_size otherwise",
+    [](StackPtr &sp, VM &) {
+        PushVec(sp, GetFrameBufferSize(GetScreenSize()));
     });
 
 nfr("gl_light", "pos,params", "F}:3F}:2", "",

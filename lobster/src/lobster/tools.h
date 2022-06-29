@@ -271,6 +271,7 @@ class PCG32 {
 };
 
 // https://thompsonsed.co.uk/random-number-generators-for-c-performance-tested
+// See also SplitMix64Hash below.
 class SplitMix64 {
     uint64_t x = 0; /* The state can be seeded with any value. */
 
@@ -345,12 +346,12 @@ template<typename T> struct RandomNumberGenerator {
     }
 
     int64_t rnd_int64(int64_t max) {
-        assert(sizeof(typename T::rnd_type) == 8);
+        static_assert(sizeof(typename T::rnd_type) == 8);
         return (int64_t)(rnd.Random() % max);
     }
 
     double rnd_double() {
-        assert(sizeof(typename T::rnd_type) == 8);
+        static_assert(sizeof(typename T::rnd_type) == 8);
         return (rnd.Random() >> 11) * 0x1.0p-53;
     }
 
@@ -768,6 +769,7 @@ range_wrapper<T> range(const T &end) {
 */
 
 // From: http://reedbeta.com/blog/python-like-enumerate-in-cpp17/
+// FIXME: doesn't work with T* types.
 
 template <typename T,
           typename TIter = decltype(std::begin(std::declval<T>())),
@@ -806,77 +808,6 @@ protected:
     //virtual ~NonCopyable() {}
 };
 
-// This turns a sequence of booleans (the current value, and the values it had before) into a
-// single number:
-//   0: "became false": false, but it was true before.
-//   1: "became true": true, but it was false before.
-//  >1: "still true": true, and was already true. Number indicates how many times it has been true
-//      in sequence.
-//  <0: "still false": false, and false before it. Negative number indicates how many times it has
-//      been false.
-// >=1: "true": currently true, regardless of history.
-// <=0: "false": currently false, regardless of history.
-
-// This is useful for detecting state changes and acting on them, such as for input device buttons.
-
-// T must be a signed integer type. Bigger types means more history before it clamps.
-
-// This is nicer than a bitfield, because basic checks like "became true" are simpler, it encodes
-// the history in a more human readable way, and it can encode a way longer history in the same
-// bits.
-template<typename T> class TimeBool {
-    T step;
-
-    enum {
-        SIGN_BIT = 1 << ((sizeof(T) * 8) - 1),
-        HIGHEST_VALUE_BIT = SIGN_BIT >> 1
-    };
-
-    // This encodes 2 booleans into 1 number.
-    static T Step(bool current, bool before) {
-        return T(current) * 2 - T(!before);
-    }
-
-    TimeBool(T _step) : step(_step) {}
-
-    public:
-
-    TimeBool() : step(-HIGHEST_VALUE_BIT) {}
-    TimeBool(bool current, bool before) : step(Step(current, before)) {}
-
-    bool True() { return step >= 1; }
-    bool False() { return step <= 0; }
-    bool BecameTrue() { return step == 1; }
-    bool BecameFalse() { return step == 0; }
-    bool StillTrue() { return step > 1; }
-    bool StillFalse() { return step < 0; }
-
-    T Step() { return step; }
-
-    T Sign() { return True() * 2 - 1; }
-
-    // This makes one time step, retaining the current value.
-    // It increases the counter, i.e. 2 -> 3 or -1 -> -2, indicating the amount of steps it has
-    // been true. Only allows this to increase to the largest power of 2 that fits inside T, e.g.
-    // 64 and -64 for a char.
-    void Advance() {
-        // Increase away from 0 if highest 2 bits are equal.
-        if ((step & HIGHEST_VALUE_BIT) == (step & SIGN_BIT))
-            step += Sign();
-    }
-
-    // Sets new value, assumes its different from the one before (wipes history).
-    void Set(bool newcurrent) { step = Step(newcurrent, True()); }
-    void Update(bool newcurrent) { Advance(); Set(newcurrent); }
-
-    // Previous state.
-    // This gives accurate history for the "still true/false" values, but for "became true/false"
-    // it assumes the history is "still false/true" as opposed to "became false/true" (which is
-    // also possible). This is typically desirable, and usually the difference doesn't matter.
-    TimeBool Back() { return TimeBool(step - Sign() * (step & ~1 ? 1 : HIGHEST_VALUE_BIT)); }
-};
-
-typedef TimeBool<char> TimeBool8;
 
 inline uint32_t FNV1A32(string_view s) {
     uint32_t hash = 0x811C9DC5;
@@ -895,6 +826,16 @@ inline uint64_t FNV1A64(string_view s) {
     }
     return hash;
 }
+
+// https://nullprogram.com/blog/2018/07/31/
+// See also SplitMix64 RNG above.
+inline uint64_t SplitMix64Hash(uint64_t x) {
+    x = (x ^ (x >> 30)) * UINT64_C(0xBF58476D1CE4E5B9);
+    x = (x ^ (x >> 27)) * UINT64_C(0x94D049BB133111EB);
+    return x ^ (x >> 31);
+}
+
+
 
 // dynamic_cast succeeds on both the given type and any derived types, which is frequently
 // undesirable. "is" only succeeds on the exact type given, and is cheaper. It also defaults

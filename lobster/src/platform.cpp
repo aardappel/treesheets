@@ -53,7 +53,9 @@
     #include "lobster/sdlincludes.h"  // FIXME
 #endif
 
-#include "subprocess.h"
+#ifndef PLATFORM_ES3
+    #include "subprocess.h"
+#endif
 
 // Dirs to load files relative to, they typically contain, and will be searched in this order:
 // - The project specific files. This is where the bytecode file you're running or the main
@@ -419,11 +421,22 @@ bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest) {
 }
 
 bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest) {
+    // First check the pakfile.
+    for (auto [prfn, tup] : pakfile_registry) {
+        if (prfn.find(reldir) == 0) {
+            auto pos = reldir.size();
+            if (prfn.find_first_of("/\\", pos) == pos) pos++;  // Skip first separator if any.
+            if (prfn.find_first_of("/\\", pos) != string::npos) continue;  // Item in subdir.
+            dest.push_back({ prfn.substr(pos), get<2>(tup) });
+        }
+    }
+    // Even if we found things in pakfile, we scan filesystem additionally, since LoadFile
+    // supports loading from both in this order too.
     auto srfn = SanitizePath(reldir);
     for (auto &dir : data_dirs) {
         if (ScanDirAbs(dir + srfn, dest)) return true;
     }
-    return false;
+    return !dest.empty();  // If we found some in pak, missing filesystem dir is not a failure.
 }
 
 OutputType min_output_level = OUTPUT_WARN;
@@ -535,29 +548,36 @@ void SetConsole(bool on) {
 }
 
 iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out) {
-    struct subprocess_s subprocess;
-    int result = subprocess_create(cmdl, 0, &subprocess);
-    if (result) return -1;
-    if (stdins) {
-        FILE *p_stdin = subprocess_stdin(&subprocess);
-        fputs(stdins, p_stdin);
-        fclose(p_stdin);
-    }
-    int process_return;
-    result = subprocess_join(&subprocess, &process_return);
-    if (result) {
-        subprocess_destroy(&subprocess);
-        return -1;
-    }
-    auto readall = [&](FILE *f) {
-        for (;;) {
-            auto c = getc(f);
-            if (c < 0) break;
-            out.push_back((char)c);
+    #ifndef PLATFORM_ES3
+        struct subprocess_s subprocess;
+        int result = subprocess_create(cmdl, subprocess_option_inherit_environment, &subprocess);
+        if (result) return -1;
+        if (stdins) {
+            FILE *p_stdin = subprocess_stdin(&subprocess);
+            fputs(stdins, p_stdin);
+            fclose(p_stdin);
         }
-    };
-    readall(subprocess_stdout(&subprocess));
-    readall(subprocess_stderr(&subprocess));
-    subprocess_destroy(&subprocess);
-    return process_return;
+        int process_return;
+        result = subprocess_join(&subprocess, &process_return);
+        if (result) {
+            subprocess_destroy(&subprocess);
+            return -1;
+        }
+        auto readall = [&](FILE *f) {
+            for (;;) {
+                auto c = getc(f);
+                if (c < 0) break;
+                out.push_back((char)c);
+            }
+        };
+        readall(subprocess_stdout(&subprocess));
+        readall(subprocess_stderr(&subprocess));
+        subprocess_destroy(&subprocess);
+        return process_return;
+    #else
+        (void)cmdl;
+        (void)stdins;
+        (void)out;
+        return -1;
+    #endif
 }

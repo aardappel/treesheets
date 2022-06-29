@@ -25,7 +25,12 @@ struct Line {
 
     Line(int _line, int _fileidx) : line(_line), fileidx(_fileidx) {}
 
-    bool operator==(const Line &o) const { return line == o.line && fileidx == o.fileidx; }
+    bool operator==(const Line &o) const {
+        return line == o.line && fileidx == o.fileidx;
+    }
+    bool operator<(const Line &o) const {
+        return fileidx < o.fileidx || (fileidx == o.fileidx && line < o.line);
+    }
 };
 
 struct LoadedFile : Line {
@@ -54,6 +59,8 @@ struct LoadedFile : Line {
 
     vector<Tok> gentokens;
 
+    string filename;
+
     LoadedFile(string_view fn, vector<string> &fns, string_view stringsource)
         : Line(1, (int)fns.size()) {
         if (!stringsource.empty()) {
@@ -69,6 +76,7 @@ struct LoadedFile : Line {
         indentstack.push_back({ 0, false });
 
         fns.push_back(string(fn));
+        filename = fn;
     }
 };
 
@@ -93,7 +101,20 @@ struct Lex : LoadedFile {
         if (token == T_LINEFEED) Next();
     }
 
-    void Include(string_view _fn) {
+    void Include(string_view _fn, bool do_cycle_check = true) {
+        auto cycle_check = [&](const LoadedFile &pf) {
+            if (pf.filename == _fn) {
+                string err = "cyclic import: ";
+                for (auto &ef : parentfiles) append(err, ef.filename, " -> ");
+                append(err, filename, " -> ", _fn);
+                Error(err);
+            }
+        };
+        if (do_cycle_check) {
+            cycle_check(*this);
+            for (auto &pf : parentfiles)
+                cycle_check(pf);
+        }
         if (allfiles.find(_fn) != allfiles.end()) {
             return;
         }
@@ -630,7 +651,7 @@ struct Lex : LoadedFile {
             }
         }
         //LOG_DEBUG(err);
-        THROW_OR_ABORT(err);
+         THROW_OR_ABORT(err);
     }
 
     void Warn(string_view msg, const Line *ln = nullptr) {

@@ -19,8 +19,8 @@
 
 namespace lobster {
 
-extern string ToCPP(NativeRegistry &natreg, string &sd,
-                    string_view bytecode_buffer, bool cpp);
+extern string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bool cpp,
+                    int runtime_checks);
 
 extern bool RunC(const char *source,
                  const char *object_name /* save instead of run if non-null */,

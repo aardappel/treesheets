@@ -244,6 +244,28 @@ struct FlexBufferParser {
         }
     }
 
+    void PushDefault(const TypeInfo &ti, string_view fname) {
+        switch (ti.t) {
+            case V_INT:
+                stack.emplace_back(Value(0));
+                break;
+            case V_FLOAT:
+                stack.emplace_back(Value(0.0f));
+                break;
+            case V_NIL:
+                stack.emplace_back(NilVal());
+                break;
+            case V_STRUCT_S:
+            case V_STRUCT_R: {
+                auto &st = vm.GetTypeInfo(ti.SingleType());
+                for (int i = 0; i < ti.len; i++) PushDefault(st, fname);
+                break;
+            }
+            default:
+                Error("no default value exists for missing field " + fname);
+        }
+    }
+
     void ParseFactor(flexbuffers::Reference r, type_elem_t typeoff) {
         auto &ti = vm.GetTypeInfo(typeoff);
         auto vt = ti.t;
@@ -306,12 +328,7 @@ struct FlexBufferParser {
                     auto eti = ti.GetElemOrParent(NumElems());
                     auto e = m[fname.data()];
                     if (e.IsNull()) {
-                        switch (vm.GetTypeInfo(ti.elemtypes[NumElems()]).t) {
-                            case V_INT:   stack.emplace_back(Value(0)); break;
-                            case V_FLOAT: stack.emplace_back(Value(0.0f)); break;
-                            case V_NIL:   stack.emplace_back(NilVal()); break;
-                            default:      Error("no default value exists for missing field " + fname);
-                        }
+                        PushDefault(vm.GetTypeInfo(eti), fname);
                     } else {
                         ParseFactor(e, eti);
                     }

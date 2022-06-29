@@ -50,8 +50,8 @@ bool RunC(const char *source,
             "    jmp     *8(%rax)                                        \n";
         if (tcc_compile_string(state.get(), chkstk_src) < 0) return false;
         tcc_set_options(state.get(), "-xc");
-        tcc_add_symbol(state.get(), "memmove", (const void *)memmove);
     #endif
+    tcc_add_symbol(state.get(), "memmove", (const void *)memmove);
     tcc_set_options(state.get(), "-nostdlib -Wall");
     while (*imports) {
         auto name = (const char *)(*imports++);

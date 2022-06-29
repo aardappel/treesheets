@@ -520,6 +520,13 @@ void SDLSetVolume(int ch, float vol) {
     Mix_Volume(ch - 1, (int)(MIX_MAX_VOLUME * vol));
 }
 
+void SDLSetPosition(int ch, float3 vecfromlistener, float3 listenerfwd, float attnscale) {
+    float dist = length(vecfromlistener) / attnscale;
+    vecfromlistener = normalize(vecfromlistener);
+    float angle = atan2(vecfromlistener.y, vecfromlistener.x) - atan2(listenerfwd.y, listenerfwd.x);
+    Mix_SetPosition(ch - 1, int16_t(angle / RAD), uint8_t(1.0f + min(dist, 254.0f)));
+}
+
 // Implementation part of stb_vorbis.
 #undef STB_VORBIS_HEADER_ONLY
 #ifdef _MSC_VER

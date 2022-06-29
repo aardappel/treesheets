@@ -111,9 +111,67 @@ struct SharedField : Named {
     SharedField() : SharedField("", 0) {}
 };
 
-struct Field {
+inline string TypeName(TypeRef type, int flen = 0);
+bool EarlyResolve(const TypeRef type, TypeRef *out);
+
+struct GivenResolve {
     UnresolvedTypeRef giventype;
-    TypeRef resolvedtype;
+
+    private:
+    TypeRef resolvedtype_;
+    public:
+
+    bool was_resolved = false;
+
+    // Callers are cool with either resolved or unresolved.
+    TypeRef utype() const {
+        assert(!resolvedtype_.Null());
+        return resolvedtype_;
+    }
+
+    // Callers want resolved, if it is unresolved this will likely cause issues.
+    TypeRef resolvedtype() const {
+        // FIXME: turn this into just an assert once we're more confident this can't happen in the wild.
+        // or if it happens in reasonable cases that can't be fixed, make it a normal error.
+        if (!was_resolved)
+            THROW_OR_ABORT("internal error: unresolved type used: " + TypeName(resolvedtype_));
+        assert(was_resolved);
+        return utype();
+    }
+
+    bool resolved_null() const {
+        return resolvedtype_.Null();
+    }
+
+    void set_resolvedtype(TypeRef type) {
+        resolvedtype_ = type;
+        if (!type.Null()) was_resolved = true;
+    }
+
+    UDT *resolved_udt() const {
+        if (resolvedtype_.Null()) return nullptr;
+        assert(IsUDT(resolvedtype_->t));
+        return resolvedtype_->udt;
+    }
+
+    GivenResolve()
+        : giventype({ nullptr }),
+          resolvedtype_(nullptr) {}
+    GivenResolve(const GivenResolve &gr)
+        : giventype(gr.giventype),
+          resolvedtype_(gr.resolvedtype_),
+          was_resolved(gr.was_resolved) {}
+    GivenResolve(UnresolvedTypeRef utype)
+        : giventype(utype),
+          resolvedtype_(utype.utr),
+          was_resolved(EarlyResolve(resolvedtype_, &resolvedtype_)) {}
+    GivenResolve(UnresolvedTypeRef utype, TypeRef type)
+        : giventype(utype),
+          resolvedtype_(type),
+          was_resolved(EarlyResolve(resolvedtype_, &resolvedtype_)) {}
+};
+
+struct Field : GivenResolve {
     SharedField *id;
     Node *defaultval;
     int slot = -1;
@@ -122,7 +180,9 @@ struct Field {
 
     Field(SharedField *_id, UnresolvedTypeRef _type, Node *_defaultval, bool isprivate,
           const Line &defined_in)
-        : giventype(_type), resolvedtype(_type.utr), id(_id), defaultval(_defaultval),
+        : GivenResolve(_type),
+          id(_id),
+          defaultval(_defaultval),
           isprivate(isprivate), defined_in(defined_in) {}
     Field(const Field &o);
     ~Field();
@@ -135,13 +195,14 @@ struct TypeVariable {
     TypeVariable(string_view name) : name(name), thistype(this) {}
 };
 
-struct BoundTypeVariable {
+struct BoundTypeVariable : GivenResolve {
     TypeVariable *tv;
-    UnresolvedTypeRef giventype;
-    TypeRef resolvedtype;
+
+    BoundTypeVariable() : tv(nullptr) {}
+    BoundTypeVariable(UnresolvedTypeRef _type, TypeVariable *_tv) : GivenResolve(_type), tv(_tv) {}
 
     void Resolve(TypeRef type) {
-        resolvedtype = type;
+        set_resolvedtype(type);
         if (giventype.utr.Null()) giventype = { type };
     }
 };
@@ -151,7 +212,7 @@ struct DispatchEntry {
     bool is_dispatch_root = false;
     // Shared return type if root of dispatch.
     TypeRef returntype = nullptr;
-    const SubFunction *returned_thru_to = nullptr;
+    int returned_thru_to_max = -1;
     size_t subudts_size = 0;  // At time of creation.
 };
 
@@ -159,8 +220,7 @@ struct UDT : Named {
     vector<Field> fields;
     vector<BoundTypeVariable> generics;
     UDT *next = nullptr, *first = this;  // Specializations
-    TypeRef given_superclass = nullptr;
-    UDT *resolved_superclass = nullptr;
+    GivenResolve superclass;
     bool is_struct = false, hasref = false;
     bool predeclaration = false;
     bool constructed = false;  // Is this instantiated anywhere in the code?
@@ -229,15 +289,15 @@ struct UDT : Named {
     }
 
     bool ComputeSizes(int depth = 0) {
-        if (numslots >= 0) return true;
+        if (numslots >= 0 || is_generic) return true;
         if (depth > 16) return false;  // Simple protection against recursive references.
         int size = 0;
         for (auto &uf : fields) {
-            assert(!uf.resolvedtype.Null());
+            assert(!uf.resolved_null());
             uf.slot = size;
-            if (IsStruct(uf.resolvedtype->t)) {
-                if (!uf.resolvedtype->udt->ComputeSizes(depth + 1)) return false;
-                size += uf.resolvedtype->udt->numslots;
+            if (IsStruct(uf.resolvedtype()->t)) {
+                if (!uf.resolved_udt()->ComputeSizes(depth + 1)) return false;
+                size += uf.resolved_udt()->numslots;
             } else {
                 size++;
             }
@@ -256,6 +316,32 @@ struct UDT : Named {
     }
 };
 
+
+// This tries to resolve types for simple situations ahead of ResolveTypeVars so many forms of
+// circular references can be broken.
+inline bool EarlyResolve(const TypeRef type, TypeRef *out) {
+    if (type.Null()) return false;
+    switch (type->t) {
+        case V_UUDT:
+            if (!out || type->spec_udt->is_generic) return false;
+            *out = &type->spec_udt->udt->thistype;
+            return true;
+        case V_TYPEVAR:
+            return false;
+        case V_NIL:
+        case V_VECTOR:
+        case V_VAR:
+        case V_TYPEID:
+            return type->sub && EarlyResolve(type->sub, nullptr);
+        case V_TUPLE:
+            for (auto &te : *type->tup)
+                if (!EarlyResolve(te.type, nullptr)) return false;
+            return true;
+        default:
+            return true;
+    }
+}
+
 inline int ValWidth(TypeRef type) {
     assert(type->t != V_TUPLE);  // You need ValWidthMulti
     return IsStruct(type->t) ? type->udt->numslots : 1;
@@ -271,8 +357,8 @@ inline int ValWidthMulti(TypeRef type, size_t nvals) {
 
 inline const Field *FindSlot(const UDT &udt, int i) {
     for (auto &f : udt.fields) {
-        if (i >= f.slot && i < f.slot + ValWidth(f.resolvedtype)) {
-            return IsStruct(f.resolvedtype->t) ? FindSlot(*f.resolvedtype->udt, i - f.slot) : &f;
+        if (i >= f.slot && i < f.slot + ValWidth(f.resolvedtype())) {
+            return IsStruct(f.resolvedtype()->t) ? FindSlot(*f.resolved_udt(), i - f.slot) : &f;
         }
     }
     assert(false);
@@ -317,7 +403,7 @@ struct SubFunction {
     bool isdynamicfunctionvalue = false;
     bool consumes_vars_on_return = false;
     bool optimized = false;
-    const SubFunction *returned_thru_to = nullptr;  // there exist return statements that may skip the caller.
+    int returned_thru_to_max = -1;  // >=0: there exist return statements that may skip the caller.
     UDT *method_of = nullptr;
     int numcallers = 0;
     Type thistype { V_FUNCTION, this };  // convenient place to store the type corresponding to this
@@ -703,7 +789,7 @@ struct SymbolTable {
 
     int SuperDistance(const UDT *super, const UDT *subclass) {
         int dist = 0;
-        for (auto t = subclass; t; t = t->resolved_superclass) {
+        for (auto t = subclass; t; t = t->superclass.resolved_udt()) {
             if (t == super) return dist;
             dist++;
         }
@@ -713,7 +799,7 @@ struct SymbolTable {
     const UDT *CommonSuperType(const UDT *a, const UDT *b) {
         if (a != b) for (;;) {
             if (SuperDistance(a, b) >= 0) break;
-            a = a->resolved_superclass;
+            a = a->superclass.resolved_udt();
             if (!a) return nullptr;
         }
         return a;
@@ -953,7 +1039,7 @@ struct SymbolTable {
     }
 };
 
-inline string TypeName(TypeRef type, int flen = 0) {
+inline string TypeName(TypeRef type, int flen) {
     switch (type->t) {
         case V_STRUCT_R:
         case V_STRUCT_S:
@@ -965,7 +1051,7 @@ inline string TypeName(TypeRef type, int flen = 0) {
                     if (i) s += ", ";
                     s += t.giventype.utr.Null()
                         ? t.tv->name
-                        : TypeName(t.resolvedtype.Null() ? t.giventype.utr : t.resolvedtype);
+                             : TypeName(t.resolved_null() ? t.giventype.utr : t.resolvedtype());
                 }
                 s += ">";
             }
@@ -1018,6 +1104,8 @@ inline string TypeName(TypeRef type, int flen = 0) {
             return "typeid(" + TypeName(type->sub) + ")";
         case V_TYPEVAR:
             return string(type->tv->name);
+        case V_RESOURCE:
+            return type->rt ? cat("resource<", type->rt->name, ">") : "resource";
         default:
             return string(BaseTypeName(type->t));
     }
@@ -1046,7 +1134,7 @@ inline string Signature(const UDT &udt) {
     string r = udt.name;
     r += "{";
     for (auto [i, f] : enumerate(udt.fields)) {
-        FormatArg(r, f.id->name, i, f.resolvedtype);
+        FormatArg(r, f.id->name, i, f.resolvedtype());
     }
     r += "}";
     return r;

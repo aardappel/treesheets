@@ -18,38 +18,69 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#define USING_GLOBALS
 #include "tcc.h"
 #ifdef CONFIG_TCC_ASM
+
+static Section *last_text_section; /* to handle .previous asm directive */
 
 ST_FUNC int asm_get_local_label_name(TCCState *s1, unsigned int n)
 {
     char buf[64];
-    TokenSym *ts;
-
     snprintf(buf, sizeof(buf), "L..%u", n);
-    ts = tok_alloc(buf, strlen(buf));
-    return ts->tok;
+    return tok_alloc_const(buf);
 }
 
 static int tcc_assemble_internal(TCCState *s1, int do_preprocess, int global);
 static Sym* asm_new_label(TCCState *s1, int label, int is_local);
 static Sym* asm_new_label1(TCCState *s1, int label, int is_local, int sh_num, int value);
 
+/* If a C name has an _ prepended then only asm labels that start
+   with _ are representable in C, by removing the first _.  ASM names
+   without _ at the beginning don't correspond to C names, but we use
+   the global C symbol table to track ASM names as well, so we need to
+   transform those into ones that don't conflict with a C name,
+   so prepend a '.' for them, but force the ELF asm name to be set.  */
+static int asm2cname(int v, int *addeddot)
+{
+    const char *name;
+    *addeddot = 0;
+    if (!tcc_state->leading_underscore)
+      return v;
+    name = get_tok_str(v, NULL);
+    if (!name)
+      return v;
+    if (name[0] == '_') {
+        v = tok_alloc_const(name + 1);
+    } else if (!strchr(name, '.')) {
+        char newname[256];
+        snprintf(newname, sizeof newname, ".%s", name);
+        v = tok_alloc_const(newname);
+        *addeddot = 1;
+    }
+    return v;
+}
+
 static Sym *asm_label_find(int v)
 {
-    Sym *sym = sym_find(v);
-    while (sym && sym->sym_scope)
+    Sym *sym;
+    int addeddot;
+    v = asm2cname(v, &addeddot);
+    sym = sym_find(v);
+    while (sym && sym->sym_scope && !(sym->type.t & VT_STATIC))
         sym = sym->prev_tok;
     return sym;
 }
 
 static Sym *asm_label_push(int v)
 {
+    int addeddot, v2 = asm2cname(v, &addeddot);
     /* We always add VT_EXTERN, for sym definition that's tentative
        (for .set, removed for real defs), for mere references it's correct
        as is.  */
-    Sym *sym = global_identifier_push(v, VT_ASM | VT_EXTERN | VT_STATIC, 0);
-    sym->r = VT_CONST | VT_SYM;
+    Sym *sym = global_identifier_push(v2, VT_ASM | VT_EXTERN | VT_STATIC, 0);
+    if (addeddot)
+        sym->asm_label = v;
     return sym;
 }
 
@@ -76,11 +107,10 @@ ST_FUNC Sym* get_asm_sym(int name, Sym *csym)
 
 static Sym* asm_section_sym(TCCState *s1, Section *sec)
 {
-    char buf[100];
-    int label = tok_alloc(buf,
-        snprintf(buf, sizeof buf, "L.%s", sec->name)
-        )->tok;
-    Sym *sym = asm_label_find(label);
+    char buf[100]; int label; Sym *sym;
+    snprintf(buf, sizeof buf, "L.%s", sec->name);
+    label = tok_alloc_const(buf);
+    sym = asm_label_find(label);
     return sym ? sym : asm_new_label1(s1, label, 1, sec->sh_num, 0);
 }
 
@@ -107,7 +137,7 @@ static void asm_expr_unary(TCCState *s1, ExprValue *pe)
                 if (sym && (!sym->c || elfsym(sym)->st_shndx == SHN_UNDEF))
                     sym = sym->prev_tok;
                 if (!sym)
-                    tcc_error("local label '%d' not found backward", n);
+                    tcc_error("local label '%d' not found backward", (int)n);
             } else {
                 /* forward */
                 if (!sym || (sym->c && elfsym(sym)->st_shndx != SHN_UNDEF)) {
@@ -389,7 +419,7 @@ static Sym* asm_new_label1(TCCState *s1, int label, int is_local,
         sym = asm_label_push(label);
     }
     if (!sym->c)
-      put_extern_sym2(sym, SHN_UNDEF, 0, 0, 0);
+      put_extern_sym2(sym, SHN_UNDEF, 0, 0, 1);
     esym = elfsym(sym);
     esym->st_shndx = sh_num;
     esym->st_value = value;
@@ -739,15 +769,11 @@ static void asm_parse_directive(TCCState *s1, int global)
 
             filename[0] = '\0';
             next();
-
             if (tok == TOK_STR)
                 pstrcat(filename, sizeof(filename), tokc.str.data);
             else
                 pstrcat(filename, sizeof(filename), get_tok_str(tok, NULL));
-
-            if (s1->warn_unsupported)
-                tcc_warning("ignoring .file %s", filename);
-
+            tcc_warning_c(warn_unsupported)("ignoring .file %s", filename);
             next();
         }
         break;
@@ -757,15 +783,11 @@ static void asm_parse_directive(TCCState *s1, int global)
 
             ident[0] = '\0';
             next();
-
             if (tok == TOK_STR)
                 pstrcat(ident, sizeof(ident), tokc.str.data);
             else
                 pstrcat(ident, sizeof(ident), get_tok_str(tok, NULL));
-
-            if (s1->warn_unsupported)
-                tcc_warning("ignoring .ident %s", ident);
-
+            tcc_warning_c(warn_unsupported)("ignoring .ident %s", ident);
             next();
         }
         break;
@@ -778,11 +800,8 @@ static void asm_parse_directive(TCCState *s1, int global)
             if (!sym) {
                 tcc_error("label not found: %s", get_tok_str(tok, NULL));
             }
-
             /* XXX .size name,label2-label1 */
-            if (s1->warn_unsupported)
-                tcc_warning("ignoring .size %s,*", get_tok_str(tok, NULL));
-
+            tcc_warning_c(warn_unsupported)("ignoring .size %s,*", get_tok_str(tok, NULL));
             next();
             skip(',');
             while (tok != TOK_LINEFEED && tok != ';' && tok != CH_EOF) {
@@ -809,9 +828,8 @@ static void asm_parse_directive(TCCState *s1, int global)
 
             if (!strcmp(newtype, "function") || !strcmp(newtype, "STT_FUNC")) {
                 sym->type.t = (sym->type.t & ~VT_BTYPE) | VT_FUNC;
-            }
-            else if (s1->warn_unsupported)
-                tcc_warning("change type of '%s' from 0x%x to '%s' ignored", 
+            } else
+                tcc_warning_c(warn_unsupported)("change type of '%s' from 0x%x to '%s' ignored",
                     get_tok_str(sym->v, NULL), sym->type.t, newtype);
 
             next();
@@ -914,9 +932,6 @@ static int tcc_assemble_internal(TCCState *s1, int do_preprocess, int global)
         next();
         if (tok == TOK_EOF)
             break;
-        /* generate line number info */
-        if (global && s1->do_debug)
-            tcc_debug_line(s1);
         parse_flags |= PARSE_FLAG_LINEFEED; /* XXX: suppress that hack */
     redo:
         if (tok == '#') {
@@ -988,6 +1003,7 @@ static void tcc_assemble_inline(TCCState *s1, char *str, int len, int global)
 {
     const int *saved_macro_ptr = macro_ptr;
     int dotid = set_idnum('.', IS_ID);
+    int dolid = set_idnum('$', 0);
 
     tcc_open_bf(s1, ":asm:", len);
     memcpy(file->buffer, str, len);
@@ -995,6 +1011,7 @@ static void tcc_assemble_inline(TCCState *s1, char *str, int len, int global)
     tcc_assemble_internal(s1, 0, global);
     tcc_close();
 
+    set_idnum('$', dolid);
     set_idnum('.', dotid);
     macro_ptr = saved_macro_ptr;
 }
@@ -1148,8 +1165,8 @@ ST_FUNC void asm_instr(void)
     ASMOperand operands[MAX_ASM_OPERANDS];
     int nb_outputs, nb_operands, i, must_subst, out_reg;
     uint8_t clobber_regs[NB_ASM_REGS];
+    Section *sec;
 
-    next();
     /* since we always generate the asm() instruction, we can ignore
        volatile */
     if (tok == TOK_VOLATILE1 || tok == TOK_VOLATILE2 || tok == TOK_VOLATILE3) {
@@ -1222,8 +1239,15 @@ ST_FUNC void asm_instr(void)
     asm_gen_code(operands, nb_operands, nb_outputs, 0, 
                  clobber_regs, out_reg);    
 
+    /* We don't allow switching section within inline asm to
+       bleed out to surrounding code.  */
+    sec = cur_text_section;
     /* assemble the string with tcc internal assembler */
     tcc_assemble_inline(tcc_state, astr1.data, astr1.size - 1, 0);
+    if (sec != cur_text_section) {
+        tcc_warning("inline asm tries to change current section");
+        use_section1(tcc_state, sec);
+    }
 
     /* restore the current C token */
     next();
@@ -1273,5 +1297,22 @@ ST_FUNC void asm_global_instr(void)
 
     cstr_free(&astr);
     nocode_wanted = saved_nocode_wanted;
+}
+
+/********************************************************/
+#else
+ST_FUNC int tcc_assemble(TCCState *s1, int do_preprocess)
+{
+    tcc_error("asm not supported");
+}
+
+ST_FUNC void asm_instr(void)
+{
+    tcc_error("inline asm() not supported");
+}
+
+ST_FUNC void asm_global_instr(void)
+{
+    tcc_error("inline asm() not supported");
 }
 #endif /* CONFIG_TCC_ASM */

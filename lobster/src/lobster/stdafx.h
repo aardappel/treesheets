@@ -96,5 +96,5 @@ using namespace geom;
 #ifndef LOBSTER_ENGINE
     // By default, build Lobster assuming it comes with the default engine.
     // Build systems can override this for a console-only build.
-    //#define LOBSTER_ENGINE 1
+    #define LOBSTER_ENGINE 1
 #endif

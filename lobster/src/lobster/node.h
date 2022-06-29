@@ -499,12 +499,11 @@ struct Dot : Unary {
 };
 
 struct IsType : Unary {
-    UnresolvedTypeRef giventype;
-    TypeRef resolvedtype;
-    IsType(const Line &ln, Node *_a) : Unary(ln, _a) {}
-    void Dump(string &sd) const { append(sd, Name(), ":", TypeName(giventype.utr)); }
+    GivenResolve gr;
+    IsType(const Line &ln, Node *_a, UnresolvedTypeRef _type) : Unary(ln, _a), gr(_type) {}
+    void Dump(string &sd) const { append(sd, Name(), ":", TypeName(gr.giventype.utr)); }
     bool EqAttr(const Node *o) const {
-        return giventype.utr->Equal(*((IsType *)o)->giventype.utr);
+        return gr.giventype.utr->Equal(*((IsType *)o)->gr.giventype.utr);
     }
     SHARED_SIGNATURE(IsType, TName(T_IS), false)
 };

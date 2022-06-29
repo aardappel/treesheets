@@ -15,6 +15,7 @@
 #include "lobster/stdafx.h"
 
 #include "lobster/vmdata.h"
+#include "lobster/natreg.h"
 
 namespace lobster {
 
@@ -297,25 +298,47 @@ void Value::ToFlexBuffer(VM &vm, flexbuffers::Builder &builder, ValueType t) con
 }
 
 
-iint RefObj::Hash(VM &vm) {
+uint64_t RefObj::Hash(VM &vm) {
     switch (ti(vm).t) {
         case V_STRING:      return ((LString *)this)->Hash();
         case V_VECTOR:      return ((LVector *)this)->Hash(vm);
         case V_CLASS:       return ((LObject *)this)->Hash(vm);
-        default:            return (iint)this;
+        default:            return SplitMix64Hash((uint64_t)this);
     }
 }
 
-iint LString::Hash() {
+uint64_t LString::Hash() {
     return FNV1A64(strv());
 }
 
-iint Value::Hash(VM &vm, ValueType vtype) {
+uint64_t LVector::Hash(VM &vm) {
+    auto &eti = ElemType(vm);
+    auto hash = SplitMix64Hash((uint64_t)(len * width));
+    if (IsStruct(eti.t)) {
+        for (iint i = 0; i < len; i++) {
+            for (int j = 0; j < width; j++) {
+                assert(width == eti.len);
+                auto &ti = vm.GetTypeInfo(eti.elemtypes[j]);
+                hash = hash * 31 + AtSub(i, j).Hash(vm, ti.t);
+            }
+        }
+    } else {
+        for (iint i = 0; i < len; i++) {
+            hash = hash * 31 + At(i).Hash(vm, eti.t);
+        }
+    }
+    return hash;
+}
+
+uint64_t Value::Hash(VM &vm, ValueType vtype) {
     switch (vtype) {
-        case V_INT: return ival_;
-        case V_FLOAT: return ReadMem<iint>(&fval_);
-        case V_FUNCTION: return ival_;
-        default: return refnil() ? ref()->Hash(vm) : 0;
+        case V_INT:
+        case V_FUNCTION:
+            return SplitMix64Hash((uint64_t)ival_);
+        case V_FLOAT:
+            return SplitMix64Hash(ReadMem<uint64_t>(&fval_));
+        default:
+            return refnil() ? ref()->Hash(vm) : 0;
     }
 }
 
@@ -360,21 +383,44 @@ Value Value::CopyRef(VM &vm, bool deep) {
 }
 
 string TypeInfo::Debug(VM &vm, bool rec) const {
-    string s;
-    s += BaseTypeName(t);
-    if (t == V_VECTOR || t == V_NIL) {
-        s += "[" + vm.GetTypeInfo(subt).Debug(vm, false) + "]";
+    if (t == V_VECTOR) {
+        return cat("[", vm.GetTypeInfo(subt).Debug(vm, false), "]");
+    } else if (t == V_NIL) {
+        return cat(vm.GetTypeInfo(subt).Debug(vm, false), "?");
     } else if (IsUDT(t)) {
-        auto sname = vm.StructName(*this);
-        s += ":" + sname;
+        string s = string(vm.StructName(*this));
         if (rec) {
             s += "{";
             for (int i = 0; i < len; i++)
                 s += vm.GetTypeInfo(elemtypes[i]).Debug(vm, false) + ",";
             s += "}";
         }
+        return s;
+    } else {
+        return string(BaseTypeName(t));
     }
-    return s;
+}
+
+void TypeInfo::Print(VM &vm, string &sd) const {
+    switch (t) {
+        case V_VECTOR:
+            append(sd, "[");
+            vm.GetTypeInfo(subt).Print(vm, sd);
+            append(sd, "]");
+            break;
+        case V_NIL:
+            vm.GetTypeInfo(subt).Print(vm, sd);
+            append(sd, "?");
+            break;
+        case V_CLASS:
+        case V_STRUCT_R:
+        case V_STRUCT_S:
+            append(sd, vm.StructName(*this));
+            break;
+        default:
+            append(sd, BaseTypeName(t));
+            break;
+    }
 }
 
 #define ELEMTYPE(acc, ass) \
@@ -455,6 +501,14 @@ void LVector::ToString(VM &vm, string &sd, PrintPrefs &pp) {
             return ElemType(vm);
         }
     );
+}
+
+void LResource::ToString(string &sd) {
+    append(sd, "(resource:", type->name, ")");
+}
+
+size_t2 LResource::MemoryUsage() {
+    return size_t2(sizeof(LResource), 0) + type->sizefun(val);
 }
 
 void VM::StructToString(string &sd, PrintPrefs &pp, const TypeInfo &ti, const Value *elems) {

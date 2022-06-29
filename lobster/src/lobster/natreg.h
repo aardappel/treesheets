@@ -77,6 +77,7 @@ struct Type {
         Enum *e;                 // V_INT
         vector<TupleElem> *tup;  // V_TUPLE
         TypeVariable *tv;        // V_TYPEVAR
+        ResourceType *rt;        // V_RESOURCE
     };
 
     Type()                               :               sub(nullptr) {}
@@ -87,7 +88,7 @@ struct Type {
     Type(ValueType _t, UDT *_udt)        : t(_t),        udt(_udt)    {}
     Type(Enum *_e)                       : t(V_INT),     e(_e)        {}
     Type(TypeVariable *_tv)              : t(V_TYPEVAR), tv(_tv)      {}
-
+    Type(ResourceType *_rt)              : t(V_RESOURCE),rt(_rt)      {}
 
     bool Equal(const Type &o, bool allow_unresolved = false) const {
         if (this == &o) return true;
@@ -207,7 +208,6 @@ struct UnresolvedTypeRef {
     TypeRef utr;
 };
 
-
 extern TypeRef type_int;
 extern TypeRef type_float;
 extern TypeRef type_string;
@@ -223,6 +223,32 @@ extern TypeRef type_void;
 extern TypeRef type_undefined;
 
 TypeRef WrapKnown(TypeRef elem, ValueType with);
+
+// There must be a single of these per type, since they are compared by pointer.
+struct ResourceType {
+    string_view name;
+    void (*deletefun)(void *);
+    void (*newfun)(void *);  // May be nullptr.
+    size_t2 (*sizefun)(void *);
+    ResourceType *next;
+    const Type thistype;
+    const Type thistypenil;
+    const Type thistypevec;
+
+    ResourceType(string_view n, void (*df)(void *), void (*nf)(void *), size_t2 (*sf)(void *))
+        : name(n), deletefun(df), newfun(nf), sizefun(sf), next(nullptr), thistype(this),
+          thistypenil(V_NIL, &thistype), thistypevec(V_VECTOR, &thistype) {
+        next = g_resource_type_list;
+        g_resource_type_list = this;
+    }
+};
+
+inline ResourceType *LookupResourceType(string_view name) {
+    for (auto rt = g_resource_type_list; rt; rt = rt->next) {
+        if (rt->name == name) return rt;
+    }
+    return nullptr;
+}
 
 struct Named {
     string name;
@@ -296,13 +322,22 @@ struct Narg {
                     assert(!type.Null());
                     break;
                 case ':':
-                    assert(*tid >= '/' && *tid <= '9');
-                    fixed_len = *tid++ - '0';
+                    if (type->t == V_RESOURCE) {
+                        auto nstart = tid;
+                        while (islower(*tid)) tid++;
+                        auto rt = LookupResourceType(string_view(nstart, tid - nstart));
+                        assert(rt);  // If hit, "R:name" is not a resource type.
+                        type = &rt->thistype;
+                    } else {
+                        assert(*tid >= '/' && *tid <= '9');
+                        fixed_len = *tid++ - '0';
+                    }
                     break;
                 default:
                     assert(false);
             }
         }
+        assert(type->t != V_RESOURCE || type->rt);  // All uses of type R must have :name specifier.
     }
 };
 

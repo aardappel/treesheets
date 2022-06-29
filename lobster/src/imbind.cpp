@@ -34,18 +34,19 @@ extern SDL_GLContext _sdl_context;
 
 bool imgui_init = false;
 
-int imgui_frame = 0;
-int imgui_windows = 0;
-int imgui_group = 0;
-int imgui_width = 0;
-int imgui_treenode = 0;
+enum Nesting {
+    N_NONE,
+    N_FRAME,
+    N_WIN,
+    N_GROUP,
+    N_WIDTH,
+    N_TREE,
+};
+
+vector<Nesting> nstack;
 
 void IMGUIFrameCleanup() {
-    imgui_frame = 0;
-    imgui_windows = 0;
-    imgui_group = 0;
-    imgui_width = 0;
-    imgui_treenode = 0;
+    nstack.clear();
 }
 
 void IMGUICleanup() {
@@ -57,9 +58,51 @@ void IMGUICleanup() {
     IMGUIFrameCleanup();
 }
 
-void IsInit(VM &vm, bool require_window = true) {
-    if (!imgui_init) vm.BuiltinError("IMGUI not running: call im_init first");
-    if (!imgui_windows && require_window) vm.BuiltinError("no window: call im_window first");
+void NPush(Nesting n) {
+    nstack.push_back(n);
+}
+
+void NPop(VM &vm, Nesting n) {
+    for (;;) {
+        if (nstack.empty()) {
+            // This should be a rare error given that they're all called from HOFs.
+            vm.BuiltinError("imgui: nested end without a start");
+        }
+        // We pop things regardless if they're the thing we're wanting to pop.
+        // This allows the Lobster code to return from a HOF doing start+end, and not
+        // get asserts for missing ends.
+        auto tn = nstack.back();
+        nstack.pop_back();
+        switch (tn) {
+            case N_FRAME:
+                ImGui::Render();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                break;
+            case N_WIN:
+                ImGui::End();
+                break;
+            case N_GROUP:
+                ImGui::PopID();
+                break;
+            case N_WIDTH:
+                ImGui::PopItemWidth();
+                break;
+            case N_TREE:
+                ImGui::TreePop();
+                break;
+ 
+        }
+        // If this was indeed the item we're looking for, we can stop popping.
+        if (tn == n) break;
+    }
+}
+
+void IsInit(VM &vm, Nesting require = N_WIN) {
+    if (!imgui_init) vm.BuiltinError("imgui: not running: call im_init first");
+    if (require != N_NONE) {
+        for (auto n : nstack) if (n == require) return;
+        vm.BuiltinError("imgui: invalid nesting (not inside im_window?)");
+    }
 }
 
 pair<bool, bool> IMGUIEvent(SDL_Event *event) {
@@ -254,7 +297,7 @@ nfr("im_init", "dark_style,flags", "B?I?", "",
 nfr("im_add_font", "font_path,size", "SF", "B",
     "",
     [](StackPtr &, VM &vm, Value &fontname, Value &size) {
-        IsInit(vm, false);
+        IsInit(vm, N_NONE);
         string buf;
         auto l = LoadFile(fontname.sval()->strv(), &buf);
         if (l < 0) return NilVal();
@@ -270,29 +313,25 @@ nfr("im_add_font", "font_path,size", "SF", "B",
 nfr("im_frame_start", "", "", "",
     "(use im_frame instead)",
     [](StackPtr &, VM &vm) {
-        IsInit(vm, false);
-        if (imgui_frame) return;
+        IsInit(vm, N_NONE);
         IMGUIFrameCleanup();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(_sdl_window);
         ImGui::NewFrame();
-        imgui_frame++;
+        NPush(N_FRAME);
     });
 
 nfr("im_frame_end", "", "", "",
     "",
     [](StackPtr &, VM &vm) {
-        IsInit(vm, false);
-        if (!imgui_frame) return;
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        imgui_frame--;
+        IsInit(vm, N_NONE);
+        NPop(vm, N_FRAME);
     });
 
 nfr("im_window_demo", "", "", "B",
     "",
     [](StackPtr &, VM &vm) {
-        IsInit(vm, false);
+        IsInit(vm, N_FRAME);
         bool show = true;
         ImGui::ShowDemoWindow(&show);
         return Value(show);
@@ -301,18 +340,18 @@ nfr("im_window_demo", "", "", "B",
 nfr("im_window_start", "title,flags", "SI", "",
     "(use im_window instead)",
     [](StackPtr &sp, VM &vm) {
-        IsInit(vm, false);
+        IsInit(vm, N_FRAME);
         auto flags = Pop(sp);
         auto title = Pop(sp);
         ImGui::Begin(title.sval()->data(), nullptr, (ImGuiWindowFlags)flags.ival());
-        imgui_windows++;
+        NPush(N_WIN);
     });
 
 nfr("im_window_end", "", "", "",
     "",
     [](StackPtr &, VM &vm) {
-        IsInit(vm, false);
-        if (imgui_windows--) ImGui::End();
+        IsInit(vm, N_FRAME);
+        NPop(vm, N_WIN);
     });
 
 nfr("im_button", "label", "S", "B",
@@ -443,16 +482,14 @@ nfr("im_treenode_start", "label", "S", "B",
         auto title = Pop(sp);
         bool open = ImGui::TreeNode(title.sval()->data());
         Push(sp, open);
-        if (open) imgui_treenode++;
+        if (open) NPush(N_TREE);
     });
 
 nfr("im_treenode_end", "", "", "",
     "",
     [](StackPtr &, VM &vm) {
         IsInit(vm);
-        if (!imgui_treenode) return;
-        ImGui::TreePop();
-        imgui_treenode--;
+        NPop(vm, N_TREE);
     });
 
 nfr("im_group_start", "label", "Ss", "",
@@ -463,16 +500,14 @@ nfr("im_group_start", "label", "Ss", "",
         IsInit(vm);
         auto title = Pop(sp);
         ImGui::PushID(title.sval()->data());
-        imgui_group++;
+        NPush(N_GROUP);
     });
 
 nfr("im_group_end", "", "", "",
     "",
     [](StackPtr &, VM &vm) {
         IsInit(vm);
-        if (!imgui_group) return;
-        ImGui::PopID();
-        imgui_group--;
+        NPop(vm, N_GROUP);
     });
 
 nfr("im_width_start", "width", "F", "",
@@ -482,14 +517,12 @@ nfr("im_width_start", "width", "F", "",
         IsInit(vm);
         auto width = Pop(sp).fltval();
         ImGui::PushItemWidth(width);
-        imgui_width++;
+        NPush(N_WIDTH);
     });
 
 nfr("im_width_end", "", "", "", "", [](StackPtr &, VM &vm) {
     IsInit(vm);
-    if (!imgui_width) return;
-    ImGui::PopItemWidth();
-    imgui_width--;
+    NPop(vm, N_WIDTH);
 });
 
 nfr("im_edit_anything", "value,label", "AkS?", "A1",

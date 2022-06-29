@@ -61,7 +61,7 @@ Texture CreateTexture(const uint8_t *buf, int3 dim, int tf) {
         ? GL_R8
         : (IsSRGBMode() ? GL_SRGB8_ALPHA8 : GL_RGBA8);
     auto bufferformat = tf & TF_SINGLE_CHANNEL ? GL_RED : GL_RGBA;
-    auto buffersize = tf & TF_SINGLE_CHANNEL ? sizeof(uint8_t) : sizeof(byte4);
+    auto elemsize = tf & TF_SINGLE_CHANNEL ? sizeof(uint8_t) : sizeof(byte4);
     auto buffercomponent = GL_UNSIGNED_BYTE;
     if ((tf & TF_SINGLE_CHANNEL) && (dim.x & 0x3)) {
         GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));  // Defaults to 4.
@@ -70,7 +70,7 @@ Texture CreateTexture(const uint8_t *buf, int3 dim, int tf) {
         #ifdef PLATFORM_WINNIX
             internalformat = tf & TF_SINGLE_CHANNEL ? GL_R32F : GL_RGBA32F;
             bufferformat = tf & TF_SINGLE_CHANNEL ? GL_RED : GL_RGBA;
-            buffersize = tf & TF_SINGLE_CHANNEL ? sizeof(float) : sizeof(float4);
+            elemsize = tf & TF_SINGLE_CHANNEL ? sizeof(float) : sizeof(float4);
             buffercomponent = GL_FLOAT;
         #else
             assert(false);  // buf points to float data, which we don't support.
@@ -79,7 +79,7 @@ Texture CreateTexture(const uint8_t *buf, int3 dim, int tf) {
     if (tf & TF_DEPTH) {
         internalformat = GL_DEPTH_COMPONENT32F;
         bufferformat = GL_DEPTH_COMPONENT;
-        buffersize = sizeof(float);
+        elemsize = sizeof(float);
         buffercomponent = GL_FLOAT;
     }
     if (tf & TF_MULTISAMPLE) {
@@ -96,7 +96,7 @@ Texture CreateTexture(const uint8_t *buf, int3 dim, int tf) {
 				GL_CALL(glTexImage3D(textype, mipl, internalformat, d.x, d.y, d.z, 0,
 									 bufferformat, buffercomponent, buf));
 				mipl++;
-				buf += d.volume() * buffersize;
+				buf += d.volume() * elemsize;
 			}
 		#else
 			assert(false);
@@ -107,7 +107,7 @@ Texture CreateTexture(const uint8_t *buf, int3 dim, int tf) {
             for (int i = 0; i < texnumfaces; i++) {
                 GL_CALL(glTexImage2D(teximagetype + i, mipl, internalformat, d.x, d.y, 0,
                                      bufferformat, buffercomponent, buf));
-                buf += d.volume() * buffersize;
+                buf += d.volume() * elemsize;
             }
             mipl++;
         }
@@ -119,7 +119,7 @@ Texture CreateTexture(const uint8_t *buf, int3 dim, int tf) {
             GL_CALL(glGenerateMipmap(textype));
     }
     GL_CALL(glBindTexture(textype, 0));
-    return Texture(id, dim);
+    return Texture(id, dim, int(elemsize));
 }
 
 Texture CreateTextureFromFile(string_view name, int tf) {
