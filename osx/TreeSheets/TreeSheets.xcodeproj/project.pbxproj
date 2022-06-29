@@ -26,7 +26,6 @@
 		338633A922F224DE00DB0737 /* idl_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338633A622F224DE00DB0737 /* idl_parser.cpp */; };
 		338633AA22F224DE00DB0737 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338633A722F224DE00DB0737 /* util.cpp */; };
 		338633AC22F2250200DB0737 /* disasm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338633AB22F2250200DB0737 /* disasm.cpp */; };
-		3387001E204C5FE700612ED7 /* vmlog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFE1204C5FE400612ED7 /* vmlog.cpp */; };
 		3387002B204C5FE700612ED7 /* vm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFEE204C5FE500612ED7 /* vm.cpp */; };
 		3387002E204C5FE700612ED7 /* compiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFF1204C5FE500612ED7 /* compiler.cpp */; };
 		3387002F204C5FE700612ED7 /* builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFF2204C5FE500612ED7 /* builtins.cpp */; };
@@ -36,6 +35,9 @@
 		33870037204C5FE700612ED7 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387001C204C5FE600612ED7 /* platform.cpp */; };
 		3387003A204C67AF00612ED7 /* scripts in Resources */ = {isa = PBXBuildFile; fileRef = 33870039204C67AE00612ED7 /* scripts */; };
 		3387FFDF204C5FBF00612ED7 /* lobster_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFDC204C5FBE00612ED7 /* lobster_impl.cpp */; };
+		33B01131286CCC0100974382 /* tocpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B0112F286CCC0100974382 /* tocpp.cpp */; };
+		33B01132286CCC0100974382 /* tccbind.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B01130286CCC0100974382 /* tccbind.cpp */; };
+		33B01134286CD56800974382 /* libtcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B01133286CD56800974382 /* libtcc.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,7 +102,6 @@
 		3387FFDC204C5FBE00612ED7 /* lobster_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lobster_impl.cpp; path = ../../src/lobster_impl.cpp; sourceTree = "<group>"; };
 		3387FFDD204C5FBF00612ED7 /* script_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = script_interface.h; path = ../../src/script_interface.h; sourceTree = "<group>"; };
 		3387FFDE204C5FBF00612ED7 /* treesheets_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = treesheets_impl.h; path = ../../src/treesheets_impl.h; sourceTree = "<group>"; };
-		3387FFE1204C5FE400612ED7 /* vmlog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmlog.cpp; path = ../../lobster/src/vmlog.cpp; sourceTree = "<group>"; };
 		3387FFEE204C5FE500612ED7 /* vm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vm.cpp; path = ../../lobster/src/vm.cpp; sourceTree = "<group>"; };
 		3387FFF1204C5FE500612ED7 /* compiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = compiler.cpp; path = ../../lobster/src/compiler.cpp; sourceTree = "<group>"; };
 		3387FFF2204C5FE500612ED7 /* builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = builtins.cpp; path = ../../lobster/src/builtins.cpp; sourceTree = "<group>"; };
@@ -113,6 +114,9 @@
 		3387FFFD204C5FE600612ED7 /* compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compiler.h; sourceTree = "<group>"; };
 		3387FFFE204C5FE600612ED7 /* natreg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = natreg.h; sourceTree = "<group>"; };
 		3387FFFF204C5FE600612ED7 /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
+		33B0112F286CCC0100974382 /* tocpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tocpp.cpp; path = ../../lobster/src/tocpp.cpp; sourceTree = "<group>"; };
+		33B01130286CCC0100974382 /* tccbind.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tccbind.cpp; path = ../../lobster/src/tccbind.cpp; sourceTree = "<group>"; };
+		33B01133286CD56800974382 /* libtcc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = libtcc.c; path = ../../lobster/external/libtcc/libtcc.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,6 +251,9 @@
 		3387FFE0204C5FC800612ED7 /* Lobster */ = {
 			isa = PBXGroup;
 			children = (
+				33B01133286CD56800974382 /* libtcc.c */,
+				33B01130286CCC0100974382 /* tccbind.cpp */,
+				33B0112F286CCC0100974382 /* tocpp.cpp */,
 				338633AB22F2250200DB0737 /* disasm.cpp */,
 				338633A422F224BD00DB0737 /* flatbuffers */,
 				3387FFF2204C5FE500612ED7 /* builtins.cpp */,
@@ -257,7 +264,6 @@
 				3387001C204C5FE600612ED7 /* platform.cpp */,
 				3387FFEE204C5FE500612ED7 /* vm.cpp */,
 				3387FFF5204C5FE600612ED7 /* vmdata.cpp */,
-				3387FFE1204C5FE400612ED7 /* vmlog.cpp */,
 			);
 			name = Lobster;
 			sourceTree = "<group>";
@@ -319,7 +325,7 @@
 		33306EB317695BE000AF5315 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 1340;
 				ORGANIZATIONNAME = "Wouter van Oortmerssen";
 			};
 			buildConfigurationList = 33306EB617695BE000AF5315 /* Build configuration list for PBXProject "TreeSheets" */;
@@ -364,15 +370,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B01131286CCC0100974382 /* tocpp.cpp in Sources */,
 				338633AC22F2250200DB0737 /* disasm.cpp in Sources */,
 				338633A822F224DE00DB0737 /* idl_gen_text.cpp in Sources */,
 				3387002E204C5FE700612ED7 /* compiler.cpp in Sources */,
+				33B01132286CCC0100974382 /* tccbind.cpp in Sources */,
 				33870037204C5FE700612ED7 /* platform.cpp in Sources */,
 				33870034204C5FE700612ED7 /* lobsterreader.cpp in Sources */,
 				33306EDC17695C5500AF5315 /* main.cpp in Sources */,
 				33870031204C5FE700612ED7 /* file.cpp in Sources */,
-				3387001E204C5FE700612ED7 /* vmlog.cpp in Sources */,
 				3387FFDF204C5FBF00612ED7 /* lobster_impl.cpp in Sources */,
+				33B01134286CD56800974382 /* libtcc.c in Sources */,
 				338633A922F224DE00DB0737 /* idl_parser.cpp in Sources */,
 				338633AA22F224DE00DB0737 /* util.cpp in Sources */,
 				3387002B204C5FE700612ED7 /* vm.cpp in Sources */,
@@ -400,17 +408,34 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -419,7 +444,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../lobster/src,
@@ -429,8 +456,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
-				VALID_ARCHS = x86_64;
+				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include ../../lobster/external/libtcc";
 			};
 			name = Debug;
 		};
@@ -439,20 +465,38 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../lobster/src,
@@ -460,9 +504,9 @@
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include";
-				VALID_ARCHS = x86_64;
+				USER_HEADER_SEARCH_PATHS = "../../lobster/src ../../lobster/include ../../lobster/external/libtcc";
 			};
 			name = Release;
 		};
@@ -472,6 +516,8 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -487,36 +533,38 @@
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.1",
-					"/usr/local/include/wx-3.1",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.2",
+					"/usr/local/include/wx-3.2",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-3.1.a",
-					"/usr/local/lib/libwx_baseu_net-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-3.1.a",
-					"/usr/local/lib/libwx_baseu_xml-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-3.1.a",
-					"/usr/local/lib/libwx_baseu-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.2.a",
+					"/usr/local/lib/libwx_baseu_net-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.2.a",
+					"/usr/local/lib/libwx_baseu_xml-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.2.a",
+					"/usr/local/lib/libwx_baseu-3.2.a",
 					"-lexpat",
-					"-lwxregexu-3.1",
-					"-lwxjpeg-3.1",
-					"-lwxpng-3.1",
-					"-lwxzlib-3.1",
+					"-lwxregexu-3.2",
+					"-lwxjpeg-3.2",
+					"-lwxpng-3.2",
+					"-lwxzlib-3.2",
 					"-lpthread",
 					"-liconv",
 					"-lz",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "dot3labs.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				VALID_ARCHS = x86_64;
+				VALID_ARCHS = "x86_64 arm64";
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -528,6 +576,8 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -540,36 +590,37 @@
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.1",
-					"/usr/local/include/wx-3.1",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.2",
+					"/usr/local/include/wx-3.2",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-3.1.a",
-					"/usr/local/lib/libwx_baseu_net-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-3.1.a",
-					"/usr/local/lib/libwx_baseu_xml-3.1.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-3.1.a",
-					"/usr/local/lib/libwx_baseu-3.1.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.2.a",
+					"/usr/local/lib/libwx_baseu_net-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.2.a",
+					"/usr/local/lib/libwx_baseu_xml-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.2.a",
+					"/usr/local/lib/libwx_baseu-3.2.a",
 					"-lexpat",
-					"-lwxregexu-3.1",
-					"-lwxjpeg-3.1",
-					"-lwxpng-3.1",
-					"-lwxzlib-3.1",
+					"-lwxregexu-3.2",
+					"-lwxjpeg-3.2",
+					"-lwxpng-3.2",
+					"-lwxzlib-3.2",
 					"-lpthread",
 					"-liconv",
 					"-lz",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "dot3labs.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				VALID_ARCHS = x86_64;
+				VALID_ARCHS = "x86_64 arm64";
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};
