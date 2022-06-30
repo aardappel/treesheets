@@ -47,7 +47,7 @@ nfr("ts_num_columns_rows", "", "", "I}:2",
     [](StackPtr &sp, VM &vm) { PushVec(sp, int2(si->NumColumnsRows())); });
 
 nfr("ts_selection", "", "", "I}:2I}:2",
-    "returns the (x,y) and (xs,ys) of the current selection, or zeroes if none.",
+    "returns the (xs,ys) and (x,y) of the current selection, or zeroes if none.",
     [](StackPtr &sp, VM &vm) {
         auto b = si->SelectionBox();
         PushVec(sp, int2(b.second));

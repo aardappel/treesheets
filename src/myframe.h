@@ -1018,7 +1018,7 @@ struct MyFrame : wxFrame {
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                    auto msg = tssi.ScriptRun(scripts_in_menu[ce.GetId() - A_SCRIPT].c_str());
+                    auto msg = tssi.ScriptRun(scripts_in_menu[ce.GetId() - A_SCRIPT].c_str(), dc);
                     msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
                     sw->Status(wxString(msg));
                 } else {

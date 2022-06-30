@@ -1818,6 +1818,7 @@ struct Document {
         loopvrev(i, path) {
             Selection &s = path[i];
             Grid *g = c->grid;
+            if (!g) return c;
             ASSERT(g && s.x < g->xs && s.y < g->ys);
             c = g->C(s.x, s.y);
         }

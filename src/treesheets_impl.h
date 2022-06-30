@@ -2,6 +2,7 @@
 struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *doc = nullptr;
     Cell *cur = nullptr;
+    wxDC *dc = nullptr;
 
     enum { max_new_grid_dim = 256 };  // Don't allow crazy sizes.
 
@@ -12,7 +13,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         doc->AddUndo(cur);
     }
 
-    std::string ScriptRun(const char *filename) {
+    std::string ScriptRun(const char *filename, wxDC &_dc) {
         SwitchToCurrentDoc();
 
         bool dump_builtins = false;
@@ -20,7 +21,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             //dump_builtins = true;
         #endif
 
+        dc = &_dc;
         auto err = RunLobster(filename, {}, dump_builtins);
+        dc = nullptr;
 
         doc->rootgrid->ResetChildren();
         doc->Refresh();
@@ -99,6 +102,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         if (cur->grid && x >= 0 && x + xs <= cur->grid->xs && y >= 0 && y + ys <= cur->grid->ys) {
             Selection s(cur->grid, x, y, xs, ys);
             cur->grid->MultiCellDeleteSub(doc, s);
+            doc->selected = Selection();
+            doc->Zoom(-100, *dc);
         }
     }
 
