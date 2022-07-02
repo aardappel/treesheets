@@ -208,7 +208,10 @@ void TSDumpBuiltinDoc() { DumpBuiltinDoc(natreg); }
 
 namespace lobster {
 
-FileLoader EnginePreInit(NativeRegistry &) { return DefaultLoadFile; }
+FileLoader EnginePreInit(NativeRegistry &nfr) {
+    //nfr.DoneRegistering();
+    return DefaultLoadFile;
+}
 
 }  // namespace lobster
 
