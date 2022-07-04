@@ -166,8 +166,9 @@ struct TSCanvas : public wxScrolledWindow {
         }
     }
 
-    void OnScrollWin(wxScrollWinEvent &) {
+    void OnScrollWin(wxScrollWinEvent &swe) {
         // This only gets called when scrolling using the scroll bar, not with mousewheel.
+        swe.Skip();  // Use default scrolling behavior.
     }
 
     void CursorScroll(int dx, int dy) {
