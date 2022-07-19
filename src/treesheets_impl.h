@@ -80,7 +80,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetText(std::string_view t) {
-        if (cur->parent) cur->text.t = wxString(t.data(), t.size());
+        if (cur->parent) cur->text.t = wxString::FromUTF8(t.data(), t.size());
     }
 
     void CreateGrid(int x, int y) {
