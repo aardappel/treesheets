@@ -1,15 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
+# ITALIAN TRANSLATION.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Albano Battistella <albano_battistella@hotmail.comS>, 2019,2021.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-26 16:49-0700\n"
-"PO-Revision-Date: 2019-05-18 19:28+0100\n"
+"PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Albano Battistella <>\n"
 "Language-Team: Italian <LL@li.org>\n"
 "Language: Italian\n"
@@ -160,7 +159,7 @@ msgstr "&Incolla\tCTRL+v"
 
 #: myframe.h:177
 msgid "&Print...\tCTRL+p"
-msgstr "&Print ...\tCTRL+p"
+msgstr "&Stampa...\tCTRL+p"
 
 #: myframe.h:522
 msgid "&Program"
@@ -370,7 +369,7 @@ msgstr "Cella"
 
 #: myframe.h:448
 msgid "Change a key binding..."
-msgstr "Modificare una chiave vincolante ..."
+msgstr "Modificare una chiave vincolante..."
 
 #: myframe.h:300
 msgid "Change the image size if it is too big or too small"
@@ -414,7 +413,7 @@ msgstr "Larghezza della colonna aumentata."
 
 #: myframe.h:158
 msgid "Comma delimited text (CSV)..."
-msgstr "Testo delimitato da virgole (CSV) ..."
+msgstr "Testo delimitato da virgole (CSV)..."
 
 #: myframe.h:289
 msgid ""
@@ -488,7 +487,7 @@ msgstr "Non salvare le modifiche"
 #: system.h:361
 #, c-format
 msgid "Edited %s"
-msgstr "Modificato%s"
+msgstr "Modificato %s"
 
 #: document.h:1503
 msgid "Empty strings cannot be tags."
@@ -592,7 +591,7 @@ msgstr "Esportare la vista corrente come testo strutturato ad albero, usando spa
 
 #: myframe.h:227
 msgid "Extend Selection Down\tSHIFT+DOWN"
-msgstr "Estendi selezione giù\tSHIFT + DOWN"
+msgstr "Estendi selezione giù\tSHIFT+DOWN"
 
 #: myframe.h:228
 msgid "Extend Selection Full Columns"
@@ -612,7 +611,7 @@ msgstr "Estendi la selezione a destra\tSHIFT+RIGHT"
 
 #: myframe.h:226
 msgid "Extend Selection Up\tSHIFT+UP"
-msgstr "Estendi selezione su\tSHIFT +UP"
+msgstr "Estendi selezione su\tSHIFT+UP"
 
 #: myframe.h:245
 msgid "Extend Selection Word Left\tSHIFT+CTRL+LEFT"
@@ -651,7 +650,7 @@ msgid ""
 "File has been re-loaded because of modifications of another program / "
 "computer"
 msgstr "Il file è stato ricaricato a causa di modifiche di un altro programma / "
-"computer"
+"del computer"
 
 #: system.h:421
 msgid "File load error."
@@ -746,11 +745,11 @@ msgstr "Aumenta la larghezza della colonna (nessuna sottogriglia)\tCTRL+ALT +PGU
 
 #: myframe.h:141
 msgid "Indented &Text..."
-msgstr "Testo &rientrato ..."
+msgstr "Testo &rientrato..."
 
 #: myframe.h:157
 msgid "Indented text..."
-msgstr "Testo rientrato ..."
+msgstr "Testo rientrato..."
 
 #: myframe.h:106
 msgid "Initialization Error"
@@ -830,7 +829,7 @@ msgstr "Sposta selezione destra\tRIGHT"
 
 #: myframe.h:216
 msgid "Move Selection Up\tUP"
-msgstr "Sposta selezione su\tUP"
+msgstr "Sposta selezione Su\tUP"
 
 #: myframe.h:209
 msgid "Move to next cell\tTAB"
@@ -882,7 +881,7 @@ msgstr "Nessuna stringa di ricerca."
 
 #: document.h:999 document.h:1293
 msgid "No search."
-msgstr "Nessuna ricerca"
+msgstr "Nessuna ricerca."
 
 #: document.h:1252
 msgid "No style to paste."
@@ -966,15 +965,15 @@ msgstr "Incolla solo stile\tCTRL+MAIUSC+v"
 
 #: myframe.h:449
 msgid "Pick Custom &Color..."
-msgstr "Scegli colore personalizzato ..."
+msgstr "Scegli colore personalizzato..."
 
 #: myframe.h:447
 msgid "Pick Default Font..."
-msgstr "Scegli il carattere di default .."
+msgstr "Scegli il carattere di default..."
 
 #: myframe.h:451
 msgid "Pick Document Background..."
-msgstr "Scegli lo sfondo del documento ..."
+msgstr "Scegli lo sfondo del documento..."
 
 #: myframe.h:862
 msgid "Please enable (Options -> Show Toolbar) to use search."
@@ -1113,7 +1112,7 @@ msgstr "Scorri a destra\tALT+RIGHT"
 
 #: myframe.h:433
 msgid "Scroll Sheet..."
-msgstr "Scorri foglio .."
+msgstr "Scorri foglio..."
 
 #: myframe.h:393
 msgid "Scroll Up (mousewheel)\tALT+UP"
@@ -1145,11 +1144,11 @@ msgstr "La griglia selezionata non è una tabella: le celle non devono avere gi�
 
 #: myframe.h:159
 msgid "Semi-Colon delimited text (CSV)..."
-msgstr "Testo delimitato da semi-colonna (CSV) .."
+msgstr "Testo delimitato da semi-colonna (CSV)..."
 
 #: myframe.h:378
 msgid "Set Grid Border Width..."
-msgstr "Imposta la larghezza del bordo della griglia ..."
+msgstr "Imposta la larghezza del bordo della griglia..."
 
 #: document.h:935
 msgid "Set Print Scale"
@@ -1157,7 +1156,7 @@ msgstr "Imposta scala di stampa"
 
 #: myframe.h:175
 msgid "Set Print Scale..."
-msgstr "Imposta scala di stampa ..."
+msgstr "Imposta scala di stampa..."
 
 #: myframe.h:407
 #, c-format
@@ -1212,11 +1211,11 @@ msgstr "Dimensione% d"
 
 #: myframe.h:280
 msgid "Sort &Ascending"
-msgstr "Ordine crescente"
+msgstr "Ordine &Crescente"
 
 #: myframe.h:283
 msgid "Sort &Descending"
-msgstr "Ordine decrescente"
+msgstr "Ordine &Decrescente"
 
 #: myframe.h:250
 msgid "Start of line of text\tHOME"
@@ -1248,11 +1247,11 @@ msgstr "Passa al file precedente/scheda\tSHIFT+CTRL+TAB"
 
 #: myframe.h:160
 msgid "Tab delimited text..."
-msgstr "Testo delimitato da tabulazioni .."
+msgstr "Testo delimitato da tabulazioni..."
 
 #: myframe.h:379
 msgid "Tag..."
-msgstr "Tag.."
+msgstr "Tag..."
 
 #: myframe.h:293
 msgid ""
@@ -1267,15 +1266,15 @@ msgstr "Testo"
 
 #: myframe.h:375
 msgid "Text &Editing..."
-msgstr "Testo e modifica ..."
+msgstr "Testo e modifica..."
 
 #: myframe.h:376
 msgid "Text Sizing..."
-msgstr "Dimensionamento del testo ..."
+msgstr "Dimensionamento del testo..."
 
 #: myframe.h:377
 msgid "Text Style..."
-msgstr "Stile di testo ..."
+msgstr "Stile di testo..."
 
 #: document.h:429
 msgid "Text size decreased."
@@ -1395,7 +1394,7 @@ msgstr "Layout verticale con Rendering stile linea\tALT+3"
 
 #: myframe.h:506
 msgid "View tutorial &web page..."
-msgstr "Visualizza tutorial e pagina web ..."
+msgstr "Visualizza tutorial e pagina web..."
 
 #: document.h:862
 msgid "What size grid would you like to start with?"
@@ -1404,7 +1403,7 @@ msgstr "Con quale dimensioni di griglia vorresti iniziare?"
 #: system.h:359
 #, c-format
 msgid "Width %d"
-msgstr "Larghezza% d"
+msgstr "Larghezza %d"
 
 #: myframe.h:240
 msgid "Word Left\tCTRL+LEFT"
@@ -1416,7 +1415,7 @@ msgstr "Parola destra\tCTRL+RIGHT"
 
 #: myframe.h:156
 msgid "XML (attributes too, for OPML etc)..."
-msgstr "XML (anche attributi, per OPML ecc.)"
+msgstr "XML (anche attributi, per OPML ecc.)..."
 
 #: myframe.h:155
 msgid "XML..."
@@ -1484,4 +1483,4 @@ msgstr "scala:"
 
 #: document.h:863
 msgid "size:"
-msgstr "Dimensione:"
+msgstr "dimensione:"
