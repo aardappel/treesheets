@@ -105,6 +105,7 @@ jobs:
       run: |
         xcodebuild -list
         xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme TreeSheets -derivedDataPath build
+        chmod +x build/Build/Products/Release/TreeSheets.app/Contents/MacOS/TreeSheets
         rm -rf build/Build/Products/Release/TreeSheets.app.dSYM
     - name: upload build artifacts
       uses: actions/upload-artifact@v2
