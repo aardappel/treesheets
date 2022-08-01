@@ -103,6 +103,8 @@ jobs:
     - name: build TreeSheets
       working-directory: osx/TreeSheets
       run: |
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(date +'%Y%m%d%H%M%S')" "TreeSheets/TreeSheets-Info.plist"
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(date +'%Y.%m.%d')" "TreeSheets/TreeSheets-Info.plist"
         xcodebuild -list
         xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme TreeSheets -derivedDataPath build
         chmod +x build/Build/Products/Release/TreeSheets.app/Contents/MacOS/TreeSheets
