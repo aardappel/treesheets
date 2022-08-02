@@ -533,8 +533,8 @@
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.2",
-					"/usr/local/include/wx-3.2",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.3",
+					"/usr/local/include/wx-3.3",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
@@ -542,21 +542,21 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-3.2.a",
-					"/usr/local/lib/libwx_baseu_net-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-3.2.a",
-					"/usr/local/lib/libwx_baseu_xml-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-3.2.a",
-					"/usr/local/lib/libwx_baseu-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.3.a",
+					"/usr/local/lib/libwx_baseu_net-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.3.a",
+					"/usr/local/lib/libwx_baseu_xml-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.3.a",
+					"/usr/local/lib/libwx_baseu-3.3.a",
 					"-lexpat",
-					"-lwxregexu-3.2",
-					"-lwxjpeg-3.2",
-					"-lwxpng-3.2",
-					"-lwxzlib-3.2",
+					"-lwxregexu-3.3",
+					"-lwxjpeg-3.3",
+					"-lwxpng-3.3",
+					"-lwxzlib-3.3",
 					"-lpthread",
 					"-liconv",
 					"-lz",
@@ -590,29 +590,29 @@
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.2",
-					"/usr/local/include/wx-3.2",
+					"/usr/local/lib/wx/include/osx_cocoa-unicode-static-3.3",
+					"/usr/local/include/wx-3.3",
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
-					"/usr/local/lib/libwx_osx_cocoau_xrc-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_webview-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_qa-3.2.a",
-					"/usr/local/lib/libwx_baseu_net-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_html-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_adv-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_core-3.2.a",
-					"/usr/local/lib/libwx_baseu_xml-3.2.a",
-					"/usr/local/lib/libwx_osx_cocoau_aui-3.2.a",
-					"/usr/local/lib/libwx_baseu-3.2.a",
+					"/usr/local/lib/libwx_osx_cocoau_xrc-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_webview-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_qa-3.3.a",
+					"/usr/local/lib/libwx_baseu_net-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_html-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_adv-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_core-3.3.a",
+					"/usr/local/lib/libwx_baseu_xml-3.3.a",
+					"/usr/local/lib/libwx_osx_cocoau_aui-3.3.a",
+					"/usr/local/lib/libwx_baseu-3.3.a",
 					"-lexpat",
-					"-lwxregexu-3.2",
-					"-lwxjpeg-3.2",
-					"-lwxpng-3.2",
-					"-lwxzlib-3.2",
+					"-lwxregexu-3.3",
+					"-lwxjpeg-3.3",
+					"-lwxpng-3.3",
+					"-lwxzlib-3.3",
 					"-lpthread",
 					"-liconv",
 					"-lz",
