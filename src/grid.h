@@ -797,14 +797,14 @@ struct Grid {
                         if (vert) {
                             if (acc && y + 2 < ys) {
                                 y += 2;
-                                return ev.Execute(op, move(acc), C(x, y - 2), C(x, y - 1));
+                                return ev.Execute(op, move(acc), C(x, y - 1), C(x, y));
                             } else {
                                 return nullptr;
                             }
                         } else {
                             if (acc && x + 2 < xs) {
                                 x += 2;
-                                return ev.Execute(op, move(acc), C(x - 2, y), C(x - 1, y));
+                                return ev.Execute(op, move(acc), C(x - 1, y), C(x, y));
                             } else {
                                 return nullptr;
                             }
