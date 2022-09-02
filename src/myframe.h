@@ -151,19 +151,25 @@ struct MyFrame : wxFrame {
 
         wxIconBundle icons;
         wxIcon iconbig;
-        icon.LoadFile(GetDataPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG);
-        iconbig.LoadFile(GetDataPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG);
+        #ifdef WIN32
+            int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
+            int iconlarge = ::GetSystemMetrics(SM_CXICON);
+        #endif
+        icon.LoadFile(GetDataPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG
+            #ifdef WIN32
+                , iconsmall, iconsmall
+            #endif
+        );
+        iconbig.LoadFile(GetDataPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG
+            #ifdef WIN32
+                , iconlarge, iconlarge
+            #endif
+        );
         if (!icon.IsOk() || !iconbig.IsOk()) {
             wxMessageBox(_(L"Error loading core data file (TreeSheets not installed correctly?)"),
                          _(L"Initialization Error"), wxOK, this);
             exit(1);
         }
-        #ifdef WIN32
-        int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
-        int iconlarge = ::GetSystemMetrics(SM_CXICON);
-        icon.SetSize(iconsmall, iconsmall);  // this shouldn't be necessary...
-        iconbig.SetSize(iconlarge, iconlarge);
-        #endif
         icons.AddIcon(icon);
         icons.AddIcon(iconbig);
         SetIcons(icons);
