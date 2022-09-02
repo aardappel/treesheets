@@ -14,6 +14,7 @@
 
 #include "lobster/stdafx.h"
 
+#include "lobster/vmdata.h"
 #include "lobster/natreg.h"
 
 #include "lobster/glinterface.h"
@@ -21,6 +22,8 @@
 
 #include "lobster/sdlinterface.h"
 #include "lobster/sdlincludes.h"
+
+#include "lobster/graphics.h"
 
 #ifdef PLATFORM_VR
 
@@ -176,8 +179,8 @@ void VREye(int eye, float znear, float zfar) {
     if (!vrsys) return;
     auto retf = TF_CLAMP | TF_NOMIPMAP;
     auto mstf = retf | TF_MULTISAMPLE;
-    if (!mstex[eye].id) mstex[eye] = CreateBlankTexture(rtsize, float4_0, mstf);
-    if (!retex[eye].id) retex[eye] = CreateBlankTexture(rtsize, float4_0, retf);
+    if (!mstex[eye].id) mstex[eye] = CreateBlankTexture("vr_mstex", rtsize, float4_0, mstf);
+    if (!retex[eye].id) retex[eye] = CreateBlankTexture("vr_retex", rtsize, float4_0, retf);
     SwitchToFrameBuffer(mstex[eye], GetScreenSize(), true, mstf, retex[eye]);
     auto proj =
         FromOpenVR(vrsys->GetProjectionMatrix((vr::EVREye)eye, znear, zfar));
@@ -238,9 +241,10 @@ Mesh *VRCreateMesh(uint32_t device) {
         }
         SDL_Delay(1);
     }
-    auto tex = CreateTexture(modeltex->rubTextureMapData,
+    auto tex = CreateTexture("vr_controller_tex", modeltex->rubTextureMapData,
                              int3(modeltex->unWidth, modeltex->unHeight, 0), TF_CLAMP);
-    auto m = new Mesh(new Geometry(gsl::make_span(model->rVertexData, model->unVertexCount),
+    auto m = new Mesh(
+        new Geometry("vr_controller_verts", gsl::make_span(model->rVertexData, model->unVertexCount),
                                    "PNT"), PRIM_TRIS);
     auto nindices = model->unTriangleCount * 3;
     vector<int> indices(nindices);
@@ -249,7 +253,7 @@ Mesh *VRCreateMesh(uint32_t device) {
         indices[i + 1] = model->rIndexData[i + 2];
         indices[i + 2] = model->rIndexData[i + 1];
     }
-    auto surf = new Surface(gsl::make_span(indices), PRIM_TRIS);
+    auto surf = new Surface("vr_controller_idxs", gsl::make_span(indices), PRIM_TRIS);
     surf->Get(0) = tex;
     m->surfs.push_back(surf);
     vr::VRRenderModels()->FreeRenderModel(model);
@@ -347,7 +351,7 @@ nfr("vr_create_motion_controller_mesh", "n", "I", "R:mesh?",
     [](StackPtr &, VM &vm, Value &mc) {
         auto mcd = GetMC(mc);
         extern ResourceType mesh_type;
-        return mcd ? Value(vm.NewResource(VRCreateMesh(mcd->device), &mesh_type)) : NilVal();
+        return mcd ? Value(vm.NewResource(&mesh_type, VRCreateMesh(mcd->device))) : NilVal();
     });
 
 // TODO: make it return an "up" value much like gl_button, since this doesn't represent

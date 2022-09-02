@@ -227,16 +227,13 @@ TypeRef WrapKnown(TypeRef elem, ValueType with);
 // There must be a single of these per type, since they are compared by pointer.
 struct ResourceType {
     string_view name;
-    void (*deletefun)(void *);
-    void (*newfun)(void *);  // May be nullptr.
-    size_t2 (*sizefun)(void *);
     ResourceType *next;
     const Type thistype;
     const Type thistypenil;
     const Type thistypevec;
 
-    ResourceType(string_view n, void (*df)(void *), void (*nf)(void *), size_t2 (*sf)(void *))
-        : name(n), deletefun(df), newfun(nf), sizefun(sf), next(nullptr), thistype(this),
+    ResourceType(string_view n)
+        : name(n), next(nullptr), thistype(this),
           thistypenil(V_NIL, &thistype), thistypevec(V_VECTOR, &thistype) {
         next = g_resource_type_list;
         g_resource_type_list = this;
@@ -281,6 +278,7 @@ struct Narg {
     NArgFlags flags = NF_NONE;
     string_view name;
     char fixed_len = 0;
+    char default_val = 0;
     Lifetime lt = LT_UNDEF;
 
     void Set(const char *&tid, Lifetime def) {
@@ -330,7 +328,11 @@ struct Narg {
                         type = &rt->thistype;
                     } else {
                         assert(*tid >= '/' && *tid <= '9');
-                        fixed_len = *tid++ - '0';
+                        char val = *tid++ - '0';
+                        if (type->ElementIfNil()->Numeric())
+                            default_val = val;
+                        else
+                            fixed_len = val; 
                     }
                     break;
                 default:
@@ -435,12 +437,25 @@ struct NativeRegistry {
     vector<NativeFun *> nfuns;
     unordered_map<string_view, NativeFun *> nfunlookup;  // Key points to value!
     vector<string> subsystems;
+    #if LOBSTER_FRAME_PROFILER_BUILTINS
+        vector<tracy::SourceLocationData> pre_allocated_function_locations;
+    #endif
 
     ~NativeRegistry() {
         for (auto f : nfuns) delete f;
     }
 
     void NativeSubSystemStart(const char *name) { subsystems.push_back(name); }
+
+    void DoneRegistering() {
+        #if LOBSTER_FRAME_PROFILER_BUILTINS
+            for (size_t i = 0; i < nfuns.size(); i++) {
+                auto f = nfuns[i];
+                pre_allocated_function_locations.push_back(
+                    tracy::SourceLocationData { f->name.c_str(), f->name.c_str(), "", 0, 0x880088 });
+            }
+        #endif
+    }
 
     #define REGISTER(N) \
     void operator()(const char *name, const char *ids, const char *typeids, \

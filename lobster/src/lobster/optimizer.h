@@ -21,9 +21,17 @@ struct Optimizer {
     size_t total_changes = 0;
     vector<SubFunction *> sfstack;
     bool functions_removed = false;
+    int runtime_checks;
+    size_t always_inline = 16;
+    size_t never_inline = 256;
 
-    Optimizer(Parser &_p, SymbolTable &_st, TypeChecker &_tc)
-        : parser(_p), st(_st), tc(_tc) {
+    Optimizer(Parser &_p, SymbolTable &_st, TypeChecker &_tc, int runtime_checks)
+        : parser(_p), st(_st), tc(_tc), runtime_checks(runtime_checks) {
+        if (runtime_checks >= RUNTIME_DEBUG) {
+            // User wants to see useful stack-traces, only inline the tiniest of functions.
+            always_inline = 2;
+            never_inline = 4;
+        }
         // We don't optimize parser.root, it only contains a single call.
         for (auto f : parser.st.functiontable) {
             again:
@@ -138,7 +146,13 @@ Node *Call::Optimize(Optimizer &opt) {
     if (is_inlinable) opt.OptimizeFunction(*sf);
     // Check if we should inline this call.
     if (!is_inlinable ||
-        (sf->numcallers > 1 && sf->sbody->Count() >= 16)) { // FIXME: configurable.
+        // Inline small functions even if called multiple times.
+        (sf->numcallers > 1 && sf->sbody->Count() >= opt.always_inline) ||
+        // Don't inline really gigantic functions, this helps with not flattening the call-graph too
+        // much for stack traces, profiling and such, and may also make them easier to reg-alloc etc.
+        (sf->numcallers <= 1 && sf->sbody->Count() >= opt.never_inline) ||
+        // Don't inline functions that are being profiled.
+        (LOBSTER_FRAME_PROFILER && sf->attributes.find("profile") != sf->attributes.end())) {
         return this;
     }
     auto AddToLocals = [&](const vector<Arg> &av) {

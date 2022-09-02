@@ -25,10 +25,11 @@
 
 #include "lobster/simplex.h"
 
+#include "lobster/graphics.h"
+
 #include "ThreadPool/ThreadPool.h"
 
 using namespace lobster;
-
 
 /* TODO:
 
@@ -608,12 +609,14 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
     LOG_DEBUG("meshgen verts = %lu, edgeverts = %lu, tris = %lu, mctris = %lu,"
            " scale = %f\n", verts.size(), edges.size(), triangles.size() / 3,
            mctriangles.size() / 3, gridscale);
-    auto m = new Mesh(new Geometry(gsl::make_span(verts), "PNC"),
+    auto m =
+        new Mesh(new Geometry("polygonize_mc_verts", gsl::make_span(verts), "PNC"),
                       pointmode ? PRIM_POINT : PRIM_TRIS);
     if (pointmode) {
         m->pointsize = 1000 / gridscale;
     } else {
-        m->surfs.push_back(new Surface(gsl::make_span(triangles), PRIM_TRIS));
+        m->surfs.push_back(
+            new Surface("polygonize_mc_idxs", gsl::make_span(triangles), PRIM_TRIS));
     }
     return m;
 }
@@ -666,7 +669,7 @@ Value eval_and_polygonize(VM &vm, int targetgridsize, int zoffset, bool do_poly)
         auto mesh = polygonize_mc(gridsize, gridscale, gridtrans, distgrid, id_grid_to_world);
         MeshGenClear();
         extern ResourceType mesh_type;
-        return Value(vm.NewResource(mesh, &mesh_type));
+        return Value(vm.NewResource(&mesh_type, mesh));
     } else {
         auto cg = CubesFromMeshGen(vm, *distgrid, targetgridsize, zoffset);
         MeshGenClear();

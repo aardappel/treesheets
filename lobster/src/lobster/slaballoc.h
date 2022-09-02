@@ -393,6 +393,8 @@ class SlabAlloc {
                                             waste, " k), ", stats[i], " total allocs");
                     }
                 }
+            #else
+                (void)num;
             #endif
         }
         iint numfree = 0, numused = 0, numlarge = 0;

@@ -238,29 +238,37 @@ nfr("insert", "xs,i,x", "A]*IAkw1", "Ab]1",
         Push(sp, l);
     });
 
-nfr("remove", "xs,i,n", "A]*II?", "A1",
-    "remove element(s) at index i, following elements shift down. pass the number of elements"
-    " to remove as an optional argument, default 1. returns the first element removed.",
+nfr("remove", "xs,i", "A]*I", "A1",
+    "remove element at index i, following elements shift down. returns the element removed.",
     [](StackPtr &sp, VM &vm) {
-        auto n = Pop(sp).ival();
         auto i = Pop(sp).ival();
         auto l = Pop(sp).vval();
-        auto amount = std::max(n, 1_L);
-        if (n < 0 || amount > l->len || i < 0 || i > l->len - amount)
-            vm.BuiltinError(cat("remove: index (", i, ") or n (", amount,
-                                    ") out of range (", l->len, ")"));
-        l->Remove(sp, vm, i, amount, 1, true);
+        if (i < 0 || i >= l->len)
+            vm.BuiltinError(cat("remove: index (", i, ") out of range (", l->len, ")"));
+        l->RemovePush(sp, i);
+    });
+
+nfr("remove_range", "xs,i,n", "A]*II", "",
+    "remove n elements at index i, following elements shift down.",
+    [](StackPtr &sp, VM &vm) {
+        auto amount = Pop(sp).ival();
+        auto i = Pop(sp).ival();
+        auto l = Pop(sp).vval();
+        if (amount < 0 || amount > l->len || i < 0 || i > l->len - amount)
+            vm.BuiltinError(
+                cat("remove: index (", i, ") or n (", amount, ") out of range (", l->len, ")"));
+        l->Remove(vm, i, amount);
     });
 
 nfr("remove_obj", "xs,obj", "A]*A1", "Ab2",
     "remove all elements equal to obj (==), returns obj.",
-    [](StackPtr &sp, VM &vm, Value &l, Value &o) {
+    [](StackPtr &, VM &vm, Value &l, Value &o) {
         iint removed = 0;
         auto vt = vm.GetTypeInfo(l.vval()->ti(vm).subt).t;
         for (iint i = 0; i < l.vval()->len; i++) {
             auto e = l.vval()->At(i);
             if (e.Equal(vm, vt, o, vt, false)) {
-                l.vval()->Remove(sp, vm, i--, 1, 0, false);
+                l.vval()->Remove(vm, i--, 1);
                 removed++;
             }
         }
@@ -375,7 +383,7 @@ nfr("substring", "s,start,size", "SII", "S",
         iint size = e.ival();
         iint start = s.ival();
         if (size < 0) size = l.sval()->len - start;
-        if (start < 0 || start + size > l.sval()->len)
+        if (start < 0 || size < 0 || start + size > l.sval()->len)
             vm.BuiltinError("substring: values out of range");
 
         auto ns = vm.NewString(string_view(l.sval()->data() + start, (size_t)size));
@@ -445,30 +453,37 @@ nfr("string_to_int", "s,base", "SI?", "IB",
         return Value(end == sv.data() + sv.size());
     });
 
-nfr("string_to_float", "s", "S", "F",
-    "converts a string to a float. returns 0.0 if no numeric data could be parsed",
-    [](StackPtr &, VM &, Value &s) {
-        auto f = strtod(s.sval()->data(), nullptr);
-        return Value(f);
+nfr("string_to_float", "s", "S", "FB",
+    "converts a string to a float. returns 0.0 if no numeric data could be parsed;"
+    "second return value is true if all characters of the string were parsed.",
+    [](StackPtr &sp, VM &, Value &s) {
+        char *end;
+        auto sv = s.sval()->strv();
+        auto f = strtod(sv.data(), &end);
+        Push(sp, f);
+        return Value(end == sv.data() + sv.size());
     });
 
-nfr("tokenize", "s,delimiters,whitespace", "SSS", "S]",
+nfr("tokenize", "s,delimiters,whitespace,dividing", "SSSI?", "S]",
     "splits a string into a vector of strings, by splitting into segments upon each dividing or"
     " terminating delimiter. Segments are stripped of leading and trailing whitespace."
-    " Example: \"; A ; B C; \" becomes [ \"\", \"A\", \"B C\" ] with \";\" as delimiter and"
-    " \" \" as whitespace.",
-    [](StackPtr &, VM &vm, Value &s, Value &delims, Value &whitespace) {
+    " Example: \"; A ; B C;; \" becomes [ \"\", \"A\", \"B C\", \"\" ] with \";\" as delimiter and"
+    " \" \" as whitespace. If dividing was true, there would be a 5th empty string element.",
+    [](StackPtr &, VM &vm, Value &s, Value &delims, Value &whitespace, Value &dividing) {
         auto v = (LVector *)vm.NewVec(0, 0, TYPE_ELEM_VECTOR_OF_STRING);
         auto ws = whitespace.sval()->strv();
         auto dl = delims.sval()->strv();
         auto p = s.sval()->strv();
         p.remove_prefix(std::min(p.find_first_not_of(ws), p.size()));
-        while (!p.empty()) {
+        bool has_delim = false;
+        while (!p.empty() || (has_delim && dividing.True())) {
             auto delim = std::min(p.find_first_of(dl), p.size());
-            auto end = std::min(p.find_last_not_of(ws) + 1, delim);
+            auto delimstr = p.substr(0, delim);
+            auto end = std::min(delimstr.find_last_not_of(ws) + 1, delim);
             v->Push(vm, vm.NewString(string_view(p.data(), end)));
             p.remove_prefix(delim);
-            p.remove_prefix(std::min(p.find_first_not_of(dl), p.size()));
+            has_delim = std::min(p.find_first_not_of(dl), p.size()) != 0;
+            if (has_delim) p.remove_prefix(1);
             p.remove_prefix(std::min(p.find_first_not_of(ws), p.size()));
         }
         return Value(v);
@@ -601,15 +616,15 @@ nfr("repeat_string", "s,n", "SI", "S",
 
 #define VECTOROP(op) VECTORVARS VECTOROPNR(elems[i] = Value(op))
 
-nfr("pow", "a,b", "FF", "F",
-    "a raised to the power of b",
-    [](StackPtr &, VM &, Value &a, Value &b) { return Value(pow(a.fval(), b.fval())); });
-
 nfr("pow", "a,b", "II", "I",
     "a raised to the power of b, for integers, using exponentiation by squaring",
     [](StackPtr &, VM &, Value &a, Value &b) {
         return Value(b.ival() >= 0 ? ipow<iint>(a.ival(), b.ival()) : 0);
     });
+
+nfr("pow", "a,b", "FF", "F",
+    "a raised to the power of b",
+    [](StackPtr &, VM &, Value &a, Value &b) { return Value(pow(a.fval(), b.fval())); });
 
 nfr("pow", "a,b", "F}F", "F}",
     "vector elements raised to the power of b",
@@ -857,23 +872,40 @@ nfr("in_range", "x,range,bias", "FFF?", "B",
         return Value(x.fval() >= bias.fval() && x.fval() < bias.fval() + range.fval());
     });
 
-nfr("in_range", "x,range,bias", "I}I}1I}1?", "B",
-    "checks if a 2d/3d integer vector is >= bias and < bias + range. Bias defaults to 0.",
+nfr("in_range", "x,range,bias", "I}:2I}:2I}:2?", "B",
+    "checks if a 2d integer vector is >= bias and < bias + range. Bias defaults to 0.",
     [](StackPtr &sp, VM &) {
-        auto bias = Top(sp).True() ? DangleVec<iint>(sp) : (Pop(sp), ValueVec<iint>());
+        auto bias = DangleVec<iint>(sp);
+        auto range = DangleVec<iint>(sp);
+        auto x = DangleVec<iint>(sp);
+        Push(sp, x.in_range(range, bias));
+    });
+nfr("in_range", "x,range,bias", "I}:3I}:3I}:3?", "B",
+    "checks if a 3d integer vector is >= bias and < bias + range. Bias defaults to 0.",
+    [](StackPtr &sp, VM &) {
+        auto bias = DangleVec<iint>(sp);
         auto range = DangleVec<iint>(sp);
         auto x = DangleVec<iint>(sp);
         Push(sp, x.in_range(range, bias));
     });
 
-nfr("in_range", "x,range,bias", "F}F}1F}1?", "B",
-    "checks if a 2d/3d float vector is >= bias and < bias + range. Bias defaults to 0.",
+nfr("in_range", "x,range,bias", "F}:2F}:2F}:2?", "B",
+    "checks if a 2d float vector is >= bias and < bias + range. Bias defaults to 0.",
     [](StackPtr &sp, VM &) {
-        auto bias = Top(sp).True() ? DangleVec<double>(sp) : (Pop(sp), ValueVec<double>());
+        auto bias = DangleVec<double>(sp);
         auto range = DangleVec<double>(sp);
         auto x = DangleVec<double>(sp);
         Push(sp, x.in_range(range, bias));
     });
+nfr("in_range", "x,range,bias", "F}:3F}:3F}:3?", "B",
+    "checks if a 2d float vector is >= bias and < bias + range. Bias defaults to 0.",
+    [](StackPtr &sp, VM &) {
+        auto bias = DangleVec<double>(sp);
+        auto range = DangleVec<double>(sp);
+        auto x = DangleVec<double>(sp);
+        Push(sp, x.in_range(range, bias));
+    });
+
 
 nfr("abs", "x", "I", "I",
     "absolute value of an integer",
@@ -1279,8 +1311,8 @@ nfr("date_time_string", "utc", "B?", "S",
 nfr("assert", "condition", "A*", "Ab1",
     "halts the program with an assertion failure if passed false. returns its input."
     " runtime errors like this will contain a stack trace if --runtime-verbose is on.",
-    [](StackPtr &, VM &vm, Value &c) {
-        if (c.False()) vm.BuiltinError("assertion failed");
+    [](StackPtr &, VM &, Value &c) {
+        assert(false);  // This builtin implemented as IL_ASSERT.
         return c;
     });
 

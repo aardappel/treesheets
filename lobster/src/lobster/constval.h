@@ -114,6 +114,9 @@ ValueType IsType::ConstVal(TypeChecker *tc, Value &val) const {
         // This may be called from the parser, where we do not support this as a constant.
         return V_VOID;
     }
+    // NOTE: IsType::TypeCheck lifts out the child if it is a side effect, so
+    // we can assume here it doesn't, and thus make the whole exp constant if
+    // the type comparison is a constant.
     // If the exp type is compile-time equal, this is compile-time true,
     // except for class types that have sub-classes, since we don't know if
     // the runtime type would be equal.
@@ -434,7 +437,5 @@ ValueType Dot::ConstVal(TypeChecker *, Value &) const {
 ValueType ToLifetime::ConstVal(TypeChecker *, Value &) const {
     return V_VOID;
 }
-
-
 
 }  // namespace lobster

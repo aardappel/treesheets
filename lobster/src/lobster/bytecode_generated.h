@@ -6,6 +6,13 @@
 
 #include "flatbuffers/flatbuffers.h"
 
+// Ensure the included flatbuffers.h is the same version as when this file was
+// generated, otherwise it may not be compatible.
+static_assert(FLATBUFFERS_VERSION_MAJOR == 2 &&
+              FLATBUFFERS_VERSION_MINOR == 0 &&
+              FLATBUFFERS_VERSION_REVISION == 6,
+             "Non-compatible flatbuffers version included");
+
 namespace bytecode {
 
 struct LineInfo;
@@ -116,7 +123,7 @@ struct Function FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int32_t>(verifier, VT_BYTECODESTART) &&
+           VerifyField<int32_t>(verifier, VT_BYTECODESTART, 4) &&
            verifier.EndTable();
   }
 };
@@ -179,7 +186,7 @@ struct Field FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int32_t>(verifier, VT_OFFSET) &&
+           VerifyField<int32_t>(verifier, VT_OFFSET, 4) &&
            verifier.EndTable();
   }
 };
@@ -250,11 +257,11 @@ struct UDT FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int32_t>(verifier, VT_IDX) &&
+           VerifyField<int32_t>(verifier, VT_IDX, 4) &&
            VerifyOffset(verifier, VT_FIELDS) &&
            verifier.VerifyVector(fields()) &&
            verifier.VerifyVectorOfTables(fields()) &&
-           VerifyField<int32_t>(verifier, VT_SIZE) &&
+           VerifyField<int32_t>(verifier, VT_SIZE, 4) &&
            verifier.EndTable();
   }
 };
@@ -332,7 +339,7 @@ struct EnumVal FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int64_t>(verifier, VT_VAL) &&
+           VerifyField<int64_t>(verifier, VT_VAL, 8) &&
            verifier.EndTable();
   }
 };
@@ -402,7 +409,7 @@ struct Enum FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_VALS) &&
            verifier.VerifyVector(vals()) &&
            verifier.VerifyVectorOfTables(vals()) &&
-           VerifyField<uint8_t>(verifier, VT_FLAGS) &&
+           VerifyField<uint8_t>(verifier, VT_FLAGS, 1) &&
            verifier.EndTable();
   }
 };
@@ -477,8 +484,8 @@ struct Ident FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<uint8_t>(verifier, VT_READONLY) &&
-           VerifyField<uint8_t>(verifier, VT_GLOBAL) &&
+           VerifyField<uint8_t>(verifier, VT_READONLY, 1) &&
+           VerifyField<uint8_t>(verifier, VT_GLOBAL, 1) &&
            verifier.EndTable();
   }
 };
@@ -586,7 +593,7 @@ struct BytecodeFile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_BYTECODE_VERSION) &&
+           VerifyField<int32_t>(verifier, VT_BYTECODE_VERSION, 4) &&
            VerifyOffset(verifier, VT_BYTECODE) &&
            verifier.VerifyVector(bytecode()) &&
            VerifyOffset(verifier, VT_TYPETABLE) &&
@@ -756,6 +763,11 @@ inline const char *BytecodeFileIdentifier() {
 inline bool BytecodeFileBufferHasIdentifier(const void *buf) {
   return flatbuffers::BufferHasIdentifier(
       buf, BytecodeFileIdentifier());
+}
+
+inline bool SizePrefixedBytecodeFileBufferHasIdentifier(const void *buf) {
+  return flatbuffers::BufferHasIdentifier(
+      buf, BytecodeFileIdentifier(), true);
 }
 
 inline bool VerifyBytecodeFileBuffer(

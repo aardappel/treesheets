@@ -15,6 +15,8 @@
 // IQM model loader, see: http://sauerbraten.org/iqm/ https://github.com/lsalzman/iqm
 
 #include "lobster/stdafx.h"
+
+#include "lobster/vmdata.h"
 #include "lobster/glinterface.h"
 
 #define IQM_MAGIC "INTERQUAKEMODEL"
@@ -337,11 +339,11 @@ Mesh *LoadIQM(string_view filename) {
     if (!innormal)
         normalize_mesh(gsl::make_span((int *)tris, numtris * 3), verts.data(), numverts, sizeof(AnimVert),
                        (uint8_t *)&verts[0].norm - (uint8_t *)&verts[0].pos);
-    auto geom = new Geometry(gsl::make_span(verts), "PNTCWI");
+    auto geom = new Geometry(filename, gsl::make_span(verts), "PNTCWI");
     auto mesh = new Mesh(geom);
     for (int i = 0; i < nummeshes; i++) {
         auto surf =
-            new Surface(gsl::make_span((int *)(tris + meshes[i].first_triangle), meshes[i].num_triangles * 3));
+            new Surface(filename, gsl::make_span((int *)(tris + meshes[i].first_triangle), meshes[i].num_triangles * 3));
         surf->name = textures[i];
         mesh->surfs.push_back(surf);
     }

@@ -19,6 +19,8 @@
 #include "lobster/glinterface.h"
 #include "lobster/sdlinterface.h"
 
+#include "lobster/graphics.h"
+
 using namespace lobster;
 
 Primitive polymode = PRIM_FAN;
@@ -28,30 +30,19 @@ float3 lasthitsize = float3_0;
 float3 lastframehitsize = float3_0;
 bool graphics_initialized = false;
 
-ResourceType mesh_type = {
-    "mesh",
-    [](void *m) { delete (Mesh *)m; },
-    nullptr,
-    [](void *m) { return ((Mesh *)m)->MemoryUsage(); }
-};
-
-ResourceType texture_type = {
-    "texture",
-    [](void *t) {
-        auto tex = (Texture *)t;
-        DeleteTexture(*tex);
-        delete tex;
-    },
-    nullptr,
-    [](void *t) { return ((Texture *)t)->MemoryUsage(); }
-};
+ResourceType mesh_type = { "mesh" };
+ResourceType texture_type = { "texture" };
+ResourceType shader_type = { "shader" };
 
 Mesh &GetMesh(Value &res) {
-    return *GetResourceDec<Mesh *>(res, &mesh_type);
+    return GetResourceDec<Mesh>(res, &mesh_type);
 }
 Texture GetTexture(const Value &res) {
-    auto tex = GetResourceDec<Texture *>(res, &texture_type);
-    return tex ? *tex : Texture();
+    if (res.False()) return Texture();
+    return GetResourceDec<OwnedTexture>(res, &texture_type).t;
+}
+Shader &GetShader(Value &res) {
+    return GetResourceDec<Shader>(res, &shader_type);
 }
 
 // Should be safe to call even if it wasn't initialized partially or at all.
@@ -131,7 +122,7 @@ Mesh *CreatePolygon(VM &vm, Value &vl) {
         vbuf[i].tc = vbuf[i].pos.xy();
         vbuf[i].col = byte4_255;
     }
-    auto m = new Mesh(new Geometry(gsl::make_span(vbuf), "PNTC"), polymode);
+    auto m = new Mesh(new Geometry("CreatePolygon", gsl::make_span(vbuf), "PNTC"), polymode);
     return m;
 }
 
@@ -151,7 +142,7 @@ Value SetUniform(VM &vm, const Value &name, const int *data, int len) {
 
 void AddGraphics(NativeRegistry &nfr) {
 
-nfr("gl_window", "title,xs,ys,flags,samples", "SIII?I?", "S?",
+nfr("gl_window", "title,xs,ys,flags,samples", "SIII?I?:1", "S?",
     "opens a window for OpenGL rendering. returns error string if any problems, nil"
     " otherwise. For flags, see modules/gl.lobster",
     [](StackPtr &, VM &vm, Value &title, Value &xs, Value &ys, Value &flags, Value &samples) {
@@ -627,7 +618,7 @@ nfr("gl_rect_tc_col", "size,tc,tcsize,cols", "F}:2F}:2F}:2F}:4]", "",
             { sz.x, 0,    0, te.x, t.y,  _GETCOL(3) }
         };
         currentshader->Set();
-        RenderArraySlow(PRIM_FAN, gsl::make_span(vb_square, 4), "PTC");
+        RenderArraySlow("gl_rect_tc_col", PRIM_FAN, gsl::make_span(vb_square, 4), "PTC");
     });
 
 nfr("gl_unit_square", "centered", "I?", "",
@@ -654,12 +645,10 @@ nfr("gl_perspective", "fovy,znear,zfar,frame_buffer_size,frame_buffer_offset", "
     " 60), far plane (furthest you want to be able to render, try 1000) and near plane (try"
     " 1). Optionally specify a framebuffer size to override the current gl_framebuffer_size",
     [](StackPtr &sp, VM &) {
-        int2 fbo = Top(sp).True()
-            ? PopVec<int2>(sp)
-            : (Pop(sp), int2_0);
-        int2 fbs = Top(sp).True()
-            ? PopVec<int2>(sp)
-            : (Pop(sp), GetFrameBufferSize(GetScreenSize()) - fbo);
+        int2 fbo = PopVec<int2>(sp);
+        int2 fbs = PopVec<int2>(sp);
+        if (fbs.x + fbs.y == 0)
+            fbs = GetFrameBufferSize(GetScreenSize()) - fbo;
         auto zfar = Pop(sp).fltval();
         auto znear = Pop(sp).fltval();
         auto fovy = Pop(sp).fltval();
@@ -692,7 +681,7 @@ nfr("gl_new_poly", "positions", "F}]", "R:mesh",
     " returns mesh id",
     [](StackPtr &, VM &vm, Value &positions) {
         auto m = CreatePolygon(vm, positions);
-        return Value(vm.NewResource(m, &mesh_type));
+        return Value(vm.NewResource(&mesh_type, m));
     });
 
 nfr("gl_new_mesh", "format,positions,colors,normals,texcoords1,texcoords2,indices", "SF}:3]F}:4]F}:3]F}:2]F}:2]I]?", "R:mesh",
@@ -769,12 +758,12 @@ nfr("gl_new_mesh", "format,positions,colors,normals,texcoords1,texcoords2,indice
             // if no normals were specified, generate them.
             normalize_mesh(gsl::make_span(idxs), verts, nverts, vsize, normal_offset);
         }
-        auto m = new Mesh(
-            new Geometry(gsl::make_span(verts, nverts * vsize), fmt, gsl::span<uint8_t>(), vsize),
+        auto m = new Mesh(new Geometry("gl_new_mesh_verts", gsl::make_span(verts, nverts * vsize), fmt,
+                                       gsl::span<uint8_t>(), vsize),
                           indices.True() ? PRIM_TRIS : PRIM_POINT);
-        if (idxs.size()) m->surfs.push_back(new Surface(gsl::make_span(idxs)));
+        if (idxs.size()) m->surfs.push_back(new Surface("gl_new_mesh_idxs", gsl::make_span(idxs)));
         delete[] verts;
-        return Value(vm.NewResource(m, &mesh_type));
+        return Value(vm.NewResource(&mesh_type, m));
     });
 
 nfr("gl_new_mesh_iqm", "filename", "S", "R:mesh?",
@@ -782,7 +771,7 @@ nfr("gl_new_mesh_iqm", "filename", "S", "R:mesh?",
     [](StackPtr &, VM &vm, Value &fn) {
         TestGL(vm);
         auto m = LoadIQM(fn.sval()->strv());
-        return m ? Value(vm.NewResource(m, &mesh_type)) : NilVal();
+        return m ? Value(vm.NewResource(&mesh_type, m)) : NilVal();
     });
 
 nfr("gl_mesh_parts", "m", "R:mesh", "S]",
@@ -844,6 +833,23 @@ nfr("gl_set_shader", "shader", "S", "",
         if (!sh) vm.BuiltinError("no such shader: " + shader.sval()->strv());
         currentshader = sh;
         return NilVal();
+    });
+
+nfr("gl_set_shader", "shader", "R:shader", "",
+    "changes the current shader from a value received from gl_get_shader",
+    [](StackPtr &, VM &vm, Value &shader) {
+        TestGL(vm);
+        currentshader = &GetShader(shader);
+        return NilVal();
+    });
+
+nfr("gl_get_shader", "shader", "S", "R:shader",
+    "gets a shader by name, for use with gl_set_shader",
+    [](StackPtr &, VM &vm, Value &shader) {
+        TestGL(vm);
+        auto sh = LookupShader(shader.sval()->strv());
+        if (!sh) vm.BuiltinError("no such shader: " + shader.sval()->strv());
+        return Value(vm.NewResource(&shader_type, sh)->NotOwned());
     });
 
 nfr("gl_set_uniform", "name,value", "SF}", "B",
@@ -984,7 +990,7 @@ nfr("gl_load_texture", "name,textureformat", "SI?", "R:texture?",
     [](StackPtr &, VM &vm, Value &name, Value &tf) {
         TestGL(vm);
         auto tex = CreateTextureFromFile(name.sval()->strv(), tf.intval());
-        return tex.id ? vm.NewResource(new Texture(tex), &texture_type) : NilVal();
+        return tex.id ? vm.NewResource(&texture_type, new OwnedTexture(tex)) : NilVal();
     });
 
 nfr("gl_set_primitive_texture", "i,tex,textureformat", "IR:textureI?", "I",
@@ -1034,9 +1040,9 @@ nfr("gl_create_texture", "matrix,textureformat", "F}:4]]I?", "R:texture",
                 else                      ((byte4  *)buf)[idx] = quantizec(col);
             }
         }
-        auto tex = CreateTexture(buf, int3((int)xs, (int)ys, 0), tf.intval());
+        auto tex = CreateTexture("gl_create_texture", buf, int3((int)xs, (int)ys, 0), tf.intval());
         delete[] buf;
-        return Value(vm.NewResource(new Texture(tex), &texture_type));
+        return Value(vm.NewResource(&texture_type, new OwnedTexture(tex)));
     });
 
 nfr("gl_create_blank_texture", "size,color,textureformat", "I}:2F}:4I?", "R:texture",
@@ -1047,8 +1053,8 @@ nfr("gl_create_blank_texture", "size,color,textureformat", "I}:2F}:4I?", "R:text
         auto tf = Pop(sp).intval();
         auto col = PopVec<float4>(sp);
         auto size = PopVec<int2>(sp);
-        auto tex = CreateBlankTexture(size, col, tf);
-        Push(sp,  vm.NewResource(new Texture(tex), &texture_type));
+        auto tex = CreateBlankTexture("gl_create_blank_texture", size, col, tf);
+        Push(sp, vm.NewResource(&texture_type, new OwnedTexture(tex)));
     });
 
 nfr("gl_texture_size", "tex", "R:texture", "I}:2",
@@ -1141,7 +1147,7 @@ nfr("gl_render_tiles", "positions,tilecoords,mapsize", "F}:2]I}:2]I}:2", "",
             vbuf[i * 6 + 5].tc = t + float2_x / msize;
         }
         currentshader->Set();
-        RenderArraySlow(PRIM_TRIS, gsl::make_span(vbuf), "pT");
+        RenderArraySlow("gl_render_tiles", PRIM_TRIS, gsl::make_span(vbuf), "pT");
     });
 
 nfr("gl_debug_grid", "num,dist,thickness", "I}:3F}:3F", "",

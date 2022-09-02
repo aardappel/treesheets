@@ -303,6 +303,14 @@ struct CodeGen  {
         while (retval--) EmitOp(IL_PUSHNIL);
     }
 
+    void GenStatDebug(const Node *c) {
+        if (runtime_checks >= RUNTIME_ASSERT_PLUS) {
+            EmitOp(IL_STATEMENT);
+            Emit(c->line.line);
+            Emit(c->line.fileidx);
+        }
+    }
+
     void GenScope(SubFunction &sf) {
         if (sf.subbytecodestart > 0) return;
         cursf = &sf;
@@ -349,14 +357,23 @@ struct CodeGen  {
         // ownership of them.
         Emit((int)ownedvars.size());
         for (auto si : ownedvars) Emit(si);
-        if (sf.sbody) for (auto c : sf.sbody->children) {
-            Gen(c, 0);
-            if (runtime_checks >= RUNTIME_ASSERT_PLUS) {
-                EmitOp(IL_ENDSTATEMENT);
-                Emit(c->line.line);
-                Emit(c->line.fileidx);
-                assert(tstack.empty());
+        auto profile = sf.attributes.find("profile");
+        if (LOBSTER_FRAME_PROFILER && profile != sf.attributes.end()) {
+            EmitOp(IL_PROFILE);
+            auto str = string(profile->second);
+            if (str.empty()) {
+                str = sf.parent->name;
+                if (!sf.args.empty() && !sf.parent->overloads.empty()) {
+                    append(str, "(", TypeName(sf.args[0].type), (sf.args.size() > 1 ? ", .." : ""), ")");
+                }
             }
+            Emit((int)stringtable.size());
+            stringtable.push_back(st.StoreName(str));
+        }
+        if (sf.sbody) for (auto c : sf.sbody->children) {
+            GenStatDebug(c);
+            Gen(c, 0);
+            assert(tstack.empty());
         }
         else Dummy(sf.reqret);
         assert(temptypestack.empty());
@@ -937,13 +954,7 @@ void StringConstant::Generate(CodeGen &cg, size_t retval) const {
 
 void DefaultVal::Generate(CodeGen &cg, size_t retval) const {
     if (!retval) return;
-    // Optional args are indicated by being nillable, but for structs passed to builtins the type
-    // has already been made non-nil.
-    switch (exptype->ElementIfNil()->t) {
-        case V_INT:   cg.EmitOp(IL_PUSHINT); cg.Emit(0); break;
-        case V_FLOAT: cg.GenFloat(0); break;
-        default:      cg.EmitOp(IL_PUSHNIL); break;
-    }
+    cg.EmitOp(IL_PUSHNIL);
 }
 
 void IdentRef::Generate(CodeGen &cg, size_t retval) const {
@@ -981,6 +992,9 @@ void AssignList::Generate(CodeGen &cg, size_t retval) const {
 }
 
 void Define::Generate(CodeGen &cg, size_t retval) const {
+    if (Is<DefaultVal>(child)) {
+        return;  // Pre-decl. 
+    }
     cg.Gen(child, sids.size());
     for (size_t i = sids.size(); i-- > 0; ) {
         auto sid = sids[i].first;
@@ -1162,7 +1176,7 @@ void ToLifetime::Generate(CodeGen &cg, size_t retval) const {
                     // TODO: alternatively emit a single op with a list or bitmask? see EmitBitMaskForRefStuct
                     for (int j = 0; j < type->udt->numslots; j++) {
                         if (IsRefNil(FindSlot(*type->udt, j)->resolvedtype()->t))
-                            cg.EmitKeep(stack_offset + j, 0);
+                            cg.EmitKeep(stack_offset + (type->udt->numslots - j - 1), 0);
                     }
                 } else {
                     cg.EmitKeep(stack_offset, 0);
@@ -1226,7 +1240,7 @@ void NativeCall::Generate(CodeGen &cg, size_t retval) const {
         // A frequently used function that doesn't actually do anything by itself, so ensure it
         // doesn't get emitted.
         cg.Gen(children[0], retval);
-        cg.TakeTemp(1, false);
+        if (retval) cg.TakeTemp(1, false);
         return;
     }
     // TODO: could pass arg types in here if most exps have types, cheaper than
@@ -1295,6 +1309,7 @@ void Block::Generate(CodeGen &cg, size_t retval) const {
     auto tstack_start = cg.tstack.size();
     (void)tstack_start;
     for (auto c : children) {
+        cg.GenStatDebug(c);
         if (c != children.back()) {
             // Not the last element.
             cg.Gen(c, 0);

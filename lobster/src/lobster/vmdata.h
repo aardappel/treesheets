@@ -15,8 +15,6 @@
 #ifndef LOBSTER_VMDATA
 #define LOBSTER_VMDATA
 
-#include "il.h"
-
 namespace bytecode { struct BytecodeFile; }  // FIXME
 
 namespace lobster {
@@ -262,17 +260,31 @@ struct LString : RefObj {
 struct ResourceType;
 extern ResourceType *g_resource_type_list;
 
-struct LResource : RefObj {
-    void *val;
-    const ResourceType *type;
+struct Resource : NonCopyable {
+    virtual ~Resource() {}
+    virtual size_t2 MemoryUsage() {
+        return size_t2(sizeof(Resource), 0);
+    }
+};
 
-    LResource(void *v, const ResourceType *t);
+struct LResource : RefObj {
+    const ResourceType *type;
+    Resource *res;
+    bool owned = true;
+
+    LResource(const ResourceType *t, Resource *res);
 
     void ToString(string &sd);
     void DeleteSelf(VM &vm);
 
-    
-    size_t2 MemoryUsage();
+    size_t2 MemoryUsage() {
+        return res->MemoryUsage() + size_t2(sizeof(LResource), 0);
+    }
+
+    LResource *NotOwned() {
+        owned = false;
+        return this;
+    }
 };
 
 #if RTT_ENABLED
@@ -693,7 +705,8 @@ struct LVector : RefObj {
         tsnz_memcpy(v + i * width, vals, width);
     }
 
-    void Remove(StackPtr &sp, VM &vm, iint i, iint n, iint decfrom, bool stack_ret);
+    void RemovePush(StackPtr &sp, iint i);
+    void Remove(VM &vm, iint i, iint n);
 
     Value *Elems() { return v; }
     const Value *Elems() const { return v; }
@@ -798,10 +811,11 @@ struct TupleSpace {
 };
 
 enum class TraceMode { OFF, ON, TAIL };
+enum { RUNTIME_NO_ASSERT, RUNTIME_ASSERT, RUNTIME_ASSERT_PLUS, RUNTIME_DEBUG };
 
 struct VMArgs {
     NativeRegistry &nfr;
-    string_view programname;
+    string programname;
     const uint8_t *static_bytecode = nullptr;
     size_t static_size = 0;
     vector<string> program_args;
@@ -809,6 +823,7 @@ struct VMArgs {
     fun_base_t jit_entry = nullptr;
     TraceMode trace = TraceMode::OFF;
     bool dump_leaks = true;
+    int runtime_checks = RUNTIME_ASSERT;
 };
 
 struct VM : VMArgs {
@@ -869,8 +884,16 @@ struct VM : VMArgs {
     struct FunStack {
         const int *funstartinfo;
         StackPtr locals;
+        int line;
+        int fileidx;
+        #if LOBSTER_FRAME_PROFILER_FUNCTIONS
+            ___tracy_c_zone_context ctx;
+        #endif
     };
     vector<FunStack> fun_id_stack;
+    #if LOBSTER_FRAME_PROFILER
+        vector<___tracy_source_location_data> pre_allocated_function_locations;
+    #endif
 
     vector<Value> fvar_def_backup;
 
@@ -890,7 +913,10 @@ struct VM : VMArgs {
 
     string_view GetProgramName() { return programname; }
 
-    int DumpVar(string &sd, Value *x, int idx);
+    typedef function<void(VM &, string_view, const TypeInfo &, Value *)> DumperFun;
+    void DumpVar(Value *locals, int idx, int &j, int &jl, const DumperFun &dump);
+    void DumpStackFrame(const int *fip, Value *locals, const DumperFun &dump);
+    pair<string, const int *> DumpStackFrameStart(FunStack &funstackelem);
     void DumpStackTrace(string &sd);
 
     void DumpVal(RefObj *ro, const char *prefix);
@@ -903,15 +929,16 @@ struct VM : VMArgs {
     void OnAlloc(RefObj *ro);
     LVector *NewVec(iint initial, iint max, type_elem_t tti);
     LObject *NewObject(iint max, type_elem_t tti);
-    LResource *NewResource(void *v, const ResourceType *t);
     LString *NewString(iint l);
     LString *NewString(string_view s);
     LString *NewString(string_view s1, string_view s2);
     LString *ResizeString(LString *s, iint size, int c, bool back);
+    LResource *NewResource(const ResourceType *type, Resource *res);
 
     Value Error(string err);
     Value BuiltinError(string err) { return Error(err); }
     Value SeriousError(string err);
+    Value NormalExit(string err);
     void ErrorBase(const string &err);
     void VMAssert(const char *what);
     void UnwindOnError();
@@ -1018,11 +1045,27 @@ VM_INLINE int RetSlots(VM &vm) {
 }
 
 VM_INLINE void PushFunId(VM &vm, const int *funstart, StackPtr locals) {
-    vm.fun_id_stack.push_back({ funstart, locals });
+    vm.fun_id_stack.push_back({ funstart, locals, vm.last_line, vm.last_fileidx,
+    #if LOBSTER_FRAME_PROFILER_FUNCTIONS
+        , ___tracy_emit_zone_begin(&vm.pre_allocated_function_locations[*funstart], true)
+    #endif
+    });
 }
 VM_INLINE void PopFunId(VM &vm) {
+    #if LOBSTER_FRAME_PROFILER_FUNCTIONS
+        ___tracy_emit_zone_end(vm.fun_id_stack.back().ctx);
+    #endif
     vm.fun_id_stack.pop_back();
 }
+
+#if LOBSTER_FRAME_PROFILER
+VM_INLINE TracyCZoneCtx StartProfile(___tracy_source_location_data *tsld) {
+    return ___tracy_emit_zone_begin(tsld, true);
+}
+VM_INLINE void EndProfile(TracyCZoneCtx ctx) {
+    ___tracy_emit_zone_end(ctx);
+}
+#endif
 
 template<typename T, int N> void PushVec(StackPtr &sp, const vec<T, N> &v, int truncate = 4) {
     auto l = std::min(N, truncate);
@@ -1130,13 +1173,12 @@ inline iint RangeCheck(VM &vm, const Value &idx, iint range, iint bias = 0) {
 }
 
 
-template<typename T> inline T GetResourceDec(const Value &val, const ResourceType *type) {
-    if (val.False())
-        return nullptr;
+template<typename T> inline T &GetResourceDec(const Value &val, const ResourceType *type) {
+    assert(val.True());
     auto x = val.xval();
-    assert(x->type == type);  // If hit, the `R:type` your specified is not the same as `type`.
+    assert(x->type == type);  // If hit, the `R:type` you specified is not the same as `type`.
     (void)type;
-    return (T)x->val;
+    return *(T *)x->res;
 }
 
 inline vector<string> ValueToVectorOfStrings(Value &v) {

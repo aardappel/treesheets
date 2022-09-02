@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "lobster/stdafx.h"
+
+#include "lobster/vmdata.h"
 #include "lobster/glinterface.h"
 #include "lobster/glincludes.h"
 #include "lobster/sdlinterface.h"
@@ -196,6 +198,7 @@ string ParseMaterialFile(string_view mbuf) {
                         bool cubemap = false;
                         bool floatingp = false;
                         bool d3 = false;
+                        bool Uav = accum == &compute;
                         if (starts_with(tp, "cube")) {
                             tp.remove_prefix(4);
                             cubemap = true;
@@ -208,13 +211,18 @@ string ParseMaterialFile(string_view mbuf) {
                             tp.remove_prefix(1);
                             floatingp = true;
                         }
+                        if (starts_with(tp, "Uav")) {
+                            tp.remove_prefix(3);
+                            Uav = true;
+                        }
                         auto unit = parse_int<int>(tp);
-                        if (accum == &compute) {
+                        if (Uav)
+                        {
                             decl += cat("layout(binding = ", unit, ", ",
                                         (floatingp ? "rgba32f" : "rgba8"), ") ");
                         }
                         decl += "uniform ";
-                        decl += accum == &compute ? (cubemap ? "imageCube" : "image2D")
+                        decl += Uav ? (cubemap ? "imageCube" : "image2D")
                                                   : (cubemap ? "samplerCube" : (d3 ? "sampler3D" :
                                                                                      "sampler2D"));
                         decl += " " + last + ";\n";
@@ -281,13 +289,16 @@ string LoadMaterialFile(string_view mfile) {
     return err;
 }
 
-string Shader::Compile(const char *name, const char *vscode, const char *pscode) {
+string Shader::Compile(string_view name, const char *vscode, const char *pscode) {
     program = glCreateProgram();
+    GL_NAME(GL_PROGRAM, program, name);
     string err;
-    vs = CompileGLSLShader(GL_VERTEX_SHADER,   program, vscode, err);
+    vs = CompileGLSLShader(GL_VERTEX_SHADER, program, vscode, err);
     if (!vs) return string_view("couldn't compile vertex shader: ") + name + "\n" + err;
+    GL_NAME(GL_SHADER, vs, name + "_vs");
     ps = CompileGLSLShader(GL_FRAGMENT_SHADER, program, pscode, err);
     if (!ps) return string_view("couldn't compile pixel shader: ") + name + "\n" + err;
+    GL_NAME(GL_SHADER, ps, name + "_ps");
     GL_CALL(glBindAttribLocation(program, VATRR_POS, "apos"));
     GL_CALL(glBindAttribLocation(program, VATRR_NOR, "anormal"));
     GL_CALL(glBindAttribLocation(program, VATRR_TC1, "atc"));
@@ -298,19 +309,21 @@ string Shader::Compile(const char *name, const char *vscode, const char *pscode)
     return Link(name);
 }
 
-string Shader::Compile(const char *name, const char *cscode) {
+string Shader::Compile(string_view name, const char *cscode) {
     #ifdef PLATFORM_WINNIX
         program = glCreateProgram();
+        GL_NAME(GL_PROGRAM, program, name);
         string err;
         cs = CompileGLSLShader(GL_COMPUTE_SHADER, program, cscode, err);
         if (!cs) return string_view("couldn't compile compute shader: ") + name + "\n" + err;
+        GL_NAME(GL_SHADER, cs, name + "_cs");
         return Link(name);
     #else
         return "compute shaders not supported";
     #endif
 }
 
-string Shader::Link(const char *name) {
+string Shader::Link(string_view name) {
     GL_CALL(glLinkProgram(program));
     GLint status;
     GL_CALL(glGetProgramiv(program, GL_LINK_STATUS, &status));
@@ -446,9 +459,6 @@ void DispatchCompute(const int3 &groups) {
 
 // Simple function for getting some uniform / shader storage attached to a shader. Should ideally
 // be split up for more flexibility.
-// Use this for reusing BO's for now:
-struct BOEntry { int bo; int bpi; size_t size; };
-map<string, BOEntry, less<>> ubomap;
 // Note that bo_binding_point_index is assigned automatically based on unique block names.
 // You can also specify these in the shader using `binding=`, but GL doesn't seem to have a way
 // to retrieve these programmatically.
@@ -456,6 +466,7 @@ map<string, BOEntry, less<>> ubomap;
 // If offset < 0 then its a buffer replacement/creation.
 int UniformBufferObject(Shader *sh, const void *data, size_t len, ptrdiff_t offset,
                          string_view uniformblockname, bool ssbo, int bo) {
+    LOBSTER_FRAME_PROFILE_THIS_FUNCTION;
     #ifdef PLATFORM_WINNIX
         if (sh && glGetProgramResourceIndex && glShaderStorageBlockBinding && glBindBufferBase &&
                   glUniformBlockBinding && glGetUniformBlockIndex) {
@@ -472,13 +483,13 @@ int UniformBufferObject(Shader *sh, const void *data, size_t len, ptrdiff_t offs
             if (idx != GL_INVALID_INDEX && len <= size_t(maxsize)) {
                 auto type = ssbo ? GL_SHADER_STORAGE_BUFFER : GL_UNIFORM_BUFFER;
                 static int binding_point_index_alloc = 0;
-                auto it = ubomap.find(uniformblockname);
+                auto it = sh->ubomap.find(uniformblockname);
                 int bo_binding_point_index = 0;
-                if (it == ubomap.end()) {
+                if (it == sh->ubomap.end()) {
                     assert(offset < 0);
-                    if (data) bo = GenBO_(type, len, data);
+                    if (data) bo = GenBO_("UniformBufferObject", type, len, data);
                     bo_binding_point_index = binding_point_index_alloc++;
-                    ubomap[string(uniformblockname)] = { bo, bo_binding_point_index, len };
+                    sh->ubomap[string(uniformblockname)] = { bo, bo_binding_point_index, len };
 				} else {
                     if (data) bo = it->second.bo;
                     bo_binding_point_index = it->second.bpi;
@@ -536,7 +547,7 @@ bool Shader::Dump(string_view filename, bool stripnonascii) {
         return (c < ' ' || c > '~') && c != '\n' && c != '\t';
       }), buf.end());
     }
-    return WriteFile(filename, true, buf);
+    return WriteFile(filename, true, buf, false);
   #else
     return false;
   #endif

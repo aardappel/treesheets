@@ -401,7 +401,7 @@ nfr("flexbuffers_binary_to_value", "typeid,flex", "TS", "A1?S?",
     [](StackPtr &sp, VM &vm) {
         auto fsv = Pop(sp).sval()->strv();
         auto id = Pop(sp).ival();
-        vector<bool> reuse_buffer;
+        vector<uint8_t> reuse_buffer;
         if (flexbuffers::VerifyBuffer((const uint8_t *)fsv.data(), fsv.size(), &reuse_buffer)) {
             auto root = flexbuffers::GetRoot((const uint8_t *)fsv.data(), fsv.size());
             ParseFlexData(sp, vm, (type_elem_t)id, root);
@@ -416,7 +416,7 @@ nfr("flexbuffers_binary_to_json", "flex,field_quotes", "SB?", "S?S?",
     [](StackPtr &sp, VM &vm) {
         auto quoted = Pop(sp).ival();
         auto fsv = Pop(sp).sval()->strv();
-        vector<bool> reuse_buffer;
+        vector<uint8_t> reuse_buffer;
         if (flexbuffers::VerifyBuffer((const uint8_t *)fsv.data(), fsv.size(), &reuse_buffer)) {
             auto root = flexbuffers::GetRoot((const uint8_t *)fsv.data(), fsv.size());
             string json;

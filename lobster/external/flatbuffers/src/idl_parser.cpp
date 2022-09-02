@@ -93,33 +93,6 @@ static bool IsLowerSnakeCase(const std::string &str) {
   return true;
 }
 
-// Convert an underscore_based_identifier in to camelCase.
-// Also uppercases the first character if first is true.
-std::string MakeCamel(const std::string &in, bool first) {
-  std::string s;
-  for (size_t i = 0; i < in.length(); i++) {
-    if (!i && first)
-      s += CharToUpper(in[0]);
-    else if (in[i] == '_' && i + 1 < in.length())
-      s += CharToUpper(in[++i]);
-    else
-      s += in[i];
-  }
-  return s;
-}
-
-// Convert an underscore_based_identifier in to screaming snake case.
-std::string MakeScreamingCamel(const std::string &in) {
-  std::string s;
-  for (size_t i = 0; i < in.length(); i++) {
-    if (in[i] != '_')
-      s += CharToUpper(in[i]);
-    else
-      s += in[i];
-  }
-  return s;
-}
-
 void DeserializeDoc(std::vector<std::string> &doc,
                     const Vector<Offset<String>> *documentation) {
   if (documentation == nullptr) return;
@@ -144,7 +117,10 @@ void Parser::Message(const std::string &msg) {
 }
 
 void Parser::Warning(const std::string &msg) {
-  if (!opts.no_warnings) Message("warning: " + msg);
+  if (!opts.no_warnings) {
+    Message("warning: " + msg);
+    has_warning_ = true;  // for opts.warnings_as_errors
+  }
 }
 
 CheckedError Parser::Error(const std::string &msg) {
@@ -513,10 +489,21 @@ CheckedError Parser::Next() {
         }
 
         const auto has_sign = (c == '+') || (c == '-');
-        if (has_sign && IsIdentifierStart(*cursor_)) {
-          // '-'/'+' and following identifier - it could be a predefined
-          // constant. Return the sign in token_, see ParseSingleValue.
-          return NoError();
+        if (has_sign) {
+          // Check for +/-inf which is considered a float constant.
+          if (strncmp(cursor_, "inf", 3) == 0 &&
+              !(IsIdentifierStart(cursor_[3]) || is_digit(cursor_[3]))) {
+            attribute_.assign(cursor_ - 1, cursor_ + 3);
+            token_ = kTokenFloatConstant;
+            cursor_ += 3;
+            return NoError();
+          }
+
+          if (IsIdentifierStart(*cursor_)) {
+            // '-'/'+' and following identifier - it could be a predefined
+            // constant. Return the sign in token_, see ParseSingleValue.
+            return NoError();
+          }
         }
 
         auto dot_lvl =
@@ -918,7 +905,7 @@ CheckedError Parser::ParseField(StructDef &struct_def) {
     }
     if (!SupportsOptionalScalars()) {
       return Error(
-          "Optional scalars are not yet supported in at least one the of "
+          "Optional scalars are not yet supported in at least one of "
           "the specified programming languages.");
     }
   }
@@ -1125,6 +1112,10 @@ CheckedError Parser::ParseAnyValue(Value &val, FieldDef *field,
       }
       uint8_t enum_idx;
       if (vector_of_union_types) {
+        if (vector_of_union_types->size() <= count)
+          return Error(
+              "union types vector smaller than union values vector for: " +
+              field->name);
         enum_idx = vector_of_union_types->Get(count);
       } else {
         ECHECK(atot(constant.c_str(), *this, &enum_idx));
@@ -1344,10 +1335,18 @@ CheckedError Parser::ParseTable(const StructDef &struct_def, std::string *value,
                 ECHECK(atot(field_value.constant.c_str(), *this, &val)); \
                 builder_.PushElement(val); \
               } else { \
-                CTYPE val, valdef; \
-                ECHECK(atot(field_value.constant.c_str(), *this, &val)); \
-                ECHECK(atot(field->value.constant.c_str(), *this, &valdef)); \
-                builder_.AddElement(field_value.offset, val, valdef); \
+                if (field->IsScalarOptional()) { \
+                  if (field_value.constant != "null") { \
+                    CTYPE val; \
+                    ECHECK(atot(field_value.constant.c_str(), *this, &val)); \
+                    builder_.AddElement(field_value.offset, val); \
+                  } \
+                } else { \
+                  CTYPE val, valdef; \
+                  ECHECK(atot(field_value.constant.c_str(), *this, &val)); \
+                  ECHECK(atot(field->value.constant.c_str(), *this, &valdef)); \
+                  builder_.AddElement(field_value.offset, val, valdef); \
+                } \
               } \
               break;
             FLATBUFFERS_GEN_TYPES_SCALAR(FLATBUFFERS_TD)
@@ -1671,7 +1670,13 @@ CheckedError Parser::ParseNestedFlatbuffer(Value &val, FieldDef *field,
                                            size_t fieldn,
                                            const StructDef *parent_struct_def) {
   if (token_ == '[') {  // backwards compat for 'legacy' ubyte buffers
-    ECHECK(ParseAnyValue(val, field, fieldn, parent_struct_def, 0));
+    if (opts.json_nested_legacy_flatbuffers) {
+      ECHECK(ParseAnyValue(val, field, fieldn, parent_struct_def, 0));
+    } else {
+      return Error(
+          "cannot parse nested_flatbuffer as bytes unless"
+          " --json-nested-bytes is set");
+    }
   } else {
     auto cursor_at_value_begin = cursor_;
     ECHECK(SkipAnyJsonValue());
@@ -2159,9 +2164,7 @@ void EnumDef::SortByValue() {
     });
   else
     std::sort(v.begin(), v.end(), [](const EnumVal *e1, const EnumVal *e2) {
-      if (e1->GetAsInt64() == e2->GetAsInt64()) {
-        return e1->name < e2->name;
-      }
+      if (e1->GetAsInt64() == e2->GetAsInt64()) { return e1->name < e2->name; }
       return e1->GetAsInt64() < e2->GetAsInt64();
     });
 }
@@ -2465,11 +2468,19 @@ CheckedError Parser::CheckClash(std::vector<FieldDef *> &fields,
   return NoError();
 }
 
+std::vector<std::string> Parser::GetIncludedFiles() const {
+  const auto it = files_included_per_file_.find(file_being_parsed_);
+  if (it == files_included_per_file_.end()) { return {}; }
+
+  return { it->second.cbegin(), it->second.cend() };
+}
+
 bool Parser::SupportsOptionalScalars(const flatbuffers::IDLOptions &opts) {
   static FLATBUFFERS_CONSTEXPR unsigned long supported_langs =
       IDLOptions::kRust | IDLOptions::kSwift | IDLOptions::kLobster |
       IDLOptions::kKotlin | IDLOptions::kCpp | IDLOptions::kJava |
-      IDLOptions::kCSharp | IDLOptions::kTs | IDLOptions::kBinary;
+      IDLOptions::kCSharp | IDLOptions::kTs | IDLOptions::kBinary |
+      IDLOptions::kGo | IDLOptions::kPython | IDLOptions::kJson;
   unsigned long langs = opts.lang_to_generate;
   return (langs > 0 && langs < IDLOptions::kMAX) && !(langs & ~supported_langs);
 }
@@ -2845,7 +2856,7 @@ CheckedError Parser::ParseProtoFields(StructDef *struct_def, bool isextend,
       if (IsIdent("group") || oneof) {
         if (!oneof) NEXT();
         if (oneof && opts.proto_oneof_union) {
-          auto name = MakeCamel(attribute_, true) + "Union";
+          auto name = ConvertCase(attribute_, Case::kUpperCamel) + "Union";
           ECHECK(StartEnum(name, true, &oneof_union));
           type = Type(BASE_TYPE_UNION, nullptr, oneof_union);
         } else {
@@ -2900,7 +2911,11 @@ CheckedError Parser::ParseProtoFields(StructDef *struct_def, bool isextend,
           if (key == "default") {
             // Temp: skip non-numeric and non-boolean defaults (enums).
             auto numeric = strpbrk(val.c_str(), "0123456789-+.");
-            if (IsScalar(type.base_type) && numeric == val.c_str()) {
+            if (IsFloat(type.base_type) &&
+                (val == "inf" || val == "+inf" || val == "-inf")) {
+              // Prefer to be explicit with +inf.
+              field->value.constant = val == "inf" ? "+inf" : val;
+            } else if (IsScalar(type.base_type) && numeric == val.c_str()) {
               field->value.constant = val;
             } else if (val == "true") {
               field->value.constant = val;
@@ -3048,7 +3063,8 @@ CheckedError Parser::SkipAnyJsonValue() {
     case kTokenIntegerConstant:
     case kTokenFloatConstant: NEXT(); break;
     default:
-      if (IsIdent("true") || IsIdent("false") || IsIdent("null")) {
+      if (IsIdent("true") || IsIdent("false") || IsIdent("null") ||
+          IsIdent("inf")) {
         NEXT();
       } else
         return TokenError();
@@ -3261,17 +3277,75 @@ CheckedError Parser::ParseRoot(const char *source, const char **include_paths,
       for (auto val_it = enum_def.Vals().begin();
            val_it != enum_def.Vals().end(); ++val_it) {
         auto &val = **val_it;
+
         if (!(opts.lang_to_generate != 0 && SupportsAdvancedUnionFeatures()) &&
             (IsStruct(val.union_type) || IsString(val.union_type)))
+
           return Error(
               "only tables can be union elements in the generated language: " +
               val.name);
       }
     }
   }
+
+  auto err = CheckPrivateLeak();
+  if (err.Check()) return err;
+
   // Parse JSON object only if the scheme has been parsed.
   if (token_ == '{') { ECHECK(DoParseJson()); }
-  EXPECT(kTokenEof);
+  return NoError();
+}
+
+CheckedError Parser::CheckPrivateLeak() {
+  if (!opts.no_leak_private_annotations) return NoError();
+  // Iterate over all structs/tables to validate we arent leaking
+  // any private (structs/tables/enums)
+  for (auto it = structs_.vec.begin(); it != structs_.vec.end(); it++) {
+    auto &struct_def = **it;
+    for (auto fld_it = struct_def.fields.vec.begin();
+         fld_it != struct_def.fields.vec.end(); ++fld_it) {
+      auto &field = **fld_it;
+
+      if (field.value.type.enum_def) {
+        auto err =
+            CheckPrivatelyLeakedFields(struct_def, *field.value.type.enum_def);
+        if (err.Check()) { return err; }
+      } else if (field.value.type.struct_def) {
+        auto err = CheckPrivatelyLeakedFields(struct_def,
+                                              *field.value.type.struct_def);
+        if (err.Check()) { return err; }
+      }
+    }
+  }
+  // Iterate over all enums to validate we arent leaking
+  // any private (structs/tables)
+  for (auto it = enums_.vec.begin(); it != enums_.vec.end(); ++it) {
+    auto &enum_def = **it;
+    if (enum_def.is_union) {
+      for (auto val_it = enum_def.Vals().begin();
+           val_it != enum_def.Vals().end(); ++val_it) {
+        auto &val = **val_it;
+        if (val.union_type.struct_def) {
+          auto err =
+              CheckPrivatelyLeakedFields(enum_def, *val.union_type.struct_def);
+          if (err.Check()) { return err; }
+        }
+      }
+    }
+  }
+  return NoError();
+}
+
+CheckedError Parser::CheckPrivatelyLeakedFields(const Definition &def,
+                                                const Definition &value_type) {
+  if (!opts.no_leak_private_annotations) return NoError();
+  const auto is_private = def.attributes.Lookup("private");
+  const auto is_field_private = value_type.attributes.Lookup("private");
+  if (!is_private && is_field_private) {
+    return Error(
+        "Leaking private implementation, verify all objects have similar "
+        "annotations");
+  }
   return NoError();
 }
 
@@ -3438,6 +3512,10 @@ CheckedError Parser::DoParse(const char *source, const char **include_paths,
     } else {
       ECHECK(ParseDecl(source_filename));
     }
+  }
+  EXPECT(kTokenEof);
+  if (opts.warnings_as_errors && has_warning_) {
+    return Error("treating warnings as errors, failed due to above warnings");
   }
   return NoError();
 }

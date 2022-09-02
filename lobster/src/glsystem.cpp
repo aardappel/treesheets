@@ -14,6 +14,7 @@
 
 #include "lobster/stdafx.h"
 
+#include "lobster/vmdata.h"
 #include "lobster/glincludes.h"
 #include "lobster/glinterface.h"
 #include "lobster/sdlincludes.h"
@@ -150,6 +151,9 @@ void OpenGLFrameEnd() {
     //glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
     //glFlush();
     //glFinish();
+    #if LOBSTER_FRAME_PROFILER
+    FrameMark
+    #endif
 }
 
 #ifdef PLATFORM_WINNIX
@@ -188,6 +192,10 @@ string OpenGLInit(int samples, bool srgb) {
             glDebugMessageCallback(DebugCallBack, nullptr);
             glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0,
                                  GL_DEBUG_SEVERITY_NOTIFICATION, 2, "on");
+            #ifndef NDEBUG
+                // This allows breakpoints in DebugCallBack above that show the caller.
+                glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            #endif
         }
     #endif
     #ifndef PLATFORM_ES3
@@ -201,9 +209,15 @@ string OpenGLInit(int samples, bool srgb) {
         }
     #endif
     GL_CALL(glCullFace(GL_FRONT));
-    assert(!geomcache);
-    geomcache = new GeometryCache();
-    return "";
+    if (!geomcache) geomcache = new GeometryCache();
+    #if LOBSTER_FRAME_PROFILER
+        #undef new
+        TracyGpuContext;
+        #if defined(_MSC_VER) && !defined(NDEBUG)
+            #define new DEBUG_NEW
+        #endif
+    #endif
+    return {};
 }
 
 void OpenGLCleanup() {

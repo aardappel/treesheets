@@ -182,7 +182,7 @@ nfr("steam_write_file", "file,contents", "SS", "B",
         auto s = contents.sval();
         auto ok = SteamWriteFile(fn, s->strv());
         if (!ok) {
-            ok = WriteFile(fn, true, s->strv());
+            ok = WriteFile(fn, true, s->strv(), false);
         }
         return Value(ok);
     });

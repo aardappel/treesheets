@@ -27,11 +27,13 @@ const size_t normal_palette_idx = 1;
 
 extern vector<Palette> palettes;
 
-struct Voxels {
+struct Voxels : lobster::Resource {
     size_t palette_idx;
     bool chunks_skipped = false;
     Chunk3DGrid<uint8_t> grid;
     int idx = 0;
+    string name;
+    int3 offset = int3_0;
 
     Voxels(const int3 &dim, size_t idx) : palette_idx(idx), grid(dim, transparant) {}
 
@@ -91,12 +93,6 @@ struct Voxels {
 };
 
 namespace lobster {
-
-extern ResourceType voxel_type;
-
-inline Voxels &GetVoxels(const Value &res) {
-    return *GetResourceDec<Voxels *>(res, &voxel_type);
-}
 
 Value CubesFromMeshGen(VM &vm, const DistGrid &grid, int targetgridsize, int zoffset);
 

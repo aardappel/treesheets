@@ -3,6 +3,8 @@
 #include "lobster/natreg.h"
 #include "lobster/bytecode_generated.h"
 
+extern string BreakPoint(lobster::VM &vm, string_view reason);
+
 namespace lobster {
 
 #define VM_OP_ARGS0
@@ -193,7 +195,7 @@ VM_INLINE void U_RETURNANY(VM &, StackPtr, int /*nretslots_norm*/) {
 VM_INLINE void U_SAVERETS(VM &, StackPtr) {
 }
 
-VM_INLINE void U_ENDSTATEMENT(VM &vm, StackPtr, int line, int fileidx) {
+VM_INLINE void U_STATEMENT(VM &vm, StackPtr, int line, int fileidx) {
     vm.last_line = line;
     vm.last_fileidx = fileidx;
     #ifndef NDEBUG
@@ -255,14 +257,22 @@ VM_INLINE void U_FORLOOPI(VM &, StackPtr sp) {
     Push(sp, i);
 }
 
+#if LOBSTER_FRAME_PROFILER_BUILTINS
+    #define BPROF(NFI) tracy::ScopedZone ___tracy_scoped_zone(&vm.nfr.pre_allocated_function_locations[NFI])
+#else
+    #define BPROF(NFI)
+#endif
+
 VM_INLINE void U_BCALLRETV(VM &vm, StackPtr sp, int nfi, int /*has_ret*/) {
     auto nf = vm.nfr.nfuns[nfi];
+    BPROF(nfi);
     nf->fun.fV(sp, vm);
 }
 
 #define BCALLOP(N,DECLS,ARGS) \
 VM_INLINE void U_BCALLRET##N(VM &vm, StackPtr sp, int nfi, int has_ret) { \
     auto nf = vm.nfr.nfuns[nfi]; \
+    BPROF(nfi); \
     DECLS; \
     Value v = nf->fun.f##N ARGS; \
     if (has_ret) { Push(sp, v); vm.BCallRetCheck(sp, nf); } \
@@ -278,12 +288,11 @@ BCALLOP(6, auto a5 = Pop(sp);auto a4 = Pop(sp);auto a3 = Pop(sp);auto a2 = Pop(s
 BCALLOP(7, auto a6 = Pop(sp);auto a5 = Pop(sp);auto a4 = Pop(sp);auto a3 = Pop(sp);auto a2 = Pop(sp);auto a1 = Pop(sp);auto a0 = Pop(sp), (sp, vm, a0, a1, a2, a3, a4, a5, a6));
 
 VM_INLINE void U_ASSERTR(VM &vm, StackPtr sp, int line, int fileidx, int stringidx) {
-    (void)line;
-    (void)fileidx;
     if (Top(sp).False()) {
         vm.last_line = line;
         vm.last_fileidx = fileidx;
-        vm.Error(cat("assertion failed: ", vm.bcf->stringtable()->Get(stringidx)->string_view()));
+        auto assert_exp = vm.bcf->stringtable()->Get(stringidx)->string_view();
+        vm.Error(cat("assertion failed: ", assert_exp));
     }
 }
 
@@ -878,6 +887,10 @@ VM_INLINE void U_LV_FPP(VM & vm, StackPtr) {
 VM_INLINE void U_LV_FMM(VM & vm, StackPtr) {
     auto &a = *vm.temp_lval;
     a.setfval(a.fval() - 1);
+}
+
+VM_INLINE void U_PROFILE(VM &, StackPtr, int) {
+    assert(false);
 }
 
 }  // namespace lobster

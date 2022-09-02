@@ -19,8 +19,6 @@
 
 namespace lobster {
 
-enum { RUNTIME_NO_ASSERT, RUNTIME_ASSERT, RUNTIME_ASSERT_PLUS };
-
 extern void Compile(NativeRegistry &natreg, string_view fn, string_view stringsource,
                     string &bytecode, string *parsedump, string *pakfile,
                     bool return_value, int runtime_checks);

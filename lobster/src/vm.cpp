@@ -14,6 +14,7 @@
 
 #include "lobster/stdafx.h"
 
+#include "lobster/il.h"
 #include "lobster/disasm.h"
 
 #include "lobster/vmops.h"
@@ -34,11 +35,35 @@ VM::VM(VMArgs &&vmargs, const bytecode::BytecodeFile *bcf)
     }
     constant_strings.resize(bcf->stringtable()->size());
     assert(native_vtables);
+
+    #if LOBSTER_FRAME_PROFILER
+        auto funs = bcf->functions();
+        for (flatbuffers::uoffset_t i = 0; i < funs->size(); i++) {
+            auto f = funs->Get(i);
+            pre_allocated_function_locations.push_back(
+                ___tracy_source_location_data { f->name()->c_str(), f->name()->c_str(), "", 0, 0x008888 });
+        }
+    #endif
 }
 
 VM::~VM() {
     TerminateWorkers();
     if (byteprofilecounts) delete[] byteprofilecounts;
+
+    #if LOBSTER_FRAME_PROFILER
+        // FIXME: this is not ideal, because there may be multiple VMs.
+        // But the profiler runs its own thread, and may be accessing pre_allocated_function_locations
+        // stored in this VM.
+        if (tracy::GetProfiler().IsConnected()) {
+            tracy::GetProfiler().RequestShutdown();
+            //while (!tracy::GetProfiler().HasShutdownFinished()) {
+            //    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            //}
+            tracy::GetProfiler().~Profiler();
+            // FIXME: have to do this to avoid it crashing when destructed twice.
+            abort();
+        }
+    #endif
 }
 
 VMAllocator::VMAllocator(VMArgs &&args) {
@@ -60,10 +85,8 @@ VMAllocator::VMAllocator(VMArgs &&args) {
 
     vm = new (mem) VM(std::move(args), bcf);
 
-    #ifdef _MSC_VER
-    #ifndef NDEBUG
-    #define new DEBUG_NEW
-    #endif
+    #if defined(_MSC_VER) && !defined(NDEBUG)
+        #define new DEBUG_NEW
     #endif
 }
 
@@ -98,9 +121,9 @@ void VM::DumpVal(RefObj *ro, const char *prefix) {
 void VM::DumpLeaks() {
     if (!dump_leaks) return;
     vector<void *> leaks = pool.findleaks();
-    auto filename = "leaks.txt";
+    auto filename = "memory_leaks.txt";
     if (leaks.empty()) {
-        if (FileExists(filename)) FileDelete(filename);
+        if (FileExists(filename, false)) FileDelete(filename);
     } else {
         LOG_ERROR("LEAKS FOUND (this indicates cycles in your object graph, or a bug in"
                              " Lobster)");
@@ -136,7 +159,7 @@ void VM::DumpLeaks() {
                 LOG_ERROR(sd);
             } else {
                 LOG_ERROR(leaks.size(), " leaks, details in ", filename);
-                WriteFile(filename, false, sd);
+                WriteFile(filename, false, sd, false);
             }
         #endif
     }
@@ -251,17 +274,8 @@ LString *VM::NewString(iint l) {
     return s;
 }
 
-LResource *VM::NewResource(void *v, const ResourceType *t) {
-    auto r = new (pool.alloc(sizeof(LResource))) LResource(v, t);
-    if (t->newfun) t->newfun(r->val);
-    OnAlloc(r);
-    return r;
-}
-
-#ifdef _MSC_VER
-#ifndef NDEBUG
-#define new DEBUG_NEW
-#endif
+#if defined(_MSC_VER) && !defined(NDEBUG)
+    #define new DEBUG_NEW
 #endif
 
 LString *VM::NewString(string_view s) {
@@ -318,40 +332,64 @@ void VM::ErrorBase(const string &err) {
     append(errmsg, "): ", err);
 }
 
-int VM::DumpVar(string &sd, Value *x, int idx) {
+void VM::DumpVar(Value *locals, int idx, int &j, int &jl, const DumperFun &dump) {
     auto sid = bcf->specidents()->Get((uint32_t)idx);
+    auto is_freevar = sid->used_as_freevar();
     auto id = bcf->idents()->Get(sid->ididx());
+    auto name = id->name()->string_view();
+    auto &ti = GetVarTypeInfo(idx);
+    auto width = IsStruct(ti.t) ? ti.len : 1;
+    auto x = is_freevar ? &fvars[idx] : locals + jl;
     // FIXME: this is not ideal, it filters global "let" declared vars.
     // It should probably instead filter global let vars whose values are entirely
     // constructors, and which are never written to.
-    auto name = id->name()->string_view();
-    auto &ti = GetVarTypeInfo(idx);
-    auto size = IsStruct(ti.t) ? ti.len : 1;
-    //if (id->readonly() && id->global()) return size;
-    append(sd, "        ", name);
-    if (fvars[idx].True() && x->False()) {
-        // Free vars live in fvars, but we can't tell which.
-        // fvars are NIL when not in use, so swapping when not-nil is safe?
-        x = &fvars[idx];
+    if (!id->readonly() || !id->global()) {
+        dump(*this, name, ti, x);
     }
-    #if RTT_ENABLED
-        if (ti.t != x->type && !IsStruct(ti.t)) {
-            append(sd, ":");
-            ti.Print(*this, sd);
-            append(sd, " != ", BaseTypeName(x->type));
-            return size;  // Likely uninitialized.
-        }
-    #endif
-    append(sd, " = ");
-    PrintPrefs minipp { 1, 20, true, -1 };
-    if (IsStruct(ti.t)) {
-        StructToString(sd, minipp, ti, x);
-    } else {
-        x->ToString(*this, sd, ti, minipp);
-    }
-    return size;
+    j += width;
+    if (!is_freevar) jl += width;
 }
 
+void VM::DumpStackFrame(const int *fip, Value *locals, const DumperFun &dump) {
+    fip++;  // regs_max
+    auto nargs = *fip++;
+    auto args = fip;
+    fip += nargs;
+    auto ndef = *fip++;
+    auto defvars = fip;
+    fip += ndef;
+    fip++;  // nkeepvars
+    fip++;  // Owned vars.
+    int jla = 0;
+    for (int j = 0; j < nargs;) {
+        auto i = *(args + j);
+        DumpVar(locals, i, j, jla, dump);
+    }
+    for (int j = 0, jld = 0; j < ndef;) {
+        auto i = *(defvars + j);
+        DumpVar(locals + jla, i, j, jld, dump);
+    }
+}
+
+pair<string, const int *> VM::DumpStackFrameStart(FunStack &funstackelem) {
+    auto fip = funstackelem.funstartinfo;
+    auto deffun = *fip++;
+    string fname;
+    auto nargs = fip[1];
+    if (nargs) {
+        auto &ti = GetVarTypeInfo(fip[2]);
+        ti.Print(*this, fname);
+        append(fname, ".");
+    }
+    append(fname, bcf->functions()->Get(deffun)->name()->string_view());
+    if (funstackelem.line >= 0 && funstackelem.fileidx >= 0) {
+        append(fname, "[", bcf->filenames()->Get(funstackelem.fileidx)->string_view(), ":",
+               funstackelem.line, "]");
+    }
+    return { fname, fip };
+}
+
+// See also imbind.cpp:DumpStackTrace
 void VM::DumpStackTrace(string &sd) {
     if (fun_id_stack.empty()) return;
 
@@ -359,31 +397,40 @@ void VM::DumpStackTrace(string &sd) {
     try {
     #endif
 
-    if (!sd.empty()) append(sd, "\n");
-    for (auto [fip, locals] : reverse(fun_id_stack)) {
-        auto deffun = *fip++;
-        append(sd, "in function: ", bcf->functions()->Get(deffun)->name()->string_view(), "(");
-        fip++;  // regs_max
-        auto nargs = *fip++;
-        auto args = fip;
-        fip += nargs;
-        auto ndef = *fip++;
-        fip += ndef;
-        // auto defvars = fip;
-        *fip++;  // nkeepvars
-        if (nargs) append(sd, "\n");
-        locals -= nargs;
-        for (int j = 0; j < nargs;) {
-            auto i = *(args + j);
-            j += DumpVar(sd, locals + j, i);
-            if (j < nargs) append(sd, ",\n");
+    DumperFun dumper = [&sd](VM &vm, string_view name, const TypeInfo &ti, Value *x) {
+        append(sd, "        ", name);
+        #if RTT_ENABLED
+            auto debug_type = x->type;
+        #else
+            auto debug_type = ti.t;
+        #endif
+        if (debug_type == V_NIL && ti.t != V_NIL) {
+            // Uninitialized.
+            append(sd, ":");
+            ti.Print(vm, sd);
+            append(sd, " (uninitialized)");
+        } else if (ti.t != debug_type && !IsStruct(ti.t)) {
+            // Some runtime type corruption, show the problem rather than crashing.
+            append(sd, ":");
+            ti.Print(vm, sd);
+            append(sd, " ERROR != ", BaseTypeName(debug_type));
+        } else {
+            append(sd, " = ");
+            PrintPrefs minipp { 1, 20, true, -1 };
+            if (IsStruct(ti.t)) {
+                vm.StructToString(sd, minipp, ti, x);
+            } else {
+                x->ToString(vm, sd, ti, minipp);
+            }
         }
-        append(sd, ")\n");
-        // for (int j = 0; j < ndef;) {
-        //    auto i = *(defvars - j - 1);
-        //    j += DumpVar(sd, nullptr, i);
-        //}
-        fip++;  // Owned vars.
+        append(sd, "\n");
+    };
+
+    if (!sd.empty()) append(sd, "\n");
+    for (auto &funstackelem : reverse(fun_id_stack)) {
+        auto [name, fip] = DumpStackFrameStart(funstackelem);
+        append(sd, "in function ", name, "\n");
+        DumpStackFrame(fip, funstackelem.locals, dumper);
     }
 
     #ifdef USE_EXCEPTION_HANDLING
@@ -398,6 +445,11 @@ void VM::DumpStackTrace(string &sd) {
 
 Value VM::Error(string err) {
     ErrorBase(err);
+    #if LOBSTER_ENGINE
+        if (runtime_checks >= RUNTIME_DEBUG) {
+            BreakPoint(*this, errmsg);
+        }
+    #endif
     DumpStackTrace(errmsg);
     UnwindOnError();
     return NilVal();
@@ -407,6 +459,12 @@ Value VM::Error(string err) {
 // in an inconsistent state.
 Value VM::SeriousError(string err) {
     ErrorBase(err);
+    UnwindOnError();
+    return NilVal();
+}
+
+Value VM::NormalExit(string err) {
+    errmsg = err;
     UnwindOnError();
     return NilVal();
 }
@@ -742,6 +800,10 @@ void CVM_SetLVal(VM *vm, Value *v) { SetLVal(*vm, v); }
 int CVM_RetSlots(VM *vm) { return RetSlots(*vm); }
 void CVM_PushFunId(VM *vm, const int *id, StackPtr locals) { PushFunId(*vm, id, locals); }
 void CVM_PopFunId(VM *vm) { PopFunId(*vm); }
+#if LOBSTER_FRAME_PROFILER
+TracyCZoneCtx CVM_StartProfile(___tracy_source_location_data *tsld) { return StartProfile(tsld); }
+void CVM_EndProfile(TracyCZoneCtx ctx) { EndProfile(ctx); }
+#endif
 
 #define F(N, A, USE, DEF) \
     void CVM_##N(VM *vm, StackPtr sp VM_COMMA_IF(A) VM_OP_ARGSN(A)) { \
@@ -804,6 +866,10 @@ const void *vm_ops_jit_table[] = {
     "PopFunId", (void *)CVM_PopFunId,
     #if LOBSTER_ENGINE
     "GLFrame", (void *)GLFrame,
+    #endif
+    #if LOBSTER_FRAME_PROFILER
+    "StartProfile", (void *)CVM_StartProfile,
+    "EndProfile", (void *)CVM_EndProfile,
     #endif
     0, 0
 };

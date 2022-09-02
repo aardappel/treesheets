@@ -79,3 +79,7 @@ extern void SDLEndTextInput();
 
 extern bool GraphicsFrameStart();
 extern void GraphicsShutDown();
+
+extern string SDLDebuggerWindow();
+extern bool SDLDebuggerFrame();
+extern void SDLDebuggerOff();

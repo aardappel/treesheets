@@ -17,19 +17,20 @@
 #ifndef FLATBUFFERS_UTIL_H_
 #define FLATBUFFERS_UTIL_H_
 
+#include <ctype.h>
 #include <errno.h>
 
 #include "flatbuffers/base.h"
 #include "flatbuffers/stl_emulation.h"
 
 #ifndef FLATBUFFERS_PREFER_PRINTF
+#  include <iomanip>
 #  include <sstream>
 #else  // FLATBUFFERS_PREFER_PRINTF
 #  include <float.h>
 #  include <stdio.h>
 #endif  // FLATBUFFERS_PREFER_PRINTF
 
-#include <iomanip>
 #include <string>
 
 namespace flatbuffers {
@@ -94,7 +95,7 @@ template<typename T> size_t IntToDigitCount(T t) {
   // Count a single 0 left of the dot for fractional numbers
   if (-1 < t && t < 1) digit_count++;
   // Count digits until fractional part
-  T eps = std::numeric_limits<float>::epsilon();
+  T eps = std::numeric_limits<T>::epsilon();
   while (t <= (-1 + eps) || (1 - eps) <= t) {
     t /= 10;
     digit_count++;
@@ -447,6 +448,9 @@ std::string StripPath(const std::string &filepath);
 // Strip the last component of the path + separator.
 std::string StripFileName(const std::string &filepath);
 
+std::string StripPrefix(const std::string &filepath,
+                        const std::string &prefix_to_remove);
+
 // Concatenates a path with a filename, regardless of whether the path
 // ends in a separator or not.
 std::string ConCatPathFileName(const std::string &path,
@@ -683,6 +687,32 @@ bool ReadEnvironmentVariable(const char *var_name,
 
 // MSVC specific: Send all assert reports to STDOUT to prevent CI hangs.
 void SetupDefaultCRTReportMode();
+
+enum class Case {
+  kUnknown = 0,
+  // TheQuickBrownFox
+  kUpperCamel = 1,
+  // theQuickBrownFox
+  kLowerCamel = 2,
+  // the_quick_brown_fox
+  kSnake = 3,
+  // THE_QUICK_BROWN_FOX
+  kScreamingSnake = 4,
+  // THEQUICKBROWNFOX
+  kAllUpper = 5,
+  // thequickbrownfox
+  kAllLower = 6,
+  // the-quick-brown-fox
+  kDasher = 7,
+  // THEQuiCKBr_ownFox (or whatever you want, we won't change it)
+  kKeep = 8,
+  // the_quick_brown_fox123 (as opposed to the_quick_brown_fox_123)
+  kSnake2 = 9,
+};
+
+// Convert the `input` string of case `input_case` to the specified `output_case`.
+std::string ConvertCase(const std::string &input, Case output_case,
+                    Case input_case = Case::kSnake);
 
 }  // namespace flatbuffers
 

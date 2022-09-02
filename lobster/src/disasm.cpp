@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "lobster/stdafx.h"
+#include "lobster/il.h"
 #include "lobster/disasm.h"
 
 namespace lobster {

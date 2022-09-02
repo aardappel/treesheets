@@ -42,7 +42,15 @@ struct Texture {
     }
 };
 
-struct Shader {
+struct OwnedTexture : lobster::Resource {
+    Texture t;
+
+    OwnedTexture(Texture t) : t(t) {}
+    ~OwnedTexture();
+    size_t2 MemoryUsage() { return t.MemoryUsage(); }
+};
+
+struct Shader : lobster::Resource {
     int vs = 0, ps = 0, cs = 0, program = 0;
     int mvp_i, col_i, camera_i, light1_i, lightparams1_i, framebuffer_size_i,
         bones_i, pointscale_i;
@@ -50,11 +58,19 @@ struct Shader {
 
     enum { MAX_SAMPLERS = 32 };
 
+    // Use this for reusing BO's for now:
+    struct BOEntry {
+        int bo;
+        int bpi;
+        size_t size;
+    };
+    map<string, BOEntry, less<>> ubomap;
+
     ~Shader();
 
-    string Compile(const char *name, const char *vscode, const char *pscode);
-    string Compile(const char *name, const char *comcode);
-    string Link(const char *name);
+    string Compile(string_view name, const char *vscode, const char *pscode);
+    string Compile(string_view name, const char *comcode);
+    string Link(string_view);
     void Activate();                            // Makes shader current;
     void Set();                                 // Activate + sets common uniforms.
     void SetAnim(float3x4 *bones, int num);     // Optionally, after Activate().
@@ -67,6 +83,11 @@ struct Shader {
                     int components, int elements = 1);
     bool SetUniformMatrix(string_view name, const float *val, int components, int elements, bool morerows);
     bool Dump(string_view filename, bool stripnonascii);
+
+    size_t2 MemoryUsage() {
+        // FIXME: somehow find out sizes of all attached GPU blocks?
+        return { sizeof(Shader), 0 };
+    }
 };
 
 struct Textured {
@@ -84,7 +105,7 @@ struct Surface : Textured {
     string name;
     Primitive prim;
 
-    Surface(gsl::span<int> indices, Primitive _prim = PRIM_TRIS);
+    Surface(string_view name, gsl::span<int> indices, Primitive _prim = PRIM_TRIS);
     ~Surface();
 
     void Render(Shader *sh);
@@ -121,17 +142,18 @@ class Geometry  {
     const size_t nverts;
 
     template<typename T, typename U = float>
-    Geometry(gsl::span<T> verts1, string_view _fmt, gsl::span<U> verts2 = gsl::span<float>(),
+    Geometry(string_view name, gsl::span<T> verts1, string_view _fmt,
+             gsl::span<U> verts2 = gsl::span<float>(),
              size_t elem_multiple = 1)
         : vertsize1(sizeof(T) * elem_multiple), vertsize2(sizeof(U) * elem_multiple), fmt(_fmt),
           nverts(verts1.size() / elem_multiple) {
         assert(verts2.empty() || verts2.size() == verts1.size());
-        Init(verts1.data(), verts2.data());
+        Init(name, verts1.data(), verts2.data());
     }
 
     ~Geometry();
 
-    void Init(const void *verts1, const void *verts2);
+    void Init(string_view name, const void *verts1, const void *verts2);
 
     void RenderSetup();
     void BindAsSSBO(Shader *sh, string_view name);
@@ -144,7 +166,7 @@ class Geometry  {
     }
 };
 
-struct Mesh {
+struct Mesh : lobster::Resource {
     Geometry *geom;
     vector<Surface *> surfs;
     Primitive prim;  // If surfs is empty, this determines how to draw the verts.
@@ -217,9 +239,10 @@ enum TextureFlag {
     TF_DEPTH = 4096
 };
 
-extern Texture CreateTexture(const uint8_t *buf, int3 dim, int tf = TF_NONE);
+extern Texture CreateTexture(string_view name, const uint8_t *buf, int3 dim, int tf = TF_NONE);
 extern Texture CreateTextureFromFile(string_view name, int tf = TF_NONE);
-extern Texture CreateBlankTexture(const int2 &size, const float4 &color, int tf = TF_NONE);
+extern Texture CreateBlankTexture(string_view name, const int2 &size, const float4 &color,
+                                  int tf = TF_NONE);
 extern void DeleteTexture(Texture &id);
 extern bool SetTexture(int textureunit, const Texture &tex, int tf = TF_NONE);
 extern uint8_t *ReadTexture(const Texture &tex);
@@ -235,22 +258,22 @@ extern void FreeImageFromFile(uint8_t *img);
 
 extern uint8_t *ReadPixels(const int2 &pos, const int2 &size);
 
-extern int GenBO_(int type, size_t bytesize, const void *data);
-template<typename T> int GenBO(int type, gsl::span<T> d) {
-    return GenBO_(type, sizeof(T) * d.size(), d.data());
+extern int GenBO_(string_view name, int type, size_t bytesize, const void *data);
+template<typename T> int GenBO(string_view name, int type, gsl::span<T> d) {
+    return GenBO_(name, type, sizeof(T) * d.size(), d.data());
 }
 extern void DeleteBO(int id);
 extern void RenderArray(Primitive prim, Geometry *geom, int ibo = 0, size_t tcount = 0);
 
 template<typename T, typename U = float>
-void RenderArraySlow(Primitive prim, gsl::span<T> vbuf1, string_view fmt,
+void RenderArraySlow(string_view name, Primitive prim, gsl::span<T> vbuf1, string_view fmt,
                      gsl::span<int> ibuf = gsl::span<int>(),
                      gsl::span<U> vbuf2 = gsl::span<float>()) {
-    Geometry geom(vbuf1, fmt, vbuf2);
+    Geometry geom(name, vbuf1, fmt, vbuf2);
     if (ibuf.empty()) {
         RenderArray(prim, &geom);
     } else {
-        Surface surf(ibuf, prim);
+        Surface surf(name, ibuf, prim);
         RenderArray(prim, &geom, surf.ibo, ibuf.size());
     }
 }

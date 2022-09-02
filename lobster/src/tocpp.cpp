@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "lobster/stdafx.h"
+#include "lobster/il.h"
 #include "lobster/disasm.h"  // Some shared bytecode utilities.
 #include "lobster/compiler.h"
 #include "lobster/tonative.h"
@@ -67,6 +68,17 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
             "#define Pop(sp) (*--(sp))\n"
             "#define Push(sp, V) (*(sp)++ = (V))\n"
             "#define TopM(sp, N) (*((sp) - (N) - 1))\n"
+            "struct ___tracy_source_location_data {\n"
+            "    const char *name;\n"
+            "    const char *function;\n"
+            "    const char *file;\n"
+            "    unsigned int line;\n"
+            "    unsigned int color;\n"
+            "};\n"
+            "struct ___tracy_c_zone_context {\n"
+            "    unsigned int id;\n"
+            "    int active;\n"
+            "};\n"
             "\n"
             ;
 
@@ -109,6 +121,10 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
               "extern int RetSlots(VMRef);\n"
               "extern void PushFunId(VMRef, const int *, StackPtr);\n"
               "extern void PopFunId(VMRef);\n"
+              #if LOBSTER_FRAME_PROFILER
+              "extern struct ___tracy_c_zone_context StartProfile(struct ___tracy_source_location_data *);\n"
+              "extern void EndProfile(struct ___tracy_c_zone_context);\n"
+              #endif
               "\n";
     }
 
@@ -154,6 +170,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
     string sdt, sp;
     int opc = -1;
     const int *args = nullptr;
+    bool has_profile = false;
     auto comment = [&](string_view c) { append(sd, " // ", c); };
     while (ip < code + len) {
         int id = (int)(ip - code);
@@ -165,12 +182,14 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
             nkeepvars = 0;
             ndefsave = 0;
             sdt.clear();
+            has_profile = false;
             auto it = function_lookup.find(id);
             auto f = it != function_lookup.end() ? it->second : nullptr;
             sd += "\n";
             if (f) append(sd, "// ", f->name()->string_view(), "\n");
             append(sd, "static void fun_", id, "(VMRef vm, StackPtr psp) {\n");
             const int *funstartend = nullptr;
+            int numlocals = 0;
             if (opc == IL_FUNSTART) {
                 auto fip = funstart;
                 fip++;  // definedfunction
@@ -187,7 +206,6 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                     var_to_local.clear();
                     var_to_local.resize(specidents->size(), -1);
                 #endif
-                int numlocals = 0;
                 for (int j = 0; j < 2; j++) {
                     auto vars = j ? defs : nargs;
                     auto len = j ? ndefsave : nargs_fun;
@@ -209,12 +227,6 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                 append(sd, "    Value regs[1];\n");
             }
             if (opc == IL_FUNSTART) {
-                if (runtime_checks >= RUNTIME_ASSERT_PLUS) {
-                    // FIXME: can make this just and index and instead store funinfo_table ref in VM.
-                    append(sd, "    PushFunId(vm, funinfo_table + ", funstarttables.size(), ", psp);\n");
-                    // TODO: this doesn't need to correspond to to funstart, can stick any info we want in here.
-                    funstarttables.insert(funstarttables.end(), funstart, funstartend);
-                }
                 auto fip = funstart;
                 fip++;  // definedfunction
                 fip++;  // regs_max.
@@ -244,6 +256,15 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                         else
                             append(sd, "    NilVal(&locals[", var_to_local[varidx], "]);\n");
                     }
+                }
+                if (runtime_checks >= RUNTIME_ASSERT_PLUS) {
+                    // FIXME: can make this just and index and instead store funinfo_table ref in VM.
+                    // Calling this here because now locals have been fully initialized.
+                    append(sd, "    PushFunId(vm, funinfo_table + ", funstarttables.size(), ", ",
+                           numlocals ? "locals" : "0", ");\n");
+                    // TODO: this doesn't need to correspond to to funstart, can stick any info we
+                    // want in here.
+                    funstarttables.insert(funstarttables.end(), funstart, funstartend);
                 }
                 nkeepvars = *fip++;
                 for (int i = 0; i < nkeepvars; i++) {
@@ -427,6 +448,14 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                 if (cpp) append(sd, "vm.next_call_target(vm, ", sp, ");");
                 else append(sd, "GetNextCallTarget(vm)(vm, ", sp, ");");
                 break;
+            case IL_PROFILE: {
+                string name;
+                EscapeAndQuote(bcf->stringtable()->Get(args[0])->string_view(), name);
+                append(sd, "static struct ___tracy_source_location_data tsld = { ", name, ", ", name,
+                       ", \"\", 0, 0x888800 }; struct ___tracy_c_zone_context ctx = StartProfile(&tsld);");
+                has_profile = true;
+                break;
+            }
             default:
                 assert(ILArity()[opc] != ILUNKNOWN);
                 append(sd, "U_", ILNames()[opc], "(vm, ", sp, "");
@@ -463,6 +492,9 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
         sd += "\n";
         if (ip == code + len || *ip == IL_FUNSTART || ip == starting_ip) {
             if (opc != IL_EXIT && opc != IL_ABORT) sd += "    epilogue:;\n";
+            if (has_profile) {
+                append(sd, "    EndProfile(ctx);\n");
+            }
             if (!sdt.empty()) append(sd, sdt);
             for (int i = 0; i < nkeepvars; i++) {
                 append(sd, "    DecVal(vm, keepvar[", i, "]);\n");

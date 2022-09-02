@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "lobster/stdafx.h"
+
+#include "lobster/vmdata.h"
 #include "lobster/glinterface.h"
 #include "lobster/fontrenderer.h"
 
@@ -133,7 +135,7 @@ bool BitmapFont::CacheChars(string_view text) {
     while (texh <= (int)image.size() / texw)
         texh *= 2;
     image.resize(texh * texw);
-    tex = CreateTexture(&image[0].x, int3(texw, texh, 0), TF_CLAMP | TF_NOMIPMAP);
+    tex = CreateTexture("font_atlas", &image[0].x, int3(texw, texh, 0), TF_CLAMP | TF_NOMIPMAP);
     return true;
 }
 
@@ -171,7 +173,7 @@ void BitmapFont::RenderText(string_view text) {
         x += glyph.advance;
     }
     SetTexture(0, tex);
-    RenderArraySlow(PRIM_TRIS, gsl::make_span(vbuf), "pT", gsl::make_span(ibuf));
+    RenderArraySlow("RenderText", PRIM_TRIS, gsl::make_span(vbuf), "pT", gsl::make_span(ibuf));
 }
 
 const int2 BitmapFont::TextSize(string_view text) {

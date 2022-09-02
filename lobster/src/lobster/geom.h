@@ -465,6 +465,10 @@ typedef vec<size_t, 2> size_t2;
 
 const float4 float4_0 = float4(0.0f);
 const float4 float4_1 = float4(1.0f);
+const float4 float4_x = float4(1, 0, 0, 0);
+const float4 float4_y = float4(0, 1, 0, 0);
+const float4 float4_z = float4(0, 0, 1, 0);
+const float4 float4_w = float4(0, 0, 0, 1);
 
 const float3 float3_0 = float3(0.0f);
 const float3 float3_1 = float3(1.0f);
@@ -565,6 +569,10 @@ struct quat : float4 {
                     w * o.w - x * o.x - y * o.y - z * o.z);
     }
 
+    quat operator*(float f) const {
+        return quat(x * f, y * f, z * f, w * f);
+    }
+
     quat operator-() const { return quat(-xyz(), w); }
 
     void flip() { *this = quat(-(float4)*this); }
@@ -573,6 +581,31 @@ struct quat : float4 {
         return p + cross(xyz(), cross(xyz(), p) + p * w) * 2.0f;
     }
 };
+
+inline quat normalize(const quat &q) { return quat(normalize((float4)q)); }
+
+inline quat linear_lerp(const quat &a, quat b, float f) {
+    if (dot(a, b) < 0.0f) b.flip();
+    return normalize(quat(mix((float4)a, (float4)b, f)));
+}
+
+inline quat spherical_lerp(const quat &from, quat to, float f)
+{
+    auto cosom = dot(from, to);
+    if (cosom < 0.0f) { cosom = -cosom; to.flip(); }
+    quat result;
+    if ((1.0f - cosom) > 1.0e-6f) {
+        const auto omega = acosf(cosom);
+        const auto sinom = sinf(omega);
+        result = from * (sinf((1.0f - f) * omega) / sinom);
+        f = sinf(f * omega) / sinom;
+    }
+    else {
+        result = from * (1.0f - f);
+    }
+    result = result + to * f;
+    return result;
+}
 
 template<typename T, int C, int R> class matrix {
     typedef vec<T,R> V;

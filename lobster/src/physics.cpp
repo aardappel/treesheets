@@ -22,10 +22,8 @@
 
 #include "Box2D/Box2D.h"
 
-#ifdef _MSC_VER
-#ifndef NDEBUG
-#define new DEBUG_NEW
-#endif
+#if defined(_MSC_VER) && !defined(NDEBUG)
+    #define new DEBUG_NEW
 #endif
 
 using namespace lobster;
@@ -54,7 +52,7 @@ b2Vec2 PopB2(StackPtr &sp) {
     return Float2ToB2(v);
 }
 
-struct PhysicsObject {
+struct PhysicsObject : Resource {
     Renderable r;
     b2Fixture *fixture;
     vector<int> *particle_contacts;
@@ -78,15 +76,10 @@ struct PhysicsObject {
     }
 };
 
-static ResourceType physics_type = {
-    "fixture",
-    [](void *v) { delete ((PhysicsObject *)v); },
-    nullptr,
-    [](void *m) { return ((PhysicsObject *)m)->MemoryUsage(); }
-};
+static ResourceType physics_type = { "fixture" };
 
 PhysicsObject &GetObject(const Value &res) {
-    return *GetResourceDec<PhysicsObject *>(res, &physics_type);
+    return GetResourceDec<PhysicsObject>(res, &physics_type);
 }
 
 void CleanPhysics() {
@@ -133,11 +126,11 @@ Value CreateFixture(VM &vm, b2Body &body, b2Shape &shape) {
     auto fixture = body.CreateFixture(&shape, 1.0f);
     auto po = new PhysicsObject(Renderable("color"), fixture);
     fixture->SetUserData(po);
-    return Value(vm.NewResource(po, &physics_type));
+    return Value(vm.NewResource(&physics_type, po));
 }
 
 b2Vec2 OptionalOffset(StackPtr &sp) {
-    return Top(sp).True() ? PopB2(sp) : (Pop(sp), b2Vec2_zero);
+    return PopB2(sp);
 }
 
 Renderable &GetRenderable(VM &, const Value &id) {
@@ -417,7 +410,7 @@ nfr("ph_render", "", "", "",
                     case b2Shape::e_polygon: {
                         r.Set();
                         auto polyshape = (b2PolygonShape *)fixture->GetShape();
-                        RenderArraySlow(
+                        RenderArraySlow("ph_render",
                             PRIM_FAN, gsl::make_span(polyshape->m_vertices, polyshape->m_count), "pn", gsl::span<int>(),
                                         gsl::make_span(polyshape->m_normals, polyshape->m_count));
                         break;
@@ -452,9 +445,8 @@ nfr("ph_render_particles", "scale", "F", "",
         auto scale = length(otransforms.object2view()[0].xy());
         SetPointSprite(scale * particlesystem->GetRadius() * particlescale.fltval());
         particlematerial->Set();
-        RenderArraySlow(PRIM_POINT, gsl::make_span(verts, particlesystem->GetParticleCount()), "pC",
-                        gsl::span<int>(),
-                        gsl::make_span(colors, particlesystem->GetParticleCount()));
+        RenderArraySlow("ph_render_particles", PRIM_POINT, gsl::make_span(verts, particlesystem->GetParticleCount()),
+                        "pC", gsl::span<int>(), gsl::make_span(colors, particlesystem->GetParticleCount()));
         return NilVal();
     });
 

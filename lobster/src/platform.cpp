@@ -66,8 +66,8 @@
 // - Any additional dirs declared with "include from".
 vector<string> data_dirs;
 
-// Folder to write to, usually the same as project dir, special folder on mobile platforms.
-string write_dir;
+// Folders to write to, usually the same as project dir, special folder on mobile platforms.
+vector<string> write_dirs;
 
 string maindir;
 string projectdir;
@@ -143,10 +143,11 @@ string_view StripFilePart(string_view filepath) {
     return fpos != string_view::npos ? filepath.substr(0, fpos + 1) : "";
 }
 
-const char *StripDirPart(const char *filepath) {
-    auto fpos = strrchr(filepath, FILESEP);
-    if (!fpos) fpos = strrchr(filepath, ':');
-    return fpos ? fpos + 1 : filepath;
+string StripDirPart(string_view filepath) {
+    auto fp = null_terminated(filepath);
+    auto fpos = strrchr(fp, FILESEP);
+    if (!fpos) fpos = strrchr(fp, ':');
+    return fpos ? fpos + 1 : string(filepath);
 }
 
 string_view StripTrailing(string_view in, string_view tail) {
@@ -155,7 +156,7 @@ string_view StripTrailing(string_view in, string_view tail) {
     return in;
 }
 
-string GetMainDirFromExePath(const char *argv_0) {
+string GetMainDirFromExePath(string_view argv_0) {
     string md = SanitizePath(argv_0);
     #ifdef _WIN32
         // Windows can pass just the exe name without a full path, which is useless.
@@ -202,7 +203,7 @@ int64_t DefaultLoadFile(string_view absfilename, string *dest, int64_t start, in
     return len != (int64_t)rlen ? -1 : len;
 }
 
-bool InitPlatform(string _maindir, const char *auxfilepath, bool from_bundle,
+bool InitPlatform(string _maindir, string_view auxfilepath, bool from_bundle,
                       FileLoader loader) {
     maindir = _maindir;
     InitTime();
@@ -225,12 +226,13 @@ bool InitPlatform(string _maindir, const char *auxfilepath, bool from_bundle,
             data_dirs.push_back(resources_dir);
             #ifdef __IOS__
                 // There's probably a better way to do this in CF.
-                write_dir = StripFilePart(path) + "Documents/";
+                auto write_dir = StripFilePart(path) + "Documents/";
+                write_dirs.push_back(write_dir);
                 data_dirs.push_back(write_dir);
             #else
                 // FIXME: This should probably be ~/Library/Application Support/AppName,
                 // but for now this works for non-app store apps.
-                write_dir = resources_dir;
+                write_dirs.push_back(resources_dir);
             #endif
             return true;
         }
@@ -246,20 +248,23 @@ bool InitPlatform(string _maindir, const char *auxfilepath, bool from_bundle,
         LOG_INFO(internalstoragepath);
         LOG_INFO(externalstoragepath);
         if (internalstoragepath) data_dirs.push_back(internalstoragepath + string_view("/"));
-        if (externalstoragepath) write_dir = externalstoragepath + string_view("/");
         // For some reason, the above SDL functionality doesn't actually work,
         // we have to use the relative path only to access APK files:
         data_dirs.clear();  // FIXME.
         data_dirs.push_back("");
-        data_dirs.push_back(write_dir);
+        if (externalstoragepath) {
+            auto write_dir = externalstoragepath + string_view("/");
+            write_dirs.push_back(write_dir);
+            data_dirs.push_back(write_dir);
+        }
     #else  // Linux, Windows, and OS X console mode.
 
-        if (auxfilepath) {
+        if (!auxfilepath.empty()) {
             projectdir = StripFilePart(SanitizePath(auxfilepath));
             data_dirs.push_back(projectdir);
-            write_dir = projectdir;
+            write_dirs.push_back(projectdir);
         } else {
-            write_dir = maindir;
+            write_dirs.push_back(maindir);
         }
         data_dirs.push_back(maindir);
         #ifdef PLATFORM_DATADIR
@@ -272,9 +277,16 @@ bool InitPlatform(string _maindir, const char *auxfilepath, bool from_bundle,
     return true;
 }
 
-void AddDataDir(string_view path) {
-    for (auto &dir : data_dirs) if (dir == path) return;
-    data_dirs.push_back(projectdir + SanitizePath(path));
+void AddDataDir(string_view path, bool is_rel) {
+    auto fpath = SanitizePath(path);
+    if (is_rel) fpath = projectdir + fpath;
+    for (auto &dir : data_dirs) if (dir == fpath) goto skipd;
+    data_dirs.push_back(fpath);
+    skipd:
+    // FIXME: this is not the greatest solution, maybe we should should separate
+    // setting these from import dirs.
+    for (auto &dir : write_dirs) if (dir == fpath) return;
+    write_dirs.push_back(fpath);
 }
 
 string SanitizePath(string_view path) {
@@ -339,24 +351,32 @@ int64_t LoadFile(string_view relfilename, string *dest, int64_t start, int64_t l
     return size;
 }
 
-string WriteFileName(string_view relfilename) {
-    return write_dir + SanitizePath(relfilename);
+FILE *OpenFor(string_view relfilename, const char *mode, bool allow_absolute) {
+    for (auto &wd : write_dirs) {
+        auto f = fopen((wd + SanitizePath(relfilename)).c_str(), mode);
+        if (f) return f;
+    }
+    if (allow_absolute) {
+        auto f = fopen(SanitizePath(relfilename).c_str(), mode);
+        if (f) return f;
+    }
+    return nullptr;
 }
 
-FILE *OpenForWriting(string_view relfilename, bool binary) {
-    auto fn = WriteFileName(relfilename);
-    LOG_INFO("write: ", fn);
-    return fopen(fn.c_str(), binary ? "wb" : "w");
+FILE *OpenForWriting(string_view relfilename, bool binary, bool allow_absolute) {
+    auto f = OpenFor(relfilename, binary ? "wb" : "w", allow_absolute);
+    LOG_INFO("write: ", relfilename);
+    return f;
 }
 
-FILE *OpenForReading(string_view relfilename, bool binary) {
-    auto fn = WriteFileName(relfilename);
-    LOG_INFO("read: ", fn);
-    return fopen(fn.c_str(), binary ? "rb" : "r");
+FILE *OpenForReading(string_view relfilename, bool binary, bool allow_absolute) {
+    auto f = OpenFor(relfilename, binary ? "rb" : "r", allow_absolute);
+    LOG_INFO("read: ", relfilename);
+    return f;
 }
 
-bool WriteFile(string_view relfilename, bool binary, string_view contents) {
-    FILE *f = OpenForWriting(relfilename, binary);
+bool WriteFile(string_view relfilename, bool binary, string_view contents, bool allow_absolute) {
+    FILE *f = OpenForWriting(relfilename, binary, allow_absolute);
     size_t written = 0;
     if (f) {
         written = fwrite(contents.data(), contents.size(), 1, f);
@@ -365,14 +385,18 @@ bool WriteFile(string_view relfilename, bool binary, string_view contents) {
     return written == 1;
 }
 
-bool FileExists(string_view relfilename) {
-    auto f = fopen(WriteFileName(relfilename).c_str(), "rb");
+bool FileExists(string_view filename, bool allow_absolute) {
+    auto f = OpenForReading(filename, true, allow_absolute);
     if (f) fclose(f);
     return f;
 }
 
 bool FileDelete(string_view relfilename) {
-    return remove(WriteFileName(relfilename).c_str()) == 0;
+    // FIXME: not super safe? tries to delete in every import dir.
+    for (auto &wd : write_dirs) {
+        if (remove((wd + SanitizePath(relfilename)).c_str()) == 0) return true;
+    }
+    return false;
 }
 
 // TODO: can now replace all this platform specific stuff with std::filesystem code.
@@ -550,29 +574,32 @@ void SetConsole(bool on) {
 iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out) {
     #ifndef PLATFORM_ES3
         struct subprocess_s subprocess;
-        int result = subprocess_create(cmdl, subprocess_option_inherit_environment, &subprocess);
+        int result = subprocess_create(cmdl,
+            subprocess_option_inherit_environment
+            | subprocess_option_enable_async, &subprocess);
         if (result) return -1;
         if (stdins) {
             FILE *p_stdin = subprocess_stdin(&subprocess);
             fputs(stdins, p_stdin);
             fclose(p_stdin);
         }
-        int process_return;
-        result = subprocess_join(&subprocess, &process_return);
-        if (result) {
-            subprocess_destroy(&subprocess);
-            return -1;
-        }
-        auto readall = [&](FILE *f) {
+        const unsigned int buflen = 256;
+        const char buf[buflen] = "";
+        auto read_async = [&](unsigned int (*subprocess_read)(subprocess_s*, char *const, const unsigned int)) {
             for (;;) {
-                auto c = getc(f);
-                if (c < 0) break;
-                out.push_back((char)c);
+                unsigned int readlength = subprocess_read(&subprocess, (char *const)buf, buflen);
+                if (!readlength) break;
+                out.append(buf, readlength);
             }
         };
-        readall(subprocess_stdout(&subprocess));
-        readall(subprocess_stderr(&subprocess));
+        read_async(subprocess_read_stdout);
+        read_async(subprocess_read_stderr);
+        int process_return;
+        result = subprocess_join(&subprocess, &process_return);
         subprocess_destroy(&subprocess);
+        if (result) {
+            return -1;
+        }
         return process_return;
     #else
         (void)cmdl;

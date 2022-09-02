@@ -351,7 +351,9 @@ struct EnumRef : Node {
 
 struct UDTRef : Node {
     UDT *udt;
-    UDTRef(const Line &ln, UDT *_udt) : Node(ln), udt(_udt) {}
+    bool predeclaration;
+    UDTRef(const Line &ln, UDT *_udt, bool predeclaration)
+        : Node(ln), udt(_udt), predeclaration(predeclaration) {}
     void Dump(string &sd) const { append(sd, udt->is_struct ? "struct " : "class ", udt->name); }
     bool EqAttr(const Node *o) const {
         return udt == ((UDTRef *)o)->udt;
@@ -375,17 +377,18 @@ struct FunRef : Node {
 // This is either a Dot, Call, or NativeCall, to be specialized by the typechecker
 struct GenericCall : List {
     string_view name;
-    SubFunction *sf;  // Need to store this, since only parser tracks scopes.
-    bool dotnoparens;
+    string_view ns;
+    bool fromdot;
+    bool noparens;
     bool super;
     vector<UnresolvedTypeRef> specializers;
-    GenericCall(const Line &ln, string_view name, SubFunction *sf, bool dotnoparens,
+    GenericCall(const Line &ln, string_view name, string_view ns, bool fromdot, bool noparens,
                 bool super, vector<UnresolvedTypeRef> *spec)
-        : List(ln), name(name), sf(sf), dotnoparens(dotnoparens), super(super) {
+        : List(ln), name(name), ns(ns), fromdot(fromdot), noparens(noparens), super(super) {
         if (spec) specializers = *spec;
     };
     bool EqAttr(const Node *o) const {
-        return sf == ((GenericCall *)o)->sf;
+        return name == ((GenericCall *)o)->name && ns == ((GenericCall *)o)->ns;
     }
     SHARED_SIGNATURE(GenericCall, "generic call", true)
 };
@@ -411,8 +414,8 @@ struct Call : List {
     SubFunction *sf;
     vector<UnresolvedTypeRef> specializers;
     bool super;
-    explicit Call(GenericCall &gc)
-        : List(gc.line), sf(gc.sf), specializers(gc.specializers), super(gc.super) {};
+    explicit Call(GenericCall &gc, SubFunction *sf)
+        : List(gc.line), sf(sf), specializers(gc.specializers), super(gc.super) {};
     Call(Line &ln, SubFunction *sf) : List(ln), sf(sf) {};
     void Dump(string &sd) const { sd += sf->parent->name; }
     bool EqAttr(const Node *o) const {
@@ -526,7 +529,7 @@ struct ToLifetime : Coercion {
     bool EqAttr(const Node *) const {
         return false;  // FIXME
     }
-    SHARED_SIGNATURE_NO_TT(ToLifetime, "lifetime change", true)
+    SHARED_SIGNATURE_NO_TT(ToLifetime, "lifetime change", false)
 };
 
 inline string DumpNode(Node &n, int indent, bool single_line) {

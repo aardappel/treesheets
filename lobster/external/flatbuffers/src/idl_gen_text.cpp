@@ -248,11 +248,23 @@ struct JsonPrinter {
   template<typename T>
   bool GenField(const FieldDef &fd, const Table *table, bool fixed,
                 int indent) {
-    return PrintScalar(
-        fixed ? reinterpret_cast<const Struct *>(table)->GetField<T>(
-                    fd.value.offset)
-              : table->GetField<T>(fd.value.offset, GetFieldDefault<T>(fd)),
-        fd.value.type, indent);
+    if (fixed) {
+      return PrintScalar(
+          reinterpret_cast<const Struct *>(table)->GetField<T>(fd.value.offset),
+          fd.value.type, indent);
+    } else if (fd.IsOptional()) {
+      auto opt = table->GetOptional<T, T>(fd.value.offset);
+      if (opt) {
+        return PrintScalar(*opt, fd.value.type, indent);
+      } else {
+        text += "null";
+        return true;
+      }
+    } else {
+      return PrintScalar(
+          table->GetField<T>(fd.value.offset, GetFieldDefault<T>(fd)),
+          fd.value.type, indent);
+    }
   }
 
   // Generate text for non-scalar field.
@@ -266,7 +278,7 @@ struct JsonPrinter {
           fd.value.offset);
     } else if (fd.flexbuffer && opts.json_nested_flexbuffers) {
       // We could verify this FlexBuffer before access, but since this sits
-      // inside a FlatBuffer that we don't know whether it has been verified or
+      // inside a FlatBuffer that we don't know wether it has been verified or
       // not, there is little point making this part safer than the parent..
       // The caller should really be verifying the whole.
       // If the whole buffer is corrupt, we likely crash before we even get

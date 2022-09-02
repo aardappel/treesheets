@@ -216,4 +216,5 @@ FileLoader EnginePreInit(NativeRegistry &nfr) {
 }  // namespace lobster
 
 extern "C" void GLFrame(StackPtr, VM &) {}
+string BreakPoint(lobster::VM &vm, string_view reason) { return {}; }
 

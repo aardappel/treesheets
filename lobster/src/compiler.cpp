@@ -16,6 +16,8 @@
 //
 #include "lobster/stdafx.h"
 
+#include "lobster/il.h"
+
 #include "lobster/lex.h"
 #include "lobster/idents.h"
 #include "lobster/node.h"
@@ -247,7 +249,7 @@ void DumpBuiltinNames(NativeRegistry &nfr) {
         s += nf->name;
         s += "|";
     }
-    WriteFile("builtin_functions_names.txt", false, s);
+    WriteFile("builtin_functions_names.txt", false, s, false);
 }
 
 string HTMLEscape(string_view in) {
@@ -305,8 +307,21 @@ void DumpBuiltinDoc(NativeRegistry &nfr) {
                     : HTMLEscape(TypeName(a.type->ElementIfNil(), a.fixed_len));
             }
             s += "</font>";
-            if (a.type->t == V_NIL && (int)i > last_non_nil)
-                s += a.type->sub->Numeric() ? " = 0" : " = nil";
+            if (a.type->t == V_NIL && (int)i > last_non_nil) {
+                switch (a.type->sub->t) {
+                    case V_INT:
+                        if (a.flags & NF_BOOL)
+                            append(s, " = ", a.default_val ? "true" : "false");
+                        else
+                            append(s, " = ", a.default_val);
+                        break;
+                    case V_FLOAT:
+                        append(s, " = ", (float)a.default_val);
+                        break;
+                    default:
+                        s += " = nil";
+                }
+            }
         }
         s += ")";
         if (nf->retvals.size()) {
@@ -321,7 +336,7 @@ void DumpBuiltinDoc(NativeRegistry &nfr) {
         s += cat("</tt></td><td class=\"a\">", HTMLEscape(nf->help), "</td></tr>\n");
     }
     s += "</table>\n</td></tr></table></center></body>\n</html>\n";
-    WriteFile("builtin_functions_reference.html", false, s);
+    WriteFile("builtin_functions_reference.html", false, s, false);
 }
 
 void Compile(NativeRegistry &nfr, string_view fn, string_view stringsource, string &bytecode,
@@ -332,7 +347,7 @@ void Compile(NativeRegistry &nfr, string_view fn, string_view stringsource, stri
     TypeChecker tc(parser, st, return_value);
     // Optimizer is not optional, must always run, since TypeChecker and CodeGen
     // rely on it culling const if-thens and other things.
-    Optimizer opt(parser, st, tc);
+    Optimizer opt(parser, st, tc, runtime_checks);
     if (parsedump) *parsedump = parser.DumpAll(true);
     CodeGen cg(parser, st, return_value, runtime_checks);
     st.Serialize(cg.code, cg.type_table,
@@ -358,9 +373,10 @@ string RunTCC(NativeRegistry &nfr, string_view bytecode_buffer, string_view fn,
                 LOG_INFO("time to tcc (seconds): ", SecondsSinceStart() - start_time);
                 if (compile_only) return true;
                 auto vmargs = VMArgs {
-                    nfr, fn, (uint8_t *)bytecode_buffer.data(),
+                    nfr, string(fn), (uint8_t *)bytecode_buffer.data(),
                     bytecode_buffer.size(), std::move(program_args),
-                    (fun_base_t *)exports[1], (fun_base_t)exports[0], trace, dump_leaks
+                    (fun_base_t *)exports[1], (fun_base_t)exports[0], trace, dump_leaks,
+                    runtime_checks
                 };
                 lobster::VMAllocator vma(std::move(vmargs));
                 vma.vm->EvalProgram();
@@ -385,6 +401,7 @@ string RunTCC(NativeRegistry &nfr, string_view bytecode_buffer, string_view fn,
         (void)program_args;
         (void)trace;
         (void)compile_only;
+        (void)dump_leaks;
         error = "cannot JIT code: libtcc not enabled";
         return "";
     #endif
@@ -444,7 +461,8 @@ void RegisterCoreLanguageBuiltins(NativeRegistry &nfr) {
 }
 
 #if !LOBSTER_ENGINE
-FileLoader EnginePreInit(NativeRegistry &) {
+FileLoader EnginePreInit(NativeRegistry &nfr) {
+    nfr.DoneRegistering();
     return DefaultLoadFile;
 }
 #endif
@@ -459,10 +477,10 @@ extern "C" int RunCompiledCodeMain(int argc, const char * const *argv, const uin
         RegisterCoreLanguageBuiltins(nfr);
         auto loader = EnginePreInit(nfr);
         min_output_level = OUTPUT_WARN;
-        InitPlatform("../../", "", false, loader);  // FIXME: path.
+        InitPlatform("../", "main.lobster", false, loader);  // FIXME: path.
         auto vmargs = VMArgs {
             nfr, StripDirPart(argv[0]), bytecodefb, static_size, {},
-            vtables, nullptr, TraceMode::OFF
+            vtables, nullptr, TraceMode::OFF, false, RUNTIME_ASSERT
         };
         for (int arg = 1; arg < argc; arg++) { vmargs.program_args.push_back(argv[arg]); }
         lobster::VMAllocator vma(std::move(vmargs));

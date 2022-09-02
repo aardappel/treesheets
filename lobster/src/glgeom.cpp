@@ -13,14 +13,17 @@
 // limitations under the License.
 
 #include "lobster/stdafx.h"
+
+#include "lobster/vmdata.h"
 #include "lobster/glinterface.h"
 #include "lobster/glincludes.h"
 
-int GenBO_(int type, size_t bytesize, const void *data) {
+int GenBO_(string_view name, int type, size_t bytesize, const void *data) {
     int bo;
     GL_CALL(glGenBuffers(1, (GLuint *)&bo));
     GL_CALL(glBindBuffer(type, bo));
     GL_CALL(glBufferData(type, bytesize, data, GL_STATIC_DRAW));
+    GL_NAME(GL_BUFFER, bo, name);
     return bo;
 }
 
@@ -51,11 +54,13 @@ GLenum GetPrimitive(Primitive prim) {
     }
 }
 
-Surface::Surface(gsl::span<int> indices, Primitive _prim) : numidx(indices.size()), prim(_prim) {
-    ibo = GenBO(GL_ELEMENT_ARRAY_BUFFER, indices);
+Surface::Surface(string_view name, gsl::span<int> indices, Primitive _prim)
+    : numidx(indices.size()), prim(_prim) {
+    ibo = GenBO(name, GL_ELEMENT_ARRAY_BUFFER, indices);
 }
 
 void Surface::Render(Shader *sh) {
+    LOBSTER_FRAME_PROFILE_GPU("Surface::Render");
     sh->SetTextures(textures);
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
     GL_CALL(glDrawElements(GetPrimitive(prim), (GLsizei)numidx, GL_UNSIGNED_INT, 0));
@@ -65,9 +70,9 @@ Surface::~Surface() {
     GL_CALL(glDeleteBuffers(1, (GLuint *)&ibo));
 }
 
-void Geometry::Init(const void *verts1, const void *verts2) {
-    vbo1 = GenBO_(GL_ARRAY_BUFFER, vertsize1 * nverts, verts1);
-    if (verts2) vbo2 = GenBO_(GL_ARRAY_BUFFER, vertsize2 * nverts, verts2);
+void Geometry::Init(string_view name, const void *verts1, const void *verts2) {
+    vbo1 = GenBO_(name, GL_ARRAY_BUFFER, vertsize1 * nverts, verts1);
+    if (verts2) vbo2 = GenBO_(name, GL_ARRAY_BUFFER, vertsize2 * nverts, verts2);
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo1));
     GL_CALL(glGenVertexArrays(1, (GLuint *)&vao));
     GL_CALL(glBindVertexArray(vao));
@@ -209,7 +214,7 @@ bool Mesh::SaveAsPLY(string_view filename) {
     string s;
     if (!geom->WritePLY(s, nindices)) return false;
     for (auto &surf : surfs) surf->WritePLY(s);
-    return WriteFile(filename, true, s);
+    return WriteFile(filename, true, s, false);
 }
 
 void SetPointSprite(float scale) {
@@ -227,6 +232,7 @@ void SetPointSprite(float scale) {
 }
 
 void RenderArray(Primitive prim, Geometry *geom, int ibo, size_t tcount) {
+    LOBSTER_FRAME_PROFILE_GPU("RenderArray");
     GLenum glprim = GetPrimitive(prim);
     geom->RenderSetup();
     if (ibo) {
@@ -252,7 +258,7 @@ void GeometryCache::RenderUnitSquare(Shader *sh, Primitive prim, bool centered) 
             SpriteVert{ float2( 1, -1), float2(1, 0) },
         };
         quadgeom[centered] =
-            new Geometry(gsl::make_span(centered ? vb_square_centered : vb_square, 4), "pT");
+            new Geometry("RenderUnitSquare", gsl::make_span(centered ? vb_square_centered : vb_square, 4), "pT");
     }
     sh->Set();
     RenderArray(prim, quadgeom[centered]);
@@ -314,8 +320,9 @@ void GeometryCache::RenderUnitCube(Shader *sh, int inside) {
                 verts.push_back(vert);
             }
         }
-        cube_geom[inside] = new Geometry(gsl::make_span(verts), "PNT");
-        cube_ibo[inside] = GenBO(GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(triangles));
+        cube_geom[inside] = new Geometry("RenderUnitCube_verts", gsl::make_span(verts), "PNT");
+        cube_ibo[inside] =
+            GenBO("RenderUnitCube_idxs", GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(triangles));
     }
     sh->Set();
     RenderArray(PRIM_TRIS, cube_geom[inside], cube_ibo[inside], 36);
@@ -332,7 +339,7 @@ void GeometryCache::RenderCircle(Shader *sh, Primitive prim, int segments, float
             vbuf[i] = float3(sinf(i * step + 1),
                              cosf(i * step + 1), 0);
         }
-        geom = new Geometry(gsl::make_span(vbuf), "P");
+        geom = new Geometry("RenderCircle", gsl::make_span(vbuf), "P");
     }
     Transform(float4x4(float4(float2_1 * radius, 1)), [&]() {
         sh->Set();
@@ -363,8 +370,8 @@ void GeometryCache::RenderOpenCircle(Shader *sh, int segments, float radius, flo
             ibuf[i * 6 + 4] = ((i + 1) * 2 + 1) % nverts;
             ibuf[i * 6 + 5] = ((i + 1) * 2 + 0) % nverts;
         }
-        vibo.first = new Geometry(gsl::make_span(vbuf), "P");
-        vibo.second = GenBO(GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(ibuf));
+        vibo.first = new Geometry("RenderOpenCircle_verts", gsl::make_span(vbuf), "P");
+        vibo.second = GenBO("RenderOpenCircle_idxs", GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(ibuf));
     }
     Transform(float4x4(float4(float2_1 * radius, 1)), [&]() {
         sh->Set();

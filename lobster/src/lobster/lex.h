@@ -371,6 +371,7 @@ struct Lex : LoadedFile {
                         case 'a':
                             if (sattr == TName(T_AND)) { cont = true; return T_AND; }
                             if (sattr == TName(T_ANYTYPE)) return T_ANYTYPE;
+                            if (sattr == TName(T_ATTRIBUTE)) return T_ATTRIBUTE;
                             break;
                         case 'b':
                             if (sattr == TName(T_BREAK)) return T_BREAK;
@@ -493,7 +494,10 @@ struct Lex : LoadedFile {
         if (!interp && !character_constant && p[0] == '\"' && p[1] == '\"') {
             p += 2;
             if (*p == '\r') p++;
-            if (*p == '\n') p++;
+            if (*p == '\n') {
+                p++;
+                tokline++;
+            }
             for (;;) {
                 switch (c = *p++) {
                     case '\0':
@@ -651,7 +655,7 @@ struct Lex : LoadedFile {
             }
         }
         //LOG_DEBUG(err);
-         THROW_OR_ABORT(err);
+        THROW_OR_ABORT(err);
     }
 
     void Warn(string_view msg, const Line *ln = nullptr) {

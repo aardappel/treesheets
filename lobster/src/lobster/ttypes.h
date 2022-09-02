@@ -115,7 +115,8 @@ namespace lobster {
     TOK(T_NAMESPACE, "namespace") \
     TOK(T_BREAK, "break") \
     TOK(T_SUPER, "super") \
-    TOK(T_OPERATOR, "operator")
+    TOK(T_OPERATOR, "operator") \
+    TOK(T_ATTRIBUTE, "attribute")
 
 
 enum TType {
