@@ -57,7 +57,7 @@ jobs:
     - name: clone wxWidgets
       run: |
         git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
-        Get-ChildItem 'wxWidgets\build\msw' -Filter *.vcxproj | Foreach-Object { (gc $PSItem.FullName) -replace '<RuntimeLibrary>`$(wxDebugRuntimeLibrary)</RuntimeLibrary>', '<RuntimeLibrary>MultiThreaded</RuntimeLibrary>' | Out-File -encoding ASCII $PSItem.FullName }
+        (gc 'wxWidgets\build\msw\wx_setup.props') -replace '<wxReleaseRuntimeLibrary>MultiThreadedDLL</wxReleaseRuntimeLibrary>', '<wxReleaseRuntimeLibrary>MultiThreaded</wxReleaseRuntimeLibrary>' | Out-File -encoding ASCII 'wxWidgets\build\msw\wx_setup.props'
     - name: build wxWidgets
       working-directory: wxWidgets
       run: msbuild.exe build/msw/wx_vc14.sln /p:Configuration=Release /p:Platform=x64 /p:RuntimeLibrary=MultiThreaded
