@@ -43,18 +43,14 @@ jobs:
       run: make -C _build -j4
     - name: install files
       run: make -C _build install
+    - name: zip
+      run: zip -r linux_treesheets_${{ matrix.cxx }}.zip TreeSheets-relocatable
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v1
       with:
         name: Linux TreeSheets ${{ matrix.cxx }}
-        path: TreeSheets-relocatable
-    - name: zip
-      if: github.ref == 'refs/heads/master'
-      uses: vimtor/action-zip@v1
-      with:
-        files: TreeSheets-relocatable/
-        dest: linux_treesheets_${{ matrix.cxx }}.zip
+        path: linux_treesheets_${{ matrix.cxx }}.zip
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
@@ -141,18 +137,13 @@ jobs:
         xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme TreeSheets -derivedDataPath build
         chmod +x build/Build/Products/Release/TreeSheets.app/Contents/MacOS/TreeSheets
         rm -rf build/Build/Products/Release/TreeSheets.app.dSYM
+        zip -r mac_treesheets.zip osx/TreeSheets/build/Build/Products/Release
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v2
       with:
         name: Mac TreeSheets
-        path: osx/TreeSheets/build/Build/Products/Release
-    - name: zip
-      if: github.ref == 'refs/heads/master'
-      uses: vimtor/action-zip@v1
-      with:
-        files: osx/TreeSheets/build/Build/Products/Release/
-        dest: mac_treesheets.zip
+        path: mac_treesheets.zip
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
