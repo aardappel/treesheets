@@ -137,7 +137,7 @@ jobs:
         xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme TreeSheets -derivedDataPath build
         chmod +x build/Build/Products/Release/TreeSheets.app/Contents/MacOS/TreeSheets
         rm -rf build/Build/Products/Release/TreeSheets.app.dSYM
-        zip -r mac_treesheets.zip osx/TreeSheets/build/Build/Products/Release
+        zip -r ../../mac_treesheets.zip build/Build/Products/Release
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v2
