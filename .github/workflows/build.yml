@@ -12,11 +12,13 @@ jobs:
   build-linux:
     name: Build Linux
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         cxx: [g++-10, clang++-12]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: apt update
       run: sudo apt-get -o Acquire::Retries=3 update
     - name: install opengl
@@ -42,16 +44,34 @@ jobs:
     - name: install files
       run: make -C _build install
     - name: upload build artifacts
+      if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v1
       with:
         name: Linux TreeSheets ${{ matrix.cxx }}
         path: TreeSheets-relocatable
+    - name: zip
+      if: github.ref == 'refs/heads/master'
+      uses: vimtor/action-zip@v1
+      with:
+        files: TreeSheets-relocatable/
+        dest: linux_treesheets_${{ matrix.cxx }}.zip
+    - name: Create release
+      if: github.ref == 'refs/heads/master'
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.run_id }}
+        allowUpdates: true
+        omitBody: true
+        commit: master
+        artifacts: "linux_treesheets_${{ matrix.cxx }}.zip"
 
   build-windows:
     name: Build Windows
     runs-on: windows-2022
+    permissions:
+      contents: write
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.3
     - name: clone wxWidgets
@@ -78,16 +98,28 @@ jobs:
         script-file: "TS_installer.nsi"
         arguments: "/V3"
     - name: upload build artifacts
+      if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v1
       with:
         name: Windows TreeSheets (installer)
         path: Treesheets_Setup.exe
+    - name: Create release
+      if: github.ref == 'refs/heads/master'
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.run_id }}
+        allowUpdates: true
+        omitBody: true
+        commit: master
+        artifacts: "Treesheets_Setup.exe"
 
   build-mac:
     name: Build Mac
     runs-on: macos-latest
+    permissions:
+      contents: write
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: clone wxWidgets
       run: git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
     - name: build wxWidgets
@@ -110,7 +142,23 @@ jobs:
         chmod +x build/Build/Products/Release/TreeSheets.app/Contents/MacOS/TreeSheets
         rm -rf build/Build/Products/Release/TreeSheets.app.dSYM
     - name: upload build artifacts
+      if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v2
       with:
         name: Mac TreeSheets
         path: osx/TreeSheets/build/Build/Products/Release
+    - name: zip
+      if: github.ref == 'refs/heads/master'
+      uses: vimtor/action-zip@v1
+      with:
+        files: osx/TreeSheets/build/Build/Products/Release/
+        dest: mac_treesheets.zip
+    - name: Create release
+      if: github.ref == 'refs/heads/master'
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.run_id }}
+        allowUpdates: true
+        omitBody: true
+        commit: master
+        artifacts: "mac_treesheets.zip"
