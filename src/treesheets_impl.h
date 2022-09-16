@@ -4,7 +4,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     Cell *cur = nullptr;
     wxDC *dc = nullptr;
 
-    enum { max_new_grid_dim = 256 };  // Don't allow crazy sizes.
+    enum { max_new_grid_cells = 256*256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
@@ -84,7 +84,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void CreateGrid(int x, int y) {
-        if (x > 0 && y > 0 && x < max_new_grid_dim && y < max_new_grid_dim)
+        if (x > 0 && y > 0 && x*y < max_new_grid_cells)
             cur->AddGrid(x, y);
     }
 
