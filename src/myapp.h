@@ -81,7 +81,11 @@ struct MyApp : wxApp {
             if (shcore) FreeLibrary(shcore);
         #endif
 
-        locale.Init();
+        auto lang = wxLocale::GetSystemLanguage();
+        if (lang == wxLANGUAGE_UNKNOWN || !wxLocale::IsAvailable(lang)) {
+            lang = wxLANGUAGE_ENGLISH;
+        }
+        locale.Init(lang);
 
         bool portable = false;
         bool single_instance = true;
