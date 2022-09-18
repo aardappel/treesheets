@@ -1046,7 +1046,9 @@ struct MyFrame : wxFrame {
     }
 
     void ReFocus() {
-        if (GetCurTab()) GetCurTab()->SetFocus();
+        if (wxWindow::HasFocus()) {
+            if (GetCurTab()) GetCurTab()->SetFocus();
+        }
     }
 
     void OnCellColor(wxCommandEvent &ce) {
