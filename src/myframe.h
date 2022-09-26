@@ -1046,7 +1046,10 @@ struct MyFrame : wxFrame {
     }
 
     void ReFocus() {
-        if (wxWindow::HasFocus()) {
+        #ifdef __WXGTK__
+        if (wxWindow::HasFocus())
+        #endif
+        {
             if (GetCurTab()) GetCurTab()->SetFocus();
         }
     }
