@@ -225,7 +225,7 @@ struct Document {
         if (success) *success = true;
 
         sw->Status(
-            wxString::Format(_(L"Saved %s succesfully (in %d milliseconds)."),
+            wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."),
                              filename.c_str(), (int)((end_saving_time - start_saving_time).GetValue()))
                 .c_str());
 
