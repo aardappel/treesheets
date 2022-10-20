@@ -30,6 +30,8 @@ struct TSCanvas : public wxScrolledWindow {
     void OnPaint(wxPaintEvent &event) {
         #ifdef __WXMAC__
             wxPaintDC dc(this);
+        #elif __WXGTK__
+            wxPaintDC dc(this);
         #else
             auto sz = GetClientSize();
             if (sz.GetX() <= 0 || sz.GetY() <= 0) return;
