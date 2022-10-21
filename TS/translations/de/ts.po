@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-26 16:49-0700\n"
-"PO-Revision-Date: 2022-10-21 19:11+0200\n"
+"PO-Revision-Date: 2022-10-21 19:22+0200\n"
 "Last-Translator: tobias.predel@gmail.com\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -1530,3 +1530,11 @@ msgstr "Skalierung:"
 #: document.h:863
 msgid "size:"
 msgstr "Größe:"
+
+#: myframe.h:527
+msgid "Toggle Zen Mode"
+msgstr "Zenmodus ein-/ausschalten"
+
+#: myframe.h:619
+msgid "Load operation reference ...\tCTRL+ALT+F1"
+msgstr "Programmierreferenz laden ...\tSTRG+ALT+F1"
