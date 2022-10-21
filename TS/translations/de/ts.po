@@ -1536,5 +1536,5 @@ msgid "Toggle Zen Mode"
 msgstr "Zenmodus ein-/ausschalten"
 
 #: myframe.h:619
-msgid "Load operation reference ...\tCTRL+ALT+F1"
-msgstr "Programmierreferenz laden ...\tSTRG+ALT+F1"
+msgid "Load operation reference...\tCTRL+ALT+F1"
+msgstr "Programmierreferenz laden...\tSTRG+ALT+F1"
