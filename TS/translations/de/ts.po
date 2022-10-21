@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-26 16:49-0700\n"
-"PO-Revision-Date: 2022-10-21 18:43+0200\n"
+"PO-Revision-Date: 2022-10-21 19:11+0200\n"
 "Last-Translator: tobias.predel@gmail.com\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -54,7 +54,7 @@ msgstr "&Ansichten zurücksetzen"
 
 #: myframe.h:169
 msgid "&Close\tCTRL+w"
-msgstr "&Schliessen\tCTRL+w"
+msgstr "&Schließen\tCTRL+w"
 
 #: myframe.h:145
 msgid "&Comma delimited text (CSV)..."
@@ -62,7 +62,7 @@ msgstr "&Text mit Kommata als Trennzeichen (CSV)..."
 
 #: myframe.h:330
 msgid "&Copy\tCTRL+c"
-msgstr "&Kopieren\\STRG+c"
+msgstr "&Kopieren\tSTRG+c"
 
 #: myframe.h:491
 msgid "&Data"
@@ -134,11 +134,11 @@ msgstr "Neue Tabelle e&infügen\tSTRG+g"
 
 #: myframe.h:350
 msgid "&Insert New Grid\tINS"
-msgstr "&Neue Tabelle e&infügen\tEINF"
+msgstr "&Neue Tabelle e&infügen\tEINFÜGEN"
 
 #: myframe.h:372
 msgid "&Layout && Render Style..."
-msgstr "&Layout && Render-Stil..."
+msgstr "&Anordnung && Render-Stil..."
 
 #: myframe.h:500
 msgid "&Mark as"
@@ -150,7 +150,7 @@ msgstr "&Neu\tSTRG+n"
 
 #: myframe.h:168
 msgid "&Open...\tCTRL+o"
-msgstr "&Öffnen...\\STRG+o"
+msgstr "&Öffnen...\tSTRG+o"
 
 #: myframe.h:492
 msgid "&Operation"
@@ -194,7 +194,8 @@ msgstr "In aktueller Auswahl e&rsetzen\tSTRG+h"
 
 #: myframe.h:388
 msgid "&Replace in Current Selection & Jump Next\tCTRL+j"
-msgstr "In aktueller Auswahl e&rsetzen & zum nächsten Treffer springen\tSTRG+j"
+msgstr ""
+"In aktueller Auswahl e&rsetzen && zum nächsten Treffer springen\tSTRG+j"
 
 #: myframe.h:189
 msgid "&Reset text sizes\tSHIFT+CTRL+s"
@@ -863,7 +864,7 @@ msgstr "Auswahl nach oben verschieben\tHOCH"
 
 #: myframe.h:209
 msgid "Move to next cell\tTAB"
-msgstr "Zur nächsten Zelle gehen\tTABULATOR"
+msgstr "Zur nächsten Zelle gehen\tTAB"
 
 #: myframe.h:210
 msgid "Move to previous cell\tSHIFT+TAB"
@@ -1187,7 +1188,7 @@ msgstr "Text mit Semikolon als Trennzeichen (CSV)..."
 
 #: myframe.h:378
 msgid "Set Grid Border Width..."
-msgstr "Breite des Tabellenrands setzen."
+msgstr "Breite des Tabellenrands setzen..."
 
 #: document.h:935
 msgid "Set Print Scale"
@@ -1241,7 +1242,7 @@ msgstr "Nur Zellen in der aktuellen Suche anzeigen"
 
 #: myframe.h:463
 msgid "Single click maximize from tray"
-msgstr "Ein Klick im Systemtray maximiert das Fenster"
+msgstr "Ein Klick im Benachrichtungsfeld maximiert das Fenster"
 
 #: system.h:358
 #, c-format
@@ -1280,11 +1281,11 @@ msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln"
 
 #: myframe.h:414
 msgid "Switch to &next file/tab\tCTRL+TAB"
-msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln\tSTRG+TABULATOR"
+msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln\tSTRG+TAB"
 
 #: myframe.h:420
 msgid "Switch to &previous file/tab\tSHIFT+CTRL+TAB"
-msgstr "Zur &vorherigen Datei/zum vorherigen Tab wechseln"
+msgstr "Zur &vorherigen Datei/zum vorherigen Tab wechseln\tUMSCHALT+STRG+TAB"
 
 #: myframe.h:160
 msgid "Tab delimited text..."
