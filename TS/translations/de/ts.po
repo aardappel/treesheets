@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-26 16:49-0700\n"
-"PO-Revision-Date: 2022-10-21 19:22+0200\n"
+"POT-Creation-Date: 2022-10-27 19:59+0200\n"
+"PO-Revision-Date: 2022-10-27 20:14+0200\n"
 "Last-Translator: tobias.predel@gmail.com\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -19,8 +19,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.1.1\n"
 
-#: myframe.h:1028
-#, c-format
+msgid ""
+"%s\n"
+"has been modified on disk by another program / computer:\n"
+"Would "
+msgstr ""
+"%s\n"
+"wurde auf dem Datenträger durch ein anderes Programm / durch einen anderen "
+"Computer verändert:\n"
+"Möchten Sie Ihre Änderungen verwerfen und die Datei vom Datenträger neu "
+"laden?"
+
 msgid ""
 "%s\n"
 "has been modified on disk by another program / computer:\n"
@@ -32,538 +41,504 @@ msgstr ""
 "Möchten Sie Ihre Änderungen verwerfen und die Datei vom Datenträger neu "
 "laden?"
 
-#: myframe.h:504
 msgid "&About..."
 msgstr "Über..."
 
-#: myframe.h:270
 msgid "&Add Cell Text as Tag"
 msgstr "&Zellentext als Schlagwort hinzufügen"
 
-#: myframe.h:298
 msgid "&Add Image"
 msgstr "Bild hinzufügen"
 
-#: myframe.h:374
 msgid "&Browsing..."
 msgstr "&Durchsuchen..."
 
-#: myframe.h:501
 msgid "&Clear Views"
 msgstr "&Ansichten zurücksetzen"
 
-#: myframe.h:169
 msgid "&Close\tCTRL+w"
 msgstr "&Schließen\tCTRL+w"
 
-#: myframe.h:145
 msgid "&Comma delimited text (CSV)..."
 msgstr "&Text mit Kommata als Trennzeichen (CSV)..."
 
-#: myframe.h:330
 msgid "&Copy\tCTRL+c"
-msgstr "&Kopieren\tSTRG+c"
+msgstr "&Kopieren\tCTRL+c"
 
-#: myframe.h:491
 msgid "&Data"
 msgstr "&Daten"
 
-#: myframe.h:188
-msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
-msgstr "Textgrösse ver&kleinern (UMSCHALT+Mausrad)\tUMSCHALT+BILD AB"
+msgid "&Data\tCTRL+ALT+d"
+msgstr "&Daten\tCTRL+ALT+d"
 
-#: myframe.h:340
+msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
+msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)\tSHIFT+PGDN"
+
 msgid "&Delete After\tDEL"
 msgstr "&Nachfolgendes Element löschen\tENTF"
 
-#: myframe.h:518
 msgid "&Edit"
 msgstr "&Bearbeiten"
 
-#: myframe.h:182
 msgid "&Exit\tCTRL+q"
-msgstr "&Beenden\tSTRG+q"
+msgstr "&Beenden\tCTRL+q"
 
-#: myframe.h:517
 msgid "&File"
 msgstr "&Datei"
 
-#: myframe.h:292
 msgid "&Flatten"
 msgstr "&Verflachen"
 
-#: myframe.h:386
 msgid "&Go To Next Search Result\tF3"
 msgstr "&Zum nächsten Suchtreffer gehen\tF3"
 
-#: myframe.h:371
 msgid "&Grid Reorganization..."
 msgstr "&Tabellen-Umstrukturierung..."
 
-#: myframe.h:135
 msgid "&HTML (Tables+Styling)..."
 msgstr "&HTML (Tabellen + Stil)..."
 
-#: myframe.h:527
 msgid "&Help"
 msgstr "&Hilfe"
 
-#: myframe.h:288
 msgid "&Hierarchify"
 msgstr "&Hierarchie anwenden"
 
-#: myframe.h:495
 msgid "&Horizontal View"
 msgstr "&Horizontale Ansicht"
 
-#: myframe.h:149
+msgid "&Horizontal View\tCTRL+ALT+."
+msgstr "&Horizontale Ansicht\tCTRL+ALT+."
+
 msgid "&Image..."
 msgstr "&Bild..."
 
-#: myframe.h:373
 msgid "&Images..."
 msgstr "&Bilder..."
 
-#: myframe.h:187
 msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
-msgstr "&Textgrösse vergrössern (UMSCHALT+Mausrad)\tUMSCHALT+BILD AUF"
+msgstr "&Textgröße vergrößern (UMSCHALT+Mausrad)\tSHIFT+PGUP"
 
-#: myframe.h:348
 msgid "&Insert New Grid\tCTRL+g"
-msgstr "Neue Tabelle e&infügen\tSTRG+g"
+msgstr "Neue Tabelle e&infügen\tCTRL+g"
 
-#: myframe.h:350
 msgid "&Insert New Grid\tINS"
 msgstr "&Neue Tabelle e&infügen\tEINFÜGEN"
 
-#: myframe.h:372
 msgid "&Layout && Render Style..."
 msgstr "&Anordnung && Render-Stil..."
 
-#: myframe.h:500
 msgid "&Mark as"
 msgstr "&Markieren als"
 
-#: myframe.h:167
 msgid "&New\tCTRL+n"
-msgstr "&Neu\tSTRG+n"
+msgstr "&Neu\tCTRL+n"
 
-#: myframe.h:168
 msgid "&Open...\tCTRL+o"
-msgstr "&Öffnen...\tSTRG+o"
+msgstr "&Öffnen...\tCTRL+o"
 
-#: myframe.h:492
 msgid "&Operation"
 msgstr "&Bedienung"
 
-#: myframe.h:521
+msgid "&Operation\tCTRL+ALT+o"
+msgstr "&Bedienung...\tCTRL+ALT+o"
+
 msgid "&Options"
 msgstr "&Optionen"
 
-#: myframe.h:332
 msgid "&Paste\tCTRL+v"
-msgstr "&Einfügen\tSTRG+v"
+msgstr "&Einfügen\tCTRL+v"
 
-#: myframe.h:177
 msgid "&Print...\tCTRL+p"
-msgstr "&Drucken...\tSTRG+p"
+msgstr "&Drucken...\tCTRL+p"
 
-#: myframe.h:522
 msgid "&Program"
 msgstr "&Programm"
 
-#: myframe.h:170
 msgid "&Recent files"
 msgstr "&Zuletzt geöffnete Dateien"
 
-#: myframe.h:337
 msgid "&Redo\tCTRL+y"
-msgstr "&Wiederherstellen\tSTRG+y"
+msgstr "&Wiederherstellen\tCTRL+y"
 
-#: myframe.h:271
 msgid "&Remove Cell Text from Tags"
 msgstr "Zellentext vom Schlagwort entfe&rnen"
 
-#: myframe.h:301
 msgid "&Remove Image(s)"
 msgstr "&Bild(er) entfernen"
 
-#: myframe.h:387
 msgid "&Replace in Current Selection\tCTRL+h"
-msgstr "In aktueller Auswahl e&rsetzen\tSTRG+h"
+msgstr "In aktueller Auswahl e&rsetzen\tCTRL+h"
 
-#: myframe.h:388
 msgid "&Replace in Current Selection & Jump Next\tCTRL+j"
-msgstr ""
-"In aktueller Auswahl e&rsetzen && zum nächsten Treffer springen\tSTRG+j"
+msgstr "In aktueller Auswahl e&rsetzen && zum nächsten Treffer springen\tCTRL+j"
 
-#: myframe.h:189
+msgid "&Reset Scale (display only)"
+msgstr "Skalierung zu&rücksetzen (nur Anzeige)"
+
+msgid "&Reset text sizes\tCTRL+SHIFT+s"
+msgstr "Textgröße zu&rücksetzen\tCTRL+SHIFT+s"
+
 msgid "&Reset text sizes\tSHIFT+CTRL+s"
-msgstr "Textgröße zu&rücksetzen\tUMSCHALT+STRG+s"
+msgstr "Textgröße zu&rücksetzen\tSHIFT+CTRL+s"
 
-#: myframe.h:266
+msgid "&Reset text styles\tCTRL+SHIFT+r"
+msgstr "Textstile zu&rücksetzen\tSHIFT+CTRL+r"
+
 msgid "&Reset text styles\tSHIFT+CTRL+r"
-msgstr "Textstile zu&rücksetzen\tUMSCHALT+STRG+r"
+msgstr "Textstile zu&rücksetzen\tSHIFT+CTRL+r"
 
-#: myframe.h:488
 msgid "&Roundness of grid borders..."
 msgstr "&Abrundung der Tabellenränder..."
 
-#: myframe.h:499
 msgid "&Run"
 msgstr "&Ausführen"
 
-#: myframe.h:171
-msgid "&Save\tCTRL+s"
-msgstr "&Speichern\tSTRG+s"
+msgid "&Run\tCTRL+ALT+F5"
+msgstr "Ausführen\tCTRL+ALT+F5"
 
-#: myframe.h:299
+msgid "&Save\tCTRL+s"
+msgstr "&Speichern\tCTRL+s"
+
 msgid "&Scale Image"
 msgstr "&Bild skalieren"
 
-#: myframe.h:519
+msgid "&Scale Image (display only)"
+msgstr "&Bild skalieren (nur Anzeige)"
+
+msgid "&Scale Image (re-sample pixels)"
+msgstr "Bild skalieren (Pixel &resampeln)"
+
 msgid "&Search"
 msgstr "&Suche"
 
-#: myframe.h:385
 msgid "&Search\tCTRL+f"
-msgstr "&Suche\tSTRG+f"
+msgstr "&Suche\tCTRL+f"
 
-#: myframe.h:370
 msgid "&Selection..."
 msgstr "&Auswahl..."
 
-#: myframe.h:272
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "&Zellentext als Schlagwort verwenden (STRG+RMB verwenden)"
+msgstr "&Zellentext als Schlagwort verwenden (CTRL+RMB verwenden)"
 
-#: myframe.h:450
 msgid "&Set Custom Color From Cell BG"
 msgstr "&Benutzerdefinierte Farbe anhand des Zellenhintergrunds setzen"
 
-#: myframe.h:190
 msgid "&Shrink text of all sub-grids\tSHIFT+CTRL+m"
-msgstr "&Text von allen untergeordneten Tabellen verkleinern\tUMSCHALT+STRG+m"
+msgstr "Text von allen untergeordneten Tabellen verkleinern\tSHIFT+CTRL+m"
 
-#: myframe.h:278
+msgid "&Transpose\tCTRL+SHIFT+t"
+msgstr "&Transponieren\tSHIFT+CTRL+t"
+
 msgid "&Transpose\tSHIFT+CTRL+t"
-msgstr "&Transponieren\tUMSCHALT+STRG+t"
+msgstr "&Transponieren\tSHIFT+CTRL+t"
 
-#: myframe.h:336
 msgid "&Undo\tCTRL+z"
-msgstr "&Rückgängig machen"
+msgstr "&Rückgängig machen\tCTRL+z"
 
-#: myframe.h:496
 msgid "&Vertical View"
 msgstr "&Vertikale Ansicht"
 
-#: myframe.h:520
+msgid "&Vertical View\tCTRL+ALT+,"
+msgstr "&Vertikale Ansicht\tCTRL+ALT+,"
+
 msgid "&View"
 msgstr "&Ansicht"
 
-#: myframe.h:353
 msgid "&Wrap in new parent\tF9"
 msgstr "&In eine Tabelle als übergeordnetes Element setzen\tF9"
 
-#: myframe.h:132
 msgid "&XML..."
 msgstr "&XML..."
 
-#: document.h:1013
 msgid "1:1 scale restored."
 msgstr "1:1-Skalierung wurde wiederhergestellt."
 
-#: system.h:197
 msgid "A temporary autosave file exists, would you like to load it instead?"
-msgstr ""
-"Eine temporäre Speicherkopie existiert. Möchten Sie diese stattdessen laden?"
+msgstr "Eine temporäre Speicherkopie existiert. Möchten Sie diese stattdessen laden?"
 
-#: myframe.h:570
 msgid "Add Image"
 msgstr "Bild hinzufügen"
 
-#: myframe.h:352
 msgid "Adds a grid to the selected cell"
 msgstr "Eine Tabelle in die ausgewählte Zelle einfügen"
 
-#: myframe.h:298
 msgid "Adds an image to the selected cell"
 msgstr "Fügt ein Bild in die ausgewählte Zelle ein"
 
-#: myframe.h:476
+msgid "Apply last border color\tSHIFT+ALT+b"
+msgstr "Letzte Randfarbe anwenden\tSHIFT+ALT+b"
+
+msgid "Apply last cell color\tSHIFT+ALT+c"
+msgstr "Letzte Zellenfarbe anwenden\tSHIFT+ALT+c"
+
+msgid "Apply last text color\tSHIFT+ALT+t"
+msgstr "Letzte Textfarbe anwenden\tSHIFT+ALT+t"
+
 msgid "Auto reload documents"
 msgstr "Dokument automatisch neu laden"
 
-#: myframe.h:479
 msgid "Automatically export a .html on every save"
 msgstr "Automatisch eine HTML-Datei bei jedem Abspeichern exportieren"
 
-#: system.h:198
 msgid "Autosave load"
 msgstr "Automatische Sicherungskopien laden"
 
-#: myframe.h:473
 msgid "Autosave to .tmp"
 msgstr "Automatische .tmp-Kopien erstellen"
 
-#: myframe.h:486
 msgid "Black and white toolbar icons"
 msgstr "Schwarz-weiße Symbole in der Werkzeugleiste"
 
-#: myframe.h:588
 msgid "Border "
 msgstr "Ränder "
 
-#: myframe.h:322
 msgid "Bubble Style Rendering\tALT+8"
 msgstr "Blasenstil-Rendering\tALT+8"
 
-#: document.h:1493
-msgid "Can only move this cell into an Nx1 or 1xN grid."
-msgstr ""
-"Es kann nur diese Zelle in eine Nx1- oder 1xN-Tabelle verschoben werden."
+msgid "Can only move this cell from a Nx1 or 1xN grid."
+msgstr "Es kann nur diese Zelle aus einer Nx1- oder 1xN-Tabelle verschoben werden."
 
-#: document.h:1660
+msgid "Can only move this cell into a Nx1 or 1xN grid."
+msgstr "Es kann nur diese Zelle in eine Nx1- oder 1xN-Tabelle verschoben werden."
+
+msgid "Can only move this cell into an Nx1 or 1xN grid."
+msgstr "Es kann nur diese Zelle in eine Nx1- oder 1xN-Tabelle verschoben werden."
+
+msgid ""
+"Can't sort: make a 1xN selection to indicate what column to sort on, and "
+msgstr ""
+"Kann nicht sortieren: bitte führen Sie eine 1xN-Auswahl durch, um die zu "
+"sortierende Spalte anzugeben, und "
+
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
 msgstr ""
+"Kann nicht sortieren: bitte führen Sie eine 1xN-Auswahl durch, um die zu "
+"sortierende Spalte anzugeben, und welche Zeilen verarbeitet werden sollen"
 
-#: document.h:601
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: myframe.h:257
 msgid "Cancel text edits\tESC"
 msgstr "Textbearbeitungen abbrechen\tESC"
 
-#: system.h:266
 msgid "Cannot decompress file."
 msgstr "Datei konnte nicht dekomprimiert werden."
 
-#: document.h:1611
 msgid "Cannot drag & drop more than 1 file."
 msgstr "Es konnte nicht mehr als 1 Datei gedrag-&dropped werden."
 
-#: document.h:655
+msgid ""
+"Cannot export grid that is not flat (zoom the view to the desired grid, "
+msgstr ""
+"Kann die nicht-flache Tabelle nicht exportieren (Vergrößern Sie auf die "
+"gewünschte Tabelle "
+
 msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
 "or use Flatten)."
 msgstr ""
+"Kann die nicht-flache Tabelle nicht exportieren (Vergrößern Sie auf die "
+"gewünschte Tabelle und/oder benutzen Sie die Verflachen-Funktion)"
 
-#: document.h:1455
 msgid "Cannot find file."
 msgstr "Datei konnte nicht gefunden werden."
 
-#: document.h:1448
 msgid "Cannot launch browser for this link."
 msgstr "Browser konnte nicht für diesen Link aufgerufen werden."
 
-#: document.h:1491
 msgid "Cannot move this cell up in the hierarchy."
 msgstr ""
 "Diese Zelle konnte in der Hierarchie nicht nach oben verschoben werden."
 
-#: system.h:211
 msgid "Cannot open file."
 msgstr "Die Datei konnte nicht geöffnet werden."
 
-#: system.h:237
 msgid "Cannot tell/seek document?"
 msgstr "Das Dokument kann nicht durchsucht werden?"
 
-#: myframe.h:582
 msgid "Cell "
 msgstr "Zelle "
 
-#: myframe.h:448
 msgid "Change a key binding..."
 msgstr "Ein Tastenkürzel ändern..."
 
-#: myframe.h:300
 msgid "Change the image size if it is too big or too small"
 msgstr "Die Bildgröße ändern, wenn sie zu groß oder zu klein ist."
 
-#: document.h:600
-msgid "Changes have been made, are you sure you wish to continue?"
-msgstr ""
-"Änderungen wurden vorgenommen. Sind Sie sich sicher, dass Sie fortfahren "
-"möchten?"
+msgid ""
+"Change the image size if it is too big or too small, by changing the size "
+msgstr "Die Bildgröße ändern, wenn sie zu groß oder zu klein ist."
 
-#: document.h:829
+msgid "Change the image size if it is too big, by reducing the amount of "
+msgstr "Die Bildgröße ändern, wenn sie zu groß oder zu klein ist."
+
+msgid "Change the scale to match DPI of the current display. "
+msgstr "Die Skalierung ändern, um mit der DPI der aktuellen Anzeige übereinzustimmen."
+
+msgid "Changes have been made, are you sure you wish to continue?"
+msgstr "Änderungen wurden vorgenommen. Sind Sie sich sicher, dass Sie fortfahren möchten?"
+
 msgid "Choose CSV file to write"
 msgstr "CSV-Datei zum Schreiben auswählen"
 
-#: document.h:826
 msgid "Choose HTML file to write"
 msgstr "HTML-Datei zum Schreiben auswählen"
 
-#: document.h:828
 msgid "Choose PNG file to write"
 msgstr "PNG-Datei zum Schreiben auswählen"
 
-#: document.h:827
 msgid "Choose Text file to write"
 msgstr "Textdatei zum Schreiben auswählen"
 
-#: document.h:711
 msgid "Choose TreeSheets file to save:"
 msgstr "Treesheets-Datei zum Schreiben auswählen"
 
-#: document.h:824
 msgid "Choose XML file to write"
 msgstr "XML-Datei zum Schreiben auswählen"
 
-#: document.h:419
 msgid "Column width decreased."
 msgstr "Spaltenbreite wurde verkleinert."
 
-#: document.h:419
 msgid "Column width increased."
 msgstr "Spaltenbreite wurde vergrößert."
 
-#: myframe.h:158
 msgid "Comma delimited text (CSV)..."
 msgstr "Text mit Kommata als Trennzeichen (CSV)..."
 
-#: myframe.h:289
+msgid ""
+"Convert an NxN grid with repeating elements per column into an 1xN grid "
+msgstr "Konvertiert eine NxN-Tabelle mit wiederholenden Elementen pro Spalte in eine 1xN-Tabelle "
+
 msgid ""
 "Convert an NxN grid with repeating elements per column into an 1xN grid with "
 "hierarchy, useful to convert data from spreadsheets"
 msgstr ""
+"Konvertiert eine NxN-Tabelle mit wiederholenden Elementen pro Spalte in eine "
+"1xN-Tabelle mit Hierarchie, nützlich zum Konvertieren von Daten aus "
+"Tabellenblättern"
 
-#: myframe.h:563
 msgid "Copy (CTRL+c)"
-msgstr "Kopieren (STRG+c)"
+msgstr "Kopieren (CTRL+c)"
 
-#: myframe.h:331
 msgid "Copy As Continuous Text"
 msgstr "Als durchgängigen Text kopieren"
 
-#: system.h:243
 msgid "Corrupt PNG header."
 msgstr "Beschädigter PNG-Header!"
 
-#: system.h:295
 msgid "Corrupt block header."
 msgstr "Beschädigter Block-Header!"
 
-#: myframe.h:471
 msgid "Create .bak files"
 msgstr ".bak-Dateien erstellen"
 
-#: myframe.h:354
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Eine neue Hierarchieebene um die aktuelle Auswahl herum erstellen"
 
-#: myframe.h:329
 msgid "Cu&t\tCTRL+x"
-msgstr "Ausschneiden\tSTRG+x"
+msgstr "Ausschneiden\tCTRL+x"
 
-#: myframe.h:238
 msgid "Cursor Left\tLEFT"
-msgstr "Cursor links\tLINKS"
+msgstr "Cursor links\tLEFT"
 
-#: myframe.h:239
 msgid "Cursor Right\tRIGHT"
-msgstr "Cursor rechts\tRECHTS"
+msgstr "Cursor rechts\tRIGHT"
 
-#: myframe.h:193
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
-msgstr "Spaltenbreite verkleinern (ALT+Mausrad)\tALT+BILD AB"
+msgstr "Spaltenbreite verkleinern (ALT+Mausrad)\tALT+PGDN"
 
-#: myframe.h:197
 msgid "Decrease column width (no sub grids)\tCTRL+ALT+PGDN"
-msgstr ""
-"Spaltenbreite verkleinern (keine untergeordnete Tabellen)\tSTRG+ALT+BILD AB"
+msgstr "Spaltenbreite verkleinern (keine untergeordnete Tabellen)\tCTRL+ALT+PGDN"
 
-#: myframe.h:343
 msgid "Delete Before\tBACK"
-msgstr "Vorhergehendes Element löschen\tBACKSPACE"
+msgstr "Vorhergehendes Element löschen\tBACK"
 
-#: myframe.h:341
+msgid "Delete Word After\tCTRL+DEL"
+msgstr "&Nachfolgendes Wort löschen\tCTRL+DEL"
+
+msgid "Delete Word Before\tCTRL+BACK"
+msgstr "Vorhergehendes Wort löschen\tCTRL+BACK"
+
 msgid ""
 "Deletes the column of cells after the selected grid line, or the row below"
 msgstr ""
 "Löscht die Spalte der Zellen nach der ausgewählten Tabellenzeile oder der "
 "Zeile darunter."
 
-#: myframe.h:344
 msgid ""
 "Deletes the column of cells before the selected grid line, or the row above"
 msgstr ""
 "Löscht die Spalte der Zellen vor der ausgewählten Tabellenzeile oder der "
 "Zeile darüber."
 
-#: document.h:601
+msgid "Deletes the entire word after the cursor"
+msgstr "Löscht das gesamte Wort nach dem Cursor"
+
+msgid "Deletes the entire word before the cursor"
+msgstr "Löscht das gesamte Wort vor dem Cursor"
+
 msgid "Discard Changes"
 msgstr "Änderungen verwerfen"
 
-#: system.h:361
-#, c-format
 msgid "Edited %s"
 msgstr "%s bearbeitet"
 
-#: document.h:1503
 msgid "Empty strings cannot be tags."
 msgstr "Leere Zeichenketten können keine Schlagworte sein!"
 
-#: myframe.h:251
 msgid "End of line of text\tEND"
-msgstr "Ende der Zeile des Textes\tENDE"
+msgstr "Ende der Zeile des Textes\tEND"
 
-#: myframe.h:253
 msgid "End of text\tCTRL+END"
-msgstr "Ende des Textes\tSTRG+ENDE"
+msgstr "Ende des Textes\tCTRL+END"
 
-#: myframe.h:255
 msgid "Enter/exit text edit mode\tENTER"
-msgstr "Textbearbeitungsmodus betreten/verlassen\tEINGABETASTE"
+msgstr "Textbearbeitungsmodus betreten/verlassen\tENTER"
 
-#: myframe.h:256
 msgid "Enter/exit text edit mode\tF2"
 msgstr "Textbearbeitungsmodus betreten/verlassen\tF2"
 
-#: document.h:671
+msgid "Enter/exit text edit to the right\tALT+ENTER"
+msgstr "Textbearbeitungsmodus nach rechts betreten/verlassen\tALT+ENTER"
+
 msgid "Error exporting file!"
 msgstr "Fehler beim Exportieren der Datei!"
 
-#: myframe.h:105
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"Fehler beim Laden von Kerndaten (TreeSheets ggf. nicht korrekt installiert?)"
+msgstr "Fehler beim Laden von Kerndaten (TreeSheets ggf. nicht korrekt installiert?)"
 
-#: document.h:667
 msgid "Error writing PNG file!"
 msgstr "Fehler beim Schreiben der PNG-Datei!"
 
-#: document.h:165
 msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr ""
-"Fehler beim Schreiben der TreeSheets-Datei (bitte versuchen Sie mit einem "
-"neuen Dateinamen erneut)."
+msgstr "Fehler beim Schreiben der TreeSheets-Datei (bitte versuchen Sie mit einem neuen Dateinamen erneut)."
 
-#: document.h:672
 msgid "Error writing to file!"
 msgstr "Fehler beim Schreiben der Datei!"
 
-#: document.h:167
 msgid "Error writing to file."
 msgstr "Fehler beim Schreiben der Datei."
 
-#: document.h:803
 msgid "Evaluation finished."
 msgstr "Auswertung wurde abgeschlossen."
 
-#: myframe.h:179
 msgid "Export &view as"
 msgstr "&Ansicht exportieren als"
 
-#: document.h:646
 msgid "Export cancelled."
 msgstr "Export wurde abgebrochen."
 
-#: myframe.h:146
+msgid ""
+"Export the current view as CSV. Good for spreadsheets and databases. Only "
+"works "
+msgstr ""
+"Die aktuelle Ansicht als CSV exportieren. Das eignet sich für Tabellen und "
+"Datenbanken. Es funktioniert nur ohne untergeordnete Tabellen (nutzen Sie "
+"den Verflachen-Vorgang, falls nötig)."
+
 msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
 "works on grids with no sub-grids (use the Flatten operation first if need be)"
@@ -572,7 +547,18 @@ msgstr ""
 "Datenbanken. Es funktioniert nur ohne untergeordnete Tabellen (nutzen Sie "
 "den Verflachen-Vorgang, falls nötig)."
 
-#: myframe.h:139
+msgid "Export the current view as HTML as nested bullet points."
+msgstr ""
+"Die aktuelle Ansicht als HTML als verschachtelte Header exportieren. Das "
+"eignet sich für den Import in den Gliederungsmodus von Word."
+
+msgid ""
+"Export the current view as HTML as nested headers, suitable for importing "
+"into "
+msgstr ""
+"Die aktuelle Ansicht als HTML als verschachtelte Header exportieren. Das "
+"eignet sich für den Import in den Gliederungsmodus von Word."
+
 msgid ""
 "Export the current view as HTML as nested headers, suitable for importing "
 "into Word's outline mode"
@@ -580,7 +566,12 @@ msgstr ""
 "Die aktuelle Ansicht als HTML als verschachtelte Header exportieren. Das "
 "eignet sich für den Import in den Gliederungsmodus von Word."
 
-#: myframe.h:136
+msgid ""
+"Export the current view as HTML using nested tables, that will look somewhat "
+msgstr ""
+"Die aktuelle Ansicht als HTML mit verschachtelten Tabellen exportieren. Das "
+"wird dann sehr ähnlich aussehen wie in TreeSheets."
+
 msgid ""
 "Export the current view as HTML using nested tables, that will look somewhat "
 "like the TreeSheet"
@@ -588,7 +579,12 @@ msgstr ""
 "Die aktuelle Ansicht als HTML mit verschachtelten Tabellen exportieren. Das "
 "wird dann sehr ähnlich aussehen wie in TreeSheets."
 
-#: myframe.h:133
+msgid ""
+"Export the current view as XML (which can also be reimported without losing "
+msgstr ""
+"Die aktuelle Ansicht als XML exportieren (die wiederum importiert werden "
+"kann, ohne dass die Struktur dabei verloren geht)"
+
 msgid ""
 "Export the current view as XML (which can also be reimported without losing "
 "structure)"
@@ -596,7 +592,13 @@ msgstr ""
 "Die aktuelle Ansicht als XML exportieren (die wiederum importiert werden "
 "kann, ohne dass die Struktur dabei verloren geht)"
 
-#: myframe.h:150
+msgid ""
+"Export the current view as an image. Useful for faithfull renderings of the "
+msgstr ""
+"Die aktuelle Ansicht als Bild exportieren. Das nützlich für eine "
+"originalgetreue Darstellung des TreeSheets und wenn Programme keine der "
+"anderen obigen Optionen akzeptieren."
+
 msgid ""
 "Export the current view as an image. Useful for faithfull renderings of the "
 "TreeSheet, and programs that don't accept any of the above options"
@@ -605,7 +607,12 @@ msgstr ""
 "originalgetreue Darstellung des TreeSheets und wenn Programme keine der "
 "anderen obigen Optionen akzeptieren."
 
-#: myframe.h:142
+msgid "Export the current view as tree structured text, using spaces for each "
+msgstr ""
+"Die aktuelle Ansicht als baumstrukturierten Text exportieren, dabei werden "
+"Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
+"in Mindmanager und allgemeine Textprogramme."
+
 msgid ""
 "Export the current view as tree structured text, using spaces for each "
 "indentation level. Suitable for importing into mindmanagers and general text "
@@ -615,65 +622,53 @@ msgstr ""
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
 
-#: myframe.h:227
 msgid "Extend Selection Down\tSHIFT+DOWN"
-msgstr "Auswahl nach unten ausweiten\tUMSCHALT+UNTEN"
+msgstr "Auswahl nach unten ausweiten\tSHIFT+DOWN"
 
-#: myframe.h:228
 msgid "Extend Selection Full Columns"
 msgstr "Auswahl auf ganze Spalten ausweiten"
 
-#: myframe.h:229
 msgid "Extend Selection Full Rows"
 msgstr "Auswahl auf ganze Zeilen ausweiten"
 
-#: myframe.h:224 myframe.h:243
 msgid "Extend Selection Left\tSHIFT+LEFT"
-msgstr "Auswahl nach links ausweiten\tUMSCHALT+LINKS"
+msgstr "Auswahl nach links ausweiten\tSHIFT+LEFT"
 
-#: myframe.h:225 myframe.h:244
 msgid "Extend Selection Right\tSHIFT+RIGHT"
-msgstr "Auswahl nach rechts ausweiten\tUMSCHALT+RECHTS"
+msgstr "Auswahl nach rechts ausweiten\tSHIFT+RIGHT"
 
-#: myframe.h:226
 msgid "Extend Selection Up\tSHIFT+UP"
-msgstr "Auswahl nach oben ausweiten\tUMSCHALT+HOCH"
+msgstr "Auswahl nach oben ausweiten\tSHIFT+UP"
 
-#: myframe.h:245
-msgid "Extend Selection Word Left\tSHIFT+CTRL+LEFT"
-msgstr "Auswahl um Wort links erweitern\tUMSCHALT+STRG+LINKS"
+msgid "Extend Selection Word Left\tCTRL+SHIFT+LEFT"
+msgstr "Auswahl um Wort links erweitern\tCTRL+SHIFT+LEFT"
 
-#: myframe.h:246
-msgid "Extend Selection Word Right\tSHIFT+CTRL+RIGHT"
-msgstr ""
-"Auswahl um Wort rechts erweitern\tUMSCHALT+STRG\n"
-"RECHTS"
+msgid "Extend Selection Word Right\tCTRL+SHIFT+RIGHT"
+msgstr "Auswahl um Wort rechts erweitern\tCTRL+SHIFT+RIGHT"
 
-#: myframe.h:248
 msgid "Extend Selection to End\tSHIFT+END"
-msgstr "Auswahl bis zum Ende ausweiten\tUMSCHALT+ENDE"
+msgstr "Auswahl bis zum Ende ausweiten\tSHIFT+END"
 
-#: myframe.h:247
 msgid "Extend Selection to Start\tSHIFT+HOME"
-msgstr "Auswahl bis zum Anfang ausweiten\tUMSCHALT+POS1"
+msgstr "Auswahl bis zum Anfang ausweiten\tSHIFT+HOME"
 
-#: myframe.h:484
 msgid "Faster line rendering"
 msgstr "Schnelleres Zeilen-Rendering"
 
-#: myframe.h:457
 msgid "File Tabs on the bottom"
 msgstr "Dateitabs befinden sich unten"
 
-#: system.h:270
 msgid "File corrupted!"
 msgstr "Datei ist fehlerhaft/beschädigt!"
 
-#: document.h:705
 msgid "File exported successfully."
 msgstr "Datei wurde erfolgreich exportiert."
 
-#: myframe.h:1047
+msgid "File has been re-loaded because of modifications of another program / "
+msgstr ""
+"Die Datei wurde auf Grund von Änderungen durch andere Programme / anderen "
+"Computer neu geladen."
+
 msgid ""
 "File has been re-loaded because of modifications of another program / "
 "computer"
@@ -681,402 +676,356 @@ msgstr ""
 "Die Datei wurde auf Grund von Änderungen durch andere Programme / anderen "
 "Computer neu geladen."
 
-#: system.h:421
 msgid "File load error."
 msgstr "Datei konnte nicht geladen werden."
 
-#: myframe.h:1033
 msgid "File modification conflict!"
 msgstr "Konflikt bei der Dateiänderung!"
 
-#: system.h:217
 msgid "File of newer version."
 msgstr "Datei weist einen neueren Versionsstand auf."
 
-#: document.h:208
 msgid "File saved succesfully."
 msgstr "Datei wurde erfolgreich gespeichert."
 
-#: myframe.h:434
 msgid "Filter..."
 msgstr "Filter..."
 
-#: myframe.h:365
 msgid "Fold All\tCTRL+SHIFT+F10"
-msgstr "Alles einklappen\tSTRG+UMSCHALT+F10"
+msgstr "Alles einklappen\tCTRL+SHIFT+F10"
 
-#: myframe.h:366
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Klappt die Tabelle der ausgewählten Zelle(n) rekursiv aus."
 
-#: myframe.h:234
 msgid "Go To &Matching Cell\tF6"
 msgstr "Gehe zur &übereinstimmenden Zelle\tF6"
 
-#: myframe.h:235
 msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
-msgstr "Gehe zur übereinstimmenden Zelle (rückwärts)\tUMSCHALT+F6"
+msgstr "Gehe zur übereinstimmenden Zelle (rückwärts)\tSHIFT+F6"
 
-#: myframe.h:321
 msgid "Grid Style Rendering\tALT+7"
 msgstr "Tabellenstil-Rendering\tALT+7"
 
-#: myframe.h:138
+msgid "HTML (&Bullet points)..."
+msgstr "HTML (&Gliederung)..."
+
 msgid "HTML (&Outline)..."
 msgstr "HTML (&Gliederung)..."
 
-#: myframe.h:286
 msgid "Hierarchy &Swap\tF8"
 msgstr "Hierarchie au&stauschen\tF8"
 
-#: myframe.h:273
 msgid ""
 "Hold CTRL while pressing right mouse button to quickly set a tag for the "
 "current cell using a popup menu"
 msgstr ""
-"STRG-Taste beim Drücken der rechten Maustaste gedrückt halten, um schnell "
+"CTRL-Taste beim Drücken der rechten Maustaste gedrückt halten, um schnell "
 "ein Schlagwort für die aktuelle Zelle mit Hilfe eines Popup-Menüs zu setzen."
 
-#: myframe.h:318
 msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
 msgstr "Horizontale Anordnung mit Blasenstil-Rendering\tALT+5"
 
-#: myframe.h:317
 msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
 msgstr "Horizontale Anordnung mit Tabellenstil-Rendering\tALT+4"
 
-#: myframe.h:319
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Horizontale Anordnung mit Zeilenstil-Rendering\tALT+6"
 
-#: document.h:934
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr ""
 "Wie viele Pixel breit soll die Seite ein? (0 für automatisches Anpassen)"
 
-#: myframe.h:591
 msgid "Image "
 msgstr "Bild"
 
-#: document.h:1463
 msgid "Image Resize"
-msgstr "Bildgrösse verändern..."
+msgstr "Bildgröße verändern..."
 
-#: myframe.h:180
 msgid "Import file from"
 msgstr "Datei importieren aus"
 
-#: myframe.h:192
 msgid "Increase column width (ALT+mousewheel)\tALT+PGUP"
-msgstr "Spaltenbreite vergrößern (ALT+Mausrad)\tALT+BILD AUF"
+msgstr "Spaltenbreite vergrößern (ALT+Mausrad)\tALT+PGUP"
 
-#: myframe.h:195
 msgid "Increase column width (no sub grids)\tCTRL+ALT+PGUP"
-msgstr ""
-"Spaltenbreite vergrößert (keine untergeordneten Tabellen)\tSTRG+ALT+BILD AUF"
+msgstr "Spaltenbreite vergrößern (keine untergeordnete Tabellen)\tCTRL+ALT+PGUP"
 
-#: myframe.h:141
 msgid "Indented &Text..."
 msgstr "Eingerückter &Text"
 
-#: myframe.h:157
 msgid "Indented text..."
 msgstr "Eingerückter Text..."
 
-#: myframe.h:106
 msgid "Initialization Error"
 msgstr "Initialisierungsfehler"
 
-#: document.h:1558
 msgid "Internal error: unimplemented operation!"
 msgstr "Interner Fehler: Nicht implementierter Vorgang!"
 
-#: document.h:1049
 msgid "Key binding"
 msgstr "Tastenkombination"
 
-#: document.h:1063
 msgid "Keybinding cancelled."
 msgstr "Zuweisen zu einem Tastenkürzel wurde abgebrochen."
 
-#: myframe.h:323
 msgid "Line Style Rendering\tALT+9"
 msgstr "Zeilenstil-Rendering\tALT+9"
 
-#: myframe.h:505
 msgid "Load interactive &tutorial...\tF1"
 msgstr "Interaktives &Tutorial laden\tF1"
 
-#: system.h:288
-#, c-format
+msgid "Load operation reference...\tCTRL+ALT+F1"
+msgstr "Programmierreferenz laden...\tCTRL+ALT+F1"
+
+msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
+msgstr "%s geladen (%d Zellen, %d Zeichen)."
+
 msgid "Loaded %s (%d cells, %d characters)."
 msgstr "%s geladen (%d Zellen, %d Zeichen)."
 
-#: myframe.h:281 myframe.h:284
+msgid ""
+"Make a 1xN selection to indicate which column to sort on, and which rows to "
+msgstr ""
+
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
 "affect"
 msgstr ""
 
-#: myframe.h:326
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
 msgstr ""
+"Eine hierarchische Anordnung in eine mehr vertikale (standardmäßig) oder "
+"horizontale Anordnung umwandeln"
 
-#: myframe.h:461
 msgid "Minimize on close"
 msgstr "Beim Schließen minimieren"
 
-#: myframe.h:459
 msgid "Minimize to tray"
 msgstr "In das Benachrichtungsfeld minimieren"
 
-#: myframe.h:222
 msgid "Move Cells Down\tCTRL+DOWN"
-msgstr "Zellen nach unten verschieben\tSTRG+UNTEN"
+msgstr "Zellen nach unten verschieben\tCTRL+DOWN"
 
-#: myframe.h:219
 msgid "Move Cells Left\tCTRL+LEFT"
-msgstr "Zellen nach links verschieben\tSTRG+LINKS"
+msgstr "Zellen nach links verschieben\tCTRL+LEFT"
 
-#: myframe.h:220
 msgid "Move Cells Right\tCTRL+RIGHT"
-msgstr "Zellen nach rechts verschieben\tSTRG+RECHTS"
+msgstr "Zellen nach rechts verschieben\tCTRL+RIGHT"
 
-#: myframe.h:221
 msgid "Move Cells Up\tCTRL+UP"
-msgstr "Zellen nach unten verschieben\tSTRG+UNTEN"
+msgstr "Zellen nach unten verschieben\tCTRL+UP"
 
-#: myframe.h:217
 msgid "Move Selection Down\tDOWN"
-msgstr "Auswahl nach unten verschieben\tUNTEN"
+msgstr "Auswahl nach unten verschieben\tDOWN"
 
-#: myframe.h:214
 msgid "Move Selection Left\tLEFT"
-msgstr "Auswahl nach links verschieben\tLINKS"
+msgstr "Auswahl nach links verschieben\tLEFT"
 
-#: myframe.h:215
 msgid "Move Selection Right\tRIGHT"
-msgstr "Auswahl nach rechts verschieben\tRECHTS"
+msgstr "Auswahl nach rechts verschieben\tRIGHT"
 
-#: myframe.h:216
 msgid "Move Selection Up\tUP"
-msgstr "Auswahl nach oben verschieben\tHOCH"
+msgstr "Auswahl nach oben verschieben\tUP"
 
-#: myframe.h:209
 msgid "Move to next cell\tTAB"
 msgstr "Zur nächsten Zelle gehen\tTAB"
 
-#: myframe.h:210
 msgid "Move to previous cell\tSHIFT+TAB"
-msgstr "Zur vorherigen Zelle wechseln\tUMSCHALT+TAB"
+msgstr "Zur vorherigen Zelle wechseln\tSHIFT+TAB"
 
-#: document.h:1060
 msgid "NOTE: key binding will take effect next run of TreeSheets."
-msgstr ""
-"NOTE: Neuzuweisung von Tastenkürzeln wird erst bei einem Neustart von "
-"TreeSheets wirksam."
+msgstr "HINWEIS: Neuzuweisung von Tastenkürzeln wird erst bei einem Neustart von TreeSheets wirksam."
 
-#: myframe.h:468
 msgid "Navigate in between cells with cursor keys"
 msgstr "Zwischen Zellen mit den Cursortasten navigieren"
 
-#: myframe.h:557
 msgid "New (CTRL+n)"
-msgstr "Neu (STRG+n)"
+msgstr "Neu (CTRL+n)"
 
-#: myframe.h:569
 msgid "New Grid (INS)"
 msgstr "Neue Tabelle (EINFÜGEN)"
 
-#: document.h:863
 msgid "New Sheet"
 msgstr "Neues Blatt"
 
-#: document.h:864
 msgid "New file cancelled."
 msgstr "Erstellen der neuen Datei abgebrochen!"
 
-#: document.h:1460
 msgid "No image in this cell."
 msgstr "Kein Bild in dieser Zelle"
 
-#: document.h:1567
 msgid "No matches for search."
 msgstr "Keine Treffer für die Suche!"
 
-#: document.h:1481
 msgid "No matching cell found!"
 msgstr "Keine übereinstimmende Zelle gefunden!"
 
-#: document.h:1563
 msgid "No search string."
 msgstr "Keine Suchzeichenkette!"
 
-#: document.h:999 document.h:1293
 msgid "No search."
 msgstr "Keine Suche!"
 
-#: document.h:1252
 msgid "No style to paste."
 msgstr "Kein Stil zum Einfügen! "
 
-#: document.h:1114
+msgid "No text in this cell."
+msgstr "Kein Bild in dieser Zelle"
+
 msgid "No text selected."
 msgstr "Kein Text ausgewählt."
 
-#: system.h:215
 msgid "Not a TreeSheets file."
 msgstr "Keine TreeSheets-Datei."
 
-#: document.h:818
 msgid "Nothing more to redo."
 msgstr "Nichts mehr zum Wiederherstellen."
 
-#: document.h:810
 msgid "Nothing more to undo."
 msgstr "Nichts mehr zum Zurücknehmen."
 
-#: document.h:1011
+msgid "Now viewing TreeSheet to fit to the screen exactly, "
+msgstr ""
+"Nun wird TreeSheets so angezeigt, dass es exakt zur Anzeige passt, Nimmt "
+"eine Hierarchie (verschachtelte 1xN oder Nx1-Tabellen) und konvertiert diese "
+"in eine flache NxN-Tabelle"
+
 msgid ""
 "Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
 "normal."
 msgstr ""
+"Nun wird TreeSheets so angezeigt, dass es exakt zur Anzeige passt. Bitte F12 "
+"drücken, um zur normalen Ansicht zurückzukehren."
 
-#: myframe.h:308
 msgid "Open &file\tF4"
 msgstr "Datei ö&ffnen\tF4"
 
-#: myframe.h:558
 msgid "Open (CTRL+o)"
-msgstr "Öffnen (STRG+o)"
+msgstr "Öffnen (CTRL+o)"
 
-#: system.h:335
+msgid "Open border colors\tSHIFT+ALT+F11"
+msgstr "&Randfarben öffnen\tSHIFT+ALT+F11"
+
+msgid "Open cell colors\tSHIFT+ALT+F9"
+msgstr "Zellfarben öffnen\tSHIFT+ALT+F9"
+
 msgid "Open file cancelled."
 msgstr "Öffnen der Datei wurde abgebrochen."
 
-#: myframe.h:305
 msgid "Open link in &browser\tF5"
 msgstr "Link im &Browser öffnen\tF5"
 
-#: myframe.h:306
+msgid "Open text colors\tSHIFT+ALT+F10"
+msgstr "Textfarben öffnen\tSHIFT+ALT+F10"
+
+msgid "Opens up the text from the selected cell in browser (should start be a "
+msgstr ""
+"Öffnet den Text von der ausgewählten Zelle in einem Browser (sollte beginnen "
+"mit einem Nun wird TreeSheets so angezeigt, dass es exakt zur Anzeige passt, "
+
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
 "URL)"
 msgstr ""
+"Öffnet den Text von der ausgewählten Zelle in einem Browser (sollte mit "
+"einer gültigen URL beginnen)"
 
-#: myframe.h:309
+msgid ""
+"Opens up the text from the selected cell in default application for the "
+msgstr ""
+"Öffnet den Text von der ausgewählten Zelle in der Standardanwendung für "
+
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
 "type"
 msgstr ""
+"Öffnet den Text von der ausgewählten Zelle in der Standardanwendung für den "
+"Dateitypen"
 
-#: system.h:308
+msgid ""
+"PNG decode failed on some images in this document\n"
+"They have been replaced by "
+msgstr ""
+"PNG-Dekodierung ist bei manchen Dateien in diesem Dokument fehlgeschlagen\n"
+"Diese wurden ersetzt durch "
+
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
 msgstr ""
 "PNG-Dekodierung ist bei manchen Dateien in diesem Dokument "
-"fehlgeschlagen\\h\n"
+"fehlgeschlagen.\n"
 "Diese wurden durch rote Rechtecke ersetzt."
 
-#: system.h:310
 msgid "PNG decoder failure"
 msgstr "Fehler beim Dekodieren der PNG-Grafik"
 
-#: myframe.h:174
 msgid "Page Setup..."
 msgstr "Seiteneinstellungen..."
 
-#: myframe.h:564
 msgid "Paste (CTRL+v)"
-msgstr "Einfügen (STRG+v)"
+msgstr "Einfügen (CTRL+v)"
 
-#: myframe.h:333
 msgid "Paste Style Only\tCTRL+SHIFT+v"
-msgstr "Nur Stil einfügen\tSTRG+UMSCHALT+v"
+msgstr "Nur Stil einfügen\tCTRL+SHIFT+v"
 
-#: myframe.h:449
 msgid "Pick Custom &Color..."
 msgstr "Benutzerdefinierte Farbe auswählen..."
 
-#: myframe.h:447
 msgid "Pick Default Font..."
 msgstr "Standardschrift auswählen..."
 
-#: myframe.h:451
 msgid "Pick Document Background..."
 msgstr "Dokumenthintergrund auswählen..."
 
-#: myframe.h:862
 msgid "Please enable (Options -> Show Toolbar) to use search."
-msgstr ""
-"Bitte aktivieren Sie (Optionen -> Werkzeugleiste anzeigen), um die Suche "
-"benutzen zu können."
+msgstr "Bitte aktivieren Sie (Optionen -> Werkzeugleiste anzeigen), um die Suche benutzen zu können."
 
-#: document.h:1462
 msgid "Please enter the percentage you want the image scaled by:"
-msgstr ""
-"Bitte geben Sie die Prozentzahl ein, um die Sie das Bild skalieren möchten:"
+msgstr "Bitte geben Sie die Prozentzahl ein, um die Sie das Bild skalieren möchten:"
 
-#: document.h:1048
 msgid "Please pick a menu item to change the key binding for"
-msgstr ""
-"Bitte wählen Sie ein Menüeintrag, um das Tastenkürzel hierfür ändern zu "
-"können"
+msgstr "Bitte wählen Sie ein Menüeintrag, um das Tastenkürzel hierfür ändern zu können"
 
-#: document.h:840
 msgid "Please select a TreeSheets file to load:"
 msgstr "Bitte wählen Sie eine TreeSheets-Datei zum Laden aus:"
 
-#: document.h:1272
 msgid "Please select an image file:"
 msgstr "Bitte wählen Sie eine Bilddatei aus:"
 
-#: system.h:373
 msgid "Please select file to import:"
 msgstr "Bitte wählen Sie eine Datei zum Importieren aus:"
 
-#: myframe.h:855
 msgid "Press F11 to exit fullscreen mode."
 msgstr "F11 drücken, um den Vollbildmous zu verlassen."
 
-#: document.h:943
 msgid "Print Preview"
 msgstr "Druckvorschau"
 
-#: myframe.h:176
 msgid "Print preview..."
 msgstr "Druckvorschau..."
 
-#: myframe.h:437
 msgid "Radius &0"
 msgstr "Radius &0"
 
-#: myframe.h:438
 msgid "Radius &1"
 msgstr "Radius &1"
 
-#: myframe.h:439
 msgid "Radius &2"
 msgstr "Radius &2"
 
-#: myframe.h:440
 msgid "Radius &3"
 msgstr "Radius &3"
 
-#: myframe.h:441
 msgid "Radius &4"
 msgstr "Radius &4"
 
-#: myframe.h:442
 msgid "Radius &5"
 msgstr "Radius &5"
 
-#: myframe.h:443
 msgid "Radius &6"
 msgstr "Radius &6"
 
-#: myframe.h:477
 msgid ""
 "Reloads when another computer has changed a file (if you have made changes, "
 "asks)"
@@ -1084,457 +1033,370 @@ msgstr ""
 "Lädt neu wenn ein anderer Rechner die Datei geändert hat (wenn Sie die "
 "Änderungen vorgenommen haben, wird das Programm nachfragen)"
 
-#: myframe.h:302
 msgid "Remove image(s) from the selected cells"
 msgstr "Bild(er) aus der ausgewählten Zelle entfernen"
 
-#: myframe.h:482
 msgid "Render document centered"
 msgstr "Dokument mittig rendern"
 
-#: myframe.h:578
 msgid "Replace "
 msgstr "Ersetzen "
 
-#: myframe.h:389
 msgid "Replace &All"
 msgstr "&Alle ersetzen"
 
-#: myframe.h:267
+msgid "Reset &colors\tCTRL+SHIFT+c"
+msgstr "&Farben zurücksetzen\tSHIFT+CTRL+c"
+
 msgid "Reset &colors\tSHIFT+CTRL+c"
-msgstr "&Farben zurücksetzen\tUMSCHALT+STRG+c"
+msgstr "&Farben zurücksetzen\tSHIFT+CTRL+c"
 
-#: myframe.h:198
+msgid "Reset column widths\tCTRL+SHIFT+w"
+msgstr "Spaltenbreiten zurücksetzen\tSHIFT+CTRL+w"
+
 msgid "Reset column widths\tSHIFT+CTRL+w"
-msgstr "Spaltenbreiten zurücksetzen\tUMSCHALT+STRG+w"
+msgstr "Spaltenbreiten zurücksetzen\tSHIFT+CTRL+w"
 
-#: myframe.h:572
 msgid "Run"
 msgstr "Ausführen"
 
-#: myframe.h:172
 msgid "Save &As..."
 msgstr "Speichern &unter..."
 
-#: myframe.h:559
 msgid "Save (CTRL+s)"
-msgstr "Speichern (STRG+s)"
+msgstr "Speichern (CTRL+s)"
 
-#: myframe.h:560
 msgid "Save As"
 msgstr "Speichern unter..."
 
-#: document.h:601
 msgid "Save and Close"
 msgstr "Speichern und schließen"
 
-#: document.h:153 document.h:713
 msgid "Save cancelled."
 msgstr "Speicherung wurde abgebrochen."
 
-#: myframe.h:395
+msgid "Saved %s successfully (in %d milliseconds)."
+msgstr "%s erfolgreich gespeichert (in %d Millisekunden)."
+
+msgid "Script"
+msgstr "Skript"
+
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
 msgstr "Herunterscrollen (Mausrad)\tALT+UNTEN"
 
-#: myframe.h:394
 msgid "Scroll Down (mousewheel)\tPGDN"
 msgstr "Herunterscrollen (Mausrad)\tBILD AB"
 
-#: myframe.h:396
 msgid "Scroll Left\tALT+LEFT"
 msgstr "Nach links scrollen\tALT+LINKS"
 
-#: myframe.h:397
 msgid "Scroll Right\tALT+RIGHT"
 msgstr "Nach rechts scrollen\tALT+RECHTS"
 
-#: myframe.h:433
 msgid "Scroll Sheet..."
 msgstr "Blatt durchscrollen..."
 
-#: myframe.h:393
 msgid "Scroll Up (mousewheel)\tALT+UP"
 msgstr "Hochscrollen (Mausrad)\tALT+AUF"
 
-#: myframe.h:392
 msgid "Scroll Up (mousewheel)\tPGUP"
 msgstr "Hochscrollen (Mausrad)\tBILD AUF"
 
-#: myframe.h:574
 msgid "Search "
 msgstr "Suche "
 
-#: myframe.h:231
 msgid "Select &Parent\tESC"
 msgstr "&Übergeordnetes Element auswählen\tESC"
 
-#: myframe.h:212
 msgid "Select &all in current grid\tCTRL+a"
-msgstr "&Alles in der aktuellen Tabelle auswählen\tSTRG+a"
+msgstr "&Alles in der aktuellen Tabelle auswählen\tCTRL+a"
 
-#: myframe.h:232
 msgid "Select First &Child\tSHIFT+ENTER"
-msgstr "Erstes untergeordnetes Element auswählen\tUMSCHALT+EINGABE"
+msgstr "Erstes untergeordnetes Element auswählen\tSHIFT+ENTER"
 
-#: document.h:1414
+msgid "Selected grid is not a table: cells must not already have "
+msgstr "Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren Untertabellen haben."
+
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr ""
-"Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren "
-"Untertabellen haben."
+msgstr "Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren Untertabellen haben."
 
-#: myframe.h:159
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Text mit Semikolon als Trennzeichen (CSV)..."
 
-#: myframe.h:378
 msgid "Set Grid Border Width..."
 msgstr "Breite des Tabellenrands setzen..."
 
-#: document.h:935
 msgid "Set Print Scale"
 msgstr "Druckskalierung setzen"
 
-#: myframe.h:175
 msgid "Set Print Scale..."
 msgstr "Druckskalierung setzen..."
 
-#: myframe.h:407
-#, c-format
 msgid "Show 1% less than the last filter"
 msgstr "1% weniger als der letzte Filter anzeigen"
 
-#: myframe.h:406
-#, c-format
 msgid "Show 1% more than the last filter"
 msgstr "1% mehr als der letzte Filter anzeigen"
 
-#: myframe.h:403
-#, c-format
 msgid "Show 10% of last edits"
 msgstr "10% der letzten Änderungen anzeigen"
 
-#: myframe.h:404
 #, c-format
 msgid "Show 20% of last edits"
 msgstr "20% der letzten Änderungen anzeigen"
 
-#: myframe.h:402
-#, c-format
 msgid "Show 5% of last edits"
 msgstr "5% der letzten Änderungen anzeigen"
 
-#: myframe.h:405
-#, c-format
 msgid "Show 50% of last edits"
 msgstr "50% der letzten Änderungen anzeigen"
 
-#: myframe.h:453
 msgid "Show Statusbar"
 msgstr "Statuszeile anzeigen"
 
-#: myframe.h:455
 msgid "Show Toolbar"
 msgstr "Werkzeugleiste anzeigen"
 
-#: myframe.h:401
 msgid "Show only cells in current search"
 msgstr "Nur Zellen in der aktuellen Suche anzeigen"
 
-#: myframe.h:463
 msgid "Single click maximize from tray"
 msgstr "Ein Klick im Benachrichtungsfeld maximiert das Fenster"
 
-#: system.h:358
-#, c-format
 msgid "Size %d"
 msgstr "Größe %d"
 
-#: myframe.h:280
 msgid "Sort &Ascending"
 msgstr "&Aufsteigend sortieren"
 
-#: myframe.h:283
 msgid "Sort &Descending"
 msgstr "Absteigen&d sortieren"
 
-#: myframe.h:250
 msgid "Start of line of text\tHOME"
-msgstr "Beginn der Zeile des Texte\tPOS1"
+msgstr "Beginn der Zeile des Texte\tHOME"
 
-#: myframe.h:252
 msgid "Start of text\tCTRL+HOME"
-msgstr "Beginn des Textes\tSTRG+POS1"
+msgstr "Beginn des Textes\tCTRL+HOME"
 
-#: myframe.h:287
 msgid "Swap all cells with this text at this level (or above) with the parent"
-msgstr ""
-"Alle Zellen mit diesem Text auf dieser Ebene (oder darüber) mit dem "
-"übergeordneten tauschen"
+msgstr "Alle Zellen mit diesem Text auf dieser Ebene (oder darüber) mit dem übergeordneten tauschen"
 
-#: myframe.h:466
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "Mausrad-Scrolling und Mausrad-Vergrößern/Verkleinern tauschen"
 
-#: myframe.h:418
 msgid "Switch to &next file/tab"
 msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln"
 
-#: myframe.h:414
 msgid "Switch to &next file/tab\tCTRL+TAB"
-msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln\tSTRG+TAB"
+msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln\tCTRL+TAB"
 
-#: myframe.h:420
+msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
+msgstr "Zur &vorherigen Datei/zum vorherigen Tab wechseln\tCTRL+SHIFT+TAB"
+
 msgid "Switch to &previous file/tab\tSHIFT+CTRL+TAB"
-msgstr "Zur &vorherigen Datei/zum vorherigen Tab wechseln\tUMSCHALT+STRG+TAB"
+msgstr "Zur &vorherigen Datei/zum vorherigen Tab wechseln\tCTRL+SHIFT+TAB"
 
-#: myframe.h:160
 msgid "Tab delimited text..."
 msgstr "Text mit Tabulator als Trennzeichen..."
 
-#: myframe.h:379
 msgid "Tag..."
 msgstr "Verschlagworten..."
 
-#: myframe.h:293
+msgid ""
+"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
+msgstr ""
+"Nimmt eine Hierarchie (verschachtelte 1xN oder Nx1-Tabellen) und konvertiert "
+"diese in eine flache NxN-Tabelle "
+
 msgid ""
 "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
 "grid, useful for export to spreadsheets"
 msgstr ""
+"Nimmt eine Hierarchie (verschachtelte 1xN oder Nx1-Tabellen) und konvertiert "
+"diese in eine flache NxN-Tabelle, nützlich für den Export in Tabellenblätter"
 
-#: myframe.h:585
 msgid "Text "
 msgstr "Text "
 
-#: myframe.h:375
 msgid "Text &Editing..."
 msgstr "Text&bearbeitung..."
 
-#: myframe.h:376
 msgid "Text Sizing..."
 msgstr "Textgröße..."
 
-#: myframe.h:377
 msgid "Text Style..."
 msgstr "Textstil..."
 
-#: document.h:429
 msgid "Text size decreased."
 msgstr "Textgröße wurde verkleinert."
 
-#: document.h:429
 msgid "Text size increased."
-msgstr "Textgrösse wurde vergrössert."
+msgstr "Textgröße wurde vergrößert."
 
-#: document.h:875
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "Der formfreie hierarchische Informationsorganisator"
 
-#: document.h:402
 msgid "This operation doesn't work on thin selections."
 msgstr "Dieser Vorgang funktioniert nicht auf dünner Auswahl."
 
-#: document.h:403
 msgid "This operation requires a cell that contains a grid."
 msgstr "Dieser Vorgang benötigt eine Zelle, die eine Tabelle beinhaltet."
 
-#: document.h:400
 msgid "This operation requires a selection."
 msgstr "Dieser Vorgang benötigt eine Auswahl."
 
-#: document.h:401
 msgid "This operation works on a single selected cell only."
 msgstr "Dieser Vorgang funktioniert nur mit einer einzigen ausgewählten Zelle."
 
-#: myframe.h:423
 msgid "Toggle &Fullscreen View\tCTRL+F11"
-msgstr "&Vollbildmodus ein-/ausschalten\tSTRG+F11"
+msgstr "&Vollbildmodus ein-/ausschalten\tCTRL+F11"
 
-#: myframe.h:425
 msgid "Toggle &Fullscreen View\tF11"
 msgstr "&Vollbildmodus ein-/ausschalten\tF11"
 
-#: myframe.h:429
 msgid "Toggle &Scaled Presentation View\tCTRL+F12"
-msgstr "&Skalierte Präsentationsansicht ein-/ausschalten\tSTRG+F12"
+msgstr "&Skalierte Präsentationsansicht ein-/ausschalten\tCTRL+F12"
 
-#: myframe.h:431
 msgid "Toggle &Scaled Presentation View\tF12"
 msgstr "&Skalierte Präsentationsansicht ein-/ausschalten\tF12"
 
-#: myframe.h:360
 msgid "Toggle Fold\tCTRL+F10"
-msgstr "Ein-/Ausklappen\tSTRG+F10"
+msgstr "Ein-/Ausklappen\tCTRL+F10"
 
-#: myframe.h:362
 msgid "Toggle Fold\tF10"
 msgstr "Ein-/Ausklappen\tF10"
 
-#: myframe.h:325
 msgid "Toggle Vertical Layout\tF7"
 msgstr "Vertikale Anordnung aktivieren/deaktivieren\tF7"
 
-#: myframe.h:260
-msgid "Toggle cell &BOLD\tCTRL+b"
-msgstr "Zelle &FETT ausweisen (ein/aus)\tSTRG+b"
-
-#: myframe.h:261
-msgid "Toggle cell &ITALIC\tCTRL+i"
-msgstr "Zelle &KURSIV ausweisen (ein/aus)\tSTRG+i"
-
-#: myframe.h:264
-msgid "Toggle cell &strikethrough\tCTRL+t"
-msgstr "Zellentext durchstreichen (ein/aus)\tSTRG+t"
-
-#: myframe.h:262
-msgid "Toggle cell &typewriter"
-msgstr "Proportionaler Zellen&text (ein/aus) "
-
-#: myframe.h:263
-msgid "Toggle cell &underlined\tCTRL+u"
-msgstr "Zellentext unterstreichen (ein/aus)\tSTRG+u"
-
-#: myframe.h:364
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "Tabellen der ausgewählten Zelle(n) anzeigen (ein/aus)"
-
-#: myframe.h:400
-msgid "Turn filter &off"
-msgstr "Filter deaktivieren"
-
-#: myframe.h:562
-msgid "Undo (CTRL+z)"
-msgstr "Rückgängig machen (STRG+z)"
-
-#: myframe.h:367
-msgid "Unfold All\tCTRL+ALT+F10"
-msgstr "Alles ausklappen\tSTRG+ALT+F10"
-
-#: myframe.h:368
-msgid "Unfolds the grid of the selected cell(s) recursively"
-msgstr ""
-"Alle Tabellen in der ausgewählten Zelle/in den ausgewählten Zellen rekursiv "
-"ausklappen"
-
-#: myframe.h:493
-msgid "Variable &Assign"
-msgstr "V&ariable zuweisen"
-
-#: myframe.h:494
-msgid "Variable &Read"
-msgstr "Va&riable lesen"
-
-#: myframe.h:314
-msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
-msgstr "Vertikale Anordnung mit Blasenstil-Rendering\tALT+2"
-
-#: myframe.h:313
-msgid "Vertical Layout with Grid Style Rendering\tALT+1"
-msgstr "Vertikale Anordnung mit Tabellenstil-Rendering\tALT+1"
-
-#: myframe.h:315
-msgid "Vertical Layout with Line Style Rendering\tALT+3"
-msgstr "Vertikale Anordnung mit Zeilenstil-Rendering\tALT+3"
-
-#: myframe.h:506
-msgid "View tutorial &web page..."
-msgstr "Tutorial-&Webseite anschauen..."
-
-#: document.h:862
-msgid "What size grid would you like to start with?"
-msgstr "Mit welcher Tabellengröße möchten Sie beginnen?"
-
-#: system.h:359
-#, c-format
-msgid "Width %d"
-msgstr "Breite %d"
-
-#: myframe.h:240
-msgid "Word Left\tCTRL+LEFT"
-msgstr "Wort links\tSTRG+LINKS"
-
-#: myframe.h:241
-msgid "Word Right\tCTRL+RIGHT"
-msgstr "Wort rechts\tSTRG+RECHTS"
-
-#: myframe.h:156
-msgid "XML (attributes too, for OPML etc)..."
-msgstr "XML (auch Attribute, für OPML u.Ä.)"
-
-#: myframe.h:155
-msgid "XML..."
-msgstr "XML..."
-
-#: document.h:187
-msgid "Zlib error while writing file."
-msgstr "Es ist ein Zlib-Fehler beim Schreiben der Datei aufgetreten."
-
-#: myframe.h:410
-msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
-msgstr "Vergrößern (STRG+Mausrad)\tSTRG+BILD AUF"
-
-#: myframe.h:411
-msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
-msgstr "Verkleinern (STRG+Mausrad)\tSTRG+BILD AB"
-
-#: myframe.h:566
-msgid "Zoom In (CTRL+mousewheel)"
-msgstr "Vergrößern (STRG+Mausrad)"
-
-#: myframe.h:567
-msgid "Zoom Out (CTRL+mousewheel)"
-msgstr "Verkleinern (STRG+Mausrad)"
-
-#: document.h:434
-msgid "Zoomed in."
-msgstr "Vergrössert."
-
-#: document.h:434
-msgid "Zoomed out."
-msgstr "Verkleinert."
-
-#: myframe.h:807
-msgid "change will take effect next run of TreeSheets"
-msgstr "Die Änderung wird erst nach einem Neustart von TreeSheets wirksam. "
-
-#: myframe.h:279
-msgid "changes the orientation of a grid"
-msgstr "Ändert die Ausrichtung einer Tabelle. "
-
-#: system.h:420
-msgid "couldn't import file!"
-msgstr "Datei konnte nicht importiert werden!"
-
-#: myframe.h:334
-msgid "only sets the colors and style of the copied cell, and keeps the text"
-msgstr ""
-"Setzt nur die Farben und den Stil der kopierten Zelle und hält den Text bei."
-
-#: document.h:1514
-msgid "only works in cell text mode"
-msgstr "Dies funktioniert nur im Zelltextmodus!"
-
-#: myframe.h:338
-msgid "redo any undo steps, if you haven't made changes since"
-msgstr ""
-"Alle Rücknahme-Schritte zurücknehmen, wenn Sie keine Änderungen seitdem "
-"vorgenommen haben."
-
-#: myframe.h:336
-msgid "revert the changes, one step at a time"
-msgstr "Nimmt die Änderungen Schritt für Schritt zurück"
-
-#: document.h:934
-msgid "scale:"
-msgstr "Skalierung:"
-
-#: document.h:863
-msgid "size:"
-msgstr "Größe:"
-
-#: myframe.h:527
 msgid "Toggle Zen Mode"
 msgstr "Zenmodus ein-/ausschalten"
 
-#: myframe.h:619
-msgid "Load operation reference...\tCTRL+ALT+F1"
-msgstr "Programmierreferenz laden...\tSTRG+ALT+F1"
+msgid "Toggle cell &BOLD\tCTRL+b"
+msgstr "Zelle &FETT ausweisen (ein/aus)\tCTRL+b"
+
+msgid "Toggle cell &ITALIC\tCTRL+i"
+msgstr "Zelle &KURSIV ausweisen (ein/aus)\tCTRL+i"
+
+msgid "Toggle cell &strikethrough\tCTRL+t"
+msgstr "Zellentext durchstreichen (ein/aus)\tCTRL+t"
+
+msgid "Toggle cell &typewriter"
+msgstr "Proportionaler Zellen&text (ein/aus) "
+
+msgid "Toggle cell &typewriter\tCTRL+ALT+t"
+msgstr "Proportionaler Zellen&text (ein/aus)\tCTRL+ALT+t"
+
+msgid "Toggle cell &underlined\tCTRL+u"
+msgstr "Zellentext unterstreichen (ein/aus)\tCTRL+u"
+
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "Tabellen der ausgewählten Zelle(n) anzeigen (ein/aus)"
+
+msgid "Turn filter &off"
+msgstr "Filter deaktivieren"
+
+msgid "Undo (CTRL+z)"
+msgstr "Rückgängig machen (CTRL+z)"
+
+msgid "Unfold All\tCTRL+ALT+F10"
+msgstr "Alles ausklappen\tCTRL+ALT+F10"
+
+msgid "Unfolds the grid of the selected cell(s) recursively"
+msgstr "Alle Tabellen in der ausgewählten Zelle/in den ausgewählten Zellen rekursiv ausklappen"
+
+msgid "Uses"
+msgstr "Benutzt"
+
+msgid "Variable &Assign"
+msgstr "V&ariable zuweisen"
+
+msgid "Variable &Assign\tCTRL+ALT+a"
+msgstr "V&ariable zuweisen\tCTRL+ALT+a"
+
+msgid "Variable &Read"
+msgstr "Va&riable lesen"
+
+msgid "Variable &Read\tCTRL+ALT+r"
+msgstr "Va&riable lesen\tCTRL+ALT+r"
+
+msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
+msgstr "Vertikale Anordnung mit Blasenstil-Rendering\tALT+2"
+
+msgid "Vertical Layout with Grid Style Rendering\tALT+1"
+msgstr "Vertikale Anordnung mit Tabellenstil-Rendering\tALT+1"
+
+msgid "Vertical Layout with Line Style Rendering\tALT+3"
+msgstr "Vertikale Anordnung mit Zeilenstil-Rendering\tALT+3"
+
+msgid "View tutorial &web page..."
+msgstr "Tutorial-&Webseite anschauen..."
+
+msgid "What size grid would you like to start with?"
+msgstr "Mit welcher Tabellengröße möchten Sie beginnen?"
+
+msgid "Width %d"
+msgstr "Breite %d"
+
+msgid "Word Left\tCTRL+LEFT"
+msgstr "Wort links\tCTRL+LEFT"
+
+msgid "Word Right\tCTRL+RIGHT"
+msgstr "Wort rechts\tCTRL+RIGHT"
+
+msgid "XML (attributes too, for OPML etc)..."
+msgstr "XML (auch Attribute, für OPML u.Ä.)"
+
+msgid "XML..."
+msgstr "XML..."
+
+msgid "Zlib error while writing file."
+msgstr "Es ist ein Zlib-Fehler beim Schreiben der Datei aufgetreten."
+
+msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
+msgstr "Vergrößern (STRG+Mausrad)\tCTRL+PGUP"
+
+msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
+msgstr "Verkleinern (STRG+Mausrad)\tCTRL+PGDN"
+
+msgid "Zoom In (CTRL+mousewheel)"
+msgstr "Vergrößern (STRG+Mausrad)"
+
+msgid "Zoom Out (CTRL+mousewheel)"
+msgstr "Verkleinern (STRG+Mausrad)"
+
+msgid "Zoomed in."
+msgstr "Vergrößert."
+
+msgid "Zoomed out."
+msgstr "Verkleinert."
+
+msgid "change will take effect next run of TreeSheets"
+msgstr "Die Änderung wird erst nach einem Neustart von TreeSheets wirksam. "
+
+msgid "changes the orientation of a grid"
+msgstr "Ändert die Ausrichtung einer Tabelle. "
+
+msgid "couldn't import file!"
+msgstr "Datei konnte nicht importiert werden!"
+
+msgid "only sets the colors and style of the copied cell, and keeps the text"
+msgstr "Setzt nur die Farben und den Stil der kopierten Zelle und hält den Text bei."
+
+msgid "only works in cell text mode"
+msgstr "Dies funktioniert nur im Zelltextmodus!"
+
+msgid "redo any undo steps, if you haven't made changes since"
+msgstr "Alle Rücknahme-Schritte zurücknehmen, wenn Sie keine Änderungen seitdem vorgenommen haben."
+
+msgid "revert the changes, one step at a time"
+msgstr "Nimmt die Änderungen Schritt für Schritt zurück"
+
+msgid "scale:"
+msgstr "Skalierung:"
+
+msgid "size:"
+msgstr "Größe:"
+
+msgid "Transpose\tSHIFT+CTRL+t"
+msgstr "Transponieren\tSHIFT+CTRL+t"
