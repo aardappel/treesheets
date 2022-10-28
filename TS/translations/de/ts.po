@@ -75,7 +75,7 @@ msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
 msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)\tSHIFT+PGDN"
 
 msgid "&Delete After\tDEL"
-msgstr "&Nachfolgendes Element löschen\tENTF"
+msgstr "&Nachfolgendes Element löschen\tDEL"
 
 msgid "&Edit"
 msgstr "&Bearbeiten"
@@ -123,7 +123,7 @@ msgid "&Insert New Grid\tCTRL+g"
 msgstr "Neue Tabelle e&infügen\tCTRL+g"
 
 msgid "&Insert New Grid\tINS"
-msgstr "&Neue Tabelle e&infügen\tEINFÜGEN"
+msgstr "&Neue Tabelle e&infügen\tINS"
 
 msgid "&Layout && Render Style..."
 msgstr "&Anordnung && Render-Stil..."
@@ -219,7 +219,7 @@ msgid "&Selection..."
 msgstr "&Auswahl..."
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "&Zellentext als Schlagwort verwenden (CTRL+RMB verwenden)"
+msgstr "&Zellentext als Schlagwort verwenden (STRG+RMB verwenden)"
 
 msgid "&Set Custom Color From Cell BG"
 msgstr "&Benutzerdefinierte Farbe anhand des Zellenhintergrunds setzen"
@@ -421,7 +421,7 @@ msgstr ""
 "Tabellenblättern"
 
 msgid "Copy (CTRL+c)"
-msgstr "Kopieren (CTRL+c)"
+msgstr "Kopieren (STRG+c)"
 
 msgid "Copy As Continuous Text"
 msgstr "Als durchgängigen Text kopieren"
@@ -840,7 +840,7 @@ msgid "Navigate in between cells with cursor keys"
 msgstr "Zwischen Zellen mit den Cursortasten navigieren"
 
 msgid "New (CTRL+n)"
-msgstr "Neu (CTRL+n)"
+msgstr "Neu (Strg+n)"
 
 msgid "New Grid (INS)"
 msgstr "Neue Tabelle (EINFÜGEN)"
@@ -901,7 +901,7 @@ msgid "Open &file\tF4"
 msgstr "Datei ö&ffnen\tF4"
 
 msgid "Open (CTRL+o)"
-msgstr "Öffnen (CTRL+o)"
+msgstr "Öffnen (STRG+o)"
 
 msgid "Open border colors\tSHIFT+ALT+F11"
 msgstr "&Randfarben öffnen\tSHIFT+ALT+F11"
@@ -964,7 +964,7 @@ msgid "Page Setup..."
 msgstr "Seiteneinstellungen..."
 
 msgid "Paste (CTRL+v)"
-msgstr "Einfügen (CTRL+v)"
+msgstr "Einfügen (STRG+v)"
 
 msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr "Nur Stil einfügen\tCTRL+SHIFT+v"
@@ -1064,7 +1064,7 @@ msgid "Save &As..."
 msgstr "Speichern &unter..."
 
 msgid "Save (CTRL+s)"
-msgstr "Speichern (CTRL+s)"
+msgstr "Speichern (STRG+s)"
 
 msgid "Save As"
 msgstr "Speichern unter..."
@@ -1082,25 +1082,25 @@ msgid "Script"
 msgstr "Skript"
 
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
-msgstr "Herunterscrollen (Mausrad)\tALT+UNTEN"
+msgstr "Herunterscrollen (Mausrad)\tALT+DOWN"
 
 msgid "Scroll Down (mousewheel)\tPGDN"
-msgstr "Herunterscrollen (Mausrad)\tBILD AB"
+msgstr "Herunterscrollen (Mausrad)\tPGDN"
 
 msgid "Scroll Left\tALT+LEFT"
-msgstr "Nach links scrollen\tALT+LINKS"
+msgstr "Nach links scrollen\tALT+LEFT"
 
 msgid "Scroll Right\tALT+RIGHT"
-msgstr "Nach rechts scrollen\tALT+RECHTS"
+msgstr "Nach rechts scrollen\tALT+RIGHT"
 
 msgid "Scroll Sheet..."
 msgstr "Blatt durchscrollen..."
 
 msgid "Scroll Up (mousewheel)\tALT+UP"
-msgstr "Hochscrollen (Mausrad)\tALT+AUF"
+msgstr "Hochscrollen (Mausrad)\tALT+UP"
 
 msgid "Scroll Up (mousewheel)\tPGUP"
-msgstr "Hochscrollen (Mausrad)\tBILD AUF"
+msgstr "Hochscrollen (Mausrad)\tPGUP"
 
 msgid "Search "
 msgstr "Suche "
@@ -1141,7 +1141,6 @@ msgstr "1% mehr als der letzte Filter anzeigen"
 msgid "Show 10% of last edits"
 msgstr "10% der letzten Änderungen anzeigen"
 
-#, c-format
 msgid "Show 20% of last edits"
 msgstr "20% der letzten Änderungen anzeigen"
 
@@ -1282,7 +1281,7 @@ msgid "Toggle cell &strikethrough\tCTRL+t"
 msgstr "Zellentext durchstreichen (ein/aus)\tCTRL+t"
 
 msgid "Toggle cell &typewriter"
-msgstr "Proportionaler Zellen&text (ein/aus) "
+msgstr "Proportionaler Zellen&text (ein/aus)"
 
 msgid "Toggle cell &typewriter\tCTRL+ALT+t"
 msgstr "Proportionaler Zellen&text (ein/aus)\tCTRL+ALT+t"
@@ -1297,7 +1296,7 @@ msgid "Turn filter &off"
 msgstr "Filter deaktivieren"
 
 msgid "Undo (CTRL+z)"
-msgstr "Rückgängig machen (CTRL+z)"
+msgstr "Rückgängig machen (STRG+z)"
 
 msgid "Unfold All\tCTRL+ALT+F10"
 msgstr "Alles ausklappen\tCTRL+ALT+F10"
