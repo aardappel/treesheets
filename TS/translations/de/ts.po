@@ -224,7 +224,7 @@ msgstr "&Zellentext als Schlagwort verwenden (STRG+RMB verwenden)"
 msgid "&Set Custom Color From Cell BG"
 msgstr "&Benutzerdefinierte Farbe anhand des Zellenhintergrunds setzen"
 
-msgid "&Shrink text of all sub-grids\tSHIFT+CTRL+m"
+msgid "&Shrink text of all sub-grids\tCTRL+SHIFT+m"
 msgstr "Text von allen untergeordneten Tabellen verkleinern\tSHIFT+CTRL+m"
 
 msgid "&Transpose\tCTRL+SHIFT+t"
