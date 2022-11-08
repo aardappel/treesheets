@@ -1,6 +1,4 @@
 struct MyFrame : wxFrame {
-    typedef std::vector<std::pair<wxString, wxString>> MenuString;
-    typedef MenuString::iterator MenuStringIterator;
     wxMenu *editmenupopup;
     wxString exepath_;
     wxFileHistory filehistory;
@@ -61,7 +59,7 @@ struct MyFrame : wxFrame {
         return wxString(relativePath.c_str());
     }
 
-    MenuString menustrings;
+    std::map<wxString, wxString> menustrings;
 
     void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"") {
         wxString item = contents;
@@ -75,7 +73,7 @@ struct MyFrame : wxFrame {
         wxString newcontents = item;
         if (key.Length()) newcontents += "\t" + key;
         menu->Append(tag, newcontents, help);
-        menustrings.push_back(std::make_pair(item, key));
+        menustrings[item] = key;
     }
 
     MyFrame(wxString exename, MyApp *_app)

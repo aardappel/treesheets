@@ -764,14 +764,6 @@ struct Document {
         }
     }
 
-    static int CompareMenuString(const wxString &first, const wxString &second) {
-        auto a = first;
-        auto b = second;
-        if (a[0] == '&') a = a.Mid(1);
-        if (b[0] == '&') b = b.Mid(1);
-        return a.Cmp(b);
-    }
-
     const wxChar *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift,
                     bool &unprocessed) {
         Cell *c = selected.GetCell();
@@ -1104,10 +1096,12 @@ struct Document {
 
             case A_CUSTKEY: {
                 wxArrayString strs;
-                MyFrame::MenuString &ms = sys->frame->menustrings;
-                for (MyFrame::MenuStringIterator it = ms.begin(); it != ms.end(); ++it)
+                wxArrayString keys;
+                for (auto it = sys->frame->menustrings.begin(); it != sys->frame->menustrings.end();
+                     ++it) {
                     strs.push_back(it->first);
-                strs.Sort(CompareMenuString);
+                    keys.push_back(it->second);
+                }
                 wxSingleChoiceDialog choice(
                     sys->frame, _(L"Please pick a menu item to change the key binding for"),
                     _(L"Key binding"), strs);
@@ -1117,12 +1111,11 @@ struct Document {
                     int sel = choice.GetSelection();
                     wxTextEntryDialog textentry(sys->frame,
                                                 "Please enter the new key binding string",
-                                                "Key binding", ms[sel].second);
+                                                "Key binding", keys[sel]);
                     if (textentry.ShowModal() == wxID_OK) {
                         wxString key = textentry.GetValue();
-                        ms[sel].second = key;
-
-                        sys->cfg->Write(ms[sel].first, key);
+                        sys->frame->menustrings[strs[sel]] = key;
+                        sys->cfg->Write(strs[sel], key);
                         return _(L"NOTE: key binding will take effect next run of TreeSheets.");
                     }
                 }
