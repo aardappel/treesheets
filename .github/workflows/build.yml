@@ -31,7 +31,7 @@ jobs:
       run: |
         mkdir -p wxWidgets/build_
         cd wxWidgets/build_
-        ../configure --enable-unicode --disable-shared
+        ../configure --disable-shared
         make -j4
     - name: install wxWidgets
       run: |
@@ -122,7 +122,7 @@ jobs:
       run: |
         mkdir -p wxWidgets/build_
         cd wxWidgets/build_
-        ../configure --enable-unicode --disable-shared --disable-sys-libs --with-osx_cocoa --without-libtiff --enable-universal_binary=x86_64,arm64 CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" CC=clang CXX=clang++
+        ../configure --disable-shared --disable-sys-libs --with-osx_cocoa --without-libtiff --enable-universal_binary=x86_64,arm64 CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" CC=clang CXX=clang++
         make -j4
     - name: install wxWidgets
       run: |
