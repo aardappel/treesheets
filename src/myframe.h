@@ -201,28 +201,19 @@ struct MyFrame : wxFrame {
 
         wxMenu *expmenu = new wxMenu();
         MyAppend(expmenu, A_EXPXML, _(L"&XML..."),
-                 _(L"Export the current view as XML (which can also be reimported without losing \
-structure)"));
+                 _(L"Export the current view as XML (which can also be reimported without losing structure)"));
         MyAppend(expmenu, A_EXPHTMLT, _(L"&HTML (Tables+Styling)..."),
-                 _(L"Export the current view as HTML using nested tables, that will look somewhat \
-like the TreeSheet"));
+                 _(L"Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet"));
         MyAppend(expmenu, A_EXPHTMLB, _(L"HTML (&Bullet points)..."),
                  _(L"Export the current view as HTML as nested bullet points."));
         MyAppend(expmenu, A_EXPHTMLO, _(L"HTML (&Outline)..."),
-                 _(L"Export the current view as HTML as nested headers, suitable for importing into \
-Word's outline mode"));
+                 _(L"Export the current view as HTML as nested headers, suitable for importing into Word's outline mode"));
         MyAppend(expmenu, A_EXPTEXT, _(L"Indented &Text..."),
-                 _(L"Export the current view as tree structured text, using spaces for each \
-indentation level. \
-Suitable for importing into mindmanagers and general text programs"));
+                 _(L"Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"));
         MyAppend(expmenu, A_EXPCSV, _(L"&Comma delimited text (CSV)..."),
-                 _(L"Export the current view as CSV. Good for spreadsheets and databases. Only works \
-on grids \
-with no sub-grids (use the Flatten operation first if need be)"));
+                 _(L"Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"));
         MyAppend(expmenu, A_EXPIMAGE, _(L"&Image..."),
-                 _(L"Export the current view as an image. Useful for faithful renderings of the \
-TreeSheet, and \
-programs that don't accept any of the above options"));
+                 _(L"Export the current view as an image. Useful for faithful renderings of the TreeSheet, and programs that don't accept any of the above options"));
 
         wxMenu *impmenu = new wxMenu();
         MyAppend(impmenu, A_IMPXML, _(L"XML..."));
@@ -351,51 +342,38 @@ programs that don't accept any of the above options"));
             MyAppend(tagmenu, A_TAGADD, _(L"&Add Cell Text as Tag"));
             MyAppend(tagmenu, A_TAGREMOVE, _(L"&Remove Cell Text from Tags"));
             MyAppend(tagmenu, A_NOP, _(L"&Set Cell Text to tag (use CTRL+RMB)"),
-                     _(L"Hold CTRL while pressing right mouse button to quickly set a tag for the \
-current cell \
-using a popup menu"));
+                     _(L"Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"));
 
             wxMenu *orgmenu = new wxMenu();
             MyAppend(orgmenu, A_TRANSPOSE, _(L"&Transpose\tCTRL+SHIFT+t"),
                      _(L"changes the orientation of a grid"));
             MyAppend(orgmenu, A_SORT, _(L"Sort &Ascending"),
-                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows to \
-affect"));
+                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows to affect"));
             MyAppend(orgmenu, A_SORTD, _(L"Sort &Descending"),
-                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows to \
-affect"));
+                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows to affect"));
             MyAppend(orgmenu, A_HSWAP, _(L"Hierarchy &Swap\tF8"),
                      _(L"Swap all cells with this text at this level (or above) with the parent"));
             MyAppend(orgmenu, A_HIFY, _(L"&Hierarchify"),
-                     _(L"Convert an NxN grid with repeating elements per column into an 1xN grid \
-with hierarchy, \
-useful to convert data from spreadsheets"));
+                     _(L"Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"));
             MyAppend(orgmenu, A_FLATTEN, _(L"&Flatten"),
-                     _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN \
-grid, useful \
-for export to spreadsheets"));
+                     _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"));
 
             wxMenu *imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _(L"&Add Image"), _(L"Adds an image to the selected cell"));
             MyAppend(imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels)"),
-                     _(L"Change the image size if it is too big, by reducing the amount of \
-pixels"));
+                     _(L"Change the image size if it is too big, by reducing the amount of pixels"));
             MyAppend(imgmenu, A_IMAGESCF, _(L"&Scale Image (display only)"),
-                     _(L"Change the image size if it is too big or too small, by changing the size \
-shown on screen. Applies to all uses of this image."));
+                     _(L"Change the image size if it is too big or too small, by changing the size shown on screen. Applies to all uses of this image."));
             MyAppend(imgmenu, A_IMAGESCN, _(L"&Reset Scale (display only)"),
-                     _(L"Change the scale to match DPI of the current display. \
-Applies to all uses of this image."));
+                     _(L"Change the scale to match DPI of the current display. Applies to all uses of this image."));
             MyAppend(imgmenu, A_IMAGER, _(L"&Remove Image(s)"),
                      _(L"Remove image(s) from the selected cells"));
 
             wxMenu *navmenu = new wxMenu();
             MyAppend(navmenu, A_BROWSE, _(L"Open link in &browser\tF5"),
-                     _(L"Opens up the text from the selected cell in browser (should start be a \
-valid URL)"));
+                     _(L"Opens up the text from the selected cell in browser (should start be a valid URL)"));
             MyAppend(navmenu, A_BROWSEF, _(L"Open &file\tF4"),
-                     _(L"Opens up the text from the selected cell in default application for the \
-file type"));
+                     _(L"Opens up the text from the selected cell in default application for the file type"));
 
             wxMenu *laymenu = new wxMenu();
             MyAppend(laymenu, A_V_GS, _(L"Vertical Layout with Grid Style Rendering\tALT+1"));
@@ -1187,9 +1165,7 @@ file type"));
                     // for now, we leave this code active, and guard it with
                     // watcherwaitingforuser
                     wxString msg = wxString::Format(
-                        _(L"%s\nhas been modified on disk by another program / computer:\nWould \
-you like to discard \
-your changes and re-load from disk?"),
+                        _(L"%s\nhas been modified on disk by another program / computer:\nWould you like to discard your changes and re-load from disk?"),
                         doc->filename);
                     watcherwaitingforuser = true;
                     int res = wxMessageBox(msg, _(L"File modification conflict!"),
@@ -1206,8 +1182,7 @@ your changes and re-load from disk?"),
                         nb->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     GetCurTab()->Status(
-                        _(L"File has been re-loaded because of modifications of another program / \
-computer"));
+                        _(L"File has been re-loaded because of modifications of another program / computer"));
                 }
                 return;
             }

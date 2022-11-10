@@ -14,6 +14,10 @@ To create a translation for a new language, run (inside the tranlations director
 msginit --input ts.pot --locale=de --ouput=de/ts.po
 and replace "de" with the new language code.
 
+To merge the translation for an existing language with the strings from the
+recompiled main template file, run de/merge.bat, or a copy of that file in
+another language directory.
+
 To re-compile the language definitions, run de/compile.bat, or a copy of that file
 in another language directory.
 

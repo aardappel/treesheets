@@ -686,8 +686,7 @@ struct Document {
             int maxdepth = 0, leaves = 0;
             root->MaxDepthLeaves(0, maxdepth, leaves);
             if (maxdepth > 1)
-                return _(L"Cannot export grid that is not flat (zoom the view to the desired grid, \
-and/or use Flatten).");
+                return _(L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
         }
         if (k == A_EXPIMAGE) {
             maxx = layoutxs;
@@ -1063,8 +1062,7 @@ and/or use Flatten).");
                 scaledviewingmode = !scaledviewingmode;
                 rootgrid->ResetChildren();
                 Refresh();
-                return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, \
-press F12 to return to normal.")
+                return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal.")
                                          : _(L"1:1 scale restored.");
 
             case A_FILTER5:
@@ -1506,8 +1504,7 @@ press F12 to return to normal.")
                 case A_HIFY:
                     if (!ac->grid) return NoGrid();
                     if (!ac->grid->IsTable())
-                        return _(L"Selected grid is not a table: cells must not already have \
-sub-grids.");
+                        return _(L"Selected grid is not a table: cells must not already have sub-grids.");
                     ac->AddUndo(this);
                     ac->grid->Hierarchify(this);
                     ac->ResetChildren();
@@ -1775,8 +1772,7 @@ sub-grids.");
 
     const wxChar *Sort(bool descending) {
         if (selected.xs != 1 && selected.ys <= 1)
-            return _(L"Can't sort: make a 1xN selection to indicate what column to sort on, and \
-what rows to affect");
+            return _(L"Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
         selected.g->cell->AddUndo(this);
         selected.g->Sort(selected, descending);
         Refresh();
