@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-10 10:09-0300\n"
-"PO-Revision-Date: 2022-11-10 10:14-0300\n"
+"PO-Revision-Date: 2022-11-10 19:01-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -180,7 +180,7 @@ msgstr "&Refazer\tCTRL+y"
 
 #: myframe.h:343
 msgid "&Remove Cell Text from Tags"
-msgstr "&Remove o Texto da Célula das Tags"
+msgstr "&Remover o Texto da Célula das Tags"
 
 #: myframe.h:369
 msgid "&Remove Image(s)"
