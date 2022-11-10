@@ -369,8 +369,7 @@ struct System {
 
         if (anyimagesfailed)
             wxMessageBox(
-                _(L"PNG decode failed on some images in this document\nThey have been replaced by "
-                  L"red squares."),
+                _(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                 _(L"PNG decoder failure"), wxOK, frame);
 
         return L"";
