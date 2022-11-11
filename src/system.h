@@ -208,10 +208,17 @@ struct System {
 
     void LoadTut() {
         auto lang = frame->app->locale.GetCanonicalName();
-        lang.Truncate(2);
-        if (LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
-            LoadDB(frame->GetDocPath(L"examples/tutorial.cts"));
+
+        if (lang.Len() == 5 && !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+            return;
         }
+
+        lang.Truncate(2);
+        if (lang.Len() == 2 && !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+            return;
+        }
+
+        LoadDB(frame->GetDocPath(L"examples/tutorial.cts"));
     }
 
     void LoadOpRef() { LoadDB(frame->GetDocPath(L"examples/operation-reference.cts")); }
