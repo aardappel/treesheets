@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-10 10:09-0300\n"
+"POT-Creation-Date: 2022-11-13 08:06-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -274,7 +274,7 @@ msgstr ""
 msgid "1:1 scale restored."
 msgstr ""
 
-#: system.h:244
+#: system.h:251
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr ""
 
@@ -310,7 +310,7 @@ msgstr ""
 msgid "Automatically export a .html on every save"
 msgstr ""
 
-#: system.h:245
+#: system.h:252
 msgid "Autosave load"
 msgstr ""
 
@@ -376,7 +376,7 @@ msgstr ""
 msgid "Cancel text edits\tESC"
 msgstr ""
 
-#: system.h:328
+#: system.h:335
 msgid "Cannot decompress file."
 msgstr ""
 
@@ -402,11 +402,11 @@ msgstr ""
 msgid "Cannot move this cell up in the hierarchy."
 msgstr ""
 
-#: system.h:259
+#: system.h:266
 msgid "Cannot open file."
 msgstr ""
 
-#: system.h:287
+#: system.h:294
 msgid "Cannot tell/seek document?"
 msgstr ""
 
@@ -489,11 +489,11 @@ msgstr ""
 msgid "Copy As Continuous Text"
 msgstr ""
 
-#: system.h:293
+#: system.h:300
 msgid "Corrupt PNG header."
 msgstr ""
 
-#: system.h:359
+#: system.h:366
 msgid "Corrupt block header."
 msgstr ""
 
@@ -559,7 +559,7 @@ msgstr ""
 msgid "Discard Changes"
 msgstr ""
 
-#: system.h:425
+#: system.h:432
 #, c-format
 msgid "Edited %s"
 msgstr ""
@@ -713,7 +713,7 @@ msgstr ""
 msgid "File Tabs on the bottom"
 msgstr ""
 
-#: system.h:332
+#: system.h:339
 msgid "File corrupted!"
 msgstr ""
 
@@ -727,7 +727,7 @@ msgid ""
 "computer"
 msgstr ""
 
-#: system.h:491
+#: system.h:498
 msgid "File load error."
 msgstr ""
 
@@ -735,7 +735,7 @@ msgstr ""
 msgid "File modification conflict!"
 msgstr ""
 
-#: system.h:265
+#: system.h:272
 msgid "File of newer version."
 msgstr ""
 
@@ -853,7 +853,7 @@ msgstr ""
 msgid "Load operation reference...\tCTRL+ALT+F1"
 msgstr ""
 
-#: system.h:352
+#: system.h:359
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr ""
@@ -972,7 +972,7 @@ msgstr ""
 msgid "No text selected."
 msgstr ""
 
-#: system.h:263
+#: system.h:270
 msgid "Not a TreeSheets file."
 msgstr ""
 
@@ -1006,7 +1006,7 @@ msgstr ""
 msgid "Open cell colors\tSHIFT+ALT+F9"
 msgstr ""
 
-#: system.h:399
+#: system.h:406
 msgid "Open file cancelled."
 msgstr ""
 
@@ -1030,13 +1030,13 @@ msgid ""
 "type"
 msgstr ""
 
-#: system.h:372
+#: system.h:379
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
 msgstr ""
 
-#: system.h:373
+#: system.h:380
 msgid "PNG decoder failure"
 msgstr ""
 
@@ -1084,7 +1084,7 @@ msgstr ""
 msgid "Please select an image file:"
 msgstr ""
 
-#: system.h:443
+#: system.h:450
 msgid "Please select file to import:"
 msgstr ""
 
@@ -1301,7 +1301,7 @@ msgstr ""
 msgid "Single click maximize from tray"
 msgstr ""
 
-#: system.h:422
+#: system.h:429
 #, c-format
 msgid "Size %d"
 msgstr ""
@@ -1504,7 +1504,7 @@ msgstr ""
 msgid "What size grid would you like to start with?"
 msgstr ""
 
-#: system.h:423
+#: system.h:430
 #, c-format
 msgid "Width %d"
 msgstr ""
@@ -1561,7 +1561,7 @@ msgstr ""
 msgid "changes the orientation of a grid"
 msgstr ""
 
-#: system.h:490
+#: system.h:497
 msgid "couldn't import file!"
 msgstr ""
 
