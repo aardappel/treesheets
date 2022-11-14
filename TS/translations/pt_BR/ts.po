@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-10 10:09-0300\n"
-"PO-Revision-Date: 2022-11-10 19:01-0300\n"
+"POT-Creation-Date: 2022-11-13 08:06-0300\n"
+"PO-Revision-Date: 2022-11-13 09:28-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -278,7 +278,7 @@ msgstr "&XML..."
 msgid "1:1 scale restored."
 msgstr "Escala 1:1 restaurada."
 
-#: system.h:244
+#: system.h:251
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr ""
 "Existe um arquivo temporário do salvamento automático, gostaria de carregá-"
@@ -316,7 +316,7 @@ msgstr "Recarregar documentos automaticamente"
 msgid "Automatically export a .html on every save"
 msgstr "Exportar um .html automaticamente a cada salvamento"
 
-#: system.h:245
+#: system.h:252
 msgid "Autosave load"
 msgstr "Carregar do salvamento automático"
 
@@ -384,7 +384,7 @@ msgstr "Cancelar"
 msgid "Cancel text edits\tESC"
 msgstr "Cancelar edições de texto\tESC"
 
-#: system.h:328
+#: system.h:335
 msgid "Cannot decompress file."
 msgstr "Não é possível descomprimir o arquivo."
 
@@ -412,11 +412,11 @@ msgstr "Não é possível abrir o navegador para esse link."
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "Não é possível mover essa célula para cima na hierarquia."
 
-#: system.h:259
+#: system.h:266
 msgid "Cannot open file."
 msgstr "Não foi possível abrir o arquivo."
 
-#: system.h:287
+#: system.h:294
 msgid "Cannot tell/seek document?"
 msgstr "Não foi possível executar tell/seek no documento?"
 
@@ -506,11 +506,11 @@ msgstr "Copiar (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copiar como Texto Contínuo"
 
-#: system.h:293
+#: system.h:300
 msgid "Corrupt PNG header."
 msgstr "O cabeçalho do PNG está corrompido."
 
-#: system.h:359
+#: system.h:366
 msgid "Corrupt block header."
 msgstr "O cabeçalho do bloco está corrompido."
 
@@ -580,7 +580,7 @@ msgstr "Exclui a palavra antes do cursor"
 msgid "Discard Changes"
 msgstr "Descartar Mudanças"
 
-#: system.h:425
+#: system.h:432
 #, c-format
 msgid "Edited %s"
 msgstr "Editada em %s"
@@ -607,7 +607,7 @@ msgstr "Entrar/sair do modo de edição de texto\tF2"
 
 #: myframe.h:321
 msgid "Enter/exit text edit to the right\tALT+ENTER"
-msgstr "Entrar/sair do modo de edição de texto à direita\tENTER"
+msgstr "Entrar/sair do modo de edição de texto, à direita\tALT+ENTER"
 
 #: document.h:704
 msgid "Error exporting file!"
@@ -752,7 +752,7 @@ msgstr "Renderização de linhas mais veloz"
 msgid "File Tabs on the bottom"
 msgstr "Abas de arquivos na parte inferior da tela"
 
-#: system.h:332
+#: system.h:339
 msgid "File corrupted!"
 msgstr "O arquivo está corrompido!"
 
@@ -768,7 +768,7 @@ msgstr ""
 "O arquivo foi recarregado por causa de modificações de outro programa / "
 "computador"
 
-#: system.h:491
+#: system.h:498
 msgid "File load error."
 msgstr "Houve um erro ao carregar o arquivo."
 
@@ -776,7 +776,7 @@ msgstr "Houve um erro ao carregar o arquivo."
 msgid "File modification conflict!"
 msgstr "O arquivo tem modificações conflitantes!"
 
-#: system.h:265
+#: system.h:272
 msgid "File of newer version."
 msgstr "O arquivo é de uma versão mais recente."
 
@@ -898,7 +898,7 @@ msgstr "Carregar &tutorial interativo...\tF1"
 msgid "Load operation reference...\tCTRL+ALT+F1"
 msgstr "Carregar referência de operações...\tCTRL+ALT+F1"
 
-#: system.h:352
+#: system.h:359
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr ""
@@ -1023,7 +1023,7 @@ msgstr "Essa célula não contém texto."
 msgid "No text selected."
 msgstr "Não há texto selecionado."
 
-#: system.h:263
+#: system.h:270
 msgid "Not a TreeSheets file."
 msgstr "Não é um arquivo do TreeSheets."
 
@@ -1059,7 +1059,7 @@ msgstr "Abrir cores de borda\tSHIFT+ALT+F11"
 msgid "Open cell colors\tSHIFT+ALT+F9"
 msgstr "Abrir cores de célula\tSHIFT+ALT+F9"
 
-#: system.h:399
+#: system.h:406
 msgid "Open file cancelled."
 msgstr "A abertura de arquivo foi cancelada."
 
@@ -1087,7 +1087,7 @@ msgstr ""
 "Abre no aplicativo padrão para o tipo de arquivo o texto da célula "
 "selecionada"
 
-#: system.h:372
+#: system.h:379
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
@@ -1095,7 +1095,7 @@ msgstr ""
 "A decodificação PNG falhou em algumas imagens deste documento\n"
 "Elas foram substituídas por quadrados vermelhos."
 
-#: system.h:373
+#: system.h:380
 msgid "PNG decoder failure"
 msgstr "Falha do decodificador PNG"
 
@@ -1146,7 +1146,7 @@ msgstr "Por favor selecione um arquivo do TreeSheets para carregar:"
 msgid "Please select an image file:"
 msgstr "Por favor selecione um arquivo de imagem:"
 
-#: system.h:443
+#: system.h:450
 msgid "Please select file to import:"
 msgstr "Por favor selecione um arquivo para importar:"
 
@@ -1334,22 +1334,22 @@ msgstr "Mostrar 1% mais que o último filtro"
 #: myframe.h:475
 #, no-c-format
 msgid "Show 10% of last edits"
-msgstr "Mostrar 10% das últimas edições"
+msgstr "Mostrar edições mais recentes: últimas 10%"
 
 #: myframe.h:477
 #, no-c-format
 msgid "Show 20% of last edits"
-msgstr "Mostrar 20% das últimas edições"
+msgstr "Mostrar edições mais recentes: últimas 20%"
 
 #: myframe.h:473
 #, no-c-format
 msgid "Show 5% of last edits"
-msgstr "Mostrar 5% das últimas edições"
+msgstr "Mostrar edições mais recentes: últimas 5%"
 
 #: myframe.h:479
 #, no-c-format
 msgid "Show 50% of last edits"
-msgstr "Mostrar 50% das últimas edições"
+msgstr "Mostrar edições mais recentes: últimas 50%"
 
 #: myframe.h:530
 msgid "Show Statusbar"
@@ -1367,7 +1367,7 @@ msgstr "Mostrar somente células na busca atual"
 msgid "Single click maximize from tray"
 msgstr "Maximizar da bandeja com um único clique"
 
-#: system.h:422
+#: system.h:429
 #, c-format
 msgid "Size %d"
 msgstr "Tamanho %d"
@@ -1574,7 +1574,7 @@ msgstr "Visualizar página de &tutorial no site..."
 msgid "What size grid would you like to start with?"
 msgstr "Com que tamanho de grade deseja começar?"
 
-#: system.h:423
+#: system.h:430
 #, c-format
 msgid "Width %d"
 msgstr "Largura %d"
@@ -1631,7 +1631,7 @@ msgstr "a mudança passará a valer na próxima execução do TreeSheets"
 msgid "changes the orientation of a grid"
 msgstr "muda a orientação de uma grade"
 
-#: system.h:490
+#: system.h:497
 msgid "couldn't import file!"
 msgstr "não foi possível importar o arquivo!"
 
