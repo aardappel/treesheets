@@ -99,6 +99,7 @@ install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
 # See: https://docs.wxwidgets.org/trunk/overview_i18n.html#overview_i18n_mofiles
 file(
     GLOB locales
+    LIST_DIRECTORIES true
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/TS/translations
     TS/translations/*/ts.mo
 )
