@@ -413,7 +413,7 @@ msgstr "Larghezza della colonna aumentata."
 
 #: myframe.h:158
 msgid "Comma delimited text (CSV)..."
-msgstr "Testo delimitato da virgole (CSV)..."
+msgstr "Texte séparateur virgule (CSV)..."
 
 #: myframe.h:289
 msgid ""
@@ -993,11 +993,11 @@ msgstr "Selectionner un fichier TreeSheets :"
 
 #: document.h:1272
 msgid "Please select an image file:"
-msgstr "Si prega di selezionare un file immagine:"
+msgstr "Veuillez sélectionner un fichier image:"
 
 #: system.h:373
 msgid "Please select file to import:"
-msgstr "Si prega di selezionare il file da importare:"
+msgstr "Veuillez sélectionner le fichier à impoter :"
 
 #: myframe.h:855
 msgid "Press F11 to exit fullscreen mode."
@@ -1144,7 +1144,7 @@ msgstr "La griglia selezionata non è una tabella: le celle non devono avere gi�
 
 #: myframe.h:159
 msgid "Semi-Colon delimited text (CSV)..."
-msgstr "Testo delimitato da semi-colonna (CSV)..."
+msgstr "Texte séparateur point virgule (CSV)..."
 
 #: myframe.h:378
 msgid "Set Grid Border Width..."
@@ -1247,7 +1247,7 @@ msgstr "Passa al file precedente/scheda\tSHIFT+CTRL+TAB"
 
 #: myframe.h:160
 msgid "Tab delimited text..."
-msgstr "Testo delimitato da tabulazioni..."
+msgstr "Texte séparateur tabulation..."
 
 #: myframe.h:379
 msgid "Tag..."
@@ -1415,7 +1415,7 @@ msgstr "Mot droite\tCTRL+RIGHT"
 
 #: myframe.h:156
 msgid "XML (attributes too, for OPML etc)..."
-msgstr "XML (anche attributi, per OPML ecc.)..."
+msgstr "XML (attributs compris, pour OPML etc.)..."
 
 #: myframe.h:155
 msgid "XML..."
