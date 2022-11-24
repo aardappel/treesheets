@@ -1192,7 +1192,7 @@ msgstr "Dokument mittig rendern"
 
 #: myframe.h:688
 msgid "Replace "
-msgstr "Ersetzen von "
+msgstr "Ersetzen mit "
 
 #: myframe.h:459
 msgid "Replace &All"
