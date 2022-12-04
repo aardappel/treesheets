@@ -1548,6 +1548,17 @@ struct Document {
                 return nullptr;
             }
 
+            case A_IMAGECPY: {
+                if(!c->text.image) return _(L"No image in this cell.");
+                if (selected.Thin()) return NoThin();
+
+                if (wxTheClipboard->Open()) {
+                    wxTheClipboard->SetData(new wxBitmapDataObject(c->text.image->bm_orig));
+                    wxTheClipboard->Close();
+                }
+                return _(L"Image copied to clipboard");
+            }            
+
             case A_IMAGESCP:
             case A_IMAGESCF: {
                 if (!c->text.image) return _(L"No image in this cell.");

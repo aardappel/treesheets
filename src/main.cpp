@@ -218,6 +218,7 @@ enum {
     A_IMAGESCP,
     A_IMAGESCF,
     A_IMAGESCN,
+    A_IMAGECPY,
     A_HELPI,
     A_HELP_OP_REF,
     A_REDO,

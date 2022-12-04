@@ -360,6 +360,7 @@ struct MyFrame : wxFrame {
 
             wxMenu *imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _(L"&Add Image"), _(L"Adds an image to the selected cell"));
+            MyAppend(imgmenu, A_IMAGECPY, _(L"Copy Image to clipboard"), _(L"Copy the image in the selected cell to the clipboard"));
             MyAppend(imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels)"),
                      _(L"Change the image size if it is too big, by reducing the amount of pixels"));
             MyAppend(imgmenu, A_IMAGESCF, _(L"&Scale Image (display only)"),
