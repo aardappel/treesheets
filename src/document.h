@@ -1553,7 +1553,13 @@ struct Document {
                 if (selected.Thin()) return NoThin();
 
                 if (wxTheClipboard->Open()) {
-                    wxTheClipboard->SetData(new wxBitmapDataObject(c->text.image->bm_orig));
+                    if (!c->text.image->png_data.empty()) {
+                        wxCustomDataObject* pngimage = new wxCustomDataObject(wxDF_BITMAP);
+                        pngimage->SetData(c->text.image->png_data.size(), c->text.image->png_data.data());
+                        wxTheClipboard->SetData(pngimage);
+                    } else {
+                         wxTheClipboard->SetData(new wxBitmapDataObject(c->text.image->bm_orig));    
+                    }                    
                     wxTheClipboard->Close();
                 }
                 return _(L"Image copied to clipboard");
