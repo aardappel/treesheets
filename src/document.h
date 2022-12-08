@@ -1554,7 +1554,11 @@ struct Document {
 
                 if (wxTheClipboard->Open()) {
                     if (!c->text.image->png_data.empty()) {
+                        #ifdef __WXMSW__
                         wxCustomDataObject *pngimage = new wxCustomDataObject(wxDF_PNG);
+                        #else
+                        wxCustomDataObject *pngimage = new wxCustomDataObject(wxDF_BITMAP);
+                        #endif
                         pngimage->SetData(c->text.image->png_data.size(), c->text.image->png_data.data());
                         wxTheClipboard->SetData(pngimage);
                     } else {
