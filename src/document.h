@@ -1553,11 +1553,20 @@ struct Document {
                 if (selected.Thin()) return NoThin();
 
                 if (wxTheClipboard->Open()) {
+                    #if defined(__WXMSW__) || defined(__WXGTK__)
                     if (!c->text.image->png_data.empty()) {
-                        wxCustomDataObject *pngimage = new wxCustomDataObject(wxDF_PNG);
+                        wxCustomDataObject *pngimage = new wxCustomDataObject(
+                            #ifdef __WXMSW__
+                                wxDF_PNG
+                            #else
+                                wxDF_BITMAP
+                            #endif
+                        );
                         pngimage->SetData(c->text.image->png_data.size(), c->text.image->png_data.data());
                         wxTheClipboard->SetData(pngimage);
-                    } else {
+                    } else
+                    #endif
+                    {
                          wxTheClipboard->SetData(new wxBitmapDataObject(c->text.image->bm_orig));    
                     }
                     wxTheClipboard->Close();
