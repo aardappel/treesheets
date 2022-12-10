@@ -830,6 +830,29 @@ struct Document {
         return nullptr;
     }
 
+    const wxChar* CopyImageToClipboard(Cell *cell) {
+        if (wxTheClipboard->Open()) {
+            #if defined(__WXMSW__) || defined(__WXGTK__)
+            if (!cell->text.image->png_data.empty()) {
+                wxCustomDataObject *pngimage = new wxCustomDataObject(
+                    #ifdef __WXMSW__
+                        wxDF_PNG
+                    #else
+                        wxDF_BITMAP
+                    #endif
+                );
+                pngimage->SetData(cell->text.image->png_data.size(), cell->text.image->png_data.data());
+                wxTheClipboard->SetData(pngimage);
+            } else
+            #endif
+            {
+                wxTheClipboard->SetData(new wxBitmapDataObject(cell->text.image->bm_orig));    
+            }
+            wxTheClipboard->Close();
+            }
+        return _(L"Image copied to clipboard");
+    }
+
     const wxChar *Action(wxDC &dc, int k) {
         ShiftToCenter(dc);
 
@@ -1183,16 +1206,22 @@ struct Document {
                     sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 }
 
-                if (wxTheClipboard->Open()) {
-                    wxString s;
-                    if (k == A_COPYCT) {
-                        loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
-                    } else {
-                        s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
+                const wxChar *returnmessage;
+                if(c and c->text.image and !c->text.t) {
+                    returnmessage = CopyImageToClipboard(c);
+                } else {
+                    if (wxTheClipboard->Open()) {
+                        wxString s;
+                        if (k == A_COPYCT) {
+                            loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
+                        } else {
+                            s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
+                        }
+                        sys->clipboardcopy = s;
+                        wxTheClipboard->SetData(new wxTextDataObject(s));
+                        wxTheClipboard->Close();
+                        returnmessage = _(L"Text copied to clipboard");
                     }
-                    sys->clipboardcopy = s;
-                    wxTheClipboard->SetData(new wxTextDataObject(s));
-                    wxTheClipboard->Close();
                 }
 
                 if (k == A_CUT) {
@@ -1206,7 +1235,7 @@ struct Document {
                     Refresh();
                 }
                 ZoomOutIfNoGrid(dc);
-                return nullptr;
+                return returnmessage;
 
             case A_SELALL:
                 selected.SelAll();
@@ -1549,29 +1578,9 @@ struct Document {
             }
 
             case A_IMAGECPY: {
-                if(!c->text.image) return _(L"No image in this cell.");
                 if (selected.Thin()) return NoThin();
-
-                if (wxTheClipboard->Open()) {
-                    #if defined(__WXMSW__) || defined(__WXGTK__)
-                    if (!c->text.image->png_data.empty()) {
-                        wxCustomDataObject *pngimage = new wxCustomDataObject(
-                            #ifdef __WXMSW__
-                                wxDF_PNG
-                            #else
-                                wxDF_BITMAP
-                            #endif
-                        );
-                        pngimage->SetData(c->text.image->png_data.size(), c->text.image->png_data.data());
-                        wxTheClipboard->SetData(pngimage);
-                    } else
-                    #endif
-                    {
-                         wxTheClipboard->SetData(new wxBitmapDataObject(c->text.image->bm_orig));    
-                    }
-                    wxTheClipboard->Close();
-                }
-                return _(L"Image copied to clipboard");
+                if (!c->text.image) return _(L"No image in this cell.");
+                return CopyImageToClipboard(c);
             }            
 
             case A_IMAGESCP:
