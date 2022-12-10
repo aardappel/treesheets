@@ -227,6 +227,7 @@ string VM::MemoryUsage(size_t show_max) {
         totalgpu += p.second.gpu;
     }
     sort(sorted.begin(), sorted.end(), _UsageSorter);
+    if (!total) return sd;
     append(sd, "TOTAL: ", total / 1024, " K (", totalgpu * 100 / total, "% on GPU)\n");
     for (auto [i, p] : enumerate(sorted)) {
         if (i >= show_max || p.second.bytes < 1024) break;

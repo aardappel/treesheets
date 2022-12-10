@@ -138,6 +138,7 @@ template<typename T> bool WaveFunctionCollapse(const int2 &insize, const char **
         for (size_t i = 0; i < tiles.size(); i++)
             if (cell.wf & to_bitmask(i))
                 total_freq += tiles[i].freq;
+        assert(total_freq);
         auto freqpick = rnd.rnd_int(total_freq);
         // Now pick.
         size_t picked = 0;

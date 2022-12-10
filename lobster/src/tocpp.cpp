@@ -166,7 +166,6 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
     ip = code + 3;  // Past first IL_JUMP.
     const int *funstart = nullptr;
     int nkeepvars = 0;
-    int ndefsave = 0;
     string sdt, sp;
     int opc = -1;
     const int *args = nullptr;
@@ -180,7 +179,6 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
         if (opc == IL_FUNSTART || is_start) {
             funstart = args;
             nkeepvars = 0;
-            ndefsave = 0;
             sdt.clear();
             has_profile = false;
             auto it = function_lookup.find(id);
@@ -197,7 +195,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                 auto nargs_fun = *fip++;
                 auto nargs = fip;
                 fip += nargs_fun;
-                ndefsave = *fip++;
+                int ndefsave = *fip++;
                 auto defs = fip;
                 fip += ndefsave;
                 nkeepvars = *fip++;
@@ -240,7 +238,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                     }
                 }
                 fip += nargs_fun;
-                ndefsave = *fip++;
+                int ndefsave = *fip++;
                 for (int i = 0; i < ndefsave; i++) {
                     // for most locals, this just saves an nil, only in recursive cases it has an actual
                     // value.
@@ -362,6 +360,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
             case IL_RETURNNONLOCAL:
             case IL_RETURNANY: {
                 // FIXME: emit epilogue stuff only once at end of function.
+                assert(funstart);
                 auto fip = funstart;
                 fip++;  // function id.
                 fip++;  // regs_max.
@@ -499,6 +498,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
             for (int i = 0; i < nkeepvars; i++) {
                 append(sd, "    DecVal(vm, keepvar[", i, "]);\n");
             }
+            assert(funstart);
             if (*(funstart - 2) == IL_FUNSTART && runtime_checks >= RUNTIME_ASSERT_PLUS) {
                 append(sd, "    PopFunId(vm);\n");
             }

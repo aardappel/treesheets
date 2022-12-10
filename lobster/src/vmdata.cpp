@@ -288,6 +288,8 @@ void Value::ToFlexBuffer(VM &vm, flexbuffers::Builder &builder, ValueType t) con
         case V_FLOAT:
             builder.Double(fval());
             return;
+        default:
+            break;
     }
     if (IsRefNil(t)) {
         if (!ref_) {
@@ -304,6 +306,8 @@ void Value::ToFlexBuffer(VM &vm, flexbuffers::Builder &builder, ValueType t) con
             case V_CLASS:
                 oval()->ToFlexBuffer(vm, builder);
                 return;
+            default:
+                break;
         }
     }
     string sd;

@@ -1163,6 +1163,8 @@ struct TypeChecker {
                 if (errn) Error(*errn, "could not resolve type variable ", Q(type->tv->name));
                 break;
             }
+            default:
+                break;
         }
         return type;
     }
@@ -3132,6 +3134,8 @@ Node *NativeCall::TypeCheck(TypeChecker &tc, size_t /*reqret*/) {
                 type = ret.type->t == V_VECTOR ? tc.st.Wrap(tc.NewTypeVar(), V_VECTOR)
                                                   : tc.NewTypeVar();
                 assert(rlt == LT_KEEP);
+                break;
+            default:
                 break;
         }
         // This allows the 0th retval to inherit the type of the 0th arg, and is

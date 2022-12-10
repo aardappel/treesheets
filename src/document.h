@@ -765,7 +765,6 @@ struct Document {
 
     const wxChar *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift,
                     bool &unprocessed) {
-        Cell *c = selected.GetCell();
         if (uk == WXK_NONE || (k < ' ' && k)) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
@@ -818,7 +817,8 @@ struct Document {
             }
         } else if (uk >= ' ') {
             if (!selected.g) return NoSel();
-            if (!(c = selected.ThinExpand(this))) return OneCell();
+            Cell *c = selected.ThinExpand(this);
+            if (!c) return OneCell();
             ShiftToCenter(dc);
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
@@ -1731,8 +1731,8 @@ struct Document {
     void PasteSingleText(Cell *c, const wxString &t) { c->text.Insert(this, t, selected); }
 
     void PasteOrDrop() {
-        Cell *c = selected.GetCell();
-        if (!(c = selected.ThinExpand(this))) return;
+        Cell *c = selected.ThinExpand(this);
+        if (!c) return;
         wxBusyCursor wait;
         switch (dataobjc->GetReceivedFormat().GetType()) {
             case wxDF_FILENAME: {

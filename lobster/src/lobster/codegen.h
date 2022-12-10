@@ -358,7 +358,7 @@ struct CodeGen  {
         Emit((int)ownedvars.size());
         for (auto si : ownedvars) Emit(si);
         auto profile = sf.attributes.find("profile");
-        if (LOBSTER_FRAME_PROFILER && profile != sf.attributes.end()) {
+        if (profile != sf.attributes.end() && LOBSTER_FRAME_PROFILER) {
             EmitOp(IL_PROFILE);
             auto str = string(profile->second);
             if (str.empty()) {

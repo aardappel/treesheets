@@ -14,7 +14,6 @@
 		33306EF017695EE900AF5315 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEB17695EE900AF5315 /* AudioToolbox.framework */; };
 		33306EF117695EE900AF5315 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEC17695EE900AF5315 /* Carbon.framework */; };
 		33306EF217695EE900AF5315 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EED17695EE900AF5315 /* IOKit.framework */; };
-		33306EF317695EE900AF5315 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33306EEE17695EE900AF5315 /* OpenGL.framework */; };
 		33306EF91769625C00AF5315 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF51769625C00AF5315 /* images */; };
 		33306EFA1769625C00AF5315 /* docs in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF61769625C00AF5315 /* docs */; };
 		33306EFB1769625C00AF5315 /* examples in Resources */ = {isa = PBXBuildFile; fileRef = 33306EF71769625C00AF5315 /* examples */; };
@@ -37,7 +36,7 @@
 		3387FFDF204C5FBF00612ED7 /* lobster_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3387FFDC204C5FBE00612ED7 /* lobster_impl.cpp */; };
 		33B01131286CCC0100974382 /* tocpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B0112F286CCC0100974382 /* tocpp.cpp */; };
 		33B01132286CCC0100974382 /* tccbind.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B01130286CCC0100974382 /* tccbind.cpp */; };
-		33B01134286CD56800974382 /* libtcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B01133286CD56800974382 /* libtcc.c */; };
+		33B01134286CD56800974382 /* libtcc.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B01133286CD56800974382 /* libtcc.c */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -117,6 +116,7 @@
 		33B0112F286CCC0100974382 /* tocpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tocpp.cpp; path = ../../lobster/src/tocpp.cpp; sourceTree = "<group>"; };
 		33B01130286CCC0100974382 /* tccbind.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tccbind.cpp; path = ../../lobster/src/tccbind.cpp; sourceTree = "<group>"; };
 		33B01133286CD56800974382 /* libtcc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = libtcc.c; path = ../../lobster/external/libtcc/libtcc.c; sourceTree = "<group>"; };
+		33B2E7A12944FBB300C1167A /* wfc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wfc.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +128,6 @@
 				33306EF117695EE900AF5315 /* Carbon.framework in Frameworks */,
 				330D5CE12641E0420010ADFE /* QuartzCore.framework in Frameworks */,
 				33306EF217695EE900AF5315 /* IOKit.framework in Frameworks */,
-				33306EF317695EE900AF5315 /* OpenGL.framework in Frameworks */,
 				33306EBF17695BE000AF5315 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,6 +270,7 @@
 		3387FFF7204C5FE600612ED7 /* lobster */ = {
 			isa = PBXGroup;
 			children = (
+				33B2E7A12944FBB300C1167A /* wfc.h */,
 				3387FFF8204C5FE600612ED7 /* slaballoc.h */,
 				3387FFF9204C5FE600612ED7 /* typecheck.h */,
 				3387FFFA204C5FE600612ED7 /* tocpp.h */,
@@ -513,12 +513,14 @@
 		33306ED917695BE000AF5315 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -530,6 +532,7 @@
 					__WXOSX__,
 					__WXOSX_COCOA__,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
@@ -539,6 +542,7 @@
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
@@ -573,12 +577,14 @@
 		33306EDA17695BE000AF5315 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -587,6 +593,7 @@
 					__WXOSX__,
 					__WXOSX_COCOA__,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = (
@@ -595,6 +602,7 @@
 				);
 				INFOPLIST_FILE = "TreeSheets/TreeSheets-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",

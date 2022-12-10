@@ -358,7 +358,7 @@ class SlabAlloc {
         loopdllist(usedpages, h) {
             h->isfree = (char *)calloc((size_t)numobjs(h->size), 1);
         }
-        for (iint i = 0; i < MAXBUCKETS; i++) {
+        for (iint i = 1; i < MAXBUCKETS; i++) {
             loopdllist(reuse[i], n) {
                 PageHeader *page = ppage(n);
                 page->isfree[(((char *)n) - ((char *)(page + 1))) / (i * ALIGN)] = 1;
