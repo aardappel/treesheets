@@ -849,7 +849,7 @@ struct Document {
                 wxTheClipboard->SetData(new wxBitmapDataObject(cell->text.image->bm_orig));    
             }
             wxTheClipboard->Close();
-            }
+        }
         return _(L"Image copied to clipboard");
     }
 
