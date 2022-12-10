@@ -1757,6 +1757,9 @@ struct Document {
             case wxDF_BITMAP:
             case wxDF_DIB:
             case wxDF_TIFF:
+            #ifdef __WXMSW__
+            case wxDF_PNG:
+            #endif
                 if (dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                     c->AddUndo(this);
                     SetImageBM(c, dataobji->GetBitmap().ConvertToImage(), sys->frame->csf);
