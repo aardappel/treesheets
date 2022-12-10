@@ -1331,19 +1331,21 @@ struct Document {
                 }
                 return nullptr;
 
-            case A_PASTECT:
             case A_PASTE:
-                k == A_PASTECT ? pastect = true : pastect = false;
+            case A_PASTECT:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
                     wxTheClipboard->GetData(*dataobjc);
-                    PasteOrDrop();
+                    if (k == A_PASTECT) {
+                        PasteOrDrop(true);
+                    } else {
+                        PasteOrDrop();
+                    }
                     wxTheClipboard->Close();
                 } else if (sys->cellclipboard) {
                     c->Paste(this, sys->cellclipboard.get(), selected);
                     Refresh();
                 }
-                pastect = false;
                 return nullptr;
 
             case A_PASTESTYLE:
@@ -1742,11 +1744,9 @@ struct Document {
 
     void PasteSingleText(Cell *c, const wxString &t) { c->text.Insert(this, t, selected); }
 
-    bool pastect = false;
-
-    void PasteOrDrop() {
-        Cell *c = selected.ThinExpand(this);
-        if (!c) return;
+    void PasteOrDrop(bool pastect = false) {
+        Cell *c = selected.GetCell();
+        if (!(c = selected.ThinExpand(this))) return;
         wxBusyCursor wait;
         switch (dataobjc->GetReceivedFormat().GetType()) {
             case wxDF_FILENAME: {
