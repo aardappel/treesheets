@@ -832,15 +832,9 @@ struct Document {
 
     const wxChar* CopyImageToClipboard(Cell *cell) {
         if (wxTheClipboard->Open()) {
-            #if defined(__WXMSW__) || defined(__WXGTK__)
+            #ifdef __WXGTK__
             if (!cell->text.image->png_data.empty()) {
-                wxCustomDataObject *pngimage = new wxCustomDataObject(
-                    #ifdef __WXMSW__
-                        wxDF_PNG
-                    #else
-                        wxDF_BITMAP
-                    #endif
-                );
+                wxCustomDataObject *pngimage = new wxCustomDataObject(wxDF_BITMAP);
                 pngimage->SetData(cell->text.image->png_data.size(), cell->text.image->png_data.data());
                 wxTheClipboard->SetData(pngimage);
             } else
