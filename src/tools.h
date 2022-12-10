@@ -47,16 +47,16 @@ typedef unsigned int uint;
         if (v < (s)) v = (s); \
     }
 
+// Use the same on all platforms, because:
+// Win32: usually contains both.
+// Macos: older versions use \r and newer \n in clipboard?
+// Linux: should only ever be \n but if we encounter \r we want to strip it.
+#define LINE_SEPERATOR L"\r\n"
+
 #ifdef WIN32
 #define PATH_SEPERATOR L"\\"
-#define LINE_SEPERATOR L"\r\n"
 #else
 #define PATH_SEPERATOR L"/"
-#ifdef __WXMAC__
-#define LINE_SEPERATOR L"\r"
-#else
-#define LINE_SEPERATOR L"\n"
-#endif
 #define __cdecl
 #define _vsnprintf vsnprintf
 #endif
