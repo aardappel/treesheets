@@ -397,6 +397,7 @@ struct MyFrame : wxFrame {
             MyAppend(editmenu, A_COPY, _(L"&Copy\tCTRL+c"));
             MyAppend(editmenu, A_COPYCT, _(L"Copy As Continuous Text"));
             MyAppend(editmenu, A_PASTE, _(L"&Paste\tCTRL+v"));
+            MyAppend(editmenu, A_PASTECT, _(L"Paste As Continuous Text\tCTRL+ALT+v"));
             MyAppend(editmenu, A_PASTESTYLE, _(L"Paste Style Only\tCTRL+SHIFT+v"),
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
             editmenu->AppendSeparator();

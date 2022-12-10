@@ -1331,7 +1331,9 @@ struct Document {
                 }
                 return nullptr;
 
+            case A_PASTECT:
             case A_PASTE:
+                k == A_PASTECT ? pastect = true : pastect = false;
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
                     wxTheClipboard->GetData(*dataobjc);
@@ -1341,6 +1343,7 @@ struct Document {
                     c->Paste(this, sys->cellclipboard.get(), selected);
                     Refresh();
                 }
+                pastect = false;
                 return nullptr;
 
             case A_PASTESTYLE:
@@ -1739,6 +1742,8 @@ struct Document {
 
     void PasteSingleText(Cell *c, const wxString &t) { c->text.Insert(this, t, selected); }
 
+    bool pastect = false;
+
     void PasteOrDrop() {
         Cell *c = selected.ThinExpand(this);
         if (!c) return;
@@ -1782,11 +1787,18 @@ struct Document {
             default:  // several text formats
                 if (dataobjt->GetText() != wxEmptyString) {
                     wxString s = dataobjt->GetText();
-                    if ((sys->clipboardcopy == s) && sys->cellclipboard) {
+                    if (!pastect and (sys->clipboardcopy == s) and sys->cellclipboard) {
                         c->Paste(this, sys->cellclipboard.get(), selected);
                         Refresh();
                     } else {
-                        const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
+                        wxString seperator;
+                        if(pastect) {
+                            s.Replace(LINE_SEPERATOR, L" ");
+                            seperator = L"\0";
+                        } else {
+                            seperator = LINE_SEPERATOR;
+                        }
+                        const wxArrayString &as = wxStringTokenize(s, seperator);
                         if (as.size()) {
                             if (as.size() <= 1) {
                                 c->AddUndo(this);
