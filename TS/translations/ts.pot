@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-05 10:37-0300\n"
+"POT-Creation-Date: 2022-12-11 11:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -354,15 +354,15 @@ msgstr ""
 msgid "Bubble Style Rendering\tALT+8"
 msgstr ""
 
-#: document.h:1605
+#: document.h:1620
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr ""
 
-#: document.h:1603
+#: document.h:1618
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr ""
 
-#: document.h:1786
+#: document.h:1801
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
@@ -380,7 +380,7 @@ msgstr ""
 msgid "Cannot decompress file."
 msgstr ""
 
-#: document.h:1726
+#: document.h:1741
 msgid "Cannot drag & drop more than 1 file."
 msgstr ""
 
@@ -398,7 +398,7 @@ msgstr ""
 msgid "Cannot launch browser for this link."
 msgstr ""
 
-#: document.h:1601
+#: document.h:1616
 msgid "Cannot move this cell up in the hierarchy."
 msgstr ""
 
@@ -572,7 +572,7 @@ msgstr ""
 msgid "Edited %s"
 msgstr ""
 
-#: document.h:1615
+#: document.h:1630
 msgid "Empty strings cannot be tags."
 msgstr ""
 
@@ -809,11 +809,11 @@ msgstr ""
 msgid "Image "
 msgstr ""
 
-#: document.h:1567
+#: document.h:1582
 msgid "Image Resize"
 msgstr ""
 
-#: document.h:1559
+#: document.h:1574
 msgid "Image copied to clipboard"
 msgstr ""
 
@@ -841,7 +841,7 @@ msgstr ""
 msgid "Initialization Error"
 msgstr ""
 
-#: document.h:1678
+#: document.h:1693
 msgid "Internal error: unimplemented operation!"
 msgstr ""
 
@@ -952,19 +952,19 @@ msgstr ""
 msgid "New file cancelled."
 msgstr ""
 
-#: document.h:1552 document.h:1564
+#: document.h:1552 document.h:1579
 msgid "No image in this cell."
 msgstr ""
 
-#: document.h:1687
+#: document.h:1702
 msgid "No matches for search."
 msgstr ""
 
-#: document.h:1591
+#: document.h:1606
 msgid "No matching cell found!"
 msgstr ""
 
-#: document.h:1683
+#: document.h:1698
 msgid "No search string."
 msgstr ""
 
@@ -976,7 +976,7 @@ msgstr ""
 msgid "No style to paste."
 msgstr ""
 
-#: document.h:1588
+#: document.h:1603
 msgid "No text in this cell."
 msgstr ""
 
@@ -1080,7 +1080,7 @@ msgstr ""
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 
-#: document.h:1566
+#: document.h:1581
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr ""
 
@@ -1581,7 +1581,7 @@ msgstr ""
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr ""
 
-#: document.h:1626
+#: document.h:1641
 msgid "only works in cell text mode"
 msgstr ""
 
