@@ -1640,6 +1640,12 @@ struct Document {
                 tags.erase(c->text.t);
                 Refresh();
                 return nullptr;
+
+            case A_FILTERBYCELLBG: 
+                loopallcells(ci) ci->text.filtered = ci->cellcolor != c->cellcolor;
+                rootgrid->ResetChildren();
+                Refresh();
+                return nullptr;
         }
 
         if (!selected.TextEdit()) return _(L"only works in cell text mode");
