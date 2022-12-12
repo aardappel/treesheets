@@ -855,6 +855,10 @@ msgstr "Bildgröße verändern..."
 msgid "Image copied to clipboard"
 msgstr "Bild in die Zwischenablage kopiert"
 
+#: document.h:1217
+msgid "Text copied to clipboard"
+msgstr "Text in die Zwischenablage kopiert"
+
 #: myframe.h:244
 msgid "Import file from"
 msgstr "Datei importieren aus"
