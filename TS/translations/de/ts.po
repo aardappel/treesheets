@@ -1349,6 +1349,10 @@ msgstr "5% der letzten Änderungen anzeigen"
 msgid "Show 50% of last edits"
 msgstr "50% der letzten Änderungen anzeigen"
 
+#: myframe.h:486
+msgid "Filter by the same cell color"
+msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
+
 #: myframe.h:531
 msgid "Show Statusbar"
 msgstr "Statuszeile anzeigen"

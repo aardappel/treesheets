@@ -482,6 +482,7 @@ struct MyFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERM, _(L"Show 1% more than the last filter"));
         // xgettext:no-c-format
         MyAppend(filtermenu, A_FILTERL, _(L"Show 1% less than the last filter"));
+        MyAppend(filtermenu, A_FILTERBYCELLBG, _(L"Filter by the same cell color"));
 
         wxMenu *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _(L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"));
