@@ -1353,6 +1353,10 @@ msgstr "50% der letzten Änderungen anzeigen"
 msgid "Filter by the same cell color"
 msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
 
+#: myframe.h:487
+msgid "Go to next filter match\tSHIFT+F3"
+msgstr "Zum nächsten Filtertreffer springen\tSHIFT+F3"
+
 #: myframe.h:531
 msgid "Show Statusbar"
 msgstr "Statuszeile anzeigen"

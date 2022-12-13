@@ -1646,6 +1646,16 @@ struct Document {
                 rootgrid->ResetChildren();
                 Refresh();
                 return nullptr;
+
+            case A_FILTERMATCHNEXT:
+                bool lastsel = true;
+                Cell *next =
+                    rootgrid->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
+                if (!next) return _(L"No matches for filter.");
+                if (next->parent) selected = next->parent->grid->FindCell(next);
+                sw->SetFocus();
+                ScrollOrZoom(dc, true);
+                return nullptr;
         }
 
         if (!selected.TextEdit()) return _(L"only works in cell text mode");

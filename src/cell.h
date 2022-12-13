@@ -395,6 +395,16 @@ struct Cell {
         return best;
     }
 
+    Cell *FindNextFilterMatch(Cell *best, Cell *selected, bool &lastwasselected) {
+        if (!text.filtered) {
+            if (lastwasselected) best = this;
+            lastwasselected = false;
+        }
+        if (selected == this) lastwasselected = true;
+        if (grid) best = grid->FindNextFilterMatch(best, selected, lastwasselected);
+        return best;
+    }
+
     Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
                    bool forward) {
         if (grid) best = grid->FindLink(s, link, best, lastthis, stylematch, forward);
