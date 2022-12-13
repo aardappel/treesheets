@@ -8,16 +8,17 @@ This generally follows the gettext standard, see e.g.
 http://www.labri.fr/perso/fleury/posts/programming/a-quick-gettext-tutorial.html
 
 To recompile the main template file (extracting strings from the source code),
-run ../../src/genbot.bat or similar.
+run src/genpot.bat or similar.
 
-To create a translation for a new language, run (inside the tranlations directory):
-msginit --input ts.pot --locale=de --ouput=de/ts.po
-and replace "de" with the new language code.
+To create a translation for a new language, run (inside TS/translations):
+msginit --input ts.pot --locale=lang --ouput=lang/ts.po
+replacing "lang" with either the 2-letter ISO 639-1 code (e.g. "it") or the
+5-letter combination of the ISO 639 code + ISO 3166 country code (e.g. "pt_BR"),
+for the new language.
 
 To merge the translation for an existing language with the strings from the
-recompiled main template file, run de/merge.bat, or a copy of that file in
-another language directory.
+recompiled main template file, run lang/merge.bat, replacing "lang" as
+described above.
 
-To re-compile the language definitions, run de/compile.bat, or a copy of that file
-in another language directory.
-
+To re-compile the language definitions, run lang/compile.bat, replacing "lang"
+as described above.
