@@ -13,7 +13,7 @@ run src/genpot.bat or similar.
 To create a translation for a new language, run (inside TS/translations):
 msginit --input ts.pot --locale=lang --ouput=lang/ts.po
 replacing "lang" with either the 2-letter ISO 639-1 code (e.g. "it") or the
-5-letter combination of the ISO 639 code + ISO 3166 country code (e.g. "pt_BR"),
+5-letter combination of the ISO 639 code + ISO 3166 country code (e.g. "pt_BR")
 for the new language.
 
 To merge the translation for an existing language with the strings from the
