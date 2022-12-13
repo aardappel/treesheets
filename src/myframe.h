@@ -17,7 +17,7 @@ struct MyFrame : wxFrame {
     MyApp *app;
     wxFileSystemWatcher *watcher;
     bool watcherwaitingforuser;
-    double csf, csf_orig;
+    double csf, csf_orig, csf_lu;
     std::vector<std::string> scripts_in_menu;
     bool zenmode;
     ColorDropdown *celldd = nullptr;
@@ -144,6 +144,10 @@ struct MyFrame : wxFrame {
             // FIXME: On a high-DPI display we get low res images even though the display is
             // capable of better!
         #endif
+
+	csf_lu = sys->cfg->Read(L"csf_lu", csf_lu);
+        wxLogMessage(L"content scale lu: %f", csf_lu);
+	csf = csf_lu;
 
         wxInitAllImageHandlers();
 
@@ -657,7 +661,7 @@ struct MyFrame : wxFrame {
             auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
                 wxBitmap bm;
                 if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
-                    auto ns = csf_orig * sc;
+                    auto ns = csf * sc;
                     ScaleBitmap(bm, ns, bm);
                     MakeInternallyScaled(bm, tb->GetBackgroundColour(), csf_orig);
                     tb->AddTool(action, name, bm, bm, wxITEM_NORMAL, name);
@@ -691,6 +695,10 @@ struct MyFrame : wxFrame {
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
             celldd = new ColorDropdown(tb, A_CELLCOLOR, csf, 1);
+            tb->AddControl(celldd);
+            tb->AddSeparator();
+            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
+            celldd = new ColorDropdown(tb, A_CELLCOLOR, csf, 3);
             tb->AddControl(celldd);
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
