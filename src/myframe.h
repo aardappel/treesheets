@@ -17,7 +17,7 @@ struct MyFrame : wxFrame {
     MyApp *app;
     wxFileSystemWatcher *watcher;
     bool watcherwaitingforuser;
-    double csf, csf_orig;
+    double csf, csf_orig, csf_lu;
     std::vector<std::string> scripts_in_menu;
     bool zenmode;
     ColorDropdown *celldd = nullptr;
@@ -144,6 +144,10 @@ struct MyFrame : wxFrame {
             // FIXME: On a high-DPI display we get low res images even though the display is
             // capable of better!
         #endif
+
+	csf_lu = sys->cfg->Read(L"csf_lu", csf_lu);
+        wxLogMessage(L"content scale lu: %f", csf_lu);
+	csf = csf_lu;
 
         wxInitAllImageHandlers();
 
