@@ -659,7 +659,7 @@ struct MyFrame : wxFrame {
             auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
                 wxBitmap bm;
                 if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
-                    auto ns = csf_orig * sc;
+                    auto ns = csf * sc;
                     ScaleBitmap(bm, ns, bm);
                     MakeInternallyScaled(bm, tb->GetBackgroundColour(), csf_orig);
                     tb->AddTool(action, name, bm, bm, wxITEM_NORMAL, name);
