@@ -694,6 +694,10 @@ struct MyFrame : wxFrame {
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
             celldd = new ColorDropdown(tb, A_CELLCOLOR, csf, 1);
             tb->AddControl(celldd);
+            tb->AddSeparator();
+            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
+            celldd = new ColorDropdown(tb, A_CELLCOLOR, csf, 3);
+            tb->AddControl(celldd);
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
             textdd = new ColorDropdown(tb, A_TEXTCOLOR, csf, 2);
