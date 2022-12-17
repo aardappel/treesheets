@@ -1500,6 +1500,32 @@ struct Document {
                 selected.HomeEnd(this, dc, k == A_HOME || k == A_CHOME);
                 return nullptr;
 
+
+            case A_IMAGESCP:
+            case A_IMAGESCF: {
+                long v = 0;
+                loopallcellssel(c, true) {
+                    if(c->text.image) {
+                        if(!v) {
+                            v = wxGetNumberFromUser(
+                                _(L"Please enter the percentage you want the image scaled by:"), L"%",
+                                _(L"Image Resize"), 50, 5, 400, sys->frame);
+                            if (v < 0) return nullptr;
+                        }
+                        auto sc = v / 100.0;
+                        if (k == A_IMAGESCP) {
+                            c->text.image->BitmapScale(sc);
+                        } else {
+                            c->text.image->DisplayScale(sc);
+                        }
+                        c->ResetLayout();
+                    }
+                }
+                Refresh();
+                return nullptr;
+            }
+        
+
             case A_IMAGESCN: {
                 loopallcellssel(c, true)
                     if (c->text.image) {
@@ -1578,24 +1604,6 @@ struct Document {
                 if (!c->text.image) return _(L"No image in this cell.");
                 return CopyImageToClipboard(c);
             }            
-
-            case A_IMAGESCP:
-            case A_IMAGESCF: {
-                if (!c->text.image) return _(L"No image in this cell.");
-                long v = wxGetNumberFromUser(
-                    _(L"Please enter the percentage you want the image scaled by:"), L"%",
-                    _(L"Image Resize"), 50, 5, 400, sys->frame);
-                if (v < 0) return nullptr;
-                auto sc = v / 100.0;
-                if (k == A_IMAGESCP) {
-                    c->text.image->BitmapScale(sc);
-                } else {
-                    c->text.image->DisplayScale(sc);
-                }
-                c->ResetLayout();
-                Refresh();
-                return nullptr;
-            }
 
             case A_ENTERGRID:
                 if (!c->grid) Action(dc, A_NEWGRID);
