@@ -1107,7 +1107,11 @@ struct Document {
                 ApplyEditFilter();
                 return nullptr;
             case A_FILTERS: SetSearchFilter(true); return nullptr;
-            case A_FILTEROFF: SetSearchFilter(false); return nullptr;
+            case A_FILTEROFF: 
+                loopallcells(c) c->text.filtered = false;
+                rootgrid->ResetChildren();
+                Refresh();
+                return nullptr;
 
             case A_CUSTKEY: {
                 wxArrayString strs;
