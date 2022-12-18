@@ -318,6 +318,11 @@ struct Grid {
         return best;
     }
 
+    Cell *FindNextFilterMatch(Cell *best, Cell *selected, bool &lastwasselected) {
+        foreachcell(c) best = c->FindNextFilterMatch(best, selected, lastwasselected);
+        return best;
+    }
+
     void FindReplaceAll(const wxString &str) { foreachcell(c) c->FindReplaceAll(str); }
     void ReplaceCell(Cell *o, Cell *n) { foreachcell(c) if (c == o) c = n; }
     Selection FindCell(Cell *o) {
