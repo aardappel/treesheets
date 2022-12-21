@@ -109,6 +109,7 @@ struct MyApp : wxApp {
                 client.MakeConnection(
                     L"localhost", L"4242",
                     filename.Len() ? filename.wc_str() : L"*");  // fire and forget
+                DELETEP(instance_checker);
                 return false;
             }
         }
