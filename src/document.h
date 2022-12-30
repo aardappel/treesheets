@@ -1536,6 +1536,43 @@ struct Document {
                 Refresh();
                 return nullptr;
             }
+
+            case A_BROWSE: {
+                const wxChar *returnmessage = nullptr;
+                int counter = 0;
+                loopallcellssel(c, true) {
+                    if (counter >= MAX_LAUNCHES) {
+                        returnmessage = _(L"Maximum number of launches reached.");
+                        break;
+                    }
+                    if (!wxLaunchDefaultBrowser(c->text.ToText(0, selected, A_EXPTEXT))) {
+                        returnmessage = _(L"The browser could not open at least one link.");
+                    } else {
+                        counter++;
+                    }
+                }
+                return returnmessage;
+            }
+
+            case A_BROWSEF: {
+                const wxChar *returnmessage = nullptr;
+                int counter = 0;
+                loopallcellssel(c, true) {
+                    if (counter >= MAX_LAUNCHES) {
+                        returnmessage = _(L"Maximum number of launches reached.");
+                        break;
+                    }
+                    wxString f = c->text.ToText(0, selected, A_EXPTEXT);
+                    wxFileName fn(f);
+                    if (fn.IsRelative()) fn.MakeAbsolute(wxFileName(filename).GetPath());
+                    if (!wxLaunchDefaultApplication(fn.GetFullPath())) {
+                        returnmessage = _(L"At least one file could not be opened.");
+                    } else {
+                        counter++;
+                    }
+                }
+                return returnmessage;
+            }
         }
 
         if (c || (!c && selected.IsAll())) {
@@ -1585,19 +1622,6 @@ struct Document {
         switch (k) {
             case A_NEXT: selected.Next(this, dc, false); return nullptr;
             case A_PREV: selected.Next(this, dc, true); return nullptr;
-
-            case A_BROWSE:
-                if (!wxLaunchDefaultBrowser(c->text.ToText(0, selected, A_EXPTEXT)))
-                    return _(L"Cannot launch browser for this link.");
-                return nullptr;
-
-            case A_BROWSEF: {
-                wxString f = c->text.ToText(0, selected, A_EXPTEXT);
-                wxFileName fn(f);
-                if (fn.IsRelative()) fn.MakeAbsolute(wxFileName(filename).GetPath());
-                if (!wxLaunchDefaultApplication(fn.GetFullPath())) return _(L"Cannot find file.");
-                return nullptr;
-            }
 
             case A_IMAGECPY: {
                 if (selected.Thin()) return NoThin();

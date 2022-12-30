@@ -20,6 +20,8 @@ int g_grid_left_offset = 15;
 int g_scrollratecursor = 240;  // FIXME: must be configurable
 int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
 
+const int MAX_LAUNCHES = 20;
+
 static uint celltextcolors[] = {
     0xFFFFFF,  // CUSTOM COLOR!
     0xFFFFFF, 0x000000, 0x202020, 0x404040, 0x606060, 0x808080, 0xA0A0A0, 0xC0C0C0, 0xD0D0D0,
