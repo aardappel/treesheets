@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-20 17:25-0300\n"
-"PO-Revision-Date: 2022-12-20 17:25-0300\n"
+"POT-Creation-Date: 2023-01-02 13:50-0300\n"
+"PO-Revision-Date: 2023-01-02 13:59-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -308,6 +308,10 @@ msgstr "Aplicar última cor de célula\tSHIFT+ALT+c"
 msgid "Apply last text color\tSHIFT+ALT+t"
 msgstr "Aplicar última cor de texto\tSHIFT+ALT+t"
 
+#: document.h:1569
+msgid "At least one file could not be opened."
+msgstr "Ao menos um dos arquivos não pôde ser aberto."
+
 #: myframe.h:556
 msgid "Auto reload documents"
 msgstr "Recarregar documentos automaticamente"
@@ -360,15 +364,15 @@ msgstr "Borda &5\tCTRL+SHIFT+5"
 msgid "Bubble Style Rendering\tALT+8"
 msgstr "Renderização com Estilo de Bolha\tALT+8"
 
-#: document.h:1633
+#: document.h:1657
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr "Só é possível mover essa célula a partir de uma grade Nx1 ou 1xN."
 
-#: document.h:1631
+#: document.h:1655
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "Só é possível mover essa célula para dentro de uma grade Nx1 ou 1xN."
 
-#: document.h:1833
+#: document.h:1857
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
@@ -388,7 +392,7 @@ msgstr "Cancelar edições de texto\tESC"
 msgid "Cannot decompress file."
 msgstr "Não é possível descomprimir o arquivo."
 
-#: document.h:1770
+#: document.h:1794
 msgid "Cannot drag & drop more than 1 file."
 msgstr "Não é possível arrastar & soltar mais de um arquivo."
 
@@ -400,15 +404,7 @@ msgstr ""
 "Não é possível exportar uma grade não-horizontal (faça zoom para a grade "
 "desejada, e/ou use Horizontalizar)."
 
-#: document.h:1598
-msgid "Cannot find file."
-msgstr "Não foi possível encontrar o arquivo."
-
-#: document.h:1591
-msgid "Cannot launch browser for this link."
-msgstr "Não é possível abrir o navegador para esse link."
-
-#: document.h:1629
+#: document.h:1653
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "Não é possível mover essa célula para cima na hierarquia."
 
@@ -593,7 +589,7 @@ msgstr "Descartar Mudanças"
 msgid "Edited %s"
 msgstr "Editada em %s"
 
-#: document.h:1643
+#: document.h:1667
 msgid "Empty strings cannot be tags."
 msgstr "Sequências vazias não podem ser tags."
 
@@ -894,7 +890,7 @@ msgstr "Texto indentado..."
 msgid "Initialization Error"
 msgstr "Erro de Inicialização"
 
-#: document.h:1722
+#: document.h:1746
 msgid "Internal error: unimplemented operation!"
 msgstr "Erro interno: operação não implementada!"
 
@@ -936,6 +932,10 @@ msgstr ""
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
 msgstr ""
 "Faz um layout hierárquico ficar mais vertical (o padrão) ou mais horizontal"
+
+#: document.h:1545 document.h:1562
+msgid "Maximum number of launches reached."
+msgstr "O número máximo de aberturas de programas foi alcançado."
 
 #: myframe.h:541
 msgid "Minimize on close"
@@ -1011,23 +1011,23 @@ msgstr "Nova TreeSheet"
 msgid "New file cancelled."
 msgstr "O novo arquivo foi cancelado."
 
-#: document.h:1604
+#: document.h:1628
 msgid "No image in this cell."
 msgstr "Essa célula não contém imagem."
 
-#: document.h:1663
+#: document.h:1687
 msgid "No matches for filter."
 msgstr "O filtro atual não evidencia nenhuma célula."
 
-#: document.h:1731
+#: document.h:1755
 msgid "No matches for search."
 msgstr "A busca não encontrou nenhuma correspondência."
 
-#: document.h:1619
+#: document.h:1643
 msgid "No matching cell found!"
 msgstr "Não há nenhuma célula correspondente!"
 
-#: document.h:1727
+#: document.h:1751
 msgid "No search string."
 msgstr "Não há termo de busca."
 
@@ -1039,7 +1039,7 @@ msgstr "Não há busca."
 msgid "No style to paste."
 msgstr "Não há estilo na área de transferência para colar."
 
-#: document.h:1616
+#: document.h:1640
 msgid "No text in this cell."
 msgstr "Essa célula não contém texto."
 
@@ -1323,7 +1323,7 @@ msgstr "Selecionar &todas na grade atual\tCTRL+a"
 msgid "Select First &Child\tSHIFT+ENTER"
 msgstr "Selecionar Primeira &Filha\tSHIFT+ENTER"
 
-#: document.h:1558
+#: document.h:1595
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr ""
 "A grade selecionada não é uma tabela: as células não devem já conter "
@@ -1481,6 +1481,10 @@ msgstr "O tamanho do texto foi aumentado."
 #: document.h:933
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "O Organizador de Informações Hierárquicas em Forma Livre"
+
+#: document.h:1549
+msgid "The browser could not open at least one link."
+msgstr "O navegador não pôde abrir ao menos um dos links."
 
 #: document.h:435
 msgid "This operation doesn't work on thin selections."
@@ -1668,7 +1672,7 @@ msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr ""
 "cola unicamente as cores e o estilo da célula copiada, e mantém o texto"
 
-#: document.h:1670
+#: document.h:1694
 msgid "only works in cell text mode"
 msgstr "só funciona no modo texto da célula"
 
@@ -1688,6 +1692,12 @@ msgstr "escala:"
 #: document.h:920
 msgid "size:"
 msgstr "tamanho:"
+
+#~ msgid "Cannot find file."
+#~ msgstr "Não foi possível encontrar o arquivo."
+
+#~ msgid "Cannot launch browser for this link."
+#~ msgstr "Não é possível abrir o navegador para esse link."
 
 #~ msgid "&Data"
 #~ msgstr "&Dados"
