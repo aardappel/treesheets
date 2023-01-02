@@ -305,6 +305,10 @@ msgstr "Letzte Zellenfarbe anwenden\tSHIFT+ALT+c"
 msgid "Apply last text color\tSHIFT+ALT+t"
 msgstr "Letzte Textfarbe anwenden\tSHIFT+ALT+t"
 
+#: document.h:1569
+msgid "At least one file could not be opened."
+msgstr "Mindestens eine Datei konnte nicht geöffnet werden."
+
 #: myframe.h:554
 msgid "Auto reload documents"
 msgstr "Dokument automatisch neu laden"
@@ -396,14 +400,6 @@ msgid ""
 msgstr ""
 "Kann die nicht-flache Tabelle nicht exportieren (Vergrößern Sie auf die "
 "gewünschte Tabelle und/oder benutzen Sie die Verflachen-Funktion)"
-
-#: document.h:1547
-msgid "Cannot find file."
-msgstr "Datei konnte nicht gefunden werden."
-
-#: document.h:1540
-msgid "Cannot launch browser for this link."
-msgstr "Browser konnte nicht für diesen Link aufgerufen werden."
 
 #: document.h:1601
 msgid "Cannot move this cell up in the hierarchy."
@@ -925,6 +921,10 @@ msgid "Make a hierarchy layout more vertical (default) or more horizontal"
 msgstr ""
 "Eine hierarchische Anordnung in eine mehr vertikale (standardmäßig) oder "
 "horizontale Anordnung umwandeln"
+
+#: document.h:1545 document.h:1562
+msgid "Maximum number of launches reached."
+msgstr "Maximale Anzahl an Startvorgängen (externer Anwendungen) wurde erreicht."
 
 #: myframe.h:539
 msgid "Minimize on close"
@@ -1461,6 +1461,10 @@ msgstr "Textgröße wurde vergrößert."
 #: document.h:916
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "Der formfreie hierarchische Informationsorganisator"
+
+#: document.h:1549
+msgid "The browser could not open at least one link."
+msgstr "Der Browser konnte mindestens einen Link nicht öffnen."
 
 #: document.h:435
 msgid "This operation doesn't work on thin selections."
