@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-20 17:25-0300\n"
+"POT-Creation-Date: 2023-01-02 13:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -302,6 +302,10 @@ msgstr ""
 msgid "Apply last text color\tSHIFT+ALT+t"
 msgstr ""
 
+#: document.h:1569
+msgid "At least one file could not be opened."
+msgstr ""
+
 #: myframe.h:556
 msgid "Auto reload documents"
 msgstr ""
@@ -354,15 +358,15 @@ msgstr ""
 msgid "Bubble Style Rendering\tALT+8"
 msgstr ""
 
-#: document.h:1633
+#: document.h:1657
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr ""
 
-#: document.h:1631
+#: document.h:1655
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr ""
 
-#: document.h:1833
+#: document.h:1857
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
@@ -380,7 +384,7 @@ msgstr ""
 msgid "Cannot decompress file."
 msgstr ""
 
-#: document.h:1770
+#: document.h:1794
 msgid "Cannot drag & drop more than 1 file."
 msgstr ""
 
@@ -390,15 +394,7 @@ msgid ""
 "or use Flatten)."
 msgstr ""
 
-#: document.h:1598
-msgid "Cannot find file."
-msgstr ""
-
-#: document.h:1591
-msgid "Cannot launch browser for this link."
-msgstr ""
-
-#: document.h:1629
+#: document.h:1653
 msgid "Cannot move this cell up in the hierarchy."
 msgstr ""
 
@@ -572,7 +568,7 @@ msgstr ""
 msgid "Edited %s"
 msgstr ""
 
-#: document.h:1643
+#: document.h:1667
 msgid "Empty strings cannot be tags."
 msgstr ""
 
@@ -849,7 +845,7 @@ msgstr ""
 msgid "Initialization Error"
 msgstr ""
 
-#: document.h:1722
+#: document.h:1746
 msgid "Internal error: unimplemented operation!"
 msgstr ""
 
@@ -886,6 +882,10 @@ msgstr ""
 
 #: myframe.h:393
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
+msgstr ""
+
+#: document.h:1545 document.h:1562
+msgid "Maximum number of launches reached."
 msgstr ""
 
 #: myframe.h:541
@@ -960,23 +960,23 @@ msgstr ""
 msgid "New file cancelled."
 msgstr ""
 
-#: document.h:1604
+#: document.h:1628
 msgid "No image in this cell."
 msgstr ""
 
-#: document.h:1663
+#: document.h:1687
 msgid "No matches for filter."
 msgstr ""
 
-#: document.h:1731
+#: document.h:1755
 msgid "No matches for search."
 msgstr ""
 
-#: document.h:1619
+#: document.h:1643
 msgid "No matching cell found!"
 msgstr ""
 
-#: document.h:1727
+#: document.h:1751
 msgid "No search string."
 msgstr ""
 
@@ -988,7 +988,7 @@ msgstr ""
 msgid "No style to paste."
 msgstr ""
 
-#: document.h:1616
+#: document.h:1640
 msgid "No text in this cell."
 msgstr ""
 
@@ -1259,7 +1259,7 @@ msgstr ""
 msgid "Select First &Child\tSHIFT+ENTER"
 msgstr ""
 
-#: document.h:1558
+#: document.h:1595
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr ""
 
@@ -1410,6 +1410,10 @@ msgstr ""
 
 #: document.h:933
 msgid "The Free Form Hierarchical Information Organizer"
+msgstr ""
+
+#: document.h:1549
+msgid "The browser could not open at least one link."
 msgstr ""
 
 #: document.h:435
@@ -1597,7 +1601,7 @@ msgstr ""
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr ""
 
-#: document.h:1670
+#: document.h:1694
 msgid "only works in cell text mode"
 msgstr ""
 
