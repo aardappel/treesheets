@@ -845,7 +845,7 @@ msgstr "Wie viele Pixel breit soll die Seite ein? (0 für automatisches Anpassen
 
 #: myframe.h:705
 msgid "Image "
-msgstr "Bild "
+msgstr "Symbol "
 
 #: document.h:1567
 msgid "Image Resize"
