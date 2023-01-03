@@ -687,6 +687,8 @@ struct MyFrame : wxFrame {
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
             tb->AddControl(filter =
                 new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, wxSize(80, 22) * csf));
+            AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.png");
+            AddTBIcon(_(L"Filter by Search Term"), A_FILTERS, iconpath + L"filter.png");
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
             tb->AddControl(replaces =
@@ -695,6 +697,7 @@ struct MyFrame : wxFrame {
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
             celldd = new ColorDropdown(tb, A_CELLCOLOR, csf, 1);
             tb->AddControl(celldd);
+            AddTBIcon(_(L"Filter by cell background"), A_FILTERBYCELLBG, iconpath + L"filter.png");
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
             textdd = new ColorDropdown(tb, A_TEXTCOLOR, csf, 2);
@@ -708,6 +711,10 @@ struct MyFrame : wxFrame {
             wxString imagepath = GetDataPath("images/nuvola/dropdown/");
             idd = new ImageDropdown(tb, imagepath);
             tb->AddControl(idd);
+            SEPARATOR;
+            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Filter ")));
+            AddTBIcon(_(L"Go to next filter match"), A_FILTERMATCHNEXT, iconpath + L"go-next.png");
+            AddTBIcon(_(L"Filter off"), A_FILTEROFF, iconpath + L"filteroff.png");
             tb->Realize();
         }
 
