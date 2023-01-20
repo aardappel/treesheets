@@ -783,17 +783,17 @@ struct Grid {
                     case 0:
                         return ev.Execute(op);
                     case 1:
-                        return acc ? ev.Execute(op, move(acc)) : nullptr;
+                        return acc ? ev.Execute(op, std::move(acc)) : nullptr;
                     case 2:
                         if (vert) {
                             if (acc && y + 1 < ys) {
-                                return ev.Execute(op, move(acc), C(x, ++y));
+                                return ev.Execute(op, std::move(acc), C(x, ++y));
                             } else {
                                 return nullptr;
                             }
                         } else {
                             if (acc && x + 1 < xs) {
-                                return ev.Execute(op, move(acc), C(++x, y));
+                                return ev.Execute(op, std::move(acc), C(++x, y));
                             } else {
                                 return nullptr;
                             }
@@ -802,14 +802,14 @@ struct Grid {
                         if (vert) {
                             if (acc && y + 2 < ys) {
                                 y += 2;
-                                return ev.Execute(op, move(acc), C(x, y - 1), C(x, y));
+                                return ev.Execute(op, std::move(acc), C(x, y - 1), C(x, y));
                             } else {
                                 return nullptr;
                             }
                         } else {
                             if (acc && x + 2 < xs) {
                                 x += 2;
-                                return ev.Execute(op, move(acc), C(x - 1, y), C(x, y));
+                                return ev.Execute(op, std::move(acc), C(x - 1, y), C(x, y));
                             } else {
                                 return nullptr;
                             }
@@ -828,12 +828,12 @@ struct Grid {
         // Do left to right processing
         if (xs > 1 || ys == 1) foreachcell(c) {
                 if (x == 0) acc.reset();
-                acc = EvalGridCell(ev, c, move(acc), x, y, alldata, false);
+                acc = EvalGridCell(ev, c, std::move(acc), x, y, alldata, false);
             }
         // Do top to bottom processing
         if (ys > 1) foreachcellcolumn(c) {
                 if (y == 0) acc.reset();
-                acc = EvalGridCell(ev, c, move(acc), x, y, alldata, true);
+                acc = EvalGridCell(ev, c, std::move(acc), x, y, alldata, true);
             }
         // If all data is true then we can exit now.
         if (alldata) {

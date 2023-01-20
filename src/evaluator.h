@@ -65,7 +65,7 @@ struct Evaluator {
         OPN(inc, a + 1);
         OPN(dec, a - 1);
         OPN(neg, -a);
-        OPT(graph, (c->Graph(), move(c)));
+        OPT(graph, (c->Graph(), std::move(c)));
         OPL(sum, a->Sum())
         OPG(transpose, a->Transpose())
         struct _if : Operation {
@@ -134,7 +134,7 @@ struct Evaluator {
                 break;
             case 't':
                 if (t.t.Len()) {
-                    return op->runc(move(left));
+                    return op->runc(std::move(left));
                 } else if (g) {
                     foreachcellingrid(c, g) c =
                         Execute(op, unique_ptr<Cell>(c)).release()->SetParent(left.get());
@@ -162,7 +162,7 @@ struct Evaluator {
                 if (g) op->rung(g);
                 break;
             case 'c':
-              return op->runc(move(left));
+              return op->runc(std::move(left));
         }
         return left;
     }
