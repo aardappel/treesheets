@@ -140,9 +140,16 @@ struct MyFrame : wxFrame {
             // blit it over via a MemoryDC?
         #endif
         #ifdef __WXGTK__
-            // Currently on Linux csf is always 1, so this is useless.
-            // FIXME: On a high-DPI display we get low res images even though the display is
-            // capable of better!
+            // On X11 platform, there is no scaling factor beside 1.0, but the DPI can be changed.
+
+            // On Wayland platform, there might be a scaling factor beside 1.0, 
+            // but the DPI is assumed to be a fixed value by default.
+
+            // If upscaling is active in Wayland compositors, the reported bitmap to paint on is downsized (and vice versa).
+            // The scaling is handled by the GTK toolkit and the Wayland compositor. 
+            // This is why csf should be set to 1.0 to let scaling be handled by the
+            // toolkit and compositor and not to be handled by TreeSheets itself.
+            csf = 1.0;
         #endif
 
         wxInitAllImageHandlers();
