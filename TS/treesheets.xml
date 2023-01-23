@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-treesheets">
+    <comment xml:lang="en">TreeSheets document</comment>
+    <icon name="treesheets"/>
+    <glob pattern="*.cts"/>
+    <magic priority="50">
+      <match type="string" value="TSFF" offset="0"/>
+    </magic>
+    <sub-class-of type="application/octet-stream"/>
+  </mime-type>
+</mime-info>
