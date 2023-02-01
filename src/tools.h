@@ -243,3 +243,23 @@ inline void __cdecl operator delete[](void *p, const char *fn, int l) {
 }
 #define new new (__FILE__, __LINE__)
 #endif
+
+
+
+inline uint32_t FNV1A32(std::string_view s) {
+    uint32_t hash = 0x811C9DC5;
+    for (auto c : s) {
+        hash ^= (uint8_t)c;
+        hash *= 0x01000193;
+    }
+    return hash;
+}
+
+inline uint64_t FNV1A64(std::string_view s) {
+    uint64_t hash = 0xCBF29CE484222325;
+    for (auto c : s) {
+        hash ^= (uint8_t)c;
+        hash *= 0x100000001B3;
+    }
+    return hash;
+}

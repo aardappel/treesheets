@@ -6,7 +6,7 @@ struct Image {
 
     int trefc = 0;
     int savedindex = -1;
-    int checksum;
+    uint64_t hash = 0;
 
     // This indicates a relative scale, where 1.0 means bitmap pixels match display pixels on
     // a low res 96 dpi display. On a high dpi screen it will look scaled up. Higher values
@@ -16,8 +16,8 @@ struct Image {
 
     long last_display = 0;
 
-    Image(wxBitmap _bm, int _cs, double _sc, vector<uint8_t> &&pd)
-        : bm_orig(_bm), png_data(std::move(pd)), checksum(_cs), display_scale(_sc) {}
+    Image(wxBitmap _bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd)
+        : bm_orig(_bm), png_data(std::move(pd)), hash(_hash), display_scale(_sc) {}
 
     void BitmapScale(double sc) {
         ScaleBitmap(bm_orig, sc, bm_orig);
@@ -588,15 +588,11 @@ struct System {
     }
 
     int AddImageToList(const wxImage &im, double sc, vector<uint8_t> &&pd) {
-        uint *p = (uint *)im.GetData();
-        uint checksum = im.GetWidth() | (im.GetHeight() << 16);
-        loop(i, im.GetWidth() * im.GetHeight() * 3 / 4) checksum ^= *p++;
-
+        auto hash = FNV1A64(string_view((char *)im.GetData(), im.GetWidth() * im.GetHeight() * 3));
         loopv(i, imagelist) {
-            if (imagelist[i]->checksum == checksum) return i;
+            if (imagelist[i]->hash == hash) return i;
         }
-
-        imagelist.push() = new Image(wxBitmap(im), checksum, sc, std::move(pd));
+        imagelist.push() = new Image(wxBitmap(im), hash, sc, std::move(pd));
         return imagelist.size() - 1;
     }
 
