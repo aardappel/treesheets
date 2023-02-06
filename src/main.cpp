@@ -32,7 +32,7 @@ static uint celltextcolors[] = {
 };
 #define CUSTOMCOLORIDX 0
 
-enum { TS_VERSION = 19, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+enum { TS_VERSION = 20, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
 enum {
     A_NEW = 500,
@@ -223,6 +223,8 @@ enum {
     A_IMAGESCF,
     A_IMAGESCN,
     A_IMAGECPY,
+    A_SAVE_AS_JPEG,
+    A_SAVE_AS_PNG,
     A_HELPI,
     A_HELP_OP_REF,
     A_REDO,
@@ -246,6 +248,13 @@ enum {
     STYLE_UNDERLINE = 8,
     STYLE_STRIKETHRU = 16
 };
+
+std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
+    { 'I', {wxBITMAP_TYPE_PNG, "image/png"} },
+    { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
+};
+
+char DEFAULT_IMAGE_TYPE = 'I';
 
 #include "script_interface.h"
 

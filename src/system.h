@@ -2,7 +2,8 @@
 struct Image {
     wxBitmap bm_orig;
     wxBitmap bm_display;
-    vector<uint8_t> png_data;
+    vector<uint8_t> image_data;
+    char image_type;
 
     int trefc = 0;
     int savedindex = -1;
@@ -16,12 +17,12 @@ struct Image {
 
     long last_display = 0;
 
-    Image(wxBitmap _bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd)
-        : bm_orig(_bm), png_data(std::move(pd)), hash(_hash), display_scale(_sc) {}
+    Image(wxBitmap _bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd, char iti)
+        : bm_orig(_bm), hash(_hash), display_scale(_sc), image_data(std::move(pd)), image_type(iti) {}
 
     void BitmapScale(double sc) {
         ScaleBitmap(bm_orig, sc, bm_orig);
-        png_data.clear();
+        image_data.clear();
         bm_display = wxNullBitmap;
     }
 
@@ -278,35 +279,47 @@ struct System {
             for (;;) {
                 fis.Read(buf, 1);
                 switch (*buf) {
-                    case 'I': {
+                    case 'I':
+                    case 'J': {
+                        char iti = *buf;
+                        wxBitmapType imt = imagetypes[*buf].first;
                         wxDataInputStream dis(fis);
                         if (versionlastloaded < 9) dis.ReadString();
                         wxImage im;
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
-                        vector<uint8_t> png_data;
-                        off_t beforepng = fis.TellI();
+                        vector<uint8_t> image_data;
+                        off_t beforeimage = fis.TellI();
                         bool ok = im.LoadFile(fis);
                         // ok = false;
                         if (!ok) {
-                            // Uhoh.. the decoder failed. Try to save the situation by skipping this
-                            // PNG.
+                            // Uhoh.. the decoder failed. Try to save the situation by skipping this image
                             anyimagesfailed = true;
-                            if (beforepng == wxInvalidOffset) return _(L"Cannot tell/seek document?");
-                            fis.SeekI(beforepng);
-                            // Now try to skip past this PNG
-                            uchar header[8];
-                            fis.Read(header, 8);
-                            uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
-                            if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
-                            dis.BigEndianOrdered(true);
-                            for (;;)  // Skip all chunks.
-                            {
-                                wxInt32 len = dis.Read32();
-                                char fourcc[4];
-                                fis.Read(fourcc, 4);
-                                fis.SeekI(len, wxFromCurrent);  // skip data
-                                dis.Read32();                   // skip CRC
-                                if (memcmp(fourcc, "IEND", 4) == 0) break;
+                            if (beforeimage == wxInvalidOffset) return _(L"Cannot tell/seek document?");
+                            fis.SeekI(beforeimage);
+                            switch(imt) {
+                                case wxBITMAP_TYPE_PNG: {
+                                    // Now try to skip past this PNG
+                                    uchar header[8];
+                                    fis.Read(header, 8);
+                                    uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
+                                    if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
+                                    dis.BigEndianOrdered(true);
+                                    for (;;) {  // Skip all chunks.
+                                        wxInt32 len = dis.Read32();
+                                        char fourcc[4];
+                                        fis.Read(fourcc, 4);
+                                        fis.SeekI(len, wxFromCurrent);  // skip data
+                                        dis.Read32();                   // skip CRC
+                                        if (memcmp(fourcc, "IEND", 4) == 0) break;
+                                    }
+                                    break;
+                                }
+                                case wxBITMAP_TYPE_JPEG: {
+                                    return _(L"Could not load file because of a corrupted embedded JPEG file");
+                                }
+                                default: {
+                                    return _(L"Could not load file because of an embedded image file of unknown type");
+                                }
                             }
                             // Set empty image here, since document expect there to be one here.
                             int sz = 32;
@@ -314,19 +327,20 @@ struct System {
                             im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0,
                                       0);  // Set to red to indicate error.
                         } else {
-                            // We loaded the PNG succesfully.
-                            // Also save a copy of PNG byte data, since re-compressing PNGs is slow, so
+                            // We loaded the bitmap succesfully.
+                            // Also save a copy of bitmap byte data, since re-compressing images can be slow, so
                             // keeping this around speeds up saving a lot (~30x faster on image heavy files!).
                             // (and should cost a fraction of the memory of the uncompressed image).
-                            off_t afterpng = fis.TellI();
-                            fis.SeekI(beforepng);
-                            auto sz = afterpng - beforepng;
-                            png_data.resize(sz);
-                            fis.Read(png_data.data(), png_data.size());
-                            if (!fis.IsOk()) png_data.clear();
-                            fis.SeekI(afterpng);
+                            off_t afterimage = fis.TellI();
+                            fis.SeekI(beforeimage);
+                            auto sz = afterimage - beforeimage;
+                            image_data.resize(sz);
+                            fis.Read(image_data.data(), image_data.size());
+                            if (!fis.IsOk()) image_data.clear();
+                            fis.SeekI(afterimage);
                         }
-                        loadimageids.push() = AddImageToList(im, sc, std::move(png_data));
+
+                        loadimageids.push() = AddImageToList(im, sc, std::move(image_data), iti);
                         break;
                     }
 
@@ -587,12 +601,12 @@ struct System {
         return (int)as.size();
     }
 
-    int AddImageToList(const wxImage &im, double sc, vector<uint8_t> &&pd) {
+    int AddImageToList(const wxImage &im, double sc, vector<uint8_t> &&pd, char iti) {
         auto hash = FNV1A64(string_view((char *)im.GetData(), im.GetWidth() * im.GetHeight() * 3));
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
-        imagelist.push() = new Image(wxBitmap(im), hash, sc, std::move(pd));
+        imagelist.push() = new Image(wxBitmap(im), hash, sc, std::move(pd), iti);
         return imagelist.size() - 1;
     }
 
