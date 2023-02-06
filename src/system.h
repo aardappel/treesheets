@@ -19,18 +19,18 @@ struct Image {
     Image(wxBitmap _bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd)
         : bm_orig(_bm), png_data(std::move(pd)), hash(_hash), display_scale(_sc) {}
 
-    void BitmapScale(double sc) {
+    void BitmapScale(const double &sc) {
         ScaleBitmap(bm_orig, sc, bm_orig);
         png_data.clear();
         bm_display = wxNullBitmap;
     }
 
-    void DisplayScale(double sc) {
+    void DisplayScale(const double &sc) {
         display_scale /= sc;
         bm_display = wxNullBitmap;
     }
 
-    void ResetScale(double sc) {
+    void ResetScale(const double &sc) {
         display_scale = sc;
         bm_display = wxNullBitmap;
     }

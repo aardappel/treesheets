@@ -89,13 +89,13 @@ struct Document {
 
     #define loopcellsin(par, c) \
         CollectCells(par);      \
-        loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
+        loopv(_i, itercells) for (Cell *&c = itercells[_i]; c; c = nullptr)
     #define loopallcells(c)     \
         CollectCells(rootgrid); \
-        loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
+        loopv(_i, itercells) for (Cell *&c = itercells[_i]; c; c = nullptr)
     #define loopallcellssel(c, rec) \
         CollectCellsSel(rec);     \
-        loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
+        loopv(_i, itercells) for (Cell *&c = itercells[_i]; c; c = nullptr)
 
     Document()
         : sw(nullptr),

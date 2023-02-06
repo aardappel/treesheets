@@ -149,7 +149,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 };
 
-static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
+static void ScaleBitmap(const wxBitmap &src, const double &sc, wxBitmap &dest) {
     dest = wxBitmap(src.ConvertToImage().Scale(src.GetWidth() * sc, src.GetHeight() * sc,
                     wxIMAGE_QUALITY_HIGH));
 }
