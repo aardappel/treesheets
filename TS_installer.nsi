@@ -10,7 +10,7 @@ doesn't show?
 
 Name "TreeSheets"
 
-OutFile "Treesheets_Setup.exe"
+OutFile "windows_treesheets_setup.exe"
 
 XPStyle on
 
