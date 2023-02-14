@@ -50,7 +50,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: Linux TreeSheets ${{ matrix.cxx }}
-        path: linux_treesheets_${{ matrix.cxx }}.zip
+        path: TreeSheets-relocatable
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
@@ -83,6 +83,7 @@ jobs:
         Remove-Item TS\*.pdb
         Remove-Item TS\*.ipdb
         Remove-Item TS\*.iobj
+        Compress-Archive -Path TS -DestinationPath windows_treesheets_no_installer.zip
     - name: upload build artifacts
       uses: actions/upload-artifact@v1
       with:
@@ -98,7 +99,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: Windows TreeSheets (installer)
-        path: Treesheets_Setup.exe
+        path: windows_treesheets_setup.exe
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
@@ -107,7 +108,7 @@ jobs:
         allowUpdates: true
         omitBody: true
         commit: master
-        artifacts: "Treesheets_Setup.exe"
+        artifacts: "windows_treesheets_setup.exe,windows_treesheets_no_installer.zip"
 
   build-mac:
     name: Build Mac
@@ -143,7 +144,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Mac TreeSheets
-        path: mac_treesheets.zip
+        path: build/Build/Products/Release
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
