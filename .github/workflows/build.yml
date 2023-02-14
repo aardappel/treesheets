@@ -18,7 +18,7 @@ jobs:
       matrix:
         cxx: [g++-10, clang++-12]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: apt update
       run: sudo apt-get -o Acquire::Retries=3 update
     - name: install opengl
@@ -67,9 +67,9 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.3
+      uses: microsoft/setup-msbuild@v1.1
     - name: clone wxWidgets
       run: |
         git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
@@ -90,7 +90,7 @@ jobs:
         name: Windows TreeSheets (no installer)
         path: TS
     - name: Create installer
-      uses: joncloud/makensis-action@v2.0
+      uses: joncloud/makensis-action@v4
       with:
         script-file: "TS_installer.nsi"
         arguments: "/V3"
@@ -116,7 +116,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: clone wxWidgets
       run: git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
     - name: build wxWidgets
