@@ -1670,3 +1670,27 @@ msgstr "Skalierung:"
 #: document.h:903
 msgid "size:"
 msgstr "Größe:"
+
+msgid "Image will be saved as JPEG upon next save"
+msgstr "Bild wird beim nächsten Speichern als JPEG gespeichert"
+
+msgid "Image will be saved as PNG upon next save"
+msgstr "Bild wird beim nächsten Speichern als PNG gespeichert"
+
+msgid "Save image as JPEG"
+msgstr "Bild als JPEG speichern"
+
+msgid "Save image as PNG (default)"
+msgstr "Bild als PNG speichern (Standard)"
+
+msgid "Could not load file because of a corrupted embedded JPEG file"
+msgstr "Die Datei konnte auf Grund einer fehlerhaften eingebetteten JPEG-Datei nicht geladen werden."
+
+msgid "Could not load file because of an embedded image file of unknown type"
+msgstr "Die Datei konnte auf Grund einer eingebetteten Bilddatei unbekannten Types nicht geladen werden."
+
+msgid "Save the image in the TreeSheets file in JPEG format"
+msgstr "Das Bild in der TreeSheets-Datei im JPEG-Format abspeichern"
+
+msgid "Save the image in the TreeSheets file in PNG format"
+msgstr "Das Bild in der TreeSheets-Datei im PNG-Format abspeichern"
