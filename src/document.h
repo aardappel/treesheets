@@ -1049,6 +1049,13 @@ struct Document {
                 return SearchNext(dc);
             }
 
+            case A_CASESENSITIVESEARCH: {
+                sys->casesensitivesearch = !(sys->casesensitivesearch);
+                sys->cfg->Write(L"casesensitivesearch", sys->casesensitivesearch);
+                sys->frame->search(sys->searchstring);
+                return nullptr;
+            }
+
             case A_ROUND0:
             case A_ROUND1:
             case A_ROUND2:

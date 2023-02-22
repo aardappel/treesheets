@@ -171,7 +171,12 @@ struct Text {
         if (!tiny) sx += 4;
     }
 
-    bool IsInSearch() { return sys->searchstring.Len() && t.Lower().Find(sys->searchstring) >= 0; }
+    bool IsInSearch() {
+        if(sys->casesensitivesearch)
+            return sys->searchstring.Len() && t.Find(sys->searchstring) >= 0;
+        else
+            return sys->searchstring.Len() && t.Lower().Find(sys->searchstring.Lower()) >= 0;
+    }
     int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
                int maxcolwidth) {
         int ixs = 0, iys = 0;

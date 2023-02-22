@@ -88,6 +88,7 @@ struct System {
     bool centered;
     bool fswatch;
     bool autohtmlexport;
+    bool casesensitivesearch;
 
     int sortcolumn, sortxs, sortdescending;
 
@@ -139,6 +140,7 @@ struct System {
           centered(true),
           fswatch(true),
           autohtmlexport(false),
+          casesensitivesearch(true),
           insidefiledialog(false) {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
@@ -160,6 +162,7 @@ struct System {
         cfg->Read(L"centered", &centered, centered);
         cfg->Read(L"fswatch", &fswatch, fswatch);
         cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
+        cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
 
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
 
