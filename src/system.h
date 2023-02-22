@@ -89,6 +89,8 @@ struct System {
     bool fswatch;
     bool autohtmlexport;
     bool casesensitivesearch;
+    bool _darkennonmatchingcells;
+    bool darkennonmatchingcells;
 
     int sortcolumn, sortxs, sortdescending;
 
@@ -141,6 +143,8 @@ struct System {
           fswatch(true),
           autohtmlexport(false),
           casesensitivesearch(true),
+          _darkennonmatchingcells(false),
+          darkennonmatchingcells(false),
           insidefiledialog(false) {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
@@ -163,6 +167,7 @@ struct System {
         cfg->Read(L"fswatch", &fswatch, fswatch);
         cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
+        cfg->Read(L"darkennonmatchingcells", &darkennonmatchingcells, darkennonmatchingcells);
 
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
 

@@ -465,6 +465,8 @@ struct MyFrame : wxFrame {
         MyAppend(semenu, A_SEARCHF, _(L"&Search\tCTRL+f"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
+        semenu->AppendCheckItem(A_DARKENNONMATCHINGCELLS, _(L"Darken non-matching cells"));
+        semenu->Check(A_DARKENNONMATCHINGCELLS, sys->darkennonmatchingcells);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
         MyAppend(semenu, A_REPLACEONCE, _(L"&Replace in Current Selection\tCTRL+h"));
         MyAppend(semenu, A_REPLACEONCEJ, _(L"&Replace in Current Selection & Jump Next\tCTRL+j"));
@@ -1036,6 +1038,7 @@ struct MyFrame : wxFrame {
     }
 
     void search(wxString searchstring) {
+        sys->_darkennonmatchingcells = (searchstring.Len() != 0 && sys->darkennonmatchingcells);
         sys->searchstring = searchstring;
         Document *doc = GetCurTab()->doc;
         doc->selected.g = nullptr;

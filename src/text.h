@@ -200,7 +200,7 @@ struct Text {
         bool searchfound = IsInSearch();
         bool istag = cell->IsTag(doc);
         if (cell->tiny) {
-            if (searchfound)
+            if (searchfound && !sys->_darkennonmatchingcells)
                 dc.SetPen(*wxRED_PEN);
             else if (filtered)
                 dc.SetPen(*wxLIGHT_GREY_PEN);
@@ -232,7 +232,7 @@ struct Text {
                     }
                 }
             } else {
-                if (searchfound)
+                if (searchfound & !sys->_darkennonmatchingcells)
                     dc.SetTextForeground(*wxRED);
                 else if (filtered)
                     dc.SetTextForeground(*wxLIGHT_GREY);

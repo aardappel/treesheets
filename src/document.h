@@ -1056,6 +1056,13 @@ struct Document {
                 return nullptr;
             }
 
+            case A_DARKENNONMATCHINGCELLS: {
+                sys->darkennonmatchingcells = !(sys->darkennonmatchingcells);
+                sys->cfg->Write(L"darkennonmatchingcells", sys->darkennonmatchingcells);
+                sys->frame->search(sys->searchstring);
+                return nullptr;
+            }
+
             case A_ROUND0:
             case A_ROUND1:
             case A_ROUND2:
