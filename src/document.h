@@ -1052,14 +1052,15 @@ struct Document {
             case A_CASESENSITIVESEARCH: {
                 sys->casesensitivesearch = !(sys->casesensitivesearch);
                 sys->cfg->Write(L"casesensitivesearch", sys->casesensitivesearch);
-                sys->frame->search(sys->searchstring);
+                this->Refresh();
                 return nullptr;
             }
 
             case A_DARKENNONMATCHINGCELLS: {
                 sys->darkennonmatchingcells = !(sys->darkennonmatchingcells);
+                sys->_darkennonmatchingcells = !(sys->_darkennonmatchingcells);
                 sys->cfg->Write(L"darkennonmatchingcells", sys->darkennonmatchingcells);
-                sys->frame->search(sys->searchstring);
+                this->Refresh();
                 return nullptr;
             }
 
