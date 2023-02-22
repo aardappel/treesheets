@@ -141,6 +141,12 @@ struct Cell {
                 p = p == doc->curdrawroot ? nullptr : p->parent;
             if (p) parentcolor = p->actualcellcolor;
         }
+
+        if(sys->darkennonmatchingcells && !text.IsInSearch()) {
+            uchar *cp = (uchar *)&actualcellcolor;
+            loop(i, 4) cp[i] = cp[i] * 800 / 1000;
+        }
+
         if (drawstyle == DS_GRID && actualcellcolor != parentcolor) {
             DrawRectangle(dc, actualcellcolor, bx - ml, by - mt, sx + ml + mr, sy + mt + mb);
         }
