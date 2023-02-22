@@ -386,9 +386,16 @@ struct Cell {
     }
 
     Cell *FindNextSearchMatch(wxString &search, Cell *best, Cell *selected, bool &lastwasselected) {
-        if (text.t.Lower().Find(search) >= 0) {
-            if (lastwasselected) best = this;
-            lastwasselected = false;
+        if(sys->casesensitivesearch) {
+            if (text.t.Find(search) >= 0) {
+                if (lastwasselected) best = this;
+                lastwasselected = false;
+            }
+        } else {
+            if (text.t.Lower().Find(search.Lower()) >= 0) {
+                if (lastwasselected) best = this;
+                lastwasselected = false;
+            }
         }
         if (selected == this) lastwasselected = true;
         if (grid) best = grid->FindNextSearchMatch(search, best, selected, lastwasselected);
