@@ -1545,18 +1545,26 @@ struct Document {
             case A_SAVE_AS_JPEG: {
                 loopallcellssel(c, true) {
                     if(c->text.image) {
-                        c->text.image->image_data.clear();
                         switch(k) {
-                            case A_SAVE_AS_JPEG:
-                                c->text.image->image_type = 'J';
-                                return _(L"Image will be saved as JPEG upon next save");
+                            case A_SAVE_AS_JPEG: {
+                                if(c->text.image->image_type != 'J') {
+                                    c->text.image->image_data.clear();
+                                    c->text.image->image_type = 'J';
+                                }
+                                break;
+                            }
                             case A_SAVE_AS_PNG:
-                            default:
-                                c->text.image->image_type = 'I';
-                                return _(L"Image will be saved as PNG upon next save");
+                            default: {
+                                if(c->text.image->image_type != 'I') {
+                                    c->text.image->image_data.clear();
+                                    c->text.image->image_type = 'I';
+                                }
+                                break;
+                            }
                         }
                     }
                 }
+                return nullptr;
             }
 
             case A_BROWSE: {

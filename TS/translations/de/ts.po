@@ -1671,12 +1671,6 @@ msgstr "Skalierung:"
 msgid "size:"
 msgstr "Größe:"
 
-msgid "Image will be saved as JPEG upon next save"
-msgstr "Bild wird beim nächsten Speichern als JPEG gespeichert"
-
-msgid "Image will be saved as PNG upon next save"
-msgstr "Bild wird beim nächsten Speichern als PNG gespeichert"
-
 msgid "Save image as JPEG"
 msgstr "Bild als JPEG speichern"
 
