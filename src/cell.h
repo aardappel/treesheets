@@ -142,7 +142,7 @@ struct Cell {
             if (p) parentcolor = p->actualcellcolor;
         }
 
-        if(sys->_darkennonmatchingcells && !this->text.IsInSearch()) {
+        if(sys->_darkennonmatchingcells && !this->text.searchfound) {
             uchar *cp = (uchar *)&actualcellcolor;
             loop(i, 4) cp[i] = cp[i] * 800 / 1000;
         }

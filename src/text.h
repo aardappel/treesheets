@@ -9,6 +9,7 @@ struct Text {
 
     wxDateTime lastedit;
     bool filtered;
+    bool searchfound;
 
     Text()
         : cell(nullptr),
@@ -17,7 +18,8 @@ struct Text {
           stylebits(0),
           extent(0),
           image(nullptr),
-          filtered(false) {
+          filtered(false),
+          searchfound(false) {
         WasEdited();
     }
 
@@ -197,10 +199,10 @@ struct Text {
         leftoffset = h;
         int i = 0;
         int lines = 0;
-        bool searchfound = IsInSearch();
+        this->searchfound = IsInSearch();
         bool istag = cell->IsTag(doc);
         if (cell->tiny) {
-            if (searchfound && !sys->_darkennonmatchingcells)
+            if (this->searchfound && !sys->_darkennonmatchingcells)
                 dc.SetPen(*wxRED_PEN);
             else if (filtered)
                 dc.SetPen(*wxLIGHT_GREY_PEN);
@@ -232,7 +234,7 @@ struct Text {
                     }
                 }
             } else {
-                if (searchfound & !sys->_darkennonmatchingcells)
+                if (this->searchfound & !sys->_darkennonmatchingcells)
                     dc.SetTextForeground(*wxRED);
                 else if (filtered)
                     dc.SetTextForeground(*wxLIGHT_GREY);
@@ -243,7 +245,7 @@ struct Text {
                 int tx = bx + 2 + ixs;
                 int ty = by + lines * h;
                 dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
-                if (searchfound || filtered || istag || cell->textcolor)
+                if (this->searchfound || filtered || istag || cell->textcolor)
                     dc.SetTextForeground(*wxBLACK);
             }
             lines++;
