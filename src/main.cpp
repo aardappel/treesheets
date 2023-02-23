@@ -224,6 +224,7 @@ enum {
     A_IMAGESCF,
     A_IMAGESCN,
     A_IMAGECPY,
+    A_IMAGESVA,
     A_SAVE_AS_JPEG,
     A_SAVE_AS_PNG,
     A_HELPI,
