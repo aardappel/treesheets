@@ -696,8 +696,8 @@ struct MyFrame : wxFrame {
             AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.png");
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
-            tb->AddControl(filter =
-                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, wxSize(80, 22) * csf));
+            tb->AddControl(filter = 
+                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, wxSize(80, 22) * csf, wxTE_PROCESS_ENTER));
             AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.png");
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
@@ -1044,6 +1044,13 @@ struct MyFrame : wxFrame {
         else
             doc->Refresh();
         GetCurTab()->Status();
+    }
+
+    void OnSearchEnter(wxCommandEvent &ce) {
+        TSCanvas *sw = GetCurTab();
+        Document *doc = GetCurTab()->doc;
+        wxClientDC dc(sw);
+        doc->SearchNext(dc, false);
     }
 
     void ReFocus() {
