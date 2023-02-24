@@ -1552,7 +1552,8 @@ struct Document {
                 size_t counter = 0, counterpos;
                 wxString oimgfn, imgfn;
                 loopallcellssel(c, true) {
-                    if (c->text.image) {
+                    Image *tim = c->text.image;
+                    if (tim) {
                         if(!oimgfn) { // first encounter
                             oimgfn = ::wxFileSelector(
                                 _(L"Choose image file to save:"), L"", L"", L"png",
@@ -1572,8 +1573,14 @@ struct Document {
                                 imgfn.wx_str(), wxOK, sys->frame);
                             return _(L"Error writing to file.");
                             }
-                        wxImage im = c->text.image->bm_orig.ConvertToImage();
-                        im.SaveFile(imagefs, wxBITMAP_TYPE_PNG);
+                        if (tim->image_type == 'I' && !tim->image_data.empty()) {
+                            // We have a copy of the image data loaded.. this is WAY faster
+                            // than recompressing (~30x on image heavy files).
+                            imagefs.Write(tim->image_data.data(), tim->image_data.size());
+                        } else {
+                            wxImage im = tim->bm_orig.ConvertToImage();
+                            im.SaveFile(imagefs, wxBITMAP_TYPE_PNG);
+                        }
                         counter++;
                     }                
                 }
