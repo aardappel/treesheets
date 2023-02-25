@@ -1548,6 +1548,45 @@ struct Document {
                 return nullptr;
             }
 
+            case A_IMAGESVA: {
+                size_t counter = 0, counterpos;
+                wxString oimgfn, imgfn;
+                loopallcellssel(c, true) {
+                    Image *tim = c->text.image;
+                    if (tim) {
+                        if(!oimgfn) { // first encounter
+                            oimgfn = ::wxFileSelector(
+                                _(L"Choose image file to save:"), L"", L"", L"png",
+                                 L"PNG file (*.png)|All Files (*.*)|*.*|",
+                                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
+                            if (oimgfn.empty()) return _(L"Save cancelled.");
+                            counterpos = oimgfn.find_last_of(".");
+                            imgfn = oimgfn;
+                        } else { // add counter to image file name at further encounters
+                            imgfn = oimgfn;
+                            imgfn.insert(counterpos, to_string(counter));
+                        }
+                        wxFFileOutputStream imagefs(imgfn, L"w+b");
+                        if (!imagefs.IsOk()) {
+                            wxMessageBox(
+                                _(L"Error writing image file! (try saving under new filename)."),
+                                imgfn.wx_str(), wxOK, sys->frame);
+                            return _(L"Error writing to file.");
+                            }
+                        if (tim->image_type == 'I' && !tim->image_data.empty()) {
+                            // We have a copy of the image data loaded.. this is WAY faster
+                            // than recompressing (~30x on image heavy files).
+                            imagefs.Write(tim->image_data.data(), tim->image_data.size());
+                        } else {
+                            wxImage im = tim->bm_orig.ConvertToImage();
+                            im.SaveFile(imagefs, wxBITMAP_TYPE_PNG);
+                        }
+                        counter++;
+                    }                
+                }
+            return nullptr;
+            }
+
             case A_SAVE_AS_PNG:
             case A_SAVE_AS_JPEG: {
                 loopallcellssel(c, true) {
@@ -1664,7 +1703,7 @@ struct Document {
                 if (selected.Thin()) return NoThin();
                 if (!c->text.image) return _(L"No image in this cell.");
                 return CopyImageToClipboard(c);
-            }            
+            }
 
             case A_ENTERGRID:
                 if (!c->grid) Action(dc, A_NEWGRID);
