@@ -1046,7 +1046,7 @@ struct Document {
             }
 
             case A_SEARCHNEXT: {
-                return SearchNext(dc);
+                return SearchNext(dc, true);
             }
 
             case A_CASESENSITIVESEARCH: {
@@ -1394,7 +1394,7 @@ struct Document {
             case A_REPLACEONCEJ: {
                 if (!sys->searchstring.Len()) return _(L"No search.");
                 selected.g->ReplaceStr(this, sys->frame->replaces->GetValue(), selected);
-                if (k == A_REPLACEONCEJ) return SearchNext(dc);
+                if (k == A_REPLACEONCEJ) return SearchNext(dc, true);
                 return nullptr;
             }
 
@@ -1784,14 +1784,14 @@ struct Document {
         }
     }
 
-    const wxChar *SearchNext(wxDC &dc) {
+    const wxChar *SearchNext(wxDC &dc, bool focusmatch) {
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
         Cell *next =
             rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel);
         if (!next) return _(L"No matches for search.");
         selected = next->parent->grid->FindCell(next);
-        sw->SetFocus();
+        if(focusmatch) sw->SetFocus();
         ScrollOrZoom(dc, true);
         return nullptr;
     }
