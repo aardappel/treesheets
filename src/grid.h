@@ -543,7 +543,7 @@ struct Grid {
         delete[] ocw;
     }
 
-    void Save(wxDataOutputStream &dos) const {
+    void Save(wxDataOutputStream &dos, Cell *ocs) const {
         dos.Write32(xs);
         dos.Write32(ys);
         dos.Write32(bordercolor);
@@ -551,10 +551,10 @@ struct Grid {
         dos.Write8(cell->verticaltextandgrid);
         dos.Write8(folded);
         loop(x, xs) dos.Write32(colwidths[x]);
-        foreachcell(c) c->Save(dos);
+        foreachcell(c) c->Save(dos, ocs);
     }
 
-    bool LoadContents(wxDataInputStream &dis, int &numcells, int &textbytes) {
+    bool LoadContents(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         if (sys->versionlastloaded >= 10) {
             bordercolor = dis.Read32() & 0xFFFFFF;
             user_grid_outer_spacing = dis.Read32();
@@ -573,7 +573,7 @@ struct Grid {
                 }
             }
         }
-        foreachcell(c) if (!(c = Cell::LoadWhich(dis, cell, numcells, textbytes))) return false;
+        foreachcell(c) if (!(c = Cell::LoadWhich(dis, cell, numcells, textbytes, ics))) return false;
         return true;
     }
 

@@ -32,7 +32,9 @@ static uint celltextcolors[] = {
 };
 #define CUSTOMCOLORIDX 0
 
-enum { TS_VERSION = 20, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+enum { TS_VERSION = 21, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+
+uint TS_SELECTION_MASK = 0x80;
 
 enum {
     A_NEW = 500,
