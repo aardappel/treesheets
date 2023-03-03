@@ -268,6 +268,7 @@ struct System {
             wxBusyCursor wait;
             Cell *ics = nullptr;
             wxFFileInputStream fis(fn);
+            wxDataInputStream dis(fis);
             if (!fis.IsOk()) return _(L"Cannot open file.");
 
             char buf[4];
@@ -275,10 +276,10 @@ struct System {
             if (strncmp(buf, "TSFF", 4)) return _(L"Not a TreeSheets file.");
             fis.Read(&versionlastloaded, 1);
             if (versionlastloaded > TS_VERSION) return _(L"File of newer version.");
-            uint xs, ys;
+            int xs, ys;
             if (versionlastloaded >= 21) {
-                fis.Read(&xs, 1);
-                fis.Read(&ys, 1);
+                xs = dis.Read8();
+                ys = dis.Read8();
             } else {
                 xs = ys = 1;
             }
@@ -294,7 +295,6 @@ struct System {
                     case 'J': {
                         char iti = *buf;
                         wxBitmapType imt = imagetypes[*buf].first;
-                        wxDataInputStream dis(fis);
                         if (versionlastloaded < 9) dis.ReadString();
                         wxImage im;
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
