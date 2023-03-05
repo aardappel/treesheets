@@ -1052,8 +1052,13 @@ struct MyFrame : wxFrame {
     void OnSearchEnter(wxCommandEvent &ce) {
         TSCanvas *sw = GetCurTab();
         Document *doc = GetCurTab()->doc;
-        wxClientDC dc(sw);
-        doc->SearchNext(dc, false);
+        wxString searchstring = ce.GetString();
+        if (searchstring.Len() == 0) {
+            sw->SetFocus();
+        } else {
+            wxClientDC dc(sw);
+            doc->SearchNext(dc, false);
+        }
     }
 
     void ReFocus() {
