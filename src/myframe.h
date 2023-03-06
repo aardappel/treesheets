@@ -324,7 +324,7 @@ struct MyFrame : wxFrame {
             MyAppend(temenu, A_CEND, _(L"End of text\tCTRL+END"));
             temenu->AppendSeparator();
             MyAppend(temenu, A_ENTERCELL, _(L"Enter/exit text edit mode\tENTER"));
-            MyAppend(temenu, A_ENTERCELL, _(L"Enter/exit text edit mode\tF2"));
+            MyAppend(temenu, A_ENTERCELL_JUMPTOEND, _(L"Enter/exit text edit mode\tF2"));
             MyAppend(temenu, A_PROGRESSCELL, _(L"Enter/exit text edit to the right\tALT+ENTER"));
             MyAppend(temenu, A_CANCELEDIT, _(L"Cancel text edits\tESC"));
 

@@ -127,6 +127,7 @@ enum {
     A_CANCELEDIT,
     A_BROWSE,
     A_ENTERCELL,
+    A_ENTERCELL_JUMPTOEND,
     A_PROGRESSCELL, // see https://github.com/aardappel/treesheets/issues/139#issuecomment-544167524
     A_CELLCOLOR,
     A_TEXTCOLOR,

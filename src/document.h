@@ -1370,12 +1370,13 @@ struct Document {
                 return nullptr;
 
             case A_ENTERCELL:
+            case A_ENTERCELL_JUMPTOEND:
             case A_PROGRESSCELL: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (selected.TextEdit()) {
                     selected.Cursor(this, (k==A_ENTERCELL ? A_DOWN : A_RIGHT), false, false, dc, true);
                 } else {
-                    selected.EnterEdit(this, 0, (int)c->text.t.Len());
+                    selected.EnterEdit(this, (k == A_ENTERCELL_JUMPTOEND) ? (int)c->text.t.Len() : 0, (int)c->text.t.Len());
                     DrawSelectMove(dc, selected, true);
                 }
                 return nullptr;
