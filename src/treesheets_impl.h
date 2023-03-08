@@ -102,7 +102,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         if (cur->grid && x >= 0 && x + xs <= cur->grid->xs && y >= 0 && y + ys <= cur->grid->ys) {
             Selection s(cur->grid, x, y, xs, ys);
             cur->grid->MultiCellDeleteSub(doc, s);
-            doc->selected = Selection();
+            doc->SetSelect(Selection());
             doc->Zoom(-100, *dc);
         }
     }

@@ -144,12 +144,12 @@ struct Document {
             if(ipg) {
                 foreachcellingrid(c, ipg) {
                     if(c == ics) {
-                        selected = Selection(ipg, x, y, xs, ys);
+                        SetSelect(Selection(ipg, x, y, xs, ys));
                     }
                 }
             }
         } else {
-            selected = Selection(r->grid, 0, 0, 1, 1);
+            SetSelect(Selection(r->grid, 0, 0, 1, 1));
         }
         ChangeFileName(filename, false);
     }
@@ -363,14 +363,18 @@ struct Document {
         sys->UpdateStatus(hover);
     }
 
+    void SetSelect(const Selection &sel = Selection()) {
+        selected = sel;
+        begindrag = sel;
+    }
+
     void Select(wxDC &dc, bool right, int isctrlshift) {
         begindrag = Selection();
         if (right && hover.IsInside(selected)) return;
         ShiftToCenter(dc);
         DrawSelect(dc, selected);
         if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
-        selected = hover;
-        begindrag = hover;
+        SetSelect(hover);
         isctrlshiftdrag = isctrlshift;
         DrawSelectMove(dc, selected);
         ResetCursor();
@@ -393,7 +397,8 @@ struct Document {
                 Selection cs = c->parent->grid->FindCell(c);
                 c->parent->grid->MultiCellDeleteSub(this, cs);
             }
-            hover = selected = tc_parent ? tc_parent->grid->FindCell(tc) : Selection();
+            hover = tc_parent ? tc_parent->grid->FindCell(tc) : Selection();
+            SetSelect(hover);
         }
         Refresh();
     }
@@ -408,7 +413,7 @@ struct Document {
         ShiftToCenter(dc);
         if (begindrag.Thin() || selected.Thin()) {
             DrawSelect(dc, selected);
-            begindrag = selected = hover;
+            SetSelect(hover);
             DrawSelect(dc, selected, true);
         } else {
             Selection old = selected;
@@ -432,13 +437,13 @@ struct Document {
         } else if (dir < 0) {
             Cell *drawroot = WalkPath(drawpath);
             if (drawroot->grid && drawroot->grid->folded && selectionmaybedrawroot)
-                selected = drawroot->parent->grid->FindCell(drawroot);
+                SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
         while (len < drawpath.size()) drawpath.remove(0);
         Cell *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
-            selected = Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys);
+            SetSelect(Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys));
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
@@ -640,6 +645,7 @@ struct Document {
 
     void ClearSelectionRefresh() {
         selected.g = nullptr;
+        begindrag.g = nullptr;
         Refresh();
     }
 
@@ -1178,8 +1184,10 @@ struct Document {
                     c->AddUndo(this);
                     c->text.Backspace(selected);
                     Refresh();
-                } else
+                } else {
                     selected.g->MultiCellDelete(this, selected);
+                    SetSelect(selected);
+                }
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
@@ -1196,8 +1204,10 @@ struct Document {
                     c->AddUndo(this);
                     c->text.Delete(selected);
                     Refresh();
-                } else
+                } else {
                     selected.g->MultiCellDelete(this, selected);
+                    SetSelect(selected);
+                }
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
@@ -1246,6 +1256,7 @@ struct Document {
                     if (!selected.TextEdit()) {
                         selected.g->cell->AddUndo(this);
                         selected.g->MultiCellDelete(this, selected);
+                        SetSelect(selected);
                     } else if (c) {
                         c->AddUndo(this);
                         c->text.Backspace(selected);
@@ -1329,7 +1340,7 @@ struct Document {
             case A_CANCELEDIT:
                 if (selected.TextEdit()) break;
                 if (selected.g->cell->parent) {
-                    selected = selected.g->cell->parent->grid->FindCell(selected.g->cell);
+                    SetSelect(selected.g->cell->parent->grid->FindCell(selected.g->cell));
                 } else {
                     selected.SelAll();
                 }
@@ -1339,12 +1350,12 @@ struct Document {
             case A_NEWGRID:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (c->grid) {
-                    selected = Selection(c->grid, 0, c->grid->ys, 1, 0);
+                    SetSelect(Selection(c->grid, 0, c->grid->ys, 1, 0));
                     ScrollOrZoom(dc, true);
                 } else {
                     c->AddUndo(this);
                     c->AddGrid();
-                    selected = Selection(c->grid, 0, 0, 1, 1);
+                    SetSelect(Selection(c->grid, 0, 0, 1, 1));
                     DrawSelectMove(dc, selected, true);
                 }
                 return nullptr;
@@ -1673,7 +1684,7 @@ struct Document {
                         ac->AddUndo(this);
                         ac->grid->Transpose();
                         ac->ResetChildren();
-                        selected = ac->parent ? ac->parent->grid->FindCell(ac) : Selection();
+                        SetSelect(ac->parent ? ac->parent->grid->FindCell(ac) : Selection());
                         Refresh();
                         return nullptr;
                     } else
@@ -1721,7 +1732,7 @@ struct Document {
 
             case A_ENTERGRID:
                 if (!c->grid) Action(dc, A_NEWGRID);
-                selected = Selection(c->grid, 0, 0, 1, 1);
+                SetSelect(Selection(c->grid, 0, 0, 1, 1));
                 ScrollOrZoom(dc, true);
                 return nullptr;
 
@@ -1731,7 +1742,7 @@ struct Document {
                 bool t1 = false, t2 = false;
                 Cell *link = rootgrid->FindLink(selected, c, nullptr, t1, t2, k == A_LINK);
                 if (!link || !link->parent) return _(L"No matching cell found!");
-                selected = link->parent->grid->FindCell(link);
+                SetSelect(link->parent->grid->FindCell(link));
                 ScrollOrZoom(dc, true);
                 return nullptr;
             }
@@ -1746,7 +1757,7 @@ struct Document {
                 if (c->parent->grid->xs != 1 && c->parent->grid->ys != 1)
                     return _(L"Can only move this cell from a Nx1 or 1xN grid.");
                 pp->AddUndo(this);
-                selected = pp->grid->HierarchySwap(c->text.t);
+                SetSelect(pp->grid->HierarchySwap(c->text.t));
                 pp->ResetChildren();
                 pp->ResetLayout();
                 Refresh();
@@ -1775,7 +1786,7 @@ struct Document {
                 Cell *next =
                     rootgrid->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
                 if (!next) return _(L"No matches for filter.");
-                if (next->parent) selected = next->parent->grid->FindCell(next);
+                if (next->parent) SetSelect(next->parent->grid->FindCell(next));
                 sw->SetFocus();
                 ScrollOrZoom(dc, true);
                 return nullptr;
@@ -1843,7 +1854,7 @@ struct Document {
         Cell *next =
             rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel);
         if (!next) return _(L"No matches for search.");
-        selected = next->parent->grid->FindCell(next);
+        SetSelect(next->parent->grid->FindCell(next));
         if(focusmatch) sw->SetFocus();
         ScrollOrZoom(dc, true);
         return nullptr;
@@ -2047,7 +2058,7 @@ struct Document {
         } else
             rootgrid = clone;
         clone->ResetLayout();
-        selected = ui->sel;
+        SetSelect(ui->sel);
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
         begindrag = selected;
         ui->sel = beforesel;

@@ -182,7 +182,7 @@ struct System {
     }
 
     void TabChange(Document *newdoc) {
-        // hover = selected = begindrag = Selection();
+        // SetSelect(hover = Selection());
         newdoc->sw->SetFocus();
         newdoc->UpdateFileName();
     }
