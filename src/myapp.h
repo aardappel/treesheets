@@ -47,6 +47,9 @@ struct MyApp : wxApp {
 
             // wxWidgets should really be doing this itself, but it doesn't (or expects you to
             // want to use a manifest), so we have to call it ourselves.
+
+            // Attempt to load the different HiDPI API functions provided in User32 and Shcore
+
             #ifndef DPI_ENUMS_DECLARED
             typedef enum PROCESS_DPI_AWARENESS
             {
@@ -58,20 +61,28 @@ struct MyApp : wxApp {
 
             typedef BOOL (WINAPI * SETPROCESSDPIAWARE_T)(void);
             typedef HRESULT (WINAPI * SETPROCESSDPIAWARENESS_T)(PROCESS_DPI_AWARENESS);
-            HMODULE shcore = LoadLibraryA("Shcore.dll");
+            typedef BOOL (WINAPI * SETPROCESSDPIAWARENESSCONTEXT_T)(DPI_AWARENESS_CONTEXT);
+            SETPROCESSDPIAWARE_T SetProcessDPIAware = NULL;
             SETPROCESSDPIAWARENESS_T SetProcessDpiAwareness = NULL;
+            SETPROCESSDPIAWARENESSCONTEXT_T SetProcessDpiAwarenessContext = NULL;
+            HMODULE user32 = LoadLibraryA("User32.dll");
+            HMODULE shcore = LoadLibraryA("Shcore.dll");
+            if (user32) {
+                SetProcessDPIAware =
+                    (SETPROCESSDPIAWARE_T)GetProcAddress(user32, "SetProcessDPIAware");
+                SetProcessDpiAwarenessContext =
+                    (SETPROCESSDPIAWARENESSCONTEXT_T)GetProcAddress(user32, "SetProcessDpiAwarenessContext");
+            }
             if (shcore) {
                 SetProcessDpiAwareness =
                     (SETPROCESSDPIAWARENESS_T)GetProcAddress(shcore, "SetProcessDpiAwareness");
             }
-            HMODULE user32 = LoadLibraryA("User32.dll");
-            SETPROCESSDPIAWARE_T SetProcessDPIAware = NULL;
-            if (user32) {
-                SetProcessDPIAware =
-                    (SETPROCESSDPIAWARE_T)GetProcAddress(user32, "SetProcessDPIAware");
-            }
 
-            if (SetProcessDpiAwareness) {
+            // Call HiDPI API functions
+
+            if (SetProcessDpiAwarenessContext) {
+                SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            } else if (SetProcessDpiAwareness) {
                 SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
             } else if (SetProcessDPIAware) {
                 SetProcessDPIAware();
