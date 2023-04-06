@@ -4,6 +4,9 @@ struct TSCanvas : public wxScrolledWindow {
 
     int mousewheelaccum;
     bool lastrmbwaswithctrl;
+    #ifdef __WXGTK__
+    bool firstpaint;
+    #endif
 
     wxPoint lastmousepos;
 
@@ -13,7 +16,13 @@ struct TSCanvas : public wxScrolledWindow {
                            wxScrolledWindowStyle | wxWANTS_CHARS),
           mousewheelaccum(0),
           doc(nullptr),
-          lastrmbwaswithctrl(false) {
+          #ifdef __WXGTK__
+          lastrmbwaswithctrl(false),
+          firstpaint(true) 
+          #else
+          lastrmbwaswithctrl(false)
+          #endif
+          {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetBackgroundColour(*wxWHITE);
         DisableKeyboardScrolling();
@@ -47,6 +56,12 @@ struct TSCanvas : public wxScrolledWindow {
                    lastmousepos.y / doc->currentviewscale,
                    dc);
         */
+        #ifdef __WXGTK__
+        if (firstpaint) {
+            doc->ScrollIfSelectionOutOfView(dc, doc->selected);
+            firstpaint = false;
+        }
+        #endif
     };
 
     void UpdateHover(int mx, int my, wxDC &dc) {
