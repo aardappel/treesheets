@@ -129,3 +129,18 @@ if(NOT APPLE AND NOT WIN32)
     install(FILES TS/treesheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES TS/treesheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
 endif()
+
+find_package(Doxygen 
+    COMPONENTS dot
+)
+
+if(DOXYGEN_FOUND)
+    Set(DOXYGEN_PROJECT_BRIEF "Free Form Data Organizer")
+    Set(DOXYGEN_BRIEF_MEMBER_DESC YES)
+    Set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
+    doxygen_add_docs(
+        docs
+        ${PROJECT_SOURCE_DIR}/src
+        COMMENT "Generate Doxygen HTML documentation"
+    )
+endif()
