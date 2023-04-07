@@ -73,6 +73,7 @@ struct Document {
     bool blink;
 
     bool redrawpending;
+    bool firstdraw;
 
     bool scaledviewingmode;
     double currentviewscale;
@@ -112,6 +113,7 @@ struct Document {
           printscale(0),
           blink(true),
           redrawpending(false),
+          firstdraw(true),
           scaledviewingmode(false),
           currentviewscale(1),
           editfilter(0),
@@ -580,6 +582,10 @@ struct Document {
         DrawSelect(dc, selected);
         if (hover.g) hover.g->DrawHover(this, dc, hover);
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
+        if (firstdraw) {
+            ScrollIfSelectionOutOfView(dc, selected);
+            firstdraw = false;
+        }
     }
 
     void Print(wxDC &dc, wxPrintout &po) {
