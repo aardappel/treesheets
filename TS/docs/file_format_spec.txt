@@ -1,9 +1,12 @@
-File format spec for TreeSheets .cts files, version 16. This should be enough for a programmer to write an importer/exporter
+File format spec for TreeSheets .cts files, version 21. This should be enough for a programmer to write an importer/exporter.
 
 struct File     // not really a struct, i.e. no alignment, read an element at a time
 {
     char magic[4] = "TSFF";
-    char version = 16;
+    char version = 21;
+    // TreeSheets saves the selection when the file is saved.
+    int xs; // xs is the number of cells within the selection in x direction
+    int ys; // ys is the number of cells within the selection in y direction
     
     Image images[0 or more];
 
@@ -17,8 +20,9 @@ struct File     // not really a struct, i.e. no alignment, read an element at a 
 
 struct Image
 {
-    char ident = 'I';   // marks start of image
-    char png_data[len]; // whatever format wxImage::LoadFile uses
+    char ident;   // marks start of image
+    // Character value depends on image type, i.e. 'I' for PNG and 'J' for JPEG
+    char image_data[len]; // whatever format wxImage::LoadFile uses
     // to know len, you need to parse the png chunks
     // sadly this means there's no way to read the Cells without doing so
 }
@@ -30,6 +34,7 @@ struct Cell
     uint textcolor;
     uchar drawstyle;    // enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };
     uchar cellcontents; // enum { TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+    // A cell that is within the selection is marked with the highest bit set to 1 (1 x x x x x x x) in cellcontents.
     if (TS_TEXT or TS_BOTH)
     {
         String text;
