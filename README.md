@@ -65,6 +65,14 @@ OSX:
   .app together with the files from the `TS` folder in `osx/TreeSheetsBeta` to distribute.
   Note to use the "Archive" operation to create a release executable.
 
+Documentation:
+--------------
+If `doxygen` is installed on your system together with `graphviz` (including `dot`),
+then CMake will enable the `docs` target within the generated `Makefile` in the build directory.
+
+To generate the Doxygen documentation, run `make docs` in the build directory. 
+The HTML documentation will be located in the `html` directory in the build directory.
+
 Contributing:
 -------------
 I welcome contributions, especially in the form of neatly prepared pull requests. The main thing to keep in mind when
