@@ -17,7 +17,7 @@ struct MyFrame : wxFrame {
     MyApp *app;
     wxFileSystemWatcher *watcher;
     bool watcherwaitingforuser;
-    double csf, csf_orig;
+    double csf = FromDIP(1.0); // TODO: functions using this attribute should be modified to handle device-independent pixels
     std::vector<std::string> scripts_in_menu;
     bool zenmode;
     ColorDropdown *celldd = nullptr;
@@ -121,37 +121,6 @@ struct MyFrame : wxFrame {
 
         app->AddTranslation(GetDataPath("translations"));
 
-        csf = GetContentScaleFactor();
-        wxLogMessage(L"content scale: %f", csf);
-        csf_orig = csf;
-        #ifdef __WXMSW__
-            // On Windows, I get csf == 1.25, as indicated in the display properties.
-            // With this factor set, bitmaps display. At their same physical sizes as when
-            // TreeSheets was a non-DPI-aware app, and extra resolution is used.
-        #endif
-        #ifdef __WXMAC__
-            // Typically csf == 2 on a retina mac. But on the mac, unlike Windows, image rendering
-            // *already* does scaling, and no way to turn that behavior off for now?
-            csf = 1.0;
-            // FIXME: This gives us low res images even though the display is capable of better!
-            // Apparently still not fixed: http://trac.wxwidgets.org/ticket/15808
-            // wxBitmap::CreateScaled could be the way to solve this, but it is not obvious
-            // how to use it, since you can't pass this scale to LoadFile etc. Could possibly
-            // blit it over via a MemoryDC?
-        #endif
-        #ifdef __WXGTK__
-            // On X11 platform, there is no scaling factor beside 1.0, but the DPI can be changed.
-
-            // On Wayland platform, there might be a scaling factor beside 1.0, 
-            // but the DPI is assumed to be a fixed value by default.
-
-            // If upscaling is active in Wayland compositors, the reported bitmap to paint on is downsized (and vice versa).
-            // The scaling is handled by the GTK toolkit and the Wayland compositor. 
-            // This is why csf should be set to 1.0 to let scaling be handled by the
-            // toolkit and compositor and not to be handled by TreeSheets itself.
-            csf = 1.0;
-        #endif
-
         wxInitAllImageHandlers();
 
         wxIconBundle icons;
@@ -184,7 +153,7 @@ struct MyFrame : wxFrame {
         line_sw.LoadFile(GetDataPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
         foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
         foldicon = wxBitmap(foldiconi);
-        ScaleBitmap(foldicon, csf / 3.0, foldicon);
+        ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
 
         if (sys->singletray)
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
@@ -667,7 +636,7 @@ struct MyFrame : wxFrame {
 
             wxString iconpath =
                 GetDataPath(iconset ? L"images/webalys/toolbar/" : L"images/nuvola/toolbar/");
-            auto sz = (iconset ? wxSize(18, 18) : wxSize(22, 22)) * csf;
+            auto sz = FromDIP(iconset ? wxSize(18, 18) : wxSize(22, 22));
             tb->SetToolBitmapSize(sz);
 
             double sc = iconset ? 1.0 : 22.0 / 48.0;
@@ -675,9 +644,7 @@ struct MyFrame : wxFrame {
             auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
                 wxBitmap bm;
                 if (bm.LoadFile(file, wxBITMAP_TYPE_PNG)) {
-                    auto ns = csf_orig * sc;
-                    ScaleBitmap(bm, ns, bm);
-                    MakeInternallyScaled(bm, tb->GetBackgroundColour(), csf_orig);
+                    ScaleBitmap(bm, sc, bm);
                     tb->AddTool(action, name, bm, bm, wxITEM_NORMAL, name);
                 }
             };
@@ -701,23 +668,23 @@ struct MyFrame : wxFrame {
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
             tb->AddControl(filter = 
-                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, wxSize(80, 22) * csf, wxTE_PROCESS_ENTER));
+                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxTE_PROCESS_ENTER));
             AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.png");
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
             tb->AddControl(replaces =
-                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, wxSize(60, 22) * csf));
+                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(60, 22))));
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
-            celldd = new ColorDropdown(tb, A_CELLCOLOR, csf, 1);
+            celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
             tb->AddControl(celldd);
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
-            textdd = new ColorDropdown(tb, A_TEXTCOLOR, csf, 2);
+            textdd = new ColorDropdown(tb, A_TEXTCOLOR, 2);
             tb->AddControl(textdd);
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
-            borddd = new ColorDropdown(tb, A_BORDCOLOR, csf, 7);
+            borddd = new ColorDropdown(tb, A_BORDCOLOR, 7);
             tb->AddControl(borddd);
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));

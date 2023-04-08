@@ -67,21 +67,19 @@ struct ColorPopup : wxVListBoxComboPopup {
 };
 
 struct ColorDropdown : wxOwnerDrawnComboBox {
-    double csf;
 
-    ColorDropdown(wxWindow *parent, wxWindowID id, double _csf, int sel) {
-        csf = _csf;
+    ColorDropdown(wxWindow *parent, wxWindowID id, int sel) {
         wxArrayString as;
         as.Add(L"", sizeof(celltextcolors) / sizeof(uint));
-        Create(parent, id, L"", wxDefaultPosition, wxSize(44, 22) * csf, as,
+        Create(parent, id, L"", wxDefaultPosition, FromDIP(wxSize(44, 22)), as,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ColorPopup(this));
         SetSelection(sel);
         SetPopupMaxHeight(wxDisplay().GetGeometry().GetHeight() * 3 / 4);
     }
 
-    wxCoord OnMeasureItem(size_t item) const { return 22 * csf; }
-    wxCoord OnMeasureItemWidth(size_t item) const { return 40 * csf; }
+    wxCoord OnMeasureItem(size_t item) const { return FromDIP(22); }
+    wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(40); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
         DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
     }
@@ -111,41 +109,37 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     // FIXME: delete these somewhere
     Vector<wxBitmap *> bitmaps_display;
     wxArrayString as;
-    double csf, csf_orig;
     const int image_space = 22;
 
     ImageDropdown(wxWindow *parent, wxString &path) {
-        csf = sys->frame->csf;
-        csf_orig = sys->frame->csf;
         wxString f = wxFindFirstFile(path + L"*.*");
         while (!f.empty()) {
             wxBitmap bm;
             if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
                 auto dbm = new wxBitmap();
-                ScaleBitmap(bm, csf_orig / dd_icon_res_scale, *dbm);
-                MakeInternallyScaled(*dbm, *wxWHITE, csf_orig);
+                ScaleBitmap(bm, FromDIP(1.0) / dd_icon_res_scale, *dbm);
                 bitmaps_display.push() = dbm;
                 as.Add(f);
             }
             f = wxFindNextFile();
         }
         Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
-               wxSize(image_space * 2, image_space) * csf, as,
+               FromDIP(wxSize(image_space * 2, image_space)), as,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ImagePopup());
         SetSelection(0);
         SetPopupMaxHeight(wxDisplay().GetGeometry().GetHeight() * 3 / 4);
     }
 
-    wxCoord OnMeasureItem(size_t item) const { return image_space * csf; }
-    wxCoord OnMeasureItemWidth(size_t item) const { return image_space * csf; }
+    wxCoord OnMeasureItem(size_t item) const { return FromDIP(image_space); }
+    wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(image_space); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
         DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
         auto bm = bitmaps_display[item];
-        sys->ImageDraw(bm, dc, rect.x + 3 * csf, rect.y + 3 * csf);
+        sys->ImageDraw(bm, dc, rect.x + FromDIP(3), rect.y + FromDIP(3));
     }
 };
 
