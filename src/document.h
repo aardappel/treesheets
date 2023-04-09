@@ -207,14 +207,7 @@ struct Document {
                     wxBitmapType imt = imagetypes[image.image_type].first;
                     fos.PutC(image.image_type);
                     sos.WriteDouble(image.display_scale);
-                    if (image.image_data.empty()) {
-                        wxImage im = image.bm_orig.ConvertToImage();
-                        im.SaveFile(fos, imt);
-                    } else {
-                        // We have a copy of the image data loaded.. this is WAY faster
-                        // than recompressing (~30x on image heavy files).
-                        fos.Write(image.image_data.data(), image.image_data.size());
-                    }
+                    fos.Write(image.image_data.data(), image.image_data.size());
                     image.savedindex = realindex++;
                 }
             }
@@ -869,15 +862,23 @@ struct Document {
     const wxChar* CopyImageToClipboard(Cell *cell) {
         if (wxTheClipboard->Open()) {
             Image *im = cell->text.image;
-            #ifdef __WXGTK__
             if (!im->image_data.empty() && imagetypes.find(im->image_type) != imagetypes.end()) {
-                wxCustomDataObject *image = new wxCustomDataObject(imagetypes[im->image_type].second);
-                image->SetData(im->image_data.size(), im->image_data.data());
+                #ifdef __WXGTK__
+                wxCustomDataObject *image = new wxCustomDataObject(imagetypes['I'].second);
+                if(im->image_type == 'I') {
+                    image->SetData(im->image_data.size(), im->image_data.data());
+                } else {
+                    // Always convert to PNG file format because wxWidgets has trouble dealing with other 
+                    // image file formats in clipboard (especially for pasting).
+                    wxImage imi = im->ConvertVectorToImage(im->image_data, imagetypes[im->image_type].first);
+                    vector<uint8_t> idv = im->ConvertImageToVector(imi, imagetypes['I'].first);
+                    image->SetData(idv.size(), idv.data());
+                }
                 wxTheClipboard->SetData(image);
-            } else
-            #endif
-            {
-                wxTheClipboard->SetData(new wxBitmapDataObject(im->bm_orig));    
+                #else
+                wxBitmap bm = im->ConvertVectorToBitmap(im->image_data, imagetypes[im->image_type].first);
+                wxTheClipboard->SetData(new wxBitmapDataObject(bm));
+                #endif
             }
             wxTheClipboard->Close();
         }
@@ -1595,8 +1596,8 @@ struct Document {
                     if (tim) {
                         if(!oimgfn) { // first encounter
                             oimgfn = ::wxFileSelector(
-                                _(L"Choose image file to save:"), L"", L"", L"png",
-                                 L"PNG file (*.png)|All Files (*.*)|*.*|",
+                                _(L"Choose image file to save:"), L"", L"", L"png|jpg",
+                                 L"PNG file (*.png)|JPG file (*.jpg)|All Files (*.*)|*.*|",
                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                             if (oimgfn.empty()) return _(L"Save cancelled.");
                             counterpos = oimgfn.find_last_of(".");
@@ -1612,14 +1613,7 @@ struct Document {
                                 imgfn.wx_str(), wxOK, sys->frame);
                             return _(L"Error writing to file.");
                             }
-                        if (tim->image_type == 'I' && !tim->image_data.empty()) {
-                            // We have a copy of the image data loaded.. this is WAY faster
-                            // than recompressing (~30x on image heavy files).
-                            imagefs.Write(tim->image_data.data(), tim->image_data.size());
-                        } else {
-                            wxImage im = tim->bm_orig.ConvertToImage();
-                            im.SaveFile(imagefs, wxBITMAP_TYPE_PNG);
-                        }
+                        imagefs.Write(tim->image_data.data(), tim->image_data.size());
                         counter++;
                     }                
                 }
@@ -1632,16 +1626,18 @@ struct Document {
                     if(c->text.image) {
                         switch(k) {
                             case A_SAVE_AS_JPEG: {
-                                if(c->text.image->image_type != 'J') {
-                                    c->text.image->image_data.clear();
+                                if(c->text.image->image_type == 'I') {
+                                    wxImage im = c->text.image->ConvertVectorToImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
+                                    c->text.image->image_data = c->text.image->ConvertImageToVector(im, wxBITMAP_TYPE_JPEG);
                                     c->text.image->image_type = 'J';
                                 }
                                 break;
                             }
                             case A_SAVE_AS_PNG:
                             default: {
-                                if(c->text.image->image_type != 'I') {
-                                    c->text.image->image_data.clear();
+                                if(c->text.image->image_type == 'J') {
+                                    wxImage im = c->text.image->ConvertVectorToImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
+                                    c->text.image->image_data = c->text.image->ConvertImageToVector(im, wxBITMAP_TYPE_PNG);
                                     c->text.image->image_type = 'I';
                                 }
                                 break;

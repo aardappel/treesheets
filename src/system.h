@@ -1,9 +1,7 @@
-
 struct Image {
-    wxBitmap bm_orig;
-    wxBitmap bm_display;
     vector<uint8_t> image_data;
     char image_type;
+    wxBitmap bm_display;
 
     int trefc = 0;
     int savedindex = -1;
@@ -17,12 +15,18 @@ struct Image {
 
     long last_display = 0;
 
-    Image(wxBitmap _bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd, char iti)
-        : bm_orig(_bm), hash(_hash), display_scale(_sc), image_data(std::move(pd)), image_type(iti) {}
+    Image(const wxBitmap &bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd, char iti)
+        : hash(_hash), display_scale(_sc), image_data(std::move(pd)), image_type(iti) {
+        if(bm.IsOk()) image_data = 
+                ConvertImageToVector(bm.ConvertToImage(), imagetypes[image_type].first);
+    }
+
 
     void BitmapScale(double sc) {
-        ScaleBitmap(bm_orig, sc, bm_orig);
-        image_data.clear();
+        wxBitmapType it = imagetypes[image_type].first;
+        wxBitmap bm = ConvertVectorToBitmap(image_data, it);
+        ScaleBitmap(bm, sc, bm);
+        image_data = ConvertImageToVector(bm.ConvertToImage(), it);
         bm_display = wxNullBitmap;
     }
 
@@ -38,7 +42,9 @@ struct Image {
 
     wxBitmap &Display() {
         if (!bm_display.IsOk()) {
-            ScaleBitmap(bm_orig, 1.0 / display_scale * sys->frame->csf, bm_display);
+            wxBitmapType it = imagetypes[image_type].first;
+            wxBitmap bm = ConvertVectorToBitmap(image_data, it);
+            ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
         last_display = wxGetLocalTime();
         return bm_display;
@@ -47,8 +53,36 @@ struct Image {
     void Purge() {
         auto seconds_passed = wxGetLocalTime() - last_display;
         if (seconds_passed > 10) bm_display = wxNullBitmap;
-        // TODO: we could even purge bm_orig for even greater memory savings if we have png_data.
     }
+
+
+    vector<uint8_t> ConvertImageToVector(const wxImage &im, wxBitmapType bmt) {
+        vector<uint8_t> pidv;
+        wxMemoryOutputStream mos;
+        off_t beforeimage = mos.TellO();
+        im.SaveFile(mos, bmt);
+        off_t afterimage = mos.TellO();
+        auto sz = afterimage - beforeimage;
+        wxMemoryInputStream mis(mos);
+        pidv.resize(sz);
+        mis.Read(pidv.data(), pidv.size());
+        return pidv;
+    }
+
+    wxImage ConvertVectorToImage(vector<uint8_t> pidv, wxBitmapType bmt) {
+        wxMemoryOutputStream mos(pidv.data(), pidv.size());
+        wxMemoryInputStream mis(mos);
+        wxImage im;
+        im.LoadFile(mis, bmt);
+        return im;
+    }
+
+    wxBitmap ConvertVectorToBitmap(vector<uint8_t> pidv, wxBitmapType bmt) {
+        wxImage im = ConvertVectorToImage(pidv, bmt);
+        wxBitmap bm(im, 32);
+        return bm;
+    }
+
 };
 
 struct System {

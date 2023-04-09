@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include <wx/mstream.h>
 
 #ifndef __WXMSW__
 #define SIMPLERENDER
