@@ -34,7 +34,7 @@ struct Cell
     uint textcolor;
     uchar drawstyle;    // enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };
     uchar cellcontents; // enum { TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
-    // A cell that is within the selection is marked with the highest bit set to 1 (1 x x x x x x x) in cellcontents.
+    // The first cell that is within the selection is marked with the highest bit set to 1 (1 x x x x x x x) in cellcontents.
     if (TS_TEXT or TS_BOTH)
     {
         String text;
