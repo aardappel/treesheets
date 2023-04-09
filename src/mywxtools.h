@@ -147,20 +147,3 @@ static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
     dest = wxBitmap(src.ConvertToImage().Scale(src.GetWidth() * sc, src.GetHeight() * sc,
                     wxIMAGE_QUALITY_HIGH));
 }
-
-static void MakeInternallyScaled(wxBitmap &bm, const wxColour bg, double sc) {
-    #ifdef __WXMAC__
-        // What a mess.. is there a simpler way?
-        wxBitmap sbm;
-        sbm.CreateScaled(bm.GetWidth() / sc, bm.GetHeight() / sc, bm.GetDepth(), sc);
-        wxMemoryDC sdc(sbm);
-        //wxMemoryDC dc(bm);
-        // FIXME: this should really be transparent.
-        sdc.SetBackground(wxBrush(bg));
-        sdc.Clear();
-        //sdc.Blit(0, 0, bm.GetWidth(), bm.GetHeight(), &dc, 0, 0, wxCOPY);
-        sdc.SetUserScale(1.0 / sc, 1.0 / sc);
-        sdc.DrawBitmap(bm, wxPoint(0, 0));
-        bm = sbm;
-    #endif
-}
