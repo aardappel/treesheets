@@ -14,6 +14,7 @@ BEGIN_EVENT_TABLE(treesheets::MyFrame, wxFrame)
   EVT_ICONIZE(treesheets::MyFrame::OnIconize)
   EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, treesheets::MyFrame::OnTabChange)
   EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, treesheets::MyFrame::OnTabClose)
+  EVT_DPI_CHANGED(treesheets::MyFrame::OnDPIChanged)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(treesheets::MyApp, wxApp)

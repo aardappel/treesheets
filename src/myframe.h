@@ -1096,6 +1096,13 @@ struct MyFrame : wxFrame {
         ReFocus();
     }
 
+    void OnDPIChanged(wxDPIChangedEvent &dce) {
+          if (nb) loop(i, nb->GetPageCount()) {
+                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                p->doc->dpichanged = true;
+                }
+    }
+
     void OnIconize(wxIconizeEvent &me) {
         if (me.IsIconized()) {
             #ifndef __WXMAC__

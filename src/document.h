@@ -74,6 +74,7 @@ struct Document {
 
     bool redrawpending;
     bool firstdraw;
+    bool dpichanged;
 
     bool scaledviewingmode;
     double currentviewscale;
@@ -114,6 +115,7 @@ struct Document {
           blink(true),
           redrawpending(false),
           firstdraw(true),
+          dpichanged(false),
           scaledviewingmode(false),
           currentviewscale(1),
           editfilter(0),
@@ -541,6 +543,12 @@ struct Document {
     }
 
     void Draw(wxDC &dc) {
+        if(dpichanged) {
+            curdrawroot->ResetLayout();
+            curdrawroot->ResetChildren();
+            firstdraw = true;
+            dpichanged = false;
+        }
         redrawpending = false;
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
