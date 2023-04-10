@@ -21,9 +21,9 @@ struct Image {
 
     void ImageRescale(double sc) {
         wxBitmapType it = imagetypes[image_type].first;
-        wxImage im = sys->ConvertBufferToImage(image_data, it);
+        wxImage im = sys->ConvertBufferToWxImage(image_data, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
-        image_data = sys->ConvertImageToBuffer(im, it);
+        image_data = sys->ConvertWxImageToBuffer(im, it);
         bm_display = wxNullBitmap;
     }
 
@@ -40,7 +40,7 @@ struct Image {
     wxBitmap &Display() {
         if (!bm_display.IsOk()) {
             wxBitmapType it = imagetypes[image_type].first;
-            wxBitmap bm = sys->ConvertBufferToBitmap(image_data, it);
+            wxBitmap bm = sys->ConvertBufferToWxBitmap(image_data, it);
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
         last_display = wxGetLocalTime();
@@ -338,7 +338,7 @@ struct System {
                             im.Create(sz, sz, false);
                             im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0,
                                       0);  // Set to red to indicate error.
-                            image_data = ConvertImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                            image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                             iti = 'I';
                         } else {
                             // We loaded the bitmap succesfully.
@@ -633,7 +633,7 @@ struct System {
     }
 
 
-    vector<uint8_t> ConvertImageToBuffer(const wxImage &im, wxBitmapType bmt) {
+    vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
         vector<uint8_t> pidv;
         wxMemoryOutputStream mos;
         off_t beforeimage = mos.TellO();
@@ -646,7 +646,7 @@ struct System {
         return pidv;
     }
 
-    wxImage ConvertBufferToImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
+    wxImage ConvertBufferToWxImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
         wxMemoryOutputStream mos(pidv.data(), pidv.size());
         wxMemoryInputStream mis(mos);
         wxImage im;
@@ -654,8 +654,8 @@ struct System {
         return im;
     }
 
-    wxBitmap ConvertBufferToBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
-        wxImage im = ConvertBufferToImage(pidv, bmt);
+    wxBitmap ConvertBufferToWxBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
+        wxImage im = ConvertBufferToWxImage(pidv, bmt);
         wxBitmap bm(im, 32);
         return bm;
     }
