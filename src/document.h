@@ -870,13 +870,13 @@ struct Document {
                 } else {
                     // Always convert to PNG file format because wxWidgets has trouble dealing with other 
                     // image file formats in clipboard (especially for pasting).
-                    wxImage imi = im->ConvertVectorToImage(im->image_data, imagetypes[im->image_type].first);
-                    vector<uint8_t> idv = im->ConvertImageToVector(imi, imagetypes['I'].first);
+                    wxImage imi = im->ConvertBufferToImage(im->image_data, imagetypes[im->image_type].first);
+                    vector<uint8_t> idv = im->ConvertImageToBuffer(imi, imagetypes['I'].first);
                     image->SetData(idv.size(), idv.data());
                 }
                 wxTheClipboard->SetData(image);
                 #else
-                wxBitmap bm = im->ConvertVectorToBitmap(im->image_data, imagetypes[im->image_type].first);
+                wxBitmap bm = im->ConvertBufferToBitmap(im->image_data, imagetypes[im->image_type].first);
                 wxTheClipboard->SetData(new wxBitmapDataObject(bm));
                 #endif
             }
@@ -1627,8 +1627,8 @@ struct Document {
                         switch(k) {
                             case A_SAVE_AS_JPEG: {
                                 if(c->text.image->image_type == 'I') {
-                                    wxImage im = c->text.image->ConvertVectorToImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
-                                    c->text.image->image_data = c->text.image->ConvertImageToVector(im, wxBITMAP_TYPE_JPEG);
+                                    wxImage im = c->text.image->ConvertBufferToImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
+                                    c->text.image->image_data = c->text.image->ConvertImageToBuffer(im, wxBITMAP_TYPE_JPEG);
                                     c->text.image->image_type = 'J';
                                 }
                                 break;
@@ -1636,8 +1636,8 @@ struct Document {
                             case A_SAVE_AS_PNG:
                             default: {
                                 if(c->text.image->image_type == 'J') {
-                                    wxImage im = c->text.image->ConvertVectorToImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
-                                    c->text.image->image_data = c->text.image->ConvertImageToVector(im, wxBITMAP_TYPE_PNG);
+                                    wxImage im = c->text.image->ConvertBufferToImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
+                                    c->text.image->image_data = c->text.image->ConvertImageToBuffer(im, wxBITMAP_TYPE_PNG);
                                     c->text.image->image_type = 'I';
                                 }
                                 break;

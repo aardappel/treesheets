@@ -18,15 +18,15 @@ struct Image {
     Image(const wxBitmap &bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd, char iti)
         : hash(_hash), display_scale(_sc), image_data(std::move(pd)), image_type(iti) {
         if(bm.IsOk()) image_data = 
-                ConvertImageToVector(bm.ConvertToImage(), imagetypes[image_type].first);
+                ConvertImageToBuffer(bm.ConvertToImage(), imagetypes[image_type].first);
     }
 
 
     void BitmapScale(double sc) {
         wxBitmapType it = imagetypes[image_type].first;
-        wxBitmap bm = ConvertVectorToBitmap(image_data, it);
+        wxBitmap bm = ConvertBufferToBitmap(image_data, it);
         ScaleBitmap(bm, sc, bm);
-        image_data = ConvertImageToVector(bm.ConvertToImage(), it);
+        image_data = ConvertImageToBuffer(bm.ConvertToImage(), it);
         bm_display = wxNullBitmap;
     }
 
@@ -43,7 +43,7 @@ struct Image {
     wxBitmap &Display() {
         if (!bm_display.IsOk()) {
             wxBitmapType it = imagetypes[image_type].first;
-            wxBitmap bm = ConvertVectorToBitmap(image_data, it);
+            wxBitmap bm = ConvertBufferToBitmap(image_data, it);
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
         last_display = wxGetLocalTime();
@@ -56,7 +56,7 @@ struct Image {
     }
 
 
-    vector<uint8_t> ConvertImageToVector(const wxImage &im, wxBitmapType bmt) {
+    vector<uint8_t> ConvertImageToBuffer(const wxImage &im, wxBitmapType bmt) {
         vector<uint8_t> pidv;
         wxMemoryOutputStream mos;
         off_t beforeimage = mos.TellO();
@@ -69,7 +69,7 @@ struct Image {
         return pidv;
     }
 
-    wxImage ConvertVectorToImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
+    wxImage ConvertBufferToImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
         wxMemoryOutputStream mos(pidv.data(), pidv.size());
         wxMemoryInputStream mis(mos);
         wxImage im;
@@ -77,8 +77,8 @@ struct Image {
         return im;
     }
 
-    wxBitmap ConvertVectorToBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
-        wxImage im = ConvertVectorToImage(pidv, bmt);
+    wxBitmap ConvertBufferToBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
+        wxImage im = ConvertBufferToImage(pidv, bmt);
         wxBitmap bm(im, 32);
         return bm;
     }
