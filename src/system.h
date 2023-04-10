@@ -69,7 +69,7 @@ struct Image {
         return pidv;
     }
 
-    wxImage ConvertVectorToImage(vector<uint8_t> pidv, wxBitmapType bmt) {
+    wxImage ConvertVectorToImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
         wxMemoryOutputStream mos(pidv.data(), pidv.size());
         wxMemoryInputStream mis(mos);
         wxImage im;
@@ -77,7 +77,7 @@ struct Image {
         return im;
     }
 
-    wxBitmap ConvertVectorToBitmap(vector<uint8_t> pidv, wxBitmapType bmt) {
+    wxBitmap ConvertVectorToBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
         wxImage im = ConvertVectorToImage(pidv, bmt);
         wxBitmap bm(im, 32);
         return bm;
