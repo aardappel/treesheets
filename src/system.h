@@ -15,18 +15,15 @@ struct Image {
 
     long last_display = 0;
 
-    Image(const wxBitmap &bm, uint64_t _hash, double _sc, vector<uint8_t> &&pd, char iti)
-        : hash(_hash), display_scale(_sc), image_data(std::move(pd)), image_type(iti) {
-        if(bm.IsOk()) image_data = 
-                ConvertImageToBuffer(bm.ConvertToImage(), imagetypes[image_type].first);
-    }
+    Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
+        : hash(_hash), display_scale(_sc), image_data(std::move(idv)), image_type(iti) {}
 
 
     void BitmapScale(double sc) {
         wxBitmapType it = imagetypes[image_type].first;
-        wxBitmap bm = ConvertBufferToBitmap(image_data, it);
+        wxBitmap bm = sys->ConvertBufferToBitmap(image_data, it);
         ScaleBitmap(bm, sc, bm);
-        image_data = ConvertImageToBuffer(bm.ConvertToImage(), it);
+        image_data = sys->ConvertImageToBuffer(bm.ConvertToImage(), it);
         bm_display = wxNullBitmap;
     }
 
@@ -43,7 +40,7 @@ struct Image {
     wxBitmap &Display() {
         if (!bm_display.IsOk()) {
             wxBitmapType it = imagetypes[image_type].first;
-            wxBitmap bm = ConvertBufferToBitmap(image_data, it);
+            wxBitmap bm = sys->ConvertBufferToBitmap(image_data, it);
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
         last_display = wxGetLocalTime();
@@ -54,35 +51,6 @@ struct Image {
         auto seconds_passed = wxGetLocalTime() - last_display;
         if (seconds_passed > 10) bm_display = wxNullBitmap;
     }
-
-
-    vector<uint8_t> ConvertImageToBuffer(const wxImage &im, wxBitmapType bmt) {
-        vector<uint8_t> pidv;
-        wxMemoryOutputStream mos;
-        off_t beforeimage = mos.TellO();
-        im.SaveFile(mos, bmt);
-        off_t afterimage = mos.TellO();
-        auto sz = afterimage - beforeimage;
-        wxMemoryInputStream mis(mos);
-        pidv.resize(sz);
-        mis.Read(pidv.data(), pidv.size());
-        return pidv;
-    }
-
-    wxImage ConvertBufferToImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
-        wxMemoryOutputStream mos(pidv.data(), pidv.size());
-        wxMemoryInputStream mis(mos);
-        wxImage im;
-        im.LoadFile(mis, bmt);
-        return im;
-    }
-
-    wxBitmap ConvertBufferToBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
-        wxImage im = ConvertBufferToImage(pidv, bmt);
-        wxBitmap bm(im, 32);
-        return bm;
-    }
-
 };
 
 struct System {
@@ -327,12 +295,12 @@ struct System {
                     case 'I':
                     case 'J': {
                         char iti = *buf;
-                        wxBitmapType imt = imagetypes[*buf].first;
+                        wxBitmapType imt = imagetypes[iti].first;
                         if (versionlastloaded < 9) dis.ReadString();
-                        wxImage im;
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
                         off_t beforeimage = fis.TellI();
+                        wxImage im;
                         bool ok = im.LoadFile(fis);
                         // ok = false;
                         if (!ok) {
@@ -370,6 +338,8 @@ struct System {
                             im.Create(sz, sz, false);
                             im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0,
                                       0);  // Set to red to indicate error.
+                            image_data = ConvertImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                            iti = 'I';
                         } else {
                             // We loaded the bitmap succesfully.
                             // Also save a copy of bitmap byte data, since re-compressing images can be slow, so
@@ -384,7 +354,7 @@ struct System {
                             fis.SeekI(afterimage);
                         }
 
-                        loadimageids.push() = AddImageToList(im, sc, std::move(image_data), iti);
+                        loadimageids.push() = AddImageToList(sc, std::move(image_data), iti);
                         break;
                     }
 
@@ -643,12 +613,12 @@ struct System {
         return (int)as.size();
     }
 
-    int AddImageToList(const wxImage &im, double sc, vector<uint8_t> &&pd, char iti) {
-        auto hash = FNV1A64(string_view((char *)im.GetData(), im.GetWidth() * im.GetHeight() * 3));
+    int AddImageToList(double sc, vector<uint8_t> &&idv, char iti) {
+        auto hash = FNV1A64(string_view((char *)idv.data(), idv.size()));
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
-        imagelist.push() = new Image(wxBitmap(im), hash, sc, std::move(pd), iti);
+        imagelist.push() = new Image(hash, sc, std::move(idv), iti);
         return imagelist.size() - 1;
     }
 
@@ -660,5 +630,33 @@ struct System {
 
     void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) {
         dc.DrawBitmap(*bm, x, y);
+    }
+
+
+    vector<uint8_t> ConvertImageToBuffer(const wxImage &im, wxBitmapType bmt) {
+        vector<uint8_t> pidv;
+        wxMemoryOutputStream mos;
+        off_t beforeimage = mos.TellO();
+        im.SaveFile(mos, bmt);
+        off_t afterimage = mos.TellO();
+        auto sz = afterimage - beforeimage;
+        wxMemoryInputStream mis(mos);
+        pidv.resize(sz);
+        mis.Read(pidv.data(), pidv.size());
+        return pidv;
+    }
+
+    wxImage ConvertBufferToImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
+        wxMemoryOutputStream mos(pidv.data(), pidv.size());
+        wxMemoryInputStream mis(mos);
+        wxImage im;
+        im.LoadFile(mis, bmt);
+        return im;
+    }
+
+    wxBitmap ConvertBufferToBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
+        wxImage im = ConvertBufferToImage(pidv, bmt);
+        wxBitmap bm(im, 32);
+        return bm;
     }
 };

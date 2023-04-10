@@ -870,13 +870,13 @@ struct Document {
                 } else {
                     // Always convert to PNG file format because wxWidgets has trouble dealing with other 
                     // image file formats in clipboard (especially for pasting).
-                    wxImage imi = im->ConvertBufferToImage(im->image_data, imagetypes[im->image_type].first);
-                    vector<uint8_t> idv = im->ConvertImageToBuffer(imi, imagetypes['I'].first);
+                    wxImage imi = sys->ConvertBufferToImage(im->image_data, imagetypes[im->image_type].first);
+                    vector<uint8_t> idv = sys->ConvertImageToBuffer(imi, imagetypes['I'].first);
                     image->SetData(idv.size(), idv.data());
                 }
                 wxTheClipboard->SetData(image);
                 #else
-                wxBitmap bm = im->ConvertBufferToBitmap(im->image_data, imagetypes[im->image_type].first);
+                wxBitmap bm = sys->ConvertBufferToBitmap(im->image_data, imagetypes[im->image_type].first);
                 wxTheClipboard->SetData(new wxBitmapDataObject(bm));
                 #endif
             }
@@ -1627,8 +1627,8 @@ struct Document {
                         switch(k) {
                             case A_SAVE_AS_JPEG: {
                                 if(c->text.image->image_type == 'I') {
-                                    wxImage im = c->text.image->ConvertBufferToImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
-                                    c->text.image->image_data = c->text.image->ConvertImageToBuffer(im, wxBITMAP_TYPE_JPEG);
+                                    wxImage im = sys->ConvertBufferToImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
+                                    c->text.image->image_data = sys->ConvertImageToBuffer(im, wxBITMAP_TYPE_JPEG);
                                     c->text.image->image_type = 'J';
                                 }
                                 break;
@@ -1636,8 +1636,8 @@ struct Document {
                             case A_SAVE_AS_PNG:
                             default: {
                                 if(c->text.image->image_type == 'J') {
-                                    wxImage im = c->text.image->ConvertBufferToImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
-                                    c->text.image->image_data = c->text.image->ConvertImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                                    wxImage im = sys->ConvertBufferToImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
+                                    c->text.image->image_data = sys->ConvertImageToBuffer(im, wxBITMAP_TYPE_PNG);
                                     c->text.image->image_type = 'I';
                                 }
                                 break;
@@ -1917,7 +1917,9 @@ struct Document {
             #endif
                 if (dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                     c->AddUndo(this);
-                    SetImageBM(c, dataobji->GetBitmap().ConvertToImage(), sys->frame->csf);
+                    wxImage im = dataobji->GetBitmap().ConvertToImage();
+                    vector<uint8_t> idv = sys->ConvertImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                    SetImageBM(c, std::move(idv), sys->frame->csf);
                     dataobji->SetBitmap(wxNullBitmap);
                     c->Reset();
                     Refresh();
@@ -2096,16 +2098,16 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, const wxImage &im, double sc) {
-        vector<uint8_t> empty;
-        c->text.image = sys->imagelist[sys->AddImageToList(im, sc, std::move(empty), DEFAULT_IMAGE_TYPE)];
+    void SetImageBM(Cell *c, vector<uint8_t> &&idv, double sc) {
+        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')];
     }
 
     bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        SetImageBM(c, im, sc);
+        vector<uint8_t> idv = sys->ConvertImageToBuffer(im, wxBITMAP_TYPE_PNG);
+        SetImageBM(c, std::move(idv), sc);
         c->Reset();
         return true;
     }
