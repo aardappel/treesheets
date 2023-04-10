@@ -19,11 +19,11 @@ struct Image {
         : hash(_hash), display_scale(_sc), image_data(std::move(idv)), image_type(iti) {}
 
 
-    void BitmapScale(double sc) {
+    void ImageRescale(double sc) {
         wxBitmapType it = imagetypes[image_type].first;
-        wxBitmap bm = sys->ConvertBufferToBitmap(image_data, it);
-        ScaleBitmap(bm, sc, bm);
-        image_data = sys->ConvertImageToBuffer(bm.ConvertToImage(), it);
+        wxImage im = sys->ConvertBufferToImage(image_data, it);
+        im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
+        image_data = sys->ConvertImageToBuffer(im, it);
         bm_display = wxNullBitmap;
     }
 

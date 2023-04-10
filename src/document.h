@@ -1565,7 +1565,7 @@ struct Document {
                         }
                         auto sc = v / 100.0;
                         if (k == A_IMAGESCP) {
-                            c->text.image->BitmapScale(sc);
+                            c->text.image->ImageRescale(sc);
                         } else {
                             c->text.image->DisplayScale(sc);
                         }
