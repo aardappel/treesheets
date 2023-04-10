@@ -864,14 +864,14 @@ struct Document {
             Image *im = cell->text.image;
             if (!im->image_data.empty() && imagetypes.find(im->image_type) != imagetypes.end()) {
                 #ifdef __WXGTK__
-                wxCustomDataObject *image = new wxCustomDataObject(imagetypes['I'].second);
+                wxCustomDataObject *image = new wxCustomDataObject("image/png");
                 if(im->image_type == 'I') {
                     image->SetData(im->image_data.size(), im->image_data.data());
                 } else {
                     // Always convert to PNG file format because wxWidgets has trouble dealing with other 
                     // image file formats in clipboard (especially for pasting).
                     wxImage imi = sys->ConvertBufferToWxImage(im->image_data, imagetypes[im->image_type].first);
-                    vector<uint8_t> idv = sys->ConvertWxImageToBuffer(imi, imagetypes['I'].first);
+                    vector<uint8_t> idv = sys->ConvertWxImageToBuffer(imi, wxBITMAP_TYPE_PNG);
                     image->SetData(idv.size(), idv.data());
                 }
                 wxTheClipboard->SetData(image);
