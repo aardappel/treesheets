@@ -207,14 +207,7 @@ struct Document {
                     wxBitmapType imt = imagetypes[image.image_type].first;
                     fos.PutC(image.image_type);
                     sos.WriteDouble(image.display_scale);
-                    if (image.image_data.empty()) {
-                        wxImage im = image.bm_orig.ConvertToImage();
-                        im.SaveFile(fos, imt);
-                    } else {
-                        // We have a copy of the image data loaded.. this is WAY faster
-                        // than recompressing (~30x on image heavy files).
-                        fos.Write(image.image_data.data(), image.image_data.size());
-                    }
+                    fos.Write(image.image_data.data(), image.image_data.size());
                     image.savedindex = realindex++;
                 }
             }
@@ -869,15 +862,23 @@ struct Document {
     const wxChar* CopyImageToClipboard(Cell *cell) {
         if (wxTheClipboard->Open()) {
             Image *im = cell->text.image;
-            #ifdef __WXGTK__
             if (!im->image_data.empty() && imagetypes.find(im->image_type) != imagetypes.end()) {
-                wxCustomDataObject *image = new wxCustomDataObject(imagetypes[im->image_type].second);
-                image->SetData(im->image_data.size(), im->image_data.data());
+                #ifdef __WXGTK__
+                wxCustomDataObject *image = new wxCustomDataObject("image/png");
+                if(im->image_type == 'I') {
+                    image->SetData(im->image_data.size(), im->image_data.data());
+                } else {
+                    // Always convert to PNG file format because wxWidgets has trouble dealing with other 
+                    // image file formats in clipboard (especially for pasting).
+                    wxImage imi = sys->ConvertBufferToWxImage(im->image_data, imagetypes[im->image_type].first);
+                    vector<uint8_t> idv = sys->ConvertWxImageToBuffer(imi, wxBITMAP_TYPE_PNG);
+                    image->SetData(idv.size(), idv.data());
+                }
                 wxTheClipboard->SetData(image);
-            } else
-            #endif
-            {
-                wxTheClipboard->SetData(new wxBitmapDataObject(im->bm_orig));    
+                #else
+                wxBitmap bm = sys->ConvertBufferToWxBitmap(im->image_data, imagetypes[im->image_type].first);
+                wxTheClipboard->SetData(new wxBitmapDataObject(bm));
+                #endif
             }
             wxTheClipboard->Close();
         }
@@ -1564,7 +1565,7 @@ struct Document {
                         }
                         auto sc = v / 100.0;
                         if (k == A_IMAGESCP) {
-                            c->text.image->BitmapScale(sc);
+                            c->text.image->ImageRescale(sc);
                         } else {
                             c->text.image->DisplayScale(sc);
                         }
@@ -1595,8 +1596,8 @@ struct Document {
                     if (tim) {
                         if(!oimgfn) { // first encounter
                             oimgfn = ::wxFileSelector(
-                                _(L"Choose image file to save:"), L"", L"", L"png",
-                                 L"PNG file (*.png)|All Files (*.*)|*.*|",
+                                _(L"Choose image file to save:"), L"", L"", L"png|jpg",
+                                 L"PNG file (*.png)|JPG file (*.jpg)|All Files (*.*)|*.*|",
                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                             if (oimgfn.empty()) return _(L"Save cancelled.");
                             counterpos = oimgfn.find_last_of(".");
@@ -1612,14 +1613,7 @@ struct Document {
                                 imgfn.wx_str(), wxOK, sys->frame);
                             return _(L"Error writing to file.");
                             }
-                        if (tim->image_type == 'I' && !tim->image_data.empty()) {
-                            // We have a copy of the image data loaded.. this is WAY faster
-                            // than recompressing (~30x on image heavy files).
-                            imagefs.Write(tim->image_data.data(), tim->image_data.size());
-                        } else {
-                            wxImage im = tim->bm_orig.ConvertToImage();
-                            im.SaveFile(imagefs, wxBITMAP_TYPE_PNG);
-                        }
+                        imagefs.Write(tim->image_data.data(), tim->image_data.size());
                         counter++;
                     }                
                 }
@@ -1632,16 +1626,18 @@ struct Document {
                     if(c->text.image) {
                         switch(k) {
                             case A_SAVE_AS_JPEG: {
-                                if(c->text.image->image_type != 'J') {
-                                    c->text.image->image_data.clear();
+                                if(c->text.image->image_type == 'I') {
+                                    wxImage im = sys->ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
+                                    c->text.image->image_data = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
                                     c->text.image->image_type = 'J';
                                 }
                                 break;
                             }
                             case A_SAVE_AS_PNG:
                             default: {
-                                if(c->text.image->image_type != 'I') {
-                                    c->text.image->image_data.clear();
+                                if(c->text.image->image_type == 'J') {
+                                    wxImage im = sys->ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
+                                    c->text.image->image_data = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                                     c->text.image->image_type = 'I';
                                 }
                                 break;
@@ -1921,7 +1917,9 @@ struct Document {
             #endif
                 if (dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                     c->AddUndo(this);
-                    SetImageBM(c, dataobji->GetBitmap().ConvertToImage(), sys->frame->csf);
+                    wxImage im = dataobji->GetBitmap().ConvertToImage();
+                    vector<uint8_t> idv = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                    SetImageBM(c, std::move(idv), sys->frame->csf);
                     dataobji->SetBitmap(wxNullBitmap);
                     c->Reset();
                     Refresh();
@@ -2100,16 +2098,16 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, const wxImage &im, double sc) {
-        vector<uint8_t> empty;
-        c->text.image = sys->imagelist[sys->AddImageToList(im, sc, std::move(empty), DEFAULT_IMAGE_TYPE)];
+    void SetImageBM(Cell *c, vector<uint8_t> &&idv, double sc) {
+        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')];
     }
 
     bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        SetImageBM(c, im, sc);
+        vector<uint8_t> idv = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+        SetImageBM(c, std::move(idv), sc);
         c->Reset();
         return true;
     }
