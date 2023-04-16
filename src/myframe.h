@@ -851,6 +851,7 @@ struct MyFrame : wxFrame {
 
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
+        TSCanvas *sw = GetCurTab();
         if (((tc = filter) && filter == wxWindow::FindFocus()) ||
             ((tc = replaces) && replaces == wxWindow::FindFocus())) {
             // FIXME: have to emulate this behavior because menu always captures these events (??)
@@ -889,9 +890,9 @@ struct MyFrame : wxFrame {
                 case A_HOME: tc->SetSelection(0, 0); return;
                 case A_END: tc->SetSelection(1000, 1000); return;
                 case A_SELALL: tc->SetSelection(0, 1000); return;
+                case A_CANCELEDIT: tc->Clear(); sw->SetFocus(); return;
             }
         }
-        TSCanvas *sw = GetCurTab();
         wxClientDC dc(sw);
         sw->DoPrepareDC(dc);
         sw->doc->ShiftToCenter(dc);
