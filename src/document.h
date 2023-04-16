@@ -1080,7 +1080,7 @@ struct Document {
             }
 
             case A_SEARCHNEXT: {
-                return SearchNext(dc, true);
+                return SearchNext(dc, false);
             }
 
             case A_CASESENSITIVESEARCH: {
