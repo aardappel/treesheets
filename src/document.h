@@ -1092,6 +1092,7 @@ struct Document {
 
             case A_CLEARSEARCH: {
                 sys->frame->filter->Clear();
+                sw->SetFocus();
                 return nullptr;
             }
 
