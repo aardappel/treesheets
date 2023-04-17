@@ -1090,6 +1090,11 @@ struct Document {
                 return nullptr;
             }
 
+            case A_CLEARSEARCH: {
+                sys->frame->filter->Clear();
+                return nullptr;
+            }
+
             case A_ROUND0:
             case A_ROUND1:
             case A_ROUND2:

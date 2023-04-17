@@ -669,6 +669,7 @@ struct MyFrame : wxFrame {
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
             tb->AddControl(filter = 
                 new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxTE_PROCESS_ENTER));
+            AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.png");
             AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.png");
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
