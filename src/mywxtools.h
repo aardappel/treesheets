@@ -112,17 +112,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     const int image_space = 22;
 
     ImageDropdown(wxWindow *parent, wxString &path) {
-        wxString f = wxFindFirstFile(path + L"*.*");
-        while (!f.empty()) {
-            wxBitmap bm;
-            if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
-                auto dbm = new wxBitmap();
-                ScaleBitmap(bm, FromDIP(1.0) / dd_icon_res_scale, *dbm);
-                bitmaps_display.push() = dbm;
-                as.Add(f);
-            }
-            f = wxFindNextFile();
-        }
+        FillBitmapVector(path);
         Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
                FromDIP(wxSize(image_space * 2, image_space)), as,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
@@ -140,6 +130,21 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
         auto bm = bitmaps_display[item];
         sys->ImageDraw(bm, dc, rect.x + FromDIP(3), rect.y + FromDIP(3));
+    }
+
+    void FillBitmapVector(wxString &path) {
+        if (!bitmaps_display.empty()) bitmaps_display.setsize(0);
+        wxString f = wxFindFirstFile(path + L"*.*");
+        while (!f.empty()) {
+            wxBitmap bm;
+            if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
+                auto dbm = new wxBitmap();
+                ScaleBitmap(bm, FromDIP(1.0) / dd_icon_res_scale, *dbm);
+                bitmaps_display.push() = dbm;
+                as.Add(f);
+            }
+            f = wxFindNextFile();
+        }
     }
 };
 
