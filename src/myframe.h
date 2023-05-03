@@ -1066,9 +1066,12 @@ struct MyFrame : wxFrame {
     }
 
     void OnDPIChanged(wxDPIChangedEvent &dce) {
-        if (nb) loop(i, nb->GetPageCount()) {
-            TSCanvas *p = (TSCanvas *)nb->GetPage(i);
-            p->doc->dpichanged = true;
+        if (nb) {
+            loop(i, nb->GetPageCount()) {
+                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                p->doc->dpichanged = true;
+            }
+            nb->SetTabCtrlHeight(-1);
         }
         Update();
     }
