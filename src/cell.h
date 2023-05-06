@@ -406,7 +406,7 @@ struct Cell {
                 lastwasselected = false;
             }
         } else {
-            if (text.t.Lower().Find(search.Lower()) >= 0) {
+            if (text.t.Lower().Find(search) >= 0) {
                 if (lastwasselected) best = this;
                 lastwasselected = false;
             }
@@ -449,9 +449,9 @@ struct Cell {
         return best;
     }
 
-    void FindReplaceAll(const wxString &str) {
-        if (grid) grid->FindReplaceAll(str);
-        text.ReplaceStr(str);
+    void FindReplaceAll(const wxString &str, const wxString &lstr) {
+        if (grid) grid->FindReplaceAll(str, lstr);
+        text.ReplaceStr(str, lstr);
     }
 
     Cell *FindExact(wxString &s) {
