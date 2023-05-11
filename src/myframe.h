@@ -441,7 +441,7 @@ struct MyFrame : wxFrame {
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
-        MyAppend(semenu, A_REPLACEONCE, _(L"&Replace in Current Selection\tCTRL+h"));
+        MyAppend(semenu, A_REPLACEONCE, _(L"&Replace in Current Selection\tCTRL+k"));
         MyAppend(semenu, A_REPLACEONCEJ, _(L"&Replace in Current Selection & Jump Next\tCTRL+j"));
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
 
@@ -676,7 +676,10 @@ struct MyFrame : wxFrame {
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
             tb->AddControl(replaces =
-                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(60, 22))));
+                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(80, 22))));
+            AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.png");
+            AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.png");
+            AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.png");
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
             celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
@@ -1008,7 +1011,7 @@ struct MyFrame : wxFrame {
     void OnSearch(wxCommandEvent &ce) {
         wxString searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
-        sys->searchstring = searchstring;
+        sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
         Document *doc = GetCurTab()->doc;
         if (doc->searchfilter)
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
