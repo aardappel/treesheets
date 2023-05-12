@@ -227,6 +227,7 @@ enum {
     A_FOLDALL,
     A_UNFOLDALL,
     A_IMAGESCP,
+    A_IMAGESCW,
     A_IMAGESCF,
     A_IMAGESCN,
     A_IMAGECPY,

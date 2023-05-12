@@ -341,7 +341,9 @@ struct MyFrame : wxFrame {
             MyAppend(imgmenu, A_IMAGECPY, _(L"Copy Image to clipboard"), _(L"Copy the image in the selected cell to the clipboard"));
             MyAppend(imgmenu, A_IMAGESVA, _(L"Save Image(s) to disk"), _(L"Save image(s) to disk. Multiple images will be saved with a counter appended to each file name."));
             imgmenu->AppendSeparator();
-            MyAppend(imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels)"),
+            MyAppend(imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels, by %)"),
+                     _(L"Change the image size if it is too big, by reducing the amount of pixels"));
+            MyAppend(imgmenu, A_IMAGESCW, _(L"&Scale Image (re-sample pixels, by width)"),
                      _(L"Change the image size if it is too big, by reducing the amount of pixels"));
             MyAppend(imgmenu, A_IMAGESCF, _(L"&Scale Image (display only)"),
                      _(L"Change the image size if it is too big or too small, by changing the size shown on screen. Applies to all uses of this image."));

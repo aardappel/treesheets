@@ -14,6 +14,7 @@ struct Image {
     double display_scale;
 
     long last_display = 0;
+    int pixel_width = 0;
 
     Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
         : hash(_hash), display_scale(_sc), image_data(std::move(idv)), image_type(iti) {}
@@ -41,6 +42,7 @@ struct Image {
         if (!bm_display.IsOk()) {
             wxBitmapType it = imagetypes[image_type].first;
             wxBitmap bm = sys->ConvertBufferToWxBitmap(image_data, it);
+            pixel_width = bm.GetWidth();
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
         last_display = wxGetLocalTime();

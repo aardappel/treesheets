@@ -204,7 +204,6 @@ struct Document {
             loopv(i, sys->imagelist) {
                 Image &image = *sys->imagelist[i];
                 if (image.trefc) {
-                    wxBitmapType imt = imagetypes[image.image_type].first;
                     fos.PutC(image.image_type);
                     sos.WriteDouble(image.display_scale);
                     fos.Write(image.image_data.data(), image.image_data.size());
@@ -1571,21 +1570,30 @@ struct Document {
 
 
             case A_IMAGESCP:
+            case A_IMAGESCW:
             case A_IMAGESCF: {
                 long v = 0;
                 loopallcellssel(c, true) {
                     if(c->text.image) {
                         if(!v) {
-                            v = wxGetNumberFromUser(
-                                _(L"Please enter the percentage you want the image scaled by:"), L"%",
-                                _(L"Image Resize"), 50, 5, 400, sys->frame);
+                            if (k == A_IMAGESCW) {
+                                v = wxGetNumberFromUser(
+                                    _(L"Please enter the new image width:"),
+                                    L"Width", _(L"Image Resize"), 500, 10, 4000, sys->frame);
+                            } else {
+                                v = wxGetNumberFromUser(
+                                    _(L"Please enter the percentage you want the image scaled by:"),
+                                    L"%", _(L"Image Resize"), 50, 5, 400, sys->frame);
+                            }
                             if (v < 0) return nullptr;
                         }
-                        auto sc = v / 100.0;
-                        if (k == A_IMAGESCP) {
-                            c->text.image->ImageRescale(sc);
+                        if (k == A_IMAGESCW) {
+                            int pw = c->text.image->pixel_width;
+                            if (pw) c->text.image->ImageRescale((double)v / (double)pw);
+                        } else if (k == A_IMAGESCP) {
+                            c->text.image->ImageRescale(v / 100.0);
                         } else {
-                            c->text.image->DisplayScale(sc);
+                            c->text.image->DisplayScale(v / 100.0);
                         }
                         c->ResetLayout();
                     }
