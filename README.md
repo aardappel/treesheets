@@ -1,7 +1,15 @@
 Welcome to the source distribution of TreeSheets!
 =================================================
 
-This contains all the files needed to build TreeSheets for various platforms.
+Community:
+----------
+If you like, you are kindly invited to join the [Discord channel](https://discord.gg/HAfKkJz) and 
+the [Google group](https://groups.google.com/group/treesheets) for discussion.
+
+Repository:
+-----------
+
+This repository contains all the files needed to build TreeSheets for various platforms.
 If instead you just want to USE TreeSheets, you may be better off with the binaries available on http://strlen.com/treesheets/
 
 TreeSheets has been licensed under the ZLIB license (see ZLIB_LICENSE.txt).
