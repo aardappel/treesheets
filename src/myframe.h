@@ -444,7 +444,7 @@ struct MyFrame : wxFrame {
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
         MyAppend(semenu, A_REPLACEONCE, _(L"&Replace in Current Selection\tCTRL+k"));
-        MyAppend(semenu, A_REPLACEONCEJ, _(L"&Replace in Current Selection & Jump Next\tCTRL+j"));
+        MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next\tCTRL+j"));
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
 
         wxMenu *scrollmenu = new wxMenu();
