@@ -6,7 +6,7 @@ If instead you just want to USE TreeSheets, you may be better off with the binar
 
 TreeSheets has been licensed under the ZLIB license (see ZLIB_LICENSE.txt).
 
-[![Build Status](https://travis-ci.org/aardappel/treesheets.svg?branch=master)](https://travis-ci.org/aardappel/treesheets)
+![Workflow status](https://github.com/aardappel/treesheets/actions/workflows/build.yml/badge.svg)
 
 `src` contains all source code. The code is dense, terse, and with few comments, typical for a codebase that was never
 intended to be used by more than one person (me). On the positive side, you'll find the code very small and simple,
@@ -79,3 +79,7 @@ probably not be in the master branch. Needless to say, performance is important 
 
 Try to keep your pull requests small (don't bundle unrelated changes) and make sure you've done extensive testing
 before you submit, preferrably on multiple platforms.
+
+Stars over time:
+----------------
+[![Stargazers over time](https://starchart.cc/aardappel/treesheets.svg)](https://starchart.cc/aardappel/treesheets)
