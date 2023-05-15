@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-26 16:49-0700\n"
+"POT-Creation-Date: 2023-05-15 18:36+0200\n"
 "PO-Revision-Date: 2019-11-29 01:05+0800\n"
 "Last-Translator: Honghao Li <im@rasphino.cn>\n"
 "Language-Team: SIMPLIFIED CHINESE <LL@li.org>\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2.4\n"
 
-#: myframe.h:1028
 #, c-format
 msgid ""
 "%s\n"
@@ -28,873 +27,858 @@ msgstr ""
 "已被另一个程序/计算机修改上：\n"
 "是否要放弃所做的更改并从磁盘重新加载？"
 
-#: myframe.h:504
 msgid "&About..."
 msgstr "关于(&A)..."
 
-#: myframe.h:270
 msgid "&Add Cell Text as Tag"
 msgstr "将单元格文本添加为标记(&A)"
 
-#: myframe.h:298
 msgid "&Add Image"
 msgstr "添加图像(&A)"
 
-#: myframe.h:374
 msgid "&Browsing..."
 msgstr "浏览(&B)..."
 
-#: myframe.h:501
 msgid "&Clear Views"
 msgstr "清晰的视图(&C)"
 
-#: myframe.h:169
 msgid "&Close\tCTRL+w"
 msgstr "关闭(&C)\tCTRL+w"
 
-#: myframe.h:145
 msgid "&Comma delimited text (CSV)..."
 msgstr "逗号分隔文本 (CSV)(&C)..."
 
-#: myframe.h:330
 msgid "&Copy\tCTRL+c"
 msgstr "复制(&C)\tCTRL+c"
 
-#: myframe.h:491
-msgid "&Data"
-msgstr "数据(&D)"
+#, fuzzy
+msgid "&Data\tCTRL+ALT+d"
+msgstr "粘贴(&P)\tCTRL+v"
 
-#: myframe.h:188
 msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
 msgstr "减小文字大小 (shift 鼠标滚轮)(&D)\tSHIFT+PGDN"
 
-#: myframe.h:340
 msgid "&Delete After\tDEL"
 msgstr "删除后(&D)\tDEL"
 
-#: myframe.h:518
 msgid "&Edit"
 msgstr "编辑(&E)"
 
-#: myframe.h:182
 msgid "&Exit\tCTRL+q"
 msgstr "退出(&E)\tCTRL+q"
 
-#: myframe.h:517
 msgid "&File"
 msgstr "文件(&F)"
 
-#: myframe.h:292
 msgid "&Flatten"
 msgstr "扁平化(&F)"
 
-#: myframe.h:386
 msgid "&Go To Next Search Result\tF3"
 msgstr "转到下一个搜索结果(&G)\tF3"
 
-#: myframe.h:371
 msgid "&Grid Reorganization..."
 msgstr "网格重组(&G)..."
 
-#: myframe.h:135
 msgid "&HTML (Tables+Styling)..."
 msgstr "HTML (表格+样式)(&H)..."
 
-#: myframe.h:527
 msgid "&Help"
 msgstr "帮助(&H)"
 
-#: myframe.h:288
 msgid "&Hierarchify"
 msgstr "层次结构(&H)"
 
-#: myframe.h:495
-msgid "&Horizontal View"
+#, fuzzy
+msgid "&Horizontal View\tCTRL+ALT+."
 msgstr "水平视图(&H)"
 
-#: myframe.h:149
 msgid "&Image..."
 msgstr "图像(&I)..."
 
-#: myframe.h:373
 msgid "&Images..."
 msgstr "图像(&I)..."
 
-#: myframe.h:187
 msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
 msgstr "增加文字大小 (shift 鼠标滚轮)(&I)\tSHIFT+PGUP"
 
-#: myframe.h:348
 msgid "&Insert New Grid\tCTRL+g"
 msgstr "插入新网格(&I)\tCTRL+g"
 
-#: myframe.h:350
 msgid "&Insert New Grid\tINS"
 msgstr "插入新网格(&I)\tINS"
 
-#: myframe.h:372
 msgid "&Layout && Render Style..."
 msgstr "布局渲染样式(&L)..."
 
-#: myframe.h:500
 msgid "&Mark as"
 msgstr "标记为(&M)"
 
-#: myframe.h:167
 msgid "&New\tCTRL+n"
 msgstr "新建(&N)\tCTRL+n"
 
-#: myframe.h:168
 msgid "&Open...\tCTRL+o"
 msgstr "打开(&O)...\tCTRL+o"
 
-#: myframe.h:492
-msgid "&Operation"
-msgstr "操作(&O)"
+#, fuzzy
+msgid "&Operation\tCTRL+ALT+o"
+msgstr "打开(&O)...\tCTRL+o"
 
-#: myframe.h:521
 msgid "&Options"
 msgstr "选项(&O)"
 
-#: myframe.h:332
 msgid "&Paste\tCTRL+v"
 msgstr "粘贴(&P)\tCTRL+v"
 
-#: myframe.h:177
 msgid "&Print...\tCTRL+p"
 msgstr "打印(&P)...\tCTRL+p"
 
-#: myframe.h:522
 msgid "&Program"
 msgstr "程序(&P)"
 
-#: myframe.h:170
 msgid "&Recent files"
 msgstr "最近的文件(&R)"
 
-#: myframe.h:337
 msgid "&Redo\tCTRL+y"
 msgstr "重做(&R)\tCTRL+y"
 
-#: myframe.h:271
 msgid "&Remove Cell Text from Tags"
 msgstr "从标签中删除单元格文本(&R)"
 
-#: myframe.h:301
 msgid "&Remove Image(s)"
 msgstr "删除图像(&R)"
 
-#: myframe.h:387
-msgid "&Replace in Current Selection\tCTRL+h"
+#, fuzzy
+msgid "&Replace in Current Selection\tCTRL+k"
 msgstr "在当前选择中替换(&R)\tCTRL+h"
 
-#: myframe.h:388
-msgid "&Replace in Current Selection & Jump Next\tCTRL+j"
-msgstr "替换在当前选择跳转下一步(&R)\tCTRL+j"
+msgid "&Reset Scale (display only)"
+msgstr ""
 
-#: myframe.h:189
-msgid "&Reset text sizes\tSHIFT+CTRL+s"
+#, fuzzy
+msgid "&Reset text sizes\tCTRL+SHIFT+s"
 msgstr "重置文本大小(&R)\tSHIFT+CTRL+s"
 
-#: myframe.h:266
-msgid "&Reset text styles\tSHIFT+CTRL+r"
+#, fuzzy
+msgid "&Reset text styles\tCTRL+SHIFT+r"
 msgstr "重置文本样式(&R)\tSHIFT+CTRL+r"
 
-#: myframe.h:488
 msgid "&Roundness of grid borders..."
 msgstr "网格边界的圆度(&R)..."
 
-#: myframe.h:499
-msgid "&Run"
-msgstr "运行(&R)"
+#, fuzzy
+msgid "&Run\tCTRL+ALT+F5"
+msgstr "全部展开\tCTRL+ALT+F10"
 
-#: myframe.h:171
 msgid "&Save\tCTRL+s"
 msgstr "保存(&S)\tCTRL+s"
 
-#: myframe.h:299
-msgid "&Scale Image"
+#, fuzzy
+msgid "&Scale Image (display only)"
 msgstr "缩放图像(&S)"
 
-#: myframe.h:519
+msgid "&Scale Image (re-sample pixels, by %)"
+msgstr ""
+
+msgid "&Scale Image (re-sample pixels, by width)"
+msgstr ""
+
 msgid "&Search"
 msgstr "搜索(&S)"
 
-#: myframe.h:385
 msgid "&Search\tCTRL+f"
 msgstr "搜索(&S)\tCTRL+f"
 
-#: myframe.h:370
 msgid "&Selection..."
 msgstr "选择...(&S)"
 
-#: myframe.h:272
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
 msgstr "将单元格文本设置为标记 (使用 CTRL+RMB)(&S)"
 
-#: myframe.h:450
 msgid "&Set Custom Color From Cell BG"
 msgstr "从单元格 bg 设置自定义颜色(&S)"
 
-#: myframe.h:190
-msgid "&Shrink text of all sub-grids\tSHIFT+CTRL+m"
+#, fuzzy
+msgid "&Shrink text of all sub-grids\tCTRL+SHIFT+m"
 msgstr "收缩所有子网格的文本(&S)\tSHIFT+CTRL+m"
 
-#: myframe.h:278
-msgid "&Transpose\tSHIFT+CTRL+t"
+#, fuzzy
+msgid "&Transpose\tCTRL+SHIFT+t"
 msgstr "移位(&T)\tSHIFT+CTRL+t"
 
-#: myframe.h:336
 msgid "&Undo\tCTRL+z"
 msgstr "撤消(&U)\tCTRL+z"
 
-#: myframe.h:496
-msgid "&Vertical View"
+#, fuzzy
+msgid "&Vertical View\tCTRL+ALT+,"
 msgstr "垂直视图(&V)"
 
-#: myframe.h:520
 msgid "&View"
 msgstr "视图(&V)"
 
-#: myframe.h:353
 msgid "&Wrap in new parent\tF9"
 msgstr "包装在新的父项中(&W)\tF9"
 
-#: myframe.h:132
 msgid "&XML..."
 msgstr "XML...(&X)"
 
-#: document.h:1013
 msgid "1:1 scale restored."
 msgstr "已恢复 1:1 比例。"
 
-#: system.h:197
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "存在临时自动保存文件，是否要改为加载该文件？"
 
-#: myframe.h:570
 msgid "Add Image"
 msgstr "添加图像"
 
-#: myframe.h:352
 msgid "Adds a grid to the selected cell"
 msgstr "将网格添加到选定的单元格"
 
-#: myframe.h:298
 msgid "Adds an image to the selected cell"
 msgstr "将图像添加到选定的单元格"
 
-#: myframe.h:476
+msgid "Apply last border color\tSHIFT+ALT+b"
+msgstr ""
+
+#, fuzzy
+msgid "Apply last cell color\tSHIFT+ALT+c"
+msgstr "重置颜色(&C)\tSHIFT+CTRL+c"
+
+#, fuzzy
+msgid "Apply last text color\tSHIFT+ALT+t"
+msgstr "重置颜色(&C)\tSHIFT+CTRL+c"
+
+msgid "At least one file could not be opened."
+msgstr ""
+
 msgid "Auto reload documents"
 msgstr "自动重新加载文档"
 
-#: myframe.h:479
 msgid "Automatically export a .html on every save"
 msgstr "每次保存时自动导出 .html"
 
-#: system.h:198
 msgid "Autosave load"
 msgstr "自动保存负载"
 
-#: myframe.h:473
 msgid "Autosave to .tmp"
 msgstr "自动保存到 .tmp"
 
-#: myframe.h:486
 msgid "Black and white toolbar icons"
 msgstr "黑白工具栏图标"
 
-#: myframe.h:588
 msgid "Border "
 msgstr "边框 "
 
-#: myframe.h:322
+#, fuzzy
+msgid "Border &0\tCTRL+SHIFT+9"
+msgstr "折叠全部\tCTRL+SHIFT+F10"
+
+#, fuzzy
+msgid "Border &1\tCTRL+SHIFT+1"
+msgstr "折叠全部\tCTRL+SHIFT+F10"
+
+#, fuzzy
+msgid "Border &2\tCTRL+SHIFT+2"
+msgstr "折叠全部\tCTRL+SHIFT+F10"
+
+#, fuzzy
+msgid "Border &3\tCTRL+SHIFT+3"
+msgstr "折叠全部\tCTRL+SHIFT+F10"
+
+#, fuzzy
+msgid "Border &4\tCTRL+SHIFT+4"
+msgstr "折叠全部\tCTRL+SHIFT+F10"
+
+#, fuzzy
+msgid "Border &5\tCTRL+SHIFT+5"
+msgstr "折叠全部\tCTRL+SHIFT+F10"
+
 msgid "Bubble Style Rendering\tALT+8"
 msgstr "气泡风格渲染\tALT+8"
 
-#: document.h:1493
-msgid "Can only move this cell into an Nx1 or 1xN grid."
+#, fuzzy
+msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr "只能将此单元格移动到 nx1 或1xn 网格中。"
 
-#: document.h:1660
-msgid "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect"
+#, fuzzy
+msgid "Can only move this cell into a Nx1 or 1xN grid."
+msgstr "只能将此单元格移动到 nx1 或1xn 网格中。"
+
+msgid ""
+"Can't sort: make a 1xN selection to indicate what column to sort on, and "
+"what rows to affect"
 msgstr "无法排序：选择一块 1xN 区域以指明需要排序的列，以及受影响的行"
 
-#: document.h:601
 msgid "Cancel"
 msgstr "取消"
 
-#: myframe.h:257
 msgid "Cancel text edits\tESC"
 msgstr "取消文本编辑\tESC"
 
-#: system.h:266
 msgid "Cannot decompress file."
 msgstr "无法解压缩文件。"
 
-#: document.h:1611
 msgid "Cannot drag & drop more than 1 file."
 msgstr "无法拖放超过 1 个文件。"
 
-#: document.h:655
-msgid "Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten)."
+msgid ""
+"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
+"or use Flatten)."
 msgstr "无法导出不平坦的网格 (将视图缩放到所需的网格，或使用 \"平展\")。"
 
-#: document.h:1455
-msgid "Cannot find file."
-msgstr "找不到文件。"
-
-#: document.h:1448
-msgid "Cannot launch browser for this link."
-msgstr "无法启动此链接的浏览器。"
-
-#: document.h:1491
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "无法在层次结构中向上移动此单元格。"
 
-#: system.h:211
 msgid "Cannot open file."
 msgstr "无法打开文件。"
 
-#: system.h:237
 msgid "Cannot tell/seek document?"
 msgstr "无法找到文件？"
 
-#: myframe.h:582
+msgid "Case-sensitive search"
+msgstr ""
+
 msgid "Cell "
 msgstr "单元格 "
 
-#: myframe.h:448
 msgid "Change a key binding..."
 msgstr "更改密钥绑定..."
 
-#: myframe.h:300
-msgid "Change the image size if it is too big or too small"
+msgid ""
+"Change the image size if it is too big or too small, by changing the size "
+"shown on screen. Applies to all uses of this image."
+msgstr ""
+
+#, fuzzy
+msgid ""
+"Change the image size if it is too big, by reducing the amount of pixels"
 msgstr "如果图像太大或太小，请更改图像大小"
 
-#: document.h:600
+msgid ""
+"Change the scale to match DPI of the current display. Applies to all uses of "
+"this image."
+msgstr ""
+
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "已进行更改，您确定要继续吗？"
 
-#: document.h:829
 msgid "Choose CSV file to write"
 msgstr "选择要写入的 CSV 文件"
 
-#: document.h:826
 msgid "Choose HTML file to write"
 msgstr "选择要写入的 HTML 文件"
 
-#: document.h:828
 msgid "Choose PNG file to write"
 msgstr "选择要写入的 PNG 文件"
 
-#: document.h:827
 msgid "Choose Text file to write"
 msgstr "选择要写入的文本文件"
 
-#: document.h:711
 msgid "Choose TreeSheets file to save:"
 msgstr "选择“树表格”文件以保存："
 
-#: document.h:824
 msgid "Choose XML file to write"
 msgstr "选择要编写的 XML 文件"
 
-#: document.h:419
+#, fuzzy
+msgid "Choose image file to save:"
+msgstr "选择“树表格”文件以保存："
+
+msgid "Clear replace"
+msgstr ""
+
+#, fuzzy
+msgid "Clear search"
+msgstr "不搜索。"
+
 msgid "Column width decreased."
 msgstr "列宽度已减小。"
 
-#: document.h:419
 msgid "Column width increased."
 msgstr "列宽度已增加。"
 
-#: myframe.h:158
 msgid "Comma delimited text (CSV)..."
 msgstr "逗号分隔文本 (CSV)..."
 
-#: myframe.h:289
-msgid "Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"
-msgstr "将每列重复元素的 NxN 网格转换为具有层次结构的 1xN 网格，可用于从电子表格中转换数据"
+msgid ""
+"Convert an NxN grid with repeating elements per column into an 1xN grid with "
+"hierarchy, useful to convert data from spreadsheets"
+msgstr ""
+"将每列重复元素的 NxN 网格转换为具有层次结构的 1xN 网格，可用于从电子表格中转"
+"换数据"
 
-#: myframe.h:563
 msgid "Copy (CTRL+c)"
 msgstr "复制 (CTRL+c)"
 
-#: myframe.h:331
 msgid "Copy As Continuous Text"
 msgstr "复制为连续文本"
 
-#: system.h:243
+msgid "Copy Image to clipboard"
+msgstr ""
+
+#, fuzzy
+msgid "Copy the image in the selected cell to the clipboard"
+msgstr "将图像添加到选定的单元格"
+
 msgid "Corrupt PNG header."
 msgstr "损坏的 PNG 标头。"
 
-#: system.h:295
 msgid "Corrupt block header."
 msgstr "损坏的块标头。"
 
-#: myframe.h:471
+msgid "Could not load file because of a corrupted embedded JPEG file"
+msgstr ""
+
+msgid "Could not load file because of an embedded image file of unknown type"
+msgstr ""
+
 msgid "Create .bak files"
 msgstr "创建 .bak 文件"
 
-#: myframe.h:354
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "围绕当前所选内容创建新级别的层次结构"
 
-#: myframe.h:329
 msgid "Cu&t\tCTRL+x"
 msgstr "剪切(&T)\tCTRL+x"
 
-#: myframe.h:238
 msgid "Cursor Left\tLEFT"
 msgstr "光标左侧\tLEFT"
 
-#: myframe.h:239
 msgid "Cursor Right\tRIGHT"
 msgstr "光标右侧\tRIGHT"
 
-#: myframe.h:193
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "减小列宽度 (alt 鼠标滚轮)\tALT+PGDN"
 
-#: myframe.h:197
 msgid "Decrease column width (no sub grids)\tCTRL+ALT+PGDN"
 msgstr "减小列宽度 (无子网格)\tCTRL+ALT+PGDN"
 
-#: myframe.h:343
 msgid "Delete Before\tBACK"
 msgstr "返回前删除"
 
-#: myframe.h:341
-msgid "Deletes the column of cells after the selected grid line, or the row below"
+#, fuzzy
+msgid "Delete Word After\tCTRL+DEL"
+msgstr "删除后(&D)\tDEL"
+
+#, fuzzy
+msgid "Delete Word Before\tCTRL+BACK"
+msgstr "返回前删除"
+
+msgid ""
+"Deletes the column of cells after the selected grid line, or the row below"
 msgstr "删除选定网格线之后的单元格列，或删除下面的行"
 
-#: myframe.h:344
-msgid "Deletes the column of cells before the selected grid line, or the row above"
+msgid ""
+"Deletes the column of cells before the selected grid line, or the row above"
 msgstr "删除选定网格线之前的单元格列，或上面的行"
 
-#: document.h:601
+msgid "Deletes the entire word after the cursor"
+msgstr ""
+
+msgid "Deletes the entire word before the cursor"
+msgstr ""
+
 msgid "Discard Changes"
 msgstr "放弃更改"
 
-#: system.h:361
 #, c-format
 msgid "Edited %s"
 msgstr "已修改 %s"
 
-#: document.h:1503
 msgid "Empty strings cannot be tags."
 msgstr "空字符串不能是标记。"
 
-#: myframe.h:251
 msgid "End of line of text\tEND"
 msgstr "文本行的结尾\tEND"
 
-#: myframe.h:253
 msgid "End of text\tCTRL+END"
 msgstr "文本的结尾\tCTRL+END"
 
-#: myframe.h:255
 msgid "Enter/exit text edit mode\tENTER"
 msgstr "输入/退出文本编辑模式\tENTER"
 
-#: myframe.h:256
 msgid "Enter/exit text edit mode\tF2"
 msgstr "输入/退出文本编辑模式\tF2"
 
-#: document.h:671
+#, fuzzy
+msgid "Enter/exit text edit to the right\tALT+ENTER"
+msgstr "输入/退出文本编辑模式\tENTER"
+
 msgid "Error exporting file!"
 msgstr "导出文件时出错！"
 
-#: myframe.h:105
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr "加载核心数据文件时出错 (树表格安装不正确？)"
 
-#: document.h:667
 msgid "Error writing PNG file!"
 msgstr "写入 PNG 文件时出错！"
 
-#: document.h:165
 msgid "Error writing TreeSheets file! (try saving under new filename)."
 msgstr "写入树表格文件时出错!(尝试在新文件名下保存)。"
 
-#: document.h:672
+#, fuzzy
+msgid "Error writing image file! (try saving under new filename)."
+msgstr "写入树表格文件时出错!(尝试在新文件名下保存)。"
+
 msgid "Error writing to file!"
 msgstr "写入文件时出错！"
 
-#: document.h:167
 msgid "Error writing to file."
 msgstr "写入文件时出错。"
 
-#: document.h:803
 msgid "Evaluation finished."
 msgstr "评估完成。"
 
-#: myframe.h:179
 msgid "Export &view as"
 msgstr "导出视图为(&V)"
 
-#: document.h:646
 msgid "Export cancelled."
 msgstr "导出已取消。"
 
-#: myframe.h:146
-msgid "Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr "将当前视图导出为 CSV。适用于电子表格和数据库。仅适用于没有子网格的网格（如有需要，请首先使用 flatten 操作）"
+msgid ""
+"Export the current view as CSV. Good for spreadsheets and databases. Only "
+"works on grids with no sub-grids (use the Flatten operation first if need be)"
+msgstr ""
+"将当前视图导出为 CSV。适用于电子表格和数据库。仅适用于没有子网格的网格（如有"
+"需要，请首先使用 flatten 操作）"
 
-#: myframe.h:139
-msgid "Export the current view as HTML as nested headers, suitable for importing into Word's outline mode"
+#, fuzzy
+msgid "Export the current view as HTML as nested bullet points."
 msgstr "将当前视图导出为嵌套标头的 HTML，适合导入到 Word 的大纲模式中"
 
-#: myframe.h:136
-msgid "Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet"
+msgid ""
+"Export the current view as HTML as nested headers, suitable for importing "
+"into Word's outline mode"
+msgstr "将当前视图导出为嵌套标头的 HTML，适合导入到 Word 的大纲模式中"
+
+msgid ""
+"Export the current view as HTML using nested tables, that will look somewhat "
+"like the TreeSheet"
 msgstr "使用嵌套表将当前视图导出为 HTML，这看起来有点像树表"
 
-#: myframe.h:133
-msgid "Export the current view as XML (which can also be reimported without losing structure)"
+msgid ""
+"Export the current view as XML (which can also be reimported without losing "
+"structure)"
 msgstr "将当前视图导出为 XML (也可以在不丢失结构的情况下重新导入)"
 
-#: myframe.h:150
-msgid "Export the current view as an image. Useful for faithfull renderings of the TreeSheet, and programs that don't accept any of the above options"
-msgstr "将当前视图导出为图像。适用于树表的完整渲染，以及不接受上述任何选项的程序"
+#, fuzzy
+msgid ""
+"Export the current view as an image. Useful for faithful renderings of the "
+"TreeSheet, and programs that don't accept any of the above options"
+msgstr ""
+"将当前视图导出为图像。适用于树表的完整渲染，以及不接受上述任何选项的程序"
 
-#: myframe.h:142
-msgid "Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"
-msgstr "将当前视图导出为树结构化文本，对每个缩进级别使用空格。适用于导入思维管理人员和一般文本程序"
+msgid ""
+"Export the current view as tree structured text, using spaces for each "
+"indentation level. Suitable for importing into mindmanagers and general text "
+"programs"
+msgstr ""
+"将当前视图导出为树结构化文本，对每个缩进级别使用空格。适用于导入思维管理人员"
+"和一般文本程序"
 
-#: myframe.h:227
 msgid "Extend Selection Down\tSHIFT+DOWN"
 msgstr "向下扩展所选内容\tSHIFT+DOWN"
 
-#: myframe.h:228
 msgid "Extend Selection Full Columns"
 msgstr "扩展所选内容的完整列"
 
-#: myframe.h:229
 msgid "Extend Selection Full Rows"
 msgstr "扩展所选内容的完整行"
 
-#: myframe.h:224 myframe.h:243
 msgid "Extend Selection Left\tSHIFT+LEFT"
 msgstr "向左扩展所选内容\tSHIFT+LEFT"
 
-#: myframe.h:225 myframe.h:244
 msgid "Extend Selection Right\tSHIFT+RIGHT"
 msgstr "扩展选择权限\tSHIFT+RIGHT"
 
-#: myframe.h:226
 msgid "Extend Selection Up\tSHIFT+UP"
 msgstr "向上扩展选择\tSHIFT+UP"
 
-#: myframe.h:245
-msgid "Extend Selection Word Left\tSHIFT+CTRL+LEFT"
+#, fuzzy
+msgid "Extend Selection Word Left\tCTRL+SHIFT+LEFT"
 msgstr "向左扩展选择词\tSHIFT+CTRL+LEFT"
 
-#: myframe.h:246
-msgid "Extend Selection Word Right\tSHIFT+CTRL+RIGHT"
+#, fuzzy
+msgid "Extend Selection Word Right\tCTRL+SHIFT+RIGHT"
 msgstr "向右扩展选择词\tSHIFT+CTRL+RIGHT"
 
-#: myframe.h:248
 msgid "Extend Selection to End\tSHIFT+END"
 msgstr "将所选内容扩展到结束\tSHIFT+END"
 
-#: myframe.h:247
 msgid "Extend Selection to Start\tSHIFT+HOME"
 msgstr "将所选内容扩展到 \"开始\"\tSHIFT+HOME"
 
-#: myframe.h:484
 msgid "Faster line rendering"
 msgstr "更快的线渲染"
 
-#: myframe.h:457
 msgid "File Tabs on the bottom"
 msgstr "底部的文件选项卡"
 
-#: system.h:270
 msgid "File corrupted!"
 msgstr "文件已损坏！"
 
-#: document.h:705
 msgid "File exported successfully."
 msgstr "文件已成功导出。"
 
-#: myframe.h:1047
-msgid "File has been re-loaded because of modifications of another program / computer"
+msgid ""
+"File has been re-loaded because of modifications of another program / "
+"computer"
 msgstr "由于另一个程序/计算机的修改，文件已重新加载"
 
-#: system.h:421
 msgid "File load error."
 msgstr "文件加载错误。"
 
-#: myframe.h:1033
 msgid "File modification conflict!"
 msgstr "文件修改冲突！"
 
-#: system.h:217
 msgid "File of newer version."
 msgstr "较新版本的文件。"
 
-#: document.h:208
-msgid "File saved succesfully."
-msgstr "成功保存的文件。"
+msgid "Filter by the same cell color"
+msgstr ""
 
-#: myframe.h:434
 msgid "Filter..."
 msgstr "滤波器..."
 
-#: myframe.h:365
 msgid "Fold All\tCTRL+SHIFT+F10"
 msgstr "折叠全部\tCTRL+SHIFT+F10"
 
-#: myframe.h:366
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "递归折叠选定单元格的网格"
 
-#: myframe.h:234
 msgid "Go To &Matching Cell\tF6"
 msgstr "转到匹配单元格(&M)\tF6"
 
-#: myframe.h:235
 msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
 msgstr "转到匹配单元格 (反向)\tSHIFT+F6"
 
-#: myframe.h:321
+#, fuzzy
+msgid "Go to Next Search Result"
+msgstr "转到下一个搜索结果(&G)\tF3"
+
+msgid "Go to next filter match\tSHIFT+F3"
+msgstr ""
+
 msgid "Grid Style Rendering\tALT+7"
 msgstr "网格样式渲染\tALT+7"
 
-#: myframe.h:138
+#, fuzzy
+msgid "HTML (&Bullet points)..."
+msgstr "HTML (&O)..."
+
 msgid "HTML (&Outline)..."
 msgstr "HTML (&O)..."
 
-#: myframe.h:286
 msgid "Hierarchy &Swap\tF8"
 msgstr "层次结构交换(&S)\tF8"
 
-#: myframe.h:273
-msgid "Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"
+msgid ""
+"Hold CTRL while pressing right mouse button to quickly set a tag for the "
+"current cell using a popup menu"
 msgstr "按住 CTRL 键，同时使用弹出菜单快速设置当前单元格的标记"
 
-#: myframe.h:318
 msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
 msgstr "具有气泡样式渲染的水平布局\tALT+5"
 
-#: myframe.h:317
 msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
 msgstr "具有网格样式渲染的水平布局\tALT+4"
 
-#: myframe.h:319
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "具有线条样式渲染的水平布局\tALT+6"
 
-#: document.h:934
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "一个页面应该有多少像素宽？(0 为自动配合)"
 
-#: myframe.h:591
 msgid "Image "
 msgstr "图像 "
 
-#: document.h:1463
 msgid "Image Resize"
 msgstr "图像调整大小"
 
-#: myframe.h:180
+msgid "Image copied to clipboard"
+msgstr ""
+
 msgid "Import file from"
 msgstr "从导入文件"
 
-#: myframe.h:192
 msgid "Increase column width (ALT+mousewheel)\tALT+PGUP"
 msgstr "增加列宽度 (alt 鼠标滚轮)\tALT+PGUP"
 
-#: myframe.h:195
 msgid "Increase column width (no sub grids)\tCTRL+ALT+PGUP"
 msgstr "增加列宽度 (无子网格)\tCTRL+ALT+PGUP"
 
-#: myframe.h:141
 msgid "Indented &Text..."
 msgstr "文本缩进(&T)..."
 
-#: myframe.h:157
 msgid "Indented text..."
 msgstr "文本缩进..."
 
-#: myframe.h:106
 msgid "Initialization Error"
 msgstr "初始化错误"
 
-#: document.h:1558
 msgid "Internal error: unimplemented operation!"
 msgstr "内部错误：未实现的操作！"
 
-#: document.h:1049
 msgid "Key binding"
 msgstr "键绑定"
 
-#: document.h:1063
 msgid "Keybinding cancelled."
 msgstr "取消了绑定。"
 
-#: myframe.h:323
 msgid "Line Style Rendering\tALT+9"
 msgstr "线条样式渲染\tALT+9"
 
-#: myframe.h:505
 msgid "Load interactive &tutorial...\tF1"
 msgstr "加载交互式教程(&T)...\tF1"
 
-#: system.h:288
-#, c-format
-msgid "Loaded %s (%d cells, %d characters)."
+msgid "Load operation reference...\tCTRL+ALT+F1"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "加载%s (%d 单元格，%d 字符)。"
 
-#: myframe.h:281 myframe.h:284
-msgid "Make a 1xN selection to indicate which column to sort on, and which rows to affect"
+msgid ""
+"Make a 1xN selection to indicate which column to sort on, and which rows to "
+"affect"
 msgstr "选定一块 1xN 区域以指明要对哪一列进行排序，以及哪些行受影响"
 
-#: myframe.h:326
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
 msgstr "使层次结构布局更垂直 (默认) 或更水平"
 
-#: myframe.h:461
+msgid "Maximum number of launches reached."
+msgstr ""
+
 msgid "Minimize on close"
 msgstr "关闭时最小化"
 
-#: myframe.h:459
 msgid "Minimize to tray"
 msgstr "最小化到托盘"
 
-#: myframe.h:222
 msgid "Move Cells Down\tCTRL+DOWN"
 msgstr "向下移动单元格\tCTRL+DOWN"
 
-#: myframe.h:219
 msgid "Move Cells Left\tCTRL+LEFT"
 msgstr "向左移动单元格\tCTRL+LEFT"
 
-#: myframe.h:220
 msgid "Move Cells Right\tCTRL+RIGHT"
 msgstr "向右移动单元格\tCTRL+RIGHT"
 
-#: myframe.h:221
 msgid "Move Cells Up\tCTRL+UP"
 msgstr "向上移动单元格\tCTRL+UP"
 
-#: myframe.h:217
 msgid "Move Selection Down\tDOWN"
 msgstr "向下移动所选内容\tDOWN"
 
-#: myframe.h:214
 msgid "Move Selection Left\tLEFT"
 msgstr "向左移动所选内容\tLEFT"
 
-#: myframe.h:215
 msgid "Move Selection Right\tRIGHT"
 msgstr "向右移动选择\tRIGHT"
 
-#: myframe.h:216
 msgid "Move Selection Up\tUP"
 msgstr "上移所选内容\tUP"
 
-#: myframe.h:209
 msgid "Move to next cell\tTAB"
 msgstr "移动到下一个单元格\tTAB"
 
-#: myframe.h:210
 msgid "Move to previous cell\tSHIFT+TAB"
 msgstr "移动到上一个单元格\tSHIFT+TAB"
 
-#: document.h:1060
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr "注：键绑定将在下一次运行的树表中生效。"
 
-#: myframe.h:468
 msgid "Navigate in between cells with cursor keys"
 msgstr "使用光标键在单元格之间导航"
 
-#: myframe.h:557
 msgid "New (CTRL+n)"
 msgstr "新建 (CTRL+n)"
 
-#: myframe.h:569
 msgid "New Grid (INS)"
 msgstr "新网格 (ins)"
 
-#: document.h:863
 msgid "New Sheet"
 msgstr "新工作表"
 
-#: document.h:864
 msgid "New file cancelled."
 msgstr "新文件已取消。"
 
-#: document.h:1460
 msgid "No image in this cell."
 msgstr "此单元格中没有图像。"
 
-#: document.h:1567
+#, fuzzy
+msgid "No matches for filter."
+msgstr "没有用于搜索的匹配项。"
+
 msgid "No matches for search."
 msgstr "没有用于搜索的匹配项。"
 
-#: document.h:1481
 msgid "No matching cell found!"
 msgstr "找不到匹配的单元格！"
 
-#: document.h:1563
 msgid "No search string."
 msgstr "没有搜索字符串。"
 
-#: document.h:999 document.h:1293
 msgid "No search."
 msgstr "不搜索。"
 
-#: document.h:1252
 msgid "No style to paste."
 msgstr "没有要粘贴的样式。"
 
-#: document.h:1114
+#, fuzzy
+msgid "No text in this cell."
+msgstr "此单元格中没有图像。"
+
 msgid "No text selected."
 msgstr "未选择文本。"
 
-#: system.h:215
 msgid "Not a TreeSheets file."
 msgstr "不是 \"树表\" 文件。"
 
-#: document.h:818
 msgid "Nothing more to redo."
 msgstr "没有什么可重做的了。"
 
-#: document.h:810
 msgid "Nothing more to undo."
 msgstr "没有更多的撤消。"
 
-#: document.h:1011
-msgid "Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal."
+msgid ""
+"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
+"normal."
 msgstr "现在查看树板以完全适合屏幕，按 F12 返回正常状态。"
 
-#: myframe.h:308
 msgid "Open &file\tF4"
 msgstr "打开文件(&F)\tF4"
 
-#: myframe.h:558
 msgid "Open (CTRL+o)"
 msgstr "打开 (CTRL+o)"
 
-#: system.h:335
+#, fuzzy
+msgid "Open border colors\tSHIFT+ALT+F11"
+msgstr "重置颜色(&C)\tSHIFT+CTRL+c"
+
+#, fuzzy
+msgid "Open cell colors\tSHIFT+ALT+F9"
+msgstr "重置颜色(&C)\tSHIFT+CTRL+c"
+
 msgid "Open file cancelled."
 msgstr "打开文件已取消。"
 
-#: myframe.h:305
 msgid "Open link in &browser\tF5"
 msgstr "在浏览器中打开链接(&B)\tF5"
 
-#: myframe.h:306
-msgid "Opens up the text from the selected cell in browser (should start be a valid URL)"
+#, fuzzy
+msgid "Open text colors\tSHIFT+ALT+F10"
+msgstr "重置颜色(&C)\tSHIFT+CTRL+c"
+
+msgid ""
+"Opens up the text from the selected cell in browser (should start be a valid "
+"URL)"
 msgstr "在浏览器中打开选定单元格中的文本 (开始时应该是有效的 url)"
 
-#: myframe.h:309
-msgid "Opens up the text from the selected cell in default application for the file type"
+msgid ""
+"Opens up the text from the selected cell in default application for the file "
+"type"
 msgstr "在文件类型的默认应用程序中打开选定单元格中的文本"
 
-#: system.h:308
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
@@ -902,535 +886,494 @@ msgstr ""
 "PNG 解码本文档中的某些图像时失败\n"
 "它们已被红色方块所取代。"
 
-#: system.h:310
 msgid "PNG decoder failure"
 msgstr "PNG 解码器故障"
 
-#: myframe.h:174
 msgid "Page Setup..."
 msgstr "页面设置..."
 
-#: myframe.h:564
 msgid "Paste (CTRL+v)"
 msgstr "粘贴 (CTRL+v)"
 
-#: myframe.h:333
 msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr "仅粘贴样式\tCTRL+SHIFT+v"
 
-#: myframe.h:449
 msgid "Pick Custom &Color..."
 msgstr "选择自定义颜色(&C)..."
 
-#: myframe.h:447
 msgid "Pick Default Font..."
 msgstr "选择默认字体..."
 
-#: myframe.h:451
 msgid "Pick Document Background..."
 msgstr "选择文档背景..."
 
-#: myframe.h:862
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr "请启用 (选项-> 显示工具栏) 以使用搜索。"
 
-#: document.h:1462
+#, fuzzy
+msgid "Please enter the new image width:"
+msgstr "请选择图像文件："
+
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "请输入要按以下方式缩放图像的百分比："
 
-#: document.h:1048
 msgid "Please pick a menu item to change the key binding for"
 msgstr "请选择一个菜单项来更改的键绑定"
 
-#: document.h:840
 msgid "Please select a TreeSheets file to load:"
 msgstr "请选择要加载的树表格文件："
 
-#: document.h:1272
 msgid "Please select an image file:"
 msgstr "请选择图像文件："
 
-#: system.h:373
 msgid "Please select file to import:"
 msgstr "请选择要导入的文件："
 
-#: myframe.h:855
 msgid "Press F11 to exit fullscreen mode."
 msgstr "按 f11 退出全屏模式。"
 
-#: document.h:943
 msgid "Print Preview"
 msgstr "打印预览"
 
-#: myframe.h:176
 msgid "Print preview..."
 msgstr "打印预览..."
 
-#: myframe.h:437
 msgid "Radius &0"
 msgstr "半径0(&0)"
 
-#: myframe.h:438
 msgid "Radius &1"
 msgstr "半径1(&1)"
 
-#: myframe.h:439
 msgid "Radius &2"
 msgstr "半径2(&2)"
 
-#: myframe.h:440
 msgid "Radius &3"
 msgstr "半径3(&3)"
 
-#: myframe.h:441
 msgid "Radius &4"
 msgstr "半径4(&4)"
 
-#: myframe.h:442
 msgid "Radius &5"
 msgstr "半径5(&5)"
 
-#: myframe.h:443
 msgid "Radius &6"
 msgstr "半径6(&6)"
 
-#: myframe.h:477
 #, fuzzy
-msgid "Reloads when another computer has changed a file (if you have made changes, asks)"
+msgid ""
+"Reloads when another computer has changed a file (if you have made changes, "
+"asks)"
 msgstr "当另一台计算机更改了文件时重新加载 (如果您进行了更改，请询问)"
 
-#: myframe.h:302
 msgid "Remove image(s) from the selected cells"
 msgstr "从选定单元格中删除图像"
 
-#: myframe.h:482
 msgid "Render document centered"
 msgstr "呈现文档居中"
 
-#: myframe.h:578
 msgid "Replace "
 msgstr "取代 "
 
-#: myframe.h:389
 msgid "Replace &All"
 msgstr "全部替换(&A)"
 
-#: myframe.h:267
-msgid "Reset &colors\tSHIFT+CTRL+c"
+#, fuzzy
+msgid "Replace All"
+msgstr "全部替换(&A)"
+
+#, fuzzy
+msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
+msgstr "替换在当前选择跳转下一步(&R)\tCTRL+j"
+
+#, fuzzy
+msgid "Replace in selection"
+msgstr "在当前选择中替换(&R)\tCTRL+h"
+
+#, fuzzy
+msgid "Reset &colors\tCTRL+SHIFT+c"
 msgstr "重置颜色(&C)\tSHIFT+CTRL+c"
 
-#: myframe.h:198
-msgid "Reset column widths\tSHIFT+CTRL+w"
+#, fuzzy
+msgid "Reset column widths\tCTRL+SHIFT+w"
 msgstr "重置列宽度\tSHIFT+CTRL+w"
 
-#: myframe.h:572
 msgid "Run"
 msgstr "运行"
 
-#: myframe.h:172
 msgid "Save &As..."
 msgstr "另存为(&A)..."
 
-#: myframe.h:559
 msgid "Save (CTRL+s)"
 msgstr "保存 (CTRL+s)"
 
-#: myframe.h:560
 msgid "Save As"
 msgstr "另存为"
 
-#: document.h:601
+msgid "Save Image(s) to disk"
+msgstr ""
+
 msgid "Save and Close"
 msgstr "保存并关闭"
 
-#: document.h:153 document.h:713
 msgid "Save cancelled."
 msgstr "保存已取消。"
 
-#: myframe.h:395
+msgid "Save image as JPEG"
+msgstr ""
+
+msgid "Save image as PNG (default)"
+msgstr ""
+
+msgid ""
+"Save image(s) to disk. Multiple images will be saved with a counter appended "
+"to each file name."
+msgstr ""
+
+msgid "Save the image in the TreeSheets file in JPEG format"
+msgstr ""
+
+msgid "Save the image in the TreeSheets file in PNG format"
+msgstr ""
+
+#, c-format
+msgid "Saved %s successfully (in %d milliseconds)."
+msgstr ""
+
+msgid "Script"
+msgstr ""
+
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
 msgstr "向下滚动 (鼠标滚轮)\tALT+DOWN"
 
-#: myframe.h:394
 msgid "Scroll Down (mousewheel)\tPGDN"
 msgstr "向下滚动 (鼠标滚轮)\tPGDN"
 
-#: myframe.h:396
 msgid "Scroll Left\tALT+LEFT"
 msgstr "向左滚动\tALT+LEFT"
 
-#: myframe.h:397
 msgid "Scroll Right\tALT+RIGHT"
 msgstr "向右滚动\tALT+RIGHT"
 
-#: myframe.h:433
 msgid "Scroll Sheet..."
 msgstr "滚动表格..."
 
-#: myframe.h:393
 msgid "Scroll Up (mousewheel)\tALT+UP"
 msgstr "向上滚动 (鼠标滚轮)\tALT+UP"
 
-#: myframe.h:392
 msgid "Scroll Up (mousewheel)\tPGUP"
 msgstr "向上滚动 (鼠标滚轮)\tPGUP"
 
-#: myframe.h:574
 msgid "Search "
 msgstr "搜索 "
 
-#: myframe.h:231
 msgid "Select &Parent\tESC"
 msgstr "选择父项(&P)\tESC"
 
-#: myframe.h:212
 msgid "Select &all in current grid\tCTRL+a"
 msgstr "在当前网格中选择所有(&A)\tCTRL+a"
 
-#: myframe.h:232
 msgid "Select First &Child\tSHIFT+ENTER"
 msgstr "选择第一个子项(&C)\tSHIFT+ENTER"
 
-#: document.h:1414
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr "选定的网格不是表：单元格不能已经有子网格。"
 
-#: myframe.h:159
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "半冒号分隔文本 (CSV)..."
 
-#: myframe.h:378
 msgid "Set Grid Border Width..."
 msgstr "设置网格边框宽度..."
 
-#: document.h:935
 msgid "Set Print Scale"
 msgstr "设置打印比例"
 
-#: myframe.h:175
 msgid "Set Print Scale..."
 msgstr "设置打印比例..."
 
-#: myframe.h:407
-#, c-format
+#, no-c-format
 msgid "Show 1% less than the last filter"
 msgstr "显示比最后一个筛选器少 1%"
 
-#: myframe.h:406
-#, c-format
+#, no-c-format
 msgid "Show 1% more than the last filter"
 msgstr "显示比最后一个筛选器多 1%"
 
-#: myframe.h:403
-#, c-format
+#, no-c-format
 msgid "Show 10% of last edits"
 msgstr "显示上次编辑的 10%"
 
-#: myframe.h:404
-#, c-format
+#, no-c-format
 msgid "Show 20% of last edits"
 msgstr "显示上次编辑的 20%"
 
-#: myframe.h:402
-#, c-format
+#, no-c-format
 msgid "Show 5% of last edits"
 msgstr "显示上次编辑的 5%"
 
-#: myframe.h:405
-#, c-format
+#, no-c-format
 msgid "Show 50% of last edits"
 msgstr "显示上次编辑的 50%"
 
-#: myframe.h:453
 msgid "Show Statusbar"
 msgstr "显示状态栏"
 
-#: myframe.h:455
 msgid "Show Toolbar"
 msgstr "显示工具栏"
 
-#: myframe.h:401
 msgid "Show only cells in current search"
 msgstr "仅在当前搜索中显示单元格"
 
-#: myframe.h:463
 msgid "Single click maximize from tray"
 msgstr "从托盘中单击最大化"
 
-#: system.h:358
 #, c-format
 msgid "Size %d"
 msgstr "尺寸 %d"
 
-#: myframe.h:280
 msgid "Sort &Ascending"
 msgstr "排序升序(&A)"
 
-#: myframe.h:283
 msgid "Sort &Descending"
 msgstr "排序降序(&D)"
 
-#: myframe.h:250
 msgid "Start of line of text\tHOME"
 msgstr "文本行的开始\tHOME"
 
-#: myframe.h:252
 msgid "Start of text\tCTRL+HOME"
 msgstr "文本的开始\tCTRL+HOME"
 
-#: myframe.h:287
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr "将此文本与父级 (或更高版本) 的所有单元格交换"
 
-#: myframe.h:466
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "交换鼠标滚轮滚动和缩放"
 
-#: myframe.h:418
 msgid "Switch to &next file/tab"
 msgstr "切换到下一个文件/选项卡(&N)"
 
-#: myframe.h:414
 msgid "Switch to &next file/tab\tCTRL+TAB"
 msgstr "切换到下一个文件/选项卡(&N)\tCTRL+TAB"
 
-#: myframe.h:420
-msgid "Switch to &previous file/tab\tSHIFT+CTRL+TAB"
+#, fuzzy
+msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
 msgstr "切换到以前的文件/选项卡(&P)\tSHIFT+CTRL+TAB"
 
-#: myframe.h:160
 msgid "Tab delimited text..."
 msgstr "制表符分隔的文本格式..."
 
-#: myframe.h:379
 msgid "Tag..."
 msgstr "标记..."
 
-#: myframe.h:293
-msgid "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"
-msgstr "采用层次结构 (嵌套 1xn 或 1xN 网格) 并将其转换为平面 1xN 网格，可用于导出到电子表格"
+msgid ""
+"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
+"grid, useful for export to spreadsheets"
+msgstr ""
+"采用层次结构 (嵌套 1xn 或 1xN 网格) 并将其转换为平面 1xN 网格，可用于导出到电"
+"子表格"
 
-#: myframe.h:585
 msgid "Text "
 msgstr "文本 "
 
-#: myframe.h:375
 msgid "Text &Editing..."
 msgstr "文本编辑(&E)..."
 
-#: myframe.h:376
 msgid "Text Sizing..."
 msgstr "文本大小..."
 
-#: myframe.h:377
 msgid "Text Style..."
 msgstr "文本样式..."
 
-#: document.h:429
+msgid "Text copied to clipboard"
+msgstr ""
+
+#, fuzzy
+msgid "Text has been replaced."
+msgstr "文本大小减小。"
+
 msgid "Text size decreased."
 msgstr "文本大小减小。"
 
-#: document.h:429
 msgid "Text size increased."
 msgstr "文本大小增加。"
 
-#: document.h:875
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "自由形式分层信息管理器"
 
-#: document.h:402
+msgid "The browser could not open at least one link."
+msgstr ""
+
 msgid "This operation doesn't work on thin selections."
 msgstr "此操作不适用于精简选择。"
 
-#: document.h:403
 msgid "This operation requires a cell that contains a grid."
 msgstr "此操作需要一个包含网格的单元格。"
 
-#: document.h:400
 msgid "This operation requires a selection."
 msgstr "此操作需要选择。"
 
-#: document.h:401
 msgid "This operation works on a single selected cell only."
 msgstr "此操作仅适用于单个选定的单元格。"
 
-#: myframe.h:423
 msgid "Toggle &Fullscreen View\tCTRL+F11"
 msgstr "切换全屏视图(&F)\tCTRL+F11"
 
-#: myframe.h:425
 msgid "Toggle &Fullscreen View\tF11"
 msgstr "切换全屏视图(&F)\tF11"
 
-#: myframe.h:429
 msgid "Toggle &Scaled Presentation View\tCTRL+F12"
 msgstr "切换缩放的演示文稿视图(&S)\tCTRL+F12"
 
-#: myframe.h:431
 msgid "Toggle &Scaled Presentation View\tF12"
 msgstr "切换缩放的演示文稿视图(&S)\tF12"
 
-#: myframe.h:360
 msgid "Toggle Fold\tCTRL+F10"
 msgstr "切换折叠\tCTRL+F10"
 
-#: myframe.h:362
 msgid "Toggle Fold\tF10"
 msgstr "切换折叠\tF10"
 
-#: myframe.h:325
 msgid "Toggle Vertical Layout\tF7"
 msgstr "切换垂直布局\tF7"
 
-#: myframe.h:260
+#, fuzzy
+msgid "Toggle Zen Mode"
+msgstr "切换折叠\tF10"
+
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "切换单元格(&B)\tCTRL+b"
 
-#: myframe.h:261
 msgid "Toggle cell &ITALIC\tCTRL+i"
 msgstr "切换单元格意大利语(&I)\tCTRL+i"
 
-#: myframe.h:264
 msgid "Toggle cell &strikethrough\tCTRL+t"
 msgstr "切换单元格删除线(&S)\tCTRL+t"
 
-#: myframe.h:262
-msgid "Toggle cell &typewriter"
+#, fuzzy
+msgid "Toggle cell &typewriter\tCTRL+ALT+t"
 msgstr "切换单元格打字机(&T)"
 
-#: myframe.h:263
 msgid "Toggle cell &underlined\tCTRL+u"
 msgstr "切换带下划线的单元格(&U)\tCTRL+u"
 
-#: myframe.h:364
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "切换显示所选单元格的网格"
 
-#: myframe.h:400
 msgid "Turn filter &off"
 msgstr "关闭过滤器(&O)"
 
-#: myframe.h:562
 msgid "Undo (CTRL+z)"
 msgstr "撤消 (CTRL+z)"
 
-#: myframe.h:367
 msgid "Unfold All\tCTRL+ALT+F10"
 msgstr "全部展开\tCTRL+ALT+F10"
 
-#: myframe.h:368
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "递归展开选定单元格的网格"
 
-#: myframe.h:493
-msgid "Variable &Assign"
+msgid "Uses"
+msgstr ""
+
+#, fuzzy
+msgid "Variable &Assign\tCTRL+ALT+a"
 msgstr "变量分配(&A)"
 
-#: myframe.h:494
-msgid "Variable &Read"
+#, fuzzy
+msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "变量读取(&R)"
 
-#: myframe.h:314
 msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
 msgstr "具有气泡样式渲染的垂直布局\tALT+2"
 
-#: myframe.h:313
 msgid "Vertical Layout with Grid Style Rendering\tALT+1"
 msgstr "具有网格样式渲染的垂直布局\tALT+1"
 
-#: myframe.h:315
 msgid "Vertical Layout with Line Style Rendering\tALT+3"
 msgstr "具有线条样式渲染的垂直布局\tALT+3"
 
-#: myframe.h:506
 msgid "View tutorial &web page..."
 msgstr "查看教程网页(&W)..."
 
-#: document.h:862
 msgid "What size grid would you like to start with?"
 msgstr "您希望从什么尺寸的网格开始？"
 
-#: system.h:359
 #, c-format
 msgid "Width %d"
 msgstr "宽度 %d"
 
-#: myframe.h:240
 msgid "Word Left\tCTRL+LEFT"
 msgstr "左边的单词\tCTRL+LEFT"
 
-#: myframe.h:241
 msgid "Word Right\tCTRL+RIGHT"
 msgstr "右文字\tCTRL+RIGHT"
 
-#: myframe.h:156
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (带有属性, for OPML etc)..."
 
-#: myframe.h:155
 msgid "XML..."
 msgstr "XML..."
 
-#: document.h:187
 msgid "Zlib error while writing file."
 msgstr "写入文件时出现 zlib 错误。"
 
-#: myframe.h:410
 msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
 msgstr "放大 (CTRL+鼠标滚轮)(&I)\tCTRL+PGUP"
 
-#: myframe.h:411
 msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
 msgstr "缩小 (CTRL+鼠标滚轮)(&O)\tCTRL+PGDN"
 
-#: myframe.h:566
 msgid "Zoom In (CTRL+mousewheel)"
 msgstr "放大 (CTRL+鼠标滚轮)"
 
-#: myframe.h:567
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "缩小 (CTRL+鼠标滚轮)"
 
-#: document.h:434
 msgid "Zoomed in."
 msgstr "已放大。"
 
-#: document.h:434
 msgid "Zoomed out."
 msgstr "已缩小。"
 
-#: myframe.h:807
 msgid "change will take effect next run of TreeSheets"
 msgstr "更改将在下一次运行的树表中生效"
 
-#: myframe.h:279
 msgid "changes the orientation of a grid"
 msgstr "更改网格的方向"
 
-#: system.h:420
 msgid "couldn't import file!"
 msgstr "无法导入文件！"
 
-#: myframe.h:334
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr "仅设置复制单元格的颜色和样式，并保留文本"
 
-#: document.h:1514
 msgid "only works in cell text mode"
 msgstr "仅在单元格文本模式下工作"
 
-#: myframe.h:338
 msgid "redo any undo steps, if you haven't made changes since"
 msgstr "重做任何撤消步骤，如果你没有做的更改，因为"
 
-#: myframe.h:336
 msgid "revert the changes, one step at a time"
 msgstr "恢复更改，一步一次"
 
-#: document.h:934
 msgid "scale:"
 msgstr "规模："
 
-#: document.h:863
 msgid "size:"
 msgstr "大小："
+
+#~ msgid "&Data"
+#~ msgstr "数据(&D)"
+
+#~ msgid "&Operation"
+#~ msgstr "操作(&O)"
+
+#~ msgid "&Run"
+#~ msgstr "运行(&R)"
+
+#~ msgid "Cannot find file."
+#~ msgstr "找不到文件。"
+
+#~ msgid "Cannot launch browser for this link."
+#~ msgstr "无法启动此链接的浏览器。"
+
+#~ msgid "File saved succesfully."
+#~ msgstr "成功保存的文件。"
