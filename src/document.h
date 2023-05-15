@@ -1579,7 +1579,7 @@ struct Document {
                             if (k == A_IMAGESCW) {
                                 v = wxGetNumberFromUser(
                                     _(L"Please enter the new image width:"),
-                                    L"Width", _(L"Image Resize"), 500, 10, 4000, sys->frame);
+                                    _(L"Width"), _(L"Image Resize"), 500, 10, 4000, sys->frame);
                             } else {
                                 v = wxGetNumberFromUser(
                                     _(L"Please enter the percentage you want the image scaled by:"),
