@@ -1279,14 +1279,30 @@ struct Document {
                     returnmessage = CopyImageToClipboard(c);
                 } else {
                     if (wxTheClipboard->Open()) {
-                        wxString s;
+                        wxString s, html;
                         if (k == A_COPYCT) {
                             loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
                         } else {
                             s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
                         }
                         sys->clipboardcopy = s;
-                        wxTheClipboard->SetData(new wxTextDataObject(s));
+                        html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
+                        wxDataObjectComposite *copyobj = new wxDataObjectComposite();
+                        auto *htmlobj = 
+                        // wxGTK crashes when the HTML Data Object is requested
+                        // so workaround this issue with a custom data object
+                        #ifdef __WXGTK__
+                            new wxCustomDataObject(wxDF_HTML);
+                        htmlobj->SetData(html.Len(), html);
+                        #else
+                            new wxHTMLDataObject(html);
+                        #endif
+                        copyobj->Add(htmlobj);
+                        // wxGTK under Wayland fails to offer multiple data objects.
+                        // Instead, the last one added to the composite data object
+                        // will be offered under wxGTK/Wayland.
+                        copyobj->Add(new wxTextDataObject(s), true);
+                        wxTheClipboard->SetData(copyobj);
                         wxTheClipboard->Close();
                         returnmessage = _(L"Text copied to clipboard");
                     }
