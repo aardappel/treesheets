@@ -708,6 +708,22 @@ struct Document {
         return ExportFile(fn, k, true);
     }
 
+    wxBitmap GetBitmap() {
+        maxx = layoutxs;
+        maxy = layoutys;
+        originx = originy = 0;
+        wxBitmap bm(maxx, maxy, 24);
+        wxMemoryDC mdc(bm);
+        DrawRectangle(mdc, Background(), 0, 0, maxx, maxy);
+        Render(mdc);
+        return bm;
+    }
+
+    wxBitmap GetSubBitmap(Selection &s) {
+        wxRect r = s.g->GetRect(this, s, true);
+        return GetBitmap().GetSubBitmap(r);
+    }
+
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
         auto root = currentview ? curdrawroot : rootgrid;
         if (k == A_EXPCSV) {
@@ -717,13 +733,7 @@ struct Document {
                 return _(L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
         }
         if (k == A_EXPIMAGE) {
-            maxx = layoutxs;
-            maxy = layoutys;
-            originx = originy = 0;
-            wxBitmap bm(maxx, maxy, 24);
-            wxMemoryDC mdc(bm);
-            DrawRectangle(mdc, Background(), 0, 0, maxx, maxy);
-            Render(mdc);
+            wxBitmap bm = GetBitmap();
             Refresh();
             if (!bm.SaveFile(fn, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
         } else {
@@ -858,7 +868,7 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar* CopyImageToClipboard(Cell *cell) {
+    const wxChar *CopyImageToClipboard(Cell *cell) {
         if (wxTheClipboard->Open()) {
             Image *im = cell->text.image;
             if (!im->image_data.empty() && imagetypes.find(im->image_type) != imagetypes.end()) {
@@ -880,8 +890,50 @@ struct Document {
                 #endif
             }
             wxTheClipboard->Close();
+            return _(L"Image copied to clipboard");
         }
-        return _(L"Image copied to clipboard");
+        return nullptr;
+    }
+
+    const wxChar *CopySubBitmapToClipboard(Selection &sel) {
+        if (wxTheClipboard->Open()) {
+            wxTheClipboard->SetData(new wxBitmapDataObject(GetSubBitmap(sel)));
+            wxTheClipboard->Close();
+            return _(L"Bitmap copied to clipboard");
+        }
+        return nullptr;
+    }
+
+    const wxChar *CopyTextToClipboard(Selection &sel, bool cont = false) {
+        if (wxTheClipboard->Open()) {
+            wxString s, html;
+            if (cont) {
+                loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
+            } else {
+                s = sel.g->ConvertToText(sel, 0, A_EXPTEXT, this);
+            }
+            sys->clipboardcopy = s;
+            html = sel.g->ConvertToText(sel, 0, A_EXPHTMLT, this);
+            wxDataObjectComposite *copyobj = new wxDataObjectComposite();
+            auto *htmlobj = 
+            // wxGTK crashes when the HTML Data Object is requested
+            // so workaround this issue with a custom data object
+            #ifdef __WXGTK__
+                new wxCustomDataObject(wxDF_HTML);
+            htmlobj->SetData(html.Len(), html);
+            #else
+                new wxHTMLDataObject(html);
+            #endif
+            copyobj->Add(htmlobj);
+            // wxGTK under Wayland fails to offer multiple data objects.
+            // Instead, the last one added to the composite data object
+            // will be offered under wxGTK/Wayland.
+            copyobj->Add(new wxTextDataObject(s), true);
+            wxTheClipboard->SetData(copyobj);
+            wxTheClipboard->Close();
+            return _(L"Text copied to clipboard");
+        }
+        return nullptr;
     }
 
     const wxChar *Action(wxDC &dc, int k) {
@@ -1262,9 +1314,10 @@ struct Document {
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
-            case A_COPYCT:
             case A_CUT:
             case A_COPY:
+            case A_COPYCT:
+            case A_COPYBM:
                 sys->clipboardcopy = wxEmptyString;
                 if (selected.Thin()) return NoThin();
 
@@ -1278,35 +1331,10 @@ struct Document {
                 const wxChar *returnmessage;
                 if(c and c->text.image and !c->text.t) {
                     returnmessage = CopyImageToClipboard(c);
+                } else if (k == A_COPYBM) {
+                    returnmessage = CopySubBitmapToClipboard(selected);
                 } else {
-                    if (wxTheClipboard->Open()) {
-                        wxString s, html;
-                        if (k == A_COPYCT) {
-                            loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
-                        } else {
-                            s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
-                        }
-                        sys->clipboardcopy = s;
-                        html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
-                        wxDataObjectComposite *copyobj = new wxDataObjectComposite();
-                        auto *htmlobj = 
-                        // wxGTK crashes when the HTML Data Object is requested
-                        // so workaround this issue with a custom data object
-                        #ifdef __WXGTK__
-                            new wxCustomDataObject(wxDF_HTML);
-                        htmlobj->SetData(html.Len(), html);
-                        #else
-                            new wxHTMLDataObject(html);
-                        #endif
-                        copyobj->Add(htmlobj);
-                        // wxGTK under Wayland fails to offer multiple data objects.
-                        // Instead, the last one added to the composite data object
-                        // will be offered under wxGTK/Wayland.
-                        copyobj->Add(new wxTextDataObject(s), true);
-                        wxTheClipboard->SetData(copyobj);
-                        wxTheClipboard->Close();
-                        returnmessage = _(L"Text copied to clipboard");
-                    }
+                    returnmessage = CopyTextToClipboard(selected, k == A_COPYCT);
                 }
 
                 if (k == A_CUT) {
