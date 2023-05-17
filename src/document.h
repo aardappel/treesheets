@@ -1089,6 +1089,7 @@ struct Document {
                     (sys->casesensitivesearch) ? 
                         sys->frame->filter->GetValue() : 
                         sys->frame->filter->GetValue().Lower();
+                sys->frame->SetSearchTextBoxBackgroundColour();
                 this->Refresh();
                 return nullptr;
             }
