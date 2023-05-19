@@ -1668,7 +1668,7 @@ struct Document {
                         if(!oimgfn) { // first encounter
                             oimgfn = ::wxFileSelector(
                                 _(L"Choose image file to save:"), L"", L"", L"png|jpg",
-                                 L"PNG file (*.png)|JPG file (*.jpg)|All Files (*.*)|*.*|",
+                                 L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*",
                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                             if (oimgfn.empty()) return _(L"Save cancelled.");
                             counterpos = oimgfn.find_last_of(".");
