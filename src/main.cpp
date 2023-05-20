@@ -16,14 +16,14 @@ int g_selmargin = 2;
 int g_deftextsize = 12;
 int g_mintextsize() { return g_deftextsize - 8; }
 int g_maxtextsize() { return g_deftextsize + 32; }
-int g_grid_left_offset = 15;
+const int g_grid_left_offset = 15;
 
 int g_scrollratecursor = 240;  // FIXME: must be configurable
 int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
 
 const int MAX_LAUNCHES = 20;
 
-static uint celltextcolors[] = {
+static const uint celltextcolors[] = {
     0xFFFFFF,  // CUSTOM COLOR!
     0xFFFFFF, 0x000000, 0x202020, 0x404040, 0x606060, 0x808080, 0xA0A0A0, 0xC0C0C0, 0xD0D0D0,
     0xE0E0E0, 0xE8E8E8, 0x000080, 0x0000FF, 0x8080FF, 0xC0C0FF, 0xC0C0E0, 0x008000, 0x00FF00,
@@ -35,7 +35,7 @@ static uint celltextcolors[] = {
 
 enum { TS_VERSION = 21, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
-uint TS_SELECTION_MASK = 0x80;
+const uint TS_SELECTION_MASK = 0x80;
 
 enum {
     A_NEW = 500,
