@@ -23,7 +23,7 @@ int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually be
 
 const int MAX_LAUNCHES = 20;
 
-static uint celltextcolors[] = {
+static const std::array<uint, 42> celltextcolors = {
     0xFFFFFF,  // CUSTOM COLOR!
     0xFFFFFF, 0x000000, 0x202020, 0x404040, 0x606060, 0x808080, 0xA0A0A0, 0xC0C0C0, 0xD0D0D0,
     0xE0E0E0, 0xE8E8E8, 0x000080, 0x0000FF, 0x8080FF, 0xC0C0FF, 0xC0C0E0, 0x008000, 0x00FF00,
