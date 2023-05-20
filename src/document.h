@@ -1672,6 +1672,10 @@ struct Document {
                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                             if (oimgfn.empty()) return _(L"Save cancelled.");
                             counterpos = oimgfn.find_last_of(".");
+                            // If file extension is not provided
+                            if (counterpos == string::npos) {
+                                counterpos =  oimgfn.Len();
+                            }
                             imgfn = oimgfn;
                         } else { // add counter to image file name at further encounters
                             imgfn = oimgfn;
