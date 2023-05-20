@@ -264,7 +264,7 @@ std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
 };
 
-char DEFAULT_IMAGE_TYPE = 'I';
+const char DEFAULT_IMAGE_TYPE = 'I';
 
 #include "script_interface.h"
 
