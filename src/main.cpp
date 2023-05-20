@@ -1,6 +1,5 @@
 
 #include "stdafx.h"
-#include <wx/mstream.h>
 
 #ifndef __WXMSW__
 #define SIMPLERENDER
@@ -16,7 +15,7 @@ int g_selmargin = 2;
 int g_deftextsize = 12;
 int g_mintextsize() { return g_deftextsize - 8; }
 int g_maxtextsize() { return g_deftextsize + 32; }
-int g_grid_left_offset = 15;
+const int g_grid_left_offset = 15;
 
 int g_scrollratecursor = 240;  // FIXME: must be configurable
 int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
@@ -31,11 +30,11 @@ static const std::array<uint, 42> celltextcolors = {
     0xFF00FF, 0xFF80FF, 0xFFC0FF, 0xE0C0E0, 0x008080, 0x00FFFF, 0x80FFFF, 0xC0FFFF, 0xC0E0E0,
     0x808000, 0xFFFF00, 0xFFFF80, 0xFFFFC0, 0xE0E0C0,
 };
-#define CUSTOMCOLORIDX 0
+enum { CUSTOMCOLORIDX = 0 };
 
 enum { TS_VERSION = 21, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
-uint TS_SELECTION_MASK = 0x80;
+const uint TS_SELECTION_MASK = 0x80;
 
 enum {
     A_NEW = 500,
@@ -264,7 +263,7 @@ std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
 };
 
-char DEFAULT_IMAGE_TYPE = 'I';
+const char DEFAULT_IMAGE_TYPE = 'I';
 
 #include "script_interface.h"
 
