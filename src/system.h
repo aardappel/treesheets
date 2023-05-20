@@ -21,7 +21,9 @@ struct Image {
 
 
     void ImageRescale(double sc) {
-        wxBitmapType it = imagetypes[image_type].first;
+        auto mapitem = imagetypes.find(image_type);
+        if (mapitem == imagetypes.end()) return;
+        wxBitmapType it = mapitem->second.first;
         wxImage im = sys->ConvertBufferToWxImage(image_data, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
         image_data = sys->ConvertWxImageToBuffer(im, it);
@@ -40,7 +42,9 @@ struct Image {
 
     wxBitmap &Display() {
         if (!bm_display.IsOk()) {
-            wxBitmapType it = imagetypes[image_type].first;
+            auto mapitem = imagetypes.find(image_type);
+            if (mapitem == imagetypes.end()) return wxNullBitmap;
+            wxBitmapType it = mapitem->second.first;
             wxBitmap bm = sys->ConvertBufferToWxBitmap(image_data, it);
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
@@ -297,7 +301,9 @@ struct System {
                     case 'I':
                     case 'J': {
                         char iti = *buf;
-                        wxBitmapType imt = imagetypes[iti].first;
+                        auto mapitem = imagetypes.find(iti);
+                        if (mapitem == imagetypes.end()) return _(L"Found an image type that is not defined in this program.");
+                        wxBitmapType imt = mapitem->second.first;
                         if (versionlastloaded < 9) dis.ReadString();
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
