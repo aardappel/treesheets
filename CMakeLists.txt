@@ -59,7 +59,7 @@ target_include_directories(lobster PUBLIC lobster/include lobster/src lobster/ex
 add_library(lobster-impl STATIC src/lobster_impl.cpp)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
-set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=*)
+set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 add_executable(
     treesheets
     src/main.cpp
