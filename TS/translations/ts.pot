@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-15 18:36+0200\n"
+"POT-Creation-Date: 2023-05-21 15:36-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,6 +46,9 @@ msgid "&Comma delimited text (CSV)..."
 msgstr ""
 
 msgid "&Copy\tCTRL+c"
+msgstr ""
+
+msgid "&Copy as Bitmap\tCTRL+ALT+c"
 msgstr ""
 
 msgid "&Data\tCTRL+ALT+d"
@@ -244,6 +247,9 @@ msgid "Autosave load"
 msgstr ""
 
 msgid "Autosave to .tmp"
+msgstr ""
+
+msgid "Bitmap copied to clipboard"
 msgstr ""
 
 msgid "Black and white toolbar icons"
@@ -602,6 +608,9 @@ msgstr ""
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr ""
 
+msgid "Found an image type that is not defined in this program."
+msgstr ""
+
 msgid "Go To &Matching Cell\tF6"
 msgstr ""
 
@@ -837,6 +846,9 @@ msgstr ""
 msgid "PNG decoder failure"
 msgstr ""
 
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr ""
+
 msgid "Page Setup..."
 msgstr ""
 
@@ -981,6 +993,10 @@ msgid "Saved %s successfully (in %d milliseconds)."
 msgstr ""
 
 msgid "Script"
+msgstr ""
+
+#, c-format
+msgid "Script system could not initialize: %s"
 msgstr ""
 
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
@@ -1193,6 +1209,9 @@ msgstr ""
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr ""
 
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr ""
+
 msgid "Turn filter &off"
 msgstr ""
 
@@ -1227,6 +1246,9 @@ msgid "View tutorial &web page..."
 msgstr ""
 
 msgid "What size grid would you like to start with?"
+msgstr ""
+
+msgid "Width"
 msgstr ""
 
 #, c-format
