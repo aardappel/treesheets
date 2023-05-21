@@ -7,20 +7,22 @@
 
 //#define SIMPLERENDER // for testing
 
-static int g_grid_margin = 1;
-static int g_cell_margin = 2;
-static int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
-static int g_line_width = 1;
-static int g_selmargin = 2;
-static int g_deftextsize = 12;
-static int g_mintextsize() { return g_deftextsize - 8; }
-static int g_maxtextsize() { return g_deftextsize + 32; }
+static const int g_grid_margin = 1;
+static const int g_cell_margin = 2;
+static const int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
+static const int g_line_width = 1;
+static const int g_selmargin = 2;
 static const int g_grid_left_offset = 15;
+static const int g_scrollratecursor = 240;  // FIXME: must be configurable
+static const int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
+static const int g_max_launches = 20;
+static const int g_deftextsize_default = 12;
+static const int g_mintextsize_delta = 8;
+static const int g_maxtextsize_delta = 32;
 
-static int g_scrollratecursor = 240;  // FIXME: must be configurable
-static int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
-
-static const int MAX_LAUNCHES = 20;
+static int g_deftextsize = g_deftextsize_default;
+static int g_mintextsize() { return g_deftextsize - g_mintextsize_delta; }
+static int g_maxtextsize() { return g_deftextsize + g_maxtextsize_delta; }
 
 static const std::array<uint, 42> celltextcolors = {
     0xFFFFFF,  // CUSTOM COLOR!

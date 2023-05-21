@@ -1727,7 +1727,7 @@ struct Document {
                 const wxChar *returnmessage = nullptr;
                 int counter = 0;
                 loopallcellssel(c, true) {
-                    if (counter >= MAX_LAUNCHES) {
+                    if (counter >= g_max_launches) {
                         returnmessage = _(L"Maximum number of launches reached.");
                         break;
                     }
@@ -1744,7 +1744,7 @@ struct Document {
                 const wxChar *returnmessage = nullptr;
                 int counter = 0;
                 loopallcellssel(c, true) {
-                    if (counter >= MAX_LAUNCHES) {
+                    if (counter >= g_max_launches) {
                         returnmessage = _(L"Maximum number of launches reached.");
                         break;
                     }
