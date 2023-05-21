@@ -7,20 +7,20 @@
 
 //#define SIMPLERENDER // for testing
 
-int g_grid_margin = 1;
-int g_cell_margin = 2;
-int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
-int g_line_width = 1;
-int g_selmargin = 2;
-int g_deftextsize = 12;
-int g_mintextsize() { return g_deftextsize - 8; }
-int g_maxtextsize() { return g_deftextsize + 32; }
-const int g_grid_left_offset = 15;
+static int g_grid_margin = 1;
+static int g_cell_margin = 2;
+static int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
+static int g_line_width = 1;
+static int g_selmargin = 2;
+static int g_deftextsize = 12;
+static int g_mintextsize() { return g_deftextsize - 8; }
+static int g_maxtextsize() { return g_deftextsize + 32; }
+static const int g_grid_left_offset = 15;
 
-int g_scrollratecursor = 240;  // FIXME: must be configurable
-int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
+static int g_scrollratecursor = 240;  // FIXME: must be configurable
+static int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
 
-const int MAX_LAUNCHES = 20;
+static const int MAX_LAUNCHES = 20;
 
 static const std::array<uint, 42> celltextcolors = {
     0xFFFFFF,  // CUSTOM COLOR!
@@ -34,7 +34,7 @@ enum { CUSTOMCOLORIDX = 0 };
 
 enum { TS_VERSION = 21, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
-const uint TS_SELECTION_MASK = 0x80;
+static const uint TS_SELECTION_MASK = 0x80;
 
 enum {
     A_NEW = 500,
@@ -258,12 +258,12 @@ enum {
     STYLE_STRIKETHRU = 16
 };
 
-std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
+static std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'I', {wxBITMAP_TYPE_PNG, "image/png"} },
     { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
 };
 
-const char DEFAULT_IMAGE_TYPE = 'I';
+static const char DEFAULT_IMAGE_TYPE = 'I';
 
 #include "script_interface.h"
 
