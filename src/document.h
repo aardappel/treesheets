@@ -785,7 +785,7 @@ struct Document {
         if (!saveas && !filename.empty()) { return SaveDB(success); }
         wxString fn =
             ::wxFileSelector(_(L"Choose TreeSheets file to save:"), L"", L"", L"cts",
-                             _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
+                             L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*",
                              wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Save cancelled.");  // avoid name being set to ""
         ChangeFileName(fn, true);
@@ -983,7 +983,7 @@ struct Document {
             case A_OPEN: {
                 wxString fn =
                     ::wxFileSelector(_(L"Please select a TreeSheets file to load:"), L"", L"",
-                                     L"cts", _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
+                                     L"cts", L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*",
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 return sys->Open(fn);
             }
@@ -1668,7 +1668,7 @@ struct Document {
                         if(!oimgfn) { // first encounter
                             oimgfn = ::wxFileSelector(
                                 _(L"Choose image file to save:"), L"", L"", L"png|jpg",
-                                 _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
+                                 L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*",
                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                             if (oimgfn.empty()) return _(L"Save cancelled.");
                             counterpos = oimgfn.find_last_of(".");

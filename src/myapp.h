@@ -146,7 +146,7 @@ struct MyApp : wxApp {
 
         auto serr = ScriptInit(frame->GetDataPath("scripts/"));
         if (!serr.empty()) {
-            wxLogFatalError(wxString::Format(_(L"Script system could not initialize: %s"), serr));
+            wxLogFatalError(L"Script system could not initialize: %s", serr);
             return false;
         }
         if (dump_builtins) {
