@@ -32,6 +32,7 @@ struct ScriptInterface {
     virtual void SetWindowSize(int width, int height) = 0;
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
     virtual std::string GetFileName() = 0;
+    virtual ~ScriptInterface() {};
 };
 
 typedef int64_t(*ScriptLoader)(std::string_view absfilename, std::string *dest, int64_t start,
