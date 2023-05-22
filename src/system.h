@@ -655,10 +655,8 @@ struct System {
     }
 
     wxImage ConvertBufferToWxImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
-        wxMemoryOutputStream mos(pidv.data(), pidv.size());
-        wxMemoryInputStream mis(mos);
-        wxImage im;
-        im.LoadFile(mis, bmt);
+        wxMemoryInputStream mis(pidv.data(), pidv.size());
+        wxImage im(mis, bmt);
         return im;
     }
 
