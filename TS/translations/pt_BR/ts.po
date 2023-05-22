@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-15 18:36+0200\n"
-"PO-Revision-Date: 2023-01-02 13:59-0300\n"
+"POT-Creation-Date: 2023-05-22 15:56-0300\n"
+"PO-Revision-Date: 2023-05-22 15:57-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -52,6 +52,9 @@ msgstr "&Texto delimitado por vírgulas (CSV)..."
 
 msgid "&Copy\tCTRL+c"
 msgstr "&Copiar\tCTRL+c"
+
+msgid "&Copy as Bitmap\tCTRL+ALT+c"
+msgstr "&Copiar como Bitmap\tCTRL+ALT+c"
 
 msgid "&Data\tCTRL+ALT+d"
 msgstr "&Dados\tCTRL+ALT+d"
@@ -146,9 +149,8 @@ msgstr "&Remover o Texto da Célula das Tags"
 msgid "&Remove Image(s)"
 msgstr "&Remover Imagem(ns)"
 
-#, fuzzy
 msgid "&Replace in Current Selection\tCTRL+k"
-msgstr "&Substituir na Seleção Atual\tCTRL+h"
+msgstr "&Substituir na Seleção Atual\tCTRL+k"
 
 msgid "&Reset Scale (display only)"
 msgstr "&Redefinir Escala (somente para exibição)"
@@ -171,13 +173,11 @@ msgstr "&Salvar\tCTRL+s"
 msgid "&Scale Image (display only)"
 msgstr "&Redimensionar Imagem (somente para exibição)"
 
-#, fuzzy
 msgid "&Scale Image (re-sample pixels, by %)"
-msgstr "&Redimensionar Imagem (com nova amostragem de pixels)"
+msgstr "&Redimensionar Imagem (com nova amostragem de pixels, por porcentagem)"
 
-#, fuzzy
 msgid "&Scale Image (re-sample pixels, by width)"
-msgstr "&Redimensionar Imagem (com nova amostragem de pixels)"
+msgstr "&Redimensionar Imagem (com nova amostragem de pixels, por largura)"
 
 msgid "&Search"
 msgstr "&Buscar"
@@ -256,6 +256,9 @@ msgstr "Carregar do salvamento automático"
 msgid "Autosave to .tmp"
 msgstr "Salvar automaticamente para .tmp"
 
+msgid "Bitmap copied to clipboard"
+msgstr "Bitmap copiado para a área de transferência"
+
 msgid "Black and white toolbar icons"
 msgstr "Ícones da barra de ferramentas em preto e branco"
 
@@ -325,7 +328,7 @@ msgid "Cannot tell/seek document?"
 msgstr "Não foi possível executar tell/seek no documento?"
 
 msgid "Case-sensitive search"
-msgstr ""
+msgstr "Diferenciar maiúsculas de minúsculas"
 
 msgid "Cell "
 msgstr "Célula "
@@ -373,16 +376,14 @@ msgstr "Informe o arquivo do TreeSheets a salvar:"
 msgid "Choose XML file to write"
 msgstr "Informe o arquivo XML a gravar"
 
-#, fuzzy
 msgid "Choose image file to save:"
-msgstr "Informe o arquivo do TreeSheets a salvar:"
+msgstr "Informe o arquivo de imagem a salvar:"
 
 msgid "Clear replace"
-msgstr ""
+msgstr "Limpar substituição"
 
-#, fuzzy
 msgid "Clear search"
-msgstr "Não há busca."
+msgstr "Limpar busca"
 
 msgid "Column width decreased."
 msgstr "A largura da coluna diminuiu."
@@ -420,9 +421,12 @@ msgstr "O cabeçalho do bloco está corrompido."
 
 msgid "Could not load file because of a corrupted embedded JPEG file"
 msgstr ""
+"Não foi possível carregar arquivo porque um JPEG embutido está corrompido"
 
 msgid "Could not load file because of an embedded image file of unknown type"
 msgstr ""
+"Não foi possível carregar arquivo porque uma imagem embutida é de um tipo "
+"desconhecido"
 
 msgid "Create .bak files"
 msgstr "Criar arquivos .bak"
@@ -511,9 +515,8 @@ msgstr "Erro ao gravar o arquivo PNG!"
 msgid "Error writing TreeSheets file! (try saving under new filename)."
 msgstr "Erro ao gravar o arquivo do TreeSheets! (tente salvar com outro nome)."
 
-#, fuzzy
 msgid "Error writing image file! (try saving under new filename)."
-msgstr "Erro ao gravar o arquivo do TreeSheets! (tente salvar com outro nome)."
+msgstr "Erro ao gravar o arquivo de imagem! (tente salvar com outro nome)."
 
 msgid "Error writing to file!"
 msgstr "Erro ao gravar o arquivo!"
@@ -650,15 +653,17 @@ msgstr "Dobrar Todas\tCTRL+SHIFT+F10"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Dobra recursivamente a grade da(s) célula(s) selecionada(s)"
 
+msgid "Found an image type that is not defined in this program."
+msgstr "Um tipo de imagem que não está definido neste programa foi encontrado."
+
 msgid "Go To &Matching Cell\tF6"
 msgstr "Ir para &Próxima Célula que Tiver o Mesmo Texto\tF6"
 
 msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
 msgstr "Ir para Célula &Anterior que Tiver o Mesmo Texto\tSHIFT+F6"
 
-#, fuzzy
 msgid "Go to Next Search Result"
-msgstr "&Ir para Próximo Resultado da Busca\tF3"
+msgstr "Ir para Próximo Resultado da Busca"
 
 msgid "Go to next filter match\tSHIFT+F3"
 msgstr "Ir para próxima célula evidenciada\tSHIFT+F3"
@@ -904,6 +909,11 @@ msgstr ""
 msgid "PNG decoder failure"
 msgstr "Falha do decodificador PNG"
 
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr ""
+"Arquivo PNG (*.png)|*.png|Arquivo JPEG (*.jpg)|*.jpg|Todos os Arquivos (*.*)|"
+"*.*"
+
 msgid "Page Setup..."
 msgstr "Configurar Página..."
 
@@ -926,12 +936,11 @@ msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 "Por favor ative (Opções -> Mostrar Barra de Ferramentas) para usar a busca."
 
-#, fuzzy
 msgid "Please enter the new image width:"
-msgstr "Por favor selecione um arquivo de imagem:"
+msgstr "Por favor informe a nova largura da imagem:"
 
 msgid "Please enter the percentage you want the image scaled by:"
-msgstr "Por favor insira a porcentagem de escala que deseja aplicar à imagem:"
+msgstr "Por favor informe a porcentagem de escala que deseja aplicar à imagem:"
 
 msgid "Please pick a menu item to change the key binding for"
 msgstr ""
@@ -996,17 +1005,14 @@ msgstr "Substituir "
 msgid "Replace &All"
 msgstr "Substituir &Todas"
 
-#, fuzzy
 msgid "Replace All"
-msgstr "Substituir &Todas"
+msgstr "Substituir Todas"
 
-#, fuzzy
 msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
-msgstr "&Substituir na Seleção Atual && Pular para a Seguinte\tCTRL+j"
+msgstr "Substituir na Seleção Atual && &Pular para a Seguinte\tCTRL+j"
 
-#, fuzzy
 msgid "Replace in selection"
-msgstr "&Substituir na Seleção Atual\tCTRL+h"
+msgstr "Substituir na seleção"
 
 msgid "Reset &colors\tCTRL+SHIFT+c"
 msgstr "Redefinir &cores\tCTRL+SHIFT+c"
@@ -1027,7 +1033,7 @@ msgid "Save As"
 msgstr "Salvar Como"
 
 msgid "Save Image(s) to disk"
-msgstr ""
+msgstr "Salvar Imagem(ns) para disco"
 
 msgid "Save and Close"
 msgstr "Salvar e Fechar"
@@ -1036,21 +1042,23 @@ msgid "Save cancelled."
 msgstr "O salvamento foi cancelado."
 
 msgid "Save image as JPEG"
-msgstr ""
+msgstr "Salvar imagem como JPEG"
 
 msgid "Save image as PNG (default)"
-msgstr ""
+msgstr "Salvar imagem como PNG (padrão)"
 
 msgid ""
 "Save image(s) to disk. Multiple images will be saved with a counter appended "
 "to each file name."
 msgstr ""
+"Salva imagem(ns) para disco. Múltiplas imagens serão salvas com um contador "
+"acrescentado ao nome de cada arquivo."
 
 msgid "Save the image in the TreeSheets file in JPEG format"
-msgstr ""
+msgstr "Salva a imagem no arquivo TreeSheets em formato JPEG"
 
 msgid "Save the image in the TreeSheets file in PNG format"
-msgstr ""
+msgstr "Salva a imagem no arquivo TreeSheets em formato PNG"
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
@@ -1206,9 +1214,8 @@ msgstr "Estilo do Texto..."
 msgid "Text copied to clipboard"
 msgstr "Texto copiado para a área de transferência"
 
-#, fuzzy
 msgid "Text has been replaced."
-msgstr "O tamanho do texto foi diminuído."
+msgstr "O texto foi substituído."
 
 msgid "Text size decreased."
 msgstr "O tamanho do texto foi diminuído."
@@ -1276,6 +1283,9 @@ msgstr "Aplicar/remover &SUBLINHADO\tCTRL+u"
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "Mostra/oculta a grade da(s) célula(s) selecionada(s)"
 
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "Arquivos do TreeSheets (*.cts)|*.cts|Todos os Arquivos (*.*)|*.*"
+
 msgid "Turn filter &off"
 msgstr "&Retirar filtro"
 
@@ -1311,6 +1321,9 @@ msgstr "Visualizar página de &tutorial no site..."
 
 msgid "What size grid would you like to start with?"
 msgstr "Com que tamanho de grade deseja começar?"
+
+msgid "Width"
+msgstr "Largura"
 
 #, c-format
 msgid "Width %d"
@@ -1377,6 +1390,10 @@ msgstr "escala:"
 
 msgid "size:"
 msgstr "tamanho:"
+
+#, c-format
+#~ msgid "Script system could not initialize: %s"
+#~ msgstr "O sistema de script não conseguiu inicializar: %s"
 
 #~ msgid "Cannot find file."
 #~ msgstr "Não foi possível encontrar o arquivo."
