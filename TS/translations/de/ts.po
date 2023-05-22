@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-15 18:36+0200\n"
+"POT-Creation-Date: 2023-05-22 15:56-0300\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -51,6 +51,9 @@ msgstr "&Text mit Kommata als Trennzeichen (CSV)..."
 
 msgid "&Copy\tCTRL+c"
 msgstr "&Kopieren\tCTRL+c"
+
+msgid "&Copy as Bitmap\tCTRL+ALT+c"
+msgstr "Als &Bild kopieren\tCTRL+ALT+d"
 
 msgid "&Data\tCTRL+ALT+d"
 msgstr "&Daten\tCTRL+ALT+d"
@@ -250,6 +253,9 @@ msgstr "Automatische Sicherungskopien laden"
 
 msgid "Autosave to .tmp"
 msgstr "Automatische .tmp-Kopien erstellen"
+
+msgid "Bitmap copied to clipboard"
+msgstr "Bild in die Zwischenablage kopiert"
 
 msgid "Black and white toolbar icons"
 msgstr "Schwarz-weiße Symbole in der Werkzeugleiste"
@@ -654,6 +660,9 @@ msgstr "Alles einklappen\tCTRL+SHIFT+F10"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Klappt die Tabelle der ausgewählten Zelle(n) rekursiv aus."
 
+msgid "Found an image type that is not defined in this program."
+msgstr "Es wurde ein Bildtyp gefunden, der nicht in diesem Programm definiert ist."
+
 msgid "Go To &Matching Cell\tF6"
 msgstr "Gehe zur &übereinstimmenden Zelle\tF6"
 
@@ -902,6 +911,9 @@ msgstr ""
 
 msgid "PNG decoder failure"
 msgstr "Fehler beim Dekodieren der PNG-Grafik"
+
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr "PNG-Datei (*.png)|*.png|JPEG-Datei (*.jpg)|*.jpg|Alle Dateien (*.*)|*.*"
 
 msgid "Page Setup..."
 msgstr "Seiteneinstellungen..."
@@ -1264,6 +1276,9 @@ msgstr "Zellentext unterstreichen (ein/aus)\tCTRL+u"
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "Tabellen der ausgewählten Zelle(n) anzeigen (ein/aus)"
 
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "TreeSheets-Dateien (*.cts)|*.cts|Alle Dateien (*.*)|*.*"
+
 msgid "Turn filter &off"
 msgstr "Filter deaktivieren"
 
@@ -1299,6 +1314,9 @@ msgstr "Tutorial-&Webseite anschauen..."
 
 msgid "What size grid would you like to start with?"
 msgstr "Mit welcher Tabellengröße möchten Sie beginnen?"
+
+msgid "Width"
+msgstr "Breite"
 
 #, c-format
 msgid "Width %d"
