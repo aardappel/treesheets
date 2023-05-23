@@ -1205,6 +1205,29 @@ struct Document {
                 return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal.")
                                          : _(L"1:1 scale restored.");
 
+            case A_FILTERRANGE: {
+                wxDialog *dtr           = new wxDialog(sys->frame, A_FILTERDIALOG, "Range", wxDefaultPosition, sys->frame->FromDIP(wxSize(340, 260)), wxDEFAULT_DIALOG_STYLE);
+                wxStaticText *introtext = new wxStaticText(dtr, wxID_ANY, _(L"Please select the date range."), sys->frame->FromDIP(wxPoint(10,10)));
+                wxStaticText *starttext = new wxStaticText(dtr, wxID_ANY, _(L"Start date"), sys->frame->FromDIP(wxPoint(10,70)));
+                wxStaticText *endtext   = new wxStaticText(dtr, wxID_ANY, _(L"End date"), sys->frame->FromDIP(wxPoint(160,70)));
+                wxDatePickerCtrl *start = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime, sys->frame->FromDIP(wxPoint(10,120)));
+                wxDatePickerCtrl *end   = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime, sys->frame->FromDIP(wxPoint(160,120)));
+                wxButton* okbtn         = new wxButton(dtr, wxID_OK, _(L"Filter"), sys->frame->FromDIP(wxPoint(10, 160)), wxDefaultSize);
+                wxButton* cancelbtn     = new wxButton(dtr, wxID_CANCEL, _(L"Cancel"), sys->frame->FromDIP(wxPoint(160, 160)), wxDefaultSize);
+
+                if(dtr->ShowModal() != wxID_OK) {
+                    return nullptr;
+                }
+                wxDateTime beginrange = start->GetValue();
+                wxDateTime endrange = end->GetValue();
+                if(beginrange.IsValid() && endrange.IsValid()) {
+                    ApplyEditRangeFilter(beginrange, endrange);
+                } else {
+                    return _(L"No valid datetime given!");
+                }
+                return nullptr;
+            }
+
             case A_FILTER5:
                 editfilter = 5;
                 ApplyEditFilter();
@@ -2237,6 +2260,22 @@ struct Document {
         loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
         rootgrid->ResetChildren();
         Refresh();
+    }
+
+    void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
+        searchfilter = false;
+        CollectCells(rootgrid);
+        loopv(i, itercells) itercells[i]->text.filtered = 
+            !itercells[i]->text.lastedit.IsBetween(rangebegin, rangeend);
+        rootgrid->ResetChildren();
+        Refresh();
+    }
+
+    wxDateTime ParseDateTimeString(const wxString &str) {
+        wxDateTime dt;
+        wxString::const_iterator end;
+        if(!dt.ParseDateTime(str, &end)) dt = wxInvalidDateTime;
+        return dt;
     }
 
     void SetSearchFilter(bool on) {
