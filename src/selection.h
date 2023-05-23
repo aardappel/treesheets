@@ -8,8 +8,7 @@ class Selection {
     int cursor, cursorend;
     int firstdx, firstdy;
 
-    Selection() { memset(this, 0, sizeof(Selection)); }
-    Selection(Grid *_g, int _x, int _y, int _xs, int _ys)
+    Selection(Grid *_g = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
         : g(_g),
           x(_x),
           y(_y),
