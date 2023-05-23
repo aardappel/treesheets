@@ -51,6 +51,7 @@
 #include <wx/ipc.h>
 
 #include <wx/srchctrl.h>
+#include <wx/datectrl.h>
 
 #include <wx/aui/aui.h>
 #include <wx/aui/auibar.h>
