@@ -73,7 +73,7 @@ struct Document {
     bool blink;
 
     bool redrawpending;
-    bool firstdraw;
+    bool scrolltoselection;
     bool dpichanged;
 
     bool scaledviewingmode;
@@ -114,7 +114,7 @@ struct Document {
           printscale(0),
           blink(true),
           redrawpending(false),
-          firstdraw(true),
+          scrolltoselection(true),
           dpichanged(false),
           scaledviewingmode(false),
           currentviewscale(1),
@@ -538,7 +538,7 @@ struct Document {
         if(dpichanged) {
             curdrawroot->ResetLayout();
             curdrawroot->ResetChildren();
-            firstdraw = true;
+            scrolltoselection = true;
             dpichanged = false;
         }
         redrawpending = false;
@@ -582,9 +582,9 @@ struct Document {
         DrawSelect(dc, selected);
         if (hover.g) hover.g->DrawHover(this, dc, hover);
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
-        if (firstdraw) {
+        if (scrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected);
-            firstdraw = false;
+            scrolltoselection = false;
         }
     }
 
