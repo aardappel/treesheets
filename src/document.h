@@ -1206,14 +1206,60 @@ struct Document {
                                          : _(L"1:1 scale restored.");
 
             case A_FILTERRANGE: {
-                wxDialog *dtr           = new wxDialog(sys->frame, A_FILTERDIALOG, "Range", wxDefaultPosition, sys->frame->FromDIP(wxSize(340, 260)), wxDEFAULT_DIALOG_STYLE);
-                wxStaticText *introtext = new wxStaticText(dtr, wxID_ANY, _(L"Please select the date range."), sys->frame->FromDIP(wxPoint(10,10)));
-                wxStaticText *starttext = new wxStaticText(dtr, wxID_ANY, _(L"Start date"), sys->frame->FromDIP(wxPoint(10,70)));
-                wxStaticText *endtext   = new wxStaticText(dtr, wxID_ANY, _(L"End date"), sys->frame->FromDIP(wxPoint(160,70)));
-                wxDatePickerCtrl *start = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime, sys->frame->FromDIP(wxPoint(10,120)));
-                wxDatePickerCtrl *end   = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime, sys->frame->FromDIP(wxPoint(160,120)));
-                wxButton* okbtn         = new wxButton(dtr, wxID_OK, _(L"Filter"), sys->frame->FromDIP(wxPoint(10, 160)), wxDefaultSize);
-                wxButton* cancelbtn     = new wxButton(dtr, wxID_CANCEL, _(L"Cancel"), sys->frame->FromDIP(wxPoint(160, 160)), wxDefaultSize);
+                wxPoint p(0,0);
+                int padding = 10;
+
+                wxDialog *dtr           = new wxDialog(sys->frame, A_FILTERDIALOG, "Range", wxDefaultPosition, wxSize(0, 0), wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
+                wxStaticText *introtext = new wxStaticText(dtr, wxID_ANY, _(L"Please select the date range."));
+                wxStaticText *starttext = new wxStaticText(dtr, wxID_ANY, _(L"Start date"));
+                wxStaticText *endtext   = new wxStaticText(dtr, wxID_ANY, _(L"End date"));
+                wxDatePickerCtrl *start = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
+                wxDatePickerCtrl *end   = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
+                wxButton* okbtn         = new wxButton(dtr, wxID_OK, _(L"Filter"));
+                wxButton* cancelbtn     = new wxButton(dtr, wxID_CANCEL, _(L"Cancel"));
+
+                vector<int> widths = {
+                    starttext->GetSize().GetWidth(),
+                    endtext->GetSize().GetWidth(),
+                    start->GetSize().GetWidth(),
+                    end->GetSize().GetWidth(),
+                    okbtn->GetSize().GetWidth(),
+                    cancelbtn->GetSize().GetWidth()
+                };
+
+                int maxelementwidth = *std::max_element(widths.begin(), widths.end());
+
+                vector<int> heights = {
+                    introtext->GetSize().GetHeight(),
+                    starttext->GetSize().GetHeight(),
+                    endtext->GetSize().GetHeight(),
+                    start->GetSize().GetHeight(),
+                    end->GetSize().GetHeight(),
+                    okbtn->GetSize().GetHeight(),
+                    cancelbtn->GetSize().GetHeight()
+                };
+
+                int maxelementheight = *std::max_element(heights.begin(), heights.end());
+
+                wxPoint x1y1 = p + wxSize(padding, padding);
+                wxPoint x1y2 = x1y1 + wxSize(0, maxelementheight + padding);
+                wxPoint x2y2 = x1y2 + wxSize(maxelementwidth + padding, 0);
+                wxPoint x1y3 = x1y2 + wxSize(0, maxelementheight + padding);
+                wxPoint x2y3 = x1y3 + wxSize(maxelementwidth + padding, 0);
+                wxPoint x1y4 = x1y3 + wxSize(0, maxelementheight + padding);
+                wxPoint x2y4 = x1y4 + wxSize(maxelementwidth + padding, 0);
+                wxPoint x3y5 = x2y4 + wxSize(maxelementwidth + padding, maxelementheight + padding);
+
+                introtext->SetPosition(x1y1);
+                starttext->SetPosition(x1y2);
+                endtext->SetPosition(x2y2);
+                start->SetPosition(x1y3);
+                end->SetPosition(x2y3);
+                okbtn->SetPosition(x1y4);
+                cancelbtn->SetPosition(x2y4);
+                wxSize windowsize = wxSize(x3y5.x, x3y5.y);
+
+                dtr->SetSize(windowsize);
 
                 if(dtr->ShowModal() != wxID_OK) {
                     return nullptr;
