@@ -1219,12 +1219,8 @@ struct Document {
                     return nullptr;
                 }
                 wxDateTime beginrange = start->GetValue();
-                wxDateTime endrange = end->GetValue();
-                if(beginrange.IsValid() && endrange.IsValid()) {
-                    ApplyEditRangeFilter(beginrange, endrange);
-                } else {
-                    return _(L"No valid datetime given!");
-                }
+                wxDateTime endrange = end->GetValue().Add(wxTimeSpan(23, 59, 59, 999));
+                ApplyEditRangeFilter(beginrange, endrange);
                 return nullptr;
             }
 
