@@ -2254,6 +2254,7 @@ struct Document {
 
     void ApplyEditFilter() {
         searchfilter = false;
+        scrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(rootgrid);
         itercells.sort((void *)(int(__cdecl *)(const void *, const void *))_timesort);
@@ -2264,6 +2265,7 @@ struct Document {
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
+        scrolltoselection = true;
         CollectCells(rootgrid);
         loopv(i, itercells) itercells[i]->text.filtered = 
             !itercells[i]->text.lastedit.IsBetween(rangebegin, rangeend);
@@ -2280,6 +2282,7 @@ struct Document {
 
     void SetSearchFilter(bool on) {
         searchfilter = on;
+        scrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         rootgrid->ResetChildren();
         Refresh();
