@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-22 15:56-0300\n"
-"PO-Revision-Date: 2023-05-22 15:57-0300\n"
+"POT-Creation-Date: 2023-05-25 16:08-0300\n"
+"PO-Revision-Date: 2023-05-25 16:09-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -443,6 +443,9 @@ msgstr "Mover Cursor à Esquerda\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Mover Cursor à Direita\tRIGHT"
 
+msgid "Date range filter"
+msgstr "Intervalo de tempo para filtrar"
+
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Diminuir a largura da coluna (ALT+botão de rolagem)\tALT+PGDN"
 
@@ -485,6 +488,9 @@ msgstr "Editada em %s"
 
 msgid "Empty strings cannot be tags."
 msgstr "Sequências vazias não podem ser tags."
+
+msgid "End date"
+msgstr "Data final"
 
 msgid "End of line of text\tEND"
 msgstr "Fim da linha de texto\tEND"
@@ -640,6 +646,9 @@ msgstr "O arquivo tem modificações conflitantes!"
 
 msgid "File of newer version."
 msgstr "O arquivo é de uma versão mais recente."
+
+msgid "Filter"
+msgstr "Filtrar"
 
 msgid "Filter by the same cell color"
 msgstr "Evidenciar células com a mesma cor"
@@ -956,6 +965,9 @@ msgstr "Por favor selecione um arquivo de imagem:"
 msgid "Please select file to import:"
 msgstr "Por favor selecione um arquivo para importar:"
 
+msgid "Please select the date range."
+msgstr "Por favor selecione o intervalo de tempo."
+
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Tecle F11 para sair do modo de tela cheia."
 
@@ -1033,7 +1045,7 @@ msgid "Save As"
 msgstr "Salvar Como"
 
 msgid "Save Image(s) to disk"
-msgstr "Salvar Imagem(ns) para disco"
+msgstr "Salvar Imagem(ns) para disco..."
 
 msgid "Save and Close"
 msgstr "Salvar e Fechar"
@@ -1147,6 +1159,10 @@ msgstr "Mostrar Barra de Status"
 msgid "Show Toolbar"
 msgstr "Mostrar Barra de Ferramentas"
 
+#, no-c-format
+msgid "Show last edits in specific date range"
+msgstr "Evidenciar edições feitas em um intervalo de tempo específico..."
+
 msgid "Show only cells in current search"
 msgstr "Evidenciar células que contiverem resultados da busca"
 
@@ -1162,6 +1178,9 @@ msgstr "Classificar em Ordem &Ascendente"
 
 msgid "Sort &Descending"
 msgstr "Classificar em Ordem &Descendente"
+
+msgid "Start date"
+msgstr "Data inicial"
 
 msgid "Start of line of text\tHOME"
 msgstr "Início da linha de texto\tHOME"
