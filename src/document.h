@@ -1215,7 +1215,7 @@ struct Document {
                 wxButton* okbtn         = new wxButton(dtr, wxID_OK, _(L"Filter"));
                 wxButton* cancelbtn     = new wxButton(dtr, wxID_CANCEL, _(L"Cancel"));
 
-                wxFlexGridSizer *gridsizer = new wxFlexGridSizer(2);
+                wxFlexGridSizer *gridsizer = new wxFlexGridSizer(2, wxSize(10, 10));
                 gridsizer->Add(starttext);
                 gridsizer->Add(endtext);
                 gridsizer->Add(start);
@@ -1223,9 +1223,12 @@ struct Document {
                 gridsizer->Add(okbtn);
                 gridsizer->Add(cancelbtn);
 
+                wxSizerFlags topsizerflags(1);
+                topsizerflags.Expand().Border(wxALL, 10);
+
                 wxFlexGridSizer *topsizer = new wxFlexGridSizer(1);
-                topsizer->Add(introtext);
-                topsizer->Add(gridsizer);
+                topsizer->Add(introtext, topsizerflags);
+                topsizer->Add(gridsizer, topsizerflags);
                 
                 dtr->SetSizerAndFit(topsizer);
 
