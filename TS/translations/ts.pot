@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-22 15:56-0300\n"
+"POT-Creation-Date: 2023-05-25 16:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -422,6 +422,9 @@ msgstr ""
 msgid "Cursor Right\tRIGHT"
 msgstr ""
 
+msgid "Date range filter"
+msgstr ""
+
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr ""
 
@@ -459,6 +462,9 @@ msgid "Edited %s"
 msgstr ""
 
 msgid "Empty strings cannot be tags."
+msgstr ""
+
+msgid "End date"
 msgstr ""
 
 msgid "End of line of text\tEND"
@@ -594,6 +600,9 @@ msgid "File modification conflict!"
 msgstr ""
 
 msgid "File of newer version."
+msgstr ""
+
+msgid "Filter"
 msgstr ""
 
 msgid "Filter by the same cell color"
@@ -888,6 +897,9 @@ msgstr ""
 msgid "Please select file to import:"
 msgstr ""
 
+msgid "Please select the date range."
+msgstr ""
+
 msgid "Press F11 to exit fullscreen mode."
 msgstr ""
 
@@ -1073,6 +1085,10 @@ msgstr ""
 msgid "Show Toolbar"
 msgstr ""
 
+#, no-c-format
+msgid "Show last edits in specific date range"
+msgstr ""
+
 msgid "Show only cells in current search"
 msgstr ""
 
@@ -1087,6 +1103,9 @@ msgid "Sort &Ascending"
 msgstr ""
 
 msgid "Sort &Descending"
+msgstr ""
+
+msgid "Start date"
 msgstr ""
 
 msgid "Start of line of text\tHOME"
