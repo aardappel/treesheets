@@ -622,7 +622,7 @@ struct System {
     }
 
     int AddImageToList(double sc, vector<uint8_t> &&idv, char iti) {
-        auto hash = FNV1A64(string_view((char *)idv.data(), idv.size()));
+        auto hash = FNV1A64(idv);
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
