@@ -246,19 +246,19 @@ inline void __cdecl operator delete[](void *p, const char *fn, int l) {
 
 
 
-inline uint32_t FNV1A32(std::string_view s) {
+inline uint32_t FNV1A32(std::vector<uint8_t> &vec) {
     uint32_t hash = 0x811C9DC5;
-    for (auto c : s) {
-        hash ^= (uint8_t)c;
+    for (uint8_t c : vec) {
+        hash ^= c;
         hash *= 0x01000193;
     }
     return hash;
 }
 
-inline uint64_t FNV1A64(std::string_view s) {
+inline uint64_t FNV1A64(std::vector<uint8_t> &vec) {
     uint64_t hash = 0xCBF29CE484222325;
-    for (auto c : s) {
-        hash ^= (uint8_t)c;
+    for (uint8_t c : vec) {
+        hash ^= c;
         hash *= 0x100000001B3;
     }
     return hash;
