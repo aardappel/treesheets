@@ -880,7 +880,7 @@ struct Document {
                     // Always convert to PNG file format because wxWidgets has trouble dealing with other 
                     // image file formats in clipboard (especially for pasting).
                     wxImage imi = sys->ConvertBufferToWxImage(im->image_data, imagetypes.at(im->image_type).first);
-                    vector<uint8_t> idv = sys->ConvertWxImageToBuffer(imi, wxBITMAP_TYPE_PNG);
+                    std::vector<uint8_t> idv = sys->ConvertWxImageToBuffer(imi, wxBITMAP_TYPE_PNG);
                     image->SetData(idv.size(), idv.data());
                 }
                 wxTheClipboard->SetData(image);
@@ -2029,7 +2029,7 @@ struct Document {
                 if (dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                     c->AddUndo(this);
                     wxImage im = dataobji->GetBitmap().ConvertToImage();
-                    vector<uint8_t> idv = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                    std::vector<uint8_t> idv = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                     SetImageBM(c, std::move(idv), sys->frame->csf);
                     dataobji->SetBitmap(wxNullBitmap);
                     c->Reset();
@@ -2209,7 +2209,7 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, vector<uint8_t> &&idv, double sc) {
+    void SetImageBM(Cell *c, std::vector<uint8_t> &&idv, double sc) {
         c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')];
     }
 
@@ -2217,7 +2217,7 @@ struct Document {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        vector<uint8_t> idv = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+        std::vector<uint8_t> idv = sys->ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
         SetImageBM(c, std::move(idv), sc);
         c->Reset();
         return true;
