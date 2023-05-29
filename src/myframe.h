@@ -461,7 +461,6 @@ struct MyFrame : wxFrame {
         wxMenu *filtermenu = new wxMenu();
         MyAppend(filtermenu, A_FILTEROFF, _(L"Turn filter &off"));
         MyAppend(filtermenu, A_FILTERS, _(L"Show only cells in current search"));
-        // xgettext:no-c-format
         MyAppend(filtermenu, A_FILTERRANGE, _(L"Show last edits in specific date range"));
         // xgettext:no-c-format
         MyAppend(filtermenu, A_FILTER5, _(L"Show 5% of last edits"));
