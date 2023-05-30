@@ -642,11 +642,10 @@ struct System {
 
 
     vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
-        vector<uint8_t> pidv;
         wxMemoryOutputStream mos(NULL, 0);
         im.SaveFile(mos, bmt);
         auto sz = mos.TellO();
-        pidv.resize(sz);
+        vector<uint8_t> pidv(sz);
         mos.CopyTo(pidv.data(), sz);
         return pidv;
     }
