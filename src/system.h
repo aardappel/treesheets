@@ -41,6 +41,9 @@ struct Image {
     }
 
     wxBitmap &Display() {
+        // This might run in multiple threads in parallel
+        // so this function must not touch any global resources
+        // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
             auto mapitem = imagetypes.find(image_type);
             if (mapitem == imagetypes.end()) return wxNullBitmap;
@@ -406,6 +409,17 @@ struct System {
 
     done:
 
+        loopv(i, sys->imagelist) sys->imagelist[i]->trefc = 0;
+        doc->rootgrid->ImageRefCount();
+        {
+            ThreadPool pool(std::thread::hardware_concurrency());   
+            loopv(i, sys->imagelist) {
+                pool.enqueue([](Image *img) {
+                    if(img->trefc) img->Display();    
+                }, sys->imagelist[i]);
+            }
+        } // wait until all tasks are finished
+
         FileUsed(filename, doc);
         doc->Refresh();
         if (anyimagesfailed)
@@ -475,8 +489,8 @@ struct System {
     }
 
     void PurgeImages() {
-        for (int i = 0; i < imagelist.size(); i++) {
-            imagelist[i]->Purge();
+        loopv(i, sys->imagelist) {
+            sys->imagelist[i]->Purge();
         }
     }
 
