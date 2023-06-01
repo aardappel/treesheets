@@ -545,6 +545,11 @@ struct Document {
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
         if (!rootgrid) return;
+        loopv(i, sys->imagelist) sys->imagelist[i]->trefc = 0;
+        rootgrid->ImageRefCount();
+        std::for_each(std::execution::par_unseq, sys->imagelist.begin(), sys->imagelist.end(), [](Image *img) {
+            if(img->trefc) img->Display();
+        });
         sw->GetClientSize(&maxx, &maxy);
         Layout(dc);
         double xscale = maxx / (double)layoutxs;

@@ -71,7 +71,7 @@ struct System {
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
 
-    Vector<Image *> imagelist;
+    std::vector<Image *> imagelist;
     Vector<int> loadimageids;
 
     uchar versionlastloaded;
@@ -475,9 +475,9 @@ struct System {
     }
 
     void PurgeImages() {
-        for (int i = 0; i < imagelist.size(); i++) {
-            imagelist[i]->Purge();
-        }
+        std::for_each(std::execution::par_unseq, imagelist.begin(), imagelist.end(), [](Image *img) {
+            img->Purge();
+        });
     }
 
     const wxChar *Import(int k) {
@@ -626,7 +626,7 @@ struct System {
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
-        imagelist.push() = new Image(hash, sc, std::move(idv), iti);
+        imagelist.push_back(new Image(hash, sc, std::move(idv), iti));
         return imagelist.size() - 1;
     }
 

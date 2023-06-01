@@ -71,6 +71,7 @@ target_link_libraries(
     PRIVATE
         ${wxWidgets_LIBRARIES}
         lobster-impl
+        tbb
 )
 if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
