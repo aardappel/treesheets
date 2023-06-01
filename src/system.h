@@ -357,7 +357,7 @@ struct System {
                             fis.SeekI(beforeimage);
                             auto sz = afterimage - beforeimage;
                             image_data.resize(sz);
-                            fis.Read(image_data.data(), image_data.size());
+                            fis.Read(image_data.data(), sz);
                             if (!fis.IsOk()) image_data.clear();
                             fis.SeekI(afterimage);
                         }
