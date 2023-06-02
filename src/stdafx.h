@@ -70,7 +70,6 @@
 WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 
 #include <new>
-
 #include <vector>
 #include <array>
 #include <string>
@@ -78,14 +77,19 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 #include <map>
 #include <algorithm>
 #include <memory>
-
+#include <queue>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <future>
+#include <functional>
+#include <stdexcept>
 #include <filesystem>
 #include <utility>
-
 #include <locale>
-
 #include <sstream>
 
+#include "threadpool.h"
 #include "tools.h"
 
 

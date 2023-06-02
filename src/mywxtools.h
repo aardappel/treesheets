@@ -152,3 +152,24 @@ static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
     dest = wxBitmap(src.ConvertToImage().Scale(src.GetWidth() * sc, src.GetHeight() * sc,
                     wxIMAGE_QUALITY_HIGH));
 }
+
+static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
+    wxMemoryOutputStream mos(NULL, 0);
+    im.SaveFile(mos, bmt);
+    auto sz = mos.TellO();
+    vector<uint8_t> buf(sz);
+    mos.CopyTo(buf.data(), sz);
+    return buf;
+}
+
+static wxImage ConvertBufferToWxImage(vector<uint8_t> &buf, wxBitmapType bmt) {
+    wxMemoryInputStream mis(buf.data(), buf.size());
+    wxImage im(mis, bmt);
+    return im;
+}
+
+static wxBitmap ConvertBufferToWxBitmap(vector<uint8_t> &buf, wxBitmapType bmt) {
+    wxImage im = ConvertBufferToWxImage(buf, bmt);
+    wxBitmap bm(im, 32);
+    return bm;
+}
