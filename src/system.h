@@ -24,9 +24,9 @@ struct Image {
         auto mapitem = imagetypes.find(image_type);
         if (mapitem == imagetypes.end()) return;
         wxBitmapType it = mapitem->second.first;
-        wxImage im = sys->ConvertBufferToWxImage(image_data, it);
+        wxImage im = ConvertBufferToWxImage(image_data, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
-        image_data = sys->ConvertWxImageToBuffer(im, it);
+        image_data = ConvertWxImageToBuffer(im, it);
         bm_display = wxNullBitmap;
     }
 
@@ -48,7 +48,7 @@ struct Image {
             auto mapitem = imagetypes.find(image_type);
             if (mapitem == imagetypes.end()) return wxNullBitmap;
             wxBitmapType it = mapitem->second.first;
-            wxBitmap bm = sys->ConvertBufferToWxBitmap(image_data, it);
+            wxBitmap bm = ConvertBufferToWxBitmap(image_data, it);
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
@@ -652,27 +652,5 @@ struct System {
 
     void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) {
         dc.DrawBitmap(*bm, x, y);
-    }
-
-
-    vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
-        wxMemoryOutputStream mos(NULL, 0);
-        im.SaveFile(mos, bmt);
-        auto sz = mos.TellO();
-        vector<uint8_t> pidv(sz);
-        mos.CopyTo(pidv.data(), sz);
-        return pidv;
-    }
-
-    wxImage ConvertBufferToWxImage(vector<uint8_t> &pidv, wxBitmapType bmt) {
-        wxMemoryInputStream mis(pidv.data(), pidv.size());
-        wxImage im(mis, bmt);
-        return im;
-    }
-
-    wxBitmap ConvertBufferToWxBitmap(vector<uint8_t> &pidv, wxBitmapType bmt) {
-        wxImage im = ConvertBufferToWxImage(pidv, bmt);
-        wxBitmap bm(im, 32);
-        return bm;
     }
 };
