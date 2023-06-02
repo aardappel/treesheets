@@ -244,8 +244,6 @@ inline void __cdecl operator delete[](void *p, const char *fn, int l) {
 #define new new (__FILE__, __LINE__)
 #endif
 
-
-
 inline uint32_t FNV1A32(std::vector<uint8_t> &vec) {
     uint32_t hash = 0x811C9DC5;
     for (uint8_t c : vec) {
