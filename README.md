@@ -10,7 +10,9 @@ Repository:
 -----------
 
 This repository contains all the files needed to build TreeSheets for various platforms.
-If instead you just want to USE TreeSheets, you may be better off with the binaries available on http://strlen.com/treesheets/
+If instead you just want to USE TreeSheets, you may be better off with the binaries available in the
+[Release section](https://github.com/aardappel/treesheets/releases). Please note that the Linux builds are built
+and only compatible with `ubuntu-latest` used by [GitHub Actions Runner](https://github.com/actions/runner-images).
 
 TreeSheets has been licensed under the ZLIB license (see ZLIB_LICENSE.txt).
 
