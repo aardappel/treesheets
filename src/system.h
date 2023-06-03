@@ -13,7 +13,6 @@ struct Image {
     // This is all relative to GetContentScalingFactor.
     double display_scale;
 
-    long last_display = 0;
     int pixel_width = 0;
 
     Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
@@ -52,13 +51,7 @@ struct Image {
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
-        last_display = wxGetLocalTime();
         return bm_display;
-    }
-
-    void Purge() {
-        auto seconds_passed = wxGetLocalTime() - last_display;
-        if (seconds_passed > 10) bm_display = wxNullBitmap;
     }
 };
 
@@ -111,7 +104,6 @@ struct System {
         void Notify() {
             sys->SaveCheck();
             sys->cfg->Flush();
-            sys->PurgeImages();
         }
     } every_second_timer;
 
@@ -485,12 +477,6 @@ struct System {
     void SaveCheck() {
         loop(i, frame->nb->GetPageCount()) {
             ((TSCanvas *)frame->nb->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
-        }
-    }
-
-    void PurgeImages() {
-        loopv(i, sys->imagelist) {
-            sys->imagelist[i]->Purge();
         }
     }
 
