@@ -205,7 +205,9 @@ struct Document {
                 if (image.trefc) {
                     fos.PutC(image.image_type);
                     sos.WriteDouble(image.display_scale);
-                    fos.Write(image.image_data.data(), image.image_data.size());
+                    wxInt64 imagelen(image.image_data.size());
+                    sos.Write64(imagelen);
+                    fos.Write(image.image_data.data(), imagelen);
                     image.savedindex = realindex++;
                 }
             }

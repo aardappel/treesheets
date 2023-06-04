@@ -22,9 +22,9 @@ struct Image
 {
     char ident;   // marks start of image
     // Character value depends on image type, i.e. 'I' for PNG and 'J' for JPEG
+    double display_scale; // display scale of image
+    int64_t imagelen; // length of image (8 bytes)
     char image_data[len]; // whatever format wxImage::LoadFile uses
-    // to know len, you need to parse the png chunks
-    // sadly this means there's no way to read the Cells without doing so
 }
 
 struct Cell
