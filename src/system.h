@@ -303,59 +303,36 @@ struct System {
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
                         off_t beforeimage = fis.TellI();
-                        wxImage im;
-                        bool ok = im.LoadFile(fis);
-                        // ok = false;
-                        if (!ok) {
-                            // Uhoh.. the decoder failed. Try to save the situation by skipping this image
-                            anyimagesfailed = true;
-                            if (beforeimage == wxInvalidOffset) return _(L"Cannot tell/seek document?");
-                            fis.SeekI(beforeimage);
-                            switch(imt) {
-                                case wxBITMAP_TYPE_PNG: {
-                                    // Now try to skip past this PNG
-                                    uchar header[8];
-                                    fis.Read(header, 8);
-                                    uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
-                                    if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
-                                    dis.BigEndianOrdered(true);
-                                    for (;;) {  // Skip all chunks.
-                                        wxInt32 len = dis.Read32();
-                                        char fourcc[4];
-                                        fis.Read(fourcc, 4);
-                                        fis.SeekI(len, wxFromCurrent);  // skip data
-                                        dis.Read32();                   // skip CRC
-                                        if (memcmp(fourcc, "IEND", 4) == 0) break;
-                                    }
-                                    break;
-                                }
-                                case wxBITMAP_TYPE_JPEG: {
-                                    return _(L"Could not load file because of a corrupted embedded JPEG file");
-                                }
-                                default: {
-                                    return _(L"Could not load file because of an embedded image file of unknown type");
-                                }
+                        
+                        if(iti == 'I') {
+                            uchar header[8];
+                            fis.Read(header, 8);
+                            uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
+                            if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
+                            dis.BigEndianOrdered(true);
+                            for (;;) {  // Skip all chunks.
+                                wxInt32 len = dis.Read32();
+                                char fourcc[4];
+                                fis.Read(fourcc, 4);
+                                fis.SeekI(len, wxFromCurrent);  // skip data
+                                dis.Read32();                   // skip CRC
+                                if (memcmp(fourcc, "IEND", 4) == 0) break;
                             }
-                            // Set empty image here, since document expect there to be one here.
-                            int sz = 32;
-                            im.Create(sz, sz, false);
-                            im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0,
-                                      0);  // Set to red to indicate error.
-                            image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-                            iti = 'I';
-                        } else {
-                            // We loaded the bitmap succesfully.
-                            // Also save a copy of bitmap byte data, since re-compressing images can be slow, so
-                            // keeping this around speeds up saving a lot (~30x faster on image heavy files!).
-                            // (and should cost a fraction of the memory of the uncompressed image).
-                            off_t afterimage = fis.TellI();
-                            fis.SeekI(beforeimage);
-                            auto sz = afterimage - beforeimage;
-                            image_data.resize(sz);
-                            fis.Read(image_data.data(), sz);
-                            if (!fis.IsOk()) image_data.clear();
-                            fis.SeekI(afterimage);
+                        } else if(iti == 'J') {
+                            wxImage im;
+                            im.LoadFile(fis); // fixme: write own parser logic to avoid LoadFile
+                            if(!im.IsOk()) {
+                                return _(L"JPEG file is corrupted!");
+                            }
                         }
+                         
+                        off_t afterimage = fis.TellI();
+                        fis.SeekI(beforeimage);
+                        auto sz = afterimage - beforeimage;
+                        image_data.resize(sz);
+                        fis.Read(image_data.data(), sz);
+                        if (!fis.IsOk()) image_data.clear();
+                        fis.SeekI(afterimage);
 
                         loadimageids.push() = AddImageToList(sc, std::move(image_data), iti);
                         break;
