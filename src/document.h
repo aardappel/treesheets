@@ -1737,28 +1737,32 @@ struct Document {
 
             case A_SAVE_AS_PNG:
             case A_SAVE_AS_JPEG: {
+                wxBusyCursor wait;
+                ThreadPool pool(std::thread::hardware_concurrency());   
                 loopallcellssel(c, true) {
-                    if(c->text.image) {
-                        switch(k) {
-                            case A_SAVE_AS_JPEG: {
-                                if(c->text.image->image_type == 'I') {
-                                    wxImage im = ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
-                                    c->text.image->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
-                                    c->text.image->image_type = 'J';
+                    pool.enqueue([k](Cell *c) {
+                        if(c->text.image) {
+                            switch(k) {
+                                case A_SAVE_AS_JPEG: {
+                                    if(c->text.image->image_type == 'I') {
+                                        wxImage im = ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
+                                        c->text.image->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
+                                        c->text.image->image_type = 'J';
+                                    }
+                                    break;
                                 }
-                                break;
-                            }
-                            case A_SAVE_AS_PNG:
-                            default: {
-                                if(c->text.image->image_type == 'J') {
-                                    wxImage im = ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
-                                    c->text.image->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-                                    c->text.image->image_type = 'I';
+                                case A_SAVE_AS_PNG:
+                                default: {
+                                    if(c->text.image->image_type == 'J') {
+                                        wxImage im = ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
+                                        c->text.image->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                                        c->text.image->image_type = 'I';
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
-                    }
+                    }, c);
                 }
                 return nullptr;
             }
