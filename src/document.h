@@ -198,8 +198,7 @@ struct Document {
             fos.Write(&vers, 1);
             sos.Write8(selected.xs);
             sos.Write8(selected.ys);
-            loopv(i, sys->imagelist) sys->imagelist[i]->trefc = 0;
-            rootgrid->ImageRefCount();
+            RefreshImageRefCount(true);
             int realindex = 0;
             loopv(i, sys->imagelist) {
                 Image &image = *sys->imagelist[i];
@@ -722,6 +721,11 @@ struct Document {
     wxBitmap GetSubBitmap(Selection &s) {
         wxRect r = s.g->GetRect(this, s, true);
         return GetBitmap().GetSubBitmap(r);
+    }
+
+    void RefreshImageRefCount(bool includefolded) {
+        loopv(i, sys->imagelist) sys->imagelist[i]->trefc = 0;
+        rootgrid->ImageRefCount(includefolded);
     }
 
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {

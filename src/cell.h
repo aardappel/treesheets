@@ -458,8 +458,8 @@ struct Cell {
         return text.t == s ? this : (grid ? grid->FindExact(s) : nullptr);
     }
 
-    void ImageRefCount() {
-        if (grid) grid->ImageRefCount();
+    void ImageRefCount(bool includefolded) {
+        if (grid) grid->ImageRefCount(includefolded);
         if (text.image) text.image->trefc++;
     }
 
