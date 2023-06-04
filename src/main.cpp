@@ -34,7 +34,7 @@ static const std::array<uint, 42> celltextcolors = {
 };
 enum { CUSTOMCOLORIDX = 0 };
 
-enum { TS_VERSION = 21, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+enum { TS_VERSION = 22, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
 static const uint TS_SELECTION_MASK = 0x80;
 

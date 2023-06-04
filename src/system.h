@@ -302,37 +302,43 @@ struct System {
                         if (versionlastloaded < 9) dis.ReadString();
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
-                        off_t beforeimage = fis.TellI();
-                        
-                        if(iti == 'I') {
-                            uchar header[8];
-                            fis.Read(header, 8);
-                            uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
-                            if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
-                            dis.BigEndianOrdered(true);
-                            for (;;) {  // Skip all chunks.
-                                wxInt32 len = dis.Read32();
-                                char fourcc[4];
-                                fis.Read(fourcc, 4);
-                                fis.SeekI(len, wxFromCurrent);  // skip data
-                                dis.Read32();                   // skip CRC
-                                if (memcmp(fourcc, "IEND", 4) == 0) break;
+                        if(versionlastloaded >= 22) {
+                            size_t imagelen = (size_t) dis.Read64();
+                            image_data.resize(imagelen);
+                            fis.Read(image_data.data(), imagelen);
+                        } else {
+                            off_t beforeimage = fis.TellI();
+                            
+                            if(iti == 'I') {
+                                uchar header[8];
+                                fis.Read(header, 8);
+                                uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
+                                if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
+                                dis.BigEndianOrdered(true);
+                                for (;;) {  // Skip all chunks.
+                                    wxInt32 len = dis.Read32();
+                                    char fourcc[4];
+                                    fis.Read(fourcc, 4);
+                                    fis.SeekI(len, wxFromCurrent);  // skip data
+                                    dis.Read32();                   // skip CRC
+                                    if (memcmp(fourcc, "IEND", 4) == 0) break;
+                                }
+                            } else if(iti == 'J') {
+                                wxImage im;
+                                im.LoadFile(fis);
+                                if(!im.IsOk()) {
+                                    return _(L"JPEG file is corrupted!");
+                                }
                             }
-                        } else if(iti == 'J') {
-                            wxImage im;
-                            im.LoadFile(fis); // fixme: write own parser logic to avoid LoadFile
-                            if(!im.IsOk()) {
-                                return _(L"JPEG file is corrupted!");
-                            }
+                             
+                            off_t afterimage = fis.TellI();
+                            fis.SeekI(beforeimage);
+                            auto sz = afterimage - beforeimage;
+                            image_data.resize(sz);
+                            fis.Read(image_data.data(), sz);
+                            fis.SeekI(afterimage);
                         }
-                         
-                        off_t afterimage = fis.TellI();
-                        fis.SeekI(beforeimage);
-                        auto sz = afterimage - beforeimage;
-                        image_data.resize(sz);
-                        fis.Read(image_data.data(), sz);
                         if (!fis.IsOk()) image_data.clear();
-                        fis.SeekI(afterimage);
 
                         loadimageids.push() = AddImageToList(sc, std::move(image_data), iti);
                         break;
