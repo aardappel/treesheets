@@ -809,7 +809,7 @@ struct Document {
 
     const wxChar *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift,
                     bool &unprocessed) {
-        if (uk == WXK_NONE || (k < ' ' && k)) {
+        if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
                     return Action(dc, A_BACKSPACE);
@@ -825,6 +825,8 @@ struct Document {
                 // should not be needed... on Windows / OS X they arrive as menu event and never
                 // arrive here, on Linux
                 // we have to process these manually?
+                case WXK_DELETE:
+                    return Action(dc, A_DELETE);
                 case WXK_LEFT:
                     return Action(dc,
                                   shift ? (ctrl ? A_SCLEFT : A_SLEFT) : (ctrl ? A_MLEFT : A_LEFT));
