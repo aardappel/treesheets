@@ -715,6 +715,7 @@ struct Document {
         wxBitmap bm(maxx, maxy, 24);
         wxMemoryDC mdc(bm);
         DrawRectangle(mdc, Background(), 0, 0, maxx, maxy);
+        Layout(mdc);
         Render(mdc);
         return bm;
     }
