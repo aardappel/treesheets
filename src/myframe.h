@@ -1090,28 +1090,29 @@ struct MyFrame : wxFrame {
     }
 
     void OnDPIChanged(wxDPIChangedEvent &dce) {
-        csf = FromDIP(1.0);
-        {
-            ThreadPool pool(std::thread::hardware_concurrency());   
-            loopv(i, sys->imagelist) {
-                pool.enqueue([](Image *img) {
-                    img->bm_display = wxNullBitmap;
-                    img->Display();
-                }, sys->imagelist[i]);
+        {   // block all other events until we finished preparing
+            wxEventBlocker blocker(this);
+            wxBusyCursor wait;
+            csf = FromDIP(1.0);
+            {
+                ThreadPool pool(std::thread::hardware_concurrency());   
+                loopv(i, sys->imagelist) {
+                    pool.enqueue([](Image *img) {
+                        img->bm_display = wxNullBitmap;
+                        img->Display();
+                    }, sys->imagelist[i]);
+                }
+            } // wait until all tasks are finished
+            if (nb) {
+                loop(i, nb->GetPageCount()) {
+                    TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                    p->doc->dpichanged = true;
+                    p->doc->scrolltoselection = true;
+                }
+                nb->SetTabCtrlHeight(-1);
             }
-        } // wait until all tasks are finished
-        if (nb) {
-            loop(i, nb->GetPageCount()) {
-                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
-                p->doc->dpichanged = true;
-            }
-            nb->SetTabCtrlHeight(-1);
-            loop(i, nb->GetPageCount()) {
-                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
-                p->doc->scrolltoselection = true;
-            }
+            idd->FillBitmapVector(imagepath);
         }
-        idd->FillBitmapVector(imagepath);
     }
 
     void OnIconize(wxIconizeEvent &me) {
