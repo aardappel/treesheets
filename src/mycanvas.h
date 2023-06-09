@@ -60,7 +60,11 @@ struct TSCanvas : public wxScrolledWindow {
         wxClientDC dc(this);
         UpdateHover(me.GetX(), me.GetY(), dc);
         if (me.LeftIsDown() || me.RightIsDown()) {
-            doc->Drag(dc);
+            if(me.ShiftDown()) {
+                doc->Copy(DRAGANDDROP);
+            } else {
+                doc->Drag(dc);
+            }
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);

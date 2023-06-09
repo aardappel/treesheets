@@ -341,7 +341,6 @@ struct MyFrame : wxFrame {
 
             wxMenu *imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _(L"&Add Image"), _(L"Adds an image to the selected cell"));
-            MyAppend(imgmenu, A_IMAGECPY, _(L"Copy Image to clipboard"), _(L"Copy the image in the selected cell to the clipboard"));
             MyAppend(imgmenu, A_IMAGESVA, _(L"Save Image(s) to disk"), _(L"Save image(s) to disk. Multiple images will be saved with a counter appended to each file name."));
             imgmenu->AppendSeparator();
             MyAppend(imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels, by %)"),

@@ -233,7 +233,6 @@ enum {
     A_IMAGESCW,
     A_IMAGESCF,
     A_IMAGESCN,
-    A_IMAGECPY,
     A_IMAGESVA,
     A_SAVE_AS_JPEG,
     A_SAVE_AS_PNG,
@@ -261,6 +260,8 @@ enum {
     STYLE_UNDERLINE = 8,
     STYLE_STRIKETHRU = 16
 };
+
+enum { DRAGANDDROP, CLIPBOARD, CLIPBOARD_CONTINUOUS_TEXT };
 
 static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'I', {wxBITMAP_TYPE_PNG, "image/png"} },
