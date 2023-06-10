@@ -83,6 +83,16 @@ struct Text {
         wxString str = s.cursor != s.cursorend ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
         if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLO || format == A_EXPHTMLB)
             str = htmlify(str);
+        if (format == A_EXPHTMLT && image && !image->image_data.empty() 
+                                 && imagetypes.find(image->image_type) != imagetypes.end()) {
+            wxString imgstr
+                   = "<img alt=\"TreeSheets embedded image\" src=\"data:" 
+                   + imagetypes.at(image->image_type).second
+                   + ";base64," 
+                   + wxBase64Encode(image->image_data.data(), image->image_data.size())
+                   + "\">";
+            str.Prepend(imgstr);
+        }
         return str;
     };
 
