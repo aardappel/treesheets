@@ -298,7 +298,6 @@ struct System {
                         char iti = *buf;
                         auto mapitem = imagetypes.find(iti);
                         if (mapitem == imagetypes.end()) return _(L"Found an image type that is not defined in this program.");
-                        wxBitmapType imt = mapitem->second.first;
                         if (versionlastloaded < 9) dis.ReadString();
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
