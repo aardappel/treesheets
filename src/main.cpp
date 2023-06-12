@@ -12,7 +12,6 @@ static const int g_cell_margin = 2;
 static const int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
 static const int g_line_width = 1;
 static const int g_selmargin = 2;
-static const int g_grid_left_offset = 15;
 static const int g_scrollratecursor = 240;  // FIXME: must be configurable
 static const int g_scrollratewheel = 2;     // relative to 1 step on a fixed wheel usually being 120
 static const int g_max_launches = 20;
@@ -267,8 +266,6 @@ static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'I', {wxBITMAP_TYPE_PNG, "image/png"} },
     { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
 };
-
-static const char DEFAULT_IMAGE_TYPE = 'I';
 
 #include "script_interface.h"
 
