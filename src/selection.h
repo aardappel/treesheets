@@ -9,14 +9,14 @@ class Selection {
     int firstdx, firstdy;
 
     Selection(Grid *_g = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
-        : g(_g),
+        : textedit(false),
+          g(_g),
           x(_x),
           y(_y),
           xs(_xs),
           ys(_ys),
           cursor(0),
           cursorend(0),
-          textedit(false),
           firstdx(0),
           firstdy(0) {}
 

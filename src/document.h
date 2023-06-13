@@ -14,25 +14,19 @@ struct UndoItem {
 
 struct Document {
     TSCanvas *sw;
-
     Cell *rootgrid;
     Selection hover, selected, begindrag;
     int isctrlshiftdrag;
-
     int originx, originy, maxx, maxy, centerx, centery;
     int layoutxs, layoutys, hierarchysize, fgutter;
     int lasttextsize, laststylebits;
     Cell *curdrawroot;  // for use during Render() calls
-
     Vector<UndoItem *> undolist, redolist;
     Vector<Selection> drawpath;
     int pathscalebias;
-
     wxString filename;
-
     long lastmodsinceautosave, undolistsizeatfullsave, lastsave;
     bool modified, tmpsavesuccess;
-
     wxDataObjectComposite *dataobjc;
     wxTextDataObject *dataobjt;
     wxBitmapDataObject *dataobji;
@@ -42,7 +36,7 @@ struct Document {
 
     struct MyPrintout : wxPrintout {
         Document *doc;
-        MyPrintout(Document *d) : doc(d), wxPrintout(L"printout") {}
+        MyPrintout(Document *d) : wxPrintout(L"printout"), doc(d) {}
 
         bool OnPrintPage(int page) {
             wxDC *dc = GetDC();
@@ -102,14 +96,16 @@ struct Document {
     Document()
         : sw(nullptr),
           rootgrid(nullptr),
+          centerx(0),
+          centery(0),
+          fgutter(6),
           pathscalebias(0),
           filename(L""),
           lastmodsinceautosave(0),
           undolistsizeatfullsave(0),
           lastsave(wxGetLocalTime()),
           modified(false),
-          centerx(0),
-          centery(0),
+          tmpsavesuccess(true),
           while_printing(false),
           printscale(0),
           blink(true),
@@ -118,10 +114,8 @@ struct Document {
           dpichanged(false),
           scaledviewingmode(false),
           currentviewscale(1),
-          editfilter(0),
           searchfilter(false),
-          tmpsavesuccess(true),
-          fgutter(6) {
+          editfilter(0) {
         dataobjc = new wxDataObjectComposite();  // deleted by DropTarget
         dataobjc->Add(dataobji = new wxBitmapDataObject());
         dataobjc->Add(dataobjt = new wxTextDataObject());
