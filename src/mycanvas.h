@@ -8,11 +8,11 @@ struct TSCanvas : public wxScrolledWindow {
     wxPoint lastmousepos;
 
     TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
-        : frame(fr),
-          wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size,
+        : wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size,
                            wxScrolledWindowStyle | wxWANTS_CHARS),
-          mousewheelaccum(0),
+          frame(fr),
           doc(nullptr),
+          mousewheelaccum(0),
           lastrmbwaswithctrl(false) {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetBackgroundColour(*wxWHITE);

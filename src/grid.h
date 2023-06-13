@@ -56,10 +56,10 @@ struct Grid {
 
     Grid(int _xs, int _ys, Cell *_c = nullptr)
         : cell(_c),
-          xs(_xs),
-          ys(_ys),
           cells(new Cell *[_xs * _ys]),
           colwidths(nullptr),
+          xs(_xs),
+          ys(_ys),
           user_grid_outer_spacing(3),
           bordercolor(0xA0A0A0),
           horiz(false),

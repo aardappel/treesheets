@@ -162,7 +162,7 @@ class Vector : public NonCopyable {
     }
 
     Vector() { new (this) Vector(8); }
-    Vector(uint n) : ulen(0), buf(nullptr) { reallocate(n); }
+    Vector(uint n) : buf(nullptr), ulen(0) { reallocate(n); }
     Vector(uint n, int c) {
         new (this) Vector(n);
         loop(i, c) push();

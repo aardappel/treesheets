@@ -2,7 +2,6 @@ struct Image {
     vector<uint8_t> image_data;
     char image_type;
     wxBitmap bm_display;
-
     int trefc = 0;
     int savedindex = -1;
     uint64_t hash = 0;
@@ -12,11 +11,10 @@ struct Image {
     // look better on most screens.
     // This is all relative to GetContentScalingFactor.
     double display_scale;
-
     int pixel_width = 0;
 
     Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
-        : hash(_hash), display_scale(_sc), image_data(std::move(idv)), image_type(iti) {}
+        : image_data(std::move(idv)), image_type(iti), hash(_hash), display_scale(_sc) {}
 
 
     void ImageRescale(double sc) {
@@ -57,29 +55,19 @@ struct Image {
 
 struct System {
     MyFrame *frame;
-
     wxString defaultfont, searchstring;
-
     wxConfigBase *cfg;
-
     Evaluator ev;
-
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
-
     Vector<Image *> imagelist;
     Vector<int> loadimageids;
-
     uchar versionlastloaded;
     wxLongLong fakelasteditonload;
-
     wxPen pen_tinytext, pen_gridborder, pen_tinygridlines, pen_gridlines, pen_thinselect;
-
     uint customcolor;
-
     int roundness;
     int defaultmaxcolwidth;
-
     bool makebaks;
     bool totray;
     bool autosave;
@@ -92,49 +80,43 @@ struct System {
     bool autohtmlexport;
     bool casesensitivesearch;
     bool darkennonmatchingcells;
-
     int sortcolumn, sortxs, sortdescending;
-
     bool fastrender;
     wxHashMapBool watchedpaths;
-
     bool insidefiledialog;
-
     struct TimerStruct : wxTimer {
         void Notify() {
             sys->SaveCheck();
             sys->cfg->Flush();
         }
     } every_second_timer;
-
     uint lastcellcolor = 0xFFFFFF;
     uint lasttextcolor = 0;
     uint lastbordcolor = 0xA0A0A0;
 
     System(bool portable)
-        : cfg(portable ? (wxConfigBase *)new wxFileConfig(
-                             L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
-                       : (wxConfigBase *)new wxConfig(L"TreeSheets")),
-          defaultfont(
+        : defaultfont(
             #ifdef WIN32
               L"Lucida Sans Unicode"
             #else
               L"Verdana"
             #endif
               ),
+          cfg(portable ? (wxConfigBase *)new wxFileConfig(
+                             L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
+                       : (wxConfigBase *)new wxConfig(L"TreeSheets")),
+          versionlastloaded(0),
           pen_tinytext(wxColour(0x808080ul)),
           pen_gridborder(wxColour(0xb5a6a4)),
           pen_tinygridlines(wxColour(0xf2dcd8)),
           pen_gridlines(wxColour(0xe5b7b0)),
           pen_thinselect(*wxLIGHT_GREY),
-          versionlastloaded(0),
           customcolor(0xFFFFFF),
           roundness(3),
           defaultmaxcolwidth(80),
           makebaks(true),
           totray(false),
           autosave(true),
-          fastrender(true),
           zoomscroll(false),
           thinselc(true),
           minclose(false),
@@ -144,6 +126,7 @@ struct System {
           autohtmlexport(false),
           casesensitivesearch(true),
           darkennonmatchingcells(false),
+          fastrender(true),
           insidefiledialog(false) {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
