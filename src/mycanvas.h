@@ -60,7 +60,7 @@ struct TSCanvas : public wxScrolledWindow {
         wxClientDC dc(this);
         UpdateHover(me.GetX(), me.GetY(), dc);
         if (me.LeftIsDown() || me.RightIsDown()) {
-            if(me.ShiftDown()) {
+            if(me.AltDown() && me.ShiftDown()) {
                 doc->Copy(DRAGANDDROP);
             } else {
                 doc->Drag(dc);
