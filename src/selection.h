@@ -108,6 +108,17 @@ class Selection {
 
     int MaxCursor() { return int(GetCell()->text.t.Len()); }
 
+    inline bool IsWordSep(wxChar &ch) {
+        //represents: !"#$%&'()*+,-./    :;<=>?@    [\]^    {|}~    `
+        return (32 < ch && ch < 48) || (57 < ch && ch < 65) || (90 < ch && ch < 95) || (122 < ch && ch < 127) || ch == 96;
+    }
+    
+    inline int CharType(wxChar &ch) {
+        if (wxIsspace(ch)) return 3;
+        if (IsWordSep(ch)) return 2;
+        return 1;
+    }
+    
     void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
               int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
@@ -127,13 +138,23 @@ class Selection {
             {
                 if (cursor == cursorend) firstdx = dx;
                 int &curs = firstdx < 0 ? cursor : cursorend;
-                for (int c = curs, start = curs;;) {
+                int c = curs + dx;
+                wxChar ch;
+                if (c >= 0 && c <= MaxCursor()) {
+                    ch = GetCell()->text.t[min(c, curs)];
+                    //3,2,1 = whitespace, separator, anything else. If negative, only accepts same (abs) type
+                    int allowed = CharType(ch);
+                    curs = c;
+                    while(true) {
                     c += dx;
                     if (c < 0 || c > MaxCursor()) break;
-                    wxChar ch = GetCell()->text.t[(c + curs) / 2];
-                    if (!wxIsalnum(ch) && curs != start) break;
+                        ch = GetCell()->text.t[min(c,curs)];
+                        int chtype = CharType(ch);
+                        //disallow 3 decreases in type, i.e. "> #a" would become " #>a"
+                        if (chtype > allowed && chtype != -allowed ) break;
                     curs = c;
-                    if (!wxIsalnum(ch) && !wxIsspace(ch)) break;
+                        if (chtype < allowed) allowed = -chtype;
+                    }
                 }
                 if (shift) {
                     if (cursorend < cursor) swap_(cursorend, cursor);
@@ -260,6 +281,7 @@ class Selection {
                 };
             }
             doc->DrawSelectMove(dc, *this);
+            doc->ResetBlink();
         };
     }
 

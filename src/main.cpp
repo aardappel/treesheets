@@ -18,6 +18,7 @@ static const int g_max_launches = 20;
 static const int g_deftextsize_default = 12;
 static const int g_mintextsize_delta = 8;
 static const int g_maxtextsize_delta = 32;
+static const int BLINK_TIME = 400;
 
 static int g_deftextsize = g_deftextsize_default;
 static int g_mintextsize() { return g_deftextsize - g_mintextsize_delta; }
