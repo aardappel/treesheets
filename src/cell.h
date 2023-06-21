@@ -427,13 +427,13 @@ struct Cell {
     }
 
     Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
-                   bool forward) {
-        if (grid) best = grid->FindLink(s, link, best, lastthis, stylematch, forward);
+                   bool forward, bool image) {
+        if (grid) best = grid->FindLink(s, link, best, lastthis, stylematch, forward, image);
         if (link == this) {
             lastthis = true;
             return best;
         }
-        if (link->text.ToText(0, s, A_EXPTEXT) == text.t) {
+        if (image ? link->text.image == text.image : link->text.ToText(0, s, A_EXPTEXT) == text.t) {
             if (link->text.stylebits != text.stylebits || link->cellcolor != cellcolor ||
                 link->textcolor != textcolor) {
                 if (!stylematch) best = nullptr;

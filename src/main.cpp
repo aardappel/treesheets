@@ -142,6 +142,8 @@ enum {
     A_ENTERGRID,
     A_LINK,
     A_LINKREV,
+    A_LINKIMG,
+    A_LINKIMGREV,
     A_SEARCHNEXT,
     A_CUSTCOL,
     A_COLCELL,
