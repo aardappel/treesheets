@@ -304,11 +304,11 @@ struct Grid {
     }
 
     Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
-                   bool forward) {
+                   bool forward, bool image) {
         if (forward) {
-            foreachcell(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward);
+            foreachcell(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward, image);
         } else {
-            foreachcellrev(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward);
+            foreachcellrev(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward, image);
         }
         return best;
     }
