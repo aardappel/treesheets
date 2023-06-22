@@ -129,22 +129,21 @@ jobs:
       run: |
         cd wxWidgets/build_
         sudo make install
-    - name: build TreeSheets
-      working-directory: osx/TreeSheets
+    - name: cmake
+      working-directory: osx
       run: |
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(date +'%Y%m%d%H%M%S')" "TreeSheets/TreeSheets-Info.plist"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(date +'%Y.%m.%d')" "TreeSheets/TreeSheets-Info.plist"
-        xcodebuild -list
-        xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme TreeSheets -derivedDataPath build
-        chmod +x build/Build/Products/Release/TreeSheets.app/Contents/MacOS/TreeSheets
-        rm -rf build/Build/Products/Release/TreeSheets.app.dSYM
-        zip -r ../../mac_treesheets.zip build/Build/Products/Release
+        sh generate_xcode.sh
+    - name: build TreeSheets
+      working-directory: osx/xcode-cmake
+      run: |
+        xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme treesheets
+        zip -r ../../mac_treesheets.zip release
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
       uses: actions/upload-artifact@v2
       with:
         name: Mac TreeSheets
-        path: build/Build/Products/Release
+        path: mac_treesheets.zip
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
