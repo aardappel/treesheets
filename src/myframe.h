@@ -1181,11 +1181,11 @@ struct MyFrame : wxFrame {
 
     void SetFileAssoc(wxString &exename) {
         #ifdef WIN32
-        SetRegKey(L"HKEY_CLASSES_ROOT\\.cts", L"TreeSheets");
-        SetRegKey(L"HKEY_CLASSES_ROOT\\TreeSheets", L"TreeSheets file");
-        SetRegKey(L"HKEY_CLASSES_ROOT\\TreeSheets\\Shell\\Open\\Command",
+        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
+        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
+        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
                   wxString(L"\"") + exename + L"\" \"%1\"");
-        SetRegKey(L"HKEY_CLASSES_ROOT\\TreeSheets\\DefaultIcon",
+        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
                   wxString(L"\"") + exename + L"\",0");
         #else
         // TODO: do something similar for mac/kde/gnome?
