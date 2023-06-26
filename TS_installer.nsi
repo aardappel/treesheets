@@ -12,11 +12,11 @@ Name "TreeSheets"
 
 OutFile "windows_treesheets_setup.exe"
 
-XPStyle on
+RequestExecutionLevel user
 
-InstallDir $PROGRAMFILES64\TreeSheets
+InstallDir "$LOCALAPPDATA\Programs\TreeSheets"
 
-InstallDirRegKey HKLM "Software\TreeSheets" "Install_Dir"
+InstallDirRegKey HKCU "Software\TreeSheets" "Install_Dir"
 
 SetCompressor /SOLID lzma
 XPStyle on
@@ -69,12 +69,12 @@ Section "TreeSheets (required)"
 
   File /r "TS\*.*"
 
-  WriteRegStr HKLM SOFTWARE\TreeSheets "Install_Dir" "$INSTDIR"
+  WriteRegStr HKCU SOFTWARE\TreeSheets "Install_Dir" "$INSTDIR"
 
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "DisplayName" "TreeSheets"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "NoRepair" 1
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "DisplayName" "TreeSheets"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "NoModify" 1
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
 
 SectionEnd
@@ -103,8 +103,8 @@ SectionEnd
 
 Section "Uninstall"
 
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets"
-  DeleteRegKey HKLM SOFTWARE\TreeSheets
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\TreeSheets"
+  DeleteRegKey HKCU SOFTWARE\TreeSheets
 
   RMDir /r "$SMPROGRAMS\TreeSheets"
   RMDir /r "$INSTDIR"
