@@ -444,14 +444,17 @@ struct Document {
             case CLIPBOARD:
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
-                wxDataObjectComposite *clipboarddata = new wxDataObjectComposite();
                 if(c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
                     if (!im->image_data.empty() && imagetypes.find(im->image_type) != imagetypes.end()) {
                         wxBitmap bm = ConvertBufferToWxBitmap(im->image_data, imagetypes.at(im->image_type).first);
-                        clipboarddata->Add(new wxBitmapDataObject(bm));
+                        if(wxTheClipboard->Open()) {
+                            wxTheClipboard->SetData(new wxBitmapDataObject(bm));
+                            wxTheClipboard->Close();
+                        }   
                     }
                 } else {
+                    wxDataObjectComposite *clipboarddata = new wxDataObjectComposite();
                     wxString s, html;
                     s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
                     html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
@@ -466,10 +469,10 @@ struct Document {
                         new wxHTMLDataObject(html);
                     #endif
                     clipboarddata->Add(htmlobj);
-                }
-                if(wxTheClipboard->Open()) {
-                    wxTheClipboard->SetData(clipboarddata);
-                    wxTheClipboard->Close();
+                    if(wxTheClipboard->Open()) {
+                        wxTheClipboard->SetData(clipboarddata);
+                        wxTheClipboard->Close();
+                    }
                 }
                 break;
             }
