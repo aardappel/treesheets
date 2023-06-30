@@ -2253,11 +2253,13 @@ struct Document {
         int i = 0;
         for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit)
             if (i++ == tagno) {
-                Cell *c = selected.GetCell();
-                if (!c) return OneCell();
-                c->AddUndo(this);
-                c->text.Clear(this, selected);
-                c->text.Insert(this, tagit->first, selected);
+                selected.g->cell->AddUndo(this);
+                loopallcellssel(c, true) {
+                    c->text.Clear(this, selected);
+                    c->text.Insert(this, tagit->first, selected);
+                }
+                selected.g->cell->ResetChildren();
+                selected.g->cell->ResetLayout();
                 Refresh();
                 return nullptr;
             }
