@@ -1151,7 +1151,7 @@ struct Document {
             }
 
             case A_SEARCHNEXT: {
-                return SearchNext(dc, false);
+                return SearchNext(dc, false, true);
             }
 
             case A_CASESENSITIVESEARCH: {
@@ -1161,7 +1161,8 @@ struct Document {
                     (sys->casesensitivesearch) ? 
                         sys->frame->filter->GetValue() : 
                         sys->frame->filter->GetValue().Lower();
-                sys->frame->SetSearchTextBoxBackgroundColour();
+                sys->frame->SetSearchTextBoxBackgroundColour(false);
+                this->SearchNext(dc, false, false);
                 this->Refresh();
                 return nullptr;
             }
@@ -1201,7 +1202,7 @@ struct Document {
                 } else {
                     loopallcellssel(c, true) if(c->text.IsInSearch()) c->AddUndo(this);
                     selected.g->ReplaceStr(this, replaces, lreplaces, selected);
-                    if (k == A_REPLACEONCEJ) return SearchNext(dc, true);
+                    if (k == A_REPLACEONCEJ) return SearchNext(dc, true, true);
                 }
                 return _(L"Text has been replaced.");
             }
@@ -1983,14 +1984,16 @@ struct Document {
         }
     }
 
-    const wxChar *SearchNext(wxDC &dc, bool focusmatch) {
+    const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump) {
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
         Cell *next =
             rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel);
         if (!next) return _(L"No matches for search.");
+        sys->frame->SetSearchTextBoxBackgroundColour(true);
+        if (!jump) return nullptr;
         SetSelect(next->parent->grid->FindCell(next));
-        if(focusmatch) sw->SetFocus();
+        if (focusmatch) sw->SetFocus();
         ScrollOrZoom(dc, true);
         return nullptr;
     }

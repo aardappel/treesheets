@@ -180,12 +180,7 @@ struct Text {
             lowert = t.Lower();
             text = &lowert;
         }
-
-        if(sys->searchstring.Len() && text->Find(sys->searchstring) >= 0) {
-            sys->frame->SetSearchTextBoxBackgroundColour(true);
-            return true;
-        }
-        return false;
+        return sys->searchstring.Len() && text->Find(sys->searchstring) >= 0;
     }
     
     int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
