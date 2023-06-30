@@ -412,7 +412,7 @@ struct Document {
                     wxString s, html;
                     s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
                     html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
-                    sys->clipboardcopy = s;
+                    if (!selected.TextEdit()) sys->clipboardcopy = s;
                     
                     dragdata.Add(new wxTextDataObject(s));
                     auto *htmlobj = 
@@ -433,7 +433,7 @@ struct Document {
                 wxDataObjectComposite *clipboardtextdata = new wxDataObjectComposite();
                 wxString s = "";
                 loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
-                sys->clipboardcopy = s;
+                if (!selected.TextEdit()) sys->clipboardcopy = s;
                 clipboardtextdata->Add(new wxTextDataObject(s));
                 if(wxTheClipboard->Open()) {
                     wxTheClipboard->SetData(clipboardtextdata);
@@ -458,7 +458,7 @@ struct Document {
                     wxString s, html;
                     s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
                     html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
-                    sys->clipboardcopy = s;
+                    if (!selected.TextEdit()) sys->clipboardcopy = s;
                     
                     clipboarddata->Add(new wxTextDataObject(s));
                     auto *htmlobj = 
@@ -1378,9 +1378,7 @@ struct Document {
                 if (selected.TextEdit()) {
                     if (selected.cursor == selected.cursorend) return _(L"No text selected.");
                 }
-
                 Copy(k == A_COPYCT ? CLIPBOARD_CONTINUOUS_TEXT : CLIPBOARD);
-
                 if (k == A_CUT) {
                     if (!selected.TextEdit()) {
                         selected.g->cell->AddUndo(this);
