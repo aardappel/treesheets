@@ -24,7 +24,6 @@ struct MyFrame : wxFrame {
     ColorDropdown *textdd = nullptr;
     ColorDropdown *borddd = nullptr;
     wxString imagepath;
-    bool searchmatchfound;
     
     wxString GetDocPath(const wxString &relpath) {
         std::filesystem::path candidatePaths[] = {
@@ -94,8 +93,7 @@ struct MyFrame : wxFrame {
           watcher(nullptr),
           watcherwaitingforuser(false),
           csf(FromDIP(1.0)),
-          zenmode(false),
-          searchmatchfound(false) {
+          zenmode(false) {
         sys->frame = this;
         exepath_ = wxFileName(exename).GetPath();
         #ifdef __WXMAC__
@@ -823,7 +821,7 @@ struct MyFrame : wxFrame {
     void OnTabChange(wxAuiNotebookEvent &nbe) {
         TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sw->Status();
-        SetSearchTextBoxBackgroundColour();
+        SetSearchTextBoxBackgroundColour(false);
         sys->TabChange(sw->doc);
     }
 
@@ -1017,26 +1015,26 @@ struct MyFrame : wxFrame {
         }
     }
 
-    void SetSearchTextBoxBackgroundColour(bool found = false) {
-        if(found != searchmatchfound) {
-            searchmatchfound = !searchmatchfound;
-            filter->SetBackgroundColour(found ? wxColour("AQUAMARINE"): 
-                wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
-            filter->SetForegroundColour(found ? *wxBLACK : 
-                wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT));
-            filter->Refresh();
-        }
+    void SetSearchTextBoxBackgroundColour(bool found) {
+        filter->SetBackgroundColour(found ? wxColour("AQUAMARINE"): 
+            wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
+        filter->SetForegroundColour(found ? *wxBLACK : 
+            wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT));
+        filter->Refresh();
     }
 
     void OnSearch(wxCommandEvent &ce) {
         wxString searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
-        SetSearchTextBoxBackgroundColour();
+        SetSearchTextBoxBackgroundColour(false);
         Document *doc = GetCurTab()->doc;
-        if (doc->searchfilter)
+        TSCanvas *sw = GetCurTab();
+        wxClientDC dc(sw);
+        doc->SearchNext(dc, false, false);
+        if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
-        else
+        } else
             doc->Refresh();
         GetCurTab()->Status();
     }
@@ -1049,7 +1047,7 @@ struct MyFrame : wxFrame {
             sw->SetFocus();
         } else {
             wxClientDC dc(sw);
-            doc->SearchNext(dc, false);
+            doc->SearchNext(dc, false, true);
         }
     }
 
