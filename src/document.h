@@ -1809,6 +1809,21 @@ struct Document {
                 }
                 return returnmessage;
             }
+
+            case A_TAGADD: {
+                loopallcellssel(c, false) {
+                    if (!c->text.t.Len()) continue;
+                    tags[c->text.t] = true;
+                }
+                Refresh();
+                return nullptr;
+            }
+
+            case A_TAGREMOVE: {
+                loopallcellssel(c, false) tags.erase(c->text.t);
+                Refresh();
+                return nullptr;
+            }
         }
 
         if (c || (!c && selected.IsAll())) {
@@ -1897,17 +1912,6 @@ struct Document {
                 Refresh();
                 return nullptr;
             }
-
-            case A_TAGADD:
-                if (!c->text.t.Len()) return _(L"Empty strings cannot be tags.");
-                tags[c->text.t] = true;
-                Refresh();
-                return nullptr;
-
-            case A_TAGREMOVE:
-                tags.erase(c->text.t);
-                Refresh();
-                return nullptr;
 
             case A_FILTERBYCELLBG: 
                 loopallcells(ci) ci->text.filtered = ci->cellcolor != c->cellcolor;
