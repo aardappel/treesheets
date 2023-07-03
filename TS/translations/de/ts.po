@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-22 15:56-0300\n"
+"POT-Creation-Date: 2023-07-03 21:55+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -323,9 +323,6 @@ msgstr ""
 msgid "Cannot open file."
 msgstr "Die Datei konnte nicht geöffnet werden."
 
-msgid "Cannot tell/seek document?"
-msgstr "Das Dokument kann nicht durchsucht werden?"
-
 msgid "Case-sensitive search"
 msgstr "Groß- und Kleinschreibung beachten"
 
@@ -411,27 +408,11 @@ msgstr "Kopieren (STRG+c)"
 msgid "Copy As Continuous Text"
 msgstr "Als durchgängigen Text kopieren"
 
-msgid "Copy Image to clipboard"
-msgstr "Bild in die Zwischenablage kopieren"
-
-msgid "Copy the image in the selected cell to the clipboard"
-msgstr "Das Bild in der ausgewählten Zelle in die Zwischenablage kopieren"
-
 msgid "Corrupt PNG header."
 msgstr "Beschädigter PNG-Header!"
 
 msgid "Corrupt block header."
 msgstr "Beschädigter Block-Header!"
-
-msgid "Could not load file because of a corrupted embedded JPEG file"
-msgstr ""
-"Die Datei konnte auf Grund einer fehlerhaften eingebetteten JPEG-Datei nicht "
-"geladen werden."
-
-msgid "Could not load file because of an embedded image file of unknown type"
-msgstr ""
-"Die Datei konnte auf Grund einer eingebetteten Bilddatei unbekannten Types "
-"nicht geladen werden."
 
 msgid "Create .bak files"
 msgstr ".bak-Dateien erstellen"
@@ -447,6 +428,9 @@ msgstr "Cursor links\tLEFT"
 
 msgid "Cursor Right\tRIGHT"
 msgstr "Cursor rechts\tRIGHT"
+
+msgid "Date range filter"
+msgstr "Filter für Datumsbereich"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Spaltenbreite verkleinern (ALT+Mausrad)\tALT+PGDN"
@@ -490,6 +474,9 @@ msgstr "%s bearbeitet"
 
 msgid "Empty strings cannot be tags."
 msgstr "Leere Zeichenketten können keine Schlagworte sein!"
+
+msgid "End date"
+msgstr "Enddatum"
 
 msgid "End of line of text\tEND"
 msgstr "Ende der Zeile des Textes\tEND"
@@ -648,6 +635,10 @@ msgstr "Konflikt bei der Dateiänderung!"
 msgid "File of newer version."
 msgstr "Datei weist einen neueren Versionsstand auf."
 
+#, fuzzy
+msgid "Filter"
+msgstr "Filter..."
+
 msgid "Filter by the same cell color"
 msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
 
@@ -663,11 +654,17 @@ msgstr "Klappt die Tabelle der ausgewählten Zelle(n) rekursiv aus."
 msgid "Found an image type that is not defined in this program."
 msgstr "Es wurde ein Bildtyp gefunden, der nicht in diesem Programm definiert ist."
 
-msgid "Go To &Matching Cell\tF6"
-msgstr "Gehe zur &übereinstimmenden Zelle\tF6"
+msgid "Go To &Matching Cell (Text)\tF6"
+msgstr "Gehe zur &übereinstimmenden Zelle (Text)\tF6"
 
-msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
-msgstr "Gehe zur übereinstimmenden Zelle (rückwärts)\tSHIFT+F6"
+msgid "Go To Matching Cell (Image)\tF7"
+msgstr "Gehe zur übereinstimmenden Zelle (Bild)\tF7"
+
+msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
+msgstr "Gehe zur übereinstimmenden Zelle (Bild, rückwärts)\tSHIFT+F7"
+
+msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
+msgstr "Gehe zur übereinstimmenden Zelle (Text, rückwärts)\tSHIFT+F6"
 
 msgid "Go to Next Search Result"
 msgstr "&Zum nächsten Suchtreffer gehen"
@@ -712,9 +709,6 @@ msgstr "Symbol "
 msgid "Image Resize"
 msgstr "Bildgröße verändern..."
 
-msgid "Image copied to clipboard"
-msgstr "Bild in die Zwischenablage kopiert"
-
 msgid "Import file from"
 msgstr "Datei importieren aus"
 
@@ -735,6 +729,9 @@ msgstr "Initialisierungsfehler"
 
 msgid "Internal error: unimplemented operation!"
 msgstr "Interner Fehler: Nicht implementierter Vorgang!"
+
+msgid "JPEG file is corrupted!"
+msgstr "JPEG-Datei ist fehlerhaft/beschädigt!"
 
 msgid "Key binding"
 msgstr "Tastenkombination"
@@ -954,6 +951,9 @@ msgstr "Bitte wählen Sie eine Bilddatei aus:"
 msgid "Please select file to import:"
 msgstr "Bitte wählen Sie eine Datei zum Importieren aus:"
 
+msgid "Please select the date range."
+msgstr "Bitte wählen Sie den Datumsbereich aus."
+
 msgid "Press F11 to exit fullscreen mode."
 msgstr "F11 drücken, um den Vollbildmous zu verlassen."
 
@@ -1142,6 +1142,9 @@ msgstr "Statuszeile anzeigen"
 msgid "Show Toolbar"
 msgstr "Werkzeugleiste anzeigen"
 
+msgid "Show last edits in specific date range"
+msgstr "Die letzten Bearbeitungen in einem bestimmten Datumsbereich anzeigen"
+
 msgid "Show only cells in current search"
 msgstr "Nur Zellen in der aktuellen Suche anzeigen"
 
@@ -1157,6 +1160,9 @@ msgstr "&Aufsteigend sortieren"
 
 msgid "Sort &Descending"
 msgstr "Absteigen&d sortieren"
+
+msgid "Start date"
+msgstr "Startdatum"
 
 msgid "Start of line of text\tHOME"
 msgstr "Beginn der Zeile des Texte\tHOME"
@@ -1204,9 +1210,6 @@ msgstr "Textgröße..."
 msgid "Text Style..."
 msgstr "Textstil..."
 
-msgid "Text copied to clipboard"
-msgstr "Text in die Zwischenablage kopiert"
-
 msgid "Text has been replaced."
 msgstr "Text wurde ersetzt."
 
@@ -1252,8 +1255,8 @@ msgstr "Ein-/Ausklappen\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Ein-/Ausklappen\tF10"
 
-msgid "Toggle Vertical Layout\tF7"
-msgstr "Vertikale Anordnung aktivieren/deaktivieren\tF7"
+msgid "Toggle Vertical Layout\tALT+0"
+msgstr "Vertikale Anordnung aktivieren/deaktivieren\tALT+0"
 
 msgid "Toggle Zen Mode"
 msgstr "Zenmodus ein-/ausschalten"
