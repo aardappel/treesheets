@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-25 16:08-0300\n"
+"POT-Creation-Date: 2023-07-03 21:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -313,9 +313,6 @@ msgstr ""
 msgid "Cannot open file."
 msgstr ""
 
-msgid "Cannot tell/seek document?"
-msgstr ""
-
 msgid "Case-sensitive search"
 msgstr ""
 
@@ -389,22 +386,10 @@ msgstr ""
 msgid "Copy As Continuous Text"
 msgstr ""
 
-msgid "Copy Image to clipboard"
-msgstr ""
-
-msgid "Copy the image in the selected cell to the clipboard"
-msgstr ""
-
 msgid "Corrupt PNG header."
 msgstr ""
 
 msgid "Corrupt block header."
-msgstr ""
-
-msgid "Could not load file because of a corrupted embedded JPEG file"
-msgstr ""
-
-msgid "Could not load file because of an embedded image file of unknown type"
 msgstr ""
 
 msgid "Create .bak files"
@@ -620,10 +605,16 @@ msgstr ""
 msgid "Found an image type that is not defined in this program."
 msgstr ""
 
-msgid "Go To &Matching Cell\tF6"
+msgid "Go To &Matching Cell (Text)\tF6"
 msgstr ""
 
-msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
+msgid "Go To Matching Cell (Image)\tF7"
+msgstr ""
+
+msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
+msgstr ""
+
+msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
 msgstr ""
 
 msgid "Go to Next Search Result"
@@ -667,9 +658,6 @@ msgstr ""
 msgid "Image Resize"
 msgstr ""
 
-msgid "Image copied to clipboard"
-msgstr ""
-
 msgid "Import file from"
 msgstr ""
 
@@ -689,6 +677,9 @@ msgid "Initialization Error"
 msgstr ""
 
 msgid "Internal error: unimplemented operation!"
+msgstr ""
+
+msgid "JPEG file is corrupted!"
 msgstr ""
 
 msgid "Key binding"
@@ -1085,7 +1076,6 @@ msgstr ""
 msgid "Show Toolbar"
 msgstr ""
 
-#, no-c-format
 msgid "Show last edits in specific date range"
 msgstr ""
 
@@ -1152,9 +1142,6 @@ msgstr ""
 msgid "Text Style..."
 msgstr ""
 
-msgid "Text copied to clipboard"
-msgstr ""
-
 msgid "Text has been replaced."
 msgstr ""
 
@@ -1200,7 +1187,7 @@ msgstr ""
 msgid "Toggle Fold\tF10"
 msgstr ""
 
-msgid "Toggle Vertical Layout\tF7"
+msgid "Toggle Vertical Layout\tALT+0"
 msgstr ""
 
 msgid "Toggle Zen Mode"
