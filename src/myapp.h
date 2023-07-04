@@ -114,7 +114,8 @@ struct MyApp : wxApp {
         }
 
         if (single_instance) {
-            instance_checker = new wxSingleInstanceChecker();
+            instance_checker = new wxSingleInstanceChecker(
+                wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir());
             if (instance_checker->IsAnotherRunning()) {
                 wxClient client;
                 client.MakeConnection(
