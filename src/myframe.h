@@ -1016,6 +1016,7 @@ struct MyFrame : wxFrame {
     }
 
     void SetSearchTextBoxBackgroundColour(bool found) {
+        if (!filter) return;
         filter->SetBackgroundColour(found ? wxColour("AQUAMARINE"): 
             wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
         filter->SetForegroundColour(found ? *wxBLACK : 
