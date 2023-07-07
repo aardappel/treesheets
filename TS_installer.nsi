@@ -1,5 +1,5 @@
 
-!include "MUI.nsh"
+!include "MUI2.nsh"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\TreeSheets.exe"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "TreeSheets\tsinst.bmp"
@@ -7,6 +7,8 @@
 doesn't show?
 !define MUI_HEADERIMAGE_UNBITMAP "TreeSheets\tsinst.bmp"
 */
+
+Unicode true
 
 Name "TreeSheets"
 
@@ -19,17 +21,25 @@ InstallDir "$LOCALAPPDATA\Programs\TreeSheets"
 InstallDirRegKey HKCU "Software\TreeSheets" "Install_Dir"
 
 SetCompressor /SOLID lzma
-XPStyle on
 
-Page components #"" ba ""
-Page directory
-Page instfiles
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_COMPONENTS
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
-UninstPage uninstConfirm
-UninstPage instfiles
+!insertmacro MUI_UNPAGE_WELCOME
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
 
-!insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "English" ; The first language is the default language
+!insertmacro MUI_LANGUAGE "French"
+!insertmacro MUI_LANGUAGE "German"
+!insertmacro MUI_LANGUAGE "SimpChinese"
+!insertmacro MUI_LANGUAGE "Italian"
+!insertmacro MUI_LANGUAGE "PortugueseBR"
+
+!insertmacro MUI_RESERVEFILE_LANGDLL
 
 /*
 AddBrandingImage top 65
@@ -45,6 +55,7 @@ FunctionEnd
 */
 
 Function .onInit
+  !insertmacro MUI_LANGDLL_DISPLAY
   SetRegView 64
   FindWindow $0 "TreeSheets" ""
   StrCmp $0 0 continueInstall
@@ -54,6 +65,7 @@ Function .onInit
 FunctionEnd
 
 Function un.onInit
+  !insertmacro MUI_UNGETLANGUAGE
   FindWindow $0 "TreeSheets" ""
   StrCmp $0 0 continueInstall
     MessageBox MB_ICONSTOP|MB_OK "TreeSheets is still running, please close it and try again."
