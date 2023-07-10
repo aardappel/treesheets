@@ -676,13 +676,13 @@ struct MyFrame : wxFrame {
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
             tb->AddControl(filter = 
-                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxTE_PROCESS_ENTER));
+                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxWANTS_CHARS | wxTE_PROCESS_ENTER));
             AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.png");
             AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.png");
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
             tb->AddControl(replaces =
-                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(80, 22))));
+                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
             AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.png");
             AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.png");
             AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.png");
@@ -866,10 +866,11 @@ struct MyFrame : wxFrame {
         TSCanvas *sw = GetCurTab();
         if (((tc = filter) && filter == wxWindow::FindFocus()) ||
             ((tc = replaces) && replaces == wxWindow::FindFocus())) {
-            // FIXME: have to emulate this behavior because menu always captures these events (??)
             long from, to;
             tc->GetSelection(&from, &to);
             switch (ce.GetId()) {
+                #ifdef __WXMSW__
+                // FIXME: have to emulate this behavior on Windows because menu always captures these events (??)
                 case A_MLEFT:
                 case A_LEFT:
                     if (from != to)
@@ -902,6 +903,7 @@ struct MyFrame : wxFrame {
                 case A_HOME: tc->SetSelection(0, 0); return;
                 case A_END: tc->SetSelection(1000, 1000); return;
                 case A_SELALL: tc->SetSelection(0, 1000); return;
+                #endif
                 case A_CANCELEDIT: tc->Clear(); sw->SetFocus(); return;
             }
         }
