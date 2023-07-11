@@ -1202,7 +1202,7 @@ struct Document {
                 } else {
                     loopallcellssel(c, true) if(c->text.IsInSearch()) c->AddUndo(this);
                     selected.g->ReplaceStr(this, replaces, lreplaces, selected);
-                    if (k == A_REPLACEONCEJ) return SearchNext(dc, true, true);
+                    if (k == A_REPLACEONCEJ) return SearchNext(dc, false, true);
                 }
                 return _(L"Text has been replaced.");
             }
@@ -1991,8 +1991,8 @@ struct Document {
         bool lastsel = true;
         Cell *next =
             rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel);
+        sys->frame->SetSearchTextBoxBackgroundColour(next);
         if (!next) return _(L"No matches for search.");
-        sys->frame->SetSearchTextBoxBackgroundColour(true);
         if (!jump) return nullptr;
         SetSelect(next->parent->grid->FindCell(next));
         if (focusmatch) sw->SetFocus();
