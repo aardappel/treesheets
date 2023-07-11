@@ -903,6 +903,18 @@ struct MyFrame : wxFrame {
                 case A_HOME: tc->SetSelection(0, 0); return;
                 case A_END: tc->SetSelection(1000, 1000); return;
                 case A_SELALL: tc->SetSelection(0, 1000); return;
+                case A_ENTERCELL: {
+                    // fixme: this is an adaption of OnSearchEnter serving as
+                    // workaround because wxEVT_TEXT_ENTER is not generated on Windows
+                    if (tc != filter) return;
+                    if (sys->searchstring.Len() == 0) {
+                        sw->SetFocus();
+                    } else {
+                        wxClientDC dc(sw);
+                        sw->doc->SearchNext(dc, false, true);
+                    }
+                    return;
+                }
                 #endif
                 case A_CANCELEDIT: tc->Clear(); sw->SetFocus(); return;
             }
