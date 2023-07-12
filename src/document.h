@@ -892,7 +892,11 @@ struct Document {
         if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
-                    return Action(dc, A_BACKSPACE);
+                    if (!ctrl) { 
+                        return Action(dc, A_BACKSPACE);
+                    } else {  // prevent Ctrl+H from being treated as Backspace
+                        break;
+                    }
                 case WXK_RETURN: return Action(dc, shift ? A_ENTERGRID : A_ENTERCELL);
                 case WXK_ESCAPE:  // docs say it can be used as a menu accelerator, but it does not
                                   // trigger from there?
