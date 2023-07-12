@@ -126,9 +126,7 @@ struct TSCanvas : public wxScrolledWindow {
         // (scrolling) don't work.
         // The 128 makes sure unicode entry on e.g. Polish keyboards still works.
         // (on Linux in particular).
-        // Also prevent the translation from Ctrl+letter into ASCII control characters.
-        if (((ce.GetModifiers() == wxMOD_ALT) || (ce.GetModifiers() == wxMOD_CONTROL)) 
-            && (ce.GetUnicodeKey() < 128)) {
+        if ((ce.GetModifiers() == wxMOD_ALT) && (ce.GetUnicodeKey() < 128)) {
             ce.Skip();
             return;
         }
