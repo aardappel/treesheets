@@ -446,7 +446,8 @@ struct MyFrame : wxFrame {
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
-        MyAppend(semenu, A_REPLACEONCE, _(L"&Replace in Current Selection\tCTRL+k"));
+        MyAppend(semenu, A_REPLACEF, _(L"&Replace\tCTRL+h"));
+        MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection\tCTRL+k"));
         MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next\tCTRL+j"));
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
 
@@ -682,7 +683,7 @@ struct MyFrame : wxFrame {
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
             tb->AddControl(replaces =
-                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
+                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxWANTS_CHARS | wxTE_PROCESS_ENTER));
             AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.png");
             AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.png");
             AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.png");
@@ -904,16 +905,26 @@ struct MyFrame : wxFrame {
                 case A_END: tc->SetSelection(1000, 1000); return;
                 case A_SELALL: tc->SetSelection(0, 1000); return;
                 case A_ENTERCELL: {
-                    // fixme: this is an adaption of OnSearchEnter serving as
-                    // workaround because wxEVT_TEXT_ENTER is not generated on Windows
-                    if (tc != filter) return;
-                    if (sys->searchstring.Len() == 0) {
-                        sw->SetFocus();
-                    } else {
-                        wxClientDC dc(sw);
-                        sw->doc->SearchNext(dc, false, true);
+                    wxClientDC dc(sw);
+                    if (tc == filter) {
+                        // OnSearchEnter equivalent implementation for MSW
+                        // as EVT_TEXT_ENTER event is not generated.
+                        if (sys->searchstring.Len() == 0) {
+                            sw->SetFocus();
+                        } else {
+                            sw->doc->Action(dc, A_SEARCHNEXT);
+                        }
+                        return;
+                    } else if (tc == replaces) {
+                        // OnReplaceEnter equivalent implementation for MSW
+                        // as EVT_TEXT_ENTER event is not generated.
+                        if (sys->frame->replaces->GetValue().Len() == 0) {
+                            sw->SetFocus();
+                        } else {
+                            sw->doc->Action(dc, A_REPLACEONCEJ);
+                        }
+                        return;
                     }
-                    return;
                 }
                 #endif
                 case A_CANCELEDIT: tc->Clear(); sw->SetFocus(); return;
@@ -999,6 +1010,14 @@ struct MyFrame : wxFrame {
                     sw->Status(_(L"Please enable (Options -> Show Toolbar) to use search."));
                 }
                 break;
+            case A_REPLACEF:
+                if (replaces) {
+                    replaces->SetFocus();
+                    replaces->SetSelection(0, 1000);
+                } else {
+                    sw->Status(_(L"Please enable (Options -> Show Toolbar) to use replace."));
+                }
+                break;
             #ifdef __WXMAC__
             case wxID_OSX_HIDE: Iconize(true); break;
             case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
@@ -1056,13 +1075,23 @@ struct MyFrame : wxFrame {
 
     void OnSearchEnter(wxCommandEvent &ce) {
         TSCanvas *sw = GetCurTab();
-        Document *doc = GetCurTab()->doc;
         wxString searchstring = ce.GetString();
         if (searchstring.Len() == 0) {
             sw->SetFocus();
         } else {
             wxClientDC dc(sw);
-            doc->SearchNext(dc, false, true);
+            sw->doc->Action(dc, A_SEARCHNEXT);
+        }
+    }
+
+    void OnReplaceEnter(wxCommandEvent &ce) {
+        TSCanvas *sw = GetCurTab();
+        wxString replacestring = ce.GetString();
+        if (replacestring.Len() == 0) {
+            sw->SetFocus();
+        } else {
+            wxClientDC dc(sw);
+            sw->doc->Action(dc, A_REPLACEONCEJ);
         }
     }
 
