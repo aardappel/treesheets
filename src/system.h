@@ -270,7 +270,7 @@ struct System {
             } else {
                 xs = ys = 1;
             }
-
+            int zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
             fakelasteditonload = wxDateTime::Now().GetValue();
 
             loadimageids.setsize(0);
@@ -343,6 +343,7 @@ struct System {
                             doc->modified = true;
                         }
                         doc->InitWith(root, filename, ics, xs, ys);
+                        doc->initialzoomlevel = zoomlevel;
 
                         if (versionlastloaded >= 11) {
                             for (;;) {

@@ -1,12 +1,13 @@
-File format spec for TreeSheets .cts files, version 21. This should be enough for a programmer to write an importer/exporter.
+File format spec for TreeSheets .cts files, version 23. This should be enough for a programmer to write an importer/exporter.
 
 struct File     // not really a struct, i.e. no alignment, read an element at a time
 {
     char magic[4] = "TSFF";
-    char version = 21;
-    // TreeSheets saves the selection when the file is saved.
+    char version = 23;
+    // TreeSheets saves the selection and the zoom level when the file is saved.
     int xs; // xs is the number of cells within the selection in x direction
     int ys; // ys is the number of cells within the selection in y direction
+    int zoomlevel; // zoom level of the document
     
     Image images[0 or more];
 

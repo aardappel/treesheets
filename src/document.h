@@ -20,6 +20,7 @@ struct Document {
     int originx, originy, maxx, maxy, centerx, centery;
     int layoutxs, layoutys, hierarchysize, fgutter;
     int lasttextsize, laststylebits;
+    int initialzoomlevel;
     Cell *curdrawroot;  // for use during Render() calls
     Vector<UndoItem *> undolist, redolist;
     Vector<Selection> drawpath;
@@ -114,6 +115,7 @@ struct Document {
           dpichanged(false),
           scaledviewingmode(false),
           currentviewscale(1),
+          initialzoomlevel(0),
           searchfilter(false),
           editfilter(0) {
         dataobjc = new wxDataObjectComposite();  // deleted by DropTarget
@@ -192,6 +194,7 @@ struct Document {
             fos.Write(&vers, 1);
             sos.Write8(selected.xs);
             sos.Write8(selected.ys);
+            sos.Write8(!drawpath.size() ? 0 : drawpath.size()); // zoom level
             RefreshImageRefCount(true);
             int realindex = 0;
             loopv(i, sys->imagelist) {
@@ -663,6 +666,7 @@ struct Document {
         if (hover.g) hover.g->DrawHover(this, dc, hover);
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
         if (scrolltoselection) {
+            Zoom(initialzoomlevel, dc);
             ScrollIfSelectionOutOfView(dc, selected);
             scrolltoselection = false;
         }
