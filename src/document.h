@@ -665,8 +665,11 @@ struct Document {
         DrawSelect(dc, selected);
         if (hover.g) hover.g->DrawHover(this, dc, hover);
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
-        if (scrolltoselection) {
+        if (initialzoomlevel) {
             Zoom(initialzoomlevel, dc);
+            initialzoomlevel = 0;
+        }
+        if (scrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected);
             scrolltoselection = false;
         }
