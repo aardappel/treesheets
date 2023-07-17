@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-03 21:55+0200\n"
+"POT-Creation-Date: 2023-07-17 18:34+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -148,8 +148,8 @@ msgstr "Zellentext vom Schlagwort entfe&rnen"
 msgid "&Remove Image(s)"
 msgstr "&Bild(er) entfernen"
 
-msgid "&Replace in Current Selection\tCTRL+k"
-msgstr "In aktueller Auswahl e&rsetzen\tCTRL+k"
+msgid "&Replace\tCTRL+h"
+msgstr "E&rsetzen\tCTRL+h"
 
 msgid "&Reset Scale (display only)"
 msgstr "Skalierung zu&rücksetzen (nur Anzeige)"
@@ -471,9 +471,6 @@ msgstr "Änderungen verwerfen"
 #, c-format
 msgid "Edited %s"
 msgstr "%s bearbeitet"
-
-msgid "Empty strings cannot be tags."
-msgstr "Leere Zeichenketten können keine Schlagworte sein!"
 
 msgid "End date"
 msgstr "Enddatum"
@@ -930,6 +927,9 @@ msgstr "Standardschrift auswählen..."
 msgid "Pick Document Background..."
 msgstr "Dokumenthintergrund auswählen..."
 
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr "Bitte aktivieren Sie (Optionen -> Werkzeugleiste anzeigen), um Ersetzen benutzen zu können."
+
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr "Bitte aktivieren Sie (Optionen -> Werkzeugleiste anzeigen), um die Suche benutzen zu können."
 
@@ -1006,8 +1006,11 @@ msgstr "&Alle ersetzen"
 msgid "Replace All"
 msgstr "Alle ersetzen"
 
+msgid "Replace in Current &Selection\tCTRL+k"
+msgstr "In aktueller Auswahl er&setzen\tCTRL+k"
+
 msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
-msgstr "In aktueller Auswahl e&rsetzen && zum nächsten Treffer springen\tCTRL+j"
+msgstr "In aktueller Auswahl ersetzen && zum &nächsten Treffer springen\tCTRL+j"
 
 msgid "Replace in selection"
 msgstr "In aktueller Auswahl ersetzen"
@@ -1048,8 +1051,7 @@ msgstr "Bild als PNG speichern (Standard)"
 msgid ""
 "Save image(s) to disk. Multiple images will be saved with a counter appended "
 "to each file name."
-msgstr "Bild(er) auf Datenträgern speichern. Mehrere Bilder werden gespeichert und "
-"ein Zähler an jedem Dateinamen angehängt"
+msgstr "Bild(er) auf Datenträgern speichern. Mehrere Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt"
 
 msgid "Save the image in the TreeSheets file in JPEG format"
 msgstr "Das Bild in der TreeSheets-Datei im JPEG-Format abspeichern"

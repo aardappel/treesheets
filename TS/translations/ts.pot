@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-03 21:55+0200\n"
+"POT-Creation-Date: 2023-07-17 18:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -144,7 +144,7 @@ msgstr ""
 msgid "&Remove Image(s)"
 msgstr ""
 
-msgid "&Replace in Current Selection\tCTRL+k"
+msgid "&Replace\tCTRL+h"
 msgstr ""
 
 msgid "&Reset Scale (display only)"
@@ -444,9 +444,6 @@ msgstr ""
 
 #, c-format
 msgid "Edited %s"
-msgstr ""
-
-msgid "Empty strings cannot be tags."
 msgstr ""
 
 msgid "End date"
@@ -867,6 +864,9 @@ msgstr ""
 msgid "Pick Document Background..."
 msgstr ""
 
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr ""
+
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 
@@ -939,6 +939,9 @@ msgid "Replace &All"
 msgstr ""
 
 msgid "Replace All"
+msgstr ""
+
+msgid "Replace in Current &Selection\tCTRL+k"
 msgstr ""
 
 msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
