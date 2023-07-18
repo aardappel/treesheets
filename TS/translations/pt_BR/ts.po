@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-25 16:08-0300\n"
-"PO-Revision-Date: 2023-05-25 16:09-0300\n"
+"POT-Creation-Date: 2023-07-13 12:11-0300\n"
+"PO-Revision-Date: 2023-07-18 08:40-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -149,8 +149,8 @@ msgstr "&Remover o Texto da Célula das Tags"
 msgid "&Remove Image(s)"
 msgstr "&Remover Imagem(ns)"
 
-msgid "&Replace in Current Selection\tCTRL+k"
-msgstr "&Substituir na Seleção Atual\tCTRL+k"
+msgid "&Replace\tCTRL+h"
+msgstr "&Substituir\tCTRL+h"
 
 msgid "&Reset Scale (display only)"
 msgstr "&Redefinir Escala (somente para exibição)"
@@ -324,9 +324,6 @@ msgstr "Não é possível mover essa célula para cima na hierarquia."
 msgid "Cannot open file."
 msgstr "Não foi possível abrir o arquivo."
 
-msgid "Cannot tell/seek document?"
-msgstr "Não foi possível executar tell/seek no documento?"
-
 msgid "Case-sensitive search"
 msgstr "Diferenciar maiúsculas de minúsculas"
 
@@ -407,26 +404,11 @@ msgstr "Copiar (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copiar como Texto Contínuo"
 
-msgid "Copy Image to clipboard"
-msgstr "Copiar Imagem para a área de transferência"
-
-msgid "Copy the image in the selected cell to the clipboard"
-msgstr "Copia a imagem na célula selecionada para a área de transferência"
-
 msgid "Corrupt PNG header."
 msgstr "O cabeçalho do PNG está corrompido."
 
 msgid "Corrupt block header."
 msgstr "O cabeçalho do bloco está corrompido."
-
-msgid "Could not load file because of a corrupted embedded JPEG file"
-msgstr ""
-"Não foi possível carregar arquivo porque um JPEG embutido está corrompido"
-
-msgid "Could not load file because of an embedded image file of unknown type"
-msgstr ""
-"Não foi possível carregar arquivo porque uma imagem embutida é de um tipo "
-"desconhecido"
 
 msgid "Create .bak files"
 msgstr "Criar arquivos .bak"
@@ -485,9 +467,6 @@ msgstr "Descartar Mudanças"
 #, c-format
 msgid "Edited %s"
 msgstr "Editada em %s"
-
-msgid "Empty strings cannot be tags."
-msgstr "Sequências vazias não podem ser tags."
 
 msgid "End date"
 msgstr "Data final"
@@ -577,7 +556,7 @@ msgid ""
 "Export the current view as an image. Useful for faithful renderings of the "
 "TreeSheet, and programs that don't accept any of the above options"
 msgstr ""
-"Exporta a visualização atual como imagem. Útil para reproduções fieis da "
+"Exporta a visualização atual como imagem. Útil para reproduções fiéis da "
 "TreeSheet, e para programas que não aceitam nenhuma das opções acima"
 
 msgid ""
@@ -665,10 +644,16 @@ msgstr "Dobra recursivamente a grade da(s) célula(s) selecionada(s)"
 msgid "Found an image type that is not defined in this program."
 msgstr "Um tipo de imagem que não está definido neste programa foi encontrado."
 
-msgid "Go To &Matching Cell\tF6"
+msgid "Go To &Matching Cell (Text)\tF6"
 msgstr "Ir para &Próxima Célula que Tiver o Mesmo Texto\tF6"
 
-msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
+msgid "Go To Matching Cell (Image)\tF7"
+msgstr "Ir para Próxima Célula que Tiver a Mesma Imagem\tF7"
+
+msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
+msgstr "Ir para Célula Anterior que Tiver a Mesma Imagem\tSHIFT+F7"
+
+msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
 msgstr "Ir para Célula &Anterior que Tiver o Mesmo Texto\tSHIFT+F6"
 
 msgid "Go to Next Search Result"
@@ -716,9 +701,6 @@ msgstr "Imagem "
 msgid "Image Resize"
 msgstr "Redimensionar Imagem"
 
-msgid "Image copied to clipboard"
-msgstr "Imagem copiada para a área de transferência"
-
 msgid "Import file from"
 msgstr "Importar de"
 
@@ -739,6 +721,9 @@ msgstr "Erro de Inicialização"
 
 msgid "Internal error: unimplemented operation!"
 msgstr "Erro interno: operação não implementada!"
+
+msgid "JPEG file is corrupted!"
+msgstr "O arquivo JPEG está corrompido!"
 
 msgid "Key binding"
 msgstr "Associação de tecla"
@@ -941,6 +926,11 @@ msgstr "Escolher Fonte Padrão..."
 msgid "Pick Document Background..."
 msgstr "Escolher Plano de Fundo do Documento..."
 
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr ""
+"Por favor ative (Opções -> Mostrar Barra de Ferramentas) para usar a função "
+"de substituir."
+
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 "Por favor ative (Opções -> Mostrar Barra de Ferramentas) para usar a busca."
@@ -1019,6 +1009,9 @@ msgstr "Substituir &Todas"
 
 msgid "Replace All"
 msgstr "Substituir Todas"
+
+msgid "Replace in Current &Selection\tCTRL+k"
+msgstr "Substituir na Seleção &Atual\tCTRL+k"
 
 msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
 msgstr "Substituir na Seleção Atual && &Pular para a Seguinte\tCTRL+j"
@@ -1159,7 +1152,6 @@ msgstr "Mostrar Barra de Status"
 msgid "Show Toolbar"
 msgstr "Mostrar Barra de Ferramentas"
 
-#, no-c-format
 msgid "Show last edits in specific date range"
 msgstr "Evidenciar edições feitas em um intervalo de tempo específico..."
 
@@ -1230,9 +1222,6 @@ msgstr "Tamanho do Texto..."
 msgid "Text Style..."
 msgstr "Estilo do Texto..."
 
-msgid "Text copied to clipboard"
-msgstr "Texto copiado para a área de transferência"
-
 msgid "Text has been replaced."
 msgstr "O texto foi substituído."
 
@@ -1278,8 +1267,8 @@ msgstr "Dobrar/Desdobrar\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Dobrar/Desdobrar\tF10"
 
-msgid "Toggle Vertical Layout\tF7"
-msgstr "Tornar Layout Vertical/Horizontal\tF7"
+msgid "Toggle Vertical Layout\tALT+0"
+msgstr "Tornar Layout Vertical/Horizontal\tALT+0"
 
 msgid "Toggle Zen Mode"
 msgstr "Entrar/Sair do Modo Zen"
@@ -1409,6 +1398,34 @@ msgstr "escala:"
 
 msgid "size:"
 msgstr "tamanho:"
+
+#~ msgid "Empty strings cannot be tags."
+#~ msgstr "Sequências vazias não podem ser tags."
+
+#~ msgid "Cannot tell/seek document?"
+#~ msgstr "Não foi possível executar tell/seek no documento?"
+
+#~ msgid "Copy Image to clipboard"
+#~ msgstr "Copiar Imagem para a área de transferência"
+
+#~ msgid "Copy the image in the selected cell to the clipboard"
+#~ msgstr "Copia a imagem na célula selecionada para a área de transferência"
+
+#~ msgid "Could not load file because of a corrupted embedded JPEG file"
+#~ msgstr ""
+#~ "Não foi possível carregar arquivo porque um JPEG embutido está corrompido"
+
+#~ msgid ""
+#~ "Could not load file because of an embedded image file of unknown type"
+#~ msgstr ""
+#~ "Não foi possível carregar arquivo porque uma imagem embutida é de um tipo "
+#~ "desconhecido"
+
+#~ msgid "Image copied to clipboard"
+#~ msgstr "Imagem copiada para a área de transferência"
+
+#~ msgid "Text copied to clipboard"
+#~ msgstr "Texto copiado para a área de transferência"
 
 #, c-format
 #~ msgid "Script system could not initialize: %s"
