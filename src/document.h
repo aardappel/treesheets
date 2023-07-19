@@ -2006,8 +2006,10 @@ struct Document {
         if (!next) return _(L"No matches for search.");
         if (!jump) return nullptr;
         SetSelect(next->parent->grid->FindCell(next));
+        Vector<Selection> path;
+        CreatePath(next, path);
+        Zoom(path.size() - 1, dc, true);
         if (focusmatch) sw->SetFocus();
-        ScrollOrZoom(dc, true);
         return nullptr;
     }
 
