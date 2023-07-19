@@ -1787,7 +1787,7 @@ struct Document {
             case A_BROWSE: {
                 const wxChar *returnmessage = nullptr;
                 int counter = 0;
-                loopallcellssel(c, true) {
+                loopallcellssel(c, false) {
                     if (counter >= g_max_launches) {
                         returnmessage = _(L"Maximum number of launches reached.");
                         break;
@@ -1804,7 +1804,7 @@ struct Document {
             case A_BROWSEF: {
                 const wxChar *returnmessage = nullptr;
                 int counter = 0;
-                loopallcellssel(c, true) {
+                loopallcellssel(c, false) {
                     if (counter >= g_max_launches) {
                         returnmessage = _(L"Maximum number of launches reached.");
                         break;
