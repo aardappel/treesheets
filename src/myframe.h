@@ -1146,6 +1146,10 @@ struct MyFrame : wxFrame {
                     }, sys->imagelist[i]);
                 }
             } // wait until all tasks are finished
+            wxImage foldiconi;
+            foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
+            foldicon = wxBitmap(foldiconi);
+            ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
             if (nb) {
                 loop(i, nb->GetPageCount()) {
                     TSCanvas *p = (TSCanvas *)nb->GetPage(i);
