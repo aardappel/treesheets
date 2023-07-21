@@ -142,7 +142,7 @@ struct Cell {
             if (p) parentcolor = p->actualcellcolor;
         }
 
-        if(sys->darkennonmatchingcells && !text.IsInSearch()) {
+        if (sys->darkennonmatchingcells && !text.IsInSearch()) {
             uchar *cp = (uchar *)&actualcellcolor;
             loop(i, 4) cp[i] = cp[i] * 800 / 1000;
         }
@@ -354,7 +354,7 @@ struct Cell {
         }
         if (sys->versionlastloaded >= 15) c->drawstyle = dis.Read8();
         int ts = dis.Read8();
-        if(ts & TS_SELECTION_MASK) {
+        if (ts & TS_SELECTION_MASK) {
             ics = c;
             ts &= ~TS_SELECTION_MASK;
         }
@@ -400,7 +400,7 @@ struct Cell {
     }
 
     Cell *FindNextSearchMatch(wxString &search, Cell *best, Cell *selected, bool &lastwasselected) {
-        if(sys->casesensitivesearch) {
+        if (sys->casesensitivesearch) {
             if (text.t.Find(search) >= 0) {
                 if (lastwasselected) best = this;
                 lastwasselected = false;

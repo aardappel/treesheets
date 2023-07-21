@@ -165,7 +165,7 @@ static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bm
 static wxImage ConvertBufferToWxImage(vector<uint8_t> &buf, wxBitmapType bmt) {
     wxMemoryInputStream mis(buf.data(), buf.size());
     wxImage im(mis, bmt);
-    if(!im.IsOk()) {
+    if (!im.IsOk()) {
         int sz = 32;
         im.Create(sz, sz, false);
         im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0, 0); 
