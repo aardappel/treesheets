@@ -139,11 +139,11 @@ struct Document {
 
     void InitWith(Cell *r, wxString filename, Cell *ics, int xs, int ys) {
         rootgrid = r;
-        if(ics) {
+        if (ics) {
             Grid* ipg = ics->parent->grid;
-            if(ipg) {
+            if (ipg) {
                 foreachcellingrid(c, ipg) {
-                    if(c == ics) {
+                    if (c == ics) {
                         SetSelect(Selection(ipg, x, y, xs, ys));
                     }
                 }
@@ -405,7 +405,7 @@ struct Document {
             case DRAGANDDROP: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 wxDataObjectComposite dragdata;
-                if(c && !c->text.t && c->text.image) {
+                if (c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
                     if (!im->image_data.empty() && imagetypes.find(im->image_type) != imagetypes.end()) {
                         wxBitmap bm = ConvertBufferToWxBitmap(im->image_data, imagetypes.at(im->image_type).first);
@@ -438,7 +438,7 @@ struct Document {
                 loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
                 if (!selected.TextEdit()) sys->clipboardcopy = s;
                 clipboardtextdata->Add(new wxTextDataObject(s));
-                if(wxTheClipboard->Open()) {
+                if (wxTheClipboard->Open()) {
                     wxTheClipboard->SetData(clipboardtextdata);
                     wxTheClipboard->Close();
                 }
@@ -447,11 +447,11 @@ struct Document {
             case CLIPBOARD:
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
-                if(c && !c->text.t && c->text.image) {
+                if (c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
                     if (!im->image_data.empty() && imagetypes.find(im->image_type) != imagetypes.end()) {
                         wxBitmap bm = ConvertBufferToWxBitmap(im->image_data, imagetypes.at(im->image_type).first);
-                        if(wxTheClipboard->Open()) {
+                        if (wxTheClipboard->Open()) {
                             wxTheClipboard->SetData(new wxBitmapDataObject(bm));
                             wxTheClipboard->Close();
                         }   
@@ -472,7 +472,7 @@ struct Document {
                         new wxHTMLDataObject(html);
                     #endif
                     clipboarddata->Add(htmlobj);
-                    if(wxTheClipboard->Open()) {
+                    if (wxTheClipboard->Open()) {
                         wxTheClipboard->SetData(clipboarddata);
                         wxTheClipboard->Close();
                     }
@@ -619,7 +619,7 @@ struct Document {
     }
 
     void Draw(wxDC &dc) {
-        if(dpichanged) {
+        if (dpichanged) {
             curdrawroot->ResetLayout();
             curdrawroot->ResetChildren();
             dpichanged = false;
@@ -1211,7 +1211,7 @@ struct Document {
                     rootgrid->ResetChildren();
                     Refresh();
                 } else {
-                    loopallcellssel(c, true) if(c->text.IsInSearch()) c->AddUndo(this);
+                    loopallcellssel(c, true) if (c->text.IsInSearch()) c->AddUndo(this);
                     selected.g->ReplaceStr(this, replaces, lreplaces, selected);
                     if (k == A_REPLACEONCEJ) return SearchNext(dc, false, true);
                 }
@@ -1264,7 +1264,7 @@ struct Document {
                 
                 dtr->SetSizerAndFit(topsizer);
 
-                if(dtr->ShowModal() != wxID_OK) {
+                if (dtr->ShowModal() != wxID_OK) {
                     return nullptr;
                 }
                 wxDateTime beginrange = start->GetValue();
@@ -1680,8 +1680,8 @@ struct Document {
             case A_IMAGESCF: {
                 long v = 0;
                 loopallcellssel(c, true) {
-                    if(c->text.image) {
-                        if(!v) {
+                    if (c->text.image) {
+                        if (!v) {
                             if (k == A_IMAGESCW) {
                                 v = wxGetNumberFromUser(
                                     _(L"Please enter the new image width:"),
@@ -1726,7 +1726,7 @@ struct Document {
                 loopallcellssel(c, true) {
                     Image *tim = c->text.image;
                     if (tim) {
-                        if(!oimgfn) { // first encounter
+                        if (!oimgfn) { // first encounter
                             oimgfn = ::wxFileSelector(
                                 _(L"Choose image file to save:"), L"", L"", L"png|jpg",
                                  _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
@@ -1759,10 +1759,10 @@ struct Document {
             case A_SAVE_AS_PNG:
             case A_SAVE_AS_JPEG: {
                 loopallcellssel(c, true) {
-                    if(c->text.image) {
+                    if (c->text.image) {
                         switch(k) {
                             case A_SAVE_AS_JPEG: {
-                                if(c->text.image->image_type == 'I') {
+                                if (c->text.image->image_type == 'I') {
                                     wxImage im = ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_PNG);
                                     c->text.image->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
                                     c->text.image->image_type = 'J';
@@ -1771,7 +1771,7 @@ struct Document {
                             }
                             case A_SAVE_AS_PNG:
                             default: {
-                                if(c->text.image->image_type == 'J') {
+                                if (c->text.image->image_type == 'J') {
                                     wxImage im = ConvertBufferToWxImage(c->text.image->image_data, wxBITMAP_TYPE_JPEG);
                                     c->text.image->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                                     c->text.image->image_type = 'I';
@@ -2321,7 +2321,7 @@ struct Document {
     wxDateTime ParseDateTimeString(const wxString &str) {
         wxDateTime dt;
         wxString::const_iterator end;
-        if(!dt.ParseDateTime(str, &end)) dt = wxInvalidDateTime;
+        if (!dt.ParseDateTime(str, &end)) dt = wxInvalidDateTime;
         return dt;
     }
 

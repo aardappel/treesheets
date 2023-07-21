@@ -286,14 +286,14 @@ struct System {
                         if (versionlastloaded < 9) dis.ReadString();
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
-                        if(versionlastloaded >= 22) {
+                        if (versionlastloaded >= 22) {
                             size_t imagelen = (size_t) dis.Read64();
                             image_data.resize(imagelen);
                             fis.Read(image_data.data(), imagelen);
                         } else {
                             off_t beforeimage = fis.TellI();
                             
-                            if(iti == 'I') {
+                            if (iti == 'I') {
                                 uchar header[8];
                                 fis.Read(header, 8);
                                 uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
@@ -307,10 +307,10 @@ struct System {
                                     dis.Read32();                   // skip CRC
                                     if (memcmp(fourcc, "IEND", 4) == 0) break;
                                 }
-                            } else if(iti == 'J') {
+                            } else if (iti == 'J') {
                                 wxImage im;
                                 im.LoadFile(fis);
-                                if(!im.IsOk()) {
+                                if (!im.IsOk()) {
                                     return _(L"JPEG file is corrupted!");
                                 }
                             }
@@ -374,7 +374,7 @@ struct System {
             ThreadPool pool(std::thread::hardware_concurrency());   
             loopv(i, sys->imagelist) {
                 pool.enqueue([](Image *img) {
-                    if(img->trefc) img->Display();    
+                    if (img->trefc) img->Display();    
                 }, sys->imagelist[i]);
             }
         } // wait until all tasks are finished

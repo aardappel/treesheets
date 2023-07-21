@@ -146,7 +146,7 @@ struct Text {
         // words.
         return GetLinePart(i, min(i + maxcolwidth, l), l);
 
-        // for(int p = i+maxcolwidth; p<l;  p++) if(!IsWord(t[p])) return GetLinePart(i, p, l);  //
+        // for(int p = i+maxcolwidth; p<l;  p++) if (!IsWord(t[p])) return GetLinePart(i, p, l);  //
         // we arrive here only
         // if a single word is too big for maxcolwidth, so simply return that word
         // return GetLinePart(i, l, l);     // big word was the last one
@@ -174,7 +174,7 @@ struct Text {
     bool IsInSearch() {
         wxString *text;
         wxString lowert;
-        if(sys->casesensitivesearch) {
+        if (sys->casesensitivesearch) {
             text = &t;
         } else {
             lowert = t.Lower();
@@ -419,7 +419,7 @@ struct Text {
         wxString *fort;
         const wxString *istr;
         
-        if(lstr.IsEmpty()) {
+        if (lstr.IsEmpty()) {
             fort = &t;
             istr = &str;
         } else {
@@ -435,7 +435,7 @@ struct Text {
             fort->Remove(i, sys->searchstring.Len());
             fort->insert(i, *istr);
 
-            if(!sys->casesensitivesearch) {
+            if (!sys->casesensitivesearch) {
                 t.Remove(i, sys->searchstring.Len());
                 t.insert(i, str);
             }

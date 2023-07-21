@@ -335,7 +335,7 @@ struct Grid {
 
     Selection SelectAll() { return Selection(this, 0, 0, xs, ys); }
     void ImageRefCount(bool includefolded) { 
-        if(includefolded || !folded) 
+        if (includefolded || !folded) 
             foreachcell(c) c->ImageRefCount(includefolded); 
     }
     void DrawHover(Document *doc, wxDC &dc, Selection &s) {
