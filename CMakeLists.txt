@@ -20,8 +20,7 @@
 # Should work on Windows, too. About helping FindwxWidgets to find wxWidgets
 # consult: https://cmake.org/cmake/help/latest/module/FindwxWidgets.html
 
-cmake_minimum_required(VERSION 3.1)
-# CMAKE_CXX_STANDARD needs v3.1, could be lowered with minor effort
+cmake_minimum_required(VERSION 3.5)
 
 project(treesheets)
 
