@@ -100,6 +100,7 @@ struct Document {
           centerx(0),
           centery(0),
           fgutter(6),
+          initialzoomlevel(0),
           pathscalebias(0),
           filename(L""),
           lastmodsinceautosave(0),
@@ -115,7 +116,6 @@ struct Document {
           dpichanged(false),
           scaledviewingmode(false),
           currentviewscale(1),
-          initialzoomlevel(0),
           searchfilter(false),
           editfilter(0) {
         dataobjc = new wxDataObjectComposite();  // deleted by DropTarget
