@@ -852,18 +852,17 @@ struct Document {
                 case A_EXPHTMLB:
                 case A_EXPHTMLO:
                     dos.WriteString(
-                        L"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
+                        L"<!DOCTYPE html>\n"
                         L"<html>\n<head>\n<style>\n"
                         L"body { font-family: sans-serif; }\n"
                         L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
-                        L" padding: 3px; vertical-align: top; }\n"
+                        L" padding: 3px; vertical-align: top; font-weight: normal; }\n"
                         L"li { }\n</style>\n"
                         L"<title>export of TreeSheets file ");
                     dos.WriteString(filename);
                     dos.WriteString(
-                        L"</title>\n<meta http-equiv=\"Content-Type\" content=\"text/html; "
-                        L"charset=UTF-8\" "
-                        L"/>\n</head>\n<body>\n");
+                        L"</title>\n<meta charset=\"UTF-8\" />\n"
+                        L"</head>\n<body>\n");
                     dos.WriteString(content);
                     dos.WriteString(L"</body>\n</html>\n");
                     break;
