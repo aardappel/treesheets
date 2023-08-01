@@ -253,6 +253,7 @@ struct Cell {
             if (text.stylebits & STYLE_ITALIC) style += L"font-style: italic;";
             if (text.stylebits & STYLE_FIXED) style += L"font-family: monospace;";
             if (text.stylebits & STYLE_UNDERLINE) style += L"text-decoration: underline;";
+            if (text.stylebits & STYLE_STRIKETHRU) style += L"text-decoration: line-through;";
             if (cellcolor != doc->Background())
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
             if (textcolor != 0x000000)
