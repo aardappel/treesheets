@@ -209,6 +209,14 @@ struct Cell {
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
     wxString ToText(int indent, const Selection &s, int format, Document *doc) {
         wxString str = text.ToText(indent, s, format);
+        if (format == A_EXPHTMLT && ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU))) {
+            wxString spanstyle = L"text-decoration:";
+            spanstyle += (text.stylebits & STYLE_UNDERLINE) ? L" underline" : wxEmptyString;
+            spanstyle += (text.stylebits & STYLE_STRIKETHRU) ? L" line-through" : wxEmptyString;
+            spanstyle += L";";
+            str.Prepend(L"<span style=\"" + spanstyle + L"\">");
+            str.Append(L"</span>");
+        }
         if (format == A_EXPCSV) {
             if (grid) return grid->ToText(indent, s, format, doc);
             str.Replace(L"\"", L"\"\"");
@@ -252,8 +260,6 @@ struct Cell {
             if (text.stylebits & STYLE_BOLD) style += L"font-weight: bold;";
             if (text.stylebits & STYLE_ITALIC) style += L"font-style: italic;";
             if (text.stylebits & STYLE_FIXED) style += L"font-family: monospace;";
-            if (text.stylebits & STYLE_UNDERLINE) style += L"text-decoration: underline;";
-            if (text.stylebits & STYLE_STRIKETHRU) style += L"text-decoration: line-through;";
             if (cellcolor != doc->Background())
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
             if (textcolor != 0x000000)

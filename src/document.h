@@ -856,7 +856,8 @@ struct Document {
                         L"<html>\n<head>\n<style>\n"
                         L"body { font-family: sans-serif; }\n"
                         L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
-                        L" padding: 3px; vertical-align: top; font-weight: normal; }\n"
+                        L" padding: 3px; vertical-align: top; font-weight: normal;"
+                        L" font-style: normal; font-family: sans-serif; }\n"
                         L"li { }\n</style>\n"
                         L"<title>export of TreeSheets file ");
                     dos.WriteString(filename);
