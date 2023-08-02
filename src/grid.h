@@ -614,7 +614,7 @@ struct Grid {
                   wxString::Format(L"<ul style=\"font-size: %dpt;\">\n",
                       font_size).wc_str());
         foreachcellinsel(c, s) {
-            if (x == 0) Formatter(r, format, indent, L"<row>\n", L"<tr valign=top>\n", L"");
+            if (x == 0) Formatter(r, format, indent, L"<row>\n", L"<tr>\n", L"");
             r.Append(c->ToText(indent, s, format, doc));
             if (format == A_EXPCSV) r.Append(x == xs - 1 ? '\n' : ',');
             if (x == xs - 1) Formatter(r, format, indent, L"</row>\n", L"</tr>\n", L"");
