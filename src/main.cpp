@@ -18,7 +18,6 @@ static const int g_max_launches = 20;
 static const int g_deftextsize_default = 12;
 static const int g_mintextsize_delta = 8;
 static const int g_maxtextsize_delta = 32;
-static const int BLINK_TIME = 400;
 
 static int g_deftextsize = g_deftextsize_default;
 static int g_mintextsize() { return g_deftextsize - g_mintextsize_delta; }
@@ -267,6 +266,21 @@ static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'I', {wxBITMAP_TYPE_PNG, "image/png"} },
     { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
 };
+
+enum {
+    TEXT_SPACE = 3,
+    TEXT_SEP = 2,
+    TEXT_CHAR = 1
+};
+inline bool IsWordSep(wxChar ch) {
+    //represents: !"#$%&'()*+,-./    :;<=>?@    [\]^    {|}~    `
+    return (32 < ch && ch < 48) || (57 < ch && ch < 65) || (90 < ch && ch < 95) || (122 < ch && ch < 127) || ch == 96;
+}
+inline int CharType(wxChar ch) {
+    if (wxIsspace(ch)) return TEXT_SPACE;
+    if (IsWordSep(ch)) return TEXT_SEP;
+    return TEXT_CHAR;
+}
 
 #include "script_interface.h"
 

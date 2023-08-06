@@ -191,7 +191,7 @@ struct System {
 
         // Refresh();
 
-        frame->bt.Start(BLINK_TIME);
+        frame->bt.Start(400);
         every_second_timer.Start(1000);
     }
 
