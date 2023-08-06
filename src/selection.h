@@ -260,6 +260,7 @@ class Selection {
                 };
             }
             doc->DrawSelectMove(dc, *this);
+            doc->ResetBlink();
         };
     }
 

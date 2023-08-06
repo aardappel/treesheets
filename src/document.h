@@ -322,16 +322,26 @@ struct Document {
         }
     }
 
-    void Blink() {
+    void HandleBlink(bool resetBlink = false) {
         if (redrawpending) return;
         #ifndef SIMPLERENDER
         wxClientDC dc(sw);
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         DrawSelect(dc, selected, false, true);
-        blink = !blink;
+        if (resetBlink) blink = 1;
+        else blink = !blink;
         DrawSelect(dc, selected, true, true);
         #endif
+    }
+
+    void Blink() {
+        HandleBlink(false);
+    }
+
+    void ResetBlink() {
+        sys->frame->bt.Start(BLINK_TIME);
+        HandleBlink(true);
     }
 
     void ResetCursor() {
@@ -369,6 +379,7 @@ struct Document {
         isctrlshiftdrag = isctrlshift;
         DrawSelectMove(dc, selected);
         ResetCursor();
+        ResetBlink();
         return;
     }
 
