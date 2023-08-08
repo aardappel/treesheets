@@ -108,6 +108,17 @@ class Selection {
 
     int MaxCursor() { return int(GetCell()->text.t.Len()); }
 
+    inline bool IsWordSep(wxChar ch) {
+        // represents: !"#$%&'()*+,-./    :;<=>?@    [\]^    {|}~    `
+        return (32 < ch && ch < 48) || (57 < ch && ch < 65) || (90 < ch && ch < 95) || (122 < ch && ch < 127) || ch == 96;
+    }
+
+    inline int CharType(wxChar ch) {
+        if (wxIsspace(ch)) return TEXT_SPACE;
+        if (IsWordSep(ch)) return TEXT_SEP;
+        return TEXT_CHAR;
+    }
+
     void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
               int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
