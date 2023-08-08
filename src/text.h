@@ -203,9 +203,12 @@ struct Text {
         leftoffset = h;
         int i = 0;
         int lines = 0;
+        bool searchfound = IsInSearch();
         bool istag = cell->IsTag(doc);
         if (cell->tiny) {
-            if (filtered)
+            if (searchfound)
+                dc.SetPen(*wxRED_PEN);
+            else if (filtered)
                 dc.SetPen(*wxLIGHT_GREY_PEN);
             else if (istag)
                 dc.SetPen(*wxBLUE_PEN);
@@ -235,7 +238,9 @@ struct Text {
                     }
                 }
             } else {
-                if (filtered)
+                if (searchfound)
+                    dc.SetTextForeground(*wxRED);
+                else if (filtered)
                     dc.SetTextForeground(*wxLIGHT_GREY);
                 else if (istag)
                     dc.SetTextForeground(*wxBLUE);
@@ -244,7 +249,7 @@ struct Text {
                 int tx = bx + 2 + ixs;
                 int ty = by + lines * h;
                 dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
-                if (filtered || istag || cell->textcolor)
+                if (searchfound || filtered || istag || cell->textcolor)
                     dc.SetTextForeground(*wxBLACK);
             }
             lines++;
