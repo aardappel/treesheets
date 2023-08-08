@@ -270,6 +270,21 @@ static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
 };
 
+enum {
+    TEXT_SPACE = 3,
+    TEXT_SEP = 2,
+    TEXT_CHAR = 1
+};
+inline bool IsWordSep(wxChar ch) {
+    //represents: !"#$%&'()*+,-./    :;<=>?@    [\]^    {|}~    `
+    return (32 < ch && ch < 48) || (57 < ch && ch < 65) || (90 < ch && ch < 95) || (122 < ch && ch < 127) || ch == 96;
+}
+inline int CharType(wxChar ch) {
+    if (wxIsspace(ch)) return TEXT_SPACE;
+    if (IsWordSep(ch)) return TEXT_SEP;
+    return TEXT_CHAR;
+}
+
 #include "script_interface.h"
 
 using namespace script;

@@ -127,13 +127,26 @@ class Selection {
             {
                 if (cursor == cursorend) firstdx = dx;
                 int &curs = firstdx < 0 ? cursor : cursorend;
-                for (int c = curs, start = curs;;) {
-                    c += dx;
-                    if (c < 0 || c > MaxCursor()) break;
-                    wxChar ch = GetCell()->text.t[(c + curs) / 2];
-                    if (!wxIsalnum(ch) && curs != start) break;
+                int c = curs + dx;
+                wxChar ch;
+                if (c >= 0 && c <= MaxCursor()) {
+                    ch = GetCell()->text.t[min(c, curs)];
+                    // TEXT_SPACE > TEXT_SEP > TEXT_CHAR > 0.
+                    // Accepts smaller or equal type when positive, only equal when negative.
+                    // in regex terms (space/sep/char = s/p/c): match (s+p*|s+c*|p+c*|c+)
+                    int allowed = CharType(ch);
                     curs = c;
-                    if (!wxIsalnum(ch) && !wxIsspace(ch)) break;
+                    for (;;) {
+                        c += dx;
+                        if (c < 0 || c > MaxCursor()) break;
+                        ch = GetCell()->text.t[min(c,curs)];
+                        int chtype = CharType(ch);
+                        // type increase when positive or type change when negative => break
+                        if (chtype > allowed && chtype != -allowed ) break;
+                        curs = c;
+                        // type decrease when positive => negate
+                        if (chtype < allowed) allowed = -chtype;
+                    }
                 }
                 if (shift) {
                     if (cursorend < cursor) swap_(cursorend, cursor);
