@@ -37,3 +37,4 @@ TreeSheets/x64
 *.ipdb
 *.iobj
 TreeSheets/gettext_bin
+TS/scripts
