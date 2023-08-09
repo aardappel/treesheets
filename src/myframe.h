@@ -1154,16 +1154,26 @@ struct MyFrame : wxFrame {
             return;
         }
         sys->RememberOpenFiles();
+        int n = (int)nb->GetPageCount();
         if (ce.CanVeto())
-            while (nb->GetPageCount()) {
-                if (GetCurTab()->doc->CloseDocument()) {
-                    ce.Veto();
-                    sys->RememberOpenFiles();  // may have closed some, but not all
-                    return;
-                } else {
-                    nb->DeletePage(nb->GetSelection());
+        {
+            // ask to save/discard all files before closing any
+            for (int i = 0; i < n; i++) {
+                TSCanvas* p = (TSCanvas*)nb->GetPage(i);
+                if (p->doc->modified) {
+                    nb->SetSelection(i);
+                    if (p->doc->CheckForChanges()) {
+                        ce.Veto();
+                        return;
+                    }
                 }
             }
+            // all files have been saved/discarded
+            while (nb->GetPageCount()) {
+                GetCurTab()->doc->RemoveTmpFile();
+                nb->DeletePage(nb->GetSelection());
+            }
+        }
         bt.Stop();
         sys->every_second_timer.Stop();
         Destroy();
