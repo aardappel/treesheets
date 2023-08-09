@@ -11,6 +11,10 @@ struct UndoItem {
 
     UndoItem() : estimated_size(0) {}
 };
+struct SelectItem {
+    Vector<Selection> path;
+    Selection sel;
+};
 
 struct Document {
     TSCanvas *sw;
@@ -22,6 +26,7 @@ struct Document {
     int lasttextsize, laststylebits;
     Cell *curdrawroot;  // for use during Render() calls
     Vector<UndoItem *> undolist, redolist;
+    Vector<SelectItem *> selecthist_undo, selecthist_redo;
     Vector<Selection> drawpath;
     int pathscalebias;
     wxString filename;
@@ -354,7 +359,10 @@ struct Document {
         sys->UpdateStatus(hover);
     }
 
-    void SetSelect(const Selection &sel = Selection()) {
+    void SetSelect(const Selection &sel = Selection(), bool save_hist=true) {
+        if (save_hist) {
+            AddSelectionUndo(sel);
+        }
         selected = sel;
         begindrag = sel;
     }
@@ -977,6 +985,20 @@ struct Document {
                     return nullptr;
                 } else {
                     return _(L"Nothing more to redo.");
+                }
+            case A_UNDOSELECT:
+                if (selecthist_undo.size()) {
+                    SelectUndo(dc, selecthist_undo, selecthist_redo);
+                    return nullptr;
+                } else {
+                    return _(L"No selection history to undo.");
+                }
+            case A_REDOSELECT:
+                if (selecthist_redo.size()) {
+                    SelectUndo(dc, selecthist_redo, selecthist_undo, true);
+                    return nullptr;
+                } else {
+                    return _(L"No selection history to redo.");
                 }
 
             case A_SAVE: return Save(false);
@@ -2187,7 +2209,7 @@ struct Document {
         } else
             rootgrid = clone;
         clone->ResetLayout();
-        SetSelect(ui->sel);
+        SetSelect(ui->sel, false);
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
         begindrag = selected;
         ui->sel = beforesel;
@@ -2202,6 +2224,93 @@ struct Document {
         else
             Refresh();
         UpdateFileName();
+    }
+
+    bool SelectItemsEqual(SelectItem *a, SelectItem *b) {
+        if (a->path.size() != b->path.size()) return false;
+        loopvrev(i, a->path) {
+            if (a->path[i].x != b->path[i].x || a->path[i].y != b->path[i].y) return false;
+        }
+        return a->sel.x == b->sel.x && a->sel.y == b->sel.y && a->sel.xs == b->sel.xs && a->sel.ys == b->sel.ys;
+    }
+    void AddSelectionUndo(const Selection &sel) {
+        if (!selected.g || !sel.g) return;
+        selecthist_redo.setsize(0);
+
+        SelectItem *si = new SelectItem();
+        si->sel = selected.GetSelectionUndo();
+        CreatePath(selected.g->cell, si->path);
+
+        SelectItem *new_si = new SelectItem();
+        new_si->sel = sel.GetSelectionUndo();
+        CreatePath(sel.g->cell, new_si->path);
+
+        if (!SelectItemsEqual(si, new_si)) {
+            selecthist_undo.push() = si;
+            if (selecthist_undo.size() > 10000) selecthist_undo.remove(0);
+        }
+    }
+    void SelectUndo(wxDC &dc, Vector<SelectItem *> &fromlist, Vector<SelectItem *> &tolist, bool redo = false) {
+        SelectItem *old_si = new SelectItem();
+        old_si->sel = selected.GetSelectionUndo();
+        if (selected.g) CreatePath(selected.g->cell, old_si->path);
+        SelectItem *si;
+        // skip invalid selections
+        for (;;) {
+            if (!fromlist.size()) {
+                si = nullptr;
+                break;
+            }
+            si = fromlist.pop();
+            Cell *c = rootgrid;
+            bool skip = false;
+            // descend through path and check validity
+            loopvrev(i, si->path) {
+                Selection &s = si->path[i];
+                Grid *g = c->grid;
+                if (!g || s.x >= g->xs || s.y >= g->ys) {
+                    tolist.push() = old_si;
+                    old_si = si;
+                    skip = true;
+                    break;
+                }
+                c = g->C(s.x, s.y);
+            }
+            if (skip) continue;
+            // deal with nothing selections
+            if (!si->sel.g) break;
+            Grid *g = c->grid;
+            if (!g) {
+                tolist.push() = old_si;
+                old_si = si;
+                continue;
+            }
+            // fix selection if grid changed
+            si->sel.g = g;
+            si->sel.x = min(si->sel.x, g->xs);
+            si->sel.y = min(si->sel.y, g->ys);
+            // g->xs/ys - si->sel.x/y can't be negative
+            si->sel.xs = min(si->sel.xs, g->xs - si->sel.x);
+            si->sel.ys = min(si->sel.ys, g->ys - si->sel.y);
+            // one size 0 -> make thin
+            if (!(si->sel.xs * si->sel.ys)) {
+                si->sel.xs = min(si->sel.xs, 1);
+                si->sel.ys = min(si->sel.ys, 1);
+            }
+            // if new size is 0,0, make it thin vertical
+            if ((!si->sel.xs) && (!si->sel.ys)) {
+                si->sel.y--;// assumes grid is not 0 height
+                si->sel.ys++;
+            }
+            break;
+        }
+        if (si) tolist.push() = old_si;
+        else si = old_si;// valid hasn't been found
+        SetSelect(si->sel, false);
+        if (selected.g)
+            ScrollOrZoom(dc);
+        else
+            Refresh();
     }
 
     void ColorChange(int which, int idx) {

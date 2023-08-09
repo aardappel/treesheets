@@ -392,6 +392,8 @@ struct MyFrame : wxFrame {
             MyAppend(editmenu, A_UNDO, _(L"&Undo\tCTRL+z"), _(L"revert the changes, one step at a time"));
             MyAppend(editmenu, A_REDO, _(L"&Redo\tCTRL+y"),
                      _(L"redo any undo steps, if you haven't made changes since"));
+            MyAppend(editmenu, A_UNDOSELECT, _(L"Previous selection\tSHIFT+ALT+LEFT"));
+            MyAppend(editmenu, A_REDOSELECT, _(L"Next selection\tSHIFT+ALT+RIGHT"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_DELETE, _(L"&Delete After\tDEL"),
                      _(L"Deletes the column of cells after the selected grid line, or the row below"));

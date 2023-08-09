@@ -105,6 +105,16 @@ struct TSCanvas : public wxScrolledWindow {
         me.Skip();  // otherwise EVT_CONTEXT_MENU won't be triggered?
         #endif
     }
+    
+    void OnAux1Down(wxMouseEvent &me) {
+        wxClientDC dc(this);
+        Status(doc->Action(dc, A_UNDOSELECT));
+    }
+    void OnAux2Down(wxMouseEvent &me) {
+        wxClientDC dc(this);
+        Status(doc->Action(dc, A_REDOSELECT));
+    }
+
 
     void OnLeftDoubleClick(wxMouseEvent &me) {
         wxClientDC dc(this);

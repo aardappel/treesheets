@@ -63,6 +63,12 @@ class Selection {
         cursor = cursorend = 0;
         SetCursorEdit(doc, false);
     }
+    Selection GetSelectionUndo() const {
+        Selection new_sel = *this;
+        new_sel.textedit = false;
+        new_sel.cursor = new_sel.cursorend = 0;
+        return new_sel;
+    }
 
     bool IsInside(Selection &o) {
         if (!o.g || !g) return false;
