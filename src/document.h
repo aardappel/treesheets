@@ -772,10 +772,14 @@ struct Document {
         return false;
     }
 
+    void RemoveTmpFile() {
+        if (!filename.empty() && ::wxFileExists(sys->TmpName(filename)))
+            ::wxRemoveFile(sys->TmpName(filename));
+    }
+
     bool CloseDocument() {
         bool keep = CheckForChanges();
-        if (!keep && !filename.empty() && ::wxFileExists(sys->TmpName(filename)))
-            ::wxRemoveFile(sys->TmpName(filename));
+        if (!keep) RemoveTmpFile();
         return keep;
     }
 
