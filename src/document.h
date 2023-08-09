@@ -332,7 +332,7 @@ struct Document {
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         DrawSelect(dc, selected, false, true);
-        if (reset) blink = 1;
+        if (reset) blink = true;
         else blink = !blink;
         DrawSelect(dc, selected, true, true);
         #endif
