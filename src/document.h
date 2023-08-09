@@ -322,14 +322,14 @@ struct Document {
         }
     }
 
-    void HandleBlink(bool resetBlink = false) {
+    void HandleBlink(bool reset) {
         if (redrawpending) return;
         #ifndef SIMPLERENDER
         wxClientDC dc(sw);
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         DrawSelect(dc, selected, false, true);
-        if (resetBlink) blink = 1;
+        if (reset) blink = 1;
         else blink = !blink;
         DrawSelect(dc, selected, true, true);
         #endif
