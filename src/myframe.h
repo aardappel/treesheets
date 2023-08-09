@@ -254,7 +254,7 @@ struct MyFrame : wxFrame {
             MyAppend(selmenu, A_NEXT, _(L"Move to next cell\tTAB"));
             MyAppend(selmenu, A_PREV, _(L"Move to previous cell\tSHIFT+TAB"));
             selmenu->AppendSeparator();
-            MyAppend(selmenu, A_SELALL, _(L"Select &all in current grid\tCTRL+a"));
+            MyAppend(selmenu, A_SELALL, _(L"Select &all in current grid/cell\tCTRL+a"));
             selmenu->AppendSeparator();
             MyAppend(selmenu, A_LEFT, _(L"Move Selection Left\tLEFT"));
             MyAppend(selmenu, A_RIGHT, _(L"Move Selection Right\tRIGHT"));
