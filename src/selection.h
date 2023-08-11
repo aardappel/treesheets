@@ -21,9 +21,14 @@ class Selection {
           firstdy(0) {}
 
     void SelAll() {
-        x = y = 0;
-        xs = g->xs;
-        ys = g->ys;
+        if (textedit) {
+            cursor = 0;
+            cursorend = MaxCursor();
+        } else {
+            x = y = 0;
+            xs = g->xs;
+            ys = g->ys;
+        }
     }
 
     Cell *GetCell() const { return g && xs == 1 && ys == 1 ? g->C(x, y) : nullptr; }
