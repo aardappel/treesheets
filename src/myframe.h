@@ -914,7 +914,6 @@ struct MyFrame : wxFrame {
                         } else {
                             sw->doc->Action(dc, A_SEARCHNEXT);
                         }
-                        return;
                     } else if (tc == replaces) {
                         // OnReplaceEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
@@ -923,8 +922,8 @@ struct MyFrame : wxFrame {
                         } else {
                             sw->doc->Action(dc, A_REPLACEONCEJ);
                         }
-                        return;
                     }
+                    return;
                 }
                 #endif
                 case A_CANCELEDIT: tc->Clear(); sw->SetFocus(); return;
