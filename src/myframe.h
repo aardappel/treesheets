@@ -1086,8 +1086,7 @@ struct MyFrame : wxFrame {
 
     void OnReplaceEnter(wxCommandEvent &ce) {
         TSCanvas *sw = GetCurTab();
-        wxString replacestring = ce.GetString();
-        if (replacestring.Len() == 0) {
+        if (ce.GetString().Len() == 0) {
             sw->SetFocus();
         } else {
             wxClientDC dc(sw);
