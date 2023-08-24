@@ -139,19 +139,17 @@ struct Document {
 
     void InitWith(Cell *r, wxString filename, Cell *ics, int xs, int ys) {
         rootgrid = r;
-        if (ics) {
-            Grid* ipg = ics->parent->grid;
-            if (ipg) {
-                foreachcellingrid(c, ipg) {
-                    if (c == ics) {
-                        SetSelect(Selection(ipg, x, y, xs, ys));
-                    }
-                }
+        Grid *ipg = ics ? ics->parent->grid : nullptr;
+        if (ipg) {
+            foreachcellingrid(c, ipg) if (c == ics) {
+                SetSelect(Selection(ipg, x, y, xs, ys));
+                goto cellisselected;
             }
         } else {
             SetSelect(Selection(r->grid, 0, 0, 1, 1));
         }
-        ChangeFileName(filename, false);
+        cellisselected:
+            ChangeFileName(filename, false);
     }
 
     void UpdateFileName(int page = -1) {
