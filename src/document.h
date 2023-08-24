@@ -145,13 +145,15 @@ struct Document {
                 foreachcellingrid(c, ipg) {
                     if (c == ics) {
                         SetSelect(Selection(ipg, x, y, xs, ys));
+                        goto cellisselected;
                     }
                 }
             }
         } else {
             SetSelect(Selection(r->grid, 0, 0, 1, 1));
         }
-        ChangeFileName(filename, false);
+        cellisselected:
+            ChangeFileName(filename, false);
     }
 
     void UpdateFileName(int page = -1) {
