@@ -280,10 +280,10 @@ struct Document {
                     sw->SetScrollbars(1, 1, layoutxs, layoutys,
                                       r.width > canvasw || r.x < originx
                                           ? r.x
-                                          : r.x + r.width > maxx ? r.x + r.width - canvasw : curx,
+                                          : r.x + r.width > maxx ? r.x + r.width / 2 - canvasw / 2 : curx,
                                       r.height > canvash || r.y < originy
                                           ? r.y
-                                          : r.y + r.height > maxy ? r.y + r.height - canvash : cury,
+                                          : r.y + r.height > maxy ? r.y + r.height / 2 - canvash / 2 : cury,
                                       true);
                     RefreshReset();
                     return true;
