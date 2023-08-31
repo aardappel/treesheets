@@ -471,20 +471,20 @@ struct Document {
                     }
                 } else {
                     wxDataObjectComposite *clipboarddata = new wxDataObjectComposite();
-                    wxString s, html;
-                    s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
-                    html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
-                    if (!selected.TextEdit()) sys->clipboardcopy = s;
-                    
+                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
                     clipboarddata->Add(new wxTextDataObject(s));
-                    auto *htmlobj = 
-                    #ifdef __WXGTK__
-                        new wxCustomDataObject(wxDF_HTML);
-                    htmlobj->SetData(html.Len(), html);
-                    #else
-                        new wxHTMLDataObject(html);
-                    #endif
-                    clipboarddata->Add(htmlobj);
+                    if (!selected.TextEdit()) {
+                        sys->clipboardcopy = s;
+                        wxString html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
+                        auto *htmlobj = 
+                        #ifdef __WXGTK__
+                            new wxCustomDataObject(wxDF_HTML);
+                        htmlobj->SetData(html.Len(), html);
+                        #else
+                            new wxHTMLDataObject(html);
+                        #endif
+                        clipboarddata->Add(htmlobj);
+                    }
                     if (wxTheClipboard->Open()) {
                         wxTheClipboard->SetData(clipboarddata);
                         wxTheClipboard->Close();
