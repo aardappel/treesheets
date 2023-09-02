@@ -102,6 +102,7 @@ struct Grid {
     unique_ptr<Cell> CloneSel(const Selection &s) {
         auto cl = make_unique<Cell>(nullptr, s.g->cell, CT_DATA, new Grid(s.xs, s.ys));
         foreachcellinsel(c, s) cl->grid->C(x - s.x, y - s.y) = c->Clone(cl.get()).release();
+        loop(i, s.xs) cl->grid->colwidths[i] = s.g->colwidths[i];
         return cl;
     }
 
