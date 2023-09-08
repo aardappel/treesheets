@@ -232,7 +232,7 @@ struct Cell {
                 str.Prepend(wxString() << -text.relsize);
                 str.Prepend(L" relsize=\"");
             }
-            if (text.stylebits) {
+            if (parent ? text.stylebits ^ parent->text.stylebits : text.stylebits) {
                 str.Prepend(L"\"");
                 str.Prepend(wxString() << text.stylebits);
                 str.Prepend(L" stylebits=\"");
