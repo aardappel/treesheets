@@ -237,12 +237,12 @@ struct Cell {
                 str.Prepend(wxString() << text.stylebits);
                 str.Prepend(L" stylebits=\"");
             }
-            if (cellcolor != doc->Background()) {
+            if (cellcolor != (parent ? parent->cellcolor : doc->Background())) {
                 str.Prepend(L"\"");
                 str.Prepend(wxString() << cellcolor);
                 str.Prepend(L" colorbg=\"");
             }
-            if (textcolor != 0x000000) {
+            if (textcolor != (parent ? parent->textcolor : 0x000000)) {
                 str.Prepend(L"\"");
                 str.Prepend(wxString() << textcolor);
                 str.Prepend(L" colorfg=\"");
@@ -260,9 +260,9 @@ struct Cell {
             if (text.stylebits & STYLE_BOLD) style += L"font-weight: bold;";
             if (text.stylebits & STYLE_ITALIC) style += L"font-style: italic;";
             if (text.stylebits & STYLE_FIXED) style += L"font-family: monospace;";
-            if (cellcolor != doc->Background())
+            if (cellcolor != (parent ? parent->cellcolor : doc->Background()))
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
-            if (textcolor != 0x000000)
+            if (textcolor != (parent ? parent->textcolor : 0x000000))
                 style += wxString::Format(L"color: #%06X;", SwapColor(textcolor));
             str.Prepend(style.IsEmpty() ? L"<td>" : L"<td style=\"" + style + L"\">");
             str.Append(L' ', indent);
