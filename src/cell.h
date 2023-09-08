@@ -207,7 +207,7 @@ struct Cell {
     bool IsParentOf(const Cell *c) { return c->parent == this || (c->parent && IsParentOf(c->parent)); }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
-    wxString ToText(int indent, const Selection &s, int format, Document *doc) {
+    wxString ToText(int indent, const Selection &s, int format, Document *doc, bool inheritstyle) {
         wxString str = text.ToText(indent, s, format);
         if (format == A_EXPHTMLT && ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU))) {
             wxString spanstyle = L"text-decoration:";
@@ -218,13 +218,13 @@ struct Cell {
             str.Append(L"</span>");
         }
         if (format == A_EXPCSV) {
-            if (grid) return grid->ToText(indent, s, format, doc);
+            if (grid) return grid->ToText(indent, s, format, doc, inheritstyle);
             str.Replace(L"\"", L"\"\"");
             return L"\"" + str + L"\"";
         }
         if (s.cursor != s.cursorend) return str;
         str.Append(L"\n");
-        if (grid) str.Append(grid->ToText(indent, s, format, doc));
+        if (grid) str.Append(grid->ToText(indent, s, format, doc, inheritstyle));
         if (format == A_EXPXML) {
             str.Prepend(L">");
             if (text.relsize) {
@@ -257,15 +257,15 @@ struct Cell {
             str.Append(L"</cell>\n");
         } else if (format == A_EXPHTMLT) {
             wxString style;
-            if (parent ? (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD) : true)
+            if (!inheritstyle || !parent || (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
                 style += (text.stylebits & STYLE_BOLD) ? L"font-weight: bold;" : L"font-weight: normal;";
-            if (parent ? (text.stylebits & STYLE_ITALIC) != (parent->text.stylebits & STYLE_ITALIC) : true)
+            if (!inheritstyle || !parent || (text.stylebits & STYLE_ITALIC) != (parent->text.stylebits & STYLE_ITALIC))
                 style += (text.stylebits & STYLE_ITALIC) ? L"font-style: italic;" : L"font-style: normal;";
-            if (parent ? (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED) : true)
+            if (!inheritstyle || !parent || (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED))
                 style += (text.stylebits & STYLE_FIXED) ? L"font-family: monospace;" : L"font-family: sans-serif;";
-            if (cellcolor != (parent ? parent->cellcolor : doc->Background()))
+            if (!inheritstyle || cellcolor != (parent ? parent->cellcolor : doc->Background()))
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
-            if (textcolor != (parent ? parent->textcolor : 0x000000))
+            if (!inheritstyle || textcolor != (parent ? parent->textcolor : 0x000000))
                 style += wxString::Format(L"color: #%06X;", SwapColor(textcolor));
             str.Prepend(style.IsEmpty() ? L"<td>" : L"<td style=\"" + style + L"\">");
             str.Append(L' ', indent);
