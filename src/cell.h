@@ -257,9 +257,12 @@ struct Cell {
             str.Append(L"</cell>\n");
         } else if (format == A_EXPHTMLT) {
             wxString style;
-            if (text.stylebits & STYLE_BOLD) style += L"font-weight: bold;";
-            if (text.stylebits & STYLE_ITALIC) style += L"font-style: italic;";
-            if (text.stylebits & STYLE_FIXED) style += L"font-family: monospace;";
+            if (parent ? (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD) : true)
+                style += (text.stylebits & STYLE_BOLD) ? L"font-weight: bold;" : L"font-weight: normal;";
+            if (parent ? (text.stylebits & STYLE_ITALIC) != (parent->text.stylebits & STYLE_ITALIC) : true)
+                style += (text.stylebits & STYLE_ITALIC) ? L"font-style: italic;" : L"font-style: normal;";
+            if (parent ? (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED) : true)
+                style += (text.stylebits & STYLE_FIXED) ? L"font-family: monospace;" : L"font-family: sans-serif;";
             if (cellcolor != (parent ? parent->cellcolor : doc->Background()))
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
             if (textcolor != (parent ? parent->textcolor : 0x000000))
