@@ -209,7 +209,8 @@ struct Cell {
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
     wxString ToText(int indent, const Selection &s, int format, Document *doc, bool inheritstyle) {
         wxString str = text.ToText(indent, s, format);
-        if (format == A_EXPHTMLT && ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU))) {
+        if (format == A_EXPHTMLT && ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU)) 
+                && this != doc->curdrawroot) {
             wxString spanstyle = L"text-decoration:";
             spanstyle += (text.stylebits & STYLE_UNDERLINE) ? L" underline" : wxEmptyString;
             spanstyle += (text.stylebits & STYLE_STRIKETHRU) ? L" line-through" : wxEmptyString;
@@ -255,7 +256,7 @@ struct Cell {
             str.Prepend(L"<cell");
             str.Append(L' ', indent);
             str.Append(L"</cell>\n");
-        } else if (format == A_EXPHTMLT) {
+        } else if (format == A_EXPHTMLT && this != doc->curdrawroot) {
             wxString style;
             if (!inheritstyle || !parent || (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
                 style += (text.stylebits & STYLE_BOLD) ? L"font-weight: bold;" : L"font-weight: normal;";
