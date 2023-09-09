@@ -598,11 +598,11 @@ struct Grid {
         }
     }
 
-    wxString ToText(int indent, const Selection &s, int format, Document *doc) {
-        return ConvertToText(SelectAll(), indent + 2, format, doc);
+    wxString ToText(int indent, const Selection &s, int format, Document *doc, bool inheritstyle) {
+        return ConvertToText(SelectAll(), indent + 2, format, doc, inheritstyle);
     };
 
-    wxString ConvertToText(const Selection &s, int indent, int format, Document *doc) {
+    wxString ConvertToText(const Selection &s, int indent, int format, Document *doc, bool inheritstyle) {
         wxString r;
         const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
         const int font_size = 14 - indent / 2;
@@ -616,7 +616,7 @@ struct Grid {
                       font_size).wc_str());
         foreachcellinsel(c, s) {
             if (x == 0) Formatter(r, format, indent, L"<row>\n", L"<tr>\n", L"");
-            r.Append(c->ToText(indent, s, format, doc));
+            r.Append(c->ToText(indent, s, format, doc, inheritstyle));
             if (format == A_EXPCSV) r.Append(x == xs - 1 ? '\n' : ',');
             if (x == xs - 1) Formatter(r, format, indent, L"</row>\n", L"</tr>\n", L"");
         }

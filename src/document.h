@@ -412,7 +412,7 @@ struct Document {
 
     auto CopyEntireCells(wxString &s) {
         sys->clipboardcopy = s;
-        wxString html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this);
+        wxString html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this, false);
         auto htmlobj = 
         #ifdef __WXGTK__
             new wxCustomDataObject(wxDF_HTML);
@@ -438,7 +438,7 @@ struct Document {
                         dragdata.Add(new wxBitmapDataObject(bm));
                     }
                 } else {
-                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
+                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s);
@@ -476,7 +476,7 @@ struct Document {
                     }
                 } else {
                     wxDataObjectComposite *clipboarddata = new wxDataObjectComposite();
-                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this);
+                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
                     clipboarddata->Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s);
@@ -859,7 +859,7 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            wxString content = root->ToText(0, Selection(), k, this);
+            wxString content = root->ToText(0, Selection(), k, this, true);
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(
@@ -879,8 +879,7 @@ struct Document {
                         L"<html>\n<head>\n<style>\n"
                         L"body { font-family: sans-serif; }\n"
                         L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
-                        L" padding: 3px; vertical-align: top; font-weight: normal;"
-                        L" font-style: normal; font-family: sans-serif; }\n"
+                        L" padding: 3px; vertical-align: top; }\n"
                         L"li { }\n</style>\n"
                         L"<title>export of TreeSheets file ");
                     dos.WriteString(filename);
