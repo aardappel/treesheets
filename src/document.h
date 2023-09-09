@@ -2022,6 +2022,7 @@ struct Document {
     const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump) {
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
+        if (!rootgrid) return nullptr; //fix crash when opening new doc
         Cell *next =
             rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel);
         sys->frame->SetSearchTextBoxBackgroundColour(next);
