@@ -615,10 +615,10 @@ struct Grid {
                   wxString::Format(L"<ul style=\"font-size: %dpt;\">\n",
                       font_size).wc_str());
         foreachcellinsel(c, s) {
-            if (x == 0) Formatter(r, format, indent, L"<row>\n", L"<tr>\n", L"");
+            if (x == s.x) Formatter(r, format, indent, L"<row>\n", L"<tr>\n", L"");
             r.Append(c->ToText(indent, s, format, doc, inheritstyle));
-            if (format == A_EXPCSV) r.Append(x == xs - 1 ? '\n' : ',');
-            if (x == xs - 1) Formatter(r, format, indent, L"</row>\n", L"</tr>\n", L"");
+            if (format == A_EXPCSV) r.Append(x == s.x + s.xs - 1 ? '\n' : ',');
+            if (x == s.x + s.xs - 1) Formatter(r, format, indent, L"</row>\n", L"</tr>\n", L"");
         }
         Formatter(r, format, indent, L"</grid>\n", L"</table>\n", L"</ul>\n");
         return r;
