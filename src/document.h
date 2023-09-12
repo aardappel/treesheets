@@ -972,6 +972,14 @@ struct Document {
                     }
                     return Action(
                         dc, shift ? (ctrl ? A_PREVFILE : A_PREV) : (ctrl ? A_NEXTFILE : A_NEXT));
+                case WXK_PAGEUP:
+                    if (ctrl) return Action(dc, A_ZOOMIN);
+                    sw->CursorScroll(0, -g_scrollratecursor); 
+                    return nullptr;
+                case WXK_PAGEDOWN:
+                    if (ctrl) return Action(dc, A_ZOOMOUT);
+                    sw->CursorScroll(0, g_scrollratecursor); 
+                    return nullptr;
                 #endif
             }
         } else if (uk >= ' ') {
