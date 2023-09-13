@@ -973,12 +973,12 @@ struct Document {
                     return Action(
                         dc, shift ? (ctrl ? A_PREVFILE : A_PREV) : (ctrl ? A_NEXTFILE : A_NEXT));
                 case WXK_PAGEUP:
-                    if (ctrl) return Action(dc, A_ZOOMIN);
-                    sw->CursorScroll(0, -g_scrollratecursor); 
+                    if (ctrl) return Action(dc, alt ? A_INCWIDTHNH : A_ZOOMIN);
+                    if (!alt) sw->CursorScroll(0, -g_scrollratecursor);
                     return nullptr;
                 case WXK_PAGEDOWN:
-                    if (ctrl) return Action(dc, A_ZOOMOUT);
-                    sw->CursorScroll(0, g_scrollratecursor); 
+                    if (ctrl) return Action(dc, alt ? A_DECWIDTHNH : A_ZOOMOUT);
+                    if (!alt) sw->CursorScroll(0, g_scrollratecursor);
                     return nullptr;
                 #endif
             }
