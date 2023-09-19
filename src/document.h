@@ -1304,29 +1304,22 @@ struct Document {
             }
 
             case A_FILTER5:
-                editfilter = 5;
-                ApplyEditFilter();
-                return nullptr;
             case A_FILTER10:
-                editfilter = 10;
-                ApplyEditFilter();
-                return nullptr;
             case A_FILTER20:
-                editfilter = 20;
-                ApplyEditFilter();
-                return nullptr;
             case A_FILTER50:
-                editfilter = 50;
-                ApplyEditFilter();
-                return nullptr;
             case A_FILTERM:
-                editfilter++;
+            case A_FILTERL: {
+                switch (k) {
+                    case A_FILTER5: editfilter = 5; break;
+                    case A_FILTER10: editfilter = 10; break;
+                    case A_FILTER20: editfilter = 20; break;
+                    case A_FILTER50: editfilter = 50; break;
+                    case A_FILTERM: editfilter++; break;
+                    case A_FILTERL: editfilter--; break;
+                }
                 ApplyEditFilter();
                 return nullptr;
-            case A_FILTERL:
-                editfilter--;
-                ApplyEditFilter();
-                return nullptr;
+            }
             case A_FILTERS: SetSearchFilter(true); return nullptr;
             case A_FILTEROFF: SetSearchFilter(false); return nullptr;
 
