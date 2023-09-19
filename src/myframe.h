@@ -1069,24 +1069,13 @@ struct MyFrame : wxFrame {
         GetCurTab()->Status();
     }
 
-    void OnSearchEnter(wxCommandEvent &ce) {
-        TSCanvas *sw = GetCurTab();
-        wxString searchstring = ce.GetString();
-        if (searchstring.Len() == 0) {
-            sw->SetFocus();
-        } else {
-            wxClientDC dc(sw);
-            sw->doc->Action(dc, A_SEARCHNEXT);
-        }
-    }
-
-    void OnReplaceEnter(wxCommandEvent &ce) {
+    void OnSearchReplaceEnter(wxCommandEvent &ce) {
         TSCanvas *sw = GetCurTab();
         if (ce.GetString().Len() == 0) {
             sw->SetFocus();
         } else {
             wxClientDC dc(sw);
-            sw->doc->Action(dc, A_REPLACEONCEJ);
+            sw->doc->Action(dc, ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
         }
     }
 
@@ -1099,18 +1088,11 @@ struct MyFrame : wxFrame {
         }
     }
 
-    void OnCellColor(wxCommandEvent &ce) {
-        GetCurTab()->doc->ColorChange(A_CELLCOLOR, ce.GetInt());
+    void OnChangeColor(wxCommandEvent &ce) {
+        GetCurTab()->doc->ColorChange(ce.GetId(), ce.GetInt());
         ReFocus();
     }
-    void OnTextColor(wxCommandEvent &ce) {
-        GetCurTab()->doc->ColorChange(A_TEXTCOLOR, ce.GetInt());
-        ReFocus();
-    }
-    void OnBordColor(wxCommandEvent &ce) {
-        GetCurTab()->doc->ColorChange(A_BORDCOLOR, ce.GetInt());
-        ReFocus();
-    }
+
     void OnDDImage(wxCommandEvent &ce) {
         GetCurTab()->doc->ImageChange(idd->as[ce.GetInt()], dd_icon_res_scale);
         ReFocus();
