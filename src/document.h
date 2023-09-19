@@ -1248,17 +1248,17 @@ struct Document {
                 return _(L"Text has been replaced.");
             }
 
+            case A_CLEARSEARCH: 
             case A_CLEARREPLACE: {
-                sys->frame->replaces->Clear();
+                wxTextCtrl *textbox;
+                switch (k) {
+                    case A_CLEARSEARCH: textbox = sys->frame->filter; break;
+                    case A_CLEARREPLACE: textbox = sys->frame->replaces; break;
+                }
+                textbox->Clear();
                 sw->SetFocus();
                 return nullptr;
              }
-
-            case A_CLEARSEARCH: {
-                sys->frame->filter->Clear();
-                sw->SetFocus();
-                return nullptr;
-            }
 
             case A_SCALED:
                 scaledviewingmode = !scaledviewingmode;
