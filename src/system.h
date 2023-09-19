@@ -66,22 +66,10 @@ struct System {
     wxLongLong fakelasteditonload;
     wxPen pen_tinytext, pen_gridborder, pen_tinygridlines, pen_gridlines, pen_thinselect;
     uint customcolor;
-    int roundness;
-    int defaultmaxcolwidth;
-    bool makebaks;
-    bool totray;
-    bool autosave;
-    bool zoomscroll;
-    bool thinselc;
-    bool minclose;
-    bool singletray;
-    bool centered;
-    bool fswatch;
-    bool autohtmlexport;
-    bool casesensitivesearch;
-    bool darkennonmatchingcells;
+    int roundness, defaultmaxcolwidth;
+    bool makebaks, totray, autosave, zoomscroll, thinselc, minclose, singletray, centered,
+        fswatch, autohtmlexport, casesensitivesearch, darkennonmatchingcells, fastrender;
     int sortcolumn, sortxs, sortdescending;
-    bool fastrender;
     wxHashMapBool watchedpaths;
     bool insidefiledialog;
     struct TimerStruct : wxTimer {

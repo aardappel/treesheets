@@ -1331,8 +1331,7 @@ struct Document {
             case A_FILTEROFF: SetSearchFilter(false); return nullptr;
 
             case A_CUSTKEY: {
-                wxArrayString strs;
-                wxArrayString keys;
+                wxArrayString strs, keys;
                 for (auto it = sys->frame->menustrings.begin(); it != sys->frame->menustrings.end();
                      ++it) {
                     strs.push_back(it->first);
