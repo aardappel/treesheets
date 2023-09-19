@@ -1220,14 +1220,17 @@ struct Document {
                 return nullptr;
 
             case A_OPENCELLCOLOR:
-                if (sys->frame->celldd) sys->frame->celldd->ShowPopup();
-                break;
             case A_OPENTEXTCOLOR:
-                if (sys->frame->textdd) sys->frame->textdd->ShowPopup();
-                break;
-            case A_OPENBORDCOLOR:
-                if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
-                break;
+            case A_OPENBORDCOLOR: {
+                ColorDropdown *cdd;
+                switch (k) {
+                    case A_OPENCELLCOLOR: cdd = sys->frame->celldd; break;
+                    case A_OPENTEXTCOLOR: cdd = sys->frame->textdd; break;
+                    case A_OPENBORDCOLOR: cdd = sys->frame->borddd; break;
+                }
+                if (cdd) cdd->ShowPopup();
+                return nullptr;
+            }
 
             case A_REPLACEONCE:
             case A_REPLACEONCEJ:
