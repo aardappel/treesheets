@@ -750,10 +750,10 @@ struct MyFrame : wxFrame {
         aui->AddPane(nb, wxCENTER);
         aui->Update();
 
-        Show(TRUE);
+        Show(!IsIconized());
 
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
-        if (ismax) Maximize(true);
+        if (ismax && !IsIconized()) Maximize(true);
 
         SetFileAssoc(exename);
 
