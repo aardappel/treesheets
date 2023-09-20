@@ -1990,39 +1990,25 @@ struct Document {
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
-            // FIXME: this functionality is really SCHOME, SHOME should be within line
-            case A_SHOME:
+            case A_SHOME: 
+            case A_SEND: 
+            case A_CHOME: 
+            case A_CEND: 
+            case A_HOME: 
+            case A_END: {
                 DrawSelect(dc, selected);
-                selected.cursor = 0;
+                switch (k) {                    
+                    case A_SHOME: // FIXME: this functionality is really SCHOME, SHOME should be within line
+                        selected.cursor = 0; break; 
+                    case A_SEND: selected.cursorend = (int)c->text.t.Len(); break;
+                    case A_CHOME: selected.cursor = selected.cursorend = 0; break;
+                    case A_CEND: selected.cursor = selected.cursorend = selected.MaxCursor(); break;
+                    case A_HOME: c->text.HomeEnd(selected, true); break;
+                    case A_END: c->text.HomeEnd(selected, false); break;
+                }
                 DrawSelectMove(dc, selected);
                 return nullptr;
-            case A_SEND:
-                DrawSelect(dc, selected);
-                selected.cursorend = (int)c->text.t.Len();
-                DrawSelectMove(dc, selected);
-                return nullptr;
-
-            case A_CHOME:
-                DrawSelect(dc, selected);
-                selected.cursor = selected.cursorend = 0;
-                DrawSelectMove(dc, selected);
-                return nullptr;
-            case A_CEND:
-                DrawSelect(dc, selected);
-                selected.cursor = selected.cursorend = selected.MaxCursor();
-                DrawSelectMove(dc, selected);
-                return nullptr;
-
-            case A_HOME:
-                DrawSelect(dc, selected);
-                c->text.HomeEnd(selected, true);
-                DrawSelectMove(dc, selected);
-                return nullptr;
-            case A_END:
-                DrawSelect(dc, selected);
-                c->text.HomeEnd(selected, false);
-                DrawSelectMove(dc, selected);
-                return nullptr;
+            }
             default: return _(L"Internal error: unimplemented operation!");
         }
     }
