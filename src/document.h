@@ -260,7 +260,7 @@ struct Document {
                         bool refreshinstead = true) {
         if (ScrollIfSelectionOutOfView(dc, s)) return;
         if (refreshalways)
-            RefreshReset();
+            Refresh();
         else
             DrawSelect(dc, s, refreshinstead);
     }
@@ -285,7 +285,7 @@ struct Document {
                                           ? r.y
                                           : r.y + r.height > maxy - wxSYS_HSCROLL_Y ? r.y + r.height - canvash + wxSYS_HSCROLL_Y : cury,
                                       true);
-                    RefreshReset();
+                    Refresh();
                     return true;
                 }
             }
@@ -728,16 +728,8 @@ struct Document {
         laststylebits = -1;
     }
 
-    void RefreshReset() {
-        Refresh();
-    }
-
     void Refresh() {
         hover.g = nullptr;
-        RefreshHover();
-    }
-
-    void RefreshHover() {
         redrawpending = true;
         #ifndef __WXMSW__
         if (sw) sw->Refresh(false);
