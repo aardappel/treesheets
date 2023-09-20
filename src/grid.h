@@ -10,9 +10,7 @@ struct Grid {
     int xs, ys;
     int view_margin, view_grid_outer_spacing, user_grid_outer_spacing, cell_margin;
     int bordercolor;
-    bool horiz;
-    bool tinyborder;
-    bool folded;
+    bool horiz, tinyborder, folded;
 
     Cell *&C(int x, int y) const {
         ASSERT(x >= 0 && y >= 0 && x < xs && y < ys);
