@@ -33,8 +33,18 @@ endif()
 # set(CMAKE_CXX_STANDARD 17)  # this doesn't work correctly on all CMake versions :(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
-find_package(wxWidgets REQUIRED aui adv core xml net)
-include(${wxWidgets_USE_FILE})
+OPTION(TREESHEETS_WITH_STATIC_WXWIDGETS "Build wxWidgets along with TreeSheets and link TreeSheets against static wxWidgets library" OFF)
+
+# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code
+# (recursive git check-out with submodules) to be placed in lib/wxWidgets (see below, it can be changed to your liking).
+
+if (TREESHEETS_WITH_STATIC_WXWIDGETS)
+    set(wxBUILD_SHARED OFF)
+    add_subdirectory(lib/wxWidgets)
+else()
+    find_package(wxWidgets REQUIRED aui adv core xml net)
+    include(${wxWidgets_USE_FILE})
+endif()
 
 file(
     GLOB lobster_sources
@@ -70,12 +80,24 @@ add_executable(
     src/main.cpp
 )
 
-target_link_libraries(
-    treesheets
-    PRIVATE
+if (TREESHEETS_WITH_STATIC_WXWIDGETS)
+    target_link_libraries(
+        treesheets
+        wx::aui
+        wx::adv
+        wx::core
+        wx::xml
+        wx::net
+        lobster-impl
+    )
+else()
+    target_link_libraries(
+        treesheets
+        PRIVATE
         ${wxWidgets_LIBRARIES}
         lobster-impl
-)
+    )
+endif()
 if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_DOCDIR})
