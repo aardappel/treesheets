@@ -1,6 +1,8 @@
 
 #include "stdafx.h"
 
+static_assert(wxCHECK_VERSION(3, 3, 0), "wxWidgets < 3.3.0 is not supported.");
+
 #ifndef __WXMSW__
 #define SIMPLERENDER
 #endif
