@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>com.strlen.TreeSheets</id>
-  
   <name>TreeSheets</name>
   <summary>Free Form Data Organizer</summary>
-  
+  <url type="homepage">https://strlen.com/treesheets</url>
+  <url type="bugtracker">https://github.com/aardappel/treesheets/issues</url>
+  <url type="contribute">https://github.com/aardappel/treesheets</url>
+  <url type="donation">https://github.com/sponsors/aardappel</url>
   <metadata_license>MIT</metadata_license>
   <project_license>Zlib</project_license>
-  
   <description>
     <p>
       A &quot;hierarchical spreadsheet&quot; that is a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
@@ -19,7 +20,6 @@
       It&apos;s like a spreadsheet, immediately familiar, but much more suitable for complex data because it&apos;s hierarchical. It&apos;s like a mind mapper, but more organized and compact. It&apos;s like an outliner, but in more than one dimension. It&apos;s like a text editor, but with structure.
     </p>
   </description>
-  
   <launchable type="desktop-id">com.strlen.TreeSheets.desktop</launchable>
   <screenshots>
     <screenshot type="default">
@@ -32,4 +32,8 @@
       <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_todo_linux.png</image>
     </screenshot>
   </screenshots>
+  <content_rating type="oars-1.0" />
+  <releases>
+    <release version="6331662287" date="2023-09-27" />
+  </releases>
 </component>
