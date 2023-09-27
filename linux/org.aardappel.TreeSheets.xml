@@ -2,7 +2,7 @@
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
   <mime-type type="application/x-treesheets">
     <comment xml:lang="en">TreeSheets document</comment>
-    <icon name="treesheets"/>
+    <icon name="org.aardappel.TreeSheets"/>
     <glob pattern="*.cts"/>
     <magic priority="50">
       <match type="string" value="TSFF" offset="0"/>
