@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.aardappel.TreeSheets</id>
+  <id>com.strlen.TreeSheets</id>
   
   <name>TreeSheets</name>
   <summary>Free Form Data Organizer</summary>
@@ -20,7 +20,7 @@
     </p>
   </description>
   
-  <launchable type="desktop-id">org.aardappel.TreeSheets.desktop</launchable>
+  <launchable type="desktop-id">com.strlen.TreeSheets.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_todo.png</image>

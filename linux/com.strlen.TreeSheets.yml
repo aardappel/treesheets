@@ -1,11 +1,12 @@
-app-id: org.aardappel.TreeSheets
+app-id: com.strlen.TreeSheets
 runtime: org.freedesktop.Platform
-runtime-version: '22.08'
+runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
 command: treesheets
 finish-args:
   - --socket=wayland
   - --socket=fallback-x11
+  - --share=ipc
   - --device=all
   - --filesystem=home
 cleanup:
@@ -13,7 +14,7 @@ cleanup:
   - /lib
 modules:
   - name: TreeSheets
-    buildsystem: cmake
+    buildsystem: cmake-ninja
     config-opts:
       - -DTREESHEETS_WITH_STATIC_WXWIDGETS=ON
       - -DCMAKE_BUILD_TYPE=Release
