@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.aardappel.TreeSheets</id>
+  
+  <name>TreeSheets</name>
+  <summary>Free Form Data Organizer</summary>
+  
+  <metadata_license>MIT</metadata_license>
+  <project_license>Zlib</project_license>
+  
+  <description>
+    <p>
+      A &quot;hierarchical spreadsheet&quot; that is a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
+    </p>
+    <p>
+      Suitable for any kind of data organization, such as todo lists, calendars, project management, brainstorming, organizing ideas, planning, requirements gathering, presentation of information, etc.
+    </p>
+    <p>
+      It&apos;s like a spreadsheet, immediately familiar, but much more suitable for complex data because it&apos;s hierarchical. It&apos;s like a mind mapper, but more organized and compact. It&apos;s like an outliner, but in more than one dimension. It&apos;s like a text editor, but with structure.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">org.aardappel.TreeSheets.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_todo.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_unicode.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_todo_linux.png</image>
+    </screenshot>
+  </screenshots>
+</component>
