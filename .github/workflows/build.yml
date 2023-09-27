@@ -16,7 +16,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        cxx: [g++-10, clang++-12]
+        cxx: [g++-12, clang++-14]
     steps:
     - uses: actions/checkout@v3
     - name: apt update
