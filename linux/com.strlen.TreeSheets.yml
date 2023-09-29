@@ -7,7 +7,7 @@ finish-args:
   - --socket=wayland
   - --socket=fallback-x11
   - --share=ipc
-  - --device=all
+  - --device=dri
   - --filesystem=home
 cleanup:
   - /include
