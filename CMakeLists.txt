@@ -152,7 +152,7 @@ else()
     endforeach()
 endif()
 
-if(NOT APPLE AND NOT WIN32)
+if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     install(FILES linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
     install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
