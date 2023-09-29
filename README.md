@@ -6,17 +6,31 @@ Community:
 If you like, you are kindly invited to join the [Discord channel](https://discord.gg/HAfKkJz) and 
 the [Google group](https://groups.google.com/group/treesheets) for discussion.
 
+Installation:
+-------------
+
+### Windows/Ubuntu LTS/MacOS users
+
+Pre-built binaries are available at the
+[Release section](https://github.com/aardappel/treesheets/releases). 
+
+Please note that the Linux builds provided are built and only compatible with `ubuntu-latest` used by [GitHub Actions Runner](https://github.com/actions/runner-images). 
+
+### Flatpak (Linux) users
+
+If you use Flatpak, you can install [TreeSheets from Flathub](https://flathub.org/apps/com.strlen.TreeSheets).
+
 Repository:
 -----------
-
 This repository contains all the files needed to build TreeSheets for various platforms.
-If instead you just want to USE TreeSheets, you may be better off with the binaries available in the
-[Release section](https://github.com/aardappel/treesheets/releases). Please note that the Linux builds are built
-and only compatible with `ubuntu-latest` used by [GitHub Actions Runner](https://github.com/actions/runner-images).
+
+### License
 
 TreeSheets has been licensed under the ZLIB license (see ZLIB_LICENSE.txt).
 
 ![Workflow status](https://github.com/aardappel/treesheets/actions/workflows/build.yml/badge.svg)
+
+### Structure
 
 `src` contains all source code. The code is dense, terse, and with few comments, typical for a codebase that was never
 intended to be used by more than one person (me). On the positive side, you'll find the code very small and simple,
