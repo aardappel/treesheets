@@ -30,9 +30,9 @@ jobs:
     - name: cmake
       run: CXX=${{ matrix.cxx }} cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=TreeSheets-relocatable -DTREESHEETS_RELOCATABLE_INSTALLATION=ON -DTREESHEETS_WITH_STATIC_WXWIDGETS=ON
     - name: build TreeSheets
-      run: make -C _build -j4
+      run: cmake --build _build -j4
     - name: install files
-      run: make -C _build install
+      run: cmake --install _build
     - name: remove unnecessary files
       run: rm -rf TreeSheets-relocatable/include TreeSheets-relocatable/lib TreeSheets-relocatable/bin/wx*
     - name: zip
