@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <tchar.h>
-#include "StackWalker\stackwalker.h"
+#include "StackWalker\StackWalker.h"
 
 static TCHAR s_szExceptionLogFileName[_MAX_PATH] = _T("\\exceptions.log");  // default
 static BOOL s_bUnhandledExeptionFilterSet = FALSE;

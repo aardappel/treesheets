@@ -63,18 +63,15 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: clone wxWidgets
-      run: |
-        git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
-        (gc 'wxWidgets\build\msw\wx_setup.props') -replace '<wxReleaseRuntimeLibrary>MultiThreadedDLL</wxReleaseRuntimeLibrary>', '<wxReleaseRuntimeLibrary>MultiThreaded</wxReleaseRuntimeLibrary>' | Out-File -encoding ASCII 'wxWidgets\build\msw\wx_setup.props'
-    - name: build wxWidgets
-      working-directory: wxWidgets
-      run: msbuild.exe build/msw/wx_vc14.sln /p:Configuration=Release /p:Platform=x64 /p:RuntimeLibrary=MultiThreaded
+      run: git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets lib/wxWidgets
     - name: build TreeSheets
       run: |
-        msbuild.exe TreeSheets\treesheets.sln /p:Configuration=Release /p:Platform=x64
-        Remove-Item TS\*.pdb
-        Remove-Item TS\*.ipdb
-        Remove-Item TS\*.iobj
+        cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=TS -DTREESHEETS_WITH_STATIC_WXWIDGETS=ON
+        cmake --build _build -j4 --config Release
+        cmake --install _build
+        Remove-Item -path TS\include -recurse
+        Remove-Item -path TS\lib -recurse
+        Remove-Item -path TS\bin -recurse
         Compress-Archive -Path TS -DestinationPath windows_treesheets_no_installer.zip
     - name: upload build artifacts
       uses: actions/upload-artifact@v1

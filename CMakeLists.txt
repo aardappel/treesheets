@@ -67,6 +67,11 @@ target_include_directories(lobster PUBLIC lobster/include lobster/src lobster/ex
 add_library(lobster-impl STATIC src/lobster_impl.cpp)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
+if (WIN32)
+    add_library(stackwalker STATIC src/StackWalker/StackWalker.cpp src/StackWalker/StackWalkerHelpers.cpp)
+    target_include_directories(stackwalker PUBLIC src/StackWalker)
+endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 OPTION(WITH_CLANG_TIDY "Run clang-tidy linter" OFF)
@@ -74,10 +79,18 @@ if (WITH_CLANG_TIDY)
 set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 endif()
 
-add_executable(
-    treesheets
-    src/main.cpp
-)
+if (WIN32)
+    add_executable(
+        treesheets
+        WIN32
+        src/main.cpp
+    )
+else()
+    add_executable(
+        treesheets
+        src/main.cpp
+    )
+endif()
 
 if (TREESHEETS_WITH_STATIC_WXWIDGETS)
     target_link_libraries(
@@ -88,6 +101,7 @@ if (TREESHEETS_WITH_STATIC_WXWIDGETS)
         wx::xml
         wx::net
         lobster-impl
+        $<$<BOOL:${WIN32}>:stackwalker>
     )
 else()
     target_link_libraries(
@@ -95,6 +109,7 @@ else()
         PRIVATE
         ${wxWidgets_LIBRARIES}
         lobster-impl
+        $<$<BOOL:${WIN32}>:stackwalker>
     )
 endif()
 if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
