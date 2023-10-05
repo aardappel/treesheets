@@ -84,6 +84,7 @@ if (WIN32)
         treesheets
         WIN32
         src/main.cpp
+        treesheets/icon.rc
     )
 else()
     add_executable(
