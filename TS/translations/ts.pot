@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-17 18:34+0200\n"
+"POT-Creation-Date: 2023-10-05 15:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -211,6 +211,9 @@ msgid "&XML..."
 msgstr ""
 
 msgid "1:1 scale restored."
+msgstr ""
+
+msgid "<unnamed>"
 msgstr ""
 
 msgid "A temporary autosave file exists, would you like to load it instead?"
@@ -1028,7 +1031,7 @@ msgstr ""
 msgid "Select &Parent\tESC"
 msgstr ""
 
-msgid "Select &all in current grid\tCTRL+a"
+msgid "Select &all in current grid/cell\tCTRL+a"
 msgstr ""
 
 msgid "Select First &Child\tSHIFT+ENTER"
