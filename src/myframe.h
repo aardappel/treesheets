@@ -792,9 +792,9 @@ struct MyFrame : wxFrame {
         doc->sw = sw;
         sw->SetScrollRate(1, 1);
         if (append)
-            nb->AddPage(sw, L"<unnamed>", true, wxNullBitmap);
+            nb->AddPage(sw, _(L"<unnamed>"), true, wxNullBitmap);
         else
-            nb->InsertPage(0, sw, L"<unnamed>", true, wxNullBitmap);
+            nb->InsertPage(0, sw, _(L"<unnamed>"), true, wxNullBitmap);
         sw->SetDropTarget(new DropTarget(doc->dataobjc));
         sw->SetFocus();
         return sw;
@@ -851,7 +851,7 @@ struct MyFrame : wxFrame {
         if (page < 0) page = nb->GetSelection();
         if (page < 0) return;
         if (page == nb->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
-        nb->SetPageText(page, (fn.empty() ? wxString(L"<unnamed>") : wxFileName(fn).GetName()) + mods);
+        nb->SetPageText(page, (fn.empty() ? wxString(_(L"<unnamed>")) : wxFileName(fn).GetName()) + mods);
     }
 
     void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
