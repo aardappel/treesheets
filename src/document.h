@@ -413,7 +413,13 @@ struct Document {
     auto CopyEntireCells(wxString &s) {
         sys->clipboardcopy = s;
         wxString html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this, false);
-        auto htmlobj = new wxHTMLDataObject(html);
+        auto htmlobj = 
+        #if defined(__WXGTK__) && !wxCHECK_VERSION(3, 3, 0)
+            new wxCustomDataObject(wxDF_HTML);
+            htmlobj->SetData(html.Len(), html);
+        #else
+            new wxHTMLDataObject(html);
+        #endif
         return htmlobj;
     }
 
