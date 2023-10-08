@@ -380,8 +380,11 @@ struct MyFrame : wxFrame {
             editmenu = new wxMenu();
             MyAppend(editmenu, A_CUT, _(L"Cu&t\tCTRL+x"));
             MyAppend(editmenu, A_COPY, _(L"&Copy\tCTRL+c"));
-            MyAppend(editmenu, A_COPYBM, _(L"&Copy as Bitmap\tCTRL+ALT+c"));
+            editmenu->AppendSeparator();
+            MyAppend(editmenu, A_COPYWI, _(L"Copy with &Images\tCTRL+ALT+c"));
+            MyAppend(editmenu, A_COPYBM, _(L"&Copy as Bitmap"));
             MyAppend(editmenu, A_COPYCT, _(L"Copy As Continuous Text"));
+            editmenu->AppendSeparator();
             MyAppend(editmenu, A_PASTE, _(L"&Paste\tCTRL+v"));
             MyAppend(editmenu, A_PASTESTYLE, _(L"Paste Style Only\tCTRL+SHIFT+v"),
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));

@@ -587,7 +587,7 @@ struct Grid {
         if (format == A_EXPXML) {
             r.Append(L' ', indent);
             r.Append(xml);
-        } else if (format == A_EXPHTMLT) {
+        } else if (format == A_EXPHTMLT || format == A_EXPHTMLTI) {
             r.Append(L' ', indent);
             r.Append(html);
         } else if (format == A_EXPHTMLB && *htmlb) {

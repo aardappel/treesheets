@@ -410,9 +410,9 @@ struct Document {
         Refresh();
     }
 
-    auto CopyEntireCells(wxString &s) {
+    auto CopyEntireCells(wxString &s, int k) {
         sys->clipboardcopy = s;
-        wxString html = selected.g->ConvertToText(selected, 0, A_EXPHTMLT, this, false);
+        wxString html = selected.g->ConvertToText(selected, 0, k == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT, this, false);
         auto htmlobj = 
         #if defined(__WXGTK__) && !wxCHECK_VERSION(3, 3, 0)
             new wxCustomDataObject(wxDF_HTML);
@@ -423,12 +423,12 @@ struct Document {
         return htmlobj;
     }
 
-    void Copy(int mode) {
+    void Copy(int k) {
         Cell *c = selected.GetCell();
         sys->clipboardcopy = wxEmptyString;
         
-        switch(mode) {
-            case DRAGANDDROP: {
+        switch(k) {
+            case A_DRAGANDDROP: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
@@ -441,7 +441,7 @@ struct Document {
                     wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
-                        auto htmlobj = CopyEntireCells(s);
+                        auto htmlobj = CopyEntireCells(s, A_COPY);
                         dragdata.Add(htmlobj);
                     }
                 }
@@ -449,7 +449,7 @@ struct Document {
                 dragsource.DoDragDrop(true);
                 break;
             }
-            case CLIPBOARD_CONTINUOUS_TEXT: {
+            case A_COPYCT: {
                 sys->cellclipboard = nullptr;
                 wxDataObjectComposite *clipboardtextdata = new wxDataObjectComposite();
                 wxString s = "";
@@ -462,7 +462,8 @@ struct Document {
                 }
                 break;
             }
-            case CLIPBOARD:
+            case A_COPY:
+            case A_COPYWI:
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 if (c && !c->text.t && c->text.image) {
@@ -479,7 +480,7 @@ struct Document {
                     wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
                     clipboarddata->Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
-                        auto htmlobj = CopyEntireCells(s);
+                        auto htmlobj = CopyEntireCells(s, k);
                         clipboarddata->Add(htmlobj);
                     }
                     if (wxTheClipboard->Open()) {
@@ -1405,12 +1406,13 @@ struct Document {
 
             case A_CUT:
             case A_COPY:
+            case A_COPYWI:
             case A_COPYCT:
                 if (selected.Thin()) return NoThin();
                 if (selected.TextEdit()) {
                     if (selected.cursor == selected.cursorend) return _(L"No text selected.");
                 }
-                Copy(k == A_COPYCT ? CLIPBOARD_CONTINUOUS_TEXT : CLIPBOARD);
+                Copy(k);
                 if (k == A_CUT) {
                     if (!selected.TextEdit()) {
                         selected.g->cell->AddUndo(this);
