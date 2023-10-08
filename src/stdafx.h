@@ -66,6 +66,7 @@
 
 #include <wx/stdpaths.h>
 #include <wx/mstream.h>
+#include <wx/base64.h>
 
 WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 

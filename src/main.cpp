@@ -62,6 +62,7 @@ enum {
     A_EXPIMAGE,
     A_EXPXML,
     A_EXPHTMLT,
+    A_EXPHTMLTI,
     A_EXPHTMLO,
     A_EXPHTMLB,
     A_EXPTEXT,
@@ -249,9 +250,11 @@ enum {
     A_THINSELC,
     A_COPYCT,
     A_COPYBM,
+    A_COPYWI,
     A_MINISIZE,
     A_CUSTKEY,
     A_AUTOEXPORT,
+    A_DRAGANDDROP,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     A_SCRIPT = 2000,  // and all values from here on
@@ -265,8 +268,6 @@ enum {
     STYLE_UNDERLINE = 8,
     STYLE_STRIKETHRU = 16
 };
-
-enum { DRAGANDDROP, CLIPBOARD, CLIPBOARD_CONTINUOUS_TEXT };
 
 static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'I', {wxBITMAP_TYPE_PNG, "image/png"} },
