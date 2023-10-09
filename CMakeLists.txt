@@ -71,7 +71,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 OPTION(WITH_CLANG_TIDY "Run clang-tidy linter" OFF)
 if (WITH_CLANG_TIDY)
-set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
+    set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 endif()
 
 add_executable(
@@ -79,24 +79,20 @@ add_executable(
     src/main.cpp
 )
 
-if (TREESHEETS_WITH_STATIC_WXWIDGETS)
-    target_link_libraries(
-        treesheets
+target_link_libraries(
+    treesheets
+    PRIVATE
+    $<IF:$<BOOL:${TREESHEETS_WITH_STATIC_WXWIDGETS}>,
         wx::aui
         wx::adv
         wx::core
         wx::xml
-        wx::net
-        lobster-impl
-    )
-else()
-    target_link_libraries(
-        treesheets
-        PRIVATE
+        wx::net,
         ${wxWidgets_LIBRARIES}
-        lobster-impl
-    )
-endif()
+    >
+    lobster-impl
+)
+
 if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_DOCDIR})
