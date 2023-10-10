@@ -919,7 +919,12 @@ struct Document {
                     } else {  // prevent Ctrl+H from being treated as Backspace
                         break;
                     }
-                case WXK_RETURN: return Action(dc, shift ? A_ENTERGRID : A_ENTERCELL);
+                case WXK_RETURN: 
+                    if (!ctrl) {
+                        return Action(dc, shift ? A_ENTERGRID : A_ENTERCELL);
+                    } else { // prevent Ctrl+M from being treated as Return
+                        break;
+                    }
                 case WXK_ESCAPE:  // docs say it can be used as a menu accelerator, but it does not
                                   // trigger from there?
                     return Action(dc, A_CANCELEDIT);
@@ -1433,6 +1438,13 @@ struct Document {
                     wxTheClipboard->Close();
                     return _(L"Bitmap copied to clipboard");
                 }
+                return nullptr;
+
+            case A_MERGE:
+                if (selected.xs == 1 && selected.ys == 1) return nullptr;
+                Action(dc, A_COPYCT);
+                Action(dc, A_DELETE);
+                Action(dc, A_PASTE);
                 return nullptr;
 
             case A_SELALL:

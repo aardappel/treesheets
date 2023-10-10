@@ -388,6 +388,7 @@ struct MyFrame : wxFrame {
             MyAppend(editmenu, A_PASTE, _(L"&Paste\tCTRL+v"));
             MyAppend(editmenu, A_PASTESTYLE, _(L"Paste Style Only\tCTRL+SHIFT+v"),
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
+            MyAppend(editmenu, A_MERGE, _(L"&Merge Text only\tCTRL+m"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_UNDO, _(L"&Undo\tCTRL+z"), _(L"revert the changes, one step at a time"));
             MyAppend(editmenu, A_REDO, _(L"&Redo\tCTRL+y"),

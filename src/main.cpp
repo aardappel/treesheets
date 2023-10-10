@@ -50,6 +50,7 @@ enum {
     A_COPY,
     A_PASTE,
     A_NEWGRID,
+    A_MERGE,
     A_UNDO,
     A_ABOUT,
     A_RUN,
