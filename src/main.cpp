@@ -49,6 +49,7 @@ enum {
     A_CUT,
     A_COPY,
     A_PASTE,
+    A_COLLAPSE,
     A_NEWGRID,
     A_UNDO,
     A_ABOUT,
