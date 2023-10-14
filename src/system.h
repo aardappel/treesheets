@@ -577,7 +577,9 @@ struct System {
     }
 
     int AddImageToList(double sc, vector<uint8_t> &&idv, char iti) {
-        auto hash = FNV1A64(idv);
+        int max = 4096;
+        auto subvector = vector<uint8_t>(idv.begin(), idv.begin() + min(idv.size(), max));
+        auto hash = FNV1A64(subvector);
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
