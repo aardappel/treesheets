@@ -1084,12 +1084,7 @@ struct MyFrame : wxFrame {
     }
 
     void ReFocus() {
-        #ifdef __WXGTK__
-        if (wxWindow::HasFocus())
-        #endif
-        {
-            if (GetCurTab()) GetCurTab()->SetFocus();
-        }
+        if (GetCurTab()) GetCurTab()->SetFocus();
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
@@ -1110,6 +1105,9 @@ struct MyFrame : wxFrame {
     void OnActivate(wxActivateEvent &ae) {
         // This causes warnings in the debug log, but without it keyboard entry upon window select
         // doesn't work.
+        #ifdef __WXGTK__
+        if (HasFocus())
+        #endif
         ReFocus();
     }
 
