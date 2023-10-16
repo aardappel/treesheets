@@ -1105,9 +1105,6 @@ struct MyFrame : wxFrame {
     void OnActivate(wxActivateEvent &ae) {
         // This causes warnings in the debug log, but without it keyboard entry upon window select
         // doesn't work.
-        #ifdef __WXGTK__
-        if (HasFocus())
-        #endif
         ReFocus();
     }
 
