@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-05 19:07-0300\n"
+"POT-Creation-Date: 2023-10-22 21:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,7 +48,7 @@ msgstr ""
 msgid "&Copy\tCTRL+c"
 msgstr ""
 
-msgid "&Copy as Bitmap\tCTRL+ALT+c"
+msgid "&Copy as Bitmap"
 msgstr ""
 
 msgid "&Data\tCTRL+ALT+d"
@@ -369,6 +369,9 @@ msgstr ""
 msgid "Clear search"
 msgstr ""
 
+msgid "Collapse Ce&lls\tCTRL+l"
+msgstr ""
+
 msgid "Column width decreased."
 msgstr ""
 
@@ -387,6 +390,9 @@ msgid "Copy (CTRL+c)"
 msgstr ""
 
 msgid "Copy As Continuous Text"
+msgstr ""
+
+msgid "Copy with &Images\tCTRL+ALT+c"
 msgstr ""
 
 msgid "Corrupt PNG header."
@@ -716,6 +722,9 @@ msgid "Minimize on close"
 msgstr ""
 
 msgid "Minimize to tray"
+msgstr ""
+
+msgid "More than one cell must be selected."
 msgstr ""
 
 msgid "Move Cells Down\tCTRL+DOWN"
@@ -1161,6 +1170,9 @@ msgid "The Free Form Hierarchical Information Organizer"
 msgstr ""
 
 msgid "The browser could not open at least one link."
+msgstr ""
+
+msgid "There is no content to collapse."
 msgstr ""
 
 msgid "This operation doesn't work on thin selections."

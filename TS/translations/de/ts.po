@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-17 18:34+0200\n"
+"POT-Creation-Date: 2023-10-22 21:32+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -52,8 +52,8 @@ msgstr "&Text mit Kommata als Trennzeichen (CSV)..."
 msgid "&Copy\tCTRL+c"
 msgstr "&Kopieren\tCTRL+c"
 
-msgid "&Copy as Bitmap\tCTRL+ALT+c"
-msgstr "Als &Bild kopieren\tCTRL+ALT+d"
+msgid "&Copy as Bitmap"
+msgstr "Als &Bild kopieren"
 
 msgid "&Data\tCTRL+ALT+d"
 msgstr "&Daten\tCTRL+ALT+d"
@@ -217,9 +217,11 @@ msgstr "&XML..."
 msgid "1:1 scale restored."
 msgstr "1:1-Skalierung wurde wiederhergestellt."
 
+msgid "<unnamed>"
+msgstr "<unbenannt>"
+
 msgid "A temporary autosave file exists, would you like to load it instead?"
-msgstr ""
-"Eine temporäre Speicherkopie existiert. Möchten Sie diese stattdessen laden?"
+msgstr "Eine temporäre Speicherkopie existiert. Möchten Sie diese stattdessen laden?"
 
 msgid "Add Image"
 msgstr "Bild hinzufügen"
@@ -385,6 +387,9 @@ msgstr "Textkasten (Ersetzen) leeren"
 msgid "Clear search"
 msgstr "Textkasten (Suche) leeren"
 
+msgid "Collapse Ce&lls\tCTRL+l"
+msgstr "Ze&llen zusammenlegen\tCTRL+l"
+
 msgid "Column width decreased."
 msgstr "Spaltenbreite wurde verkleinert."
 
@@ -407,6 +412,9 @@ msgstr "Kopieren (STRG+c)"
 
 msgid "Copy As Continuous Text"
 msgstr "Als durchgängigen Text kopieren"
+
+msgid "Copy with &Images\tCTRL+ALT+c"
+msgstr "Mit &Bildern kopieren\tCTRL+ALT+d"
 
 msgid "Corrupt PNG header."
 msgstr "Beschädigter PNG-Header!"
@@ -632,7 +640,6 @@ msgstr "Konflikt bei der Dateiänderung!"
 msgid "File of newer version."
 msgstr "Datei weist einen neueren Versionsstand auf."
 
-#, fuzzy
 msgid "Filter"
 msgstr "Filter..."
 
@@ -769,6 +776,9 @@ msgstr "Beim Schließen minimieren"
 
 msgid "Minimize to tray"
 msgstr "In das Benachrichtungsfeld minimieren"
+
+msgid "More than one cell must be selected."
+msgstr "Es muss mehr als eine Zelle ausgewählt werden."
 
 msgid "Move Cells Down\tCTRL+DOWN"
 msgstr "Zellen nach unten verschieben\tCTRL+DOWN"
@@ -1051,7 +1061,7 @@ msgstr "Bild als PNG speichern (Standard)"
 msgid ""
 "Save image(s) to disk. Multiple images will be saved with a counter appended "
 "to each file name."
-msgstr "Bild(er) auf Datenträgern speichern. Mehrere Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt"
+msgstr "Bild(er) auf Datenträgern speichern. Mehrere Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt."
 
 msgid "Save the image in the TreeSheets file in JPEG format"
 msgstr "Das Bild in der TreeSheets-Datei im JPEG-Format abspeichern"
@@ -1093,8 +1103,8 @@ msgstr "Suche "
 msgid "Select &Parent\tESC"
 msgstr "&Übergeordnetes Element auswählen\tESC"
 
-msgid "Select &all in current grid\tCTRL+a"
-msgstr "&Alles in der aktuellen Tabelle auswählen\tCTRL+a"
+msgid "Select &all in current grid/cell\tCTRL+a"
+msgstr "&Alles in dem aktuellem Raster/der aktuellen Zelle auswählen\tCTRL+a"
 
 msgid "Select First &Child\tSHIFT+ENTER"
 msgstr "Erstes untergeordnetes Element auswählen\tSHIFT+ENTER"
@@ -1226,6 +1236,9 @@ msgstr "Der formfreie hierarchische Informationsorganisator"
 
 msgid "The browser could not open at least one link."
 msgstr "Der Browser konnte mindestens einen Link nicht öffnen."
+
+msgid "There is no content to collapse."
+msgstr "Es gibt keinen Inhalt zum Zusammenlegen."
 
 msgid "This operation doesn't work on thin selections."
 msgstr "Dieser Vorgang funktioniert nicht auf dünner Auswahl."
