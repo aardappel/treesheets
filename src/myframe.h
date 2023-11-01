@@ -210,6 +210,7 @@ struct MyFrame : wxFrame {
         filemenu->AppendSubMenu(recentmenu, _(L"&Recent files"));
         MyAppend(filemenu, A_SAVE, _(L"&Save\tCTRL+s"));
         MyAppend(filemenu, A_SAVEAS, _(L"Save &As..."));
+        MyAppend(filemenu, A_SAVEALL, _(L"Save All"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _(L"Page Setup..."));
         MyAppend(filemenu, A_PRINTSCALE, _(L"Set Print Scale..."));
