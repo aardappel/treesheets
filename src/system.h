@@ -435,6 +435,13 @@ struct System {
         }
     }
 
+    void SaveAll() {
+        loop(i, frame->nb->GetPageCount()) {
+            frame->GetCurTab()->doc->Save(false);
+            frame->CycleTabs(1);
+        }
+    }
+
     const wxChar *Import(int k) {
         wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);

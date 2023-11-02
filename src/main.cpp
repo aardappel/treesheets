@@ -46,6 +46,7 @@ enum {
     A_CLOSE,
     A_SAVE,
     A_SAVEAS,
+    A_SAVEALL,
     A_CUT,
     A_COPY,
     A_PASTE,
