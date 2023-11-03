@@ -102,7 +102,7 @@ msgid "&Insert New Grid\tCTRL+g"
 msgstr "&Insérer nouvelle grille\tCTRL+g"
 
 msgid "&Insert New Grid\tINS"
-msgstr "&Insérer nouvelle grille"
+msgstr "&Insérer nouvelle grille\tINS"
 
 msgid "&Layout && Render Style..."
 msgstr "&Disposition et style de rendu ..."
