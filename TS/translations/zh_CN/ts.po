@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-15 18:36+0200\n"
-"PO-Revision-Date: 2019-11-29 01:05+0800\n"
-"Last-Translator: Honghao Li <im@rasphino.cn>\n"
-"Language-Team: SIMPLIFIED CHINESE <LL@li.org>\n"
-"Language: zh_CN\n"
+"POT-Creation-Date: 2023-11-02 17:08-0300\n"
+"PO-Revision-Date: 2023-11-23 14:11+0800\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=GB2312\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.2\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: zh_CN\n"
 
 #, c-format
 msgid ""
@@ -24,1356 +25,1333 @@ msgid ""
 "Would you like to discard your changes and re-load from disk?"
 msgstr ""
 "%s\n"
-"ÒÑ±»ÁíÒ»¸ö³ÌĞò/¼ÆËã»úĞŞ¸ÄÉÏ£º\n"
-"ÊÇ·ñÒª·ÅÆúËù×öµÄ¸ü¸Ä²¢´Ó´ÅÅÌÖØĞÂ¼ÓÔØ£¿"
+"å·²è¢«å¦ä¸€ä¸ªç¨‹åº/è®¡ç®—æœºä¿®æ”¹ä¸Šï¼š\n"
+"æ˜¯å¦è¦æ”¾å¼ƒæ‰€åšçš„æ›´æ”¹å¹¶ä»ç£ç›˜é‡æ–°åŠ è½½ï¼Ÿ"
 
 msgid "&About..."
-msgstr "¹ØÓÚ(&A)..."
+msgstr "å…³äº(&A)..."
 
 msgid "&Add Cell Text as Tag"
-msgstr "½«µ¥Ôª¸ñÎÄ±¾Ìí¼ÓÎª±ê¼Ç(&A)"
+msgstr "å°†å•å…ƒæ ¼æ–‡æœ¬æ·»åŠ ä¸ºæ ‡è®°(&A)"
 
 msgid "&Add Image"
-msgstr "Ìí¼ÓÍ¼Ïñ(&A)"
+msgstr "æ·»åŠ å›¾åƒ(&A)"
 
 msgid "&Browsing..."
-msgstr "ä¯ÀÀ(&B)..."
+msgstr "æµè§ˆ(&B)..."
 
 msgid "&Clear Views"
-msgstr "ÇåÎúµÄÊÓÍ¼(&C)"
+msgstr "æ¸…é™¤è§†å›¾(&C)"
 
 msgid "&Close\tCTRL+w"
-msgstr "¹Ø±Õ(&C)\tCTRL+w"
+msgstr "å…³é—­(&C)\tCTRL+w"
 
 msgid "&Comma delimited text (CSV)..."
-msgstr "¶ººÅ·Ö¸ôÎÄ±¾ (CSV)(&C)..."
+msgstr "é€—å·åˆ†éš”æ–‡æœ¬ (CSV)(&C)..."
 
 msgid "&Copy\tCTRL+c"
-msgstr "¸´ÖÆ(&C)\tCTRL+c"
+msgstr "å¤åˆ¶(&C)\tCTRL+c"
 
-#, fuzzy
+msgid "&Copy as Bitmap"
+msgstr "å¤åˆ¶ä¸ºä½å›¾(&C)"
+
 msgid "&Data\tCTRL+ALT+d"
-msgstr "Õ³Ìù(&P)\tCTRL+v"
+msgstr "æ•°æ®(&D)\tCTRL+ALT+d"
 
 msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
-msgstr "¼õĞ¡ÎÄ×Ö´óĞ¡ (shift Êó±ê¹öÂÖ)(&D)\tSHIFT+PGDN"
+msgstr "å‡å°æ–‡å­—å¤§å° (shift é¼ æ ‡æ»šè½®)(&D)\tSHIFT+PGDN"
 
 msgid "&Delete After\tDEL"
-msgstr "É¾³ıºó(&D)\tDEL"
+msgstr "åˆ é™¤å(&D)\tDEL"
 
 msgid "&Edit"
-msgstr "±à¼­(&E)"
+msgstr "ç¼–è¾‘(&E)"
 
 msgid "&Exit\tCTRL+q"
-msgstr "ÍË³ö(&E)\tCTRL+q"
+msgstr "é€€å‡º(&E)\tCTRL+q"
 
 msgid "&File"
-msgstr "ÎÄ¼ş(&F)"
+msgstr "æ–‡ä»¶(&F)"
 
 msgid "&Flatten"
-msgstr "±âÆ½»¯(&F)"
+msgstr "æ‰å¹³åŒ–(&F)"
 
 msgid "&Go To Next Search Result\tF3"
-msgstr "×ªµ½ÏÂÒ»¸öËÑË÷½á¹û(&G)\tF3"
+msgstr "è½¬åˆ°ä¸‹ä¸€ä¸ªæœç´¢ç»“æœ(&G)\tF3"
 
 msgid "&Grid Reorganization..."
-msgstr "Íø¸ñÖØ×é(&G)..."
+msgstr "ç½‘æ ¼é‡ç»„(&G)..."
 
 msgid "&HTML (Tables+Styling)..."
-msgstr "HTML (±í¸ñ+ÑùÊ½)(&H)..."
+msgstr "HTML (è¡¨æ ¼+æ ·å¼)(&H)..."
 
 msgid "&Help"
-msgstr "°ïÖú(&H)"
+msgstr "å¸®åŠ©(&H)"
 
 msgid "&Hierarchify"
-msgstr "²ã´Î½á¹¹(&H)"
+msgstr "å±‚æ¬¡ç»“æ„(&H)"
 
-#, fuzzy
 msgid "&Horizontal View\tCTRL+ALT+."
-msgstr "Ë®Æ½ÊÓÍ¼(&H)"
+msgstr "æ°´å¹³è§†å›¾(&H)\tCTRL+ALT+."
 
 msgid "&Image..."
-msgstr "Í¼Ïñ(&I)..."
+msgstr "å›¾åƒ(&I)..."
 
 msgid "&Images..."
-msgstr "Í¼Ïñ(&I)..."
+msgstr "å›¾åƒ(&I)..."
 
 msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
-msgstr "Ôö¼ÓÎÄ×Ö´óĞ¡ (shift Êó±ê¹öÂÖ)(&I)\tSHIFT+PGUP"
+msgstr "å¢åŠ æ–‡å­—å¤§å° (shift é¼ æ ‡æ»šè½®)(&I)\tSHIFT+PGUP"
 
 msgid "&Insert New Grid\tCTRL+g"
-msgstr "²åÈëĞÂÍø¸ñ(&I)\tCTRL+g"
+msgstr "æ’å…¥æ–°ç½‘æ ¼(&I)\tCTRL+g"
 
 msgid "&Insert New Grid\tINS"
-msgstr "²åÈëĞÂÍø¸ñ(&I)\tINS"
+msgstr "æ’å…¥æ–°ç½‘æ ¼(&I)\tINS"
 
 msgid "&Layout && Render Style..."
-msgstr "²¼¾ÖäÖÈ¾ÑùÊ½(&L)..."
+msgstr "å¸ƒå±€æ¸²æŸ“æ ·å¼(&L)..."
 
 msgid "&Mark as"
-msgstr "±ê¼ÇÎª(&M)"
+msgstr "æ ‡è®°ä¸º(&M)"
 
 msgid "&New\tCTRL+n"
-msgstr "ĞÂ½¨(&N)\tCTRL+n"
+msgstr "æ–°å»º(&N)\tCTRL+n"
 
 msgid "&Open...\tCTRL+o"
-msgstr "´ò¿ª(&O)...\tCTRL+o"
+msgstr "æ‰“å¼€(&O)...\tCTRL+o"
 
-#, fuzzy
 msgid "&Operation\tCTRL+ALT+o"
-msgstr "´ò¿ª(&O)...\tCTRL+o"
+msgstr "æ“ä½œ(&O)...\tCTRL+o"
 
 msgid "&Options"
-msgstr "Ñ¡Ïî(&O)"
+msgstr "é€‰é¡¹(&O)"
 
 msgid "&Paste\tCTRL+v"
-msgstr "Õ³Ìù(&P)\tCTRL+v"
+msgstr "ç²˜è´´(&P)\tCTRL+v"
 
 msgid "&Print...\tCTRL+p"
-msgstr "´òÓ¡(&P)...\tCTRL+p"
+msgstr "æ‰“å°(&P)...\tCTRL+p"
 
 msgid "&Program"
-msgstr "³ÌĞò(&P)"
+msgstr "ç¨‹åº(&P)"
 
 msgid "&Recent files"
-msgstr "×î½üµÄÎÄ¼ş(&R)"
+msgstr "æœ€è¿‘çš„æ–‡ä»¶(&R)"
 
 msgid "&Redo\tCTRL+y"
-msgstr "ÖØ×ö(&R)\tCTRL+y"
+msgstr "é‡åš(&R)\tCTRL+y"
 
 msgid "&Remove Cell Text from Tags"
-msgstr "´Ó±êÇ©ÖĞÉ¾³ıµ¥Ôª¸ñÎÄ±¾(&R)"
+msgstr "ä»æ ‡ç­¾ä¸­åˆ é™¤å•å…ƒæ ¼æ–‡æœ¬(&R)"
 
 msgid "&Remove Image(s)"
-msgstr "É¾³ıÍ¼Ïñ(&R)"
+msgstr "åˆ é™¤å›¾åƒ(&R)"
 
-#, fuzzy
-msgid "&Replace in Current Selection\tCTRL+k"
-msgstr "ÔÚµ±Ç°Ñ¡ÔñÖĞÌæ»»(&R)\tCTRL+h"
+msgid "&Replace\tCTRL+h"
+msgstr "æ›¿æ¢(&R)\tCTRL+h"
 
 msgid "&Reset Scale (display only)"
-msgstr ""
+msgstr "é‡ç½®ç¼©æ”¾(ä»…æ˜¾ç¤º)(&R)"
 
-#, fuzzy
 msgid "&Reset text sizes\tCTRL+SHIFT+s"
-msgstr "ÖØÖÃÎÄ±¾´óĞ¡(&R)\tSHIFT+CTRL+s"
+msgstr "é‡ç½®æ–‡æœ¬å¤§å°(&R)\tCTRL+SHIFT+s"
 
-#, fuzzy
 msgid "&Reset text styles\tCTRL+SHIFT+r"
-msgstr "ÖØÖÃÎÄ±¾ÑùÊ½(&R)\tSHIFT+CTRL+r"
+msgstr "é‡ç½®æ–‡æœ¬æ ·å¼(&R)\tCTRL+SHIFT+r"
 
 msgid "&Roundness of grid borders..."
-msgstr "Íø¸ñ±ß½çµÄÔ²¶È(&R)..."
+msgstr "ç½‘æ ¼è¾¹ç•Œçš„åœ†åº¦(&R)..."
 
-#, fuzzy
 msgid "&Run\tCTRL+ALT+F5"
-msgstr "È«²¿Õ¹¿ª\tCTRL+ALT+F10"
+msgstr "è¿è¡Œ(&R)\tCTRL+ALT+F10"
 
 msgid "&Save\tCTRL+s"
-msgstr "±£´æ(&S)\tCTRL+s"
+msgstr "ä¿å­˜(&S)\tCTRL+s"
 
-#, fuzzy
 msgid "&Scale Image (display only)"
-msgstr "Ëõ·ÅÍ¼Ïñ(&S)"
+msgstr "ç¼©æ”¾å›¾åƒ(ä»…æ˜¾ç¤º)(&S)"
 
 msgid "&Scale Image (re-sample pixels, by %)"
-msgstr ""
+msgstr "ç¼©æ”¾å›¾åƒ(æŒ‰%é‡æ–°é‡‡æ ·åƒç´ )(&S)"
 
 msgid "&Scale Image (re-sample pixels, by width)"
-msgstr ""
+msgstr "ç¼©æ”¾å›¾åƒ(æŒ‰å®½åº¦é‡æ–°é‡‡æ ·åƒç´ )(&S)"
 
 msgid "&Search"
-msgstr "ËÑË÷(&S)"
+msgstr "æœç´¢(&S)"
 
 msgid "&Search\tCTRL+f"
-msgstr "ËÑË÷(&S)\tCTRL+f"
+msgstr "æœç´¢(&S)\tCTRL+f"
 
 msgid "&Selection..."
-msgstr "Ñ¡Ôñ...(&S)"
+msgstr "é€‰æ‹©...(&S)"
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "½«µ¥Ôª¸ñÎÄ±¾ÉèÖÃÎª±ê¼Ç (Ê¹ÓÃ CTRL+RMB)(&S)"
+msgstr "å°†å•å…ƒæ ¼æ–‡æœ¬è®¾ç½®ä¸ºæ ‡è®° (ä½¿ç”¨ CTRL+RMB)(&S)"
 
 msgid "&Set Custom Color From Cell BG"
-msgstr "´Óµ¥Ôª¸ñ bg ÉèÖÃ×Ô¶¨ÒåÑÕÉ«(&S)"
+msgstr "è®¾ç½®å•å…ƒæ ¼èƒŒæ™¯è‰²(&S)"
 
-#, fuzzy
 msgid "&Shrink text of all sub-grids\tCTRL+SHIFT+m"
-msgstr "ÊÕËõËùÓĞ×ÓÍø¸ñµÄÎÄ±¾(&S)\tSHIFT+CTRL+m"
+msgstr "æ”¶ç¼©æ‰€æœ‰å­ç½‘æ ¼çš„æ–‡æœ¬(&S)\tSHIFT+CTRL+m"
 
-#, fuzzy
 msgid "&Transpose\tCTRL+SHIFT+t"
-msgstr "ÒÆÎ»(&T)\tSHIFT+CTRL+t"
+msgstr "è½¬ç½®(&T)\tSHIFT+CTRL+t"
 
 msgid "&Undo\tCTRL+z"
-msgstr "³·Ïû(&U)\tCTRL+z"
+msgstr "æ’¤æ¶ˆ(&U)\tCTRL+z"
 
-#, fuzzy
 msgid "&Vertical View\tCTRL+ALT+,"
-msgstr "´¹Ö±ÊÓÍ¼(&V)"
+msgstr "å‚ç›´è§†å›¾(&V)\tCTRL+ALT+,"
 
 msgid "&View"
-msgstr "ÊÓÍ¼(&V)"
+msgstr "è§†å›¾(&V)"
 
 msgid "&Wrap in new parent\tF9"
-msgstr "°ü×°ÔÚĞÂµÄ¸¸ÏîÖĞ(&W)\tF9"
+msgstr "åŒ…è£…åœ¨æ–°çš„çˆ¶é¡¹ä¸­(&W)\tF9"
 
 msgid "&XML..."
 msgstr "XML...(&X)"
 
 msgid "1:1 scale restored."
-msgstr "ÒÑ»Ö¸´ 1:1 ±ÈÀı¡£"
+msgstr "å·²æ¢å¤ 1:1 æ¯”ä¾‹ã€‚"
+
+msgid "<unnamed>"
+msgstr ",<æœªå‘½å>"
 
 msgid "A temporary autosave file exists, would you like to load it instead?"
-msgstr "´æÔÚÁÙÊ±×Ô¶¯±£´æÎÄ¼ş£¬ÊÇ·ñÒª¸ÄÎª¼ÓÔØ¸ÃÎÄ¼ş£¿"
+msgstr "å­˜åœ¨ä¸´æ—¶è‡ªåŠ¨ä¿å­˜æ–‡ä»¶ï¼Œæ˜¯å¦è¦æ”¹ä¸ºåŠ è½½è¯¥æ–‡ä»¶ï¼Ÿ"
 
 msgid "Add Image"
-msgstr "Ìí¼ÓÍ¼Ïñ"
+msgstr "æ·»åŠ å›¾åƒ"
 
 msgid "Adds a grid to the selected cell"
-msgstr "½«Íø¸ñÌí¼Óµ½Ñ¡¶¨µÄµ¥Ôª¸ñ"
+msgstr "å°†ç½‘æ ¼æ·»åŠ åˆ°é€‰å®šçš„å•å…ƒæ ¼"
 
 msgid "Adds an image to the selected cell"
-msgstr "½«Í¼ÏñÌí¼Óµ½Ñ¡¶¨µÄµ¥Ôª¸ñ"
+msgstr "å°†å›¾åƒæ·»åŠ åˆ°é€‰å®šçš„å•å…ƒæ ¼"
 
 msgid "Apply last border color\tSHIFT+ALT+b"
-msgstr ""
+msgstr "åº”ç”¨ä¸Šæ¬¡è¾¹æ¡†é¢œè‰²\tSHIFT+ALT+b"
 
-#, fuzzy
 msgid "Apply last cell color\tSHIFT+ALT+c"
-msgstr "ÖØÖÃÑÕÉ«(&C)\tSHIFT+CTRL+c"
+msgstr "åº”ç”¨ä¸Šæ¬¡å•å…ƒæ ¼é¢œè‰²\tSHIFT+ALT+c"
 
-#, fuzzy
 msgid "Apply last text color\tSHIFT+ALT+t"
-msgstr "ÖØÖÃÑÕÉ«(&C)\tSHIFT+CTRL+c"
+msgstr "åº”ç”¨ä¸Šæ¬¡æ–‡å­—é¢œè‰²\tSHIFT+ALT+t"
 
 msgid "At least one file could not be opened."
-msgstr ""
+msgstr "è‡³å°‘æœ‰ä¸€ä¸ªæ–‡ä»¶æ— æ³•æ‰“å¼€ã€‚"
 
 msgid "Auto reload documents"
-msgstr "×Ô¶¯ÖØĞÂ¼ÓÔØÎÄµµ"
+msgstr "è‡ªåŠ¨é‡æ–°åŠ è½½æ–‡æ¡£"
 
 msgid "Automatically export a .html on every save"
-msgstr "Ã¿´Î±£´æÊ±×Ô¶¯µ¼³ö .html"
+msgstr "æ¯æ¬¡ä¿å­˜æ—¶è‡ªåŠ¨å¯¼å‡º .html"
 
 msgid "Autosave load"
-msgstr "×Ô¶¯±£´æ¸ºÔØ"
+msgstr "è‡ªåŠ¨ä¿å­˜è´Ÿè½½"
 
 msgid "Autosave to .tmp"
-msgstr "×Ô¶¯±£´æµ½ .tmp"
+msgstr "è‡ªåŠ¨ä¿å­˜åˆ° .tmp"
+
+msgid "Bitmap copied to clipboard"
+msgstr "ä½å›¾å·²å¤åˆ¶åˆ°å‰ªè´´æ¿"
 
 msgid "Black and white toolbar icons"
-msgstr "ºÚ°×¹¤¾ßÀ¸Í¼±ê"
+msgstr "é»‘ç™½å·¥å…·æ å›¾æ ‡"
 
 msgid "Border "
-msgstr "±ß¿ò "
+msgstr "è¾¹æ¡† "
 
-#, fuzzy
 msgid "Border &0\tCTRL+SHIFT+9"
-msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
+msgstr "è¾¹æ¡† &0\tCTRL+SHIFT+9"
 
-#, fuzzy
 msgid "Border &1\tCTRL+SHIFT+1"
-msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
+msgstr "è¾¹æ¡† &1\tCTRL+SHIFT+1"
 
-#, fuzzy
 msgid "Border &2\tCTRL+SHIFT+2"
-msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
+msgstr "è¾¹æ¡† &2\tCTRL+SHIFT+2"
 
-#, fuzzy
 msgid "Border &3\tCTRL+SHIFT+3"
-msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
+msgstr "è¾¹æ¡† &3\tCTRL+SHIFT+3"
 
-#, fuzzy
 msgid "Border &4\tCTRL+SHIFT+4"
-msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
+msgstr "è¾¹æ¡† &4\tCTRL+SHIFT+4"
 
-#, fuzzy
 msgid "Border &5\tCTRL+SHIFT+5"
-msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
+msgstr "è¾¹æ¡† &5\tCTRL+SHIFT+5"
 
 msgid "Bubble Style Rendering\tALT+8"
-msgstr "ÆøÅİ·ç¸ñäÖÈ¾\tALT+8"
+msgstr "æ°”æ³¡é£æ ¼æ¸²æŸ“\tALT+8"
 
-#, fuzzy
 msgid "Can only move this cell from a Nx1 or 1xN grid."
-msgstr "Ö»ÄÜ½«´Ëµ¥Ôª¸ñÒÆ¶¯µ½ nx1 »ò1xn Íø¸ñÖĞ¡£"
+msgstr "åªèƒ½ä»Nx1æˆ–1xNç½‘æ ¼ä¸­ç§»åŠ¨æ­¤å•å…ƒæ ¼ã€‚"
 
-#, fuzzy
 msgid "Can only move this cell into a Nx1 or 1xN grid."
-msgstr "Ö»ÄÜ½«´Ëµ¥Ôª¸ñÒÆ¶¯µ½ nx1 »ò1xn Íø¸ñÖĞ¡£"
+msgstr "åªèƒ½å°†æ­¤å•å…ƒæ ¼ç§»åŠ¨åˆ°Nx1æˆ–1xNç½‘æ ¼ä¸­ã€‚"
 
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
-msgstr "ÎŞ·¨ÅÅĞò£ºÑ¡ÔñÒ»¿é 1xN ÇøÓòÒÔÖ¸Ã÷ĞèÒªÅÅĞòµÄÁĞ£¬ÒÔ¼°ÊÜÓ°ÏìµÄĞĞ"
+msgstr "æ— æ³•æ’åºï¼šé€‰æ‹©ä¸€å— 1xN åŒºåŸŸä»¥æŒ‡æ˜éœ€è¦æ’åºçš„åˆ—ï¼Œä»¥åŠå—å½±å“çš„è¡Œ"
 
 msgid "Cancel"
-msgstr "È¡Ïû"
+msgstr "å–æ¶ˆ"
 
 msgid "Cancel text edits\tESC"
-msgstr "È¡ÏûÎÄ±¾±à¼­\tESC"
+msgstr "å–æ¶ˆæ–‡æœ¬ç¼–è¾‘\tESC"
 
 msgid "Cannot decompress file."
-msgstr "ÎŞ·¨½âÑ¹ËõÎÄ¼ş¡£"
+msgstr "æ— æ³•è§£å‹ç¼©æ–‡ä»¶ã€‚"
 
 msgid "Cannot drag & drop more than 1 file."
-msgstr "ÎŞ·¨ÍÏ·Å³¬¹ı 1 ¸öÎÄ¼ş¡£"
+msgstr "æ— æ³•æ‹–æ”¾è¶…è¿‡ 1 ä¸ªæ–‡ä»¶ã€‚"
 
 msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
 "or use Flatten)."
-msgstr "ÎŞ·¨µ¼³ö²»Æ½Ì¹µÄÍø¸ñ (½«ÊÓÍ¼Ëõ·Åµ½ËùĞèµÄÍø¸ñ£¬»òÊ¹ÓÃ \"Æ½Õ¹\")¡£"
+msgstr "æ— æ³•å¯¼å‡ºä¸å¹³å¦çš„ç½‘æ ¼ (å°†è§†å›¾ç¼©æ”¾åˆ°æ‰€éœ€çš„ç½‘æ ¼ï¼Œæˆ–ä½¿ç”¨ \"å¹³å±•\")ã€‚"
 
 msgid "Cannot move this cell up in the hierarchy."
-msgstr "ÎŞ·¨ÔÚ²ã´Î½á¹¹ÖĞÏòÉÏÒÆ¶¯´Ëµ¥Ôª¸ñ¡£"
+msgstr "æ— æ³•åœ¨å±‚æ¬¡ç»“æ„ä¸­å‘ä¸Šç§»åŠ¨æ­¤å•å…ƒæ ¼ã€‚"
 
 msgid "Cannot open file."
-msgstr "ÎŞ·¨´ò¿ªÎÄ¼ş¡£"
-
-msgid "Cannot tell/seek document?"
-msgstr "ÎŞ·¨ÕÒµ½ÎÄ¼ş£¿"
+msgstr "æ— æ³•æ‰“å¼€æ–‡ä»¶ã€‚"
 
 msgid "Case-sensitive search"
-msgstr ""
+msgstr "åŒºåˆ†å¤§å°å†™çš„æœç´¢"
 
 msgid "Cell "
-msgstr "µ¥Ôª¸ñ "
+msgstr "å•å…ƒæ ¼ "
 
 msgid "Change a key binding..."
-msgstr "¸ü¸ÄÃÜÔ¿°ó¶¨..."
+msgstr "æ›´æ”¹ç»‘å®šæŒ‰é”®..."
 
 msgid ""
 "Change the image size if it is too big or too small, by changing the size "
 "shown on screen. Applies to all uses of this image."
 msgstr ""
+"å¦‚æœå›¾åƒå¤ªå¤§æˆ–å¤ªå°ï¼Œè¯·é€šè¿‡æ›´æ”¹å±å¹•ä¸Šæ˜¾ç¤ºçš„å¤§å°æ¥æ›´æ”¹å›¾åƒå¤§å°ã€‚ ç¦æ­¢ä½¿ç”¨æ­¤å›¾"
+"åƒã€‚"
 
-#, fuzzy
 msgid ""
 "Change the image size if it is too big, by reducing the amount of pixels"
-msgstr "Èç¹ûÍ¼ÏñÌ«´ó»òÌ«Ğ¡£¬Çë¸ü¸ÄÍ¼Ïñ´óĞ¡"
+msgstr "å¦‚æœå›¾åƒå¤ªå¤§ï¼Œè¯·é€šè¿‡å‡å°‘åƒç´ æ•°é‡æ¥æ›´æ”¹å›¾åƒå¤§å°"
 
 msgid ""
 "Change the scale to match DPI of the current display. Applies to all uses of "
 "this image."
-msgstr ""
+msgstr "æ›´æ”¹æ¯”ä¾‹ä»¥åŒ¹é…å½“å‰æ˜¾ç¤ºçš„DPIã€‚ ç¦æ­¢ä½¿ç”¨æ­¤å›¾åƒã€‚"
 
 msgid "Changes have been made, are you sure you wish to continue?"
-msgstr "ÒÑ½øĞĞ¸ü¸Ä£¬ÄúÈ·¶¨Òª¼ÌĞøÂğ£¿"
+msgstr "å·²è¿›è¡Œæ›´æ”¹ï¼Œæ‚¨ç¡®å®šè¦ç»§ç»­å—ï¼Ÿ"
 
 msgid "Choose CSV file to write"
-msgstr "Ñ¡ÔñÒªĞ´ÈëµÄ CSV ÎÄ¼ş"
+msgstr "é€‰æ‹©è¦å†™å…¥çš„ CSV æ–‡ä»¶"
 
 msgid "Choose HTML file to write"
-msgstr "Ñ¡ÔñÒªĞ´ÈëµÄ HTML ÎÄ¼ş"
+msgstr "é€‰æ‹©è¦å†™å…¥çš„ HTML æ–‡ä»¶"
 
 msgid "Choose PNG file to write"
-msgstr "Ñ¡ÔñÒªĞ´ÈëµÄ PNG ÎÄ¼ş"
+msgstr "é€‰æ‹©è¦å†™å…¥çš„ PNG æ–‡ä»¶"
 
 msgid "Choose Text file to write"
-msgstr "Ñ¡ÔñÒªĞ´ÈëµÄÎÄ±¾ÎÄ¼ş"
+msgstr "é€‰æ‹©è¦å†™å…¥çš„æ–‡æœ¬æ–‡ä»¶"
 
 msgid "Choose TreeSheets file to save:"
-msgstr "Ñ¡Ôñ¡°Ê÷±í¸ñ¡±ÎÄ¼şÒÔ±£´æ£º"
+msgstr "é€‰æ‹© TreeSheets  æ–‡ä»¶ä»¥ä¿å­˜ï¼š"
 
 msgid "Choose XML file to write"
-msgstr "Ñ¡ÔñÒª±àĞ´µÄ XML ÎÄ¼ş"
+msgstr "é€‰æ‹©è¦ç¼–å†™çš„ XML æ–‡ä»¶"
 
-#, fuzzy
 msgid "Choose image file to save:"
-msgstr "Ñ¡Ôñ¡°Ê÷±í¸ñ¡±ÎÄ¼şÒÔ±£´æ£º"
+msgstr "é€‰æ‹©å›¾åƒæ–‡ä»¶ä»¥ä¿å­˜ï¼š"
 
 msgid "Clear replace"
-msgstr ""
+msgstr "æ¸…é™¤æ›¿æ¢"
 
-#, fuzzy
 msgid "Clear search"
-msgstr "²»ËÑË÷¡£"
+msgstr "æ¸…é™¤æœç´¢"
+
+msgid "Collapse Ce&lls\tCTRL+l"
+msgstr "æŠ˜å å•å…ƒæ ¼(&L)\tCTRL+l"
 
 msgid "Column width decreased."
-msgstr "ÁĞ¿í¶ÈÒÑ¼õĞ¡¡£"
+msgstr "åˆ—å®½åº¦å·²å‡å°ã€‚"
 
 msgid "Column width increased."
-msgstr "ÁĞ¿í¶ÈÒÑÔö¼Ó¡£"
+msgstr "åˆ—å®½åº¦å·²å¢åŠ ã€‚"
 
 msgid "Comma delimited text (CSV)..."
-msgstr "¶ººÅ·Ö¸ôÎÄ±¾ (CSV)..."
+msgstr "é€—å·åˆ†éš”æ–‡æœ¬ (CSV)..."
 
 msgid ""
 "Convert an NxN grid with repeating elements per column into an 1xN grid with "
 "hierarchy, useful to convert data from spreadsheets"
 msgstr ""
-"½«Ã¿ÁĞÖØ¸´ÔªËØµÄ NxN Íø¸ñ×ª»»Îª¾ßÓĞ²ã´Î½á¹¹µÄ 1xN Íø¸ñ£¬¿ÉÓÃÓÚ´Óµç×Ó±í¸ñÖĞ×ª"
-"»»Êı¾İ"
+"å°†æ¯åˆ—é‡å¤å…ƒç´ çš„ NxN ç½‘æ ¼è½¬æ¢ä¸ºå…·æœ‰å±‚æ¬¡ç»“æ„çš„ 1xN ç½‘æ ¼ï¼Œå¯ç”¨äºä»ç”µå­è¡¨æ ¼ä¸­è½¬"
+"æ¢æ•°æ®"
 
 msgid "Copy (CTRL+c)"
-msgstr "¸´ÖÆ (CTRL+c)"
+msgstr "å¤åˆ¶ (CTRL+c)"
 
 msgid "Copy As Continuous Text"
-msgstr "¸´ÖÆÎªÁ¬ĞøÎÄ±¾"
+msgstr "å¤åˆ¶ä¸ºè¿ç»­æ–‡æœ¬"
 
-msgid "Copy Image to clipboard"
-msgstr ""
-
-#, fuzzy
-msgid "Copy the image in the selected cell to the clipboard"
-msgstr "½«Í¼ÏñÌí¼Óµ½Ñ¡¶¨µÄµ¥Ôª¸ñ"
+msgid "Copy with &Images\tCTRL+ALT+c"
+msgstr "å¸¦å›¾åƒå¤åˆ¶(&I)\tCTRL+ALT+c"
 
 msgid "Corrupt PNG header."
-msgstr "Ëğ»µµÄ PNG ±êÍ·¡£"
+msgstr "æŸåçš„ PNG æ ‡å¤´ã€‚"
 
 msgid "Corrupt block header."
-msgstr "Ëğ»µµÄ¿é±êÍ·¡£"
-
-msgid "Could not load file because of a corrupted embedded JPEG file"
-msgstr ""
-
-msgid "Could not load file because of an embedded image file of unknown type"
-msgstr ""
+msgstr "æŸåçš„å—æ ‡å¤´ã€‚"
 
 msgid "Create .bak files"
-msgstr "´´½¨ .bak ÎÄ¼ş"
+msgstr "åˆ›å»º .bak æ–‡ä»¶"
 
 msgid "Creates a new level of hierarchy around the current selection"
-msgstr "Î§ÈÆµ±Ç°ËùÑ¡ÄÚÈİ´´½¨ĞÂ¼¶±ğµÄ²ã´Î½á¹¹"
+msgstr "å›´ç»•å½“å‰æ‰€é€‰å†…å®¹åˆ›å»ºæ–°çº§åˆ«çš„å±‚æ¬¡ç»“æ„"
 
 msgid "Cu&t\tCTRL+x"
-msgstr "¼ôÇĞ(&T)\tCTRL+x"
+msgstr "å‰ªåˆ‡(&T)\tCTRL+x"
 
 msgid "Cursor Left\tLEFT"
-msgstr "¹â±ê×ó²à\tLEFT"
+msgstr "å…‰æ ‡å·¦ä¾§\tLEFT"
 
 msgid "Cursor Right\tRIGHT"
-msgstr "¹â±êÓÒ²à\tRIGHT"
+msgstr "å…‰æ ‡å³ä¾§\tRIGHT"
+
+msgid "Date range filter"
+msgstr "æ—¥æœŸèŒƒå›´ç­›é€‰"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
-msgstr "¼õĞ¡ÁĞ¿í¶È (alt Êó±ê¹öÂÖ)\tALT+PGDN"
+msgstr "å‡å°åˆ—å®½åº¦ (alt é¼ æ ‡æ»šè½®)\tALT+PGDN"
 
 msgid "Decrease column width (no sub grids)\tCTRL+ALT+PGDN"
-msgstr "¼õĞ¡ÁĞ¿í¶È (ÎŞ×ÓÍø¸ñ)\tCTRL+ALT+PGDN"
+msgstr "å‡å°åˆ—å®½åº¦ (æ— å­ç½‘æ ¼)\tCTRL+ALT+PGDN"
 
 msgid "Delete Before\tBACK"
-msgstr "·µ»ØÇ°É¾³ı"
+msgstr "è¿”å›å‰åˆ é™¤"
 
-#, fuzzy
 msgid "Delete Word After\tCTRL+DEL"
-msgstr "É¾³ıºó(&D)\tDEL"
+msgstr "åˆ é™¤åé¢çš„å•è¯\tCTRL+DEL"
 
-#, fuzzy
 msgid "Delete Word Before\tCTRL+BACK"
-msgstr "·µ»ØÇ°É¾³ı"
+msgstr "åˆ é™¤ä¹‹å‰çš„å•è¯\tCTRL+BACK"
 
 msgid ""
 "Deletes the column of cells after the selected grid line, or the row below"
-msgstr "É¾³ıÑ¡¶¨Íø¸ñÏßÖ®ºóµÄµ¥Ôª¸ñÁĞ£¬»òÉ¾³ıÏÂÃæµÄĞĞ"
+msgstr "åˆ é™¤é€‰å®šç½‘æ ¼çº¿ä¹‹åçš„å•å…ƒæ ¼åˆ—ï¼Œæˆ–åˆ é™¤ä¸‹é¢çš„è¡Œ"
 
 msgid ""
 "Deletes the column of cells before the selected grid line, or the row above"
-msgstr "É¾³ıÑ¡¶¨Íø¸ñÏßÖ®Ç°µÄµ¥Ôª¸ñÁĞ£¬»òÉÏÃæµÄĞĞ"
+msgstr "åˆ é™¤é€‰å®šç½‘æ ¼çº¿ä¹‹å‰çš„å•å…ƒæ ¼åˆ—ï¼Œæˆ–ä¸Šé¢çš„è¡Œ"
 
 msgid "Deletes the entire word after the cursor"
-msgstr ""
+msgstr "åœ¨å…‰æ ‡ååˆ é™¤æ•´ä¸ªå•è¯"
 
 msgid "Deletes the entire word before the cursor"
-msgstr ""
+msgstr "å°†å…‰æ ‡å‰çš„æ•´ä¸ªå•è¯åˆ é™¤"
 
 msgid "Discard Changes"
-msgstr "·ÅÆú¸ü¸Ä"
+msgstr "æ”¾å¼ƒæ›´æ”¹"
 
 #, c-format
 msgid "Edited %s"
-msgstr "ÒÑĞŞ¸Ä %s"
+msgstr "å·²ä¿®æ”¹ %s"
 
-msgid "Empty strings cannot be tags."
-msgstr "¿Õ×Ö·û´®²»ÄÜÊÇ±ê¼Ç¡£"
+msgid "End date"
+msgstr "ç»“æŸæ—¥æœŸ"
 
 msgid "End of line of text\tEND"
-msgstr "ÎÄ±¾ĞĞµÄ½áÎ²\tEND"
+msgstr "æ–‡æœ¬è¡Œçš„ç»“å°¾\tEND"
 
 msgid "End of text\tCTRL+END"
-msgstr "ÎÄ±¾µÄ½áÎ²\tCTRL+END"
+msgstr "æ–‡æœ¬çš„ç»“å°¾\tCTRL+END"
 
 msgid "Enter/exit text edit mode\tENTER"
-msgstr "ÊäÈë/ÍË³öÎÄ±¾±à¼­Ä£Ê½\tENTER"
+msgstr "è¾“å…¥/é€€å‡ºæ–‡æœ¬ç¼–è¾‘æ¨¡å¼\tENTER"
 
 msgid "Enter/exit text edit mode\tF2"
-msgstr "ÊäÈë/ÍË³öÎÄ±¾±à¼­Ä£Ê½\tF2"
+msgstr "è¾“å…¥/é€€å‡ºæ–‡æœ¬ç¼–è¾‘æ¨¡å¼\tF2"
 
-#, fuzzy
 msgid "Enter/exit text edit to the right\tALT+ENTER"
-msgstr "ÊäÈë/ÍË³öÎÄ±¾±à¼­Ä£Ê½\tENTER"
+msgstr "åœ¨å³ä¾§è¾“å…¥/é€€å‡ºæ–‡æœ¬ç¼–è¾‘\tENTER"
 
 msgid "Error exporting file!"
-msgstr "µ¼³öÎÄ¼şÊ±³ö´í£¡"
+msgstr "å¯¼å‡ºæ–‡ä»¶æ—¶å‡ºé”™ï¼"
 
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr "¼ÓÔØºËĞÄÊı¾İÎÄ¼şÊ±³ö´í (Ê÷±í¸ñ°²×°²»ÕıÈ·£¿)"
+msgstr "åŠ è½½æ ¸å¿ƒæ•°æ®æ–‡ä»¶æ—¶å‡ºé”™ (æ ‘è¡¨æ ¼å®‰è£…ä¸æ­£ç¡®ï¼Ÿ)"
 
 msgid "Error writing PNG file!"
-msgstr "Ğ´Èë PNG ÎÄ¼şÊ±³ö´í£¡"
+msgstr "å†™å…¥ PNG æ–‡ä»¶æ—¶å‡ºé”™ï¼"
 
 msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr "Ğ´ÈëÊ÷±í¸ñÎÄ¼şÊ±³ö´í!(³¢ÊÔÔÚĞÂÎÄ¼şÃûÏÂ±£´æ)¡£"
+msgstr "å†™å…¥æ ‘è¡¨æ ¼æ–‡ä»¶æ—¶å‡ºé”™!(å°è¯•åœ¨æ–°æ–‡ä»¶åä¸‹ä¿å­˜)ã€‚"
 
-#, fuzzy
 msgid "Error writing image file! (try saving under new filename)."
-msgstr "Ğ´ÈëÊ÷±í¸ñÎÄ¼şÊ±³ö´í!(³¢ÊÔÔÚĞÂÎÄ¼şÃûÏÂ±£´æ)¡£"
+msgstr "å†™å…¥å›¾åƒæ–‡ä»¶æ—¶å‡ºé”™ï¼ (å°è¯•åœ¨æ–°æ–‡ä»¶åä¸‹ä¿å­˜ï¼‰ã€‚"
 
 msgid "Error writing to file!"
-msgstr "Ğ´ÈëÎÄ¼şÊ±³ö´í£¡"
+msgstr "å†™å…¥æ–‡ä»¶æ—¶å‡ºé”™ï¼"
 
 msgid "Error writing to file."
-msgstr "Ğ´ÈëÎÄ¼şÊ±³ö´í¡£"
+msgstr "å†™å…¥æ–‡ä»¶æ—¶å‡ºé”™ã€‚"
 
 msgid "Evaluation finished."
-msgstr "ÆÀ¹ÀÍê³É¡£"
+msgstr "è¯„ä¼°å®Œæˆã€‚"
 
 msgid "Export &view as"
-msgstr "µ¼³öÊÓÍ¼Îª(&V)"
+msgstr "å¯¼å‡ºè§†å›¾ä¸º(&V)"
 
 msgid "Export cancelled."
-msgstr "µ¼³öÒÑÈ¡Ïû¡£"
+msgstr "å¯¼å‡ºå·²å–æ¶ˆã€‚"
 
 msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
 "works on grids with no sub-grids (use the Flatten operation first if need be)"
 msgstr ""
-"½«µ±Ç°ÊÓÍ¼µ¼³öÎª CSV¡£ÊÊÓÃÓÚµç×Ó±í¸ñºÍÊı¾İ¿â¡£½öÊÊÓÃÓÚÃ»ÓĞ×ÓÍø¸ñµÄÍø¸ñ£¨ÈçÓĞ"
-"ĞèÒª£¬ÇëÊ×ÏÈÊ¹ÓÃ flatten ²Ù×÷£©"
+"å°†å½“å‰è§†å›¾å¯¼å‡ºä¸º CSVã€‚é€‚ç”¨äºç”µå­è¡¨æ ¼å’Œæ•°æ®åº“ã€‚ä»…é€‚ç”¨äºæ²¡æœ‰å­ç½‘æ ¼çš„ç½‘æ ¼ï¼ˆå¦‚æœ‰"
+"éœ€è¦ï¼Œè¯·é¦–å…ˆä½¿ç”¨ flatten æ“ä½œï¼‰"
 
-#, fuzzy
 msgid "Export the current view as HTML as nested bullet points."
-msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎªÇ¶Ì×±êÍ·µÄ HTML£¬ÊÊºÏµ¼Èëµ½ Word µÄ´ó¸ÙÄ£Ê½ÖĞ"
+msgstr "ä»¥åµŒå¥—è¦ç‚¹çš„å½¢å¼å°†å½“å‰è§†å›¾å¯¼å‡ºä¸º HTMLã€‚"
 
 msgid ""
 "Export the current view as HTML as nested headers, suitable for importing "
 "into Word's outline mode"
-msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎªÇ¶Ì×±êÍ·µÄ HTML£¬ÊÊºÏµ¼Èëµ½ Word µÄ´ó¸ÙÄ£Ê½ÖĞ"
+msgstr "å°†å½“å‰è§†å›¾å¯¼å‡ºä¸ºåµŒå¥—æ ‡å¤´çš„ HTMLï¼Œé€‚åˆå¯¼å…¥åˆ° Word çš„å¤§çº²æ¨¡å¼ä¸­"
 
 msgid ""
 "Export the current view as HTML using nested tables, that will look somewhat "
 "like the TreeSheet"
-msgstr "Ê¹ÓÃÇ¶Ì×±í½«µ±Ç°ÊÓÍ¼µ¼³öÎª HTML£¬Õâ¿´ÆğÀ´ÓĞµãÏñÊ÷±í"
+msgstr "ä½¿ç”¨åµŒå¥—è¡¨å°†å½“å‰è§†å›¾å¯¼å‡ºä¸º HTMLï¼Œè¿™çœ‹èµ·æ¥æœ‰ç‚¹åƒæ ‘è¡¨"
 
 msgid ""
 "Export the current view as XML (which can also be reimported without losing "
 "structure)"
-msgstr "½«µ±Ç°ÊÓÍ¼µ¼³öÎª XML (Ò²¿ÉÒÔÔÚ²»¶ªÊ§½á¹¹µÄÇé¿öÏÂÖØĞÂµ¼Èë)"
+msgstr "å°†å½“å‰è§†å›¾å¯¼å‡ºä¸º XML (ä¹Ÿå¯ä»¥åœ¨ä¸ä¸¢å¤±ç»“æ„çš„æƒ…å†µä¸‹é‡æ–°å¯¼å…¥)"
 
-#, fuzzy
 msgid ""
 "Export the current view as an image. Useful for faithful renderings of the "
 "TreeSheet, and programs that don't accept any of the above options"
 msgstr ""
-"½«µ±Ç°ÊÓÍ¼µ¼³öÎªÍ¼Ïñ¡£ÊÊÓÃÓÚÊ÷±íµÄÍêÕûäÖÈ¾£¬ÒÔ¼°²»½ÓÊÜÉÏÊöÈÎºÎÑ¡ÏîµÄ³ÌĞò"
+"å°†å½“å‰è§†å›¾å¯¼å‡ºä¸ºå›¾åƒã€‚å¯¹äºå¿ å®å‘ˆç° TreeSheet å’Œä¸æ¥å—ä¸Šè¿°ä»»ä½•é€‰é¡¹çš„ç¨‹åºéå¸¸æœ‰"
+"ç”¨"
 
 msgid ""
 "Export the current view as tree structured text, using spaces for each "
 "indentation level. Suitable for importing into mindmanagers and general text "
 "programs"
 msgstr ""
-"½«µ±Ç°ÊÓÍ¼µ¼³öÎªÊ÷½á¹¹»¯ÎÄ±¾£¬¶ÔÃ¿¸öËõ½ø¼¶±ğÊ¹ÓÃ¿Õ¸ñ¡£ÊÊÓÃÓÚµ¼ÈëË¼Î¬¹ÜÀíÈËÔ±"
-"ºÍÒ»°ãÎÄ±¾³ÌĞò"
+"å°†å½“å‰è§†å›¾å¯¼å‡ºä¸ºæ ‘ç»“æ„åŒ–æ–‡æœ¬ï¼Œå¯¹æ¯ä¸ªç¼©è¿›çº§åˆ«ä½¿ç”¨ç©ºæ ¼ã€‚é€‚ç”¨äºå¯¼å…¥ "
+"mindmanagers å’Œä¸€èˆ¬æ–‡æœ¬ç¨‹åº"
 
 msgid "Extend Selection Down\tSHIFT+DOWN"
-msgstr "ÏòÏÂÀ©Õ¹ËùÑ¡ÄÚÈİ\tSHIFT+DOWN"
+msgstr "å‘ä¸‹æ‰©å±•æ‰€é€‰å†…å®¹\tSHIFT+DOWN"
 
 msgid "Extend Selection Full Columns"
-msgstr "À©Õ¹ËùÑ¡ÄÚÈİµÄÍêÕûÁĞ"
+msgstr "æ‰©å±•æ‰€é€‰å†…å®¹çš„å®Œæ•´åˆ—"
 
 msgid "Extend Selection Full Rows"
-msgstr "À©Õ¹ËùÑ¡ÄÚÈİµÄÍêÕûĞĞ"
+msgstr "æ‰©å±•æ‰€é€‰å†…å®¹çš„å®Œæ•´è¡Œ"
 
 msgid "Extend Selection Left\tSHIFT+LEFT"
-msgstr "Ïò×óÀ©Õ¹ËùÑ¡ÄÚÈİ\tSHIFT+LEFT"
+msgstr "å‘å·¦æ‰©å±•æ‰€é€‰å†…å®¹\tSHIFT+LEFT"
 
 msgid "Extend Selection Right\tSHIFT+RIGHT"
-msgstr "À©Õ¹Ñ¡ÔñÈ¨ÏŞ\tSHIFT+RIGHT"
+msgstr "æ‰©å±•é€‰æ‹©æƒé™\tSHIFT+RIGHT"
 
 msgid "Extend Selection Up\tSHIFT+UP"
-msgstr "ÏòÉÏÀ©Õ¹Ñ¡Ôñ\tSHIFT+UP"
+msgstr "å‘ä¸Šæ‰©å±•é€‰æ‹©\tSHIFT+UP"
 
-#, fuzzy
 msgid "Extend Selection Word Left\tCTRL+SHIFT+LEFT"
-msgstr "Ïò×óÀ©Õ¹Ñ¡Ôñ´Ê\tSHIFT+CTRL+LEFT"
+msgstr "å‘å·¦æ‰©å±•é€‰æ‹©å•è¯\tSHIFT+CTRL+LEFT"
 
-#, fuzzy
 msgid "Extend Selection Word Right\tCTRL+SHIFT+RIGHT"
-msgstr "ÏòÓÒÀ©Õ¹Ñ¡Ôñ´Ê\tSHIFT+CTRL+RIGHT"
+msgstr "å‘å³æ‰©å±•æ‰€é€‰å•è¯\tSHIFT+CTRL+RIGHT"
 
 msgid "Extend Selection to End\tSHIFT+END"
-msgstr "½«ËùÑ¡ÄÚÈİÀ©Õ¹µ½½áÊø\tSHIFT+END"
+msgstr "å°†æ‰€é€‰å†…å®¹æ‰©å±•åˆ°ç»“æŸ\tSHIFT+END"
 
 msgid "Extend Selection to Start\tSHIFT+HOME"
-msgstr "½«ËùÑ¡ÄÚÈİÀ©Õ¹µ½ \"¿ªÊ¼\"\tSHIFT+HOME"
+msgstr "å°†æ‰€é€‰å†…å®¹æ‰©å±•åˆ°å¼€å§‹\tSHIFT+HOME"
 
 msgid "Faster line rendering"
-msgstr "¸ü¿ìµÄÏßäÖÈ¾"
+msgstr "æ›´å¿«çš„çº¿æ¸²æŸ“"
 
 msgid "File Tabs on the bottom"
-msgstr "µ×²¿µÄÎÄ¼şÑ¡Ïî¿¨"
+msgstr "åº•éƒ¨çš„æ–‡ä»¶é€‰é¡¹å¡"
 
 msgid "File corrupted!"
-msgstr "ÎÄ¼şÒÑËğ»µ£¡"
+msgstr "æ–‡ä»¶å·²æŸåï¼"
 
 msgid "File exported successfully."
-msgstr "ÎÄ¼şÒÑ³É¹¦µ¼³ö¡£"
+msgstr "æ–‡ä»¶å·²æˆåŠŸå¯¼å‡ºã€‚"
 
 msgid ""
 "File has been re-loaded because of modifications of another program / "
 "computer"
-msgstr "ÓÉÓÚÁíÒ»¸ö³ÌĞò/¼ÆËã»úµÄĞŞ¸Ä£¬ÎÄ¼şÒÑÖØĞÂ¼ÓÔØ"
+msgstr "ç”±äºå¦ä¸€ä¸ªç¨‹åº/è®¡ç®—æœºçš„ä¿®æ”¹ï¼Œæ–‡ä»¶å·²é‡æ–°åŠ è½½"
 
 msgid "File load error."
-msgstr "ÎÄ¼ş¼ÓÔØ´íÎó¡£"
+msgstr "æ–‡ä»¶åŠ è½½é”™è¯¯ã€‚"
 
 msgid "File modification conflict!"
-msgstr "ÎÄ¼şĞŞ¸Ä³åÍ»£¡"
+msgstr "æ–‡ä»¶ä¿®æ”¹å†²çªï¼"
 
 msgid "File of newer version."
-msgstr "½ÏĞÂ°æ±¾µÄÎÄ¼ş¡£"
+msgstr "è¾ƒæ–°ç‰ˆæœ¬çš„æ–‡ä»¶ã€‚"
+
+msgid "Filter"
+msgstr "ç­›é€‰"
 
 msgid "Filter by the same cell color"
-msgstr ""
+msgstr "æŒ‰ç›¸åŒçš„å•å…ƒæ ¼é¢œè‰²ç­›é€‰"
 
 msgid "Filter..."
-msgstr "ÂË²¨Æ÷..."
+msgstr "ç­›é€‰..."
 
 msgid "Fold All\tCTRL+SHIFT+F10"
-msgstr "ÕÛµşÈ«²¿\tCTRL+SHIFT+F10"
+msgstr "æŠ˜å å…¨éƒ¨\tCTRL+SHIFT+F10"
 
 msgid "Folds the grid of the selected cell(s) recursively"
-msgstr "µİ¹éÕÛµşÑ¡¶¨µ¥Ôª¸ñµÄÍø¸ñ"
+msgstr "é€’å½’æŠ˜å é€‰å®šå•å…ƒæ ¼çš„ç½‘æ ¼"
 
-msgid "Go To &Matching Cell\tF6"
-msgstr "×ªµ½Æ¥Åäµ¥Ôª¸ñ(&M)\tF6"
+msgid "Found an image type that is not defined in this program."
+msgstr "å‘ç°ä¸€ä¸ªæœªåœ¨æœ¬ç¨‹åºä¸­å®šä¹‰çš„å›¾åƒç±»å‹ã€‚"
 
-msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
-msgstr "×ªµ½Æ¥Åäµ¥Ôª¸ñ (·´Ïò)\tSHIFT+F6"
+msgid "Go To &Matching Cell (Text)\tF6"
+msgstr "è½¬åˆ°åŒ¹é…å•å…ƒæ ¼(æ–‡å­—)\tF6"
 
-#, fuzzy
+msgid "Go To Matching Cell (Image)\tF7"
+msgstr "è½¬åˆ°åŒ¹é…å•å…ƒæ ¼(å›¾åƒ)\tF7"
+
+msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
+msgstr "è½¬åˆ°åŒ¹é…å•å…ƒæ ¼ (å›¾åƒ,åå‘)\tSHIFT+F7"
+
+msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
+msgstr "è½¬åˆ°åŒ¹é…å•å…ƒæ ¼ (æ–‡å­—,åå‘)\tSHIFT+F6"
+
 msgid "Go to Next Search Result"
-msgstr "×ªµ½ÏÂÒ»¸öËÑË÷½á¹û(&G)\tF3"
+msgstr "è½¬åˆ°ä¸‹ä¸€ä¸ªæœç´¢ç»“æœ"
 
 msgid "Go to next filter match\tSHIFT+F3"
-msgstr ""
+msgstr "è½¬åˆ°ä¸‹ä¸ªç­›é€‰åŒ¹é…\tSHIFT+F3"
 
 msgid "Grid Style Rendering\tALT+7"
-msgstr "Íø¸ñÑùÊ½äÖÈ¾\tALT+7"
+msgstr "ç½‘æ ¼æ ·å¼æ¸²æŸ“\tALT+7"
 
-#, fuzzy
 msgid "HTML (&Bullet points)..."
-msgstr "HTML (&O)..."
+msgstr "HTML è¦ç‚¹(&B)..."
 
 msgid "HTML (&Outline)..."
-msgstr "HTML (&O)..."
+msgstr "HTML å¤§çº²(&O)..."
 
 msgid "Hierarchy &Swap\tF8"
-msgstr "²ã´Î½á¹¹½»»»(&S)\tF8"
+msgstr "å±‚æ¬¡ç»“æ„äº¤æ¢(&S)\tF8"
 
 msgid ""
 "Hold CTRL while pressing right mouse button to quickly set a tag for the "
 "current cell using a popup menu"
-msgstr "°´×¡ CTRL ¼ü£¬Í¬Ê±Ê¹ÓÃµ¯³ö²Ëµ¥¿ìËÙÉèÖÃµ±Ç°µ¥Ôª¸ñµÄ±ê¼Ç"
+msgstr "æŒ‰ä½ CTRL é”®ï¼ŒåŒæ—¶ä½¿ç”¨å¼¹å‡ºèœå•å¿«é€Ÿè®¾ç½®å½“å‰å•å…ƒæ ¼çš„æ ‡è®°"
 
 msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
-msgstr "¾ßÓĞÆøÅİÑùÊ½äÖÈ¾µÄË®Æ½²¼¾Ö\tALT+5"
+msgstr "æ°´å¹³å¸ƒå±€:æ°”æ³¡\tALT+5"
 
 msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
-msgstr "¾ßÓĞÍø¸ñÑùÊ½äÖÈ¾µÄË®Æ½²¼¾Ö\tALT+4"
+msgstr "æ°´å¹³å¸ƒå±€:ç½‘æ ¼\tALT+4"
 
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
-msgstr "¾ßÓĞÏßÌõÑùÊ½äÖÈ¾µÄË®Æ½²¼¾Ö\tALT+6"
+msgstr "æ°´å¹³å¸ƒå±€:çº¿æ¡\tALT+6"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
-msgstr "Ò»¸öÒ³ÃæÓ¦¸ÃÓĞ¶àÉÙÏñËØ¿í£¿(0 Îª×Ô¶¯ÅäºÏ)"
+msgstr "ä¸€ä¸ªé¡µé¢åº”è¯¥æœ‰å¤šå°‘åƒç´ å®½ï¼Ÿ(0 ä¸ºè‡ªåŠ¨é…åˆ)"
 
 msgid "Image "
-msgstr "Í¼Ïñ "
+msgstr "å›¾åƒ "
 
 msgid "Image Resize"
-msgstr "Í¼Ïñµ÷Õû´óĞ¡"
-
-msgid "Image copied to clipboard"
-msgstr ""
+msgstr "å›¾åƒè°ƒæ•´å¤§å°"
 
 msgid "Import file from"
-msgstr "´Óµ¼ÈëÎÄ¼ş"
+msgstr "å¯¼å…¥æ–‡ä»¶"
 
 msgid "Increase column width (ALT+mousewheel)\tALT+PGUP"
-msgstr "Ôö¼ÓÁĞ¿í¶È (alt Êó±ê¹öÂÖ)\tALT+PGUP"
+msgstr "å¢åŠ åˆ—å®½åº¦ (alt é¼ æ ‡æ»šè½®)\tALT+PGUP"
 
 msgid "Increase column width (no sub grids)\tCTRL+ALT+PGUP"
-msgstr "Ôö¼ÓÁĞ¿í¶È (ÎŞ×ÓÍø¸ñ)\tCTRL+ALT+PGUP"
+msgstr "å¢åŠ åˆ—å®½åº¦ (æ— å­ç½‘æ ¼)\tCTRL+ALT+PGUP"
 
 msgid "Indented &Text..."
-msgstr "ÎÄ±¾Ëõ½ø(&T)..."
+msgstr "æ–‡æœ¬ç¼©è¿›(&T)..."
 
 msgid "Indented text..."
-msgstr "ÎÄ±¾Ëõ½ø..."
+msgstr "æ–‡æœ¬ç¼©è¿›..."
 
 msgid "Initialization Error"
-msgstr "³õÊ¼»¯´íÎó"
+msgstr "åˆå§‹åŒ–é”™è¯¯"
 
 msgid "Internal error: unimplemented operation!"
-msgstr "ÄÚ²¿´íÎó£ºÎ´ÊµÏÖµÄ²Ù×÷£¡"
+msgstr "å†…éƒ¨é”™è¯¯ï¼šæœªå®ç°çš„æ“ä½œï¼"
+
+msgid "JPEG file is corrupted!"
+msgstr "JPEG æ–‡ä»¶å·²æŸåï¼"
 
 msgid "Key binding"
-msgstr "¼ü°ó¶¨"
+msgstr "é”®ç»‘å®š"
 
 msgid "Keybinding cancelled."
-msgstr "È¡ÏûÁË°ó¶¨¡£"
+msgstr "å–æ¶ˆäº†ç»‘å®šã€‚"
 
 msgid "Line Style Rendering\tALT+9"
-msgstr "ÏßÌõÑùÊ½äÖÈ¾\tALT+9"
+msgstr "çº¿æ¡æ ·å¼æ¸²æŸ“\tALT+9"
 
 msgid "Load interactive &tutorial...\tF1"
-msgstr "¼ÓÔØ½»»¥Ê½½Ì³Ì(&T)...\tF1"
+msgstr "åŠ è½½äº¤äº’å¼æ•™ç¨‹(&T)...\tF1"
 
 msgid "Load operation reference...\tCTRL+ALT+F1"
-msgstr ""
+msgstr "åŠ è½½æ“ä½œå‚è€ƒ...\tCTRL+ALT+F1"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "¼ÓÔØ%s (%d µ¥Ôª¸ñ£¬%d ×Ö·û)¡£"
+msgstr "åŠ è½½ %sï¼ˆ%d ä¸ªå•å…ƒæ ¼ï¼Œ%d ä¸ªå­—ç¬¦ï¼‰åœ¨ %d æ¯«ç§’å†…ã€‚"
 
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
 "affect"
-msgstr "Ñ¡¶¨Ò»¿é 1xN ÇøÓòÒÔÖ¸Ã÷Òª¶ÔÄÄÒ»ÁĞ½øĞĞÅÅĞò£¬ÒÔ¼°ÄÄĞ©ĞĞÊÜÓ°Ïì"
+msgstr "é€‰å®šä¸€å— 1xN åŒºåŸŸä»¥æŒ‡æ˜è¦å¯¹å“ªä¸€åˆ—è¿›è¡Œæ’åºï¼Œä»¥åŠå“ªäº›è¡Œå—å½±å“"
 
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
-msgstr "Ê¹²ã´Î½á¹¹²¼¾Ö¸ü´¹Ö± (Ä¬ÈÏ) »ò¸üË®Æ½"
+msgstr "ä½¿å±‚æ¬¡ç»“æ„å¸ƒå±€æ›´å‚ç›´ (é»˜è®¤) æˆ–æ›´æ°´å¹³"
 
 msgid "Maximum number of launches reached."
-msgstr ""
+msgstr "å·²è¾¾åˆ°æœ€å¤§å¯åŠ¨æ¬¡æ•°ã€‚"
 
 msgid "Minimize on close"
-msgstr "¹Ø±ÕÊ±×îĞ¡»¯"
+msgstr "å…³é—­æ—¶æœ€å°åŒ–"
 
 msgid "Minimize to tray"
-msgstr "×îĞ¡»¯µ½ÍĞÅÌ"
+msgstr "æœ€å°åŒ–åˆ°æ‰˜ç›˜"
+
+msgid "More than one cell must be selected."
+msgstr "å¿…é¡»é€‰æ‹©å¤šä¸ªå•å…ƒæ ¼ã€‚"
 
 msgid "Move Cells Down\tCTRL+DOWN"
-msgstr "ÏòÏÂÒÆ¶¯µ¥Ôª¸ñ\tCTRL+DOWN"
+msgstr "å‘ä¸‹ç§»åŠ¨å•å…ƒæ ¼\tCTRL+DOWN"
 
 msgid "Move Cells Left\tCTRL+LEFT"
-msgstr "Ïò×óÒÆ¶¯µ¥Ôª¸ñ\tCTRL+LEFT"
+msgstr "å‘å·¦ç§»åŠ¨å•å…ƒæ ¼\tCTRL+LEFT"
 
 msgid "Move Cells Right\tCTRL+RIGHT"
-msgstr "ÏòÓÒÒÆ¶¯µ¥Ôª¸ñ\tCTRL+RIGHT"
+msgstr "å‘å³ç§»åŠ¨å•å…ƒæ ¼\tCTRL+RIGHT"
 
 msgid "Move Cells Up\tCTRL+UP"
-msgstr "ÏòÉÏÒÆ¶¯µ¥Ôª¸ñ\tCTRL+UP"
+msgstr "å‘ä¸Šç§»åŠ¨å•å…ƒæ ¼\tCTRL+UP"
 
 msgid "Move Selection Down\tDOWN"
-msgstr "ÏòÏÂÒÆ¶¯ËùÑ¡ÄÚÈİ\tDOWN"
+msgstr "å‘ä¸‹ç§»åŠ¨æ‰€é€‰å†…å®¹\tDOWN"
 
 msgid "Move Selection Left\tLEFT"
-msgstr "Ïò×óÒÆ¶¯ËùÑ¡ÄÚÈİ\tLEFT"
+msgstr "å‘å·¦ç§»åŠ¨æ‰€é€‰å†…å®¹\tLEFT"
 
 msgid "Move Selection Right\tRIGHT"
-msgstr "ÏòÓÒÒÆ¶¯Ñ¡Ôñ\tRIGHT"
+msgstr "å‘å³ç§»åŠ¨é€‰æ‹©\tRIGHT"
 
 msgid "Move Selection Up\tUP"
-msgstr "ÉÏÒÆËùÑ¡ÄÚÈİ\tUP"
+msgstr "ä¸Šç§»æ‰€é€‰å†…å®¹\tUP"
 
 msgid "Move to next cell\tTAB"
-msgstr "ÒÆ¶¯µ½ÏÂÒ»¸öµ¥Ôª¸ñ\tTAB"
+msgstr "ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªå•å…ƒæ ¼\tTAB"
 
 msgid "Move to previous cell\tSHIFT+TAB"
-msgstr "ÒÆ¶¯µ½ÉÏÒ»¸öµ¥Ôª¸ñ\tSHIFT+TAB"
+msgstr "ç§»åŠ¨åˆ°ä¸Šä¸€ä¸ªå•å…ƒæ ¼\tSHIFT+TAB"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
-msgstr "×¢£º¼ü°ó¶¨½«ÔÚÏÂÒ»´ÎÔËĞĞµÄÊ÷±íÖĞÉúĞ§¡£"
+msgstr "æ³¨ï¼šé”®ç»‘å®šå°†åœ¨ä¸‹ä¸€æ¬¡è¿è¡Œçš„æ ‘è¡¨ä¸­ç”Ÿæ•ˆã€‚"
 
 msgid "Navigate in between cells with cursor keys"
-msgstr "Ê¹ÓÃ¹â±ê¼üÔÚµ¥Ôª¸ñÖ®¼äµ¼º½"
+msgstr "ä½¿ç”¨å…‰æ ‡é”®åœ¨å•å…ƒæ ¼ä¹‹é—´å¯¼èˆª"
 
 msgid "New (CTRL+n)"
-msgstr "ĞÂ½¨ (CTRL+n)"
+msgstr "æ–°å»º (CTRL+n)"
 
 msgid "New Grid (INS)"
-msgstr "ĞÂÍø¸ñ (ins)"
+msgstr "æ–°ç½‘æ ¼ (ins)"
 
 msgid "New Sheet"
-msgstr "ĞÂ¹¤×÷±í"
+msgstr "æ–°å·¥ä½œè¡¨"
 
 msgid "New file cancelled."
-msgstr "ĞÂÎÄ¼şÒÑÈ¡Ïû¡£"
+msgstr "æ–°æ–‡ä»¶å·²å–æ¶ˆã€‚"
 
 msgid "No image in this cell."
-msgstr "´Ëµ¥Ôª¸ñÖĞÃ»ÓĞÍ¼Ïñ¡£"
+msgstr "æ­¤å•å…ƒæ ¼ä¸­æ²¡æœ‰å›¾åƒã€‚"
 
-#, fuzzy
 msgid "No matches for filter."
-msgstr "Ã»ÓĞÓÃÓÚËÑË÷µÄÆ¥ÅäÏî¡£"
+msgstr "æ²¡æœ‰åŒ¹é…çš„ç­›é€‰ã€‚"
 
 msgid "No matches for search."
-msgstr "Ã»ÓĞÓÃÓÚËÑË÷µÄÆ¥ÅäÏî¡£"
+msgstr "æ²¡æœ‰ç”¨äºæœç´¢çš„åŒ¹é…é¡¹ã€‚"
 
 msgid "No matching cell found!"
-msgstr "ÕÒ²»µ½Æ¥ÅäµÄµ¥Ôª¸ñ£¡"
+msgstr "æ‰¾ä¸åˆ°åŒ¹é…çš„å•å…ƒæ ¼ï¼"
 
 msgid "No search string."
-msgstr "Ã»ÓĞËÑË÷×Ö·û´®¡£"
+msgstr "æ²¡æœ‰æœç´¢å­—ç¬¦ä¸²ã€‚"
 
 msgid "No search."
-msgstr "²»ËÑË÷¡£"
+msgstr "ä¸æœç´¢ã€‚"
 
 msgid "No style to paste."
-msgstr "Ã»ÓĞÒªÕ³ÌùµÄÑùÊ½¡£"
+msgstr "æ²¡æœ‰è¦ç²˜è´´çš„æ ·å¼ã€‚"
 
-#, fuzzy
 msgid "No text in this cell."
-msgstr "´Ëµ¥Ôª¸ñÖĞÃ»ÓĞÍ¼Ïñ¡£"
+msgstr "æ­¤å•å…ƒæ ¼ä¸­æ²¡æœ‰æ–‡å­—ã€‚"
 
 msgid "No text selected."
-msgstr "Î´Ñ¡ÔñÎÄ±¾¡£"
+msgstr "æœªé€‰æ‹©æ–‡æœ¬ã€‚"
 
 msgid "Not a TreeSheets file."
-msgstr "²»ÊÇ \"Ê÷±í\" ÎÄ¼ş¡£"
+msgstr "ä¸æ˜¯ \"TreeSheets\" æ–‡ä»¶ã€‚"
 
 msgid "Nothing more to redo."
-msgstr "Ã»ÓĞÊ²Ã´¿ÉÖØ×öµÄÁË¡£"
+msgstr "æ²¡æœ‰ä»€ä¹ˆå¯é‡åšçš„äº†ã€‚"
 
 msgid "Nothing more to undo."
-msgstr "Ã»ÓĞ¸ü¶àµÄ³·Ïû¡£"
+msgstr "æ²¡æœ‰æ›´å¤šçš„æ’¤æ¶ˆã€‚"
 
 msgid ""
 "Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
 "normal."
-msgstr "ÏÖÔÚ²é¿´Ê÷°åÒÔÍêÈ«ÊÊºÏÆÁÄ»£¬°´ F12 ·µ»ØÕı³£×´Ì¬¡£"
+msgstr "ç°åœ¨æŸ¥çœ‹æ ‘æ¿ä»¥å®Œå…¨é€‚åˆå±å¹•ï¼ŒæŒ‰ F12 è¿”å›æ­£å¸¸çŠ¶æ€ã€‚"
 
 msgid "Open &file\tF4"
-msgstr "´ò¿ªÎÄ¼ş(&F)\tF4"
+msgstr "æ‰“å¼€æ–‡ä»¶(&F)\tF4"
 
 msgid "Open (CTRL+o)"
-msgstr "´ò¿ª (CTRL+o)"
+msgstr "æ‰“å¼€ (CTRL+o)"
 
-#, fuzzy
 msgid "Open border colors\tSHIFT+ALT+F11"
-msgstr "ÖØÖÃÑÕÉ«(&C)\tSHIFT+CTRL+c"
+msgstr "æ‰“å¼€è¾¹æ¡†é¢œè‰²\tSHIFT+ALT+F11"
 
-#, fuzzy
 msgid "Open cell colors\tSHIFT+ALT+F9"
-msgstr "ÖØÖÃÑÕÉ«(&C)\tSHIFT+CTRL+c"
+msgstr "æ‰“å¼€å•å…ƒæ ¼é¢œè‰²\tSHIFT+ALT+F9"
 
 msgid "Open file cancelled."
-msgstr "´ò¿ªÎÄ¼şÒÑÈ¡Ïû¡£"
+msgstr "æ‰“å¼€æ–‡ä»¶å·²å–æ¶ˆã€‚"
 
 msgid "Open link in &browser\tF5"
-msgstr "ÔÚä¯ÀÀÆ÷ÖĞ´ò¿ªÁ´½Ó(&B)\tF5"
+msgstr "åœ¨æµè§ˆå™¨ä¸­æ‰“å¼€é“¾æ¥(&B)\tF5"
 
-#, fuzzy
 msgid "Open text colors\tSHIFT+ALT+F10"
-msgstr "ÖØÖÃÑÕÉ«(&C)\tSHIFT+CTRL+c"
+msgstr "æ‰“å¼€æ–‡æœ¬é¢œè‰²\tSHIFT+ALT+F10"
 
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
 "URL)"
-msgstr "ÔÚä¯ÀÀÆ÷ÖĞ´ò¿ªÑ¡¶¨µ¥Ôª¸ñÖĞµÄÎÄ±¾ (¿ªÊ¼Ê±Ó¦¸ÃÊÇÓĞĞ§µÄ url)"
+msgstr "åœ¨æµè§ˆå™¨ä¸­æ‰“å¼€é€‰å®šå•å…ƒæ ¼ä¸­çš„æ–‡æœ¬ (å¼€å§‹æ—¶åº”è¯¥æ˜¯æœ‰æ•ˆçš„ url)"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
 "type"
-msgstr "ÔÚÎÄ¼şÀàĞÍµÄÄ¬ÈÏÓ¦ÓÃ³ÌĞòÖĞ´ò¿ªÑ¡¶¨µ¥Ôª¸ñÖĞµÄÎÄ±¾"
+msgstr "åœ¨æ–‡ä»¶ç±»å‹çš„é»˜è®¤åº”ç”¨ç¨‹åºä¸­æ‰“å¼€é€‰å®šå•å…ƒæ ¼ä¸­çš„æ–‡æœ¬"
 
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
 msgstr ""
-"PNG ½âÂë±¾ÎÄµµÖĞµÄÄ³Ğ©Í¼ÏñÊ±Ê§°Ü\n"
-"ËüÃÇÒÑ±»ºìÉ«·½¿éËùÈ¡´ú¡£"
+"PNG è§£ç æœ¬æ–‡æ¡£ä¸­çš„æŸäº›å›¾åƒæ—¶å¤±è´¥\n"
+"å®ƒä»¬å·²è¢«çº¢è‰²æ–¹å—æ‰€å–ä»£ã€‚"
 
 msgid "PNG decoder failure"
-msgstr "PNG ½âÂëÆ÷¹ÊÕÏ"
+msgstr "PNG è§£ç å™¨æ•…éšœ"
+
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr "PNG æ–‡ä»¶ (*.png)|*.png|JPEG æ–‡ä»¶ (*.jpg)|*.jpg|æ‰€æœ‰æ–‡ä»¶ (*.*)|*.*"
 
 msgid "Page Setup..."
-msgstr "Ò³ÃæÉèÖÃ..."
+msgstr "é¡µé¢è®¾ç½®..."
 
 msgid "Paste (CTRL+v)"
-msgstr "Õ³Ìù (CTRL+v)"
+msgstr "ç²˜è´´ (CTRL+v)"
 
 msgid "Paste Style Only\tCTRL+SHIFT+v"
-msgstr "½öÕ³ÌùÑùÊ½\tCTRL+SHIFT+v"
+msgstr "ä»…ç²˜è´´æ ·å¼\tCTRL+SHIFT+v"
 
 msgid "Pick Custom &Color..."
-msgstr "Ñ¡Ôñ×Ô¶¨ÒåÑÕÉ«(&C)..."
+msgstr "é€‰æ‹©è‡ªå®šä¹‰é¢œè‰²(&C)..."
 
 msgid "Pick Default Font..."
-msgstr "Ñ¡ÔñÄ¬ÈÏ×ÖÌå..."
+msgstr "é€‰æ‹©é»˜è®¤å­—ä½“..."
 
 msgid "Pick Document Background..."
-msgstr "Ñ¡ÔñÎÄµµ±³¾°..."
+msgstr "é€‰æ‹©æ–‡æ¡£èƒŒæ™¯..."
+
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr "è¯·å¯ç”¨ (é€‰é¡¹-> æ˜¾ç¤ºå·¥å…·æ ) ä»¥ä¾¿ç”¨äºæ›¿æ¢ã€‚"
 
 msgid "Please enable (Options -> Show Toolbar) to use search."
-msgstr "ÇëÆôÓÃ (Ñ¡Ïî-> ÏÔÊ¾¹¤¾ßÀ¸) ÒÔÊ¹ÓÃËÑË÷¡£"
+msgstr "è¯·å¯ç”¨ (é€‰é¡¹-> æ˜¾ç¤ºå·¥å…·æ ) ä»¥ä¾¿ç”¨äºæœç´¢ã€‚"
 
-#, fuzzy
 msgid "Please enter the new image width:"
-msgstr "ÇëÑ¡ÔñÍ¼ÏñÎÄ¼ş£º"
+msgstr "è¯·è¾“å…¥æ–°çš„å›¾åƒå®½åº¦ï¼š"
 
 msgid "Please enter the percentage you want the image scaled by:"
-msgstr "ÇëÊäÈëÒª°´ÒÔÏÂ·½Ê½Ëõ·ÅÍ¼ÏñµÄ°Ù·Ö±È£º"
+msgstr "è¯·è¾“å…¥è¦æŒ‰ä»¥ä¸‹æ–¹å¼ç¼©æ”¾å›¾åƒçš„ç™¾åˆ†æ¯”ï¼š"
 
 msgid "Please pick a menu item to change the key binding for"
-msgstr "ÇëÑ¡ÔñÒ»¸ö²Ëµ¥ÏîÀ´¸ü¸ÄµÄ¼ü°ó¶¨"
+msgstr "è¯·é€‰æ‹©ä¸€ä¸ªèœå•é¡¹æ¥æ›´æ”¹çš„é”®ç»‘å®š"
 
 msgid "Please select a TreeSheets file to load:"
-msgstr "ÇëÑ¡ÔñÒª¼ÓÔØµÄÊ÷±í¸ñÎÄ¼ş£º"
+msgstr "è¯·é€‰æ‹©è¦åŠ è½½çš„æ ‘è¡¨æ ¼æ–‡ä»¶ï¼š"
 
 msgid "Please select an image file:"
-msgstr "ÇëÑ¡ÔñÍ¼ÏñÎÄ¼ş£º"
+msgstr "è¯·é€‰æ‹©å›¾åƒæ–‡ä»¶ï¼š"
 
 msgid "Please select file to import:"
-msgstr "ÇëÑ¡ÔñÒªµ¼ÈëµÄÎÄ¼ş£º"
+msgstr "è¯·é€‰æ‹©è¦å¯¼å…¥çš„æ–‡ä»¶ï¼š"
+
+msgid "Please select the date range."
+msgstr "è¯·é€‰æ‹©æ—¥æœŸèŒƒå›´ã€‚"
 
 msgid "Press F11 to exit fullscreen mode."
-msgstr "°´ f11 ÍË³öÈ«ÆÁÄ£Ê½¡£"
+msgstr "æŒ‰ F11 é€€å‡ºå…¨å±æ¨¡å¼ã€‚"
 
 msgid "Print Preview"
-msgstr "´òÓ¡Ô¤ÀÀ"
+msgstr "æ‰“å°é¢„è§ˆ"
 
 msgid "Print preview..."
-msgstr "´òÓ¡Ô¤ÀÀ..."
+msgstr "æ‰“å°é¢„è§ˆ..."
 
 msgid "Radius &0"
-msgstr "°ë¾¶0(&0)"
+msgstr "åŠå¾„0(&0)"
 
 msgid "Radius &1"
-msgstr "°ë¾¶1(&1)"
+msgstr "åŠå¾„1(&1)"
 
 msgid "Radius &2"
-msgstr "°ë¾¶2(&2)"
+msgstr "åŠå¾„2(&2)"
 
 msgid "Radius &3"
-msgstr "°ë¾¶3(&3)"
+msgstr "åŠå¾„3(&3)"
 
 msgid "Radius &4"
-msgstr "°ë¾¶4(&4)"
+msgstr "åŠå¾„4(&4)"
 
 msgid "Radius &5"
-msgstr "°ë¾¶5(&5)"
+msgstr "åŠå¾„5(&5)"
 
 msgid "Radius &6"
-msgstr "°ë¾¶6(&6)"
+msgstr "åŠå¾„6(&6)"
 
-#, fuzzy
 msgid ""
 "Reloads when another computer has changed a file (if you have made changes, "
 "asks)"
-msgstr "µ±ÁíÒ»Ì¨¼ÆËã»ú¸ü¸ÄÁËÎÄ¼şÊ±ÖØĞÂ¼ÓÔØ (Èç¹ûÄú½øĞĞÁË¸ü¸Ä£¬ÇëÑ¯ÎÊ)"
+msgstr "å½“å¦ä¸€å°è®¡ç®—æœºæ›´æ”¹äº†æ–‡ä»¶æ—¶é‡æ–°åŠ è½½ï¼ˆè‹¥æ›´æ”¹ä¼šè¯¢é—®ï¼‰"
 
 msgid "Remove image(s) from the selected cells"
-msgstr "´ÓÑ¡¶¨µ¥Ôª¸ñÖĞÉ¾³ıÍ¼Ïñ"
+msgstr "ä»é€‰å®šå•å…ƒæ ¼ä¸­åˆ é™¤å›¾åƒ"
 
 msgid "Render document centered"
-msgstr "³ÊÏÖÎÄµµ¾ÓÖĞ"
+msgstr "å‘ˆç°æ–‡æ¡£å±…ä¸­"
 
 msgid "Replace "
-msgstr "È¡´ú "
+msgstr "æ›¿æ¢ "
 
 msgid "Replace &All"
-msgstr "È«²¿Ìæ»»(&A)"
+msgstr "å…¨éƒ¨æ›¿æ¢(&A)"
 
-#, fuzzy
 msgid "Replace All"
-msgstr "È«²¿Ìæ»»(&A)"
+msgstr "å…¨éƒ¨æ›¿æ¢"
 
-#, fuzzy
+msgid "Replace in Current &Selection\tCTRL+k"
+msgstr "åœ¨å½“å‰é€‰åŒºä¸­æ›¿æ¢(&R)\tCTRL+k"
+
 msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
-msgstr "Ìæ»»ÔÚµ±Ç°Ñ¡ÔñÌø×ªÏÂÒ»²½(&R)\tCTRL+j"
+msgstr "åœ¨å½“å‰é€‰åŒºä¸­æ›¿æ¢&&è·³è½¬åˆ°ä¸‹ä¸€ä¸ª(&R)\tCTRL+j"
 
-#, fuzzy
 msgid "Replace in selection"
-msgstr "ÔÚµ±Ç°Ñ¡ÔñÖĞÌæ»»(&R)\tCTRL+h"
+msgstr "åœ¨é€‰åŒºä¸­æ›¿æ¢"
 
-#, fuzzy
 msgid "Reset &colors\tCTRL+SHIFT+c"
-msgstr "ÖØÖÃÑÕÉ«(&C)\tSHIFT+CTRL+c"
+msgstr "é‡ç½®é¢œè‰²(&C)\tCTRL+SHIFT+c"
 
-#, fuzzy
 msgid "Reset column widths\tCTRL+SHIFT+w"
-msgstr "ÖØÖÃÁĞ¿í¶È\tSHIFT+CTRL+w"
+msgstr "é‡ç½®åˆ—å®½åº¦\tCTRL+SHIFT+w"
 
 msgid "Run"
-msgstr "ÔËĞĞ"
+msgstr "è¿è¡Œ"
 
 msgid "Save &As..."
-msgstr "Áí´æÎª(&A)..."
+msgstr "å¦å­˜ä¸º(&A)..."
 
 msgid "Save (CTRL+s)"
-msgstr "±£´æ (CTRL+s)"
+msgstr "ä¿å­˜ (CTRL+s)"
+
+msgid "Save All"
+msgstr "å…¨éƒ¨ä¿å­˜"
 
 msgid "Save As"
-msgstr "Áí´æÎª"
+msgstr "å¦å­˜ä¸º"
 
 msgid "Save Image(s) to disk"
-msgstr ""
+msgstr "ä¿å­˜å›¾åƒåˆ°ç£ç›˜"
 
 msgid "Save and Close"
-msgstr "±£´æ²¢¹Ø±Õ"
+msgstr "ä¿å­˜å¹¶å…³é—­"
 
 msgid "Save cancelled."
-msgstr "±£´æÒÑÈ¡Ïû¡£"
+msgstr "ä¿å­˜å·²å–æ¶ˆã€‚"
 
 msgid "Save image as JPEG"
-msgstr ""
+msgstr "ä¿å­˜å›¾åƒä¸º JPEG"
 
 msgid "Save image as PNG (default)"
-msgstr ""
+msgstr "ä¿å­˜å›¾åƒä¸º PNG(é»˜è®¤)"
 
 msgid ""
 "Save image(s) to disk. Multiple images will be saved with a counter appended "
 "to each file name."
-msgstr ""
+msgstr "å°†å›¾åƒä¿å­˜åˆ°ç£ç›˜ã€‚ å°†ä¿å­˜å¤šä¸ªå›¾åƒï¼Œå¹¶åœ¨æ¯ä¸ªæ–‡ä»¶ååé™„åŠ ä¸€ä¸ªè®¡æ•°å™¨ã€‚"
 
 msgid "Save the image in the TreeSheets file in JPEG format"
-msgstr ""
+msgstr "ä¿å­˜ JPEG æ ¼å¼çš„ TreeSheets æ–‡ä»¶ä¸­çš„å›¾åƒ"
 
 msgid "Save the image in the TreeSheets file in PNG format"
-msgstr ""
+msgstr "ä¿å­˜ PNG æ ¼å¼çš„ TreeSheets æ–‡ä»¶ä¸­çš„å›¾åƒ"
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
-msgstr ""
+msgstr "å·²æˆåŠŸä¿å­˜%sï¼ˆåœ¨%dæ¯«ç§’å†…ï¼‰ã€‚"
 
 msgid "Script"
-msgstr ""
+msgstr "è„šæœ¬(&S)"
 
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
-msgstr "ÏòÏÂ¹ö¶¯ (Êó±ê¹öÂÖ)\tALT+DOWN"
+msgstr "å‘ä¸‹æ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tALT+DOWN"
 
 msgid "Scroll Down (mousewheel)\tPGDN"
-msgstr "ÏòÏÂ¹ö¶¯ (Êó±ê¹öÂÖ)\tPGDN"
+msgstr "å‘ä¸‹æ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tPGDN"
 
 msgid "Scroll Left\tALT+LEFT"
-msgstr "Ïò×ó¹ö¶¯\tALT+LEFT"
+msgstr "å‘å·¦æ»šåŠ¨\tALT+LEFT"
 
 msgid "Scroll Right\tALT+RIGHT"
-msgstr "ÏòÓÒ¹ö¶¯\tALT+RIGHT"
+msgstr "å‘å³æ»šåŠ¨\tALT+RIGHT"
 
 msgid "Scroll Sheet..."
-msgstr "¹ö¶¯±í¸ñ..."
+msgstr "æ»šåŠ¨è¡¨æ ¼..."
 
 msgid "Scroll Up (mousewheel)\tALT+UP"
-msgstr "ÏòÉÏ¹ö¶¯ (Êó±ê¹öÂÖ)\tALT+UP"
+msgstr "å‘ä¸Šæ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tALT+UP"
 
 msgid "Scroll Up (mousewheel)\tPGUP"
-msgstr "ÏòÉÏ¹ö¶¯ (Êó±ê¹öÂÖ)\tPGUP"
+msgstr "å‘ä¸Šæ»šåŠ¨ (é¼ æ ‡æ»šè½®)\tPGUP"
 
 msgid "Search "
-msgstr "ËÑË÷ "
+msgstr "æœç´¢ "
 
 msgid "Select &Parent\tESC"
-msgstr "Ñ¡Ôñ¸¸Ïî(&P)\tESC"
+msgstr "é€‰æ‹©çˆ¶é¡¹(&P)\tESC"
 
-msgid "Select &all in current grid\tCTRL+a"
-msgstr "ÔÚµ±Ç°Íø¸ñÖĞÑ¡ÔñËùÓĞ(&A)\tCTRL+a"
+msgid "Select &all in current grid/cell\tCTRL+a"
+msgstr "åœ¨å½“å‰ç½‘æ ¼/å•å…ƒæ ¼ä¸­é€‰æ‹©æ‰€æœ‰(&A)\tCTRL+a"
 
 msgid "Select First &Child\tSHIFT+ENTER"
-msgstr "Ñ¡ÔñµÚÒ»¸ö×ÓÏî(&C)\tSHIFT+ENTER"
+msgstr "é€‰æ‹©ç¬¬ä¸€ä¸ªå­é¡¹(&C)\tSHIFT+ENTER"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr "Ñ¡¶¨µÄÍø¸ñ²»ÊÇ±í£ºµ¥Ôª¸ñ²»ÄÜÒÑ¾­ÓĞ×ÓÍø¸ñ¡£"
+msgstr "é€‰å®šçš„ç½‘æ ¼ä¸æ˜¯è¡¨ï¼šå•å…ƒæ ¼ä¸èƒ½å·²ç»æœ‰å­ç½‘æ ¼ã€‚"
 
 msgid "Semi-Colon delimited text (CSV)..."
-msgstr "°ëÃ°ºÅ·Ö¸ôÎÄ±¾ (CSV)..."
+msgstr "åŠå†’å·åˆ†éš”æ–‡æœ¬ (CSV)..."
 
 msgid "Set Grid Border Width..."
-msgstr "ÉèÖÃÍø¸ñ±ß¿ò¿í¶È..."
+msgstr "è®¾ç½®ç½‘æ ¼è¾¹æ¡†å®½åº¦..."
 
 msgid "Set Print Scale"
-msgstr "ÉèÖÃ´òÓ¡±ÈÀı"
+msgstr "è®¾ç½®æ‰“å°æ¯”ä¾‹"
 
 msgid "Set Print Scale..."
-msgstr "ÉèÖÃ´òÓ¡±ÈÀı..."
+msgstr "è®¾ç½®æ‰“å°æ¯”ä¾‹..."
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
-msgstr "ÏÔÊ¾±È×îºóÒ»¸öÉ¸Ñ¡Æ÷ÉÙ 1%"
+msgstr "æ˜¾ç¤ºæ¯”ä¸Šæ¬¡ç­›é€‰å°‘ 1% çš„å†…å®¹"
 
 #, no-c-format
 msgid "Show 1% more than the last filter"
-msgstr "ÏÔÊ¾±È×îºóÒ»¸öÉ¸Ñ¡Æ÷¶à 1%"
+msgstr "æ˜¾ç¤ºæ¯”ä¸Šæ¬¡ç­›é€‰å¤š 1% çš„å†…å®¹"
 
 #, no-c-format
 msgid "Show 10% of last edits"
-msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 10%"
+msgstr "æ˜¾ç¤º 10% çš„ä¸Šæ¬¡ç¼–è¾‘"
 
 #, no-c-format
 msgid "Show 20% of last edits"
-msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 20%"
+msgstr "æ˜¾ç¤º 20% çš„ä¸Šæ¬¡ç¼–è¾‘"
 
 #, no-c-format
 msgid "Show 5% of last edits"
-msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 5%"
+msgstr "æ˜¾ç¤º 5% çš„ä¸Šæ¬¡ç¼–è¾‘"
 
 #, no-c-format
 msgid "Show 50% of last edits"
-msgstr "ÏÔÊ¾ÉÏ´Î±à¼­µÄ 50%"
+msgstr "æ˜¾ç¤º 50% çš„ä¸Šæ¬¡ç¼–è¾‘"
 
 msgid "Show Statusbar"
-msgstr "ÏÔÊ¾×´Ì¬À¸"
+msgstr "æ˜¾ç¤ºçŠ¶æ€æ "
 
 msgid "Show Toolbar"
-msgstr "ÏÔÊ¾¹¤¾ßÀ¸"
+msgstr "æ˜¾ç¤ºå·¥å…·æ "
+
+msgid "Show last edits in specific date range"
+msgstr "æ˜¾ç¤ºç‰¹å®šæ—¥æœŸèŒƒå›´å†…çš„æœ€åä¸€æ¬¡ç¼–è¾‘"
 
 msgid "Show only cells in current search"
-msgstr "½öÔÚµ±Ç°ËÑË÷ÖĞÏÔÊ¾µ¥Ôª¸ñ"
+msgstr "ä»…åœ¨å½“å‰æœç´¢ä¸­æ˜¾ç¤ºå•å…ƒæ ¼"
 
 msgid "Single click maximize from tray"
-msgstr "´ÓÍĞÅÌÖĞµ¥»÷×î´ó»¯"
+msgstr "æ‰˜ç›˜å•å‡»æœ€å¤§åŒ–"
 
 #, c-format
 msgid "Size %d"
-msgstr "³ß´ç %d"
+msgstr "å°ºå¯¸ %d"
 
 msgid "Sort &Ascending"
-msgstr "ÅÅĞòÉıĞò(&A)"
+msgstr "æ’åºå‡åº(&A)"
 
 msgid "Sort &Descending"
-msgstr "ÅÅĞò½µĞò(&D)"
+msgstr "æ’åºé™åº(&D)"
+
+msgid "Start date"
+msgstr "å¼€å§‹æ—¥æœŸ"
 
 msgid "Start of line of text\tHOME"
-msgstr "ÎÄ±¾ĞĞµÄ¿ªÊ¼\tHOME"
+msgstr "æ–‡æœ¬è¡Œé¦–\tHOME"
 
 msgid "Start of text\tCTRL+HOME"
-msgstr "ÎÄ±¾µÄ¿ªÊ¼\tCTRL+HOME"
+msgstr "æ–‡æœ¬é¦–\tCTRL+HOME"
 
 msgid "Swap all cells with this text at this level (or above) with the parent"
-msgstr "½«´ËÎÄ±¾Óë¸¸¼¶ (»ò¸ü¸ß°æ±¾) µÄËùÓĞµ¥Ôª¸ñ½»»»"
+msgstr "å°†æ­¤æ–‡æœ¬ä¸çˆ¶çº§ (æˆ–æ›´é«˜ç‰ˆæœ¬) çš„æ‰€æœ‰å•å…ƒæ ¼äº¤æ¢"
 
 msgid "Swap mousewheel scrolling and zooming"
-msgstr "½»»»Êó±ê¹öÂÖ¹ö¶¯ºÍËõ·Å"
+msgstr "äº¤æ¢é¼ æ ‡æ»šè½®æ»šåŠ¨å’Œç¼©æ”¾"
 
 msgid "Switch to &next file/tab"
-msgstr "ÇĞ»»µ½ÏÂÒ»¸öÎÄ¼ş/Ñ¡Ïî¿¨(&N)"
+msgstr "åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªæ–‡ä»¶/é€‰é¡¹å¡(&N)"
 
 msgid "Switch to &next file/tab\tCTRL+TAB"
-msgstr "ÇĞ»»µ½ÏÂÒ»¸öÎÄ¼ş/Ñ¡Ïî¿¨(&N)\tCTRL+TAB"
+msgstr "åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªæ–‡ä»¶/é€‰é¡¹å¡(&N)\tCTRL+TAB"
 
-#, fuzzy
 msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
-msgstr "ÇĞ»»µ½ÒÔÇ°µÄÎÄ¼ş/Ñ¡Ïî¿¨(&P)\tSHIFT+CTRL+TAB"
+msgstr "åˆ‡æ¢åˆ°ä¸Šä¸ªæ–‡ä»¶/é€‰é¡¹å¡(&P)\tSHIFT+CTRL+TAB"
 
 msgid "Tab delimited text..."
-msgstr "ÖÆ±í·û·Ö¸ôµÄÎÄ±¾¸ñÊ½..."
+msgstr "åˆ¶è¡¨ç¬¦åˆ†éš”çš„æ–‡æœ¬æ ¼å¼..."
 
 msgid "Tag..."
-msgstr "±ê¼Ç..."
+msgstr "æ ‡è®°..."
 
 msgid ""
 "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
 "grid, useful for export to spreadsheets"
 msgstr ""
-"²ÉÓÃ²ã´Î½á¹¹ (Ç¶Ì× 1xn »ò 1xN Íø¸ñ) ²¢½«Æä×ª»»ÎªÆ½Ãæ 1xN Íø¸ñ£¬¿ÉÓÃÓÚµ¼³öµ½µç"
-"×Ó±í¸ñ"
+"é‡‡ç”¨å±‚æ¬¡ç»“æ„ (åµŒå¥— 1xn æˆ– 1xN ç½‘æ ¼) å¹¶å°†å…¶è½¬æ¢ä¸ºå¹³é¢ 1xN ç½‘æ ¼ï¼Œå¯ç”¨äºå¯¼å‡ºåˆ°ç”µ"
+"å­è¡¨æ ¼"
 
 msgid "Text "
-msgstr "ÎÄ±¾ "
+msgstr "æ–‡æœ¬ "
 
 msgid "Text &Editing..."
-msgstr "ÎÄ±¾±à¼­(&E)..."
+msgstr "æ–‡æœ¬ç¼–è¾‘(&E)..."
 
 msgid "Text Sizing..."
-msgstr "ÎÄ±¾´óĞ¡..."
+msgstr "æ–‡æœ¬å¤§å°..."
 
 msgid "Text Style..."
-msgstr "ÎÄ±¾ÑùÊ½..."
+msgstr "æ–‡æœ¬æ ·å¼..."
 
-msgid "Text copied to clipboard"
-msgstr ""
-
-#, fuzzy
 msgid "Text has been replaced."
-msgstr "ÎÄ±¾´óĞ¡¼õĞ¡¡£"
+msgstr "æ–‡æœ¬å·²è¢«æ›¿æ¢ã€‚"
 
 msgid "Text size decreased."
-msgstr "ÎÄ±¾´óĞ¡¼õĞ¡¡£"
+msgstr "æ–‡æœ¬å¤§å°å‡å°ã€‚"
 
 msgid "Text size increased."
-msgstr "ÎÄ±¾´óĞ¡Ôö¼Ó¡£"
+msgstr "æ–‡æœ¬å¤§å°å¢åŠ ã€‚"
 
 msgid "The Free Form Hierarchical Information Organizer"
-msgstr "×ÔÓÉĞÎÊ½·Ö²ãĞÅÏ¢¹ÜÀíÆ÷"
+msgstr "è‡ªç”±å½¢å¼åˆ†å±‚ä¿¡æ¯ç®¡ç†å™¨"
 
 msgid "The browser could not open at least one link."
-msgstr ""
+msgstr "æµè§ˆå™¨æ— æ³•æ‰“å¼€ä¸Šæ¬¡é“¾æ¥ã€‚"
+
+msgid "There is no content to collapse."
+msgstr "æ²¡æœ‰å†…å®¹å¯ä»¥æŠ˜å ã€‚"
 
 msgid "This operation doesn't work on thin selections."
-msgstr "´Ë²Ù×÷²»ÊÊÓÃÓÚ¾«¼òÑ¡Ôñ¡£"
+msgstr "æ­¤æ“ä½œä¸é€‚ç”¨äºç²¾ç®€é€‰æ‹©ã€‚"
 
 msgid "This operation requires a cell that contains a grid."
-msgstr "´Ë²Ù×÷ĞèÒªÒ»¸ö°üº¬Íø¸ñµÄµ¥Ôª¸ñ¡£"
+msgstr "æ­¤æ“ä½œéœ€è¦ä¸€ä¸ªåŒ…å«ç½‘æ ¼çš„å•å…ƒæ ¼ã€‚"
 
 msgid "This operation requires a selection."
-msgstr "´Ë²Ù×÷ĞèÒªÑ¡Ôñ¡£"
+msgstr "æ­¤æ“ä½œéœ€è¦é€‰æ‹©ã€‚"
 
 msgid "This operation works on a single selected cell only."
-msgstr "´Ë²Ù×÷½öÊÊÓÃÓÚµ¥¸öÑ¡¶¨µÄµ¥Ôª¸ñ¡£"
+msgstr "æ­¤æ“ä½œä»…é€‚ç”¨äºå•ä¸ªé€‰å®šçš„å•å…ƒæ ¼ã€‚"
 
 msgid "Toggle &Fullscreen View\tCTRL+F11"
-msgstr "ÇĞ»»È«ÆÁÊÓÍ¼(&F)\tCTRL+F11"
+msgstr "åˆ‡æ¢å…¨å±è§†å›¾(&F)\tCTRL+F11"
 
 msgid "Toggle &Fullscreen View\tF11"
-msgstr "ÇĞ»»È«ÆÁÊÓÍ¼(&F)\tF11"
+msgstr "åˆ‡æ¢å…¨å±è§†å›¾(&F)\tF11"
 
 msgid "Toggle &Scaled Presentation View\tCTRL+F12"
-msgstr "ÇĞ»»Ëõ·ÅµÄÑİÊ¾ÎÄ¸åÊÓÍ¼(&S)\tCTRL+F12"
+msgstr "åˆ‡æ¢ç¼©æ”¾çš„æ¼”ç¤ºæ–‡ç¨¿è§†å›¾(&S)\tCTRL+F12"
 
 msgid "Toggle &Scaled Presentation View\tF12"
-msgstr "ÇĞ»»Ëõ·ÅµÄÑİÊ¾ÎÄ¸åÊÓÍ¼(&S)\tF12"
+msgstr "åˆ‡æ¢ç¼©æ”¾çš„æ¼”ç¤ºæ–‡ç¨¿è§†å›¾(&S)\tF12"
 
 msgid "Toggle Fold\tCTRL+F10"
-msgstr "ÇĞ»»ÕÛµş\tCTRL+F10"
+msgstr "åˆ‡æ¢æŠ˜å \tCTRL+F10"
 
 msgid "Toggle Fold\tF10"
-msgstr "ÇĞ»»ÕÛµş\tF10"
+msgstr "åˆ‡æ¢æŠ˜å \tF10"
 
-msgid "Toggle Vertical Layout\tF7"
-msgstr "ÇĞ»»´¹Ö±²¼¾Ö\tF7"
+msgid "Toggle Vertical Layout\tALT+0"
+msgstr "åˆ‡æ¢å‚ç›´å¸ƒå±€\tALT+0"
 
-#, fuzzy
 msgid "Toggle Zen Mode"
-msgstr "ÇĞ»»ÕÛµş\tF10"
+msgstr "åˆ‡æ¢ Zen æ¨¡å¼"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
-msgstr "ÇĞ»»µ¥Ôª¸ñ(&B)\tCTRL+b"
+msgstr "åˆ‡æ¢å•å…ƒæ ¼(&B)\tCTRL+b"
 
 msgid "Toggle cell &ITALIC\tCTRL+i"
-msgstr "ÇĞ»»µ¥Ôª¸ñÒâ´óÀûÓï(&I)\tCTRL+i"
+msgstr "åˆ‡æ¢å•å…ƒæ ¼æ–œä½“(&I)\tCTRL+i"
 
 msgid "Toggle cell &strikethrough\tCTRL+t"
-msgstr "ÇĞ»»µ¥Ôª¸ñÉ¾³ıÏß(&S)\tCTRL+t"
+msgstr "åˆ‡æ¢å•å…ƒæ ¼åˆ é™¤çº¿(&S)\tCTRL+t"
 
-#, fuzzy
 msgid "Toggle cell &typewriter\tCTRL+ALT+t"
-msgstr "ÇĞ»»µ¥Ôª¸ñ´ò×Ö»ú(&T)"
+msgstr "åˆ‡æ¢å•å…ƒæ ¼å’Œæ‰“å­—æœº(&T)\tCTRL+ALT+t"
 
 msgid "Toggle cell &underlined\tCTRL+u"
-msgstr "ÇĞ»»´øÏÂ»®ÏßµÄµ¥Ôª¸ñ(&U)\tCTRL+u"
+msgstr "åˆ‡æ¢å•å…ƒæ ¼ä¸‹åˆ’çº¿(&U)\tCTRL+u"
 
 msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "ÇĞ»»ÏÔÊ¾ËùÑ¡µ¥Ôª¸ñµÄÍø¸ñ"
+msgstr "åˆ‡æ¢æ˜¾ç¤ºæ‰€é€‰å•å…ƒæ ¼çš„ç½‘æ ¼"
+
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "TreeSheets æ–‡ä»¶ (*.cts)|*.cts|æ‰€æœ‰æ–‡ä»¶ (*.*)|*.*"
 
 msgid "Turn filter &off"
-msgstr "¹Ø±Õ¹ıÂËÆ÷(&O)"
+msgstr "å…³é—­ç­›é€‰(&O)"
 
 msgid "Undo (CTRL+z)"
-msgstr "³·Ïû (CTRL+z)"
+msgstr "æ’¤æ¶ˆ (CTRL+z)"
 
 msgid "Unfold All\tCTRL+ALT+F10"
-msgstr "È«²¿Õ¹¿ª\tCTRL+ALT+F10"
+msgstr "å…¨éƒ¨å±•å¼€\tCTRL+ALT+F10"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
-msgstr "µİ¹éÕ¹¿ªÑ¡¶¨µ¥Ôª¸ñµÄÍø¸ñ"
+msgstr "é€’å½’å±•å¼€é€‰å®šå•å…ƒæ ¼çš„ç½‘æ ¼"
 
 msgid "Uses"
-msgstr ""
+msgstr "ç”¨æˆ·"
 
-#, fuzzy
 msgid "Variable &Assign\tCTRL+ALT+a"
-msgstr "±äÁ¿·ÖÅä(&A)"
+msgstr "å˜é‡åˆ†é…(&A)\tCTRL+ALT+a"
 
-#, fuzzy
 msgid "Variable &Read\tCTRL+ALT+r"
-msgstr "±äÁ¿¶ÁÈ¡(&R)"
+msgstr "å˜é‡è¯»å–(&R)\tCTRL+ALT+r"
 
 msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
-msgstr "¾ßÓĞÆøÅİÑùÊ½äÖÈ¾µÄ´¹Ö±²¼¾Ö\tALT+2"
+msgstr "å‚ç›´å¸ƒå±€:æ°”æ³¡\tALT+2"
 
 msgid "Vertical Layout with Grid Style Rendering\tALT+1"
-msgstr "¾ßÓĞÍø¸ñÑùÊ½äÖÈ¾µÄ´¹Ö±²¼¾Ö\tALT+1"
+msgstr "å‚ç›´å¸ƒå±€:ç½‘æ ¼\tALT+1"
 
 msgid "Vertical Layout with Line Style Rendering\tALT+3"
-msgstr "¾ßÓĞÏßÌõÑùÊ½äÖÈ¾µÄ´¹Ö±²¼¾Ö\tALT+3"
+msgstr "å‚ç›´å¸ƒå±€:çº¿æ¡\tALT+3"
 
 msgid "View tutorial &web page..."
-msgstr "²é¿´½Ì³ÌÍøÒ³(&W)..."
+msgstr "æŸ¥çœ‹æ•™ç¨‹ç½‘é¡µ(&W)..."
 
 msgid "What size grid would you like to start with?"
-msgstr "ÄúÏ£Íû´ÓÊ²Ã´³ß´çµÄÍø¸ñ¿ªÊ¼£¿"
+msgstr "æ‚¨å¸Œæœ›ä»ä»€ä¹ˆå°ºå¯¸çš„ç½‘æ ¼å¼€å§‹ï¼Ÿ"
+
+msgid "Width"
+msgstr "å®½åº¦"
 
 #, c-format
 msgid "Width %d"
-msgstr "¿í¶È %d"
+msgstr "å®½åº¦ %d"
 
 msgid "Word Left\tCTRL+LEFT"
-msgstr "×ó±ßµÄµ¥´Ê\tCTRL+LEFT"
+msgstr "å·¦è¾¹çš„å•è¯\tCTRL+LEFT"
 
 msgid "Word Right\tCTRL+RIGHT"
-msgstr "ÓÒÎÄ×Ö\tCTRL+RIGHT"
+msgstr "å³æ–‡å­—\tCTRL+RIGHT"
 
 msgid "XML (attributes too, for OPML etc)..."
-msgstr "XML (´øÓĞÊôĞÔ, for OPML etc)..."
+msgstr "XML (å±æ€§ï¼Œç”¨äº OPML ç­‰)..."
 
 msgid "XML..."
 msgstr "XML..."
 
 msgid "Zlib error while writing file."
-msgstr "Ğ´ÈëÎÄ¼şÊ±³öÏÖ zlib ´íÎó¡£"
+msgstr "å†™å…¥æ–‡ä»¶æ—¶å‡ºç° zlib é”™è¯¯ã€‚"
 
 msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
-msgstr "·Å´ó (CTRL+Êó±ê¹öÂÖ)(&I)\tCTRL+PGUP"
+msgstr "æ”¾å¤§ (CTRL+é¼ æ ‡æ»šè½®)(&I)\tCTRL+PGUP"
 
 msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
-msgstr "ËõĞ¡ (CTRL+Êó±ê¹öÂÖ)(&O)\tCTRL+PGDN"
+msgstr "ç¼©å° (CTRL+é¼ æ ‡æ»šè½®)(&O)\tCTRL+PGDN"
 
 msgid "Zoom In (CTRL+mousewheel)"
-msgstr "·Å´ó (CTRL+Êó±ê¹öÂÖ)"
+msgstr "æ”¾å¤§ (CTRL+é¼ æ ‡æ»šè½®)"
 
 msgid "Zoom Out (CTRL+mousewheel)"
-msgstr "ËõĞ¡ (CTRL+Êó±ê¹öÂÖ)"
+msgstr "ç¼©å° (CTRL+é¼ æ ‡æ»šè½®)"
 
 msgid "Zoomed in."
-msgstr "ÒÑ·Å´ó¡£"
+msgstr "å·²æ”¾å¤§ã€‚"
 
 msgid "Zoomed out."
-msgstr "ÒÑËõĞ¡¡£"
+msgstr "å·²ç¼©å°ã€‚"
 
 msgid "change will take effect next run of TreeSheets"
-msgstr "¸ü¸Ä½«ÔÚÏÂÒ»´ÎÔËĞĞµÄÊ÷±íÖĞÉúĞ§"
+msgstr "æ›´æ”¹å°†åœ¨ä¸‹ä¸€æ¬¡è¿è¡Œçš„æ ‘è¡¨ä¸­ç”Ÿæ•ˆ"
 
 msgid "changes the orientation of a grid"
-msgstr "¸ü¸ÄÍø¸ñµÄ·½Ïò"
+msgstr "æ›´æ”¹ç½‘æ ¼çš„æ–¹å‘"
 
 msgid "couldn't import file!"
-msgstr "ÎŞ·¨µ¼ÈëÎÄ¼ş£¡"
+msgstr "æ— æ³•å¯¼å…¥æ–‡ä»¶ï¼"
 
 msgid "only sets the colors and style of the copied cell, and keeps the text"
-msgstr "½öÉèÖÃ¸´ÖÆµ¥Ôª¸ñµÄÑÕÉ«ºÍÑùÊ½£¬²¢±£ÁôÎÄ±¾"
+msgstr "ä»…è®¾ç½®å¤åˆ¶å•å…ƒæ ¼çš„é¢œè‰²å’Œæ ·å¼ï¼Œå¹¶ä¿ç•™æ–‡æœ¬"
 
 msgid "only works in cell text mode"
-msgstr "½öÔÚµ¥Ôª¸ñÎÄ±¾Ä£Ê½ÏÂ¹¤×÷"
+msgstr "ä»…åœ¨å•å…ƒæ ¼æ–‡æœ¬æ¨¡å¼ä¸‹å·¥ä½œ"
 
 msgid "redo any undo steps, if you haven't made changes since"
-msgstr "ÖØ×öÈÎºÎ³·Ïû²½Öè£¬Èç¹ûÄãÃ»ÓĞ×öµÄ¸ü¸Ä£¬ÒòÎª"
+msgstr "é‡åšä»»ä½•æ’¤æ¶ˆæ­¥éª¤ï¼Œå¦‚æœä½ æ²¡æœ‰åšçš„æ›´æ”¹ï¼Œå› ä¸º"
 
 msgid "revert the changes, one step at a time"
-msgstr "»Ö¸´¸ü¸Ä£¬Ò»²½Ò»´Î"
+msgstr "æ¢å¤æ›´æ”¹ï¼Œä¸€æ­¥ä¸€æ¬¡"
 
 msgid "scale:"
-msgstr "¹æÄ££º"
+msgstr "ç¼©æ”¾ï¼š"
 
 msgid "size:"
-msgstr "´óĞ¡£º"
-
-#~ msgid "&Data"
-#~ msgstr "Êı¾İ(&D)"
-
-#~ msgid "&Operation"
-#~ msgstr "²Ù×÷(&O)"
-
-#~ msgid "&Run"
-#~ msgstr "ÔËĞĞ(&R)"
-
-#~ msgid "Cannot find file."
-#~ msgstr "ÕÒ²»µ½ÎÄ¼ş¡£"
-
-#~ msgid "Cannot launch browser for this link."
-#~ msgstr "ÎŞ·¨Æô¶¯´ËÁ´½ÓµÄä¯ÀÀÆ÷¡£"
-
-#~ msgid "File saved succesfully."
-#~ msgstr "³É¹¦±£´æµÄÎÄ¼ş¡£"
+msgstr "å¤§å°ï¼š"
