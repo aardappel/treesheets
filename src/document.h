@@ -1179,7 +1179,11 @@ struct Document {
             }
 
             case A_SEARCHNEXT: {
-                return SearchNext(dc, false, true);
+                return SearchNext(dc, false, true, false);
+            }
+
+            case A_SEARCHPREV: {
+                return SearchNext(dc, false, true, true);
             }
 
             case A_CASESENSITIVESEARCH: {
@@ -1190,7 +1194,7 @@ struct Document {
                         sys->frame->filter->GetValue() : 
                         sys->frame->filter->GetValue().Lower();
                 sys->frame->SetSearchTextBoxBackgroundColour(false);
-                this->SearchNext(dc, false, false);
+                this->SearchNext(dc, false, false, false);
                 this->Refresh();
                 return nullptr;
             }
@@ -1230,7 +1234,7 @@ struct Document {
                 } else {
                     loopallcellssel(c, true) if (c->text.IsInSearch()) c->AddUndo(this);
                     selected.g->ReplaceStr(this, replaces, lreplaces, selected);
-                    if (k == A_REPLACEONCEJ) return SearchNext(dc, false, true);
+                    if (k == A_REPLACEONCEJ) return SearchNext(dc, false, true, false);
                 }
                 return _(L"Text has been replaced.");
             }
@@ -2023,12 +2027,12 @@ struct Document {
         }
     }
 
-    const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump) {
+    const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump, bool reverse) {
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
         if (!rootgrid) return nullptr; //fix crash when opening new doc
         Cell *next =
-            rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel);
+            rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel, reverse);
         sys->frame->SetSearchTextBoxBackgroundColour(next);
         if (!next) return _(L"No matches for search.");
         if (!jump) return nullptr;
