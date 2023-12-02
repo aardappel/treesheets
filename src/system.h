@@ -158,7 +158,7 @@ struct System {
         newdoc->sw->SetFocus();
         newdoc->UpdateFileName();
         wxClientDC dc(newdoc->sw);
-        newdoc->SearchNext(dc, false, false);
+        newdoc->SearchNext(dc, false, false, false);
     }
 
     void Init(const wxString &filename) {

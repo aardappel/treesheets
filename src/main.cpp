@@ -152,6 +152,7 @@ enum {
     A_LINKIMG,
     A_LINKIMGREV,
     A_SEARCHNEXT,
+    A_SEARCHPREV,
     A_CUSTCOL,
     A_COLCELL,
     A_SORT,

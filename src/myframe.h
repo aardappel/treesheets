@@ -448,6 +448,7 @@ struct MyFrame : wxFrame {
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
+        MyAppend(semenu, A_SEARCHPREV, _(L"Go To &Previous Search Result\tSHIFT+F3"));
         MyAppend(semenu, A_REPLACEF, _(L"&Replace\tCTRL+h"));
         MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection\tCTRL+k"));
         MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next\tCTRL+j"));
@@ -478,7 +479,7 @@ struct MyFrame : wxFrame {
         // xgettext:no-c-format
         MyAppend(filtermenu, A_FILTERL, _(L"Show 1% less than the last filter"));
         MyAppend(filtermenu, A_FILTERBYCELLBG, _(L"Filter by the same cell color"));
-        MyAppend(filtermenu, A_FILTERMATCHNEXT, _(L"Go to next filter match\tSHIFT+F3"));
+        MyAppend(filtermenu, A_FILTERMATCHNEXT, _(L"Go to next filter match\tCTRL+F3"));
 
         wxMenu *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _(L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"));
@@ -1066,7 +1067,7 @@ struct MyFrame : wxFrame {
         Document *doc = GetCurTab()->doc;
         TSCanvas *sw = GetCurTab();
         wxClientDC dc(sw);
-        doc->SearchNext(dc, false, false);
+        doc->SearchNext(dc, false, false, false);
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
         } else
