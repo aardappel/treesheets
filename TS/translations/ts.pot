@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-02 17:08-0300\n"
+"POT-Creation-Date: 2023-12-02 20:47-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -614,6 +614,9 @@ msgstr ""
 msgid "Go To &Matching Cell (Text)\tF6"
 msgstr ""
 
+msgid "Go To &Previous Search Result\tSHIFT+F3"
+msgstr ""
+
 msgid "Go To Matching Cell (Image)\tF7"
 msgstr ""
 
@@ -626,7 +629,7 @@ msgstr ""
 msgid "Go to Next Search Result"
 msgstr ""
 
-msgid "Go to next filter match\tSHIFT+F3"
+msgid "Go to next filter match\tCTRL+F3"
 msgstr ""
 
 msgid "Grid Style Rendering\tALT+7"

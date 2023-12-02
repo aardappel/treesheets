@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-02 17:08-0300\n"
-"PO-Revision-Date: 2023-11-02 17:13-0300\n"
+"POT-Creation-Date: 2023-12-02 20:47-0300\n"
+"PO-Revision-Date: 2023-12-02 20:56-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -78,7 +78,7 @@ msgid "&Flatten"
 msgstr "H&orizontalizar"
 
 msgid "&Go To Next Search Result\tF3"
-msgstr "&Ir para Resultado Seguinte da Busca\tF3"
+msgstr "Ir para Resultado Se&guinte da Busca\tF3"
 
 msgid "&Grid Reorganization..."
 msgstr "Reorgani&zação da Grade..."
@@ -656,6 +656,9 @@ msgstr "Um tipo de imagem que não está definido neste programa foi encontrado.
 msgid "Go To &Matching Cell (Text)\tF6"
 msgstr "Ir para Célula &Seguinte que Tiver o Mesmo Texto\tF6"
 
+msgid "Go To &Previous Search Result\tSHIFT+F3"
+msgstr "Ir para Resultado A&nterior da Busca\tSHIFT+F3"
+
 msgid "Go To Matching Cell (Image)\tF7"
 msgstr "Ir para Célula Seguinte que Tiver a Mesma Imagem\tF7"
 
@@ -668,8 +671,8 @@ msgstr "Ir para Célula &Anterior que Tiver o Mesmo Texto\tSHIFT+F6"
 msgid "Go to Next Search Result"
 msgstr "Ir para Resultado Seguinte da Busca"
 
-msgid "Go to next filter match\tSHIFT+F3"
-msgstr "Ir para célula evidenciada seguinte\tSHIFT+F3"
+msgid "Go to next filter match\tCTRL+F3"
+msgstr "Ir para célula evidenciada seguinte\tCTRL+F3"
 
 msgid "Grid Style Rendering\tALT+7"
 msgstr "Renderização com Estilo de Grade\tALT+7"
