@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-22 21:32+0200\n"
+"POT-Creation-Date: 2023-12-02 20:47-0300\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -77,7 +77,7 @@ msgid "&Flatten"
 msgstr "&Verflachen"
 
 msgid "&Go To Next Search Result\tF3"
-msgstr "&Zum nächsten Suchtreffer gehen\tF3"
+msgstr "&Zum nächsten Suchtreffer springen\tF3"
 
 msgid "&Grid Reorganization..."
 msgstr "&Tabellen-Umstrukturierung..."
@@ -661,6 +661,9 @@ msgstr "Es wurde ein Bildtyp gefunden, der nicht in diesem Programm definiert is
 msgid "Go To &Matching Cell (Text)\tF6"
 msgstr "Gehe zur &übereinstimmenden Zelle (Text)\tF6"
 
+msgid "Go To &Previous Search Result\tSHIFT+F3"
+msgstr "Zum &vorgängigen Suchtreffer springen\tSHIFT+F3"
+
 msgid "Go To Matching Cell (Image)\tF7"
 msgstr "Gehe zur übereinstimmenden Zelle (Bild)\tF7"
 
@@ -671,10 +674,10 @@ msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
 msgstr "Gehe zur übereinstimmenden Zelle (Text, rückwärts)\tSHIFT+F6"
 
 msgid "Go to Next Search Result"
-msgstr "&Zum nächsten Suchtreffer gehen"
+msgstr "Zum &nächsten Suchtreffer springen"
 
-msgid "Go to next filter match\tSHIFT+F3"
-msgstr "Zum nächsten Filtertreffer springen\tSHIFT+F3"
+msgid "Go to next filter match\tCTRL+F3"
+msgstr "Zum nächsten Filtertreffer springen\tCTRL+F3"
 
 msgid "Grid Style Rendering\tALT+7"
 msgstr "Tabellenstil-Rendering\tALT+7"
@@ -1039,6 +1042,9 @@ msgstr "Speichern &unter..."
 
 msgid "Save (CTRL+s)"
 msgstr "Speichern (STRG+s)"
+
+msgid "Save All"
+msgstr "Alles speichern"
 
 msgid "Save As"
 msgstr "Speichern unter..."
