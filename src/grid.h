@@ -312,7 +312,7 @@ struct Grid {
         return best;
     }
 
-    Cell *FindNextSearchMatch(wxString &search, Cell *best, Cell *selected, bool &lastwasselected, bool reverse) {
+    Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected, bool &lastwasselected, bool reverse) {
         if (reverse) {
             foreachcellrev(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
         } else {
