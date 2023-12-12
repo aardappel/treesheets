@@ -71,7 +71,7 @@ Linux:
 
 - Using the version of  wxWidgets from https://github.com/wxWidgets/wxWidgets.git
   - Follow the instructions to build there, but add `--enable-unicode` and
-   `--disabled-shared` to the `configure` step.
+   `--disable-shared` to the `configure` step.
 - Build with `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release` or similar.
   You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
 - Install using `sudo make -C _build install`.
