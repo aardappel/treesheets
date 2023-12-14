@@ -968,7 +968,7 @@ struct Document {
                     return nullptr;
                 #endif
             }
-        } else if (uk >= ' ') {
+        } else if (uk >= ' ' && !alt && !ctrl) {
             if (!selected.g) return NoSel();
             Cell *c = selected.ThinExpand(this);
             if (!c) return OneCell();
