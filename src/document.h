@@ -724,22 +724,19 @@ struct Document {
     }
 
     void Refresh() {
-        hover.g = nullptr;
-        redrawpending = true;
-        #ifndef __WXMSW__
-        if (sw) sw->Refresh(false);
-        #endif
-        #ifdef __WXGTK__
         if (sw) {
-            // wxWidgets (wxGTK) does not always automatically update the scrollbar 
-            // to new canvas size and current position within after zoom so force it manually
-            int curx, cury;
-            sw->GetViewStart(&curx, &cury);
-            sw->SetScrollbars(1, 1, layoutxs, layoutys, curx, cury, true);
+            hover.g = nullptr;
+            redrawpending = true;
+            sys->UpdateStatus(selected);
+            sw->Refresh(false);
+            #ifdef __WXGTK__
+                // wxWidgets (wxGTK) does not always automatically update the scrollbar 
+                // to new canvas size and current position within after zoom so force it manually
+                int curx, cury;
+                sw->GetViewStart(&curx, &cury);
+                sw->SetScrollbars(1, 1, layoutxs, layoutys, curx, cury, true);
+            #endif
         }
-        #endif
-        sys->UpdateStatus(selected);
-        sys->frame->nb->Refresh(false);
     }
 
     void ClearSelectionRefresh() {
