@@ -2116,6 +2116,7 @@ struct Document {
                         if (as.size()) {
                             if (as.size() <= 1) {
                                 c->AddUndo(this);
+                                c->ResetLayout();
                                 PasteSingleText(c, as[0]);
                             } else {
                                 c->parent->AddUndo(this);
