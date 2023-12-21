@@ -111,7 +111,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     wxArrayString as;
     const int image_space = 22;
 
-    ImageDropdown(wxWindow *parent, wxString &path) {
+    ImageDropdown(wxWindow *parent, const wxString &path) {
         FillBitmapVector(path);
         Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
                FromDIP(wxSize(image_space * 2, image_space)), as,
@@ -132,7 +132,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         sys->ImageDraw(bm, dc, rect.x + FromDIP(3), rect.y + FromDIP(3));
     }
 
-    void FillBitmapVector(wxString &path) {
+    void FillBitmapVector(const wxString &path) {
         if (!bitmaps_display.empty()) bitmaps_display.setsize(0);
         wxString f = wxFindFirstFile(path + L"*.*");
         while (!f.empty()) {
@@ -162,7 +162,7 @@ static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bm
     return buf;
 }
 
-static wxImage ConvertBufferToWxImage(vector<uint8_t> &buf, wxBitmapType bmt) {
+static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType bmt) {
     wxMemoryInputStream mis(buf.data(), buf.size());
     wxImage im(mis, bmt);
     if (!im.IsOk()) {
@@ -174,7 +174,7 @@ static wxImage ConvertBufferToWxImage(vector<uint8_t> &buf, wxBitmapType bmt) {
     return im;
 }
 
-static wxBitmap ConvertBufferToWxBitmap(vector<uint8_t> &buf, wxBitmapType bmt) {
+static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buf, wxBitmapType bmt) {
     wxImage im = ConvertBufferToWxImage(buf, bmt);
     wxBitmap bm(im, 32);
     return bm;
