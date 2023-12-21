@@ -302,7 +302,7 @@ struct Grid {
         }
     }
 
-    Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
+    Cell *FindLink(const Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
                    bool forward, bool image) {
         if (forward) {
             foreachcell(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward, image);
@@ -903,7 +903,7 @@ struct Grid {
               (int(__cdecl *)(const void *, const void *))sortfunc);
     }
 
-    Cell *FindExact(wxString &s) {
+    Cell *FindExact(const wxString &s) {
         foreachcell(c) {
             Cell *f = c->FindExact(s);
             if (f) return f;
