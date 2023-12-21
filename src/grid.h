@@ -389,7 +389,7 @@ struct Grid {
         }
     }
 
-    wxRect GetRect(Document *doc, Selection &s, bool minimal = false) {
+    wxRect GetRect(Document *doc, const Selection &s, bool minimal = false) {
         if (s.Thin()) {
             if (s.xs) {
                 if (s.y < ys) {
@@ -627,10 +627,10 @@ struct Grid {
     }
 
     void RelSize(int dir, int zoomdepth) { foreachcell(c) c->RelSize(dir, zoomdepth); }
-    void RelSize(int dir, Selection &s, int zoomdepth) {
+    void RelSize(int dir, const Selection &s, int zoomdepth) {
         foreachcellinsel(c, s) c->RelSize(dir, zoomdepth);
     }
-    void SetBorder(int width, Selection &s) { foreachcellinsel(c, s) c->SetBorder(width); }
+    void SetBorder(int width, const Selection &s) { foreachcellinsel(c, s) c->SetBorder(width); }
     int MinRelsize(int rs) {
         foreachcell(c) {
             int crs = c->MinRelsize();
@@ -644,7 +644,7 @@ struct Grid {
         foreachcell(c) c->ResetChildren();
     }
 
-    void Move(int dx, int dy, Selection &s) {
+    void Move(int dx, int dy, const Selection &s) {
         if (dx < 0 || dy < 0)
             foreachcellinsel(c, s) swap_(c, C((x + dx + xs) % xs, (y + dy + ys) % ys));
         else
@@ -684,21 +684,21 @@ struct Grid {
         delete this;
     }
 
-    void SetStyle(Document *doc, Selection &s, int sb) {
+    void SetStyle(Document *doc, const Selection &s, int sb) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, s) c->text.stylebits ^= sb;
         doc->Refresh();
     }
 
-    void ColorChange(Document *doc, int which, uint color, Selection &s) {
+    void ColorChange(Document *doc, int which, uint color, const Selection &s) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, s) c->ColorChange(which, color);
         doc->Refresh();
     }
 
-    void ReplaceStr(Document *doc, const wxString &str, const wxString &lstr, Selection &s) {
+    void ReplaceStr(Document *doc, const wxString &str, const wxString &lstr, const Selection &s) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, s) c->text.ReplaceStr(str, lstr);
@@ -1089,11 +1089,11 @@ struct Grid {
     }
 
     void CollectCells(Vector<Cell *> &itercells) { foreachcell(c) c->CollectCells(itercells); }
-    void CollectCellsSel(Vector<Cell *> &itercells, Selection &s, bool recurse) {
+    void CollectCellsSel(Vector<Cell *> &itercells, const Selection &s, bool recurse) {
         foreachcellinsel(c, s) c->CollectCells(itercells, recurse);
     }
 
-    void SetStyles(Selection &s, Cell *o) {
+    void SetStyles(const Selection &s, Cell *o) {
         foreachcellinsel(c, s) {
             c->cellcolor = o->cellcolor;
             c->textcolor = o->textcolor;
@@ -1102,5 +1102,5 @@ struct Grid {
         }
     }
 
-    void ClearImages(Selection &s) { foreachcellinsel(c, s) c->text.image = nullptr; }
+    void ClearImages(const Selection &s) { foreachcellinsel(c, s) c->text.image = nullptr; }
 };
