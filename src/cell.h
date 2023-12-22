@@ -438,7 +438,7 @@ struct Cell {
         return best;
     }
 
-    Cell *FindLink(Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
+    Cell *FindLink(const Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
                    bool forward, bool image) {
         if (grid) best = grid->FindLink(s, link, best, lastthis, stylematch, forward, image);
         if (link == this) {
@@ -466,7 +466,7 @@ struct Cell {
         text.ReplaceStr(str, lstr);
     }
 
-    Cell *FindExact(wxString &s) {
+    Cell *FindExact(const wxString &s) {
         return text.t == s ? this : (grid ? grid->FindExact(s) : nullptr);
     }
 
