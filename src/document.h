@@ -137,7 +137,7 @@ struct Document {
 
     uint Background() { return rootgrid ? rootgrid->cellcolor : 0xFFFFFF; }
 
-    void InitWith(Cell *r, wxString filename, Cell *ics, int xs, int ys) {
+    void InitWith(Cell *r, const wxString &filename, Cell *ics, int xs, int ys) {
         rootgrid = r;
         if (ics) {
             Grid* ipg = ics->parent->grid;
