@@ -423,32 +423,25 @@ struct Text {
     }
 
     void ReplaceStr(const wxString &str, const wxString &lstr) {
-        wxString lowert;
-        wxString *fort;
-        const wxString *istr;
-        
-        if (lstr.IsEmpty()) {
-            fort = &t;
-            istr = &str;
-        } else {
-            lowert = t.Lower();
-            fort = &lowert;
-            istr = &lstr;
-        }
-
-        for (int i = 0, j; (j = fort->Mid(i).Find(sys->searchstring)) >= 0;) 
-        {
-            // does this need WasEdited()?
-            i += j;
-            fort->Remove(i, sys->searchstring.Len());
-            fort->insert(i, *istr);
-
-            if (!sys->casesensitivesearch) {
+        if (sys->casesensitivesearch) {
+            for (int i = 0, j; (j = t.Mid(i).Find(sys->searchstring)) >= 0;) {
+                // does this need WasEdited()?
+                i += j;
                 t.Remove(i, sys->searchstring.Len());
                 t.insert(i, str);
+                i += str.Len();
             }
-
-            i += str.Len();
+        } else {
+            wxString lowert = t.Lower();
+            for (int i = 0, j; (j = lowert.Mid(i).Find(sys->searchstring)) >= 0;) {
+                // does this need WasEdited()?
+                i += j;
+                lowert.Remove(i, sys->searchstring.Len());
+                t.Remove(i, sys->searchstring.Len());
+                lowert.insert(i, lstr);
+                t.insert(i, str);
+                i += str.Len();
+            }
         }
     }
 
