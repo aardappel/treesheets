@@ -920,11 +920,7 @@ struct MyFrame : wxFrame {
                     } else if (tc == replaces) {
                         // OnReplaceEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
-                        if (sys->frame->replaces->GetValue().Len() == 0) {
-                            sw->SetFocus();
-                        } else {
-                            sw->doc->Action(dc, A_REPLACEONCEJ);
-                        }
+                        sw->doc->Action(dc, A_REPLACEONCEJ);
                     }
                     return;
                 }
@@ -1077,7 +1073,7 @@ struct MyFrame : wxFrame {
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
         TSCanvas *sw = GetCurTab();
-        if (ce.GetString().Len() == 0) {
+        if (ce.GetId() == A_SEARCH && ce.GetString().Len() == 0) {
             sw->SetFocus();
         } else {
             wxClientDC dc(sw);
