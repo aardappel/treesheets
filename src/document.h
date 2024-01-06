@@ -1175,12 +1175,17 @@ struct Document {
                 return nullptr;
             }
 
-            case A_SEARCHNEXT: {
-                return SearchNext(dc, false, true, false);
-            }
-
+            case A_SEARCHNEXT: 
             case A_SEARCHPREV: {
-                return SearchNext(dc, false, true, true);
+                if (sys->searchstring.Len()) return SearchNext(dc, false, true, k == A_SEARCHPREV);
+                if (Cell *c = selected.GetCell()) {
+                    if (!c->text.t.Len()) return _(L"No text in this cell.");
+                    sys->frame->filter->SetFocus();
+                    sys->frame->filter->SetValue(c->text.t);
+                    return nullptr;
+                } else {
+                    return _(L"You need to select one cell if you want to search for its text.");
+                }
             }
 
             case A_CASESENSITIVESEARCH: {
@@ -2025,9 +2030,9 @@ struct Document {
     }
 
     const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump, bool reverse) {
+        if (!rootgrid) return nullptr; // fix crash when opening new doc
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
-        if (!rootgrid) return nullptr; //fix crash when opening new doc
         Cell *next =
             rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel, reverse);
         sys->frame->SetSearchTextBoxBackgroundColour(next);
