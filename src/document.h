@@ -1179,9 +1179,10 @@ struct Document {
             case A_SEARCHPREV: {
                 if (sys->searchstring.Len()) return SearchNext(dc, false, true, k == A_SEARCHPREV);
                 if (Cell *c = selected.GetCell()) {
-                    if (!c->text.t.Len()) return _(L"No text in this cell.");
+                    wxString str = c->text.ToText(0, selected, A_EXPTEXT);
+                    if (!str.Len()) return _(L"No text to search for.");
                     sys->frame->filter->SetFocus();
-                    sys->frame->filter->SetValue(c->text.t);
+                    sys->frame->filter->SetValue(str);
                     return nullptr;
                 } else {
                     return _(L"You need to select one cell if you want to search for its text.");
