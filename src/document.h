@@ -1262,37 +1262,56 @@ struct Document {
                                          : _(L"1:1 scale restored.");
 
             case A_FILTERRANGE: {
-                wxDialog *dtr           = new wxDialog(sys->frame, wxID_ANY, _(L"Date range filter"), wxDefaultPosition, wxSize(0, 0), wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
-                wxStaticText *introtext = new wxStaticText(dtr, wxID_ANY, _(L"Please select the date range."));
-                wxStaticText *starttext = new wxStaticText(dtr, wxID_ANY, _(L"Start date"));
-                wxStaticText *endtext   = new wxStaticText(dtr, wxID_ANY, _(L"End date"));
-                wxDatePickerCtrl *start = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
-                wxDatePickerCtrl *end   = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
-                wxButton* okbtn         = new wxButton(dtr, wxID_OK, _(L"Filter"));
-                wxButton* cancelbtn     = new wxButton(dtr, wxID_CANCEL, _(L"Cancel"));
+                wxDialog *dtr               = new wxDialog(sys->frame, wxID_ANY, _(L"Date range filter"), wxDefaultPosition, wxSize(0, 0), wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
+                wxStaticText *introtext     = new wxStaticText(dtr, wxID_ANY, _(L"Please select the datetime range."));
+                wxStaticText *starttext     = new wxStaticText(dtr, wxID_ANY, _(L"Start date and time"));
+                wxStaticText *endtext       = new wxStaticText(dtr, wxID_ANY, _(L"End date and time"));
+                wxDatePickerCtrl *startdate = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
+                wxTimePickerCtrl *starttime = new wxTimePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
+                wxDatePickerCtrl *enddate   = new wxDatePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
+                wxTimePickerCtrl *endtime   = new wxTimePickerCtrl(dtr, wxID_ANY, wxDefaultDateTime);
+                wxButton* okbtn             = new wxButton(dtr, wxID_OK, _(L"Filter"));
+                wxButton* cancelbtn         = new wxButton(dtr, wxID_CANCEL, _(L"Cancel"));
 
-                wxFlexGridSizer *gridsizer = new wxFlexGridSizer(2, wxSize(10, 10));
-                gridsizer->Add(starttext);
-                gridsizer->Add(endtext);
-                gridsizer->Add(start);
-                gridsizer->Add(end);
-                gridsizer->Add(okbtn);
-                gridsizer->Add(cancelbtn);
+                wxSizerFlags sizerflags(1);
+                sizerflags.Expand().Border(wxALL, 10);
 
-                wxSizerFlags topsizerflags(1);
-                topsizerflags.Expand().Border(wxALL, 10);
+                wxFlexGridSizer *startsizer = new wxFlexGridSizer(2, wxSize(10, 10));
+                startsizer->Add(startdate);
+                startsizer->Add(starttime);
 
-                wxFlexGridSizer *topsizer = new wxFlexGridSizer(1);
-                topsizer->Add(introtext, topsizerflags);
-                topsizer->Add(gridsizer, topsizerflags);
+                wxFlexGridSizer *endsizer   = new wxFlexGridSizer(2, wxSize(10, 10));
+                endsizer->Add(enddate);
+                endsizer->Add(endtime);
+                
+                wxFlexGridSizer *btnsizer   = new wxFlexGridSizer(2, wxSize(10, 10));
+                btnsizer->Add(okbtn);
+                btnsizer->Add(cancelbtn);
+
+                wxFlexGridSizer *topsizer   = new wxFlexGridSizer(1);
+                topsizer->Add(introtext);
+                topsizer->Add(starttext);
+                topsizer->Add(startsizer, sizerflags);
+                topsizer->Add(endtext);
+                topsizer->Add(endsizer, sizerflags);
+                topsizer->Add(btnsizer, sizerflags);
                 
                 dtr->SetSizerAndFit(topsizer);
 
                 if (dtr->ShowModal() != wxID_OK) {
                     return nullptr;
                 }
-                wxDateTime beginrange = start->GetValue();
-                wxDateTime endrange = end->GetValue().Add(wxTimeSpan(23, 59, 59, 999));
+
+                int starthour, startmin, startsec;
+                starttime->GetTime(&starthour, &startmin, &startsec);
+                wxTimeSpan starttimespan(starthour, startmin, startsec);
+                
+                int endhour, endmin, endsec;
+                endtime->GetTime(&endhour, &endmin, &endsec);
+                wxTimeSpan endtimespan(endhour, endmin, endsec);
+
+                wxDateTime beginrange = startdate->GetValue() + starttimespan;
+                wxDateTime endrange = enddate->GetValue() + endtimespan;
                 ApplyEditRangeFilter(beginrange, endrange);
                 return nullptr;
             }

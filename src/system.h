@@ -424,7 +424,7 @@ struct System {
                 frame->SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
                 frame->SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
                 frame->SetStatusText(
-                    wxString::Format(_(L"Edited %s"), c->text.lastedit.FormatDate().c_str()), 1);
+                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(), c->text.lastedit.FormatTime().c_str()), 1);
             }
         }
     }
