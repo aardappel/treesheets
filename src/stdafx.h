@@ -52,6 +52,7 @@
 
 #include <wx/srchctrl.h>
 #include <wx/datectrl.h>
+#include <wx/timectrl.h>
 #include <wx/sizer.h>
 
 #include <wx/aui/aui.h>
