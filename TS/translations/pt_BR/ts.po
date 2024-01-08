@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-02 20:47-0300\n"
-"PO-Revision-Date: 2023-12-02 20:56-0300\n"
+"POT-Creation-Date: 2024-01-08 12:32-0300\n"
+"PO-Revision-Date: 2024-01-08 13:38-0300\n"
 "Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #, c-format
 msgid ""
@@ -474,11 +474,11 @@ msgid "Discard Changes"
 msgstr "Descartar Mudanças"
 
 #, c-format
-msgid "Edited %s"
-msgstr "Editada em %s"
+msgid "Edited %s %s"
+msgstr "Editada em %s às %s"
 
-msgid "End date"
-msgstr "Data final"
+msgid "End date and time"
+msgstr "Data/hora final"
 
 msgid "End of line of text\tEND"
 msgstr "Fim da linha de texto\tEND"
@@ -738,10 +738,10 @@ msgid "JPEG file is corrupted!"
 msgstr "O arquivo JPEG está corrompido!"
 
 msgid "Key binding"
-msgstr "Associação de tecla"
+msgstr "Associação de teclas"
 
 msgid "Keybinding cancelled."
-msgstr "A associação de tecla foi cancelada."
+msgstr "A associação de teclas foi cancelada."
 
 msgid "Line Style Rendering\tALT+9"
 msgstr "Renderização com Estilo de Linha\tALT+9"
@@ -812,7 +812,7 @@ msgstr "Ir para a célula anterior\tSHIFT+TAB"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
-"NOTA: a associação de tecla passará a valer na próxima execução do "
+"NOTA: a associação de teclas passará a valer na próxima execução do "
 "TreeSheets."
 
 msgid "Navigate in between cells with cursor keys"
@@ -856,6 +856,9 @@ msgstr "Essa célula não contém texto."
 
 msgid "No text selected."
 msgstr "Não há texto selecionado."
+
+msgid "No text to search for."
+msgstr "Não há texto para buscar."
 
 msgid "Not a TreeSheets file."
 msgstr "Não é um arquivo do TreeSheets."
@@ -959,7 +962,7 @@ msgstr "Por favor informe a porcentagem de escala que deseja aplicar à imagem:"
 msgid "Please pick a menu item to change the key binding for"
 msgstr ""
 "Por favor escolha um item de menu para o qual deseja mudar a associação de "
-"tecla"
+"teclas"
 
 msgid "Please select a TreeSheets file to load:"
 msgstr "Por favor selecione um arquivo do TreeSheets para carregar:"
@@ -970,8 +973,8 @@ msgstr "Por favor selecione um arquivo de imagem:"
 msgid "Please select file to import:"
 msgstr "Por favor selecione um arquivo para importar:"
 
-msgid "Please select the date range."
-msgstr "Por favor selecione a data inicial e a data final."
+msgid "Please select the datetime range."
+msgstr "Por favor selecione a data/hora inicial e a final."
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Tecle F11 para sair do modo de tela cheia."
@@ -1171,7 +1174,7 @@ msgid "Show Toolbar"
 msgstr "Mostrar Barra de &Ferramentas"
 
 msgid "Show last edits in specific date range"
-msgstr "Evidenciar edições feitas em um intervalo de datas específico..."
+msgstr "Evidenciar edições feitas em um intervalo específico de datas/horas..."
 
 msgid "Show only cells in current search"
 msgstr "Evidenciar células que contiverem resultados da busca"
@@ -1189,8 +1192,8 @@ msgstr "Classificar em Ordem &Ascendente"
 msgid "Sort &Descending"
 msgstr "Classificar em Ordem &Descendente"
 
-msgid "Start date"
-msgstr "Data inicial"
+msgid "Start date and time"
+msgstr "Data/hora inicial"
 
 msgid "Start of line of text\tHOME"
 msgstr "Início da linha de texto\tHOME"
@@ -1370,6 +1373,9 @@ msgstr "XML (&atributos também, para OPML, etc.)..."
 
 msgid "XML..."
 msgstr "&XML..."
+
+msgid "You need to select one cell if you want to search for its text."
+msgstr "Você deve selecionar uma célula se quiser buscar pelo texto dela."
 
 msgid "Zlib error while writing file."
 msgstr "A Zlib retornou um erro ao gravar o arquivo."
