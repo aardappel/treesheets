@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-02 20:47-0300\n"
+"POT-Creation-Date: 2024-01-08 13:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -452,10 +452,10 @@ msgid "Discard Changes"
 msgstr ""
 
 #, c-format
-msgid "Edited %s"
+msgid "Edited %s %s"
 msgstr ""
 
-msgid "End date"
+msgid "End date and time"
 msgstr ""
 
 msgid "End of line of text\tEND"
@@ -805,6 +805,9 @@ msgstr ""
 msgid "No text selected."
 msgstr ""
 
+msgid "No text to search for."
+msgstr ""
+
 msgid "Not a TreeSheets file."
 msgstr ""
 
@@ -903,7 +906,7 @@ msgstr ""
 msgid "Please select file to import:"
 msgstr ""
 
-msgid "Please select the date range."
+msgid "Please select the datetime range."
 msgstr ""
 
 msgid "Press F11 to exit fullscreen mode."
@@ -1116,7 +1119,7 @@ msgstr ""
 msgid "Sort &Descending"
 msgstr ""
 
-msgid "Start date"
+msgid "Start date and time"
 msgstr ""
 
 msgid "Start of line of text\tHOME"
@@ -1291,6 +1294,9 @@ msgid "XML (attributes too, for OPML etc)..."
 msgstr ""
 
 msgid "XML..."
+msgstr ""
+
+msgid "You need to select one cell if you want to search for its text."
 msgstr ""
 
 msgid "Zlib error while writing file."
