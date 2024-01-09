@@ -713,8 +713,7 @@ struct MyFrame : wxFrame {
             wxStatusBar *sb = CreateStatusBar(4);
             sb->SetOwnBackgroundColour(toolbgcol);
             SetStatusBarPane(0);
-            int swidths[] = {-1, FromDIP(200), FromDIP(120), FromDIP(100)};
-            SetStatusWidths(4, swidths);
+            SetDPIAwareStatusWidths();
         }
 
         nb = new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -1113,6 +1112,11 @@ struct MyFrame : wxFrame {
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
     }
 
+    void SetDPIAwareStatusWidths() {
+        int swidths[] = {-1, FromDIP(200), FromDIP(120), FromDIP(100)};
+        SetStatusWidths(4, swidths);
+    }
+
     void OnDPIChanged(wxDPIChangedEvent &dce) {
         {   // block all other events until we finished preparing
             wxEventBlocker blocker(this);
@@ -1137,6 +1141,7 @@ struct MyFrame : wxFrame {
                 nb->SetTabCtrlHeight(-1);
             }
             idd->FillBitmapVector(imagepath);
+            if (GetStatusBar()) SetDPIAwareStatusWidths();
         }
     }
 
