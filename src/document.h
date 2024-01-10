@@ -1276,27 +1276,27 @@ struct Document {
 
                 wxSizerFlags sizerflags(1);
 
-                wxFlexGridSizer startsizer(2, wxSize(5, 5));
-                startsizer.Add(&startdate, 0, wxALL, 5);
-                startsizer.Add(&starttime, 0, wxALL, 5);
+                wxFlexGridSizer* startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+                startsizer->Add(&startdate, 0, wxALL, 5);
+                startsizer->Add(&starttime, 0, wxALL, 5);
 
-                wxFlexGridSizer endsizer(2, wxSize(5, 5));
-                endsizer.Add(&enddate, 0, wxALL, 5);
-                endsizer.Add(&endtime, 0, wxALL, 5);
+                wxFlexGridSizer* endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+                endsizer->Add(&enddate, 0, wxALL, 5);
+                endsizer->Add(&endtime, 0, wxALL, 5);
                 
-                wxFlexGridSizer btnsizer(2, wxSize(5, 5));
-                btnsizer.Add(&okbtn, 0, wxALL, 5);
-                btnsizer.Add(&cancelbtn, 0, wxALL, 5);
+                wxFlexGridSizer* btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+                btnsizer->Add(&okbtn, 0, wxALL, 5);
+                btnsizer->Add(&cancelbtn, 0, wxALL, 5);
 
-                wxFlexGridSizer topsizer(1);
-                topsizer.Add(&introtext, 0, wxALL, 5);
-                topsizer.Add(&starttext, 0, wxALL, 5);
-                topsizer.Add(&startsizer, sizerflags);
-                topsizer.Add(&endtext, 0, wxALL, 5);
-                topsizer.Add(&endsizer, sizerflags);
-                topsizer.Add(&btnsizer, sizerflags);
+                wxFlexGridSizer* topsizer = new wxFlexGridSizer(1);
+                topsizer->Add(&introtext, 0, wxALL, 5);
+                topsizer->Add(&starttext, 0, wxALL, 5);
+                topsizer->Add(startsizer, sizerflags);
+                topsizer->Add(&endtext, 0, wxALL, 5);
+                topsizer->Add(endsizer, sizerflags);
+                topsizer->Add(btnsizer, sizerflags);
                 
-                dtr.SetSizerAndFit(&topsizer);
+                dtr.SetSizerAndFit(topsizer);
 
                 if (dtr.ShowModal() != wxID_OK) {
                     return nullptr;
