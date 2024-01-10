@@ -207,7 +207,7 @@ struct Cell {
     bool IsParentOf(const Cell *c) { return c->parent == this || (c->parent && IsParentOf(c->parent)); }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
-    wxString ToText(int indent, const Selection &s, int format, Document *doc, bool inheritstyle) {
+    wxString ToText(int indent, const Selection &s, int format, Document *doc, bool inheritstyle, bool includefolded) {
         wxString str = text.ToText(indent, s, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) && ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU)) 
                 && this != doc->curdrawroot && !str.IsEmpty()) {
@@ -219,13 +219,13 @@ struct Cell {
             str.Append(L"</span>");
         }
         if (format == A_EXPCSV) {
-            if (grid) return grid->ToText(indent, s, format, doc, inheritstyle);
+            if (grid) return grid->ToText(indent, s, format, doc, inheritstyle, includefolded);
             str.Replace(L"\"", L"\"\"");
             return L"\"" + str + L"\"";
         }
         if (s.cursor != s.cursorend) return str;
         str.Append(L"\n");
-        if (grid) str.Append(grid->ToText(indent, s, format, doc, inheritstyle));
+        if (grid) str.Append(grid->ToText(indent, s, format, doc, inheritstyle, includefolded));
         if (format == A_EXPXML) {
             str.Prepend(L">");
             if (text.relsize) {

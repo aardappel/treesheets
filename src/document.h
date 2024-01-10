@@ -412,7 +412,7 @@ struct Document {
 
     auto CopyEntireCells(wxString &s, int k) {
         sys->clipboardcopy = s;
-        wxString html = selected.g->ConvertToText(selected, 0, k == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT, this, false);
+        wxString html = selected.g->ConvertToText(selected, 0, k == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT, this, false, false);
         auto htmlobj = new wxHTMLDataObject(html);
         return htmlobj;
     }
@@ -432,7 +432,7 @@ struct Document {
                         dragdata.Add(new wxBitmapDataObject(bm));
                     }
                 } else {
-                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
+                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false, false);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s, A_COPY);
@@ -471,7 +471,7 @@ struct Document {
                     }
                 } else {
                     wxDataObjectComposite *clipboarddata = new wxDataObjectComposite();
-                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
+                    wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false, false);
                     clipboarddata->Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s, k);
@@ -843,7 +843,7 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            wxString content = root->ToText(0, Selection(), k, this, true);
+            wxString content = root->ToText(0, Selection(), k, this, true, true);
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(
