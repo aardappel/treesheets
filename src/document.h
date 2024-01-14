@@ -512,7 +512,7 @@ struct Document {
         return;
     }
 
-    void Zoom(int dir, wxDC &dc, bool fromroot = false, bool selectionmaybedrawroot = true) {
+    void Zoom(int dir, wxDC &dc, bool fromroot = false, bool selectionmaybedrawroot = true, bool needsrefresh = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
         if (!len && !drawpath.size()) return;
         if (dir > 0) {
@@ -533,7 +533,7 @@ struct Document {
         drawroot->ResetLayout();
         drawroot->ResetChildren();
         Layout(dc);
-        DrawSelectMove(dc, selected, true, false);
+        DrawSelectMove(dc, selected, needsrefresh, false);
     }
 
     const wxChar *NoSel()   { return _(L"This operation requires a selection."); }
@@ -671,7 +671,7 @@ struct Document {
         if (hover.g) hover.g->DrawHover(this, dc, hover);
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
         if (initialzoomlevel) {
-            Zoom(initialzoomlevel, dc);
+            Zoom(initialzoomlevel, dc, false, true, false);
             initialzoomlevel = 0;
         }
         if (scrolltoselection) {
