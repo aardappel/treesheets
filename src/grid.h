@@ -539,8 +539,8 @@ struct Grid {
             if (nc)
                 c = nc;
             else {
-                Cell *colcell = ocells[(nxs ? min(dx, xs - nxs - 1) : x) +
-                                       (nxs ? y : min(dy, ys - nys - 1)) * (xs - nxs)];
+                Cell *colcell = ocells[(nxs ? max(0, min(dx - 1, xs - nxs - 1)) : x) +
+                                       (nxs ? y : max(0, min(dy - 1, ys - nys - 1))) * (xs - nxs)];
                 c = new Cell(cell, colcell);
                 c->text.relsize = colcell->text.relsize;
             }
