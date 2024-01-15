@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-02 20:47-0300\n"
+"POT-Creation-Date: 2024-01-08 13:35-0300\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -221,7 +221,7 @@ msgid "<unnamed>"
 msgstr "<unbenannt>"
 
 msgid "A temporary autosave file exists, would you like to load it instead?"
-msgstr "Eine temporäre Speicherkopie existiert. Möchten Sie diese stattdessen laden?"
+msgstr "Eine temporäre Sicherungskopie existiert. Möchten Sie diese stattdessen laden?"
 
 msgid "Add Image"
 msgstr "Bild hinzufügen"
@@ -477,11 +477,11 @@ msgid "Discard Changes"
 msgstr "Änderungen verwerfen"
 
 #, c-format
-msgid "Edited %s"
-msgstr "%s bearbeitet"
+msgid "Edited %s %s"
+msgstr "Bearbeitet am %s um %s"
 
-msgid "End date"
-msgstr "Enddatum"
+msgid "End date and time"
+msgstr "Enddatum und -zeit"
 
 msgid "End of line of text\tEND"
 msgstr "Ende der Zeile des Textes\tEND"
@@ -858,6 +858,9 @@ msgstr "Kein Text in dieser Zelle!"
 msgid "No text selected."
 msgstr "Kein Text ausgewählt!"
 
+msgid "No text to search for."
+msgstr "Kein Suchbegriff für die Suche vorhanden."
+
 msgid "Not a TreeSheets file."
 msgstr "Keine TreeSheets-Datei!"
 
@@ -964,8 +967,8 @@ msgstr "Bitte wählen Sie eine Bilddatei aus:"
 msgid "Please select file to import:"
 msgstr "Bitte wählen Sie eine Datei zum Importieren aus:"
 
-msgid "Please select the date range."
-msgstr "Bitte wählen Sie den Datumsbereich aus."
+msgid "Please select the datetime range."
+msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "F11 drücken, um den Vollbildmous zu verlassen."
@@ -1179,8 +1182,8 @@ msgstr "&Aufsteigend sortieren"
 msgid "Sort &Descending"
 msgstr "Absteigen&d sortieren"
 
-msgid "Start date"
-msgstr "Startdatum"
+msgid "Start date and time"
+msgstr "Startdatum und -zeit"
 
 msgid "Start of line of text\tHOME"
 msgstr "Beginn der Zeile des Texte\tHOME"
@@ -1357,6 +1360,9 @@ msgstr "XML (auch Attribute, für OPML u.Ä.)"
 
 msgid "XML..."
 msgstr "XML..."
+
+msgid "You need to select one cell if you want to search for its text."
+msgstr "Sie müssen eine Zelle auswählen, wenn Sie ihren Text suchen möchten."
 
 msgid "Zlib error while writing file."
 msgstr "Es ist ein Zlib-Fehler beim Schreiben der Datei aufgetreten."
