@@ -160,7 +160,7 @@ struct TSCanvas : public wxScrolledWindow {
         }
     }
 
-    void OnSize(wxSizeEvent &se) { doc->Refresh(); }
+    void OnSize(wxSizeEvent &se) {}
     void OnContextMenuClick(wxContextMenuEvent &cme) {
         if (lastrmbwaswithctrl) {
             wxMenu *tagmenu = new wxMenu();
