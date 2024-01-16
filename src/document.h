@@ -667,17 +667,18 @@ struct Document {
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         Render(dc);
-        DrawSelect(dc, selected);
-        if (hover.g) hover.g->DrawHover(this, dc, hover);
-        if (scaledviewingmode) { dc.SetUserScale(1, 1); }
         if (initialzoomlevel) {
             Zoom(initialzoomlevel, dc, false, true, false);
             initialzoomlevel = 0;
+        } else {
+            DrawSelect(dc, selected);
         }
         if (scrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected, false, false);
             scrolltoselection = false;
         }
+        if (hover.g) hover.g->DrawHover(this, dc, hover);
+        if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
     void Print(wxDC &dc, wxPrintout &po) {
