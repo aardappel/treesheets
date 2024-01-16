@@ -265,10 +265,10 @@ struct Document {
             DrawSelect(dc, s, refreshinstead);
     }
 
-    bool ScrollIfSelectionOutOfView(wxDC &dc, Selection &s, bool refreshalways = false) {
+    bool ScrollIfSelectionOutOfView(wxDC &dc, Selection &s, bool refreshalways = false, bool needslayout = true) {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
-            Layout(dc);
+            if (needslayout) Layout(dc);
             int canvasw, canvash;
             sw->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && s.g) {
@@ -285,7 +285,7 @@ struct Document {
                                           ? r.y
                                           : r.y + r.height > maxy - wxSYS_HSCROLL_Y ? r.y + r.height - canvash + wxSYS_HSCROLL_Y : cury,
                                       true);
-                    Refresh();
+                    if (needslayout) Refresh();
                     return true;
                 }
             }
@@ -675,7 +675,7 @@ struct Document {
             initialzoomlevel = 0;
         }
         if (scrolltoselection) {
-            ScrollIfSelectionOutOfView(dc, selected);
+            ScrollIfSelectionOutOfView(dc, selected, false, false);
             scrolltoselection = false;
         }
     }
