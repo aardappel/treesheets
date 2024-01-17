@@ -314,7 +314,7 @@ struct Document {
                 DrawSelectMove(dc, selected, true);
                 return;
             }
-        Zoom(-100, dc, false, false);
+        Zoom(-100, dc, false);
         if (zoomiftiny) ZoomTiny(dc);
         DrawSelectMove(dc, selected, true);
     }
@@ -512,7 +512,7 @@ struct Document {
         return;
     }
 
-    void ZoomSetDrawPath(int dir, wxDC &dc, bool fromroot = true, bool selectionmaybedrawroot = true) {
+    void ZoomSetDrawPath(int dir, wxDC &dc, bool fromroot = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
         if (!len && !drawpath.size()) return;
         if (dir > 0) {
@@ -521,14 +521,14 @@ struct Document {
             CreatePath(c && c->grid ? c : selected.g->cell, drawpath);
         } else if (dir < 0) {
             Cell *drawroot = WalkPath(drawpath);
-            if (drawroot->grid && drawroot->grid->folded && selectionmaybedrawroot)
+            if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
         while (len < drawpath.size()) drawpath.remove(0);
     }
 
-    void Zoom(int dir, wxDC &dc, bool fromroot = false, bool selectionmaybedrawroot = true) {
-        ZoomSetDrawPath(dir, dc, fromroot, selectionmaybedrawroot);
+    void Zoom(int dir, wxDC &dc, bool fromroot = false) {
+        ZoomSetDrawPath(dir, dc, fromroot);
         Cell *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
