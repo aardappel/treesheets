@@ -512,7 +512,7 @@ struct Document {
         return;
     }
 
-    void Zoom(int dir, wxDC &dc, bool fromroot = false, bool selectionmaybedrawroot = true, bool needsrefresh = true) {
+    void ZoomSetDrawPath(int dir, wxDC &dc, bool fromroot = true, bool selectionmaybedrawroot = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
         if (!len && !drawpath.size()) return;
         if (dir > 0) {
@@ -525,6 +525,10 @@ struct Document {
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
         while (len < drawpath.size()) drawpath.remove(0);
+    }
+
+    void Zoom(int dir, wxDC &dc, bool fromroot = false, bool selectionmaybedrawroot = true) {
+        ZoomSetDrawPath(dir, dc, fromroot, selectionmaybedrawroot);
         Cell *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
@@ -533,7 +537,7 @@ struct Document {
         drawroot->ResetLayout();
         drawroot->ResetChildren();
         Layout(dc);
-        DrawSelectMove(dc, selected, needsrefresh, false);
+        DrawSelectMove(dc, selected, true, false);
     }
 
     const wxChar *NoSel()   { return _(L"This operation requires a selection."); }
@@ -634,6 +638,10 @@ struct Document {
         dc.Clear();
         if (!rootgrid) return;
         sw->GetClientSize(&maxx, &maxy);
+        if (initialzoomlevel) {
+            ZoomSetDrawPath(initialzoomlevel, dc);
+            initialzoomlevel = 0;
+        }
         Layout(dc);
         double xscale = maxx / (double)layoutxs;
         double yscale = maxy / (double)layoutys;
@@ -667,12 +675,7 @@ struct Document {
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         Render(dc);
-        if (initialzoomlevel) {
-            Zoom(initialzoomlevel, dc, false, true, false);
-            initialzoomlevel = 0;
-        } else {
-            DrawSelect(dc, selected);
-        }
+        DrawSelect(dc, selected);
         if (scrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected, false, false);
             scrolltoselection = false;
