@@ -972,10 +972,13 @@ struct Document {
         } else if (uk >= ' ') {
             if (!selected.g) return NoSel();
             Cell *c = selected.ThinExpand(this);
-            if (!c) return OneCell();
+            if (!c) {
+                selected.Wrap(this);
+                c = selected.GetCell();
+            }
+            c->AddUndo(this); // FIXME: not needed for all keystrokes, or at least, merge all
+                                  // keystroke undos within same cell
             ShiftToCenter(dc);
-            c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
-                               // keystroke undos within same cell
             c->text.Key(this, uk, selected);
             ScrollIfSelectionOutOfView(dc, selected, true);
             return nullptr;
