@@ -196,7 +196,7 @@ struct Document {
             fos.Write(&vers, 1);
             sos.Write8(selected.xs);
             sos.Write8(selected.ys);
-            sos.Write8(!drawpath.size() || !ocs ? 0 : drawpath.size()); // zoom level
+            sos.Write8(ocs ? drawpath.size() : 0); // zoom level
             RefreshImageRefCount(true);
             int realindex = 0;
             loopv(i, sys->imagelist) {
