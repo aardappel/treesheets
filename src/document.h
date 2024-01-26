@@ -2156,7 +2156,7 @@ struct Document {
                                 DELETEP(c->grid);
                                 sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
                                 if (!c->HasText())
-                                    c->grid->MergeWithParent(c->parent->grid, selected);
+                                    c->grid->MergeWithParent(c->parent->grid, selected, this);
                             }
                             Refresh();
                         }

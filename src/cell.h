@@ -406,7 +406,7 @@ struct Cell {
             c = nullptr;
             DELETEP(grid);  // FIXME: could merge instead?
             grid = cg;
-            if (!HasText()) grid->MergeWithParent(parent->grid, s);  // deletes grid/this.
+            if (!HasText()) grid->MergeWithParent(parent->grid, s, doc);  // deletes grid/this.
         }
     }
 

@@ -659,7 +659,7 @@ struct Grid {
         c->parent = cell;
     }
 
-    void MergeWithParent(Grid *p, Selection &s) {
+    void MergeWithParent(Grid *p, Selection &s, Document *doc) {
         cell->grid = nullptr;
         foreachcell(c) {
             if (x + s.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
@@ -681,6 +681,7 @@ struct Grid {
         s.g = p;
         s.xs += xs - 1;
         s.ys += ys - 1;
+        s.ExitEdit(doc);
         delete this;
     }
 
