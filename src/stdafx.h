@@ -60,6 +60,7 @@
 #include <wx/aui/auibook.h>
 
 #include <wx/display.h>
+#include <wx/bmpbndl.h>
 
 #include <clocale>
 

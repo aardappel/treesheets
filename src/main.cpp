@@ -209,7 +209,6 @@ enum {
     A_INCWIDTHNH,
     A_DECWIDTHNH,
     A_ZOOMSCR,
-    A_ICONSET,
     A_V_GS,
     A_V_BS,
     A_V_LS,
