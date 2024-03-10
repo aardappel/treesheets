@@ -130,11 +130,18 @@ list(
     TRANSFORM locales
     REPLACE "/ts\\.mo$" ""
 )
-if(APPLE OR WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
+if(WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
     foreach(locale ${locales})
         install(
             FILES "TS/translations/${locale}/ts.mo"
             DESTINATION "${CMAKE_INSTALL_PREFIX}/translations/${locale}"
+        )
+    endforeach()
+elseif(APPLE)
+    foreach(locale ${locales})
+        install(
+            FILES "TS/translations/${locale}/ts.mo"
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/${locale}.lproj"
         )
     endforeach()
 else()
