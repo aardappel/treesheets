@@ -20,30 +20,21 @@
 # Should work on Windows, too. About helping FindwxWidgets to find wxWidgets
 # consult: https://cmake.org/cmake/help/latest/module/FindwxWidgets.html
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.25)
 
 project(treesheets)
 
-if(NOT APPLE AND NOT WIN32)
-    set(TREESHEETS_RELOCATABLE_INSTALLATION OFF CACHE BOOL "Install data relative to the treesheets binary, instead of respecting the Filesystem Hierarchy Standard")
-
-    include(GNUInstallDirs)
-endif()
+########## GLOBAL SETTINGS ################################
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-OPTION(TREESHEETS_WITH_STATIC_WXWIDGETS "Build wxWidgets along with TreeSheets and link TreeSheets against static wxWidgets library" OFF)
-
-# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code
-# (recursive git check-out with submodules) to be placed in lib/wxWidgets (see below, it can be changed to your liking).
-
-if (TREESHEETS_WITH_STATIC_WXWIDGETS)
-    set(wxBUILD_SHARED OFF)
-    add_subdirectory(lib/wxWidgets)
-else()
-    find_package(wxWidgets REQUIRED aui adv core xml net)
-    include(${wxWidgets_USE_FILE})
+OPTION(WITH_CLANG_TIDY "Run clang-tidy linter" OFF)
+if (WITH_CLANG_TIDY)
+    set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 endif()
+
+########## LOBSTER COMPILE AND LINK SETTINGS ##############
 
 file(
     GLOB lobster_sources
@@ -67,11 +58,19 @@ target_include_directories(lobster PUBLIC lobster/include lobster/src lobster/ex
 add_library(lobster-impl STATIC src/lobster_impl.cpp)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+########## TREESHEETS COMPILE AND LINK SETTINGS ###########
 
-OPTION(WITH_CLANG_TIDY "Run clang-tidy linter" OFF)
-if (WITH_CLANG_TIDY)
-    set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
+OPTION(TREESHEETS_WITH_STATIC_WXWIDGETS "Build wxWidgets along with TreeSheets and link TreeSheets against static wxWidgets library" OFF)
+
+# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code
+# (recursive git check-out with submodules) to be placed in lib/wxWidgets (see below, it can be changed to your liking).
+
+if (TREESHEETS_WITH_STATIC_WXWIDGETS)
+    set(wxBUILD_SHARED OFF)
+    add_subdirectory(lib/wxWidgets)
+else()
+    find_package(wxWidgets REQUIRED aui adv core xml net)
+    include(${wxWidgets_USE_FILE})
 endif()
 
 add_executable(
@@ -93,14 +92,21 @@ target_link_libraries(
     lobster-impl
 )
 
-if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
+########## TREESHEETS INSTALLATION SETTINGS ###############
+
+if(LINUX)
+    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the treesheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
+    include(GNUInstallDirs)
+endif()
+
+if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_DOCDIR})
     set(TREESHEETS_FULL_DOCDIR ${CMAKE_INSTALL_FULL_DOCDIR})
     set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME})
     set(TREESHEETS_FULL_PKGDATADIR ${CMAKE_INSTALL_FULL_DATADIR}/${CMAKE_PROJECT_NAME})
 
-    # Apple and Windows always look to relative paths for locales.
+    # Convert relative to absolute paths because only absolute paths are looked up on Linux
     target_compile_definitions(treesheets PRIVATE "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
     target_compile_definitions(treesheets PRIVATE "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\"")
     target_compile_definitions(treesheets PRIVATE "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\"")
@@ -147,7 +153,7 @@ else()
     endforeach()
 endif()
 
-if(NOT APPLE AND NOT WIN32 AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
+if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     install(FILES linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
     install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
