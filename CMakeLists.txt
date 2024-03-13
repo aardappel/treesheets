@@ -96,10 +96,11 @@ target_link_libraries(
 
 if(LINUX)
     OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the treesheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
-    include(GNUInstallDirs)
 endif()
 
 if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
+    include(GNUInstallDirs)
+
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_DOCDIR})
     set(TREESHEETS_FULL_DOCDIR ${CMAKE_INSTALL_FULL_DOCDIR})
@@ -110,6 +111,10 @@ if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     target_compile_definitions(treesheets PRIVATE "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
     target_compile_definitions(treesheets PRIVATE "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\"")
     target_compile_definitions(treesheets PRIVATE "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\"")
+
+    install(FILES linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+    install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+    install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
 else()
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX})
@@ -158,10 +163,4 @@ else()
             DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES"
         )
     endforeach()
-endif()
-
-if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
-    install(FILES linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
-    install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-    install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
 endif()
