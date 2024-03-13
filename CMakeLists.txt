@@ -152,7 +152,7 @@ elseif(APPLE)
     foreach(locale ${locales})
         install(
             FILES "TS/translations/${locale}/ts.mo"
-            DESTINATION "${CMAKE_INSTALL_PREFIX}/${locale}.lproj"
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/translations/${locale}.lproj"
         )
     endforeach()
 else()
