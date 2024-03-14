@@ -33,8 +33,6 @@ jobs:
       run: cmake --build _build -j4
     - name: install files
       run: cmake --install _build
-    - name: remove unnecessary files
-      run: rm -rf TreeSheets-relocatable/include TreeSheets-relocatable/lib TreeSheets-relocatable/bin/wx*
     - name: zip
       run: zip -r linux_treesheets_${{ matrix.cxx }}.zip TreeSheets-relocatable
     - name: upload build artifacts
