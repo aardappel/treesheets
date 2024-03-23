@@ -286,6 +286,20 @@ class Selection {
                 {
                     if (dx + dy < 0) v--;
                     vs = 1;  // make it a cell selection
+                } else { // selection cycle, jump to the opposite side of the grid
+                    if (y + dy > g->ys) {
+                        y = 0;
+                        vs = 1;
+                    } else if (y + dy < 0) {
+                        y = g->ys - 1;
+                        vs = 1;
+                    } else if (x + dx > g->xs) {
+                        x = 0;
+                        vs = 1;
+                    } else if (x + dx < 0) {
+                        x = g->xs - 1;
+                        vs = 1;
+                    }
                 };
             }
             doc->DrawSelectMove(dc, *this);
