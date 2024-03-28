@@ -1,4 +1,4 @@
-struct TSCanvas : public wxScrolledWindow {
+struct TSCanvas : public wxScrolledCanvas {
     MyFrame *frame;
     Document *doc;
 
@@ -8,7 +8,7 @@ struct TSCanvas : public wxScrolledWindow {
     wxPoint lastmousepos;
 
     TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
-        : wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, size,
+        : wxScrolledCanvas(parent, wxID_ANY, wxDefaultPosition, size,
                            wxScrolledWindowStyle | wxWANTS_CHARS),
           frame(fr),
           doc(nullptr),
