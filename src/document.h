@@ -28,12 +28,6 @@ struct Document {
     wxString filename;
     long lastmodsinceautosave, undolistsizeatfullsave, lastsave;
     bool modified, tmpsavesuccess;
-    wxDataObjectComposite *dataobjc;
-    wxTextDataObject *dataobjt;
-    wxBitmapDataObject *dataobji;
-    wxFileDataObject *dataobjf;
-    //wxHTMLDataObject *dataobjh;
-    //wxRichTextBufferDataObject *dataobjr;
 
     struct MyPrintout : wxPrintout {
         Document *doc;
@@ -118,12 +112,6 @@ struct Document {
           currentviewscale(1),
           searchfilter(false),
           editfilter(0) {
-        dataobjc = new wxDataObjectComposite();  // deleted by DropTarget
-        dataobjc->Add(dataobji = new wxBitmapDataObject());
-        dataobjc->Add(dataobjt = new wxTextDataObject());
-        dataobjc->Add(dataobjf = new wxFileDataObject());
-        //dataobjc->Add(dataobjh = new wxHTMLDataObject(), true);  // Prefer HTML over text, doesn't seem to work.
-        //dataobjc->Add(dataobjr = new wxRichTextBufferDataObject());
         ResetFont();
         pageSetupData = printData;
         pageSetupData.SetMarginTopLeft(wxPoint(15, 15));
@@ -1582,7 +1570,7 @@ struct Document {
             case A_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
-                    wxTheClipboard->GetData(*dataobjc);
+                    wxTheClipboard->GetData(sys->dataobjc);
                     PasteOrDrop();
                     wxTheClipboard->Close();
                 } else if (sys->cellclipboard) {
@@ -2099,9 +2087,9 @@ struct Document {
         Cell *c = selected.ThinExpand(this);
         if (!c) return;
         wxBusyCursor wait;
-        switch (dataobjc->GetReceivedFormat().GetType()) {
+        switch (sys->dataobjc.GetReceivedFormat().GetType()) {
             case wxDF_FILENAME: {
-                const wxArrayString &as = dataobjf->GetFilenames();
+                const wxArrayString &as = sys->dataobjf.GetFilenames();
                 if (as.size()) {
                     if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
                     c->AddUndo(this);
@@ -2116,12 +2104,12 @@ struct Document {
             #ifdef __WXMSW__
             case wxDF_PNG:
             #endif
-                if (dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
+                if (sys->dataobji.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                     c->AddUndo(this);
-                    wxImage im = dataobji->GetBitmap().ConvertToImage();
+                    wxImage im = sys->dataobji.GetBitmap().ConvertToImage();
                     vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                     SetImageBM(c, std::move(idv), sys->frame->csf);
-                    dataobji->SetBitmap(wxNullBitmap);
+                    sys->dataobji.SetBitmap(wxNullBitmap);
                     c->Reset();
                     Refresh();
                 }
@@ -2138,8 +2126,8 @@ struct Document {
             }
             */
             default:  // several text formats
-                if (dataobjt->GetText() != wxEmptyString) {
-                    wxString s = dataobjt->GetText();
+                if (sys->dataobjt.GetText() != wxEmptyString) {
+                    wxString s = sys->dataobjt.GetText();
                     if ((sys->clipboardcopy == s) && sys->cellclipboard) {
                         c->Paste(this, sys->cellclipboard.get(), selected);
                         Refresh();
@@ -2161,7 +2149,7 @@ struct Document {
                             Refresh();
                         }
                     }
-                    dataobjt->SetText(wxEmptyString);
+                    sys->dataobjt.SetText(wxEmptyString);
                 }
                 break;
         }
