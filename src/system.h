@@ -121,7 +121,11 @@ struct System {
           casesensitivesearch(true),
           darkennonmatchingcells(false),
           fastrender(true),
-          insidefiledialog(false) {
+          insidefiledialog(false),
+          dataobjc(),
+          dataobji(),
+          dataobjt(),
+          dataobjf() {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
