@@ -81,10 +81,10 @@ struct System {
     uint lastcellcolor = 0xFFFFFF;
     uint lasttextcolor = 0;
     uint lastbordcolor = 0xA0A0A0;
-    wxDataObjectComposite dataobjc;
-    wxTextDataObject dataobjt;
-    wxBitmapDataObject dataobji;
-    wxFileDataObject dataobjf;
+    wxDataObjectComposite *dataobjc = new wxDataObjectComposite();
+    wxTextDataObject *dataobjt = new wxTextDataObject();
+    wxBitmapDataObject *dataobji = new wxBitmapDataObject();
+    wxFileDataObject *dataobjf = new wxFileDataObject();
     //wxHTMLDataObject dataobjh;
     //wxRichTextBufferDataObject dataobjr;
 
@@ -147,10 +147,9 @@ struct System {
 
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
-
-        dataobjc.Add(&dataobji);
-        dataobjc.Add(&dataobjt);
-        dataobjc.Add(&dataobjf);
+        dataobjc->Add(dataobjt);
+        dataobjc->Add(dataobji);
+        dataobjc->Add(dataobjf);
         //dataobjc.Add(dataobjh, true);  // Prefer HTML over text, doesn't seem to work.
         //dataobjc.Add(dataobjr);
     }

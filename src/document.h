@@ -1570,7 +1570,7 @@ struct Document {
             case A_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
-                    wxTheClipboard->GetData(sys->dataobjc);
+                    wxTheClipboard->GetData(*sys->dataobjc);
                     PasteOrDrop();
                     wxTheClipboard->Close();
                 } else if (sys->cellclipboard) {
@@ -2087,9 +2087,9 @@ struct Document {
         Cell *c = selected.ThinExpand(this);
         if (!c) return;
         wxBusyCursor wait;
-        switch (sys->dataobjc.GetReceivedFormat().GetType()) {
+        switch (sys->dataobjc->GetReceivedFormat().GetType()) {
             case wxDF_FILENAME: {
-                const wxArrayString &as = sys->dataobjf.GetFilenames();
+                const wxArrayString &as = sys->dataobjf->GetFilenames();
                 if (as.size()) {
                     if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
                     c->AddUndo(this);
@@ -2104,12 +2104,12 @@ struct Document {
             #ifdef __WXMSW__
             case wxDF_PNG:
             #endif
-                if (sys->dataobji.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
+                if (sys->dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                     c->AddUndo(this);
-                    wxImage im = sys->dataobji.GetBitmap().ConvertToImage();
+                    wxImage im = sys->dataobji->GetBitmap().ConvertToImage();
                     vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                     SetImageBM(c, std::move(idv), sys->frame->csf);
-                    sys->dataobji.SetBitmap(wxNullBitmap);
+                    sys->dataobji->SetBitmap(wxNullBitmap);
                     c->Reset();
                     Refresh();
                 }
@@ -2126,8 +2126,8 @@ struct Document {
             }
             */
             default:  // several text formats
-                if (sys->dataobjt.GetText() != wxEmptyString) {
-                    wxString s = sys->dataobjt.GetText();
+                if (sys->dataobjt->GetText() != wxEmptyString) {
+                    wxString s = sys->dataobjt->GetText();
                     if ((sys->clipboardcopy == s) && sys->cellclipboard) {
                         c->Paste(this, sys->cellclipboard.get(), selected);
                         Refresh();
@@ -2149,7 +2149,7 @@ struct Document {
                             Refresh();
                         }
                     }
-                    sys->dataobjt.SetText(wxEmptyString);
+                    sys->dataobjt->SetText(wxEmptyString);
                 }
                 break;
         }
