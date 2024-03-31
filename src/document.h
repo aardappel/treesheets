@@ -2103,12 +2103,13 @@ struct Document {
         Cell *c = selected.ThinExpand(this);
         if (!c) return;
         wxBusyCursor wait;
+        bool wantsrefresh = false;
 
         if (pdataobjt.GetText() != wxEmptyString) {
             wxString s = pdataobjt.GetText();
             if ((sys->clipboardcopy == s) && sys->cellclipboard) {
                 c->Paste(this, sys->cellclipboard.get(), selected);
-                Refresh();
+                wantsrefresh = true;
             } else {
                 const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
                 if (as.size()) {
@@ -2124,7 +2125,7 @@ struct Document {
                         if (!c->HasText())
                             c->grid->MergeWithParent(c->parent->grid, selected, this);
                     }
-                    Refresh();
+                    wantsrefresh = true;
                 }
             }
         }
@@ -2135,7 +2136,7 @@ struct Document {
                 if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
                 c->AddUndo(this);
                 if (!LoadImageIntoCell(as[0], c, sys->frame->csf)) PasteSingleText(c, as[0]);
-                Refresh();
+                wantsrefresh = true;
             }
         }
 
@@ -2145,8 +2146,10 @@ struct Document {
             vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
             SetImageBM(c, std::move(idv), sys->frame->csf);
             c->Reset();
-            Refresh();
+            wantsrefresh = true;
         }
+
+        if (wantsrefresh) Refresh();
     }
 
     const wxChar *Sort(bool descending) {
