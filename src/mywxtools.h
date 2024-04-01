@@ -23,7 +23,7 @@ struct DropTarget : wxDropTarget {
         GetData();
         TSCanvas *sw = sys->frame->GetCurTab();
         sw->SelectClick(x, y, false, 0);
-        sw->doc->PasteOrDrop();
+        sw->doc->PasteOrDrop(*sys->dndobjt, *sys->dndobji, *sys->dndobjf);
         return wxDragCopy;
     }
 };

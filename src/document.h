@@ -1570,8 +1570,22 @@ struct Document {
             case A_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
-                    wxTheClipboard->GetData(*sys->dataobjc);
-                    PasteOrDrop();
+                    // wxDataObjectComposite does not work properly under Wayland for text atoms
+                    // and also needs to be allocated to the heap because of the behavior of its destructor.
+                    //
+                    // Instead of aggregating the possible targets to one wxDataObjectComposite on the heap, 
+                    // just create one wxDataObjectSimple subclass instance for each type TreeSheets can handle 
+                    // on the stack and try to paste the clipboard content into it.
+                    //
+                    // For drag and drop operations, wxDataObjectComposite is still mandatory, so keep one 
+                    // instance for it separately at the System instance.
+                    wxTextDataObject pdataobjt;
+                    wxBitmapDataObject pdataobji;
+                    wxFileDataObject pdataobjf;
+                    wxTheClipboard->GetData(pdataobjt);
+                    wxTheClipboard->GetData(pdataobji);
+                    wxTheClipboard->GetData(pdataobjf);
+                    PasteOrDrop(pdataobjt, pdataobji, pdataobjf);
                     wxTheClipboard->Close();
                 } else if (sys->cellclipboard) {
                     c->Paste(this, sys->cellclipboard.get(), selected);
@@ -2083,76 +2097,59 @@ struct Document {
 
     void PasteSingleText(Cell *c, const wxString &t) { c->text.Insert(this, t, selected); }
 
-    void PasteOrDrop() {
+    void PasteOrDrop(const wxTextDataObject &pdataobjt,
+                     const wxBitmapDataObject &pdataobji,
+                     const wxFileDataObject &pdataobjf) {
         Cell *c = selected.ThinExpand(this);
         if (!c) return;
         wxBusyCursor wait;
-        switch (sys->dataobjc->GetReceivedFormat().GetType()) {
-            case wxDF_FILENAME: {
-                const wxArrayString &as = sys->dataobjf->GetFilenames();
+        bool wantsrefresh = false;
+
+        if (pdataobjt.GetText() != wxEmptyString) {
+            wxString s = pdataobjt.GetText();
+            if ((sys->clipboardcopy == s) && sys->cellclipboard) {
+                c->Paste(this, sys->cellclipboard.get(), selected);
+                wantsrefresh = true;
+            } else {
+                const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
                 if (as.size()) {
-                    if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
-                    c->AddUndo(this);
-                    if (!LoadImageIntoCell(as[0], c, sys->frame->csf)) PasteSingleText(c, as[0]);
-                    Refresh();
-                }
-                break;
-            }
-            case wxDF_BITMAP:
-            case wxDF_DIB:
-            case wxDF_TIFF:
-            #ifdef __WXMSW__
-            case wxDF_PNG:
-            #endif
-                if (sys->dataobji->GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
-                    c->AddUndo(this);
-                    wxImage im = sys->dataobji->GetBitmap().ConvertToImage();
-                    vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-                    SetImageBM(c, std::move(idv), sys->frame->csf);
-                    sys->dataobji->SetBitmap(wxNullBitmap);
-                    c->Reset();
-                    Refresh();
-                }
-                break;
-            /*
-            case wxDF_HTML: {
-                auto s = dataobjh->GetHTML();
-                // Would have to somehow parse HTML here to get images and styled text.
-                break;
-            }
-            case wxDF_RTF: {
-                // Would have to somehow parse RTF here to get images and styled text.
-                break;
-            }
-            */
-            default:  // several text formats
-                if (sys->dataobjt->GetText() != wxEmptyString) {
-                    wxString s = sys->dataobjt->GetText();
-                    if ((sys->clipboardcopy == s) && sys->cellclipboard) {
-                        c->Paste(this, sys->cellclipboard.get(), selected);
-                        Refresh();
+                    if (as.size() <= 1) {
+                        c->AddUndo(this);
+                        c->ResetLayout();
+                        PasteSingleText(c, as[0]);
                     } else {
-                        const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
-                        if (as.size()) {
-                            if (as.size() <= 1) {
-                                c->AddUndo(this);
-                                c->ResetLayout();
-                                PasteSingleText(c, as[0]);
-                            } else {
-                                c->parent->AddUndo(this);
-                                c->ResetLayout();
-                                DELETEP(c->grid);
-                                sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
-                                if (!c->HasText())
-                                    c->grid->MergeWithParent(c->parent->grid, selected, this);
-                            }
-                            Refresh();
-                        }
+                        c->parent->AddUndo(this);
+                        c->ResetLayout();
+                        DELETEP(c->grid);
+                        sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
+                        if (!c->HasText())
+                            c->grid->MergeWithParent(c->parent->grid, selected, this);
                     }
-                    sys->dataobjt->SetText(wxEmptyString);
+                    wantsrefresh = true;
                 }
-                break;
+            }
         }
+
+        if (pdataobjf.GetFilenames().size() != 0) {
+            const wxArrayString &as = pdataobjf.GetFilenames();
+            if (as.size()) {
+                if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
+                c->AddUndo(this);
+                if (!LoadImageIntoCell(as[0], c, sys->frame->csf)) PasteSingleText(c, as[0]);
+                wantsrefresh = true;
+            }
+        }
+
+        if (pdataobji.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
+            c->AddUndo(this);
+            wxImage im = pdataobji.GetBitmap().ConvertToImage();
+            vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+            SetImageBM(c, std::move(idv), sys->frame->csf);
+            c->Reset();
+            wantsrefresh = true;
+        }
+
+        if (wantsrefresh) Refresh();
     }
 
     const wxChar *Sort(bool descending) {

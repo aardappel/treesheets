@@ -81,12 +81,10 @@ struct System {
     uint lastcellcolor = 0xFFFFFF;
     uint lasttextcolor = 0;
     uint lastbordcolor = 0xA0A0A0;
-    wxDataObjectComposite *dataobjc = new wxDataObjectComposite();
-    wxTextDataObject *dataobjt = new wxTextDataObject();
-    wxBitmapDataObject *dataobji = new wxBitmapDataObject();
-    wxFileDataObject *dataobjf = new wxFileDataObject();
-    //wxHTMLDataObject dataobjh;
-    //wxRichTextBufferDataObject dataobjr;
+    wxDataObjectComposite* dndobjc = new wxDataObjectComposite();
+    wxTextDataObject* dndobjt = new wxTextDataObject();
+    wxBitmapDataObject* dndobji = new wxBitmapDataObject();
+    wxFileDataObject* dndobjf = new wxFileDataObject();
 
     System(bool portable)
         : defaultfont(
@@ -145,13 +143,12 @@ struct System {
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
 
+        dndobjc->Add(dndobjt);
+        dndobjc->Add(dndobji);
+        dndobjc->Add(dndobjf);
+
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
-        dataobjc->Add(dataobjt);
-        dataobjc->Add(dataobji);
-        dataobjc->Add(dataobjf);
-        //dataobjc.Add(dataobjh, true);  // Prefer HTML over text, doesn't seem to work.
-        //dataobjc.Add(dataobjr);
     }
 
     ~System() {
