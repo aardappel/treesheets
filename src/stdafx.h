@@ -74,6 +74,7 @@ WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
 
 #include <new>
 #include <vector>
+#include <set>
 #include <array>
 #include <string>
 #include <string_view>

@@ -1753,32 +1753,45 @@ struct Document {
             case A_IMAGESCP:
             case A_IMAGESCW:
             case A_IMAGESCF: {
-                long v = 0;
+                std::set<Image *> imagestomanipulate;
+                std::vector<Cell *> cellstoresetlayout;
+                long v = 0.0;
+
                 loopallcellssel(c, true) {
                     if (c->text.image) {
-                        if (!v) {
-                            if (k == A_IMAGESCW) {
-                                v = wxGetNumberFromUser(
-                                    _(L"Please enter the new image width:"),
-                                    _(L"Width"), _(L"Image Resize"), 500, 10, 4000, sys->frame);
-                            } else {
-                                v = wxGetNumberFromUser(
-                                    _(L"Please enter the percentage you want the image scaled by:"),
-                                    L"%", _(L"Image Resize"), 50, 5, 400, sys->frame);
-                            }
-                            if (v < 0) return nullptr;
-                        }
-                        if (k == A_IMAGESCW) {
-                            int pw = c->text.image->pixel_width;
-                            if (pw) c->text.image->ImageRescale((double)v / (double)pw);
-                        } else if (k == A_IMAGESCP) {
-                            c->text.image->ImageRescale(v / 100.0);
-                        } else {
-                            c->text.image->DisplayScale(v / 100.0);
-                        }
-                        c->ResetLayout();
+                        imagestomanipulate.insert(c->text.image);
+                        cellstoresetlayout.push_back(c);
                     }
                 }
+
+                if (imagestomanipulate.size()) {
+                    if (k == A_IMAGESCW) {
+                        v = wxGetNumberFromUser(
+                            _(L"Please enter the new image width:"),
+                            _(L"Width"), _(L"Image Resize"), 500, 10, 4000, sys->frame);
+                    } else {
+                        v = wxGetNumberFromUser(
+                            _(L"Please enter the percentage you want the image scaled by:"),
+                            L"%", _(L"Image Resize"), 50, 5, 400, sys->frame);
+                    }
+                    if (v < 0) return nullptr;
+                }
+
+                for(auto img: imagestomanipulate) {
+                    if (k == A_IMAGESCW) {
+                        int pw = img->pixel_width;
+                        if (pw) img->ImageRescale((double)v / (double)pw);
+                    } else if (k == A_IMAGESCP) {
+                        img->ImageRescale(v / 100.0);
+                    } else {
+                        img->DisplayScale(v / 100.0);
+                    }   
+                }
+
+                for(auto c: cellstoresetlayout) {
+                    c->ResetLayout();
+                }
+           
                 Refresh();
                 return nullptr;
             }
