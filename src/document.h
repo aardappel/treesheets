@@ -1789,6 +1789,7 @@ struct Document {
                 }
 
                 for(auto c: cellstoresetlayout) {
+                    c->ResetChildren();
                     c->ResetLayout();
                 }
            
