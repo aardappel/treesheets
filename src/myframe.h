@@ -789,7 +789,7 @@ struct MyFrame : wxFrame {
             nb->AddPage(sw, _(L"<unnamed>"), true, wxNullBitmap);
         else
             nb->InsertPage(0, sw, _(L"<unnamed>"), true, wxNullBitmap);
-        sw->SetDropTarget(new DropTarget(sys->dndobjc));
+        sw->SetDropTarget(new DropTarget(doc->dndobjc));
         sw->SetFocus();
         return sw;
     }

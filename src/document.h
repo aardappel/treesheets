@@ -28,6 +28,10 @@ struct Document {
     wxString filename;
     long lastmodsinceautosave, undolistsizeatfullsave, lastsave;
     bool modified, tmpsavesuccess;
+    wxDataObjectComposite* dndobjc = new wxDataObjectComposite();
+    wxTextDataObject* dndobjt = new wxTextDataObject();
+    wxBitmapDataObject* dndobji = new wxBitmapDataObject();
+    wxFileDataObject* dndobjf = new wxFileDataObject();
 
     struct MyPrintout : wxPrintout {
         Document *doc;
@@ -116,6 +120,9 @@ struct Document {
         pageSetupData = printData;
         pageSetupData.SetMarginTopLeft(wxPoint(15, 15));
         pageSetupData.SetMarginBottomRight(wxPoint(15, 15));
+        dndobjc->Add(dndobjt);
+        dndobjc->Add(dndobji);
+        dndobjc->Add(dndobjf);
     }
 
     ~Document() {

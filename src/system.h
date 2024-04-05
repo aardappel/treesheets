@@ -81,10 +81,6 @@ struct System {
     uint lastcellcolor = 0xFFFFFF;
     uint lasttextcolor = 0;
     uint lastbordcolor = 0xA0A0A0;
-    wxDataObjectComposite* dndobjc = new wxDataObjectComposite();
-    wxTextDataObject* dndobjt = new wxTextDataObject();
-    wxBitmapDataObject* dndobji = new wxBitmapDataObject();
-    wxFileDataObject* dndobjf = new wxFileDataObject();
 
     System(bool portable)
         : defaultfont(
@@ -142,10 +138,6 @@ struct System {
         cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
-
-        dndobjc->Add(dndobjt);
-        dndobjc->Add(dndobji);
-        dndobjc->Add(dndobjf);
 
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
