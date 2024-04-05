@@ -1756,27 +1756,23 @@ struct Document {
                 std::set<Image *> imagestomanipulate;
                 std::vector<Cell *> cellstoresetlayout;
                 long v = 0.0;
-
                 loopallcellssel(c, true) {
                     if (c->text.image) {
                         imagestomanipulate.insert(c->text.image);
                         cellstoresetlayout.push_back(c);
                     }
                 }
-
-                if (imagestomanipulate.size()) {
-                    if (k == A_IMAGESCW) {
-                        v = wxGetNumberFromUser(
-                            _(L"Please enter the new image width:"),
-                            _(L"Width"), _(L"Image Resize"), 500, 10, 4000, sys->frame);
-                    } else {
-                        v = wxGetNumberFromUser(
-                            _(L"Please enter the percentage you want the image scaled by:"),
-                            L"%", _(L"Image Resize"), 50, 5, 400, sys->frame);
-                    }
-                    if (v < 0) return nullptr;
+                if (imagestomanipulate.empty()) return nullptr;
+                if (k == A_IMAGESCW) {
+                    v = wxGetNumberFromUser(
+                        _(L"Please enter the new image width:"),
+                        _(L"Width"), _(L"Image Resize"), 500, 10, 4000, sys->frame);
+                } else {
+                    v = wxGetNumberFromUser(
+                        _(L"Please enter the percentage you want the image scaled by:"),
+                        L"%", _(L"Image Resize"), 50, 5, 400, sys->frame);
                 }
-
+                if (v < 0) return nullptr;
                 for(auto img: imagestomanipulate) {
                     if (k == A_IMAGESCW) {
                         int pw = img->pixel_width;
@@ -1787,12 +1783,10 @@ struct Document {
                         img->DisplayScale(v / 100.0);
                     }   
                 }
-
                 for(auto c: cellstoresetlayout) {
                     c->ResetChildren();
                     c->ResetLayout();
-                }
-           
+                }        
                 Refresh();
                 return nullptr;
             }
