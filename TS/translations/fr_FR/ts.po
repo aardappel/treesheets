@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-22 21:32+0200\n"
+"POT-Creation-Date: 2024-01-08 13:35-0300\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
-"Last-Translator: Philippe-devel-github <comptes.phil@gmail.com>\n"
+"Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -261,10 +261,8 @@ msgstr "Charger la sauvegarde automatique"
 msgid "Autosave to .tmp"
 msgstr "Sauvegarde automatique en .tmp"
 
-#, fuzzy
-#| msgid "Image copied to clipboard"
 msgid "Bitmap copied to clipboard"
-msgstr "Image copiée dans le presse-papier"
+msgstr "Bitmap copiée dans le presse-papier"
 
 msgid "Black and white toolbar icons"
 msgstr "Icônes de la barre d'outils en noir et blanc"
@@ -450,10 +448,8 @@ msgstr "Curseur à gauche\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Curseur à droite\tRIGHT"
 
-#, fuzzy
-#| msgid "No matches for filter."
 msgid "Date range filter"
-msgstr "Pas de correspondance sur ce filtre."
+msgstr "Filtre de l'intervalle de date et heure."
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Diminuer la largeur de colonne (ALT+molette)\tALT+PGDN"
@@ -491,12 +487,12 @@ msgstr "Supprime le mot situé avant le curseur"
 msgid "Discard Changes"
 msgstr "Supprimer les modifications"
 
-#, c-format
-msgid "Edited %s"
-msgstr "Modifié le %s"
+# c-format
+msgid "Edited %s %s"
+msgstr "Modifié %s %s"
 
-msgid "End date"
-msgstr "Date de fin"
+msgid "End date and time"
+msgstr "Date et heure de fin"
 
 msgid "End of line of text\tEND"
 msgstr "Aller en fin de ligne, des cellules\tFIN"
@@ -658,10 +654,8 @@ msgstr "Conflit de modifications du fichier!"
 msgid "File of newer version."
 msgstr "Fichier de version plus récente."
 
-#, fuzzy
-#| msgid "Filter..."
 msgid "Filter"
-msgstr "Filtre..."
+msgstr "Filtre"
 
 msgid "Filter by the same cell color"
 msgstr "Filtrer les cellules avec la même couleur"
@@ -681,6 +675,9 @@ msgstr "Un type d'image non défini dans ce programme a été trouvé."
 msgid "Go To &Matching Cell (Text)\tF6"
 msgstr "Aller à la cellule identique suivante (Texte)\tF6"
 
+msgid "Go To &Previous Search Result\tSHIFT+F3"
+msgstr "&Aller Au Résultat de Recherche Précédent\tF3"
+
 msgid "Go To Matching Cell (Image)\tF7"
 msgstr "Aller à la cellule &identique suivante (Image)\tF6"
 
@@ -693,17 +690,15 @@ msgstr "Aller à la cellule identique précédente (Texte)\tSHIFT+F6"
 msgid "Go to Next Search Result"
 msgstr "Aller au résultat de recherche suivant\tF3"
 
-msgid "Go to next filter match\tSHIFT+F3"
-msgstr "Aller au résultat de filtre suivant\tSHIFT+F3"
+msgid "Go to next filter match\tCTRL+F3"
+msgstr "Aller au résultat de filtre suivant\tCTRL+F3"
 
 msgid "Grid Style Rendering\tALT+7"
 msgstr "Rendu de style grille\tALT+7"
 
-#, fuzzy
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (&Puces)..."
 
-#, fuzzy
 msgid "HTML (&Outline)..."
 msgstr "HTML (&Aperçu)..."
 
@@ -759,10 +754,8 @@ msgstr "Erreur d'initialisation"
 msgid "Internal error: unimplemented operation!"
 msgstr "Erreur interne: opération non prévue!"
 
-#, fuzzy
-#| msgid "File corrupted!"
 msgid "JPEG file is corrupted!"
-msgstr "Fichier corrompu!"
+msgstr "Fichier JPEG est corrompu!"
 
 msgid "Key binding"
 msgstr "Association de touche"
@@ -884,6 +877,9 @@ msgstr "Aucun texte dans cette cellule."
 msgid "No text selected."
 msgstr "Aucun texte sélectionné."
 
+msgid "No text to search for."
+msgstr "Pas de texte à rechercher."
+
 msgid "Not a TreeSheets file."
 msgstr "N'est pas un fichier TreeSheets."
 
@@ -985,10 +981,8 @@ msgstr "Veuillez entrer la nouvelle largeur d'image:"
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Veuillez entrer le pourcentage de redimensionnement de l'image:"
 
-#, fuzzy
 msgid "Please pick a menu item to change the key binding for"
-msgstr ""
-"Veuillez sélectionner un item du menu pour changer sa touche de raccourci"
+msgstr "Veuillez sélectionner un item du menu pour changer sa touche de raccourci"
 
 msgid "Please select a TreeSheets file to load:"
 msgstr "Veuillez sélectionner un fichier TreeSheets à charger:"
@@ -997,12 +991,10 @@ msgid "Please select an image file:"
 msgstr "Veuillez sélectionner un fichier image:"
 
 msgid "Please select file to import:"
-msgstr "Veuillez sélectionner le fichier à impoter :"
+msgstr "Veuillez sélectionner le fichier à impoter:"
 
-#, fuzzy
-#| msgid "Please select an image file:"
-msgid "Please select the date range."
-msgstr "Veuillez sélectionner un fichier image:"
+msgid "Please select the datetime range."
+msgstr "Veuillez sélectionner l'intervalle de date et heure."
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Pressez F11 pour sortir du mode plein écran."
@@ -1079,6 +1071,9 @@ msgstr "Enregistrer &Sous..."
 
 msgid "Save (CTRL+s)"
 msgstr "Enregistrer (CTRL+s)"
+
+msgid "Save All"
+msgstr "Enregistrer tout"
 
 msgid "Save As"
 msgstr "Enregistrer sous"
@@ -1219,8 +1214,8 @@ msgstr "Tri Croiss&ant"
 msgid "Sort &Descending"
 msgstr "Tri &Décroissant"
 
-msgid "Start date"
-msgstr "Date de début"
+msgid "Start date and time"
+msgstr "Date et heure de début"
 
 msgid "Start of line of text\tHOME"
 msgstr "Aller au début de ligne\tHOME"
@@ -1385,10 +1380,8 @@ msgstr "Aller sur la page &web du tutoriel..."
 msgid "What size grid would you like to start with?"
 msgstr "Avec quelle taille de grille souhaitez-vous commencer ?"
 
-#, fuzzy
-#| msgid "Width %d"
 msgid "Width"
-msgstr "Largeur %d"
+msgstr "Largeur"
 
 #, c-format
 msgid "Width %d"
@@ -1405,6 +1398,9 @@ msgstr "XML (attributs compris, pour OPML etc.)..."
 
 msgid "XML..."
 msgstr "XML..."
+
+msgid "You need to select one cell if you want to search for its text."
+msgstr "Voud devrez sélectionner une cellule si vous voulez rechercher son texte."
 
 msgid "Zlib error while writing file."
 msgstr "Erreur Zlib lors de l'enregistrement du fichier."
@@ -1458,35 +1454,3 @@ msgstr "échelle:"
 
 msgid "size:"
 msgstr "taille:"
-
-#~ msgid "Cannot tell/seek document?"
-#~ msgstr "Impossible de dire/chercher un document?"
-
-#~ msgid "Copy Image to clipboard"
-#~ msgstr "Copier l'image vers le presse-papier"
-
-#~ msgid "Copy the image in the selected cell to the clipboard"
-#~ msgstr "Copier l'image de la cellule sélectionnée vers le presse-papier"
-
-#~ msgid "Could not load file because of a corrupted embedded JPEG file"
-#~ msgstr ""
-#~ "Impossible de charger le fichier à cause de la corruption d'une image "
-#~ "JPEG intégrée"
-
-#~ msgid ""
-#~ "Could not load file because of an embedded image file of unknown type"
-#~ msgstr ""
-#~ "Impossible de charger le fichier à cause du format inconnu d'une image "
-#~ "intégrée"
-
-#~ msgid "Empty strings cannot be tags."
-#~ msgstr "Un texte vide ne peut pas être une balise."
-
-#~ msgid "Text copied to clipboard"
-#~ msgstr "Texte copier vers le presse papier"
-
-#~ msgid "Cannot find file."
-#~ msgstr "Fichier introuvable."
-
-#~ msgid "Cannot launch browser for this link."
-#~ msgstr "Impossible de lancer le navigateur pour ce lien."
