@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-15 18:36+0200\n"
+"POT-Creation-Date: 2024-01-08 13:35-0300\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
-"Last-Translator: Albano Battistella <>\n"
+"Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
 "Language: Italian\n"
 "MIME-Version: 1.0\n"
@@ -49,9 +49,11 @@ msgstr "&Testo delimitato da virgole (CSV) ..."
 msgid "&Copy\tCTRL+c"
 msgstr "&Copia\tCTRL+c"
 
-#, fuzzy
+msgid "&Copy as Bitmap"
+msgstr "&Copia come bitmap"
+
 msgid "&Data\tCTRL+ALT+d"
-msgstr "&Incolla\tCTRL+v"
+msgstr "&Dati\tCTRL+ALT+d"
 
 msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
 msgstr ""
@@ -89,7 +91,7 @@ msgstr "&Gerarchia"
 
 #, fuzzy
 msgid "&Horizontal View\tCTRL+ALT+."
-msgstr "&Vista Orizzontale"
+msgstr "Vista &Orizzontale\tCTRL+ALT+."
 
 msgid "&Image..."
 msgstr "&Immagine..."
@@ -120,9 +122,8 @@ msgstr "&Nuovo\tCTRL+n"
 msgid "&Open...\tCTRL+o"
 msgstr "&Apri ...\tCTRL+O"
 
-#, fuzzy
 msgid "&Operation\tCTRL+ALT+o"
-msgstr "&Apri ...\tCTRL+O"
+msgstr "&Operazione\tCTRL+ALT+o"
 
 msgid "&Options"
 msgstr "&Opzioni"
@@ -148,40 +149,35 @@ msgstr "&Rimuovi il testo della cella dai tag"
 msgid "&Remove Image(s)"
 msgstr "&Rimuovi immagine(s)"
 
-#, fuzzy
-msgid "&Replace in Current Selection\tCTRL+k"
-msgstr "&Sostituisci nella selezione corrente\tCTRL+h"
+msgid "&Replace\tCTRL+h"
+msgstr "&Sostituisci\tCTRL+h"
 
 msgid "&Reset Scale (display only)"
-msgstr ""
+msgstr "Reimposta la scala (solo display)"
 
-#, fuzzy
 msgid "&Reset text sizes\tCTRL+SHIFT+s"
-msgstr "&Reimposta la dimensione del testo\tSHIFT+CTRL+s"
+msgstr "&Reimposta la dimensione del testo\tCTRL+SHIFT+s"
 
-#, fuzzy
 msgid "&Reset text styles\tCTRL+SHIFT+r"
-msgstr "&Ripristina stili di testo\tSHIFT+CTRL+r"
+msgstr "&Ripristina stili di testo\tCTRL+SHIFT+r"
 
 msgid "&Roundness of grid borders..."
-msgstr "&Rotondità dei bordi della griglia ..."
+msgstr "&Rotondità dei bordi della griglia..."
 
-#, fuzzy
 msgid "&Run\tCTRL+ALT+F5"
-msgstr "Dispiega tutto\tCTRL+ALT+F10"
+msgstr "&Eseguisci\tCTRL+ALT+F5"
 
 msgid "&Save\tCTRL+s"
 msgstr "&Salva\tCTRL+s"
 
-#, fuzzy
 msgid "&Scale Image (display only)"
-msgstr "&Scala l'immagine"
+msgstr "&Scala l'immagine (solo display)"
 
 msgid "&Scale Image (re-sample pixels, by %)"
-msgstr ""
+msgstr "&Scala immagine (ricampiona i pixel, in %)"
 
 msgid "&Scale Image (re-sample pixels, by width)"
-msgstr ""
+msgstr "&Scala immagine (ricampiona i pixel, per larghezza)"
 
 msgid "&Search"
 msgstr "&Cerca"
@@ -198,20 +194,17 @@ msgstr "&Imposta il testo della cella da taggare (usa CTRL+RMB)"
 msgid "&Set Custom Color From Cell BG"
 msgstr "&Imposta colore personalizzato dalla cella BG"
 
-#, fuzzy
 msgid "&Shrink text of all sub-grids\tCTRL+SHIFT+m"
-msgstr "&Riduci il testo di tutte le griglie secondarie \tSHIFT+CTRL+m"
+msgstr "&Riduci il testo di tutte le griglie secondarie\tCTRL+SHIFT+m"
 
-#, fuzzy
 msgid "&Transpose\tCTRL+SHIFT+t"
-msgstr "&Riduci il testo di tutte le sottocategorie\tSHIFT+CTRL+m"
+msgstr "&Trasponi\tCTRL+SHIFT+t"
 
 msgid "&Undo\tCTRL+z"
 msgstr "&Annulla\tCTRL+z"
 
-#, fuzzy
 msgid "&Vertical View\tCTRL+ALT+,"
-msgstr "&Vista verticale"
+msgstr "&Vista verticale\tCTRL+ALT+,"
 
 msgid "&View"
 msgstr "&Vista"
@@ -224,6 +217,9 @@ msgstr "&XML..."
 
 msgid "1:1 scale restored."
 msgstr "Scala 1: 1 ripristinata."
+
+msgid "<unnamed>"
+msgstr "<senza nome>"
 
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr ""
@@ -240,18 +236,16 @@ msgid "Adds an image to the selected cell"
 msgstr "Aggiunge un'immagine alla cella selezionata"
 
 msgid "Apply last border color\tSHIFT+ALT+b"
-msgstr ""
+msgstr "Applica il colore del bordo recente\tSHIFT+ALT+b"
 
-#, fuzzy
 msgid "Apply last cell color\tSHIFT+ALT+c"
-msgstr "Ripristina &colori\tSHIFT+CTRL+c"
+msgstr "Applica il colore della cella recente\tSHIFT+ALT+c"
 
-#, fuzzy
 msgid "Apply last text color\tSHIFT+ALT+t"
-msgstr "Ripristina &colori\tSHIFT+CTRL+c"
+msgstr "Applica il colore del testo recente\tSHIFT+ALT+t"
 
 msgid "At least one file could not be opened."
-msgstr ""
+msgstr "Non è stato possibile aprire almeno un file."
 
 msgid "Auto reload documents"
 msgstr "Auto caricamento documenti"
@@ -265,35 +259,34 @@ msgstr "Salvataggio automatico"
 msgid "Autosave to .tmp"
 msgstr "Salvataggio automatico su .tmp"
 
+msgid "Bitmap copied to clipboard"
+msgstr "Bitmap copiata negli appunti"
+
 msgid "Black and white toolbar icons"
 msgstr "Icone della barra degli strumenti in bianco e nero"
 
 msgid "Border "
 msgstr "Bordo"
 
-#, fuzzy
 msgid "Border &0\tCTRL+SHIFT+9"
-msgstr "Piega tutto\tCTRL+MAIUSC+F10"
+msgstr "Bordo &0\tCTRL+SHIFT+9"
 
-#, fuzzy
 msgid "Border &1\tCTRL+SHIFT+1"
-msgstr "Piega tutto\tCTRL+MAIUSC+F10"
+msgstr "Bordo &1\tCTRL+SHIFT+1"
 
-#, fuzzy
 msgid "Border &2\tCTRL+SHIFT+2"
-msgstr "Piega tutto\tCTRL+MAIUSC+F10"
+msgstr "Bordo &2\tCTRL+SHIFT+2"
 
-#, fuzzy
 msgid "Border &3\tCTRL+SHIFT+3"
-msgstr "Piega tutto\tCTRL+MAIUSC+F10"
+msgstr "Bordo &3\tCTRL+SHIFT+3"
 
 #, fuzzy
 msgid "Border &4\tCTRL+SHIFT+4"
-msgstr "Piega tutto\tCTRL+MAIUSC+F10"
+msgstr "Bordo &4\tCTRL+SHIFT+4"
 
 #, fuzzy
 msgid "Border &5\tCTRL+SHIFT+5"
-msgstr "Piega tutto\tCTRL+MAIUSC+F10"
+msgstr "Bordo &5\tCTRL+SHIFT+5"
 
 msgid "Bubble Style Rendering\tALT+8"
 msgstr "Rendering stile bolla\tALT+8"
@@ -337,9 +330,6 @@ msgstr "Impossibile spostare questa cella nella gerarchia."
 
 msgid "Cannot open file."
 msgstr "Non è possibile aprire questo file."
-
-msgid "Cannot tell/seek document?"
-msgstr "Non posso dire/cercare un documento?"
 
 msgid "Case-sensitive search"
 msgstr ""
@@ -386,16 +376,17 @@ msgstr "Scegli il file Fogli Albero da salvare:"
 msgid "Choose XML file to write"
 msgstr "Scegli il file XML da scrivere"
 
-#, fuzzy
 msgid "Choose image file to save:"
-msgstr "Scegli il file Fogli Albero da salvare:"
+msgstr "Scegli il file immagine da salvare:"
 
 msgid "Clear replace"
-msgstr ""
+msgstr "Cancella la sostituzione"
 
-#, fuzzy
 msgid "Clear search"
-msgstr "Nessuna ricerca."
+msgstr "Cancella la ricerca"
+
+msgid "Collapse Ce&lls\tCTRL+l"
+msgstr "Collasa le ce&llule\tCTRL+l"
 
 msgid "Column width decreased."
 msgstr "La larghezza della colonna è diminuita."
@@ -419,24 +410,14 @@ msgstr "Copia (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copia come testo continuo"
 
-msgid "Copy Image to clipboard"
-msgstr ""
-
-#, fuzzy
-msgid "Copy the image in the selected cell to the clipboard"
-msgstr "Aggiunge un'immagine alla cella selezionata"
+msgid "Copy with &Images\tCTRL+ALT+c"
+msgstr "Copia con &immagini\tCTRL+ALT+c"
 
 msgid "Corrupt PNG header."
 msgstr "Intestazione PNG corrotta."
 
 msgid "Corrupt block header."
 msgstr "intestazione blocco corrotto."
-
-msgid "Could not load file because of a corrupted embedded JPEG file"
-msgstr ""
-
-msgid "Could not load file because of an embedded image file of unknown type"
-msgstr ""
 
 msgid "Create .bak files"
 msgstr "Crea file .bak"
@@ -453,6 +434,9 @@ msgstr "Cursore a sinistra\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Cursore a destra\tRIGHT"
 
+msgid "Date range filter"
+msgstr "Filtro per un intervallo di date e tempo"
+
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Riduci larghezza colonna (ALT + rotellina del mouse)\tALT+PGDN"
 
@@ -462,13 +446,11 @@ msgstr "Diminuisci larghezza colonna (nessuna sottogriglia)\tCTRL+ALT+PGDN"
 msgid "Delete Before\tBACK"
 msgstr "Eliminare Prima\tINDIETRO"
 
-#, fuzzy
 msgid "Delete Word After\tCTRL+DEL"
-msgstr "&Elimina dopo\tDEL"
+msgstr "&Elimina dopo la parola\tCTRL+DEL"
 
-#, fuzzy
 msgid "Delete Word Before\tCTRL+BACK"
-msgstr "Eliminare Prima\tINDIETRO"
+msgstr "Elimina prima della parola\tCTRL+BACK"
 
 msgid ""
 "Deletes the column of cells after the selected grid line, or the row below"
@@ -492,11 +474,11 @@ msgid "Discard Changes"
 msgstr "Non salvare le modifiche"
 
 #, c-format
-msgid "Edited %s"
-msgstr "Modificato %s"
+msgid "Edited %s %s"
+msgstr "Modificato %s %s"
 
-msgid "Empty strings cannot be tags."
-msgstr "Le stringhe vuote non possono essere tag."
+msgid "End date and time"
+msgstr "Data e ora di fine"
 
 msgid "End of line of text\tEND"
 msgstr "Fine della riga di testo\tFINE"
@@ -621,13 +603,11 @@ msgstr "Estendi la selezione a destra\tSHIFT+RIGHT"
 msgid "Extend Selection Up\tSHIFT+UP"
 msgstr "Estendi selezione su\tSHIFT+UP"
 
-#, fuzzy
 msgid "Extend Selection Word Left\tCTRL+SHIFT+LEFT"
-msgstr "Estendi la parola di selezione Sinistra\tSHIFT+CTRL+LEFT"
+msgstr "Estendi la parola di selezione Sinistra\tCTRL+SHIFT+LEFT"
 
-#, fuzzy
 msgid "Extend Selection Word Right\tCTRL+SHIFT+RIGHT"
-msgstr "Estendi la parola di selezione a destra\tSHIFT+CTRL+RIGHT"
+msgstr "Estendi la parola di selezione a destra\tCTRL+SHIFT+RIGHT"
 
 msgid "Extend Selection to End\tSHIFT+END"
 msgstr "Estendi selezione per terminare\tSHIFT+END"
@@ -663,8 +643,11 @@ msgstr "Conflitto di modifica dei file!"
 msgid "File of newer version."
 msgstr "File della versione più recente."
 
+msgid "Filter"
+msgstr "Filtro"
+
 msgid "Filter by the same cell color"
-msgstr ""
+msgstr "Filtra per lo stesso colore di cella"
 
 msgid "Filter..."
 msgstr "Filtro..."
@@ -675,25 +658,35 @@ msgstr "Piega tutto\tCTRL+MAIUSC+F10"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Piega la griglia delle celle selezionate in modo ricorsivo"
 
-msgid "Go To &Matching Cell\tF6"
-msgstr "Vai a & Abbina cella\tF6"
+msgid "Found an image type that is not defined in this program."
+msgstr "È stato trovato un tipo di immagine non definito in questo programma."
 
-msgid "Go To Matching Cell (Reverse)\tSHIFT+F6"
-msgstr "Vai a Cella corrispondente (inversa)\tSHIFT+F6"
+msgid "Go To &Matching Cell (Text)\tF6"
+msgstr "Vai alla cella corrispondente (testo)\tF6"
+ 
+msgid "Go To &Previous Search Result\tSHIFT+F3"
+msgstr "&Vai al risultato della ricerca precedente\tSHIFT+F3"
 
-#, fuzzy
+msgid "Go To Matching Cell (Image)\tF7"
+msgstr "Vai alla cella corrispondente (immagine)\tF7"
+
+msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
+msgstr "Vai a Cella corrispondente (immagine, inversa)\tSHIFT+F7"
+
+msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
+msgstr "Vai a Cella corrispondente (testo, inversa)\tSHIFT+F6"
+
 msgid "Go to Next Search Result"
-msgstr "&Vai al risultato della ricerca successiva\tF3"
+msgstr "Vai al risultato della ricerca successiva"
 
-msgid "Go to next filter match\tSHIFT+F3"
-msgstr ""
+msgid "Go to next filter match\tCTRL+F3"
+msgstr "Vai alla corrispondenza del filtro successivo\tCTRL+F3"
 
 msgid "Grid Style Rendering\tALT+7"
 msgstr "Grid Style Rendering\tALT+7"
 
-#, fuzzy
 msgid "HTML (&Bullet points)..."
-msgstr "HTML (&Outline)..."
+msgstr "HTML (&Punti elenco)..."
 
 msgid "HTML (&Outline)..."
 msgstr "HTML (&Outline)..."
@@ -726,9 +719,6 @@ msgstr "Immagine"
 msgid "Image Resize"
 msgstr "Ridimensiona mmagine"
 
-msgid "Image copied to clipboard"
-msgstr ""
-
 msgid "Import file from"
 msgstr "Importa file da"
 
@@ -751,6 +741,9 @@ msgstr "Errore di inizializzazione"
 
 msgid "Internal error: unimplemented operation!"
 msgstr "Errore interno: operazione non implementata!"
+
+msgid "JPEG file is corrupted!"
+msgstr "File JPEG è corrotto!"
 
 msgid "Key binding"
 msgstr "chiave di rilegatura"
@@ -783,13 +776,16 @@ msgstr ""
 "Rendi un layout di gerarchia più verticale (predefinito) o più orizzontale"
 
 msgid "Maximum number of launches reached."
-msgstr ""
+msgstr "Numero massimo di inizi raggiunto."
 
 msgid "Minimize on close"
 msgstr "Riduci a icona in chiusura"
 
 msgid "Minimize to tray"
 msgstr "Riduci a icona"
+
+msgid "More than one cell must be selected."
+msgstr "È necessario selezionare più di una cella."
 
 msgid "Move Cells Down\tCTRL+DOWN"
 msgstr "Sposta celle in basso\tCTRL+DOWN"
@@ -844,9 +840,8 @@ msgstr "Nuovo file annullato."
 msgid "No image in this cell."
 msgstr "Nessuna immagine in questa cella."
 
-#, fuzzy
 msgid "No matches for filter."
-msgstr "Nessuna corrispondenza per la ricerca."
+msgstr "Nessuna corrispondenza per il filtro."
 
 msgid "No matches for search."
 msgstr "Nessuna corrispondenza per la ricerca."
@@ -863,12 +858,14 @@ msgstr "Nessuna ricerca."
 msgid "No style to paste."
 msgstr "Nessuno stile da incollare."
 
-#, fuzzy
 msgid "No text in this cell."
-msgstr "Nessuna immagine in questa cella."
+msgstr "Nessun testo in questa cella."
 
 msgid "No text selected."
 msgstr "Nessun testo selezionato."
+
+msgid "No text to search for."
+msgstr "Nessun testo da cercare."
 
 msgid "Not a TreeSheets file."
 msgstr "Non un file TreeSheets."
@@ -892,13 +889,11 @@ msgstr "Apri  &file\tF4"
 msgid "Open (CTRL+o)"
 msgstr "Apri (CTRL+o)"
 
-#, fuzzy
 msgid "Open border colors\tSHIFT+ALT+F11"
-msgstr "Ripristina &colori\tSHIFT+CTRL+c"
+msgstr "Apri colori del bordo\tSHIFT+ALT+F11"
 
-#, fuzzy
 msgid "Open cell colors\tSHIFT+ALT+F9"
-msgstr "Ripristina &colori\tSHIFT+CTRL+c"
+msgstr "Apri colori della cella\tSHIFT+ALT+F9"
 
 msgid "Open file cancelled."
 msgstr "Apri file cancellato."
@@ -906,9 +901,8 @@ msgstr "Apri file cancellato."
 msgid "Open link in &browser\tF5"
 msgstr "Apri link in &browser\tF5"
 
-#, fuzzy
 msgid "Open text colors\tSHIFT+ALT+F10"
-msgstr "Ripristina &colori\tSHIFT+CTRL+c"
+msgstr "Apri colori del testo\tSHIFT+ALT+F10"
 
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
@@ -934,6 +928,9 @@ msgstr ""
 msgid "PNG decoder failure"
 msgstr "Errore decodificatore PNG"
 
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr "File PNG (*.png)|*.png|File JPEG (*.jpg)|*.jpg|Tutti i file (*.*)|*.*"
+
 msgid "Page Setup..."
 msgstr "Impostazione della pagina..."
 
@@ -951,6 +948,11 @@ msgstr "Scegli il carattere di default..."
 
 msgid "Pick Document Background..."
 msgstr "Scegli lo sfondo del documento..."
+
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr ""
+"Si prega di abilitare (Opzioni -> Mostra la barra degli strumenti) per "
+"utilizzare lo strumento di sostituzione."
 
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
@@ -976,6 +978,9 @@ msgstr "Si prega di selezionare un file immagine:"
 
 msgid "Please select file to import:"
 msgstr "Si prega di selezionare il file da importare:"
+
+msgid "Please select the datetime range."
+msgstr "Si prega di selezionare l'intervallo di date e ora."
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Premere F11 per uscire dalla modalità a schermo intero."
@@ -1026,17 +1031,17 @@ msgstr "Sostituisci"
 msgid "Replace &All"
 msgstr "Sostituisci &tutto"
 
-#, fuzzy
 msgid "Replace All"
-msgstr "Sostituisci &tutto"
+msgstr "Sostituisci tutto"
 
-#, fuzzy
+msgid "Replace in Current &Selection\tCTRL+k"
+msgstr "Sostituisci nella selezione corrente\tCTRL+k"
+
 msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
-msgstr "&Sostituisci nella selezione corrente e salta Avanti\tCTRL+j"
+msgstr "Sostituisci nella selezione corrente e salta avanti\tCTRL+j"
 
-#, fuzzy
 msgid "Replace in selection"
-msgstr "&Sostituisci nella selezione corrente\tCTRL+h"
+msgstr "Sostituisci nella selezione corrente"
 
 #, fuzzy
 msgid "Reset &colors\tCTRL+SHIFT+c"
@@ -1055,11 +1060,15 @@ msgstr "Salva &come..."
 msgid "Save (CTRL+s)"
 msgstr "Salva (CTRL+s)"
 
+#, fuzzy
+msgid "Save All"
+msgstr "Salva tutto"
+
 msgid "Save As"
 msgstr "Salva come"
 
 msgid "Save Image(s) to disk"
-msgstr ""
+msgstr "Salva immagine su disco"
 
 msgid "Save and Close"
 msgstr "Salva e chiudi"
@@ -1068,10 +1077,10 @@ msgid "Save cancelled."
 msgstr "Salvataggio annullato"
 
 msgid "Save image as JPEG"
-msgstr ""
+msgstr "Salva immagine come JPEG"
 
 msgid "Save image as PNG (default)"
-msgstr ""
+msgstr "Salva immagine come PNG (predefinito)"
 
 msgid ""
 "Save image(s) to disk. Multiple images will be saved with a counter appended "
@@ -1118,8 +1127,8 @@ msgstr "Cerca"
 msgid "Select &Parent\tESC"
 msgstr "Seleziona &Genitore\tESC"
 
-msgid "Select &all in current grid\tCTRL+a"
-msgstr "Seleziona &tutto nella griglia corrente\tCTRL+a"
+msgid "Select &all in current grid/cell\tCTRL+a"
+msgstr "Seleziona &tutto nella griglia/cella corrente\tCTRL+a"
 
 msgid "Select First &Child\tSHIFT+ENTER"
 msgstr "Seleziona Primo &Figlio\tSHIFT+ENTER"
@@ -1171,6 +1180,9 @@ msgstr "Mostra la barra di stato"
 msgid "Show Toolbar"
 msgstr "Mostra la barra degli strumenti"
 
+msgid "Show last edits in specific date range"
+msgstr "Mostra le ultime modifiche in un intervallo di date specifico"
+
 msgid "Show only cells in current search"
 msgstr "Mostra solo le celle nella ricerca corrente"
 
@@ -1179,13 +1191,16 @@ msgstr "Un singolo clic ingrandisce dal vassoio"
 
 #, c-format
 msgid "Size %d"
-msgstr "Dimensione% d"
+msgstr "Dimensione %d"
 
 msgid "Sort &Ascending"
 msgstr "Ordine &Crescente"
 
 msgid "Sort &Descending"
 msgstr "Ordine &Decrescente"
+
+msgid "Start date and time"
+msgstr "Data e ora di inizio"
 
 msgid "Start of line of text\tHOME"
 msgstr "Inizio della riga di testo\tHOME"
@@ -1236,12 +1251,8 @@ msgstr "Dimensionamento del testo..."
 msgid "Text Style..."
 msgstr "Stile di testo..."
 
-msgid "Text copied to clipboard"
-msgstr ""
-
-#, fuzzy
 msgid "Text has been replaced."
-msgstr "La dimensione del testo è diminuita."
+msgstr "Il testo è stato sostituito."
 
 msgid "Text size decreased."
 msgstr "La dimensione del testo è diminuita."
@@ -1253,7 +1264,10 @@ msgid "The Free Form Hierarchical Information Organizer"
 msgstr "Organizzatore di informazioni gerarchico a forma libera"
 
 msgid "The browser could not open at least one link."
-msgstr ""
+msgstr "Il browser non è riuscito ad aprire almeno un link."
+
+msgid "There is no content to collapse."
+msgstr "Non ci sono contenuti da far crollare."
 
 msgid "This operation doesn't work on thin selections."
 msgstr "Questa operazione non funziona su selezioni sottili."
@@ -1285,12 +1299,11 @@ msgstr "Commuta piegatura\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Commuta piegatura\tF10"
 
-msgid "Toggle Vertical Layout\tF7"
-msgstr "Attiva/disattiva layout verticale\tF7"
+msgid "Toggle Vertical Layout\tALT+0"
+msgstr "Attiva/disattiva layout verticale\tAlt+0"
 
-#, fuzzy
 msgid "Toggle Zen Mode"
-msgstr "Commuta piegatura\tF10"
+msgstr "Attiva/disattive modalità zen"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Cambia cella &GRASSETTO\tCTRL+b"
@@ -1301,7 +1314,6 @@ msgstr "Commuta cella e ITALIC\tCTRL+i"
 msgid "Toggle cell &strikethrough\tCTRL+t"
 msgstr "Attiva/disattiva attivazione cella tramite\tCTRL+t"
 
-#, fuzzy
 msgid "Toggle cell &typewriter\tCTRL+ALT+t"
 msgstr "Attiva/disattiva la cella e la macchina da scrivere"
 
@@ -1311,6 +1323,9 @@ msgstr "Attiva/disattiva sottolineatura cella\tCTRL+u"
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr ""
 "Attiva/disattiva la visualizzazione della griglia delle cella(e) selezionate"
+
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "Files TreeSheets (*.cts)|*.cts|Tutti i file (*.*)|*.*"
 
 msgid "Turn filter &off"
 msgstr "Spegni il filtro"
@@ -1325,15 +1340,13 @@ msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "Dispiega la griglia delle celle selezionata(e) in modo ricorsivo"
 
 msgid "Uses"
-msgstr ""
+msgstr "Utilizza"
 
-#, fuzzy
 msgid "Variable &Assign\tCTRL+ALT+a"
-msgstr "Assegnazione &variabile"
+msgstr "Assegnazione &variabile\tCTRL+ALT+a"
 
-#, fuzzy
 msgid "Variable &Read\tCTRL+ALT+r"
-msgstr "Variabile &Letta"
+msgstr "Variabile &Letta\tCTRL+ALT+r"
 
 msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
 msgstr "Layout verticale con Rendering stile Bubble\tALT+2"
@@ -1350,6 +1363,9 @@ msgstr "Visualizza tutorial e pagina web..."
 msgid "What size grid would you like to start with?"
 msgstr "Con quale dimensioni di griglia vorresti iniziare?"
 
+msgid "Width"
+msgstr "Larghezza"
+
 #, c-format
 msgid "Width %d"
 msgstr "Larghezza %d"
@@ -1365,6 +1381,9 @@ msgstr "XML (anche attributi, per OPML ecc.)..."
 
 msgid "XML..."
 msgstr "XML..."
+
+msgid "You need to select one cell if you want to search for its text."
+msgstr "È necessario selezionare una cella per cercare il suo testo."
 
 msgid "Zlib error while writing file."
 msgstr "Errore Zlib durante la scrittura del file"
@@ -1416,21 +1435,3 @@ msgstr "scala:"
 
 msgid "size:"
 msgstr "dimensione:"
-
-#~ msgid "&Data"
-#~ msgstr "&Dati"
-
-#~ msgid "&Operation"
-#~ msgstr "&Operazione"
-
-#~ msgid "&Run"
-#~ msgstr "&Avvia"
-
-#~ msgid "Cannot find file."
-#~ msgstr "Impossibile trovare il file."
-
-#~ msgid "Cannot launch browser for this link."
-#~ msgstr "Impossibile avviare il browser per questo collegamento."
-
-#~ msgid "File saved succesfully."
-#~ msgstr "File salvato con successo."
