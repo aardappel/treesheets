@@ -16,7 +16,6 @@ struct Image {
     Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
         : image_data(std::move(idv)), image_type(iti), hash(_hash), display_scale(_sc) {}
 
-
     void ImageRescale(double sc) {
         auto mapitem = imagetypes.find(image_type);
         if (mapitem == imagetypes.end()) return;
@@ -67,8 +66,8 @@ struct System {
     wxPen pen_tinytext, pen_gridborder, pen_tinygridlines, pen_gridlines, pen_thinselect;
     uint customcolor;
     int roundness, defaultmaxcolwidth;
-    bool makebaks, totray, autosave, zoomscroll, thinselc, minclose, singletray, centered,
-        fswatch, autohtmlexport, casesensitivesearch, darkennonmatchingcells, fastrender;
+    bool makebaks, totray, autosave, zoomscroll, thinselc, minclose, singletray, centered, fswatch,
+        autohtmlexport, casesensitivesearch, darkennonmatchingcells, fastrender;
     int sortcolumn, sortxs, sortdescending;
     wxHashMapBool watchedpaths;
     bool insidefiledialog;
@@ -116,10 +115,10 @@ struct System {
           darkennonmatchingcells(false),
           fastrender(true),
           insidefiledialog(false) {
-        static const wxDash glpattern[] = {1, 3};
+        static const wxDash glpattern[] = { 1, 3 };
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
-        static const wxDash tspattern[] = {2, 4};
+        static const wxDash tspattern[] = { 2, 4 };
         pen_thinselect.SetDashes(2, tspattern);
         pen_thinselect.SetStyle(wxPENSTYLE_USER_DASH);
 
@@ -143,9 +142,7 @@ struct System {
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
 
-    ~System() {
-        DELETEP(cfg);
-    }
+    ~System() { DELETEP(cfg); }
 
     Document *NewTabDoc(bool append = false) {
         Document *doc = new Document();
@@ -188,12 +185,14 @@ struct System {
     void LoadTut() {
         auto lang = frame->app->locale.GetCanonicalName();
 
-        if (lang.Len() == 5 && !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+        if (lang.Len() == 5 &&
+            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
             return;
         }
 
         lang.Truncate(2);
-        if (lang.Len() == 2 && !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+        if (lang.Len() == 2 &&
+            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
             return;
         }
 
@@ -270,21 +269,22 @@ struct System {
                     case 'J': {
                         char iti = *buf;
                         auto mapitem = imagetypes.find(iti);
-                        if (mapitem == imagetypes.end()) return _(L"Found an image type that is not defined in this program.");
+                        if (mapitem == imagetypes.end())
+                            return _(L"Found an image type that is not defined in this program.");
                         if (versionlastloaded < 9) dis.ReadString();
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
                         if (versionlastloaded >= 22) {
-                            size_t imagelen = (size_t) dis.Read64();
+                            size_t imagelen = (size_t)dis.Read64();
                             image_data.resize(imagelen);
                             fis.Read(image_data.data(), imagelen);
                         } else {
                             off_t beforeimage = fis.TellI();
-                            
+
                             if (iti == 'I') {
                                 uchar header[8];
                                 fis.Read(header, 8);
-                                uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
+                                uchar expected[] = { 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n' };
                                 if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
                                 dis.BigEndianOrdered(true);
                                 for (;;) {  // Skip all chunks.
@@ -298,11 +298,9 @@ struct System {
                             } else if (iti == 'J') {
                                 wxImage im;
                                 im.LoadFile(fis);
-                                if (!im.IsOk()) {
-                                    return _(L"JPEG file is corrupted!");
-                                }
+                                if (!im.IsOk()) { return _(L"JPEG file is corrupted!"); }
                             }
-                             
+
                             off_t afterimage = fis.TellI();
                             fis.SeekI(beforeimage);
                             auto sz = afterimage - beforeimage;
@@ -343,9 +341,12 @@ struct System {
 
                         auto end_loading_time = wxGetLocalTimeMillis();
 
-                        doc->sw->Status(wxString::Format(_(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
-                                filename.c_str(), numcells, textbytes, (int)((end_loading_time - start_loading_time).GetValue()))
-                                            .c_str());
+                        doc->sw->Status(
+                            wxString::Format(
+                                _(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
+                                filename.c_str(), numcells, textbytes,
+                                (int)((end_loading_time - start_loading_time).GetValue()))
+                                .c_str());
 
                         goto done;
                     }
@@ -359,20 +360,22 @@ struct System {
 
         doc->RefreshImageRefCount(false);
         {
-            ThreadPool pool(std::thread::hardware_concurrency());   
+            ThreadPool pool(std::thread::hardware_concurrency());
             loopv(i, sys->imagelist) {
-                pool.enqueue([](Image *img) {
-                    if (img->trefc) img->Display();    
-                }, sys->imagelist[i]);
+                pool.enqueue(
+                    [](Image *img) {
+                        if (img->trefc) img->Display();
+                    },
+                    sys->imagelist[i]);
             }
-        } // wait until all tasks are finished
+        }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
         doc->Refresh();
         if (anyimagesfailed)
-            wxMessageBox(
-                _(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
-                _(L"PNG decoder failure"), wxOK, frame);
+            wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been "
+                           L"replaced by red squares."),
+                         _(L"PNG decoder failure"), wxOK, frame);
 
         return L"";
     }
@@ -424,7 +427,9 @@ struct System {
                 frame->SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
                 frame->SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
                 frame->SetStatusText(
-                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(), c->text.lastedit.FormatTime().c_str()), 1);
+                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
+                                     c->text.lastedit.FormatTime().c_str()),
+                    1);
             }
         }
     }
@@ -478,14 +483,21 @@ struct System {
                                 Cell *r = InitDB(1);
                                 FillRows(r->grid, as, CountCol(as[0]), 0, 0);
                             }; break;
-                            case A_IMPTXTC: InitDB(1, (int)as.size())->grid->CSVImport(as, L','); break;
-                            case A_IMPTXTS: InitDB(1, (int)as.size())->grid->CSVImport(as, L';'); break;
-                            case A_IMPTXTT: InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t'); break;
+                            case A_IMPTXTC:
+                                InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
+                                break;
+                            case A_IMPTXTS:
+                                InitDB(1, (int)as.size())->grid->CSVImport(as, L';');
+                                break;
+                            case A_IMPTXTT:
+                                InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t');
+                                break;
                         }
                     break;
                 }
             }
-            frame->GetCurTab()->doc->ChangeFileName(fn.Find(L'.') >= 0 ? fn.BeforeLast(L'.') : fn, true);
+            frame->GetCurTab()->doc->ChangeFileName(fn.Find(L'.') >= 0 ? fn.BeforeLast(L'.') : fn,
+                                                    true);
             frame->GetCurTab()->doc->ClearSelectionRefresh();
         }
         return nullptr;
@@ -600,7 +612,5 @@ struct System {
         ys = bm->GetHeight();
     }
 
-    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) {
-        dc.DrawBitmap(*bm, x, y);
-    }
+    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
 };
