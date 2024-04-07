@@ -58,8 +58,7 @@ struct ThreeChoiceDialog : public wxDialog {
 };
 
 struct ColorPopup : wxVListBoxComboPopup {
-    ColorPopup(wxWindow *parent) {
-    }
+    ColorPopup(wxWindow *parent) {}
 
     void OnComboDoubleClick() {
         sys->frame->GetCurTab()->doc->ColorChange(m_combo->GetId(), GetSelection());
@@ -67,7 +66,6 @@ struct ColorPopup : wxVListBoxComboPopup {
 };
 
 struct ColorDropdown : wxOwnerDrawnComboBox {
-
     ColorDropdown(wxWindow *parent, wxWindowID id, int sel) {
         wxArrayString as;
         as.Add(L"", sizeof(celltextcolors) / sizeof(uint));
@@ -150,7 +148,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
 static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
     dest = wxBitmap(src.ConvertToImage().Scale(src.GetWidth() * sc, src.GetHeight() * sc,
-                    wxIMAGE_QUALITY_HIGH));
+                                               wxIMAGE_QUALITY_HIGH));
 }
 
 static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
@@ -168,7 +166,7 @@ static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType b
     if (!im.IsOk()) {
         int sz = 32;
         im.Create(sz, sz, false);
-        im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0, 0); 
+        im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0, 0);
         // Set to red to indicate error.
     }
     return im;
