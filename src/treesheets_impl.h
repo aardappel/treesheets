@@ -4,7 +4,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     Cell *cur = nullptr;
     wxDC *dc = nullptr;
 
-    enum { max_new_grid_cells = 256*256 };  // Don't allow crazy sizes.
+    enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
@@ -50,28 +50,26 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         if (c) cur = c;
     }
     bool HasParent() { return cur->parent; }
-    void GoToParent() { if (cur->parent) cur = cur->parent; }
+    void GoToParent() {
+        if (cur->parent) cur = cur->parent;
+    }
     int NumChildren() { return cur->grid ? cur->grid->xs * cur->grid->ys : 0; }
 
     icoord NumColumnsRows() {
-        return cur->grid ? icoord(cur->grid->xs, cur->grid->ys)
-                         : icoord(0, 0);
+        return cur->grid ? icoord(cur->grid->xs, cur->grid->ys) : icoord(0, 0);
     }
 
     ibox SelectionBox() {
         auto &s = doc->selected;
-        return s.g ? ibox(icoord(s.x, s.y), icoord(s.xs, s.ys))
-                    : ibox(icoord(0, 0), icoord(0, 0));
+        return s.g ? ibox(icoord(s.x, s.y), icoord(s.xs, s.ys)) : ibox(icoord(0, 0), icoord(0, 0));
     }
 
     void GoToChild(int n) {
-        if (cur->grid && n < cur->grid->xs * cur->grid->ys)
-            cur = cur->grid->cells[n];
+        if (cur->grid && n < cur->grid->xs * cur->grid->ys) cur = cur->grid->cells[n];
     }
 
     void GoToColumnRow(int x, int y) {
-        if (cur->grid && x < cur->grid->xs && y < cur->grid->ys)
-            cur = cur->grid->C(x, y);
+        if (cur->grid && x < cur->grid->xs && y < cur->grid->ys) cur = cur->grid->C(x, y);
     }
 
     std::string GetText() {
@@ -84,18 +82,15 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void CreateGrid(int x, int y) {
-        if (x > 0 && y > 0 && x*y < max_new_grid_cells)
-            cur->AddGrid(x, y);
+        if (x > 0 && y > 0 && x * y < max_new_grid_cells) cur->AddGrid(x, y);
     }
 
     void InsertColumn(int x) {
-        if (cur->grid && x >= 0 && x <= cur->grid->xs)
-            cur->grid->InsertCells(x, -1, 1, 0);
+        if (cur->grid && x >= 0 && x <= cur->grid->xs) cur->grid->InsertCells(x, -1, 1, 0);
     }
 
     void InsertRow(int y) {
-        if (cur->grid && y >= 0 && y <= cur->grid->ys)
-            cur->grid->InsertCells(-1, y, 0, 1);
+        if (cur->grid && y >= 0 && y <= cur->grid->ys) cur->grid->InsertCells(-1, y, 0, 1);
     }
 
     void Delete(int x, int y, int xs, int ys) {
@@ -109,7 +104,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetBackgroundColor(uint col) { cur->cellcolor = col; }
     void SetTextColor(uint col) { cur->textcolor = col; }
-    void SetBorderColor(uint col) { if (cur->grid) cur->grid->bordercolor = col; }
+    void SetBorderColor(uint col) {
+        if (cur->grid) cur->grid->bordercolor = col;
+    }
     void SetRelativeSize(int s) { cur->text.relsize = s; }
     void SetStyle(int s) { cur->text.stylebits = s; }
 
@@ -118,14 +115,14 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         sys->frame->GetCurTab()->Status(ws);
     }
 
-    void SetWindowSize(int width, int height) {
-        sys->frame->SetSize(width, height);
-    }
+    void SetWindowSize(int width, int height) { sys->frame->SetSize(width, height); }
 
     std::string GetFileNameFromUser(bool is_save) {
         int flags = wxFD_CHANGE_DIR;
-        if (is_save) flags |= wxFD_OVERWRITE_PROMPT | wxFD_SAVE;
-        else flags |= wxFD_OPEN | wxFD_FILE_MUST_EXIST;
+        if (is_save)
+            flags |= wxFD_OVERWRITE_PROMPT | wxFD_SAVE;
+        else
+            flags |= wxFD_OPEN | wxFD_FILE_MUST_EXIST;
         wxString fn = ::wxFileSelector(_(L"Choose file:"), L"", L"", L"", L"*.*", flags);
         auto s = fn.utf8_str();
         return std::string(s.data(), s.length());
