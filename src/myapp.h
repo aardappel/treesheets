@@ -106,7 +106,10 @@ struct MyApp : wxApp {
                 switch ((int)argv[i][1]) {
                     case 'p': portable = true; break;
                     case 'i': single_instance = false; break;
-                    case 'd': dump_builtins = true; single_instance = false; break;
+                    case 'd':
+                        dump_builtins = true;
+                        single_instance = false;
+                        break;
                 }
             } else {
                 filename = argv[i];
@@ -163,10 +166,8 @@ struct MyApp : wxApp {
         return true;
     }
 
-    void OnEventLoopEnter(wxEventLoopBase* WXUNUSED(loop))
-    {
-        if (!initateventloop)
-        {
+    void OnEventLoopEnter(wxEventLoopBase *WXUNUSED(loop)) {
+        if (!initateventloop) {
             initateventloop = true;
             frame->AppOnEventLoopEnter();
             sys->Init(filename);
