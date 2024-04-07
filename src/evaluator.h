@@ -3,7 +3,7 @@
     A structure describing an operation.
 */
 struct Operation {
-    virtual ~Operation() {};
+    virtual ~Operation(){};
     const char *args;
 
     virtual unique_ptr<Cell> run() const { return nullptr; }
@@ -89,9 +89,7 @@ struct Evaluator {
 
     bool IsValidSymbol(wxString const &symbol) const { return !symbol.IsEmpty(); }
     void SetSymbol(wxString const &symbol, unique_ptr<Cell> val) {
-        if (!this->IsValidSymbol(symbol)) {
-            return;
-        }
+        if (!this->IsValidSymbol(symbol)) { return; }
         Cell *old = vars[symbol];
         DELETEP(old);
         vars[symbol] = val.release();
@@ -116,9 +114,7 @@ struct Evaluator {
 
     Operation *FindOp(wxString &name) { return ops[name]; }
 
-    unique_ptr<Cell> Execute(const Operation *op) {
-        return op->run();
-    }
+    unique_ptr<Cell> Execute(const Operation *op) { return op->run(); }
 
     unique_ptr<Cell> Execute(const Operation *op, unique_ptr<Cell> left) {
         Text &t = left->text;
@@ -162,8 +158,7 @@ struct Evaluator {
             case 'g':
                 if (g) op->rung(g);
                 break;
-            case 'c':
-              return op->runc(std::move(left));
+            case 'c': return op->runc(std::move(left));
         }
         return left;
     }
@@ -185,13 +180,16 @@ struct Evaluator {
                     loop(x, g->xs) loop(y, g->ys) {
                         Cell *&c1 = g1->C(x, y);
                         Cell *&c2 = g2->C(x, y);
-                        g->C(x, y) = Execute(op, unique_ptr<Cell>(c1), c2).release()->SetParent(c.get());
+                        g->C(x, y) =
+                            Execute(op, unique_ptr<Cell>(c1), c2).release()->SetParent(c.get());
                         c1 = nullptr;
                     }
                     return c;
                 } else if (g1 && t2.t.Len()) {
                     foreachcellingrid(c, g1) {
-                        c = Execute(op, unique_ptr<Cell>(c), right.get()).release()->SetParent(left.get());
+                        c = Execute(op, unique_ptr<Cell>(c), right.get())
+                                .release()
+                                ->SetParent(left.get());
                     }
                 }
                 break;
