@@ -115,7 +115,8 @@ class Selection {
 
     inline bool IsWordSep(wxChar ch) {
         // represents: !"#$%&'()*+,-./    :;<=>?@    [\]^    {|}~    `
-        return (32 < ch && ch < 48) || (57 < ch && ch < 65) || (90 < ch && ch < 95) || (122 < ch && ch < 127) || ch == 96;
+        return (32 < ch && ch < 48) || (57 < ch && ch < 65) || (90 < ch && ch < 95) ||
+               (122 < ch && ch < 127) || ch == 96;
     }
 
     inline int CharType(wxChar ch) {
@@ -125,7 +126,7 @@ class Selection {
     }
 
     void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
-              int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
+             int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
             g->cell->AddUndo(doc);
 
@@ -134,7 +135,8 @@ class Selection {
             y = (y + dy + g->ys) % g->ys;
             if (x + xs > g->xs || y + ys > g->ys) g = nullptr;
 
-            // FIXME: this is null in the case of a whole column selection, and doesn't do the right thing.
+            // FIXME: this is null in the case of a whole column selection, and doesn't do the right
+            // thing.
             if (g) g->cell->ResetChildren();
             doc->ScrollIfSelectionOutOfView(dc, *this, true);
         } else {
@@ -155,10 +157,10 @@ class Selection {
                     for (;;) {
                         c += dx;
                         if (c < 0 || c > MaxCursor()) break;
-                        ch = GetCell()->text.t[min(c,curs)];
+                        ch = GetCell()->text.t[min(c, curs)];
                         int chtype = CharType(ch);
                         // type increase when positive or type change when negative => break
-                        if (chtype > allowed && chtype != -allowed ) break;
+                        if (chtype > allowed && chtype != -allowed) break;
                         curs = c;
                         // type decrease when positive => negate
                         if (chtype < allowed) allowed = -chtype;
@@ -286,7 +288,7 @@ class Selection {
                 {
                     if (dx + dy < 0) v--;
                     vs = 1;  // make it a cell selection
-                } else { // selection cycle, jump to the opposite side of the grid
+                } else {     // selection cycle, jump to the opposite side of the grid
                     if (y + dy > g->ys) {
                         y = 0;
                         vs = 1;
@@ -307,12 +309,9 @@ class Selection {
         };
     }
 
-    void Cursor(Document *doc, int k, bool ctrl, bool shift, wxDC &dc,
-                         bool exitedit = false) {
+    void Cursor(Document *doc, int k, bool ctrl, bool shift, wxDC &dc, bool exitedit = false) {
         switch (k) {
-            case A_UP:
-                Dir(doc, ctrl, shift, dc, 0, -1, y, ys, xs, y != 0, y != 0, exitedit);
-                break;
+            case A_UP: Dir(doc, ctrl, shift, dc, 0, -1, y, ys, xs, y != 0, y != 0, exitedit); break;
             case A_DOWN:
                 Dir(doc, ctrl, shift, dc, 0, 1, y, ys, xs, y < g->ys, y < g->ys - 1, exitedit);
                 break;

@@ -138,7 +138,8 @@ enum {
     A_BROWSE,
     A_ENTERCELL,
     A_ENTERCELL_JUMPTOEND,
-    A_PROGRESSCELL, // see https://github.com/aardappel/treesheets/issues/139#issuecomment-544167524
+    A_PROGRESSCELL,  // see
+                     // https://github.com/aardappel/treesheets/issues/139#issuecomment-544167524
     A_CELLCOLOR,
     A_TEXTCOLOR,
     A_BORDCOLOR,
@@ -272,15 +273,10 @@ enum {
 };
 
 static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
-    { 'I', {wxBITMAP_TYPE_PNG, "image/png"} },
-    { 'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"} }
+    { 'I', { wxBITMAP_TYPE_PNG, "image/png" } }, { 'J', { wxBITMAP_TYPE_JPEG, "image/jpeg" } }
 };
 
-enum {
-    TEXT_SPACE = 3,
-    TEXT_SEP = 2,
-    TEXT_CHAR = 1
-};
+enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 
 #include "script_interface.h"
 

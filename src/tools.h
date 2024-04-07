@@ -25,19 +25,19 @@ typedef unsigned int uint;
         va_end(v);            \
     }
 
-#define DELETEP(p)    \
-    {                 \
-        if (p) {      \
-            delete p; \
+#define DELETEP(p)       \
+    {                    \
+        if (p) {         \
+            delete p;    \
             p = nullptr; \
-        }             \
+        }                \
     }
-#define DELETEA(a)      \
-    {                   \
-        if (a) {        \
-            delete[] a; \
-            a = nullptr;   \
-        }               \
+#define DELETEA(a)       \
+    {                    \
+        if (a) {         \
+            delete[] a;  \
+            a = nullptr; \
+        }                \
     }
 
 #define bound(v, a, s, e)     \
@@ -61,8 +61,7 @@ typedef unsigned int uint;
 #define _vsnprintf vsnprintf
 #endif
 
-template <class T>
-inline void swap_(T &a, T &b) {
+template<class T> inline void swap_(T &a, T &b) {
     T c = a;
     a = b;
     b = c;
@@ -81,12 +80,18 @@ inline uchar *loadfile(const char *fn, size_t *lenret = nullptr) {
     fseek(f, 0, SEEK_END);
     size_t len = ftell(f);
     fseek(f, 0, SEEK_SET);
-    uchar *buf = (uchar *)malloc(len+1);
-    if (!buf) { fclose(f); return nullptr; }
+    uchar *buf = (uchar *)malloc(len + 1);
+    if (!buf) {
+        fclose(f);
+        return nullptr;
+    }
     buf[len] = 0;
     size_t rlen = fread(buf, 1, len, f);
     fclose(f);
-    if (len!=rlen || len<=0) { free(buf); return nullptr; }
+    if (len != rlen || len <= 0) {
+        free(buf);
+        return nullptr;
+    }
     if (lenret) *lenret = len;
     return buf;
 }
@@ -106,12 +111,8 @@ class NonCopyable {
 
 // helper function for containers below to delete members if they are of pointer type only
 
-template <class X>
-void DelPtr(X &) {}
-template <class X>
-void DelPtr(X *&m) {
-    DELETEP(m);
-}
+template<class X> void DelPtr(X &) {}
+template<class X> void DelPtr(X *&m) { DELETEP(m); }
 
 // replacement for STL vector
 
@@ -126,8 +127,7 @@ void DelPtr(X *&m) {
 
 // also automatically deletes pointer members and other neat things
 
-template <class T>
-class Vector : public NonCopyable {
+template<class T> class Vector : public NonCopyable {
     T *buf;
     uint alen, ulen;
 

@@ -32,15 +32,15 @@ struct ScriptInterface {
     virtual void SetWindowSize(int width, int height) = 0;
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
     virtual std::string GetFileName() = 0;
-    virtual ~ScriptInterface() {};
+    virtual ~ScriptInterface(){};
 };
 
-typedef int64_t(*ScriptLoader)(std::string_view absfilename, std::string *dest, int64_t start,
-                               int64_t len);
+typedef int64_t (*ScriptLoader)(std::string_view absfilename, std::string *dest, int64_t start,
+                                int64_t len);
 
-extern std::string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *auxfilepath,
-                               bool from_bundle, ScriptLoader sl);
+extern std::string InitLobster(ScriptInterface *_si, const char *exefilepath,
+                               const char *auxfilepath, bool from_bundle, ScriptLoader sl);
 extern std::string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins);
 extern void TSDumpBuiltinDoc();
 
-}
+}  // namespace script

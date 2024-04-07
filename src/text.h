@@ -21,10 +21,9 @@ struct Text {
         WasEdited();
     }
 
-    wxBitmap * DisplayImage() {
-        return cell->grid && cell->grid->folded
-            ? &sys->frame->foldicon
-            : (image ? &image->Display() : nullptr);
+    wxBitmap *DisplayImage() {
+        return cell->grid && cell->grid->folded ? &sys->frame->foldicon
+                                                : (image ? &image->Display() : nullptr);
     }
 
     size_t EstimatedMemoryUse() {
@@ -81,11 +80,13 @@ struct Text {
 
     wxString ToText(int indent, const Selection &s, int format) {
         wxString str = s.cursor != s.cursorend ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
-        if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLO || format == A_EXPHTMLB)
+        if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
+            format == A_EXPHTMLO || format == A_EXPHTMLB)
             str = htmlify(str);
-        if (format == A_EXPHTMLTI && image) 
-            str.Prepend(L"<img src=\"data:" + imagetypes.at(image->image_type).second 
-                + ";base64," + wxBase64Encode(image->image_data.data(), image->image_data.size()) + "\" />");
+        if (format == A_EXPHTMLTI && image)
+            str.Prepend(L"<img src=\"data:" + imagetypes.at(image->image_type).second + ";base64," +
+                        wxBase64Encode(image->image_data.data(), image->image_data.size()) +
+                        "\" />");
         return str;
     };
 
@@ -185,7 +186,7 @@ struct Text {
         }
         return sys->searchstring.Len() && text->Find(sys->searchstring) >= 0;
     }
-    
+
     int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
                int maxcolwidth) {
         int ixs = 0, iys = 0;
@@ -223,10 +224,11 @@ struct Text {
             if (!curl.Len()) break;
             if (cell->tiny) {
                 if (sys->fastrender) {
-                    dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + (int)curl.Len(), by + lines * h);
+                    dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + (int)curl.Len(),
+                                by + lines * h);
                     /*
-                    wxPoint points[] = { wxPoint(bx + ixs, by + lines * h), wxPoint(bx + ixs + curl.Len(), by + lines * h) };
-                    dc.DrawLines(1, points, 0, 0);
+                    wxPoint points[] = { wxPoint(bx + ixs, by + lines * h), wxPoint(bx + ixs +
+                    curl.Len(), by + lines * h) }; dc.DrawLines(1, points, 0, 0);
                      */
                 } else {
                     int word = 0;
@@ -513,11 +515,9 @@ struct Text {
             }
 
             // Return our current data.
-            case CT_DATA:
-                return cell->Clone(nullptr);
+            case CT_DATA: return cell->Clone(nullptr);
 
-            default:
-                return nullptr;
+            default: return nullptr;
         }
     }
 };

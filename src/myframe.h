@@ -17,14 +17,15 @@ struct MyFrame : wxFrame {
     MyApp *app;
     wxFileSystemWatcher *watcher;
     bool watcherwaitingforuser;
-    double csf; // TODO: functions using this attribute should be modified to handle device-independent pixels
+    double csf;  // TODO: functions using this attribute should be modified to handle
+                 // device-independent pixels
     std::vector<std::string> scripts_in_menu;
     bool zenmode;
     ColorDropdown *celldd = nullptr;
     ColorDropdown *textdd = nullptr;
     ColorDropdown *borddd = nullptr;
     wxString imagepath;
-    
+
     wxString GetDocPath(const wxString &relpath) {
         std::filesystem::path candidatePaths[] = {
             std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
@@ -35,9 +36,7 @@ struct MyFrame : wxFrame {
         std::filesystem::path relativePath;
         for (auto path : candidatePaths) {
             relativePath = path;
-            if (std::filesystem::exists(relativePath)) {
-                break;
-            }
+            if (std::filesystem::exists(relativePath)) { break; }
         }
 
         return wxString(relativePath.c_str());
@@ -52,9 +51,7 @@ struct MyFrame : wxFrame {
         std::filesystem::path relativePath;
         for (auto path : candidatePaths) {
             relativePath = path;
-            if (std::filesystem::exists(relativePath)) {
-                break;
-            }
+            if (std::filesystem::exists(relativePath)) { break; }
         }
 
         return wxString(relativePath.c_str());
@@ -176,19 +173,27 @@ struct MyFrame : wxFrame {
 
         wxMenu *expmenu = new wxMenu();
         MyAppend(expmenu, A_EXPXML, _(L"&XML..."),
-                 _(L"Export the current view as XML (which can also be reimported without losing structure)"));
+                 _(L"Export the current view as XML (which can also be reimported without losing "
+                   L"structure)"));
         MyAppend(expmenu, A_EXPHTMLT, _(L"&HTML (Tables+Styling)..."),
-                 _(L"Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet"));
+                 _(L"Export the current view as HTML using nested tables, that will look somewhat "
+                   L"like the TreeSheet"));
         MyAppend(expmenu, A_EXPHTMLB, _(L"HTML (&Bullet points)..."),
                  _(L"Export the current view as HTML as nested bullet points."));
         MyAppend(expmenu, A_EXPHTMLO, _(L"HTML (&Outline)..."),
-                 _(L"Export the current view as HTML as nested headers, suitable for importing into Word's outline mode"));
-        MyAppend(expmenu, A_EXPTEXT, _(L"Indented &Text..."),
-                 _(L"Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"));
-        MyAppend(expmenu, A_EXPCSV, _(L"&Comma delimited text (CSV)..."),
-                 _(L"Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"));
+                 _(L"Export the current view as HTML as nested headers, suitable for importing "
+                   L"into Word's outline mode"));
+        MyAppend(
+            expmenu, A_EXPTEXT, _(L"Indented &Text..."),
+            _(L"Export the current view as tree structured text, using spaces for each indentation "
+              L"level. Suitable for importing into mindmanagers and general text programs"));
+        MyAppend(
+            expmenu, A_EXPCSV, _(L"&Comma delimited text (CSV)..."),
+            _(L"Export the current view as CSV. Good for spreadsheets and databases. Only works on "
+              L"grids with no sub-grids (use the Flatten operation first if need be)"));
         MyAppend(expmenu, A_EXPIMAGE, _(L"&Image..."),
-                 _(L"Export the current view as an image. Useful for faithful renderings of the TreeSheet, and programs that don't accept any of the above options"));
+                 _(L"Export the current view as an image. Useful for faithful renderings of the "
+                   L"TreeSheet, and programs that don't accept any of the above options"));
 
         wxMenu *impmenu = new wxMenu();
         MyAppend(impmenu, A_IMPXML, _(L"XML..."));
@@ -320,46 +325,61 @@ struct MyFrame : wxFrame {
             MyAppend(tagmenu, A_TAGADD, _(L"&Add Cell Text as Tag"));
             MyAppend(tagmenu, A_TAGREMOVE, _(L"&Remove Cell Text from Tags"));
             MyAppend(tagmenu, A_NOP, _(L"&Set Cell Text to tag (use CTRL+RMB)"),
-                     _(L"Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"));
+                     _(L"Hold CTRL while pressing right mouse button to quickly set a tag for the "
+                       L"current cell using a popup menu"));
 
             wxMenu *orgmenu = new wxMenu();
             MyAppend(orgmenu, A_TRANSPOSE, _(L"&Transpose\tCTRL+SHIFT+t"),
                      _(L"changes the orientation of a grid"));
             MyAppend(orgmenu, A_SORT, _(L"Sort &Ascending"),
-                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows to affect"));
+                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows "
+                       L"to affect"));
             MyAppend(orgmenu, A_SORTD, _(L"Sort &Descending"),
-                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows to affect"));
+                     _(L"Make a 1xN selection to indicate which column to sort on, and which rows "
+                       L"to affect"));
             MyAppend(orgmenu, A_HSWAP, _(L"Hierarchy &Swap\tF8"),
                      _(L"Swap all cells with this text at this level (or above) with the parent"));
             MyAppend(orgmenu, A_HIFY, _(L"&Hierarchify"),
-                     _(L"Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"));
+                     _(L"Convert an NxN grid with repeating elements per column into an 1xN grid "
+                       L"with hierarchy, useful to convert data from spreadsheets"));
             MyAppend(orgmenu, A_FLATTEN, _(L"&Flatten"),
-                     _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"));
+                     _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat "
+                       L"NxN grid, useful for export to spreadsheets"));
 
             wxMenu *imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _(L"&Add Image"), _(L"Adds an image to the selected cell"));
-            MyAppend(imgmenu, A_IMAGESVA, _(L"Save Image(s) to disk"), _(L"Save image(s) to disk. Multiple images will be saved with a counter appended to each file name."));
+            MyAppend(imgmenu, A_IMAGESVA, _(L"Save Image(s) to disk"),
+                     _(L"Save image(s) to disk. Multiple images will be saved with a counter "
+                       L"appended to each file name."));
             imgmenu->AppendSeparator();
-            MyAppend(imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels, by %)"),
-                     _(L"Change the image size if it is too big, by reducing the amount of pixels"));
-            MyAppend(imgmenu, A_IMAGESCW, _(L"&Scale Image (re-sample pixels, by width)"),
-                     _(L"Change the image size if it is too big, by reducing the amount of pixels"));
+            MyAppend(
+                imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels, by %)"),
+                _(L"Change the image size if it is too big, by reducing the amount of pixels"));
+            MyAppend(
+                imgmenu, A_IMAGESCW, _(L"&Scale Image (re-sample pixels, by width)"),
+                _(L"Change the image size if it is too big, by reducing the amount of pixels"));
             MyAppend(imgmenu, A_IMAGESCF, _(L"&Scale Image (display only)"),
-                     _(L"Change the image size if it is too big or too small, by changing the size shown on screen. Applies to all uses of this image."));
+                     _(L"Change the image size if it is too big or too small, by changing the size "
+                       L"shown on screen. Applies to all uses of this image."));
             MyAppend(imgmenu, A_IMAGESCN, _(L"&Reset Scale (display only)"),
-                     _(L"Change the scale to match DPI of the current display. Applies to all uses of this image."));
+                     _(L"Change the scale to match DPI of the current display. Applies to all uses "
+                       L"of this image."));
             imgmenu->AppendSeparator();
-            MyAppend(imgmenu, A_SAVE_AS_JPEG, _(L"Save image as JPEG"), _(L"Save the image in the TreeSheets file in JPEG format"));
-            MyAppend(imgmenu, A_SAVE_AS_PNG, _(L"Save image as PNG (default)"), _(L"Save the image in the TreeSheets file in PNG format"));
+            MyAppend(imgmenu, A_SAVE_AS_JPEG, _(L"Save image as JPEG"),
+                     _(L"Save the image in the TreeSheets file in JPEG format"));
+            MyAppend(imgmenu, A_SAVE_AS_PNG, _(L"Save image as PNG (default)"),
+                     _(L"Save the image in the TreeSheets file in PNG format"));
             imgmenu->AppendSeparator();
             MyAppend(imgmenu, A_IMAGER, _(L"&Remove Image(s)"),
                      _(L"Remove image(s) from the selected cells"));
 
             wxMenu *navmenu = new wxMenu();
             MyAppend(navmenu, A_BROWSE, _(L"Open link in &browser\tF5"),
-                     _(L"Opens up the text from the selected cell in browser (should start be a valid URL)"));
+                     _(L"Opens up the text from the selected cell in browser (should start be a "
+                       L"valid URL)"));
             MyAppend(navmenu, A_BROWSEF, _(L"Open &file\tF4"),
-                     _(L"Opens up the text from the selected cell in default application for the file type"));
+                     _(L"Opens up the text from the selected cell in default application for the "
+                       L"file type"));
 
             wxMenu *laymenu = new wxMenu();
             MyAppend(laymenu, A_V_GS, _(L"Vertical Layout with Grid Style Rendering\tALT+1"));
@@ -390,12 +410,14 @@ struct MyFrame : wxFrame {
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
             MyAppend(editmenu, A_COLLAPSE, _(L"Collapse Ce&lls\tCTRL+l"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, A_UNDO, _(L"&Undo\tCTRL+z"), _(L"revert the changes, one step at a time"));
+            MyAppend(editmenu, A_UNDO, _(L"&Undo\tCTRL+z"),
+                     _(L"revert the changes, one step at a time"));
             MyAppend(editmenu, A_REDO, _(L"&Redo\tCTRL+y"),
                      _(L"redo any undo steps, if you haven't made changes since"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, A_DELETE, _(L"&Delete After\tDEL"),
-                     _(L"Deletes the column of cells after the selected grid line, or the row below"));
+            MyAppend(
+                editmenu, A_DELETE, _(L"&Delete After\tDEL"),
+                _(L"Deletes the column of cells after the selected grid line, or the row below"));
             MyAppend(
                 editmenu, A_BACKSPACE, _(L"Delete Before\tBACK"),
                 _(L"Deletes the column of cells before the selected grid line, or the row above"));
@@ -547,9 +569,9 @@ struct MyFrame : wxFrame {
         optmenu->Check(A_MAKEBAKS, sys->makebaks);
         optmenu->AppendCheckItem(A_AUTOSAVE, _(L"Autosave to .tmp"));
         optmenu->Check(A_AUTOSAVE, sys->autosave);
-        optmenu->AppendCheckItem(
-            A_FSWATCH, _(L"Auto reload documents"),
-            _(L"Reloads when another computer has changed a file (if you have made changes, asks)"));
+        optmenu->AppendCheckItem(A_FSWATCH, _(L"Auto reload documents"),
+                                 _(L"Reloads when another computer has changed a file (if you have "
+                                   L"made changes, asks)"));
         optmenu->Check(A_FSWATCH, sys->fswatch);
         optmenu->AppendCheckItem(A_AUTOEXPORT, _(L"Automatically export a .html on every save"));
         optmenu->Check(A_AUTOEXPORT, sys->autohtmlexport);
@@ -643,11 +665,11 @@ struct MyFrame : wxFrame {
             #define SEPARATOR tb->AddSeparator()
             #endif
 
-            wxString iconpath =
-                GetDataPath(L"images/material/toolbar/");
+            wxString iconpath = GetDataPath(L"images/material/toolbar/");
 
             auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
-                tb->AddTool(action, name, wxBitmapBundle::FromSVGFile(file, wxSize(24,24)), name, wxITEM_NORMAL);
+                tb->AddTool(action, name, wxBitmapBundle::FromSVGFile(file, wxSize(24, 24)), name,
+                            wxITEM_NORMAL);
             };
 
             AddTBIcon(_(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
@@ -668,14 +690,16 @@ struct MyFrame : wxFrame {
             AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.svg");
             tb->AddSeparator();
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
-            tb->AddControl(filter = 
-                new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+            tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
+                                                   FromDIP(wxSize(80, 22)),
+                                                   wxWANTS_CHARS | wxTE_PROCESS_ENTER));
             AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.svg");
             AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.svg");
             SEPARATOR;
             tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
-            tb->AddControl(replaces =
-                new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition, FromDIP(wxSize(80, 22)), wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+            tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
+                                                     FromDIP(wxSize(80, 22)),
+                                                     wxWANTS_CHARS | wxTE_PROCESS_ENTER));
             AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.svg");
             AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.svg");
             AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.svg");
@@ -754,8 +778,7 @@ struct MyFrame : wxFrame {
         wxSafeYield();
     }
 
-    void AppOnEventLoopEnter()
-    {
+    void AppOnEventLoopEnter() {
         // Have to do this here, if we do it in the Frame constructor above, it crashes on OS X.
         watcher = new wxFileSystemWatcher();
         watcher->SetOwner(this);
@@ -795,9 +818,8 @@ struct MyFrame : wxFrame {
     }
 
     TSCanvas *GetCurTab() {
-        return nb && nb->GetSelection() >= 0
-            ? (TSCanvas *)nb->GetPage(nb->GetSelection())
-            : nullptr;
+        return nb && nb->GetSelection() >= 0 ? (TSCanvas *)nb->GetPage(nb->GetSelection())
+                                             : nullptr;
     }
     TSCanvas *GetTabByFileName(const wxString &fn) {
         if (nb) loop(i, nb->GetPageCount()) {
@@ -845,7 +867,8 @@ struct MyFrame : wxFrame {
         if (page < 0) page = nb->GetSelection();
         if (page < 0) return;
         if (page == nb->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
-        nb->SetPageText(page, (fn.empty() ? wxString(_(L"<unnamed>")) : wxFileName(fn).GetName()) + mods);
+        nb->SetPageText(page,
+                        (fn.empty() ? wxString(_(L"<unnamed>")) : wxFileName(fn).GetName()) + mods);
     }
 
     void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
@@ -931,18 +954,10 @@ struct MyFrame : wxFrame {
             case A_AUP: sw->CursorScroll(0, -g_scrollratecursor); break;
             case A_ADOWN: sw->CursorScroll(0, g_scrollratecursor); break;
 
-            case A_SHOWSBAR:
-                Check(L"showsbar");
-                break;
-            case A_SHOWTBAR:
-                Check(L"showtbar");
-                break;
-            case A_LEFTTABS:
-                Check(L"lefttabs");
-                break;
-            case A_SINGLETRAY:
-                Check(L"singletray");
-                break;
+            case A_SHOWSBAR: Check(L"showsbar"); break;
+            case A_SHOWTBAR: Check(L"showtbar"); break;
+            case A_LEFTTABS: Check(L"lefttabs"); break;
+            case A_SINGLETRAY: Check(L"singletray"); break;
             case A_MAKEBAKS: sys->cfg->Write(L"makebaks", sys->makebaks = ce.IsChecked()); break;
             case A_TOTRAY: sys->cfg->Write(L"totray", sys->totray = ce.IsChecked()); break;
             case A_MINCLOSE: sys->cfg->Write(L"minclose", sys->minclose = ce.IsChecked()); break;
@@ -972,16 +987,12 @@ struct MyFrame : wxFrame {
                 if (!IsFullScreen()) {
                     wxToolBar *wtb = this->GetToolBar();
                     wxStatusBar *wsb = this->GetStatusBar();
-                    if (wtb != nullptr)
-                        wtb->Show(zenmode);
-                    if (wsb != nullptr)
-                        wsb->Show(zenmode);
+                    if (wtb != nullptr) wtb->Show(zenmode);
+                    if (wsb != nullptr) wsb->Show(zenmode);
                     this->SendSizeEvent();
                     this->Refresh();
-                    if (wtb != nullptr)
-                        wtb->Refresh();
-                    if (wsb != nullptr)
-                        wsb->Refresh();
+                    if (wtb != nullptr) wtb->Refresh();
+                    if (wsb != nullptr) wsb->Refresh();
                     zenmode = !zenmode;
                 }
                 break;
@@ -1033,10 +1044,10 @@ struct MyFrame : wxFrame {
 
     void SetSearchTextBoxBackgroundColour(bool found) {
         if (!filter) return;
-        filter->SetBackgroundColour(found ? wxColour("AQUAMARINE"): 
-            wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
-        filter->SetForegroundColour(found ? *wxBLACK : 
-            wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT));
+        filter->SetBackgroundColour(found ? wxColour("AQUAMARINE")
+                                          : wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
+        filter->SetForegroundColour(found ? *wxBLACK
+                                          : wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT));
         filter->Refresh();
     }
 
@@ -1099,24 +1110,26 @@ struct MyFrame : wxFrame {
     }
 
     void SetDPIAwareStatusWidths() {
-        int swidths[] = {-1, FromDIP(200), FromDIP(120), FromDIP(100)};
+        int swidths[] = { -1, FromDIP(200), FromDIP(120), FromDIP(100) };
         SetStatusWidths(4, swidths);
     }
 
     void OnDPIChanged(wxDPIChangedEvent &dce) {
-        {   // block all other events until we finished preparing
+        {  // block all other events until we finished preparing
             wxEventBlocker blocker(this);
             wxBusyCursor wait;
             csf = FromDIP(1.0);
             {
-                ThreadPool pool(std::thread::hardware_concurrency());   
+                ThreadPool pool(std::thread::hardware_concurrency());
                 loopv(i, sys->imagelist) {
-                    pool.enqueue([](Image *img) {
-                        img->bm_display = wxNullBitmap;
-                        img->Display();
-                    }, sys->imagelist[i]);
+                    pool.enqueue(
+                        [](Image *img) {
+                            img->bm_display = wxNullBitmap;
+                            img->Display();
+                        },
+                        sys->imagelist[i]);
                 }
-            } // wait until all tasks are finished
+            }  // wait until all tasks are finished
             RenderFolderIcon();
             if (nb) {
                 loop(i, nb->GetPageCount()) {
@@ -1172,11 +1185,10 @@ struct MyFrame : wxFrame {
         }
         sys->RememberOpenFiles();
         int n = (int)nb->GetPageCount();
-        if (ce.CanVeto())
-        {
+        if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             for (int i = 0; i < n; i++) {
-                TSCanvas* p = (TSCanvas*)nb->GetPage(i);
+                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
                 if (p->doc->modified) {
                     nb->SetSelection(i);
                     if (p->doc->CheckForChanges()) {
@@ -1226,8 +1238,7 @@ struct MyFrame : wxFrame {
             if (modfile == doc->filename) {
                 wxDateTime modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
-                if (!modtime.IsValid() ||
-                    !doc->lastmodificationtime.IsValid() ||
+                if (!modtime.IsValid() || !doc->lastmodificationtime.IsValid() ||
                     modtime == doc->lastmodificationtime) {
                     return;
                 }
@@ -1242,11 +1253,12 @@ struct MyFrame : wxFrame {
                     // for now, we leave this code active, and guard it with
                     // watcherwaitingforuser
                     wxString msg = wxString::Format(
-                        _(L"%s\nhas been modified on disk by another program / computer:\nWould you like to discard your changes and re-load from disk?"),
+                        _(L"%s\nhas been modified on disk by another program / computer:\nWould "
+                          L"you like to discard your changes and re-load from disk?"),
                         doc->filename);
                     watcherwaitingforuser = true;
                     int res = wxMessageBox(msg, _(L"File modification conflict!"),
-                                            wxYES_NO | wxICON_QUESTION, this);
+                                           wxYES_NO | wxICON_QUESTION, this);
                     watcherwaitingforuser = false;
                     if (res != wxYES) return;
                 }
@@ -1259,7 +1271,8 @@ struct MyFrame : wxFrame {
                         nb->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     GetCurTab()->Status(
-                        _(L"File has been re-loaded because of modifications of another program / computer"));
+                        _(L"File has been re-loaded because of modifications of another program / "
+                          L"computer"));
                 }
                 return;
             }
