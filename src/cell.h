@@ -33,9 +33,7 @@ struct Cell {
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
          Grid *_g = nullptr)
-        : parent(_p),
-          celltype(_ct),
-          grid(_g) {
+        : parent(_p), celltype(_ct), grid(_g) {
         text.cell = this;
         if (_g) _g->cell = this;
         if (_p) {
@@ -151,8 +149,7 @@ struct Cell {
             DrawRectangle(dc, actualcellcolor, bx - ml, by - mt, sx + ml + mr, sy + mt + mb);
         }
         if (drawstyle != DS_GRID && HasContent() && !tiny) {
-            if (actualcellcolor == parentcolor)
-            {
+            if (actualcellcolor == parentcolor) {
                 uchar *cp = (uchar *)&actualcellcolor;
                 loop(i, 4) cp[i] = cp[i] * 850 / 1000;
             }
@@ -185,13 +182,11 @@ struct Cell {
     }
 
     unique_ptr<Cell> Clone(Cell *_parent) const {
-        auto c =
-            make_unique<Cell>(_parent, this, celltype, grid ? new Grid(grid->xs, grid->ys) : nullptr);
+        auto c = make_unique<Cell>(_parent, this, celltype,
+                                   grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
         c->text.cell = c.get();
-        if (grid) {
-            grid->Clone(c->grid);
-        }
+        if (grid) { grid->Clone(c->grid); }
         return c;
     }
 
@@ -204,13 +199,16 @@ struct Cell {
         parent = g;
         return this;
     }
-    bool IsParentOf(const Cell *c) { return c->parent == this || (c->parent && IsParentOf(c->parent)); }
+    bool IsParentOf(const Cell *c) {
+        return c->parent == this || (c->parent && IsParentOf(c->parent));
+    }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
     wxString ToText(int indent, const Selection &s, int format, Document *doc, bool inheritstyle) {
         wxString str = text.ToText(indent, s, format);
-        if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) && ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU)) 
-                && this != doc->curdrawroot && !str.IsEmpty()) {
+        if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
+            ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU)) &&
+            this != doc->curdrawroot && !str.IsEmpty()) {
             wxString spanstyle = L"text-decoration:";
             spanstyle += (text.stylebits & STYLE_UNDERLINE) ? L" underline" : wxEmptyString;
             spanstyle += (text.stylebits & STYLE_STRIKETHRU) ? L" line-through" : wxEmptyString;
@@ -258,12 +256,18 @@ struct Cell {
             str.Append(L"</cell>\n");
         } else if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) && this != doc->curdrawroot) {
             wxString style;
-            if (!inheritstyle || !parent || (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
-                style += (text.stylebits & STYLE_BOLD) ? L"font-weight: bold;" : L"font-weight: normal;";
-            if (!inheritstyle || !parent || (text.stylebits & STYLE_ITALIC) != (parent->text.stylebits & STYLE_ITALIC))
-                style += (text.stylebits & STYLE_ITALIC) ? L"font-style: italic;" : L"font-style: normal;";
-            if (!inheritstyle || !parent || (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED))
-                style += (text.stylebits & STYLE_FIXED) ? L"font-family: monospace;" : L"font-family: sans-serif;";
+            if (!inheritstyle || !parent ||
+                (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
+                style +=
+                    (text.stylebits & STYLE_BOLD) ? L"font-weight: bold;" : L"font-weight: normal;";
+            if (!inheritstyle || !parent ||
+                (text.stylebits & STYLE_ITALIC) != (parent->text.stylebits & STYLE_ITALIC))
+                style += (text.stylebits & STYLE_ITALIC) ? L"font-style: italic;"
+                                                         : L"font-style: normal;";
+            if (!inheritstyle || !parent ||
+                (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED))
+                style += (text.stylebits & STYLE_FIXED) ? L"font-family: monospace;"
+                                                        : L"font-family: sans-serif;";
             if (!inheritstyle || cellcolor != (parent ? parent->cellcolor : doc->Background()))
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
             if (!inheritstyle || textcolor != (parent ? parent->textcolor : 0x000000))
@@ -356,7 +360,8 @@ struct Cell {
         return this;
     }
 
-    static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes, Cell *&ics) {
+    static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes,
+                           Cell *&ics) {
         Cell *c = new Cell(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
@@ -410,8 +415,10 @@ struct Cell {
         }
     }
 
-    Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected, bool &lastwasselected, bool reverse) {
-        if (reverse && grid) best = grid->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
+    Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
+                              bool &lastwasselected, bool reverse) {
+        if (reverse && grid)
+            best = grid->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
         if (sys->casesensitivesearch) {
             if (text.t.Find(search) >= 0) {
                 if (lastwasselected) best = this;
@@ -424,7 +431,8 @@ struct Cell {
             }
         }
         if (selected == this) lastwasselected = true;
-        if (!reverse && grid) best = grid->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
+        if (!reverse && grid)
+            best = grid->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
         return best;
     }
 
