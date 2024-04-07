@@ -41,7 +41,8 @@ struct TSCanvas : public wxScrolledCanvas {
         // DoPrepareDC(dc);
         doc->Draw(dc);
         // Display has been re-layouted, compute hover selection again.
-        // TODO: lastmousepos doesn't seem correct anymore after a scroll operation in latest wxWidgets.
+        // TODO: lastmousepos doesn't seem correct anymore after a scroll operation in latest
+        // wxWidgets.
         /*
         doc->Hover(lastmousepos.x / doc->currentviewscale,
                    lastmousepos.y / doc->currentviewscale,
@@ -122,11 +123,11 @@ struct TSCanvas : public wxScrolledCanvas {
         }
         */
 
-        // Without this check, Alt+[Alphanumericals], Alt+Shift+[Alphanumericals] and Alt+[Shift]+cursor
-        // (scrolling) don't work.
-        // The 128 makes sure unicode entry on e.g. Polish keyboards still works.
-        // (on Linux in particular).
-        if ((ce.GetModifiers() == wxMOD_ALT || ce.GetModifiers() == (wxMOD_ALT | wxMOD_SHIFT)) && (ce.GetUnicodeKey() < 128)) {
+        // Without this check, Alt+[Alphanumericals], Alt+Shift+[Alphanumericals] and
+        // Alt+[Shift]+cursor (scrolling) don't work. The 128 makes sure unicode entry on e.g.
+        // Polish keyboards still works. (on Linux in particular).
+        if ((ce.GetModifiers() == wxMOD_ALT || ce.GetModifiers() == (wxMOD_ALT | wxMOD_SHIFT)) &&
+            (ce.GetUnicodeKey() < 128)) {
             ce.Skip();
             return;
         }
@@ -188,8 +189,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void Status(const wxChar *msg = nullptr) {
-        if (frame->GetStatusBar() && (!msg || *msg))
-            frame->SetStatusText(msg ? msg : L"", 0);
+        if (frame->GetStatusBar() && (!msg || *msg)) frame->SetStatusText(msg ? msg : L"", 0);
     }
 
     DECLARE_EVENT_TABLE()
