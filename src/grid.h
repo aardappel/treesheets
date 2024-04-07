@@ -307,16 +307,20 @@ struct Grid {
         if (forward) {
             foreachcell(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward, image);
         } else {
-            foreachcellrev(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward, image);
+            foreachcellrev(c) best =
+                c->FindLink(s, link, best, lastthis, stylematch, forward, image);
         }
         return best;
     }
 
-    Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected, bool &lastwasselected, bool reverse) {
+    Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
+                              bool &lastwasselected, bool reverse) {
         if (reverse) {
-            foreachcellrev(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
+            foreachcellrev(c) best =
+                c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
         } else {
-            foreachcell(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
+            foreachcell(c) best =
+                c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
         }
         return best;
     }
@@ -326,10 +330,10 @@ struct Grid {
         return best;
     }
 
-    void FindReplaceAll(const wxString &str, const wxString &lstr) { 
+    void FindReplaceAll(const wxString &str, const wxString &lstr) {
         foreachcell(c) c->FindReplaceAll(str, lstr);
     }
-    
+
     void ReplaceCell(Cell *o, Cell *n) { foreachcell(c) if (c == o) c = n; }
     Selection FindCell(Cell *o) {
         foreachcell(c) if (c == o) return Selection(this, x, y, 1, 1);
@@ -337,9 +341,8 @@ struct Grid {
     }
 
     Selection SelectAll() { return Selection(this, 0, 0, xs, ys); }
-    void ImageRefCount(bool includefolded) { 
-        if (includefolded || !folded) 
-            foreachcell(c) c->ImageRefCount(includefolded); 
+    void ImageRefCount(bool includefolded) {
+        if (includefolded || !folded) foreachcell(c) c->ImageRefCount(includefolded);
     }
     void DrawHover(Document *doc, wxDC &dc, Selection &s) {
         #ifndef SIMPLERENDER
@@ -524,8 +527,7 @@ struct Grid {
     }
 
     void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
-        assert(((dx < 0) == (nxs == 0)) &&
-               ((dy < 0) == (nys == 0)));
+        assert(((dx < 0) == (nxs == 0)) && ((dy < 0) == (nys == 0)));
         assert(nxs + nys == 1);
         Cell **ocells = cells;
         cells = new Cell *[(xs + nxs) * (ys + nys)];
@@ -582,7 +584,8 @@ struct Grid {
                 }
             }
         }
-        foreachcell(c) if (!(c = Cell::LoadWhich(dis, cell, numcells, textbytes, ics))) return false;
+        foreachcell(
+            c) if (!(c = Cell::LoadWhich(dis, cell, numcells, textbytes, ics))) return false;
         return true;
     }
 
@@ -604,18 +607,18 @@ struct Grid {
         return ConvertToText(SelectAll(), indent + 2, format, doc, inheritstyle);
     };
 
-    wxString ConvertToText(const Selection &s, int indent, int format, Document *doc, bool inheritstyle) {
+    wxString ConvertToText(const Selection &s, int indent, int format, Document *doc,
+                           bool inheritstyle) {
         wxString r;
         const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
         const int font_size = 14 - indent / 2;
         const int grid_border_width =
             cell == doc->rootgrid ? root_grid_spacing : user_grid_outer_spacing - 1;
-        Formatter(r, format, indent,
-                  L"<grid>\n",
+        Formatter(r, format, indent, L"<grid>\n",
                   wxString::Format(L"<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
-                      grid_border_width, font_size).wc_str(),
-                  wxString::Format(L"<ul style=\"font-size: %dpt;\">\n",
-                      font_size).wc_str());
+                                   grid_border_width, font_size)
+                      .wc_str(),
+                  wxString::Format(L"<ul style=\"font-size: %dpt;\">\n", font_size).wc_str());
         foreachcellinsel(c, s) {
             if (x == s.x) Formatter(r, format, indent, L"<row>\n", L"<tr>\n", L"");
             r.Append(c->ToText(indent, s, format, doc, inheritstyle));
@@ -758,7 +761,7 @@ struct Grid {
         int ct = c->celltype;  // Type of subcell being evaluated
         // Update alldata condition (variable reads act like data)
         alldata = alldata && (ct == CT_DATA || ct == CT_VARU);
-        ev.vert = vert;                  // Inform evaluatour of vert status. (?)
+        ev.vert = vert;  // Inform evaluatour of vert status. (?)
         switch (ct) {
             // Var assign
             case CT_VARD: {
@@ -777,9 +780,7 @@ struct Grid {
             // View
             case CT_VIEWV:
             case CT_VIEWH:
-                if (vert ? ct == CT_VIEWH : ct == CT_VIEWV) {
-                    return c->Clone(nullptr);
-                }
+                if (vert ? ct == CT_VIEWH : ct == CT_VIEWV) { return c->Clone(nullptr); }
                 delete c;
                 c = acc ? acc->Clone(cell).release() : new Cell(cell);
                 c->celltype = ct;
@@ -788,12 +789,9 @@ struct Grid {
             case CT_CODE: {
                 Operation *op = ev.FindOp(c->text.t);
                 switch (op ? strlen(op->args) : -1) {
-                    default:
-                        return nullptr;
-                    case 0:
-                        return ev.Execute(op);
-                    case 1:
-                        return acc ? ev.Execute(op, std::move(acc)) : nullptr;
+                    default: return nullptr;
+                    case 0: return ev.Execute(op);
+                    case 1: return acc ? ev.Execute(op, std::move(acc)) : nullptr;
                     case 2:
                         if (vert) {
                             if (acc && y + 1 < ys) {
@@ -827,14 +825,13 @@ struct Grid {
                 }
             }
             // Var read, Data
-            default:
-                return c->Eval(ev);
+            default: return c->Eval(ev);
         }
     }
 
     unique_ptr<Cell> Eval(Evaluator &ev) {
         unique_ptr<Cell> acc;  // Actual/Accumulating data temporary
-        bool alldata = true;  // Is the grid all data?
+        bool alldata = true;   // Is the grid all data?
         // Do left to right processing
         if (xs > 1 || ys == 1) foreachcell(c) {
                 if (x == 0) acc.reset();
@@ -915,7 +912,7 @@ struct Grid {
     Selection HierarchySwap(wxString tag) {
         Cell *selcell = nullptr;
         bool done = false;
-        lookformore:
+    lookformore:
         foreachcell(c) if (c->grid && !done) {
             Cell *f = c->grid->FindExact(tag);
             if (f) {
@@ -1042,7 +1039,7 @@ struct Grid {
                 swap_(c->grid, rest->grid);
                 c->grid->ReParent(c);
             }
-            done:;
+        done:;
         }
         Selection s(this, 1, 0, xs - 1, ys);
         MultiCellDeleteSub(doc, s);
