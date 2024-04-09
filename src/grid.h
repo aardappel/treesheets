@@ -691,7 +691,10 @@ struct Grid {
     void SetStyle(Document *doc, const Selection &s, int sb) {
         cell->AddUndo(doc);
         cell->ResetChildren();
-        foreachcellinsel(c, s) c->text.stylebits ^= sb;
+        foreachcellinsel(c, s) {
+            c->text.stylebits ^= sb;
+            c->text.WasEdited();
+        }
         doc->Refresh();
     }
 

@@ -495,6 +495,7 @@ struct Cell {
                 if (grid) grid->bordercolor = color;
                 break;
         }
+        text.WasEdited();
     }
 
     void SetGridTextLayout(int ds, bool vert, bool noset) {
