@@ -3,7 +3,7 @@ struct MyFrame : wxFrame {
     wxString exepath_;
     wxFileHistory filehistory;
     wxTextCtrl *filter, *replaces;
-    wxToolBar *tb;
+    wxAuiToolBar *tb1, *tb2, *tb3, *tb4, *tb5, *tb6, *tb7, *tb8, *tb9;
     int refreshhack, refreshhackinstances;
     BlinkTimer bt;
     wxTaskBarIcon tbi;
@@ -79,7 +79,6 @@ struct MyFrame : wxFrame {
                   wxDEFAULT_FRAME_STYLE),
           filter(nullptr),
           replaces(nullptr),
-          tb(nullptr),
           refreshhack(0),
           refreshhackinstances(0),
           idd(nullptr),
@@ -91,6 +90,8 @@ struct MyFrame : wxFrame {
           watcherwaitingforuser(false),
           csf(FromDIP(1.0)),
           zenmode(false) {
+        aui.SetManagedWindow(this);
+
         sys->frame = this;
         exepath_ = wxFileName(exename).GetPath();
         #ifdef __WXMAC__
@@ -158,8 +159,6 @@ struct MyFrame : wxFrame {
         else
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
                         wxTaskBarIconEventHandler(MyFrame::OnTBIDBLClick), nullptr, this);
-
-        aui.SetManagedWindow(this);
 
         bool mergetbar = false;
 
@@ -656,70 +655,98 @@ struct MyFrame : wxFrame {
         wxColour toolbgcol(0xD8C7BC);
 
         if (showtbar || mergetbar) {
-            tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
-            tb->SetOwnBackgroundColour(toolbgcol);
-
-            #ifdef __WXMAC__
-            #define SEPARATOR
-            #else
-            #define SEPARATOR tb->AddSeparator()
-            #endif
-
             wxString iconpath = GetDataPath(L"images/material/toolbar/");
 
-            auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
-                tb->AddTool(action, name, wxBitmapBundle::FromSVGFile(file, wxSize(24, 24)), name,
-                            wxITEM_NORMAL);
+            auto AddTBIcon = [&](wxAuiToolBar *atb, const wxChar *name, int action, wxString file) {
+                atb->AddTool(action, name, wxBitmapBundle::FromSVGFile(file, wxSize(24, 24)), name,
+                             wxITEM_NORMAL);
             };
 
-            AddTBIcon(_(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
-            AddTBIcon(_(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
-            AddTBIcon(_(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
-            AddTBIcon(_(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
-            AddTBIcon(_(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
-            AddTBIcon(_(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
-            AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
-            AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.svg");
-            tb->AddSeparator();
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
-            tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
-                                                   FromDIP(wxSize(80, 22)),
-                                                   wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-            AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.svg");
-            AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.svg");
-            SEPARATOR;
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
-            tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
-                                                     FromDIP(wxSize(80, 22)),
-                                                     wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-            AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.svg");
-            AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.svg");
-            AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.svg");
-            tb->AddSeparator();
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
-            celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
-            tb->AddControl(celldd);
-            SEPARATOR;
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
-            textdd = new ColorDropdown(tb, A_TEXTCOLOR, 2);
-            tb->AddControl(textdd);
-            SEPARATOR;
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
-            borddd = new ColorDropdown(tb, A_BORDCOLOR, 7);
-            tb->AddControl(borddd);
-            tb->AddSeparator();
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
-            idd = new ImageDropdown(tb, imagepath);
-            tb->AddControl(idd);
-            tb->Realize();
+            tb1 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(tb1, _(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
+            AddTBIcon(tb1, _(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
+            AddTBIcon(tb1, _(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
+            AddTBIcon(tb1, _(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
+            tb1->Realize();
+
+            tb2 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(tb2, _(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
+            AddTBIcon(tb2, _(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
+            AddTBIcon(tb2, _(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
+            tb2->Realize();
+
+            tb3 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(tb3, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
+            AddTBIcon(tb3, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.svg");
+            tb3->Realize();
+
+            tb4 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(tb4, _(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
+            AddTBIcon(tb4, _(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
+            tb4->Realize();
+
+            tb5 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(tb5, _(L"Run"), A_RUN, iconpath + L"run.svg");
+            tb5->Realize();
+
+            tb6 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            tb6->AddControl(new wxStaticText(tb6, wxID_ANY, _(L"Search ")));
+            tb6->AddControl(filter = new wxTextCtrl(tb6, A_SEARCH, "", wxDefaultPosition,
+                                                    FromDIP(wxSize(80, 22)),
+                                                    wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+
+            AddTBIcon(tb6, _(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.svg");
+            AddTBIcon(tb6, _(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.svg");
+            tb6->Realize();
+
+            tb7 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            tb7->AddControl(new wxStaticText(tb7, wxID_ANY, _(L"Replace ")));
+            tb7->AddControl(replaces = new wxTextCtrl(tb7, A_REPLACE, "", wxDefaultPosition,
+                                                      FromDIP(wxSize(80, 22)),
+                                                      wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+            AddTBIcon(tb7, _(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.svg");
+            AddTBIcon(tb7, _(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.svg");
+            AddTBIcon(tb7, _(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.svg");
+            tb7->Realize();
+
+            tb8 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            tb8->AddControl(new wxStaticText(tb8, wxID_ANY, _(L"Cell ")));
+            celldd = new ColorDropdown(tb8, A_CELLCOLOR, 1);
+            tb8->AddControl(celldd);
+            tb8->AddSeparator();
+            tb8->AddControl(new wxStaticText(tb8, wxID_ANY, _(L"Text ")));
+            textdd = new ColorDropdown(tb8, A_TEXTCOLOR, 2);
+            tb8->AddControl(textdd);
+            tb8->AddSeparator();
+            tb8->AddControl(new wxStaticText(tb8, wxID_ANY, _(L"Border ")));
+            borddd = new ColorDropdown(tb8, A_BORDCOLOR, 7);
+            tb8->AddControl(borddd);
+            tb8->Realize();
+
+            tb9 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                   wxAUI_TB_DEFAULT_STYLE);
+            tb9->AddControl(new wxStaticText(tb9, wxID_ANY, _(L"Image ")));
+            idd = new ImageDropdown(tb9, imagepath);
+            tb9->AddControl(idd);
+            tb9->Realize();
+
+            aui.AddPane(tb1, wxAuiPaneInfo().Name("tb1").ToolbarPane().Top());
+            aui.AddPane(tb2, wxAuiPaneInfo().Name("tb2").ToolbarPane().Top());
+            aui.AddPane(tb3, wxAuiPaneInfo().Name("tb3").ToolbarPane().Top());
+            aui.AddPane(tb4, wxAuiPaneInfo().Name("tb4").ToolbarPane().Top());
+            aui.AddPane(tb5, wxAuiPaneInfo().Name("tb5").ToolbarPane().Top());
+            aui.AddPane(tb6, wxAuiPaneInfo().Name("tb6").ToolbarPane().Top());
+            aui.AddPane(tb7, wxAuiPaneInfo().Name("tb7").ToolbarPane().Top());
+            aui.AddPane(tb8, wxAuiPaneInfo().Name("tb8").ToolbarPane().Top());
+            aui.AddPane(tb9, wxAuiPaneInfo().Name("tb9").ToolbarPane().Top());
         }
 
         if (showsbar) {
@@ -766,6 +793,17 @@ struct MyFrame : wxFrame {
         sys->cfg->Read(L"maximized", &ismax, true);
 
         aui.AddPane(nb, wxCENTER);
+
+        wxAuiPaneInfoArray &all_panes = aui.GetAllPanes();
+        int count = all_panes.GetCount();
+        for (int i = 0; i < count; ++i) {
+            if (wxAuiPaneInfo &pane_info = all_panes.Item(i); pane_info.IsToolbar()) {
+                wxString str_pane_info;
+                sys->cfg->Read(pane_info.name, &str_pane_info, wxEmptyString);
+                if (!str_pane_info.empty()) aui.LoadPaneInfo(str_pane_info, pane_info);
+            }
+        }
+
         aui.Update();
 
         Show(!IsIconized());
@@ -1175,6 +1213,14 @@ struct MyFrame : wxFrame {
     void OnTBIDBLClick(wxTaskBarIconEvent &e) { DeIconize(); }
 
     void OnClosing(wxCloseEvent &ce) {
+        wxAuiPaneInfoArray &all_panes = aui.GetAllPanes();
+        int count = all_panes.GetCount();
+        for (int i = 0; i < count; ++i) {
+            if (wxAuiPaneInfo &pane_info = all_panes.Item(i); pane_info.IsToolbar()) {
+                sys->cfg->Write(pane_info.name, aui.SavePaneInfo(pane_info));
+            }
+        }
+
         bool fcb = fromclosebox;
         fromclosebox = true;
         if (fcb && sys->minclose) {
