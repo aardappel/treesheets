@@ -10,7 +10,7 @@ struct MyFrame : wxFrame {
     wxIcon icon;
     ImageDropdown *idd;
     wxAuiNotebook *nb;
-    wxAuiManager *aui;
+    wxAuiManager aui;
     wxBitmap line_nw, line_sw;
     wxBitmap foldicon;
     bool fromclosebox;
@@ -159,7 +159,7 @@ struct MyFrame : wxFrame {
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
                         wxTaskBarIconEventHandler(MyFrame::OnTBIDBLClick), nullptr, this);
 
-        aui = new wxAuiManager(this);
+        aui.SetManagedWindow(this);
 
         bool mergetbar = false;
 
@@ -765,8 +765,8 @@ struct MyFrame : wxFrame {
         bool ismax;
         sys->cfg->Read(L"maximized", &ismax, true);
 
-        aui->AddPane(nb, wxCENTER);
-        aui->Update();
+        aui.AddPane(nb, wxCENTER);
+        aui.Update();
 
         Show(!IsIconized());
 
@@ -796,9 +796,8 @@ struct MyFrame : wxFrame {
                 sys->cfg->Write(L"posy", GetPosition().y);
             }
         }
-        aui->ClearEventHashTable();
-        aui->UnInit();
-        DELETEP(aui);
+        aui.ClearEventHashTable();
+        aui.UnInit();
         DELETEP(editmenupopup);
         DELETEP(watcher);
     }
