@@ -3,7 +3,8 @@ struct MyFrame : wxFrame {
     wxString exepath_;
     wxFileHistory filehistory;
     wxTextCtrl *filter, *replaces;
-    wxAuiToolBar *tb1, *tb2, *tb3, *tb4, *tb5, *tb6, *tb7, *tb8, *tb9;
+    wxAuiToolBar *filetools, *edittools, *zoomtools, *gridtools, *scripttools, *searchtools,
+        *replacetools, *colortools, *imagetools;
     int refreshhack, refreshhackinstances;
     BlinkTimer bt;
     wxTaskBarIcon tbi;
@@ -662,91 +663,97 @@ struct MyFrame : wxFrame {
                              wxITEM_NORMAL);
             };
 
-            tb1 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            AddTBIcon(tb1, _(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
-            AddTBIcon(tb1, _(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
-            AddTBIcon(tb1, _(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
-            AddTBIcon(tb1, _(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
-            tb1->Realize();
+            filetools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                         wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(filetools, _(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
+            AddTBIcon(filetools, _(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
+            AddTBIcon(filetools, _(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
+            AddTBIcon(filetools, _(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
+            filetools->Realize();
 
-            tb2 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            AddTBIcon(tb2, _(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
-            AddTBIcon(tb2, _(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
-            AddTBIcon(tb2, _(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
-            tb2->Realize();
+            edittools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                         wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(edittools, _(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
+            AddTBIcon(edittools, _(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
+            AddTBIcon(edittools, _(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
+            edittools->Realize();
 
-            tb3 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            AddTBIcon(tb3, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
-            AddTBIcon(tb3, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.svg");
-            tb3->Realize();
+            zoomtools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                         wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(zoomtools, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN,
+                      iconpath + L"zoomin.svg");
+            AddTBIcon(zoomtools, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT,
+                      iconpath + L"zoomout.svg");
+            zoomtools->Realize();
 
-            tb4 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            AddTBIcon(tb4, _(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
-            AddTBIcon(tb4, _(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
-            tb4->Realize();
+            gridtools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                         wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(gridtools, _(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
+            AddTBIcon(gridtools, _(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
+            gridtools->Realize();
 
-            tb5 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            AddTBIcon(tb5, _(L"Run"), A_RUN, iconpath + L"run.svg");
-            tb5->Realize();
+            scripttools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                           wxAUI_TB_DEFAULT_STYLE);
+            AddTBIcon(scripttools, _(L"Run"), A_RUN, iconpath + L"run.svg");
+            scripttools->Realize();
 
-            tb6 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            tb6->AddControl(new wxStaticText(tb6, wxID_ANY, _(L"Search ")));
-            tb6->AddControl(filter = new wxTextCtrl(tb6, A_SEARCH, "", wxDefaultPosition,
-                                                    FromDIP(wxSize(80, 22)),
-                                                    wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+            searchtools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                           wxAUI_TB_DEFAULT_STYLE);
+            searchtools->AddControl(new wxStaticText(searchtools, wxID_ANY, _(L"Search ")));
+            searchtools->AddControl(filter =
+                                        new wxTextCtrl(searchtools, A_SEARCH, "", wxDefaultPosition,
+                                                       FromDIP(wxSize(80, 22)),
+                                                       wxWANTS_CHARS | wxTE_PROCESS_ENTER));
 
-            AddTBIcon(tb6, _(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.svg");
-            AddTBIcon(tb6, _(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.svg");
-            tb6->Realize();
+            AddTBIcon(searchtools, _(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.svg");
+            AddTBIcon(searchtools, _(L"Go to Next Search Result"), A_SEARCHNEXT,
+                      iconpath + L"search.svg");
+            searchtools->Realize();
 
-            tb7 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            tb7->AddControl(new wxStaticText(tb7, wxID_ANY, _(L"Replace ")));
-            tb7->AddControl(replaces = new wxTextCtrl(tb7, A_REPLACE, "", wxDefaultPosition,
-                                                      FromDIP(wxSize(80, 22)),
-                                                      wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-            AddTBIcon(tb7, _(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.svg");
-            AddTBIcon(tb7, _(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.svg");
-            AddTBIcon(tb7, _(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.svg");
-            tb7->Realize();
+            replacetools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                            wxAUI_TB_DEFAULT_STYLE);
+            replacetools->AddControl(new wxStaticText(replacetools, wxID_ANY, _(L"Replace ")));
+            replacetools->AddControl(replaces =
+                                         new wxTextCtrl(replacetools, A_REPLACE, "",
+                                                        wxDefaultPosition, FromDIP(wxSize(80, 22)),
+                                                        wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+            AddTBIcon(replacetools, _(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.svg");
+            AddTBIcon(replacetools, _(L"Replace in selection"), A_REPLACEONCE,
+                      iconpath + L"replace.svg");
+            AddTBIcon(replacetools, _(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.svg");
+            replacetools->Realize();
 
-            tb8 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            tb8->AddControl(new wxStaticText(tb8, wxID_ANY, _(L"Cell ")));
-            celldd = new ColorDropdown(tb8, A_CELLCOLOR, 1);
-            tb8->AddControl(celldd);
-            tb8->AddSeparator();
-            tb8->AddControl(new wxStaticText(tb8, wxID_ANY, _(L"Text ")));
-            textdd = new ColorDropdown(tb8, A_TEXTCOLOR, 2);
-            tb8->AddControl(textdd);
-            tb8->AddSeparator();
-            tb8->AddControl(new wxStaticText(tb8, wxID_ANY, _(L"Border ")));
-            borddd = new ColorDropdown(tb8, A_BORDCOLOR, 7);
-            tb8->AddControl(borddd);
-            tb8->Realize();
+            colortools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                          wxAUI_TB_DEFAULT_STYLE);
+            colortools->AddControl(new wxStaticText(colortools, wxID_ANY, _(L"Cell ")));
+            celldd = new ColorDropdown(colortools, A_CELLCOLOR, 1);
+            colortools->AddControl(celldd);
+            colortools->AddSeparator();
+            colortools->AddControl(new wxStaticText(colortools, wxID_ANY, _(L"Text ")));
+            textdd = new ColorDropdown(colortools, A_TEXTCOLOR, 2);
+            colortools->AddControl(textdd);
+            colortools->AddSeparator();
+            colortools->AddControl(new wxStaticText(colortools, wxID_ANY, _(L"Border ")));
+            borddd = new ColorDropdown(colortools, A_BORDCOLOR, 7);
+            colortools->AddControl(borddd);
+            colortools->Realize();
 
-            tb9 = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxAUI_TB_DEFAULT_STYLE);
-            tb9->AddControl(new wxStaticText(tb9, wxID_ANY, _(L"Image ")));
-            idd = new ImageDropdown(tb9, imagepath);
-            tb9->AddControl(idd);
-            tb9->Realize();
+            imagetools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                          wxAUI_TB_DEFAULT_STYLE);
+            imagetools->AddControl(new wxStaticText(imagetools, wxID_ANY, _(L"Image ")));
+            idd = new ImageDropdown(imagetools, imagepath);
+            imagetools->AddControl(idd);
+            imagetools->Realize();
 
-            aui.AddPane(tb1, wxAuiPaneInfo().Name("tb1").ToolbarPane().Top());
-            aui.AddPane(tb2, wxAuiPaneInfo().Name("tb2").ToolbarPane().Top());
-            aui.AddPane(tb3, wxAuiPaneInfo().Name("tb3").ToolbarPane().Top());
-            aui.AddPane(tb4, wxAuiPaneInfo().Name("tb4").ToolbarPane().Top());
-            aui.AddPane(tb5, wxAuiPaneInfo().Name("tb5").ToolbarPane().Top());
-            aui.AddPane(tb6, wxAuiPaneInfo().Name("tb6").ToolbarPane().Top());
-            aui.AddPane(tb7, wxAuiPaneInfo().Name("tb7").ToolbarPane().Top());
-            aui.AddPane(tb8, wxAuiPaneInfo().Name("tb8").ToolbarPane().Top());
-            aui.AddPane(tb9, wxAuiPaneInfo().Name("tb9").ToolbarPane().Top());
+            aui.AddPane(filetools, wxAuiPaneInfo().Name("filetools").ToolbarPane().Top());
+            aui.AddPane(edittools, wxAuiPaneInfo().Name("edittools").ToolbarPane().Top());
+            aui.AddPane(zoomtools, wxAuiPaneInfo().Name("zoomtools").ToolbarPane().Top());
+            aui.AddPane(gridtools, wxAuiPaneInfo().Name("gridtools").ToolbarPane().Top());
+            aui.AddPane(scripttools, wxAuiPaneInfo().Name("scripttools").ToolbarPane().Top());
+            aui.AddPane(searchtools, wxAuiPaneInfo().Name("searchtools").ToolbarPane().Top());
+            aui.AddPane(replacetools, wxAuiPaneInfo().Name("replacetools").ToolbarPane().Top());
+            aui.AddPane(colortools, wxAuiPaneInfo().Name("colortools").ToolbarPane().Top());
+            aui.AddPane(imagetools, wxAuiPaneInfo().Name("imagetools").ToolbarPane().Top());
         }
 
         if (showsbar) {
