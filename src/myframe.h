@@ -664,7 +664,7 @@ struct MyFrame : wxFrame {
             };
 
             filetools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxAUI_TB_DEFAULT_STYLE);
+                                         wxAUI_TB_PLAIN_BACKGROUND);
             AddTBIcon(filetools, _(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
             AddTBIcon(filetools, _(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
             AddTBIcon(filetools, _(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
@@ -672,14 +672,14 @@ struct MyFrame : wxFrame {
             filetools->Realize();
 
             edittools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxAUI_TB_DEFAULT_STYLE);
+                                         wxAUI_TB_PLAIN_BACKGROUND);
             AddTBIcon(edittools, _(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
             AddTBIcon(edittools, _(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
             AddTBIcon(edittools, _(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
             edittools->Realize();
 
             zoomtools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxAUI_TB_DEFAULT_STYLE);
+                                         wxAUI_TB_PLAIN_BACKGROUND);
             AddTBIcon(zoomtools, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN,
                       iconpath + L"zoomin.svg");
             AddTBIcon(zoomtools, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT,
@@ -687,18 +687,18 @@ struct MyFrame : wxFrame {
             zoomtools->Realize();
 
             gridtools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxAUI_TB_DEFAULT_STYLE);
+                                         wxAUI_TB_PLAIN_BACKGROUND);
             AddTBIcon(gridtools, _(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
             AddTBIcon(gridtools, _(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
             gridtools->Realize();
 
             scripttools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                           wxAUI_TB_DEFAULT_STYLE);
+                                           wxAUI_TB_PLAIN_BACKGROUND);
             AddTBIcon(scripttools, _(L"Run"), A_RUN, iconpath + L"run.svg");
             scripttools->Realize();
 
             searchtools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                           wxAUI_TB_DEFAULT_STYLE);
+                                           wxAUI_TB_PLAIN_BACKGROUND);
             searchtools->AddControl(new wxStaticText(searchtools, wxID_ANY, _(L"Search ")));
             searchtools->AddControl(filter =
                                         new wxTextCtrl(searchtools, A_SEARCH, "", wxDefaultPosition,
@@ -711,7 +711,7 @@ struct MyFrame : wxFrame {
             searchtools->Realize();
 
             replacetools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                            wxAUI_TB_DEFAULT_STYLE);
+                                            wxAUI_TB_PLAIN_BACKGROUND);
             replacetools->AddControl(new wxStaticText(replacetools, wxID_ANY, _(L"Replace ")));
             replacetools->AddControl(replaces =
                                          new wxTextCtrl(replacetools, A_REPLACE, "",
@@ -724,7 +724,7 @@ struct MyFrame : wxFrame {
             replacetools->Realize();
 
             colortools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                          wxAUI_TB_DEFAULT_STYLE);
+                                          wxAUI_TB_PLAIN_BACKGROUND);
             colortools->AddControl(new wxStaticText(colortools, wxID_ANY, _(L"Cell ")));
             celldd = new ColorDropdown(colortools, A_CELLCOLOR, 1);
             colortools->AddControl(celldd);
@@ -739,7 +739,7 @@ struct MyFrame : wxFrame {
             colortools->Realize();
 
             imagetools = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                          wxAUI_TB_DEFAULT_STYLE);
+                                          wxAUI_TB_PLAIN_BACKGROUND);
             imagetools->AddControl(new wxStaticText(imagetools, wxID_ANY, _(L"Image ")));
             idd = new ImageDropdown(imagetools, imagepath);
             imagetools->AddControl(idd);
