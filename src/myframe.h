@@ -1029,14 +1029,24 @@ struct MyFrame : wxFrame {
                 break;
             case A_ZEN_MODE:
                 if (!IsFullScreen()) {
-                    wxToolBar *wtb = this->GetToolBar();
+                    wxAuiPaneInfoArray &all_panes = aui.GetAllPanes();
+                    int count = all_panes.GetCount();
+                    for (int i = 0; i < count; ++i) {
+                        if (wxAuiPaneInfo &pane_info = all_panes.Item(i); pane_info.IsToolbar()) {
+                            if (zenmode)
+                                pane_info.Show();
+                            else
+                                pane_info.Hide();
+                        }
+                    }
+                    aui.Update();
+
                     wxStatusBar *wsb = this->GetStatusBar();
-                    if (wtb != nullptr) wtb->Show(zenmode);
                     if (wsb != nullptr) wsb->Show(zenmode);
                     this->SendSizeEvent();
                     this->Refresh();
-                    if (wtb != nullptr) wtb->Refresh();
                     if (wsb != nullptr) wsb->Refresh();
+
                     zenmode = !zenmode;
                 }
                 break;
