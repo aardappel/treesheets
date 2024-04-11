@@ -26,6 +26,7 @@ struct MyFrame : wxFrame {
     ColorDropdown *textdd = nullptr;
     ColorDropdown *borddd = nullptr;
     wxString imagepath;
+    wxString defaultperspective;
 
     wxString GetDocPath(const wxString &relpath) {
         std::filesystem::path candidatePaths[] = {
@@ -527,6 +528,7 @@ struct MyFrame : wxFrame {
                  _(L"Toggle &Scaled Presentation View\tF12"));
                  #endif
         MyAppend(viewmenu, A_ZEN_MODE, _(L"Toggle Zen Mode"));
+        MyAppend(viewmenu, A_RESET_PERSPECTIVE, _(L"Reset toolbar"));
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
 
@@ -800,6 +802,8 @@ struct MyFrame : wxFrame {
         sys->cfg->Read(L"maximized", &ismax, true);
 
         aui.AddPane(nb, wxCENTER);
+        
+        defaultperspective = aui.SavePerspective();
 
         wxAuiPaneInfoArray &all_panes = aui.GetAllPanes();
         int count = all_panes.GetCount();
@@ -1050,6 +1054,10 @@ struct MyFrame : wxFrame {
                     zenmode = !zenmode;
                 }
                 break;
+            case A_RESET_PERSPECTIVE: {
+                aui.LoadPerspective(defaultperspective);
+                break;
+            }
             case A_SEARCHF:
                 if (filter) {
                     filter->SetFocus();
@@ -1196,6 +1204,7 @@ struct MyFrame : wxFrame {
             idd->FillBitmapVector(imagepath);
             if (GetStatusBar()) SetDPIAwareStatusWidths();
         }
+        aui.Update();
     }
 
     void OnIconize(wxIconizeEvent &me) {

@@ -163,6 +163,7 @@ enum {
     A_AUTOSAVE,
     A_FULLSCREEN,
     A_ZEN_MODE,
+    A_RESET_PERSPECTIVE,
     A_SCALED,
     A_SCOLS,
     A_SROWS,
