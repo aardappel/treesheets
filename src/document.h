@@ -841,8 +841,7 @@ struct Document {
             root->MaxDepthLeaves(0, maxdepth, leaves);
             if (maxdepth > 1)
                 return _(
-                    L"Cannot export grid that is not flat (zoom the view to the desired grid, "
-                    L"and/or use Flatten).");
+                    L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
         }
         if (k == A_EXPIMAGE) {
             wxBitmap bm = GetBitmap();
@@ -1273,8 +1272,7 @@ struct Document {
                 scaledviewingmode = !scaledviewingmode;
                 rootgrid->ResetChildren();
                 Refresh();
-                return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, "
-                                             L"press F12 to return to normal.")
+                return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal.")
                                          : _(L"1:1 scale restored.");
 
             case A_FILTERRANGE: {
@@ -1808,8 +1806,7 @@ struct Document {
                         if (!oimgfn) {  // first encounter
                             oimgfn = ::wxFileSelector(
                                 _(L"Choose image file to save:"), L"", L"", L"png|jpg",
-                                _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files "
-                                  L"(*.*)|*.*"),
+                                _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
                                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                             if (oimgfn.empty()) return _(L"Save cancelled.");
                             counterpos = oimgfn.find_last_of(".");
@@ -1937,8 +1934,7 @@ struct Document {
                     if (!ac->grid) return NoGrid();
                     if (!ac->grid->IsTable())
                         return _(
-                            L"Selected grid is not a table: cells must not already have "
-                            L"sub-grids.");
+                            L"Selected grid is not a table: cells must not already have sub-grids.");
                     ac->AddUndo(this);
                     ac->grid->Hierarchify(this);
                     ac->ResetChildren();
@@ -2165,8 +2161,7 @@ struct Document {
     const wxChar *Sort(bool descending) {
         if (selected.xs != 1 && selected.ys <= 1)
             return _(
-                L"Can't sort: make a 1xN selection to indicate what column to sort on, and what "
-                L"rows to affect");
+                L"Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
         selected.g->cell->AddUndo(this);
         selected.g->Sort(selected, descending);
         Refresh();

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-08 13:35-0300\n"
+"POT-Creation-Date: 2024-04-12 18:02-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,9 +253,6 @@ msgid "Autosave to .tmp"
 msgstr ""
 
 msgid "Bitmap copied to clipboard"
-msgstr ""
-
-msgid "Black and white toolbar icons"
 msgstr ""
 
 msgid "Border "
@@ -972,6 +969,9 @@ msgid "Reset &colors\tCTRL+SHIFT+c"
 msgstr ""
 
 msgid "Reset column widths\tCTRL+SHIFT+w"
+msgstr ""
+
+msgid "Reset toolbar"
 msgstr ""
 
 msgid "Run"
