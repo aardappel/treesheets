@@ -7,9 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-08 12:32-0300\n"
-"PO-Revision-Date: 2024-01-08 13:38-0300\n"
-"Last-Translator: Georger Araujo <georger_br@no.yahoo.spam.com.br>\n"
+"POT-Creation-Date: 2024-04-12 18:02-0300\n"
+"PO-Revision-Date: 2024-04-13 08:16-0300\n"
+"Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
+"br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
 "net>\n"
 "Language: pt_BR\n"
@@ -39,7 +40,7 @@ msgid "&Add Image"
 msgstr "Adicionar Imagem..."
 
 msgid "&Browsing..."
-msgstr "&Navegação..."
+msgstr "&Navegação"
 
 msgid "&Clear Views"
 msgstr "&Limpar Visualizações"
@@ -81,7 +82,7 @@ msgid "&Go To Next Search Result\tF3"
 msgstr "Ir para Resultado Se&guinte da Busca\tF3"
 
 msgid "&Grid Reorganization..."
-msgstr "Reorgani&zação da Grade..."
+msgstr "Reorgani&zação da Grade"
 
 msgid "&HTML (Tables+Styling)..."
 msgstr "&HTML (Tabelas+Estilo)..."
@@ -99,7 +100,7 @@ msgid "&Image..."
 msgstr "I&magem..."
 
 msgid "&Images..."
-msgstr "&Imagens..."
+msgstr "&Imagens"
 
 msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
 msgstr "&Aumentar tamanho do texto (SHIFT+botão de rolagem)\tSHIFT+PGUP"
@@ -111,7 +112,7 @@ msgid "&Insert New Grid\tINS"
 msgstr "Inserir No&va Grade\tINS"
 
 msgid "&Layout && Render Style..."
-msgstr "La&yout && Estilo de Renderização..."
+msgstr "La&yout && Estilo de Renderização"
 
 msgid "&Mark as"
 msgstr "&Marcar como"
@@ -162,7 +163,7 @@ msgid "&Reset text styles\tCTRL+SHIFT+r"
 msgstr "&Redefinir estilo dos textos\tCTRL+SHIFT+r"
 
 msgid "&Roundness of grid borders..."
-msgstr "Raio das bordas das &grades..."
+msgstr "Raio das bordas das &grades"
 
 msgid "&Run\tCTRL+ALT+F5"
 msgstr "&Executar\tCTRL+ALT+F5"
@@ -186,7 +187,7 @@ msgid "&Search\tCTRL+f"
 msgstr "&Buscar\tCTRL+f"
 
 msgid "&Selection..."
-msgstr "&Seleção..."
+msgstr "&Seleção"
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
 msgstr "&Preencher Texto da Célula com Tag (use CTRL+botão direito do mouse)"
@@ -261,9 +262,6 @@ msgstr "Salvar automaticamente para .&tmp"
 
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiado para a área de transferência"
-
-msgid "Black and white toolbar icons"
-msgstr "Íco&nes da barra de ferramentas em preto e branco"
 
 msgid "Border "
 msgstr "Borda "
@@ -642,7 +640,7 @@ msgid "Filter by the same cell color"
 msgstr "Evidenciar células com a mesma cor"
 
 msgid "Filter..."
-msgstr "&Filtrar..."
+msgstr "&Filtrar"
 
 msgid "Fold All\tCTRL+SHIFT+F10"
 msgstr "Dobrar Todas\tCTRL+SHIFT+F10"
@@ -1043,6 +1041,9 @@ msgstr "Redefinir &cores\tCTRL+SHIFT+c"
 msgid "Reset column widths\tCTRL+SHIFT+w"
 msgstr "Redefinir largura das colunas\tCTRL+SHIFT+w"
 
+msgid "Reset toolbar"
+msgstr "&Redefinir barra de ferramentas"
+
 msgid "Run"
 msgstr "Executar"
 
@@ -1106,7 +1107,7 @@ msgid "Scroll Right\tALT+RIGHT"
 msgstr "Rolar para a Direita\tALT+RIGHT"
 
 msgid "Scroll Sheet..."
-msgstr "&Rolar Sheet..."
+msgstr "Ro&lar Sheet"
 
 msgid "Scroll Up (mousewheel)\tALT+UP"
 msgstr "Rolar para Cima (botão de rolagem)\tALT+UP"
@@ -1135,7 +1136,7 @@ msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Texto delimitado por &ponto e vírgula (CSV)..."
 
 msgid "Set Grid Border Width..."
-msgstr "Definir Largura da &Borda da Grade..."
+msgstr "Largura da &Borda da Grade"
 
 msgid "Set Print Scale"
 msgstr "&Definir Escala de Impressão"
@@ -1223,7 +1224,7 @@ msgid "Tab delimited text..."
 msgstr "Texto delimitado por &tabulações..."
 
 msgid "Tag..."
-msgstr "Ta&g..."
+msgstr "Ta&g"
 
 msgid ""
 "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
@@ -1236,13 +1237,13 @@ msgid "Text "
 msgstr "Texto "
 
 msgid "Text &Editing..."
-msgstr "Edi&ção de Texto..."
+msgstr "Edi&ção de Texto"
 
 msgid "Text Sizing..."
-msgstr "&Tamanho do Texto..."
+msgstr "&Tamanho do Texto"
 
 msgid "Text Style..."
-msgstr "Estil&o do Texto..."
+msgstr "Estil&o do Texto"
 
 msgid "Text has been replaced."
 msgstr "O texto foi substituído."
@@ -1426,6 +1427,9 @@ msgstr "escala:"
 
 msgid "size:"
 msgstr "tamanho:"
+
+#~ msgid "Black and white toolbar icons"
+#~ msgstr "Íco&nes da barra de ferramentas em preto e branco"
 
 #~ msgid "Empty strings cannot be tags."
 #~ msgstr "Sequências vazias não podem ser tags."

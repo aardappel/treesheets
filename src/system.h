@@ -373,8 +373,7 @@ struct System {
         FileUsed(filename, doc);
         doc->Refresh();
         if (anyimagesfailed)
-            wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been "
-                           L"replaced by red squares."),
+            wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _(L"PNG decoder failure"), wxOK, frame);
 
         return L"";
