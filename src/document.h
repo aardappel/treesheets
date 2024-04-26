@@ -1566,17 +1566,13 @@ struct Document {
             case wxID_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
-                    // wxDataObjectComposite does not work properly under Wayland for text atoms
-                    // and also needs to be allocated to the heap because of the behavior of its
-                    // destructor.
-                    //
-                    // Instead of aggregating the possible targets to one wxDataObjectComposite on
-                    // the heap, just create one wxDataObjectSimple subclass instance for each type
+                    // Instead of aggregating the possible targets to one wxDataObjectComposite
+                    // just create one wxDataObjectSimple subclass instance for each type
                     // TreeSheets can handle on the stack and try to paste the clipboard content
                     // into it.
                     //
                     // For drag and drop operations, wxDataObjectComposite is still mandatory, so
-                    // keep one instance for it separately at the System instance.
+                    // keep one instance for it separately at each Document instance.
                     wxTextDataObject pdataobjt;
                     wxBitmapDataObject pdataobji;
                     wxFileDataObject pdataobjf;
