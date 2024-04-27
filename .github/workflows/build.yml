@@ -37,7 +37,7 @@ jobs:
       run: zip -r linux_treesheets_${{ matrix.cxx }}.zip TreeSheets-relocatable
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: Linux TreeSheets ${{ matrix.cxx }}
         path: TreeSheets-relocatable
@@ -75,7 +75,7 @@ jobs:
         Remove-Item TS\*.iobj
         Compress-Archive -Path TS -DestinationPath windows_treesheets_no_installer.zip
     - name: upload build artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: Windows TreeSheets (no installer)
         path: TS
@@ -86,7 +86,7 @@ jobs:
         arguments: "/V3"
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: Windows TreeSheets (installer)
         path: windows_treesheets_setup.exe
@@ -131,7 +131,7 @@ jobs:
         zip -r ../../mac_treesheets.zip build/Build/Products/Release
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Mac TreeSheets
         path: build/Build/Products/Release
