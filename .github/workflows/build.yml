@@ -18,7 +18,7 @@ jobs:
       matrix:
         cxx: [g++-12, clang++-14]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: apt update
       run: sudo apt-get -o Acquire::Retries=3 update
     - name: install opengl
@@ -57,7 +57,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: clone wxWidgets
@@ -106,7 +106,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: clone wxWidgets
       run: git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
     - name: build wxWidgets
