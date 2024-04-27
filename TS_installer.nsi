@@ -3,6 +3,7 @@
 !define MUI_FINISHPAGE_RUN "$INSTDIR\TreeSheets.exe"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "TreeSheets\tsinst.bmp"
+!define MUI_ICON "TreeSheets\icon1.ico"
 /*
 doesn't show?
 !define MUI_HEADERIMAGE_UNBITMAP "TreeSheets\tsinst.bmp"
