@@ -36,7 +36,7 @@ class Selection {
     bool EqLoc(const Selection &s) {
         return g == s.g && x == s.x && y == s.y && xs == s.xs && ys == s.ys;
     }
-    bool operator==(const Selection &s) {
+    bool operator==(Selection &s) {
         return EqLoc(s) && cursor == s.cursor && cursorend == s.cursorend;
     }
     bool Thin() const { return !(xs * ys); }
