@@ -132,7 +132,7 @@ struct Document {
 
     uint Background() { return rootgrid ? rootgrid->cellcolor : 0xFFFFFF; }
 
-    void InitWith(Cell *r, const wxString &filename, Cell *ics, int xs, int ys) {
+    void InitWith(Cell *r, const wxString &filename, Cell *ics, uint8_t xs, uint8_t ys) {
         rootgrid = r;
         if (ics) {
             Grid *ipg = ics->parent->grid;
@@ -2168,7 +2168,7 @@ struct Document {
         return nullptr;
     }
 
-    void DelRowCol(int &v, int e, int gvs, int dec, int dx, int dy, int nxs, int nys) {
+    void DelRowCol(uint8_t &v, int e, int gvs, int dec, int dx, int dy, int nxs, int nys) {
         if (v != e) {
             selected.g->cell->AddUndo(this);
             if (gvs == 1) {

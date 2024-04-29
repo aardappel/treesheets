@@ -250,7 +250,7 @@ struct System {
             if (strncmp(buf, "TSFF", 4)) return _(L"Not a TreeSheets file.");
             fis.Read(&versionlastloaded, 1);
             if (versionlastloaded > TS_VERSION) return _(L"File of newer version.");
-            int xs, ys;
+            uint8_t xs, ys;
             if (versionlastloaded >= 21) {
                 xs = dis.Read8();
                 ys = dis.Read8();

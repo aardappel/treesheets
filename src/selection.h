@@ -4,11 +4,11 @@ class Selection {
 
     public:
     Grid *g;
-    int x, y, xs, ys;
+    uint8_t x, y, xs, ys;
     int cursor, cursorend;
     int firstdx, firstdy;
 
-    Selection(Grid *_g = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
+    Selection(Grid *_g = nullptr, uint8_t _x = 0, uint8_t _y = 0, uint8_t _xs = 0, uint8_t _ys = 0)
         : textedit(false),
           g(_g),
           x(_x),
@@ -125,8 +125,8 @@ class Selection {
         return TEXT_CHAR;
     }
 
-    void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
-             int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
+    void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, uint8_t &v, uint8_t &vs,
+             uint8_t &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
             g->cell->AddUndo(doc);
 
