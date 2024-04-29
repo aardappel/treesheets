@@ -36,8 +36,9 @@ static const std::array<uint, 42> celltextcolors = {
 };
 enum { CUSTOMCOLORIDX = 0 };
 
-enum { TS_VERSION = 23, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+enum { TS_VERSION = 24, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
+static const uint TS_BOOKMARK_MASK = 0x40;
 static const uint TS_SELECTION_MASK = 0x80;
 
 enum {
@@ -258,6 +259,9 @@ enum {
     A_CUSTKEY,
     A_AUTOEXPORT,
     A_DRAGANDDROP,
+    A_BOOKMARK_ADD,
+    A_BOOKMARK_DELETE,
+    A_BOOKMARK_NEXT,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     A_SCRIPT = 2000,  // and all values from here on

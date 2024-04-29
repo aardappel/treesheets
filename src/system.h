@@ -206,7 +206,8 @@ struct System {
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
         Document *doc = NewTabDoc();
-        doc->InitWith(c, L"", nullptr, 1, 1);
+        std::set<Cell *> nobookmarks{};
+        doc->InitWith(c, L"", nullptr, 1, 1, nobookmarks);
         return doc->rootgrid;
     }
 
@@ -241,6 +242,7 @@ struct System {
         {  // limit destructors
             wxBusyCursor wait;
             Cell *ics = nullptr;
+            std::set<Cell *> bmc{};
             wxFFileInputStream fis(fn);
             wxDataInputStream dis(fis);
             if (!fis.IsOk()) return _(L"Cannot open file.");
@@ -319,7 +321,7 @@ struct System {
                         if (!zis.IsOk()) return _(L"Cannot decompress file.");
                         wxDataInputStream dis(zis);
                         int numcells = 0, textbytes = 0;
-                        Cell *root = Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics);
+                        Cell *root = Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics, bmc);
                         if (!root) return _(L"File corrupted!");
 
                         doc = NewTabDoc(true);
@@ -328,7 +330,7 @@ struct System {
                                 -1;  // if not, user will lose tmp without warning when he closes
                             doc->modified = true;
                         }
-                        doc->InitWith(root, filename, ics, xs, ys);
+                        doc->InitWith(root, filename, ics, xs, ys, bmc);
                         doc->initialzoomlevel = zoomlevel;
 
                         if (versionlastloaded >= 11) {

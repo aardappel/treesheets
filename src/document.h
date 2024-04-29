@@ -32,6 +32,7 @@ struct Document {
     wxTextDataObject *dndobjt = new wxTextDataObject();
     wxBitmapDataObject *dndobji = new wxBitmapDataObject();
     wxFileDataObject *dndobjf = new wxFileDataObject();
+    std::set<Cell *> bmc;
 
     struct MyPrintout : wxPrintout {
         Document *doc;
@@ -115,7 +116,8 @@ struct Document {
           scaledviewingmode(false),
           currentviewscale(1),
           searchfilter(false),
-          editfilter(0) {
+          editfilter(0),
+          bmc({}) {
         ResetFont();
         pageSetupData = printData;
         pageSetupData.SetMarginTopLeft(wxPoint(15, 15));
@@ -132,7 +134,8 @@ struct Document {
 
     uint Background() { return rootgrid ? rootgrid->cellcolor : 0xFFFFFF; }
 
-    void InitWith(Cell *r, const wxString &filename, Cell *ics, int xs, int ys) {
+    void InitWith(Cell *r, const wxString &filename, Cell *ics, int xs, int ys,
+                  std::set<Cell *> &bmc) {
         rootgrid = r;
         if (ics) {
             Grid *ipg = ics->parent->grid;
@@ -148,6 +151,7 @@ struct Document {
         } else {
             SetSelect(Selection(r->grid, 0, 0, 1, 1));
         }
+        if (!bmc.empty()) { this->bmc = bmc; }
         ChangeFileName(filename, false);
     }
 
@@ -210,7 +214,7 @@ struct Document {
             wxZlibOutputStream zos(fos, 9);
             if (!zos.IsOk()) return _(L"Zlib error while writing file.");
             wxDataOutputStream dos(zos);
-            rootgrid->Save(dos, ocs);
+            rootgrid->Save(dos, ocs, bmc);
             for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit) {
                 dos.WriteString(tagit->first);
             }
@@ -1914,6 +1918,16 @@ struct Document {
                 Refresh();
                 return nullptr;
             }
+
+            case A_BOOKMARK_NEXT: {
+                bool lastsel = true;
+                Cell *next = rootgrid->FindNextBookmark(this, nullptr, selected.GetCell(), lastsel);
+                if (!next) return _(L"No bookmark found.");
+                if (next->parent) SetSelect(next->parent->grid->FindCell(next));
+                sw->SetFocus();
+                ScrollOrZoom(dc, true);
+                return nullptr;
+            }
         }
 
         if (c || (!c && selected.IsAll())) {
@@ -1965,6 +1979,19 @@ struct Document {
             case A_NEXT: selected.Next(this, dc, false); return nullptr;
             case A_PREV: selected.Next(this, dc, true); return nullptr;
 
+            case A_BOOKMARK_ADD: {
+                bmc.insert(c);
+                return _(L"Bookmark was added.");
+            }
+
+            case A_BOOKMARK_DELETE: {
+                if (bmc.contains(const_cast<Cell *>(c))) {
+                    bmc.erase(c);
+                    return _(L"Bookmark was deleted.");
+                }
+                return _(L"Cell was not bookmarked.");
+            }
+
             case A_ENTERGRID:
                 if (!c->grid) Action(dc, A_NEWGRID);
                 SetSelect(Selection(c->grid, 0, 0, 1, 1));
@@ -2012,7 +2039,7 @@ struct Document {
                 Refresh();
                 return nullptr;
 
-            case A_FILTERMATCHNEXT:
+            case A_FILTERMATCHNEXT: {
                 bool lastsel = true;
                 Cell *next = rootgrid->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
                 if (!next) return _(L"No matches for filter.");
@@ -2020,6 +2047,7 @@ struct Document {
                 sw->SetFocus();
                 ScrollOrZoom(dc, true);
                 return nullptr;
+            }
         }
 
         if (!selected.TextEdit()) return _(L"only works in cell text mode");

@@ -321,21 +321,22 @@ struct Cell {
         doc->AddUndo(this);
     }
 
-    void Save(wxDataOutputStream &dos, Cell *ocs) const {
+    void Save(wxDataOutputStream &dos, Cell *ocs, std::set<Cell *> &bmc) const {
         dos.Write8(celltype);
         dos.Write32(cellcolor);
         dos.Write32(textcolor);
         dos.Write8(drawstyle);
         uint cellflags = (this == ocs) ? TS_SELECTION_MASK : 0;
+        if (bmc.contains(const_cast<Cell *>(this))) { cellflags |= TS_BOOKMARK_MASK; }
         if (HasTextState()) {
             cellflags |= grid ? TS_BOTH : TS_TEXT;
             dos.Write8(cellflags);
             text.Save(dos);
-            if (grid) grid->Save(dos, ocs);
+            if (grid) grid->Save(dos, ocs, bmc);
         } else if (grid) {
             cellflags |= TS_GRID;
             dos.Write8(cellflags);
-            grid->Save(dos, ocs);
+            grid->Save(dos, ocs, bmc);
         } else {
             cellflags |= TS_NEITHER;
             dos.Write8(cellflags);
@@ -351,17 +352,18 @@ struct Cell {
         return grid;
     }
 
-    Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
+    Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics,
+                   std::set<Cell *> &bmc) {
         int xs = dis.Read32();
         Grid *g = new Grid(xs, dis.Read32());
         grid = g;
         g->cell = this;
-        if (!g->LoadContents(dis, numcells, textbytes, ics)) return nullptr;
+        if (!g->LoadContents(dis, numcells, textbytes, ics, bmc)) return nullptr;
         return this;
     }
 
     static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes,
-                           Cell *&ics) {
+                           Cell *&ics, std::set<Cell *> &bmc) {
         Cell *c = new Cell(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
@@ -370,6 +372,12 @@ struct Cell {
         }
         if (sys->versionlastloaded >= 15) c->drawstyle = dis.Read8();
         int ts = dis.Read8();
+
+        if (ts & TS_BOOKMARK_MASK) {
+            bmc.insert(c);
+            ts &= ~TS_BOOKMARK_MASK;
+        }
+
         if (ts & TS_SELECTION_MASK) {
             ics = c;
             ts &= ~TS_SELECTION_MASK;
@@ -380,7 +388,7 @@ struct Cell {
                 c->text.Load(dis);
                 textbytes += c->text.t.Len();
                 if (ts == TS_TEXT) return c;
-            case TS_GRID: return c->LoadGrid(dis, numcells, textbytes, ics);
+            case TS_GRID: return c->LoadGrid(dis, numcells, textbytes, ics, bmc);
             case TS_NEITHER: return c;
             default: return nullptr;
         }
@@ -443,6 +451,16 @@ struct Cell {
         }
         if (selected == this) lastwasselected = true;
         if (grid) best = grid->FindNextFilterMatch(best, selected, lastwasselected);
+        return best;
+    }
+
+    Cell *FindNextBookmark(Document *doc, Cell *best, Cell *selected, bool &lastwasselected) {
+        if (doc->bmc.contains(const_cast<Cell *>(this))) {
+            if (lastwasselected) best = this;
+            lastwasselected = false;
+        }
+        if (selected == this) lastwasselected = true;
+        if (grid) best = grid->FindNextBookmark(doc, best, selected, lastwasselected);
         return best;
     }
 

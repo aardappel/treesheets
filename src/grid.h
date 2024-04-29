@@ -330,6 +330,11 @@ struct Grid {
         return best;
     }
 
+    Cell *FindNextBookmark(Document *doc, Cell *best, Cell *selected, bool &lastwasselected) {
+        foreachcell(c) best = c->FindNextBookmark(doc, best, selected, lastwasselected);
+        return best;
+    }
+
     void FindReplaceAll(const wxString &str, const wxString &lstr) {
         foreachcell(c) c->FindReplaceAll(str, lstr);
     }
@@ -485,7 +490,10 @@ struct Grid {
     }
 
     void MultiCellDeleteSub(Document *doc, Selection &s) {
-        foreachcellinsel(c, s) c->Clear();
+        foreachcellinsel(c, s) {
+            doc->bmc.erase(c);
+            c->Clear();
+        }
         bool delhoriz = true, delvert = true;
         foreachcell(c) {
             if (c->HasContent()) {
@@ -554,7 +562,7 @@ struct Grid {
         delete[] ocw;
     }
 
-    void Save(wxDataOutputStream &dos, Cell *ocs) const {
+    void Save(wxDataOutputStream &dos, Cell *ocs, std::set<Cell *> &bmc) const {
         dos.Write32(xs);
         dos.Write32(ys);
         dos.Write32(bordercolor);
@@ -562,10 +570,11 @@ struct Grid {
         dos.Write8(cell->verticaltextandgrid);
         dos.Write8(folded);
         loop(x, xs) dos.Write32(colwidths[x]);
-        foreachcell(c) c->Save(dos, ocs);
+        foreachcell(c) c->Save(dos, ocs, bmc);
     }
 
-    bool LoadContents(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
+    bool LoadContents(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics,
+                      std::set<Cell *> &bmc) {
         if (sys->versionlastloaded >= 10) {
             bordercolor = dis.Read32() & 0xFFFFFF;
             user_grid_outer_spacing = dis.Read32();
@@ -585,7 +594,7 @@ struct Grid {
             }
         }
         foreachcell(
-            c) if (!(c = Cell::LoadWhich(dis, cell, numcells, textbytes, ics))) return false;
+            c) if (!(c = Cell::LoadWhich(dis, cell, numcells, textbytes, ics, bmc))) return false;
         return true;
     }
 

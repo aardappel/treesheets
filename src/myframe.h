@@ -486,6 +486,12 @@ struct MyFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERBYCELLBG, _(L"Filter by the same cell color"));
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _(L"Go to next filter match\tCTRL+F3"));
 
+        wxMenu *bookmarkmenu = new wxMenu();
+        MyAppend(bookmarkmenu, A_BOOKMARK_ADD, _(L"Add as bookmark"));
+        MyAppend(bookmarkmenu, A_BOOKMARK_DELETE, _(L"Delete bookmark"));
+        bookmarkmenu->AppendSeparator();
+        MyAppend(bookmarkmenu, A_BOOKMARK_NEXT, _(L"Go to next bookmark"));
+
         wxMenu *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _(L"Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"));
         MyAppend(viewmenu, A_ZOOMOUT, _(L"Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"));
@@ -513,6 +519,7 @@ struct MyFrame : wxFrame {
         MyAppend(viewmenu, A_ZEN_MODE, _(L"Toggle Zen Mode"));
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
+        viewmenu->AppendSubMenu(bookmarkmenu, _(L"Bookmarks..."));
 
         wxMenu *roundmenu = new wxMenu();
         roundmenu->AppendRadioItem(A_ROUND0, _(L"Radius &0"));
