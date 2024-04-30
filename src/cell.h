@@ -272,7 +272,7 @@ struct Cell {
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
             if (!inheritstyle || textcolor != (parent ? parent->textcolor : 0x000000))
                 style += wxString::Format(L"color: #%06X;", SwapColor(textcolor));
-            str.Prepend(style.IsEmpty() ? L"<td>" : L"<td style=\"" + style + L"\">");
+            str.Prepend(style.IsEmpty() ? wxString(L"<td>") : wxString(L"<td style=\"") + style + wxString(L"\">"));
             str.Append(L' ', indent);
             str.Append(L"</td>\n");
         } else if (format == A_EXPHTMLB && (text.t.Len() || grid) && this != doc->curdrawroot) {
