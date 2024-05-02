@@ -23,6 +23,7 @@ struct Image {
         wxImage im = ConvertBufferToWxImage(image_data, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
         image_data = ConvertWxImageToBuffer(im, it);
+        hash = CalculateHash(image_data);
         bm_display = wxNullBitmap;
     }
 
@@ -595,9 +596,7 @@ struct System {
     }
 
     int AddImageToList(double sc, vector<uint8_t> &&idv, char iti) {
-        int max = 4096;
-        auto subvector = vector<uint8_t>(idv.begin(), idv.begin() + min(idv.size(), max));
-        auto hash = FNV1A64(subvector);
+        auto hash = CalculateHash(idv);
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }

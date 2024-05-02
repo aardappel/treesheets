@@ -177,3 +177,9 @@ static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buf, wxBitmapType
     wxBitmap bm(im, 32);
     return bm;
 }
+
+static uint64_t CalculateHash(vector<uint8_t> &idv) {
+    int max = 4096;
+    auto subvector = vector<uint8_t>(idv.begin(), idv.begin() + min(idv.size(), max));
+    return FNV1A64(subvector);
+}
