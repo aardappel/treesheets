@@ -253,10 +253,10 @@ inline uint32_t FNV1A32(std::vector<uint8_t> &vec) {
     return hash;
 }
 
-inline uint64_t FNV1A64(std::vector<uint8_t> &vec) {
+inline uint64_t FNV1A64(uint8_t *data, size_t size) {
     uint64_t hash = 0xCBF29CE484222325;
-    for (uint8_t c : vec) {
-        hash ^= c;
+    for (size_t i = 0; i < size; ++i) {
+        hash ^= data[i];
         hash *= 0x100000001B3;
     }
     return hash;
