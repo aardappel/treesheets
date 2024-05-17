@@ -48,7 +48,8 @@ Note that YOU are responsible to know how to use compilers and C++, the hints be
 
 All Platforms:
 
-- TreeSheets requires the latest wxWidgets from https://github.com/wxWidgets/wxWidgets.git
+- TreeSheets requires the latest development wxWidgets from their repo:
+  `git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git`.
 
 Windows:
 
