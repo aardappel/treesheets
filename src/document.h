@@ -746,6 +746,9 @@ struct Document {
                 sw->SetScrollbars(1, 1, layoutxs, layoutys, curx, cury, true);
             #endif
             sw->Refresh(false);
+            #ifdef __WXGTK__
+                sw->Update();
+            #endif
         }
     }
 
