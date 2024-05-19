@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   height="24"
-   viewBox="0 -960 960 960"
-   width="24"
+   height="16"
+   viewBox="0 -960 640 640"
+   width="16"
    version="1.1"
    id="svg1"
    sodipodi:docname="newgrid.svg"
@@ -22,9 +22,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="33.291667"
-     inkscape:cx="12"
-     inkscape:cy="12"
+     inkscape:zoom="49.9375"
+     inkscape:cx="8"
+     inkscape:cy="8"
      inkscape:window-width="1920"
      inkscape:window-height="1013"
      inkscape:window-x="-9"
@@ -32,7 +32,24 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="svg1" />
   <path
-     d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h133v-133H200v133Zm213 0h134v-133H413v133Zm214 0h133v-133H627v133ZM200-413h133v-134H200v134Zm213 0h134v-134H413v134Zm214 0h133v-134H627v134ZM200-627h133v-133H200v133Zm213 0h134v-133H413v133Zm214 0h133v-133H627v133Z"
+     style="fill:none;fill-opacity:1;stroke:#424242;stroke-width:40;stroke-dasharray:40, 40;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 20.000001,-899.99999 H 620.00002"
+     id="path1-8" />
+  <path
+     style="fill:none;fill-opacity:1;stroke:#424242;stroke-width:40;stroke-dasharray:40, 40;stroke-dashoffset:20;stroke-opacity:1"
+     d="M 40,-360 V -920"
+     id="path3" />
+  <path
+     style="fill:none;fill-opacity:1;stroke:#424242;stroke-width:40;stroke-dasharray:40, 40;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 20.000001,-380.00001 H 620.00002"
+     id="path2" />
+  <path
+     style="fill:none;fill-opacity:1;stroke:#424242;stroke-width:40;stroke-dasharray:40,40;stroke-dashoffset:20;stroke-opacity:1"
+     d="M 600,-360 V -920"
+     id="path7" />
+  <path
+     d="m 180,-480 -20,-20 v -280 l 20,-20 h 100 v 40 h -80 v 240 l 240,0.0133 v -80.00665 l 40,-0.0133 V -500 l -20,20 z m 193.33334,-160 v -53.33334 H 320 v -53.33333 h 53.33334 V -800 h 53.33333 v 53.33333 H 480 v 53.33333 H 426.66667 V -640 Z M 200,-760 v 240 z"
      id="path1"
-     style="fill:#424242;fill-opacity:1" />
+     style="fill:#424242;fill-opacity:1;stroke-width:0.999996"
+     sodipodi:nodetypes="cccccccccccccccccccccccccccccc" />
 </svg>
