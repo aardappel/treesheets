@@ -738,7 +738,6 @@ struct Document {
             hover.g = nullptr;
             redrawpending = true;
             sys->UpdateStatus(selected);
-            sw->Refresh(false);
             #ifdef __WXGTK__
                 // wxWidgets (wxGTK) does not always automatically update the scrollbar 
                 // to new canvas size and current position within after zoom so force it manually
@@ -746,6 +745,7 @@ struct Document {
                 sw->GetViewStart(&curx, &cury);
                 sw->SetScrollbars(1, 1, layoutxs, layoutys, curx, cury, true);
             #endif
+            sw->Refresh(false);
         }
     }
 
