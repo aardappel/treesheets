@@ -53,44 +53,42 @@ All Platforms:
 
 Windows:
 
-- Make sure your `wxWidgets` folder sits parallel to the `src` folder, that way the TreeSheets project will pick
-  it up without further modifications
-- Inside `wxWidgets/build/msw`, open `wx_vc17.sln` with Visual Studio 2022.
-- Select all projects (except the project `_custom_build`) in the solution explorer, and go to properties:
-  - Set configuration to debug, and C/C++ -> Code Generation -> Runtime library
-    to Multithreaded Debug
-  - Set configuration to release, and C/C++ -> Code Generation -> Runtime library
-    to Multithreaded
-- Build solution in both x64 Debug and Release
-- Close the wxWidgets solution
-- "treesheets" contains the Visual Studio 2022 files for treesheets, open the .sln.
-  If you've done the above correctly, TreeSheets will now compile and pick up
-  the wxWidgets libraries.
-- To distribute, build an installer with `TS_installer.nsi` (requires nsis.sourceforge.net)
+1. Make sure your `wxWidgets` folder sits parallel to the `src` folder, that way the TreeSheets project will pick it up without further modifications
+2. Inside `wxWidgets/build/msw`, open `wx_vc17.sln` with Visual Studio 2022.
+3. Select all projects (except the project `_custom_build`) in the solution explorer, and go to properties:
+    - Set configuration to debug, and C/C++ -> Code Generation -> Runtime library
+      to Multithreaded Debug
+    - Set configuration to release, and C/C++ -> Code Generation -> Runtime library
+      to Multithreaded
+4. Build solution in both x64 Debug and Release
+5. Close the wxWidgets solution
+6. "treesheets" contains the Visual Studio 2022 files for treesheets, open the .sln.
+    If you've done the above correctly, TreeSheets will now compile and pick up
+    the wxWidgets libraries.
+7. To distribute, build an installer with `TS_installer.nsi` (requires nsis.sourceforge.net)
 
 Linux:
 
-- Using the version of  wxWidgets from https://github.com/wxWidgets/wxWidgets.git
-  - Follow the instructions to build there, but add `--enable-unicode` and
-   `--disable-shared` to the `configure` step.
-  - You can also build wxWidgets as a subproject in the case that TreeSheets should be built and linked statically 
-    against wxWidgets. In this case, the TreeSheets CMake project must be configured with the option
-    `TREESHEETS_WITH_STATIC_WXWIDGETS` set and with the source code of wxWidgets (including its submodules)
-    being located at `lib/wxWidgets` relative to the root of the TreeSheets source code.
-- Build with `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release` or similar.
-  You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
-- Install using `sudo make -C _build install`.
-- There is also a `src/Makefile`, this is deprecated.
+1. Configure the build process with `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release` or similar.
+    - If you have `git` installed, the submodules for wxWidgets will be automatically updated and wxWidgets will be compiled as a CMake subproject. TreeSheets will be then statically linked against this wxWidgets build.
+    - If you do like to link dynamically against an existing wxWidgets installation instead, you can switch off the option `GIT_WXWIDGETS_SUBMODULES` in the CMake project. In this case:
+        - You can use the version of wxWidgets from https://github.com/wxWidgets/wxWidgets.git.
+        - Follow the instructions to build there, but add `--enable-unicode` and `--disable-shared` to the `configure` step.
+    - You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
+2. Build using `cmake --build _build`.
+3. Install using `sudo cmake --install _build`.
+
+There is also a `src/Makefile`, this is deprecated.
 
 OSX:
 
-- Build wxWidgets as follows (inside the wxWidgets dir):
-  - `mkdir build_osx`
-  - `cd build_osx`
-  - `../configure --enable-unicode --disable-shared --disable-sys-libs --without-libtiff --with-osx_cocoa --enable-universal_binary=x86_64,arm64 CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" --disable-mediactrl CC=clang CXX=clang++`
-  - `make -j8`
-  - `sudo make install`
-- use the XCode project in `osx/TreeSheets` to build treesheets. put the resulting
+1. Build wxWidgets as follows (inside the wxWidgets dir):
+    1. `mkdir build_osx`
+    2. `cd build_osx`
+    3. `../configure --enable-unicode --disable-shared --disable-sys-libs --without-libtiff --with-osx_cocoa --enable-universal_binary=x86_64,arm64 CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" --disable-mediactrl CC=clang CXX=clang++`
+    4. `make -j8`
+    5. `sudo make install`
+2. use the XCode project in `osx/TreeSheets` to build treesheets. put the resulting
   .app together with the files from the `TS` folder in `osx/TreeSheetsBeta` to distribute.
   Note to use the "Archive" operation to create a release executable.
 
