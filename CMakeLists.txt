@@ -62,8 +62,32 @@ target_link_libraries(lobster-impl PRIVATE lobster)
 
 OPTION(TREESHEETS_WITH_STATIC_WXWIDGETS "Build wxWidgets along with TreeSheets and link TreeSheets against static wxWidgets library" OFF)
 
-# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code
-# (recursive git check-out with submodules) to be placed in lib/wxWidgets (see below, it can be changed to your liking).
+######### GIT SUBMODULES AUTOMATIC HANDLING ########
+# Taken from https://cliutils.gitlab.io/modern-cmake/chapters/projects/submodule.html
+
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+# Update submodules as needed
+    OPTION(GIT_WXWIDGETS_SUBMODULES "Check wxWidgets git submodules during build" ON)
+    if(GIT_WXWIDGETS_SUBMODULES)
+        message(STATUS "The Git wxWidgets submodules are currently being updated...")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
+        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/lib/wxWidgets/CMakeLists.txt")
+            message(FATAL_ERROR "The submodules were not downloaded! GIT_WXWIDGETS_SUBMODULES failed.")
+        endif()
+        set(TREESHEETS_WITH_STATIC_WXWIDGETS ON)
+    endif()
+endif()
+
+######## TREESHEETS WITH STATIC WXWIDGETS ########
+
+# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code 
+# to be placed in lib/wxWidgets (see below, it can be changed to your liking).
 
 if (TREESHEETS_WITH_STATIC_WXWIDGETS)
     set(wxBUILD_SHARED OFF)
