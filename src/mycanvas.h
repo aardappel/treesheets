@@ -59,7 +59,16 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnMotion(wxMouseEvent &me) {
         wxClientDC dc(this);
+        #ifdef SIMPLERENDER
+        if (me.MiddleIsDown()) {
+            wxDCOverlay odc(doc->overlay, &dc);
+            odc.Clear();
+        } else {
+            UpdateHover(me.GetX(), me.GetY(), dc);
+        }
+        #else
         UpdateHover(me.GetX(), me.GetY(), dc);
+        #endif
         if (me.LeftIsDown() || me.RightIsDown()) {
             if (me.AltDown() && me.ShiftDown()) {
                 doc->Copy(A_DRAGANDDROP);
@@ -175,6 +184,9 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnScrollWin(wxScrollWinEvent &swe) {
         // This only gets called when scrolling using the scroll bar, not with mousewheel.
+        wxClientDC dc(this);
+        wxDCOverlay odc(doc->overlay, &dc);
+        odc.Clear();
         swe.Skip();  // Use default scrolling behavior.
     }
 

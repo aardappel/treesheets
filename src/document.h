@@ -32,6 +32,7 @@ struct Document {
     wxTextDataObject *dndobjt = new wxTextDataObject();
     wxBitmapDataObject *dndobji = new wxBitmapDataObject();
     wxFileDataObject *dndobjf = new wxFileDataObject();
+    wxOverlay overlay;
 
     struct MyPrintout : wxPrintout {
         Document *doc;
@@ -364,8 +365,16 @@ struct Document {
             drawroot->grid->FindXY(this, x - centerx / currentviewscale - hierarchysize,
                                    y - centery / currentviewscale - hierarchysize, dc);
         if (!(prev == hover)) {
+            #ifndef SIMPLERENDER
             if (prev.g) prev.g->DrawHover(this, dc, prev);
             if (hover.g) hover.g->DrawHover(this, dc, hover);
+            #else
+            if (hover.g) {
+                wxDCOverlay odc(overlay, &dc);
+                odc.Clear();
+                hover.g->DrawHover(this, dc, hover);
+            }
+            #endif
         }
         sys->UpdateStatus(hover);
     }

@@ -38,6 +38,7 @@
 #include <wx/mstream.h>
 #include <wx/notebook.h>
 #include <wx/odcombo.h>
+#include <wx/overlay.h>
 #include <wx/print.h>
 #include <wx/printdlg.h>
 #include <wx/sizer.h>

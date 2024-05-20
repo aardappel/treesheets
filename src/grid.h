@@ -345,7 +345,6 @@ struct Grid {
         if (includefolded || !folded) foreachcell(c) c->ImageRefCount(includefolded);
     }
     void DrawHover(Document *doc, wxDC &dc, Selection &s) {
-        #ifndef SIMPLERENDER
         #ifdef __WXMAC__
         const uint thincol = 0xFFFFFF;
         const uint bgcol = 0xFFFFFF;
@@ -353,14 +352,21 @@ struct Grid {
         const uint thincol = 0x555555;
         const uint bgcol = 0x101014;
         #endif
+        #ifndef SIMPLERENDER
         dc.SetLogicalFunction(wxXOR);
+        #endif
         if (s.Thin()) {
             DrawInsert(doc, dc, s, thincol);
         } else {
             Cell *c = C(s.x, s.y);
             DrawRectangle(dc, bgcol, c->GetX(doc) - cell_margin, c->GetY(doc) - cell_margin,
-                          c->sx + cell_margin * 2, c->sy + cell_margin * 2);
+                          c->sx + cell_margin * 2, c->sy + cell_margin * 2
+                            #ifdef SIMPLERENDER
+                            , true
+                            #endif
+                          );
         }
+        #ifndef SIMPLERENDER
         dc.SetLogicalFunction(wxCOPY);
         #endif
     }
