@@ -78,8 +78,6 @@ Linux:
 2. Build using `cmake --build _build`.
 3. Install using `sudo cmake --install _build`.
 
-There is also a `src/Makefile`, this is deprecated.
-
 OSX:
 
 1. Build wxWidgets as follows (inside the wxWidgets dir):
