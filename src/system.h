@@ -138,7 +138,9 @@ struct System {
         cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
-
+        int _customcolor = 0xFFFFFF;
+        cfg->Read(L"customcolor", &_customcolor);
+        if (_customcolor != 0xFFFFFF) customcolor = (uint)_customcolor;
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }

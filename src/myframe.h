@@ -770,6 +770,7 @@ struct MyFrame : wxFrame {
 
     ~MyFrame() {
         filehistory.Save(*sys->cfg);
+        sys->cfg->Write(L"customcolor", sys->customcolor);
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {
