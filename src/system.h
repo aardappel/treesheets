@@ -531,8 +531,10 @@ struct System {
         if (n->GetName() == L"cell") {
             c->text.relsize = -wxAtoi(n->GetAttribute(L"relsize", L"0"));
             c->text.stylebits = wxAtoi(n->GetAttribute(L"stylebits", L"0"));
-            c->cellcolor = wxAtoi(n->GetAttribute(L"colorbg", L"16777215"));
-            c->textcolor = wxAtoi(n->GetAttribute(L"colorfg", L"0"));
+            c->cellcolor =
+                std::stoi(n->GetAttribute(L"colorbg", L"0xFFFFFF").ToStdString(), nullptr, 0);
+            c->textcolor =
+                std::stoi(n->GetAttribute(L"colorfg", L"0x000000").ToStdString(), nullptr, 0);
             c->celltype = wxAtoi(n->GetAttribute(L"type", L"0"));
         }
 
