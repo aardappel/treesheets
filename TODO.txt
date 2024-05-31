@@ -117,8 +117,6 @@
 
 - a way to navigate to previous selections (like alt+arrow in browsers)
 
-- shift+F3 find previous.
-
 - when zooming out, for any parent(s) of the selected item that also fit on screen, make sure they are shown on screen
 
 - When a subgrid has multiple columns "Flatten" should iterate over rows (and copy rowns in their entirety) rather than iterating over each cell.
