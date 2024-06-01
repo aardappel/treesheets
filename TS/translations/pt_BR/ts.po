@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 18:02-0300\n"
-"PO-Revision-Date: 2024-04-13 08:16-0300\n"
+"POT-Creation-Date: 2024-06-01 14:29-0300\n"
+"PO-Revision-Date: 2024-06-01 14:55-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -31,7 +31,7 @@ msgstr ""
 "Gostaria de descartar suas modificações, e recarregar do disco?"
 
 msgid "&About..."
-msgstr "&Sobre..."
+msgstr "&Sobre o TreeSheets"
 
 msgid "&Add Cell Text as Tag"
 msgstr "&Adicionar Texto da Célula como Tag"
@@ -745,10 +745,10 @@ msgid "Line Style Rendering\tALT+9"
 msgstr "Renderização com Estilo de Linha\tALT+9"
 
 msgid "Load interactive &tutorial...\tF1"
-msgstr "Carregar &tutorial interativo...\tF1"
+msgstr "Carregar &tutorial interativo\tF1"
 
 msgid "Load operation reference...\tCTRL+ALT+F1"
-msgstr "Carregar &referência de operações...\tCTRL+ALT+F1"
+msgstr "Carregar &referência de operações\tCTRL+ALT+F1"
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
@@ -1041,9 +1041,6 @@ msgstr "Redefinir &cores\tCTRL+SHIFT+c"
 msgid "Reset column widths\tCTRL+SHIFT+w"
 msgstr "Redefinir largura das colunas\tCTRL+SHIFT+w"
 
-msgid "Reset toolbar"
-msgstr "&Redefinir barra de ferramentas"
-
 msgid "Run"
 msgstr "Executar"
 
@@ -1107,7 +1104,7 @@ msgid "Scroll Right\tALT+RIGHT"
 msgstr "Rolar para a Direita\tALT+RIGHT"
 
 msgid "Scroll Sheet..."
-msgstr "Ro&lar Sheet"
+msgstr "&Rolar Sheet"
 
 msgid "Scroll Up (mousewheel)\tALT+UP"
 msgstr "Rolar para Cima (botão de rolagem)\tALT+UP"
@@ -1131,6 +1128,10 @@ msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr ""
 "A grade selecionada não é uma tabela: as células não devem já conter "
 "subgrades."
+
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr "A seleção contém %d célula(s) com %d caractere(s)."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Texto delimitado por &ponto e vírgula (CSV)..."
@@ -1179,6 +1180,9 @@ msgstr "Evidenciar edições feitas em um intervalo específico de datas/horas..
 
 msgid "Show only cells in current search"
 msgstr "Evidenciar células que contiverem resultados da busca"
+
+msgid "Show statistics"
+msgstr "Mostrar es&tatísticas"
 
 msgid "Single click maximize from tray"
 msgstr "Maximizar da bandeja com um único cli&que"
@@ -1282,10 +1286,10 @@ msgid "Toggle &Fullscreen View\tF11"
 msgstr "Entrar/Sair da Visualização em Tela &Cheia\tF11"
 
 msgid "Toggle &Scaled Presentation View\tCTRL+F12"
-msgstr "Entrar/Sair da Visualização de Apresenta&ção em Escala\tCTRL+F12"
+msgstr "Entrar/Sair da Visualização de Apresentação em &Escala\tCTRL+F12"
 
 msgid "Toggle &Scaled Presentation View\tF12"
-msgstr "Entrar/Sair da Visualização de A&presentação em Escala\tF12"
+msgstr "Entrar/Sair da Visualização de Apresentação em &Escala\tF12"
 
 msgid "Toggle Fold\tCTRL+F10"
 msgstr "Dobrar/Desdobrar\tCTRL+F10"
@@ -1297,7 +1301,7 @@ msgid "Toggle Vertical Layout\tALT+0"
 msgstr "Tornar Layout Vertical/Horizontal\tALT+0"
 
 msgid "Toggle Zen Mode"
-msgstr "Entrar/Sair do Modo Ze&n"
+msgstr "Entrar/Sair do Modo &Zen"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Aplicar/remover &NEGRITO\tCTRL+b"
@@ -1351,7 +1355,7 @@ msgid "Vertical Layout with Line Style Rendering\tALT+3"
 msgstr "Layout Vertical, Renderização com Estilo de Linha\tALT+3"
 
 msgid "View tutorial &web page..."
-msgstr "Visualizar &página de tutorial no site..."
+msgstr "Visualizar &página de tutorial no site"
 
 msgid "What size grid would you like to start with?"
 msgstr "Com que tamanho de grade deseja começar?"
@@ -1382,10 +1386,10 @@ msgid "Zlib error while writing file."
 msgstr "A Zlib retornou um erro ao gravar o arquivo."
 
 msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
-msgstr "Mais &Zoom (CTRL+botão de rolagem)\tCTRL+PGUP"
+msgstr "&Mais Zoom (CTRL+botão de rolagem)\tCTRL+PGUP"
 
 msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
-msgstr "M&enos Zoom (CTRL+botão de rolagem)\tCTRL+PGDN"
+msgstr "Me&nos Zoom (CTRL+botão de rolagem)\tCTRL+PGDN"
 
 msgid "Zoom In (CTRL+mousewheel)"
 msgstr "Mais Zoom (CTRL+botão de rolagem)"
@@ -1427,6 +1431,9 @@ msgstr "escala:"
 
 msgid "size:"
 msgstr "tamanho:"
+
+#~ msgid "Reset toolbar"
+#~ msgstr "&Redefinir barra de ferramentas"
 
 #~ msgid "Black and white toolbar icons"
 #~ msgstr "Íco&nes da barra de ferramentas em preto e branco"
