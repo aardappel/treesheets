@@ -386,6 +386,12 @@ struct Cell {
         }
     }
 
+    void GetStats(int &numcells, int &textbytes) {
+        numcells++;
+        textbytes += text.t.Len();
+        if (grid) grid->GetStats(numcells, textbytes);
+    }
+
     unique_ptr<Cell> Eval(Evaluator &ev) const {
         // Evaluates the internal grid if it exists, otherwise, evaluate the text.
         return grid ? grid->Eval(ev) : text.Eval(ev);
