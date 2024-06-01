@@ -513,6 +513,7 @@ struct MyFrame : wxFrame {
         MyAppend(viewmenu, A_ZEN_MODE, _(L"Toggle Zen Mode"));
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
+        MyAppend(viewmenu, A_SHOWSTATS, _(L"Show statistics"));
 
         wxMenu *roundmenu = new wxMenu();
         roundmenu->AppendRadioItem(A_ROUND0, _(L"Radius &0"));

@@ -258,6 +258,7 @@ enum {
     A_CUSTKEY,
     A_AUTOEXPORT,
     A_DRAGANDDROP,
+    A_SHOWSTATS,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     A_SCRIPT = 2000,  // and all values from here on
