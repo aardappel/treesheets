@@ -231,17 +231,17 @@ struct Cell {
                 str.Prepend(wxString() << -text.relsize);
                 str.Prepend(L" relsize=\"");
             }
-            if (parent ? text.stylebits ^ parent->text.stylebits : text.stylebits) {
+            if (text.stylebits) {
                 str.Prepend(L"\"");
                 str.Prepend(wxString() << text.stylebits);
                 str.Prepend(L" stylebits=\"");
             }
-            if (cellcolor != (parent ? parent->cellcolor : doc->Background())) {
+            if (cellcolor != 0xFFFFFF) {
                 str.Prepend(L"\"");
                 str.Prepend(wxString::Format(wxT("0x%06X"), cellcolor));
                 str.Prepend(L" colorbg=\"");
             }
-            if (textcolor != (parent ? parent->textcolor : 0x000000)) {
+            if (textcolor != 0x000000) {
                 str.Prepend(L"\"");
                 str.Prepend(wxString::Format(wxT("0x%06X"), textcolor));
                 str.Prepend(L" colorfg=\"");
