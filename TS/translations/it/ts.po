@@ -485,7 +485,7 @@ msgid "Enter/exit text edit mode\tF2"
 msgstr "Entra/esci da modalità modifica testo\tF2"
 
 msgid "Enter/exit text edit to the right\tALT+ENTER"
-msgstr "Entra/esci da modalità modifica testo\tENTER"
+msgstr "Entra/esci da modalità modifica testo\tALT+ENTER"
 
 msgid "Error exporting file!"
 msgstr "Errore durante l'esportazione del file!"
@@ -750,7 +750,7 @@ msgstr ""
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "Caricato%s (%d celle,%d caratteri)."
+msgstr "Caricato %s (%d celle, %d caratteri) in %d millisecondi."
 
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
@@ -948,7 +948,7 @@ msgstr ""
 "utilizzare la ricerca."
 
 msgid "Please enter the new image width:"
-msgstr "Si prega di selezionare un file immagine:"
+msgstr "Si prega di inserire la nuova larghezza dell'immagine:"
 
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Inserisci la percentuale in cui desideri ridimensionare l'immagine:"
@@ -1079,7 +1079,7 @@ msgstr "Salvare l'immagine nel file TreeSheets in formato PNG."
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "Salvato %s con successo (in %d millisecondi)"
+msgstr "Salvato %s con successo (in %d millisecondi)."
 
 msgid "Script"
 msgstr "Script"
@@ -1214,7 +1214,7 @@ msgid "Switch to &next file/tab\tCTRL+TAB"
 msgstr "Passa a & successivo file/scheda\tCTRL+TAB"
 
 msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
-msgstr "Passa al file precedente/scheda\tSHIFT+CTRL+TAB"
+msgstr "Passa al file/scheda precedente\tSHIFT+CTRL+TAB"
 
 msgid "Tab delimited text..."
 msgstr "Testo delimitato da tabulazioni..."
