@@ -1072,17 +1072,17 @@ msgid ""
 msgstr ""
 
 msgid "Save the image in the TreeSheets file in JPEG format"
-msgstr ""
+msgstr "Salvare l'immagine nel file TreeSheets in formato JPEG."
 
 msgid "Save the image in the TreeSheets file in PNG format"
-msgstr ""
+msgstr "Salvare l'immagine nel file TreeSheets in formato PNG."
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
-msgstr ""
+msgstr "Salvato %s con successo (in %d millisecondi)"
 
 msgid "Script"
-msgstr ""
+msgstr "Script"
 
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
 msgstr "Scorri verso il basso (rotellina)\tALT+DOWN"
@@ -1121,6 +1121,10 @@ msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr ""
 "La griglia selezionata non è una tabella: le celle non devono avere già "
 "sottogriglie."
+
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr "La selezione contiene %d celle con %d caratteri."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Testo delimitato da semi-colonna (CSV)..."
@@ -1169,6 +1173,9 @@ msgstr "Mostra le ultime modifiche in un intervallo di date specifico"
 
 msgid "Show only cells in current search"
 msgstr "Mostra solo le celle nella ricerca corrente"
+
+msgid "Show statistics"
+msgstr "Mostra le statistiche"
 
 msgid "Single click maximize from tray"
 msgstr "Un singolo clic ingrandisce dal vassoio"
