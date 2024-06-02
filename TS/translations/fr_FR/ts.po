@@ -263,9 +263,6 @@ msgstr "Sauvegarde automatique en .tmp"
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiée dans le presse-papier"
 
-msgid "Black and white toolbar icons"
-msgstr "Icônes de la barre d'outils en noir et blanc"
-
 msgid "Border "
 msgstr "Bordure "
 
