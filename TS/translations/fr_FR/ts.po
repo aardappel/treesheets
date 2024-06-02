@@ -93,7 +93,6 @@ msgstr "&Hiérarchiser"
 msgid "&Horizontal View\tCTRL+ALT+."
 msgstr "Calcul en ligne\tCTRL+ALT+."
 
-#, fuzzy
 msgid "&Image..."
 msgstr "&Image..."
 
@@ -364,37 +363,30 @@ msgstr ""
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Enregistrer les modifications du document avant fermeture ?"
 
-#, fuzzy
 msgid "Choose CSV file to write"
 msgstr "Choisir le fichier CSV à éditer"
 
-#, fuzzy
 msgid "Choose HTML file to write"
 msgstr "Choisir le fichier HTML à éditer"
 
-#, fuzzy
 msgid "Choose PNG file to write"
 msgstr "Choisir le fichier PNG à éditer"
 
-#, fuzzy
 msgid "Choose Text file to write"
 msgstr "Choisir le fichier Text à éditer"
 
 msgid "Choose TreeSheets file to save:"
 msgstr "Choisir où sauvegader le fichier TreeSheets:"
 
-#, fuzzy
 msgid "Choose XML file to write"
 msgstr "Choisir le fichier XML à éditer"
 
 msgid "Choose image file to save:"
 msgstr "Choisir le fichier image à sauvegarder:"
 
-#, fuzzy
 msgid "Clear replace"
 msgstr "Réinitialiser et remplacer"
 
-#, fuzzy
 msgid "Clear search"
 msgstr "Réinitialiser la recherche"
 
@@ -487,7 +479,7 @@ msgstr "Supprime le mot situé avant le curseur"
 msgid "Discard Changes"
 msgstr "Supprimer les modifications"
 
-# c-format
+#, c-format
 msgid "Edited %s %s"
 msgstr "Modifié %s %s"
 
@@ -963,13 +955,11 @@ msgstr "Définir le style caractère par défaut..."
 msgid "Pick Document Background..."
 msgstr "Choisir la couleur de fond du document..."
 
-#, fuzzy
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
 "SVP activer (Options -> Afficher la barre d'outils) pour utiliser la "
 "fonction de recherche."
 
-#, fuzzy
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 "SVP activer (Options -> Afficher la barre d'outils) pour utiliser la "
@@ -1134,7 +1124,6 @@ msgstr "Défiler vers le haut (molette)\tALT+UP"
 msgid "Scroll Up (mousewheel)\tPGUP"
 msgstr "Défiler vers le haut (molette)\tPGUP"
 
-#, fuzzy
 msgid "Search "
 msgstr "Recherche "
 
@@ -1147,7 +1136,6 @@ msgstr "Sélectionner tout d&ans la grille courante\tCTRL+a"
 msgid "Select First &Child\tSHIFT+ENTER"
 msgstr "Sélectionner la première cellule &fille\tSHIFT+ENTER"
 
-#, fuzzy
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr ""
 "La cellule sélectionnée n'est pas un tableau: les cellules ne doivent pas "
@@ -1274,7 +1262,6 @@ msgstr "La taille du texte a été réduite."
 msgid "Text size increased."
 msgstr "La taille du texte a été augmentée."
 
-#, fuzzy
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "L'organisateur d'informations hiérarchiques de forme libre"
 
@@ -1284,7 +1271,6 @@ msgstr "Le navigateur n'a pas pu ouvrir au moins un lien."
 msgid "There is no content to collapse."
 msgstr "Il n'y a pas de contenu à replier."
 
-#, fuzzy
 msgid "This operation doesn't work on thin selections."
 msgstr "Cette opération ne fonctionne pas sur des sélections fines."
 
@@ -1355,7 +1341,6 @@ msgstr "Tout développer\tCTRL+ALT+F10"
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "Développer la grille des cellules sélectionnées mode récursif"
 
-#, fuzzy
 msgid "Uses"
 msgstr "Utilise"
 
@@ -1437,7 +1422,6 @@ msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr ""
 "définit la couleur et le style de la cellule copiée, et conserve le texte"
 
-#, fuzzy
 msgid "only works in cell text mode"
 msgstr "fonctionne seulement en mode texte"
 
