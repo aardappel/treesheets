@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-08 13:35-0300\n"
+"POT-Creation-Date: 2024-06-01 14:29-0300\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -262,9 +262,6 @@ msgstr "Salvataggio automatico su .tmp"
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiata negli appunti"
 
-msgid "Black and white toolbar icons"
-msgstr "Icone della barra degli strumenti in bianco e nero"
-
 msgid "Border "
 msgstr "Bordo"
 
@@ -280,22 +277,18 @@ msgstr "Bordo &2\tCTRL+SHIFT+2"
 msgid "Border &3\tCTRL+SHIFT+3"
 msgstr "Bordo &3\tCTRL+SHIFT+3"
 
-#, fuzzy
 msgid "Border &4\tCTRL+SHIFT+4"
 msgstr "Bordo &4\tCTRL+SHIFT+4"
 
-#, fuzzy
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "Bordo &5\tCTRL+SHIFT+5"
 
 msgid "Bubble Style Rendering\tALT+8"
 msgstr "Rendering stile bolla\tALT+8"
 
-#, fuzzy
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr "Può solo spostare questa cella in una griglia Nx1 o 1xN."
 
-#, fuzzy
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "Può solo spostare questa cella in una griglia Nx1 o 1xN."
 
@@ -345,7 +338,6 @@ msgid ""
 "shown on screen. Applies to all uses of this image."
 msgstr ""
 
-#, fuzzy
 msgid ""
 "Change the image size if it is too big, by reducing the amount of pixels"
 msgstr "Cambia la dimensione dell'immagine se è troppo grande o troppo piccola"
@@ -492,9 +484,8 @@ msgstr "Entra/esci da modalità modifica testo\tENTER"
 msgid "Enter/exit text edit mode\tF2"
 msgstr "Entra/esci da modalità modifica testo\tF2"
 
-#, fuzzy
 msgid "Enter/exit text edit to the right\tALT+ENTER"
-msgstr "Entra/esci da modalità modifica testo\tENTER"
+msgstr "Entra/esci da modalità modifica testo\tALT+ENTER"
 
 msgid "Error exporting file!"
 msgstr "Errore durante l'esportazione del file!"
@@ -512,7 +503,6 @@ msgstr ""
 "Errore durante la scrittura del file TreeSheets! (prova a salvare con il "
 "nuovo nome file)."
 
-#, fuzzy
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
 "Errore durante la scrittura del file TreeSheets! (prova a salvare con il "
@@ -541,7 +531,6 @@ msgstr ""
 "Funziona solo su griglie senza sub-griglie (utilizzare prima l'operazione "
 "appiattimento se necessario)"
 
-#, fuzzy
 msgid "Export the current view as HTML as nested bullet points."
 msgstr ""
 "Esportare la vista corrente come HTML come intestazioni nidificate, adatte "
@@ -568,7 +557,6 @@ msgstr ""
 "Esporta la vista corrente come XML (che può anche essere reimportata senza "
 "perdere struttura)"
 
-#, fuzzy
 msgid ""
 "Export the current view as an image. Useful for faithful renderings of the "
 "TreeSheet, and programs that don't accept any of the above options"
@@ -760,9 +748,9 @@ msgstr "Carica interattivo e tutorial ...\tF1"
 msgid "Load operation reference...\tCTRL+ALT+F1"
 msgstr ""
 
-#, fuzzy, c-format
+#, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "Caricato%s (%d celle,%d caratteri)."
+msgstr "Caricato %s (%d celle, %d caratteri) in %d millisecondi."
 
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
@@ -959,9 +947,8 @@ msgstr ""
 "Si prega di abilitare (Opzioni -> Mostra la barra degli strumenti) per "
 "utilizzare la ricerca."
 
-#, fuzzy
 msgid "Please enter the new image width:"
-msgstr "Si prega di selezionare un file immagine:"
+msgstr "Si prega di inserire la nuova larghezza dell'immagine:"
 
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Inserisci la percentuale in cui desideri ridimensionare l'immagine:"
@@ -1043,11 +1030,9 @@ msgstr "Sostituisci nella selezione corrente e salta avanti\tCTRL+j"
 msgid "Replace in selection"
 msgstr "Sostituisci nella selezione corrente"
 
-#, fuzzy
 msgid "Reset &colors\tCTRL+SHIFT+c"
 msgstr "Ripristina &colori\tSHIFT+CTRL+c"
 
-#, fuzzy
 msgid "Reset column widths\tCTRL+SHIFT+w"
 msgstr "Ripristina le larghezze delle colonne\tSHIFT+CTRL+w"
 
@@ -1060,7 +1045,6 @@ msgstr "Salva &come..."
 msgid "Save (CTRL+s)"
 msgstr "Salva (CTRL+s)"
 
-#, fuzzy
 msgid "Save All"
 msgstr "Salva tutto"
 
@@ -1088,17 +1072,17 @@ msgid ""
 msgstr ""
 
 msgid "Save the image in the TreeSheets file in JPEG format"
-msgstr ""
+msgstr "Salvare l'immagine nel file TreeSheets in formato JPEG."
 
 msgid "Save the image in the TreeSheets file in PNG format"
-msgstr ""
+msgstr "Salvare l'immagine nel file TreeSheets in formato PNG."
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
-msgstr ""
+msgstr "Salvato %s con successo (in %d millisecondi)."
 
 msgid "Script"
-msgstr ""
+msgstr "Script"
 
 msgid "Scroll Down (mousewheel)\tALT+DOWN"
 msgstr "Scorri verso il basso (rotellina)\tALT+DOWN"
@@ -1137,6 +1121,10 @@ msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr ""
 "La griglia selezionata non è una tabella: le celle non devono avere già "
 "sottogriglie."
+
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr "La selezione contiene %d celle con %d caratteri."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Testo delimitato da semi-colonna (CSV)..."
@@ -1186,6 +1174,9 @@ msgstr "Mostra le ultime modifiche in un intervallo di date specifico"
 msgid "Show only cells in current search"
 msgstr "Mostra solo le celle nella ricerca corrente"
 
+msgid "Show statistics"
+msgstr "Mostra le statistiche"
+
 msgid "Single click maximize from tray"
 msgstr "Un singolo clic ingrandisce dal vassoio"
 
@@ -1222,9 +1213,8 @@ msgstr "Passa a &successivo file/scheda"
 msgid "Switch to &next file/tab\tCTRL+TAB"
 msgstr "Passa a & successivo file/scheda\tCTRL+TAB"
 
-#, fuzzy
 msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
-msgstr "Passa al file precedente/scheda\tSHIFT+CTRL+TAB"
+msgstr "Passa al file/scheda precedente\tSHIFT+CTRL+TAB"
 
 msgid "Tab delimited text..."
 msgstr "Testo delimitato da tabulazioni..."

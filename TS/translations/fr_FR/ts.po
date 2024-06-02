@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-08 13:35-0300\n"
+"POT-Creation-Date: 2024-06-01 14:29-0300\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -93,7 +93,6 @@ msgstr "&Hiérarchiser"
 msgid "&Horizontal View\tCTRL+ALT+."
 msgstr "Calcul en ligne\tCTRL+ALT+."
 
-#, fuzzy
 msgid "&Image..."
 msgstr "&Image..."
 
@@ -264,9 +263,6 @@ msgstr "Sauvegarde automatique en .tmp"
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiée dans le presse-papier"
 
-msgid "Black and white toolbar icons"
-msgstr "Icônes de la barre d'outils en noir et blanc"
-
 msgid "Border "
 msgstr "Bordure "
 
@@ -364,37 +360,30 @@ msgstr ""
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Enregistrer les modifications du document avant fermeture ?"
 
-#, fuzzy
 msgid "Choose CSV file to write"
 msgstr "Choisir le fichier CSV à éditer"
 
-#, fuzzy
 msgid "Choose HTML file to write"
 msgstr "Choisir le fichier HTML à éditer"
 
-#, fuzzy
 msgid "Choose PNG file to write"
 msgstr "Choisir le fichier PNG à éditer"
 
-#, fuzzy
 msgid "Choose Text file to write"
 msgstr "Choisir le fichier Text à éditer"
 
 msgid "Choose TreeSheets file to save:"
 msgstr "Choisir où sauvegader le fichier TreeSheets:"
 
-#, fuzzy
 msgid "Choose XML file to write"
 msgstr "Choisir le fichier XML à éditer"
 
 msgid "Choose image file to save:"
 msgstr "Choisir le fichier image à sauvegarder:"
 
-#, fuzzy
 msgid "Clear replace"
 msgstr "Réinitialiser et remplacer"
 
-#, fuzzy
 msgid "Clear search"
 msgstr "Réinitialiser la recherche"
 
@@ -487,7 +476,7 @@ msgstr "Supprime le mot situé avant le curseur"
 msgid "Discard Changes"
 msgstr "Supprimer les modifications"
 
-# c-format
+#, c-format
 msgid "Edited %s %s"
 msgstr "Modifié %s %s"
 
@@ -774,7 +763,7 @@ msgstr "Charger le modèle calculs...\tCTRL+ALT+F1"
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "Chargement %s (%d cellules,%d caratères) en %d millisecondes."
+msgstr "Chargement %s (%d cellules, %d caratères) en %d millisecondes."
 
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
@@ -942,8 +931,7 @@ msgid "PNG decoder failure"
 msgstr "Echec décodage PNG"
 
 msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
-msgstr ""
-"fichier PNG (*.png)|*.png|fichier JPEG(*.jpg)|*.jpg|Tout Format (*.*)|*.*"
+msgstr "fichier PNG (*.png)|*.png|fichier JPEG(*.jpg)|*.jpg|Tout Format (*.*)|*.*"
 
 msgid "Page Setup..."
 msgstr "Paramétrage de la page d'impression…"
@@ -963,17 +951,11 @@ msgstr "Définir le style caractère par défaut..."
 msgid "Pick Document Background..."
 msgstr "Choisir la couleur de fond du document..."
 
-#, fuzzy
 msgid "Please enable (Options -> Show Toolbar) to use replace."
-msgstr ""
-"SVP activer (Options -> Afficher la barre d'outils) pour utiliser la "
-"fonction de recherche."
+msgstr "SVP activer (Options -> Afficher la barre d'outils) pour utiliser la fonction de recherche."
 
-#, fuzzy
 msgid "Please enable (Options -> Show Toolbar) to use search."
-msgstr ""
-"SVP activer (Options -> Afficher la barre d'outils) pour utiliser la "
-"fonction de recherche."
+msgstr "SVP activer (Options -> Afficher la barre d'outils) pour utiliser la fonction de recherche."
 
 msgid "Please enter the new image width:"
 msgstr "Veuillez entrer la nouvelle largeur d'image:"
@@ -1134,7 +1116,6 @@ msgstr "Défiler vers le haut (molette)\tALT+UP"
 msgid "Scroll Up (mousewheel)\tPGUP"
 msgstr "Défiler vers le haut (molette)\tPGUP"
 
-#, fuzzy
 msgid "Search "
 msgstr "Recherche "
 
@@ -1147,11 +1128,12 @@ msgstr "Sélectionner tout d&ans la grille courante\tCTRL+a"
 msgid "Select First &Child\tSHIFT+ENTER"
 msgstr "Sélectionner la première cellule &fille\tSHIFT+ENTER"
 
-#, fuzzy
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr ""
-"La cellule sélectionnée n'est pas un tableau: les cellules ne doivent pas "
-"avoir déjà une sous-grille."
+msgstr "La cellule sélectionnée n'est pas un tableau: les cellules ne doivent pas avoir déjà une sous-grille."
+
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr "La sélection contient %d cellule(s) avec %d caractère(s)."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Texte séparateur point virgule (CSV)..."
@@ -1200,6 +1182,9 @@ msgstr "Montrer les dernières modification dans une période donnée"
 
 msgid "Show only cells in current search"
 msgstr "Afficher uniquement les cellules de la recherche courante"
+
+msgid "Show statistics"
+msgstr "Afficher les statistiques"
 
 msgid "Single click maximize from tray"
 msgstr "Maximiser par Un simple clic"
@@ -1274,7 +1259,6 @@ msgstr "La taille du texte a été réduite."
 msgid "Text size increased."
 msgstr "La taille du texte a été augmentée."
 
-#, fuzzy
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "L'organisateur d'informations hiérarchiques de forme libre"
 
@@ -1284,7 +1268,6 @@ msgstr "Le navigateur n'a pas pu ouvrir au moins un lien."
 msgid "There is no content to collapse."
 msgstr "Il n'y a pas de contenu à replier."
 
-#, fuzzy
 msgid "This operation doesn't work on thin selections."
 msgstr "Cette opération ne fonctionne pas sur des sélections fines."
 
@@ -1355,7 +1338,6 @@ msgstr "Tout développer\tCTRL+ALT+F10"
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "Développer la grille des cellules sélectionnées mode récursif"
 
-#, fuzzy
 msgid "Uses"
 msgstr "Utilise"
 
@@ -1437,7 +1419,6 @@ msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr ""
 "définit la couleur et le style de la cellule copiée, et conserve le texte"
 
-#, fuzzy
 msgid "only works in cell text mode"
 msgstr "fonctionne seulement en mode texte"
 
