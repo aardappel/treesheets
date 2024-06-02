@@ -292,7 +292,7 @@ struct treesheets {
     struct Evaluator;
     struct Image;
     struct Document;
-    class Selection;
+    struct Selection;
 
     struct System;
 
