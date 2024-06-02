@@ -1129,9 +1129,11 @@ msgid "Select First &Child\tSHIFT+ENTER"
 msgstr "Sélectionner la première cellule &fille\tSHIFT+ENTER"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr ""
-"La cellule sélectionnée n'est pas un tableau: les cellules ne doivent pas "
-"avoir déjà une sous-grille."
+msgstr "La cellule sélectionnée n'est pas un tableau: les cellules ne doivent pas avoir déjà une sous-grille."
+
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr "La sélection contient %d cellule(s) avec %d caractère(s)."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Texte séparateur point virgule (CSV)..."
@@ -1180,6 +1182,9 @@ msgstr "Montrer les dernières modification dans une période donnée"
 
 msgid "Show only cells in current search"
 msgstr "Afficher uniquement les cellules de la recherche courante"
+
+msgid "Show statistics"
+msgstr "Afficher les statistiques"
 
 msgid "Single click maximize from tray"
 msgstr "Maximiser par Un simple clic"
