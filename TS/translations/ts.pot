@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 18:02-0300\n"
+"POT-Creation-Date: 2024-06-01 14:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -971,9 +971,6 @@ msgstr ""
 msgid "Reset column widths\tCTRL+SHIFT+w"
 msgstr ""
 
-msgid "Reset toolbar"
-msgstr ""
-
 msgid "Run"
 msgstr ""
 
@@ -1058,6 +1055,10 @@ msgstr ""
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr ""
 
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr ""
+
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr ""
 
@@ -1104,6 +1105,9 @@ msgid "Show last edits in specific date range"
 msgstr ""
 
 msgid "Show only cells in current search"
+msgstr ""
+
+msgid "Show statistics"
 msgstr ""
 
 msgid "Single click maximize from tray"
