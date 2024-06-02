@@ -262,9 +262,6 @@ msgstr "Salvataggio automatico su .tmp"
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiata negli appunti"
 
-msgid "Black and white toolbar icons"
-msgstr "Icone della barra degli strumenti in bianco e nero"
-
 msgid "Border "
 msgstr "Bordo"
 
