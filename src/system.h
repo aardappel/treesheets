@@ -557,6 +557,8 @@ struct System {
                     if (!i) {
                         desiredxs = xs ? xs : 1;
                         c->AddGrid(desiredxs, ns.size());
+                        c->grid->bordercolor = std::stoi(
+                            n->GetAttribute(L"bordercolor", L"0xA0A0A0").ToStdString(), nullptr, 0);
                     }
                     loop(j, desiredxs) if (ins.size() > j)
                         FillXML(c->grid->C(j, i), ins[j], attributestoo);
@@ -564,6 +566,8 @@ struct System {
                 }
             } else {
                 c->AddGrid(1, numrows);
+                c->grid->bordercolor = std::stoi(
+                    n->GetAttribute(L"bordercolor", L"0xA0A0A0").ToStdString(), nullptr, 0);
                 loopv(i, ps) c->grid->C(0, i)->text.t = ps[i]->GetValue();
                 loopv(i, ns) FillXML(c->grid->C(0, i + ps.size()), ns[i], attributestoo);
             }
