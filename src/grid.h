@@ -622,7 +622,8 @@ struct Grid {
         const int font_size = 14 - indent / 2;
         const int grid_border_width =
             cell == doc->rootgrid ? root_grid_spacing : user_grid_outer_spacing - 1;
-        Formatter(r, format, indent, L"<grid>\n",
+        Formatter(r, format, indent,
+                  wxString::Format(L"<grid bordercolor=\"0x%06X\">\n", bordercolor),
                   wxString::Format(L"<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
                                    grid_border_width, font_size)
                       .wc_str(),
