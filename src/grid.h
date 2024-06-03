@@ -622,9 +622,17 @@ struct Grid {
         const int font_size = 14 - indent / 2;
         const int grid_border_width =
             cell == doc->rootgrid ? root_grid_spacing : user_grid_outer_spacing - 1;
-        Formatter(r, format, indent,
-                  wxString::Format(L"<grid bordercolor=\"0x%06X\" outerspacing=\"%d\">\n",
-                                   bordercolor, user_grid_outer_spacing),
+
+        wxString xmlstr(L"<grid");
+        if (bordercolor != 0xA0A0A0) {
+            xmlstr.Append(wxString::Format(wxT(" bordercolor=\"0x%06X\""), bordercolor));
+        }
+        if (user_grid_outer_spacing != 3) {
+            xmlstr.Append(wxString::Format(wxT(" outerspacing=\"%d\""), user_grid_outer_spacing));
+        }
+        xmlstr.Append(L">\n");
+
+        Formatter(r, format, indent, xmlstr,
                   wxString::Format(L"<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
                                    grid_border_width, font_size)
                       .wc_str(),
