@@ -557,6 +557,7 @@ struct System {
                     if (!i) {
                         desiredxs = xs ? xs : 1;
                         c->AddGrid(desiredxs, ns.size());
+                        c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
                         c->grid->bordercolor = std::stoi(
                             n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default)
                                 .ToStdString(),
@@ -570,6 +571,7 @@ struct System {
                 }
             } else {
                 c->AddGrid(1, numrows);
+                c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
                 c->grid->bordercolor =
                     std::stoi(n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default)
                                   .ToStdString(),
