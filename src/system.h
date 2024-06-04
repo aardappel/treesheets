@@ -559,8 +559,8 @@ struct System {
                         c->AddGrid(desiredxs, ns.size());
                         c->grid->bordercolor = std::stoi(
                             n->GetAttribute(L"bordercolor", L"0xA0A0A0").ToStdString(), nullptr, 0);
-                        c->grid->user_grid_outer_spacing =
-                            wxAtoi(n->GetAttribute(L"outerspacing", L"3"));
+                        c->grid->user_grid_outer_spacing = wxAtoi(n->GetAttribute(
+                            L"outerspacing", wxString() << g_usergridouterspacing_default));
                     }
                     loop(j, desiredxs) if (ins.size() > j)
                         FillXML(c->grid->C(j, i), ins[j], attributestoo);
@@ -570,7 +570,8 @@ struct System {
                 c->AddGrid(1, numrows);
                 c->grid->bordercolor = std::stoi(
                     n->GetAttribute(L"bordercolor", L"0xA0A0A0").ToStdString(), nullptr, 0);
-                c->grid->user_grid_outer_spacing = wxAtoi(n->GetAttribute(L"outerspacing", L"3"));
+                c->grid->user_grid_outer_spacing = wxAtoi(
+                    n->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
                 loopv(i, ps) c->grid->C(0, i)->text.t = ps[i]->GetValue();
                 loopv(i, ns) FillXML(c->grid->C(0, i + ps.size()), ns[i], attributestoo);
             }

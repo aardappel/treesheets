@@ -58,7 +58,7 @@ struct Grid {
           colwidths(nullptr),
           xs(_xs),
           ys(_ys),
-          user_grid_outer_spacing(3),
+          user_grid_outer_spacing(g_usergridouterspacing_default),
           bordercolor(0xA0A0A0),
           horiz(false),
           folded(false) {
@@ -627,7 +627,7 @@ struct Grid {
         if (bordercolor != 0xA0A0A0) {
             xmlstr.Append(wxString::Format(wxT(" bordercolor=\"0x%06X\""), bordercolor));
         }
-        if (user_grid_outer_spacing != 3) {
+        if (user_grid_outer_spacing != g_usergridouterspacing_default) {
             xmlstr.Append(wxString::Format(wxT(" outerspacing=\"%d\""), user_grid_outer_spacing));
         }
         xmlstr.Append(L">\n");
