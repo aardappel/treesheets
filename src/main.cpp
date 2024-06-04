@@ -13,6 +13,7 @@ static const int g_grid_margin = 1;
 static const int g_cell_margin = 2;
 static const int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
 static const int g_usergridouterspacing_default = 3;
+static const int g_bordercolor_default = 0xA0A0A0;
 static const int g_line_width = 1;
 static const int g_selmargin = 2;
 static const int g_scrollratecursor = 240;  // FIXME: must be configurable

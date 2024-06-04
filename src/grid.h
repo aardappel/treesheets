@@ -59,7 +59,7 @@ struct Grid {
           xs(_xs),
           ys(_ys),
           user_grid_outer_spacing(g_usergridouterspacing_default),
-          bordercolor(0xA0A0A0),
+          bordercolor(g_bordercolor_default),
           horiz(false),
           folded(false) {
         foreachcell(c) c = nullptr;
