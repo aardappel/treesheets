@@ -624,7 +624,7 @@ struct Grid {
             cell == doc->rootgrid ? root_grid_spacing : user_grid_outer_spacing - 1;
 
         wxString xmlstr(L"<grid");
-        if (bordercolor != 0xA0A0A0) {
+        if (bordercolor != g_bordercolor_default) {
             xmlstr.Append(wxString::Format(wxT(" bordercolor=\"0x%06X\""), bordercolor));
         }
         if (user_grid_outer_spacing != g_usergridouterspacing_default) {
