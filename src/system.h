@@ -557,13 +557,7 @@ struct System {
                     if (!i) {
                         desiredxs = xs ? xs : 1;
                         c->AddGrid(desiredxs, ns.size());
-                        c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
-                        c->grid->bordercolor = std::stoi(
-                            n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default)
-                                .ToStdString(),
-                            nullptr, 0);
-                        c->grid->user_grid_outer_spacing = wxAtoi(n->GetAttribute(
-                            L"outerspacing", wxString() << g_usergridouterspacing_default));
+                        SetGridSettingsFromXML(c, n);
                     }
                     loop(j, desiredxs) if (ins.size() > j)
                         FillXML(c->grid->C(j, i), ins[j], attributestoo);
@@ -571,13 +565,7 @@ struct System {
                 }
             } else {
                 c->AddGrid(1, numrows);
-                c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
-                c->grid->bordercolor =
-                    std::stoi(n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default)
-                                  .ToStdString(),
-                              nullptr, 0);
-                c->grid->user_grid_outer_spacing = wxAtoi(
-                    n->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
+                SetGridSettingsFromXML(c, n);
                 loopv(i, ps) c->grid->C(0, i)->text.t = ps[i]->GetValue();
                 loopv(i, ns) FillXML(c->grid->C(0, i + ps.size()), ns[i], attributestoo);
             }
@@ -585,6 +573,15 @@ struct System {
 
         ns.setsize_nd(0);
         ps.setsize_nd(0);
+    }
+
+    void SetGridSettingsFromXML(Cell *c, wxXmlNode *n) {
+        c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
+        c->grid->bordercolor = std::stoi(
+            n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default).ToStdString(),
+            nullptr, 0);
+        c->grid->user_grid_outer_spacing =
+            wxAtoi(n->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
     }
 
     int CountCol(const wxString &s) {
