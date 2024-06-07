@@ -1110,7 +1110,7 @@ msgstr ""
 msgid "Show only cells in current search"
 msgstr ""
 
-msgid "Show statistics"
+msgid "Show statistics\tCTRL+d"
 msgstr ""
 
 msgid "Single click maximize from tray"
