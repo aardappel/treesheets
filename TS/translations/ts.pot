@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-01 14:29-0300\n"
+"POT-Creation-Date: 2024-06-04 14:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -886,6 +886,9 @@ msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 
 msgid "Please enter the new image width:"
+msgstr ""
+
+msgid "Please enter the new key binding string"
 msgstr ""
 
 msgid "Please enter the percentage you want the image scaled by:"

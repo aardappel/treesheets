@@ -1382,8 +1382,8 @@ struct Document {
                 if (choice.ShowModal() == wxID_OK) {
                     int sel = choice.GetSelection();
                     wxTextEntryDialog textentry(sys->frame,
-                                                "Please enter the new key binding string",
-                                                "Key binding", keys[sel]);
+                                                _(L"Please enter the new key binding string"),
+                                                _(L"Key binding"), keys[sel]);
                     if (textentry.ShowModal() == wxID_OK) {
                         wxString key = textentry.GetValue();
                         sys->frame->menustrings[strs[sel]] = key;
