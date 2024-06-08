@@ -2151,6 +2151,27 @@ struct Document {
             const wxArrayString &as = pdataobjf.GetFilenames();
             if (as.size()) {
                 if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
+                else {
+                    wxString fpath = as[0];
+                    wxFFileInputStream fis(fpath);
+                    if (fis.IsOk()) {
+                        char buf[4];
+                        fis.Read(buf, 4);
+                        if (!strncmp(buf, "TSFF", 4)) {
+                            ThreeChoiceDialog tcd(sys->frame, fpath,
+                                                  _(L"It seems that you are about to drop a "
+                                                    L"TreeSheets file. What do you like to do?"),
+                                                  _(L"Open TreeSheets file"), _(L"Paste file path"),
+                                                  _(L"Cancel"));
+                            switch (tcd.Run()) {
+                                case 0: sw->Status(sys->LoadDB(fpath));
+                                case 2: return;
+                                default:
+                                case 1:;
+                            }
+                        }
+                    }
+                }
                 c->AddUndo(this);
                 if (!LoadImageIntoCell(as[0], c, sys->frame->csf)) PasteSingleText(c, as[0]);
                 wantsrefresh = true;
