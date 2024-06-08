@@ -23,7 +23,23 @@ struct DropTarget : wxDropTarget {
         GetData();
         TSCanvas *sw = sys->frame->GetCurTab();
         sw->SelectClick(x, y, false, 0);
-        sw->doc->PasteOrDrop(*sw->doc->dndobjt, *sw->doc->dndobji, *sw->doc->dndobjf);
+        // The data objects in the composite data object for drag and drop operations
+        // are not cleared after the drop operation, leaving the data in the data objects.
+        // In the next drop operation, matching type data objects are overwritten but the others
+        // are left untouched. Avoid the processing of invalid data by replacing the others
+        // with empty data objects.
+        wxTextDataObject nulltext;
+        wxBitmapDataObject nullbitmap;
+        wxFileDataObject nullfile;
+        sw->doc->PasteOrDrop(
+            (sw->doc->dndobjc->GetReceivedFormat().GetType() == wxDF_TEXT ||
+             sw->doc->dndobjc->GetReceivedFormat().GetType() == wxDF_UNICODETEXT)
+                ? *sw->doc->dndobjt
+                : nulltext,
+            sw->doc->dndobjc->GetReceivedFormat().GetType() == wxDF_BITMAP ? *sw->doc->dndobji
+                                                                           : nullbitmap,
+            sw->doc->dndobjc->GetReceivedFormat().GetType() == wxDF_FILENAME ? *sw->doc->dndobjf
+                                                                             : nullfile);
         return wxDragCopy;
     }
 };
