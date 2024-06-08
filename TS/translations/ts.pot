@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-04 14:08-0300\n"
+"POT-Creation-Date: 2024-06-08 12:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -685,6 +685,11 @@ msgstr ""
 msgid "Internal error: unimplemented operation!"
 msgstr ""
 
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What do you like to "
+"do?"
+msgstr ""
+
 msgid "JPEG file is corrupted!"
 msgstr ""
 
@@ -825,6 +830,9 @@ msgstr ""
 msgid "Open (CTRL+o)"
 msgstr ""
 
+msgid "Open TreeSheets file"
+msgstr ""
+
 msgid "Open border colors\tSHIFT+ALT+F11"
 msgstr ""
 
@@ -868,6 +876,9 @@ msgid "Paste (CTRL+v)"
 msgstr ""
 
 msgid "Paste Style Only\tCTRL+SHIFT+v"
+msgstr ""
+
+msgid "Paste file path"
 msgstr ""
 
 msgid "Pick Custom &Color..."
