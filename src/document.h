@@ -2117,35 +2117,8 @@ struct Document {
 
     void PasteOrDrop(const wxTextDataObject &pdataobjt, const wxBitmapDataObject &pdataobji,
                      const wxFileDataObject &pdataobjf) {
-        Cell *c = selected.ThinExpand(this);
-        if (!c) return;
         wxBusyCursor wait;
         bool wantsrefresh = false;
-
-        if (pdataobjt.GetText() != wxEmptyString) {
-            wxString s = pdataobjt.GetText();
-            if ((sys->clipboardcopy == s) && sys->cellclipboard) {
-                c->Paste(this, sys->cellclipboard.get(), selected);
-                wantsrefresh = true;
-            } else {
-                const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
-                if (as.size()) {
-                    if (as.size() <= 1) {
-                        c->AddUndo(this);
-                        c->ResetLayout();
-                        PasteSingleText(c, as[0]);
-                    } else {
-                        c->parent->AddUndo(this);
-                        c->ResetLayout();
-                        DELETEP(c->grid);
-                        sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
-                        if (!c->HasText())
-                            c->grid->MergeWithParent(c->parent->grid, selected, this);
-                    }
-                    wantsrefresh = true;
-                }
-            }
-        }
 
         if (pdataobjf.GetFilenames().size() != 0) {
             const wxArrayString &as = pdataobjf.GetFilenames();
@@ -2172,9 +2145,39 @@ struct Document {
                         }
                     }
                 }
+                Cell *c = selected.ThinExpand(this);
+                if (!c) return;
                 c->AddUndo(this);
                 if (!LoadImageIntoCell(as[0], c, sys->frame->csf)) PasteSingleText(c, as[0]);
                 wantsrefresh = true;
+            }
+        }
+
+        Cell *c = selected.ThinExpand(this);
+        if (!c) return;
+
+        if (pdataobjt.GetText() != wxEmptyString) {
+            wxString s = pdataobjt.GetText();
+            if ((sys->clipboardcopy == s) && sys->cellclipboard) {
+                c->Paste(this, sys->cellclipboard.get(), selected);
+                wantsrefresh = true;
+            } else {
+                const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
+                if (as.size()) {
+                    if (as.size() <= 1) {
+                        c->AddUndo(this);
+                        c->ResetLayout();
+                        PasteSingleText(c, as[0]);
+                    } else {
+                        c->parent->AddUndo(this);
+                        c->ResetLayout();
+                        DELETEP(c->grid);
+                        sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
+                        if (!c->HasText())
+                            c->grid->MergeWithParent(c->parent->grid, selected, this);
+                    }
+                    wantsrefresh = true;
+                }
             }
         }
 
