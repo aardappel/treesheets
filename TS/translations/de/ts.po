@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-01 14:29-0300\n"
+"POT-Creation-Date: 2024-06-08 18:08-0300\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -734,6 +734,13 @@ msgstr "Initialisierungsfehler"
 msgid "Internal error: unimplemented operation!"
 msgstr "Interner Fehler: Nicht implementierter Vorgang!"
 
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What would you like "
+"to do?"
+msgstr ""
+"Es scheint, dass Sie gerade eine TreeSheets-Datei in das Fenster ziehen. "
+"Was möchten Sie gerne tun?"
+
 msgid "JPEG file is corrupted!"
 msgstr "JPEG-Datei ist fehlerhaft/beschädigt!"
 
@@ -880,6 +887,9 @@ msgstr "Datei ö&ffnen\tF4"
 msgid "Open (CTRL+o)"
 msgstr "Öffnen (STRG+o)"
 
+msgid "Open TreeSheets file"
+msgstr "TreeSheets-Datei öffnen"
+
 msgid "Open border colors\tSHIFT+ALT+F11"
 msgstr "&Randfarben öffnen\tSHIFT+ALT+F11"
 
@@ -931,6 +941,9 @@ msgstr "Einfügen (STRG+v)"
 msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr "Nur Stil einfügen\tCTRL+SHIFT+v"
 
+msgid "Paste file path"
+msgstr "Dateipfad einfügen"
+
 msgid "Pick Custom &Color..."
 msgstr "Benutzerdefinierte Farbe auswählen..."
 
@@ -948,6 +961,9 @@ msgstr "Bitte aktivieren Sie (Optionen -> Werkzeugleiste anzeigen), um die Suche
 
 msgid "Please enter the new image width:"
 msgstr "Bitte geben Sie die neue Bildbreite an:"
+
+msgid "Please enter the new key binding string"
+msgstr "Bitte geben Sie eine neue Tastaturkombination (als Zeichenkette) ein:"
 
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Bitte geben Sie die Prozentzahl ein, um die Sie das Bild skalieren möchten:"
@@ -1170,8 +1186,8 @@ msgstr "Die letzten Bearbeitungen in einem bestimmten Datumsbereich anzeigen"
 msgid "Show only cells in current search"
 msgstr "Nur Zellen in der aktuellen Suche anzeigen"
 
-msgid "Show statistics"
-msgstr "Statistiken anzeigen"
+msgid "Show statistics\tCTRL+d"
+msgstr "Statistiken anzeigen\tCTRL+d"
 
 msgid "Single click maximize from tray"
 msgstr "Ein Klick im Benachrichtungsfeld maximiert das Fenster"
