@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-01 14:29-0300\n"
+"POT-Creation-Date: 2024-06-08 18:08-0300\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -89,7 +89,6 @@ msgstr "&Aiuto"
 msgid "&Hierarchify"
 msgstr "&Gerarchia"
 
-#, fuzzy
 msgid "&Horizontal View\tCTRL+ALT+."
 msgstr "Vista &Orizzontale\tCTRL+ALT+."
 
@@ -730,6 +729,12 @@ msgstr "Errore di inizializzazione"
 msgid "Internal error: unimplemented operation!"
 msgstr "Errore interno: operazione non implementata!"
 
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What would you like "
+"to do?"
+msgstr "Sembra che si stia per rilasciare (trascinare) un file TreeSheets. "
+"Cosa si desidera fare?"
+
 msgid "JPEG file is corrupted!"
 msgstr "File JPEG è corrotto!"
 
@@ -877,6 +882,9 @@ msgstr "Apri  &file\tF4"
 msgid "Open (CTRL+o)"
 msgstr "Apri (CTRL+o)"
 
+msgid "Open TreeSheets file"
+msgstr "Aprire il file TreeSheets"
+
 msgid "Open border colors\tSHIFT+ALT+F11"
 msgstr "Apri colori del bordo\tSHIFT+ALT+F11"
 
@@ -928,6 +936,9 @@ msgstr "Incolla (CTRL+v)"
 msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr "Incolla solo stile\tCTRL+MAIUSC+v"
 
+msgid "Paste file path"
+msgstr "Incolla il percorso del file"
+
 msgid "Pick Custom &Color..."
 msgstr "Scegli colore personalizzato..."
 
@@ -949,6 +960,9 @@ msgstr ""
 
 msgid "Please enter the new image width:"
 msgstr "Si prega di inserire la nuova larghezza dell'immagine:"
+
+msgid "Please enter the new key binding string"
+msgstr "Inserire il nuovo binding della chiave"
 
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Inserisci la percentuale in cui desideri ridimensionare l'immagine:"
@@ -1174,8 +1188,8 @@ msgstr "Mostra le ultime modifiche in un intervallo di date specifico"
 msgid "Show only cells in current search"
 msgstr "Mostra solo le celle nella ricerca corrente"
 
-msgid "Show statistics"
-msgstr "Mostra le statistiche"
+msgid "Show statistics\tCTRL+d"
+msgstr "Mostra le statistiche\tCTRL+d"
 
 msgid "Single click maximize from tray"
 msgstr "Un singolo clic ingrandisce dal vassoio"

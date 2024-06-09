@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-01 14:29-0300\n"
+"POT-Creation-Date: 2024-06-08 18:08-0300\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -743,6 +743,11 @@ msgstr "Erreur d'initialisation"
 msgid "Internal error: unimplemented operation!"
 msgstr "Erreur interne: opération non prévue!"
 
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What would you like "
+"to do?"
+msgstr "Il semble que vous soyez sur le point de glisser-déposer un TreeSheets. Que voulez-vous faire ?"
+
 msgid "JPEG file is corrupted!"
 msgstr "Fichier JPEG est corrompu!"
 
@@ -891,6 +896,9 @@ msgstr "Ouverture du &fichier\tF4"
 msgid "Open (CTRL+o)"
 msgstr "Ouvrir (CTRL+o)"
 
+msgid "Open TreeSheets file"
+msgstr "Ouvrir le fichier TreeSheets"
+
 msgid "Open border colors\tSHIFT+ALT+F11"
 msgstr "Sélectionner une couleur de bordure\tSHIFT+ALT+F11"
 
@@ -942,6 +950,9 @@ msgstr "Coller (CTRL+v)"
 msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr "Coller le style uniquement\tCTRL+SHIFT+v"
 
+msgid "Paste file path"
+msgstr "Coller le chemin d'accès au fichier"
+
 msgid "Pick Custom &Color..."
 msgstr "Choisir une &Couleur personnalisée..."
 
@@ -959,6 +970,9 @@ msgstr "SVP activer (Options -> Afficher la barre d'outils) pour utiliser la fon
 
 msgid "Please enter the new image width:"
 msgstr "Veuillez entrer la nouvelle largeur d'image:"
+
+msgid "Please enter the new key binding string"
+msgstr "Veuillez entrer la nouvelle combinaison de touches (en tant que chaîne de caractères)"
 
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Veuillez entrer le pourcentage de redimensionnement de l'image:"
@@ -1183,8 +1197,8 @@ msgstr "Montrer les dernières modification dans une période donnée"
 msgid "Show only cells in current search"
 msgstr "Afficher uniquement les cellules de la recherche courante"
 
-msgid "Show statistics"
-msgstr "Afficher les statistiques"
+msgid "Show statistics\tCTRL+d"
+msgstr "Afficher les statistiques\tCTRL+d"
 
 msgid "Single click maximize from tray"
 msgstr "Maximiser par Un simple clic"
