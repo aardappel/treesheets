@@ -2132,8 +2132,7 @@ struct Document {
                         fis.Read(buf, 4);
                         if (!strncmp(buf, "TSFF", 4)) {
                             ThreeChoiceDialog tcd(sys->frame, fpath,
-                                                  _(L"It seems that you are about to drop a "
-                                                    L"TreeSheets file. What do you like to do?"),
+                                                  _(L"It seems that you are about to drop a TreeSheets file. What would you like to do?"),
                                                   _(L"Open TreeSheets file"), _(L"Paste file path"),
                                                   _(L"Cancel"));
                             switch (tcd.Run()) {

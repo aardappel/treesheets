@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-04 14:08-0300\n"
-"PO-Revision-Date: 2024-06-04 14:09-0300\n"
+"POT-Creation-Date: 2024-06-08 18:08-0300\n"
+"PO-Revision-Date: 2024-06-08 18:11-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -732,6 +732,13 @@ msgstr "Erro de Inicialização"
 msgid "Internal error: unimplemented operation!"
 msgstr "Erro interno: operação não implementada!"
 
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What would you like "
+"to do?"
+msgstr ""
+"Parece que você está prestes a soltar um arquivo do TreeSheets. O que "
+"gostaria de fazer?"
+
 msgid "JPEG file is corrupted!"
 msgstr "O arquivo JPEG está corrompido!"
 
@@ -880,6 +887,9 @@ msgstr "&Abrir arquivo\tF4"
 msgid "Open (CTRL+o)"
 msgstr "Abrir (CTRL+o)"
 
+msgid "Open TreeSheets file"
+msgstr "Abrir o arquivo do TreeSheets"
+
 msgid "Open border colors\tSHIFT+ALT+F11"
 msgstr "Abrir cores de borda\tSHIFT+ALT+F11"
 
@@ -932,6 +942,9 @@ msgstr "Colar (CTRL+v)"
 
 msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr "Colar &Estilo\tCTRL+SHIFT+v"
+
+msgid "Paste file path"
+msgstr "Colar o caminho do arquivo"
 
 msgid "Pick Custom &Color..."
 msgstr "Escolher &Cor Personalizada..."
