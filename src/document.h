@@ -199,9 +199,8 @@ struct Document {
                 if (image.trefc) {
                     fos.PutC(image.image_type);
                     sos.WriteDouble(image.display_scale);
-                    wxInt64 imagelen(image.image_data.size());
-                    sos.Write64(imagelen);
-                    fos.Write(image.image_data.data(), imagelen);
+                    sos.Write64(wxInt64(image.image_size));
+                    fos.Write(image.image_data, image.image_size);
                     image.savedindex = realindex++;
                 }
             }
@@ -429,9 +428,8 @@ struct Document {
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
-                    if (!im->image_data.empty() &&
-                        imagetypes.find(im->image_type) != imagetypes.end()) {
-                        wxBitmap bm = ConvertBufferToWxBitmap(im->image_data,
+                    if (im->image_size && imagetypes.find(im->image_type) != imagetypes.end()) {
+                        wxBitmap bm = ConvertBufferToWxBitmap(im->image_data, im->image_size,
                                                               imagetypes.at(im->image_type).first);
                         dragdata.Add(new wxBitmapDataObject(bm));
                     }
@@ -466,9 +464,8 @@ struct Document {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 if (c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
-                    if (!im->image_data.empty() &&
-                        imagetypes.find(im->image_type) != imagetypes.end()) {
-                        wxBitmap bm = ConvertBufferToWxBitmap(im->image_data,
+                    if (!im->image_size && imagetypes.find(im->image_type) != imagetypes.end()) {
+                        wxBitmap bm = ConvertBufferToWxBitmap(im->image_data, im->image_size,
                                                               imagetypes.at(im->image_type).first);
                         if (wxTheClipboard->Open()) {
                             wxTheClipboard->SetData(new wxBitmapDataObject(bm));
@@ -1835,7 +1832,7 @@ struct Document {
                                 imgfn.wx_str(), wxOK, sys->frame);
                             return _(L"Error writing to file.");
                         }
-                        imagefs.Write(tim->image_data.data(), tim->image_data.size());
+                        imagefs.Write(tim->image_data, tim->image_size);
                         counter++;
                     }
                 }
@@ -1850,9 +1847,11 @@ struct Document {
                             case A_SAVE_AS_JPEG: {
                                 if (c->text.image->image_type == 'I') {
                                     wxImage im = ConvertBufferToWxImage(c->text.image->image_data,
+                                                                        c->text.image->image_size,
                                                                         wxBITMAP_TYPE_PNG);
-                                    c->text.image->image_data =
-                                        ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
+                                    delete[] c->text.image->image_data;
+                                    c->text.image->image_data = ConvertWxImageToBuffer(
+                                        im, wxBITMAP_TYPE_JPEG, c->text.image->image_size);
                                     c->text.image->image_type = 'J';
                                 }
                                 break;
@@ -1861,9 +1860,11 @@ struct Document {
                             default: {
                                 if (c->text.image->image_type == 'J') {
                                     wxImage im = ConvertBufferToWxImage(c->text.image->image_data,
+                                                                        c->text.image->image_size,
                                                                         wxBITMAP_TYPE_JPEG);
-                                    c->text.image->image_data =
-                                        ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                                    delete[] c->text.image->image_data;
+                                    c->text.image->image_data = ConvertWxImageToBuffer(
+                                        im, wxBITMAP_TYPE_PNG, c->text.image->image_size);
                                     c->text.image->image_type = 'I';
                                 }
                                 break;
@@ -2183,8 +2184,9 @@ struct Document {
         if (pdataobji.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
             c->AddUndo(this);
             wxImage im = pdataobji.GetBitmap().ConvertToImage();
-            vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-            SetImageBM(c, std::move(idv), sys->frame->csf);
+            size_t sz;
+            uint8_t *id = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG, sz);
+            SetImageBM(c, id, sz, sys->frame->csf);
             c->Reset();
             wantsrefresh = true;
         }
@@ -2326,16 +2328,17 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, vector<uint8_t> &&idv, double sc) {
-        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')];
+    void SetImageBM(Cell *c, uint8_t *id, size_t sz, double sc) {
+        c->text.image = sys->imagelist[sys->AddImageToList(sc, id, sz, 'I')];
     }
 
     bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-        SetImageBM(c, std::move(idv), sc);
+        size_t sz;
+        uint8_t *id = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG, sz);
+        SetImageBM(c, id, sz, sc);
         c->Reset();
         return true;
     }

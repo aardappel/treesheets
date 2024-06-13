@@ -167,17 +167,17 @@ static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
                                                wxIMAGE_QUALITY_HIGH));
 }
 
-static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
+static uint8_t *ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt, size_t &sz) {
     wxMemoryOutputStream mos(NULL, 0);
     im.SaveFile(mos, bmt);
-    auto sz = mos.TellO();
-    vector<uint8_t> buf(sz);
-    mos.CopyTo(buf.data(), sz);
+    sz = mos.TellO();
+    uint8_t *buf = new uint8_t[sz];
+    mos.CopyTo(buf, sz);
     return buf;
 }
 
-static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType bmt) {
-    wxMemoryInputStream mis(buf.data(), buf.size());
+static wxImage ConvertBufferToWxImage(uint8_t *buf, size_t sz, wxBitmapType bmt) {
+    wxMemoryInputStream mis(buf, sz);
     wxImage im(mis, bmt);
     if (!im.IsOk()) {
         int sz = 32;
@@ -188,13 +188,13 @@ static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType b
     return im;
 }
 
-static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buf, wxBitmapType bmt) {
-    wxImage im = ConvertBufferToWxImage(buf, bmt);
+static wxBitmap ConvertBufferToWxBitmap(uint8_t *buf, size_t sz, wxBitmapType bmt) {
+    wxImage im = ConvertBufferToWxImage(buf, sz, bmt);
     wxBitmap bm(im, 32);
     return bm;
 }
 
-static uint64_t CalculateHash(vector<uint8_t> &idv) {
+static uint64_t CalculateHash(uint8_t *buf, size_t sz) {
     int max = 4096;
-    return FNV1A64(idv.data(), min(idv.size(), max));
+    return FNV1A64(buf, min(sz, max));
 }

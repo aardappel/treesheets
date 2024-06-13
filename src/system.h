@@ -1,5 +1,6 @@
 struct Image {
-    vector<uint8_t> image_data;
+    uint8_t *image_data;
+    size_t image_size;
     char image_type;
     wxBitmap bm_display;
     int trefc = 0;
@@ -13,17 +14,24 @@ struct Image {
     double display_scale;
     int pixel_width = 0;
 
-    Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
-        : image_data(std::move(idv)), image_type(iti), hash(_hash), display_scale(_sc) {}
+    Image(uint64_t _hash, double _sc, uint8_t *_image_data, size_t _image_size, char _image_type)
+        : image_data(_image_data),
+          image_size(_image_size),
+          image_type(_image_type),
+          hash(_hash),
+          display_scale(_sc) {}
+
+    ~Image() { delete[] image_data; }
 
     void ImageRescale(double sc) {
         auto mapitem = imagetypes.find(image_type);
         if (mapitem == imagetypes.end()) return;
         wxBitmapType it = mapitem->second.first;
-        wxImage im = ConvertBufferToWxImage(image_data, it);
+        wxImage im = ConvertBufferToWxImage(image_data, image_size, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
-        image_data = ConvertWxImageToBuffer(im, it);
-        hash = CalculateHash(image_data);
+        delete[] image_data;
+        image_data = ConvertWxImageToBuffer(im, it, image_size);
+        hash = CalculateHash(image_data, image_size);
         bm_display = wxNullBitmap;
     }
 
@@ -45,7 +53,7 @@ struct Image {
             auto mapitem = imagetypes.find(image_type);
             if (mapitem == imagetypes.end()) return wxNullBitmap;
             wxBitmapType it = mapitem->second.first;
-            wxBitmap bm = ConvertBufferToWxBitmap(image_data, it);
+            wxBitmap bm = ConvertBufferToWxBitmap(image_data, image_size, it);
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
         }
@@ -276,11 +284,12 @@ struct System {
                             return _(L"Found an image type that is not defined in this program.");
                         if (versionlastloaded < 9) dis.ReadString();
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
-                        vector<uint8_t> image_data;
+                        uint8_t *image_data;
+                        size_t image_size;
                         if (versionlastloaded >= 22) {
-                            size_t imagelen = (size_t)dis.Read64();
-                            image_data.resize(imagelen);
-                            fis.Read(image_data.data(), imagelen);
+                            image_size = (size_t)dis.Read64();
+                            image_data = new uint8_t[image_size];
+                            fis.Read(image_data, image_size);
                         } else {
                             off_t beforeimage = fis.TellI();
 
@@ -306,14 +315,14 @@ struct System {
 
                             off_t afterimage = fis.TellI();
                             fis.SeekI(beforeimage);
-                            auto sz = afterimage - beforeimage;
-                            image_data.resize(sz);
-                            fis.Read(image_data.data(), sz);
+                            image_size = afterimage - beforeimage;
+                            image_data = new uint8_t[image_size];
+                            fis.Read(image_data, image_size);
                             fis.SeekI(afterimage);
                         }
-                        if (!fis.IsOk()) image_data.clear();
+                        if (!fis.IsOk()) delete[] image_data;
 
-                        loadimageids.push() = AddImageToList(sc, std::move(image_data), iti);
+                        loadimageids.push() = AddImageToList(sc, image_data, image_size, iti);
                         break;
                     }
 
@@ -610,12 +619,12 @@ struct System {
         return (int)as.size();
     }
 
-    int AddImageToList(double sc, vector<uint8_t> &&idv, char iti) {
-        auto hash = CalculateHash(idv);
+    int AddImageToList(double sc, uint8_t *id, size_t sz, char iti) {
+        auto hash = CalculateHash(id, sz);
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
-        imagelist.push() = new Image(hash, sc, std::move(idv), iti);
+        imagelist.push() = new Image(hash, sc, id, sz, iti);
         return imagelist.size() - 1;
     }
 
