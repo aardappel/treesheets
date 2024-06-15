@@ -10,7 +10,7 @@ struct MyFrame : wxFrame {
     wxIcon icon;
     ImageDropdown *idd;
     wxAuiNotebook *nb;
-    wxAuiManager *aui;
+    unique_ptr<wxAuiManager> aui;
     wxBitmap line_nw, line_sw;
     wxBitmap foldicon;
     bool fromclosebox;
@@ -84,7 +84,7 @@ struct MyFrame : wxFrame {
           refreshhackinstances(0),
           idd(nullptr),
           nb(nullptr),
-          aui(nullptr),
+          aui(new wxAuiManager(this)),
           fromclosebox(true),
           app(_app),
           watcher(nullptr),
@@ -158,8 +158,6 @@ struct MyFrame : wxFrame {
         else
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
                         wxTaskBarIconEventHandler(MyFrame::OnTBIDBLClick), nullptr, this);
-
-        aui = new wxAuiManager(this);
 
         bool mergetbar = false;
 
@@ -783,7 +781,6 @@ struct MyFrame : wxFrame {
         }
         aui->ClearEventHashTable();
         aui->UnInit();
-        DELETEP(aui);
         DELETEP(editmenupopup);
         DELETEP(watcher);
     }
