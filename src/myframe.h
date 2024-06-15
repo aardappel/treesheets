@@ -2,28 +2,26 @@ struct MyFrame : wxFrame {
     wxMenu *editmenupopup;
     wxString exepath_;
     wxFileHistory filehistory;
-    wxTextCtrl *filter, *replaces;
-    wxToolBar *tb;
-    int refreshhack, refreshhackinstances;
+    wxTextCtrl *filter{ nullptr }, *replaces{ nullptr };
+    wxToolBar *tb{ nullptr };
+    int refreshhack{ 0 }, refreshhackinstances{ 0 };
     BlinkTimer bt;
     wxTaskBarIcon tbi;
     wxIcon icon;
-    ImageDropdown *idd;
-    wxAuiNotebook *nb;
-    unique_ptr<wxAuiManager> aui;
+    ImageDropdown *idd{ nullptr };
+    wxAuiNotebook *nb{ nullptr };
+    unique_ptr<wxAuiManager> aui{ make_unique<wxAuiManager>(this) };
     wxBitmap line_nw, line_sw;
     wxBitmap foldicon;
-    bool fromclosebox;
+    bool fromclosebox{ true };
     MyApp *app;
-    wxFileSystemWatcher *watcher;
-    bool watcherwaitingforuser;
-    double csf;  // TODO: functions using this attribute should be modified to handle
-                 // device-independent pixels
+    wxFileSystemWatcher *watcher{ nullptr };
+    bool watcherwaitingforuser{ false };
+    double csf{ (double)FromDIP(1.0) };  // TODO: functions using this attribute should be modified
+                                         // to handle device-independent pixels
     std::vector<std::string> scripts_in_menu;
-    bool zenmode;
-    ColorDropdown *celldd = nullptr;
-    ColorDropdown *textdd = nullptr;
-    ColorDropdown *borddd = nullptr;
+    bool zenmode{ false };
+    ColorDropdown *celldd{ nullptr }, *textdd{ nullptr }, *borddd{ nullptr };
     wxString imagepath;
 
     wxString GetDocPath(const wxString &relpath) {
@@ -77,20 +75,7 @@ struct MyFrame : wxFrame {
     MyFrame(wxString exename, MyApp *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
                   wxDEFAULT_FRAME_STYLE),
-          filter(nullptr),
-          replaces(nullptr),
-          tb(nullptr),
-          refreshhack(0),
-          refreshhackinstances(0),
-          idd(nullptr),
-          nb(nullptr),
-          aui(new wxAuiManager(this)),
-          fromclosebox(true),
-          app(_app),
-          watcher(nullptr),
-          watcherwaitingforuser(false),
-          csf(FromDIP(1.0)),
-          zenmode(false) {
+          app(_app) {
         sys->frame = this;
         exepath_ = wxFileName(exename).GetPath();
         #ifdef __WXMAC__
