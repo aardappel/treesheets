@@ -9,13 +9,13 @@ struct IPCServer : wxServer {
 
 struct MyApp : wxApp {
     MyFrame *frame;
-    IPCServer *serv;
+    unique_ptr<IPCServer> serv;
     wxString filename;
     bool initateventloop;
     wxLocale locale;
     wxSingleInstanceChecker *instance_checker = nullptr;
 
-    MyApp() : frame(nullptr), serv(nullptr), initateventloop(false) {}
+    MyApp() : frame(nullptr), serv(new IPCServer()), initateventloop(false) {}
 
     void AddTranslation(const wxString &basepath) {
         #ifdef __WXGTK__
@@ -160,7 +160,6 @@ struct MyApp : wxApp {
 
         SetTopWindow(frame);
 
-        serv = new IPCServer();
         serv->Create(L"4242");
 
         return true;
@@ -175,7 +174,6 @@ struct MyApp : wxApp {
     }
 
     int OnExit() {
-        DELETEP(serv);
         DELETEP(sys);
         DELETEP(instance_checker);
         return 0;
