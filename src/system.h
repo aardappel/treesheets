@@ -56,7 +56,7 @@ struct Image {
 struct System {
     MyFrame *frame;
     wxString defaultfont, searchstring;
-    wxConfigBase *cfg;
+    unique_ptr<wxConfigBase> cfg;
     Evaluator ev;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
@@ -144,8 +144,6 @@ struct System {
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
-
-    ~System() { DELETEP(cfg); }
 
     Document *NewTabDoc(bool append = false) {
         Document *doc = new Document();
