@@ -1,24 +1,15 @@
 
 class Selection {
-    bool textedit;
+    bool textedit{ false };
 
     public:
     Grid *g;
     int x, y, xs, ys;
-    int cursor, cursorend;
-    int firstdx, firstdy;
+    int cursor{ 0 }, cursorend{ 0 };
+    int firstdx{ 0 }, firstdy{ 0 };
 
     Selection(Grid *_g = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
-        : textedit(false),
-          g(_g),
-          x(_x),
-          y(_y),
-          xs(_xs),
-          ys(_ys),
-          cursor(0),
-          cursorend(0),
-          firstdx(0),
-          firstdy(0) {}
+        : g(_g), x(_x), y(_y), xs(_xs), ys(_ys) {}
 
     void SelAll() {
         if (textedit) {
