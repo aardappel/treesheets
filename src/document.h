@@ -6,10 +6,10 @@ struct UndoItem {
     Vector<Selection> path, selpath;
     Selection sel;
     unique_ptr<Cell> clone;
-    size_t estimated_size;
+    size_t estimated_size{ 0 };
     uintptr_t cloned_from;  // May be dead.
 
-    UndoItem() : estimated_size(0) {}
+    UndoItem() {}
 };
 
 struct Document {
