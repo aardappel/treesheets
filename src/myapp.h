@@ -13,7 +13,7 @@ struct MyApp : wxApp {
     wxString filename;
     bool initateventloop;
     wxLocale locale;
-    wxSingleInstanceChecker *instance_checker = nullptr;
+    unique_ptr<wxSingleInstanceChecker> instance_checker = nullptr;
 
     MyApp() : frame(nullptr), serv(new IPCServer()), initateventloop(false) {}
 
@@ -117,14 +117,13 @@ struct MyApp : wxApp {
         }
 
         if (single_instance) {
-            instance_checker = new wxSingleInstanceChecker(
-                wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir());
+            instance_checker.reset(new wxSingleInstanceChecker(
+                wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir()));
             if (instance_checker->IsAnotherRunning()) {
                 wxClient client;
                 client.MakeConnection(
                     L"localhost", L"4242",
                     filename.Len() ? filename.wc_str() : L"*");  // fire and forget
-                DELETEP(instance_checker);
                 return false;
             }
         }
@@ -175,7 +174,6 @@ struct MyApp : wxApp {
 
     int OnExit() {
         DELETEP(sys);
-        DELETEP(instance_checker);
         return 0;
     }
 
