@@ -120,7 +120,7 @@ struct ImagePopup : wxVListBoxComboPopup {
 };
 
 struct ImageDropdown : wxOwnerDrawnComboBox {
-    Vector<unique_ptr<wxBitmap>> bitmaps_display;
+    vector<unique_ptr<wxBitmap>> bitmaps_display;
     wxArrayString as;
     const int image_space = 22;
 
@@ -145,14 +145,14 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 
     void FillBitmapVector(const wxString &path) {
-        if (!bitmaps_display.empty()) bitmaps_display.setsize(0);
+        if (!bitmaps_display.empty()) bitmaps_display.resize(0);
         wxString f = wxFindFirstFile(path + L"*.*");
         while (!f.empty()) {
             wxBitmap bm;
             if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
                 unique_ptr<wxBitmap> dbm(new wxBitmap());
                 ScaleBitmap(bm, FromDIP(1.0) / dd_icon_res_scale, *dbm);
-                bitmaps_display.push() = std::move(dbm);
+                bitmaps_display.push_back(std::move(dbm));
                 as.Add(f);
             }
             f = wxFindNextFile();
