@@ -1,25 +1,13 @@
 
 struct Text {
-    Cell *cell;
-
-    wxString t;
-    int relsize, stylebits, extent;
-
-    Image *image;
-
+    Cell *cell{ nullptr };
+    wxString t{ wxEmptyString };
+    int relsize{ 0 }, stylebits{ 0 }, extent{ 0 };
+    Image *image{ nullptr };
     wxDateTime lastedit;
-    bool filtered;
+    bool filtered{ false };
 
-    Text()
-        : cell(nullptr),
-          t(wxEmptyString),
-          relsize(0),
-          stylebits(0),
-          extent(0),
-          image(nullptr),
-          filtered(false) {
-        WasEdited();
-    }
+    Text() { WasEdited(); }
 
     wxBitmap *DisplayImage() {
         return cell->grid && cell->grid->folded ? &sys->frame->foldicon

@@ -2,16 +2,16 @@ struct Image {
     vector<uint8_t> image_data;
     char image_type;
     wxBitmap bm_display;
-    int trefc = 0;
-    int savedindex = -1;
-    uint64_t hash = 0;
+    int trefc{ 0 };
+    int savedindex{ -1 };
+    uint64_t hash{ 0 };
 
     // This indicates a relative scale, where 1.0 means bitmap pixels match display pixels on
     // a low res 96 dpi display. On a high dpi screen it will look scaled up. Higher values
     // look better on most screens.
     // This is all relative to GetContentScalingFactor.
     double display_scale;
-    int pixel_width = 0;
+    int pixel_width{ 0 };
 
     Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
         : image_data(std::move(idv)), image_type(iti), hash(_hash), display_scale(_sc) {}
