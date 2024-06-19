@@ -15,8 +15,6 @@ struct MyApp : wxApp {
     wxLocale locale;
     unique_ptr<wxSingleInstanceChecker> instance_checker{ nullptr };
 
-    MyApp() {}
-
     void AddTranslation(const wxString &basepath) {
         #ifdef __WXGTK__
             locale.AddCatalogLookupPathPrefix(L"/usr");

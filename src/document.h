@@ -8,8 +8,6 @@ struct UndoItem {
     unique_ptr<Cell> clone;
     size_t estimated_size{ 0 };
     uintptr_t cloned_from;  // May be dead.
-
-    UndoItem() {}
 };
 
 struct Document {
