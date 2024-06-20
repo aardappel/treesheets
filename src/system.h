@@ -74,7 +74,6 @@ struct System {
     wxPen pen_tinytext{ wxColour(0x808080ul) }, pen_gridborder{ wxColour(0xb5a6a4) },
         pen_tinygridlines{ wxColour(0xf2dcd8) }, pen_gridlines{ wxColour(0xe5b7b0) },
         pen_thinselect{ *wxLIGHT_GREY };
-    uint customcolor{ 0xFFFFFF };
     int roundness{ 3 }, defaultmaxcolwidth{ 80 };
     bool makebaks{ true }, totray{ false }, autosave{ true }, zoomscroll{ false }, thinselc{ true },
         minclose{ false }, singletray{ false }, centered{ true }, fswatch{ true },
@@ -89,9 +88,8 @@ struct System {
             sys->cfg->Flush();
         }
     } every_second_timer;
-    uint lastcellcolor = 0xFFFFFF;
-    uint lasttextcolor = 0;
-    uint lastbordcolor = 0xA0A0A0;
+    uint lastcellcolor{ 0xFFFFFF }, lasttextcolor{ 0 }, lastbordcolor{ 0xA0A0A0 };
+    int customcolor{ 0xFFFFFF };
 
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
@@ -119,9 +117,7 @@ struct System {
         cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
-        int _customcolor = 0xFFFFFF;
-        cfg->Read(L"customcolor", &_customcolor);
-        if (_customcolor != 0xFFFFFF) customcolor = (uint)_customcolor;
+        cfg->Read(L"customcolor", &customcolor, customcolor);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
