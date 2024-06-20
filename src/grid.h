@@ -5,12 +5,13 @@ struct Grid {
     // subcells
     Cell **cells;
     // widths for each column
-    int *colwidths;
+    int *colwidths{ nullptr };
     // xsize, ysize
     int xs, ys;
-    int view_margin, view_grid_outer_spacing, user_grid_outer_spacing, cell_margin;
-    int bordercolor;
-    bool horiz, tinyborder, folded;
+    int view_margin, view_grid_outer_spacing,
+        user_grid_outer_spacing{ g_usergridouterspacing_default }, cell_margin;
+    int bordercolor{ g_bordercolor_default };
+    bool horiz{ false }, tinyborder, folded{ false };
 
     Cell *&C(int x, int y) const {
         ASSERT(x >= 0 && y >= 0 && x < xs && y < ys);
@@ -53,15 +54,7 @@ struct Grid {
                     for (Cell *&c = g->C(x, y); _f; _f = false)
 
     Grid(int _xs, int _ys, Cell *_c = nullptr)
-        : cell(_c),
-          cells(new Cell *[_xs * _ys]),
-          colwidths(nullptr),
-          xs(_xs),
-          ys(_ys),
-          user_grid_outer_spacing(g_usergridouterspacing_default),
-          bordercolor(g_bordercolor_default),
-          horiz(false),
-          folded(false) {
+        : xs(_xs), ys(_ys), cell(_c), cells(new Cell *[_xs * _ys]) {
         foreachcell(c) c = nullptr;
         InitColWidths();
         SetOrient();

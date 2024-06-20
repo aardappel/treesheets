@@ -8,14 +8,12 @@ struct IPCServer : wxServer {
 };
 
 struct MyApp : wxApp {
-    MyFrame *frame;
-    unique_ptr<IPCServer> serv;
+    MyFrame *frame{ nullptr };
+    unique_ptr<IPCServer> serv{ make_unique<IPCServer>() };
     wxString filename;
-    bool initateventloop;
+    bool initateventloop{ false };
     wxLocale locale;
-    unique_ptr<wxSingleInstanceChecker> instance_checker = nullptr;
-
-    MyApp() : frame(nullptr), serv(new IPCServer()), initateventloop(false) {}
+    unique_ptr<wxSingleInstanceChecker> instance_checker{ nullptr };
 
     void AddTranslation(const wxString &basepath) {
         #ifdef __WXGTK__

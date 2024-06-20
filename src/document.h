@@ -6,28 +6,26 @@ struct UndoItem {
     Vector<Selection> path, selpath;
     Selection sel;
     unique_ptr<Cell> clone;
-    size_t estimated_size;
+    size_t estimated_size{ 0 };
     uintptr_t cloned_from;  // May be dead.
-
-    UndoItem() : estimated_size(0) {}
 };
 
 struct Document {
-    TSCanvas *sw;
-    Cell *rootgrid;
+    TSCanvas *sw{ nullptr };
+    Cell *rootgrid{ nullptr };
     Selection hover, selected, begindrag;
     int isctrlshiftdrag;
-    int originx, originy, maxx, maxy, centerx, centery;
-    int layoutxs, layoutys, hierarchysize, fgutter;
+    int originx, originy, maxx, maxy, centerx{ 0 }, centery{ 0 };
+    int layoutxs, layoutys, hierarchysize, fgutter{ 6 };
     int lasttextsize, laststylebits;
-    int initialzoomlevel;
+    int initialzoomlevel{ 0 };
     Cell *curdrawroot;  // for use during Render() calls
     Vector<UndoItem *> undolist, redolist;
     Vector<Selection> drawpath;
-    int pathscalebias;
-    wxString filename;
-    long lastmodsinceautosave, undolistsizeatfullsave, lastsave;
-    bool modified, tmpsavesuccess;
+    int pathscalebias{ 0 };
+    wxString filename{ L"" };
+    long lastmodsinceautosave{ 0 }, undolistsizeatfullsave{ 0 }, lastsave{ wxGetLocalTime() };
+    bool modified{ false }, tmpsavesuccess{ true };
     wxDataObjectComposite *dndobjc = new wxDataObjectComposite();
     wxTextDataObject *dndobjt = new wxTextDataObject();
     wxBitmapDataObject *dndobji = new wxBitmapDataObject();
@@ -58,29 +56,18 @@ struct Document {
         bool HasPage(int pageNum) { return pageNum == 1; }
     };
 
-    bool while_printing;
+    bool while_printing{ false };
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
-    uint printscale;
-
-    bool blink;
-
-    bool redrawpending;
-    bool scrolltoselection;
-    bool dpichanged;
-
-    bool scaledviewingmode;
-    double currentviewscale;
-
-    bool searchfilter;
-
-    std::map<wxString, bool> tags;
-
-    int editfilter;
-
-    Vector<Cell *> itercells;
-
+    uint printscale{ 0 };
+    bool blink{ true }, redrawpending{ false }, scrolltoselection{ true }, dpichanged{ false };
+    bool scaledviewingmode{ false };
+    double currentviewscale{ 1.0 };
+    bool searchfilter{ false };
+    int editfilter{ 0 };
     wxDateTime lastmodificationtime;
+    std::map<wxString, bool> tags;
+    Vector<Cell *> itercells;
 
     #define loopcellsin(par, c) \
         CollectCells(par);      \
@@ -92,30 +79,7 @@ struct Document {
         CollectCellsSel(rec);     \
         loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
 
-    Document()
-        : sw(nullptr),
-          rootgrid(nullptr),
-          centerx(0),
-          centery(0),
-          fgutter(6),
-          initialzoomlevel(0),
-          pathscalebias(0),
-          filename(L""),
-          lastmodsinceautosave(0),
-          undolistsizeatfullsave(0),
-          lastsave(wxGetLocalTime()),
-          modified(false),
-          tmpsavesuccess(true),
-          while_printing(false),
-          printscale(0),
-          blink(true),
-          redrawpending(false),
-          scrolltoselection(true),
-          dpichanged(false),
-          scaledviewingmode(false),
-          currentviewscale(1),
-          searchfilter(false),
-          editfilter(0) {
+    Document() {
         ResetFont();
         pageSetupData = printData;
         pageSetupData.SetMarginTopLeft(wxPoint(15, 15));

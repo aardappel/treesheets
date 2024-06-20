@@ -1,19 +1,14 @@
 struct TSCanvas : public wxScrolledCanvas {
     MyFrame *frame;
-    Document *doc;
-
-    int mousewheelaccum;
-    bool lastrmbwaswithctrl;
-
+    Document *doc{ nullptr };
+    int mousewheelaccum{ 0 };
+    bool lastrmbwaswithctrl{ false };
     wxPoint lastmousepos;
 
     TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
         : wxScrolledCanvas(parent, wxID_ANY, wxDefaultPosition, size,
                            wxScrolledWindowStyle | wxWANTS_CHARS),
-          frame(fr),
-          doc(nullptr),
-          mousewheelaccum(0),
-          lastrmbwaswithctrl(false) {
+          frame(fr) {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetBackgroundColour(*wxWHITE);
         DisableKeyboardScrolling();
