@@ -15,7 +15,7 @@ struct MyFrame : wxFrame {
     wxBitmap foldicon;
     bool fromclosebox{ true };
     MyApp *app;
-    wxFileSystemWatcher *watcher{ nullptr };
+    unique_ptr<wxFileSystemWatcher> watcher{ nullptr };
     bool watcherwaitingforuser{ false };
     double csf{ (double)FromDIP(1.0) };  // TODO: functions using this attribute should be modified
                                          // to handle device-independent pixels
@@ -747,7 +747,7 @@ struct MyFrame : wxFrame {
 
     void AppOnEventLoopEnter() {
         // Have to do this here, if we do it in the Frame constructor above, it crashes on OS X.
-        watcher = new wxFileSystemWatcher();
+        watcher.reset(new wxFileSystemWatcher());
         watcher->SetOwner(this);
         Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
     }
@@ -767,7 +767,6 @@ struct MyFrame : wxFrame {
         aui->ClearEventHashTable();
         aui->UnInit();
         DELETEP(editmenupopup);
-        DELETEP(watcher);
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
