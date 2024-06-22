@@ -2,26 +2,26 @@ struct MyFrame : wxFrame {
     wxMenu *editmenupopup;
     wxString exepath_;
     wxFileHistory filehistory;
-    wxTextCtrl *filter{ nullptr }, *replaces{ nullptr };
-    wxToolBar *tb{ nullptr };
-    int refreshhack{ 0 }, refreshhackinstances{ 0 };
+    wxTextCtrl *filter {nullptr}, *replaces {nullptr};
+    wxToolBar *tb {nullptr};
+    int refreshhack {0}, refreshhackinstances {0};
     BlinkTimer bt;
     wxTaskBarIcon tbi;
     wxIcon icon;
-    ImageDropdown *idd{ nullptr };
-    wxAuiNotebook *nb{ nullptr };
-    unique_ptr<wxAuiManager> aui{ make_unique<wxAuiManager>(this) };
+    ImageDropdown *idd {nullptr};
+    wxAuiNotebook *nb {nullptr};
+    unique_ptr<wxAuiManager> aui {make_unique<wxAuiManager>(this)};
     wxBitmap line_nw, line_sw;
     wxBitmap foldicon;
-    bool fromclosebox{ true };
+    bool fromclosebox {true};
     MyApp *app;
-    unique_ptr<wxFileSystemWatcher> watcher{ nullptr };
-    bool watcherwaitingforuser{ false };
-    double csf{ (double)FromDIP(1.0) };  // TODO: functions using this attribute should be modified
-                                         // to handle device-independent pixels
+    unique_ptr<wxFileSystemWatcher> watcher {nullptr};
+    bool watcherwaitingforuser {false};
+    double csf {(double)FromDIP(1.0)};  // TODO: functions using this attribute should be modified
+                                        // to handle device-independent pixels
     std::vector<std::string> scripts_in_menu;
-    bool zenmode{ false };
-    ColorDropdown *celldd{ nullptr }, *textdd{ nullptr }, *borddd{ nullptr };
+    bool zenmode {false};
+    ColorDropdown *celldd {nullptr}, *textdd {nullptr}, *borddd {nullptr};
     wxString imagepath;
 
     wxString GetDocPath(const wxString &relpath) {
@@ -1076,7 +1076,7 @@ struct MyFrame : wxFrame {
     }
 
     void SetDPIAwareStatusWidths() {
-        int swidths[] = { -1, FromDIP(240), FromDIP(120), FromDIP(100) };
+        int swidths[] = {-1, FromDIP(240), FromDIP(120), FromDIP(100)};
         SetStatusWidths(4, swidths);
     }
 

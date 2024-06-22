@@ -19,6 +19,7 @@ PointerAlignment: Right
 SpaceBeforeParens: ControlStatements
 SpaceAfterTemplateKeyword: false
 Standard: Cpp11
-Cpp11BracedListStyle: false
+Cpp11BracedListStyle: true
+SpaceBeforeCpp11BracedList: true
 IndentPPDirectives: BeforeHash
 AlwaysBreakTemplateDeclarations: false

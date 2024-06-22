@@ -1,11 +1,11 @@
 
 struct Text {
-    Cell *cell{ nullptr };
-    wxString t{ wxEmptyString };
-    int relsize{ 0 }, stylebits{ 0 }, extent{ 0 };
-    Image *image{ nullptr };
+    Cell *cell {nullptr};
+    wxString t {wxEmptyString};
+    int relsize {0}, stylebits {0}, extent {0};
+    Image *image {nullptr};
     wxDateTime lastedit;
-    bool filtered{ false };
+    bool filtered {false};
 
     Text() { WasEdited(); }
 
@@ -366,7 +366,7 @@ struct Text {
 
     void SetRelSize(Selection &s) {
         if (t.Len() || !cell->parent) return;
-        int dd[] = { 0, 1, 1, 0, 0, -1, -1, 0 };
+        int dd[] = {0, 1, 1, 0, 0, -1, -1, 0};
         for (int i = 0; i < 4; i++) {
             int x = max(0, min(s.x + dd[i * 2], s.g->xs - 1));
             int y = max(0, min(s.y + dd[i * 2 + 1], s.g->ys - 1));

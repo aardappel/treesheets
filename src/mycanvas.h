@@ -1,8 +1,8 @@
 struct TSCanvas : public wxScrolledCanvas {
     MyFrame *frame;
-    Document *doc{ nullptr };
-    int mousewheelaccum{ 0 };
-    bool lastrmbwaswithctrl{ false };
+    Document *doc {nullptr};
+    int mousewheelaccum {0};
+    bool lastrmbwaswithctrl {false};
     wxPoint lastmousepos;
 
     TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)

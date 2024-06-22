@@ -9,7 +9,7 @@ static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool o
 }
 
 struct DropTarget : wxDropTarget {
-    DropTarget(wxDataObject *data) : wxDropTarget(data){};
+    DropTarget(wxDataObject *data) : wxDropTarget(data) {};
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
         TSCanvas *sw = sys->frame->GetCurTab();

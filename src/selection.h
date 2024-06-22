@@ -1,12 +1,12 @@
 
 class Selection {
-    bool textedit{ false };
+    bool textedit {false};
 
     public:
     Grid *g;
     int x, y, xs, ys;
-    int cursor{ 0 }, cursorend{ 0 };
-    int firstdx{ 0 }, firstdy{ 0 };
+    int cursor {0}, cursorend {0};
+    int firstdx {0}, firstdy {0};
 
     Selection(Grid *_g = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
         : g(_g), x(_x), y(_y), xs(_xs), ys(_ys) {}

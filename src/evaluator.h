@@ -3,7 +3,7 @@
     A structure describing an operation.
 */
 struct Operation {
-    virtual ~Operation(){};
+    virtual ~Operation() {};
     const char *args;
 
     virtual unique_ptr<Cell> run() const { return nullptr; }

@@ -1,31 +1,31 @@
 #ifndef PACKAGE_VERSION
-#define PACKAGE_VERSION __DATE__
+    #define PACKAGE_VERSION __DATE__
 #endif
 
 struct UndoItem {
     Vector<Selection> path, selpath;
     Selection sel;
     unique_ptr<Cell> clone;
-    size_t estimated_size{ 0 };
+    size_t estimated_size {0};
     uintptr_t cloned_from;  // May be dead.
 };
 
 struct Document {
-    TSCanvas *sw{ nullptr };
-    Cell *rootgrid{ nullptr };
+    TSCanvas *sw {nullptr};
+    Cell *rootgrid {nullptr};
     Selection hover, selected, begindrag;
     int isctrlshiftdrag;
-    int originx, originy, maxx, maxy, centerx{ 0 }, centery{ 0 };
-    int layoutxs, layoutys, hierarchysize, fgutter{ 6 };
+    int originx, originy, maxx, maxy, centerx {0}, centery {0};
+    int layoutxs, layoutys, hierarchysize, fgutter {6};
     int lasttextsize, laststylebits;
-    int initialzoomlevel{ 0 };
+    int initialzoomlevel {0};
     Cell *curdrawroot;  // for use during Render() calls
     Vector<UndoItem *> undolist, redolist;
     Vector<Selection> drawpath;
-    int pathscalebias{ 0 };
-    wxString filename{ L"" };
-    long lastmodsinceautosave{ 0 }, undolistsizeatfullsave{ 0 }, lastsave{ wxGetLocalTime() };
-    bool modified{ false }, tmpsavesuccess{ true };
+    int pathscalebias {0};
+    wxString filename {L""};
+    long lastmodsinceautosave {0}, undolistsizeatfullsave {0}, lastsave {wxGetLocalTime()};
+    bool modified {false}, tmpsavesuccess {true};
     wxDataObjectComposite *dndobjc = new wxDataObjectComposite();
     wxTextDataObject *dndobjt = new wxTextDataObject();
     wxBitmapDataObject *dndobji = new wxBitmapDataObject();
@@ -56,15 +56,15 @@ struct Document {
         bool HasPage(int pageNum) { return pageNum == 1; }
     };
 
-    bool while_printing{ false };
+    bool while_printing {false};
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
-    uint printscale{ 0 };
-    bool blink{ true }, redrawpending{ false }, scrolltoselection{ true }, dpichanged{ false };
-    bool scaledviewingmode{ false };
-    double currentviewscale{ 1.0 };
-    bool searchfilter{ false };
-    int editfilter{ 0 };
+    uint printscale {0};
+    bool blink {true}, redrawpending {false}, scrolltoselection {true}, dpichanged {false};
+    bool scaledviewingmode {false};
+    double currentviewscale {1.0};
+    bool searchfilter {false};
+    int editfilter {0};
     wxDateTime lastmodificationtime;
     std::map<wxString, bool> tags;
     Vector<Cell *> itercells;

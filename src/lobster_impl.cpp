@@ -182,9 +182,7 @@ string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *au
         InitPlatform(exefilepath, auxfilepath, from_bundle, sl);
         RegisterBuiltin(natreg, "treesheets", AddTreeSheets);
         RegisterCoreLanguageBuiltins(natreg);
-    } catch (string &s) {
-        err = s;
-    }
+    } catch (string &s) { err = s; }
     return err;
 }
 

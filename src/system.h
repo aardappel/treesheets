@@ -2,16 +2,16 @@ struct Image {
     vector<uint8_t> image_data;
     char image_type;
     wxBitmap bm_display;
-    int trefc{ 0 };
-    int savedindex{ -1 };
-    uint64_t hash{ 0 };
+    int trefc {0};
+    int savedindex {-1};
+    uint64_t hash {0};
 
     // This indicates a relative scale, where 1.0 means bitmap pixels match display pixels on
     // a low res 96 dpi display. On a high dpi screen it will look scaled up. Higher values
     // look better on most screens.
     // This is all relative to GetContentScalingFactor.
     double display_scale;
-    int pixel_width{ 0 };
+    int pixel_width {0};
 
     Image(uint64_t _hash, double _sc, vector<uint8_t> &&idv, char iti)
         : image_data(std::move(idv)), image_type(iti), hash(_hash), display_scale(_sc) {}
@@ -69,36 +69,36 @@ struct System {
     unique_ptr<Cell> cellclipboard;
     Vector<Image *> imagelist;
     Vector<int> loadimageids;
-    uchar versionlastloaded{ 0 };
+    uchar versionlastloaded {0};
     wxLongLong fakelasteditonload;
-    wxPen pen_tinytext{ wxColour(0x808080ul) }, pen_gridborder{ wxColour(0xb5a6a4) },
-        pen_tinygridlines{ wxColour(0xf2dcd8) }, pen_gridlines{ wxColour(0xe5b7b0) },
-        pen_thinselect{ *wxLIGHT_GREY };
-    int roundness{ 3 }, defaultmaxcolwidth{ 80 };
-    bool makebaks{ true }, totray{ false }, autosave{ true }, zoomscroll{ false }, thinselc{ true },
-        minclose{ false }, singletray{ false }, centered{ true }, fswatch{ true },
-        autohtmlexport{ false }, casesensitivesearch{ true }, darkennonmatchingcells{ false },
-        fastrender{ true };
+    wxPen pen_tinytext {wxColour(0x808080ul)}, pen_gridborder {wxColour(0xb5a6a4)},
+        pen_tinygridlines {wxColour(0xf2dcd8)}, pen_gridlines {wxColour(0xe5b7b0)},
+        pen_thinselect {*wxLIGHT_GREY};
+    int roundness {3}, defaultmaxcolwidth {80};
+    bool makebaks {true}, totray {false}, autosave {true}, zoomscroll {false}, thinselc {true},
+        minclose {false}, singletray {false}, centered {true}, fswatch {true},
+        autohtmlexport {false}, casesensitivesearch {true}, darkennonmatchingcells {false},
+        fastrender {true};
     int sortcolumn, sortxs, sortdescending;
     wxHashMapBool watchedpaths;
-    bool insidefiledialog{ false };
+    bool insidefiledialog {false};
     struct TimerStruct : wxTimer {
         void Notify() {
             sys->SaveCheck();
             sys->cfg->Flush();
         }
     } every_second_timer;
-    uint lastcellcolor{ 0xFFFFFF }, lasttextcolor{ 0 }, lastbordcolor{ 0xA0A0A0 };
-    int customcolor{ 0xFFFFFF };
+    uint lastcellcolor {0xFFFFFF}, lasttextcolor {0}, lastbordcolor {0xA0A0A0};
+    int customcolor {0xFFFFFF};
 
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
                              L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
                        : (wxConfigBase *)new wxConfig(L"TreeSheets")) {
-        static const wxDash glpattern[] = { 1, 3 };
+        static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
-        static const wxDash tspattern[] = { 2, 4 };
+        static const wxDash tspattern[] = {2, 4};
         pen_thinselect.SetDashes(2, tspattern);
         pen_thinselect.SetStyle(wxPENSTYLE_USER_DASH);
 
@@ -262,7 +262,7 @@ struct System {
                             if (iti == 'I') {
                                 uchar header[8];
                                 fis.Read(header, 8);
-                                uchar expected[] = { 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n' };
+                                uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
                                 if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
                                 dis.BigEndianOrdered(true);
                                 for (;;) {  // Skip all chunks.
