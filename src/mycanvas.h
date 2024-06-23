@@ -23,9 +23,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnPaint(wxPaintEvent &event) {
-        #ifdef __WXMAC__
-            wxPaintDC dc(this);
-        #elif __WXGTK__
+        #if defined(__WXMAC__) || defined(__WXGTK__)
             wxPaintDC dc(this);
         #else
             auto sz = GetClientSize();
