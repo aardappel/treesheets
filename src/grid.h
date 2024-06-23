@@ -5,13 +5,13 @@ struct Grid {
     // subcells
     Cell **cells;
     // widths for each column
-    int *colwidths{ nullptr };
+    int *colwidths {nullptr};
     // xsize, ysize
     int xs, ys;
     int view_margin, view_grid_outer_spacing,
-        user_grid_outer_spacing{ g_usergridouterspacing_default }, cell_margin;
-    int bordercolor{ g_bordercolor_default };
-    bool horiz{ false }, tinyborder, folded{ false };
+        user_grid_outer_spacing {g_usergridouterspacing_default}, cell_margin;
+    int bordercolor {g_bordercolor_default};
+    bool horiz {false}, tinyborder, folded {false};
 
     Cell *&C(int x, int y) const {
         ASSERT(x >= 0 && y >= 0 && x < xs && y < ys);
