@@ -167,8 +167,7 @@ struct Text {
         if (sys->casesensitivesearch) {
             return sys->searchstring.Len() && t.Find(sys->searchstring) >= 0;
         } else {
-            wxString lowert = t.Lower();
-            return sys->searchstring.Len() && lowert.Find(sys->searchstring) >= 0;
+            return sys->searchstring.Len() && t.Lower().Find(sys->searchstring) >= 0;
         }
     }
 
