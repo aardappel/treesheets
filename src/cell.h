@@ -426,16 +426,9 @@ struct Cell {
                               bool &lastwasselected, bool reverse) {
         if (reverse && grid)
             best = grid->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
-        if (sys->casesensitivesearch) {
-            if (text.t.Find(search) >= 0) {
-                if (lastwasselected) best = this;
-                lastwasselected = false;
-            }
-        } else {
-            if (text.t.Lower().Find(search) >= 0) {
-                if (lastwasselected) best = this;
-                lastwasselected = false;
-            }
+        if ((sys->casesensitivesearch ? text.t.Find(search) : text.t.Lower().Find(search)) >= 0) {
+            if (lastwasselected) best = this;
+            lastwasselected = false;
         }
         if (selected == this) lastwasselected = true;
         if (!reverse && grid)
