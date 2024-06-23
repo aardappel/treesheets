@@ -164,15 +164,12 @@ struct Text {
     }
 
     bool IsInSearch() {
-        wxString *text;
-        wxString lowert;
         if (sys->casesensitivesearch) {
-            text = &t;
+            return sys->searchstring.Len() && t.Find(sys->searchstring) >= 0;
         } else {
-            lowert = t.Lower();
-            text = &lowert;
+            wxString lowert = t.Lower();
+            return sys->searchstring.Len() && lowert.Find(sys->searchstring) >= 0;
         }
-        return sys->searchstring.Len() && text->Find(sys->searchstring) >= 0;
     }
 
     int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
