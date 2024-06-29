@@ -7,11 +7,16 @@ struct Grid {
     // widths for each column
     int *colwidths {nullptr};
     // xsize, ysize
-    int xs, ys;
-    int view_margin, view_grid_outer_spacing,
-        user_grid_outer_spacing {g_usergridouterspacing_default}, cell_margin;
+    int xs;
+    int ys;
+    int view_margin;
+    int view_grid_outer_spacing;
+    int user_grid_outer_spacing {g_usergridouterspacing_default};
+    int cell_margin;
     int bordercolor {g_bordercolor_default};
-    bool horiz {false}, tinyborder, folded {false};
+    bool horiz {false};
+    bool tinyborder;
+    bool folded {false};
 
     Cell *&C(int x, int y) const {
         ASSERT(x >= 0 && y >= 0 && x < xs && y < ys);

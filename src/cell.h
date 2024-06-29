@@ -22,14 +22,24 @@ enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };
 */
 struct Cell {
     Cell *parent;
-    int sx = 0, sy = 0, ox = 0, oy = 0, minx = 0, miny = 0, ycenteroff = 0, txs = 0, tys = 0;
+    int sx {0};
+    int sy {0};
+    int ox {0};
+    int oy {0};
+    int minx {0};
+    int miny {0};
+    int ycenteroff {0};
+    int txs {0};
+    int tys {0};
     int celltype;
     Text text;
     Grid *grid;
-    uint cellcolor = 0xFFFFFF, textcolor = 0x000000, actualcellcolor = 0xFFFFFF;
-    bool tiny = false;
-    bool verticaltextandgrid = true;
-    wxUint8 drawstyle = DS_GRID;
+    uint cellcolor {0xFFFFFF};
+    uint textcolor {0x000000};
+    uint actualcellcolor {0xFFFFFF};
+    bool tiny {false};
+    bool verticaltextandgrid {true};
+    wxUint8 drawstyle {DS_GRID};
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
          Grid *_g = nullptr)

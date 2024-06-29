@@ -1,28 +1,33 @@
 struct MyFrame : wxFrame {
-    wxMenu *editmenupopup;
     wxString exepath_;
-    wxFileHistory filehistory;
-    wxTextCtrl *filter {nullptr}, *replaces {nullptr};
-    wxToolBar *tb {nullptr};
-    int refreshhack {0}, refreshhackinstances {0};
-    BlinkTimer bt;
-    wxTaskBarIcon tbi;
+    MyApp *app;
     wxIcon icon;
-    ImageDropdown *idd {nullptr};
+    wxTaskBarIcon tbi;
+    wxMenu *editmenupopup;
+    wxFileHistory filehistory;
+    unique_ptr<wxFileSystemWatcher> watcher {nullptr};
     wxAuiNotebook *nb {nullptr};
     unique_ptr<wxAuiManager> aui {make_unique<wxAuiManager>(this)};
-    wxBitmap line_nw, line_sw;
+    wxBitmap line_nw;
+    wxBitmap line_sw;
     wxBitmap foldicon;
     bool fromclosebox {true};
-    MyApp *app;
-    unique_ptr<wxFileSystemWatcher> watcher {nullptr};
     bool watcherwaitingforuser {false};
     double csf {(double)FromDIP(1.0)};  // TODO: functions using this attribute should be modified
                                         // to handle device-independent pixels
     std::vector<std::string> scripts_in_menu;
     bool zenmode {false};
-    ColorDropdown *celldd {nullptr}, *textdd {nullptr}, *borddd {nullptr};
+    wxToolBar *tb {nullptr};
+    wxTextCtrl *filter {nullptr};
+    wxTextCtrl *replaces {nullptr};
+    ColorDropdown *celldd {nullptr};
+    ColorDropdown *textdd {nullptr};
+    ColorDropdown *borddd {nullptr};
+    ImageDropdown *idd {nullptr};
     wxString imagepath;
+    BlinkTimer bt;
+    int refreshhack {0};
+    int refreshhackinstances {0};
 
     wxString GetDocPath(const wxString &relpath) {
         std::filesystem::path candidatePaths[] = {

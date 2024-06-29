@@ -1,9 +1,11 @@
 
 struct Text {
     Cell *cell {nullptr};
-    wxString t {wxEmptyString};
-    int relsize {0}, stylebits {0}, extent {0};
     Image *image {nullptr};
+    wxString t {wxEmptyString};
+    int relsize {0};
+    int stylebits {0};
+    int extent {0};
     wxDateTime lastedit;
     bool filtered {false};
 

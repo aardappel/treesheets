@@ -4,9 +4,14 @@ class Selection {
 
     public:
     Grid *g;
-    int x, y, xs, ys;
-    int cursor {0}, cursorend {0};
-    int firstdx {0}, firstdy {0};
+    int x;
+    int y;
+    int xs;
+    int ys;
+    int cursor {0};
+    int cursorend {0};
+    int firstdx {0};
+    int firstdy {0};
 
     Selection(Grid *_g = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
         : g(_g), x(_x), y(_y), xs(_xs), ys(_ys) {}

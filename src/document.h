@@ -13,23 +13,38 @@ struct UndoItem {
 struct Document {
     TSCanvas *sw {nullptr};
     Cell *rootgrid {nullptr};
-    Selection hover, selected, begindrag;
+    Selection hover;
+    Selection selected;
+    Selection begindrag;
     int isctrlshiftdrag;
-    int originx, originy, maxx, maxy, centerx {0}, centery {0};
-    int layoutxs, layoutys, hierarchysize, fgutter {6};
-    int lasttextsize, laststylebits;
+    int originx;
+    int originy;
+    int maxx;
+    int maxy;
+    int centerx {0};
+    int centery {0};
+    int layoutxs;
+    int layoutys;
+    int hierarchysize;
+    int fgutter {6};
+    int lasttextsize;
+    int laststylebits;
     int initialzoomlevel {0};
     Cell *curdrawroot;  // for use during Render() calls
-    Vector<UndoItem *> undolist, redolist;
+    Vector<UndoItem *> undolist;
+    Vector<UndoItem *> redolist;
     Vector<Selection> drawpath;
     int pathscalebias {0};
     wxString filename {L""};
-    long lastmodsinceautosave {0}, undolistsizeatfullsave {0}, lastsave {wxGetLocalTime()};
-    bool modified {false}, tmpsavesuccess {true};
-    wxDataObjectComposite *dndobjc = new wxDataObjectComposite();
-    wxTextDataObject *dndobjt = new wxTextDataObject();
-    wxBitmapDataObject *dndobji = new wxBitmapDataObject();
-    wxFileDataObject *dndobjf = new wxFileDataObject();
+    long lastmodsinceautosave {0};
+    long undolistsizeatfullsave {0};
+    long lastsave {wxGetLocalTime()};
+    bool modified {false};
+    bool tmpsavesuccess {true};
+    wxDataObjectComposite *dndobjc {new wxDataObjectComposite()};
+    wxTextDataObject *dndobjt {new wxTextDataObject()};
+    wxBitmapDataObject *dndobji {new wxBitmapDataObject()};
+    wxFileDataObject *dndobjf {new wxFileDataObject()};
 
     struct MyPrintout : wxPrintout {
         Document *doc;
@@ -60,7 +75,10 @@ struct Document {
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
-    bool blink {true}, redrawpending {false}, scrolltoselection {true}, dpichanged {false};
+    bool blink {true};
+    bool redrawpending {false};
+    bool scrolltoselection {true};
+    bool dpichanged {false};
     bool scaledviewingmode {false};
     double currentviewscale {1.0};
     bool searchfilter {false};
