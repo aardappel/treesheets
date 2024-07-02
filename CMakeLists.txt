@@ -117,6 +117,22 @@ target_link_libraries(
     lobster-impl
 )
 
+######## X11 LINUX BUILD ISSUE ########
+
+# This is the fix for this build error under linux with static wxWidgets:
+# [ 60%] Linking CXX executable treesheets
+# /usr/bin/ld: lib/wxWidgets/lib/libwx_gtk3u_core-3.3.a(utilsx11.cpp.o): undefined reference to symbol 'XGetWindowAttributes'
+# /usr/bin/ld: /lib/x86_64-linux-gnu/libX11.so.6: error adding symbols: DSO missing from command line
+# collect2: error: ld returned 1 exit status
+# make[2]: *** [CMakeFiles/treesheets.dir/build.make:115: treesheets] Error 1
+# make[1]: *** [CMakeFiles/Makefile2:449: CMakeFiles/treesheets.dir/all] Error 2
+# make: *** [Makefile:136: all] Error 2
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(X11 REQUIRED) 
+    target_link_libraries(treesheets PRIVATE ${X11_LIBRARIES})  
+endif()
+
 ########## TREESHEETS INSTALLATION SETTINGS ###############
 
 if(LINUX)
