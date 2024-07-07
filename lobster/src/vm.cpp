@@ -19,8 +19,16 @@
 
 #include "lobster/vmops.h"
 
+#include "lobster/lobsterreader.h"
+
 namespace lobster {
 
+#if LOBSTER_FRAME_PROFILER_GLOBAL
+// This is a global, so doesn't work well with multithreading :)
+// It's only here to debug difficult crashes on platforms without a stack trace.
+vector<___tracy_source_location_data> g_function_locations;
+vector<tracy::SourceLocationData> g_builtin_locations;
+#endif
 
 VM::VM(VMArgs &&vmargs, const bytecode::BytecodeFile *bcf)
     : VMArgs(std::move(vmargs)), bcf(bcf) {
@@ -98,6 +106,21 @@ VMAllocator::~VMAllocator() {
 
 const TypeInfo &VM::GetVarTypeInfo(int varidx) {
     return GetTypeInfo((type_elem_t)bcf->specidents()->Get(varidx)->typeidx());
+}
+
+type_elem_t VM::GetSubClassFromSerID(type_elem_t super, uint32_t ser_id) {
+    auto ser_ids = bcf->ser_ids();
+    auto size = ser_ids->size();
+    if (ser_id >= size) return (type_elem_t)-1;
+    auto typeoff = (type_elem_t)ser_ids->Get(ser_id);
+    if (typeoff == super) return typeoff;
+    auto sup = &GetTypeInfo(typeoff);
+    for (;;) {
+        auto supoff = sup->superclass;
+        if (supoff < 0) return (type_elem_t)-1;
+        if (supoff == super) return typeoff;
+        sup = &GetTypeInfo(supoff);
+    }
 }
 
 static bool _LeakSorter(void *va, void *vb) {
@@ -337,7 +360,7 @@ void VM::DumpVar(Value *locals, int idx, int &j, int &jl, const DumperFun &dump)
     auto sid = bcf->specidents()->Get((uint32_t)idx);
     auto is_freevar = sid->used_as_freevar();
     auto id = bcf->idents()->Get(sid->ididx());
-    auto name = id->name()->string_view();
+    auto name = string_view_nt(id->name()->string_view());
     auto &ti = GetVarTypeInfo(idx);
     auto width = IsStruct(ti.t) ? ti.len : 1;
     auto x = is_freevar ? &fvars[idx] : locals + jl;
@@ -372,33 +395,42 @@ void VM::DumpStackFrame(const int *fip, Value *locals, const DumperFun &dump) {
     }
 }
 
-pair<string, const int *> VM::DumpStackFrameStart(FunStack &funstackelem) {
-    auto fip = funstackelem.funstartinfo;
+string VM::DumpFileLine(int fileidx, int line) {
+    string loc;
+    if (line >= 0 && fileidx >= 0) {
+        append(loc, "[", bcf->filenames()->Get(fileidx)->string_view(), ":", line, "]");
+    }
+    return loc;
+}
+
+pair<string, const int *> VM::DumpStackFrameStart(const int *fip, int fileidx, int line) {
     auto deffun = *fip++;
     string fname;
     auto nargs = fip[1];
     if (nargs) {
         auto &ti = GetVarTypeInfo(fip[2]);
-        ti.Print(*this, fname);
+        ti.Print(*this, fname, nullptr);
         append(fname, ".");
     }
-    append(fname, bcf->functions()->Get(deffun)->name()->string_view());
-    if (funstackelem.line >= 0 && funstackelem.fileidx >= 0) {
-        append(fname, "[", bcf->filenames()->Get(funstackelem.fileidx)->string_view(), ":",
-               funstackelem.line, "]");
-    }
+    append(fname, bcf->functions()->Get(deffun)->name()->string_view(),
+           DumpFileLine(fileidx, line));
     return { fname, fip };
 }
 
-// See also imbind.cpp:DumpStackTrace
+// See also imbind.cpp:DumpStackTrace and VM::DumpStackTraceMemory()
 void VM::DumpStackTrace(string &sd) {
-    if (fun_id_stack.empty()) return;
+    if (fun_id_stack.empty()) {
+        // We don't have a stack trace, but maybe this minimum information will be better
+        // than nothing:
+        sd += DumpFileLine(last_fileidx, last_line);
+        return;
+    }
 
     #ifdef USE_EXCEPTION_HANDLING
     try {
     #endif
 
-    DumperFun dumper = [&sd](VM &vm, string_view name, const TypeInfo &ti, Value *x) {
+    DumperFun dumper = [&sd](VM &vm, string_view_nt name, const TypeInfo &ti, Value *x) {
         append(sd, "        ", name);
         #if RTT_ENABLED
             auto debug_type = x->type;
@@ -408,12 +440,12 @@ void VM::DumpStackTrace(string &sd) {
         if (debug_type == V_NIL && ti.t != V_NIL) {
             // Uninitialized.
             append(sd, ":");
-            ti.Print(vm, sd);
+            ti.Print(vm, sd, nullptr);
             append(sd, " (uninitialized)");
         } else if (ti.t != debug_type && !IsStruct(ti.t)) {
             // Some runtime type corruption, show the problem rather than crashing.
             append(sd, ":");
-            ti.Print(vm, sd);
+            ti.Print(vm, sd, nullptr);
             append(sd, " ERROR != ", BaseTypeName(debug_type));
         } else {
             append(sd, " = ");
@@ -428,10 +460,14 @@ void VM::DumpStackTrace(string &sd) {
     };
 
     if (!sd.empty()) append(sd, "\n");
+    auto cur_fileidx = last_fileidx;
+    auto cur_line = last_line;
     for (auto &funstackelem : reverse(fun_id_stack)) {
-        auto [name, fip] = DumpStackFrameStart(funstackelem);
+        auto [name, fip] = DumpStackFrameStart(funstackelem.funstartinfo, cur_fileidx, cur_line);
         append(sd, "in function ", name, "\n");
         DumpStackFrame(fip, funstackelem.locals, dumper);
+        cur_fileidx = funstackelem.fileidx;
+        cur_line = funstackelem.line;
     }
 
     #ifdef USE_EXCEPTION_HANDLING
@@ -444,11 +480,90 @@ void VM::DumpStackTrace(string &sd) {
     #endif
 }
 
+// See also imbind.cpp:DumpStackTrace and VM::DumpStackTrace()
+void VM::DumpStackTraceMemory(const string &err) {
+    if (fun_id_stack.empty()) {
+        // We don't have a stack trace.
+        return;
+    }
+    // We're going to be dumping as much as possible of the memory of the program along with
+    // the stack trace. To this end we're using the FlexBuffers dumper which already can deal with
+    // cycles etc, so it will output max 1 copy of each data structure.
+    ToFlexBufferContext fbc(*this, 1024 * 1024, flexbuffers::BUILDER_FLAG_SHARE_KEYS_AND_STRINGS);
+    fbc.cycle_detect = true;
+    fbc.max_depth = 64;
+    fbc.ignore_unsupported_types = true;
+
+    #ifdef USE_EXCEPTION_HANDLING
+    try {
+    #endif
+
+    DumperFun dumper = [&fbc](VM &vm, string_view_nt name, const TypeInfo &ti, Value *x) {
+        #if RTT_ENABLED
+            auto debug_type = x->type;
+        #else
+            auto debug_type = ti.t;
+        #endif
+        if (debug_type == V_NIL && ti.t != V_NIL) {
+            // Just skip, only useful in debug.
+        } else if (ti.t != debug_type && !IsStruct(ti.t)) {
+            // Just skip, only useful in debug.
+        } else {
+            fbc.builder.Key(name.data(), name.size());
+            if (IsStruct(ti.t)) {
+                vm.StructToFlexBuffer(fbc, ti, x, false);
+            } else {
+                x->ToFlexBuffer(fbc, ti.t, {}, -1);
+            }
+        }
+    };
+
+    auto vstart = fbc.builder.StartVector();
+    fbc.builder.String(err);
+    auto cur_fileidx = last_fileidx;
+    auto cur_line = last_line;
+    for (auto &funstackelem : reverse(fun_id_stack)) {
+        auto vstart2 = fbc.builder.StartVector();
+        auto [name, fip] = DumpStackFrameStart(funstackelem.funstartinfo, cur_fileidx, cur_line);
+        fbc.builder.String(name);
+        auto mstart = fbc.builder.StartMap();
+        DumpStackFrame(fip, funstackelem.locals, dumper);
+        fbc.builder.EndMap(mstart);
+        fbc.builder.EndVector(vstart2, false, false);
+        cur_fileidx = funstackelem.fileidx;
+        cur_line = funstackelem.line;
+    }
+    fbc.builder.EndVector(vstart, false, false);
+    fbc.builder.Finish();
+    auto fn = cat("crash_stack_trace_memory_dump_", GetDateTime(), ".flex");
+    auto contents =
+        string_view((char *)fbc.builder.GetBuffer().data(), fbc.builder.GetBuffer().size());
+    if (WriteFile(fn, true, contents, false)) {
+        LOG_PROGRAM(fn + " written succesfully");
+    } else {
+        LOG_ERROR(fn + " failed to write!")
+    }
+
+    #ifdef USE_EXCEPTION_HANDLING
+    } catch (string &) {
+        // Error happened while we were building this stack trace.
+        // That may happen if the reason we're dumping the stack trace is because something got in an
+        // inconsistent state in the first place.
+        
+        // It would be cool to make a heroic effort to still output the information already in the
+        // FlexBuffer for debugging, but we can't really tell how to repair the information there-in.
+        return;
+    }
+    #endif
+}
+
 Value VM::Error(string err) {
     ErrorBase(err);
     #if LOBSTER_ENGINE
-        if (runtime_checks >= RUNTIME_DEBUG) {
+        if (runtime_checks >= RUNTIME_DEBUGGER) {
             BreakPoint(*this, errmsg);
+        } else if (runtime_checks >= RUNTIME_DEBUG_DUMP) {
+            DumpStackTraceMemory(err);
         }
     #endif
     DumpStackTrace(errmsg);
@@ -476,7 +591,7 @@ void VM::VMAssert(const char *what)  {
 
 void VM::EndEval(StackPtr &, const Value &ret, const TypeInfo &ti) {
     TerminateWorkers();
-    ret.ToString(*this, evalret, ti, programprintprefs);
+    ret.ToString(*this, evalret.first, ti, programprintprefs);
     ret.LTDECTYPE(*this, ti.t);
     for (auto s : constant_strings) {
         if (s) s->Dec(*this);
@@ -526,6 +641,11 @@ void VM::EvalProgram() {
     #else
         compiled_entry_point(*this, nullptr);
     #endif
+}
+
+void VM::CallFunctionValue(Value &f) {
+    auto fv = f.ip();
+    fv(*this, nullptr);
 }
 
 string &VM::TraceStream() {
@@ -597,6 +717,24 @@ string_view VM::LookupField(int stidx, iint fieldn) const {
     return st->fields()->Get((flatbuffers::uoffset_t)fieldn)->name()->string_view();
 }
 
+string_view VM::LookupFieldByOffset(int stidx, int offset) const {
+    auto st = bcf->udts()->Get((flatbuffers::uoffset_t)stidx);
+    auto fields = st->fields();
+    auto fieldn = fields->size() - 1;
+    for (flatbuffers::uoffset_t i = 1; i < fields->size(); i++) {
+        auto foffset = fields->Get(i)->offset();
+        if (foffset < 0) {
+            // Generic type that does not have field offsets.
+            return "";
+        }
+        if (offset < foffset) {
+            fieldn = i - 1;
+            break;
+        }
+    }
+    return fields->Get(fieldn)->name()->string_view();
+}
+
 bool VM::EnumName(string &sd, iint enum_val, int enumidx) {
     auto enum_def = bcf->enums()->Get(enumidx);
     auto &vals = *enum_def->vals();
@@ -638,11 +776,23 @@ optional<int64_t> VM::LookupEnum(string_view name, int enumidx) {
     return {};
 }
 
+void VM::EnsureUDTLookupPopulated() {
+    if (!UDTLookup.empty()) return;
+    for (auto udt : *bcf->udts()) {
+        auto &v = UDTLookup[udt->name()->string_view()];
+        v.push_back(udt);
+    }
+}
+
+string_view VM::BuildInfo() {
+    return bcf->build_info()->string_view();
+}
+
 void VM::StartWorkers(iint numthreads) {
     if (is_worker) Error("workers can\'t start more worker threads");
     if (tuple_space) Error("workers already running");
     // Stop bad values from locking up the machine :)
-    numthreads = std::min(numthreads, 256_L);
+    numthreads = std::min(numthreads, 256_L64);
     tuple_space = new TupleSpace(bcf->udts()->size());
     for (iint i = 0; i < numthreads; i++) {
         // Create a new VM that should own all its own memory and be completely independent
@@ -691,40 +841,50 @@ void VM::WorkerWrite(RefObj *ref) {
     auto &ti = ref->ti(*this);
     if (ti.t != V_CLASS) Error("thread write: must be a class");
     auto st = (LObject *)ref;
-    // Use malloc instead of pool, since this is being sent to another thread.
-    auto buf = (Value *)malloc(sizeof(Value) * ti.len);
-    for (int i = 0; i < ti.len; i++) {
-        // FIXME: lift this restriction.
-        if (IsRefNil(GetTypeInfo(ti.elemtypes[i]).t))
-            Error("thread write: only scalar class members supported for now");
-        buf[i] = st->AtS(i);
-    }
+    vector<uint8_t> buf;
+    st->ToLobsterBinary(*this, buf);
     auto &tt = tuple_space->tupletypes[ti.structidx];
     {
         unique_lock<mutex> lock(tt.mtx);
-        tt.tuples.push_back(buf);
+        tt.tuples.emplace_back(std::move(buf));
     }
     tt.condition.notify_one();
 }
 
-LObject *VM::WorkerRead(type_elem_t tti) {
+Value VM::WorkerRead(type_elem_t tti) {
+    if (!tuple_space) return NilVal();
     auto &ti = GetTypeInfo(tti);
     if (ti.t != V_CLASS) Error("thread read: must be a class type");
-    Value *buf = nullptr;
+    vector<uint8_t> buf;
     auto &tt = tuple_space->tupletypes[ti.structidx];
     {
         unique_lock<mutex> lock(tt.mtx);
         tt.condition.wait(lock, [&] { return !tuple_space->alive || !tt.tuples.empty(); });
         if (!tt.tuples.empty()) {
-            buf = tt.tuples.front();
+            buf = std::move(tt.tuples.front());
             tt.tuples.pop_front();
         }
     }
-    if (!buf) return nullptr;
-    auto ns = NewObject(ti.len, tti);
-    ns->CopyElemsShallow(buf, ti.len);
-    free(buf);
-    return ns;
+    if (buf.empty()) return NilVal();
+    LobsterBinaryParser parser(*this);
+    return parser.Parse(tti, buf.data(), buf.data() + buf.size());
+}
+
+Value VM::WorkerCheck(type_elem_t tti) {
+    if (!tuple_space) return NilVal();
+    auto &ti = GetTypeInfo(tti);
+    if (ti.t != V_CLASS) Error("thread check: must be a class type");
+    vector<uint8_t> buf;
+    auto &tt = tuple_space->tupletypes[ti.structidx];
+    {
+        unique_lock<mutex> lock(tt.mtx);
+        if (tt.tuples.empty()) return NilVal();
+        buf = std::move(tt.tuples.front());
+        tt.tuples.pop_front();
+    }
+    if (buf.empty()) return NilVal();
+    LobsterBinaryParser parser(*this);
+    return parser.Parse(tti, buf.data(), buf.data() + buf.size());
 }
 
 }  // namespace lobster
@@ -799,6 +959,7 @@ void CVM_RestoreBackup(VM *vm, int i) { RestoreBackup(*vm, i); }
 StackPtr CVM_PopArg(VM *vm, int i, StackPtr psp) { return PopArg(*vm, i, psp); }
 void CVM_SetLVal(VM *vm, Value *v) { SetLVal(*vm, v); }
 int CVM_RetSlots(VM *vm) { return RetSlots(*vm); }
+int CVM_GetTypeSwitchID(VM *vm, Value self, int vtable_idx) { return GetTypeSwitchID(*vm, self, vtable_idx); }
 void CVM_PushFunId(VM *vm, const int *id, StackPtr locals) { PushFunId(*vm, id, locals); }
 void CVM_PopFunId(VM *vm) { PopFunId(*vm); }
 #if LOBSTER_FRAME_PROFILER
@@ -863,6 +1024,7 @@ const void *vm_ops_jit_table[] = {
     "PopArg", (void *)CVM_PopArg,
     "SetLVal", (void *)CVM_SetLVal,
     "RetSlots", (void *)CVM_RetSlots,
+    "GetTypeSwitchID", (void *)CVM_GetTypeSwitchID,
     "PushFunId", (void *)CVM_PushFunId,
     "PopFunId", (void *)CVM_PopFunId,
     #if LOBSTER_ENGINE

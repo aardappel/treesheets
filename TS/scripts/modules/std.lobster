@@ -48,20 +48,19 @@ def exists(xs, fun):
             return true
     return false
 
-def forever(fun): while true: fun()
+def forever(fun):
+    while true:
+        fun()
 
 def fold(xs, acc, fun):
-    for xs: acc = fun(acc, _)
+    for xs:
+        acc = fun(acc, _)
     return acc
 
 def fold2(xs, acc1, acc2, fun):
     for xs:
         acc1, acc2 = fun(acc1, acc2, _)
     return acc1, acc2
-
-def fold_reverse(xs, acc, fun):
-    for xs.length: acc = fun(acc, xs[xs.length - 1 - _])
-    return acc
 
 def reduce(xs, fun):
     assert xs.length
@@ -78,9 +77,27 @@ def reduce_reverse(xs, fun):
     for(xs.length - 1) i: acc = fun(xs[xs.length - i - 2], acc)
     return acc
 
+// Returns index of element or -1 if not found.
 def find(xs, fun):
-    for(xs) x, i: if fun(x): return i
+    for(xs) x, i:
+        if fun(x):
+            return i
     return -1
+
+// Returns element and index or defval and -1 if not found.
+def find_or(xs, defval, fun):
+    for(xs) x, i:
+        if fun(x):
+            return x, i
+    return defval, -1
+
+// Returns element and index, and pushes newval if not found.
+def find_or_push(xs, newval, fun):
+    for(xs) x, i:
+        if fun(x):
+            return x, i
+    xs.push(newval)
+    return newval, xs.length - 1
 
 // return element index for which fun returns biggest value of type R (float or int).
 def find_best<R>(xs, fun):
@@ -117,63 +134,85 @@ def product<T>(xs:[T]):
 
 def zip(xs, ys): return map xs.length: [ xs[_], ys[_] ]
 
-def reverse(xs, fun): for(xs.length) i:
-    let j = xs.length - i - 1
-    fun(xs[j], j)
+def reverse(xs, fun):
+     for(xs.length) i:
+        let j = xs.length - i - 1
+        fun(xs[j], j)
 
-def reverse_map(xs, fun): return map(xs.length) i:
-    let j = xs.length - i - 1
-    fun(xs[j], j)
+def reverse_map(xs, fun):
+    return map(xs.length) i:
+        let j = xs.length - i - 1
+        fun(xs[j], j)
 
-def reverse_list(xs): return map(xs.length) i: xs[xs.length - i - 1]
+def reverse_fold(xs, acc, fun):
+    for(xs.length) i:
+        let j = xs.length - i - 1
+        acc = fun(acc, xs[j])
+    return acc
 
-def flatten(xs): return fold(xs, []): append(_a, _b)
+def reverse_find(xs, fun):
+    for(xs.length) i:
+        let j = xs.length - i - 1
+        if fun(xs[j]):
+            return j
+    return -1
+
+def reverse_list(xs):
+    return map(xs.length) i:
+        let j = xs.length - i - 1
+        xs[j]
+
+def flatten(xs):
+    return fold(xs, []):
+        append(_a, _b)
 
 def split(l, f):
     let r = [ [], [] ]
-    for(l) e: r[f(e)].push(e)
+    for(l) e:
+        r[f(e)].push(e)
     return r
 
-def rnd_pick(xs): return xs[rnd(xs.length)]
-def rnd_pick2(xs): return rnd_pick(rnd_pick(xs))
+def rnd_pick(xs):
+    return xs[rnd(xs.length)]
+def rnd_pick2(xs):
+    return rnd_pick(rnd_pick(xs))
 
 def qsort<T>(xs:[T], lt) -> [T]:
-    if xs.length <= 1:
+    guard xs.length > 1:
         return xs
-    else:
-        let pivot = xs[0]
-        let tail = xs.slice(1, -1)
-        let f1, f2 = tail.partition(): lt(_, pivot)
-        return append(append(qsort(f1, lt), [ pivot ]),
-                             qsort(f2, lt))
+    let pivot = xs[0]
+    let tail = xs.slice(1, -1)
+    let f1, f2 = tail.partition(): lt(_, pivot)
+    return append(append(qsort(f1, lt), [ pivot ]),
+                            qsort(f2, lt))
 
 def qsort_in_place(xs, lt):
     def rec(s, e) -> void:
         let l = e - s
-        if l > 1:
-            let pivot = xs[s]
-            var sp = s + 1
-            var ep = e
-            while sp < ep:
-                let c = xs[sp]
-                if lt(c, pivot):
-                    xs[sp - 1] = xs[sp]
-                    sp++
-                else:
-                    xs[sp] = xs[--ep]
-                    xs[ep] = c
-            xs[--sp] = pivot
-            rec(s, sp)
-            rec(ep, e)
+        guard l > 1
+        let pivot = xs[s]
+        var sp = s + 1
+        var ep = e
+        while sp < ep:
+            let c = xs[sp]
+            if lt(c, pivot):
+                xs[sp - 1] = xs[sp]
+                sp++
+            else:
+                xs[sp] = xs[--ep]
+                xs[ep] = c
+        xs[--sp] = pivot
+        rec(s, sp)
+        rec(ep, e)
     rec(0, xs.length)
 
 def insertion_sort(xs, lt):
     for(xs) key, i:
-        if i:
-            var j = i
-            while j > 0 and lt(key, xs[j - 1]):
-                xs[j--] = xs[j - 1]
-            xs[j] = key
+        guard i
+        var j = i
+        while j > 0 and lt(key, xs[j - 1]):
+            xs[j--] = xs[j - 1]
+        xs[j] = key
 
 def insert_ordered(xs, x, lt):
     for(xs) key, i:
@@ -184,10 +223,10 @@ def insert_ordered(xs, x, lt):
 
 def shuffle(xs):
     for(xs) x, i:
-        if i:
-            let j = rnd(i + 1)
-            xs[i] = xs[j]
-            xs[j] = x
+        guard i
+        let j = rnd(i + 1)
+        xs[i] = xs[j]
+        xs[j] = x
     return xs
 
 def nest_if(c, nest, with):
@@ -200,11 +239,17 @@ def return_after(v, f):
 
 def do(f): return f()  // Useful to create a scope where there is none.
 
-def for_bias (num, bias,  fun): for num: fun(_ + bias)
-def for_scale(num, scale, fun): for num: fun(_ * scale)
+def for_bias (num, bias,  fun):
+    for num:
+        fun(_ + bias)
+def for_scale(num, scale, fun):
+    for num:
+        fun(_ * scale)
 
-def for_range     (a, b, fun): for_bias(b - a,     a, fun)
-def for_range_incl(a, b, fun): for_bias(b - a + 1, a, fun)
+def for_range(a, b, fun):
+    for_bias(b - a, a, fun)
+def for_range_incl(a, b, fun):
+    for_bias(b - a + 1, a, fun)
 
 // HOFs that work on other HOFs:
 
@@ -216,6 +261,7 @@ def collect(hof):
 // error checking
 
 def fatal_exit(msg):
+    set_exit_code(1)
     print "fatal error: {msg}"
     return from program
 

@@ -19,7 +19,7 @@ bool RunC(const char *source,
     tcc_set_output_type(state.get(), object_name ? TCC_OUTPUT_OBJ : TCC_OUTPUT_MEMORY);
     tcc_set_error_func(state.get(), &error, [](void *err, const char *msg) {
         // No way to disable warnings individually, so filter them here :)
-        //if (strstr(msg, "label at end of compound statement")) return;
+        if (strstr(msg, "label at end of compound statement")) return;
         *((string *)err) += msg;
         *((string *)err) += "\n";
     });

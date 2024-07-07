@@ -4,110 +4,116 @@ import std
 
 // Convenient constants:
 
-let xy_0 = xy { 0.0, 0.0 }
-let xy_1 = xy { 1.0, 1.0 }
-let xy_h = xy { 0.5, 0.5 }
-let xy_x = xy { 1.0, 0.0 }
-let xy_y = xy { 0.0, 1.0 }
+let float2_0 = float2 { 0.0, 0.0 }
+let float2_1 = float2 { 1.0, 1.0 }
+let float2_h = float2 { 0.5, 0.5 }
+let float2_x = float2 { 1.0, 0.0 }
+let float2_y = float2 { 0.0, 1.0 }
 
-let xyz_0 = xyz { 0.0, 0.0, 0.0 }
-let xyz_1 = xyz { 1.0, 1.0, 1.0 }
-let xyz_x = xyz { 1.0, 0.0, 0.0 }
-let xyz_y = xyz { 0.0, 1.0, 0.0 }
-let xyz_z = xyz { 0.0, 0.0, 1.0 }
+let float3_0 = float3 { 0.0, 0.0, 0.0 }
+let float3_1 = float3 { 1.0, 1.0, 1.0 }
+let float3_x = float3 { 1.0, 0.0, 0.0 }
+let float3_y = float3 { 0.0, 1.0, 0.0 }
+let float3_z = float3 { 0.0, 0.0, 1.0 }
 
-let xyzw_0 = xyzw { 0.0, 0.0, 0.0, 0.0 }
-let xyzw_1 = xyzw { 1.0, 1.0, 1.0, 1.0 }
-let xyzw_x = xyzw { 1.0, 0.0, 0.0, 0.0 }
-let xyzw_y = xyzw { 0.0, 1.0, 0.0, 0.0 }
-let xyzw_z = xyzw { 0.0, 0.0, 1.0, 0.0 }
-let xyzw_w = xyzw { 0.0, 0.0, 0.0, 1.0 }
+let float4_0 = float4 { 0.0, 0.0, 0.0, 0.0 }
+let float4_1 = float4 { 1.0, 1.0, 1.0, 1.0 }
+let float4_x = float4 { 1.0, 0.0, 0.0, 0.0 }
+let float4_y = float4 { 0.0, 1.0, 0.0, 0.0 }
+let float4_z = float4 { 0.0, 0.0, 1.0, 0.0 }
+let float4_w = float4 { 0.0, 0.0, 0.0, 1.0 }
 
 // int versions
 
-let xy_0i = xy { 0, 0 }
-let xy_1i = xy { 1, 1 }
-let xy_xi = xy { 1, 0 }
-let xy_yi = xy { 0, 1 }
+let int2_0 = int2 { 0, 0 }
+let int2_1 = int2 { 1, 1 }
+let int2_x = int2 { 1, 0 }
+let int2_y = int2 { 0, 1 }
 
-let xyz_0i = xyz { 0, 0, 0 }
-let xyz_1i = xyz { 1, 1, 1 }
-let xyz_xi = xyz { 1, 0, 0 }
-let xyz_yi = xyz { 0, 1, 0 }
-let xyz_zi = xyz { 0, 0, 1 }
+let int3_0 = int3 { 0, 0, 0 }
+let int3_1 = int3 { 1, 1, 1 }
+let int3_x = int3 { 1, 0, 0 }
+let int3_y = int3 { 0, 1, 0 }
+let int3_z = int3 { 0, 0, 1 }
 
-let xyzw_0i = xyzw { 0, 0, 0, 0 }
-let xyzw_1i = xyzw { 1, 1, 1, 1 }
-let xyzw_xi = xyzw { 1, 0, 0, 0 }
-let xyzw_yi = xyzw { 0, 1, 0, 0 }
-let xyzw_zi = xyzw { 0, 0, 1, 0 }
-let xyzw_wi = xyzw { 0, 0, 0, 1 }
+let int4_0 = int4 { 0, 0, 0, 0 }
+let int4_1 = int4 { 1, 1, 1, 1 }
+let int4_x = int4 { 1, 0, 0, 0 }
+let int4_y = int4 { 0, 1, 0, 0 }
+let int4_z = int4 { 0, 0, 1, 0 }
+let int4_w = int4 { 0, 0, 0, 1 }
 
-let cardinal_directions = [ xy { 0, -1 }, xy { 1, 0 }, xy { 0, 1 }, xy { -1, 0 } ]
-let diagonal_directions = [ xy { -1, -1 }, xy { 1, 1 }, xy { 1, -1 }, xy { -1, 1 } ]
-
-let positive_directions = [ xy { 0, 0 }, xy { 1, 0 }, xy { 1, 1 }, xy { 0, 1 } ]
+let cardinal_directions = [ int2 {  0, -1 }, int2 { 1, 0 }, int2 { 0,  1 }, int2 { -1, 0 } ]
+let diagonal_directions = [ int2 { -1, -1 }, int2 { 1, 1 }, int2 { 1, -1 }, int2 { -1, 1 } ]
+let positive_directions = [ int2 {  0,  0 }, int2 { 1, 0 }, int2 { 1,  1 }, int2 {  0, 1 } ]
 
 let octant_directions = [
-    xyz {  1,  1,  1 },
-    xyz {  1,  1, -1 },
-    xyz {  1, -1,  1 },
-    xyz {  1, -1, -1 },
-    xyz { -1,  1,  1 },
-    xyz { -1,  1, -1 },
-    xyz { -1, -1,  1 },
-    xyz { -1, -1, -1 },
+    int3 {  1,  1,  1 },
+    int3 {  1,  1, -1 },
+    int3 {  1, -1,  1 },
+    int3 {  1, -1, -1 },
+    int3 { -1,  1,  1 },
+    int3 { -1,  1, -1 },
+    int3 { -1, -1,  1 },
+    int3 { -1, -1, -1 },
 ]
 
-// shorten vectors, e.g. xyz -> xy
-// FIXME: subtyping should take care of this
-def xy(v):  return xy  { v.x, v.y }
-def xyz(v): return xyz { v.x, v.y, v.z }
+// shorten vectors, e.g. vec3 -> vec2
+def xy<T>(v:vec3<T>) -> vec2<T>: return v  // Shorten by subtyping.
+def xy<T>(v:vec4<T>) -> vec2<T>: return v  // Shorten by subtyping.
+def xz(v): return vec2 { v.x, v.z }
+def yw(v): return vec2 { v.y, v.w }
+def zw(v): return vec2 { v.z, v.w }
+
+def xyz(v): return vec3 { v.x, v.y, v.z }
 
 // lengthen vectors
-def xyz(v, z):  return xyz  { v.x, v.y, z }
-def xyzw(v, w): return xyzw { v.x, v.y, v.z, w }
+def int3  (v:int2,   z:int):   return int3    { v.x, v.y, z }
+def float3(v:float2, z:float): return float3  { v.x, v.y, z }
+def vec3<T>(v:vec2<T>, z:T):   return vec3<T> { v.x, v.y, z }
+def int4  (v:int3,   w:int):   return int4    { v.x, v.y, v.z, w }
+def float4(v:float3, w:float): return float4  { v.x, v.y, v.z, w }
+def vec4<T>(v:vec3<T>, w:T):   return vec4<T> { v.x, v.y, v.z, w }
 
 // create from vector types
-def xy_v(v):   return xy { v[0], v[1] }
-def xyz_v(v):  return xyz { v[0], v[1], v[2] }
-def xyzw_v(v): return xyzw { v[0], v[1], v[2], v[3] }
+def vec2_v<T>(v:[T]): return vec2<T> { v[0], v[1] }
+def vec3_v<T>(v:[T]): return vec3<T> { v[0], v[1], v[2] }
+def vec4_v<T>(v:[T]): return vec4<T> { v[0], v[1], v[2], v[3] }
 // or to vector
-def v_xy(v):   return [ v.x, v.y ]
-def v_xyz(v):  return [ v.x, v.y, v.z ]
-def v_xyzw(v): return [ v.x, v.y, v.z, v.w ]
+def v_vec2<T>(v:vec2<T>): return [ v.x, v.y ]
+def v_vec3<T>(v:vec3<T>): return [ v.x, v.y, v.z ]
+def v_vec4<T>(v:vec4<T>): return [ v.x, v.y, v.z, v.w ]
 
 // flip vectors
-def yx(v):   return xy { v.y, v.x }
-def zyx(v):  return xyz { v.z, v.y, v.x }
-def wzyx(v): return xyzw { v.w, v.z, v.y, v.x }
+def yx<T>(v:vec2<T>):   return vec2<T> { v.y, v.x }
+def zyx<T>(v:vec3<T>):  return vec3<T> { v.z, v.y, v.x }
+def wzyx<T>(v:vec4<T>): return vec4<T> { v.w, v.z, v.y, v.x }
 
-def xy_rnd():   return xy  { rnd_float(), rnd_float() }
-def xyz_rnd():  return xyz { rnd_float(), rnd_float(), rnd_float() }
-def xyzw_rnd(): return xyzw { rnd_float(), rnd_float(), rnd_float(), rnd_float() }
+def rnd_float2(): return float2 { rnd_float(), rnd_float() }
+def rnd_float3(): return float3 { rnd_float(), rnd_float(), rnd_float() }
+def rnd_float4(): return float4 { rnd_float(), rnd_float(), rnd_float(), rnd_float() }
 
-def xy_rnd_norm():  return normalize(xy_rnd() - 0.5)
-def xyz_rnd_norm(): return normalize(xyz_rnd() - 0.5)
+def rnd_float2_norm(): return normalize(rnd_float2() - 0.5)
+def rnd_float3_norm(): return normalize(rnd_float3() - 0.5)
 
-def xy_rndi(n:int):    return xy  { rnd(n), rnd(n) }
-def xy_rndi(n:xy_i):   return xy  { rnd(n.x), rnd(n.y) }
-def xyz_rndi(n:int):   return xyz { rnd(n), rnd(n), rnd(n) }
-def xyz_rndi(n:xyz_i): return xyz { rnd(n.x), rnd(n.y), rnd(n.z) }
+def rnd_int2(n:int):  return int2  { rnd(n), rnd(n) }
+def rnd_int2(n:int2): return int2  { rnd(n.x), rnd(n.y) }
+def rnd_int3(n:int):  return int3 { rnd(n), rnd(n), rnd(n) }
+def rnd_int3(n:int3): return int3 { rnd(n.x), rnd(n.y), rnd(n.z) }
 
-def forxy(v, fun): for(v.y) y: for(v.x) x: fun(xy { x, y })
-def foryx(v, fun): for(v.x) x: for(v.y) y: fun(xy { x, y })
-def mapxy(v, fun): return map(v.y) y: map(v.x) x: fun(xy { x, y })
+def forxy(v:int2, fun): for(v.y) y: for(v.x) x: fun(int2 { x, y })
+def foryx(v:int2, fun): for(v.x) x: for(v.y) y: fun(int2 { x, y })
+def mapxy(v:int2, fun): return map(v.y) y: map(v.x) x: fun(int2 { x, y })
 
-def forxyz(v, fun): for(v.z) z: for(v.y) y: for(v.x) x: fun(xyz { x, y, z })
-def mapxyz(v, fun): return map(v.z) z: map(v.y) y: map(v.x) x: fun(xyz { x, y, z })
+def forxyz(v:int3, fun): for(v.z) z: for(v.y) y: for(v.x) x: fun(int3 { x, y, z })
+def mapxyz(v:int3, fun): return map(v.z) z: map(v.y) y: map(v.x) x: fun(int3 { x, y, z })
 
-def vecfromyawpitch(yaw, pitch, move, strafe):
-    return (xyz(sincos(yaw + 90.0/* start from Y rather than X axis */), 0.0) *
-        cos(pitch) + xyz_z * sin(pitch)) * move + xyz(sincos(yaw), 0.0) * strafe
+def vecfromyawpitch(yaw:float, pitch:float, move:float, strafe:float):
+    return (float3(sincos(yaw + 90.0/* start from Y rather than X axis */), 0.0) *
+        cos(pitch) + float3_z * sin(pitch)) * move + float3(sincos(yaw), 0.0) * strafe
 
-def rotate2D(v, angle):
+def rotate2D(v:float2, angle:float):
     let s = sin(-angle)
     let c = cos(-angle)
-    return xy { v.x * c + v.y * s,
-                v.y * c - v.x * s }
-
+    return float2 { v.x * c + v.y * s,
+                  v.y * c - v.x * s }

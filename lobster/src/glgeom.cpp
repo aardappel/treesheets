@@ -18,12 +18,13 @@
 #include "lobster/glinterface.h"
 #include "lobster/glincludes.h"
 
-int GenBO_(string_view name, int type, size_t bytesize, const void *data) {
+int GenBO_(string_view name, int type, size_t bytesize, const void *data, bool dyn) {
     int bo;
     GL_CALL(glGenBuffers(1, (GLuint *)&bo));
     GL_CALL(glBindBuffer(type, bo));
-    GL_CALL(glBufferData(type, bytesize, data, GL_STATIC_DRAW));
+    GL_CALL(glBufferData(type, bytesize, data, dyn ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
     GL_NAME(GL_BUFFER, bo, name);
+    LOG_DEBUG("GPU ALLOC BUFFER: ", bytesize / 1024, " K ", name);
     return bo;
 }
 
@@ -56,11 +57,11 @@ GLenum GetPrimitive(Primitive prim) {
 
 Surface::Surface(string_view name, gsl::span<int> indices, Primitive _prim)
     : numidx(indices.size()), prim(_prim) {
-    ibo = GenBO(name, GL_ELEMENT_ARRAY_BUFFER, indices);
+    ibo = GenBO(name, GL_ELEMENT_ARRAY_BUFFER, indices, false);
 }
 
 void Surface::Render(Shader *sh) {
-    LOBSTER_FRAME_PROFILE_GPU("Surface::Render");
+    LOBSTER_FRAME_PROFILE_GPU;
     sh->SetTextures(textures);
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
     GL_CALL(glDrawElements(GetPrimitive(prim), (GLsizei)numidx, GL_UNSIGNED_INT, 0));
@@ -71,8 +72,8 @@ Surface::~Surface() {
 }
 
 void Geometry::Init(string_view name, const void *verts1, const void *verts2) {
-    vbo1 = GenBO_(name, GL_ARRAY_BUFFER, vertsize1 * nverts, verts1);
-    if (verts2) vbo2 = GenBO_(name, GL_ARRAY_BUFFER, vertsize2 * nverts, verts2);
+    vbo1 = GenBO_(name, GL_ARRAY_BUFFER, vertsize1 * nverts, verts1, false);
+    if (verts2) vbo2 = GenBO_(name, GL_ARRAY_BUFFER, vertsize2 * nverts, verts2, false);
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo1));
     GL_CALL(glGenVertexArrays(1, (GLuint *)&vao));
     GL_CALL(glBindVertexArray(vao));
@@ -120,22 +121,38 @@ Geometry::~Geometry() {
     GL_CALL(glDeleteVertexArrays(1, (GLuint *)&vao));
 }
 
-void Geometry::BindAsSSBO(Shader *sh, string_view name) {
-    UniformBufferObject(sh, nullptr, 0, -1, name, true, vbo1);
-    assert(!vbo2);
+void BindAsSSBO(Shader *sh, string_view_nt name, int id) {
+    #ifndef PLATFORM_WINNIX
+        (void)sh;
+        (void)name;
+    #else
+        BufferObject tmp(id, GL_SHADER_STORAGE_BUFFER, 0, false);
+        BindBufferObject(sh, &tmp, name);
+    #endif
 }
 
 void Mesh::Render(Shader *sh) {
     if (prim == PRIM_POINT) SetPointSprite(pointsize);
     sh->Set();
-    if (numbones && numframes) {
-        int frame1 = ffloor(curanim);
-        int frame2 = frame1 + 1;
-        float frameoffset = curanim - frame1;
-        float3x4 *mat1 = &mats[(frame1 % numframes) * numbones],
-                 *mat2 = &mats[(frame2 % numframes) * numbones];
-        auto outframe = new float3x4[numbones];
-        for(int i = 0; i < numbones; i++) outframe[i] = mix(mat1[i], mat2[i], frameoffset);
+    if (sh->bones_i >= 0 && numbones && numframes) {
+        auto blend_frame = [this](float fr, float3x4 *out) {
+            int frame1 = ffloor(fr);
+            int frame2 = frame1 + 1;
+            float frameoffset = fr - frame1;
+            float3x4 *mat1 = &mats[(frame1 % numframes) * numbones],
+                     *mat2 = &mats[(frame2 % numframes) * numbones];
+            for(int i = 0; i < numbones; i++) out[i] = mix(mat1[i], mat2[i], frameoffset);
+        };
+
+        auto outframe = new float3x4[numbones * 2];
+        blend_frame(anim_frame1, outframe);
+        if (anim_frame2 >= 0.0) {
+            // Blend two animations
+            blend_frame(anim_frame2, outframe + numbones);
+            for(int i = 0; i < numbones; i++) {
+                outframe[i] = mix(outframe[i], outframe[i + numbones], anim_blending);
+            }
+        }
         sh->SetAnim(outframe, numbones);
         delete[] outframe;
     }
@@ -208,13 +225,31 @@ void Surface::WritePLY(string &s) {
     #endif
 }
 
-bool Mesh::SaveAsPLY(string_view filename) {
-    size_t nindices = 0;
-    for (auto &surf : surfs) nindices += surf->numidx;
-    string s;
-    if (!geom->WritePLY(s, nindices)) return false;
-    for (auto &surf : surfs) surf->WritePLY(s);
-    return WriteFile(filename, true, s, false);
+string Mesh::Save(string_view filename, ModelFormat format) {
+    string err;
+    switch (format) {
+        case MF_PLY: {
+            size_t nindices = 0;
+            for (auto &surf : surfs) nindices += surf->numidx;
+            string s;
+            if (!geom->WritePLY(s, nindices)) {
+                err = "encode geometry failed";
+                break;
+            }
+            for (auto &surf : surfs) surf->WritePLY(s);
+            if (!WriteFile(filename, true, s, false)) {
+                err = "unable to write file to filesystem";
+            }
+            break;
+        }
+        case MF_IQM:
+            err = SaveAsIQM(this, filename);
+            break;
+        default:
+            err = "unsupported model format";
+            break;
+    }
+    return err;
 }
 
 void SetPointSprite(float scale) {
@@ -232,7 +267,7 @@ void SetPointSprite(float scale) {
 }
 
 void RenderArray(Primitive prim, Geometry *geom, int ibo, size_t tcount) {
-    LOBSTER_FRAME_PROFILE_GPU("RenderArray");
+    LOBSTER_FRAME_PROFILE_GPU;
     GLenum glprim = GetPrimitive(prim);
     geom->RenderSetup();
     if (ibo) {
@@ -281,7 +316,7 @@ void GeometryCache::RenderLine2D(Shader *sh, Primitive prim, const float3 &v1, c
 
 void GeometryCache::RenderLine3D(Shader *sh, const float3 &v1, const float3 &v2,
                                  const float3 &/*campos*/, float thickness) {
-    GL_CALL(glDisable(GL_CULL_FACE));  // An exception in 3d mode.
+    CullFace(false);  // An exception in 3d mode.
     // FIXME: need to rotate the line also to make it face the camera.
     //auto camvec = normalize(campos - (v1 + v2) / 2);
     auto v = v2 - v1;
@@ -291,7 +326,7 @@ void GeometryCache::RenderLine3D(Shader *sh, const float3 &v1, const float3 &v2,
                  float3x3to4x4(rotation(vq)) *  // FIXME: cheaper?
                  float4x4(float4(length(v) / 2, thickness, 1, 1));
     RenderQuad(sh, PRIM_FAN, true, trans);
-    GL_CALL(glEnable(GL_CULL_FACE));
+    CullFace(true);
 }
 
 void GeometryCache::RenderUnitCube(Shader *sh, int inside) {
@@ -322,10 +357,34 @@ void GeometryCache::RenderUnitCube(Shader *sh, int inside) {
         }
         cube_geom[inside] = new Geometry("RenderUnitCube_verts", gsl::make_span(verts), "PNT");
         cube_ibo[inside] =
-            GenBO("RenderUnitCube_idxs", GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(triangles));
+            GenBO("RenderUnitCube_idxs", GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(triangles), false);
     }
     sh->Set();
     RenderArray(PRIM_TRIS, cube_geom[inside], cube_ibo[inside], 36);
+}
+
+void GeometryCache::RenderRoundedRectangle(Shader *sh, Primitive prim, int segments, float2 size, float corner_ratio) {
+    assert(segments >= 3);
+    // Use plain floats, as the float2::operator< does not work well with std::map
+    auto &geom = roundedboxvbos[{ segments, size.x, size.y, corner_ratio }];
+    if (!geom) {
+        vector<float3> vbuf(segments);
+        float step = PI * 2 / segments;
+        auto ratio2 = size.x > size.y ? float2(corner_ratio * size.y / size.x, corner_ratio)
+                                      : float2(corner_ratio, corner_ratio * size.x / size.y);
+        for (int i = 0; i < segments; i++) {
+            // + 1 to reduce "aliasing" from exact 0 / 90 degrees points
+            auto xy = float2(sinf(i * step + 1), cosf(i * step + 1)) * ratio2;
+            xy += (1.0f - ratio2) * sign(xy);
+            xy /= 2.0f;
+            xy += 0.5f;
+            xy *= size;
+            vbuf[i] = float3(xy, 0);
+        }
+        geom = new Geometry("RenderRoundedRectangle", gsl::make_span(vbuf), "P");
+    }
+    sh->Set();
+    RenderArray(prim, geom);
 }
 
 void GeometryCache::RenderCircle(Shader *sh, Primitive prim, int segments, float radius) {
@@ -371,7 +430,7 @@ void GeometryCache::RenderOpenCircle(Shader *sh, int segments, float radius, flo
             ibuf[i * 6 + 5] = ((i + 1) * 2 + 0) % nverts;
         }
         vibo.first = new Geometry("RenderOpenCircle_verts", gsl::make_span(vbuf), "P");
-        vibo.second = GenBO("RenderOpenCircle_idxs", GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(ibuf));
+        vibo.second = GenBO("RenderOpenCircle_idxs", GL_ELEMENT_ARRAY_BUFFER, gsl::make_span(ibuf), false);
     }
     Transform(float4x4(float4(float2_1 * radius, 1)), [&]() {
         sh->Set();
@@ -387,4 +446,5 @@ GeometryCache::~GeometryCache() {
     }
     for (auto &p : circlevbos) delete p.second;
     for (auto &p : opencirclevbos) delete p.second.first;
+    for (auto &p : roundedboxvbos) delete p.second;
 }

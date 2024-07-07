@@ -37,7 +37,7 @@ BitmapFont::~BitmapFont() {
 }
 
 BitmapFont::BitmapFont(OutlineFont *_font, int _size, float _osize)
-    : font_height(_size), outlinesize(_osize), font(_font) {}
+    : tex(DummyTexture()), font_height(_size), outlinesize(_osize), font(_font) {}
 
 bool BitmapFont::CacheChars(string_view text) {
     usedcount++;
@@ -173,7 +173,9 @@ void BitmapFont::RenderText(string_view text) {
         x += glyph.advance;
     }
     SetTexture(0, tex);
+    if (!Is2DMode()) CullFace(false);
     RenderArraySlow("RenderText", PRIM_TRIS, gsl::make_span(vbuf), "pT", gsl::make_span(ibuf));
+    if (!Is2DMode()) CullFace(true);
 }
 
 const int2 BitmapFont::TextSize(string_view text) {
@@ -212,8 +214,8 @@ string OutlineFont::GetName(int i) {
     return buf;
 }
 
-int OutlineFont::GetCharCode(string_view name) {
-    auto glyphi = FT_Get_Name_Index((FT_Face)fthandle, (char *)null_terminated(name));
+int OutlineFont::GetCharCode(string_view_nt name) {
+    auto glyphi = FT_Get_Name_Index((FT_Face)fthandle, (char *)name.c_str());
     if (!glyphi) return 0;
     if (glyph_to_char.empty()) {
         uint32_t cgi = 0;

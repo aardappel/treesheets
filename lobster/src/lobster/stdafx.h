@@ -15,6 +15,7 @@
 #pragma once
 
 #ifdef _MSC_VER
+    #define _HAS_STD_BYTE 0  // clashes with windows headers.
     #define _CRT_SECURE_NO_WARNINGS
     #define _SCL_SECURE_NO_WARNINGS
     #define _CRTDBG_MAP_ALLOC
@@ -77,7 +78,17 @@ using gsl::span;
 
 // Our universally used headers.
 #include "wentropy.h"
+
 #include "tools.h"
+#include "dllist.h"
+#include "rng_hash.h"
+#include "string_tools.h"
+#include "accumulator.h"
+#include "resource_manager.h"
+#include "small_vector.h"
+#include "packed_vector.h"
+#include "varint.h"
+
 #include "platform.h"
 #include "slaballoc.h"
 #include "geom.h"
@@ -116,9 +127,10 @@ using namespace geom;
     #define TRACY_ONLY_LOCALHOST 1
     // These are too expensive to always have on, but can give maximum info automatically.
     #define LOBSTER_FRAME_PROFILER_BUILTINS 0
-    #define LOBSTER_FRAME_PROFILER_FUNCTIONS 0   // Only works with --runtime-verbose on.
-    #define LOBSTER_FRAME_PROFILE_THIS_FUNCTION ZoneScoped
-    #define LOBSTER_FRAME_PROFILE_GPU(N) TracyGpuZone(N)
+    #define LOBSTER_FRAME_PROFILER_FUNCTIONS 0   // Only works with --runtime-stack-trace on.
+    #define LOBSTER_FRAME_PROFILER_GLOBAL 0      // Save additional copy to debug hard crashes.
+    #define LOBSTER_FRAME_PROFILE_THIS_SCOPE ZoneScoped
+    #define LOBSTER_FRAME_PROFILE_GPU TracyGpuZone(__FUNCTION__)
     #undef new
     #include "Tracy.hpp"
     #include "TracyC.h"
@@ -128,6 +140,9 @@ using namespace geom;
 #else
     #define LOBSTER_FRAME_PROFILER_BUILTINS 0
     #define LOBSTER_FRAME_PROFILER_FUNCTIONS 0
-    #define LOBSTER_FRAME_PROFILE_THIS_FUNCTION
-    #define LOBSTER_FRAME_PROFILE_GPU(N)
+    #define LOBSTER_FRAME_PROFILER_GLOBAL 0
+    #define LOBSTER_FRAME_PROFILE_THIS_SCOPE
+    #define LOBSTER_FRAME_PROFILE_GPU
 #endif
+
+#define LOBSTER_RENDERDOC 0

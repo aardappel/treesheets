@@ -17,8 +17,6 @@
 
 namespace lobster {
 
-typedef const function<void (Node *)> &IterateFun;
-
 struct TypeChecker;
 struct Optimizer;
 struct CodeGen;
@@ -35,9 +33,11 @@ struct Node {
     virtual bool IsConstInit() const { return false; }
     // Does control flow continue beyond this node?
     virtual bool Terminal(TypeChecker &) const { return false; }
+    // Node will have this type regardless of type-checking context.
+    virtual TypeRef CFType() { return nullptr; }
     virtual string_view Name() const = 0;
     virtual void Dump(string &sd) const { sd += Name(); }
-    void Iterate(IterateFun f) {
+    template<typename F> void Iterate(F f) {
         f(this);
         auto ch = Children();
         if (ch) for (size_t i = 0; i < Arity(); i++) ch[i]->Iterate(f);
@@ -77,6 +77,8 @@ struct Node {
     virtual Node *TypeCheck(TypeChecker &tc, size_t reqret) = 0;
     virtual Node *Optimize(Optimizer &opt);
     virtual void Generate(CodeGen &cg, size_t retval) const = 0;
+    // Node allocation and cloning is the bulk of allocation, so use custom fast allocator:
+    USE_CURRENT_SLABALLOCATOR
   protected:
     Node(const Line &ln) : line(ln) {}
     Node() = default;
@@ -85,6 +87,10 @@ struct Node {
 struct TypeLT {
     TypeRef type;
     Lifetime lt;
+
+    TypeLT() {
+        lt = LT_UNDEF;
+    }
 
     TypeLT(TypeRef type, Lifetime lt)
         : type(type), lt(lt) {}
@@ -192,9 +198,11 @@ struct NAME : Node { \
 #define TERNARY_NODE(NAME, STR, SE, A, B, C, METHODS) \
     TERNARY_NODE_T(NAME, STR, SE, Node, A, Node, B, Node, C, METHODS)
 
+typedef small_vector<Node *, 4> node_small_vector;
+
 #define NARY_NODE(NAME, STR, SE, METHODS) \
 struct NAME : Node { \
-    vector<Node *> children; \
+    node_small_vector children; \
     NAME(const Line &ln) : Node(ln) {}; \
     ~NAME() { for (auto n : children) delete n; } \
     size_t Arity() const { return children.size(); } \
@@ -206,11 +214,11 @@ struct NAME : Node { \
 };
 
 struct TypeAnnotation : Node {
-    UnresolvedTypeRef giventype;
-    TypeAnnotation(const Line &ln, UnresolvedTypeRef tr) : Node(ln), giventype(tr) {}
-    void Dump(string &sd) const { sd += TypeName(giventype.utr); }
+    TypeRef giventype;
+    TypeAnnotation(const Line &ln, TypeRef tr) : Node(ln), giventype(tr) {}
+    void Dump(string &sd) const { sd += TypeName(giventype); }
     bool EqAttr(const Node *o) const {
-        return giventype.utr->Equal(*((TypeAnnotation *)o)->giventype.utr);
+        return giventype->Equal(*((TypeAnnotation *)o)->giventype);
     }
     SHARED_SIGNATURE(TypeAnnotation, "type", false)
 };
@@ -269,6 +277,7 @@ COER_NODE(ToFloat, "tofloat", )
 COER_NODE(ToString, "tostring", )
 COER_NODE(ToBool, "tobool", )
 COER_NODE(ToInt, "toint", )
+COER_NODE(ToStructSuper, "tostructsuper", )
 NARY_NODE(Block, "block", false, RETURNSMETHOD)
 BINARY_NODE_T(IfThen, "if", false, Node, condition, Block, truepart, )
 TERNARY_NODE_T(IfElse, "if", false, Node, condition, Block, truepart, Block, falsepart, RETURNSMETHOD)
@@ -276,16 +285,21 @@ BINARY_NODE_T(While, "while", false, Node, condition, Block, wbody, RETURNSMETHO
 BINARY_NODE_T(For, "for", false, Node, iter, Block, fbody, )
 ZERO_NODE(ForLoopElem, "for loop element", false, )
 ZERO_NODE(ForLoopCounter, "for loop counter", false, )
-BINARY_NODE_T(Switch, "switch", false, Node, value, List, cases, RETURNSMETHOD bool GenerateJumpTable(CodeGen &cg, size_t retval) const;)
+BINARY_NODE_T(Switch, "switch", false, Node, value, List, cases, \
+    int vtable_idx = -1; \
+    RETURNSMETHOD \
+    bool GenerateJumpTable(CodeGen &cg, size_t retval) const; \
+    void GenerateTypeDispatch(CodeGen &cg, size_t retval) const; \
+    void GenerateJumpTableMain(CodeGen &cg, size_t retval, int range, int mini) const;)
 BINARY_NODE_T(Case, "case", false, List, pattern, Node, cbody, )
 BINARY_NODE(Range, "range", false, start, end, )
 ZERO_NODE(Break, "break", false, RETURNSMETHOD)
 
 struct Nil : Node {
-    UnresolvedTypeRef giventype;
-    Nil(const Line &ln, UnresolvedTypeRef tr) : Node(ln), giventype(tr) {}
+    TypeRef giventype;
+    Nil(const Line &ln, TypeRef tr) : Node(ln), giventype(tr) {}
     bool EqAttr(const Node *o) const {
-        return giventype.utr->Equal(*((Nil *)o)->giventype.utr);
+        return giventype->Equal(*((Nil *)o)->giventype);
     }
     SHARED_SIGNATURE(Nil, TName(T_NIL), false)
     OPTMETHOD
@@ -308,6 +322,7 @@ struct IntConstant : Node {
     EnumVal *from;
     IntConstant(const Line &ln, int64_t i) : Node(ln), integer(i), from(nullptr) {}
     bool IsConstInit() const { return true; }
+    TypeRef CFType() { return from ? &from->e->thistype : type_int; }
     void Dump(string &sd) const { if (from) sd += from->name; else append(sd, integer); }
     bool EqAttr(const Node *o) const {
         return integer == ((IntConstant *)o)->integer;
@@ -320,6 +335,7 @@ struct FloatConstant : Node {
     double flt;
     FloatConstant(const Line &ln, double f) : Node(ln), flt(f) {}
     bool IsConstInit() const { return true; }
+    TypeRef CFType() { return type_float; }
     void Dump(string &sd) const { sd += to_string_float(flt); }
     bool EqAttr(const Node *o) const {
         return flt == ((FloatConstant *)o)->flt;
@@ -332,6 +348,7 @@ struct StringConstant : Node {
     string str;
     StringConstant(const Line &ln, string &&s) : Node(ln), str(s) {}
     bool IsConstInit() const { return true; }
+    TypeRef CFType() { return type_string; }
     void Dump(string &sd) const { EscapeAndQuote(str, sd); }
     bool EqAttr(const Node *o) const {
         return str == ((StringConstant *)o)->str;
@@ -349,12 +366,23 @@ struct EnumRef : Node {
     SHARED_SIGNATURE(EnumRef, TName(T_ENUM), false)
 };
 
+struct GUDTRef : Node {
+    GUDT *gudt;
+    bool predeclaration;
+    GUDTRef(const Line &ln, GUDT *_gudt, bool predeclaration)
+        : Node(ln), gudt(_gudt), predeclaration(predeclaration) {}
+    void Dump(string &sd) const { append(sd, gudt->is_struct ? "struct " : "class ", gudt->name); }
+    bool EqAttr(const Node *o) const {
+        return gudt == ((GUDTRef *)o)->gudt;
+    }
+    SHARED_SIGNATURE(GUDTRef, TName(T_CLASS), false)
+};
+
 struct UDTRef : Node {
     UDT *udt;
-    bool predeclaration;
-    UDTRef(const Line &ln, UDT *_udt, bool predeclaration)
-        : Node(ln), udt(_udt), predeclaration(predeclaration) {}
-    void Dump(string &sd) const { append(sd, udt->is_struct ? "struct " : "class ", udt->name); }
+    UDTRef(const Line &ln, UDT *_udt)
+        : Node(ln), udt(_udt) {}
+    void Dump(string &sd) const { append(sd, "specialization ", udt->name); }
     bool EqAttr(const Node *o) const {
         return udt == ((UDTRef *)o)->udt;
     }
@@ -381,9 +409,9 @@ struct GenericCall : List {
     bool fromdot;
     bool noparens;
     bool super;
-    vector<UnresolvedTypeRef> specializers;
+    vector<TypeRef> specializers;
     GenericCall(const Line &ln, string_view name, string_view ns, bool fromdot, bool noparens,
-                bool super, vector<UnresolvedTypeRef> *spec)
+                bool super, vector<TypeRef> *spec)
         : List(ln), name(name), ns(ns), fromdot(fromdot), noparens(noparens), super(super) {
         if (spec) specializers = *spec;
     };
@@ -394,8 +422,8 @@ struct GenericCall : List {
 };
 
 struct Constructor : List {
-    UnresolvedTypeRef giventype;
-    Constructor(const Line &ln, UnresolvedTypeRef _type) : List(ln), giventype(_type) {};
+    TypeRef giventype;
+    Constructor(const Line &ln, TypeRef _type) : List(ln), giventype(_type) {};
     bool IsConstInit() const {
         for (auto n : children) {
             if (!n->IsConstInit()) return false;
@@ -403,7 +431,7 @@ struct Constructor : List {
         return true;
     }
     bool EqAttr(const Node *o) const {
-        return giventype.utr->Equal(*((Constructor *)o)->giventype.utr);
+        return giventype->Equal(*((Constructor *)o)->giventype);
     }
     SHARED_SIGNATURE(Constructor, "constructor", false)
     OPTMETHOD
@@ -412,7 +440,7 @@ struct Constructor : List {
 struct Call : List {
     int vtable_idx = -1;
     SubFunction *sf;
-    vector<UnresolvedTypeRef> specializers;
+    vector<TypeRef> specializers;
     bool super;
     explicit Call(GenericCall &gc, SubFunction *sf)
         : List(gc.line), sf(sf), specializers(gc.specializers), super(gc.super) {};
@@ -478,7 +506,7 @@ struct AssignList : List {
 };
 
 struct Define : Unary {
-    vector<pair<SpecIdent *, UnresolvedTypeRef>> sids;
+    vector<pair<SpecIdent *, TypeRef>> sids;
     Define(const Line &ln, Node *_a) : Unary(ln, _a) {}
     void Dump(string &sd) const {
         for (auto p : sids) append(sd, p.first->id->name, " ");
@@ -488,6 +516,38 @@ struct Define : Unary {
         return false;  // FIXME
     }
     SHARED_SIGNATURE(Define, "var", true)
+};
+
+struct Member : Unary {
+    SpecIdent *this_sid = nullptr;
+    GUDT *gudt = nullptr;
+    size_t field_idx = 0;
+    bool frame = false;
+    Member(const Line &ln, Node *init) : Unary(ln, init) {}
+    Field *field() const { return &gudt->fields[field_idx]; }
+    void Dump(string &sd) const {
+        append(sd, field()->id->name, " ");
+        sd += Name();
+    }
+    bool EqAttr(const Node *o) const {
+        return field() == ((Member *)o)->field() && frame == ((Member *)o)->frame;
+    }
+    SHARED_SIGNATURE(Member, TName(T_MEMBER), false)
+};
+
+struct Static : Unary {
+    SpecIdent *sid = nullptr;
+    TypeRef giventype;
+    bool frame = false;
+    Static(const Line &ln, Node *init) : Unary(ln, init) {}
+    void Dump(string &sd) const {
+        append(sd, sid->id->name, " ");
+        sd += Name();
+    }
+    bool EqAttr(const Node *) const {
+        return false;  // FIXME
+    }
+    SHARED_SIGNATURE(Static, TName(T_STATIC), false)
 };
 
 struct Dot : Unary {
@@ -502,11 +562,12 @@ struct Dot : Unary {
 };
 
 struct IsType : Unary {
-    GivenResolve gr;
-    IsType(const Line &ln, Node *_a, UnresolvedTypeRef _type) : Unary(ln, _a), gr(_type) {}
-    void Dump(string &sd) const { append(sd, Name(), ":", TypeName(gr.giventype.utr)); }
+    TypeRef giventype;
+    TypeRef resolvedtype = nullptr;
+    IsType(const Line &ln, Node *_a, TypeRef _type) : Unary(ln, _a), giventype(_type) {}
+    void Dump(string &sd) const { append(sd, Name(), ":", TypeName(giventype)); }
     bool EqAttr(const Node *o) const {
-        return gr.giventype.utr->Equal(*((IsType *)o)->gr.giventype.utr);
+        return giventype->Equal(*((IsType *)o)->giventype);
     }
     SHARED_SIGNATURE(IsType, TName(T_IS), false)
 };

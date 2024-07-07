@@ -15,17 +15,14 @@
 #include "lobster/stdafx.h"
 
 #include "lobster/vmdata.h"
-
 #include "lobster/sdlincludes.h"
 #include "lobster/sdlinterface.h"
-
 #include "lobster/glinterface.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #ifdef _MSC_VER
   #pragma warning(push)
   #pragma warning(disable: 4244)
@@ -54,6 +51,13 @@ enter equals up down right left insert home end page up page down
 f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15
 numlock caps lock scroll lock right shift left shift right ctrl left ctrl right alt left alt
 right meta left meta left super right super alt gr compose help print screen sys req break
+
+For controllers (all starting with controller_):
+
+a b x y back guide start leftstick rightstick leftshoulder rightshoulder
+dpup dpdown dpleft dpright misc1 paddle1 paddle2 paddle3 paddle4 touchpad
+
+joy0 and up give raw joystick values with no mapping.
 */
 
 
@@ -123,12 +127,14 @@ int2 inputscale = int2_1;
 
 bool fullscreen = false;
 bool cursor = true;
+int cursorx = 0, cursory = 0;
 bool landscape = true;
 bool minimized = false;
 bool noninteractivetestmode = false;
 
-const int MAXAXES = 8;
+const int MAXAXES = 16;
 float joyaxes[MAXAXES] = { 0 };
+float controller_axes[SDL_CONTROLLER_AXIS_MAX] = { 0 };
 
 struct Finger {
     SDL_FingerID id;
@@ -193,6 +199,10 @@ float GetJoyAxis(int i) {
     return joyaxes[max(min(i, MAXAXES - 1), 0)];
 }
 
+float GetControllerAxis(int i) {
+    return controller_axes[max(min(i, SDL_CONTROLLER_AXIS_MAX - 1), 0)];
+}
+
 int updatedragpos(SDL_TouchFingerEvent &e, Uint32 et) {
     int numfingers = SDL_GetNumTouchFingers(e.touchId);
     //assert(numfingers && e.fingerId < numfingers);
@@ -227,6 +237,7 @@ string SDLError(const char *msg) {
 }
 
 int SDLHandleAppEvents(void * /*userdata*/, SDL_Event *event) {
+    // NOTE: This function only called on mobile devices it appears.
     switch (event->type) {
         case SDL_APP_TERMINATING:
             /* Terminate the app.
@@ -239,12 +250,14 @@ int SDLHandleAppEvents(void * /*userdata*/, SDL_Event *event) {
              */
             return 0;
         case SDL_APP_WILLENTERBACKGROUND:
+            LOG_DEBUG("SDL_APP_WILLENTERBACKGROUND");
             minimized = true;
             /* Prepare your app to go into the background.  Stop loops, etc.
              This gets called when the user hits the home button, or gets a call.
              */
             return 0;
         case SDL_APP_DIDENTERBACKGROUND:
+            LOG_DEBUG("SDL_APP_DIDENTERBACKGROUND");
             /* This will get called if the user accepted whatever sent your app to the background.
              If the user got a phone call and canceled it,
              you'll instead get an SDL_APP_DIDENTERFOREGROUND event and restart your loops.
@@ -253,11 +266,13 @@ int SDLHandleAppEvents(void * /*userdata*/, SDL_Event *event) {
              */
             return 0;
         case SDL_APP_WILLENTERFOREGROUND:
+            LOG_DEBUG("SDL_APP_WILLENTERFOREGROUND");
             /* This call happens when your app is coming back to the foreground.
              Restore all your state here.
              */
             return 0;
         case SDL_APP_DIDENTERFOREGROUND:
+            LOG_DEBUG("SDL_APP_DIDENTERFOREGROUND");
             /* Restart your loops here.
              Your app is interactive and getting CPU again.
              */
@@ -278,6 +293,16 @@ void ScreenSizeChanged() {
     inputscale = screensize / inputsize;
 }
 
+SDL_GameController *find_controller() {
+    for (int i = 0; i < SDL_NumJoysticks(); i++) {
+        if (SDL_IsGameController(i)) {
+            return SDL_GameControllerOpen(i);
+        }
+    }
+    return nullptr;
+}
+SDL_GameController *controller = nullptr;
+
 #ifdef PLATFORM_ES3
 int gl_major = 3, gl_minor = 0;
 #else
@@ -292,10 +317,11 @@ void SDLRequireGLVersion(int major, int minor) {
     #endif
 };
 
-string SDLInit(string_view title, const int2 &desired_screensize, InitFlags flags, int samples) {
+string SDLInit(string_view_nt title, const int2 &desired_screensize, InitFlags flags, int samples) {
     MakeDPIAware();
-    //SDL_SetMainReady();
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER /* | SDL_INIT_AUDIO*/) < 0) {
+    TextToSpeechInit();  // Needs to be before SDL_Init because COINITBASE_MULTITHREADED
+    // SDL_SetMainReady();
+    if (SDL_Init(SDL_INIT_VIDEO /* | SDL_INIT_AUDIO*/) < 0) {
         return SDLError("Unable to initialize SDL");
     }
 
@@ -350,7 +376,7 @@ string SDLInit(string_view title, const int2 &desired_screensize, InitFlags flag
         #ifdef __EMSCRIPTEN__
             wflags |= SDL_WINDOW_RESIZABLE;
         #endif
-        _sdl_window = SDL_CreateWindow(null_terminated(title),
+        _sdl_window = SDL_CreateWindow(title.c_str(),
                                        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                        screensize.x, screensize.y, wflags);
         LOG_INFO(_sdl_window ? "SDL window passed..." : "SDL window FAILED...");
@@ -367,14 +393,18 @@ string SDLInit(string_view title, const int2 &desired_screensize, InitFlags flag
         if (SDL_GetDisplayDPI(display, NULL, &dpi, NULL)) dpi = default_dpi;
         LOG_INFO(cat("dpi: ", dpi));
         screensize = desired_screensize * int(dpi) / int(default_dpi);
-        _sdl_window = SDL_CreateWindow(null_terminated(title),
-                                       SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                       screensize.x, screensize.y,
-                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE |
-                                       SDL_WINDOW_ALLOW_HIGHDPI |
-                                            (flags & INIT_FULLSCREEN
-                                                ? SDL_WINDOW_FULLSCREEN_DESKTOP
-                                                : 0));
+        // STARTUP-TIME-COST: 0.16 sec.
+        _sdl_window = SDL_CreateWindow(
+            title.c_str(),
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            screensize.x, screensize.y,
+            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI |
+                (flags & INIT_NO_RESIZABLE ? 0 : SDL_WINDOW_RESIZABLE) |
+                (flags & INIT_BORDERLESS ? SDL_WINDOW_BORDERLESS : 0) |
+                (flags & INIT_MAXIMIZED ? SDL_WINDOW_MAXIMIZED : 0) |
+                (flags & INIT_FULLSCREEN ? (flags & INIT_NATIVE ? SDL_WINDOW_FULLSCREEN
+                                                                : SDL_WINDOW_FULLSCREEN_DESKTOP)
+                                         : 0));
     #endif
     ScreenSizeChanged();
     LOG_INFO("obtained resolution: ", screensize.x, " ", screensize.y);
@@ -395,25 +425,66 @@ string SDLInit(string_view title, const int2 &desired_screensize, InitFlags flag
         if (SDL_GL_SetSwapInterval(flags & INIT_NO_VSYNC ? 0 : -1) < 0) SDL_GL_SetSwapInterval(1);
     #endif
 
-    SDL_JoystickEventState(SDL_ENABLE);
-    SDL_JoystickUpdate();
-    for(int i = 0; i < SDL_NumJoysticks(); i++) {
-        SDL_Joystick *joy = SDL_JoystickOpen(i);
-        if (joy) {
-            LOG_INFO("Detected joystick: ", SDL_JoystickName(joy), " (",
-                                SDL_JoystickNumAxes(joy), " axes, ",
-                                SDL_JoystickNumButtons(joy), " buttons, ",
-                                SDL_JoystickNumBalls(joy), " balls, ",
-                                SDL_JoystickNumHats(joy), " hats)");
+    auto gl_err = OpenGLInit(samples, flags & INIT_LINEAR_COLOR);
+
+    // STARTUP-TIME-COST: 0.08 sec. (due to controller, not joystick)
+    if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) >= 0 &&
+        SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) >= 0) {
+        SDL_JoystickEventState(SDL_ENABLE);
+        SDL_JoystickUpdate();
+        for(int i = 0; i < SDL_NumJoysticks(); i++) {
+            SDL_Joystick *joy = SDL_JoystickOpen(i);
+            if (joy) {
+                LOG_INFO("Detected joystick: ", SDL_JoystickName(joy), " (",
+                                    SDL_JoystickNumAxes(joy), " axes, ",
+                                    SDL_JoystickNumButtons(joy), " buttons, ",
+                                    SDL_JoystickNumBalls(joy), " balls, ",
+                                    SDL_JoystickNumHats(joy), " hats)");
+            };
         };
-    };
+        controller = find_controller();
+    }
 
     timestart = SDL_GetPerformanceCounter();
     timefreq = SDL_GetPerformanceFrequency();
 
     lasttime = -0.02f;    // ensure first frame doesn't get a crazy delta
 
-    return OpenGLInit(samples, flags & INIT_LINEAR_COLOR);
+    return gl_err;
+}
+
+void SDLSetFullscreen(InitFlags flags) {
+    int mode = 0;
+    if (flags & INIT_FULLSCREEN) {
+        if (flags & INIT_NATIVE) {
+            // If you switch to fullscreen you get some random display mode that is not the
+            // native res? So we have to find the native res first.
+            const int display_in_use = 0;  // Only using first display
+            int display_mode_count = SDL_GetNumDisplayModes(display_in_use);
+            if (display_mode_count < 1) return;
+            SDL_DisplayMode bestdm;
+            int bestres = 0;
+            for (int i = 0; i < display_mode_count; ++i) {
+                SDL_DisplayMode dm;
+                if (SDL_GetDisplayMode(display_in_use, i, &dm) != 0) return;
+                int res = dm.w * dm.h;
+                if (res > bestres) {
+                    bestres = res;
+                    bestdm = dm;
+                }
+            }
+            // Set desired fullscreen res to highest res we found.
+            SDL_SetWindowDisplayMode(_sdl_window, &bestdm);
+            mode = SDL_WINDOW_FULLSCREEN;
+        } else {
+            mode = SDL_WINDOW_FULLSCREEN_DESKTOP;
+        }
+    } else {
+        if (flags & INIT_MAXIMIZED) {
+            mode = SDL_WINDOW_MAXIMIZED;
+        }
+    }
+    SDL_SetWindowFullscreen(_sdl_window, mode);
 }
 
 string SDLDebuggerWindow() {
@@ -491,12 +562,22 @@ void SDLShutdown() {
 
 vector<float> &SDLGetFrameTimeLog() { return frametimelog; }
 
+float SDLGetRollingAverage(size_t n) {
+    n = std::max((size_t)1, std::min(frametimelog.size(), n));
+    float sum = 0.0f;
+    for (size_t i = 0; i < n; i++) {
+        sum += frametimelog[frametimelog.size() - n + i];
+    }
+    return sum / frametimelog.size();
+}
+
 bool SDLFrame() {
     if (minimized) {
-        SDL_Delay(10);  // save CPU/battery
+        SDL_Delay(100);  // save CPU/battery
     } else {
         #ifndef __EMSCRIPTEN__
             SDL_GL_SwapWindow(_sdl_window);
+            OpenGLPostSwapBuffers();
         #else
             emscripten_sleep(0);
         #endif
@@ -543,7 +624,7 @@ bool SDLFrame() {
                     // Built-in key-press functionality.
                     switch (event.key.keysym.sym) {
                         case SDLK_PRINTSCREEN:
-                            ScreenShot("screenshot-" + GetDateTime() + ".jpg");
+                            ScreenShot("screenshot-" + GetDateTime() + ".png");
                             break;
                     }
                 }
@@ -618,7 +699,7 @@ bool SDLFrame() {
             #endif
 
             case SDL_JOYAXISMOTION: {
-                const int deadzone = 800; // FIXME
+                const int deadzone = 8192;
                 if (event.jaxis.axis < MAXAXES) {
                     joyaxes[event.jaxis.axis] = abs(event.jaxis.value) > deadzone ? event.jaxis.value / (float)0x8000 : 0;
                 };
@@ -630,19 +711,60 @@ bool SDLFrame() {
 
             case SDL_JOYBUTTONDOWN:
             case SDL_JOYBUTTONUP: {
-                string name = "joy";
-                name += '0' + (char)event.jbutton.button;
+                string name = "joy" + to_string(event.jbutton.button);
                 updatebutton(name, event.jbutton.state == SDL_PRESSED, 0, false);
                 break;
             }
 
+            case SDL_CONTROLLERDEVICEADDED:
+                if (!controller) {
+                    controller = SDL_GameControllerOpen(event.cdevice.which);
+                }
+                break;
+            case SDL_CONTROLLERDEVICEREMOVED:
+                if (controller && event.cdevice.which ==
+                                    SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(controller))) {
+                    SDL_GameControllerClose(controller);
+                    controller = find_controller();
+                }
+                break;
+            case SDL_CONTROLLERBUTTONDOWN:
+            case SDL_CONTROLLERBUTTONUP:
+                if (controller && event.cdevice.which ==
+                                      SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(controller))) {
+                    string name = "controller_";
+                    auto sdl_name = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)event.cbutton.button);
+                    name += sdl_name ? sdl_name : cat(event.cbutton.button); 
+                    updatebutton(name, event.cbutton.state == SDL_PRESSED, 0, false);
+                }
+                break;
+            case SDL_CONTROLLERAXISMOTION: {
+                const int deadzone = 8192;
+                controller_axes[event.caxis.axis] =
+                        abs(event.caxis.value) > deadzone ? event.caxis.value / (float)0x8000 : 0;
+                break;
+            }
+
             case SDL_WINDOWEVENT:
+                LOG_DEBUG("SDL_WINDOWEVENT ", event.window.event);
                 switch (event.window.event) {
                     case SDL_WINDOWEVENT_RESIZED: {
                         ScreenSizeChanged();
                         // reload and bind shaders/textures here
                         break;
                     }
+                    case SDL_WINDOWEVENT_MINIMIZED:
+                    case SDL_WINDOWEVENT_HIDDEN:
+                        minimized = true;
+                        break;
+                    case SDL_WINDOWEVENT_MAXIMIZED:
+                    case SDL_WINDOWEVENT_RESTORED:
+                    case SDL_WINDOWEVENT_SHOWN:
+                        minimized = false;
+                        break;
+                    case SDL_WINDOWEVENT_EXPOSED:
+                        // This event seems buggy, it fires right after SDL_WINDOWEVENT_MINIMIZED when the user minimizes?
+                        break;
                     case SDL_WINDOWEVENT_LEAVE:
                         // never gets hit?
                         /*
@@ -654,20 +776,6 @@ bool SDLFrame() {
                         closebutton = true;
                         break;
                 }
-                break;
-
-            case SDL_WINDOWEVENT_MINIMIZED:
-                //minimized = true;
-                break;
-
-            case SDL_WINDOWEVENT_MAXIMIZED:
-            case SDL_WINDOWEVENT_RESTORED:
-                /*
-                #ifdef __IOS__
-                    SDL_Delay(10);  // IOS crashes in SDL_GL_SwapWindow if we start rendering straight away
-                #endif
-                minimized = false;
-                */
                 break;
 
             case SDL_DROPFILE:
@@ -700,6 +808,8 @@ bool SDLFrame() {
         int A = 1;
     }
     */
+
+    TextToSpeechUpdate();
 
     return closebutton || (noninteractivetestmode && frames == 2 /* has rendered one full frame */);
 }
@@ -742,29 +852,30 @@ int2 GetKeyPos(string_view name, int on) {
     return ks.lastpos[on];
 }
 
-void SDLTitle(string_view title) {
-    LOBSTER_FRAME_PROFILE_THIS_FUNCTION;
-    SDL_SetWindowTitle(_sdl_window, null_terminated(title));
+void SDLTitle(string_view_nt title) {
+    LOBSTER_FRAME_PROFILE_THIS_SCOPE;
+    SDL_SetWindowTitle(_sdl_window, title.c_str());
 }
 
 int SDLWheelDelta() { return mousewheeldelta; }
 bool SDLIsMinimized() { return minimized; }
 
 bool SDLCursor(bool on) {
-    if (on != cursor) {
-        cursor = !cursor;
-        if (cursor) {
-            if (fullscreen) SDL_SetWindowGrab(_sdl_window, SDL_FALSE);
-            SDL_ShowCursor(1);
-            SDL_SetRelativeMouseMode(SDL_FALSE);
-        } else {
-            if (fullscreen) SDL_SetWindowGrab(_sdl_window, SDL_TRUE);
-            SDL_ShowCursor(0);
-            SDL_SetRelativeMouseMode(SDL_TRUE);
-            clearfingers(false);
-        }
+    if (on == cursor) return cursor;
+    cursor = !cursor;
+    if (cursor) {
+        if (fullscreen) SDL_SetWindowGrab(_sdl_window, SDL_FALSE);
+        SDL_ShowCursor(1);
+        SDL_SetRelativeMouseMode(SDL_FALSE);
+        SDL_WarpMouseInWindow(_sdl_window, cursorx, cursory);
+    } else {
+        SDL_GetMouseState(&cursorx, &cursory);
+        if (fullscreen) SDL_SetWindowGrab(_sdl_window, SDL_TRUE);
+        SDL_ShowCursor(0);
+        SDL_SetRelativeMouseMode(SDL_TRUE);
+        clearfingers(false);
     }
-    return cursor;
+    return !cursor;
 }
 
 bool SDLGrab(bool on) {
@@ -772,18 +883,27 @@ bool SDLGrab(bool on) {
     return SDL_GetWindowGrab(_sdl_window) == SDL_TRUE;
 }
 
-void SDLMessageBox(string_view title, string_view msg) {
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, null_terminated<0>(title), null_terminated<1>(msg), _sdl_window);
+void SDLMessageBox(string_view_nt title, string_view_nt msg) {
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title.c_str(), msg.c_str(), _sdl_window);
 }
 
-int64_t SDLLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len) {
-    LOG_INFO("SDLLoadFile: ", absfilename);
-    auto f = SDL_RWFromFile(null_terminated(absfilename), "rb");
+bool SDLOpenURL(string_view url) {
+    #ifdef __ANDROID__
+        return false;
+    #else
+        return SDL_OpenURL(url.data()) == 0;
+    #endif
+}
+
+int64_t SDLLoadFile(string_view_nt absfilename, string *dest, int64_t start, int64_t len) {
+    LOG_DEBUG("SDLLoadFile: ", absfilename);
+    auto f = SDL_RWFromFile(absfilename.c_str(), "rb");
     if (!f) return -1;
     auto filelen = SDL_RWseek(f, 0, RW_SEEK_END);
     if (filelen < 0 || filelen == LLONG_MAX) {
         // If SDL_RWseek fails it is supposed to return -1, but on Linux it returns LLONG_MAX instead.
         SDL_RWclose(f);
+        LOG_INFO("SDLLoadFile: ", absfilename, " failed to determine file size.");
         return -1;
     }
     if (!len) {  // Just the file length requested.
@@ -795,12 +915,17 @@ int64_t SDLLoadFile(string_view absfilename, string *dest, int64_t start, int64_
     dest->resize((size_t)len);
     auto rlen = SDL_RWread(f, &(*dest)[0], 1, (size_t)len);
     SDL_RWclose(f);
-    return len != (int64_t)rlen ? -1 : len;
+    if (len != (int64_t)rlen) {
+        LOG_INFO("SDLLoadFile: ", absfilename, " file is not of requested length. requested: ", len, " found: ", rlen);
+        return -1;
+    }
+    return  len;
 }
 
-bool ScreenShot(string_view filename) {
+bool ScreenShot(string_view_nt filename) {
     auto pixels = ReadPixels(int2(0), screensize);
-    auto ok = stbi_write_png(null_terminated(filename), screensize.x, screensize.y, 3, pixels,
+    stbi_flip_vertically_on_write(0);
+    auto ok = stbi_write_png(filename.c_str(), screensize.x, screensize.y, 3, pixels,
                              screensize.x * 3);
     delete[] pixels;
     return ok != 0;
@@ -836,4 +961,8 @@ void SDLTextInputSet(string_view t) {
 
 void SDLEndTextInput() {
     SDL_StopTextInput();
+}
+
+const char *SDLControllerDataBase(const string& buf) {
+    return SDL_GameControllerAddMapping(buf.c_str()) >= 0 ? nullptr : SDL_GetError();
 }

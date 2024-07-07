@@ -193,7 +193,7 @@ float SimplexRawNoise(const float x, const float y, const float z) {
     int gi2 = perm[ii+i2+perm[jj+j2+perm[kk+k2]]] % 12;
     int gi3 = perm[ii+1+perm[jj+1+perm[kk+1]]] % 12;
     // Calculate the contribution from the four corners
-    float t0 = 0.6f - x0*x0 - y0*y0 - z0*z0;
+    float t0 = 0.5f - x0*x0 - y0*y0 - z0*z0;  // https://github.com/stegu/perlin-noise/blob/master/simplexnoise.pdf
     if(t0<0) n0 = 0.0f;
     else {
         t0 *= t0;
@@ -309,7 +309,7 @@ float SimplexRawNoise(const float x, const float y, const float z, const float w
     int gi3 = perm[ii+i3+perm[jj+j3+perm[kk+k3+perm[ll+l3]]]] % 32;
     int gi4 = perm[ii+1+perm[jj+1+perm[kk+1+perm[ll+1]]]] % 32;
     // Calculate the contribution from the five corners
-    float t0 = 0.6f - x0*x0 - y0*y0 - z0*z0 - w0*w0;
+    float t0 = 0.5f - x0*x0 - y0*y0 - z0*z0 - w0*w0;  // https://github.com/stegu/perlin-noise/blob/master/simplexnoise.pdf
     if(t0<0) n0 = 0.0f;
     else {
         t0 *= t0;
@@ -417,9 +417,22 @@ nfr("simplex", "pos,octaves,scale,persistence", "F}IFF", "F",
         auto len = Top(sp).ival();
         auto v = PopVec<float4>(sp);
         switch (len) {
-            case 2: Push(sp,  SimplexNoise(octaves, persistence, scale, v.xy())); break;
-            case 3: Push(sp,  SimplexNoise(octaves, persistence, scale, v.xyz())); break;
-            case 4: Push(sp,  SimplexNoise(octaves, persistence, scale, v)); break;
+            case 2: Push(sp, SimplexNoise(octaves, persistence, scale, v.xy())); break;
+            case 3: Push(sp, SimplexNoise(octaves, persistence, scale, v.xyz())); break;
+            case 4: Push(sp, SimplexNoise(octaves, persistence, scale, v)); break;
+            default: assert(false);
+        }
+    });
+
+nfr("simplex_raw", "pos", "F}", "F",
+    "returns a simplex noise value [-1..1] given a 2D/3D or 4D location",
+    [](StackPtr &sp, VM &) {
+        auto len = Top(sp).ival();
+        auto v = PopVec<float4>(sp);
+        switch (len) {
+            case 2: Push(sp, SimplexRawNoise(v.x, v.y)); break;
+            case 3: Push(sp, SimplexRawNoise(v.x, v.y, v.z)); break;
+            case 4: Push(sp, SimplexRawNoise(v.x, v.y, v.z, v.w)); break;
             default: assert(false);
         }
     });

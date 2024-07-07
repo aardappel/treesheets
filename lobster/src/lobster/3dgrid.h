@@ -39,6 +39,7 @@ template<typename T> class Chunk3DGrid : NonCopyable {
     }
 
     T &Get(const int3 &pos) const {
+        assert(pos < dim);
         return grid[pos.x][pos.y * dim.z + pos.z];
     }
 
@@ -68,6 +69,24 @@ template<typename T> class Chunk3DGrid : NonCopyable {
             p = n;
         }
         dim = ndim;
+    }
+
+    void Rotate(const matrix<int, 3, 3> &m) {
+        // Each row of the matrix must have exactly one -1 or 1.
+        assert(squaredlength(m.row(0)) == 1 && squaredlength(m.row(1)) == 1 && squaredlength(m.row(2)) == 1);
+        int3 newdim = abs(dim * m);
+        int3 offset = sign(dim * m).eq(-1) * (newdim - 1);
+        Chunk3DGrid rotated(newdim, 0);
+        for (int z = 0; z < dim.z; z++) {
+            for (int y = 0; y < dim.y; y++) {
+                for (int x = 0; x < dim.x; x++) {
+                    int3 p(x, y, z);
+                    rotated.Get(p * m + offset) = Get(p);
+                }
+            }
+        }
+        swap(grid, rotated.grid);
+        swap(dim, rotated.dim);
     }
 };
 

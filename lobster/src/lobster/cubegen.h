@@ -90,6 +90,10 @@ struct Voxels : lobster::Resource {
         // FIXME: does NOT account for shared palettes.
         return { sizeof(Voxels) + grid.dim.volume() + grid.dim.x * sizeof(void *), 0 };
     }
+
+    void Dump(string &sd) {
+        append(sd, grid.dim.to_string());
+    }
 };
 
 namespace lobster {

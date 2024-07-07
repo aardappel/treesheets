@@ -21,7 +21,7 @@
 namespace lobster {
 
 string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bool cpp,
-             int runtime_checks) {
+             int runtime_checks, string_view custom_pre_init_name, string_view aux_src_name) {
     auto bcf = bytecode::GetBytecodeFile(bytecode_buffer.data());
     if (!FLATBUFFERS_LITTLEENDIAN) return "native code gen requires little endian";
     auto code = (const int *)bcf->bytecode()->Data();  // Assumes we're on a little-endian machine.
@@ -119,6 +119,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
               "extern StackPtr PopArg(VMRef, int, StackPtr);\n"
               "extern void SetLVal(VMRef, Value *);\n"
               "extern int RetSlots(VMRef);\n"
+              "extern int GetTypeSwitchID(VMRef, Value, int);\n"
               "extern void PushFunId(VMRef, const int *, StackPtr);\n"
               "extern void PopFunId(VMRef);\n"
               #if LOBSTER_FRAME_PROFILER
@@ -128,7 +129,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
               "\n";
     }
 
-    if (runtime_checks >= RUNTIME_ASSERT_PLUS) {
+    if (runtime_checks >= RUNTIME_STACK_TRACE) {
         append(sd, "extern const int funinfo_table[];\n\n");
     }
 
@@ -255,7 +256,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                             append(sd, "    NilVal(&locals[", var_to_local[varidx], "]);\n");
                     }
                 }
-                if (runtime_checks >= RUNTIME_ASSERT_PLUS) {
+                if (runtime_checks >= RUNTIME_STACK_TRACE) {
                     // FIXME: can make this just and index and instead store funinfo_table ref in VM.
                     // Calling this here because now locals have been fully initialized.
                     append(sd, "    PushFunId(vm, funinfo_table + ", funstarttables.size(), ", ",
@@ -302,12 +303,13 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
             case IL_IFOR:
             case IL_SFOR:
             case IL_VFOR:
-            case IL_JUMPIFUNWOUND: {
-                auto id = args[opc == IL_JUMPIFUNWOUND ? 1 : 0];
+            case IL_JUMPIFUNWOUND:
+            case IL_JUMPIFSTATICLF:
+            case IL_JUMPIFMEMBERLF: {
+                auto id = args[opc >= IL_JUMPIFUNWOUND ? 1 : 0];
                 assert(id >= 0);
-                auto df = opc == IL_JUMPIFUNWOUND ? args[0] : -1;
                 append(sd, "if (!U_", ILNames()[opc], "(vm, ", sp);
-                if (df >= 0) append(sd, ", ", df);
+                if (opc >= IL_JUMPIFUNWOUND) append(sd, ", ", args[0]);
                 append(sd, ")) goto block", id, ";");
                 break;
             }
@@ -315,6 +317,16 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                 // FIXME: added ";" because blocks may end up just before "}" at the end of a
                 // switch, and generate warnings/errors. Ideally not generate this block at all.
                 append(sd, "block", id, ":;");
+                break;
+            case IL_JUMP_TABLE_DISPATCH:
+                if (cpp) {
+                    append(sd, "switch (GetTypeSwitchID(vm, regs[", regso - 1, "], ", args[0],
+                               ")) {");
+                } else {
+                    append(sd, "{ int top = GetTypeSwitchID(vm, regs[", regso - 1, "], ", args[0],
+                               "); switch (top) {");
+                }
+                jumptables.push_back(args + 1);
                 break;
             case IL_JUMP_TABLE:
                 if (cpp) {
@@ -417,7 +429,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                 }
                 break;
             }
-            case IL_SAVERETS:  // FIXME: remove
+            case IL_GOTOFUNEXIT:
                 append(sd, "goto epilogue;");
                 break;
             case IL_KEEPREFLOOP:
@@ -499,7 +511,7 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
                 append(sd, "    DecVal(vm, keepvar[", i, "]);\n");
             }
             assert(funstart);
-            if (*(funstart - 2) == IL_FUNSTART && runtime_checks >= RUNTIME_ASSERT_PLUS) {
+            if (*(funstart - 2) == IL_FUNSTART && runtime_checks >= RUNTIME_STACK_TRACE) {
                 append(sd, "    PopFunId(vm);\n");
             }
             sd += "}\n";
@@ -507,17 +519,18 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
     }
 
     if (cpp) sd += "\nstatic";
-    else sd += "\nextern ";
+    else sd += "\nextern";
     sd += " const fun_base_t vtables[] = {\n";
     for (auto id : *bcf->vtables()) {
         sd += "    ";
         if (id >= 0) append(sd, "fun_", id);
+        else if (id <= -2) append(sd, "(fun_base_t)", -id - 2);  // Bit of a hack, would be nice to separate.
         else sd += "0";
         sd += ",\n";
     }
     sd += "    0\n};\n";  // Make sure table is never empty.
 
-    if (runtime_checks >= RUNTIME_ASSERT_PLUS) {
+    if (runtime_checks >= RUNTIME_STACK_TRACE) {
         append(sd, "const int funinfo_table[] = {\n    ");
         for (auto [i, d] : enumerate(funstarttables)) {
             if (i && (i & 15) == 0) append(sd, "\n    ");
@@ -547,13 +560,19 @@ string ToCPP(NativeRegistry &natreg, string &sd, string_view bytecode_buffer, bo
     }
     if (cpp) sd += "extern \"C\" ";
     sd += "void compiled_entry_point(VMRef vm, StackPtr sp) {\n";
-    if (!cpp) sd += "    Entry(sizeof(Value));\n";
+    if (cpp) {
+        append(sd, "    if (vm.nfr.HashAll() != ", natreg.HashAll(),
+               "ULL) vm.BuiltinError(\"code compiled with mismatching builtin function library\");\n");
+    } else {
+        sd += "    Entry(sizeof(Value));\n";
+    }
     append(sd, "    fun_", starting_point, "(vm, sp);\n}\n\n");
     if (cpp) {
         sd += "int main(int argc, char *argv[]) {\n";
         sd += "    // This is hard-coded to call compiled_entry_point()\n";
+        if (custom_pre_init_name != "nullptr") append(sd, "    void ", custom_pre_init_name, "(lobster::NativeRegistry &);\n");
         sd += "    return RunCompiledCodeMain(argc, argv, ";
-        append(sd, "(uint8_t *)bytecodefb, ", bytecode_buffer.size(), ", vtables);\n}\n");
+        append(sd, "(uint8_t *)bytecodefb, ", bytecode_buffer.size(), ", vtables, ", custom_pre_init_name, ", \"", aux_src_name ,"\");\n}\n");
     }
 
     return "";

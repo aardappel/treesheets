@@ -17,6 +17,7 @@
 #ifndef FLATBUFFERS_FLEXBUFFERS_H_
 #define FLATBUFFERS_FLEXBUFFERS_H_
 
+#include <algorithm>
 #include <map>
 // Used to select STL variant.
 #include "flatbuffers/base.h"
@@ -359,15 +360,39 @@ class Map : public Vector {
   bool IsTheEmptyMap() const { return data_ == EmptyMap().data_; }
 };
 
+inline void IndentString(std::string &s, int indent,
+                         const char *indent_string) {
+  for (int i = 0; i < indent; i++) s += indent_string;
+}
+
+template<typename T>
+void AppendToString(std::string &s, T &&v, bool keys_quoted, bool indented,
+                    int cur_indent, const char *indent_string) {
+  s += "[";
+  s += indented ? "\n" : " ";
+  for (size_t i = 0; i < v.size(); i++) {
+    if (i) {
+      s += ",";
+      s += indented ? "\n" : " ";
+    }
+    if (indented) IndentString(s, cur_indent, indent_string);
+    v[i].ToString(true, keys_quoted, s, indented, cur_indent,
+                  indent_string);
+  }
+  if (indented) {
+    s += "\n";
+    IndentString(s, cur_indent - 1, indent_string);
+  } else {
+    s += " ";
+  }
+  s += "]";
+}
+
 template<typename T>
 void AppendToString(std::string &s, T &&v, bool keys_quoted) {
-  s += "[ ";
-  for (size_t i = 0; i < v.size(); i++) {
-    if (i) s += ", ";
-    v[i].ToString(true, keys_quoted, s);
-  }
-  s += " ]";
+  AppendToString(s, v, keys_quoted);
 }
+
 
 class Reference {
  public:
@@ -382,10 +407,10 @@ class Reference {
         type_(type) {}
 
   Reference(const uint8_t *data, uint8_t parent_width, uint8_t packed_type)
-      : data_(data), parent_width_(parent_width) {
-    byte_width_ = 1U << static_cast<BitWidth>(packed_type & 3);
-    type_ = static_cast<Type>(packed_type >> 2);
-  }
+      : data_(data),
+        parent_width_(parent_width),
+        byte_width_(static_cast<uint8_t>(1 << (packed_type & 3))),
+        type_(static_cast<Type>(packed_type >> 2)) {}
 
   Type GetType() const { return type_; }
 
@@ -541,8 +566,13 @@ class Reference {
   // Convert any type to a JSON-like string. strings_quoted determines if
   // string values at the top level receive "" quotes (inside other values
   // they always do). keys_quoted determines if keys are quoted, at any level.
-  // TODO(wvo): add further options to have indentation/newlines.
   void ToString(bool strings_quoted, bool keys_quoted, std::string &s) const {
+    ToString(strings_quoted, keys_quoted, s, false, 0, "");
+  }
+
+  // This version additionally allow you to specify if you want indentation.
+  void ToString(bool strings_quoted, bool keys_quoted, std::string &s,
+                bool indented, int cur_indent, const char *indent_string) const {
     if (type_ == FBT_STRING) {
       String str(Indirect(), byte_width_);
       if (strings_quoted) {
@@ -568,7 +598,8 @@ class Reference {
     } else if (IsBool()) {
       s += AsBool() ? "true" : "false";
     } else if (IsMap()) {
-      s += "{ ";
+      s += "{";
+      s += indented ? "\n" : " ";
       auto m = AsMap();
       auto keys = m.Keys();
       auto vals = m.Values();
@@ -589,18 +620,28 @@ class Reference {
             }
           }
         }
+        if (indented) IndentString(s, cur_indent + 1, indent_string);
         keys[i].ToString(true, kq, s);
         s += ": ";
-        vals[i].ToString(true, keys_quoted, s);
-        if (i < keys.size() - 1) s += ", ";
+        vals[i].ToString(true, keys_quoted, s, indented, cur_indent + 1, indent_string);
+        if (i < keys.size() - 1) {
+          s += ",";
+          if (!indented) s += " ";
+        }
+        if (indented) s += "\n";
       }
-      s += " }";
+      if (!indented) s += " ";
+      if (indented) IndentString(s, cur_indent, indent_string);
+      s += "}";
     } else if (IsVector()) {
-      AppendToString<Vector>(s, AsVector(), keys_quoted);
+      AppendToString<Vector>(s, AsVector(), keys_quoted, indented,
+                             cur_indent + 1, indent_string);
     } else if (IsTypedVector()) {
-      AppendToString<TypedVector>(s, AsTypedVector(), keys_quoted);
+      AppendToString<TypedVector>(s, AsTypedVector(), keys_quoted, indented,
+                                  cur_indent + 1, indent_string);
     } else if (IsFixedTypedVector()) {
-      AppendToString<FixedTypedVector>(s, AsFixedTypedVector(), keys_quoted);
+      AppendToString<FixedTypedVector>(s, AsFixedTypedVector(), keys_quoted,
+                                       indented, cur_indent + 1, indent_string);
     } else if (IsBlob()) {
       auto blob = AsBlob();
       flatbuffers::EscapeString(reinterpret_cast<const char *>(blob.data()),
@@ -1127,10 +1168,7 @@ class Builder FLATBUFFERS_FINAL_CLASS {
 
   size_t EndMap(size_t start) {
     // We should have interleaved keys and values on the stack.
-    // Make sure it is an even number:
-    auto len = stack_.size() - start;
-    FLATBUFFERS_ASSERT(!(len & 1));
-    len /= 2;
+    auto len = MapElementCount(start);
     // Make sure keys are all strings:
     for (auto key = start; key < stack_.size(); key += 2) {
       FLATBUFFERS_ASSERT(stack_[key].type_ == FBT_KEY);
@@ -1288,6 +1326,14 @@ class Builder FLATBUFFERS_FINAL_CLASS {
     EndMap(start);
   }
 
+  size_t MapElementCount(size_t start) {
+    // Make sure it is an even number:
+    auto len = stack_.size() - start;
+    FLATBUFFERS_ASSERT(!(len & 1));
+    len /= 2;
+    return len;
+  }
+
   // If you wish to share a value explicitly (a value not shared automatically
   // through one of the BUILDER_FLAG_SHARE_* flags) you can do so with these
   // functions. Or if you wish to turn those flags off for performance reasons
@@ -1304,6 +1350,12 @@ class Builder FLATBUFFERS_FINAL_CLASS {
   void ReuseValue(const char *key, Value v) {
     Key(key);
     ReuseValue(v);
+  }
+
+  // Undo the last element serialized. Call once for a value and once for a
+  // key.
+  void Undo() {
+      stack_.pop_back();
   }
 
   // Overloaded Add that tries to call the correct function above.
@@ -1423,12 +1475,10 @@ class Builder FLATBUFFERS_FINAL_CLASS {
 
   template<typename T> static Type GetScalarType() {
     static_assert(flatbuffers::is_scalar<T>::value, "Unrelated types");
-    return flatbuffers::is_floating_point<T>::value
-               ? FBT_FLOAT
-               : flatbuffers::is_same<T, bool>::value
-                     ? FBT_BOOL
-                     : (flatbuffers::is_unsigned<T>::value ? FBT_UINT
-                                                           : FBT_INT);
+    return flatbuffers::is_floating_point<T>::value ? FBT_FLOAT
+           : flatbuffers::is_same<T, bool>::value
+               ? FBT_BOOL
+               : (flatbuffers::is_unsigned<T>::value ? FBT_UINT : FBT_INT);
   }
 
  public:
@@ -1670,7 +1720,7 @@ class Verifier FLATBUFFERS_FINAL_CLASS {
         max_vectors_(buf_len),
         check_alignment_(_check_alignment),
         reuse_tracker_(reuse_tracker) {
-    FLATBUFFERS_ASSERT(size_ < FLATBUFFERS_MAX_BUFFER_SIZE);
+    FLATBUFFERS_ASSERT(static_cast<int32_t>(size_) < FLATBUFFERS_MAX_BUFFER_SIZE);
     if (reuse_tracker_) {
       reuse_tracker_->clear();
       reuse_tracker_->resize(size_, PackedType(BIT_WIDTH_8, FBT_NULL));
@@ -1844,7 +1894,7 @@ class Verifier FLATBUFFERS_FINAL_CLASS {
         uint8_t len = 0;
         auto vtype = ToFixedTypedVectorElementType(r.type_, &len);
         if (!VerifyType(vtype)) return false;
-        return VerifyFromPointer(p, r.byte_width_ * len);
+        return VerifyFromPointer(p, static_cast<size_t>(r.byte_width_) * len);
       }
       default: return false;
     }
@@ -1871,7 +1921,7 @@ class Verifier FLATBUFFERS_FINAL_CLASS {
   std::vector<uint8_t> *reuse_tracker_;
 };
 
-// Utility function that contructs the Verifier for you, see above for
+// Utility function that constructs the Verifier for you, see above for
 // parameters.
 inline bool VerifyBuffer(const uint8_t *buf, size_t buf_len,
                          std::vector<uint8_t> *reuse_tracker = nullptr) {

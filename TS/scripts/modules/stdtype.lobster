@@ -5,26 +5,26 @@
 
 // vector types: generally for float or int elements, but useful for other types as well.
 
-struct xy<T>:
+struct vec2<T>:
     x:T
     y:T
 
-struct xyz : xy
+struct vec3<T> : vec2<T>
     z:T
 
-struct xyzw : xyz
+struct vec4<T> : vec3<T>
     w:T
 
 // Specialized type names:
 
-struct xy_f = xy<float>
-struct xy_i = xy<int>
+struct float2 = vec2<float>
+struct int2 = vec2<int>
 
-struct xyz_f = xyz<float>
-struct xyz_i = xyz<int>
+struct float3 = vec3<float>
+struct int3 = vec3<int>
 
-struct xyzw_f = xyzw<float>
-struct xyzw_i = xyzw<int>
+struct float4 = vec4<float>
+struct int4 = vec4<int>
 
 // Booleans are an enum.
 

@@ -49,17 +49,29 @@ namespace geom {
 template<typename T> void default_debug_value(T &a) {
     a = (T)(0xABADCAFEDEADBEEF >> ((8 - sizeof(T)) * 8));
 }
-union int2float { int i; float f; };
+
+union int2float {
+    int i;
+    float f;
+
+    int2float(int i) : i(i) {}
+    int2float(float f) : f(f) {}
+};
+
 template<> inline void default_debug_value<float>(float &a) {
-    int2float nan;
-    nan.i = 0x7Fc00000;
-    a = nan.f;
+    a = int2float(0x7Fc00000).f;
 }
-union int2float64 { int64_t i; double f; };
+
+union int2float64 {
+    int64_t i;
+    double f;
+
+    int2float64(int64_t i) : i(i) {}
+    int2float64(double f) : f(f) {}
+};
+
 template<> inline void default_debug_value<double>(double &a) {
-    int2float64 nan;
-    nan.i = 0x7ff8000000000000;
-    a = nan.f;
+    a = int2float64(0x7ff8000000000000_L64).f;
 }
 
 template<typename T, int C, int R> class matrix;
@@ -355,7 +367,7 @@ template<typename T, int N> inline T dot(const vec<T,N> &a, const vec<T,N> &b) {
 template<typename T, int N> inline T squaredlength(const vec<T,N> &v) { return dot(v, v); }
 template<typename T, int N> inline T length(const vec<T,N> &v) { return sqrt(squaredlength(v)); }
 template<typename T, int N> inline vec<T,N> normalize(const vec<T,N> &v) { return v / length(v); }
-template<typename T, int N> inline vec<T,N> abs(const vec<T,N> &v) { DOVECR(fabsf(v.c[i])); }
+template<typename T, int N> inline vec<T,N> abs(const vec<T,N> &v) { DOVECR(std::abs(v.c[i])); }
 template<typename T, int N> inline vec<T,N> sign(const vec<T,N> &v) {
     DOVECR((T)(v.c[i] >= 0 ? 1 : -1));
 }
@@ -447,6 +459,10 @@ typedef vec<float, 2> float2;
 typedef vec<float, 3> float3;
 typedef vec<float, 4> float4;
 
+typedef vec<uint16_t, 2> hfloat2;
+typedef vec<uint16_t, 3> hfloat3;
+typedef vec<uint16_t, 4> hfloat4;
+
 typedef vec<int, 2> int2;
 typedef vec<int, 3> int3;
 typedef vec<int, 4> int4;
@@ -460,7 +476,7 @@ typedef vec<iint, 3> iint3;
 typedef vec<iint, 4> iint4;
 
 typedef vec<uint8_t, 4> byte4;
-
+typedef vec<uint32_t, 2> uint2;
 typedef vec<size_t, 2> size_t2;
 
 const float4 float4_0 = float4(0.0f);
@@ -491,9 +507,9 @@ const double4 double4_0 = double4(0.0);
 const double3 double3_0 = double3(0.0);
 const double2 double2_0 = double2(0.0);
 
-const iint2 iint2_0 = iint2(0_L);
-const iint2 iint2_1 = iint2(1_L);
-const iint3 iint3_0 = iint3(0_L);
+const iint2 iint2_0 = iint2(0_L64);
+const iint2 iint2_1 = iint2(1_L64);
+const iint3 iint3_0 = iint3(0_L64);
 
 const byte4 byte4_0   = byte4((uint8_t)0);
 const byte4 byte4_255 = byte4((uint8_t)255);
@@ -522,6 +538,10 @@ inline float smoothmax(float a, float b, float r) {
 
 inline float smoothstep(float x) {
     return x * x * (3 - 2 * x);
+}
+
+inline float smoothstep(float a, float b, float f) {
+    return smoothstep(std::min(std::max((f - a) / (b - a), 0.0f), 1.0f));
 }
 
 inline float smootherstep(float x) {
@@ -572,6 +592,9 @@ struct quat : float4 {
     quat operator*(float f) const {
         return quat(x * f, y * f, z * f, w * f);
     }
+
+    quat &operator*=(const quat &o) { *this = *this * o; return *this; }
+    quat &operator*=(float f) { *this = *this * f; return *this; }
 
     quat operator-() const { return quat(-xyz(), w); }
 
@@ -685,7 +708,7 @@ template<typename T, int C, int R> class matrix {
     }
 
     V operator*(const vec<T,C> &v) const {
-        V res(0.0f);
+        V res((T()));
         for (int i = 0; i < C; i++)
             res += m[i] * v.c[i];
         return res;
@@ -738,6 +761,8 @@ typedef matrix<float,3,3> float3x3;
 typedef matrix<float,3,4> float3x4;
 typedef matrix<float,4,3> float4x3;
 
+typedef matrix<double, 4, 4> double4x4;
+
 const float4x4 float4x4_1 = float4x4(1);
 const float3x3 float3x3_1 = float3x3(1);
 
@@ -748,60 +773,60 @@ inline float3x4 operator*(const float3x4 &m, const float3x4 &o) {  // FIXME: cle
         (o[0]*m[2].x + o[1]*m[2].y + o[2]*m[2].z + float4(0, 0, 0, m[2].w)));
 }
 
-inline float4x4 translation(const float3 &t) {
-    return float4x4(
-        float4(1, 0, 0, 0),
-        float4(0, 1, 0, 0),
-        float4(0, 0, 1, 0),
-        float4(t, 1));
+template<typename T> matrix<T,4,4> translation(const vec<T,3> &t) {
+    return matrix<T,4,4>(
+        vec<T,4>(1, 0, 0, 0),
+        vec<T,4>(0, 1, 0, 0),
+        vec<T,4>(0, 0, 1, 0),
+        vec<T,4>(t, 1));
 }
 
-inline float4x4 scaling(float s) {
-    return float4x4(
-        float4(s, 0, 0, 0),
-        float4(0, s, 0, 0),
-        float4(0, 0, s, 0),
-        float4(0, 0, 0, 1));
+template<typename T> matrix<T,4,4> scaling(T s) {
+    return matrix<T,4,4>(
+        vec<T,4>(s, 0, 0, 0),
+        vec<T,4>(0, s, 0, 0),
+        vec<T,4>(0, 0, s, 0),
+        vec<T,4>(0, 0, 0, 1));
 }
 
-inline float4x4 scaling(const float3 &s) {
-    return float4x4(
-        float4(s.x, 0,   0,   0),
-        float4(0,   s.y, 0,   0),
-        float4(0,   0,   s.z, 0),
-        float4(0,   0,   0,   1));
+template<typename T> matrix<T,4,4> scaling(const float3 &s) {
+    return matrix<T,4,4>(
+        vec<T,4>(s.x, 0,   0,   0),
+        vec<T,4>(0,   s.y, 0,   0),
+        vec<T,4>(0,   0,   s.z, 0),
+        vec<T,4>(0,   0,   0,   1));
 }
 
-inline float4x4 rotationX(const float2 &v) {
-    return float4x4(
-        float4(1,  0,   0,   0),
-        float4(0,  v.x, v.y, 0),
-        float4(0, -v.y, v.x, 0),
-        float4(0,  0,   0,   1));
+template<typename T> matrix<T,4,4> rotationX(const vec<T,2> &v) {
+    return matrix<T,4,4>(
+        vec<T,4>(1,  0,   0,   0),
+        vec<T,4>(0,  v.x, v.y, 0),
+        vec<T,4>(0, -v.y, v.x, 0),
+        vec<T,4>(0,  0,   0,   1));
 }
 
-inline float4x4 rotationY(const float2 &v) {
-    return float4x4(
-        float4(v.x, 0, -v.y, 0),
-        float4(0,   1,  0,   0),
-        float4(v.y, 0,  v.x, 0),
-        float4(0,   0,  0,   1));
+template<typename T> matrix<T,4,4> rotationY(const vec<T,2> &v) {
+    return matrix<T,4,4>(
+        vec<T,4>(v.x, 0, -v.y, 0),
+        vec<T,4>(0,   1,  0,   0),
+        vec<T,4>(v.y, 0,  v.x, 0),
+        vec<T,4>(0,   0,  0,   1));
 }
 
-inline float4x4 rotationZ(const float2 &v) {
-    return float4x4(
-        float4( v.x, v.y, 0, 0),
-        float4(-v.y, v.x, 0, 0),
-        float4( 0,   0,   1, 0),
-        float4( 0,   0,   0, 1));
+template<typename T> matrix<T,4,4> rotationZ(const vec<T,2> &v) {
+    return matrix<T,4,4>(
+        vec<T,4>( v.x, v.y, 0, 0),
+        vec<T,4>(-v.y, v.x, 0, 0),
+        vec<T,4>( 0,   0,   1, 0),
+        vec<T,4>( 0,   0,   0, 1));
 }
 
-inline float4x4 rotation3D(const float3 &v) {
-    return float4x4(
-        float4( 0,   -v.z,  v.y, 0),
-        float4( v.z,  0,   -v.x, 0),
-        float4(-v.y,  v.x,  0,   0),
-        float4( 0,    0,    0,   1));
+template<typename T> matrix<T,4,4> rotation3D(const vec<T,3> & v) {
+    return matrix<T,4,4>(
+        vec<T,4>( 0,   -v.z,  v.y, 0),
+        vec<T,4>( v.z,  0,   -v.x, 0),
+        vec<T,4>(-v.y,  v.x,  0,   0),
+        vec<T,4>( 0,    0,    0,   1));
 }
 
 inline float4x4 rotationX(float a) { return rotationX(float2(cosf(a), sinf(a))); }

@@ -48,6 +48,7 @@ struct SubFunction;
 
 struct Enum;
 
+struct GUDT;
 struct UDT;
 
 struct TypeVariable;
@@ -55,12 +56,13 @@ struct TypeVariable;
 struct Type;
 
 struct SpecUDT {
-    UDT *udt;
+    GUDT *gudt;
     vector<const Type *> specializers;
-    bool is_generic = false;
+    //bool is_generic = false;
 
-    SpecUDT(UDT *udt) : udt(udt) {}
+    SpecUDT(GUDT *gudt) : gudt(gudt) {}
 
+    bool IsGeneric() const;
     bool Equal(const SpecUDT &o) const;
 };
 
@@ -90,34 +92,7 @@ struct Type {
     Type(TypeVariable *_tv)              : t(V_TYPEVAR), tv(_tv)      {}
     Type(ResourceType *_rt)              : t(V_RESOURCE),rt(_rt)      {}
 
-    bool Equal(const Type &o, bool allow_unresolved = false) const {
-        if (this == &o) return true;
-        if (t != o.t) {
-            if (!allow_unresolved) return false;
-            // Special case for V_UUDT, since sometime types are resolved in odd orders.
-            // TODO: can the is_generic be removed?
-            switch (t) {
-                case V_UUDT:
-                    return IsUDT(o.t) && spec_udt->udt == o.udt && !spec_udt->is_generic;
-                case V_CLASS:
-                case V_STRUCT_R:
-                case V_STRUCT_S:
-                    return o.t == V_UUDT && o.spec_udt->udt == udt && !o.spec_udt->is_generic;
-                default:
-                    return false;
-            }
-        }
-        if (sub == o.sub) return true;  // Also compares sf/udt
-        switch (t) {
-            case V_VECTOR:
-            case V_NIL:
-                return sub->Equal(*o.sub, allow_unresolved);
-            case V_UUDT:
-                return spec_udt->Equal(*o.spec_udt);
-            default:
-                return false;
-        }
-    }
+    bool Equal(const Type &o, bool allow_unresolved = false) const;
 
     Type &operator=(const Type &o) {
         // Hack: we want t to be const, but still have a working assignment operator.
@@ -204,17 +179,13 @@ class TypeRef {
     bool Null() const { return type == nullptr; }
 };
 
-struct UnresolvedTypeRef {
-    TypeRef utr;
-};
-
 extern TypeRef type_int;
 extern TypeRef type_float;
 extern TypeRef type_string;
 extern TypeRef type_any;
 extern TypeRef type_vector_int;
 extern TypeRef type_vector_float;
-extern TypeRef type_function_null;
+extern TypeRef type_function_null_void;
 extern TypeRef type_function_cocl;
 extern TypeRef type_resource;
 extern TypeRef type_vector_resource;
@@ -250,7 +221,6 @@ inline ResourceType *LookupResourceType(string_view name) {
 struct Named {
     string name;
     int idx = -1;
-    bool isprivate = false;
 
     Named() = default;
     Named(string_view _name, int _idx = 0) : name(_name), idx(_idx) {}
@@ -291,7 +261,7 @@ struct Narg {
             case 'B': type = type_int; flags = flags | NF_BOOL; break;
             case 'F': type = type_float; break;
             case 'S': type = type_string; break;
-            case 'L': type = type_function_null; break;  // FIXME: only used by hash(), in gui.lobster
+            case 'L': type = type_function_null_void; break;  // NOTE: only used by call_function_value(), and hash(), in gui.lobster
             case 'R': type = type_resource; break;
             case 'T': type = type_typeid; break;
             default:  assert(0);
@@ -331,8 +301,10 @@ struct Narg {
                         char val = *tid++ - '0';
                         if (type->ElementIfNil()->Numeric())
                             default_val = val;
+                        else if (type->t == V_VECTOR && fixed_len < 0)
+                            fixed_len = val;
                         else
-                            fixed_len = val; 
+                            assert(false);
                     }
                     break;
                 default:
@@ -396,9 +368,12 @@ struct NativeFun : Named {
         return i;
     };
 
-    NativeFun(const char *name, BuiltinPtr f, const char *ids, const char *typeids,
+    NativeFun(const char *ns, const char *nsname, BuiltinPtr f, const char *ids, const char *typeids,
               const char *rets, const char *help)
-        : Named(name, 0), fun(f), args(TypeLen(typeids)), retvals(TypeLen(rets)),
+        : Named(*ns ? cat(ns, ".", nsname) : nsname, 0),
+          fun(f),
+          args(TypeLen(typeids)),
+          retvals(TypeLen(rets)),
           help(help) {
         assert((int)args.size() == f.fnargs || f.fnargs < 0);
         auto StructArgsVararg = [&](const Narg &arg) {
@@ -424,7 +399,7 @@ struct NativeFun : Named {
     }
 
     bool IsGLFrame() {
-        return name == "gl_frame";
+        return name == "gl.frame";
     }
 
     bool IsAssert() {
@@ -437,15 +412,25 @@ struct NativeRegistry {
     vector<NativeFun *> nfuns;
     unordered_map<string_view, NativeFun *> nfunlookup;  // Key points to value!
     vector<string> subsystems;
+    vector<string_view> namespaces;
+    const char *cur_ns;
     #if LOBSTER_FRAME_PROFILER_BUILTINS
         vector<tracy::SourceLocationData> pre_allocated_function_locations;
     #endif
+
+    NativeRegistry() {
+        nfuns.reserve(1024);
+    }
 
     ~NativeRegistry() {
         for (auto f : nfuns) delete f;
     }
 
-    void NativeSubSystemStart(const char *name) { subsystems.push_back(name); }
+    void NativeSubSystemStart(const char *ns, const char *name) {
+        cur_ns = ns;
+        if (*ns) namespaces.push_back(ns);
+        subsystems.push_back(name);
+    }
 
     void DoneRegistering() {
         #if LOBSTER_FRAME_PROFILER_BUILTINS
@@ -458,9 +443,9 @@ struct NativeRegistry {
     }
 
     #define REGISTER(N) \
-    void operator()(const char *name, const char *ids, const char *typeids, \
+    void operator()(const char *nsname, const char *ids, const char *typeids, \
                     const char *rets, const char *help, builtinf##N f) { \
-        Reg(new NativeFun(name, BuiltinPtr(f), ids, typeids, rets, help)); \
+        Reg(new NativeFun(cur_ns, nsname, BuiltinPtr(f), ids, typeids, rets, help)); \
     }
     REGISTER(V)
     REGISTER(0)
@@ -498,6 +483,41 @@ struct NativeRegistry {
         auto it = nfunlookup.find(name);
         return it != nfunlookup.end() ? it->second : nullptr;
     }
+
+    uint64_t HashAll() {
+        uint64_t h = 0xABADCAFEDEADBEEF;
+        for (auto nf : nfuns) {
+            h ^= FNV1A64(nf->name);
+            for (auto &a : nf->args) {
+                h ^= FNV1A64(a.name);
+            }
+        }
+        return h;
+    }
+};
+
+struct Line {
+    int line;
+    int fileidx;
+
+    Line(int _line, int _fileidx) : line(_line), fileidx(_fileidx) {}
+
+    bool operator==(const Line &o) const {
+        return line == o.line && fileidx == o.fileidx;
+    }
+    bool operator<(const Line &o) const {
+        return fileidx < o.fileidx || (fileidx == o.fileidx && line < o.line);
+    }
+};
+
+struct Query {
+    Line qloc{ -1, -1 };
+    string kind;
+    string file;
+    string line;
+    string iden;
+    vector<string> args;
+    vector<pair<string, string>> *filenames = nullptr;
 };
 
 }  // namespace lobster

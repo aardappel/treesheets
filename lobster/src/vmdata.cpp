@@ -22,7 +22,9 @@ namespace lobster {
 LString::LString(iint _l) : RefObj(TYPE_ELEM_STRING), len(_l) { ((char *)data())[_l] = 0; }
 
 LResource::LResource(const ResourceType *t, Resource *res)
-    : RefObj(TYPE_ELEM_RESOURCE), type(t), res(res) {}
+    : RefObj(TYPE_ELEM_RESOURCE), type(t), res(res) {
+    res->refc++;
+}
 
 char HexChar(char i) { return i + (i < 10 ? '0' : 'A' - 10); }
 
@@ -85,7 +87,7 @@ void LVector::Resize(VM &vm, iint newmax) {
 }
 
 void LVector::Append(VM &vm, LVector *from, iint start, iint amount) {
-    if (len + amount > maxl) Resize(vm, len + amount);  // FIXME: check overflow
+    if (len + amount > maxl) Resize(vm, std::max(len + amount, maxl * 2));  // FIXME: check overflow
     assert(width == from->width);
     t_memcpy(v + len * width, from->v + start * width, amount * width);
     len += amount;
@@ -95,7 +97,7 @@ void LVector::Append(VM &vm, LVector *from, iint start, iint amount) {
 void LVector::RemovePush(StackPtr &sp, iint i) {
     assert(len >= 1 && i >= 0 && i < len);
     tsnz_memcpy(TopPtr(sp), v + i * width, width);
-    PushN(sp, (int)width);
+    PushN(sp, width);
     t_memmove(v + i * width, v + (i + 1) * width, (len - i - 1) * width);
     len--;
 }
@@ -110,7 +112,7 @@ void LVector::Remove(VM &vm, iint i, iint n) {
 void LVector::AtVW(StackPtr &sp, iint i) const {
     auto src = AtSt(i);
     tsnz_memcpy(TopPtr(sp), src, width);
-    PushN(sp, (int)width);
+    PushN(sp, width);
 }
 
 void LVector::AtVWInc(StackPtr &sp, iint i, int bitmask) const {
@@ -181,7 +183,11 @@ void LObject::DeleteSelf(VM &vm) {
 }
 
 void LResource::DeleteSelf(VM &vm) {
-    if (owned) delete res;
+    res->refc--;
+    if (owned) {
+        assert(!res->refc);
+        delete res;
+    }
     vm.pool.dealloc(this, sizeof(LResource));
 }
 
@@ -280,72 +286,106 @@ void Value::ToStringBase(VM &vm, string &sd, ValueType t, PrintPrefs &pp) const 
     }
 }
 
-void Value::ToFlexBuffer(VM &vm, flexbuffers::Builder &builder, ValueType t) const {
-    switch (t) {
-        case V_INT:
-            builder.Int(ival());
-            return;
-        case V_FLOAT:
-            builder.Double(fval());
-            return;
-        default:
-            break;
-    }
+void Value::ToFlexBuffer(ToFlexBufferContext &fbc, ValueType t, string_view key, int defval) const {
     if (IsRefNil(t)) {
         if (!ref_) {
-            builder.Null();
+            if (key.empty()) fbc.builder.Null();
             return;
         }
         switch (t) {
             case V_STRING:
-                builder.String(sval()->strv().data(), sval()->strv().size());
+                if (!key.empty()) fbc.builder.Key(key.data());
+                fbc.builder.String(sval()->strv().data(), sval()->strv().size());
                 return;
             case V_VECTOR:
-                vval()->ToFlexBuffer(vm, builder);
+                if (!key.empty()) fbc.builder.Key(key.data());
+                vval()->ToFlexBuffer(fbc);
                 return;
             case V_CLASS:
-                oval()->ToFlexBuffer(vm, builder);
+                if (!key.empty()) fbc.builder.Key(key.data());
+                oval()->ToFlexBuffer(fbc);
+                return;
+            default:
+                break;
+        }
+    } else {
+        switch (t) {
+            case V_INT:
+                if (ival() != defval || key.empty()) {
+                    if (!key.empty()) fbc.builder.Key(key.data());
+                    fbc.builder.Int(ival());
+                }
+                return;
+            case V_FLOAT:
+                // FIXME: this check misses most float values that
+                // are not simple 0.0 or 1.0.
+                // Really need to change defval to be 64-bit
+                if (fval() != int2float(defval).f || key.empty()) {
+                    if (!key.empty()) fbc.builder.Key(key.data());
+                    fbc.builder.Double(fval());
+                }
                 return;
             default:
                 break;
         }
     }
     string sd;
+    ToStringBase(fbc.vm, sd, t, fbc.vm.debugpp);
+    if (fbc.ignore_unsupported_types) {
+        if (!key.empty()) fbc.builder.Key(key.data());
+        fbc.builder.String(sd);
+    } else {
+        fbc.vm.Error("cannot convert to FlexBuffer: " + sd);
+    }
+}
+
+void Value::ToLobsterBinary(VM &vm, vector<uint8_t> &buf, ValueType t) const {
+    if (IsRefNil(t)) {
+        if (!ref_) {
+            EncodeVarintZero(buf);  // Length of the types below.
+            return;
+        }
+        switch (t) {
+            case V_STRING: {
+                auto strv = sval()->strv();
+                EncodeVarintU(strv.size(), buf);
+                auto data = (const uint8_t *)strv.data();
+                buf.insert(buf.end(), data, data + strv.size());
+                return;
+            }
+            case V_VECTOR:
+                vval()->ToLobsterBinary(vm, buf);
+                return;
+            case V_CLASS:
+                oval()->ToLobsterBinary(vm, buf);
+                return;
+            default:
+                break;
+        }
+    } else if (t == V_INT) {
+        EncodeVarintS(ival_, buf);
+        return;
+    } else if (t == V_FLOAT) {
+        // Serialize as 32-bit by default, native endianness!
+        auto f = fltval();
+        buf.insert(buf.end(), (const uint8_t *)&f, (const uint8_t *)(&f + 1));
+        return;
+    }
+    string sd;
     ToStringBase(vm, sd, t, vm.debugpp);
-    vm.Error("cannot convert to FlexBuffer: " + sd);
+    vm.Error("cannot convert to Lobster binary: " + sd);
 }
 
 
+
 uint64_t RefObj::Hash(VM &vm) {
-    switch (ti(vm).t) {
-        case V_STRING:      return ((LString *)this)->Hash();
-        case V_VECTOR:      return ((LVector *)this)->Hash(vm);
-        case V_CLASS:       return ((LObject *)this)->Hash(vm);
-        default:            return SplitMix64Hash((uint64_t)this);
-    }
+    return ti(vm).t == V_STRING
+        ? ((LString *)this)->Hash()
+        : SplitMix64Hash((uint64_t)this);
 }
 
 uint64_t LString::Hash() {
     return FNV1A64(strv());
-}
-
-uint64_t LVector::Hash(VM &vm) {
-    auto &eti = ElemType(vm);
-    auto hash = SplitMix64Hash((uint64_t)(len * width));
-    if (IsStruct(eti.t)) {
-        for (iint i = 0; i < len; i++) {
-            for (int j = 0; j < width; j++) {
-                assert(width == eti.len);
-                auto &ti = vm.GetTypeInfo(eti.elemtypes[j]);
-                hash = hash * 31 + AtSub(i, j).Hash(vm, ti.t);
-            }
-        }
-    } else {
-        for (iint i = 0; i < len; i++) {
-            hash = hash * 31 + At(i).Hash(vm, eti.t);
-        }
-    }
-    return hash;
 }
 
 uint64_t Value::Hash(VM &vm, ValueType vtype) {
@@ -360,43 +400,44 @@ uint64_t Value::Hash(VM &vm, ValueType vtype) {
     }
 }
 
-Value Value::CopyRef(VM &vm, bool deep) {
+Value Value::CopyRef(VM &vm, iint depth) {
     if (!refnil()) return NilVal();
     auto &ti = ref()->ti(vm);
+    depth--;
     switch (ti.t) {
-    case V_VECTOR: {
-        auto len = vval()->len;
-        auto nv = vm.NewVec(len, len, vval()->tti);
-        if (len) {
-            nv->CopyElemsShallow(vval()->Elems());
-            if (deep) {
-                nv->CopyRefElemsDeep(vm);
-            } else {
-                nv->IncRefElems(vm);
+        case V_VECTOR: {
+            auto len = vval()->len;
+            auto nv = vm.NewVec(len, len, vval()->tti);
+            if (len) {
+                nv->CopyElemsShallow(vval()->Elems());
+                if (depth) {
+                    nv->CopyRefElemsDeep(vm, depth);
+                } else {
+                    nv->IncRefElems(vm);
+                }
             }
+            return Value(nv);
         }
-        return Value(nv);
-    }
-    case V_CLASS: {
-        auto len = oval()->Len(vm);
-        auto nv = vm.NewObject(len, oval()->tti);
-        if (len) {
-            nv->CopyElemsShallow(oval()->Elems(), len);
-            if (deep) {
-                nv->CopyRefElemsDeep(vm, len);
-            } else {
-                nv->IncRefElems(vm, len);
+        case V_CLASS: {
+            auto len = oval()->Len(vm);
+            auto nv = vm.NewObject(len, oval()->tti);
+            if (len) {
+                nv->CopyElemsShallow(oval()->Elems(), len);
+                if (depth) {
+                    nv->CopyRefElemsDeep(vm, len, depth);
+                } else {
+                    nv->IncRefElems(vm, len);
+                }
             }
+            return Value(nv);
         }
-        return Value(nv);
-    }
-    case V_STRING: {
-        auto s = vm.NewString(sval()->strv());
-        return Value(s);
-    }
-    default:
-        vm.BuiltinError("Can\'t copy type: " + ti.Debug(vm, false));
-        return NilVal();
+        case V_STRING: {
+            auto s = vm.NewString(sval()->strv());
+            return Value(s);
+        }
+        default:
+            vm.BuiltinError("Can\'t copy type: " + ti.Debug(vm, false));
+            return NilVal();
     }
 }
 
@@ -410,7 +451,7 @@ string TypeInfo::Debug(VM &vm, bool rec) const {
         if (rec) {
             s += "{";
             for (int i = 0; i < len; i++)
-                s += vm.GetTypeInfo(elemtypes[i]).Debug(vm, false) + ",";
+                s += vm.GetTypeInfo(elemtypes[i].type).Debug(vm, false) + ",";
             s += "}";
         }
         return s;
@@ -419,21 +460,28 @@ string TypeInfo::Debug(VM &vm, bool rec) const {
     }
 }
 
-void TypeInfo::Print(VM &vm, string &sd) const {
+void TypeInfo::Print(VM &vm, string &sd, void *ref) const {
     switch (t) {
         case V_VECTOR:
             append(sd, "[");
-            vm.GetTypeInfo(subt).Print(vm, sd);
+            vm.GetTypeInfo(subt).Print(vm, sd, nullptr);
             append(sd, "]");
             break;
         case V_NIL:
-            vm.GetTypeInfo(subt).Print(vm, sd);
+            vm.GetTypeInfo(subt).Print(vm, sd, ref);
             append(sd, "?");
             break;
         case V_CLASS:
         case V_STRUCT_R:
         case V_STRUCT_S:
             append(sd, vm.StructName(*this));
+            break;
+        case V_RESOURCE:
+            append(sd, "resource");
+            if (ref) {
+                auto res = (LResource *)ref;
+                append(sd, "<", res->type->name, ">");
+            }
             break;
         default:
             append(sd, BaseTypeName(t));
@@ -448,7 +496,7 @@ void TypeInfo::Print(VM &vm, string &sd) const {
     return sti.t == V_NIL ? vm.GetTypeInfo(sti.subt) : sti;
 
 const TypeInfo &LObject::ElemTypeS(VM &vm, iint i) const {
-    ELEMTYPE(elemtypes[i], assert(i < _ti.len));
+    ELEMTYPE(elemtypes[i].type, assert(i < _ti.len));
 }
 
 const TypeInfo &LObject::ElemTypeSP(VM &vm, iint i) const {
@@ -535,55 +583,129 @@ void VM::StructToString(string &sd, PrintPrefs &pp, const TypeInfo &ti, const Va
     );
 }
 
-void ElemToFlexBuffer(VM &vm, flexbuffers::Builder &builder, const TypeInfo &ti,
-                      iint &i, iint width, const Value *elems, bool is_vector) {
+void ElemToFlexBuffer(ToFlexBufferContext &fbc, const TypeInfo &ti,
+                      iint &i, iint width, const Value *elems, string_view key, int defval) {
+    fbc.cur_depth++;
     if (IsStruct(ti.t)) {
-        vm.StructToFlexBuffer(vm, builder, ti, elems + i * width);
-        if (!is_vector) i += ti.len - 1;
+        if (!key.empty()) fbc.builder.Key(key.data());
+        bool emitted = fbc.vm.StructToFlexBuffer(fbc, ti, elems + i * width, !key.empty());
+        if (!key.empty()) {
+            i += ti.len - 1;
+            if (!emitted) fbc.builder.Undo();  // Pop key.
+        }
     } else {
-        elems[i].ToFlexBuffer(vm, builder, ti.t);
+        elems[i].ToFlexBuffer(fbc, ti.t, key, defval);
     }
+    fbc.cur_depth--;
 }
 
-void LObject::ToFlexBuffer(VM &vm, flexbuffers::Builder &builder) {
-    // TODO: some form of cycle protection?
-    auto start = builder.StartMap();
-    auto stidx = ti(vm).structidx;
-    if (true) {
-        // FIXME: only needed if dynamic type is unequal to static type.
-        auto type_name = vm.ReverseLookupType(stidx);
-        builder.Key("_type");
-        builder.String(type_name.data(), type_name.size());
+void LObject::ToFlexBuffer(ToFlexBufferContext &fbc) {
+    if (fbc.cycle_detect) {
+        if (fbc.seen_objects.find(this) == fbc.seen_objects.end()) {
+            fbc.seen_objects.insert(this);
+        } else {
+            fbc.cycle_hit = TypeName(fbc.vm);
+            if (fbc.cycle_hit_value.type_ == flexbuffers::FBT_NULL) {
+                fbc.builder.String("(dup_ref)");
+                fbc.cycle_hit_value = fbc.builder.LastValue();
+            } else {
+                fbc.builder.ReuseValue(fbc.cycle_hit_value);
+            }
+            return;
+        }
     }
-    for (iint i = 0, f = 0; i < Len(vm); i++, f++) {
-        auto &ti = ElemTypeSP(vm, i);
-        auto fname = vm.LookupField(stidx, f);
-        builder.Key(fname.data());
-        ElemToFlexBuffer(vm, builder, ti, i, 1, Elems(), false);
+    if (fbc.cur_depth >= fbc.max_depth) {
+        fbc.max_depth_hit = TypeName(fbc.vm);
+        if (fbc.max_depth_hit_value.type_ == flexbuffers::FBT_NULL) {
+            fbc.builder.String("(max_depth)");
+            fbc.max_depth_hit_value = fbc.builder.LastValue();
+        } else {
+            fbc.builder.ReuseValue(fbc.max_depth_hit_value);
+        }
+        return;
     }
-    builder.EndMap(start);
+    auto start = fbc.builder.StartMap();
+    auto &stti = ti(fbc.vm);
+    auto stidx = stti.structidx;
+    if (stti.superclass >= 0) {
+        // TODO: This is only needed if dynamic type is unequal to static type.
+        // So far we approximate that with seeing if it has a superclass which should
+        // eliminate this field in the majority of cases, but maybe we can do better.
+        auto type_name = fbc.vm.ReverseLookupType(stidx);
+        fbc.builder.Key("_type");
+        fbc.builder.String(type_name.data(), type_name.size());
+    }
+    for (iint i = 0, f = 0; i < stti.len; i++, f++) {
+        auto &eti = ElemTypeSP(fbc.vm, i);
+        auto fname = fbc.vm.LookupField(stidx, f);
+        ElemToFlexBuffer(fbc, eti, i, 1, Elems(), fname, stti.elemtypes[i].defval);
+    }
+    fbc.builder.EndMap(start);
 }
 
-void LVector::ToFlexBuffer(VM &vm, flexbuffers::Builder &builder) {
-    auto start = builder.StartVector();
-    auto &ti = ElemType(vm);
+void LVector::ToFlexBuffer(ToFlexBufferContext &fbc) {
+    auto start = fbc.builder.StartVector();
+    auto &ti = ElemType(fbc.vm);
     for (iint i = 0; i < len; i++) {
-        ElemToFlexBuffer(vm, builder, ti, i, width, v, true);
+        ElemToFlexBuffer(fbc, ti, i, width, v, {}, -1);
     }
-    builder.EndVector(start, false, false);
+    fbc.builder.EndVector(start, false, false);
 }
 
-void VM::StructToFlexBuffer(VM &vm, flexbuffers::Builder &builder, const TypeInfo &sti,
-                            const Value *elems) {
-    auto start = builder.StartMap();
+bool VM::StructToFlexBuffer(ToFlexBufferContext &fbc, const TypeInfo &sti,
+                            const Value *elems, bool omit_if_empty) {
+    auto start = fbc.builder.StartMap();
     for (iint i = 0, f = 0; i < sti.len; i++, f++) {
         auto &ti = GetTypeInfo(sti.GetElemOrParent(i));
-        auto fname = vm.LookupField(sti.structidx, f);
-        builder.Key(fname.data());
-        ElemToFlexBuffer(*this, builder, ti, i, 1, elems, false);
+        auto fname = fbc.vm.LookupField(sti.structidx, f);
+        ElemToFlexBuffer(fbc, ti, i, 1, elems, fname, sti.elemtypes[i].defval);
     }
-    builder.EndMap(start);
+    if (omit_if_empty && !fbc.builder.MapElementCount(start))
+        return false;
+    fbc.builder.EndMap(start);
+    return true;
 }
+
+void ElemToLobsterBinary(VM &vm, vector<uint8_t> &buf, const TypeInfo &ti, iint &i, iint width,
+                         const Value *elems, bool is_object) {
+    if (IsStruct(ti.t)) {
+        vm.StructToLobsterBinary(vm, buf, ti, elems + i * width);
+        if (is_object) i += ti.len - 1;
+    } else {
+        elems[i].ToLobsterBinary(vm, buf, ti.t);
+    }
+}
+
+void LObject::ToLobsterBinary(VM &vm, vector<uint8_t> &buf) {
+    auto &stti = ti(vm);
+    EncodeVarintU(stti.len, buf);
+    if (stti.serializable_id < 0) {
+        vm.Error("cannot serialize (missing serializable attribute): " + vm.StructName(stti));
+    }
+    EncodeVarintU(stti.serializable_id, buf);
+    for (iint i = 0; i < stti.len; i++) {
+        auto &eti = ElemTypeSP(vm, i);
+        ElemToLobsterBinary(vm, buf, eti, i, 1, Elems(), true);
+    }
+}
+
+void LVector::ToLobsterBinary(VM &vm, vector<uint8_t> &buf) {
+    EncodeVarintU(len, buf);
+    auto &ti = ElemType(vm);
+    for (iint i = 0; i < len; i++) {
+        ElemToLobsterBinary(vm, buf, ti, i, width, v, false);
+    }
+}
+
+void VM::StructToLobsterBinary(VM &vm, vector<uint8_t> &buf, const TypeInfo &sti,
+                               const Value *elems) {
+    for (iint i = 0; i < sti.len; i++) {
+        auto &ti = GetTypeInfo(sti.GetElemOrParent(i));
+        ElemToLobsterBinary(vm, buf, ti, i, 1, elems, true);
+    }
+}
+
+
 
 
 type_elem_t LVector::SingleType(VM &vm) {
