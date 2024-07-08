@@ -174,7 +174,7 @@ nfr("ts_set_window_size", "width,height", "II", "", "resizes the window",
 NativeRegistry natreg;  // FIXME: global.
 
 string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *auxfilepath,
-                   bool from_bundle, ScriptLoader sl) {
+                   bool from_bundle, FileLoader sl) {
     si = _si;
     min_output_level = OUTPUT_PROGRAM;
     string err = "";
