@@ -22,7 +22,7 @@ nfr("goto_view", "", "", "",
     [](StackPtr &sp, VM &) { si->GoToView(); return Value(); });
 
 nfr("has_selection", "", "", "I",
-    "wether there is a selection.",
+    "whether there is a selection.",
     [](StackPtr &sp, VM &) { return Value(si->HasSelection()); });
 
 nfr("goto_selection", "", "", "",
@@ -30,7 +30,7 @@ nfr("goto_selection", "", "", "",
     [](StackPtr &sp, VM &) { si->GoToSelection(); return Value(); });
 
 nfr("has_parent", "", "", "I",
-    "wether the current cell has a parent (is the root cell).",
+    "whether the current cell has a parent (is the root cell).",
     [](StackPtr &sp, VM &) { return Value(si->HasParent()); });
 
 nfr("goto_parent", "", "", "",
