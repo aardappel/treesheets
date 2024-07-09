@@ -55,14 +55,14 @@ struct Image {
 
 struct System {
     MyFrame *frame;
-    wxString defaultfont{
+    wxString defaultfont {
     #ifdef WIN32
         L"Lucida Sans Unicode"
     #else
         L"Verdana"
     #endif
-    },
-        searchstring;
+    };
+    wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
     Evaluator ev;
     wxString clipboardcopy;
@@ -71,15 +71,29 @@ struct System {
     Vector<int> loadimageids;
     uchar versionlastloaded {0};
     wxLongLong fakelasteditonload;
-    wxPen pen_tinytext {wxColour(0x808080ul)}, pen_gridborder {wxColour(0xb5a6a4)},
-        pen_tinygridlines {wxColour(0xf2dcd8)}, pen_gridlines {wxColour(0xe5b7b0)},
-        pen_thinselect {*wxLIGHT_GREY};
-    int roundness {3}, defaultmaxcolwidth {80};
-    bool makebaks {true}, totray {false}, autosave {true}, zoomscroll {false}, thinselc {true},
-        minclose {false}, singletray {false}, centered {true}, fswatch {true},
-        autohtmlexport {false}, casesensitivesearch {true}, darkennonmatchingcells {false},
-        fastrender {true};
-    int sortcolumn, sortxs, sortdescending;
+    wxPen pen_tinytext {wxColour(0x808080ul)};
+    wxPen pen_gridborder {wxColour(0xb5a6a4)};
+    wxPen pen_tinygridlines {wxColour(0xf2dcd8)};
+    wxPen pen_gridlines {wxColour(0xe5b7b0)};
+    wxPen pen_thinselect {*wxLIGHT_GREY};
+    int roundness {3};
+    int defaultmaxcolwidth {80};
+    bool makebaks {true};
+    bool totray {false};
+    bool autosave {true};
+    bool zoomscroll {false};
+    bool thinselc {true};
+    bool minclose {false};
+    bool singletray {false};
+    bool centered {true};
+    bool fswatch {true};
+    bool autohtmlexport {false};
+    bool casesensitivesearch {true};
+    bool darkennonmatchingcells {false};
+    bool fastrender {true};
+    int sortcolumn;
+    int sortxs;
+    int sortdescending;
     wxHashMapBool watchedpaths;
     bool insidefiledialog {false};
     struct TimerStruct : wxTimer {
@@ -88,7 +102,9 @@ struct System {
             sys->cfg->Flush();
         }
     } every_second_timer;
-    uint lastcellcolor {0xFFFFFF}, lasttextcolor {0}, lastbordcolor {0xA0A0A0};
+    uint lastcellcolor {0xFFFFFF};
+    uint lasttextcolor {0};
+    uint lastbordcolor {0xA0A0A0};
     int customcolor {0xFFFFFF};
 
     System(bool portable)
