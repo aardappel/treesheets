@@ -18,6 +18,7 @@
 
 #include "lobster/vmdata.h"
 #include "lobster/glinterface.h"
+#include "lobster/glincludes.h"
 
 #define IQM_MAGIC "INTERQUAKEMODEL"
 #define IQM_VERSION 2
@@ -123,19 +124,19 @@ template<> inline short endianswap<short>(short n) { return endianswap16(n); }
 template<> inline uint32_t endianswap<uint32_t>(uint32_t n) { return endianswap32(n); }
 template<> inline int endianswap<int>(int n) { return endianswap32(n); }
 
-template<class T> inline void endianswap(T *buf, int len) {
+template<class T> inline void endianswap(T *buf, size_t len) {
     for(T *end = &buf[len]; buf < end; buf++) *buf = endianswap(*buf);
 }
 template<class T> inline T lilswap(T n) {
     return islittleendian() ? n : endianswap(n);
 }
-template<class T> inline void lilswap(T *buf, int len) {
+template<class T> inline void lilswap(T *buf, size_t len) {
     if(!islittleendian()) endianswap(buf, len);
 }
 template<class T> inline T bigswap(T n) {
     return islittleendian() ? endianswap(n) : n;
 }
-template<class T> inline void bigswap(T *buf, int len) {
+template<class T> inline void bigswap(T *buf, size_t len) {
     if(islittleendian()) endianswap(buf, len);
 }
 
@@ -154,6 +155,7 @@ static const char **textures = nullptr;
 static iqmjoint *joints = nullptr;
 static iqmpose *poses = nullptr;
 static iqmanim *anims = nullptr;
+static const char **anim_names = nullptr;
 static iqmbounds *bounds = nullptr;
 static float3x4 *baseframe = nullptr, *inversebaseframe = nullptr, *frames = nullptr;
 
@@ -162,6 +164,7 @@ void cleanupiqm() {
     delete[] baseframe;        baseframe = nullptr;
     delete[] inversebaseframe; inversebaseframe = nullptr;
     delete[] frames;           frames = nullptr;
+    delete[] anim_names;       anim_names = nullptr;
     string().swap(filebuffer);
     inposition = nullptr;
     innormal = nullptr;
@@ -302,6 +305,12 @@ bool loadiqmanims(const iqmheader &hdr, const char *buf) {
             frames[i*hdr.num_poses + j] = m;
         }
     }
+    const char *str = hdr.ofs_text ? &buf[hdr.ofs_text] : "";
+    anim_names = new const char *[numanims];
+    memset(anim_names, 0, numanims * sizeof(const char *));
+    for (int i = 0; i < numanims; i++) {
+        anim_names[i] = &str[anims[i].name];
+    }
     return true;
 }
 
@@ -354,6 +363,127 @@ Mesh *LoadIQM(string_view filename) {
         t_memcpy(mats, frames, numjoints * numframes);
         mesh->mats = mats;
     }
+    for (int i = 0; i < numanims; i++) {
+        auto anim =
+            Mesh::Animation{(int)anims[i].first_frame, (int)anims[i].num_frames, anims[i].framerate};
+        mesh->animations[anim_names[i]] = anim;
+    }
     cleanupiqm();
     return mesh;
+}
+
+string SaveAsIQM(const Mesh *mesh, string_view filename) {
+    #ifndef PLATFORM_ES3
+    if (mesh->geom->fmt != "PNC") {
+        return "only support 'PNC' vertex format";
+    }
+    if (mesh->surfs.size() != 1) {
+        return "only support one mesh part";
+    }
+    if (mesh->surfs[0]->prim != PRIM_TRIS) {
+        return "only support triangles primitive";
+    }
+
+    struct vert {
+        float pos[3], normal[3];
+        uint8_t color[4];
+    };
+
+    Geometry *geom = mesh->geom;
+    Surface *surf = mesh->surfs[0];
+    iqmheader hdr;
+    iqmmesh mesh2;
+    iqmvertexarray varray[3];
+    vector<vert> vattribs;
+    vector<float3> vpositions;
+    vector<float3> vnormals;
+    vector<byte4> vcolors;
+    vector<iqmtriangle> triangles;
+
+    // Prepare vertex data
+    vattribs.resize(geom->nverts);
+    vpositions.reserve(geom->nverts);
+    vnormals.reserve(geom->nverts);
+    vcolors.reserve(geom->nverts);
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, geom->vbo1));
+    GL_CALL(glGetBufferSubData(GL_ARRAY_BUFFER, 0, geom->nverts*sizeof(vert), vattribs.data()));
+    for (const auto &v : vattribs) {
+        vpositions.push_back(float3(v.pos[0], v.pos[1], v.pos[2]));
+        vnormals.push_back(float3(v.normal[0], v.normal[1], v.color[2]));
+        vcolors.push_back(byte4(v.color[0], v.color[1], v.color[2], v.color[3]));
+    }
+
+    // Prepare triangle data
+    memset(&mesh2, 0, sizeof(mesh2));
+    mesh2.num_vertexes = (uint32_t)geom->nverts;
+    mesh2.num_triangles = (uint32_t)surf->numidx / 3;
+    triangles.resize(mesh2.num_triangles);
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, surf->ibo));
+    GL_CALL(glGetBufferSubData(GL_ARRAY_BUFFER, 0, mesh2.num_triangles*sizeof(iqmtriangle), triangles.data()));
+
+    // Init header
+    memset(&hdr, 0, sizeof(hdr));
+    memcpy(hdr.magic, IQM_MAGIC, sizeof(hdr.magic)); 
+    hdr.filesize = sizeof(hdr);
+    hdr.version = IQM_VERSION;
+    hdr.num_meshes = 1;
+    hdr.ofs_meshes = hdr.filesize;
+    hdr.filesize += sizeof(iqmmesh);
+    uint32_t voffset = hdr.filesize + sizeof(varray);
+    hdr.num_vertexarrays = 3;
+    hdr.ofs_vertexarrays = hdr.filesize;
+    hdr.filesize += sizeof(varray);
+    uint32_t valign = (8 - (hdr.filesize%8))%8;
+    voffset += valign;
+    hdr.filesize += uint32_t(valign + vattribs.size() * sizeof(vert));
+    hdr.num_vertexes = (uint32_t)vattribs.size();
+    hdr.num_triangles = (uint32_t)triangles.size();
+    hdr.ofs_triangles = hdr.filesize;
+    hdr.filesize += uint32_t(triangles.size() * sizeof(iqmtriangle));
+
+    // Init vertexarray(s)
+    memset(varray, 0, sizeof(varray));
+    varray[0].type = IQM_POSITION;
+    varray[0].format = IQM_FLOAT;
+    varray[0].size = 3;
+    varray[0].offset = voffset;
+    varray[1].type = IQM_NORMAL;
+    varray[1].format = IQM_FLOAT;
+    varray[1].size = 3;
+    varray[1].offset = uint32_t(voffset + vpositions.size() * sizeof(float3));
+    varray[2].type = IQM_COLOR;
+    varray[2].format = IQM_UBYTE;
+    varray[2].size = 4;
+    varray[2].offset = uint32_t(voffset + (vpositions.size() + vnormals.size()) * sizeof(float3));
+
+    // Change to little-endian
+    if (!islittleendian()) {
+        endianswap(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint32_t));
+        endianswap((uint32_t*)&mesh2, sizeof(mesh2)/sizeof(uint32_t));
+        endianswap((uint32_t*)&varray[0], sizeof(varray)/(sizeof(uint32_t)));
+        endianswap((float*)vpositions.data(), vpositions.size() * 3);
+        endianswap((float*)vnormals.data(), vnormals.size() * 3);
+        endianswap((uint32_t*)triangles.data(), triangles.size() * 3);
+    }
+
+    // Accumulate data to be written
+    string s;
+    s.append((char*)&hdr, sizeof(hdr));
+    s.append((char*)&mesh2, sizeof(mesh2));
+    s.append((char*)&varray[0], sizeof(varray));
+    for (uint32_t i = 0; i < valign; i++) s.append("\x00");
+    s.append((char*)vpositions.data(), sizeof(float3)*vpositions.size());
+    s.append((char*)vnormals.data(), sizeof(float3)*vnormals.size());
+    s.append((char*)vcolors.data(), sizeof(byte4)*vcolors.size());
+    s.append((char*)triangles.data(), sizeof(iqmtriangle)*triangles.size());
+
+    if (!WriteFile(filename, true, s, false)) {
+        return "unable to write file to filesystem";
+    }
+    return "";
+    #else
+    (void)mesh;
+    (void)filename;
+    return "unsupported when using OpenGL ES";
+    #endif
 }

@@ -28,7 +28,7 @@ struct OutlineFont {
 
     bool EnsureCharsPresent(string_view utf8str);
     string GetName(int i);
-    int GetCharCode(string_view name);
+    int GetCharCode(string_view_nt name);
 };
 
 struct BitmapFont {

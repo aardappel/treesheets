@@ -95,7 +95,7 @@ template<typename T> struct ImplicitFunctionImpl : ImplicitFunction {
                         // dist was evaluated in the local coordinate system of the primitive.
                         // This is correct for trans/rot, but the scale makes it give the wrong
                         // distance globally.
-                        // Most uses of mg_scale(vec) are uniform so this should be close enough:
+                        // Most uses of mg.scale(vec) are uniform so this should be close enough:
                         dist *= uniform_scale;
                         // This is our only state access, but is thread-safe:
                         auto &dv = distgrid->Get(ipos);
@@ -494,11 +494,7 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
                         c.accum /= (float)-c.n;
                         c.col /= (float)-c.n;
                         c.n = (int)verts.size();
-                        verts.push_back(mgvert());
-                        auto &v = verts.back();
-                        v.pos = c.accum;
-                        v.norm = float3_0;
-                        v.col = quantizec(c.col, 1);
+                        verts.push_back(mgvert{ c.accum, float3_0, quantizec(c.col, 1) });
                     }
                     triangles.push_back(c.n);
                 }
@@ -507,12 +503,8 @@ Mesh *polygonize_mc(const int3 &gridsize, float gridscale, const float3 &gridtra
         delete dcellindices;
     } else {
         for (edge &e : edges) {
-            verts.push_back(mgvert());
-            auto &v = verts.back();
             assert(e.fmid >= 0 && e.fmid <= float3(gridsize));
-            v.pos = e.fmid;
-            v.col = e.material;
-            v.norm = float3_0;
+            verts.push_back(mgvert{ e.fmid, float3_0, e.material });
         }
         triangles.assign(mctriangles.begin(), mctriangles.end());
     }
@@ -680,7 +672,7 @@ Value eval_and_polygonize(VM &vm, int targetgridsize, int zoffset, bool do_poly)
 
 void AddMeshGen(NativeRegistry &nfr) {
 
-nfr("mg_sphere", "radius", "F", "",
+nfr("sphere", "radius", "F", "",
     "a sphere",
     [](StackPtr &, VM &, Value &rad) {
         auto s = new IFSphere();
@@ -688,7 +680,7 @@ nfr("mg_sphere", "radius", "F", "",
         return AddShape(s);
     });
 
-nfr("mg_cube", "extents", "F}:3", "",
+nfr("cube", "extents", "F}:3", "",
     "a cube (extents are size from center)",
     [](StackPtr &sp, VM &) {
         auto c = new IFCube();
@@ -696,7 +688,7 @@ nfr("mg_cube", "extents", "F}:3", "",
         Push(sp,  AddShape(c));
     });
 
-nfr("mg_cylinder", "radius,height", "FF", "",
+nfr("cylinder", "radius,height", "FF", "",
     "a unit cylinder (height is from center)",
     [](StackPtr &, VM &, Value &radius, Value &height) {
         auto c = new IFCylinder();
@@ -705,7 +697,7 @@ nfr("mg_cylinder", "radius,height", "FF", "",
         return AddShape(c);
     });
 
-nfr("mg_tapered_cylinder", "bot,top,height", "FFF", "",
+nfr("tapered_cylinder", "bot,top,height", "FFF", "",
     "a cyclinder where you specify the top and bottom radius (height is from center)",
     [](StackPtr &, VM &, Value &bot, Value &top, Value &height) {
         auto tc = new IFTaperedCylinder();
@@ -715,7 +707,7 @@ nfr("mg_tapered_cylinder", "bot,top,height", "FFF", "",
         return AddShape(tc);
     });
 
-nfr("mg_superquadric", "exponents,scale", "F}:3F}:3", "",
+nfr("superquadric", "exponents,scale", "F}:3F}:3", "",
     "a super quadric. specify an exponent of 2 for spherical, higher values for rounded"
     " squares",
     [](StackPtr &sp, VM &) {
@@ -725,7 +717,7 @@ nfr("mg_superquadric", "exponents,scale", "F}:3F}:3", "",
         AddShape(sq);
     });
 
-nfr("mg_superquadric_non_uniform", "posexponents,negexponents,posscale,negscale", "F}:3F}:3F}:3F}:3", "",
+nfr("superquadric_non_uniform", "posexponents,negexponents,posscale,negscale", "F}:3F}:3F}:3F}:3", "",
     "a superquadric that allows you to specify exponents and sizes in all 6 directions"
     " independently for maximum modelling possibilities",
     [](StackPtr &sp, VM &) {
@@ -737,7 +729,7 @@ nfr("mg_superquadric_non_uniform", "posexponents,negexponents,posscale,negscale"
         AddShape(sq);
     });
 
-nfr("mg_supertoroid", "R,exponents", "FF}:3", "",
+nfr("supertoroid", "R,exponents", "FF}:3", "",
     "a super toroid. R is the distance from the origin to the center of the ring.",
     [](StackPtr &sp, VM &) {
         auto t = new IFSuperToroid();
@@ -746,7 +738,7 @@ nfr("mg_supertoroid", "R,exponents", "FF}:3", "",
         AddShape(t);
     });
 
-nfr("mg_landscape", "zscale,xyscale", "FF", "",
+nfr("landscape", "zscale,xyscale", "FF", "",
     "a simplex landscape of unit size",
     [](StackPtr &, VM &, Value &zscale, Value &xyscale) {
         auto ls = new IFLandscape();
@@ -755,7 +747,7 @@ nfr("mg_landscape", "zscale,xyscale", "FF", "",
         return AddShape(ls);
     });
 
-nfr("mg_set_polygon_reduction", "polyreductionpasses,epsilon,maxtricornerdot", "IFF", "",
+nfr("set_polygon_reduction", "polyreductionpasses,epsilon,maxtricornerdot", "IFF", "",
     "controls the polygon reduction algorithm. set polyreductionpasses to 0 for off, 100 for"
     " max compression, or low values for generation speed or to keep the mesh uniform. epsilon"
     " determines how flat adjacent triangles must be to be reduced, use 0.98 as a good"
@@ -769,7 +761,7 @@ nfr("mg_set_polygon_reduction", "polyreductionpasses,epsilon,maxtricornerdot", "
         return NilVal();
     });
 
-nfr("mg_set_color_noise", "noiseintensity,noisestretch", "FF", "",
+nfr("set_color_noise", "noiseintensity,noisestretch", "FF", "",
     "applies simplex noise to the colors of the model. try 0.3 for intensity."
     " stretch scales the pattern over the model",
     [](StackPtr &, VM &, Value &_noiseintensity, Value &_noisestretch) {
@@ -778,7 +770,7 @@ nfr("mg_set_color_noise", "noiseintensity,noisestretch", "FF", "",
         return NilVal();
     });
 
-nfr("mg_set_vertex_randomize", "factor", "F", "",
+nfr("set_vertex_randomize", "factor", "F", "",
     "randomizes all verts produced to give a more organic look and to hide the inherent messy"
     " polygons produced by the algorithm. try 0.15. note that any setting other than 0 will"
     " likely counteract the polygon reduction algorithm",
@@ -787,15 +779,15 @@ nfr("mg_set_vertex_randomize", "factor", "F", "",
         return NilVal();
     });
 
-nfr("mg_set_point_mode", "on", "B", "",
+nfr("set_point_mode", "on", "B", "",
     "generates a point mesh instead of polygons",
     [](StackPtr &, VM &, Value &aspoints) {
         pointmode = aspoints.True();
         return NilVal();
     });
 
-nfr("mg_polygonize", "subdiv", "I", "R:mesh",
-    "returns a generated mesh from past mg_ commands."
+nfr("polygonize", "subdiv", "I", "R:mesh",
+    "returns a generated mesh from past mg commands."
     " subdiv determines detail and number of polygons (relative to the largest dimension of the"
     " model), try 30.. 300 depending on the subject."
     " values much higher than that will likely make you run out of memory (or take very long).",
@@ -803,15 +795,15 @@ nfr("mg_polygonize", "subdiv", "I", "R:mesh",
         return eval_and_polygonize(vm, subdiv.intval(), 0, true);
     });
 
-nfr("mg_convert_to_cubes", "subdiv,zoffset", "II", "R:voxels",
-    "returns a cubegen block (see cg_ functions) from past mg_ commands."
+nfr("convert_to_cubes", "subdiv,zoffset", "II", "R:voxels",
+    "returns a cubegen block (see cg_ functions) from past mg commands."
     " subdiv determines detail and number of cubes (relative to the largest dimension of the"
     " model).",
     [](StackPtr &, VM &vm, Value &subdiv, Value &zoffset) {
         return eval_and_polygonize(vm, subdiv.intval(), zoffset.intval(), false);
     });
 
-nfr("mg_translate", "vec", "F}:3", "",
+nfr("translate", "vec", "F}:3", "",
     "translates the current coordinate system along a vector",
     [](StackPtr &sp, VM &) {
         auto v = PopVec<float3>(sp);
@@ -819,21 +811,21 @@ nfr("mg_translate", "vec", "F}:3", "",
         cur.orig += cur.rot * (v * cur.size);
     });
 
-nfr("mg_scale", "f", "F", "",
+nfr("scale", "f", "F", "",
     "scales the current coordinate system by the given factor",
     [](StackPtr &sp, VM &) {
         auto f = Pop(sp).fltval();
         cur.size *= f;
     });
 
-nfr("mg_scale_vec", "vec", "F}:3", "",
+nfr("scale_vec", "vec", "F}:3", "",
     "non-unimformly scales the current coordinate system using individual factors per axis",
     [](StackPtr &sp, VM &) {
         auto v = PopVec<float3>(sp);
         cur.size *= v;
     });
 
-nfr("mg_rotate", "axis,angle", "F}:3F", "",
+nfr("rotate", "axis,angle", "F}:3F", "",
     "rotates using axis/angle",
     [](StackPtr &sp, VM &) {
         auto angle = Pop(sp).fltval();
@@ -841,7 +833,7 @@ nfr("mg_rotate", "axis,angle", "F}:3F", "",
         cur.rot *= float3x3(angle * RAD, axis);
     });
 
-nfr("mg_color", "color", "F}:4", "",
+nfr("color", "color", "F}:4", "",
     "sets the color, where an alpha of 1 means to add shapes to the scene (union), and 0"
     " substracts them (carves)",
     [](StackPtr &sp, VM &) {
@@ -849,7 +841,7 @@ nfr("mg_color", "color", "F}:4", "",
         cur.material = v;
     });
 
-nfr("mg_smooth", "smooth", "F", "",
+nfr("smooth", "smooth", "F", "",
     "sets the smoothness in terms of the range of distance from the shape smoothing happens,"
     " defaults to 1.0",
     [](StackPtr &sp, VM &) {
@@ -857,13 +849,13 @@ nfr("mg_smooth", "smooth", "F", "",
         cur.smoothmink = smooth;
     });
 
-nfr("mg_push_transform", "", "", "",
+nfr("push_transform", "", "", "",
     "save the current state of the transform",
     [](StackPtr &, VM &) {
         fstack.push_back(cur);
     });
 
-nfr("mg_pop_transform", "", "", "",
+nfr("pop_transform", "", "", "",
     "restore a previous state of the transform",
     [](StackPtr &, VM &) {
         if (!fstack.empty()) {

@@ -73,6 +73,7 @@
         GLEXT(PFNGLDELETEPROGRAMPROC                 , glDeleteProgram                 , 1) \
         GLEXT(PFNGLDELETESHADERPROC                  , glDeleteShader                  , 1) \
         GLEXT(PFNGLUSEPROGRAMPROC                    , glUseProgram                    , 1) \
+        GLEXT(PFNGLISPROGRAMPROC                     , glIsProgram                     , 1) \
         GLEXT(PFNGLCREATESHADERPROC                  , glCreateShader                  , 1) \
         GLEXT(PFNGLSHADERSOURCEPROC                  , glShaderSource                  , 1) \
         GLEXT(PFNGLCOMPILESHADERPROC                 , glCompileShader                 , 1) \
@@ -135,7 +136,11 @@
         GLEXT(PFNGLBINDBUFFERBASEPROC                , glBindBufferBase                , 0) \
         GLEXT(PFNGLMEMORYBARRIERPROC                 , glMemoryBarrier                 , 0) \
         GLEXT(PFNGLMAPBUFFERRANGEPROC                , glMapBufferRange                , 0) \
+        GLEXT(PFNGLCOPYBUFFERSUBDATAPROC             , glCopyBufferSubData             , 0) \
         GLEXT(PFNGLGENQUERIESPROC                    , glGenQueries                    , 0) \
+        GLEXT(PFNGLDELETEQUERIESPROC                 , glDeleteQueries                 , 0) \
+        GLEXT(PFNGLBEGINQUERYPROC                    , glBeginQuery                    , 0) \
+        GLEXT(PFNGLENDQUERYPROC                      , glEndQuery                      , 0) \
         GLEXT(PFNGLGETSTRINGIPROC                    , glGetStringi                    , 0) \
         GLEXT(PFNGLGETINTEGER64VPROC                 , glGetInteger64v                 , 0) \
         GLEXT(PFNGLGETQUERYIVPROC                    , glGetQueryiv                    , 0) \
@@ -144,7 +149,10 @@
         GLEXT(PFNGLQUERYCOUNTERPROC                  , glQueryCounter                  , 0) \
         GLEXT(PFNGLOBJECTLABELPROC                   , glObjectLabel                   , 0) \
         GLEXT(PFNGLDEBUGMESSAGECALLBACKPROC          , glDebugMessageCallback          , 0) \
-        GLEXT(PFNGLDEBUGMESSAGEINSERTPROC            , glDebugMessageInsert            , 0)
+        GLEXT(PFNGLDEBUGMESSAGECONTROLPROC           , glDebugMessageControl           , 0) \
+        GLEXT(PFNGLDEBUGMESSAGEINSERTPROC            , glDebugMessageInsert            , 0) \
+        GLEXT(PFNGLTEXSTORAGE2DPROC                  , glTexStorage2D                  , 0) \
+        GLEXT(PFNGLTEXSTORAGE3DPROC                  , glTexStorage3D                  , 0)
     #define GLEXT(type, name, needed) extern type name;
         GLBASEEXTS
         GLEXTS

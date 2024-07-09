@@ -12,41 +12,41 @@ namespace script {
 ScriptInterface *si = nullptr;
 
 void AddTreeSheets(NativeRegistry &nfr) {
-nfr("ts_goto_root", "", "", "",
+nfr("goto_root", "", "", "",
     "makes the root of the document the current cell. this is the default at the start"
     "of any script, so this function is only needed to return there.",
     [](StackPtr &sp, VM &) { si->GoToRoot(); return Value(); });
 
-nfr("ts_goto_view", "", "", "",
+nfr("goto_view", "", "", "",
     "makes what the user has zoomed into the current cell.",
     [](StackPtr &sp, VM &) { si->GoToView(); return Value(); });
 
-nfr("ts_has_selection", "", "", "I",
+nfr("has_selection", "", "", "I",
     "wether there is a selection.",
     [](StackPtr &sp, VM &) { return Value(si->HasSelection()); });
 
-nfr("ts_goto_selection", "", "", "",
+nfr("goto_selection", "", "", "",
     "makes the current cell the one selected, or the first of a selection.",
     [](StackPtr &sp, VM &) { si->GoToSelection(); return Value(); });
 
-nfr("ts_has_parent", "", "", "I",
+nfr("has_parent", "", "", "I",
     "wether the current cell has a parent (is the root cell).",
     [](StackPtr &sp, VM &) { return Value(si->HasParent()); });
 
-nfr("ts_goto_parent", "", "", "",
+nfr("goto_parent", "", "", "",
     "makes the current cell the parent of the current cell, if any.",
     [](StackPtr &sp, VM &) { si->GoToParent(); return Value(); });
 
-nfr("ts_num_children", "", "", "I",
+nfr("num_children", "", "", "I",
     "returns the total number of children of the current cell (rows * columns)."
     "returns 0 if this cell doesn't have a sub-grid at all.",
     [](StackPtr &sp, VM &) { return Value(si->NumChildren()); });
 
-nfr("ts_num_columns_rows", "", "", "I}:2",
+nfr("num_columns_rows", "", "", "I}:2",
     "returns the number of columns & rows in the current cell.",
     [](StackPtr &sp, VM &vm) { PushVec(sp, int2(si->NumColumnsRows())); });
 
-nfr("ts_selection", "", "", "I}:2I}:2",
+nfr("selection", "", "", "I}:2I}:2",
     "returns the (xs,ys) and (x,y) of the current selection, or zeroes if none.",
     [](StackPtr &sp, VM &vm) {
         auto b = si->SelectionBox();
@@ -54,47 +54,47 @@ nfr("ts_selection", "", "", "I}:2I}:2",
         PushVec(sp, int2(b.first));
     });
 
-nfr("ts_goto_child", "n", "I", "",
+nfr("goto_child", "n", "I", "",
     "makes the current cell the nth child of the current cell.",
     [](StackPtr &sp, VM &, Value &n) { si->GoToChild(n.intval()); return Value(); });
 
-nfr("ts_goto_column_row", "col,row", "II", "",
+nfr("goto_column_row", "col,row", "II", "",
     "makes the current cell the child at col / row.",
     [](StackPtr &sp, VM &, Value &x, Value &y) {
         si->GoToColumnRow(x.intval(), y.intval());
         return Value();
     });
 
-nfr("ts_get_text", "", "", "S",
+nfr("get_text", "", "", "S",
     "gets the text of the current cell.",
     [](StackPtr &sp, VM &vm) { return Value(vm.NewString(si->GetText())); });
 
-nfr("ts_set_text", "text", "S", "",
+nfr("set_text", "text", "S", "",
     "sets the text of the current cell.",
     [](StackPtr &sp, VM &, Value &s) { si->SetText(s.sval()->strv()); return Value(); });
 
-nfr("ts_create_grid", "cols,rows", "II", "",
+nfr("create_grid", "cols,rows", "II", "",
     "creates a grid in the current cell if there isn't one yet.",
     [](StackPtr &sp, VM &, Value &x, Value &y) {
         si->CreateGrid(x.intval(), y.intval());
         return Value();
     });
 
-nfr("ts_insert_column", "c", "I", "",
+nfr("insert_column", "c", "I", "",
     "insert n columns before column c in an existing grid.",
     [](StackPtr &sp, VM &, Value &x) {
         si->InsertColumn(x.intval());
         return Value();
     });
 
-nfr("ts_insert_row", "r", "I", "",
+nfr("insert_row", "r", "I", "",
     "insert n rows before row r in an existing grid.",
     [](StackPtr &sp, VM &, Value &x) {
         si->InsertRow(x.intval());
         return Value();
     });
 
-nfr("ts_delete", "pos,size", "I}:2I}:2", "",
+nfr("delete", "pos,size", "I}:2I}:2", "",
     "clears the cells denoted by pos/size. also removes columns/rows if they become"
     "completely empty, or the entire grid.",
     [](StackPtr &sp, VM &vm) {
@@ -103,34 +103,34 @@ nfr("ts_delete", "pos,size", "I}:2I}:2", "",
         si->Delete(p.x, p.y, s.x, s.y);
     });
 
-nfr("ts_set_background_color", "col", "F}:4", "",
+nfr("set_background_color", "col", "F}:4", "",
     "sets the background color of the current cell",
     [](StackPtr &sp, VM &vm) {
         auto col = PopVec<float3>(sp);
         si->SetBackgroundColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
-nfr("ts_set_text_color", "col", "F}:4", "",
+nfr("set_text_color", "col", "F}:4", "",
     "sets the text color of the current cell",
     [](StackPtr &sp, VM &vm) {
         auto col = PopVec<float3>(sp);
         si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
-nfr("ts_set_border_color", "col", "F}:4", "", "sets the border color of the current grid",
+nfr("set_border_color", "col", "F}:4", "", "sets the border color of the current grid",
     [](StackPtr &sp, VM &vm) {
         auto col = PopVec<float3>(sp);
         si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
-nfr("ts_set_relative_size", "s", "I", "",
+nfr("set_relative_size", "s", "I", "",
     "sets the relative size (0 is normal, -1 is smaller etc.) of the current cell",
     [](StackPtr &sp, VM &, Value &s) {
         si->SetRelativeSize(geom::clamp(s.intval(), -10, 10));
         return Value();
     });
 
-nfr("ts_set_style_bits", "s", "I", "",
+nfr("set_style_bits", "s", "I", "",
     "sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8,"
     " strikethru = 16) on the current cell.",
     [](StackPtr &sp, VM &, Value &s) {
@@ -138,32 +138,32 @@ nfr("ts_set_style_bits", "s", "I", "",
         return Value();
     });
 
-nfr("ts_set_status_message", "msg", "S", "",
+nfr("set_status_message", "msg", "S", "",
     "sets the status message in TreeSheets.",
     [](StackPtr &sp, VM &vm, Value &s) {
         si->SetStatusMessage(s.sval()->strv());
         return Value();
     });
 
-nfr("ts_get_filename_from_user", "is_save", "I", "S",
+nfr("get_filename_from_user", "is_save", "I", "S",
     "gets a filename using a file dialog. empty string if cancelled.",
     [](StackPtr &sp, VM &vm, Value &is_save) {
         return Value(vm.NewString(si->GetFileNameFromUser(is_save.True())));
     });
 
-nfr("ts_get_filename", "", "", "S",
+nfr("get_filename", "", "", "S",
     "gets the current documents file name.",
     [](StackPtr &sp, VM &vm) {
         return Value(vm.NewString(si->GetFileName()));
     });
 
-nfr("ts_load_document", "filename", "S", "B",
+nfr("load_document", "filename", "S", "B",
     "loads a document, and makes it the active one. returns false if failed.",
     [](StackPtr &sp, VM &vm, Value &filename) {
         return Value(si->LoadDocument(filename.sval()->data()));
     });
 
-nfr("ts_set_window_size", "width,height", "II", "", "resizes the window",
+nfr("set_window_size", "width,height", "II", "", "resizes the window",
     [](StackPtr &sp, VM &vm, Value &w, Value &h) {
         si->SetWindowSize(w.intval(), h.intval());
         return Value();
@@ -174,13 +174,13 @@ nfr("ts_set_window_size", "width,height", "II", "", "resizes the window",
 NativeRegistry natreg;  // FIXME: global.
 
 string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *auxfilepath,
-                   bool from_bundle, ScriptLoader sl) {
+                   bool from_bundle, FileLoader sl) {
     si = _si;
     min_output_level = OUTPUT_PROGRAM;
     string err = "";
     try {
         InitPlatform(exefilepath, auxfilepath, from_bundle, sl);
-        RegisterBuiltin(natreg, "treesheets", AddTreeSheets);
+        RegisterBuiltin(natreg, "ts", "treesheets", AddTreeSheets);
         RegisterCoreLanguageBuiltins(natreg);
     } catch (string &s) { err = s; }
     return err;
@@ -191,9 +191,9 @@ string RunLobster(std::string_view filename, std::string_view code, bool dump_bu
     try {
         string bytecode;
         Compile(natreg, filename, code, bytecode, nullptr, nullptr,
-                false, RUNTIME_ASSERT);
+                false, RUNTIME_ASSERT, nullptr, 0, true);
         auto ret = RunTCC(natreg, bytecode, filename, nullptr, {}, TraceMode::OFF, false, err,
-                          RUNTIME_ASSERT_PLUS, true);
+                          RUNTIME_ASSERT, true);
     } catch (string &s) {
         err = s;
     }

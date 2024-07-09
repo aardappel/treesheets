@@ -24,25 +24,25 @@ def add_indent(indent):
 def add_cell(indent) -> void:
     out.push("[\n")
     add_indent(indent + 1)
-    add_text(ts_get_text())
-    for(ts_num_children()) i:
+    add_text(ts.get_text())
+    for(ts.num_children()) i:
         out.push(",\n")
-        ts_goto_child(i)
+        ts.goto_child(i)
         add_indent(indent + 1)
-        if ts_num_children():
+        if ts.num_children():
             add_cell(indent + 1)
         else:
-            add_text(ts_get_text())
-        ts_goto_parent()
+            add_text(ts.get_text())
+        ts.goto_parent()
     out.push("\n")
     add_indent(indent)
     out.push("]")
 
-let filename = ts_get_filename_from_user(true)
+let filename = ts.get_filename_from_user(true)
 if filename.length:
-    ts_goto_root()  // This the default, here just for clarity.
+    ts.goto_root()  // This the default, here just for clarity.
     add_cell(0)
     let ok = write_file(filename, concat_string(out, ""), true, true)
-    ts_set_status_message("JSON export of {filename} " + if ok: "succesful" else: "failed!")
+    ts.set_status_message("JSON export of {filename} " + if ok: "succesful" else: "failed!")
 else:
-    ts_set_status_message("export cancelled")
+    ts.set_status_message("export cancelled")

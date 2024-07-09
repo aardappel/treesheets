@@ -124,7 +124,9 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SupportJustMyCode>false</SupportJustMyCode>
+      <EnableModules>true</EnableModules>
       <BuildStlModules>false</BuildStlModules>
+      <AdditionalOptions>/D_ITERATOR_DEBUG_LEVEL=1 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,6 +162,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableModules>true</EnableModules>
       <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
@@ -200,6 +203,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableModules>true</EnableModules>
       <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
@@ -292,27 +296,36 @@
     <ClInclude Include="..\include\flatbuffers\registry.h" />
     <ClInclude Include="..\include\flatbuffers\stl_emulation.h" />
     <ClInclude Include="..\include\flatbuffers\util.h" />
+    <ClInclude Include="..\src\lobster\accumulator.h" />
     <ClInclude Include="..\src\lobster\bytecode_generated.h" />
     <ClInclude Include="..\src\lobster\codegen.h" />
     <ClInclude Include="..\src\lobster\compiler.h" />
     <ClInclude Include="..\src\lobster\constval.h" />
     <ClInclude Include="..\src\lobster\disasm.h" />
+    <ClInclude Include="..\src\lobster\dllist.h" />
     <ClInclude Include="..\src\lobster\geom.h" />
     <ClInclude Include="..\src\lobster\idents.h" />
     <ClInclude Include="..\src\lobster\il.h" />
     <ClInclude Include="..\src\lobster\lex.h" />
+    <ClInclude Include="..\src\lobster\lobsterreader.h" />
     <ClInclude Include="..\src\lobster\natreg.h" />
     <ClInclude Include="..\src\lobster\node.h" />
     <ClInclude Include="..\src\lobster\optimizer.h" />
+    <ClInclude Include="..\src\lobster\packed_vector.h" />
     <ClInclude Include="..\src\lobster\parser.h" />
     <ClInclude Include="..\src\lobster\platform.h" />
+    <ClInclude Include="..\src\lobster\resource_manager.h" />
+    <ClInclude Include="..\src\lobster\rng_hash.h" />
     <ClInclude Include="..\src\lobster\slaballoc.h" />
+    <ClInclude Include="..\src\lobster\small_vector.h" />
     <ClInclude Include="..\src\lobster\stdafx.h" />
+    <ClInclude Include="..\src\lobster\string_tools.h" />
     <ClInclude Include="..\src\lobster\tonative.h" />
     <ClInclude Include="..\src\lobster\tools.h" />
     <ClInclude Include="..\src\lobster\ttypes.h" />
     <ClInclude Include="..\src\lobster\typecheck.h" />
     <ClInclude Include="..\src\lobster\unicode.h" />
+    <ClInclude Include="..\src\lobster\varint.h" />
     <ClInclude Include="..\src\lobster\vmdata.h" />
     <ClInclude Include="..\src\lobster\vmops.h" />
     <ClInclude Include="..\src\lobster\wasm_binary_writer.h" />

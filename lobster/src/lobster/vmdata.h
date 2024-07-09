@@ -15,7 +15,11 @@
 #ifndef LOBSTER_VMDATA
 #define LOBSTER_VMDATA
 
-namespace bytecode { struct BytecodeFile; }  // FIXME
+// FIXME
+namespace bytecode {
+    struct BytecodeFile;
+    struct UDT;
+}
 
 namespace lobster {
 
@@ -80,6 +84,7 @@ inline bool IsRefNilStruct(ValueType t) { return t <= V_NIL || t == V_STRUCT_S; 
 inline bool IsRefNilNoStruct(ValueType t) { return t <= V_NIL && t != V_STRUCT_R; }
 inline bool IsRuntime(ValueType t) { return t < V_VAR; }
 inline bool IsStruct(ValueType t) { return t == V_STRUCT_R || t == V_STRUCT_S; }
+inline bool IsUnBoxedOrStruct(ValueType t) { return IsUnBoxed(t) || IsStruct(t); }
 inline bool IsUDT(ValueType t) { return t == V_CLASS || IsStruct(t); }
 
 inline string_view BaseTypeName(ValueType t) {
@@ -118,6 +123,12 @@ enum type_elem_t : int {  // Strongly typed element of typetable.
 
 struct VM;
 
+struct TIField {
+    type_elem_t type;
+    type_elem_t parent;
+    int defval;
+};
+
 struct TypeInfo {
     ValueType t;
     union {
@@ -126,7 +137,9 @@ struct TypeInfo {
             int structidx;
             int len;
             int vtable_start_or_bitmask;
-            type_elem_t elemtypes[1];  // len elems, followed by len parent types.
+            type_elem_t superclass;
+            int serializable_id;
+            TIField elemtypes[1];  // len elems.
         };
         int enumidx;       // V_INT, -1 if not an enum.
         int sfidx;         // V_FUNCTION;
@@ -137,19 +150,19 @@ struct TypeInfo {
     TypeInfo &operator=(const TypeInfo &) = delete;
 
     string Debug(VM &vm, bool rec = true) const;
-    void Print(VM &vm, string &sd) const;
+    void Print(VM &vm, string &sd, void *ref) const;
 
     type_elem_t GetElemOrParent(iint i) const {
-        auto pti = elemtypes[len + i];
-        return pti >= 0 ? pti : elemtypes[i];
+        auto pti = elemtypes[i].parent;
+        return pti >= 0 ? pti : elemtypes[i].type;
     }
 
     type_elem_t SingleType() const {
         if (!len) return TYPE_ELEM_ANY;
         for (int i = 1; i < len; i++)
-            if (elemtypes[i] != elemtypes[0])
+            if (elemtypes[i].type != elemtypes[0].type)
                 return TYPE_ELEM_ANY;
-        return elemtypes[0];
+        return elemtypes[0].type;
     }
 };
 
@@ -227,6 +240,13 @@ struct RefObj : DynAlloc {
     void DECSTAT(VM &vm);
 
     uint64_t Hash(VM &vm);
+
+    string TypeName(VM &vm) {
+        auto &t = ti(vm);
+        string sd;
+        t.Print(vm, sd, this);
+        return sd;
+    }
 };
 
 extern bool RefEqual(VM &vm, const RefObj *a, const RefObj *b, bool structural);
@@ -238,6 +258,7 @@ struct LString : RefObj {
 
     const char *data() const { return (char *)(this + 1); }
     string_view strv() const { return string_view(data(), (size_t)len); }
+    string_view_nt strvnt() const { return string_view_nt(strv()); }
 
     void ToString(string &sd, PrintPrefs &pp);
 
@@ -261,10 +282,14 @@ struct ResourceType;
 extern ResourceType *g_resource_type_list;
 
 struct Resource : NonCopyable {
+    // This is a "nested" refc, for the cases where more than 1 LResource can be constructed to
+    // point to a single Resource, e.g. with Shader.
+    int refc = 0;
     virtual ~Resource() {}
     virtual size_t2 MemoryUsage() {
         return size_t2(sizeof(Resource), 0);
     }
+    virtual void Dump(string &) {};
 };
 
 struct LResource : RefObj {
@@ -346,6 +371,26 @@ typedef void(*fun_base_t)(VM &, StackPtr);
 
 static_assert(sizeof(iint) == sizeof(double) && sizeof(iint) == sizeof(RefObjPtr),
               "typedefs need fixing");
+
+struct ToFlexBufferContext {
+    VM &vm;
+    flexbuffers::Builder builder;
+
+    bool ignore_unsupported_types = false;
+    bool cycle_detect = false;
+    set<LObject *> seen_objects;
+
+    iint max_depth = 100;
+    iint cur_depth = 0;
+
+    string max_depth_hit;
+    flexbuffers::Builder::Value max_depth_hit_value;
+    string cycle_hit;
+    flexbuffers::Builder::Value cycle_hit_value;
+
+    ToFlexBufferContext(VM &vm, size_t initial_size, flexbuffers::BuilderFlag flags)
+        : vm(vm), builder(initial_size, flags) {}
+};
 
 struct Value {
     private:
@@ -460,11 +505,12 @@ struct Value {
     void ToString(VM &vm, string &sd, const TypeInfo &ti, PrintPrefs &pp) const;
     void ToStringBase(VM &vm, string &sd, ValueType t, PrintPrefs &pp) const;
 
-    void ToFlexBuffer(VM &vm, flexbuffers::Builder &builder, ValueType t) const;
+    void ToFlexBuffer(ToFlexBufferContext &fbc, ValueType t, string_view key, int defval) const;
+    void ToLobsterBinary(VM &vm, vector<uint8_t> &buf, ValueType t) const;
 
     bool Equal(VM &vm, ValueType vtype, const Value &o, ValueType otype, bool structural) const;
     uint64_t Hash(VM &vm, ValueType vtype);
-    Value CopyRef(VM &vm, bool deep);
+    Value CopyRef(VM &vm, iint depth);
 };
 
 template<typename T> T get_T(Value) {
@@ -478,6 +524,8 @@ template<> inline double get_T<double>(Value a) {
     return a.fval();
 }
 
+// This enables access of an array of Value equally in Debug or Release, which works well
+// for short vectors. We can't just cast to T * because in debug there's a type field.
 template<typename T> struct ValueVec {
     Value *vals;
     iint len;
@@ -568,6 +616,42 @@ template<typename T> struct ValueVec {
     }
 };
 
+// Like ValueVec, but optimizes for speed in Release mode (no copy).
+template<typename T, int N> struct InlineVec {
+    T *vals;
+    #ifndef NDEBUG
+        T valstore[N];
+    #endif
+
+    // initialized should be false for a result vector where data will be overwritten anyway.
+    InlineVec(const Value *v, bool initialized = true) {
+        #ifdef NDEBUG
+            // In Release mode we may assume this is a contiguous set of T's.
+            vals = (T *)v;  // FIXME: strict aliasing?
+            (void)initialized;
+        #else
+            vals = &valstore[0];
+            if (initialized) {
+                // Sadly in debug there's type values in between, so we must copy.
+                for (int i = 0; i < N; i++) {
+                    valstore[i] = get_T<T>(v[i]);
+                }
+            }
+        #endif
+    }
+
+    void CopyBack(Value *v) {
+        #ifdef NDEBUG
+            // Don't need to do anything, since memory was aliased.
+            (void)v;
+        #else
+            for (int i = 0; i < N; i++) {
+                v[i] = valstore[i];
+            }            
+        #endif
+    }
+};
+
 template<typename T> inline T *AllocSubBuf(VM &vm, iint size, type_elem_t tti);
 template<typename T> inline void DeallocSubBuf(VM &vm, T *v, iint size);
 
@@ -591,7 +675,8 @@ struct LObject : RefObj {
     const TypeInfo &ElemTypeSP(VM &vm, iint i) const;
 
     void ToString(VM &vm, string &sd, PrintPrefs &pp);
-    void ToFlexBuffer(VM &vm, flexbuffers::Builder &builder);
+    void ToFlexBuffer(ToFlexBufferContext &fbc);
+    void ToLobsterBinary(VM &vm, vector<uint8_t> &buf);
 
     bool Equal(VM &vm, const LObject &o) {
         // RefObj::Equal has already guaranteed the typeoff's are the same.
@@ -605,14 +690,6 @@ struct LObject : RefObj {
         return true;
     }
 
-    uint64_t Hash(VM &vm) {
-        auto hash = SplitMix64Hash((uint64_t)Len(vm));
-        for (iint i = 0; i < Len(vm); i++) {
-            hash = hash * 31 + AtS(i).Hash(vm, ElemTypeS(vm, i).t);
-        }
-        return hash;
-    }
-
     void CopyElemsShallow(Value *from, iint len) {
         t_memcpy(Elems(), from, len);
     }
@@ -623,9 +700,9 @@ struct LObject : RefObj {
         }
     }
 
-    void CopyRefElemsDeep(VM &vm, iint len) {
+    void CopyRefElemsDeep(VM &vm, iint len, iint depth) {
         for (iint i = 0; i < len; i++) {
-            if (IsRefNil(ElemTypeS(vm, i).t)) AtS(i) = AtS(i).CopyRef(vm, true);
+            if (IsRefNil(ElemTypeS(vm, i).t)) AtS(i) = AtS(i).CopyRef(vm, depth);
         }
     }
 
@@ -738,7 +815,8 @@ struct LVector : RefObj {
     void Append(VM &vm, LVector *from, iint start, iint amount);
 
     void ToString(VM &vm, string &sd, PrintPrefs &pp);
-    void ToFlexBuffer(VM &vm, flexbuffers::Builder &builder);
+    void ToFlexBuffer(ToFlexBufferContext &fbc);
+    void ToLobsterBinary(VM &vm, vector<uint8_t> &buf);
 
     bool Equal(VM &vm, const LVector &o) {
         // RefObj::Equal has already guaranteed the typeoff's are the same.
@@ -752,8 +830,6 @@ struct LVector : RefObj {
         return true;
     }
 
-    uint64_t Hash(VM &vm);
-
     void CopyElemsShallow(Value *from) {
         t_memcpy(v, from, len * width);
     }
@@ -762,14 +838,14 @@ struct LVector : RefObj {
         IncElementRange(vm, 0, len);
     }
 
-    void CopyRefElemsDeep(VM &vm) {
+    void CopyRefElemsDeep(VM &vm, iint depth) {
         auto &eti = ElemType(vm);
         if (!IsRefNil(eti.t)) return;
         for (int j = 0; j < width; j++) {
             if (eti.t != V_STRUCT_R || (1 << j) & eti.vtable_start_or_bitmask) {
                 for (iint i = 0; i < len; i++) {
                     auto l = i * width + j;
-                    AtSlot(l) = AtSlot(l).CopyRef(vm, true);
+                    AtSlot(l) = AtSlot(l).CopyRef(vm, depth);
                 }
             }
         }
@@ -795,7 +871,7 @@ struct TupleSpace {
     struct TupleType {
         // We have an independent list of tuples and synchronization per type, for minimum
         // contention.
-        list<Value *> tuples;
+        list<vector<uint8_t>> tuples;
         mutex mtx;
         condition_variable condition;
     };
@@ -804,14 +880,17 @@ struct TupleSpace {
     atomic<bool> alive;
 
     TupleSpace(size_t numstructs) : tupletypes(numstructs), alive(true) {}
-
-    ~TupleSpace() {
-        for (auto &tt : tupletypes) for (auto p : tt.tuples) delete[] p;
-    }
 };
 
 enum class TraceMode { OFF, ON, TAIL };
-enum { RUNTIME_NO_ASSERT, RUNTIME_ASSERT, RUNTIME_ASSERT_PLUS, RUNTIME_DEBUG };
+enum {
+    RUNTIME_NO_ASSERT,     // --runtime-no-asserts: Asserts generate no code, this may produce crashes if the code would instead have run into an assert
+    RUNTIME_ASSERT,        // --runtime-asserts: Default.
+    RUNTIME_STACK_TRACE,   // --runtime-stack-traces: Also is able to show correct line numbers and functions on runtime errors, mild slowdown.
+    RUNTIME_DEBUG,         // --runtime-debug: Also reduces inlining for better stacktraces, a little more slowdown.
+    RUNTIME_DEBUG_DUMP,    // --runtime-debug-dump: In Addition will dump memory dump files.
+    RUNTIME_DEBUGGER       // --runtime-debugger: Instead of a memory dump, will invoke debugger on errors.
+};
 
 struct VMArgs {
     NativeRegistry &nfr;
@@ -843,7 +922,7 @@ struct VM : VMArgs {
 
     PrintPrefs programprintprefs { 10, 100000, false, -1 };
     const type_elem_t *typetable = nullptr;
-    string evalret;
+    pair<string, iint> evalret;
 
     int currentline = -1;
     iint maxsp = -1;
@@ -868,6 +947,8 @@ struct VM : VMArgs {
     int64_t vm_count_decref = 0;
 
     typedef StackPtr (* f_ins_pointer)(VM &, StackPtr);
+
+    iint frame_count = -1;
 
     bool is_worker = false;
     vector<thread> workers;
@@ -897,6 +978,9 @@ struct VM : VMArgs {
 
     vector<Value> fvar_def_backup;
 
+    map<string_view, vector<const bytecode::UDT *>> UDTLookup;
+    void EnsureUDTLookupPopulated();
+
     // We stick this in here directly, since the constant offsets into this array in
     // compiled mode a big win.
     Value fvars[1] = { -1 };
@@ -910,14 +994,17 @@ struct VM : VMArgs {
         return *(TypeInfo *)(typetable + offset);
     }
     const TypeInfo &GetVarTypeInfo(int varidx);
+    type_elem_t GetSubClassFromSerID(type_elem_t super, uint32_t ser_id);
 
     string_view GetProgramName() { return programname; }
 
-    typedef function<void(VM &, string_view, const TypeInfo &, Value *)> DumperFun;
+    typedef function<void(VM &, string_view_nt, const TypeInfo &, Value *)> DumperFun;
     void DumpVar(Value *locals, int idx, int &j, int &jl, const DumperFun &dump);
     void DumpStackFrame(const int *fip, Value *locals, const DumperFun &dump);
-    pair<string, const int *> DumpStackFrameStart(FunStack &funstackelem);
+    string DumpFileLine(int fileidx, int line);
+    pair<string, const int *> DumpStackFrameStart(const int *fip, int fileidx, int line);
     void DumpStackTrace(string &sd);
+    void DumpStackTraceMemory(const string &);
 
     void DumpVal(RefObj *ro, const char *prefix);
     void DumpLeaks();
@@ -946,11 +1033,16 @@ struct VM : VMArgs {
     void StartWorkers(iint numthreads);
     void TerminateWorkers();
     void WorkerWrite(RefObj *ref);
-    LObject *WorkerRead(type_elem_t tti);
+    Value WorkerRead(type_elem_t tti);
+    Value WorkerCheck(type_elem_t tti);
 
     void EndEval(StackPtr &sp, const Value &ret, const TypeInfo &ti);
 
     void EvalProgram();
+
+    void FrameStart() { frame_count++; }
+
+    void CallFunctionValue(Value &f);
 
     void LvalueIdxVector(int lvalop, iint i);
     void LvalueIdxStruct(int lvalop, iint i);
@@ -959,7 +1051,8 @@ struct VM : VMArgs {
 
     string ProperTypeName(const TypeInfo &ti);
 
-    void Div0() { Error("division by zero"); }
+    void DivErr(iint divisor) { Error(divisor ? "integer overflow" : "division by zero"); }
+    void DivErr(double) { assert(false); }
     void IDXErr(iint i, iint n, const RefObj *v);
     void BCallRetCheck(StackPtr sp, const NativeFun *nf);
     iint GrabIndex(StackPtr &sp, int len);
@@ -967,7 +1060,10 @@ struct VM : VMArgs {
     string_view StructName(const TypeInfo &ti);
     string_view ReverseLookupType(int v);
     string_view LookupField(int stidx, iint fieldn) const;
+    string_view LookupFieldByOffset(int stidx, int offset) const;
+
     void Trace(TraceMode m) { trace = m; }
+
     double Time() { return SecondsSinceStart(); }
 
     Value ToString(const Value &a, const TypeInfo &ti) {
@@ -981,11 +1077,14 @@ struct VM : VMArgs {
         return NewString(s_reuse);
     }
     void StructToString(string &sd, PrintPrefs &pp, const TypeInfo &ti, const Value *elems);
-    void StructToFlexBuffer(VM &vm, flexbuffers::Builder &builder, const TypeInfo &ti,
-                            const Value *elems);
+    bool StructToFlexBuffer(ToFlexBufferContext &fbc, const TypeInfo &ti, const Value *elems,
+                            bool omit_if_empty);
+    void StructToLobsterBinary(VM &vm, vector<uint8_t> &buf, const TypeInfo &ti, const Value *elems);
     bool EnumName(string &sd, iint val, int enumidx);
     string_view EnumName(int enumidx);
     optional<int64_t> LookupEnum(string_view name, int enumidx);
+
+    string_view BuildInfo();
 };
 
 // This is like a smart-pointer for VM above that dynamically allocates the size of "vars".
@@ -1044,16 +1143,34 @@ VM_INLINE int RetSlots(VM &vm) {
     return vm.ret_slots;
 }
 
+VM_INLINE int GetTypeSwitchID(VM &vm, Value self, int vtable_idx) {
+    auto start = self.oval()->ti(vm).vtable_start_or_bitmask;
+    auto id = (int)(size_t)vm.native_vtables[start + vtable_idx];
+    assert(id >= 0);
+    return id;
+}
+
+#if LOBSTER_FRAME_PROFILER_GLOBAL
+    extern vector<___tracy_source_location_data> g_function_locations;
+    extern vector<tracy::SourceLocationData> g_builtin_locations;
+#endif
+
 VM_INLINE void PushFunId(VM &vm, const int *funstart, StackPtr locals) {
-    vm.fun_id_stack.push_back({ funstart, locals, vm.last_line, vm.last_fileidx,
+    vm.fun_id_stack.push_back({ funstart, locals, vm.last_line, vm.last_fileidx
     #if LOBSTER_FRAME_PROFILER_FUNCTIONS
         , ___tracy_emit_zone_begin(&vm.pre_allocated_function_locations[*funstart], true)
     #endif
     });
+    #if LOBSTER_FRAME_PROFILER_GLOBAL
+        g_function_locations.push_back(vm.pre_allocated_function_locations[*funstart]);
+    #endif
 }
 VM_INLINE void PopFunId(VM &vm) {
     #if LOBSTER_FRAME_PROFILER_FUNCTIONS
         ___tracy_emit_zone_end(vm.fun_id_stack.back().ctx);
+    #endif
+    #if LOBSTER_FRAME_PROFILER_GLOBAL
+        g_function_locations.pop_back();
     #endif
     vm.fun_id_stack.pop_back();
 }

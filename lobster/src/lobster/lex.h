@@ -19,20 +19,6 @@
 
 namespace lobster {
 
-struct Line {
-    int line;
-    int fileidx;
-
-    Line(int _line, int _fileidx) : line(_line), fileidx(_fileidx) {}
-
-    bool operator==(const Line &o) const {
-        return line == o.line && fileidx == o.fileidx;
-    }
-    bool operator<(const Line &o) const {
-        return fileidx < o.fileidx || (fileidx == o.fileidx && line < o.line);
-    }
-};
-
 struct LoadedFile : Line {
     const char *p = nullptr;
     const char *linestart = nullptr;
@@ -61,13 +47,17 @@ struct LoadedFile : Line {
 
     string filename;
 
-    LoadedFile(string_view fn, vector<string> &fns, string_view stringsource)
+    LoadedFile(string_view fn, vector<pair<string, string>> &fns, string_view stringsource)
         : Line(1, (int)fns.size()) {
         if (!stringsource.empty()) {
             *source.get() = stringsource;
         } else {
             if (LoadFile("modules/" + fn, source.get()) < 0 &&
                 LoadFile(fn, source.get()) < 0) {
+                // Do specialized message for this file, since it always confuses people
+                // that like to move the exe away from the standard location for some reason.
+                if (fn == "stdtype.lobster")
+                    THROW_OR_ABORT("can't find the standard modules (../modules/) relative to the exe location (bin/)");
                 THROW_OR_ABORT("can't open file: " + fn);
             }
         }
@@ -75,7 +65,7 @@ struct LoadedFile : Line {
 
         indentstack.push_back({ 0, false });
 
-        fns.push_back(string(fn));
+        fns.push_back({ string(fn), LastAbsPathLoaded() });
         filename = fn;
     }
 };
@@ -85,15 +75,33 @@ struct Lex : LoadedFile {
     set<string, less<>> allfiles;
     vector<shared_ptr<string>> allsources;
 
-    vector<string> &filenames;
+    vector<pair<string, string>> &filenames;
+
+    set<string_view> namespaces;
 
     bool do_string_interpolation = true;
+    int max_errors = 1;
+    int num_errors = 0;
 
-    Lex(string_view fn, vector<string> &fns, string_view _ss = {})
-        : LoadedFile(fn, fns, _ss), filenames(fns) {
+    Lex(string_view fn, vector<pair<string, string>> &fns, const vector<string_view> &extra_namespaces,
+        string_view _ss = {}, int max_errors = 1)
+        : LoadedFile(fn, fns, _ss), filenames(fns), max_errors(max_errors) {
+        for (auto s : extra_namespaces) namespaces.insert(s);
         allsources.push_back(source);
         if (!fn.empty()) allfiles.insert(string(fn));
+        if (p[0] == '#' && p[1] == '!') {
+            // Main source file starts with a shebang, scan past it. Leave the LF.
+            while (*p != '\n' && *p != '\0') p++;
+        }
         FirstToken();
+    }
+
+    uint64_t HashAll() {
+        uint64_t h = 0xABADCAFEDEADBEEF;
+        for (auto &src : allsources) {
+            h ^= FNV1A64(*src.get());
+        }
+        return h;
     }
 
     void FirstToken() {
@@ -223,6 +231,9 @@ struct Lex : LoadedFile {
     static bool IsXDigit(char c) { return IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'); }
     static bool IsAlNum(char c) { return IsAlpha(c) || IsDigit(c); }
 
+    static bool IsIdentStart(char c) { return IsAlpha(c) || c == '_' || c < 0; }
+    static bool IsIdentCont(char c) { return IsAlNum(c) || c == '_' || c < 0; }
+
     TType NextToken() {
         line = tokline;
         islf = false;
@@ -244,14 +255,30 @@ struct Lex : LoadedFile {
                     return parentfiles.empty() ? T_ENDOFFILE : T_ENDOFINCLUDE;
                 }
 
-            case '\n': tokline++; islf = bracketstack.empty(); linestart = p; break;
-            case ' ': case '\t': case '\r': case '\f': whitespacebefore++; break;
+            case '\n':
+                tokline++;
+                islf = bracketstack.empty();
+                linestart = p;
+                break;
+            case ' ': case '\t': case '\r': case '\f':
+                whitespacebefore++;
+                break;
 
-            case '(': bracketstack.push_back({ T_LEFTPAREN, T_RIGHTPAREN }); return T_LEFTPAREN;
-            case '[': bracketstack.push_back({ T_LEFTBRACKET, T_RIGHTBRACKET }); return T_LEFTBRACKET;
-            case '{': bracketstack.push_back({ T_LEFTCURLY, T_RIGHTCURLY }); return T_LEFTCURLY;
-            case ')': PopBracket(T_RIGHTPAREN); return T_RIGHTPAREN;
-            case ']': PopBracket(T_RIGHTBRACKET); return T_RIGHTBRACKET;
+            case '(':
+                bracketstack.push_back({ T_LEFTPAREN, T_RIGHTPAREN });
+                return T_LEFTPAREN;
+            case '[':
+                bracketstack.push_back({ T_LEFTBRACKET, T_RIGHTBRACKET });
+                return T_LEFTBRACKET;
+            case '{':
+                bracketstack.push_back({ T_LEFTCURLY, T_RIGHTCURLY });
+                return T_LEFTCURLY;
+            case ')':
+                PopBracket(T_RIGHTPAREN);
+                return T_RIGHTPAREN;
+            case ']':
+                PopBracket(T_RIGHTBRACKET);
+                return T_RIGHTBRACKET;
             case '}':
                 if (!bracketstack.empty() && bracketstack.back().first == T_STR_INT_START &&
                     do_string_interpolation) {
@@ -260,19 +287,29 @@ struct Lex : LoadedFile {
                 }
                 PopBracket(T_RIGHTCURLY); return T_RIGHTCURLY;
 
-            case ';': return T_SEMICOLON;
+            case ';':
+                Error("\';\' isn\'t used as a statement terminator");
 
             case ',': cont = true; return T_COMMA;
 
             #define secondb(s, t, b) if (*p == s) { p++; b; return t; }
             #define second(s, t) secondb(s, t, {})
+            #define infcheck(s, n) \
+                if (strncmp(p, s, n) == 0 && !IsIdentCont(p[n])) { \
+                    p += n; \
+                    sattr = string_view(tokenstart, p - tokenstart); \
+                    return Float(); \
+                }
+            #define infchecks() infcheck("inf", 3) infcheck("infinity", 8)
 
             case '+':
+                infchecks();
                 second('+', T_INCR);
                 cont = true;
                 second('=', T_PLUSEQ);
                 return T_PLUS;
             case '-':
+                infchecks();
                 second('-', T_DECR);
                 cont = true;
                 second('=', T_MINUSEQ);
@@ -364,14 +401,16 @@ struct Lex : LoadedFile {
                 return StringConstant(c == '\'', false);
 
             default: {
-                if (IsAlpha(c) || c == '_' || c < 0) {
-                    while (IsAlNum(*p) || *p == '_' || *p < 0) p++;
+
+                if (IsIdentStart(c)) {
+                    while (IsIdentCont(*p)) p++;
                     sattr = string_view(tokenstart, p - tokenstart);
                     switch (sattr[0]) {
                         case 'a':
                             if (sattr == TName(T_AND)) { cont = true; return T_AND; }
                             if (sattr == TName(T_ANYTYPE)) return T_ANYTYPE;
                             if (sattr == TName(T_ATTRIBUTE)) return T_ATTRIBUTE;
+                            if (sattr == TName(T_ABSTRACT)) return T_ABSTRACT;
                             break;
                         case 'b':
                             if (sattr == TName(T_BREAK)) return T_BREAK;
@@ -379,6 +418,7 @@ struct Lex : LoadedFile {
                         case 'c':
                             if (sattr == TName(T_CLASS)) return T_CLASS;
                             if (sattr == TName(T_CASE)) return T_CASE;
+                            if (sattr == TName(T_CONSTRUCTOR)) return T_CONSTRUCTOR;
                             break;
                         case 'd':
                             if (sattr == TName(T_FUN)) return T_FUN;
@@ -396,19 +436,28 @@ struct Lex : LoadedFile {
                             if (sattr == TName(T_LAMBDA)) return T_LAMBDA;
                             if (sattr == TName(T_FROM)) return T_FROM;
                             break;
+                        case 'g':
+                            if (sattr == TName(T_GUARD)) return T_GUARD;
+                            break;
                         case 'i':
                             if (sattr == TName(T_INTTYPE)) return T_INTTYPE;
                             if (sattr == TName(T_IF)) return T_IF;
                             if (sattr == TName(T_INCLUDE)) return T_INCLUDE;
                             if (sattr == TName(T_IS)) return T_IS;
+                            if (sattr == "inf" || sattr == "infinity") return Float();
                             break;
                         case 'l':
                             if (sattr == TName(T_CONST)) return T_CONST;
+                            break;
+                        case 'm':
+                            if (sattr == TName(T_MEMBER)) return T_MEMBER;
+                            if (sattr == TName(T_MEMBER_FRAME)) return T_MEMBER_FRAME;
                             break;
                         case 'n':
                             if (sattr == TName(T_NIL)) return T_NIL;
                             if (sattr == TName(T_NOT)) return T_NOT;
                             if (sattr == TName(T_NAMESPACE)) return T_NAMESPACE;
+                            if (sattr == "nan") return Float();
                             break;
                         case 'o':
                             if (sattr == TName(T_OR)) { cont = true; return T_OR; }
@@ -428,6 +477,8 @@ struct Lex : LoadedFile {
                             if (sattr == TName(T_STRTYPE)) return T_STRTYPE;
                             if (sattr == TName(T_SWITCH)) return T_SWITCH;
                             if (sattr == TName(T_SUPER)) return T_SUPER;
+                            if (sattr == TName(T_STATIC)) return T_STATIC;
+                            if (sattr == TName(T_STATIC_FRAME)) return T_STATIC_FRAME;
                             break;
                         case 't':
                             if (sattr == TName(T_TYPEOF)) return T_TYPEOF;
@@ -440,6 +491,20 @@ struct Lex : LoadedFile {
                             if (sattr == TName(T_WHILE)) return T_WHILE;
                             break;
                     }
+                    // Doing this in the Lex is not the cleanest, but it avoids us having to handle
+                    // namespaces everywhere the parser deals with idents.
+                    while (namespaces.find(sattr) != namespaces.end() && *p == '.') {
+                        // FIXME: we have individual uses of namespaces such as "import gl" or
+                        // simply a redeclaration of an existing namespace, etc.
+                        // However without this error if someone puts a space after "." they'll get an
+                        // unknown identifier.
+                        //if (*p != '.') Error(cat("use of namespace ", Q(sattr), " must be directly followed by \".\""));
+                        p++;
+                        if (!IsIdentStart(*p)) Error("missing namespace member after \".\"");
+                        p++;
+                        while (IsIdentCont(*p)) p++;
+                        sattr = string_view(tokenstart, p - tokenstart);
+                    }
                     return T_IDENT;
                 }
                 bool isfloat = c == '.' && *p != '.';
@@ -448,7 +513,7 @@ struct Lex : LoadedFile {
                         p++;
                         while (IsXDigit(*p)) p++;
                         sattr = string_view(tokenstart, p - tokenstart);
-                        ival = parse_int<int64_t>(sattr, 16);
+                        ival = parse_int<int64_t>(sattr.substr(2), 16);
                         return T_INT;
                     } else {
                         while (IsDigit(*p)) p++;
@@ -464,8 +529,7 @@ struct Lex : LoadedFile {
                         }
                         sattr = string_view(tokenstart, p - tokenstart);
                         if (isfloat) {
-                            fval = strtod(sattr.data(), nullptr);
-                            return T_FLOAT;
+                            return Float();
                         } else {
                             ival = parse_int<int64_t>(sattr);
                             return T_INT;
@@ -486,6 +550,11 @@ struct Lex : LoadedFile {
         }
     }
 
+    TType Float() {
+        fval = parse_float<double>(sattr, nullptr);
+        return T_FLOAT;
+    }
+
     TType StringConstant(bool character_constant, bool interp) {
         sval.clear();
         auto start = p - 1;
@@ -497,6 +566,12 @@ struct Lex : LoadedFile {
             if (*p == '\n') {
                 p++;
                 tokline++;
+            }
+            // Check amount of spaces on first line, as we'll skip that on each line.
+            int spaces = 0;
+            while (*p == ' ') {
+                spaces++;
+                p++;
             }
             for (;;) {
                 switch (c = *p++) {
@@ -513,10 +588,14 @@ struct Lex : LoadedFile {
                         }
                         sval += c;
                         break;
-                    case '\n':
+                    case '\n': {
                         tokline++;
                         sval += c;
+                        // Skip initial spaces.
+                        auto start = p;
+                        while (p - start < spaces && *p == ' ') p++;
                         break;
+                    }
                     default:
                         sval += c;
                         break;
@@ -535,7 +614,7 @@ struct Lex : LoadedFile {
                 if (!character_constant)
                     Error("\' should be prefixed with a \\ in a string constant");
                 sattr = string_view(start, p - start);
-                if (sval.size() > 4) Error("character constant too long");
+                if (sval.size() > 8) Error("character constant too long");
                 ival = 0;
                 for (auto c : sval) ival = (ival << 8) + c;
                 return T_INT;
@@ -635,10 +714,11 @@ struct Lex : LoadedFile {
     }
 
     string Location(const Line &ln) {
-        return cat(filenames[ln.fileidx], "(", ln.line, ")");
+        return cat(filenames[ln.fileidx].first, "(", ln.line, ")");
     }
 
     void Error(string_view msg, const Line *ln = nullptr) {
+        num_errors++;
         auto err = Location(ln ? *ln : *this) + ": error: " + msg;
         if (!ln) {
             auto begin = prevtokenstart;

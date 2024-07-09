@@ -12,10 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "lobster/vmdata.h"
+
+#include "lobster/glinterface.h"
+
 extern lobster::ResourceType mesh_type;
 extern lobster::ResourceType texture_type;
 extern lobster::ResourceType shader_type;
 
+extern lobster::Value UpdateBufferObjectResource(lobster::VM &vm, lobster::Value buf, const void *data,
+                                                 size_t len, ptrdiff_t offset, bool ssbo, bool dyn);
+extern void BindBufferObjectResource(lobster::VM &vm, lobster::Value buf, string_view_nt name);
 
-
-
+extern Texture GetTexture(const lobster::Value &res);

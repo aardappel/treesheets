@@ -103,6 +103,8 @@ add_executable(
     src/main.cpp
 )
 
+target_include_directories(treesheets PUBLIC lobster/src)
+
 target_link_libraries(
     treesheets
     PRIVATE

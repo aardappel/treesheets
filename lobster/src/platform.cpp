@@ -27,6 +27,8 @@
     #include <windows.h>
     #define FILESEP '\\'
     #include <intrin.h>
+    #include <sapi.h>
+    #include <comdef.h>
 #else
     #include <sys/time.h>
 	#ifndef PLATFORM_ES3
@@ -107,7 +109,9 @@ double SecondsSinceStart() {
     return double(end.QuadPart - time_start.QuadPart) / double(time_frequency.QuadPart);
 }
 
-int hwthreads = 2, hwcores = 1;
+int hwthreads = 2;
+int hwcores = 1;
+bool hwpopcount = true;
 void InitCPU() {
     // This can fail and return 0, so default to 2 threads:
     hwthreads = max(2, (int)thread::hardware_concurrency());
@@ -131,6 +135,13 @@ void InitCPU() {
                 if (cores) hwcores = cores;
             }
         }
+        #ifdef _M_ARM64
+            hwpopcount = false;
+        #else
+            int ci[4];
+            __cpuid(ci, 1);
+            if (!((ci[2] >> 23) & 1)) hwpopcount = false;
+        #endif
     #endif
 }
 
@@ -143,17 +154,22 @@ string_view StripFilePart(string_view filepath) {
     return fpos != string_view::npos ? filepath.substr(0, fpos + 1) : "";
 }
 
-string StripDirPart(string_view filepath) {
-    auto fp = null_terminated(filepath);
+string StripDirPart(string_view_nt filepath) {
+    auto fp = filepath.c_str();
     auto fpos = strrchr(fp, FILESEP);
     if (!fpos) fpos = strrchr(fp, ':');
-    return fpos ? fpos + 1 : string(filepath);
+    return fpos ? fpos + 1 : string(filepath.sv);
 }
 
 string_view StripTrailing(string_view in, string_view tail) {
     if (in.size() >= tail.size() && in.substr(in.size() - tail.size()) == tail)
         return in.substr(0, in.size() - tail.size());
     return in;
+}
+
+
+bool IsAbsolute(string_view filename) {
+    return filename.size() > 1 && (filename[0] == '/' || filename[0] == '\\' || filename[1] == ':');
 }
 
 string GetMainDirFromExePath(string_view argv_0) {
@@ -182,9 +198,9 @@ string GetMainDirFromExePath(string_view argv_0) {
     return md;
 }
 
-int64_t DefaultLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len) {
+int64_t DefaultLoadFile(string_view_nt absfilename, string *dest, int64_t start, int64_t len) {
     LOG_INFO("DefaultLoadFile: ", absfilename);
-    auto f = fopen(null_terminated(absfilename), "rb");
+    auto f = fopen(absfilename.c_str(), "rb");
     if (!f) return -1;
     if (fseek(f, 0, SEEK_END)) {
         fclose(f);
@@ -277,9 +293,11 @@ bool InitPlatform(string _maindir, string_view auxfilepath, bool from_bundle,
     return true;
 }
 
-void AddDataDir(string_view path, bool is_rel) {
+void AddDataDir(string_view path) {
     auto fpath = SanitizePath(path);
-    if (is_rel) fpath = projectdir + fpath;
+    // Add slash at the end if missing, otherwise when loading it will fail.
+    if (!fpath.empty() && fpath[fpath.length() - 1] != FILESEP) fpath = fpath + FILESEP;
+    if (!IsAbsolute(fpath)) fpath = projectdir + fpath;
     for (auto &dir : data_dirs) if (dir == fpath) goto skipd;
     data_dirs.push_back(fpath);
     skipd:
@@ -304,15 +322,19 @@ void AddPakFileEntry(string_view pakfilename, string_view relfilename, int64_t o
     pakfile_registry[string(relfilename)] = make_tuple(pakfilename, off, len, uncompressed);
 }
 
-int64_t LoadFileFromAny(string_view srelfilename, string *dest, int64_t start, int64_t len) {
-    if (srelfilename.size() > 1 && (srelfilename[0] == FILESEP || srelfilename[1] == ':')) {
+string last_abs_path_loaded;
+string LastAbsPathLoaded() { return last_abs_path_loaded; }
+
+int64_t LoadFileFromAny(string_view filename, string *dest, int64_t start, int64_t len) {
+    if (IsAbsolute(filename)) {
         // Absolute filename.
-        return cur_loader(srelfilename, dest, start, len);
+        return cur_loader(last_abs_path_loaded = string(filename), dest, start, len);
     }
     for (auto &dir : data_dirs) {
-        auto l = cur_loader(dir + srelfilename, dest, start, len);
+        auto l = cur_loader(last_abs_path_loaded = dir + filename, dest, start, len);
         if (l >= 0) return l;
     }
+    LOG_DEBUG("LoadFileFromAny: ", filename, " file not found");
     return -1;
 }
 
@@ -351,32 +373,35 @@ int64_t LoadFile(string_view relfilename, string *dest, int64_t start, int64_t l
     return size;
 }
 
-FILE *OpenFor(string_view relfilename, const char *mode, bool allow_absolute) {
-    for (auto &wd : write_dirs) {
-        auto f = fopen((wd + SanitizePath(relfilename)).c_str(), mode);
-        if (f) return f;
-    }
-    if (allow_absolute) {
-        auto f = fopen(SanitizePath(relfilename).c_str(), mode);
-        if (f) return f;
+FILE *OpenFor(string_view filename, const char *mode, bool allow_absolute) {
+    if (IsAbsolute(filename)) {
+        if (allow_absolute) {
+            auto f = fopen(SanitizePath(filename).c_str(), mode);
+            if (f) return f;
+        }
+    } else {
+        for (auto &wd : write_dirs) {
+            auto f = fopen((wd + SanitizePath(filename)).c_str(), mode);
+            if (f) return f;
+        }
     }
     return nullptr;
 }
 
-FILE *OpenForWriting(string_view relfilename, bool binary, bool allow_absolute) {
-    auto f = OpenFor(relfilename, binary ? "wb" : "w", allow_absolute);
-    LOG_INFO("write: ", relfilename);
+FILE *OpenForWriting(string_view filename, bool binary, bool allow_absolute) {
+    auto f = OpenFor(filename, binary ? "wb" : "w", allow_absolute);
+    LOG_INFO("write: ", filename);
     return f;
 }
 
-FILE *OpenForReading(string_view relfilename, bool binary, bool allow_absolute) {
-    auto f = OpenFor(relfilename, binary ? "rb" : "r", allow_absolute);
-    LOG_INFO("read: ", relfilename);
+FILE *OpenForReading(string_view filename, bool binary, bool allow_absolute) {
+    auto f = OpenFor(filename, binary ? "rb" : "r", allow_absolute);
+    LOG_INFO("read: ", filename);
     return f;
 }
 
-bool WriteFile(string_view relfilename, bool binary, string_view contents, bool allow_absolute) {
-    FILE *f = OpenForWriting(relfilename, binary, allow_absolute);
+bool WriteFile(string_view filename, bool binary, string_view contents, bool allow_absolute) {
+    FILE *f = OpenForWriting(filename, binary, allow_absolute);
     size_t written = 0;
     if (f) {
         written = fwrite(contents.data(), contents.size(), 1, f);
@@ -385,8 +410,13 @@ bool WriteFile(string_view relfilename, bool binary, string_view contents, bool 
     return written == 1;
 }
 
+bool RenameFile(string_view oldfilename, string_view newfilename) {
+    int result = rename(SanitizePath(oldfilename).c_str(), SanitizePath(newfilename).c_str());
+    return result == 0;
+}
+
 bool FileExists(string_view filename, bool allow_absolute) {
-    auto f = OpenForReading(filename, true, allow_absolute);
+    auto f = OpenFor(filename, "rb", allow_absolute);
     if (f) fclose(f);
     return f;
 }
@@ -606,5 +636,54 @@ iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out) {
         (void)stdins;
         (void)out;
         return -1;
+    #endif
+}
+
+vector<string> text_to_speech_q;
+void QueueTextToSpeech(string_view text) {
+    text_to_speech_q.emplace_back(string(text));
+}
+
+#ifdef _WIN32
+ISpVoice *voice = NULL;
+#endif
+
+bool TextToSpeechInit() {
+    #ifdef _WIN32
+        if (FAILED(::CoInitializeEx(NULL, COINITBASE_MULTITHREADED))) return false;
+    #endif
+    return true;
+}
+
+void StopTextToSpeech() {
+    text_to_speech_q.clear();
+    #ifdef _WIN32
+        if (!voice) return;
+        voice->Release();
+        voice = NULL;
+    #endif
+}
+
+bool TextToSpeechUpdate() {
+    #ifdef _WIN32
+        // First see if we have active speech, and if so, don't start a new one.
+        if (voice) {
+            SPVOICESTATUS status;
+            if (FAILED(voice->GetStatus(&status, NULL))) return false;
+            if (status.dwRunningState != SPRS_DONE) return true;
+            voice->Release();
+            voice = NULL;
+        }
+        // Have something new to start?
+        if (text_to_speech_q.empty()) return true;
+        _bstr_t wide(text_to_speech_q.front().c_str());
+        text_to_speech_q.erase(text_to_speech_q.begin());
+        if (FAILED(
+                CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&voice)))
+            return false;
+        voice->Speak(wide, SPF_IS_XML | SPF_ASYNC, NULL);
+        return true;
+    #else
+        return false;
     #endif
 }

@@ -1,2 +1,2 @@
-extern void InitUnhandledExceptionFilter();
+extern void InitUnhandledExceptionFilter(int argc, char* argv[]);
 

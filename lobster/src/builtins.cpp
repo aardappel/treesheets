@@ -41,6 +41,18 @@ static int ObjectCompare(const Value &a, const Value &b) {
     return a.any() < b.any() ? -1 : a.any() > b.any();
 }
 
+static int FirstStringCompare(const Value &key, const Value &elem) {
+    auto _a = key.sval()->strv();
+    auto _b = elem.oval()->AtS(0).sval()->strv();
+    return (_a > _b) - (_b > _a);
+}
+
+static int FirstObjectCompare(const Value &key, const Value &elem) {
+    auto _a = key.any();
+    auto _b = elem.oval()->AtS(0).any();
+    return _a < _b ? -1 : _a > _b;
+}
+
 template<typename T> Value BinarySearch(StackPtr &sp, Value &l, Value &key, T comparefun) {
     iint size = l.vval()->len;
     iint i = 0;
@@ -72,7 +84,11 @@ nfr("print", "x", "Ss", "",
     [](StackPtr &, VM &vm, Value &a) {
         vm.s_reuse.clear();
         RefToString(vm, vm.s_reuse, a.refnil(), vm.programprintprefs);
-        LOG_PROGRAM(vm.s_reuse);
+        if (vm.evalret.second) {
+            LOG_ERROR(vm.s_reuse);
+        } else {
+            LOG_PROGRAM(vm.s_reuse);
+        }
         return NilVal();
     });
 
@@ -212,7 +228,7 @@ nfr("pop", "xs", "A]*", "A1",
         auto l = Pop(sp).vval();
         if (!l->len) vm.BuiltinError("pop: empty vector");
         l->PopVW(TopPtr(sp));
-        PushN(sp, (int)l->width);
+        PushN(sp, l->width);
     });
 
 nfr("top", "xs", "A]*", "Ab1",
@@ -221,7 +237,7 @@ nfr("top", "xs", "A]*", "Ab1",
         auto l = Pop(sp).vval();
         if (!l->len) vm.BuiltinError("top: empty vector");
         l->TopVW(TopPtr(sp));
-        PushN(sp, (int)l->width);
+        PushN(sp, l->width);
     });
 
 nfr("insert", "xs,i,x", "A]*IAkw1", "Ab]1",
@@ -306,17 +322,40 @@ nfr("binary_search_object", "xs,key", "A]*A1", "II",
         return r;
     });
 
+// TODO: add int/float versions of this?
+nfr("binary_search_first_field_string", "xs,key", "A]*S", "II",
+    "object version where key is the first field (must be string, runtime error if it is not)",
+    [](StackPtr &sp, VM &vm, Value &l, Value &key) {
+        auto &et = vm.GetTypeInfo(l.vval()->ti(vm).subt);
+        if (et.t != V_CLASS || !et.len || vm.GetTypeInfo(et.elemtypes[0].type).t != V_STRING)
+            vm.BuiltinError(
+                "binary_search_first_field_string: elements not objects with first string field");
+        auto r = BinarySearch(sp, l, key, FirstStringCompare);
+        return r;
+    });
+
+nfr("binary_search_first_field_object", "xs,key", "A]*A", "II",
+    "object version where key is the first field (must be object, runtime error if it is not)",
+    [](StackPtr &sp, VM &vm, Value &l, Value &key) {
+        auto &et = vm.GetTypeInfo(l.vval()->ti(vm).subt);
+        if (et.t != V_CLASS || !et.len || vm.GetTypeInfo(et.elemtypes[0].type).t != V_CLASS)
+            vm.BuiltinError(
+                "binary_search_first_field_object: elements not objects with first object field");
+        auto r = BinarySearch(sp, l, key, FirstObjectCompare);
+        return r;
+    });
+
 nfr("copy", "x", "A", "A1",
     "makes a shallow copy of any object/vector/string.",
     [](StackPtr &, VM &vm, Value &v) {
-        return v.CopyRef(vm, false);
+        return v.CopyRef(vm, 1);
     });
 
-nfr("deepcopy", "x", "A", "A1",
-    "makes a deep copy of any object/vector/string. DAGs become trees, and cycles will make it run"
-    " out of memory.",
-    [](StackPtr &, VM &vm, Value &v) {
-        return v.CopyRef(vm, true);
+nfr("deepcopy", "x,depth", "AI", "A1",
+    "makes a deep copy of any object/vector/string. DAGs become trees, and cycles will"
+    " clone until it reach the given depth. depth == 1 would do the same as copy.",
+    [](StackPtr &, VM &vm, Value &v, Value &depth) {
+        return v.CopyRef(vm, max((iint)1, depth.ival()));
     });
 
 nfr("slice", "xs,start,size", "A]*II", "A]1",
@@ -446,20 +485,20 @@ nfr("string_to_int", "s,base", "SI?", "IB",
         int base = b.True() ? b.intval() : 10;
         if (base < 2 || base > 36)
             vm.BuiltinError("string_to_int: values out of range");
-        char *end;
-        auto sv = s.sval()->strv();
-        auto i = parse_int<iint>(sv, base, &end);
+        const char *end;
+        auto svnt = s.sval()->strv();
+        auto i = parse_int<iint>(svnt, base, &end);
         Push(sp,  i);
-        return Value(end == sv.data() + sv.size());
+        return Value(end == svnt.data() + svnt.size());
     });
 
 nfr("string_to_float", "s", "S", "FB",
     "converts a string to a float. returns 0.0 if no numeric data could be parsed;"
     "second return value is true if all characters of the string were parsed.",
     [](StackPtr &sp, VM &, Value &s) {
-        char *end;
+        const char *end;
         auto sv = s.sval()->strv();
-        auto f = strtod(sv.data(), &end);
+        auto f = parse_float<double>(sv, &end);
         Push(sp, f);
         return Value(end == sv.data() + sv.size());
     });
@@ -637,6 +676,10 @@ nfr("log", "a", "F", "F",
     "natural logaritm of a",
     [](StackPtr &, VM &, Value &a) { return Value(log(a.fval())); });
 
+nfr("log2", "a", "F", "F",
+    "base 2 logaritm of a",
+    [](StackPtr &, VM &, Value &a) { return Value(log2(a.fval())); });
+
 nfr("sqrt", "f", "F", "F",
     "square root",
     [](StackPtr &, VM &, Value &a) { return Value(sqrt(a.fval())); });
@@ -663,12 +706,11 @@ nfr("int", "v", "F}", "I}",
     [](StackPtr &sp, VM &) { VECTOROP(iint(f.fval())); });
 
 nfr("round", "f", "F", "I",
-    "converts a float to the closest int. same as int(f + 0.5), so does not work well on"
-    " negative numbers",
-    [](StackPtr &, VM &, Value &a) { return Value(iint(a.fval() + 0.5f)); });
+    "converts a float to the closest int",
+    [](StackPtr &, VM &, Value &a) { return Value(iint(a.fval() + (double(a.fval() >= 0) - 0.5))); });
 nfr("round", "v", "F}", "I}",
     "converts a vector of floats to the closest ints",
-    [](StackPtr &sp, VM &) { VECTOROP(iint(f.fval() + 0.5f)); });
+    [](StackPtr &sp, VM &) { VECTOROP(iint(f.fval() + (double(f.fval() >= 0) - 0.5))); });
 
 nfr("fraction", "f", "F", "F",
     "returns the fractional part of a float: short for f - floor(f)",
@@ -687,12 +729,21 @@ nfr("float", "v", "I}", "F}",
 nfr("sin", "angle", "F", "F",
     "the y coordinate of the normalized vector indicated by angle (in degrees)",
     [](StackPtr &, VM &, Value &a) { return Value(sin(a.fval() * RAD)); });
+nfr("sin", "angle", "F}", "F}",
+    "the y coordinates of the normalized vector indicated by the angles (in degrees)",
+    [](StackPtr &sp, VM &) { VECTOROP(sin(f.fval() * RAD)); });
 nfr("cos", "angle", "F", "F",
     "the x coordinate of the normalized vector indicated by angle (in degrees)",
     [](StackPtr &, VM &, Value &a) { return Value(cos(a.fval() * RAD)); });
+nfr("cos", "angle", "F}", "F}",
+    "the x coordinates of the normalized vector indicated by the angles (in degrees)",
+    [](StackPtr &sp, VM &) { VECTOROP(cos(f.fval() * RAD)); });
 nfr("tan", "angle", "F", "F",
     "the tangent of an angle (in degrees)",
     [](StackPtr &, VM &, Value &a) { return Value(tan(a.fval() * RAD)); });
+nfr("tan", "angle", "F}", "F}",
+    "the tangents of the angles (in degrees)",
+    [](StackPtr &sp, VM &) { VECTOROP(tan(f.fval() * RAD)); });
 
 nfr("sincos", "angle", "F", "F}:2",
     "the normalized vector indicated by angle (in degrees), same as xy { cos(angle), sin(angle) }",
@@ -1056,6 +1107,15 @@ nfr("lerp", "a,b,f", "F}F}1F", "F}",
         x.mix(y, f);
     });
 
+nfr("spherical_lerp", "a,b,f", "F}:4F}:4F", "F}:4",
+    "spherically interpolates between a and b quaternions with factor f [0..1]",
+    [](StackPtr &sp, VM &) {
+        auto f = Pop(sp).fltval();
+        auto y = PopVec<quat>(sp);
+        auto x = PopVec<quat>(sp);
+        PushVec(sp, spherical_lerp(x, y, f));
+    });
+
 nfr("smoothmin", "x,y,k", "FFF", "F",
     "k is the influence range",
     [](StackPtr &, VM &, Value &x, Value &y, Value &k) {
@@ -1066,6 +1126,12 @@ nfr("smoothstep", "x", "F", "F",
     "input must be in range 0..1, https://en.wikipedia.org/wiki/Smoothstep",
     [](StackPtr &, VM &, Value &x) {
         return Value(smoothstep(x.fltval()));
+    });
+
+nfr("smoothstep", "a,b,f", "FFF", "F",
+    "hermite interpolation between a and b by f [0..1], https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml",
+    [](StackPtr &, VM &, Value &a, Value &b, Value &f) {
+        return Value(smoothstep(a.fltval(), b.fltval(), f.fltval()));
     });
 
 nfr("smootherstep", "x", "F", "F",
@@ -1200,7 +1266,10 @@ nfr("wave_function_collapse", "tilemap,size", "S]I}:2", "S]I",
         iint cols = 0;
         for (ssize_t i = 0; i < rows; i++) {
             auto sv = tilemap.vval()->At(i).sval()->strv();
-            if (i) { if (ssize(sv) != cols) vm.BuiltinError("all columns must be equal length"); }
+            if (i) {
+                if (ssize(sv) != cols)
+                    vm.BuiltinError("all columns must be equal length");
+            }
             else cols = sv.size();
             inmap[i] = sv.data();
         }
@@ -1253,8 +1322,93 @@ nfr("hash", "v", "F}", "I",
         Push(sp, positive_bits(a.Hash(vm, V_FLOAT)));
     });
 
+nfr("call_function_value", "x", "L", "",
+    "calls a void / no args function value.. you shouldn't need to use this, it is"
+    " a demonstration of how native code can call back into Lobster",
+    [](StackPtr &, VM &vm, Value &f) {
+        vm.CallFunctionValue(f);
+        return NilVal();
+    });
+
+nfr("type_id", "ref", "A", "I",
+    "int uniquely representing the type of the given reference (object/vector/string/resource)."
+    " this is the same as typeof, except dynamic (accounts for subtypes of the static type)."
+    " useful to compare the types of objects quickly."
+    " specializations of a generic type will result in different ids.",
+    [](StackPtr &sp, VM &) {
+        auto a = Pop(sp);
+        Push(sp, a.ref()->tti);
+    });
+
+nfr("type_string", "ref", "A", "S",
+    "string representing the type of the given reference (object/vector/string/resource)",
+    [](StackPtr &sp, VM &vm) {
+        auto a = Pop(sp);
+        Push(sp, vm.NewString(a.ref()->TypeName(vm)));
+    });
+
+nfr("type_element_string", "v", "A]*", "S",
+    "string representing the type of the elements of a vector",
+    [](StackPtr &sp, VM &vm) {
+        auto a = Pop(sp);
+        auto &ti = a.vval()->ti(vm);
+        string sd;
+        vm.GetTypeInfo(ti.subt).Print(vm, sd, nullptr);
+        Push(sp, vm.NewString(sd));
+    });
+
+nfr("type_field_count", "obj", "A", "I",
+    "number of fields in an object, or 0 for other reference types",
+    [](StackPtr &sp, VM &vm) {
+        auto a = Pop(sp);
+        auto &ti = a.ref()->ti(vm);
+        Push(sp, IsUDT(ti.t) ? ti.len : 0);
+    });
+
+nfr("type_field_string", "obj,idx", "AI", "S",
+    "string representing the type of a field in an object, or empty for other reference types",
+    [](StackPtr &sp, VM &vm) {
+        auto i = Pop(sp).ival();
+        auto a = Pop(sp);
+        auto &ti = a.ref()->ti(vm);
+        string sd;
+        if (IsUDT(ti.t) && i >= 0 && i < ti.len) {
+            vm.GetTypeInfo(ti.elemtypes[i].type).Print(vm, sd, nullptr);
+        }
+        Push(sp, vm.NewString(sd));
+    });
+
+nfr("type_field_name", "obj,idx", "AI", "S",
+    "name of a field in an object, or empty for other reference types",
+    [](StackPtr &sp, VM &vm) {
+        auto i = Pop(sp).intval();
+        auto a = Pop(sp);
+        auto &ti = a.ref()->ti(vm);
+        string sd;
+        if (IsUDT(ti.t) && i >= 0 && i < ti.len) {
+            sd = vm.LookupFieldByOffset(ti.structidx, i);
+        }
+        Push(sp, vm.NewString(sd));
+    });
+
+nfr("type_field_value", "obj,idx", "AI", "S",
+    "string representing the value of a field in an object, or empty for other reference types",
+    [](StackPtr &sp, VM &vm) {
+        auto i = Pop(sp).ival();
+        auto a = Pop(sp);
+        auto &ti = a.ref()->ti(vm);
+        Value r;
+        if (IsUDT(ti.t) && i >= 0 && i < ti.len) {
+            auto &sti = vm.GetTypeInfo(ti.elemtypes[i].type);
+            r = vm.ToString(a.oval()->AtS(i), sti);
+        } else {
+            r = vm.NewString(0);
+        }
+        Push(sp, r);
+    });
+
 nfr("program_name", "", "", "S",
-    "returns the name of the main program (e.g. \"foo.lobster\".",
+    "returns the name of the main program (e.g. \"foo.lobster\"), \"\" if running from lpak.",
     [](StackPtr &, VM &vm) {
         return Value(vm.NewString(vm.GetProgramName()));
     });
@@ -1266,7 +1420,7 @@ nfr("vm_compiled_mode", "", "", "B",
     });
 
 nfr("seconds_elapsed", "", "", "F",
-    "seconds since program start as a float, unlike gl_time() it is calculated every time it is"
+    "seconds since program start as a float, unlike gl.time() it is calculated every time it is"
     " called",
     [](StackPtr &, VM &vm) {
         return Value(vm.Time());
@@ -1308,16 +1462,40 @@ nfr("date_time_string", "utc", "B?", "S",
         return Value(s);
     });
 
+nfr("date_time_string_format", "format,utc", "SB?", "S",
+    "a string representing date & time information using a formatting string according to"
+    " https://en.cppreference.com/w/cpp/chrono/c/strftime, for example \"%Y_%m_%d_%H_%M_%S\"."
+    " By default returns local time, pass true for UTC instead.",
+    [](StackPtr &, VM &vm, Value &fmt, Value &utc) {
+        auto time = std::time(nullptr);
+        if (!time) return Value(vm.NewString(""));
+        auto tm = utc.True() ? std::gmtime(&time) : std::localtime(&time);
+        if (!tm) return Value(vm.NewString(""));
+        const size_t max = 1024;
+        char buf[max];
+        auto sz = std::strftime(buf, max, fmt.sval()->strvnt().c_str(), tm);
+        if (!sz) return Value(vm.NewString(""));
+        auto s = vm.NewString(string_view(buf, sz));
+        return Value(s);
+    });
+
+nfr("date_time_build_info", "", "", "S",
+    "a string representing information from when this program was compiled.",
+    [](StackPtr &, VM &vm) {
+        auto s = vm.NewString(vm.BuildInfo());
+        return Value(s);
+    });
+
 nfr("assert", "condition", "A*", "Ab1",
     "halts the program with an assertion failure if passed false. returns its input."
-    " runtime errors like this will contain a stack trace if --runtime-verbose is on.",
+    " runtime errors like this will contain a stack trace if --runtime-stack-trace is on.",
     [](StackPtr &, VM &, Value &c) {
         assert(false);  // This builtin implemented as IL_ASSERT.
         return c;
     });
 
 nfr("get_stack_trace", "", "", "S",
-    "gets a stack trace of the current location of the program (needs --runtime-verbose)"
+    "gets a stack trace of the current location of the program (needs --runtime-stack-trace)"
     " without actually stopping the program.",
     [](StackPtr &, VM &vm) {
         string sd;
@@ -1356,6 +1534,21 @@ nfr("set_console", "on", "B", "",
     "lets you turn on/off the console window (on Windows)",
     [](StackPtr &, VM &, Value &x) {
         SetConsole(x.True());
+        return NilVal();
+    });
+
+nfr("set_output_level", "level", "I", "",
+    "0 = debug, 1 = verbose, 2 = warn (default), 3 = error, 4 = program",
+    [](StackPtr &, VM &, Value &x) {
+        // Do "min", so we can override even lower from command-line.
+        min_output_level = std::min(min_output_level, (OutputType)x.intval());
+        return NilVal();
+    });
+
+nfr("set_exit_code", "code", "I", "",
+    "this will be returned when run as a console application",
+    [](StackPtr &, VM &vm, Value &x) {
+        vm.evalret.second = x.ival();
         return NilVal();
     });
 
@@ -1410,11 +1603,90 @@ nfr("thread_write", "struct", "A", "",
 
 nfr("thread_read", "type", "T", "A1?",
     "get a struct from the thread queue. pass the typeof struct. blocks if no such"
-            "structs available. returns struct, or nil if stop_worker_threads() was called",
+    "structs available. returns struct, or nil if stop_worker_threads() was called",
     [](StackPtr &, VM &vm, Value &t) {
-        return Value(vm.WorkerRead((type_elem_t)t.ival()));
+        return vm.WorkerRead((type_elem_t)t.ival());
+    });
+
+nfr("thread_check", "type", "T", "A1?",
+    "tests if a struct is available on the thread queue. pass the typeof struct. "
+    "returns struct, or nil if none available, or if stop_worker_threads() was called",
+    [](StackPtr &, VM &vm, Value &t) {
+        return vm.WorkerCheck((type_elem_t)t.ival());
+    });
+
+nfr("crash_test_cpp_nullptr_exception", "", "", "",
+    "only for testing crash dump functionality, don\'t use! :)",
+    [](StackPtr &, VM &) {
+        char *volatile crash = nullptr;
+        *crash = 0;
     });
 
 }  // AddBuiltins
+
+
+void AddMatrix(NativeRegistry &nfr) {
+
+nfr("multiply", "a,b", "F]F]", "F]",
+    "input matrices must be 4x4 elements",
+    [](StackPtr &, VM &vm, Value &a, Value &b) {
+        auto av = a.vval();
+        auto bv = b.vval();
+        if (av->len != 16 || bv->len != 16)
+            vm.BuiltinError("matrix_multiply: input vectors must be length 16");
+        auto r = vm.NewVec(16, 16, TYPE_ELEM_VECTOR_OF_FLOAT);
+        InlineVec<double, 16> iva(av->Elems());
+        InlineVec<double, 16> ivb(bv->Elems());
+        InlineVec<double, 16> ivr(r->Elems(), false);
+        (*(double4x4 *)ivr.vals) = (*(double4x4 *)iva.vals) * (*(double4x4 *)ivb.vals);
+        ivr.CopyBack(r->Elems());
+        return Value(r);
+    });
+
+nfr("rotate_x", "angle", "F}:2", "F]",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        auto angle = PopVec<double2>(sp);
+        auto r = vm.NewVec(16, 16, TYPE_ELEM_VECTOR_OF_FLOAT);
+        InlineVec<double, 16> ivr(r->Elems(), false);
+        (*(double4x4 *)ivr.vals) = rotationX(angle);
+        ivr.CopyBack(r->Elems());
+        Push(sp, r);
+    });
+
+nfr("rotate_y", "angle", "F}:2", "F]",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        auto angle = PopVec<double2>(sp);
+        auto r = vm.NewVec(16, 16, TYPE_ELEM_VECTOR_OF_FLOAT);
+        InlineVec<double, 16> ivr(r->Elems(), false);
+        (*(double4x4 *)ivr.vals) = rotationY(angle);
+        ivr.CopyBack(r->Elems());
+        Push(sp, r);
+    });
+
+nfr("rotate_z", "angle", "F}:2", "F]",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        auto angle = PopVec<double2>(sp);
+        auto r = vm.NewVec(16, 16, TYPE_ELEM_VECTOR_OF_FLOAT);
+        InlineVec<double, 16> ivr(r->Elems(), false);
+        (*(double4x4 *)ivr.vals) = rotationZ(angle);
+        ivr.CopyBack(r->Elems());
+        Push(sp, r);
+    });
+
+nfr("translation", "trans", "F}:3", "F]",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        auto trans = PopVec<double3>(sp);
+        auto r = vm.NewVec(16, 16, TYPE_ELEM_VECTOR_OF_FLOAT);
+        InlineVec<double, 16> ivr(r->Elems(), false);
+        (*(double4x4 *)ivr.vals) = translation(trans);
+        ivr.CopyBack(r->Elems());
+        Push(sp, r);
+    });
+
+}  // AddMatrix
 
 }

@@ -131,6 +131,8 @@
     <ClCompile Include="..\src\main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\lobster\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\lobster\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NDEBUG;WINVER=0x0400;wxUSE_GUI=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="..\src\StackWalker\StackWalker.cpp">
@@ -150,6 +152,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\lobster\src\lobster\string_tools.h" />
     <ClInclude Include="..\src\script_interface.h" />
     <ClInclude Include="..\src\StackWalker\StackWalker.h" />
     <ClInclude Include="..\src\StackWalker\StackWalkerHelpers.h" />

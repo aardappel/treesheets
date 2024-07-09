@@ -140,4 +140,103 @@ nfr("sound_position", "channel,vecfromlistener,listenerfwd,attnscale", "IF}:3F}:
         if (ch_idx > 0)
             SDLSetPosition(ch_idx, src, fwd, scale);
     });
+
+nfr("sound_time_length", "channel", "I", "F",
+    "returns the length in seconds of the sound playing on this channel",
+    [](StackPtr &, VM &, Value &ch_idx) {
+        float length = SDLGetTimeLength(ch_idx.intval());
+        return Value(length);
+    });
+
+nfr("text_to_speech", "text", "S", "",
+    "Queues up text for async text to speech output. Currently on: win32",
+    [](StackPtr &, VM &, Value &text) {
+        QueueTextToSpeech(text.sval()->strv());
+        return NilVal();
+    });
+
+nfr("text_to_speech_stop", "", "", "",
+    "Stops current text to speech output and clears queue",
+    [](StackPtr &, VM &) {
+        StopTextToSpeech();
+        return NilVal();
+    });
+
+nfr("play_music", "filename,loops", "SI?", "I",
+    "plays music in many common formats (WAV, MP3, OGG, etc.). the default volume is the max volume (1.0)"
+    " loops is the number of repeats to play (-1 repeats endlessly, omit for no repeats)."
+    " returns the music id or 0 on error",
+    [](StackPtr &, VM &, Value &ins, Value &loops) {
+        int mus_id = SDLPlayMusic(ins.sval()->strv(), loops.intval());
+        return Value(mus_id);
+    });
+
+nfr("play_music_fade_in", "filename,ms,loops", "SII?", "I",
+    "plays music while fading in over ms milliseconds. See play_music for more info.",
+    [](StackPtr &, VM &, Value &ins, Value &ms, Value &loops) {
+        int mus_id = SDLFadeInMusic(ins.sval()->strv(), loops.intval(), ms.intval());
+        return Value(mus_id);
+    });
+
+nfr("play_music_cross_fade", "old_mus_id,new_filename,ms,loops", "ISII?", "I",
+    "cross-fades new music with existing music over ms milliseconds. See play_music for more info.",
+    [](StackPtr &, VM &, Value &old_mus_id, Value &new_ins, Value &ms, Value &loops) {
+        int new_mus_id = SDLCrossFadeMusic(old_mus_id.intval(), new_ins.sval()->strv(), loops.intval(), ms.intval());
+        return Value(new_mus_id);
+    });
+
+nfr("music_fade_out", "mus_id,ms", "II", "",
+    "fade out music over ms milliseconds.",
+    [](StackPtr &, VM &, Value &mus_id, Value &ms) {
+        SDLFadeOutMusic(mus_id.intval(), ms.intval());
+        return NilVal();
+    });
+
+nfr("music_halt", "mus_id", "I", "",
+    "stop music with the given id.",
+    [](StackPtr &, VM &, Value &mus_id) {
+        SDLHaltMusic(mus_id.intval());
+        return NilVal();
+    });
+
+nfr("music_pause", "mus_id", "I", "",
+    "pause music with the given id.",
+    [](StackPtr &, VM &, Value &mus_id) {
+        SDLPauseMusic(mus_id.intval());
+        return NilVal();
+    });
+
+nfr("music_resume", "mus_id", "I", "",
+    "resume music with the given id.",
+    [](StackPtr &, VM &, Value &mus_id) {
+        SDLResumeMusic(mus_id.intval());
+        return NilVal();
+    });
+
+nfr("music_volume", "mus_id,vol", "IF", "",
+    "set the music volume in the range 0..1.",
+    [](StackPtr &, VM &, Value &mus_id, Value &vol) {
+        SDLSetMusicVolume(mus_id.intval(), vol.fltval());
+        return NilVal();
+    });
+
+nfr("music_is_playing", "mus_id", "I", "B",
+    "returns whether the music with the given id has not yet finished. Paused music is still considered to be playing",
+    [](StackPtr &, VM &, Value &mus_id) {
+        auto is_playing = SDLMusicIsPlaying(mus_id.intval());
+        return Value(is_playing);
+    });
+
+nfr("music_set_general_volume", "vol", "F", "",
+    "set the general music volume in the range 0..1.",
+    [](StackPtr &, VM &, Value &vol) {
+        SDLSetGeneralMusicVolume(vol.fltval());
+        return NilVal();
+    });
+
+
+
 }
+
+
+

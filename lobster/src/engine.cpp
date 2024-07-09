@@ -32,7 +32,7 @@
 // Lobster without the needs for DLL/so files or whatever.
 // "projects" is already in .gitignore so can even be a
 // separate git repo.
-#if __has_include("../../projects/include/lobster_engine_plugins.h")
+#if defined(BUILD_CONTEXT_lobster) && __has_include("../../projects/include/lobster_engine_plugins.h")
     #include "../../projects/include/lobster_engine_plugins.h"
     #define HAVE_PLUGINS
     void AddPlugins(NativeRegistry &nfr);
@@ -51,22 +51,24 @@ extern void AddCubeGen(NativeRegistry &nfr);
 extern void AddVR(NativeRegistry &nfr);
 extern void AddSteam(NativeRegistry &nfr);
 extern void AddIMGUI(NativeRegistry &nfr);
+extern void AddIMGUIDebug(NativeRegistry &nfr);
 
 namespace lobster {
 
 FileLoader EnginePreInit(NativeRegistry &nfr) {
-    RegisterBuiltin(nfr, "graphics",  AddGraphics);
-    RegisterBuiltin(nfr, "font",      AddFont);
-    RegisterBuiltin(nfr, "sound",     AddSound);
-    RegisterBuiltin(nfr, "physics",   AddPhysics);
-    RegisterBuiltin(nfr, "noise",     AddNoise);
-    RegisterBuiltin(nfr, "meshgen",   AddMeshGen);
-    RegisterBuiltin(nfr, "cubegen",   AddCubeGen);
-    RegisterBuiltin(nfr, "vr",        AddVR);
-    RegisterBuiltin(nfr, "steam",     AddSteam);
-    RegisterBuiltin(nfr, "imgui",     AddIMGUI);
+    RegisterBuiltin(nfr, "gl", "graphics",  AddGraphics);
+    RegisterBuiltin(nfr, "gl", "font", AddFont);
+    RegisterBuiltin(nfr, "", "sound", AddSound);
+    RegisterBuiltin(nfr, "ph", "physics", AddPhysics);
+    RegisterBuiltin(nfr, "", "noise", AddNoise);
+    RegisterBuiltin(nfr, "mg", "meshgen", AddMeshGen);
+    RegisterBuiltin(nfr, "cg", "cubegen", AddCubeGen);
+    RegisterBuiltin(nfr, "vr", "vr", AddVR);
+    RegisterBuiltin(nfr, "steam", "steam", AddSteam);
+    RegisterBuiltin(nfr, "im", "imgui", AddIMGUI);
+    RegisterBuiltin(nfr, "", "imguidebug", AddIMGUIDebug);
     #ifdef HAVE_PLUGINS
-        RegisterBuiltin(nfr, "plugin", AddPlugins);
+        RegisterBuiltin(nfr, "", "plugin", AddPlugins);
     #endif
     nfr.DoneRegistering();
     return SDLLoadFile;

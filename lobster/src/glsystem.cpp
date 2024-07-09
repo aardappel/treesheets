@@ -20,6 +20,11 @@
 #include "lobster/sdlincludes.h"
 #include "lobster/sdlinterface.h"
 
+#if defined(_WIN32) && LOBSTER_RENDERDOC
+    #include "renderdoc_app.h"
+    RENDERDOC_API_1_1_2 *rdoc_api = NULL;
+#endif
+
 #ifdef PLATFORM_WINNIX
 #define GLEXT(type, name, needed) type name = nullptr;
 GLBASEEXTS GLEXTS
@@ -35,6 +40,7 @@ float custompointscale = 1.0f;
 bool mode2d = true;
 bool mode_srgb = false;
 GeometryCache *geomcache = nullptr;
+int max_ssbo = 0, max_ubo = 0;
 
 BlendMode SetBlendMode(BlendMode mode) {
     static BlendMode curblendmode = BLEND_NONE;
@@ -95,10 +101,16 @@ void SetScissorRect(int2 topleft, int2 size, pair<int2, int2>& prev) {
     }
 }
 
+void DepthTest(bool on) {
+    if (on)
+        GL_CALL(glEnable(GL_DEPTH_TEST));
+    else
+        GL_CALL(glDisable(GL_DEPTH_TEST));
+}
+
 void Set2DMode(const int2 &ssize, bool lh, bool depthtest) {
-    GL_CALL(glDisable(GL_CULL_FACE));
-    if (depthtest) GL_CALL(glEnable(GL_DEPTH_TEST));
-    else GL_CALL(glDisable(GL_DEPTH_TEST));
+    DepthTest(depthtest);
+    CullFace(false);
     glViewport(0, 0, ssize.x, ssize.y);
     otransforms = objecttransforms();
     auto y = (float)ssize.y;
@@ -107,8 +119,8 @@ void Set2DMode(const int2 &ssize, bool lh, bool depthtest) {
 }
 
 void Set3DOrtho(const int2 &ssize, const float3 &center, const float3 &extends) {
-    GL_CALL(glEnable(GL_DEPTH_TEST));
-    GL_CALL(glEnable(GL_CULL_FACE));
+    DepthTest(true);
+    CullFace(true);
     glViewport(0, 0, ssize.x, ssize.y);
     otransforms = objecttransforms();
     auto p = center + extends;
@@ -117,14 +129,22 @@ void Set3DOrtho(const int2 &ssize, const float3 &center, const float3 &extends) 
     mode2d = false;
 }
 
-void Set3DMode(float fovy, int2 fbo, int2 fbs, float znear, float zfar) {
-    GL_CALL(glEnable(GL_DEPTH_TEST));
-    GL_CALL(glEnable(GL_CULL_FACE));
+void Set3DMode(float fovy, int2 fbo, int2 fbs, float znear, float zfar, bool nodepth) {
+    DepthTest(!nodepth);
+    CullFace(true);
     glViewport(fbo.x, fbo.y, fbs.x, fbs.y);
     otransforms = objecttransforms();
     float ratio = fbs.x / (float)fbs.y;
     view2clip = perspective(fovy, ratio, znear, zfar, 1);
     mode2d = false;
+}
+
+void CullFace(bool on) {
+    GL_CALL(if (on) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE));
+}
+
+void CullFront(bool on) {
+    GL_CALL(glCullFace(on ? GL_FRONT : GL_BACK));
 }
 
 bool Is2DMode() { return mode2d; }
@@ -152,22 +172,39 @@ void OpenGLFrameEnd() {
     //glFlush();
     //glFinish();
     #if LOBSTER_FRAME_PROFILER
-    FrameMark
+        FrameMark
+    #endif
+}
+
+void OpenGLPostSwapBuffers() {
+    #if LOBSTER_FRAME_PROFILER
+        TracyGpuCollect;
     #endif
 }
 
 #ifdef PLATFORM_WINNIX
-void DebugCallBack(GLenum, GLenum, GLuint, GLenum severity, GLsizei length,
+void DebugCallBack(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
                    const GLchar *message, const void *) {
-    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return;  // Spam.
+    (void)source;
+    (void)type;
+    (void)id;
     auto ll = OUTPUT_INFO;
     if (severity == GL_DEBUG_SEVERITY_HIGH) ll = OUTPUT_ERROR;
     else if (severity == GL_DEBUG_SEVERITY_MEDIUM) ll = OUTPUT_WARN;
+    else if (severity == GL_DEBUG_SEVERITY_LOW) ll = OUTPUT_INFO;
+    // Suppress notifications in general
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) return;
     if (ll < min_output_level) return;
-    // These messages are useless too, as they're hard to correlate to what needs to be
-    // reordered in Lobster code to make them go away.
-    if (strstr(message, "being recompiled based on GL state")) return;
     LogOutput(ll, "GLDEBUG: ", string_view(message, length));
+    if (id == GL_OUT_OF_MEMORY) {
+        // For severe errors like this we'd like to know what call is failing,
+        // but we have absolutely no information about that (esp in Release mode).
+        // So, throw an exception, in the hope that we're running with some sort of
+        // callstack printing, though maybe not accurate without GL_DEBUG_OUTPUT_SYNCHRONOUS?
+        // The driver can do allocations that may fail long after the GL call that submitted
+        // the work was run.
+        THROW_OR_ABORT(string(message, length));
+    }
 }
 #endif
 
@@ -176,8 +213,8 @@ string OpenGLInit(int samples, bool srgb) {
     LOG_INFO((const char *)glGetString(GL_VENDOR), " - ",
              (const char *)glGetString(GL_RENDERER), " - ",
              (const char *)glGetString(GL_VERSION));
-    // If not called, flashes red framebuffer on OS X before first gl_clear() is called.
-    ClearFrameBuffer(float3_0);
+    // If not called, flashes red framebuffer on OS X before first gl.clear() is called.
+    ClearFrameBuffer(float3(0.25f));
     #ifdef PLATFORM_WINNIX
         #define GLEXT(type, name, needed) { \
                 union { void *proc; type fun; } funcast; /* regular cast causes gcc warning */ \
@@ -187,16 +224,37 @@ string OpenGLInit(int samples, bool srgb) {
             }
         GLBASEEXTS GLEXTS
         #undef GLEXT
-        glEnable(GL_DEBUG_OUTPUT);
-        if (glDebugMessageCallback && glDebugMessageInsert) {
-            glDebugMessageCallback(DebugCallBack, nullptr);
-            glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0,
-                                 GL_DEBUG_SEVERITY_NOTIFICATION, 2, "on");
+        GL_CALL(glEnable(GL_DEBUG_OUTPUT));
+        if (glDebugMessageCallback && glDebugMessageInsert && glDebugMessageControl) {
+            GL_CALL(glDebugMessageCallback(DebugCallBack, nullptr));
+            // Turn off all notification messages, which are largely spam.
+            GL_CALL(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION,
+                                          0, nullptr, false));
+            GL_CALL(glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 'TEST',
+                                         GL_DEBUG_SEVERITY_LOW, 2, "on"));
             #ifndef NDEBUG
                 // This allows breakpoints in DebugCallBack above that show the caller.
                 glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            #else
+                // Disabled only in Release to reduce spam.
+                // "Buffer name does not refer to an buffer object generated by OpenGL"
+                // Seems to originate from SDL_GL_SwapWindow and its not clear why.
+                // FIXME: this is the same id as GL_INVALID_OPERATION so would disable all of those?
+                unsigned api_error_ids[] = { 0x00000502 };
+                GL_CALL(glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR,
+                                              GL_DONT_CARE, 1, api_error_ids, false));
+                // "Vertex shader in program N is being recompiled based on GL state"
+                // Seems impossible to track down which sequence of Lobster calls
+                // produces this warning.
+                // FIXME: is this id NVidia specific?
+                unsigned api_perf_ids[] = { 0x00020092 };
+                GL_CALL(glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_PERFORMANCE,
+                                              GL_DONT_CARE, 1, api_perf_ids, false));
             #endif
         }
+        // FIXME: call glGetInteger64v if we ever want buffers >2GB.
+        glGetIntegerv(GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &max_ssbo);
+        glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_ubo);
     #endif
     #ifndef PLATFORM_ES3
         GL_CALL(glEnable(GL_LINE_SMOOTH));
@@ -207,8 +265,9 @@ string OpenGLInit(int samples, bool srgb) {
             GL_CALL(glEnable(GL_FRAMEBUFFER_SRGB));
             mode_srgb = true;
         }
+        GL_CALL(glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS));
     #endif
-    GL_CALL(glCullFace(GL_FRONT));
+    CullFront(true);
     if (!geomcache) geomcache = new GeometryCache();
     #if LOBSTER_FRAME_PROFILER
         #undef new
@@ -217,12 +276,35 @@ string OpenGLInit(int samples, bool srgb) {
             #define new DEBUG_NEW
         #endif
     #endif
+    #if defined(_WIN32) && LOBSTER_RENDERDOC
+        if (HMODULE mod = LoadLibraryA("renderdoc.dll")) {
+            pRENDERDOC_GetAPI RENDERDOC_GetAPI =
+                (pRENDERDOC_GetAPI)GetProcAddress(mod, "RENDERDOC_GetAPI");
+            RENDERDOC_GetAPI(eRENDERDOC_API_Version_1_1_2, (void **)&rdoc_api);
+        }
+    #endif
     return {};
 }
 
 void OpenGLCleanup() {
     if (geomcache) delete geomcache;
     geomcache = nullptr;
+}
+
+void RenderDocStartFrameCapture() {
+    #if defined(_WIN32) && LOBSTER_RENDERDOC
+        // To start a frame capture, call StartFrameCapture.
+        // You can specify NULL, NULL for the device to capture on if you have only one device and
+        // either no windows at all or only one window, and it will capture from that device.
+        // See the documentation below for a longer explanation
+        if (rdoc_api) rdoc_api->StartFrameCapture(NULL, NULL);
+    #endif
+}
+
+void RenderDocStopFrameCapture() {
+    #if defined(_WIN32) && LOBSTER_RENDERDOC
+        if (rdoc_api) rdoc_api->EndFrameCapture(NULL, NULL);
+    #endif
 }
 
 void LogGLError(const char *file, int line, const char *call) {

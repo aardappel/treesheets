@@ -35,8 +35,8 @@ struct Optimizer {
         // We don't optimize parser.root, it only contains a single call.
         for (auto f : parser.st.functiontable) {
             again:
-            for (auto &ov : f->overloads) {
-                auto sf = ov.sf;
+            for (auto ov : f->overloads) {
+                auto sf = ov->sf;
                 if (sf && sf->typechecked) {
                     for (; sf; sf = sf->next) {
                         functions_removed = false;
@@ -60,6 +60,7 @@ struct Optimizer {
         }
         sfstack.push_back(&sf);
         auto nb = sf.sbody->Optimize(*this);
+        sf.node_count = sf.sbody->Count();
         assert(nb == sf.sbody);
         (void)nb;
         sfstack.pop_back();
@@ -96,20 +97,10 @@ Node *Node::Optimize(Optimizer &opt) {
 }
 
 Node *Constructor::Optimize(Optimizer &opt) {
-    // Special case that really is not an optimisation but should run at end of type checking:
-    // "seal" empty lists to a type.
-    if (exptype->t == V_VECTOR && children.empty() && exptype->sub->t == V_VAR) {
-        opt.tc.UnifyVar(type_int, exptype->sub);
-    }
     return Node::Optimize(opt);
 }
 
-Node *Nil::Optimize(Optimizer &opt) {
-    // Special case that really is not an optimisation but should run at end of type checking:
-    // "seal" unknown nils to a type.
-    if (exptype->t == V_NIL && exptype->sub->t == V_VAR) {
-        opt.tc.UnifyVar(type_string, exptype->sub);
-    }
+Node *Nil::Optimize(Optimizer &) {
     return this;
 }
 
@@ -147,10 +138,10 @@ Node *Call::Optimize(Optimizer &opt) {
     // Check if we should inline this call.
     if (!is_inlinable ||
         // Inline small functions even if called multiple times.
-        (sf->numcallers > 1 && sf->sbody->Count() >= opt.always_inline) ||
+        (sf->numcallers > 1 && sf->node_count >= opt.always_inline) ||
         // Don't inline really gigantic functions, this helps with not flattening the call-graph too
         // much for stack traces, profiling and such, and may also make them easier to reg-alloc etc.
-        (sf->numcallers <= 1 && sf->sbody->Count() >= opt.never_inline) ||
+        (sf->numcallers <= 1 && sf->node_count >= opt.never_inline) ||
         // Don't inline functions that are being profiled.
         (LOBSTER_FRAME_PROFILER && sf->attributes.find("profile") != sf->attributes.end())) {
         return this;
@@ -189,8 +180,7 @@ Node *Call::Optimize(Optimizer &opt) {
     // TODO: triple-check this similar in semantics to what happens in CloneFunction() in the
     // typechecker.
     if (sf->numcallers == 1) {
-        list->children.insert(list->children.end(), sf->sbody->children.begin(),
-                              sf->sbody->children.end());
+        list->children.append(sf->sbody->children.data(), sf->sbody->children.size());
         sf->sbody->children.clear();
         delete sf->sbody;
         sf->sbody = nullptr;

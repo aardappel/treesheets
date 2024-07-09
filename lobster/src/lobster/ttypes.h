@@ -82,7 +82,6 @@ namespace lobster {
     TOK(T_RIGHTBRACKET, "]") \
     TOK(T_LEFTCURLY, "{") \
     TOK(T_RIGHTCURLY, "}") \
-    TOK(T_SEMICOLON, ";") \
     TOK(T_AT, "@") \
     TOK(T_QUESTIONMARK, "?") \
     TOK(T_COMMA, ",") \
@@ -116,8 +115,14 @@ namespace lobster {
     TOK(T_BREAK, "break") \
     TOK(T_SUPER, "super") \
     TOK(T_OPERATOR, "operator") \
-    TOK(T_ATTRIBUTE, "attribute")
-
+    TOK(T_ATTRIBUTE, "attribute") \
+    TOK(T_MEMBER, "member") \
+    TOK(T_MEMBER_FRAME, "member_frame") \
+    TOK(T_STATIC, "static") \
+    TOK(T_STATIC_FRAME, "static_frame") \
+    TOK(T_ABSTRACT, "abstract") \
+    TOK(T_GUARD, "guard") \
+    TOK(T_CONSTRUCTOR, "constructor")
 
 enum TType {
     #define TOK(ENUM, STR) ENUM,

@@ -1,3 +1,4 @@
+typedef int64_t (*FileLoader)(string_view_nt absfilename, std::string *dest, int64_t start, int64_t len);
 
 namespace script {
 
@@ -35,11 +36,8 @@ struct ScriptInterface {
     virtual ~ScriptInterface() {};
 };
 
-typedef int64_t (*ScriptLoader)(std::string_view absfilename, std::string *dest, int64_t start,
-                                int64_t len);
-
 extern std::string InitLobster(ScriptInterface *_si, const char *exefilepath,
-                               const char *auxfilepath, bool from_bundle, ScriptLoader sl);
+                               const char *auxfilepath, bool from_bundle, FileLoader sl);
 extern std::string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins);
 extern void TSDumpBuiltinDoc();
 

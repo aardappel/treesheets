@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Platform independent file access:
-typedef int64_t (* FileLoader)(string_view absfilename, string *dest, int64_t start, int64_t len);
+typedef int64_t (* FileLoader)(string_view_nt absfilename, string *dest, int64_t start, int64_t len);
 
 // Call this at init to determine default folders to load stuff from.
 string GetMainDirFromExePath(string_view argv_0);
@@ -21,12 +21,12 @@ string GetMainDirFromExePath(string_view argv_0);
 // This also initializes anything else functions in this file need.
 extern bool InitPlatform(string maindir, string_view auxfilepath, bool from_bundle,
                              FileLoader loader);
-extern void AddDataDir(string_view path, bool is_rel);  // Any additional dirs besides the above.
+extern void AddDataDir(string_view path);  // Any additional dirs besides the above.
 extern string_view ProjectDir();
 extern string_view MainDir();
 
 extern string_view StripFilePart(string_view filepath);
-extern string StripDirPart(string_view filepath);
+extern string StripDirPart(string_view_nt filepath);
 
 // Read all or part of a file.
 // To read the whole file, pass -1 for len.
@@ -35,12 +35,16 @@ extern string StripDirPart(string_view filepath);
 extern int64_t LoadFile(string_view relfilename, string *dest, int64_t start = 0, int64_t len = -1,
                         bool binary = true);
 
+// Full absolute path of last file attempted by LoadFile.
+extern string LastAbsPathLoaded();
+
 // fopen based implementation of FileLoader above to pass to InitPlatform if needed.
-extern int64_t DefaultLoadFile(string_view absfilename, string *dest, int64_t start, int64_t len);
+extern int64_t DefaultLoadFile(string_view_nt absfilename, string *dest, int64_t start, int64_t len);
 
 extern FILE *OpenForWriting(string_view relfilename, bool binary, bool allow_absolute);
 extern FILE *OpenForReading(string_view relfilename, bool binary, bool allow_absolute);
 extern bool WriteFile(string_view relfilename, bool binary, string_view contents, bool allow_absolute);
+extern bool RenameFile(string_view oldfilename, string_view newfilename);
 extern bool FileExists(string_view filename, bool allow_absolute);
 extern bool FileDelete(string_view relfilename);
 extern string SanitizePath(string_view path);
@@ -52,6 +56,11 @@ extern bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest);
 extern bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest);
 
 extern iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out);
+
+extern void QueueTextToSpeech(string_view text);
+extern bool TextToSpeechInit();
+extern bool TextToSpeechUpdate();
+extern void StopTextToSpeech();
 
 // Logging:
 
