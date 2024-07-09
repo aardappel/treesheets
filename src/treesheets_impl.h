@@ -104,6 +104,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetBackgroundColor(uint col) { cur->cellcolor = col; }
     void SetTextColor(uint col) { cur->textcolor = col; }
+    void SetTextFiltered(bool filtered) {
+        if (cur->parent) cur->text.filtered = filtered;
+    }
+    bool IsTextFiltered() { return cur->text.filtered; }
     void SetBorderColor(uint col) {
         if (cur->grid) cur->grid->bordercolor = col;
     }
