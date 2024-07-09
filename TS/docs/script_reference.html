@@ -29,6 +29,8 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.delete</b>(pos<font color="#666666">:int2</font>, size<font color="#666666">:int2</font>)</tt></td><td class="a">clears the cells denoted by pos/size. also removes columns/rows if they becomecompletely empty, or the entire grid.</td></tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_background_color</b>(col<font color="#666666">:float4</font>)</tt></td><td class="a">sets the background color of the current cell</td></tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text_color</b>(col<font color="#666666">:float4</font>)</tt></td><td class="a">sets the text color of the current cell</td></tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_text_filtered</b>(filtered<font color="#666666">:bool</font>)</tt></td><td class="a">sets the text filtered of the current cell</td></tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.is_text_filtered</b>() -> <font color="#666666">int</font></tt></td><td class="a">whether the text of the current cell is filtered</td></tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_border_color</b>(col<font color="#666666">:float4</font>)</tt></td><td class="a">sets the border color of the current grid</td></tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_relative_size</b>(s<font color="#666666">:int</font>)</tt></td><td class="a">sets the relative size (0 is normal, -1 is smaller etc.) of the current cell</td></tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_style_bits</b>(s<font color="#666666">:int</font>)</tt></td><td class="a">sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8, strikethru = 16) on the current cell.</td></tr>

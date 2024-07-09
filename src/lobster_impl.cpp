@@ -117,6 +117,15 @@ nfr("set_text_color", "col", "F}:4", "",
         si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
+nfr("set_text_filtered", "filtered", "B", "", "sets the text filtered of the current cell",
+    [](StackPtr &sp, VM &vm, Value &filtered) {
+        si->SetTextFiltered(filtered.True());
+        return Value();
+    });
+
+nfr("is_text_filtered", "", "", "B", "whether the text of the current cell is filtered",
+    [](StackPtr &sp, VM &vm) { return Value(si->IsTextFiltered()); });
+
 nfr("set_border_color", "col", "F}:4", "", "sets the border color of the current grid",
     [](StackPtr &sp, VM &vm) {
         auto col = PopVec<float3>(sp);
