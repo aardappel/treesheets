@@ -178,6 +178,9 @@ nfr("set_window_size", "width,height", "II", "", "resizes the window",
         return Value();
     });
 
+nfr("last_edit", "", "", "I",
+    "gets the timestamp of the last edit in milliseconds since the Unix/C epoch",
+    [](StackPtr &sp, VM &vm) { return Value(si->LastEdit()); });
 }
 
 NativeRegistry natreg;  // FIXME: global.
