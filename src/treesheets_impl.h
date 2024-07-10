@@ -136,6 +136,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         auto s = doc->filename.utf8_str();
         return std::string(s.data(), s.length());
     }
+
+    int64_t LastEdit() { return cur->text.lastedit.GetValue().GetValue(); }
 };
 
 static int64_t TreeSheetsLoader(string_view_nt absfilename, std::string *dest, int64_t start,
