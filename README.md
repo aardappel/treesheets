@@ -1,5 +1,15 @@
-Welcome to the source distribution of TreeSheets!
-=================================================
+<p align="center">
+<img src="https://github.com/aardappel/treesheets/assets/3286756/8aaf7e24-70ee-4ed1-92ea-881b366ea570" />
+</p>
+
+TreeSheets is a "hierarchical spreadsheet" that is a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
+
+Suitable for any kind of data organization, such as todo lists, calendars, project management, brainstorming, organizing ideas, planning, requirements gathering, presentation of information, etc.
+
+It's like a spreadsheet, immediately familiar, but much more suitable for complex data because it's hierarchical.
+It's like a mind mapper, but more organized and compact.
+It's like an outliner, but in more than one dimension.
+It's like a text editor, but with structure.
 
 Community:
 ----------
@@ -20,8 +30,8 @@ Please note that the Linux builds provided are built and only compatible with `u
 
 If you use Flatpak, you can install [TreeSheets from Flathub](https://flathub.org/apps/com.strlen.TreeSheets).
 
-Repository:
------------
+Source Code:
+------------
 This repository contains all the files needed to build TreeSheets for various platforms.
 
 ### License
