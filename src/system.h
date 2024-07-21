@@ -106,6 +106,9 @@ struct System {
     uint lasttextcolor {0};
     uint lastbordcolor {0xA0A0A0};
     int customcolor {0xFFFFFF};
+    #ifdef SIMPLERENDER
+    int cursorcolor {0x00FF00};
+    #endif
 
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
@@ -134,6 +137,9 @@ struct System {
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
         cfg->Read(L"customcolor", &customcolor, customcolor);
+        #ifdef SIMPLERENDER
+        cfg->Read(L"cursorcolor", &cursorcolor, cursorcolor);
+        #endif
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }

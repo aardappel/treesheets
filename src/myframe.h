@@ -519,6 +519,9 @@ struct MyFrame : wxFrame {
         MyAppend(optmenu, A_CUSTCOL, _(L"Pick Custom &Color..."));
         MyAppend(optmenu, A_COLCELL, _(L"&Set Custom Color From Cell BG"));
         MyAppend(optmenu, A_DEFBGCOL, _(L"Pick Document Background..."));
+        #ifdef SIMPLERENDER
+        MyAppend(optmenu, A_DEFCURCOL, _(L"Pick Cu&rsor Color..."));
+        #endif
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_SHOWSBAR, _(L"Show Statusbar"));
         optmenu->Check(A_SHOWSBAR, showsbar);
@@ -760,6 +763,9 @@ struct MyFrame : wxFrame {
     ~MyFrame() {
         filehistory.Save(*sys->cfg);
         sys->cfg->Write(L"customcolor", sys->customcolor);
+        #ifdef SIMPLERENDER
+        sys->cfg->Write(L"cursorcolor", sys->cursorcolor);
+        #endif
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {

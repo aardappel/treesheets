@@ -253,6 +253,9 @@ enum {
     A_REDO,
     A_FSWATCH,
     A_DEFBGCOL,
+    #ifdef SIMPLERENDER
+    A_DEFCURCOL,
+    #endif
     A_THINSELC,
     A_COPYCT,
     A_COPYBM,
