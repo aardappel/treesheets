@@ -1174,6 +1174,17 @@ struct Document {
                 return nullptr;
             }
 
+            #ifdef SIMPLERENDER
+            case A_DEFCURCOL: {
+                uint c = PickColor(sys->frame, sys->cursorcolor);
+                if (c != (uint)-1) {
+                    sys->cursorcolor = c;
+                    Refresh();
+                }
+                return nullptr;
+            }
+            #endif
+
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {
                 if (sys->searchstring.Len()) return SearchNext(dc, false, true, k == A_SEARCHPREV);

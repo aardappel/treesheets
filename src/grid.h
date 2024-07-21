@@ -450,7 +450,7 @@ struct Grid {
             #endif
             if (s.TextEdit())
             #ifdef SIMPLERENDER
-                DrawCursor(doc, dc, s, true, 0x00FF00, cursoronly);
+                DrawCursor(doc, dc, s, true, sys->cursorcolor, cursoronly);
             #else
                 DrawCursor(doc, dc, s, true, 0xFFFF, cursoronly);
             #endif
