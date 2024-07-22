@@ -16,7 +16,6 @@ struct MyFrame : wxFrame {
     double csf {(double)FromDIP(1.0)};  // TODO: functions using this attribute should be modified
                                         // to handle device-independent pixels
     std::vector<std::string> scripts_in_menu;
-    bool zenmode {false};
     wxToolBar *tb {nullptr};
     wxTextCtrl *filter {nullptr};
     wxTextCtrl *replaces {nullptr};
@@ -499,7 +498,7 @@ struct MyFrame : wxFrame {
                  _(L"Toggle &Scaled Presentation View\tF12"));
                  #endif
         viewmenu->AppendCheckItem(A_ZEN_MODE, _(L"Zen Mode"));
-        viewmenu->Check(A_ZEN_MODE, zenmode);
+        viewmenu->Check(A_ZEN_MODE, sys->zenmode);
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
         MyAppend(viewmenu, A_SHOWSTATS, _(L"Show statistics\tCTRL+d"));
@@ -696,6 +695,7 @@ struct MyFrame : wxFrame {
             idd = new ImageDropdown(tb, imagepath);
             tb->AddControl(idd);
             tb->Realize();
+            tb->Show(!sys->zenmode);
         }
 
         if (showsbar) {
@@ -703,6 +703,7 @@ struct MyFrame : wxFrame {
             sb->SetOwnBackgroundColour(toolbgcol);
             SetStatusBarPane(0);
             SetDPIAwareStatusWidths();
+            sb->Show(!sys->zenmode);
         }
 
         nb = new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -767,6 +768,7 @@ struct MyFrame : wxFrame {
         #ifdef SIMPLERENDER
         sys->cfg->Write(L"cursorcolor", sys->cursorcolor);
         #endif
+        sys->cfg->Write(L"zenmode", sys->zenmode);
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {
@@ -965,13 +967,13 @@ struct MyFrame : wxFrame {
                 if (!IsFullScreen()) {
                     wxToolBar *wtb = this->GetToolBar();
                     wxStatusBar *wsb = this->GetStatusBar();
-                    if (wtb != nullptr) wtb->Show(zenmode);
-                    if (wsb != nullptr) wsb->Show(zenmode);
+                    if (wtb != nullptr) wtb->Show(sys->zenmode);
+                    if (wsb != nullptr) wsb->Show(sys->zenmode);
                     this->SendSizeEvent();
                     this->Refresh();
                     if (wtb != nullptr) wtb->Refresh();
                     if (wsb != nullptr) wsb->Refresh();
-                    zenmode = !zenmode;
+                    sys->zenmode = !sys->zenmode;
                 }
                 break;
             case A_SEARCHF:
