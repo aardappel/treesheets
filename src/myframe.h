@@ -498,7 +498,8 @@ struct MyFrame : wxFrame {
                  #else
                  _(L"Toggle &Scaled Presentation View\tF12"));
                  #endif
-        MyAppend(viewmenu, A_ZEN_MODE, _(L"Toggle Zen Mode"));
+        viewmenu->AppendCheckItem(A_ZEN_MODE, _(L"Zen Mode"));
+        viewmenu->Check(A_ZEN_MODE, zenmode);
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
         MyAppend(viewmenu, A_SHOWSTATS, _(L"Show statistics\tCTRL+d"));
