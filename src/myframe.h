@@ -497,8 +497,10 @@ struct MyFrame : wxFrame {
                  #else
                  _(L"Toggle &Scaled Presentation View\tF12"));
                  #endif
-        viewmenu->AppendCheckItem(A_ZEN_MODE, _(L"Zen Mode"));
-        viewmenu->Check(A_ZEN_MODE, sys->zenmode);
+        viewmenu->AppendCheckItem(A_SHOWTBAR, _(L"Show Toolbar"));
+        viewmenu->Check(A_SHOWTBAR, sys->showtoolbar);
+        viewmenu->AppendCheckItem(A_SHOWSBAR, _(L"Show Statusbar"));
+        viewmenu->Check(A_SHOWSBAR, sys->showstatusbar);
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
         MyAppend(viewmenu, A_SHOWSTATS, _(L"Show statistics\tCTRL+d"));
@@ -523,10 +525,6 @@ struct MyFrame : wxFrame {
         MyAppend(optmenu, A_DEFCURCOL, _(L"Pick Cu&rsor Color..."));
         #endif
         optmenu->AppendSeparator();
-        optmenu->AppendCheckItem(A_SHOWSBAR, _(L"Show Statusbar"));
-        optmenu->Check(A_SHOWSBAR, showsbar);
-        optmenu->AppendCheckItem(A_SHOWTBAR, _(L"Show Toolbar"));
-        optmenu->Check(A_SHOWTBAR, showtbar);
         optmenu->AppendCheckItem(A_LEFTTABS, _(L"File Tabs on the bottom"));
         optmenu->Check(A_LEFTTABS, lefttabs);
         optmenu->AppendCheckItem(A_TOTRAY, _(L"Minimize to tray"));
@@ -630,81 +628,77 @@ struct MyFrame : wxFrame {
 
         wxColour toolbgcol(0xD8C7BC);
 
-        if (showtbar || mergetbar) {
-            tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
-            tb->SetOwnBackgroundColour(toolbgcol);
+        tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
+        tb->SetOwnBackgroundColour(toolbgcol);
 
-            #ifdef __WXMAC__
-            #define SEPARATOR
-            #else
-            #define SEPARATOR tb->AddSeparator()
-            #endif
+        #ifdef __WXMAC__
+        #define SEPARATOR
+        #else
+        #define SEPARATOR tb->AddSeparator()
+        #endif
 
-            wxString iconpath = GetDataPath(L"images/material/toolbar/");
+        wxString iconpath = GetDataPath(L"images/material/toolbar/");
 
-            auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
-                tb->AddTool(action, name, wxBitmapBundle::FromSVGFile(file, wxSize(24, 24)), name,
-                            wxITEM_NORMAL);
-            };
+        auto AddTBIcon = [&](const wxChar *name, int action, wxString file) {
+            tb->AddTool(action, name, wxBitmapBundle::FromSVGFile(file, wxSize(24, 24)), name,
+                        wxITEM_NORMAL);
+        };
 
-            AddTBIcon(_(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
-            AddTBIcon(_(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
-            AddTBIcon(_(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
-            AddTBIcon(_(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
-            AddTBIcon(_(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
-            AddTBIcon(_(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
-            AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
-            AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
-            SEPARATOR;
-            AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.svg");
-            tb->AddSeparator();
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
-            tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
-                                                   FromDIP(wxSize(80, 22)),
-                                                   wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-            AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.svg");
-            AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.svg");
-            SEPARATOR;
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
-            tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
-                                                     FromDIP(wxSize(80, 22)),
-                                                     wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-            AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.svg");
-            AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.svg");
-            AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.svg");
-            tb->AddSeparator();
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
-            celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
-            tb->AddControl(celldd);
-            SEPARATOR;
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
-            textdd = new ColorDropdown(tb, A_TEXTCOLOR, 2);
-            tb->AddControl(textdd);
-            SEPARATOR;
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
-            borddd = new ColorDropdown(tb, A_BORDCOLOR, 7);
-            tb->AddControl(borddd);
-            tb->AddSeparator();
-            tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
-            idd = new ImageDropdown(tb, imagepath);
-            tb->AddControl(idd);
-            tb->Realize();
-            tb->Show(!sys->zenmode);
-        }
+        AddTBIcon(_(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
+        AddTBIcon(_(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
+        AddTBIcon(_(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
+        AddTBIcon(_(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
+        AddTBIcon(_(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
+        AddTBIcon(_(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
+        AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
+        AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.svg");
+        tb->AddSeparator();
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
+        tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
+                                               FromDIP(wxSize(80, 22)),
+                                               wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath + L"cancel.svg");
+        AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath + L"search.svg");
+        SEPARATOR;
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
+        tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
+                                                 FromDIP(wxSize(80, 22)),
+                                                 wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath + L"cancel.svg");
+        AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath + L"replace.svg");
+        AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath + L"replaceall.svg");
+        tb->AddSeparator();
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
+        celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
+        tb->AddControl(celldd);
+        SEPARATOR;
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
+        textdd = new ColorDropdown(tb, A_TEXTCOLOR, 2);
+        tb->AddControl(textdd);
+        SEPARATOR;
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
+        borddd = new ColorDropdown(tb, A_BORDCOLOR, 7);
+        tb->AddControl(borddd);
+        tb->AddSeparator();
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
+        idd = new ImageDropdown(tb, imagepath);
+        tb->AddControl(idd);
+        tb->Realize();
+        tb->Show(sys->showtoolbar);
 
-        if (showsbar) {
-            wxStatusBar *sb = CreateStatusBar(4);
-            sb->SetOwnBackgroundColour(toolbgcol);
-            SetStatusBarPane(0);
-            SetDPIAwareStatusWidths();
-            sb->Show(!sys->zenmode);
-        }
+        wxStatusBar *sb = CreateStatusBar(4);
+        sb->SetOwnBackgroundColour(toolbgcol);
+        SetStatusBarPane(0);
+        SetDPIAwareStatusWidths();
+        sb->Show(sys->showstatusbar);
 
         nb = new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT | wxAUI_NB_SCROLL_BUTTONS |
@@ -768,7 +762,8 @@ struct MyFrame : wxFrame {
         #ifdef SIMPLERENDER
         sys->cfg->Write(L"cursorcolor", sys->cursorcolor);
         #endif
-        sys->cfg->Write(L"zenmode", sys->zenmode);
+        sys->cfg->Write(L"showtoolbar", sys->showtoolbar);
+        sys->cfg->Write(L"showstatusbar", sys->showstatusbar);
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {
@@ -934,8 +929,26 @@ struct MyFrame : wxFrame {
             case A_AUP: sw->CursorScroll(0, -g_scrollratecursor); break;
             case A_ADOWN: sw->CursorScroll(0, g_scrollratecursor); break;
 
-            case A_SHOWSBAR: Check(L"showsbar"); break;
-            case A_SHOWTBAR: Check(L"showtbar"); break;
+            case A_SHOWSBAR:
+                if (!IsFullScreen()) {
+                    sys->showstatusbar = !sys->showstatusbar;
+                    wxStatusBar *wsb = this->GetStatusBar();
+                    if (wsb != nullptr) wsb->Show(sys->showstatusbar);
+                    this->SendSizeEvent();
+                    this->Refresh();
+                    if (wsb != nullptr) wsb->Refresh();
+                }
+                break;
+            case A_SHOWTBAR:
+                if (!IsFullScreen()) {
+                    sys->showtoolbar = !sys->showtoolbar;
+                    wxToolBar *wtb = this->GetToolBar();
+                    if (wtb != nullptr) wtb->Show(sys->showtoolbar);
+                    this->SendSizeEvent();
+                    this->Refresh();
+                    if (wtb != nullptr) wtb->Refresh();
+                }
+                break;
             case A_LEFTTABS: Check(L"lefttabs"); break;
             case A_SINGLETRAY: Check(L"singletray"); break;
             case A_MAKEBAKS: sys->cfg->Write(L"makebaks", sys->makebaks = ce.IsChecked()); break;
@@ -962,19 +975,6 @@ struct MyFrame : wxFrame {
             case A_FULLSCREEN:
                 ShowFullScreen(!IsFullScreen());
                 if (IsFullScreen()) sw->Status(_(L"Press F11 to exit fullscreen mode."));
-                break;
-            case A_ZEN_MODE:
-                if (!IsFullScreen()) {
-                    wxToolBar *wtb = this->GetToolBar();
-                    wxStatusBar *wsb = this->GetStatusBar();
-                    if (wtb != nullptr) wtb->Show(sys->zenmode);
-                    if (wsb != nullptr) wsb->Show(sys->zenmode);
-                    this->SendSizeEvent();
-                    this->Refresh();
-                    if (wtb != nullptr) wtb->Refresh();
-                    if (wsb != nullptr) wsb->Refresh();
-                    sys->zenmode = !sys->zenmode;
-                }
                 break;
             case A_SEARCHF:
                 if (filter) {

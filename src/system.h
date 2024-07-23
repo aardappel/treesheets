@@ -91,7 +91,8 @@ struct System {
     bool casesensitivesearch {true};
     bool darkennonmatchingcells {false};
     bool fastrender {true};
-    bool zenmode {false};
+    bool showtoolbar {true};
+    bool showstatusbar {true};
     int sortcolumn;
     int sortxs;
     int sortdescending;
@@ -141,7 +142,8 @@ struct System {
         #ifdef SIMPLERENDER
         cfg->Read(L"cursorcolor", &cursorcolor, cursorcolor);
         #endif
-        cfg->Read(L"zenmode", &zenmode, zenmode);
+        cfg->Read(L"showtoolbar", &showtoolbar, showtoolbar);
+        cfg->Read(L"showstatusbar", &showstatusbar, showstatusbar);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
