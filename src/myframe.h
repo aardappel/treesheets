@@ -933,20 +933,20 @@ struct MyFrame : wxFrame {
                 if (!IsFullScreen()) {
                     sys->showstatusbar = !sys->showstatusbar;
                     wxStatusBar *wsb = this->GetStatusBar();
-                    if (wsb != nullptr) wsb->Show(sys->showstatusbar);
+                    wsb->Show(sys->showstatusbar);
                     this->SendSizeEvent();
                     this->Refresh();
-                    if (wsb != nullptr) wsb->Refresh();
+                    wsb->Refresh();
                 }
                 break;
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->showtoolbar = !sys->showtoolbar;
                     wxToolBar *wtb = this->GetToolBar();
-                    if (wtb != nullptr) wtb->Show(sys->showtoolbar);
+                    wtb->Show(sys->showtoolbar);
                     this->SendSizeEvent();
                     this->Refresh();
-                    if (wtb != nullptr) wtb->Refresh();
+                    wtb->Refresh();
                 }
                 break;
             case A_LEFTTABS: Check(L"lefttabs"); break;
