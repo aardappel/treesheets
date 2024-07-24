@@ -497,10 +497,6 @@ struct MyFrame : wxFrame {
                  #else
                  _(L"Toggle &Scaled Presentation View\tF12"));
                  #endif
-        viewmenu->AppendCheckItem(A_SHOWTBAR, _(L"Show Toolbar"));
-        viewmenu->Check(A_SHOWTBAR, sys->showtoolbar);
-        viewmenu->AppendCheckItem(A_SHOWSBAR, _(L"Show Statusbar"));
-        viewmenu->Check(A_SHOWSBAR, sys->showstatusbar);
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
         MyAppend(viewmenu, A_SHOWSTATS, _(L"Show statistics\tCTRL+d"));
@@ -525,6 +521,10 @@ struct MyFrame : wxFrame {
         MyAppend(optmenu, A_DEFCURCOL, _(L"Pick Cu&rsor Color..."));
         #endif
         optmenu->AppendSeparator();
+        optmenu->AppendCheckItem(A_SHOWTBAR, _(L"Show Toolbar"));
+        optmenu->Check(A_SHOWTBAR, sys->showtoolbar);
+        optmenu->AppendCheckItem(A_SHOWSBAR, _(L"Show Statusbar"));
+        optmenu->Check(A_SHOWSBAR, sys->showstatusbar);
         optmenu->AppendCheckItem(A_LEFTTABS, _(L"File Tabs on the bottom"));
         optmenu->Check(A_LEFTTABS, lefttabs);
         optmenu->AppendCheckItem(A_TOTRAY, _(L"Minimize to tray"));
