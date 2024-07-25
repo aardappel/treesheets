@@ -1090,7 +1090,7 @@ struct MyFrame : wxFrame {
     }
 
     void SetDPIAwareStatusWidths() {
-        int swidths[] = {-1, FromDIP(240), FromDIP(120), FromDIP(100)};
+        int swidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100)};
         SetStatusWidths(4, swidths);
     }
 
