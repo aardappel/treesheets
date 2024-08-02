@@ -1,0 +1,1595 @@
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# lex <quarus@ya.ru>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: TreeSheets-ru_RU-0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-08 18:08-0300\n"
+"PO-Revision-Date: 2024-07-31 13:01+0300\n"
+"Last-Translator: Устинов Александр <quarus@ya.ru>\n"
+"Language-Team: Russian <gnu@d07.ru>\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.4.4\n"
+
+# Сообщения
+#, c-format
+msgid ""
+"%s\n"
+"has been modified on disk by another program / computer:\n"
+"Would you like to discard your changes and re-load from disk?"
+msgstr ""
+"%s\n"
+"был изменён на диске другой программой / компьютером:\n"
+"Хотите отменить изменения и перезагрузить данные с диска?"
+
+msgid "&About..."
+msgstr "&О программе..."
+
+msgid "&Add Cell Text as Tag"
+msgstr "Доб&авить Текст Ячейки в качестве Тега"
+
+msgid "&Add Image"
+msgstr "Доб&авить изображение"
+
+msgid "&Browsing..."
+msgstr "&Просмотр..."
+
+msgid "&Clear Views"
+msgstr "О&чистить Виды"
+
+msgid "&Close\tCTRL+w"
+msgstr "Закрыть\tCTRL+w"
+
+msgid "&Comma delimited text (CSV)..."
+msgstr "CSV-текст (разделитель - &запятая)..."
+
+msgid "&Copy\tCTRL+c"
+msgstr "Копировать\tCTRL+c"
+
+msgid "&Copy as Bitmap"
+msgstr "&Копировать как Растровое Изображение"
+
+msgid "&Data\tCTRL+ALT+d"
+msgstr "&Данные\tCTRL+ALT+d"
+
+msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
+msgstr "У&меньшить...\tSHIFT+PGDN"
+
+msgid "&Delete After\tDEL"
+msgstr "&Удалить После\tDEL"
+
+msgid "&Edit"
+msgstr "&Редактировать"
+
+msgid "&Exit\tCTRL+q"
+msgstr "&Выход\tCTRL+q"
+
+msgid "&File"
+msgstr "&Файл"
+
+msgid "&Flatten"
+msgstr "С&гладить (2D)"
+
+msgid "&Go To Next Search Result\tF3"
+msgstr "К &Cледующему вхождению поиска\tF3"
+
+msgid "&Grid Reorganization..."
+msgstr "Ре&организация Сетки..."
+
+msgid "&HTML (Tables+Styling)..."
+msgstr "HTML (Таблицы&+Стили)..."
+
+msgid "&Help"
+msgstr "П&омощь"
+
+msgid "&Hierarchify"
+msgstr "&Иерархизировать"
+
+msgid "&Horizontal View\tCTRL+ALT+."
+msgstr "&Горизонтальный Вид\tCTRL+ALT+."
+
+msgid "&Image..."
+msgstr "&Изображение..."
+
+msgid "&Images..."
+msgstr "&Изображения..."
+
+msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
+msgstr "У&величить Размер Текста (SHIFT+mousewheel)\tSHIFT+PGUP"
+
+msgid "&Insert New Grid\tCTRL+g"
+msgstr "Вставить Новую Сетку\tCTRL+g"
+
+msgid "&Insert New Grid\tINS"
+msgstr "Вставить Новую Сетку\tINS"
+
+msgid "&Layout && Render Style..."
+msgstr "&Макет && Стиль Отображения..."
+
+msgid "&Mark as"
+msgstr "От&метить как"
+
+msgid "&New\tCTRL+n"
+msgstr "Новый\tCTRL+n"
+
+msgid "&Open...\tCTRL+o"
+msgstr "Открыть...\tCTRL+o"
+
+msgid "&Operation\tCTRL+ALT+o"
+msgstr "&Операция\tCTRL+ALT+o"
+
+msgid "&Options"
+msgstr "Пара&метры"
+
+msgid "&Paste\tCTRL+v"
+msgstr "Вставить\tCTRL+v"
+
+# Распечатать
+# Печать
+msgid "&Print...\tCTRL+p"
+msgstr "Печать...\tCTRL+p"
+
+msgid "&Program"
+msgstr "Про&грамма"
+
+msgid "&Recent files"
+msgstr "&Недавние файлы"
+
+msgid "&Redo\tCTRL+y"
+msgstr "Вернуть\tCTRL+y"
+
+msgid "&Remove Cell Text from Tags"
+msgstr "У&далить Текст Ячейки из Тегов"
+
+msgid "&Remove Image(s)"
+msgstr "У&далить изображение(я)"
+
+msgid "&Replace\tCTRL+h"
+msgstr "&Заменить\tCTRL+h"
+
+msgid "&Reset Scale (display only)"
+msgstr "Сб&росить масштаб (отображение)"
+
+msgid "&Reset text sizes\tCTRL+SHIFT+s"
+msgstr "Сбросить &Размеры Текста\tCTRL+SHIFT+s"
+
+msgid "&Reset text styles\tCTRL+SHIFT+r"
+msgstr "Сбросить &Стили Текста\tCTRL+SHIFT+r"
+
+msgid "&Roundness of grid borders..."
+msgstr "&Округлость Границ сетки..."
+
+msgid "&Run\tCTRL+ALT+F5"
+msgstr "За&Пуск\tCTRL+ALT+F5"
+
+msgid "&Save\tCTRL+s"
+msgstr "Сохранить\tCTRL+s"
+
+msgid "&Scale Image (display only)"
+msgstr "... (только &Отображение)"
+
+msgid "&Scale Image (re-sample pixels, by %)"
+msgstr "&Масштабировать (пересборка пикселей, в %)"
+
+msgid "&Scale Image (re-sample pixels, by width)"
+msgstr "... (пересборка пикселей по &Ширине)"
+
+msgid "&Search"
+msgstr "&Поиск"
+
+msgid "&Search\tCTRL+f"
+msgstr "&Поиск\tCTRL+f"
+
+msgid "&Selection..."
+msgstr "&Выделение..."
+
+msgid "&Set Cell Text to tag (use CTRL+RMB)"
+msgstr "В&ставить Тег в Ячейку (CTRL+RMB - меню тегов)"
+
+msgid "&Set Custom Color From Cell BG"
+msgstr "Установить Цвет из Фона &Ячейки"
+
+msgid "&Shrink text of all sub-grids\tCTRL+SHIFT+m"
+msgstr "С&жать Текст всех подсеток\tCTRL+SHIFT+m"
+
+msgid "&Transpose\tCTRL+SHIFT+t"
+msgstr "Транспонировать\tCTRL+SHIFT+t"
+
+msgid "&Undo\tCTRL+z"
+msgstr "Отменить\tCTRL+z"
+
+msgid "&Vertical View\tCTRL+ALT+,"
+msgstr "&Вертикальный Вид\tCTRL+ALT+,"
+
+msgid "&View"
+msgstr "&Вид"
+
+msgid "&Wrap in new parent\tF9"
+msgstr "Обернуть в новый родительский элемент\tF9"
+
+msgid "&XML..."
+msgstr "XML..."
+
+# Сообщения
+msgid "1:1 scale restored."
+msgstr "Масштаб 1:1 восстановлен."
+
+msgid "<unnamed>"
+msgstr "<безымянный>"
+
+# Сообщения
+msgid "A temporary autosave file exists, would you like to load it instead?"
+msgstr "Существует временный файл автосохранения. Хотите загрузить его?"
+
+msgid "Add Image"
+msgstr "Добавить изображение"
+
+msgid "Adds a grid to the selected cell"
+msgstr "Добавляет сетку в выбранную ячейку"
+
+# Сообщения
+msgid "Adds an image to the selected cell"
+msgstr "Добавляет изображение в выбранную ячейку"
+
+msgid "Apply last border color\tSHIFT+ALT+b"
+msgstr "... последний Цвет &Границы\tSHIFT+ALT+b"
+
+msgid "Apply last cell color\tSHIFT+ALT+c"
+msgstr "Применить Цвет последней &Ячейки\tSHIFT+ALT+c"
+
+msgid "Apply last text color\tSHIFT+ALT+t"
+msgstr "... последний Цвет &Текста\tSHIFT+ALT+t"
+
+# Сообщения
+msgid "At least one file could not be opened."
+msgstr "Как минимум один файл открыть не удалось."
+
+msgid "Auto reload documents"
+msgstr "Автоматическая перезагрузка документов"
+
+msgid "Automatically export a .html on every save"
+msgstr "Автоматически экспортировать в .html при каждом сохранении"
+
+# Сообщения
+msgid "Autosave load"
+msgstr "Загрузка автосохранения"
+
+msgid "Autosave to .tmp"
+msgstr "Автосохранение в .tmp"
+
+# Сообщения
+msgid "Bitmap copied to clipboard"
+msgstr "Растровое изображение скопировано в буфер обмена"
+
+# Интерфейс
+msgid "Border "
+msgstr "Граница "
+
+msgid "Border &0\tCTRL+SHIFT+9"
+msgstr "Граница &0\tCTRL+SHIFT+9"
+
+msgid "Border &1\tCTRL+SHIFT+1"
+msgstr "Граница &1\tCTRL+SHIFT+1"
+
+msgid "Border &2\tCTRL+SHIFT+2"
+msgstr "Граница &2\tCTRL+SHIFT+2"
+
+msgid "Border &3\tCTRL+SHIFT+3"
+msgstr "Граница &3\tCTRL+SHIFT+3"
+
+msgid "Border &4\tCTRL+SHIFT+4"
+msgstr "Граница &4\tCTRL+SHIFT+4"
+
+msgid "Border &5\tCTRL+SHIFT+5"
+msgstr "Граница &5\tCTRL+SHIFT+5"
+
+msgid "Bubble Style Rendering\tALT+8"
+msgstr "... в стиле &Пузыря\tALT+8"
+
+# Сообщения
+msgid "Can only move this cell from a Nx1 or 1xN grid."
+msgstr "Переместить эту ячейку можно только из сетки Nx1 или 1xN."
+
+# Сообщения
+msgid "Can only move this cell into a Nx1 or 1xN grid."
+msgstr "Переместить эту ячейку можно только в сетку Nx1 или 1xN."
+
+# Сообщения
+msgid ""
+"Can't sort: make a 1xN selection to indicate what column to sort on, and "
+"what rows to affect"
+msgstr ""
+"Невозможно отсортировать: сделайте выборку 1xN, чтобы указать, по какому "
+"столбцу сортировать и какие строки"
+
+# Сообщения
+msgid "Cancel"
+msgstr "Отмена Операции"
+
+msgid "Cancel text edits\tESC"
+msgstr "Отменить редактирование текста\tESC"
+
+# Сообщения
+msgid "Cannot decompress file."
+msgstr "Невозможно распаковать файл."
+
+# Сообщения
+msgid "Cannot drag & drop more than 1 file."
+msgstr "Невозможно перетащить более 1 файла."
+
+# Сообщения
+msgid ""
+"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
+"or use Flatten)."
+msgstr ""
+"Невозможно экспортировать сетку, которая не является плоской. Увеличьте "
+"масштаб просмотра до нужной сетки и/или используйте Сглаживание (2D)."
+
+# Сообщения
+msgid "Cannot move this cell up in the hierarchy."
+msgstr "Невозможно переместить эту ячейку вверх по иерархии."
+
+# Сообщения
+msgid "Cannot open file."
+msgstr "Не удается открыть файл."
+
+msgid "Case-sensitive search"
+msgstr "Поиск с учетом &Регистра"
+
+# Интерфейс
+msgid "Cell "
+msgstr "Ячейка "
+
+msgid "Change a key binding..."
+msgstr "Изменить привязку &Клавиш..."
+
+# Сообщения
+msgid ""
+"Change the image size if it is too big or too small, by changing the size "
+"shown on screen. Applies to all uses of this image."
+msgstr ""
+"Измените размер изображения на экране, если оно слишком большое/маленькое. "
+"Относится ко всем вариантам использования этого изображения."
+
+# Сообщения
+msgid ""
+"Change the image size if it is too big, by reducing the amount of pixels"
+msgstr ""
+"Измените размер изображения, если оно слишком большое - уменьшив количество "
+"пикселей"
+
+# Сообщения
+msgid ""
+"Change the scale to match DPI of the current display. Applies to all uses of "
+"this image."
+msgstr ""
+"Измените масштаб в соответствие DPI дисплея. Применяется ко всем вариантам "
+"использования этого изображения."
+
+msgid "Changes have been made, are you sure you wish to continue?"
+msgstr "Были внесены Изменения. Хотите продолжить?"
+
+# Сообщения
+msgid "Choose CSV file to write"
+msgstr "Выберите CSV-файл для записи"
+
+# Сообщения
+msgid "Choose HTML file to write"
+msgstr "Выберите HTML-файл для записи"
+
+# Сообщения
+msgid "Choose PNG file to write"
+msgstr "Выберите PNG-файл для записи"
+
+# Сообщения
+msgid "Choose Text file to write"
+msgstr "Выберите TXT-файл для записи"
+
+# Сообщения
+msgid "Choose TreeSheets file to save:"
+msgstr "Выберите файл TreeSheets для сохранения:"
+
+# Сообщения
+msgid "Choose XML file to write"
+msgstr "Выберите XML-файл для записи"
+
+# Сообщения
+msgid "Choose image file to save:"
+msgstr "Выберите файл изображения для сохранения:"
+
+# Сообщения
+msgid "Clear replace"
+msgstr "Очистить Замену"
+
+# Сообщения
+msgid "Clear search"
+msgstr "Очистить Поиск"
+
+msgid "Collapse Ce&lls\tCTRL+l"
+msgstr "Слияние Ячеек\tCTRL+l"
+
+# Сообщения
+msgid "Column width decreased."
+msgstr "Ширина столбца уменьшена."
+
+# Сообщения
+msgid "Column width increased."
+msgstr "Ширина столбца увеличена."
+
+msgid "Comma delimited text (CSV)..."
+msgstr "CSV-текст (разделитель - &запятая)..."
+
+# Сообщения
+msgid ""
+"Convert an NxN grid with repeating elements per column into an 1xN grid with "
+"hierarchy, useful to convert data from spreadsheets"
+msgstr ""
+"Преобразует сетку NxN с повторяющимися элементами в каждом столбце в сетку "
+"1xN с иерархией. Полезно для преобразования данных из электронных таблиц"
+
+msgid "Copy (CTRL+c)"
+msgstr "Копировать (CTRL+c)"
+
+msgid "Copy As Continuous Text"
+msgstr "&Копировать как Непрерывный Текст"
+
+msgid "Copy with &Images\tCTRL+ALT+c"
+msgstr "Копировать с Изображениями\tCTRL+ALT+c"
+
+# Сообщения
+msgid "Corrupt PNG header."
+msgstr "Поврежденный заголовок PNG."
+
+# Сообщения
+msgid "Corrupt block header."
+msgstr "Поврежденный заголовок блока."
+
+msgid "Create .bak files"
+msgstr "Создавать .bak файлы"
+
+msgid "Creates a new level of hierarchy around the current selection"
+msgstr "Создает новый уровень иерархии вокруг текущего выделения"
+
+msgid "Cu&t\tCTRL+x"
+msgstr "Вырезать\tCTRL+x"
+
+msgid "Cursor Left\tLEFT"
+msgstr "На СИМВОЛ вЛево\tLEFT"
+
+msgid "Cursor Right\tRIGHT"
+msgstr "... вПраво\tRIGHT"
+
+# Сообщения
+msgid "Date range filter"
+msgstr "Фильтр по диапазону дат"
+
+msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
+msgstr "У&меньшить...\tALT+PGDN"
+
+msgid "Decrease column width (no sub grids)\tCTRL+ALT+PGDN"
+msgstr "У&меньшить...\tCTRL+ALT+PGDN"
+
+msgid "Delete Before\tBACK"
+msgstr "Удалить До\tBACK"
+
+msgid "Delete Word After\tCTRL+DEL"
+msgstr "&Удалить Слово После\tCTRL+DEL"
+
+msgid "Delete Word Before\tCTRL+BACK"
+msgstr "Удалить Слово До\tCTRL+BACK"
+
+msgid ""
+"Deletes the column of cells after the selected grid line, or the row below"
+msgstr "Удаляет Столбец ячеек После выбранной линии сетки или Строку Ниже"
+
+msgid ""
+"Deletes the column of cells before the selected grid line, or the row above"
+msgstr "Удаляет Столбец ячеек Перед выбранной линией сетки или Строку Выше"
+
+msgid "Deletes the entire word after the cursor"
+msgstr "Удаляет все слово после курсора"
+
+msgid "Deletes the entire word before the cursor"
+msgstr "Удаляет все слово перед курсором"
+
+# Сообщения
+msgid "Discard Changes"
+msgstr "Закрыть Без Изменений"
+
+# Сообщения
+#, c-format
+msgid "Edited %s %s"
+msgstr "Отредактировано %s %s"
+
+# Сообщения
+msgid "End date and time"
+msgstr "Дата и Время завершения"
+
+msgid "End of line of text\tEND"
+msgstr "В Конец...\tEND"
+
+msgid "End of text\tCTRL+END"
+msgstr "В Конец...\tCTRL+END"
+
+msgid "Enter/exit text edit mode\tENTER"
+msgstr "Вх/Вых из реж. Редактирования\tENTER"
+
+msgid "Enter/exit text edit mode\tF2"
+msgstr "Вх/Вых из реж. Редактирования\tF2"
+
+msgid "Enter/exit text edit to the right\tALT+ENTER"
+msgstr "Вх/Вых из реж. Редактирования сПрава\tALT+ENTER"
+
+# Сообщения
+msgid "Error exporting file!"
+msgstr "Ошибка экспорта файла!"
+
+# Сообщения
+msgid "Error loading core data file (TreeSheets not installed correctly?)"
+msgstr ""
+"Ошибка при загрузке файла данных ядра (TreeSheets установлен неправильно?)"
+
+# Сообщения
+msgid "Error writing PNG file!"
+msgstr "Ошибка записи PNG-файла!"
+
+# Сообщения
+msgid "Error writing TreeSheets file! (try saving under new filename)."
+msgstr ""
+"Ошибка записи файла TreeSheets! (попробуйте сохранить под другим именем)."
+
+# Сообщения
+msgid "Error writing image file! (try saving under new filename)."
+msgstr ""
+"Ошибка записи файла изображения! (попробуйте сохранить под другим именем)."
+
+# Сообщения
+msgid "Error writing to file!"
+msgstr "Ошибка записи в файл!"
+
+# Сообщения
+msgid "Error writing to file."
+msgstr "Ошибка записи в файл."
+
+# Сообщения
+msgid "Evaluation finished."
+msgstr "Оценка завершена."
+
+msgid "Export &view as"
+msgstr "&Экспортировать как"
+
+# Сообщения
+msgid "Export cancelled."
+msgstr "Экспорт Отменён."
+
+# Комметарий п. меню.
+msgid ""
+"Export the current view as CSV. Good for spreadsheets and databases. Only "
+"works on grids with no sub-grids (use the Flatten operation first if need be)"
+msgstr ""
+"Экспорт в CSV. Для электронных таблиц и баз данных. Работает только с "
+"сетками, без подсеток (при необходимости, используйте Сглаживание-2D)"
+
+# Комметарий п. меню.
+msgid "Export the current view as HTML as nested bullet points."
+msgstr "Экспорт в HTML, в виде пунктов списка."
+
+# Комметарий п. меню.
+msgid ""
+"Export the current view as HTML as nested headers, suitable for importing "
+"into Word's outline mode"
+msgstr ""
+"Экспорт в HTML, в виде иерархии заголовков. Подходит для импорта в режим "
+"структуры Word"
+
+# Комметарий п. меню.
+msgid ""
+"Export the current view as HTML using nested tables, that will look somewhat "
+"like the TreeSheet"
+msgstr ""
+"Экспорт в HTML, используя вложенные таблицы, которые будут выглядеть "
+"примерно так же, как treesheet"
+
+# Комметарий п. меню.
+msgid ""
+"Export the current view as XML (which can also be reimported without losing "
+"structure)"
+msgstr ""
+"Экспорт в XML (который можно импортировать обратно в TreeSheets без потери "
+"структуры)"
+
+# Комметарий п. меню.
+msgid ""
+"Export the current view as an image. Useful for faithful renderings of the "
+"TreeSheet, and programs that don't accept any of the above options"
+msgstr ""
+"Экспортировать как изображение (PNG). Когда не принимается ни один из "
+"вышеперечисленных вариантов"
+
+# Комметарий п. меню.
+msgid ""
+"Export the current view as tree structured text, using spaces for each "
+"indentation level. Suitable for importing into mindmanagers and general text "
+"programs"
+msgstr ""
+"Экспорт в TXT, c пробелами для каждого уровня отступа. Для импорта в mind и "
+"текстовые программы"
+
+msgid "Extend Selection Down\tSHIFT+DOWN"
+msgstr "... вНиз\tSHIFT+DOWN"
+
+msgid "Extend Selection Full Columns"
+msgstr "... в полные &Столбцы"
+
+msgid "Extend Selection Full Rows"
+msgstr "... в полные &Строки"
+
+msgid "Extend Selection Left\tSHIFT+LEFT"
+msgstr "Расширить ВЫДЕЛЕНИЕ вЛево\tSHIFT+LEFT"
+
+msgid "Extend Selection Right\tSHIFT+RIGHT"
+msgstr "... вПраво\tSHIFT+RIGHT"
+
+msgid "Extend Selection Up\tSHIFT+UP"
+msgstr "... вВерх\tSHIFT+UP"
+
+msgid "Extend Selection Word Left\tCTRL+SHIFT+LEFT"
+msgstr "... на Слово вЛево\tCTRL+SHIFT+LEFT"
+
+msgid "Extend Selection Word Right\tCTRL+SHIFT+RIGHT"
+msgstr "... на Слово вПраво\tCTRL+SHIFT+RIGHT"
+
+msgid "Extend Selection to End\tSHIFT+END"
+msgstr "... до Конца Клетки\tSHIFT+END"
+
+msgid "Extend Selection to Start\tSHIFT+HOME"
+msgstr "... до Начала Клетки\tSHIFT+HOME"
+
+msgid "Faster line rendering"
+msgstr "Более быстрый рендеринг линий"
+
+msgid "File Tabs on the bottom"
+msgstr "Вкладки Файлов вНизу"
+
+# Сообщения
+msgid "File corrupted!"
+msgstr "Файл поврежден!"
+
+# Сообщения
+msgid "File exported successfully."
+msgstr "Файл успешно экспортирован."
+
+# Сообщения
+msgid ""
+"File has been re-loaded because of modifications of another program / "
+"computer"
+msgstr "Файл был перезагружен из-за изменений другой программой / компьютером"
+
+# Сообщения
+msgid "File load error."
+msgstr "Ошибка загрузки файла."
+
+# Сообщения
+msgid "File modification conflict!"
+msgstr "Конфликт модификации файла!"
+
+# Сообщения
+msgid "File of newer version."
+msgstr "Более новая версия файла."
+
+msgid "Filter"
+msgstr "Фильтр"
+
+msgid "Filter by the same cell color"
+msgstr "Фильтр по Цвету Ячейки"
+
+msgid "Filter..."
+msgstr "Фильтр..."
+
+msgid "Fold All\tCTRL+SHIFT+F10"
+msgstr "Свернуть Всё\tCTRL+SHIFT+F10"
+
+msgid "Folds the grid of the selected cell(s) recursively"
+msgstr ""
+"Рекурсивно (на всю глубину вложенности) Сворачивает подсетки выбранных ячеек"
+
+# Сообщения
+msgid "Found an image type that is not defined in this program."
+msgstr "Найден тип изображения, который не определен в этой программе."
+
+msgid "Go To &Matching Cell (Text)\tF6"
+msgstr "Перейти к ячейке с &Аналогичным Текстом\tF6"
+
+msgid "Go To &Previous Search Result\tSHIFT+F3"
+msgstr "К Пре&дыдущему...\tSHIFT+F3"
+
+msgid "Go To Matching Cell (Image)\tF7"
+msgstr "Перейти к ячейке с &Аналогичным Изображением\tF7"
+
+msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
+msgstr "... в Обратном направлении\tSHIFT+F7"
+
+msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
+msgstr "... в Обратном направлении\tSHIFT+F6"
+
+msgid "Go to Next Search Result"
+msgstr "К Cледующему вхождению поиска"
+
+msgid "Go to next filter match\tCTRL+F3"
+msgstr "Перейти к Следующему Фильтру\tCTRL+F3"
+
+msgid "Grid Style Rendering\tALT+7"
+msgstr "Отображение в стиле &Сетки\tALT+7"
+
+msgid "HTML (&Bullet points)..."
+msgstr "HTML (&Пункты Cписка)..."
+
+msgid "HTML (&Outline)..."
+msgstr "HTML (&Структура)..."
+
+msgid "Hierarchy &Swap\tF8"
+msgstr "&Смена Иерархии\tF8"
+
+# Сообщения
+msgid ""
+"Hold CTRL while pressing right mouse button to quickly set a tag for the "
+"current cell using a popup menu"
+msgstr ""
+"Удерживайте CTRL и одновременно нажмите правую кнопку мыши, чтобы быстро "
+"задать Тег для текущей ячейки из всплывающего меню"
+
+msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
+msgstr "... в стиле &Пузыря\tALT+5"
+
+msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
+msgstr "Горизонтальная компоновка в стиле &Сетки\tALT+4"
+
+msgid "Horizontal Layout with Line Style Rendering\tALT+6"
+msgstr "... в стиле &Линии\tALT+6"
+
+# Сообщения
+msgid "How many pixels wide should a page be? (0 for auto fit)"
+msgstr ""
+"Сколько пикселей в ширину должна иметь страница? (0 для автоматической "
+"подгонки)"
+
+# Интерфейс
+msgid "Image "
+msgstr "Изображ-е "
+
+# Сообщения
+msgid "Image Resize"
+msgstr "Размер изображения изменён"
+
+msgid "Import file from"
+msgstr "&Импортировать файл из"
+
+msgid "Increase column width (ALT+mousewheel)\tALT+PGUP"
+msgstr "У&величить Ширину Столбца (ALT+mousewheel)\tALT+PGUP"
+
+msgid "Increase column width (no sub grids)\tCTRL+ALT+PGUP"
+msgstr "У&величить Ширину Столбца (без подсеток)\tCTRL+ALT+PGUP"
+
+# & - не в том месте!..
+msgid "Indented &Text..."
+msgstr "&Текст с Отступами..."
+
+msgid "Indented text..."
+msgstr "&Текст с Отступами..."
+
+# Сообщения
+msgid "Initialization Error"
+msgstr "Ошибка инициализации"
+
+# Сообщения
+msgid "Internal error: unimplemented operation!"
+msgstr "Внутренняя ошибка: невыполненная операция!"
+
+# Сообщения
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What would you like "
+"to do?"
+msgstr ""
+"Кажется, вы собираетесь сбросить файл TreeSheet. Что бы вы собираетксь "
+"сделать?"
+
+# Сообщения
+msgid "JPEG file is corrupted!"
+msgstr "JPEG-файл поврежден!"
+
+# Сообщения
+msgid "Key binding"
+msgstr "Привязка клавиш"
+
+# Сообщения
+msgid "Keybinding cancelled."
+msgstr "Привязка клавиш отменена."
+
+msgid "Line Style Rendering\tALT+9"
+msgstr "... в стиле &Линии\tALT+9"
+
+msgid "Load interactive &tutorial...\tF1"
+msgstr "Загрузить интерактивный &Учебник...\tF1"
+
+msgid "Load operation reference...\tCTRL+ALT+F1"
+msgstr "Загрузить Справочник Операций...\tCTRL+ALT+F1"
+
+# Сообщения
+#, c-format
+msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
+msgstr "Загружено %s (%d ячеек, %d символов) за %d миллисекунд."
+
+# Сообщения
+msgid ""
+"Make a 1xN selection to indicate which column to sort on, and which rows to "
+"affect"
+msgstr ""
+"Сделайте выборку 1xN, чтобы указать, по какому столбцу производить "
+"сортировку и в каких строках"
+
+# Сообщения
+msgid "Make a hierarchy layout more vertical (default) or more horizontal"
+msgstr ""
+"Сделать иерархическую компоновку более вертикальной (по умолчанию) или более "
+"горизонтальной"
+
+# Сообщения
+msgid "Maximum number of launches reached."
+msgstr "Достигнуто максимальное количество запусков."
+
+msgid "Minimize on close"
+msgstr "Свернуть при закрытии"
+
+msgid "Minimize to tray"
+msgstr "Свернуть в Трей"
+
+# Сообщения
+msgid "More than one cell must be selected."
+msgstr "Необходимо выбрать более одной ячейки."
+
+msgid "Move Cells Down\tCTRL+DOWN"
+msgstr "... вНиз\tCTRL+DOWN"
+
+msgid "Move Cells Left\tCTRL+LEFT"
+msgstr "Переместить Ячейки вЛево\tCTRL+LEFT"
+
+msgid "Move Cells Right\tCTRL+RIGHT"
+msgstr "... вПраво\tCTRL+RIGHT"
+
+msgid "Move Cells Up\tCTRL+UP"
+msgstr "... вВерх\tCTRL+UP"
+
+msgid "Move Selection Down\tDOWN"
+msgstr "... вНиз\tDOWN"
+
+msgid "Move Selection Left\tLEFT"
+msgstr "Переместить Курсор Клетки вЛево\tLEFT"
+
+msgid "Move Selection Right\tRIGHT"
+msgstr "... вПраво\tRIGHT"
+
+msgid "Move Selection Up\tUP"
+msgstr "... вВерх\tUP"
+
+msgid "Move to next cell\tTAB"
+msgstr "Перейти к Следующей Ячейке\tTAB"
+
+msgid "Move to previous cell\tSHIFT+TAB"
+msgstr "... к Предыдущей...\tSHIFT+TAB"
+
+# Сообщения
+msgid "NOTE: key binding will take effect next run of TreeSheets."
+msgstr ""
+"ПРИМЕЧАНИЕ: привязка клавиш вступит в силу при следующем запуске TreeSheets."
+
+msgid "Navigate in between cells with cursor keys"
+msgstr "Перемещаться между ячейками с помощью Клавиш Курсора"
+
+msgid "New (CTRL+n)"
+msgstr "Новый (CTRL+n)"
+
+msgid "New Grid (INS)"
+msgstr "Новая Сетка (INS)"
+
+# Сообщения
+msgid "New Sheet"
+msgstr "Новый лист"
+
+# Сообщения
+msgid "New file cancelled."
+msgstr "Новый файл отменен."
+
+# Сообщения
+msgid "No image in this cell."
+msgstr "В этой ячейке нет изображения."
+
+# Сообщения
+msgid "No matches for filter."
+msgstr "Для фильтра нет совпадений."
+
+# Сообщения
+msgid "No matches for search."
+msgstr "Поиск не дал результатов."
+
+# Сообщения
+msgid "No matching cell found!"
+msgstr "Соответствующая ячейка не найдена!"
+
+# Сообщения
+msgid "No search string."
+msgstr "Строка поиска отсутствует."
+
+# Сообщения
+msgid "No search."
+msgstr "Нет поиска."
+
+# Сообщения
+msgid "No style to paste."
+msgstr "Нет стиля для вставки."
+
+# Сообщения
+msgid "No text in this cell."
+msgstr "Текст в этой ячейке отсутствует."
+
+# Сообщения
+msgid "No text selected."
+msgstr "Нет выделенного текста."
+
+# Сообщения
+msgid "No text to search for."
+msgstr "Отсутствует текст для поиска."
+
+# Сообщения
+msgid "Not a TreeSheets file."
+msgstr "Не является файлом TreeSheets."
+
+msgid "Nothing more to redo."
+msgstr "Больше нечего возвращать."
+
+msgid "Nothing more to undo."
+msgstr "Больше нечего отменить."
+
+msgid ""
+"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
+"normal."
+msgstr ""
+"Теперь просмотр TreeSheet должен поместиться на экране. Нажмите F12, чтобы "
+"вернуться в нормальный режим."
+
+msgid "Open &file\tF4"
+msgstr "Открыть &Файл\tF4"
+
+msgid "Open (CTRL+o)"
+msgstr "Открыть (CTRL+o)"
+
+# Сообщения
+msgid "Open TreeSheets file"
+msgstr "Открыть файл TreeSheets"
+
+msgid "Open border colors\tSHIFT+ALT+F11"
+msgstr "... Цвета &Границы\tSHIFT+ALT+F11"
+
+msgid "Open cell colors\tSHIFT+ALT+F9"
+msgstr "Открыть Цвета &Ячейки\tSHIFT+ALT+F9"
+
+# Сообщения
+msgid "Open file cancelled."
+msgstr "Открытие файла отменено."
+
+msgid "Open link in &browser\tF5"
+msgstr "Открыть ссылку в &Браузере\tF5"
+
+msgid "Open text colors\tSHIFT+ALT+F10"
+msgstr "... Цвета &Текста\tSHIFT+ALT+F10"
+
+# Сообщения
+msgid ""
+"Opens up the text from the selected cell in browser (should start be a valid "
+"URL)"
+msgstr ""
+"Открывает текст из выбранной ячейки в браузере (в начале должен быть "
+"действительный URL)"
+
+# Сообщения
+msgid ""
+"Opens up the text from the selected cell in default application for the file "
+"type"
+msgstr ""
+"Открывает текст из выбранной ячейки в приложении по умолчанию для данного "
+"типа файла"
+
+# Сообщения
+msgid ""
+"PNG decode failed on some images in this document\n"
+"They have been replaced by red squares."
+msgstr ""
+"Не удалось декодировать PNG для некоторых изображений в этом документе.\n"
+"Они были заменены красными квадратами."
+
+# Сообщения
+msgid "PNG decoder failure"
+msgstr "Сбой декодера PNG"
+
+# Сообщения
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr "PNG файл (*.png)|*.png|JPEG файл (*.jpg)|*.jpg|Все Файлы (*.*)|*.*"
+
+msgid "Page Setup..."
+msgstr "Настройка Страницы..."
+
+msgid "Paste (CTRL+v)"
+msgstr "Вставить (CTRL+v)"
+
+msgid "Paste Style Only\tCTRL+SHIFT+v"
+msgstr "Вставить только Стиль\tCTRL+SHIFT+v"
+
+# Сообщения
+msgid "Paste file path"
+msgstr "Вставить путь к файлу"
+
+msgid "Pick Custom &Color..."
+msgstr "Выбрать &Цвет на свой вкус..."
+
+msgid "Pick Default Font..."
+msgstr "Выбрать Шрифт по Умолчанию..."
+
+msgid "Pick Document Background..."
+msgstr "Выбрать Фон &Документа..."
+
+# Сообщения
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr ""
+"Чтобы использовать Замену, включите (Параметры > Показать Панель "
+"Инструментов)."
+
+# Сообщения
+msgid "Please enable (Options -> Show Toolbar) to use search."
+msgstr ""
+"Чтобы использовать Поиск, включите (Параметры > Показать Панель "
+"Инструментов)."
+
+# Сообщения
+msgid "Please enter the new image width:"
+msgstr "Введите новую ширину изображения:"
+
+# Сообщения
+msgid "Please enter the new key binding string"
+msgstr "Введите новую строку привязки клавиш"
+
+# Сообщения
+msgid "Please enter the percentage you want the image scaled by:"
+msgstr "Введите процент, на который вы хотите масштабировать изображение:"
+
+# Меню
+msgid "Please pick a menu item to change the key binding for"
+msgstr "Выберите пункт меню, чтобы изменить привязку клавиш для"
+
+# Сообщения
+msgid "Please select a TreeSheets file to load:"
+msgstr "Пожалуйста, выберите TreeSheets-файл для загрузки:"
+
+# Сообщения
+msgid "Please select an image file:"
+msgstr "Выберите файл изображения:"
+
+# Сообщения
+msgid "Please select file to import:"
+msgstr "Выберите файл для импорта:"
+
+# Сообщения
+msgid "Please select the datetime range."
+msgstr "Выберите диапазон дат."
+
+# Сообщения
+msgid "Press F11 to exit fullscreen mode."
+msgstr "Нажмите F11, чтобы выйти из полноэкранного режима."
+
+msgid "Print Preview"
+msgstr "Просмотр Печати"
+
+# Предварительный Просмотр Печати
+# ПредПросмотр Печати
+# Просмотр Печати
+msgid "Print preview..."
+msgstr "&Просмотр Печати..."
+
+msgid "Radius &0"
+msgstr "Радиус &0"
+
+msgid "Radius &1"
+msgstr "Радиус &1"
+
+msgid "Radius &2"
+msgstr "Радиус &2"
+
+msgid "Radius &3"
+msgstr "Радиус &3 (по умолч.)"
+
+msgid "Radius &4"
+msgstr "Радиус &4"
+
+msgid "Radius &5"
+msgstr "Радиус &5"
+
+msgid "Radius &6"
+msgstr "Радиус &6"
+
+# Сообщения
+msgid ""
+"Reloads when another computer has changed a file (if you have made changes, "
+"asks)"
+msgstr ""
+"Перезагрузить, если другой компьютер изменил файл (спрашивает - внесли ли вы "
+"изменения)."
+
+# Сообщения
+msgid "Remove image(s) from the selected cells"
+msgstr "Удалить изображение(я) из выбранных ячеек"
+
+msgid "Render document centered"
+msgstr "Отобразить документ по Центру"
+
+# Интерфейс
+msgid "Replace "
+msgstr "Замена "
+
+msgid "Replace &All"
+msgstr "Заменить &Всё"
+
+msgid "Replace All"
+msgstr "Заменить Всё"
+
+msgid "Replace in Current &Selection\tCTRL+k"
+msgstr "Заменить в &Текущем Выделении\tCTRL+k"
+
+msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
+msgstr "... и Перейти к Cледующему вх&ождению\tCTRL+j"
+
+# Сообщения
+msgid "Replace in selection"
+msgstr "Заменить в выделенном"
+
+msgid "Reset &colors\tCTRL+SHIFT+c"
+msgstr "... &Цвета\tCTRL+SHIFT+c"
+
+msgid "Reset column widths\tCTRL+SHIFT+w"
+msgstr "Сбросить &Ширину Столбца\tCTRL+SHIFT+w"
+
+msgid "Run"
+msgstr "Запустить"
+
+msgid "Save &As..."
+msgstr "Сохранить &Как..."
+
+msgid "Save (CTRL+s)"
+msgstr "Сохранить (CTRL+s)"
+
+msgid "Save All"
+msgstr "Сохранить Всё"
+
+msgid "Save As"
+msgstr "Сохранить Как"
+
+msgid "Save Image(s) to disk"
+msgstr "Сохранить &Изображение(я) на диск"
+
+# Сообщения
+msgid "Save and Close"
+msgstr "Сохранить и закрыть"
+
+# Сообщения
+msgid "Save cancelled."
+msgstr "Сохранение отменено."
+
+msgid "Save image as JPEG"
+msgstr "&Сохранить в JPEG"
+
+msgid "Save image as PNG (default)"
+msgstr "... в PNG (по &Умолчанию)"
+
+msgid ""
+"Save image(s) to disk. Multiple images will be saved with a counter appended "
+"to each file name."
+msgstr ""
+"Сохранить изображение(я) на диск. При сохранении нескольких изображений к "
+"имени каждого файла будет добавлен счетчик."
+
+# Сообщения
+msgid "Save the image in the TreeSheets file in JPEG format"
+msgstr "Сохраните изображение в файле TreeSheets в формате JPEG"
+
+# Сообщения
+msgid "Save the image in the TreeSheets file in PNG format"
+msgstr "Сохраните изображение в файле TreeSheets в формате PNG"
+
+# Сообщения
+#, c-format
+msgid "Saved %s successfully (in %d milliseconds)."
+msgstr "Сохранение %s прошло успешно (за %d миллисекунд)."
+
+msgid "Script"
+msgstr "Сценарий"
+
+msgid "Scroll Down (mousewheel)\tALT+DOWN"
+msgstr "... вНиз (mousewheel)\tALT+DOWN"
+
+msgid "Scroll Down (mousewheel)\tPGDN"
+msgstr "... вНиз (mousewheel)\tPGDN"
+
+msgid "Scroll Left\tALT+LEFT"
+msgstr "... вЛево\tALT+LEFT"
+
+msgid "Scroll Right\tALT+RIGHT"
+msgstr "... вПраво\tALT+RIGHT"
+
+msgid "Scroll Sheet..."
+msgstr "Прокрутка Листа..."
+
+msgid "Scroll Up (mousewheel)\tALT+UP"
+msgstr "... вВерх (mousewheel)\tALT+UP"
+
+msgid "Scroll Up (mousewheel)\tPGUP"
+msgstr "... вВерх (mousewheel)\tPGUP"
+
+# Интерфейс
+msgid "Search "
+msgstr "Поиск "
+
+msgid "Select &Parent\tESC"
+msgstr "Выбрать &Родителя\tESC"
+
+msgid "Select &all in current grid/cell\tCTRL+a"
+msgstr "Выбрать Всё в текущей Сетке/Ячейке\tCTRL+a"
+
+msgid "Select First &Child\tSHIFT+ENTER"
+msgstr "Выбрать Первого &Потомка\tSHIFT+ENTER"
+
+# Сообщения
+msgid "Selected grid is not a table: cells must not already have sub-grids."
+msgstr ""
+"Выбранная сетка не является таблицей: ячейки не должны иметь подсеток "
+"(вложенных сеток)."
+
+# Show statistics
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr "Выделение содержит %d ячеек с %d символами."
+
+msgid "Semi-Colon delimited text (CSV)..."
+msgstr "CSV-текст (разделитель - точка &с запятой)..."
+
+msgid "Set Grid Border Width..."
+msgstr "Установить Ширину &Границы Сетки..."
+
+# Задать
+# Установить
+msgid "Set Print Scale"
+msgstr "Задать Масштаб Печати"
+
+msgid "Set Print Scale..."
+msgstr "Задать Масштаб Печати..."
+
+#, no-c-format
+msgid "Show 1% less than the last filter"
+msgstr "... на 1% Меньше"
+
+#, no-c-format
+msgid "Show 1% more than the last filter"
+msgstr "Показать на 1% Больше, чем в последнем фильтре"
+
+#, no-c-format
+msgid "Show 10% of last edits"
+msgstr "... 10%"
+
+#, no-c-format
+msgid "Show 20% of last edits"
+msgstr "... 20%"
+
+#, no-c-format
+msgid "Show 5% of last edits"
+msgstr "Показать 5% Последних Правок"
+
+#, no-c-format
+msgid "Show 50% of last edits"
+msgstr "... 50%"
+
+msgid "Show Statusbar"
+msgstr "Показать Строку Состояния"
+
+msgid "Show Toolbar"
+msgstr "Показать Панель Инструментов"
+
+msgid "Show last edits in specific date range"
+msgstr "Показать последние Изменения в Диапазоне Дат"
+
+msgid "Show only cells in current search"
+msgstr "Показывать Ячейки только в Текущем Поиске"
+
+msgid "Show statistics\tCTRL+d"
+msgstr "Показать Статистику\tCTRL+d"
+
+msgid "Single click maximize from tray"
+msgstr "Развернуть одним щелчком мыши из Трея"
+
+# Сообщения
+#, c-format
+msgid "Size %d"
+msgstr "Размер %d"
+
+msgid "Sort &Ascending"
+msgstr "Сортировать по &Возрастанию"
+
+msgid "Sort &Descending"
+msgstr "... по &Убыванию"
+
+# Сообщения
+msgid "Start date and time"
+msgstr "Дата и время начала"
+
+msgid "Start of line of text\tHOME"
+msgstr "К Началу Строки текста\tHOME"
+
+msgid "Start of text\tCTRL+HOME"
+msgstr "К Началу Текста Клетки\tCTRL+HOME"
+
+# Сообщения
+msgid "Swap all cells with this text at this level (or above) with the parent"
+msgstr ""
+"Поменяйте местами все ячейки с этим текстом на данном уровне (или выше) с "
+"родительской ячейкой"
+
+msgid "Swap mousewheel scrolling and zooming"
+msgstr "Поменять Прокрутку и Масштабирование колесом мыши"
+
+msgid "Switch to &next file/tab"
+msgstr "Переход к &Cледующему файлу/вкладке"
+
+msgid "Switch to &next file/tab\tCTRL+TAB"
+msgstr "Переход к &Cледующему файлу/вкладке\tCTRL+TAB"
+
+msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
+msgstr "... к &Предыдущему файлу/вкладке\tCTRL+SHIFT+TAB"
+
+msgid "Tab delimited text..."
+msgstr "Текст (разделитель - та&буляция)..."
+
+msgid "Tag..."
+msgstr "&Тег..."
+
+# Сообщения
+msgid ""
+"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
+"grid, useful for export to spreadsheets"
+msgstr ""
+"Берет иерархию (вложенные сетки 1xN или Nx1) и преобразует ее в плоскую "
+"сетку NxN, полезную для экспорта в электронные таблицы"
+
+# Интерфейс
+msgid "Text "
+msgstr "Текст "
+
+msgid "Text &Editing..."
+msgstr "Текст - &Редактирование..."
+
+msgid "Text Sizing..."
+msgstr "Ра&змер Текста..."
+
+msgid "Text Style..."
+msgstr "&Стиль Текста..."
+
+# Сообщения
+msgid "Text has been replaced."
+msgstr "Текст был заменен."
+
+# Сообщения
+msgid "Text size decreased."
+msgstr "Размер текста уменьшен."
+
+# Сообщения
+msgid "Text size increased."
+msgstr "Размер текста увеличен."
+
+# Сообщения
+msgid "The Free Form Hierarchical Information Organizer"
+msgstr "Иерархический органайзер информации свободной формы"
+
+# Сообщения
+msgid "The browser could not open at least one link."
+msgstr "Браузеру не удалось открыть ни одну ссылку."
+
+# Сообщения
+msgid "There is no content to collapse."
+msgstr "Отсутствует содержимое для слияния."
+
+# Сообщения
+msgid "This operation doesn't work on thin selections."
+msgstr "Эта операция не работает с тонкими выделениями."
+
+# Сообщения
+msgid "This operation requires a cell that contains a grid."
+msgstr "Для этой операции требуется ячейка, содержащая сетку."
+
+# Сообщения
+msgid "This operation requires a selection."
+msgstr "Эта операция требует выбора (выделения)."
+
+# Сообщения
+msgid "This operation works on a single selected cell only."
+msgstr "Эта операция применима только к одной выбранной ячейке."
+
+msgid "Toggle &Fullscreen View\tCTRL+F11"
+msgstr "Переключить Полноэкранный режим\tCTRL+F11"
+
+msgid "Toggle &Fullscreen View\tF11"
+msgstr "Переключить Полноэкранный режим\tF11"
+
+msgid "Toggle &Scaled Presentation View\tCTRL+F12"
+msgstr "... Масштабирование просмотра\tCTRL+F12"
+
+msgid "Toggle &Scaled Presentation View\tF12"
+msgstr "... Масштабирование просмотра\tF12"
+
+msgid "Toggle Fold\tCTRL+F10"
+msgstr "Свер&нуть - Развернуть\tCTRL+F10"
+
+msgid "Toggle Fold\tF10"
+msgstr "Свер&нуть - Развернуть\tF10"
+
+msgid "Toggle Vertical Layout\tALT+0"
+msgstr "Переключить &Макет (Вертик/Горизонт)\tALT+0"
+
+msgid "Toggle Zen Mode"
+msgstr "... Д&зен режим"
+
+msgid "Toggle cell &BOLD\tCTRL+b"
+msgstr "Переключить Ячейку на &ЖИРНЫЙ\tCTRL+b"
+
+msgid "Toggle cell &ITALIC\tCTRL+i"
+msgstr "... на &ИТАЛИК\tCTRL+i"
+
+msgid "Toggle cell &strikethrough\tCTRL+t"
+msgstr "... на &Зачеркивание\tCTRL+t"
+
+msgid "Toggle cell &typewriter\tCTRL+ALT+t"
+msgstr "... на &Машинопись\tCTRL+ALT+t"
+
+msgid "Toggle cell &underlined\tCTRL+u"
+msgstr "... на &Подчеркивание\tCTRL+u"
+
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "Сворачивает - Разворачивает подсетки в выбранных ячейках."
+
+# Сообщения
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "TreeSheets Файлы (*.cts)|*.cts|Все Файлы (*.*)|*.*"
+
+msgid "Turn filter &off"
+msgstr "&Выключить Фильтр"
+
+msgid "Undo (CTRL+z)"
+msgstr "Отменить (CTRL+z)"
+
+msgid "Unfold All\tCTRL+ALT+F10"
+msgstr "Развернуть Всё\tCTRL+ALT+F10"
+
+msgid "Unfolds the grid of the selected cell(s) recursively"
+msgstr ""
+"Рекурсивно (на всю глубину вложенности) Разворачивает подсетки выбранных "
+"ячеек"
+
+# Сообщения
+msgid "Uses"
+msgstr "Используется"
+
+msgid "Variable &Assign\tCTRL+ALT+a"
+msgstr "&Назначить Переменную\tCTRL+ALT+a"
+
+msgid "Variable &Read\tCTRL+ALT+r"
+msgstr "Про&читать Переменную\tCTRL+ALT+r"
+
+msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
+msgstr "... в стиле &Пузыря\tALT+2"
+
+msgid "Vertical Layout with Grid Style Rendering\tALT+1"
+msgstr "Вертикальная компоновка в стиле &Сетки\tALT+1"
+
+msgid "Vertical Layout with Line Style Rendering\tALT+3"
+msgstr "... в стиле &Линии\tALT+3"
+
+msgid "View tutorial &web page..."
+msgstr "Посмотреть &Bеб-страницу Учебника..."
+
+# Сообщения
+msgid "What size grid would you like to start with?"
+msgstr "С какой размерности сетки вы хотели бы начать?"
+
+# Сообщения
+msgid "Width"
+msgstr "Ширина"
+
+# Сообщения
+#, c-format
+msgid "Width %d"
+msgstr "Ширина %d"
+
+msgid "Word Left\tCTRL+LEFT"
+msgstr "На СЛОВО вЛево\tCTRL+LEFT"
+
+msgid "Word Right\tCTRL+RIGHT"
+msgstr "... вПраво\tCTRL+RIGHT"
+
+msgid "XML (attributes too, for OPML etc)..."
+msgstr "XML (в т.ч. &атрибуты - для OPML и т.п.)..."
+
+msgid "XML..."
+msgstr "XML..."
+
+# Сообщения
+msgid "You need to select one cell if you want to search for its text."
+msgstr "Вам необходимо выбрать одну ячейку, если хотите найти текст в ней."
+
+# Сообщения
+msgid "Zlib error while writing file."
+msgstr "Ошибка Zlib при записи файла."
+
+msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
+msgstr "У&величить (CTRL+mousewheel)\tCTRL+PGUP"
+
+msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
+msgstr "У&меньшить (CTRL+mousewheel)\tCTRL+PGDN"
+
+msgid "Zoom In (CTRL+mousewheel)"
+msgstr "Увеличить (CTRL+mousewheel)"
+
+msgid "Zoom Out (CTRL+mousewheel)"
+msgstr "Уменьшить (CTRL+mousewheel)"
+
+# Сообщения
+msgid "Zoomed in."
+msgstr "Увеличено."
+
+# Сообщения
+msgid "Zoomed out."
+msgstr "Уменьшено."
+
+# Сообщения
+msgid "change will take effect next run of TreeSheets"
+msgstr "изменения вступят в силу при следующем запуске TreeSheets"
+
+# Сообщения
+msgid "changes the orientation of a grid"
+msgstr "изменение ориентации сетки"
+
+# Сообщения
+msgid "couldn't import file!"
+msgstr "не удалось импортировать файл!"
+
+# Комметарий п. меню.
+msgid "only sets the colors and style of the copied cell, and keeps the text"
+msgstr "устанавливает только цвета и стиль из скопированной ячейки"
+
+# Сообщения
+msgid "only works in cell text mode"
+msgstr "работает только в текстовом режиме ячейки"
+
+msgid "redo any undo steps, if you haven't made changes since"
+msgstr "вернуть все шаги отмены (если вы не вносили изменения после)"
+
+# Сообщения
+msgid "revert the changes, one step at a time"
+msgstr "отменять изменения, шаг за шагом"
+
+msgid "scale:"
+msgstr "масштаб:"
+
+msgid "size:"
+msgstr "размер:"
