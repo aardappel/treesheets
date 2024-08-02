@@ -911,9 +911,12 @@ struct Document {
                 case WXK_PAGEUP: sw->CursorScroll(0, -g_scrollratecursor); return nullptr;
 #endif
 #ifdef __WXGTK__
-                // should not be needed... on Windows / OS X they arrive as menu event and never
-                // arrive here, on Linux
-                // we have to process these manually?
+                // Due to limitations within GTK, wxGTK does not support specific keycodes 
+                // as accelerator keys for menu items. See wxWidgets documentation for the 
+                // wxMenuItem class in order to obtain more details. This is why we implement 
+                // the missing handling of these accelerator keys in the following section.
+                // Please be aware that the custom implementation has the downside of these 
+                // "accelerator keys" being suppressed in the menu items on wxGTK.
                 case WXK_DELETE: return Action(dc, A_DELETE);
                 case WXK_LEFT:
                     return Action(dc,
