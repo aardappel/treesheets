@@ -113,7 +113,6 @@ enum {
     A_BOLD,
     A_ITALIC,
     A_TT,
-    A_UNDERL,
     A_SEARCH,
     A_CASESENSITIVESEARCH,
     A_CLEARSEARCH,

@@ -289,7 +289,7 @@ struct MyFrame : wxFrame {
             MyAppend(stmenu, A_BOLD, _(L"Toggle cell &BOLD\tCTRL+b"));
             MyAppend(stmenu, A_ITALIC, _(L"Toggle cell &ITALIC\tCTRL+i"));
             MyAppend(stmenu, A_TT, _(L"Toggle cell &typewriter\tCTRL+ALT+t"));
-            MyAppend(stmenu, A_UNDERL, _(L"Toggle cell &underlined\tCTRL+u"));
+            MyAppend(stmenu, wxID_UNDERLINE, _(L"Toggle cell &underlined\tCTRL+u"));
             MyAppend(stmenu, A_STRIKET, _(L"Toggle cell &strikethrough\tCTRL+t"));
             stmenu->AppendSeparator();
             MyAppend(stmenu, A_RESETSTYLE, _(L"&Reset text styles\tCTRL+SHIFT+r"));
