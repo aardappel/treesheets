@@ -1072,7 +1072,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_HELPI: sys->LoadTut(); return nullptr;
+            case wxID_HELP: sys->LoadTut(); return nullptr;
 
             case A_HELP_OP_REF: sys->LoadOpRef(); return nullptr;
 

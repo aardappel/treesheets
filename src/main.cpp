@@ -226,7 +226,6 @@ enum {
     A_IMAGESVA,
     A_SAVE_AS_JPEG,
     A_SAVE_AS_PNG,
-    A_HELPI,
     A_HELP_OP_REF,
     A_FSWATCH,
     A_DEFBGCOL,
