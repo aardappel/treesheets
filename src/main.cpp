@@ -148,7 +148,6 @@ enum {
     A_CUSTCOL,
     A_COLCELL,
     A_SORT,
-    A_SEARCHF,
     A_MAKEBAKS,
     A_TOTRAY,
     A_AUTOSAVE,

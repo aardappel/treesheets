@@ -436,7 +436,7 @@ struct MyFrame : wxFrame {
         }
 
         wxMenu *semenu = new wxMenu();
-        MyAppend(semenu, A_SEARCHF, _(L"&Search\tCTRL+f"));
+        MyAppend(semenu, wxID_FIND, _(L"&Search\tCTRL+f"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
@@ -976,7 +976,7 @@ struct MyFrame : wxFrame {
                 ShowFullScreen(!IsFullScreen());
                 if (IsFullScreen()) sw->Status(_(L"Press F11 to exit fullscreen mode."));
                 break;
-            case A_SEARCHF:
+            case wxID_FIND:
                 if (filter) {
                     filter->SetFocus();
                     filter->SetSelection(0, 1000);
