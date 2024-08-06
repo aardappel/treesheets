@@ -421,7 +421,7 @@ struct Document {
                     wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
-                        auto htmlobj = CopyEntireCells(s, A_COPY);
+                        auto htmlobj = CopyEntireCells(s, wxID_COPY);
                         dragdata.Add(htmlobj);
                     }
                 }
@@ -442,7 +442,7 @@ struct Document {
                 }
                 break;
             }
-            case A_COPY:
+            case wxID_COPY:
             case A_COPYWI:
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
@@ -1445,7 +1445,7 @@ struct Document {
                 return nullptr;
 
             case A_CUT:
-            case A_COPY:
+            case wxID_COPY:
             case A_COPYWI:
             case A_COPYCT:
                 if (selected.Thin()) return NoThin();

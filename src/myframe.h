@@ -370,7 +370,7 @@ struct MyFrame : wxFrame {
 
             editmenu = new wxMenu();
             MyAppend(editmenu, A_CUT, _(L"Cu&t\tCTRL+x"));
-            MyAppend(editmenu, A_COPY, _(L"&Copy\tCTRL+c"));
+            MyAppend(editmenu, wxID_COPY, _(L"&Copy\tCTRL+c"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_COPYWI, _(L"Copy with &Images\tCTRL+ALT+c"));
             MyAppend(editmenu, A_COPYBM, _(L"&Copy as Bitmap"));
@@ -595,7 +595,7 @@ struct MyFrame : wxFrame {
         wxAcceleratorEntry entries[3];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, A_CUT);
         entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, A_PASTE);
-        entries[2].Set(wxACCEL_CTRL, WXK_INSERT, A_COPY);
+        entries[2].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
         wxAcceleratorTable accel(3, entries);
         SetAcceleratorTable(accel);
 
@@ -650,7 +650,7 @@ struct MyFrame : wxFrame {
         AddTBIcon(_(L"Save As"), wxID_SAVEAS, iconpath + L"filesaveas.svg");
         SEPARATOR;
         AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
-        AddTBIcon(_(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
+        AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath + L"editcopy.svg");
         AddTBIcon(_(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
         SEPARATOR;
         AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
