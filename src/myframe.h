@@ -286,7 +286,7 @@ struct MyFrame : wxFrame {
             MyAppend(temenu, A_CANCELEDIT, _(L"Cancel text edits\tESC"));
 
             wxMenu *stmenu = new wxMenu();
-            MyAppend(stmenu, A_BOLD, _(L"Toggle cell &BOLD\tCTRL+b"));
+            MyAppend(stmenu, wxID_BOLD, _(L"Toggle cell &BOLD\tCTRL+b"));
             MyAppend(stmenu, A_ITALIC, _(L"Toggle cell &ITALIC\tCTRL+i"));
             MyAppend(stmenu, A_TT, _(L"Toggle cell &typewriter\tCTRL+ALT+t"));
             MyAppend(stmenu, wxID_UNDERLINE, _(L"Toggle cell &underlined\tCTRL+u"));

@@ -110,7 +110,6 @@ enum {
     A_PRINTSCALE,
     A_NEXT,
     A_PREV,
-    A_BOLD,
     A_ITALIC,
     A_TT,
     A_SEARCH,
