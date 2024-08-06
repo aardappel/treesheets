@@ -205,7 +205,7 @@ struct MyFrame : wxFrame {
         filemenu->AppendSubMenu(expmenu, _(L"Export &view as"));
         filemenu->AppendSubMenu(impmenu, _(L"Import file from"));
         filemenu->AppendSeparator();
-        MyAppend(filemenu, A_EXIT, _(L"&Exit\tCTRL+q"));
+        MyAppend(filemenu, wxID_EXIT, _(L"&Exit\tCTRL+q"));
 
         wxMenu *editmenu;
         loop(twoeditmenus, 2) {
@@ -619,7 +619,7 @@ struct MyFrame : wxFrame {
             // these don't seem to work anymore in the newer wxWidgets, handled in the menu event
             // handler below instead
             wxApp::s_macAboutMenuItemId = A_ABOUT;
-            wxApp::s_macExitMenuItemId = A_EXIT;
+            wxApp::s_macExitMenuItemId = wxID_EXIT;
             wxApp::s_macPreferencesMenuItemId =
                 A_DEFFONT;  // we have no prefs, so for now just select the font
             #endif
@@ -998,9 +998,8 @@ struct MyFrame : wxFrame {
             case wxID_OSX_SHOWALL: Iconize(false); break;
             case wxID_ABOUT: sw->doc->Action(dc, A_ABOUT); break;
             case wxID_PREFERENCES: sw->doc->Action(dc, A_DEFFONT); break;
-            case wxID_EXIT:  // FALL THRU:
             #endif
-            case A_EXIT:
+            case wxID_EXIT:
                 fromclosebox = false;
                 this->Close();
                 break;

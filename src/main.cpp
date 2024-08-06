@@ -120,7 +120,6 @@ enum {
     A_PREVIEW,
     A_PAGESETUP,
     A_PRINTSCALE,
-    A_EXIT,
     A_NEXT,
     A_PREV,
     A_BOLD,
