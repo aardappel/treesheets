@@ -45,7 +45,6 @@ static const uint TS_SELECTION_MASK = 0x80;
 
 enum {
     A_SAVEALL = 500,
-    A_PASTE,
     A_COLLAPSE,
     A_NEWGRID,
     A_UNDO,

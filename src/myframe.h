@@ -376,7 +376,7 @@ struct MyFrame : wxFrame {
             MyAppend(editmenu, A_COPYBM, _(L"&Copy as Bitmap"));
             MyAppend(editmenu, A_COPYCT, _(L"Copy As Continuous Text"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, A_PASTE, _(L"&Paste\tCTRL+v"));
+            MyAppend(editmenu, wxID_PASTE, _(L"&Paste\tCTRL+v"));
             MyAppend(editmenu, A_PASTESTYLE, _(L"Paste Style Only\tCTRL+SHIFT+v"),
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
             MyAppend(editmenu, A_COLLAPSE, _(L"Collapse Ce&lls\tCTRL+l"));
@@ -594,7 +594,7 @@ struct MyFrame : wxFrame {
 
         wxAcceleratorEntry entries[3];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-        entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, A_PASTE);
+        entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
         entries[2].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
         wxAcceleratorTable accel(3, entries);
         SetAcceleratorTable(accel);
@@ -651,7 +651,7 @@ struct MyFrame : wxFrame {
         SEPARATOR;
         AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
         AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath + L"editcopy.svg");
-        AddTBIcon(_(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
+        AddTBIcon(_(L"Paste (CTRL+v)"), wxID_PASTE, iconpath + L"editpaste.svg");
         SEPARATOR;
         AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
         AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.svg");

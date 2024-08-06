@@ -1575,7 +1575,7 @@ struct Document {
                 }
                 return nullptr;
 
-            case A_PASTE:
+            case wxID_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
                     // wxDataObjectComposite does not work properly under Wayland for text atoms
