@@ -199,7 +199,7 @@ struct MyFrame : wxFrame {
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _(L"Page Setup..."));
         MyAppend(filemenu, A_PRINTSCALE, _(L"Set Print Scale..."));
-        MyAppend(filemenu, A_PREVIEW, _(L"Print preview..."));
+        MyAppend(filemenu, wxID_PREVIEW, _(L"Print preview..."));
         MyAppend(filemenu, wxID_PRINT, _(L"&Print...\tCTRL+p"));
         filemenu->AppendSeparator();
         filemenu->AppendSubMenu(expmenu, _(L"Export &view as"));

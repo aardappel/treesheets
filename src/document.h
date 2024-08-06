@@ -1133,7 +1133,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_PREVIEW: {
+            case wxID_PREVIEW: {
                 wxPrintDialogData printDialogData(printData);
                 wxPrintPreview *preview = new wxPrintPreview(
                     new MyPrintout(this), new MyPrintout(this), &printDialogData);
