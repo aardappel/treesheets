@@ -421,7 +421,7 @@ struct Document {
                     wxString s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
-                        auto htmlobj = CopyEntireCells(s, A_COPY);
+                        auto htmlobj = CopyEntireCells(s, wxID_COPY);
                         dragdata.Add(htmlobj);
                     }
                 }
@@ -442,7 +442,7 @@ struct Document {
                 }
                 break;
             }
-            case A_COPY:
+            case wxID_COPY:
             case A_COPYWI:
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
@@ -984,13 +984,13 @@ struct Document {
         ShiftToCenter(dc);
 
         switch (k) {
-            case A_RUN:
+            case wxID_EXECUTE:
                 sys->ev.Eval(rootgrid);
                 rootgrid->ResetChildren();
                 ClearSelectionRefresh();
                 return _(L"Evaluation finished.");
 
-            case A_UNDO:
+            case wxID_UNDO:
                 if (undolist.size()) {
                     Undo(dc, undolist, redolist);
                     return nullptr;
@@ -998,7 +998,7 @@ struct Document {
                     return _(L"Nothing more to undo.");
                 }
 
-            case A_REDO:
+            case wxID_REDO:
                 if (redolist.size()) {
                     Undo(dc, redolist, undolist, true);
                     return nullptr;
@@ -1006,8 +1006,8 @@ struct Document {
                     return _(L"Nothing more to redo.");
                 }
 
-            case A_SAVE: return Save(false);
-            case A_SAVEAS: return Save(true);
+            case wxID_SAVE: return Save(false);
+            case wxID_SAVEAS: return Save(true);
             case A_SAVEALL: sys->SaveAll(); return nullptr;
 
             case A_EXPXML: return Export(L"xml", L"*.xml", _(L"Choose XML file to write"), k);
@@ -1025,7 +1025,7 @@ struct Document {
             case A_IMPTXTS:
             case A_IMPTXTT: return sys->Import(k);
 
-            case A_OPEN: {
+            case wxID_OPEN: {
                 wxString fn = ::wxFileSelector(
                     _(L"Please select a TreeSheets file to load:"), L"", L"", L"cts",
                     _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
@@ -1033,7 +1033,7 @@ struct Document {
                 return sys->Open(fn);
             }
 
-            case A_CLOSE: {
+            case wxID_CLOSE: {
                 if (sys->frame->nb->GetPageCount() <= 1) {
                     sys->frame->fromclosebox = false;
                     sys->frame->Close();
@@ -1049,7 +1049,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_NEW: {
+            case wxID_NEW: {
                 int size =
                     (int)::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
                                                _(L"size:"), _(L"New Sheet"), 10, 1, 25, sys->frame);
@@ -1059,7 +1059,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_ABOUT: {
+            case wxID_ABOUT: {
                 wxAboutDialogInfo info;
                 info.SetName(L"TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));
@@ -1072,7 +1072,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_HELPI: sys->LoadTut(); return nullptr;
+            case wxID_HELP: sys->LoadTut(); return nullptr;
 
             case A_HELP_OP_REF: sys->LoadOpRef(); return nullptr;
 
@@ -1098,7 +1098,7 @@ struct Document {
             case A_INCWIDTHNH: return Wheel(dc, 1, true, false, false, false);
             case A_DECWIDTHNH: return Wheel(dc, -1, true, false, false, false);
 
-            case A_DEFFONT: {
+            case wxID_SELECT_FONT: {
                 wxFontData fdat;
                 fdat.SetInitialFont(wxFont(g_deftextsize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
                                            wxFONTWEIGHT_NORMAL, false, sys->defaultfont));
@@ -1116,7 +1116,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_PRINT: {
+            case wxID_PRINT: {
                 wxPrintDialogData printDialogData(printData);
                 wxPrinter printer(&printDialogData);
                 MyPrintout printout(this);
@@ -1133,7 +1133,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_PREVIEW: {
+            case wxID_PREVIEW: {
                 wxPrintDialogData printDialogData(printData);
                 wxPrintPreview *preview = new wxPrintPreview(
                     new MyPrintout(this), new MyPrintout(this), &printDialogData);
@@ -1444,8 +1444,8 @@ struct Document {
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
-            case A_CUT:
-            case A_COPY:
+            case wxID_CUT:
+            case wxID_COPY:
             case A_COPYWI:
             case A_COPYCT:
                 if (selected.Thin()) return NoThin();
@@ -1453,7 +1453,7 @@ struct Document {
                     if (selected.cursor == selected.cursorend) return _(L"No text selected.");
                 }
                 Copy(k);
-                if (k == A_CUT) {
+                if (k == wxID_CUT) {
                     if (!selected.TextEdit()) {
                         selected.g->cell->AddUndo(this);
                         selected.g->MultiCellDelete(this, selected);
@@ -1497,7 +1497,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_SELALL:
+            case wxID_SELECTALL:
                 selected.SelAll();
                 Refresh();
                 return nullptr;
@@ -1522,11 +1522,11 @@ struct Document {
                 selected.Cursor(this, k - A_SCUP + A_UP, true, true, dc);
                 return nullptr;
 
-            case A_BOLD: selected.g->SetStyle(this, selected, STYLE_BOLD); return nullptr;
-            case A_ITALIC: selected.g->SetStyle(this, selected, STYLE_ITALIC); return nullptr;
+            case wxID_BOLD: selected.g->SetStyle(this, selected, STYLE_BOLD); return nullptr;
+            case wxID_ITALIC: selected.g->SetStyle(this, selected, STYLE_ITALIC); return nullptr;
             case A_TT: selected.g->SetStyle(this, selected, STYLE_FIXED); return nullptr;
-            case A_UNDERL: selected.g->SetStyle(this, selected, STYLE_UNDERLINE); return nullptr;
-            case A_STRIKET: selected.g->SetStyle(this, selected, STYLE_STRIKETHRU); return nullptr;
+            case wxID_UNDERLINE: selected.g->SetStyle(this, selected, STYLE_UNDERLINE); return nullptr;
+            case wxID_STRIKETHROUGH: selected.g->SetStyle(this, selected, STYLE_STRIKETHRU); return nullptr;
 
             case A_MARKDATA:
             case A_MARKVARD:
@@ -1575,7 +1575,7 @@ struct Document {
                 }
                 return nullptr;
 
-            case A_PASTE:
+            case wxID_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
                     // wxDataObjectComposite does not work properly under Wayland for text atoms

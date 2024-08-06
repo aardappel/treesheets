@@ -189,23 +189,23 @@ struct MyFrame : wxFrame {
         filehistory.AddFilesToMenu();
 
         wxMenu *filemenu = new wxMenu();
-        MyAppend(filemenu, A_NEW, _(L"&New\tCTRL+n"));
-        MyAppend(filemenu, A_OPEN, _(L"&Open...\tCTRL+o"));
-        MyAppend(filemenu, A_CLOSE, _(L"&Close\tCTRL+w"));
+        MyAppend(filemenu, wxID_NEW, _(L"&New\tCTRL+n"));
+        MyAppend(filemenu, wxID_OPEN, _(L"&Open...\tCTRL+o"));
+        MyAppend(filemenu, wxID_CLOSE, _(L"&Close\tCTRL+w"));
         filemenu->AppendSubMenu(recentmenu, _(L"&Recent files"));
-        MyAppend(filemenu, A_SAVE, _(L"&Save\tCTRL+s"));
-        MyAppend(filemenu, A_SAVEAS, _(L"Save &As..."));
+        MyAppend(filemenu, wxID_SAVE, _(L"&Save\tCTRL+s"));
+        MyAppend(filemenu, wxID_SAVEAS, _(L"Save &As..."));
         MyAppend(filemenu, A_SAVEALL, _(L"Save All"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _(L"Page Setup..."));
         MyAppend(filemenu, A_PRINTSCALE, _(L"Set Print Scale..."));
-        MyAppend(filemenu, A_PREVIEW, _(L"Print preview..."));
-        MyAppend(filemenu, A_PRINT, _(L"&Print...\tCTRL+p"));
+        MyAppend(filemenu, wxID_PREVIEW, _(L"Print preview..."));
+        MyAppend(filemenu, wxID_PRINT, _(L"&Print...\tCTRL+p"));
         filemenu->AppendSeparator();
         filemenu->AppendSubMenu(expmenu, _(L"Export &view as"));
         filemenu->AppendSubMenu(impmenu, _(L"Import file from"));
         filemenu->AppendSeparator();
-        MyAppend(filemenu, A_EXIT, _(L"&Exit\tCTRL+q"));
+        MyAppend(filemenu, wxID_EXIT, _(L"&Exit\tCTRL+q"));
 
         wxMenu *editmenu;
         loop(twoeditmenus, 2) {
@@ -235,7 +235,7 @@ struct MyFrame : wxFrame {
             MyAppend(selmenu, A_NEXT, _(L"Move to next cell\tTAB"));
             MyAppend(selmenu, A_PREV, _(L"Move to previous cell\tSHIFT+TAB"));
             selmenu->AppendSeparator();
-            MyAppend(selmenu, A_SELALL, _(L"Select &all in current grid/cell\tCTRL+a"));
+            MyAppend(selmenu, wxID_SELECTALL, _(L"Select &all in current grid/cell\tCTRL+a"));
             selmenu->AppendSeparator();
             MyAppend(selmenu, A_LEFT, _(L"Move Selection Left\tLEFT"));
             MyAppend(selmenu, A_RIGHT, _(L"Move Selection Right\tRIGHT"));
@@ -286,11 +286,11 @@ struct MyFrame : wxFrame {
             MyAppend(temenu, A_CANCELEDIT, _(L"Cancel text edits\tESC"));
 
             wxMenu *stmenu = new wxMenu();
-            MyAppend(stmenu, A_BOLD, _(L"Toggle cell &BOLD\tCTRL+b"));
-            MyAppend(stmenu, A_ITALIC, _(L"Toggle cell &ITALIC\tCTRL+i"));
+            MyAppend(stmenu, wxID_BOLD, _(L"Toggle cell &BOLD\tCTRL+b"));
+            MyAppend(stmenu, wxID_ITALIC, _(L"Toggle cell &ITALIC\tCTRL+i"));
             MyAppend(stmenu, A_TT, _(L"Toggle cell &typewriter\tCTRL+ALT+t"));
-            MyAppend(stmenu, A_UNDERL, _(L"Toggle cell &underlined\tCTRL+u"));
-            MyAppend(stmenu, A_STRIKET, _(L"Toggle cell &strikethrough\tCTRL+t"));
+            MyAppend(stmenu, wxID_UNDERLINE, _(L"Toggle cell &underlined\tCTRL+u"));
+            MyAppend(stmenu, wxID_STRIKETHROUGH, _(L"Toggle cell &strikethrough\tCTRL+t"));
             stmenu->AppendSeparator();
             MyAppend(stmenu, A_RESETSTYLE, _(L"&Reset text styles\tCTRL+SHIFT+r"));
             MyAppend(stmenu, A_RESETCOLOR, _(L"Reset &colors\tCTRL+SHIFT+c"));
@@ -369,21 +369,21 @@ struct MyFrame : wxFrame {
                      _(L"Make a hierarchy layout more vertical (default) or more horizontal"));
 
             editmenu = new wxMenu();
-            MyAppend(editmenu, A_CUT, _(L"Cu&t\tCTRL+x"));
-            MyAppend(editmenu, A_COPY, _(L"&Copy\tCTRL+c"));
+            MyAppend(editmenu, wxID_CUT, _(L"Cu&t\tCTRL+x"));
+            MyAppend(editmenu, wxID_COPY, _(L"&Copy\tCTRL+c"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_COPYWI, _(L"Copy with &Images\tCTRL+ALT+c"));
             MyAppend(editmenu, A_COPYBM, _(L"&Copy as Bitmap"));
             MyAppend(editmenu, A_COPYCT, _(L"Copy As Continuous Text"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, A_PASTE, _(L"&Paste\tCTRL+v"));
+            MyAppend(editmenu, wxID_PASTE, _(L"&Paste\tCTRL+v"));
             MyAppend(editmenu, A_PASTESTYLE, _(L"Paste Style Only\tCTRL+SHIFT+v"),
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
             MyAppend(editmenu, A_COLLAPSE, _(L"Collapse Ce&lls\tCTRL+l"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, A_UNDO, _(L"&Undo\tCTRL+z"),
+            MyAppend(editmenu, wxID_UNDO, _(L"&Undo\tCTRL+z"),
                      _(L"revert the changes, one step at a time"));
-            MyAppend(editmenu, A_REDO, _(L"&Redo\tCTRL+y"),
+            MyAppend(editmenu, wxID_REDO, _(L"&Redo\tCTRL+y"),
                      _(L"redo any undo steps, if you haven't made changes since"));
             editmenu->AppendSeparator();
             MyAppend(
@@ -436,12 +436,12 @@ struct MyFrame : wxFrame {
         }
 
         wxMenu *semenu = new wxMenu();
-        MyAppend(semenu, A_SEARCHF, _(L"&Search\tCTRL+f"));
+        MyAppend(semenu, wxID_FIND, _(L"&Search\tCTRL+f"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
         MyAppend(semenu, A_SEARCHPREV, _(L"Go To &Previous Search Result\tSHIFT+F3"));
-        MyAppend(semenu, A_REPLACEF, _(L"&Replace\tCTRL+h"));
+        MyAppend(semenu, wxID_REPLACE, _(L"&Replace\tCTRL+h"));
         MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection\tCTRL+k"));
         MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next\tCTRL+j"));
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
@@ -512,7 +512,7 @@ struct MyFrame : wxFrame {
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
         wxMenu *optmenu = new wxMenu();
-        MyAppend(optmenu, A_DEFFONT, _(L"Pick Default Font..."));
+        MyAppend(optmenu, wxID_SELECT_FONT, _(L"Pick Default Font..."));
         MyAppend(optmenu, A_CUSTKEY, _(L"Change a key binding..."));
         MyAppend(optmenu, A_CUSTCOL, _(L"Pick Custom &Color..."));
         MyAppend(optmenu, A_COLCELL, _(L"&Set Custom Color From Cell BG"));
@@ -582,20 +582,20 @@ struct MyFrame : wxFrame {
         MyAppend(markmenu, A_MARKVIEWV, _(L"&Vertical View\tCTRL+ALT+,"));
 
         wxMenu *langmenu = new wxMenu();
-        MyAppend(langmenu, A_RUN, _(L"&Run\tCTRL+ALT+F5"));
+        MyAppend(langmenu, wxID_EXECUTE, _(L"&Run\tCTRL+ALT+F5"));
         langmenu->AppendSubMenu(markmenu, _(L"&Mark as"));
         MyAppend(langmenu, A_CLRVIEW, _(L"&Clear Views"));
 
         wxMenu *helpmenu = new wxMenu();
-        MyAppend(helpmenu, A_ABOUT, _(L"&About..."));
-        MyAppend(helpmenu, A_HELPI, _(L"Load interactive &tutorial...\tF1"));
+        MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."));
+        MyAppend(helpmenu, wxID_HELP, _(L"Load interactive &tutorial...\tF1"));
         MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...\tCTRL+ALT+F1"));
         MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
 
         wxAcceleratorEntry entries[3];
-        entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, A_CUT);
-        entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, A_PASTE);
-        entries[2].Set(wxACCEL_CTRL, WXK_INSERT, A_COPY);
+        entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+        entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
+        entries[2].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
         wxAcceleratorTable accel(3, entries);
         SetAcceleratorTable(accel);
 
@@ -618,10 +618,10 @@ struct MyFrame : wxFrame {
             #ifdef __WXMAC__
             // these don't seem to work anymore in the newer wxWidgets, handled in the menu event
             // handler below instead
-            wxApp::s_macAboutMenuItemId = A_ABOUT;
-            wxApp::s_macExitMenuItemId = A_EXIT;
+            wxApp::s_macAboutMenuItemId = wxID_ABOUT;
+            wxApp::s_macExitMenuItemId = wxID_EXIT;
             wxApp::s_macPreferencesMenuItemId =
-                A_DEFFONT;  // we have no prefs, so for now just select the font
+                wxID_SELECT_FONT;  // we have no prefs, so for now just select the font
             #endif
             SetMenuBar(menubar);
         }
@@ -644,14 +644,14 @@ struct MyFrame : wxFrame {
                         wxITEM_NORMAL);
         };
 
-        AddTBIcon(_(L"New (CTRL+n)"), A_NEW, iconpath + L"filenew.svg");
-        AddTBIcon(_(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
-        AddTBIcon(_(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
-        AddTBIcon(_(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
+        AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath + L"filenew.svg");
+        AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath + L"fileopen.svg");
+        AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath + L"filesave.svg");
+        AddTBIcon(_(L"Save As"), wxID_SAVEAS, iconpath + L"filesaveas.svg");
         SEPARATOR;
-        AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
-        AddTBIcon(_(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
-        AddTBIcon(_(L"Paste (CTRL+v)"), A_PASTE, iconpath + L"editpaste.svg");
+        AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath + L"undo.svg");
+        AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath + L"editcopy.svg");
+        AddTBIcon(_(L"Paste (CTRL+v)"), wxID_PASTE, iconpath + L"editpaste.svg");
         SEPARATOR;
         AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath + L"zoomin.svg");
         AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath + L"zoomout.svg");
@@ -659,7 +659,7 @@ struct MyFrame : wxFrame {
         AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
         AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
         SEPARATOR;
-        AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.svg");
+        AddTBIcon(_(L"Run"), wxID_EXECUTE, iconpath + L"run.svg");
         tb->AddSeparator();
         tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
         tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
@@ -892,7 +892,7 @@ struct MyFrame : wxFrame {
                 case A_DELETE: tc->Remove(from, to + (from == to)); return;
                 case A_HOME: tc->SetSelection(0, 0); return;
                 case A_END: tc->SetSelection(1000, 1000); return;
-                case A_SELALL: tc->SetSelection(0, 1000); return;
+                case wxID_SELECTALL: tc->SetSelection(0, 1000); return;
                 case A_ENTERCELL: {
                     wxClientDC dc(sw);
                     if (tc == filter) {
@@ -976,7 +976,7 @@ struct MyFrame : wxFrame {
                 ShowFullScreen(!IsFullScreen());
                 if (IsFullScreen()) sw->Status(_(L"Press F11 to exit fullscreen mode."));
                 break;
-            case A_SEARCHF:
+            case wxID_FIND:
                 if (filter) {
                     filter->SetFocus();
                     filter->SetSelection(0, 1000);
@@ -984,7 +984,7 @@ struct MyFrame : wxFrame {
                     sw->Status(_(L"Please enable (Options -> Show Toolbar) to use search."));
                 }
                 break;
-            case A_REPLACEF:
+            case wxID_REPLACE:
                 if (replaces) {
                     replaces->SetFocus();
                     replaces->SetSelection(0, 1000);
@@ -996,15 +996,14 @@ struct MyFrame : wxFrame {
             case wxID_OSX_HIDE: Iconize(true); break;
             case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
             case wxID_OSX_SHOWALL: Iconize(false); break;
-            case wxID_ABOUT: sw->doc->Action(dc, A_ABOUT); break;
-            case wxID_PREFERENCES: sw->doc->Action(dc, A_DEFFONT); break;
-            case wxID_EXIT:  // FALL THRU:
+            case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
+            case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;
             #endif
-            case A_EXIT:
+            case wxID_EXIT:
                 fromclosebox = false;
                 this->Close();
                 break;
-            case A_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
+            case wxID_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
