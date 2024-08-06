@@ -984,7 +984,7 @@ struct Document {
         ShiftToCenter(dc);
 
         switch (k) {
-            case A_RUN:
+            case wxID_EXECUTE:
                 sys->ev.Eval(rootgrid);
                 rootgrid->ResetChildren();
                 ClearSelectionRefresh();

@@ -582,7 +582,7 @@ struct MyFrame : wxFrame {
         MyAppend(markmenu, A_MARKVIEWV, _(L"&Vertical View\tCTRL+ALT+,"));
 
         wxMenu *langmenu = new wxMenu();
-        MyAppend(langmenu, A_RUN, _(L"&Run\tCTRL+ALT+F5"));
+        MyAppend(langmenu, wxID_EXECUTE, _(L"&Run\tCTRL+ALT+F5"));
         langmenu->AppendSubMenu(markmenu, _(L"&Mark as"));
         MyAppend(langmenu, A_CLRVIEW, _(L"&Clear Views"));
 
@@ -659,7 +659,7 @@ struct MyFrame : wxFrame {
         AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath + L"newgrid.svg");
         AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath + L"image.svg");
         SEPARATOR;
-        AddTBIcon(_(L"Run"), A_RUN, iconpath + L"run.svg");
+        AddTBIcon(_(L"Run"), wxID_EXECUTE, iconpath + L"run.svg");
         tb->AddSeparator();
         tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
         tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
