@@ -441,7 +441,7 @@ struct MyFrame : wxFrame {
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
         MyAppend(semenu, A_SEARCHPREV, _(L"Go To &Previous Search Result\tSHIFT+F3"));
-        MyAppend(semenu, A_REPLACEF, _(L"&Replace\tCTRL+h"));
+        MyAppend(semenu, wxID_REPLACE, _(L"&Replace\tCTRL+h"));
         MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection\tCTRL+k"));
         MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next\tCTRL+j"));
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
@@ -984,7 +984,7 @@ struct MyFrame : wxFrame {
                     sw->Status(_(L"Please enable (Options -> Show Toolbar) to use search."));
                 }
                 break;
-            case A_REPLACEF:
+            case wxID_REPLACE:
                 if (replaces) {
                     replaces->SetFocus();
                     replaces->SetSelection(0, 1000);
