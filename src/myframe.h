@@ -383,7 +383,7 @@ struct MyFrame : wxFrame {
             editmenu->AppendSeparator();
             MyAppend(editmenu, wxID_UNDO, _(L"&Undo\tCTRL+z"),
                      _(L"revert the changes, one step at a time"));
-            MyAppend(editmenu, A_REDO, _(L"&Redo\tCTRL+y"),
+            MyAppend(editmenu, wxID_REDO, _(L"&Redo\tCTRL+y"),
                      _(L"redo any undo steps, if you haven't made changes since"));
             editmenu->AppendSeparator();
             MyAppend(

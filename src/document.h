@@ -998,7 +998,7 @@ struct Document {
                     return _(L"Nothing more to undo.");
                 }
 
-            case A_REDO:
+            case wxID_REDO:
                 if (redolist.size()) {
                     Undo(dc, redolist, undolist, true);
                     return nullptr;
