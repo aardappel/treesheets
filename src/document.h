@@ -1523,7 +1523,7 @@ struct Document {
                 return nullptr;
 
             case wxID_BOLD: selected.g->SetStyle(this, selected, STYLE_BOLD); return nullptr;
-            case A_ITALIC: selected.g->SetStyle(this, selected, STYLE_ITALIC); return nullptr;
+            case wxID_ITALIC: selected.g->SetStyle(this, selected, STYLE_ITALIC); return nullptr;
             case A_TT: selected.g->SetStyle(this, selected, STYLE_FIXED); return nullptr;
             case wxID_UNDERLINE: selected.g->SetStyle(this, selected, STYLE_UNDERLINE); return nullptr;
             case A_STRIKET: selected.g->SetStyle(this, selected, STYLE_STRIKETHRU); return nullptr;
