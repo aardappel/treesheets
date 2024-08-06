@@ -47,7 +47,6 @@ enum {
     A_SAVEALL = 500,
     A_COLLAPSE,
     A_NEWGRID,
-    A_ABOUT,
     A_RUN,
     A_CLRVIEW,
     A_MARKDATA,

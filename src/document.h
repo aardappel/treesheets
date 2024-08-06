@@ -1059,7 +1059,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_ABOUT: {
+            case wxID_ABOUT: {
                 wxAboutDialogInfo info;
                 info.SetName(L"TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));

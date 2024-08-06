@@ -587,7 +587,7 @@ struct MyFrame : wxFrame {
         MyAppend(langmenu, A_CLRVIEW, _(L"&Clear Views"));
 
         wxMenu *helpmenu = new wxMenu();
-        MyAppend(helpmenu, A_ABOUT, _(L"&About..."));
+        MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."));
         MyAppend(helpmenu, A_HELPI, _(L"Load interactive &tutorial...\tF1"));
         MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...\tCTRL+ALT+F1"));
         MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
@@ -618,7 +618,7 @@ struct MyFrame : wxFrame {
             #ifdef __WXMAC__
             // these don't seem to work anymore in the newer wxWidgets, handled in the menu event
             // handler below instead
-            wxApp::s_macAboutMenuItemId = A_ABOUT;
+            wxApp::s_macAboutMenuItemId = wxID_ABOUT;
             wxApp::s_macExitMenuItemId = wxID_EXIT;
             wxApp::s_macPreferencesMenuItemId =
                 wxID_SELECT_FONT;  // we have no prefs, so for now just select the font
@@ -996,7 +996,7 @@ struct MyFrame : wxFrame {
             case wxID_OSX_HIDE: Iconize(true); break;
             case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
             case wxID_OSX_SHOWALL: Iconize(false); break;
-            case wxID_ABOUT: sw->doc->Action(dc, A_ABOUT); break;
+            case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
             case wxID_PREFERENCES: sw->doc->Action(dc, A_DEFFONT); break;
             #endif
             case wxID_EXIT:
