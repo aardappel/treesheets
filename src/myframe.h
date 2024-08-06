@@ -235,7 +235,7 @@ struct MyFrame : wxFrame {
             MyAppend(selmenu, A_NEXT, _(L"Move to next cell\tTAB"));
             MyAppend(selmenu, A_PREV, _(L"Move to previous cell\tSHIFT+TAB"));
             selmenu->AppendSeparator();
-            MyAppend(selmenu, A_SELALL, _(L"Select &all in current grid/cell\tCTRL+a"));
+            MyAppend(selmenu, wxID_SELECTALL, _(L"Select &all in current grid/cell\tCTRL+a"));
             selmenu->AppendSeparator();
             MyAppend(selmenu, A_LEFT, _(L"Move Selection Left\tLEFT"));
             MyAppend(selmenu, A_RIGHT, _(L"Move Selection Right\tRIGHT"));
@@ -892,7 +892,7 @@ struct MyFrame : wxFrame {
                 case A_DELETE: tc->Remove(from, to + (from == to)); return;
                 case A_HOME: tc->SetSelection(0, 0); return;
                 case A_END: tc->SetSelection(1000, 1000); return;
-                case A_SELALL: tc->SetSelection(0, 1000); return;
+                case wxID_SELECTALL: tc->SetSelection(0, 1000); return;
                 case A_ENTERCELL: {
                     wxClientDC dc(sw);
                     if (tc == filter) {

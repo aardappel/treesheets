@@ -1497,7 +1497,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_SELALL:
+            case wxID_SELECTALL:
                 selected.SelAll();
                 Refresh();
                 return nullptr;
