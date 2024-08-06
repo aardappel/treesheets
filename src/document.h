@@ -1006,7 +1006,7 @@ struct Document {
                     return _(L"Nothing more to redo.");
                 }
 
-            case A_SAVE: return Save(false);
+            case wxID_SAVE: return Save(false);
             case A_SAVEAS: return Save(true);
             case A_SAVEALL: sys->SaveAll(); return nullptr;
 

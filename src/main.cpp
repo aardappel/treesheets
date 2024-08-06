@@ -44,8 +44,7 @@ enum { TS_VERSION = 23, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 static const uint TS_SELECTION_MASK = 0x80;
 
 enum {
-    A_SAVE = 500,
-    A_SAVEAS,
+    A_SAVEAS = 500,
     A_SAVEALL,
     A_CUT,
     A_COPY,
