@@ -990,7 +990,7 @@ struct Document {
                 ClearSelectionRefresh();
                 return _(L"Evaluation finished.");
 
-            case A_UNDO:
+            case wxID_UNDO:
                 if (undolist.size()) {
                     Undo(dc, undolist, redolist);
                     return nullptr;

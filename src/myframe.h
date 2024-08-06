@@ -381,7 +381,7 @@ struct MyFrame : wxFrame {
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
             MyAppend(editmenu, A_COLLAPSE, _(L"Collapse Ce&lls\tCTRL+l"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, A_UNDO, _(L"&Undo\tCTRL+z"),
+            MyAppend(editmenu, wxID_UNDO, _(L"&Undo\tCTRL+z"),
                      _(L"revert the changes, one step at a time"));
             MyAppend(editmenu, A_REDO, _(L"&Redo\tCTRL+y"),
                      _(L"redo any undo steps, if you haven't made changes since"));
@@ -649,7 +649,7 @@ struct MyFrame : wxFrame {
         AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath + L"filesave.svg");
         AddTBIcon(_(L"Save As"), wxID_SAVEAS, iconpath + L"filesaveas.svg");
         SEPARATOR;
-        AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
+        AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath + L"undo.svg");
         AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath + L"editcopy.svg");
         AddTBIcon(_(L"Paste (CTRL+v)"), wxID_PASTE, iconpath + L"editpaste.svg");
         SEPARATOR;
