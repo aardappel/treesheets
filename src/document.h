@@ -1033,7 +1033,7 @@ struct Document {
                 return sys->Open(fn);
             }
 
-            case A_CLOSE: {
+            case wxID_CLOSE: {
                 if (sys->frame->nb->GetPageCount() <= 1) {
                     sys->frame->fromclosebox = false;
                     sys->frame->Close();

@@ -191,7 +191,7 @@ struct MyFrame : wxFrame {
         wxMenu *filemenu = new wxMenu();
         MyAppend(filemenu, wxID_NEW, _(L"&New\tCTRL+n"));
         MyAppend(filemenu, wxID_OPEN, _(L"&Open...\tCTRL+o"));
-        MyAppend(filemenu, A_CLOSE, _(L"&Close\tCTRL+w"));
+        MyAppend(filemenu, wxID_CLOSE, _(L"&Close\tCTRL+w"));
         filemenu->AppendSubMenu(recentmenu, _(L"&Recent files"));
         MyAppend(filemenu, A_SAVE, _(L"&Save\tCTRL+s"));
         MyAppend(filemenu, A_SAVEAS, _(L"Save &As..."));
@@ -1003,7 +1003,7 @@ struct MyFrame : wxFrame {
                 fromclosebox = false;
                 this->Close();
                 break;
-            case A_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
+            case wxID_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
