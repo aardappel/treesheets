@@ -997,7 +997,7 @@ struct MyFrame : wxFrame {
             case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
             case wxID_OSX_SHOWALL: Iconize(false); break;
             case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
-            case wxID_PREFERENCES: sw->doc->Action(dc, A_DEFFONT); break;
+            case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
