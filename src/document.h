@@ -1049,7 +1049,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_NEW: {
+            case wxID_NEW: {
                 int size =
                     (int)::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
                                                _(L"size:"), _(L"New Sheet"), 10, 1, 25, sys->frame);
