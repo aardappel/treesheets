@@ -1116,7 +1116,7 @@ struct Document {
                 return nullptr;
             }
 
-            case A_PRINT: {
+            case wxID_PRINT: {
                 wxPrintDialogData printDialogData(printData);
                 wxPrinter printer(&printDialogData);
                 MyPrintout printout(this);

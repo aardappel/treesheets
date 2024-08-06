@@ -111,7 +111,6 @@ enum {
     A_END,
     A_CHOME,
     A_CEND,
-    A_PRINT,
     A_PREVIEW,
     A_PAGESETUP,
     A_PRINTSCALE,
