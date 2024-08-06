@@ -1444,7 +1444,7 @@ struct Document {
                 ZoomOutIfNoGrid(dc);
                 return nullptr;
 
-            case A_CUT:
+            case wxID_CUT:
             case wxID_COPY:
             case A_COPYWI:
             case A_COPYCT:
@@ -1453,7 +1453,7 @@ struct Document {
                     if (selected.cursor == selected.cursorend) return _(L"No text selected.");
                 }
                 Copy(k);
-                if (k == A_CUT) {
+                if (k == wxID_CUT) {
                     if (!selected.TextEdit()) {
                         selected.g->cell->AddUndo(this);
                         selected.g->MultiCellDelete(this, selected);

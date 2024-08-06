@@ -369,7 +369,7 @@ struct MyFrame : wxFrame {
                      _(L"Make a hierarchy layout more vertical (default) or more horizontal"));
 
             editmenu = new wxMenu();
-            MyAppend(editmenu, A_CUT, _(L"Cu&t\tCTRL+x"));
+            MyAppend(editmenu, wxID_CUT, _(L"Cu&t\tCTRL+x"));
             MyAppend(editmenu, wxID_COPY, _(L"&Copy\tCTRL+c"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_COPYWI, _(L"Copy with &Images\tCTRL+ALT+c"));
@@ -593,7 +593,7 @@ struct MyFrame : wxFrame {
         MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
 
         wxAcceleratorEntry entries[3];
-        entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, A_CUT);
+        entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
         entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, A_PASTE);
         entries[2].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
         wxAcceleratorTable accel(3, entries);
