@@ -190,7 +190,7 @@ struct MyFrame : wxFrame {
 
         wxMenu *filemenu = new wxMenu();
         MyAppend(filemenu, wxID_NEW, _(L"&New\tCTRL+n"));
-        MyAppend(filemenu, A_OPEN, _(L"&Open...\tCTRL+o"));
+        MyAppend(filemenu, wxID_OPEN, _(L"&Open...\tCTRL+o"));
         MyAppend(filemenu, A_CLOSE, _(L"&Close\tCTRL+w"));
         filemenu->AppendSubMenu(recentmenu, _(L"&Recent files"));
         MyAppend(filemenu, A_SAVE, _(L"&Save\tCTRL+s"));
@@ -645,7 +645,7 @@ struct MyFrame : wxFrame {
         };
 
         AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath + L"filenew.svg");
-        AddTBIcon(_(L"Open (CTRL+o)"), A_OPEN, iconpath + L"fileopen.svg");
+        AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath + L"fileopen.svg");
         AddTBIcon(_(L"Save (CTRL+s)"), A_SAVE, iconpath + L"filesave.svg");
         AddTBIcon(_(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
         SEPARATOR;

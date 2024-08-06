@@ -1025,7 +1025,7 @@ struct Document {
             case A_IMPTXTS:
             case A_IMPTXTT: return sys->Import(k);
 
-            case A_OPEN: {
+            case wxID_OPEN: {
                 wxString fn = ::wxFileSelector(
                     _(L"Please select a TreeSheets file to load:"), L"", L"", L"cts",
                     _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
