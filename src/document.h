@@ -1007,7 +1007,7 @@ struct Document {
                 }
 
             case wxID_SAVE: return Save(false);
-            case A_SAVEAS: return Save(true);
+            case wxID_SAVEAS: return Save(true);
             case A_SAVEALL: sys->SaveAll(); return nullptr;
 
             case A_EXPXML: return Export(L"xml", L"*.xml", _(L"Choose XML file to write"), k);

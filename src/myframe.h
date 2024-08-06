@@ -194,7 +194,7 @@ struct MyFrame : wxFrame {
         MyAppend(filemenu, wxID_CLOSE, _(L"&Close\tCTRL+w"));
         filemenu->AppendSubMenu(recentmenu, _(L"&Recent files"));
         MyAppend(filemenu, wxID_SAVE, _(L"&Save\tCTRL+s"));
-        MyAppend(filemenu, A_SAVEAS, _(L"Save &As..."));
+        MyAppend(filemenu, wxID_SAVEAS, _(L"Save &As..."));
         MyAppend(filemenu, A_SAVEALL, _(L"Save All"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _(L"Page Setup..."));
@@ -647,7 +647,7 @@ struct MyFrame : wxFrame {
         AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath + L"filenew.svg");
         AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath + L"fileopen.svg");
         AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath + L"filesave.svg");
-        AddTBIcon(_(L"Save As"), A_SAVEAS, iconpath + L"filesaveas.svg");
+        AddTBIcon(_(L"Save As"), wxID_SAVEAS, iconpath + L"filesaveas.svg");
         SEPARATOR;
         AddTBIcon(_(L"Undo (CTRL+z)"), A_UNDO, iconpath + L"undo.svg");
         AddTBIcon(_(L"Copy (CTRL+c)"), A_COPY, iconpath + L"editcopy.svg");
