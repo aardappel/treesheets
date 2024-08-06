@@ -512,7 +512,7 @@ struct MyFrame : wxFrame {
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
         wxMenu *optmenu = new wxMenu();
-        MyAppend(optmenu, A_DEFFONT, _(L"Pick Default Font..."));
+        MyAppend(optmenu, wxID_SELECT_FONT, _(L"Pick Default Font..."));
         MyAppend(optmenu, A_CUSTKEY, _(L"Change a key binding..."));
         MyAppend(optmenu, A_CUSTCOL, _(L"Pick Custom &Color..."));
         MyAppend(optmenu, A_COLCELL, _(L"&Set Custom Color From Cell BG"));
@@ -621,7 +621,7 @@ struct MyFrame : wxFrame {
             wxApp::s_macAboutMenuItemId = A_ABOUT;
             wxApp::s_macExitMenuItemId = wxID_EXIT;
             wxApp::s_macPreferencesMenuItemId =
-                A_DEFFONT;  // we have no prefs, so for now just select the font
+                wxID_SELECT_FONT;  // we have no prefs, so for now just select the font
             #endif
             SetMenuBar(menubar);
         }

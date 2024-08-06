@@ -89,7 +89,6 @@ enum {
     A_SCRIGHT,
     A_SCUP,
     A_SCDOWN,
-    A_DEFFONT,
     A_IMPXML,
     A_IMPXMLA,
     A_IMPTXTI,

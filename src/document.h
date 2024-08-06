@@ -1098,7 +1098,7 @@ struct Document {
             case A_INCWIDTHNH: return Wheel(dc, 1, true, false, false, false);
             case A_DECWIDTHNH: return Wheel(dc, -1, true, false, false, false);
 
-            case A_DEFFONT: {
+            case wxID_SELECT_FONT: {
                 wxFontData fdat;
                 fdat.SetInitialFont(wxFont(g_deftextsize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
                                            wxFONTWEIGHT_NORMAL, false, sys->defaultfont));
