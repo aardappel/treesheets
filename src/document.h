@@ -1752,13 +1752,9 @@ struct Document {
             case A_IMAGESCW:
             case A_IMAGESCF: {
                 std::set<Image *> imagestomanipulate;
-                std::vector<Cell *> cellstoresetlayout;
                 long v = 0.0;
                 loopallcellssel(c, true) {
-                    if (c->text.image) {
-                        imagestomanipulate.insert(c->text.image);
-                        cellstoresetlayout.push_back(c);
-                    }
+                    if (c->text.image) { imagestomanipulate.insert(c->text.image); }
                 }
                 if (imagestomanipulate.empty()) return nullptr;
                 if (k == A_IMAGESCW) {
@@ -1780,10 +1776,8 @@ struct Document {
                         img->DisplayScale(v / 100.0);
                     }
                 }
-                for (auto c : cellstoresetlayout) {
-                    c->ResetChildren();
-                    c->ResetLayout();
-                }
+                curdrawroot->ResetChildren();
+                curdrawroot->ResetLayout();
                 Refresh();
                 return nullptr;
             }
@@ -1791,9 +1785,9 @@ struct Document {
             case A_IMAGESCN: {
                 loopallcellssel(c, true) if (c->text.image) {
                     c->text.image->ResetScale(sys->frame->csf);
-                    c->ResetChildren();
-                    c->ResetLayout();
                 }
+                curdrawroot->ResetChildren();
+                curdrawroot->ResetLayout();
                 Refresh();
                 return nullptr;
             }
