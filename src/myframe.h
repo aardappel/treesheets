@@ -1113,7 +1113,8 @@ struct MyFrame : wxFrame {
             if (nb) {
                 loop(i, nb->GetPageCount()) {
                     TSCanvas *p = (TSCanvas *)nb->GetPage(i);
-                    p->doc->dpichanged = true;
+                    p->doc->curdrawroot->ResetChildren();
+                    p->doc->curdrawroot->ResetLayout();
                     p->doc->scrolltoselection = true;
                 }
                 nb->SetTabCtrlHeight(-1);
