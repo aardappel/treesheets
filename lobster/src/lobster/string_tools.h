@@ -157,7 +157,7 @@ template<typename T> T parse_int(string_view sv, int base = 10, const char **end
 
 template<typename T> T parse_float(string_view sv, const char **end = nullptr) {
     // FIXME: Upgrade compilers for these platforms on CI.
-    #if defined(__APPLE__) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+    #if defined(__APPLE__) || defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__FreeBSD__)
         auto &term = *(char *)(sv.data() + sv.size());
         auto orig = term;
         term = 0;
