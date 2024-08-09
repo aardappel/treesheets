@@ -232,15 +232,15 @@ struct MyFrame : wxFrame {
             MyAppend(bordmenu, A_BORD5, _(L"Border &5\tCTRL+SHIFT+5"));
 
             wxMenu *selmenu = new wxMenu();
-            MyAppend(selmenu, A_NEXT, _(L"Move to next cell\tTAB"));
-            MyAppend(selmenu, A_PREV, _(L"Move to previous cell\tSHIFT+TAB"));
+            MyAppend(selmenu, A_NEXT, SpecialAccelerator(_(L"Move to next cell"), "TAB"));
+            MyAppend(selmenu, A_PREV, SpecialAccelerator(_(L"Move to previous cell"), "SHIFT+TAB"));
             selmenu->AppendSeparator();
             MyAppend(selmenu, wxID_SELECTALL, _(L"Select &all in current grid/cell\tCTRL+a"));
             selmenu->AppendSeparator();
-            MyAppend(selmenu, A_LEFT, _(L"Move Selection Left\tLEFT"));
-            MyAppend(selmenu, A_RIGHT, _(L"Move Selection Right\tRIGHT"));
-            MyAppend(selmenu, A_UP, _(L"Move Selection Up\tUP"));
-            MyAppend(selmenu, A_DOWN, _(L"Move Selection Down\tDOWN"));
+            MyAppend(selmenu, A_LEFT, SpecialAccelerator(_(L"Move Selection Left"), "LEFT"));
+            MyAppend(selmenu, A_RIGHT, SpecialAccelerator(_(L"Move Selection Right"), "RIGHT"));
+            MyAppend(selmenu, A_UP, SpecialAccelerator(_(L"Move Selection Up"), "UP"));
+            MyAppend(selmenu, A_DOWN, SpecialAccelerator(_(L"Move Selection Down"), "DOWN"));
             selmenu->AppendSeparator();
             MyAppend(selmenu, A_MLEFT, _(L"Move Cells Left\tCTRL+LEFT"));
             MyAppend(selmenu, A_MRIGHT, _(L"Move Cells Right\tCTRL+RIGHT"));
@@ -776,6 +776,26 @@ struct MyFrame : wxFrame {
         aui->ClearEventHashTable();
         aui->UnInit();
         DELETEP(editmenupopup);
+    }
+
+    inline wxString SpecialAccelerator(const wxString &desc, const wxString &accel) {
+        return
+            #ifdef __WXGTK__
+                // On wxGTK, some keys cannot be used natively as accelerators and are
+                // thus suppressed if it is tried to display them as accelerators.
+
+                // As TreeSheets implements these accelerators manually,
+                // the accelerators are just put in brackets in order to display them.
+
+                // Note: When with native support, the accelerator key is input by its 
+                // English abbreviation and translated automatically. 
+
+                // With non-native implementation, we need to translate the accelerator
+                // by ourselves.
+                desc + " (" + _(accel) + ")";
+            #else
+                desc + "\t" + accel;
+            #endif
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
