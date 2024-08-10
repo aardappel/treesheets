@@ -232,15 +232,51 @@ struct MyFrame : wxFrame {
             MyAppend(bordmenu, A_BORD5, _(L"Border &5\tCTRL+SHIFT+5"));
 
             wxMenu *selmenu = new wxMenu();
-            MyAppend(selmenu, A_NEXT, _(L"Move to next cell\tTAB"));
-            MyAppend(selmenu, A_PREV, _(L"Move to previous cell\tSHIFT+TAB"));
+            MyAppend(selmenu, A_NEXT,
+                #ifdef __WXGTK__
+                    _(L"Move to next cell (TAB)")
+                #else
+                    _(L"Move to next cell\tTAB")
+                #endif
+            );
+            MyAppend(selmenu, A_PREV, 
+                #ifdef __WXGTK__
+                    _(L"Move to previous cell (SHIFT+TAB)")
+                #else
+                    _(L"Move to previous cell\tSHIFT+TAB")
+                #endif
+            );
             selmenu->AppendSeparator();
             MyAppend(selmenu, wxID_SELECTALL, _(L"Select &all in current grid/cell\tCTRL+a"));
             selmenu->AppendSeparator();
-            MyAppend(selmenu, A_LEFT, _(L"Move Selection Left\tLEFT"));
-            MyAppend(selmenu, A_RIGHT, _(L"Move Selection Right\tRIGHT"));
-            MyAppend(selmenu, A_UP, _(L"Move Selection Up\tUP"));
-            MyAppend(selmenu, A_DOWN, _(L"Move Selection Down\tDOWN"));
+            MyAppend(selmenu, A_LEFT, 
+                #ifdef __WXGTK__
+                    _(L"Move Selection Left (LEFT)")
+                #else
+                    _(L"Move Selection Left\tLEFT")
+                #endif
+            );
+            MyAppend(selmenu, A_RIGHT, 
+                #ifdef __WXGTK__
+                    _(L"Move Selection Right (RIGHT)")
+                #else 
+                    _(L"Move Selection Right\tRIGHT")
+                #endif
+            );
+            MyAppend(selmenu, A_UP, 
+                #ifdef __WXGTK__
+                    _(L"Move Selection Up (UP)")
+                #else
+                    _(L"Move Selection Up\tUP")
+                #endif
+            );
+            MyAppend(selmenu, A_DOWN, 
+                #ifdef __WXGTK__
+                    _(L"Move Selection Down (DOWN)")
+                #else
+                    _(L"Move Selection Down\tDOWN")
+                #endif
+            );
             selmenu->AppendSeparator();
             MyAppend(selmenu, A_MLEFT, _(L"Move Cells Left\tCTRL+LEFT"));
             MyAppend(selmenu, A_MRIGHT, _(L"Move Cells Right\tCTRL+RIGHT"));
