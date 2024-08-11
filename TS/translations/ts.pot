@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-08 18:08-0300\n"
+"POT-Creation-Date: 2024-08-11 08:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -747,19 +747,37 @@ msgstr ""
 msgid "Move Selection Down\tDOWN"
 msgstr ""
 
+msgid "Move Selection Down (DOWN)"
+msgstr ""
+
 msgid "Move Selection Left\tLEFT"
+msgstr ""
+
+msgid "Move Selection Left (LEFT)"
 msgstr ""
 
 msgid "Move Selection Right\tRIGHT"
 msgstr ""
 
+msgid "Move Selection Right (RIGHT)"
+msgstr ""
+
 msgid "Move Selection Up\tUP"
+msgstr ""
+
+msgid "Move Selection Up (UP)"
 msgstr ""
 
 msgid "Move to next cell\tTAB"
 msgstr ""
 
+msgid "Move to next cell (TAB)"
+msgstr ""
+
 msgid "Move to previous cell\tSHIFT+TAB"
+msgstr ""
+
+msgid "Move to previous cell (SHIFT+TAB)"
 msgstr ""
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
@@ -879,6 +897,9 @@ msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr ""
 
 msgid "Paste file path"
+msgstr ""
+
+msgid "Pick Cu&rsor Color..."
 msgstr ""
 
 msgid "Pick Custom &Color..."
@@ -1233,9 +1254,6 @@ msgid "Toggle Fold\tF10"
 msgstr ""
 
 msgid "Toggle Vertical Layout\tALT+0"
-msgstr ""
-
-msgid "Toggle Zen Mode"
 msgstr ""
 
 msgid "Toggle cell &BOLD\tCTRL+b"
