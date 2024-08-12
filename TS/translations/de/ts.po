@@ -802,44 +802,38 @@ msgstr "Zellen nach oben verschieben\tCTRL+UP"
 msgid "Move Selection Down\tDOWN"
 msgstr "Auswahl nach unten verschieben\tDOWN"
 
-#, fuzzy
 msgid "Move Selection Down (DOWN)"
-msgstr "Auswahl nach unten verschieben\tDOWN"
+msgstr "Auswahl nach unten verschieben (UNTEN)"
 
 msgid "Move Selection Left\tLEFT"
 msgstr "Auswahl nach links verschieben\tLEFT"
 
-#, fuzzy
 msgid "Move Selection Left (LEFT)"
-msgstr "Auswahl nach links verschieben\tLEFT"
+msgstr "Auswahl nach links verschieben (LINKS)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "Auswahl nach rechts verschieben\tRIGHT"
 
-#, fuzzy
 msgid "Move Selection Right (RIGHT)"
-msgstr "Auswahl nach rechts verschieben\tRIGHT"
+msgstr "Auswahl nach rechts verschieben (RECHTS)"
 
 msgid "Move Selection Up\tUP"
 msgstr "Auswahl nach oben verschieben\tUP"
 
-#, fuzzy
 msgid "Move Selection Up (UP)"
-msgstr "Auswahl nach oben verschieben\tUP"
+msgstr "Auswahl nach oben verschieben (OBEN)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Zur nächsten Zelle wechseln\tTAB"
 
-#, fuzzy
 msgid "Move to next cell (TAB)"
-msgstr "Zur nächsten Zelle wechseln\tTAB"
+msgstr "Zur nächsten Zelle wechseln (TAB)"
 
 msgid "Move to previous cell\tSHIFT+TAB"
 msgstr "Zur vorherigen Zelle wechseln\tSHIFT+TAB"
 
-#, fuzzy
 msgid "Move to previous cell (SHIFT+TAB)"
-msgstr "Zur vorherigen Zelle wechseln\tSHIFT+TAB"
+msgstr "Zur vorherigen Zelle wechseln (UMSCHALT+TAB)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr "HINWEIS: Neuzuweisung von Tastenkombinationen wird erst bei einem Neustart von TreeSheets wirksam."
@@ -968,9 +962,8 @@ msgstr "Nur Stil einfügen\tCTRL+SHIFT+v"
 msgid "Paste file path"
 msgstr "Dateipfad einfügen"
 
-#, fuzzy
 msgid "Pick Cu&rsor Color..."
-msgstr "Benutzerdefinierte Farbe auswählen..."
+msgstr "Benutzerdefinierte Cursorfarbe auswählen..."
 
 msgid "Pick Custom &Color..."
 msgstr "Benutzerdefinierte Farbe auswählen..."
