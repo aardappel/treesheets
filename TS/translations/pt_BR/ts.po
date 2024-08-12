@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-08 18:08-0300\n"
-"PO-Revision-Date: 2024-06-08 18:11-0300\n"
+"POT-Creation-Date: 2024-08-12 09:25-0300\n"
+"PO-Revision-Date: 2024-08-12 09:38-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -798,22 +798,40 @@ msgid "Move Cells Up\tCTRL+UP"
 msgstr "Mover Células para Cima\tCTRL+UP"
 
 msgid "Move Selection Down\tDOWN"
-msgstr "Mover Seleção para Baixo\tDOWN"
+msgstr "Mover Caixa de Seleção para Baixo\tDOWN"
+
+msgid "Move Selection Down (DOWN)"
+msgstr "Mover Caixa de Seleção para Baixo (DOWN)"
 
 msgid "Move Selection Left\tLEFT"
-msgstr "Mover Seleção para a Esquerda\tLEFT"
+msgstr "Mover Caixa de Seleção para a Esquerda\tLEFT"
+
+msgid "Move Selection Left (LEFT)"
+msgstr "Mover Caixa de Seleção para a Esquerda (LEFT)"
 
 msgid "Move Selection Right\tRIGHT"
-msgstr "Mover Seleção para a Direita\tRIGHT"
+msgstr "Mover Caixa de Seleção para a Direita\tRIGHT"
+
+msgid "Move Selection Right (RIGHT)"
+msgstr "Mover Caixa de Seleção para a Direita (RIGHT)"
 
 msgid "Move Selection Up\tUP"
-msgstr "Mover Seleção para Cima\tUP"
+msgstr "Mover Caixa de Seleção para Cima\tUP"
+
+msgid "Move Selection Up (UP)"
+msgstr "Mover Caixa de Seleção para Cima (UP)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Ir para a célula seguinte\tTAB"
 
+msgid "Move to next cell (TAB)"
+msgstr "Ir para a célula seguinte (TAB)"
+
 msgid "Move to previous cell\tSHIFT+TAB"
 msgstr "Ir para a célula anterior\tSHIFT+TAB"
+
+msgid "Move to previous cell (SHIFT+TAB)"
+msgstr "Ir para a célula anterior (SHIFT+TAB)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
@@ -945,6 +963,9 @@ msgstr "Colar &Estilo\tCTRL+SHIFT+v"
 
 msgid "Paste file path"
 msgstr "Colar o caminho do arquivo"
+
+msgid "Pick Cu&rsor Color..."
+msgstr "Escolher Cor &do Cursor..."
 
 msgid "Pick Custom &Color..."
 msgstr "Escolher &Cor Personalizada..."
@@ -1316,9 +1337,6 @@ msgstr "Dobrar/Desdobrar\tF10"
 msgid "Toggle Vertical Layout\tALT+0"
 msgstr "Tornar Layout Vertical/Horizontal\tALT+0"
 
-msgid "Toggle Zen Mode"
-msgstr "Entrar/Sair do Modo &Zen"
-
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Aplicar/remover &NEGRITO\tCTRL+b"
 
@@ -1447,6 +1465,9 @@ msgstr "escala:"
 
 msgid "size:"
 msgstr "tamanho:"
+
+#~ msgid "Toggle Zen Mode"
+#~ msgstr "Entrar/Sair do Modo &Zen"
 
 #~ msgid "Reset toolbar"
 #~ msgstr "&Redefinir barra de ferramentas"
