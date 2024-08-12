@@ -803,25 +803,25 @@ msgid "Move Selection Down\tDOWN"
 msgstr "Auswahl nach unten verschieben\tDOWN"
 
 msgid "Move Selection Down (DOWN)"
-msgstr "Auswahl nach unten verschieben (UNTEN)"
+msgstr "Auswahl nach unten verschieben (PFEIL NACH UNTEN)"
 
 msgid "Move Selection Left\tLEFT"
 msgstr "Auswahl nach links verschieben\tLEFT"
 
 msgid "Move Selection Left (LEFT)"
-msgstr "Auswahl nach links verschieben (LINKS)"
+msgstr "Auswahl nach links verschieben (PFEIL NACH LINKS)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "Auswahl nach rechts verschieben\tRIGHT"
 
 msgid "Move Selection Right (RIGHT)"
-msgstr "Auswahl nach rechts verschieben (RECHTS)"
+msgstr "Auswahl nach rechts verschieben (PFEIL NACH RECHTS)"
 
 msgid "Move Selection Up\tUP"
 msgstr "Auswahl nach oben verschieben\tUP"
 
 msgid "Move Selection Up (UP)"
-msgstr "Auswahl nach oben verschieben (OBEN)"
+msgstr "Auswahl nach oben verschieben (PFEIL NACH OBEN)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Zur nächsten Zelle wechseln\tTAB"
