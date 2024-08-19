@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets-ru_RU-0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-08 18:08-0300\n"
-"PO-Revision-Date: 2024-07-31 13:01+0300\n"
+"POT-Creation-Date: 2024-08-11 08:22+0200\n"
+"PO-Revision-Date: 2024-08-17 20:09+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru_RU\n"
@@ -871,20 +871,38 @@ msgstr "... вВерх\tCTRL+UP"
 msgid "Move Selection Down\tDOWN"
 msgstr "... вНиз\tDOWN"
 
+msgid "Move Selection Down (DOWN)"
+msgstr "... вНиз (DOWN)"
+
 msgid "Move Selection Left\tLEFT"
 msgstr "Переместить Курсор Клетки вЛево\tLEFT"
+
+msgid "Move Selection Left (LEFT)"
+msgstr "Переместить Курсор Клетки вЛево (LEFT)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "... вПраво\tRIGHT"
 
+msgid "Move Selection Right (RIGHT)"
+msgstr "... вПраво (RIGHT)"
+
 msgid "Move Selection Up\tUP"
 msgstr "... вВерх\tUP"
+
+msgid "Move Selection Up (UP)"
+msgstr "... вВерх (UP)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Перейти к Следующей Ячейке\tTAB"
 
+msgid "Move to next cell (TAB)"
+msgstr "Перейти к Следующей Ячейке (TAB)"
+
 msgid "Move to previous cell\tSHIFT+TAB"
 msgstr "... к Предыдущей...\tSHIFT+TAB"
+
+msgid "Move to previous cell (SHIFT+TAB)"
+msgstr "... к Предыдущей... (SHIFT+TAB)"
 
 # Сообщения
 msgid "NOTE: key binding will take effect next run of TreeSheets."
@@ -1036,14 +1054,17 @@ msgstr "Вставить только Стиль\tCTRL+SHIFT+v"
 msgid "Paste file path"
 msgstr "Вставить путь к файлу"
 
+msgid "Pick Cu&rsor Color..."
+msgstr "Цвет Ку&рсора..."
+
 msgid "Pick Custom &Color..."
-msgstr "Выбрать &Цвет на свой вкус..."
+msgstr "Установить &Цвет по желанию..."
 
 msgid "Pick Default Font..."
-msgstr "Выбрать Шрифт по Умолчанию..."
+msgstr "Шрифт по Умолчанию..."
 
 msgid "Pick Document Background..."
-msgstr "Выбрать Фон &Документа..."
+msgstr "Фон &Документа..."
 
 # Сообщения
 msgid "Please enable (Options -> Show Toolbar) to use replace."
@@ -1447,9 +1468,6 @@ msgstr "Свер&нуть - Развернуть\tF10"
 msgid "Toggle Vertical Layout\tALT+0"
 msgstr "Переключить &Макет (Вертик/Горизонт)\tALT+0"
 
-msgid "Toggle Zen Mode"
-msgstr "... Д&зен режим"
-
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Переключить Ячейку на &ЖИРНЫЙ\tCTRL+b"
 
@@ -1593,3 +1611,6 @@ msgstr "масштаб:"
 
 msgid "size:"
 msgstr "размер:"
+
+#~ msgid "Toggle Zen Mode"
+#~ msgstr "... Д&зен режим"
