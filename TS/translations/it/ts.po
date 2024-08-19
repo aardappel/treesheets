@@ -795,44 +795,38 @@ msgstr "Sposta celle in alto\tCTRL+UP"
 msgid "Move Selection Down\tDOWN"
 msgstr "Sposta selezione in basso\tDOWN"
 
-#, fuzzy
 msgid "Move Selection Down (DOWN)"
-msgstr "Sposta selezione in basso\tDOWN"
+msgstr "Sposta selezione in basso (Basso)"
 
 msgid "Move Selection Left\tLEFT"
 msgstr "Sposta selezione a sinistra\tLEFT"
 
-#, fuzzy
 msgid "Move Selection Left (LEFT)"
-msgstr "Sposta selezione a sinistra\tLEFT"
+msgstr "Sposta selezione a sinistra (Sinistra)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "Sposta selezione destra\tRIGHT"
 
-#, fuzzy
 msgid "Move Selection Right (RIGHT)"
-msgstr "Sposta selezione destra\tRIGHT"
+msgstr "Sposta selezione destra (Destra)"
 
 msgid "Move Selection Up\tUP"
 msgstr "Sposta selezione Su\tUP"
 
-#, fuzzy
 msgid "Move Selection Up (UP)"
-msgstr "Sposta selezione Su\tUP"
+msgstr "Sposta selezione Su (Su)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Passa alla cella successiva\tTAB"
 
-#, fuzzy
 msgid "Move to next cell (TAB)"
-msgstr "Passa alla cella successiva\tTAB"
+msgstr "Passa alla cella successiva (Tab)"
 
 msgid "Move to previous cell\tSHIFT+TAB"
-msgstr ""
+msgstr "Passa alla cella precedente\tSHIFT+TAB"
 
-#, fuzzy
 msgid "Move to previous cell (SHIFT+TAB)"
-msgstr "Passa alla cella successiva\tTAB"
+msgstr "Passa alla cella precedente (Maiusc+Tab)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
@@ -963,9 +957,8 @@ msgstr "Incolla solo stile\tCTRL+MAIUSC+v"
 msgid "Paste file path"
 msgstr "Incolla il percorso del file"
 
-#, fuzzy
 msgid "Pick Cu&rsor Color..."
-msgstr "Scegli colore personalizzato..."
+msgstr "Scegli colore del cu&rsore......"
 
 msgid "Pick Custom &Color..."
 msgstr "Scegli colore personalizzato..."
