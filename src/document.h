@@ -1151,12 +1151,6 @@ struct Document {
             case A_NEXTFILE: sys->frame->CycleTabs(1); return nullptr;
             case A_PREVFILE: sys->frame->CycleTabs(-1); return nullptr;
 
-            case A_CUSTCOL: {
-                uint c = PickColor(sys->frame, sys->customcolor);
-                if (c != (uint)-1) sys->customcolor = c;
-                return nullptr;
-            }
-
             case A_DEFBGCOL: {
                 uint oldbg = Background();
                 uint c = PickColor(sys->frame, oldbg);
@@ -2074,12 +2068,6 @@ struct Document {
         if (focusmatch) sw->SetFocus();
         ScrollOrZoom(dc, true);
         return nullptr;
-    }
-
-    uint PickColor(wxFrame *fr, uint defcol) {
-        wxColour col = wxGetColourFromUser(fr, wxColour(defcol));
-        if (col.IsOk()) return (col.Blue() << 16) + (col.Green() << 8) + col.Red();
-        return -1;
     }
 
     const wxChar *layrender(int ds, bool vert, bool toggle = false, bool noset = false) {

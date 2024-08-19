@@ -110,6 +110,12 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
     }
 };
 
+static uint PickColor(wxFrame *fr, uint defcol) {
+    wxColour col = wxGetColourFromUser(fr, wxColour(defcol));
+    if (col.IsOk()) return (col.Blue() << 16) + (col.Green() << 8) + col.Red();
+    return -1;
+}
+
 #define dd_icon_res_scale 3.0
 
 struct ImagePopup : wxVListBoxComboPopup {
