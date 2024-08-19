@@ -809,44 +809,38 @@ msgstr "Déplacement cellule vers le haut\tCTRL+UP"
 msgid "Move Selection Down\tDOWN"
 msgstr "Positionnement sur le bas de la cellule\tDOWN"
 
-#, fuzzy
 msgid "Move Selection Down (DOWN)"
-msgstr "Positionnement sur le bas de la cellule\tDOWN"
+msgstr "Positionnement sur le bas de la cellule (BAS)"
 
 msgid "Move Selection Left\tLEFT"
 msgstr "Positionnement sur la gauche de la cellule\tLEFT"
 
-#, fuzzy
 msgid "Move Selection Left (LEFT)"
-msgstr "Positionnement sur la gauche de la cellule\tLEFT"
+msgstr "Positionnement sur la gauche de la cellule (GAUCHE)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "Positionnement sur la droite de la cellule\tRIGHT"
 
-#, fuzzy
 msgid "Move Selection Right (RIGHT)"
-msgstr "Positionnement sur la droite de la cellule\tRIGHT"
+msgstr "Positionnement sur la droite de la cellule (DROIT)"
 
 msgid "Move Selection Up\tUP"
 msgstr "Positionnement sur le haut de la cellule\tUP"
 
-#, fuzzy
 msgid "Move Selection Up (UP)"
-msgstr "Positionnement sur le haut de la cellule\tUP"
+msgstr "Positionnement sur le haut de la cellule (HAUT)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Aller à la cellule suivante\tTAB"
 
-#, fuzzy
 msgid "Move to next cell (TAB)"
-msgstr "Aller à la cellule suivante\tTAB"
+msgstr "Aller à la cellule suivante (TAB)"
 
 msgid "Move to previous cell\tSHIFT+TAB"
 msgstr "Aller à la cellule précédente\tSHIFT+TAB"
 
-#, fuzzy
 msgid "Move to previous cell (SHIFT+TAB)"
-msgstr "Aller à la cellule précédente\tSHIFT+TAB"
+msgstr "Aller à la cellule précédente (SHIFT+TAB)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
@@ -977,9 +971,8 @@ msgstr "Coller le style uniquement\tCTRL+SHIFT+v"
 msgid "Paste file path"
 msgstr "Coller le chemin d'accès au fichier"
 
-#, fuzzy
 msgid "Pick Cu&rsor Color..."
-msgstr "Choisir une &Couleur personnalisée..."
+msgstr "Choisir la couleur du cu&rseur..."
 
 msgid "Pick Custom &Color..."
 msgstr "Choisir une &Couleur personnalisée..."
