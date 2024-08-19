@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-08 18:08-0300\n"
+"POT-Creation-Date: 2024-08-11 08:22+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -809,20 +809,38 @@ msgstr "Déplacement cellule vers le haut\tCTRL+UP"
 msgid "Move Selection Down\tDOWN"
 msgstr "Positionnement sur le bas de la cellule\tDOWN"
 
+msgid "Move Selection Down (DOWN)"
+msgstr "Positionnement sur le bas de la cellule (Bas)"
+
 msgid "Move Selection Left\tLEFT"
 msgstr "Positionnement sur la gauche de la cellule\tLEFT"
+
+msgid "Move Selection Left (LEFT)"
+msgstr "Positionnement sur la gauche de la cellule (Gauche)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "Positionnement sur la droite de la cellule\tRIGHT"
 
+msgid "Move Selection Right (RIGHT)"
+msgstr "Positionnement sur la droite de la cellule (Droite)"
+
 msgid "Move Selection Up\tUP"
 msgstr "Positionnement sur le haut de la cellule\tUP"
+
+msgid "Move Selection Up (UP)"
+msgstr "Positionnement sur le haut de la cellule (Haut)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Aller à la cellule suivante\tTAB"
 
+msgid "Move to next cell (TAB)"
+msgstr "Aller à la cellule suivante (TAB)"
+
 msgid "Move to previous cell\tSHIFT+TAB"
 msgstr "Aller à la cellule précédente\tSHIFT+TAB"
+
+msgid "Move to previous cell (SHIFT+TAB)"
+msgstr "Aller à la cellule précédente (SHIFT+TAB)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
@@ -952,6 +970,9 @@ msgstr "Coller le style uniquement\tCTRL+SHIFT+v"
 
 msgid "Paste file path"
 msgstr "Coller le chemin d'accès au fichier"
+
+msgid "Pick Cu&rsor Color..."
+msgstr "Choisir la couleur du cu&rseur..."
 
 msgid "Pick Custom &Color..."
 msgstr "Choisir une &Couleur personnalisée..."
@@ -1315,9 +1336,6 @@ msgstr "Développer/Réduire\tF10"
 
 msgid "Toggle Vertical Layout\tALT+0"
 msgstr "Activer/désactiver la disposition verticale\tALT+0"
-
-msgid "Toggle Zen Mode"
-msgstr "Basculer en mode Zen"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Gras\tCTRL+b"
