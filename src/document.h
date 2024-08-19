@@ -1169,7 +1169,7 @@ struct Document {
             case A_DEFCURCOL: {
                 uint c = PickColor(sys->frame, sys->cursorcolor);
                 if (c != (uint)-1) {
-                    sys->cursorcolor = c;
+                    sys->cfg->Write(L"cursorcolor", sys->cursorcolor = c);
                     Refresh();
                 }
                 return nullptr;

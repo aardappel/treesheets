@@ -794,9 +794,6 @@ struct MyFrame : wxFrame {
 
     ~MyFrame() {
         filehistory.Save(*sys->cfg);
-        #ifdef SIMPLERENDER
-        sys->cfg->Write(L"cursorcolor", sys->cursorcolor);
-        #endif
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {
