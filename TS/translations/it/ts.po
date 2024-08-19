@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-08 18:08-0300\n"
+"POT-Creation-Date: 2024-08-11 08:22+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -795,20 +795,38 @@ msgstr "Sposta celle in alto\tCTRL+UP"
 msgid "Move Selection Down\tDOWN"
 msgstr "Sposta selezione in basso\tDOWN"
 
+msgid "Move Selection Down (DOWN)"
+msgstr "Sposta selezione in basso (Basso)"
+
 msgid "Move Selection Left\tLEFT"
 msgstr "Sposta selezione a sinistra\tLEFT"
+
+msgid "Move Selection Left (LEFT)"
+msgstr "Sposta selezione a sinistra (Sinistra)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "Sposta selezione destra\tRIGHT"
 
+msgid "Move Selection Right (RIGHT)"
+msgstr "Sposta selezione destra (Destra)"
+
 msgid "Move Selection Up\tUP"
 msgstr "Sposta selezione Su\tUP"
+
+msgid "Move Selection Up (UP)"
+msgstr "Sposta selezione Su (Su)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Passa alla cella successiva\tTAB"
 
+msgid "Move to next cell (TAB)"
+msgstr "Passa alla cella successiva (Tab)"
+
 msgid "Move to previous cell\tSHIFT+TAB"
-msgstr ""
+msgstr "Passa alla cella precedente\tSHIFT+TAB"
+
+msgid "Move to previous cell (SHIFT+TAB)"
+msgstr "Passa alla cella precedente (Maiusc+Tab)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
@@ -938,6 +956,9 @@ msgstr "Incolla solo stile\tCTRL+MAIUSC+v"
 
 msgid "Paste file path"
 msgstr "Incolla il percorso del file"
+
+msgid "Pick Cu&rsor Color..."
+msgstr "Scegli colore del cu&rsore......"
 
 msgid "Pick Custom &Color..."
 msgstr "Scegli colore personalizzato..."
@@ -1305,9 +1326,6 @@ msgstr "Commuta piegatura\tF10"
 
 msgid "Toggle Vertical Layout\tALT+0"
 msgstr "Attiva/disattiva layout verticale\tAlt+0"
-
-msgid "Toggle Zen Mode"
-msgstr "Attiva/disattive modalità zen"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Cambia cella &GRASSETTO\tCTRL+b"
