@@ -810,25 +810,25 @@ msgid "Move Selection Down\tDOWN"
 msgstr "Positionnement sur le bas de la cellule\tDOWN"
 
 msgid "Move Selection Down (DOWN)"
-msgstr "Positionnement sur le bas de la cellule (BAS)"
+msgstr "Positionnement sur le bas de la cellule (Bas)"
 
 msgid "Move Selection Left\tLEFT"
 msgstr "Positionnement sur la gauche de la cellule\tLEFT"
 
 msgid "Move Selection Left (LEFT)"
-msgstr "Positionnement sur la gauche de la cellule (GAUCHE)"
+msgstr "Positionnement sur la gauche de la cellule (Gauche)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "Positionnement sur la droite de la cellule\tRIGHT"
 
 msgid "Move Selection Right (RIGHT)"
-msgstr "Positionnement sur la droite de la cellule (DROIT)"
+msgstr "Positionnement sur la droite de la cellule (Droite)"
 
 msgid "Move Selection Up\tUP"
 msgstr "Positionnement sur le haut de la cellule\tUP"
 
 msgid "Move Selection Up (UP)"
-msgstr "Positionnement sur le haut de la cellule (HAUT)"
+msgstr "Positionnement sur le haut de la cellule (Haut)"
 
 msgid "Move to next cell\tTAB"
 msgstr "Aller à la cellule suivante\tTAB"
