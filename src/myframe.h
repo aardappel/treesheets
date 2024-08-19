@@ -985,6 +985,11 @@ struct MyFrame : wxFrame {
                     wtb->Refresh();
                 }
                 break;
+            case A_CUSTCOL: {
+                uint c = PickColor(sys->frame, sys->customcolor);
+                if (c != (uint)-1) sys->customcolor = c;
+                break;
+            }
             case A_LEFTTABS: Check(L"lefttabs"); break;
             case A_SINGLETRAY: Check(L"singletray"); break;
             case A_MAKEBAKS: sys->cfg->Write(L"makebaks", sys->makebaks = ce.IsChecked()); break;

@@ -1151,12 +1151,6 @@ struct Document {
             case A_NEXTFILE: sys->frame->CycleTabs(1); return nullptr;
             case A_PREVFILE: sys->frame->CycleTabs(-1); return nullptr;
 
-            case A_CUSTCOL: {
-                uint c = PickColor(sys->frame, sys->customcolor);
-                if (c != (uint)-1) sys->customcolor = c;
-                return nullptr;
-            }
-
             case A_DEFBGCOL: {
                 uint oldbg = Background();
                 uint c = PickColor(sys->frame, oldbg);
