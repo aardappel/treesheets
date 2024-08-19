@@ -798,8 +798,6 @@ struct MyFrame : wxFrame {
         #ifdef SIMPLERENDER
         sys->cfg->Write(L"cursorcolor", sys->cursorcolor);
         #endif
-        sys->cfg->Write(L"showtoolbar", sys->showtoolbar);
-        sys->cfg->Write(L"showstatusbar", sys->showstatusbar);
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {
@@ -967,7 +965,7 @@ struct MyFrame : wxFrame {
 
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
-                    sys->showstatusbar = !sys->showstatusbar;
+                    sys->cfg->Write(L"showstatusbar", sys->showstatusbar = !sys->showstatusbar);
                     wxStatusBar *wsb = this->GetStatusBar();
                     wsb->Show(sys->showstatusbar);
                     this->SendSizeEvent();
@@ -977,7 +975,7 @@ struct MyFrame : wxFrame {
                 break;
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
-                    sys->showtoolbar = !sys->showtoolbar;
+                    sys->cfg->Write(L"showtoolbar", sys->showtoolbar = !sys->showtoolbar);
                     wxToolBar *wtb = this->GetToolBar();
                     wtb->Show(sys->showtoolbar);
                     this->SendSizeEvent();
