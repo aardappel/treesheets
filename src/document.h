@@ -2076,12 +2076,6 @@ struct Document {
         return nullptr;
     }
 
-    uint PickColor(wxFrame *fr, uint defcol) {
-        wxColour col = wxGetColourFromUser(fr, wxColour(defcol));
-        if (col.IsOk()) return (col.Blue() << 16) + (col.Green() << 8) + col.Red();
-        return -1;
-    }
-
     const wxChar *layrender(int ds, bool vert, bool toggle = false, bool noset = false) {
         if (selected.Thin()) return NoThin();
         selected.g->cell->AddUndo(this);
