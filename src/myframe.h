@@ -554,7 +554,10 @@ struct MyFrame : wxFrame {
         MyAppend(optmenu, A_COLCELL, _(L"&Set Custom Color From Cell BG"));
         MyAppend(optmenu, A_DEFBGCOL, _(L"Pick Document Background..."));
         #ifdef SIMPLERENDER
-        MyAppend(optmenu, A_DEFCURCOL, _(L"Pick Cu&rsor Color..."));
+            MyAppend(optmenu, A_DEFCURCOL, _(L"Pick Cu&rsor Color..."));
+        #else
+            optmenu->AppendCheckItem(A_HOVERSHADOW, _(L"Hover shadow"));
+            optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
         #endif
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_SHOWTBAR, _(L"Show Toolbar"));
@@ -993,6 +996,11 @@ struct MyFrame : wxFrame {
             case A_ZOOMSCR: sys->cfg->Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
             case A_THINSELC: sys->cfg->Write(L"thinselc", sys->thinselc = ce.IsChecked()); break;
             case A_AUTOSAVE: sys->cfg->Write(L"autosave", sys->autosave = ce.IsChecked()); break;
+            #ifndef SIMPLERENDER
+                case A_HOVERSHADOW:
+                   sys->cfg->Write(L"hovershadow", sys->hovershadow = ce.IsChecked());
+                   break;
+            #endif
             case A_CENTERED:
                 sys->cfg->Write(L"centered", sys->centered = ce.IsChecked());
                 Refresh();

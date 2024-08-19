@@ -357,7 +357,7 @@ struct Grid {
         } else {
             Cell *c = C(s.x, s.y);
             DrawRectangle(dc, bgcol, c->GetX(doc) - cell_margin, c->GetY(doc) - cell_margin,
-                          c->sx + cell_margin * 2, c->sy + cell_margin * 2);
+                          c->sx + cell_margin * 2, c->sy + cell_margin * 2, !sys->hovershadow);
         }
         dc.SetLogicalFunction(wxCOPY);
         #endif
