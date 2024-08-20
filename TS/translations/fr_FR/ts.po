@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-11 08:22+0200\n"
+"POT-Creation-Date: 2024-08-20 19:05+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -709,6 +709,9 @@ msgstr "Disposition horizontale mode Grille\tALT+4"
 
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Disposition horizontale mode Ligne\tALT+6"
+
+msgid "Hover shadow"
+msgstr ""
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-12 09:25-0300\n"
+"POT-Creation-Date: 2024-08-20 19:05+0200\n"
 "PO-Revision-Date: 2024-08-12 09:38-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -699,6 +699,9 @@ msgstr "Layout Horizontal, Renderização com Estilo de Grade\tALT+4"
 
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Layout Horizontal, Renderização com Estilo de Linha\tALT+6"
+
+msgid "Hover shadow"
+msgstr ""
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr ""

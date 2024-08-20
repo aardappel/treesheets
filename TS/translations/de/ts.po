@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-11 08:22+0200\n"
+"POT-Creation-Date: 2024-08-20 19:05+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -703,6 +703,9 @@ msgstr "Horizontale Anordnung mit Tabellenstil-Rendering\tALT+4"
 
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Horizontale Anordnung mit Zeilenstil-Rendering\tALT+6"
+
+msgid "Hover shadow"
+msgstr ""
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "Wie viele Pixel breit soll die Seite ein? (0 für automatisches Anpassen)"

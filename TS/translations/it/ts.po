@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-11 08:22+0200\n"
+"POT-Creation-Date: 2024-08-20 19:05+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -650,7 +650,7 @@ msgstr "È stato trovato un tipo di immagine non definito in questo programma."
 
 msgid "Go To &Matching Cell (Text)\tF6"
 msgstr "Vai alla cella corrispondente (testo)\tF6"
- 
+
 msgid "Go To &Previous Search Result\tSHIFT+F3"
 msgstr "&Vai al risultato della ricerca precedente\tSHIFT+F3"
 
@@ -696,6 +696,9 @@ msgstr "Layout orizzontale con Rendering stile griglia\tALT+4"
 
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Layout orizzontale con Rendering stile linea\tALT+6"
+
+msgid "Hover shadow"
+msgstr ""
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "Di quanti pixel deve essere una pagina? (0 per adattamento automatico)"
