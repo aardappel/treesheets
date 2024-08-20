@@ -964,7 +964,7 @@ struct MyFrame : wxFrame {
 
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
-                    sys->cfg->Write(L"showstatusbar", sys->showstatusbar = !sys->showstatusbar);
+                    sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());
                     wxStatusBar *wsb = this->GetStatusBar();
                     wsb->Show(sys->showstatusbar);
                     this->SendSizeEvent();
@@ -974,7 +974,7 @@ struct MyFrame : wxFrame {
                 break;
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
-                    sys->cfg->Write(L"showtoolbar", sys->showtoolbar = !sys->showtoolbar);
+                    sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
                     wxToolBar *wtb = this->GetToolBar();
                     wtb->Show(sys->showtoolbar);
                     this->SendSizeEvent();
