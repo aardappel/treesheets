@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-11 08:22+0200\n"
+"POT-Creation-Date: 2024-08-20 19:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -653,6 +653,9 @@ msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
 msgstr ""
 
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
+msgstr ""
+
+msgid "Hover shadow"
 msgstr ""
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
