@@ -698,7 +698,7 @@ msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Layout orizzontale con Rendering stile linea\tALT+6"
 
 msgid "Hover shadow"
-msgstr ""
+msgstr "Ombra a bilico"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "Di quanti pixel deve essere una pagina? (0 per adattamento automatico)"

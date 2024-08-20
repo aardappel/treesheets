@@ -711,7 +711,7 @@ msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Disposition horizontale mode Ligne\tALT+6"
 
 msgid "Hover shadow"
-msgstr ""
+msgstr "Ombre en survol"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr ""

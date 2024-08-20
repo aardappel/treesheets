@@ -705,7 +705,7 @@ msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "Horizontale Anordnung mit Zeilenstil-Rendering\tALT+6"
 
 msgid "Hover shadow"
-msgstr ""
+msgstr "Schwebeschatten"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "Wie viele Pixel breit soll die Seite ein? (0 für automatisches Anpassen)"
