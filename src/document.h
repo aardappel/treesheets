@@ -2085,7 +2085,7 @@ struct Document {
         if (!WalkPath(drawpath)->grid) Zoom(-1, dc);
     }
 
-    void PasteSingleText(Cell *c, const wxString &t) { c->text.Insert(this, t, selected); }
+    void PasteSingleText(Cell *c, const wxString &t) { c->text.Insert(this, t, selected, false); }
 
     void PasteOrDrop(const wxTextDataObject &pdataobjt, const wxBitmapDataObject &pdataobji,
                      const wxFileDataObject &pdataobjf) {
@@ -2333,7 +2333,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 loopallcellssel(c, false) {
                     c->text.Clear(this, selected);
-                    c->text.Insert(this, tagit->first, selected);
+                    c->text.Insert(this, tagit->first, selected, true);
                 }
                 selected.g->cell->ResetChildren();
                 selected.g->cell->ResetLayout();

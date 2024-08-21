@@ -374,18 +374,18 @@ struct Text {
         }
     }
 
-    void Insert(Document *doc, const wxString &ins, Selection &s) {
+    void Insert(Document *doc, const wxString &ins, Selection &s, bool keeprelsize) {
         auto prevl = t.Len();
         if (!s.TextEdit()) Clear(doc, s);
         RangeSelRemove(s);
-        if (!prevl) SetRelSize(s);
+        if (!prevl && !keeprelsize) SetRelSize(s);
         t.insert(s.cursor, ins);
         s.cursor = s.cursorend = s.cursor + (int)ins.Len();
     }
     void Key(Document *doc, int k, Selection &s) {
         wxString ins;
         ins += k;
-        Insert(doc, ins, s);
+        Insert(doc, ins, s, false);
     }
 
     void Delete(Selection &s) {

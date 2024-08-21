@@ -417,7 +417,7 @@ struct Cell {
                 textcolor = c->textcolor;
                 text.stylebits = c->text.stylebits;
             }
-            text.Insert(doc, c->text.t, s);
+            text.Insert(doc, c->text.t, s, false);
         }
         if (c->text.image) text.image = c->text.image;
         if (c->grid) {
