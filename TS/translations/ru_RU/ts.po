@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets-ru_RU-0.1\n"
+"Project-Id-Version: TreeSheets_RU-1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-11 08:22+0200\n"
-"PO-Revision-Date: 2024-08-17 20:09+0300\n"
+"POT-Creation-Date: 2024-08-20 19:05+0200\n"
+"PO-Revision-Date: 2024-08-25 09:11+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru_RU\n"
@@ -755,6 +755,9 @@ msgstr "Горизонтальная компоновка в стиле &Сет�
 
 msgid "Horizontal Layout with Line Style Rendering\tALT+6"
 msgstr "... в стиле &Линии\tALT+6"
+
+msgid "Hover shadow"
+msgstr "Тень при наведении"
 
 # Сообщения
 msgid "How many pixels wide should a page be? (0 for auto fit)"
@@ -1611,6 +1614,3 @@ msgstr "масштаб:"
 
 msgid "size:"
 msgstr "размер:"
-
-#~ msgid "Toggle Zen Mode"
-#~ msgstr "... Д&зен режим"
