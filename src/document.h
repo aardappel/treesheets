@@ -192,9 +192,7 @@ struct Document {
             if (!zos.IsOk()) return _(L"Zlib error while writing file.");
             wxDataOutputStream dos(zos);
             rootgrid->Save(dos, ocs);
-            for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit) {
-                dos.WriteString(tagit->first);
-            }
+            for (auto &tag : tags) { dos.WriteString(tag.first); }
             dos.WriteString(wxEmptyString);
         }
         lastmodsinceautosave = 0;
@@ -2321,19 +2319,17 @@ struct Document {
 
     void RecreateTagMenu(wxMenu &menu) {
         int i = A_TAGSET;
-        for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit) {
-            menu.Append(i++, tagit->first);
-        }
+        for (auto &tag : tags) { menu.Append(i++, tag.first); }
     }
 
     const wxChar *TagSet(int tagno) {
         int i = 0;
-        for (auto tagit = tags.begin(); tagit != tags.end(); ++tagit)
+        for (auto &tag : tags)
             if (i++ == tagno) {
                 selected.g->cell->AddUndo(this);
                 loopallcellssel(c, false) {
                     c->text.Clear(this, selected);
-                    c->text.Insert(this, tagit->first, selected, true);
+                    c->text.Insert(this, tag.first, selected, true);
                 }
                 selected.g->cell->ResetChildren();
                 selected.g->cell->ResetLayout();
