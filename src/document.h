@@ -410,10 +410,10 @@ struct Document {
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
-                    if (!im->image_data.empty() &&
-                        imagetypes.find(im->image_type) != imagetypes.end()) {
-                        wxBitmap bm = ConvertBufferToWxBitmap(im->image_data,
-                                                              imagetypes.at(im->image_type).first);
+                    if (auto imagetypeit = imagetypes.find(im->image_type);
+                        imagetypeit != imagetypes.end() && !im->image_data.empty()) {
+                        wxBitmap bm =
+                            ConvertBufferToWxBitmap(im->image_data, imagetypeit->second.first);
                         dragdata.Add(new wxBitmapDataObject(bm));
                     }
                 } else {
@@ -447,10 +447,10 @@ struct Document {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 if (c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
-                    if (!im->image_data.empty() &&
-                        imagetypes.find(im->image_type) != imagetypes.end()) {
-                        wxBitmap bm = ConvertBufferToWxBitmap(im->image_data,
-                                                              imagetypes.at(im->image_type).first);
+                    if (auto imagetypeit = imagetypes.find(im->image_type);
+                        imagetypeit != imagetypes.end() && !im->image_data.empty()) {
+                        wxBitmap bm =
+                            ConvertBufferToWxBitmap(im->image_data, imagetypeit->second.first);
                         if (wxTheClipboard->Open()) {
                             wxTheClipboard->SetData(new wxBitmapDataObject(bm));
                             wxTheClipboard->Close();
