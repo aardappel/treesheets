@@ -514,7 +514,7 @@ struct Cell {
         if (grid) grid->SetGridTextLayout(ds, vert, noset, grid->SelectAll());
     }
 
-    bool IsTag(Document *doc) { return doc->tags.find(text.t) != doc->tags.end(); }
+    bool IsTag(Document *doc) { return doc->tags.contains(text.t); }
     void MaxDepthLeaves(int curdepth, int &maxdepth, int &leaves) {
         if (curdepth > maxdepth) maxdepth = curdepth;
         if (grid)
