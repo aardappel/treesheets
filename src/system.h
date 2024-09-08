@@ -344,7 +344,7 @@ struct System {
                             for (;;) {
                                 wxString s = dis.ReadString();
                                 if (!s.Len()) break;
-                                doc->tags[s] = true;
+                                doc->tags.insert(s);
                             }
                         }
 
