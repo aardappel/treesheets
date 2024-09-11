@@ -99,7 +99,7 @@ struct System {
     int sortcolumn;
     int sortxs;
     int sortdescending;
-    wxHashMapBool watchedpaths;
+    std::set<wxString> watchedpaths;
     bool insidefiledialog {false};
     struct TimerStruct : wxTimer {
         void Notify() {
@@ -395,8 +395,7 @@ struct System {
             doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
             const wxString &d =
                 wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            if (watchedpaths.find(d) == watchedpaths.end()) {
-                watchedpaths[d] = true;
+            if (watchedpaths.insert(d).second) {
                 frame->watcher->Add(wxFileName(d), wxFSW_EVENT_ALL);
             }
         }
