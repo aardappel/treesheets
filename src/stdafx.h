@@ -54,12 +54,9 @@
 #include <wx/timectrl.h>
 #include <wx/xml/xml.h>
 
-#include <clocale>
-
-WX_DECLARE_STRING_HASH_MAP(bool, wxHashMapBool);
-
 #include <algorithm>
 #include <array>
+#include <clocale>
 #include <condition_variable>
 #include <filesystem>
 #include <functional>
