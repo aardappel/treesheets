@@ -1072,16 +1072,13 @@ struct MyFrame : wxFrame {
     }
 
     void OnSearch(wxCommandEvent &ce) {
-        TSCanvas *sw = GetCurTab();
-        if (!sys->showtoolbar) {
-            sw->SetFocus();
-            return;
-        }
+        if (!sys->showtoolbar) return;
         wxString searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
         SetSearchTextBoxBackgroundColour(false);
         Document *doc = GetCurTab()->doc;
+        TSCanvas *sw = GetCurTab();
         wxClientDC dc(sw);
         doc->SearchNext(dc, false, false, false);
         if (doc->searchfilter) {
@@ -1092,11 +1089,8 @@ struct MyFrame : wxFrame {
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
+        if (!sys->showtoolbar) return;
         TSCanvas *sw = GetCurTab();
-        if (!sys->showtoolbar) {
-            sw->SetFocus();
-            return;
-        }
         if (ce.GetId() == A_SEARCH && ce.GetString().Len() == 0) {
             sw->SetFocus();
         } else {
