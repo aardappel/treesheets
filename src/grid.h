@@ -5,7 +5,7 @@ struct Grid {
     // subcells
     Cell **cells;
     // widths for each column
-    int *colwidths {nullptr};
+    std::vector<int> colwidths {};
     // xsize, ysize
     int xs;
     int ys;
@@ -68,7 +68,6 @@ struct Grid {
     ~Grid() {
         foreachcell(c) if (c) delete c;
         delete[] cells;
-        delete[] colwidths;
     }
 
     void InitCells(Cell *clonestylefrom = nullptr) {
@@ -80,10 +79,8 @@ struct Grid {
     }
 
     void InitColWidths() {
-        if (colwidths) delete[] colwidths;
-        colwidths = new int[xs];
-        int cw = cell ? cell->ColWidth() : sys->defaultmaxcolwidth;
-        loop(x, xs) colwidths[x] = cw;
+        colwidths.clear();
+        colwidths.resize(xs, cell ? cell->ColWidth() : sys->defaultmaxcolwidth);
     }
 
     /* Clones g into this grid. This mutates the grid this function is called on. */
@@ -463,16 +460,12 @@ struct Grid {
     void DeleteCells(int dx, int dy, int nxs, int nys) {
         Cell **ncells = new Cell *[(xs + nxs) * (ys + nys)];
         Cell **ncp = ncells;
-        int *ncw = new int[xs + nxs];
-        int *ncwp = ncw;
         foreachcell(c) if (x == dx || y == dy) DELETEP(c) else *ncp++ = c;
-        loop(x, xs) if (x != dx) *ncwp++ = colwidths[x];
         delete[] cells;
         cells = ncells;
-        delete[] colwidths;
-        colwidths = ncw;
         xs += nxs;
         ys += nys;
+        if (dx >= 0) colwidths.erase(colwidths.begin() + dx);
         SetOrient();
     }
 
@@ -529,8 +522,6 @@ struct Grid {
         assert(nxs + nys == 1);
         Cell **ocells = cells;
         cells = new Cell *[(xs + nxs) * (ys + nys)];
-        int *ocw = colwidths;
-        colwidths = new int[xs + nxs];
         xs += nxs;
         ys += nys;
         Cell **ncp = ocells;
@@ -546,10 +537,8 @@ struct Grid {
             }
         }
         else c = *ncp++;
-        int *cwp = ocw;
-        loop(x, xs) colwidths[x] = x == dx ? cell->ColWidth() : *cwp++;
         delete[] ocells;
-        delete[] ocw;
+        if (dx >= 0) colwidths.insert(colwidths.begin() + dx, cell->ColWidth());
     }
 
     void Save(wxDataOutputStream &dos, Cell *ocs) const {
