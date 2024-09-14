@@ -13,8 +13,6 @@ struct MyFrame : wxFrame {
     wxBitmap foldicon;
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
-    double csf {(double)FromDIP(1.0)};  // TODO: functions using this attribute should be modified
-                                        // to handle device-independent pixels
     std::vector<std::string> scripts_in_menu;
     wxToolBar *tb {nullptr};
     wxTextCtrl *filter {nullptr};
@@ -1140,7 +1138,6 @@ struct MyFrame : wxFrame {
         {  // block all other events until we finished preparing
             wxEventBlocker blocker(this);
             wxBusyCursor wait;
-            csf = FromDIP(1.0);
             {
                 ThreadPool pool(std::thread::hardware_concurrency());
                 loopv(i, sys->imagelist) {

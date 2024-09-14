@@ -47,7 +47,7 @@ struct Image {
             wxBitmapType it = mapitem->second.first;
             wxBitmap bm = ConvertBufferToWxBitmap(image_data, it);
             pixel_width = bm.GetWidth();
-            ScaleBitmap(bm, 1.0 / display_scale * sys->frame->csf, bm_display);
+            ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
         }
         return bm_display;
     }
