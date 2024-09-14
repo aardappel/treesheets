@@ -1072,6 +1072,7 @@ struct MyFrame : wxFrame {
     }
 
     void OnSearch(wxCommandEvent &ce) {
+        if (!sys->showtoolbar) return;
         wxString searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
@@ -1088,6 +1089,7 @@ struct MyFrame : wxFrame {
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
+        if (!sys->showtoolbar) return;
         TSCanvas *sw = GetCurTab();
         if (ce.GetId() == A_SEARCH && ce.GetString().Len() == 0) {
             sw->SetFocus();
