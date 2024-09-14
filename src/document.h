@@ -113,22 +113,24 @@ struct Document {
 
     uint Background() { return rootgrid ? rootgrid->cellcolor : 0xFFFFFF; }
 
+    void InitCellSelect(Cell *ics, int xs, int ys) {
+        if (!ics) {
+            SetSelect(Selection(rootgrid->grid, 0, 0, 1, 1));
+            return;
+        }
+        Grid *ipg = ics->parent->grid;
+        foreachcellingrid(c, ipg) {
+            if (c == ics) {
+                SetSelect(Selection(ipg, x, y, xs, ys));
+                goto foreachcellingrid_end;
+            }
+        }
+        foreachcellingrid_end:;
+    }
+
     void InitWith(Cell *r, const wxString &filename, Cell *ics, int xs, int ys) {
         rootgrid = r;
-        if (ics) {
-            Grid *ipg = ics->parent->grid;
-            if (ipg) {
-                foreachcellingrid(c, ipg) {
-                    if (c == ics) {
-                        SetSelect(Selection(ipg, x, y, xs, ys));
-                        goto foreachcellingrid_end;
-                    }
-                }
-            foreachcellingrid_end:;
-            }
-        } else {
-            SetSelect(Selection(r->grid, 0, 0, 1, 1));
-        }
+        InitCellSelect(ics, xs, ys);
         ChangeFileName(filename, false);
     }
 
