@@ -5,7 +5,7 @@ struct Grid {
     // subcells
     Cell **cells;
     // widths for each column
-    std::vector<int> colwidths {};
+    std::vector<int> colwidths;
     // xsize, ysize
     int xs;
     int ys;
