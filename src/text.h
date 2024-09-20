@@ -57,12 +57,13 @@ struct Text {
 
     wxString htmlify(wxString &str) {
         wxString r;
-        loop(i, str.Len()) {
-            switch (str[i].GetValue()) {
+        for(auto cref : str) {
+            wxChar c = cref.GetValue();
+            switch(c) {
                 case '&': r += L"&amp;"; break;
                 case '<': r += L"&lt;"; break;
                 case '>': r += L"&gt;"; break;
-                default: r += str[i];
+                default: r += c;
             }
         }
         return r;
