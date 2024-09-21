@@ -396,8 +396,7 @@ struct Document {
         sys->clipboardcopy = s;
         wxString html = selected.g->ConvertToText(
             selected, 0, k == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT, this, false);
-        auto htmlobj = new wxHTMLDataObject(html);
-        return htmlobj;
+        return new wxHTMLDataObject(html);
     }
 
     void Copy(int k) {
