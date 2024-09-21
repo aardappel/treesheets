@@ -39,3 +39,7 @@ END_EVENT_TABLE()
 BEGIN_EVENT_TABLE(treesheets::ThreeChoiceDialog, wxDialog)
     EVT_BUTTON(wxID_ANY, treesheets::ThreeChoiceDialog::OnButton)
 END_EVENT_TABLE()
+
+BEGIN_EVENT_TABLE(treesheets::DateTimeRangeDialog, wxDialog)
+    EVT_BUTTON(wxID_ANY, treesheets::DateTimeRangeDialog::OnButton)
+END_EVENT_TABLE()

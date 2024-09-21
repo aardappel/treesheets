@@ -73,6 +73,56 @@ struct ThreeChoiceDialog : public wxDialog {
     DECLARE_EVENT_TABLE()
 };
 
+struct DateTimeRangeDialog : public wxDialog {
+    wxStaticText introtext {this, wxID_ANY, _(L"Please select the datetime range.")};
+    wxStaticText starttext {this, wxID_ANY, _(L"Start date and time")};
+    wxDatePickerCtrl startdate {this, wxID_ANY};
+    wxTimePickerCtrl starttime {this, wxID_ANY};
+    wxStaticText endtext {this, wxID_ANY, _(L"End date and time")};
+    wxDatePickerCtrl enddate {this, wxID_ANY};
+    wxTimePickerCtrl endtime {this, wxID_ANY};
+    wxButton okbtn {this, wxID_OK, _(L"Filter")};
+    wxButton cancelbtn {this, wxID_CANCEL, _(L"Cancel")};
+    wxDateTime begin;
+    wxDateTime end;
+    DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _(L"Date and time range")) {
+        wxSizerFlags sizerflags(1);
+        wxFlexGridSizer *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        startsizer->Add(&startdate, 0, wxALL, 5);
+        startsizer->Add(&starttime, 0, wxALL, 5);
+        wxFlexGridSizer *endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        endsizer->Add(&enddate, 0, wxALL, 5);
+        endsizer->Add(&endtime, 0, wxALL, 5);
+        wxFlexGridSizer *btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        btnsizer->Add(&okbtn, 0, wxALL, 5);
+        btnsizer->Add(&cancelbtn, 0, wxALL, 5);
+        wxFlexGridSizer *topsizer = new wxFlexGridSizer(1);
+        topsizer->Add(&introtext, 0, wxALL, 5);
+        topsizer->Add(&starttext, 0, wxALL, 5);
+        topsizer->Add(startsizer, sizerflags);
+        topsizer->Add(&endtext, 0, wxALL, 5);
+        topsizer->Add(endsizer, sizerflags);
+        topsizer->Add(btnsizer, sizerflags);
+        SetSizerAndFit(topsizer);
+        topsizer->SetSizeHints(this);
+    }
+    void OnButton(wxCommandEvent &ce) {
+        if (ce.GetId() == wxID_OK) {
+            int starthour, startmin, startsec;
+            starttime.GetTime(&starthour, &startmin, &startsec);
+            wxTimeSpan starttimespan(starthour, startmin, startsec);
+            int endhour, endmin, endsec;
+            endtime.GetTime(&endhour, &endmin, &endsec);
+            wxTimeSpan endtimespan(endhour, endmin, endsec);
+            begin = startdate.GetValue().Add(starttimespan);
+            end = enddate.GetValue().Add(endtimespan);
+        }
+        EndModal(ce.GetId());
+    }
+    int Run() { return ShowModal(); }
+    DECLARE_EVENT_TABLE()
+};
+
 struct ColorPopup : wxVListBoxComboPopup {
     ColorPopup(wxWindow *parent) {}
 
