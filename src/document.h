@@ -447,13 +447,12 @@ struct Document {
                 if (c && !c->text.t && c->text.image) {
                     Image *im = c->text.image;
                     if (auto imagetypeit = imagetypes.find(im->image_type);
-                        imagetypeit != imagetypes.end() && !im->image_data.empty()) {
+                        imagetypeit != imagetypes.end() && !im->image_data.empty() &&
+                        wxTheClipboard->Open()) {
                         wxBitmap bm =
                             ConvertBufferToWxBitmap(im->image_data, imagetypeit->second.first);
-                        if (wxTheClipboard->Open()) {
-                            wxTheClipboard->SetData(new wxBitmapDataObject(bm));
-                            wxTheClipboard->Close();
-                        }
+                        wxTheClipboard->SetData(new wxBitmapDataObject(bm));
+                        wxTheClipboard->Close();
                     }
                 } else {
                     wxDataObjectComposite *clipboarddata = new wxDataObjectComposite();
