@@ -32,28 +32,7 @@ struct Text {
         return r;
     }
 
-    void SetNum(double d) {
-        std::wstringstream ss;
-        ss << std::fixed;
-
-        // We're going to use at most 19 digits after '.'. Add small value round remainder.
-        size_t max_significant = 10;
-        d += 0.00000000005;
-
-        ss << d;
-
-        auto s = ss.str();
-        // First trim whatever lies beyond the precision to avoid garbage digits.
-        max_significant += 2;  // "0."
-        if (s[0] == '-') max_significant++;
-        if (s.length() > max_significant) s.erase(max_significant);
-        // Now strip unnecessary trailing zeroes.
-        while (s.back() == '0') s.pop_back();
-        // If there were only zeroes, remove '.'.
-        if (s.back() == '.') s.pop_back();
-
-        t = s;
-    }
+    void SetNum(double d) { t = std::format("{:g}", d); }
 
     wxString htmlify(wxString &str) {
         wxString r;

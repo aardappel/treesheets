@@ -59,6 +59,7 @@
 #include <clocale>
 #include <condition_variable>
 #include <filesystem>
+#include <format>
 #include <functional>
 #include <future>
 #include <locale>
