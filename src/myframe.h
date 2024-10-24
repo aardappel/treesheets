@@ -13,6 +13,7 @@ struct MyFrame : wxFrame {
     wxBitmap foldicon;
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
+    bool darkmode {wxSystemSettings::GetAppearance().IsDark()};
     std::vector<std::string> scripts_in_menu;
     wxToolBar *tb {nullptr};
     wxTextCtrl *filter {nullptr};
@@ -676,7 +677,6 @@ struct MyFrame : wxFrame {
 
         wxString iconpath = GetDataPath(L"images/material/toolbar/");
 
-        bool darkmode = wxSystemSettings::GetAppearance().IsDark();
         auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
             tb->AddTool(action, name,
@@ -1074,9 +1074,9 @@ struct MyFrame : wxFrame {
 
     void SetSearchTextBoxBackgroundColour(bool found) {
         if (!filter) return;
-        filter->SetBackgroundColour(found ? wxColour("AQUAMARINE")
+        filter->SetBackgroundColour(found ? (darkmode ? *wxBLACK : wxColour("AQUAMARINE"))
                                           : wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
-        filter->SetForegroundColour(found ? *wxBLACK
+        filter->SetForegroundColour(found ? (darkmode ? wxColour("AQUAMARINE") : *wxBLACK)
                                           : wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT));
         filter->Refresh();
     }
