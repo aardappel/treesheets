@@ -84,7 +84,7 @@ struct Document {
     int editfilter {0};
     wxDateTime lastmodificationtime;
     std::set<wxString> tags;
-    Vector<Cell *> itercells;
+    std::vector<Cell *> itercells;
 
     #define loopcellsin(par, c) \
         CollectCells(par);      \
@@ -107,7 +107,7 @@ struct Document {
     }
 
     ~Document() {
-        itercells.setsize_nd(0);
+        itercells.clear();
         DELETEP(rootgrid);
     }
 
@@ -1653,8 +1653,8 @@ struct Document {
             case A_MINISIZE: {
                 selected.g->cell->AddUndo(this);
                 CollectCellsSel(false);
-                Vector<Cell *> outer;
-                outer.append(itercells);
+                std::vector<Cell *> outer;
+                outer.insert(outer.end(), itercells.begin(), itercells.end());
                 loopv(i, outer) {
                     Cell *o = outer[i];
                     if (o->grid) {
@@ -1663,7 +1663,7 @@ struct Document {
                         }
                     }
                 }
-                outer.setsize_nd(0);
+                outer.clear();
                 selected.g->cell->ResetChildren();
                 Refresh();
                 return nullptr;
@@ -2290,17 +2290,13 @@ struct Document {
     }
 
     void CollectCells(Cell *c) {
-        itercells.setsize_nd(0);
+        itercells.clear();
         c->CollectCells(itercells);
     }
 
     void CollectCellsSel(bool recurse) {
-        itercells.setsize_nd(0);
+        itercells.clear();
         if (selected.g) selected.g->CollectCellsSel(itercells, selected, recurse);
-    }
-
-    static int _timesort(const Cell **a, const Cell **b) {
-        return ((*a)->text.lastedit < (*b)->text.lastedit) * 2 - 1;
     }
 
     void ApplyEditFilter() {
@@ -2308,7 +2304,10 @@ struct Document {
         scrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(rootgrid);
-        itercells.sort((void *)(int(__cdecl *)(const void *, const void *))_timesort);
+        std::sort(itercells.begin(), itercells.end(), [](Cell *a, Cell *b) {
+            // sort in descending order
+            return a->text.lastedit > b->text.lastedit;
+        });
         loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
         rootgrid->ResetChildren();
         Refresh();
@@ -2318,8 +2317,18 @@ struct Document {
         searchfilter = false;
         scrolltoselection = true;
         CollectCells(rootgrid);
-        loopv(i, itercells) itercells[i]->text.filtered =
-            !itercells[i]->text.lastedit.IsBetween(rangebegin, rangeend);
+        std::sort(itercells.begin(), itercells.end(), [](Cell *a, Cell *b) {
+            // sort in ascending order
+            return a->text.lastedit < b->text.lastedit;
+        });
+        auto lower = std::lower_bound(itercells.begin(), itercells.end(), rangebegin,
+                                      [](Cell *c, auto value) { return c->text.lastedit < value; });
+        auto upper = std::upper_bound(itercells.begin(), itercells.end(), rangeend,
+                                      [](auto value, Cell *c) { return c->text.lastedit > value; });
+        auto it = itercells.begin();
+        for (; it != lower && it != itercells.end(); it++) (*it)->text.filtered = true;
+        for (; it != upper && it != itercells.end(); it++) (*it)->text.filtered = false;
+        for (; it != itercells.end(); it++) (*it)->text.filtered = true;
         rootgrid->ResetChildren();
         Refresh();
     }
