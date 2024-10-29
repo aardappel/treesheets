@@ -507,8 +507,8 @@ struct Grid {
     }
 
     void DelSelf(Document *doc, Selection &s) {
-        if (!doc->drawpath.empty() && doc->drawpath.last().g == this) {
-            doc->drawpath.pop();
+        if (!doc->drawpath.empty() && doc->drawpath.back().g == this) {
+            doc->drawpath.pop_back();
             doc->curdrawroot = doc->WalkPath(doc->drawpath);
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?

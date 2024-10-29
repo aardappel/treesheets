@@ -3,7 +3,8 @@
 #endif
 
 struct UndoItem {
-    Vector<Selection> path, selpath;
+    std::vector<Selection> path;
+    std::vector<Selection> selpath;
     Selection sel;
     unique_ptr<Cell> clone;
     size_t estimated_size {0};
@@ -31,9 +32,9 @@ struct Document {
     int laststylebits;
     int initialzoomlevel {0};
     Cell *curdrawroot;  // for use during Render() calls
-    Vector<UndoItem *> undolist;
-    Vector<UndoItem *> redolist;
-    Vector<Selection> drawpath;
+    std::vector<UndoItem *> undolist;
+    std::vector<UndoItem *> redolist;
+    std::vector<Selection> drawpath;
     int pathscalebias {0};
     wxString filename {L""};
     long lastmodsinceautosave {0};
@@ -506,7 +507,7 @@ struct Document {
             if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
-        while (len < drawpath.size()) drawpath.remove(0);
+        while (len < drawpath.size()) drawpath.erase(drawpath.begin());
     }
 
     void Zoom(int dir, wxDC &dc, bool fromroot = false) {
@@ -2130,17 +2131,17 @@ struct Document {
         }
     }
 
-    void CreatePath(Cell *c, Vector<Selection> &path) {
-        path.setsize(0);
+    void CreatePath(Cell *c, std::vector<Selection> &path) {
+        path.clear();
         while (c->parent) {
             const Selection &s = c->parent->grid->FindCell(c);
             ASSERT(s.g);
-            path.push() = s;
+            path.push_back(s);
             c = c->parent;
         }
     }
 
-    Cell *WalkPath(Vector<Selection> &path) {
+    Cell *WalkPath(std::vector<Selection> &path) {
         Cell *c = rootgrid;
         loopvrev(i, path) {
             Selection &s = path[i];
@@ -2154,19 +2155,19 @@ struct Document {
 
     bool LastUndoSameCellAny(Cell *c) {
         return undolist.size() && undolist.size() != undolistsizeatfullsave &&
-               undolist.last()->cloned_from == (uintptr_t)c;
+               undolist.back()->cloned_from == (uintptr_t)c;
     }
 
     bool LastUndoSameCellTextEdit(Cell *c) {
         // hacky way to detect word boundaries to stop coalescing, but works, and
         // not a big deal if selected is not actually related to this cell
         return undolist.size() && !c->grid && undolist.size() != undolistsizeatfullsave &&
-               undolist.last()->sel.EqLoc(c->parent->grid->FindCell(c)) &&
+               undolist.back()->sel.EqLoc(c->parent->grid->FindCell(c)) &&
                (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);
     }
 
     void AddUndo(Cell *c) {
-        redolist.setsize(0);
+        redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
         if (!modified) {
             modified = true;
@@ -2174,7 +2175,7 @@ struct Document {
         }
         if (LastUndoSameCellTextEdit(c)) return;
         UndoItem *ui = new UndoItem();
-        undolist.push() = ui;
+        undolist.push_back(ui);
         ui->clone = c->Clone(nullptr);
         ui->estimated_size = c->EstimatedMemoryUse();
         ui->sel = selected;
@@ -2190,7 +2191,7 @@ struct Document {
             if (total_usage < 100 * 1024 * 1024 && undolist.size() - i < 1000) {
                 total_usage += undolist[i]->estimated_size;
             } else {
-                undolist.remove(0, i + 1);
+                undolist.erase(undolist.begin(), undolist.begin() + i + 1);
                 break;
             }
         }
@@ -2198,12 +2199,13 @@ struct Document {
         undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
-    void Undo(wxDC &dc, Vector<UndoItem *> &fromlist, Vector<UndoItem *> &tolist,
+    void Undo(wxDC &dc, std::vector<UndoItem *> &fromlist, std::vector<UndoItem *> &tolist,
               bool redo = false) {
         Selection beforesel = selected;
-        Vector<Selection> beforepath;
+        std::vector<Selection> beforepath;
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
-        UndoItem *ui = fromlist.pop();
+        UndoItem *ui = fromlist.back();
+        fromlist.pop_back();
         Cell *c = WalkPath(ui->path);
         auto clone = ui->clone.release();
         ui->clone.reset(c);
@@ -2217,9 +2219,9 @@ struct Document {
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
         begindrag = selected;
         ui->sel = beforesel;
-        ui->selpath.setsize(0);
-        ui->selpath.append(beforepath);
-        tolist.push() = ui;
+        ui->selpath.clear();
+        ui->selpath.insert(ui->selpath.end(), beforepath.begin(), beforepath.end());
+        tolist.push_back(ui);
         if (undolistsizeatfullsave > undolist.size())
             undolistsizeatfullsave = -1;  // gone beyond the save point, always modified
         modified = undolistsizeatfullsave != undolist.size();
@@ -2241,7 +2243,7 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, vector<uint8_t> &&idv, double sc) {
+    void SetImageBM(Cell *c, std::vector<uint8_t> &&idv, double sc) {
         c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')];
     }
 
