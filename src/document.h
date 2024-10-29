@@ -91,10 +91,10 @@ struct Document {
         loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
     #define loopallcells(c)     \
         CollectCells(rootgrid); \
-        loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
+        for (Cell *c : itercells)
     #define loopallcellssel(c, rec) \
         CollectCellsSel(rec);     \
-        loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
+        for (Cell *c : itercells)
 
     Document() {
         ResetFont();
@@ -1652,8 +1652,7 @@ struct Document {
                 CollectCellsSel(false);
                 std::vector<Cell *> outer;
                 outer.insert(outer.end(), itercells.begin(), itercells.end());
-                loopv(i, outer) {
-                    Cell *o = outer[i];
+                for (Cell *o : outer) {
                     if (o->grid) {
                         loopcellsin(o, c) if (_i) {
                             c->text.relsize = g_deftextsize - g_mintextsize() - c->Depth();
