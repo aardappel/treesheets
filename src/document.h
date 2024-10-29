@@ -2099,7 +2099,7 @@ struct Document {
         if (pdataobji.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
             c->AddUndo(this);
             wxImage im = pdataobji.GetBitmap().ConvertToImage();
-            vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+            std::vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
             SetImageBM(c, std::move(idv), sys->frame->FromDIP(1.0));
             c->Reset();
             wantsrefresh = true;
@@ -2251,7 +2251,7 @@ struct Document {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+        std::vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
         SetImageBM(c, std::move(idv), sc);
         c->Reset();
         return true;
