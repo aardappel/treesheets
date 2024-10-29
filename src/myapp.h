@@ -175,8 +175,9 @@ struct MyApp : wxApp {
         return 0;
     }
 
-    void MacOpenFile(const wxString &fn) {
-        if (sys) sys->Open(fn);
+    void MacOpenFiles(const wxArrayString &fns) {
+        if (!sys) return;
+        for (auto &fn : fns) { sys->Open(fn); }
     }
 
     DECLARE_EVENT_TABLE()
