@@ -1095,8 +1095,8 @@ struct Grid {
         }
     }
 
-    void CollectCells(Vector<Cell *> &itercells) { foreachcell(c) c->CollectCells(itercells); }
-    void CollectCellsSel(Vector<Cell *> &itercells, const Selection &s, bool recurse) {
+    void CollectCells(std::vector<Cell *> &itercells) { foreachcell(c) c->CollectCells(itercells); }
+    void CollectCellsSel(std::vector<Cell *> &itercells, const Selection &s, bool recurse) {
         foreachcellinsel(c, s) c->CollectCells(itercells, recurse);
     }
 
