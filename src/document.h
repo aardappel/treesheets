@@ -2219,8 +2219,7 @@ struct Document {
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
         begindrag = selected;
         ui->sel = beforesel;
-        ui->selpath.clear();
-        ui->selpath.insert(ui->selpath.end(), beforepath.begin(), beforepath.end());
+        ui->selpath = std::move(beforepath);
         tolist.push_back(ui);
         if (undolistsizeatfullsave > undolist.size())
             undolistsizeatfullsave = -1;  // gone beyond the save point, always modified
