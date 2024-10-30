@@ -864,8 +864,8 @@ struct Grid {
         return acc;
     }
 
-    void Split(Vector<Grid *> &gs, bool vert) {
-        loop(i, vert ? xs : ys) gs.push() = new Grid(vert ? 1 : xs, vert ? ys : 1);
+    void Split(std::vector<Grid *> &gs, bool vert) {
+        loop(i, vert ? xs : ys) gs.push_back(new Grid(vert ? 1 : xs, vert ? ys : 1));
         foreachcell(c) {
             Grid *g = gs[vert ? x : y];
             g->cells[vert ? y : x] = c->SetParent(g->cell);
