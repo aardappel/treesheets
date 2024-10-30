@@ -554,7 +554,10 @@ struct System {
         } else {
             bool allrow = n->GetName() == L"grid";
             for (auto *n : ns)
-                if (n->GetName() != L"row") allrow = false;
+                if (n->GetName() != L"row") {
+                    allrow = false;
+                    break;
+                }
             if (allrow) {
                 int desiredxs;
                 loopv(i, ns) {
