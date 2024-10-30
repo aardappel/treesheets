@@ -142,12 +142,12 @@ struct Evaluator {
                     if (g->xs == 1 || g->ys == 1) {
                         return op->runl(g);
                     } else {
-                        std::vector<Grid *> gs;
+                        std::vector<unique_ptr<Grid>> gs;
                         g->Split(gs, vert);
                         g = new Grid(vert ? gs.size() : 1, vert ? 1 : gs.size());
                         auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
                         loopv(i, gs) {
-                            auto v = op->runl(gs[i]).release();
+                            auto v = op->runl(gs[i].get()).release();
                             g->C(vert ? i : 0, vert ? 0 : i) = v->SetParent(c.get());
                         }
                         return c;
