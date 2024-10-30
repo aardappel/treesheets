@@ -864,10 +864,10 @@ struct Grid {
         return acc;
     }
 
-    void Split(std::vector<shared_ptr<Grid>> &gs, bool vert) {
-        loop(i, vert ? xs : ys) gs.push_back(make_shared<Grid>(vert ? 1 : xs, vert ? ys : 1));
+    void Split(std::vector<unique_ptr<Grid>> &gs, bool vert) {
+        loop(i, vert ? xs : ys) gs.push_back(make_unique<Grid>(vert ? 1 : xs, vert ? ys : 1));
         foreachcell(c) {
-            shared_ptr<Grid> g = gs[vert ? x : y];
+            Grid *g = gs[vert ? x : y].get();
             g->cells[vert ? y : x] = c->SetParent(g->cell);
             c = nullptr;
         }
