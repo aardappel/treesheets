@@ -2315,8 +2315,9 @@ struct Document {
         searchfilter = false;
         scrolltoselection = true;
         CollectCells(rootgrid);
-        loopv(i, itercells) itercells[i]->text.filtered =
-            !itercells[i]->text.lastedit.IsBetween(rangebegin, rangeend);
+        for (auto *c : itercells) {
+            c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
+        }
         rootgrid->ResetChildren();
         Refresh();
     }
