@@ -370,11 +370,12 @@ struct System {
         doc->RefreshImageRefCount(false);
         {
             ThreadPool pool(std::thread::hardware_concurrency());
-            for (auto *img : sys->imagelist) {
+            for (auto *image : sys->imagelist) {
                 pool.enqueue(
                     [](Image *img) {
                         if (img->trefc) img->Display();
-                    }, img);
+                    },
+                    image);
             }
         }  // wait until all tasks are finished
 
