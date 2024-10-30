@@ -513,14 +513,14 @@ struct System {
         return _(L"File load error.");
     }
 
-    int GetXMLNodes(wxXmlNode *n, Vector<wxXmlNode *> &ns, Vector<wxXmlAttribute *> *ps = nullptr,
-                    bool attributestoo = false) {
+    int GetXMLNodes(wxXmlNode *n, std::vector<wxXmlNode *> &ns,
+                    std::vector<wxXmlAttribute *> *ps = nullptr, bool attributestoo = false) {
         for (wxXmlNode *child = n->GetChildren(); child; child = child->GetNext()) {
-            if (child->GetType() == wxXML_ELEMENT_NODE) ns.push() = child;
+            if (child->GetType() == wxXML_ELEMENT_NODE) ns.push_back(child);
         }
         if (attributestoo && ps)
             for (wxXmlAttribute *child = n->GetAttributes(); child; child = child->GetNext()) {
-                ps->push() = child;
+                ps->push_back(child);
             }
         return ns.size() + (ps ? ps->size() : 0);
     }
@@ -543,8 +543,8 @@ struct System {
             c->celltype = wxAtoi(n->GetAttribute(L"type", L"0"));
         }
 
-        Vector<wxXmlNode *> ns;
-        Vector<wxXmlAttribute *> ps;
+        std::vector<wxXmlNode *> ns;
+        std::vector<wxXmlAttribute *> ps;
         int numrows = GetXMLNodes(n, ns, &ps, attributestoo);
         if (!numrows) return;
 
@@ -553,11 +553,12 @@ struct System {
             FillXML(c, ns[0], attributestoo);
         } else {
             bool allrow = n->GetName() == L"grid";
-            loopv(i, ns) if (ns[i]->GetName() != L"row") allrow = false;
+            for (auto *n : ns)
+                if (n->GetName() != L"row") allrow = false;
             if (allrow) {
                 int desiredxs;
                 loopv(i, ns) {
-                    Vector<wxXmlNode *> ins;
+                    std::vector<wxXmlNode *> ins;
                     int xs = GetXMLNodes(ns[i], ins);
                     if (!i) {
                         desiredxs = xs ? xs : 1;
@@ -566,7 +567,6 @@ struct System {
                     }
                     loop(j, desiredxs) if (ins.size() > j)
                         FillXML(c->grid->C(j, i), ins[j], attributestoo);
-                    ins.setsize_nd(0);
                 }
             } else {
                 c->AddGrid(1, numrows);
@@ -575,9 +575,6 @@ struct System {
                 loopv(i, ns) FillXML(c->grid->C(0, i + ps.size()), ns[i], attributestoo);
             }
         }
-
-        ns.setsize_nd(0);
-        ps.setsize_nd(0);
     }
 
     void SetGridSettingsFromXML(Cell *c, wxXmlNode *n) {
