@@ -32,8 +32,8 @@ struct Document {
     int laststylebits;
     int initialzoomlevel {0};
     Cell *curdrawroot;  // for use during Render() calls
-    std::vector<UndoItem *> undolist;
-    std::vector<UndoItem *> redolist;
+    std::vector<unique_ptr<UndoItem>> undolist;
+    std::vector<unique_ptr<UndoItem>> redolist;
     std::vector<Selection> drawpath;
     int pathscalebias {0};
     wxString filename {L""};
@@ -2174,14 +2174,14 @@ struct Document {
             UpdateFileName();
         }
         if (LastUndoSameCellTextEdit(c)) return;
-        UndoItem *ui = new UndoItem();
-        undolist.push_back(ui);
+        unique_ptr<UndoItem> ui = make_unique<UndoItem>();
         ui->clone = c->Clone(nullptr);
         ui->estimated_size = c->EstimatedMemoryUse();
         ui->sel = selected;
         ui->cloned_from = (uintptr_t)c;
         CreatePath(c, ui->path);
         if (selected.g) CreatePath(selected.g->cell, ui->selpath);
+        undolist.push_back(std::move(ui));
         size_t total_usage = 0;
         size_t old_list_size = undolist.size();
         // Cull undolist. Always at least keeps last item.
@@ -2199,12 +2199,12 @@ struct Document {
         undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
-    void Undo(wxDC &dc, std::vector<UndoItem *> &fromlist, std::vector<UndoItem *> &tolist,
-              bool redo = false) {
+    void Undo(wxDC &dc, std::vector<unique_ptr<UndoItem>> &fromlist,
+              std::vector<unique_ptr<UndoItem>> &tolist, bool redo = false) {
         Selection beforesel = selected;
         std::vector<Selection> beforepath;
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
-        UndoItem *ui = fromlist.back();
+        unique_ptr<UndoItem> ui = std::move(fromlist.back());
         fromlist.pop_back();
         Cell *c = WalkPath(ui->path);
         auto clone = ui->clone.release();
@@ -2220,7 +2220,7 @@ struct Document {
         begindrag = selected;
         ui->sel = beforesel;
         ui->selpath = std::move(beforepath);
-        tolist.push_back(ui);
+        tolist.push_back(std::move(ui));
         if (undolistsizeatfullsave > undolist.size())
             undolistsizeatfullsave = -1;  // gone beyond the save point, always modified
         modified = undolistsizeatfullsave != undolist.size();
