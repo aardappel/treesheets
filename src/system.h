@@ -67,8 +67,8 @@ struct System {
     Evaluator ev;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
-    Vector<Image *> imagelist;
-    Vector<int> loadimageids;
+    std::vector<Image *> imagelist;
+    std::vector<int> loadimageids;
     uchar versionlastloaded {0};
     wxLongLong fakelasteditonload;
     wxPen pen_tinytext {wxColour(0x808080ul)};
@@ -269,7 +269,7 @@ struct System {
             int zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
             fakelasteditonload = wxDateTime::Now().GetValue();
 
-            loadimageids.setsize(0);
+            loadimageids.clear();
 
             for (;;) {
                 fis.Read(buf, 1);
@@ -319,7 +319,7 @@ struct System {
                         }
                         if (!fis.IsOk()) image_data.clear();
 
-                        loadimageids.push() = AddImageToList(sc, std::move(image_data), iti);
+                        loadimageids.push_back(AddImageToList(sc, std::move(image_data), iti));
                         break;
                     }
 
@@ -620,7 +620,7 @@ struct System {
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
-        imagelist.push() = new Image(hash, sc, std::move(idv), iti);
+        imagelist.push_back(new Image(hash, sc, std::move(idv), iti));
         return imagelist.size() - 1;
     }
 
