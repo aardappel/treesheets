@@ -142,7 +142,7 @@ struct Evaluator {
                     if (g->xs == 1 || g->ys == 1) {
                         return op->runl(g);
                     } else {
-                        std::vector<unique_ptr<Grid>> gs;
+                        std::vector<shared_ptr<Grid>> gs;
                         g->Split(gs, vert);
                         g = new Grid(vert ? gs.size() : 1, vert ? 1 : gs.size());
                         auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
