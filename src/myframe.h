@@ -16,6 +16,7 @@ struct MyFrame : wxFrame {
     bool darkmode {wxSystemSettings::GetAppearance().IsDark()};
     std::vector<std::string> scripts_in_menu;
     wxToolBar *tb {nullptr};
+    wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
     wxTextCtrl *replaces {nullptr};
     ColorDropdown *celldd {nullptr};
@@ -664,82 +665,7 @@ struct MyFrame : wxFrame {
             SetMenuBar(menubar);
         }
 
-        wxColour toolbgcol(0xD8C7BC);
-
-        tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
-        tb->SetOwnBackgroundColour(toolbgcol);
-
-        #ifdef __WXMAC__
-        #define SEPARATOR
-        #else
-        #define SEPARATOR tb->AddSeparator()
-        #endif
-
-        wxString iconpath = GetDataPath(L"images/material/toolbar/");
-
-        auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
-                             wxString darkicon) {
-            tb->AddTool(action, name,
-                        wxBitmapBundle::FromSVGFile(iconpath + (darkmode ? darkicon : lighticon),
-                                                    wxSize(24, 24)),
-                        name, wxITEM_NORMAL);
-        };
-
-        AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
-        AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg", L"fileopen_dark.svg");
-        AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg", L"filesave_dark.svg");
-        AddTBIcon(_(L"Save As"), wxID_SAVEAS, iconpath, L"filesaveas.svg", L"filesaveas_dark.svg");
-        SEPARATOR;
-        AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
-        AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg", L"editcopy_dark.svg");
-        AddTBIcon(_(L"Paste (CTRL+v)"), wxID_PASTE, iconpath, L"editpaste.svg",
-                  L"editpaste_dark.svg");
-        SEPARATOR;
-        AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, L"zoomin.svg",
-                  L"zoomin_dark.svg");
-        AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, L"zoomout.svg",
-                  L"zoomout_dark.svg");
-        SEPARATOR;
-        AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath, L"newgrid.svg", L"newgrid_dark.svg");
-        AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
-        SEPARATOR;
-        AddTBIcon(_(L"Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
-        tb->AddSeparator();
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
-        tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
-                                               FromDIP(wxSize(80, 22)),
-                                               wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg", L"cancel_dark.svg");
-        AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath, L"search.svg",
-                  L"search_dark.svg");
-        SEPARATOR;
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
-        tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
-                                                 FromDIP(wxSize(80, 22)),
-                                                 wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath, L"cancel.svg", L"cancel_dark.svg");
-        AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath, L"replace.svg",
-                  L"replace_dark.svg");
-        AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
-                  L"replaceall_dark.svg");
-        tb->AddSeparator();
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
-        celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
-        tb->AddControl(celldd);
-        SEPARATOR;
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
-        textdd = new ColorDropdown(tb, A_TEXTCOLOR, 2);
-        tb->AddControl(textdd);
-        SEPARATOR;
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
-        borddd = new ColorDropdown(tb, A_BORDCOLOR, 7);
-        tb->AddControl(borddd);
-        tb->AddSeparator();
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
-        idd = new ImageDropdown(tb, imagepath);
-        tb->AddControl(idd);
-        tb->Realize();
-        tb->Show(sys->showtoolbar);
+        ConstructToolBar();
 
         wxStatusBar *sb = CreateStatusBar(4);
         sb->SetOwnBackgroundColour(toolbgcol);
@@ -885,6 +811,83 @@ struct MyFrame : wxFrame {
         if (page == nb->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
         nb->SetPageText(page,
                         (fn.empty() ? wxString(_(L"<unnamed>")) : wxFileName(fn).GetName()) + mods);
+    }
+
+    void ConstructToolBar() {
+        tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
+        tb->SetOwnBackgroundColour(toolbgcol);
+
+        #ifdef __WXMAC__
+        #define SEPARATOR
+        #else
+        #define SEPARATOR tb->AddSeparator()
+        #endif
+
+        wxString iconpath = GetDataPath(L"images/material/toolbar/");
+
+        auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
+                             wxString darkicon) {
+            tb->AddTool(action, name,
+                        wxBitmapBundle::FromSVGFile(iconpath + (darkmode ? darkicon : lighticon),
+                                                    wxSize(24, 24)),
+                        name, wxITEM_NORMAL);
+        };
+
+        AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
+        AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg", L"fileopen_dark.svg");
+        AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg", L"filesave_dark.svg");
+        AddTBIcon(_(L"Save As"), wxID_SAVEAS, iconpath, L"filesaveas.svg", L"filesaveas_dark.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
+        AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg", L"editcopy_dark.svg");
+        AddTBIcon(_(L"Paste (CTRL+v)"), wxID_PASTE, iconpath, L"editpaste.svg",
+                  L"editpaste_dark.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, L"zoomin.svg",
+                  L"zoomin_dark.svg");
+        AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, L"zoomout.svg",
+                  L"zoomout_dark.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath, L"newgrid.svg", L"newgrid_dark.svg");
+        AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
+        SEPARATOR;
+        AddTBIcon(_(L"Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
+        tb->AddSeparator();
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
+        tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
+                                               FromDIP(wxSize(80, 22)),
+                                               wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg", L"cancel_dark.svg");
+        AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath, L"search.svg",
+                  L"search_dark.svg");
+        SEPARATOR;
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
+        tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
+                                                 FromDIP(wxSize(80, 22)),
+                                                 wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath, L"cancel.svg", L"cancel_dark.svg");
+        AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath, L"replace.svg",
+                  L"replace_dark.svg");
+        AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
+                  L"replaceall_dark.svg");
+        tb->AddSeparator();
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
+        celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
+        tb->AddControl(celldd);
+        SEPARATOR;
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
+        textdd = new ColorDropdown(tb, A_TEXTCOLOR, 2);
+        tb->AddControl(textdd);
+        SEPARATOR;
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
+        borddd = new ColorDropdown(tb, A_BORDCOLOR, 7);
+        tb->AddControl(borddd);
+        tb->AddSeparator();
+        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
+        idd = new ImageDropdown(tb, imagepath);
+        tb->AddControl(idd);
+        tb->Realize();
+        tb->Show(sys->showtoolbar);
     }
 
     void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
@@ -1172,6 +1175,18 @@ struct MyFrame : wxFrame {
             idd->FillBitmapVector(imagepath);
             if (GetStatusBar()) SetDPIAwareStatusWidths();
         }
+    }
+
+    void OnSysColourChanged(wxSysColourChangedEvent &se) {
+        if (bool newmode = wxSystemSettings::GetAppearance().IsDark(); newmode != darkmode)
+            OnDarkModeChanged(newmode);
+        se.Skip();
+    }
+
+    void OnDarkModeChanged(bool newmode) {
+        darkmode = newmode;
+        delete (tb);
+        ConstructToolBar();
     }
 
     void OnIconize(wxIconizeEvent &me) {
