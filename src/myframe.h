@@ -1149,17 +1149,10 @@ struct MyFrame : wxFrame {
         {  // block all other events until we finished preparing
             wxEventBlocker blocker(this);
             wxBusyCursor wait;
-            {
-                ThreadPool pool(std::thread::hardware_concurrency());
-                loopv(i, sys->imagelist) {
-                    pool.enqueue(
-                        [](Image *img) {
-                            img->bm_display = wxNullBitmap;
-                            img->Display();
-                        },
-                        sys->imagelist[i]);
-                }
-            }  // wait until all tasks are finished
+            for (const auto &uimg : sys->imagelist) {
+                uimg->bm_display = wxNullBitmap;
+                uimg->Display();
+            }
             RenderFolderIcon();
             if (nb) {
                 loop(i, nb->GetPageCount()) {

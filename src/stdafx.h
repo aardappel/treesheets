@@ -57,26 +57,18 @@
 #include <algorithm>
 #include <array>
 #include <clocale>
-#include <condition_variable>
 #include <filesystem>
-#include <functional>
-#include <future>
 #include <locale>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <new>
-#include <queue>
 #include <set>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 #include <string_view>
-#include <thread>
 #include <utility>
 #include <vector>
 
-#include "threadpool.h"
 #include "tools.h"
 
 #ifdef _WIN32
