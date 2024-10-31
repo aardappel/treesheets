@@ -2243,7 +2243,7 @@ struct Document {
     }
 
     void SetImageBM(Cell *c, std::vector<uint8_t> &&idv, double sc) {
-        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')];
+        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')].get();
     }
 
     bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {

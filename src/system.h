@@ -67,7 +67,7 @@ struct System {
     Evaluator ev;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
-    std::vector<Image *> imagelist;
+    std::vector<unique_ptr<Image>> imagelist;
     std::vector<int> loadimageids;
     uchar versionlastloaded {0};
     wxLongLong fakelasteditonload;
@@ -368,16 +368,9 @@ struct System {
     done:
 
         doc->RefreshImageRefCount(false);
-        {
-            ThreadPool pool(std::thread::hardware_concurrency());
-            for (auto *image : sys->imagelist) {
-                pool.enqueue(
-                    [](Image *img) {
-                        if (img->trefc) img->Display();
-                    },
-                    image);
-            }
-        }  // wait until all tasks are finished
+        for (const auto &uimg : sys->imagelist) {
+            if (uimg->trefc) uimg->Display();
+        }
 
         FileUsed(filename, doc);
         doc->Refresh();
@@ -620,7 +613,7 @@ struct System {
         loopv(i, imagelist) {
             if (imagelist[i]->hash == hash) return i;
         }
-        imagelist.push_back(new Image(hash, sc, std::move(idv), iti));
+        imagelist.push_back(make_unique<Image>(hash, sc, std::move(idv), iti));
         return imagelist.size() - 1;
     }
 

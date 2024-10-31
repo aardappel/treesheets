@@ -472,7 +472,7 @@ struct Text {
         relsize = dis.Read32();
 
         int i = dis.Read32();
-        image = i >= 0 ? sys->imagelist[sys->loadimageids[i]] : nullptr;
+        image = i >= 0 ? sys->imagelist[sys->loadimageids[i]].get() : nullptr;
 
         if (sys->versionlastloaded >= 7) stylebits = dis.Read32();
 
