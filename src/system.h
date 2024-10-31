@@ -370,7 +370,7 @@ struct System {
         doc->RefreshImageRefCount(false);
         {
             ThreadPool pool(std::thread::hardware_concurrency());
-            for (auto &image : sys->imagelist) {
+            for (const auto &image : sys->imagelist) {
                 pool.enqueue(
                     [](auto *img) {
                         if (img->trefc) img->Display();
