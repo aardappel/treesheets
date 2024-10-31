@@ -368,9 +368,16 @@ struct System {
     done:
 
         doc->RefreshImageRefCount(false);
-        for (const auto &uimg : sys->imagelist) {
-            if (uimg->trefc) uimg->Display();
-        }
+        {
+            ThreadPool pool(std::thread::hardware_concurrency());
+            for (auto &image : sys->imagelist) {
+                pool.enqueue(
+                    [](auto *img) {
+                        if (img->trefc) img->Display();
+                    },
+                    image.get());
+            }
+        }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
         doc->Refresh();
