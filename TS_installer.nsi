@@ -17,6 +17,8 @@ OutFile "windows_treesheets_setup.exe"
 
 RequestExecutionLevel user
 
+ManifestDPIAware true
+
 InstallDir "$LOCALAPPDATA\Programs\TreeSheets"
 
 InstallDirRegKey HKCU "Software\TreeSheets" "Install_Dir"
