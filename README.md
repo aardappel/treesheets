@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/aardappel/treesheets/assets/3286756/8aaf7e24-70ee-4ed1-92ea-881b366ea570" />
+  <img src="https://github.com/user-attachments/assets/1d6dc57a-5db2-48ce-82b9-5e7675bf0e7d">
 </p>
 
 TreeSheets is a "hierarchical spreadsheet" that is a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
