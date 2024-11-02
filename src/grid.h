@@ -1,3 +1,5 @@
+#ifndef TREESHEETS_GRID_H
+#define TREESHEETS_GRID_H
 
 struct Grid {
     // owning cell.
@@ -1111,3 +1113,5 @@ struct Grid {
 
     void ClearImages(const Selection &s) { foreachcellinsel(c, s) c->text.image = nullptr; }
 };
+
+#endif

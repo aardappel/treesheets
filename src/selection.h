@@ -1,3 +1,5 @@
+#ifndef TREESHEETS_SELECTION_H
+#define TREESHEETS_SELECTION_H
 
 class Selection {
     bool textedit {false};
@@ -398,3 +400,5 @@ class Selection {
         doc->DrawSelectMove(dc, *this);
     }
 };
+
+#endif

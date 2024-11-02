@@ -1,3 +1,5 @@
+#ifndef TREESHEETS_TEXT_H
+#define TREESHEETS_TEXT_H
 
 struct Text {
     Cell *cell {nullptr};
@@ -505,3 +507,5 @@ struct Text {
         }
     }
 };
+
+#endif

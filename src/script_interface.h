@@ -1,3 +1,6 @@
+#ifndef TREESHEETS_SCRIPT_INTERFACE_H
+#define TREESHEETS_SCRIPT_INTERFACE_H
+
 typedef int64_t (*FileLoader)(string_view_nt absfilename, std::string *dest, int64_t start, int64_t len);
 
 namespace script {
@@ -45,3 +48,5 @@ extern std::string RunLobster(std::string_view filename, std::string_view code, 
 extern void TSDumpBuiltinDoc();
 
 }  // namespace script
+
+#endif

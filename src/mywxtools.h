@@ -1,3 +1,5 @@
+#ifndef TREESHEETS_MYWXTOOLS_H
+#define TREESHEETS_MYWXTOOLS_H
 
 static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline = false) {
     if (outline)
@@ -252,3 +254,5 @@ static uint64_t CalculateHash(vector<uint8_t> &idv) {
     int max = 4096;
     return FNV1A64(idv.data(), min(idv.size(), max));
 }
+
+#endif

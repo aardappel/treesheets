@@ -1,3 +1,5 @@
+#ifndef TREESHEETS_CELL_H
+#define TREESHEETS_CELL_H
 
 /* The evaluation types for a cell.
 CT_DATA: "Data"
@@ -540,3 +542,5 @@ struct Cell {
         return this;
     }
 };
+
+#endif

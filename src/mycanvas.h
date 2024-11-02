@@ -1,3 +1,6 @@
+#ifndef TREESHEETS_MYCANVAS_H
+#define TREESHEETS_MYCANVAS_H
+
 struct TSCanvas : public wxScrolledCanvas {
     MyFrame *frame;
     Document *doc {nullptr};
@@ -187,3 +190,5 @@ struct TSCanvas : public wxScrolledCanvas {
 
     DECLARE_EVENT_TABLE()
 };
+
+#endif

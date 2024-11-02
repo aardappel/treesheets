@@ -1,3 +1,5 @@
+#ifndef TREESHEETS_MYAPP_H
+#define TREESHEETS_MYAPP_H
 
 struct IPCServer : wxServer {
     wxConnectionBase *OnAcceptConnection(const wxString &topic) {
@@ -182,3 +184,5 @@ struct MyApp : wxApp {
 
     DECLARE_EVENT_TABLE()
 };
+
+#endif

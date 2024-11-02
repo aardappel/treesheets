@@ -1,3 +1,6 @@
+#ifndef TREESHEETS_SYSTEM_H
+#define TREESHEETS_SYSTEM_H
+
 struct Image {
     vector<uint8_t> image_data;
     char image_type;
@@ -632,3 +635,5 @@ struct System {
 
     void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
 };
+
+#endif

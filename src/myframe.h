@@ -1,3 +1,6 @@
+#ifndef TREESHEETS_MYFRAME_H
+#define TREESHEETS_MYFRAME_H
+
 struct MyFrame : wxFrame {
     wxString exepath_;
     MyApp *app;
@@ -1326,3 +1329,5 @@ struct MyFrame : wxFrame {
 
     DECLARE_EVENT_TABLE()
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef TREESHEETS_EVALUATOR_H
+#define TREESHEETS_EVALUATOR_H
 
 /*
     A structure describing an operation.
@@ -210,3 +212,5 @@ struct Evaluator {
         ClearVars();
     }
 };
+
+#endif

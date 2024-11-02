@@ -1,3 +1,6 @@
+#ifndef TREESHEETS_DOCUMENT_H
+#define TREESHEETS_DOCUMENT_H
+
 #ifndef PACKAGE_VERSION
     #define PACKAGE_VERSION __DATE__
 #endif
@@ -2336,3 +2339,5 @@ struct Document {
         Refresh();
     }
 };
+
+#endif

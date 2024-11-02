@@ -1,8 +1,8 @@
+#ifndef TREESHEETS_LOBSTER_IMPL_H
+#define TREESHEETS_LOBSTER_IMPL_H
 
 #include "lobster/stdafx.h"
-
 #include "script_interface.h"
-
 #include "lobster/compiler.h"
 
 using namespace lobster;
@@ -228,3 +228,4 @@ FileLoader EnginePreInit(NativeRegistry &nfr) {
 extern "C" void GLFrame(StackPtr, VM &) {}
 string BreakPoint(lobster::VM &vm, string_view reason) { return {}; }
 
+#endif
