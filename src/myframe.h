@@ -1181,6 +1181,8 @@ struct MyFrame : wxFrame {
     }
 
     void OnDarkModeChanged(bool newmode) {
+        wxEventBlocker blocker(this);
+        wxBusyCursor wait;
         darkmode = newmode;
         wxString s_filter =  filter->GetValue();
         wxString s_replaces = replaces->GetValue();
