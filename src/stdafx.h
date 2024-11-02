@@ -85,3 +85,8 @@
 #endif
 
 using namespace std;
+
+#ifndef TREESHEETS_LOBSTER_STRING_TOOLS_H
+    #define TREESHEETS_LOBSTER_STRING_TOOLS_H
+    #include "lobster/string_tools.h"
+#endif
