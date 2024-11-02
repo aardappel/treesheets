@@ -142,6 +142,10 @@ struct MyApp : wxApp {
             }
         #endif
 
+        #ifdef __WXMSW__
+            MSWEnableDarkMode();
+        #endif
+
         sys = new System(portable);
         frame = new MyFrame(exepath, this);
 

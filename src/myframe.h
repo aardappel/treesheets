@@ -668,7 +668,6 @@ struct MyFrame : wxFrame {
         ConstructToolBar();
 
         wxStatusBar *sb = CreateStatusBar(4);
-        sb->SetOwnBackgroundColour(toolbgcol);
         SetStatusBarPane(0);
         SetDPIAwareStatusWidths();
         sb->Show(sys->showstatusbar);
@@ -815,7 +814,7 @@ struct MyFrame : wxFrame {
 
     void ConstructToolBar() {
         tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
-        tb->SetOwnBackgroundColour(toolbgcol);
+        if (!darkmode) tb->SetOwnBackgroundColour(toolbgcol);
 
         #ifdef __WXMAC__
         #define SEPARATOR
