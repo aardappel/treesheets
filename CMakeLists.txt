@@ -104,6 +104,7 @@ add_executable(
 )
 
 target_include_directories(treesheets PUBLIC lobster/src)
+target_precompile_headers(treesheets PUBLIC src/stdafx.h)
 
 target_link_libraries(
     treesheets
