@@ -610,9 +610,20 @@ struct Document {
                             curdrawroot->ColWidth(), 0);
     }
 
-    void Draw(wxDC &dc) {
+    void Draw(
+        #ifdef __WXMSW__
+            wxBufferedPaintDC
+        #else
+            wxPaintDC
+        #endif
+            &pdc) {
+        wxGraphicsContext *context = wxGraphicsContext::Create(pdc);
+        context->SetAntialiasMode(wxANTIALIAS_DEFAULT);
         redrawpending = false;
-        dc.SetBackground(wxBrush(wxColor(Background())));
+        pdc.SetBackground(wxBrush(wxColor(Background())));
+        pdc.SetGraphicsContext(context);
+        wxDC &dc = static_cast<wxDC&>(pdc);
+        sw->DoPrepareDC(dc);
         dc.Clear();
         if (!rootgrid) return;
         sw->GetClientSize(&maxx, &maxy);
@@ -650,7 +661,6 @@ struct Document {
         centery = sys->centered && !originy && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
-        sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         Render(dc);
         DrawSelect(dc, selected);
