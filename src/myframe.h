@@ -1146,33 +1146,32 @@ struct MyFrame : wxFrame {
     }
 
     void OnDPIChanged(wxDPIChangedEvent &dce) {
-        {  // block all other events until we finished preparing
-            wxEventBlocker blocker(this);
-            wxBusyCursor wait;
-            {
-                ThreadPool pool(std::thread::hardware_concurrency());
-                for (const auto &image : sys->imagelist) {
-                    pool.enqueue(
-                        [](auto *img) {
-                            img->bm_display = wxNullBitmap;
-                            img->Display();
-                        },
-                        image.get());
-                }
-            }  // wait until all tasks are finished
-            RenderFolderIcon();
-            if (nb) {
-                loop(i, nb->GetPageCount()) {
-                    TSCanvas *p = (TSCanvas *)nb->GetPage(i);
-                    p->doc->curdrawroot->ResetChildren();
-                    p->doc->curdrawroot->ResetLayout();
-                    p->doc->scrolltoselection = true;
-                }
-                nb->SetTabCtrlHeight(-1);
+        // block all other events until we finished preparing
+        wxEventBlocker blocker(this);
+        wxBusyCursor wait;
+        {
+            ThreadPool pool(std::thread::hardware_concurrency());
+            for (const auto &image : sys->imagelist) {
+                pool.enqueue(
+                    [](auto *img) {
+                        img->bm_display = wxNullBitmap;
+                        img->Display();
+                    },
+                    image.get());
             }
-            idd->FillBitmapVector(imagepath);
-            if (GetStatusBar()) SetDPIAwareStatusWidths();
+        }  // wait until all tasks are finished
+        RenderFolderIcon();
+        if (nb) {
+            loop(i, nb->GetPageCount()) {
+                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                p->doc->curdrawroot->ResetChildren();
+                p->doc->curdrawroot->ResetLayout();
+                p->doc->scrolltoselection = true;
+            }
+            nb->SetTabCtrlHeight(-1);
         }
+        idd->FillBitmapVector(imagepath);
+        if (GetStatusBar()) SetDPIAwareStatusWidths();
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
