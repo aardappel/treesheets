@@ -156,7 +156,8 @@ struct Cell {
         }
 
         if (drawstyle == DS_GRID && actualcellcolor != parentcolor) {
-            DrawRectangle(dc, actualcellcolor, bx - ml, by - mt, sx + ml + mr, sy + mt + mb);
+            DrawRectangle(dc, actualcellcolor, dc.FromDIP(bx - ml), dc.FromDIP(by - mt),
+                          dc.FromDIP(sx + ml + mr), sy + mt + mb);
         }
         if (drawstyle != DS_GRID && HasContent() && !tiny) {
             if (actualcellcolor == parentcolor) {
@@ -167,13 +168,16 @@ struct Cell {
             dc.SetPen(wxPen(actualcellcolor));
 
             if (drawstyle == DS_BLOBSHIER)
-                dc.DrawRoundedRectangle(bx - cell_margin, by - cell_margin, minx + cell_margin * 2,
-                                        miny + cell_margin * 2, sys->roundness);
+                dc.DrawRoundedRectangle(dc.FromDIP(bx - cell_margin), dc.FromDIP(by - cell_margin),
+                                        dc.FromDIP(minx + cell_margin * 2),
+                                        dc.FromDIP(miny + cell_margin * 2),
+                                        dc.FromDIP(sys->roundness));
             else if (HasHeader())
-                dc.DrawRoundedRectangle(bx - cell_margin + g_margin_extra / 2,
-                                        by - cell_margin + ycenteroff + g_margin_extra / 2,
-                                        txs + cell_margin * 2 + g_margin_extra,
-                                        tys + cell_margin * 2 + g_margin_extra, sys->roundness);
+                dc.DrawRoundedRectangle(
+                    dc.FromDIP(bx - cell_margin + g_margin_extra / 2),
+                    dc.FromDIP(by - cell_margin + ycenteroff + g_margin_extra / 2),
+                    dc.FromDIP(txs + cell_margin * 2 + g_margin_extra),
+                    dc.FromDIP(tys + cell_margin * 2 + g_margin_extra), dc.FromDIP(sys->roundness));
             // FIXME: this half a g_margin_extra is a bit of hack
         }
         dc.SetTextBackground(wxColour(actualcellcolor));

@@ -173,17 +173,21 @@ struct Grid {
                     int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
                     if (xl >= doc->originx && xl <= doc->maxx) loop(line, g_line_width) {
                             dc.DrawLine(
-                                xl + line, max(doc->originy, by + yoff + view_grid_outer_spacing),
-                                xl + line, min(doc->maxy, by + maxy + g_line_width) + view_margin);
+                                dc.FromDIP(xl + line),
+                                dc.FromDIP(max(doc->originy, by + yoff + view_grid_outer_spacing)),
+                                dc.FromDIP(xl + line),
+                                dc.FromDIP(min(doc->maxy, by + maxy + g_line_width) + view_margin));
                         }
                 }
                 for (int y = ldelta; y <= ys - ldelta; y++) {
                     int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
                     if (yl >= doc->originy && yl <= doc->maxy) loop(line, g_line_width) {
-                            dc.DrawLine(max(doc->originx,
-                                            bx + xoff + view_grid_outer_spacing + g_line_width),
-                                        yl + line, min(doc->maxx, bx + maxx) + view_margin,
-                                        yl + line);
+                            dc.DrawLine(
+                                dc.FromDIP(max(doc->originx,
+                                               bx + xoff + view_grid_outer_spacing + g_line_width)),
+                                dc.FromDIP(yl + line),
+                                dc.FromDIP(min(doc->maxx, bx + maxx) + view_margin),
+                                dc.FromDIP(yl + line));
                         }
                 }
             };
@@ -224,28 +228,38 @@ struct Grid {
                 if (abs(srcy - desty) < arcsize && !cell->verticaltextandgrid) {
                     if (destyfirst < 0) destyfirst = desty;
                     destylast = desty;
-                    if (visible) dc.DrawLine(srcx, desty, destx, desty);
+                    if (visible)
+                        dc.DrawLine(dc.FromDIP(srcx), dc.FromDIP(desty), dc.FromDIP(destx),
+                                    dc.FromDIP(desty));
                 } else {
                     if (desty < srcy) {
                         if (destyfirst < 0) destyfirst = desty + arcsize;
                         destylast = desty + arcsize;
-                        if (visible) dc.DrawBitmap(sys->frame->line_nw, srcx, desty, true);
+                        if (visible)
+                            dc.DrawBitmap(sys->frame->line_nw, dc.FromDIP(srcx), dc.FromDIP(desty),
+                                          true);
                     } else {
                         destylast = desty - arcsize;
                         if (visible)
-                            dc.DrawBitmap(sys->frame->line_sw, srcx, desty - arcsize, true);
+                            dc.DrawBitmap(sys->frame->line_sw, dc.FromDIP(srcx),
+                                          dc.FromDIP(desty - arcsize), true);
                         desty--;
                     }
-                    if (visible) dc.DrawLine(srcx + arcsize, desty, destx, desty);
+                    if (visible)
+                        dc.DrawLine(dc.FromDIP(srcx + arcsize), dc.FromDIP(desty),
+                                    dc.FromDIP(destx), dc.FromDIP(desty));
                 }
             }
             if (cell->verticaltextandgrid) {
-                if (destylast > 0) dc.DrawLine(srcx, srcy, srcx, destylast);
+                if (destylast > 0)
+                    dc.DrawLine(dc.FromDIP(srcx), dc.FromDIP(srcy), dc.FromDIP(srcx),
+                                dc.FromDIP(destylast));
             } else {
                 if (destyfirst >= 0 && destylast >= 0 && destyfirst < destylast) {
                     destyfirst = min(destyfirst, srcy);
                     destylast = max(destylast, srcy);
-                    dc.DrawLine(srcx, destyfirst, srcx, destylast);
+                    dc.DrawLine(dc.FromDIP(srcx), dc.FromDIP(destyfirst), dc.FromDIP(srcx),
+                                dc.FromDIP(destylast));
                 }
             }
         }
@@ -254,11 +268,11 @@ struct Grid {
             dc.SetPen(wxPen(wxColour(bordercolor)));
             loop(i, view_grid_outer_spacing - 1) {
                 dc.DrawRoundedRectangle(
-                    bx + xoff + view_grid_outer_spacing - i,
-                    by + yoff + view_grid_outer_spacing - i,
-                    maxx - xoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
-                    maxy - yoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
-                    sys->roundness + i);
+                    dc.FromDIP(bx + xoff + view_grid_outer_spacing - i),
+                    dc.FromDIP(by + yoff + view_grid_outer_spacing - i),
+                    dc.FromDIP(maxx - xoff - view_grid_outer_spacing + 1 + i * 2 + view_margin),
+                    dc.FromDIP(maxy - yoff - view_grid_outer_spacing + 1 + i * 2 + view_margin),
+                    dc.FromDIP(sys->roundness + i));
             }
         }
     }
@@ -353,8 +367,10 @@ struct Grid {
             DrawInsert(doc, dc, s, thincol);
         } else {
             Cell *c = C(s.x, s.y);
-            DrawRectangle(dc, bgcol, c->GetX(doc) - cell_margin, c->GetY(doc) - cell_margin,
-                          c->sx + cell_margin * 2, c->sy + cell_margin * 2, !sys->hovershadow);
+            DrawRectangle(dc, bgcol, dc.FromDIP(c->GetX(doc) - cell_margin),
+                          dc.FromDIP(c->GetY(doc) - cell_margin),
+                          dc.FromDIP(c->sx + cell_margin * 2), dc.FromDIP(c->sy + cell_margin * 2),
+                          !sys->hovershadow);
         }
         dc.SetLogicalFunction(wxCOPY);
         #endif
@@ -363,7 +379,7 @@ struct Grid {
     void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color, bool cursoronly) {
         Cell *c = s.GetCell();
         if (c && !c->tiny && (c->HasText() || !c->grid))
-            c->text.DrawCursor(doc, dc, s, full, color, cursoronly, colwidths[s.x]);
+            c->text.DrawCursor(doc, dc, s, full, color, cursoronly, dc.FromDIP(colwidths[s.x]));
     }
 
     void DrawInsert(Document *doc, wxDC &dc, Selection &s, uint colour) {
@@ -372,17 +388,18 @@ struct Grid {
             Cell *c = C(s.x - (s.x == xs), s.y);
             int x = c->GetX(doc) + (c->sx + g_line_width + cell_margin) * (s.x == xs) -
                     g_line_width - cell_margin;
-            loop(line, g_line_width)
-                dc.DrawLine(x + line, max(cell->GetY(doc), doc->originy), x + line,
-                            min(cell->GetY(doc) + cell->sy, doc->maxy));
-            DrawRectangle(dc, colour, x - 1, c->GetY(doc), g_line_width + 2, c->sy);
+            loop(line, g_line_width) dc.DrawLine(
+                dc.FromDIP(x + line), dc.FromDIP(max(cell->GetY(doc), doc->originy)),
+                dc.FromDIP(x + line), dc.FromDIP(min(cell->GetY(doc) + cell->sy, doc->maxy)));
+            DrawRectangle(dc, colour, dc.FromDIP(x - 1), dc.FromDIP(c->GetY(doc)),
+                          dc.FromDIP(g_line_width + 2), dc.FromDIP(c->sy));
         } else {
             Cell *c = C(s.x, s.y - (s.y == ys));
             int y = c->GetY(doc) + (c->sy + g_line_width + cell_margin) * (s.y == ys) -
                     g_line_width - cell_margin;
-            loop(line, g_line_width)
-                dc.DrawLine(max(cell->GetX(doc), doc->originx), y + line,
-                            min(cell->GetX(doc) + cell->sx, doc->maxx), y + line);
+            loop(line, g_line_width) dc.DrawLine(
+                dc.FromDIP(max(cell->GetX(doc), doc->originx)), dc.FromDIP(y + line),
+                dc.FromDIP(min(cell->GetX(doc) + cell->sx, doc->maxx)), dc.FromDIP(y + line));
             DrawRectangle(dc, colour, c->GetX(doc), y - 1, c->sx, g_line_width + 2);
         }
     }
@@ -430,17 +447,22 @@ struct Grid {
                 wxRect g = GetRect(doc, s);
                 int lw = g_line_width;
                 int te = s.TextEdit();
-                dc.DrawRectangle(g.x - 1 - lw, g.y - 1 - lw, g.width + 2 + 2 * lw, 2 + lw - te);
-                dc.DrawRectangle(g.x - 1 - lw, g.y - 1 + g.height + te, g.width + 2 + 2 * lw - 5,
-                                 2 + lw - te);
+                dc.DrawRectangle(dc.FromDIP(g.x - 1 - lw), dc.FromDIP(g.y - 1 - lw),
+                                 dc.FromDIP(g.width + 2 + 2 * lw), dc.FromDIP(2 + lw - te));
+                dc.DrawRectangle(dc.FromDIP(g.x - 1 - lw), dc.FromDIP(g.y - 1 + g.height + te),
+                                 dc.FromDIP(g.width + 2 + 2 * lw - 5), dc.FromDIP(2 + lw - te));
 
-                dc.DrawRectangle(g.x - 1 - lw, g.y + 1 - te, 2 + lw - te, g.height - 2 + 2 * te);
-                dc.DrawRectangle(g.x - 1 + g.width + te, g.y + 1 - te, 2 + lw - te,
-                                 g.height - 2 + 2 * te - 2 - te);
+                dc.DrawRectangle(dc.FromDIP(g.x - 1 - lw), dc.FromDIP(g.y + 1 - te),
+                                 dc.FromDIP(2 + lw - te), dc.FromDIP(g.height - 2 + 2 * te));
+                dc.DrawRectangle(dc.FromDIP(g.x - 1 + g.width + te), dc.FromDIP(g.y + 1 - te),
+                                 dc.FromDIP(2 + lw - te),
+                                 dc.FromDIP(g.height - 2 + 2 * te - 2 - te));
 
-                dc.DrawRectangle(g.x + g.width, g.y + g.height - 2, lw + 2, lw + 4);
-                dc.DrawRectangle(g.x + g.width - lw - 1, g.y + g.height - 2 + 2 * te, lw + 1,
-                                 lw + 4 - 2 * te);
+                dc.DrawRectangle(dc.FromDIP(g.x + g.width), dc.FromDIP(g.y + g.height - 2),
+                                 dc.FromDIP(lw + 2), dc.FromDIP(lw + 4));
+                dc.DrawRectangle(dc.FromDIP(g.x + g.width - lw - 1),
+                                 dc.FromDIP(g.y + g.height - 2 + 2 * te), dc.FromDIP(lw + 1),
+                                 dc.FromDIP(lw + 4 - 2 * te));
             }
             #ifndef SIMPLERENDER
             dc.SetLogicalFunction(wxXOR);
