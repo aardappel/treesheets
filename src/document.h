@@ -507,7 +507,8 @@ struct Document {
             if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
-        while (len < drawpath.size()) drawpath.erase(drawpath.begin());
+        auto diff = (int)drawpath.size() - max(0, len);
+        if (diff > 0) drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
     }
 
     void Zoom(int dir, wxDC &dc, bool fromroot = false) {
