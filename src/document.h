@@ -610,9 +610,20 @@ struct Document {
                             curdrawroot->ColWidth(), 0);
     }
 
-    void Draw(wxDC &dc) {
+    void Draw(
+        #ifdef __WXMSW__
+            wxBufferedPaintDC
+        #else
+            wxPaintDC
+        #endif
+            &pdc) {
+        wxGraphicsContext *context = wxGraphicsContext::Create(pdc);
+        context->SetAntialiasMode(wxANTIALIAS_DEFAULT);
         redrawpending = false;
-        dc.SetBackground(wxBrush(wxColor(Background())));
+        pdc.SetBackground(wxBrush(wxColor(Background())));
+        pdc.SetGraphicsContext(context);
+        wxDC &dc = static_cast<wxDC&>(pdc);
+        sw->DoPrepareDC(dc);
         dc.Clear();
         if (!rootgrid) return;
         sw->GetClientSize(&maxx, &maxy);
@@ -650,7 +661,6 @@ struct Document {
         centery = sys->centered && !originy && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
-        sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         Render(dc);
         DrawSelect(dc, selected);
@@ -710,8 +720,8 @@ struct Document {
             hover.g = nullptr;
             redrawpending = true;
             sys->UpdateStatus(selected);
-            #ifdef __WXGTK__
-                // wxWidgets (wxGTK) does not always automatically update the scrollbar 
+            #ifndef __WXMSW__
+                // wxWidgets on wxMAC and wxGTK does not always automatically update the scrollbar
                 // to new canvas size and current position within after zoom so force it manually
                 int curx, cury;
                 sw->GetViewStart(&curx, &cury);
