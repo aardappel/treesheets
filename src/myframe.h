@@ -668,7 +668,6 @@ struct MyFrame : wxFrame {
         ConstructToolBar();
 
         wxStatusBar *sb = CreateStatusBar(4);
-        sb->SetOwnBackgroundColour(toolbgcol);
         SetStatusBarPane(0);
         SetDPIAwareStatusWidths();
         sb->Show(sys->showstatusbar);
@@ -677,7 +676,6 @@ struct MyFrame : wxFrame {
                                wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT | wxAUI_NB_SCROLL_BUTTONS |
                                    wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_CLOSE_ON_ALL_TABS |
                                    (lefttabs ? wxAUI_NB_BOTTOM : wxAUI_NB_TOP));
-        nb->SetOwnBackgroundColour(toolbgcol);
 
         int display_id = wxDisplay::GetFromWindow(this);
         wxRect disprect = wxDisplay(display_id == wxNOT_FOUND ? 0 : display_id).GetClientArea();
