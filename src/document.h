@@ -897,11 +897,11 @@ struct Document {
                 case WXK_ESCAPE:  // docs say it can be used as a menu accelerator, but it does not
                                   // trigger from there?
                     return Action(dc, A_CANCELEDIT);
-#ifdef WIN32  // works fine on Linux, not sure OS X
-                case WXK_PAGEDOWN: sw->CursorScroll(0, g_scrollratecursor); return nullptr;
-                case WXK_PAGEUP: sw->CursorScroll(0, -g_scrollratecursor); return nullptr;
-#endif
-#ifdef __WXGTK__
+                #ifdef WIN32  // works fine on Linux, not sure OS X
+                    case WXK_PAGEDOWN: sw->CursorScroll(0, g_scrollratecursor); return nullptr;
+                    case WXK_PAGEUP: sw->CursorScroll(0, -g_scrollratecursor); return nullptr;
+                #endif
+                #ifdef __WXGTK__
                 // Due to limitations within GTK, wxGTK does not support specific keycodes 
                 // as accelerator keys for menu items. See wxWidgets documentation for the 
                 // wxMenuItem class in order to obtain more details. This is why we implement 
