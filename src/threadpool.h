@@ -1,6 +1,3 @@
-#ifndef TREESHEETS_THREADPOOL_H
-#define TREESHEETS_THREADPOOL_H
-
 class ThreadPool {
     public:
     ThreadPool(size_t);
@@ -73,5 +70,3 @@ inline ThreadPool::~ThreadPool() {
     condition.notify_all();
     for (std::thread& worker : workers) worker.join();
 }
-
-#endif

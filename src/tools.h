@@ -1,6 +1,3 @@
-#ifndef TREESHEETS_TOOLS_H
-#define TREESHEETS_TOOLS_H
-
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;
@@ -134,5 +131,3 @@ inline uint64_t FNV1A64(uint8_t *data, size_t size) {
     }
     return hash;
 }
-
-#endif
