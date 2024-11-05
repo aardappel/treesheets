@@ -679,19 +679,16 @@ struct MyFrame : wxFrame {
 
         int display_id = wxDisplay::GetFromWindow(this);
         wxRect disprect = wxDisplay(display_id == wxNOT_FOUND ? 0 : display_id).GetClientArea();
-        const int screenx = disprect.width - disprect.x;
-        const int screeny = disprect.height - disprect.y;
-
         const int boundary = 64;
-        const int defx = screenx - 2 * boundary;
-        const int defy = screeny - 2 * boundary;
+        const int defx = disprect.width - 2 * boundary;
+        const int defy = disprect.height - 2 * boundary;
         int resx, resy, posx, posy;
         sys->cfg->Read(L"resx", &resx, defx);
         sys->cfg->Read(L"resy", &resy, defy);
         sys->cfg->Read(L"posx", &posx, boundary + disprect.x);
         sys->cfg->Read(L"posy", &posy, boundary + disprect.y);
-        if (resx > screenx || resy > screeny || posx < disprect.x || posy < disprect.y ||
-            posx + resx > disprect.width + disprect.x ||
+        if (resx > disprect.width || resy > disprect.height || posx < disprect.x ||
+            posy < disprect.y || posx + resx > disprect.width + disprect.x ||
             posy + resy > disprect.height + disprect.y) {
             // Screen res has been resized since we last ran, set sizes to default to avoid being
             // off-screen.
