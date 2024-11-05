@@ -77,7 +77,7 @@ Windows:
     the wxWidgets libraries.
 7. To distribute, build an installer with `TS_installer.nsi` (requires nsis.sourceforge.net)
 
-Linux:
+Linux / MacOS X:
 
 1. Configure the build process with `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release` or similar.
     - If you have `git` installed, the submodules for wxWidgets will be automatically updated and wxWidgets will be compiled as a CMake subproject. TreeSheets will be then statically linked against this wxWidgets build.
@@ -85,20 +85,14 @@ Linux:
         - You can use the version of wxWidgets from https://github.com/wxWidgets/wxWidgets.git.
         - Follow the instructions to build there, but add `--enable-unicode` and `--disable-shared` to the `configure` step.
     - You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
+    - If you are MacOS X user, a bundle will be installed to the installation prefix.
 2. Build using `cmake --build _build`.
 3. Install using `sudo cmake --install _build`.
 
-OSX:
+For Mac OS X users:
 
-1. Build wxWidgets as follows (inside the wxWidgets dir):
-    1. `mkdir build_osx`
-    2. `cd build_osx`
-    3. `../configure --enable-unicode --disable-shared --disable-sys-libs --without-libtiff --with-osx_cocoa --enable-universal_binary=x86_64,arm64 CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" --disable-mediactrl CC=clang CXX=clang++`
-    4. `make -j8`
-    5. `sudo make install`
-2. use the XCode project in `osx/TreeSheets` to build treesheets. put the resulting
-  .app together with the files from the `TS` folder in `osx/TreeSheetsBeta` to distribute.
-  Note to use the "Archive" operation to create a release executable.
+4. Run the application bundle that has been installed to the installation prefix. You might consider to drag-and-drop it to Applications.
+
 
 Contributing:
 -------------

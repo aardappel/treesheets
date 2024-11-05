@@ -100,8 +100,15 @@ endif()
 
 add_executable(
     treesheets
+    MACOSX_BUNDLE
     src/main.cpp
 )
+
+if(APPLE)
+    set_target_properties(treesheets PROPERTIES
+        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/osx/Info.plist"
+    )
+endif()
 
 target_include_directories(treesheets PUBLIC lobster/src)
 target_precompile_headers(treesheets PUBLIC src/stdafx.h)
@@ -143,6 +150,10 @@ if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     install(FILES linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
     install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
+elseif(APPLE)
+    set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
+    set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX}/treesheets.app/Contents/Resources)
+    set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_PREFIX}/treesheets.app/Contents/Resources)
 else()
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX})
@@ -180,7 +191,7 @@ elseif(APPLE)
     foreach(locale ${locales})
         install(
             FILES "TS/translations/${locale}/ts.mo"
-            DESTINATION "${CMAKE_INSTALL_PREFIX}/translations/${locale}.lproj"
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/treesheets.app/Contents/Resources/translations/${locale}.lproj"
         )
     endforeach()
 else()
