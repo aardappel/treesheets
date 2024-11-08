@@ -2034,7 +2034,6 @@ struct Document {
     void PasteOrDrop(const wxTextDataObject &pdataobjt, const wxBitmapDataObject &pdataobji,
                      const wxFileDataObject &pdataobjf) {
         wxBusyCursor wait;
-        bool wantsrefresh = false;
 
         if (pdataobjf.GetFilenames().size() != 0) {
             const wxArrayString &as = pdataobjf.GetFilenames();
@@ -2065,7 +2064,8 @@ struct Document {
                 c->AddUndo(this);
                 if (!LoadImageIntoCell(as[0], c, sys->frame->FromDIP(1.0)))
                     PasteSingleText(c, as[0]);
-                wantsrefresh = true;
+                Refresh();
+                return;
             }
         }
 
@@ -2076,7 +2076,6 @@ struct Document {
             wxString s = pdataobjt.GetText();
             if ((sys->clipboardcopy == s) && sys->cellclipboard) {
                 c->Paste(this, sys->cellclipboard.get(), selected);
-                wantsrefresh = true;
             } else {
                 const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
                 if (as.size()) {
@@ -2092,9 +2091,10 @@ struct Document {
                         if (!c->HasText())
                             c->grid->MergeWithParent(c->parent->grid, selected, this);
                     }
-                    wantsrefresh = true;
                 }
             }
+            Refresh();
+            return;
         }
 
         if (pdataobji.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
@@ -2103,10 +2103,9 @@ struct Document {
             std::vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
             SetImageBM(c, std::move(idv), sys->frame->FromDIP(1.0));
             c->Reset();
-            wantsrefresh = true;
+            Refresh();
+            return;
         }
-
-        if (wantsrefresh) Refresh();
     }
 
     const wxChar *Sort(bool descending) {
