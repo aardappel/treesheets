@@ -98,15 +98,22 @@ else()
     include(${wxWidgets_USE_FILE})
 endif()
 
-add_executable(
-    treesheets
-    MACOSX_BUNDLE
-    src/main.cpp
-)
-
 if(APPLE)
+    add_executable(
+        treesheets
+        MACOSX_BUNDLE
+        src/main.cpp
+        osx/App.icns
+    )
+    set_source_files_properties(osx/App.icns PROPERTIES
+        MACOSX_PACKAGE_LOCATION "Resources")
     set_target_properties(treesheets PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/osx/Info.plist"
+    )
+else()
+    add_executable(
+        treesheets
+        src/main.cpp
     )
 endif()
 
