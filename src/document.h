@@ -507,7 +507,7 @@ struct Document {
             if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
-        if (auto diff = (int)drawpath.size() - max(0, len) > 0)
+        if (auto diff = (int)drawpath.size() - max(0, len); diff > 0)
             drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
     }
 
