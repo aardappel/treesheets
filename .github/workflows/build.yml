@@ -105,34 +105,14 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v4
-    - name: clone wxWidgets
-      run: git clone --depth 1 --recurse-submodules https://github.com/wxWidgets/wxWidgets
-    - name: build wxWidgets
-      run: |
-        mkdir -p wxWidgets/build_
-        cd wxWidgets/build_
-        ../configure --disable-shared --disable-sys-libs --with-osx_cocoa --without-libtiff --enable-universal_binary=x86_64,arm64 CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" OBJCXXFLAGS="-stdlib=libc++" CC=clang CXX=clang++
-        make -j4
-    - name: install wxWidgets
-      run: |
-        cd wxWidgets/build_
-        sudo make install
-    - name: build TreeSheets
-      working-directory: osx/TreeSheets
-      run: |
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(date +'%Y%m%d%H%M%S')" "TreeSheets/TreeSheets-Info.plist"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(date +'%Y.%m.%d')" "TreeSheets/TreeSheets-Info.plist"
-        xcodebuild -list
-        xcodebuild -toolchain clang -configuration Release -target TreeSheets -scheme TreeSheets -derivedDataPath build
-        chmod +x build/Build/Products/Release/TreeSheets.app/Contents/MacOS/TreeSheets
-        rm -rf build/Build/Products/Release/TreeSheets.app.dSYM
-        zip -r ../../mac_treesheets.zip build/Build/Products/Release
-    - name: upload build artifacts
-      if: github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v4
-      with:
-        name: Mac TreeSheets
-        path: build/Build/Products/Release
+    - name: cmake
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=macos-bundle
+    - name: Build TreeSheets
+      run: cmake --build _build -j4
+    - name: Create bundle
+      run: cmake --install _build
+    - name: Zip bundle
+      run: zip -r mac_treesheets.zip macos-bundle
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
