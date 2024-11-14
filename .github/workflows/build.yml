@@ -110,7 +110,7 @@ jobs:
         /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(date +'%Y%m%d%H%M%S')" "osx/Info.plist"
         /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(date +'%Y.%m.%d')" "osx/Info.plist"
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=macos-bundle
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_INSTALL_PREFIX=macos-bundle
     - name: Build TreeSheets
       run: cmake --build _build -j4
     - name: Create bundle
