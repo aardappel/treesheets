@@ -4,6 +4,21 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleTypeExtensions</key>
+		<array>
+			<string>cts</string>
+		</array>
+		<key>CFBundleTypeIconFile</key>
+		<string>App</string>
+		<key>CFBundleTypeName</key>
+		<string>TreeSheets</string>
+	</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>treesheets</string>
 	<key>CFBundleGetInfoString</key>
@@ -37,7 +52,17 @@
 	<string></string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.productivity</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.15</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Wouter van Oortmersen</string>
+	<string>Copyright © 2013 Wouter van Oortmerssen. All rights reserved.</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 </dict>
 </plist>
