@@ -100,28 +100,28 @@ endif()
 
 if(APPLE)
     add_executable(
-        treesheets
+        TreeSheets
         MACOSX_BUNDLE
         src/main.cpp
         osx/App.icns
     )
     set_source_files_properties(osx/App.icns PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources")
-    set_target_properties(treesheets PROPERTIES
+    set_target_properties(TreeSheets PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/osx/Info.plist"
     )
 else()
     add_executable(
-        treesheets
+        TreeSheets
         src/main.cpp
     )
 endif()
 
-target_include_directories(treesheets PUBLIC lobster/src)
-target_precompile_headers(treesheets PUBLIC src/stdafx.h)
+target_include_directories(TreeSheets PUBLIC lobster/src)
+target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 target_link_libraries(
-    treesheets
+    TreeSheets
     PRIVATE
     $<IF:$<BOOL:${TREESHEETS_WITH_STATIC_WXWIDGETS}>,
         wx::aui
@@ -137,7 +137,7 @@ target_link_libraries(
 ########## TREESHEETS INSTALLATION SETTINGS ###############
 
 if(LINUX)
-    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the treesheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
+    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
 endif()
 
 if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
@@ -150,24 +150,24 @@ if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_FULL_PKGDATADIR ${CMAKE_INSTALL_FULL_DATADIR}/${CMAKE_PROJECT_NAME})
 
     # Convert relative to absolute paths because only absolute paths are looked up on Linux
-    target_compile_definitions(treesheets PRIVATE "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
-    target_compile_definitions(treesheets PRIVATE "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\"")
-    target_compile_definitions(treesheets PRIVATE "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\"")
+    target_compile_definitions(TreeSheets PRIVATE "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
+    target_compile_definitions(TreeSheets PRIVATE "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\"")
+    target_compile_definitions(TreeSheets PRIVATE "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\"")
 
     install(FILES linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
     install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
 elseif(APPLE)
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
-    set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX}/treesheets.app/Contents/Resources)
-    set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_PREFIX}/treesheets.app/Contents/Resources)
+    set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX}/TreeSheets.app/Contents/Resources)
+    set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_PREFIX}/TreeSheets.app/Contents/Resources)
 else()
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX})
     set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_PREFIX})
 endif()
 
-install(TARGETS treesheets DESTINATION ${TREESHEETS_BINDIR})
+install(TARGETS TreeSheets DESTINATION ${TREESHEETS_BINDIR})
 install(DIRECTORY TS/docs DESTINATION ${TREESHEETS_DOCDIR})
 install(FILES TS/readme.html DESTINATION ${TREESHEETS_DOCDIR})
 install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
@@ -198,7 +198,7 @@ elseif(APPLE)
     foreach(locale ${locales})
         install(
             FILES "TS/translations/${locale}/ts.mo"
-            DESTINATION "${CMAKE_INSTALL_PREFIX}/treesheets.app/Contents/Resources/translations/${locale}.lproj"
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/TreeSheets.app/Contents/Resources/translations/${locale}.lproj"
         )
     endforeach()
 else()
