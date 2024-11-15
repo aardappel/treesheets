@@ -81,7 +81,7 @@
 #include "tools.h"
 
 #ifdef _WIN32
-    #include "..\treesheets\resource.h"
+    #include "..\win\resource.h"
     #include "StackWalker\StackWalkerHelpers.h"
 #endif
 

@@ -2,11 +2,11 @@
 !include "MUI2.nsh"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\TreeSheets.exe"
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "TreeSheets\tsinst.bmp"
-!define MUI_ICON "TreeSheets\icon1.ico"
+!define MUI_HEADERIMAGE_BITMAP "tsinst.bmp"
+!define MUI_ICON "icon1.ico"
 /*
 doesn't show?
-!define MUI_HEADERIMAGE_UNBITMAP "TreeSheets\tsinst.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "tsinst.bmp"
 */
 
 Unicode true
@@ -49,12 +49,12 @@ SetCompressor /SOLID lzma
 AddBrandingImage top 65
 
 Function ba
-	File TreeSheets\dot3.bmp
-  SetBrandingImage TreeSheets\dot3.bmp
+	File dot3.bmp
+  SetBrandingImage dot3.bmp
 FunctionEnd
 
 Function un.ba
-  SetBrandingImage TreeSheets\dot3.bmp
+  SetBrandingImage dot3.bmp
 FunctionEnd
 */
 
@@ -83,7 +83,7 @@ Section "TreeSheets (required)"
 
   SetOutPath $INSTDIR
 
-  File /r "TS\*.*"
+  File /r "..\TS\*.*"
 
   WriteRegStr HKCU SOFTWARE\TreeSheets "Install_Dir" "$INSTDIR"
 
