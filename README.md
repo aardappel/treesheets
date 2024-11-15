@@ -72,10 +72,10 @@ Windows:
       to Multithreaded
 4. Build solution in both x64 Debug and Release
 5. Close the wxWidgets solution
-6. "treesheets" contains the Visual Studio 2022 files for treesheets, open the .sln.
+6. `win` contains the Visual Studio 2022 files for treesheets, open the .sln.
     If you've done the above correctly, TreeSheets will now compile and pick up
     the wxWidgets libraries.
-7. To distribute, build an installer with `TS_installer.nsi` (requires nsis.sourceforge.net)
+7. To distribute, build an installer with `win\TS_installer.nsi` (requires nsis.sourceforge.net)
 
 Linux / MacOS X:
 

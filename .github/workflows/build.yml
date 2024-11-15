@@ -67,7 +67,7 @@ jobs:
       run: msbuild.exe build/msw/wx_vc14.sln /p:Configuration=Release /p:Platform=x64 /p:RuntimeLibrary=MultiThreaded
     - name: build TreeSheets
       run: |
-        msbuild.exe TreeSheets\treesheets.sln /p:Configuration=Release /p:Platform=x64
+        msbuild.exe win\treesheets.sln /p:Configuration=Release /p:Platform=x64
         Remove-Item TS\*.pdb
         Remove-Item TS\*.ipdb
         Remove-Item TS\*.iobj
@@ -80,7 +80,7 @@ jobs:
     - name: Create installer
       uses: joncloud/makensis-action@v4
       with:
-        script-file: "TS_installer.nsi"
+        script-file: "win/TS_installer.nsi"
         arguments: "/V3"
     - name: upload build artifacts
       if: github.ref == 'refs/heads/master'
