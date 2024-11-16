@@ -45,19 +45,6 @@ SetCompressor /SOLID lzma
 
 !insertmacro MUI_RESERVEFILE_LANGDLL
 
-/*
-AddBrandingImage top 65
-
-Function ba
-	File dot3.bmp
-  SetBrandingImage dot3.bmp
-FunctionEnd
-
-Function un.ba
-  SetBrandingImage dot3.bmp
-FunctionEnd
-*/
-
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
   SetRegView 64
