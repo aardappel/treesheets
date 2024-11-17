@@ -56,43 +56,80 @@ Building:
 ---------
 Note that YOU are responsible to know how to use compilers and C++, the hints below are all the help I will give you:
 
-All Platforms:
-
-- TreeSheets requires the latest development wxWidgets from their repo:
+### Windows
+  
+1. TreeSheets requires the latest development wxWidgets from their repo:
   `git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git`.
-
-Windows:
-
-1. Make sure your `wxWidgets` folder sits parallel to the `src` folder, that way the TreeSheets project will pick it up without further modifications
-2. Inside `wxWidgets/build/msw`, open `wx_vc17.sln` with Visual Studio 2022.
-3. Select all projects (except the project `_custom_build`) in the solution explorer, and go to properties:
+2. Make sure your `wxWidgets` folder sits parallel to the `src` folder, that way the TreeSheets project will pick it up without further modifications
+3. Inside `wxWidgets/build/msw`, open `wx_vc17.sln` with Visual Studio 2022.
+4. Select all projects (except the project `_custom_build`) in the solution explorer, and go to properties:
     - Set configuration to debug, and C/C++ -> Code Generation -> Runtime library
       to Multithreaded Debug
     - Set configuration to release, and C/C++ -> Code Generation -> Runtime library
       to Multithreaded
-4. Build solution in both x64 Debug and Release
-5. Close the wxWidgets solution
-6. `win` contains the Visual Studio 2022 files for treesheets, open the .sln.
+5. Build solution in both x64 Debug and Release
+6. Close the wxWidgets solution
+7. `win` contains the Visual Studio 2022 files for treesheets, open the .sln.
     If you've done the above correctly, TreeSheets will now compile and pick up
     the wxWidgets libraries.
-7. To distribute, build an installer with `win\TS_installer.nsi` (requires nsis.sourceforge.net)
+8. To distribute, build an installer with `win\TS_installer.nsi` (requires nsis.sourceforge.net)
 
-Linux / MacOS X:
+### Mac OS
+  
+1. Clone this repository
+```sh
+git clone https://github.com/aardappel/treesheets
+```
+2. Change to working tree
+```sh
+cd treesheets
+```
+3. Configure the build system
+```sh
+cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/Applications
+```
+4. Build
+```sh
+cmake --build _build -j
+```
+5. Install
+```sh
+cmake --install _build
+```
 
-1. Configure the build process with `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release` or similar.
-    - If you have `git` installed, the submodules for wxWidgets will be automatically updated and wxWidgets will be compiled as a CMake subproject. TreeSheets will be then statically linked against this wxWidgets build.
-    - If you do like to link dynamically against an existing wxWidgets installation instead, you can switch off the option `GIT_WXWIDGETS_SUBMODULES` in the CMake project. In this case:
-        - You can use the version of wxWidgets from https://github.com/wxWidgets/wxWidgets.git.
-        - Follow the instructions to build there, but add `--enable-unicode` and `--disable-shared` to the `configure` step.
-    - You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
-    - If you are MacOS X user, a bundle will be installed to the installation prefix.
-2. Build using `cmake --build _build`.
-3. Install using `sudo cmake --install _build`.
+### Linux
+  
+1. Clone this repository
+```sh
+git clone https://github.com/aardappel/treesheets
+```
+2. Change to working tree
+```sh
+cd treesheets
+```
+3. Configure the build system
+```sh
+cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release
+```
+4. Build
+```sh
+cmake --build _build -j
+```
+5. Install
+```sh
+sudo cmake --install _build
+```
 
-For Mac OS X users:
-
-4. Run the application bundle that has been installed to the installation prefix. You might consider to drag-and-drop it to Applications.
-
+### Further information for Mac OS / Linux
+  
+- If you have `git` installed, the submodules for wxWidgets will be automatically updated and wxWidgets will be compiled as a CMake subproject. TreeSheets will be then statically linked against this wxWidgets build.
+- If you do like to link dynamically against an existing wxWidgets installation instead, you can switch off the option `GIT_WXWIDGETS_SUBMODULES` in the CMake project. In this case:
+    - You can use the version of wxWidgets from https://github.com/wxWidgets/wxWidgets.git.
+    - Follow the instructions to build there, but add `--enable-unicode` and `--disable-shared` to the `configure` step.
+    - Alternatively you can build against the wxWidgets package of your distribution.
+- You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
+- If you are MacOS X user, a bundle will be installed to the installation prefix.
+</details>
 
 Contributing:
 -------------
