@@ -87,7 +87,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Windows TreeSheets (installer)
-        path: windows_treesheets_setup.exe
+        path: "win/windows_treesheets_setup.exe"
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
@@ -96,7 +96,7 @@ jobs:
         allowUpdates: true
         omitBody: true
         commit: master
-        artifacts: "windows_treesheets_setup.exe,windows_treesheets_no_installer.zip"
+        artifacts: "win/windows_treesheets_setup.exe,windows_treesheets_no_installer.zip"
 
   build-mac:
     name: Build Mac
