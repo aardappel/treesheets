@@ -139,7 +139,7 @@ struct MyFrame : wxFrame {
         line_nw.LoadFile(GetDataPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
         line_sw.LoadFile(GetDataPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
 
-        imagepath = GetDataPath("images/nuvola/dropdown/");
+        imagepath = GetDataPath("images/dropdown/");
 
         if (sys->singletray)
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
@@ -818,7 +818,7 @@ struct MyFrame : wxFrame {
         #define SEPARATOR tb->AddSeparator()
         #endif
 
-        wxString iconpath = GetDataPath(L"images/material/toolbar/");
+        wxString iconpath = GetDataPath(L"images/toolbar/");
 
         auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
@@ -1130,7 +1130,7 @@ struct MyFrame : wxFrame {
 
     void RenderFolderIcon() {
         wxImage foldiconi;
-        foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
+        foldiconi.LoadFile(GetDataPath(L"images/fold.png"));
         foldicon = wxBitmap(foldiconi);
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
     }
