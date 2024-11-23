@@ -14,7 +14,7 @@ struct MyFrame : wxFrame {
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
     bool darkmode {wxSystemSettings::GetAppearance().IsDark()};
-    std::vector<std::string> scripts_in_menu;
+    vector<std::string> scripts_in_menu;
     wxToolBar *tb {nullptr};
     wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};

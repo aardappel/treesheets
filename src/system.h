@@ -67,8 +67,8 @@ struct System {
     Evaluator ev;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
-    std::vector<unique_ptr<Image>> imagelist;
-    std::vector<int> loadimageids;
+    vector<unique_ptr<Image>> imagelist;
+    vector<int> loadimageids;
     uchar versionlastloaded {0};
     wxLongLong fakelasteditonload;
     wxPen pen_tinytext {wxColour(0x808080ul)};
@@ -513,8 +513,8 @@ struct System {
         return _(L"File load error.");
     }
 
-    int GetXMLNodes(wxXmlNode *n, std::vector<wxXmlNode *> &ns,
-                    std::vector<wxXmlAttribute *> *ps = nullptr, bool attributestoo = false) {
+    int GetXMLNodes(wxXmlNode *n, vector<wxXmlNode *> &ns, vector<wxXmlAttribute *> *ps = nullptr,
+                    bool attributestoo = false) {
         for (wxXmlNode *child = n->GetChildren(); child; child = child->GetNext()) {
             if (child->GetType() == wxXML_ELEMENT_NODE) ns.push_back(child);
         }
@@ -543,8 +543,8 @@ struct System {
             c->celltype = wxAtoi(n->GetAttribute(L"type", L"0"));
         }
 
-        std::vector<wxXmlNode *> ns;
-        std::vector<wxXmlAttribute *> ps;
+        vector<wxXmlNode *> ns;
+        vector<wxXmlAttribute *> ps;
         int numrows = GetXMLNodes(n, ns, &ps, attributestoo);
         if (!numrows) return;
 
@@ -561,7 +561,7 @@ struct System {
             if (allrow) {
                 int desiredxs;
                 loopv(i, ns) {
-                    std::vector<wxXmlNode *> ins;
+                    vector<wxXmlNode *> ins;
                     int xs = GetXMLNodes(ns[i], ins);
                     if (!i) {
                         desiredxs = xs ? xs : 1;

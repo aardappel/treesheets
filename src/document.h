@@ -3,8 +3,8 @@
 #endif
 
 struct UndoItem {
-    std::vector<Selection> path;
-    std::vector<Selection> selpath;
+    vector<Selection> path;
+    vector<Selection> selpath;
     Selection sel;
     unique_ptr<Cell> clone;
     size_t estimated_size {0};
@@ -32,9 +32,9 @@ struct Document {
     int laststylebits;
     int initialzoomlevel {0};
     Cell *curdrawroot;  // for use during Render() calls
-    std::vector<unique_ptr<UndoItem>> undolist;
-    std::vector<unique_ptr<UndoItem>> redolist;
-    std::vector<Selection> drawpath;
+    vector<unique_ptr<UndoItem>> undolist;
+    vector<unique_ptr<UndoItem>> redolist;
+    vector<Selection> drawpath;
     int pathscalebias {0};
     wxString filename {L""};
     long lastmodsinceautosave {0};
@@ -85,7 +85,7 @@ struct Document {
     int editfilter {0};
     wxDateTime lastmodificationtime;
     std::set<wxString> tags;
-    std::vector<Cell *> itercells;
+    vector<Cell *> itercells;
 
     #define loopcellsin(par, c) \
         CollectCells(par);      \
@@ -1654,7 +1654,7 @@ struct Document {
             case A_MINISIZE: {
                 selected.g->cell->AddUndo(this);
                 CollectCellsSel(false);
-                std::vector<Cell *> outer;
+                vector<Cell *> outer;
                 outer.insert(outer.end(), itercells.begin(), itercells.end());
                 for (Cell *o : outer) {
                     if (o->grid) {
@@ -2105,7 +2105,7 @@ struct Document {
         if (bdo.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
             c->AddUndo(this);
             wxImage im = bdo.GetBitmap().ConvertToImage();
-            std::vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+            vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
             SetImageBM(c, std::move(idv), sys->frame->FromDIP(1.0));
             c->Reset();
             Refresh();
@@ -2136,7 +2136,7 @@ struct Document {
         }
     }
 
-    void CreatePath(Cell *c, std::vector<Selection> &path) {
+    void CreatePath(Cell *c, vector<Selection> &path) {
         path.clear();
         while (c->parent) {
             const Selection &s = c->parent->grid->FindCell(c);
@@ -2146,7 +2146,7 @@ struct Document {
         }
     }
 
-    Cell *WalkPath(std::vector<Selection> &path) {
+    Cell *WalkPath(vector<Selection> &path) {
         Cell *c = rootgrid;
         loopvrev(i, path) {
             Selection &s = path[i];
@@ -2204,10 +2204,10 @@ struct Document {
         undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
-    void Undo(wxDC &dc, std::vector<unique_ptr<UndoItem>> &fromlist,
-              std::vector<unique_ptr<UndoItem>> &tolist, bool redo = false) {
+    void Undo(wxDC &dc, vector<unique_ptr<UndoItem>> &fromlist,
+              vector<unique_ptr<UndoItem>> &tolist, bool redo = false) {
         Selection beforesel = selected;
-        std::vector<Selection> beforepath;
+        vector<Selection> beforepath;
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
         unique_ptr<UndoItem> ui = std::move(fromlist.back());
         fromlist.pop_back();
@@ -2247,7 +2247,7 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, std::vector<uint8_t> &&idv, double sc) {
+    void SetImageBM(Cell *c, vector<uint8_t> &&idv, double sc) {
         c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')].get();
     }
 
@@ -2255,7 +2255,7 @@ struct Document {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        std::vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+        vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
         SetImageBM(c, std::move(idv), sc);
         c->Reset();
         return true;

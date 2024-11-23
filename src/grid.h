@@ -5,7 +5,7 @@ struct Grid {
     // subcells
     Cell **cells;
     // widths for each column
-    std::vector<int> colwidths;
+    vector<int> colwidths;
     // xsize, ysize
     int xs;
     int ys;
@@ -864,7 +864,7 @@ struct Grid {
         return acc;
     }
 
-    void Split(std::vector<unique_ptr<Grid>> &gs, bool vert) {
+    void Split(vector<unique_ptr<Grid>> &gs, bool vert) {
         loop(i, vert ? xs : ys) gs.push_back(make_unique<Grid>(vert ? 1 : xs, vert ? ys : 1));
         foreachcell(c) {
             Grid *g = gs[vert ? x : y].get();
@@ -1095,8 +1095,8 @@ struct Grid {
         }
     }
 
-    void CollectCells(std::vector<Cell *> &itercells) { foreachcell(c) c->CollectCells(itercells); }
-    void CollectCellsSel(std::vector<Cell *> &itercells, const Selection &s, bool recurse) {
+    void CollectCells(vector<Cell *> &itercells) { foreachcell(c) c->CollectCells(itercells); }
+    void CollectCellsSel(vector<Cell *> &itercells, const Selection &s, bool recurse) {
         foreachcellinsel(c, s) c->CollectCells(itercells, recurse);
     }
 
