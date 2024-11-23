@@ -8,7 +8,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
-        cur = doc->rootgrid;
+        cur = doc->rootgrid.get();
 
         doc->AddUndo(cur);
     }
@@ -42,7 +42,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return true;
     }
 
-    void GoToRoot() { cur = doc->rootgrid; }
+    void GoToRoot() { cur = doc->rootgrid.get(); }
     void GoToView() { cur = doc->curdrawroot; }
     bool HasSelection() { return doc->selected.g; }
     void GoToSelection() {
