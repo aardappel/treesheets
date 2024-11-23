@@ -1517,20 +1517,20 @@ struct Document {
             case wxID_PASTE:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
-                    // Instead of aggregating the possible targets to one wxDataObjectComposite
-                    // just create one wxDataObjectSimple subclass instance for each type
-                    // TreeSheets can handle on the stack and try to paste the clipboard content
-                    // into it.
-                    //
-                    // For drag and drop operations, wxDataObjectComposite is still mandatory, so
-                    // keep one instance for it separately at each Document instance.
-                    wxTextDataObject pdataobjt;
-                    wxBitmapDataObject pdataobji;
-                    wxFileDataObject pdataobjf;
-                    wxTheClipboard->GetData(pdataobjt);
-                    wxTheClipboard->GetData(pdataobji);
-                    wxTheClipboard->GetData(pdataobjf);
-                    PasteOrDrop(pdataobjt, pdataobji, pdataobjf);
+                    if (wxTheClipboard->IsSupported(wxDF_BITMAP)) {
+                        wxBitmapDataObject bdo;
+                        wxTheClipboard->GetData(bdo);
+                        PasteOrDrop(bdo);
+                    } else if (wxTheClipboard->IsSupported(wxDF_FILENAME)) {
+                        wxFileDataObject fdo;
+                        wxTheClipboard->GetData(fdo);
+                        PasteOrDrop(fdo);
+                    } else if (wxTheClipboard->IsSupported(wxDF_TEXT) ||
+                               wxTheClipboard->IsSupported(wxDF_UNICODETEXT)) {
+                        wxTextDataObject tdo;
+                        wxTheClipboard->GetData(tdo);
+                        PasteOrDrop(tdo);
+                    }
                     wxTheClipboard->Close();
                 } else if (sys->cellclipboard) {
                     c->Paste(this, sys->cellclipboard.get(), selected);
@@ -2033,12 +2033,9 @@ struct Document {
 
     void PasteSingleText(Cell *c, const wxString &t) { c->text.Insert(this, t, selected, false); }
 
-    void PasteOrDrop(const wxTextDataObject &pdataobjt, const wxBitmapDataObject &pdataobji,
-                     const wxFileDataObject &pdataobjf) {
-        wxBusyCursor wait;
-
-        if (pdataobjf.GetFilenames().size() != 0) {
-            const wxArrayString &as = pdataobjf.GetFilenames();
+    void PasteOrDrop(const wxFileDataObject &fdo) {
+        if (fdo.GetFilenames().size() != 0) {
+            const wxArrayString &as = fdo.GetFilenames();
             if (as.size()) {
                 if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
                 else {
@@ -2070,12 +2067,14 @@ struct Document {
                 return;
             }
         }
+    }
 
+    void PasteOrDrop(const wxTextDataObject &tdo) {
         Cell *c = selected.ThinExpand(this);
         if (!c) return;
 
-        if (pdataobjt.GetText() != wxEmptyString) {
-            wxString s = pdataobjt.GetText();
+        if (tdo.GetText() != wxEmptyString) {
+            wxString s = tdo.GetText();
             if ((sys->clipboardcopy == s) && sys->cellclipboard) {
                 c->Paste(this, sys->cellclipboard.get(), selected);
             } else {
@@ -2098,10 +2097,14 @@ struct Document {
             Refresh();
             return;
         }
+    }
 
-        if (pdataobji.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
+    void PasteOrDrop(const wxBitmapDataObject &bdo) {
+        Cell *c = selected.ThinExpand(this);
+        if (!c) return;
+        if (bdo.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
             c->AddUndo(this);
-            wxImage im = pdataobji.GetBitmap().ConvertToImage();
+            wxImage im = bdo.GetBitmap().ConvertToImage();
             std::vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
             SetImageBM(c, std::move(idv), sys->frame->FromDIP(1.0));
             c->Reset();
