@@ -528,7 +528,7 @@ struct Cell {
                       : sys->defaultmaxcolwidth;
     }
 
-    void CollectCells(std::vector<Cell *> &itercells, bool recurse = true) {
+    void CollectCells(vector<Cell *> &itercells, bool recurse = true) {
         itercells.push_back(this);
         if (grid && recurse) grid->CollectCells(itercells);
     }
