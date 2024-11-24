@@ -14,7 +14,7 @@ struct MyFrame : wxFrame {
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
     bool darkmode {wxSystemSettings::GetAppearance().IsDark()};
-    vector<std::string> scripts_in_menu;
+    vector<string> scripts_in_menu;
     wxToolBar *tb {nullptr};
     wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
@@ -607,7 +607,7 @@ struct MyFrame : wxFrame {
             }
             MyAppend(scriptmenu, A_SCRIPT + sidx, ms);
             auto ss = fn.utf8_str();
-            scripts_in_menu.push_back(std::string(ss.data(), ss.length()));
+            scripts_in_menu.push_back(string(ss.data(), ss.length()));
             sf = wxFindNextFile();
             sidx++;
         }
