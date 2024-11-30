@@ -119,7 +119,8 @@ jobs:
     - name: Create bundle
       run: cmake --install _build
     - name: Zip bundle
-      run: zip -r mac_treesheets.zip macos-bundle
+      run: zip -r ../mac_treesheets.zip TreeSheets.app
+      working-directory: macos-bundle
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
