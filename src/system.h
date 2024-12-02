@@ -210,7 +210,7 @@ struct System {
 
     void LoadOpRef() { LoadDB(frame->GetDocPath(L"examples/operation-reference.cts")); }
 
-    Cell *&InitDB(int sizex, int sizey = 0) {
+    unique_ptr<Cell> &InitDB(int sizex, int sizey = 0) {
         Cell *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
@@ -464,13 +464,12 @@ struct System {
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(fn)) goto problem;
-                    Cell *&r = InitDB(1);
+                    unique_ptr<Cell> &r = InitDB(1);
                     Cell *c = *r->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
                         *r->grid->cells = nullptr;
-                        delete r;
-                        r = c;
+                        r.reset(c);
                         c->parent = nullptr;
                     }
                     break;
@@ -487,7 +486,7 @@ struct System {
 
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
-                                Cell *r = InitDB(1);
+                                Cell *r = InitDB(1).get();
                                 FillRows(r->grid, as, CountCol(as[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:

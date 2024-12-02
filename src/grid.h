@@ -608,7 +608,7 @@ struct Grid {
         const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
         const int font_size = 14 - indent / 2;
         const int grid_border_width =
-            cell == doc->rootgrid ? root_grid_spacing : user_grid_outer_spacing - 1;
+            cell == doc->rootgrid.get() ? root_grid_spacing : user_grid_outer_spacing - 1;
 
         wxString xmlstr(L"<grid");
         if (folded) xmlstr.Append(wxString::Format(wxT(" folded=\"%d\""), folded));
