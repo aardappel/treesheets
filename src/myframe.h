@@ -667,7 +667,7 @@ struct MyFrame : wxFrame {
 
         ConstructToolBar();
 
-        wxStatusBar *sb = CreateStatusBar(4);
+        wxStatusBar *sb = CreateStatusBar(5);
         SetStatusBarPane(0);
         SetDPIAwareStatusWidths();
         sb->Show(sys->showstatusbar);
@@ -1136,8 +1136,8 @@ struct MyFrame : wxFrame {
     }
 
     void SetDPIAwareStatusWidths() {
-        int swidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100)};
-        SetStatusWidths(4, swidths);
+        int swidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
+        SetStatusWidths(5, swidths);
     }
 
     void OnDPIChanged(wxDPIChangedEvent &dce) {
