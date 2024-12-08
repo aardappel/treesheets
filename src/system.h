@@ -441,6 +441,12 @@ struct System {
         }
     }
 
+    void UpdateAmountStatus(Selection &s) {
+        if (frame->GetStatusBar()) {
+            frame->SetStatusText(wxString::Format(_(L"%d cells"), s.xs * s.ys), 4);
+        }
+    }
+
     void SaveCheck() {
         loop(i, frame->nb->GetPageCount()) {
             ((TSCanvas *)frame->nb->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
