@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-09 13:44-0300\n"
+"POT-Creation-Date: 2024-12-09 14:03-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -417,6 +417,9 @@ msgstr ""
 msgid "Cursor Right\tRIGHT"
 msgstr ""
 
+msgid "Date and time range"
+msgstr ""
+
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr ""
 
@@ -451,6 +454,9 @@ msgstr ""
 
 #, c-format
 msgid "Edited %s %s"
+msgstr ""
+
+msgid "End date and time"
 msgstr ""
 
 msgid "End of line of text\tEND"
@@ -586,6 +592,9 @@ msgid "File modification conflict!"
 msgstr ""
 
 msgid "File of newer version."
+msgstr ""
+
+msgid "Filter"
 msgstr ""
 
 msgid "Filter by the same cell color"
@@ -936,6 +945,9 @@ msgstr ""
 msgid "Please select file to import:"
 msgstr ""
 
+msgid "Please select the datetime range."
+msgstr ""
+
 msgid "Press F11 to exit fullscreen mode."
 msgstr ""
 
@@ -1151,6 +1163,9 @@ msgid "Sort &Ascending"
 msgstr ""
 
 msgid "Sort &Descending"
+msgstr ""
+
+msgid "Start date and time"
 msgstr ""
 
 msgid "Start of line of text\tHOME"

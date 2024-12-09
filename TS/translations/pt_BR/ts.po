@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-09 13:44-0300\n"
-"PO-Revision-Date: 2024-12-09 13:45-0300\n"
+"POT-Creation-Date: 2024-12-09 14:03-0300\n"
+"PO-Revision-Date: 2024-12-09 14:06-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -436,6 +436,9 @@ msgstr "Mover Cursor à Esquerda\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Mover Cursor à Direita\tRIGHT"
 
+msgid "Date and time range"
+msgstr "Intervalo de datas e horas"
+
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Diminuir a largura da coluna (ALT+botão de rolagem)\tALT+PGDN"
 
@@ -475,6 +478,9 @@ msgstr "Descartar Mudanças"
 #, c-format
 msgid "Edited %s %s"
 msgstr "Editada em %s às %s"
+
+msgid "End date and time"
+msgstr "Data/hora final"
 
 msgid "End of line of text\tEND"
 msgstr "Fim da linha de texto\tEND"
@@ -630,6 +636,9 @@ msgstr "O arquivo tem modificações conflitantes!"
 
 msgid "File of newer version."
 msgstr "O arquivo é de uma versão mais recente."
+
+msgid "Filter"
+msgstr "Filtrar"
 
 msgid "Filter by the same cell color"
 msgstr "Evidenciar células com a mesma cor"
@@ -1006,6 +1015,9 @@ msgstr "Por favor selecione um arquivo de imagem:"
 msgid "Please select file to import:"
 msgstr "Por favor selecione um arquivo para importar:"
 
+msgid "Please select the datetime range."
+msgstr "Por favor selecione a data/hora inicial e a final."
+
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Tecle F11 para sair do modo de tela cheia."
 
@@ -1228,6 +1240,9 @@ msgstr "Classificar em Ordem &Ascendente"
 
 msgid "Sort &Descending"
 msgstr "Classificar em Ordem &Descendente"
+
+msgid "Start date and time"
+msgstr "Data/hora inicial"
 
 msgid "Start of line of text\tHOME"
 msgstr "Início da linha de texto\tHOME"
@@ -1460,18 +1475,6 @@ msgstr "tamanho:"
 
 #~ msgid "Date range filter"
 #~ msgstr "Intervalo de datas para filtrar"
-
-#~ msgid "End date and time"
-#~ msgstr "Data/hora final"
-
-#~ msgid "Filter"
-#~ msgstr "Filtrar"
-
-#~ msgid "Please select the datetime range."
-#~ msgstr "Por favor selecione a data/hora inicial e a final."
-
-#~ msgid "Start date and time"
-#~ msgstr "Data/hora inicial"
 
 #~ msgid "Toggle Zen Mode"
 #~ msgstr "Entrar/Sair do Modo &Zen"
