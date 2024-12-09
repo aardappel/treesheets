@@ -219,6 +219,7 @@ struct Document {
     }
 
     void DrawSelect(wxDC &dc, Selection &s, bool refreshinstead = false, bool cursoronly = false) {
+	sys->UpdateAmountStatus(s);
         #ifdef SIMPLERENDER
         if (refreshinstead) {
             Refresh();
@@ -711,7 +712,6 @@ struct Document {
             hover.g = nullptr;
             redrawpending = true;
             sys->UpdateStatus(selected);
-            sys->UpdateAmountStatus(selected);
             #ifdef __WXGTK__
                 // wxWidgets (wxGTK) does not always automatically update the scrollbar 
                 // to new canvas size and current position within after zoom so force it manually
