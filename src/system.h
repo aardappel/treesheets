@@ -443,7 +443,7 @@ struct System {
 
     void UpdateAmountStatus(Selection &s) {
         if (frame->GetStatusBar()) {
-            frame->SetStatusText(wxString::Format(_(L"%d cells"), s.xs * s.ys), 4);
+            frame->SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
         }
     }
 

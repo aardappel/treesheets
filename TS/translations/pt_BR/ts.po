@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-20 19:05+0200\n"
-"PO-Revision-Date: 2024-08-20 15:38-0300\n"
+"POT-Creation-Date: 2024-12-09 14:03-0300\n"
+"PO-Revision-Date: 2024-12-09 14:06-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -19,6 +19,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.4.2\n"
+
+#, c-format
+msgid "%d cell(s)"
+msgstr "%d célula(s)"
 
 #, c-format
 msgid ""
@@ -432,8 +436,8 @@ msgstr "Mover Cursor à Esquerda\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Mover Cursor à Direita\tRIGHT"
 
-msgid "Date range filter"
-msgstr "Intervalo de datas para filtrar"
+msgid "Date and time range"
+msgstr "Intervalo de datas e horas"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Diminuir a largura da coluna (ALT+botão de rolagem)\tALT+PGDN"
@@ -1468,6 +1472,9 @@ msgstr "escala:"
 
 msgid "size:"
 msgstr "tamanho:"
+
+#~ msgid "Date range filter"
+#~ msgstr "Intervalo de datas para filtrar"
 
 #~ msgid "Toggle Zen Mode"
 #~ msgstr "Entrar/Sair do Modo &Zen"
