@@ -111,10 +111,10 @@ struct Document {
 
     void InitCellSelect(Cell *ics, int xs, int ys) {
         if (!ics) {
-            SetSelect(Selection(rootgrid->grid, 0, 0, 1, 1));
+            SetSelect(Selection(rootgrid->grid.get(), 0, 0, 1, 1));
             return;
         }
-        Grid *ipg = ics->parent->grid;
+        Grid *ipg = ics->parent->grid.get();
         foreachcellingrid(c, ipg) {
             if (c == ics) {
                 SetSelect(Selection(ipg, x, y, xs, ys));
@@ -515,7 +515,8 @@ struct Document {
         Cell *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
-            SetSelect(Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys));
+            SetSelect(
+                Selection(drawroot->grid.get(), 0, 0, drawroot->grid->xs, drawroot->grid->ys));
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
@@ -1503,12 +1504,12 @@ struct Document {
             case A_NEWGRID:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (c->grid) {
-                    SetSelect(Selection(c->grid, 0, c->grid->ys, 1, 0));
+                    SetSelect(Selection(c->grid.get(), 0, c->grid->ys, 1, 0));
                     ScrollOrZoom(dc, true);
                 } else {
                     c->AddUndo(this);
                     c->AddGrid();
-                    SetSelect(Selection(c->grid, 0, 0, 1, 1));
+                    SetSelect(Selection(c->grid.get(), 0, 0, 1, 1));
                     DrawSelectMove(dc, selected, true);
                 }
                 return nullptr;
@@ -1883,8 +1884,7 @@ struct Document {
                     Grid *g = new Grid(maxdepth, leaves);
                     g->InitCells();
                     ac->grid->Flatten(0, 0, g);
-                    DELETEP(ac->grid);
-                    ac->grid = g;
+                    ac->grid.reset(g);
                     g->ReParent(ac);
                     ac->ResetChildren();
                     ClearSelectionRefresh();
@@ -1901,7 +1901,7 @@ struct Document {
 
             case A_ENTERGRID:
                 if (!c->grid) Action(dc, A_NEWGRID);
-                SetSelect(Selection(c->grid, 0, 0, 1, 1));
+                SetSelect(Selection(c->grid.get(), 0, 0, 1, 1));
                 ScrollOrZoom(dc, true);
                 return nullptr;
 
@@ -2086,10 +2086,10 @@ struct Document {
                     } else {
                         c->parent->AddUndo(this);
                         c->ResetLayout();
-                        DELETEP(c->grid);
+                        c->grid.release();
                         sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
                         if (!c->HasText())
-                            c->grid->MergeWithParent(c->parent->grid, selected, this);
+                            c->grid->MergeWithParent(c->parent->grid.get(), selected, this);
                     }
                 }
             }
@@ -2149,7 +2149,7 @@ struct Document {
         Cell *c = rootgrid.get();
         loopvrev(i, path) {
             Selection &s = path[i];
-            Grid *g = c->grid;
+            Grid *g = c->grid.get();
             if (!g) return c;
             ASSERT(g && s.x < g->xs && s.y < g->ys);
             c = g->C(s.x, s.y);
@@ -2220,7 +2220,7 @@ struct Document {
             rootgrid.reset(clone);
         clone->ResetLayout();
         SetSelect(ui->sel);
-        if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
+        if (selected.g) selected.g = WalkPath(ui->selpath)->grid.get();
         begindrag = selected;
         ui->sel = beforesel;
         ui->selpath = std::move(beforepath);

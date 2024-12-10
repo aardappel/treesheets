@@ -95,7 +95,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void Delete(int x, int y, int xs, int ys) {
         if (cur->grid && x >= 0 && x + xs <= cur->grid->xs && y >= 0 && y + ys <= cur->grid->ys) {
-            Selection s(cur->grid, x, y, xs, ys);
+            Selection s(cur->grid.get(), x, y, xs, ys);
             cur->grid->MultiCellDeleteSub(doc, s);
             doc->SetSelect(Selection());
             doc->Zoom(-100, *dc);
