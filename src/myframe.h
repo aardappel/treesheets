@@ -742,7 +742,7 @@ struct MyFrame : wxFrame {
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
         TSCanvas *sw = new TSCanvas(this, nb);
-        sw->doc = doc;
+        sw->doc.reset(doc);
         doc->sw = sw;
         sw->SetScrollRate(1, 1);
         if (append)
@@ -773,7 +773,7 @@ struct MyFrame : wxFrame {
         TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sw->Status();
         SetSearchTextBoxBackgroundColour(false);
-        sys->TabChange(sw->doc);
+        sys->TabChange(sw->doc.get());
     }
 
     void TabsReset() {
@@ -1082,7 +1082,7 @@ struct MyFrame : wxFrame {
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
         SetSearchTextBoxBackgroundColour(false);
-        Document *doc = GetCurTab()->doc;
+        Document *doc = GetCurTab()->doc.get();
         TSCanvas *sw = GetCurTab();
         wxClientDC dc(sw);
         doc->SearchNext(dc, false, false, false);
@@ -1275,7 +1275,7 @@ struct MyFrame : wxFrame {
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
         const wxString &modfile = event.GetPath().GetFullPath();
         loop(i, nb->GetPageCount()) {
-            Document *doc = ((TSCanvas *)nb->GetPage(i))->doc;
+            Document *doc = ((TSCanvas *)nb->GetPage(i))->doc.get();
             if (modfile == doc->filename) {
                 wxDateTime modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
@@ -1307,7 +1307,7 @@ struct MyFrame : wxFrame {
                 if (*msg) {
                     GetCurTab()->Status(msg);
                 } else {
-                    loop(j, nb->GetPageCount()) if (((TSCanvas *)nb->GetPage(j))->doc == doc)
+                    loop(j, nb->GetPageCount()) if (((TSCanvas *)nb->GetPage(j))->doc.get() == doc)
                         nb->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     GetCurTab()->Status(

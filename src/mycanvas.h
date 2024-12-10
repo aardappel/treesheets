@@ -1,6 +1,6 @@
 struct TSCanvas : public wxScrolledCanvas {
     MyFrame *frame;
-    Document *doc {nullptr};
+    unique_ptr<Document> doc;
     int mousewheelaccum {0};
     bool lastrmbwaswithctrl {false};
     wxPoint lastmousepos;
@@ -17,10 +17,7 @@ struct TSCanvas : public wxScrolledCanvas {
         EnableScrolling(false, false);
     }
 
-    ~TSCanvas() {
-        DELETEP(doc);
-        frame = nullptr;
-    }
+    ~TSCanvas() { frame = nullptr; }
 
     void OnPaint(wxPaintEvent &event) {
         #if defined(__WXMAC__) || defined(__WXGTK__)
