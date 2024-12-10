@@ -96,7 +96,7 @@ class Selection {
             int bd = bt->Depth();
             int i = 0;
             while (i < ad && i < bd && at->Parent(ad - i) == bt->Parent(bd - i)) i++;
-            Grid *g = at->Parent(ad - i + 1)->grid;
+            Grid *g = at->Parent(ad - i + 1)->grid.get();
             Merge(g->FindCell(at->Parent(ad - i)), g->FindCell(bt->Parent(bd - i)));
             return;
         }

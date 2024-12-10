@@ -493,7 +493,7 @@ struct System {
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
                                 Cell *r = InitDB(1).get();
-                                FillRows(r->grid, as, CountCol(as[0]), 0, 0);
+                                FillRows(r->grid.get(), as, CountCol(as[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
                                 InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
@@ -608,7 +608,7 @@ struct System {
             if (col < column && startrow != 0) return i;
             if (col > column) {
                 Cell *c = g->C(0, y - 1);
-                Grid *sg = c->grid;
+                Grid *sg = c->grid.get();
                 i = FillRows(sg ? sg : c->AddGrid(), as, col, i, sg ? sg->ys : 0) - 1;
             } else {
                 if (g->ys <= y) g->InsertCells(-1, y, 0, 1);
