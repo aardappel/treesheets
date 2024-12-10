@@ -219,7 +219,7 @@ struct Document {
     }
 
     void DrawSelect(wxDC &dc, Selection &s, bool refreshinstead = false, bool cursoronly = false) {
-	sys->UpdateAmountStatus(s);
+        sys->UpdateAmountStatus(s);
         #ifdef SIMPLERENDER
         if (refreshinstead) {
             Refresh();
