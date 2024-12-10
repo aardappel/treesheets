@@ -148,8 +148,6 @@ struct MyFrame : wxFrame {
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
                         wxTaskBarIconEventHandler(MyFrame::OnTBIDBLClick), nullptr, this);
 
-        bool mergetbar = false;
-
         bool showtbar, showsbar, lefttabs;
 
         sys->cfg->Read(L"showtbar", &showtbar, true);
@@ -638,32 +636,30 @@ struct MyFrame : wxFrame {
         wxAcceleratorTable accel(3, entries);
         SetAcceleratorTable(accel);
 
-        if (!mergetbar) {
-            wxMenuBar *menubar = new wxMenuBar();
-            menubar->Append(filemenu, _(L"&File"));
-            menubar->Append(editmenu, _(L"&Edit"));
-            menubar->Append(semenu, _(L"&Search"));
-            menubar->Append(viewmenu, _(L"&View"));
-            menubar->Append(optmenu, _(L"&Options"));
-            menubar->Append(scriptmenu, _(L"Script"));
-            menubar->Append(langmenu, _(L"&Program"));
-            menubar->Append(helpmenu,
-                            #ifdef __WXMAC__
-                            wxApp::s_macHelpMenuTitleName  // so merges with osx provided help
-                            #else
-                            _(L"&Help")
-                            #endif
-                            );
-            #ifdef __WXMAC__
-            // these don't seem to work anymore in the newer wxWidgets, handled in the menu event
-            // handler below instead
-            wxApp::s_macAboutMenuItemId = wxID_ABOUT;
-            wxApp::s_macExitMenuItemId = wxID_EXIT;
-            wxApp::s_macPreferencesMenuItemId =
-                wxID_SELECT_FONT;  // we have no prefs, so for now just select the font
-            #endif
-            SetMenuBar(menubar);
-        }
+        wxMenuBar *menubar = new wxMenuBar();
+        menubar->Append(filemenu, _(L"&File"));
+        menubar->Append(editmenu, _(L"&Edit"));
+        menubar->Append(semenu, _(L"&Search"));
+        menubar->Append(viewmenu, _(L"&View"));
+        menubar->Append(optmenu, _(L"&Options"));
+        menubar->Append(scriptmenu, _(L"Script"));
+        menubar->Append(langmenu, _(L"&Program"));
+        menubar->Append(helpmenu,
+                        #ifdef __WXMAC__
+                        wxApp::s_macHelpMenuTitleName  // so merges with osx provided help
+                        #else
+                        _(L"&Help")
+                        #endif
+                        );
+        #ifdef __WXMAC__
+        // these don't seem to work anymore in the newer wxWidgets, handled in the menu event
+        // handler below instead
+        wxApp::s_macAboutMenuItemId = wxID_ABOUT;
+        wxApp::s_macExitMenuItemId = wxID_EXIT;
+        wxApp::s_macPreferencesMenuItemId =
+            wxID_SELECT_FONT;  // we have no prefs, so for now just select the font
+        #endif
+        SetMenuBar(menubar);
 
         ConstructToolBar();
 
