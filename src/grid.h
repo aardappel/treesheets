@@ -668,7 +668,7 @@ struct Grid {
     }
 
     void MergeWithParent(Grid *p, Selection &s, Document *doc) {
-        cell->grid = nullptr;
+        cell->grid.release();
         foreachcell(c) {
             if (x + s.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
             if (y + s.y >= p->ys) p->InsertCells(-1, p->ys, 0, 1);
