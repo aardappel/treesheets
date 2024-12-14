@@ -1146,7 +1146,6 @@ struct MyFrame : wxFrame {
                 pool.enqueue(
                     [](auto *img) {
                         img->bm_display = wxNullBitmap;
-                        img->Display();
                     },
                     image.get());
             }
@@ -1163,6 +1162,7 @@ struct MyFrame : wxFrame {
         }
         idd->FillBitmapVector(imagepath);
         if (GetStatusBar()) SetDPIAwareStatusWidths();
+        dce.Skip();
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
