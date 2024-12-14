@@ -37,13 +37,13 @@ static const std::array<uint, 42> celltextcolors = {
     0xFF00FF, 0xFF80FF, 0xFFC0FF, 0xE0C0E0, 0x008080, 0x00FFFF, 0x80FFFF, 0xC0FFFF, 0xC0E0E0,
     0x808000, 0xFFFF00, 0xFFFF80, 0xFFFFC0, 0xE0E0C0,
 };
-enum { CUSTOMCOLORIDX = 0 };
+enum : uint8_t { CUSTOMCOLORIDX = 0 };
 
-enum { TS_VERSION = 23, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+enum : uint8_t { TS_VERSION = 23, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
 
 static const uint TS_SELECTION_MASK = 0x80;
 
-enum {
+enum : uint16_t {
     A_SAVEALL = 500,
     A_COLLAPSE,
     A_NEWGRID,
@@ -248,7 +248,7 @@ enum {
     A_MAXACTION = 3000
 };
 
-enum {
+enum : uint8_t {
     STYLE_BOLD = 1,
     STYLE_ITALIC = 2,
     STYLE_FIXED = 4,
@@ -260,7 +260,7 @@ static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     { 'I', { wxBITMAP_TYPE_PNG, "image/png" } }, { 'J', { wxBITMAP_TYPE_JPEG, "image/jpeg" } }
 };
 
-enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
+enum : uint8_t { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 
 #include "script_interface.h"
 
