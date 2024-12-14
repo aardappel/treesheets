@@ -471,10 +471,10 @@ struct System {
                     wxXmlDocument doc;
                     if (!doc.Load(fn)) goto problem;
                     unique_ptr<Cell> &r = InitDB(1);
-                    Cell *c = *r->grid->cells;
+                    Cell *c = r->grid->cells[0];
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        *r->grid->cells = nullptr;
+                        r->grid->cells[0] = nullptr;
                         r.reset(c);
                         c->parent = nullptr;
                     }
