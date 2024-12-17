@@ -114,14 +114,9 @@ struct Document {
             SetSelect(Selection(rootgrid->grid.get(), 0, 0, 1, 1));
             return;
         }
-        Grid *ipg = ics->parent->grid.get();
-        foreachcellingrid(c, ipg) {
-            if (c == ics) {
-                SetSelect(Selection(ipg, x, y, xs, ys));
-                goto foreachcellingrid_end;
-            }
-        }
-        foreachcellingrid_end:;
+        SetSelect(ics->parent->grid->FindCell(ics));
+        selected.xs = xs;
+        selected.ys = ys;
     }
 
     void InitWith(Cell *r, const wxString &filename, Cell *ics, int xs, int ys) {
