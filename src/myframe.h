@@ -386,20 +386,32 @@ struct MyFrame : wxFrame {
             MyAppend(navmenu, A_BROWSEF, _(L"Open &file\tF4"),
                      _(L"Opens up the text from the selected cell in default application for the file type"));
 
+            #ifdef __WXMAC__
+                #define CTRLORALT "CTRL"
+            #else
+                #define CTRLORALT "ALT"
+            #endif
+
             wxMenu *laymenu = new wxMenu();
-            MyAppend(laymenu, A_V_GS, _(L"Vertical Layout with Grid Style Rendering\tALT+1"));
-            MyAppend(laymenu, A_V_BS, _(L"Vertical Layout with Bubble Style Rendering\tALT+2"));
-            MyAppend(laymenu, A_V_LS, _(L"Vertical Layout with Line Style Rendering\tALT+3"));
+            MyAppend(laymenu, A_V_GS,
+                     _(L"Vertical Layout with Grid Style Rendering\t" CTRLORALT "+1"));
+            MyAppend(laymenu, A_V_BS,
+                     _(L"Vertical Layout with Bubble Style Rendering\t" CTRLORALT "+2"));
+            MyAppend(laymenu, A_V_LS,
+                     _(L"Vertical Layout with Line Style Rendering\t" CTRLORALT "+3"));
             laymenu->AppendSeparator();
-            MyAppend(laymenu, A_H_GS, _(L"Horizontal Layout with Grid Style Rendering\tALT+4"));
-            MyAppend(laymenu, A_H_BS, _(L"Horizontal Layout with Bubble Style Rendering\tALT+5"));
-            MyAppend(laymenu, A_H_LS, _(L"Horizontal Layout with Line Style Rendering\tALT+6"));
+            MyAppend(laymenu, A_H_GS,
+                     _(L"Horizontal Layout with Grid Style Rendering\t" CTRLORALT "+4"));
+            MyAppend(laymenu, A_H_BS,
+                     _(L"Horizontal Layout with Bubble Style Rendering\t" CTRLORALT "+5"));
+            MyAppend(laymenu, A_H_LS,
+                     _(L"Horizontal Layout with Line Style Rendering\t" CTRLORALT "+6"));
             laymenu->AppendSeparator();
-            MyAppend(laymenu, A_GS, _(L"Grid Style Rendering\tALT+7"));
-            MyAppend(laymenu, A_BS, _(L"Bubble Style Rendering\tALT+8"));
-            MyAppend(laymenu, A_LS, _(L"Line Style Rendering\tALT+9"));
+            MyAppend(laymenu, A_GS, _(L"Grid Style Rendering\t" CTRLORALT "+7"));
+            MyAppend(laymenu, A_BS, _(L"Bubble Style Rendering\t" CTRLORALT "+8"));
+            MyAppend(laymenu, A_LS, _(L"Line Style Rendering\t" CTRLORALT "+9"));
             laymenu->AppendSeparator();
-            MyAppend(laymenu, A_TEXTGRID, _(L"Toggle Vertical Layout\tALT+0"),
+            MyAppend(laymenu, A_TEXTGRID, _(L"Toggle Vertical Layout\t" CTRLORALT "+0"),
                      _(L"Make a hierarchy layout more vertical (default) or more horizontal"));
 
             editmenu = new wxMenu();

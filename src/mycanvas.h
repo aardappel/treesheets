@@ -112,15 +112,16 @@ struct TSCanvas : public wxScrolledCanvas {
             return;
         }
         */
-
-        // Without this check, Alt+[Alphanumericals], Alt+Shift+[Alphanumericals] and
-        // Alt+[Shift]+cursor (scrolling) don't work. The 128 makes sure unicode entry on e.g.
-        // Polish keyboards still works. (on Linux in particular).
-        if ((ce.GetModifiers() == wxMOD_ALT || ce.GetModifiers() == (wxMOD_ALT | wxMOD_SHIFT)) &&
-            (ce.GetUnicodeKey() < 128)) {
-            ce.Skip();
-            return;
-        }
+        #ifndef __WXMAC__
+            // Without this check, Alt+[Alphanumericals], Alt+Shift+[Alphanumericals] and
+            // Alt+[Shift]+cursor (scrolling) don't work. The 128 makes sure unicode entry on e.g.
+            // Polish keyboards still works. (on Linux in particular).
+            if ((ce.GetModifiers() == wxMOD_ALT || ce.GetModifiers() == (wxMOD_ALT | wxMOD_SHIFT)) &&
+                (ce.GetUnicodeKey() < 128)) {
+                ce.Skip();
+                return;
+            }
+        #endif
 
         wxClientDC dc(this);
         DoPrepareDC(dc);
