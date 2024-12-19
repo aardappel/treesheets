@@ -696,7 +696,7 @@ struct MyFrame : wxFrame {
         sys->cfg->Read(L"posx", &posx, boundary + disprect.x);
         sys->cfg->Read(L"posy", &posy, boundary + disprect.y);
         SetSize(resx, resy);
-        SetPosition(wxPoint(posx, posy));
+        Move(posx, posy);
 
         bool ismax;
         sys->cfg->Read(L"maximized", &ismax, true);
