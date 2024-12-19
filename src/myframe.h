@@ -695,17 +695,6 @@ struct MyFrame : wxFrame {
         sys->cfg->Read(L"resy", &resy, defy);
         sys->cfg->Read(L"posx", &posx, boundary + disprect.x);
         sys->cfg->Read(L"posy", &posy, boundary + disprect.y);
-        if (resx > disprect.width || resy > disprect.height || posx < disprect.x ||
-            posy < disprect.y || posx + resx > disprect.width + disprect.x ||
-            posy + resy > disprect.height + disprect.y) {
-            // Screen res has been resized since we last ran, set sizes to default to avoid being
-            // off-screen.
-            resx = defx;
-            resy = defy;
-            posx = posy = boundary;
-            posx += disprect.x;
-            posy += disprect.y;
-        }
         SetSize(resx, resy);
         SetPosition(wxPoint(posx, posy));
 
