@@ -695,6 +695,10 @@ struct MyFrame : wxFrame {
         sys->cfg->Read(L"resy", &resy, defy);
         sys->cfg->Read(L"posx", &posx, boundary + disprect.x);
         sys->cfg->Read(L"posy", &posy, boundary + disprect.y);
+        #ifndef __WXGTK__
+        // On X11, disprect only refers to the primary screen. Thus, for a multi-head display,
+        // the conditions below might be fulfilled (e.g. large window spanning multiple screens
+        // or being on the secondary screen), so just ignore them.
         if (resx > disprect.width || resy > disprect.height || posx < disprect.x ||
             posy < disprect.y || posx + resx > disprect.width + disprect.x ||
             posy + resy > disprect.height + disprect.y) {
@@ -706,6 +710,7 @@ struct MyFrame : wxFrame {
             posx += disprect.x;
             posy += disprect.y;
         }
+        #endif
         SetSize(resx, resy);
         SetPosition(wxPoint(posx, posy));
 
