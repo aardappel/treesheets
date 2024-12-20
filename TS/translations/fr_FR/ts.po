@@ -19,7 +19,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cells"
-msgstr ""
+msgstr "%d cellules"
 
 #, c-format
 msgid ""
@@ -288,9 +288,8 @@ msgstr "Bordure &4\tCTRL+SHIFT+4"
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "Bordure &5\tCTRL+SHIFT+5"
 
-#, fuzzy
 msgid "Bubble Style Rendering\t"
-msgstr "Rendu de style bulle\tALT+8"
+msgstr "Rendu de style bulle\t"
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr ""
@@ -442,9 +441,8 @@ msgstr "Curseur à gauche\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Curseur à droite\tRIGHT"
 
-#, fuzzy
 msgid "Date and time range"
-msgstr "Date et heure de fin"
+msgstr "Date et heure de début et fin"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Diminuer la largeur de colonne (ALT+molette)\tALT+PGDN"
@@ -688,9 +686,8 @@ msgstr "Aller au résultat de recherche suivant\tF3"
 msgid "Go to next filter match\tCTRL+F3"
 msgstr "Aller au résultat de filtre suivant\tCTRL+F3"
 
-#, fuzzy
 msgid "Grid Style Rendering\t"
-msgstr "Rendu de style grille\tALT+7"
+msgstr "Rendu de style grille\t"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (&Puces)..."
@@ -708,17 +705,14 @@ msgstr ""
 "Maintenir touche CTRL et click droit pour remplacer rapidement une étiquette "
 "dans la cellule courante via un menu contextuel"
 
-#, fuzzy
 msgid "Horizontal Layout with Bubble Style Rendering\t"
-msgstr "Disposition horizontale mode Bubble\tALT+5"
+msgstr "Disposition horizontale mode Bubble\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Grid Style Rendering\t"
-msgstr "Disposition horizontale mode Grille\tALT+4"
+msgstr "Disposition horizontale mode Grille\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Line Style Rendering\t"
-msgstr "Disposition horizontale mode Ligne\tALT+6"
+msgstr "Disposition horizontale mode Ligne\t"
 
 msgid "Hover shadow"
 msgstr "Ombre en survol"
@@ -770,9 +764,8 @@ msgstr "Association de touche"
 msgid "Keybinding cancelled."
 msgstr "Annulation de l'association de touche."
 
-#, fuzzy
 msgid "Line Style Rendering\t"
-msgstr "Mode ligne\tALT+9"
+msgstr "Mode ligne\t"
 
 msgid "Load interactive &tutorial...\tF1"
 msgstr "Charger le &tutoriel interactif ...\tF1"
@@ -1348,9 +1341,8 @@ msgstr "Développer/Réduire\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Développer/Réduire\tF10"
 
-#, fuzzy
 msgid "Toggle Vertical Layout\t"
-msgstr "Activer/désactiver la disposition verticale\tALT+0"
+msgstr "Activer/désactiver la disposition verticale\t"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Gras\tCTRL+b"
@@ -1394,17 +1386,14 @@ msgstr "&Assignation de variable\tCTRL+ALT+a"
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "Lecture de Va&riable\tCTRL+ALT+r"
 
-#, fuzzy
 msgid "Vertical Layout with Bubble Style Rendering\t"
-msgstr "Disposition verticale mode Bubble\tALT+2"
+msgstr "Disposition verticale mode Bubble\t"
 
-#, fuzzy
 msgid "Vertical Layout with Grid Style Rendering\t"
-msgstr "Disposition verticale mode grille\tALT+1"
+msgstr "Disposition verticale mode grille\t"
 
-#, fuzzy
 msgid "Vertical Layout with Line Style Rendering\t"
-msgstr "Disposition verticale mode ligne\tALT+3"
+msgstr "Disposition verticale mode ligne\t"
 
 msgid "View tutorial &web page..."
 msgstr "Aller sur la page &web du tutoriel..."
