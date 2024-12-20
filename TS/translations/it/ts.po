@@ -18,7 +18,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cells"
-msgstr ""
+msgstr "%d celle"
 
 #, c-format
 msgid ""
@@ -286,9 +286,8 @@ msgstr "Bordo &4\tCTRL+SHIFT+4"
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "Bordo &5\tCTRL+SHIFT+5"
 
-#, fuzzy
 msgid "Bubble Style Rendering\t"
-msgstr "Rendering stile bolla\tALT+8"
+msgstr "Rendering stile bolla\t"
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr "Può solo spostare questa cella in una griglia Nx1 o 1xN."
@@ -430,9 +429,8 @@ msgstr "Cursore a sinistra\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Cursore a destra\tRIGHT"
 
-#, fuzzy
 msgid "Date and time range"
-msgstr "Data e ora di fine"
+msgstr "Data e ora d'inizio e fine"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Riduci larghezza colonna (ALT + rotellina del mouse)\tALT+PGDN"
@@ -675,9 +673,8 @@ msgstr "Vai al risultato della ricerca successiva"
 msgid "Go to next filter match\tCTRL+F3"
 msgstr "Vai alla corrispondenza del filtro successivo\tCTRL+F3"
 
-#, fuzzy
 msgid "Grid Style Rendering\t"
-msgstr "Grid Style Rendering\tALT+7"
+msgstr "Grid Style Rendering\t"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (&Punti elenco)..."
@@ -695,17 +692,14 @@ msgstr ""
 "Tieni premuto CTRL mentre premi il tasto destro del mouse per impostare "
 "rapidamente un tag per cella corrente sta' usando un menu popup"
 
-#, fuzzy
 msgid "Horizontal Layout with Bubble Style Rendering\t"
-msgstr "Layout orizzontale con Rendering stile Bubble\tALT+5"
+msgstr "Layout orizzontale con Rendering stile Bubble\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Grid Style Rendering\t"
-msgstr "Layout orizzontale con Rendering stile griglia\tALT+4"
+msgstr "Layout orizzontale con Rendering stile griglia\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Line Style Rendering\t"
-msgstr "Layout orizzontale con Rendering stile linea\tALT+6"
+msgstr "Layout orizzontale con Rendering stile linea\t"
 
 msgid "Hover shadow"
 msgstr "Ombra a bilico"
@@ -757,9 +751,8 @@ msgstr "chiave di rilegatura"
 msgid "Keybinding cancelled."
 msgstr "Combinazione di tasti annullato."
 
-#, fuzzy
 msgid "Line Style Rendering\t"
-msgstr "Rendering stile linea\tALT+9"
+msgstr "Rendering stile linea\t"
 
 msgid "Load interactive &tutorial...\tF1"
 msgstr "Carica interattivo e tutorial ...\tF1"
@@ -1338,9 +1331,8 @@ msgstr "Commuta piegatura\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Commuta piegatura\tF10"
 
-#, fuzzy
 msgid "Toggle Vertical Layout\t"
-msgstr "Attiva/disattiva layout verticale\tAlt+0"
+msgstr "Attiva/disattiva layout verticale\t"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Cambia cella &GRASSETTO\tCTRL+b"
@@ -1385,17 +1377,14 @@ msgstr "Assegnazione &variabile\tCTRL+ALT+a"
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "Variabile &Letta\tCTRL+ALT+r"
 
-#, fuzzy
 msgid "Vertical Layout with Bubble Style Rendering\t"
-msgstr "Layout verticale con Rendering stile Bubble\tALT+2"
+msgstr "Layout verticale con Rendering stile Bubble\t"
 
-#, fuzzy
 msgid "Vertical Layout with Grid Style Rendering\t"
-msgstr "Layout verticale con rendering a stile griglia\tALT+1"
+msgstr "Layout verticale con rendering a stile griglia\t"
 
-#, fuzzy
 msgid "Vertical Layout with Line Style Rendering\t"
-msgstr "Layout verticale con Rendering stile linea\tALT+3"
+msgstr "Layout verticale con Rendering stile linea\t"
 
 msgid "View tutorial &web page..."
 msgstr "Visualizza tutorial e pagina web..."
