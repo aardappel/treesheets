@@ -22,7 +22,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cells"
-msgstr ""
+msgstr "%d клеток"
 
 # Сообщения
 #, c-format
@@ -296,9 +296,8 @@ msgstr "Граница &4\tCTRL+SHIFT+4"
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "Граница &5\tCTRL+SHIFT+5"
 
-#, fuzzy
 msgid "Bubble Style Rendering\t"
-msgstr "... в стиле &Пузыря\tALT+8"
+msgstr "... в стиле &Пузыря\t"
 
 # Сообщения
 msgid "Can only move this cell from a Nx1 or 1xN grid."
@@ -474,9 +473,8 @@ msgid "Cursor Right\tRIGHT"
 msgstr "... вПраво\tRIGHT"
 
 # Сообщения
-#, fuzzy
 msgid "Date and time range"
-msgstr "Дата и Время завершения"
+msgstr "Диапазон даты и времени"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "У&меньшить...\tALT+PGDN"
@@ -733,9 +731,8 @@ msgstr "К Cледующему вхождению поиска"
 msgid "Go to next filter match\tCTRL+F3"
 msgstr "Перейти к Следующему Фильтру\tCTRL+F3"
 
-#, fuzzy
 msgid "Grid Style Rendering\t"
-msgstr "Отображение в стиле &Сетки\tALT+7"
+msgstr "Отображение в стиле &Сетки\t"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (&Пункты Cписка)..."
@@ -754,17 +751,14 @@ msgstr ""
 "Удерживайте CTRL и одновременно нажмите правую кнопку мыши, чтобы быстро "
 "задать Тег для текущей ячейки из всплывающего меню"
 
-#, fuzzy
 msgid "Horizontal Layout with Bubble Style Rendering\t"
-msgstr "... в стиле &Пузыря\tALT+5"
+msgstr "... в стиле &Пузыря\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Grid Style Rendering\t"
-msgstr "Горизонтальная компоновка в стиле &Сетки\tALT+4"
+msgstr "Горизонтальная компоновка в стиле &Сетки\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Line Style Rendering\t"
-msgstr "... в стиле &Линии\tALT+6"
+msgstr "... в стиле &Линии\t"
 
 msgid "Hover shadow"
 msgstr "Тень при наведении"
@@ -827,9 +821,8 @@ msgstr "Привязка клавиш"
 msgid "Keybinding cancelled."
 msgstr "Привязка клавиш отменена."
 
-#, fuzzy
 msgid "Line Style Rendering\t"
-msgstr "... в стиле &Линии\tALT+9"
+msgstr "... в стиле &Линии\t"
 
 msgid "Load interactive &tutorial...\tF1"
 msgstr "Загрузить интерактивный &Учебник...\tF1"
@@ -1479,9 +1472,8 @@ msgstr "Свер&нуть - Развернуть\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Свер&нуть - Развернуть\tF10"
 
-#, fuzzy
 msgid "Toggle Vertical Layout\t"
-msgstr "Переключить &Макет (Вертик/Горизонт)\tALT+0"
+msgstr "Переключить &Макет (Вертик/Горизонт)\t"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Переключить Ячейку на &ЖИРНЫЙ\tCTRL+b"
@@ -1529,17 +1521,14 @@ msgstr "&Назначить Переменную\tCTRL+ALT+a"
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "Про&читать Переменную\tCTRL+ALT+r"
 
-#, fuzzy
 msgid "Vertical Layout with Bubble Style Rendering\t"
-msgstr "... в стиле &Пузыря\tALT+2"
+msgstr "... в стиле &Пузыря\t"
 
-#, fuzzy
 msgid "Vertical Layout with Grid Style Rendering\t"
-msgstr "Вертикальная компоновка в стиле &Сетки\tALT+1"
+msgstr "Вертикальная компоновка в стиле &Сетки\t"
 
-#, fuzzy
 msgid "Vertical Layout with Line Style Rendering\t"
-msgstr "... в стиле &Линии\tALT+3"
+msgstr "... в стиле &Линии\t"
 
 msgid "View tutorial &web page..."
 msgstr "Посмотреть &Bеб-страницу Учебника..."
