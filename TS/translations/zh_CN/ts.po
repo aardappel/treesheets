@@ -20,7 +20,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cells"
-msgstr ""
+msgstr "%d 个单元格"
 
 #, c-format
 msgid ""
@@ -284,9 +284,8 @@ msgstr "边框 &4\tCTRL+SHIFT+4"
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "边框 &5\tCTRL+SHIFT+5"
 
-#, fuzzy
 msgid "Bubble Style Rendering\t"
-msgstr "气泡风格渲染\tALT+8"
+msgstr "气泡风格渲染\t"
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr "只能从Nx1或1xN网格中移动此单元格。"
@@ -426,9 +425,8 @@ msgstr "光标左侧\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "光标右侧\tRIGHT"
 
-#, fuzzy
 msgid "Date and time range"
-msgstr "日期范围筛选"
+msgstr "日期和时间范围"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "减小列宽度 (alt 鼠标滚轮)\tALT+PGDN"
@@ -462,13 +460,11 @@ msgstr "将光标前的整个单词删除"
 msgid "Discard Changes"
 msgstr "放弃更改"
 
-#, fuzzy, c-format
 msgid "Edited %s %s"
-msgstr "已修改 %s"
+msgstr "已编辑 %s %s"
 
-#, fuzzy
 msgid "End date and time"
-msgstr "结束日期"
+msgstr "结束日期和时间"
 
 msgid "End of line of text\tEND"
 msgstr "文本行的结尾\tEND"
@@ -632,9 +628,8 @@ msgstr "发现一个未在本程序中定义的图像类型。"
 msgid "Go To &Matching Cell (Text)\tF6"
 msgstr "转到匹配单元格(文字)\tF6"
 
-#, fuzzy
 msgid "Go To &Previous Search Result\tSHIFT+F3"
-msgstr "转到下一个搜索结果(&G)\tF3"
+msgstr "转到上一个搜索结果(&G)\tSHIFT+F3"
 
 msgid "Go To Matching Cell (Image)\tF7"
 msgstr "转到匹配单元格(图像)\tF7"
@@ -648,13 +643,11 @@ msgstr "转到匹配单元格 (文字,反向)\tSHIFT+F6"
 msgid "Go to Next Search Result"
 msgstr "转到下一个搜索结果"
 
-#, fuzzy
 msgid "Go to next filter match\tCTRL+F3"
-msgstr "转到下个筛选匹配\tSHIFT+F3"
+msgstr "转到下一个匹配过滤器\tCTRL+F3"
 
-#, fuzzy
 msgid "Grid Style Rendering\t"
-msgstr "网格样式渲染\tALT+7"
+msgstr "网格样式渲染\t"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML 要点(&B)..."
@@ -670,20 +663,17 @@ msgid ""
 "current cell using a popup menu"
 msgstr "按住 CTRL 键，同时使用弹出菜单快速设置当前单元格的标记"
 
-#, fuzzy
 msgid "Horizontal Layout with Bubble Style Rendering\t"
-msgstr "水平布局:气泡\tALT+5"
+msgstr "水平布局:气泡\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Grid Style Rendering\t"
-msgstr "水平布局:网格\tALT+4"
+msgstr "水平布局:网格\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Line Style Rendering\t"
-msgstr "水平布局:线条\tALT+6"
+msgstr "水平布局:线条\t"
 
 msgid "Hover shadow"
-msgstr ""
+msgstr "悬停阴影"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "一个页面应该有多少像素宽？(0 为自动配合)"
@@ -715,10 +705,8 @@ msgstr "初始化错误"
 msgid "Internal error: unimplemented operation!"
 msgstr "内部错误：未实现的操作！"
 
-msgid ""
-"It seems that you are about to drop a TreeSheets file. What would you like "
-"to do?"
-msgstr ""
+msgid "It seems that you are about to drop a TreeSheets file. What would you like to do?"
+msgstr "您似乎要删除一个 TreeSheets 文件。您想做什么？"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 文件已损坏！"
@@ -729,9 +717,8 @@ msgstr "键绑定"
 msgid "Keybinding cancelled."
 msgstr "取消了绑定。"
 
-#, fuzzy
 msgid "Line Style Rendering\t"
-msgstr "线条样式渲染\tALT+9"
+msgstr "线条样式渲染\t"
 
 msgid "Load interactive &tutorial...\tF1"
 msgstr "加载交互式教程(&T)...\tF1"
@@ -778,44 +765,38 @@ msgstr "向上移动单元格\tCTRL+UP"
 msgid "Move Selection Down\tDOWN"
 msgstr "向下移动所选内容\tDOWN"
 
-#, fuzzy
 msgid "Move Selection Down (DOWN)"
-msgstr "向下移动所选内容\tDOWN"
+msgstr "向下移动所选内容 (DOWN)"
 
 msgid "Move Selection Left\tLEFT"
 msgstr "向左移动所选内容\tLEFT"
 
-#, fuzzy
 msgid "Move Selection Left (LEFT)"
-msgstr "向左移动所选内容\tLEFT"
+msgstr "向左移动所选内容 (LEFT)"
 
 msgid "Move Selection Right\tRIGHT"
 msgstr "向右移动选择\tRIGHT"
 
-#, fuzzy
 msgid "Move Selection Right (RIGHT)"
-msgstr "向右移动选择\tRIGHT"
+msgstr "向右移动选择 (RIGHT)"
 
 msgid "Move Selection Up\tUP"
 msgstr "上移所选内容\tUP"
 
-#, fuzzy
 msgid "Move Selection Up (UP)"
-msgstr "上移所选内容\tUP"
+msgstr "上移所选内容 (UP)"
 
 msgid "Move to next cell\tTAB"
 msgstr "移动到下一个单元格\tTAB"
 
-#, fuzzy
 msgid "Move to next cell (TAB)"
-msgstr "移动到下一个单元格\tTAB"
+msgstr "移动到下一个单元格 (TAB)"
 
 msgid "Move to previous cell\tSHIFT+TAB"
 msgstr "移动到上一个单元格\tSHIFT+TAB"
 
-#, fuzzy
 msgid "Move to previous cell (SHIFT+TAB)"
-msgstr "移动到上一个单元格\tSHIFT+TAB"
+msgstr "移动到上一个单元格 (SHIFT+TAB)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr "注：键绑定将在下一次运行的树表中生效。"
@@ -862,9 +843,8 @@ msgstr "此单元格中没有文字。"
 msgid "No text selected."
 msgstr "未选择文本。"
 
-#, fuzzy
 msgid "No text to search for."
-msgstr "没有用于搜索的匹配项。"
+msgstr "无文本可搜索"
 
 msgid "Not a TreeSheets file."
 msgstr "不是 \"TreeSheets\" 文件。"
@@ -886,9 +866,8 @@ msgstr "打开文件(&F)\tF4"
 msgid "Open (CTRL+o)"
 msgstr "打开 (CTRL+o)"
 
-#, fuzzy
 msgid "Open TreeSheets file"
-msgstr "不是 \"TreeSheets\" 文件。"
+msgstr "打开 TreeSheets 文件"
 
 msgid "Open border colors\tSHIFT+ALT+F11"
 msgstr "打开边框颜色\tSHIFT+ALT+F11"
@@ -938,11 +917,10 @@ msgid "Paste Style Only\tCTRL+SHIFT+v"
 msgstr "仅粘贴样式\tCTRL+SHIFT+v"
 
 msgid "Paste file path"
-msgstr ""
+msgstr "粘贴文件路径"
 
-#, fuzzy
 msgid "Pick Cu&rsor Color..."
-msgstr "选择自定义颜色(&C)..."
+msgstr "选择颜色...(&C)..."
 
 msgid "Pick Custom &Color..."
 msgstr "选择自定义颜色(&C)..."
@@ -962,9 +940,8 @@ msgstr "请启用 (选项-> 显示工具栏) 以便用于搜索。"
 msgid "Please enter the new image width:"
 msgstr "请输入新的图像宽度："
 
-#, fuzzy
 msgid "Please enter the new key binding string"
-msgstr "请输入新的图像宽度："
+msgstr "请输入新的密钥绑定字符串："
 
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "请输入要按以下方式缩放图像的百分比："
@@ -981,7 +958,6 @@ msgstr "请选择图像文件："
 msgid "Please select file to import:"
 msgstr "请选择要导入的文件："
 
-#, fuzzy
 msgid "Please select the datetime range."
 msgstr "请选择日期范围。"
 
@@ -1136,7 +1112,7 @@ msgstr "选定的网格不是表：单元格不能已经有子网格。"
 
 #, c-format
 msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr ""
+msgstr "所选内容包含 %d 个单元格，其中有 %d 个字符。"
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "半冒号分隔文本 (CSV)..."
@@ -1187,7 +1163,7 @@ msgid "Show only cells in current search"
 msgstr "仅在当前搜索中显示单元格"
 
 msgid "Show statistics\tCTRL+d"
-msgstr ""
+msgstr "显示统计数据\tCTRL+d"
 
 msgid "Single click maximize from tray"
 msgstr "托盘单击最大化"
@@ -1202,9 +1178,8 @@ msgstr "排序升序(&A)"
 msgid "Sort &Descending"
 msgstr "排序降序(&D)"
 
-#, fuzzy
 msgid "Start date and time"
-msgstr "开始日期"
+msgstr "开始日期和时间"
 
 msgid "Start of line of text\tHOME"
 msgstr "文本行首\tHOME"
@@ -1302,7 +1277,7 @@ msgstr "切换折叠\tF10"
 
 #, fuzzy
 msgid "Toggle Vertical Layout\t"
-msgstr "切换垂直布局\tALT+0"
+msgstr "切换垂直布局\t"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "切换单元格(&B)\tCTRL+b"
@@ -1346,17 +1321,14 @@ msgstr "变量分配(&A)\tCTRL+ALT+a"
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "变量读取(&R)\tCTRL+ALT+r"
 
-#, fuzzy
 msgid "Vertical Layout with Bubble Style Rendering\t"
-msgstr "垂直布局:气泡\tALT+2"
+msgstr "垂直布局:气泡\t"
 
-#, fuzzy
 msgid "Vertical Layout with Grid Style Rendering\t"
-msgstr "垂直布局:网格\tALT+1"
+msgstr "垂直布局:网格\t"
 
-#, fuzzy
 msgid "Vertical Layout with Line Style Rendering\t"
-msgstr "垂直布局:线条\tALT+3"
+msgstr "垂直布局:线条\t"
 
 msgid "View tutorial &web page..."
 msgstr "查看教程网页(&W)..."
@@ -1384,7 +1356,7 @@ msgid "XML..."
 msgstr "XML..."
 
 msgid "You need to select one cell if you want to search for its text."
-msgstr ""
+msgstr "如果要搜索一个单元格的文本，则需要选择该单元格。"
 
 msgid "Zlib error while writing file."
 msgstr "写入文件时出现 zlib 错误。"
