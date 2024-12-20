@@ -18,7 +18,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cells"
-msgstr ""
+msgstr "%d Zellen"
 
 #, c-format
 msgid ""
@@ -284,9 +284,8 @@ msgstr "Rand &4\tCTRL+SHIFT+4"
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "Rand &5\tCTRL+SHIFT+5"
 
-#, fuzzy
 msgid "Bubble Style Rendering\t"
-msgstr "Blasenstil-Rendering\tALT+8"
+msgstr "Blasenstil-Rendering\t"
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr "Es kann nur diese Zelle aus einer Nx1- oder 1xN-Tabelle verschoben werden."
@@ -681,9 +680,8 @@ msgstr "Zum &nächsten Suchtreffer springen"
 msgid "Go to next filter match\tCTRL+F3"
 msgstr "Zum nächsten Filtertreffer springen\tCTRL+F3"
 
-#, fuzzy
 msgid "Grid Style Rendering\t"
-msgstr "Tabellenstil-Rendering\tALT+7"
+msgstr "Tabellenstil-Rendering\t"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (Aufzählungspunkte)..."
@@ -701,17 +699,14 @@ msgstr ""
 "CTRL-Taste beim Drücken der rechten Maustaste gedrückt halten, um schnell "
 "ein Schlagwort für die aktuelle Zelle mit Hilfe eines Popup-Menüs zu setzen."
 
-#, fuzzy
 msgid "Horizontal Layout with Bubble Style Rendering\t"
-msgstr "Horizontale Anordnung mit Blasenstil-Rendering\tALT+5"
+msgstr "Horizontale Anordnung mit Blasenstil-Rendering\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Grid Style Rendering\t"
-msgstr "Horizontale Anordnung mit Tabellenstil-Rendering\tALT+4"
+msgstr "Horizontale Anordnung mit Tabellenstil-Rendering\t"
 
-#, fuzzy
 msgid "Horizontal Layout with Line Style Rendering\t"
-msgstr "Horizontale Anordnung mit Zeilenstil-Rendering\tALT+6"
+msgstr "Horizontale Anordnung mit Zeilenstil-Rendering\t"
 
 msgid "Hover shadow"
 msgstr "Schwebeschatten"
@@ -762,9 +757,8 @@ msgstr "Tastenkombination"
 msgid "Keybinding cancelled."
 msgstr "Zuweisen zu einer Tastenkombination wurde abgebrochen."
 
-#, fuzzy
 msgid "Line Style Rendering\t"
-msgstr "Zeilenstil-Rendering\tALT+9"
+msgstr "Zeilenstil-Rendering\t"
 
 msgid "Load interactive &tutorial...\tF1"
 msgstr "Interaktives &Tutorial laden\tF1"
@@ -1333,9 +1327,8 @@ msgstr "Ein-/Ausklappen\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Ein-/Ausklappen\tF10"
 
-#, fuzzy
 msgid "Toggle Vertical Layout\t"
-msgstr "Vertikale Anordnung aktivieren/deaktivieren\tALT+0"
+msgstr "Vertikale Anordnung aktivieren/deaktivieren\t"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Zelle &FETT ausweisen (ein/aus)\tCTRL+b"
@@ -1379,17 +1372,14 @@ msgstr "V&ariable zuweisen\tCTRL+ALT+a"
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "Va&riable lesen\tCTRL+ALT+r"
 
-#, fuzzy
 msgid "Vertical Layout with Bubble Style Rendering\t"
-msgstr "Vertikale Anordnung mit Blasenstil-Rendering\tALT+2"
+msgstr "Vertikale Anordnung mit Blasenstil-Rendering\t"
 
-#, fuzzy
 msgid "Vertical Layout with Grid Style Rendering\t"
-msgstr "Vertikale Anordnung mit Tabellenstil-Rendering\tALT+1"
+msgstr "Vertikale Anordnung mit Tabellenstil-Rendering\t"
 
-#, fuzzy
 msgid "Vertical Layout with Line Style Rendering\t"
-msgstr "Vertikale Anordnung mit Zeilenstil-Rendering\tALT+3"
+msgstr "Vertikale Anordnung mit Zeilenstil-Rendering\t"
 
 msgid "View tutorial &web page..."
 msgstr "Tutorial-&Webseite anschauen..."
