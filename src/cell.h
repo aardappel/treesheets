@@ -426,7 +426,10 @@ struct Cell {
             c = nullptr;
             grid.reset(cg);  // FIXME: could merge instead?
             if (!HasText())
-                grid->MergeWithParent(parent->grid.get(), s, doc);  // deletes grid/this.
+                // cg will be released from grid in the next step to unlink cg
+                // from its owning cell because the contents of cg will be
+                // merged into the parent grid and cg will be deleted afterwards
+                grid->MergeWithParent(parent->grid.get(), s, doc);
         }
     }
 
