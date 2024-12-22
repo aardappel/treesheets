@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-20 19:05+0200\n"
+"POT-Creation-Date: 2024-12-20 20:50+0100\n"
 "PO-Revision-Date: 2024-08-20 15:38-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.4.2\n"
+
+#, c-format
+msgid "%d cells"
+msgstr ""
 
 #, c-format
 msgid ""
@@ -284,7 +288,8 @@ msgstr "Borda &4\tCTRL+SHIFT+4"
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "Borda &5\tCTRL+SHIFT+5"
 
-msgid "Bubble Style Rendering\tALT+8"
+#, fuzzy
+msgid "Bubble Style Rendering\t"
 msgstr "Renderização com Estilo de Bolha\tALT+8"
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
@@ -432,8 +437,9 @@ msgstr "Mover Cursor à Esquerda\tLEFT"
 msgid "Cursor Right\tRIGHT"
 msgstr "Mover Cursor à Direita\tRIGHT"
 
-msgid "Date range filter"
-msgstr "Intervalo de datas para filtrar"
+#, fuzzy
+msgid "Date and time range"
+msgstr "Data/hora final"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "Diminuir a largura da coluna (ALT+botão de rolagem)\tALT+PGDN"
@@ -672,7 +678,8 @@ msgstr "Ir para Resultado Seguinte da Busca"
 msgid "Go to next filter match\tCTRL+F3"
 msgstr "Ir para célula evidenciada seguinte\tCTRL+F3"
 
-msgid "Grid Style Rendering\tALT+7"
+#, fuzzy
+msgid "Grid Style Rendering\t"
 msgstr "Renderização com Estilo de Grade\tALT+7"
 
 msgid "HTML (&Bullet points)..."
@@ -691,13 +698,16 @@ msgstr ""
 "Segure CTRL e clique com o botão direito do mouse para definir rapidamente "
 "uma tag para a célula atual usando um menu popup"
 
-msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
+#, fuzzy
+msgid "Horizontal Layout with Bubble Style Rendering\t"
 msgstr "Layout Horizontal, Renderização com Estilo de Bolha\tALT+5"
 
-msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
+#, fuzzy
+msgid "Horizontal Layout with Grid Style Rendering\t"
 msgstr "Layout Horizontal, Renderização com Estilo de Grade\tALT+4"
 
-msgid "Horizontal Layout with Line Style Rendering\tALT+6"
+#, fuzzy
+msgid "Horizontal Layout with Line Style Rendering\t"
 msgstr "Layout Horizontal, Renderização com Estilo de Linha\tALT+6"
 
 msgid "Hover shadow"
@@ -751,7 +761,8 @@ msgstr "Associação de teclas"
 msgid "Keybinding cancelled."
 msgstr "A associação de teclas foi cancelada."
 
-msgid "Line Style Rendering\tALT+9"
+#, fuzzy
+msgid "Line Style Rendering\t"
 msgstr "Renderização com Estilo de Linha\tALT+9"
 
 msgid "Load interactive &tutorial...\tF1"
@@ -1337,7 +1348,8 @@ msgstr "Dobrar/Desdobrar\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Dobrar/Desdobrar\tF10"
 
-msgid "Toggle Vertical Layout\tALT+0"
+#, fuzzy
+msgid "Toggle Vertical Layout\t"
 msgstr "Tornar Layout Vertical/Horizontal\tALT+0"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
@@ -1382,13 +1394,16 @@ msgstr "&Atribuição de Variável\tCTRL+ALT+a"
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "&Leitura de Variável\tCTRL+ALT+r"
 
-msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
+#, fuzzy
+msgid "Vertical Layout with Bubble Style Rendering\t"
 msgstr "Layout Vertical, Renderização com Estilo de Bolha\tALT+2"
 
-msgid "Vertical Layout with Grid Style Rendering\tALT+1"
+#, fuzzy
+msgid "Vertical Layout with Grid Style Rendering\t"
 msgstr "Layout Vertical, Renderização com Estilo de Grade\tALT+1"
 
-msgid "Vertical Layout with Line Style Rendering\tALT+3"
+#, fuzzy
+msgid "Vertical Layout with Line Style Rendering\t"
 msgstr "Layout Vertical, Renderização com Estilo de Linha\tALT+3"
 
 msgid "View tutorial &web page..."

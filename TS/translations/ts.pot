@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-20 19:05+0200\n"
+"POT-Creation-Date: 2024-12-20 20:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#, c-format
+msgid "%d cells"
+msgstr ""
 
 #, c-format
 msgid ""
@@ -276,7 +280,7 @@ msgstr ""
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr ""
 
-msgid "Bubble Style Rendering\tALT+8"
+msgid "Bubble Style Rendering\t"
 msgstr ""
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
@@ -413,7 +417,7 @@ msgstr ""
 msgid "Cursor Right\tRIGHT"
 msgstr ""
 
-msgid "Date range filter"
+msgid "Date and time range"
 msgstr ""
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
@@ -629,7 +633,7 @@ msgstr ""
 msgid "Go to next filter match\tCTRL+F3"
 msgstr ""
 
-msgid "Grid Style Rendering\tALT+7"
+msgid "Grid Style Rendering\t"
 msgstr ""
 
 msgid "HTML (&Bullet points)..."
@@ -646,13 +650,13 @@ msgid ""
 "current cell using a popup menu"
 msgstr ""
 
-msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
+msgid "Horizontal Layout with Bubble Style Rendering\t"
 msgstr ""
 
-msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
+msgid "Horizontal Layout with Grid Style Rendering\t"
 msgstr ""
 
-msgid "Horizontal Layout with Line Style Rendering\tALT+6"
+msgid "Horizontal Layout with Line Style Rendering\t"
 msgstr ""
 
 msgid "Hover shadow"
@@ -702,7 +706,7 @@ msgstr ""
 msgid "Keybinding cancelled."
 msgstr ""
 
-msgid "Line Style Rendering\tALT+9"
+msgid "Line Style Rendering\t"
 msgstr ""
 
 msgid "Load interactive &tutorial...\tF1"
@@ -1256,7 +1260,7 @@ msgstr ""
 msgid "Toggle Fold\tF10"
 msgstr ""
 
-msgid "Toggle Vertical Layout\tALT+0"
+msgid "Toggle Vertical Layout\t"
 msgstr ""
 
 msgid "Toggle cell &BOLD\tCTRL+b"
@@ -1301,13 +1305,13 @@ msgstr ""
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr ""
 
-msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
+msgid "Vertical Layout with Bubble Style Rendering\t"
 msgstr ""
 
-msgid "Vertical Layout with Grid Style Rendering\tALT+1"
+msgid "Vertical Layout with Grid Style Rendering\t"
 msgstr ""
 
-msgid "Vertical Layout with Line Style Rendering\tALT+3"
+msgid "Vertical Layout with Line Style Rendering\t"
 msgstr ""
 
 msgid "View tutorial &web page..."

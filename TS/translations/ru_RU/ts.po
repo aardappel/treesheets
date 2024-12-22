@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU-1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-20 19:05+0200\n"
+"POT-Creation-Date: 2024-12-20 20:50+0100\n"
 "PO-Revision-Date: 2024-08-25 09:11+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 3.4.4\n"
+
+#, c-format
+msgid "%d cells"
+msgstr "%d клеток"
 
 # Сообщения
 #, c-format
@@ -292,8 +296,8 @@ msgstr "Граница &4\tCTRL+SHIFT+4"
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr "Граница &5\tCTRL+SHIFT+5"
 
-msgid "Bubble Style Rendering\tALT+8"
-msgstr "... в стиле &Пузыря\tALT+8"
+msgid "Bubble Style Rendering\t"
+msgstr "... в стиле &Пузыря\t"
 
 # Сообщения
 msgid "Can only move this cell from a Nx1 or 1xN grid."
@@ -469,8 +473,8 @@ msgid "Cursor Right\tRIGHT"
 msgstr "... вПраво\tRIGHT"
 
 # Сообщения
-msgid "Date range filter"
-msgstr "Фильтр по диапазону дат"
+msgid "Date and time range"
+msgstr "Диапазон даты и времени"
 
 msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
 msgstr "У&меньшить...\tALT+PGDN"
@@ -727,8 +731,8 @@ msgstr "К Cледующему вхождению поиска"
 msgid "Go to next filter match\tCTRL+F3"
 msgstr "Перейти к Следующему Фильтру\tCTRL+F3"
 
-msgid "Grid Style Rendering\tALT+7"
-msgstr "Отображение в стиле &Сетки\tALT+7"
+msgid "Grid Style Rendering\t"
+msgstr "Отображение в стиле &Сетки\t"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (&Пункты Cписка)..."
@@ -747,14 +751,14 @@ msgstr ""
 "Удерживайте CTRL и одновременно нажмите правую кнопку мыши, чтобы быстро "
 "задать Тег для текущей ячейки из всплывающего меню"
 
-msgid "Horizontal Layout with Bubble Style Rendering\tALT+5"
-msgstr "... в стиле &Пузыря\tALT+5"
+msgid "Horizontal Layout with Bubble Style Rendering\t"
+msgstr "... в стиле &Пузыря\t"
 
-msgid "Horizontal Layout with Grid Style Rendering\tALT+4"
-msgstr "Горизонтальная компоновка в стиле &Сетки\tALT+4"
+msgid "Horizontal Layout with Grid Style Rendering\t"
+msgstr "Горизонтальная компоновка в стиле &Сетки\t"
 
-msgid "Horizontal Layout with Line Style Rendering\tALT+6"
-msgstr "... в стиле &Линии\tALT+6"
+msgid "Horizontal Layout with Line Style Rendering\t"
+msgstr "... в стиле &Линии\t"
 
 msgid "Hover shadow"
 msgstr "Тень при наведении"
@@ -817,8 +821,8 @@ msgstr "Привязка клавиш"
 msgid "Keybinding cancelled."
 msgstr "Привязка клавиш отменена."
 
-msgid "Line Style Rendering\tALT+9"
-msgstr "... в стиле &Линии\tALT+9"
+msgid "Line Style Rendering\t"
+msgstr "... в стиле &Линии\t"
 
 msgid "Load interactive &tutorial...\tF1"
 msgstr "Загрузить интерактивный &Учебник...\tF1"
@@ -1468,8 +1472,8 @@ msgstr "Свер&нуть - Развернуть\tCTRL+F10"
 msgid "Toggle Fold\tF10"
 msgstr "Свер&нуть - Развернуть\tF10"
 
-msgid "Toggle Vertical Layout\tALT+0"
-msgstr "Переключить &Макет (Вертик/Горизонт)\tALT+0"
+msgid "Toggle Vertical Layout\t"
+msgstr "Переключить &Макет (Вертик/Горизонт)\t"
 
 msgid "Toggle cell &BOLD\tCTRL+b"
 msgstr "Переключить Ячейку на &ЖИРНЫЙ\tCTRL+b"
@@ -1517,14 +1521,14 @@ msgstr "&Назначить Переменную\tCTRL+ALT+a"
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr "Про&читать Переменную\tCTRL+ALT+r"
 
-msgid "Vertical Layout with Bubble Style Rendering\tALT+2"
-msgstr "... в стиле &Пузыря\tALT+2"
+msgid "Vertical Layout with Bubble Style Rendering\t"
+msgstr "... в стиле &Пузыря\t"
 
-msgid "Vertical Layout with Grid Style Rendering\tALT+1"
-msgstr "Вертикальная компоновка в стиле &Сетки\tALT+1"
+msgid "Vertical Layout with Grid Style Rendering\t"
+msgstr "Вертикальная компоновка в стиле &Сетки\t"
 
-msgid "Vertical Layout with Line Style Rendering\tALT+3"
-msgstr "... в стиле &Линии\tALT+3"
+msgid "Vertical Layout with Line Style Rendering\t"
+msgstr "... в стиле &Линии\t"
 
 msgid "View tutorial &web page..."
 msgstr "Посмотреть &Bеб-страницу Учебника..."
