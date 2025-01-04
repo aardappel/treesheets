@@ -1,6 +1,8 @@
 
 BEGIN_EVENT_TABLE(treesheets::MyFrame, wxFrame)
-  EVT_DPI_CHANGED(treesheets::MyFrame::OnDPIChanged)
+  #ifndef __WXMAC__
+    EVT_DPI_CHANGED(treesheets::MyFrame::OnDPIChanged)
+  #endif
   EVT_SIZING(treesheets::MyFrame::OnSizing)
   EVT_MENU(wxID_ANY, treesheets::MyFrame::OnMenu)
   EVT_TEXT(A_SEARCH, treesheets::MyFrame::OnSearch)
