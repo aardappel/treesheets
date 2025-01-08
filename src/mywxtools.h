@@ -65,18 +65,18 @@ struct ThreeChoiceDialog : public wxDialog {
 };
 
 struct DateTimeRangeDialog : public wxDialog {
-    wxStaticText introtext {this, wxID_ANY, _(L"Please select the datetime range.")};
-    wxStaticText starttext {this, wxID_ANY, _(L"Start date and time")};
+    wxStaticText introtext {this, wxID_ANY, _("Please select the datetime range.")};
+    wxStaticText starttext {this, wxID_ANY, _("Start date and time")};
     wxDatePickerCtrl startdate {this, wxID_ANY};
     wxTimePickerCtrl starttime {this, wxID_ANY};
-    wxStaticText endtext {this, wxID_ANY, _(L"End date and time")};
+    wxStaticText endtext {this, wxID_ANY, _("End date and time")};
     wxDatePickerCtrl enddate {this, wxID_ANY};
     wxTimePickerCtrl endtime {this, wxID_ANY};
-    wxButton okbtn {this, wxID_OK, _(L"Filter")};
-    wxButton cancelbtn {this, wxID_CANCEL, _(L"Cancel")};
+    wxButton okbtn {this, wxID_OK, _("Filter")};
+    wxButton cancelbtn {this, wxID_CANCEL, _("Cancel")};
     wxDateTime begin;
     wxDateTime end;
-    DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _(L"Date and time range")) {
+    DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _("Date and time range")) {
         wxSizerFlags sizerflags(1);
         wxFlexGridSizer *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         startsizer->Add(&startdate, 0, wxALL, 5);

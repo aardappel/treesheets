@@ -235,8 +235,8 @@ struct System {
 
             if (::wxFileExists(TmpName(filename))) {
                 if (::wxMessageBox(
-                        _(L"A temporary autosave file exists, would you like to load it instead?"),
-                        _(L"Autosave load"), wxYES_NO, frame) == wxYES) {
+                        _("A temporary autosave file exists, would you like to load it instead?"),
+                        _("Autosave load"), wxYES_NO, frame) == wxYES) {
                     fn = TmpName(filename);
                     loadedfromtmp = true;
                 }
@@ -252,13 +252,13 @@ struct System {
             Cell *ics = nullptr;
             wxFFileInputStream fis(fn);
             wxDataInputStream dis(fis);
-            if (!fis.IsOk()) return _(L"Cannot open file.");
+            if (!fis.IsOk()) return _("Cannot open file.");
 
             char buf[4];
             fis.Read(buf, 4);
-            if (strncmp(buf, "TSFF", 4)) return _(L"Not a TreeSheets file.");
+            if (strncmp(buf, "TSFF", 4)) return _("Not a TreeSheets file.");
             fis.Read(&versionlastloaded, 1);
-            if (versionlastloaded > TS_VERSION) return _(L"File of newer version.");
+            if (versionlastloaded > TS_VERSION) return _("File of newer version.");
             int xs, ys;
             if (versionlastloaded >= 21) {
                 xs = dis.Read8();
@@ -279,7 +279,7 @@ struct System {
                         char iti = *buf;
                         auto mapitem = imagetypes.find(iti);
                         if (mapitem == imagetypes.end())
-                            return _(L"Found an image type that is not defined in this program.");
+                            return _("Found an image type that is not defined in this program.");
                         if (versionlastloaded < 9) dis.ReadString();
                         double sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
@@ -294,7 +294,7 @@ struct System {
                                 uchar header[8];
                                 fis.Read(header, 8);
                                 uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
-                                if (memcmp(header, expected, 8)) return _(L"Corrupt PNG header.");
+                                if (memcmp(header, expected, 8)) return _("Corrupt PNG header.");
                                 dis.BigEndianOrdered(true);
                                 for (;;) {  // Skip all chunks.
                                     wxInt32 len = dis.Read32();
@@ -307,7 +307,7 @@ struct System {
                             } else if (iti == 'J') {
                                 wxImage im;
                                 im.LoadFile(fis);
-                                if (!im.IsOk()) { return _(L"JPEG file is corrupted!"); }
+                                if (!im.IsOk()) { return _("JPEG file is corrupted!"); }
                             }
 
                             off_t afterimage = fis.TellI();
@@ -325,11 +325,11 @@ struct System {
 
                     case 'D': {
                         wxZlibInputStream zis(fis);
-                        if (!zis.IsOk()) return _(L"Cannot decompress file.");
+                        if (!zis.IsOk()) return _("Cannot decompress file.");
                         wxDataInputStream dis(zis);
                         int numcells = 0, textbytes = 0;
                         Cell *root = Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics);
-                        if (!root) return _(L"File corrupted!");
+                        if (!root) return _("File corrupted!");
 
                         doc = NewTabDoc(true);
                         if (loadedfromtmp) {
@@ -352,7 +352,7 @@ struct System {
 
                         doc->sw->Status(
                             wxString::Format(
-                                _(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
+                                _("Loaded %s (%d cells, %d characters) in %d milliseconds."),
                                 filename.c_str(), numcells, textbytes,
                                 (int)((end_loading_time - start_loading_time).GetValue()))
                                 .c_str());
@@ -360,7 +360,7 @@ struct System {
                         goto done;
                     }
 
-                    default: return _(L"Corrupt block header.");
+                    default: return _("Corrupt block header.");
                 }
             }
         }
@@ -382,8 +382,8 @@ struct System {
         FileUsed(filename, doc);
         doc->Refresh();
         if (anyimagesfailed)
-            wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
-                         _(L"PNG decoder failure"), wxOK, frame);
+            wxMessageBox(_("PNG decode failed on some images in this document\nThey have been replaced by red squares."),
+                         _("PNG decoder failure"), wxOK, frame);
 
         return L"";
     }
@@ -408,7 +408,7 @@ struct System {
             if (*msg) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
             return msg;
         }
-        return _(L"Open file cancelled.");
+        return _("Open file cancelled.");
     }
 
     void RememberOpenFiles() {
@@ -431,10 +431,10 @@ struct System {
         if (frame->GetStatusBar()) {
             Cell *c = s.GetCell();
             if (c && s.xs) {
-                frame->SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
-                frame->SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
+                frame->SetStatusText(wxString::Format(_("Size %d"), -c->text.relsize), 3);
+                frame->SetStatusText(wxString::Format(_("Width %d"), s.g->colwidths[s.x]), 2);
                 frame->SetStatusText(
-                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
+                    wxString::Format(_("Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
                                      c->text.lastedit.FormatTime().c_str()),
                     1);
             }
@@ -443,7 +443,7 @@ struct System {
 
     void UpdateAmountStatus(Selection &s) {
         if (frame->GetStatusBar()) {
-            frame->SetStatusText(wxString::Format(_(L"%d cells"), s.xs * s.ys), 4);
+            frame->SetStatusText(wxString::Format(_("%d cells"), s.xs * s.ys), 4);
         }
     }
 
@@ -461,7 +461,7 @@ struct System {
     }
 
     const wxChar *Import(int k) {
-        wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
+        wxString fn = ::wxFileSelector(_("Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
             wxBusyCursor wait;
@@ -514,8 +514,8 @@ struct System {
         }
         return nullptr;
     problem:
-        wxMessageBox(_(L"couldn't import file!"), fn, wxOK, frame);
-        return _(L"File load error.");
+        wxMessageBox(_("couldn't import file!"), fn, wxOK, frame);
+        return _("File load error.");
     }
 
     int GetXMLNodes(wxXmlNode *n, vector<wxXmlNode *> &ns, vector<wxXmlAttribute *> *ps = nullptr,
