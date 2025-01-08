@@ -5,7 +5,7 @@ struct MyFrame : wxFrame {
     wxTaskBarIcon tbi;
     wxMenu *editmenupopup;
     wxFileHistory filehistory;
-    unique_ptr<wxFileSystemWatcher> watcher {nullptr};
+    unique_ptr<wxFileSystemWatcher> watcher {make_unique<wxFileSystemWatcher>()};
     wxAuiNotebook *nb {nullptr};
     unique_ptr<wxAuiManager> aui {make_unique<wxAuiManager>(this)};
     wxBitmap line_nw;
@@ -731,8 +731,6 @@ struct MyFrame : wxFrame {
     }
 
     void AppOnEventLoopEnter() {
-        // Have to do this here, if we do it in the Frame constructor above, it crashes on OS X.
-        watcher.reset(new wxFileSystemWatcher());
         watcher->SetOwner(this);
         Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
     }
