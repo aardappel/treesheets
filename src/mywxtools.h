@@ -125,8 +125,8 @@ struct ColorPopup : wxVListBoxComboPopup {
 struct ColorDropdown : wxOwnerDrawnComboBox {
     ColorDropdown(wxWindow *parent, wxWindowID id, int sel) {
         wxArrayString as;
-        as.Add(L"", sizeof(celltextcolors) / sizeof(uint));
-        Create(parent, id, L"", wxDefaultPosition, FromDIP(wxSize(44, 22)), as,
+        as.Add("", sizeof(celltextcolors) / sizeof(uint));
+        Create(parent, id, "", wxDefaultPosition, FromDIP(wxSize(44, 22)), as,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ColorPopup(this));
         SetSelection(sel);
@@ -145,8 +145,8 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
         if (item == CUSTOMCOLORIDX) {
             dc.SetTextForeground(*wxBLACK);
             dc.SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
-                              false, L""));
-            dc.DrawText(L"Custom", rect.x + 1, rect.y + 1);
+                              false, ""));
+            dc.DrawText("Custom", rect.x + 1, rect.y + 1);
         }
     }
 };
@@ -173,7 +173,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     ImageDropdown(wxWindow *parent, const wxString &path) {
         FillBitmapVector(path);
-        Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
+        Create(parent, A_DDIMAGE, "", wxDefaultPosition,
                FromDIP(wxSize(image_space * 2, image_space)), as,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ImagePopup());
@@ -193,7 +193,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     void FillBitmapVector(const wxString &path) {
         if (!bitmaps_display.empty()) bitmaps_display.resize(0);
-        wxString f = wxFindFirstFile(path + L"*.*");
+        wxString f = wxFindFirstFile(path + "*.*");
         while (!f.empty()) {
             wxBitmap bm;
             if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {

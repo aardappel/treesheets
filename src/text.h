@@ -58,10 +58,10 @@ struct Text {
     wxString htmlify(wxString &str) {
         wxString r;
         for(auto cref : str) {
-            switch (wxChar c = cref.GetValue()) {
-                case '&': r += L"&amp;"; break;
-                case '<': r += L"&lt;"; break;
-                case '>': r += L"&gt;"; break;
+            switch (char c = cref.GetValue()) {
+                case '&': r += "&amp;"; break;
+                case '<': r += "&lt;"; break;
+                case '>': r += "&gt;"; break;
                 default: r += c;
             }
         }
@@ -74,7 +74,7 @@ struct Text {
             format == A_EXPHTMLO || format == A_EXPHTMLB)
             str = htmlify(str);
         if (format == A_EXPHTMLTI && image)
-            str.Prepend(L"<img src=\"data:" + imagetypes.at(image->image_type).second + ";base64," +
+            str.Prepend("<img src=\"data:" + imagetypes.at(image->image_type).second + ";base64," +
                         wxBase64Encode(image->image_data.data(), image->image_data.size()) +
                         "\" />");
         return str;
@@ -87,7 +87,7 @@ struct Text {
                       g_deftextsize - g_maxtextsize() - zoomdepth);
     }
 
-    bool IsWord(wxChar c) { return wxIsalnum(c) || wxStrchr(L"_\"\'()", c); }
+    bool IsWord(char c) { return wxIsalnum(c) || wxStrchr("_\"\'()", c); }
     wxString GetLinePart(int &i, int p, int l) {
         int start = i;
         i = p;

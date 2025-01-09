@@ -109,13 +109,13 @@ class Selection {
 
     int MaxCursor() { return int(GetCell()->text.t.Len()); }
 
-    inline bool IsWordSep(wxChar ch) {
+    inline bool IsWordSep(char ch) {
         // represents: !"#$%&'()*+,-./    :;<=>?@    [\]^    {|}~    `
         return (32 < ch && ch < 48) || (57 < ch && ch < 65) || (90 < ch && ch < 95) ||
                (122 < ch && ch < 127) || ch == 96;
     }
 
-    inline int CharType(wxChar ch) {
+    inline int CharType(char ch) {
         if (wxIsspace(ch)) return TEXT_SPACE;
         if (IsWordSep(ch)) return TEXT_SEP;
         return TEXT_CHAR;
@@ -142,7 +142,7 @@ class Selection {
                 if (cursor == cursorend) firstdx = dx;
                 int &curs = firstdx < 0 ? cursor : cursorend;
                 int c = curs + dx;
-                wxChar ch;
+                char ch;
                 if (c >= 0 && c <= MaxCursor()) {
                     ch = GetCell()->text.t[min(c, curs)];
                     // TEXT_SPACE > TEXT_SEP > TEXT_CHAR > 0.
@@ -346,7 +346,7 @@ class Selection {
         doc->DrawSelectMove(dc, *this);
     }
 
-    const wxChar *Wrap(Document *doc) {
+    const char *Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
         g->cell->AddUndo(doc);
         auto np = g->CloneSel(*this).release();

@@ -57,9 +57,9 @@ struct System {
     MyFrame *frame;
     wxString defaultfont {
     #ifdef WIN32
-        L"Lucida Sans Unicode"
+        "Lucida Sans Unicode"
     #else
-        L"Verdana"
+        "Verdana"
     #endif
     };
     wxString searchstring;
@@ -117,8 +117,8 @@ struct System {
 
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
-                             L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
-                       : (wxConfigBase *)new wxConfig(L"TreeSheets")) {
+                             "", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
+                       : (wxConfigBase *)new wxConfig("TreeSheets")) {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
@@ -126,29 +126,29 @@ struct System {
         pen_thinselect.SetDashes(2, tspattern);
         pen_thinselect.SetStyle(wxPENSTYLE_USER_DASH);
 
-        roundness = (int)cfg->Read(L"roundness", roundness);
-        defaultfont = cfg->Read(L"defaultfont", defaultfont);
-        cfg->Read(L"makebaks", &makebaks, makebaks);
-        cfg->Read(L"totray", &totray, totray);
-        cfg->Read(L"zoomscroll", &zoomscroll, zoomscroll);
-        cfg->Read(L"thinselc", &thinselc, thinselc);
-        cfg->Read(L"autosave", &autosave, autosave);
-        cfg->Read(L"fastrender", &fastrender, fastrender);
-        cfg->Read(L"minclose", &minclose, minclose);
-        cfg->Read(L"singletray", &singletray, singletray);
-        cfg->Read(L"centered", &centered, centered);
-        cfg->Read(L"fswatch", &fswatch, fswatch);
-        cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
-        cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
-        cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
-        cfg->Read(L"customcolor", &customcolor, customcolor);
+        roundness = (int)cfg->Read("roundness", roundness);
+        defaultfont = cfg->Read("defaultfont", defaultfont);
+        cfg->Read("makebaks", &makebaks, makebaks);
+        cfg->Read("totray", &totray, totray);
+        cfg->Read("zoomscroll", &zoomscroll, zoomscroll);
+        cfg->Read("thinselc", &thinselc, thinselc);
+        cfg->Read("autosave", &autosave, autosave);
+        cfg->Read("fastrender", &fastrender, fastrender);
+        cfg->Read("minclose", &minclose, minclose);
+        cfg->Read("singletray", &singletray, singletray);
+        cfg->Read("centered", &centered, centered);
+        cfg->Read("fswatch", &fswatch, fswatch);
+        cfg->Read("autohtmlexport", &autohtmlexport, autohtmlexport);
+        cfg->Read("casesensitivesearch", &casesensitivesearch, casesensitivesearch);
+        cfg->Read("defaultfontsize", &g_deftextsize, g_deftextsize);
+        cfg->Read("customcolor", &customcolor, customcolor);
         #ifdef SIMPLERENDER
-            cfg->Read(L"cursorcolor", &cursorcolor, cursorcolor);
+            cfg->Read("cursorcolor", &cursorcolor, cursorcolor);
         #else
-            cfg->Read(L"hovershadow", &hovershadow, hovershadow);
+            cfg->Read("hovershadow", &hovershadow, hovershadow);
         #endif
-        cfg->Read(L"showtoolbar", &showtoolbar, showtoolbar);
-        cfg->Read(L"showstatusbar", &showstatusbar, showstatusbar);
+        cfg->Read("showtoolbar", &showtoolbar, showtoolbar);
+        cfg->Read("showstatusbar", &showstatusbar, showstatusbar);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
@@ -173,10 +173,10 @@ struct System {
         if (filename.Len()) LoadDB(filename);
 
         if (!frame->nb->GetPageCount()) {
-            int numfiles = (int)cfg->Read(L"numopenfiles", (long)0);
+            int numfiles = (int)cfg->Read("numopenfiles", (long)0);
             loop(i, numfiles) {
                 wxString fn;
-                cfg->Read(wxString::Format(L"lastopenfile_%d", i), &fn);
+                cfg->Read(wxString::Format("lastopenfile_%d", i), &fn);
                 LoadDB(fn, true);
             }
         }
@@ -195,43 +195,43 @@ struct System {
         auto lang = frame->app->locale.GetCanonicalName();
 
         if (lang.Len() == 5 &&
-            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+            !LoadDB(frame->GetDocPath("examples/tutorial-" + lang + ".cts"))[0]) {
             return;
         }
 
         lang.Truncate(2);
         if (lang.Len() == 2 &&
-            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+            !LoadDB(frame->GetDocPath("examples/tutorial-" + lang + ".cts"))[0]) {
             return;
         }
 
-        LoadDB(frame->GetDocPath(L"examples/tutorial.cts"));
+        LoadDB(frame->GetDocPath("examples/tutorial.cts"));
     }
 
-    void LoadOpRef() { LoadDB(frame->GetDocPath(L"examples/operation-reference.cts")); }
+    void LoadOpRef() { LoadDB(frame->GetDocPath("examples/operation-reference.cts")); }
 
     unique_ptr<Cell> &InitDB(int sizex, int sizey = 0) {
         Cell *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
         Document *doc = NewTabDoc();
-        doc->InitWith(c, L"", nullptr, 1, 1);
+        doc->InitWith(c, "", nullptr, 1, 1);
         return doc->rootgrid;
     }
 
-    wxString BakName(const wxString &filename) { return ExtName(filename, L".bak"); }
-    wxString TmpName(const wxString &filename) { return ExtName(filename, L".tmp"); }
+    wxString BakName(const wxString &filename) { return ExtName(filename, ".bak"); }
+    wxString TmpName(const wxString &filename) { return ExtName(filename, ".tmp"); }
     wxString ExtName(const wxString &filename, wxString ext) {
         wxFileName fn(filename);
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    const wxChar *LoadDB(const wxString &filename, bool frominit = false, bool fromreload = false) {
+    const char *LoadDB(const wxString &filename, bool frominit = false, bool fromreload = false) {
         wxString fn = filename;
         bool loadedfromtmp = false;
 
         if (!fromreload) {
-            if (frame->GetTabByFileName(filename)) return L"";  //"this file is already loaded";
+            if (frame->GetTabByFileName(filename)) return "";  //"this file is already loaded";
 
             if (::wxFileExists(TmpName(filename))) {
                 if (::wxMessageBox(
@@ -350,12 +350,10 @@ struct System {
 
                         auto end_loading_time = wxGetLocalTimeMillis();
 
-                        doc->sw->Status(
-                            wxString::Format(
-                                _("Loaded %s (%d cells, %d characters) in %d milliseconds."),
-                                filename.c_str(), numcells, textbytes,
-                                (int)((end_loading_time - start_loading_time).GetValue()))
-                                .c_str());
+                        doc->sw->Status(wxString::Format(
+                            _("Loaded %s (%d cells, %d characters) in %d milliseconds."), filename,
+                            numcells, textbytes,
+                            (int)((end_loading_time - start_loading_time).GetValue())));
 
                         goto done;
                     }
@@ -385,7 +383,7 @@ struct System {
             wxMessageBox(_("PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _("PNG decoder failure"), wxOK, frame);
 
-        return L"";
+        return "";
     }
 
     void FileUsed(const wxString &filename, Document *doc) {
@@ -401,7 +399,7 @@ struct System {
         }
     }
 
-    const wxChar *Open(const wxString &fn) {
+    const char *Open(const wxString &fn) {
         if (!fn.empty()) {
             auto msg = LoadDB(fn);
             assert(msg);
@@ -418,12 +416,12 @@ struct System {
         loop(i, n) {
             TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
             if (p->doc->filename.Len()) {
-                cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
+                cfg->Write(wxString::Format("lastopenfile_%d", namedfiles), p->doc->filename);
                 namedfiles++;
             }
         }
 
-        cfg->Write(L"numopenfiles", namedfiles);
+        cfg->Write("numopenfiles", namedfiles);
         cfg->Flush();
     }
 
@@ -434,8 +432,8 @@ struct System {
                 frame->SetStatusText(wxString::Format(_("Size %d"), -c->text.relsize), 3);
                 frame->SetStatusText(wxString::Format(_("Width %d"), s.g->colwidths[s.x]), 2);
                 frame->SetStatusText(
-                    wxString::Format(_("Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
-                                     c->text.lastedit.FormatTime().c_str()),
+                    wxString::Format(_("Edited %s %s"), c->text.lastedit.FormatDate(),
+                                     c->text.lastedit.FormatTime()),
                     1);
             }
         }
@@ -460,8 +458,8 @@ struct System {
         }
     }
 
-    const wxChar *Import(int k) {
-        wxString fn = ::wxFileSelector(_("Please select file to import:"), L"", L"", L"", L"*.*",
+    const char *Import(int k) {
+        wxString fn = ::wxFileSelector(_("Please select file to import:"), "", "", "", "*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
             wxBusyCursor wait;
@@ -538,14 +536,14 @@ struct System {
             c->text.t.Append(as[i]);
         }
 
-        if (n->GetName() == L"cell") {
-            c->text.relsize = -wxAtoi(n->GetAttribute(L"relsize", L"0"));
-            c->text.stylebits = wxAtoi(n->GetAttribute(L"stylebits", L"0"));
+        if (n->GetName() == "cell") {
+            c->text.relsize = -wxAtoi(n->GetAttribute("relsize", "0"));
+            c->text.stylebits = wxAtoi(n->GetAttribute("stylebits", "0"));
             c->cellcolor =
-                std::stoi(n->GetAttribute(L"colorbg", L"0xFFFFFF").ToStdString(), nullptr, 0);
+                std::stoi(n->GetAttribute("colorbg", "0xFFFFFF").ToStdString(), nullptr, 0);
             c->textcolor =
-                std::stoi(n->GetAttribute(L"colorfg", L"0x000000").ToStdString(), nullptr, 0);
-            c->celltype = wxAtoi(n->GetAttribute(L"type", L"0"));
+                std::stoi(n->GetAttribute("colorfg", "0x000000").ToStdString(), nullptr, 0);
+            c->celltype = wxAtoi(n->GetAttribute("type", "0"));
         }
 
         vector<wxXmlNode *> ns;
@@ -554,12 +552,12 @@ struct System {
         if (!numrows) return;
 
         if (ns.size() == 1 && (!c->text.t.Len() || ns[0]->IsWhitespaceOnly()) &&
-            ns[0]->GetName() != L"row") {
+            ns[0]->GetName() != "row") {
             FillXML(c, ns[0], attributestoo);
         } else {
-            bool allrow = n->GetName() == L"grid";
+            bool allrow = n->GetName() == "grid";
             for (auto *n : ns)
-                if (n->GetName() != L"row") {
+                if (n->GetName() != "row") {
                     allrow = false;
                     break;
                 }
@@ -586,12 +584,12 @@ struct System {
     }
 
     void SetGridSettingsFromXML(Cell *c, wxXmlNode *n) {
-        c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
+        c->grid->folded = wxAtoi(n->GetAttribute("folded", "0"));
         c->grid->bordercolor = std::stoi(
-            n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default).ToStdString(),
+            n->GetAttribute("bordercolor", wxString() << g_bordercolor_default).ToStdString(),
             nullptr, 0);
         c->grid->user_grid_outer_spacing =
-            wxAtoi(n->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
+            wxAtoi(n->GetAttribute("outerspacing", wxString() << g_usergridouterspacing_default));
     }
 
     int CountCol(const wxString &s) {

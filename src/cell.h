@@ -218,84 +218,84 @@ struct Cell {
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
             ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU)) &&
             this != doc->curdrawroot && !str.IsEmpty()) {
-            wxString spanstyle = L"text-decoration:";
-            spanstyle += (text.stylebits & STYLE_UNDERLINE) ? L" underline" : wxEmptyString;
-            spanstyle += (text.stylebits & STYLE_STRIKETHRU) ? L" line-through" : wxEmptyString;
-            spanstyle += L";";
-            str.Prepend(L"<span style=\"" + spanstyle + L"\">");
-            str.Append(L"</span>");
+            wxString spanstyle = "text-decoration:";
+            spanstyle += (text.stylebits & STYLE_UNDERLINE) ? " underline" : "";
+            spanstyle += (text.stylebits & STYLE_STRIKETHRU) ? " line-through" : "";
+            spanstyle += ";";
+            str.Prepend("<span style=\"" + spanstyle + "\">");
+            str.Append("</span>");
         }
         if (format == A_EXPCSV) {
             if (grid) return grid->ToText(indent, s, format, doc, inheritstyle);
-            str.Replace(L"\"", L"\"\"");
-            return L"\"" + str + L"\"";
+            str.Replace("\"", "\"\"");
+            return "\"" + str + "\"";
         }
         if (s.cursor != s.cursorend) return str;
-        str.Append(L"\n");
+        str.Append("\n");
         if (grid) str.Append(grid->ToText(indent, s, format, doc, inheritstyle));
         if (format == A_EXPXML) {
-            str.Prepend(L">");
+            str.Prepend(">");
             if (text.relsize) {
-                str.Prepend(L"\"");
+                str.Prepend("\"");
                 str.Prepend(wxString() << -text.relsize);
-                str.Prepend(L" relsize=\"");
+                str.Prepend(" relsize=\"");
             }
             if (text.stylebits) {
-                str.Prepend(L"\"");
+                str.Prepend("\"");
                 str.Prepend(wxString() << text.stylebits);
-                str.Prepend(L" stylebits=\"");
+                str.Prepend(" stylebits=\"");
             }
             if (cellcolor != 0xFFFFFF) {
-                str.Prepend(L"\"");
+                str.Prepend("\"");
                 str.Prepend(wxString::Format(wxT("0x%06X"), cellcolor));
-                str.Prepend(L" colorbg=\"");
+                str.Prepend(" colorbg=\"");
             }
             if (textcolor != 0x000000) {
-                str.Prepend(L"\"");
+                str.Prepend("\"");
                 str.Prepend(wxString::Format(wxT("0x%06X"), textcolor));
-                str.Prepend(L" colorfg=\"");
+                str.Prepend(" colorfg=\"");
             }
             if (celltype != CT_DATA) {
-                str.Prepend(L"\"");
+                str.Prepend("\"");
                 str.Prepend(wxString() << celltype);
-                str.Prepend(L" type=\"");
+                str.Prepend(" type=\"");
             }
-            str.Prepend(L"<cell");
-            str.Append(L' ', indent);
-            str.Append(L"</cell>\n");
+            str.Prepend("<cell");
+            str.Append(' ', indent);
+            str.Append("</cell>\n");
         } else if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) && this != doc->curdrawroot) {
             wxString style;
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
                 style +=
-                    (text.stylebits & STYLE_BOLD) ? L"font-weight: bold;" : L"font-weight: normal;";
+                    (text.stylebits & STYLE_BOLD) ? "font-weight: bold;" : "font-weight: normal;";
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_ITALIC) != (parent->text.stylebits & STYLE_ITALIC))
-                style += (text.stylebits & STYLE_ITALIC) ? L"font-style: italic;"
-                                                         : L"font-style: normal;";
+                style +=
+                    (text.stylebits & STYLE_ITALIC) ? "font-style: italic;" : "font-style: normal;";
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED))
-                style += (text.stylebits & STYLE_FIXED) ? L"font-family: monospace;"
-                                                        : L"font-family: sans-serif;";
+                style += (text.stylebits & STYLE_FIXED) ? "font-family: monospace;"
+                                                        : "font-family: sans-serif;";
             if (!inheritstyle || cellcolor != (parent ? parent->cellcolor : doc->Background()))
-                style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
+                style += wxString::Format("background-color: #%06X;", SwapColor(cellcolor));
             if (!inheritstyle || textcolor != (parent ? parent->textcolor : 0x000000))
-                style += wxString::Format(L"color: #%06X;", SwapColor(textcolor));
-            str.Prepend(style.IsEmpty() ? wxString(L"<td>")
-                                        : wxString(L"<td style=\"") + style + wxString(L"\">"));
-            str.Append(L' ', indent);
-            str.Append(L"</td>\n");
+                style += wxString::Format("color: #%06X;", SwapColor(textcolor));
+            str.Prepend(style.IsEmpty() ? wxString("<td>")
+                                        : wxString("<td style=\"") + style + wxString("\">"));
+            str.Append(' ', indent);
+            str.Append("</td>\n");
         } else if (format == A_EXPHTMLB && (text.t.Len() || grid) && this != doc->curdrawroot) {
-            str.Prepend(L"<li>");
-            str.Append(L' ', indent);
-            str.Append(L"</li>\n");
+            str.Prepend("<li>");
+            str.Append(' ', indent);
+            str.Append("</li>\n");
         } else if (format == A_EXPHTMLO && text.t.Len()) {
-            wxString h = wxString(L"h") + wxChar(L'0' + indent / 2) + L">";
-            str.Prepend(L"<" + h);
-            str.Append(L' ', indent);
-            str.Append(L"</" + h + L"\n");
+            wxString h = wxString("h") + wxChar(L'0' + indent / 2) + ">";
+            str.Prepend("<" + h);
+            str.Append(' ', indent);
+            str.Append("</" + h + "\n");
         }
-        str.Pad(indent, L' ', false);
+        str.Pad(indent, ' ', false);
         return str;
     }
 

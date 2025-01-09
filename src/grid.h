@@ -587,8 +587,8 @@ struct Grid {
         foreachconstcell(c) c->GetStats(numcells, textbytes);
     }
 
-    void Formatter(wxString &r, int format, int indent, const wxChar *xml, const wxChar *html,
-                   const wxChar *htmlb) {
+    void Formatter(wxString &r, int format, int indent, const char *xml, const char *html,
+                   const char *htmlb) {
         if (format == A_EXPXML) {
             r.Append(L' ', indent);
             r.Append(xml);
@@ -613,7 +613,7 @@ struct Grid {
         const int grid_border_width =
             cell == doc->rootgrid.get() ? root_grid_spacing : user_grid_outer_spacing - 1;
 
-        wxString xmlstr(L"<grid");
+        wxString xmlstr("<grid");
         if (folded) xmlstr.Append(wxString::Format(wxT(" folded=\"%d\""), folded));
         if (bordercolor != g_bordercolor_default) {
             xmlstr.Append(wxString::Format(wxT(" bordercolor=\"0x%06X\""), bordercolor));
@@ -621,20 +621,19 @@ struct Grid {
         if (user_grid_outer_spacing != g_usergridouterspacing_default) {
             xmlstr.Append(wxString::Format(wxT(" outerspacing=\"%d\""), user_grid_outer_spacing));
         }
-        xmlstr.Append(L">\n");
+        xmlstr.Append(">\n");
 
         Formatter(r, format, indent, xmlstr,
-                  wxString::Format(L"<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
-                                   grid_border_width, font_size)
-                      .wc_str(),
-                  wxString::Format(L"<ul style=\"font-size: %dpt;\">\n", font_size).wc_str());
+                  wxString::Format("<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
+                                   grid_border_width, font_size),
+                  wxString::Format("<ul style=\"font-size: %dpt;\">\n", font_size));
         foreachcellinsel(c, s) {
-            if (x == s.x) Formatter(r, format, indent, L"<row>\n", L"<tr>\n", L"");
+            if (x == s.x) Formatter(r, format, indent, "<row>\n", "<tr>\n", "");
             r.Append(c->ToText(indent, s, format, doc, inheritstyle));
             if (format == A_EXPCSV) r.Append(x == s.x + s.xs - 1 ? '\n' : ',');
-            if (x == s.x + s.xs - 1) Formatter(r, format, indent, L"</row>\n", L"</tr>\n", L"");
+            if (x == s.x + s.xs - 1) Formatter(r, format, indent, "</row>\n", "</tr>\n", "");
         }
-        Formatter(r, format, indent, L"</grid>\n", L"</table>\n", L"</ul>\n");
+        Formatter(r, format, indent, "</grid>\n", "</table>\n", "</ul>\n");
         return r;
     }
 
@@ -721,28 +720,28 @@ struct Grid {
         doc->Refresh();
     }
 
-    void CSVImport(const wxArrayString &as, wxChar sep) {
+    void CSVImport(const wxArrayString &as, char sep) {
         int cy = 0;
         loop(y, (int)as.size()) {
             wxString s = as[y];
             wxString word;
             for (int x = 0; s[0]; x++) {
                 if (s[0] == '\"') {
-                    word = L"";
+                    word = "";
                     for (int i = 1;; i++) {
                         if (!s[i]) {
                             if (y < (int)as.size() - 1) {
                                 s = as[++y];
                                 i = 0;
                             } else {
-                                s = L"";
+                                s = "";
                                 break;
                             }
                         } else if (s[i] == '\"') {
                             if (s[i + 1] == '\"')
                                 word += s[++i];
                             else {
-                                s = s.size() == i + 1 ? wxString(L"") : s.Mid(i + 2);
+                                s = s.size() == i + 1 ? wxString("") : s.Mid(i + 2);
                                 break;
                             }
                         } else
@@ -752,7 +751,7 @@ struct Grid {
                     int pos = s.Find(sep);
                     if (pos < 0) {
                         word = s;
-                        s = L"";
+                        s = "";
                     } else {
                         word = s.Left(pos);
                         s = s.Mid(pos + 1);

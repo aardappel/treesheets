@@ -179,8 +179,8 @@ struct TSCanvas : public wxScrolledCanvas {
         // EnableScrolling(false, false);
     }
 
-    void Status(const wxChar *msg = nullptr) {
-        if (frame->GetStatusBar() && (!msg || *msg)) frame->SetStatusText(msg ? msg : L"", 0);
+    void Status(const char *msg = nullptr) {
+        if (frame->GetStatusBar() && (!msg || *msg)) frame->SetStatusText(msg ? msg : "", 0);
     }
 
     DECLARE_EVENT_TABLE()

@@ -2,7 +2,7 @@
 struct IPCServer : wxServer {
     wxConnectionBase *OnAcceptConnection(const wxString &topic) {
         sys->frame->DeIconize();
-        if (topic.Len() && topic != L"*") sys->Open(topic);
+        if (topic.Len() && topic != "*") sys->Open(topic);
         return new wxConnection();
     }
 };
@@ -17,8 +17,8 @@ struct MyApp : wxApp {
 
     void AddTranslation(const wxString &basepath) {
         #ifdef __WXGTK__
-            locale.AddCatalogLookupPathPrefix(L"/usr");
-            locale.AddCatalogLookupPathPrefix(L"/usr/local");
+        locale.AddCatalogLookupPathPrefix("/usr");
+        locale.AddCatalogLookupPathPrefix("/usr/local");
             #ifdef LOCALEDIR
                 locale.AddCatalogLookupPathPrefix(LOCALEDIR);
             #endif
@@ -26,7 +26,7 @@ struct MyApp : wxApp {
             locale.AddCatalogLookupPathPrefix(prefix);
         #endif
         locale.AddCatalogLookupPathPrefix(basepath);
-        locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
+        locale.AddCatalog("ts", (wxLanguage)locale.GetLanguage());
     }
 
     bool OnInit() {
@@ -119,9 +119,8 @@ struct MyApp : wxApp {
                 wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir()));
             if (instance_checker->IsAnotherRunning()) {
                 wxClient client;
-                client.MakeConnection(
-                    L"localhost", L"4242",
-                    filename.Len() ? filename.wc_str() : L"*");  // fire and forget
+                client.MakeConnection(L"localhost", L"4242",
+                                      filename.Len() ? filename.wc_str() : L"*");  // fire and forget
                 return false;
             }
         }
@@ -147,7 +146,7 @@ struct MyApp : wxApp {
 
         auto serr = ScriptInit(frame->GetDataPath("scripts/"));
         if (!serr.empty()) {
-            wxLogFatalError(L"Script system could not initialize: %s", serr);
+            wxLogFatalError("Script system could not initialize: %s", serr);
             return false;
         }
         if (dump_builtins) {
@@ -157,7 +156,7 @@ struct MyApp : wxApp {
 
         SetTopWindow(frame);
 
-        serv->Create(L"4242");
+        serv->Create("4242");
 
         return true;
     }

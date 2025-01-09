@@ -41,7 +41,7 @@ struct MyFrame : wxFrame {
             if (std::filesystem::exists(relativePath)) { break; }
         }
 
-        return wxString(relativePath.c_str());
+        return wxString(relativePath);
     }
     wxString GetDataPath(const wxString &relpath) {
         std::filesystem::path candidatePaths[] = {
@@ -56,14 +56,14 @@ struct MyFrame : wxFrame {
             if (std::filesystem::exists(relativePath)) { break; }
         }
 
-        return wxString(relativePath.c_str());
+        return wxString(relativePath);
     }
 
     std::map<wxString, wxString> menustrings;
 
-    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"") {
+    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const char *help = "") {
         wxString item = contents;
-        wxString key = L"";
+        wxString key = "";
         int pos = contents.Find("\t");
         if (pos >= 0) {
             item = contents.Mid(0, pos);
@@ -77,7 +77,7 @@ struct MyFrame : wxFrame {
     }
 
     MyFrame(wxString exename, MyApp *_app)
-        : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
+        : wxFrame((wxFrame *)nullptr, wxID_ANY, "TreeSheets", wxDefaultPosition, wxDefaultSize,
                   wxDEFAULT_FRAME_STYLE),
           app(_app) {
         sys->frame = this;
@@ -88,13 +88,13 @@ struct MyFrame : wxFrame {
         #endif
 
         class MyLog : public wxLog {
-            void DoLogString(const wxChar *msg, time_t timestamp) { DoLogText(*msg); }
+            void DoLogString(const char *msg, time_t timestamp) { DoLogText(*msg); }
             void DoLogText(const wxString &msg) {
                 #ifdef WIN32
-                OutputDebugString(msg.c_str());
+                OutputDebugString(msg);
                 OutputDebugString(L"\n");
                 #else
-                fputws(msg.c_str(), stderr);
+                fputws(msg, stderr);
                 fputws(L"\n", stderr);
                 #endif
             }
@@ -102,9 +102,9 @@ struct MyFrame : wxFrame {
 
         wxLog::SetActiveTarget(new MyLog());
 
-        wxLogMessage(L"%s", wxVERSION_STRING);
+        wxLogMessage("%s", wxVERSION_STRING);
 
-        wxLogMessage(L"locale: %s", std::setlocale(LC_CTYPE, nullptr));
+        wxLogMessage("locale: %s", std::setlocale(LC_CTYPE, nullptr));
 
         app->AddTranslation(GetDataPath("translations"));
 
@@ -116,12 +116,12 @@ struct MyFrame : wxFrame {
             int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
             int iconlarge = ::GetSystemMetrics(SM_CXICON);
         #endif
-        icon.LoadFile(GetDataPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG
+        icon.LoadFile(GetDataPath("images/icon16.png"), wxBITMAP_TYPE_PNG
             #ifdef WIN32
                 , iconsmall, iconsmall
             #endif
         );
-        iconbig.LoadFile(GetDataPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG
+        iconbig.LoadFile(GetDataPath("images/icon32.png"), wxBITMAP_TYPE_PNG
             #ifdef WIN32
                 , iconlarge, iconlarge
             #endif
@@ -136,8 +136,8 @@ struct MyFrame : wxFrame {
         SetIcons(icons);
 
         RenderFolderIcon();
-        line_nw.LoadFile(GetDataPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
-        line_sw.LoadFile(GetDataPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
+        line_nw.LoadFile(GetDataPath("images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
+        line_sw.LoadFile(GetDataPath("images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
 
         imagepath = GetDataPath("images/nuvola/dropdown/");
 
@@ -150,9 +150,9 @@ struct MyFrame : wxFrame {
 
         bool showtbar, showsbar, lefttabs;
 
-        sys->cfg->Read(L"showtbar", &showtbar, true);
-        sys->cfg->Read(L"showsbar", &showsbar, true);
-        sys->cfg->Read(L"lefttabs", &lefttabs, true);
+        sys->cfg->Read("showtbar", &showtbar, true);
+        sys->cfg->Read("showsbar", &showsbar, true);
+        sys->cfg->Read("lefttabs", &lefttabs, true);
 
         filehistory.Load(*sys->cfg);
 
@@ -606,13 +606,13 @@ struct MyFrame : wxFrame {
 
         wxMenu *scriptmenu = new wxMenu();
         auto scriptpath = GetDataPath("scripts/");
-        wxString sf = wxFindFirstFile(scriptpath + L"*.lobster");
+        wxString sf = wxFindFirstFile(scriptpath + "*.lobster");
         int sidx = 0;
         while (!sf.empty()) {
             auto fn = wxFileName::FileName(sf).GetFullName();
             auto ms = fn.BeforeFirst('.');
             if (sidx < 26) {
-                ms += L"\tCTRL+SHIFT+ALT+";
+                ms += "\tCTRL+SHIFT+ALT+";
                 ms += wxChar('A' + sidx);
             }
             MyAppend(scriptmenu, A_SCRIPT + sidx, ms);
@@ -691,10 +691,10 @@ struct MyFrame : wxFrame {
         const int defx = disprect.width - 2 * boundary;
         const int defy = disprect.height - 2 * boundary;
         int resx, resy, posx, posy;
-        sys->cfg->Read(L"resx", &resx, defx);
-        sys->cfg->Read(L"resy", &resy, defy);
-        sys->cfg->Read(L"posx", &posx, boundary + disprect.x);
-        sys->cfg->Read(L"posy", &posy, boundary + disprect.y);
+        sys->cfg->Read("resx", &resx, defx);
+        sys->cfg->Read("resy", &resy, defy);
+        sys->cfg->Read("posx", &posx, boundary + disprect.x);
+        sys->cfg->Read("posy", &posy, boundary + disprect.y);
         #ifndef __WXGTK__
         // On X11, disprect only refers to the primary screen. Thus, for a multi-head display,
         // the conditions below might be fulfilled (e.g. large window spanning multiple screens
@@ -715,7 +715,7 @@ struct MyFrame : wxFrame {
         Move(posx, posy);
 
         bool ismax;
-        sys->cfg->Read(L"maximized", &ismax, true);
+        sys->cfg->Read("maximized", &ismax, true);
 
         aui->AddPane(nb, wxCENTER);
         aui->Update();
@@ -740,12 +740,12 @@ struct MyFrame : wxFrame {
     ~MyFrame() {
         filehistory.Save(*sys->cfg);
         if (!IsIconized()) {
-            sys->cfg->Write(L"maximized", IsMaximized());
+            sys->cfg->Write("maximized", IsMaximized());
             if (!IsMaximized()) {
-                sys->cfg->Write(L"resx", GetSize().x);
-                sys->cfg->Write(L"resy", GetSize().y);
-                sys->cfg->Write(L"posx", GetPosition().x);
-                sys->cfg->Write(L"posy", GetPosition().y);
+                sys->cfg->Write("resx", GetSize().x);
+                sys->cfg->Write("resy", GetSize().y);
+                sys->cfg->Write("posx", GetPosition().x);
+                sys->cfg->Write("posy", GetPosition().y);
             }
         }
         aui->ClearEventHashTable();
@@ -816,7 +816,7 @@ struct MyFrame : wxFrame {
     void SetPageTitle(const wxString &fn, wxString mods, int page = -1) {
         if (page < 0) page = nb->GetSelection();
         if (page < 0) return;
-        if (page == nb->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
+        if (page == nb->GetSelection()) SetTitle("TreeSheets - " + fn + mods);
         nb->SetPageText(page,
                         (fn.empty() ? wxString(_("<unnamed>")) : wxFileName(fn).GetName()) + mods);
     }
@@ -831,9 +831,9 @@ struct MyFrame : wxFrame {
         #define SEPARATOR tb->AddSeparator()
         #endif
 
-        wxString iconpath = GetDataPath(L"images/material/toolbar/");
+        wxString iconpath = GetDataPath("images/material/toolbar/");
 
-        auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
+        auto AddTBIcon = [&](const char *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
             tb->AddTool(action, name,
                         wxBitmapBundle::FromSVGFile(iconpath + (darkmode ? darkicon : lighticon),
@@ -841,43 +841,42 @@ struct MyFrame : wxFrame {
                         name, wxITEM_NORMAL);
         };
 
-        AddTBIcon(_("New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
-        AddTBIcon(_("Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg", L"fileopen_dark.svg");
-        AddTBIcon(_("Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg", L"filesave_dark.svg");
-        AddTBIcon(_("Save As"), wxID_SAVEAS, iconpath, L"filesaveas.svg", L"filesaveas_dark.svg");
+        AddTBIcon(_("New (CTRL+n)"), wxID_NEW, iconpath, "filenew.svg", "filenew_dark.svg");
+        AddTBIcon(_("Open (CTRL+o)"), wxID_OPEN, iconpath, "fileopen.svg", "fileopen_dark.svg");
+        AddTBIcon(_("Save (CTRL+s)"), wxID_SAVE, iconpath, "filesave.svg", "filesave_dark.svg");
+        AddTBIcon(_("Save As"), wxID_SAVEAS, iconpath, "filesaveas.svg", "filesaveas_dark.svg");
         SEPARATOR;
-        AddTBIcon(_("Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
-        AddTBIcon(_("Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg", L"editcopy_dark.svg");
-        AddTBIcon(_("Paste (CTRL+v)"), wxID_PASTE, iconpath, L"editpaste.svg",
-                  L"editpaste_dark.svg");
+        AddTBIcon(_("Undo (CTRL+z)"), wxID_UNDO, iconpath, "undo.svg", "undo_dark.svg");
+        AddTBIcon(_("Copy (CTRL+c)"), wxID_COPY, iconpath, "editcopy.svg", "editcopy_dark.svg");
+        AddTBIcon(_("Paste (CTRL+v)"), wxID_PASTE, iconpath, "editpaste.svg", "editpaste_dark.svg");
         SEPARATOR;
-        AddTBIcon(_("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, L"zoomin.svg",
-                  L"zoomin_dark.svg");
-        AddTBIcon(_("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, L"zoomout.svg",
-                  L"zoomout_dark.svg");
+        AddTBIcon(_("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, "zoomin.svg",
+                  "zoomin_dark.svg");
+        AddTBIcon(_("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, "zoomout.svg",
+                  "zoomout_dark.svg");
         SEPARATOR;
-        AddTBIcon(_("New Grid (INS)"), A_NEWGRID, iconpath, L"newgrid.svg", L"newgrid_dark.svg");
-        AddTBIcon(_("Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
+        AddTBIcon(_("New Grid (INS)"), A_NEWGRID, iconpath, "newgrid.svg", "newgrid_dark.svg");
+        AddTBIcon(_("Add Image"), A_IMAGE, iconpath, "image.svg", "image_dark.svg");
         SEPARATOR;
-        AddTBIcon(_("Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
+        AddTBIcon(_("Run"), wxID_EXECUTE, iconpath, "run.svg", "run_dark.svg");
         tb->AddSeparator();
         tb->AddControl(new wxStaticText(tb, wxID_ANY, _("Search ")));
         tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
                                                FromDIP(wxSize(80, 22)),
                                                wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddTBIcon(_("Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg", L"cancel_dark.svg");
-        AddTBIcon(_("Go to Next Search Result"), A_SEARCHNEXT, iconpath, L"search.svg",
-                  L"search_dark.svg");
+        AddTBIcon(_("Clear search"), A_CLEARSEARCH, iconpath, "cancel.svg", "cancel_dark.svg");
+        AddTBIcon(_("Go to Next Search Result"), A_SEARCHNEXT, iconpath, "search.svg",
+                  "search_dark.svg");
         SEPARATOR;
         tb->AddControl(new wxStaticText(tb, wxID_ANY, _("Replace ")));
         tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
                                                  FromDIP(wxSize(80, 22)),
                                                  wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddTBIcon(_("Clear replace"), A_CLEARREPLACE, iconpath, L"cancel.svg", L"cancel_dark.svg");
-        AddTBIcon(_("Replace in selection"), A_REPLACEONCE, iconpath, L"replace.svg",
-                  L"replace_dark.svg");
-        AddTBIcon(_("Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
-                  L"replaceall_dark.svg");
+        AddTBIcon(_("Clear replace"), A_CLEARREPLACE, iconpath, "cancel.svg", "cancel_dark.svg");
+        AddTBIcon(_("Replace in selection"), A_REPLACEONCE, iconpath, "replace.svg",
+                  "replace_dark.svg");
+        AddTBIcon(_("Replace All"), A_REPLACEALL, iconpath, "replaceall.svg",
+                  "replaceall_dark.svg");
         tb->AddSeparator();
         tb->AddControl(new wxStaticText(tb, wxID_ANY, _("Cell ")));
         celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
@@ -898,7 +897,7 @@ struct MyFrame : wxFrame {
         tb->Show(sys->showtoolbar);
     }
 
-    void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
+    void TBMenu(wxToolBar *tb, wxMenu *menu, const char *name, int id = 0) {
         tb->AddTool(id, name, wxNullBitmap, wxEmptyString, wxITEM_DROPDOWN);
         tb->SetDropdownMenu(id, menu);
     }
@@ -969,7 +968,7 @@ struct MyFrame : wxFrame {
         wxClientDC dc(sw);
         sw->DoPrepareDC(dc);
         sw->doc->ShiftToCenter(dc);
-        auto Check = [&](const wxChar *cfg) {
+        auto Check = [&](const char *cfg) {
             sys->cfg->Write(cfg, ce.IsChecked());
             sw->Status(_("change will take effect next run of TreeSheets"));
         };
@@ -983,7 +982,7 @@ struct MyFrame : wxFrame {
 
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
-                    sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());
+                    sys->cfg->Write("showstatusbar", sys->showstatusbar = ce.IsChecked());
                     wxStatusBar *wsb = this->GetStatusBar();
                     wsb->Show(sys->showstatusbar);
                     this->SendSizeEvent();
@@ -993,7 +992,7 @@ struct MyFrame : wxFrame {
                 break;
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
-                    sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
+                    sys->cfg->Write("showtoolbar", sys->showtoolbar = ce.IsChecked());
                     wxToolBar *wtb = this->GetToolBar();
                     wtb->Show(sys->showtoolbar);
                     this->SendSizeEvent();
@@ -1003,35 +1002,35 @@ struct MyFrame : wxFrame {
                 break;
             case A_CUSTCOL: {
                 uint c = PickColor(sys->frame, sys->customcolor);
-                if (c != (uint)-1) sys->cfg->Write(L"customcolor", sys->customcolor = c);
+                if (c != (uint)-1) sys->cfg->Write("customcolor", sys->customcolor = c);
                 break;
             }
-            case A_LEFTTABS: Check(L"lefttabs"); break;
-            case A_SINGLETRAY: Check(L"singletray"); break;
-            case A_MAKEBAKS: sys->cfg->Write(L"makebaks", sys->makebaks = ce.IsChecked()); break;
-            case A_TOTRAY: sys->cfg->Write(L"totray", sys->totray = ce.IsChecked()); break;
-            case A_MINCLOSE: sys->cfg->Write(L"minclose", sys->minclose = ce.IsChecked()); break;
-            case A_ZOOMSCR: sys->cfg->Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
-            case A_THINSELC: sys->cfg->Write(L"thinselc", sys->thinselc = ce.IsChecked()); break;
-            case A_AUTOSAVE: sys->cfg->Write(L"autosave", sys->autosave = ce.IsChecked()); break;
+            case A_LEFTTABS: Check("lefttabs"); break;
+            case A_SINGLETRAY: Check("singletray"); break;
+            case A_MAKEBAKS: sys->cfg->Write("makebaks", sys->makebaks = ce.IsChecked()); break;
+            case A_TOTRAY: sys->cfg->Write("totray", sys->totray = ce.IsChecked()); break;
+            case A_MINCLOSE: sys->cfg->Write("minclose", sys->minclose = ce.IsChecked()); break;
+            case A_ZOOMSCR: sys->cfg->Write("zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
+            case A_THINSELC: sys->cfg->Write("thinselc", sys->thinselc = ce.IsChecked()); break;
+            case A_AUTOSAVE: sys->cfg->Write("autosave", sys->autosave = ce.IsChecked()); break;
             #ifndef SIMPLERENDER
                 case A_HOVERSHADOW:
-                   sys->cfg->Write(L"hovershadow", sys->hovershadow = ce.IsChecked());
-                   break;
+                    sys->cfg->Write("hovershadow", sys->hovershadow = ce.IsChecked());
+                    break;
             #endif
             case A_CENTERED:
-                sys->cfg->Write(L"centered", sys->centered = ce.IsChecked());
+                sys->cfg->Write("centered", sys->centered = ce.IsChecked());
                 Refresh();
                 break;
             case A_FSWATCH:
-                Check(L"fswatch");
+                Check("fswatch");
                 sys->fswatch = ce.IsChecked();
                 break;
             case A_AUTOEXPORT:
-                sys->cfg->Write(L"autohtmlexport", sys->autohtmlexport = ce.IsChecked());
+                sys->cfg->Write("autohtmlexport", sys->autohtmlexport = ce.IsChecked());
                 break;
             case A_FASTRENDER:
-                sys->cfg->Write(L"fastrender", sys->fastrender = ce.IsChecked());
+                sys->cfg->Write("fastrender", sys->fastrender = ce.IsChecked());
                 Refresh();
                 break;
             case A_FULLSCREEN:
@@ -1056,7 +1055,7 @@ struct MyFrame : wxFrame {
                 break;
             #ifdef __WXMAC__
             case wxID_OSX_HIDE: Iconize(true); break;
-            case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
+            case wxID_OSX_HIDEOTHERS: sw->Status("NOT IMPLEMENTED"); break;
             case wxID_OSX_SHOWALL: Iconize(false); break;
             case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
             case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;
@@ -1143,7 +1142,7 @@ struct MyFrame : wxFrame {
 
     void RenderFolderIcon() {
         wxImage foldiconi;
-        foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
+        foldiconi.LoadFile(GetDataPath("images/nuvola/fold.png"));
         foldicon = wxBitmap(foldiconi);
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
     }
@@ -1202,7 +1201,7 @@ struct MyFrame : wxFrame {
         if (me.IsIconized()) {
             #ifndef __WXMAC__
             if (sys->totray) {
-                tbi.SetIcon(icon, L"TreeSheets");
+                tbi.SetIcon(icon, "TreeSheets");
                 Show(false);
                 Iconize();
             }
@@ -1263,7 +1262,7 @@ struct MyFrame : wxFrame {
     }
 
     #ifdef WIN32
-    void SetRegKey(const wxChar *key, wxString val) {
+    void SetRegKey(const char *key, wxString val) {
         wxRegKey rk(key);
         rk.Create();
         rk.SetValue(L"", val);
@@ -1272,12 +1271,12 @@ struct MyFrame : wxFrame {
 
     void SetFileAssoc(wxString &exename) {
         #ifdef WIN32
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
-                  wxString(L"\"") + exename + L"\" \"%1\"");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
-                  wxString(L"\"") + exename + L"\",0");
+        SetRegKey("HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
+        SetRegKey("HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
+        SetRegKey("HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
+                  wxString("\"") + exename + "\" \"%1\"");
+        SetRegKey("HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
+                  wxString("\"") + exename + "\",0");
         #else
         // TODO: do something similar for mac/kde/gnome?
         #endif

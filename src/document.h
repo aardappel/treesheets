@@ -36,7 +36,7 @@ struct Document {
     vector<unique_ptr<UndoItem>> redolist;
     vector<Selection> drawpath;
     int pathscalebias {0};
-    wxString filename {L""};
+    wxString filename {""};
     long lastmodsinceautosave {0};
     long undolistsizeatfullsave {0};
     long lastsave {wxGetLocalTime()};
@@ -49,7 +49,7 @@ struct Document {
 
     struct MyPrintout : wxPrintout {
         Document *doc;
-        MyPrintout(Document *d) : wxPrintout(L"printout"), doc(d) {}
+        MyPrintout(Document *d) : wxPrintout("printout"), doc(d) {}
 
         bool OnPrintPage(int page) {
             wxDC *dc = GetDC();
@@ -126,7 +126,7 @@ struct Document {
     }
 
     void UpdateFileName(int page = -1) {
-        sys->frame->SetPageTitle(filename, modified ? (lastmodsinceautosave ? L"*" : L"+") : L"",
+        sys->frame->SetPageTitle(filename, modified ? (lastmodsinceautosave ? "*" : "+") : "",
                                  page);
     }
 
@@ -134,12 +134,12 @@ struct Document {
         filename = fn;
         if (checkext) {
             wxFileName wxfn(filename);
-            if (!wxfn.HasExt()) filename.Append(L".cts");
+            if (!wxfn.HasExt()) filename.Append(".cts");
         }
         UpdateFileName();
     }
 
-    const wxChar *SaveDB(bool *success, bool istempfile = false, int page = -1) {
+    const char *SaveDB(bool *success, bool istempfile = false, int page = -1) {
         if (filename.empty()) return _("Save cancelled.");
         Cell *ocs = selected.GetFirst();
         auto start_saving_time = wxGetLocalTimeMillis();
@@ -199,16 +199,12 @@ struct Document {
             sys->FileUsed(filename, this);
             if (::wxFileExists(sys->TmpName(filename))) ::wxRemoveFile(sys->TmpName(filename));
         }
-        if (sys->autohtmlexport) {
-            ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT, false);
-        }
+        if (sys->autohtmlexport) { ExportFile(sys->ExtName(filename, ".html"), A_EXPHTMLT, false); }
         UpdateFileName(page);
         if (success) *success = true;
 
-        sw->Status(wxString::Format(_("Saved %s successfully (in %d milliseconds)."),
-                                    filename.c_str(),
-                                    (int)((end_saving_time - start_saving_time).GetValue()))
-                       .c_str());
+        sw->Status(wxString::Format(_("Saved %s successfully (in %d milliseconds)."), filename,
+                                    (int)((end_saving_time - start_saving_time).GetValue())));
 
         return _("");
     }
@@ -519,13 +515,13 @@ struct Document {
         DrawSelectMove(dc, selected, true, false);
     }
 
-    const wxChar *NoSel() { return _("This operation requires a selection."); }
-    const wxChar *OneCell() { return _("This operation works on a single selected cell only."); }
-    const wxChar *NoThin() { return _("This operation doesn't work on thin selections."); }
-    const wxChar *NoGrid() { return _("This operation requires a cell that contains a grid."); }
+    const char *NoSel() { return _("This operation requires a selection."); }
+    const char *OneCell() { return _("This operation works on a single selected cell only."); }
+    const char *NoThin() { return _("This operation doesn't work on thin selections."); }
+    const char *NoGrid() { return _("This operation requires a cell that contains a grid."); }
 
-    const wxChar *Wheel(wxDC &dc, int dir, bool alt, bool ctrl, bool shift,
-                        bool hierarchical = true) {
+    const char *Wheel(wxDC &dc, int dir, bool alt, bool ctrl, bool shift,
+                      bool hierarchical = true) {
         if (!dir) return nullptr;
         ShiftToCenter(dc);
         if (alt) {
@@ -540,7 +536,7 @@ struct Document {
                 Refresh();
                 return dir > 0 ? _("Column width increased.") : _("Column width decreased.");
             }
-            return L"nothing to resize";
+            return "nothing to resize";
         } else if (shift) {
             if (!selected.g) return NoSel();
             selected.g->cell->AddUndo(this);
@@ -599,7 +595,7 @@ struct Document {
                 if ((int)s.Len() > sys->defaultmaxcolwidth) {
                     // should take the width of these into account for layoutys, but really, the
                     // worst that can happen on a thin window is that its rendering gets cut off
-                    s = s.Left(sys->defaultmaxcolwidth) + L"...";
+                    s = s.Left(sys->defaultmaxcolwidth) + "...";
                 }
                 dc.DrawText(s, off, off);
             }
@@ -689,7 +685,7 @@ struct Document {
                         stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
                         stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
                         (stylebits & STYLE_UNDERLINE) != 0,
-                        stylebits & STYLE_FIXED ? wxString(L"") : sys->defaultfont);
+                        stylebits & STYLE_FIXED ? wxString("") : sys->defaultfont);
             if (stylebits & STYLE_STRIKETHRU) font.SetStrikethrough(true);
             dc.SetFont(font);
             lasttextsize = textsize;
@@ -758,7 +754,7 @@ struct Document {
         return keep;
     }
 
-    const wxChar *DoubleClick(wxDC &dc) {
+    const char *DoubleClick(wxDC &dc) {
         if (!selected.g) return nullptr;
         ShiftToCenter(dc);
         Cell *c = selected.GetCell();
@@ -778,8 +774,8 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *msg, int k) {
-        wxString fn = ::wxFileSelector(msg, L"", L"", fmt, pat,
+    const char *Export(const char *fmt, const char *pat, const char *msg, int k) {
+        wxString fn = ::wxFileSelector(msg, "", "", fmt, pat,
                                        wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _("Export cancelled.");
         return ExportFile(fn, k, true);
@@ -807,7 +803,7 @@ struct Document {
         rootgrid->ImageRefCount(includefolded);
     }
 
-    const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
+    const char *ExportFile(const wxString &fn, int k, bool currentview) {
         auto root = currentview ? curdrawroot : rootgrid.get();
         if (k == A_EXPCSV) {
             int maxdepth = 0, leaves = 0;
@@ -821,7 +817,7 @@ struct Document {
             Refresh();
             if (!bm.SaveFile(fn, wxBITMAP_TYPE_PNG)) return _("Error writing PNG file!");
         } else {
-            wxFFileOutputStream fos(fn, L"w+b");
+            wxFFileOutputStream fos(fn, "w+b");
             if (!fos.IsOk()) {
                 wxMessageBox(_("Error exporting file!"), fn.wx_str(), wxOK, sys->frame);
                 return _("Error writing to file!");
@@ -831,31 +827,31 @@ struct Document {
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(
-                        L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                        L"<!DOCTYPE cell [\n"
-                        L"<!ELEMENT cell (grid)>\n"
-                        L"<!ELEMENT grid (row*)>\n"
-                        L"<!ELEMENT row (cell*)>\n"
-                        L"]>\n");
+                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                        "<!DOCTYPE cell [\n"
+                        "<!ELEMENT cell (grid)>\n"
+                        "<!ELEMENT grid (row*)>\n"
+                        "<!ELEMENT row (cell*)>\n"
+                        "]>\n");
                     dos.WriteString(content);
                     break;
                 case A_EXPHTMLT:
                 case A_EXPHTMLB:
                 case A_EXPHTMLO:
                     dos.WriteString(
-                        L"<!DOCTYPE html>\n"
-                        L"<html>\n<head>\n<style>\n"
-                        L"body { font-family: sans-serif; }\n"
-                        L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
-                        L" padding: 3px; vertical-align: top; }\n"
-                        L"li { }\n</style>\n"
-                        L"<title>export of TreeSheets file ");
+                        "<!DOCTYPE html>\n"
+                        "<html>\n<head>\n<style>\n"
+                        "body { font-family: sans-serif; }\n"
+                        "table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
+                        " padding: 3px; vertical-align: top; }\n"
+                        "li { }\n</style>\n"
+                        "<title>export of TreeSheets file ");
                     dos.WriteString(filename);
                     dos.WriteString(
-                        L"</title>\n<meta charset=\"UTF-8\" />\n"
-                        L"</head>\n<body>\n");
+                        "</title>\n<meta charset=\"UTF-8\" />\n"
+                        "</head>\n<body>\n");
                     dos.WriteString(content);
-                    dos.WriteString(L"</body>\n</html>\n");
+                    dos.WriteString("</body>\n</html>\n");
                     break;
                 case A_EXPCSV:
                 case A_EXPTEXT: dos.WriteString(content); break;
@@ -864,9 +860,9 @@ struct Document {
         return _("File exported successfully.");
     }
 
-    const wxChar *Save(bool saveas, bool *success = nullptr) {
+    const char *Save(bool saveas, bool *success = nullptr) {
         if (!saveas && !filename.empty()) { return SaveDB(success); }
-        wxString fn = ::wxFileSelector(_("Choose TreeSheets file to save:"), L"", L"", L"cts",
+        wxString fn = ::wxFileSelector(_("Choose TreeSheets file to save:"), "", "", "cts",
                                        _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
                                        wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _("Save cancelled.");  // avoid name being set to ""
@@ -883,8 +879,8 @@ struct Document {
         }
     }
 
-    const wxChar *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift,
-                      bool &unprocessed) {
+    const char *Key(wxDC &dc, wxChar uk, int k, bool alt, bool ctrl, bool shift,
+                    bool &unprocessed) {
         if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
@@ -968,7 +964,7 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar *Action(wxDC &dc, int k) {
+    const char *Action(wxDC &dc, int k) {
         ShiftToCenter(dc);
 
         switch (k) {
@@ -998,13 +994,13 @@ struct Document {
             case wxID_SAVEAS: return Save(true);
             case A_SAVEALL: sys->SaveAll(); return nullptr;
 
-            case A_EXPXML: return Export(L"xml", L"*.xml", _("Choose XML file to write"), k);
+            case A_EXPXML: return Export("xml", "*.xml", _("Choose XML file to write"), k);
             case A_EXPHTMLT:
             case A_EXPHTMLB:
-            case A_EXPHTMLO: return Export(L"html", L"*.html", _("Choose HTML file to write"), k);
-            case A_EXPTEXT: return Export(L"txt", L"*.txt", _("Choose Text file to write"), k);
-            case A_EXPIMAGE: return Export(L"png", L"*.png", _("Choose PNG file to write"), k);
-            case A_EXPCSV: return Export(L"csv", L"*.csv", _("Choose CSV file to write"), k);
+            case A_EXPHTMLO: return Export("html", "*.html", _("Choose HTML file to write"), k);
+            case A_EXPTEXT: return Export("txt", "*.txt", _("Choose Text file to write"), k);
+            case A_EXPIMAGE: return Export("png", "*.png", _("Choose PNG file to write"), k);
+            case A_EXPCSV: return Export("csv", "*.csv", _("Choose CSV file to write"), k);
 
             case A_IMPXML:
             case A_IMPXMLA:
@@ -1014,10 +1010,10 @@ struct Document {
             case A_IMPTXTT: return sys->Import(k);
 
             case wxID_OPEN: {
-                wxString fn = ::wxFileSelector(
-                    _("Please select a TreeSheets file to load:"), L"", L"", L"cts",
-                    _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
-                    wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+                wxString fn =
+                    ::wxFileSelector(_("Please select a TreeSheets file to load:"), "", "", "cts",
+                                     _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
+                                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 return sys->Open(fn);
             }
 
@@ -1049,11 +1045,11 @@ struct Document {
 
             case wxID_ABOUT: {
                 wxAboutDialogInfo info;
-                info.SetName(L"TreeSheets");
+                info.SetName("TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));
-                info.SetCopyright(L"(C) 2009 Wouter van Oortmerssen");
+                info.SetCopyright("(C) 2009 Wouter van Oortmerssen");
                 wxString desc = wxString::Format(
-                    L"%s\n\n%s " wxVERSION_STRING,
+                    "%s\n\n%s " wxVERSION_STRING,
                     _("The Free Form Hierarchical Information Organizer"), _("Uses"));
                 info.SetDescription(desc);
                 wxAboutBox(info);
@@ -1066,10 +1062,10 @@ struct Document {
 
             case A_HELP:
                 #ifdef __WXMAC__
-                wxLaunchDefaultBrowser(L"file://" +
-                                       sys->frame->GetDocPath(L"docs/tutorial.html"));  // RbrtPntn
+                wxLaunchDefaultBrowser("file://" +
+                                       sys->frame->GetDocPath("docs/tutorial.html"));  // RbrtPntn
                 #else
-                wxLaunchDefaultBrowser(sys->frame->GetDocPath(L"docs/tutorial.html"));
+                wxLaunchDefaultBrowser(sys->frame->GetDocPath("docs/tutorial.html"));
                 #endif
                 return nullptr;
 
@@ -1095,8 +1091,8 @@ struct Document {
                     wxFont font = fd.GetFontData().GetChosenFont();
                     sys->defaultfont = font.GetFaceName();
                     g_deftextsize = min(20, max(10, font.GetPointSize()));
-                    sys->cfg->Write(L"defaultfont", sys->defaultfont);
-                    sys->cfg->Write(L"defaultfontsize", g_deftextsize);
+                    sys->cfg->Write("defaultfont", sys->defaultfont);
+                    sys->cfg->Write("defaultfontsize", g_deftextsize);
                     // rootgrid->ResetChildren();
                     sys->frame->TabsReset();  // ResetChildren on all
                     Refresh();
@@ -1163,7 +1159,7 @@ struct Document {
             case A_DEFCURCOL: {
                 uint c = PickColor(sys->frame, sys->cursorcolor);
                 if (c != (uint)-1) {
-                    sys->cfg->Write(L"cursorcolor", sys->cursorcolor = c);
+                    sys->cfg->Write("cursorcolor", sys->cursorcolor = c);
                     Refresh();
                 }
                 return nullptr;
@@ -1186,7 +1182,7 @@ struct Document {
 
             case A_CASESENSITIVESEARCH: {
                 sys->casesensitivesearch = !(sys->casesensitivesearch);
-                sys->cfg->Write(L"casesensitivesearch", sys->casesensitivesearch);
+                sys->cfg->Write("casesensitivesearch", sys->casesensitivesearch);
                 sys->searchstring = (sys->casesensitivesearch)
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
@@ -1203,7 +1199,7 @@ struct Document {
             case A_ROUND4:
             case A_ROUND5:
             case A_ROUND6:
-                sys->cfg->Write(L"roundness", long(sys->roundness = k - A_ROUND0));
+                sys->cfg->Write("roundness", long(sys->roundness = k - A_ROUND0));
                 Refresh();
                 return nullptr;
 
@@ -1559,9 +1555,8 @@ struct Document {
 
             case A_IMAGE: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
-                wxString fn =
-                    ::wxFileSelector(_("Please select an image file:"), L"", L"", L"", L"*.*",
-                                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+                wxString fn = ::wxFileSelector(_("Please select an image file:"), "", "", "", "*.*",
+                                               wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 c->AddUndo(this);
                 LoadImageIntoCell(fn, c, sys->frame->FromDIP(1.0));
                 Refresh();
@@ -1697,7 +1692,7 @@ struct Document {
                                             _("Image Resize"), 500, 10, 4000, sys->frame);
                 } else {
                     v = wxGetNumberFromUser(
-                        _("Please enter the percentage you want the image scaled by:"), L"%",
+                        _("Please enter the percentage you want the image scaled by:"), "%",
                         _("Image Resize"), 50, 5, 400, sys->frame);
                 }
                 if (v < 0) return nullptr;
@@ -1735,8 +1730,9 @@ struct Document {
                     if (tim) {
                         if (!oimgfn) {  // first encounter
                             oimgfn = ::wxFileSelector(
-                                _("Choose image file to save:"), L"", L"", L"png|jpg",
-                                _("PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
+                                _("Choose image file to save:"), "", "", "png|jpg",
+                                _("PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files "
+                                  "(*.*)|*.*"),
                                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                             if (oimgfn.empty()) return _("Save cancelled.");
                             counterpos = oimgfn.find_last_of(".");
@@ -1747,7 +1743,7 @@ struct Document {
                             imgfn = oimgfn;
                             imgfn.insert(counterpos, to_string(counter));
                         }
-                        wxFFileOutputStream imagefs(imgfn, L"w+b");
+                        wxFFileOutputStream imagefs(imgfn, "w+b");
                         if (!imagefs.IsOk()) {
                             wxMessageBox(
                                 _("Error writing image file! (try saving under new filename)."),
@@ -1794,7 +1790,7 @@ struct Document {
             }
 
             case A_BROWSE: {
-                const wxChar *returnmessage = nullptr;
+                const char *returnmessage = nullptr;
                 int counter = 0;
                 loopallcellssel(c, false) {
                     if (counter >= g_max_launches) {
@@ -1811,7 +1807,7 @@ struct Document {
             }
 
             case A_BROWSEF: {
-                const wxChar *returnmessage = nullptr;
+                const char *returnmessage = nullptr;
                 int counter = 0;
                 loopallcellssel(c, false) {
                     if (counter >= g_max_launches) {
@@ -1995,7 +1991,7 @@ struct Document {
         }
     }
 
-    const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump, bool reverse) {
+    const char *SearchNext(wxDC &dc, bool focusmatch, bool jump, bool reverse) {
         if (!rootgrid) return nullptr;  // fix crash when opening new doc
         if (!sys->searchstring.Len()) return _("No search string.");
         bool lastsel = true;
@@ -2010,7 +2006,7 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar *layrender(int ds, bool vert, bool toggle = false, bool noset = false) {
+    const char *layrender(int ds, bool vert, bool toggle = false, bool noset = false) {
         if (selected.Thin()) return NoThin();
         selected.g->cell->AddUndo(this);
         bool v = toggle ? !selected.GetFirst()->verticaltextandgrid : vert;
@@ -2107,7 +2103,7 @@ struct Document {
         }
     }
 
-    const wxChar *Sort(bool descending) {
+    const char *Sort(bool descending) {
         if (selected.xs != 1 && selected.ys <= 1)
             return _(
                 "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
@@ -2267,7 +2263,7 @@ struct Document {
         for (auto &tag : tags) { menu.Append(i++, tag); }
     }
 
-    const wxChar *TagSet(int tagno) {
+    const char *TagSet(int tagno) {
         int i = 0;
         for (auto &tag : tags)
             if (i++ == tagno) {
