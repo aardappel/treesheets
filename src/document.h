@@ -2205,17 +2205,16 @@ struct Document {
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
         unique_ptr<UndoItem> ui = std::move(fromlist.back());
         fromlist.pop_back();
-        Cell *c = WalkPath(ui->path);
-        auto clone = ui->clone.release();
-        ui->clone.reset(c);
-        if (c->parent && c->parent->grid) {
+        if (Cell *c = WalkPath(ui->path); c->parent && c->parent->grid) {
+            auto clone = ui->clone.release();
             c->parent->grid->ReplaceCell(c, clone);
             clone->parent = c->parent;
+            clone->ResetLayout();
+            ui->clone.reset(c);
         } else {
-            rootgrid.release();  // May still point to "c", so don't delete upon reset!
-            rootgrid.reset(clone);
+            rootgrid.swap(ui->clone);
+            rootgrid->ResetLayout();
         }
-        clone->ResetLayout();
         SetSelect(ui->sel);
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid.get();
         begindrag = selected;
