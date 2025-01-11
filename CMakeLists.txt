@@ -68,7 +68,7 @@ OPTION(TREESHEETS_WITH_STATIC_WXWIDGETS "Build wxWidgets along with TreeSheets a
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 # Update submodules as needed
-    OPTION(GIT_WXWIDGETS_SUBMODULES "Check wxWidgets git submodules during build" ON)
+    OPTION(GIT_WXWIDGETS_SUBMODULES "Checkout wxWidgets git submodules during build" OFF)
     if(GIT_WXWIDGETS_SUBMODULES)
         message(STATUS "The Git wxWidgets submodules are currently being updated...")
         execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --remote --recursive
