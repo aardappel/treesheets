@@ -2211,10 +2211,8 @@ struct Document {
         if (c->parent && c->parent->grid) {
             c->parent->grid->ReplaceCell(c, clone);
             clone->parent = c->parent;
-        } else {
-            rootgrid.release();  // May still point to "c", so don't delete upon reset!
+        } else
             rootgrid.reset(clone);
-        }
         clone->ResetLayout();
         SetSelect(ui->sel);
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid.get();
