@@ -518,7 +518,8 @@ struct Grid {
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);
-        cell->grid.release();
+        Grid *&pthis = cell->grid;
+        DELETEP(pthis);
     }
 
     void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
@@ -935,9 +936,9 @@ struct Grid {
                     Cell *t = new Cell(f, p);
                     t->text = p->text;
                     t->text.cell = t;
-                    t->grid = std::move(f->grid);
+                    t->grid = f->grid;
                     if (t->grid) t->grid->ReParent(t);
-                    f->grid = make_unique<Grid>(1, 1);
+                    f->grid = new Grid(1, 1);
                     f->grid->cell = f;
                     f->grid->cells[0] = t;
                 }
@@ -994,8 +995,9 @@ struct Grid {
                 if (c->grid) {
                     f->grid->MergeTagAll(c);
                 } else {
-                    c->grid = std::move(f->grid);
+                    c->grid = f->grid;
                     c->grid->ReParent(c);
+                    f->grid = nullptr;
                 }
                 delete f;
             }
@@ -1034,7 +1036,7 @@ struct Grid {
                 if (prev->text.t == c->text.t) {
                     if (rest) {
                         ASSERT(prev->grid);
-                        prev->grid->MergeRow(rest->grid.get());
+                        prev->grid->MergeRow(rest->grid);
                         rest.reset();
                     }
 
@@ -1046,7 +1048,7 @@ struct Grid {
                 }
             }
             if (rest) {
-                c->grid.swap(rest->grid);
+                swap_(c->grid, rest->grid);
                 c->grid->ReParent(c);
             }
         done:;

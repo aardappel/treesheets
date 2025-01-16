@@ -97,12 +97,12 @@ struct Evaluator {
 
     void Assign(const Cell *sym, const Cell *val) {
         this->SetSymbol(sym->text.t, val->Clone(nullptr));
-        if (sym->grid && val->grid) this->DestructuringAssign(sym->grid.get(), val->Clone(nullptr));
+        if (sym->grid && val->grid) this->DestructuringAssign(sym->grid, val->Clone(nullptr));
     }
 
     void DestructuringAssign(Grid const *names, unique_ptr<Cell> val) {
         Grid const *ng = names;
-        Grid const *vg = val->grid.get();
+        Grid const *vg = val->grid;
         if (ng->xs == vg->xs && ng->ys == vg->ys) {
             loop(x, ng->xs) loop(y, ng->ys) {
                 Cell *nc = ng->C(x, y);
@@ -118,7 +118,7 @@ struct Evaluator {
 
     unique_ptr<Cell> Execute(const Operation *op, unique_ptr<Cell> left) {
         Text &t = left->text;
-        Grid *g = left->grid.get();
+        Grid *g = left->grid;
         switch (op->args[0]) {
             case 'n':
                 if (t.t.Len()) {
@@ -167,8 +167,8 @@ struct Evaluator {
         if (!right) return left;
         Text &t1 = left->text;
         Text &t2 = right->text;
-        Grid *g1 = left->grid.get();
-        Grid *g2 = right->grid.get();
+        Grid *g1 = left->grid;
+        Grid *g2 = right->grid;
         switch (op->args[0]) {
             case 'n':
                 if (t1.t.Len() && t2.t.Len()) {

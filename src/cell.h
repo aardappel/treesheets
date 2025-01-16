@@ -33,7 +33,7 @@ struct Cell {
     int tys {0};
     int celltype;
     Text text;
-    unique_ptr<Grid> grid;
+    Grid *grid;
     uint cellcolor {0xFFFFFF};
     uint textcolor {0x000000};
     uint actualcellcolor {0xFFFFFF};
@@ -53,8 +53,9 @@ struct Cell {
         if (_clonefrom) CloneStyleFrom(_clonefrom);
     }
 
+    ~Cell() { DELETEP(grid); }
     void Clear() {
-        grid.release();
+        DELETEP(grid);
         text.t.Clear();
         text.image = nullptr;
         Reset();
@@ -195,7 +196,7 @@ struct Cell {
                                    grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
         c->text.cell = c.get();
-        if (grid) { grid->Clone(c->grid.get()); }
+        if (grid) { grid->Clone(c->grid); }
         return c;
     }
 
@@ -354,18 +355,19 @@ struct Cell {
 
     Grid *AddGrid(int x = 1, int y = 1) {
         if (!grid) {
-            grid = make_unique<Grid>(x, y, this);
+            grid = new Grid(x, y, this);
             grid->InitCells(this);
-            if (parent) grid->CloneStyleFrom(parent->grid.get());
+            if (parent) grid->CloneStyleFrom(parent->grid);
         }
-        return grid.get();
+        return grid;
     }
 
     Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         int xs = dis.Read32();
-        grid = make_unique<Grid>(xs, dis.Read32());
-        grid->cell = this;
-        if (!grid->LoadContents(dis, numcells, textbytes, ics)) return nullptr;
+        Grid *g = new Grid(xs, dis.Read32());
+        grid = g;
+        g->cell = this;
+        if (!g->LoadContents(dis, numcells, textbytes, ics)) return nullptr;
         return this;
     }
 
@@ -424,9 +426,9 @@ struct Cell {
             c->grid->Clone(cg);
             // Note: deleting grid may invalidate c if its a child of grid, so clear it.
             c = nullptr;
-            grid.reset(cg);  // FIXME: could merge instead?
-            if (!HasText())
-                grid->MergeWithParent(parent->grid.get(), s, doc);  // deletes grid/this.
+            DELETEP(grid);  // FIXME: could merge instead?
+            grid = cg;
+            if (!HasText()) grid->MergeWithParent(parent->grid, s, doc);  // deletes grid/this.
         }
     }
 
