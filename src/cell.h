@@ -54,7 +54,7 @@ struct Cell {
     }
 
     void Clear() {
-        grid.reset();
+        grid.release();
         text.t.Clear();
         text.image = nullptr;
         Reset();

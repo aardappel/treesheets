@@ -518,7 +518,7 @@ struct Grid {
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);
-        cell->grid.reset();
+        cell->grid.release();
     }
 
     void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
@@ -672,7 +672,7 @@ struct Grid {
     }
 
     void MergeWithParent(Grid *p, Selection &s, Document *doc) {
-        cell->grid.release();
+        cell->grid = nullptr;
         foreachcell(c) {
             if (x + s.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
             if (y + s.y >= p->ys) p->InsertCells(-1, p->ys, 0, 1);
