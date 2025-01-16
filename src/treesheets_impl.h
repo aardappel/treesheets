@@ -7,8 +7,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDoc() {
-        doc = sys->frame->GetCurTab()->doc.get();
-        cur = doc->rootgrid.get();
+        doc = sys->frame->GetCurTab()->doc;
+        cur = doc->rootgrid;
 
         doc->AddUndo(cur);
     }
@@ -42,7 +42,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return true;
     }
 
-    void GoToRoot() { cur = doc->rootgrid.get(); }
+    void GoToRoot() { cur = doc->rootgrid; }
     void GoToView() { cur = doc->curdrawroot; }
     bool HasSelection() { return doc->selected.g; }
     void GoToSelection() {
