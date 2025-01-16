@@ -7,9 +7,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDoc() {
-        doc = sys->frame->GetCurTab()->doc.get();
-        cur = doc->rootgrid.get();
-
+        doc = sys->frame->GetCurTab()->doc;
+        cur = doc->rootgrid;
         doc->AddUndo(cur);
     }
 
@@ -42,7 +41,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return true;
     }
 
-    void GoToRoot() { cur = doc->rootgrid.get(); }
+    void GoToRoot() { cur = doc->rootgrid; }
     void GoToView() { cur = doc->curdrawroot; }
     bool HasSelection() { return doc->selected.g; }
     void GoToSelection() {
@@ -95,7 +94,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void Delete(int x, int y, int xs, int ys) {
         if (cur->grid && x >= 0 && x + xs <= cur->grid->xs && y >= 0 && y + ys <= cur->grid->ys) {
-            Selection s(cur->grid.get(), x, y, xs, ys);
+            Selection s(cur->grid, x, y, xs, ys);
             cur->grid->MultiCellDeleteSub(doc, s);
             doc->SetSelect(Selection());
             doc->Zoom(-100, *dc);

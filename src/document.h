@@ -13,7 +13,7 @@ struct UndoItem {
 
 struct Document {
     TSCanvas *sw {nullptr};
-    unique_ptr<Cell> rootgrid;
+    Cell *rootgrid {nullptr};
     Selection hover;
     Selection selected;
     Selection begindrag;
@@ -91,7 +91,7 @@ struct Document {
         CollectCells(par);      \
         loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
     #define loopallcells(c)     \
-        CollectCells(rootgrid.get()); \
+        CollectCells(rootgrid); \
         for (Cell *c : itercells)
     #define loopallcellssel(c, rec) \
         CollectCellsSel(rec);     \
@@ -107,11 +107,13 @@ struct Document {
         dndobjc->Add(dndobjf);
     }
 
+    ~Document() { DELETEP(rootgrid); }
+
     uint Background() { return rootgrid ? rootgrid->cellcolor : 0xFFFFFF; }
 
     void InitCellSelect(Cell *ics, int xs, int ys) {
         if (!ics) {
-            SetSelect(Selection(rootgrid->grid.get(), 0, 0, 1, 1));
+            SetSelect(Selection(rootgrid->grid, 0, 0, 1, 1));
             return;
         }
         SetSelect(ics->parent->grid->FindCell(ics));
@@ -120,7 +122,7 @@ struct Document {
     }
 
     void InitWith(Cell *r, const wxString &filename, Cell *ics, int xs, int ys) {
-        rootgrid.reset(r);
+        rootgrid = r;
         InitCellSelect(ics, xs, ys);
         ChangeFileName(filename, false);
     }
@@ -510,8 +512,7 @@ struct Document {
         Cell *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
-            SetSelect(
-                Selection(drawroot->grid.get(), 0, 0, drawroot->grid->xs, drawroot->grid->ys));
+            SetSelect(Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys));
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
@@ -565,7 +566,7 @@ struct Document {
         ResetFont();
         dc.SetUserScale(1, 1);
         curdrawroot = WalkPath(drawpath);
-        int psb = curdrawroot == rootgrid.get() ? 0 : curdrawroot->MinRelsize();
+        int psb = curdrawroot == rootgrid ? 0 : curdrawroot->MinRelsize();
         if (psb < 0 || psb == INT_MAX) psb = 0;
         if (psb != pathscalebias) curdrawroot->ResetChildren();
         pathscalebias = psb;
@@ -808,7 +809,7 @@ struct Document {
     }
 
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
-        auto root = currentview ? curdrawroot : rootgrid.get();
+        auto root = currentview ? curdrawroot : rootgrid;
         if (k == A_EXPCSV) {
             int maxdepth = 0, leaves = 0;
             root->MaxDepthLeaves(0, maxdepth, leaves);
@@ -973,7 +974,7 @@ struct Document {
 
         switch (k) {
             case wxID_EXECUTE:
-                sys->ev.Eval(rootgrid.get());
+                sys->ev.Eval(rootgrid);
                 rootgrid->ResetChildren();
                 ClearSelectionRefresh();
                 return _(L"Evaluation finished.");
@@ -1499,12 +1500,12 @@ struct Document {
             case A_NEWGRID:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (c->grid) {
-                    SetSelect(Selection(c->grid.get(), 0, c->grid->ys, 1, 0));
+                    SetSelect(Selection(c->grid, 0, c->grid->ys, 1, 0));
                     ScrollOrZoom(dc, true);
                 } else {
                     c->AddUndo(this);
                     c->AddGrid();
-                    SetSelect(Selection(c->grid.get(), 0, 0, 1, 1));
+                    SetSelect(Selection(c->grid, 0, 0, 1, 1));
                     DrawSelectMove(dc, selected, true);
                 }
                 return nullptr;
@@ -1879,7 +1880,8 @@ struct Document {
                     Grid *g = new Grid(maxdepth, leaves);
                     g->InitCells();
                     ac->grid->Flatten(0, 0, g);
-                    ac->grid.reset(g);
+                    DELETEP(ac->grid);
+                    ac->grid = g;
                     g->ReParent(ac);
                     ac->ResetChildren();
                     ClearSelectionRefresh();
@@ -1896,7 +1898,7 @@ struct Document {
 
             case A_ENTERGRID:
                 if (!c->grid) Action(dc, A_NEWGRID);
-                SetSelect(Selection(c->grid.get(), 0, 0, 1, 1));
+                SetSelect(Selection(c->grid, 0, 0, 1, 1));
                 ScrollOrZoom(dc, true);
                 return nullptr;
 
@@ -2081,10 +2083,10 @@ struct Document {
                     } else {
                         c->parent->AddUndo(this);
                         c->ResetLayout();
-                        c->grid.release();
+                        DELETEP(c->grid);
                         sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
                         if (!c->HasText())
-                            c->grid->MergeWithParent(c->parent->grid.get(), selected, this);
+                            c->grid->MergeWithParent(c->parent->grid, selected, this);
                     }
                 }
             }
@@ -2141,10 +2143,10 @@ struct Document {
     }
 
     Cell *WalkPath(vector<Selection> &path) {
-        Cell *c = rootgrid.get();
+        Cell *c = rootgrid;
         loopvrev(i, path) {
             Selection &s = path[i];
-            Grid *g = c->grid.get();
+            Grid *g = c->grid;
             if (!g) return c;
             ASSERT(g && s.x < g->xs && s.y < g->ys);
             c = g->C(s.x, s.y);
@@ -2205,18 +2207,17 @@ struct Document {
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
         unique_ptr<UndoItem> ui = std::move(fromlist.back());
         fromlist.pop_back();
-        if (Cell *c = WalkPath(ui->path); c->parent && c->parent->grid) {
-            auto clone = ui->clone.release();
+        Cell *c = WalkPath(ui->path);
+        auto clone = ui->clone.release();
+        ui->clone.reset(c);
+        if (c->parent && c->parent->grid) {
             c->parent->grid->ReplaceCell(c, clone);
             clone->parent = c->parent;
-            clone->ResetLayout();
-            ui->clone.reset(c);
-        } else {
-            rootgrid.swap(ui->clone);
-            rootgrid->ResetLayout();
-        }
+        } else
+            rootgrid = clone;
+        clone->ResetLayout();
         SetSelect(ui->sel);
-        if (selected.g) selected.g = WalkPath(ui->selpath)->grid.get();
+        if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
         begindrag = selected;
         ui->sel = beforesel;
         ui->selpath = std::move(beforepath);
@@ -2300,7 +2301,7 @@ struct Document {
         searchfilter = false;
         scrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
-        CollectCells(rootgrid.get());
+        CollectCells(rootgrid);
         std::sort(itercells.begin(), itercells.end(), [](Cell *a, Cell *b) {
             // sort in descending order
             return a->text.lastedit > b->text.lastedit;
@@ -2313,7 +2314,7 @@ struct Document {
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
         scrolltoselection = true;
-        CollectCells(rootgrid.get());
+        CollectCells(rootgrid);
         for (auto *c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }

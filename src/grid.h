@@ -3,7 +3,7 @@ struct Grid {
     // owning cell.
     Cell *cell;
     // subcells
-    vector<Cell *> cells;
+    Cell **cells;
     // widths for each column
     vector<int> colwidths;
     // xsize, ysize
@@ -18,12 +18,7 @@ struct Grid {
     bool tinyborder;
     bool folded {false};
 
-    Cell *C(int x, int y) const {
-        ASSERT(x >= 0 && y >= 0 && x < xs && y < ys);
-        return cells[x + y * xs];
-    }
-
-    Cell *&C(int x, int y) {
+    Cell *&C(int x, int y) const {
         ASSERT(x >= 0 && y >= 0 && x < xs && y < ys);
         return cells[x + y * xs];
     }
@@ -33,11 +28,6 @@ struct Grid {
             for (int x = 0; x < xs; x++)  \
                 for (bool _f = true; _f;) \
                     for (Cell *&c = C(x, y); _f; _f = false)
-     #define foreachconstcell(c)                \
-        for (int y = 0; y < ys; y++)      \
-            for (int x = 0; x < xs; x++)  \
-                for (bool _f = true; _f;) \
-                    for (Cell *c = C(x, y); _f; _f = false)
     #define foreachcellrev(c)                 \
         for (int y = ys - 1; y >= 0; y--)     \
             for (int x = xs - 1; x >= 0; x--) \
@@ -68,12 +58,17 @@ struct Grid {
                 for (bool _f = true; _f;)   \
                     for (Cell *&c = g->C(x, y); _f; _f = false)
 
-    Grid(int _xs, int _ys, Cell *_c = nullptr) : xs(_xs), ys(_ys), cell(_c), cells(_xs * _ys) {
+    Grid(int _xs, int _ys, Cell *_c = nullptr)
+        : xs(_xs), ys(_ys), cell(_c), cells(new Cell *[_xs * _ys]) {
+        foreachcell(c) c = nullptr;
         InitColWidths();
         SetOrient();
     }
 
-    ~Grid() { foreachconstcell(c) if (c) delete c; }
+    ~Grid() {
+        foreachcell(c) if (c) delete c;
+        delete[] cells;
+    }
 
     void InitCells(Cell *clonestylefrom = nullptr) {
         foreachcell(c) c = new Cell(cell, clonestylefrom);
@@ -269,7 +264,7 @@ struct Grid {
     }
 
     void FindXY(Document *doc, int px, int py, wxDC &dc) {
-        foreachconstcell(c) {
+        foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;
             if (bx >= 0 && by >= -g_line_width - g_selmargin && bx < c->sx && by < g_selmargin) {
@@ -305,8 +300,7 @@ struct Grid {
     Cell *FindLink(const Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
                    bool forward, bool image) {
         if (forward) {
-            foreachconstcell(c) best =
-                c->FindLink(s, link, best, lastthis, stylematch, forward, image);
+            foreachcell(c) best = c->FindLink(s, link, best, lastthis, stylematch, forward, image);
         } else {
             foreachcellrev(c) best =
                 c->FindLink(s, link, best, lastthis, stylematch, forward, image);
@@ -320,30 +314,30 @@ struct Grid {
             foreachcellrev(c) best =
                 c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
         } else {
-            foreachconstcell(c) best =
+            foreachcell(c) best =
                 c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
         }
         return best;
     }
 
     Cell *FindNextFilterMatch(Cell *best, Cell *selected, bool &lastwasselected) {
-        foreachconstcell(c) best = c->FindNextFilterMatch(best, selected, lastwasselected);
+        foreachcell(c) best = c->FindNextFilterMatch(best, selected, lastwasselected);
         return best;
     }
 
     void FindReplaceAll(const wxString &str, const wxString &lstr) {
-        foreachconstcell(c) c->FindReplaceAll(str, lstr);
+        foreachcell(c) c->FindReplaceAll(str, lstr);
     }
 
     void ReplaceCell(Cell *o, Cell *n) { foreachcell(c) if (c == o) c = n; }
     Selection FindCell(Cell *o) {
-        foreachconstcell(c) if (c == o) return Selection(this, x, y, 1, 1);
+        foreachcell(c) if (c == o) return Selection(this, x, y, 1, 1);
         return Selection();
     }
 
     Selection SelectAll() { return Selection(this, 0, 0, xs, ys); }
     void ImageRefCount(bool includefolded) {
-        if (includefolded || !folded) foreachconstcell(c) c->ImageRefCount(includefolded);
+        if (includefolded || !folded) foreachcell(c) c->ImageRefCount(includefolded);
     }
     void DrawHover(Document *doc, wxDC &dc, Selection &s) {
         #ifndef SIMPLERENDER
@@ -464,10 +458,11 @@ struct Grid {
     }
 
     void DeleteCells(int dx, int dy, int nxs, int nys) {
-        vector<Cell *> ncells((xs + nxs) * (ys + nys));
-        auto nit = ncells.begin();
-        foreachcell(c) if (x == dx || y == dy) DELETEP(c) else *nit++ = c;
-        cells = std::move(ncells);
+        Cell **ncells = new Cell *[(xs + nxs) * (ys + nys)];
+        Cell **ncp = ncells;
+        foreachcell(c) if (x == dx || y == dy) DELETEP(c) else *ncp++ = c;
+        delete[] cells;
+        cells = ncells;
         xs += nxs;
         ys += nys;
         if (dx >= 0) colwidths.erase(colwidths.begin() + dx);
@@ -483,7 +478,7 @@ struct Grid {
     void MultiCellDeleteSub(Document *doc, Selection &s) {
         foreachcellinsel(c, s) c->Clear();
         bool delhoriz = true, delvert = true;
-        foreachconstcell(c) {
+        foreachcell(c) {
             if (c->HasContent()) {
                 if (y >= s.y && y < s.y + s.ys) delhoriz = false;
                 if (x >= s.x && x < s.x + s.xs) delvert = false;
@@ -518,17 +513,18 @@ struct Grid {
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);
-        cell->grid.reset();
+        Grid *&pthis = cell->grid;
+        DELETEP(pthis);
     }
 
     void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
         assert(((dx < 0) == (nxs == 0)) && ((dy < 0) == (nys == 0)));
         assert(nxs + nys == 1);
-        vector<Cell *> ocells = std::move(cells);
-        cells = vector<Cell *>((xs + nxs) * (ys + nys));
+        Cell **ocells = cells;
+        cells = new Cell *[(xs + nxs) * (ys + nys)];
         xs += nxs;
         ys += nys;
-        auto oit = ocells.begin();
+        Cell **ncp = ocells;
         SetOrient();
         foreachcell(c) if (x == dx || y == dy) {
             if (nc)
@@ -540,7 +536,8 @@ struct Grid {
                 c->text.relsize = colcell->text.relsize;
             }
         }
-        else c = *oit++;
+        else c = *ncp++;
+        delete[] ocells;
         if (dx >= 0) colwidths.insert(colwidths.begin() + dx, cell->ColWidth());
     }
 
@@ -552,7 +549,7 @@ struct Grid {
         dos.Write8(cell->verticaltextandgrid);
         dos.Write8(folded);
         loop(x, xs) dos.Write32(colwidths[x]);
-        foreachconstcell(c) c->Save(dos, ocs);
+        foreachcell(c) c->Save(dos, ocs);
     }
 
     bool LoadContents(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
@@ -584,7 +581,7 @@ struct Grid {
     }
 
     void GetStats(int &numcells, int &textbytes) {
-        foreachconstcell(c) c->GetStats(numcells, textbytes);
+        foreachcell(c) c->GetStats(numcells, textbytes);
     }
 
     void Formatter(wxString &r, int format, int indent, const wxChar *xml, const wxChar *html,
@@ -611,7 +608,7 @@ struct Grid {
         const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
         const int font_size = 14 - indent / 2;
         const int grid_border_width =
-            cell == doc->rootgrid.get() ? root_grid_spacing : user_grid_outer_spacing - 1;
+            cell == doc->rootgrid ? root_grid_spacing : user_grid_outer_spacing - 1;
 
         wxString xmlstr(L"<grid");
         if (folded) xmlstr.Append(wxString::Format(wxT(" folded=\"%d\""), folded));
@@ -638,13 +635,13 @@ struct Grid {
         return r;
     }
 
-    void RelSize(int dir, int zoomdepth) { foreachconstcell(c) c->RelSize(dir, zoomdepth); }
+    void RelSize(int dir, int zoomdepth) { foreachcell(c) c->RelSize(dir, zoomdepth); }
     void RelSize(int dir, const Selection &s, int zoomdepth) {
         foreachcellinsel(c, s) c->RelSize(dir, zoomdepth);
     }
     void SetBorder(int width, const Selection &s) { foreachcellinsel(c, s) c->SetBorder(width); }
     int MinRelsize(int rs) {
-        foreachconstcell(c) {
+        foreachcell(c) {
             int crs = c->MinRelsize();
             rs = min(rs, crs);
         }
@@ -653,7 +650,7 @@ struct Grid {
 
     void ResetChildren() {
         cell->Reset();
-        foreachconstcell(c) c->ResetChildren();
+        foreachcell(c) c->ResetChildren();
     }
 
     void Move(int dx, int dy, const Selection &s) {
@@ -672,7 +669,7 @@ struct Grid {
     }
 
     void MergeWithParent(Grid *p, Selection &s, Document *doc) {
-        cell->grid.release();
+        cell->grid = nullptr;
         foreachcell(c) {
             if (x + s.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
             if (y + s.y >= p->ys) p->InsertCells(-1, p->ys, 0, 1);
@@ -878,7 +875,7 @@ struct Grid {
 
     unique_ptr<Cell> Sum() {
         double total = 0;
-        foreachconstcell(c) {
+        foreachcell(c) {
             if (c->HasText()) total += c->text.GetNum();
         }
         auto c = make_unique<Cell>();
@@ -887,9 +884,10 @@ struct Grid {
     }
 
     void Transpose() {
-        vector<Cell *> tr(xs * ys);
-        foreachconstcell(c) tr[y + x * ys] = c;
-        cells = std::move(tr);
+        Cell **tr = new Cell *[xs * ys];
+        foreachcell(c) tr[y + x * ys] = c;
+        delete[] cells;
+        cells = tr;
         swap_(xs, ys);
         SetOrient();
         InitColWidths();
@@ -908,12 +906,12 @@ struct Grid {
         sys->sortcolumn = s.x;
         sys->sortxs = xs;
         sys->sortdescending = descending;
-        qsort(cells.data() + s.y * xs, s.ys, sizeof(Cell *) * xs,
+        qsort(cells + s.y * xs, s.ys, sizeof(Cell *) * xs,
               (int(__cdecl *)(const void *, const void *))sortfunc);
     }
 
     Cell *FindExact(const wxString &s) {
-        foreachconstcell(c) {
+        foreachcell(c) {
             Cell *f = c->FindExact(s);
             if (f) return f;
         }
@@ -924,7 +922,7 @@ struct Grid {
         Cell *selcell = nullptr;
         bool done = false;
     lookformore:
-        foreachconstcell(c) if (c->grid && !done) {
+        foreachcell(c) if (c->grid && !done) {
             Cell *f = c->grid->FindExact(tag);
             if (f) {
                 // add all parent tags as extra hierarchy inside the cell
@@ -935,18 +933,18 @@ struct Grid {
                     Cell *t = new Cell(f, p);
                     t->text = p->text;
                     t->text.cell = t;
-                    t->grid = std::move(f->grid);
+                    t->grid = f->grid;
                     if (t->grid) t->grid->ReParent(t);
-                    f->grid = make_unique<Grid>(1, 1);
+                    f->grid = new Grid(1, 1);
                     f->grid->cell = f;
-                    f->grid->cells[0] = t;
+                    *f->grid->cells = t;
                 }
                 // remove cell from parent, recursively if parent becomes empty
                 for (Cell *r = f; r && r != cell; r = r->parent->grid->DeleteTagParent(r, cell, f))
                     ;
                 // merge newly constructed hierarchy at this level
-                if (cells.empty()) {
-                    cells.push_back(f);
+                if (!*cells) {
+                    *cells = f;
                     f->parent = cell;
                     selcell = f;
                 } else {
@@ -961,7 +959,7 @@ struct Grid {
 
     void ReParent(Cell *p) {
         cell = p;
-        foreachconstcell(c) c->parent = p;
+        foreachcell(c) c->parent = p;
     }
 
     Cell *DeleteTagParent(Cell *tag, Cell *basecell, Cell *found) {
@@ -975,7 +973,7 @@ struct Grid {
             if (tag != found) delete tag;
             return next;
         } else
-            foreachconstcell(c) if (c == nullptr) {
+            foreachcell(c) if (c == nullptr) {
                 if (ys > 1)
                     DeleteCells(-1, y, 0, -1);
                 else
@@ -987,15 +985,16 @@ struct Grid {
     }
 
     void MergeTagCell(Cell *f, Cell *&selcell) {
-        foreachconstcell(c) if (c->text.t == f->text.t) {
+        foreachcell(c) if (c->text.t == f->text.t) {
             if (!selcell) selcell = c;
 
             if (f->grid) {
                 if (c->grid) {
                     f->grid->MergeTagAll(c);
                 } else {
-                    c->grid = std::move(f->grid);
+                    c->grid = f->grid;
                     c->grid->ReParent(c);
+                    f->grid = nullptr;
                 }
                 delete f;
             }
@@ -1017,7 +1016,7 @@ struct Grid {
     }
 
     bool IsTable() {
-        foreachconstcell(c) if (c->grid) return false;
+        foreachcell(c) if (c->grid) return false;
         return true;
     }
 
@@ -1034,7 +1033,7 @@ struct Grid {
                 if (prev->text.t == c->text.t) {
                     if (rest) {
                         ASSERT(prev->grid);
-                        prev->grid->MergeRow(rest->grid.get());
+                        prev->grid->MergeRow(rest->grid);
                         rest.reset();
                     }
 
@@ -1046,14 +1045,14 @@ struct Grid {
                 }
             }
             if (rest) {
-                c->grid.swap(rest->grid);
+                swap_(c->grid, rest->grid);
                 c->grid->ReParent(c);
             }
         done:;
         }
         Selection s(this, 1, 0, xs - 1, ys);
         MultiCellDeleteSub(doc, s);
-        foreachconstcell(c) if (c->grid && c->grid->xs > 1) c->grid->Hierarchify(doc);
+        foreachcell(c) if (c->grid && c->grid->xs > 1) c->grid->Hierarchify(doc);
     }
 
     void MergeRow(Grid *tm) {
@@ -1066,11 +1065,11 @@ struct Grid {
     }
 
     void MaxDepthLeaves(int curdepth, int &maxdepth, int &leaves) {
-        foreachconstcell(c) c->MaxDepthLeaves(curdepth, maxdepth, leaves);
+        foreachcell(c) c->MaxDepthLeaves(curdepth, maxdepth, leaves);
     }
 
     int Flatten(int curdepth, int cury, Grid *g) {
-        foreachconstcell(c) if (c->grid) { cury = c->grid->Flatten(curdepth + 1, cury, g); }
+        foreachcell(c) if (c->grid) { cury = c->grid->Flatten(curdepth + 1, cury, g); }
         else {
             Cell *ic = c;
             for (int i = curdepth; i >= 0; i--) {
@@ -1096,7 +1095,7 @@ struct Grid {
         }
     }
 
-    void CollectCells(vector<Cell *> &itercells) { foreachconstcell(c) c->CollectCells(itercells); }
+    void CollectCells(vector<Cell *> &itercells) { foreachcell(c) c->CollectCells(itercells); }
     void CollectCellsSel(vector<Cell *> &itercells, const Selection &s, bool recurse) {
         foreachcellinsel(c, s) c->CollectCells(itercells, recurse);
     }

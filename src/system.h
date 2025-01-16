@@ -210,7 +210,7 @@ struct System {
 
     void LoadOpRef() { LoadDB(frame->GetDocPath(L"examples/operation-reference.cts")); }
 
-    unique_ptr<Cell> &InitDB(int sizex, int sizey = 0) {
+    Cell *&InitDB(int sizex, int sizey = 0) {
         Cell *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
@@ -470,12 +470,13 @@ struct System {
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(fn)) goto problem;
-                    unique_ptr<Cell> &r = InitDB(1);
-                    Cell *c = r->grid->cells[0];
+                    Cell *&r = InitDB(1);
+                    Cell *c = *r->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        r->grid->cells[0] = nullptr;
-                        r.reset(c);
+                        *r->grid->cells = nullptr;
+                        delete r;
+                        r = c;
                         c->parent = nullptr;
                     }
                     break;
@@ -492,8 +493,8 @@ struct System {
 
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
-                                Cell *r = InitDB(1).get();
-                                FillRows(r->grid.get(), as, CountCol(as[0]), 0, 0);
+                                Cell *r = InitDB(1);
+                                FillRows(r->grid, as, CountCol(as[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
                                 InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
@@ -608,7 +609,7 @@ struct System {
             if (col < column && startrow != 0) return i;
             if (col > column) {
                 Cell *c = g->C(0, y - 1);
-                Grid *sg = c->grid.get();
+                Grid *sg = c->grid;
                 i = FillRows(sg ? sg : c->AddGrid(), as, col, i, sg ? sg->ys : 0) - 1;
             } else {
                 if (g->ys <= y) g->InsertCells(-1, y, 0, 1);
