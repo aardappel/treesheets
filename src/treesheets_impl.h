@@ -9,7 +9,6 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
         cur = doc->rootgrid;
-
         doc->AddUndo(cur);
     }
 

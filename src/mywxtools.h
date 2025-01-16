@@ -23,7 +23,7 @@ struct DropTarget : wxDropTarget {
         GetData();
         TSCanvas *sw = sys->frame->GetCurTab();
         sw->SelectClick(x, y, false, 0);
-        Document *doc = sw->doc.get();
+        Document *doc = sw->doc;
         switch (doc->dndobjc->GetReceivedFormat().GetType()) {
             case wxDF_BITMAP: doc->PasteOrDrop(*doc->dndobji); break;
             case wxDF_FILENAME: doc->PasteOrDrop(*doc->dndobjf); break;
