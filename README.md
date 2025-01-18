@@ -88,6 +88,10 @@ cd treesheets
 ```sh
 cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/Applications
 ```
+
+Please note that you need to have wxWidgets installed, e.g. distributed by Homebrew or built by yourself. 
+If you wish to compile statically against wxWidgets, append `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `lib/wxWidgets`).
+
 4. Build
 ```sh
 cmake --build _build -j
@@ -111,6 +115,10 @@ cd treesheets
 ```sh
 cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release
 ```
+
+Please note that you need to have wxWidgets installed, e.g. distributed by your distribution or built by yourself. 
+If you wish to compile statically against wxWidgets, append `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `lib/wxWidgets`).
+
 4. Build
 ```sh
 cmake --build _build -j
@@ -121,12 +129,10 @@ sudo cmake --install _build
 ```
 
 ### Further information for Mac OS / Linux
-  
-- If you have `git` installed, the submodules for wxWidgets will be automatically updated and wxWidgets will be compiled as a CMake subproject. TreeSheets will be then statically linked against this wxWidgets build.
-- If you do like to link dynamically against an existing wxWidgets installation instead, you can switch off the option `GIT_WXWIDGETS_SUBMODULES` in the CMake project. In this case:
+<details>
+ - If you like to build wxWidgets by yourself:
     - You can use the version of wxWidgets from https://github.com/wxWidgets/wxWidgets.git.
     - Follow the instructions to build there, but add `--enable-unicode` and `--disable-shared` to the `configure` step.
-    - Alternatively you can build against the wxWidgets package of your distribution.
 - You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
 - If you are MacOS X user, a bundle will be installed to the installation prefix.
 </details>
