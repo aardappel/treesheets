@@ -26,7 +26,7 @@ jobs:
     - name: install gtk
       run: sudo apt-get -o Acquire::Retries=3 install libgtk-3-dev
     - name: cmake
-      run: CXX=${{ matrix.cxx }} cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=TreeSheets-relocatable -DTREESHEETS_RELOCATABLE_INSTALLATION=ON
+      run: CXX=${{ matrix.cxx }} cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=TreeSheets-relocatable -DTREESHEETS_RELOCATABLE_INSTALLATION=ON -DGIT_WXWIDGETS_SUBMODULES=ON
     - name: build TreeSheets
       run: cmake --build _build -j4
     - name: install files
@@ -113,7 +113,7 @@ jobs:
         /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(date +'%Y.%m.%d')" osx/Info.plist
         /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" osx/Info.plist
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DCMAKE_INSTALL_PREFIX=macos-bundle
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DCMAKE_INSTALL_PREFIX=macos-bundle -DGIT_WXWIDGETS_SUBMODULES=ON
     - name: Build TreeSheets
       run: cmake --build _build -j4
     - name: Create bundle
