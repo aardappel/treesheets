@@ -352,7 +352,7 @@ struct System {
 
                         doc->sw->Status(
                             wxString::Format(
-                                _(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
+                                _(L"Loaded %s (%d cell(s), %d character(s)) in %d millisecond(s)."),
                                 filename.c_str(), numcells, textbytes,
                                 (int)((end_loading_time - start_loading_time).GetValue()))
                                 .c_str());
@@ -443,7 +443,7 @@ struct System {
 
     void UpdateAmountStatus(Selection &s) {
         if (frame->GetStatusBar()) {
-            frame->SetStatusText(wxString::Format(_(L"%d cells"), s.xs * s.ys), 4);
+            frame->SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
         }
     }
 
