@@ -352,7 +352,7 @@ struct System {
 
                         doc->sw->Status(
                             wxString::Format(
-                                _(L"Loaded %s (%d cell(s), %d character(s)) in %d millisecond(s)."),
+                                _(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
                                 filename.c_str(), numcells, textbytes,
                                 (int)((end_loading_time - start_loading_time).GetValue()))
                                 .c_str());
