@@ -187,12 +187,17 @@ struct MyFrame : wxFrame {
         filehistory.AddFilesToMenu();
 
         wxMenu *filemenu = new wxMenu();
-        MyAppend(filemenu, wxID_NEW, _(L"&New\tCTRL+n"));
-        MyAppend(filemenu, wxID_OPEN, _(L"&Open...\tCTRL+o"));
-        MyAppend(filemenu, wxID_CLOSE, _(L"&Close\tCTRL+w"));
+        MyAppend(filemenu, wxID_NEW, _(L"&New\tCTRL+n"),
+                     _(L"Create a new document"));
+        MyAppend(filemenu, wxID_OPEN, _(L"&Open...\tCTRL+o"),
+                     _(L"Open an existing document"));
+        MyAppend(filemenu, wxID_CLOSE, _(L"&Close\tCTRL+w"),
+                     _(L"Close current document"));
         filemenu->AppendSubMenu(recentmenu, _(L"&Recent files"));
-        MyAppend(filemenu, wxID_SAVE, _(L"&Save\tCTRL+s"));
-        MyAppend(filemenu, wxID_SAVEAS, _(L"Save &As..."));
+        MyAppend(filemenu, wxID_SAVE, _(L"&Save\tCTRL+s"),
+                     _(L"Save current document"));
+        MyAppend(filemenu, wxID_SAVEAS, _(L"Save &As..."),
+                     _(L"Save current document with a different filename"));
         MyAppend(filemenu, A_SAVEALL, _(L"Save All"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _(L"Page Setup..."));
@@ -203,7 +208,8 @@ struct MyFrame : wxFrame {
         filemenu->AppendSubMenu(expmenu, _(L"Export &view as"));
         filemenu->AppendSubMenu(impmenu, _(L"Import file from"));
         filemenu->AppendSeparator();
-        MyAppend(filemenu, wxID_EXIT, _(L"&Exit\tCTRL+q"));
+        MyAppend(filemenu, wxID_EXIT, _(L"&Exit\tCTRL+q"),
+                     _(L"Quit this program"));
 
         wxMenu *editmenu;
         loop(twoeditmenus, 2) {
@@ -415,14 +421,17 @@ struct MyFrame : wxFrame {
                      _(L"Make a hierarchy layout more vertical (default) or more horizontal"));
 
             editmenu = new wxMenu();
-            MyAppend(editmenu, wxID_CUT, _(L"Cu&t\tCTRL+x"));
-            MyAppend(editmenu, wxID_COPY, _(L"&Copy\tCTRL+c"));
+            MyAppend(editmenu, wxID_CUT, _(L"Cu&t\tCTRL+x"),
+                     _(L"Cut selection"));
+            MyAppend(editmenu, wxID_COPY, _(L"&Copy\tCTRL+c"),
+                     _(L"Copy selection"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_COPYWI, _(L"Copy with &Images\tCTRL+ALT+c"));
             MyAppend(editmenu, A_COPYBM, _(L"&Copy as Bitmap"));
             MyAppend(editmenu, A_COPYCT, _(L"Copy As Continuous Text"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, wxID_PASTE, _(L"&Paste\tCTRL+v"));
+            MyAppend(editmenu, wxID_PASTE, _(L"&Paste\tCTRL+v"),
+                     _(L"Paste clipboard contents"));
             MyAppend(editmenu, A_PASTESTYLE, _(L"Paste Style Only\tCTRL+SHIFT+v"),
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
             MyAppend(editmenu, A_COLLAPSE, _(L"Collapse Ce&lls\tCTRL+l"));
@@ -482,12 +491,14 @@ struct MyFrame : wxFrame {
         }
 
         wxMenu *semenu = new wxMenu();
-        MyAppend(semenu, wxID_FIND, _(L"&Search\tCTRL+f"));
+        MyAppend(semenu, wxID_FIND, _(L"&Search\tCTRL+f"),
+                     _(L"Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result\tF3"));
         MyAppend(semenu, A_SEARCHPREV, _(L"Go To &Previous Search Result\tSHIFT+F3"));
-        MyAppend(semenu, wxID_REPLACE, _(L"&Replace\tCTRL+h"));
+        MyAppend(semenu, wxID_REPLACE, _(L"&Replace\tCTRL+h"),
+                     _(L"Find and replace in document"));
         MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection\tCTRL+k"));
         MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next\tCTRL+j"));
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
@@ -636,7 +647,8 @@ struct MyFrame : wxFrame {
         MyAppend(langmenu, A_CLRVIEW, _(L"&Clear Views"));
 
         wxMenu *helpmenu = new wxMenu();
-        MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."));
+        MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."),
+                     _(L"Show About dialog"));
         MyAppend(helpmenu, wxID_HELP, _(L"Load interactive &tutorial...\tF1"));
         MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...\tCTRL+ALT+F1"));
         MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
