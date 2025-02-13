@@ -52,6 +52,13 @@ file(
         lobster/src/tccbind.cpp
         lobster/external/libtcc/libtcc.c
 )
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    # These warnings seem pretty broken in GCC, with lots of false positives.
+    set(CMAKE_CXX_FLAGS
+    "${CMAKE_CXX_FLAGS} -Wno-array-bounds -Wno-stringop-overflow -Wno-maybe-uninitialized")
+endif()
+
 add_library(lobster STATIC ${lobster_sources})
 target_include_directories(lobster PUBLIC lobster/include lobster/src lobster/external/libtcc)
 
