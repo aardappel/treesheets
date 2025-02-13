@@ -512,7 +512,7 @@ struct MyFrame : wxFrame {
         MyAppend(scrollmenu, A_ARIGHT, _(L"Scroll Right\tALT+RIGHT"));
 
         wxMenu *filtermenu = new wxMenu();
-        MyAppend(filtermenu, A_FILTEROFF, _(L"Turn filter &off"));
+        MyAppend(filtermenu, A_FILTEROFF, _(L"Turn filter &off\tCTRL+SHIFT+f"));
         MyAppend(filtermenu, A_FILTERS, _(L"Show only cells in current search"));
         MyAppend(filtermenu, A_FILTERRANGE, _(L"Show last edits in specific date range"));
         // xgettext:no-c-format
