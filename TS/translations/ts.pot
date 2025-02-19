@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
+"POT-Creation-Date: 2025-02-19 19:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -280,7 +280,7 @@ msgstr ""
 msgid "Border &5\tCTRL+SHIFT+5"
 msgstr ""
 
-msgid "Bubble Style Rendering\t"
+msgid "Bubble Style Rendering"
 msgstr ""
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
@@ -633,7 +633,7 @@ msgstr ""
 msgid "Go to next filter match\tCTRL+F3"
 msgstr ""
 
-msgid "Grid Style Rendering\t"
+msgid "Grid Style Rendering"
 msgstr ""
 
 msgid "HTML (&Bullet points)..."
@@ -650,13 +650,13 @@ msgid ""
 "current cell using a popup menu"
 msgstr ""
 
-msgid "Horizontal Layout with Bubble Style Rendering\t"
+msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr ""
 
-msgid "Horizontal Layout with Grid Style Rendering\t"
+msgid "Horizontal Layout with Grid Style Rendering"
 msgstr ""
 
-msgid "Horizontal Layout with Line Style Rendering\t"
+msgid "Horizontal Layout with Line Style Rendering"
 msgstr ""
 
 msgid "Hover shadow"
@@ -706,7 +706,7 @@ msgstr ""
 msgid "Keybinding cancelled."
 msgstr ""
 
-msgid "Line Style Rendering\t"
+msgid "Line Style Rendering"
 msgstr ""
 
 msgid "Load interactive &tutorial...\tF1"
@@ -1260,7 +1260,7 @@ msgstr ""
 msgid "Toggle Fold\tF10"
 msgstr ""
 
-msgid "Toggle Vertical Layout\t"
+msgid "Toggle Vertical Layout"
 msgstr ""
 
 msgid "Toggle cell &BOLD\tCTRL+b"
@@ -1305,13 +1305,13 @@ msgstr ""
 msgid "Variable &Read\tCTRL+ALT+r"
 msgstr ""
 
-msgid "Vertical Layout with Bubble Style Rendering\t"
+msgid "Vertical Layout with Bubble Style Rendering"
 msgstr ""
 
-msgid "Vertical Layout with Grid Style Rendering\t"
+msgid "Vertical Layout with Grid Style Rendering"
 msgstr ""
 
-msgid "Vertical Layout with Line Style Rendering\t"
+msgid "Vertical Layout with Line Style Rendering"
 msgstr ""
 
 msgid "View tutorial &web page..."
