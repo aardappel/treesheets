@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU-1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
+"POT-Creation-Date: 2025-02-19 20:25+0100\n"
 "PO-Revision-Date: 2024-08-25 09:11+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -20,8 +20,8 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 3.4.4\n"
 
-#, c-format
-msgid "%d cells"
+#, fuzzy, c-format
+msgid "%d cell(s)"
 msgstr "%d клеток"
 
 # Сообщения
@@ -412,6 +412,10 @@ msgstr "Очистить Замену"
 msgid "Clear search"
 msgstr "Очистить Поиск"
 
+#, fuzzy
+msgid "Close current document"
+msgstr "Автоматическая перезагрузка документов"
+
 msgid "Collapse Ce&lls"
 msgstr "Слияние Ячеек"
 
@@ -440,6 +444,11 @@ msgstr "Копировать (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "&Копировать как Непрерывный Текст"
 
+# Сообщения
+#, fuzzy
+msgid "Copy selection"
+msgstr "Заменить в выделенном"
+
 msgid "Copy with &Images"
 msgstr "Копировать с Изображениями"
 
@@ -454,6 +463,9 @@ msgstr "Поврежденный заголовок блока."
 msgid "Create .bak files"
 msgstr "Создавать .bak файлы"
 
+msgid "Create a new document"
+msgstr ""
+
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Создает новый уровень иерархии вокруг текущего выделения"
 
@@ -465,6 +477,10 @@ msgstr "На СИМВОЛ вЛево"
 
 msgid "Cursor Right"
 msgstr "... вПраво"
+
+#, fuzzy
+msgid "Cut selection"
+msgstr "... вВерх"
 
 # Сообщения
 msgid "Date and time range"
@@ -689,6 +705,12 @@ msgstr "Фильтр по Цвету Ячейки"
 
 msgid "Filter..."
 msgstr "Фильтр..."
+
+msgid "Find and replace in document"
+msgstr ""
+
+msgid "Find in document"
+msgstr ""
 
 msgid "Fold All"
 msgstr "Свернуть Всё"
@@ -991,6 +1013,9 @@ msgstr "Открыть (CTRL+o)"
 msgid "Open TreeSheets file"
 msgstr "Открыть файл TreeSheets"
 
+msgid "Open an existing document"
+msgstr ""
+
 msgid "Open border colors"
 msgstr "... Цвета &Границы"
 
@@ -1047,6 +1072,9 @@ msgstr "Вставить (CTRL+v)"
 
 msgid "Paste Style Only"
 msgstr "Вставить только Стиль"
+
+msgid "Paste clipboard contents"
+msgstr ""
 
 # Сообщения
 msgid "Paste file path"
@@ -1120,6 +1148,9 @@ msgstr "Просмотр Печати"
 # Просмотр Печати
 msgid "Print preview..."
 msgstr "&Просмотр Печати..."
+
+msgid "Quit this program"
+msgstr ""
 
 msgid "Radius &0"
 msgstr "Радиус &0"
@@ -1208,6 +1239,12 @@ msgstr "Сохранить и закрыть"
 # Сообщения
 msgid "Save cancelled."
 msgstr "Сохранение отменено."
+
+msgid "Save current document"
+msgstr ""
+
+msgid "Save current document with a different filename"
+msgstr ""
 
 msgid "Save image as JPEG"
 msgstr "&Сохранить в JPEG"
@@ -1314,6 +1351,9 @@ msgstr "Показать 5% Последних Правок"
 #, no-c-format
 msgid "Show 50% of last edits"
 msgstr "... 50%"
+
+msgid "Show About dialog"
+msgstr ""
 
 msgid "Show Statusbar"
 msgstr "Показать Строку Состояния"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
+"POT-Creation-Date: 2025-02-19 20:25+0100\n"
 "PO-Revision-Date: 2023-11-23 14:11+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,8 +18,8 @@ msgstr ""
 "X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#, c-format
-msgid "%d cells"
+#, fuzzy, c-format
+msgid "%d cell(s)"
 msgstr "%d 个单元格"
 
 #, c-format
@@ -370,6 +370,10 @@ msgstr "清除替换"
 msgid "Clear search"
 msgstr "清除搜索"
 
+#, fuzzy
+msgid "Close current document"
+msgstr "自动重新加载文档"
+
 msgid "Collapse Ce&lls"
 msgstr "折叠单元格(&L)"
 
@@ -395,6 +399,10 @@ msgstr "复制 (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "复制为连续文本"
 
+#, fuzzy
+msgid "Copy selection"
+msgstr "在选区中替换"
+
 msgid "Copy with &Images"
 msgstr "带图像复制(&I)"
 
@@ -407,6 +415,9 @@ msgstr "损坏的块标头。"
 msgid "Create .bak files"
 msgstr "创建 .bak 文件"
 
+msgid "Create a new document"
+msgstr ""
+
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "围绕当前所选内容创建新级别的层次结构"
 
@@ -418,6 +429,10 @@ msgstr "光标左侧"
 
 msgid "Cursor Right"
 msgstr "光标右侧"
+
+#, fuzzy
+msgid "Cut selection"
+msgstr "向上扩展选择"
 
 msgid "Date and time range"
 msgstr "日期和时间范围"
@@ -454,6 +469,7 @@ msgstr "将光标前的整个单词删除"
 msgid "Discard Changes"
 msgstr "放弃更改"
 
+#, c-format
 msgid "Edited %s %s"
 msgstr "已编辑 %s %s"
 
@@ -606,6 +622,12 @@ msgstr "按相同的单元格颜色筛选"
 
 msgid "Filter..."
 msgstr "筛选..."
+
+msgid "Find and replace in document"
+msgstr ""
+
+msgid "Find in document"
+msgstr ""
 
 msgid "Fold All"
 msgstr "折叠全部"
@@ -860,6 +882,9 @@ msgstr "打开 (CTRL+o)"
 msgid "Open TreeSheets file"
 msgstr "打开 TreeSheets 文件"
 
+msgid "Open an existing document"
+msgstr ""
+
 msgid "Open border colors"
 msgstr "打开边框颜色"
 
@@ -906,6 +931,9 @@ msgstr "粘贴 (CTRL+v)"
 
 msgid "Paste Style Only"
 msgstr "仅粘贴样式"
+
+msgid "Paste clipboard contents"
+msgstr ""
 
 msgid "Paste file path"
 msgstr "粘贴文件路径"
@@ -960,6 +988,9 @@ msgstr "打印预览"
 
 msgid "Print preview..."
 msgstr "打印预览..."
+
+msgid "Quit this program"
+msgstr ""
 
 msgid "Radius &0"
 msgstr "半径0(&0)"
@@ -1040,6 +1071,12 @@ msgstr "保存并关闭"
 
 msgid "Save cancelled."
 msgstr "保存已取消。"
+
+msgid "Save current document"
+msgstr ""
+
+msgid "Save current document with a different filename"
+msgstr ""
 
 msgid "Save image as JPEG"
 msgstr "保存图像为 JPEG"
@@ -1134,6 +1171,9 @@ msgstr "显示 5% 的上次编辑"
 #, no-c-format
 msgid "Show 50% of last edits"
 msgstr "显示 50% 的上次编辑"
+
+msgid "Show About dialog"
+msgstr ""
 
 msgid "Show Statusbar"
 msgstr "显示状态栏"

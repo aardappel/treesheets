@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
+"POT-Creation-Date: 2025-02-19 20:25+0100\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, c-format
-msgid "%d cells"
+#, fuzzy, c-format
+msgid "%d cell(s)"
 msgstr "%d Zellen"
 
 #, c-format
@@ -382,6 +382,10 @@ msgstr "Textkasten (Ersetzen) leeren"
 msgid "Clear search"
 msgstr "Textkasten (Suche) leeren"
 
+#, fuzzy
+msgid "Close current document"
+msgstr "Dokument automatisch neu laden"
+
 msgid "Collapse Ce&lls"
 msgstr "Ze&llen zusammenlegen"
 
@@ -408,6 +412,10 @@ msgstr "Kopieren (STRG+c)"
 msgid "Copy As Continuous Text"
 msgstr "Als durchgängigen Text kopieren"
 
+#, fuzzy
+msgid "Copy selection"
+msgstr "In aktueller Auswahl ersetzen"
+
 msgid "Copy with &Images"
 msgstr "Mit &Bildern kopieren"
 
@@ -419,6 +427,9 @@ msgstr "Beschädigter Block-Header!"
 
 msgid "Create .bak files"
 msgstr ".bak-Dateien erstellen"
+
+msgid "Create a new document"
+msgstr ""
 
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Eine neue Hierarchieebene um die aktuelle Auswahl herum erstellen"
@@ -432,8 +443,13 @@ msgstr "Cursor links"
 msgid "Cursor Right"
 msgstr "Cursor rechts"
 
-msgid "Date range filter"
-msgstr "Filter für Datumsbereich"
+#, fuzzy
+msgid "Cut selection"
+msgstr "Auswahl nach oben ausweiten"
+
+#, fuzzy
+msgid "Date and time range"
+msgstr "Enddatum und -zeit"
 
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "Spaltenbreite verkleinern (ALT+Mausrad)"
@@ -640,6 +656,12 @@ msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
 
 msgid "Filter..."
 msgstr "Filter..."
+
+msgid "Find and replace in document"
+msgstr ""
+
+msgid "Find in document"
+msgstr ""
 
 msgid "Fold All"
 msgstr "Alles einklappen"
@@ -906,6 +928,9 @@ msgstr "Öffnen (STRG+o)"
 msgid "Open TreeSheets file"
 msgstr "TreeSheets-Datei öffnen"
 
+msgid "Open an existing document"
+msgstr ""
+
 msgid "Open border colors"
 msgstr "&Randfarben öffnen"
 
@@ -956,6 +981,9 @@ msgstr "Einfügen (STRG+v)"
 
 msgid "Paste Style Only"
 msgstr "Nur Stil einfügen"
+
+msgid "Paste clipboard contents"
+msgstr ""
 
 msgid "Paste file path"
 msgstr "Dateipfad einfügen"
@@ -1010,6 +1038,9 @@ msgstr "Druckvorschau"
 
 msgid "Print preview..."
 msgstr "Druckvorschau..."
+
+msgid "Quit this program"
+msgstr ""
 
 msgid "Radius &0"
 msgstr "Radius &0"
@@ -1093,6 +1124,12 @@ msgstr "Speichern und schließen"
 msgid "Save cancelled."
 msgstr "Speicherung wurde abgebrochen."
 
+msgid "Save current document"
+msgstr ""
+
+msgid "Save current document with a different filename"
+msgstr ""
+
 msgid "Save image as JPEG"
 msgstr "Bild als JPEG speichern"
 
@@ -1145,7 +1182,9 @@ msgid "Select First &Child"
 msgstr "Erstes untergeordnetes Element auswählen"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr "Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren Untertabellen haben."
+msgstr ""
+"Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren "
+"Untertabellen haben."
 
 #, c-format
 msgid "Selection contains %d cell(s) with %d character(s)."
@@ -1186,6 +1225,9 @@ msgstr "5% der letzten Änderungen anzeigen"
 #, no-c-format
 msgid "Show 50% of last edits"
 msgstr "50% der letzten Änderungen anzeigen"
+
+msgid "Show About dialog"
+msgstr ""
 
 msgid "Show Statusbar"
 msgstr "Statuszeile anzeigen"

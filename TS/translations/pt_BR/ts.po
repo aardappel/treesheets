@@ -21,7 +21,7 @@ msgstr ""
 "X-Generator: Poedit 3.4.2\n"
 
 #, c-format
-msgid "%d cells"
+msgid "%d cell(s)"
 msgstr ""
 
 #, c-format
@@ -382,6 +382,10 @@ msgstr "Limpar substituição"
 msgid "Clear search"
 msgstr "Limpar busca"
 
+#, fuzzy
+msgid "Close current document"
+msgstr "Recarregar d&ocumentos automaticamente"
+
 msgid "Collapse Ce&lls"
 msgstr "&Mesclar Células"
 
@@ -407,6 +411,10 @@ msgstr "Copiar (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copiar como Te&xto Contínuo"
 
+#, fuzzy
+msgid "Copy selection"
+msgstr "Substituir na seleção"
+
 msgid "Copy with &Images"
 msgstr "Copiar com &Imagens"
 
@@ -419,6 +427,9 @@ msgstr "O cabeçalho do bloco está corrompido."
 msgid "Create .bak files"
 msgstr "Criar arquivos .ba&k"
 
+msgid "Create a new document"
+msgstr ""
+
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Cria um novo nível de hierarquia ao redor da seleção atual"
 
@@ -430,6 +441,10 @@ msgstr "Mover Cursor à Esquerda"
 
 msgid "Cursor Right"
 msgstr "Mover Cursor à Direita"
+
+#, fuzzy
+msgid "Cut selection"
+msgstr "Estender Seleção para Cima"
 
 #, fuzzy
 msgid "Date and time range"
@@ -638,6 +653,12 @@ msgstr "Evidenciar células com a mesma cor"
 
 msgid "Filter..."
 msgstr "&Filtrar"
+
+msgid "Find and replace in document"
+msgstr ""
+
+msgid "Find in document"
+msgstr ""
 
 msgid "Fold All"
 msgstr "Dobrar Todas"
@@ -913,6 +934,9 @@ msgstr "Abrir (CTRL+o)"
 msgid "Open TreeSheets file"
 msgstr "Abrir o arquivo do TreeSheets"
 
+msgid "Open an existing document"
+msgstr ""
+
 msgid "Open border colors"
 msgstr "Abrir cores de borda"
 
@@ -965,6 +989,9 @@ msgstr "Colar (CTRL+v)"
 
 msgid "Paste Style Only"
 msgstr "Colar &Estilo"
+
+msgid "Paste clipboard contents"
+msgstr ""
 
 msgid "Paste file path"
 msgstr "Colar o caminho do arquivo"
@@ -1024,6 +1051,9 @@ msgstr "Pre&visualização de Impressão"
 
 msgid "Print preview..."
 msgstr "&Visualização de impressão..."
+
+msgid "Quit this program"
+msgstr ""
 
 msgid "Radius &0"
 msgstr "Raio &0"
@@ -1106,6 +1136,12 @@ msgstr "Salvar e Fechar"
 
 msgid "Save cancelled."
 msgstr "O salvamento foi cancelado."
+
+msgid "Save current document"
+msgstr ""
+
+msgid "Save current document with a different filename"
+msgstr ""
 
 msgid "Save image as JPEG"
 msgstr "Salvar imagem como JPEG"
@@ -1204,6 +1240,9 @@ msgstr "Evidenciar edições mais recentes: últimas 5%"
 #, no-c-format
 msgid "Show 50% of last edits"
 msgstr "Evidenciar edições mais recentes: últimas 50%"
+
+msgid "Show About dialog"
+msgstr ""
 
 msgid "Show Statusbar"
 msgstr "Mostrar Barra de &Status"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
+"POT-Creation-Date: 2025-02-19 20:25+0100\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, c-format
-msgid "%d cells"
+#, fuzzy, c-format
+msgid "%d cell(s)"
 msgstr "%d celle"
 
 #, c-format
@@ -371,6 +371,10 @@ msgstr "Cancella la sostituzione"
 msgid "Clear search"
 msgstr "Cancella la ricerca"
 
+#, fuzzy
+msgid "Close current document"
+msgstr "Auto caricamento documenti"
+
 msgid "Collapse Ce&lls"
 msgstr "Collasa le ce&llule"
 
@@ -396,6 +400,10 @@ msgstr "Copia (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copia come testo continuo"
 
+#, fuzzy
+msgid "Copy selection"
+msgstr "Sostituisci nella selezione corrente"
+
 msgid "Copy with &Images"
 msgstr "Copia con &immagini"
 
@@ -408,6 +416,9 @@ msgstr "intestazione blocco corrotto."
 msgid "Create .bak files"
 msgstr "Crea file .bak"
 
+msgid "Create a new document"
+msgstr ""
+
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Crea un nuovo livello di gerarchia attorno alla selezione corrente"
 
@@ -419,6 +430,10 @@ msgstr "Cursore a sinistra"
 
 msgid "Cursor Right"
 msgstr "Cursore a destra"
+
+#, fuzzy
+msgid "Cut selection"
+msgstr "Estendi selezione su"
 
 msgid "Date and time range"
 msgstr "Data e ora d'inizio e fine"
@@ -630,6 +645,12 @@ msgstr "Filtra per lo stesso colore di cella"
 
 msgid "Filter..."
 msgstr "Filtro..."
+
+msgid "Find and replace in document"
+msgstr ""
+
+msgid "Find in document"
+msgstr ""
 
 msgid "Fold All"
 msgstr "Piega tutto"
@@ -896,6 +917,9 @@ msgstr "Apri (CTRL+o)"
 msgid "Open TreeSheets file"
 msgstr "Aprire il file TreeSheets"
 
+msgid "Open an existing document"
+msgstr ""
+
 msgid "Open border colors"
 msgstr "Apri colori del bordo"
 
@@ -946,6 +970,9 @@ msgstr "Incolla (CTRL+v)"
 
 msgid "Paste Style Only"
 msgstr "Incolla solo stile"
+
+msgid "Paste clipboard contents"
+msgstr ""
 
 msgid "Paste file path"
 msgstr "Incolla il percorso del file"
@@ -1005,6 +1032,9 @@ msgstr "Anteprima di stampa"
 
 msgid "Print preview..."
 msgstr "Anteprima di stampa..."
+
+msgid "Quit this program"
+msgstr ""
 
 msgid "Radius &0"
 msgstr "Raggio &0"
@@ -1087,6 +1117,12 @@ msgstr "Salva e chiudi"
 
 msgid "Save cancelled."
 msgstr "Salvataggio annullato"
+
+msgid "Save current document"
+msgstr ""
+
+msgid "Save current document with a different filename"
+msgstr ""
 
 msgid "Save image as JPEG"
 msgstr "Salva immagine come JPEG"
@@ -1183,6 +1219,9 @@ msgstr "Mostra il 5% delle ultime modifiche"
 #, no-c-format
 msgid "Show 50% of last edits"
 msgstr "Mostra il 50% delle ultime modifiche"
+
+msgid "Show About dialog"
+msgstr ""
 
 msgid "Show Statusbar"
 msgstr "Mostra la barra di stato"
