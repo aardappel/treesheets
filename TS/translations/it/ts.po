@@ -60,8 +60,7 @@ msgid "&Data"
 msgstr "&Dati"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
-msgstr ""
-"&Riduci la dimensione del testo (MAIUSC + rotella del mouse)"
+msgstr "&Riduci la dimensione del testo (MAIUSC + rotella del mouse)"
 
 msgid "&Delete After"
 msgstr "&Elimina dopo"
@@ -103,12 +102,7 @@ msgid "&Images..."
 msgstr "&Immagini..."
 
 msgid "&Increase text size (SHIFT+mousewheel)"
-msgstr ""
-"&Aumentare la dimensione del testo (MAIUSC + rotellina del "
-"mouse)"
-
-msgid "&Insert New Grid"
-msgstr "&Inserisci nuova griglia"
+msgstr "&Aumentare la dimensione del testo (MAIUSC + rotellina del mouse)"
 
 msgid "&Insert New Grid"
 msgstr "&Inserisci nuova griglia"
@@ -181,9 +175,6 @@ msgstr "&Scala immagine (ricampiona i pixel, in %)"
 
 msgid "&Scale Image (re-sample pixels, by width)"
 msgstr "&Scala immagine (ricampiona i pixel, per larghezza)"
-
-msgid "&Search"
-msgstr "&Cerca"
 
 msgid "&Search"
 msgstr "&Cerca"
@@ -484,9 +475,6 @@ msgstr "Fine del testo"
 msgid "Enter/exit text edit mode"
 msgstr "Entra/esci da modalità modifica testo"
 
-msgid "Enter/exit text edit mode"
-msgstr "Entra/esci da modalità modifica testo"
-
 msgid "Enter/exit text edit to the right"
 msgstr "Entra/esci da modalità modifica testo"
 
@@ -717,12 +705,10 @@ msgid "Import file from"
 msgstr "Importa file da"
 
 msgid "Increase column width (ALT+mousewheel)"
-msgstr ""
-"Aumentare la larghezza della colonna (ALT+rotellina del mouse)"
+msgstr "Aumentare la larghezza della colonna (ALT+rotellina del mouse)"
 
 msgid "Increase column width (no sub grids)"
-msgstr ""
-"Aumenta la larghezza della colonna (nessuna sottogriglia)"
+msgstr "Aumenta la larghezza della colonna (nessuna sottogriglia)"
 
 msgid "Indented &Text..."
 msgstr "Testo &rientrato..."
@@ -1129,9 +1115,6 @@ msgstr "Script"
 msgid "Scroll Down (mousewheel)"
 msgstr "Scorri verso il basso (rotellina)"
 
-msgid "Scroll Down (mousewheel)"
-msgstr "Scorri verso il basso (rotellina)"
-
 msgid "Scroll Left"
 msgstr "Scorri a sinistra"
 
@@ -1140,9 +1123,6 @@ msgstr "Scorri a destra"
 
 msgid "Scroll Sheet..."
 msgstr "Scorri foglio..."
-
-msgid "Scroll Up (mousewheel)"
-msgstr "Scorri verso l'alto (rotellina)"
 
 msgid "Scroll Up (mousewheel)"
 msgstr "Scorri verso l'alto (rotellina)"
@@ -1252,9 +1232,6 @@ msgstr "Scambia la rotellina del mouse per scorrere e zoomare"
 msgid "Switch to &next file/tab"
 msgstr "Passa a &successivo file/scheda"
 
-msgid "Switch to &next file/tab"
-msgstr "Passa a & successivo file/scheda"
-
 msgid "Switch to &previous file/tab"
 msgstr "Passa al file/scheda precedente"
 
@@ -1316,17 +1293,8 @@ msgstr "Questa operazione funziona solo su una singola cella selezionata."
 msgid "Toggle &Fullscreen View"
 msgstr "Attiva / disattiva visualizzazione a schermo"
 
-msgid "Toggle &Fullscreen View"
-msgstr "Attiva/disattiva la visualizzazione a schermo intero"
-
 msgid "Toggle &Scaled Presentation View"
 msgstr "Mostra presentazione a scalare e ridimensionata"
-
-msgid "Toggle &Scaled Presentation View"
-msgstr "Mostra presentazione a scalare e ridimensionata"
-
-msgid "Toggle Fold"
-msgstr "Commuta piegatura"
 
 msgid "Toggle Fold"
 msgstr "Commuta piegatura"

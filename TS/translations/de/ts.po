@@ -110,9 +110,6 @@ msgstr "&Textgröße vergrößern (UMSCHALT+Mausrad)"
 msgid "&Insert New Grid"
 msgstr "Neue Tabelle e&infügen"
 
-msgid "&Insert New Grid"
-msgstr "&Neue Tabelle e&infügen"
-
 msgid "&Layout && Render Style..."
 msgstr "&Anordnung && Render-Stil..."
 
@@ -181,9 +178,6 @@ msgstr "Bild skalieren (Pixel &resampeln, Prozent)"
 
 msgid "&Scale Image (re-sample pixels, by width)"
 msgstr "Bild skalieren (Pixel &resampeln, Breite)"
-
-msgid "&Search"
-msgstr "&Suche"
 
 msgid "&Search"
 msgstr "&Suche"
@@ -489,9 +483,6 @@ msgstr "Ende der Zeile des Textes"
 
 msgid "End of text"
 msgstr "Ende des Textes"
-
-msgid "Enter/exit text edit mode"
-msgstr "Textbearbeitungsmodus betreten/verlassen"
 
 msgid "Enter/exit text edit mode"
 msgstr "Textbearbeitungsmodus betreten/verlassen"
@@ -1129,9 +1120,6 @@ msgstr "Skript"
 msgid "Scroll Down (mousewheel)"
 msgstr "Herunterscrollen (Mausrad)"
 
-msgid "Scroll Down (mousewheel)"
-msgstr "Herunterscrollen (Mausrad)"
-
 msgid "Scroll Left"
 msgstr "Nach links scrollen"
 
@@ -1140,9 +1128,6 @@ msgstr "Nach rechts scrollen"
 
 msgid "Scroll Sheet..."
 msgstr "Blatt durchscrollen..."
-
-msgid "Scroll Up (mousewheel)"
-msgstr "Hochscrollen (Mausrad)"
 
 msgid "Scroll Up (mousewheel)"
 msgstr "Hochscrollen (Mausrad)"
@@ -1248,9 +1233,6 @@ msgstr "Mausrad-Scrolling und Mausrad-Vergrößern/Verkleinern tauschen"
 msgid "Switch to &next file/tab"
 msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln"
 
-msgid "Switch to &next file/tab"
-msgstr "Zur &nächsten Datei/zum nächsten Tab wechseln"
-
 msgid "Switch to &previous file/tab"
 msgstr "Zur &vorherigen Datei/zum vorherigen Tab wechseln"
 
@@ -1312,17 +1294,8 @@ msgstr "Dieser Vorgang funktioniert nur mit einer einzigen ausgewählten Zelle."
 msgid "Toggle &Fullscreen View"
 msgstr "&Vollbildmodus ein-/ausschalten"
 
-msgid "Toggle &Fullscreen View"
-msgstr "&Vollbildmodus ein-/ausschalten"
-
 msgid "Toggle &Scaled Presentation View"
 msgstr "&Skalierte Präsentationsansicht ein-/ausschalten"
-
-msgid "Toggle &Scaled Presentation View"
-msgstr "&Skalierte Präsentationsansicht ein-/ausschalten"
-
-msgid "Toggle Fold"
-msgstr "Ein-/Ausklappen"
 
 msgid "Toggle Fold"
 msgstr "Ein-/Ausklappen"

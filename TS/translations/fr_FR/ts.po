@@ -109,9 +109,6 @@ msgstr "&Augmenter la taille du texte (SHIFT+roulette)"
 msgid "&Insert New Grid"
 msgstr "&Insérer nouvelle sous-cellule"
 
-msgid "&Insert New Grid"
-msgstr "&Insérer nouvelle grille"
-
 msgid "&Layout && Render Style..."
 msgstr "&Disposition et style de rendu..."
 
@@ -180,9 +177,6 @@ msgstr "&Redimensionner Image (rééchantillonnage des pixels, en %)"
 
 msgid "&Scale Image (re-sample pixels, by width)"
 msgstr "&Redimensionner Image (rééchantillonnage des pixels, en largeur)"
-
-msgid "&Search"
-msgstr "&Rechercher"
 
 msgid "&Search"
 msgstr "&Rechercher"
@@ -492,9 +486,6 @@ msgstr "Aller en fin de ligne, des cellules"
 
 msgid "End of text"
 msgstr "Aller à la fin"
-
-msgid "Enter/exit text edit mode"
-msgstr "Entrée/Sortie mode de saisie de texte"
 
 msgid "Enter/exit text edit mode"
 msgstr "Entrée/Sortie mode de saisie de texte"
@@ -1140,9 +1131,6 @@ msgstr "Script"
 msgid "Scroll Down (mousewheel)"
 msgstr "Défiler vers le bas (molette)"
 
-msgid "Scroll Down (mousewheel)"
-msgstr "Défiler vers le bas (molette)"
-
 msgid "Scroll Left"
 msgstr "Défiler à gauche"
 
@@ -1151,9 +1139,6 @@ msgstr "Défiler à droite"
 
 msgid "Scroll Sheet..."
 msgstr "Défilement feuille..."
-
-msgid "Scroll Up (mousewheel)"
-msgstr "Défiler vers le haut (molette)"
 
 msgid "Scroll Up (mousewheel)"
 msgstr "Défiler vers le haut (molette)"
@@ -1261,9 +1246,6 @@ msgstr "Permuter la molette de la souris entre défilement et zoom"
 msgid "Switch to &next file/tab"
 msgstr "Fichier/Onglet suivant"
 
-msgid "Switch to &next file/tab"
-msgstr "Fichier/Onglet suivant"
-
 msgid "Switch to &previous file/tab"
 msgstr "Fichier/Onglet précédent"
 
@@ -1326,17 +1308,8 @@ msgstr ""
 msgid "Toggle &Fullscreen View"
 msgstr "Plein Ecran"
 
-msgid "Toggle &Fullscreen View"
-msgstr "Plein Ecran"
-
 msgid "Toggle &Scaled Presentation View"
 msgstr "Affichage optimal"
-
-msgid "Toggle &Scaled Presentation View"
-msgstr "Affichage optimal"
-
-msgid "Toggle Fold"
-msgstr "Développer/Réduire"
 
 msgid "Toggle Fold"
 msgstr "Développer/Réduire"

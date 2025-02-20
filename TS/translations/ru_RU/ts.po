@@ -113,9 +113,6 @@ msgstr "У&величить Размер Текста (SHIFT+mousewheel)"
 msgid "&Insert New Grid"
 msgstr "Вставить Новую Сетку"
 
-msgid "&Insert New Grid"
-msgstr "Вставить Новую Сетку"
-
 msgid "&Layout && Render Style..."
 msgstr "&Макет && Стиль Отображения..."
 
@@ -186,9 +183,6 @@ msgstr "&Масштабировать (пересборка пикселей, в
 
 msgid "&Scale Image (re-sample pixels, by width)"
 msgstr "... (пересборка пикселей по &Ширине)"
-
-msgid "&Search"
-msgstr "&Поиск"
 
 msgid "&Search"
 msgstr "&Поиск"
@@ -523,9 +517,6 @@ msgstr "В Конец..."
 
 msgid "End of text"
 msgstr "В Конец..."
-
-msgid "Enter/exit text edit mode"
-msgstr "Вх/Вых из реж. Редактирования"
 
 msgid "Enter/exit text edit mode"
 msgstr "Вх/Вых из реж. Редактирования"
@@ -1250,9 +1241,6 @@ msgstr "Сценарий"
 msgid "Scroll Down (mousewheel)"
 msgstr "... вНиз (mousewheel)"
 
-msgid "Scroll Down (mousewheel)"
-msgstr "... вНиз (mousewheel)"
-
 msgid "Scroll Left"
 msgstr "... вЛево"
 
@@ -1261,9 +1249,6 @@ msgstr "... вПраво"
 
 msgid "Scroll Sheet..."
 msgstr "Прокрутка Листа..."
-
-msgid "Scroll Up (mousewheel)"
-msgstr "... вВерх (mousewheel)"
 
 msgid "Scroll Up (mousewheel)"
 msgstr "... вВерх (mousewheel)"
@@ -1381,9 +1366,6 @@ msgstr "Поменять Прокрутку и Масштабирование к
 msgid "Switch to &next file/tab"
 msgstr "Переход к &Cледующему файлу/вкладке"
 
-msgid "Switch to &next file/tab"
-msgstr "Переход к &Cледующему файлу/вкладке"
-
 msgid "Switch to &previous file/tab"
 msgstr "... к &Предыдущему файлу/вкладке"
 
@@ -1457,17 +1439,8 @@ msgstr "Эта операция применима только к одной в
 msgid "Toggle &Fullscreen View"
 msgstr "Переключить Полноэкранный режим"
 
-msgid "Toggle &Fullscreen View"
-msgstr "Переключить Полноэкранный режим"
-
 msgid "Toggle &Scaled Presentation View"
 msgstr "... Масштабирование просмотра"
-
-msgid "Toggle &Scaled Presentation View"
-msgstr "... Масштабирование просмотра"
-
-msgid "Toggle Fold"
-msgstr "Свер&нуть - Развернуть"
 
 msgid "Toggle Fold"
 msgstr "Свер&нуть - Развернуть"

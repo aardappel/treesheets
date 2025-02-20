@@ -110,9 +110,6 @@ msgstr "增加文字大小 (shift 鼠标滚轮)(&I)"
 msgid "&Insert New Grid"
 msgstr "插入新网格(&I)"
 
-msgid "&Insert New Grid"
-msgstr "插入新网格(&I)"
-
 msgid "&Layout && Render Style..."
 msgstr "布局渲染样式(&L)..."
 
@@ -181,9 +178,6 @@ msgstr "缩放图像(按%重新采样像素)(&S)"
 
 msgid "&Scale Image (re-sample pixels, by width)"
 msgstr "缩放图像(按宽度重新采样像素)(&S)"
-
-msgid "&Search"
-msgstr "搜索(&S)"
 
 msgid "&Search"
 msgstr "搜索(&S)"
@@ -471,9 +465,6 @@ msgstr "文本行的结尾"
 
 msgid "End of text"
 msgstr "文本的结尾"
-
-msgid "Enter/exit text edit mode"
-msgstr "输入/退出文本编辑模式"
 
 msgid "Enter/exit text edit mode"
 msgstr "输入/退出文本编辑模式"
@@ -1077,9 +1068,6 @@ msgstr "脚本(&S)"
 msgid "Scroll Down (mousewheel)"
 msgstr "向下滚动 (鼠标滚轮)"
 
-msgid "Scroll Down (mousewheel)"
-msgstr "向下滚动 (鼠标滚轮)"
-
 msgid "Scroll Left"
 msgstr "向左滚动"
 
@@ -1088,9 +1076,6 @@ msgstr "向右滚动"
 
 msgid "Scroll Sheet..."
 msgstr "滚动表格..."
-
-msgid "Scroll Up (mousewheel)"
-msgstr "向上滚动 (鼠标滚轮)"
 
 msgid "Scroll Up (mousewheel)"
 msgstr "向上滚动 (鼠标滚轮)"
@@ -1196,9 +1181,6 @@ msgstr "交换鼠标滚轮滚动和缩放"
 msgid "Switch to &next file/tab"
 msgstr "切换到下一个文件/选项卡(&N)"
 
-msgid "Switch to &next file/tab"
-msgstr "切换到下一个文件/选项卡(&N)"
-
 msgid "Switch to &previous file/tab"
 msgstr "切换到上个文件/选项卡(&P)"
 
@@ -1260,17 +1242,8 @@ msgstr "此操作仅适用于单个选定的单元格。"
 msgid "Toggle &Fullscreen View"
 msgstr "切换全屏视图(&F)"
 
-msgid "Toggle &Fullscreen View"
-msgstr "切换全屏视图(&F)"
-
 msgid "Toggle &Scaled Presentation View"
 msgstr "切换缩放的演示文稿视图(&S)"
-
-msgid "Toggle &Scaled Presentation View"
-msgstr "切换缩放的演示文稿视图(&S)"
-
-msgid "Toggle Fold"
-msgstr "切换折叠"
 
 msgid "Toggle Fold"
 msgstr "切换折叠"
