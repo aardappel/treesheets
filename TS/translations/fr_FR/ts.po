@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
+"POT-Creation-Date: 2025-02-19 20:25+0100\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -17,8 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.4.1\n"
 
-#, c-format
-msgid "%d cells"
+#, fuzzy, c-format
+msgid "%d cell(s)"
 msgstr "%d cellules"
 
 #, c-format
@@ -46,32 +46,32 @@ msgstr "&Navigation..."
 msgid "&Clear Views"
 msgstr "&Effacer Vues"
 
-msgid "&Close\tCTRL+w"
-msgstr "&Fermer\tCTRL+w"
+msgid "&Close"
+msgstr "&Fermer"
 
 msgid "&Comma delimited text (CSV)..."
 msgstr "&Texte séparateur virgule (CSV)..."
 
-msgid "&Copy\tCTRL+c"
-msgstr "&Copier\tCTRL+c"
+msgid "&Copy"
+msgstr "&Copier"
 
 msgid "&Copy as Bitmap"
 msgstr "&Copier comme image Bitmap"
 
-msgid "&Data\tCTRL+ALT+d"
-msgstr "&Donnée\tCTRL+ALT+d"
+msgid "&Data"
+msgstr "&Donnée"
 
-msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
-msgstr "&Diminuer la taille du texte (SHIFT+Molette)\tSHIFT+PGDN"
+msgid "&Decrease text size (SHIFT+mousewheel)"
+msgstr "&Diminuer la taille du texte (SHIFT+Molette)"
 
-msgid "&Delete After\tDEL"
-msgstr "&Supprimer\tDEL"
+msgid "&Delete After"
+msgstr "&Supprimer"
 
 msgid "&Edit"
 msgstr "&Edition"
 
-msgid "&Exit\tCTRL+q"
-msgstr "&Quitter\tCTRL+q"
+msgid "&Exit"
+msgstr "&Quitter"
 
 msgid "&File"
 msgstr "&Fichier"
@@ -79,8 +79,8 @@ msgstr "&Fichier"
 msgid "&Flatten"
 msgstr "&Aplanir"
 
-msgid "&Go To Next Search Result\tF3"
-msgstr "&Aller Au Résultat de Recherche Suivant\tF3"
+msgid "&Go To Next Search Result"
+msgstr "&Aller Au Résultat de Recherche Suivant"
 
 msgid "&Grid Reorganization..."
 msgstr "&Réorganisation de la grille ..."
@@ -94,8 +94,8 @@ msgstr "&Aide"
 msgid "&Hierarchify"
 msgstr "&Hiérarchiser"
 
-msgid "&Horizontal View\tCTRL+ALT+."
-msgstr "Calcul en ligne\tCTRL+ALT+."
+msgid "&Horizontal View"
+msgstr "Calcul en ligne"
 
 msgid "&Image..."
 msgstr "&Image..."
@@ -103,14 +103,11 @@ msgstr "&Image..."
 msgid "&Images..."
 msgstr "&Images..."
 
-msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
-msgstr "&Augmenter la taille du texte (SHIFT+roulette)\tSHIFT+PGUP"
+msgid "&Increase text size (SHIFT+mousewheel)"
+msgstr "&Augmenter la taille du texte (SHIFT+roulette)"
 
-msgid "&Insert New Grid\tCTRL+g"
-msgstr "&Insérer nouvelle sous-cellule\tCTRL+g"
-
-msgid "&Insert New Grid\tINS"
-msgstr "&Insérer nouvelle grille\tINS"
+msgid "&Insert New Grid"
+msgstr "&Insérer nouvelle sous-cellule"
 
 msgid "&Layout && Render Style..."
 msgstr "&Disposition et style de rendu..."
@@ -118,23 +115,23 @@ msgstr "&Disposition et style de rendu..."
 msgid "&Mark as"
 msgstr "&Marquer comme"
 
-msgid "&New\tCTRL+n"
-msgstr "&Nouveau\tCTRL+n"
+msgid "&New"
+msgstr "&Nouveau"
 
-msgid "&Open...\tCTRL+o"
-msgstr "&Ouvrir...\tCTRL+o"
+msgid "&Open..."
+msgstr "&Ouvrir..."
 
-msgid "&Operation\tCTRL+ALT+o"
-msgstr "&Opération\tCTRL+ALT+o"
+msgid "&Operation"
+msgstr "&Opération"
 
 msgid "&Options"
 msgstr "&Options"
 
-msgid "&Paste\tCTRL+v"
-msgstr "&Coller\tCTRL+v"
+msgid "&Paste"
+msgstr "&Coller"
 
-msgid "&Print...\tCTRL+p"
-msgstr "&Imprimer\tCTRL+p"
+msgid "&Print..."
+msgstr "&Imprimer"
 
 msgid "&Program"
 msgstr "&Programme"
@@ -142,8 +139,8 @@ msgstr "&Programme"
 msgid "&Recent files"
 msgstr "&Fichiers Récents"
 
-msgid "&Redo\tCTRL+y"
-msgstr "&Refaire\tCTRL+y"
+msgid "&Redo"
+msgstr "&Refaire"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "&Retirer l'étiquette"
@@ -151,26 +148,26 @@ msgstr "&Retirer l'étiquette"
 msgid "&Remove Image(s)"
 msgstr "&Supprimer Image(s)"
 
-msgid "&Replace\tCTRL+h"
-msgstr "&Remplacer\tCTRL+h"
+msgid "&Replace"
+msgstr "&Remplacer"
 
 msgid "&Reset Scale (display only)"
 msgstr "&Réinitialiser l'échelle (affichage seulement)"
 
-msgid "&Reset text sizes\tCTRL+SHIFT+s"
-msgstr "&Réinitialiser taille texte\tCTRL+SHIFT+s"
+msgid "&Reset text sizes"
+msgstr "&Réinitialiser taille texte"
 
-msgid "&Reset text styles\tCTRL+SHIFT+r"
-msgstr "&Réinitialiser style de texte\tCTRL+SHIFT+r"
+msgid "&Reset text styles"
+msgstr "&Réinitialiser style de texte"
 
 msgid "&Roundness of grid borders..."
 msgstr "&Arrondi des bordures de grille ..."
 
-msgid "&Run\tCTRL+ALT+F5"
-msgstr "Calculer\tCTRL+ALT+F5"
+msgid "&Run"
+msgstr "Calculer"
 
-msgid "&Save\tCTRL+s"
-msgstr "&Enregister\tCTRL+s"
+msgid "&Save"
+msgstr "&Enregister"
 
 msgid "&Scale Image (display only)"
 msgstr "&Redimensionner Image (affichage seulement)"
@@ -184,9 +181,6 @@ msgstr "&Redimensionner Image (rééchantillonnage des pixels, en largeur)"
 msgid "&Search"
 msgstr "&Rechercher"
 
-msgid "&Search\tCTRL+f"
-msgstr "&Rechercher\tCTRL+f"
-
 msgid "&Selection..."
 msgstr "&Sélection..."
 
@@ -199,23 +193,23 @@ msgid "&Set Custom Color From Cell BG"
 msgstr ""
 "Définir la couleur per&sonnalisée à partir de l’arrière-plan de la cellule"
 
-msgid "&Shrink text of all sub-grids\tCTRL+SHIFT+m"
-msgstr "&Réduire le texte de toutes les sous-grilles\tSHIFT+CTRL+m"
+msgid "&Shrink text of all sub-grids"
+msgstr "&Réduire le texte de toutes les sous-grilles"
 
-msgid "&Transpose\tCTRL+SHIFT+t"
-msgstr "&Transposer\tSHIFT+CTRL+t"
+msgid "&Transpose"
+msgstr "&Transposer"
 
-msgid "&Undo\tCTRL+z"
-msgstr "&Annuler\tCTRL+z"
+msgid "&Undo"
+msgstr "&Annuler"
 
-msgid "&Vertical View\tCTRL+ALT+,"
-msgstr "&Vue en colonne\tCTRL+ALT+,"
+msgid "&Vertical View"
+msgstr "&Vue en colonne"
 
 msgid "&View"
 msgstr "&Affichage"
 
-msgid "&Wrap in new parent\tF9"
-msgstr "&Envoyer en sous-cellule\tF9"
+msgid "&Wrap in new parent"
+msgstr "&Envoyer en sous-cellule"
 
 msgid "&XML..."
 msgstr "&XML..."
@@ -240,14 +234,14 @@ msgstr "Ajouter une grille à la cellule sélectionnée"
 msgid "Adds an image to the selected cell"
 msgstr "Ajouter une image à la cellule sélectionnée"
 
-msgid "Apply last border color\tSHIFT+ALT+b"
-msgstr "Appliquer la couleur de bordure active\tSHITF+ALT+b"
+msgid "Apply last border color"
+msgstr "Appliquer la couleur de bordure active"
 
-msgid "Apply last cell color\tSHIFT+ALT+c"
-msgstr "Appliquer la couleur active à la cellule\tSHIFT+ALT+c"
+msgid "Apply last cell color"
+msgstr "Appliquer la couleur active à la cellule"
 
-msgid "Apply last text color\tSHIFT+ALT+t"
-msgstr "Appliquer la couleur de texte active\tSHIFT+ALT+t"
+msgid "Apply last text color"
+msgstr "Appliquer la couleur de texte active"
 
 msgid "At least one file could not be opened."
 msgstr "Au moins un fichier n'a pas pu être ouvert."
@@ -270,26 +264,26 @@ msgstr "Bitmap copiée dans le presse-papier"
 msgid "Border "
 msgstr "Bordure "
 
-msgid "Border &0\tCTRL+SHIFT+9"
-msgstr "Bordure &0\tCTRL+SHIFT+9"
+msgid "Border &0"
+msgstr "Bordure &0"
 
-msgid "Border &1\tCTRL+SHIFT+1"
-msgstr "Bordure &1\tCTRL+SHIFT+1"
+msgid "Border &1"
+msgstr "Bordure &1"
 
-msgid "Border &2\tCTRL+SHIFT+2"
-msgstr "Bordure &2\tCTRL+SHIFT+2"
+msgid "Border &2"
+msgstr "Bordure &2"
 
-msgid "Border &3\tCTRL+SHIFT+3"
-msgstr "Bordure &3\tCTRL+SHIFT+3"
+msgid "Border &3"
+msgstr "Bordure &3"
 
-msgid "Border &4\tCTRL+SHIFT+4"
-msgstr "Bordure &4\tCTRL+SHIFT+4"
+msgid "Border &4"
+msgstr "Bordure &4"
 
-msgid "Border &5\tCTRL+SHIFT+5"
-msgstr "Bordure &5\tCTRL+SHIFT+5"
+msgid "Border &5"
+msgstr "Bordure &5"
 
-msgid "Bubble Style Rendering\t"
-msgstr "Rendu de style bulle\t"
+msgid "Bubble Style Rendering"
+msgstr "Rendu de style bulle"
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr ""
@@ -309,8 +303,8 @@ msgstr ""
 msgid "Cancel"
 msgstr "Annuler"
 
-msgid "Cancel text edits\tESC"
-msgstr "Annuler les modifications texte\tESC"
+msgid "Cancel text edits"
+msgstr "Annuler les modifications texte"
 
 msgid "Cannot decompress file."
 msgstr "Décompression du fichier impossible."
@@ -391,8 +385,12 @@ msgstr "Réinitialiser et remplacer"
 msgid "Clear search"
 msgstr "Réinitialiser la recherche"
 
-msgid "Collapse Ce&lls\tCTRL+l"
-msgstr "Grouper les c&llules\tCTRL+l"
+#, fuzzy
+msgid "Close current document"
+msgstr "Rechargement automatique des documents"
+
+msgid "Collapse Ce&lls"
+msgstr "Grouper les c&llules"
 
 msgid "Column width decreased."
 msgstr "Largeur de la colonne réduite."
@@ -417,8 +415,12 @@ msgstr "Copier (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copier comme texte continu"
 
-msgid "Copy with &Images\tCTRL+ALT+c"
-msgstr "Copier avec les &Images\tCTRL+ALT+c"
+#, fuzzy
+msgid "Copy selection"
+msgstr "&Remplacer dans la sélection courante"
+
+msgid "Copy with &Images"
+msgstr "Copier avec les &Images"
 
 msgid "Corrupt PNG header."
 msgstr "Entête PNG corrompu."
@@ -429,35 +431,42 @@ msgstr "Entête de bloc corrompu."
 msgid "Create .bak files"
 msgstr "Générer des fichiers .bak"
 
+msgid "Create a new document"
+msgstr ""
+
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Créer un nouveau niveau de hiérarchie autour de la sélection courante"
 
-msgid "Cu&t\tCTRL+x"
-msgstr "Couper\tCTRL+x"
+msgid "Cu&t"
+msgstr "Couper"
 
-msgid "Cursor Left\tLEFT"
-msgstr "Curseur à gauche\tLEFT"
+msgid "Cursor Left"
+msgstr "Curseur à gauche"
 
-msgid "Cursor Right\tRIGHT"
-msgstr "Curseur à droite\tRIGHT"
+msgid "Cursor Right"
+msgstr "Curseur à droite"
+
+#, fuzzy
+msgid "Cut selection"
+msgstr "Etendre la sélection vers le haut"
 
 msgid "Date and time range"
 msgstr "Date et heure de début et fin"
 
-msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
-msgstr "Diminuer la largeur de colonne (ALT+molette)\tALT+PGDN"
+msgid "Decrease column width (ALT+mousewheel)"
+msgstr "Diminuer la largeur de colonne (ALT+molette)"
 
-msgid "Decrease column width (no sub grids)\tCTRL+ALT+PGDN"
-msgstr "Diminuer la largeur de colonne (sous-grilles exclues)\tCTRL+ALT+PGDN"
+msgid "Decrease column width (no sub grids)"
+msgstr "Diminuer la largeur de colonne (sous-grilles exclues)"
 
-msgid "Delete Before\tBACK"
-msgstr "Retour arrière\tBACK"
+msgid "Delete Before"
+msgstr "Retour arrière"
 
-msgid "Delete Word After\tCTRL+DEL"
-msgstr "Supprimer Mot suivant\tCTRL+DEL"
+msgid "Delete Word After"
+msgstr "Supprimer Mot suivant"
 
-msgid "Delete Word Before\tCTRL+BACK"
-msgstr "Supprimer Mot précédent\tCTRL+BACK"
+msgid "Delete Word Before"
+msgstr "Supprimer Mot précédent"
 
 msgid ""
 "Deletes the column of cells after the selected grid line, or the row below"
@@ -487,20 +496,17 @@ msgstr "Modifié %s %s"
 msgid "End date and time"
 msgstr "Date et heure de fin"
 
-msgid "End of line of text\tEND"
-msgstr "Aller en fin de ligne, des cellules\tFIN"
+msgid "End of line of text"
+msgstr "Aller en fin de ligne, des cellules"
 
-msgid "End of text\tCTRL+END"
-msgstr "Aller à la fin\tCTRL+FIN"
+msgid "End of text"
+msgstr "Aller à la fin"
 
-msgid "Enter/exit text edit mode\tENTER"
-msgstr "Entrée/Sortie mode de saisie de texte\tENTER"
+msgid "Enter/exit text edit mode"
+msgstr "Entrée/Sortie mode de saisie de texte"
 
-msgid "Enter/exit text edit mode\tF2"
-msgstr "Entrée/Sortie mode de saisie de texte\tF2"
-
-msgid "Enter/exit text edit to the right\tALT+ENTER"
-msgstr "Entrée/Sortie mode de saisie de texte à droite\tALT+ENTER"
+msgid "Enter/exit text edit to the right"
+msgstr "Entrée/Sortie mode de saisie de texte à droite"
 
 msgid "Error exporting file!"
 msgstr "Erreur lors de l'export du fichier!"
@@ -589,8 +595,8 @@ msgstr ""
 "utilisant des espaces pour chaque niveau d'indentation. Convient pour "
 "l'import dans un logiciel de  Mind manager et de texte général"
 
-msgid "Extend Selection Down\tSHIFT+DOWN"
-msgstr "Etendre la sélection vers le bas\tSHIFT+DOWN"
+msgid "Extend Selection Down"
+msgstr "Etendre la sélection vers le bas"
 
 msgid "Extend Selection Full Columns"
 msgstr "Etendre la sélection sur toute la hauteur"
@@ -598,26 +604,26 @@ msgstr "Etendre la sélection sur toute la hauteur"
 msgid "Extend Selection Full Rows"
 msgstr "Etendre la sélection sur tout la largeur "
 
-msgid "Extend Selection Left\tSHIFT+LEFT"
-msgstr "Etendre la sélection à gauche\tSHIFT+LEFT"
+msgid "Extend Selection Left"
+msgstr "Etendre la sélection à gauche"
 
-msgid "Extend Selection Right\tSHIFT+RIGHT"
-msgstr "Etendre la sélection à droite\tSHIFT+RIGHT"
+msgid "Extend Selection Right"
+msgstr "Etendre la sélection à droite"
 
-msgid "Extend Selection Up\tSHIFT+UP"
-msgstr "Etendre la sélection vers le haut\tSHIFT+UP"
+msgid "Extend Selection Up"
+msgstr "Etendre la sélection vers le haut"
 
-msgid "Extend Selection Word Left\tCTRL+SHIFT+LEFT"
-msgstr "Etendre la sélection début de mot vers la gauche\tSHIFT+CTRL+LEFT"
+msgid "Extend Selection Word Left"
+msgstr "Etendre la sélection début de mot vers la gauche"
 
-msgid "Extend Selection Word Right\tCTRL+SHIFT+RIGHT"
-msgstr "Etendre la sélection fin de mot vers la droite\tSHIFT+CTRL+RIGHT"
+msgid "Extend Selection Word Right"
+msgstr "Etendre la sélection fin de mot vers la droite"
 
-msgid "Extend Selection to End\tSHIFT+END"
-msgstr "Etendre la sélection jusqu'en fin de cellule\tSHIFT+END"
+msgid "Extend Selection to End"
+msgstr "Etendre la sélection jusqu'en fin de cellule"
 
-msgid "Extend Selection to Start\tSHIFT+HOME"
-msgstr "Etendre la sélection jusqu'en début de cellule\tSHIFT+HOME"
+msgid "Extend Selection to Start"
+msgstr "Etendre la sélection jusqu'en début de cellule"
 
 msgid "Faster line rendering"
 msgstr "Rendu de ligne rapide"
@@ -656,8 +662,14 @@ msgstr "Filtrer les cellules avec la même couleur"
 msgid "Filter..."
 msgstr "Filtre..."
 
-msgid "Fold All\tCTRL+SHIFT+F10"
-msgstr "Tout réduire\tCTRL+SHIFT+F10"
+msgid "Find and replace in document"
+msgstr ""
+
+msgid "Find in document"
+msgstr ""
+
+msgid "Fold All"
+msgstr "Tout réduire"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Réduire la grille des cellules sélectionnées mode récursif"
@@ -665,29 +677,29 @@ msgstr "Réduire la grille des cellules sélectionnées mode récursif"
 msgid "Found an image type that is not defined in this program."
 msgstr "Un type d'image non défini dans ce programme a été trouvé."
 
-msgid "Go To &Matching Cell (Text)\tF6"
-msgstr "Aller à la cellule identique suivante (Texte)\tF6"
+msgid "Go To &Matching Cell (Text)"
+msgstr "Aller à la cellule identique suivante (Texte)"
 
-msgid "Go To &Previous Search Result\tSHIFT+F3"
-msgstr "&Aller Au Résultat de Recherche Précédent\tF3"
+msgid "Go To &Previous Search Result"
+msgstr "&Aller Au Résultat de Recherche Précédent"
 
-msgid "Go To Matching Cell (Image)\tF7"
-msgstr "Aller à la cellule &identique suivante (Image)\tF6"
+msgid "Go To Matching Cell (Image)"
+msgstr "Aller à la cellule &identique suivante (Image)"
 
-msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
-msgstr "Aller à la cellule identique précédente (Image)\tSHIFT+F6"
+msgid "Go To Matching Cell (Image, Reverse)"
+msgstr "Aller à la cellule identique précédente (Image)"
 
-msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
-msgstr "Aller à la cellule identique précédente (Texte)\tSHIFT+F6"
+msgid "Go To Matching Cell (Text, Reverse)"
+msgstr "Aller à la cellule identique précédente (Texte)"
 
 msgid "Go to Next Search Result"
-msgstr "Aller au résultat de recherche suivant\tF3"
+msgstr "Aller au résultat de recherche suivant"
 
-msgid "Go to next filter match\tCTRL+F3"
-msgstr "Aller au résultat de filtre suivant\tCTRL+F3"
+msgid "Go to next filter match"
+msgstr "Aller au résultat de filtre suivant"
 
-msgid "Grid Style Rendering\t"
-msgstr "Rendu de style grille\t"
+msgid "Grid Style Rendering"
+msgstr "Rendu de style grille"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (&Puces)..."
@@ -695,8 +707,8 @@ msgstr "HTML (&Puces)..."
 msgid "HTML (&Outline)..."
 msgstr "HTML (&Aperçu)..."
 
-msgid "Hierarchy &Swap\tF8"
-msgstr "Permuter la Hiérarchie\tF8"
+msgid "Hierarchy &Swap"
+msgstr "Permuter la Hiérarchie"
 
 msgid ""
 "Hold CTRL while pressing right mouse button to quickly set a tag for the "
@@ -705,14 +717,14 @@ msgstr ""
 "Maintenir touche CTRL et click droit pour remplacer rapidement une étiquette "
 "dans la cellule courante via un menu contextuel"
 
-msgid "Horizontal Layout with Bubble Style Rendering\t"
-msgstr "Disposition horizontale mode Bubble\t"
+msgid "Horizontal Layout with Bubble Style Rendering"
+msgstr "Disposition horizontale mode Bubble"
 
-msgid "Horizontal Layout with Grid Style Rendering\t"
-msgstr "Disposition horizontale mode Grille\t"
+msgid "Horizontal Layout with Grid Style Rendering"
+msgstr "Disposition horizontale mode Grille"
 
-msgid "Horizontal Layout with Line Style Rendering\t"
-msgstr "Disposition horizontale mode Ligne\t"
+msgid "Horizontal Layout with Line Style Rendering"
+msgstr "Disposition horizontale mode Ligne"
 
 msgid "Hover shadow"
 msgstr "Ombre en survol"
@@ -731,12 +743,12 @@ msgstr "Redimensionner Image"
 msgid "Import file from"
 msgstr "Importer un fichier"
 
-msgid "Increase column width (ALT+mousewheel)\tALT+PGUP"
-msgstr "Augmenter la largeur de la colonne (ALT+Molette)\tALT+PGUP"
+msgid "Increase column width (ALT+mousewheel)"
+msgstr "Augmenter la largeur de la colonne (ALT+Molette)"
 
-msgid "Increase column width (no sub grids)\tCTRL+ALT+PGUP"
+msgid "Increase column width (no sub grids)"
 msgstr ""
-"Augmenter la largeur de la colonne (sous grilles exclues)\tCTRL+ALT +PGUP"
+"Augmenter la largeur de la colonne (sous grilles exclues)"
 
 msgid "Indented &Text..."
 msgstr "&Texte indenté..."
@@ -764,14 +776,14 @@ msgstr "Association de touche"
 msgid "Keybinding cancelled."
 msgstr "Annulation de l'association de touche."
 
-msgid "Line Style Rendering\t"
-msgstr "Mode ligne\t"
+msgid "Line Style Rendering"
+msgstr "Mode ligne"
 
-msgid "Load interactive &tutorial...\tF1"
-msgstr "Charger le &tutoriel interactif ...\tF1"
+msgid "Load interactive &tutorial..."
+msgstr "Charger le &tutoriel interactif ..."
 
-msgid "Load operation reference...\tCTRL+ALT+F1"
-msgstr "Charger le modèle calculs...\tCTRL+ALT+F1"
+msgid "Load operation reference..."
+msgstr "Charger le modèle calculs..."
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
@@ -801,50 +813,50 @@ msgstr "Réduire à la barre des tâches"
 msgid "More than one cell must be selected."
 msgstr "Plus d'une cellule doivent être sélectionnées."
 
-msgid "Move Cells Down\tCTRL+DOWN"
-msgstr "Déplacement cellule vers le bas\tCTRL+DOWN"
+msgid "Move Cells Down"
+msgstr "Déplacement cellule vers le bas"
 
-msgid "Move Cells Left\tCTRL+LEFT"
-msgstr "Déplacement cellule vers la gauche\tCTRL+LEFT"
+msgid "Move Cells Left"
+msgstr "Déplacement cellule vers la gauche"
 
-msgid "Move Cells Right\tCTRL+RIGHT"
-msgstr "Déplacement cellule vers la droite\tCTRL+RIGHT"
+msgid "Move Cells Right"
+msgstr "Déplacement cellule vers la droite"
 
-msgid "Move Cells Up\tCTRL+UP"
-msgstr "Déplacement cellule vers le haut\tCTRL+UP"
+msgid "Move Cells Up"
+msgstr "Déplacement cellule vers le haut"
 
-msgid "Move Selection Down\tDOWN"
-msgstr "Positionnement sur le bas de la cellule\tDOWN"
+msgid "Move Selection Down"
+msgstr "Positionnement sur le bas de la cellule"
 
 msgid "Move Selection Down (DOWN)"
 msgstr "Positionnement sur le bas de la cellule (Bas)"
 
-msgid "Move Selection Left\tLEFT"
-msgstr "Positionnement sur la gauche de la cellule\tLEFT"
+msgid "Move Selection Left"
+msgstr "Positionnement sur la gauche de la cellule"
 
 msgid "Move Selection Left (LEFT)"
 msgstr "Positionnement sur la gauche de la cellule (Gauche)"
 
-msgid "Move Selection Right\tRIGHT"
-msgstr "Positionnement sur la droite de la cellule\tRIGHT"
+msgid "Move Selection Right"
+msgstr "Positionnement sur la droite de la cellule"
 
 msgid "Move Selection Right (RIGHT)"
 msgstr "Positionnement sur la droite de la cellule (Droite)"
 
-msgid "Move Selection Up\tUP"
-msgstr "Positionnement sur le haut de la cellule\tUP"
+msgid "Move Selection Up"
+msgstr "Positionnement sur le haut de la cellule"
 
 msgid "Move Selection Up (UP)"
 msgstr "Positionnement sur le haut de la cellule (Haut)"
 
-msgid "Move to next cell\tTAB"
-msgstr "Aller à la cellule suivante\tTAB"
+msgid "Move to next cell"
+msgstr "Aller à la cellule suivante"
 
 msgid "Move to next cell (TAB)"
 msgstr "Aller à la cellule suivante (TAB)"
 
-msgid "Move to previous cell\tSHIFT+TAB"
-msgstr "Aller à la cellule précédente\tSHIFT+TAB"
+msgid "Move to previous cell"
+msgstr "Aller à la cellule précédente"
 
 msgid "Move to previous cell (SHIFT+TAB)"
 msgstr "Aller à la cellule précédente (SHIFT+TAB)"
@@ -915,8 +927,8 @@ msgstr ""
 "Affichage TreeSheet adapté à l'écran, pressez F12 pour retour affichage "
 "normal."
 
-msgid "Open &file\tF4"
-msgstr "Ouverture du &fichier\tF4"
+msgid "Open &file"
+msgstr "Ouverture du &fichier"
 
 msgid "Open (CTRL+o)"
 msgstr "Ouvrir (CTRL+o)"
@@ -924,20 +936,23 @@ msgstr "Ouvrir (CTRL+o)"
 msgid "Open TreeSheets file"
 msgstr "Ouvrir le fichier TreeSheets"
 
-msgid "Open border colors\tSHIFT+ALT+F11"
-msgstr "Sélectionner une couleur de bordure\tSHIFT+ALT+F11"
+msgid "Open an existing document"
+msgstr ""
 
-msgid "Open cell colors\tSHIFT+ALT+F9"
-msgstr "Séléctionner une couleur de fond\tSHIFT+ALT+F9"
+msgid "Open border colors"
+msgstr "Sélectionner une couleur de bordure"
+
+msgid "Open cell colors"
+msgstr "Séléctionner une couleur de fond"
 
 msgid "Open file cancelled."
 msgstr "Ouverture de fichier abandonnée."
 
-msgid "Open link in &browser\tF5"
-msgstr "Ouvrir le lien dans un navigateur\tF5"
+msgid "Open link in &browser"
+msgstr "Ouvrir le lien dans un navigateur"
 
-msgid "Open text colors\tSHIFT+ALT+F10"
-msgstr "Sélectionner une couleur de texte\tSHIFT+ALT+F10"
+msgid "Open text colors"
+msgstr "Sélectionner une couleur de texte"
 
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
@@ -972,8 +987,11 @@ msgstr "Paramétrage de la page d'impression…"
 msgid "Paste (CTRL+v)"
 msgstr "Coller (CTRL+v)"
 
-msgid "Paste Style Only\tCTRL+SHIFT+v"
-msgstr "Coller le style uniquement\tCTRL+SHIFT+v"
+msgid "Paste Style Only"
+msgstr "Coller le style uniquement"
+
+msgid "Paste clipboard contents"
+msgstr ""
 
 msgid "Paste file path"
 msgstr "Coller le chemin d'accès au fichier"
@@ -1029,6 +1047,9 @@ msgstr "Aperçu avant impression"
 msgid "Print preview..."
 msgstr "Aperçu avant impression..."
 
+msgid "Quit this program"
+msgstr ""
+
 msgid "Radius &0"
 msgstr "Rayon &0"
 
@@ -1072,20 +1093,20 @@ msgstr "Remplacer &tout"
 msgid "Replace All"
 msgstr "Remplacer tout"
 
-msgid "Replace in Current &Selection\tCTRL+k"
-msgstr "Remplacer dans la &sélection courante\tCTRL+k"
+msgid "Replace in Current &Selection"
+msgstr "Remplacer dans la &sélection courante"
 
-msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
-msgstr "Remplacer dans la sélection courant et aller au suivant\tCTRL+j"
+msgid "Replace in Current Selection && &Jump Next"
+msgstr "Remplacer dans la sélection courant et aller au suivant"
 
 msgid "Replace in selection"
 msgstr "&Remplacer dans la sélection courante"
 
-msgid "Reset &colors\tCTRL+SHIFT+c"
-msgstr "Effacer la &couleur de fond\tCTRL+SHIFT+c"
+msgid "Reset &colors"
+msgstr "Effacer la &couleur de fond"
 
-msgid "Reset column widths\tCTRL+SHIFT+w"
-msgstr "Effacer les largeurs de colonnes\tCTRL+SHIFT+w"
+msgid "Reset column widths"
+msgstr "Effacer les largeurs de colonnes"
 
 msgid "Run"
 msgstr "Calculer"
@@ -1110,6 +1131,12 @@ msgstr "Enregistrer et fermer"
 
 msgid "Save cancelled."
 msgstr "Sauvegarde abandonnée."
+
+msgid "Save current document"
+msgstr ""
+
+msgid "Save current document with a different filename"
+msgstr ""
 
 msgid "Save image as JPEG"
 msgstr "Enregistrer l'image en JPEG"
@@ -1137,38 +1164,32 @@ msgstr "Sauvegarde %s réussie (en %d millisecondes)."
 msgid "Script"
 msgstr "Script"
 
-msgid "Scroll Down (mousewheel)\tALT+DOWN"
-msgstr "Défiler vers le bas (molette)\tALT+DOWN"
+msgid "Scroll Down (mousewheel)"
+msgstr "Défiler vers le bas (molette)"
 
-msgid "Scroll Down (mousewheel)\tPGDN"
-msgstr "Défiler vers le bas (molette)\tPGDN"
+msgid "Scroll Left"
+msgstr "Défiler à gauche"
 
-msgid "Scroll Left\tALT+LEFT"
-msgstr "Défiler à gauche\tALT+LEFT"
-
-msgid "Scroll Right\tALT+RIGHT"
-msgstr "Défiler à droite\tALT+RIGHT"
+msgid "Scroll Right"
+msgstr "Défiler à droite"
 
 msgid "Scroll Sheet..."
 msgstr "Défilement feuille..."
 
-msgid "Scroll Up (mousewheel)\tALT+UP"
-msgstr "Défiler vers le haut (molette)\tALT+UP"
-
-msgid "Scroll Up (mousewheel)\tPGUP"
-msgstr "Défiler vers le haut (molette)\tPGUP"
+msgid "Scroll Up (mousewheel)"
+msgstr "Défiler vers le haut (molette)"
 
 msgid "Search "
 msgstr "Recherche "
 
-msgid "Select &Parent\tESC"
-msgstr "Sélectionner cellule &Parent\tESC"
+msgid "Select &Parent"
+msgstr "Sélectionner cellule &Parent"
 
-msgid "Select &all in current grid/cell\tCTRL+a"
-msgstr "Sélectionner tout d&ans la grille courante\tCTRL+a"
+msgid "Select &all in current grid/cell"
+msgstr "Sélectionner tout d&ans la grille courante"
 
-msgid "Select First &Child\tSHIFT+ENTER"
-msgstr "Sélectionner la première cellule &fille\tSHIFT+ENTER"
+msgid "Select First &Child"
+msgstr "Sélectionner la première cellule &fille"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr "La cellule sélectionnée n'est pas un tableau: les cellules ne doivent pas avoir déjà une sous-grille."
@@ -1213,6 +1234,9 @@ msgstr "Affiche 5% des dernières modifications"
 msgid "Show 50% of last edits"
 msgstr "Affiche 50% des dernières modifications"
 
+msgid "Show About dialog"
+msgstr ""
+
 msgid "Show Statusbar"
 msgstr "Afficher la barre d'état"
 
@@ -1225,8 +1249,8 @@ msgstr "Montrer les dernières modification dans une période donnée"
 msgid "Show only cells in current search"
 msgstr "Afficher uniquement les cellules de la recherche courante"
 
-msgid "Show statistics\tCTRL+d"
-msgstr "Afficher les statistiques\tCTRL+d"
+msgid "Show statistics"
+msgstr "Afficher les statistiques"
 
 msgid "Single click maximize from tray"
 msgstr "Maximiser par Un simple clic"
@@ -1244,11 +1268,11 @@ msgstr "Tri &Décroissant"
 msgid "Start date and time"
 msgstr "Date et heure de début"
 
-msgid "Start of line of text\tHOME"
-msgstr "Aller au début de ligne\tHOME"
+msgid "Start of line of text"
+msgstr "Aller au début de ligne"
 
-msgid "Start of text\tCTRL+HOME"
-msgstr "Aller au début du texte\tCTRL+HOME"
+msgid "Start of text"
+msgstr "Aller au début du texte"
 
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
@@ -1261,11 +1285,8 @@ msgstr "Permuter la molette de la souris entre défilement et zoom"
 msgid "Switch to &next file/tab"
 msgstr "Fichier/Onglet suivant"
 
-msgid "Switch to &next file/tab\tCTRL+TAB"
-msgstr "Fichier/Onglet suivant\tCTRL+TAB"
-
-msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
-msgstr "Fichier/Onglet précédent\tSHIFT+CTRL+TAB"
+msgid "Switch to &previous file/tab"
+msgstr "Fichier/Onglet précédent"
 
 msgid "Tab delimited text..."
 msgstr "Texte séparateur tabulation..."
@@ -1323,41 +1344,32 @@ msgid "This operation works on a single selected cell only."
 msgstr ""
 "Cette opération ne fonctionne que sur une sélection d'une cellule simple."
 
-msgid "Toggle &Fullscreen View\tCTRL+F11"
-msgstr "Plein Ecran\tCTRL+F11"
+msgid "Toggle &Fullscreen View"
+msgstr "Plein Ecran"
 
-msgid "Toggle &Fullscreen View\tF11"
-msgstr "Plein Ecran\tF11"
+msgid "Toggle &Scaled Presentation View"
+msgstr "Affichage optimal"
 
-msgid "Toggle &Scaled Presentation View\tCTRL+F12"
-msgstr "Affichage optimal\tCTRL+F12"
+msgid "Toggle Fold"
+msgstr "Développer/Réduire"
 
-msgid "Toggle &Scaled Presentation View\tF12"
-msgstr "Affichage optimal\tF12"
+msgid "Toggle Vertical Layout"
+msgstr "Activer/désactiver la disposition verticale"
 
-msgid "Toggle Fold\tCTRL+F10"
-msgstr "Développer/Réduire\tCTRL+F10"
+msgid "Toggle cell &BOLD"
+msgstr "Gras"
 
-msgid "Toggle Fold\tF10"
-msgstr "Développer/Réduire\tF10"
+msgid "Toggle cell &ITALIC"
+msgstr "&Italique"
 
-msgid "Toggle Vertical Layout\t"
-msgstr "Activer/désactiver la disposition verticale\t"
+msgid "Toggle cell &strikethrough"
+msgstr "Barré"
 
-msgid "Toggle cell &BOLD\tCTRL+b"
-msgstr "Gras\tCTRL+b"
+msgid "Toggle cell &typewriter"
+msgstr "Courrier"
 
-msgid "Toggle cell &ITALIC\tCTRL+i"
-msgstr "&Italique\tCTRL+i"
-
-msgid "Toggle cell &strikethrough\tCTRL+t"
-msgstr "Barré\tCTRL+t"
-
-msgid "Toggle cell &typewriter\tCTRL+ALT+t"
-msgstr "Courrier\tCTRL+ALT+t"
-
-msgid "Toggle cell &underlined\tCTRL+u"
-msgstr "So&uligné\tCTRL+u"
+msgid "Toggle cell &underlined"
+msgstr "So&uligné"
 
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "Activer/désactiver l'affichage de la grille des cellules sélectionnées"
@@ -1371,8 +1383,8 @@ msgstr "Désactiver le filtre"
 msgid "Undo (CTRL+z)"
 msgstr "Annuler (CTRL+z)"
 
-msgid "Unfold All\tCTRL+ALT+F10"
-msgstr "Tout développer\tCTRL+ALT+F10"
+msgid "Unfold All"
+msgstr "Tout développer"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "Développer la grille des cellules sélectionnées mode récursif"
@@ -1380,20 +1392,20 @@ msgstr "Développer la grille des cellules sélectionnées mode récursif"
 msgid "Uses"
 msgstr "Utilise"
 
-msgid "Variable &Assign\tCTRL+ALT+a"
-msgstr "&Assignation de variable\tCTRL+ALT+a"
+msgid "Variable &Assign"
+msgstr "&Assignation de variable"
 
-msgid "Variable &Read\tCTRL+ALT+r"
-msgstr "Lecture de Va&riable\tCTRL+ALT+r"
+msgid "Variable &Read"
+msgstr "Lecture de Va&riable"
 
-msgid "Vertical Layout with Bubble Style Rendering\t"
-msgstr "Disposition verticale mode Bubble\t"
+msgid "Vertical Layout with Bubble Style Rendering"
+msgstr "Disposition verticale mode Bubble"
 
-msgid "Vertical Layout with Grid Style Rendering\t"
-msgstr "Disposition verticale mode grille\t"
+msgid "Vertical Layout with Grid Style Rendering"
+msgstr "Disposition verticale mode grille"
 
-msgid "Vertical Layout with Line Style Rendering\t"
-msgstr "Disposition verticale mode ligne\t"
+msgid "Vertical Layout with Line Style Rendering"
+msgstr "Disposition verticale mode ligne"
 
 msgid "View tutorial &web page..."
 msgstr "Aller sur la page &web du tutoriel..."
@@ -1408,11 +1420,11 @@ msgstr "Largeur"
 msgid "Width %d"
 msgstr "Largeur %d"
 
-msgid "Word Left\tCTRL+LEFT"
-msgstr "Début de mot\tCTRL+LEFT"
+msgid "Word Left"
+msgstr "Début de mot"
 
-msgid "Word Right\tCTRL+RIGHT"
-msgstr "Fin de mot\tCTRL+RIGHT"
+msgid "Word Right"
+msgstr "Fin de mot"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (attributs compris, pour OPML etc.)..."
@@ -1426,11 +1438,11 @@ msgstr "Voud devrez sélectionner une cellule si vous voulez rechercher son text
 msgid "Zlib error while writing file."
 msgstr "Erreur Zlib lors de l'enregistrement du fichier."
 
-msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
-msgstr "Zoom &Avant (CTRL+molette)\tCTRL+PGUP"
+msgid "Zoom &In (CTRL+mousewheel)"
+msgstr "Zoom &Avant (CTRL+molette)"
 
-msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
-msgstr "Zoom &Arrière (CTRL+mollette)\tCTRL+PGDN"
+msgid "Zoom &Out (CTRL+mousewheel)"
+msgstr "Zoom &Arrière (CTRL+mollette)"
 
 msgid "Zoom In (CTRL+mousewheel)"
 msgstr "Zoom avant (CTRL+molette)"

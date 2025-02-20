@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU-1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
+"POT-Creation-Date: 2025-02-19 20:25+0100\n"
 "PO-Revision-Date: 2024-08-25 09:11+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -20,8 +20,8 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 3.4.4\n"
 
-#, c-format
-msgid "%d cells"
+#, fuzzy, c-format
+msgid "%d cell(s)"
 msgstr "%d клеток"
 
 # Сообщения
@@ -50,32 +50,32 @@ msgstr "&Просмотр..."
 msgid "&Clear Views"
 msgstr "О&чистить Виды"
 
-msgid "&Close\tCTRL+w"
-msgstr "Закрыть\tCTRL+w"
+msgid "&Close"
+msgstr "Закрыть"
 
 msgid "&Comma delimited text (CSV)..."
 msgstr "CSV-текст (разделитель - &запятая)..."
 
-msgid "&Copy\tCTRL+c"
-msgstr "Копировать\tCTRL+c"
+msgid "&Copy"
+msgstr "Копировать"
 
 msgid "&Copy as Bitmap"
 msgstr "&Копировать как Растровое Изображение"
 
-msgid "&Data\tCTRL+ALT+d"
-msgstr "&Данные\tCTRL+ALT+d"
+msgid "&Data"
+msgstr "&Данные"
 
-msgid "&Decrease text size (SHIFT+mousewheel)\tSHIFT+PGDN"
-msgstr "У&меньшить...\tSHIFT+PGDN"
+msgid "&Decrease text size (SHIFT+mousewheel)"
+msgstr "У&меньшить..."
 
-msgid "&Delete After\tDEL"
-msgstr "&Удалить После\tDEL"
+msgid "&Delete After"
+msgstr "&Удалить После"
 
 msgid "&Edit"
 msgstr "&Редактировать"
 
-msgid "&Exit\tCTRL+q"
-msgstr "&Выход\tCTRL+q"
+msgid "&Exit"
+msgstr "&Выход"
 
 msgid "&File"
 msgstr "&Файл"
@@ -83,8 +83,8 @@ msgstr "&Файл"
 msgid "&Flatten"
 msgstr "С&гладить (2D)"
 
-msgid "&Go To Next Search Result\tF3"
-msgstr "К &Cледующему вхождению поиска\tF3"
+msgid "&Go To Next Search Result"
+msgstr "К &Cледующему вхождению поиска"
 
 msgid "&Grid Reorganization..."
 msgstr "Ре&организация Сетки..."
@@ -98,8 +98,8 @@ msgstr "П&омощь"
 msgid "&Hierarchify"
 msgstr "&Иерархизировать"
 
-msgid "&Horizontal View\tCTRL+ALT+."
-msgstr "&Горизонтальный Вид\tCTRL+ALT+."
+msgid "&Horizontal View"
+msgstr "&Горизонтальный Вид"
 
 msgid "&Image..."
 msgstr "&Изображение..."
@@ -107,14 +107,11 @@ msgstr "&Изображение..."
 msgid "&Images..."
 msgstr "&Изображения..."
 
-msgid "&Increase text size (SHIFT+mousewheel)\tSHIFT+PGUP"
-msgstr "У&величить Размер Текста (SHIFT+mousewheel)\tSHIFT+PGUP"
+msgid "&Increase text size (SHIFT+mousewheel)"
+msgstr "У&величить Размер Текста (SHIFT+mousewheel)"
 
-msgid "&Insert New Grid\tCTRL+g"
-msgstr "Вставить Новую Сетку\tCTRL+g"
-
-msgid "&Insert New Grid\tINS"
-msgstr "Вставить Новую Сетку\tINS"
+msgid "&Insert New Grid"
+msgstr "Вставить Новую Сетку"
 
 msgid "&Layout && Render Style..."
 msgstr "&Макет && Стиль Отображения..."
@@ -122,25 +119,25 @@ msgstr "&Макет && Стиль Отображения..."
 msgid "&Mark as"
 msgstr "От&метить как"
 
-msgid "&New\tCTRL+n"
-msgstr "Новый\tCTRL+n"
+msgid "&New"
+msgstr "Новый"
 
-msgid "&Open...\tCTRL+o"
-msgstr "Открыть...\tCTRL+o"
+msgid "&Open..."
+msgstr "Открыть..."
 
-msgid "&Operation\tCTRL+ALT+o"
-msgstr "&Операция\tCTRL+ALT+o"
+msgid "&Operation"
+msgstr "&Операция"
 
 msgid "&Options"
 msgstr "Пара&метры"
 
-msgid "&Paste\tCTRL+v"
-msgstr "Вставить\tCTRL+v"
+msgid "&Paste"
+msgstr "Вставить"
 
 # Распечатать
 # Печать
-msgid "&Print...\tCTRL+p"
-msgstr "Печать...\tCTRL+p"
+msgid "&Print..."
+msgstr "Печать..."
 
 msgid "&Program"
 msgstr "Про&грамма"
@@ -148,8 +145,8 @@ msgstr "Про&грамма"
 msgid "&Recent files"
 msgstr "&Недавние файлы"
 
-msgid "&Redo\tCTRL+y"
-msgstr "Вернуть\tCTRL+y"
+msgid "&Redo"
+msgstr "Вернуть"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "У&далить Текст Ячейки из Тегов"
@@ -157,26 +154,26 @@ msgstr "У&далить Текст Ячейки из Тегов"
 msgid "&Remove Image(s)"
 msgstr "У&далить изображение(я)"
 
-msgid "&Replace\tCTRL+h"
-msgstr "&Заменить\tCTRL+h"
+msgid "&Replace"
+msgstr "&Заменить"
 
 msgid "&Reset Scale (display only)"
 msgstr "Сб&росить масштаб (отображение)"
 
-msgid "&Reset text sizes\tCTRL+SHIFT+s"
-msgstr "Сбросить &Размеры Текста\tCTRL+SHIFT+s"
+msgid "&Reset text sizes"
+msgstr "Сбросить &Размеры Текста"
 
-msgid "&Reset text styles\tCTRL+SHIFT+r"
-msgstr "Сбросить &Стили Текста\tCTRL+SHIFT+r"
+msgid "&Reset text styles"
+msgstr "Сбросить &Стили Текста"
 
 msgid "&Roundness of grid borders..."
 msgstr "&Округлость Границ сетки..."
 
-msgid "&Run\tCTRL+ALT+F5"
-msgstr "За&Пуск\tCTRL+ALT+F5"
+msgid "&Run"
+msgstr "За&Пуск"
 
-msgid "&Save\tCTRL+s"
-msgstr "Сохранить\tCTRL+s"
+msgid "&Save"
+msgstr "Сохранить"
 
 msgid "&Scale Image (display only)"
 msgstr "... (только &Отображение)"
@@ -190,9 +187,6 @@ msgstr "... (пересборка пикселей по &Ширине)"
 msgid "&Search"
 msgstr "&Поиск"
 
-msgid "&Search\tCTRL+f"
-msgstr "&Поиск\tCTRL+f"
-
 msgid "&Selection..."
 msgstr "&Выделение..."
 
@@ -202,23 +196,23 @@ msgstr "В&ставить Тег в Ячейку (CTRL+RMB - меню тегов
 msgid "&Set Custom Color From Cell BG"
 msgstr "Установить Цвет из Фона &Ячейки"
 
-msgid "&Shrink text of all sub-grids\tCTRL+SHIFT+m"
-msgstr "С&жать Текст всех подсеток\tCTRL+SHIFT+m"
+msgid "&Shrink text of all sub-grids"
+msgstr "С&жать Текст всех подсеток"
 
-msgid "&Transpose\tCTRL+SHIFT+t"
-msgstr "Транспонировать\tCTRL+SHIFT+t"
+msgid "&Transpose"
+msgstr "Транспонировать"
 
-msgid "&Undo\tCTRL+z"
-msgstr "Отменить\tCTRL+z"
+msgid "&Undo"
+msgstr "Отменить"
 
-msgid "&Vertical View\tCTRL+ALT+,"
-msgstr "&Вертикальный Вид\tCTRL+ALT+,"
+msgid "&Vertical View"
+msgstr "&Вертикальный Вид"
 
 msgid "&View"
 msgstr "&Вид"
 
-msgid "&Wrap in new parent\tF9"
-msgstr "Обернуть в новый родительский элемент\tF9"
+msgid "&Wrap in new parent"
+msgstr "Обернуть в новый родительский элемент"
 
 msgid "&XML..."
 msgstr "XML..."
@@ -244,14 +238,14 @@ msgstr "Добавляет сетку в выбранную ячейку"
 msgid "Adds an image to the selected cell"
 msgstr "Добавляет изображение в выбранную ячейку"
 
-msgid "Apply last border color\tSHIFT+ALT+b"
-msgstr "... последний Цвет &Границы\tSHIFT+ALT+b"
+msgid "Apply last border color"
+msgstr "... последний Цвет &Границы"
 
-msgid "Apply last cell color\tSHIFT+ALT+c"
-msgstr "Применить Цвет последней &Ячейки\tSHIFT+ALT+c"
+msgid "Apply last cell color"
+msgstr "Применить Цвет последней &Ячейки"
 
-msgid "Apply last text color\tSHIFT+ALT+t"
-msgstr "... последний Цвет &Текста\tSHIFT+ALT+t"
+msgid "Apply last text color"
+msgstr "... последний Цвет &Текста"
 
 # Сообщения
 msgid "At least one file could not be opened."
@@ -278,26 +272,26 @@ msgstr "Растровое изображение скопировано в бу
 msgid "Border "
 msgstr "Граница "
 
-msgid "Border &0\tCTRL+SHIFT+9"
-msgstr "Граница &0\tCTRL+SHIFT+9"
+msgid "Border &0"
+msgstr "Граница &0"
 
-msgid "Border &1\tCTRL+SHIFT+1"
-msgstr "Граница &1\tCTRL+SHIFT+1"
+msgid "Border &1"
+msgstr "Граница &1"
 
-msgid "Border &2\tCTRL+SHIFT+2"
-msgstr "Граница &2\tCTRL+SHIFT+2"
+msgid "Border &2"
+msgstr "Граница &2"
 
-msgid "Border &3\tCTRL+SHIFT+3"
-msgstr "Граница &3\tCTRL+SHIFT+3"
+msgid "Border &3"
+msgstr "Граница &3"
 
-msgid "Border &4\tCTRL+SHIFT+4"
-msgstr "Граница &4\tCTRL+SHIFT+4"
+msgid "Border &4"
+msgstr "Граница &4"
 
-msgid "Border &5\tCTRL+SHIFT+5"
-msgstr "Граница &5\tCTRL+SHIFT+5"
+msgid "Border &5"
+msgstr "Граница &5"
 
-msgid "Bubble Style Rendering\t"
-msgstr "... в стиле &Пузыря\t"
+msgid "Bubble Style Rendering"
+msgstr "... в стиле &Пузыря"
 
 # Сообщения
 msgid "Can only move this cell from a Nx1 or 1xN grid."
@@ -319,8 +313,8 @@ msgstr ""
 msgid "Cancel"
 msgstr "Отмена Операции"
 
-msgid "Cancel text edits\tESC"
-msgstr "Отменить редактирование текста\tESC"
+msgid "Cancel text edits"
+msgstr "Отменить редактирование текста"
 
 # Сообщения
 msgid "Cannot decompress file."
@@ -418,8 +412,12 @@ msgstr "Очистить Замену"
 msgid "Clear search"
 msgstr "Очистить Поиск"
 
-msgid "Collapse Ce&lls\tCTRL+l"
-msgstr "Слияние Ячеек\tCTRL+l"
+#, fuzzy
+msgid "Close current document"
+msgstr "Автоматическая перезагрузка документов"
+
+msgid "Collapse Ce&lls"
+msgstr "Слияние Ячеек"
 
 # Сообщения
 msgid "Column width decreased."
@@ -446,8 +444,13 @@ msgstr "Копировать (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "&Копировать как Непрерывный Текст"
 
-msgid "Copy with &Images\tCTRL+ALT+c"
-msgstr "Копировать с Изображениями\tCTRL+ALT+c"
+# Сообщения
+#, fuzzy
+msgid "Copy selection"
+msgstr "Заменить в выделенном"
+
+msgid "Copy with &Images"
+msgstr "Копировать с Изображениями"
 
 # Сообщения
 msgid "Corrupt PNG header."
@@ -460,36 +463,43 @@ msgstr "Поврежденный заголовок блока."
 msgid "Create .bak files"
 msgstr "Создавать .bak файлы"
 
+msgid "Create a new document"
+msgstr ""
+
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Создает новый уровень иерархии вокруг текущего выделения"
 
-msgid "Cu&t\tCTRL+x"
-msgstr "Вырезать\tCTRL+x"
+msgid "Cu&t"
+msgstr "Вырезать"
 
-msgid "Cursor Left\tLEFT"
-msgstr "На СИМВОЛ вЛево\tLEFT"
+msgid "Cursor Left"
+msgstr "На СИМВОЛ вЛево"
 
-msgid "Cursor Right\tRIGHT"
-msgstr "... вПраво\tRIGHT"
+msgid "Cursor Right"
+msgstr "... вПраво"
+
+#, fuzzy
+msgid "Cut selection"
+msgstr "... вВерх"
 
 # Сообщения
 msgid "Date and time range"
 msgstr "Диапазон даты и времени"
 
-msgid "Decrease column width (ALT+mousewheel)\tALT+PGDN"
-msgstr "У&меньшить...\tALT+PGDN"
+msgid "Decrease column width (ALT+mousewheel)"
+msgstr "У&меньшить..."
 
-msgid "Decrease column width (no sub grids)\tCTRL+ALT+PGDN"
-msgstr "У&меньшить...\tCTRL+ALT+PGDN"
+msgid "Decrease column width (no sub grids)"
+msgstr "У&меньшить..."
 
-msgid "Delete Before\tBACK"
-msgstr "Удалить До\tBACK"
+msgid "Delete Before"
+msgstr "Удалить До"
 
-msgid "Delete Word After\tCTRL+DEL"
-msgstr "&Удалить Слово После\tCTRL+DEL"
+msgid "Delete Word After"
+msgstr "&Удалить Слово После"
 
-msgid "Delete Word Before\tCTRL+BACK"
-msgstr "Удалить Слово До\tCTRL+BACK"
+msgid "Delete Word Before"
+msgstr "Удалить Слово До"
 
 msgid ""
 "Deletes the column of cells after the selected grid line, or the row below"
@@ -518,20 +528,17 @@ msgstr "Отредактировано %s %s"
 msgid "End date and time"
 msgstr "Дата и Время завершения"
 
-msgid "End of line of text\tEND"
-msgstr "В Конец...\tEND"
+msgid "End of line of text"
+msgstr "В Конец..."
 
-msgid "End of text\tCTRL+END"
-msgstr "В Конец...\tCTRL+END"
+msgid "End of text"
+msgstr "В Конец..."
 
-msgid "Enter/exit text edit mode\tENTER"
-msgstr "Вх/Вых из реж. Редактирования\tENTER"
+msgid "Enter/exit text edit mode"
+msgstr "Вх/Вых из реж. Редактирования"
 
-msgid "Enter/exit text edit mode\tF2"
-msgstr "Вх/Вых из реж. Редактирования\tF2"
-
-msgid "Enter/exit text edit to the right\tALT+ENTER"
-msgstr "Вх/Вых из реж. Редактирования сПрава\tALT+ENTER"
+msgid "Enter/exit text edit to the right"
+msgstr "Вх/Вых из реж. Редактирования сПрава"
 
 # Сообщения
 msgid "Error exporting file!"
@@ -628,8 +635,8 @@ msgstr ""
 "Экспорт в TXT, c пробелами для каждого уровня отступа. Для импорта в mind и "
 "текстовые программы"
 
-msgid "Extend Selection Down\tSHIFT+DOWN"
-msgstr "... вНиз\tSHIFT+DOWN"
+msgid "Extend Selection Down"
+msgstr "... вНиз"
 
 msgid "Extend Selection Full Columns"
 msgstr "... в полные &Столбцы"
@@ -637,26 +644,26 @@ msgstr "... в полные &Столбцы"
 msgid "Extend Selection Full Rows"
 msgstr "... в полные &Строки"
 
-msgid "Extend Selection Left\tSHIFT+LEFT"
-msgstr "Расширить ВЫДЕЛЕНИЕ вЛево\tSHIFT+LEFT"
+msgid "Extend Selection Left"
+msgstr "Расширить ВЫДЕЛЕНИЕ вЛево"
 
-msgid "Extend Selection Right\tSHIFT+RIGHT"
-msgstr "... вПраво\tSHIFT+RIGHT"
+msgid "Extend Selection Right"
+msgstr "... вПраво"
 
-msgid "Extend Selection Up\tSHIFT+UP"
-msgstr "... вВерх\tSHIFT+UP"
+msgid "Extend Selection Up"
+msgstr "... вВерх"
 
-msgid "Extend Selection Word Left\tCTRL+SHIFT+LEFT"
-msgstr "... на Слово вЛево\tCTRL+SHIFT+LEFT"
+msgid "Extend Selection Word Left"
+msgstr "... на Слово вЛево"
 
-msgid "Extend Selection Word Right\tCTRL+SHIFT+RIGHT"
-msgstr "... на Слово вПраво\tCTRL+SHIFT+RIGHT"
+msgid "Extend Selection Word Right"
+msgstr "... на Слово вПраво"
 
-msgid "Extend Selection to End\tSHIFT+END"
-msgstr "... до Конца Клетки\tSHIFT+END"
+msgid "Extend Selection to End"
+msgstr "... до Конца Клетки"
 
-msgid "Extend Selection to Start\tSHIFT+HOME"
-msgstr "... до Начала Клетки\tSHIFT+HOME"
+msgid "Extend Selection to Start"
+msgstr "... до Начала Клетки"
 
 msgid "Faster line rendering"
 msgstr "Более быстрый рендеринг линий"
@@ -699,8 +706,14 @@ msgstr "Фильтр по Цвету Ячейки"
 msgid "Filter..."
 msgstr "Фильтр..."
 
-msgid "Fold All\tCTRL+SHIFT+F10"
-msgstr "Свернуть Всё\tCTRL+SHIFT+F10"
+msgid "Find and replace in document"
+msgstr ""
+
+msgid "Find in document"
+msgstr ""
+
+msgid "Fold All"
+msgstr "Свернуть Всё"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr ""
@@ -710,29 +723,29 @@ msgstr ""
 msgid "Found an image type that is not defined in this program."
 msgstr "Найден тип изображения, который не определен в этой программе."
 
-msgid "Go To &Matching Cell (Text)\tF6"
-msgstr "Перейти к ячейке с &Аналогичным Текстом\tF6"
+msgid "Go To &Matching Cell (Text)"
+msgstr "Перейти к ячейке с &Аналогичным Текстом"
 
-msgid "Go To &Previous Search Result\tSHIFT+F3"
-msgstr "К Пре&дыдущему...\tSHIFT+F3"
+msgid "Go To &Previous Search Result"
+msgstr "К Пре&дыдущему..."
 
-msgid "Go To Matching Cell (Image)\tF7"
-msgstr "Перейти к ячейке с &Аналогичным Изображением\tF7"
+msgid "Go To Matching Cell (Image)"
+msgstr "Перейти к ячейке с &Аналогичным Изображением"
 
-msgid "Go To Matching Cell (Image, Reverse)\tSHIFT+F7"
-msgstr "... в Обратном направлении\tSHIFT+F7"
+msgid "Go To Matching Cell (Image, Reverse)"
+msgstr "... в Обратном направлении"
 
-msgid "Go To Matching Cell (Text, Reverse)\tSHIFT+F6"
-msgstr "... в Обратном направлении\tSHIFT+F6"
+msgid "Go To Matching Cell (Text, Reverse)"
+msgstr "... в Обратном направлении"
 
 msgid "Go to Next Search Result"
 msgstr "К Cледующему вхождению поиска"
 
-msgid "Go to next filter match\tCTRL+F3"
-msgstr "Перейти к Следующему Фильтру\tCTRL+F3"
+msgid "Go to next filter match"
+msgstr "Перейти к Следующему Фильтру"
 
-msgid "Grid Style Rendering\t"
-msgstr "Отображение в стиле &Сетки\t"
+msgid "Grid Style Rendering"
+msgstr "Отображение в стиле &Сетки"
 
 msgid "HTML (&Bullet points)..."
 msgstr "HTML (&Пункты Cписка)..."
@@ -740,8 +753,8 @@ msgstr "HTML (&Пункты Cписка)..."
 msgid "HTML (&Outline)..."
 msgstr "HTML (&Структура)..."
 
-msgid "Hierarchy &Swap\tF8"
-msgstr "&Смена Иерархии\tF8"
+msgid "Hierarchy &Swap"
+msgstr "&Смена Иерархии"
 
 # Сообщения
 msgid ""
@@ -751,14 +764,14 @@ msgstr ""
 "Удерживайте CTRL и одновременно нажмите правую кнопку мыши, чтобы быстро "
 "задать Тег для текущей ячейки из всплывающего меню"
 
-msgid "Horizontal Layout with Bubble Style Rendering\t"
-msgstr "... в стиле &Пузыря\t"
+msgid "Horizontal Layout with Bubble Style Rendering"
+msgstr "... в стиле &Пузыря"
 
-msgid "Horizontal Layout with Grid Style Rendering\t"
-msgstr "Горизонтальная компоновка в стиле &Сетки\t"
+msgid "Horizontal Layout with Grid Style Rendering"
+msgstr "Горизонтальная компоновка в стиле &Сетки"
 
-msgid "Horizontal Layout with Line Style Rendering\t"
-msgstr "... в стиле &Линии\t"
+msgid "Horizontal Layout with Line Style Rendering"
+msgstr "... в стиле &Линии"
 
 msgid "Hover shadow"
 msgstr "Тень при наведении"
@@ -780,11 +793,11 @@ msgstr "Размер изображения изменён"
 msgid "Import file from"
 msgstr "&Импортировать файл из"
 
-msgid "Increase column width (ALT+mousewheel)\tALT+PGUP"
-msgstr "У&величить Ширину Столбца (ALT+mousewheel)\tALT+PGUP"
+msgid "Increase column width (ALT+mousewheel)"
+msgstr "У&величить Ширину Столбца (ALT+mousewheel)"
 
-msgid "Increase column width (no sub grids)\tCTRL+ALT+PGUP"
-msgstr "У&величить Ширину Столбца (без подсеток)\tCTRL+ALT+PGUP"
+msgid "Increase column width (no sub grids)"
+msgstr "У&величить Ширину Столбца (без подсеток)"
 
 # & - не в том месте!..
 msgid "Indented &Text..."
@@ -821,14 +834,14 @@ msgstr "Привязка клавиш"
 msgid "Keybinding cancelled."
 msgstr "Привязка клавиш отменена."
 
-msgid "Line Style Rendering\t"
-msgstr "... в стиле &Линии\t"
+msgid "Line Style Rendering"
+msgstr "... в стиле &Линии"
 
-msgid "Load interactive &tutorial...\tF1"
-msgstr "Загрузить интерактивный &Учебник...\tF1"
+msgid "Load interactive &tutorial..."
+msgstr "Загрузить интерактивный &Учебник..."
 
-msgid "Load operation reference...\tCTRL+ALT+F1"
-msgstr "Загрузить Справочник Операций...\tCTRL+ALT+F1"
+msgid "Load operation reference..."
+msgstr "Загрузить Справочник Операций..."
 
 # Сообщения
 #, c-format
@@ -863,50 +876,50 @@ msgstr "Свернуть в Трей"
 msgid "More than one cell must be selected."
 msgstr "Необходимо выбрать более одной ячейки."
 
-msgid "Move Cells Down\tCTRL+DOWN"
-msgstr "... вНиз\tCTRL+DOWN"
+msgid "Move Cells Down"
+msgstr "... вНиз"
 
-msgid "Move Cells Left\tCTRL+LEFT"
-msgstr "Переместить Ячейки вЛево\tCTRL+LEFT"
+msgid "Move Cells Left"
+msgstr "Переместить Ячейки вЛево"
 
-msgid "Move Cells Right\tCTRL+RIGHT"
-msgstr "... вПраво\tCTRL+RIGHT"
+msgid "Move Cells Right"
+msgstr "... вПраво"
 
-msgid "Move Cells Up\tCTRL+UP"
-msgstr "... вВерх\tCTRL+UP"
+msgid "Move Cells Up"
+msgstr "... вВерх"
 
-msgid "Move Selection Down\tDOWN"
-msgstr "... вНиз\tDOWN"
+msgid "Move Selection Down"
+msgstr "... вНиз"
 
 msgid "Move Selection Down (DOWN)"
 msgstr "... вНиз (DOWN)"
 
-msgid "Move Selection Left\tLEFT"
-msgstr "Переместить Курсор Клетки вЛево\tLEFT"
+msgid "Move Selection Left"
+msgstr "Переместить Курсор Клетки вЛево"
 
 msgid "Move Selection Left (LEFT)"
 msgstr "Переместить Курсор Клетки вЛево (LEFT)"
 
-msgid "Move Selection Right\tRIGHT"
-msgstr "... вПраво\tRIGHT"
+msgid "Move Selection Right"
+msgstr "... вПраво"
 
 msgid "Move Selection Right (RIGHT)"
 msgstr "... вПраво (RIGHT)"
 
-msgid "Move Selection Up\tUP"
-msgstr "... вВерх\tUP"
+msgid "Move Selection Up"
+msgstr "... вВерх"
 
 msgid "Move Selection Up (UP)"
 msgstr "... вВерх (UP)"
 
-msgid "Move to next cell\tTAB"
-msgstr "Перейти к Следующей Ячейке\tTAB"
+msgid "Move to next cell"
+msgstr "Перейти к Следующей Ячейке"
 
 msgid "Move to next cell (TAB)"
 msgstr "Перейти к Следующей Ячейке (TAB)"
 
-msgid "Move to previous cell\tSHIFT+TAB"
-msgstr "... к Предыдущей...\tSHIFT+TAB"
+msgid "Move to previous cell"
+msgstr "... к Предыдущей..."
 
 msgid "Move to previous cell (SHIFT+TAB)"
 msgstr "... к Предыдущей... (SHIFT+TAB)"
@@ -990,8 +1003,8 @@ msgstr ""
 "Теперь просмотр TreeSheet должен поместиться на экране. Нажмите F12, чтобы "
 "вернуться в нормальный режим."
 
-msgid "Open &file\tF4"
-msgstr "Открыть &Файл\tF4"
+msgid "Open &file"
+msgstr "Открыть &Файл"
 
 msgid "Open (CTRL+o)"
 msgstr "Открыть (CTRL+o)"
@@ -1000,21 +1013,24 @@ msgstr "Открыть (CTRL+o)"
 msgid "Open TreeSheets file"
 msgstr "Открыть файл TreeSheets"
 
-msgid "Open border colors\tSHIFT+ALT+F11"
-msgstr "... Цвета &Границы\tSHIFT+ALT+F11"
+msgid "Open an existing document"
+msgstr ""
 
-msgid "Open cell colors\tSHIFT+ALT+F9"
-msgstr "Открыть Цвета &Ячейки\tSHIFT+ALT+F9"
+msgid "Open border colors"
+msgstr "... Цвета &Границы"
+
+msgid "Open cell colors"
+msgstr "Открыть Цвета &Ячейки"
 
 # Сообщения
 msgid "Open file cancelled."
 msgstr "Открытие файла отменено."
 
-msgid "Open link in &browser\tF5"
-msgstr "Открыть ссылку в &Браузере\tF5"
+msgid "Open link in &browser"
+msgstr "Открыть ссылку в &Браузере"
 
-msgid "Open text colors\tSHIFT+ALT+F10"
-msgstr "... Цвета &Текста\tSHIFT+ALT+F10"
+msgid "Open text colors"
+msgstr "... Цвета &Текста"
 
 # Сообщения
 msgid ""
@@ -1054,8 +1070,11 @@ msgstr "Настройка Страницы..."
 msgid "Paste (CTRL+v)"
 msgstr "Вставить (CTRL+v)"
 
-msgid "Paste Style Only\tCTRL+SHIFT+v"
-msgstr "Вставить только Стиль\tCTRL+SHIFT+v"
+msgid "Paste Style Only"
+msgstr "Вставить только Стиль"
+
+msgid "Paste clipboard contents"
+msgstr ""
 
 # Сообщения
 msgid "Paste file path"
@@ -1130,6 +1149,9 @@ msgstr "Просмотр Печати"
 msgid "Print preview..."
 msgstr "&Просмотр Печати..."
 
+msgid "Quit this program"
+msgstr ""
+
 msgid "Radius &0"
 msgstr "Радиус &0"
 
@@ -1176,21 +1198,21 @@ msgstr "Заменить &Всё"
 msgid "Replace All"
 msgstr "Заменить Всё"
 
-msgid "Replace in Current &Selection\tCTRL+k"
-msgstr "Заменить в &Текущем Выделении\tCTRL+k"
+msgid "Replace in Current &Selection"
+msgstr "Заменить в &Текущем Выделении"
 
-msgid "Replace in Current Selection && &Jump Next\tCTRL+j"
-msgstr "... и Перейти к Cледующему вх&ождению\tCTRL+j"
+msgid "Replace in Current Selection && &Jump Next"
+msgstr "... и Перейти к Cледующему вх&ождению"
 
 # Сообщения
 msgid "Replace in selection"
 msgstr "Заменить в выделенном"
 
-msgid "Reset &colors\tCTRL+SHIFT+c"
-msgstr "... &Цвета\tCTRL+SHIFT+c"
+msgid "Reset &colors"
+msgstr "... &Цвета"
 
-msgid "Reset column widths\tCTRL+SHIFT+w"
-msgstr "Сбросить &Ширину Столбца\tCTRL+SHIFT+w"
+msgid "Reset column widths"
+msgstr "Сбросить &Ширину Столбца"
 
 msgid "Run"
 msgstr "Запустить"
@@ -1217,6 +1239,12 @@ msgstr "Сохранить и закрыть"
 # Сообщения
 msgid "Save cancelled."
 msgstr "Сохранение отменено."
+
+msgid "Save current document"
+msgstr ""
+
+msgid "Save current document with a different filename"
+msgstr ""
 
 msgid "Save image as JPEG"
 msgstr "&Сохранить в JPEG"
@@ -1247,39 +1275,33 @@ msgstr "Сохранение %s прошло успешно (за %d милли�
 msgid "Script"
 msgstr "Сценарий"
 
-msgid "Scroll Down (mousewheel)\tALT+DOWN"
-msgstr "... вНиз (mousewheel)\tALT+DOWN"
+msgid "Scroll Down (mousewheel)"
+msgstr "... вНиз (mousewheel)"
 
-msgid "Scroll Down (mousewheel)\tPGDN"
-msgstr "... вНиз (mousewheel)\tPGDN"
+msgid "Scroll Left"
+msgstr "... вЛево"
 
-msgid "Scroll Left\tALT+LEFT"
-msgstr "... вЛево\tALT+LEFT"
-
-msgid "Scroll Right\tALT+RIGHT"
-msgstr "... вПраво\tALT+RIGHT"
+msgid "Scroll Right"
+msgstr "... вПраво"
 
 msgid "Scroll Sheet..."
 msgstr "Прокрутка Листа..."
 
-msgid "Scroll Up (mousewheel)\tALT+UP"
-msgstr "... вВерх (mousewheel)\tALT+UP"
-
-msgid "Scroll Up (mousewheel)\tPGUP"
-msgstr "... вВерх (mousewheel)\tPGUP"
+msgid "Scroll Up (mousewheel)"
+msgstr "... вВерх (mousewheel)"
 
 # Интерфейс
 msgid "Search "
 msgstr "Поиск "
 
-msgid "Select &Parent\tESC"
-msgstr "Выбрать &Родителя\tESC"
+msgid "Select &Parent"
+msgstr "Выбрать &Родителя"
 
-msgid "Select &all in current grid/cell\tCTRL+a"
-msgstr "Выбрать Всё в текущей Сетке/Ячейке\tCTRL+a"
+msgid "Select &all in current grid/cell"
+msgstr "Выбрать Всё в текущей Сетке/Ячейке"
 
-msgid "Select First &Child\tSHIFT+ENTER"
-msgstr "Выбрать Первого &Потомка\tSHIFT+ENTER"
+msgid "Select First &Child"
+msgstr "Выбрать Первого &Потомка"
 
 # Сообщения
 msgid "Selected grid is not a table: cells must not already have sub-grids."
@@ -1330,6 +1352,9 @@ msgstr "Показать 5% Последних Правок"
 msgid "Show 50% of last edits"
 msgstr "... 50%"
 
+msgid "Show About dialog"
+msgstr ""
+
 msgid "Show Statusbar"
 msgstr "Показать Строку Состояния"
 
@@ -1342,8 +1367,8 @@ msgstr "Показать последние Изменения в Диапазо
 msgid "Show only cells in current search"
 msgstr "Показывать Ячейки только в Текущем Поиске"
 
-msgid "Show statistics\tCTRL+d"
-msgstr "Показать Статистику\tCTRL+d"
+msgid "Show statistics"
+msgstr "Показать Статистику"
 
 msgid "Single click maximize from tray"
 msgstr "Развернуть одним щелчком мыши из Трея"
@@ -1363,11 +1388,11 @@ msgstr "... по &Убыванию"
 msgid "Start date and time"
 msgstr "Дата и время начала"
 
-msgid "Start of line of text\tHOME"
-msgstr "К Началу Строки текста\tHOME"
+msgid "Start of line of text"
+msgstr "К Началу Строки текста"
 
-msgid "Start of text\tCTRL+HOME"
-msgstr "К Началу Текста Клетки\tCTRL+HOME"
+msgid "Start of text"
+msgstr "К Началу Текста Клетки"
 
 # Сообщения
 msgid "Swap all cells with this text at this level (or above) with the parent"
@@ -1381,11 +1406,8 @@ msgstr "Поменять Прокрутку и Масштабирование к
 msgid "Switch to &next file/tab"
 msgstr "Переход к &Cледующему файлу/вкладке"
 
-msgid "Switch to &next file/tab\tCTRL+TAB"
-msgstr "Переход к &Cледующему файлу/вкладке\tCTRL+TAB"
-
-msgid "Switch to &previous file/tab\tCTRL+SHIFT+TAB"
-msgstr "... к &Предыдущему файлу/вкладке\tCTRL+SHIFT+TAB"
+msgid "Switch to &previous file/tab"
+msgstr "... к &Предыдущему файлу/вкладке"
 
 msgid "Tab delimited text..."
 msgstr "Текст (разделитель - та&буляция)..."
@@ -1454,41 +1476,32 @@ msgstr "Эта операция требует выбора (выделения)
 msgid "This operation works on a single selected cell only."
 msgstr "Эта операция применима только к одной выбранной ячейке."
 
-msgid "Toggle &Fullscreen View\tCTRL+F11"
-msgstr "Переключить Полноэкранный режим\tCTRL+F11"
+msgid "Toggle &Fullscreen View"
+msgstr "Переключить Полноэкранный режим"
 
-msgid "Toggle &Fullscreen View\tF11"
-msgstr "Переключить Полноэкранный режим\tF11"
+msgid "Toggle &Scaled Presentation View"
+msgstr "... Масштабирование просмотра"
 
-msgid "Toggle &Scaled Presentation View\tCTRL+F12"
-msgstr "... Масштабирование просмотра\tCTRL+F12"
+msgid "Toggle Fold"
+msgstr "Свер&нуть - Развернуть"
 
-msgid "Toggle &Scaled Presentation View\tF12"
-msgstr "... Масштабирование просмотра\tF12"
+msgid "Toggle Vertical Layout"
+msgstr "Переключить &Макет (Вертик/Горизонт)"
 
-msgid "Toggle Fold\tCTRL+F10"
-msgstr "Свер&нуть - Развернуть\tCTRL+F10"
+msgid "Toggle cell &BOLD"
+msgstr "Переключить Ячейку на &ЖИРНЫЙ"
 
-msgid "Toggle Fold\tF10"
-msgstr "Свер&нуть - Развернуть\tF10"
+msgid "Toggle cell &ITALIC"
+msgstr "... на &ИТАЛИК"
 
-msgid "Toggle Vertical Layout\t"
-msgstr "Переключить &Макет (Вертик/Горизонт)\t"
+msgid "Toggle cell &strikethrough"
+msgstr "... на &Зачеркивание"
 
-msgid "Toggle cell &BOLD\tCTRL+b"
-msgstr "Переключить Ячейку на &ЖИРНЫЙ\tCTRL+b"
+msgid "Toggle cell &typewriter"
+msgstr "... на &Машинопись"
 
-msgid "Toggle cell &ITALIC\tCTRL+i"
-msgstr "... на &ИТАЛИК\tCTRL+i"
-
-msgid "Toggle cell &strikethrough\tCTRL+t"
-msgstr "... на &Зачеркивание\tCTRL+t"
-
-msgid "Toggle cell &typewriter\tCTRL+ALT+t"
-msgstr "... на &Машинопись\tCTRL+ALT+t"
-
-msgid "Toggle cell &underlined\tCTRL+u"
-msgstr "... на &Подчеркивание\tCTRL+u"
+msgid "Toggle cell &underlined"
+msgstr "... на &Подчеркивание"
 
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "Сворачивает - Разворачивает подсетки в выбранных ячейках."
@@ -1503,8 +1516,8 @@ msgstr "&Выключить Фильтр"
 msgid "Undo (CTRL+z)"
 msgstr "Отменить (CTRL+z)"
 
-msgid "Unfold All\tCTRL+ALT+F10"
-msgstr "Развернуть Всё\tCTRL+ALT+F10"
+msgid "Unfold All"
+msgstr "Развернуть Всё"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr ""
@@ -1515,20 +1528,20 @@ msgstr ""
 msgid "Uses"
 msgstr "Используется"
 
-msgid "Variable &Assign\tCTRL+ALT+a"
-msgstr "&Назначить Переменную\tCTRL+ALT+a"
+msgid "Variable &Assign"
+msgstr "&Назначить Переменную"
 
-msgid "Variable &Read\tCTRL+ALT+r"
-msgstr "Про&читать Переменную\tCTRL+ALT+r"
+msgid "Variable &Read"
+msgstr "Про&читать Переменную"
 
-msgid "Vertical Layout with Bubble Style Rendering\t"
-msgstr "... в стиле &Пузыря\t"
+msgid "Vertical Layout with Bubble Style Rendering"
+msgstr "... в стиле &Пузыря"
 
-msgid "Vertical Layout with Grid Style Rendering\t"
-msgstr "Вертикальная компоновка в стиле &Сетки\t"
+msgid "Vertical Layout with Grid Style Rendering"
+msgstr "Вертикальная компоновка в стиле &Сетки"
 
-msgid "Vertical Layout with Line Style Rendering\t"
-msgstr "... в стиле &Линии\t"
+msgid "Vertical Layout with Line Style Rendering"
+msgstr "... в стиле &Линии"
 
 msgid "View tutorial &web page..."
 msgstr "Посмотреть &Bеб-страницу Учебника..."
@@ -1546,11 +1559,11 @@ msgstr "Ширина"
 msgid "Width %d"
 msgstr "Ширина %d"
 
-msgid "Word Left\tCTRL+LEFT"
-msgstr "На СЛОВО вЛево\tCTRL+LEFT"
+msgid "Word Left"
+msgstr "На СЛОВО вЛево"
 
-msgid "Word Right\tCTRL+RIGHT"
-msgstr "... вПраво\tCTRL+RIGHT"
+msgid "Word Right"
+msgstr "... вПраво"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (в т.ч. &атрибуты - для OPML и т.п.)..."
@@ -1566,11 +1579,11 @@ msgstr "Вам необходимо выбрать одну ячейку, есл
 msgid "Zlib error while writing file."
 msgstr "Ошибка Zlib при записи файла."
 
-msgid "Zoom &In (CTRL+mousewheel)\tCTRL+PGUP"
-msgstr "У&величить (CTRL+mousewheel)\tCTRL+PGUP"
+msgid "Zoom &In (CTRL+mousewheel)"
+msgstr "У&величить (CTRL+mousewheel)"
 
-msgid "Zoom &Out (CTRL+mousewheel)\tCTRL+PGDN"
-msgstr "У&меньшить (CTRL+mousewheel)\tCTRL+PGDN"
+msgid "Zoom &Out (CTRL+mousewheel)"
+msgstr "У&меньшить (CTRL+mousewheel)"
 
 msgid "Zoom In (CTRL+mousewheel)"
 msgstr "Увеличить (CTRL+mousewheel)"
