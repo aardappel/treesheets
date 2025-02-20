@@ -8,11 +8,11 @@ msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-20 20:50+0100\n"
-"PO-Revision-Date: 2024-08-20 15:38-0300\n"
+"PO-Revision-Date: 2025-02-20 10:35-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
-"Language-Team: Brazilian Portuguese <ldpbr-"
-"translation@lists.sourceforge.net>\n"
+"Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
+"net>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cell(s)"
-msgstr ""
+msgstr "%d célula(s)"
 
 #, c-format
 msgid ""
@@ -282,7 +282,6 @@ msgstr "Borda &4"
 msgid "Border &5"
 msgstr "Borda &5"
 
-#, fuzzy
 msgid "Bubble Style Rendering"
 msgstr "Renderização com Estilo de Bolha"
 
@@ -382,9 +381,8 @@ msgstr "Limpar substituição"
 msgid "Clear search"
 msgstr "Limpar busca"
 
-#, fuzzy
 msgid "Close current document"
-msgstr "Recarregar d&ocumentos automaticamente"
+msgstr "Fecha o documento atual"
 
 msgid "Collapse Ce&lls"
 msgstr "&Mesclar Células"
@@ -411,9 +409,8 @@ msgstr "Copiar (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copiar como Te&xto Contínuo"
 
-#, fuzzy
 msgid "Copy selection"
-msgstr "Substituir na seleção"
+msgstr "Copia a seleção"
 
 msgid "Copy with &Images"
 msgstr "Copiar com &Imagens"
@@ -428,7 +425,7 @@ msgid "Create .bak files"
 msgstr "Criar arquivos .ba&k"
 
 msgid "Create a new document"
-msgstr ""
+msgstr "Cria um novo documento"
 
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Cria um novo nível de hierarquia ao redor da seleção atual"
@@ -442,13 +439,11 @@ msgstr "Mover Cursor à Esquerda"
 msgid "Cursor Right"
 msgstr "Mover Cursor à Direita"
 
-#, fuzzy
 msgid "Cut selection"
-msgstr "Estender Seleção para Cima"
+msgstr "Recorta a seleção"
 
-#, fuzzy
 msgid "Date and time range"
-msgstr "Data/hora final"
+msgstr "Intervalo de datas e horas"
 
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "Diminuir a largura da coluna (ALT+botão de rolagem)"
@@ -655,10 +650,10 @@ msgid "Filter..."
 msgstr "&Filtrar"
 
 msgid "Find and replace in document"
-msgstr ""
+msgstr "Busca e substitui no documento"
 
 msgid "Find in document"
-msgstr ""
+msgstr "Busca no documento"
 
 msgid "Fold All"
 msgstr "Dobrar Todas"
@@ -690,7 +685,6 @@ msgstr "Ir para Resultado Seguinte da Busca"
 msgid "Go to next filter match"
 msgstr "Ir para célula evidenciada seguinte"
 
-#, fuzzy
 msgid "Grid Style Rendering"
 msgstr "Renderização com Estilo de Grade"
 
@@ -710,15 +704,12 @@ msgstr ""
 "Segure CTRL e clique com o botão direito do mouse para definir rapidamente "
 "uma tag para a célula atual usando um menu popup"
 
-#, fuzzy
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "Layout Horizontal, Renderização com Estilo de Bolha"
 
-#, fuzzy
 msgid "Horizontal Layout with Grid Style Rendering"
 msgstr "Layout Horizontal, Renderização com Estilo de Grade"
 
-#, fuzzy
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Layout Horizontal, Renderização com Estilo de Linha"
 
@@ -773,7 +764,6 @@ msgstr "Associação de teclas"
 msgid "Keybinding cancelled."
 msgstr "A associação de teclas foi cancelada."
 
-#, fuzzy
 msgid "Line Style Rendering"
 msgstr "Renderização com Estilo de Linha"
 
@@ -785,8 +775,7 @@ msgstr "Carregar &referência de operações"
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr ""
-"O arquivo %s foi carregado (%d células, %d caracteres) em %d milissegundos."
+msgstr "%s (%d célula(s), %d caractere(s)) carregado em %d milissegundo(s)."
 
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
@@ -935,7 +924,7 @@ msgid "Open TreeSheets file"
 msgstr "Abrir o arquivo do TreeSheets"
 
 msgid "Open an existing document"
-msgstr ""
+msgstr "Abre um documento existente"
 
 msgid "Open border colors"
 msgstr "Abrir cores de borda"
@@ -956,15 +945,15 @@ msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
 "URL)"
 msgstr ""
-"Abre no navegador o texto da célula selecionada (deve começar com uma URL "
+"Abre o texto da célula selecionada no navegador (deve começar com uma URL "
 "válida)"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
 "type"
 msgstr ""
-"Abre no aplicativo padrão para o tipo de arquivo o texto da célula "
-"selecionada"
+"Abre o texto da célula selecionada no aplicativo padrão para o tipo de "
+"arquivo"
 
 msgid ""
 "PNG decode failed on some images in this document\n"
@@ -991,7 +980,7 @@ msgid "Paste Style Only"
 msgstr "Colar &Estilo"
 
 msgid "Paste clipboard contents"
-msgstr ""
+msgstr "Cola o conteúdo da área de transferência"
 
 msgid "Paste file path"
 msgstr "Colar o caminho do arquivo"
@@ -1053,7 +1042,7 @@ msgid "Print preview..."
 msgstr "&Visualização de impressão..."
 
 msgid "Quit this program"
-msgstr ""
+msgstr "Sai deste programa"
 
 msgid "Radius &0"
 msgstr "Raio &0"
@@ -1138,10 +1127,10 @@ msgid "Save cancelled."
 msgstr "O salvamento foi cancelado."
 
 msgid "Save current document"
-msgstr ""
+msgstr "Salva o documento atual"
 
 msgid "Save current document with a different filename"
-msgstr ""
+msgstr "Salva o documento atual com um nome diferente"
 
 msgid "Save image as JPEG"
 msgstr "Salvar imagem como JPEG"
@@ -1153,7 +1142,7 @@ msgid ""
 "Save image(s) to disk. Multiple images will be saved with a counter appended "
 "to each file name."
 msgstr ""
-"Salva imagem(ns) para disco. Múltiplas imagens serão salvas com um contador "
+"Salva imagem(ns) para disco. Múltiplas imagens serão salvas, com um contador "
 "acrescentado ao nome de cada arquivo."
 
 msgid "Save the image in the TreeSheets file in JPEG format"
@@ -1164,7 +1153,7 @@ msgstr "Salva a imagem no arquivo TreeSheets em formato PNG"
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "O arquivo %s foi salvo com sucesso (em %d milissegundos)."
+msgstr "O arquivo %s foi salvo com sucesso (em %d milissegundo(s))."
 
 msgid "Script"
 msgstr "&Script"
@@ -1242,7 +1231,7 @@ msgid "Show 50% of last edits"
 msgstr "Evidenciar edições mais recentes: últimas 50%"
 
 msgid "Show About dialog"
-msgstr ""
+msgstr "Mostra a caixa de diálogo Sobre"
 
 msgid "Show Statusbar"
 msgstr "Mostrar Barra de &Status"
@@ -1360,7 +1349,6 @@ msgstr "Entrar/Sair da Visualização de Apresentação em &Escala"
 msgid "Toggle Fold"
 msgstr "Dobrar/Desdobrar"
 
-#, fuzzy
 msgid "Toggle Vertical Layout"
 msgstr "Tornar Layout Vertical/Horizontal"
 
@@ -1406,15 +1394,12 @@ msgstr "&Atribuição de Variável"
 msgid "Variable &Read"
 msgstr "&Leitura de Variável"
 
-#, fuzzy
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "Layout Vertical, Renderização com Estilo de Bolha"
 
-#, fuzzy
 msgid "Vertical Layout with Grid Style Rendering"
 msgstr "Layout Vertical, Renderização com Estilo de Grade"
 
-#, fuzzy
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "Layout Vertical, Renderização com Estilo de Linha"
 
@@ -1438,7 +1423,7 @@ msgid "Word Right"
 msgstr "Palavra à Direita"
 
 msgid "XML (attributes too, for OPML etc)..."
-msgstr "XML (&atributos também, para OPML, etc.)..."
+msgstr "XML (&atributos também, para OPML etc.)..."
 
 msgid "XML..."
 msgstr "&XML..."
@@ -1471,24 +1456,22 @@ msgid "change will take effect next run of TreeSheets"
 msgstr "a mudança passará a valer na próxima execução do TreeSheets"
 
 msgid "changes the orientation of a grid"
-msgstr "muda a orientação de uma grade"
+msgstr "Muda a orientação de uma grade"
 
 msgid "couldn't import file!"
 msgstr "não foi possível importar o arquivo!"
 
 msgid "only sets the colors and style of the copied cell, and keeps the text"
-msgstr ""
-"cola unicamente as cores e o estilo da célula copiada, e mantém o texto"
+msgstr "Cola as cores e o estilo, mas não o texto, da célula que foi copiada"
 
 msgid "only works in cell text mode"
 msgstr "só funciona no modo texto da célula"
 
 msgid "redo any undo steps, if you haven't made changes since"
-msgstr ""
-"refaz passos defeitos, se não tiverem havido mudanças depois de desfazer"
+msgstr "Refaz passos desfeitos, se você não tiver feito mudanças desde então"
 
 msgid "revert the changes, one step at a time"
-msgstr "reverte as mudanças, um passo de cada vez"
+msgstr "Reverte as mudanças, um passo de cada vez"
 
 msgid "scale:"
 msgstr "escala:"
@@ -1498,12 +1481,6 @@ msgstr "tamanho:"
 
 #~ msgid "Toggle Zen Mode"
 #~ msgstr "Entrar/Sair do Modo &Zen"
-
-#~ msgid "Reset toolbar"
-#~ msgstr "&Redefinir barra de ferramentas"
-
-#~ msgid "Black and white toolbar icons"
-#~ msgstr "Íco&nes da barra de ferramentas em preto e branco"
 
 #~ msgid "Empty strings cannot be tags."
 #~ msgstr "Sequências vazias não podem ser tags."
@@ -1527,15 +1504,8 @@ msgstr "tamanho:"
 #~ "Não foi possível carregar arquivo porque uma imagem embutida é de um tipo "
 #~ "desconhecido"
 
-#~ msgid "Image copied to clipboard"
-#~ msgstr "Imagem copiada para a área de transferência"
-
 #~ msgid "Text copied to clipboard"
 #~ msgstr "Texto copiado para a área de transferência"
-
-#, c-format
-#~ msgid "Script system could not initialize: %s"
-#~ msgstr "O sistema de script não conseguiu inicializar: %s"
 
 #~ msgid "Cannot find file."
 #~ msgstr "Não foi possível encontrar o arquivo."
