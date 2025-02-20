@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%d cell(s)"
-msgstr "%d Zellen"
+msgstr "%d Zell(en)"
 
 #, c-format
 msgid ""
@@ -382,9 +382,8 @@ msgstr "Textkasten (Ersetzen) leeren"
 msgid "Clear search"
 msgstr "Textkasten (Suche) leeren"
 
-#, fuzzy
 msgid "Close current document"
-msgstr "Dokument automatisch neu laden"
+msgstr "Aktuelles Dokument schließen"
 
 msgid "Collapse Ce&lls"
 msgstr "Ze&llen zusammenlegen"
@@ -412,9 +411,8 @@ msgstr "Kopieren (STRG+c)"
 msgid "Copy As Continuous Text"
 msgstr "Als durchgängigen Text kopieren"
 
-#, fuzzy
 msgid "Copy selection"
-msgstr "In aktueller Auswahl ersetzen"
+msgstr "Auswahl kopieren"
 
 msgid "Copy with &Images"
 msgstr "Mit &Bildern kopieren"
@@ -443,13 +441,11 @@ msgstr "Cursor links"
 msgid "Cursor Right"
 msgstr "Cursor rechts"
 
-#, fuzzy
 msgid "Cut selection"
-msgstr "Auswahl nach oben ausweiten"
+msgstr "Auswahl ausschneiden"
 
-#, fuzzy
 msgid "Date and time range"
-msgstr "Enddatum und -zeit"
+msgstr "Datum- und Zeitbereich"
 
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "Spaltenbreite verkleinern (ALT+Mausrad)"
