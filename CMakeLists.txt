@@ -165,9 +165,10 @@ if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
 elseif(APPLE)
-    set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
-    set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX}/TreeSheets.app/Contents/Resources)
-    set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_PREFIX}/TreeSheets.app/Contents/Resources)
+    # Paths must be relative to use with CPack
+    set(TREESHEETS_BINDIR .)
+    set(TREESHEETS_DOCDIR TreeSheets.app/Contents/Resources)
+    set(TREESHEETS_PKGDATADIR TreeSheets.app/Contents/Resources)
 else()
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
     set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX})
@@ -205,7 +206,8 @@ elseif(APPLE)
     foreach(locale ${locales})
         install(
             FILES "TS/translations/${locale}/ts.mo"
-            DESTINATION "${CMAKE_INSTALL_PREFIX}/TreeSheets.app/Contents/Resources/translations/${locale}.lproj"
+            # Paths must be relative to use with CPack
+            DESTINATION "TreeSheets.app/Contents/Resources/translations/${locale}.lproj"
         )
     endforeach()
 else()
@@ -216,4 +218,10 @@ else()
             DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES"
         )
     endforeach()
+endif()
+if(APPLE)
+    set(CPACK_PACKAGE_NAME "TreeSheets")
+    set(CPACK_PACKAGE_VENDOR "Wouter van Oortmerssen")
+    set(CPACK_GENERATOR "DragNDrop")
+    include(CPack)
 endif()

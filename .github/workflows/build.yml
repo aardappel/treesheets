@@ -113,14 +113,9 @@ jobs:
         /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(date +'%Y.%m.%d')" osx/Info.plist
         /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" osx/Info.plist
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DCMAKE_INSTALL_PREFIX=macos-bundle -DGIT_WXWIDGETS_SUBMODULES=ON
-    - name: Build TreeSheets
-      run: cmake --build _build -j4
-    - name: Create bundle
-      run: cmake --install _build
-    - name: Zip bundle
-      run: zip -r ../mac_treesheets.zip TreeSheets.app
-      working-directory: macos-bundle
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DGIT_WXWIDGETS_SUBMODULES=ON
+    - name: Build and package TreeSheets
+      run: cmake --build _build --target package -j4
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
@@ -129,4 +124,4 @@ jobs:
         allowUpdates: true
         omitBody: true
         commit: master
-        artifacts: "mac_treesheets.zip"
+        artifacts: "_build/TreeSheets-*.dmg"
