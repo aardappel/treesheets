@@ -521,14 +521,44 @@ struct System {
                                 }
                             }; break;
                             case A_IMPTXTC:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
-                                break;
+                                if (Cell *p = sel.GetFirst()) {
+                                    Cell *r = new Cell(nullptr, nullptr, CT_DATA,
+                                                       new Grid(1, (int)as.size()));
+                                    r->grid->InitCells();
+                                    r->grid->CSVImport(as, L',');
+                                    p->Paste(tsdoc, r, sel);
+                                    tsdoc->Refresh();
+                                    return nullptr;
+                                } else {
+                                    InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
+                                    break;
+                                }
                             case A_IMPTXTS:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L';');
-                                break;
+                                if (Cell *p = sel.GetFirst()) {
+                                    Cell *r = new Cell(nullptr, nullptr, CT_DATA,
+                                                       new Grid(1, (int)as.size()));
+                                    r->grid->InitCells();
+                                    r->grid->CSVImport(as, L';');
+                                    p->Paste(tsdoc, r, sel);
+                                    tsdoc->Refresh();
+                                    return nullptr;
+                                } else {
+                                    InitDB(1, (int)as.size())->grid->CSVImport(as, L';');
+                                    break;
+                                }
                             case A_IMPTXTT:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t');
-                                break;
+                                if (Cell *p = sel.GetFirst()) {
+                                    Cell *r = new Cell(nullptr, nullptr, CT_DATA,
+                                                       new Grid(1, (int)as.size()));
+                                    r->grid->InitCells();
+                                    r->grid->CSVImport(as, L'\t');
+                                    p->Paste(tsdoc, r, sel);
+                                    tsdoc->Refresh();
+                                    return nullptr;
+                                } else {
+                                    InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t');
+                                    break;
+                                }
                         }
                     break;
                 }
