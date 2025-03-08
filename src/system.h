@@ -460,7 +460,16 @@ struct System {
         }
     }
 
-    const wxChar *Import(int k) {
+    void MergeLevel(Cell *lower, Cell *&upper) {
+        if (!lower->HasText() && lower->grid) {
+            *upper->grid->cells = nullptr;
+            delete upper;
+            upper = lower;
+            lower->parent = nullptr;
+        }
+    }
+
+    const wxChar *Import(int k, Selection &sel, Document *tsdoc) {
         wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
@@ -470,16 +479,22 @@ struct System {
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(fn)) goto problem;
-                    Cell *&r = InitDB(1);
-                    Cell *c = *r->grid->cells;
-                    FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
-                    if (!c->HasText() && c->grid) {
-                        *r->grid->cells = nullptr;
-                        delete r;
-                        r = c;
-                        c->parent = nullptr;
+                    if (Cell *p = sel.GetFirst()) {
+                        Cell *r = new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1));
+                        r->grid->InitCells();
+                        Cell *c = *r->grid->cells;
+                        FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
+                        MergeLevel(c, r);
+                        p->Paste(tsdoc, r, sel);
+                        tsdoc->Refresh();
+                        return nullptr;
+                    } else {
+                        Cell *&r = InitDB(1);
+                        Cell *c = *r->grid->cells;
+                        FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
+                        MergeLevel(c, r);
+                        break;
                     }
-                    break;
                 }
                 case A_IMPTXTI:
                 case A_IMPTXTC:
@@ -493,8 +508,17 @@ struct System {
 
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
-                                Cell *r = InitDB(1);
-                                FillRows(r->grid, as, CountCol(as[0]), 0, 0);
+                                if (Cell *p = sel.GetFirst()) {
+                                    Cell *r = new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1));
+                                    r->grid->InitCells();
+                                    FillRows(r->grid, as, CountCol(as[0]), 0, 0);
+                                    p->Paste(tsdoc, r, sel);
+                                    tsdoc->Refresh();
+                                    return nullptr;
+                                } else {
+                                    Cell *r = InitDB(1);
+                                    FillRows(r->grid, as, CountCol(as[0]), 0, 0);
+                                }
                             }; break;
                             case A_IMPTXTC:
                                 InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
