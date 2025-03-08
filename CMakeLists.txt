@@ -22,7 +22,9 @@
 
 cmake_minimum_required(VERSION 3.25)
 
-project(TreeSheets)
+project(TreeSheets
+    DESCRIPTION "A free-form hierarchical data organizer"
+    HOMEPAGE_URL "https://github.com/aardappel/treesheets")
 
 ########## GLOBAL SETTINGS ################################
 
@@ -253,10 +255,7 @@ else()
     endforeach()
 endif()
 
-set(CPACK_PACKAGE_NAME "TreeSheets")
 set(CPACK_PACKAGE_VENDOR "Wouter van Oortmerssen")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A free-form hierarchical data organizer")
-set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/aardappel/treesheets")
 if(APPLE)
     set(CPACK_GENERATOR "DragNDrop")
 elseif(WIN32)
