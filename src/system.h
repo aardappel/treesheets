@@ -474,12 +474,12 @@ struct System {
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
             wxBusyCursor wait;
+            Cell *p = sel.ThinExpand(tsdoc);
             switch (k) {
                 case A_IMPXML:
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(fn)) goto problem;
-                    Cell *p = sel.GetFirst();
                     Cell *r = p ? new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1)) : InitDB(1);
                     r->grid->InitCells();
                     Cell *c = *r->grid->cells;
@@ -503,7 +503,6 @@ struct System {
 
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
-                                Cell *p = sel.GetFirst();
                                 Cell *r = p ? new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1))
                                             : InitDB(1);
                                 r->grid->InitCells();
@@ -521,7 +520,7 @@ struct System {
                                 if (k == A_IMPTXTC) sep = L',';
                                 if (k == A_IMPTXTS) sep = L';';
                                 if (k == A_IMPTXTT) sep = L'\t';
-                                if (Cell *p = sel.GetFirst()) {
+                                if (p) {
                                     Cell *r = new Cell(nullptr, nullptr, CT_DATA,
                                                        new Grid(1, (int)as.size()));
                                     r->grid->InitCells();
