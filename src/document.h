@@ -1012,7 +1012,7 @@ struct Document {
             case A_IMPTXTI:
             case A_IMPTXTC:
             case A_IMPTXTS:
-            case A_IMPTXTT: return sys->Import(k);
+            case A_IMPTXTT: return sys->Import(k, selected, this);
 
             case wxID_OPEN: {
                 wxString fn = ::wxFileSelector(

@@ -460,7 +460,16 @@ struct System {
         }
     }
 
-    const wxChar *Import(int k) {
+    void MergeLevel(Cell *lower, Cell *&upper) {
+        if (!lower->HasText() && lower->grid) {
+            *upper->grid->cells = nullptr;
+            delete upper;
+            upper = lower;
+            lower->parent = nullptr;
+        }
+    }
+
+    const wxChar *Import(int k, Selection &sel, Document *tsdoc) {
         wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
@@ -470,17 +479,18 @@ struct System {
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(fn)) goto problem;
-                    Cell *&r = InitDB(1);
+                    Cell *p = sel.GetFirst();
+                    Cell *r = p ? new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1)) : InitDB(1);
+                    r->grid->InitCells();
                     Cell *c = *r->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
-                    if (!c->HasText() && c->grid) {
-                        *r->grid->cells = nullptr;
-                        delete r;
-                        r = c;
-                        c->parent = nullptr;
+                    MergeLevel(c, r);
+                    if (p) {
+                        p->Paste(tsdoc, r, sel);
+                        tsdoc->Refresh();
+                        return nullptr;
                     }
-                    break;
-                }
+                }; break;
                 case A_IMPTXTI:
                 case A_IMPTXTC:
                 case A_IMPTXTS:
@@ -493,18 +503,37 @@ struct System {
 
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
-                                Cell *r = InitDB(1);
+                                Cell *p = sel.GetFirst();
+                                Cell *r = p ? new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1))
+                                            : InitDB(1);
+                                r->grid->InitCells();
                                 FillRows(r->grid, as, CountCol(as[0]), 0, 0);
+                                if (p) {
+                                    p->Paste(tsdoc, r, sel);
+                                    tsdoc->Refresh();
+                                    return nullptr;
+                                }
                             }; break;
                             case A_IMPTXTC:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
-                                break;
                             case A_IMPTXTS:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L';');
-                                break;
-                            case A_IMPTXTT:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t');
-                                break;
+                            case A_IMPTXTT: {
+                                wxChar sep;
+                                if (k == A_IMPTXTC) sep = L',';
+                                if (k == A_IMPTXTS) sep = L';';
+                                if (k == A_IMPTXTT) sep = L'\t';
+                                if (Cell *p = sel.GetFirst()) {
+                                    Cell *r = new Cell(nullptr, nullptr, CT_DATA,
+                                                       new Grid(1, (int)as.size()));
+                                    r->grid->InitCells();
+                                    r->grid->CSVImport(as, sep);
+                                    p->Paste(tsdoc, r, sel);
+                                    tsdoc->Refresh();
+                                    return nullptr;
+                                } else {
+                                    InitDB(1, (int)as.size())->grid->CSVImport(as, sep);
+                                }
+                            break;
+                            }
                         }
                     break;
                 }
