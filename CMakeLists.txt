@@ -22,7 +22,9 @@
 
 cmake_minimum_required(VERSION 3.25)
 
-project(treesheets)
+project(TreeSheets
+    DESCRIPTION "A free-form hierarchical data organizer"
+    HOMEPAGE_URL "https://github.com/aardappel/treesheets")
 
 ########## GLOBAL SETTINGS ################################
 
@@ -105,6 +107,11 @@ else()
     include(${wxWidgets_USE_FILE})
 endif()
 
+if(WIN32)
+    add_library(StackWalker STATIC src/StackWalker/StackWalker.cpp src/StackWalker/StackWalkerHelpers.cpp)
+    target_include_directories(StackWalker PUBLIC src/StackWalker)
+endif()
+
 if(APPLE)
     add_executable(
         TreeSheets
@@ -117,6 +124,12 @@ if(APPLE)
     set_target_properties(TreeSheets PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/osx/Info.plist"
     )
+elseif(WIN32)
+    add_executable(
+        TreeSheets
+        WIN32
+        src/main.cpp
+    )
 else()
     add_executable(
         TreeSheets
@@ -124,22 +137,43 @@ else()
     )
 endif()
 
-target_include_directories(TreeSheets PUBLIC lobster/src)
+if(WIN32)
+    target_include_directories(TreeSheets PUBLIC lobster/src)
+else()
+    target_include_directories(TreeSheets PUBLIC lobster/src src/StackWalker)
+endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
-target_link_libraries(
-    TreeSheets
-    PRIVATE
-    $<IF:$<BOOL:${TREESHEETS_WITH_STATIC_WXWIDGETS}>,
-        wx::aui
-        wx::adv
-        wx::core
-        wx::xml
-        wx::net,
-        ${wxWidgets_LIBRARIES}
-    >
-    lobster-impl
-)
+if(WIN32)
+    target_link_libraries(
+        TreeSheets
+        PRIVATE
+        $<IF:$<BOOL:${TREESHEETS_WITH_STATIC_WXWIDGETS}>,
+            wx::aui
+            wx::adv
+            wx::core
+            wx::xml
+            wx::net,
+            ${wxWidgets_LIBRARIES}
+        >
+        lobster-impl
+        StackWalker
+    )
+else()
+    target_link_libraries(
+        TreeSheets
+        PRIVATE
+        $<IF:$<BOOL:${TREESHEETS_WITH_STATIC_WXWIDGETS}>,
+            wx::aui
+            wx::adv
+            wx::core
+            wx::xml
+            wx::net,
+            ${wxWidgets_LIBRARIES}
+        >
+        lobster-impl
+    )
+endif()
 
 ########## TREESHEETS INSTALLATION SETTINGS ###############
 
@@ -170,9 +204,9 @@ elseif(APPLE)
     set(TREESHEETS_DOCDIR TreeSheets.app/Contents/Resources)
     set(TREESHEETS_PKGDATADIR TreeSheets.app/Contents/Resources)
 else()
-    set(TREESHEETS_BINDIR ${CMAKE_INSTALL_PREFIX})
-    set(TREESHEETS_DOCDIR ${CMAKE_INSTALL_PREFIX})
-    set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_PREFIX})
+    set(TREESHEETS_BINDIR .)
+    set(TREESHEETS_DOCDIR .)
+    set(TREESHEETS_PKGDATADIR .)
 endif()
 
 install(TARGETS TreeSheets DESTINATION ${TREESHEETS_BINDIR})
@@ -199,7 +233,8 @@ if(WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
     foreach(locale ${locales})
         install(
             FILES "TS/translations/${locale}/ts.mo"
-            DESTINATION "${CMAKE_INSTALL_PREFIX}/translations/${locale}"
+            # Paths must be relative to use with CPack
+            DESTINATION "translations/${locale}"
         )
     endforeach()
 elseif(APPLE)
@@ -219,9 +254,25 @@ else()
         )
     endforeach()
 endif()
+
+set(CPACK_PACKAGE_VENDOR "Wouter van Oortmerssen")
 if(APPLE)
-    set(CPACK_PACKAGE_NAME "TreeSheets")
-    set(CPACK_PACKAGE_VENDOR "Wouter van Oortmerssen")
     set(CPACK_GENERATOR "DragNDrop")
-    include(CPack)
+elseif(WIN32)
+    set(CPACK_GENERATOR "NSIS")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
+    set(CPACK_NSIS_INSTALL_ROOT "$LOCALAPPDATA\\\\Programs")
+    set(CPACK_NSIS_EXECUTABLES_DIRECTORY .)
+    set(CPACK_NSIS_MANIFEST_DPI_AWARE 1)
+else()
+    set(CPACK_GENERATOR "DEB")
+    set(CPACK_DEBIAN_PACKAGE_SECTION "contrib/text")
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Wouter van Oortmerssen")
+    if(TREESHEETS_WITH_STATIC_WXWIDGETS)
+        set(CPACK_DEBIAN_PACKAGE_DEPENDS "gtk3")
+    else()
+        set(CPACK_DEBIAN_PACKAGE_DEPENDS "gtk3, wxwidgets3.2")
+    endif()
+    set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 endif()
+include(CPack)
