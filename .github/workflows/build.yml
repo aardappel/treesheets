@@ -57,7 +57,7 @@ jobs:
         allowUpdates: true
         omitBody: true
         commit: master
-        artifacts: "_build/TreeSheets-*.exe"
+        artifacts: "_build/TreeSheets-*.exe, _build/TreeSheets-*.zip"
 
   build-mac:
     name: Build Mac
