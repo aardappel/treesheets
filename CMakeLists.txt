@@ -265,6 +265,7 @@ elseif(WIN32)
     set(CPACK_NSIS_EXECUTABLES_DIRECTORY .)
     set(CPACK_NSIS_MANIFEST_DPI_AWARE 1)
     set(CPACK_NSIS_IGNORE_LICENSE_PAGE 1)
+    string(APPEND CPACK_NSIS_DEFINES "\nRequestExecutionLevel user") # non-admin install
 else()
     set(CPACK_GENERATOR "DEB")
     set(CPACK_DEBIAN_PACKAGE_SECTION "contrib/text")
