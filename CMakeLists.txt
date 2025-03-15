@@ -138,9 +138,9 @@ else()
 endif()
 
 if(WIN32)
-    target_include_directories(TreeSheets PUBLIC lobster/src)
-else()
     target_include_directories(TreeSheets PUBLIC lobster/src src/StackWalker)
+else()
+    target_include_directories(TreeSheets PUBLIC lobster/src)
 endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
