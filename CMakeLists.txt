@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.25)
 
-string(TIMESTAMP TimeStamp "%Y%m%d%H%M" UTC)
+string(TIMESTAMP TimeStamp "%y%m%d.%H%M" UTC)
 
 project(TreeSheets
     DESCRIPTION "A free-form hierarchical data organizer"
