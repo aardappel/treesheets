@@ -22,9 +22,12 @@
 
 cmake_minimum_required(VERSION 3.25)
 
+string(TIMESTAMP TimeStamp "%Y%m%d%H%M" UTC)
+
 project(TreeSheets
     DESCRIPTION "A free-form hierarchical data organizer"
-    HOMEPAGE_URL "https://github.com/aardappel/treesheets")
+    HOMEPAGE_URL "https://github.com/aardappel/treesheets"
+    VERSION ${TimeStamp})
 
 ########## GLOBAL SETTINGS ################################
 
