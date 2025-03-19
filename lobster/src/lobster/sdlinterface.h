@@ -33,6 +33,7 @@ extern void SDLTitle(string_view_nt title);
 extern bool SDLIsMinimized();
 extern void SDLWindowMinMax(int dir);
 extern void SDLSetFullscreen(InitFlags flags);
+extern void SDLSetWindowSize(int2 size);
 
 extern const int2 &GetScreenSize();
 

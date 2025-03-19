@@ -230,7 +230,7 @@ struct Group : ImplicitFunctionImpl<Group> {
     static inline float Eval(const float3 & /*pos*/) { return 0.0f; }
 
     float3 Size() override {
-        float3 p1, p2;
+        float3 p1(0.0f), p2(0.0f);
         for (auto c : children) {
             auto csz = c->Size();
             csz = rotated_size(c->rot, csz);

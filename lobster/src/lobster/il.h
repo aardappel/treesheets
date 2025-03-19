@@ -146,7 +146,8 @@ enum MathOp {
     F(LV_FVSMOD, 1, 1, 0) \
     F(LV_SADD, 0, 1, 0) \
     F(LV_IPP, 0, 0, 0) F(LV_IMM, 0, 0, 0) \
-    F(LV_FPP, 0, 0, 0) F(LV_FMM, 0, 0, 0)
+    F(LV_FPP, 0, 0, 0) F(LV_FMM, 0, 0, 0) \
+    F(ENUM_RANGE_ERR, 0, 0, 0)
 
 #define ILCALLNAMES \
     F(PUSHFUN, 1, 0, 1)

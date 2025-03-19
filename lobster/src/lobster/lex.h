@@ -80,6 +80,7 @@ struct Lex : LoadedFile {
     set<string_view> namespaces;
 
     bool do_string_interpolation = true;
+    bool allow_shift_right = true;
     int max_errors = 1;
     int num_errors = 0;
 
@@ -340,7 +341,7 @@ struct Lex : LoadedFile {
             case '>':
                 cont = true;
                 second('=', T_GTEQ);
-                secondb('>', T_ASR, second('=', T_ASREQ));
+                if (allow_shift_right) secondb('>', T_ASR, second('=', T_ASREQ));
                 return T_GT;
 
             case '&':
@@ -738,8 +739,11 @@ struct Lex : LoadedFile {
         THROW_OR_ABORT(err);
     }
 
+    std::set<string> all_warnings;
     void Warn(string_view msg, const Line *ln = nullptr) {
-        LOG_WARN(Location(ln ? *ln : *this) + ": warning: " + msg);
+        auto warning = Location(ln ? *ln : *this) + ": warning: " + msg;
+        auto [_it, was_inserted] = all_warnings.insert(warning);
+        if (was_inserted) LOG_WARN(warning);
     }
 };
 

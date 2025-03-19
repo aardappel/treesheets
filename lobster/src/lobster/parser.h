@@ -370,7 +370,7 @@ struct Parser {
                     // Add to toplevel scope too.
                     st.toplevel->parent->overloads[0]->gbody->Add(cdef);
                 }
-                auto statik = new Static(lex, init->Clone());
+                auto statik = new Static(lex, init->Clone(true));
                 statik->sid = id->cursid;
                 statik->giventype = type;
                 statik->frame = frame;
@@ -389,11 +389,16 @@ struct Parser {
                 // This is an arbitrary restriction that we could lift, just doesn't seem
                 // great to have invisble extra members in structs.
                 if (gudt->is_struct) Error("member declaration only allowed in classes");
+                // TODO: This is not great: when "member" is used in an inline method decl, this should
+                // never happen, and it can later still be subclassed, but when it is used outside
+                // in a free-standing method we can't allow new fields to be added when a subclass
+                // has already copied them. We can maybe lift this restriction.
+                if (gudt->has_subclasses) Error("member cannot be added in freestanding method to class that has been subclassed");
                 st.bound_typevars_stack.push_back(gudt->generics);
                 auto field_idx = gudt->fields.size();
                 ParseField(gudt, true, true);
                 st.bound_typevars_stack.pop_back();
-                auto initc = gudt->fields.back().defaultval->Clone();
+                auto initc = gudt->fields.back().gdefaultval->Clone(true);
                 SpecIdent *this_sid = nullptr;
                 if (frame) {
                     // Create int field to store frame count.
@@ -411,6 +416,10 @@ struct Parser {
                 member->field_idx = field_idx;
                 member->frame = frame;
                 member->this_sid = this_sid;
+                for (UDT *udt = gudt->first; udt; udt = udt->next) {
+                    // New fields have been added possibly non-inline, run this again to be sure.
+                    st.ResolveFields(*udt, lex);
+                }
                 list->Add(member);
                 break;
             }
@@ -506,12 +515,14 @@ struct Parser {
             auto [gsup, ssup] = ParseSup(is_struct);
             auto udt = st.MakeSpecialization(*gsup, sname, true, true);
             Expect(T_LT);
+            lex.allow_shift_right = false;
             size_t j = 0;
             for (;;) {
                 if (j == gsup->generics.size()) Error("too many type specializers");
                 udt->bound_generics.push_back(ParseType(false, nullptr, false));
                 j++;
                 if (lex.token == T_GT) {
+                    lex.allow_shift_right = true;
                     lex.OverrideCont(false);  // T_GT here should not continue the line.
                     lex.Next();
                     break;
@@ -529,7 +540,6 @@ struct Parser {
         GUDT *gudt = st.LookupStruct(sname);
         bool was_predeclaration = gudt && gudt->predeclaration;
         gudt = &st.StructDecl(sname, is_struct, lex);
-        gudtstack.push_back(gudt);
         UDT *udt = nullptr;
         if (Either(T_COLON, T_LT)) {
             // A regular struct declaration
@@ -572,6 +582,7 @@ struct Parser {
                 } else {
                     gudt->gsuperclass = { st.NewSpecUDT(gsup) };
                     if (IsNext(T_LT)) {
+                        lex.allow_shift_right = false;
                         size_t j = 0;
                         for (;;) {
                             if (j == gsup->generics.size()) Error("too many type specializers");
@@ -579,6 +590,7 @@ struct Parser {
                                 &*ParseType(false));
                             j++;
                             if (lex.token == T_GT) {
+                                lex.allow_shift_right = true;
                                 lex.OverrideCont(false);  // T_GT here should not continue the line.
                                 lex.Next();
                                 break;
@@ -671,27 +683,26 @@ struct Parser {
             parent_list->Add(new UDTRef(line, udt));
         }
         parent_list->Add(new GUDTRef(line, gudt, gudt->predeclaration));
-        gudtstack.pop_back();
     }
 
     FunRef *ParseNamedFunctionDefinition(bool is_constructor, bool isprivate, GUDT *self) {
-        string idname;
         if (IsNext(T_OPERATOR)) {
             auto op = lex.token;
             if ((op < T_PLUS || op > T_ASREQ) && op != T_LEFTBRACKET)
                 Error(cat("illegal token for operator overloading: ", TName(op)));
-            idname = cat(TName(T_OPERATOR), TName(op));
+            auto idname = cat(TName(T_OPERATOR), TName(op));
             lex.Next();
             if (op == T_LEFTBRACKET) {
                 Expect(T_RIGHTBRACKET);
                 idname += ']';
             }
+            return ParseFunction(&idname, is_constructor, isprivate, true, true, self, 2);
         } else {
             // TODO: also exclude functions from namespacing whose first arg is a type namespaced to
             // current namespace (which is same as !self).
-            idname = st.MaybeMakeNameSpace(ExpectId(), !self);
+            auto idname = string(st.MaybeMakeNameSpace(ExpectId(), !self));
+            return ParseFunction(&idname, is_constructor, isprivate, true, true, self);
         }
-        return ParseFunction(&idname, is_constructor, isprivate, true, true, self);
     }
 
     void ImplicitReturn(Overload &ov) {
@@ -736,7 +747,7 @@ struct Parser {
     }
 
     FunRef *ParseFunction(string *name, bool is_constructor, bool isprivate, bool parens,
-                          bool parseargs, GUDT *self) {
+                          bool parseargs, GUDT *self, size_t maxargs = 1024) {
         bool in_class = !!self;
         auto sf = st.FunctionScopeStart();
         if (name) {
@@ -757,8 +768,10 @@ struct Parser {
         st.bound_typevars_stack.push_back(sf->generics);
         if (parens) Expect(T_LEFTPAREN);
         size_t nargs = 0;
+        bool self_withtype = false;
         if (self) {
             nargs++;
+            self_withtype = true;
             auto id = st.LookupDef("this", false, true);
             auto &arg = sf->args.back();
             arg.type = &self->unspecialized_type;
@@ -783,6 +796,7 @@ struct Parser {
                     if (nargs == 1 && (arg.type->t == V_UUDT || IsUDT(arg.type->t))) {
                         non_inline_method = true;
                         self = GetGUDTAny(arg.type);
+                        self_withtype = withtype;
                         st.bound_typevars_stack.push_back(self->generics);
                     }
                     sf->giventypes.push_back({ arg.type });
@@ -798,6 +812,7 @@ struct Parser {
                     if (first_default_arg >= 0) Error("missing default argument");
                 }
                 if (!IsNext(T_COMMA)) break;
+                if (sf->args.size() == maxargs) Error("too many arguments for ", Q(*name));
             }
         }
         if (parens) Expect(T_RIGHTPAREN);
@@ -830,14 +845,8 @@ struct Parser {
         f.overloads.emplace_back(ov);
         ov->method_of = self;
         sf->SetParent(f, *ov);
-        // Check if there's any overlap in default argument ranges.
-        for (auto ff = st.GetFirstFunction(f.name); ff; ff = ff->sibf) {
-            if (ff == &f) continue;   
-            if (first_default_arg <= (int)ff->nargs() &&
-                ff->first_default_arg <= (int)f.nargs())
-                Error("function ", Q(f.name), " with ", f.nargs(),
-                        " arguments is ambiguous with the ", ff->nargs(),
-                        " version because of default arguments");
+        for (auto &arg : sf->args) {
+            ov->givenargs.push_back(arg.type);
         }
         if (IsNext(T_RETURNTYPE)) {  // Return type decl.
             sf->returngiventype = ParseTypes(sf, LT_KEEP);
@@ -886,6 +895,7 @@ struct Parser {
         } else {
             f.anonymous = true;
         }
+        if (self_withtype) gudtstack.push_back(self);
         // Parse the body.
         Line line = lex;
         if (!f.istype) {
@@ -894,6 +904,7 @@ struct Parser {
             ParseBody(block, -1);
             ImplicitReturn(*ov);
         }
+        if (self_withtype) gudtstack.pop_back();
         if (name) functionstack.pop_back();
         if (non_inline_method) st.bound_typevars_stack.pop_back();
         st.bound_typevars_stack.pop_back();
@@ -985,11 +996,13 @@ struct Parser {
                             Error("no ad-hoc specialization allowed in concrete type (use a "
                                     "named specialization)");
                         }
+                        lex.allow_shift_right = false;
                         dest = st.NewSpecUDT(gudt);
                         for (;;) {
                             auto s = ParseType(false, nullptr, allow_unresolved);
                             dest->spec_udt->specializers.push_back(&*s);
                             if (lex.token == T_GT) {
+                                lex.allow_shift_right = true;
                                 // This may be the end of the line, so make sure Lex doesn't see
                                 // it as a GT op.
                                 lex.OverrideCont(false);
@@ -1628,9 +1641,13 @@ struct Parser {
         // Check for function call with generic params.
         // This is not a great way to distinguish from < operator exps, but best we can do?
         if (likely_named_function && lex.whitespacebefore == 0 && IsNext(T_LT)) {
+            lex.allow_shift_right = false;
             for (;;) {
                 specializers.push_back(ParseType(false));
-                if (IsNext(T_GT)) break;
+                if (IsNext(T_GT)) {
+                    lex.allow_shift_right = true;
+                    break;
+                }
                 Expect(T_COMMA);
             }
         }
@@ -1692,7 +1709,7 @@ struct Parser {
                 // An initializer without a tag. Find first field without a default thats not
                 // set yet.
                 for (size_t i = 0; i < exps.size(); i++) {
-                    if (!exps[i] && !gudt->fields[i].defaultval) {
+                    if (!exps[i] && !gudt->fields[i].gdefaultval) {
                         exps[i] = ParseExp();
                         return;
                     }
@@ -1705,8 +1722,8 @@ struct Parser {
             auto constructor = new Constructor(line, type);
             for (size_t i = 0; i < exps.size(); i++) {
                 if (!exps[i]) {
-                    if (gudt->fields[i].defaultval)
-                        exps[i] = gudt->fields[i].defaultval->Clone();
+                    if (gudt->fields[i].gdefaultval)
+                        exps[i] = gudt->fields[i].gdefaultval->Clone(true);
                     else
                         Error("field ", Q(gudt->fields[i].id->name), " not initialized");
                 }

@@ -29,8 +29,10 @@ struct Node {
     virtual size_t Arity() const { return 0; }
     virtual Node **Children() { return nullptr; }
     virtual void ClearChildren() {}
-    virtual Node *Clone() = 0;
-    virtual bool IsConstInit() const { return false; }
+    virtual Node *Clone(bool notype) = 0;
+    virtual bool IsConstInit() const {
+        return false;
+    }
     // Does control flow continue beyond this node?
     virtual bool Terminal(TypeChecker &) const { return false; }
     // Node will have this type regardless of type-checking context.
@@ -106,9 +108,13 @@ struct TypeLT {
 };
 
 
-template<typename T> T *DoClone(T *dest, T *src) {
+template<typename T> T *DoClone(T *dest, T *src, bool notype) {
     *dest = *src;  // Copy contructor copies all values & non-owned.
-    for (size_t i = 0; i < src->Arity(); i++) dest->Children()[i] = src->Children()[i]->Clone();
+    if (notype) {
+        dest->exptype = TypeRef{};
+        dest->lt = LT_UNDEF;
+    }
+    for (size_t i = 0; i < src->Arity(); i++) dest->Children()[i] = src->Children()[i]->Clone(notype);
     return dest;
 }
 
@@ -119,7 +125,7 @@ template<typename T> T *DoClone(T *dest, T *src) {
     string_view Name() const { return STR; } \
     bool SideEffect() const { return SE; } \
     void Generate(CodeGen &cg, size_t retval) const; \
-    Node *Clone() { return DoClone<NAME>(new NAME(), this); } \
+    Node *Clone(bool notype) { return DoClone<NAME>(new NAME(), this, notype); } \
     ValueType ConstVal(TypeChecker *tc, Value &val) const;
 #define SHARED_SIGNATURE(NAME, STR, SE) \
     Node *TypeCheck(TypeChecker &tc, size_t reqret); \

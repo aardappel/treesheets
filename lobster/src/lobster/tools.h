@@ -25,8 +25,11 @@ typedef int64_t iint;
 // args and indexing, so using the 64-bit type above would introduce a lot
 // of casts. Best we can do is a signed version of that, until we can
 // stop targetting 32-bit entirely.
-// This may also be defined in Posix (sys/types.h), but in C++
-// redefining typedefs is totally cool:
+// This may also be defined in Posix (sys/types.h) or in string.h
+// on Darwin, where it breaks the build. Undefine ssize_t if defined.
+#ifdef ssize_t
+    #undef ssize_t
+#endif
 typedef ptrdiff_t ssize_t;
 
 // Custom _L suffix, since neither L (different size on win/nix) or LL

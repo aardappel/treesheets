@@ -24,6 +24,7 @@ struct Palette {
 
 const size_t default_palette_idx = 0;
 const size_t normal_palette_idx = 1;
+const size_t default_material_palette_idx = 2;
 
 extern vector<Palette> palettes;
 
@@ -56,6 +57,15 @@ struct Voxels : lobster::Resource {
         Do(p, sz, [&](const int3 &pos, uint8_t &vox) {
             auto d = (pos - p) * flip + dest;
             if (d >= int3_0 && d < grid.dim) grid.Get(d) = vox;
+        });
+    }
+
+    void Blit(const Voxels &src, const int3 &dst_p, const int3 &src_p, const int3 &sz, const int3 &flip) {
+        const_cast<Voxels &>(src).Do(src_p, sz, [&](const int3 &pos, uint8_t &vox) {
+            auto d = (pos - src_p) * flip + dst_p;
+            if (vox == transparant) return;
+            if (d < int3_0 || d >= grid.dim) return;
+            grid.Get(d) = vox;
         });
     }
 
@@ -101,6 +111,9 @@ namespace lobster {
 Value CubesFromMeshGen(VM &vm, const DistGrid &grid, int targetgridsize, int zoffset);
 
 extern const unsigned int default_palette[256];
+
+Voxels *NewWorld(const int3 &size, size_t palette_idx);
+LResource *NewVoxelResource(VM &vm, Voxels &v);
 
 }
 

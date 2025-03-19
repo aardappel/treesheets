@@ -36,6 +36,10 @@
     #include <unistd.h>
 #endif
 
+#include <chrono>
+#include <version>
+#include <time.h>
+
 namespace lobster {
 
 template<typename T, bool B> T Read(VM &vm, iint i, const LString *s) {
@@ -132,28 +136,88 @@ Value ParseSchemas(VM &vm, flatbuffers::Parser &parser, const Value &schema,
 
 void AddFile(NativeRegistry &nfr) {
 
-nfr("scan_folder", "folder,rel", "SB?", "S]?I]?",
-    "returns two vectors representing all elements in a folder, the first vector containing all"
-    " names, the second vector containing sizes in bytes (or -1 if a directory)."
+nfr("format_time", "format,time,localtime", "SIB", "S",
+    "convert a time in seconds since 00:00:00 UTC, Thursday, 1 January 1970 into a string,"
+    " using the same format string syntax as POSIX strftime. If localtime is true, then"
+    " the time will be displayed using the local timezone, otherwise it will use UTC."
+    " Returns an empty string on error.",
+    [](StackPtr &, VM &vm, Value &format, Value &time, Value &use_localtime) {
+        chrono::system_clock::time_point tp { chrono::system_clock::duration(time.ival()) };
+        time_t tt = chrono::system_clock::to_time_t(tp);
+        tm ctm{};
+        bool ok = false;
+        #ifdef _WIN32
+            ok = (use_localtime.True() ? localtime_s(&ctm, &tt) : gmtime_s(&ctm, &tt)) == 0;
+        #else
+            ok = (use_localtime.True() ? localtime_r(&tt, &ctm) : gmtime_r(&tt, &ctm)) != nullptr;
+        #endif
+        if (!ok) return Value(vm.NewString(0));
+        // TODO: using strftime to avoid pulling in std::format(); maybe we should reconsider that?
+        char buf[1024];
+        auto written = strftime(buf, sizeof(buf), format.sval()->data(), &ctm);
+        // TODO: written may be zero if the format string was too long; in that
+        // case maybe we want to try again with a larger buf?
+        if (written == 0) return Value(vm.NewString(0));
+        auto s = vm.NewString(buf);
+        return Value(s);
+    });
+
+nfr("scan_folder", "folder,rel", "SB?", "S]?I]?I]?",
+    "returns three vectors representing all elements in a folder, the first vector containing all"
+    " names, the second vector containing sizes in bytes (or -1 if a directory), and the third as"
+    " the number of seconds since 00:00:00 UTC, Thursday, 1 January 1970, not including leap seconds."
     " set rel use a relative path, default is absolute."
     " Returns nil if folder couldn't be scanned.",
     [](StackPtr &sp, VM &vm, Value &fld, Value &rel) {
-        vector<pair<string, int64_t>> dir;
+        vector<DirInfo> dir;
         auto ok = rel.True()
             ? ScanDir(fld.sval()->strv(), dir)
             : ScanDirAbs(fld.sval()->strv(), dir);
         if (!ok) {
             Push(sp, NilVal());
+            Push(sp, NilVal());
             return NilVal();
         }
         auto nlist = (LVector *)vm.NewVec(0, 0, TYPE_ELEM_VECTOR_OF_STRING);
         auto slist = (LVector *)vm.NewVec(0, 0, TYPE_ELEM_VECTOR_OF_INT);
-        for (auto &[name, size] : dir) {
-            nlist->Push(vm, Value(vm.NewString(name)));
-            slist->Push(vm, Value(size));
+        auto tlist = (LVector *)vm.NewVec(0, 0, TYPE_ELEM_VECTOR_OF_INT);
+        for (auto &entry : dir) {
+            nlist->Push(vm, Value(vm.NewString(entry.name)));
+            slist->Push(vm, Value(entry.size));
+            // For a fun change of pace, MSVC C++ standard library has support
+            // for clock_cast but libstdc++ and libc++ don't. This is a
+            // workaround for converting between the file_clock time (used for
+            // the filesystem) and system_clock time (used for formatting
+            // times). Sadly, even if we could use clock_cast, it seems to have
+            // a known memory leak on Windows: 
+            // See https://developercommunity.visualstudio.com/t/reported-memory-leak-when-converting-file-time-typ/1467739
+            //
+            // According to https://stackoverflow.com/a/73748610 (written by Howard Hinnant,
+            // the designer of the chrono library):
+            //     "I believe the Windows file_clock epoch is 1601-01-01 00:00:00 UTC. The
+            //     difference between that and the system_clock epoch (1970-01-01 00:00:00
+            //     UTC) is 13,4774 days or 3'234'576h."
+            using namespace literals;
+            #if defined(_WIN32)
+                const chrono::duration file_to_system_clock_epoch_offset = 3'234'576h;
+            #elif defined(__GLIBCXX__)  // libstdc++
+                // From the same stack overflow article above: "On gcc I believe
+                // the epoch is 2174-01-01 00:00:00 UTC".
+                // I calculated the following value locally on my linux laptop.
+                const chrono::duration file_to_system_clock_epoch_offset = -1'788'240h;
+            #else  // libc++ or other
+                const chrono::duration file_to_system_clock_epoch_offset = 0h;
+            #endif
+            auto system_time = chrono::system_clock::time_point{
+                chrono::duration_cast<chrono::system_clock::duration>(
+                    entry.last_write_time.time_since_epoch() -
+                    file_to_system_clock_epoch_offset)
+            };
+            tlist->Push(vm, Value((int64_t)system_time.time_since_epoch().count()));
         }
         Push(sp, Value(nlist));
-        return Value(slist);
+        Push(sp, Value(slist));
+        return Value(tlist);
     });
 
 nfr("read_file", "file,textmode", "SI?", "S?",
@@ -187,7 +251,7 @@ nfr("delete_file", "file", "S", "B", "deletes a file, returns false if it wasn't
         return Value(ok);
     });
 
-nfr("exists_file", "file", "S", "B", "checks wether a file exists.",
+nfr("exists_file", "file", "S", "B", "checks whether a file exists.",
     [](StackPtr &, VM &, Value &file) {
         auto ok = FileExists(file.sval()->strv(), false);
         return Value(ok);

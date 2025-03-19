@@ -114,7 +114,7 @@ template<typename T, int N> class small_vector {
         return cap == N ? elems : buf;
     }
 
-    bool empty() {
+    bool empty() const {
         return len == 0;
     }
 

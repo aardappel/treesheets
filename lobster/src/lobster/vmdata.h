@@ -378,7 +378,7 @@ struct ToFlexBufferContext {
 
     bool ignore_unsupported_types = false;
     bool cycle_detect = false;
-    set<LObject *> seen_objects;
+    map<LObject *, flexbuffers::Builder::Value> seen_objects;
 
     iint max_depth = 100;
     iint cur_depth = 0;
@@ -386,7 +386,8 @@ struct ToFlexBufferContext {
     string max_depth_hit;
     flexbuffers::Builder::Value max_depth_hit_value;
     string cycle_hit;
-    flexbuffers::Builder::Value cycle_hit_value;
+
+    PrintPrefs pp = PrintPrefs(2, 50, true, -1);
 
     ToFlexBufferContext(VM &vm, size_t initial_size, flexbuffers::BuilderFlag flags)
         : vm(vm), builder(initial_size, flags) {}
@@ -504,6 +505,7 @@ struct Value {
 
     void ToString(VM &vm, string &sd, const TypeInfo &ti, PrintPrefs &pp) const;
     void ToStringBase(VM &vm, string &sd, ValueType t, PrintPrefs &pp) const;
+    void ToStringNoVM(string &sd, ValueType t) const;
 
     void ToFlexBuffer(ToFlexBufferContext &fbc, ValueType t, string_view key, int defval) const;
     void ToLobsterBinary(VM &vm, vector<uint8_t> &buf, ValueType t) const;
@@ -784,6 +786,7 @@ struct LVector : RefObj {
 
     void RemovePush(StackPtr &sp, iint i);
     void Remove(VM &vm, iint i, iint n);
+    void Truncate(VM &vm, iint n);
 
     Value *Elems() { return v; }
     const Value *Elems() const { return v; }
@@ -993,6 +996,9 @@ struct VM : VMArgs {
     const TypeInfo &GetTypeInfo(type_elem_t offset) {
         return *(TypeInfo *)(typetable + offset);
     }
+    type_elem_t TypeInfoToIdx(const TypeInfo *ti) {
+        return (type_elem_t)(ptrdiff_t)(((type_elem_t *)ti) - typetable);
+    }
     const TypeInfo &GetVarTypeInfo(int varidx);
     type_elem_t GetSubClassFromSerID(type_elem_t super, uint32_t ser_id);
 
@@ -1061,6 +1067,7 @@ struct VM : VMArgs {
     string_view ReverseLookupType(int v);
     string_view LookupField(int stidx, iint fieldn) const;
     string_view LookupFieldByOffset(int stidx, int offset) const;
+    int LookupFieldByName(int stidx, string_view fname) const;
 
     void Trace(TraceMode m) { trace = m; }
 
@@ -1176,10 +1183,10 @@ VM_INLINE void PopFunId(VM &vm) {
 }
 
 #if LOBSTER_FRAME_PROFILER
-VM_INLINE TracyCZoneCtx StartProfile(___tracy_source_location_data *tsld) {
+VM_INLINE ___tracy_c_zone_context StartProfile(___tracy_source_location_data *tsld) {
     return ___tracy_emit_zone_begin(tsld, true);
 }
-VM_INLINE void EndProfile(TracyCZoneCtx ctx) {
+VM_INLINE void EndProfile(___tracy_c_zone_context ctx) {
     ___tracy_emit_zone_end(ctx);
 }
 #endif

@@ -48,7 +48,7 @@ SlabAlloc *g_current_slaballoc;
             return g_current_slaballoc->dealloc_small(ptr); \
         }
 #else
-    #define USE_CURRENT_SLABALLOCATOR 
+    #define USE_CURRENT_SLABALLOCATOR
 #endif
 
 struct Ident : Named {
@@ -151,16 +151,16 @@ struct SharedField : Named {
 struct Field {
     SharedField *id;
     TypeRef giventype;
-    Node *defaultval;
+    Node *gdefaultval;
     bool isprivate;
     bool in_scope;  // For tracking scopes of ones declared by `member`.
     Line defined_in;
 
-    Field(SharedField *_id, TypeRef _type, Node *_defaultval, bool isprivate,
+    Field(SharedField *_id, TypeRef _type, Node *_gdefaultval, bool isprivate,
           bool in_scope, const Line &defined_in)
         : id(_id),
           giventype(_type),
-          defaultval(_defaultval),
+          gdefaultval(_gdefaultval),
           isprivate(isprivate),
           in_scope(in_scope),
           defined_in(defined_in) {}
@@ -170,6 +170,7 @@ struct Field {
 
 struct SField {
     TypeRef type;
+    Node *defaultval = nullptr;
     int slot = -1;
 };
 
@@ -192,11 +193,12 @@ struct DispatchEntry {
     SubFunction *sf = nullptr;          // if !is_switch_dispatch
     int case_index = -1;                // if is_switch_dispatch
     bool is_switch_dispatch = false;
-    bool is_dispatch_root = false;
+    UDT *dispatch_root = nullptr;
     // Shared return type if root of dispatch.
     TypeRef returntype = nullptr;
     int returned_thru_to_max = -1;
     size_t subudts_size = 0;  // At time of creation.
+    int vtable_idx = -1;
 };
 
 // This contains the declaration-side stuff for any UDT, and may contain
@@ -260,11 +262,13 @@ struct UDT : Named {
     // Multiple specializations of a method may be in here.
     // Methods whose dispatch can be determined statically for the current program do not end up
     // in here.
-    vector<DispatchEntry> dispatch_table;
+    vector<unique_ptr<DispatchEntry>> dispatch_table;
 
     UDT(string_view _name, int _idx, GUDT &g) : Named(_name, _idx), g(g) {
         thistype = g.is_struct ? Type { V_STRUCT_R, this } : Type { V_CLASS, this };
     }
+
+    ~UDT();
 
     vector<GenericTypeVariable> GetBoundGenerics() {
         auto generics = g.generics;
@@ -392,8 +396,14 @@ struct Arg {
 struct Function;
 struct SubFunction;
 
+struct Caller {
+    SubFunction *caller = nullptr;  // Null if this is the call to __top_level_expression
+    DispatchEntry *de = nullptr;    // Null if static call.
+};
+
 struct Overload {
     SubFunction *sf = nullptr;
+    vector<TypeRef> givenargs;
     Block *gbody = nullptr;
     Line declared_at;
     bool isprivate;
@@ -433,6 +443,7 @@ struct SubFunction {
     bool optimized = false;
     bool explicit_generics = false;
     int returned_thru_to_max = -1;  // >=0: there exist return statements that may skip the caller.
+    vector<int> returned_thru_function_ids;
     UDT *method_of = nullptr;
     int numcallers = 0;
     Type thistype { V_FUNCTION, this };  // convenient place to store the type corresponding to this
@@ -441,6 +452,7 @@ struct SubFunction {
     Overload *lexical_parent = nullptr;
     Overload *overload = nullptr;
     size_t node_count = 0;
+    vector<Caller> callers;
 
     SubFunction(int _idx) : idx(_idx) {}
 
@@ -543,7 +555,7 @@ template<> void ErasePrivate(unordered_map<string_view, UDT *> &dict) {
     }
 }
 
-inline string TypeName(TypeRef type, int flen = 0);
+inline string TypeName(TypeRef type, int flen = 0, bool tuple_brackets = true);
 
 struct SymbolTable {
     Lex &lex;
@@ -627,7 +639,7 @@ struct SymbolTable {
         for (auto tv  : typevars)         delete tv;
         for (auto su  : specudts)         delete su;
     }
-    
+
     bool MaybeNameSpace(string_view name) {
         return !current_namespace.empty() && name.find(".") == name.npos;
     }
@@ -899,6 +911,17 @@ struct SymbolTable {
         }
         auto uit = gudts.find(name);
         if (uit != gudts.end()) return uit->second;
+        return nullptr;
+    }
+    GUDT *LookupStructQuery(string_view name) {
+        GUDT* res = LookupStruct(name);
+        if(res) return res;
+        //Try to search out of scope when doing query
+        for (auto gudt = gudttable.rbegin(); gudt != gudttable.rend(); ++gudt) {
+            if((*gudt)->name == name) {
+                return *gudt;
+            }
+        }
         return nullptr;
     }
 
@@ -1271,7 +1294,8 @@ struct SymbolTable {
             udt.ssuperclass = supertype->udt;
         }
         PushSuperGenerics(udt.ssuperclass);
-        for (auto &field : udt.g.fields) {
+        for (size_t i = udt.sfields.size(); i < udt.g.fields.size(); i++) {
+            auto &field = udt.g.fields[i];
             udt.sfields.push_back({ ResolveTypeVars(field.giventype, errl) });
         }
         PopSuperGenerics(udt.ssuperclass);
@@ -1358,8 +1382,6 @@ struct SymbolTable {
     }
 };
 
-inline string TypeName(TypeRef type, int flen);
-
 inline void FormatArg(string &r, string_view name, size_t i, TypeRef type) {
     if (i) r += ", ";
     r += name;
@@ -1376,6 +1398,13 @@ inline string Signature(const NativeFun &nf) {
         FormatArg(r, arg.name, i, arg.type);
     }
     r += ")";
+    if (nf.retvals.size() > 0) {
+        r += " -> ";
+        for (auto [i, retval] : enumerate(nf.retvals)) {
+            if (i) r += ", ";
+            r += TypeName(retval.type);
+        }
+    }
     return r;
 }
 
@@ -1415,13 +1444,13 @@ inline string Signature(const SubFunction &sf) {
     }
     r += ")";
     if (sf.returntype->t != V_VOID && sf.returntype->t != V_UNDEFINED && sf.returntype->t != V_VAR) {
-        r += "->";
-        r += TypeName(sf.returntype);
+        r += " -> ";
+        r += TypeName(sf.returntype, 0, false);
     }
     return r;
 }
 
-inline string TypeName(TypeRef type, int flen) {
+inline string TypeName(TypeRef type, int flen, bool tuple_brackets) {
     switch (type->t) {
         case V_STRUCT_R:
         case V_STRUCT_S:
@@ -1455,7 +1484,7 @@ inline string TypeName(TypeRef type, int flen) {
                 auto nvt = SymbolTable::GetVectorName(type->Element(), flen);
                 if (nvt) return nvt;
                 // FIXME: better names?
-                return type->Element()->t == V_INT ? "vec_i" : "vec_f";
+                return type->Element()->t == V_INT ? "intN" : "floatN";
             } else {
                 return type->Element()->t == V_VAR
                            ? "[]"
@@ -1471,12 +1500,13 @@ inline string TypeName(TypeRef type, int flen) {
                 ? "nil"
                 : TypeName(type->Element(), flen) + "?";
         case V_TUPLE: {
-            string s = "(";
+            string s;
+            if (tuple_brackets) s += "(";
             for (auto [i, te] : enumerate(*type->tup)) {
                 if (i) s += ", ";
                 s += TypeName(te.type);
             }
-            s += ")";
+            if (tuple_brackets) s += ")";
             return s;
         }
         case V_INT:

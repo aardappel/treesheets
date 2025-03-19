@@ -133,7 +133,7 @@ struct CodeGen  {
                 tt.push_back(ti);
                 tt.push_back(parent);
                 Value val;
-                auto dv = udt->g.fields[i].defaultval;
+                auto dv = udt->sfields[i].defaultval;
                 switch (dv ? dv->ConstVal(nullptr, val) : V_VOID) {
                     case V_INT:
                         tt.push_back((type_elem_t)(val.intval() == val.ival() ? val.intval() : 0));
@@ -263,7 +263,7 @@ struct CodeGen  {
         ser_ids.resize(max_ser_ids, (type_elem_t)-1);
         for (auto udt : parser.st.udttable) {
             if (!udt->g.is_abstract) {
-                // We generate a type table for every UDT regardless of wether it is referred to
+                // We generate a type table for every UDT regardless of whether it is referred to
                 // anywhere, for example (sub)classes may be constructed by deserializing them and
                 // not in code.
                 udt->ComputeSizes();
@@ -327,13 +327,13 @@ struct CodeGen  {
         // Now fill in the vtables.
         for (auto udt : st.udttable) {
             for (auto [i, de] : enumerate(udt->dispatch_table)) {
-                if (de.sf) {
+                if (de->sf) {
                     vtables[udt->vtable_start + i] =
-                        de.sf->subbytecodestart ? de.sf->subbytecodestart : dummyfun;
-                    assert(!de.is_switch_dispatch);
-                } else if (de.case_index >= 0) {
-                    vtables[udt->vtable_start + i] = -de.case_index - 2;
-                    assert(de.is_switch_dispatch);
+                        de->sf->subbytecodestart ? de->sf->subbytecodestart : dummyfun;
+                    assert(!de->is_switch_dispatch);
+                } else if (de->case_index >= 0) {
+                    vtables[udt->vtable_start + i] = -de->case_index - 2;
+                    assert(de->is_switch_dispatch);
                 }
             }
         }
@@ -510,11 +510,11 @@ struct CodeGen  {
             // doesn't necessarily point to the dispatch root (which may not even have an sf).
             auto dispatch_type = call.children[0]->exptype;
             assert(IsUDT(dispatch_type->t));
-            auto &de = dispatch_type->udt->dispatch_table[call.vtable_idx];
-            assert(de.is_dispatch_root && !de.returntype.Null() && de.subudts_size);
-            if (de.returned_thru_to_max >= 0) {
+            auto de = dispatch_type->udt->dispatch_table[call.vtable_idx].get();
+            assert(de->dispatch_root && !de->returntype.Null() && de->subudts_size);
+            if (de->returned_thru_to_max >= 0) {
                 // This works because all overloads of a DD sit under a single Function.
-                GenUnwind(sf, de.returned_thru_to_max, outw);
+                GenUnwind(sf, de->returned_thru_to_max, outw);
             }
         }
         auto nretvals = sf.returntype->NumValues();
@@ -1044,7 +1044,7 @@ void Member::Generate(CodeGen &cg, size_t retval) const {
     if (frame) {
         cg.GenPushVar(1, this_sid->type, this_sid->Idx(), this_sid->used_as_freevar);
         cg.EmitOp(IL_JUMPIFMEMBERLF);
-        auto &f = *field();
+        //auto &f = *field();
         auto &sfield = this_sid->type->udt->sfields[field_idx];
         cg.Emit(sfield.slot + ValWidth(sfield.type));  // It's the var after this one.
         cg.Emit(0);
@@ -1054,7 +1054,7 @@ void Member::Generate(CodeGen &cg, size_t retval) const {
         cg.TakeTemp(1, true);
         cg.EmitOp(IL_LVAL_FLD);
         cg.Emit(sfield.slot);
-        cg.GenOpWithStructInfo(cg.AssignBaseOp({ *f.defaultval, 0 }), sfield.type);
+        cg.GenOpWithStructInfo(cg.AssignBaseOp({ sfield.type, LT_KEEP }), sfield.type);
         cg.SetLabel(loc);
     }
     if (!retval) return;
@@ -1696,8 +1696,7 @@ void Switch::Generate(CodeGen &cg, size_t retval) const {
         cg.SetLabels(thiscase);
         cg.GenPop(valtlt);
         cg.TakeTemp(1, false);
-        cg.Gen(cas->cbody, retval);
-        if (retval) cg.TakeTemp(1, true);
+        cas->Generate(cg, retval);
         bs.End();
         if (n != cases->children.back() || !have_default) {
             cg.EmitOp(IL_JUMP);
@@ -1784,8 +1783,7 @@ void Switch::GenerateJumpTableMain(CodeGen & cg, size_t retval, int range, int m
         }
         if (cas->pattern->children.empty()) default_pos = cg.Pos();
         cg.EmitOp(IL_JUMP_TABLE_CASE_START);
-        cg.Gen(cas->cbody, retval);
-        if (retval) cg.TakeTemp(1, true);
+        cas->Generate(cg, retval);
         bs.End();
         if (n != cases->children.back()) {
             cg.EmitOp(IL_JUMP);
@@ -1805,10 +1803,10 @@ void Switch::GenerateJumpTableMain(CodeGen & cg, size_t retval, int range, int m
 
 void Switch::GenerateTypeDispatch(CodeGen &cg, size_t retval) const {
     auto dispatch_udt = value->exptype->udt;
-    auto &dt = dispatch_udt->dispatch_table[vtable_idx];
-    assert(dt.is_dispatch_root && dt.is_switch_dispatch &&
-           dt.subudts_size == dispatch_udt->subudts.size());
-    (void)dt;
+    auto de = dispatch_udt->dispatch_table[vtable_idx].get();
+    assert(de->dispatch_root && de->is_switch_dispatch &&
+           de->subudts_size == dispatch_udt->subudts.size());
+    (void)de;
     cg.EmitOp(IL_JUMP_TABLE_DISPATCH);
     cg.Emit(vtable_idx);
     cg.Emit(0);
@@ -1817,8 +1815,17 @@ void Switch::GenerateTypeDispatch(CodeGen &cg, size_t retval) const {
     GenerateJumpTableMain(cg, retval, range, 0);
 }
 
-void Case::Generate(CodeGen &/*cg*/, size_t /*retval*/) const {
-    assert(false);
+void Case::Generate(CodeGen &cg, size_t retval) const {
+    if (cbody->Arity()) {
+        cg.Gen(cbody, retval);
+        if (retval) cg.TakeTemp(1, true);
+    } else {
+        // An empty default case signals runtime error for enums.
+        assert(pattern->children.empty());
+        // FIXME: would be great to ensure the offending value is still on the stack for
+        // this instruction to have access to.
+        cg.EmitOp(IL_ENUM_RANGE_ERR);
+    }
 }
 
 void Range::Generate(CodeGen &/*cg*/, size_t /*retval*/) const {
@@ -1908,7 +1915,7 @@ void Return::Generate(CodeGen &cg, size_t retval) const {
         cg.Emit(nretslots);
     } else {
         // This is for both if the return itself is non-local, or if the destination has
-        // an unwind check, could potentially split those up further.
+        // an unwind check.
         cg.EmitOp(IL_RETURNNONLOCAL, nretslots);
         cg.Emit(nretslots);
         cg.Emit(sf->parent->idx);

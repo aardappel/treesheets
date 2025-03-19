@@ -123,9 +123,9 @@ string ParseMaterialFile(string_view mbuf, string_view prefix) {
             } else {
                 string header;
                 #ifdef PLATFORM_ES3
-                    #ifdef __EMSCRIPTEN__
+                    //#ifdef __EMSCRIPTEN__
                         header += "#version 300 es\n";
-                    #endif
+                    //#endif
                     header += "#ifdef GL_ES\nprecision highp float;\n#endif\n";
                 #else
                     #ifdef __APPLE__

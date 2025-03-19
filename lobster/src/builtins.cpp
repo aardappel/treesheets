@@ -279,16 +279,23 @@ nfr("remove_range", "xs,i,n", "A]*II", "",
 nfr("remove_obj", "xs,obj", "A]*A1", "Ab2",
     "remove all elements equal to obj (==), returns obj.",
     [](StackPtr &, VM &vm, Value &l, Value &o) {
-        iint removed = 0;
         auto vt = vm.GetTypeInfo(l.vval()->ti(vm).subt).t;
         for (iint i = 0; i < l.vval()->len; i++) {
             auto e = l.vval()->At(i);
             if (e.Equal(vm, vt, o, vt, false)) {
                 l.vval()->Remove(vm, i--, 1);
-                removed++;
             }
         }
         return o;
+    });
+
+nfr("truncate", "xs,i", "A]*I", "",
+    "removes all elements starting from index i, does nothing if i >= len",
+    [](StackPtr &sp, VM &vm) {
+        auto i = Pop(sp).ival();
+        auto l = Pop(sp).vval();
+        if (i < 0 || i >= l->len) return;
+        l->Truncate(vm, i);
     });
 
 nfr("binary_search", "xs,key", "I]I", "II",
@@ -364,9 +371,11 @@ nfr("slice", "xs,start,size", "A]*II", "A]1",
     [](StackPtr &, VM &vm, Value &l, Value &s, Value &e) {
         auto size = e.ival();
         auto start = s.ival();
-        if (size < 0) size = l.vval()->len - start;
-        if (start < 0 || start + size > l.vval()->len)
-            vm.BuiltinError("slice: values out of range");
+        if (start < 0)
+            vm.BuiltinError(cat("slice: start cannot be negative: ", start));
+        if (size < 0) size = std::max((iint)0, l.vval()->len - start);
+        if (start + size > l.vval()->len)
+            vm.BuiltinError(cat("slice: range extends beyond the end: ", start + size, " > ", l.vval()->len));
         auto nv = (LVector *)vm.NewVec(0, size, l.vval()->tti);
         nv->Append(vm, l.vval(), start, size);
         return Value(nv);
@@ -421,10 +430,10 @@ nfr("substring", "s,start,size", "SII", "S",
     [](StackPtr &, VM &vm, Value &l, Value &s, Value &e) {
         iint size = e.ival();
         iint start = s.ival();
-        if (size < 0) size = l.sval()->len - start;
-        if (start < 0 || size < 0 || start + size > l.sval()->len)
-            vm.BuiltinError("substring: values out of range");
-
+        if (start < 0) vm.BuiltinError(cat("substring: start cannot be negative: ", start));
+        if (size < 0) size = std::max((iint)0, l.sval()->len - start);
+        if (start + size > l.sval()->len)
+            vm.BuiltinError(cat("substring: range extends beyond the end: ", start + size, " > ", l.sval()->len));
         auto ns = vm.NewString(string_view(l.sval()->data() + start, (size_t)size));
         return Value(ns);
     });
@@ -441,8 +450,11 @@ nfr("find_string_reverse", "s,substr,offset", "SSI?", "I",
     " optionally start at a position other than the end of the string",
     [](StackPtr &, VM &, Value &s, Value &sub, Value &offset) {
         auto sv = s.sval()->strv();
-        return Value((ssize_t)sv.rfind(sub.sval()->strv(),
-                                      offset.ival() ? (size_t)offset.ival() : sv.size()));
+        auto lim = offset.ival() ? (size_t)offset.ival() : sv.size();
+        // Cut sv, because the "pos" arg to rfind has the weird behavior that it
+        // will go over that limit by the size of the search string (wtf?)
+        sv = sv.substr(0, lim);
+        return Value((ssize_t)sv.rfind(sub.sval()->strv()));
     });
 
 nfr("replace_string", "s,a,b,count", "SSSI?", "S",
@@ -746,7 +758,7 @@ nfr("tan", "angle", "F}", "F}",
     [](StackPtr &sp, VM &) { VECTOROP(tan(f.fval() * RAD)); });
 
 nfr("sincos", "angle", "F", "F}:2",
-    "the normalized vector indicated by angle (in degrees), same as xy { cos(angle), sin(angle) }",
+    "the normalized vector indicated by angle (in degrees), same as float2 { cos(angle), sin(angle) }",
     [](StackPtr &sp, VM &) {
         auto a = Pop(sp).fval();
         PushVec(sp, double2(cos(a * RAD), sin(a * RAD)));
@@ -1090,6 +1102,12 @@ nfr("max", "v", "F]", "F",
     "largest component of a float vector, or FLT_MIN if length 0.",
     [](StackPtr &, VM &, Value &x) {
         VECSCALAROP(double, FLT_MIN, v = std::max(v, f.fval()), vval, len, At(i))
+    });
+
+nfr("popcount", "x", "I", "I",
+    "number of bits set in an integer",
+    [](StackPtr &, VM &, Value &a) {
+        return Value(PopCount((uint64_t)a.ival()));
     });
 
 nfr("lerp", "x,y,f", "FFF", "F",

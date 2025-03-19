@@ -797,6 +797,10 @@ VM_INLINE void U_ABORT(VM &vm, StackPtr) {
     vm.SeriousError("VM internal error: abort");
 }
 
+VM_INLINE void U_ENUM_RANGE_ERR(VM &vm, StackPtr) {
+    vm.Error("Enum out of range of possible values in switch");
+}
+
 VM_INLINE void U_LVAL_VARL(VM &, StackPtr, int) {
     assert(false);
 }

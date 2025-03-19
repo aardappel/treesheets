@@ -307,6 +307,14 @@ nfr("fullscreen", "mode", "I", "",
         return NilVal();
     });
 
+nfr("window_size", "size", "I}:2", "",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        auto size = PopVec<int2>(sp);
+        TestGL(vm);
+        SDLSetWindowSize(size);
+    });
+
 nfr("visible", "", "", "B",
     "checks if the window is currently visible (not minimized, or on mobile devices, in the"
     " foreground). If false, you should not render anything, nor run the frame's code.",
@@ -1162,7 +1170,7 @@ nfr("dump_shader", "filename,stripnonascii", "SB", "B",
     });
 
 nfr("blend", "on", "I", "I",
-    "changes the blending mode (use blending constants from color.lobster), returns old mode",
+    "changes the blending mode (use blending constants from texture.lobster), returns old mode",
     [](StackPtr &sp, VM &vm) {
         auto mode = Pop(sp);
         TestGL(vm);
@@ -1344,13 +1352,16 @@ nfr("light", "pos,params", "F}:3F}:2", "",
         lights.push_back(l);
     });
 
-nfr("render_tiles", "positions,tilecoords,mapsize", "F}:2]I}:2]I}:2", "",
-    "Renders a list of tiles from a tilemap. Each tile rendered is 1x1 in size."
+nfr("render_tiles", "positions,tilecoords,mapsize,sizes,rotations", "F}:2]I}:2]I}:2F]F]", "",
+    "Renders a list of tiles from a tilemap. Each tile rendered is 0.5 in radius (1x1 square around pos) unless the optional sizes vector is specified (may be empty)."
     " Positions may be anywhere. tilecoords are indices into the map (0..mapsize-1), mapsize is"
-    " the amount of tiles in the texture. Tiles may overlap, they are drawn in order."
-    " Before calling this, make sure to have the texture set and a textured shader",
+    " the amount of tiles in the texture. rotations are optional (may be empty, faster if not specified). Tiles may overlap, they are drawn in order."
+    " Before calling this, make sure to have the texture set and a textured shader."
+    " If you want tile to use top-left as position, wrap this call in gl.translate float2_h:",
     [](StackPtr &sp, VM &vm) {
         TestGL(vm);
+        auto rotations = Pop(sp).vval();
+        auto sizes = Pop(sp).vval();
         auto msize = float2(PopVec<int2>(sp));
         auto tile = Pop(sp).vval();
         auto pos = Pop(sp).vval();
@@ -1361,12 +1372,24 @@ nfr("render_tiles", "positions,tilecoords,mapsize", "F}:2]I}:2]I}:2", "",
         for (iint i = 0; i < len; i++) {
             auto p = ValueToFLT<2>(pos->AtSt(i), pos->width);
             auto t = float2(ValueToI<2>(tile->AtSt(i), tile->width)) / msize;
-            vbuf[i * 6 + 0].pos = p;
-            vbuf[i * 6 + 1].pos = p + float2_y;
-            vbuf[i * 6 + 2].pos = p + float2_1;
-            vbuf[i * 6 + 3].pos = p;
-            vbuf[i * 6 + 4].pos = p + float2_1;
-            vbuf[i * 6 + 5].pos = p + float2_x;
+            auto size = i < sizes->len ? sizes->At(i).fltval() : 0.5f;
+            auto c1 = float2(-size);
+            auto c2 = float2(-size, size);
+            auto c3 = float2(size);
+            auto c4 = float2(size, -size);
+            if (i < rotations->len) {
+                auto rot = rotations->At(i).fltval();
+                c1 = rotate2(c1, rot * RAD);
+                c2 = float2(c1.y, -c1.x);
+                c3 = float2(c2.y, -c2.x);
+                c4 = float2(c3.y, -c3.x);
+            }
+            vbuf[i * 6 + 0].pos = p + c1;
+            vbuf[i * 6 + 1].pos = p + c2;
+            vbuf[i * 6 + 2].pos = p + c3;
+            vbuf[i * 6 + 3].pos = p + c1;
+            vbuf[i * 6 + 4].pos = p + c3;
+            vbuf[i * 6 + 5].pos = p + c4;
             vbuf[i * 6 + 0].tc = t;
             vbuf[i * 6 + 1].tc = t + float2_y / msize;
             vbuf[i * 6 + 2].tc = t + float2_1 / msize;

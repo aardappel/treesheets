@@ -212,7 +212,7 @@ string RunLobster(std::string_view filename, std::string_view code, bool dump_bu
     return err;
 }
 
-void TSDumpBuiltinDoc() { DumpBuiltinDoc(natreg); }
+void TSDumpBuiltinDoc() { DumpBuiltinDoc(natreg, true); }
 
 }
 

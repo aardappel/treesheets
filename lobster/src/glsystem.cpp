@@ -171,13 +171,13 @@ void OpenGLFrameEnd() {
     //glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
     //glFlush();
     //glFinish();
-    #if LOBSTER_FRAME_PROFILER
+    #if LOBSTER_FRAME_PROFILER == 2
         FrameMark
     #endif
 }
 
 void OpenGLPostSwapBuffers() {
-    #if LOBSTER_FRAME_PROFILER
+    #if LOBSTER_FRAME_PROFILER == 2
         TracyGpuCollect;
     #endif
 }

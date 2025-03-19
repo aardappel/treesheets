@@ -23,6 +23,8 @@
 #define FLATBUFFERS_DEBUG_VERIFICATION_FAILURE
 #include "lobster/bytecode_generated.h"
 
+#include "lobster/lobsterreader.h"
+
 #include "lobster/sdlincludes.h"
 #include "lobster/sdlinterface.h"
 #include "lobster/glinterface.h"
@@ -59,6 +61,7 @@ enum Nesting {
     N_DRAG_DROP_SOURCE,
     N_DRAG_DROP_TARGET,
     N_TABLE,
+    N_DISABLED,
 };
 
 vector<Nesting> nstack;
@@ -85,7 +88,13 @@ bool IMGUIInit(iint flags, bool dark, float rounding, float border) {
     if (!_sdl_window || !_sdl_context) return false;
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui::GetIO().ConfigFlags |= (ImGuiConfigFlags)flags;
+    auto &io = ImGui::GetIO();
+    io.ConfigFlags |= (ImGuiConfigFlags)flags;
+    io.ConfigDebugHighlightIdConflicts = true;
+    io.ConfigErrorRecovery = true;
+    io.ConfigErrorRecoveryEnableAssert = false;
+    io.ConfigErrorRecoveryEnableTooltip = true;
+    io.ConfigErrorRecoveryEnableDebugLog = true;
     if (dark)
         ImGui::StyleColorsDark();
     else
@@ -210,6 +219,9 @@ void NPop(VM &vm, Nesting n) {
             case N_TABLE:
                 ImGui::EndTable();
                 break;
+            case N_DISABLED:
+                ImGui::EndDisabled();
+                break;
         }
         // If this was indeed the item we're looking for, we can stop popping.
         if (tn == n) break;
@@ -218,7 +230,14 @@ void NPop(VM &vm, Nesting n) {
 
 void IsInit(VM &vm, pair<Nesting, Nesting> require = { N_WIN, N_MENU }) {
     if (!imgui_init) vm.BuiltinError("imgui: not running: call im.init first");
-    for (auto n : nstack) if (n == require.first || n == require.second) return;
+    for (auto n : nstack) {
+        if (n == require.first || n == require.second) return;
+        // A popup is a window, so should N_POPUP should allow anything that requires N_WIN.
+        if (n == N_POPUP) {
+            n = N_WIN;
+            if (n == require.first || n == require.second) return;
+        }
+    }
     if (require.first != N_NONE || require.second != N_NONE) {
         vm.BuiltinError("imgui: invalid nesting (not inside im.window?)");
     }
@@ -246,7 +265,7 @@ pair<bool, bool> IMGUIEvent(SDL_Event *event) {
     return { ImGui::GetIO().WantCaptureMouse, ImGui::GetIO().WantCaptureKeyboard };
 }
 
-bool LoadFont(string_view name, float size) {
+bool LoadFont(string_view name, float size, string_view lang_name) {
     string buf;
     auto l = LoadFile(name, &buf);
     if (l < 0) return false;
@@ -255,8 +274,27 @@ bool LoadFont(string_view name, float size) {
     std::memcpy(mb, buf.data(), buf.size());
     ImFontConfig imfc;
     imfc.FontDataOwnedByAtlas = true;
-    auto font =
-        ImGui::GetIO().Fonts->AddFontFromMemoryTTF(mb, (int)buf.size(), size, &imfc);
+    auto atlas = ImGui::GetIO().Fonts;
+    const ImWchar *glyph_ranges = atlas->GetGlyphRangesDefault();
+    if (lang_name == "SimplifiedChinese") {
+        glyph_ranges = atlas->GetGlyphRangesChineseSimplifiedCommon();
+    } else if (lang_name == "Korean") {
+        glyph_ranges = atlas->GetGlyphRangesKorean();
+    } else if (lang_name == "Japanese") {
+        glyph_ranges = atlas->GetGlyphRangesJapanese();
+    } else if (lang_name == "Cyrillic") {
+        glyph_ranges = atlas->GetGlyphRangesCyrillic();
+    } else if (lang_name == "Greek") {
+        glyph_ranges = atlas->GetGlyphRangesGreek();
+    } else if (lang_name == "Thai") {
+        glyph_ranges = atlas->GetGlyphRangesThai();
+    } else if (lang_name == "Vietnamese") {
+        glyph_ranges = atlas->GetGlyphRangesVietnamese();
+    } else if (lang_name == "Polish") {
+        static const ImWchar ranges[] = { 0x0020, 0x00FF, 0x0100, 0x017F, 0 };
+        glyph_ranges = ranges;
+    }
+    auto font = atlas->AddFontFromMemoryTTF(mb, (int)buf.size(), size, &imfc, glyph_ranges);
     return font != nullptr;
 }
 
@@ -329,8 +367,43 @@ void Text(string_view s) {
     ImGui::TextUnformatted(s.data(), s.data() + s.size());
 }
 
-void Nil() {
+void Nil(VM &vm, Value *v, const TypeInfo *ti) {
     Text("nil");
+    ImGui::SameLine();
+    if (v && ImGui::Button("+")) {
+        switch (ti->t) {
+            case V_STRING:
+                *v = vm.NewString(0);
+                break;
+            case V_VECTOR:
+                *v = vm.NewVec(0, 0, vm.TypeInfoToIdx(ti));
+                break;
+            case V_CLASS: {
+                Deserializer des(vm);
+                if (des.PushDefault(vm.TypeInfoToIdx(ti), 0)) {
+                    *v = des.PopV();
+                }
+                break;
+            }
+        }
+    }
+}
+
+void VectorOps(VM &vm, LVector *vec, const TypeInfo *ti) {
+    ImGui::SameLine();
+    if (ImGui::Button("+")) {
+        Deserializer des(vm);
+        if (des.PushDefault(ti->subt, 0)) {
+            vec->Push(vm, des.PopV());
+        }
+    }
+    if (vec->len) {
+        ImGui::SameLine();
+        if (ImGui::Button("-")) {
+            auto e = vec->Pop();
+            e.LTDECTYPE(vm, vm.GetTypeInfo(ti->subt).t);
+        }
+    }
 }
 
 void ValToGUI(VM &vm, Value *v, const TypeInfo *ti, string_view_nt label, bool expanded, bool in_table = true) {
@@ -381,14 +454,16 @@ void ValToGUI(VM &vm, Value *v, const TypeInfo *ti, string_view_nt label, bool e
         }
         case V_VECTOR:
             if (v->False()) {
-                Nil();
+                Nil(vm, v, ti);
                 break;
             }
             if (!v->vval()->len) {
                 Text("[]");
+                VectorOps(vm, v->vval(), ti);
                 break;
             }
             if (ImGui::TreeNodeEx(*l ? l : "[..]", flags)) {
+                VectorOps(vm, v->vval(), ti);
                 if (BeginTable("[]")) {
                     auto &sti = vm.GetTypeInfo(ti->subt);
                     auto vec = v->vval();
@@ -402,7 +477,7 @@ void ValToGUI(VM &vm, Value *v, const TypeInfo *ti, string_view_nt label, bool e
             break;
         case V_CLASS:
             if (v->False()) {
-                Nil();
+                Nil(vm, v, ti);
                 break;
             }
             // Upgrade to dynamic type if maybe subclass.
@@ -462,7 +537,7 @@ void ValToGUI(VM &vm, Value *v, const TypeInfo *ti, string_view_nt label, bool e
         }
         case V_STRING: {
             if (v->False()) {
-                Nil();
+                Nil(vm, v, ti);
                 break;
             }
             *v = LStringInputText(vm, l, v->sval());
@@ -473,7 +548,7 @@ void ValToGUI(VM &vm, Value *v, const TypeInfo *ti, string_view_nt label, bool e
             break;
         case V_RESOURCE: {
             if (v->False()) {
-                Nil();
+                Nil(vm, nullptr, ti);
                 break;
             }
             auto r = v->xval();
@@ -630,8 +705,10 @@ void DumpStackTrace(VM &vm) {
 
     auto cur_fileidx = vm.last_fileidx;
     auto cur_line = vm.last_line;
+    int i = 0;
     for (auto &funstackelem : reverse(vm.fun_id_stack)) {
         auto [name, fip] = vm.DumpStackFrameStart(funstackelem.funstartinfo, cur_fileidx, cur_line);
+        ImGui::PushID(i++);
         if (ImGui::TreeNode(name.c_str())) {
             if (BeginTable(name.c_str())) {
                 vm.DumpStackFrame(fip, funstackelem.locals, dumper);
@@ -639,6 +716,7 @@ void DumpStackTrace(VM &vm) {
             }
             ImGui::TreePop();
         }
+        ImGui::PopID();
         cur_fileidx = funstackelem.fileidx;
         cur_line = funstackelem.line;
     }
@@ -668,7 +746,7 @@ string BreakPoint(VM &vm, string_view reason) {
     ImGui_ImplOpenGL3_Init("#version 150");
 
     // Set our own font.. would be better to inherit the one from the game.
-    LoadFont("data/fonts/Droid_Sans/DroidSans.ttf", 16.0);
+    LoadFont("data/fonts/Droid_Sans/DroidSans.ttf", 16.0, "Default");
 
     bool quit = false;
     int cont = 0;
@@ -680,7 +758,7 @@ string BreakPoint(VM &vm, string_view reason) {
         ClearFrameBuffer(float3(0.5f));
 
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(_sdl_debugger_window);
+        ImGui_ImplSDL2_NewFrame();
 
         ImGui::NewFrame();
 
@@ -775,11 +853,13 @@ nfr("init", "dark_style,flags,rounding,border", "B?I?F?F?", "",
         return NilVal();
     });
 
-nfr("add_font", "font_path,size", "SF", "B",
-    "",
-    [](StackPtr &, VM &vm, Value &fontname, Value &size) {
+nfr("add_font", "font_path,size,glyph_ranges", "SFS?", "B",
+    "glyph_ranges will activate additional unicode ranges to be rasterized, and can be"
+    " Default (most European languages), SimplifiedChinese, Japanese, Korean, Cyrillic, Thai, Vietnamese, Greek, ..",
+    [](StackPtr &, VM &vm, Value &fontname, Value &size, Value &glyph_ranges) {
         IsInit(vm, { N_NONE, N_NONE });
-        return Value(LoadFont(fontname.sval()->strv(), size.fltval()));
+        return Value(LoadFont(fontname.sval()->strv(), size.fltval(),
+                              glyph_ranges.True() ? glyph_ranges.sval()->strv() : "Default"));
     });
 
 nfr("set_style_color", "i,color", "IF}:4", "",
@@ -830,7 +910,7 @@ nfr("frame_start", "", "", "",
         IsInit(vm, { N_NONE, N_NONE });
         IMGUIFrameCleanup();
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(_sdl_window);
+        ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
         NPush(N_FRAME);
         imgui_frame++;
@@ -855,7 +935,7 @@ nfr("dockspace_over_viewport", "", "", "",
     [](StackPtr &, VM &vm) {
         IsInit(vm, { N_FRAME, N_NONE });
     ImGui::DockSpaceOverViewport(
-        nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+        0, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
     });
 
 nfr("window_demo", "", "", "B",
@@ -894,14 +974,6 @@ nfr("window_end", "", "", "",
         NPop(vm, N_WIN);
     });
 
-nfr("next_window_size", "size", "F}:2", "",
-    "size in pixels",
-    [](StackPtr &sp, VM &vm) {
-        IsInit(vm, { N_FRAME, N_NONE });
-        auto size = PopVec<float2>(sp);
-        ImGui::SetNextWindowSize(ImVec2(size.x, size.y), ImGuiCond_Appearing);
-    });
-
 nfr("next_window_size", "size,cond", "F}:2I", "",
     "size in pixels",
     [](StackPtr &sp, VM &vm) {
@@ -909,16 +981,6 @@ nfr("next_window_size", "size,cond", "F}:2I", "",
         auto cond = Pop(sp).ival();
         auto size = PopVec<float2>(sp);
         ImGui::SetNextWindowSize(ImVec2(size.x, size.y), (ImGuiCond)cond);
-    });
-
-
-nfr("next_window_pos", "pos,pivot", "F}:2F}:2", "",
-    "pos in pixels, pivot values 0..1 relative to pos",
-    [](StackPtr &sp, VM &vm) {
-        IsInit(vm, { N_FRAME, N_NONE });
-        auto pivot = PopVec<float2>(sp);
-        auto pos = PopVec<float2>(sp);
-        ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Appearing, ImVec2(pivot.x, pivot.y));
     });
 
 nfr("next_window_pos", "pos,pivot,cond", "F}:2F}:2I", "",
@@ -980,6 +1042,44 @@ nfr("is_item_deactivated_after_edit", "", "", "B",
         Push(sp, result);
     });
 
+nfr("is_item_focused", "", "", "B",
+    "returns true if the last item is focused",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto result = ImGui::IsItemFocused();
+        Push(sp, result);
+    });
+
+nfr("set_item_default_focus", "", "", "", "sets the last item created to have focus",
+    [](StackPtr &, VM &vm) {
+        IsInit(vm);
+        ImGui::SetItemDefaultFocus();
+    });
+
+nfr("set_scroll_here_x", "center_x_ratio", "F", "",
+    "scroll the pane in the X dimension so the imgui cursor is visible. Use 0.5 to center the pane on the item",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto center_x_ratio = Pop(sp).fltval();
+        ImGui::SetScrollHereX(center_x_ratio);
+    });
+
+nfr("set_scroll_here_y", "center_y_ratio", "F", "",
+    "scroll the pane in the Y dimension so the imgui cursor is visible. Use 0.5 to center the pane on the item",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto center_y_ratio = Pop(sp).fltval();
+        ImGui::SetScrollHereY(center_y_ratio);
+    });
+
+nfr("want_capture_mouse", "", "", "B",
+    "returns true if imgui wants to capture the mouse",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm, { N_NONE, N_NONE });
+        auto result = ImGui::GetIO().WantCaptureMouse;
+        Push(sp, result);
+    });
+
 nfr("get_layout_pos", "", "", "F}:2", "",
     [](StackPtr &sp, VM &vm) {
         IsInit(vm);
@@ -992,6 +1092,20 @@ nfr("set_layout_pos", "pos", "F}:2", "", "",
         IsInit(vm);
         auto pos = PopVec<float2>(sp);
         ImGui::SetCursorPos(ImVec2(pos.x, pos.y));
+    });
+
+nfr("get_layout_screen_pos", "", "", "F}:2", "",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto pos = ImGui::GetCursorScreenPos();
+        PushVec(sp, float2(pos.x, pos.y));
+    });
+
+nfr("set_layout_screen_pos", "pos", "F}:2", "", "",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto pos = PopVec<float2>(sp);
+        ImGui::SetCursorScreenPos(ImVec2(pos.x, pos.y));
     });
 
 nfr("get_content_region_avail", "", "", "F}:2",
@@ -1054,7 +1168,7 @@ nfr("font_end", "", "", "",
     });
 
 nfr("color_start", "color", "F}:4", "",
-    "(use im.tooltip_multi instead)",
+    "(use im.color instead)",
     [](StackPtr &sp, VM &vm) {
         IsInit(vm);
         auto c = PopVec<float4>(sp);
@@ -1126,7 +1240,7 @@ nfr("input_int", "label,val,min,max", "SIII", "I",
     [](StackPtr &, VM &vm, Value &text, Value &val, Value &min, Value &max) {
         IsInit(vm);
         ImGui::InputScalar(Label(vm, text), ImGuiDataType_S64, (void *)&val,
-                           nullptr, nullptr, "%d", 0);
+                           nullptr, nullptr, "%" PRId64, 0);
         if (val.ival() < min.ival()) val = min;
         if (val.ival() > max.ival()) val = max;
         return val;
@@ -1137,7 +1251,7 @@ nfr("input_int", "label,val", "SI", "I",
     [](StackPtr &, VM &vm, Value &text, Value &val) {
         IsInit(vm);
         ImGui::InputScalar(Label(vm, text), ImGuiDataType_S64, (void *)&val,
-                           nullptr, nullptr, "%d", 0);
+                           nullptr, nullptr, "%" PRId64, 0);
         return val;
     });
 
@@ -1302,6 +1416,52 @@ nfr("image_mouseclick", "tex,size", "R:textureF}:2", "F}:2I",
             PushVec<float, 2>(sp, -float2_1);
             Push(sp, -1);
         }
+    });
+
+nfr("rect", "min,max,color,rounding,thickness", "F}:2F}:2F}:4FF", "",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto thickness = Pop(sp).fltval();
+        auto rounding = Pop(sp).fltval();
+        auto color = PopVec<float4>(sp);
+        auto p_max = PopVec<float2>(sp);
+        auto p_min = PopVec<float2>(sp);
+        ImDrawFlags flags = rounding >= 0.0 ? ImDrawFlags_RoundCornersAll : ImDrawFlags_None;
+        ImGui::GetWindowDrawList()->AddRect(
+            ImVec2(p_min.x, p_min.y),
+            ImVec2(p_max.x, p_max.y),
+            ImGui::GetColorU32(ImVec4(color.x, color.y, color.z, color.w)),
+            rounding,
+            flags,
+            thickness
+        );
+    });
+
+nfr("rect_filled", "min,max,color,rounding", "F}:2F}:2F}:4F", "",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto rounding = Pop(sp).fltval();
+        auto color = PopVec<float4>(sp);
+        auto p_max = PopVec<float2>(sp);
+        auto p_min = PopVec<float2>(sp);
+        ImDrawFlags flags = rounding >= 0.0 ? ImDrawFlags_RoundCornersAll : ImDrawFlags_None;
+        ImGui::GetWindowDrawList()->AddRectFilled(
+            ImVec2(p_min.x, p_min.y),
+            ImVec2(p_max.x, p_max.y),
+            ImGui::GetColorU32(ImVec4(color.x, color.y, color.z, color.w)),
+            rounding,
+            flags
+        );
+    });
+
+nfr("set_next_item_open", "is_open,cond", "BI", "", "Set the open state of the next treenode",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto cond = Pop(sp).ival();
+        auto is_open = Pop(sp).True();
+        ImGui::SetNextItemOpen(is_open, (ImGuiCond)cond);
     });
 
 nfr("treenode_start", "label,flags", "SI", "B",
@@ -1493,12 +1653,23 @@ nfr("group_end", "", "", "",
 nfr("popup_start", "label,winflags,rmbprevitem", "SIB?", "B",
     "(use im.popup instead)",
     [](StackPtr &sp, VM &vm) {
-        IsInit(vm);
+        IsInit(vm, { N_FRAME, N_NONE });
         auto rmb = Pop(sp).True();
         auto flags = (ImGuiWindowFlags)Pop(sp).intval();
         auto title = Pop(sp);
         bool open = rmb ? ImGui::BeginPopupContextItem(Label(vm, title))
             : ImGui::BeginPopup(Label(vm, title), flags);
+        Push(sp, open);
+        if (open) NPush(N_POPUP);
+    });
+
+nfr("popup_modal_start", "label,winflags", "SI", "B",
+    "(use im.popup_modal instead)",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm, { N_FRAME, N_NONE });
+        auto flags = (ImGuiWindowFlags)Pop(sp).intval();
+        auto title = Pop(sp);
+        bool open = ImGui::BeginPopupModal(Label(vm, title), nullptr, flags);
         Push(sp, open);
         if (open) NPush(N_POPUP);
     });
@@ -1513,7 +1684,7 @@ nfr("popup_end", "", "", "",
 nfr("popup_open", "label", "S", "",
     "",
     [](StackPtr &sp, VM &vm) {
-        IsInit(vm);
+        IsInit(vm, { N_FRAME, N_NONE });
         auto title = Pop(sp);
         ImGui::OpenPopup(Label(vm, title));
     });
@@ -1531,13 +1702,14 @@ nfr("disabled_start", "disabled", "B", "",
         IsInit(vm);
         const auto disabled = Pop(sp).True();
         ImGui::BeginDisabled(disabled);
+        NPush(N_DISABLED);
     });
 
 nfr("disabled_end", "", "", "",
     "",
     [](StackPtr &, VM &vm) {
         IsInit(vm);
-        ImGui::EndDisabled();
+        NPop(vm, N_DISABLED);
     });
 
 nfr("button_repeat_start", "repeat", "B", "",
@@ -1553,6 +1725,14 @@ nfr("button_repeat_end", "", "", "",
     [](StackPtr &, VM &vm) {
         IsInit(vm);
         ImGui::PopButtonRepeat();
+    });
+
+nfr("dummy", "size", "F}:2", "add a dummy item of a given size",
+    "",
+    [](StackPtr &sp, VM &vm) {
+        IsInit(vm);
+        auto size = PopVec<float2>(sp);
+        ImGui::Dummy(ImVec2(size.x, size.y));
     });
 
 nfr("drag_drop_source_start", "flags", "I", "B",
@@ -1743,6 +1923,52 @@ nfr("show_engine_stats", "", "", "",
     [](StackPtr &, VM &vm) {
         IsInit(vm);
         EngineStatsGUI();
+        return NilVal();
+    });
+
+nfr("show_debug_metrics_window", "", "", "",
+    "",
+    [](StackPtr &, VM &vm) {
+        IsInit(vm, { N_FRAME, N_NONE });
+        // There is also ShowDebugLogWindow() and others, but all of these can be
+        // opened from this window, so really only one needed:
+        ImGui::ShowMetricsWindow();
+        return NilVal();
+    });
+
+nfr("show_profiling_stats", "num,reset", "IB", "",
+    "",
+    [](StackPtr &, VM &vm, Value &num, Value &reset) {
+        IsInit(vm);
+        #if LOBSTER_FRAME_PROFILER == 1
+        if (reset.True()) prof_stats.clear();
+        vector<pair<const struct ___tracy_source_location_data *, ProfStat>> display;
+        for (auto &it : prof_stats) {
+            display.push_back(it);
+        }
+        sort(display.begin(), display.end(),
+             [](pair<const struct ___tracy_source_location_data *, ProfStat> &a,
+                pair<const struct ___tracy_source_location_data *, ProfStat> &b) -> bool {
+                 return a.second.time >= b.second.time;
+            });
+        if (!ImGui::BeginTable("show_profiling_stats", 2,
+                               ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoHostExtendX |
+                                   ImGuiTableFlags_Borders))
+            return NilVal();
+        auto i = num.ival();
+        for (auto &it : display) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            Text(it.first->function);
+            ImGui::TableSetColumnIndex(1);
+            Text(to_string_float(it.second.time, 3));
+            if (!--i) break;
+        }
+        ImGui::EndTable();
+        #else
+        (void)num;
+        (void)reset;
+        #endif
         return NilVal();
     });
 
