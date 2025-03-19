@@ -131,7 +131,11 @@ struct MyApp : wxApp {
         #endif
 
         auto exepath = argv[0];
-        #ifdef __WXGTK__
+        #if defined(__WXMAC__)
+            char path[PATH_MAX];
+            uint32_t size = sizeof(path);
+            if(_NSGetExecutablePath(path, &size) == 0) exepath = path;
+        #elif defined(__WXGTK__)
             // argv[0] could be relative, this is apparently a more robust way to get the
             // full path.
             char path[PATH_MAX];

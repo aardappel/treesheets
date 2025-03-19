@@ -85,4 +85,8 @@
     #include "StackWalker\StackWalkerHelpers.h"
 #endif
 
+#ifdef __WXMAC__
+    #include <mach-o/dyld.h>
+#endif
+
 using namespace std;
