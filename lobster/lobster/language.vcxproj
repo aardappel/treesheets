@@ -126,7 +126,7 @@
       <SupportJustMyCode>false</SupportJustMyCode>
       <EnableModules>true</EnableModules>
       <BuildStlModules>false</BuildStlModules>
-      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/D_ITERATOR_DEBUG_LEVEL=1 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -318,6 +318,7 @@
     <ClInclude Include="..\src\lobster\rng_hash.h" />
     <ClInclude Include="..\src\lobster\slaballoc.h" />
     <ClInclude Include="..\src\lobster\small_vector.h" />
+    <ClInclude Include="..\src\lobster\stack_vector.h" />
     <ClInclude Include="..\src\lobster\stdafx.h" />
     <ClInclude Include="..\src\lobster\string_tools.h" />
     <ClInclude Include="..\src\lobster\tonative.h" />

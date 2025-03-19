@@ -317,6 +317,20 @@ void SDLRequireGLVersion(int major, int minor) {
     #endif
 };
 
+int2 DPIAwareScreenSize(int2 desired_screensize) {
+    int display = 0;  // FIXME: we're not dealing with multiple displays.
+    float dpi = 0;
+    const float default_dpi =
+        #ifdef __APPLE__
+            72.0f;
+        #else
+            96.0f;
+        #endif
+    if (SDL_GetDisplayDPI(display, NULL, &dpi, NULL)) dpi = default_dpi;
+    LOG_INFO(cat("dpi: ", dpi));
+    return desired_screensize * int(dpi) / int(default_dpi);
+}
+
 string SDLInit(string_view_nt title, const int2 &desired_screensize, InitFlags flags, int samples) {
     MakeDPIAware();
     TextToSpeechInit();  // Needs to be before SDL_Init because COINITBASE_MULTITHREADED
@@ -382,17 +396,7 @@ string SDLInit(string_view_nt title, const int2 &desired_screensize, InitFlags f
         LOG_INFO(_sdl_window ? "SDL window passed..." : "SDL window FAILED...");
         if (landscape) SDL_SetHint("SDL_HINT_ORIENTATIONS", "LandscapeLeft LandscapeRight");
     #else
-        int display = 0;  // FIXME: we're not dealing with multiple displays.
-        float dpi = 0;
-        const float default_dpi =
-            #ifdef __APPLE__
-                72.0f;
-            #else
-                96.0f;
-            #endif
-        if (SDL_GetDisplayDPI(display, NULL, &dpi, NULL)) dpi = default_dpi;
-        LOG_INFO(cat("dpi: ", dpi));
-        screensize = desired_screensize * int(dpi) / int(default_dpi);
+        screensize = DPIAwareScreenSize(desired_screensize);
         // STARTUP-TIME-COST: 0.16 sec.
         _sdl_window = SDL_CreateWindow(
             title.c_str(),
@@ -485,6 +489,13 @@ void SDLSetFullscreen(InitFlags flags) {
         }
     }
     SDL_SetWindowFullscreen(_sdl_window, mode);
+}
+
+void SDLSetWindowSize(int2 size) {
+    if (!_sdl_window) return;
+    //size = DPIAwareScreenSize(size);
+    SDL_SetWindowSize(_sdl_window, size.x, size.y);
+    ScreenSizeChanged();
 }
 
 string SDLDebuggerWindow() {

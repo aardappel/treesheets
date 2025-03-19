@@ -224,6 +224,10 @@ struct Named {
 
     Named() = default;
     Named(string_view _name, int _idx = 0) : name(_name), idx(_idx) {}
+
+    void Error(const string &msg) {
+        THROW_OR_ABORT(cat("INTERNAL ERROR: ", name, ": ", msg));
+    }
 };
 
 enum NArgFlags {
@@ -242,6 +246,7 @@ DEFINE_BITWISE_OPERATORS_FOR_ENUM(NArgFlags)
 
 struct Ident;
 struct SpecIdent;
+struct NativeFun;
 
 struct Narg {
     TypeRef type = type_undefined;
@@ -251,7 +256,7 @@ struct Narg {
     char default_val = 0;
     Lifetime lt = LT_UNDEF;
 
-    void Set(const char *&tid, Lifetime def) {
+    void Set(const char *&tid, Lifetime def, Named *nf) {
         char t = *tid++;
         flags = NF_NONE;
         lt = def;
@@ -264,7 +269,7 @@ struct Narg {
             case 'L': type = type_function_null_void; break;  // NOTE: only used by call_function_value(), and hash(), in gui.lobster
             case 'R': type = type_resource; break;
             case 'T': type = type_typeid; break;
-            default:  assert(0);
+            default: nf->Error("illegal type code");
         }
         while (*tid && !isupper(*tid)) {
             switch (auto c = *tid++) {
@@ -282,36 +287,38 @@ struct Narg {
                 case ']':
                 case '}':
                     type = WrapKnown(type, V_VECTOR);
-                    assert(!type.Null());
+                    if (type.Null()) nf->Error("unknown vector type");
                     if (c == '}') fixed_len = -1;
                     break;
                 case '?':
                     type = WrapKnown(type, V_NIL);
-                    assert(!type.Null());
+                    if (type.Null()) nf->Error("unknown nillable type");
                     break;
                 case ':':
                     if (type->t == V_RESOURCE) {
                         auto nstart = tid;
                         while (islower(*tid)) tid++;
-                        auto rt = LookupResourceType(string_view(nstart, tid - nstart));
-                        assert(rt);  // If hit, "R:name" is not a resource type.
+                        auto rname = string_view(nstart, tid - nstart);
+                        auto rt = LookupResourceType(rname);
+                        if (!rt) nf->Error("unknown resource type " + rname);
                         type = &rt->thistype;
                     } else {
-                        assert(*tid >= '/' && *tid <= '9');
+                        if (*tid < '/' || *tid > '9') nf->Error("int out of range");
                         char val = *tid++ - '0';
                         if (type->ElementIfNil()->Numeric())
                             default_val = val;
                         else if (type->t == V_VECTOR && fixed_len < 0)
                             fixed_len = val;
                         else
-                            assert(false);
+                            nf->Error(cat("illegal type: ", type->t));
                     }
                     break;
                 default:
-                    assert(false);
+                    nf->Error("illegal type modifier");
             }
         }
-        assert(type->t != V_RESOURCE || type->rt);  // All uses of type R must have :name specifier.
+        if (type->t == V_RESOURCE && !type->rt)
+            nf->Error("all uses of type R must have :name specifier");
     }
 };
 
@@ -368,32 +375,34 @@ struct NativeFun : Named {
         return i;
     };
 
-    NativeFun(const char *ns, const char *nsname, BuiltinPtr f, const char *ids, const char *typeids,
+    NativeFun(const char *ns, const char *nsname, BuiltinPtr f, const char *ids,
+              const char *typeids,
               const char *rets, const char *help)
         : Named(*ns ? cat(ns, ".", nsname) : nsname, 0),
           fun(f),
           args(TypeLen(typeids)),
           retvals(TypeLen(rets)),
           help(help) {
-        assert((int)args.size() == f.fnargs || f.fnargs < 0);
+        if ((int)args.size() != f.fnargs && f.fnargs >= 0) Error("mismatching argument count");
         auto StructArgsVararg = [&](const Narg &arg) {
-            assert(!arg.fixed_len || IsRef(arg.type->sub->t) || f.fnargs < 0);
+            if (arg.fixed_len && !IsRef(arg.type->sub->t) && f.fnargs >= 0)
+                Error("struct types can only be used by vararg builtins");
             (void)arg;
         };
         for (auto [i, arg] : enumerate(args)) {
             const char *idend = strchr(ids, ',');
             if (!idend) {
                 // if this fails, you're not specifying enough arg names in the comma separated list
-                assert(i == args.size() - 1);
+                if (i != args.size() - 1) Error("incorrect argument name specification");
                 idend = ids + strlen(ids);
             }
             arg.name = string_view(ids, idend - ids);
             ids = idend + 1;
-            arg.Set(typeids, LT_BORROW);
+            arg.Set(typeids, LT_BORROW, this);
             StructArgsVararg(arg);
         }
         for (auto &ret : retvals) {
-            ret.Set(rets, LT_KEEP);
+            ret.Set(rets, LT_KEEP, this);
             StructArgsVararg(ret);
         }
     }

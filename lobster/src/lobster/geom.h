@@ -556,6 +556,12 @@ template<typename T> inline float3 random_point_in_sphere(RandomNumberGenerator<
     }
 }
 
+
+inline float2 rotate2(const float2 &v, const float2 &a) {
+    return float2(v.x * a.x - v.y * a.y, v.x * a.y + v.y * a.x);
+}
+
+
 inline float3 rotateX(const float3 &v, const float2 &a) {
     return float3(v.x, v.y * a.x - v.z * a.y, v.y * a.y + v.z * a.x);
 }
@@ -566,9 +572,13 @@ inline float3 rotateZ(const float3 &v, const float2 &a) {
     return float3(v.x * a.x - v.y * a.y, v.x * a.y + v.y * a.x, v.z);
 }
 
-inline float3 rotateX(const float3 &v, float a) { return rotateX(v, float2(cosf(a), sinf(a))); }
-inline float3 rotateY(const float3 &v, float a) { return rotateY(v, float2(cosf(a), sinf(a))); }
-inline float3 rotateZ(const float3 &v, float a) { return rotateZ(v, float2(cosf(a), sinf(a))); }
+inline float2 rotvec(float a) { return float2(cosf(a), sinf(a)); }
+
+inline float2 rotate2(const float2 &v, float a) { return rotate2(v, rotvec(a)); }
+
+inline float3 rotateX(const float3 &v, float a) { return rotateX(v, rotvec(a)); }
+inline float3 rotateY(const float3 &v, float a) { return rotateY(v, rotvec(a)); }
+inline float3 rotateZ(const float3 &v, float a) { return rotateZ(v, rotvec(a)); }
 
 struct quat : float4 {
     quat() {}

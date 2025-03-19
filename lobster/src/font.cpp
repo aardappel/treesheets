@@ -31,6 +31,7 @@ map<string, OutlineFont *, less<>> loadedfaces;
 OutlineFont *curface = nullptr;
 string curfacename;
 
+extern Shader *currentshader;
 Shader *texturedshader = nullptr;
 
 void CullFonts() {
@@ -56,6 +57,10 @@ void FontCleanup() {
     FTClosedown();
 }
 
+void SetDefaultFontShader() {
+    texturedshader = LookupShader("textured");
+}
+
 void AddFont(NativeRegistry &nfr) {
 
 nfr("set_font_name", "filename", "S", "B",
@@ -70,8 +75,7 @@ nfr("set_font_name", "filename", "S", "B",
             curfacename = piname;
             return Value(true);
         }
-        texturedshader = LookupShader("textured");
-        assert(texturedshader);
+        SetDefaultFontShader();
         curface = LoadFont(piname);
         if (curface)  {
             curfacename = piname;
@@ -82,33 +86,38 @@ nfr("set_font_name", "filename", "S", "B",
         }
     });
 
-nfr("set_font_size", "size,outlinesize", "IF?", "B",
+nfr("set_font_size", "size,outlinesize,outlinecolor", "IF?F}:4?", "B",
     "sets the font for rendering into this fontsize (in pixels). caches into a texture first"
     " time this size is used, flushes from cache if this size is not used an entire frame. font"
     " rendering will look best if using 1:1 pixels (careful with gl.scale/gl.translate)."
-    " an optional outlinesize will give the font a black outline."
+    " an optional outlinesize will give the font an outline."
     " make sure to call this every frame."
     " returns true if success",
-    [](StackPtr &, VM &vm, Value &fontsize, Value &outlinesize) {
+    [](StackPtr &sp, VM &vm) {
+        auto outlinecol = PopVec<float4>(sp);
+        auto outlinesize = Pop(sp).fltval();
+        auto fontsize = Pop(sp).intval();
         if (!curface) vm.BuiltinError("gl.set_font_size: no current font set with gl.set_font_name");
-        float osize = min(16.0f, max(0.0f, outlinesize.fltval()));
-        int size = max(1, fontsize.intval());
+        float osize = min(16.0f, max(0.0f, outlinesize));
+        int size = max(1, fontsize);
         int csize = min(size, maxfontsize);
         if (osize > 0 && csize != size) osize = osize * csize / size;
         string fontname = curfacename;
         fontname += to_string(csize);
         fontname += "_";
         fontname += to_string_float(osize);
+        fontname += "_";
+        fontname += outlinecol.to_string();
         curfontsize = size;
         curoutlinesize = osize;
         auto fontelem = fontcache.find(fontname);
         if (fontelem != fontcache.end()) {
             curfont = fontelem->second;
-            return Value(true);
+        } else {
+            curfont = new BitmapFont(curface, csize, osize, quantizec(outlinecol));
+            fontcache.insert({ fontname, curfont });
         }
-        curfont = new BitmapFont(curface, csize, osize);
-        fontcache.insert({ fontname, curfont });
-        return Value(true);
+        Push(sp, Value(true));
     });
 
 nfr("set_max_font_size", "size", "I", "",
@@ -138,7 +147,8 @@ nfr("text", "text", "S", "Sb",
             otransforms.append_object2view(scaling(curfontsize / float(maxfontsize)));
         }
         SetTexture(0, f->tex);
-        texturedshader->Set();
+        if (texturedshader) texturedshader->Set();
+        else currentshader->Set();
         f->RenderText(s.sval()->strv());
         if (curfontsize > maxfontsize) {
             otransforms.pop();
@@ -169,6 +179,19 @@ nfr("get_char_code", "name", "S", "I",
     " (or if the font doesn\'t have names)",
     [](StackPtr &, VM &, Value &n) {
         return Value(curface ? curface->GetCharCode(n.sval()->strvnt()) : 0);
+    });
+
+nfr("use_default_font_shader", "on", "B", "",
+    "by default set_font_name sets the use of the \"textured\" shader."
+    " With this function you can turn that on/off to use a current shader instead.",
+    [](StackPtr &, VM &vm, Value &on) {
+        extern void TestGL(VM &vm); TestGL(vm);
+        if (on.True())  {
+            SetDefaultFontShader();
+        } else {
+            texturedshader = nullptr;
+        }
+        return NilVal();
     });
 
 }  // AddFont

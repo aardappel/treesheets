@@ -58,7 +58,7 @@ VM::~VM() {
     TerminateWorkers();
     if (byteprofilecounts) delete[] byteprofilecounts;
 
-    #if LOBSTER_FRAME_PROFILER
+    #if LOBSTER_FRAME_PROFILER == 2
         // FIXME: this is not ideal, because there may be multiple VMs.
         // But the profiler runs its own thread, and may be accessing pre_allocated_function_locations
         // stored in this VM.
@@ -735,6 +735,19 @@ string_view VM::LookupFieldByOffset(int stidx, int offset) const {
     return fields->Get(fieldn)->name()->string_view();
 }
 
+int VM::LookupFieldByName(int stidx, string_view fname) const {
+    auto st = bcf->udts()->Get((flatbuffers::uoffset_t)stidx);
+    auto fields = st->fields();
+    for (flatbuffers::uoffset_t i = 0; i < fields->size(); i++) {
+        auto f = fields->Get(i);
+        auto name = f->name()->string_view();
+        if (name == fname) {
+            return f->offset();
+        }
+    }
+    return -1;
+}
+
 bool VM::EnumName(string &sd, iint enum_val, int enumidx) {
     auto enum_def = bcf->enums()->Get(enumidx);
     auto &vals = *enum_def->vals();
@@ -889,6 +902,32 @@ Value VM::WorkerCheck(type_elem_t tti) {
 
 }  // namespace lobster
 
+#if LOBSTER_FRAME_PROFILER == 1
+
+vector<pair<const struct ___tracy_source_location_data *, double>> prof_stack;
+unordered_map<const struct ___tracy_source_location_data *, ProfStat> prof_stats;
+
+___tracy_c_zone_context ___tracy_emit_zone_begin(const struct ___tracy_source_location_data *srcloc, int) {
+    prof_stack.push_back({ srcloc, 0.0 });
+    return { SecondsSinceStart() };
+}
+
+void ___tracy_emit_zone_end(___tracy_c_zone_context ctx) {
+    auto [srcloc, child_time] = prof_stack.back();
+    prof_stack.pop_back();
+    auto time = SecondsSinceStart() - ctx.start_time;
+    auto it = prof_stats.find(srcloc);
+    if (it == prof_stats.end()) {
+        prof_stats[srcloc] = ProfStat{ time - child_time };
+    } else {
+        it->second.time += time - child_time;
+    }
+    if (!prof_stack.empty()) {
+        prof_stack.back().second += time;
+    }
+}
+
+#endif
 
 // Make VM ops available as C functions for linking purposes:
 
@@ -963,8 +1002,12 @@ int CVM_GetTypeSwitchID(VM *vm, Value self, int vtable_idx) { return GetTypeSwit
 void CVM_PushFunId(VM *vm, const int *id, StackPtr locals) { PushFunId(*vm, id, locals); }
 void CVM_PopFunId(VM *vm) { PopFunId(*vm); }
 #if LOBSTER_FRAME_PROFILER
-TracyCZoneCtx CVM_StartProfile(___tracy_source_location_data *tsld) { return StartProfile(tsld); }
-void CVM_EndProfile(TracyCZoneCtx ctx) { EndProfile(ctx); }
+___tracy_c_zone_context CVM_StartProfile(___tracy_source_location_data *tsld) {
+    return StartProfile(tsld);
+}
+void CVM_EndProfile(___tracy_c_zone_context ctx) {
+    EndProfile(ctx);
+}
 #endif
 
 #define F(N, A, USE, DEF) \

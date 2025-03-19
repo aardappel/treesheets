@@ -31,11 +31,11 @@
     #include <comdef.h>
 #else
     #include <sys/time.h>
-	#ifndef PLATFORM_ES3
-		#include <glob.h>
-		#include <sys/stat.h>
-	#endif
     #define FILESEP '/'
+#endif
+
+#ifndef PLATFORM_ES3
+    #include <filesystem>
 #endif
 
 #ifdef __linux__
@@ -429,52 +429,29 @@ bool FileDelete(string_view relfilename) {
     return false;
 }
 
-// TODO: can now replace all this platform specific stuff with std::filesystem code.
-// https://github.com/tvaneerd/cpp17_in_TTs/blob/master/ALL_IN_ONE.md
-// http://en.cppreference.com/w/cpp/experimental/fs
-bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest) {
+bool ScanDirAbs(string_view absdir, vector<DirInfo> &dest) {
+    using namespace filesystem;
     string folder = SanitizePath(absdir);
-    #ifdef _WIN32
-        WIN32_FIND_DATA fdata;
-        HANDLE fh = FindFirstFile((folder + "\\*.*").c_str(), &fdata);
-        if (fh != INVALID_HANDLE_VALUE) {
-            do {
-                if (strcmp(fdata.cFileName, ".") && strcmp(fdata.cFileName, "..")) {
-                    auto size =
-                        (static_cast<uint64_t>(fdata.nFileSizeHigh) << (sizeof(uint32_t) * 8)) |
-                        fdata.nFileSizeLow;
-                    dest.push_back(
-                        { fdata.cFileName,
-                          fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY
-                              ? -1
-                              : (int64_t)size });
-                }
+    #if !defined(PLATFORM_ES3)
+        path p = folder.empty() ? "/" : folder;
+        error_code ec;
+        directory_iterator iter{p, ec};
+        if (ec) return false;
+        for (; iter != directory_iterator(); iter.increment(ec)) {
+            if (ec) continue;
+            auto &entry = *iter;
+            if (entry.is_directory()) {
+                dest.push_back({ entry.path().filename().string(), -1, entry.last_write_time(ec) });
+            } else {
+                dest.push_back({ entry.path().filename().string(), (int64_t)entry.file_size(ec), entry.last_write_time(ec) });
             }
-            while(FindNextFile(fh, &fdata));
-            FindClose(fh);
-            return true;
         }
-    #elif !defined(PLATFORM_ES3)
-        glob_t gl;
-        string mask = folder + "/*";
-        if (!glob(mask.c_str(), GLOB_MARK | GLOB_TILDE, nullptr, &gl)) {
-            for (size_t fi = 0; fi < gl.gl_pathc; fi++) {
-                string xFileName = gl.gl_pathv[fi];
-                bool isDir = xFileName[xFileName.length()-1] == '/';
-                if (isDir) xFileName = xFileName.substr(0, xFileName.length() - 1);
-                string cFileName = xFileName.substr(xFileName.find_last_of('/') + 1);
-                struct stat st;
-                stat(gl.gl_pathv[fi], &st);
-                dest.push_back({ cFileName, isDir ? -1 : (int64_t)st.st_size });
-            }
-            globfree(&gl);
-            return true;
-        }
+        return true;
     #endif
     return false;
 }
 
-bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest) {
+bool ScanDir(string_view reldir, vector<DirInfo> &dest) {
     // First check the pakfile.
     for (auto [prfn, tup] : pakfile_registry) {
         if (prfn.find(reldir) == 0) {

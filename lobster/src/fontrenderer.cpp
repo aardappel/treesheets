@@ -36,8 +36,8 @@ BitmapFont::~BitmapFont() {
     DeleteTexture(tex);
 }
 
-BitmapFont::BitmapFont(OutlineFont *_font, int _size, float _osize)
-    : tex(DummyTexture()), font_height(_size), outlinesize(_osize), font(_font) {}
+BitmapFont::BitmapFont(OutlineFont *_font, int _size, float _osize, byte4 _ocol)
+    : tex(DummyTexture()), font_height(_size), outlinesize(_osize), outlinecol(_ocol), font(_font) {}
 
 bool BitmapFont::CacheChars(string_view text) {
     usedcount++;
@@ -104,12 +104,15 @@ bool BitmapFont::CacheChars(string_view text) {
                     auto alpha = bglyph->bitmap.buffer[pixel + row * bglyph->bitmap.pitch];
                     if (outline_passes > 1) {
                         if (!pass) {
-                            image[off] = { 0x00, 0x00, 0x00, alpha };
+                            auto col = outlinecol;
+                            col.w = alpha;
+                            image[off] = col;
                         } else {
                             auto cur_alpha = image[off].w;
                             auto max_alpha = max(cur_alpha, alpha);
-                            auto col = (uint8_t)mix(0x00, 0xFF, alpha / 255.0f);
-                            image[off] = { col, col, col, max_alpha };
+                            // FIXME: this would be faster without the float conversions.
+                            auto col = float4(mix(float3(outlinecol.xyz()), float3(255.0), alpha / 255.0f), max_alpha);
+                            image[off] = byte4(col);
                         }
                     } else {
                         // FIXME: wastefull

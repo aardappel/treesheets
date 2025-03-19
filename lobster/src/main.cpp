@@ -40,6 +40,7 @@ void unit_test_all() {
     unit_test_varint();
     unit_test_unicode();
     unit_test_packed_vector();
+    unit_test_stack_vector();
 }
 
 int main(int argc, char* argv[]) {
@@ -61,6 +62,8 @@ int main(int argc, char* argv[]) {
     {
         bool parsedump = false;
         bool disasm = false;
+        bool dump_builtins_json = false;
+        bool dump_builtins_ng = false;
         bool dump_builtins = false;
         bool dump_names = false;
         bool tcc_out = false;
@@ -128,6 +131,8 @@ int main(int argc, char* argv[]) {
                 else if (a == "--runtime-debug-dump") { runtime_checks = RUNTIME_DEBUG_DUMP; }
                 else if (a == "--runtime-debugger") { runtime_checks = RUNTIME_DEBUGGER; }
                 else if (a == "--noconsole") { SetConsole(false); }
+                else if (a == "--gen-builtins-json") { dump_builtins_json = true; }
+                else if (a == "--gen-builtins-html-ng") { dump_builtins_ng = true; }
                 else if (a == "--gen-builtins-html") { dump_builtins = true; }
                 else if (a == "--gen-builtins-names") { dump_names = true; }
                 else if (a == "--compile-only") { compile_only = true; }
@@ -195,7 +200,9 @@ int main(int argc, char* argv[]) {
             THROW_OR_ABORT("cannot find location to read/write data on this platform!");
         if (!mainfile.empty() && !fn.empty()) AddDataDir(StripFilePart(fn));
 
-        if (dump_builtins) { DumpBuiltinDoc(nfr); return 0; }
+        if (dump_builtins_json) { DumpBuiltinDocJson(nfr); return 0; }
+        if (dump_builtins) { DumpBuiltinDoc(nfr, true); return 0; }
+        if (dump_builtins_ng) { DumpBuiltinDoc(nfr, false); return 0; }
         if (dump_names) { DumpBuiltinNames(nfr); return 0; }
 
         LOG_INFO("lobster version " GIT_COMMIT_INFOSTR);

@@ -188,7 +188,7 @@ Node *Call::Optimize(Optimizer &opt) {
         assert(opt.functions_removed);
     } else {
         for (auto c : sf->sbody->children) {
-            auto nc = c->Clone();
+            auto nc = c->Clone(false);
             list->children.push_back(nc);
             nc->Iterate([](Node *i) {
                 if (auto call = Is<Call>(i)) call->sf->numcallers++;

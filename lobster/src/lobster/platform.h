@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <filesystem>
+
 // Platform independent file access:
 typedef int64_t (* FileLoader)(string_view_nt absfilename, string *dest, int64_t start, int64_t len);
 
@@ -52,8 +54,14 @@ extern string SanitizePath(string_view path);
 extern void AddPakFileEntry(string_view pakfilename, string_view relfilename, int64_t off,
                             int64_t len, int64_t uncompressed);
 
-extern bool ScanDir(string_view reldir, vector<pair<string, int64_t>> &dest);
-extern bool ScanDirAbs(string_view absdir, vector<pair<string, int64_t>> &dest);
+struct DirInfo {
+    string name;
+    int64_t size = 0;
+    filesystem::file_time_type last_write_time;
+};
+
+extern bool ScanDir(string_view reldir, vector<DirInfo> &dest);
+extern bool ScanDirAbs(string_view absdir, vector<DirInfo> &dest);
 
 extern iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out);
 

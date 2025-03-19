@@ -210,7 +210,7 @@ struct FlexBufferParser : Deserializer {
     FlexBufferParser(VM &vm) : Deserializer(vm) {}
 
     Value Parse(type_elem_t typeoff, flexbuffers::Reference r) {
-        ParseFactor(r, typeoff);
+        ParseFactor(r, typeoff, "root");
         assert(stack.size() == 1);
         return PopV();
     }
@@ -220,14 +220,15 @@ struct FlexBufferParser : Deserializer {
         THROW_OR_ABORT(cat("flexbuffers_binary_to_value: ", s));
     }
 
-    void ExpectType(ValueType given, ValueType needed) {
+    void ExpectType(ValueType given, ValueType needed, string_view parent_field_name) {
         if (given != needed && needed != V_ANY) {
-            Error(cat("type ", BaseTypeName(needed), " required, ", BaseTypeName(given),
+            Error(cat(parent_field_name, ": type ", BaseTypeName(needed), " required, ",
+                      BaseTypeName(given),
                                " given"));
         }
     }
 
-    void ParseFactor(flexbuffers::Reference r, type_elem_t typeoff) {
+    void ParseFactor(flexbuffers::Reference r, type_elem_t typeoff, string_view parent_field_name) {
         auto ti = &vm.GetTypeInfo(typeoff);
         auto ft = r.GetType();
         if (ti->t == V_NIL && ft != flexbuffers::FBT_NULL) {
@@ -240,34 +241,34 @@ struct FlexBufferParser : Deserializer {
                 if (vt == V_FLOAT) {
                     PushV((double)r.AsInt64());
                 } else {
-                    ExpectType(V_INT, vt);
+                    ExpectType(V_INT, vt, parent_field_name);
                     PushV(r.AsInt64());
                 }
                 break;
             }
             case flexbuffers::FBT_FLOAT: {
-                ExpectType(V_FLOAT, vt);
+                ExpectType(V_FLOAT, vt, parent_field_name);
                 PushV(r.AsDouble());
                 break;
             }
             case flexbuffers::FBT_STRING: {
-                ExpectType(V_STRING, vt);
+                ExpectType(V_STRING, vt, parent_field_name);
                 auto s = r.AsString();
                 auto str = vm.NewString(string_view(s.c_str(), s.size()));
                 PushV(str, true);
                 break;
             }
             case flexbuffers::FBT_NULL: {
-                ExpectType(V_NIL, vt);
+                ExpectType(V_NIL, vt, parent_field_name);
                 PushV(NilVal());
                 break;
             }
             case flexbuffers::FBT_VECTOR: {
-                ExpectType(V_VECTOR, vt);
+                ExpectType(V_VECTOR, vt, parent_field_name);
                 auto v = r.AsVector();
                 auto stack_start = stack.size();
                 for (size_t i = 0; i < v.size(); i++) {
-                    ParseFactor(v[i], ti->subt);
+                    ParseFactor(v[i], ti->subt, parent_field_name);
                 }
                 auto &sti = vm.GetTypeInfo(ti->subt);
                 auto width = IsStruct(sti.t) ? sti.len : 1;
@@ -281,14 +282,16 @@ struct FlexBufferParser : Deserializer {
             }
             case flexbuffers::FBT_MAP: {
                 if (!IsUDT(vt) && vt != V_ANY)
-                    Error(cat("class/struct type required, ", BaseTypeName(vt), " given"));
+                    Error(cat(parent_field_name, ": class/struct type required, ", BaseTypeName(vt),
+                              " given"));
                 auto m = r.AsMap();
                 auto name = vm.StructName(*ti);
                 auto sname = m["_type"];
                 if (sname.IsString() && sname.AsString().c_str() != name) {
                     auto p = LookupSubClass(sname.AsString().c_str(), ti, typeoff);
                     if (!p.first)
-                        Error(cat("class/struct type ", name, " required, ", sname.AsString().str(),
+                        Error(cat(parent_field_name, ": class/struct type ", name, " required, ",
+                                  sname.AsString().str(),
                                   " given"));
                     ti = p.first;
                     typeoff = p.second;
@@ -303,7 +306,7 @@ struct FlexBufferParser : Deserializer {
                         if(!PushDefault(eti, ti->elemtypes[NumElems()].defval))
                             Error("no default value exists for missing field " + fname);
                     } else {
-                        ParseFactor(e, eti);
+                        ParseFactor(e, eti, fname);
                     }
                 }
                 if (vt == V_CLASS) {
@@ -317,7 +320,7 @@ struct FlexBufferParser : Deserializer {
                 break;
             }
             default:
-                Error("can\'t convert to value: " + r.ToString());
+                Error(cat(parent_field_name, ": can\'t convert to value: ", r.ToString()));
                 PushV(NilVal());
                 break;
         }
@@ -438,7 +441,7 @@ nfr("flexbuffers_binary_to_json", "flex,field_quotes,indent_string", "SBS", "S?S
         if (flexbuffers::VerifyBuffer((const uint8_t *)fsv.data(), fsv.size(), &reuse_buffer)) {
             auto root = flexbuffers::GetRoot((const uint8_t *)fsv.data(), fsv.size());
             string json;
-            root.ToString(true, quoted, json, indent_string.size() != 0, 0, indent_string.c_str());
+            root.ToString(true, quoted, json, indent_string.size() != 0, 0, indent_string.c_str(), true);
             auto s = vm.NewString(json);
             Push(sp, s);
             Push(sp, NilVal());

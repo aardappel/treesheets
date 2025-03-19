@@ -72,7 +72,6 @@ inline void PolyReduce(vector<int> &triangles, vector<mgvert> &verts) {
                 vertmap[ovi] = vi;
             }
         }
-        int flipped = 0;
         for (size_t t = 0; t < triangles.size(); t += 3) {
             for (int i = 0; i < 3; i++) {
                 int vi1 = triangles[t + i];
@@ -94,12 +93,10 @@ inline void PolyReduce(vector<int> &triangles, vector<mgvert> &verts) {
                         dot(-v23m, -v13m) > maxtricornerdot) {
                         vertmap[vertmap[vi1]] = -1;
                         vertmap[vi1] = -1;
-                        flipped++;
                     }
                 }
             }
         }
-        //LOG_DEBUG("flipped tris: ", flipped);
         for (size_t t = 0; t < triangles.size(); t += 3) {
             int keep = -1;
             for (int i = 0; i < 3; i++) {
