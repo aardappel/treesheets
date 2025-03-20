@@ -156,6 +156,12 @@ struct MyFrame : wxFrame {
 
         filehistory.Load(*sys->cfg);
 
+        #ifdef __WXMAC__
+            #define CTRLORALT "CTRL"
+        #else
+            #define CTRLORALT "ALT"
+        #endif
+
         wxMenu *expmenu = new wxMenu();
         MyAppend(expmenu, A_EXPXML, _(L"&XML..."),
                  _(L"Export the current view as XML (which can also be reimported without losing structure)"));
@@ -391,12 +397,6 @@ struct MyFrame : wxFrame {
                      _(L"Opens up the text from the selected cell in browser (should start be a valid URL)"));
             MyAppend(navmenu, A_BROWSEF, _(L"Open &file") + "\tF4",
                      _(L"Opens up the text from the selected cell in default application for the file type"));
-
-            #ifdef __WXMAC__
-                #define CTRLORALT "CTRL"
-            #else
-                #define CTRLORALT "ALT"
-            #endif
 
             wxMenu *laymenu = new wxMenu();
             MyAppend(laymenu, A_V_GS,
