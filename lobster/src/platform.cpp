@@ -429,7 +429,7 @@ bool FileDelete(string_view relfilename) {
     return false;
 }
 
-bool ScanDirAbs(string_view absdir, vector<DirInfo> &dest) {
+bool ScanDirAbs(string_view absdir, vector<DirectoryInfo> &dest) {
     using namespace filesystem;
     string folder = SanitizePath(absdir);
     #if !defined(PLATFORM_ES3)
@@ -451,7 +451,7 @@ bool ScanDirAbs(string_view absdir, vector<DirInfo> &dest) {
     return false;
 }
 
-bool ScanDir(string_view reldir, vector<DirInfo> &dest) {
+bool ScanDir(string_view reldir, vector<DirectoryInfo> &dest) {
     // First check the pakfile.
     for (auto [prfn, tup] : pakfile_registry) {
         if (prfn.find(reldir) == 0) {

@@ -166,7 +166,7 @@ string BuildPakFile(string &pakfile, string &bytecode, set<string> &files, uint6
                 pat = filename.substr(pos + 1);
                 base = filename.substr(0, pos);
             }
-            vector<DirInfo> dir;
+            vector<DirectoryInfo> dir;
             if (!ScanDir(base, dir)) return "cannot load file/dir for pakfile: " + filename;
             for (auto &entry : dir) {
                 if (!pat.empty() && entry.name.find(pat) == entry.name.npos) continue;

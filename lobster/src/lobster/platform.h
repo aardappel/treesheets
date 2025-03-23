@@ -54,14 +54,15 @@ extern string SanitizePath(string_view path);
 extern void AddPakFileEntry(string_view pakfilename, string_view relfilename, int64_t off,
                             int64_t len, int64_t uncompressed);
 
-struct DirInfo {
+// Avoid a conflict with macOS headers which define DirInfo differently.
+struct DirectoryInfo {
     string name;
     int64_t size = 0;
     filesystem::file_time_type last_write_time;
 };
 
-extern bool ScanDir(string_view reldir, vector<DirInfo> &dest);
-extern bool ScanDirAbs(string_view absdir, vector<DirInfo> &dest);
+extern bool ScanDir(string_view reldir, vector<DirectoryInfo> &dest);
+extern bool ScanDirAbs(string_view absdir, vector<DirectoryInfo> &dest);
 
 extern iint LaunchSubProcess(const char **cmdl, const char *stdins, string &out);
 
