@@ -169,7 +169,7 @@ nfr("scan_folder", "folder,rel", "SB?", "S]?I]?I]?",
     " set rel use a relative path, default is absolute."
     " Returns nil if folder couldn't be scanned.",
     [](StackPtr &sp, VM &vm, Value &fld, Value &rel) {
-        vector<DirInfo> dir;
+        vector<DirectoryInfo> dir;
         auto ok = rel.True()
             ? ScanDir(fld.sval()->strv(), dir)
             : ScanDirAbs(fld.sval()->strv(), dir);
