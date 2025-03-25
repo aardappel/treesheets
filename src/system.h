@@ -252,7 +252,14 @@ struct System {
             Cell *ics = nullptr;
             wxFFileInputStream fis(fn);
             wxDataInputStream dis(fis);
-            if (!fis.IsOk()) return _(L"Cannot open file.");
+            if (!fis.IsOk()) {
+                size_t count = frame->filehistory.GetCount();
+                for (size_t i = 0; i < count; i++) {
+                    if (frame->filehistory.GetHistoryFile(i) == filename)
+                        frame->filehistory.RemoveFileFromHistory(i);
+                }
+                return _(L"Cannot open file.");
+            }
 
             char buf[4];
             fis.Read(buf, 4);
