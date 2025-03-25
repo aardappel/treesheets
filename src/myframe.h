@@ -571,6 +571,7 @@ struct MyFrame : wxFrame {
         wxMenu *optmenu = new wxMenu();
         MyAppend(optmenu, wxID_SELECT_FONT, _(L"Pick Default Font..."));
         MyAppend(optmenu, A_CUSTKEY, _(L"Change a key binding..."));
+        MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _(L"Set default column width..."));
         MyAppend(optmenu, A_CUSTCOL, _(L"Pick Custom &Color..."));
         MyAppend(optmenu, A_COLCELL, _(L"&Set Custom Color From Cell BG"));
         MyAppend(optmenu, A_DEFBGCOL, _(L"Pick Document Background..."));
@@ -1016,6 +1017,15 @@ struct MyFrame : wxFrame {
                 if (c != (uint)-1) sys->cfg->Write(L"customcolor", sys->customcolor = c);
                 break;
             }
+
+            case A_DEFAULTMAXCOLWIDTH: {
+                int w = wxGetNumberFromUser(_(L"Please enter the default column width:"), _(L"Width"),
+                                        _(L"Default column width"), sys->defaultmaxcolwidth, 1,
+                                        1000, sys->frame);
+                if (w > 0) sys->cfg->Write(L"defaultmaxcolwidth", sys->defaultmaxcolwidth = w);
+                break;
+            }
+
             case A_LEFTTABS: Check(L"lefttabs"); break;
             case A_SINGLETRAY: Check(L"singletray"); break;
             case A_MAKEBAKS: sys->cfg->Write(L"makebaks", sys->makebaks = ce.IsChecked()); break;
