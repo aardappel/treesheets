@@ -128,6 +128,7 @@ struct System {
 
         roundness = (int)cfg->Read(L"roundness", roundness);
         defaultfont = cfg->Read(L"defaultfont", defaultfont);
+        cfg->Read(L"defaultmaxcolwidth", &defaultmaxcolwidth, defaultmaxcolwidth);
         cfg->Read(L"makebaks", &makebaks, makebaks);
         cfg->Read(L"totray", &totray, totray);
         cfg->Read(L"zoomscroll", &zoomscroll, zoomscroll);
