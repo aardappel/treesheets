@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 20:50+0100\n"
-"PO-Revision-Date: 2025-02-20 10:35-0300\n"
+"POT-Creation-Date: 2025-03-26 18:23-0300\n"
+"PO-Revision-Date: 2025-03-26 18:25-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -450,6 +450,9 @@ msgstr "Diminuir a largura da coluna (ALT+botão de rolagem)"
 
 msgid "Decrease column width (no sub grids)"
 msgstr "Diminuir a largura da coluna (subgrades não)"
+
+msgid "Default column width"
+msgstr "Largura padrão das colunas"
 
 msgid "Delete Before"
 msgstr "Excluir Antes"
@@ -1006,6 +1009,9 @@ msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 "Por favor ative (Opções -> Mostrar Barra de Ferramentas) para usar a busca."
 
+msgid "Please enter the default column width:"
+msgstr "Por favor informe a largura padrão das colunas:"
+
 msgid "Please enter the new image width:"
 msgstr "Por favor informe a nova largura da imagem:"
 
@@ -1205,6 +1211,9 @@ msgstr "&Definir Escala de Impressão"
 
 msgid "Set Print Scale..."
 msgstr "Definir Esca&la de Impressão..."
+
+msgid "Set default column width..."
+msgstr "Definir largura padrão das colunas..."
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
