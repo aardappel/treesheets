@@ -6,25 +6,25 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 1.2\n"
+"Project-Id-Version: TreeSheets_RU 2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-19 20:25+0100\n"
-"PO-Revision-Date: 2025-03-21 21:03+0300\n"
+"PO-Revision-Date: 2025-03-27 21:34+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
-"Language-Team: @TreeSheets_RU <https://t.me/TreeSheets_RU>\n"
+"Language-Team: Sam\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 3.5\n"
 
-#, fuzzy, c-format
+# комментарий к эл-ту Главного Окна (Инф Строка)
+#, c-format
 msgid "%d cell(s)"
-msgstr "%d клеток"
+msgstr "%d ячейка(и)"
 
-# Сообщения
+# Сообщение (после действия или события)
 #, c-format
 msgid ""
 "%s\n"
@@ -32,29 +32,29 @@ msgid ""
 "Would you like to discard your changes and re-load from disk?"
 msgstr ""
 "%s\n"
-"был изменён на диске другой программой / компьютером:\n"
-"Хотите отменить изменения и перезагрузить данные с диска?"
+"был изменён на диске другой программой или компьютером:\n"
+"Хотите отменить изменения и загрузить файл с диска?"
 
 msgid "&About..."
 msgstr "&О программе..."
 
 msgid "&Add Cell Text as Tag"
-msgstr "Доб&авить Текст Ячейки в качестве Тега"
+msgstr "Доб&авить Текст Ячейки как Тег"
 
 msgid "&Add Image"
-msgstr "Доб&авить изображение"
+msgstr "Доб&авить Изображение"
 
 msgid "&Browsing..."
 msgstr "&Просмотр..."
 
 msgid "&Clear Views"
-msgstr "О&чистить Виды"
+msgstr "О&чистить Представления"
 
 msgid "&Close"
 msgstr "Закрыть"
 
 msgid "&Comma delimited text (CSV)..."
-msgstr "CSV-текст (разделитель - &запятая)..."
+msgstr "CSV (разделитель - &запятая)..."
 
 msgid "&Copy"
 msgstr "Копировать"
@@ -72,7 +72,7 @@ msgid "&Delete After"
 msgstr "&Удалить После"
 
 msgid "&Edit"
-msgstr "&Редактировать"
+msgstr "&Редактирование"
 
 msgid "&Exit"
 msgstr "&Выход"
@@ -81,16 +81,16 @@ msgid "&File"
 msgstr "&Файл"
 
 msgid "&Flatten"
-msgstr "С&гладить (2D)"
+msgstr "к &Табличному виду"
 
 msgid "&Go To Next Search Result"
-msgstr "К &Cледующему вхождению поиска"
+msgstr "К &Cледующему Результату Поиска"
 
 msgid "&Grid Reorganization..."
 msgstr "Ре&организация Сетки..."
 
 msgid "&HTML (Tables+Styling)..."
-msgstr "HTML (Таблицы&+Стили)..."
+msgstr "HTML (Таблицы&+Оформление)..."
 
 msgid "&Help"
 msgstr "П&омощь"
@@ -99,7 +99,7 @@ msgid "&Hierarchify"
 msgstr "&Иерархизировать"
 
 msgid "&Horizontal View"
-msgstr "&Горизонтальный Вид"
+msgstr "&Горизонтальное Представление"
 
 msgid "&Image..."
 msgstr "&Изображение..."
@@ -108,10 +108,10 @@ msgid "&Images..."
 msgstr "&Изображения..."
 
 msgid "&Increase text size (SHIFT+mousewheel)"
-msgstr "У&величить Размер Текста (SHIFT+mousewheel)"
+msgstr "У&величить Размер текста (SHIFT+КМ)"
 
 msgid "&Insert New Grid"
-msgstr "Вставить Новую Сетку"
+msgstr "&Вставить Новую Сетку"
 
 msgid "&Layout && Render Style..."
 msgstr "&Макет && Стиль Отображения..."
@@ -134,8 +134,6 @@ msgstr "Пара&метры"
 msgid "&Paste"
 msgstr "Вставить"
 
-# Распечатать
-# Печать
 msgid "&Print..."
 msgstr "Печать..."
 
@@ -158,10 +156,10 @@ msgid "&Replace"
 msgstr "&Заменить"
 
 msgid "&Reset Scale (display only)"
-msgstr "Сб&росить масштаб (отображение)"
+msgstr "Сб&росить Масштаб (только Отображения)"
 
 msgid "&Reset text sizes"
-msgstr "Сбросить &Размеры Текста"
+msgstr "Сбросить &Размеры текста"
 
 msgid "&Reset text styles"
 msgstr "Сбросить &Стили Текста"
@@ -170,19 +168,19 @@ msgid "&Roundness of grid borders..."
 msgstr "&Округлость Границ сетки..."
 
 msgid "&Run"
-msgstr "За&Пуск"
+msgstr "За&пустить"
 
 msgid "&Save"
 msgstr "Сохранить"
 
 msgid "&Scale Image (display only)"
-msgstr "... (только &Отображение)"
+msgstr ".. (только &Отображение)"
 
 msgid "&Scale Image (re-sample pixels, by %)"
-msgstr "&Масштабировать (пересборка пикселей, в %)"
+msgstr "&Масштабировать (поПиксельно, в %)"
 
 msgid "&Scale Image (re-sample pixels, by width)"
-msgstr "... (пересборка пикселей по &Ширине)"
+msgstr ".. (поПиксельно, по &Ширине)"
 
 msgid "&Search"
 msgstr "&Поиск"
@@ -197,7 +195,7 @@ msgid "&Set Custom Color From Cell BG"
 msgstr "Установить Цвет из Фона &Ячейки"
 
 msgid "&Shrink text of all sub-grids"
-msgstr "С&жать Текст всех подсеток"
+msgstr "С&жать текст Всех Подсеток"
 
 msgid "&Transpose"
 msgstr "Транспонировать"
@@ -206,48 +204,49 @@ msgid "&Undo"
 msgstr "Отменить"
 
 msgid "&Vertical View"
-msgstr "&Вертикальный Вид"
+msgstr "&Вертикальное Представление"
 
 msgid "&View"
 msgstr "&Вид"
 
 msgid "&Wrap in new parent"
-msgstr "Обернуть в новый родительский элемент"
+msgstr "&Обернуть в новый родительский уровень"
 
 msgid "&XML..."
 msgstr "XML..."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "1:1 scale restored."
 msgstr "Масштаб 1:1 восстановлен."
 
 msgid "<unnamed>"
 msgstr "<безымянный>"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "A temporary autosave file exists, would you like to load it instead?"
-msgstr "Существует временный файл автосохранения. Хотите загрузить его?"
+msgstr "Обнаружен временный файл автосохранения. Загрузить его вместо открытого файла?"
 
 msgid "Add Image"
 msgstr "Добавить изображение"
 
+# комментарий к п. Меню
 msgid "Adds a grid to the selected cell"
-msgstr "Добавляет сетку в выбранную ячейку"
+msgstr "Добавить сетку в выбранную ячейку"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Adds an image to the selected cell"
-msgstr "Добавляет изображение в выбранную ячейку"
+msgstr "Добавить изображение в выбранную ячейку"
 
 msgid "Apply last border color"
-msgstr "... последний Цвет &Границы"
+msgstr ".. последний Цвет &Границы"
 
 msgid "Apply last cell color"
 msgstr "Применить Цвет последней &Ячейки"
 
 msgid "Apply last text color"
-msgstr "... последний Цвет &Текста"
+msgstr ".. последний Цвет &Текста"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "At least one file could not be opened."
 msgstr "Как минимум один файл открыть не удалось."
 
@@ -257,18 +256,18 @@ msgstr "Автоматическая перезагрузка документо
 msgid "Automatically export a .html on every save"
 msgstr "Автоматически экспортировать в .html при каждом сохранении"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Autosave load"
 msgstr "Загрузка автосохранения"
 
 msgid "Autosave to .tmp"
 msgstr "Автосохранение в .tmp"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Bitmap copied to clipboard"
 msgstr "Растровое изображение скопировано в буфер обмена"
 
-# Интерфейс
+# эл-т Главного Окна
 msgid "Border "
 msgstr "Граница "
 
@@ -291,152 +290,129 @@ msgid "Border &5"
 msgstr "Граница &5"
 
 msgid "Bubble Style Rendering"
-msgstr "... в стиле &Пузыря"
+msgstr ".. в стиле &Пузырьков"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr "Переместить эту ячейку можно только из сетки Nx1 или 1xN."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "Переместить эту ячейку можно только в сетку Nx1 или 1xN."
 
-# Сообщения
-msgid ""
-"Can't sort: make a 1xN selection to indicate what column to sort on, and "
-"what rows to affect"
-msgstr ""
-"Невозможно отсортировать: сделайте выборку 1xN, чтобы указать, по какому "
-"столбцу сортировать и какие строки"
+# Сообщение (после действия или события)
+msgid "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect"
+msgstr "Сортировка невозможно: выделите столбец 1xN для сортировки строк"
 
-# Сообщения
+# в Окне (выбор п. Меню) - Кнопка
 msgid "Cancel"
 msgstr "Отмена Операции"
 
+# п. Меню (нет & в исходном тексте)
 msgid "Cancel text edits"
-msgstr "Отменить редактирование текста"
+msgstr "Отменить изменения (..перейти к Родителю)"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Cannot decompress file."
 msgstr "Невозможно распаковать файл."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Cannot drag & drop more than 1 file."
 msgstr "Невозможно перетащить более 1 файла."
 
-# Сообщения
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr ""
-"Невозможно экспортировать сетку, которая не является плоской. Увеличьте "
-"масштаб просмотра до нужной сетки и/или используйте Сглаживание (2D)."
+# Сообщение (после действия или события)
+msgid "Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten)."
+msgstr "Невозможно экспортировать сетку, которая не является плоской. Увеличьте масштаб просмотра до нужной сетки и/или реорганизуйте сетку \"к Табличному виду\"."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "Невозможно переместить эту ячейку вверх по иерархии."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Cannot open file."
-msgstr "Не удается открыть файл."
+msgstr "Невозможно открыть файл."
 
 msgid "Case-sensitive search"
 msgstr "Поиск с учетом &Регистра"
 
-# Интерфейс
+# эл-т Главного Окна
 msgid "Cell "
 msgstr "Ячейка "
 
 msgid "Change a key binding..."
 msgstr "Изменить привязку &Клавиш..."
 
-# Сообщения
-msgid ""
-"Change the image size if it is too big or too small, by changing the size "
-"shown on screen. Applies to all uses of this image."
-msgstr ""
-"Измените размер изображения на экране, если оно слишком большое/маленькое. "
-"Относится ко всем вариантам использования этого изображения."
+# Сообщение (после действия или события)
+msgid "Change the image size if it is too big or too small, by changing the size shown on screen. Applies to all uses of this image."
+msgstr "Измените размер изображения, отображаемый на экране, если оно слишком большое или маленькое. Относится ко всем вариантам использования этого изображения."
 
-# Сообщения
-msgid ""
-"Change the image size if it is too big, by reducing the amount of pixels"
-msgstr ""
-"Измените размер изображения, если оно слишком большое - уменьшив количество "
-"пикселей"
+# Сообщение (после действия или события)
+msgid "Change the image size if it is too big, by reducing the amount of pixels"
+msgstr "Если изображение слишком большое, уменьшите его, изменив количество пикселей"
 
-# Сообщения
-msgid ""
-"Change the scale to match DPI of the current display. Applies to all uses of "
-"this image."
-msgstr ""
-"Измените масштаб в соответствие DPI дисплея. Применяется ко всем вариантам "
-"использования этого изображения."
+# Сообщение (после действия или события)
+msgid "Change the scale to match DPI of the current display. Applies to all uses of this image."
+msgstr "Измените масштаб изображения в соответствии с DPI экрана. Применяется ко всем экземплярам изображения."
 
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Были внесены Изменения. Хотите продолжить?"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose CSV file to write"
-msgstr "Выберите CSV-файл для записи"
+msgstr "Укажите CSV-файл для сохранения"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose HTML file to write"
-msgstr "Выберите HTML-файл для записи"
+msgstr "Укажите HTML-файл для сохранения"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose PNG file to write"
-msgstr "Выберите PNG-файл для записи"
+msgstr "Укажите PNG-файл для сохранения"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose Text file to write"
-msgstr "Выберите TXT-файл для записи"
+msgstr "Укажите TXT-файл для сохранения"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose TreeSheets file to save:"
-msgstr "Выберите файл TreeSheets для сохранения:"
+msgstr "Укажите файл TreeSheets для сохранения:"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose XML file to write"
-msgstr "Выберите XML-файл для записи"
+msgstr "Укажите XML-файл для сохранения"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose image file to save:"
-msgstr "Выберите файл изображения для сохранения:"
+msgstr "Укажите файл изображения для сохранения:"
 
-# Сообщения
+# комментарий к эл-ту Главного Окна
 msgid "Clear replace"
 msgstr "Очистить Замену"
 
-# Сообщения
+# комментарий к эл-ту Главного Окна
 msgid "Clear search"
 msgstr "Очистить Поиск"
 
-#, fuzzy
 msgid "Close current document"
-msgstr "Автоматическая перезагрузка документов"
+msgstr "Закрыть текущий документ"
 
 msgid "Collapse Ce&lls"
 msgstr "Слияние Ячеек"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Column width decreased."
 msgstr "Ширина столбца уменьшена."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Column width increased."
 msgstr "Ширина столбца увеличена."
 
 msgid "Comma delimited text (CSV)..."
-msgstr "CSV-текст (разделитель - &запятая)..."
+msgstr "CSV (разделитель - &запятая)..."
 
-# Сообщения
-msgid ""
-"Convert an NxN grid with repeating elements per column into an 1xN grid with "
-"hierarchy, useful to convert data from spreadsheets"
-msgstr ""
-"Преобразует сетку NxN с повторяющимися элементами в каждом столбце в сетку "
-"1xN с иерархией. Полезно для преобразования данных из электронных таблиц"
+# Сообщение (после действия или события)
+msgid "Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"
+msgstr "Преобразует сетку NxN с повторяющимися элементами в каждом столбце в сетку 1xN с иерархией. Полезно для преобразования данных из электронных таблиц"
 
 msgid "Copy (CTRL+c)"
 msgstr "Копировать (CTRL+c)"
@@ -444,48 +420,47 @@ msgstr "Копировать (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "&Копировать как Непрерывный Текст"
 
-# Сообщения
-#, fuzzy
+# комментарий к п. Меню
 msgid "Copy selection"
-msgstr "Заменить в выделенном"
+msgstr "Копировать выделенное"
 
 msgid "Copy with &Images"
 msgstr "Копировать с Изображениями"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Corrupt PNG header."
-msgstr "Поврежденный заголовок PNG."
+msgstr "Повреждён заголовок PNG."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Corrupt block header."
-msgstr "Поврежденный заголовок блока."
+msgstr "Повреждён заголовок блока."
 
 msgid "Create .bak files"
 msgstr "Создавать .bak файлы"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Create a new document"
 msgstr "Создать новый документ"
 
 msgid "Creates a new level of hierarchy around the current selection"
-msgstr "Создает новый уровень иерархии вокруг текущего выделения"
+msgstr "Создаёт новый уровень иерархии вокруг текущего выделения"
 
 msgid "Cu&t"
 msgstr "Вырезать"
 
 msgid "Cursor Left"
-msgstr "На СИМВОЛ вЛево"
+msgstr "Курсор вЛево"
 
 msgid "Cursor Right"
-msgstr "... вПраво"
+msgstr ".. вПраво"
 
-#, fuzzy
+# комментарий к п. Меню
 msgid "Cut selection"
-msgstr "... вВерх"
+msgstr "Вырезать выделенное"
 
-# Сообщения
+# Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Date and time range"
-msgstr "Диапазон даты и времени"
+msgstr "Диапазон Даты и Времени"
 
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "У&меньшить..."
@@ -502,38 +477,36 @@ msgstr "&Удалить Слово После"
 msgid "Delete Word Before"
 msgstr "Удалить Слово До"
 
-msgid ""
-"Deletes the column of cells after the selected grid line, or the row below"
+msgid "Deletes the column of cells after the selected grid line, or the row below"
 msgstr "Удаляет Столбец ячеек После выбранной линии сетки или Строку Ниже"
 
-msgid ""
-"Deletes the column of cells before the selected grid line, or the row above"
+msgid "Deletes the column of cells before the selected grid line, or the row above"
 msgstr "Удаляет Столбец ячеек Перед выбранной линией сетки или Строку Выше"
 
+# комментарий к п. Меню
 msgid "Deletes the entire word after the cursor"
-msgstr "Удаляет все слово после курсора"
+msgstr "Удаляет слово после курсора"
 
+# комментарий к п. Меню
 msgid "Deletes the entire word before the cursor"
 msgstr "Удаляет все слово перед курсором"
 
-# Сообщения
+# в Окне (выбор п. Меню) - Кнопка
 msgid "Discard Changes"
 msgstr "Закрыть Без Изменений"
 
-# Сообщения
+# комментарий к эл-ту Главного Окна (Инф Строка)
 #, c-format
 msgid "Edited %s %s"
-msgstr "Отредактировано %s %s"
+msgstr "Изменено %s %s"
 
-# Сообщения
+# Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "End date and time"
-msgstr "Дата и Время завершения"
+msgstr "Дата и Время Завершения"
 
-#, fuzzy
 msgid "End of line of text"
 msgstr "В Конец..."
 
-#, fuzzy
 msgid "End of text"
 msgstr "В Конец..."
 
@@ -543,160 +516,130 @@ msgstr "Вх/Вых из реж. Редактирования"
 msgid "Enter/exit text edit to the right"
 msgstr "Вх/Вых из реж. Редактирования сПрава"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Error exporting file!"
 msgstr "Ошибка экспорта файла!"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"Ошибка при загрузке файла данных ядра (TreeSheets установлен неправильно?)"
+msgstr "Ошибка загрузки файла данных ядра (проверьте корректность установки TreeSheets)"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Error writing PNG file!"
 msgstr "Ошибка записи PNG-файла!"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr ""
-"Ошибка записи файла TreeSheets! (попробуйте сохранить под другим именем)."
+msgstr "Ошибка записи файла TreeSheets! (попробуйте сохранить под другим именем)."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Error writing image file! (try saving under new filename)."
-msgstr ""
-"Ошибка записи файла изображения! (попробуйте сохранить под другим именем)."
+msgstr "Ошибка записи файла изображения! (попробуйте сохранить под другим именем)."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Error writing to file!"
 msgstr "Ошибка записи в файл!"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Error writing to file."
 msgstr "Ошибка записи в файл."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Evaluation finished."
 msgstr "Оценка завершена."
 
 msgid "Export &view as"
 msgstr "&Экспортировать как"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Export cancelled."
 msgstr "Экспорт Отменён."
 
 # Комметарий п. меню.
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-"Экспорт в CSV. Для электронных таблиц и баз данных. Работает только с "
-"сетками, без подсеток (при необходимости, используйте Сглаживание-2D)"
+msgid "Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"
+msgstr "Экспорт в CSV. Для электронных таблиц и баз данных. Работает только с сетками, без подсеток (при необходимости, реорганизуйте сетку \"к Табличному виду\")"
 
 # Комметарий п. меню.
 msgid "Export the current view as HTML as nested bullet points."
-msgstr "Экспорт в HTML, в виде пунктов списка."
+msgstr "Экспорт в HTML, в виде вложенных списков."
 
 # Комметарий п. меню.
-msgid ""
-"Export the current view as HTML as nested headers, suitable for importing "
-"into Word's outline mode"
-msgstr ""
-"Экспорт в HTML, в виде иерархии заголовков. Подходит для импорта в режим "
-"структуры Word"
+msgid "Export the current view as HTML as nested headers, suitable for importing into Word's outline mode"
+msgstr "Экспорт в HTML, в виде вложенных заголовков. Подходит для импорта в Word в виде  структуры"
 
 # Комметарий п. меню.
-msgid ""
-"Export the current view as HTML using nested tables, that will look somewhat "
-"like the TreeSheet"
-msgstr ""
-"Экспорт в HTML, используя вложенные таблицы, которые будут выглядеть "
-"примерно так же, как treesheet"
+msgid "Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet"
+msgstr "Экспорт в HTML с вложенными таблицами, что будет выглядеть похожим на лист TreeSheet"
 
 # Комметарий п. меню.
-msgid ""
-"Export the current view as XML (which can also be reimported without losing "
-"structure)"
-msgstr ""
-"Экспорт в XML (который можно импортировать обратно в TreeSheets без потери "
-"структуры)"
+msgid "Export the current view as XML (which can also be reimported without losing structure)"
+msgstr "Экспорт в XML (который можно импортировать обратно в TreeSheets без потери структуры)"
 
 # Комметарий п. меню.
-msgid ""
-"Export the current view as an image. Useful for faithful renderings of the "
-"TreeSheet, and programs that don't accept any of the above options"
-msgstr ""
-"Экспортировать как изображение (PNG). Когда не принимается ни один из "
-"вышеперечисленных вариантов"
+msgid "Export the current view as an image. Useful for faithful renderings of the TreeSheet, and programs that don't accept any of the above options"
+msgstr "Экспортировать как изображение (PNG). Когда не подходит ни один из вышеперечисленных вариантов"
 
 # Комметарий п. меню.
-msgid ""
-"Export the current view as tree structured text, using spaces for each "
-"indentation level. Suitable for importing into mindmanagers and general text "
-"programs"
-msgstr ""
-"Экспорт в TXT, c пробелами для каждого уровня отступа. Для импорта в mind и "
-"текстовые программы"
+msgid "Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"
+msgstr "Экспорт в виде древовидного структурированного текста с пробелами для каждого уровня отступа. Для импорта в менеджеры интеллект-карт и текстовые программы общего назначения"
 
 msgid "Extend Selection Down"
-msgstr "... вНиз"
+msgstr ".. вНиз"
 
 msgid "Extend Selection Full Columns"
-msgstr "... в полные &Столбцы"
+msgstr ".. на Все &Столбцы"
 
 msgid "Extend Selection Full Rows"
-msgstr "... в полные &Строки"
+msgstr ".. на Все &Строки"
 
 msgid "Extend Selection Left"
 msgstr "Расширить ВЫДЕЛЕНИЕ вЛево"
 
 msgid "Extend Selection Right"
-msgstr "... вПраво"
+msgstr ".. вПраво"
 
 msgid "Extend Selection Up"
-msgstr "... вВерх"
+msgstr ".. вВерх"
 
 msgid "Extend Selection Word Left"
-msgstr "... на Слово вЛево"
+msgstr ".. на Слово вЛево"
 
 msgid "Extend Selection Word Right"
-msgstr "... на Слово вПраво"
+msgstr ".. на Слово вПраво"
 
 msgid "Extend Selection to End"
-msgstr "... до Конца Клетки"
+msgstr ".. до Конца Ячейки"
 
 msgid "Extend Selection to Start"
-msgstr "... до Начала Клетки"
+msgstr ".. до Начала Ячейки"
 
 msgid "Faster line rendering"
-msgstr "Более быстрый рендеринг линий"
+msgstr "Ускоренная отрисовка линий"
 
 msgid "File Tabs on the bottom"
 msgstr "Вкладки Файлов вНизу"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "File corrupted!"
-msgstr "Файл поврежден!"
+msgstr "Файл повреждён!"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "File exported successfully."
 msgstr "Файл успешно экспортирован."
 
-# Сообщения
-msgid ""
-"File has been re-loaded because of modifications of another program / "
-"computer"
-msgstr "Файл был перезагружен из-за изменений другой программой / компьютером"
+# Сообщение (после действия или события)
+msgid "File has been re-loaded because of modifications of another program / computer"
+msgstr "Файл был перезагружен, так как его изменила другая программа / компьютер"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "File load error."
 msgstr "Ошибка загрузки файла."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "File modification conflict!"
-msgstr "Конфликт модификации файла!"
+msgstr "Конфликт изменений файла!"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "File of newer version."
 msgstr "Более новая версия файла."
 
@@ -709,11 +652,11 @@ msgstr "Фильтр по Цвету Ячейки"
 msgid "Filter..."
 msgstr "Фильтр..."
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Find and replace in document"
 msgstr "Поиск и замена в документе"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Find in document"
 msgstr "Поиск в документе"
 
@@ -721,33 +664,33 @@ msgid "Fold All"
 msgstr "Свернуть Всё"
 
 msgid "Folds the grid of the selected cell(s) recursively"
-msgstr ""
-"Рекурсивно (на всю глубину вложенности) Сворачивает подсетки выбранных ячеек"
+msgstr "Рекурсивно (на всю глубину вложенности) Сворачивает подсетки выбранных ячеек"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Found an image type that is not defined in this program."
-msgstr "Найден тип изображения, который не определен в этой программе."
+msgstr "Обнаружен тип изображения, который не определен в этой программе."
 
 msgid "Go To &Matching Cell (Text)"
-msgstr "Перейти к ячейке с &Аналогичным Текстом"
+msgstr "Перейти к ячейке с Совпадающим &Текстом"
 
 msgid "Go To &Previous Search Result"
-msgstr "К Пре&дыдущему..."
+msgstr "К Пре&дыдущему Результату"
 
 msgid "Go To Matching Cell (Image)"
-msgstr "Перейти к ячейке с &Аналогичным Изображением"
+msgstr "Перейти к ячейке с Совпадающим &Изображением"
 
 msgid "Go To Matching Cell (Image, Reverse)"
-msgstr "... в Обратном направлении"
+msgstr ".. в Обратном направлении"
 
 msgid "Go To Matching Cell (Text, Reverse)"
-msgstr "... в Обратном направлении"
+msgstr ".. в Обратном направлении"
 
+# комментарий к эл-ту Главного Окна
 msgid "Go to Next Search Result"
-msgstr "К Cледующему вхождению поиска"
+msgstr "К Cледующему Результату Поиска"
 
 msgid "Go to next filter match"
-msgstr "Перейти к Следующему Фильтру"
+msgstr "Перейти к Следующему Совпадению фильтра"
 
 msgid "Grid Style Rendering"
 msgstr "Отображение в стиле &Сетки"
@@ -761,45 +704,40 @@ msgstr "HTML (&Структура)..."
 msgid "Hierarchy &Swap"
 msgstr "&Смена Иерархии"
 
-# Сообщения
-msgid ""
-"Hold CTRL while pressing right mouse button to quickly set a tag for the "
-"current cell using a popup menu"
-msgstr ""
-"Удерживайте CTRL и одновременно нажмите правую кнопку мыши, чтобы быстро "
-"задать Тег для текущей ячейки из всплывающего меню"
+# комментарий к п. Меню
+msgid "Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"
+msgstr "Удерживая CTRL, нажмите правую кнопку мыши для выбора Тега из всплывающего Меню Тегов (для текущей ячейки)"
 
 msgid "Horizontal Layout with Bubble Style Rendering"
-msgstr "... в стиле &Пузыря"
+msgstr ".. в стиле &Пузырьков"
 
 msgid "Horizontal Layout with Grid Style Rendering"
 msgstr "Горизонтальная компоновка в стиле &Сетки"
 
 msgid "Horizontal Layout with Line Style Rendering"
-msgstr "... в стиле &Линии"
+msgstr ".. в стиле &Линий"
 
+# п. Меню (нет & в исходном тексте), отсутствует в Linux
 msgid "Hover shadow"
 msgstr "Тень при наведении"
 
-# Сообщения
+# комментарий к п. Меню: Задать Масштаб Печати
 msgid "How many pixels wide should a page be? (0 for auto fit)"
-msgstr ""
-"Сколько пикселей в ширину должна иметь страница? (0 для автоматической "
-"подгонки)"
+msgstr "Сколько пикселей в ширину должна иметь страница? (0 для автоподгонки)"
 
-# Интерфейс
+# эл-т Главного Окна
 msgid "Image "
-msgstr "Изображ-е "
+msgstr "Изображение "
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Image Resize"
-msgstr "Размер изображения изменён"
+msgstr "Изменение Размера изображения"
 
 msgid "Import file from"
 msgstr "&Импортировать файл из"
 
 msgid "Increase column width (ALT+mousewheel)"
-msgstr "У&величить Ширину Столбца (ALT+mousewheel)"
+msgstr "У&величить Ширину Столбца (ALT+КМ)"
 
 msgid "Increase column width (no sub grids)"
 msgstr "У&величить Ширину Столбца (без подсеток)"
@@ -811,63 +749,53 @@ msgstr "&Текст с Отступами..."
 msgid "Indented text..."
 msgstr "&Текст с Отступами..."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Initialization Error"
 msgstr "Ошибка инициализации"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Internal error: unimplemented operation!"
-msgstr "Внутренняя ошибка: невыполненная операция!"
+msgstr "Внутренняя ошибка: операция не выполнена!"
 
-# Сообщения
-msgid ""
-"It seems that you are about to drop a TreeSheets file. What would you like "
-"to do?"
-msgstr ""
-"Кажется, вы собираетесь сбросить файл TreeSheet. Что бы вы собираетксь "
-"сделать?"
+# Сообщение (после действия или события)
+msgid "It seems that you are about to drop a TreeSheets file. What would you like to do?"
+msgstr "Похоже, вы собираетесь сбросить файл TreeSheet. Что вы хотите сделать?"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "JPEG file is corrupted!"
 msgstr "JPEG-файл поврежден!"
 
-# Сообщения
+# Заголовок Окна п. Меню
 msgid "Key binding"
 msgstr "Привязка клавиш"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Keybinding cancelled."
 msgstr "Привязка клавиш отменена."
 
 msgid "Line Style Rendering"
-msgstr "... в стиле &Линии"
+msgstr ".. в стиле &Линий"
 
 msgid "Load interactive &tutorial..."
-msgstr "Загрузить интерактивный &Учебник..."
+msgstr "Интерактивный &Учебник..."
 
 msgid "Load operation reference..."
-msgstr "Загрузить Справочник Операций..."
+msgstr "Справочник Операций..."
 
-# Сообщения
+# Сообщение (после действия или события)
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "Загружено %s (%d ячеек, %d символов) за %d миллисекунд."
 
-# Сообщения
-msgid ""
-"Make a 1xN selection to indicate which column to sort on, and which rows to "
-"affect"
-msgstr ""
-"Сделайте выборку 1xN, чтобы указать, по какому столбцу производить "
-"сортировку и в каких строках"
+# Сообщение (после действия или события)
+msgid "Make a 1xN selection to indicate which column to sort on, and which rows to affect"
+msgstr "Выделите столбец 1xN для сортировки строк"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
-msgstr ""
-"Сделать иерархическую компоновку более вертикальной (по умолчанию) или более "
-"горизонтальной"
+msgstr "Сделать иерархическую компоновку более вертикальной (по умолчанию) или более горизонтальной"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Maximum number of launches reached."
 msgstr "Достигнуто максимальное количество запусков."
 
@@ -877,45 +805,45 @@ msgstr "Свернуть при закрытии"
 msgid "Minimize to tray"
 msgstr "Свернуть в Трей"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "More than one cell must be selected."
 msgstr "Необходимо выбрать более одной ячейки."
 
 msgid "Move Cells Down"
-msgstr "... вНиз"
+msgstr ".. вНиз"
 
 msgid "Move Cells Left"
 msgstr "Переместить Ячейки вЛево"
 
 msgid "Move Cells Right"
-msgstr "... вПраво"
+msgstr ".. вПраво"
 
 msgid "Move Cells Up"
-msgstr "... вВерх"
+msgstr ".. вВерх"
 
 msgid "Move Selection Down"
-msgstr "... вНиз"
+msgstr ".. вНиз"
 
 msgid "Move Selection Down (DOWN)"
-msgstr "... вНиз (DOWN)"
+msgstr ".. вНиз (↓)"
 
 msgid "Move Selection Left"
-msgstr "Переместить Курсор Клетки вЛево"
+msgstr "Переместить Курсор Ячейки вЛево"
 
 msgid "Move Selection Left (LEFT)"
-msgstr "Переместить Курсор Клетки вЛево (LEFT)"
+msgstr "Переместить Курсор Ячейки вЛево (←)"
 
 msgid "Move Selection Right"
-msgstr "... вПраво"
+msgstr ".. вПраво"
 
 msgid "Move Selection Right (RIGHT)"
-msgstr "... вПраво (RIGHT)"
+msgstr ".. вПраво (→)"
 
 msgid "Move Selection Up"
-msgstr "... вВерх"
+msgstr ".. вВерх"
 
 msgid "Move Selection Up (UP)"
-msgstr "... вВерх (UP)"
+msgstr ".. вВерх (↑)"
 
 msgid "Move to next cell"
 msgstr "Перейти к Следующей Ячейке"
@@ -924,111 +852,109 @@ msgid "Move to next cell (TAB)"
 msgstr "Перейти к Следующей Ячейке (TAB)"
 
 msgid "Move to previous cell"
-msgstr "... к Предыдущей..."
+msgstr "Перейти к предыдущей ячейке"
 
 msgid "Move to previous cell (SHIFT+TAB)"
-msgstr "... к Предыдущей... (SHIFT+TAB)"
+msgstr ".. к Предыдущей.. (SHIFT+TAB)"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "NOTE: key binding will take effect next run of TreeSheets."
-msgstr ""
-"ПРИМЕЧАНИЕ: привязка клавиш вступит в силу при следующем запуске TreeSheets."
+msgstr "ПРИМЕЧАНИЕ: привязка клавиш вступит в силу при следующем запуске TreeSheets."
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "Перемещаться между ячейками с помощью Клавиш Курсора"
 
+# комментарий к эл-ту Главного Окна
 msgid "New (CTRL+n)"
 msgstr "Новый (CTRL+n)"
 
+# комментарий к эл-ту Главного Окна
 msgid "New Grid (INS)"
 msgstr "Новая Сетка (INS)"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "New Sheet"
-msgstr "Новый лист"
+msgstr "Новый Лист"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "New file cancelled."
-msgstr "Новый файл отменен."
+msgstr "Создание нового файла отменено."
 
-# Сообщения
+# ??? Сообщение (после действия или события)
 msgid "No image in this cell."
 msgstr "В этой ячейке нет изображения."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "No matches for filter."
-msgstr "Для фильтра нет совпадений."
+msgstr "Нет совпадений для фильтра ."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "No matches for search."
 msgstr "Поиск не дал результатов."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "No matching cell found!"
-msgstr "Соответствующая ячейка не найдена!"
+msgstr "Совпадающая ячейка не найдена!"
 
-# Сообщения
+# ??? Сообщение (после действия или события)
 msgid "No search string."
 msgstr "Строка поиска отсутствует."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "No search."
-msgstr "Нет поиска."
+msgstr "Поиск не выполнен."
 
-# Сообщения
+# ??? Сообщение (после действия или события)
 msgid "No style to paste."
 msgstr "Нет стиля для вставки."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "No text in this cell."
 msgstr "Текст в этой ячейке отсутствует."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "No text selected."
 msgstr "Нет выделенного текста."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "No text to search for."
 msgstr "Отсутствует текст для поиска."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Not a TreeSheets file."
-msgstr "Не является файлом TreeSheets."
+msgstr "Файл не является файлом TreeSheets."
 
 msgid "Nothing more to redo."
 msgstr "Больше нечего возвращать."
 
 msgid "Nothing more to undo."
-msgstr "Больше нечего отменить."
+msgstr "Больше нечего отменять."
 
-msgid ""
-"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
-"normal."
-msgstr ""
-"Теперь просмотр TreeSheet должен поместиться на экране. Нажмите F12, чтобы "
-"вернуться в нормальный режим."
+msgid "Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal."
+msgstr "Теперь просмотр TreeSheet должен соответствовать экрану. Нажмите F12, чтобы вернуться в обычный режим."
 
 msgid "Open &file"
 msgstr "Открыть &Файл"
 
+# комментарий к эл-ту Главного Окна
 msgid "Open (CTRL+o)"
 msgstr "Открыть (CTRL+o)"
 
-# Сообщения
+# ???
 msgid "Open TreeSheets file"
 msgstr "Открыть файл TreeSheets"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Open an existing document"
 msgstr "Открыть существующий документ"
 
 msgid "Open border colors"
-msgstr "... Цвета &Границы"
+msgstr ".. Цвета &Границы"
 
 msgid "Open cell colors"
 msgstr "Открыть Цвета &Ячейки"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Open file cancelled."
 msgstr "Открытие файла отменено."
 
@@ -1036,25 +962,17 @@ msgid "Open link in &browser"
 msgstr "Открыть ссылку в &Браузере"
 
 msgid "Open text colors"
-msgstr "... Цвета &Текста"
+msgstr ".. Цвета &Текста"
 
-# Сообщения
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
-msgstr ""
-"Открывает текст из выбранной ячейки в браузере (в начале должен быть "
-"действительный URL)"
+# комментарий к п. Меню
+msgid "Opens up the text from the selected cell in browser (should start be a valid URL)"
+msgstr "Открывает текст из выбранной ячейки в браузере (в начале должен быть действительный URL)"
 
-# Сообщения
-msgid ""
-"Opens up the text from the selected cell in default application for the file "
-"type"
-msgstr ""
-"Открывает текст из выбранной ячейки в приложении по умолчанию для данного "
-"типа файла"
+# комментарий к п. Меню
+msgid "Opens up the text from the selected cell in default application for the file type"
+msgstr "Открывает текст из выбранной ячейки в приложении, ассоциированном с данным типом файла"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
@@ -1062,28 +980,29 @@ msgstr ""
 "Не удалось декодировать PNG для некоторых изображений в этом документе.\n"
 "Они были заменены красными квадратами."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "PNG decoder failure"
 msgstr "Сбой декодера PNG"
 
-# Сообщения
+# в Окне (выбор п. Меню)
 msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
 msgstr "PNG файл (*.png)|*.png|JPEG файл (*.jpg)|*.jpg|Все Файлы (*.*)|*.*"
 
 msgid "Page Setup..."
 msgstr "Настройка Страницы..."
 
+# комментарий к эл-ту Главного Окна
 msgid "Paste (CTRL+v)"
 msgstr "Вставить (CTRL+v)"
 
 msgid "Paste Style Only"
 msgstr "Вставить только Стиль"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Paste clipboard contents"
 msgstr "Вставить содержимое буфера обмена"
 
-# Сообщения
+# ??? Сообщение (после действия или события)
 msgid "Paste file path"
 msgstr "Вставить путь к файлу"
 
@@ -1099,64 +1018,58 @@ msgstr "Шрифт по Умолчанию..."
 msgid "Pick Document Background..."
 msgstr "Фон &Документа..."
 
-# Сообщения
+# ??? Сообщение (после действия или события)
 msgid "Please enable (Options -> Show Toolbar) to use replace."
-msgstr ""
-"Чтобы использовать Замену, включите (Параметры > Показать Панель "
-"Инструментов)."
+msgstr "Чтобы использовать Замену, включите (Параметры > Показать Панель Инструментов)."
 
-# Сообщения
+# ??? Сообщение (после действия или события)
 msgid "Please enable (Options -> Show Toolbar) to use search."
-msgstr ""
-"Чтобы использовать Поиск, включите (Параметры > Показать Панель "
-"Инструментов)."
+msgstr "Чтобы использовать Поиск, включите (Параметры > Показать Панель Инструментов)."
 
-# Сообщения
+# в Окне (выбор п. Меню)
 msgid "Please enter the new image width:"
 msgstr "Введите новую ширину изображения:"
 
-# Сообщения
+# в Окне (выбор п. Меню)
 msgid "Please enter the new key binding string"
 msgstr "Введите новую строку привязки клавиш"
 
-# Сообщения
+# в Окне (выбор п. Меню)
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Введите процент, на который вы хотите масштабировать изображение:"
 
 # Меню
 msgid "Please pick a menu item to change the key binding for"
-msgstr "Выберите пункт меню, чтобы изменить привязку клавиш для"
+msgstr "Выберите пункт меню, чтобы изменить привязку клавиш для:"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select a TreeSheets file to load:"
-msgstr "Пожалуйста, выберите TreeSheets-файл для загрузки:"
+msgstr "Выберите TreeSheets-файл для загрузки:"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select an image file:"
 msgstr "Выберите файл изображения:"
 
-# Сообщения
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select file to import:"
 msgstr "Выберите файл для импорта:"
 
-# Сообщения
+# Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Please select the datetime range."
-msgstr "Выберите диапазон дат."
+msgstr "Выберите Диапазон"
 
-# Сообщения
+# ??? Сообщение (после действия или события)
 msgid "Press F11 to exit fullscreen mode."
-msgstr "Нажмите F11, чтобы выйти из полноэкранного режима."
+msgstr "Нажмите F11 для выхода из полноэкранного режима."
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Print Preview"
-msgstr "Просмотр Печати"
+msgstr "Просмотр перед Печатью"
 
-# Предварительный Просмотр Печати
-# ПредПросмотр Печати
-# Просмотр Печати
 msgid "Print preview..."
 msgstr "&Просмотр Печати..."
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Quit this program"
 msgstr "Выйти из программы"
 
@@ -1181,24 +1094,20 @@ msgstr "Радиус &5"
 msgid "Radius &6"
 msgstr "Радиус &6"
 
-# Сообщения
-msgid ""
-"Reloads when another computer has changed a file (if you have made changes, "
-"asks)"
-msgstr ""
-"Перезагрузить, если другой компьютер изменил файл (спрашивает - внесли ли вы "
-"изменения)."
+# комментарий к п. Меню
+msgid "Reloads when another computer has changed a file (if you have made changes, asks)"
+msgstr "Перезагрузить файл, если другой компьютер изменил его (если вы внесли изменения - спросит)."
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Remove image(s) from the selected cells"
 msgstr "Удалить изображение(я) из выбранных ячеек"
 
 msgid "Render document centered"
-msgstr "Отобразить документ по Центру"
+msgstr "Отображать документ по Центру"
 
-# Интерфейс
+# эл-т Главного Окна
 msgid "Replace "
-msgstr "Замена "
+msgstr "Заменить"
 
 msgid "Replace &All"
 msgstr "Заменить &Всё"
@@ -1210,14 +1119,14 @@ msgid "Replace in Current &Selection"
 msgstr "Заменить в &Текущем Выделении"
 
 msgid "Replace in Current Selection && &Jump Next"
-msgstr "... и Перейти к Cледующему вх&ождению"
+msgstr ".. и Перейти к Cледующему Ре&зультату"
 
-# Сообщения
+# комментарий к эл-ту Главного Окна
 msgid "Replace in selection"
 msgstr "Заменить в выделенном"
 
 msgid "Reset &colors"
-msgstr "... &Цвета"
+msgstr ".. &Цвета"
 
 msgid "Reset column widths"
 msgstr "Сбросить &Ширину Столбца"
@@ -1228,6 +1137,7 @@ msgstr "Запустить"
 msgid "Save &As..."
 msgstr "Сохранить &Как..."
 
+# комментарий к эл-ту Главного Окна
 msgid "Save (CTRL+s)"
 msgstr "Сохранить (CTRL+s)"
 
@@ -1240,19 +1150,19 @@ msgstr "Сохранить Как"
 msgid "Save Image(s) to disk"
 msgstr "Сохранить &Изображение(я) на диск"
 
-# Сообщения
+# в Окне (выбор п. Меню) - Кнопка
 msgid "Save and Close"
-msgstr "Сохранить и закрыть"
+msgstr "Сохранить и Закрыть"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Save cancelled."
 msgstr "Сохранение отменено."
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Save current document"
 msgstr "Сохранить текущий документ"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Save current document with a different filename"
 msgstr "Сохранить текущий документ с другим именем"
 
@@ -1260,47 +1170,44 @@ msgid "Save image as JPEG"
 msgstr "&Сохранить в JPEG"
 
 msgid "Save image as PNG (default)"
-msgstr "... в PNG (по &Умолчанию)"
+msgstr ".. в PNG (по &Умолчанию)"
 
-msgid ""
-"Save image(s) to disk. Multiple images will be saved with a counter appended "
-"to each file name."
-msgstr ""
-"Сохранить изображение(я) на диск. При сохранении нескольких изображений к "
-"имени каждого файла будет добавлен счетчик."
+# ???
+msgid "Save image(s) to disk. Multiple images will be saved with a counter appended to each file name."
+msgstr "Сохраняет изображение(я) на диск. При сохранении нескольких изображений к имени каждого файла будет добавлен счетчик."
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Save the image in the TreeSheets file in JPEG format"
-msgstr "Сохраните изображение в файле TreeSheets в формате JPEG"
+msgstr "Сохранить изображение из файла TreeSheets в формате JPEG"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Save the image in the TreeSheets file in PNG format"
-msgstr "Сохраните изображение в файле TreeSheets в формате PNG"
+msgstr "Сохранить изображение из файла TreeSheets в формате PNG"
 
-# Сообщения
+# Сообщение (после действия или события)
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "Сохранение %s прошло успешно (за %d миллисекунд)."
+msgstr "Файл %s успешно сохранён (за %d миллисекунд)."
 
 msgid "Script"
 msgstr "Сценарий"
 
 msgid "Scroll Down (mousewheel)"
-msgstr "... вНиз (mousewheel)"
+msgstr ".. вНиз (КМ)"
 
 msgid "Scroll Left"
-msgstr "... вЛево"
+msgstr ".. вЛево"
 
 msgid "Scroll Right"
-msgstr "... вПраво"
+msgstr ".. вПраво"
 
 msgid "Scroll Sheet..."
 msgstr "Прокрутка Листа..."
 
 msgid "Scroll Up (mousewheel)"
-msgstr "... вВерх (mousewheel)"
+msgstr ".. вВерх (КМ)"
 
-# Интерфейс
+# эл-т Главного Окна
 msgid "Search "
 msgstr "Поиск "
 
@@ -1313,34 +1220,32 @@ msgstr "Выбрать Всё в текущей Сетке/Ячейке"
 msgid "Select First &Child"
 msgstr "Выбрать Первого &Потомка"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr ""
-"Выбранная сетка не является таблицей: ячейки не должны иметь подсеток "
-"(вложенных сеток)."
+msgstr "Выбранная сетка не является таблицей: ячейки не должны иметь подсеток (вложенных сеток)."
 
-# Show statistics
+# Показать статистику
 #, c-format
 msgid "Selection contains %d cell(s) with %d character(s)."
 msgstr "Выделение содержит %d ячеек с %d символами."
 
 msgid "Semi-Colon delimited text (CSV)..."
-msgstr "CSV-текст (разделитель - точка &с запятой)..."
+msgstr "CSV (разделитель - точка &с запятой)..."
 
 msgid "Set Grid Border Width..."
 msgstr "Установить Ширину &Границы Сетки..."
 
-# Задать
-# Установить
+# Заголовок Окна (выбор п. Меню)
 msgid "Set Print Scale"
 msgstr "Задать Масштаб Печати"
 
+# п. Меню (нет & в исходном тексте)
 msgid "Set Print Scale..."
 msgstr "Задать Масштаб Печати..."
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
-msgstr "... на 1% Меньше"
+msgstr ".. на 1% Меньше"
 
 #, no-c-format
 msgid "Show 1% more than the last filter"
@@ -1348,21 +1253,21 @@ msgstr "Показать на 1% Больше, чем в последнем фи
 
 #, no-c-format
 msgid "Show 10% of last edits"
-msgstr "... 10%"
+msgstr ".. 10%"
 
 #, no-c-format
 msgid "Show 20% of last edits"
-msgstr "... 20%"
+msgstr ".. 20%"
 
 #, no-c-format
 msgid "Show 5% of last edits"
-msgstr "Показать 5% Последних Правок"
+msgstr "Показать 5% Последних Изменений"
 
 #, no-c-format
 msgid "Show 50% of last edits"
-msgstr "... 50%"
+msgstr ".. 50%"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "Show About dialog"
 msgstr "Показать окно \"О программе\""
 
@@ -1373,7 +1278,7 @@ msgid "Show Toolbar"
 msgstr "Показать Панель Инструментов"
 
 msgid "Show last edits in specific date range"
-msgstr "Показать последние Изменения в Диапазоне Дат"
+msgstr "Показать Изменения в Диапазоне Дат и Времени"
 
 msgid "Show only cells in current search"
 msgstr "Показывать Ячейки только в Текущем Поиске"
@@ -1384,7 +1289,7 @@ msgstr "Показать Статистику"
 msgid "Single click maximize from tray"
 msgstr "Развернуть одним щелчком мыши из Трея"
 
-# Сообщения
+# Сообщение (после действия или события)
 #, c-format
 msgid "Size %d"
 msgstr "Размер %d"
@@ -1393,32 +1298,30 @@ msgid "Sort &Ascending"
 msgstr "Сортировать по &Возрастанию"
 
 msgid "Sort &Descending"
-msgstr "... по &Убыванию"
+msgstr ".. по &Убыванию"
 
-# Сообщения
+# Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Start date and time"
-msgstr "Дата и время начала"
+msgstr "Дата и Время Начала"
 
 msgid "Start of line of text"
 msgstr "К Началу Строки текста"
 
 msgid "Start of text"
-msgstr "К Началу Текста Клетки"
+msgstr "К Началу Текста Ячейки"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Swap all cells with this text at this level (or above) with the parent"
-msgstr ""
-"Поменяйте местами все ячейки с этим текстом на данном уровне (или выше) с "
-"родительской ячейкой"
+msgstr "Поменять местами все ячейки с этим текстом на данном уровне (или выше) с родительской ячейкой"
 
 msgid "Swap mousewheel scrolling and zooming"
-msgstr "Поменять Прокрутку и Масштабирование колесом мыши"
+msgstr "Поменять Прокрутку и Масштабирование КМ (Колесом Мыши)"
 
 msgid "Switch to &next file/tab"
-msgstr "Переход к &Cледующему файлу/вкладке"
+msgstr "Переключиться на &Cледующий файл/вкладку"
 
 msgid "Switch to &previous file/tab"
-msgstr "... к &Предыдущему файлу/вкладке"
+msgstr ".. на &Предыдущий файл/вкладку"
 
 msgid "Tab delimited text..."
 msgstr "Текст (разделитель - та&буляция)..."
@@ -1426,15 +1329,11 @@ msgstr "Текст (разделитель - та&буляция)..."
 msgid "Tag..."
 msgstr "&Тег..."
 
-# Сообщения
-msgid ""
-"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
-"grid, useful for export to spreadsheets"
-msgstr ""
-"Берет иерархию (вложенные сетки 1xN или Nx1) и преобразует ее в плоскую "
-"сетку NxN, полезную для экспорта в электронные таблицы"
+# комментарий к п. Меню
+msgid "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"
+msgstr "Преобразует иерархию (вложенные сетки 1xN или Nx1) в плоскую сетку NxN, пригодную для экспорта в электронные таблицы"
 
-# Интерфейс
+# эл-т Главного Окна
 msgid "Text "
 msgstr "Текст "
 
@@ -1447,43 +1346,43 @@ msgstr "Ра&змер Текста..."
 msgid "Text Style..."
 msgstr "&Стиль Текста..."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Text has been replaced."
 msgstr "Текст был заменен."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Text size decreased."
 msgstr "Размер текста уменьшен."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Text size increased."
 msgstr "Размер текста увеличен."
 
-# Сообщения
+# в Окне (выбор п. Меню) - О программе
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "Иерархический органайзер информации свободной формы"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "The browser could not open at least one link."
 msgstr "Браузеру не удалось открыть ни одну ссылку."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "There is no content to collapse."
 msgstr "Отсутствует содержимое для слияния."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "This operation doesn't work on thin selections."
 msgstr "Эта операция не работает с тонкими выделениями."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "This operation requires a cell that contains a grid."
 msgstr "Для этой операции требуется ячейка, содержащая сетку."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "This operation requires a selection."
 msgstr "Эта операция требует выбора (выделения)."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "This operation works on a single selected cell only."
 msgstr "Эта операция применима только к одной выбранной ячейке."
 
@@ -1491,7 +1390,7 @@ msgid "Toggle &Fullscreen View"
 msgstr "Переключить Полноэкранный режим"
 
 msgid "Toggle &Scaled Presentation View"
-msgstr "... Масштабирование просмотра"
+msgstr ".. Масштабированное представление"
 
 msgid "Toggle Fold"
 msgstr "Свер&нуть - Развернуть"
@@ -1503,39 +1402,40 @@ msgid "Toggle cell &BOLD"
 msgstr "Переключить Ячейку на &ЖИРНЫЙ"
 
 msgid "Toggle cell &ITALIC"
-msgstr "... на &ИТАЛИК"
+msgstr ".. на &ИТАЛИК"
 
 msgid "Toggle cell &strikethrough"
-msgstr "... на &Зачеркивание"
+msgstr ".. на &Зачеркнутый"
 
 msgid "Toggle cell &typewriter"
-msgstr "... на &Машинопись"
+msgstr ".. на &Машинопись"
 
 msgid "Toggle cell &underlined"
-msgstr "... на &Подчеркивание"
+msgstr ".. на &Подчеркнутый"
 
+# комментарий к п. Меню
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "Сворачивает - Разворачивает подсетки в выбранных ячейках."
 
-# Сообщения
+# в Окне (выбор п. Меню)
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "TreeSheets Файлы (*.cts)|*.cts|Все Файлы (*.*)|*.*"
 
 msgid "Turn filter &off"
 msgstr "&Выключить Фильтр"
 
+# комментарий к эл-ту Главного Окна
 msgid "Undo (CTRL+z)"
 msgstr "Отменить (CTRL+z)"
 
 msgid "Unfold All"
 msgstr "Развернуть Всё"
 
+# комментарий к п. Меню
 msgid "Unfolds the grid of the selected cell(s) recursively"
-msgstr ""
-"Рекурсивно (на всю глубину вложенности) Разворачивает подсетки выбранных "
-"ячеек"
+msgstr "Рекурсивно (на всю глубину вложенности) Разворачивает подсетки выбранных ячеек"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Uses"
 msgstr "Используется"
 
@@ -1546,35 +1446,35 @@ msgid "Variable &Read"
 msgstr "Про&читать Переменную"
 
 msgid "Vertical Layout with Bubble Style Rendering"
-msgstr "... в стиле &Пузыря"
+msgstr ".. в стиле &Пузырьков"
 
 msgid "Vertical Layout with Grid Style Rendering"
 msgstr "Вертикальная компоновка в стиле &Сетки"
 
 msgid "Vertical Layout with Line Style Rendering"
-msgstr "... в стиле &Линии"
+msgstr ".. в стиле &Линий"
 
 msgid "View tutorial &web page..."
-msgstr "Посмотреть &Bеб-страницу Учебника..."
+msgstr "&Bеб-страница Краткого Введения..."
 
-# Сообщения
+# в Окне (выбор п. Меню) - Файл / Новый
 msgid "What size grid would you like to start with?"
 msgstr "С какой размерности сетки вы хотели бы начать?"
 
-# Сообщения
+# в Окне (выбор п. Меню)
 msgid "Width"
 msgstr "Ширина"
 
-# Сообщения
+# Сообщение (после действия или события)
 #, c-format
 msgid "Width %d"
 msgstr "Ширина %d"
 
 msgid "Word Left"
-msgstr "На СЛОВО вЛево"
+msgstr "На Слово вЛево"
 
 msgid "Word Right"
-msgstr "... вПраво"
+msgstr ".. вПраво"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (в т.ч. &атрибуты - для OPML и т.п.)..."
@@ -1582,58 +1482,58 @@ msgstr "XML (в т.ч. &атрибуты - для OPML и т.п.)..."
 msgid "XML..."
 msgstr "XML..."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "You need to select one cell if you want to search for its text."
-msgstr "Вам необходимо выбрать одну ячейку, если хотите найти текст в ней."
+msgstr "Вам необходимо выбрать одну ячейку, если хотите найти в ней текст."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Zlib error while writing file."
 msgstr "Ошибка Zlib при записи файла."
 
 msgid "Zoom &In (CTRL+mousewheel)"
-msgstr "У&величить (CTRL+mousewheel)"
+msgstr "У&величить (CTRL+КМ)"
 
 msgid "Zoom &Out (CTRL+mousewheel)"
-msgstr "У&меньшить (CTRL+mousewheel)"
+msgstr "У&меньшить (CTRL+КМ)"
 
 msgid "Zoom In (CTRL+mousewheel)"
-msgstr "Увеличить (CTRL+mousewheel)"
+msgstr "Увеличить (CTRL+КМ)"
 
 msgid "Zoom Out (CTRL+mousewheel)"
-msgstr "Уменьшить (CTRL+mousewheel)"
+msgstr "Уменьшить (CTRL+КМ)"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Zoomed in."
 msgstr "Увеличено."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "Zoomed out."
 msgstr "Уменьшено."
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "change will take effect next run of TreeSheets"
 msgstr "изменения вступят в силу при следующем запуске TreeSheets"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "changes the orientation of a grid"
 msgstr "изменение ориентации сетки"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "couldn't import file!"
 msgstr "не удалось импортировать файл!"
 
 # Комметарий п. меню.
 msgid "only sets the colors and style of the copied cell, and keeps the text"
-msgstr "устанавливает только цвета и стиль из скопированной ячейки"
+msgstr "устанавливает только цвета и стиль из скопированной ячейки, сохраняя текст"
 
-# Сообщения
+# Сообщение (после действия или события)
 msgid "only works in cell text mode"
 msgstr "работает только в текстовом режиме ячейки"
 
 msgid "redo any undo steps, if you haven't made changes since"
 msgstr "вернуть все шаги отмены (если вы не вносили изменения после)"
 
-# Сообщения
+# комментарий к п. Меню
 msgid "revert the changes, one step at a time"
 msgstr "отменять изменения, шаг за шагом"
 
