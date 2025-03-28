@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-19 20:25+0100\n"
+"POT-Creation-Date: 2025-03-26 18:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -430,6 +430,9 @@ msgid "Decrease column width (ALT+mousewheel)"
 msgstr ""
 
 msgid "Decrease column width (no sub grids)"
+msgstr ""
+
+msgid "Default column width"
 msgstr ""
 
 msgid "Delete Before"
@@ -939,6 +942,9 @@ msgstr ""
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 
+msgid "Please enter the default column width:"
+msgstr ""
+
 msgid "Please enter the new image width:"
 msgstr ""
 
@@ -1129,6 +1135,9 @@ msgid "Set Print Scale"
 msgstr ""
 
 msgid "Set Print Scale..."
+msgstr ""
+
+msgid "Set default column width..."
 msgstr ""
 
 #, no-c-format
