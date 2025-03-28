@@ -1,8 +1,9 @@
----
-дата: 2024-07-26
-tags:
-  - "#dev"
----
+2024-07-26
+
+[Устинов Александр](quarus@ya.ru)
+
+## Вводная информация
+
 [TreeSheets - Проект](https://github.com/aardappel/treesheets)
 [Указания к переводу](https://github.com/aardappel/treesheets/blob/master/TS/translations/readme_translations.txt)
 
@@ -39,6 +40,7 @@ tags:
    Переводчик выполняет *перевод новых строк* в обновлённом файле **.po**.
 3) *po*-файл с переводами преобразуется в машиночитаемый **.mo** (для программы).
 
+
 ## Процесс получения перевода
 
 ### 1 Основной Шаблон (pot-файл)
@@ -57,7 +59,6 @@ xgettext --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot my
 ```sh
 xgettext -j --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot myframe.h document.h system.h
 ```
-
 
 ### 2.1 Создание файл перевода (po-файл)
 
@@ -103,6 +104,7 @@ msgstr "Перейти к следующей вкладке\tCTRL+TAB"
 
 Это можно делать и врукопашную... но существуют утилиты для переводчиков, облегчающие редактирование перевода, например:
 
+
 #### Poedit
 
 [Poedit](https://poedit.net) -бесплатный и открытый кросс-платформенный инструмент редактирования каталогов локализации для *gettext*.
@@ -126,12 +128,35 @@ msgfmt --output-file=ts.mo ts.po
 
 ### Оперативная визуализация процесса перевода
 
-Для этого поместите ссылку на каталог ru_RU (в котором выполняете перевод)  в  соответствующий каталог программы.
-Для **flatpak**:
+Для оперативного просмотра вносимых изменений в процессе перевода, нам необходимо "скормить" программе наш файл перевода `ts.mo` (вместо родного).
+
+#### **Debian** (Ubuntu)
+
+> Файл **ts.mo**  находится здесь: `/usr/share/locale/ru_RU/LC_MESSAGES/ts.mo`
+
+Можно создать ссылку на файл, в котором выполняется перевод, вместо соответствующего файла ts.mo (*предварительно переименовав существующий файл!*):
+```sh
+cd /usr/share/locale/ru_RU/LC_MESSAGES/ && mv -i ts.mo ts.mo.1 && ls
+ln -s .../GIT/TreeSheets/TS/translations/ru_RU/ts.mo /usr/share/locale/ru_RU/LC_MESSAGES/ts.mo
+```
+... и перезапустить программу.
+
+
+#### **Flatpak**
+
+> Файл **ts.mo**  находится здесь: `/var/lib/flatpak/runtime/com.strlen.TreeSheets.Locale/x86_64/stable/active/files/ru/share/ru_RU/LC_MESSAGES/ts.mo`
+
+Можно создать ссылку на файл, в котором выполняется перевод, вместо существующего файла ts.mo (*предварительно переименовав существующий файл!*):
+```sh
+ln -s .../GIT/TreeSheets/TS/translations/ru_RU/ts.mo /var/lib/flatpak/runtime/com.strlen.TreeSheets.Locale/x86_64/stable/active/files/ru/share/ru_RU/LC_MESSAGES/ts.mo
+```
+
+
+Также, можно создать ссылку на каталог ru_RU (в котором выполняется перевод) в  соответствующем каталоге программы (*предварительно переименовав существующую там ссылку!*):
+
 ```sh
 ln -s .../GIT/TreeSheets/TS/translations/ru_RU /var/lib/flatpak/app/com.strlen.TreeSheets/current/active/files/share/locale/ru_RU
 ```
-... и перезапустите программу.
 
 
 ### & в Меню (F10)
