@@ -134,6 +134,7 @@ elseif(WIN32)
         TreeSheets
         WIN32
         src/main.cpp
+        win/icon.rc
     )
 else()
     add_executable(
