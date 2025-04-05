@@ -33,6 +33,8 @@ project(TreeSheets
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+# Use statically-linked runtime library
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 OPTION(WITH_CLANG_TIDY "Run clang-tidy linter" OFF)
 if (WITH_CLANG_TIDY)
