@@ -92,12 +92,9 @@ struct Text {
         int start = i;
         i = p;
 
-        for (wxString::const_iterator j = t.begin() + start; j != t.end(); j++) {
-            wxUniChar ch = *j;
-            if (ch != L' ' && !IsWord(ch)) {
-                i++;
-                p++;
-            } else break;
+        for (auto j = t.begin() + start; j != t.end() && *j != L' ' && !IsWord(*j); j++) {
+            i++;
+            p++;
         }
          // gobble up any trailing punctuation
         if (i != start && i < l && (t[i] == '\"' || t[i] == '\'')) {
@@ -105,18 +102,17 @@ struct Text {
             p++;
         }  // special case: if punctuation followed by quote, quote is meant to be part of word
 
-        for (wxString::const_iterator k = t.begin() + i; k != t.end(); k++) {
-            wxUniChar ch = *k;
-            if (ch == L' ') { // gobble spaces, but do not copy them
-                i++;
-                if (i == l) p = i; // happens with a space at the last line, user is most likely about to type
-                    // another word, so
-                    // need to show space. Alternatively could check if the cursor is actually on this spot.
-                    // Simply
-                    // showing a blank new line would not be a good idea, unless the cursor is here for
-                    // sure, and
-                    // even then, placing the cursor there again after deselect may be hard.
-            } else break;
+        for (auto k = t.begin() + i; k != t.end() && *k == L' '; k++) {
+            // gobble spaces, but do not copy them
+            i++;
+            if (i == l)
+                p = i;  // happens with a space at the last line, user is most likely about to type
+                        // another word, so
+            // need to show space. Alternatively could check if the cursor is actually on this spot.
+            // Simply
+            // showing a blank new line would not be a good idea, unless the cursor is here for
+            // sure, and
+            // even then, placing the cursor there again after deselect may be hard.
         }
 
         ASSERT(start != i);
