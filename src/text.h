@@ -92,17 +92,18 @@ struct Text {
         int start = i;
         i = p;
 
-        while (i < l && t[i] != L' ' && !IsWord(t[i])) {
+        for (auto j = t.begin() + start; j != t.end() && *j != L' ' && !IsWord(*j); j++) {
             i++;
             p++;
-        };  // gobble up any trailing punctuation
+        }
+         // gobble up any trailing punctuation
         if (i != start && i < l && (t[i] == '\"' || t[i] == '\'')) {
             i++;
             p++;
         }  // special case: if punctuation followed by quote, quote is meant to be part of word
 
-        while (i < l && t[i] == L' ')  // gobble spaces, but do not copy them
-        {
+        for (auto k = t.begin() + i; k != t.end() && *k == L' '; k++) {
+            // gobble spaces, but do not copy them
             i++;
             if (i == l)
                 p = i;  // happens with a space at the last line, user is most likely about to type
