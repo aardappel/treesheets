@@ -92,26 +92,31 @@ struct Text {
         int start = i;
         i = p;
 
-        while (i < l && t[i] != L' ' && !IsWord(t[i])) {
-            i++;
-            p++;
-        };  // gobble up any trailing punctuation
+        for (wxString::const_iterator j = t.begin() + start; j != t.end(); j++) {
+            wxUniChar ch = *j;
+            if (ch != L' ' && !IsWord(ch)) {
+                i++;
+                p++;
+            } else break;
+        }
+         // gobble up any trailing punctuation
         if (i != start && i < l && (t[i] == '\"' || t[i] == '\'')) {
             i++;
             p++;
         }  // special case: if punctuation followed by quote, quote is meant to be part of word
 
-        while (i < l && t[i] == L' ')  // gobble spaces, but do not copy them
-        {
-            i++;
-            if (i == l)
-                p = i;  // happens with a space at the last line, user is most likely about to type
-                        // another word, so
-            // need to show space. Alternatively could check if the cursor is actually on this spot.
-            // Simply
-            // showing a blank new line would not be a good idea, unless the cursor is here for
-            // sure, and
-            // even then, placing the cursor there again after deselect may be hard.
+        for (wxString::const_iterator k = t.begin() + i; k != t.end(); k++) {
+            wxUniChar ch = *k;
+            if (ch == L' ') { // gobble spaces, but do not copy them
+                i++;
+                if (i == l) p = i; // happens with a space at the last line, user is most likely about to type
+                    // another word, so
+                    // need to show space. Alternatively could check if the cursor is actually on this spot.
+                    // Simply
+                    // showing a blank new line would not be a good idea, unless the cursor is here for
+                    // sure, and
+                    // even then, placing the cursor there again after deselect may be hard.
+            } else break;
         }
 
         ASSERT(start != i);
