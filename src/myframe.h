@@ -17,7 +17,7 @@ struct MyFrame : wxFrame {
     vector<string> scripts_in_menu;
     wxToolBar *tb {nullptr};
     wxColour toolbgcol {0xD8C7BC};
-    wxTextCtrl *filter {nullptr};
+    wxSearchCtrl *filter {nullptr};
     wxTextCtrl *replaces {nullptr};
     ColorDropdown *celldd {nullptr};
     ColorDropdown *textdd {nullptr};
@@ -873,13 +873,8 @@ struct MyFrame : wxFrame {
         SEPARATOR;
         AddTBIcon(_(L"Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
         tb->AddSeparator();
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
-        tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
-                                               FromDIP(wxSize(80, 22)),
-                                               wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg", L"cancel_dark.svg");
-        AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath, L"search.svg",
-                  L"search_dark.svg");
+        tb->AddControl(filter = new wxSearchCtrl(tb, A_SEARCH, "", wxDefaultPosition,
+                                                 FromDIP(wxSize(80, 22))));
         SEPARATOR;
         tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
         tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
@@ -960,8 +955,8 @@ struct MyFrame : wxFrame {
                 case A_ENTERCELL: {
                     wxClientDC dc(sw);
                     if (tc == filter) {
-                        // OnSearchEnter equivalent implementation for MSW
-                        // as EVT_TEXT_ENTER event is not generated.
+                        // OnSearch equivalent implementation for MSW
+                        // as EVT_SEARCH event is not generated.
                         if (sys->searchstring.Len() == 0) {
                             sw->SetFocus();
                         } else {
@@ -1111,7 +1106,7 @@ struct MyFrame : wxFrame {
         filter->Refresh();
     }
 
-    void OnSearch(wxCommandEvent &ce) {
+    void OnSearchText(wxCommandEvent &ce) {
         wxString searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
@@ -1127,14 +1122,20 @@ struct MyFrame : wxFrame {
         GetCurTab()->Status();
     }
 
-    void OnSearchReplaceEnter(wxCommandEvent &ce) {
+    void OnSearch(wxCommandEvent &ce) {
         TSCanvas *sw = GetCurTab();
-        if (ce.GetId() == A_SEARCH && ce.GetString().Len() == 0) {
+        if (ce.GetString().IsEmpty()) {
             sw->SetFocus();
-        } else {
-            wxClientDC dc(sw);
-            sw->doc->Action(dc, ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
+            return;
         }
+        wxClientDC dc(sw);
+        sw->doc->Action(dc, A_SEARCHNEXT);
+    }
+
+    void OnReplace(wxCommandEvent &ce) {
+        TSCanvas *sw = GetCurTab();
+        wxClientDC dc(sw);
+        sw->doc->Action(dc, A_REPLACEONCEJ);
     }
 
     void ReFocus() {
