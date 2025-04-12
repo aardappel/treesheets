@@ -9,11 +9,11 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
         cur = doc->rootgrid;
-        doc->AddUndo(cur);
     }
 
     std::string ScriptRun(const char *filename, wxDC &_dc) {
         SwitchToCurrentDoc();
+        doc->AddUndo(cur);
 
         bool dump_builtins = false;
         #ifdef _DEBUG
