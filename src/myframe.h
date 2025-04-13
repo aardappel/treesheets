@@ -5,6 +5,7 @@ struct MyFrame : wxFrame {
     wxTaskBarIcon tbi;
     wxMenu *editmenupopup;
     wxFileHistory filehistory;
+    wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
     unique_ptr<wxFileSystemWatcher> watcher {make_unique<wxFileSystemWatcher>()};
     wxAuiNotebook *nb {nullptr};
     unique_ptr<wxAuiManager> aui {make_unique<wxAuiManager>(this)};
@@ -14,7 +15,6 @@ struct MyFrame : wxFrame {
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
     bool darkmode {wxSystemSettings::GetAppearance().IsDark()};
-    vector<string> scripts_in_menu;
     wxToolBar *tb {nullptr};
     wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
@@ -155,6 +155,10 @@ struct MyFrame : wxFrame {
         sys->cfg->Read(L"lefttabs", &lefttabs, true);
 
         filehistory.Load(*sys->cfg);
+        wxString oldpath = sys->cfg->GetPath();
+        sys->cfg->SetPath("/scripts");
+        scripts.Load(*sys->cfg);
+        sys->cfg->SetPath(oldpath);
 
         #ifdef __WXMAC__
             #define CTRLORALT "CTRL"
@@ -618,21 +622,18 @@ struct MyFrame : wxFrame {
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
 
         wxMenu *scriptmenu = new wxMenu();
+        MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add Lobster script...") + "\tCTRL+ALT+L",
+                     _(L"Add Lobster script"));
+        scripts.UseMenu(scriptmenu);
+        scripts.AddFilesToMenu();
+
         auto scriptpath = GetDataPath("scripts/");
         wxString sf = wxFindFirstFile(scriptpath + L"*.lobster");
         int sidx = 0;
         while (!sf.empty()) {
             auto fn = wxFileName::FileName(sf).GetFullName();
-            auto ms = fn.BeforeFirst('.');
-            if (sidx < 26) {
-                ms += L"\tCTRL+SHIFT+ALT+";
-                ms += wxChar('A' + sidx);
-            }
-            MyAppend(scriptmenu, A_SCRIPT + sidx, ms);
-            auto ss = fn.utf8_str();
-            scripts_in_menu.push_back(string(ss.data(), ss.length()));
+            scripts.AddFileToHistory(fn);
             sf = wxFindNextFile();
-            sidx++;
         }
 
         wxMenu *markmenu = new wxMenu();
@@ -751,6 +752,10 @@ struct MyFrame : wxFrame {
 
     ~MyFrame() {
         filehistory.Save(*sys->cfg);
+        wxString oldpath = sys->cfg->GetPath();
+        sys->cfg->SetPath("/scripts");
+        scripts.Save(*sys->cfg);
+        sys->cfg->SetPath(oldpath);
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {
@@ -1019,6 +1024,16 @@ struct MyFrame : wxFrame {
                 break;
             }
 
+            case A_ADDSCRIPT: {
+                 wxString fn = ::wxFileSelector(
+                    _(L"Please select a Lobster script file to load:"), L"", L"", L"lobster",
+                    _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
+                    wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+                if (!fn.empty())
+                    scripts.AddFileToHistory(fn);
+                break;
+            }
+
             case A_DEFAULTMAXCOLWIDTH: {
                 int w = wxGetNumberFromUser(_(L"Please enter the default column width:"), _(L"Width"),
                                         _(L"Default column width"), sys->defaultmaxcolwidth, 1,
@@ -1094,7 +1109,7 @@ struct MyFrame : wxFrame {
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                    auto msg = tssi.ScriptRun(scripts_in_menu[ce.GetId() - A_SCRIPT].c_str(), dc);
+                    auto msg = tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str(), dc);
                     msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
                     sw->Status(wxString(msg));
                 } else {
