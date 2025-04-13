@@ -624,6 +624,8 @@ struct MyFrame : wxFrame {
         wxMenu *scriptmenu = new wxMenu();
         MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add Lobster script...") + "\tCTRL+ALT+L",
                      _(L"Add Lobster script"));
+        MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove script from list...") + "\tCTRL+SHIFT+ALT+L",
+                 _(L"Remove script from list"));
         scripts.UseMenu(scriptmenu);
         scripts.AddFilesToMenu();
 
@@ -1031,6 +1033,16 @@ struct MyFrame : wxFrame {
                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 if (!fn.empty())
                     scripts.AddFileToHistory(fn);
+                break;
+            }
+
+            case A_DETSCRIPT: {
+                wxArrayString as;
+                for (auto i = 0; i < scripts.GetCount(); i++) { as.Add(scripts.GetHistoryFile(i)); }
+                auto dlg = wxSingleChoiceDialog(
+                    this, _(L"Please select the script you want to remove from the list:"),
+                    _(L"Remove script from list"), as);
+                if (dlg.ShowModal() == wxID_OK) scripts.RemoveFileFromHistory(dlg.GetSelection());
                 break;
             }
 
