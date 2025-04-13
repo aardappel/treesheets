@@ -243,6 +243,7 @@ enum {
     A_DRAGANDDROP,
     A_SHOWSTATS,
     A_DEFAULTMAXCOLWIDTH,
+    A_ADDSCRIPT,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     A_SCRIPT = 2000,  // and all values from here on
