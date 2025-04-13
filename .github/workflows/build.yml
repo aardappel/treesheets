@@ -58,6 +58,14 @@ jobs:
         omitBody: true
         commit: master
         artifacts: "_build/TreeSheets-*.exe, _build/TreeSheets-*.zip"
+    - name: Upload artifacts
+      if: github.ref != 'refs/heads/master'
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-builds
+        path: |
+          _build/TreeSheets-*.exe
+          _build/TreeSheets-*.zip
 
   build-mac:
     name: Build Mac
@@ -86,3 +94,9 @@ jobs:
         omitBody: true
         commit: master
         artifacts: "_build/TreeSheets-*.dmg"
+    - name: Upload artifacts
+      if: github.ref != 'refs/heads/master'
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-disk-image
+        path: _build/TreeSheets-*.dmg
