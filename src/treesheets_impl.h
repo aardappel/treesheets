@@ -3,12 +3,20 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *doc = nullptr;
     Cell *cur = nullptr;
     wxDC *dc = nullptr;
+    bool docmodified = false;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
         cur = doc->rootgrid;
+        docmodified = false;
+    }
+
+    void MarkDocAsModified() {
+        if (docmodified) return;
+        doc->AddUndo(cur);
+        docmodified = true;
     }
 
     std::string ScriptRun(const char *filename, wxDC &_dc) {
@@ -76,27 +84,27 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetText(std::string_view t) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         if (cur->parent) cur->text.t = wxString::FromUTF8(t.data(), t.size());
     }
 
     void CreateGrid(int x, int y) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         if (x > 0 && y > 0 && x * y < max_new_grid_cells) cur->AddGrid(x, y);
     }
 
     void InsertColumn(int x) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         if (cur->grid && x >= 0 && x <= cur->grid->xs) cur->grid->InsertCells(x, -1, 1, 0);
     }
 
     void InsertRow(int y) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         if (cur->grid && y >= 0 && y <= cur->grid->ys) cur->grid->InsertCells(-1, y, 0, 1);
     }
 
     void Delete(int x, int y, int xs, int ys) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         if (cur->grid && x >= 0 && x + xs <= cur->grid->xs && y >= 0 && y + ys <= cur->grid->ys) {
             Selection s(cur->grid, x, y, xs, ys);
             cur->grid->MultiCellDeleteSub(doc, s);
@@ -106,28 +114,28 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetBackgroundColor(uint col) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         cur->cellcolor = col;
     }
     void SetTextColor(uint col) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         cur->textcolor = col;
     }
     void SetTextFiltered(bool filtered) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         if (cur->parent) cur->text.filtered = filtered;
     }
     bool IsTextFiltered() { return cur->text.filtered; }
     void SetBorderColor(uint col) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         if (cur->grid) cur->grid->bordercolor = col;
     }
     void SetRelativeSize(int s) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         cur->text.relsize = s;
     }
     void SetStyle(int s) {
-        doc->AddUndo(cur);
+        MarkDocAsModified();
         cur->text.stylebits = s;
     }
 
