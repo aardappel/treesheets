@@ -930,8 +930,8 @@ struct MyFrame : wxFrame {
             long from, to;
             tc->GetSelection(&from, &to);
             switch (ce.GetId()) {
-                #ifdef __WXMSW__
-                // FIXME: have to emulate this behavior on Windows because menu always captures these events (??)
+                #if defined(__WXMSW__) || defined(__WXMAC__)
+                // FIXME: have to emulate this behavior on Windows and Mac because menu always captures these events (??)
                 case A_MLEFT:
                 case A_LEFT:
                     if (from != to)
@@ -964,6 +964,8 @@ struct MyFrame : wxFrame {
                 case A_HOME: tc->SetSelection(0, 0); return;
                 case A_END: tc->SetSelection(1000, 1000); return;
                 case wxID_SELECTALL: tc->SetSelection(0, 1000); return;
+                #endif
+                #ifdef __WXMSW__
                 case A_ENTERCELL: {
                     wxClientDC dc(sw);
                     if (tc == filter) {
