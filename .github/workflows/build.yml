@@ -26,6 +26,8 @@ jobs:
       run: cmake -S . -B _build -DCMAKE_INSTALL_PREFIX=/usr -DCPACK_PACKAGING_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DGIT_WXWIDGETS_SUBMODULES=ON -DwxUSE_EXPAT=builtin -DwxUSE_LIBJPEG=builtin -DwxUSE_LIBPNG=builtin -DwxUSE_LIBTIFF=builtin -DwxUSE_ZLIB=builtin
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
+    - name: Remove epoch from .deb filename
+      run: for file in _build/treesheets_1:*.deb; do mv -v "${file}" "${file/treesheets_1:/treesheets_}"; done
     - name: Create release
       if: github.ref == 'refs/heads/master'
       uses: ncipollo/release-action@v1
@@ -35,6 +37,12 @@ jobs:
         omitBody: true
         commit: master
         artifacts: "_build/treesheets_*.deb"
+    - name: Upload artifacts
+      if: github.ref != 'refs/heads/master'
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-builds
+        path: _build/treesheets_*.deb
 
   build-windows:
     name: Build Windows
