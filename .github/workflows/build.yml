@@ -35,7 +35,7 @@ jobs:
         tag: ${{ github.run_id }}
         allowUpdates: true
         omitBody: true
-        commit: master
+        commit: ${{ github.sha }}
         artifacts: "_build/treesheets_*.deb"
     - name: Upload artifacts
       if: github.ref != 'refs/heads/master'
@@ -64,7 +64,7 @@ jobs:
         tag: ${{ github.run_id }}
         allowUpdates: true
         omitBody: true
-        commit: master
+        commit: ${{ github.sha }}
         artifacts: "_build/TreeSheets-*.exe, _build/TreeSheets-*.zip"
     - name: Upload artifacts
       if: github.ref != 'refs/heads/master'
@@ -100,7 +100,7 @@ jobs:
         tag: ${{ github.run_id }}
         allowUpdates: true
         omitBody: true
-        commit: master
+        commit: ${{ github.sha }}
         artifacts: "_build/TreeSheets-*.dmg"
     - name: Upload artifacts
       if: github.ref != 'refs/heads/master'
