@@ -130,11 +130,13 @@ sudo cmake --install _build
 
 ### Further information for Mac OS / Linux
 <details>
+
  - If you like to build wxWidgets by yourself:
     - You can use the version of wxWidgets from https://github.com/wxWidgets/wxWidgets.git.
     - Follow the instructions to build there, but add `--enable-unicode` and `--disable-shared` to the `configure` step.
 - You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
 - If you are MacOS X user, a bundle will be installed to the installation prefix.
+
 </details>
 
 Contributing:
