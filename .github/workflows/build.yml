@@ -29,7 +29,7 @@ jobs:
     - name: Remove epoch from .deb filename
       run: for file in _build/treesheets_1:*.deb; do mv -v "${file}" "${file/treesheets_1:/treesheets_}"; done
     - name: Create release
-      if: github.ref == 'refs/heads/master'
+      if: github.event_name == 'push'
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ github.run_id }}
@@ -38,7 +38,7 @@ jobs:
         commit: master
         artifacts: "_build/treesheets_*.deb"
     - name: Upload artifacts
-      if: github.ref != 'refs/heads/master'
+      if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v4
       with:
         name: linux-builds
@@ -58,7 +58,7 @@ jobs:
     - name: build and package
       run: cmake --build _build --config Release --target package -j
     - name: Create release
-      if: github.ref == 'refs/heads/master'
+      if: github.event_name == 'push'
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ github.run_id }}
@@ -67,7 +67,7 @@ jobs:
         commit: master
         artifacts: "_build/TreeSheets-*.exe, _build/TreeSheets-*.zip"
     - name: Upload artifacts
-      if: github.ref != 'refs/heads/master'
+      if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v4
       with:
         name: windows-builds
@@ -94,7 +94,7 @@ jobs:
     - name: Build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Create release
-      if: github.ref == 'refs/heads/master'
+      if: github.event_name == 'push'
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ github.run_id }}
@@ -103,7 +103,7 @@ jobs:
         commit: master
         artifacts: "_build/TreeSheets-*.dmg"
     - name: Upload artifacts
-      if: github.ref != 'refs/heads/master'
+      if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v4
       with:
         name: macos-disk-image
