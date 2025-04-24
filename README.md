@@ -24,7 +24,7 @@ Installation:
 Pre-built binaries are available at the
 [Release section](https://github.com/aardappel/treesheets/releases). 
 
-Please note that the Linux builds provided are built and only compatible with `ubuntu-latest` used by [GitHub Actions Runner](https://github.com/actions/runner-images). 
+Please note that the packages for Debian-based distributions provided are built on `ubuntu-latest` used by [GitHub Actions Runner](https://github.com/actions/runner-images). They could also be installed on other Debian-based distributions depending on whether the required dependency packages are available.
 
 ### Flatpak (Linux) users
 
