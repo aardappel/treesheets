@@ -46,7 +46,7 @@ void unit_test_all() {
 int main(int argc, char* argv[]) {
     #ifdef _MSC_VER
     	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-        InitUnhandledExceptionFilter(argc, argv);
+        InitUnhandledExceptionFilter();
     #endif
     LOG_INFO("Lobster running...");
     bool wait = false;

@@ -628,7 +628,7 @@ extern "C" int RunCompiledCodeMain(int argc, const char *const *argv, const uint
                                    void *custom_pre_init, const char *aux_src_path) {
     #ifdef _MSC_VER
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-        InitUnhandledExceptionFilter(argc, (char **)argv);
+        InitUnhandledExceptionFilter();
     #endif
     #ifdef USE_EXCEPTION_HANDLING
     try
