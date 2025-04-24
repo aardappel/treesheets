@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-26 18:23-0300\n"
+"POT-Creation-Date: 2025-04-24 21:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -218,6 +218,9 @@ msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr ""
 
 msgid "Add Image"
+msgstr ""
+
+msgid "Add Lobster script..."
 msgstr ""
 
 msgid "Adds a grid to the selected cell"
@@ -731,6 +734,9 @@ msgstr ""
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr ""
 
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr ""
+
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
 "affect"
@@ -957,6 +963,9 @@ msgstr ""
 msgid "Please pick a menu item to change the key binding for"
 msgstr ""
 
+msgid "Please select a Lobster script file:"
+msgstr ""
+
 msgid "Please select a TreeSheets file to load:"
 msgstr ""
 
@@ -967,6 +976,9 @@ msgid "Please select file to import:"
 msgstr ""
 
 msgid "Please select the datetime range."
+msgstr ""
+
+msgid "Please select the script you want to remove from the list:"
 msgstr ""
 
 msgid "Press F11 to exit fullscreen mode."
@@ -1008,6 +1020,9 @@ msgid ""
 msgstr ""
 
 msgid "Remove image(s) from the selected cells"
+msgstr ""
+
+msgid "Remove script from list..."
 msgstr ""
 
 msgid "Render document centered"
