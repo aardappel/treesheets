@@ -46,7 +46,10 @@ jobs:
 
   build-windows:
     name: Build Windows
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        winos: [windows-latest, windows-11-arm]
+    runs-on: ${{ matrix.winos }}
     permissions:
       contents: write
     steps:
@@ -70,7 +73,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v4
       with:
-        name: windows-builds
+        name: ${{ matrix.winos }}-builds
         path: |
           _build/TreeSheets-*.exe
           _build/TreeSheets-*.zip
