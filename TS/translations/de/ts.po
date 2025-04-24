@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-19 20:25+0100\n"
+"POT-Creation-Date: 2025-04-24 21:10+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -223,6 +223,9 @@ msgstr "Eine temporäre Sicherungskopie existiert. Möchten Sie diese stattdesse
 
 msgid "Add Image"
 msgstr "Bild hinzufügen"
+
+msgid "Add Lobster script..."
+msgstr "Lobster-Skript hinzufügen..."
 
 msgid "Adds a grid to the selected cell"
 msgstr "Eine Tabelle in die ausgewählte Zelle einfügen"
@@ -452,6 +455,9 @@ msgstr "Spaltenbreite verkleinern (ALT+Mausrad)"
 
 msgid "Decrease column width (no sub grids)"
 msgstr "Spaltenbreite verkleinern (keine untergeordnete Tabellen)"
+
+msgid "Default column width"
+msgstr "Standardspaltenbreite"
 
 msgid "Delete Before"
 msgstr "Vorhergehendes Element löschen"
@@ -779,6 +785,9 @@ msgstr "Programmierreferenz laden..."
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "%s geladen (%d Zellen, %d Zeichen) in %d Millisekunden."
 
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "Lobster-Dateien (*.lobster)|*.lobster|Alle Dateien (*.*)|*.*"
+
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
 "affect"
@@ -1002,6 +1011,9 @@ msgstr "Bitte aktivieren Sie (Optionen -> Werkzeugleiste anzeigen), um Ersetzen 
 msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr "Bitte aktivieren Sie (Optionen -> Werkzeugleiste anzeigen), um die Suche benutzen zu können."
 
+msgid "Please enter the default column width:"
+msgstr "Bitte geben Sie die neue standardmäßige Spaltenbreite an:"
+
 msgid "Please enter the new image width:"
 msgstr "Bitte geben Sie die neue Bildbreite an:"
 
@@ -1014,6 +1026,9 @@ msgstr "Bitte geben Sie die Prozentzahl ein, um die Sie das Bild skalieren möch
 msgid "Please pick a menu item to change the key binding for"
 msgstr "Bitte wählen Sie ein Menüeintrag, um das Tastenkürzel hierfür ändern zu können"
 
+msgid "Please select a Lobster script file:"
+msgstr "Bitte wählen Sie eine Lobster-Skriptdatei aus:"
+
 msgid "Please select a TreeSheets file to load:"
 msgstr "Bitte wählen Sie eine TreeSheets-Datei zum Laden aus:"
 
@@ -1025,6 +1040,9 @@ msgstr "Bitte wählen Sie eine Datei zum Importieren aus:"
 
 msgid "Please select the datetime range."
 msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "Bitte wählen Sie das Skript aus, das sie aus der Liste entfernen möchten:"
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "F11 drücken, um den Vollbildmous zu verlassen."
@@ -1068,6 +1086,9 @@ msgstr ""
 
 msgid "Remove image(s) from the selected cells"
 msgstr "Bild(er) aus der ausgewählten Zelle entfernen"
+
+msgid "Remove script from list..."
+msgstr "Skript aus der Liste entfernen..."
 
 msgid "Render document centered"
 msgstr "Dokument mittig rendern"
@@ -1197,6 +1218,9 @@ msgstr "Druckskalierung setzen"
 
 msgid "Set Print Scale..."
 msgstr "Druckskalierung setzen..."
+
+msgid "Set default column width..."
+msgstr "Standardspaltenbreite setzen..."
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
