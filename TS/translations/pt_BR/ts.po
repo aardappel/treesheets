@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-26 18:23-0300\n"
-"PO-Revision-Date: 2025-03-26 18:25-0300\n"
+"POT-Creation-Date: 2025-04-24 21:10+0200\n"
+"PO-Revision-Date: 2025-04-24 17:46-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -227,6 +227,9 @@ msgstr ""
 
 msgid "Add Image"
 msgstr "Adicionar Imagem"
+
+msgid "Add Lobster script..."
+msgstr "Adicionar script Lobster..."
 
 msgid "Adds a grid to the selected cell"
 msgstr "Adiciona uma grade à célula selecionada"
@@ -780,6 +783,9 @@ msgstr "Carregar &referência de operações"
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "%s (%d célula(s), %d caractere(s)) carregado em %d milissegundo(s)."
 
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "Arquivos Lobster (*.lobster)|*.lobster|Todos os Arquivos (*.*)|*.*"
+
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
 "affect"
@@ -1026,6 +1032,9 @@ msgstr ""
 "Por favor escolha um item de menu para o qual deseja mudar a associação de "
 "teclas"
 
+msgid "Please select a Lobster script file:"
+msgstr "Por favor selecione um arquivo de script Lobster:"
+
 msgid "Please select a TreeSheets file to load:"
 msgstr "Por favor selecione um arquivo do TreeSheets para carregar:"
 
@@ -1037,6 +1046,9 @@ msgstr "Por favor selecione um arquivo para importar:"
 
 msgid "Please select the datetime range."
 msgstr "Por favor selecione a data/hora inicial e a final."
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "Por favor selecione o script que deseja remover da lista:"
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Tecle F11 para sair do modo de tela cheia."
@@ -1080,6 +1092,9 @@ msgstr ""
 
 msgid "Remove image(s) from the selected cells"
 msgstr "Remove imagem(ns) das células selecionadas"
+
+msgid "Remove script from list..."
+msgstr "Remover script da lista..."
 
 msgid "Render document centered"
 msgstr "&Renderizar documento centralizado na tela"
