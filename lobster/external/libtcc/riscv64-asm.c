@@ -1,13 +1,13 @@
 /*************************************************************/
 /*
- *  ARM dummy assembler for TCC
+ *  RISCV64 dummy assembler for TCC
  *
  */
 
 #ifdef TARGET_DEFS_ONLY
 
 #define CONFIG_TCC_ASM
-#define NB_ASM_REGS 16
+#define NB_ASM_REGS 32
 
 ST_FUNC void g(int c);
 ST_FUNC void gen_le16(int c);
@@ -21,7 +21,7 @@ ST_FUNC void gen_le32(int c);
 
 static void asm_error(void)
 {
-    tcc_error("ARM asm not implemented.");
+    tcc_error("RISCV64 asm not implemented.");
 }
 
 /* XXX: make it faster ? */

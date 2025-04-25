@@ -27,7 +27,6 @@ enum float_abi {
 
 #include "tcc.h"
 
-#ifdef NEED_RELOC_TYPE
 /* Returns 1 for a code relocation, 0 for a data relocation. For unknown
    relocations, returns -1. */
 int code_reloc (int reloc_type)
@@ -42,13 +41,10 @@ int code_reloc (int reloc_type)
 	case R_ARM_GOTPC:
 	case R_ARM_GOTOFF:
 	case R_ARM_GOT32:
-	case R_ARM_GOT_PREL:
 	case R_ARM_COPY:
 	case R_ARM_GLOB_DAT:
 	case R_ARM_NONE:
 	case R_ARM_TARGET1:
-	case R_ARM_MOVT_PREL:
-	case R_ARM_MOVW_PREL_NC:
             return 0;
 
         case R_ARM_PC24:
@@ -91,9 +87,7 @@ int gotplt_entry_type (int reloc_type)
 	case R_ARM_ABS32:
 	case R_ARM_REL32:
 	case R_ARM_V4BX:
-	case R_ARM_TARGET1:
-	case R_ARM_MOVT_PREL:
-	case R_ARM_MOVW_PREL_NC:
+        case R_ARM_TARGET1:
             return AUTO_GOTPLT_ENTRY;
 
 	case R_ARM_GOTPC:
@@ -101,13 +95,12 @@ int gotplt_entry_type (int reloc_type)
             return BUILD_GOT_ONLY;
 
 	case R_ARM_GOT32:
-	case R_ARM_GOT_PREL:
             return ALWAYS_GOTPLT_ENTRY;
     }
     return -1;
 }
 
-#ifdef NEED_BUILD_GOT
+#ifndef TCC_TARGET_PE
 ST_FUNC unsigned create_plt_entry(TCCState *s1, unsigned got_offset, struct sym_attr *attr)
 {
     Section *plt = s1->plt;
@@ -154,7 +147,7 @@ ST_FUNC void relocate_plt(TCCState *s1)
 
     if (p < p_end) {
         int x = s1->got->sh_addr - s1->plt->sh_addr - 12;
-        write32le(s1->plt->data + 16, x - 4);
+        write32le(s1->plt->data + 16, x - 16);
         p += 20;
         while (p < p_end) {
 	    unsigned off = x  + read32le(p + 4) + (s1->plt->data - p) + 4;
@@ -167,16 +160,7 @@ ST_FUNC void relocate_plt(TCCState *s1)
             p += 16;
         }
     }
-
-    if (s1->plt->reloc) {
-        ElfW_Rel *rel;
-        p = s1->got->data;
-        for_each_elem(s1->plt->reloc, 0, rel, ElfW_Rel) {
-            write32le(p + rel->r_offset, s1->plt->sh_addr);
-	}
-    }
 }
-#endif
 #endif
 
 void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t addr, addr_t val)
@@ -335,20 +319,6 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
                     *(int *)ptr += x;
             }
             return;
-        case R_ARM_MOVT_PREL:
-        case R_ARM_MOVW_PREL_NC:
-            {
-		int insn = *(int *)ptr;
-                int addend = ((insn >> 4) & 0xf000) | (insn & 0xfff);
-
-		addend = (addend ^ 0x8000) - 0x8000;
-		val += addend - addr;
-		if (type == R_ARM_MOVT_PREL)
-		    val >>= 16;
-		*(int *)ptr = (insn & 0xfff0f000) |
-			      ((val & 0xf000) << 4) | (val & 0xfff);
-            }
-            return;
         case R_ARM_THM_MOVT_ABS:
         case R_ARM_THM_MOVW_ABS_NC:
             {
@@ -379,12 +349,12 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
             }
             return;
         case R_ARM_ABS32:
-        case R_ARM_TARGET1:
+     // case R_ARM_TARGET1: /* ??? as seen on NetBSD - FIXME! */
             if (s1->output_type == TCC_OUTPUT_DLL) {
                 esym_index = get_sym_attr(s1, sym_index, 0)->dyn_index;
                 qrel->r_offset = rel->r_offset;
                 if (esym_index) {
-                    qrel->r_info = ELFW(R_INFO)(esym_index, R_ARM_ABS32);
+                    qrel->r_info = ELFW(R_INFO)(esym_index, type);
                     qrel++;
                     return;
                 } else {
@@ -406,12 +376,6 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
         case R_ARM_GOT32:
             /* we load the got offset */
             *(int *)ptr += get_sym_attr(s1, sym_index, 0)->got_offset;
-            return;
-	case R_ARM_GOT_PREL:
-            /* we load the pc relative got offset */
-            *(int *)ptr += s1->got->sh_addr +
-			   get_sym_attr(s1, sym_index, 0)->got_offset -
-			   addr;
             return;
         case R_ARM_COPY:
             return;
@@ -435,7 +399,7 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
             /* do nothing */
             return;
         default:
-            fprintf(stderr,"FIXME: handle reloc type %d at %x [%p] to %x\n",
+            fprintf(stderr,"FIXME: handle reloc type %x at %x [%p] to %x\n",
                 type, (unsigned)addr, ptr, (unsigned)val);
             return;
     }

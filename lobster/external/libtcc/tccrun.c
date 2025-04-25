@@ -27,16 +27,8 @@
 typedef struct rt_context
 {
     /* --> tccelf.c:tcc_add_btstub wants those below in that order: */
-    union {
-	struct {
-    	    Stab_Sym *stab_sym, *stab_sym_end;
-    	    char *stab_str;
-	};
-	struct {
-    	    unsigned char *dwarf_line, *dwarf_line_end, *dwarf_line_str;
-	};
-    };
-    addr_t dwarf;
+    Stab_Sym *stab_sym, *stab_sym_end;
+    char *stab_str;
     ElfW(Sym) *esym_start, *esym_end;
     char *elf_str;
     addr_t prog_base;
@@ -59,16 +51,25 @@ static void rt_exit(int code);
 /* defined when included from lib/bt-exe.c */
 #ifndef CONFIG_TCC_BACKTRACE_ONLY
 
+#ifdef __APPLE__
+# include <libkern/OSCacheControl.h>
+#endif
 #ifndef _WIN32
 # include <sys/mman.h>
 #endif
 
-static void set_pages_executable(TCCState *s1, int mode, void *ptr, unsigned long length);
+static void set_pages_executable(TCCState *s1, void *ptr, unsigned long length);
 static int tcc_relocate_ex(TCCState *s1, void *ptr, addr_t ptr_diff);
 
 #ifdef _WIN64
 static void *win64_add_function_table(TCCState *s1);
 static void win64_del_function_table(void *);
+#endif
+
+#ifdef __APPLE__
+static addr_t cached_page_size = 0;
+#else
+extern char **environ;
 #endif
 
 /* ------------------------------------------------------------- */
@@ -96,21 +97,19 @@ LIBTCCAPI int tcc_relocate(TCCState *s1, void *ptr)
     unlink(tmpfname);
     ftruncate(fd, size);
 
-    size = (size + (PAGESIZE-1)) & ~(PAGESIZE-1);
-    ptr = mmap(NULL, size * 2, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-    /* mmap RX memory at a fixed distance */
-    prx = mmap((char*)ptr + size, size, PROT_READ|PROT_EXEC, MAP_SHARED|MAP_FIXED, fd, 0);
+    ptr = mmap (NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+    prx = mmap (NULL, size, PROT_READ|PROT_EXEC, MAP_SHARED, fd, 0);
     if (ptr == MAP_FAILED || prx == MAP_FAILED)
 	tcc_error("tccrun: could not map memory");
+    dynarray_add(&s1->runtime_mem, &s1->nb_runtime_mem, (void*)(addr_t)size);
+    dynarray_add(&s1->runtime_mem, &s1->nb_runtime_mem, prx);
     ptr_diff = (char*)prx - (char*)ptr;
     close(fd);
-    //printf("map %p %p %p\n", ptr, prx, (void*)ptr_diff);
 }
 #else
     ptr = tcc_malloc(size);
 #endif
     tcc_relocate_ex(s1, ptr, ptr_diff); /* no more errors expected */
-    dynarray_add(&s1->runtime_mem, &s1->nb_runtime_mem, (void*)(addr_t)size);
     dynarray_add(&s1->runtime_mem, &s1->nb_runtime_mem, ptr);
     return 0;
 }
@@ -119,18 +118,16 @@ ST_FUNC void tcc_run_free(TCCState *s1)
 {
     int i;
 
-    for (i = 0; i < s1->nb_runtime_mem; i += 2) {
-        unsigned size = (unsigned)(addr_t)s1->runtime_mem[i];
-        void *ptr = s1->runtime_mem[i+1];
+    for (i = 0; i < s1->nb_runtime_mem; ++i) {
 #ifdef HAVE_SELINUX
-        munmap(ptr, size * 2);
+        unsigned size = (unsigned)(addr_t)s1->runtime_mem[i++];
+        munmap(s1->runtime_mem[i++], size);
+        munmap(s1->runtime_mem[i], size);
 #else
-        /* unprotect memory to make it usable for malloc again */
-        set_pages_executable(s1, 2, ptr, size);
 #ifdef _WIN64
-        win64_del_function_table(*(void**)ptr);
+        win64_del_function_table(*(void**)s1->runtime_mem[i]);
 #endif
-        tcc_free(ptr);
+        tcc_free(s1->runtime_mem[i]);
 #endif
     }
     tcc_free(s1->runtime_mem);
@@ -145,6 +142,9 @@ static void run_cdtors(TCCState *s1, const char *start, const char *end,
         ((void(*)(int, char **, char **))*a++)(argc, argv, envp);
 }
 
+#ifndef __APPLE__
+#endif
+
 /* launch the compiled program with the given arguments */
 LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
 {
@@ -152,12 +152,8 @@ LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
 #ifdef CONFIG_TCC_BACKTRACE
     rt_context *rc = &g_rtctxt;
 #endif
-
-#if defined(__APPLE__) || defined(__FreeBSD__)
+# if defined(__APPLE__)
     char **envp = NULL;
-#elif defined(__OpenBSD__) || defined(__NetBSD__)
-    extern char **environ;
-    char **envp = environ;
 #else
     char **envp = environ;
 #endif
@@ -177,19 +173,9 @@ LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
     memset(rc, 0, sizeof *rc);
     if (s1->do_debug) {
         void *p;
-	if (s1->dwarf) {
-	    rc->dwarf_line = dwarf_line_section->data;
-	    rc->dwarf_line_end = dwarf_line_section->data + dwarf_line_section->data_offset;
-	    if (dwarf_line_str_section)
-		rc->dwarf_line_str = dwarf_line_str_section->data;
-	}
-	else
-	{
-            rc->stab_sym = (Stab_Sym *)stab_section->data;
-            rc->stab_sym_end = (Stab_Sym *)(stab_section->data + stab_section->data_offset);
-            rc->stab_str = (char *)stab_section->link->data;
-	}
-        rc->dwarf = s1->dwarf;
+        rc->stab_sym = (Stab_Sym *)stab_section->data;
+        rc->stab_sym_end = (Stab_Sym *)(stab_section->data + stab_section->data_offset);
+        rc->stab_str = (char *)stab_section->link->data;
         rc->esym_start = (ElfW(Sym) *)(symtab_section->data);
         rc->esym_end = (ElfW(Sym) *)(symtab_section->data + symtab_section->data_offset);
         rc->elf_str = (char *)symtab_section->link->data;
@@ -203,9 +189,8 @@ LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
             *(void**)p = _rt_error;
 #ifdef CONFIG_TCC_BCHECK
         if (s1->do_bounds_check) {
-            rc->bounds_start = (void*)bounds_section->sh_addr;
             if ((p = tcc_get_symbol(s1, "__bound_init")))
-                ((void(*)(void*,int))p)(rc->bounds_start, 1);
+                ((void(*)(void*, int))p)(bounds_section->data, 1);
         }
 #endif
         set_exception_handler();
@@ -229,20 +214,13 @@ LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
     return ret;
 }
 
-#define DEBUG_RUNMEN 0
-
-/* enable rx/ro/rw permissions */
-#define CONFIG_RUNMEM_RO 1
-
-#if CONFIG_RUNMEM_RO
-# define PAGE_ALIGN PAGESIZE
-#elif defined TCC_TARGET_I386 || defined TCC_TARGET_X86_64
+#if defined TCC_TARGET_I386 || defined TCC_TARGET_X86_64
 /* To avoid that x86 processors would reload cached instructions
    each time when data is written in the near, we need to make
    sure that code and data do not share the same 64 byte unit */
-# define PAGE_ALIGN 64
+ #define RUN_SECTION_ALIGNMENT 63
 #else
-# define PAGE_ALIGN 1
+ #define RUN_SECTION_ALIGNMENT 0
 #endif
 
 /* relocate code. Return -1 on error, required size if ptr is NULL,
@@ -251,7 +229,6 @@ static int tcc_relocate_ex(TCCState *s1, void *ptr, addr_t ptr_diff)
 {
     Section *s;
     unsigned offset, length, align, max_align, i, k, f;
-    unsigned n, copy;
     addr_t mem, addr;
 
     if (NULL == ptr) {
@@ -271,80 +248,35 @@ static int tcc_relocate_ex(TCCState *s1, void *ptr, addr_t ptr_diff)
 #ifdef _WIN64
     offset += sizeof (void*); /* space for function_table pointer */
 #endif
-    copy = 0;
-redo:
-    for (k = 0; k < 3; ++k) { /* 0:rx, 1:ro, 2:rw sections */
-        n = 0; addr = 0;
+    for (k = 0; k < 2; ++k) {
+        f = 0, addr = k ? mem : mem + ptr_diff;
         for(i = 1; i < s1->nb_sections; i++) {
-            static const char shf[] = {
-                SHF_ALLOC|SHF_EXECINSTR, SHF_ALLOC, SHF_ALLOC|SHF_WRITE
-                };
             s = s1->sections[i];
-            if (shf[k] != (s->sh_flags & (SHF_ALLOC|SHF_WRITE|SHF_EXECINSTR)))
+            if (0 == (s->sh_flags & SHF_ALLOC))
                 continue;
-            length = s->data_offset;
-            if (copy) {
-                if (addr == 0)
-                    addr = s->sh_addr;
-                n = (s->sh_addr - addr) + length;
-                ptr = (void*)s->sh_addr;
-                if (k == 0)
-                    ptr = (void*)(s->sh_addr - ptr_diff);
-                if (NULL == s->data || s->sh_type == SHT_NOBITS)
-                    memset(ptr, 0, length);
-                else
-                    memcpy(ptr, s->data, length);
-#ifdef _WIN64
-                if (s == s1->uw_pdata)
-                    *(void**)mem = win64_add_function_table(s1);
-#endif
-                if (s->data) {
-                    tcc_free(s->data);
-                    s->data = NULL;
-                    s->data_allocated = 0;
-                }
-                s->data_offset = 0;
+            if (k != !(s->sh_flags & SHF_EXECINSTR))
                 continue;
-            }
             align = s->sh_addralign - 1;
-            if (++n == 1 && align < (PAGE_ALIGN - 1))
-                align = (PAGE_ALIGN - 1);
+            if (++f == 1 && align < RUN_SECTION_ALIGNMENT)
+                align = RUN_SECTION_ALIGNMENT;
             if (max_align < align)
                 max_align = align;
-            addr = k ? mem : mem + ptr_diff;
             offset += -(addr + offset) & align;
             s->sh_addr = mem ? addr + offset : 0;
-            offset += length;
-#if DEBUG_RUNMEN
+            offset += s->data_offset;
+#if 0
             if (mem)
-                printf("%d: %-16s %p  len %04x  align %04x\n",
-                    k, s->name, (void*)s->sh_addr, length, align + 1);
+                printf("%-16s %p  len %04x  align %2d\n",
+                    s->name, (void*)s->sh_addr, (unsigned)s->data_offset, align + 1);
 #endif
-        }
-        if (copy) { /* set permissions */
-            if (k == 0 && ptr_diff)
-                continue; /* not with HAVE_SELINUX */
-            f = k;
-#if !CONFIG_RUNMEM_RO
-            if (f != 0)
-                continue;
-            f = 3; /* change only SHF_EXECINSTR to rwx */
-#endif
-#if DEBUG_RUNMEN
-            printf("protect %d %p %04x\n", f, (void*)addr, n);
-#endif
-            if (n)
-                set_pages_executable(s1, f, (void*)addr, n);
         }
     }
-
-    if (copy)
-        return 0;
 
     /* relocate symbols */
     relocate_syms(s1, s1->symtab, !(s1->nostdlib));
     if (s1->nb_errors)
         return -1;
+
     if (0 == mem)
         return offset + max_align;
 
@@ -352,51 +284,85 @@ redo:
     s1->pe_imagebase = mem;
 #endif
 
-    /* relocate sections */
-#ifndef TCC_TARGET_PE
+    /* relocate each section */
+    for(i = 1; i < s1->nb_sections; i++) {
+        s = s1->sections[i];
+        if (s->reloc)
+            relocate_section(s1, s);
+    }
+#if !defined(TCC_TARGET_PE) || defined(TCC_TARGET_MACHO)
     relocate_plt(s1);
 #endif
-    relocate_sections(s1);
-    copy = 1;
-    goto redo;
+
+    for(i = 1; i < s1->nb_sections; i++) {
+        s = s1->sections[i];
+        if (0 == (s->sh_flags & SHF_ALLOC))
+            continue;
+        length = s->data_offset;
+        ptr = (void*)s->sh_addr;
+        if (s->sh_flags & SHF_EXECINSTR)
+            ptr = (char*)((addr_t)ptr - ptr_diff);
+        if (NULL == s->data || s->sh_type == SHT_NOBITS)
+            memset(ptr, 0, length);
+        else
+            memcpy(ptr, s->data, length);
+    }
+
+    /* mark executable sections as executable in memory */
+    for(i = 1; i < s1->nb_sections; i++) {
+        s = s1->sections[i];
+        if (0 == (s->sh_flags & SHF_ALLOC))
+            continue;
+        if (s->sh_flags & SHF_EXECINSTR)
+            set_pages_executable(s1, (char*)s->sh_addr, s->data_offset);
+    }
+
+#ifdef _WIN64
+    *(void**)mem = win64_add_function_table(s1);
+#endif
+
+    return 0;
 }
 
 /* ------------------------------------------------------------- */
 /* allow to run code in memory */
 
-static void set_pages_executable(TCCState *s1, int mode, void *ptr, unsigned long length)
+static void set_pages_executable(TCCState *s1, void *ptr, unsigned long length)
 {
 #ifdef _WIN32
-    static const unsigned char protect[] = {
-        PAGE_EXECUTE_READ,
-        PAGE_READONLY,
-        PAGE_READWRITE,
-        PAGE_EXECUTE_READWRITE
-        };
-    DWORD old;
-    VirtualProtect(ptr, length, protect[mode], &old);
+    unsigned long old_protect;
+    VirtualProtect(ptr, length, PAGE_EXECUTE_READWRITE, &old_protect);
 #else
-    static const unsigned char protect[] = {
-        PROT_READ | PROT_EXEC,
-        PROT_READ,
-        PROT_READ | PROT_WRITE,
-        PROT_READ | PROT_WRITE | PROT_EXEC
-        };
-    addr_t start, end;
-    start = (addr_t)ptr & ~(PAGESIZE - 1);
+    void __clear_cache(void *beginning, void *end);
+# ifndef HAVE_SELINUX
+    addr_t start, end, pagesize;
+#  ifdef __APPLE__
+    if (0 == cached_page_size)
+        cached_page_size = getpagesize();
+    pagesize = cached_page_size;
+#  else
+#   ifndef PAGESIZE
+#    define PAGESIZE 4096
+#   endif
+    pagesize = PAGESIZE;
+#  endif
+    start = (addr_t)ptr & ~(pagesize - 1);
     end = (addr_t)ptr + length;
-    end = (end + PAGESIZE - 1) & ~(PAGESIZE - 1);
-    if (mprotect((void *)start, end - start, protect[mode]))
+    end = (end + pagesize - 1) & ~(pagesize - 1);
+    if (mprotect((void *)start, end - start, PROT_READ | PROT_EXEC))
         tcc_error("mprotect failed: did you mean to configure --with-selinux?");
-
-/* XXX: BSD sometimes dump core with bad system call */
-# if (TCC_TARGET_ARM && !TARGETOS_BSD) || TCC_TARGET_ARM64
-    if (mode == 0 || mode == 3) {
-        void __clear_cache(void *beginning, void *end);
-        __clear_cache(ptr, (char *)ptr + length);
-    }
 # endif
-
+/* XXX: BSD sometimes dump core with bad system call */
+# if (defined(TCC_TARGET_ARM) && \
+      !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__NetBSD__)) || \
+     defined(TCC_TARGET_ARM64)
+#  ifdef __APPLE__
+    sys_icache_invalidate(ptr, length);
+    sys_dcache_flush(ptr, length);
+#  else
+    __clear_cache(ptr, (char *)ptr + length);
+#  endif
+# endif
 #endif
 }
 
@@ -444,21 +410,6 @@ static int rt_printf(const char *fmt, ...)
     return r;
 }
 
-static char *rt_elfsym(rt_context *rc, addr_t wanted_pc, addr_t *func_addr)
-{
-    ElfW(Sym) *esym;
-    for (esym = rc->esym_start + 1; esym < rc->esym_end; ++esym) {
-        int type = ELFW(ST_TYPE)(esym->st_info);
-        if ((type == STT_FUNC || type == STT_GNU_IFUNC)
-            && wanted_pc >= esym->st_value
-            && wanted_pc < esym->st_value + esym->st_size) {
-            *func_addr = esym->st_value;
-            return rc->elf_str + esym->st_name;
-        }
-    }
-    return NULL;
-}
-
 #define INCLUDE_STACK_SIZE 32
 
 /* print the position in the source file of PC value 'pc' by reading
@@ -471,6 +422,7 @@ static addr_t rt_printline (rt_context *rc, addr_t wanted_pc,
     const char *incl_files[INCLUDE_STACK_SIZE];
     int incl_index, last_incl_index, len, last_line_num, i;
     const char *str, *p;
+    ElfW(Sym) *esym;
     Stab_Sym *sym;
 
 next:
@@ -517,7 +469,7 @@ next:
             p = strchr(str, ':');
             if (0 == p || (len = p - str + 1, len > sizeof func_name))
                 len = sizeof func_name;
-            pstrcpy(func_name, len, str);
+            tcc_pstrcpy(func_name, len, str);
             func_addr = pc;
             break;
             /* line number info */
@@ -560,14 +512,24 @@ next:
     func_name[0] = '\0';
     func_addr = 0;
     last_incl_index = 0;
+
     /* we try symtab symbols (no line number info) */
-    p = rt_elfsym(rc, wanted_pc, &func_addr);
-    if (p) {
-        pstrcpy(func_name, sizeof func_name, p);
-        goto found;
+    for (esym = rc->esym_start + 1; esym < rc->esym_end; ++esym) {
+        int type = ELFW(ST_TYPE)(esym->st_info);
+        if (type == STT_FUNC || type == STT_GNU_IFUNC) {
+            if (wanted_pc >= esym->st_value &&
+                wanted_pc < esym->st_value + esym->st_size) {
+                tcc_pstrcpy(func_name, sizeof(func_name),
+                    rc->elf_str + esym->st_name);
+                func_addr = esym->st_value;
+                goto found;
+            }
+        }
     }
+
     if ((rc = rc->next))
         goto next;
+
 found:
     i = last_incl_index;
     if (i > 0) {
@@ -592,361 +554,6 @@ found:
 #endif
     return func_addr;
 }
-
-/* ------------------------------------------------------------- */
-/* rt_printline - dwarf version */
-
-#define MAX_128	((8 * sizeof (long long) + 6) / 7)
-
-#define DIR_TABLE_SIZE	(64)
-#define FILE_TABLE_SIZE	(512)
-
-#define	dwarf_read_1(ln,end) \
-	((ln) < (end) ? *(ln)++ : 0)
-#define	dwarf_read_2(ln,end) \
-	((ln) + 2 < (end) ? (ln) += 2, read16le((ln) - 2) : 0)
-#define	dwarf_read_4(ln,end) \
-	((ln) + 4 < (end) ? (ln) += 4, read32le((ln) - 4) : 0)
-#define	dwarf_read_8(ln,end) \
-	((ln) + 8 < (end) ? (ln) += 8, read64le((ln) - 8) : 0)
-#define	dwarf_ignore_type(ln, end) /* timestamp/size/md5/... */ \
-	switch (entry_format[j].form) { \
-	case DW_FORM_data1: (ln) += 1; break; \
-	case DW_FORM_data2: (ln) += 2; break; \
-	case DW_FORM_data4: (ln) += 3; break; \
-	case DW_FORM_data8: (ln) += 8; break; \
-	case DW_FORM_data16: (ln) += 16; break; \
-	case DW_FORM_udata: dwarf_read_uleb128(&(ln), (end)); break; \
-	default: goto next_line; \
-	}
-
-static unsigned long long
-dwarf_read_uleb128(unsigned char **ln, unsigned char *end)
-{
-    unsigned char *cp = *ln;
-    unsigned long long retval = 0;
-    int i;
-
-    for (i = 0; i < MAX_128; i++) {
-	unsigned long long byte = dwarf_read_1(cp, end);
-
-        retval |= (byte & 0x7f) << (i * 7);
-	if ((byte & 0x80) == 0)
-	    break;
-    }
-    *ln = cp;
-    return retval;
-}
-
-static long long
-dwarf_read_sleb128(unsigned char **ln, unsigned char *end)
-{
-    unsigned char *cp = *ln;
-    long long retval = 0;
-    int i;
-
-    for (i = 0; i < MAX_128; i++) {
-	unsigned long long byte = dwarf_read_1(cp, end);
-
-        retval |= (byte & 0x7f) << (i * 7);
-	if ((byte & 0x80) == 0) {
-	    if ((byte & 0x40) && (i + 1) * 7 < 64)
-		retval |= -1LL << ((i + 1) * 7);
-	    break;
-	}
-    }
-    *ln = cp;
-    return retval;
-}
-
-static addr_t rt_printline_dwarf (rt_context *rc, addr_t wanted_pc,
-    const char *msg, const char *skip)
-{
-    unsigned char *ln;
-    unsigned char *cp;
-    unsigned char *end;
-    unsigned char *opcode_length;
-    unsigned long long size;
-    unsigned int length;
-    unsigned char version;
-    unsigned int min_insn_length;
-    unsigned int max_ops_per_insn;
-    int line_base;
-    unsigned int line_range;
-    unsigned int opcode_base;
-    unsigned int opindex;
-    unsigned int col;
-    unsigned int i;
-    unsigned int j;
-    unsigned int len;
-    unsigned long long value;
-    struct {
-	unsigned int type;
-	unsigned int form;
-    } entry_format[256];
-    unsigned int dir_size;
-#if 0
-    char *dirs[DIR_TABLE_SIZE];
-#endif
-    unsigned int filename_size;
-    struct dwarf_filename_struct {
-        unsigned int dir_entry;
-        char *name;
-    } filename_table[FILE_TABLE_SIZE];
-    addr_t last_pc;
-    addr_t pc;
-    addr_t func_addr;
-    int line;
-    char *filename;
-    char *function;
-
-next:
-    ln = rc->dwarf_line;
-    while (ln < rc->dwarf_line_end) {
-	dir_size = 0;
-	filename_size = 0;
-        last_pc = 0;
-        pc = 0;
-        func_addr = 0;
-        line = 1;
-        filename = NULL;
-        function = NULL;
-	length = 4;
-	size = dwarf_read_4(ln, rc->dwarf_line_end);
-	if (size == 0xffffffffu) // dwarf 64
-	    length = 8, size = dwarf_read_8(ln, rc->dwarf_line_end);
-	end = ln + size;
-	if (end < ln || end > rc->dwarf_line_end)
-	    break;
-	version = dwarf_read_2(ln, end);
-	if (version >= 5)
-	    ln += length + 2; // address size, segment selector, prologue Length
-	else
-	    ln += length; // prologue Length
-	min_insn_length = dwarf_read_1(ln, end);
-	if (version >= 4)
-	    max_ops_per_insn = dwarf_read_1(ln, end);
-	else
-	    max_ops_per_insn = 1;
-	ln++; // Initial value of 'is_stmt'
-	line_base = dwarf_read_1(ln, end);
-	line_base |= line_base >= 0x80 ? ~0xff : 0;
-	line_range = dwarf_read_1(ln, end);
-	opcode_base = dwarf_read_1(ln, end);
-	opcode_length = ln;
-	ln += opcode_base - 1;
-	opindex = 0;
-	if (version >= 5) {
-	    col = dwarf_read_1(ln, end);
-	    for (i = 0; i < col; i++) {
-	        entry_format[i].type = dwarf_read_uleb128(&ln, end);
-	        entry_format[i].form = dwarf_read_uleb128(&ln, end);
-	    }
-	    dir_size = dwarf_read_uleb128(&ln, end);
-	    for (i = 0; i < dir_size; i++) {
-		for (j = 0; j < col; j++) {
-		    if (entry_format[j].type == DW_LNCT_path) {
-		        if (entry_format[j].form != DW_FORM_line_strp)
-			    goto next_line;
-#if 0
-		        value = length == 4 ? dwarf_read_4(ln, end)
-					    : dwarf_read_8(ln, end);
-		        if (i < DIR_TABLE_SIZE)
-		            dirs[i] = (char *)rc->dwarf_line_str + value;
-#else
-			length == 4 ? dwarf_read_4(ln, end)
-				    : dwarf_read_8(ln, end);
-#endif
-		    }
-		    else 
-			dwarf_ignore_type(ln, end);
-		}
-	    }
-	    col = dwarf_read_1(ln, end);
-	    for (i = 0; i < col; i++) {
-	        entry_format[i].type = dwarf_read_uleb128(&ln, end);
-	        entry_format[i].form = dwarf_read_uleb128(&ln, end);
-	    }
-	    filename_size = dwarf_read_uleb128(&ln, end);
-	    for (i = 0; i < filename_size; i++)
-		for (j = 0; j < col; j++) {
-		    if (entry_format[j].type == DW_LNCT_path) {
-			if (entry_format[j].form != DW_FORM_line_strp)
-			    goto next_line;
-			value = length == 4 ? dwarf_read_4(ln, end)
-					    : dwarf_read_8(ln, end);
-		        if (i < FILE_TABLE_SIZE)
-		            filename_table[i].name =
-				(char *)rc->dwarf_line_str + value;
-	            }
-		    else if (entry_format[j].type == DW_LNCT_directory_index) {
-			switch (entry_format[j].form) {
-			case DW_FORM_data1: value = dwarf_read_1(ln, end); break;
-			case DW_FORM_data2: value = dwarf_read_2(ln, end); break;
-			case DW_FORM_data4: value = dwarf_read_4(ln, end); break;
-			case DW_FORM_udata: value = dwarf_read_uleb128(&ln, end); break;
-			default: goto next_line;
-			}
-		        if (i < FILE_TABLE_SIZE)
-		            filename_table[i].dir_entry = value;
-		    }
-		    else 
-			dwarf_ignore_type(ln, end);
-	    }
-	}
-	else {
-	    while ((dwarf_read_1(ln, end))) {
-#if 0
-		if (++dir_size < DIR_TABLE_SIZE)
-		    dirs[dir_size - 1] = (char *)ln - 1;
-#endif
-		while (dwarf_read_1(ln, end)) {}
-	    }
-	    while ((dwarf_read_1(ln, end))) {
-		if (++filename_size < FILE_TABLE_SIZE) {
-		    filename_table[filename_size - 1].name = (char *)ln - 1;
-		    while (dwarf_read_1(ln, end)) {}
-		    filename_table[filename_size - 1].dir_entry =
-		        dwarf_read_uleb128(&ln, end);
-		}
-		else {
-		    while (dwarf_read_1(ln, end)) {}
-		    dwarf_read_uleb128(&ln, end);
-		}
-		dwarf_read_uleb128(&ln, end); // time
-		dwarf_read_uleb128(&ln, end); // size
-	    }
-	}
-	if (filename_size >= 1)
-	    filename = filename_table[0].name;
-	while (ln < end) {
-	    last_pc = pc;
-	    i = dwarf_read_1(ln, end);
-	    if (i >= opcode_base) {
-	        if (max_ops_per_insn == 1)
-		    pc += ((i - opcode_base) / line_range) * min_insn_length;
-		else {
-		    pc += (opindex + (i - opcode_base) / line_range) /
-			  max_ops_per_insn * min_insn_length;
-		    opindex = (opindex + (i - opcode_base) / line_range) %
-			       max_ops_per_insn;
-		}
-		i = (int)((i - opcode_base) % line_range) + line_base;
-check_pc:
-		if (pc >= wanted_pc && wanted_pc >= last_pc)
-		    goto found;
-		line += i;
-	    }
-	    else {
-	        switch (i) {
-	        case 0:
-		    len = dwarf_read_uleb128(&ln, end);
-		    cp = ln;
-		    ln += len;
-		    if (len == 0)
-		        goto next_line;
-		    switch (dwarf_read_1(cp, end)) {
-		    case DW_LNE_end_sequence:
-		        break;
-		    case DW_LNE_set_address:
-#if PTR_SIZE == 4
-		        pc = dwarf_read_4(cp, end);
-#else
-		        pc = dwarf_read_8(cp, end);
-#endif
-		        opindex = 0;
-		        break;
-		    case DW_LNE_define_file: /* deprecated */
-		        if (++filename_size < FILE_TABLE_SIZE) {
-		            filename_table[filename_size - 1].name = (char *)ln - 1;
-		            while (dwarf_read_1(ln, end)) {}
-		            filename_table[filename_size - 1].dir_entry =
-		                dwarf_read_uleb128(&ln, end);
-		        }
-		        else {
-		            while (dwarf_read_1(ln, end)) {}
-		            dwarf_read_uleb128(&ln, end);
-		        }
-		        dwarf_read_uleb128(&ln, end); // time
-		        dwarf_read_uleb128(&ln, end); // size
-		        break;
-		    case DW_LNE_hi_user - 1:
-		        function = (char *)cp;
-		        func_addr = pc;
-		        break;
-		    default:
-		        break;
-		    }
-		    break;
-	        case DW_LNS_advance_pc:
-		    if (max_ops_per_insn == 1)
-		        pc += dwarf_read_uleb128(&ln, end) * min_insn_length;
-		    else {
-		        unsigned long long off = dwarf_read_uleb128(&ln, end);
-
-		        pc += (opindex + off) / max_ops_per_insn *
-			      min_insn_length;
-		        opindex = (opindex + off) % max_ops_per_insn;
-		    }
-		    i = 0;
-		    goto check_pc;
-	        case DW_LNS_advance_line:
-		    line += dwarf_read_sleb128(&ln, end);
-		    break;
-	        case DW_LNS_set_file:
-		    i = dwarf_read_uleb128(&ln, end);
-		    if (i < FILE_TABLE_SIZE && i < filename_size)
-		        filename = filename_table[i].name;
-		    break;
-	        case DW_LNS_const_add_pc:
-		    if (max_ops_per_insn ==  1)
-		        pc += ((255 - opcode_base) / line_range) * min_insn_length;
-		    else {
-		        unsigned int off = (255 - opcode_base) / line_range;
-
-		        pc += ((opindex + off) / max_ops_per_insn) *
-			      min_insn_length;
-		        opindex = (opindex + off) % max_ops_per_insn;
-		    }
-		    i = 0;
-		    goto check_pc;
-	        case DW_LNS_fixed_advance_pc:
-		    i = dwarf_read_2(ln, end);
-		    pc += i;
-		    opindex = 0;
-		    i = 0;
-		    goto check_pc;
-	        default:
-		    for (j = 0; j < opcode_length[i - 1]; j++)
-                        dwarf_read_uleb128 (&ln, end);
-		    break;
-		}
-	    }
-	}
-next_line:
-	ln = end;
-    }
-
-    filename = NULL;
-    func_addr = 0;
-    /* we try symtab symbols (no line number info) */
-    function = rt_elfsym(rc, wanted_pc, &func_addr);
-    if (function)
-        goto found;
-    if ((rc = rc->next))
-        goto next;
-found:
-    if (filename) {
-	if (skip[0] && strstr(filename, skip))
-	    return (addr_t)-1;
-	rt_printf("%s:%d: ", filename, line);
-    }
-    else
-	rt_printf("0x%08llx : ", (long long)wanted_pc);
-    rt_printf("%s %s", msg, function ? function : "???");
-    return (addr_t)func_addr;
-}
-/* ------------------------------------------------------------- */
 
 static int rt_get_caller_pc(addr_t *paddr, rt_context *rc, int level);
 
@@ -980,10 +587,7 @@ static int _rt_error(void *fp, void *ip, const char *fmt, va_list ap)
         ret = rt_get_caller_pc(&pc, rc, i);
         a = "%s";
         if (ret != -1) {
-	    if (rc->dwarf)
-                pc = rt_printline_dwarf(rc, pc, level ? "by" : "at", skip);
-	    else
-                pc = rt_printline(rc, pc, level ? "by" : "at", skip);
+            pc = rt_printline(rc, pc, level ? "by" : "at", skip);
             if (pc == (addr_t)-1)
                 continue;
             a = ": %s";
@@ -1026,7 +630,9 @@ static void rt_exit(int code)
 
 #ifndef _WIN32
 # include <signal.h>
-# ifndef __OpenBSD__
+# if defined(__QNX__)
+#  include <ucontext.h>
+# elif !defined(__OpenBSD__)
 #  include <sys/ucontext.h>
 # endif
 #else
@@ -1037,9 +643,15 @@ static void rt_exit(int code)
 static void rt_getcontext(ucontext_t *uc, rt_context *rc)
 {
 #if defined _WIN64
+# if defined _M_ARM64
+    rc->ip = uc->Pc;
+    rc->fp = uc->Fp;
+    rc->sp = uc->Sp;
+# else
     rc->ip = uc->Rip;
     rc->fp = uc->Rbp;
     rc->sp = uc->Rsp;
+# endif
 #elif defined _WIN32
     rc->ip = uc->Eip;
     rc->fp = uc->Ebp;
@@ -1060,6 +672,9 @@ static void rt_getcontext(ucontext_t *uc, rt_context *rc)
 # elif defined(__OpenBSD__)
     rc->ip = uc->sc_eip;
     rc->fp = uc->sc_ebp;
+# elif defined(__QNX__)
+    rc->ip = uc->uc_mcontext.cpu.eip;
+    rc->fp = uc->uc_mcontext.cpu.ebp;
 # elif !defined REG_EIP && defined EIP /* fix for glibc 2.1 */
     rc->ip = uc->uc_mcontext.gregs[EIP];
     rc->fp = uc->uc_mcontext.gregs[EBP];
@@ -1077,45 +692,41 @@ static void rt_getcontext(ucontext_t *uc, rt_context *rc)
 # elif defined(__NetBSD__)
     rc->ip = uc->uc_mcontext.__gregs[_REG_RIP];
     rc->fp = uc->uc_mcontext.__gregs[_REG_RBP];
-# elif defined(__OpenBSD__)
-    rc->ip = uc->sc_rip;
-    rc->fp = uc->sc_rbp;
 # else
     rc->ip = uc->uc_mcontext.gregs[REG_RIP];
     rc->fp = uc->uc_mcontext.gregs[REG_RBP];
 # endif
-#elif defined(__arm__) && defined(__NetBSD__)
-    rc->ip = uc->uc_mcontext.__gregs[_REG_PC];
-    rc->fp = uc->uc_mcontext.__gregs[_REG_FP];
-#elif defined(__arm__) && defined(__OpenBSD__)
-    rc->ip = uc->sc_pc;
-    rc->fp = uc->sc_r11;
-#elif defined(__arm__) && defined(__FreeBSD__)
-    rc->ip = uc->uc_mcontext.__gregs[_REG_PC];
-    rc->fp = uc->uc_mcontext.__gregs[_REG_FP];
 #elif defined(__arm__)
+# if defined(__APPLE__)
+    rc->ip = uc->uc_mcontext->__ss.__pc;
+    rc->fp = uc->uc_mcontext->__ss.__r[11];
+# elif defined(__FreeBSD__) || defined(__NetBSD__)
+    rc->ip = uc->uc_mcontext.__gregs[_REG_PC];
+    rc->fp = uc->uc_mcontext.__gregs[_REG_FP];
+# elif defined(__OpenBSD__)
+    rc->fp = uc->sc_r11;
+    rc->fp = uc->sc_fpreg[29];
+# elif defined(__QNX__)
+    rc->ip = uc->uc_mcontext.cpu.gpr[15];
+    rc->fp = uc->uc_mcontext.cpu.gpr[11];
+# else
     rc->ip = uc->uc_mcontext.arm_pc;
     rc->fp = uc->uc_mcontext.arm_fp;
-#elif defined(__aarch64__) && defined(__APPLE__)
-    // see:
-    // /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/usr/include/mach/arm/_structs.h
+# endif
+#elif defined(__aarch64__)
+# if defined(__APPLE__) && defined(__DARWIN_OPAQUE_ARM_THREAD_STATE64)
+    rc->ip = __darwin_arm_thread_state64_get_pc(uc->uc_mcontext->__ss);
+    rc->fp = __darwin_arm_thread_state64_get_fp(uc->uc_mcontext->__ss);
+# elif defined(__APPLE__)
     rc->ip = uc->uc_mcontext->__ss.__pc;
     rc->fp = uc->uc_mcontext->__ss.__fp;
-#elif defined(__aarch64__) && defined(__FreeBSD__)
-    rc->ip = uc->uc_mcontext.mc_gpregs.gp_elr; /* aka REG_PC */
+# elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+    rc->ip = uc->uc_mcontext.mc_gpregs.gp_elr;
     rc->fp = uc->uc_mcontext.mc_gpregs.gp_x[29];
-#elif defined(__aarch64__) && defined(__NetBSD__)
-    rc->ip = uc->uc_mcontext.__gregs[_REG_PC];
-    rc->fp = uc->uc_mcontext.__gregs[_REG_FP];
-#elif defined(__aarch64__) && defined(__OpenBSD__)
-    rc->ip = uc->sc_elr;
-    rc->fp = uc->sc_x[29];
-#elif defined(__aarch64__)
+# else
     rc->ip = uc->uc_mcontext.pc;
     rc->fp = uc->uc_mcontext.regs[29];
-#elif defined(__riscv) && defined(__OpenBSD__)
-    rc->ip = uc->sc_sepc;
-    rc->fp = uc->sc_s[0];
+# endif
 #elif defined(__riscv)
     rc->ip = uc->uc_mcontext.__gregs[REG_PC];
     rc->fp = uc->uc_mcontext.__gregs[REG_S0];
@@ -1169,7 +780,6 @@ static void set_exception_handler(void)
     struct sigaction sigact;
     /* install TCC signal handlers to print debug info on fatal
        runtime errors */
-    sigemptyset (&sigact.sa_mask);
     sigact.sa_flags = SA_SIGINFO | SA_RESETHAND;
 #if 0//def SIGSTKSZ // this causes signals not to work at all on some (older) linuxes
     sigact.sa_flags |= SA_ONSTACK;
@@ -1282,7 +892,7 @@ static int rt_get_caller_pc(addr_t *paddr, rt_context *rc, int level)
 #endif
 }
 
-#elif defined(__aarch64__)
+#elif defined(__aarch64__) || defined(_M_ARM64)
 static int rt_get_caller_pc(addr_t *paddr, rt_context *rc, int level)
 {
     if (level == 0) {

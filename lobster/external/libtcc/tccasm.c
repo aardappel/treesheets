@@ -27,8 +27,11 @@ static Section *last_text_section; /* to handle .previous asm directive */
 ST_FUNC int asm_get_local_label_name(TCCState *s1, unsigned int n)
 {
     char buf[64];
+    TokenSym *ts;
+
     snprintf(buf, sizeof(buf), "L..%u", n);
-    return tok_alloc_const(buf);
+    ts = tok_alloc(buf, strlen(buf));
+    return ts->tok;
 }
 
 static int tcc_assemble_internal(TCCState *s1, int do_preprocess, int global);
@@ -51,11 +54,12 @@ static int asm2cname(int v, int *addeddot)
     if (!name)
       return v;
     if (name[0] == '_') {
-        v = tok_alloc_const(name + 1);
+        v = tok_alloc(name + 1, strlen(name) - 1)->tok;
     } else if (!strchr(name, '.')) {
+        int n = strlen(name) + 2;
         char newname[256];
         snprintf(newname, sizeof newname, ".%s", name);
-        v = tok_alloc_const(newname);
+        v = tok_alloc(newname, n - 1)->tok;
         *addeddot = 1;
     }
     return v;
@@ -107,10 +111,11 @@ ST_FUNC Sym* get_asm_sym(int name, Sym *csym)
 
 static Sym* asm_section_sym(TCCState *s1, Section *sec)
 {
-    char buf[100]; int label; Sym *sym;
-    snprintf(buf, sizeof buf, "L.%s", sec->name);
-    label = tok_alloc_const(buf);
-    sym = asm_label_find(label);
+    char buf[100];
+    int label = tok_alloc(buf,
+        snprintf(buf, sizeof buf, "L.%s", sec->name)
+        )->tok;
+    Sym *sym = asm_label_find(label);
     return sym ? sym : asm_new_label1(s1, label, 1, sec->sh_num, 0);
 }
 
@@ -769,11 +774,15 @@ static void asm_parse_directive(TCCState *s1, int global)
 
             filename[0] = '\0';
             next();
+
             if (tok == TOK_STR)
-                pstrcat(filename, sizeof(filename), tokc.str.data);
+                tcc_pstrcat(filename, sizeof(filename), tokc.str.data);
             else
-                pstrcat(filename, sizeof(filename), get_tok_str(tok, NULL));
-            tcc_warning_c(warn_unsupported)("ignoring .file %s", filename);
+                tcc_pstrcat(filename, sizeof(filename), get_tok_str(tok, NULL));
+
+            if (s1->warn_unsupported)
+                tcc_warning("ignoring .file %s", filename);
+
             next();
         }
         break;
@@ -783,11 +792,15 @@ static void asm_parse_directive(TCCState *s1, int global)
 
             ident[0] = '\0';
             next();
+
             if (tok == TOK_STR)
-                pstrcat(ident, sizeof(ident), tokc.str.data);
+                tcc_pstrcat(ident, sizeof(ident), tokc.str.data);
             else
-                pstrcat(ident, sizeof(ident), get_tok_str(tok, NULL));
-            tcc_warning_c(warn_unsupported)("ignoring .ident %s", ident);
+                tcc_pstrcat(ident, sizeof(ident), get_tok_str(tok, NULL));
+
+            if (s1->warn_unsupported)
+                tcc_warning("ignoring .ident %s", ident);
+
             next();
         }
         break;
@@ -800,8 +813,11 @@ static void asm_parse_directive(TCCState *s1, int global)
             if (!sym) {
                 tcc_error("label not found: %s", get_tok_str(tok, NULL));
             }
+
             /* XXX .size name,label2-label1 */
-            tcc_warning_c(warn_unsupported)("ignoring .size %s,*", get_tok_str(tok, NULL));
+            if (s1->warn_unsupported)
+                tcc_warning("ignoring .size %s,*", get_tok_str(tok, NULL));
+
             next();
             skip(',');
             while (tok != TOK_LINEFEED && tok != ';' && tok != CH_EOF) {
@@ -828,8 +844,9 @@ static void asm_parse_directive(TCCState *s1, int global)
 
             if (!strcmp(newtype, "function") || !strcmp(newtype, "STT_FUNC")) {
                 sym->type.t = (sym->type.t & ~VT_BTYPE) | VT_FUNC;
-            } else
-                tcc_warning_c(warn_unsupported)("change type of '%s' from 0x%x to '%s' ignored",
+            }
+            else if (s1->warn_unsupported)
+                tcc_warning("change type of '%s' from 0x%x to '%s' ignored", 
                     get_tok_str(sym->v, NULL), sym->type.t, newtype);
 
             next();
@@ -847,9 +864,9 @@ static void asm_parse_directive(TCCState *s1, int global)
             sname[0] = '\0';
             while (tok != ';' && tok != TOK_LINEFEED && tok != ',') {
                 if (tok == TOK_STR)
-                    pstrcat(sname, sizeof(sname), tokc.str.data);
+                    tcc_pstrcat(sname, sizeof(sname), tokc.str.data);
                 else
-                    pstrcat(sname, sizeof(sname), get_tok_str(tok, NULL));
+                    tcc_pstrcat(sname, sizeof(sname), get_tok_str(tok, NULL));
                 next();
             }
             if (tok == ',') {
@@ -1297,22 +1314,5 @@ ST_FUNC void asm_global_instr(void)
 
     cstr_free(&astr);
     nocode_wanted = saved_nocode_wanted;
-}
-
-/********************************************************/
-#else
-ST_FUNC int tcc_assemble(TCCState *s1, int do_preprocess)
-{
-    tcc_error("asm not supported");
-}
-
-ST_FUNC void asm_instr(void)
-{
-    tcc_error("inline asm() not supported");
-}
-
-ST_FUNC void asm_global_instr(void)
-{
-    tcc_error("inline asm() not supported");
 }
 #endif /* CONFIG_TCC_ASM */

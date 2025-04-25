@@ -22,7 +22,7 @@
 
 #include "tcc.h"
 
-#ifdef NEED_RELOC_TYPE
+#if !defined(ELF_OBJ_ONLY) || defined(TCC_TARGET_MACHO)
 /* Returns 1 for a code relocation, 0 for a data relocation. For unknown
    relocations, returns -1. */
 int code_reloc (int reloc_type)
@@ -47,8 +47,6 @@ int code_reloc (int reloc_type)
         case R_X86_64_TLSLD:
         case R_X86_64_DTPOFF32:
         case R_X86_64_TPOFF32:
-        case R_X86_64_DTPOFF64:
-        case R_X86_64_TPOFF64:
             return 0;
 
         case R_X86_64_PC32:
@@ -97,8 +95,6 @@ int gotplt_entry_type (int reloc_type)
         case R_X86_64_TLSLD:
         case R_X86_64_DTPOFF32:
         case R_X86_64_TPOFF32:
-        case R_X86_64_DTPOFF64:
-        case R_X86_64_TPOFF64:
         case R_X86_64_REX_GOTPCRELX:
         case R_X86_64_PLT32:
         case R_X86_64_PLTOFF64:
@@ -108,7 +104,7 @@ int gotplt_entry_type (int reloc_type)
     return -1;
 }
 
-#ifdef NEED_BUILD_GOT
+#if !defined(TCC_TARGET_MACHO) || defined TCC_IS_NATIVE
 ST_FUNC unsigned create_plt_entry(TCCState *s1, unsigned got_offset, struct sym_attr *attr)
 {
     Section *plt = s1->plt;
@@ -135,7 +131,7 @@ ST_FUNC unsigned create_plt_entry(TCCState *s1, unsigned got_offset, struct sym_
     /* The PLT slot refers to the relocation entry it needs via offset.
        The reloc entry is created below, so its offset is the current
        data_offset */
-    relofs = s1->plt->reloc ? s1->plt->reloc->data_offset : 0;
+    relofs = s1->got->reloc ? s1->got->reloc->data_offset : 0;
 
     /* Jump to GOT entry where ld.so initially put the address of ip + 4 */
     p = section_ptr_add(plt, 16);
@@ -144,7 +140,7 @@ ST_FUNC unsigned create_plt_entry(TCCState *s1, unsigned got_offset, struct sym_
     write32le(p + 2, got_offset);
     p[6] = 0x68; /* push $xxx */
     /* On x86-64, the relocation is referred to by _index_ */
-    write32le(p + 7, relofs / sizeof (ElfW_Rel) - 1);
+    write32le(p + 7, relofs / sizeof (ElfW_Rel));
     p[11] = 0xe9; /* jmp plt_start */
     write32le(p + 12, -(plt->data_offset));
     return plt_offset;
@@ -170,16 +166,6 @@ ST_FUNC void relocate_plt(TCCState *s1)
         while (p < p_end) {
             add32le(p + 2, x + (s1->plt->data - p));
             p += 16;
-        }
-    }
-
-    if (s1->plt->reloc) {
-        ElfW_Rel *rel;
-        int x = s1->plt->sh_addr + 16 + 6;
-        p = s1->got->data;
-        for_each_elem(s1->plt->reloc, 0, rel, ElfW_Rel) {
-            write64le(p + rel->r_offset, x);
-            x += 16;
         }
     }
 }
@@ -252,9 +238,6 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
             add32le(ptr, diff);
         }
             break;
-
-        case R_X86_64_COPY:
-	    break;
 
         case R_X86_64_PLTOFF64:
             add64le(ptr, val - s1->got->sh_addr + rel->r_addend);
@@ -368,19 +351,6 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
                 add32le(ptr, x);
             }
             break;
-        case R_X86_64_DTPOFF64:
-        case R_X86_64_TPOFF64:
-            {
-                ElfW(Sym) *sym;
-                Section *sec;
-                int32_t x;
-
-                sym = &((ElfW(Sym) *)symtab_section->data)[sym_index];
-                sec = s1->sections[sym->st_shndx];
-                x = val - sec->sh_addr - sec->data_offset;
-                add64le(ptr, x);
-            }
-            break;
         case R_X86_64_NONE:
             break;
         case R_X86_64_RELATIVE:
@@ -388,10 +358,6 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
             add32le(ptr, val - s1->pe_imagebase);
 #endif
             /* do nothing */
-            break;
-        default:
-            fprintf(stderr,"FIXME: handle reloc type %d at %x [%p] to %x\n",
-                type, (unsigned)addr, ptr, (unsigned)val);
             break;
     }
 }
