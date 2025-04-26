@@ -164,6 +164,7 @@ if(WIN32)
         >
         lobster-impl
         StackWalker
+        imm32.lib
     )
 else()
     target_link_libraries(

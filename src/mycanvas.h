@@ -201,7 +201,7 @@ struct TSCanvas : public wxScrolledCanvas {
                 ImmSetCompositionWindow(imc, &cf);
                 ImmReleaseContext(GetHandle(), imc);
             }
-            return frame->MSWWindowProc(message, wParam, lParam);
+            return 0;
         }
     #endif
 
