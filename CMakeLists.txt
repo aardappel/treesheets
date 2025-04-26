@@ -143,7 +143,6 @@ else()
     )
 endif()
 
-target_include_directories(TreeSheets PUBLIC thirdparty/lobster/src)
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 if(WIN32)

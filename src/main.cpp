@@ -1,6 +1,5 @@
 
 #include "stdafx.h"
-#include "lobster/string_tools.h"
 
 static_assert(wxCHECK_VERSION(3, 2, 6), "wxWidgets < 3.2.6 is not supported.");
 
@@ -264,6 +263,28 @@ static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
 };
 
 enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
+
+// script_interface.h is both used by TreeSheets and lobster-impl
+// and uses data types that are already defined by lobster.
+
+// Define these data types separately on the TreeSheets side here
+// to avoid redefinitions.
+
+struct string_view_nt {
+    string_view sv;
+    string_view_nt(const string &s) : sv(s) {}
+    explicit string_view_nt(const char *s) : sv(s) {}
+    explicit string_view_nt(string_view osv) : sv(osv) { check_null_terminated(); }
+    void check_null_terminated() { assert(!sv.data()[sv.size()]); }
+    size_t size() const { return sv.size(); }
+    const char *data() const { return sv.data(); }
+    const char *c_str() {
+        check_null_terminated();  // Catch appends to parent buffer since construction.
+        return sv.data();
+    }
+};
+typedef int64_t (*FileLoader)(string_view_nt absfilename, std::string *dest, int64_t start,
+                              int64_t len);
 
 #include "script_interface.h"
 
