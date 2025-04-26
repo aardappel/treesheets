@@ -187,7 +187,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     #ifdef __WXMSW__
-        WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam) {
+        bool MSWHandleMessage(WXLRESULT *result, WXUINT message, WXWPARAM wParam, WXLPARAM lParam) {
             if (message == WM_IME_STARTCOMPOSITION) {
                 HIMC imc = ImmGetContext(GetHandle());
                 COMPOSITIONFORM cf;
@@ -200,8 +200,10 @@ struct TSCanvas : public wxScrolledCanvas {
                 }
                 ImmSetCompositionWindow(imc, &cf);
                 ImmReleaseContext(GetHandle(), imc);
+                return true;
+            } else {
+                return false;
             }
-            return 0;
         }
     #endif
 
