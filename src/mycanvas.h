@@ -186,5 +186,24 @@ struct TSCanvas : public wxScrolledCanvas {
         if (frame->GetStatusBar() && (!msg || *msg)) frame->SetStatusText(msg ? msg : L"", 0);
     }
 
+    #ifdef __WXMSW__
+        WXLRESULT MSWWindowProc(WXUINT message, WXPARAM wParam, WXLPARAM lParam) {
+            if (message == WM_IME_STARTCOMPOSITION) {
+                HIMC imc = ImmGetContext(GetHandle());
+                COMPOSITIONFORM cf;
+                cf.dwStyle = CFS_FORCE_POSITION;
+                POINT ptPos;
+                bool ret = GetCursorPos(&ptPos);
+                if (ret) {
+                    cf.ptCurrentPos.x = ptPos.x;
+                    cf.ptCurrentPos.y = ptPos.y;
+                }
+                ImmSetCompositionWindow(imc, &cf);
+                ImmReleaseContext(GetHandle(), imc);
+            }
+            return wxFrame::MSWWindowProc(message, wParam, lParam);
+        }
+    #endif
+
     DECLARE_EVENT_TABLE()
 };
