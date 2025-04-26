@@ -1,4 +1,3 @@
-typedef int64_t (*FileLoader)(string_view_nt absfilename, std::string *dest, int64_t start, int64_t len);
 
 namespace script {
 
