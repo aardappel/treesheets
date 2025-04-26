@@ -57,22 +57,9 @@ Building:
 Note that YOU are responsible to know how to use compilers and C++, the hints below are all the help I will give you:
 
 ### Windows
-  
-1. TreeSheets requires the latest development wxWidgets from their repo:
-  `git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets.git`.
-2. Make sure your `wxWidgets` folder sits parallel to the `src` folder, that way the TreeSheets project will pick it up without further modifications
-3. Inside `wxWidgets/build/msw`, open `wx_vc17.sln` with Visual Studio 2022.
-4. Select all projects (except the project `_custom_build`) in the solution explorer, and go to properties:
-    - Set configuration to debug, and C/C++ -> Code Generation -> Runtime library
-      to Multithreaded Debug
-    - Set configuration to release, and C/C++ -> Code Generation -> Runtime library
-      to Multithreaded
-5. Build solution in both x64 Debug and Release
-6. Close the wxWidgets solution
-7. `win` contains the Visual Studio 2022 files for treesheets, open the .sln.
-    If you've done the above correctly, TreeSheets will now compile and pick up
-    the wxWidgets libraries.
-8. To distribute, build an installer with `win\TS_installer.nsi` (requires nsis.sourceforge.net)
+
+You can import the TreeSheets source directory as CMake project in Visual Studio, see
+[Visual Studio online documentation](https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170) for more details with regards to configure, build and install.
 
 ### Mac OS
   
