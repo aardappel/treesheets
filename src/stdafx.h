@@ -81,8 +81,7 @@
 #include "tools.h"
 
 #ifdef _WIN32
-    #include "..\win\resource.h"
-    #include "StackWalker\StackWalkerHelpers.h"
+    #include "StackWalkerHelpers.h"
 #endif
 
 #ifdef __WXMAC__

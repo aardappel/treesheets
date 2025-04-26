@@ -45,19 +45,19 @@ endif()
 
 file(
     GLOB lobster_sources
-        lobster/external/flatbuffers/src/*.cpp
-        lobster/src/builtins.cpp
-        lobster/src/compiler.cpp
-        lobster/src/disasm.cpp
-        lobster/src/file.cpp
-        lobster/src/lobsterreader.cpp
-        lobster/src/platform.cpp
-        lobster/src/vm.cpp
-        lobster/src/vmdata.cpp
-        lobster/src/vmlog.cpp
-        lobster/src/tocpp.cpp
-        lobster/src/tccbind.cpp
-        lobster/external/libtcc/libtcc.c
+        thirdparty/lobster/external/flatbuffers/src/*.cpp
+        thirdparty/lobster/src/builtins.cpp
+        thirdparty/lobster/src/compiler.cpp
+        thirdparty/lobster/src/disasm.cpp
+        thirdparty/lobster/src/file.cpp
+        thirdparty/lobster/src/lobsterreader.cpp
+        thirdparty/lobster/src/platform.cpp
+        thirdparty/lobster/src/vm.cpp
+        thirdparty/lobster/src/vmdata.cpp
+        thirdparty/lobster/src/vmlog.cpp
+        thirdparty/lobster/src/tocpp.cpp
+        thirdparty/lobster/src/tccbind.cpp
+        thirdparty/lobster/external/libtcc/libtcc.c
 )
 
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -67,7 +67,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 add_library(lobster STATIC ${lobster_sources})
-target_include_directories(lobster PUBLIC lobster/include lobster/src lobster/external/libtcc)
+target_include_directories(lobster PUBLIC thirdparty/lobster/include thirdparty/lobster/src thirdparty/lobster/external/libtcc)
 
 add_library(lobster-impl STATIC src/lobster_impl.cpp)
 target_link_libraries(lobster-impl PRIVATE lobster)
@@ -91,7 +91,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         if(NOT GIT_SUBMOD_RESULT EQUAL "0")
             message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
         endif()
-        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/lib/wxWidgets/CMakeLists.txt")
+        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/thirdparty/wxWidgets/CMakeLists.txt")
             message(FATAL_ERROR "The submodules were not downloaded! GIT_WXWIDGETS_SUBMODULES failed.")
         endif()
         set(TREESHEETS_WITH_STATIC_WXWIDGETS ON)
@@ -101,20 +101,20 @@ endif()
 ######## TREESHEETS WITH STATIC WXWIDGETS ########
 
 # If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code 
-# to be placed in lib/wxWidgets (see below, it can be changed to your liking).
+# to be placed in thirdparty/wxWidgets (see below, it can be changed to your liking).
 
 if (TREESHEETS_WITH_STATIC_WXWIDGETS)
     set(wxBUILD_SHARED OFF)
     set(wxBUILD_INSTALL OFF CACHE BOOL "Avoid install/uninstall target for wxWidgets in static build" FORCE)
-    add_subdirectory(lib/wxWidgets)
+    add_subdirectory(thirdparty/wxWidgets)
 else()
     find_package(wxWidgets REQUIRED aui adv core xml net)
     include(${wxWidgets_USE_FILE})
 endif()
 
 if(WIN32)
-    add_library(StackWalker STATIC src/StackWalker/StackWalker.cpp src/StackWalker/StackWalkerHelpers.cpp)
-    target_include_directories(StackWalker PUBLIC src/StackWalker)
+    add_library(StackWalker STATIC thirdparty/StackWalker/StackWalker.cpp thirdparty/StackWalker/StackWalkerHelpers.cpp)
+    target_include_directories(StackWalker PUBLIC thirdparty/StackWalker)
 endif()
 
 if(APPLE)
@@ -122,19 +122,19 @@ if(APPLE)
         TreeSheets
         MACOSX_BUNDLE
         src/main.cpp
-        osx/App.icns
+        platform/osx/App.icns
     )
-    set_source_files_properties(osx/App.icns PROPERTIES
+    set_source_files_properties(platform/osx/App.icns PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources")
     set_target_properties(TreeSheets PROPERTIES
-        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/osx/Info.plist"
+        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
     )
 elseif(WIN32)
     add_executable(
         TreeSheets
         WIN32
         src/main.cpp
-        win/icon.rc
+        platform/win/icon.rc
     )
 else()
     add_executable(
@@ -144,9 +144,9 @@ else()
 endif()
 
 if(WIN32)
-    target_include_directories(TreeSheets PUBLIC lobster/src src/StackWalker)
+    target_include_directories(TreeSheets PUBLIC thirdparty/lobster/src thirdparty/StackWalker)
 else()
-    target_include_directories(TreeSheets PUBLIC lobster/src)
+    target_include_directories(TreeSheets PUBLIC thirdparty/lobster/src)
 endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
@@ -201,9 +201,9 @@ if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     target_compile_definitions(TreeSheets PRIVATE "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\"")
     target_compile_definitions(TreeSheets PRIVATE "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\"")
 
-    install(FILES linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
-    install(FILES linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-    install(FILES linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
+    install(FILES platform/linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+    install(FILES platform/linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+    install(FILES platform/linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
 elseif(APPLE)
     # Paths must be relative to use with CPack
     set(TREESHEETS_BINDIR .)
