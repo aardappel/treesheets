@@ -810,13 +810,6 @@ struct Document {
 
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
         auto root = currentview ? curdrawroot : rootgrid;
-        if (k == A_EXPCSV) {
-            int maxdepth = 0, leaves = 0;
-            root->MaxDepthLeaves(0, maxdepth, leaves);
-            if (maxdepth > 1)
-                return _(
-                    L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
-        }
         if (k == A_EXPIMAGE) {
             wxBitmap bm = GetBitmap();
             Refresh();
@@ -1005,7 +998,14 @@ struct Document {
             case A_EXPHTMLO: return Export(L"html", L"*.html", _(L"Choose HTML file to write"), k);
             case A_EXPTEXT: return Export(L"txt", L"*.txt", _(L"Choose Text file to write"), k);
             case A_EXPIMAGE: return Export(L"png", L"*.png", _(L"Choose PNG file to write"), k);
-            case A_EXPCSV: return Export(L"csv", L"*.csv", _(L"Choose CSV file to write"), k);
+            case A_EXPCSV: {
+                int maxdepth = 0, leaves = 0;
+                curdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
+                if (maxdepth > 1)
+                    return _(
+                        L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
+                return Export(L"csv", L"*.csv", _(L"Choose CSV file to write"), k);
+            }
 
             case A_IMPXML:
             case A_IMPXMLA:
