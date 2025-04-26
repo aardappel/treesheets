@@ -58,8 +58,22 @@ Note that YOU are responsible to know how to use compilers and C++, the hints be
 
 ### Windows
 
-You can import the TreeSheets source directory as CMake project in Visual Studio, see
+1. Clone this repository
+```sh
+git clone https://github.com/aardappel/treesheets
+```
+2. Import into Visual Studio as CMake Project.
+
+See
 [Visual Studio online documentation](https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170) for more details with regards to configure, build and install.
+
+Alternatively you can run the Visual Studio Developer Command Prompt and in the TreeSheets source directory execute
+
+```sh
+cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release  -DGIT_WXWIDGETS_SUBMODULES=ON
+cmake --build _build --config Release --target package -j
+```
+to configure the Visual Studio build system, build TreeSheets and package it.
 
 ### Mac OS
   
