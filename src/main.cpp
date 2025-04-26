@@ -228,9 +228,8 @@ enum {
     A_HELP_OP_REF,
     A_FSWATCH,
     A_DEFBGCOL,
-    #ifdef SIMPLERENDER
-        A_DEFCURCOL,
-    #else
+    A_DEFCURCOL,
+    #ifndef SIMPLERENDER
         A_HOVERSHADOW,
     #endif
     A_THINSELC,

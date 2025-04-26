@@ -1160,7 +1160,6 @@ struct Document {
                 return nullptr;
             }
 
-            #ifdef SIMPLERENDER
             case A_DEFCURCOL: {
                 uint c = PickColor(sys->frame, sys->cursorcolor);
                 if (c != (uint)-1) {
@@ -1169,7 +1168,6 @@ struct Document {
                 }
                 return nullptr;
             }
-            #endif
 
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {
