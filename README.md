@@ -154,7 +154,3 @@ probably not be in the master branch. Needless to say, performance is important 
 
 Try to keep your pull requests small (don't bundle unrelated changes) and make sure you've done extensive testing
 before you submit, preferrably on multiple platforms.
-
-Stars over time:
-----------------
-[![Stargazers over time](https://starchart.cc/aardappel/treesheets.svg?variant=adaptive)](https://starchart.cc/aardappel/treesheets)
