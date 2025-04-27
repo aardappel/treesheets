@@ -1,26 +1,6 @@
-# Sample build with makefile generator
-#
-#     cd <into-treesheets-source>
-#     cmake . -B _build -DCMAKE_BUILD_TYPE=Release \
-#         -DCMAKE_INSTALL_PREFIX=installed \
-#         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
-#     cmake --build _build --target install
-#
-# Sample build with IDE generator, like Xcode
-#
-#     cd <into-treesheets-source>
-#     cmake -B _build -GXcode \
-#         -DCMAKE_PROGRAM_PATH=<path-to-wx-config> # not always needed
-#     cmake --build _build --config Release --target install
-#
-# Run program:
-#
-#     ./i/treesheets
-#
-# Should work on Windows, too. About helping FindwxWidgets to find wxWidgets
-# consult: https://cmake.org/cmake/help/latest/module/FindwxWidgets.html
-
 cmake_minimum_required(VERSION 3.25)
+
+### Project
 
 string(TIMESTAMP TimeStamp "%y%m%d.%H%M" UTC)
 
@@ -29,56 +9,39 @@ project(TreeSheets
     HOMEPAGE_URL "https://github.com/aardappel/treesheets"
     VERSION ${TimeStamp})
 
-########## GLOBAL SETTINGS ################################
+### Settings
 
 set(CMAKE_CXX_STANDARD 20)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-# Use statically-linked runtime library
+
+## Compiler-specific
+
+# Use statically-linked runtime library for MSVC
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+# Silence warnings in GCC that contain lots of false positives
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS
+    "${CMAKE_CXX_FLAGS} -Wno-array-bounds -Wno-stringop-overflow -Wno-maybe-uninitialized")
+endif()
+
+### Options
+
+## Run clang-tidy linter
 
 OPTION(WITH_CLANG_TIDY "Run clang-tidy linter" OFF)
 if (WITH_CLANG_TIDY)
     set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 endif()
 
-########## LOBSTER COMPILE AND LINK SETTINGS ##############
-
-file(
-    GLOB lobster_sources
-        thirdparty/lobster/external/flatbuffers/src/*.cpp
-        thirdparty/lobster/src/builtins.cpp
-        thirdparty/lobster/src/compiler.cpp
-        thirdparty/lobster/src/disasm.cpp
-        thirdparty/lobster/src/file.cpp
-        thirdparty/lobster/src/lobsterreader.cpp
-        thirdparty/lobster/src/platform.cpp
-        thirdparty/lobster/src/vm.cpp
-        thirdparty/lobster/src/vmdata.cpp
-        thirdparty/lobster/src/vmlog.cpp
-        thirdparty/lobster/src/tocpp.cpp
-        thirdparty/lobster/src/tccbind.cpp
-        thirdparty/lobster/external/libtcc/libtcc.c
-)
-
-if(CMAKE_COMPILER_IS_GNUCXX)
-    # These warnings seem pretty broken in GCC, with lots of false positives.
-    set(CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} -Wno-array-bounds -Wno-stringop-overflow -Wno-maybe-uninitialized")
-endif()
-
-add_library(lobster STATIC ${lobster_sources})
-target_include_directories(lobster PUBLIC thirdparty/lobster/include thirdparty/lobster/src thirdparty/lobster/external/libtcc)
-
-add_library(lobster-impl STATIC src/lobster_impl.cpp)
-target_link_libraries(lobster-impl PRIVATE lobster)
-
-########## TREESHEETS COMPILE AND LINK SETTINGS ###########
+## Build with statically linked wxWidgets
 
 OPTION(TREESHEETS_WITH_STATIC_WXWIDGETS "Build wxWidgets along with TreeSheets and link TreeSheets against static wxWidgets library" OFF)
 
-######### GIT SUBMODULES AUTOMATIC HANDLING ########
-# Taken from https://cliutils.gitlab.io/modern-cmake/chapters/projects/submodule.html
+## Build with statically linked wxWidgets that resides within a git submodule
 
+# Taken from https://cliutils.gitlab.io/modern-cmake/chapters/projects/submodule.html
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 # Update submodules as needed
@@ -98,7 +61,43 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
-######## TREESHEETS WITH STATIC WXWIDGETS ########
+### Libraries (lobster, lobster-impl, StackWalker)
+
+## lobster (script interpreter)
+
+file(
+    GLOB lobster_sources
+        thirdparty/lobster/external/flatbuffers/src/*.cpp
+        thirdparty/lobster/src/builtins.cpp
+        thirdparty/lobster/src/compiler.cpp
+        thirdparty/lobster/src/disasm.cpp
+        thirdparty/lobster/src/file.cpp
+        thirdparty/lobster/src/lobsterreader.cpp
+        thirdparty/lobster/src/platform.cpp
+        thirdparty/lobster/src/vm.cpp
+        thirdparty/lobster/src/vmdata.cpp
+        thirdparty/lobster/src/vmlog.cpp
+        thirdparty/lobster/src/tocpp.cpp
+        thirdparty/lobster/src/tccbind.cpp
+        thirdparty/lobster/external/libtcc/libtcc.c
+)
+
+add_library(lobster STATIC ${lobster_sources})
+target_include_directories(lobster PUBLIC thirdparty/lobster/include thirdparty/lobster/src thirdparty/lobster/external/libtcc)
+
+## lobster-impl (provider of TreeSheets functions in lobster)
+
+add_library(lobster-impl STATIC src/lobster_impl.cpp)
+target_link_libraries(lobster-impl PRIVATE lobster)
+
+## StackWalker (only on Windows)
+
+if(WIN32)
+    add_library(StackWalker STATIC thirdparty/StackWalker/StackWalker.cpp thirdparty/StackWalker/StackWalkerHelpers.cpp)
+    target_include_directories(StackWalker PRIVATE thirdparty/StackWalker)
+endif()
+
+### TreeSheets executable
 
 # If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code 
 # to be placed in thirdparty/wxWidgets (see below, it can be changed to your liking).
@@ -110,11 +109,6 @@ if (TREESHEETS_WITH_STATIC_WXWIDGETS)
 else()
     find_package(wxWidgets REQUIRED aui adv core xml net)
     include(${wxWidgets_USE_FILE})
-endif()
-
-if(WIN32)
-    add_library(StackWalker STATIC thirdparty/StackWalker/StackWalker.cpp thirdparty/StackWalker/StackWalkerHelpers.cpp)
-    target_include_directories(StackWalker PUBLIC thirdparty/StackWalker)
 endif()
 
 if(APPLE)
@@ -145,38 +139,25 @@ endif()
 
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
-if(WIN32)
-    target_link_libraries(
-        TreeSheets
-        PRIVATE
-        $<IF:$<BOOL:${TREESHEETS_WITH_STATIC_WXWIDGETS}>,
-            wx::aui
-            wx::adv
-            wx::core
-            wx::xml
-            wx::net,
-            ${wxWidgets_LIBRARIES}
-        >
-        lobster-impl
-        StackWalker
-    )
+## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
+
+if(TREESHEETS_WITH_STATIC_WXWIDGETS)
+    set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
 else()
-    target_link_libraries(
-        TreeSheets
-        PRIVATE
-        $<IF:$<BOOL:${TREESHEETS_WITH_STATIC_WXWIDGETS}>,
-            wx::aui
-            wx::adv
-            wx::core
-            wx::xml
-            wx::net,
-            ${wxWidgets_LIBRARIES}
-        >
-        lobster-impl
-    )
+    set(TREESHEETS_LIBS ${wxWidgets_LIBRARIES})
 endif()
 
-########## TREESHEETS INSTALLATION SETTINGS ###############
+list(APPEND TREESHEETS_LIBS lobster-impl)
+
+if(WIN32)
+    list(APPEND TREESHEETS_LIBS StackWalker)
+endif()
+
+target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
+
+### Installation
+
+## Platform specific installation paths
 
 if(LINUX)
     OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
@@ -210,6 +191,8 @@ else()
     set(TREESHEETS_PKGDATADIR .)
 endif()
 
+## Installation
+
 install(TARGETS TreeSheets DESTINATION ${TREESHEETS_BINDIR})
 install(DIRECTORY TS/docs DESTINATION ${TREESHEETS_DOCDIR})
 install(FILES TS/readme.html DESTINATION ${TREESHEETS_DOCDIR})
@@ -217,6 +200,8 @@ install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
 
 install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
 install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
+
+## Localization
 
 # Install translations to correct platform-specific path.
 # See: https://docs.wxwidgets.org/trunk/overview_i18n.html#overview_i18n_mofiles
@@ -255,6 +240,8 @@ else()
         )
     endforeach()
 endif()
+
+### Packaging with CPack
 
 set(CPACK_PACKAGE_VENDOR "Wouter van Oortmerssen")
 if(APPLE)
