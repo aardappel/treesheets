@@ -50,91 +50,33 @@ in the root of this folder, and distributing to users is then a matter of giving
 
 Building:
 ---------
-Note that YOU are responsible to know how to use compilers and C++, the hints below are all the help I will give you:
-
-### Windows
+This project uses CMake to enable compilation on various platforms and CPack on top of it to package the produced binaries. The build, installation and packaging instructions are within `CMakeLists.txt`.
+Please note that you are responsible to know how to use compilers and C++, the hints below are all the help we will give you for building TreeSheets:
 
 1. Clone this repository
+
 ```sh
 git clone https://github.com/aardappel/treesheets
 ```
-2. Import into Visual Studio as CMake Project.
 
-See
-[Visual Studio online documentation](https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170) for more details with regards to configure, build and install.
+2. Change the working directory to the working tree
 
-Alternatively you can run the Visual Studio Developer Command Prompt and in the TreeSheets source directory execute
-
-```sh
-cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release  -DGIT_WXWIDGETS_SUBMODULES=ON
-cmake --build _build --config Release --target package -j
-```
-to configure the Visual Studio build system, build TreeSheets and package it.
-
-### Mac OS
-  
-1. Clone this repository
-```sh
-git clone https://github.com/aardappel/treesheets
-```
-2. Change to working tree
 ```sh
 cd treesheets
 ```
-3. Configure the build system
-```sh
-cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/Applications
-```
 
-Please note that you need to have wxWidgets installed, e.g. distributed by Homebrew or built by yourself. 
-If you wish to compile statically against wxWidgets, append `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `lib/wxWidgets`).
+3. Steps for building and installation/packaging for binary distribution
 
-4. Build
-```sh
-cmake --build _build -j
-```
-5. Install
-```sh
-cmake --install _build
-```
+| Step | Command | Windows | macOS | Linux |
+| ---- | ------- | ------- | ----- | ----- |
+| 3.1 Configure the build system | `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release` | needs Visual Studio C++ compiler for succesful compilation | Specify `CMAKE_INSTALL_PREFIX` for the full path where the Application Bundle will be installed, i.e. append `-DCMAKE_INSTALL_PREFIX=...` to the command. | |
+| 3.2 Build and package for binary distribution | `cmake --build _build --target package -j` | creates a ZIP archive for portable usage and a Nullsoft installer | creates a disk image for Drag and Drop installation | creates a binary Debian package |
+| or |
+| 3.2 Build only | `cmake --build _build -j` | Append `--config Release` | | |
+| 3.3 Install | `cmake --install _build` | | | usually requires root privileges, e.g. run this command with `sudo` | 
 
-### Linux
-  
-1. Clone this repository
-```sh
-git clone https://github.com/aardappel/treesheets
-```
-2. Change to working tree
-```sh
-cd treesheets
-```
-3. Configure the build system
-```sh
-cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release
-```
-
-Please note that you need to have wxWidgets installed, e.g. distributed by your distribution or built by yourself. 
-If you wish to compile statically against wxWidgets, append `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `lib/wxWidgets`).
-
-4. Build
-```sh
-cmake --build _build -j
-```
-5. Install
-```sh
-sudo cmake --install _build
-```
-
-### Further information for Mac OS / Linux
-<details>
-
- - If you like to build wxWidgets by yourself:
-    - You can use the version of wxWidgets from https://github.com/wxWidgets/wxWidgets.git.
-    - Follow the instructions to build there, but add `--enable-unicode` and `--disable-shared` to the `configure` step.
-- You can change the default installation prefix (`/usr/local`) by passing something like `-DCMAKE_INSTALL_PREFIX=/usr`.
-- If you are MacOS X user, a bundle will be installed to the installation prefix.
-
-</details>
+Please note that you need to have wxWidgets installed, e.g. distributed by your distribution or built by yourself. See the documentation on the CMake `FindwxWidgets` module for more details.
+Otherwise you need to compile wxWidgets as a subproject and link statically against it. This can be achieved by appending either `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `lib/wxWidgets`) to the `cmake` command that configures the build system.
 
 Contributing:
 -------------
