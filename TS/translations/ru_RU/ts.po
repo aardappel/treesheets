@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-26 18:23-0300\n"
-"PO-Revision-Date: 2025-03-28 14:21+0300\n"
+"POT-Creation-Date: 2025-04-24 21:10+0200\n"
+"PO-Revision-Date: 2025-04-27 14:22+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 # комментарий к эл-ту Главного Окна (Инф Строка)
 #, c-format
@@ -114,7 +114,7 @@ msgid "&Insert New Grid"
 msgstr "&Вставить Новую Сетку"
 
 msgid "&Layout && Render Style..."
-msgstr "&Макет && Стиль Отображения..."
+msgstr "&Макет и Стиль Отображения..."
 
 msgid "&Mark as"
 msgstr "От&метить как"
@@ -228,6 +228,9 @@ msgstr "Обнаружен временный файл автосохранен�
 
 msgid "Add Image"
 msgstr "Добавить изображение"
+
+msgid "Add Lobster script..."
+msgstr "Добавить сценарий Lobster..."
 
 # комментарий к п. Меню
 msgid "Adds a grid to the selected cell"
@@ -449,10 +452,10 @@ msgid "Cu&t"
 msgstr "Вырезать"
 
 msgid "Cursor Left"
-msgstr "Курсор вЛево"
+msgstr "Курсор вЛево (⊲)"
 
 msgid "Cursor Right"
-msgstr ".. вПраво"
+msgstr ".. вПраво (⊳)"
 
 # комментарий к п. Меню
 msgid "Cut selection"
@@ -791,6 +794,10 @@ msgstr "Справочник Операций..."
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "Загружено %s (%d ячеек, %d символов) за %d миллисекунд."
 
+# в Окне (выбор п. Меню)
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "Lobster Файлы (*.cts)|*.cts|Все Файлы (*.*)|*.*"
+
 # Сообщение (после действия или события)
 msgid "Make a 1xN selection to indicate which column to sort on, and which rows to affect"
 msgstr "Выделите столбец 1xN для сортировки строк"
@@ -1051,6 +1058,10 @@ msgid "Please pick a menu item to change the key binding for"
 msgstr "Выберите пункт меню, чтобы изменить привязку клавиш для:"
 
 # Заголовок Окна (выбор п. Меню)
+msgid "Please select a Lobster script file:"
+msgstr "Выберите файл Lobster-сценария:"
+
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select a TreeSheets file to load:"
 msgstr "Выберите TreeSheets-файл для загрузки:"
 
@@ -1065,6 +1076,9 @@ msgstr "Выберите файл для импорта:"
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Please select the datetime range."
 msgstr "Выберите Диапазон"
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "Выберите сценарий, который вы хотите удалить из списка:"
 
 # ??? Сообщение (после действия или события)
 msgid "Press F11 to exit fullscreen mode."
@@ -1109,6 +1123,9 @@ msgstr "Перезагрузить файл, если другой компью�
 # комментарий к п. Меню
 msgid "Remove image(s) from the selected cells"
 msgstr "Удалить изображение(я) из выбранных ячеек"
+
+msgid "Remove script from list..."
+msgstr "Удалить сценарий из списка..."
 
 msgid "Render document centered"
 msgstr "Отображать документ по Центру"
@@ -1329,10 +1346,10 @@ msgid "Swap mousewheel scrolling and zooming"
 msgstr "Поменять Прокрутку и Масштабирование КМ (Колесом Мыши)"
 
 msgid "Switch to &next file/tab"
-msgstr "Переключиться на &Cледующий файл/вкладку"
+msgstr "Переключиться на &Cледующий файл/вкладку (CTRL+TAB)"
 
 msgid "Switch to &previous file/tab"
-msgstr ".. на &Предыдущий файл/вкладку"
+msgstr ".. на &Предыдущий файл/вкладку (CTRL+SHIFT+TAB)"
 
 msgid "Tab delimited text..."
 msgstr "Текст (разделитель - та&буляция)..."
