@@ -76,7 +76,7 @@ cd treesheets
 | 3.3 Install | `cmake --install _build` | | | usually requires root privileges, e.g. run this command with `sudo` | 
 
 Please note that you need to have wxWidgets installed, e.g. distributed by your distribution or built by yourself. See the documentation on the CMake `FindwxWidgets` module for more details.
-Otherwise you need to compile wxWidgets as a subproject and link statically against it. This can be achieved by appending either `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `lib/wxWidgets`) to the `cmake` command that configures the build system.
+Otherwise you need to compile wxWidgets as a subproject and link statically against it. This can be achieved by appending either `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `thirdparty/wxWidgets`) to the `cmake` command that configures the build system.
 
 Contributing:
 -------------
