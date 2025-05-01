@@ -157,7 +157,9 @@ target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 
 ### Trimsheets (TreeSheets + ImGUI)
 
-find_package(glfw3 3.3 REQUIRED)
+# Details https://wiki.libsdl.org/SDL2/README/cmake
+
+find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
 find_package(OpenGL REQUIRED)
 
 add_executable(
@@ -168,10 +170,10 @@ add_executable(
     thirdparty/imgui/imgui_draw.cpp
     thirdparty/imgui/imgui_tables.cpp
     thirdparty/imgui/imgui_widgets.cpp
-    thirdparty/imgui/backends/imgui_impl_glfw.cpp
+    thirdparty/imgui/backends/imgui_impl_sdl2.cpp
     thirdparty/imgui/backends/imgui_impl_opengl3.cpp)
 
-target_link_libraries(trimsheets glfw OpenGL::GL)
+target_link_libraries(trimsheets SDL2::SDL2 OpenGL::GL)
 
 target_include_directories(
     trimsheets
