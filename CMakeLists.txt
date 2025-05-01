@@ -87,7 +87,7 @@ target_include_directories(lobster PUBLIC thirdparty/lobster/include thirdparty/
 
 ## lobster-impl (provider of TreeSheets functions in lobster)
 
-add_library(lobster-impl STATIC src/lobster_impl.cpp)
+add_library(lobster-impl STATIC src/wx/lobster_impl.cpp)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
 ## StackWalker (only on Windows)
@@ -115,7 +115,7 @@ if(APPLE)
     add_executable(
         TreeSheets
         MACOSX_BUNDLE
-        src/main.cpp
+        src/wx/main.cpp
         platform/osx/App.icns
     )
     set_source_files_properties(platform/osx/App.icns PROPERTIES
@@ -127,17 +127,17 @@ elseif(WIN32)
     add_executable(
         TreeSheets
         WIN32
-        src/main.cpp
+        src/wx/main.cpp
         platform/win/icon.rc
     )
 else()
     add_executable(
         TreeSheets
-        src/main.cpp
+        src/wx/main.cpp
     )
 endif()
 
-target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
+target_precompile_headers(TreeSheets PUBLIC src/wx/stdafx.h)
 
 ## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
 
@@ -154,6 +154,30 @@ if(WIN32)
 endif()
 
 target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
+
+### Trimsheets (TreeSheets + ImGUI)
+
+find_package(glfw3 3.3 REQUIRED)
+find_package(OpenGL REQUIRED)
+
+add_executable(
+    trimsheets
+    src/im/main.cpp
+    thirdparty/imgui/imgui.cpp
+    thirdparty/imgui/imgui_demo.cpp
+    thirdparty/imgui/imgui_draw.cpp
+    thirdparty/imgui/imgui_tables.cpp
+    thirdparty/imgui/imgui_widgets.cpp
+    thirdparty/imgui/backends/imgui_impl_glfw.cpp
+    thirdparty/imgui/backends/imgui_impl_opengl3.cpp)
+
+target_link_libraries(trimsheets glfw OpenGL::GL)
+
+target_include_directories(
+    trimsheets
+    PRIVATE
+    thirdparty/imgui
+    thirdparty/imgui/backends)
 
 ### Installation
 

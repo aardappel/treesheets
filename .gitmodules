@@ -2,3 +2,6 @@
 	path = thirdparty/wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets
 	branch = master
+[submodule "thirdparty/imgui"]
+	path = thirdparty/imgui
+	url = https://github.com/ocornut/imgui
