@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 2.0\n"
+"Project-Id-Version: TreeSheets_RU 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-24 21:10+0200\n"
-"PO-Revision-Date: 2025-04-27 14:22+0300\n"
+"PO-Revision-Date: 2025-05-02 11:02+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -189,7 +189,7 @@ msgid "&Selection..."
 msgstr "&Выделение..."
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "В&ставить Тег в Ячейку (CTRL+RMB - меню тегов)"
+msgstr "В&ставить Тег в Ячейку (CTRL+ПКМ - Меню тегов)"
 
 msgid "&Set Custom Color From Cell BG"
 msgstr "Установить Цвет из Фона &Ячейки"
