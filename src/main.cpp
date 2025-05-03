@@ -9,6 +9,7 @@ static_assert(wxCHECK_VERSION(3, 2, 6), "wxWidgets < 3.2.6 is not supported.");
 
 //#define SIMPLERENDER // for testing
 
+static const int TS_VERSION = 23;
 static const int g_grid_margin = 1;
 static const int g_cell_margin = 2;
 static const int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -23,10 +24,8 @@ static const int g_deftextsize_default = 12;
 static const int g_mintextsize_delta = 8;
 static const int g_maxtextsize_delta = 32;
 static const int BLINK_TIME = 400;
-
-static int g_deftextsize = g_deftextsize_default;
-static int g_mintextsize() { return g_deftextsize - g_mintextsize_delta; }
-static int g_maxtextsize() { return g_deftextsize + g_maxtextsize_delta; }
+static const int CUSTOMCOLORIDX = 0;
+static const uint TS_SELECTION_MASK = 0x80;
 
 static const std::array<uint, 42> celltextcolors = {
     0xFFFFFF,  // CUSTOM COLOR!
@@ -36,11 +35,16 @@ static const std::array<uint, 42> celltextcolors = {
     0xFF00FF, 0xFF80FF, 0xFFC0FF, 0xE0C0E0, 0x008080, 0x00FFFF, 0x80FFFF, 0xC0FFFF, 0xC0E0E0,
     0x808000, 0xFFFF00, 0xFFFF80, 0xFFFFC0, 0xE0E0C0,
 };
-enum { CUSTOMCOLORIDX = 0 };
 
-enum { TS_VERSION = 23, TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
+static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
+    { 'I', { wxBITMAP_TYPE_PNG, "image/png" } }, { 'J', { wxBITMAP_TYPE_JPEG, "image/jpeg" } }
+};
 
-static const uint TS_SELECTION_MASK = 0x80;
+static int g_deftextsize = g_deftextsize_default;
+static int g_mintextsize() { return g_deftextsize - g_mintextsize_delta; }
+static int g_maxtextsize() { return g_deftextsize + g_maxtextsize_delta; }
+
+enum {TS_TEXT = 0, TS_GRID = 1, TS_BOTH = 2, TS_NEITHER = 3};
 
 enum {
     A_SAVEALL = 500,
@@ -256,10 +260,6 @@ enum {
     STYLE_FIXED = 4,
     STYLE_UNDERLINE = 8,
     STYLE_STRIKETHRU = 16
-};
-
-static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
-    { 'I', { wxBITMAP_TYPE_PNG, "image/png" } }, { 'J', { wxBITMAP_TYPE_JPEG, "image/jpeg" } }
 };
 
 enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
