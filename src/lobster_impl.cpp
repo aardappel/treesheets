@@ -189,7 +189,7 @@ string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *au
                    bool from_bundle, FileLoader sl) {
     si = _si;
     min_output_level = OUTPUT_PROGRAM;
-    string err = "";
+    string err;
     try {
         InitPlatform(exefilepath, auxfilepath, from_bundle, sl);
         RegisterBuiltin(natreg, "ts", "treesheets", AddTreeSheets);
@@ -199,7 +199,7 @@ string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *au
 }
 
 string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins) {
-    string err = "";
+    string err;
     try {
         string bytecode;
         Compile(natreg, filename, code, bytecode, nullptr, nullptr,
