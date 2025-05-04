@@ -278,7 +278,7 @@ struct string_view_nt {
     void check_null_terminated() { assert(!sv.data()[sv.size()]); }
     size_t size() const { return sv.size(); }
     const char *data() const { return sv.data(); }
-    const char *c_str() {
+    const char *c_str() const {
         check_null_terminated();  // Catch appends to parent buffer since construction.
         return sv.data();
     }
