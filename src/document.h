@@ -294,8 +294,7 @@ struct Document {
     }
 
     void ZoomTiny(wxDC &dc) {
-        Cell *c = selected.GetCell();
-        if (c && c->tiny) {
+        if (auto *c = selected.GetCell(); c && c->tiny) {
             Zoom(1, dc);  // seems to leave selection box in a weird location?
             if (selected.GetCell() != c) ZoomTiny(dc);
         }
