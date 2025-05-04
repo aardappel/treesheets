@@ -171,8 +171,7 @@ struct Document {
             RefreshImageRefCount(true);
             int realindex = 0;
             loopv(i, sys->imagelist) {
-                Image &image = *sys->imagelist[i];
-                if (image.trefc) {
+                if (auto &image = *sys->imagelist[i]; image.trefc) {
                     fos.PutC(image.image_type);
                     sos.WriteDouble(image.display_scale);
                     wxInt64 imagelen(image.image_data.size());
