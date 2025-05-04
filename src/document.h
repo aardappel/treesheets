@@ -1146,8 +1146,7 @@ struct Document {
 
             case A_DEFBGCOL: {
                 uint oldbg = Background();
-                uint c = PickColor(sys->frame, oldbg);
-                if (c != (uint)-1) {
+                if (auto c = PickColor(sys->frame, oldbg); c != (uint)-1) {
                     rootgrid->AddUndo(this);
                     loopallcells(lc) {
                         if (lc->cellcolor == oldbg && (!lc->parent || lc->parent->cellcolor == c))
@@ -1160,8 +1159,7 @@ struct Document {
 
             #ifdef SIMPLERENDER
             case A_DEFCURCOL: {
-                uint c = PickColor(sys->frame, sys->cursorcolor);
-                if (c != (uint)-1) {
+                if (auto c = PickColor(sys->frame, sys->cursorcolor); c != (uint)-1) {
                     sys->cfg->Write(L"cursorcolor", sys->cursorcolor = c);
                     Refresh();
                 }
