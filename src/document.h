@@ -1732,8 +1732,7 @@ struct Document {
                 size_t counter = 0, counterpos;
                 wxString oimgfn, imgfn;
                 loopallcellssel(c, true) {
-                    Image *tim = c->text.image;
-                    if (tim) {
+                    if (auto *tim = c->text.image; tim) {
                         if (!oimgfn) {  // first encounter
                             oimgfn = ::wxFileSelector(
                                 _(L"Choose image file to save:"), L"", L"", L"png|jpg",
