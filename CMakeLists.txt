@@ -103,9 +103,9 @@ endif()
 # to be placed in thirdparty/wxWidgets (see below, it can be changed to your liking).
 
 if (TREESHEETS_WITH_STATIC_WXWIDGETS)
-    set(wxBUILD_SHARED OFF)
-    set(wxBUILD_INSTALL OFF CACHE BOOL "Avoid install/uninstall target for wxWidgets in static build" FORCE)
     add_subdirectory(thirdparty/wxWidgets)
+    set(wxBUILD_SHARED OFF CACHE BOOL "Do not build shared libraries" FORCE)
+    set(wxBUILD_INSTALL OFF CACHE BOOL "Avoid install/uninstall target for wxWidgets in static build" FORCE)
 else()
     find_package(wxWidgets REQUIRED aui adv core xml net)
     include(${wxWidgets_USE_FILE})
