@@ -112,8 +112,8 @@ struct Grid {
 
     bool Layout(Document *doc, wxDC &dc, int depth, int &sx, int &sy, int startx, int starty,
                 bool forcetiny) {
-        int *xa = new int[xs];
-        int *ya = new int[ys];
+        auto *xa = new int[xs];
+        auto *ya = new int[ys];
         loop(i, xs) xa[i] = 0;
         loop(i, ys) ya[i] = 0;
         tinyborder = true;
@@ -458,8 +458,8 @@ struct Grid {
     }
 
     void DeleteCells(int dx, int dy, int nxs, int nys) {
-        Cell **ncells = new Cell *[(xs + nxs) * (ys + nys)];
-        Cell **ncp = ncells;
+        auto **ncells = new Cell *[(xs + nxs) * (ys + nys)];
+        auto **ncp = ncells;
         foreachcell(c) if (x == dx || y == dy) DELETEP(c) else *ncp++ = c;
         delete[] cells;
         cells = ncells;
@@ -884,7 +884,7 @@ struct Grid {
     }
 
     void Transpose() {
-        Cell **tr = new Cell *[xs * ys];
+        auto **tr = new Cell *[xs * ys];
         foreachcell(c) tr[y + x * ys] = c;
         delete[] cells;
         cells = tr;
@@ -930,7 +930,7 @@ struct Grid {
                     // Special case check: if parents have same name, this would cause infinite
                     // swapping.
                     if (p->text.t == tag) done = true;
-                    Cell *t = new Cell(f, p);
+                    auto *t = new Cell(f, p);
                     t->text = p->text;
                     t->text.cell = t;
                     t->grid = f->grid;

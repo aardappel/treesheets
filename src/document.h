@@ -1122,9 +1122,9 @@ struct Document {
 
             case wxID_PREVIEW: {
                 wxPrintDialogData printDialogData(printData);
-                wxPrintPreview *preview = new wxPrintPreview(
+                auto *preview = new wxPrintPreview(
                     new MyPrintout(this), new MyPrintout(this), &printDialogData);
-                wxPreviewFrame *pframe = new wxPreviewFrame(
+                auto *pframe = new wxPreviewFrame(
                     preview, sys->frame, _(L"Print Preview"), wxPoint(100, 100), wxSize(600, 650));
                 pframe->Centre(wxBOTH);
                 pframe->Initialize();
@@ -1872,7 +1872,7 @@ struct Document {
                     ac->AddUndo(this);
                     int maxdepth = 0, leaves = 0;
                     ac->MaxDepthLeaves(0, maxdepth, leaves);
-                    Grid *g = new Grid(maxdepth, leaves);
+                    auto *g = new Grid(maxdepth, leaves);
                     g->InitCells();
                     ac->grid->Flatten(0, 0, g);
                     DELETEP(ac->grid);
@@ -2170,7 +2170,7 @@ struct Document {
             UpdateFileName();
         }
         if (LastUndoSameCellTextEdit(c)) return;
-        unique_ptr<UndoItem> ui = make_unique<UndoItem>();
+        auto ui = make_unique<UndoItem>();
         ui->clone = c->Clone(nullptr);
         ui->estimated_size = c->EstimatedMemoryUse();
         ui->sel = selected;
@@ -2181,7 +2181,7 @@ struct Document {
         size_t total_usage = 0;
         size_t old_list_size = undolist.size();
         // Cull undolist. Always at least keeps last item.
-        for (int i = (int)undolist.size() - 1; i >= 0; i--) {
+        for (auto i = (int)undolist.size() - 1; i >= 0; i--) {
             // Cull old items if using more than 100MB or 1000 items, whichever comes first.
             // TODO: make configurable?
             if (total_usage < 100 * 1024 * 1024 && undolist.size() - i < 1000) {
@@ -2200,7 +2200,7 @@ struct Document {
         Selection beforesel = selected;
         vector<Selection> beforepath;
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
-        unique_ptr<UndoItem> ui = std::move(fromlist.back());
+        auto ui = std::move(fromlist.back());
         fromlist.pop_back();
         Cell *c = WalkPath(ui->path);
         auto clone = ui->clone.release();
