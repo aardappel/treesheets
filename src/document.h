@@ -52,7 +52,7 @@ struct Document {
         MyPrintout(Document *d) : wxPrintout(L"printout"), doc(d) {}
 
         bool OnPrintPage(int page) {
-            wxDC *dc = GetDC();
+            auto *dc = GetDC();
             if (!dc) return false;
             doc->Print(*dc, *this);
             return true;
@@ -89,13 +89,13 @@ struct Document {
 
     #define loopcellsin(par, c) \
         CollectCells(par);      \
-        loopv(_i, itercells) for (Cell *c = itercells[_i]; c; c = nullptr)
+        loopv(_i, itercells) for (auto *c = itercells[_i]; c; c = nullptr)
     #define loopallcells(c)     \
         CollectCells(rootgrid); \
-        for (Cell *c : itercells)
+        for (auto *c : itercells)
     #define loopallcellssel(c, rec) \
         CollectCellsSel(rec);     \
-        for (Cell *c : itercells)
+        for (auto *c : itercells)
 
     Document() {
         ResetFont();
