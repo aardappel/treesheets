@@ -2262,6 +2262,9 @@ struct Document {
     void RecreateTagMenu(wxMenu &menu) {
         int i = A_TAGSET;
         for (auto &tag : tags) { menu.Append(i++, tag); }
+        if (tags.size()) menu.AppendSeparator();
+        menu.Append(A_TAGADD, _(L"&Add Cell Text as Tag"));
+        menu.Append(A_TAGREMOVE, _(L"&Remove Cell Text from Tags"));
     }
 
     const wxChar *TagSet(int tagno) {
