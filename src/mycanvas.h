@@ -158,7 +158,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnSize(wxSizeEvent &se) {}
     void OnContextMenuClick(wxContextMenuEvent &cme) {
         if (lastrmbwaswithctrl) {
-            wxMenu *tagmenu = new wxMenu();
+            auto *tagmenu = new wxMenu();
             doc->RecreateTagMenu(*tagmenu);
             PopupMenu(tagmenu);
             delete tagmenu;

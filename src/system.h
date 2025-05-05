@@ -155,7 +155,7 @@ struct System {
     }
 
     Document *NewTabDoc(bool append = false) {
-        Document *doc = new Document();
+        auto *doc = new Document();
         frame->NewTab(doc, append);
         return doc;
     }
@@ -212,7 +212,7 @@ struct System {
     void LoadOpRef() { LoadDB(frame->GetDocPath(L"examples/operation-reference.cts")); }
 
     Cell *&InitDB(int sizex, int sizey = 0) {
-        Cell *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
+        auto *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
         Document *doc = NewTabDoc();
@@ -529,7 +529,7 @@ struct System {
                                 if (k == A_IMPTXTS) sep = L';';
                                 if (k == A_IMPTXTT) sep = L'\t';
                                 if (p) {
-                                    Cell *r = new Cell(nullptr, nullptr, CT_DATA,
+                                    auto *r = new Cell(nullptr, nullptr, CT_DATA,
                                                        new Grid(1, (int)as.size()));
                                     r->grid->InitCells();
                                     r->grid->CSVImport(as, sep);

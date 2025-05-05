@@ -46,9 +46,9 @@ struct ThreeChoiceDialog : public wxDialog {
     ThreeChoiceDialog(wxWindow *parent, const wxString &title, const wxString &msg,
                       const wxString &ch1, const wxString &ch2, const wxString &ch3)
         : wxDialog(parent, wxID_ANY, title) {
-        wxBoxSizer *bsv = new wxBoxSizer(wxVERTICAL);
+        auto *bsv = new wxBoxSizer(wxVERTICAL);
         bsv->Add(new wxStaticText(this, -1, msg), 0, wxALL, 5);
-        wxBoxSizer *bsb = new wxBoxSizer(wxHORIZONTAL);
+        auto *bsb = new wxBoxSizer(wxHORIZONTAL);
         bsb->Prepend(new wxButton(this, 2, ch3), 0, wxALL, 5);
         bsb->PrependStretchSpacer(1);
         bsb->Prepend(new wxButton(this, 1, ch2), 0, wxALL, 5);
@@ -78,16 +78,16 @@ struct DateTimeRangeDialog : public wxDialog {
     wxDateTime end;
     DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _(L"Date and time range")) {
         wxSizerFlags sizerflags(1);
-        wxFlexGridSizer *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        auto *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         startsizer->Add(&startdate, 0, wxALL, 5);
         startsizer->Add(&starttime, 0, wxALL, 5);
-        wxFlexGridSizer *endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        auto *endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         endsizer->Add(&enddate, 0, wxALL, 5);
         endsizer->Add(&endtime, 0, wxALL, 5);
-        wxFlexGridSizer *btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        auto *btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         btnsizer->Add(&okbtn, 0, wxALL, 5);
         btnsizer->Add(&cancelbtn, 0, wxALL, 5);
-        wxFlexGridSizer *topsizer = new wxFlexGridSizer(1);
+        auto *topsizer = new wxFlexGridSizer(1);
         topsizer->Add(&introtext, 0, wxALL, 5);
         topsizer->Add(&starttext, 0, wxALL, 5);
         topsizer->Add(startsizer, sizerflags);
