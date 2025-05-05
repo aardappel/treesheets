@@ -84,7 +84,7 @@ struct Document {
     bool searchfilter {false};
     int editfilter {0};
     wxDateTime lastmodificationtime;
-    std::set<wxString> tags;
+    set<wxString> tags;
     vector<Cell *> itercells;
 
     #define loopcellsin(par, c) \
