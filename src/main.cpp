@@ -275,10 +275,10 @@ struct string_view_nt {
     string_view_nt(const string &s) : sv(s) {}
     explicit string_view_nt(const char *s) : sv(s) {}
     explicit string_view_nt(string_view osv) : sv(osv) { check_null_terminated(); }
-    void check_null_terminated() { assert(!sv.data()[sv.size()]); }
+    void check_null_terminated() const { assert(!sv.data()[sv.size()]); }
     size_t size() const { return sv.size(); }
     const char *data() const { return sv.data(); }
-    const char *c_str() {
+    const char *c_str() const {
         check_null_terminated();  // Catch appends to parent buffer since construction.
         return sv.data();
     }
