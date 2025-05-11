@@ -16,7 +16,10 @@ struct File     // not really a struct, i.e. no alignment, read an element at a 
     // the remainder of the file from here is written as a zlib compressed stream
     Cell root;
 
-    String tagnames[1 or more, terminated by empty string];
+    for (;;) {
+        String tagname; // terminated by empty string];
+        int tagcolor;
+    }
 }
 
 struct Image
