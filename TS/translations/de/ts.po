@@ -18,7 +18,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cell(s)"
-msgstr "%d Zell(en)"
+msgstr "%d Zelle(n)"
 
 #, c-format
 msgid ""
@@ -144,7 +144,7 @@ msgid "&Redo"
 msgstr "&Wiederherstellen"
 
 msgid "&Remove Cell Text from Tags"
-msgstr "Zellentext vom Schlagwort entfe&rnen"
+msgstr "Zellentext als Schlagwort entfe&rnen"
 
 msgid "&Remove Image(s)"
 msgstr "&Bild(er) entfernen"
