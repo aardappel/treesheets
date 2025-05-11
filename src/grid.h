@@ -707,7 +707,7 @@ struct Grid {
     void ColorChange(Document *doc, int which, uint color, const Selection &s) {
         cell->AddUndo(doc);
         cell->ResetChildren();
-        foreachcellinsel(c, s) c->ColorChange(which, color);
+        foreachcellinsel(c, s) c->ColorChange(doc, which, color);
         doc->Refresh();
     }
 

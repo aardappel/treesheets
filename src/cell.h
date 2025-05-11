@@ -497,10 +497,16 @@ struct Cell {
         if (grid) grid->user_grid_outer_spacing = width;
     }
 
-    void ColorChange(int which, uint color) {
+    void ColorChange(Document *doc, int which, uint color) {
         switch (which) {
             case A_CELLCOLOR: cellcolor = color; break;
-            case A_TEXTCOLOR: textcolor = color; break;
+            case A_TEXTCOLOR:
+                if (IsTag(doc)) {
+                    doc->tags[text.t] = color;
+                } else {
+                    textcolor = color;
+                }
+                break;
             case A_BORDCOLOR:
                 if (grid) grid->bordercolor = color;
                 break;

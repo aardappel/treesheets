@@ -84,7 +84,7 @@ struct Document {
     bool searchfilter {false};
     int editfilter {0};
     wxDateTime lastmodificationtime;
-    set<wxString> tags;
+    map<wxString, uint> tags;
     vector<Cell *> itercells;
 
     #define loopcellsin(par, c) \
@@ -186,7 +186,10 @@ struct Document {
             if (!zos.IsOk()) return _(L"Zlib error while writing file.");
             wxDataOutputStream dos(zos);
             rootgrid->Save(dos, ocs);
-            for (auto &tag : tags) { dos.WriteString(tag); }
+            for (auto& [tag, color] : tags) {
+                dos.WriteString(tag);
+                dos.Write32(color);
+            }
             dos.WriteString(wxEmptyString);
         }
         lastmodsinceautosave = 0;
@@ -1827,7 +1830,7 @@ struct Document {
             case A_TAGADD: {
                 loopallcellssel(c, false) {
                     if (!c->text.t.Len()) continue;
-                    tags.insert(c->text.t);
+                    tags[c->text.t] = g_defaulttagcolor;
                 }
                 Refresh();
                 return nullptr;
@@ -2259,7 +2262,7 @@ struct Document {
 
     void RecreateTagMenu(wxMenu &menu) {
         int i = A_TAGSET;
-        for (auto &tag : tags) { menu.Append(i++, tag); }
+        for (auto &tag : tags) { menu.Append(i++, tag.first); }
         if (tags.size()) menu.AppendSeparator();
         menu.Append(A_TAGADD, _(L"&Add Cell Text as Tag"));
         menu.Append(A_TAGREMOVE, _(L"&Remove Cell Text from Tags"));
@@ -2272,7 +2275,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 loopallcellssel(c, false) {
                     c->text.Clear(this, selected);
-                    c->text.Insert(this, tag, selected, true);
+                    c->text.Insert(this, tag.first, selected, true);
                 }
                 selected.g->cell->ResetChildren();
                 selected.g->cell->ResetLayout();

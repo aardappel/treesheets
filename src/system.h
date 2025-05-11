@@ -352,7 +352,11 @@ struct System {
                             for (;;) {
                                 wxString s = dis.ReadString();
                                 if (!s.Len()) break;
-                                doc->tags.insert(s);
+                                if (versionlastloaded >= 24) {
+                                    doc->tags[s] = dis.Read32();
+                                } else {
+                                    doc->tags[s] = g_defaulttagcolor;
+                                }
                             }
                         }
 
