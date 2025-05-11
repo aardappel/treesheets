@@ -23,8 +23,7 @@ struct DropTarget : wxDropTarget {
         GetData();
         TSCanvas *sw = sys->frame->GetCurTab();
         sw->SelectClick(x, y, false, 0);
-        Document *doc = sw->doc;
-        switch (doc->dndobjc->GetReceivedFormat().GetType()) {
+        switch (Document *doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
             case wxDF_BITMAP: doc->PasteOrDrop(*doc->dndobji); break;
             case wxDF_FILENAME: doc->PasteOrDrop(*doc->dndobjf); break;
             case wxDF_TEXT:
@@ -37,8 +36,7 @@ struct DropTarget : wxDropTarget {
 
 struct BlinkTimer : wxTimer {
     void Notify() {
-        TSCanvas *tsc = sys->frame->GetCurTab();
-        if (tsc) tsc->doc->Blink();
+        if (TSCanvas *tsc = sys->frame->GetCurTab()) tsc->doc->Blink();
     }
 };
 

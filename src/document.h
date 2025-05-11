@@ -760,11 +760,10 @@ struct Document {
     const wxChar *DoubleClick(wxDC &dc) {
         if (!selected.g) return nullptr;
         ShiftToCenter(dc);
-        Cell *c = selected.GetCell();
         if (selected.Thin()) {
             selected.SelAll();
             Refresh();
-        } else if (c) {
+        } else if (Cell *c = selected.GetCell()) {
             DrawSelect(dc, selected);
             if (selected.TextEdit()) {
                 c->text.SelectWord(selected);
@@ -1089,8 +1088,7 @@ struct Document {
                 wxFontData fdat;
                 fdat.SetInitialFont(wxFont(g_deftextsize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
                                            wxFONTWEIGHT_NORMAL, false, sys->defaultfont));
-                wxFontDialog fd(sys->frame, fdat);
-                if (fd.ShowModal() == wxID_OK) {
+                if (wxFontDialog fd(sys->frame, fdat); fd.ShowModal() == wxID_OK) {
                     wxFont font = fd.GetFontData().GetChosenFont();
                     sys->defaultfont = font.GetFaceName();
                     g_deftextsize = min(20, max(10, font.GetPointSize()));

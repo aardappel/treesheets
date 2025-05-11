@@ -64,8 +64,7 @@ struct MyFrame : wxFrame {
     void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"") {
         wxString item = contents;
         wxString key = L"";
-        int pos = contents.Find("\t");
-        if (pos >= 0) {
+        if (int pos = contents.Find("\t"); pos >= 0) {
             item = contents.Mid(0, pos);
             key = contents.Mid(pos + 1);
         }
@@ -1023,8 +1022,8 @@ struct MyFrame : wxFrame {
                 }
                 break;
             case A_CUSTCOL: {
-                uint c = PickColor(sys->frame, sys->customcolor);
-                if (c != (uint)-1) sys->cfg->Write(L"customcolor", sys->customcolor = c);
+                if (uint c = PickColor(sys->frame, sys->customcolor); c != (uint)-1)
+                    sys->cfg->Write(L"customcolor", sys->customcolor = c);
                 break;
             }
 
