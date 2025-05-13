@@ -227,12 +227,12 @@ struct System {
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    const wxString &LoadDB(const wxString &filename, bool frominit = false, bool fromreload = false) {
+    const wxChar *LoadDB(const wxString &filename, bool frominit = false, bool fromreload = false) {
         wxString fn = filename;
         bool loadedfromtmp = false;
 
         if (!fromreload) {
-            if (frame->GetTabByFileName(filename)) return nullmsg;  //"this file is already loaded";
+            if (frame->GetTabByFileName(filename)) return L"";  //"this file is already loaded";
 
             if (::wxFileExists(TmpName(filename))) {
                 if (::wxMessageBox(
@@ -397,7 +397,7 @@ struct System {
             wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _(L"PNG decoder failure"), wxOK, frame);
 
-        return nullmsg;
+        return L"";
     }
 
     void FileUsed(const wxString &filename, Document *doc) {
@@ -413,12 +413,12 @@ struct System {
         }
     }
 
-    const wxString &Open(const wxString &fn) {
+    const wxChar *Open(const wxString &fn) {
         if (!fn.empty()) {
             auto msg = LoadDB(fn);
             assert(msg);
-            if (msg.Len()) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
-            return nullmsg;
+            if (*msg) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
+            return msg;
         }
         return _(L"Open file cancelled.");
     }
@@ -481,7 +481,7 @@ struct System {
         }
     }
 
-    const wxString &Import(int k, Selection &sel, Document *tsdoc) {
+    const wxChar *Import(int k, Selection &sel, Document *tsdoc) {
         wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
@@ -500,7 +500,7 @@ struct System {
                     if (p) {
                         p->Paste(tsdoc, r, sel);
                         tsdoc->Refresh();
-                        return nullmsg;
+                        return nullptr;
                     }
                 }; break;
                 case A_IMPTXTI:
@@ -522,7 +522,7 @@ struct System {
                                 if (p) {
                                     p->Paste(tsdoc, r, sel);
                                     tsdoc->Refresh();
-                                    return nullmsg;
+                                    return nullptr;
                                 }
                             }; break;
                             case A_IMPTXTC:
@@ -539,7 +539,7 @@ struct System {
                                     r->grid->CSVImport(as, sep);
                                     p->Paste(tsdoc, r, sel);
                                     tsdoc->Refresh();
-                                    return nullmsg;
+                                    return nullptr;
                                 } else {
                                     InitDB(1, (int)as.size())->grid->CSVImport(as, sep);
                                 }
@@ -553,7 +553,7 @@ struct System {
                                                     true);
             frame->GetCurTab()->doc->ClearSelectionRefresh();
         }
-        return nullmsg;
+        return nullptr;
     problem:
         wxMessageBox(_(L"couldn't import file!"), fn, wxOK, frame);
         return _(L"File load error.");

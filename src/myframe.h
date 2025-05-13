@@ -851,7 +851,7 @@ struct MyFrame : wxFrame {
 
         wxString iconpath = GetDataPath(L"images/material/toolbar/");
 
-        auto AddTBIcon = [&](const wxString &name, int action, wxString iconpath, wxString lighticon,
+        auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
             tb->AddTool(action, name,
                         wxBitmapBundle::FromSVGFile(iconpath + (darkmode ? darkicon : lighticon),
@@ -916,7 +916,7 @@ struct MyFrame : wxFrame {
         tb->Show(sys->showtoolbar);
     }
 
-    void TBMenu(wxToolBar *tb, wxMenu *menu, const wxString &name, int id = 0) {
+    void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
         tb->AddTool(id, name, wxNullBitmap, wxEmptyString, wxITEM_DROPDOWN);
         tb->SetDropdownMenu(id, menu);
     }
@@ -989,7 +989,7 @@ struct MyFrame : wxFrame {
         wxClientDC dc(sw);
         sw->DoPrepareDC(dc);
         sw->doc->ShiftToCenter(dc);
-        auto Check = [&](const wxString &cfg) {
+        auto Check = [&](const wxChar *cfg) {
             sys->cfg->Write(cfg, ce.IsChecked());
             sw->Status(_(L"change will take effect next run of TreeSheets"));
         };
@@ -1312,7 +1312,7 @@ struct MyFrame : wxFrame {
     }
 
     #ifdef WIN32
-    void SetRegKey(const wxString &key, wxString val) {
+    void SetRegKey(const wxChar *key, wxString val) {
         wxRegKey rk(key);
         rk.Create();
         rk.SetValue(L"", val);
@@ -1366,7 +1366,7 @@ struct MyFrame : wxFrame {
                 }
                 auto msg = sys->LoadDB(doc->filename, false, true);
                 assert(msg);
-                if (msg.Len()) {
+                if (*msg) {
                     GetCurTab()->Status(msg);
                 } else {
                     loop(j, nb->GetPageCount()) if (((TSCanvas *)nb->GetPage(j))->doc == doc)

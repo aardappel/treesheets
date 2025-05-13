@@ -346,7 +346,7 @@ class Selection {
         doc->DrawSelectMove(dc, *this);
     }
 
-    const wxString &Wrap(Document *doc) {
+    const wxChar *Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
         g->cell->AddUndo(doc);
         auto np = g->CloneSel(*this).release();
@@ -368,7 +368,7 @@ class Selection {
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
         doc->Refresh();
-        return nullmsg;
+        return nullptr;
     }
 
     Cell *ThinExpand(Document *doc) {
