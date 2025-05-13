@@ -42,7 +42,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     bool LoadDocument(const char *filename) {
         auto msg = sys->LoadDB(filename);
-        if (*msg) return false;
+        if (msg.Len()) return false;
 
         SwitchToCurrentDoc();
         return true;
