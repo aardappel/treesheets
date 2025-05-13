@@ -79,8 +79,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     std::string GetText() {
-        auto s = cur->text.t.utf8_str();
-        return std::string(s.data(), s.length());
+        return cur->text.t.utf8_string();
     }
 
     void SetText(std::string_view t) {
@@ -153,13 +152,11 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         else
             flags |= wxFD_OPEN | wxFD_FILE_MUST_EXIST;
         wxString fn = ::wxFileSelector(_(L"Choose file:"), L"", L"", L"", L"*.*", flags);
-        auto s = fn.utf8_str();
-        return std::string(s.data(), s.length());
+        return fn.utf8_string();
     }
 
     std::string GetFileName() {
-        auto s = doc->filename.utf8_str();
-        return std::string(s.data(), s.length());
+        return doc->filename.utf8_string();
     }
 
     int64_t LastEdit() { return cur->text.lastedit.GetValue().GetValue(); }
