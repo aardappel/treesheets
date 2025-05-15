@@ -99,23 +99,32 @@ endif()
 
 ### TreeSheets executable
 
-# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code 
-# to be placed in thirdparty/wxWidgets (see below, it can be changed to your liking).
-
-if (TREESHEETS_WITH_STATIC_WXWIDGETS)
-    set(wxBUILD_SHARED OFF)
-    set(wxBUILD_INSTALL OFF CACHE BOOL "Avoid install/uninstall target for wxWidgets in static build" FORCE)
-    add_subdirectory(thirdparty/wxWidgets)
-else()
-    find_package(wxWidgets REQUIRED aui adv core xml net)
-    include(${wxWidgets_USE_FILE})
-endif()
+set(treesheets_sources
+        src/main.cpp
+        # The header files are included in order to make them appear in IDEs
+        src/cell.h
+        src/document.h
+        src/evaluator.h
+        src/grid.h
+        src/myapp.h
+        src/mycanvas.h
+        src/myevents.h
+        src/myframe.h
+        src/mywxtools.h
+        src/script_interface.h
+        src/selection.h
+        src/stdafx.h
+        src/system.h
+        src/text.h
+        src/threadpool.h
+        src/tools.h
+)
 
 if(APPLE)
     add_executable(
         TreeSheets
         MACOSX_BUNDLE
-        src/main.cpp
+        ${treesheets_sources}
         platform/osx/App.icns
     )
     set_source_files_properties(platform/osx/App.icns PROPERTIES
@@ -127,32 +136,38 @@ elseif(WIN32)
     add_executable(
         TreeSheets
         WIN32
-        src/main.cpp
+        ${treesheets_sources}
         platform/win/icon.rc
     )
 else()
     add_executable(
         TreeSheets
-        src/main.cpp
+        ${treesheets_sources}
     )
 endif()
 
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
-## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
+# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code 
+# to be placed in thirdparty/wxWidgets (see below, it can be changed to your liking).
 
 if(TREESHEETS_WITH_STATIC_WXWIDGETS)
+    set(wxBUILD_SHARED OFF)
+    set(wxBUILD_INSTALL OFF CACHE BOOL "Avoid install/uninstall target for wxWidgets in static build" FORCE)
+    add_subdirectory(thirdparty/wxWidgets)
     set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
 else()
+    find_package(wxWidgets REQUIRED aui adv core xml net)
+    include(${wxWidgets_USE_FILE})
     set(TREESHEETS_LIBS ${wxWidgets_LIBRARIES})
 endif()
 
-list(APPEND TREESHEETS_LIBS lobster-impl)
+## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
 
+list(APPEND TREESHEETS_LIBS lobster-impl)
 if(WIN32)
     list(APPEND TREESHEETS_LIBS StackWalker)
 endif()
-
 target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 
 ### Installation
