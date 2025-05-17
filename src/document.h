@@ -1636,7 +1636,7 @@ struct Document {
                             c->textcolor = 0;
                         }
                         c->cellcolor = 0xFFFFFF;
-                        if (c->grid) c->grid->bordercolor = 0xA0A0A0;
+                        if (c->grid) c->grid->bordercolor = g_bordercolor_default;
                         break;
                     case A_LASTCELLCOLOR: c->cellcolor = sys->lastcellcolor; break;
                     case A_LASTTEXTCOLOR: c->textcolor = sys->lasttextcolor; break;
