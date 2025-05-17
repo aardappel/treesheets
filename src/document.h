@@ -1633,7 +1633,7 @@ struct Document {
                         if (c->IsTag(this)) {
                             tags[c->text.t] = g_tagcolor_default;
                         } else {
-                            c->textcolor = 0;
+                            c->textcolor = g_textcolor_default;
                         }
                         c->cellcolor = 0xFFFFFF;
                         if (c->grid) c->grid->bordercolor = g_bordercolor_default;
