@@ -1631,12 +1631,12 @@ struct Document {
                     case A_RESETSTYLE: c->text.stylebits = 0; break;
                     case A_RESETCOLOR:
                         if (c->IsTag(this)) {
-                            tags[c->text.t] = g_defaulttagcolor;
+                            tags[c->text.t] = g_tagcolor_default;
                         } else {
-                            c->textcolor = 0;
+                            c->textcolor = g_textcolor_default;
                         }
-                        c->cellcolor = 0xFFFFFF;
-                        if (c->grid) c->grid->bordercolor = 0xA0A0A0;
+                        c->cellcolor = g_cellcolor_default;
+                        if (c->grid) c->grid->bordercolor = g_bordercolor_default;
                         break;
                     case A_LASTCELLCOLOR: c->cellcolor = sys->lastcellcolor; break;
                     case A_LASTTEXTCOLOR: c->textcolor = sys->lasttextcolor; break;
@@ -1834,7 +1834,7 @@ struct Document {
             case A_TAGADD: {
                 loopallcellssel(c, false) {
                     if (!c->text.t.Len()) continue;
-                    tags[c->text.t] = g_defaulttagcolor;
+                    tags[c->text.t] = g_tagcolor_default;
                 }
                 Refresh();
                 return nullptr;

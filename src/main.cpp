@@ -14,7 +14,6 @@ static const int g_grid_margin = 1;
 static const int g_cell_margin = 2;
 static const int g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
 static const int g_usergridouterspacing_default = 3;
-static const int g_bordercolor_default = 0xA0A0A0;
 static const int g_line_width = 1;
 static const int g_selmargin = 2;
 static const int g_scrollratecursor = 240;  // FIXME: must be configurable
@@ -23,11 +22,13 @@ static const int g_max_launches = 20;
 static const int g_deftextsize_default = 12;
 static const int g_mintextsize_delta = 8;
 static const int g_maxtextsize_delta = 32;
-static const uint g_defaulttagcolor = 0xFF0000;
 static const int BLINK_TIME = 400;
 static const int CUSTOMCOLORIDX = 0;
 static const uint TS_SELECTION_MASK = 0x80;
-
+static const uint g_bordercolor_default = 0xA0A0A0;
+static const uint g_cellcolor_default = 0xFFFFFF;
+static const uint g_textcolor_default = 0x000000;
+static const uint g_tagcolor_default = 0xFF0000;
 static const std::array<uint, 42> celltextcolors = {
     0xFFFFFF,  // CUSTOM COLOR!
     0xFFFFFF, 0x000000, 0x202020, 0x404040, 0x606060, 0x808080, 0xA0A0A0, 0xC0C0C0, 0xD0D0D0,
