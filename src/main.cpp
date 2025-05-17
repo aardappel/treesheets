@@ -24,6 +24,7 @@ static const int g_deftextsize_default = 12;
 static const int g_mintextsize_delta = 8;
 static const int g_maxtextsize_delta = 32;
 static const int g_textcolor_default = 0;
+static const int g_cellcolor_default = 0xFFFFFF;
 static const uint g_tagcolor_default = 0xFF0000;
 static const int BLINK_TIME = 400;
 static const int CUSTOMCOLORIDX = 0;
