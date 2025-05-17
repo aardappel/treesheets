@@ -87,7 +87,7 @@ struct Text {
                       g_deftextsize - g_maxtextsize() - zoomdepth);
     }
 
-    bool IsWord(wxChar c) { return wxIsalnum(c) || wxStrchr(L"_\"\'()", c); }
+    bool IsWord(wxChar c) { return wxIsalnum(c) || wxStrchr(L"_\"\'()", c) || wxIspunct(c); }
     wxString GetLinePart(int &i, int p, int l) {
         int start = i;
         i = p;
