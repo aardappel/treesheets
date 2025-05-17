@@ -34,9 +34,9 @@ struct Cell {
     int celltype;
     Text text;
     Grid *grid;
-    uint cellcolor {0xFFFFFF};
-    uint textcolor {0x000000};
-    uint actualcellcolor {0xFFFFFF};
+    uint cellcolor {g_cellcolor_default};
+    uint actualcellcolor {g_cellcolor_default};
+    uint textcolor {g_textcolor_default};
     bool tiny {false};
     bool verticaltextandgrid {true};
     wxUint8 drawstyle {DS_GRID};
