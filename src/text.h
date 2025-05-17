@@ -88,25 +88,25 @@ struct Text {
     }
 
     bool IsWord(wxChar c) { return wxIsalnum(c) || wxStrchr(L"_\"\'()", c) || wxIspunct(c); }
-    wxString GetLinePart(int &i, int p, int l) {
-        int start = i;
-        i = p;
+    wxString GetLinePart(int &currentpos, int breakpos, int limitpos) {
+        int startpos = currentpos;
+        currentpos = breakpos;
 
-        for (auto j = t.begin() + start; j != t.end() && *j != L' ' && !IsWord(*j); j++) {
-            i++;
-            p++;
+        for (auto j = t.begin() + startpos; (j != t.end()) && !wxIsspace(*j) && !IsWord(*j); j++) {
+            currentpos++;
+            breakpos++;
         }
          // gobble up any trailing punctuation
-        if (i != start && i < l && (t[i] == '\"' || t[i] == '\'')) {
-            i++;
-            p++;
+        if (currentpos != startpos && currentpos < limitpos && (t[currentpos] == '\"' || t[currentpos] == '\'')) {
+            currentpos++;
+            breakpos++;
         }  // special case: if punctuation followed by quote, quote is meant to be part of word
 
-        for (auto k = t.begin() + i; k != t.end() && *k == L' '; k++) {
+        for (auto k = t.begin() + currentpos; (k != t.end()) && wxIsspace(*k); k++) {
             // gobble spaces, but do not copy them
-            i++;
-            if (i == l)
-                p = i;  // happens with a space at the last line, user is most likely about to type
+            currentpos++;
+            if (currentpos == limitpos)
+                breakpos = currentpos;  // happens with a space at the last line, user is most likely about to type
                         // another word, so
             // need to show space. Alternatively could check if the cursor is actually on this spot.
             // Simply
@@ -115,9 +115,9 @@ struct Text {
             // even then, placing the cursor there again after deselect may be hard.
         }
 
-        ASSERT(start != i);
+        ASSERT(startpos != currentpos);
 
-        return t.Mid(start, p - start);
+        return t.Mid(startpos, breakpos - startpos);
     }
 
     wxString GetLine(int &i, int maxcolwidth) {
