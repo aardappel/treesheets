@@ -1630,8 +1630,12 @@ struct Document {
                         break;
                     case A_RESETSTYLE: c->text.stylebits = 0; break;
                     case A_RESETCOLOR:
+                        if (c->IsTag(this)) {
+                            tags[c->text.t] = g_defaulttagcolor;
+                        } else {
+                            c->textcolor = 0;
+                        }
                         c->cellcolor = 0xFFFFFF;
-                        c->textcolor = 0;
                         if (c->grid) c->grid->bordercolor = 0xA0A0A0;
                         break;
                     case A_LASTCELLCOLOR: c->cellcolor = sys->lastcellcolor; break;
