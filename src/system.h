@@ -355,7 +355,7 @@ struct System {
                                 if (versionlastloaded >= 24) {
                                     doc->tags[s] = dis.Read32();
                                 } else {
-                                    doc->tags[s] = g_defaulttagcolor;
+                                    doc->tags[s] = g_tagcolor_default;
                                 }
                             }
                         }
