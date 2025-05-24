@@ -752,6 +752,14 @@ struct MyFrame : wxFrame {
     }
 
     ~MyFrame() {
+        if (nb) {
+            // Consider the case that the user reordered the tabs
+            while (filehistory.GetCount() > 0) filehistory.RemoveFileFromHistory(0);
+            loop(i, nb->GetPageCount()) {
+                auto *p = (TSCanvas *)nb->GetPage(i);
+                filehistory.AddFileToHistory(p->doc->filename);
+            }
+        }
         filehistory.Save(*sys->cfg);
         wxString oldpath = sys->cfg->GetPath();
         sys->cfg->SetPath("/scripts");
