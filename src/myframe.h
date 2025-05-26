@@ -300,7 +300,7 @@ struct MyFrame : wxFrame {
             MyAppend(selmenu, A_SRIGHT, _(L"Extend Selection Right") + "\tSHIFT+RIGHT");
             MyAppend(selmenu, A_SUP, _(L"Extend Selection Up") + "\tSHIFT+UP");
             MyAppend(selmenu, A_SDOWN, _(L"Extend Selection Down") + "\tSHIFT+DOWN");
-            MyAppend(selmenu, A_SCOLS, _(L"Extend Selection Full Columns"));
+            MyAppend(selmenu, A_SCOLS, _(L"Extend Selection Full Columns") + "\tCTRL+SHIFT+a");
             MyAppend(selmenu, A_SROWS, _(L"Extend Selection Full Rows"));
             selmenu->AppendSeparator();
             MyAppend(selmenu, A_CANCELEDIT, _(L"Select &Parent") + "\tESC");
