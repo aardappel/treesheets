@@ -1451,6 +1451,17 @@ struct Document {
 
             case A_SCLEFT:
             case A_SCRIGHT:
+                if (!selected.TextEdit() && k == A_SCLEFT) {
+                    selected.xs = selected.Thin() ? selected.x : selected.x + 1;
+                    selected.x = 0;
+                    Refresh();
+                    return nullptr;
+                }
+                if (!selected.TextEdit() && k == A_SCRIGHT) {
+                    selected.xs = selected.g->xs - selected.x;
+                    Refresh();
+                    return nullptr;
+                }
                 selected.Cursor(this, k - A_SCUP + A_UP, true, true, dc);
                 return nullptr;
 
