@@ -357,6 +357,7 @@ struct MyFrame : wxFrame {
             MyAppend(stmenu, A_OPENCELLCOLOR, _(L"Open cell colors") + "\tSHIFT+ALT+F9");
             MyAppend(stmenu, A_OPENTEXTCOLOR, _(L"Open text colors") + "\tSHIFT+ALT+F10");
             MyAppend(stmenu, A_OPENBORDCOLOR, _(L"Open border colors") + "\tSHIFT+ALT+F11");
+            MyAppend(stmenu, A_OPENIMGDROPDOWN, _(L"Open image dropdown") + "\tSHIFT+ALT+F12");
 
             auto *tagmenu = new wxMenu();
             MyAppend(tagmenu, A_TAGADD, _(L"&Add Cell Text as Tag"));
