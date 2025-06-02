@@ -1214,6 +1214,9 @@ struct Document {
             case A_OPENBORDCOLOR:
                 if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
                 break;
+            case A_OPENIMGDROPDOWN:
+                if (sys->frame->idd) sys->frame->idd->ShowPopup();
+                break;
 
             case A_REPLACEONCE:
             case A_REPLACEONCEJ:
