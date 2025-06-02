@@ -1465,6 +1465,19 @@ struct Document {
                 selected.Cursor(this, k - A_SCUP + A_UP, true, true, dc);
                 return nullptr;
 
+            case A_SCUP:
+            case A_SCDOWN:
+                if (!selected.TextEdit() && k == A_SCUP) {
+                    selected.ys = selected.Thin() ? selected.y : selected.y + 1;
+                    selected.y = 0;
+                    Refresh();
+                }
+                if (!selected.TextEdit() && k == A_SCDOWN) {
+                    selected.ys = selected.g->ys - selected.y;
+                    Refresh();
+                }
+                return nullptr;
+
             case wxID_BOLD: selected.g->SetStyle(this, selected, STYLE_BOLD); return nullptr;
             case wxID_ITALIC: selected.g->SetStyle(this, selected, STYLE_ITALIC); return nullptr;
             case A_TT: selected.g->SetStyle(this, selected, STYLE_FIXED); return nullptr;
