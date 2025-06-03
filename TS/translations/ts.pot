@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-24 21:10+0200\n"
+"POT-Creation-Date: 2025-06-03 15:02-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -547,6 +547,12 @@ msgid ""
 "programs"
 msgstr ""
 
+msgid "Extend Selection Columns Down"
+msgstr ""
+
+msgid "Extend Selection Columns Up"
+msgstr ""
+
 msgid "Extend Selection Down"
 msgstr ""
 
@@ -560,6 +566,12 @@ msgid "Extend Selection Left"
 msgstr ""
 
 msgid "Extend Selection Right"
+msgstr ""
+
+msgid "Extend Selection Rows Left"
+msgstr ""
+
+msgid "Extend Selection Rows Right"
 msgstr ""
 
 msgid "Extend Selection Up"
@@ -886,6 +898,9 @@ msgid "Open cell colors"
 msgstr ""
 
 msgid "Open file cancelled."
+msgstr ""
+
+msgid "Open image dropdown"
 msgstr ""
 
 msgid "Open link in &browser"

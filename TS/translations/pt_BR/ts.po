@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-24 21:10+0200\n"
-"PO-Revision-Date: 2025-04-24 17:46-0300\n"
+"POT-Creation-Date: 2025-06-03 15:02-0300\n"
+"PO-Revision-Date: 2025-06-03 15:35-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -588,20 +588,32 @@ msgstr ""
 "espaços para cada nível de indentação. Pode ser usado para importar em "
 "programas de mapas mentais e editores de texto em geral"
 
+msgid "Extend Selection Columns Down"
+msgstr "Estender Seleção o Máximo Possível Para Baixo"
+
+msgid "Extend Selection Columns Up"
+msgstr "Estender Seleção o Máximo Possível Para Cima"
+
 msgid "Extend Selection Down"
 msgstr "Estender Seleção para Baixo"
 
 msgid "Extend Selection Full Columns"
-msgstr "Estender Seleção à Coluna Toda"
+msgstr "Estender Seleção à(s) Coluna(s) Inteira(s)"
 
 msgid "Extend Selection Full Rows"
-msgstr "Estender Seleção à Linha Toda"
+msgstr "Estender Seleção à(s) Linha(s) Inteira(s)"
 
 msgid "Extend Selection Left"
 msgstr "Estender Seleção para a Esquerda"
 
 msgid "Extend Selection Right"
 msgstr "Estender Seleção para a Direita"
+
+msgid "Extend Selection Rows Left"
+msgstr "Estender Seleção o Máximo Possível Para a Esquerda"
+
+msgid "Extend Selection Rows Right"
+msgstr "Estender Seleção o Máximo Possível Para a Direita"
 
 msgid "Extend Selection Up"
 msgstr "Estender Seleção para Cima"
@@ -936,19 +948,22 @@ msgid "Open an existing document"
 msgstr "Abre um documento existente"
 
 msgid "Open border colors"
-msgstr "Abrir cores de borda"
+msgstr "Abrir lista dropdown Borda"
 
 msgid "Open cell colors"
-msgstr "Abrir cores de célula"
+msgstr "Abrir lista dropdown Célula"
 
 msgid "Open file cancelled."
 msgstr "A abertura de arquivo foi cancelada."
+
+msgid "Open image dropdown"
+msgstr "Abrir lista dropdown Imagem"
 
 msgid "Open link in &browser"
 msgstr "Abrir &link no navegador"
 
 msgid "Open text colors"
-msgstr "Abrir cores de texto"
+msgstr "Abrir lista dropdown Texto"
 
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
