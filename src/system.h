@@ -155,7 +155,7 @@ struct System {
     }
 
     Document *NewTabDoc(bool append = false) {
-        auto *doc = new Document();
+        auto doc = new Document();
         frame->NewTab(doc, append);
         return doc;
     }
@@ -212,10 +212,10 @@ struct System {
     void LoadOpRef() { LoadDB(frame->GetDocPath(L"examples/operation-reference.cts")); }
 
     Cell *&InitDB(int sizex, int sizey = 0) {
-        auto *c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
+        auto c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
-        Document *doc = NewTabDoc();
+        auto doc = NewTabDoc();
         doc->InitWith(c, L"", nullptr, 1, 1);
         return doc->rootgrid;
     }
@@ -384,7 +384,7 @@ struct System {
             ThreadPool pool(std::thread::hardware_concurrency());
             for (const auto &image : sys->imagelist) {
                 pool.enqueue(
-                    [](auto *img) {
+                    [](auto img) {
                         if (img->trefc) img->Display();
                     },
                     image.get());
@@ -533,8 +533,8 @@ struct System {
                                 if (k == A_IMPTXTS) sep = L';';
                                 if (k == A_IMPTXTT) sep = L'\t';
                                 if (p) {
-                                    auto *r = new Cell(nullptr, nullptr, CT_DATA,
-                                                       new Grid(1, (int)as.size()));
+                                    auto r = new Cell(nullptr, nullptr, CT_DATA,
+                                                      new Grid(1, (int)as.size()));
                                     r->grid->InitCells();
                                     r->grid->CSVImport(as, sep);
                                     p->Paste(tsdoc, r, sel);
@@ -599,7 +599,7 @@ struct System {
             FillXML(c, ns[0], attributestoo);
         } else {
             bool allrow = n->GetName() == L"grid";
-            for (auto *n : ns)
+            for (auto n : ns)
                 if (n->GetName() != L"row") {
                     allrow = false;
                     break;

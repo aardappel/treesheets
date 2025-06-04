@@ -62,14 +62,14 @@ struct MyFrame : wxFrame {
     std::map<wxString, wxString> menustrings;
 
     void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"") {
-        wxString item = contents;
+        auto item = contents;
         wxString key = L"";
         if (int pos = contents.Find("\t"); pos >= 0) {
             item = contents.Mid(0, pos);
             key = contents.Mid(pos + 1);
         }
         key = sys->cfg->Read(item, key);
-        wxString newcontents = item;
+        auto newcontents = item;
         if (key.Length()) newcontents += "\t" + key;
         menu->Append(tag, newcontents, help);
         menustrings[item] = key;
@@ -165,7 +165,7 @@ struct MyFrame : wxFrame {
             #define CTRLORALT "ALT"
         #endif
 
-        auto *expmenu = new wxMenu();
+        auto expmenu = new wxMenu();
         MyAppend(expmenu, A_EXPXML, _(L"&XML..."),
                  _(L"Export the current view as XML (which can also be reimported without losing structure)"));
         MyAppend(expmenu, A_EXPHTMLT, _(L"&HTML (Tables+Styling)..."),
@@ -183,7 +183,7 @@ struct MyFrame : wxFrame {
         MyAppend(expmenu, A_EXPIMAGE, _(L"&Image..."),
                  _(L"Export the current view as an image. Useful for faithful renderings of the TreeSheet, and programs that don't accept any of the above options"));
 
-        auto *impmenu = new wxMenu();
+        auto impmenu = new wxMenu();
         MyAppend(impmenu, A_IMPXML, _(L"XML..."));
         MyAppend(impmenu, A_IMPXMLA, _(L"XML (attributes too, for OPML etc)..."));
         MyAppend(impmenu, A_IMPTXTI, _(L"Indented text..."));
@@ -191,11 +191,11 @@ struct MyFrame : wxFrame {
         MyAppend(impmenu, A_IMPTXTS, _(L"Semi-Colon delimited text (CSV)..."));
         MyAppend(impmenu, A_IMPTXTT, _(L"Tab delimited text..."));
 
-        auto *recentmenu = new wxMenu();
+        auto recentmenu = new wxMenu();
         filehistory.UseMenu(recentmenu);
         filehistory.AddFilesToMenu();
 
-        auto *filemenu = new wxMenu();
+        auto filemenu = new wxMenu();
         MyAppend(filemenu, wxID_NEW, _(L"&New") + "\tCTRL+n",
                      _(L"Create a new document"));
         MyAppend(filemenu, wxID_OPEN, _(L"&Open...") + "\tCTRL+o",
@@ -222,7 +222,7 @@ struct MyFrame : wxFrame {
 
         wxMenu *editmenu;
         loop(twoeditmenus, 2) {
-            auto *sizemenu = new wxMenu();
+            auto sizemenu = new wxMenu();
             MyAppend(sizemenu, A_INCSIZE, _(L"&Increase text size (SHIFT+mousewheel)") + "\tSHIFT+PGUP");
             MyAppend(sizemenu, A_DECSIZE, _(L"&Decrease text size (SHIFT+mousewheel)") + "\tSHIFT+PGDN");
             MyAppend(sizemenu, A_RESETSIZE, _(L"&Reset text sizes") + "\tCTRL+SHIFT+s");
@@ -236,7 +236,7 @@ struct MyFrame : wxFrame {
                      _(L"Decrease column width (no sub grids)") + "\tCTRL+ALT+PGDN");
             MyAppend(sizemenu, A_RESETWIDTH, _(L"Reset column widths") + "\tCTRL+SHIFT+w");
 
-            auto *bordmenu = new wxMenu();
+            auto bordmenu = new wxMenu();
             MyAppend(bordmenu, A_BORD0, _(L"Border &0") + "\tCTRL+SHIFT+9");
             MyAppend(bordmenu, A_BORD1, _(L"Border &1") + "\tCTRL+SHIFT+1");
             MyAppend(bordmenu, A_BORD2, _(L"Border &2") + "\tCTRL+SHIFT+2");
@@ -244,7 +244,7 @@ struct MyFrame : wxFrame {
             MyAppend(bordmenu, A_BORD4, _(L"Border &4") + "\tCTRL+SHIFT+4");
             MyAppend(bordmenu, A_BORD5, _(L"Border &5") + "\tCTRL+SHIFT+5");
 
-            auto *selmenu = new wxMenu();
+            auto selmenu = new wxMenu();
             MyAppend(selmenu, A_NEXT,
                 #ifdef __WXGTK__
                     _(L"Move to next cell (TAB)")
@@ -317,7 +317,7 @@ struct MyFrame : wxFrame {
             MyAppend(selmenu, A_LINKIMG, _(L"Go To Matching Cell (Image)") + "\tF7");
             MyAppend(selmenu, A_LINKIMGREV, _(L"Go To Matching Cell (Image, Reverse)") + "\tSHIFT+F7");
 
-            auto *temenu = new wxMenu();
+            auto temenu = new wxMenu();
             MyAppend(temenu, A_LEFT, _(L"Cursor Left") + "\tLEFT");
             MyAppend(temenu, A_RIGHT, _(L"Cursor Right") + "\tRIGHT");
             MyAppend(temenu, A_MLEFT, _(L"Word Left") + "\tCTRL+LEFT");
@@ -341,7 +341,7 @@ struct MyFrame : wxFrame {
             MyAppend(temenu, A_PROGRESSCELL, _(L"Enter/exit text edit to the right") + "\t" CTRLORALT "+ENTER");
             MyAppend(temenu, A_CANCELEDIT, _(L"Cancel text edits") + "\tESC");
 
-            auto *stmenu = new wxMenu();
+            auto stmenu = new wxMenu();
             MyAppend(stmenu, wxID_BOLD, _(L"Toggle cell &BOLD") + "\tCTRL+b");
             MyAppend(stmenu, wxID_ITALIC, _(L"Toggle cell &ITALIC") + "\tCTRL+i");
             MyAppend(stmenu, A_TT, _(L"Toggle cell &typewriter") + "\tCTRL+ALT+t");
@@ -359,13 +359,13 @@ struct MyFrame : wxFrame {
             MyAppend(stmenu, A_OPENBORDCOLOR, _(L"Open border colors") + "\tSHIFT+ALT+F11");
             MyAppend(stmenu, A_OPENIMGDROPDOWN, _(L"Open image dropdown") + "\tSHIFT+ALT+F12");
 
-            auto *tagmenu = new wxMenu();
+            auto tagmenu = new wxMenu();
             MyAppend(tagmenu, A_TAGADD, _(L"&Add Cell Text as Tag"));
             MyAppend(tagmenu, A_TAGREMOVE, _(L"&Remove Cell Text from Tags"));
             MyAppend(tagmenu, A_NOP, _(L"&Set Cell Text to tag (use CTRL+RMB)"),
                      _(L"Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"));
 
-            auto *orgmenu = new wxMenu();
+            auto orgmenu = new wxMenu();
             MyAppend(orgmenu, A_TRANSPOSE, _(L"&Transpose") + "\tCTRL+SHIFT+t",
                      _(L"changes the orientation of a grid"));
             MyAppend(orgmenu, A_SORT, _(L"Sort &Ascending"),
@@ -379,7 +379,7 @@ struct MyFrame : wxFrame {
             MyAppend(orgmenu, A_FLATTEN, _(L"&Flatten"),
                      _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"));
 
-            auto *imgmenu = new wxMenu();
+            auto imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _(L"&Add Image"), _(L"Adds an image to the selected cell"));
             MyAppend(imgmenu, A_IMAGESVA, _(L"Save Image(s) to disk"),
                      _(L"Save image(s) to disk. Multiple images will be saved with a counter appended to each file name."));
@@ -403,13 +403,13 @@ struct MyFrame : wxFrame {
             MyAppend(imgmenu, A_IMAGER, _(L"&Remove Image(s)"),
                      _(L"Remove image(s) from the selected cells"));
 
-            auto *navmenu = new wxMenu();
+            auto navmenu = new wxMenu();
             MyAppend(navmenu, A_BROWSE, _(L"Open link in &browser") + "\tF5",
                      _(L"Opens up the text from the selected cell in browser (should start be a valid URL)"));
             MyAppend(navmenu, A_BROWSEF, _(L"Open &file") + "\tF4",
                      _(L"Opens up the text from the selected cell in default application for the file type"));
 
-            auto *laymenu = new wxMenu();
+            auto laymenu = new wxMenu();
             MyAppend(laymenu, A_V_GS,
                      _(L"Vertical Layout with Grid Style Rendering") + "\t" CTRLORALT "+1");
             MyAppend(laymenu, A_V_BS,
@@ -501,7 +501,7 @@ struct MyFrame : wxFrame {
             if (!twoeditmenus) editmenupopup = editmenu;
         }
 
-        auto *semenu = new wxMenu();
+        auto semenu = new wxMenu();
         MyAppend(semenu, wxID_FIND, _(L"&Search") + "\tCTRL+f",
                      _(L"Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
@@ -514,7 +514,7 @@ struct MyFrame : wxFrame {
         MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next") + "\tCTRL+j");
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
 
-        auto *scrollmenu = new wxMenu();
+        auto scrollmenu = new wxMenu();
         MyAppend(scrollmenu, A_AUP, _(L"Scroll Up (mousewheel)") + "\tPGUP");
         MyAppend(scrollmenu, A_AUP, _(L"Scroll Up (mousewheel)") + "\tALT+UP");
         MyAppend(scrollmenu, A_ADOWN, _(L"Scroll Down (mousewheel)") + "\tPGDN");
@@ -522,7 +522,7 @@ struct MyFrame : wxFrame {
         MyAppend(scrollmenu, A_ALEFT, _(L"Scroll Left") + "\tALT+LEFT");
         MyAppend(scrollmenu, A_ARIGHT, _(L"Scroll Right") + "\tALT+RIGHT");
 
-        auto *filtermenu = new wxMenu();
+        auto filtermenu = new wxMenu();
         MyAppend(filtermenu, A_FILTEROFF, _(L"Turn filter &off") + "\tCTRL+SHIFT+f");
         MyAppend(filtermenu, A_FILTERS, _(L"Show only cells in current search"));
         MyAppend(filtermenu, A_FILTERRANGE, _(L"Show last edits in specific date range"));
@@ -541,7 +541,7 @@ struct MyFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERBYCELLBG, _(L"Filter by the same cell color"));
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _(L"Go to next filter match") + "\tCTRL+F3");
 
-        auto *viewmenu = new wxMenu();
+        auto viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _(L"Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
         MyAppend(viewmenu, A_ZOOMOUT, _(L"Zoom &Out (CTRL+mousewheel)") + "\tCTRL+PGDN");
         MyAppend(viewmenu, A_NEXTFILE,
@@ -569,7 +569,7 @@ struct MyFrame : wxFrame {
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
         MyAppend(viewmenu, A_SHOWSTATS, _(L"Show statistics") + "\tCTRL+d");
 
-        auto *roundmenu = new wxMenu();
+        auto roundmenu = new wxMenu();
         roundmenu->AppendRadioItem(A_ROUND0, _(L"Radius &0"));
         roundmenu->AppendRadioItem(A_ROUND1, _(L"Radius &1"));
         roundmenu->AppendRadioItem(A_ROUND2, _(L"Radius &2"));
@@ -579,7 +579,7 @@ struct MyFrame : wxFrame {
         roundmenu->AppendRadioItem(A_ROUND6, _(L"Radius &6"));
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
-        auto *optmenu = new wxMenu();
+        auto optmenu = new wxMenu();
         MyAppend(optmenu, wxID_SELECT_FONT, _(L"Pick Default Font..."));
         MyAppend(optmenu, A_CUSTKEY, _(L"Change a key binding..."));
         MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _(L"Set default column width..."));
@@ -627,7 +627,7 @@ struct MyFrame : wxFrame {
         optmenu->Check(A_FASTRENDER, sys->fastrender);
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
 
-        auto *scriptmenu = new wxMenu();
+        auto scriptmenu = new wxMenu();
         MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add Lobster script...") + "\tCTRL+ALT+L",
                      _(L"Add Lobster script..."));
         MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove script from list...") + "\tCTRL+SHIFT+ALT+L",
@@ -644,7 +644,7 @@ struct MyFrame : wxFrame {
             sf = wxFindNextFile();
         }
 
-        auto *markmenu = new wxMenu();
+        auto markmenu = new wxMenu();
         MyAppend(markmenu, A_MARKDATA, _(L"&Data") + "\tCTRL+ALT+d");
         MyAppend(markmenu, A_MARKCODE, _(L"&Operation") + "\tCTRL+ALT+o");
         MyAppend(markmenu, A_MARKVARD, _(L"Variable &Assign") + "\tCTRL+ALT+a");
@@ -652,12 +652,12 @@ struct MyFrame : wxFrame {
         MyAppend(markmenu, A_MARKVIEWH, _(L"&Horizontal View") + "\tCTRL+ALT+.");
         MyAppend(markmenu, A_MARKVIEWV, _(L"&Vertical View") + "\tCTRL+ALT+,");
 
-        auto *langmenu = new wxMenu();
+        auto langmenu = new wxMenu();
         MyAppend(langmenu, wxID_EXECUTE, _(L"&Run") + "\tCTRL+ALT+F5");
         langmenu->AppendSubMenu(markmenu, _(L"&Mark as"));
         MyAppend(langmenu, A_CLRVIEW, _(L"&Clear Views"));
 
-        auto *helpmenu = new wxMenu();
+        auto helpmenu = new wxMenu();
         MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."),
                      _(L"Show About dialog"));
         MyAppend(helpmenu, wxID_HELP, _(L"Load interactive &tutorial...") + "\tF1");
@@ -671,7 +671,7 @@ struct MyFrame : wxFrame {
         wxAcceleratorTable accel(3, entries);
         SetAcceleratorTable(accel);
 
-        auto *menubar = new wxMenuBar();
+        auto menubar = new wxMenuBar();
         menubar->Append(filemenu, _(L"&File"));
         menubar->Append(editmenu, _(L"&Edit"));
         menubar->Append(semenu, _(L"&Search"));
@@ -698,7 +698,7 @@ struct MyFrame : wxFrame {
 
         ConstructToolBar();
 
-        auto *sb = CreateStatusBar(5);
+        auto sb = CreateStatusBar(5);
         SetStatusBarPane(0);
         SetDPIAwareStatusWidths();
         sb->Show(sys->showstatusbar);
@@ -763,7 +763,7 @@ struct MyFrame : wxFrame {
             // Consider the case that the user reordered the tabs
             while (filehistory.GetCount() > 0) filehistory.RemoveFileFromHistory(0);
             loop(i, nb->GetPageCount()) {
-                auto *p = (TSCanvas *)nb->GetPage(i);
+                auto p = (TSCanvas *)nb->GetPage(i);
                 filehistory.AddFileToHistory(p->doc->filename);
             }
         }
@@ -787,7 +787,7 @@ struct MyFrame : wxFrame {
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
-        auto *sw = new TSCanvas(this, nb);
+        auto sw = new TSCanvas(this, nb);
         sw->doc = doc;
         doc->sw = sw;
         sw->SetScrollRate(1, 1);
@@ -806,7 +806,7 @@ struct MyFrame : wxFrame {
     }
     TSCanvas *GetTabByFileName(const wxString &fn) {
         if (nb) loop(i, nb->GetPageCount()) {
-                auto *p = (TSCanvas *)nb->GetPage(i);
+                auto p = (TSCanvas *)nb->GetPage(i);
                 if (p->doc->filename == fn) {
                     nb->SetSelection(i);
                     return p;
@@ -816,7 +816,7 @@ struct MyFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        auto *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
+        auto sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sw->Status();
         SetSearchTextBoxBackgroundColour(false);
         sys->TabChange(sw->doc);
@@ -824,13 +824,13 @@ struct MyFrame : wxFrame {
 
     void TabsReset() {
         if (nb) loop(i, nb->GetPageCount()) {
-                auto *p = (TSCanvas *)nb->GetPage(i);
+                auto p = (TSCanvas *)nb->GetPage(i);
                 p->doc->rootgrid->ResetChildren();
             }
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        auto *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
+        auto sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sys->RememberOpenFiles();
         if (nb->GetPageCount() <= 1) {
             nbe.Veto();
@@ -938,7 +938,7 @@ struct MyFrame : wxFrame {
 
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
-        auto *sw = GetCurTab();
+        auto sw = GetCurTab();
         if (((tc = filter) && filter == wxWindow::FindFocus()) ||
             ((tc = replaces) && replaces == wxWindow::FindFocus())) {
             long from, to;
@@ -1019,7 +1019,7 @@ struct MyFrame : wxFrame {
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());
-                    auto *wsb = this->GetStatusBar();
+                    auto wsb = this->GetStatusBar();
                     wsb->Show(sys->showstatusbar);
                     this->SendSizeEvent();
                     this->Refresh();
@@ -1029,7 +1029,7 @@ struct MyFrame : wxFrame {
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
-                    auto *wtb = this->GetToolBar();
+                    auto wtb = this->GetToolBar();
                     wtb->Show(sys->showtoolbar);
                     this->SendSizeEvent();
                     this->Refresh();
@@ -1037,7 +1037,7 @@ struct MyFrame : wxFrame {
                 }
                 break;
             case A_CUSTCOL: {
-                if (uint c = PickColor(sys->frame, sys->customcolor); c != (uint)-1)
+                if (auto c = PickColor(sys->frame, sys->customcolor); c != (uint)-1)
                     sys->cfg->Write(L"customcolor", sys->customcolor = c);
                 break;
             }
@@ -1159,8 +1159,8 @@ struct MyFrame : wxFrame {
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
         SetSearchTextBoxBackgroundColour(false);
-        auto *doc = GetCurTab()->doc;
-        auto *sw = GetCurTab();
+        auto doc = GetCurTab()->doc;
+        auto sw = GetCurTab();
         wxClientDC dc(sw);
         doc->SearchNext(dc, false, false, false);
         if (doc->searchfilter) {
@@ -1171,7 +1171,7 @@ struct MyFrame : wxFrame {
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        auto *sw = GetCurTab();
+        auto sw = GetCurTab();
         if (ce.GetId() == A_SEARCH && ce.GetString().Len() == 0) {
             sw->SetFocus();
         } else {
@@ -1225,7 +1225,7 @@ struct MyFrame : wxFrame {
             ThreadPool pool(std::thread::hardware_concurrency());
             for (const auto &image : sys->imagelist) {
                 pool.enqueue(
-                    [](auto *img) {
+                    [](auto img) {
                         img->bm_display = wxNullBitmap;
                         img->Display();
                     },
@@ -1352,7 +1352,7 @@ struct MyFrame : wxFrame {
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
         const auto &modfile = event.GetPath().GetFullPath();
         loop(i, nb->GetPageCount()) {
-            auto *doc = ((TSCanvas *)nb->GetPage(i))->doc;
+            auto doc = ((TSCanvas *)nb->GetPage(i))->doc;
             if (modfile == doc->filename) {
                 auto modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
