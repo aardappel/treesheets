@@ -2332,7 +2332,7 @@ struct Document {
         scrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(rootgrid);
-        std::sort(itercells.begin(), itercells.end(), [](auto a, auto b) {
+        sort(itercells.begin(), itercells.end(), [](auto a, auto b) {
             // sort in descending order
             return a->text.lastedit > b->text.lastedit;
         });
