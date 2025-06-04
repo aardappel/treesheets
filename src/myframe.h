@@ -154,7 +154,7 @@ struct MyFrame : wxFrame {
         sys->cfg->Read(L"lefttabs", &lefttabs, true);
 
         filehistory.Load(*sys->cfg);
-        wxString oldpath = sys->cfg->GetPath();
+        auto oldpath = sys->cfg->GetPath();
         sys->cfg->SetPath("/scripts");
         scripts.Load(*sys->cfg);
         sys->cfg->SetPath(oldpath);
@@ -636,7 +636,7 @@ struct MyFrame : wxFrame {
         scripts.AddFilesToMenu();
 
         auto scriptpath = GetDataPath("scripts/");
-        wxString sf = wxFindFirstFile(scriptpath + L"*.lobster");
+        auto sf = wxFindFirstFile(scriptpath + L"*.lobster");
         int sidx = 0;
         while (!sf.empty()) {
             auto fn = wxFileName::FileName(sf).GetFullName();
@@ -698,7 +698,7 @@ struct MyFrame : wxFrame {
 
         ConstructToolBar();
 
-        wxStatusBar *sb = CreateStatusBar(5);
+        auto *sb = CreateStatusBar(5);
         SetStatusBarPane(0);
         SetDPIAwareStatusWidths();
         sb->Show(sys->showstatusbar);
@@ -768,7 +768,7 @@ struct MyFrame : wxFrame {
             }
         }
         filehistory.Save(*sys->cfg);
-        wxString oldpath = sys->cfg->GetPath();
+        auto oldpath = sys->cfg->GetPath();
         sys->cfg->SetPath("/scripts");
         scripts.Save(*sys->cfg);
         sys->cfg->SetPath(oldpath);
@@ -806,7 +806,7 @@ struct MyFrame : wxFrame {
     }
     TSCanvas *GetTabByFileName(const wxString &fn) {
         if (nb) loop(i, nb->GetPageCount()) {
-                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                auto *p = (TSCanvas *)nb->GetPage(i);
                 if (p->doc->filename == fn) {
                     nb->SetSelection(i);
                     return p;
@@ -816,7 +816,7 @@ struct MyFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
+        auto *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sw->Status();
         SetSearchTextBoxBackgroundColour(false);
         sys->TabChange(sw->doc);
@@ -824,13 +824,13 @@ struct MyFrame : wxFrame {
 
     void TabsReset() {
         if (nb) loop(i, nb->GetPageCount()) {
-                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                auto *p = (TSCanvas *)nb->GetPage(i);
                 p->doc->rootgrid->ResetChildren();
             }
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
+        auto *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sys->RememberOpenFiles();
         if (nb->GetPageCount() <= 1) {
             nbe.Veto();
@@ -864,7 +864,7 @@ struct MyFrame : wxFrame {
         #define SEPARATOR tb->AddSeparator()
         #endif
 
-        wxString iconpath = GetDataPath(L"images/material/toolbar/");
+        auto iconpath = GetDataPath(L"images/material/toolbar/");
 
         auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
@@ -938,7 +938,7 @@ struct MyFrame : wxFrame {
 
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
-        TSCanvas *sw = GetCurTab();
+        auto *sw = GetCurTab();
         if (((tc = filter) && filter == wxWindow::FindFocus()) ||
             ((tc = replaces) && replaces == wxWindow::FindFocus())) {
             long from, to;
@@ -1019,7 +1019,7 @@ struct MyFrame : wxFrame {
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());
-                    wxStatusBar *wsb = this->GetStatusBar();
+                    auto *wsb = this->GetStatusBar();
                     wsb->Show(sys->showstatusbar);
                     this->SendSizeEvent();
                     this->Refresh();
@@ -1029,7 +1029,7 @@ struct MyFrame : wxFrame {
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
-                    wxToolBar *wtb = this->GetToolBar();
+                    auto *wtb = this->GetToolBar();
                     wtb->Show(sys->showtoolbar);
                     this->SendSizeEvent();
                     this->Refresh();
@@ -1043,7 +1043,7 @@ struct MyFrame : wxFrame {
             }
 
             case A_ADDSCRIPT: {
-                 wxString fn = ::wxFileSelector(
+                auto fn = ::wxFileSelector(
                     _(L"Please select a Lobster script file:"), L"", L"", L"lobster",
                     _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
@@ -1155,12 +1155,12 @@ struct MyFrame : wxFrame {
     }
 
     void OnSearch(wxCommandEvent &ce) {
-        wxString searchstring = ce.GetString();
+        auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
         SetSearchTextBoxBackgroundColour(false);
-        Document *doc = GetCurTab()->doc;
-        TSCanvas *sw = GetCurTab();
+        auto *doc = GetCurTab()->doc;
+        auto *sw = GetCurTab();
         wxClientDC dc(sw);
         doc->SearchNext(dc, false, false, false);
         if (doc->searchfilter) {
@@ -1171,7 +1171,7 @@ struct MyFrame : wxFrame {
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        TSCanvas *sw = GetCurTab();
+        auto *sw = GetCurTab();
         if (ce.GetId() == A_SEARCH && ce.GetString().Len() == 0) {
             sw->SetFocus();
         } else {
@@ -1350,11 +1350,11 @@ struct MyFrame : wxFrame {
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
         // 0xF == create/delete/rename/modify
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
-        const wxString &modfile = event.GetPath().GetFullPath();
+        const auto &modfile = event.GetPath().GetFullPath();
         loop(i, nb->GetPageCount()) {
-            Document *doc = ((TSCanvas *)nb->GetPage(i))->doc;
+            auto *doc = ((TSCanvas *)nb->GetPage(i))->doc;
             if (modfile == doc->filename) {
-                wxDateTime modtime = wxFileName(modfile).GetModificationTime();
+                auto modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
                 if (!modtime.IsValid() || !doc->lastmodificationtime.IsValid() ||
                     modtime == doc->lastmodificationtime) {
@@ -1370,7 +1370,7 @@ struct MyFrame : wxFrame {
                     // version on another computer.
                     // for now, we leave this code active, and guard it with
                     // watcherwaitingforuser
-                    wxString msg = wxString::Format(
+                    auto msg = wxString::Format(
                         _(L"%s\nhas been modified on disk by another program / computer:\nWould you like to discard your changes and re-load from disk?"),
                         doc->filename);
                     watcherwaitingforuser = true;
