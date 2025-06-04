@@ -121,10 +121,10 @@ struct Document {
         selected.ys = ys;
     }
 
-    void InitWith(Cell *r, const auto &filename, Cell *ics, int xs, int ys) {
+    void InitWith(Cell *r, const auto &fn, Cell *ics, int xs, int ys) {
         rootgrid = r;
         InitCellSelect(ics, xs, ys);
-        ChangeFileName(filename, false);
+        ChangeFileName(fn, false);
     }
 
     void UpdateFileName(int page = -1) {
@@ -526,7 +526,7 @@ struct Document {
     const wxChar *NoThin() { return _(L"This operation doesn't work on thin selections."); }
     const wxChar *NoGrid() { return _(L"This operation requires a cell that contains a grid."); }
 
-    const wxChar *Wheel(wxDC &dc, int dir, bool alt, bool ctrl, bool shift,
+    const wxChar *Wheel(auto &dc, int dir, bool alt, bool ctrl, bool shift,
                         bool hierarchical = true) {
         if (!dir) return nullptr;
         ShiftToCenter(dc);
@@ -2269,7 +2269,7 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(auto *c, auto &&idv, double sc) {
+    void SetImageBM(auto c, auto &&idv, double sc) {
         c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')].get();
     }
 
