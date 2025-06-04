@@ -52,7 +52,7 @@ struct Document {
         MyPrintout(Document *d) : wxPrintout(L"printout"), doc(d) {}
 
         bool OnPrintPage(int page) {
-            auto *dc = GetDC();
+            auto dc = GetDC();
             if (!dc) return false;
             doc->Print(*dc, *this);
             return true;
@@ -89,13 +89,13 @@ struct Document {
 
     #define loopcellsin(par, c) \
         CollectCells(par);      \
-        loopv(_i, itercells) for (auto *c = itercells[_i]; c; c = nullptr)
+        loopv(_i, itercells) for (auto c = itercells[_i]; c; c = nullptr)
     #define loopallcells(c)     \
         CollectCells(rootgrid); \
-        for (auto *c : itercells)
+        for (auto c : itercells)
     #define loopallcellssel(c, rec) \
         CollectCellsSel(rec);     \
-        for (auto *c : itercells)
+        for (auto c : itercells)
 
     Document() {
         ResetFont();
@@ -143,7 +143,7 @@ struct Document {
 
     const wxChar *SaveDB(bool *success, bool istempfile = false, int page = -1) {
         if (filename.empty()) return _(L"Save cancelled.");
-        auto *ocs = selected.GetFirst();
+        auto ocs = selected.GetFirst();
         auto start_saving_time = wxGetLocalTimeMillis();
 
         {  // limit destructors
@@ -273,10 +273,10 @@ struct Document {
 
     void ScrollOrZoom(wxDC &dc, bool zoomiftiny = false) {
         if (!selected.g) return;
-        auto *drawroot = WalkPath(drawpath);
+        auto drawroot = WalkPath(drawpath);
         // If we jumped to a cell which may be insided a folded cell, we have to unfold it
         // because the rest of the code doesn't deal with a selection that is invisible :)
-        for (auto *cg = selected.g->cell; cg; cg = cg->parent) {
+        for (auto cg = selected.g->cell; cg; cg = cg->parent) {
             // Unless we're under the drawroot, no need to unfold further.
             if (cg == drawroot) break;
             if (cg->grid->folded) {
@@ -285,7 +285,7 @@ struct Document {
                 cg->ResetChildren();
             }
         }
-        for (auto *cg = selected.g->cell; cg; cg = cg->parent)
+        for (auto cg = selected.g->cell; cg; cg = cg->parent)
             if (cg == drawroot) {
                 if (zoomiftiny) ZoomTiny(dc);
                 DrawSelectMove(dc, selected, true);
@@ -297,7 +297,7 @@ struct Document {
     }
 
     void ZoomTiny(wxDC &dc) {
-        if (auto *c = selected.GetCell(); c && c->tiny) {
+        if (auto c = selected.GetCell(); c && c->tiny) {
             Zoom(1, dc);  // seems to leave selection box in a weird location?
             if (selected.GetCell() != c) ZoomTiny(dc);
         }
@@ -367,9 +367,9 @@ struct Document {
 
     void SelectUp() {
         if (!isctrlshiftdrag || isctrlshiftdrag == 3 || begindrag.EqLoc(selected)) return;
-        auto *c = selected.GetCell();
+        auto c = selected.GetCell();
         if (!c) return;
-        auto *tc = begindrag.ThinExpand(this);
+        auto tc = begindrag.ThinExpand(this);
         selected = begindrag;
         if (tc) {
             auto is_parent = tc->IsParentOf(c);
@@ -395,7 +395,7 @@ struct Document {
     }
 
     void Copy(int k) {
-        auto *c = selected.GetCell();
+        auto c = selected.GetCell();
         sys->clipboardcopy = wxEmptyString;
 
         switch (k) {
@@ -403,7 +403,7 @@ struct Document {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
-                    auto *im = c->text.image;
+                    auto im = c->text.image;
                     if (auto imagetypeit = imagetypes.find(im->image_type);
                         imagetypeit != imagetypes.end() && !im->image_data.empty()) {
                         auto bm =
@@ -424,7 +424,7 @@ struct Document {
             }
             case A_COPYCT: {
                 sys->cellclipboard = nullptr;
-                auto *clipboardtextdata = new wxDataObjectComposite();
+                auto clipboardtextdata = new wxDataObjectComposite();
                 wxString s = "";
                 loopallcellssel(c, true) if (c->text.t.Len()) s += c->text.t + " ";
                 if (!selected.TextEdit()) sys->clipboardcopy = s;
@@ -440,7 +440,7 @@ struct Document {
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 if (c && !c->text.t && c->text.image) {
-                    auto *im = c->text.image;
+                    auto im = c->text.image;
                     if (auto imagetypeit = imagetypes.find(im->image_type);
                         imagetypeit != imagetypes.end() && !im->image_data.empty() &&
                         wxTheClipboard->Open()) {
@@ -450,7 +450,7 @@ struct Document {
                         wxTheClipboard->Close();
                     }
                 } else {
-                    auto *clipboarddata = new wxDataObjectComposite();
+                    auto clipboarddata = new wxDataObjectComposite();
                     auto s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
                     clipboarddata->Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
@@ -497,10 +497,10 @@ struct Document {
         if (!len && !drawpath.size()) return;
         if (dir > 0) {
             if (!selected.g) return;
-            auto *c = selected.GetCell();
+            auto c = selected.GetCell();
             CreatePath(c && c->grid ? c : selected.g->cell, drawpath);
         } else if (dir < 0) {
-            auto *drawroot = WalkPath(drawpath);
+            auto drawroot = WalkPath(drawpath);
             if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
@@ -510,7 +510,7 @@ struct Document {
 
     void Zoom(int dir, wxDC &dc, bool fromroot = false) {
         ZoomSetDrawPath(dir, dc, fromroot);
-        auto *drawroot = WalkPath(drawpath);
+        auto drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
             SetSelect(Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys));
@@ -594,7 +594,7 @@ struct Document {
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
         int i = 0;
-        for (auto *p = curdrawroot->parent; p; p = p->parent)
+        for (auto p = curdrawroot->parent; p; p = p->parent)
             if (p->text.t.Len()) {
                 int off = hierarchysize - dc.GetCharHeight() * ++i;
                 auto s = p->text.t;
@@ -766,7 +766,7 @@ struct Document {
         if (selected.Thin()) {
             selected.SelAll();
             Refresh();
-        } else if (auto *c = selected.GetCell()) {
+        } else if (auto c = selected.GetCell()) {
             DrawSelect(dc, selected);
             if (selected.TextEdit()) {
                 c->text.SelectWord(selected);
@@ -946,7 +946,7 @@ struct Document {
             }
         } else if (uk >= ' ') {
             if (!selected.g) return NoSel();
-            auto *c = selected.ThinExpand(this);
+            auto c = selected.ThinExpand(this);
             if (!c) {
                 selected.Wrap(this);
                 c = selected.GetCell();
@@ -1123,10 +1123,10 @@ struct Document {
 
             case wxID_PREVIEW: {
                 wxPrintDialogData printDialogData(printData);
-                auto *preview = new wxPrintPreview(
-                    new MyPrintout(this), new MyPrintout(this), &printDialogData);
-                auto *pframe = new wxPreviewFrame(
-                    preview, sys->frame, _(L"Print Preview"), wxPoint(100, 100), wxSize(600, 650));
+                auto preview = new wxPrintPreview(new MyPrintout(this), new MyPrintout(this),
+                                                  &printDialogData);
+                auto pframe = new wxPreviewFrame(preview, sys->frame, _(L"Print Preview"),
+                                                 wxPoint(100, 100), wxSize(600, 650));
                 pframe->Centre(wxBOTH);
                 pframe->Initialize();
                 pframe->Show(true);
@@ -1171,7 +1171,7 @@ struct Document {
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {
                 if (sys->searchstring.Len()) return SearchNext(dc, false, true, k == A_SEARCHPREV);
-                if (auto *c = selected.GetCell()) {
+                if (auto c = selected.GetCell()) {
                     auto s = c->text.ToText(0, selected, A_EXPTEXT);
                     if (!s.Len()) return _(L"No text to search for.");
                     sys->frame->filter->SetFocus();
@@ -1189,7 +1189,7 @@ struct Document {
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
                 sys->frame->SetSearchTextBoxBackgroundColour(false);
-                auto *msg = this->SearchNext(dc, false, false, false);
+                auto msg = this->SearchNext(dc, false, false, false);
                 this->Refresh();
                 return msg;
             }
@@ -1328,7 +1328,7 @@ struct Document {
 
         if (!selected.g) return NoSel();
 
-        auto *c = selected.GetCell();
+        auto c = selected.GetCell();
 
         switch (k) {
             case A_BACKSPACE:
@@ -1680,7 +1680,7 @@ struct Document {
                 CollectCellsSel(false);
                 vector<Cell *> outer;
                 outer.insert(outer.end(), itercells.begin(), itercells.end());
-                for (auto *o : outer) {
+                for (auto o : outer) {
                     if (o->grid) {
                         loopcellsin(o, c) if (_i) {
                             c->text.relsize = g_deftextsize - g_mintextsize() - c->Depth();
@@ -1760,7 +1760,7 @@ struct Document {
                 size_t counter = 0, counterpos;
                 wxString oimgfn, imgfn;
                 loopallcellssel(c, true) {
-                    if (auto *tim = c->text.image; tim) {
+                    if (auto tim = c->text.image; tim) {
                         if (!oimgfn) {  // first encounter
                             oimgfn = ::wxFileSelector(
                                 _(L"Choose image file to save:"), L"", L"", L"png|jpg",
@@ -1875,7 +1875,7 @@ struct Document {
         }
 
         if (c || (!c && selected.IsAll())) {
-            auto *ac = c ? c : selected.g->cell;
+            auto ac = c ? c : selected.g->cell;
             switch (k) {
                 case A_TRANSPOSE:
                     if (ac->grid) {
@@ -1904,7 +1904,7 @@ struct Document {
                     ac->AddUndo(this);
                     int maxdepth = 0, leaves = 0;
                     ac->MaxDepthLeaves(0, maxdepth, leaves);
-                    auto *g = new Grid(maxdepth, leaves);
+                    auto g = new Grid(maxdepth, leaves);
                     g->InitCells();
                     ac->grid->Flatten(0, 0, g);
                     DELETEP(ac->grid);
@@ -1938,7 +1938,7 @@ struct Document {
                 if ((k == A_LINKIMG || k == A_LINKIMGREV) && !c->text.image)
                     return _(L"No image in this cell.");
                 bool t1 = false, t2 = false;
-                auto *link =
+                auto link =
                     rootgrid->FindLink(selected, c, nullptr, t1, t2, k == A_LINK || k == A_LINKIMG,
                                        k == A_LINKIMG || k == A_LINKIMGREV);
                 if (!link || !link->parent) return _(L"No matching cell found!");
@@ -1950,7 +1950,7 @@ struct Document {
             case A_COLCELL: sys->customcolor = c->cellcolor; return nullptr;
 
             case A_HSWAP: {
-                auto *pp = c->parent->parent;
+                auto pp = c->parent->parent;
                 if (!pp) return _(L"Cannot move this cell up in the hierarchy.");
                 if (pp->grid->xs != 1 && pp->grid->ys != 1)
                     return _(L"Can only move this cell into a Nx1 or 1xN grid.");
@@ -1972,7 +1972,7 @@ struct Document {
 
             case A_FILTERMATCHNEXT:
                 bool lastsel = true;
-                auto *next = rootgrid->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
+                auto next = rootgrid->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
                 if (!next) return _(L"No matches for filter.");
                 if (next->parent) SetSelect(next->parent->grid->FindCell(next));
                 sw->SetFocus();
@@ -2028,8 +2028,8 @@ struct Document {
         if (!rootgrid) return nullptr;  // fix crash when opening new doc
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
-        auto *next = rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
-                                                   lastsel, reverse);
+        auto next = rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
+                                                  lastsel, reverse);
         sys->frame->SetSearchTextBoxBackgroundColour(next);
         if (!next) return _(L"No matches for search.");
         if (!jump) return nullptr;
@@ -2081,7 +2081,7 @@ struct Document {
                         }
                     }
                 }
-                auto *c = selected.ThinExpand(this);
+                auto c = selected.ThinExpand(this);
                 if (!c) return;
                 c->AddUndo(this);
                 if (!LoadImageIntoCell(as[0], c, sys->frame->FromDIP(1.0)))
@@ -2093,7 +2093,7 @@ struct Document {
     }
 
     void PasteOrDrop(const wxTextDataObject &tdo) {
-        auto *c = selected.ThinExpand(this);
+        auto c = selected.ThinExpand(this);
         if (!c) return;
 
         if (tdo.GetText() != wxEmptyString) {
@@ -2123,7 +2123,7 @@ struct Document {
     }
 
     void PasteOrDrop(const wxBitmapDataObject &bdo) {
-        auto *c = selected.ThinExpand(this);
+        auto c = selected.ThinExpand(this);
         if (!c) return;
         if (bdo.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
             c->AddUndo(this);
@@ -2170,7 +2170,7 @@ struct Document {
     }
 
     Cell *WalkPath(vector<Selection> &path) {
-        auto *c = rootgrid;
+        auto c = rootgrid;
         loopvrev(i, path) {
             Selection &s = path[i];
             Grid *g = c->grid;
@@ -2234,7 +2234,7 @@ struct Document {
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
         auto ui = std::move(fromlist.back());
         fromlist.pop_back();
-        auto *c = WalkPath(ui->path);
+        auto c = WalkPath(ui->path);
         auto clone = ui->clone.release();
         ui->clone.reset(c);
         if (c->parent && c->parent->grid) {
@@ -2332,7 +2332,7 @@ struct Document {
         scrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(rootgrid);
-        std::sort(itercells.begin(), itercells.end(), [](auto *a, auto *b) {
+        std::sort(itercells.begin(), itercells.end(), [](auto a, auto b) {
             // sort in descending order
             return a->text.lastedit > b->text.lastedit;
         });
@@ -2345,7 +2345,7 @@ struct Document {
         searchfilter = false;
         scrolltoselection = true;
         CollectCells(rootgrid);
-        for (auto *c : itercells) {
+        for (auto c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }
         rootgrid->ResetChildren();

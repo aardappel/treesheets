@@ -151,7 +151,7 @@ struct Cell {
         }
 
         if (sys->darkennonmatchingcells && !text.IsInSearch()) {
-            auto *cp = (uchar *)&actualcellcolor;
+            auto cp = (uchar *)&actualcellcolor;
             loop(i, 4) cp[i] = cp[i] * 800 / 1000;
         }
 
@@ -160,7 +160,7 @@ struct Cell {
         }
         if (drawstyle != DS_GRID && HasContent() && !tiny) {
             if (actualcellcolor == parentcolor) {
-                auto *cp = (uchar *)&actualcellcolor;
+                auto cp = (uchar *)&actualcellcolor;
                 loop(i, 4) cp[i] = cp[i] * 850 / 1000;
             }
             dc.SetBrush(wxBrush(actualcellcolor));
@@ -364,7 +364,7 @@ struct Cell {
 
     Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         int xs = dis.Read32();
-        auto *g = new Grid(xs, dis.Read32());
+        auto g = new Grid(xs, dis.Read32());
         grid = g;
         g->cell = this;
         if (!g->LoadContents(dis, numcells, textbytes, ics)) return nullptr;
@@ -373,7 +373,7 @@ struct Cell {
 
     static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes,
                            Cell *&ics) {
-        auto *c = new Cell(_p, nullptr, dis.Read8());
+        auto c = new Cell(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
             c->cellcolor = dis.Read32() & 0xFFFFFF;

@@ -90,13 +90,13 @@ class Selection {
                 cursor = cursorend = 0;
             }
         } else {
-            auto *at = a.GetCell();
-            auto *bt = b.GetCell();
+            auto at = a.GetCell();
+            auto bt = b.GetCell();
             int ad = at->Depth();
             int bd = bt->Depth();
             int i = 0;
             while (i < ad && i < bd && at->Parent(ad - i) == bt->Parent(bd - i)) i++;
-            auto *g = at->Parent(ad - i + 1)->grid;
+            auto g = at->Parent(ad - i + 1)->grid;
             Merge(g->FindCell(at->Parent(ad - i)), g->FindCell(bt->Parent(bd - i)));
             return;
         }
@@ -359,7 +359,7 @@ class Selection {
             Selection s(g, x, y + 1, 1, ys - 1);
             g->MultiCellDeleteSub(doc, s);
         }
-        auto *old = g->C(x, y);
+        auto old = g->C(x, y);
         np->text.relsize = old->text.relsize;
         np->CloneStyleFrom(old);
         g->ReplaceCell(old, np);

@@ -12,7 +12,7 @@ struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data) {};
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
-        auto *sw = sys->frame->GetCurTab();
+        auto sw = sys->frame->GetCurTab();
         wxClientDC dc(sw);
         sw->UpdateHover(x, y, dc);
         return sw->doc->hover.g ? wxDragCopy : wxDragNone;
@@ -21,9 +21,9 @@ struct DropTarget : wxDropTarget {
     bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
-        auto *sw = sys->frame->GetCurTab();
+        auto sw = sys->frame->GetCurTab();
         sw->SelectClick(x, y, false, 0);
-        switch (auto *doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
+        switch (auto doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
             case wxDF_BITMAP: doc->PasteOrDrop(*doc->dndobji); break;
             case wxDF_FILENAME: doc->PasteOrDrop(*doc->dndobjf); break;
             case wxDF_TEXT:
@@ -36,7 +36,7 @@ struct DropTarget : wxDropTarget {
 
 struct BlinkTimer : wxTimer {
     void Notify() {
-        if (auto *tsc = sys->frame->GetCurTab()) tsc->doc->Blink();
+        if (auto tsc = sys->frame->GetCurTab()) tsc->doc->Blink();
     }
 };
 
@@ -44,9 +44,9 @@ struct ThreeChoiceDialog : public wxDialog {
     ThreeChoiceDialog(wxWindow *parent, const wxString &title, const wxString &msg,
                       const wxString &ch1, const wxString &ch2, const wxString &ch3)
         : wxDialog(parent, wxID_ANY, title) {
-        auto *bsv = new wxBoxSizer(wxVERTICAL);
+        auto bsv = new wxBoxSizer(wxVERTICAL);
         bsv->Add(new wxStaticText(this, -1, msg), 0, wxALL, 5);
-        auto *bsb = new wxBoxSizer(wxHORIZONTAL);
+        auto bsb = new wxBoxSizer(wxHORIZONTAL);
         bsb->Prepend(new wxButton(this, 2, ch3), 0, wxALL, 5);
         bsb->PrependStretchSpacer(1);
         bsb->Prepend(new wxButton(this, 1, ch2), 0, wxALL, 5);
@@ -76,16 +76,16 @@ struct DateTimeRangeDialog : public wxDialog {
     wxDateTime end;
     DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _(L"Date and time range")) {
         wxSizerFlags sizerflags(1);
-        auto *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        auto startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         startsizer->Add(&startdate, 0, wxALL, 5);
         startsizer->Add(&starttime, 0, wxALL, 5);
-        auto *endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        auto endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         endsizer->Add(&enddate, 0, wxALL, 5);
         endsizer->Add(&endtime, 0, wxALL, 5);
-        auto *btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
+        auto btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         btnsizer->Add(&okbtn, 0, wxALL, 5);
         btnsizer->Add(&cancelbtn, 0, wxALL, 5);
-        auto *topsizer = new wxFlexGridSizer(1);
+        auto topsizer = new wxFlexGridSizer(1);
         topsizer->Add(&introtext, 0, wxALL, 5);
         topsizer->Add(&starttext, 0, wxALL, 5);
         topsizer->Add(startsizer, sizerflags);
