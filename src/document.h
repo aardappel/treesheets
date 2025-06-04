@@ -1300,10 +1300,9 @@ struct Document {
 
             case A_CUSTKEY: {
                 wxArrayString strs, keys;
-                for (auto it = sys->frame->menustrings.begin(); it != sys->frame->menustrings.end();
-                     ++it) {
-                    strs.push_back(it->first);
-                    keys.push_back(it->second);
+                for (auto &[s, k] : sys->frame->menustrings) {
+                    strs.push_back(s);
+                    keys.push_back(k);
                 }
                 wxSingleChoiceDialog choice(
                     sys->frame, _(L"Please pick a menu item to change the key binding for"),
