@@ -1189,9 +1189,9 @@ struct Document {
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
                 sys->frame->SetSearchTextBoxBackgroundColour(false);
-                this->SearchNext(dc, false, false, false);
+                auto *msg = this->SearchNext(dc, false, false, false);
                 this->Refresh();
-                return nullptr;
+                return msg;
             }
 
             case A_ROUND0:
