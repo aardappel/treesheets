@@ -352,7 +352,7 @@ struct Grid {
         if (s.Thin()) {
             DrawInsert(doc, dc, s, thincol);
         } else {
-            Cell *c = C(s.x, s.y);
+            auto *c = C(s.x, s.y);
             DrawRectangle(dc, bgcol, c->GetX(doc) - cell_margin, c->GetY(doc) - cell_margin,
                           c->sx + cell_margin * 2, c->sy + cell_margin * 2, !sys->hovershadow);
         }
@@ -361,15 +361,14 @@ struct Grid {
     }
 
     void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color, bool cursoronly) {
-        Cell *c = s.GetCell();
-        if (c && !c->tiny && (c->HasText() || !c->grid))
+        if (auto *c = s.GetCell(); c && !c->tiny && (c->HasText() || !c->grid))
             c->text.DrawCursor(doc, dc, s, full, color, cursoronly, colwidths[s.x]);
     }
 
     void DrawInsert(Document *doc, wxDC &dc, Selection &s, uint colour) {
         dc.SetPen(sys->pen_thinselect);
         if (!s.xs) {
-            Cell *c = C(s.x - (s.x == xs), s.y);
+            auto *c = C(s.x - (s.x == xs), s.y);
             int x = c->GetX(doc) + (c->sx + g_line_width + cell_margin) * (s.x == xs) -
                     g_line_width - cell_margin;
             loop(line, g_line_width)
@@ -377,7 +376,7 @@ struct Grid {
                             min(cell->GetY(doc) + cell->sy, doc->maxy));
             DrawRectangle(dc, colour, x - 1, c->GetY(doc), g_line_width + 2, c->sy);
         } else {
-            Cell *c = C(s.x, s.y - (s.y == ys));
+            auto *c = C(s.x, s.y - (s.y == ys));
             int y = c->GetY(doc) + (c->sy + g_line_width + cell_margin) * (s.y == ys) -
                     g_line_width - cell_margin;
             loop(line, g_line_width)
@@ -391,24 +390,24 @@ struct Grid {
         if (s.Thin()) {
             if (s.xs) {
                 if (s.y < ys) {
-                    Cell *tl = C(s.x, s.y);
+                    auto *tl = C(s.x, s.y);
                     return wxRect(tl->GetX(doc), tl->GetY(doc), tl->sx, 0);
                 } else {
-                    Cell *br = C(s.x, ys - 1);
+                    auto *br = C(s.x, ys - 1);
                     return wxRect(br->GetX(doc), br->GetY(doc) + br->sy, br->sx, 0);
                 }
             } else {
                 if (s.x < xs) {
-                    Cell *tl = C(s.x, s.y);
+                    auto *tl = C(s.x, s.y);
                     return wxRect(tl->GetX(doc), tl->GetY(doc), 0, tl->sy);
                 } else {
-                    Cell *br = C(xs - 1, s.y);
+                    auto *br = C(xs - 1, s.y);
                     return wxRect(br->GetX(doc) + br->sx, br->GetY(doc), 0, br->sy);
                 }
             }
         } else {
-            Cell *tl = C(s.x, s.y);
-            Cell *br = C(s.x + s.xs - 1, s.y + s.ys - 1);
+            auto *tl = C(s.x, s.y);
+            auto *br = C(s.x + s.xs - 1, s.y + s.ys - 1);
             wxRect r(tl->GetX(doc) - cell_margin, tl->GetY(doc) - cell_margin,
                      br->GetX(doc) + br->sx - tl->GetX(doc) + cell_margin * 2,
                      br->GetY(doc) + br->sy - tl->GetY(doc) + cell_margin * 2);
@@ -513,7 +512,7 @@ struct Grid {
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);
-        Grid *&pthis = cell->grid;
+        auto *&pthis = cell->grid;
         DELETEP(pthis);
     }
 
@@ -673,7 +672,7 @@ struct Grid {
         foreachcell(c) {
             if (x + s.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
             if (y + s.y >= p->ys) p->InsertCells(-1, p->ys, 0, 1);
-            Cell *pc = p->C(x + s.x, y + s.y);
+            auto *pc = p->C(x + s.x, y + s.y);
             if (pc->HasContent()) {
                 if (x) p->InsertCells(s.x + x, -1, 1, 0);
                 pc = p->C(x + s.x, y + s.y);
@@ -721,7 +720,7 @@ struct Grid {
     void CSVImport(const wxArrayString &as, wxChar sep) {
         int cy = 0;
         loop(y, (int)as.size()) {
-            wxString s = as[y];
+            auto s = as[y];
             wxString word;
             for (int x = 0; s[0]; x++) {
                 if (s[0] == '\"') {
@@ -756,7 +755,7 @@ struct Grid {
                     }
                 }
                 if (x >= xs) InsertCells(x, -1, 1, 0);
-                Cell *c = C(x, cy);
+                auto *c = C(x, cy);
                 c->text.t = word;
             }
             cy++;
@@ -796,7 +795,7 @@ struct Grid {
                 return acc;
             // Operation
             case CT_CODE: {
-                Operation *op = ev.FindOp(c->text.t);
+                auto *op = ev.FindOp(c->text.t);
                 switch (op ? strlen(op->args) : -1) {
                     default: return nullptr;
                     case 0: return ev.Execute(op);
@@ -867,7 +866,7 @@ struct Grid {
     void Split(vector<unique_ptr<Grid>> &gs, bool vert) {
         loop(i, vert ? xs : ys) gs.push_back(make_unique<Grid>(vert ? 1 : xs, vert ? ys : 1));
         foreachcell(c) {
-            Grid *g = gs[vert ? x : y].get();
+            auto *g = gs[vert ? x : y].get();
             g->cells[vert ? y : x] = c->SetParent(g->cell);
             c = nullptr;
         }
@@ -912,7 +911,7 @@ struct Grid {
 
     Cell *FindExact(const wxString &s) {
         foreachcell(c) {
-            Cell *f = c->FindExact(s);
+            auto *f = c->FindExact(s);
             if (f) return f;
         }
         return nullptr;
@@ -923,10 +922,10 @@ struct Grid {
         bool done = false;
     lookformore:
         foreachcell(c) if (c->grid && !done) {
-            Cell *f = c->grid->FindExact(tag);
+            auto *f = c->grid->FindExact(tag);
             if (f) {
                 // add all parent tags as extra hierarchy inside the cell
-                for (Cell *p = f->parent; p != cell; p = p->parent) {
+                for (auto *p = f->parent; p != cell; p = p->parent) {
                     // Special case check: if parents have same name, this would cause infinite
                     // swapping.
                     if (p->text.t == tag) done = true;
@@ -940,8 +939,7 @@ struct Grid {
                     *f->grid->cells = t;
                 }
                 // remove cell from parent, recursively if parent becomes empty
-                for (Cell *r = f; r && r != cell; r = r->parent->grid->DeleteTagParent(r, cell, f))
-                    ;
+                for (auto *r = f; r && r != cell; r = r->parent->grid->DeleteTagParent(r, cell, f));
                 // merge newly constructed hierarchy at this level
                 if (!*cells) {
                     *cells = f;
@@ -969,7 +967,7 @@ struct Grid {
                 cell->grid = nullptr;
                 delete this;
             }
-            Cell *next = tag->parent;
+            auto *next = tag->parent;
             if (tag != found) delete tag;
             return next;
         } else
@@ -1027,10 +1025,9 @@ struct Grid {
                 Selection s(this, 1, y, xs - 1, 1);
                 rest = CloneSel(s);
             }
-            Cell *c = C(0, y);
+            auto *c = C(0, y);
             loop(prevy, y) {
-                Cell *prev = C(0, prevy);
-                if (prev->text.t == c->text.t) {
+                if (auto *prev = C(0, prevy); prev->text.t == c->text.t) {
                     if (rest) {
                         ASSERT(prev->grid);
                         prev->grid->MergeRow(rest->grid);
@@ -1071,9 +1068,9 @@ struct Grid {
     int Flatten(int curdepth, int cury, Grid *g) {
         foreachcell(c) if (c->grid) { cury = c->grid->Flatten(curdepth + 1, cury, g); }
         else {
-            Cell *ic = c;
+            auto *ic = c;
             for (int i = curdepth; i >= 0; i--) {
-                Cell *dest = g->C(i, cury);
+                auto *dest = g->C(i, cury);
                 dest->text = ic->text;
                 dest->text.cell = dest;
                 ic = ic->parent;
@@ -1088,7 +1085,7 @@ struct Grid {
             colwidths[x] += dir * 5;
             if (colwidths[x] < 5) colwidths[x] = 5;
             loop(y, ys) {
-                Cell *c = C(x, y);
+                auto *c = C(x, y);
                 if (c->grid && hierarchical)
                     c->grid->ResizeColWidths(dir, c->grid->SelectAll(), hierarchical);
             }
