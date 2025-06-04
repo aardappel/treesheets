@@ -90,13 +90,13 @@ class Selection {
                 cursor = cursorend = 0;
             }
         } else {
-            Cell *at = a.GetCell();
-            Cell *bt = b.GetCell();
+            auto *at = a.GetCell();
+            auto *bt = b.GetCell();
             int ad = at->Depth();
             int bd = bt->Depth();
             int i = 0;
             while (i < ad && i < bd && at->Parent(ad - i) == bt->Parent(bd - i)) i++;
-            Grid *g = at->Parent(ad - i + 1)->grid;
+            auto *g = at->Parent(ad - i + 1)->grid;
             Merge(g->FindCell(at->Parent(ad - i)), g->FindCell(bt->Parent(bd - i)));
             return;
         }
@@ -209,7 +209,7 @@ class Selection {
                         if (textedit && !exitedit && GetCell()) {
                             if (dy) {
                                 cursorend = cursor;
-                                Text &text = GetCell()->text;
+                                auto &text = GetCell()->text;
                                 int maxcolwidth = GetCell()->parent->grid->colwidths[x];
 
                                 int i = 0;
@@ -217,7 +217,7 @@ class Selection {
                                 int nextoffset = -1;
                                 for (int l = 0;; l++) {
                                     int start = i;
-                                    wxString ls = text.GetLine(i, maxcolwidth);
+                                    auto ls = text.GetLine(i, maxcolwidth);
                                     int len = (int)ls.Len();
                                     int end = start + len;
 
@@ -359,7 +359,7 @@ class Selection {
             Selection s(g, x, y + 1, 1, ys - 1);
             g->MultiCellDeleteSub(doc, s);
         }
-        Cell *old = g->C(x, y);
+        auto *old = g->C(x, y);
         np->text.relsize = old->text.relsize;
         np->CloneStyleFrom(old);
         g->ReplaceCell(old, np);
