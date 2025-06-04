@@ -66,9 +66,7 @@ struct Cell {
     bool HasTextState() const { return HasTextSize() || text.image; }
     bool HasHeader() const { return HasText() || text.image; }
     bool HasContent() const { return HasHeader() || grid; }
-    bool GridShown(Document *doc) const {
-        return grid && (!grid->folded || this == doc->curdrawroot);
-    }
+    bool GridShown(auto doc) const { return grid && (!grid->folded || this == doc->curdrawroot); }
     int MinRelsize()  // the smallest relsize is actually the biggest text
     {
         int rs = INT_MAX;
@@ -86,7 +84,7 @@ struct Cell {
         return sizeof(Cell) + text.EstimatedMemoryUse() + (grid ? grid->EstimatedMemoryUse() : 0);
     }
 
-    void Layout(Document *doc, wxDC &dc, int depth, int maxcolwidth, bool forcetiny) {
+    void Layout(auto doc, auto &dc, int depth, int maxcolwidth, bool forcetiny) {
         tiny = (text.filtered && !grid) || forcetiny ||
                doc->PickFont(dc, depth, text.relsize, text.stylebits);
         int ixs = 0, iys = 0;
@@ -131,7 +129,7 @@ struct Cell {
         }
     }
 
-    void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int ml, int mr, int mt, int mb,
+    void Render(auto doc, int bx, int by, auto &dc, int depth, int ml, int mr, int mt, int mb,
                 int maxcolwidth, int cell_margin) {
         // Choose color from celltype (program operations)
         switch (celltype) {
@@ -191,7 +189,7 @@ struct Cell {
         text.stylebits = o->text.stylebits;
     }
 
-    unique_ptr<Cell> Clone(Cell *_parent) const {
+    unique_ptr<Cell> Clone(auto _parent) const {
         auto c = make_unique<Cell>(_parent, this, celltype,
                                    grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
@@ -201,11 +199,11 @@ struct Cell {
     }
 
     bool IsInside(int x, int y) const { return x >= 0 && y >= 0 && x < sx && y < sy; }
-    int GetX(Document *doc) const { return ox + (parent ? parent->GetX(doc) : doc->hierarchysize); }
-    int GetY(Document *doc) const { return oy + (parent ? parent->GetY(doc) : doc->hierarchysize); }
+    int GetX(auto doc) const { return ox + (parent ? parent->GetX(doc) : doc->hierarchysize); }
+    int GetY(auto doc) const { return oy + (parent ? parent->GetY(doc) : doc->hierarchysize); }
     int Depth() const { return parent ? parent->Depth() + 1 : 0; }
     Cell *Parent(int i) { return i ? parent->Parent(i - 1) : this; }
-    Cell *SetParent(Cell *g) {
+    Cell *SetParent(auto g) {
         parent = g;
         return this;
     }
@@ -214,8 +212,8 @@ struct Cell {
     }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
-    wxString ToText(int indent, const Selection &s, int format, Document *doc, bool inheritstyle) {
-        wxString str = text.ToText(indent, s, format);
+    wxString ToText(int indent, const auto &sel, int format, auto doc, bool inheritstyle) {
+        wxString str = text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
             ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU)) &&
             this != doc->curdrawroot && !str.IsEmpty()) {
@@ -227,13 +225,13 @@ struct Cell {
             str.Append(L"</span>");
         }
         if (format == A_EXPCSV) {
-            if (grid) return grid->ToText(indent, s, format, doc, inheritstyle);
+            if (grid) return grid->ToText(indent, sel, format, doc, inheritstyle);
             str.Replace(L"\"", L"\"\"");
             return L"\"" + str + L"\"";
         }
-        if (s.cursor != s.cursorend) return str;
+        if (sel.cursor != sel.cursorend) return str;
         str.Append(L"\n");
-        if (grid) str.Append(grid->ToText(indent, s, format, doc, inheritstyle));
+        if (grid) str.Append(grid->ToText(indent, sel, format, doc, inheritstyle));
         if (format == A_EXPXML) {
             str.Prepend(L">");
             if (text.relsize) {
@@ -316,7 +314,7 @@ struct Cell {
         if (parent) parent->ResetLayout();
     }
 
-    void LazyLayout(Document *doc, wxDC &dc, int depth, int maxcolwidth, bool forcetiny) {
+    void LazyLayout(auto doc, auto &dc, int depth, int maxcolwidth, bool forcetiny) {
         if (sx == 0) {
             Layout(doc, dc, depth, maxcolwidth, forcetiny);
             minx = sx;
@@ -327,12 +325,12 @@ struct Cell {
         }
     }
 
-    void AddUndo(Document *doc) {
+    void AddUndo(auto doc) {
         ResetLayout();
         doc->AddUndo(this);
     }
 
-    void Save(wxDataOutputStream &dos, Cell *ocs) const {
+    void Save(auto &dos, auto ocs) const {
         dos.Write8(celltype);
         dos.Write32(cellcolor);
         dos.Write32(textcolor);
@@ -362,7 +360,7 @@ struct Cell {
         return grid;
     }
 
-    Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
+    Cell *LoadGrid(auto &dis, int &numcells, int &textbytes, auto *&ics) {
         int xs = dis.Read32();
         auto g = new Grid(xs, dis.Read32());
         grid = g;
@@ -371,8 +369,7 @@ struct Cell {
         return this;
     }
 
-    static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes,
-                           Cell *&ics) {
+    static Cell *LoadWhich(auto &dis, auto _p, int &numcells, int &textbytes, auto *&ics) {
         auto c = new Cell(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
@@ -403,21 +400,21 @@ struct Cell {
         if (grid) grid->GetStats(numcells, textbytes);
     }
 
-    unique_ptr<Cell> Eval(Evaluator &ev) const {
+    unique_ptr<Cell> Eval(auto &ev) const {
         // Evaluates the internal grid if it exists, otherwise, evaluate the text.
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 
-    void Paste(Document *doc, const Cell *c, Selection &s) {
+    void Paste(auto doc, const auto *c, auto &sel) {
         parent->AddUndo(doc);
         ResetLayout();
         if (c->HasText()) {
-            if (!HasText() || !s.TextEdit()) {
+            if (!HasText() || !sel.TextEdit()) {
                 cellcolor = c->cellcolor;
                 textcolor = c->textcolor;
                 text.stylebits = c->text.stylebits;
             }
-            text.Insert(doc, c->text.t, s, false);
+            text.Insert(doc, c->text.t, sel, false);
         }
         if (c->text.image) text.image = c->text.image;
         if (c->grid) {
@@ -428,21 +425,21 @@ struct Cell {
             c = nullptr;
             DELETEP(grid);  // FIXME: could merge instead?
             grid = cg;
-            if (!HasText()) grid->MergeWithParent(parent->grid, s, doc);  // deletes grid/this.
+            if (!HasText()) grid->MergeWithParent(parent->grid, sel, doc);  // deletes grid/this.
         }
     }
 
-    Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
-                              bool &lastwasselected, bool reverse) {
+    Cell *FindNextSearchMatch(const auto &s, Cell *best, Cell *selected, bool &lastwasselected,
+                              bool reverse) {
         if (reverse && grid)
-            best = grid->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
-        if ((sys->casesensitivesearch ? text.t.Find(search) : text.t.Lower().Find(search)) >= 0) {
+            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse);
+        if ((sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
             if (lastwasselected) best = this;
             lastwasselected = false;
         }
         if (selected == this) lastwasselected = true;
         if (!reverse && grid)
-            best = grid->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
+            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse);
         return best;
     }
 
@@ -456,14 +453,15 @@ struct Cell {
         return best;
     }
 
-    Cell *FindLink(const Selection &s, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
+    Cell *FindLink(const auto &sel, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
                    bool forward, bool image) {
-        if (grid) best = grid->FindLink(s, link, best, lastthis, stylematch, forward, image);
+        if (grid) best = grid->FindLink(sel, link, best, lastthis, stylematch, forward, image);
         if (link == this) {
             lastthis = true;
             return best;
         }
-        if (image ? link->text.image == text.image : link->text.ToText(0, s, A_EXPTEXT) == text.t) {
+        if (image ? link->text.image == text.image
+                  : link->text.ToText(0, sel, A_EXPTEXT) == text.t) {
             if (link->text.stylebits != text.stylebits || link->cellcolor != cellcolor ||
                 link->textcolor != textcolor) {
                 if (!stylematch) best = nullptr;
@@ -479,12 +477,12 @@ struct Cell {
         return best;
     }
 
-    void FindReplaceAll(const wxString &str, const wxString &lstr) {
-        if (grid) grid->FindReplaceAll(str, lstr);
-        text.ReplaceStr(str, lstr);
+    void FindReplaceAll(const auto &s, const auto &ls) {
+        if (grid) grid->FindReplaceAll(s, ls);
+        text.ReplaceStr(s, ls);
     }
 
-    Cell *FindExact(const wxString &s) {
+    Cell *FindExact(const auto &s) {
         return text.t == s ? this : (grid ? grid->FindExact(s) : nullptr);
     }
 
@@ -497,7 +495,7 @@ struct Cell {
         if (grid) grid->user_grid_outer_spacing = width;
     }
 
-    void ColorChange(Document *doc, int which, uint color) {
+    void ColorChange(auto doc, int which, uint color) {
         switch (which) {
             case A_CELLCOLOR: cellcolor = color; break;
             case A_TEXTCOLOR:
@@ -520,7 +518,7 @@ struct Cell {
         if (grid) grid->SetGridTextLayout(ds, vert, noset, grid->SelectAll());
     }
 
-    bool IsTag(Document *doc) { return doc->tags.contains(text.t); }
+    bool IsTag(auto doc) { return doc->tags.contains(text.t); }
     void MaxDepthLeaves(int curdepth, int &maxdepth, int &leaves) {
         if (curdepth > maxdepth) maxdepth = curdepth;
         if (grid)
@@ -534,7 +532,7 @@ struct Cell {
                       : sys->defaultmaxcolwidth;
     }
 
-    void CollectCells(vector<Cell *> &itercells, bool recurse = true) {
+    void CollectCells(auto &itercells, bool recurse = true) {
         itercells.push_back(this);
         if (grid && recurse) grid->CollectCells(itercells);
     }
