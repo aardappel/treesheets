@@ -12,7 +12,7 @@ struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data) {};
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
-        TSCanvas *sw = sys->frame->GetCurTab();
+        auto *sw = sys->frame->GetCurTab();
         wxClientDC dc(sw);
         sw->UpdateHover(x, y, dc);
         return sw->doc->hover.g ? wxDragCopy : wxDragNone;
@@ -21,9 +21,9 @@ struct DropTarget : wxDropTarget {
     bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
-        TSCanvas *sw = sys->frame->GetCurTab();
+        auto *sw = sys->frame->GetCurTab();
         sw->SelectClick(x, y, false, 0);
-        switch (Document *doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
+        switch (auto *doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
             case wxDF_BITMAP: doc->PasteOrDrop(*doc->dndobji); break;
             case wxDF_FILENAME: doc->PasteOrDrop(*doc->dndobjf); break;
             case wxDF_TEXT:
@@ -36,7 +36,7 @@ struct DropTarget : wxDropTarget {
 
 struct BlinkTimer : wxTimer {
     void Notify() {
-        if (TSCanvas *tsc = sys->frame->GetCurTab()) tsc->doc->Blink();
+        if (auto *tsc = sys->frame->GetCurTab()) tsc->doc->Blink();
     }
 };
 
@@ -150,7 +150,7 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
 };
 
 static uint PickColor(wxFrame *fr, uint defcol) {
-    wxColour col = wxGetColourFromUser(fr, wxColour(defcol));
+    auto col = wxGetColourFromUser(fr, wxColour(defcol));
     if (col.IsOk()) return (col.Blue() << 16) + (col.Green() << 8) + col.Red();
     return -1;
 }
@@ -159,7 +159,7 @@ static uint PickColor(wxFrame *fr, uint defcol) {
 
 struct ImagePopup : wxVListBoxComboPopup {
     void OnComboDoubleClick() {
-        wxString s = GetString(GetSelection());
+        auto s = GetString(GetSelection());
         sys->frame->GetCurTab()->doc->ImageChange(s, dd_icon_res_scale);
     }
 };
@@ -191,7 +191,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     void FillBitmapVector(const wxString &path) {
         if (!bitmaps_display.empty()) bitmaps_display.resize(0);
-        wxString f = wxFindFirstFile(path + L"*.*");
+        auto f = wxFindFirstFile(path + L"*.*");
         while (!f.empty()) {
             wxBitmap bm;
             if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
@@ -232,7 +232,7 @@ static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType b
 }
 
 static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buf, wxBitmapType bmt) {
-    wxImage im = ConvertBufferToWxImage(buf, bmt);
+    auto im = ConvertBufferToWxImage(buf, bmt);
     wxBitmap bm(im, 32);
     return bm;
 }
