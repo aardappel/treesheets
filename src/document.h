@@ -2040,7 +2040,7 @@ struct Document {
 
     void PasteOrDrop(const wxFileDataObject &fdo) {
         if (fdo.GetFilenames().size() != 0) {
-            const wxArrayString &as = fdo.GetFilenames();
+            const auto &as = fdo.GetFilenames();
             if (as.size()) {
                 if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
                 else {
