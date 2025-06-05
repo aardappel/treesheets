@@ -296,31 +296,31 @@ using namespace script;
 struct treesheets {
     struct TreeSheetsScriptImpl;
 
+    struct Image;
+    struct Text;
     struct Cell;
     struct Grid;
-    struct Text;
-    struct Evaluator;
-    struct Image;
+    struct Selection;
     struct Document;
-    class Selection;
+    struct Evaluator;
 
     struct System;
-
-    struct MyApp;
-    struct MyFrame;
     struct TSCanvas;
+    struct MyFrame;
+    struct MyApp;
 
     static System *sys;
 
     #include "treesheets_impl.h"
 
-    #include "selection.h"
+    #include "image.h"
     #include "text.h"
     #include "cell.h"
     #include "grid.h"
+    #include "selection.h"
+    #include "document.h"
     #include "evaluator.h"
 
-    #include "document.h"
     #include "system.h"
 
     #include "mywxtools.h"
