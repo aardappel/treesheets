@@ -13,8 +13,8 @@ struct Image {
     double display_scale;
     int pixel_width {0};
 
-    Image(auto _hash, auto _sc, auto &&idv, auto iti)
-        : data(std::move(idv)), type(iti), hash(_hash), display_scale(_sc) {}
+    Image(auto _hash, auto _sc, auto &&_data, auto _type)
+        : hash(_hash), display_scale(_sc), data(std::move(_data)), type(_type) {}
 
     auto ImageRescale(auto sc) {
         auto mapitem = imagetypes.find(type);
