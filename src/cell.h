@@ -405,7 +405,7 @@ struct Cell {
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 
-    void Paste(auto doc, const auto c, auto &sel) {
+    void Paste(auto doc, const auto *c, auto &sel) {
         parent->AddUndo(doc);
         ResetLayout();
         if (c->HasText()) {
