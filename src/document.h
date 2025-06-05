@@ -403,10 +403,10 @@ struct Document {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
-                    auto im = c->text.image;
-                    if (auto imagetypeit = imagetypes.find(im->image_type);
-                        imagetypeit != imagetypes.end() && !im->data.empty()) {
-                        auto bm = ConvertBufferToWxBitmap(im->data, imagetypeit->second.first);
+                    auto img = c->text.image;
+                    if (auto imagetypeit = imagetypes.find(img->image_type);
+                        imagetypeit != imagetypes.end() && !img->data.empty()) {
+                        auto bm = ConvertBufferToWxBitmap(img->data, imagetypeit->second.first);
                         dragdata.Add(new wxBitmapDataObject(bm));
                     }
                 } else {
