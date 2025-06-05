@@ -105,7 +105,7 @@ struct System {
         return doc;
     }
 
-    void TabChange(auto newdoc) {
+    void TabChange(Document *newdoc) {
         // SetSelect(hover = Selection());
         newdoc->sw->SetFocus();
         newdoc->UpdateFileName();
@@ -113,7 +113,7 @@ struct System {
         newdoc->SearchNext(dc, false, false, false);
     }
 
-    void Init(const auto &filename) {
+    void Init(const wxString &filename) {
         ev.Init();
 
         if (filename.Len()) LoadDB(filename);
@@ -165,9 +165,9 @@ struct System {
         return doc->rootgrid;
     }
 
-    wxString BakName(const auto &filename) { return ExtName(filename, L".bak"); }
-    wxString TmpName(const auto &filename) { return ExtName(filename, L".tmp"); }
-    wxString ExtName(const auto &filename, auto ext) {
+    wxString BakName(const wxString &filename) { return ExtName(filename, L".bak"); }
+    wxString TmpName(const wxString &filename) { return ExtName(filename, L".tmp"); }
+    wxString ExtName(const wxString &filename, auto ext) {
         wxFileName fn(filename);
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
@@ -379,7 +379,7 @@ struct System {
         cfg->Flush();
     }
 
-    void UpdateStatus(auto &s) {
+    void UpdateStatus(Selection &s) {
         if (frame->GetStatusBar()) {
             auto c = s.GetCell();
             if (c && s.xs) {
@@ -393,7 +393,7 @@ struct System {
         }
     }
 
-    void UpdateAmountStatus(auto &s) {
+    void UpdateAmountStatus(Selection &s) {
         if (frame->GetStatusBar()) {
             frame->SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
         }
@@ -412,7 +412,7 @@ struct System {
         }
     }
 
-    void MergeLevel(auto lower, auto &upper) {
+    void MergeLevel(Cell *lower, Cell *&upper) {
         if (!lower->HasText() && lower->grid) {
             *upper->grid->cells = nullptr;
             delete upper;
@@ -421,7 +421,7 @@ struct System {
         }
     }
 
-    const wxChar *Import(int k, auto &sel, auto tsdoc) {
+    const wxChar *Import(int k, Selection &sel, Document *tsdoc) {
         auto fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
@@ -499,7 +499,7 @@ struct System {
         return _(L"File load error.");
     }
 
-    int GetXMLNodes(auto n, auto &ns, vector<wxXmlAttribute *> *ps = nullptr,
+    int GetXMLNodes(wxXmlNode *n, auto &ns, vector<wxXmlAttribute *> *ps = nullptr,
                     bool attributestoo = false) {
         for (auto child = n->GetChildren(); child; child = child->GetNext()) {
             if (child->GetType() == wxXML_ELEMENT_NODE) ns.push_back(child);
@@ -511,7 +511,7 @@ struct System {
         return ns.size() + (ps ? ps->size() : 0);
     }
 
-    void FillXML(auto c, auto n, bool attributestoo) {
+    void FillXML(Cell *c, wxXmlNode *n, bool attributestoo) {
         const auto &as = wxStringTokenize(
             n->GetType() == wxXML_ELEMENT_NODE ? n->GetNodeContent() : n->GetContent());
         loop(i, as.GetCount()) {
@@ -566,7 +566,7 @@ struct System {
         }
     }
 
-    void SetGridSettingsFromXML(auto c, auto n) {
+    void SetGridSettingsFromXML(Cell *c, wxXmlNode *n) {
         c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
         c->grid->bordercolor = std::stoi(
             n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default).ToStdString(),
@@ -581,7 +581,7 @@ struct System {
         return col;
     }
 
-    int FillRows(auto g, const auto &as, int column, int startrow, int starty) {
+    int FillRows(Grid *g, const wxArrayString &as, int column, int startrow, int starty) {
         auto y = starty;
         for (auto i = startrow; i < as.size(); i++) {
             auto s = as[i];
@@ -610,11 +610,11 @@ struct System {
         return imagelist.size() - 1;
     }
 
-    void ImageSize(auto bm, int &xs, int &ys) {
+    void ImageSize(wxBitmap *bm, int &xs, int &ys) {
         if (!bm) return;
         xs = bm->GetWidth();
         ys = bm->GetHeight();
     }
 
-    void ImageDraw(auto *bm, auto &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
+    void ImageDraw(wxBitmap *bm, auto &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
 };
