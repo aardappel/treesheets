@@ -1,5 +1,5 @@
 
-static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline = false) {
+static void DrawRectangle(auto &dc, uint c, int x, int y, int xs, int ys, bool outline = false) {
     if (outline)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     else
@@ -9,17 +9,17 @@ static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool o
 }
 
 struct DropTarget : wxDropTarget {
-    DropTarget(wxDataObject *data) : wxDropTarget(data) {};
+    DropTarget(auto data) : wxDropTarget(data) {};
 
-    wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
+    wxDragResult OnDragOver(auto x, auto y, auto def) {
         auto sw = sys->frame->GetCurTab();
         wxClientDC dc(sw);
         sw->UpdateHover(x, y, dc);
         return sw->doc->hover.g ? wxDragCopy : wxDragNone;
     }
 
-    bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
-    wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
+    bool OnDrop(auto x, auto y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
+    wxDragResult OnData(auto x, auto y, auto def) {
         GetData();
         auto sw = sys->frame->GetCurTab();
         sw->SelectClick(x, y, false, 0);
@@ -41,8 +41,8 @@ struct BlinkTimer : wxTimer {
 };
 
 struct ThreeChoiceDialog : public wxDialog {
-    ThreeChoiceDialog(wxWindow *parent, const wxString &title, const wxString &msg,
-                      const wxString &ch1, const wxString &ch2, const wxString &ch3)
+    ThreeChoiceDialog(auto parent, const auto &title, const auto &msg,
+                      const auto &ch1, const auto &ch2, const auto &ch3)
         : wxDialog(parent, wxID_ANY, title) {
         auto bsv = new wxBoxSizer(wxVERTICAL);
         bsv->Add(new wxStaticText(this, -1, msg), 0, wxALL, 5);
@@ -74,7 +74,7 @@ struct DateTimeRangeDialog : public wxDialog {
     wxButton cancelbtn {this, wxID_CANCEL, _(L"Cancel")};
     wxDateTime begin;
     wxDateTime end;
-    DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _(L"Date and time range")) {
+    DateTimeRangeDialog(auto parent) : wxDialog(parent, wxID_ANY, _(L"Date and time range")) {
         wxSizerFlags sizerflags(1);
         auto startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         startsizer->Add(&startdate, 0, wxALL, 5);
@@ -113,7 +113,7 @@ struct DateTimeRangeDialog : public wxDialog {
 };
 
 struct ColorPopup : wxVListBoxComboPopup {
-    ColorPopup(wxWindow *parent) {}
+    ColorPopup(auto parent) {}
 
     void OnComboDoubleClick() {
         sys->frame->GetCurTab()->doc->ColorChange(m_combo->GetId(), GetSelection());
@@ -121,7 +121,7 @@ struct ColorPopup : wxVListBoxComboPopup {
 };
 
 struct ColorDropdown : wxOwnerDrawnComboBox {
-    ColorDropdown(wxWindow *parent, wxWindowID id, int sel) {
+    ColorDropdown(auto parent, auto id, int sel) {
         wxArrayString as;
         as.Add(L"", sizeof(celltextcolors) / sizeof(uint));
         Create(parent, id, L"", wxDefaultPosition, FromDIP(wxSize(44, 22)), as,
@@ -133,11 +133,11 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
 
     wxCoord OnMeasureItem(size_t item) const { return FromDIP(22); }
     wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(40); }
-    void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
+    void OnDrawBackground(auto &dc, const auto &rect, int item, int flags) const {
         DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
     }
 
-    void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
+    void OnDrawItem(auto &dc, const auto &rect, int item, int flags) const {
         DrawRectangle(dc, item == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[item],
                       rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
         if (item == CUSTOMCOLORIDX) {
@@ -149,7 +149,7 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
     }
 };
 
-static uint PickColor(wxFrame *fr, uint defcol) {
+static uint PickColor(auto fr, uint defcol) {
     auto col = wxGetColourFromUser(fr, wxColour(defcol));
     if (col.IsOk()) return (col.Blue() << 16) + (col.Green() << 8) + col.Red();
     return -1;
@@ -169,7 +169,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     wxArrayString as;
     const int image_space = 22;
 
-    ImageDropdown(wxWindow *parent, const wxString &path) {
+    ImageDropdown(auto parent, const auto &path) {
         FillBitmapVector(path);
         Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
                FromDIP(wxSize(image_space * 2, image_space)), as,
@@ -181,15 +181,15 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     wxCoord OnMeasureItem(size_t item) const { return FromDIP(image_space); }
     wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(image_space); }
-    void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
+    void OnDrawBackground(auto &dc, const auto &rect, int item, int flags) const {
         DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
     }
 
-    void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
+    void OnDrawItem(auto &dc, const auto &rect, int item, int flags) const {
         sys->ImageDraw(bitmaps_display[item].get(), dc, rect.x + FromDIP(3), rect.y + FromDIP(3));
     }
 
-    void FillBitmapVector(const wxString &path) {
+    void FillBitmapVector(const auto &path) {
         if (!bitmaps_display.empty()) bitmaps_display.resize(0);
         auto f = wxFindFirstFile(path + L"*.*");
         while (!f.empty()) {
@@ -205,12 +205,12 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 };
 
-static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
+static void ScaleBitmap(const auto &src, double sc, auto &dest) {
     dest = wxBitmap(src.ConvertToImage().Scale(src.GetWidth() * sc, src.GetHeight() * sc,
                                                wxIMAGE_QUALITY_HIGH));
 }
 
-static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
+static vector<uint8_t> ConvertWxImageToBuffer(const auto &im, auto bmt) {
     wxMemoryOutputStream mos(NULL, 0);
     im.SaveFile(mos, bmt);
     auto sz = mos.TellO();
@@ -219,7 +219,7 @@ static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bm
     return buf;
 }
 
-static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType bmt) {
+static wxImage ConvertBufferToWxImage(const auto &buf, auto bmt) {
     wxMemoryInputStream mis(buf.data(), buf.size());
     wxImage im(mis, bmt);
     if (!im.IsOk()) {
@@ -231,13 +231,13 @@ static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType b
     return im;
 }
 
-static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buf, wxBitmapType bmt) {
+static wxBitmap ConvertBufferToWxBitmap(const auto &buf, auto bmt) {
     auto im = ConvertBufferToWxImage(buf, bmt);
     wxBitmap bm(im, 32);
     return bm;
 }
 
-static uint64_t CalculateHash(vector<uint8_t> &idv) {
+static uint64_t CalculateHash(auto &idv) {
     int max = 4096;
     return FNV1A64(idv.data(), min(idv.size(), max));
 }
