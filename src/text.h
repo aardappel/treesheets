@@ -9,16 +9,16 @@ struct Text {
     wxDateTime lastedit;
     bool filtered {false};
 
-    auto WasEdited() { lastedit = wxDateTime::Now(); }
+    void WasEdited() { lastedit = wxDateTime::Now(); }
 
     Text() { WasEdited(); }
 
-    auto DisplayImage() {
+    wxBitmap *DisplayImage() {
         return cell->grid && cell->grid->folded ? &sys->frame->foldicon
                                                 : (image ? &image->Display() : nullptr);
     }
 
-    auto EstimatedMemoryUse() {
+    size_t EstimatedMemoryUse() {
         return sizeof(Text) + t.Length() *
             #if wxUSE_UNICODE
             sizeof(wchar_t);
@@ -27,14 +27,14 @@ struct Text {
             #endif
     }
 
-    auto GetNum() {
+    double GetNum() {
         std::wstringstream ss(t.ToStdWstring());
         double r;
         ss >> r;
         return r;
     }
 
-    auto SetNum(auto d) {
+    void SetNum(double d) {
         std::wstringstream ss;
         ss << std::fixed;
 
@@ -57,7 +57,7 @@ struct Text {
         t = s;
     }
 
-    auto htmlify(auto &str) {
+    wxString htmlify(wxString &str) {
         wxString r;
         for(auto cref : str) {
             switch (wxChar c = cref.GetValue()) {
@@ -70,7 +70,7 @@ struct Text {
         return r;
     }
 
-    auto ToText(auto indent, const auto &s, auto format) {
+    wxString ToText(int indent, const Selection &s, int format) {
         wxString str = s.cursor != s.cursorend ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
         if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
             format == A_EXPHTMLO || format == A_EXPHTMLB)
@@ -81,14 +81,14 @@ struct Text {
         return str;
     };
 
-    auto MinRelsize(auto rs) { return min(relsize, rs); }
-    auto RelSize(auto dir, auto zoomdepth) {
+    auto MinRelsize(int rs) { return min(relsize, rs); }
+    auto RelSize(int dir, int zoomdepth) {
         relsize = max(min(relsize + dir, g_deftextsize - g_mintextsize() + zoomdepth),
                       g_deftextsize - g_maxtextsize() - zoomdepth);
     }
 
-    auto IsWord(auto c) { return wxIsalnum(c) || wxStrchr(L"_\"\'()", c) || wxIspunct(c); }
-    auto GetLinePart(auto &currentpos, auto breakpos, auto limitpos) {
+    auto IsWord(wxChar c) { return wxIsalnum(c) || wxStrchr(L"_\"\'()", c) || wxIspunct(c); }
+    auto GetLinePart(int &currentpos, int breakpos, int limitpos) {
         auto startpos = currentpos;
         currentpos = breakpos;
 
@@ -147,7 +147,7 @@ struct Text {
         // return GetLinePart(i, l, l);     // big word was the last one
     }
 
-    auto TextSize(auto &dc, auto &sx, auto &sy, auto tiny, auto &leftoffset, auto maxcolwidth) {
+    void TextSize(wxDC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth) {
         sx = sy = 0;
         auto i = 0;
         for (;;) {
@@ -166,13 +166,13 @@ struct Text {
         if (!tiny) sx += 4;
     }
 
-    auto IsInSearch() {
+    bool IsInSearch() {
         return sys->searchstring.Len() &&
                (sys->casesensitivesearch ? t.Find(sys->searchstring)
                                          : t.Lower().Find(sys->searchstring)) >= 0;
     }
 
-    auto Render(auto doc, auto bx, auto by, auto depth, auto &dc, auto &leftoffset, auto maxcolwidth) {
+    int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset, int maxcolwidth) {
         auto ixs = 0, iys = 0;
         if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
 
@@ -247,7 +247,7 @@ struct Text {
         return max(lines * h, iys);
     }
 
-    void FindCursor(auto doc, auto bx, auto by, auto &dc, auto &s, auto maxcolwidth) {
+    void FindCursor(Document *doc, int bx, int by, wxDC &dc, Selection &s, int maxcolwidth) {
         bx -= g_margin_extra;
         by -= g_margin_extra;
 
@@ -277,8 +277,8 @@ struct Text {
         ASSERT(s.cursor >= 0 && s.cursor <= (int)t.Len());
     }
 
-    auto DrawCursor(auto doc, auto &dc, auto &s, auto full, auto color, auto cursoronly,
-                    auto maxcolwidth) {
+    void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color, bool cursoronly,
+                    int maxcolwidth) {
         auto ixs = 0, iys = 0;
         if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
         if (ixs) ixs += 2;
@@ -332,25 +332,25 @@ struct Text {
         }
     }
 
-    auto ExpandToWord(auto &s) {
+    void ExpandToWord(Selection &s) {
         if (!wxIsalnum(t[s.cursor])) return;
         while (s.cursor > 0 && wxIsalnum(t[s.cursor - 1])) s.cursor--;
         while (s.cursorend < (int)t.Len() && wxIsalnum(t[s.cursorend])) s.cursorend++;
     }
 
-    auto SelectWord(auto &s) {
+    void SelectWord(Selection &s) {
         if (s.cursor >= (int)t.Len()) return;
         s.cursorend = s.cursor + 1;
         ExpandToWord(s);
     }
 
-    auto SelectWordBefore(auto &s) {
+    void SelectWordBefore(Selection &s) {
         if (s.cursor <= 1) return;
         s.cursorend = s.cursor--;
         ExpandToWord(s);
     }
 
-    auto RangeSelRemove(auto &s) {
+    bool RangeSelRemove(Selection &s) {
         WasEdited();
         if (s.cursor != s.cursorend) {
             t.Remove(s.cursor, s.cursorend - s.cursor);
@@ -360,7 +360,7 @@ struct Text {
         return false;
     }
 
-    auto SetRelSize(auto &s) {
+    void SetRelSize(Selection &s) {
         if (t.Len() || !cell->parent) return;
         int dd[] = {0, 1, 1, 0, 0, -1, -1, 0};
         for (auto i = 0; i < 4; i++) {
@@ -374,7 +374,7 @@ struct Text {
         }
     }
 
-    auto Insert(auto doc, const auto &ins, auto &s, auto keeprelsize) {
+    auto Insert(Document *doc, const auto &ins, Selection &s, bool keeprelsize) {
         auto prevl = t.Len();
         if (!s.TextEdit()) Clear(doc, s);
         RangeSelRemove(s);
@@ -382,33 +382,33 @@ struct Text {
         t.insert(s.cursor, ins);
         s.cursor = s.cursorend = s.cursor + (int)ins.Len();
     }
-    auto Key(auto doc, auto k, auto &s) {
+    void Key(Document *doc, int k, Selection &s) {
         wxString ins;
         ins += k;
         Insert(doc, ins, s, false);
     }
 
-    auto Delete(auto &s) {
+    void Delete(Selection &s) {
         if (!RangeSelRemove(s))
             if (s.cursor < (int)t.Len()) { t.Remove(s.cursor, 1); };
     }
-    auto Backspace(auto &s) {
+    void Backspace(Selection &s) {
         if (!RangeSelRemove(s))
             if (s.cursor > 0) {
                 t.Remove(--s.cursor, 1);
                 --s.cursorend;
             };
     }
-    auto DeleteWord(auto &s) {
+    void DeleteWord(Selection &s) {
         SelectWord(s);
         Delete(s);
     }
-    auto BackspaceWord(auto &s) {
+    void BackspaceWord(Selection &s) {
         SelectWordBefore(s);
         Backspace(s);
     }
 
-    auto ReplaceStr(const auto &str, const auto &lstr) {
+    void ReplaceStr(const wxString &str, const wxString &lstr) {
         if (sys->casesensitivesearch) {
             for (auto i = 0, j = 0; (j = t.Mid(i).Find(sys->searchstring)) >= 0;) {
                 // does this need WasEdited()?
@@ -431,12 +431,12 @@ struct Text {
         }
     }
 
-    auto Clear(auto doc, auto &s) {
+    void Clear(Document *doc, Selection &s) {
         t.Clear();
         s.EnterEdit(doc);
     }
 
-    auto HomeEnd(auto &s, auto home) {
+    void HomeEnd(Selection &s, bool home) {
         auto i = 0;
         auto cw = cell->ColWidth();
         auto findwhere = home ? s.cursor : s.cursorend;
@@ -452,7 +452,7 @@ struct Text {
         }
     }
 
-    auto Save(auto &dos) const {
+    void Save(wxDataOutputStream &dos) const {
         dos.WriteString(t.wx_str());
         dos.Write32(relsize);
         dos.Write32(image ? image->savedindex : -1);
@@ -461,7 +461,7 @@ struct Text {
         dos.Write64(&le, 1);
     }
 
-    auto Load(auto &dis) {
+    void Load(wxDataInputStream &dis) {
         t = dis.ReadString();
 
         // if (t.length() > 10000)
