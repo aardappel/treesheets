@@ -43,7 +43,7 @@ struct TSCanvas : public wxScrolledCanvas {
         */
     };
 
-    void UpdateHover(int mx, int my, auto &dc) {
+    void UpdateHover(int mx, int my, wxDC &dc) {
         int x, y;
         CalcUnscrolledPosition(mx, my, &x, &y);
         DoPrepareDC(dc);
