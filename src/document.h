@@ -1788,37 +1788,22 @@ struct Document {
                 return nullptr;
             }
 
+            case A_SAVE_AS_JPEG:
             case A_SAVE_AS_PNG:
-            case A_SAVE_AS_JPEG: {
                 loopallcellssel(c, true) {
-                    if (c->text.image) {
-                        switch (k) {
-                            case A_SAVE_AS_JPEG: {
-                                if (c->text.image->image_type == 'I') {
-                                    auto im = ConvertBufferToWxImage(c->text.image->image_data,
-                                                                     wxBITMAP_TYPE_PNG);
-                                    c->text.image->image_data =
-                                        ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
-                                    c->text.image->image_type = 'J';
-                                }
-                                break;
-                            }
-                            case A_SAVE_AS_PNG:
-                            default: {
-                                if (c->text.image->image_type == 'J') {
-                                    auto im = ConvertBufferToWxImage(c->text.image->image_data,
-                                                                     wxBITMAP_TYPE_JPEG);
-                                    c->text.image->image_data =
-                                        ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-                                    c->text.image->image_type = 'I';
-                                }
-                                break;
-                            }
-                        }
+                    auto img = c->text.image;
+                    if (k == A_SAVE_AS_JPEG && img && img->image_type == 'I') {
+                        auto im = ConvertBufferToWxImage(img->image_data, wxBITMAP_TYPE_PNG);
+                        img->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
+                        img->image_type = 'J';
+                    }
+                    if (k == A_SAVE_AS_PNG && img && img->image_type == 'J') {
+                        auto im = ConvertBufferToWxImage(img->image_data, wxBITMAP_TYPE_JPEG);
+                        img->image_data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                        img->image_type = 'I';
                     }
                 }
                 return nullptr;
-            }
 
             case A_BROWSE: {
                 const wxChar *returnmessage = nullptr;
