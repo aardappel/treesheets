@@ -84,7 +84,7 @@ struct Grid {
     }
 
     /* Clones g into this grid. This mutates the grid this function is called on. */
-    void Clone(auto g) {
+    void Clone(Grid *g) {
         g->bordercolor = bordercolor;
         g->user_grid_outer_spacing = user_grid_outer_spacing;
         g->folded = folded;
