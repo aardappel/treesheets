@@ -142,7 +142,7 @@ struct MyApp : wxApp {
         return 0;
     }
 
-    void MacOpenFiles(const wxArrayString &fns) {
+    void MacOpenFiles(const auto &fns) {
         if (!sys) return;
         for (auto &fn : fns) { sys->Open(fn); }
     }
