@@ -11,7 +11,7 @@ struct MyApp : wxApp {
     MyFrame *frame {nullptr};
     unique_ptr<IPCServer> serv {make_unique<IPCServer>()};
     wxString filename;
-    bool initateventloop {false};
+    bool initiateventloop {false};
     wxLocale locale;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
 
@@ -130,8 +130,8 @@ struct MyApp : wxApp {
     }
 
     void OnEventLoopEnter(wxEventLoopBase *WXUNUSED(loop)) {
-        if (!initateventloop) {
-            initateventloop = true;
+        if (!initiateventloop) {
+            initiateventloop = true;
             frame->AppOnEventLoopEnter();
             sys->Init(filename);
         }
