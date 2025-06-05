@@ -151,7 +151,7 @@ struct Text {
         sx = sy = 0;
         int i = 0;
         for (;;) {
-            wxString curl = GetLine(i, maxcolwidth);
+            auto curl = GetLine(i, maxcolwidth);
             if (!curl.Len()) break;
             int x, y;
             if (tiny) {
