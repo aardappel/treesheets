@@ -111,7 +111,7 @@ struct Document {
 
     uint Background() { return rootgrid ? rootgrid->cellcolor : 0xFFFFFF; }
 
-    void InitCellSelect(auto ics, int xs, int ys) {
+    void InitCellSelect(Cell *ics, int xs, int ys) {
         if (!ics) {
             SetSelect(Selection(rootgrid->grid, 0, 0, 1, 1));
             return;
@@ -121,7 +121,7 @@ struct Document {
         selected.ys = ys;
     }
 
-    void InitWith(Cell *r, const auto &fn, Cell *ics, int xs, int ys) {
+    void InitWith(Cell *r, const wxString &fn, Cell *ics, int xs, int ys) {
         rootgrid = r;
         InitCellSelect(ics, xs, ys);
         ChangeFileName(fn, false);
@@ -132,7 +132,7 @@ struct Document {
                                  page);
     }
 
-    void ChangeFileName(const auto &fn, bool checkext) {
+    void ChangeFileName(const wxString &fn, bool checkext) {
         filename = fn;
         if (checkext) {
             wxFileName wxfn(filename);
@@ -217,7 +217,7 @@ struct Document {
         return _(L"");
     }
 
-    void DrawSelect(auto &dc, auto &sel, bool refreshinstead = false, bool cursoronly = false) {
+    void DrawSelect(wxDC &dc, Selection &sel, bool refreshinstead = false, bool cursoronly = false) {
         sys->UpdateAmountStatus(sel);
         #ifdef SIMPLERENDER
         if (refreshinstead) {
@@ -230,7 +230,7 @@ struct Document {
         sel.g->DrawSelect(this, dc, sel, cursoronly);
     }
 
-    void DrawSelectMove(auto &dc, auto &sel, bool refreshalways = false,
+    void DrawSelectMove(wxDC &dc, Selection &sel, bool refreshalways = false,
                         bool refreshinstead = true) {
         if (ScrollIfSelectionOutOfView(dc, sel)) return;
         if (refreshalways)
@@ -239,7 +239,7 @@ struct Document {
             DrawSelect(dc, sel, refreshinstead);
     }
 
-    bool ScrollIfSelectionOutOfView(auto &dc, auto &sel, bool refreshalways = false,
+    bool ScrollIfSelectionOutOfView(wxDC &dc, Selection &sel, bool refreshalways = false,
                                     bool needslayout = true) {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
@@ -271,7 +271,7 @@ struct Document {
         return refreshalways;
     }
 
-    void ScrollOrZoom(auto &dc, bool zoomiftiny = false) {
+    void ScrollOrZoom(wxDC &dc, bool zoomiftiny = false) {
         if (!selected.g) return;
         auto drawroot = WalkPath(drawpath);
         // If we jumped to a cell which may be insided a folded cell, we have to unfold it
@@ -296,7 +296,7 @@ struct Document {
         DrawSelectMove(dc, selected, true);
     }
 
-    void ZoomTiny(auto &dc) {
+    void ZoomTiny(wxDC &dc) {
         if (auto c = selected.GetCell(); c && c->tiny) {
             Zoom(1, dc);  // seems to leave selection box in a weird location?
             if (selected.GetCell() != c) ZoomTiny(dc);
@@ -329,7 +329,7 @@ struct Document {
         if (selected.g) selected.SetCursorEdit(this, selected.TextEdit());
     }
 
-    void Hover(int x, int y, auto &dc) {
+    void Hover(int x, int y, wxDC &dc) {
         if (redrawpending) return;
         ShiftToCenter(dc);
         ResetFont();
@@ -346,12 +346,12 @@ struct Document {
         sys->UpdateStatus(hover);
     }
 
-    void SetSelect(const auto &sel = Selection()) {
+    void SetSelect(const Selection &sel = Selection()) {
         selected = sel;
         begindrag = sel;
     }
 
-    void Select(auto &dc, bool right, int isctrlshift) {
+    void Select(wxDC &dc, bool right, int isctrlshift) {
         begindrag = Selection();
         if (right && hover.IsInside(selected)) return;
         ShiftToCenter(dc);
@@ -387,7 +387,7 @@ struct Document {
         Refresh();
     }
 
-    auto CopyEntireCells(auto &s, int k) {
+    auto CopyEntireCells(wxString &s, int k) {
         sys->clipboardcopy = s;
         auto html = selected.g->ConvertToText(selected, 0, k == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT,
                                               this, false);
@@ -466,7 +466,7 @@ struct Document {
         return;
     }
 
-    void Drag(auto &dc) {
+    void Drag(wxDC &dc) {
         if (!selected.g || !hover.g || !begindrag.g) return;
         if (isctrlshiftdrag) {
             begindrag = hover;
@@ -490,7 +490,7 @@ struct Document {
         return;
     }
 
-    void ZoomSetDrawPath(int dir, auto &dc, bool fromroot = true) {
+    void ZoomSetDrawPath(int dir, wxDC &dc, bool fromroot = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
         if (!len && !drawpath.size()) return;
         if (dir > 0) {
@@ -506,7 +506,7 @@ struct Document {
             drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
     }
 
-    void Zoom(int dir, auto &dc, bool fromroot = false) {
+    void Zoom(int dir, wxDC &dc, bool fromroot = false) {
         ZoomSetDrawPath(dir, dc, fromroot);
         auto drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
@@ -524,7 +524,7 @@ struct Document {
     const wxChar *NoThin() { return _(L"This operation doesn't work on thin selections."); }
     const wxChar *NoGrid() { return _(L"This operation requires a cell that contains a grid."); }
 
-    const wxChar *Wheel(auto &dc, int dir, bool alt, bool ctrl, bool shift,
+    const wxChar *Wheel(wxDC &dc, int dir, bool alt, bool ctrl, bool shift,
                         bool hierarchical = true) {
         if (!dir) return nullptr;
         ShiftToCenter(dc);
@@ -561,7 +561,7 @@ struct Document {
         }
     }
 
-    void Layout(auto &dc) {
+    void Layout(wxDC &dc) {
         ResetFont();
         dc.SetUserScale(1, 1);
         curdrawroot = WalkPath(drawpath);
@@ -580,14 +580,14 @@ struct Document {
         layoutys = curdrawroot->sy + hierarchysize + fgutter;
     }
 
-    void ShiftToCenter(auto &dc) {
+    void ShiftToCenter(wxDC &dc) {
         int dlx = dc.DeviceToLogicalX(0);
         int dly = dc.DeviceToLogicalY(0);
         dc.SetDeviceOrigin(dlx > 0 ? -dlx : centerx, dly > 0 ? -dly : centery);
         dc.SetUserScale(currentviewscale, currentviewscale);
     }
 
-    void Render(auto &dc) {
+    void Render(wxDC &dc) {
         ResetFont();
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
@@ -608,7 +608,7 @@ struct Document {
                             curdrawroot->ColWidth(), 0);
     }
 
-    void Draw(auto &dc) {
+    void Draw(wxDC &dc) {
         redrawpending = false;
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
@@ -660,7 +660,7 @@ struct Document {
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
-    void Print(auto &dc, auto &po) {
+    void Print(wxDC &dc, wxPrintout &po) {
         Layout(dc);
         maxx = layoutxs;
         maxy = layoutys;
@@ -681,7 +681,7 @@ struct Document {
 
     bool FontIsMini(int textsize) { return textsize == g_mintextsize(); }
 
-    bool PickFont(auto &dc, int depth, int relsize, int stylebits) {
+    bool PickFont(wxDC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
             wxFont font(textsize - (while_printing || scaledviewingmode),
@@ -758,7 +758,7 @@ struct Document {
         return keep;
     }
 
-    const wxChar *DoubleClick(auto &dc) {
+    const wxChar *DoubleClick(wxDC &dc) {
         if (!selected.g) return nullptr;
         ShiftToCenter(dc);
         if (selected.Thin()) {
@@ -777,7 +777,7 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar *Export(const auto fmt, const auto pat, const auto msg, int k) {
+    const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *msg, int k) {
         auto fn = ::wxFileSelector(msg, L"", L"", fmt, pat,
                                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Export cancelled.");
@@ -796,7 +796,7 @@ struct Document {
         return bm;
     }
 
-    wxBitmap GetSubBitmap(auto &sel) {
+    wxBitmap GetSubBitmap(Selection &sel) {
         auto r = sel.g->GetRect(this, sel, true);
         return GetBitmap().GetSubBitmap(r);
     }
@@ -806,7 +806,7 @@ struct Document {
         rootgrid->ImageRefCount(includefolded);
     }
 
-    const wxChar *ExportFile(const auto &fn, int k, bool currentview) {
+    const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
         auto root = currentview ? curdrawroot : rootgrid;
         if (k == A_EXPIMAGE) {
             auto bm = GetBitmap();
@@ -875,7 +875,7 @@ struct Document {
         }
     }
 
-    const wxChar *Key(auto &dc, auto uk, int k, bool alt, bool ctrl, bool shift,
+    const wxChar *Key(wxDC &dc, int uk, int k, bool alt, bool ctrl, bool shift,
                       bool &unprocessed) {
         if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
             switch (k) {
@@ -960,7 +960,7 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar *Action(auto &dc, int k) {
+    const wxChar *Action(wxDC &dc, int k) {
         ShiftToCenter(dc);
 
         switch (k) {
@@ -2006,7 +2006,7 @@ struct Document {
         }
     }
 
-    const wxChar *SearchNext(auto &dc, bool focusmatch, bool jump, bool reverse) {
+    const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump, bool reverse) {
         if (!rootgrid) return nullptr;  // fix crash when opening new doc
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
@@ -2141,7 +2141,7 @@ struct Document {
         }
     }
 
-    void CreatePath(auto c, auto &path) {
+    void CreatePath(Cell *c, auto &path) {
         path.clear();
         while (c->parent) {
             const Selection &s = c->parent->grid->FindCell(c);
@@ -2163,12 +2163,12 @@ struct Document {
         return c;
     }
 
-    bool LastUndoSameCellAny(auto c) {
+    bool LastUndoSameCellAny(Cell *c) {
         return undolist.size() && undolist.size() != undolistsizeatfullsave &&
                undolist.back()->cloned_from == (uintptr_t)c;
     }
 
-    bool LastUndoSameCellTextEdit(auto c) {
+    bool LastUndoSameCellTextEdit(Cell *c) {
         // hacky way to detect word boundaries to stop coalescing, but works, and
         // not a big deal if selected is not actually related to this cell
         return undolist.size() && !c->grid && undolist.size() != undolistsizeatfullsave &&
@@ -2176,7 +2176,7 @@ struct Document {
                (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);
     }
 
-    void AddUndo(auto c) {
+    void AddUndo(Cell *c) {
         redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
         if (!modified) {
@@ -2209,7 +2209,7 @@ struct Document {
         undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
-    void Undo(auto &dc, auto &fromlist, auto &tolist, bool redo = false) {
+    void Undo(wxDC &dc, auto &fromlist, auto &tolist, bool redo = false) {
         auto beforesel = selected;
         vector<Selection> beforepath;
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
@@ -2251,11 +2251,11 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(auto c, auto &&idv, double sc) {
+    void SetImageBM(Cell *c, auto &&idv, double sc) {
         c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')].get();
     }
 
-    bool LoadImageIntoCell(const auto &fn, auto c, double sc) {
+    bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
@@ -2265,14 +2265,14 @@ struct Document {
         return true;
     }
 
-    void ImageChange(auto &fn, double sc) {
+    void ImageChange(wxString &fn, double sc) {
         if (!selected.g) return;
         selected.g->cell->AddUndo(this);
         loopallcellssel(c, false) LoadImageIntoCell(fn, c, sc);
         Refresh();
     }
 
-    void RecreateTagMenu(auto &menu) {
+    void RecreateTagMenu(wxMenu &menu) {
         int i = A_TAGSET;
         for (auto& [tag, color] : tags) { menu.Append(i++, tag); }
         if (tags.size()) menu.AppendSeparator();
@@ -2298,7 +2298,7 @@ struct Document {
         return nullptr;
     }
 
-    void CollectCells(auto c) {
+    void CollectCells(Cell *c) {
         itercells.clear();
         c->CollectCells(itercells);
     }
@@ -2322,7 +2322,7 @@ struct Document {
         Refresh();
     }
 
-    void ApplyEditRangeFilter(auto &rangebegin, auto &rangeend) {
+    void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
         scrolltoselection = true;
         CollectCells(rootgrid);
@@ -2333,7 +2333,7 @@ struct Document {
         Refresh();
     }
 
-    wxDateTime ParseDateTimeString(const auto &s) {
+    wxDateTime ParseDateTimeString(const wxString &s) {
         wxDateTime dt;
         wxString::const_iterator end;
         if (!dt.ParseDateTime(s, &end)) dt = wxInvalidDateTime;
