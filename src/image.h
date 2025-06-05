@@ -16,7 +16,7 @@ struct Image {
     Image(auto _hash, auto _sc, auto &&idv, auto iti)
         : data(std::move(idv)), type(iti), hash(_hash), display_scale(_sc) {}
 
-    void ImageRescale(auto sc) {
+    auto ImageRescale(auto sc) {
         auto mapitem = imagetypes.find(type);
         if (mapitem == imagetypes.end()) return;
         auto it = mapitem->second.first;
@@ -27,25 +27,25 @@ struct Image {
         bm_display = wxNullBitmap;
     }
 
-    void DisplayScale(auto sc) {
+    auto DisplayScale(auto sc) {
         display_scale /= sc;
         bm_display = wxNullBitmap;
     }
 
-    void ResetScale(auto sc) {
+    auto ResetScale(auto sc) {
         display_scale = sc;
         bm_display = wxNullBitmap;
     }
 
-    wxBitmap &Display() {
+    auto &Display() {
         // This might run in multiple threads in parallel
         // so this function must not touch any global resources
         // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
             auto mapitem = imagetypes.find(type);
             if (mapitem == imagetypes.end()) return wxNullBitmap;
-            wxBitmapType it = mapitem->second.first;
-            wxBitmap bm = ConvertBufferToWxBitmap(data, it);
+            auto it = mapitem->second.first;
+            auto bm = ConvertBufferToWxBitmap(data, it);
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
         }
