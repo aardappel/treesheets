@@ -121,7 +121,7 @@ struct Text {
     }
 
     wxString GetLine(auto &i, auto maxcolwidth) {
-        int l = (int)t.Len();
+        auto l = (int)t.Len();
 
         if (i >= l) return wxEmptyString;
 
@@ -131,7 +131,7 @@ struct Text {
         }  // subsumed by the case below, but this case happens 90% of the time, so more optimal
         if (l - i <= maxcolwidth) return GetLinePart(i, l, l);
 
-        for (int p = i + maxcolwidth; p >= i; p--)
+        for (auto p = i + maxcolwidth; p >= i; p--)
             if (!IsWord(t[p])) return GetLinePart(i, p, l);
 
         // A single word is > maxcolwidth. We split it up anyway.
@@ -149,7 +149,7 @@ struct Text {
 
     auto TextSize(auto &dc, auto &sx, auto &sy, auto tiny, auto &leftoffset, auto maxcolwidth) {
         sx = sy = 0;
-        int i = 0;
+        auto i = 0;
         for (;;) {
             auto curl = GetLine(i, maxcolwidth);
             if (!curl.Len()) break;
