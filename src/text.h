@@ -74,9 +74,8 @@ struct Text {
             format == A_EXPHTMLO || format == A_EXPHTMLB)
             str = htmlify(str);
         if (format == A_EXPHTMLTI && image)
-            str.Prepend(L"<img src=\"data:" + imagetypes.at(image->image_type).second + ";base64," +
-                        wxBase64Encode(image->image_data.data(), image->image_data.size()) +
-                        "\" />");
+            str.Prepend(L"<img src=\"data:" + imagetypes.at(image->type).second + ";base64," +
+                        wxBase64Encode(image->data.data(), image->data.size()) + "\" />");
         return str;
     };
 

@@ -1,6 +1,6 @@
 struct Image {
-    vector<uint8_t> image_data;
-    char image_type;
+    vector<uint8_t> data;
+    char type;
     wxBitmap bm_display;
     int trefc {0};
     int savedindex {-1};
@@ -14,16 +14,16 @@ struct Image {
     int pixel_width {0};
 
     Image(auto _hash, auto _sc, auto &&idv, auto iti)
-        : image_data(std::move(idv)), image_type(iti), hash(_hash), display_scale(_sc) {}
+        : data(std::move(idv)), type(iti), hash(_hash), display_scale(_sc) {}
 
     void ImageRescale(auto sc) {
-        auto mapitem = imagetypes.find(image_type);
+        auto mapitem = imagetypes.find(type);
         if (mapitem == imagetypes.end()) return;
         auto it = mapitem->second.first;
-        auto im = ConvertBufferToWxImage(image_data, it);
+        auto im = ConvertBufferToWxImage(data, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
-        image_data = ConvertWxImageToBuffer(im, it);
-        hash = CalculateHash(image_data);
+        data = ConvertWxImageToBuffer(im, it);
+        hash = CalculateHash(data);
         bm_display = wxNullBitmap;
     }
 
@@ -42,10 +42,10 @@ struct Image {
         // so this function must not touch any global resources
         // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
-            auto mapitem = imagetypes.find(image_type);
+            auto mapitem = imagetypes.find(type);
             if (mapitem == imagetypes.end()) return wxNullBitmap;
             wxBitmapType it = mapitem->second.first;
-            wxBitmap bm = ConvertBufferToWxBitmap(image_data, it);
+            wxBitmap bm = ConvertBufferToWxBitmap(data, it);
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
         }
