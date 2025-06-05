@@ -92,7 +92,7 @@ struct Grid {
         loop(x, xs) g->colwidths[x] = colwidths[x];
     }
 
-    unique_ptr<Cell> CloneSel(const auto &sel) {
+    unique_ptr<Cell> CloneSel(const Selection &sel) {
         auto cl = make_unique<Cell>(nullptr, sel.g->cell, CT_DATA, new Grid(sel.xs, sel.ys));
         foreachcellinsel(c, sel) cl->grid->C(x - sel.x, y - sel.y) = c->Clone(cl.get()).release();
         loop(i, sel.xs) cl->grid->colwidths[i] = sel.g->colwidths[i];
@@ -110,7 +110,7 @@ struct Grid {
         if (ys > xs) horiz = false;
     }
 
-    bool Layout(auto doc, auto &dc, int depth, int &sx, int &sy, int startx, int starty,
+    bool Layout(Document *doc, wxDC &dc, int depth, int &sx, int &sy, int startx, int starty,
                 bool forcetiny) {
         auto xa = new int[xs];
         auto ya = new int[ys];
@@ -160,7 +160,7 @@ struct Grid {
         return tinyborder;
     }
 
-    void Render(auto doc, int bx, int by, auto &dc, int depth, int sx, int sy, int xoff, int yoff) {
+    void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int sx, int sy, int xoff, int yoff) {
         xoff = C(0, 0)->ox - view_margin - view_grid_outer_spacing - 1;
         yoff = C(0, 0)->oy - view_margin - view_grid_outer_spacing - 1;
         int maxx = C(xs - 1, 0)->ox + C(xs - 1, 0)->sx;
@@ -262,7 +262,7 @@ struct Grid {
         }
     }
 
-    void FindXY(auto doc, int px, int py, auto &dc) {
+    void FindXY(Document *doc, int px, int py, wxDC &dc) {
         foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;
@@ -296,7 +296,7 @@ struct Grid {
         }
     }
 
-    Cell *FindLink(const auto &sel, auto link, auto best, bool &lastthis, bool &stylematch,
+    Cell *FindLink(const Selection &sel, auto link, auto best, bool &lastthis, bool &stylematch,
                    bool forward, bool image) {
         if (forward) {
             foreachcell(c) best =
@@ -308,7 +308,7 @@ struct Grid {
         return best;
     }
 
-    Cell *FindNextSearchMatch(const auto &search, auto best, auto selected, bool &lastwasselected,
+    Cell *FindNextSearchMatch(const wxString &search, auto best, auto selected, bool &lastwasselected,
                               bool reverse) {
         if (reverse) {
             foreachcellrev(c) best =
@@ -320,15 +320,15 @@ struct Grid {
         return best;
     }
 
-    Cell *FindNextFilterMatch(auto best, auto selected, bool &lastwasselected) {
+    Cell *FindNextFilterMatch(Cell *best, Cell *selected, bool &lastwasselected) {
         foreachcell(c) best = c->FindNextFilterMatch(best, selected, lastwasselected);
         return best;
     }
 
-    void FindReplaceAll(const auto &s, const auto &ls) { foreachcell(c) c->FindReplaceAll(s, ls); }
+    void FindReplaceAll(const wxString &s, const wxString &ls) { foreachcell(c) c->FindReplaceAll(s, ls); }
 
-    void ReplaceCell(auto o, auto n) { foreachcell(c) if (c == o) c = n; }
-    Selection FindCell(auto o) {
+    void ReplaceCell(Cell *o, Cell *n) { foreachcell(c) if (c == o) c = n; }
+    Selection FindCell(Cell *o) {
         foreachcell(c) if (c == o) return Selection(this, x, y, 1, 1);
         return Selection();
     }
@@ -337,7 +337,7 @@ struct Grid {
     void ImageRefCount(bool includefolded) {
         if (includefolded || !folded) foreachcell(c) c->ImageRefCount(includefolded);
     }
-    void DrawHover(auto doc, auto &dc, auto &sel) {
+    void DrawHover(Document *doc, wxDC &dc, Selection &sel) {
         #ifndef SIMPLERENDER
         #ifdef __WXMAC__
         const auto thincol = 0xFFFFFFu;
@@ -358,12 +358,12 @@ struct Grid {
         #endif
     }
 
-    void DrawCursor(auto doc, auto &dc, auto &sel, bool full, uint color, bool cursoronly) {
+    void DrawCursor(Document *doc, wxDC &dc, Selection &sel, bool full, uint color, bool cursoronly) {
         if (auto c = sel.GetCell(); c && !c->tiny && (c->HasText() || !c->grid))
             c->text.DrawCursor(doc, dc, sel, full, color, cursoronly, colwidths[sel.x]);
     }
 
-    void DrawInsert(auto doc, auto &dc, auto &sel, uint colour) {
+    void DrawInsert(Document *doc, wxDC &dc, Selection &sel, uint colour) {
         dc.SetPen(sys->pen_thinselect);
         if (!sel.xs) {
             auto c = C(sel.x - (sel.x == xs), sel.y);
@@ -384,7 +384,7 @@ struct Grid {
         }
     }
 
-    wxRect GetRect(auto doc, const auto &sel, bool minimal = false) {
+    wxRect GetRect(Document *doc, const Selection &sel, bool minimal = false) {
         if (sel.Thin()) {
             if (sel.xs) {
                 if (sel.y < ys) {
@@ -414,7 +414,7 @@ struct Grid {
         }
     }
 
-    void DrawSelect(auto doc, auto &dc, auto &sel, bool cursoronly) {
+    void DrawSelect(Document *doc, wxDC &dc, Selection &sel, bool cursoronly) {
         #ifndef SIMPLERENDER
         dc.SetLogicalFunction(wxINVERT);
         #endif
@@ -466,13 +466,13 @@ struct Grid {
         SetOrient();
     }
 
-    void MultiCellDelete(auto doc, auto &sel) {
+    void MultiCellDelete(Document *doc, Selection &sel) {
         cell->AddUndo(doc);
         MultiCellDeleteSub(doc, sel);
         doc->Refresh();
     }
 
-    void MultiCellDeleteSub(auto doc, auto &sel) {
+    void MultiCellDeleteSub(Document *doc, Selection &sel) {
         foreachcellinsel(c, sel) c->Clear();
         bool delhoriz = true, delvert = true;
         foreachcell(c) {
@@ -503,7 +503,7 @@ struct Grid {
         }
     }
 
-    void DelSelf(auto doc, auto &s) {
+    void DelSelf(Document *doc, Selection &s) {
         if (!doc->drawpath.empty() && doc->drawpath.back().g == this) {
             doc->drawpath.pop_back();
             doc->curdrawroot = doc->WalkPath(doc->drawpath);
@@ -538,7 +538,7 @@ struct Grid {
         if (dx >= 0) colwidths.insert(colwidths.begin() + dx, cell->ColWidth());
     }
 
-    void Save(auto &dos, auto ocs) const {
+    void Save(wxDataOutputStream &dos, Cell *ocs) const {
         dos.Write32(xs);
         dos.Write32(ys);
         dos.Write32(bordercolor);
@@ -549,7 +549,7 @@ struct Grid {
         foreachcell(c) c->Save(dos, ocs);
     }
 
-    bool LoadContents(auto &dis, int &numcells, int &textbytes, auto &ics) {
+    bool LoadContents(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         if (sys->versionlastloaded >= 10) {
             bordercolor = dis.Read32() & 0xFFFFFF;
             user_grid_outer_spacing = dis.Read32();
@@ -573,7 +573,7 @@ struct Grid {
         return true;
     }
 
-    void GetStats(auto &sel, int &numcells, int &textbytes) {
+    void GetStats(Selection &sel, int &numcells, int &textbytes) {
         foreachcellinsel(c, sel) c->GetStats(numcells, textbytes);
     }
 
@@ -581,8 +581,8 @@ struct Grid {
         foreachcell(c) c->GetStats(numcells, textbytes);
     }
 
-    void Formatter(auto &r, int format, int indent, const auto xml, const auto html,
-                   const auto htmlb) {
+    void Formatter(wxString &r, int format, int indent, const wxChar *xml, const wxChar *html,
+                   const wxChar *htmlb) {
         if (format == A_EXPXML) {
             r.Append(L' ', indent);
             r.Append(xml);
@@ -595,11 +595,11 @@ struct Grid {
         }
     }
 
-    wxString ToText(int indent, const auto &sel, int format, auto doc, bool inheritstyle) {
+    wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle) {
         return ConvertToText(SelectAll(), indent + 2, format, doc, inheritstyle);
     };
 
-    wxString ConvertToText(const auto &sel, int indent, int format, auto doc, bool inheritstyle) {
+    wxString ConvertToText(const Selection &sel, int indent, int format, Document *doc, bool inheritstyle) {
         wxString r;
         const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
         const int font_size = 14 - indent / 2;
@@ -635,7 +635,7 @@ struct Grid {
     void RelSize(int dir, const auto &sel, int zoomdepth) {
         foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth);
     }
-    void SetBorder(int width, const auto &sel) { foreachcellinsel(c, sel) c->SetBorder(width); }
+    void SetBorder(int width, const Selection &sel) { foreachcellinsel(c, sel) c->SetBorder(width); }
     int MinRelsize(int rs) {
         foreachcell(c) {
             int crs = c->MinRelsize();
@@ -664,7 +664,7 @@ struct Grid {
         c->parent = cell;
     }
 
-    void MergeWithParent(auto p, auto &sel, auto doc) {
+    void MergeWithParent(Grid *p, Selection &sel, Document *doc) {
         cell->grid = nullptr;
         foreachcell(c) {
             if (x + sel.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
@@ -690,7 +690,7 @@ struct Grid {
         delete this;
     }
 
-    void SetStyle(auto doc, const auto &sel, int sb) {
+    void SetStyle(Document *doc, const Selection &sel, int sb) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) {
@@ -700,21 +700,21 @@ struct Grid {
         doc->Refresh();
     }
 
-    void ColorChange(auto doc, int which, uint color, const auto &sel) {
+    void ColorChange(Document *doc, int which, uint color, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->ColorChange(doc, which, color);
         doc->Refresh();
     }
 
-    void ReplaceStr(auto doc, const auto &s, const auto &ls, const auto &sel) {
+    void ReplaceStr(Document *doc, const wxString &s, const wxString &ls, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->text.ReplaceStr(s, ls);
         doc->Refresh();
     }
 
-    void CSVImport(const auto &as, auto sep) {
+    void CSVImport(const wxArrayString &as, wxString sep) {
         int cy = 0;
         loop(y, (int)as.size()) {
             auto s = as[y];
@@ -761,7 +761,7 @@ struct Grid {
         ys = cy;  // throws memory away, but doesn't matter
     }
 
-    unique_ptr<Cell> EvalGridCell(auto &ev, auto &c, auto acc, int &x, int &y, bool &alldata,
+    unique_ptr<Cell> EvalGridCell(auto &ev, Cell *&c, auto acc, int &x, int &y, bool &alldata,
                                   bool vert) {
         int ct = c->celltype;  // Type of subcell being evaluated
         // Update alldata condition (variable reads act like data)
@@ -898,7 +898,7 @@ struct Grid {
         return 0;
     }
 
-    void Sort(auto &sel, bool descending) {
+    void Sort(Selection &sel, bool descending) {
         sys->sortcolumn = sel.x;
         sys->sortxs = xs;
         sys->sortdescending = descending;
@@ -906,7 +906,7 @@ struct Grid {
               (int(__cdecl *)(const void *, const void *))sortfunc);
     }
 
-    Cell *FindExact(const auto &s) {
+    Cell *FindExact(const wxString &s) {
         foreachcell(c) {
             auto f = c->FindExact(s);
             if (f) return f;
@@ -914,7 +914,7 @@ struct Grid {
         return nullptr;
     }
 
-    Selection HierarchySwap(auto tag) {
+    Selection HierarchySwap(wxString tag) {
         Cell *selcell = nullptr;
         bool done = false;
     lookformore:
@@ -957,7 +957,7 @@ struct Grid {
         foreachcell(c) c->parent = p;
     }
 
-    Cell *DeleteTagParent(auto tag, auto basecell, auto found) {
+    Cell *DeleteTagParent(Cell *tag, Cell *basecell, Cell *found) {
         ReplaceCell(tag, nullptr);
         if (xs * ys == 1) {
             if (cell != basecell) {
@@ -979,7 +979,7 @@ struct Grid {
         return nullptr;
     }
 
-    void MergeTagCell(auto f, auto &selcell) {
+    void MergeTagCell(Cell *f, Cell *&selcell) {
         foreachcell(c) if (c->text.t == f->text.t) {
             if (!selcell) selcell = c;
 
@@ -999,14 +999,14 @@ struct Grid {
         Add(f);
     }
 
-    void MergeTagAll(auto into) {
+    void MergeTagAll(Cell *into) {
         foreachcell(c) {
             into->grid->MergeTagCell(c, into /*dummy*/);
             c = nullptr;
         }
     }
 
-    void SetGridTextLayout(int ds, bool vert, bool noset, const auto &sel) {
+    void SetGridTextLayout(int ds, bool vert, bool noset, const Selection &sel) {
         foreachcellinsel(c, sel) c->SetGridTextLayout(ds, vert, noset);
     }
 
@@ -1015,7 +1015,7 @@ struct Grid {
         return true;
     }
 
-    void Hierarchify(auto doc) {
+    void Hierarchify(Document *doc) {
         loop(y, ys) {
             unique_ptr<Cell> rest;
             if (xs > 1) {
@@ -1049,7 +1049,7 @@ struct Grid {
         foreachcell(c) if (c->grid && c->grid->xs > 1) c->grid->Hierarchify(doc);
     }
 
-    void MergeRow(auto tm) {
+    void MergeRow(Grid *tm) {
         ASSERT(xs == tm->xs && tm->ys == 1);
         InsertCells(-1, ys, 0, 1, nullptr);
         loop(x, xs) {
@@ -1062,7 +1062,7 @@ struct Grid {
         foreachcell(c) c->MaxDepthLeaves(curdepth, maxdepth, leaves);
     }
 
-    int Flatten(int curdepth, int cury, auto g) {
+    int Flatten(int curdepth, int cury, Grid *g) {
         foreachcell(c) if (c->grid) { cury = c->grid->Flatten(curdepth + 1, cury, g); }
         else {
             auto ic = c;
@@ -1077,7 +1077,7 @@ struct Grid {
         return cury;
     }
 
-    void ResizeColWidths(int dir, const auto &sel, bool hierarchical) {
+    void ResizeColWidths(int dir, const Selection &sel, bool hierarchical) {
         for (int x = sel.x; x < sel.x + sel.xs; x++) {
             colwidths[x] += dir * 5;
             if (colwidths[x] < 5) colwidths[x] = 5;
@@ -1090,11 +1090,11 @@ struct Grid {
     }
 
     void CollectCells(auto &itercells) { foreachcell(c) c->CollectCells(itercells); }
-    void CollectCellsSel(auto &itercells, const auto &sel, bool recurse) {
+    void CollectCellsSel(auto &itercells, const Selection &sel, bool recurse) {
         foreachcellinsel(c, sel) c->CollectCells(itercells, recurse);
     }
 
-    void SetStyles(const auto &sel, auto o) {
+    void SetStyles(const Selection &sel, Cell *o) {
         foreachcellinsel(c, sel) {
             c->cellcolor = o->cellcolor;
             c->textcolor = o->textcolor;
@@ -1103,5 +1103,5 @@ struct Grid {
         }
     }
 
-    void ClearImages(const auto &sel) { foreachcellinsel(c, sel) c->text.image = nullptr; }
+    void ClearImages(const Selection &sel) { foreachcellinsel(c, sel) c->text.image = nullptr; }
 };
