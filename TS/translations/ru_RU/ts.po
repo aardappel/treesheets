@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 2.1\n"
+"Project-Id-Version: TreeSheets_RU 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-24 21:10+0200\n"
-"PO-Revision-Date: 2025-05-02 11:02+0300\n"
+"POT-Creation-Date: 2025-06-03 15:02-0300\n"
+"PO-Revision-Date: 2025-06-05 17:59+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -590,20 +590,32 @@ msgstr "Экспортировать как изображение (PNG). Ког
 msgid "Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"
 msgstr "Экспорт в виде древовидного структурированного текста с пробелами для каждого уровня отступа. Для импорта в менеджеры интеллект-карт и текстовые программы общего назначения"
 
+msgid "Extend Selection Columns Down"
+msgstr ".. по Cтолбцам вНиз"
+
+msgid "Extend Selection Columns Up"
+msgstr ".. по Cтолбцам вВерх"
+
 msgid "Extend Selection Down"
 msgstr ".. вНиз"
 
 msgid "Extend Selection Full Columns"
-msgstr ".. на Все &Столбцы"
+msgstr ".. в Полные &Столбцы"
 
 msgid "Extend Selection Full Rows"
-msgstr ".. на Все &Строки"
+msgstr ".. в Полные &Строки"
 
 msgid "Extend Selection Left"
 msgstr "Расширить ВЫДЕЛЕНИЕ вЛево"
 
 msgid "Extend Selection Right"
 msgstr ".. вПраво"
+
+msgid "Extend Selection Rows Left"
+msgstr ".. по Строкам вЛево"
+
+msgid "Extend Selection Rows Right"
+msgstr ".. по Строкам вПраво"
 
 msgid "Extend Selection Up"
 msgstr ".. вВерх"
@@ -968,6 +980,9 @@ msgstr "Открыть Цвета &Ячейки"
 # Сообщение (после действия или события)
 msgid "Open file cancelled."
 msgstr "Открытие файла отменено."
+
+msgid "Open image dropdown"
+msgstr ".. Изображения"
 
 msgid "Open link in &browser"
 msgstr "Открыть ссылку в &Браузере"
