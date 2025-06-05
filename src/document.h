@@ -172,7 +172,7 @@ struct Document {
             int realindex = 0;
             loopv(i, sys->imagelist) {
                 if (auto &image = *sys->imagelist[i]; image.trefc) {
-                    fos.PutC(image.image_type);
+                    fos.PutC(image.type);
                     sos.WriteDouble(image.display_scale);
                     wxInt64 imagelen(image.data.size());
                     sos.Write64(imagelen);
@@ -404,7 +404,7 @@ struct Document {
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
                     auto img = c->text.image;
-                    if (auto imagetypeit = imagetypes.find(img->image_type);
+                    if (auto imagetypeit = imagetypes.find(img->type);
                         imagetypeit != imagetypes.end() && !img->data.empty()) {
                         auto bm = ConvertBufferToWxBitmap(img->data, imagetypeit->second.first);
                         dragdata.Add(new wxBitmapDataObject(bm));
@@ -440,7 +440,7 @@ struct Document {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 if (c && !c->text.t && c->text.image) {
                     auto im = c->text.image;
-                    if (auto imagetypeit = imagetypes.find(im->image_type);
+                    if (auto imagetypeit = imagetypes.find(im->type);
                         imagetypeit != imagetypes.end() && !im->data.empty() &&
                         wxTheClipboard->Open()) {
                         auto bm = ConvertBufferToWxBitmap(im->data, imagetypeit->second.first);
@@ -1790,15 +1790,15 @@ struct Document {
             case A_SAVE_AS_PNG:
                 loopallcellssel(c, true) {
                     auto img = c->text.image;
-                    if (k == A_SAVE_AS_JPEG && img && img->image_type == 'I') {
+                    if (k == A_SAVE_AS_JPEG && img && img->type == 'I') {
                         auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_PNG);
                         img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
-                        img->image_type = 'J';
+                        img->type = 'J';
                     }
-                    if (k == A_SAVE_AS_PNG && img && img->image_type == 'J') {
+                    if (k == A_SAVE_AS_PNG && img && img->type == 'J') {
                         auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_JPEG);
                         img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-                        img->image_type = 'I';
+                        img->type = 'I';
                     }
                 }
                 return nullptr;
