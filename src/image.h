@@ -16,7 +16,7 @@ struct Image {
     Image(auto _hash, auto _sc, auto &&_data, auto _type)
         : hash(_hash), display_scale(_sc), data(std::move(_data)), type(_type) {}
 
-    auto ImageRescale(auto sc) {
+    void ImageRescale(double sc) {
         auto mapitem = imagetypes.find(type);
         if (mapitem == imagetypes.end()) return;
         auto it = mapitem->second.first;
@@ -27,17 +27,17 @@ struct Image {
         bm_display = wxNullBitmap;
     }
 
-    auto DisplayScale(auto sc) {
+    void DisplayScale(double sc) {
         display_scale /= sc;
         bm_display = wxNullBitmap;
     }
 
-    auto ResetScale(auto sc) {
+    void ResetScale(double sc) {
         display_scale = sc;
         bm_display = wxNullBitmap;
     }
 
-    auto &Display() {
+    wxBitmap &Display() {
         // This might run in multiple threads in parallel
         // so this function must not touch any global resources
         // and callees must be thread-safe.
