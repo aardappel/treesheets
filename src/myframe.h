@@ -786,7 +786,7 @@ struct MyFrame : wxFrame {
         DELETEP(editmenupopup);
     }
 
-    TSCanvas *NewTab(Document *doc, bool append = false) {
+    TSCanvas *NewTab(auto doc, bool append = false) {
         auto sw = new TSCanvas(this, nb);
         sw->doc = doc;
         doc->sw = sw;
@@ -931,7 +931,7 @@ struct MyFrame : wxFrame {
         tb->Show(sys->showtoolbar);
     }
 
-    void TBMenu(wxToolBar *tb, wxMenu *menu, const wxChar *name, int id = 0) {
+    void TBMenu(auto tb, auto menu, const auto name, int id = 0) {
         tb->AddTool(id, name, wxNullBitmap, wxEmptyString, wxITEM_DROPDOWN);
         tb->SetDropdownMenu(id, menu);
     }
@@ -1327,14 +1327,14 @@ struct MyFrame : wxFrame {
     }
 
     #ifdef WIN32
-    void SetRegKey(const wxChar *key, wxString val) {
+    void SetRegKey(const auto key, auto val) {
         wxRegKey rk(key);
         rk.Create();
         rk.SetValue(L"", val);
     }
     #endif
 
-    void SetFileAssoc(wxString &exename) {
+    void SetFileAssoc(auto &exename) {
         #ifdef WIN32
         SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
         SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
