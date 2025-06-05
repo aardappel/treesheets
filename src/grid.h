@@ -84,7 +84,7 @@ struct Grid {
     }
 
     /* Clones g into this grid. This mutates the grid this function is called on. */
-    void Clone(auto *g) {
+    void Clone(auto g) {
         g->bordercolor = bordercolor;
         g->user_grid_outer_spacing = user_grid_outer_spacing;
         g->folded = folded;
@@ -510,7 +510,7 @@ struct Grid {
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);
-        auto *&pthis = cell->grid;
+        auto &pthis = cell->grid;
         DELETEP(pthis);
     }
 
@@ -549,7 +549,7 @@ struct Grid {
         foreachcell(c) c->Save(dos, ocs);
     }
 
-    bool LoadContents(auto &dis, int &numcells, int &textbytes, auto *&ics) {
+    bool LoadContents(auto &dis, int &numcells, int &textbytes, auto &ics) {
         if (sys->versionlastloaded >= 10) {
             bordercolor = dis.Read32() & 0xFFFFFF;
             user_grid_outer_spacing = dis.Read32();
@@ -761,7 +761,7 @@ struct Grid {
         ys = cy;  // throws memory away, but doesn't matter
     }
 
-    unique_ptr<Cell> EvalGridCell(auto &ev, auto *&c, auto acc, int &x, int &y, bool &alldata,
+    unique_ptr<Cell> EvalGridCell(auto &ev, auto &c, auto acc, int &x, int &y, bool &alldata,
                                   bool vert) {
         int ct = c->celltype;  // Type of subcell being evaluated
         // Update alldata condition (variable reads act like data)
@@ -979,7 +979,7 @@ struct Grid {
         return nullptr;
     }
 
-    void MergeTagCell(auto f, auto *&selcell) {
+    void MergeTagCell(auto f, auto &selcell) {
         foreachcell(c) if (c->text.t == f->text.t) {
             if (!selcell) selcell = c;
 

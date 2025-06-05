@@ -360,7 +360,7 @@ struct Cell {
         return grid;
     }
 
-    Cell *LoadGrid(auto &dis, int &numcells, int &textbytes, auto *&ics) {
+    Cell *LoadGrid(auto &dis, int &numcells, int &textbytes, auto &ics) {
         int xs = dis.Read32();
         auto g = new Grid(xs, dis.Read32());
         grid = g;
@@ -369,7 +369,7 @@ struct Cell {
         return this;
     }
 
-    static Cell *LoadWhich(auto &dis, auto _p, int &numcells, int &textbytes, auto *&ics) {
+    static Cell *LoadWhich(auto &dis, auto _p, int &numcells, int &textbytes, auto &ics) {
         auto c = new Cell(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
