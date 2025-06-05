@@ -37,7 +37,7 @@ class Selection {
     }
     bool Thin() const { return !(xs * ys); }
     bool IsAll() const { return xs == g->xs && ys == g->ys; }
-    void SetCursorEdit(auto doc, bool edit) {
+    void SetCursorEdit(Document *doc, bool edit) {
         wxCursor c(edit ? wxCURSOR_IBEAM : wxCURSOR_ARROW);
         #ifdef WIN32
         // this changes the cursor instantly, but gets overridden by the local window cursor
@@ -50,29 +50,29 @@ class Selection {
     }
 
     bool TextEdit() { return textedit; }
-    void EnterEditOnly(auto doc) {
+    void EnterEditOnly(Document *doc) {
         textedit = true;
         SetCursorEdit(doc, true);
     }
-    void EnterEdit(auto doc, int c = 0, int ce = 0) {
+    void EnterEdit(Document *doc, int c = 0, int ce = 0) {
         EnterEditOnly(doc);
         cursor = c;
         cursorend = ce;
     }
-    void ExitEdit(auto doc) {
+    void ExitEdit(Document *doc) {
         textedit = false;
         cursor = cursorend = 0;
         SetCursorEdit(doc, false);
     }
 
-    bool IsInside(auto &o) {
+    bool IsInside(Selection &o) {
         if (!o.g || !g) return false;
         if (g != o.g)
             return g->cell->parent && g->cell->parent->grid->FindCell(g->cell).IsInside(o);
         return x >= o.x && y >= o.y && x + xs <= o.x + o.xs && y + ys <= o.y + o.ys;
     }
 
-    void Merge(const auto &a, const auto &b) {
+    void Merge(const Selection &a, const Selection &b) {
         textedit = false;
         if (a.g == b.g) {
             if (a.GetCell() == b.GetCell() && a.GetCell() && (a.textedit || b.textedit)) {
@@ -121,8 +121,8 @@ class Selection {
         return TEXT_CHAR;
     }
 
-    void Dir(auto doc, bool ctrl, bool shift, auto &dc, int dx, int dy, int &v, int &vs, int &ovs,
-             bool notboundaryperp, bool notboundarypar, bool exitedit) {
+    void Dir(Document *doc, bool ctrl, bool shift, auto &dc, int dx, int dy, int &v, int &vs,
+             int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
             g->cell->AddUndo(doc);
 
@@ -305,7 +305,7 @@ class Selection {
         };
     }
 
-    void Cursor(auto doc, int k, bool ctrl, bool shift, auto &dc, bool exitedit = false) {
+    void Cursor(Document *doc, int k, bool ctrl, bool shift, wxDC &dc, bool exitedit = false) {
         switch (k) {
             case A_UP: Dir(doc, ctrl, shift, dc, 0, -1, y, ys, xs, y != 0, y != 0, exitedit); break;
             case A_DOWN:
@@ -320,7 +320,7 @@ class Selection {
         }
     }
 
-    void Next(auto doc, auto &dc, bool backwards) {
+    void Next(Document *doc, wxDC &dc, bool backwards) {
         doc->DrawSelect(dc, *this);
         ExitEdit(doc);
         if (backwards) {
@@ -346,7 +346,7 @@ class Selection {
         doc->DrawSelectMove(dc, *this);
     }
 
-    const wxChar *Wrap(auto doc) {
+    const wxChar *Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
         g->cell->AddUndo(doc);
         auto np = g->CloneSel(*this).release();
@@ -371,7 +371,7 @@ class Selection {
         return nullptr;
     }
 
-    Cell *ThinExpand(auto doc) {
+    Cell *ThinExpand(Document *doc) {
         if (Thin()) {
             if (xs) {
                 g->cell->AddUndo(doc);
@@ -386,7 +386,7 @@ class Selection {
         return GetCell();
     }
 
-    void HomeEnd(auto doc, auto &dc, bool ishome) {
+    void HomeEnd(Document *doc, wxDC &dc, bool ishome) {
         doc->DrawSelect(dc, *this);
         xs = ys = 1;
         if (ishome)
