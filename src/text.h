@@ -55,7 +55,7 @@ struct Text {
         t = s;
     }
 
-    wxString htmlify(wxString &str) {
+    wxString htmlify(auto &str) {
         wxString r;
         for(auto cref : str) {
             switch (wxChar c = cref.GetValue()) {
@@ -68,7 +68,7 @@ struct Text {
         return r;
     }
 
-    wxString ToText(int indent, const Selection &s, int format) {
+    wxString ToText(int indent, const auto &s, int format) {
         wxString str = s.cursor != s.cursorend ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
         if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
             format == A_EXPHTMLO || format == A_EXPHTMLB)
@@ -147,7 +147,7 @@ struct Text {
         // return GetLinePart(i, l, l);     // big word was the last one
     }
 
-    void TextSize(wxDC &dc, int &sx, int &sy, bool tiny, int &leftoffset, int maxcolwidth) {
+    void TextSize(auto &dc, int &sx, int &sy, bool tiny, int &leftoffset, int maxcolwidth) {
         sx = sy = 0;
         int i = 0;
         for (;;) {
@@ -172,8 +172,7 @@ struct Text {
                                          : t.Lower().Find(sys->searchstring)) >= 0;
     }
 
-    int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
-               int maxcolwidth) {
+    int Render(auto doc, int bx, int by, int depth, auto &dc, int &leftoffset, int maxcolwidth) {
         int ixs = 0, iys = 0;
         if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
 
@@ -205,7 +204,7 @@ struct Text {
                 dc.SetPen(sys->pen_tinytext);
         }
         for (;;) {
-            wxString curl = GetLine(i, maxcolwidth);
+            auto curl = GetLine(i, maxcolwidth);
             if (!curl.Len()) break;
             if (cell->tiny) {
                 if (sys->fastrender) {
@@ -248,7 +247,7 @@ struct Text {
         return max(lines * h, iys);
     }
 
-    void FindCursor(Document *doc, int bx, int by, wxDC &dc, Selection &s, int maxcolwidth) {
+    void FindCursor(auto doc, int bx, int by, auto &dc, auto &s, int maxcolwidth) {
         bx -= g_margin_extra;
         by -= g_margin_extra;
 
@@ -278,7 +277,7 @@ struct Text {
         ASSERT(s.cursor >= 0 && s.cursor <= (int)t.Len());
     }
 
-    void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color, bool cursoronly,
+    void DrawCursor(auto doc, auto &dc, auto &s, bool full, uint color, bool cursoronly,
                     int maxcolwidth) {
         int ixs = 0, iys = 0;
         if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
@@ -333,25 +332,25 @@ struct Text {
         }
     }
 
-    void ExpandToWord(Selection &s) {
+    void ExpandToWord(auto &s) {
         if (!wxIsalnum(t[s.cursor])) return;
         while (s.cursor > 0 && wxIsalnum(t[s.cursor - 1])) s.cursor--;
         while (s.cursorend < (int)t.Len() && wxIsalnum(t[s.cursorend])) s.cursorend++;
     }
 
-    void SelectWord(Selection &s) {
+    void SelectWord(auto &s) {
         if (s.cursor >= (int)t.Len()) return;
         s.cursorend = s.cursor + 1;
         ExpandToWord(s);
     }
 
-    void SelectWordBefore(Selection &s) {
+    void SelectWordBefore(auto &s) {
         if (s.cursor <= 1) return;
         s.cursorend = s.cursor--;
         ExpandToWord(s);
     }
 
-    bool RangeSelRemove(Selection &s) {
+    bool RangeSelRemove(auto &s) {
         WasEdited();
         if (s.cursor != s.cursorend) {
             t.Remove(s.cursor, s.cursorend - s.cursor);
@@ -361,7 +360,7 @@ struct Text {
         return false;
     }
 
-    void SetRelSize(Selection &s) {
+    void SetRelSize(auto &s) {
         if (t.Len() || !cell->parent) return;
         int dd[] = {0, 1, 1, 0, 0, -1, -1, 0};
         for (int i = 0; i < 4; i++) {
@@ -375,7 +374,7 @@ struct Text {
         }
     }
 
-    void Insert(Document *doc, const wxString &ins, Selection &s, bool keeprelsize) {
+    void Insert(auto doc, const auto &ins, auto &s, bool keeprelsize) {
         auto prevl = t.Len();
         if (!s.TextEdit()) Clear(doc, s);
         RangeSelRemove(s);
@@ -383,33 +382,33 @@ struct Text {
         t.insert(s.cursor, ins);
         s.cursor = s.cursorend = s.cursor + (int)ins.Len();
     }
-    void Key(Document *doc, int k, Selection &s) {
+    void Key(auto doc, int k, auto &s) {
         wxString ins;
         ins += k;
         Insert(doc, ins, s, false);
     }
 
-    void Delete(Selection &s) {
+    void Delete(auto &s) {
         if (!RangeSelRemove(s))
             if (s.cursor < (int)t.Len()) { t.Remove(s.cursor, 1); };
     }
-    void Backspace(Selection &s) {
+    void Backspace(auto &s) {
         if (!RangeSelRemove(s))
             if (s.cursor > 0) {
                 t.Remove(--s.cursor, 1);
                 --s.cursorend;
             };
     }
-    void DeleteWord(Selection &s) {
+    void DeleteWord(auto &s) {
         SelectWord(s);
         Delete(s);
     }
-    void BackspaceWord(Selection &s) {
+    void BackspaceWord(auto &s) {
         SelectWordBefore(s);
         Backspace(s);
     }
 
-    void ReplaceStr(const wxString &str, const wxString &lstr) {
+    void ReplaceStr(const auto &str, const auto &lstr) {
         if (sys->casesensitivesearch) {
             for (int i = 0, j; (j = t.Mid(i).Find(sys->searchstring)) >= 0;) {
                 // does this need WasEdited()?
@@ -432,12 +431,12 @@ struct Text {
         }
     }
 
-    void Clear(Document *doc, Selection &s) {
+    void Clear(auto doc, auto &s) {
         t.Clear();
         s.EnterEdit(doc);
     }
 
-    void HomeEnd(Selection &s, bool home) {
+    void HomeEnd(auto &s, bool home) {
         int i = 0;
         int cw = cell->ColWidth();
         int findwhere = home ? s.cursor : s.cursorend;
@@ -453,7 +452,7 @@ struct Text {
         }
     }
 
-    void Save(wxDataOutputStream &dos) const {
+    void Save(auto &dos) const {
         dos.WriteString(t.wx_str());
         dos.Write32(relsize);
         dos.Write32(image ? image->savedindex : -1);
@@ -462,7 +461,7 @@ struct Text {
         dos.Write64(&le, 1);
     }
 
-    void Load(wxDataInputStream &dis) {
+    void Load(auto &dis) {
         t = dis.ReadString();
 
         // if (t.length() > 10000)
@@ -486,7 +485,7 @@ struct Text {
         lastedit = wxDateTime(time);
     }
 
-    unique_ptr<Cell> Eval(Evaluator &ev) const {
+    unique_ptr<Cell> Eval(auto &ev) const {
         switch (cell->celltype) {
             // Load variable's data.
             case CT_VARU: {
