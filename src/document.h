@@ -2032,11 +2032,11 @@ struct Document {
         return nullptr;
     }
 
-    void ZoomOutIfNoGrid(auto &dc) {
+    void ZoomOutIfNoGrid(wxDC &dc) {
         if (!WalkPath(drawpath)->grid) Zoom(-1, dc);
     }
 
-    void PasteSingleText(auto c, const auto &s) { c->text.Insert(this, s, selected, false); }
+    void PasteSingleText(Cell *c, const wxString &s) { c->text.Insert(this, s, selected, false); }
 
     void PasteOrDrop(const wxFileDataObject &fdo) {
         if (fdo.GetFilenames().size() != 0) {
