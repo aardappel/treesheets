@@ -404,9 +404,9 @@ struct Document {
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
                     auto img = c->text.image;
-                    if (auto imagetypeit = imagetypes.find(img->type);
-                        imagetypeit != imagetypes.end() && !img->data.empty()) {
-                        auto bm = ConvertBufferToWxBitmap(img->data, imagetypeit->second.first);
+                    if (!img->data.empty()) {
+                        auto &[it, mime] = imagetypes.at(img->type);
+                        auto bm = ConvertBufferToWxBitmap(img->data, it);
                         dragdata.Add(new wxBitmapDataObject(bm));
                     }
                 } else {
@@ -439,11 +439,10 @@ struct Document {
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.g->CloneSel(selected);
                 if (c && !c->text.t && c->text.image) {
-                    auto im = c->text.image;
-                    if (auto imagetypeit = imagetypes.find(im->type);
-                        imagetypeit != imagetypes.end() && !im->data.empty() &&
-                        wxTheClipboard->Open()) {
-                        auto bm = ConvertBufferToWxBitmap(im->data, imagetypeit->second.first);
+                    auto img = c->text.image;
+                    if (!img->data.empty() && wxTheClipboard->Open()) {
+                        auto &[it, mime] = imagetypes.at(img->type);
+                        auto bm = ConvertBufferToWxBitmap(img->data, it);
                         wxTheClipboard->SetData(new wxBitmapDataObject(bm));
                         wxTheClipboard->Close();
                     }

@@ -17,7 +17,6 @@ struct Image {
         : hash(_hash), display_scale(_sc), data(std::move(_data)), type(_type) {}
 
     void ImageRescale(double sc) {
-        if (!imagetypes.contains(type)) return;
         auto &[it, mime] = imagetypes.at(type);
         auto im = ConvertBufferToWxImage(data, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
@@ -41,7 +40,6 @@ struct Image {
         // so this function must not touch any global resources
         // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
-            if (!imagetypes.contains(type)) return wxNullBitmap;
             auto &[it, mime] = imagetypes.at(type);
             auto bm = ConvertBufferToWxBitmap(data, it);
             pixel_width = bm.GetWidth();
