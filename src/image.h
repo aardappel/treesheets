@@ -17,9 +17,8 @@ struct Image {
         : hash(_hash), display_scale(_sc), data(std::move(_data)), type(_type) {}
 
     void ImageRescale(double sc) {
-        auto mapitem = imagetypes.find(type);
-        if (mapitem == imagetypes.end()) return;
-        auto it = mapitem->second.first;
+        if (!imagetypes.contains(type)) return;
+        auto &[it, mime] = imagetypes.at(type);
         auto im = ConvertBufferToWxImage(data, it);
         im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
         data = ConvertWxImageToBuffer(im, it);
