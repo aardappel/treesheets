@@ -985,7 +985,7 @@ struct MyFrame : wxFrame {
                     if (tc == filter) {
                         // OnSearchEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
-                        if (sys->searchstring.Len() == 0) {
+                        if (sys->searchstring.IsEmpty()) {
                             sw->SetFocus();
                         } else {
                             sw->doc->Action(dc, A_SEARCHNEXT);
@@ -1172,7 +1172,7 @@ struct MyFrame : wxFrame {
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
         auto sw = GetCurTab();
-        if (ce.GetId() == A_SEARCH && ce.GetString().Len() == 0) {
+        if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty()) {
             sw->SetFocus();
         } else {
             wxClientDC dc(sw);
