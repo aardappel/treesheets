@@ -1165,6 +1165,7 @@ struct MyFrame : wxFrame {
         doc->SearchNext(dc, false, false, false);
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
+            doc->searchfilter = true;
         } else
             doc->Refresh();
         GetCurTab()->Status();
