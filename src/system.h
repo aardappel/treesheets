@@ -225,9 +225,8 @@ struct System {
                     case 'I':
                     case 'J': {
                         char iti = *buf;
-                        auto mapitem = imagetypes.find(iti);
-                        if (mapitem == imagetypes.end())
-                            return _(L"Found an image type that is not defined in this program.");
+                        if (!imagetypes.contains(iti))
+                             return _(L"Found an image type that is not defined in this program.");
                         if (versionlastloaded < 9) dis.ReadString();
                         auto sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
