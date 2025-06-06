@@ -800,10 +800,7 @@ struct MyFrame : wxFrame {
         return sw;
     }
 
-    TSCanvas *GetCurTab() {
-        return nb && nb->GetSelection() >= 0 ? (TSCanvas *)nb->GetPage(nb->GetSelection())
-                                             : nullptr;
-    }
+    TSCanvas *GetCurTab() { return nb ? (TSCanvas *)nb->GetCurrentPage() : nullptr; }
     TSCanvas *GetTabByFileName(const wxString &fn) {
         if (nb) loop(i, nb->GetPageCount()) {
                 auto p = (TSCanvas *)nb->GetPage(i);
