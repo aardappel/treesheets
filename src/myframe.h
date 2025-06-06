@@ -985,7 +985,8 @@ struct MyFrame : wxFrame {
                         if (sys->searchstring.IsEmpty()) {
                             sw->SetFocus();
                         } else {
-                            sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                            // sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                            GlobalSearchNext(false);
                         }
                     } else if (tc == replaces) {
                         // OnReplaceEnter equivalent implementation for MSW
@@ -1016,7 +1017,8 @@ struct MyFrame : wxFrame {
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {
                 if (sys->searchstring.Len()) {
-                    sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                    // sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                    GlobalSearchNext(ce.GetId() == A_SEARCHPREV);
                     break;
                 }
                 auto selected = sw->doc->selected;
@@ -1209,10 +1211,36 @@ struct MyFrame : wxFrame {
                     sw->SetFocus();
                     return;
                 }
-                sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                // sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                GlobalSearchNext(false);
                 break;
             case A_REPLACE: sw->doc->Action(dc, A_REPLACEONCEJ); break;
         }
+    }
+
+    void GlobalSearchNext(bool reverse) {
+        auto sw = GetCurTab();
+        if (!sw) return;
+        bool lastsel = false;
+        auto next = sw->doc->rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, sw->doc->selected.GetCell(), lastsel, reverse);
+        while (!next) {
+            nb->AdvanceSelection();
+            auto nextroot = GetCurTab()->doc->rootgrid;
+            auto initsel = Selection(nextroot->grid, 0, 0, 1, 1);
+            bool lastsel = false;
+            next = nextroot->FindNextSearchMatch(sys->searchstring, nullptr, initsel.GetCell(), lastsel, reverse);
+            if (sw == GetCurTab()) break;
+        }
+        sys->frame->SetSearchTextBoxBackgroundColour(next);
+        if (!next) {
+            sw->Status(_(L"No matches for search."));
+            return;
+        }
+        auto mw = GetCurTab();
+        mw->doc->SetSelect(next->parent->grid->FindCell(next));
+        mw->doc->scrolltoselection = true;
+        mw->Refresh();
+        filter->SetFocus();
     }
 
     void SetSearchTextBoxBackgroundColour(bool found) {
