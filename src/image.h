@@ -41,9 +41,8 @@ struct Image {
         // so this function must not touch any global resources
         // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
-            auto mapitem = imagetypes.find(type);
-            if (mapitem == imagetypes.end()) return wxNullBitmap;
-            auto it = mapitem->second.first;
+            if (!imagetypes.contains(type)) return wxNullBitmap;
+            auto &[it, mime] = imagetypes.at(type);
             auto bm = ConvertBufferToWxBitmap(data, it);
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
