@@ -1165,20 +1165,6 @@ struct Document {
             }
             #endif
 
-            case A_SEARCHNEXT:
-            case A_SEARCHPREV: {
-                if (sys->searchstring.Len()) return SearchNext(dc, false, true, k == A_SEARCHPREV);
-                if (auto c = selected.GetCell()) {
-                    auto s = c->text.ToText(0, selected, A_EXPTEXT);
-                    if (!s.Len()) return _(L"No text to search for.");
-                    sys->frame->filter->SetFocus();
-                    sys->frame->filter->SetValue(s);
-                    return nullptr;
-                } else {
-                    return _(L"You need to select one cell if you want to search for its text.");
-                }
-            }
-
             case A_CASESENSITIVESEARCH: {
                 sys->casesensitivesearch = !(sys->casesensitivesearch);
                 sys->cfg->Write(L"casesensitivesearch", sys->casesensitivesearch);
@@ -1233,18 +1219,6 @@ struct Document {
                     if (k == A_REPLACEONCEJ) return SearchNext(dc, false, true, false);
                 }
                 return _(L"Text has been replaced.");
-            }
-
-            case A_CLEARREPLACE: {
-                sys->frame->replaces->Clear();
-                sw->SetFocus();
-                return nullptr;
-            }
-
-            case A_CLEARSEARCH: {
-                sys->frame->filter->Clear();
-                sw->SetFocus();
-                return nullptr;
             }
 
             case A_SCALED:

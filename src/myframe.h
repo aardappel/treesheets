@@ -985,7 +985,7 @@ struct MyFrame : wxFrame {
                         if (sys->searchstring.IsEmpty()) {
                             sw->SetFocus();
                         } else {
-                            sw->doc->Action(dc, A_SEARCHNEXT);
+                            sw->Status(sw->doc->SearchNext(dc, false, true, false));
                         }
                     } else if (tc == replaces) {
                         // OnReplaceEnter equivalent implementation for MSW
@@ -1006,12 +1006,44 @@ struct MyFrame : wxFrame {
             sw->Status(_(L"change will take effect next run of TreeSheets"));
         };
         switch (ce.GetId()) {
-            case A_NOP: break;
+            case A_NOP: sw->Status(_(L"Operation is not implemented")); break;
 
             case A_ALEFT: sw->CursorScroll(-g_scrollratecursor, 0); break;
             case A_ARIGHT: sw->CursorScroll(g_scrollratecursor, 0); break;
             case A_AUP: sw->CursorScroll(0, -g_scrollratecursor); break;
             case A_ADOWN: sw->CursorScroll(0, g_scrollratecursor); break;
+
+            case A_SEARCHNEXT:
+            case A_SEARCHPREV: {
+                if (sys->searchstring.Len()) {
+                    sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                    break;
+                }
+                auto selected = sw->doc->selected;
+                if (auto c = selected.GetCell()) {
+                    auto s = c->text.ToText(0, selected, A_EXPTEXT);
+                    if (!s.Len()) {
+                        sw->Status(_(L"No text to search for."));
+                        break;
+                    }
+                    sys->frame->filter->SetFocus();
+                    sys->frame->filter->SetValue(s);
+                } else {
+                    sw->Status(
+                        _(L"You need to select one cell if you want to search for its text."));
+                }
+                break;
+            }
+
+            case A_CLEARSEARCH:
+                filter->Clear();
+                sw->SetFocus();
+                break;
+
+            case A_CLEARREPLACE:
+                replaces->Clear();
+                sw->SetFocus();
+                break;
 
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
@@ -1023,6 +1055,7 @@ struct MyFrame : wxFrame {
                     wsb->Refresh();
                 }
                 break;
+
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
@@ -1033,6 +1066,7 @@ struct MyFrame : wxFrame {
                     wtb->Refresh();
                 }
                 break;
+
             case A_CUSTCOL: {
                 if (auto c = PickColor(sys->frame, sys->customcolor); c != (uint)-1)
                     sys->cfg->Write(L"customcolor", sys->customcolor = c);
@@ -1117,7 +1151,7 @@ struct MyFrame : wxFrame {
                 break;
             #ifdef __WXMAC__
             case wxID_OSX_HIDE: Iconize(true); break;
-            case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
+            case wxID_OSX_HIDEOTHERS: sw->Status(_(L"Operation is not implemented")); break;
             case wxID_OSX_SHOWALL: Iconize(false); break;
             case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
             case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;
@@ -1126,7 +1160,9 @@ struct MyFrame : wxFrame {
                 fromclosebox = false;
                 this->Close();
                 break;
-            case wxID_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
+            case wxID_CLOSE:
+                sw->doc->Action(dc, ce.GetId());
+                break;  // sw dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
@@ -1139,8 +1175,43 @@ struct MyFrame : wxFrame {
                     sw->Status(wxString(msg));
                 } else {
                     sw->Status(sw->doc->Action(dc, ce.GetId()));
-                    break;
                 }
+        }
+    }
+
+    void OnText(wxCommandEvent &ce) {
+        auto sw = GetCurTab();
+        wxClientDC dc(sw);
+        switch (ce.GetId()) {
+            case A_SEARCH:
+                auto searchstring = ce.GetString();
+                sys->darkennonmatchingcells = searchstring.Len() != 0;
+                sys->searchstring =
+                    (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
+                SetSearchTextBoxBackgroundColour(false);
+                auto doc = sw->doc;
+                doc->SearchNext(dc, false, false, false);
+                if (doc->searchfilter) {
+                    doc->SetSearchFilter(sys->searchstring.Len() != 0);
+                    doc->searchfilter = true;
+                } else
+                    doc->Refresh();
+                GetCurTab()->Status();
+        }
+    }
+
+    void OnTextEnter(wxCommandEvent &ce) {
+        auto sw = GetCurTab();
+        wxClientDC dc(sw);
+        switch (ce.GetId()) {
+            case A_SEARCH:
+                if (ce.GetString().IsEmpty()) {
+                    sw->SetFocus();
+                    return;
+                }
+                sw->Status(sw->doc->SearchNext(dc, false, true, false));
+                break;
+            case A_REPLACE: sw->doc->Action(dc, A_REPLACEONCEJ); break;
         }
     }
 
@@ -1149,33 +1220,6 @@ struct MyFrame : wxFrame {
         filter->SetForegroundColour((found && darkmode) ? wxColour("AQUAMARINE") : wxNullColour);
         filter->SetBackgroundColour((found && !darkmode) ? wxColour("AQUAMARINE") : wxNullColour);
         filter->Refresh();
-    }
-
-    void OnSearch(wxCommandEvent &ce) {
-        auto searchstring = ce.GetString();
-        sys->darkennonmatchingcells = searchstring.Len() != 0;
-        sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
-        SetSearchTextBoxBackgroundColour(false);
-        auto doc = GetCurTab()->doc;
-        auto sw = GetCurTab();
-        wxClientDC dc(sw);
-        doc->SearchNext(dc, false, false, false);
-        if (doc->searchfilter) {
-            doc->SetSearchFilter(sys->searchstring.Len() != 0);
-            doc->searchfilter = true;
-        } else
-            doc->Refresh();
-        GetCurTab()->Status();
-    }
-
-    void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        auto sw = GetCurTab();
-        if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty()) {
-            sw->SetFocus();
-        } else {
-            wxClientDC dc(sw);
-            sw->doc->Action(dc, ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
-        }
     }
 
     void ReFocus() {
