@@ -296,7 +296,7 @@ struct Grid {
         }
     }
 
-    Cell *FindLink(const Selection &sel, auto link, auto best, bool &lastthis, bool &stylematch,
+    Cell *FindLink(const Selection &sel, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
                    bool forward, bool image) {
         if (forward) {
             foreachcell(c) best =
@@ -308,8 +308,8 @@ struct Grid {
         return best;
     }
 
-    Cell *FindNextSearchMatch(const wxString &search, auto best, auto selected, bool &lastwasselected,
-                              bool reverse) {
+    Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
+                              bool &lastwasselected, bool reverse) {
         if (reverse) {
             foreachcellrev(c) best =
                 c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
@@ -632,7 +632,7 @@ struct Grid {
     }
 
     void RelSize(int dir, int zoomdepth) { foreachcell(c) c->RelSize(dir, zoomdepth); }
-    void RelSize(int dir, const auto &sel, int zoomdepth) {
+    void RelSize(int dir, const Selection &sel, int zoomdepth) {
         foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth);
     }
     void SetBorder(int width, const Selection &sel) { foreachcellinsel(c, sel) c->SetBorder(width); }
@@ -649,14 +649,14 @@ struct Grid {
         foreachcell(c) c->ResetChildren();
     }
 
-    void Move(int dx, int dy, const auto &sel) {
+    void Move(int dx, int dy, const Selection &sel) {
         if (dx < 0 || dy < 0)
             foreachcellinsel(c, sel) swap_(c, C((x + dx + xs) % xs, (y + dy + ys) % ys));
         else
             foreachcellinselrev(c, sel) swap_(c, C((x + dx + xs) % xs, (y + dy + ys) % ys));
     }
 
-    void Add(auto c) {
+    void Add(Cell *c) {
         if (horiz)
             InsertCells(xs, -1, 1, 0, c);
         else
