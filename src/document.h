@@ -1012,11 +1012,15 @@ struct Document {
             case A_IMPTXTT: return sys->Import(k, selected, this);
 
             case wxID_OPEN: {
-                auto fn = ::wxFileSelector(_(L"Please select a TreeSheets file to load:"), L"", L"",
-                                           L"cts",
-                                           _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
-                                           wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
-                return sys->Open(fn);
+                wxFileDialog fd(sys->frame, _(L"Please select TreeSheets file(s) to load:"), L"", L"",
+                                _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
+                                wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
+                if (fd.ShowModal() == wxID_CANCEL) return _(L"Open cancelled.");
+                const wxChar *msg = nullptr;
+                wxArrayString fns;
+                fd.GetPaths(fns);
+                for (auto &fn : fns) msg = sys->Open(fn);
+                return msg;
             }
 
             case wxID_CLOSE: {
