@@ -961,7 +961,7 @@ msgid "Open file cancelled."
 msgstr "Öffnen der Datei wurde abgebrochen."
 
 msgid "Open image dropdown"
-msgstr ""
+msgstr "Bild-Dropdownmenü öffnen"
 
 msgid "Open link in &browser"
 msgstr "Link im &Browser öffnen"
