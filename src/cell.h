@@ -278,8 +278,12 @@ struct Cell {
                                                         : L"font-family: sans-serif;";
             if (!inheritstyle || cellcolor != (parent ? parent->cellcolor : doc->Background()))
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
-            if (!inheritstyle || textcolor != (parent ? parent->textcolor : 0x000000))
-                style += wxString::Format(L"color: #%06X;", SwapColor(textcolor));
+            auto exporttextcolor = IsTag(doc) ? doc->tags[text.t] : textcolor;
+            auto parenttextcolor =
+                parent ? parent->IsTag(doc) ? doc->tags[parent->text.t] : parent->textcolor
+                       : 0x000000;
+            if (!inheritstyle || exporttextcolor != parenttextcolor)
+                style += wxString::Format(L"color: #%06X;", SwapColor(exporttextcolor));
             str.Prepend(style.IsEmpty() ? wxString(L"<td>")
                                         : wxString(L"<td style=\"") + style + wxString(L"\">"));
             str.Append(L' ', indent);
