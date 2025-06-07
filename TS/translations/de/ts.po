@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-24 21:10+0200\n"
+"POT-Creation-Date: 2025-06-07 08:37+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -592,6 +592,12 @@ msgstr ""
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
 
+msgid "Extend Selection Columns Down"
+msgstr "Auswahl in den Spalten nach unten ausweiten"
+
+msgid "Extend Selection Columns Up"
+msgstr "Auswahl in den Spalten nach oben ausweiten"
+
 msgid "Extend Selection Down"
 msgstr "Auswahl nach unten ausweiten"
 
@@ -606,6 +612,12 @@ msgstr "Auswahl nach links ausweiten"
 
 msgid "Extend Selection Right"
 msgstr "Auswahl nach rechts ausweiten"
+
+msgid "Extend Selection Rows Left"
+msgstr "Auswahl in den Zeilen nach links ausweiten"
+
+msgid "Extend Selection Rows Right"
+msgstr "Auswahl in den Zeilen nach rechts ausweiten"
 
 msgid "Extend Selection Up"
 msgstr "Auswahl nach oben ausweiten"
@@ -939,11 +951,17 @@ msgstr ""
 msgid "Open border colors"
 msgstr "&Randfarben öffnen"
 
+msgid "Open cancelled."
+msgstr "Öffnen wurde abgebrochen."
+
 msgid "Open cell colors"
 msgstr "Zellfarben öffnen"
 
 msgid "Open file cancelled."
 msgstr "Öffnen der Datei wurde abgebrochen."
+
+msgid "Open image dropdown"
+msgstr ""
 
 msgid "Open link in &browser"
 msgstr "Link im &Browser öffnen"
@@ -1026,11 +1044,11 @@ msgstr "Bitte geben Sie die Prozentzahl ein, um die Sie das Bild skalieren möch
 msgid "Please pick a menu item to change the key binding for"
 msgstr "Bitte wählen Sie ein Menüeintrag, um das Tastenkürzel hierfür ändern zu können"
 
+msgid "Please select TreeSheets file(s) to load:"
+msgstr "Bitte wählen Sie TreeSheets-Datei(en) zum Laden aus:"
+
 msgid "Please select a Lobster script file:"
 msgstr "Bitte wählen Sie eine Lobster-Skriptdatei aus:"
-
-msgid "Please select a TreeSheets file to load:"
-msgstr "Bitte wählen Sie eine TreeSheets-Datei zum Laden aus:"
 
 msgid "Please select an image file:"
 msgstr "Bitte wählen Sie eine Bilddatei aus:"
