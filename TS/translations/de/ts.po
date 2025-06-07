@@ -1042,9 +1042,7 @@ msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Bitte geben Sie die Prozentzahl ein, um die Sie das Bild skalieren möchten:"
 
 msgid "Please pick a menu item to change the key binding for"
-msgstr ""
-"Bitte wählen Sie ein Menüeintrag, um das Tastenkürzel hierfür ändern zu "
-"können"
+msgstr "Bitte wählen Sie ein Menüeintrag, um das Tastenkürzel hierfür ändern zu können"
 
 msgid "Please select TreeSheets file(s) to load:"
 msgstr "Bitte wählen Sie TreeSheets-Datei(en) zum Laden aus:"
