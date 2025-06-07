@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-03 15:02-0300\n"
+"POT-Creation-Date: 2025-06-07 08:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -894,6 +894,9 @@ msgstr ""
 msgid "Open border colors"
 msgstr ""
 
+msgid "Open cancelled."
+msgstr ""
+
 msgid "Open cell colors"
 msgstr ""
 
@@ -978,10 +981,10 @@ msgstr ""
 msgid "Please pick a menu item to change the key binding for"
 msgstr ""
 
-msgid "Please select a Lobster script file:"
+msgid "Please select TreeSheets file(s) to load:"
 msgstr ""
 
-msgid "Please select a TreeSheets file to load:"
+msgid "Please select a Lobster script file:"
 msgstr ""
 
 msgid "Please select an image file:"
