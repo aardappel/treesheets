@@ -592,13 +592,11 @@ msgstr ""
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
 
-#, fuzzy
 msgid "Extend Selection Columns Down"
-msgstr "Auswahl nach unten ausweiten"
+msgstr "Auswahl in den Spalten nach unten ausweiten"
 
-#, fuzzy
 msgid "Extend Selection Columns Up"
-msgstr "Auswahl auf ganze Spalten ausweiten"
+msgstr "Auswahl in den Spalten nach oben ausweiten"
 
 msgid "Extend Selection Down"
 msgstr "Auswahl nach unten ausweiten"
@@ -615,13 +613,11 @@ msgstr "Auswahl nach links ausweiten"
 msgid "Extend Selection Right"
 msgstr "Auswahl nach rechts ausweiten"
 
-#, fuzzy
 msgid "Extend Selection Rows Left"
-msgstr "Auswahl nach links ausweiten"
+msgstr "Auswahl in den Zeilen nach links ausweiten"
 
-#, fuzzy
 msgid "Extend Selection Rows Right"
-msgstr "Auswahl nach rechts ausweiten"
+msgstr "Auswahl in den Zeilen nach rechts ausweiten"
 
 msgid "Extend Selection Up"
 msgstr "Auswahl nach oben ausweiten"
@@ -955,9 +951,8 @@ msgstr ""
 msgid "Open border colors"
 msgstr "&Randfarben öffnen"
 
-#, fuzzy
 msgid "Open cancelled."
-msgstr "Öffnen der Datei wurde abgebrochen."
+msgstr "Öffnen wurde abgebrochen."
 
 msgid "Open cell colors"
 msgstr "Zellfarben öffnen"
@@ -1051,9 +1046,8 @@ msgstr ""
 "Bitte wählen Sie ein Menüeintrag, um das Tastenkürzel hierfür ändern zu "
 "können"
 
-#, fuzzy
 msgid "Please select TreeSheets file(s) to load:"
-msgstr "Bitte wählen Sie eine TreeSheets-Datei zum Laden aus:"
+msgstr "Bitte wählen Sie TreeSheets-Datei(en) zum Laden aus:"
 
 msgid "Please select a Lobster script file:"
 msgstr "Bitte wählen Sie eine Lobster-Skriptdatei aus:"
