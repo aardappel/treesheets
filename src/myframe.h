@@ -628,8 +628,8 @@ struct MyFrame : wxFrame {
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
 
         auto scriptmenu = new wxMenu();
-        MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add Lobster script...") + "\tCTRL+ALT+L",
-                     _(L"Add Lobster script..."));
+        MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add Lobster scripts...") + "\tCTRL+ALT+L",
+                 _(L"Add Lobster scripts..."));
         MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove script from list...") + "\tCTRL+SHIFT+ALT+L",
                  _(L"Remove script from list..."));
         scripts.UseMenu(scriptmenu);
@@ -1040,12 +1040,16 @@ struct MyFrame : wxFrame {
             }
 
             case A_ADDSCRIPT: {
-                auto fn = ::wxFileSelector(
-                    _(L"Please select a Lobster script file:"), L"", L"", L"lobster",
-                    _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
-                    wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
-                if (!fn.empty())
-                    scripts.AddFileToHistory(fn);
+                wxFileDialog fd(this, _(L"Please select Lobster script file(s):"), L"", L"",
+                                _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
+                                wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
+                if (fd.ShowModal() == wxID_CANCEL)
+                    sw->Status(_(L"Adding Lobster script(s) cancelled."));
+                else {
+                    wxArrayString fns;
+                    fd.GetPaths(fns);
+                    for (auto &fn : fns) scripts.AddFileToHistory(fn);
+                }
                 break;
             }
 
