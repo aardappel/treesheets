@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 2.2\n"
+"Project-Id-Version: TreeSheets_RU 2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-03 15:02-0300\n"
-"PO-Revision-Date: 2025-06-05 17:59+0300\n"
+"POT-Creation-Date: 2025-06-07 08:37+0200\n"
+"PO-Revision-Date: 2025-06-07 16:19+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -974,6 +974,10 @@ msgstr "Открыть существующий документ"
 msgid "Open border colors"
 msgstr ".. Цвета &Границы"
 
+# Сообщение (после действия или события)
+msgid "Open cancelled."
+msgstr "Открытие отменено."
+
 msgid "Open cell colors"
 msgstr "Открыть Цвета &Ячейки"
 
@@ -1073,12 +1077,12 @@ msgid "Please pick a menu item to change the key binding for"
 msgstr "Выберите пункт меню, чтобы изменить привязку клавиш для:"
 
 # Заголовок Окна (выбор п. Меню)
-msgid "Please select a Lobster script file:"
-msgstr "Выберите файл Lobster-сценария:"
+msgid "Please select TreeSheets file(s) to load:"
+msgstr "Выберите TreeSheets-файл(ы) для загрузки:"
 
 # Заголовок Окна (выбор п. Меню)
-msgid "Please select a TreeSheets file to load:"
-msgstr "Выберите TreeSheets-файл для загрузки:"
+msgid "Please select a Lobster script file:"
+msgstr "Выберите файл Lobster-сценария:"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Please select an image file:"
