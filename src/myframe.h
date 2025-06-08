@@ -1120,7 +1120,6 @@ struct MyFrame : wxFrame {
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
-                sys->RememberOpenFiles();
                 this->Close();
                 break;
             case wxID_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
