@@ -1009,7 +1009,7 @@ struct Document {
             case A_IMPTXTI:
             case A_IMPTXTC:
             case A_IMPTXTS:
-            case A_IMPTXTT: return sys->Import(k, selected, this);
+            case A_IMPTXTT: return sys->Import(k);
 
             case wxID_OPEN: {
                 wxFileDialog fd(sys->frame, _(L"Please select TreeSheets file(s) to load:"), L"", L"",

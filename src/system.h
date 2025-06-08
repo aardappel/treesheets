@@ -411,37 +411,27 @@ struct System {
         }
     }
 
-    void MergeLevel(Cell *lower, Cell *&upper) {
-        if (!lower->HasText() && lower->grid) {
-            *upper->grid->cells = nullptr;
-            delete upper;
-            upper = lower;
-            lower->parent = nullptr;
-        }
-    }
-
-    const wxChar *Import(int k, Selection &sel, Document *tsdoc) {
-        auto fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
+    const wxChar *Import(int k) {
+        wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
                                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
         if (!fn.empty()) {
             wxBusyCursor wait;
-            auto p = sel.ThinExpand(tsdoc);
             switch (k) {
                 case A_IMPXML:
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(fn)) goto problem;
-                    auto r = p ? new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1)) : InitDB(1);
-                    r->grid->InitCells();
-                    auto c = *r->grid->cells;
+                    Cell *&r = InitDB(1);
+                    Cell *c = *r->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
-                    MergeLevel(c, r);
-                    if (p) {
-                        p->Paste(tsdoc, r, sel);
-                        tsdoc->Refresh();
-                        return nullptr;
+                    if (!c->HasText() && c->grid) {
+                        *r->grid->cells = nullptr;
+                        delete r;
+                        r = c;
+                        c->parent = nullptr;
                     }
-                }; break;
+                    break;
+                }
                 case A_IMPTXTI:
                 case A_IMPTXTC:
                 case A_IMPTXTS:
@@ -454,42 +444,22 @@ struct System {
 
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
-                                auto r = p ? new Cell(nullptr, nullptr, CT_DATA, new Grid(1, 1))
-                                            : InitDB(1);
-                                r->grid->InitCells();
+                                Cell *r = InitDB(1);
                                 FillRows(r->grid, as, CountCol(as[0]), 0, 0);
-                                if (p) {
-                                    p->Paste(tsdoc, r, sel);
-                                    tsdoc->Refresh();
-                                    return nullptr;
-                                }
                             }; break;
                             case A_IMPTXTC:
+                                InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
+                                break;
                             case A_IMPTXTS:
-                            case A_IMPTXTT: {
-                                wxChar sep;
-                                if (k == A_IMPTXTC) sep = L',';
-                                if (k == A_IMPTXTS) sep = L';';
-                                if (k == A_IMPTXTT) sep = L'\t';
-                                if (p) {
-                                    auto r = new Cell(nullptr, nullptr, CT_DATA,
-                                                      new Grid(1, (int)as.size()));
-                                    r->grid->InitCells();
-                                    r->grid->CSVImport(as, sep);
-                                    p->Paste(tsdoc, r, sel);
-                                    tsdoc->Refresh();
-                                    return nullptr;
-                                } else {
-                                    InitDB(1, (int)as.size())->grid->CSVImport(as, sep);
-                                }
-                            break;
-                            }
+                                InitDB(1, (int)as.size())->grid->CSVImport(as, L';');
+                                break;
+                            case A_IMPTXTT:
+                                InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t');
+                                break;
                         }
                     break;
                 }
             }
-            frame->GetCurTab()->doc->ChangeFileName(fn.Find(L'.') >= 0 ? fn.BeforeLast(L'.') : fn,
-                                                    true);
             frame->GetCurTab()->doc->ClearSelectionRefresh();
         }
         return nullptr;
