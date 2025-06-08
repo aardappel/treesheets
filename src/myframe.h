@@ -6,7 +6,7 @@ struct MyFrame : wxFrame {
     wxMenu *editmenupopup;
     wxFileHistory filehistory;
     wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
-    unique_ptr<wxFileSystemWatcher> watcher {make_unique<wxFileSystemWatcher>()};
+    wxFileSystemWatcher *watcher;
     wxAuiNotebook *nb {nullptr};
     unique_ptr<wxAuiManager> aui {make_unique<wxAuiManager>(this)};
     wxBitmap line_nw;
@@ -754,6 +754,7 @@ struct MyFrame : wxFrame {
     }
 
     void AppOnEventLoopEnter() {
+        watcher = new wxFileSystemWatcher();
         watcher->SetOwner(this);
         Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
     }
@@ -776,6 +777,7 @@ struct MyFrame : wxFrame {
         aui->ClearEventHashTable();
         aui->UnInit();
         DELETEP(editmenupopup);
+        DELETEP(watcher);
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
