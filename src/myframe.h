@@ -759,14 +759,6 @@ struct MyFrame : wxFrame {
     }
 
     ~MyFrame() {
-        if (nb) {
-            // Consider the case that the user reordered the tabs
-            while (filehistory.GetCount() > 0) filehistory.RemoveFileFromHistory(0);
-            loop(i, nb->GetPageCount()) {
-                auto p = (TSCanvas *)nb->GetPage(i);
-                filehistory.AddFileToHistory(p->doc->filename);
-            }
-        }
         filehistory.Save(*sys->cfg);
         auto oldpath = sys->cfg->GetPath();
         sys->cfg->SetPath("/scripts");
@@ -1128,6 +1120,7 @@ struct MyFrame : wxFrame {
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
+                sys->RememberOpenFiles();
                 this->Close();
                 break;
             case wxID_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
