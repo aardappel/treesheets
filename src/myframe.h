@@ -1296,10 +1296,11 @@ struct MyFrame : wxFrame {
             return;
         }
         sys->RememberOpenFiles();
-        int n = (int)nb->GetPageCount();
+        sys->cfg->Write(L"focusfile", GetCurTab()->doc->filename);
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
-            for (int i = 0; i < n; i++) {
+            int n = (int)nb->GetPageCount();
+            loop(i, n) {
                 TSCanvas *p = (TSCanvas *)nb->GetPage(i);
                 if (p->doc->modified) {
                     nb->SetSelection(i);
