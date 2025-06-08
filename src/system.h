@@ -125,6 +125,9 @@ struct System {
                 cfg->Read(wxString::Format(L"lastopenfile_%d", i), &fn);
                 LoadDB(fn, true);
             }
+
+            wxString focusfile = cfg->Read(L"focusfile", L"");
+            frame->GetTabByFileName(focusfile);
         }
 
         if (!frame->nb->GetPageCount()) LoadTut();
