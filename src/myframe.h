@@ -1310,6 +1310,7 @@ struct MyFrame : wxFrame {
                 }
             }
             // all files have been saved/discarded
+            sys->cfg->Write(L"focusfile", GetCurTab()->doc->filename);
             while (nb->GetPageCount()) {
                 GetCurTab()->doc->RemoveTmpFile();
                 nb->DeletePage(nb->GetSelection());
