@@ -460,6 +460,8 @@ struct System {
                     break;
                 }
             }
+            frame->GetCurTab()->doc->modified = true;
+            frame->GetCurTab()->doc->UpdateFileName();
             frame->GetCurTab()->doc->ClearSelectionRefresh();
         }
         return nullptr;
