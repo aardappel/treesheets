@@ -366,10 +366,8 @@ struct System {
     }
 
     void RememberOpenFiles() {
-        auto n = frame->nb->GetPageCount();
         auto namedfiles = 0;
-
-        loop(i, n) {
+        loop(i, frame->nb->GetPageCount()) {
             auto p = (TSCanvas *)frame->nb->GetPage(i);
             if (p->doc->filename.Len()) {
                 cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
