@@ -1298,7 +1298,6 @@ struct MyFrame : wxFrame {
             return;
         }
         sys->RememberOpenFiles();
-        sys->cfg->Write(L"focusfile", GetCurTab()->doc->filename);
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, nb->GetPageCount()) {
