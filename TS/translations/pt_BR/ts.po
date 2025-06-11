@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-07 17:36-0300\n"
-"PO-Revision-Date: 2025-06-11 11:11-0300\n"
+"POT-Creation-Date: 2025-06-11 12:25-0300\n"
+"PO-Revision-Date: 2025-06-11 12:31-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -445,6 +445,9 @@ msgstr "Mover Cursor à Esquerda"
 msgid "Cursor Right"
 msgstr "Mover Cursor à Direita"
 
+msgid "Custom"
+msgstr "Personalizada"
+
 msgid "Cut selection"
 msgstr "Recorta a seleção"
 
@@ -871,6 +874,9 @@ msgstr "Ir para a célula anterior"
 
 msgid "Move to previous cell (SHIFT+TAB)"
 msgstr "Ir para a célula anterior (SHIFT+TAB)"
+
+msgid "NOT IMPLEMENTED"
+msgstr "NÃO IMPLEMENTADO"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
