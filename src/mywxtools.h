@@ -144,7 +144,7 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
             dc.SetTextForeground(*wxBLACK);
             dc.SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
                               false, L""));
-            dc.DrawText(L"Custom", rect.x + 1, rect.y + 1);
+            dc.DrawText(_(L"Custom"), rect.x + 1, rect.y + 1);
         }
     }
 };

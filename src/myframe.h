@@ -1115,7 +1115,7 @@ struct MyFrame : wxFrame {
                 break;
             #ifdef __WXMAC__
             case wxID_OSX_HIDE: Iconize(true); break;
-            case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
+            case wxID_OSX_HIDEOTHERS: sw->Status(_(L"NOT IMPLEMENTED")); break;
             case wxID_OSX_SHOWALL: Iconize(false); break;
             case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
             case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;

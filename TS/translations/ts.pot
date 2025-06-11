@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-07 17:36-0300\n"
+"POT-Creation-Date: 2025-06-11 12:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -426,6 +426,9 @@ msgstr ""
 msgid "Cursor Right"
 msgstr ""
 
+msgid "Custom"
+msgstr ""
+
 msgid "Cut selection"
 msgstr ""
 
@@ -818,6 +821,9 @@ msgid "Move to previous cell"
 msgstr ""
 
 msgid "Move to previous cell (SHIFT+TAB)"
+msgstr ""
+
+msgid "NOT IMPLEMENTED"
 msgstr ""
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."

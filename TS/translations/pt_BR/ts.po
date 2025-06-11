@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-07 17:36-0300\n"
-"PO-Revision-Date: 2025-06-07 17:40-0300\n"
+"POT-Creation-Date: 2025-06-11 12:25-0300\n"
+"PO-Revision-Date: 2025-06-11 12:31-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -137,7 +137,7 @@ msgid "&Print..."
 msgstr "&Imprimir..."
 
 msgid "&Program"
-msgstr "&Programa"
+msgstr "&Programação"
 
 msgid "&Recent files"
 msgstr "Ar&quivos recentes"
@@ -229,7 +229,7 @@ msgid "Add Image"
 msgstr "Adicionar Imagem"
 
 msgid "Add Lobster scripts..."
-msgstr "Adicionar scripts Lobster..."
+msgstr "Adicionar script(s) Lobster..."
 
 msgid "Adding Lobster script(s) cancelled."
 msgstr "Adição de script(s) Lobster cancelada."
@@ -444,6 +444,9 @@ msgstr "Mover Cursor à Esquerda"
 
 msgid "Cursor Right"
 msgstr "Mover Cursor à Direita"
+
+msgid "Custom"
+msgstr "Personalizada"
 
 msgid "Cut selection"
 msgstr "Recorta a seleção"
@@ -872,6 +875,9 @@ msgstr "Ir para a célula anterior"
 msgid "Move to previous cell (SHIFT+TAB)"
 msgstr "Ir para a célula anterior (SHIFT+TAB)"
 
+msgid "NOT IMPLEMENTED"
+msgstr "NÃO IMPLEMENTADO"
+
 msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
 "NOTA: a associação de teclas passará a valer na próxima execução do "
@@ -1198,7 +1204,7 @@ msgid "Saved %s successfully (in %d milliseconds)."
 msgstr "O arquivo %s foi salvo com sucesso (em %d milissegundo(s))."
 
 msgid "Script"
-msgstr "&Script"
+msgstr "&Scripts"
 
 msgid "Scroll Down (mousewheel)"
 msgstr "Rolar para Baixo (botão de rolagem)"
