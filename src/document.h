@@ -2041,83 +2041,79 @@ struct Document {
 
     void PasteSingleText(Cell *c, const wxString &s) { c->text.Insert(this, s, selected, false); }
 
-    void PasteOrDrop(const wxFileDataObject &fdo) {
-        if (fdo.GetFilenames().size() != 0) {
-            const auto &as = fdo.GetFilenames();
-            if (as.size()) {
-                if (as.size() > 1) sw->Status(_(L"Cannot drag & drop more than 1 file."));
-                else {
-                    wxString fpath = as[0];
-                    wxFFileInputStream fis(fpath);
-                    if (fis.IsOk()) {
-                        char buf[4];
-                        fis.Read(buf, 4);
-                        if (!strncmp(buf, "TSFF", 4)) {
-                            ThreeChoiceDialog tcd(sys->frame, fpath,
-                                                  _(L"It seems that you are about to drop a TreeSheets file. What would you like to do?"),
-                                                  _(L"Open TreeSheets file"), _(L"Paste file path"),
-                                                  _(L"Cancel"));
-                            switch (tcd.Run()) {
-                                case 0: sw->Status(sys->LoadDB(fpath));
-                                case 2: return;
-                                default:
-                                case 1:;
-                            }
+    void PasteOrDrop(const wxDataObjectSimple &sdo) {
+        wxDataFormat fmt = sdo.GetFormat();
+        Cell *c = selected.ThinExpand(this);
+        if (fmt == wxDF_FILENAME) {
+            auto &fdo = (wxFileDataObject &)sdo;
+            const wxArrayString &as = fdo.GetFilenames();
+            if (!as.size()) return;
+            if (as.size() > 1) {
+                sw->Status(_(L"Cannot drag & drop more than 1 file."));
+                return;
+            }
+            wxString fpath = as[0];
+            wxFFileInputStream fis(fpath);
+            if (fis.IsOk()) {
+                char buf[4];
+                fis.Read(buf, 4);
+                if (!strncmp(buf, "TSFF", 4)) {
+                    ThreeChoiceDialog tcd(
+                        sys->frame, fpath,
+                        _(L"It seems that you are about to drop a TreeSheets file. "
+                          L"What would you like to do?"),
+                        _(L"Open TreeSheets file"), _(L"Paste file path"), _(L"Cancel"));
+                    switch (tcd.Run()) {
+                        case 0: sw->Status(sys->LoadDB(fpath));
+                        case 2: return;
+                        default:
+                        case 1:;
+                    }
+                }
+            }
+            if (!c) return;
+            c->AddUndo(this);
+            if (!LoadImageIntoCell(as[0], c, sys->frame->FromDIP(1.0))) PasteSingleText(c, as[0]);
+            Refresh();
+            return;
+        }
+        if (c && (fmt == wxDF_TEXT || fmt == wxDF_UNICODETEXT)) {
+            auto &tdo = (wxTextDataObject &)sdo;
+            if (tdo.GetText() != wxEmptyString) {
+                auto s = tdo.GetText();
+                if ((sys->clipboardcopy == s) && sys->cellclipboard) {
+                    c->Paste(this, sys->cellclipboard.get(), selected);
+                } else {
+                    const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
+                    if (as.size()) {
+                        if (as.size() <= 1) {
+                            c->AddUndo(this);
+                            c->ResetLayout();
+                            PasteSingleText(c, as[0]);
+                        } else {
+                            c->parent->AddUndo(this);
+                            c->ResetLayout();
+                            DELETEP(c->grid);
+                            sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
+                            if (!c->HasText())
+                                c->grid->MergeWithParent(c->parent->grid, selected, this);
                         }
                     }
                 }
-                auto c = selected.ThinExpand(this);
-                if (!c) return;
-                c->AddUndo(this);
-                if (!LoadImageIntoCell(as[0], c, sys->frame->FromDIP(1.0)))
-                    PasteSingleText(c, as[0]);
                 Refresh();
-                return;
             }
-        }
-    }
-
-    void PasteOrDrop(const wxTextDataObject &tdo) {
-        auto c = selected.ThinExpand(this);
-        if (!c) return;
-
-        if (tdo.GetText() != wxEmptyString) {
-            auto s = tdo.GetText();
-            if ((sys->clipboardcopy == s) && sys->cellclipboard) {
-                c->Paste(this, sys->cellclipboard.get(), selected);
-            } else {
-                const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
-                if (as.size()) {
-                    if (as.size() <= 1) {
-                        c->AddUndo(this);
-                        c->ResetLayout();
-                        PasteSingleText(c, as[0]);
-                    } else {
-                        c->parent->AddUndo(this);
-                        c->ResetLayout();
-                        DELETEP(c->grid);
-                        sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
-                        if (!c->HasText())
-                            c->grid->MergeWithParent(c->parent->grid, selected, this);
-                    }
-                }
-            }
-            Refresh();
             return;
         }
-    }
-
-    void PasteOrDrop(const wxBitmapDataObject &bdo) {
-        auto c = selected.ThinExpand(this);
-        if (!c) return;
-        if (bdo.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
-            c->AddUndo(this);
-            auto im = bdo.GetBitmap().ConvertToImage();
-            vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-            SetImageBM(c, std::move(idv), sys->frame->FromDIP(1.0));
-            c->Reset();
-            Refresh();
-            return;
+        if (c && fmt == wxDF_BITMAP) {
+            auto &bdo = (wxBitmapDataObject &)sdo;
+            if (bdo.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
+                c->AddUndo(this);
+                auto im = bdo.GetBitmap().ConvertToImage();
+                vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                SetImageBM(c, std::move(idv), sys->frame->FromDIP(1.0));
+                c->Reset();
+                Refresh();
+            }
         }
     }
 
