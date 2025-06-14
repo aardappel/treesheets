@@ -230,16 +230,7 @@ struct Document {
         sel.g->DrawSelect(this, dc, sel, cursoronly);
     }
 
-    void DrawSelectMove(wxDC &dc, Selection &sel, bool refreshalways = false,
-                        bool refreshinstead = true) {
-        if (ScrollIfSelectionOutOfView(dc, sel)) return;
-        if (refreshalways)
-            Refresh();
-        else
-            DrawSelect(dc, sel, refreshinstead);
-    }
-
-    bool ScrollIfSelectionOutOfView(wxDC &dc, Selection &sel, bool refreshalways = false,
+    bool ScrollIfSelectionOutOfView(wxPaintDC &dc, Selection &sel, bool refreshalways = false,
                                     bool needslayout = true) {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
@@ -288,12 +279,14 @@ struct Document {
         for (auto cg = selected.g->cell; cg; cg = cg->parent)
             if (cg == drawroot) {
                 if (zoomiftiny) ZoomTiny(dc);
-                DrawSelectMove(dc, selected, true);
+                scrolltoselection = true;
+                Refresh();
                 return;
             }
         Zoom(-100, dc, false);
         if (zoomiftiny) ZoomTiny(dc);
-        DrawSelectMove(dc, selected, true);
+        scrolltoselection = true;
+        Refresh();
     }
 
     void ZoomTiny(wxDC &dc) {
@@ -359,7 +352,8 @@ struct Document {
         if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
         SetSelect(hover);
         isctrlshiftdrag = isctrlshift;
-        DrawSelectMove(dc, selected);
+        scrolltoselection = true;
+        Refresh();
         ResetCursor();
         ResetBlink();
         return;
@@ -514,8 +508,8 @@ struct Document {
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
-        Layout(dc);
-        DrawSelectMove(dc, selected, true, false);
+        scrolltoselection = true;
+        Refresh();
     }
 
     const wxChar *NoSel() { return _(L"This operation requires a selection."); }
@@ -607,7 +601,7 @@ struct Document {
                             curdrawroot->ColWidth(), 0);
     }
 
-    void Draw(wxDC &dc) {
+    void Draw(wxPaintDC &dc) {
         redrawpending = false;
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
@@ -952,7 +946,8 @@ struct Document {
                                // keystroke undos within same cell
             ShiftToCenter(dc);
             c->text.Key(this, uk, selected);
-            ScrollIfSelectionOutOfView(dc, selected, true);
+            scrolltoselection = true;
+            Refresh();
             return nullptr;
         }
         unprocessed = true;
@@ -1530,7 +1525,8 @@ struct Document {
                     c->AddUndo(this);
                     c->AddGrid();
                     SetSelect(Selection(c->grid, 0, 0, 1, 1));
-                    DrawSelectMove(dc, selected, true);
+                    scrolltoselection = true;
+                    Refresh();
                 }
                 return nullptr;
 
@@ -1577,7 +1573,8 @@ struct Document {
                     selected.EnterEdit(this,
                                        (k == A_ENTERCELL_JUMPTOEND) ? (int)c->text.t.Len() : 0,
                                        (int)c->text.t.Len());
-                    DrawSelectMove(dc, selected, true);
+                    scrolltoselection = true;
+                    Refresh();
                 }
                 return nullptr;
             }
@@ -1990,7 +1987,6 @@ struct Document {
             case A_CEND:
             case A_HOME:
             case A_END: {
-                DrawSelect(dc, selected);
                 switch (k) {
                     case A_SHOME:  // FIXME: this functionality is really SCHOME, SHOME should be
                                    // within line
@@ -2002,7 +1998,8 @@ struct Document {
                     case A_HOME: c->text.HomeEnd(selected, true); break;
                     case A_END: c->text.HomeEnd(selected, false); break;
                 }
-                DrawSelectMove(dc, selected);
+                scrolltoselection = true;
+                Refresh();
                 return nullptr;
             }
             default: return _(L"Internal error: unimplemented operation!");
