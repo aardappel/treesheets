@@ -489,7 +489,7 @@ struct Document {
         return;
     }
 
-    void ZoomSetDrawPath(int dir, wxDC &dc, bool fromroot = true) {
+    void ZoomSetDrawPath(int dir, bool fromroot = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
         if (!len && !drawpath.size()) return;
         if (dir > 0) {
@@ -506,7 +506,7 @@ struct Document {
     }
 
     void Zoom(int dir, wxDC &dc, bool fromroot = false) {
-        ZoomSetDrawPath(dir, dc, fromroot);
+        ZoomSetDrawPath(dir, fromroot);
         auto drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
@@ -614,7 +614,7 @@ struct Document {
         if (!rootgrid) return;
         sw->GetClientSize(&maxx, &maxy);
         if (initialzoomlevel) {
-            ZoomSetDrawPath(initialzoomlevel, dc);
+            ZoomSetDrawPath(initialzoomlevel);
             initialzoomlevel = 0;
         }
         Layout(dc);
