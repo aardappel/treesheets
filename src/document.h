@@ -2113,8 +2113,8 @@ struct Document {
             if (bdo.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
                 c->AddUndo(this);
                 auto im = bdo.GetBitmap().ConvertToImage();
-                vector<uint8_t> idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-                SetImageBM(c, std::move(idv), sys->frame->FromDIP(1.0));
+                vector<uint8_t> data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+                SetImageBM(c, std::move(data), sys->frame->FromDIP(1.0));
                 c->Reset();
                 Refresh();
             }
@@ -2254,16 +2254,16 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, auto &&idv, double sc) {
-        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(idv), 'I')].get();
+    void SetImageBM(Cell *c, auto &&data, double sc) {
+        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(data), 'I')].get();
     }
 
     bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {
         if (fn.empty()) return false;
         wxImage im;
         if (!im.LoadFile(fn)) return false;
-        auto idv = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-        SetImageBM(c, std::move(idv), sc);
+        auto data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
+        SetImageBM(c, std::move(data), sc);
         c->Reset();
         return true;
     }
