@@ -120,7 +120,7 @@ struct System {
         loop(i, numfiles) {
             wxString fn;
             cfg->Read(wxString::Format(L"lastopenfile_%d", i), &fn);
-            LoadDB(fn, true);
+            LoadDB(fn);
         }
 
         if (filename.Len()) LoadDB(filename);
@@ -170,7 +170,7 @@ struct System {
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    const wxChar *LoadDB(const wxString &filename, bool frominit = false, bool fromreload = false) {
+    const wxChar *LoadDB(const wxString &filename, bool fromreload = false) {
         auto fn = filename;
         auto loadedfromtmp = false;
 
