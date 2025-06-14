@@ -23,14 +23,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnPaint(wxPaintEvent &event) {
-        #if defined(__WXMAC__) || defined(__WXGTK__)
-            wxPaintDC dc(this);
-        #else
-            auto sz = GetClientSize();
-            if (sz.GetX() <= 0 || sz.GetY() <= 0) return;
-            wxBitmap buffer(sz.GetX(), sz.GetY(), 24);
-            wxBufferedPaintDC dc(this, buffer);
-        #endif
+        wxPaintDC dc(this);
         // DoPrepareDC(dc);
         doc->Draw(dc);
         // Display has been re-layouted, compute hover selection again.
