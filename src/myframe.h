@@ -580,58 +580,86 @@ struct MyFrame : wxFrame {
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
         auto optmenu = new wxMenu();
-        MyAppend(optmenu, wxID_SELECT_FONT, _(L"Pick Default Font..."));
-        MyAppend(optmenu, A_CUSTKEY, _(L"Change a key binding..."));
-        MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _(L"Set default column width..."));
-        MyAppend(optmenu, A_CUSTCOL, _(L"Pick Custom &Color..."));
-        MyAppend(optmenu, A_COLCELL, _(L"&Set Custom Color From Cell BG"));
-        MyAppend(optmenu, A_DEFBGCOL, _(L"Pick Document Background..."));
+        MyAppend(optmenu, wxID_SELECT_FONT, _(L"Font..."),
+                 _(L"Set the font the document text is displayed with"));
+        MyAppend(optmenu, A_CUSTKEY, _(L"Key bindings..."),
+                 _(L"Change the key binding of a menu item"));
+        MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _(L"Default column width..."),
+                 _(L"Set the default column width for a new grid"));
+        MyAppend(optmenu, A_CUSTCOL, _(L"Custom &color..."),
+                 _(L"Set a custom color for the color dropdowns"));
+        MyAppend(
+            optmenu, A_COLCELL, _(L"&Set custom color from cell background"),
+            _(L"Set a custom color for the color dropdowns from the selected cell background"));
+        MyAppend(optmenu, A_DEFBGCOL, _(L"Background color..."),
+                 _(L"Set the color for the document background"));
         #ifdef SIMPLERENDER
-            MyAppend(optmenu, A_DEFCURCOL, _(L"Pick Cu&rsor Color..."));
+        MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
+                 _(L"Set the color for the text cursor"));
         #else
-            optmenu->AppendCheckItem(A_HOVERSHADOW, _(L"Hover shadow"));
-            optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
+        optmenu->AppendCheckItem(A_HOVERSHADOW, _(L"Hover shadow"),
+                                 _(L"Shadow the cell the pointer hovers over"));
+        optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
         #endif
         optmenu->AppendSeparator();
-        optmenu->AppendCheckItem(A_SHOWTBAR, _(L"Show Toolbar"));
+        optmenu->AppendCheckItem(
+            A_SHOWTBAR, _(L"Toolbar"),
+            _(L"Toggle whether toolbar is shown between menu bar and documents"));
         optmenu->Check(A_SHOWTBAR, sys->showtoolbar);
-        optmenu->AppendCheckItem(A_SHOWSBAR, _(L"Show Statusbar"));
+        optmenu->AppendCheckItem(A_SHOWSBAR, _(L"Statusbar"),
+                                 _(L"Toggle whether statusbar is shown below the documents"));
         optmenu->Check(A_SHOWSBAR, sys->showstatusbar);
-        optmenu->AppendCheckItem(A_LEFTTABS, _(L"File Tabs on the bottom"));
+        optmenu->AppendCheckItem(
+            A_LEFTTABS, _(L"File Tabs on the bottom"),
+            _(L"Toggle whether file tabs are shown on top or on bottom of the documents"));
         optmenu->Check(A_LEFTTABS, lefttabs);
-        optmenu->AppendCheckItem(A_TOTRAY, _(L"Minimize to tray"));
+        optmenu->AppendCheckItem(A_TOTRAY, _(L"Minimize to tray"),
+                                 _(L"Toogle whether window is minimized to system tray"));
         optmenu->Check(A_TOTRAY, sys->totray);
-        optmenu->AppendCheckItem(A_MINCLOSE, _(L"Minimize on close"));
+        optmenu->AppendCheckItem(A_MINCLOSE, _(L"Minimize on close"),
+                                 _(L"Toggle whether the window is minimized instead of closed"));
         optmenu->Check(A_MINCLOSE, sys->minclose);
-        optmenu->AppendCheckItem(A_SINGLETRAY, _(L"Single click maximize from tray"));
+        optmenu->AppendCheckItem(
+            A_SINGLETRAY, _(L"Single click maximize from tray"),
+            _(L"Toggle whether only one click is required to maximize from system tray"));
         optmenu->Check(A_SINGLETRAY, sys->singletray);
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_ZOOMSCR, _(L"Swap mousewheel scrolling and zooming"));
         optmenu->Check(A_ZOOMSCR, sys->zoomscroll);
-        optmenu->AppendCheckItem(A_THINSELC, _(L"Navigate in between cells with cursor keys"));
+        optmenu->AppendCheckItem(A_THINSELC, _(L"Navigate in between cells with cursor keys"),
+                                 _(L"Toggle whether the cursor keys are used for navigation in "
+                                   L"addition to text editing"));
         optmenu->Check(A_THINSELC, sys->thinselc);
         optmenu->AppendSeparator();
-        optmenu->AppendCheckItem(A_MAKEBAKS, _(L"Create .bak files"));
+        optmenu->AppendCheckItem(A_MAKEBAKS, _(L"Backup files"),
+                                 _(L"Create backup file before document is saved to file"));
         optmenu->Check(A_MAKEBAKS, sys->makebaks);
-        optmenu->AppendCheckItem(A_AUTOSAVE, _(L"Autosave to .tmp"));
+        optmenu->AppendCheckItem(A_AUTOSAVE, _(L"Autosave"),
+                                 _(L"Save open documents periodically to temporary files"));
         optmenu->Check(A_AUTOSAVE, sys->autosave);
-        optmenu->AppendCheckItem(A_FSWATCH, _(L"Auto reload documents"),
-                                 _(L"Reloads when another computer has changed a file (if you have made changes, asks)"));
+        optmenu->AppendCheckItem(
+            A_FSWATCH, _(L"Autoreload documents"),
+            _(L"Reload when another computer has changed a file (if you have made changes, asks)"));
         optmenu->Check(A_FSWATCH, sys->fswatch);
-        optmenu->AppendCheckItem(A_AUTOEXPORT, _(L"Automatically export a .html on every save"));
+        optmenu->AppendCheckItem(A_AUTOEXPORT, _(L"Autoexport to HTML"),
+                                 _(L"Export to a HTML file when document is saved"));
         optmenu->Check(A_AUTOEXPORT, sys->autohtmlexport);
         optmenu->AppendSeparator();
-        optmenu->AppendCheckItem(A_CENTERED, _(L"Render document centered"));
+        optmenu->AppendCheckItem(
+            A_CENTERED, _(L"Render document centered"),
+            _(L"Toggle whether documents are rendered centered or left aligned"));
         optmenu->Check(A_CENTERED, sys->centered);
-        optmenu->AppendCheckItem(A_FASTRENDER, _(L"Faster line rendering"));
+        optmenu->AppendCheckItem(
+            A_FASTRENDER, _(L"Faster line rendering"),
+            _(L"Toggle whether lines are drawn solid (faster rendering) or dashed"));
         optmenu->Check(A_FASTRENDER, sys->fastrender);
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
 
         auto scriptmenu = new wxMenu();
         MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add Lobster scripts...") + "\tCTRL+ALT+L",
-                 _(L"Add Lobster scripts..."));
+                 _(L"Add Lobster scripts to the menu"));
         MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove script from list...") + "\tCTRL+SHIFT+ALT+L",
-                 _(L"Remove script from list..."));
+                 _(L"Remove script from list in the menu"));
         scripts.UseMenu(scriptmenu);
         scripts.AddFilesToMenu();
 
