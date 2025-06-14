@@ -409,9 +409,7 @@ struct System {
         }
     }
 
-    const wxChar *Import(int k) {
-        wxString fn = ::wxFileSelector(_(L"Please select file to import:"), L"", L"", L"", L"*.*",
-                                       wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+    const wxChar *Import(const wxString &fn, int k) {
         if (!fn.empty()) {
             wxBusyCursor wait;
             switch (k) {
