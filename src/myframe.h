@@ -1034,16 +1034,10 @@ struct MyFrame : wxFrame {
             }
 
             case A_ADDSCRIPT: {
-                wxFileDialog fd(this, _(L"Please select Lobster script file(s):"), L"", L"",
-                                _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
-                                wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
-                if (fd.ShowModal() == wxID_CANCEL)
-                    sw->Status(_(L"Adding Lobster script(s) cancelled."));
-                else {
-                    wxArrayString fns;
-                    fd.GetPaths(fns);
-                    for (auto &fn : fns) scripts.AddFileToHistory(fn);
-                }
+                wxArrayString fns;
+                GetFilesFromUser(fns, this, _(L"Please select Lobster script file(s):"),
+                                 _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"));
+                for (auto &fn : fns) scripts.AddFileToHistory(fn);
                 break;
             }
 

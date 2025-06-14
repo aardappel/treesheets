@@ -241,3 +241,10 @@ static uint64_t CalculateHash(vector<uint8_t> &idv) {
     int max = 4096;
     return FNV1A64(idv.data(), min(idv.size(), max));
 }
+
+static void GetFilesFromUser(wxArrayString &fns, wxWindow *w, const wxChar *title,
+                             const wxChar *filter) {
+    wxFileDialog fd(w, title, L"", L"", filter,
+                    wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
+    if (fd.ShowModal() == wxID_OK) fd.GetPaths(fns);
+}

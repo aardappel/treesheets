@@ -1010,25 +1010,19 @@ struct Document {
             case A_IMPTXTC:
             case A_IMPTXTS:
             case A_IMPTXTT: {
-                wxFileDialog fd(sys->frame, _(L"Please select file(s) to import:"), L"", L"",
-                                _(L"*.*"),
-                                wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
-                if (fd.ShowModal() == wxID_CANCEL) return _(L"Open cancelled.");
-                const wxChar *msg = nullptr;
                 wxArrayString fns;
-                fd.GetPaths(fns);
+                GetFilesFromUser(fns, sys->frame, _(L"Please select file(s) to import:"),
+                                 _(L"*.*"));
+                const wxChar *msg = nullptr;
                 for (auto &fn : fns) msg = sys->Import(fn, k);
                 return msg;
             }
 
             case wxID_OPEN: {
-                wxFileDialog fd(sys->frame, _(L"Please select TreeSheets file(s) to load:"), L"", L"",
-                                _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
-                                wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
-                if (fd.ShowModal() == wxID_CANCEL) return _(L"Open cancelled.");
-                const wxChar *msg = nullptr;
                 wxArrayString fns;
-                fd.GetPaths(fns);
+                GetFilesFromUser(fns, sys->frame, _(L"Please select TreeSheets file(s) to load:"),
+                                 _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"));
+                const wxChar *msg = nullptr;
                 for (auto &fn : fns) msg = sys->Open(fn);
                 return msg;
             }
