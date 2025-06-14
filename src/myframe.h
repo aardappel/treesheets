@@ -586,6 +586,7 @@ struct MyFrame : wxFrame {
                  _(L"Change the key binding of a menu item"));
         MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _(L"Default column width..."),
                  _(L"Set the default column width for a new grid"));
+        optmenu->AppendSeparator();
         MyAppend(optmenu, A_CUSTCOL, _(L"Custom &color..."),
                  _(L"Set a custom color for the color dropdowns"));
         MyAppend(
