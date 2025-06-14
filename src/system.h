@@ -116,16 +116,14 @@ struct System {
     void Init(const wxString &filename) {
         ev.Init();
 
-        if (filename.Len()) LoadDB(filename);
-
-        if (!frame->nb->GetPageCount()) {
-            auto numfiles = (int)cfg->Read(L"numopenfiles", (long)0);
-            loop(i, numfiles) {
-                wxString fn;
-                cfg->Read(wxString::Format(L"lastopenfile_%d", i), &fn);
-                LoadDB(fn, true);
-            }
+        auto numfiles = (int)cfg->Read(L"numopenfiles", (long)0);
+        loop(i, numfiles) {
+            wxString fn;
+            cfg->Read(wxString::Format(L"lastopenfile_%d", i), &fn);
+            LoadDB(fn, true);
         }
+
+        if (filename.Len()) LoadDB(filename);
 
         if (!frame->nb->GetPageCount()) LoadTut();
 
