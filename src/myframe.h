@@ -215,7 +215,7 @@ struct MyFrame : wxFrame {
         MyAppend(filemenu, wxID_PRINT, _(L"&Print...") + "\tCTRL+p");
         filemenu->AppendSeparator();
         filemenu->AppendSubMenu(expmenu, _(L"Export &view as"));
-        filemenu->AppendSubMenu(impmenu, _(L"Import file from"));
+        filemenu->AppendSubMenu(impmenu, _(L"Import file(s) from"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, wxID_EXIT, _(L"&Exit") + "\tCTRL+q",
                      _(L"Quit this program"));
