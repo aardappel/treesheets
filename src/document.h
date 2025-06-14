@@ -607,7 +607,7 @@ struct Document {
                             curdrawroot->ColWidth(), 0);
     }
 
-    void Draw(wxDC &dc) {
+    void Draw(wxPaintDC &dc) {
         redrawpending = false;
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
