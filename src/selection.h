@@ -134,7 +134,8 @@ class Selection {
             // FIXME: this is null in the case of a whole column selection, and doesn't do the right
             // thing.
             if (g) g->cell->ResetChildren();
-            doc->ScrollIfSelectionOutOfView(dc, *this, true);
+            doc->scrolltoselection = true;
+            doc->Refresh();
         } else {
             doc->DrawSelect(dc, *this);
             if (ctrl && dx)  // implies textedit
@@ -300,7 +301,8 @@ class Selection {
                     }
                 };
             }
-            doc->DrawSelectMove(dc, *this);
+            doc->scrolltoselection = true;
+            doc->Refresh();
             doc->ResetBlink();
         };
     }
@@ -321,7 +323,6 @@ class Selection {
     }
 
     void Next(Document *doc, wxDC &dc, bool backwards) {
-        doc->DrawSelect(dc, *this);
         ExitEdit(doc);
         if (backwards) {
             if (x > 0)
@@ -343,7 +344,8 @@ class Selection {
                 x = y = 0;
         }
         EnterEdit(doc, 0, MaxCursor());
-        doc->DrawSelectMove(dc, *this);
+        doc->scrolltoselection = true;
+        doc->Refresh();
     }
 
     const wxChar *Wrap(Document *doc) {
@@ -387,7 +389,6 @@ class Selection {
     }
 
     void HomeEnd(Document *doc, wxDC &dc, bool ishome) {
-        doc->DrawSelect(dc, *this);
         xs = ys = 1;
         if (ishome)
             x = y = 0;
@@ -395,6 +396,7 @@ class Selection {
             x = g->xs - 1;
             y = g->ys - 1;
         }
-        doc->DrawSelectMove(dc, *this);
+        doc->scrolltoselection = true;
+        doc->Refresh();
     }
 };
