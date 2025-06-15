@@ -84,7 +84,7 @@ struct Cell {
         return sizeof(Cell) + text.EstimatedMemoryUse() + (grid ? grid->EstimatedMemoryUse() : 0);
     }
 
-    void Layout(auto doc, auto &dc, int depth, int maxcolwidth, bool forcetiny) {
+    void Layout(Document *doc, wxDC &dc, int depth, int maxcolwidth, bool forcetiny) {
         tiny = (text.filtered && !grid) || forcetiny ||
                doc->PickFont(dc, depth, text.relsize, text.stylebits);
         int ixs = 0, iys = 0;
@@ -129,7 +129,7 @@ struct Cell {
         }
     }
 
-    void Render(auto doc, int bx, int by, auto &dc, int depth, int ml, int mr, int mt, int mb,
+    void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int ml, int mr, int mt, int mb,
                 int maxcolwidth, int cell_margin) {
         // Choose color from celltype (program operations)
         switch (celltype) {
@@ -318,7 +318,7 @@ struct Cell {
         if (parent) parent->ResetLayout();
     }
 
-    void LazyLayout(auto doc, auto &dc, int depth, int maxcolwidth, bool forcetiny) {
+    void LazyLayout(Document *doc, wxDC &dc, int depth, int maxcolwidth, bool forcetiny) {
         if (sx == 0) {
             Layout(doc, dc, depth, maxcolwidth, forcetiny);
             minx = sx;

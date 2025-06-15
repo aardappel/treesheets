@@ -121,7 +121,7 @@ class Selection {
         return TEXT_CHAR;
     }
 
-    void Dir(Document *doc, bool ctrl, bool shift, auto &dc, int dx, int dy, int &v, int &vs,
+    void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
              int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
             g->cell->AddUndo(doc);
