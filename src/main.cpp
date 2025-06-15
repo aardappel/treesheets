@@ -323,7 +323,7 @@ struct treesheets {
 
     #include "system.h"
 
-    #include "mywxtools.h"
+    #include "wxtools.h"
     #include "canvas.h"
     #include "myframe.h"
     #include "app.h"
@@ -334,4 +334,4 @@ treesheets::TreeSheetsScriptImpl treesheets::tssi;
 
 IMPLEMENT_APP(treesheets::App)
 
-#include "myevents.h"
+#include "events.h"

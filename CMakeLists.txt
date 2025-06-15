@@ -108,9 +108,9 @@ set(treesheets_sources
         src/grid.h
         src/app.h
         src/canvas.h
-        src/myevents.h
+        src/events.h
         src/myframe.h
-        src/mywxtools.h
+        src/wxtools.h
         src/script_interface.h
         src/selection.h
         src/stdafx.h
