@@ -486,16 +486,16 @@ struct Frame : wxFrame {
             MyAppend(editmenu, A_UNFOLDALL, _(L"Unfold All") + "\tCTRL+ALT+F10",
                 _(L"Unfolds the grid of the selected cell(s) recursively"));
             editmenu->AppendSeparator();
-            editmenu->AppendSubMenu(selmenu, _(L"&Selection..."));
-            editmenu->AppendSubMenu(orgmenu, _(L"&Grid Reorganization..."));
-            editmenu->AppendSubMenu(laymenu, _(L"&Layout && Render Style..."));
-            editmenu->AppendSubMenu(imgmenu, _(L"&Images..."));
-            editmenu->AppendSubMenu(navmenu, _(L"&Browsing..."));
-            editmenu->AppendSubMenu(temenu, _(L"Text &Editing..."));
-            editmenu->AppendSubMenu(sizemenu, _(L"Text Sizing..."));
-            editmenu->AppendSubMenu(stmenu, _(L"Text Style..."));
-            editmenu->AppendSubMenu(bordmenu, _(L"Set Grid Border Width..."));
-            editmenu->AppendSubMenu(tagmenu, _(L"Tag..."));
+            editmenu->AppendSubMenu(selmenu, _(L"&Selection"));
+            editmenu->AppendSubMenu(orgmenu, _(L"&Grid Reorganization"));
+            editmenu->AppendSubMenu(laymenu, _(L"&Layout && Render Style"));
+            editmenu->AppendSubMenu(imgmenu, _(L"&Images"));
+            editmenu->AppendSubMenu(navmenu, _(L"&Browsing"));
+            editmenu->AppendSubMenu(temenu, _(L"Text &Editing"));
+            editmenu->AppendSubMenu(sizemenu, _(L"Text Sizing"));
+            editmenu->AppendSubMenu(stmenu, _(L"Text Style"));
+            editmenu->AppendSubMenu(bordmenu, _(L"Set Grid Border Width"));
+            editmenu->AppendSubMenu(tagmenu, _(L"Tag"));
 
             if (!twoeditmenus) editmenupopup = editmenu;
         }
@@ -564,8 +564,8 @@ struct Frame : wxFrame {
                  #else
                  _(L"Toggle &Scaled Presentation View") + "\tF12");
                  #endif
-        viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet..."));
-        viewmenu->AppendSubMenu(filtermenu, _(L"Filter..."));
+        viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet"));
+        viewmenu->AppendSubMenu(filtermenu, _(L"Filter"));
         MyAppend(viewmenu, A_SHOWSTATS, _(L"Show statistics") + "\tCTRL+d");
 
         auto roundmenu = new wxMenu();
@@ -653,7 +653,7 @@ struct Frame : wxFrame {
             A_FASTRENDER, _(L"Faster line rendering"),
             _(L"Toggle whether lines are drawn solid (faster rendering) or dashed"));
         optmenu->Check(A_FASTRENDER, sys->fastrender);
-        optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
+        optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders"));
 
         auto scriptmenu = new wxMenu();
         MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add...") + "\tCTRL+ALT+L",
