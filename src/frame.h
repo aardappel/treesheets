@@ -504,8 +504,9 @@ struct Frame : wxFrame {
         MyAppend(semenu, wxID_FIND, _(L"&Search") + "\tCTRL+f", _(L"Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
-        MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result") + "\tF3");
-        MyAppend(semenu, A_SEARCHPREV, _(L"Go To &Previous Search Result") + "\tSHIFT+F3");
+        MyAppend(semenu, A_SEARCHNEXT, _(L"&Next Match") + "\tF3", _(L"Go to next search match"));
+        MyAppend(semenu, A_SEARCHPREV, _(L"&Previous Match") + "\tSHIFT+F3",
+                 _(L"Go to previous search match"));
         MyAppend(semenu, wxID_REPLACE, _(L"&Replace") + "\tCTRL+h",
                  _(L"Find and replace in document"));
         MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection") + "\tCTRL+k");
@@ -543,15 +544,18 @@ struct Frame : wxFrame {
         auto viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _(L"Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
         MyAppend(viewmenu, A_ZOOMOUT, _(L"Zoom &Out (CTRL+mousewheel)") + "\tCTRL+PGDN");
-        MyAppend(viewmenu, A_NEXTFILE,
+        MyAppend(
+            viewmenu, A_NEXTFILE,
+            _(L"&Next tab")
                  #ifndef __WXGTK__
-                 _(L"Switch to &next file/tab") + "\tCTRL+TAB");
-                 #else
-                 // On Linux, this conflicts with CTRL+I, see Document::Key()
-                 // CTRL+SHIFT+TAB below still works, so that will have to be used to switch tabs.
-                 _(L"Switch to &next file/tab"));
+                    // On Linux, this conflicts with CTRL+I, see Document::Key()
+                    // CTRL+SHIFT+TAB below still works, so that will have to be used to switch tabs.
+                     + "\tCTRL+TAB"
                  #endif
-        MyAppend(viewmenu, A_PREVFILE, _(L"Switch to &previous file/tab") + "\tCTRL+SHIFT+TAB");
+            ,
+            _(L"Go to the document in the next tab"));
+        MyAppend(viewmenu, A_PREVFILE, _(L"Previous tab") + "\tCTRL+SHIFT+TAB",
+                 _(L"Go to the document in the previous tab"));
         MyAppend(viewmenu, A_FULLSCREEN,
                  #ifdef __WXMAC__
                  _(L"Toggle &Fullscreen View") + "\tCTRL+F11");
