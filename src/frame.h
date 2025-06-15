@@ -1,4 +1,4 @@
-struct MyFrame : wxFrame {
+struct Frame : wxFrame {
     wxString exepath_;
     App *app;
     wxIcon icon;
@@ -75,7 +75,7 @@ struct MyFrame : wxFrame {
         menustrings[item] = key;
     }
 
-    MyFrame(wxString exename, App *_app)
+    Frame(wxString exename, App *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
                   wxDEFAULT_FRAME_STYLE),
           app(_app) {
@@ -142,10 +142,10 @@ struct MyFrame : wxFrame {
 
         if (sys->singletray)
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
-                        wxTaskBarIconEventHandler(MyFrame::OnTBIDBLClick), nullptr, this);
+                        wxTaskBarIconEventHandler(Frame::OnTBIDBLClick), nullptr, this);
         else
             tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
-                        wxTaskBarIconEventHandler(MyFrame::OnTBIDBLClick), nullptr, this);
+                        wxTaskBarIconEventHandler(Frame::OnTBIDBLClick), nullptr, this);
 
         bool showtbar, showsbar, lefttabs;
 
@@ -785,10 +785,10 @@ struct MyFrame : wxFrame {
     void AppOnEventLoopEnter() {
         watcher = new wxFileSystemWatcher();
         watcher->SetOwner(this);
-        Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(MyFrame::OnFileSystemEvent));
+        Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(Frame::OnFileSystemEvent));
     }
 
-    ~MyFrame() {
+    ~Frame() {
         filehistory.Save(*sys->cfg);
         auto oldpath = sys->cfg->GetPath();
         sys->cfg->SetPath("/scripts");

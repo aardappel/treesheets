@@ -306,7 +306,7 @@ struct treesheets {
 
     struct System;
     struct Canvas;
-    struct MyFrame;
+    struct Frame;
     struct App;
 
     static System *sys;
@@ -325,7 +325,7 @@ struct treesheets {
 
     #include "wxtools.h"
     #include "canvas.h"
-    #include "myframe.h"
+    #include "frame.h"
     #include "app.h"
 };
 

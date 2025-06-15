@@ -1,5 +1,5 @@
 struct System {
-    MyFrame *frame;
+    Frame *frame;
     wxString defaultfont {
     #ifdef WIN32
         L"Lucida Sans Unicode"

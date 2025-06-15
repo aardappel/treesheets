@@ -109,7 +109,7 @@ set(treesheets_sources
         src/app.h
         src/canvas.h
         src/events.h
-        src/myframe.h
+        src/frame.h
         src/wxtools.h
         src/script_interface.h
         src/selection.h

@@ -1,11 +1,11 @@
 struct Canvas : public wxScrolledCanvas {
-    MyFrame *frame;
+    Frame *frame;
     Document *doc {nullptr};
     int mousewheelaccum {0};
     bool lastrmbwaswithctrl {false};
     wxPoint lastmousepos;
 
-    Canvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
+    Canvas(Frame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
         : wxScrolledCanvas(parent, wxID_ANY, wxDefaultPosition, size,
                            wxScrolledWindowStyle | wxWANTS_CHARS),
           frame(fr) {
