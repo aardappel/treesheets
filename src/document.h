@@ -186,7 +186,7 @@ struct Document {
             if (!zos.IsOk()) return _(L"Zlib error while writing file.");
             wxDataOutputStream dos(zos);
             rootgrid->Save(dos, ocs);
-            for (auto& [tag, color] : tags) {
+            for (auto &[tag, color] : tags) {
                 dos.WriteString(tag);
                 dos.Write32(color);
             }
@@ -217,7 +217,8 @@ struct Document {
         return _(L"");
     }
 
-    void DrawSelect(wxDC &dc, Selection &sel, bool refreshinstead = false, bool cursoronly = false) {
+    void DrawSelect(wxDC &dc, Selection &sel, bool refreshinstead = false,
+                    bool cursoronly = false) {
         sys->UpdateAmountStatus(sel);
         #ifdef SIMPLERENDER
         if (refreshinstead) {
@@ -874,8 +875,7 @@ struct Document {
         }
     }
 
-    const wxChar *Key(wxDC &dc, int uk, int k, bool alt, bool ctrl, bool shift,
-                      bool &unprocessed) {
+    const wxChar *Key(wxDC &dc, int uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed) {
         if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
@@ -894,7 +894,7 @@ struct Document {
                 // as accelerator keys for menu items. See wxWidgets documentation for the 
                 // wxMenuItem class in order to obtain more details. This is why we implement 
                 // the missing handling of these accelerator keys in the following section.
-                // Please be aware that the custom implementation has the downside of these 
+                // Please be aware that the custom implementation has the downside of these
                 // "accelerator keys" being suppressed in the menu items on wxGTK.
                 case WXK_DELETE: return Action(dc, A_DELETE);
                 case WXK_LEFT:
@@ -1298,8 +1298,9 @@ struct Document {
             case A_SHOWSTATS: {
                 int numcells = 0, textbytes = 0;
                 selected.g->GetStats(selected, numcells, textbytes);
-                sw->Status(wxString::Format(_(L"Selection contains %d cell(s) with %d character(s)."),
-                                    numcells, textbytes));
+                sw->Status(
+                    wxString::Format(_(L"Selection contains %d cell(s) with %d character(s)."),
+                                     numcells, textbytes));
                 return _(L"");
             }
 
@@ -1488,8 +1489,12 @@ struct Document {
             case wxID_BOLD: selected.g->SetStyle(this, selected, STYLE_BOLD); return nullptr;
             case wxID_ITALIC: selected.g->SetStyle(this, selected, STYLE_ITALIC); return nullptr;
             case A_TT: selected.g->SetStyle(this, selected, STYLE_FIXED); return nullptr;
-            case wxID_UNDERLINE: selected.g->SetStyle(this, selected, STYLE_UNDERLINE); return nullptr;
-            case wxID_STRIKETHROUGH: selected.g->SetStyle(this, selected, STYLE_STRIKETHRU); return nullptr;
+            case wxID_UNDERLINE:
+                selected.g->SetStyle(this, selected, STYLE_UNDERLINE);
+                return nullptr;
+            case wxID_STRIKETHROUGH:
+                selected.g->SetStyle(this, selected, STYLE_STRIKETHRU);
+                return nullptr;
 
             case A_MARKDATA:
             case A_MARKVARD:
@@ -2277,7 +2282,7 @@ struct Document {
 
     void RecreateTagMenu(wxMenu &menu) {
         int i = A_TAGSET;
-        for (auto& [tag, color] : tags) { menu.Append(i++, tag); }
+        for (auto &[tag, color] : tags) { menu.Append(i++, tag); }
         if (tags.size()) menu.AppendSeparator();
         menu.Append(A_TAGADD, _(L"&Add Cell Text as Tag"));
         menu.Append(A_TAGREMOVE, _(L"&Remove Cell Text from Tags"));
@@ -2285,7 +2290,7 @@ struct Document {
 
     const wxChar *TagSet(int tagno) {
         int i = 0;
-        for (auto& [tag, color] : tags)
+        for (auto &[tag, color] : tags)
             if (i++ == tagno) {
                 selected.g->cell->AddUndo(this);
                 loopallcellssel(c, false) {

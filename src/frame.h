@@ -196,17 +196,13 @@ struct Frame : wxFrame {
         filehistory.AddFilesToMenu();
 
         auto filemenu = new wxMenu();
-        MyAppend(filemenu, wxID_NEW, _(L"&New") + "\tCTRL+n",
-                     _(L"Create a new document"));
-        MyAppend(filemenu, wxID_OPEN, _(L"&Open...") + "\tCTRL+o",
-                     _(L"Open an existing document"));
-        MyAppend(filemenu, wxID_CLOSE, _(L"&Close") + "\tCTRL+w",
-                     _(L"Close current document"));
+        MyAppend(filemenu, wxID_NEW, _(L"&New") + "\tCTRL+n", _(L"Create a new document"));
+        MyAppend(filemenu, wxID_OPEN, _(L"&Open...") + "\tCTRL+o", _(L"Open an existing document"));
+        MyAppend(filemenu, wxID_CLOSE, _(L"&Close") + "\tCTRL+w", _(L"Close current document"));
         filemenu->AppendSubMenu(recentmenu, _(L"&Recent files"));
-        MyAppend(filemenu, wxID_SAVE, _(L"&Save") + "\tCTRL+s",
-                     _(L"Save current document"));
+        MyAppend(filemenu, wxID_SAVE, _(L"&Save") + "\tCTRL+s", _(L"Save current document"));
         MyAppend(filemenu, wxID_SAVEAS, _(L"Save &As..."),
-                     _(L"Save current document with a different filename"));
+                 _(L"Save current document with a different filename"));
         MyAppend(filemenu, A_SAVEALL, _(L"Save All"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _(L"Page Setup..."));
@@ -217,19 +213,22 @@ struct Frame : wxFrame {
         filemenu->AppendSubMenu(expmenu, _(L"Export &view as"));
         filemenu->AppendSubMenu(impmenu, _(L"Import file(s) from"));
         filemenu->AppendSeparator();
-        MyAppend(filemenu, wxID_EXIT, _(L"&Exit") + "\tCTRL+q",
-                     _(L"Quit this program"));
+        MyAppend(filemenu, wxID_EXIT, _(L"&Exit") + "\tCTRL+q", _(L"Quit this program"));
 
         wxMenu *editmenu;
         loop(twoeditmenus, 2) {
             auto sizemenu = new wxMenu();
-            MyAppend(sizemenu, A_INCSIZE, _(L"&Increase text size (SHIFT+mousewheel)") + "\tSHIFT+PGUP");
-            MyAppend(sizemenu, A_DECSIZE, _(L"&Decrease text size (SHIFT+mousewheel)") + "\tSHIFT+PGDN");
+            MyAppend(sizemenu, A_INCSIZE,
+                     _(L"&Increase text size (SHIFT+mousewheel)") + "\tSHIFT+PGUP");
+            MyAppend(sizemenu, A_DECSIZE,
+                     _(L"&Decrease text size (SHIFT+mousewheel)") + "\tSHIFT+PGDN");
             MyAppend(sizemenu, A_RESETSIZE, _(L"&Reset text sizes") + "\tCTRL+SHIFT+s");
             MyAppend(sizemenu, A_MINISIZE, _(L"&Shrink text of all sub-grids") + "\tCTRL+SHIFT+m");
             sizemenu->AppendSeparator();
-            MyAppend(sizemenu, A_INCWIDTH, _(L"Increase column width (ALT+mousewheel)") + "\tALT+PGUP");
-            MyAppend(sizemenu, A_DECWIDTH, _(L"Decrease column width (ALT+mousewheel)") + "\tALT+PGDN");
+            MyAppend(sizemenu, A_INCWIDTH,
+                     _(L"Increase column width (ALT+mousewheel)") + "\tALT+PGUP");
+            MyAppend(sizemenu, A_DECWIDTH,
+                     _(L"Decrease column width (ALT+mousewheel)") + "\tALT+PGDN");
             MyAppend(sizemenu, A_INCWIDTHNH,
                      _(L"Increase column width (no sub grids)") + "\tCTRL+ALT+PGUP");
             MyAppend(sizemenu, A_DECWIDTHNH,
@@ -315,7 +314,8 @@ struct Frame : wxFrame {
             MyAppend(selmenu, A_LINK, _(L"Go To &Matching Cell (Text)") + "\tF6");
             MyAppend(selmenu, A_LINKREV, _(L"Go To Matching Cell (Text, Reverse)") + "\tSHIFT+F6");
             MyAppend(selmenu, A_LINKIMG, _(L"Go To Matching Cell (Image)") + "\tF7");
-            MyAppend(selmenu, A_LINKIMGREV, _(L"Go To Matching Cell (Image, Reverse)") + "\tSHIFT+F7");
+            MyAppend(selmenu, A_LINKIMGREV,
+                     _(L"Go To Matching Cell (Image, Reverse)") + "\tSHIFT+F7");
 
             auto temenu = new wxMenu();
             MyAppend(temenu, A_LEFT, _(L"Cursor Left") + "\tLEFT");
@@ -338,7 +338,8 @@ struct Frame : wxFrame {
             MyAppend(temenu, A_ENTERCELL, _(L"Enter/exit text edit mode") + "\tENTER");
             MyAppend(temenu, A_ENTERCELL_JUMPTOEND,
                      _(L"Enter/exit text edit to the right") + "\tF2");
-            MyAppend(temenu, A_PROGRESSCELL, _(L"Enter/exit text edit to the right") + "\t" CTRLORALT "+ENTER");
+            MyAppend(temenu, A_PROGRESSCELL,
+                     _(L"Enter/exit text edit to the right") + "\t" CTRLORALT "+ENTER");
             MyAppend(temenu, A_CANCELEDIT, _(L"Cancel text edits") + "\tESC");
 
             auto stmenu = new wxMenu();
@@ -432,10 +433,8 @@ struct Frame : wxFrame {
                      _(L"Make a hierarchy layout more vertical (default) or more horizontal"));
 
             editmenu = new wxMenu();
-            MyAppend(editmenu, wxID_CUT, _(L"Cu&t") + "\tCTRL+x",
-                     _(L"Cut selection"));
-            MyAppend(editmenu, wxID_COPY, _(L"&Copy") + "\tCTRL+c",
-                     _(L"Copy selection"));
+            MyAppend(editmenu, wxID_CUT, _(L"Cu&t") + "\tCTRL+x", _(L"Cut selection"));
+            MyAppend(editmenu, wxID_COPY, _(L"&Copy") + "\tCTRL+c", _(L"Copy selection"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_COPYWI, _(L"Copy with &Images") + "\tCTRL+ALT+c");
             MyAppend(editmenu, A_COPYBM, _(L"&Copy as Bitmap"));
@@ -502,16 +501,16 @@ struct Frame : wxFrame {
         }
 
         auto semenu = new wxMenu();
-        MyAppend(semenu, wxID_FIND, _(L"&Search") + "\tCTRL+f",
-                     _(L"Find in document"));
+        MyAppend(semenu, wxID_FIND, _(L"&Search") + "\tCTRL+f", _(L"Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Go To Next Search Result") + "\tF3");
         MyAppend(semenu, A_SEARCHPREV, _(L"Go To &Previous Search Result") + "\tSHIFT+F3");
         MyAppend(semenu, wxID_REPLACE, _(L"&Replace") + "\tCTRL+h",
-                     _(L"Find and replace in document"));
+                 _(L"Find and replace in document"));
         MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection") + "\tCTRL+k");
-        MyAppend(semenu, A_REPLACEONCEJ, _(L"Replace in Current Selection && &Jump Next") + "\tCTRL+j");
+        MyAppend(semenu, A_REPLACEONCEJ,
+                 _(L"Replace in Current Selection && &Jump Next") + "\tCTRL+j");
         MyAppend(semenu, A_REPLACEALL, _(L"Replace &All"));
 
         auto scrollmenu = new wxMenu();
@@ -687,8 +686,7 @@ struct Frame : wxFrame {
         MyAppend(langmenu, A_CLRVIEW, _(L"&Clear Views"));
 
         auto helpmenu = new wxMenu();
-        MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."),
-                     _(L"Show About dialog"));
+        MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."), _(L"Show About dialog"));
         MyAppend(helpmenu, wxID_HELP, _(L"Load interactive &tutorial...") + "\tF1");
         MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...") + "\tCTRL+ALT+F1");
         MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
@@ -1081,9 +1079,9 @@ struct Frame : wxFrame {
             }
 
             case A_DEFAULTMAXCOLWIDTH: {
-                int w = wxGetNumberFromUser(_(L"Please enter the default column width:"), _(L"Width"),
-                                        _(L"Default column width"), sys->defaultmaxcolwidth, 1,
-                                        1000, sys->frame);
+                int w = wxGetNumberFromUser(_(L"Please enter the default column width:"),
+                                            _(L"Width"), _(L"Default column width"),
+                                            sys->defaultmaxcolwidth, 1, 1000, sys->frame);
                 if (w > 0) sys->cfg->Write(L"defaultmaxcolwidth", sys->defaultmaxcolwidth = w);
                 break;
             }
@@ -1137,17 +1135,19 @@ struct Frame : wxFrame {
                 }
                 break;
             #ifdef __WXMAC__
-            case wxID_OSX_HIDE: Iconize(true); break;
-            case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
-            case wxID_OSX_SHOWALL: Iconize(false); break;
-            case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
-            case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;
+                case wxID_OSX_HIDE: Iconize(true); break;
+                case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
+                case wxID_OSX_SHOWALL: Iconize(false); break;
+                case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
+                case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
                 this->Close();
                 break;
-            case wxID_CLOSE: sw->doc->Action(dc, ce.GetId()); break;  // sw dangling pointer on return
+            case wxID_CLOSE:
+                sw->doc->Action(dc, ce.GetId());
+                break;  // sw dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
@@ -1155,7 +1155,8 @@ struct Frame : wxFrame {
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                    auto msg = tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str(), dc);
+                    auto msg =
+                        tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str(), dc);
                     msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
                     sw->Status(wxString(msg));
                 } else {
@@ -1273,7 +1274,7 @@ struct Frame : wxFrame {
 
     void OnDarkModeChanged(bool newmode) {
         darkmode = newmode;
-        wxString s_filter =  filter->GetValue();
+        wxString s_filter = filter->GetValue();
         wxString s_replaces = replaces->GetValue();
         delete (tb);
         ConstructToolBar();

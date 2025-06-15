@@ -224,7 +224,7 @@ struct System {
                     case 'J': {
                         char iti = *buf;
                         if (!imagetypes.contains(iti))
-                             return _(L"Found an image type that is not defined in this program.");
+                            return _(L"Found an image type that is not defined in this program.");
                         if (versionlastloaded < 9) dis.ReadString();
                         auto sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
@@ -342,8 +342,7 @@ struct System {
         RememberOpenFiles();
         if (fswatch) {
             doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
-            const auto &d =
-                wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            const auto &d = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
             if (watchedpaths.insert(d).second) {
                 frame->watcher->Add(wxFileName(d), wxFSW_EVENT_ALL);
             }
@@ -477,8 +476,8 @@ struct System {
     }
 
     void FillXML(Cell *c, wxXmlNode *n, bool attributestoo) {
-        const auto &as = wxStringTokenize(
-            n->GetType() == wxXML_ELEMENT_NODE ? n->GetNodeContent() : n->GetContent());
+        const auto &as = wxStringTokenize(n->GetType() == wxXML_ELEMENT_NODE ? n->GetNodeContent()
+                                                                             : n->GetContent());
         loop(i, as.GetCount()) {
             if (c->text.t.Len()) c->text.t.Append(L' ');
             c->text.t.Append(as[i]);

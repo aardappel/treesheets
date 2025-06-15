@@ -214,12 +214,12 @@ string RunLobster(std::string_view filename, std::string_view code, bool dump_bu
 
 void TSDumpBuiltinDoc() { DumpBuiltinDoc(natreg, true); }
 
-}
+}  // namespace script
 
 namespace lobster {
 
 FileLoader EnginePreInit(NativeRegistry &nfr) {
-    //nfr.DoneRegistering();
+    // nfr.DoneRegistering();
     return DefaultLoadFile;
 }
 
@@ -227,4 +227,3 @@ FileLoader EnginePreInit(NativeRegistry &nfr) {
 
 extern "C" void GLFrame(StackPtr, VM &) {}
 string BreakPoint(lobster::VM &vm, string_view reason) { return {}; }
-

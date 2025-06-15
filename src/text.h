@@ -59,7 +59,7 @@ struct Text {
 
     wxString htmlify(wxString &str) {
         wxString r;
-        for(auto cref : str) {
+        for (auto cref : str) {
             switch (wxChar c = cref.GetValue()) {
                 case '&': r += L"&amp;"; break;
                 case '<': r += L"&lt;"; break;
@@ -96,8 +96,9 @@ struct Text {
             currentpos++;
             breakpos++;
         }
-         // gobble up any trailing punctuation
-        if (currentpos != startpos && currentpos < limitpos && (t[currentpos] == '\"' || t[currentpos] == '\'')) {
+        // gobble up any trailing punctuation
+        if (currentpos != startpos && currentpos < limitpos &&
+            (t[currentpos] == '\"' || t[currentpos] == '\'')) {
             currentpos++;
             breakpos++;
         }  // special case: if punctuation followed by quote, quote is meant to be part of word
@@ -106,8 +107,8 @@ struct Text {
             // gobble spaces, but do not copy them
             currentpos++;
             if (currentpos == limitpos)
-                breakpos = currentpos;  // happens with a space at the last line, user is most likely about to type
-                        // another word, so
+                breakpos = currentpos;  // happens with a space at the last line, user is most
+                                        // likely about to type another word, so
             // need to show space. Alternatively could check if the cursor is actually on this spot.
             // Simply
             // showing a blank new line would not be a good idea, unless the cursor is here for
@@ -172,7 +173,8 @@ struct Text {
                                          : t.Lower().Find(sys->searchstring)) >= 0;
     }
 
-    int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset, int maxcolwidth) {
+    int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
+               int maxcolwidth) {
         auto ixs = 0, iys = 0;
         if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
 

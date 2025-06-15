@@ -78,9 +78,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         if (cur->grid && x < cur->grid->xs && y < cur->grid->ys) cur = cur->grid->C(x, y);
     }
 
-    std::string GetText() {
-        return cur->text.t.utf8_string();
-    }
+    std::string GetText() { return cur->text.t.utf8_string(); }
 
     void SetText(std::string_view t) {
         MarkDocAsModified();
@@ -155,9 +153,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return fn.utf8_string();
     }
 
-    std::string GetFileName() {
-        return doc->filename.utf8_string();
-    }
+    std::string GetFileName() { return doc->filename.utf8_string(); }
 
     int64_t LastEdit() { return cur->text.lastedit.GetValue().GetValue(); }
 };
