@@ -107,7 +107,7 @@ set(treesheets_sources
         src/evaluator.h
         src/grid.h
         src/app.h
-        src/mycanvas.h
+        src/canvas.h
         src/myevents.h
         src/myframe.h
         src/mywxtools.h

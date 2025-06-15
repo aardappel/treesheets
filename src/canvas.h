@@ -1,11 +1,11 @@
-struct TSCanvas : public wxScrolledCanvas {
+struct Canvas : public wxScrolledCanvas {
     MyFrame *frame;
     Document *doc {nullptr};
     int mousewheelaccum {0};
     bool lastrmbwaswithctrl {false};
     wxPoint lastmousepos;
 
-    TSCanvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
+    Canvas(MyFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
         : wxScrolledCanvas(parent, wxID_ANY, wxDefaultPosition, size,
                            wxScrolledWindowStyle | wxWANTS_CHARS),
           frame(fr) {
@@ -17,7 +17,7 @@ struct TSCanvas : public wxScrolledCanvas {
         EnableScrolling(false, false);
     }
 
-    ~TSCanvas() {
+    ~Canvas() {
         DELETEP(doc);
         frame = nullptr;
     }

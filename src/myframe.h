@@ -809,8 +809,8 @@ struct MyFrame : wxFrame {
         DELETEP(watcher);
     }
 
-    TSCanvas *NewTab(Document *doc, bool append = false) {
-        auto sw = new TSCanvas(this, nb);
+    Canvas *NewTab(Document *doc, bool append = false) {
+        Canvas *sw = new Canvas(this, nb);
         sw->doc = doc;
         doc->sw = sw;
         sw->SetScrollRate(1, 1);
@@ -823,10 +823,10 @@ struct MyFrame : wxFrame {
         return sw;
     }
 
-    TSCanvas *GetCurTab() { return nb ? (TSCanvas *)nb->GetCurrentPage() : nullptr; }
-    TSCanvas *GetTabByFileName(const wxString &fn) {
+    Canvas *GetCurTab() { return nb ? (Canvas *)nb->GetCurrentPage() : nullptr; }
+    Canvas *GetTabByFileName(const wxString &fn) {
         if (nb) loop(i, nb->GetPageCount()) {
-                auto p = (TSCanvas *)nb->GetPage(i);
+                auto p = (Canvas *)nb->GetPage(i);
                 if (p->doc->filename == fn) {
                     nb->SetSelection(i);
                     return p;
@@ -836,7 +836,7 @@ struct MyFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        auto sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
+        Canvas *sw = (Canvas *)nb->GetPage(nbe.GetSelection());
         sw->Status();
         SetSearchTextBoxBackgroundColour(false);
         sys->TabChange(sw->doc);
@@ -844,13 +844,13 @@ struct MyFrame : wxFrame {
 
     void TabsReset() {
         if (nb) loop(i, nb->GetPageCount()) {
-                auto p = (TSCanvas *)nb->GetPage(i);
+                Canvas *p = (Canvas *)nb->GetPage(i);
                 p->doc->rootgrid->ResetChildren();
             }
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        auto sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
+        auto sw = (Canvas *)nb->GetPage(nbe.GetSelection());
         sys->RememberOpenFiles();
         if (nb->GetPageCount() <= 1) {
             nbe.Veto();
@@ -1254,7 +1254,7 @@ struct MyFrame : wxFrame {
         RenderFolderIcon();
         if (nb) {
             loop(i, nb->GetPageCount()) {
-                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                Canvas *p = (Canvas *)nb->GetPage(i);
                 p->doc->curdrawroot->ResetChildren();
                 p->doc->curdrawroot->ResetLayout();
                 p->doc->scrolltoselection = true;
@@ -1324,7 +1324,7 @@ struct MyFrame : wxFrame {
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, nb->GetPageCount()) {
-                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
+                Canvas *p = (Canvas *)nb->GetPage(i);
                 if (p->doc->modified) {
                     nb->SetSelection(i);
                     if (p->doc->CheckForChanges()) {
@@ -1370,7 +1370,7 @@ struct MyFrame : wxFrame {
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
         const auto &modfile = event.GetPath().GetFullPath();
         loop(i, nb->GetPageCount()) {
-            auto doc = ((TSCanvas *)nb->GetPage(i))->doc;
+            Document *doc = ((Canvas *)nb->GetPage(i))->doc;
             if (modfile == doc->filename) {
                 auto modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
@@ -1402,7 +1402,7 @@ struct MyFrame : wxFrame {
                 if (*msg) {
                     GetCurTab()->Status(msg);
                 } else {
-                    loop(j, nb->GetPageCount()) if (((TSCanvas *)nb->GetPage(j))->doc == doc)
+                    loop(j, nb->GetPageCount()) if (((Canvas *)nb->GetPage(j))->doc == doc)
                         nb->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     GetCurTab()->Status(
