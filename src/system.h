@@ -581,5 +581,5 @@ struct System {
         ys = bm->GetHeight();
     }
 
-    void ImageDraw(wxBitmap *bm, auto &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
+    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
 };
