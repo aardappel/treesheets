@@ -160,7 +160,8 @@ struct Grid {
         return tinyborder;
     }
 
-    void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int sx, int sy, int xoff, int yoff) {
+    void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int sx, int sy, int xoff,
+                int yoff) {
         xoff = C(0, 0)->ox - view_margin - view_grid_outer_spacing - 1;
         yoff = C(0, 0)->oy - view_margin - view_grid_outer_spacing - 1;
         int maxx = C(xs - 1, 0)->ox + C(xs - 1, 0)->sx;
@@ -325,7 +326,9 @@ struct Grid {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls) { foreachcell(c) c->FindReplaceAll(s, ls); }
+    void FindReplaceAll(const wxString &s, const wxString &ls) {
+        foreachcell(c) c->FindReplaceAll(s, ls);
+    }
 
     void ReplaceCell(Cell *o, Cell *n) { foreachcell(c) if (c == o) c = n; }
     Selection FindCell(Cell *o) {
@@ -358,7 +361,8 @@ struct Grid {
         #endif
     }
 
-    void DrawCursor(Document *doc, wxDC &dc, Selection &sel, bool full, uint color, bool cursoronly) {
+    void DrawCursor(Document *doc, wxDC &dc, Selection &sel, bool full, uint color,
+                    bool cursoronly) {
         if (auto c = sel.GetCell(); c && !c->tiny && (c->HasText() || !c->grid))
             c->text.DrawCursor(doc, dc, sel, full, color, cursoronly, colwidths[sel.x]);
     }
@@ -595,11 +599,13 @@ struct Grid {
         }
     }
 
-    wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle) {
+    wxString ToText(int indent, const Selection &sel, int format, Document *doc,
+                    bool inheritstyle) {
         return ConvertToText(SelectAll(), indent + 2, format, doc, inheritstyle);
     };
 
-    wxString ConvertToText(const Selection &sel, int indent, int format, Document *doc, bool inheritstyle) {
+    wxString ConvertToText(const Selection &sel, int indent, int format, Document *doc,
+                           bool inheritstyle) {
         wxString r;
         const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
         const int font_size = 14 - indent / 2;
@@ -635,7 +641,9 @@ struct Grid {
     void RelSize(int dir, const Selection &sel, int zoomdepth) {
         foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth);
     }
-    void SetBorder(int width, const Selection &sel) { foreachcellinsel(c, sel) c->SetBorder(width); }
+    void SetBorder(int width, const Selection &sel) {
+        foreachcellinsel(c, sel) c->SetBorder(width);
+    }
     int MinRelsize(int rs) {
         foreachcell(c) {
             int crs = c->MinRelsize();

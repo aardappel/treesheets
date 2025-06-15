@@ -39,14 +39,13 @@ static const std::array<uint, 42> celltextcolors = {
 };
 
 static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
-    { 'I', { wxBITMAP_TYPE_PNG, "image/png" } }, { 'J', { wxBITMAP_TYPE_JPEG, "image/jpeg" } }
-};
+    {'I', {wxBITMAP_TYPE_PNG, "image/png"}}, {'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"}}};
 
 static auto g_deftextsize = g_deftextsize_default;
 static int g_mintextsize() { return g_deftextsize - g_mintextsize_delta; }
 static int g_maxtextsize() { return g_deftextsize + g_maxtextsize_delta; }
 
-enum {TS_TEXT = 0, TS_GRID = 1, TS_BOTH = 2, TS_NEITHER = 3};
+enum { TS_TEXT = 0, TS_GRID = 1, TS_BOTH = 2, TS_NEITHER = 3 };
 
 enum {
     A_SAVEALL = 500,
