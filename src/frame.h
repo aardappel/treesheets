@@ -381,27 +381,28 @@ struct Frame : wxFrame {
                      _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"));
 
             auto imgmenu = new wxMenu();
-            MyAppend(imgmenu, A_IMAGE, _(L"&Add Image"), _(L"Adds an image to the selected cell"));
-            MyAppend(imgmenu, A_IMAGESVA, _(L"Save Image(s) to disk"),
-                     _(L"Save image(s) to disk. Multiple images will be saved with a counter appended to each file name."));
+            MyAppend(imgmenu, A_IMAGE, _(L"&Add..."), _(L"Add an image to the selected cell"));
+            MyAppend(imgmenu, A_IMAGESVA, _(L"&Save as..."),
+                     _(L"Save image(s) from selected cell(s) to disk. Multiple images will be saved with a counter appended to each file name."));
             imgmenu->AppendSeparator();
             MyAppend(
-                imgmenu, A_IMAGESCP, _(L"&Scale Image (re-sample pixels, by %)"),
-                _(L"Change the image size if it is too big, by reducing the amount of pixels"));
+                imgmenu, A_IMAGESCP, _(L"Scale (re-sa&mple pixels, by %)"),
+                _(L"Change the image(s) size if it is too big, by reducing the amount of pixels"));
             MyAppend(
-                imgmenu, A_IMAGESCW, _(L"&Scale Image (re-sample pixels, by width)"),
-                _(L"Change the image size if it is too big, by reducing the amount of pixels"));
-            MyAppend(imgmenu, A_IMAGESCF, _(L"&Scale Image (display only)"),
-                     _(L"Change the image size if it is too big or too small, by changing the size shown on screen. Applies to all uses of this image."));
+                imgmenu, A_IMAGESCW, _(L"Scale (re-sample pixels, by &width)"),
+                _(L"Change the image(s) size if it is too big, by reducing the amount of pixels"));
+            MyAppend(imgmenu, A_IMAGESCF, _(L"Scale (&display only)"),
+                     _(L"Change the image(s) size if it is too big or too small, by changing the size shown on screen. Applies to all uses of this image."));
             MyAppend(imgmenu, A_IMAGESCN, _(L"&Reset Scale (display only)"),
-                     _(L"Change the scale to match DPI of the current display. Applies to all uses of this image."));
+                     _(L"Change the image(s) scale to match DPI of the current display. Applies to all uses of this image."));
             imgmenu->AppendSeparator();
-            MyAppend(imgmenu, A_SAVE_AS_JPEG, _(L"Save image as JPEG"),
-                     _(L"Save the image in the TreeSheets file in JPEG format"));
-            MyAppend(imgmenu, A_SAVE_AS_PNG, _(L"Save image as PNG (default)"),
-                     _(L"Save the image in the TreeSheets file in PNG format"));
+            MyAppend(
+                imgmenu, A_SAVE_AS_JPEG, _(L"Embed as &JPEG"),
+                _(L"Embed the image(s) in the selected cells in JPEG format (reduces data size)"));
+            MyAppend(imgmenu, A_SAVE_AS_PNG, _(L"Embed as &PNG"),
+                     _(L"Embed the image(s) in the selected cells in PNG format (default)"));
             imgmenu->AppendSeparator();
-            MyAppend(imgmenu, A_IMAGER, _(L"&Remove Image(s)"),
+            MyAppend(imgmenu, A_IMAGER, _(L"Remo&ve"),
                      _(L"Remove image(s) from the selected cells"));
 
             auto navmenu = new wxMenu();
@@ -899,7 +900,7 @@ struct Frame : wxFrame {
         AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
         AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg", L"fileopen_dark.svg");
         AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg", L"filesave_dark.svg");
-        AddTBIcon(_(L"Save As"), wxID_SAVEAS, iconpath, L"filesaveas.svg", L"filesaveas_dark.svg");
+        AddTBIcon(_(L"Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg", L"filesaveas_dark.svg");
         SEPARATOR;
         AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
         AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg", L"editcopy_dark.svg");
