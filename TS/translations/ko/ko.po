@@ -1,0 +1,1485 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TreeSheets\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-07 17:36-0300\n"
+"PO-Revision-Date: 2025-06-15 20:26+0900\n"
+"Last-Translator: VenusGirl (Venusgirl@outlook.com)\n"
+"Language-Team: VenusGirl (https://venusgirls.tistory.com/)\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+
+#, c-format
+msgid "%d cell(s)"
+msgstr "%d 셀"
+
+#, c-format
+msgid ""
+"%s\n"
+"has been modified on disk by another program / computer:\n"
+"Would you like to discard your changes and re-load from disk?"
+msgstr ""
+"%s\n"
+"디스크에서 다른 프로그램/컴퓨터에 의해 수정되었습니다:\n"
+"변경 사항을 폐기하고 디스크에서 다시 로드하시겠습니까?"
+
+msgid "&About..."
+msgstr "정보(&A)..."
+
+msgid "&Add Cell Text as Tag"
+msgstr "셀 텍스트를 태그로 추가(&A)"
+
+msgid "&Add Image"
+msgstr "이미지 추가(&A)"
+
+msgid "&Browsing..."
+msgstr "찾아보기(&B)..."
+
+msgid "&Clear Views"
+msgstr "지우기(&C)"
+
+msgid "&Close"
+msgstr "닫기(&C)"
+
+msgid "&Comma delimited text (CSV)..."
+msgstr "쉼표 구분 텍스트 (CSV)(&C)..."
+
+msgid "&Copy"
+msgstr "복사(&C)"
+
+msgid "&Copy as Bitmap"
+msgstr "비트맵으로 복사(&C)"
+
+msgid "&Data"
+msgstr "데이터(&D)"
+
+msgid "&Decrease text size (SHIFT+mousewheel)"
+msgstr "텍스트 크기 줄이기 (SHIFT+마우스휠)(&D)"
+
+msgid "&Delete After"
+msgstr "이후 삭제(&D)"
+
+msgid "&Edit"
+msgstr "편집(&E)"
+
+msgid "&Exit"
+msgstr "종료(&E)"
+
+msgid "&File"
+msgstr "파일(&F)"
+
+msgid "&Flatten"
+msgstr "평평하게(&F)"
+
+msgid "&Go To Next Search Result"
+msgstr "다음 검색 결과로 가기(&G)"
+
+msgid "&Grid Reorganization..."
+msgstr "격자 재구성(&G)..."
+
+msgid "&HTML (Tables+Styling)..."
+msgstr "HTML(테이블+스타일링)(&H)..."
+
+msgid "&Help"
+msgstr "도움말(&H)"
+
+msgid "&Hierarchify"
+msgstr "계층화(&H)"
+
+msgid "&Horizontal View"
+msgstr "가로 보기(&H)"
+
+msgid "&Image..."
+msgstr "이미지(&I)..."
+
+msgid "&Images..."
+msgstr "이미지(&I)..."
+
+msgid "&Increase text size (SHIFT+mousewheel)"
+msgstr "텍스트 크기 늘이기 (SHIFT+마우스휠)(&I)"
+
+msgid "&Insert New Grid"
+msgstr "새 격자 삽입(&I)"
+
+msgid "&Layout && Render Style..."
+msgstr "레이아웃 및 렌더링 스타일(&L)..."
+
+msgid "&Mark as"
+msgstr "다음과 같이 표시(&M)"
+
+msgid "&New"
+msgstr "새로 만들기(&N)"
+
+msgid "&Open..."
+msgstr "열기(&O)..."
+
+msgid "&Operation"
+msgstr "작동(&O)"
+
+msgid "&Options"
+msgstr "옵션(&O)"
+
+msgid "&Paste"
+msgstr "붙여넣기(&P)"
+
+msgid "&Print..."
+msgstr "인쇄(&P)..."
+
+msgid "&Program"
+msgstr "프로그램(&P)"
+
+msgid "&Recent files"
+msgstr "최근 파일(&R)"
+
+msgid "&Redo"
+msgstr "다시 실행(&R)"
+
+msgid "&Remove Cell Text from Tags"
+msgstr "태그에서 셀 텍스트 제거(&R)"
+
+msgid "&Remove Image(s)"
+msgstr "이미지 제거(&R)"
+
+msgid "&Replace"
+msgstr "바꾸기(&R)"
+
+msgid "&Reset Scale (display only)"
+msgstr "스케일 재설정 (표시 전용)(&R)"
+
+msgid "&Reset text sizes"
+msgstr "텍스트 크기 재설정(&R)"
+
+msgid "&Reset text styles"
+msgstr "텍스트 스타일 재설정(&R)"
+
+msgid "&Roundness of grid borders..."
+msgstr "격자 경계의 원형(&R)..."
+
+msgid "&Run"
+msgstr "실행(&R)"
+
+msgid "&Save"
+msgstr "저장(&S)"
+
+msgid "&Scale Image (display only)"
+msgstr "스케일 이미지 (표시 전용)(&S)"
+
+msgid "&Scale Image (re-sample pixels, by %)"
+msgstr "스케일 이미지 (픽셀 재샘플링, %)(&S)"
+
+msgid "&Scale Image (re-sample pixels, by width)"
+msgstr "스케일 이미지 (픽셀 재샘플링, 너비 기준)(&S)"
+
+msgid "&Search"
+msgstr "검색(&S)"
+
+msgid "&Selection..."
+msgstr "선택(&S)..."
+
+msgid "&Set Cell Text to tag (use CTRL+RMB)"
+msgstr "셀 텍스트를 태그로 설정(CTRL+RMB 사용)(&S)"
+
+msgid "&Set Custom Color From Cell BG"
+msgstr "셀 배경에서 사용자 지정 색상 설정(&S)"
+
+msgid "&Shrink text of all sub-grids"
+msgstr "모든 하위 격자의 텍스트 축소(&S)"
+
+msgid "&Transpose"
+msgstr "순서 바꾸기(&T)"
+
+msgid "&Undo"
+msgstr "실행 취소(&U)"
+
+msgid "&Vertical View"
+msgstr "세로 보기(&V)"
+
+msgid "&View"
+msgstr "보기(&V)"
+
+msgid "&Wrap in new parent"
+msgstr "새 부모로 감싸기(&W)"
+
+msgid "&XML..."
+msgstr "XML(&X)..."
+
+msgid "1:1 scale restored."
+msgstr "1:1 스케일로 복원합니다."
+
+msgid "<unnamed>"
+msgstr "<이름 없음>"
+
+msgid "A temporary autosave file exists, would you like to load it instead?"
+msgstr "임시 자동 저장 파일이 있는데 대신 로드하시겠습니까?"
+
+msgid "Add Image"
+msgstr "이미지 추가"
+
+msgid "Add Lobster scripts..."
+msgstr "Lobster 스크립트 추가..."
+
+msgid "Adding Lobster script(s) cancelled."
+msgstr "Lobster 스크립트 추가가 취소되었습니다."
+
+msgid "Adds a grid to the selected cell"
+msgstr "선택한 셀에 격자를 추가합니다"
+
+msgid "Adds an image to the selected cell"
+msgstr "선택한 셀에 이미지를 추가합니다"
+
+msgid "Apply last border color"
+msgstr "마지막 테두리 색상 적용"
+
+msgid "Apply last cell color"
+msgstr "마지막 셀 색상 적용"
+
+msgid "Apply last text color"
+msgstr "마지막 텍스트 색상 적용"
+
+msgid "At least one file could not be opened."
+msgstr "파일을 하나 이상 열 수 없습니다."
+
+msgid "Auto reload documents"
+msgstr "문서 자동 다시 로드"
+
+msgid "Automatically export a .html on every save"
+msgstr "저장할 때마다 자동으로 .html 내보내기"
+
+msgid "Autosave load"
+msgstr "자동 저장 로드"
+
+msgid "Autosave to .tmp"
+msgstr ".tmp로 자동 저장"
+
+msgid "Bitmap copied to clipboard"
+msgstr "클립보드에 복사된 비트맵"
+
+msgid "Border "
+msgstr "테두리 "
+
+msgid "Border &0"
+msgstr "테두리 &0"
+
+msgid "Border &1"
+msgstr "테두리 &1"
+
+msgid "Border &2"
+msgstr "테두리 &2"
+
+msgid "Border &3"
+msgstr "테두리 &3"
+
+msgid "Border &4"
+msgstr "테두리 &4"
+
+msgid "Border &5"
+msgstr "테두리 &5"
+
+msgid "Bubble Style Rendering"
+msgstr "버블 스타일 렌더링"
+
+msgid "Can only move this cell from a Nx1 or 1xN grid."
+msgstr "이 셀은 Nx1 또는 1xN 그리드에서만 이동할 수 있습니다."
+
+msgid "Can only move this cell into a Nx1 or 1xN grid."
+msgstr "이 셀은 Nx1 또는 1xN 그리드로만 이동할 수 있습니다."
+
+msgid ""
+"Can't sort: make a 1xN selection to indicate what column to sort on, and "
+"what rows to affect"
+msgstr ""
+"정렬할 수 없음: 정렬할 열과 영향을 미칠 행을 나타내기 위해 1xN을 선택합니다"
+
+msgid "Cancel"
+msgstr "취소"
+
+msgid "Cancel text edits"
+msgstr "텍스트 편집 취소"
+
+msgid "Cannot decompress file."
+msgstr "파일 압축을 해제할 수 없습니다."
+
+msgid "Cannot drag & drop more than 1 file."
+msgstr "파일을 두 개 이상 끌어서 놓기를 할 수 없습니다."
+
+msgid ""
+"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
+"or use Flatten)."
+msgstr ""
+"평평하지 않은 격자를 내보낼 수 없습니다 (보기를 원하는 격자로 확대하거나 평면"
+"을 사용)."
+
+msgid "Cannot move this cell up in the hierarchy."
+msgstr "이 셀을 계층에서 위로 이동할 수 없습니다."
+
+msgid "Cannot open file."
+msgstr "파일을 열 수 없습니다."
+
+msgid "Case-sensitive search"
+msgstr "대소문자 구분 검색"
+
+msgid "Cell "
+msgstr "셀 "
+
+msgid "Change a key binding..."
+msgstr "키 바인딩 변경..."
+
+msgid ""
+"Change the image size if it is too big or too small, by changing the size "
+"shown on screen. Applies to all uses of this image."
+msgstr ""
+"이미지 크기가 너무 크거나 작은 경우 화면에 표시되는 크기를 변경하여 이미지 크"
+"기를 변경합니다. 이 이미지의 모든 용도에 적용됩니다."
+
+msgid ""
+"Change the image size if it is too big, by reducing the amount of pixels"
+msgstr "이미지 크기가 너무 크면 픽셀 수를 줄여 크기를 변경합니다"
+
+msgid ""
+"Change the scale to match DPI of the current display. Applies to all uses of "
+"this image."
+msgstr ""
+"현재 디스플레이의 DPI에 맞게 눈금을 변경합니다. 이 이미지의 모든 용도에 적용"
+"됩니다."
+
+msgid "Changes have been made, are you sure you wish to continue?"
+msgstr "변경 사항이 적용되었습니다. 계속하시겠습니까?"
+
+msgid "Choose CSV file to write"
+msgstr "작성할 CSV 파일 선택"
+
+msgid "Choose HTML file to write"
+msgstr "작성할 HTML 파일 선택"
+
+msgid "Choose PNG file to write"
+msgstr "작성할 PNG 파일 선택"
+
+msgid "Choose Text file to write"
+msgstr "작성할 텍스트 파일 선택"
+
+msgid "Choose TreeSheets file to save:"
+msgstr "저장할 TreeSheets 파일 선택:"
+
+msgid "Choose XML file to write"
+msgstr "작성할 XML 파일 선택"
+
+msgid "Choose image file to save:"
+msgstr "저장할 이미지 파일 선택:"
+
+msgid "Clear replace"
+msgstr "바꾸기 지우기"
+
+msgid "Clear search"
+msgstr "검색 지우기"
+
+msgid "Close current document"
+msgstr "현재 문서 닫기"
+
+msgid "Collapse Ce&lls"
+msgstr "셀 축소"
+
+msgid "Column width decreased."
+msgstr "열 너비가 감소했습니다."
+
+msgid "Column width increased."
+msgstr "열 너비가 증가했습니다."
+
+msgid "Comma delimited text (CSV)..."
+msgstr "쉼표로 구분된 텍스트 (CSV)..."
+
+msgid ""
+"Convert an NxN grid with repeating elements per column into an 1xN grid with "
+"hierarchy, useful to convert data from spreadsheets"
+msgstr ""
+"열당 반복 요소가 있는 NxN 그리드를 계층 구조를 가진 1xN 그리드로 변환하여 스"
+"프레드시트에서 데이터를 변환하는 데 유용합니다"
+
+msgid "Copy (CTRL+c)"
+msgstr "복사 (CTRL+c)"
+
+msgid "Copy As Continuous Text"
+msgstr "연속 텍스트로 복사"
+
+msgid "Copy selection"
+msgstr "복사 선택"
+
+msgid "Copy with &Images"
+msgstr "이미지와 함께 복사(&I)"
+
+msgid "Corrupt PNG header."
+msgstr "손상된 PNG 헤더입니다."
+
+msgid "Corrupt block header."
+msgstr "손상된 블록 헤더입니다."
+
+msgid "Create .bak files"
+msgstr ".bak 파일 만들기"
+
+msgid "Create a new document"
+msgstr "새 문서 만들기"
+
+msgid "Creates a new level of hierarchy around the current selection"
+msgstr "현재 선택 항목을 중심으로 새로운 계층 구조를 만듭니다"
+
+msgid "Cu&t"
+msgstr "잘라내기(&T)"
+
+msgid "Cursor Left"
+msgstr "커서 왼쪽"
+
+msgid "Cursor Right"
+msgstr "커서 오른쪽"
+
+msgid "Cut selection"
+msgstr "잘라내기 선택"
+
+msgid "Date and time range"
+msgstr "날짜 및 시간 범위"
+
+msgid "Decrease column width (ALT+mousewheel)"
+msgstr "열 너비 감소 (ALT+마우스휠)"
+
+msgid "Decrease column width (no sub grids)"
+msgstr "열 너비 감소 (하위 격자 없음)"
+
+msgid "Default column width"
+msgstr "기본 열 너비"
+
+msgid "Delete Before"
+msgstr "이전 삭제"
+
+msgid "Delete Word After"
+msgstr "이후 단어 삭제"
+
+msgid "Delete Word Before"
+msgstr "이전 단어 삭제"
+
+msgid ""
+"Deletes the column of cells after the selected grid line, or the row below"
+msgstr "선택한 격자 줄 또는 아래 행 뒤에 있는 셀 열을 삭제합니다"
+
+msgid ""
+"Deletes the column of cells before the selected grid line, or the row above"
+msgstr "선택한 격자 줄 또는 위의 행 앞에 있는 셀 열을 삭제합니다"
+
+msgid "Deletes the entire word after the cursor"
+msgstr "커서 뒤에 있는 전체 단어를 삭제합니다"
+
+msgid "Deletes the entire word before the cursor"
+msgstr "커서 앞에 있는 전체 단어를 삭제합니다"
+
+msgid "Discard Changes"
+msgstr "변경 사항 폐기"
+
+#, c-format
+msgid "Edited %s %s"
+msgstr "%s %s 편집됨"
+
+msgid "End date and time"
+msgstr "종료 날짜 및 시간"
+
+msgid "End of line of text"
+msgstr "텍스트의 줄의 끝"
+
+msgid "End of text"
+msgstr "텍스트의 끝"
+
+msgid "Enter/exit text edit mode"
+msgstr "텍스트 편집 모드 진입/종료"
+
+msgid "Enter/exit text edit to the right"
+msgstr "오른쪽으로 텍스트 편집 입력/종료"
+
+msgid "Error exporting file!"
+msgstr "파일을 내보내는 중 오류가 발생했습니다!"
+
+msgid "Error loading core data file (TreeSheets not installed correctly?)"
+msgstr ""
+"코어 데이터 파일을 로드하는 중 오류가 발생했습니다 (TreeSheets가 올바르게 설"
+"치되지 않았나요?)"
+
+msgid "Error writing PNG file!"
+msgstr "PNG 파일 작성 중 오류 발생가 발생했습니다!"
+
+msgid "Error writing TreeSheets file! (try saving under new filename)."
+msgstr ""
+"TreeSheets 파일을 쓰는 중 오류가 발생했습니다! (새 파일 이름으로 저장 시도)."
+
+msgid "Error writing image file! (try saving under new filename)."
+msgstr ""
+"이미지 파일을 쓰는 중 오류가 발생했습니다! (새 파일 이름으로 저장 시도)."
+
+msgid "Error writing to file!"
+msgstr "파일 작성 중 오류가 발생했습니다!"
+
+msgid "Error writing to file."
+msgstr "파일에 쓰는 중 오류가 발생했습니다."
+
+msgid "Evaluation finished."
+msgstr "평가가 완료되었습니다."
+
+msgid "Export &view as"
+msgstr "보기를 다음으로 내보내기(&V)"
+
+msgid "Export cancelled."
+msgstr "내보내기가 취소되었습니다."
+
+msgid ""
+"Export the current view as CSV. Good for spreadsheets and databases. Only "
+"works on grids with no sub-grids (use the Flatten operation first if need be)"
+msgstr ""
+"현재 보기를 CSV로 내보냅니다. 스프레드시트와 데이터베이스에 적합합니다. 하위 "
+"격자가 없는 격자에서만 작동합니다 (필요한 경우 먼저 평면화 작업 사용)"
+
+msgid "Export the current view as HTML as nested bullet points."
+msgstr "현재 보기를 HTML로 중첩된 글머리 기호로 내보냅니다."
+
+msgid ""
+"Export the current view as HTML as nested headers, suitable for importing "
+"into Word's outline mode"
+msgstr ""
+"현재 보기를 HTML로 중첩 헤더로 내보내어 Word의 개요 모드로 가져오기에 적합합"
+"니다"
+
+msgid ""
+"Export the current view as HTML using nested tables, that will look somewhat "
+"like the TreeSheet"
+msgstr ""
+"중첩된 테이블을 사용하여 현재 보기를 HTML로 내보냅니다. 이 테이블은 TreeSheet"
+"처럼 보일 것입니다"
+
+msgid ""
+"Export the current view as XML (which can also be reimported without losing "
+"structure)"
+msgstr "현재 보기를 XML로 내보내기 (구조 손실 없이 다시 가져올 수도 있음)"
+
+msgid ""
+"Export the current view as an image. Useful for faithful renderings of the "
+"TreeSheet, and programs that don't accept any of the above options"
+msgstr ""
+"현재 보기를 이미지로 내보냅니다. 트리시트의 충실한 렌더링과 위의 옵션을 허용"
+"하지 않는 프로그램에 유용합니다"
+
+msgid ""
+"Export the current view as tree structured text, using spaces for each "
+"indentation level. Suitable for importing into mindmanagers and general text "
+"programs"
+msgstr ""
+"현재 보기를 각 들여쓰기 수준에 맞는 공백을 사용하여 트리 구조 텍스트로 내보냅"
+"니다. 마인드 매니저 및 일반 텍스트 프로그램으로 가져오기에 적합합니다"
+
+msgid "Extend Selection Columns Down"
+msgstr "선택 열 아래로 확장"
+
+msgid "Extend Selection Columns Up"
+msgstr "선택 열 위로 확장"
+
+msgid "Extend Selection Down"
+msgstr "선택 아래로 확장"
+
+msgid "Extend Selection Full Columns"
+msgstr "선택 전체 열 확장"
+
+msgid "Extend Selection Full Rows"
+msgstr "선택 전체 행 확장"
+
+msgid "Extend Selection Left"
+msgstr "선택 왼쪽 확장"
+
+msgid "Extend Selection Right"
+msgstr "선택 오른쪽 확장"
+
+msgid "Extend Selection Rows Left"
+msgstr "선택 행 왼쪽으로 확장"
+
+msgid "Extend Selection Rows Right"
+msgstr "선택 행 오른쪽으로 확장"
+
+msgid "Extend Selection Up"
+msgstr "선택 위로 확장"
+
+msgid "Extend Selection Word Left"
+msgstr "선택 단어 왼쪽 확장"
+
+msgid "Extend Selection Word Right"
+msgstr "선택 단어 오른쪽 확장"
+
+msgid "Extend Selection to End"
+msgstr "선택 범위를 끝까지 확장"
+
+msgid "Extend Selection to Start"
+msgstr "선택을 시작까지 확장"
+
+msgid "Faster line rendering"
+msgstr "더 빠른 줄 렌더링"
+
+msgid "File Tabs on the bottom"
+msgstr "하단의 파일 탭"
+
+msgid "File corrupted!"
+msgstr "파일이 손상되었습니다!"
+
+msgid "File exported successfully."
+msgstr "파일을 성공적으로 내보냈습니다."
+
+msgid ""
+"File has been re-loaded because of modifications of another program / "
+"computer"
+msgstr "다른 프로그램/컴퓨터의 수정으로 인해 파일이 다시 로드되었습니다"
+
+msgid "File load error."
+msgstr "파일 로드 오류입니다."
+
+msgid "File modification conflict!"
+msgstr "파일 수정이 충돌합니다!"
+
+msgid "File of newer version."
+msgstr "최신 버전의 파일입니다."
+
+msgid "Filter"
+msgstr "필터"
+
+msgid "Filter by the same cell color"
+msgstr "동일한 셀 색상으로 필터링"
+
+msgid "Filter..."
+msgstr "필터..."
+
+msgid "Find and replace in document"
+msgstr "문서에서 찾기 및 바꾸기"
+
+msgid "Find in document"
+msgstr "문서에서 찾기"
+
+msgid "Fold All"
+msgstr "모두 접기"
+
+msgid "Folds the grid of the selected cell(s) recursively"
+msgstr "선택한 셀의 격자를 재귀적으로 접습니다"
+
+msgid "Found an image type that is not defined in this program."
+msgstr "이 프로그램에서 정의되지 않은 이미지 유형을 찾았습니다."
+
+msgid "Go To &Matching Cell (Text)"
+msgstr "일치 셀로 가기 (텍스트)(&M)"
+
+msgid "Go To &Previous Search Result"
+msgstr "이전 검색 결과로 가기(&P)"
+
+msgid "Go To Matching Cell (Image)"
+msgstr "매칭 셀로 가기 (이미지)"
+
+msgid "Go To Matching Cell (Image, Reverse)"
+msgstr "일치 셀로 가기 (이미지, 반전)"
+
+msgid "Go To Matching Cell (Text, Reverse)"
+msgstr "일치 셀로 가기 (텍스트, 반전)"
+
+msgid "Go to Next Search Result"
+msgstr "다음 검색 결과로 가기"
+
+msgid "Go to next filter match"
+msgstr "다음 필터 일치로 가기"
+
+msgid "Grid Style Rendering"
+msgstr "격자 스타일 렌더링"
+
+msgid "HTML (&Bullet points)..."
+msgstr "HTML (글머리 기호)(&B)..."
+
+msgid "HTML (&Outline)..."
+msgstr "HTML (Outline)(&O)..."
+
+msgid "Hierarchy &Swap"
+msgstr "계층 구조 스왑(&S)"
+
+msgid ""
+"Hold CTRL while pressing right mouse button to quickly set a tag for the "
+"current cell using a popup menu"
+msgstr ""
+"오른쪽 마우스 버튼을 누른 상태에서 CTRL을 눌러 팝업 메뉴를 사용하여 현재 셀"
+"의 태그를 빠르게 설정합니다"
+
+msgid "Horizontal Layout with Bubble Style Rendering"
+msgstr "버블 스타일 렌더링을 사용한 수평 레이아웃"
+
+msgid "Horizontal Layout with Grid Style Rendering"
+msgstr "격자 스타일 렌더링을 사용한 수평 레이아웃"
+
+msgid "Horizontal Layout with Line Style Rendering"
+msgstr "줄 스타일 렌더링을 사용한 수평 레이아웃"
+
+msgid "Hover shadow"
+msgstr "호버 그림자"
+
+msgid "How many pixels wide should a page be? (0 for auto fit)"
+msgstr "페이지 너비는 몇 픽셀이어야 하나요? (자동 맞춤의 경우 0)"
+
+msgid "Image "
+msgstr "이미지 "
+
+msgid "Image Resize"
+msgstr "이미지 크기"
+
+msgid "Import file from"
+msgstr "다음에서 파일 가져오기"
+
+msgid "Increase column width (ALT+mousewheel)"
+msgstr "열 너비 증가 (ALT+마우스휠)"
+
+msgid "Increase column width (no sub grids)"
+msgstr "열 너비 증가 (하위 격자 없음)"
+
+msgid "Indented &Text..."
+msgstr "텍스트 들여쓰기(&T)..."
+
+msgid "Indented text..."
+msgstr "텍스트 들여쓰기..."
+
+msgid "Initialization Error"
+msgstr "초기화 오류"
+
+msgid "Internal error: unimplemented operation!"
+msgstr "내부 오류: 구현되지 않은 동작!"
+
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What would you like "
+"to do?"
+msgstr "TreeSheets 파일을 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니까?"
+
+msgid "JPEG file is corrupted!"
+msgstr "JPEG 파일이 손상되었습니다!"
+
+msgid "Key binding"
+msgstr "키 바인딩"
+
+msgid "Keybinding cancelled."
+msgstr "키 바인딩이 취소되었습니다."
+
+msgid "Line Style Rendering"
+msgstr "줄 스타일 렌더링"
+
+msgid "Load interactive &tutorial..."
+msgstr "대화형 자습서 로드(&T)..."
+
+msgid "Load operation reference..."
+msgstr "동작 참조 로드..."
+
+#, c-format
+msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
+msgstr "%s (%d 셀, %d 문자)를 %d 밀리초 단위로 로드했습니다."
+
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "Lobster 파일 (*.lobster)|*.lobster|모든 파일 (*.*)|*.*"
+
+msgid ""
+"Make a 1xN selection to indicate which column to sort on, and which rows to "
+"affect"
+msgstr "정렬할 열과 영향을 미칠 행을 나타내기 위해 1xN을 선택합니다"
+
+msgid "Make a hierarchy layout more vertical (default) or more horizontal"
+msgstr "계층 구조 레이아웃을 더 수직 (기본값) 또는 더 수평으로 만들기"
+
+msgid "Maximum number of launches reached."
+msgstr "최대 실행 횟수에 도달했습니다."
+
+msgid "Minimize on close"
+msgstr "닫기 시 최소화"
+
+msgid "Minimize to tray"
+msgstr "트레이에 최소화"
+
+msgid "More than one cell must be selected."
+msgstr "하나 이상의 셀을 선택해야 합니다."
+
+msgid "Move Cells Down"
+msgstr "셀 아래로 이동"
+
+msgid "Move Cells Left"
+msgstr "셀 왼쪽으로 이동"
+
+msgid "Move Cells Right"
+msgstr "셀 오른쪽으로 이동"
+
+msgid "Move Cells Up"
+msgstr "셀 위로 이동"
+
+msgid "Move Selection Down"
+msgstr "선택 아래로 이동"
+
+msgid "Move Selection Down (DOWN)"
+msgstr "선택을 아래로 이동 (DOWN)"
+
+msgid "Move Selection Left"
+msgstr "선택 왼쪽으로 이동"
+
+msgid "Move Selection Left (LEFT)"
+msgstr "선택 왼쪽으로 이동 (LEFT)"
+
+msgid "Move Selection Right"
+msgstr "선택 오른쪽으로 이동"
+
+msgid "Move Selection Right (RIGHT)"
+msgstr "선택 오른쪽으로 이동 (RIGHT)"
+
+msgid "Move Selection Up"
+msgstr "선택 위로 이동"
+
+msgid "Move Selection Up (UP)"
+msgstr "선택 위로 이동 (UP)"
+
+msgid "Move to next cell"
+msgstr "다음 셀로 이동"
+
+msgid "Move to next cell (TAB)"
+msgstr "다음 셀로 이동 (TAB)"
+
+msgid "Move to previous cell"
+msgstr "이전 셀로 이동"
+
+msgid "Move to previous cell (SHIFT+TAB)"
+msgstr "이전 셀로 이동이전 셀로 이동"
+
+msgid "NOTE: key binding will take effect next run of TreeSheets."
+msgstr "참고: 키 바인딩은 다음 TreeSheets 실행 시 적용됩니다."
+
+msgid "Navigate in between cells with cursor keys"
+msgstr "커서 키로 셀 사이를 탐색합니다"
+
+msgid "New (CTRL+n)"
+msgstr "새로 만들기 (CTRL+n)"
+
+msgid "New Grid (INS)"
+msgstr "새 격자 (INS)"
+
+msgid "New Sheet"
+msgstr "새 시트"
+
+msgid "New file cancelled."
+msgstr "새 파일이 취소되었습니다."
+
+msgid "No image in this cell."
+msgstr "이 셀에는 이미지가 없습니다."
+
+msgid "No matches for filter."
+msgstr "필터에 일치하는 항목이 없습니다."
+
+msgid "No matches for search."
+msgstr "검색에 일치하는 항목이 없습니다."
+
+msgid "No matching cell found!"
+msgstr "일치하는 셀을 찾을 수 없습니다!"
+
+msgid "No search string."
+msgstr "검색 문자열이 없습니다."
+
+msgid "No search."
+msgstr "검색이 없습니다."
+
+msgid "No style to paste."
+msgstr "붙여넣을 스타일이 없습니다."
+
+msgid "No text in this cell."
+msgstr "이 셀에는 텍스트가 없습니다."
+
+msgid "No text selected."
+msgstr "텍스트가 선택되지 않았습니다."
+
+msgid "No text to search for."
+msgstr "검색할 텍스트가 없습니다."
+
+msgid "Not a TreeSheets file."
+msgstr "TreeSheets 파일이 아닙니다."
+
+msgid "Nothing more to redo."
+msgstr "더 이상 다시 실행이 없습니다."
+
+msgid "Nothing more to undo."
+msgstr "더 이상 실행 취소가 없습니다."
+
+msgid ""
+"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
+"normal."
+msgstr ""
+"이제 TreeSheet를 화면에 정확히 맞추려면 F12 키를 눌러 정상으로 돌아갑니다."
+
+msgid "Open &file"
+msgstr "파일 열기(&F)"
+
+msgid "Open (CTRL+o)"
+msgstr "열기 (CTRL+o)"
+
+msgid "Open TreeSheets file"
+msgstr "TreeSheets 파일 열기"
+
+msgid "Open an existing document"
+msgstr "기존 문서 열기"
+
+msgid "Open border colors"
+msgstr "테두리 색상 열기"
+
+msgid "Open cancelled."
+msgstr "열기가 취소되었습니다."
+
+msgid "Open cell colors"
+msgstr "셀 색상 열기"
+
+msgid "Open file cancelled."
+msgstr "파일 열기가 취소되었습니다."
+
+msgid "Open image dropdown"
+msgstr "이미지 드롭다운 열기"
+
+msgid "Open link in &browser"
+msgstr "브라우저에서 링크 열기(&B)"
+
+msgid "Open text colors"
+msgstr "텍스트 색상 열기"
+
+msgid ""
+"Opens up the text from the selected cell in browser (should start be a valid "
+"URL)"
+msgstr "브라우저에서 선택한 셀의 텍스트를 엽니다 (유효한 URL로 시작해야 함)"
+
+msgid ""
+"Opens up the text from the selected cell in default application for the file "
+"type"
+msgstr "파일 형식에 대한 기본 응용 프로그램에서 선택한 셀의 텍스트를 엽니다"
+
+msgid ""
+"PNG decode failed on some images in this document\n"
+"They have been replaced by red squares."
+msgstr ""
+"이 문서의 일부 이미지에서 PNG 디코딩에 실패했습니다\n"
+"빨간색 사각형으로 대체되었습니다."
+
+msgid "PNG decoder failure"
+msgstr "PNG 디코더 고장"
+
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr "PNG 파일 (*.png)|*.png|JPEG 파일 (*.jpg)|*.jpg|모든 파일 (*.*)|*.*"
+
+msgid "Page Setup..."
+msgstr "페이지 설정..."
+
+msgid "Paste (CTRL+v)"
+msgstr "붙여넣기 (CTRL+v)"
+
+msgid "Paste Style Only"
+msgstr "스타일만 붙여넣기"
+
+msgid "Paste clipboard contents"
+msgstr "클립보드 내용 붙여넣기"
+
+msgid "Paste file path"
+msgstr "파일 경로 붙여넣기"
+
+msgid "Pick Cu&rsor Color..."
+msgstr "커서 색상 선택(&R)..."
+
+msgid "Pick Custom &Color..."
+msgstr "사용자 지정 색상 선택(&C)..."
+
+msgid "Pick Default Font..."
+msgstr "기본 글꼴 선택..."
+
+msgid "Pick Document Background..."
+msgstr "문서 배경 선택..."
+
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr "바꾸기를 사용하려면 (옵션 -> 도구 모음 표시)을 활성화하세요."
+
+msgid "Please enable (Options -> Show Toolbar) to use search."
+msgstr "검색을 사용하려면 (옵션 -> 도구 모음 표시)을 활성화하세요."
+
+msgid "Please enter the default column width:"
+msgstr "기본 열 너비를 입력하세요:"
+
+msgid "Please enter the new image width:"
+msgstr "새 이미지 너비를 입력하세요:"
+
+msgid "Please enter the new key binding string"
+msgstr "새 키 바인딩 문자열을 입력하세요"
+
+msgid "Please enter the percentage you want the image scaled by:"
+msgstr "이미지 크기를 조정하려는 비율을 입력하세요:"
+
+msgid "Please pick a menu item to change the key binding for"
+msgstr "키 바인딩을 변경할 메뉴 항목을 선택하세요"
+
+msgid "Please select Lobster script file(s):"
+msgstr "Lobster 스크립트 파일을 선택하세요:"
+
+msgid "Please select TreeSheets file(s) to load:"
+msgstr "로드할 TreeSheets 파일을 선택하세요:"
+
+msgid "Please select an image file:"
+msgstr "이미지 파일을 선택하세요:"
+
+msgid "Please select file to import:"
+msgstr "가져올 파일을 선택하세요:"
+
+msgid "Please select the datetime range."
+msgstr "날짜 범위를 선택해 주세요."
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "목록에서 제거하려는 스크립트를 선택하세요:"
+
+msgid "Press F11 to exit fullscreen mode."
+msgstr "F11 키를 눌러 전체 화면 모드를 종료합니다."
+
+msgid "Print Preview"
+msgstr "인쇄 미리보기"
+
+msgid "Print preview..."
+msgstr "인쇄 미리보기..."
+
+msgid "Quit this program"
+msgstr "이 프로그램 종료"
+
+msgid "Radius &0"
+msgstr "반지름 &0"
+
+msgid "Radius &1"
+msgstr "반지름 &1"
+
+msgid "Radius &2"
+msgstr "반지름 &2"
+
+msgid "Radius &3"
+msgstr "반지름 &3"
+
+msgid "Radius &4"
+msgstr "반지름 &4"
+
+msgid "Radius &5"
+msgstr "반지름 &5"
+
+msgid "Radius &6"
+msgstr "반지름 &6"
+
+msgid ""
+"Reloads when another computer has changed a file (if you have made changes, "
+"asks)"
+msgstr "다른 컴퓨터가 파일을 변경한 경우 다시 로드합니다 (변경한 경우 질문)"
+
+msgid "Remove image(s) from the selected cells"
+msgstr "선택한 셀에서 이미지 제거"
+
+msgid "Remove script from list..."
+msgstr "목록에서 스크립트 제거..."
+
+msgid "Render document centered"
+msgstr "문서 중심 렌더링"
+
+msgid "Replace "
+msgstr "바꾸기 "
+
+msgid "Replace &All"
+msgstr "모두 바꾸기(&A)"
+
+msgid "Replace All"
+msgstr "모두 바꾸기"
+
+msgid "Replace in Current &Selection"
+msgstr "현재 선택에서 바꾸기(&S)"
+
+msgid "Replace in Current Selection && &Jump Next"
+msgstr "현재 선택에서 바꾸고 다음 점프(&J)"
+
+msgid "Replace in selection"
+msgstr "선택에서 바꾸기"
+
+msgid "Reset &colors"
+msgstr "색상 재설정(&C)"
+
+msgid "Reset column widths"
+msgstr "열 너비 재설정"
+
+msgid "Run"
+msgstr "실행"
+
+msgid "Save &As..."
+msgstr "다른 이름으로 저장(&A)..."
+
+msgid "Save (CTRL+s)"
+msgstr "저장 (CTRL+s)"
+
+msgid "Save All"
+msgstr "모두 저장"
+
+msgid "Save As"
+msgstr "다른 이름으로 저장"
+
+msgid "Save Image(s) to disk"
+msgstr "디스크에 이미지 저장"
+
+msgid "Save and Close"
+msgstr "저장하고 닫기"
+
+msgid "Save cancelled."
+msgstr "저장이 취소되었습니다."
+
+msgid "Save current document"
+msgstr "현재 문서 저장"
+
+msgid "Save current document with a different filename"
+msgstr "현재 문서를 다른 파일 이름으로 저장"
+
+msgid "Save image as JPEG"
+msgstr "이미지를 JPEG로 저장"
+
+msgid "Save image as PNG (default)"
+msgstr "이미지를 PNG로 저장 (기본값)"
+
+msgid ""
+"Save image(s) to disk. Multiple images will be saved with a counter appended "
+"to each file name."
+msgstr ""
+"이미지를 디스크에 저장합니다. 각 파일 이름에 카운터가 추가되어 여러 이미지가 "
+"저장됩니다."
+
+msgid "Save the image in the TreeSheets file in JPEG format"
+msgstr "이미지를 TreeSheets 파일에 JPEG 형식으로 저장"
+
+msgid "Save the image in the TreeSheets file in PNG format"
+msgstr "이미지를 TreeSheets 파일에 PNG 형식으로 저장"
+
+#, c-format
+msgid "Saved %s successfully (in %d milliseconds)."
+msgstr "%s을(를) 성공적으로 저장했습니다 (%d 밀리초 단위)."
+
+msgid "Script"
+msgstr "스크립트"
+
+msgid "Scroll Down (mousewheel)"
+msgstr "아래로 스크롤 (마우스휠)"
+
+msgid "Scroll Left"
+msgstr "왼쪽 스크롤"
+
+msgid "Scroll Right"
+msgstr "오른쪽 스크롤"
+
+msgid "Scroll Sheet..."
+msgstr "시트 스크롤..."
+
+msgid "Scroll Up (mousewheel)"
+msgstr "위로 스크롤 (마우스휠)"
+
+msgid "Search "
+msgstr "검색 "
+
+msgid "Select &Parent"
+msgstr "부모 선택(&P)"
+
+msgid "Select &all in current grid/cell"
+msgstr "현재 격자/셀에서 모두 선택(&A)"
+
+msgid "Select First &Child"
+msgstr "첫 번째 자식 선택(&C)"
+
+msgid "Selected grid is not a table: cells must not already have sub-grids."
+msgstr "선택한 격자는 표가 아닙니다: 셀에는 이미 하위 격자가 없어야 합니다."
+
+#, c-format
+msgid "Selection contains %d cell(s) with %d character(s)."
+msgstr "선택 항목에 문자가 %d개 셀 / %d개 문자가 포함되어 있습니다."
+
+msgid "Semi-Colon delimited text (CSV)..."
+msgstr "세미콜론으로 구분된 텍스트 (CSV)..."
+
+msgid "Set Grid Border Width..."
+msgstr "격자 테두리 너비 설정..."
+
+msgid "Set Print Scale"
+msgstr "인쇄 스케일 설정"
+
+msgid "Set Print Scale..."
+msgstr "인쇄 스케일 설정..."
+
+msgid "Set default column width..."
+msgstr "기본 열 너비 설정..."
+
+#, no-c-format
+msgid "Show 1% less than the last filter"
+msgstr "마지막 필터보다 1% 더 적게 표시"
+
+#, no-c-format
+msgid "Show 1% more than the last filter"
+msgstr "마지막 필터보다 1% 더 많이 표시"
+
+#, no-c-format
+msgid "Show 10% of last edits"
+msgstr "마지막 편집의 10% 표시"
+
+#, no-c-format
+msgid "Show 20% of last edits"
+msgstr "마지막 편집의 20% 표시"
+
+#, no-c-format
+msgid "Show 5% of last edits"
+msgstr "마지막 편집의 5% 표시"
+
+#, no-c-format
+msgid "Show 50% of last edits"
+msgstr "마지막 편집의 50% 표시"
+
+msgid "Show About dialog"
+msgstr "정보 대화상자 표시"
+
+msgid "Show Statusbar"
+msgstr "상태 표시줄 표시"
+
+msgid "Show Toolbar"
+msgstr "도구 모음 표시"
+
+msgid "Show last edits in specific date range"
+msgstr "특정 날짜 범위에서 마지막 편집 표시"
+
+msgid "Show only cells in current search"
+msgstr "현재 검색에서 셀만 표시"
+
+msgid "Show statistics"
+msgstr "통계 표시"
+
+msgid "Single click maximize from tray"
+msgstr "트레이에서 한 번 클릭으로 최대화"
+
+#, c-format
+msgid "Size %d"
+msgstr "크기 %d"
+
+msgid "Sort &Ascending"
+msgstr "오름차순 정렬(&A)"
+
+msgid "Sort &Descending"
+msgstr "내림차순 정렬(&D)"
+
+msgid "Start date and time"
+msgstr "시작 날짜 및 시간"
+
+msgid "Start of line of text"
+msgstr "텍스트 줄의 시작"
+
+msgid "Start of text"
+msgstr "텍스트의 시작"
+
+msgid "Swap all cells with this text at this level (or above) with the parent"
+msgstr ""
+"이 수준 (또는 그 이상)에서 이 텍스트를 가진 모든 셀을 부모와 교체합니다"
+
+msgid "Swap mousewheel scrolling and zooming"
+msgstr "마우스 휠 스크롤 및 확대/축소 전환"
+
+msgid "Switch to &next file/tab"
+msgstr "다음 파일/탭으로 전환(&N)"
+
+msgid "Switch to &previous file/tab"
+msgstr "이전 파일/탭으로 전환(&P)"
+
+msgid "Tab delimited text..."
+msgstr "탭 구분 텍스트..."
+
+msgid "Tag..."
+msgstr "태그..."
+
+msgid ""
+"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
+"grid, useful for export to spreadsheets"
+msgstr ""
+"계층 구조 (중첩된 1xN 또는 Nx1 격자)를 가져와 평평한 NxN 격자로 변환하여 스프"
+"레드시트로 내보내기에 유용합니다"
+
+msgid "Text "
+msgstr "텍스트 "
+
+msgid "Text &Editing..."
+msgstr "텍스트 편집(&E)..."
+
+msgid "Text Sizing..."
+msgstr "텍스트 크기 조정..."
+
+msgid "Text Style..."
+msgstr "텍스트 스타일..."
+
+msgid "Text has been replaced."
+msgstr "텍스트가 교체되었습니다."
+
+msgid "Text size decreased."
+msgstr "텍스트 크기가 감소했습니다."
+
+msgid "Text size increased."
+msgstr "텍스트 크기가 증가했습니다."
+
+msgid "The Free Form Hierarchical Information Organizer"
+msgstr ""
+"무료 양식 계층적 정보 구성 도구 \n"
+"\n"
+"한국어 번역: 비너스걸"
+
+msgid "The browser could not open at least one link."
+msgstr "브라우저에서 최소한 하나의 링크를 열 수 없습니다."
+
+msgid "There is no content to collapse."
+msgstr "축소할 내용이 없습니다."
+
+msgid "This operation doesn't work on thin selections."
+msgstr "이 작업은 얇은 선택에서는 작동하지 않습니다."
+
+msgid "This operation requires a cell that contains a grid."
+msgstr "이 작업에는 격자가 포함된 셀이 필요합니다."
+
+msgid "This operation requires a selection."
+msgstr "이 작업은 선택이 필요합니다."
+
+msgid "This operation works on a single selected cell only."
+msgstr "이 작업은 선택한 단일 셀에서만 작동합니다."
+
+msgid "Toggle &Fullscreen View"
+msgstr "전체 화면 보기 전환(&F)"
+
+msgid "Toggle &Scaled Presentation View"
+msgstr "축소된 프레젠테이션 보기 전환(&S)"
+
+msgid "Toggle Fold"
+msgstr "접기 전환"
+
+msgid "Toggle Vertical Layout"
+msgstr "수직 레이아웃 전환"
+
+msgid "Toggle cell &BOLD"
+msgstr "셀 굵게 전환(&B)"
+
+msgid "Toggle cell &ITALIC"
+msgstr "셀 기울임꼴 전환(&I)"
+
+msgid "Toggle cell &strikethrough"
+msgstr "셀 취소선 전환(&S)"
+
+msgid "Toggle cell &typewriter"
+msgstr "셀 타이프라이터 전환(&T)"
+
+msgid "Toggle cell &underlined"
+msgstr "셀 밑줄 전환(&U)"
+
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "선택한 셀의 격자 표시 전환"
+
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "TreeSheets 파일 (*.cts)|*.cts|모든 파일 (*.*)|*.*"
+
+msgid "Turn filter &off"
+msgstr "필터 끄기(&O)"
+
+msgid "Undo (CTRL+z)"
+msgstr "실핼 취소 (CTRL+z)"
+
+msgid "Unfold All"
+msgstr "모두 펴기"
+
+msgid "Unfolds the grid of the selected cell(s) recursively"
+msgstr "선택한 셀의 격자를 재귀적으로 펼칩니다"
+
+msgid "Uses"
+msgstr "사용"
+
+msgid "Variable &Assign"
+msgstr "변수 할당(&A)"
+
+msgid "Variable &Read"
+msgstr "변수 읽기(&R)"
+
+msgid "Vertical Layout with Bubble Style Rendering"
+msgstr "버블 스타일 렌더링을 사용한 수직 레이아웃"
+
+msgid "Vertical Layout with Grid Style Rendering"
+msgstr "격자 스타일 렌더링을 사용한 수직 레이아웃"
+
+msgid "Vertical Layout with Line Style Rendering"
+msgstr "라인 스타일 렌더링을 사용한 수직 레이아웃"
+
+msgid "View tutorial &web page..."
+msgstr "자습서 웹 페이지 보기(&W)..."
+
+msgid "What size grid would you like to start with?"
+msgstr "어떤 크기의 격자로 시작하시겠습니까?"
+
+msgid "Width"
+msgstr "너비"
+
+#, c-format
+msgid "Width %d"
+msgstr "너비 %d"
+
+msgid "Word Left"
+msgstr "단어 왼쪽"
+
+msgid "Word Right"
+msgstr "단어 오른쪽"
+
+msgid "XML (attributes too, for OPML etc)..."
+msgstr "XML (OMPL 등의 속성도 포함)..."
+
+msgid "XML..."
+msgstr "XML..."
+
+msgid "You need to select one cell if you want to search for its text."
+msgstr "텍스트를 검색하려면 하나의 셀을 선택해야 합니다."
+
+msgid "Zlib error while writing file."
+msgstr "파일을 작성하는 동안 Zlib 오류가 발생했습니다."
+
+msgid "Zoom &In (CTRL+mousewheel)"
+msgstr "확대 (CTRL+마우스휠)(&I)"
+
+msgid "Zoom &Out (CTRL+mousewheel)"
+msgstr "축소 (CTRL+마우스휠)(&O)"
+
+msgid "Zoom In (CTRL+mousewheel)"
+msgstr "확대 (CTRL+마우스휠)"
+
+msgid "Zoom Out (CTRL+mousewheel)"
+msgstr "축소 (CTRL+마우스휠)"
+
+msgid "Zoomed in."
+msgstr "확대합니다."
+
+msgid "Zoomed out."
+msgstr "축소합니다."
+
+msgid "change will take effect next run of TreeSheets"
+msgstr "변경 사항은 다음 TreeSheets 실행 시 적용됩니다"
+
+msgid "changes the orientation of a grid"
+msgstr "격자의 방향을 변경합니다"
+
+msgid "couldn't import file!"
+msgstr "파일을 가져올 수 없습니다!"
+
+msgid "only sets the colors and style of the copied cell, and keeps the text"
+msgstr "복사된 셀의 색상과 스타일만 설정하고 텍스트를 보관합니다"
+
+msgid "only works in cell text mode"
+msgstr "셀 텍스트 모드에서만 작동합니다"
+
+msgid "redo any undo steps, if you haven't made changes since"
+msgstr "이후 변경한 적이 없는 경우 실행 취소 단계를 다시 실행합니다"
+
+msgid "revert the changes, one step at a time"
+msgstr "변경 사항을 한 번에 한 단계씩 되돌리기"
+
+msgid "scale:"
+msgstr "스케일:"
+
+msgid "size:"
+msgstr "크기:"
