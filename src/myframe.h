@@ -1,6 +1,6 @@
 struct MyFrame : wxFrame {
     wxString exepath_;
-    MyApp *app;
+    App *app;
     wxIcon icon;
     wxTaskBarIcon tbi;
     wxMenu *editmenupopup;
@@ -75,7 +75,7 @@ struct MyFrame : wxFrame {
         menustrings[item] = key;
     }
 
-    MyFrame(wxString exename, MyApp *_app)
+    MyFrame(wxString exename, App *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
                   wxDEFAULT_FRAME_STYLE),
           app(_app) {

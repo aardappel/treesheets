@@ -21,7 +21,7 @@ BEGIN_EVENT_TABLE(treesheets::MyFrame, wxFrame)
   EVT_SYS_COLOUR_CHANGED(treesheets::MyFrame::OnSysColourChanged)
 END_EVENT_TABLE()
 
-BEGIN_EVENT_TABLE(treesheets::MyApp, wxApp)
+BEGIN_EVENT_TABLE(treesheets::App, wxApp)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(treesheets::TSCanvas, wxScrolledWindow)

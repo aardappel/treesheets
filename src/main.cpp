@@ -307,7 +307,7 @@ struct treesheets {
     struct System;
     struct TSCanvas;
     struct MyFrame;
-    struct MyApp;
+    struct App;
 
     static System *sys;
 
@@ -326,12 +326,12 @@ struct treesheets {
     #include "mywxtools.h"
     #include "mycanvas.h"
     #include "myframe.h"
-    #include "myapp.h"
+    #include "app.h"
 };
 
 treesheets::System *treesheets::sys = nullptr;
 treesheets::TreeSheetsScriptImpl treesheets::tssi;
 
-IMPLEMENT_APP(treesheets::MyApp)
+IMPLEMENT_APP(treesheets::App)
 
 #include "myevents.h"

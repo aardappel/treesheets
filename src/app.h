@@ -7,7 +7,7 @@ struct IPCServer : wxServer {
     }
 };
 
-struct MyApp : wxApp {
+struct App : wxApp {
     MyFrame *frame {nullptr};
     unique_ptr<IPCServer> serv {make_unique<IPCServer>()};
     wxString filename;
