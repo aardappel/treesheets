@@ -1397,7 +1397,7 @@ struct MyFrame : wxFrame {
                     watcherwaitingforuser = false;
                     if (res != wxYES) return;
                 }
-                auto msg = sys->LoadDB(doc->filename, false, true);
+                auto msg = sys->LoadDB(doc->filename, true);
                 assert(msg);
                 if (*msg) {
                     GetCurTab()->Status(msg);
