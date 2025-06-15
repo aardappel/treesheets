@@ -106,11 +106,11 @@ set(treesheets_sources
         src/document.h
         src/evaluator.h
         src/grid.h
-        src/myapp.h
-        src/mycanvas.h
-        src/myevents.h
-        src/myframe.h
-        src/mywxtools.h
+        src/app.h
+        src/canvas.h
+        src/events.h
+        src/frame.h
+        src/wxtools.h
         src/script_interface.h
         src/selection.h
         src/stdafx.h

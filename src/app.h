@@ -7,8 +7,8 @@ struct IPCServer : wxServer {
     }
 };
 
-struct MyApp : wxApp {
-    MyFrame *frame {nullptr};
+struct App : wxApp {
+    Frame *frame {nullptr};
     unique_ptr<IPCServer> serv {make_unique<IPCServer>()};
     wxString filename;
     bool initiateventloop {false};
@@ -110,7 +110,7 @@ struct MyApp : wxApp {
         #endif
 
         sys = new System(portable);
-        frame = new MyFrame(exepath, this);
+        frame = new Frame(exepath, this);
 
         auto serr = ScriptInit(frame->GetDataPath("scripts/"));
         if (!serr.empty()) {

@@ -12,7 +12,7 @@ struct UndoItem {
 };
 
 struct Document {
-    TSCanvas *sw {nullptr};
+    Canvas *sw {nullptr};
     Cell *rootgrid {nullptr};
     Selection hover;
     Selection selected;
@@ -47,9 +47,9 @@ struct Document {
     wxBitmapDataObject *dndobji {new wxBitmapDataObject()};
     wxFileDataObject *dndobjf {new wxFileDataObject()};
 
-    struct MyPrintout : wxPrintout {
+    struct Printout : wxPrintout {
         Document *doc;
-        MyPrintout(Document *d) : wxPrintout(L"printout"), doc(d) {}
+        Printout(Document *d) : wxPrintout(L"printout"), doc(d) {}
 
         bool OnPrintPage(int page) {
             auto dc = GetDC();
@@ -1112,7 +1112,7 @@ struct Document {
             case wxID_PRINT: {
                 wxPrintDialogData printDialogData(printData);
                 wxPrinter printer(&printDialogData);
-                MyPrintout printout(this);
+                Printout printout(this);
                 if (printer.Print(sys->frame, &printout, true)) {
                     printData = printer.GetPrintDialogData().GetPrintData();
                 }
@@ -1128,8 +1128,8 @@ struct Document {
 
             case wxID_PREVIEW: {
                 wxPrintDialogData printDialogData(printData);
-                auto preview = new wxPrintPreview(new MyPrintout(this), new MyPrintout(this),
-                                                  &printDialogData);
+                auto preview =
+                    new wxPrintPreview(new Printout(this), new Printout(this), &printDialogData);
                 auto pframe = new wxPreviewFrame(preview, sys->frame, _(L"Print Preview"),
                                                  wxPoint(100, 100), wxSize(600, 650));
                 pframe->Centre(wxBOTH);
