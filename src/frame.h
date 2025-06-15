@@ -211,7 +211,7 @@ struct Frame : wxFrame {
         MyAppend(filemenu, wxID_PRINT, _(L"&Print...") + "\tCTRL+p");
         filemenu->AppendSeparator();
         filemenu->AppendSubMenu(expmenu, _(L"Export &view as"));
-        filemenu->AppendSubMenu(impmenu, _(L"Import file(s) from"));
+        filemenu->AppendSubMenu(impmenu, _(L"Import from"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, wxID_EXIT, _(L"&Exit") + "\tCTRL+q", _(L"Quit this program"));
 
@@ -656,9 +656,9 @@ struct Frame : wxFrame {
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders..."));
 
         auto scriptmenu = new wxMenu();
-        MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add Lobster scripts...") + "\tCTRL+ALT+L",
+        MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add...") + "\tCTRL+ALT+L",
                  _(L"Add Lobster scripts to the menu"));
-        MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove script from list...") + "\tCTRL+SHIFT+ALT+L",
+        MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove...") + "\tCTRL+SHIFT+ALT+L",
                  _(L"Remove script from list in the menu"));
         scripts.UseMenu(scriptmenu);
         scripts.AddFilesToMenu();
@@ -687,9 +687,9 @@ struct Frame : wxFrame {
 
         auto helpmenu = new wxMenu();
         MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."), _(L"Show About dialog"));
-        MyAppend(helpmenu, wxID_HELP, _(L"Load interactive &tutorial...") + "\tF1");
-        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Load operation reference...") + "\tCTRL+ALT+F1");
-        MyAppend(helpmenu, A_HELP, _(L"View tutorial &web page..."));
+        MyAppend(helpmenu, wxID_HELP, _(L"Interactive &tutorial") + "\tF1");
+        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Operation reference") + "\tCTRL+ALT+F1");
+        MyAppend(helpmenu, A_HELP, _(L"Tutorial &web page"));
 
         wxAcceleratorEntry entries[3];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
