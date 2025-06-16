@@ -195,7 +195,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         while (!f.empty()) {
             wxBitmap bm;
             if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
-                unique_ptr<wxBitmap> dbm(new wxBitmap());
+                auto dbm = make_unique<wxBitmap>();
                 ScaleBitmap(bm, FromDIP(1.0) / dd_icon_res_scale, *dbm);
                 bitmaps_display.push_back(std::move(dbm));
                 as.Add(f);
