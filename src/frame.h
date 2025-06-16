@@ -954,11 +954,6 @@ struct Frame : wxFrame {
         tb->Show(sys->showtoolbar);
     }
 
-    void TBMenu(wxToolBar *tb, wxMenu *menu, const wxString &name, int id = 0) {
-        tb->AddTool(id, name, wxNullBitmap, wxEmptyString, wxITEM_DROPDOWN);
-        tb->SetDropdownMenu(id, menu);
-    }
-
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
         auto sw = GetCurTab();
