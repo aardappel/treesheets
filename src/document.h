@@ -76,7 +76,6 @@ struct Document {
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
-    bool blink {true};
     bool redrawpending {false};
     bool scrolltoselection {true};
     bool scaledviewingmode {false};
@@ -304,28 +303,6 @@ struct Document {
         }
     }
 
-    void HandleBlink(bool reset) {
-        if (redrawpending) return;
-        #ifndef SIMPLERENDER
-        wxClientDC dc(sw);
-        sw->DoPrepareDC(dc);
-        ShiftToCenter(dc);
-        DrawSelect(dc, selected, false, true);
-        if (reset)
-            blink = true;
-        else
-            blink = !blink;
-        DrawSelect(dc, selected, true, true);
-        #endif
-    }
-
-    void Blink() { HandleBlink(false); }
-
-    void ResetBlink() {
-        sys->frame->bt.Start(BLINK_TIME);
-        HandleBlink(true);
-    }
-
     void ResetCursor() {
         if (selected.g) selected.SetCursorEdit(this, selected.TextEdit());
     }
@@ -362,7 +339,6 @@ struct Document {
         isctrlshiftdrag = isctrlshift;
         DrawSelectMove(dc, selected);
         ResetCursor();
-        ResetBlink();
         return;
     }
 
