@@ -12,7 +12,7 @@ struct UndoItem {
 };
 
 struct Document {
-    Canvas *sw {nullptr};
+    TSCanvas *sw {nullptr};
     Cell *rootgrid {nullptr};
     Selection hover;
     Selection selected;

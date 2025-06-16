@@ -1,5 +1,5 @@
 struct System {
-    Frame *frame;
+    TSFrame *frame;
     wxString defaultfont {
     #ifdef WIN32
         L"Lucida Sans Unicode"
@@ -362,7 +362,7 @@ struct System {
     void RememberOpenFiles() {
         auto namedfiles = 0;
         loop(i, frame->nb->GetPageCount()) {
-            auto p = (Canvas *)frame->nb->GetPage(i);
+            TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
             if (p->doc->filename.Len()) {
                 cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
                 namedfiles++;
@@ -395,7 +395,7 @@ struct System {
 
     void SaveCheck() {
         loop(i, frame->nb->GetPageCount()) {
-            ((Canvas *)frame->nb->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
+            ((TSCanvas *)frame->nb->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
         }
     }
 
