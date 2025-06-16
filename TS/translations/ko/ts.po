@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-07 17:36-0300\n"
-"PO-Revision-Date: 2025-06-15 20:26+0900\n"
+"PO-Revision-Date: 2025-06-16 04:10+0900\n"
 "Last-Translator: VenusGirl (Venusgirl@outlook.com)\n"
 "Language-Team: VenusGirl (https://venusgirls.tistory.com/)\n"
 "Language: ko\n"
@@ -51,7 +51,7 @@ msgid "&Close"
 msgstr "닫기(&C)"
 
 msgid "&Comma delimited text (CSV)..."
-msgstr "쉼표 구분 텍스트 (CSV)(&C)..."
+msgstr "쉼표로 구분된 텍스트 (CSV)(&C)..."
 
 msgid "&Copy"
 msgstr "복사(&C)"
@@ -87,7 +87,7 @@ msgid "&Grid Reorganization..."
 msgstr "격자 재구성(&G)..."
 
 msgid "&HTML (Tables+Styling)..."
-msgstr "HTML(테이블+스타일링)(&H)..."
+msgstr "HTML (테이블+스타일링)(&H)..."
 
 msgid "&Help"
 msgstr "도움말(&H)"
@@ -186,7 +186,7 @@ msgid "&Selection..."
 msgstr "선택(&S)..."
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "셀 텍스트를 태그로 설정(CTRL+RMB 사용)(&S)"
+msgstr "셀 텍스트를 태그로 설정 (CTRL+RMB 사용)(&S)"
 
 msgid "&Set Custom Color From Cell BG"
 msgstr "셀 배경에서 사용자 지정 색상 설정(&S)"
@@ -614,10 +614,10 @@ msgid "Extend Selection Word Right"
 msgstr "선택 단어 오른쪽 확장"
 
 msgid "Extend Selection to End"
-msgstr "선택 범위를 끝까지 확장"
+msgstr "선택을 끝까지 확장"
 
 msgid "Extend Selection to Start"
-msgstr "선택을 시작까지 확장"
+msgstr "선택을 시작으로 확장"
 
 msgid "Faster line rendering"
 msgstr "더 빠른 줄 렌더링"
@@ -697,7 +697,7 @@ msgid "HTML (&Bullet points)..."
 msgstr "HTML (글머리 기호)(&B)..."
 
 msgid "HTML (&Outline)..."
-msgstr "HTML (Outline)(&O)..."
+msgstr "HTML (개요)(&O)..."
 
 msgid "Hierarchy &Swap"
 msgstr "계층 구조 스왑(&S)"
@@ -710,13 +710,13 @@ msgstr ""
 "의 태그를 빠르게 설정합니다"
 
 msgid "Horizontal Layout with Bubble Style Rendering"
-msgstr "버블 스타일 렌더링을 사용한 수평 레이아웃"
+msgstr "버블 스타일 렌더링을 사용한 가로 레이아웃"
 
 msgid "Horizontal Layout with Grid Style Rendering"
-msgstr "격자 스타일 렌더링을 사용한 수평 레이아웃"
+msgstr "격자 스타일 렌더링을 사용한 가로 레이아웃"
 
 msgid "Horizontal Layout with Line Style Rendering"
-msgstr "줄 스타일 렌더링을 사용한 수평 레이아웃"
+msgstr "줄 스타일 렌더링을 사용한 가로 레이아웃"
 
 msgid "Hover shadow"
 msgstr "호버 그림자"
@@ -787,7 +787,7 @@ msgid ""
 msgstr "정렬할 열과 영향을 미칠 행을 나타내기 위해 1xN을 선택합니다"
 
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
-msgstr "계층 구조 레이아웃을 더 수직 (기본값) 또는 더 수평으로 만들기"
+msgstr "계층 구조 레이아웃을 더 세로 (기본값) 또는 더 가로로 만들기"
 
 msgid "Maximum number of launches reached."
 msgstr "최대 실행 횟수에 도달했습니다."
@@ -853,7 +853,7 @@ msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr "참고: 키 바인딩은 다음 TreeSheets 실행 시 적용됩니다."
 
 msgid "Navigate in between cells with cursor keys"
-msgstr "커서 키로 셀 사이를 탐색합니다"
+msgstr "커서 키로 셀 사이 탐색"
 
 msgid "New (CTRL+n)"
 msgstr "새로 만들기 (CTRL+n)"
@@ -1193,7 +1193,7 @@ msgstr "선택한 격자는 표가 아닙니다: 셀에는 이미 하위 격자�
 
 #, c-format
 msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr "선택 항목에 문자가 %d개 셀 / %d개 문자가 포함되어 있습니다."
+msgstr "선택 항목에 %d개 셀 / %d개 문자가 포함되어 있습니다."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "세미콜론으로 구분된 텍스트 (CSV)..."
@@ -1269,7 +1269,7 @@ msgid "Start date and time"
 msgstr "시작 날짜 및 시간"
 
 msgid "Start of line of text"
-msgstr "텍스트 줄의 시작"
+msgstr "텍스트의 줄의 시작"
 
 msgid "Start of text"
 msgstr "텍스트의 시작"
@@ -1355,7 +1355,7 @@ msgid "Toggle Fold"
 msgstr "접기 전환"
 
 msgid "Toggle Vertical Layout"
-msgstr "수직 레이아웃 전환"
+msgstr "세로 레이아웃 전환"
 
 msgid "Toggle cell &BOLD"
 msgstr "셀 굵게 전환(&B)"
@@ -1400,13 +1400,13 @@ msgid "Variable &Read"
 msgstr "변수 읽기(&R)"
 
 msgid "Vertical Layout with Bubble Style Rendering"
-msgstr "버블 스타일 렌더링을 사용한 수직 레이아웃"
+msgstr "버블 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "Vertical Layout with Grid Style Rendering"
-msgstr "격자 스타일 렌더링을 사용한 수직 레이아웃"
+msgstr "격자 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "Vertical Layout with Line Style Rendering"
-msgstr "라인 스타일 렌더링을 사용한 수직 레이아웃"
+msgstr "줄 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "View tutorial &web page..."
 msgstr "자습서 웹 페이지 보기(&W)..."
