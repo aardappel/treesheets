@@ -130,8 +130,6 @@ struct System {
         if (!frame->nb->GetPageCount()) InitDB(10);
 
         // Refresh();
-
-        frame->bt.Start(BLINK_TIME);
         every_second_timer.Start(1000);
     }
 

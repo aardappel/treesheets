@@ -24,7 +24,6 @@ struct TSFrame : wxFrame {
     ColorDropdown *borddd {nullptr};
     ImageDropdown *idd {nullptr};
     wxString imagepath;
-    BlinkTimer bt;
     int refreshhack {0};
     int refreshhackinstances {0};
 
@@ -1340,7 +1339,6 @@ struct TSFrame : wxFrame {
                 nb->DeletePage(nb->GetSelection());
             }
         }
-        bt.Stop();
         sys->every_second_timer.Stop();
         Destroy();
     }
