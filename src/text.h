@@ -316,6 +316,9 @@ struct Text {
                     ls.Truncate(s.cursor - start);
                     auto x = 0;
                     dc.GetTextExtent(ls, &x, nullptr);
+                    DrawRectangle(dc, color, cell->GetX(doc) + x + 1 + ixs + g_margin_extra,
++                            cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra, 2,
++                            h - 2);
                     break;
                 }
 
