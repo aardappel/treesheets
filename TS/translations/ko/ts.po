@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-07 17:36-0300\n"
-"PO-Revision-Date: 2025-06-17 02:34+0900\n"
+"PO-Revision-Date: 2025-06-18 03:57+0900\n"
 "Last-Translator: VenusGirl (Venusgirl@outlook.com)\n"
 "Language-Team: VenusGirl (https://venusgirls.tistory.com/)\n"
 "Language: ko\n"
@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "디스크에서 다른 프로그램/컴퓨터에 의해 수정되었습니다:\n"
-"변경 사항을 폐기하고 디스크에서 다시 로드하시겠습니까?"
+"변경 사항을 버리고 디스크에서 다시 로드하시겠습니까?"
 
 msgid "&About..."
 msgstr "정보(&A)..."
@@ -63,7 +63,7 @@ msgid "&Data"
 msgstr "데이터(&D)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
-msgstr "텍스트 크기 줄이기 (SHIFT+마우스휠)(&D)"
+msgstr "텍스트 크기 줄이기 (Shift+마우스 휠)(&D)"
 
 msgid "&Delete After"
 msgstr "이후 삭제(&D)"
@@ -78,13 +78,13 @@ msgid "&File"
 msgstr "파일(&F)"
 
 msgid "&Flatten"
-msgstr "평평하게(&F)"
+msgstr "평탄화(&F)"
 
 msgid "&Grid Reorganization"
 msgstr "격자 재구성(&G)"
 
 msgid "&HTML (Tables+Styling)..."
-msgstr "HTML (테이블+스타일링)(&H)..."
+msgstr "HTML (표+스타일링)(&H)..."
 
 msgid "&Help"
 msgstr "도움말(&H)"
@@ -102,7 +102,7 @@ msgid "&Images"
 msgstr "이미지(&I)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
-msgstr "텍스트 크기 늘이기 (SHIFT+마우스휠)(&I)"
+msgstr "텍스트 크기 늘이기 (SHIFT+마우스 휠)(&I)"
 
 msgid "&Insert New Grid"
 msgstr "새 격자 삽입(&I)"
@@ -156,7 +156,7 @@ msgid "&Replace"
 msgstr "바꾸기(&R)"
 
 msgid "&Reset Scale (display only)"
-msgstr "스케일 재설정 (표시 전용)(&R)"
+msgstr "비율 재설정 (표시 전용)(&R)"
 
 msgid "&Reset text sizes"
 msgstr "텍스트 크기 재설정(&R)"
@@ -165,7 +165,7 @@ msgid "&Reset text styles"
 msgstr "텍스트 스타일 재설정(&R)"
 
 msgid "&Roundness of grid borders"
-msgstr "격자 경계의 원형(&R)"
+msgstr "격자 테두리의 둥글기(&R)"
 
 msgid "&Run"
 msgstr "실행(&R)"
@@ -183,7 +183,7 @@ msgid "&Selection"
 msgstr "선택(&S)"
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "셀 텍스트를 태그로 설정 (CTRL+RMB 사용)(&S)"
+msgstr "셀 텍스트를 태그로 설정 (Ctrl+RMB 사용)(&S)"
 
 msgid "&Set custom color from cell background"
 msgstr "셀 배경에서 사용자 지정 색상 설정(&S)"
@@ -213,7 +213,7 @@ msgid "*.*"
 msgstr "*.*"
 
 msgid "1:1 scale restored."
-msgstr "1:1 스케일로 복원합니다."
+msgstr "1:1 비율로 복원합니다."
 
 msgid "<unnamed>"
 msgstr "<이름 없음>"
@@ -264,7 +264,7 @@ msgid "Background color..."
 msgstr "배경 색상..."
 
 msgid "Backup files"
-msgstr "백업 파일"
+msgstr "파일 백업"
 
 msgid "Bitmap copied to clipboard"
 msgstr "클립보드에 복사된 비트맵"
@@ -340,8 +340,8 @@ msgid ""
 "Change the image(s) scale to match DPI of the current display. Applies to "
 "all uses of this image."
 msgstr ""
-"현재 디스플레이의 DPI에 맞게 이미지 스케일을 변경합니다. 이 이미지의 모든 용"
-"도에 적용됩니다."
+"현재 디스플레이의 DPI에 맞게 이미지 비율을 변경합니다. 이 이미지의 모든 용도"
+"에 적용됩니다."
 
 msgid ""
 "Change the image(s) size if it is too big or too small, by changing the size "
@@ -410,7 +410,7 @@ msgstr ""
 "프레드시트에서 데이터를 변환하는 데 유용합니다"
 
 msgid "Copy (CTRL+c)"
-msgstr "복사 (CTRL+c)"
+msgstr "복사 (Ctrl+C)"
 
 msgid "Copy As Continuous Text"
 msgstr "연속 텍스트로 복사"
@@ -461,10 +461,10 @@ msgid "Date and time range"
 msgstr "날짜 및 시간 범위"
 
 msgid "Decrease column width (ALT+mousewheel)"
-msgstr "열 너비 감소 (ALT+마우스휠)"
+msgstr "열 너비 줄이기 (ALT+마우스 휠)"
 
 msgid "Decrease column width (no sub grids)"
-msgstr "열 너비 감소 (하위 격자 없음)"
+msgstr "열 너비 줄이기 (하위 격자 없음)"
 
 msgid "Default column width"
 msgstr "기본 열 너비"
@@ -496,7 +496,7 @@ msgid "Deletes the entire word before the cursor"
 msgstr "커서 앞에 있는 전체 단어를 삭제합니다"
 
 msgid "Discard Changes"
-msgstr "변경 사항 폐기"
+msgstr "변경 사항 버리기"
 
 #, c-format
 msgid "Edited %s %s"
@@ -559,7 +559,7 @@ msgid "Evaluation finished."
 msgstr "평가가 완료되었습니다."
 
 msgid "Export &view as"
-msgstr "보기를 다음으로 내보내기(&V)"
+msgstr "다른 보기 내보내기(&V)"
 
 msgid "Export cancelled."
 msgstr "내보내기가 취소되었습니다."
@@ -585,8 +585,8 @@ msgid ""
 "Export the current view as HTML using nested tables, that will look somewhat "
 "like the TreeSheet"
 msgstr ""
-"중첩된 테이블을 사용하여 현재 보기를 HTML로 내보냅니다. 이 테이블은 TreeSheet"
-"처럼 보일 것입니다"
+"중첩된 표를 사용하여 현재 보기를 HTML로 내보냅니다. 이 표는 TreeSheet처럼 보"
+"일 것입니다"
 
 msgid ""
 "Export the current view as XML (which can also be reimported without losing "
@@ -707,7 +707,7 @@ msgid "Go To &Matching Cell (Text)"
 msgstr "일치 셀로 가기 (텍스트)(&M)"
 
 msgid "Go To Matching Cell (Image)"
-msgstr "매칭 셀로 가기 (이미지)"
+msgstr "일치 셀로 가기 (이미지)"
 
 msgid "Go To Matching Cell (Image, Reverse)"
 msgstr "일치 셀로 가기 (이미지, 반전)"
@@ -743,13 +743,13 @@ msgid "HTML (&Outline)..."
 msgstr "HTML (개요)(&O)..."
 
 msgid "Hierarchy &Swap"
-msgstr "계층 구조 스왑(&S)"
+msgstr "계층 교체(&S)"
 
 msgid ""
 "Hold CTRL while pressing right mouse button to quickly set a tag for the "
 "current cell using a popup menu"
 msgstr ""
-"오른쪽 마우스 버튼을 누른 상태에서 CTRL을 눌러 팝업 메뉴를 사용하여 현재 셀"
+"오른쪽 마우스 버튼을 누른 상태에서 Ctrl을 눌러 팝업 메뉴를 사용하여 현재 셀"
 "의 태그를 빠르게 설정합니다"
 
 msgid "Horizontal Layout with Bubble Style Rendering"
@@ -759,7 +759,7 @@ msgid "Horizontal Layout with Grid Style Rendering"
 msgstr "격자 스타일 렌더링을 사용한 가로 레이아웃"
 
 msgid "Horizontal Layout with Line Style Rendering"
-msgstr "줄 스타일 렌더링을 사용한 가로 레이아웃"
+msgstr "선 스타일 렌더링을 사용한 가로 레이아웃"
 
 msgid "Hover shadow"
 msgstr "호버 그림자"
@@ -777,10 +777,10 @@ msgid "Import from"
 msgstr "다음에서 가져오기"
 
 msgid "Increase column width (ALT+mousewheel)"
-msgstr "열 너비 증가 (ALT+마우스휠)"
+msgstr "열 너비 늘이기 (ALT+마우스 휠)"
 
 msgid "Increase column width (no sub grids)"
-msgstr "열 너비 증가 (하위 격자 없음)"
+msgstr "열 너비 늘이기 (하위 격자 없음)"
 
 msgid "Indented &Text..."
 msgstr "텍스트 들여쓰기(&T)..."
@@ -815,7 +815,7 @@ msgid "Keybinding cancelled."
 msgstr "키 바인딩이 취소되었습니다."
 
 msgid "Line Style Rendering"
-msgstr "줄 스타일 렌더링"
+msgstr "선 스타일 렌더링"
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
@@ -899,7 +899,7 @@ msgid "Navigate in between cells with cursor keys"
 msgstr "커서 키로 셀 사이 탐색"
 
 msgid "New (CTRL+n)"
-msgstr "새로 만들기 (CTRL+n)"
+msgstr "새로 만들기 (Ctrl+N)"
 
 msgid "New Grid (INS)"
 msgstr "새 격자 (INS)"
@@ -959,7 +959,7 @@ msgid "Open &file"
 msgstr "파일 열기(&F)"
 
 msgid "Open (CTRL+o)"
-msgstr "열기 (CTRL+o)"
+msgstr "열기 (Ctrl+O)"
 
 msgid "Open TreeSheets file"
 msgstr "TreeSheets 파일 열기"
@@ -1015,7 +1015,7 @@ msgid "Page Setup..."
 msgstr "페이지 설정..."
 
 msgid "Paste (CTRL+v)"
-msgstr "붙여넣기 (CTRL+v)"
+msgstr "붙여넣기 (Ctrl+V)"
 
 msgid "Paste Style Only"
 msgstr "스타일만 붙여넣기"
@@ -1137,7 +1137,7 @@ msgid "Replace in Current &Selection"
 msgstr "현재 선택에서 바꾸기(&S)"
 
 msgid "Replace in Current Selection && &Jump Next"
-msgstr "현재 선택에서 바꾸고 다음 점프(&J)"
+msgstr "현재 선택에서 바꾸고 다음으로 이동(&J)"
 
 msgid "Replace in selection"
 msgstr "선택에서 바꾸기"
@@ -1155,7 +1155,7 @@ msgid "Save &As..."
 msgstr "다른 이름으로 저장(&A)..."
 
 msgid "Save (CTRL+s)"
-msgstr "저장 (CTRL+s)"
+msgstr "저장 (Ctrl+S)"
 
 msgid "Save All"
 msgstr "모두 저장"
@@ -1190,19 +1190,19 @@ msgid "Saved %s successfully (in %d milliseconds)."
 msgstr "%s을(를) 성공적으로 저장했습니다 (%d 밀리초 단위)."
 
 msgid "Scale (&display only)"
-msgstr "스케일 (표시 전용)(&D)"
+msgstr "비율 (표시 전용)(&D)"
 
 msgid "Scale (re-sa&mple pixels, by %)"
-msgstr "스케일 (픽셀 재샘플링, %)(&M)"
+msgstr "비율 (픽셀 재샘플링, %)(&M)"
 
 msgid "Scale (re-sample pixels, by &width)"
-msgstr "스케일 (픽셀 재샘플링, 너비 기준)(&W)"
+msgstr "비율 (픽셀 재샘플링, 너비 기준)(&W)"
 
 msgid "Script"
 msgstr "스크립트"
 
 msgid "Scroll Down (mousewheel)"
-msgstr "아래로 스크롤 (마우스휠)"
+msgstr "아래로 스크롤 (마우스 휠)"
 
 msgid "Scroll Left"
 msgstr "왼쪽 스크롤"
@@ -1214,7 +1214,7 @@ msgid "Scroll Sheet"
 msgstr "시트 스크롤"
 
 msgid "Scroll Up (mousewheel)"
-msgstr "위로 스크롤 (마우스휠)"
+msgstr "위로 스크롤 (마우스 휠)"
 
 msgid "Search "
 msgstr "검색 "
@@ -1242,10 +1242,10 @@ msgid "Set Grid Border Width"
 msgstr "격자 테두리 너비 설정..."
 
 msgid "Set Print Scale"
-msgstr "인쇄 스케일 설정"
+msgstr "인쇄 비율 설정"
 
 msgid "Set Print Scale..."
-msgstr "인쇄 스케일 설정..."
+msgstr "인쇄 비율 설정..."
 
 msgid "Set a custom color for the color dropdowns"
 msgstr "색상 드롭다운에 대한 사용자 지정 색상 설정"
@@ -1357,7 +1357,7 @@ msgid "Text &Editing"
 msgstr "텍스트 편집(&E)"
 
 msgid "Text Sizing"
-msgstr "텍스트 크기 조정"
+msgstr "텍스트 크기"
 
 msgid "Text Style"
 msgstr "텍스트 스타일"
@@ -1399,7 +1399,7 @@ msgid "Toggle &Fullscreen View"
 msgstr "전체 화면 보기 전환(&F)"
 
 msgid "Toggle &Scaled Presentation View"
-msgstr "축소된 프레젠테이션 보기 전환(&S)"
+msgstr "크기 조정된 프레젠테이션 보기 전환(&S)"
 
 msgid "Toggle Fold"
 msgstr "접기 전환"
@@ -1417,7 +1417,7 @@ msgid "Toggle cell &strikethrough"
 msgstr "셀 취소선 전환(&S)"
 
 msgid "Toggle cell &typewriter"
-msgstr "셀 타이프라이터 전환(&T)"
+msgstr "셀 타자기체 전환(&T)"
 
 msgid "Toggle cell &underlined"
 msgstr "셀 밑줄 전환(&U)"
@@ -1467,7 +1467,7 @@ msgid "Tutorial &web page"
 msgstr "자습서 웹 페이지(&W)"
 
 msgid "Undo (CTRL+z)"
-msgstr "실핼 취소 (CTRL+z)"
+msgstr "실핼 취소 (Ctrl+Z)"
 
 msgid "Unfold All"
 msgstr "모두 펴기"
@@ -1491,7 +1491,7 @@ msgid "Vertical Layout with Grid Style Rendering"
 msgstr "격자 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "Vertical Layout with Line Style Rendering"
-msgstr "줄 스타일 렌더링을 사용한 세로 레이아웃"
+msgstr "선 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "What size grid would you like to start with?"
 msgstr "어떤 크기의 격자로 시작하시겠습니까?"
@@ -1522,16 +1522,16 @@ msgid "Zlib error while writing file."
 msgstr "파일을 작성하는 동안 Zlib 오류가 발생했습니다."
 
 msgid "Zoom &In (CTRL+mousewheel)"
-msgstr "확대 (CTRL+마우스휠)(&I)"
+msgstr "확대 (Ctrl+마우스 휠)(&I)"
 
 msgid "Zoom &Out (CTRL+mousewheel)"
-msgstr "축소 (CTRL+마우스휠)(&O)"
+msgstr "축소 (Ctrl+마우스 휠)(&O)"
 
 msgid "Zoom In (CTRL+mousewheel)"
-msgstr "확대 (CTRL+마우스휠)"
+msgstr "확대 (Ctrl+마우스 휠)"
 
 msgid "Zoom Out (CTRL+mousewheel)"
-msgstr "축소 (CTRL+마우스휠)"
+msgstr "축소 (Ctrl+마우스 휠)"
 
 msgid "Zoomed in."
 msgstr "확대합니다."
@@ -1561,7 +1561,7 @@ msgid "revert the changes, one step at a time"
 msgstr "변경 사항을 한 번에 한 단계씩 되돌리기"
 
 msgid "scale:"
-msgstr "스케일:"
+msgstr "비율:"
 
 msgid "size:"
 msgstr "크기:"
