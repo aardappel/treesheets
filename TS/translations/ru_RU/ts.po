@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.0\n"
+"Project-Id-Version: TreeSheets_RU 3.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-16 17:53+0200\n"
-"PO-Revision-Date: 2025-06-18 15:51+0300\n"
+"PO-Revision-Date: 2025-06-18 18:17+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -542,11 +542,11 @@ msgstr ".. как PNG (по &Умолчанию)"
 
 # комментарий к п. Меню
 msgid "Embed the image(s) in the selected cells in JPEG format (reduces data size)"
-msgstr "Встроить изображение(я) в выбранные ячейки в формате JPEG (уменьшает размер данных)"
+msgstr "JPEG формат уменьшает размер *.sts-файла. Применяется к изображениям в выбранных ячейках (и ко всем копиям одного изображения)"
 
 # комментарий к п. Меню
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
-msgstr "Встроить изображение(я) в выбранные ячейки в формате PNG (по умолчанию)"
+msgstr "PNG формат по умолчанию. Применяется к изображениям в выбранных ячейках (ко всем копиям одного изображения)"
 
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "End date and time"
