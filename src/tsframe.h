@@ -14,7 +14,6 @@ struct TSFrame : wxFrame {
     wxBitmap foldicon;
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
-    bool darkmode {wxSystemSettings::GetAppearance().IsDark()};
     wxToolBar *tb {nullptr};
     wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
@@ -889,10 +888,12 @@ struct TSFrame : wxFrame {
 
         auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
-            tb->AddTool(action, name,
-                        wxBitmapBundle::FromSVGFile(iconpath + (darkmode ? darkicon : lighticon),
-                                                    wxSize(24, 24)),
-                        name, wxITEM_NORMAL);
+            tb->AddTool(
+                action, name,
+                wxBitmapBundle::FromSVGFile(
+                    iconpath + (wxSystemSettings::GetAppearance().IsDark() ? darkicon : lighticon),
+                    wxSize(24, 24)),
+                name, wxITEM_NORMAL);
         };
 
         AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
@@ -1255,13 +1256,6 @@ struct TSFrame : wxFrame {
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        if (bool newmode = wxSystemSettings::GetAppearance().IsDark(); newmode != darkmode)
-            OnDarkModeChanged(newmode);
-        se.Skip();
-    }
-
-    void OnDarkModeChanged(bool newmode) {
-        darkmode = newmode;
         wxString s_filter = filter->GetValue();
         wxString s_replaces = replaces->GetValue();
         delete (tb);
