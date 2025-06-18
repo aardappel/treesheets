@@ -1169,7 +1169,6 @@ struct Document {
                 sys->searchstring = (sys->casesensitivesearch)
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
-                sys->frame->SetSearchTextBoxBackgroundColour(false);
                 auto msg = this->SearchNext(dc, false, false, false);
                 this->Refresh();
                 return msg;
@@ -2000,7 +1999,6 @@ struct Document {
         bool lastsel = true;
         auto next = rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
                                                   lastsel, reverse);
-        sys->frame->SetSearchTextBoxBackgroundColour(next);
         if (!next) return _(L"No matches for search.");
         if (!jump) return nullptr;
         SetSelect(next->parent->grid->FindCell(next));

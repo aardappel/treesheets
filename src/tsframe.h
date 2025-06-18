@@ -840,7 +840,6 @@ struct TSFrame : wxFrame {
     void OnTabChange(wxAuiNotebookEvent &nbe) {
         TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
         sw->Status();
-        SetSearchTextBoxBackgroundColour(false);
         sys->TabChange(sw->doc);
     }
 
@@ -1165,27 +1164,17 @@ struct TSFrame : wxFrame {
         }
     }
 
-    void SetSearchTextBoxBackgroundColour(bool found) {
-        if (!filter) return;
-        filter->SetForegroundColour((found && darkmode) ? wxColour("AQUAMARINE") : wxNullColour);
-        filter->SetBackgroundColour((found && !darkmode) ? wxColour("AQUAMARINE") : wxNullColour);
-        filter->Refresh();
-    }
-
     void OnSearch(wxCommandEvent &ce) {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
-        sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
-        SetSearchTextBoxBackgroundColour(false);
+        sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
         auto doc = GetCurTab()->doc;
         auto sw = GetCurTab();
-        wxClientDC dc(sw);
-        doc->SearchNext(dc, false, false, false);
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
-        } else
-            doc->Refresh();
+        }
+        doc->Refresh();
         GetCurTab()->Status();
     }
 
