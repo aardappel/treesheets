@@ -1167,7 +1167,7 @@ struct TSFrame : wxFrame {
     void OnSearch(wxCommandEvent &ce) {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
-        sys->searchstring = (sys->casesensitivesearch) ? searchstring : searchstring.Lower();
+        sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
         auto doc = GetCurTab()->doc;
         auto sw = GetCurTab();
         if (doc->searchfilter) {
