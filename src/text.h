@@ -305,12 +305,7 @@ struct Text {
                             DrawRectangle(
                                 dc, color, cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra,
                                 cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra,
-                                x2 - x1, h - 1
-                                #ifdef SIMPLERENDER
-                                ,
-                                true
-                                #endif
-                                );
+                                x2 - x1, h - 1, true);
                     }
                 } else if (s.cursor >= start && s.cursor <= end) {
                     ls.Truncate(s.cursor - start);

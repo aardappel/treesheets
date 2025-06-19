@@ -219,12 +219,10 @@ struct Document {
     void DrawSelect(wxDC &dc, Selection &sel, bool refreshinstead = false,
                     bool cursoronly = false) {
         sys->UpdateAmountStatus(sel);
-        #ifdef SIMPLERENDER
         if (refreshinstead) {
             Refresh();
             return;
         }
-        #endif
         if (!sel.g) return;
         ResetFont();
         sel.g->DrawSelect(this, dc, sel, cursoronly);
@@ -679,7 +677,7 @@ struct Document {
             hover.g = nullptr;
             redrawpending = true;
             sys->UpdateStatus(selected);
-            #ifdef SIMPLERENDER
+            #ifndef __WXMSW__ 
                 // wxWidgets (wxGTK, wxMAC) does not always automatically update the scrollbar
                 // to new canvas size and current position within after zoom so force it manually
                 int curx, cury;
@@ -1135,7 +1133,6 @@ struct Document {
                 return nullptr;
             }
 
-            #ifdef SIMPLERENDER
             case A_DEFCURCOL: {
                 if (auto color = PickColor(sys->frame, sys->cursorcolor); color != (uint)-1) {
                     sys->cfg->Write(L"cursorcolor", sys->cursorcolor = color);
@@ -1143,7 +1140,6 @@ struct Document {
                 }
                 return nullptr;
             }
-            #endif
 
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {

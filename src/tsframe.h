@@ -596,7 +596,7 @@ struct TSFrame : wxFrame {
             _(L"Set a custom color for the color dropdowns from the selected cell background"));
         MyAppend(optmenu, A_DEFBGCOL, _(L"Background color..."),
                  _(L"Set the color for the document background"));
-        #ifdef SIMPLERENDER
+        #ifndef __WXMSW__
         MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
                  _(L"Set the color for the text cursor"));
         #endif
