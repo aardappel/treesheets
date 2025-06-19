@@ -1262,6 +1262,7 @@ struct TSFrame : wxFrame {
         ConstructToolBar();
         filter->SetValue(s_filter);
         replaces->SetValue(s_replaces);
+        se.Skip();
     }
 
     void OnIconize(wxIconizeEvent &me) {
