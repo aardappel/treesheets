@@ -235,8 +235,6 @@ enum {
     A_DEFBGCOL,
     #ifdef SIMPLERENDER
         A_DEFCURCOL,
-    #else
-        A_HOVERSHADOW,
     #endif
     A_THINSELC,
     A_COPYCT,

@@ -599,10 +599,6 @@ struct TSFrame : wxFrame {
         #ifdef SIMPLERENDER
         MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
                  _(L"Set the color for the text cursor"));
-        #else
-        optmenu->AppendCheckItem(A_HOVERSHADOW, _(L"Hover shadow"),
-                                 _(L"Shadow the cell the pointer hovers over"));
-        optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
         #endif
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(
@@ -1093,11 +1089,6 @@ struct TSFrame : wxFrame {
             case A_ZOOMSCR: sys->cfg->Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
             case A_THINSELC: sys->cfg->Write(L"thinselc", sys->thinselc = ce.IsChecked()); break;
             case A_AUTOSAVE: sys->cfg->Write(L"autosave", sys->autosave = ce.IsChecked()); break;
-            #ifndef SIMPLERENDER
-                case A_HOVERSHADOW:
-                   sys->cfg->Write(L"hovershadow", sys->hovershadow = ce.IsChecked());
-                   break;
-            #endif
             case A_CENTERED:
                 sys->cfg->Write(L"centered", sys->centered = ce.IsChecked());
                 Refresh();
