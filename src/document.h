@@ -850,12 +850,12 @@ struct Document {
         if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
-                    if (!ctrl) return Action(dc, A_BACKSPACE);
+                    if (!ctrl) return Action(A_BACKSPACE);
                     break;  // Prevent Ctrl+H from being treated as Backspace
-                case WXK_RETURN: return Action(dc, shift ? A_ENTERGRID : A_ENTERCELL);
+                case WXK_RETURN: return Action(shift ? A_ENTERGRID : A_ENTERCELL);
                 case WXK_ESCAPE:  // docs say it can be used as a menu accelerator, but it does not
                                   // trigger from there?
-                    return Action(dc, A_CANCELEDIT);
+                    return Action(A_CANCELEDIT);
                 #ifdef WIN32  // works fine on Linux, not sure OS X
                     case WXK_PAGEDOWN: sw->CursorScroll(0, g_scrollratecursor); return nullptr;
                     case WXK_PAGEUP: sw->CursorScroll(0, -g_scrollratecursor); return nullptr;
@@ -867,49 +867,47 @@ struct Document {
                 // the missing handling of these accelerator keys in the following section.
                 // Please be aware that the custom implementation has the downside of these
                 // "accelerator keys" being suppressed in the menu items on wxGTK.
-                case WXK_DELETE: return Action(dc, A_DELETE);
-                case WXK_LEFT:
-                    return Action(dc,
-                                  shift ? (ctrl ? A_SCLEFT : A_SLEFT) : (ctrl ? A_MLEFT : A_LEFT));
-                case WXK_RIGHT:
-                    return Action(
-                        dc, shift ? (ctrl ? A_SCRIGHT : A_SRIGHT) : (ctrl ? A_MRIGHT : A_RIGHT));
-                case WXK_UP:
-                    return Action(dc, shift ? (ctrl ? A_SCUP : A_SUP) : (ctrl ? A_MUP : A_UP));
-                case WXK_DOWN:
-                    return Action(dc,
-                                  shift ? (ctrl ? A_SCDOWN : A_SDOWN) : (ctrl ? A_MDOWN : A_DOWN));
-                case WXK_HOME:
-                    return Action(dc,
-                                  shift ? (ctrl ? A_SHOME : A_SHOME) : (ctrl ? A_CHOME : A_HOME));
-                case WXK_END:
-                    return Action(dc, shift ? (ctrl ? A_SEND : A_SEND) : (ctrl ? A_CEND : A_END));
-                case WXK_TAB:
-                    if (ctrl && !shift) {
-                        // WXK_CONTROL_I (italics) arrives as the same keycode as WXK_TAB + ctrl on
-                        // Linux??
-                        // They're both keycode 9 in defs.h
-                        // We ignore it here, such that CTRL+I works, but it means only
-                        // CTRL+SHIFT+TAB works on Linux as
-                        // a way to switch tabs.
-                        // Also, even though we ignore CTRL+TAB, and it is not assigned in the
-                        // menus, it still has the
-                        // effect of de-selecting
-                        // the current tab (requires a click to re-activate). FIXME??
-                        break;
-                    }
-                    return Action(
-                        dc, shift ? (ctrl ? A_PREVFILE : A_PREV) : (ctrl ? A_NEXTFILE : A_NEXT));
-                case WXK_PAGEUP:
-                    if (ctrl) return Action(dc, alt ? A_INCWIDTHNH : A_ZOOMIN);
-                    if (shift) return Action(dc, A_INCSIZE);
-                    if (!alt) sw->CursorScroll(0, -g_scrollratecursor);
-                    return nullptr;
-                case WXK_PAGEDOWN:
-                    if (ctrl) return Action(dc, alt ? A_DECWIDTHNH : A_ZOOMOUT);
-                    if (shift) return Action(dc, A_DECSIZE);
-                    if (!alt) sw->CursorScroll(0, g_scrollratecursor);
-                    return nullptr;
+                    case WXK_DELETE: return Action(A_DELETE);
+                    case WXK_LEFT:
+                        return Action(shift ? (ctrl ? A_SCLEFT : A_SLEFT)
+                                            : (ctrl ? A_MLEFT : A_LEFT));
+                    case WXK_RIGHT:
+                        return Action(shift ? (ctrl ? A_SCRIGHT : A_SRIGHT)
+                                            : (ctrl ? A_MRIGHT : A_RIGHT));
+                    case WXK_UP:
+                        return Action(shift ? (ctrl ? A_SCUP : A_SUP) : (ctrl ? A_MUP : A_UP));
+                    case WXK_DOWN:
+                        return Action(shift ? (ctrl ? A_SCDOWN : A_SDOWN)
+                                            : (ctrl ? A_MDOWN : A_DOWN));
+                    case WXK_HOME:
+                        return Action(shift ? (ctrl ? A_SHOME : A_SHOME)
+                                            : (ctrl ? A_CHOME : A_HOME));
+                    case WXK_END:
+                        return Action(shift ? (ctrl ? A_SEND : A_SEND) : (ctrl ? A_CEND : A_END));
+                    case WXK_TAB:
+                        if (ctrl && !shift) {
+                            // WXK_CONTROL_I (italics) arrives as the same keycode as WXK_TAB + ctrl
+                            // on Linux?? They're both keycode 9 in defs.h We ignore it here, such
+                            // that CTRL+I works, but it means only CTRL+SHIFT+TAB works on Linux as
+                            // a way to switch tabs.
+                            // Also, even though we ignore CTRL+TAB, and it is not assigned in the
+                            // menus, it still has the
+                            // effect of de-selecting
+                            // the current tab (requires a click to re-activate). FIXME??
+                            break;
+                        }
+                        return Action(shift ? (ctrl ? A_PREVFILE : A_PREV)
+                                            : (ctrl ? A_NEXTFILE : A_NEXT));
+                    case WXK_PAGEUP:
+                        if (ctrl) return Action(alt ? A_INCWIDTHNH : A_ZOOMIN);
+                        if (shift) return Action(A_INCSIZE);
+                        if (!alt) sw->CursorScroll(0, -g_scrollratecursor);
+                        return nullptr;
+                    case WXK_PAGEDOWN:
+                        if (ctrl) return Action(alt ? A_DECWIDTHNH : A_ZOOMOUT);
+                        if (shift) return Action(A_DECSIZE);
+                        if (!alt) sw->CursorScroll(0, g_scrollratecursor);
+                        return nullptr;
                 #endif
             }
         } else if (uk >= ' ') {
@@ -930,7 +928,9 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar *Action(wxDC &dc, int k) {
+    const wxChar *Action(int k) {
+        wxClientDC dc(sw);
+        sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
 
         switch (k) {
@@ -1888,7 +1888,7 @@ struct Document {
             case A_PREV: selected.Next(this, dc, true); return nullptr;
 
             case A_ENTERGRID:
-                if (!c->grid) Action(dc, A_NEWGRID);
+                if (!c->grid) Action(A_NEWGRID);
                 SetSelect(Selection(c->grid, 0, 0, 1, 1));
                 ScrollOrZoom(dc, true);
                 return nullptr;
