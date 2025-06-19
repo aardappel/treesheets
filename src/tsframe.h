@@ -994,19 +994,18 @@ struct TSFrame : wxFrame {
                 #endif
                 #ifdef __WXMSW__
                 case A_ENTERCELL: {
-                    wxClientDC dc(sw);
                     if (tc == filter) {
                         // OnSearchEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
                         if (sys->searchstring.IsEmpty()) {
                             sw->SetFocus();
                         } else {
-                            sw->doc->Action(dc, A_SEARCHNEXT);
+                            sw->doc->Action(A_SEARCHNEXT);
                         }
                     } else if (tc == replaces) {
                         // OnReplaceEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
-                        sw->doc->Action(dc, A_REPLACEONCEJ);
+                        sw->doc->Action(A_REPLACEONCEJ);
                     }
                     return;
                 }
@@ -1014,9 +1013,6 @@ struct TSFrame : wxFrame {
                 case A_CANCELEDIT: tc->Clear(); sw->SetFocus(); return;
             }
         }
-        wxClientDC dc(sw);
-        sw->DoPrepareDC(dc);
-        sw->doc->ShiftToCenter(dc);
         auto Check = [&](const wxChar *cfg) {
             sys->cfg->Write(cfg, ce.IsChecked());
             sw->Status(_(L"change will take effect next run of TreeSheets"));
@@ -1128,16 +1124,14 @@ struct TSFrame : wxFrame {
                 case wxID_OSX_HIDE: Iconize(true); break;
                 case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
                 case wxID_OSX_SHOWALL: Iconize(false); break;
-                case wxID_ABOUT: sw->doc->Action(dc, wxID_ABOUT); break;
-                case wxID_PREFERENCES: sw->doc->Action(dc, wxID_SELECT_FONT); break;
+                case wxID_ABOUT: sw->doc->Action(wxID_ABOUT); break;
+                case wxID_PREFERENCES: sw->doc->Action(wxID_SELECT_FONT); break;
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
                 this->Close();
                 break;
-            case wxID_CLOSE:
-                sw->doc->Action(dc, ce.GetId());
-                break;  // sw dangling pointer on return
+            case wxID_CLOSE: sw->doc->Action(ce.GetId()); break;  // sw dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
@@ -1145,12 +1139,15 @@ struct TSFrame : wxFrame {
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
+                    wxClientDC dc(sw);
+                    sw->DoPrepareDC(dc);
+                    sw->doc->ShiftToCenter(dc);
                     auto msg =
                         tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str(), dc);
                     msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
                     sw->Status(wxString(msg));
                 } else {
-                    sw->Status(sw->doc->Action(dc, ce.GetId()));
+                    sw->Status(sw->doc->Action(ce.GetId()));
                     break;
                 }
         }
@@ -1172,12 +1169,10 @@ struct TSFrame : wxFrame {
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
         auto sw = GetCurTab();
-        if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty()) {
+        if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty())
             sw->SetFocus();
-        } else {
-            wxClientDC dc(sw);
-            sw->doc->Action(dc, ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
-        }
+        else
+            sw->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
     }
 
     void ReFocus() {
