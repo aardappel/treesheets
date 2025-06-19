@@ -14,7 +14,6 @@ struct TSFrame : wxFrame {
     wxBitmap foldicon;
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
-    bool darkmode {wxSystemSettings::GetAppearance().IsDark()};
     wxToolBar *tb {nullptr};
     wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
@@ -600,10 +599,6 @@ struct TSFrame : wxFrame {
         #ifdef SIMPLERENDER
         MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
                  _(L"Set the color for the text cursor"));
-        #else
-        optmenu->AppendCheckItem(A_HOVERSHADOW, _(L"Hover shadow"),
-                                 _(L"Shadow the cell the pointer hovers over"));
-        optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
         #endif
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(
@@ -889,10 +884,12 @@ struct TSFrame : wxFrame {
 
         auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
-            tb->AddTool(action, name,
-                        wxBitmapBundle::FromSVGFile(iconpath + (darkmode ? darkicon : lighticon),
-                                                    wxSize(24, 24)),
-                        name, wxITEM_NORMAL);
+            tb->AddTool(
+                action, name,
+                wxBitmapBundle::FromSVGFile(
+                    iconpath + (wxSystemSettings::GetAppearance().IsDark() ? darkicon : lighticon),
+                    wxSize(24, 24)),
+                name, wxITEM_NORMAL);
         };
 
         AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
@@ -1092,11 +1089,6 @@ struct TSFrame : wxFrame {
             case A_ZOOMSCR: sys->cfg->Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
             case A_THINSELC: sys->cfg->Write(L"thinselc", sys->thinselc = ce.IsChecked()); break;
             case A_AUTOSAVE: sys->cfg->Write(L"autosave", sys->autosave = ce.IsChecked()); break;
-            #ifndef SIMPLERENDER
-                case A_HOVERSHADOW:
-                   sys->cfg->Write(L"hovershadow", sys->hovershadow = ce.IsChecked());
-                   break;
-            #endif
             case A_CENTERED:
                 sys->cfg->Write(L"centered", sys->centered = ce.IsChecked());
                 Refresh();
@@ -1255,19 +1247,13 @@ struct TSFrame : wxFrame {
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        if (bool newmode = wxSystemSettings::GetAppearance().IsDark(); newmode != darkmode)
-            OnDarkModeChanged(newmode);
-        se.Skip();
-    }
-
-    void OnDarkModeChanged(bool newmode) {
-        darkmode = newmode;
         wxString s_filter = filter->GetValue();
         wxString s_replaces = replaces->GetValue();
         delete (tb);
         ConstructToolBar();
         filter->SetValue(s_filter);
         replaces->SetValue(s_replaces);
+        se.Skip();
     }
 
     void OnIconize(wxIconizeEvent &me) {

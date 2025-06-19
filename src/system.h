@@ -38,9 +38,6 @@ struct System {
     bool fastrender {true};
     bool showtoolbar {true};
     bool showstatusbar {true};
-    #ifndef SIMPLERENDER
-        bool hovershadow {true};
-    #endif
     int sortcolumn;
     int sortxs;
     int sortdescending;
@@ -90,8 +87,6 @@ struct System {
         cfg->Read(L"customcolor", &customcolor, customcolor);
         #ifdef SIMPLERENDER
             cfg->Read(L"cursorcolor", &cursorcolor, cursorcolor);
-        #else
-            cfg->Read(L"hovershadow", &hovershadow, hovershadow);
         #endif
         cfg->Read(L"showtoolbar", &showtoolbar, showtoolbar);
         cfg->Read(L"showstatusbar", &showstatusbar, showstatusbar);

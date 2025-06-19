@@ -340,26 +340,6 @@ struct Grid {
     void ImageRefCount(bool includefolded) {
         if (includefolded || !folded) foreachcell(c) c->ImageRefCount(includefolded);
     }
-    void DrawHover(Document *doc, wxDC &dc, Selection &sel) {
-        #ifndef SIMPLERENDER
-        #ifdef __WXMAC__
-        const auto thincol = 0xFFFFFFu;
-        const auto bgcol = 0xFFFFFFu;
-        #else
-        const auto thincol = 0x555555u;
-        const auto bgcol = 0x101014u;
-        #endif
-        dc.SetLogicalFunction(wxXOR);
-        if (sel.Thin()) {
-            DrawInsert(doc, dc, sel, thincol);
-        } else {
-            auto c = C(sel.x, sel.y);
-            DrawRectangle(dc, bgcol, c->GetX(doc) - cell_margin, c->GetY(doc) - cell_margin,
-                          c->sx + cell_margin * 2, c->sy + cell_margin * 2, !sys->hovershadow);
-        }
-        dc.SetLogicalFunction(wxCOPY);
-        #endif
-    }
 
     void DrawCursor(Document *doc, wxDC &dc, Selection &sel, bool full, uint color,
                     bool cursoronly) {

@@ -317,10 +317,6 @@ struct Document {
         if (drawroot->grid)
             drawroot->grid->FindXY(this, x - centerx / currentviewscale - hierarchysize,
                                    y - centery / currentviewscale - hierarchysize, dc);
-        if (!(prev == hover)) {
-            if (prev.g) prev.g->DrawHover(this, dc, prev);
-            if (hover.g) hover.g->DrawHover(this, dc, hover);
-        }
         sys->UpdateStatus(hover);
     }
 
@@ -632,7 +628,6 @@ struct Document {
             ScrollIfSelectionOutOfView(dc, selected, false, false);
             scrolltoselection = false;
         }
-        if (hover.g) hover.g->DrawHover(this, dc, hover);
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
