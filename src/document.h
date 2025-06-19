@@ -846,7 +846,7 @@ struct Document {
         }
     }
 
-    const wxChar *Key(wxDC &dc, int uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed) {
+    const wxChar *Key(int uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed) {
         if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
@@ -919,6 +919,7 @@ struct Document {
             }
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
+            wxClientDC dc(sw);
             ShiftToCenter(dc);
             c->text.Key(this, uk, selected);
             ScrollIfSelectionOutOfView(dc, selected, true);

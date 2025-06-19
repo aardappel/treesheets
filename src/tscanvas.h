@@ -119,10 +119,8 @@ struct TSCanvas : public wxScrolledCanvas {
             }
         #endif
 
-        wxClientDC dc(this);
-        DoPrepareDC(dc);
         bool unprocessed = false;
-        Status(doc->Key(dc, ce.GetUnicodeKey(), ce.GetKeyCode(), ce.AltDown(), ce.CmdDown(),
+        Status(doc->Key(ce.GetUnicodeKey(), ce.GetKeyCode(), ce.AltDown(), ce.CmdDown(),
                         ce.ShiftDown(), unprocessed));
         if (unprocessed) ce.Skip();
     }
