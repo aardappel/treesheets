@@ -2,7 +2,6 @@
 struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *doc = nullptr;
     Cell *cur = nullptr;
-    wxDC *dc = nullptr;
     bool docmodified = false;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
@@ -19,7 +18,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         docmodified = true;
     }
 
-    std::string ScriptRun(const char *filename, wxDC &_dc) {
+    std::string ScriptRun(const char *filename) {
         SwitchToCurrentDoc();
 
         bool dump_builtins = false;
@@ -27,9 +26,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             //dump_builtins = true;
         #endif
 
-        dc = &_dc;
         auto err = RunLobster(filename, {}, dump_builtins);
-        dc = nullptr;
 
         doc->rootgrid->ResetChildren();
         doc->Refresh();
