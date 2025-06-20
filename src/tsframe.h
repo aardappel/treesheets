@@ -1228,26 +1228,13 @@ struct TSFrame : wxFrame {
             }
         }  // wait until all tasks are finished
         RenderFolderIcon();
-        if (nb) {
-            loop(i, nb->GetPageCount()) {
-                TSCanvas *p = (TSCanvas *)nb->GetPage(i);
-                p->doc->curdrawroot->ResetChildren();
-                p->doc->curdrawroot->ResetLayout();
-                p->doc->scrolltoselection = true;
-            }
-            nb->SetTabCtrlHeight(-1);
-        }
         idd->FillBitmapVector(imagepath);
-        if (GetStatusBar()) SetDPIAwareStatusWidths();
+        dce.Skip();
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        wxString s_filter = filter->GetValue();
-        wxString s_replaces = replaces->GetValue();
-        delete (tb);
+        if (tb) DELETEP(tb);
         ConstructToolBar();
-        filter->SetValue(s_filter);
-        replaces->SetValue(s_replaces);
         se.Skip();
     }
 
