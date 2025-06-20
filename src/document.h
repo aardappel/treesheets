@@ -443,18 +443,17 @@ struct Document {
         if (hover.Thin()) return;
         ShiftToCenter(dc);
         if (begindrag.Thin() || selected.Thin()) {
-            DrawSelect(dc, selected);
             SetSelect(hover);
-            DrawSelect(dc, selected, true);
+            ResetCursor();
+            Refresh();
         } else {
             auto old = selected;
             selected.Merge(begindrag, hover);
             if (!(old == selected)) {
-                DrawSelect(dc, old);
-                DrawSelect(dc, selected, true);
+                ResetCursor();
+                Refresh();
             }
         }
-        ResetCursor();
         return;
     }
 
