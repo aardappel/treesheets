@@ -268,7 +268,7 @@ struct Document {
         return refreshalways;
     }
 
-    void ScrollOrZoom(wxDC &dc, bool zoomiftiny = false) {
+    void ScrollOrZoom(bool zoomiftiny = false) {
         if (!selected.g) return;
         auto drawroot = WalkPath(drawpath);
         // If we jumped to a cell which may be insided a folded cell, we have to unfold it
@@ -1491,14 +1491,14 @@ struct Document {
                 } else {
                     selected.SelAll();
                 }
-                ScrollOrZoom(dc);
+                ScrollOrZoom();
                 return nullptr;
 
             case A_NEWGRID:
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (c->grid) {
                     SetSelect(Selection(c->grid, 0, c->grid->ys, 1, 0));
-                    ScrollOrZoom(dc, true);
+                    ScrollOrZoom(true);
                 } else {
                     c->AddUndo(this);
                     c->AddGrid();
@@ -1884,7 +1884,7 @@ struct Document {
             case A_ENTERGRID:
                 if (!c->grid) Action(A_NEWGRID);
                 SetSelect(Selection(c->grid, 0, 0, 1, 1));
-                ScrollOrZoom(dc, true);
+                ScrollOrZoom(true);
                 return nullptr;
 
             case A_LINK:
@@ -1901,7 +1901,7 @@ struct Document {
                                        k == A_LINKIMG || k == A_LINKIMGREV);
                 if (!link || !link->parent) return _(L"No matching cell found!");
                 SetSelect(link->parent->grid->FindCell(link));
-                ScrollOrZoom(dc, true);
+                ScrollOrZoom(true);
                 return nullptr;
             }
 
@@ -1934,7 +1934,7 @@ struct Document {
                 if (!next) return _(L"No matches for filter.");
                 if (next->parent) SetSelect(next->parent->grid->FindCell(next));
                 sw->SetFocus();
-                ScrollOrZoom(dc, true);
+                ScrollOrZoom(true);
                 return nullptr;
         }
 
@@ -1991,7 +1991,7 @@ struct Document {
         if (!jump) return nullptr;
         SetSelect(next->parent->grid->FindCell(next));
         if (focusmatch) sw->SetFocus();
-        ScrollOrZoom(dc, true);
+        ScrollOrZoom(true);
         return nullptr;
     }
 
@@ -2204,7 +2204,7 @@ struct Document {
             undolistsizeatfullsave = -1;  // gone beyond the save point, always modified
         modified = undolistsizeatfullsave != undolist.size();
         if (selected.g)
-            ScrollOrZoom(dc);
+            ScrollOrZoom();
         else
             Refresh();
         UpdateFileName();
