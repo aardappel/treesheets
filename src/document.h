@@ -326,7 +326,6 @@ struct Document {
         begindrag = Selection();
         if (right && hover.IsInside(selected)) return;
         ShiftToCenter(dc);
-        DrawSelect(dc, selected);
         if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
         SetSelect(hover);
         isctrlshiftdrag = isctrlshift;
