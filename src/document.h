@@ -1685,7 +1685,7 @@ struct Document {
             case A_CHOME:
             case A_CEND:
                 if (selected.TextEdit()) break;
-                selected.HomeEnd(this, dc, k == A_HOME || k == A_CHOME);
+                selected.HomeEnd(this, k == A_HOME || k == A_CHOME);
                 return nullptr;
 
             case A_IMAGESCP:
@@ -1881,8 +1881,8 @@ struct Document {
         if (!c) return OneCell();
 
         switch (k) {
-            case A_NEXT: selected.Next(this, dc, false); return nullptr;
-            case A_PREV: selected.Next(this, dc, true); return nullptr;
+            case A_NEXT: selected.Next(this, false); return nullptr;
+            case A_PREV: selected.Next(this, true); return nullptr;
 
             case A_ENTERGRID:
                 if (!c->grid) Action(A_NEWGRID);

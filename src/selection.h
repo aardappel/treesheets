@@ -318,7 +318,7 @@ class Selection {
         }
     }
 
-    void Next(Document *doc, wxDC &dc, bool backwards) {
+    void Next(Document *doc, bool backwards) {
         ExitEdit(doc);
         if (backwards) {
             if (x > 0)
@@ -383,7 +383,7 @@ class Selection {
         return GetCell();
     }
 
-    void HomeEnd(Document *doc, wxDC &dc, bool ishome) {
+    void HomeEnd(Document *doc, bool ishome) {
         xs = ys = 1;
         if (ishome)
             x = y = 0;
