@@ -936,7 +936,7 @@ struct Document {
 
             case wxID_UNDO:
                 if (undolist.size()) {
-                    Undo(dc, undolist, redolist);
+                    Undo(undolist, redolist);
                     return nullptr;
                 } else {
                     return _(L"Nothing more to undo.");
@@ -944,7 +944,7 @@ struct Document {
 
             case wxID_REDO:
                 if (redolist.size()) {
-                    Undo(dc, redolist, undolist, true);
+                    Undo(redolist, undolist, true);
                     return nullptr;
                 } else {
                     return _(L"Nothing more to redo.");
@@ -1943,7 +1943,7 @@ struct Document {
         switch (k) {
             case A_CANCELEDIT:
                 if (LastUndoSameCellTextEdit(c))
-                    Undo(dc, undolist, redolist);
+                    Undo(undolist, redolist);
                 else
                     Refresh();
                 selected.ExitEdit(this);
@@ -2179,7 +2179,7 @@ struct Document {
         undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
-    void Undo(wxDC &dc, auto &fromlist, auto &tolist, bool redo = false) {
+    void Undo(auto &fromlist, auto &tolist, bool redo = false) {
         auto beforesel = selected;
         vector<Selection> beforepath;
         if (beforesel.g) CreatePath(beforesel.g->cell, beforepath);
