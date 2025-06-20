@@ -499,8 +499,7 @@ struct Document {
                 selected.g->cell->ResetLayout();
                 selected.g->cell->ResetChildren();
                 sys->UpdateStatus(selected);
-                scrolltoselection = true;
-                Refresh();
+                RefreshMove(selected);
                 return dir > 0 ? _(L"Column width increased.") : _(L"Column width decreased.");
             }
             return L"nothing to resize";
@@ -510,8 +509,7 @@ struct Document {
             selected.g->ResetChildren();
             selected.g->RelSize(-dir, selected, pathscalebias);
             sys->UpdateStatus(selected);
-            scrolltoselection = true;
-            Refresh();
+            RefreshMove(selected);
             return dir > 0 ? _(L"Text size increased.") : _(L"Text size decreased.");
         } else if (ctrl) {
             int steps = abs(dir);
