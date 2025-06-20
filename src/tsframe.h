@@ -1228,7 +1228,6 @@ struct TSFrame : wxFrame {
             }
         }  // wait until all tasks are finished
         RenderFolderIcon();
-        idd->FillBitmapVector(imagepath);
         dce.Skip();
     }
 
