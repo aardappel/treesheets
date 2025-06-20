@@ -731,14 +731,13 @@ struct Document {
             selected.SelAll();
             Refresh();
         } else if (auto c = selected.GetCell()) {
-            DrawSelect(dc, selected);
             if (selected.TextEdit()) {
                 c->text.SelectWord(selected);
                 begindrag = selected;
             } else {
                 selected.EnterEditOnly(this);
             }
-            DrawSelect(dc, selected, true);
+            Refresh();
         }
         return nullptr;
     }
