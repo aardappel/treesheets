@@ -1412,17 +1412,17 @@ struct Document {
             case A_UP:
             case A_DOWN:
             case A_LEFT:
-            case A_RIGHT: selected.Cursor(this, k, false, false, dc); return nullptr;
+            case A_RIGHT: selected.Cursor(this, k, false, false); return nullptr;
 
             case A_MUP:
             case A_MDOWN:
             case A_MLEFT:
-            case A_MRIGHT: selected.Cursor(this, k - A_MUP + A_UP, true, false, dc); return nullptr;
+            case A_MRIGHT: selected.Cursor(this, k - A_MUP + A_UP, true, false); return nullptr;
 
             case A_SUP:
             case A_SDOWN:
             case A_SLEFT:
-            case A_SRIGHT: selected.Cursor(this, k - A_SUP + A_UP, false, true, dc); return nullptr;
+            case A_SRIGHT: selected.Cursor(this, k - A_SUP + A_UP, false, true); return nullptr;
 
             case A_SCLEFT:
             case A_SCRIGHT:
@@ -1437,7 +1437,7 @@ struct Document {
                     Refresh();
                     return nullptr;
                 }
-                selected.Cursor(this, k - A_SCUP + A_UP, true, true, dc);
+                selected.Cursor(this, k - A_SCUP + A_UP, true, true);
                 return nullptr;
 
             case A_SCUP:
@@ -1547,7 +1547,7 @@ struct Document {
             case A_PROGRESSCELL: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (selected.TextEdit()) {
-                    selected.Cursor(this, (k == A_ENTERCELL ? A_DOWN : A_RIGHT), false, false, dc,
+                    selected.Cursor(this, (k == A_ENTERCELL ? A_DOWN : A_RIGHT), false, false, 
                                     true);
                 } else {
                     selected.EnterEdit(this,
