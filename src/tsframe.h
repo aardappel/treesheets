@@ -1212,7 +1212,13 @@ struct TSFrame : wxFrame {
         SetStatusWidths(5, swidths);
     }
 
+    void ReconstructToolBar() {
+        if (tb) DELETEP(tb);
+        ConstructToolBar();
+    }
+
     void OnDPIChanged(wxDPIChangedEvent &dce) {
+        ReconstructToolBar();
         // block all other events until we finished preparing
         wxEventBlocker blocker(this);
         wxBusyCursor wait;
@@ -1228,13 +1234,11 @@ struct TSFrame : wxFrame {
             }
         }  // wait until all tasks are finished
         RenderFolderIcon();
-        idd->FillBitmapVector(imagepath);
         dce.Skip();
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        if (tb) DELETEP(tb);
-        ConstructToolBar();
+        ReconstructToolBar();
         se.Skip();
     }
 
