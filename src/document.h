@@ -288,14 +288,14 @@ struct Document {
                 RefreshMove(selected);
                 return;
             }
-        Zoom(-100, dc, false);
+        Zoom(-100, false);
         if (zoomiftiny) ZoomTiny(dc);
         RefreshMove(selected);
     }
 
     void ZoomTiny(wxDC &dc) {
         if (auto c = selected.GetCell(); c && c->tiny) {
-            Zoom(1, dc);  // seems to leave selection box in a weird location?
+            Zoom(1);  // seems to leave selection box in a weird location?
             if (selected.GetCell() != c) ZoomTiny(dc);
         }
     }
@@ -473,7 +473,7 @@ struct Document {
             drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
     }
 
-    void Zoom(int dir, wxDC &dc, bool fromroot = false) {
+    void Zoom(int dir, bool fromroot = false) {
         ZoomSetDrawPath(dir, fromroot);
         auto drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
@@ -519,7 +519,7 @@ struct Document {
         } else if (ctrl) {
             int steps = abs(dir);
             dir = sign(dir);
-            loop(i, steps) Zoom(dir, dc);
+            loop(i, steps) Zoom(dir);
             return dir > 0 ? _(L"Zoomed in.") : _(L"Zoomed out.");
         } else {
             ASSERT(0);
@@ -2007,7 +2007,7 @@ struct Document {
     }
 
     void ZoomOutIfNoGrid(wxDC &dc) {
-        if (!WalkPath(drawpath)->grid) Zoom(-1, dc);
+        if (!WalkPath(drawpath)->grid) Zoom(-1);
     }
 
     void PasteSingleText(Cell *c, const wxString &s) { c->text.Insert(this, s, selected, false); }

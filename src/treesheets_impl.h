@@ -106,7 +106,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             Selection s(cur->grid, x, y, xs, ys);
             cur->grid->MultiCellDeleteSub(doc, s);
             doc->SetSelect(Selection());
-            doc->Zoom(-100, *dc);
+            doc->Zoom(-100);
         }
     }
 
