@@ -325,7 +325,6 @@ struct Document {
     void Select(wxDC &dc, bool right, int isctrlshift) {
         begindrag = Selection();
         if (right && hover.IsInside(selected)) return;
-        ShiftToCenter(dc);
         if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
         SetSelect(hover);
         isctrlshiftdrag = isctrlshift;
@@ -440,8 +439,7 @@ struct Document {
             begindrag = hover;
             return;
         }
-        if (hover.Thin()) return;
-        ShiftToCenter(dc);
+        if (hover.Thin()) return;;
         if (begindrag.Thin() || selected.Thin()) {
             SetSelect(hover);
             ResetCursor();
@@ -493,7 +491,6 @@ struct Document {
     const wxChar *Wheel(wxDC &dc, int dir, bool alt, bool ctrl, bool shift,
                         bool hierarchical = true) {
         if (!dir) return nullptr;
-        ShiftToCenter(dc);
         if (alt) {
             if (!selected.g) return NoSel();
             if (selected.xs > 0) {
@@ -725,7 +722,6 @@ struct Document {
 
     const wxChar *DoubleClick(wxDC &dc) {
         if (!selected.g) return nullptr;
-        ShiftToCenter(dc);
         if (selected.Thin()) {
             selected.SelAll();
             Refresh();
