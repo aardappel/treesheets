@@ -284,19 +284,19 @@ struct Document {
         }
         for (auto cg = selected.g->cell; cg; cg = cg->parent)
             if (cg == drawroot) {
-                if (zoomiftiny) ZoomTiny(dc);
+                if (zoomiftiny) ZoomTiny();
                 RefreshMove(selected);
                 return;
             }
         Zoom(-100, false);
-        if (zoomiftiny) ZoomTiny(dc);
+        if (zoomiftiny) ZoomTiny();
         RefreshMove(selected);
     }
 
-    void ZoomTiny(wxDC &dc) {
+    void ZoomTiny() {
         if (auto c = selected.GetCell(); c && c->tiny) {
             Zoom(1);  // seems to leave selection box in a weird location?
-            if (selected.GetCell() != c) ZoomTiny(dc);
+            if (selected.GetCell() != c) ZoomTiny();
         }
     }
 
