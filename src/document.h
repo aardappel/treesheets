@@ -295,7 +295,6 @@ struct Document {
             }
         Zoom(-100, false);
         if (zoomiftiny) ZoomTiny();
-        RefreshMove(selected);
     }
 
     void ZoomTiny() {
