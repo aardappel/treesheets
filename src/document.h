@@ -78,7 +78,6 @@ struct Document {
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
-    bool redrawpending {false};
     bool scrolltoselection {true};
     bool scaledviewingmode {false};
     bool updatehover {false};
@@ -572,7 +571,6 @@ struct Document {
     }
 
     void Draw(wxPaintDC &dc) {
-        redrawpending = false;
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
         if (!rootgrid) return;
@@ -672,20 +670,8 @@ struct Document {
 
     void Refresh() {
         if (sw) {
-            hover.g = nullptr;
-            redrawpending = true;
-            sys->UpdateStatus(selected);
-            #ifdef SIMPLERENDER
-                // wxWidgets (wxGTK, wxMAC) does not always automatically update the scrollbar
-                // to new canvas size and current position within after zoom so force it manually
-                int curx, cury;
-                sw->GetViewStart(&curx, &cury);
-                sw->SetScrollbars(1, 1, layoutxs, layoutys, curx, cury, true);
-            #endif
-            sw->Refresh(false);
-            #ifdef __WXGTK__
-                sw->Update();
-            #endif
+            sw->Refresh();
+            sw->Update();
         }
     }
 
