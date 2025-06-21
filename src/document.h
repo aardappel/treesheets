@@ -488,7 +488,7 @@ struct Document {
     const wxChar *NoThin() { return _(L"This operation doesn't work on thin selections."); }
     const wxChar *NoGrid() { return _(L"This operation requires a cell that contains a grid."); }
 
-    const wxChar *Wheel(wxDC &dc, int dir, bool alt, bool ctrl, bool shift,
+    const wxChar *Wheel(int dir, bool alt, bool ctrl, bool shift,
                         bool hierarchical = true) {
         if (!dir) return nullptr;
         if (alt) {
@@ -906,10 +906,8 @@ struct Document {
             }
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
-            wxClientDC dc(sw);
-            ShiftToCenter(dc);
             c->text.Key(this, uk, selected);
-            ScrollIfSelectionOutOfView(dc, selected, true);
+            RefreshMove(selected);
             return nullptr;
         }
         unprocessed = true;
@@ -1039,17 +1037,17 @@ struct Document {
                 return nullptr;
 
             case A_ZOOMIN:
-                return Wheel(dc, 1, false, true,
+                return Wheel(1, false, true,
                              false);  // Zoom( 1, dc); return "zoomed in (menu)";
             case A_ZOOMOUT:
-                return Wheel(dc, -1, false, true,
+                return Wheel(-1, false, true,
                              false);  // Zoom(-1, dc); return "zoomed out (menu)";
-            case A_INCSIZE: return Wheel(dc, 1, false, false, true);
-            case A_DECSIZE: return Wheel(dc, -1, false, false, true);
-            case A_INCWIDTH: return Wheel(dc, 1, true, false, false);
-            case A_DECWIDTH: return Wheel(dc, -1, true, false, false);
-            case A_INCWIDTHNH: return Wheel(dc, 1, true, false, false, false);
-            case A_DECWIDTHNH: return Wheel(dc, -1, true, false, false, false);
+            case A_INCSIZE: return Wheel(1, false, false, true);
+            case A_DECSIZE: return Wheel( -1, false, false, true);
+            case A_INCWIDTH: return Wheel(1, true, false, false);
+            case A_DECWIDTH: return Wheel(-1, true, false, false);
+            case A_INCWIDTHNH: return Wheel(1, true, false, false, false);
+            case A_DECWIDTHNH: return Wheel(-1, true, false, false, false);
 
             case wxID_SELECT_FONT: {
                 wxFontData fdat;
