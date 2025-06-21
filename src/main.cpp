@@ -3,9 +3,7 @@
 
 static_assert(wxCHECK_VERSION(3, 2, 6), "wxWidgets < 3.2.6 is not supported.");
 
-#ifndef __WXMSW__
 #define SIMPLERENDER
-#endif
 
 //#define SIMPLERENDER // for testing
 
