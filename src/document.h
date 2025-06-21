@@ -246,11 +246,9 @@ struct Document {
         sys->UpdateStatus(hover);
     }
 
-    bool ScrollIfSelectionOutOfView(wxDC &dc, Selection &sel, bool refreshalways = false,
-                                    bool needslayout = true) {
+    void ScrollIfSelectionOutOfView(wxDC &dc, Selection &sel) {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
-            if (needslayout) Layout(dc);
             int canvasw, canvash;
             sw->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && sel.g) {
@@ -269,13 +267,10 @@ struct Document {
                                           ? r.y + r.height - canvash + wxSYS_HSCROLL_Y
                                           : cury,
                                       true);
-                    if (needslayout) sw->Refresh();
-                    return true;
                 }
             }
         }
-        if (refreshalways) sw->Refresh();
-        return refreshalways;
+
     }
 
     void ScrollOrZoom(bool zoomiftiny = false) {
@@ -612,7 +607,7 @@ struct Document {
         Render(dc);
         DrawSelect(dc, selected);
         if (scrolltoselection) {
-            ScrollIfSelectionOutOfView(dc, selected, false, false);
+            ScrollIfSelectionOutOfView(dc, selected);
             scrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
