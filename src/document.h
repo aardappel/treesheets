@@ -227,7 +227,7 @@ struct Document {
         s.g->DrawSelect(this, dc, s);
     }
 
-    void RefreshMove(Selection &s) {
+    void RefreshMove() {
         scrolltoselection = true;
         sw->Refresh();
     }
@@ -287,7 +287,7 @@ struct Document {
         for (auto cg = selected.g->cell; cg; cg = cg->parent)
             if (cg == drawroot) {
                 if (zoomiftiny) ZoomTiny();
-                RefreshMove(selected);
+                RefreshMove();
                 return;
             }
         Zoom(-100, false);
@@ -457,7 +457,7 @@ struct Document {
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
-        RefreshMove(selected);
+        RefreshMove();
     }
 
     const wxChar *NoSel() { return _(L"This operation requires a selection."); }
@@ -474,7 +474,7 @@ struct Document {
                 selected.g->ResizeColWidths(dir, selected, hierarchical);
                 selected.g->cell->ResetLayout();
                 selected.g->cell->ResetChildren();
-                RefreshMove(selected);
+                RefreshMove();
                 return dir > 0 ? _(L"Column width increased.") : _(L"Column width decreased.");
             }
             return L"nothing to resize";
@@ -483,7 +483,7 @@ struct Document {
             selected.g->cell->AddUndo(this);
             selected.g->ResetChildren();
             selected.g->RelSize(-dir, selected, pathscalebias);
-            RefreshMove(selected);
+            RefreshMove();
             return dir > 0 ? _(L"Text size increased.") : _(L"Text size decreased.");
         } else if (ctrl) {
             int steps = abs(dir);
@@ -871,7 +871,7 @@ struct Document {
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
             c->text.Key(this, uk, selected);
-            RefreshMove(selected);
+            RefreshMove();
             return nullptr;
         }
         unprocessed = true;
@@ -1453,7 +1453,7 @@ struct Document {
                     c->AddUndo(this);
                     c->AddGrid();
                     SetSelect(Selection(c->grid, 0, 0, 1, 1));
-                    RefreshMove(selected);
+                    RefreshMove();
                 }
                 return nullptr;
 
@@ -1500,7 +1500,7 @@ struct Document {
                     selected.EnterEdit(this,
                                        (k == A_ENTERCELL_JUMPTOEND) ? (int)c->text.t.Len() : 0,
                                        (int)c->text.t.Len());
-                    RefreshMove(selected);
+                    RefreshMove();
                 }
                 return nullptr;
             }
@@ -1924,7 +1924,7 @@ struct Document {
                     case A_HOME: c->text.HomeEnd(selected, true); break;
                     case A_END: c->text.HomeEnd(selected, false); break;
                 }
-                RefreshMove(selected);
+                RefreshMove();
                 return nullptr;
             }
             default: return _(L"Internal error: unimplemented operation!");

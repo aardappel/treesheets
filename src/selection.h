@@ -134,7 +134,7 @@ class Selection {
             // FIXME: this is null in the case of a whole column selection, and doesn't do the right
             // thing.
             if (g) g->cell->ResetChildren();
-            doc->RefreshMove(*this);
+            doc->RefreshMove();
         } else {
             if (ctrl && dx)  // implies textedit
             {
@@ -299,7 +299,7 @@ class Selection {
                     }
                 };
             }
-            doc->RefreshMove(*this);
+            doc->RefreshMove();
         };
     }
 
@@ -338,7 +338,7 @@ class Selection {
                 x = y = 0;
         }
         EnterEdit(doc, 0, MaxCursor());
-        doc->RefreshMove(*this);
+        doc->RefreshMove();
     }
 
     const wxChar *Wrap(Document *doc) {
@@ -389,6 +389,6 @@ class Selection {
             x = g->xs - 1;
             y = g->ys - 1;
         }
-        doc->RefreshMove(*this);
+        doc->RefreshMove();
     }
 };
