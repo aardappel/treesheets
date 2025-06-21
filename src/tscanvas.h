@@ -24,13 +24,7 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnPaint(wxPaintEvent &event) {
         wxPaintDC dc(this);
-        // DoPrepareDC(dc);
         doc->Draw(dc);
-        // Display has been re-layouted, compute hover selection again.
-        // TODO: lastmousepos doesn't seem correct anymore after a scroll operation in latest
-        // wxWidgets.
-        /*
-        */
     };
 
     void RefreshHover(int mx, int my) {
