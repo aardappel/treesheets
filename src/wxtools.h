@@ -13,8 +13,7 @@ struct DropTarget : wxDropTarget {
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
         auto sw = sys->frame->GetCurTab();
-        wxClientDC dc(sw);
-        sw->UpdateHover(x, y, dc);
+        sw->RefreshHover(x, y);
         return sw->doc->hover.g ? wxDragCopy : wxDragNone;
     }
 

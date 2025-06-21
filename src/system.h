@@ -53,9 +53,7 @@ struct System {
     uint lasttextcolor {0};
     uint lastbordcolor {0xA0A0A0};
     int customcolor {0xFFFFFF};
-    #ifdef SIMPLERENDER
     int cursorcolor {0x00FF00};
-    #endif
 
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
@@ -85,9 +83,7 @@ struct System {
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
         cfg->Read(L"customcolor", &customcolor, customcolor);
-        #ifdef SIMPLERENDER
-            cfg->Read(L"cursorcolor", &cursorcolor, cursorcolor);
-        #endif
+        cfg->Read(L"cursorcolor", &cursorcolor, cursorcolor);
         cfg->Read(L"showtoolbar", &showtoolbar, showtoolbar);
         cfg->Read(L"showstatusbar", &showstatusbar, showstatusbar);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
@@ -181,6 +177,7 @@ struct System {
         Document *doc = nullptr;
         auto anyimagesfailed = false;
         auto start_loading_time = wxGetLocalTimeMillis();
+        int zoomlevel = 0;
 
         {  // limit destructors
             wxBusyCursor wait;
@@ -203,7 +200,7 @@ struct System {
             if (versionlastloaded > TS_VERSION) return _(L"File of newer version.");
             auto xs = versionlastloaded >= 21 ? dis.Read8() : 1;
             auto ys = versionlastloaded >= 21 ? dis.Read8() : 1;
-            auto zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
+            zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
             fakelasteditonload = wxDateTime::Now().GetValue();
 
             loadimageids.clear();
@@ -274,7 +271,6 @@ struct System {
                             doc->modified = true;
                         }
                         doc->InitWith(root, filename, ics, xs, ys);
-                        doc->initialzoomlevel = zoomlevel;
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
@@ -320,7 +316,7 @@ struct System {
         }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
-        doc->Refresh();
+        doc->Zoom(zoomlevel, true);
         if (anyimagesfailed)
             wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _(L"PNG decoder failure"), wxOK, frame);
@@ -362,26 +358,6 @@ struct System {
 
         cfg->Write(L"numopenfiles", namedfiles);
         cfg->Flush();
-    }
-
-    void UpdateStatus(Selection &s) {
-        if (frame->GetStatusBar()) {
-            auto c = s.GetCell();
-            if (c && s.xs) {
-                frame->SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
-                frame->SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
-                frame->SetStatusText(
-                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
-                                     c->text.lastedit.FormatTime().c_str()),
-                    1);
-            }
-        }
-    }
-
-    void UpdateAmountStatus(Selection &s) {
-        if (frame->GetStatusBar()) {
-            frame->SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
-        }
     }
 
     void SaveCheck() {

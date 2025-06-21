@@ -279,8 +279,7 @@ struct Text {
         ASSERT(s.cursor >= 0 && s.cursor <= (int)t.Len());
     }
 
-    void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color, bool cursoronly,
-                    int maxcolwidth) {
+    void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color, int maxcolwidth) {
         auto ixs = 0, iys = 0;
         if (!cell->tiny) sys->ImageSize(DisplayImage(), ixs, iys);
         if (ixs) ixs += 2;
@@ -295,7 +294,7 @@ struct Text {
                 auto end = start + len;
 
                 if (s.cursor != s.cursorend) {
-                    if (s.cursor <= end && s.cursorend >= start && !cursoronly) {
+                    if (s.cursor <= end && s.cursorend >= start) {
                         ls.Truncate(min(s.cursorend, end) - start);
                         auto x1 = 0, x2 = 0;
                         dc.GetTextExtent(ls, &x2, nullptr);
@@ -305,20 +304,15 @@ struct Text {
                             DrawRectangle(
                                 dc, color, cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra,
                                 cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra,
-                                x2 - x1, h - 1
-                                #ifdef SIMPLERENDER
-                                ,
-                                true
-                                #endif
-                                );
+                                x2 - x1, h - 1, true);
                     }
                 } else if (s.cursor >= start && s.cursor <= end) {
                     ls.Truncate(s.cursor - start);
                     auto x = 0;
                     dc.GetTextExtent(ls, &x, nullptr);
                     DrawRectangle(dc, color, cell->GetX(doc) + x + 1 + ixs + g_margin_extra,
-                            cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra, 2,
-                            h - 2);
+                                  cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra,
+                                  2, h - 2);
                     break;
                 }
 
