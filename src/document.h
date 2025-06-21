@@ -241,8 +241,9 @@ struct Document {
         hover = Selection();
         auto drawroot = WalkPath(drawpath);
         if (drawroot->grid)
-            drawroot->grid->FindXY(this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
-                               y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
+            drawroot->grid->FindXY(
+                this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
+                y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
         sys->UpdateStatus(hover);
     }
 
@@ -270,7 +271,6 @@ struct Document {
                 }
             }
         }
-
     }
 
     void ScrollOrZoom(bool zoomiftiny = false) {
@@ -419,7 +419,7 @@ struct Document {
             begindrag = hover;
             return;
         }
-        if (hover.Thin()) return;;
+        if (hover.Thin()) return;
         if (begindrag.Thin() || selected.Thin()) {
             SetSelect(hover);
             ResetCursor();
@@ -468,8 +468,7 @@ struct Document {
     const wxChar *NoThin() { return _(L"This operation doesn't work on thin selections."); }
     const wxChar *NoGrid() { return _(L"This operation requires a cell that contains a grid."); }
 
-    const wxChar *Wheel(int dir, bool alt, bool ctrl, bool shift,
-                        bool hierarchical = true) {
+    const wxChar *Wheel(int dir, bool alt, bool ctrl, bool shift, bool hierarchical = true) {
         if (!dir) return nullptr;
         if (alt) {
             if (!selected.g) return NoSel();
@@ -595,7 +594,8 @@ struct Document {
             if (selectclick) {
                 begindrag = Selection();
                 if (!(clickright && hover.IsInside(selected))) {
-                    if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
+                    if (selected.GetCell() == hover.GetCell() && hover.GetCell())
+                        hover.EnterEditOnly(this);
                     SetSelect(hover);
                     isctrlshiftdrag = clickisctrlshift;
                     scrolltoselection = true;
@@ -888,7 +888,6 @@ struct Document {
     }
 
     const wxChar *Action(int k) {
-
         switch (k) {
             case wxID_EXECUTE:
                 sys->ev.Eval(rootgrid);
@@ -1013,7 +1012,7 @@ struct Document {
                 return Wheel(-1, false, true,
                              false);  // Zoom(-1, dc); return "zoomed out (menu)";
             case A_INCSIZE: return Wheel(1, false, false, true);
-            case A_DECSIZE: return Wheel( -1, false, false, true);
+            case A_DECSIZE: return Wheel(-1, false, false, true);
             case A_INCWIDTH: return Wheel(1, true, false, false);
             case A_DECWIDTH: return Wheel(-1, true, false, false);
             case A_INCWIDTHNH: return Wheel(1, true, false, false, false);
@@ -1504,7 +1503,7 @@ struct Document {
             case A_PROGRESSCELL: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
                 if (selected.TextEdit()) {
-                    selected.Cursor(this, (k == A_ENTERCELL ? A_DOWN : A_RIGHT), false, false, 
+                    selected.Cursor(this, (k == A_ENTERCELL ? A_DOWN : A_RIGHT), false, false,
                                     true);
                 } else {
                     selected.EnterEdit(this,

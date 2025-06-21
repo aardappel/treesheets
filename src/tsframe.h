@@ -893,7 +893,8 @@ struct TSFrame : wxFrame {
         AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
         AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg", L"fileopen_dark.svg");
         AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg", L"filesave_dark.svg");
-        AddTBIcon(_(L"Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg", L"filesaveas_dark.svg");
+        AddTBIcon(_(L"Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg",
+                  L"filesaveas_dark.svg");
         SEPARATOR;
         AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
         AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg", L"editcopy_dark.svg");

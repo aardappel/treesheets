@@ -121,8 +121,8 @@ class Selection {
         return TEXT_CHAR;
     }
 
-    void Dir(Document *doc, bool ctrl, bool shift, int dx, int dy, int &v, int &vs,
-             int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
+    void Dir(Document *doc, bool ctrl, bool shift, int dx, int dy, int &v, int &vs, int &ovs,
+             bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
             g->cell->AddUndo(doc);
 
@@ -309,9 +309,7 @@ class Selection {
             case A_DOWN:
                 Dir(doc, ctrl, shift, 0, 1, y, ys, xs, y < g->ys, y < g->ys - 1, exitedit);
                 break;
-            case A_LEFT:
-                Dir(doc, ctrl, shift, -1, 0, x, xs, ys, x != 0, x != 0, exitedit);
-                break;
+            case A_LEFT: Dir(doc, ctrl, shift, -1, 0, x, xs, ys, x != 0, x != 0, exitedit); break;
             case A_RIGHT:
                 Dir(doc, ctrl, shift, 1, 0, x, xs, ys, x < g->xs, x < g->xs - 1, exitedit);
                 break;

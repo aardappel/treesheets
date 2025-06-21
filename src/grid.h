@@ -417,8 +417,7 @@ struct Grid {
             dc.DrawRectangle(g.x + g.width, g.y + g.height - 2, lw + 2, lw + 4);
             dc.DrawRectangle(g.x + g.width - lw - 1, g.y + g.height - 2 + 2 * te, lw + 1,
                              lw + 4 - 2 * te);
-            if (sel.TextEdit())
-                DrawCursor(doc, dc, sel, true, sys->cursorcolor);
+            if (sel.TextEdit()) DrawCursor(doc, dc, sel, true, sys->cursorcolor);
         }
     }
 

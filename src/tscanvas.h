@@ -51,7 +51,7 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void SelectClick(int mx, int my, bool right, int isctrlshift) {
         if (mx < 0 || my < 0)
-            return; // for some reason, using just the "menu" key sends a right-click at (-1, -1)
+            return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
         doc->selectclick = true;
         doc->clickright = right;
         doc->clickisctrlshift = isctrlshift;
