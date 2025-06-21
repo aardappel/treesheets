@@ -27,6 +27,8 @@ struct Document {
     int layoutxs;
     int layoutys;
     int hierarchysize;
+    int mx;
+    int my;
     int fgutter {6};
     int lasttextsize;
     int laststylebits;
@@ -79,6 +81,7 @@ struct Document {
     bool redrawpending {false};
     bool scrolltoselection {true};
     bool scaledviewingmode {false};
+    bool updatehover {false};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -236,6 +239,18 @@ struct Document {
         Refresh();
     }
 
+    void UpdateHover(wxDC &dc) {
+        int x, y;
+        sw->CalcUnscrolledPosition(mx, my, &x, &y);
+        Selection prev = hover;
+        hover = Selection();
+        auto drawroot = WalkPath(drawpath);
+        if (drawroot->grid)
+            drawroot->grid->FindXY(this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
+                               y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
+        sys->UpdateStatus(hover);
+    }
+
     bool ScrollIfSelectionOutOfView(wxDC &dc, Selection &sel, bool refreshalways = false,
                                     bool needslayout = true) {
         if (!scaledviewingmode) {
@@ -302,19 +317,6 @@ struct Document {
 
     void ResetCursor() {
         if (selected.g) selected.SetCursorEdit(this, selected.TextEdit());
-    }
-
-    void Hover(int x, int y, wxDC &dc) {
-        if (redrawpending) return;
-        ShiftToCenter(dc);
-        ResetFont();
-        Selection prev = hover;
-        hover = Selection();
-        auto drawroot = WalkPath(drawpath);
-        if (drawroot->grid)
-            drawroot->grid->FindXY(this, x - centerx / currentviewscale - hierarchysize,
-                                   y - centery / currentviewscale - hierarchysize, dc);
-        sys->UpdateStatus(hover);
     }
 
     void SetSelect(const Selection &sel = Selection()) {
@@ -613,6 +615,11 @@ struct Document {
         ShiftToCenter(dc);
         Render(dc);
         DrawSelect(dc, selected);
+        if (updatehover) {
+            UpdateHover(dc);
+            updatehover = false;
+            return;
+        }
         if (scrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected, false, false);
             scrolltoselection = false;
