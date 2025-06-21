@@ -596,7 +596,6 @@ struct Document {
                       : 0;
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
-        Render(dc);
         if (selectclick || updatehover) {
             UpdateHover(dc);
             if (selectclick) {
@@ -610,6 +609,7 @@ struct Document {
             }
             selectclick = clickright = clickisctrlshift = updatehover = false;
         }
+        Render(dc);
         DrawSelect(dc, selected);
         if (scrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected, false, false);
