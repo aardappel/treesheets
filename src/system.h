@@ -177,6 +177,7 @@ struct System {
         Document *doc = nullptr;
         auto anyimagesfailed = false;
         auto start_loading_time = wxGetLocalTimeMillis();
+        int zoomlevel = 0;
 
         {  // limit destructors
             wxBusyCursor wait;
@@ -199,7 +200,7 @@ struct System {
             if (versionlastloaded > TS_VERSION) return _(L"File of newer version.");
             auto xs = versionlastloaded >= 21 ? dis.Read8() : 1;
             auto ys = versionlastloaded >= 21 ? dis.Read8() : 1;
-            auto zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
+            zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
             fakelasteditonload = wxDateTime::Now().GetValue();
 
             loadimageids.clear();
@@ -270,7 +271,6 @@ struct System {
                             doc->modified = true;
                         }
                         doc->InitWith(root, filename, ics, xs, ys);
-                        doc->initialzoomlevel = zoomlevel;
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
@@ -316,7 +316,7 @@ struct System {
         }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
-        doc->sw->Refresh();
+        doc->Zoom(zoomlevel, true);
         if (anyimagesfailed)
             wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _(L"PNG decoder failure"), wxOK, frame);

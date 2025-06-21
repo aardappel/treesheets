@@ -32,7 +32,6 @@ struct Document {
     int fgutter {6};
     int lasttextsize;
     int laststylebits;
-    int initialzoomlevel {0};
     Cell *curdrawroot;  // for use during Render() calls
     vector<unique_ptr<UndoItem>> undolist;
     vector<unique_ptr<UndoItem>> redolist;
@@ -550,10 +549,6 @@ struct Document {
         dc.Clear();
         if (!rootgrid) return;
         sw->GetClientSize(&maxx, &maxy);
-        if (initialzoomlevel) {
-            ZoomSetDrawPath(initialzoomlevel);
-            initialzoomlevel = 0;
-        }
         Layout(dc);
         double xscale = maxx / (double)layoutxs;
         double yscale = maxy / (double)layoutys;
