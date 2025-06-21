@@ -316,7 +316,7 @@ struct System {
         }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
-        doc->Refresh();
+        doc->sw->Refresh();
         if (anyimagesfailed)
             wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _(L"PNG decoder failure"), wxOK, frame);

@@ -364,7 +364,7 @@ class Selection {
         delete old;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
-        doc->Refresh();
+        doc->sw->Refresh();
         return nullptr;
     }
 
