@@ -3,10 +3,6 @@
 
 static_assert(wxCHECK_VERSION(3, 2, 6), "wxWidgets < 3.2.6 is not supported.");
 
-#define SIMPLERENDER
-
-//#define SIMPLERENDER // for testing
-
 static const auto TS_VERSION = 24;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
@@ -231,9 +227,7 @@ enum {
     A_HELP_OP_REF,
     A_FSWATCH,
     A_DEFBGCOL,
-    #ifdef SIMPLERENDER
-        A_DEFCURCOL,
-    #endif
+    A_DEFCURCOL,
     A_THINSELC,
     A_COPYCT,
     A_COPYBM,

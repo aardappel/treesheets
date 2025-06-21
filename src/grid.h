@@ -399,9 +399,6 @@ struct Grid {
     }
 
     void DrawSelect(Document *doc, wxDC &dc, Selection &sel, bool cursoronly) {
-        #ifndef SIMPLERENDER
-        dc.SetLogicalFunction(wxINVERT);
-        #endif
         if (sel.Thin()) {
             if (!cursoronly) DrawInsert(doc, dc, sel, 0);
         } else {
@@ -423,19 +420,9 @@ struct Grid {
                 dc.DrawRectangle(g.x + g.width - lw - 1, g.y + g.height - 2 + 2 * te, lw + 1,
                                  lw + 4 - 2 * te);
             }
-            #ifndef SIMPLERENDER
-            dc.SetLogicalFunction(wxXOR);
-            #endif
             if (sel.TextEdit())
-            #ifdef SIMPLERENDER
                 DrawCursor(doc, dc, sel, true, sys->cursorcolor, cursoronly);
-            #else
-                DrawCursor(doc, dc, sel, true, 0xFFFF, cursoronly);
-            #endif
         }
-        #ifndef SIMPLERENDER
-        dc.SetLogicalFunction(wxCOPY);
-        #endif
     }
 
     void DeleteCells(int dx, int dy, int nxs, int nys) {

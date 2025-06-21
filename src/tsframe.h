@@ -596,10 +596,8 @@ struct TSFrame : wxFrame {
             _(L"Set a custom color for the color dropdowns from the selected cell background"));
         MyAppend(optmenu, A_DEFBGCOL, _(L"Background color..."),
                  _(L"Set the color for the document background"));
-        #ifdef SIMPLERENDER
         MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
                  _(L"Set the color for the text cursor"));
-        #endif
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(
             A_SHOWTBAR, _(L"Toolbar"),
