@@ -122,7 +122,6 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnMouseWheel(wxMouseEvent &me) {
         bool ctrl = me.CmdDown();
         if (sys->zoomscroll) ctrl = !ctrl;
-        wxClientDC dc(this);
         if (me.AltDown() || ctrl || me.ShiftDown()) {
             mousewheelaccum += me.GetWheelRotation();
             int steps = mousewheelaccum / me.GetWheelDelta();
