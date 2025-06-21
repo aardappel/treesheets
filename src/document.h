@@ -915,9 +915,6 @@ struct Document {
     }
 
     const wxChar *Action(int k) {
-        wxClientDC dc(sw);
-        sw->DoPrepareDC(dc);
-        ShiftToCenter(dc);
 
         switch (k) {
             case wxID_EXECUTE:
@@ -1132,7 +1129,7 @@ struct Document {
 
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {
-                if (sys->searchstring.Len()) return SearchNext(dc, false, true, k == A_SEARCHPREV);
+                if (sys->searchstring.Len()) return SearchNext(false, true, k == A_SEARCHPREV);
                 if (auto c = selected.GetCell()) {
                     auto s = c->text.ToText(0, selected, A_EXPTEXT);
                     if (!s.Len()) return _(L"No text to search for.");
@@ -1150,7 +1147,7 @@ struct Document {
                 sys->searchstring = (sys->casesensitivesearch)
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
-                auto msg = this->SearchNext(dc, false, false, false);
+                auto msg = this->SearchNext(false, false, false);
                 this->Refresh();
                 return msg;
             }
@@ -1194,7 +1191,7 @@ struct Document {
                 } else {
                     loopallcellssel(c, true) if (c->text.IsInSearch()) c->AddUndo(this);
                     selected.g->ReplaceStr(this, replaces, lreplaces, selected);
-                    if (k == A_REPLACEONCEJ) return SearchNext(dc, false, true, false);
+                    if (k == A_REPLACEONCEJ) return SearchNext(false, true, false);
                 }
                 return _(L"Text has been replaced.");
             }
@@ -1973,7 +1970,7 @@ struct Document {
         }
     }
 
-    const wxChar *SearchNext(wxDC &dc, bool focusmatch, bool jump, bool reverse) {
+    const wxChar *SearchNext(bool focusmatch, bool jump, bool reverse) {
         if (!rootgrid) return nullptr;  // fix crash when opening new doc
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
