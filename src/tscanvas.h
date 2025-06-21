@@ -96,7 +96,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnLeftDoubleClick(wxMouseEvent &me) {
         wxClientDC dc(this);
         UpdateHover(me.GetX(), me.GetY(), dc);
-        Status(doc->DoubleClick(dc));
+        Status(doc->DoubleClick());
     }
 
     void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }

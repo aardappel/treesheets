@@ -718,7 +718,7 @@ struct Document {
         return keep;
     }
 
-    const wxChar *DoubleClick(wxDC &dc) {
+    const wxChar *DoubleClick() {
         if (!selected.g) return nullptr;
         if (selected.Thin()) {
             selected.SelAll();
