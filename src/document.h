@@ -218,16 +218,11 @@ struct Document {
         return _(L"");
     }
 
-    void DrawSelect(wxDC &dc, Selection &sel, bool refreshinstead = false,
-                    bool cursoronly = false) {
+    void DrawSelect(wxDC &dc, Selection &sel) {
         sys->UpdateAmountStatus(sel);
-        if (refreshinstead) {
-            sw->Refresh();
-            return;
-        }
         if (!sel.g) return;
         ResetFont();
-        sel.g->DrawSelect(this, dc, sel, cursoronly);
+        sel.g->DrawSelect(this, dc, sel);
     }
 
     void RefreshMove(Selection &sel) {
@@ -327,8 +322,8 @@ struct Document {
         if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
         SetSelect(hover);
         isctrlshiftdrag = isctrlshift;
-        RefreshMove(selected);
         ResetCursor();
+        RefreshMove(selected);
         return;
     }
 
