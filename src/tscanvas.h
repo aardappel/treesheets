@@ -33,7 +33,7 @@ struct TSCanvas : public wxScrolledCanvas {
         */
     };
 
-    void RefreshHover(int mx, int my, wxDC &dc) {
+    void RefreshHover(int mx, int my) {
         doc->mx = mx;
         doc->my = my;
         doc->updatehover = true;
@@ -41,13 +41,12 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnMotion(wxMouseEvent &me) {
-        wxClientDC dc(this);
-        RefreshHover(me.GetX(), me.GetY(), dc);
+        RefreshHover(me.GetX(), me.GetY());
         if (me.LeftIsDown() || me.RightIsDown()) {
             if (me.AltDown() && me.ShiftDown()) {
                 doc->Copy(A_DRAGANDDROP);
             } else {
-                doc->Drag(dc);
+                doc->Drag();
             }
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
@@ -59,9 +58,8 @@ struct TSCanvas : public wxScrolledCanvas {
     void SelectClick(int mx, int my, bool right, int isctrlshift) {
         if (mx < 0 || my < 0)
             return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
-        wxClientDC dc(this);
-        RefreshHover(mx, my, dc);
-        doc->Select(dc, right, isctrlshift);
+        RefreshHover(mx, my);
+        doc->Select(right, isctrlshift);
     }
 
     void OnLeftDown(wxMouseEvent &me) {
@@ -91,8 +89,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftDoubleClick(wxMouseEvent &me) {
-        wxClientDC dc(this);
-        RefreshHover(me.GetX(), me.GetY(), dc);
+        RefreshHover(me.GetX(), me.GetY());
         Status(doc->DoubleClick());
     }
 
@@ -132,14 +129,14 @@ struct TSCanvas : public wxScrolledCanvas {
             if (!steps) return;
             mousewheelaccum -= steps * me.GetWheelDelta();
 
-            RefreshHover(me.GetX(), me.GetY(), dc);
+            RefreshHover(me.GetX(), me.GetY());
             Status(doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown()));
         } else if (me.GetWheelAxis()) {
             CursorScroll(me.GetWheelRotation() * g_scrollratewheel, 0);
-            RefreshHover(me.GetX(), me.GetY(), dc);
+            RefreshHover(me.GetX(), me.GetY());
         } else {
             CursorScroll(0, -me.GetWheelRotation() * g_scrollratewheel);
-            RefreshHover(me.GetX(), me.GetY(), dc);
+            RefreshHover(me.GetX(), me.GetY());
         }
     }
 

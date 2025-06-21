@@ -324,7 +324,7 @@ struct Document {
         begindrag = sel;
     }
 
-    void Select(wxDC &dc, bool right, int isctrlshift) {
+    void Select(bool right, int isctrlshift) {
         begindrag = Selection();
         if (right && hover.IsInside(selected)) return;
         if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
@@ -435,7 +435,7 @@ struct Document {
         return;
     }
 
-    void Drag(wxDC &dc) {
+    void Drag() {
         if (!selected.g || !hover.g || !begindrag.g) return;
         if (isctrlshiftdrag) {
             begindrag = hover;
