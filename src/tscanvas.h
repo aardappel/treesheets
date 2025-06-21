@@ -41,8 +41,8 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnMotion(wxMouseEvent &me) {
-        RefreshHover(me.GetX(), me.GetY());
         if (me.LeftIsDown() || me.RightIsDown()) {
+            RefreshHover(me.GetX(), me.GetY());
             if (me.AltDown() && me.ShiftDown()) {
                 doc->Copy(A_DRAGANDDROP);
             } else {
