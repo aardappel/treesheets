@@ -23,7 +23,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnPaint(wxPaintEvent &event) {
-        wxPaintDC dc(this);
+        wxAutoBufferedPaintDC dc(this);
         doc->Draw(dc);
     };
 
