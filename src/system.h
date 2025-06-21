@@ -360,20 +360,6 @@ struct System {
         cfg->Flush();
     }
 
-    void UpdateStatus(Selection &s) {
-        if (frame->GetStatusBar()) {
-            if (Cell *c = s.GetCell(); c && s.xs) {
-                frame->SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
-                frame->SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
-                frame->SetStatusText(
-                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
-                                     c->text.lastedit.FormatTime().c_str()),
-                    1);
-            }
-            frame->SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
-        }
-    }
-
     void SaveCheck() {
         loop(i, frame->nb->GetPageCount()) {
             ((TSCanvas *)frame->nb->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);

@@ -221,7 +221,7 @@ struct Document {
     }
 
     void DrawSelect(wxDC &dc, Selection &s) {
-        sys->UpdateStatus(s);
+        sys->frame->UpdateStatus(s);
         if (!s.g) return;
         ResetFont();
         s.g->DrawSelect(this, dc, s);
@@ -242,7 +242,6 @@ struct Document {
             drawroot->grid->FindXY(
                 this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
                 y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
-        sys->UpdateStatus(hover);
     }
 
     void ScrollIfSelectionOutOfView(wxDC &dc, Selection &sel) {
