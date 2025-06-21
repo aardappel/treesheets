@@ -80,7 +80,8 @@ struct Document {
     bool scrolltoselection {true};
     bool scaledviewingmode {false};
     bool updatehover {false};
-    bool selectclick {true};
+    bool selectclick {false};
+    bool doubleclick {false};
     bool clickright {false};
     bool clickisctrlshift {false};
     double currentviewscale {1.0};
@@ -580,7 +581,7 @@ struct Document {
                       : 0;
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
-        if (selectclick || updatehover) {
+        if (updatehover || selectclick || doubleclick) {
             UpdateHover(dc);
             if (selectclick) {
                 begindrag = Selection();
@@ -594,7 +595,19 @@ struct Document {
                     scrolltoselection = true;
                 }
             }
-            selectclick = clickright = clickisctrlshift = updatehover = false;
+            if (doubleclick) {
+                if (selected.Thin()) {
+                    selected.SelAll();
+                } else if (auto c = selected.GetCell()) {
+                    if (selected.TextEdit()) {
+                        c->text.SelectWord(selected);
+                        begindrag = selected;
+                    } else {
+                        selected.EnterEditOnly(this);
+                    }
+                }
+            }
+            updatehover = selectclick = clickright = clickisctrlshift = doubleclick = false;
         }
         Render(dc);
         DrawSelect(dc, selected);
@@ -682,23 +695,6 @@ struct Document {
         bool keep = CheckForChanges();
         if (!keep) RemoveTmpFile();
         return keep;
-    }
-
-    const wxChar *DoubleClick() {
-        if (!selected.g) return nullptr;
-        if (selected.Thin()) {
-            selected.SelAll();
-            sw->Refresh();
-        } else if (auto c = selected.GetCell()) {
-            if (selected.TextEdit()) {
-                c->text.SelectWord(selected);
-                begindrag = selected;
-            } else {
-                selected.EnterEditOnly(this);
-            }
-            sw->Refresh();
-        }
-        return nullptr;
     }
 
     const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *msg, int k) {

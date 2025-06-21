@@ -55,9 +55,7 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->selectclick = true;
         doc->clickright = right;
         doc->clickisctrlshift = isctrlshift;
-        doc->mx = mx;
-        doc->my = my;
-        Refresh();
+        RefreshHover(mx, my);
     }
 
     void OnLeftDown(wxMouseEvent &me) {
@@ -87,8 +85,8 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftDoubleClick(wxMouseEvent &me) {
+        doc->doubleclick = true;
         RefreshHover(me.GetX(), me.GetY());
-        Status(doc->DoubleClick());
     }
 
     void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }
