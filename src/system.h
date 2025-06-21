@@ -362,8 +362,7 @@ struct System {
 
     void UpdateStatus(Selection &s) {
         if (frame->GetStatusBar()) {
-            auto c = s.GetCell();
-            if (c && s.xs) {
+            if (Cell *c = s.GetCell(); c && s.xs) {
                 frame->SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
                 frame->SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
                 frame->SetStatusText(
@@ -371,11 +370,6 @@ struct System {
                                      c->text.lastedit.FormatTime().c_str()),
                     1);
             }
-        }
-    }
-
-    void UpdateAmountStatus(Selection &s) {
-        if (frame->GetStatusBar()) {
             frame->SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
         }
     }

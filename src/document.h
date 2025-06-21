@@ -221,15 +221,14 @@ struct Document {
         return _(L"");
     }
 
-    void DrawSelect(wxDC &dc, Selection &sel) {
-        sys->UpdateAmountStatus(sel);
-        if (!sel.g) return;
+    void DrawSelect(wxDC &dc, Selection &s) {
+        sys->UpdateStatus(s);
+        if (!s.g) return;
         ResetFont();
-        sel.g->DrawSelect(this, dc, sel);
+        s.g->DrawSelect(this, dc, s);
     }
 
-    void RefreshMove(Selection &sel) {
-        sys->UpdateAmountStatus(sel);
+    void RefreshMove(Selection &s) {
         scrolltoselection = true;
         sw->Refresh();
     }
@@ -477,7 +476,6 @@ struct Document {
                 selected.g->ResizeColWidths(dir, selected, hierarchical);
                 selected.g->cell->ResetLayout();
                 selected.g->cell->ResetChildren();
-                sys->UpdateStatus(selected);
                 RefreshMove(selected);
                 return dir > 0 ? _(L"Column width increased.") : _(L"Column width decreased.");
             }
@@ -487,7 +485,6 @@ struct Document {
             selected.g->cell->AddUndo(this);
             selected.g->ResetChildren();
             selected.g->RelSize(-dir, selected, pathscalebias);
-            sys->UpdateStatus(selected);
             RefreshMove(selected);
             return dir > 0 ? _(L"Text size increased.") : _(L"Text size decreased.");
         } else if (ctrl) {
