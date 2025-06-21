@@ -81,6 +81,9 @@ struct Document {
     bool scrolltoselection {true};
     bool scaledviewingmode {false};
     bool updatehover {false};
+    bool selectclick {true};
+    bool clickright {false};
+    bool clickisctrlshift {false};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -314,17 +317,6 @@ struct Document {
     void SetSelect(const Selection &sel = Selection()) {
         selected = sel;
         begindrag = sel;
-    }
-
-    void Select(bool right, int isctrlshift) {
-        begindrag = Selection();
-        if (right && hover.IsInside(selected)) return;
-        if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
-        SetSelect(hover);
-        isctrlshiftdrag = isctrlshift;
-        ResetCursor();
-        RefreshMove(selected);
-        return;
     }
 
     void SelectUp() {
@@ -605,12 +597,20 @@ struct Document {
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         Render(dc);
-        DrawSelect(dc, selected);
-        if (updatehover) {
+        if (selectclick || updatehover) {
             UpdateHover(dc);
-            updatehover = false;
-            return;
+            if (selectclick) {
+                begindrag = Selection();
+                if (!(clickright && hover.IsInside(selected))) {
+                    if (selected.GetCell() == hover.GetCell() && hover.GetCell()) hover.EnterEditOnly(this);
+                    SetSelect(hover);
+                    isctrlshiftdrag = clickisctrlshift;
+                    scrolltoselection = true;
+                }
+            }
+            selectclick = clickright = clickisctrlshift = updatehover = false;
         }
+        DrawSelect(dc, selected);
         if (scrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected, false, false);
             scrolltoselection = false;
