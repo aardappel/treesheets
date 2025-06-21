@@ -1307,7 +1307,7 @@ struct Document {
                     selected.g->MultiCellDelete(this, selected);
                     SetSelect(selected);
                 }
-                ZoomOutIfNoGrid(dc);
+                ZoomOutIfNoGrid();
                 return nullptr;
 
             case A_DELETE:
@@ -1327,7 +1327,7 @@ struct Document {
                     selected.g->MultiCellDelete(this, selected);
                     SetSelect(selected);
                 }
-                ZoomOutIfNoGrid(dc);
+                ZoomOutIfNoGrid();
                 return nullptr;
 
             case A_DELETE_WORD:
@@ -1337,7 +1337,7 @@ struct Document {
                     c->text.DeleteWord(selected);
                     Refresh();
                 }
-                ZoomOutIfNoGrid(dc);
+                ZoomOutIfNoGrid();
                 return nullptr;
 
             case wxID_CUT:
@@ -1360,7 +1360,7 @@ struct Document {
                     }
                     Refresh();
                 }
-                ZoomOutIfNoGrid(dc);
+                ZoomOutIfNoGrid();
                 return nullptr;
 
             case A_COPYBM:
@@ -1946,7 +1946,7 @@ struct Document {
                 c->AddUndo(this);
                 c->text.BackspaceWord(selected);
                 Refresh();
-                ZoomOutIfNoGrid(dc);
+                ZoomOutIfNoGrid();
                 return nullptr;
 
             case A_SHOME:
@@ -1998,7 +1998,7 @@ struct Document {
         return nullptr;
     }
 
-    void ZoomOutIfNoGrid(wxDC &dc) {
+    void ZoomOutIfNoGrid() {
         if (!WalkPath(drawpath)->grid) Zoom(-1);
     }
 
