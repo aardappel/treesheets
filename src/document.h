@@ -1108,7 +1108,7 @@ struct Document {
                 sys->searchstring = (sys->casesensitivesearch)
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
-                auto msg = this->SearchNext(false, false, false);
+                auto msg = SearchNext(false, false, false);
                 sw->Refresh();
                 return msg;
             }

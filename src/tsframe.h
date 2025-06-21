@@ -1027,20 +1027,20 @@ struct TSFrame : wxFrame {
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());
-                    auto wsb = this->GetStatusBar();
+                    auto wsb = GetStatusBar();
                     wsb->Show(sys->showstatusbar);
-                    this->SendSizeEvent();
-                    this->Refresh();
+                    SendSizeEvent();
+                    Refresh();
                     wsb->Refresh();
                 }
                 break;
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
-                    auto wtb = this->GetToolBar();
+                    auto wtb = GetToolBar();
                     wtb->Show(sys->showtoolbar);
-                    this->SendSizeEvent();
-                    this->Refresh();
+                    SendSizeEvent();
+                    Refresh();
                     wtb->Refresh();
                 }
                 break;
@@ -1128,7 +1128,7 @@ struct TSFrame : wxFrame {
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
-                this->Close();
+                Close();
                 break;
             case wxID_CLOSE: sw->doc->Action(ce.GetId()); break;  // sw dangling pointer on return
             default:
@@ -1160,7 +1160,6 @@ struct TSFrame : wxFrame {
             doc->searchfilter = true;
         }
         sw->Refresh();
-        sw->Status();
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
