@@ -587,6 +587,8 @@ struct Document {
                 if (!(clickright && hover.IsInside(selected))) {
                     if (selected.GetCell() == hover.GetCell() && hover.GetCell())
                         hover.EnterEditOnly(this);
+                    else
+                        hover.ExitEdit(this);
                     SetSelect(hover);
                     isctrlshiftdrag = clickisctrlshift;
                     scrolltoselection = true;
