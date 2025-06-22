@@ -596,15 +596,13 @@ struct Document {
                 }
             }
             if (doubleclick) {
+                SetSelect(hover);
                 if (selected.Thin()) {
                     selected.SelAll();
-                } else if (auto c = selected.GetCell()) {
-                    if (selected.TextEdit()) {
-                        c->text.SelectWord(selected);
-                        begindrag = selected;
-                    } else {
-                        selected.EnterEditOnly(this);
-                    }
+                } else if (Cell *c = selected.GetCell()) {
+                    selected.EnterEditOnly(this);
+                    c->text.SelectWord(selected);
+                    begindrag = selected;
                 }
             }
             updatehover = selectclick = clickright = clickisctrlshift = doubleclick = false;
