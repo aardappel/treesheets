@@ -267,6 +267,8 @@ struct Document {
                                           ? r.y + r.height - canvash + wxSYS_HSCROLL_Y
                                           : cury,
                                       true);
+                    sw->Refresh();
+                    sw->Update();
                 }
             }
         }
