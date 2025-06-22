@@ -82,6 +82,7 @@ struct Document {
     bool updatehover {false};
     bool selectclick {false};
     bool doubleclick {false};
+    bool drag {false};
     bool clickright {false};
     bool clickisctrlshift {false};
     double currentviewscale {1.0};
@@ -411,28 +412,6 @@ struct Document {
         return;
     }
 
-    void Drag() {
-        if (!selected.g || !hover.g || !begindrag.g) return;
-        if (isctrlshiftdrag) {
-            begindrag = hover;
-            return;
-        }
-        if (hover.Thin()) return;
-        if (begindrag.Thin() || selected.Thin()) {
-            SetSelect(hover);
-            ResetCursor();
-            sw->Refresh();
-        } else {
-            auto old = selected;
-            selected.Merge(begindrag, hover);
-            if (!(old == selected)) {
-                ResetCursor();
-                sw->Refresh();
-            }
-        }
-        return;
-    }
-
     void ZoomSetDrawPath(int dir, bool fromroot = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
         if (!len && !drawpath.size()) return;
@@ -581,7 +560,7 @@ struct Document {
                       : 0;
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
-        if (updatehover || selectclick || doubleclick) {
+        if (updatehover || selectclick || doubleclick || drag) {
             UpdateHover(dc);
             if (selectclick) {
                 begindrag = Selection();
@@ -605,7 +584,20 @@ struct Document {
                     begindrag = selected;
                 }
             }
-            updatehover = selectclick = clickright = clickisctrlshift = doubleclick = false;
+            if (drag && selected.g && hover.g && begindrag.g) {
+                if (isctrlshiftdrag) { begindrag = hover; }
+                if (!hover.Thin()) {
+                    if (begindrag.Thin() || selected.Thin()) {
+                        SetSelect(hover);
+                        ResetCursor();
+                    } else {
+                        Selection old = selected;
+                        selected.Merge(begindrag, hover);
+                        if (!(old == selected)) { ResetCursor(); }
+                    }
+                }
+            }
+            updatehover = selectclick = clickright = clickisctrlshift = doubleclick = drag = false;
         }
         Render(dc);
         DrawSelect(dc, selected);
