@@ -596,10 +596,8 @@ struct TSFrame : wxFrame {
             _(L"Set a custom color for the color dropdowns from the selected cell background"));
         MyAppend(optmenu, A_DEFBGCOL, _(L"Background color..."),
                  _(L"Set the color for the document background"));
-        #ifdef SIMPLERENDER
         MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
                  _(L"Set the color for the text cursor"));
-        #endif
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(
             A_SHOWTBAR, _(L"Toolbar"),
@@ -895,7 +893,8 @@ struct TSFrame : wxFrame {
         AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
         AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg", L"fileopen_dark.svg");
         AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg", L"filesave_dark.svg");
-        AddTBIcon(_(L"Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg", L"filesaveas_dark.svg");
+        AddTBIcon(_(L"Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg",
+                  L"filesaveas_dark.svg");
         SEPARATOR;
         AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
         AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg", L"editcopy_dark.svg");
@@ -1028,20 +1027,20 @@ struct TSFrame : wxFrame {
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());
-                    auto wsb = this->GetStatusBar();
+                    auto wsb = GetStatusBar();
                     wsb->Show(sys->showstatusbar);
-                    this->SendSizeEvent();
-                    this->Refresh();
+                    SendSizeEvent();
+                    Refresh();
                     wsb->Refresh();
                 }
                 break;
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
-                    auto wtb = this->GetToolBar();
+                    auto wtb = GetToolBar();
                     wtb->Show(sys->showtoolbar);
-                    this->SendSizeEvent();
-                    this->Refresh();
+                    SendSizeEvent();
+                    Refresh();
                     wtb->Refresh();
                 }
                 break;
@@ -1129,7 +1128,7 @@ struct TSFrame : wxFrame {
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
-                this->Close();
+                Close();
                 break;
             case wxID_CLOSE: sw->doc->Action(ce.GetId()); break;  // sw dangling pointer on return
             default:
@@ -1139,11 +1138,8 @@ struct TSFrame : wxFrame {
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                    wxClientDC dc(sw);
-                    sw->DoPrepareDC(dc);
-                    sw->doc->ShiftToCenter(dc);
                     auto msg =
-                        tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str(), dc);
+                        tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
                     msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
                     sw->Status(wxString(msg));
                 } else {
@@ -1163,8 +1159,7 @@ struct TSFrame : wxFrame {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
         }
-        doc->Refresh();
-        GetCurTab()->Status();
+        sw->Refresh();
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
@@ -1210,6 +1205,20 @@ struct TSFrame : wxFrame {
     void SetDPIAwareStatusWidths() {
         int swidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
         SetStatusWidths(5, swidths);
+    }
+
+    void UpdateStatus(Selection &s) {
+        if (GetStatusBar()) {
+            if (Cell *c = s.GetCell(); c && s.xs) {
+                SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
+                SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
+                SetStatusText(
+                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
+                                     c->text.lastedit.FormatTime().c_str()),
+                    1);
+            }
+            SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
+        }
     }
 
     void OnDPIChanged(wxDPIChangedEvent &dce) {
