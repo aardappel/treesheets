@@ -544,7 +544,7 @@ struct Document {
                             curdrawroot->ColWidth(), 0);
     }
 
-    void Draw(wxPaintDC &dc) {
+    void Draw(wxDC &dc) {
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
         if (!rootgrid) return;
