@@ -561,7 +561,7 @@ struct Document {
                       : 0;
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
-        if (updatehover || selectclick || doubleclick || drag) {
+        if (updatehover) {
             UpdateHover(dc);
             updatehover = false;
             if (selectclick) {
