@@ -590,7 +590,7 @@ struct Document {
             }
             if (drag && selected.g && hover.g && begindrag.g) {
                 if (isctrlshiftdrag) { begindrag = hover; }
-                if (!hover.Thin()) {
+                else if (!hover.Thin()) {
                     if (begindrag.Thin() || selected.Thin()) {
                         SetSelect(hover);
                         ResetCursor();
@@ -604,6 +604,7 @@ struct Document {
             }
             if (selectup) {
                 SelectUp();
+                Layout(dc);
                 selectup = false;
             }
         }
