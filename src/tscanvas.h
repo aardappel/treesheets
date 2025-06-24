@@ -80,7 +80,10 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftUp(wxMouseEvent &me) {
-        if (me.CmdDown() || me.AltDown()) doc->SelectUp();
+        if (me.CmdDown() || me.AltDown()) {
+            doc->selectup = true;
+            RefreshHover(me.GetX(), me.GetY());
+        }
     }
 
     void OnRightDown(wxMouseEvent &me) {

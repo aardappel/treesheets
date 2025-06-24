@@ -84,6 +84,7 @@ struct Document {
     bool doubleclick {false};
     bool drag {false};
     bool clickright {false};
+    bool selectup {false};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -332,7 +333,6 @@ struct Document {
             hover = tc_parent ? tc_parent->grid->FindCell(tc) : Selection();
             SetSelect(hover);
         }
-        sw->Refresh();
     }
 
     auto CopyEntireCells(wxString &s, int k) {
@@ -601,6 +601,10 @@ struct Document {
                     }
                 }
                 drag = false;
+            }
+            if (selectup) {
+                SelectUp();
+                selectup = false;
             }
         }
         Render(dc);
