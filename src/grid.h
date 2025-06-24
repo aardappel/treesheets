@@ -341,10 +341,9 @@ struct Grid {
         if (includefolded || !folded) foreachcell(c) c->ImageRefCount(includefolded);
     }
 
-    void DrawCursor(Document *doc, wxDC &dc, Selection &sel, bool full, uint color,
-                    bool cursoronly) {
+    void DrawCursor(Document *doc, wxDC &dc, Selection &sel, bool full, uint color) {
         if (auto c = sel.GetCell(); c && !c->tiny && (c->HasText() || !c->grid))
-            c->text.DrawCursor(doc, dc, sel, full, color, cursoronly, colwidths[sel.x]);
+            c->text.DrawCursor(doc, dc, sel, full, color, colwidths[sel.x]);
     }
 
     void DrawInsert(Document *doc, wxDC &dc, Selection &sel, uint colour) {
@@ -398,44 +397,28 @@ struct Grid {
         }
     }
 
-    void DrawSelect(Document *doc, wxDC &dc, Selection &sel, bool cursoronly) {
-        #ifndef SIMPLERENDER
-        dc.SetLogicalFunction(wxINVERT);
-        #endif
+    void DrawSelect(Document *doc, wxDC &dc, Selection &sel) {
         if (sel.Thin()) {
-            if (!cursoronly) DrawInsert(doc, dc, sel, 0);
+            DrawInsert(doc, dc, sel, 0);
         } else {
-            if (!cursoronly) {
-                dc.SetBrush(*wxBLACK_BRUSH);
-                dc.SetPen(*wxBLACK_PEN);
-                wxRect g = GetRect(doc, sel);
-                int lw = g_line_width;
-                int te = sel.TextEdit();
-                dc.DrawRectangle(g.x - 1 - lw, g.y - 1 - lw, g.width + 2 + 2 * lw, 2 + lw - te);
-                dc.DrawRectangle(g.x - 1 - lw, g.y - 1 + g.height + te, g.width + 2 + 2 * lw - 5,
-                                 2 + lw - te);
+            dc.SetBrush(*wxBLACK_BRUSH);
+            dc.SetPen(*wxBLACK_PEN);
+            wxRect g = GetRect(doc, sel);
+            int lw = g_line_width;
+            int te = sel.TextEdit();
+            dc.DrawRectangle(g.x - 1 - lw, g.y - 1 - lw, g.width + 2 + 2 * lw, 2 + lw - te);
+            dc.DrawRectangle(g.x - 1 - lw, g.y - 1 + g.height + te, g.width + 2 + 2 * lw - 5,
+                             2 + lw - te);
 
-                dc.DrawRectangle(g.x - 1 - lw, g.y + 1 - te, 2 + lw - te, g.height - 2 + 2 * te);
-                dc.DrawRectangle(g.x - 1 + g.width + te, g.y + 1 - te, 2 + lw - te,
-                                 g.height - 2 + 2 * te - 2 - te);
+            dc.DrawRectangle(g.x - 1 - lw, g.y + 1 - te, 2 + lw - te, g.height - 2 + 2 * te);
+            dc.DrawRectangle(g.x - 1 + g.width + te, g.y + 1 - te, 2 + lw - te,
+                             g.height - 2 + 2 * te - 2 - te);
 
-                dc.DrawRectangle(g.x + g.width, g.y + g.height - 2, lw + 2, lw + 4);
-                dc.DrawRectangle(g.x + g.width - lw - 1, g.y + g.height - 2 + 2 * te, lw + 1,
-                                 lw + 4 - 2 * te);
-            }
-            #ifndef SIMPLERENDER
-            dc.SetLogicalFunction(wxXOR);
-            #endif
-            if (sel.TextEdit())
-            #ifdef SIMPLERENDER
-                DrawCursor(doc, dc, sel, true, sys->cursorcolor, cursoronly);
-            #else
-                DrawCursor(doc, dc, sel, true, 0xFFFF, cursoronly);
-            #endif
+            dc.DrawRectangle(g.x + g.width, g.y + g.height - 2, lw + 2, lw + 4);
+            dc.DrawRectangle(g.x + g.width - lw - 1, g.y + g.height - 2 + 2 * te, lw + 1,
+                             lw + 4 - 2 * te);
+            if (sel.TextEdit()) DrawCursor(doc, dc, sel, true, sys->cursorcolor);
         }
-        #ifndef SIMPLERENDER
-        dc.SetLogicalFunction(wxCOPY);
-        #endif
     }
 
     void DeleteCells(int dx, int dy, int nxs, int nys) {
@@ -453,7 +436,7 @@ struct Grid {
     void MultiCellDelete(Document *doc, Selection &sel) {
         cell->AddUndo(doc);
         MultiCellDeleteSub(doc, sel);
-        doc->Refresh();
+        doc->sw->Refresh();
     }
 
     void MultiCellDeleteSub(Document *doc, Selection &sel) {
@@ -685,21 +668,21 @@ struct Grid {
             c->text.stylebits ^= sb;
             c->text.WasEdited();
         }
-        doc->Refresh();
+        doc->sw->Refresh();
     }
 
     void ColorChange(Document *doc, int which, uint color, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->ColorChange(doc, which, color);
-        doc->Refresh();
+        doc->sw->Refresh();
     }
 
     void ReplaceStr(Document *doc, const wxString &s, const wxString &ls, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->text.ReplaceStr(s, ls);
-        doc->Refresh();
+        doc->sw->Refresh();
     }
 
     void CSVImport(const wxArrayString &as, wxString sep) {

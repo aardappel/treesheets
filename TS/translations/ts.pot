@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 17:53+0200\n"
+"POT-Creation-Date: 2025-06-22 22:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -729,9 +729,6 @@ msgstr ""
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr ""
 
-msgid "Hover shadow"
-msgstr ""
-
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr ""
 
@@ -1227,9 +1224,6 @@ msgid "Set the default column width for a new grid"
 msgstr ""
 
 msgid "Set the font the document text is displayed with"
-msgstr ""
-
-msgid "Shadow the cell the pointer hovers over"
 msgstr ""
 
 #, no-c-format

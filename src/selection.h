@@ -121,8 +121,8 @@ class Selection {
         return TEXT_CHAR;
     }
 
-    void Dir(Document *doc, bool ctrl, bool shift, wxDC &dc, int dx, int dy, int &v, int &vs,
-             int &ovs, bool notboundaryperp, bool notboundarypar, bool exitedit) {
+    void Dir(Document *doc, bool ctrl, bool shift, int dx, int dy, int &v, int &vs, int &ovs,
+             bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
             g->cell->AddUndo(doc);
 
@@ -134,9 +134,8 @@ class Selection {
             // FIXME: this is null in the case of a whole column selection, and doesn't do the right
             // thing.
             if (g) g->cell->ResetChildren();
-            doc->ScrollIfSelectionOutOfView(dc, *this, true);
+            doc->RefreshMove();
         } else {
-            doc->DrawSelect(dc, *this);
             if (ctrl && dx)  // implies textedit
             {
                 if (cursor == cursorend) firstdx = dx;
@@ -300,27 +299,24 @@ class Selection {
                     }
                 };
             }
-            doc->DrawSelectMove(dc, *this);
+            doc->RefreshMove();
         };
     }
 
-    void Cursor(Document *doc, int k, bool ctrl, bool shift, wxDC &dc, bool exitedit = false) {
+    void Cursor(Document *doc, int k, bool ctrl, bool shift, bool exitedit = false) {
         switch (k) {
-            case A_UP: Dir(doc, ctrl, shift, dc, 0, -1, y, ys, xs, y != 0, y != 0, exitedit); break;
+            case A_UP: Dir(doc, ctrl, shift, 0, -1, y, ys, xs, y != 0, y != 0, exitedit); break;
             case A_DOWN:
-                Dir(doc, ctrl, shift, dc, 0, 1, y, ys, xs, y < g->ys, y < g->ys - 1, exitedit);
+                Dir(doc, ctrl, shift, 0, 1, y, ys, xs, y < g->ys, y < g->ys - 1, exitedit);
                 break;
-            case A_LEFT:
-                Dir(doc, ctrl, shift, dc, -1, 0, x, xs, ys, x != 0, x != 0, exitedit);
-                break;
+            case A_LEFT: Dir(doc, ctrl, shift, -1, 0, x, xs, ys, x != 0, x != 0, exitedit); break;
             case A_RIGHT:
-                Dir(doc, ctrl, shift, dc, 1, 0, x, xs, ys, x < g->xs, x < g->xs - 1, exitedit);
+                Dir(doc, ctrl, shift, 1, 0, x, xs, ys, x < g->xs, x < g->xs - 1, exitedit);
                 break;
         }
     }
 
-    void Next(Document *doc, wxDC &dc, bool backwards) {
-        doc->DrawSelect(dc, *this);
+    void Next(Document *doc, bool backwards) {
         ExitEdit(doc);
         if (backwards) {
             if (x > 0)
@@ -342,7 +338,7 @@ class Selection {
                 x = y = 0;
         }
         EnterEdit(doc, 0, MaxCursor());
-        doc->DrawSelectMove(dc, *this);
+        doc->RefreshMove();
     }
 
     const wxChar *Wrap(Document *doc) {
@@ -366,7 +362,7 @@ class Selection {
         delete old;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
-        doc->Refresh();
+        doc->sw->Refresh();
         return nullptr;
     }
 
@@ -385,8 +381,7 @@ class Selection {
         return GetCell();
     }
 
-    void HomeEnd(Document *doc, wxDC &dc, bool ishome) {
-        doc->DrawSelect(dc, *this);
+    void HomeEnd(Document *doc, bool ishome) {
         xs = ys = 1;
         if (ishome)
             x = y = 0;
@@ -394,6 +389,6 @@ class Selection {
             x = g->xs - 1;
             y = g->ys - 1;
         }
-        doc->DrawSelectMove(dc, *this);
+        doc->RefreshMove();
     }
 };
