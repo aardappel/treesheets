@@ -563,6 +563,7 @@ struct Document {
         ShiftToCenter(dc);
         if (updatehover || selectclick || doubleclick || drag) {
             UpdateHover(dc);
+            updatehover = false;
             if (selectclick) {
                 begindrag = Selection();
                 if (!(clickright && hover.IsInside(selected))) {
@@ -573,6 +574,8 @@ struct Document {
                     SetSelect(hover);
                     scrolltoselection = true;
                 }
+                selectclick = false;
+                clickright = false;
             }
             if (doubleclick) {
                 SetSelect(hover);
@@ -583,6 +586,7 @@ struct Document {
                     c->text.SelectWord(selected);
                     begindrag = selected;
                 }
+                doubleclick = false;
             }
             if (drag && selected.g && hover.g && begindrag.g) {
                 if (isctrlshiftdrag) { begindrag = hover; }
@@ -596,8 +600,8 @@ struct Document {
                         if (!(old == selected)) { ResetCursor(); }
                     }
                 }
+                drag = false;
             }
-            updatehover = selectclick = clickright = doubleclick = drag = false;
         }
         Render(dc);
         DrawSelect(dc, selected);
