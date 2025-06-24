@@ -84,7 +84,6 @@ struct Document {
     bool doubleclick {false};
     bool drag {false};
     bool clickright {false};
-    bool clickisctrlshift {false};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -572,7 +571,6 @@ struct Document {
                     else
                         hover.ExitEdit(this);
                     SetSelect(hover);
-                    isctrlshiftdrag = clickisctrlshift;
                     scrolltoselection = true;
                 }
             }
@@ -599,7 +597,7 @@ struct Document {
                     }
                 }
             }
-            updatehover = selectclick = clickright = clickisctrlshift = doubleclick = drag = false;
+            updatehover = selectclick = clickright = doubleclick = drag = false;
         }
         Render(dc);
         DrawSelect(dc, selected);

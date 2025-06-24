@@ -62,7 +62,7 @@ struct TSCanvas : public wxScrolledCanvas {
             return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
         doc->selectclick = true;
         doc->clickright = right;
-        doc->clickisctrlshift = isctrlshift;
+        doc->isctrlshiftdrag = isctrlshift;
         RefreshHover(mx, my);
     }
 
