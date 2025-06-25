@@ -314,7 +314,7 @@ struct Document {
         begindrag = sel;
     }
 
-    void SelectUp() {
+    void SelectUp(wxDC &dc) {
         if (!isctrlshiftdrag || isctrlshiftdrag == 3 || begindrag.EqLoc(selected)) return;
         auto c = selected.GetCell();
         if (!c) return;
@@ -332,6 +332,7 @@ struct Document {
             }
             hover = tc_parent ? tc_parent->grid->FindCell(tc) : Selection();
             SetSelect(hover);
+            Layout(dc);
         }
     }
 
@@ -603,8 +604,7 @@ struct Document {
                 drag = false;
             }
             if (selectup) {
-                SelectUp();
-                Layout(dc);
+                SelectUp(dc);
                 selectup = false;
             }
         }
