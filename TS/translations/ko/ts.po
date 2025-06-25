@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-07 17:36-0300\n"
-"PO-Revision-Date: 2025-06-19 21:46+0900\n"
-"Last-Translator: VenusGirl (Venusgirl@outlook.com)\n"
+"POT-Creation-Date: 2025-06-22 22:55+0200\n"
+"PO-Revision-Date: 2025-06-25 02:38+0900\n"
+"Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl (https://venusgirls.tistory.com/)\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
@@ -427,9 +427,6 @@ msgstr "손상된 PNG 헤더입니다."
 msgid "Corrupt block header."
 msgstr "손상된 블록 헤더입니다."
 
-msgid "Create .bak files"
-msgstr ".bak 파일 만들기"
-
 msgid "Create a new document"
 msgstr "새 문서 만들기"
 
@@ -760,9 +757,6 @@ msgstr "격자 스타일 렌더링을 사용한 가로 레이아웃"
 
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "선 스타일 렌더링을 사용한 가로 레이아웃"
-
-msgid "Hover shadow"
-msgstr "호버 그림자"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "페이지 너비는 몇 픽셀이어야 하나요? (자동 맞춤의 경우 0)"
@@ -1229,7 +1223,7 @@ msgid "Select First &Child"
 msgstr "첫 번째 자식 선택(&C)"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr "선택한 격자는 표가 아닙니다: 셀에는 이미 하위 격자가 없어야 합니다."
+msgstr "선택한 격자는 표가 아닙니다: 셀에 하위 격자가 있어서는 안됩니다."
 
 #, c-format
 msgid "Selection contains %d cell(s) with %d character(s)."
@@ -1265,9 +1259,6 @@ msgstr "새 격자의 기본 열 너비 설정"
 
 msgid "Set the font the document text is displayed with"
 msgstr "문서 텍스트가 표시되는 글꼴 설정"
-
-msgid "Shadow the cell the pointer hovers over"
-msgstr "포인터가 가리키는 셀을 그림자로 표시"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
