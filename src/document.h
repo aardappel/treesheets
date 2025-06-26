@@ -1678,36 +1678,30 @@ struct Document {
             }
 
             case A_IMAGESVA: {
-                size_t counter = 0, counterpos;
-                wxString oimgfn, imgfn;
-                loopallcellssel(c, true) {
-                    if (auto tim = c->text.image; tim) {
-                        if (!oimgfn) {  // first encounter
-                            oimgfn = ::wxFileSelector(
-                                _(L"Choose image file to save:"), L"", L"", L"png|jpg",
-                                _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
-                                wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
-                            if (oimgfn.empty()) return _(L"Save cancelled.");
-                            counterpos = oimgfn.find_last_of(".");
-                            // If file extension is not provided
-                            if (counterpos == string::npos) { counterpos = oimgfn.Len(); }
-                            imgfn = oimgfn;
-                        } else {  // add counter to image file name at further encounters
-                            imgfn = oimgfn;
-                            imgfn.insert(counterpos, to_string(counter));
-                        }
-                        wxFFileOutputStream imagefs(imgfn, L"w+b");
-                        if (!imagefs.IsOk()) {
-                            wxMessageBox(
-                                _(L"Error writing image file! (try saving under new filename)."),
-                                imgfn.wx_str(), wxOK, sys->frame);
-                            return _(L"Error writing to file.");
-                        }
-                        imagefs.Write(tim->data.data(), tim->data.size());
-                        counter++;
+                set<Image *> is;
+                loopallcellssel(c, true) if (Image *im = c->text.image) is.insert(im);
+                if (!is.size()) return _(L"There are no images in the selection.");
+                wxString f = ::wxFileSelector(
+                    _(L"Choose image file to save:"), L"", L"", L"png|jpg",
+                    _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
+                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
+                if (f.empty()) return _(L"Save cancelled.");
+                auto i = 0;
+                for (Image *im : is) {
+                    wxFileName fn(f);
+                    wxString tf = fn.GetPathWithSep() + fn.GetName() +
+                                  ((i == 0) ? L"" : wxString::Format("%d", i)) + L"." + fn.GetExt();
+                    wxFFileOutputStream os(tf, L"w+b");
+                    if (!os.IsOk()) {
+                        wxMessageBox(
+                            _(L"Error writing image file! (try saving under new filename)."),
+                            tf.wx_str(), wxOK, sys->frame);
+                        return _(L"Error writing to file.");
                     }
+                    os.Write(im->data.data(), im->data.size());
+                    i++;
                 }
-                return nullptr;
+                return _(L"Image(s) have been saved to disk.");
             }
 
             case A_SAVE_AS_JPEG:
