@@ -223,7 +223,6 @@ struct Document {
     }
 
     void DrawSelect(wxDC &dc, Selection &s) {
-        sys->frame->UpdateStatus(s);
         if (!s.g) return;
         ResetFont();
         s.g->DrawSelect(this, dc, s);
@@ -575,6 +574,7 @@ struct Document {
                     SetSelect(hover);
                     scrolltoselection = true;
                 }
+                sys->frame->UpdateStatus(selected);
                 selectclick = false;
                 clickright = false;
             }
@@ -587,6 +587,7 @@ struct Document {
                     c->text.SelectWord(selected);
                     begindrag = selected;
                 }
+                sys->frame->UpdateStatus(selected);
                 doubleclick = false;
             }
             if (drag && selected.g && hover.g && begindrag.g) {
