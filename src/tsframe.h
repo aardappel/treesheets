@@ -1207,7 +1207,7 @@ struct TSFrame : wxFrame {
         SetStatusWidths(5, swidths);
     }
 
-    void UpdateStatus(Selection &s) {
+    void UpdateStatus(const Selection &s) {
         if (GetStatusBar()) {
             if (Cell *c = s.GetCell(); c && s.xs) {
                 SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);

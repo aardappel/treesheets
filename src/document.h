@@ -311,6 +311,7 @@ struct Document {
     void SetSelect(const Selection &sel = Selection()) {
         selected = sel;
         begindrag = sel;
+        sys->frame->UpdateStatus(selected);
     }
 
     void SelectUp(wxDC &dc) {
@@ -574,7 +575,6 @@ struct Document {
                     SetSelect(hover);
                     scrolltoselection = true;
                 }
-                sys->frame->UpdateStatus(selected);
                 selectclick = false;
                 clickright = false;
             }
@@ -587,7 +587,6 @@ struct Document {
                     c->text.SelectWord(selected);
                     begindrag = selected;
                 }
-                sys->frame->UpdateStatus(selected);
                 doubleclick = false;
             }
             if (drag && selected.g && hover.g && begindrag.g) {
