@@ -456,6 +456,7 @@ struct Document {
                 selected.g->ResizeColWidths(dir, selected, hierarchical);
                 selected.g->cell->ResetLayout();
                 selected.g->cell->ResetChildren();
+                sys->frame->UpdateStatus(selected);
                 RefreshMove();
                 return dir > 0 ? _(L"Column width increased.") : _(L"Column width decreased.");
             }
