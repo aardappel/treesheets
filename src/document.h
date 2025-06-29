@@ -647,7 +647,7 @@ struct Document {
                         stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
                         stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
                         (stylebits & STYLE_UNDERLINE) != 0,
-                        stylebits & STYLE_FIXED ? wxString(L"") : sys->defaultfont);
+                        stylebits & STYLE_FIXED ? sys->defaultfixedfont : sys->defaultfont);
             if (stylebits & STYLE_STRIKETHRU) font.SetStrikethrough(true);
             dc.SetFont(font);
             lasttextsize = textsize;
@@ -1007,16 +1007,28 @@ struct Document {
             case A_INCWIDTHNH: return Wheel(1, true, false, false, false);
             case A_DECWIDTHNH: return Wheel(-1, true, false, false, false);
 
-            case wxID_SELECT_FONT: {
+            case wxID_SELECT_FONT:
+            case A_SET_FIXED_FONT: {
                 wxFontData fdat;
-                fdat.SetInitialFont(wxFont(g_deftextsize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
-                                           wxFONTWEIGHT_NORMAL, false, sys->defaultfont));
+                fdat.SetInitialFont(
+                    wxFont(g_deftextsize,
+                           k == wxID_SELECT_FONT ? wxFONTFAMILY_DEFAULT : wxFONTFAMILY_TELETYPE,
+                           wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false,
+                           k == wxID_SELECT_FONT ? sys->defaultfont : sys->defaultfixedfont));
                 if (wxFontDialog fd(sys->frame, fdat); fd.ShowModal() == wxID_OK) {
                     wxFont font = fd.GetFontData().GetChosenFont();
-                    sys->defaultfont = font.GetFaceName();
                     g_deftextsize = min(20, max(10, font.GetPointSize()));
-                    sys->cfg->Write(L"defaultfont", sys->defaultfont);
                     sys->cfg->Write(L"defaultfontsize", g_deftextsize);
+                    switch (k) {
+                        case wxID_SELECT_FONT:
+                            sys->defaultfont = font.GetFaceName();
+                            sys->cfg->Write(L"defaultfont", sys->defaultfont);
+                            break;
+                        case A_SET_FIXED_FONT:
+                            sys->defaultfixedfont = font.GetFaceName();
+                            sys->cfg->Write(L"defaultfixedfont", sys->defaultfixedfont);
+                            break;
+                    }
                     // rootgrid->ResetChildren();
                     sys->frame->TabsReset();  // ResetChildren on all
                     sw->Refresh();

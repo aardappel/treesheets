@@ -584,6 +584,8 @@ struct TSFrame : wxFrame {
         auto optmenu = new wxMenu();
         MyAppend(optmenu, wxID_SELECT_FONT, _(L"Font..."),
                  _(L"Set the font the document text is displayed with"));
+        MyAppend(optmenu, A_SET_FIXED_FONT, _(L"Typewriter font..."),
+                 _(L"Set the font the typewriter text is displayed with."));
         MyAppend(optmenu, A_CUSTKEY, _(L"Key bindings..."),
                  _(L"Change the key binding of a menu item"));
         MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _(L"Default column width..."),
