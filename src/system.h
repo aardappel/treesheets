@@ -1,18 +1,18 @@
 struct System {
     TSFrame *frame;
     wxString defaultfont {
-    #ifdef WIN32
-        L"Lucida Sans Unicode"
-    #else
-        L"Verdana"
-    #endif
+        #ifdef WIN32
+            L"Lucida Sans Unicode"
+        #else
+            L"Verdana"
+        #endif
     };
     wxString defaultfixedfont {
-    #ifdef WIN32
-        L"Consolas"
-    #else
-        L"monospace"
-    #endif
+        #ifdef WIN32
+            L"Consolas"
+        #else
+            L"monospace"
+        #endif
     };
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
