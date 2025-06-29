@@ -647,7 +647,7 @@ struct Document {
                         stylebits & STYLE_ITALIC ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
                         stylebits & STYLE_BOLD ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
                         (stylebits & STYLE_UNDERLINE) != 0,
-                        stylebits & STYLE_FIXED ? sys->defaultmonofont : sys->defaultfont);
+                        stylebits & STYLE_FIXED ? sys->defaultfixedfont : sys->defaultfont);
             if (stylebits & STYLE_STRIKETHRU) font.SetStrikethrough(true);
             dc.SetFont(font);
             lasttextsize = textsize;
@@ -1014,7 +1014,7 @@ struct Document {
                     wxFont(g_deftextsize,
                            k == wxID_SELECT_FONT ? wxFONTFAMILY_DEFAULT : wxFONTFAMILY_TELETYPE,
                            wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false,
-                           k == wxID_SELECT_FONT ? sys->defaultfont : sys->defaultmonofont));
+                           k == wxID_SELECT_FONT ? sys->defaultfont : sys->defaultfixedfont));
                 if (wxFontDialog fd(sys->frame, fdat); fd.ShowModal() == wxID_OK) {
                     wxFont font = fd.GetFontData().GetChosenFont();
                     g_deftextsize = min(20, max(10, font.GetPointSize()));
@@ -1025,8 +1025,8 @@ struct Document {
                             sys->cfg->Write(L"defaultfont", sys->defaultfont);
                             break;
                         case A_SET_FIXED_FONT:
-                            sys->defaultmonofont = font.GetFaceName();
-                            sys->cfg->Write(L"defaultmonofont", sys->defaultmonofont);
+                            sys->defaultfixedfont = font.GetFaceName();
+                            sys->cfg->Write(L"defaultfixedfont", sys->defaultfixedfont);
                             break;
                     }
                     // rootgrid->ResetChildren();
