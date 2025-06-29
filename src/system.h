@@ -7,6 +7,13 @@ struct System {
         L"Verdana"
     #endif
     };
+    wxString defaultmonofont {
+        #ifdef WIN32
+            L"Consolas"
+        #else
+            L"monospace"
+        #endif
+    };
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
     Evaluator ev;
@@ -68,6 +75,7 @@ struct System {
 
         roundness = (int)cfg->Read(L"roundness", roundness);
         defaultfont = cfg->Read(L"defaultfont", defaultfont);
+        defaultmonofont = cfg->Read(L"defaultmonofont", defaultmonofont);
         cfg->Read(L"defaultmaxcolwidth", &defaultmaxcolwidth, defaultmaxcolwidth);
         cfg->Read(L"makebaks", &makebaks, makebaks);
         cfg->Read(L"totray", &totray, totray);

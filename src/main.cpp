@@ -240,6 +240,7 @@ enum {
     A_DEFAULTMAXCOLWIDTH,
     A_ADDSCRIPT,
     A_DETSCRIPT,
+    A_SET_FIXED_FONT,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     A_SCRIPT = 2000,  // and all values from here on
