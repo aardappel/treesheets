@@ -1386,11 +1386,13 @@ struct Document {
                 if (!selected.TextEdit() && k == A_SCLEFT) {
                     selected.xs = selected.Thin() ? selected.x : selected.x + 1;
                     selected.x = 0;
+                    sys->frame->UpdateStatus(selected);
                     sw->Refresh();
                     return nullptr;
                 }
                 if (!selected.TextEdit() && k == A_SCRIGHT) {
                     selected.xs = selected.g->xs - selected.x;
+                    sys->frame->UpdateStatus(selected);
                     sw->Refresh();
                     return nullptr;
                 }
@@ -1402,10 +1404,12 @@ struct Document {
                 if (!selected.TextEdit() && k == A_SCUP) {
                     selected.ys = selected.Thin() ? selected.y : selected.y + 1;
                     selected.y = 0;
+                    sys->frame->UpdateStatus(selected);
                     sw->Refresh();
                 }
                 if (!selected.TextEdit() && k == A_SCDOWN) {
                     selected.ys = selected.g->ys - selected.y;
+                    sys->frame->UpdateStatus(selected);
                     sw->Refresh();
                 }
                 return nullptr;
