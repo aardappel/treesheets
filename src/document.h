@@ -1725,14 +1725,15 @@ struct Document {
                         auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_PNG);
                         img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
                         img->type = 'J';
+                        return _(L"Images in selected cells have been converted to JPEG format.");
                     }
                     if (k == A_SAVE_AS_PNG && img && img->type == 'J') {
                         auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_JPEG);
                         img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                         img->type = 'I';
+                        return _(L"Images in selected cells have been converted to PNG format.");
                     }
                 }
-                return nullptr;
 
             case A_BROWSE: {
                 const wxChar *returnmessage = nullptr;
