@@ -7,13 +7,7 @@ struct System {
             L"Verdana"
         #endif
     };
-    wxString defaultfixedfont {
-        #ifdef WIN32
-            L"Consolas"
-        #else
-            L"monospace"
-        #endif
-    };
+    wxString defaultfixedfont {L"Courier New"};
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
     Evaluator ev;
