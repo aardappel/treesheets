@@ -613,11 +613,11 @@ struct Document {
                 selectup = false;
             }
             if (drop) {
-                switch (auto doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
-                    case wxDF_BITMAP: doc->PasteOrDrop(*doc->dndobji); break;
-                    case wxDF_FILENAME: doc->PasteOrDrop(*doc->dndobjf); break;
+                switch (dndobjc->GetReceivedFormat().GetType()) {
+                    case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
+                    case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
                     case wxDF_TEXT:
-                    case wxDF_UNICODETEXT: doc->PasteOrDrop(*doc->dndobjt);
+                    case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
                     default:;
                 }
                 Layout(dc);
