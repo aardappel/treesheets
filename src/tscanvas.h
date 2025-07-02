@@ -38,7 +38,7 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->mx = mx;
         doc->my = my;
         doc->updatehover = true;
-        doc->sw->Refresh();
+        doc->Refresh();
     }
 
     void OnMotion(wxMouseEvent &me) {

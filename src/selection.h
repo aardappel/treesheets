@@ -314,7 +314,6 @@ class Selection {
                 Dir(doc, ctrl, shift, 1, 0, x, xs, ys, x < g->xs, x < g->xs - 1, exitedit);
                 break;
         }
-        sys->frame->UpdateStatus(*this);
     }
 
     void Next(Document *doc, bool backwards) {
@@ -363,7 +362,7 @@ class Selection {
         delete old;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
-        doc->sw->Refresh();
+        doc->Refresh();
         return nullptr;
     }
 

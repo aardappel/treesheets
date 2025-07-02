@@ -1161,7 +1161,7 @@ struct TSFrame : wxFrame {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
         }
-        sw->Refresh();
+        doc->Refresh();
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {

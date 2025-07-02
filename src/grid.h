@@ -436,7 +436,7 @@ struct Grid {
     void MultiCellDelete(Document *doc, Selection &sel) {
         cell->AddUndo(doc);
         MultiCellDeleteSub(doc, sel);
-        doc->sw->Refresh();
+        doc->Refresh();
     }
 
     void MultiCellDeleteSub(Document *doc, Selection &sel) {
@@ -668,21 +668,21 @@ struct Grid {
             c->text.stylebits ^= sb;
             c->text.WasEdited();
         }
-        doc->sw->Refresh();
+        doc->Refresh();
     }
 
     void ColorChange(Document *doc, int which, uint color, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->ColorChange(doc, which, color);
-        doc->sw->Refresh();
+        doc->Refresh();
     }
 
     void ReplaceStr(Document *doc, const wxString &s, const wxString &ls, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->text.ReplaceStr(s, ls);
-        doc->sw->Refresh();
+        doc->Refresh();
     }
 
     void CSVImport(const wxArrayString &as, wxString sep) {

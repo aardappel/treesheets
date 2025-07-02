@@ -29,7 +29,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         auto err = RunLobster(filename, {}, dump_builtins);
 
         doc->rootgrid->ResetChildren();
-        doc->sw->Refresh();
+        doc->Refresh();
 
         doc = nullptr;
         cur = nullptr;
