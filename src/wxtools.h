@@ -20,15 +20,10 @@ struct DropTarget : wxDropTarget {
     bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
-        auto sw = sys->frame->GetCurTab();
-        sw->SelectClick(x, y, false, 0);
-        switch (auto doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
-            case wxDF_BITMAP: doc->PasteOrDrop(*doc->dndobji); break;
-            case wxDF_FILENAME: doc->PasteOrDrop(*doc->dndobjf); break;
-            case wxDF_TEXT:
-            case wxDF_UNICODETEXT: doc->PasteOrDrop(*doc->dndobjt);
-            default:;
-        }
+        Document *doc = sys->frame->GetCurTab()->doc;
+        doc->selectclick = true;
+        doc->drop = true;
+        doc->sw->RefreshHover(x, y);
         return wxDragCopy;
     }
 };
