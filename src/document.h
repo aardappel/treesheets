@@ -83,6 +83,7 @@ struct Document {
     bool selectclick {false};
     bool doubleclick {false};
     bool drag {false};
+    bool drop {false};
     bool clickright {false};
     bool selectup {false};
     double currentviewscale {1.0};
@@ -610,6 +611,17 @@ struct Document {
             if (selectup) {
                 SelectUp(dc);
                 selectup = false;
+            }
+            if (drop) {
+                switch (auto doc = sw->doc; doc->dndobjc->GetReceivedFormat().GetType()) {
+                    case wxDF_BITMAP: doc->PasteOrDrop(*doc->dndobji); break;
+                    case wxDF_FILENAME: doc->PasteOrDrop(*doc->dndobjf); break;
+                    case wxDF_TEXT:
+                    case wxDF_UNICODETEXT: doc->PasteOrDrop(*doc->dndobjt);
+                    default:;
+                }
+                Layout(dc);
+                drop = false;
             }
         }
         Render(dc);
@@ -1488,6 +1500,7 @@ struct Document {
                         PasteOrDrop(tdo);
                     }
                     wxTheClipboard->Close();
+                    Refresh();
                 } else if (sys->cellclipboard) {
                     c->Paste(this, sys->cellclipboard.get(), selected);
                     Refresh();
@@ -2004,7 +2017,6 @@ struct Document {
             if (!c) return;
             c->AddUndo(this);
             if (!LoadImageIntoCell(as[0], c, sys->frame->FromDIP(1.0))) PasteSingleText(c, as[0]);
-            Refresh();
             return;
         }
         if (c && (fmt == wxDF_TEXT || fmt == wxDF_UNICODETEXT)) {
@@ -2030,7 +2042,6 @@ struct Document {
                         }
                     }
                 }
-                Refresh();
             }
             return;
         }
@@ -2042,7 +2053,6 @@ struct Document {
                 vector<uint8_t> data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                 SetImageBM(c, std::move(data), sys->frame->FromDIP(1.0));
                 c->Reset();
-                Refresh();
             }
         }
     }
