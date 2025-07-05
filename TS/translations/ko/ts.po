@@ -1,15 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# VenusGirl <venusgirl@outlook.com>, 2025.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-22 22:55+0200\n"
-"PO-Revision-Date: 2025-06-25 02:38+0900\n"
+"POT-Creation-Date: 2025-07-03 18:36+0300\n"
+"PO-Revision-Date: 2025-07-04 02:15+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl (https://venusgirls.tistory.com/)\n"
 "Language: ko\n"
@@ -767,6 +767,15 @@ msgstr "이미지 "
 msgid "Image Resize"
 msgstr "이미지 크기"
 
+msgid "Image(s) have been saved to disk."
+msgstr "이미지가 디스크에 저장되었습니다."
+
+msgid "Images in selected cells have been converted to JPEG format."
+msgstr "선택된 셀의 이미지가 JPEG 형식으로 변환되었습니다."
+
+msgid "Images in selected cells have been converted to PNG format."
+msgstr "선택한 셀의 이미지가 PNG 형식으로 변환되었습니다."
+
 msgid "Import from"
 msgstr "가져오기"
 
@@ -1260,6 +1269,9 @@ msgstr "새 격자의 기본 열 너비 설정"
 msgid "Set the font the document text is displayed with"
 msgstr "문서 텍스트가 표시되는 글꼴 설정"
 
+msgid "Set the font the typewriter text is displayed with."
+msgstr "타자기 텍스트가 표시되는 글꼴을 설정합니다."
+
 #, no-c-format
 msgid "Show 1% less than the last filter"
 msgstr "마지막 필터보다 1% 더 적게 표시"
@@ -1371,6 +1383,9 @@ msgstr ""
 msgid "The browser could not open at least one link."
 msgstr "브라우저에서 최소한 하나의 링크를 열 수 없습니다."
 
+msgid "There are no images in the selection."
+msgstr "선택 항목에 이미지가 없습니다."
+
 msgid "There is no content to collapse."
 msgstr "축소할 내용이 없습니다."
 
@@ -1456,6 +1471,9 @@ msgstr "필터 끄기(&O)"
 
 msgid "Tutorial &web page"
 msgstr "자습서 웹 페이지(&W)"
+
+msgid "Typewriter font..."
+msgstr "타자기 글꼴..."
 
 msgid "Undo (CTRL+z)"
 msgstr "실핼 취소 (Ctrl+Z)"
