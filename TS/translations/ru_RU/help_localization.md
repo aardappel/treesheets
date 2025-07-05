@@ -52,12 +52,12 @@
 #### Создание
 Чтобы *создать* основной файл шаблона `/TS/translations/ts.pot`, находясь в каталоге `src/`, запустите `genpot.bat` или команду:
 ```sh
-xgettext --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot myframe.h document.h system.h
+xgettext --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot tsframe.h document.h system.h wxtools.h
 ```
 #### Обновление
-Чтобы *обновить* файла шаблона (*после изменения исходников* в новой версии программы):
+Чтобы *обновить* файла шаблона (*после изменения исходников* в новой версии программы), находясь в каталоге `src/`, выполните команду:
 ```sh
-xgettext -j --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot myframe.h document.h system.h
+xgettext -j --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot tsframe.h document.h system.h wxtools.h
 ```
 
 ### 2.1 Создание файл перевода (po-файл)

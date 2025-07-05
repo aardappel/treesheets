@@ -8,7 +8,7 @@ struct TSFrame : wxFrame {
     wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
     wxFileSystemWatcher *watcher;
     wxAuiNotebook *nb {nullptr};
-    unique_ptr<wxAuiManager> aui {make_unique<wxAuiManager>(this)};
+    wxAuiManager aui {this};
     wxBitmap line_nw;
     wxBitmap line_sw;
     wxBitmap foldicon;
@@ -766,8 +766,8 @@ struct TSFrame : wxFrame {
         bool ismax;
         sys->cfg->Read(L"maximized", &ismax, true);
 
-        aui->AddPane(nb, wxCENTER);
-        aui->Update();
+        aui.AddPane(nb, wxCENTER);
+        aui.Update();
 
         Show(!IsIconized());
 
@@ -783,27 +783,6 @@ struct TSFrame : wxFrame {
         watcher = new wxFileSystemWatcher();
         watcher->SetOwner(this);
         Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(TSFrame::OnFileSystemEvent));
-    }
-
-    ~TSFrame() {
-        filehistory.Save(*sys->cfg);
-        auto oldpath = sys->cfg->GetPath();
-        sys->cfg->SetPath("/scripts");
-        scripts.Save(*sys->cfg);
-        sys->cfg->SetPath(oldpath);
-        if (!IsIconized()) {
-            sys->cfg->Write(L"maximized", IsMaximized());
-            if (!IsMaximized()) {
-                sys->cfg->Write(L"resx", GetSize().x);
-                sys->cfg->Write(L"resy", GetSize().y);
-                sys->cfg->Write(L"posx", GetPosition().x);
-                sys->cfg->Write(L"posy", GetPosition().y);
-            }
-        }
-        aui->ClearEventHashTable();
-        aui->UnInit();
-        DELETEP(editmenupopup);
-        DELETEP(watcher);
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
@@ -1307,6 +1286,24 @@ struct TSFrame : wxFrame {
             }
         }
         sys->every_second_timer.Stop();
+        filehistory.Save(*sys->cfg);
+        auto oldpath = sys->cfg->GetPath();
+        sys->cfg->SetPath("/scripts");
+        scripts.Save(*sys->cfg);
+        sys->cfg->SetPath(oldpath);
+        if (!IsIconized()) {
+            sys->cfg->Write(L"maximized", IsMaximized());
+            if (!IsMaximized()) {
+                sys->cfg->Write(L"resx", GetSize().x);
+                sys->cfg->Write(L"resy", GetSize().y);
+                sys->cfg->Write(L"posx", GetPosition().x);
+                sys->cfg->Write(L"posy", GetPosition().y);
+            }
+        }
+        aui.ClearEventHashTable();
+        aui.UnInit();
+        DELETEP(editmenupopup);
+        DELETEP(watcher);
         Destroy();
     }
 
