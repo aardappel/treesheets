@@ -8,7 +8,7 @@ struct TSFrame : wxFrame {
     wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
     wxFileSystemWatcher *watcher;
     wxAuiNotebook *nb {nullptr};
-    unique_ptr<wxAuiManager> aui {make_unique<wxAuiManager>(this)};
+    wxAuiManager aui {this};
     wxBitmap line_nw;
     wxBitmap line_sw;
     wxBitmap foldicon;
@@ -766,8 +766,8 @@ struct TSFrame : wxFrame {
         bool ismax;
         sys->cfg->Read(L"maximized", &ismax, true);
 
-        aui->AddPane(nb, wxCENTER);
-        aui->Update();
+        aui.AddPane(nb, wxCENTER);
+        aui.Update();
 
         Show(!IsIconized());
 
@@ -800,8 +800,8 @@ struct TSFrame : wxFrame {
                 sys->cfg->Write(L"posy", GetPosition().y);
             }
         }
-        aui->ClearEventHashTable();
-        aui->UnInit();
+        aui.ClearEventHashTable();
+        aui.UnInit();
         DELETEP(editmenupopup);
         DELETEP(watcher);
     }
