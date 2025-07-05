@@ -785,27 +785,6 @@ struct TSFrame : wxFrame {
         Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(TSFrame::OnFileSystemEvent));
     }
 
-    ~TSFrame() {
-        filehistory.Save(*sys->cfg);
-        auto oldpath = sys->cfg->GetPath();
-        sys->cfg->SetPath("/scripts");
-        scripts.Save(*sys->cfg);
-        sys->cfg->SetPath(oldpath);
-        if (!IsIconized()) {
-            sys->cfg->Write(L"maximized", IsMaximized());
-            if (!IsMaximized()) {
-                sys->cfg->Write(L"resx", GetSize().x);
-                sys->cfg->Write(L"resy", GetSize().y);
-                sys->cfg->Write(L"posx", GetPosition().x);
-                sys->cfg->Write(L"posy", GetPosition().y);
-            }
-        }
-        aui.ClearEventHashTable();
-        aui.UnInit();
-        DELETEP(editmenupopup);
-        DELETEP(watcher);
-    }
-
     TSCanvas *NewTab(Document *doc, bool append = false) {
         TSCanvas *sw = new TSCanvas(this, nb);
         sw->doc = doc;
@@ -1307,6 +1286,24 @@ struct TSFrame : wxFrame {
             }
         }
         sys->every_second_timer.Stop();
+        filehistory.Save(*sys->cfg);
+        auto oldpath = sys->cfg->GetPath();
+        sys->cfg->SetPath("/scripts");
+        scripts.Save(*sys->cfg);
+        sys->cfg->SetPath(oldpath);
+        if (!IsIconized()) {
+            sys->cfg->Write(L"maximized", IsMaximized());
+            if (!IsMaximized()) {
+                sys->cfg->Write(L"resx", GetSize().x);
+                sys->cfg->Write(L"resy", GetSize().y);
+                sys->cfg->Write(L"posx", GetPosition().x);
+                sys->cfg->Write(L"posy", GetPosition().y);
+            }
+        }
+        aui.ClearEventHashTable();
+        aui.UnInit();
+        DELETEP(editmenupopup);
+        DELETEP(watcher);
         Destroy();
     }
 
