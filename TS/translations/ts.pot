@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-22 22:55+0200\n"
+"POT-Creation-Date: 2025-07-03 18:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #, c-format
@@ -738,6 +738,15 @@ msgstr ""
 msgid "Image Resize"
 msgstr ""
 
+msgid "Image(s) have been saved to disk."
+msgstr ""
+
+msgid "Images in selected cells have been converted to JPEG format."
+msgstr ""
+
+msgid "Images in selected cells have been converted to PNG format."
+msgstr ""
+
 msgid "Import from"
 msgstr ""
 
@@ -1226,6 +1235,9 @@ msgstr ""
 msgid "Set the font the document text is displayed with"
 msgstr ""
 
+msgid "Set the font the typewriter text is displayed with."
+msgstr ""
+
 #, no-c-format
 msgid "Show 1% less than the last filter"
 msgstr ""
@@ -1331,6 +1343,9 @@ msgstr ""
 msgid "The browser could not open at least one link."
 msgstr ""
 
+msgid "There are no images in the selection."
+msgstr ""
+
 msgid "There is no content to collapse."
 msgstr ""
 
@@ -1415,6 +1430,9 @@ msgid "Turn filter &off"
 msgstr ""
 
 msgid "Tutorial &web page"
+msgstr ""
+
+msgid "Typewriter font..."
 msgstr ""
 
 msgid "Undo (CTRL+z)"
