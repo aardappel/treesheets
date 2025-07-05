@@ -29,8 +29,6 @@
 #endif
 
 #include <wx/aui/aui.h>
-#include <wx/aui/auibar.h>
-#include <wx/aui/auibook.h>
 #include <wx/base64.h>
 #include <wx/bmpbndl.h>
 #include <wx/colordlg.h>
