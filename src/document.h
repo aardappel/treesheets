@@ -79,7 +79,7 @@ struct Document {
     uint printscale {0};
     bool scrolltoselection {true};
     bool scaledviewingmode {false};
-    bool updatehover {false};
+    bool paintupdatehover {false};
     bool selectclick {false};
     bool doubleclick {false};
     bool drag {false};
@@ -567,9 +567,9 @@ struct Document {
                       : 0;
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
-        if (updatehover) {
+        if (paintupdatehover) {
             UpdateHover(dc);
-            updatehover = false;
+            paintupdatehover = false;
             if (selectclick) {
                 begindrag = Selection();
                 if (!(clickright && hover.IsInside(selected))) {
