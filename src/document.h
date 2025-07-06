@@ -77,7 +77,6 @@ struct Document {
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
-    bool paintscrolltoselection {true};
     bool scaledviewingmode {false};
     bool paintupdatehover {false};
     bool paintselectclick {false};
@@ -86,6 +85,7 @@ struct Document {
     bool paintdrop {false};
     bool paintclickright {false};
     bool paintselectup {false};
+    bool paintscrolltoselection {true};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
