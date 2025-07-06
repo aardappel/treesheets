@@ -82,7 +82,7 @@ struct Document {
     bool paintupdatehover {false};
     bool paintselectclick {false};
     bool paintdoubleclick {false};
-    bool drag {false};
+    bool paintdrag {false};
     bool drop {false};
     bool clickright {false};
     bool selectup {false};
@@ -594,7 +594,7 @@ struct Document {
                 }
                 paintdoubleclick = false;
             }
-            if (drag && selected.g && hover.g && begindrag.g) {
+            if (paintdrag && selected.g && hover.g && begindrag.g) {
                 if (isctrlshiftdrag) { begindrag = hover; }
                 else if (!hover.Thin()) {
                     if (begindrag.Thin() || selected.Thin()) {
@@ -606,7 +606,7 @@ struct Document {
                         if (!(old == selected)) { ResetCursor(); }
                     }
                 }
-                drag = false;
+                paintdrag = false;
             }
             if (selectup) {
                 SelectUp(dc);

@@ -47,7 +47,7 @@ struct TSCanvas : public wxScrolledCanvas {
                 RefreshHover(me.GetX(), me.GetY());
                 doc->Copy(A_DRAGANDDROP);
             } else {
-                doc->drag = true;
+                doc->paintdrag = true;
                 RefreshHover(me.GetX(), me.GetY());
             }
         } else if (me.MiddleIsDown()) {
