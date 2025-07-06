@@ -85,7 +85,7 @@ struct Document {
     bool paintdrag {false};
     bool paintdrop {false};
     bool clickright {false};
-    bool selectup {false};
+    bool paintselectup {false};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -608,9 +608,9 @@ struct Document {
                 }
                 paintdrag = false;
             }
-            if (selectup) {
+            if (paintselectup) {
                 SelectUp(dc);
-                selectup = false;
+                paintselectup = false;
             }
             if (paintdrop) {
                 switch (dndobjc->GetReceivedFormat().GetType()) {
