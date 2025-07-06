@@ -83,7 +83,7 @@ struct Document {
     bool paintselectclick {false};
     bool paintdoubleclick {false};
     bool paintdrag {false};
-    bool drop {false};
+    bool paintdrop {false};
     bool clickright {false};
     bool selectup {false};
     double currentviewscale {1.0};
@@ -612,7 +612,7 @@ struct Document {
                 SelectUp(dc);
                 selectup = false;
             }
-            if (drop) {
+            if (paintdrop) {
                 switch (dndobjc->GetReceivedFormat().GetType()) {
                     case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
                     case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
@@ -621,7 +621,7 @@ struct Document {
                     default:;
                 }
                 Layout(dc);
-                drop = false;
+                paintdrop = false;
             }
         }
         Render(dc);

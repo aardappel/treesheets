@@ -22,7 +22,7 @@ struct DropTarget : wxDropTarget {
         GetData();
         Document *doc = sys->frame->GetCurTab()->doc;
         doc->paintselectclick = true;
-        doc->drop = true;
+        doc->paintdrop = true;
         doc->sw->RefreshHover(x, y);
         return wxDragCopy;
     }
