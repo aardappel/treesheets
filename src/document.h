@@ -77,15 +77,15 @@ struct Document {
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
-    bool scrolltoselection {true};
     bool scaledviewingmode {false};
-    bool updatehover {false};
-    bool selectclick {false};
-    bool doubleclick {false};
-    bool drag {false};
-    bool drop {false};
-    bool clickright {false};
-    bool selectup {false};
+    bool paintupdatehover {false};
+    bool paintselectclick {false};
+    bool paintdoubleclick {false};
+    bool paintdrag {false};
+    bool paintdrop {false};
+    bool paintclickright {false};
+    bool paintselectup {false};
+    bool paintscrolltoselection {true};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -230,7 +230,7 @@ struct Document {
     }
 
     void RefreshMove() {
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         Refresh();
     }
 
@@ -567,23 +567,23 @@ struct Document {
                       : 0;
         sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
-        if (updatehover) {
+        if (paintupdatehover) {
             UpdateHover(dc);
-            updatehover = false;
-            if (selectclick) {
+            paintupdatehover = false;
+            if (paintselectclick) {
                 begindrag = Selection();
-                if (!(clickright && hover.IsInside(selected))) {
+                if (!(paintclickright && hover.IsInside(selected))) {
                     if (selected.GetCell() == hover.GetCell() && hover.GetCell())
                         hover.EnterEditOnly(this);
                     else
                         hover.ExitEdit(this);
                     SetSelect(hover);
-                    scrolltoselection = true;
+                    paintscrolltoselection = true;
                 }
-                selectclick = false;
-                clickright = false;
+                paintselectclick = false;
+                paintclickright = false;
             }
-            if (doubleclick) {
+            if (paintdoubleclick) {
                 SetSelect(hover);
                 if (selected.Thin()) {
                     selected.SelAll();
@@ -592,9 +592,9 @@ struct Document {
                     c->text.SelectWord(selected);
                     begindrag = selected;
                 }
-                doubleclick = false;
+                paintdoubleclick = false;
             }
-            if (drag && selected.g && hover.g && begindrag.g) {
+            if (paintdrag && selected.g && hover.g && begindrag.g) {
                 if (isctrlshiftdrag) { begindrag = hover; }
                 else if (!hover.Thin()) {
                     if (begindrag.Thin() || selected.Thin()) {
@@ -606,13 +606,13 @@ struct Document {
                         if (!(old == selected)) { ResetCursor(); }
                     }
                 }
-                drag = false;
+                paintdrag = false;
             }
-            if (selectup) {
+            if (paintselectup) {
                 SelectUp(dc);
-                selectup = false;
+                paintselectup = false;
             }
-            if (drop) {
+            if (paintdrop) {
                 switch (dndobjc->GetReceivedFormat().GetType()) {
                     case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
                     case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
@@ -621,14 +621,14 @@ struct Document {
                     default:;
                 }
                 Layout(dc);
-                drop = false;
+                paintdrop = false;
             }
         }
         Render(dc);
         DrawSelect(dc, selected);
-        if (scrolltoselection) {
+        if (paintscrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected);
-            scrolltoselection = false;
+            paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
@@ -2249,7 +2249,7 @@ struct Document {
 
     void ApplyEditFilter() {
         searchfilter = false;
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(rootgrid);
         ranges::sort(itercells, [](auto a, auto b) {
@@ -2263,7 +2263,7 @@ struct Document {
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         CollectCells(rootgrid);
         for (auto c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
@@ -2281,7 +2281,7 @@ struct Document {
 
     void SetSearchFilter(bool on) {
         searchfilter = on;
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         rootgrid->ResetChildren();
         Refresh();

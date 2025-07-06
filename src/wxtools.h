@@ -21,8 +21,8 @@ struct DropTarget : wxDropTarget {
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
         Document *doc = sys->frame->GetCurTab()->doc;
-        doc->selectclick = true;
-        doc->drop = true;
+        doc->paintselectclick = true;
+        doc->paintdrop = true;
         doc->sw->RefreshHover(x, y);
         return wxDragCopy;
     }
