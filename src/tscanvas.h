@@ -96,7 +96,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftDoubleClick(wxMouseEvent &me) {
-        doc->doubleclick = true;
+        doc->paintdoubleclick = true;
         RefreshHover(me.GetX(), me.GetY());
     }
 

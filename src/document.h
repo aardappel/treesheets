@@ -81,7 +81,7 @@ struct Document {
     bool scaledviewingmode {false};
     bool paintupdatehover {false};
     bool paintselectclick {false};
-    bool doubleclick {false};
+    bool paintdoubleclick {false};
     bool drag {false};
     bool drop {false};
     bool clickright {false};
@@ -583,7 +583,7 @@ struct Document {
                 paintselectclick = false;
                 clickright = false;
             }
-            if (doubleclick) {
+            if (paintdoubleclick) {
                 SetSelect(hover);
                 if (selected.Thin()) {
                     selected.SelAll();
@@ -592,7 +592,7 @@ struct Document {
                     c->text.SelectWord(selected);
                     begindrag = selected;
                 }
-                doubleclick = false;
+                paintdoubleclick = false;
             }
             if (drag && selected.g && hover.g && begindrag.g) {
                 if (isctrlshiftdrag) { begindrag = hover; }
