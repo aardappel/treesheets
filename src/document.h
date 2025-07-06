@@ -77,7 +77,7 @@ struct Document {
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
-    bool scrolltoselection {true};
+    bool paintscrolltoselection {true};
     bool scaledviewingmode {false};
     bool paintupdatehover {false};
     bool selectclick {false};
@@ -230,7 +230,7 @@ struct Document {
     }
 
     void RefreshMove() {
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         Refresh();
     }
 
@@ -578,7 +578,7 @@ struct Document {
                     else
                         hover.ExitEdit(this);
                     SetSelect(hover);
-                    scrolltoselection = true;
+                    paintscrolltoselection = true;
                 }
                 selectclick = false;
                 clickright = false;
@@ -626,9 +626,9 @@ struct Document {
         }
         Render(dc);
         DrawSelect(dc, selected);
-        if (scrolltoselection) {
+        if (paintscrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected);
-            scrolltoselection = false;
+            paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
@@ -2249,7 +2249,7 @@ struct Document {
 
     void ApplyEditFilter() {
         searchfilter = false;
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(rootgrid);
         ranges::sort(itercells, [](auto a, auto b) {
@@ -2263,7 +2263,7 @@ struct Document {
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         CollectCells(rootgrid);
         for (auto c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
@@ -2281,7 +2281,7 @@ struct Document {
 
     void SetSearchFilter(bool on) {
         searchfilter = on;
-        scrolltoselection = true;
+        paintscrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         rootgrid->ResetChildren();
         Refresh();
