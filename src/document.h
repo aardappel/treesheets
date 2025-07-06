@@ -84,7 +84,7 @@ struct Document {
     bool paintdoubleclick {false};
     bool paintdrag {false};
     bool paintdrop {false};
-    bool clickright {false};
+    bool paintclickright {false};
     bool paintselectup {false};
     double currentviewscale {1.0};
     bool searchfilter {false};
@@ -572,7 +572,7 @@ struct Document {
             paintupdatehover = false;
             if (paintselectclick) {
                 begindrag = Selection();
-                if (!(clickright && hover.IsInside(selected))) {
+                if (!(paintclickright && hover.IsInside(selected))) {
                     if (selected.GetCell() == hover.GetCell() && hover.GetCell())
                         hover.EnterEditOnly(this);
                     else
@@ -581,7 +581,7 @@ struct Document {
                     paintscrolltoselection = true;
                 }
                 paintselectclick = false;
-                clickright = false;
+                paintclickright = false;
             }
             if (paintdoubleclick) {
                 SetSelect(hover);
