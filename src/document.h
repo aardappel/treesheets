@@ -80,7 +80,7 @@ struct Document {
     bool paintscrolltoselection {true};
     bool scaledviewingmode {false};
     bool paintupdatehover {false};
-    bool selectclick {false};
+    bool paintselectclick {false};
     bool doubleclick {false};
     bool drag {false};
     bool drop {false};
@@ -570,7 +570,7 @@ struct Document {
         if (paintupdatehover) {
             UpdateHover(dc);
             paintupdatehover = false;
-            if (selectclick) {
+            if (paintselectclick) {
                 begindrag = Selection();
                 if (!(clickright && hover.IsInside(selected))) {
                     if (selected.GetCell() == hover.GetCell() && hover.GetCell())
@@ -580,7 +580,7 @@ struct Document {
                     SetSelect(hover);
                     paintscrolltoselection = true;
                 }
-                selectclick = false;
+                paintselectclick = false;
                 clickright = false;
             }
             if (doubleclick) {
