@@ -578,7 +578,6 @@ struct Document {
                     else
                         hover.ExitEdit(this);
                     SetSelect(hover);
-                    paintscrolltoselection = true;
                 }
                 paintselectclick = false;
                 paintclickright = false;
