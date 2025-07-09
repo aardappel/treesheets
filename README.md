@@ -75,8 +75,7 @@ cd treesheets
 | 3.2 Build only | `cmake --build _build -j` | Append `--config Release` | | |
 | 3.3 Install | `cmake --install _build` | | Append `--prefix <directory>` to specify another installation root for the bundle | usually requires root privileges, e.g. run this command with `sudo` |
 
-Please note that you need to have wxWidgets installed, e.g. distributed by your distribution or built by yourself. See the documentation on the CMake `FindwxWidgets` module for more details.
-Otherwise you need to compile wxWidgets as a subproject and link statically against it. This can be achieved by appending either `-DGIT_WXWIDGETS_SUBMODULES=ON` (autodownloads wxWidgets) or `-DTREESHEETS_WITH_STATIC_WXWIDGETS=ON` (if you have already placed the wxWidgets source in `thirdparty/wxWidgets`) to the `cmake` command that configures the build system.
+If you do not have `wxWidgets` installed, you may want to set `wxBUILD_INSTALL` and `wxBUILD_SHARED` to off in the build configuration. This ensures a TreeSheets build with wxWidgets libraries statically linked in.
 
 Contributing:
 -------------
