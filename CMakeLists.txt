@@ -35,32 +35,6 @@ if (WITH_CLANG_TIDY)
     set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 endif()
 
-## Build with statically linked wxWidgets
-
-OPTION(TREESHEETS_WITH_STATIC_WXWIDGETS "Build wxWidgets along with TreeSheets and link TreeSheets against static wxWidgets library" OFF)
-
-## Build with statically linked wxWidgets that resides within a git submodule
-
-# Taken from https://cliutils.gitlab.io/modern-cmake/chapters/projects/submodule.html
-find_package(Git QUIET)
-if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
-# Update submodules as needed
-    OPTION(GIT_WXWIDGETS_SUBMODULES "Checkout wxWidgets git submodules during build" OFF)
-    if(GIT_WXWIDGETS_SUBMODULES)
-        message(STATUS "The Git wxWidgets submodules are currently being updated...")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --remote --recursive
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif()
-        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/thirdparty/wxWidgets/CMakeLists.txt")
-            message(FATAL_ERROR "The submodules were not downloaded! GIT_WXWIDGETS_SUBMODULES failed.")
-        endif()
-        set(TREESHEETS_WITH_STATIC_WXWIDGETS ON)
-    endif()
-endif()
-
 ### Libraries (lobster, lobster-impl, StackWalker)
 
 ## lobster (script interpreter)
@@ -148,23 +122,17 @@ endif()
 
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
-# If TREESHEETS_WITH_STATIC_WXWIDGETS is set, then it expects the wxWidgets source code 
-# to be placed in thirdparty/wxWidgets (see below, it can be changed to your liking).
-
-if(TREESHEETS_WITH_STATIC_WXWIDGETS)
-    set(wxBUILD_SHARED OFF)
-    set(wxBUILD_INSTALL OFF CACHE BOOL "Avoid install/uninstall target for wxWidgets in static build" FORCE)
-    add_subdirectory(thirdparty/wxWidgets)
-    set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
-else()
-    find_package(wxWidgets REQUIRED aui adv core xml net)
-    include(${wxWidgets_USE_FILE})
-    set(TREESHEETS_LIBS ${wxWidgets_LIBRARIES})
-endif()
+include(FetchContent)
+FetchContent_Declare(
+    wxwidgets
+    GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
+    GIT_TAG v3.3.0
+    FIND_PACKAGE_ARGS NAMES wxWidgets
+)
+FetchContent_MakeAvailable(wxwidgets)
 
 ## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
-
-list(APPEND TREESHEETS_LIBS lobster-impl)
+set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net lobster-impl)
 if(WIN32)
     list(APPEND TREESHEETS_LIBS StackWalker)
 endif()

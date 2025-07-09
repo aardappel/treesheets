@@ -1,4 +1,0 @@
-[submodule "lib/wxWidgets"]
-	path = thirdparty/wxWidgets
-	url = https://github.com/wxWidgets/wxWidgets
-	branch = master
