@@ -64,13 +64,6 @@ target_include_directories(lobster PUBLIC thirdparty/lobster/include thirdparty/
 add_library(lobster-impl STATIC src/lobster_impl.cpp)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
-## StackWalker (only on Windows)
-
-if(WIN32)
-    add_library(StackWalker STATIC thirdparty/StackWalker/StackWalker.cpp thirdparty/StackWalker/StackWalkerHelpers.cpp)
-    target_include_directories(StackWalker PRIVATE thirdparty/StackWalker)
-endif()
-
 ### TreeSheets executable
 
 set(treesheets_sources
@@ -122,6 +115,8 @@ endif()
 
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
+## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
+
 include(FetchContent)
 FetchContent_Declare(
     wxwidgets
@@ -131,9 +126,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(wxwidgets)
 
-## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
 set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net lobster-impl)
 if(WIN32)
+    FetchContent_Declare(
+        stackwalker
+        GIT_REPOSITORY https://github.com/JochenKalmbach/StackWalker
+        GIT_TAG 2023-06-24
+    )
+    FetchContent_MakeAvailable(stackwalker)
     list(APPEND TREESHEETS_LIBS StackWalker)
 endif()
 target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
