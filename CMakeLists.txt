@@ -12,7 +12,6 @@ project(TreeSheets
 ### Settings
 
 set(CMAKE_CXX_STANDARD 20)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 ## Compiler-specific
@@ -25,6 +24,22 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} -Wno-array-bounds -Wno-stringop-overflow -Wno-maybe-uninitialized")
 endif()
+
+### Thirdparty dependencies
+
+include(FetchContent)
+FetchContent_Declare(
+    wxwidgets
+    GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
+    GIT_TAG v3.3.0
+    FIND_PACKAGE_ARGS NAMES wxWidgets
+)
+FetchContent_Declare(
+    lobster
+    GIT_REPOSITORY https://github.com/aardappel/lobster
+    GIT_TAG v2025.0
+)
+FetchContent_MakeAvailable(wxwidgets lobster)
 
 ### Options
 
@@ -41,27 +56,34 @@ endif()
 
 file(
     GLOB lobster_sources
-        thirdparty/lobster/external/flatbuffers/src/*.cpp
-        thirdparty/lobster/src/builtins.cpp
-        thirdparty/lobster/src/compiler.cpp
-        thirdparty/lobster/src/disasm.cpp
-        thirdparty/lobster/src/file.cpp
-        thirdparty/lobster/src/lobsterreader.cpp
-        thirdparty/lobster/src/platform.cpp
-        thirdparty/lobster/src/vm.cpp
-        thirdparty/lobster/src/vmdata.cpp
-        thirdparty/lobster/src/vmlog.cpp
-        thirdparty/lobster/src/tocpp.cpp
-        thirdparty/lobster/src/tccbind.cpp
-        thirdparty/lobster/external/libtcc/libtcc.c
+        ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/*.cpp
+        ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
+        ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
+        ${lobster_SOURCE_DIR}/dev/src/disasm.cpp
+        ${lobster_SOURCE_DIR}/dev/src/file.cpp
+        ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
+        ${lobster_SOURCE_DIR}/dev/src/platform.cpp
+        ${lobster_SOURCE_DIR}/dev/src/vm.cpp
+        ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
+        ${lobster_SOURCE_DIR}/dev/src/vmlog.cpp
+        ${lobster_SOURCE_DIR}/dev/src/tocpp.cpp
+        ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
+        ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c
 )
 
 add_library(lobster STATIC ${lobster_sources})
-target_include_directories(lobster PUBLIC thirdparty/lobster/include thirdparty/lobster/src thirdparty/lobster/external/libtcc)
+target_include_directories(lobster PRIVATE
+    ${lobster_SOURCE_DIR}/dev/src
+    ${lobster_SOURCE_DIR}/dev/include
+    ${lobster_SOURCE_DIR}/dev/external
+    ${lobster_SOURCE_DIR}/dev/external/libtcc)
 
 ## lobster-impl (provider of TreeSheets functions in lobster)
 
 add_library(lobster-impl STATIC src/lobster_impl.cpp)
+target_include_directories(lobster-impl PRIVATE 
+    ${lobster_SOURCE_DIR}/dev/src
+    ${lobster_SOURCE_DIR}/dev/include)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
 ## StackWalker (only on Windows)
@@ -122,15 +144,6 @@ endif()
 
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
-include(FetchContent)
-FetchContent_Declare(
-    wxwidgets
-    GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
-    GIT_TAG v3.3.0
-    FIND_PACKAGE_ARGS NAMES wxWidgets
-)
-FetchContent_MakeAvailable(wxwidgets)
-
 ## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
 set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net lobster-impl)
 if(WIN32)
@@ -183,6 +196,13 @@ install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
 
 install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
 install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
+set(LOBSTER_MODULES
+    ${lobster_SOURCE_DIR}/modules/std.lobster
+    ${lobster_SOURCE_DIR}/modules/stdtype.lobster
+    ${lobster_SOURCE_DIR}/modules/vec.lobster
+    ${lobster_SOURCE_DIR}/modules/color.lobster
+)
+install(FILES ${LOBSTER_MODULES} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
 
 ## Localization
 
