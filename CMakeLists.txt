@@ -89,56 +89,50 @@ target_link_libraries(lobster-impl PRIVATE lobster)
 ## StackWalker (only on Windows)
 
 if(WIN32)
-    add_library(StackWalker STATIC thirdparty/StackWalker/StackWalker.cpp thirdparty/StackWalker/StackWalkerHelpers.cpp)
+    add_library(StackWalker STATIC 
+        thirdparty/StackWalker/StackWalker.cpp
+        thirdparty/StackWalker/StackWalkerHelpers.cpp)
     target_include_directories(StackWalker PRIVATE thirdparty/StackWalker)
 endif()
 
 ### TreeSheets executable
 
 set(treesheets_sources
-        src/main.cpp
-        # The header files are included in order to make them appear in IDEs
-        src/cell.h
-        src/document.h
-        src/evaluator.h
-        src/grid.h
-        src/tsapp.h
-        src/tscanvas.h
-        src/events.h
-        src/tsframe.h
-        src/wxtools.h
-        src/script_interface.h
-        src/selection.h
-        src/stdafx.h
-        src/system.h
-        src/text.h
-        src/threadpool.h
-        src/tools.h
+    src/main.cpp
+    # The header files are included in order to make them appear in IDEs
+    src/cell.h
+    src/document.h
+    src/evaluator.h
+    src/grid.h
+    src/tsapp.h
+    src/tscanvas.h
+    src/events.h
+    src/tsframe.h
+    src/wxtools.h
+    src/script_interface.h
+    src/selection.h
+    src/stdafx.h
+    src/system.h
+    src/text.h
+    src/threadpool.h
+    src/tools.h
 )
 
+if(WIN32)
+    list(APPEND treesheets_sources platform/win/icon.rc)
+endif()
+
+add_executable(TreeSheets ${treesheets_sources})
+
 if(APPLE)
-    add_executable(
-        TreeSheets
-        MACOSX_BUNDLE
-        ${treesheets_sources}
-        platform/osx/App.icns
-    )
-    set_source_files_properties(platform/osx/App.icns PROPERTIES
-        MACOSX_PACKAGE_LOCATION "Resources")
     set_target_properties(TreeSheets PROPERTIES
+        MACOSX_BUNLDE TRUE
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
+        RESOURCE "${CMAKE_SOURCE_DIR}/platform/osx/App.icns"
     )
 elseif(WIN32)
-    add_executable(
-        TreeSheets
-        WIN32
-        ${treesheets_sources}
-        platform/win/icon.rc
-    )
-else()
-    add_executable(
-        TreeSheets
-        ${treesheets_sources}
+    set_target_properties(TreeSheets PROPERTIES
+        WIN32_EXECUTABLE TRUE
     )
 endif()
 
