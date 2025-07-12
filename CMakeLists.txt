@@ -129,7 +129,7 @@ target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VE
 
 if(APPLE)
     set_target_properties(TreeSheets PROPERTIES
-        MACOSX_BUNLDE TRUE
+        MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
         RESOURCE "${CMAKE_SOURCE_DIR}/platform/osx/App.icns"
     )
