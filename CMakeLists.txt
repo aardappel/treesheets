@@ -2,12 +2,14 @@ cmake_minimum_required(VERSION 3.25)
 
 ### Project
 
-string(TIMESTAMP TimeStamp "%y%m%d.%H%M" UTC)
-
 project(TreeSheets
     DESCRIPTION "A free-form hierarchical data organizer"
-    HOMEPAGE_URL "https://github.com/aardappel/treesheets"
-    VERSION ${TimeStamp})
+    HOMEPAGE_URL "https://github.com/aardappel/treesheets")
+
+if(NOT TREESHEETS_VERSION)
+    string(TIMESTAMP timestamp "%y%m%d.%H%M" UTC)
+    set(TREESHEETS_VERSION "${timestamp}")
+endif()
 
 ### Settings
 
@@ -123,6 +125,7 @@ if(WIN32)
 endif()
 
 add_executable(TreeSheets ${treesheets_sources})
+target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VERSION}\"")
 
 if(APPLE)
     set_target_properties(TreeSheets PROPERTIES
