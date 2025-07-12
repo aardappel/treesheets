@@ -2,14 +2,15 @@ cmake_minimum_required(VERSION 3.25)
 
 ### Project
 
-project(TreeSheets
-    DESCRIPTION "A free-form hierarchical data organizer"
-    HOMEPAGE_URL "https://github.com/aardappel/treesheets")
-
 if(NOT TREESHEETS_VERSION)
     string(TIMESTAMP timestamp "%y%m%d.%H%M" UTC)
     set(TREESHEETS_VERSION "${timestamp}")
 endif()
+
+project(TreeSheets
+    DESCRIPTION "A free-form hierarchical data organizer"
+    HOMEPAGE_URL "https://github.com/aardappel/treesheets"
+    VERSION "${TREESHEETS_VERSION}")
 
 ### Settings
 
