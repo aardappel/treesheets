@@ -16,17 +16,15 @@
 		<key>CFBundleTypeIconFile</key>
 		<string>App</string>
 		<key>CFBundleTypeName</key>
-		<string>TreeSheets</string>
+		<string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
 	</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>treesheets</string>
-	<key>CFBundleGetInfoString</key>
-	<string></string>
+	<string>${MACOSX_BUNDLE_EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>App.icns</string>
+	<string>${MACOSX_BUNDLE_ICON_FILE}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.strlen.TreeSheets</string>
+	<string>${MACOSX_BUNDLE_GUI_IDENTIFIER}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleLocalizations</key>
@@ -38,16 +36,14 @@
 		<string>Portuguese</string>
 		<string>Russian</string>
 	</array>
-	<key>CFBundleLongVersionString</key>
-	<string></string>
 	<key>CFBundleName</key>
-	<string>TreeSheets</string>
+	<string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string></string>
+	<string>${MACOSX_BUNDLE_BUNDLE_VERSION}</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>LSApplicationCategoryType</key>
@@ -57,7 +53,7 @@
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2013 Wouter van Oortmerssen. All rights reserved.</string>
+	<string>${MACOSX_BUNDLE_COPYRIGHT}</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
