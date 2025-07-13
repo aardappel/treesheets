@@ -35,6 +35,7 @@
 		<string>Chinese</string>
 		<string>Portuguese</string>
 		<string>Russian</string>
+		<string>Korean</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
