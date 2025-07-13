@@ -126,11 +126,16 @@ if(WIN32)
 endif()
 
 add_executable(TreeSheets ${treesheets_sources})
-target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VERSION}\"")
+target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
 
 if(APPLE)
     set_target_properties(TreeSheets PROPERTIES
         MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_BUNDLE_NAME "${CMAKE_PROJECT_NAME}"
+        MACOSX_BUNDLE_BUNDLE_VERSION "${CMAKE_PROJECT_VERSION}"
+        MACOSX_BUNDLE_COPYRIGHT "Copyright © 2013 Wouter van Oortmerssen. All rights reserved."
+        MACOSX_BUNDLE_GUI_IDENTIFIER "com.strlen.TreeSheets"
+        MACOSX_BUNDLE_ICON_FILE "App.icns"
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
         RESOURCE "${CMAKE_SOURCE_DIR}/platform/osx/App.icns"
     )

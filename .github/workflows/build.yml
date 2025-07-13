@@ -85,9 +85,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Prepare Plist
-      run: |
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ github.run_number }}" platform/osx/Info.plist
-        /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
+      run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
       run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
     - name: Build and package TreeSheets
