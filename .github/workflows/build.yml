@@ -27,7 +27,7 @@ jobs:
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Remove epoch from .deb filename
-      run: for file in _build/treesheets_1:*.deb; do mv -v "${file}" "${file/treesheets_1:/treesheets_}"; done
+      run: for file in _build/treesheets_2:*.deb; do mv -v "${file}" "${file/treesheets_2:/treesheets_}"; done
     - name: Create release
       if: github.event_name == 'push'
       uses: ncipollo/release-action@v1
