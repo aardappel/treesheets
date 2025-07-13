@@ -132,6 +132,7 @@ if(APPLE)
     set_target_properties(TreeSheets PROPERTIES
         MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
+        MACOSX_BUNDLE_BUNDLE_VERSION "${TREESHEETS_VERSION}"
         RESOURCE "${CMAKE_SOURCE_DIR}/platform/osx/App.icns"
     )
 elseif(WIN32)
