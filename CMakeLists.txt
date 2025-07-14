@@ -171,9 +171,11 @@ if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_FULL_PKGDATADIR ${CMAKE_INSTALL_FULL_DATADIR}/${CMAKE_PROJECT_NAME})
 
     # Convert relative to absolute paths because only absolute paths are looked up on Linux
-    target_compile_definitions(TreeSheets PRIVATE "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
-    target_compile_definitions(TreeSheets PRIVATE "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\"")
-    target_compile_definitions(TreeSheets PRIVATE "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\"")
+    target_compile_definitions(TreeSheets PRIVATE
+        "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\""
+        "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\""
+        "TREESHEETS_DATADIR=\"${TREESHEETS_FULL_PKGDATADIR}\""
+    )
 
     install(FILES platform/linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
     install(FILES platform/linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
