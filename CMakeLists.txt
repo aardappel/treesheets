@@ -137,7 +137,6 @@ if(APPLE)
         MACOSX_BUNDLE_GUI_IDENTIFIER "com.strlen.TreeSheets"
         MACOSX_BUNDLE_ICON_FILE "App.icns"
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
-        RESOURCE "${CMAKE_SOURCE_DIR}/platform/osx/App.icns"
     )
 elseif(WIN32)
     set_target_properties(TreeSheets PROPERTIES
@@ -206,6 +205,14 @@ set(LOBSTER_MODULES
     ${lobster_SOURCE_DIR}/modules/color.lobster
 )
 install(FILES ${LOBSTER_MODULES} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
+
+## Apple icon set
+if(APPLE)
+    install(
+        FILES "platform/osx/App.icns"
+        DESTINATION "TreeSheets.app/Contents/Resources"
+    )
+endif()
 
 ## Localization
 
