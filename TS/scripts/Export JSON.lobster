@@ -43,6 +43,6 @@ if filename.length:
     ts.goto_root()  // This the default, here just for clarity.
     add_cell(0)
     let ok = write_file(filename, concat_string(out, ""), true, true)
-    ts.set_status_message("JSON export of {filename} " + if ok: "succesful" else: "failed!")
+    ts.set_status_message("JSON export of {filename} " + if ok: "successful" else: "failed!")
 else:
     ts.set_status_message("export cancelled")
