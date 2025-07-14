@@ -205,7 +205,7 @@ string RunLobster(std::string_view filename, std::string_view code, bool dump_bu
         Compile(natreg, filename, code, bytecode, nullptr, nullptr,
                 false, RUNTIME_ASSERT, nullptr, 0, true);
         auto ret = RunTCC(natreg, bytecode, filename, nullptr, {}, TraceMode::OFF, false, err,
-                          RUNTIME_ASSERT, true);
+                          RUNTIME_ASSERT, true, false);
     } catch (string &s) {
         err = s;
     }
