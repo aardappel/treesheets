@@ -195,7 +195,8 @@ endif()
 
 install(TARGETS TreeSheets DESTINATION ${TREESHEETS_BINDIR})
 install(DIRECTORY TS/docs DESTINATION ${TREESHEETS_DOCDIR})
-install(FILES TS/readme.html DESTINATION ${TREESHEETS_DOCDIR})
+file(GLOB treesheets_readme_files "TS/readme*.html")
+install(FILES ${treesheets_readme_files} DESTINATION ${TREESHEETS_DOCDIR})
 install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
 
 install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
