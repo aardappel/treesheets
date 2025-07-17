@@ -60,7 +60,10 @@ jobs:
     - name: cache build
       uses: actions/cache@v4
       with:
-        path: _build/_deps
+        path: |
+            _build/
+            !_build/TreeSheets-*.exe
+            !_build/TreeSheets-*.zip
         key: ${{ runner.os }}-cmake-build-deps-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-build-deps
     - name: Add msbuild to PATH
@@ -99,7 +102,9 @@ jobs:
     - name: cache build
       uses: actions/cache@v4
       with:
-        path: _build/_deps
+        path: |
+          _build/
+          !_build/TreeSheets-*.dmg
         key: ${{ runner.os }}-cmake-build-deps-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-build-deps
     - name: Prepare Plist
