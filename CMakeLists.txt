@@ -87,6 +87,9 @@ target_include_directories(lobster-impl PRIVATE
     ${lobster_SOURCE_DIR}/dev/include)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
+# Hack to place the build artifacts into the FetchContent structure
+set_target_properties(lobster lobster-impl PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/_deps/lobster-build")
+
 ## StackWalker (only on Windows)
 
 if(WIN32)
