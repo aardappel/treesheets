@@ -57,24 +57,22 @@ endif()
 
 ## lobster (script interpreter)
 
-file(
-    GLOB lobster_sources
-        ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/*.cpp
-        ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
-        ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
-        ${lobster_SOURCE_DIR}/dev/src/disasm.cpp
-        ${lobster_SOURCE_DIR}/dev/src/file.cpp
-        ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
-        ${lobster_SOURCE_DIR}/dev/src/platform.cpp
-        ${lobster_SOURCE_DIR}/dev/src/vm.cpp
-        ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
-        ${lobster_SOURCE_DIR}/dev/src/vmlog.cpp
-        ${lobster_SOURCE_DIR}/dev/src/tocpp.cpp
-        ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
-        ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c
+add_library(lobster STATIC
+    ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_gen_text.cpp
+    ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_parser.cpp
+    ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/util.cpp
+    ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
+    ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
+    ${lobster_SOURCE_DIR}/dev/src/disasm.cpp
+    ${lobster_SOURCE_DIR}/dev/src/file.cpp
+    ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
+    ${lobster_SOURCE_DIR}/dev/src/platform.cpp
+    ${lobster_SOURCE_DIR}/dev/src/vm.cpp
+    ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
+    ${lobster_SOURCE_DIR}/dev/src/tocpp.cpp
+    ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
+    ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c
 )
-
-add_library(lobster STATIC ${lobster_sources})
 target_include_directories(lobster PRIVATE
     ${lobster_SOURCE_DIR}/dev/src
     ${lobster_SOURCE_DIR}/dev/include
