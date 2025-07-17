@@ -60,10 +60,7 @@ jobs:
     - name: cache build
       uses: actions/cache@v4
       with:
-        path: |
-            _build/
-            !_build/TreeSheets-*.exe
-            !_build/TreeSheets-*.zip
+        path: _build
         key: ${{ runner.os }}-cmake-build-deps-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-build-deps
     - name: Add msbuild to PATH
@@ -89,6 +86,12 @@ jobs:
         path: |
           _build/TreeSheets-*.exe
           _build/TreeSheets-*.zip
+    - name: Remove CPack artifacts
+      run: |
+        Remove-Item -Path _build/TreeSheets-*.exe -Force
+        Remove-Item -Path _build/TreeSheets-*.zip -Force
+      shell: powershell
+
 
   build-mac:
     name: Build Mac
@@ -102,9 +105,7 @@ jobs:
     - name: cache build
       uses: actions/cache@v4
       with:
-        path: |
-          _build/
-          !_build/TreeSheets-*.dmg
+        path: _build
         key: ${{ runner.os }}-cmake-build-deps-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-build-deps
     - name: Prepare Plist
@@ -128,3 +129,5 @@ jobs:
       with:
         name: macos-disk-image
         path: _build/TreeSheets-*.dmg
+    - name: Remove CPack artifact
+      run: rm -f _build/TreeSheets-*.dmg
