@@ -1,7 +1,3 @@
-#ifndef PACKAGE_VERSION
-    #define PACKAGE_VERSION __DATE__
-#endif
-
 struct UndoItem {
     vector<Selection> path;
     vector<Selection> selpath;
