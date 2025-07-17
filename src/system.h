@@ -328,7 +328,6 @@ struct System {
 
     void FileUsed(const wxString &filename, Document *doc) {
         frame->filehistory.AddFileToHistory(filename);
-        RememberOpenFiles();
         if (fswatch) {
             doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
             const auto &d = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);

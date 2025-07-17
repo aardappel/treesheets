@@ -967,7 +967,6 @@ struct Document {
                     int p = sys->frame->nb->GetSelection();
                     // sys->frame->nb->AdvanceSelection();
                     sys->frame->nb->DeletePage(p);
-                    sys->RememberOpenFiles();
                 }
                 return nullptr;
             }

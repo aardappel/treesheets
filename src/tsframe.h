@@ -826,7 +826,6 @@ struct TSFrame : wxFrame {
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
         TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
-        sys->RememberOpenFiles();
         if (nb->GetPageCount() <= 1) {
             nbe.Veto();
             Close();
