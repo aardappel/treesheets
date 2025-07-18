@@ -12,16 +12,18 @@ jobs:
   build-linux:
     name: Build Linux
     runs-on: ubuntu-latest
+    env:
+      cache-key: linux-cmake-build-deps
     permissions:
       contents: write
     steps:
     - uses: actions/checkout@v4
-    - name: cache build
-      uses: actions/cache@v4
+    - name: Restore cache
+      id: cache-restore
+      uses: actions/cache/restore@v4
       with:
         path: _build/_deps
-        key: ${{ runner.os }}-cmake-build-deps-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-build-deps
+        key: ${{ env.cache-key }}
     - name: apt update
       run: sudo apt-get -o Acquire::Retries=3 update
     - name: install opengl
@@ -49,20 +51,35 @@ jobs:
       with:
         name: linux-builds
         path: _build/treesheets_*.deb
+    - name: Delete Previous Cache
+      if: ${{ steps.cache-restore.outputs.cache-hit }}
+      continue-on-error: true
+      run: |
+        gh extension install actions/gh-actions-cache
+        gh actions-cache delete "${{ env.cache-key }}" --confirm
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Save Cache
+      uses: actions/cache/save@v4
+      with:
+        path: _build/_deps
+        key: ${{ env.cache-key }}
 
   build-windows:
     name: Build Windows
     runs-on: windows-latest
+    env:
+      cache-key: windows-cmake-build
     permissions:
       contents: write
     steps:
     - uses: actions/checkout@v4
-    - name: cache build
-      uses: actions/cache@v4
+    - name: Restore cache
+      id: cache-restore
+      uses: actions/cache/restore@v4
       with:
         path: _build
-        key: ${{ runner.os }}-cmake-build-deps-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-build-deps
+        key: ${{ env.cache-key }}
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: cmake
@@ -91,23 +108,36 @@ jobs:
         Remove-Item -Path _build/TreeSheets-*.exe -Force
         Remove-Item -Path _build/TreeSheets-*.zip -Force
       shell: powershell
-
+    - name: Delete Previous Cache
+      if: ${{ steps.cache-restore.outputs.cache-hit }}
+      continue-on-error: true
+      run: |
+        gh extension install actions/gh-actions-cache
+        gh actions-cache delete "${{ env.cache-key }}" --confirm
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Save Cache
+      uses: actions/cache/save@v3
+      with:
+        path: _build
+        key: ${{ env.cache-key }}
 
   build-mac:
     name: Build Mac
     runs-on: macos-latest
     env:
       minmac: 10.15
+      cache-key: mac-cmake-build
     permissions:
       contents: write
     steps:
     - uses: actions/checkout@v4
-    - name: cache build
-      uses: actions/cache@v4
+    - name: Restore cache
+      id: cache-restore
+      uses: actions/cache/restore@v4
       with:
         path: _build
-        key: ${{ runner.os }}-cmake-build-deps-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-build-deps
+        key: ${{ env.cache-key }}
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
@@ -131,3 +161,16 @@ jobs:
         path: _build/TreeSheets-*.dmg
     - name: Remove CPack artifact
       run: rm -f _build/TreeSheets-*.dmg
+    - name: Delete Previous Cache
+      if: ${{ steps.cache-restore.outputs.cache-hit }}
+      continue-on-error: true
+      run: |
+        gh extension install actions/gh-actions-cache
+        gh actions-cache delete "${{ env.cache-key }}" --confirm
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Save Cache
+      uses: actions/cache/save@v4
+      with:
+        path: _build
+        key: ${{ env.cache-key }}
