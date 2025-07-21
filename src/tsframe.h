@@ -626,8 +626,7 @@ struct TSFrame : wxFrame {
         optmenu->AppendCheckItem(A_ZOOMSCR, _(L"Swap mousewheel scrolling and zooming"));
         optmenu->Check(A_ZOOMSCR, sys->zoomscroll);
         optmenu->AppendCheckItem(A_THINSELC, _(L"Navigate in between cells with cursor keys"),
-                                 _(L"Toggle whether the cursor keys are used for navigation in "
-                                   L"addition to text editing"));
+                                 _(L"Toggle whether the cursor keys are used for navigation in addition to text editing"));
         optmenu->Check(A_THINSELC, sys->thinselc);
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_MAKEBAKS, _(L"Backup files"),
