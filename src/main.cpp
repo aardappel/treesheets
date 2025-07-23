@@ -1,8 +1,6 @@
 
 #include "stdafx.h"
 
-static_assert(wxCHECK_VERSION(3, 2, 6), "wxWidgets < 3.2.6 is not supported.");
-
 static const auto TS_VERSION = 24;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
