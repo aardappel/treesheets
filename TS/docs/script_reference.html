@@ -417,7 +417,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>in_range</b>(x<font color="#666666">: int</font>, range<font color="#666666">: int</font>, bias<font color="#666666">: int</font> = 0) -> <font color="#666666">int</font></tt></td><td class="a">checks if an integer is &gt;= bias and &lt; bias + range. Bias defaults to 0.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>in_range</b>(x<font color="#666666">: float</font>, range<font color="#666666">: float</font>, bias<font color="#666666">: float</font> = 0,000000) -> <font color="#666666">int</font></tt></td><td class="a">checks if a float is &gt;= bias and &lt; bias + range. Bias defaults to 0.</td>
+<tr class="a" valign=top><td class="a"><tt><b>in_range</b>(x<font color="#666666">: float</font>, range<font color="#666666">: float</font>, bias<font color="#666666">: float</font> = 0.000000) -> <font color="#666666">int</font></tt></td><td class="a">checks if a float is &gt;= bias and &lt; bias + range. Bias defaults to 0.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>in_range</b>(x<font color="#666666">: int2</font>, range<font color="#666666">: int2</font>, bias<font color="#666666">: int2</font> = nil) -> <font color="#666666">int</font></tt></td><td class="a">checks if a 2d integer vector is &gt;= bias and &lt; bias + range. Bias defaults to 0.</td>
@@ -601,9 +601,6 @@
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>date_time_build_info</b>() -> <font color="#666666">string</font></tt></td><td class="a">a string representing information from when this program was compiled.</td>
-
-</tr>
-<tr class="a" valign=top><td class="a"><tt><b>assert</b>(condition<font color="#666666">: any</font>) -> <font color="#666666">any</font></tt></td><td class="a">halts the program with an assertion failure if passed false. returns its input. runtime errors like this will contain a stack trace if --runtime-stack-trace is on.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>get_stack_trace</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets a stack trace of the current location of the program (needs --runtime-stack-trace) without actually stopping the program.</td>
