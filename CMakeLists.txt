@@ -199,13 +199,13 @@ install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
 
 install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
 install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
-set(LOBSTER_MODULES
+set(lobster_modules
     ${lobster_SOURCE_DIR}/modules/std.lobster
     ${lobster_SOURCE_DIR}/modules/stdtype.lobster
     ${lobster_SOURCE_DIR}/modules/vec.lobster
     ${lobster_SOURCE_DIR}/modules/color.lobster
 )
-install(FILES ${LOBSTER_MODULES} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
+install(FILES ${lobster_modules} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
 
 ## Apple icon set
 if(APPLE)
