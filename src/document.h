@@ -1228,15 +1228,6 @@ struct Document {
             case A_FILTERS: SetSearchFilter(true); return nullptr;
             case A_FILTEROFF: SetSearchFilter(false); return nullptr;
 
-            case A_SHOWSTATS: {
-                int numcells = 0, textbytes = 0;
-                selected.g->GetStats(selected, numcells, textbytes);
-                sw->Status(
-                    wxString::Format(_(L"Selection contains %d cell(s) with %d character(s)."),
-                                     numcells, textbytes));
-                return _(L"");
-            }
-
             case A_CUSTKEY: {
                 wxArrayString strs, keys;
                 for (auto &[s, k] : sys->frame->menustrings) {
