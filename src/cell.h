@@ -215,8 +215,8 @@ struct Cell {
     wxString ToText(int indent, const auto &sel, int format, auto doc, bool inheritstyle) {
         wxString str = text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
-            ((text.stylebits & STYLE_UNDERLINE) || (text.stylebits & STYLE_STRIKETHRU)) &&
-            this != doc->curdrawroot && !str.IsEmpty()) {
+            (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) && this != doc->curdrawroot &&
+            !str.IsEmpty()) {
             wxString spanstyle = L"text-decoration:";
             spanstyle += (text.stylebits & STYLE_UNDERLINE) ? L" underline" : wxEmptyString;
             spanstyle += (text.stylebits & STYLE_STRIKETHRU) ? L" line-through" : wxEmptyString;
