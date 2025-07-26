@@ -203,7 +203,7 @@ struct Cell {
     int GetY(auto doc) const { return oy + (parent ? parent->GetY(doc) : doc->hierarchysize); }
     int Depth() const { return parent ? parent->Depth() + 1 : 0; }
     Cell *Parent(int i) { return i ? parent->Parent(i - 1) : this; }
-    Cell *SetParent(auto g) {
+    Cell *SetParent(Cell *g) {
         parent = g;
         return this;
     }
@@ -212,7 +212,7 @@ struct Cell {
     }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
-    wxString ToText(int indent, const auto &sel, int format, auto doc, bool inheritstyle) {
+    wxString ToText(int indent, const Selection &sel, int format, auto doc, bool inheritstyle) {
         wxString str = text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
             (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) && this != doc->curdrawroot &&
@@ -367,7 +367,7 @@ struct Cell {
         return grid;
     }
 
-    Cell *LoadGrid(auto &dis, int &numcells, int &textbytes, auto &ics) {
+    Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         int xs = dis.Read32();
         auto g = new Grid(xs, dis.Read32());
         grid = g;
@@ -376,7 +376,7 @@ struct Cell {
         return this;
     }
 
-    static Cell *LoadWhich(auto &dis, auto _p, int &numcells, int &textbytes, auto &ics) {
+    static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes, Cell *&ics) {
         auto c = new Cell(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
@@ -412,7 +412,7 @@ struct Cell {
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 
-    void Paste(auto doc, const auto *c, auto &sel) {
+    void Paste(Document *doc, const Cell *c, Selection &sel) {
         parent->AddUndo(doc);
         ResetLayout();
         if (c->HasText()) {
@@ -436,7 +436,7 @@ struct Cell {
         }
     }
 
-    Cell *FindNextSearchMatch(const auto &s, Cell *best, Cell *selected, bool &lastwasselected,
+    Cell *FindNextSearchMatch(const wxString &s, Cell *best, Cell *selected, bool &lastwasselected,
                               bool reverse) {
         if (reverse && grid)
             best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse);
@@ -460,7 +460,7 @@ struct Cell {
         return best;
     }
 
-    Cell *FindLink(const auto &sel, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
+    Cell *FindLink(const Selection &sel, Cell *link, Cell *best, bool &lastthis, bool &stylematch,
                    bool forward, bool image) {
         if (grid) best = grid->FindLink(sel, link, best, lastthis, stylematch, forward, image);
         if (link == this) {
@@ -484,12 +484,12 @@ struct Cell {
         return best;
     }
 
-    void FindReplaceAll(const auto &s, const auto &ls) {
+    void FindReplaceAll(const wxString &s, const wxString &ls) {
         if (grid) grid->FindReplaceAll(s, ls);
         text.ReplaceStr(s, ls);
     }
 
-    Cell *FindExact(const auto &s) {
+    Cell *FindExact(const wxString &s) {
         return text.t == s ? this : (grid ? grid->FindExact(s) : nullptr);
     }
 
@@ -502,7 +502,7 @@ struct Cell {
         if (grid) grid->user_grid_outer_spacing = width;
     }
 
-    void ColorChange(auto doc, int which, uint color) {
+    void ColorChange(Document *doc, int which, uint color) {
         switch (which) {
             case A_CELLCOLOR: cellcolor = color; break;
             case A_TEXTCOLOR:
