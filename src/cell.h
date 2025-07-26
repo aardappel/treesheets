@@ -66,7 +66,7 @@ struct Cell {
     bool HasTextState() const { return HasTextSize() || text.image; }
     bool HasHeader() const { return HasText() || text.image; }
     bool HasContent() const { return HasHeader() || grid; }
-    bool GridShown(auto doc) const { return grid && (!grid->folded || this == doc->curdrawroot); }
+    bool GridShown(Document *doc) const { return grid && (!grid->folded || this == doc->curdrawroot); }
     int MinRelsize()  // the smallest relsize is actually the biggest text
     {
         int rs = INT_MAX;
@@ -189,7 +189,7 @@ struct Cell {
         text.stylebits = o->text.stylebits;
     }
 
-    unique_ptr<Cell> Clone(auto _parent) const {
+    unique_ptr<Cell> Clone(Cell *_parent) const {
         auto c = make_unique<Cell>(_parent, this, celltype,
                                    grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
@@ -199,8 +199,8 @@ struct Cell {
     }
 
     bool IsInside(int x, int y) const { return x >= 0 && y >= 0 && x < sx && y < sy; }
-    int GetX(auto doc) const { return ox + (parent ? parent->GetX(doc) : doc->hierarchysize); }
-    int GetY(auto doc) const { return oy + (parent ? parent->GetY(doc) : doc->hierarchysize); }
+    int GetX(Document *doc) const { return ox + (parent ? parent->GetX(doc) : doc->hierarchysize); }
+    int GetY(Document *doc) const { return oy + (parent ? parent->GetY(doc) : doc->hierarchysize); }
     int Depth() const { return parent ? parent->Depth() + 1 : 0; }
     Cell *Parent(int i) { return i ? parent->Parent(i - 1) : this; }
     Cell *SetParent(Cell *g) {
@@ -212,7 +212,7 @@ struct Cell {
     }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
-    wxString ToText(int indent, const Selection &sel, int format, auto doc, bool inheritstyle) {
+    wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle) {
         wxString str = text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
             (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) && this != doc->curdrawroot &&
@@ -332,12 +332,12 @@ struct Cell {
         }
     }
 
-    void AddUndo(auto doc) {
+    void AddUndo(Document *doc) {
         ResetLayout();
         doc->AddUndo(this);
     }
 
-    void Save(auto &dos, auto ocs) const {
+    void Save(wxDataOutputStream &dos, Cell *ocs) const {
         dos.Write8(celltype);
         dos.Write32(cellcolor);
         dos.Write32(textcolor);
@@ -525,7 +525,7 @@ struct Cell {
         if (grid) grid->SetGridTextLayout(ds, vert, noset, grid->SelectAll());
     }
 
-    bool IsTag(auto doc) { return doc->tags.contains(text.t); }
+    bool IsTag(Document *doc) { return doc->tags.contains(text.t); }
     void MaxDepthLeaves(int curdepth, int &maxdepth, int &leaves) {
         if (curdepth > maxdepth) maxdepth = curdepth;
         if (grid)
