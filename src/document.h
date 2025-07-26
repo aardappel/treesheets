@@ -340,7 +340,7 @@ struct Document {
     auto CopyEntireCells(wxString &s, int k) {
         sys->clipboardcopy = s;
         auto html = selected.g->ConvertToText(selected, 0, k == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT,
-                                              this, false);
+                                              this, false, curdrawroot);
         return new wxHTMLDataObject(html);
     }
 
@@ -360,7 +360,8 @@ struct Document {
                         dragdata.Add(new wxBitmapDataObject(bm));
                     }
                 } else {
-                    auto s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
+                    auto s =
+                        selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false, curdrawroot);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s, wxID_COPY);
@@ -398,7 +399,8 @@ struct Document {
                     }
                 } else {
                     auto clipboarddata = new wxDataObjectComposite();
-                    auto s = selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false);
+                    auto s =
+                        selected.g->ConvertToText(selected, 0, A_EXPTEXT, this, false, curdrawroot);
                     clipboarddata->Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s, k);
@@ -737,7 +739,7 @@ struct Document {
     }
 
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
-        auto root = currentview ? curdrawroot : rootgrid;
+        Cell *root = currentview ? curdrawroot : rootgrid;
         if (k == A_EXPIMAGE) {
             auto bm = GetBitmap();
             Refresh();
@@ -749,7 +751,7 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            auto content = root->ToText(0, Selection(), k, this, true);
+            auto content = root->ToText(0, Selection(), k, this, true, root);
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(

@@ -212,10 +212,11 @@ struct Cell {
     }
 
     uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
-    wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle) {
+    wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle,
+                    Cell *root) {
         wxString str = text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
-            (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) && this != doc->curdrawroot &&
+            (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) && this != root &&
             !str.IsEmpty()) {
             wxString spanstyle = L"text-decoration:";
             spanstyle += (text.stylebits & STYLE_UNDERLINE) ? L" underline" : wxEmptyString;
@@ -225,13 +226,13 @@ struct Cell {
             str.Append(L"</span>");
         }
         if (format == A_EXPCSV) {
-            if (grid) return grid->ToText(indent, sel, format, doc, inheritstyle);
+            if (grid) return grid->ToText(indent, sel, format, doc, inheritstyle, root);
             str.Replace(L"\"", L"\"\"");
             return L"\"" + str + L"\"";
         }
         if (sel.cursor != sel.cursorend) return str;
         str.Append(L"\n");
-        if (grid) str.Append(grid->ToText(indent, sel, format, doc, inheritstyle));
+        if (grid) str.Append(grid->ToText(indent, sel, format, doc, inheritstyle, root));
         if (format == A_EXPXML) {
             str.Prepend(L">");
             if (text.relsize) {
@@ -263,7 +264,7 @@ struct Cell {
             str.Append(L' ', indent);
             str.Append(L"</cell>\n");
         }
-        if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) && this != doc->curdrawroot) {
+        if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) && this != root) {
             wxString style;
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
@@ -290,7 +291,7 @@ struct Cell {
             str.Append(L' ', indent);
             str.Append(L"</td>\n");
         }
-        if (format == A_EXPHTMLB && (text.t.Len() || grid) && this != doc->curdrawroot) {
+        if (format == A_EXPHTMLB && (text.t.Len() || grid) && this != root) {
             str.Prepend(L"<li>");
             str.Append(L' ', indent);
             str.Append(L"</li>\n");
