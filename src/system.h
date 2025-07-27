@@ -349,8 +349,7 @@ struct System {
 
     void RememberOpenFiles() {
         auto namedfiles = 0;
-        auto &&lps = frame->nb->GetPagesInDisplayOrder(frame->nb->GetActiveTabCtrl());
-        for (auto i : lps) {
+        loop(i, frame->nb->GetPageCount()) {
             TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
             if (p->doc->filename.Len()) {
                 cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
