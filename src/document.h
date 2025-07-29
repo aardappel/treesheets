@@ -582,7 +582,7 @@ struct Document {
             }
             if (paintdoubleclick) {
                 SetSelect(hover);
-                if (selected.Thin()) {
+                if (selected.Thin() && selected.g) {
                     selected.SelAll();
                 } else if (Cell *c = selected.GetCell()) {
                     selected.EnterEditOnly(this);
