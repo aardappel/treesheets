@@ -263,7 +263,7 @@ struct Document {
                                r.height > canvash || r.y < originy ? r.y
                                : r.y + r.height > maxy             ? r.y + r.height - canvash
                                                                    : cury);
-                    Refresh();
+                    sw->Refresh();
                     sw->Update();
                 }
             }
