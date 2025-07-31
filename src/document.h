@@ -268,8 +268,6 @@ struct Document {
                                           ? r.y + r.height - canvash + wxSYS_HSCROLL_Y
                                           : cury,
                                       true);
-                    Refresh();
-                    sw->Update();
                 }
             }
         }
@@ -621,12 +619,12 @@ struct Document {
                 paintdrop = false;
             }
         }
-        Render(dc);
-        DrawSelect(dc, selected);
         if (paintscrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected);
             paintscrolltoselection = false;
         }
+        Render(dc);
+        DrawSelect(dc, selected);
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
