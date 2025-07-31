@@ -233,6 +233,7 @@ struct Document {
     void Refresh() {
         sys->frame->UpdateStatus(selected);
         sw->Refresh();
+        sw->Update();
     }
 
     void UpdateHover(wxDC &dc) {
