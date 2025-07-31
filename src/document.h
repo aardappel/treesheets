@@ -550,9 +550,7 @@ struct Document {
         } else {
             currentviewscale = 1;
             dc.SetUserScale(1, 1);
-            int drx = max(layoutxs, maxx);
-            int dry = max(layoutys, maxy);
-            sw->SetVirtualSize(drx, dry);
+            sw->SetVirtualSize(layoutxs, layoutys);
             sw->CalcUnscrolledPosition(0, 0, &originx, &originy);
             maxx += originx;
             maxy += originy;
