@@ -254,20 +254,15 @@ struct Document {
             sw->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && sel.g) {
                 auto r = sel.g->GetRect(this, sel, true);
-                if (r.y < originy || r.y + r.height > maxy - wxSYS_HSCROLL_Y || r.x < originx ||
-                    r.x + r.width > maxx - wxSYS_VSCROLL_X) {
+                if (r.y < originy || r.y + r.height || r.x < originx || r.x + r.width > maxx) {
                     int curx, cury;
                     sw->GetViewStart(&curx, &cury);
-                    sw->SetScrollbars(1, 1, layoutxs, layoutys,
-                                      r.width > canvasw - wxSYS_VSCROLL_X || r.x < originx ? r.x
-                                      : r.x + r.width > maxx - wxSYS_VSCROLL_X
-                                          ? r.x + r.width - canvasw + wxSYS_VSCROLL_X
-                                          : curx,
-                                      r.height > canvash - wxSYS_HSCROLL_Y || r.y < originy ? r.y
-                                      : r.y + r.height > maxy - wxSYS_HSCROLL_Y
-                                          ? r.y + r.height - canvash + wxSYS_HSCROLL_Y
-                                          : cury,
-                                      true);
+                    sw->Scroll(r.width > canvasw || r.x < originx ? r.x
+                               : r.x + r.width > maxx             ? r.x + r.width - canvasw
+                                                                  : curx,
+                               r.height > canvash || r.y < originy ? r.y
+                               : r.y + r.height > maxy             ? r.y + r.height - canvash
+                                                                   : cury);
                     Refresh();
                     sw->Update();
                 }
