@@ -31,6 +31,7 @@ struct TSCanvas : public wxScrolledCanvas {
             wxBitmap buffer(sz.GetX(), sz.GetY(), 24);
             wxBufferedPaintDC dc(this, buffer);
         #endif
+        DoPrepareDC(dc);
         doc->Draw(dc);
     };
 

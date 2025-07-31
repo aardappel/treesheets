@@ -563,7 +563,6 @@ struct Document {
         centery = sys->centered && !originy && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
-        sw->DoPrepareDC(dc);
         ShiftToCenter(dc);
         if (paintupdatehover) {
             UpdateHover(dc);
