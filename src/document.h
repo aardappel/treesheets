@@ -263,8 +263,6 @@ struct Document {
                                r.height > canvash || r.y < originy ? r.y
                                : r.y + r.height > maxy             ? r.y + r.height - canvash
                                                                    : cury);
-                    sw->Refresh();
-                    sw->Update();
                 }
             }
         }
@@ -556,6 +554,10 @@ struct Document {
         centery = sys->centered && !originy && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
+        if (paintscrolltoselection) {
+            ScrollIfSelectionOutOfView(dc, selected);
+            paintscrolltoselection = false;
+        }
         ShiftToCenter(dc);
         if (paintupdatehover) {
             UpdateHover(dc);
@@ -615,10 +617,6 @@ struct Document {
         }
         Render(dc);
         DrawSelect(dc, selected);
-        if (paintscrolltoselection) {
-            ScrollIfSelectionOutOfView(dc, selected);
-            paintscrolltoselection = false;
-        }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
