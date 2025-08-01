@@ -14,8 +14,8 @@ struct Document {
     Selection selected;
     Selection begindrag;
     int isctrlshiftdrag;
-    int originx;
-    int originy;
+    int scrollx;
+    int scrolly;
     int maxx;
     int maxy;
     int centerx {0};
@@ -253,16 +253,14 @@ struct Document {
             int canvasw, canvash;
             sw->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && sel.g) {
-                auto r = sel.g->GetRect(this, sel, true);
-                if (r.y < originy || r.y + r.height || r.x < originx || r.x + r.width > maxx) {
-                    int curx, cury;
-                    sw->GetViewStart(&curx, &cury);
-                    sw->Scroll(r.width > canvasw || r.x < originx ? r.x
+                wxRect r = sel.g->GetRect(this, sel, true);
+                if (r.y < scrolly || r.y + r.height || r.x < scrollx || r.x + r.width > maxx) {
+                    sw->Scroll(r.width > canvasw || r.x < scrollx ? r.x
                                : r.x + r.width > maxx             ? r.x + r.width - canvasw
-                                                                  : curx,
-                               r.height > canvash || r.y < originy ? r.y
+                                                                  : scrollx,
+                               r.height > canvash || r.y < scrolly ? r.y
                                : r.y + r.height > maxy             ? r.y + r.height - canvash
-                                                                   : cury);
+                                                                   : scrolly);
                     sw->Refresh();
                     sw->Update();
                 }
@@ -541,19 +539,19 @@ struct Document {
             dc.SetUserScale(currentviewscale, currentviewscale);
             maxx /= currentviewscale;
             maxy /= currentviewscale;
-            originx = originy = 0;
+            scrollx = scrolly = 0;
         } else {
             currentviewscale = 1;
             dc.SetUserScale(1, 1);
             sw->SetVirtualSize(layoutxs, layoutys);
-            sw->CalcUnscrolledPosition(0, 0, &originx, &originy);
-            maxx += originx;
-            maxy += originy;
+            sw->GetViewStart(&scrollx, &scrolly);
+            maxx += scrollx;
+            maxy += scrolly;
         }
-        centerx = sys->centered && !originx && maxx > layoutxs
+        centerx = sys->centered && !scrollx && maxx > layoutxs
                       ? (maxx - layoutxs) / 2 * currentviewscale
                       : 0;
-        centery = sys->centered && !originy && maxy > layoutys
+        centery = sys->centered && !scrolly && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
         ShiftToCenter(dc);
@@ -626,7 +624,7 @@ struct Document {
         Layout(dc);
         maxx = layoutxs;
         maxy = layoutys;
-        originx = originy = 0;
+        scrollx = scrolly = 0;
         po.FitThisSizeToPage(printscale ? wxSize(printscale, 1) : wxSize(maxx, maxy));
         wxRect fitRect = po.GetLogicalPageRect();
         wxCoord xoff = (fitRect.width - maxx) / 2;
@@ -711,7 +709,7 @@ struct Document {
     wxBitmap GetBitmap() {
         maxx = layoutxs;
         maxy = layoutys;
-        originx = originy = 0;
+        scrollx = scrolly = 0;
         wxBitmap bm(maxx, maxy, 24);
         wxMemoryDC mdc(bm);
         DrawRectangle(mdc, Background(), 0, 0, maxx, maxy);
