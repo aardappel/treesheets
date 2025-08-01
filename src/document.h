@@ -253,16 +253,14 @@ struct Document {
             int canvasw, canvash;
             sw->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && sel.g) {
-                auto r = sel.g->GetRect(this, sel, true);
+                wxRect r = sel.g->GetRect(this, sel, true);
                 if (r.y < originy || r.y + r.height || r.x < originx || r.x + r.width > maxx) {
-                    int curx, cury;
-                    sw->GetViewStart(&curx, &cury);
                     sw->Scroll(r.width > canvasw || r.x < originx ? r.x
                                : r.x + r.width > maxx             ? r.x + r.width - canvasw
-                                                                  : curx,
+                                                                  : originx,
                                r.height > canvash || r.y < originy ? r.y
                                : r.y + r.height > maxy             ? r.y + r.height - canvash
-                                                                   : cury);
+                                                                   : originy);
                     sw->Refresh();
                     sw->Update();
                 }
@@ -546,7 +544,7 @@ struct Document {
             currentviewscale = 1;
             dc.SetUserScale(1, 1);
             sw->SetVirtualSize(layoutxs, layoutys);
-            sw->CalcUnscrolledPosition(0, 0, &originx, &originy);
+            sw->GetViewStart(&originx, &originy);
             maxx += originx;
             maxy += originy;
         }
