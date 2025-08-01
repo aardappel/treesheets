@@ -107,7 +107,7 @@ jobs:
       with:
         path: _build/_deps
         key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-01-build
+        restore-keys: ${{ runner.os }}-cmake-02-build
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
