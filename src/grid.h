@@ -171,16 +171,16 @@ struct Grid {
             auto drawlines = [&]() {
                 for (int x = ldelta; x <= xs - ldelta; x++) {
                     int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
-                    if (xl >= doc->originx && xl <= doc->maxx) loop(line, g_line_width) {
+                    if (xl >= doc->scrollx && xl <= doc->maxx) loop(line, g_line_width) {
                             dc.DrawLine(
-                                xl + line, max(doc->originy, by + yoff + view_grid_outer_spacing),
+                                xl + line, max(doc->scrolly, by + yoff + view_grid_outer_spacing),
                                 xl + line, min(doc->maxy, by + maxy + g_line_width) + view_margin);
                         }
                 }
                 for (int y = ldelta; y <= ys - ldelta; y++) {
                     int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
-                    if (yl >= doc->originy && yl <= doc->maxy) loop(line, g_line_width) {
-                            dc.DrawLine(max(doc->originx,
+                    if (yl >= doc->scrolly && yl <= doc->maxy) loop(line, g_line_width) {
+                            dc.DrawLine(max(doc->scrollx,
                                             bx + xoff + view_grid_outer_spacing + g_line_width),
                                         yl + line, min(doc->maxx, bx + maxx) + view_margin,
                                         yl + line);
@@ -200,8 +200,8 @@ struct Grid {
         foreachcell(c) {
             int cx = bx + c->ox;
             int cy = by + c->oy;
-            if (cx < doc->maxx && cx + c->sx > doc->originx && cy < doc->maxy &&
-                cy + c->sy > doc->originy) {
+            if (cx < doc->maxx && cx + c->sx > doc->scrollx && cy < doc->maxy &&
+                cy + c->sy > doc->scrolly) {
                 c->Render(doc, cx, cy, dc, depth + 1, (x == 0) * view_margin,
                           (x == xs - 1) * view_margin, (y == 0) * view_margin,
                           (y == ys - 1) * view_margin, colwidths[x], cell_margin);
@@ -219,8 +219,8 @@ struct Grid {
             foreachcelly(c) if (c->HasContent() && !c->tiny) {
                 int desty = c->ycenteroff + by + c->oy + c->tys / 2 + g_margin_extra;
                 int destx = bx + c->ox - 2 + g_margin_extra;
-                bool visible = srcx < doc->maxx && destx > doc->originx &&
-                               desty - arcsize < doc->maxy && desty + arcsize > doc->originy;
+                bool visible = srcx < doc->maxx && destx > doc->scrollx &&
+                               desty - arcsize < doc->maxy && desty + arcsize > doc->scrolly;
                 if (abs(srcy - desty) < arcsize && !cell->verticaltextandgrid) {
                     if (destyfirst < 0) destyfirst = desty;
                     destylast = desty;
@@ -353,7 +353,7 @@ struct Grid {
             int x = c->GetX(doc) + (c->sx + g_line_width + cell_margin) * (sel.x == xs) -
                     g_line_width - cell_margin;
             loop(line, g_line_width)
-                dc.DrawLine(x + line, max(cell->GetY(doc), doc->originy), x + line,
+                dc.DrawLine(x + line, max(cell->GetY(doc), doc->scrolly), x + line,
                             min(cell->GetY(doc) + cell->sy, doc->maxy));
             DrawRectangle(dc, colour, x - 1, c->GetY(doc), g_line_width + 2, c->sy);
         } else {
@@ -361,7 +361,7 @@ struct Grid {
             int y = c->GetY(doc) + (c->sy + g_line_width + cell_margin) * (sel.y == ys) -
                     g_line_width - cell_margin;
             loop(line, g_line_width)
-                dc.DrawLine(max(cell->GetX(doc), doc->originx), y + line,
+                dc.DrawLine(max(cell->GetX(doc), doc->scrollx), y + line,
                             min(cell->GetX(doc) + cell->sx, doc->maxx), y + line);
             DrawRectangle(dc, colour, c->GetX(doc), y - 1, c->sx, g_line_width + 2);
         }
