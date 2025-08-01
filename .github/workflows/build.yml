@@ -105,8 +105,8 @@ jobs:
     - name: cache build
       uses: actions/cache@v4
       with:
-        path: _build
-        key: ${{ runner.os }}-cmake-01-build-${{ hashFiles('CMakeLists.txt') }}
+        path: _build/_deps
+        key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-01-build
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
