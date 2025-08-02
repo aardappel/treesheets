@@ -255,8 +255,10 @@ struct Document {
                                r.height > canvash || r.y < scrolly ? r.y
                                : r.y + r.height > maxy             ? r.y + r.height - canvash
                                                                    : scrolly);
-                    sw->Refresh();
-                    sw->Update();
+                    #ifndef __WXMSW__
+                        sw->Refresh();
+                        sw->Update();
+                    #endif
                 }
             }
         }
