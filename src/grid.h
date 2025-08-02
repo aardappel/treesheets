@@ -540,14 +540,6 @@ struct Grid {
         return true;
     }
 
-    void GetStats(Selection &sel, int &numcells, int &textbytes) {
-        foreachcellinsel(c, sel) c->GetStats(numcells, textbytes);
-    }
-
-    void GetStats(int &numcells, int &textbytes) {
-        foreachcell(c) c->GetStats(numcells, textbytes);
-    }
-
     void Formatter(wxString &r, int format, int indent, const wxChar *xml, const wxChar *html,
                    const wxChar *htmlb) {
         if (format == A_EXPXML) {
