@@ -965,7 +965,7 @@ struct Document {
                 wxAboutDialogInfo info;
                 info.SetName(L"TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));
-                info.SetCopyright(L"(C) 2009 Wouter van Oortmerssen");
+                info.SetCopyright(L"(C) 2025 Wouter van Oortmerssen and Tobias Predel");
                 auto desc = wxString::Format(L"%s\n\n%s " wxVERSION_STRING,
                                              _(L"The Free Form Hierarchical Information Organizer"),
                                              _(L"Uses"));

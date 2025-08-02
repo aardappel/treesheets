@@ -131,7 +131,7 @@ if(APPLE)
         MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_BUNDLE_NAME "${CMAKE_PROJECT_NAME}"
         MACOSX_BUNDLE_BUNDLE_VERSION "${CMAKE_PROJECT_VERSION}"
-        MACOSX_BUNDLE_COPYRIGHT "Copyright © 2013 Wouter van Oortmerssen. All rights reserved."
+        MACOSX_BUNDLE_COPYRIGHT "Copyright © 2025 Wouter van Oortmerssen and Tobias Predel. All rights reserved."
         MACOSX_BUNDLE_GUI_IDENTIFIER "com.strlen.TreeSheets"
         MACOSX_BUNDLE_ICON_FILE "App.icns"
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
