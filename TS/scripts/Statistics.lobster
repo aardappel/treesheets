@@ -9,7 +9,7 @@ var chars = 0
 
 def count_cell() -> void:
     cells++
-    chars += length(ts.get_text())
+    chars += ts.get_text().length
     for(ts.num_children()) i:
         ts.goto_child(i)
         count_cell()
