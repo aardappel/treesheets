@@ -74,7 +74,6 @@ struct Document {
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
     bool scaledviewingmode {false};
-    bool paintupdatehover {false};
     bool paintselectclick {false};
     bool paintdoubleclick {false};
     bool paintdrag {false};
@@ -555,61 +554,58 @@ struct Document {
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
         ShiftToCenter(dc);
-        if (paintupdatehover) {
-            UpdateHover(dc);
-            paintupdatehover = false;
-            if (paintselectclick) {
-                begindrag = Selection();
-                if (!(paintclickright && hover.IsInside(selected))) {
-                    if (selected.GetCell() == hover.GetCell() && hover.GetCell())
-                        hover.EnterEditOnly(this);
-                    else
-                        hover.ExitEdit(this);
-                    SetSelect(hover);
-                }
-                paintselectclick = false;
-                paintclickright = false;
-            }
-            if (paintdoubleclick) {
+        UpdateHover(dc);
+        if (paintselectclick) {
+            begindrag = Selection();
+            if (!(paintclickright && hover.IsInside(selected))) {
+                if (selected.GetCell() == hover.GetCell() && hover.GetCell())
+                    hover.EnterEditOnly(this);
+                else
+                    hover.ExitEdit(this);
                 SetSelect(hover);
-                if (selected.Thin() && selected.g) {
-                    selected.SelAll();
-                } else if (Cell *c = selected.GetCell()) {
-                    selected.EnterEditOnly(this);
-                    c->text.SelectWord(selected);
-                    begindrag = selected;
+            }
+            paintselectclick = false;
+            paintclickright = false;
+        }
+        if (paintdoubleclick) {
+            SetSelect(hover);
+            if (selected.Thin() && selected.g) {
+                selected.SelAll();
+            } else if (Cell *c = selected.GetCell()) {
+                selected.EnterEditOnly(this);
+                c->text.SelectWord(selected);
+                begindrag = selected;
+            }
+            paintdoubleclick = false;
+        }
+        if (paintdrag && selected.g && hover.g && begindrag.g) {
+            if (isctrlshiftdrag) { begindrag = hover; }
+            else if (!hover.Thin()) {
+                if (begindrag.Thin() || selected.Thin()) {
+                    SetSelect(hover);
+                    ResetCursor();
+                } else {
+                    Selection old = selected;
+                    selected.Merge(begindrag, hover);
+                    if (!(old == selected)) { ResetCursor(); }
                 }
-                paintdoubleclick = false;
             }
-            if (paintdrag && selected.g && hover.g && begindrag.g) {
-                if (isctrlshiftdrag) { begindrag = hover; }
-                else if (!hover.Thin()) {
-                    if (begindrag.Thin() || selected.Thin()) {
-                        SetSelect(hover);
-                        ResetCursor();
-                    } else {
-                        Selection old = selected;
-                        selected.Merge(begindrag, hover);
-                        if (!(old == selected)) { ResetCursor(); }
-                    }
-                }
-                paintdrag = false;
+            paintdrag = false;
+        }
+        if (paintselectup) {
+            SelectUp(dc);
+            paintselectup = false;
+        }
+        if (paintdrop) {
+            switch (dndobjc->GetReceivedFormat().GetType()) {
+                case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
+                case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
+                case wxDF_TEXT:
+                case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
+                default:;
             }
-            if (paintselectup) {
-                SelectUp(dc);
-                paintselectup = false;
-            }
-            if (paintdrop) {
-                switch (dndobjc->GetReceivedFormat().GetType()) {
-                    case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
-                    case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
-                    case wxDF_TEXT:
-                    case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
-                    default:;
-                }
-                Layout(dc);
-                paintdrop = false;
-            }
+            Layout(dc);
+            paintdrop = false;
         }
         Render(dc);
         DrawSelect(dc, selected);

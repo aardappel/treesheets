@@ -38,7 +38,6 @@ struct TSCanvas : public wxScrolledCanvas {
     void RefreshHover(int mx, int my) {
         doc->mx = mx;
         doc->my = my;
-        doc->paintupdatehover = true;
         doc->Refresh();
     }
 
