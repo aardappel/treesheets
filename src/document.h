@@ -226,11 +226,6 @@ struct Document {
 
     void RefreshMove() {
         paintscrolltoselection = true;
-        Refresh();
-    }
-
-    void Refresh() {
-        sys->frame->UpdateStatus(selected);
         sw->Refresh();
     }
 
@@ -609,6 +604,7 @@ struct Document {
         }
         Render(dc);
         DrawSelect(dc, selected);
+        sys->frame->UpdateStatus(selected);
         if (paintscrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected);
             paintscrolltoselection = false;
@@ -662,7 +658,7 @@ struct Document {
     void ClearSelectionRefresh() {
         selected.g = nullptr;
         begindrag.g = nullptr;
-        Refresh();
+        sw->Refresh();
     }
 
     bool CheckForChanges() {
@@ -728,7 +724,7 @@ struct Document {
         Cell *root = currentview ? curdrawroot : rootgrid;
         if (k == A_EXPIMAGE) {
             auto bm = GetBitmap();
-            Refresh();
+            sw->Refresh();
             if (!bm.SaveFile(fn, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
         } else {
             wxFFileOutputStream fos(fn, L"w+b");
@@ -1028,7 +1024,7 @@ struct Document {
                     }
                     // rootgrid->ResetChildren();
                     sys->frame->TabsReset();  // ResetChildren on all
-                    Refresh();
+                    sw->Refresh();
                 }
                 return nullptr;
             }
@@ -1082,7 +1078,7 @@ struct Document {
                         if (c->cellcolor == oldbg && (!c->parent || c->parent->cellcolor == color))
                             c->cellcolor = color;
                     }
-                    Refresh();
+                    sw->Refresh();
                 }
                 return nullptr;
             }
@@ -1090,7 +1086,7 @@ struct Document {
             case A_DEFCURCOL: {
                 if (auto color = PickColor(sys->frame, sys->cursorcolor); color != (uint)-1) {
                     sys->cfg->Write(L"cursorcolor", sys->cursorcolor = color);
-                    Refresh();
+                    sw->Refresh();
                 }
                 return nullptr;
             }
@@ -1116,7 +1112,7 @@ struct Document {
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
                 auto msg = SearchNext(false, false, false);
-                Refresh();
+                sw->Refresh();
                 return msg;
             }
 
@@ -1128,7 +1124,7 @@ struct Document {
             case A_ROUND5:
             case A_ROUND6:
                 sys->cfg->Write(L"roundness", long(sys->roundness = k - A_ROUND0));
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_OPENCELLCOLOR:
@@ -1155,7 +1151,7 @@ struct Document {
                     rootgrid->AddUndo(this);  // expensive?
                     rootgrid->FindReplaceAll(replaces, lreplaces);
                     rootgrid->ResetChildren();
-                    Refresh();
+                    sw->Refresh();
                 } else {
                     loopallcellssel(c, true) if (c->text.IsInSearch()) c->AddUndo(this);
                     selected.g->ReplaceStr(this, replaces, lreplaces, selected);
@@ -1179,7 +1175,7 @@ struct Document {
             case A_SCALED:
                 scaledviewingmode = !scaledviewingmode;
                 rootgrid->ResetChildren();
-                Refresh();
+                sw->Refresh();
                 return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal.")
                                          : _(L"1:1 scale restored.");
 
@@ -1258,7 +1254,7 @@ struct Document {
                     if (selected.cursorend == 0) return nullptr;
                     c->AddUndo(this);
                     c->text.Backspace(selected);
-                    Refresh();
+                    sw->Refresh();
                 } else {
                     selected.g->MultiCellDelete(this, selected);
                     SetSelect(selected);
@@ -1278,7 +1274,7 @@ struct Document {
                     if (selected.cursor == c->text.t.Len()) return nullptr;
                     c->AddUndo(this);
                     c->text.Delete(selected);
-                    Refresh();
+                    sw->Refresh();
                 } else {
                     selected.g->MultiCellDelete(this, selected);
                     SetSelect(selected);
@@ -1291,7 +1287,7 @@ struct Document {
                     if (selected.cursor == c->text.t.Len()) return nullptr;
                     c->AddUndo(this);
                     c->text.DeleteWord(selected);
-                    Refresh();
+                    sw->Refresh();
                 }
                 ZoomOutIfNoGrid();
                 return nullptr;
@@ -1314,7 +1310,7 @@ struct Document {
                         c->AddUndo(this);
                         c->text.Backspace(selected);
                     }
-                    Refresh();
+                    sw->Refresh();
                 }
                 ZoomOutIfNoGrid();
                 return nullptr;
@@ -1345,13 +1341,13 @@ struct Document {
                 selected.g->MultiCellDeleteSub(this, deletesel);
                 SetSelect(Selection(selected.g, selected.x, selected.y, 1, 1));
                 fc->ResetLayout();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
             case wxID_SELECTALL:
                 selected.SelAll();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_UP:
@@ -1374,12 +1370,12 @@ struct Document {
                 if (!selected.TextEdit() && k == A_SCLEFT) {
                     selected.xs = selected.Thin() ? selected.x : selected.x + 1;
                     selected.x = 0;
-                    Refresh();
+                    sw->Refresh();
                     return nullptr;
                 }
                 if (!selected.TextEdit() && k == A_SCRIGHT) {
                     selected.xs = selected.g->xs - selected.x;
-                    Refresh();
+                    sw->Refresh();
                     return nullptr;
                 }
                 selected.Cursor(this, k - A_SCUP + A_UP, true, true);
@@ -1390,11 +1386,11 @@ struct Document {
                 if (!selected.TextEdit() && k == A_SCUP) {
                     selected.ys = selected.Thin() ? selected.y : selected.y + 1;
                     selected.y = 0;
-                    Refresh();
+                    sw->Refresh();
                 }
                 if (!selected.TextEdit() && k == A_SCDOWN) {
                     selected.ys = selected.g->ys - selected.y;
-                    Refresh();
+                    sw->Refresh();
                 }
                 return nullptr;
 
@@ -1427,7 +1423,7 @@ struct Document {
                 loopallcellssel(c, false) {
                     c->celltype =
                         (newcelltype == CT_CODE) ? sys->ev.InferCellType(c->text) : newcelltype;
-                    Refresh();
+                    sw->Refresh();
                 }
                 return nullptr;
             }
@@ -1473,10 +1469,10 @@ struct Document {
                         PasteOrDrop(tdo);
                     }
                     wxTheClipboard->Close();
-                    Refresh();
+                    sw->Refresh();
                 } else if (sys->cellclipboard) {
                     c->Paste(this, sys->cellclipboard.get(), selected);
-                    Refresh();
+                    sw->Refresh();
                 }
                 return nullptr;
 
@@ -1485,7 +1481,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 selected.g->SetStyles(selected, sys->cellclipboard.get());
                 selected.g->cell->ResetChildren();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_ENTERCELL:
@@ -1511,7 +1507,7 @@ struct Document {
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 c->AddUndo(this);
                 LoadImageIntoCell(fn, c, sys->frame->FromDIP(1.0));
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
@@ -1519,7 +1515,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 selected.g->ClearImages(selected);
                 selected.g->cell->ResetChildren();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
@@ -1529,13 +1525,13 @@ struct Document {
             case A_SCOLS:
                 selected.y = 0;
                 selected.ys = selected.g->ys;
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_SROWS:
                 selected.x = 0;
                 selected.xs = selected.g->xs;
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_BORD0:
@@ -1547,7 +1543,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 selected.g->SetBorder(k - A_BORD0 + 1, selected);
                 selected.g->cell->ResetChildren();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_TEXTGRID: return layrender(-1, true, true);
@@ -1594,7 +1590,7 @@ struct Document {
                         break;
                 }
                 selected.g->cell->ResetChildren();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_MINISIZE: {
@@ -1611,7 +1607,7 @@ struct Document {
                 }
                 outer.clear();
                 selected.g->cell->ResetChildren();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
@@ -1623,7 +1619,7 @@ struct Document {
                     c->grid->folded = k == A_FOLD ? !c->grid->folded : k == A_FOLDALL;
                     c->ResetChildren();
                 }
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_HOME:
@@ -1664,7 +1660,7 @@ struct Document {
                 }
                 curdrawroot->ResetChildren();
                 curdrawroot->ResetLayout();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
@@ -1674,7 +1670,7 @@ struct Document {
                 }
                 curdrawroot->ResetChildren();
                 curdrawroot->ResetLayout();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
@@ -1766,13 +1762,13 @@ struct Document {
                     if (!c->text.t.Len()) continue;
                     tags[c->text.t] = g_tagcolor_default;
                 }
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
             case A_TAGREMOVE: {
                 loopallcellssel(c, false) tags.erase(c->text.t);
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
         }
@@ -1786,7 +1782,7 @@ struct Document {
                         ac->grid->Transpose();
                         ac->ResetChildren();
                         SetSelect(ac->parent ? ac->parent->grid->FindCell(ac) : Selection());
-                        Refresh();
+                        sw->Refresh();
                         return nullptr;
                     } else
                         return NoGrid();
@@ -1863,14 +1859,14 @@ struct Document {
                 SetSelect(pp->grid->HierarchySwap(c->text.t));
                 pp->ResetChildren();
                 pp->ResetLayout();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
 
             case A_FILTERBYCELLBG:
                 loopallcells(ci) ci->text.filtered = ci->cellcolor != c->cellcolor;
                 rootgrid->ResetChildren();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
 
             case A_FILTERMATCHNEXT:
@@ -1890,7 +1886,7 @@ struct Document {
                 if (LastUndoSameCellTextEdit(c))
                     Undo(undolist, redolist);
                 else
-                    Refresh();
+                    sw->Refresh();
                 selected.ExitEdit(this);
                 return nullptr;
 
@@ -1898,7 +1894,7 @@ struct Document {
                 if (selected.cursorend == 0) return nullptr;
                 c->AddUndo(this);
                 c->text.BackspaceWord(selected);
-                Refresh();
+                sw->Refresh();
                 ZoomOutIfNoGrid();
                 return nullptr;
 
@@ -1947,7 +1943,7 @@ struct Document {
         if (ds >= 0 && selected.IsAll()) selected.g->cell->drawstyle = ds;
         selected.g->SetGridTextLayout(ds, v, noset, selected);
         selected.g->cell->ResetChildren();
-        Refresh();
+        sw->Refresh();
         return nullptr;
     }
 
@@ -2036,7 +2032,7 @@ struct Document {
                 L"Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
         selected.g->cell->AddUndo(this);
         selected.g->Sort(selected, descending);
-        Refresh();
+        sw->Refresh();
         return nullptr;
     }
 
@@ -2049,7 +2045,7 @@ struct Document {
                 selected.g->DeleteCells(dx, dy, nxs, nys);
                 v -= dec;
             }
-            Refresh();
+            sw->Refresh();
         }
     }
 
@@ -2148,7 +2144,7 @@ struct Document {
         if (selected.g)
             ScrollOrZoom();
         else
-            Refresh();
+            sw->Refresh();
         UpdateFileName();
     }
 
@@ -2181,7 +2177,7 @@ struct Document {
         if (!selected.g) return;
         selected.g->cell->AddUndo(this);
         loopallcellssel(c, false) LoadImageIntoCell(fn, c, sc);
-        Refresh();
+        sw->Refresh();
     }
 
     void RecreateTagMenu(wxMenu &menu) {
@@ -2203,7 +2199,7 @@ struct Document {
                 }
                 selected.g->cell->ResetChildren();
                 selected.g->cell->ResetLayout();
-                Refresh();
+                sw->Refresh();
                 return nullptr;
             }
         ASSERT(0);
@@ -2231,7 +2227,7 @@ struct Document {
         });
         loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
         rootgrid->ResetChildren();
-        Refresh();
+        sw->Refresh();
     }
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
@@ -2242,7 +2238,7 @@ struct Document {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }
         rootgrid->ResetChildren();
-        Refresh();
+        sw->Refresh();
     }
 
     wxDateTime ParseDateTimeString(const wxString &s) {
@@ -2257,6 +2253,6 @@ struct Document {
         paintscrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         rootgrid->ResetChildren();
-        Refresh();
+        sw->Refresh();
     }
 };
