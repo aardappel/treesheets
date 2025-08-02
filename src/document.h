@@ -529,8 +529,8 @@ struct Document {
         else if (currentviewscale < 1)
             currentviewscale = 1;
         if (scaledviewingmode && currentviewscale > 1) {
-            sw->SetVirtualSize(maxx, maxy);
             dc.SetUserScale(currentviewscale, currentviewscale);
+            sw->SetVirtualSize(maxx, maxy);
             maxx /= currentviewscale;
             maxy /= currentviewscale;
             scrollx = scrolly = 0;
