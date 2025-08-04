@@ -247,7 +247,7 @@ struct Document {
             int canvasw, canvash;
             sw->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && sel.g) {
-                wxRect r = sel.g->GetRect(this, sel, true);
+                wxRect r = sel.g->GetRect(this, sel);
                 if (r.y < scrolly || r.y + r.height > maxy || r.x < scrollx || r.x + r.width > maxx) {
                     sw->Scroll(r.width > canvasw || r.x < scrollx ? r.x
                                : r.x + r.width > maxx             ? r.x + r.width - canvasw
