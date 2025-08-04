@@ -20,8 +20,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: _build/_deps
-        key: ${{ runner.os }}-cmake-01-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-01-build
+        key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
+        restore-keys: ${{ runner.os }}-cmake-02-build
     - name: apt update
       run: sudo apt-get -o Acquire::Retries=3 update
     - name: install opengl
@@ -29,7 +29,23 @@ jobs:
     - name: install gtk
       run: sudo apt-get -o Acquire::Retries=3 install libgtk-3-dev
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_INSTALL_PREFIX=/usr -DCPACK_PACKAGING_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
+      # starting with wxWidgets 3.0.0 we will be able to use wxUSE_SYS_LIBS
+      run: |
+        cmake -S . -B _build \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DwxBUILD_SHARED=OFF \
+        -DwxBUILD_INSTALL=OFF \
+        -DwxUSE_REGEX=builtin \
+        -DwxUSE_ZLIB=builtin \
+        -DwxUSE_EXPAT=builtin \
+        -DwxUSE_LIBJPEG=builtin \
+        -DwxUSE_LIBPNG=builtin \
+        -DwxUSE_LIBTIFF=builtin \
+        -DwxUSE_LIBWEBP=builtin \
+        -DwxUSE_NANOSVG=builtin \
+        -DTREESHEETS_VERSION=${{ github.run_number }}
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Remove epoch from .deb filename
