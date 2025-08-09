@@ -241,7 +241,7 @@ struct Document {
                 y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
     }
 
-    void ScrollIfSelectionOutOfView(wxDC &dc, Selection &sel) {
+    void ScrollIfSelectionOutOfView(Selection &sel) {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
             int canvasw, canvash;
@@ -607,7 +607,7 @@ struct Document {
         wxCommandEvent event(UPDATE_STATUSBAR_REQUEST); 
         wxPostEvent(sw->frame, event);
         if (paintscrolltoselection) {
-            ScrollIfSelectionOutOfView(dc, selected);
+            ScrollIfSelectionOutOfView(selected);
             paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
