@@ -255,8 +255,6 @@ struct Document {
                                r.height > canvash || r.y < scrolly ? r.y
                                : r.y + r.height > maxy             ? r.y + r.height - canvash
                                                                    : scrolly);
-                    sw->Refresh();
-                    sw->Update();
                 }
             }
         }
@@ -604,10 +602,11 @@ struct Document {
         }
         Render(dc);
         DrawSelect(dc, selected);
-        wxCommandEvent event(UPDATE_STATUSBAR_REQUEST); 
-        wxPostEvent(sw->frame, event);
+        wxCommandEvent sbev(UPDATE_STATUSBAR_REQUEST); 
+        wxPostEvent(sw->frame, sbev);
         if (paintscrolltoselection) {
-            ScrollIfSelectionOutOfView(selected);
+            wxCommandEvent scev(SCROLLTOSELECTION_REQUEST);
+            wxPostEvent(sw, scev);
             paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
