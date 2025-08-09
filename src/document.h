@@ -602,11 +602,9 @@ struct Document {
         }
         Render(dc);
         DrawSelect(dc, selected);
-        wxCommandEvent sbev(UPDATE_STATUSBAR_REQUEST); 
-        wxPostEvent(sw->frame, sbev);
+        wxQueueEvent(sw->frame, new wxCommandEvent(UPDATE_STATUSBAR_REQUEST));
         if (paintscrolltoselection) {
-            wxCommandEvent scev(SCROLLTOSELECTION_REQUEST);
-            wxPostEvent(sw, scev);
+            wxQueueEvent(sw, new wxCommandEvent(SCROLLTOSELECTION_REQUEST));
             paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
