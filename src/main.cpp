@@ -281,6 +281,7 @@ typedef int64_t (*FileLoader)(string_view_nt absfilename, std::string *dest, int
 using namespace script;
 
 wxDEFINE_EVENT(UPDATE_STATUSBAR_REQUEST, wxCommandEvent);
+wxDEFINE_EVENT(SCROLLTOSELECTION_REQUEST, wxCommandEvent);
 
 struct treesheets {
     struct TreeSheetsScriptImpl;
