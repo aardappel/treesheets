@@ -604,7 +604,8 @@ struct Document {
         }
         Render(dc);
         DrawSelect(dc, selected);
-        sys->frame->UpdateStatus(selected);
+        wxCommandEvent event(UPDATE_STATUSBAR_REQUEST); 
+        wxPostEvent(sw->frame, event);
         if (paintscrolltoselection) {
             ScrollIfSelectionOutOfView(dc, selected);
             paintscrolltoselection = false;

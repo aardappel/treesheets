@@ -1185,6 +1185,10 @@ struct TSFrame : wxFrame {
         SetStatusWidths(5, swidths);
     }
 
+    void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
+        UpdateStatus(GetCurTab()->doc->selected);
+    }
+
     void UpdateStatus(const Selection &s) {
         if (GetStatusBar()) {
             if (Cell *c = s.GetCell(); c && s.xs) {
