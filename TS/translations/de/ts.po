@@ -261,7 +261,7 @@ msgid "Autosave load"
 msgstr "Automatische Sicherungskopien laden"
 
 msgid "Background color..."
-msgstr "Benutzerdefinierte Cursorfarbe..."
+msgstr "Hintergrundfarbe"
 
 msgid "Backup files"
 msgstr "Sicherungskopien"
