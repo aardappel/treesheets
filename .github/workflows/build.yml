@@ -77,7 +77,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: _build
-        key: ${{ runner.os }}-cmake-01-build-${{ hashFiles('CMakeLists.txt') }}
+        key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-01-build
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
@@ -122,7 +122,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: _build/_deps
-        key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
+        key: ${{ runner.os }}-cmake-03-build-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-02-build
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
