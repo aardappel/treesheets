@@ -1244,7 +1244,7 @@ struct TSFrame : wxFrame {
                 Show(true);
             }
             #endif
-            if (GetCurTab()) GetCurTab()->SetFocus();
+            if (TSCanvas *tab = GetCurTab()) tab->SetFocus();
         }
     }
 
