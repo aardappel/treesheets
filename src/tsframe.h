@@ -1186,7 +1186,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
-        if (TSCanvas *tab = GetCurTab()) UpdateStatus(tab->doc->selected);
+        if (TSCanvas *sw = GetCurTab()) UpdateStatus(sw->doc->selected);
     }
 
     void UpdateStatus(const Selection &s) {
