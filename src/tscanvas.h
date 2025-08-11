@@ -37,6 +37,9 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnScrollToSelectionRequest(wxCommandEvent &event) {
         doc->ScrollIfSelectionOutOfView(doc->selected);
+        #ifdef __WXMAC__
+            Update();
+        #endif
     }
 
     void RefreshHover(int mx, int my) {
