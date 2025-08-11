@@ -1131,13 +1131,13 @@ struct TSFrame : wxFrame {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
-        auto doc = GetCurTab()->doc;
-        auto sw = GetCurTab();
+        TSCanvas *sw = GetCurTab();
+        Document *doc = sw->doc;
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
         }
-        doc->sw->Refresh();
+        sw->Refresh();
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
