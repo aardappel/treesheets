@@ -1149,7 +1149,7 @@ struct TSFrame : wxFrame {
     }
 
     void ReFocus() {
-        if (GetCurTab()) GetCurTab()->SetFocus();
+        if (TSCanvas *sw = GetCurTab()) sw->SetFocus();
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
