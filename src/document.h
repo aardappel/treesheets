@@ -719,7 +719,7 @@ struct Document {
     }
 
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
-        Cell *r = currentview ? curdrawroot : root;
+        Cell *exproot = currentview ? curdrawroot : root;
         if (k == A_EXPIMAGE) {
             auto bm = GetBitmap();
             sw->Refresh();
@@ -731,7 +731,7 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            auto content = r->ToText(0, Selection(), k, this, true, r);
+            wxString content = exproot->ToText(0, Selection(), k, this, true, exproot);
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(
