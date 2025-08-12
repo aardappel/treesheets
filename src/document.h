@@ -9,7 +9,7 @@ struct UndoItem {
 
 struct Document {
     TSCanvas *sw {nullptr};
-    Cell *rootgrid {nullptr};
+    Cell *root {nullptr};
     Selection hover;
     Selection selected;
     Selection begindrag;
@@ -92,7 +92,7 @@ struct Document {
         CollectCells(par);      \
         loopv(_i, itercells) for (auto c = itercells[_i]; c; c = nullptr)
     #define loopallcells(c)     \
-        CollectCells(rootgrid); \
+        CollectCells(root); \
         for (auto c : itercells)
     #define loopallcellssel(c, rec) \
         CollectCellsSel(rec);     \
@@ -108,13 +108,13 @@ struct Document {
         dndobjc->Add(dndobjf);
     }
 
-    ~Document() { DELETEP(rootgrid); }
+    ~Document() { DELETEP(root); }
 
-    uint Background() { return rootgrid ? rootgrid->cellcolor : 0xFFFFFF; }
+    uint Background() { return root ? root->cellcolor : 0xFFFFFF; }
 
     void InitCellSelect(Cell *ics, int xs, int ys) {
         if (!ics) {
-            SetSelect(Selection(rootgrid->grid, 0, 0, 1, 1));
+            SetSelect(Selection(root->grid, 0, 0, 1, 1));
             return;
         }
         SetSelect(ics->parent->grid->FindCell(ics));
@@ -123,7 +123,7 @@ struct Document {
     }
 
     void InitWith(Cell *r, const wxString &fn, Cell *ics, int xs, int ys) {
-        rootgrid = r;
+        root = r;
         InitCellSelect(ics, xs, ys);
         ChangeFileName(fn, false);
     }
@@ -186,7 +186,7 @@ struct Document {
             wxZlibOutputStream zos(fos, 9);
             if (!zos.IsOk()) return _(L"Zlib error while writing file.");
             wxDataOutputStream dos(zos);
-            rootgrid->Save(dos, ocs);
+            root->Save(dos, ocs);
             for (auto &[tag, color] : tags) {
                 dos.WriteString(tag);
                 dos.Write32(color);
@@ -470,7 +470,7 @@ struct Document {
         ResetFont();
         dc.SetUserScale(1, 1);
         curdrawroot = WalkPath(drawpath);
-        int psb = curdrawroot == rootgrid ? 0 : curdrawroot->MinRelsize();
+        int psb = curdrawroot == root ? 0 : curdrawroot->MinRelsize();
         if (psb < 0 || psb == INT_MAX) psb = 0;
         if (psb != pathscalebias) curdrawroot->ResetChildren();
         pathscalebias = psb;
@@ -516,7 +516,7 @@ struct Document {
     void Draw(wxDC &dc) {
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
-        if (!rootgrid) return;
+        if (!root) return;
         sw->GetClientSize(&maxx, &maxy);
         Layout(dc);
         double xscale = maxx / (double)layoutxs;
@@ -715,11 +715,11 @@ struct Document {
 
     void RefreshImageRefCount(bool includefolded) {
         loopv(i, sys->imagelist) sys->imagelist[i]->trefc = 0;
-        rootgrid->ImageRefCount(includefolded);
+        root->ImageRefCount(includefolded);
     }
 
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
-        Cell *root = currentview ? curdrawroot : rootgrid;
+        Cell *r = currentview ? curdrawroot : root;
         if (k == A_EXPIMAGE) {
             auto bm = GetBitmap();
             sw->Refresh();
@@ -731,7 +731,7 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            auto content = root->ToText(0, Selection(), k, this, true, root);
+            auto content = r->ToText(0, Selection(), k, this, true, r);
             switch (k) {
                 case A_EXPXML:
                     dos.WriteString(
@@ -871,8 +871,8 @@ struct Document {
     const wxChar *Action(int k) {
         switch (k) {
             case wxID_EXECUTE:
-                sys->ev.Eval(rootgrid);
-                rootgrid->ResetChildren();
+                sys->ev.Eval(root);
+                root->ResetChildren();
                 ClearSelectionRefresh();
                 return _(L"Evaluation finished.");
 
@@ -1020,7 +1020,7 @@ struct Document {
                             sys->cfg->Write(L"defaultfixedfont", sys->defaultfixedfont);
                             break;
                     }
-                    // rootgrid->ResetChildren();
+                    // root->ResetChildren();
                     sys->frame->TabsReset();  // ResetChildren on all
                     sw->Refresh();
                 }
@@ -1071,7 +1071,7 @@ struct Document {
             case A_DEFBGCOL: {
                 auto oldbg = Background();
                 if (auto color = PickColor(sys->frame, oldbg); color != (uint)-1) {
-                    rootgrid->AddUndo(this);
+                    root->AddUndo(this);
                     loopallcells(c) {
                         if (c->cellcolor == oldbg && (!c->parent || c->parent->cellcolor == color))
                             c->cellcolor = color;
@@ -1146,9 +1146,9 @@ struct Document {
                 auto lreplaces =
                     sys->casesensitivesearch ? (wxString)wxEmptyString : replaces.Lower();
                 if (k == A_REPLACEALL) {
-                    rootgrid->AddUndo(this);  // expensive?
-                    rootgrid->FindReplaceAll(replaces, lreplaces);
-                    rootgrid->ResetChildren();
+                    root->AddUndo(this);  // expensive?
+                    root->FindReplaceAll(replaces, lreplaces);
+                    root->ResetChildren();
                     sw->Refresh();
                 } else {
                     loopallcellssel(c, true) if (c->text.IsInSearch()) c->AddUndo(this);
@@ -1172,7 +1172,7 @@ struct Document {
 
             case A_SCALED:
                 scaledviewingmode = !scaledviewingmode;
-                rootgrid->ResetChildren();
+                root->ResetChildren();
                 sw->Refresh();
                 return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal.")
                                          : _(L"1:1 scale restored.");
@@ -1836,8 +1836,8 @@ struct Document {
                     return _(L"No image in this cell.");
                 bool t1 = false, t2 = false;
                 auto link =
-                    rootgrid->FindLink(selected, c, nullptr, t1, t2, k == A_LINK || k == A_LINKIMG,
-                                       k == A_LINKIMG || k == A_LINKIMGREV);
+                    root->FindLink(selected, c, nullptr, t1, t2, k == A_LINK || k == A_LINKIMG,
+                                   k == A_LINKIMG || k == A_LINKIMGREV);
                 if (!link || !link->parent) return _(L"No matching cell found!");
                 SetSelect(link->parent->grid->FindCell(link));
                 ScrollOrZoom(true);
@@ -1863,13 +1863,13 @@ struct Document {
 
             case A_FILTERBYCELLBG:
                 loopallcells(ci) ci->text.filtered = ci->cellcolor != c->cellcolor;
-                rootgrid->ResetChildren();
+                root->ResetChildren();
                 sw->Refresh();
                 return nullptr;
 
             case A_FILTERMATCHNEXT:
                 bool lastsel = true;
-                auto next = rootgrid->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
+                Cell *next = root->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
                 if (!next) return _(L"No matches for filter.");
                 if (next->parent) SetSelect(next->parent->grid->FindCell(next));
                 sw->SetFocus();
@@ -1921,11 +1921,11 @@ struct Document {
     }
 
     const wxChar *SearchNext(bool focusmatch, bool jump, bool reverse) {
-        if (!rootgrid) return nullptr;  // fix crash when opening new doc
+        if (!root) return nullptr;  // fix crash when opening new doc
         if (!sys->searchstring.Len()) return _(L"No search string.");
         bool lastsel = true;
-        auto next = rootgrid->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
-                                                  lastsel, reverse);
+        Cell *next = root->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
+                                               lastsel, reverse);
         if (!next) return _(L"No matches for search.");
         if (!jump) return nullptr;
         SetSelect(next->parent->grid->FindCell(next));
@@ -2058,7 +2058,7 @@ struct Document {
     }
 
     Cell *WalkPath(auto &path) {
-        auto c = rootgrid;
+        Cell *c = root;
         loopvrev(i, path) {
             Selection &s = path[i];
             Grid *g = c->grid;
@@ -2128,7 +2128,7 @@ struct Document {
             c->parent->grid->ReplaceCell(c, clone);
             clone->parent = c->parent;
         } else
-            rootgrid = clone;
+            root = clone;
         clone->ResetLayout();
         SetSelect(ui->sel);
         if (selected.g) selected.g = WalkPath(ui->selpath)->grid;
@@ -2218,24 +2218,24 @@ struct Document {
         searchfilter = false;
         paintscrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
-        CollectCells(rootgrid);
+        CollectCells(root);
         ranges::sort(itercells, [](auto a, auto b) {
             // sort in descending order
             return a->text.lastedit > b->text.lastedit;
         });
         loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
-        rootgrid->ResetChildren();
+        root->ResetChildren();
         sw->Refresh();
     }
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
         paintscrolltoselection = true;
-        CollectCells(rootgrid);
+        CollectCells(root);
         for (auto c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }
-        rootgrid->ResetChildren();
+        root->ResetChildren();
         sw->Refresh();
     }
 
@@ -2250,7 +2250,7 @@ struct Document {
         searchfilter = on;
         paintscrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
-        rootgrid->ResetChildren();
+        root->ResetChildren();
         sw->Refresh();
     }
 };
