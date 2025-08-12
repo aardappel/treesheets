@@ -330,9 +330,9 @@ struct System {
         frame->filehistory.AddFileToHistory(filename);
         if (fswatch) {
             doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
-            const auto &d = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            if (watchedpaths.insert(d).second) {
-                frame->watcher->Add(wxFileName(d), wxFSW_EVENT_ALL);
+            const wxString &directorypath = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            if (watchedpaths.insert(directorypath).second) {
+                frame->watcher->Add(wxFileName(directorypath), wxFSW_EVENT_ALL);
             }
         }
     }
