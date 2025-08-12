@@ -276,7 +276,7 @@ struct System {
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
-                                wxString tag = dis.ReadString();
+                                auto tag = dis.ReadString();
                                 if (!tag.Len()) break;
                                 if (versionlastloaded >= 24) {
                                     doc->tags[tag] = dis.Read32();
@@ -330,7 +330,7 @@ struct System {
         frame->filehistory.AddFileToHistory(filename);
         if (fswatch) {
             doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
-            const wxString &directorypath = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            const auto &directorypath = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
             if (watchedpaths.insert(directorypath).second) {
                 frame->watcher->Add(wxFileName(directorypath), wxFSW_EVENT_ALL);
             }
@@ -339,7 +339,7 @@ struct System {
 
     const wxChar *Open(const wxString &filename) {
         if (!filename.empty()) {
-            const wxChar *msg = LoadDB(filename);
+            auto msg = LoadDB(filename);
             assert(msg);
             if (*msg) wxMessageBox(msg, filename.wx_str(), wxOK, frame);
             return msg;
@@ -350,7 +350,7 @@ struct System {
     void RememberOpenFiles() {
         auto namedfiles = 0;
         loop(i, frame->nb->GetPageCount()) {
-            TSCanvas *page = (TSCanvas *)frame->nb->GetPage(i);
+            auto page = (TSCanvas *)frame->nb->GetPage(i);
             if (page->doc->filename.Len()) {
                 cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), page->doc->filename);
                 namedfiles++;

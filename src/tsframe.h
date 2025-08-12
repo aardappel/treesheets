@@ -800,7 +800,7 @@ struct TSFrame : wxFrame {
     TSCanvas *GetCurTab() { return nb ? (TSCanvas *)nb->GetCurrentPage() : nullptr; }
     TSCanvas *GetTabByFileName(const wxString &fn) {
         if (nb) loop(i, nb->GetPageCount()) {
-                TSCanvas *page = (TSCanvas *)nb->GetPage(i);
+                auto page = (TSCanvas *)nb->GetPage(i);
                 if (page->doc->filename == fn) {
                     nb->SetSelection(i);
                     return page;
@@ -817,7 +817,7 @@ struct TSFrame : wxFrame {
 
     void TabsReset() {
         if (nb) loop(i, nb->GetPageCount()) {
-                TSCanvas *page = (TSCanvas *)nb->GetPage(i);
+                auto page = (TSCanvas *)nb->GetPage(i);
                 page->doc->root->ResetChildren();
             }
     }
@@ -1272,7 +1272,7 @@ struct TSFrame : wxFrame {
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, nb->GetPageCount()) {
-                TSCanvas *page = (TSCanvas *)nb->GetPage(i);
+                auto page = (TSCanvas *)nb->GetPage(i);
                 if (page->doc->modified) {
                     nb->SetSelection(i);
                     if (page->doc->CheckForChanges()) {
