@@ -276,12 +276,12 @@ struct System {
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
-                                auto s = dis.ReadString();
-                                if (!s.Len()) break;
+                                wxString tag = dis.ReadString();
+                                if (!tag.Len()) break;
                                 if (versionlastloaded >= 24) {
-                                    doc->tags[s] = dis.Read32();
+                                    doc->tags[tag] = dis.Read32();
                                 } else {
-                                    doc->tags[s] = g_tagcolor_default;
+                                    doc->tags[tag] = g_tagcolor_default;
                                 }
                             }
                         }
