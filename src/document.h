@@ -708,8 +708,8 @@ struct Document {
         return bm;
     }
 
-    wxBitmap GetSubBitmap(Selection &sel) {
-        auto r = sel.g->GetRect(this, sel, true);
+    wxBitmap GetSubBitmap(const Selection &sel) {
+        wxRect r = sel.g->GetRect(this, sel, true);
         return GetBitmap().GetSubBitmap(r);
     }
 
