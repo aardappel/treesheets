@@ -112,20 +112,20 @@ struct Document {
 
     uint Background() { return root ? root->cellcolor : 0xFFFFFF; }
 
-    void InitCellSelect(Cell *ics, int xs, int ys) {
-        if (!ics) {
+    void InitCellSelect(Cell *initialselected, int xsize, int ysize) {
+        if (!initialselected) {
             SetSelect(Selection(root->grid, 0, 0, 1, 1));
             return;
         }
-        SetSelect(ics->parent->grid->FindCell(ics));
-        selected.xs = xs;
-        selected.ys = ys;
+        SetSelect(initialselected->parent->grid->FindCell(initialselected));
+        selected.xs = xsize;
+        selected.ys = ysize;
     }
 
-    void InitWith(Cell *r, const wxString &fn, Cell *ics, int xs, int ys) {
-        root = r;
-        InitCellSelect(ics, xs, ys);
-        ChangeFileName(fn, false);
+    void InitWith(Cell *root, const wxString &filename, Cell *initialselected, int xsize, int ysize) {
+        this->root = root;
+        InitCellSelect(initialselected, xsize, ysize);
+        ChangeFileName(filename, false);
     }
 
     void UpdateFileName(int page = -1) {
@@ -133,8 +133,8 @@ struct Document {
                                  page);
     }
 
-    void ChangeFileName(const wxString &fn, bool checkext) {
-        filename = fn;
+    void ChangeFileName(const wxString &newfilename, bool checkext) {
+        filename = newfilename;
         if (checkext) {
             wxFileName wxfn(filename);
             if (!wxfn.HasExt()) filename.Append(L".cts");
