@@ -337,11 +337,11 @@ struct System {
         }
     }
 
-    const wxChar *Open(const wxString &fn) {
-        if (!fn.empty()) {
-            auto msg = LoadDB(fn);
+    const wxChar *Open(const wxString &filename) {
+        if (!filename.empty()) {
+            const wxChar *msg = LoadDB(filename);
             assert(msg);
-            if (*msg) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
+            if (*msg) wxMessageBox(msg, filename.wx_str(), wxOK, frame);
             return msg;
         }
         return _(L"Open file cancelled.");
