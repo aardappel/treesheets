@@ -149,7 +149,7 @@ struct System {
         c->grid->InitCells();
         auto doc = NewTabDoc();
         doc->InitWith(c, L"", nullptr, 1, 1);
-        return doc->rootgrid;
+        return doc->root;
     }
 
     wxString BakName(const wxString &filename) { return ExtName(filename, L".bak"); }

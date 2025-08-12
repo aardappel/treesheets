@@ -818,7 +818,7 @@ struct TSFrame : wxFrame {
     void TabsReset() {
         if (nb) loop(i, nb->GetPageCount()) {
                 TSCanvas *p = (TSCanvas *)nb->GetPage(i);
-                p->doc->rootgrid->ResetChildren();
+                p->doc->root->ResetChildren();
             }
     }
 

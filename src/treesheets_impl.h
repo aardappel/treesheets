@@ -8,7 +8,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurTab()->doc;
-        cur = doc->rootgrid;
+        cur = doc->root;
         docmodified = false;
     }
 
@@ -28,7 +28,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
         auto err = RunLobster(filename, {}, dump_builtins);
 
-        doc->rootgrid->ResetChildren();
+        doc->root->ResetChildren();
         doc->sw->Refresh();
 
         doc = nullptr;
@@ -45,7 +45,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return true;
     }
 
-    void GoToRoot() { cur = doc->rootgrid; }
+    void GoToRoot() { cur = doc->root; }
     void GoToView() { cur = doc->curdrawroot; }
     bool HasSelection() { return doc->selected.g; }
     void GoToSelection() {
