@@ -278,11 +278,8 @@ struct System {
                             for (;;) {
                                 auto tag = dis.ReadString();
                                 if (!tag.Len()) break;
-                                if (versionlastloaded >= 24) {
-                                    doc->tags[tag] = dis.Read32();
-                                } else {
-                                    doc->tags[tag] = g_tagcolor_default;
-                                }
+                                doc->tags[tag] =
+                                    versionlastloaded >= 24 ? dis.Read32() : g_tagcolor_default;
                             }
                         }
 
