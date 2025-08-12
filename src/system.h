@@ -350,9 +350,9 @@ struct System {
     void RememberOpenFiles() {
         auto namedfiles = 0;
         loop(i, frame->nb->GetPageCount()) {
-            TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
-            if (p->doc->filename.Len()) {
-                cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
+            TSCanvas *page = (TSCanvas *)frame->nb->GetPage(i);
+            if (page->doc->filename.Len()) {
+                cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), page->doc->filename);
                 namedfiles++;
             }
         }
