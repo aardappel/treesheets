@@ -22,7 +22,7 @@ struct TSCanvas : public wxScrolledCanvas {
         frame = nullptr;
     }
 
-    void OnPaint(wxPaintEvent &event) {
+    void OnPaint(wxPaintEvent &pe) {
         #ifndef __WXMSW__
             wxPaintDC dc(this);
         #else
@@ -35,7 +35,7 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->Draw(dc);
     };
 
-    void OnScrollToSelectionRequest(wxCommandEvent &event) {
+    void OnScrollToSelectionRequest(wxCommandEvent &ce) {
         doc->ScrollIfSelectionOutOfView(doc->selected);
         #ifdef __WXMAC__
             Refresh();
