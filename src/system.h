@@ -276,12 +276,12 @@ struct System {
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
-                                auto s = dis.ReadString();
-                                if (!s.Len()) break;
+                                wxString tag = dis.ReadString();
+                                if (!tag.Len()) break;
                                 if (versionlastloaded >= 24) {
-                                    doc->tags[s] = dis.Read32();
+                                    doc->tags[tag] = dis.Read32();
                                 } else {
-                                    doc->tags[s] = g_tagcolor_default;
+                                    doc->tags[tag] = g_tagcolor_default;
                                 }
                             }
                         }
@@ -330,18 +330,18 @@ struct System {
         frame->filehistory.AddFileToHistory(filename);
         if (fswatch) {
             doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
-            const auto &d = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            if (watchedpaths.insert(d).second) {
-                frame->watcher->Add(wxFileName(d), wxFSW_EVENT_ALL);
+            const wxString &directorypath = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            if (watchedpaths.insert(directorypath).second) {
+                frame->watcher->Add(wxFileName(directorypath), wxFSW_EVENT_ALL);
             }
         }
     }
 
-    const wxChar *Open(const wxString &fn) {
-        if (!fn.empty()) {
-            auto msg = LoadDB(fn);
+    const wxChar *Open(const wxString &filename) {
+        if (!filename.empty()) {
+            const wxChar *msg = LoadDB(filename);
             assert(msg);
-            if (*msg) wxMessageBox(msg, fn.wx_str(), wxOK, frame);
+            if (*msg) wxMessageBox(msg, filename.wx_str(), wxOK, frame);
             return msg;
         }
         return _(L"Open file cancelled.");
@@ -350,9 +350,9 @@ struct System {
     void RememberOpenFiles() {
         auto namedfiles = 0;
         loop(i, frame->nb->GetPageCount()) {
-            TSCanvas *p = (TSCanvas *)frame->nb->GetPage(i);
-            if (p->doc->filename.Len()) {
-                cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), p->doc->filename);
+            TSCanvas *page = (TSCanvas *)frame->nb->GetPage(i);
+            if (page->doc->filename.Len()) {
+                cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), page->doc->filename);
                 namedfiles++;
             }
         }
