@@ -147,8 +147,8 @@ static uint PickColor(wxFrame *frame, uint defaultcolor) {
 
 struct ImagePopup : wxVListBoxComboPopup {
     void OnComboDoubleClick() {
-        auto s = GetString(GetSelection());
-        sys->frame->GetCurTab()->doc->ImageChange(s, dd_icon_res_scale);
+        auto filename = GetString(GetSelection());
+        sys->frame->GetCurTab()->doc->ImageChange(filename, dd_icon_res_scale);
     }
 };
 
