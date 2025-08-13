@@ -799,10 +799,10 @@ struct TSFrame : wxFrame {
     }
 
     TSCanvas *GetCurTab() { return notebook ? (TSCanvas *)notebook->GetCurrentPage() : nullptr; }
-    TSCanvas *GetTabByFileName(const wxString &fn) {
+    TSCanvas *GetTabByFileName(const wxString &filename) {
         if (notebook) loop(i, notebook->GetPageCount()) {
                 auto page = (TSCanvas *)notebook->GetPage(i);
-                if (page->doc->filename == fn) {
+                if (page->doc->filename == filename) {
                     notebook->SetSelection(i);
                     return page;
                 }
@@ -839,12 +839,13 @@ struct TSFrame : wxFrame {
         notebook->SetSelection((notebook->GetSelection() + offset) % numtabs);
     }
 
-    void SetPageTitle(const wxString &fn, wxString mods, int page = -1) {
+    void SetPageTitle(const wxString &filename, wxString mods, int page = -1) {
         if (page < 0) page = notebook->GetSelection();
         if (page < 0) return;
-        if (page == notebook->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
+        if (page == notebook->GetSelection()) SetTitle(L"TreeSheets - " + filename + mods);
         notebook->SetPageText(
-            page, (fn.empty() ? wxString(_(L"<unnamed>")) : wxFileName(fn).GetName()) + mods);
+            page,
+            (filename.empty() ? wxString(_(L"<unnamed>")) : wxFileName(filename).GetName()) + mods);
     }
 
     void ConstructToolBar() {
@@ -1033,20 +1034,23 @@ struct TSFrame : wxFrame {
             }
 
             case A_ADDSCRIPT: {
-                wxArrayString fns;
-                GetFilesFromUser(fns, this, _(L"Please select Lobster script file(s):"),
+                wxArrayString filenames;
+                GetFilesFromUser(filenames, this, _(L"Please select Lobster script file(s):"),
                                  _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"));
-                for (auto &fn : fns) scripts.AddFileToHistory(fn);
+                for (auto &filename : filenames) scripts.AddFileToHistory(filename);
                 break;
             }
 
             case A_DETSCRIPT: {
-                wxArrayString as;
-                for (auto i = 0; i < scripts.GetCount(); i++) { as.Add(scripts.GetHistoryFile(i)); }
-                auto dlg = wxSingleChoiceDialog(
+                wxArrayString filenames;
+                for (auto i = 0; i < scripts.GetCount(); i++) {
+                    filenames.Add(scripts.GetHistoryFile(i));
+                }
+                auto dialog = wxSingleChoiceDialog(
                     this, _(L"Please select the script you want to remove from the list:"),
-                    _(L"Remove script from list..."), as);
-                if (dlg.ShowModal() == wxID_OK) scripts.RemoveFileFromHistory(dlg.GetSelection());
+                    _(L"Remove script from list..."), filenames);
+                if (dialog.ShowModal() == wxID_OK)
+                    scripts.RemoveFileFromHistory(dialog.GetSelection());
                 break;
             }
 
