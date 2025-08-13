@@ -396,9 +396,9 @@ struct System {
                 case A_IMPTXTT: {
                     wxFFile file(filename);
                     if (!file.IsOpened()) goto problem;
-                    wxString s;
-                    if (!file.ReadAll(&s)) goto problem;
-                    const auto &lines = wxStringTokenize(s, LINE_SEPERATOR);
+                    wxString content;
+                    if (!file.ReadAll(&content)) goto problem;
+                    const auto &lines = wxStringTokenize(content, LINE_SEPERATOR);
 
                     if (lines.size()) switch (k) {
                             case A_IMPTXTI: {
