@@ -116,7 +116,7 @@ struct System {
 
         if (filename.Len()) LoadDB(filename);
 
-        if (!frame->notebook->GetPageCount()) LoadTut();
+        if (!frame->notebook->GetPageCount()) LoadTutorial();
 
         if (!frame->notebook->GetPageCount()) InitDB(10);
 
@@ -124,7 +124,7 @@ struct System {
         every_second_timer.Start(1000);
     }
 
-    void LoadTut() {
+    void LoadTutorial() {
         auto lang = frame->app->locale.GetCanonicalName();
 
         if (lang.Len() == 5 &&
