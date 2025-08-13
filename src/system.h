@@ -379,13 +379,13 @@ struct System {
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(filename)) goto problem;
-                    Cell *&r = InitDB(1);
-                    Cell *c = *r->grid->cells;
+                    Cell *&root = InitDB(1);
+                    Cell *c = *root->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        *r->grid->cells = nullptr;
-                        delete r;
-                        r = c;
+                        *root->grid->cells = nullptr;
+                        delete root;
+                        root = c;
                         c->parent = nullptr;
                     }
                     break;
