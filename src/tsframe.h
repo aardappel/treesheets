@@ -1208,7 +1208,7 @@ struct TSFrame : wxFrame {
                                      c->text.lastedit.FormatTime().c_str()),
                     1);
             } else
-                for (int i : {1, 2, 3}) SetStatusText("", i);
+                for (int field : {1, 2, 3}) SetStatusText("", field);
             SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
         }
     }
