@@ -152,13 +152,13 @@ struct Document {
             if (!istempfile && sys->makebaks && ::wxFileExists(filename)) {
                 ::wxRenameFile(filename, sys->BakName(filename));
             }
-            auto sfn = istempfile ? sys->TmpName(filename) : filename;
-            wxFFileOutputStream fos(sfn);
+            auto savefilename = istempfile ? sys->TmpName(filename) : filename;
+            wxFFileOutputStream fos(savefilename);
             if (!fos.IsOk()) {
                 if (!istempfile)
                     wxMessageBox(
                         _(L"Error writing TreeSheets file! (try saving under new filename)."),
-                        sfn.wx_str(), wxOK, sys->frame);
+                        savefilename.wx_str(), wxOK, sys->frame);
                 return _(L"Error writing to file.");
             }
 
