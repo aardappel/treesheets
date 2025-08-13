@@ -442,11 +442,11 @@ struct System {
     }
 
     void FillXML(Cell *c, wxXmlNode *node, bool attributestoo) {
-        const auto &as = wxStringTokenize(
+        const auto &words = wxStringTokenize(
             node->GetType() == wxXML_ELEMENT_NODE ? node->GetNodeContent() : node->GetContent());
-        loop(i, as.GetCount()) {
+        loop(i, words.GetCount()) {
             if (c->text.t.Len()) c->text.t.Append(L' ');
-            c->text.t.Append(as[i]);
+            c->text.t.Append(words[i]);
         }
 
         if (node->GetName() == L"cell") {
