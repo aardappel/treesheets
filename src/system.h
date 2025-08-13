@@ -418,9 +418,10 @@ struct System {
                     break;
                 }
             }
-            frame->GetCurrentTab()->doc->modified = true;
-            frame->GetCurrentTab()->doc->UpdateFileName();
-            frame->GetCurrentTab()->doc->ClearSelectionRefresh();
+            Document *doc = frame->GetCurrentTab()->doc;
+            doc->modified = true;
+            doc->UpdateFileName();
+            doc->ClearSelectionRefresh();
         }
         return nullptr;
     problem:
