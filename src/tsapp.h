@@ -53,11 +53,11 @@ struct TSApp : wxApp {
             }
         #endif
 
-        auto lang = wxLocale::GetSystemLanguage();
-        if (lang == wxLANGUAGE_UNKNOWN || !wxLocale::IsAvailable(lang)) {
-            lang = wxLANGUAGE_ENGLISH;
+        auto language = wxLocale::GetSystemLanguage();
+        if (language == wxLANGUAGE_UNKNOWN || !wxLocale::IsAvailable(language)) {
+            language = wxLANGUAGE_ENGLISH;
         }
-        locale.Init(lang);
+        locale.Init(language);
 
         bool portable = false;
         bool single_instance = true;

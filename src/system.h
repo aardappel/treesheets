@@ -125,16 +125,16 @@ struct System {
     }
 
     void LoadTutorial() {
-        auto lang = frame->app->locale.GetCanonicalName();
+        auto language = frame->app->locale.GetCanonicalName();
 
-        if (lang.Len() == 5 &&
-            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+        if (language.Len() == 5 &&
+            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + language + ".cts"))[0]) {
             return;
         }
 
-        lang.Truncate(2);
-        if (lang.Len() == 2 &&
-            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + lang + ".cts"))[0]) {
+        language.Truncate(2);
+        if (language.Len() == 2 &&
+            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + language + ".cts"))[0]) {
             return;
         }
 
@@ -366,26 +366,26 @@ struct System {
 
     void SaveAll() {
         loop(i, frame->notebook->GetPageCount()) {
-            frame->GetCurTab()->doc->Save(false);
+            frame->GetCurrentTab()->doc->Save(false);
             frame->CycleTabs(1);
         }
     }
 
-    const wxChar *Import(const wxString &fn, int k) {
-        if (!fn.empty()) {
+    const wxChar *Import(const wxString &filename, int k) {
+        if (!filename.empty()) {
             wxBusyCursor wait;
             switch (k) {
                 case A_IMPXML:
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
-                    if (!doc.Load(fn)) goto problem;
-                    Cell *&r = InitDB(1);
-                    Cell *c = *r->grid->cells;
+                    if (!doc.Load(filename)) goto problem;
+                    Cell *&root = InitDB(1);
+                    Cell *c = *root->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        *r->grid->cells = nullptr;
-                        delete r;
-                        r = c;
+                        *root->grid->cells = nullptr;
+                        delete root;
+                        root = c;
                         c->parent = nullptr;
                     }
                     break;
@@ -394,114 +394,117 @@ struct System {
                 case A_IMPTXTC:
                 case A_IMPTXTS:
                 case A_IMPTXTT: {
-                    wxFFile f(fn);
-                    if (!f.IsOpened()) goto problem;
-                    wxString s;
-                    if (!f.ReadAll(&s)) goto problem;
-                    const auto &as = wxStringTokenize(s, LINE_SEPERATOR);
+                    wxFFile file(filename);
+                    if (!file.IsOpened()) goto problem;
+                    wxString content;
+                    if (!file.ReadAll(&content)) goto problem;
+                    const auto &lines = wxStringTokenize(content, LINE_SEPERATOR);
 
-                    if (as.size()) switch (k) {
+                    if (lines.size()) switch (k) {
                             case A_IMPTXTI: {
-                                Cell *r = InitDB(1);
-                                FillRows(r->grid, as, CountCol(as[0]), 0, 0);
+                                Cell *root = InitDB(1);
+                                FillRows(root->grid, lines, CountCol(lines[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
+                                InitDB(1, (int)lines.size())->grid->CSVImport(lines, L',');
                                 break;
                             case A_IMPTXTS:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L';');
+                                InitDB(1, (int)lines.size())->grid->CSVImport(lines, L';');
                                 break;
                             case A_IMPTXTT:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t');
+                                InitDB(1, (int)lines.size())->grid->CSVImport(lines, L'\t');
                                 break;
                         }
                     break;
                 }
             }
-            frame->GetCurTab()->doc->modified = true;
-            frame->GetCurTab()->doc->UpdateFileName();
-            frame->GetCurTab()->doc->ClearSelectionRefresh();
+            Document *doc = frame->GetCurrentTab()->doc;
+            doc->modified = true;
+            doc->UpdateFileName();
+            doc->ClearSelectionRefresh();
         }
         return nullptr;
     problem:
-        wxMessageBox(_(L"couldn't import file!"), fn, wxOK, frame);
+        wxMessageBox(_(L"couldn't import file!"), filename, wxOK, frame);
         return _(L"File load error.");
     }
 
-    int GetXMLNodes(wxXmlNode *n, auto &ns, vector<wxXmlAttribute *> *ps = nullptr,
+    int GetXMLNodes(wxXmlNode *node, auto &nodes, vector<wxXmlAttribute *> *attributes = nullptr,
                     bool attributestoo = false) {
-        for (auto child = n->GetChildren(); child; child = child->GetNext()) {
-            if (child->GetType() == wxXML_ELEMENT_NODE) ns.push_back(child);
+        for (auto child = node->GetChildren(); child; child = child->GetNext()) {
+            if (child->GetType() == wxXML_ELEMENT_NODE) nodes.push_back(child);
         }
-        if (attributestoo && ps)
-            for (auto child = n->GetAttributes(); child; child = child->GetNext()) {
-                ps->push_back(child);
+        if (attributestoo && attributes)
+            for (auto attribute = node->GetAttributes(); attribute;
+                 attribute = attribute->GetNext()) {
+                attributes->push_back(attribute);
             }
-        return ns.size() + (ps ? ps->size() : 0);
+        return nodes.size() + (attributes ? attributes->size() : 0);
     }
 
-    void FillXML(Cell *c, wxXmlNode *n, bool attributestoo) {
-        const auto &as = wxStringTokenize(n->GetType() == wxXML_ELEMENT_NODE ? n->GetNodeContent()
-                                                                             : n->GetContent());
-        loop(i, as.GetCount()) {
+    void FillXML(Cell *c, wxXmlNode *node, bool attributestoo) {
+        const auto &words = wxStringTokenize(
+            node->GetType() == wxXML_ELEMENT_NODE ? node->GetNodeContent() : node->GetContent());
+        loop(i, words.GetCount()) {
             if (c->text.t.Len()) c->text.t.Append(L' ');
-            c->text.t.Append(as[i]);
+            c->text.t.Append(words[i]);
         }
 
-        if (n->GetName() == L"cell") {
-            c->text.relsize = -wxAtoi(n->GetAttribute(L"relsize", L"0"));
-            c->text.stylebits = wxAtoi(n->GetAttribute(L"stylebits", L"0"));
+        if (node->GetName() == L"cell") {
+            c->text.relsize = -wxAtoi(node->GetAttribute(L"relsize", L"0"));
+            c->text.stylebits = wxAtoi(node->GetAttribute(L"stylebits", L"0"));
             c->cellcolor =
-                std::stoi(n->GetAttribute(L"colorbg", L"0xFFFFFF").ToStdString(), nullptr, 0);
+                std::stoi(node->GetAttribute(L"colorbg", L"0xFFFFFF").ToStdString(), nullptr, 0);
             c->textcolor =
-                std::stoi(n->GetAttribute(L"colorfg", L"0x000000").ToStdString(), nullptr, 0);
-            c->celltype = wxAtoi(n->GetAttribute(L"type", L"0"));
+                std::stoi(node->GetAttribute(L"colorfg", L"0x000000").ToStdString(), nullptr, 0);
+            c->celltype = wxAtoi(node->GetAttribute(L"type", L"0"));
         }
 
-        vector<wxXmlNode *> ns;
-        vector<wxXmlAttribute *> ps;
-        auto numrows = GetXMLNodes(n, ns, &ps, attributestoo);
+        vector<wxXmlNode *> nodes;
+        vector<wxXmlAttribute *> attributes;
+        auto numrows = GetXMLNodes(node, nodes, &attributes, attributestoo);
         if (!numrows) return;
 
-        if (ns.size() == 1 && (!c->text.t.Len() || ns[0]->IsWhitespaceOnly()) &&
-            ns[0]->GetName() != L"row") {
-            FillXML(c, ns[0], attributestoo);
+        if (nodes.size() == 1 && (!c->text.t.Len() || nodes[0]->IsWhitespaceOnly()) &&
+            nodes[0]->GetName() != L"row") {
+            FillXML(c, nodes[0], attributestoo);
         } else {
-            auto allrow = n->GetName() == L"grid";
-            for (auto n : ns)
-                if (n->GetName() != L"row") {
+            auto allrow = node->GetName() == L"grid";
+            for (auto node : nodes)
+                if (node->GetName() != L"row") {
                     allrow = false;
                     break;
                 }
             if (allrow) {
                 int desiredxs;
-                loopv(i, ns) {
+                loopv(i, nodes) {
                     vector<wxXmlNode *> ins;
-                    auto xs = GetXMLNodes(ns[i], ins);
+                    auto xs = GetXMLNodes(nodes[i], ins);
                     if (!i) {
                         desiredxs = xs ? xs : 1;
-                        c->AddGrid(desiredxs, ns.size());
-                        SetGridSettingsFromXML(c, n);
+                        c->AddGrid(desiredxs, nodes.size());
+                        SetGridSettingsFromXML(c, node);
                     }
                     loop(j, desiredxs) if (ins.size() > j)
                         FillXML(c->grid->C(j, i), ins[j], attributestoo);
                 }
             } else {
                 c->AddGrid(1, numrows);
-                SetGridSettingsFromXML(c, n);
-                loopv(i, ps) c->grid->C(0, i)->text.t = ps[i]->GetValue();
-                loopv(i, ns) FillXML(c->grid->C(0, i + ps.size()), ns[i], attributestoo);
+                SetGridSettingsFromXML(c, node);
+                loopv(i, attributes) c->grid->C(0, i)->text.t = attributes[i]->GetValue();
+                loopv(i, nodes)
+                    FillXML(c->grid->C(0, i + attributes.size()), nodes[i], attributestoo);
             }
         }
     }
 
-    void SetGridSettingsFromXML(Cell *c, wxXmlNode *n) {
-        c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
+    void SetGridSettingsFromXML(Cell *c, wxXmlNode *node) {
+        c->grid->folded = wxAtoi(node->GetAttribute(L"folded", L"0"));
         c->grid->bordercolor = std::stoi(
-            n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default).ToStdString(),
+            node->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default).ToStdString(),
             nullptr, 0);
-        c->grid->user_grid_outer_spacing =
-            wxAtoi(n->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
+        c->grid->user_grid_outer_spacing = wxAtoi(
+            node->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
     }
 
     int CountCol(const auto &s) {

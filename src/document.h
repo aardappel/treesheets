@@ -956,7 +956,7 @@ struct Document {
                                                _(L"size:"), _(L"New Sheet"), 10, 1, 25, sys->frame);
                 if (size < 0) return _(L"New file cancelled.");
                 sys->InitDB(size);
-                sys->frame->GetCurTab()->Refresh();
+                sys->frame->GetCurrentTab()->Refresh();
                 return nullptr;
             }
 
@@ -1136,7 +1136,7 @@ struct Document {
                 if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
                 break;
             case A_OPENIMGDROPDOWN:
-                if (sys->frame->idd) sys->frame->idd->ShowPopup();
+                if (sys->frame->imagedropdown) sys->frame->imagedropdown->ShowPopup();
                 break;
 
             case A_REPLACEONCE:
