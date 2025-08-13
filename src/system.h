@@ -429,16 +429,16 @@ struct System {
         return _(L"File load error.");
     }
 
-    int GetXMLNodes(wxXmlNode *n, auto &ns, vector<wxXmlAttribute *> *ps = nullptr,
+    int GetXMLNodes(wxXmlNode *node, auto &nodes, vector<wxXmlAttribute *> *ps = nullptr,
                     bool attributestoo = false) {
-        for (auto child = n->GetChildren(); child; child = child->GetNext()) {
-            if (child->GetType() == wxXML_ELEMENT_NODE) ns.push_back(child);
+        for (auto child = node->GetChildren(); child; child = child->GetNext()) {
+            if (child->GetType() == wxXML_ELEMENT_NODE) nodes.push_back(child);
         }
         if (attributestoo && ps)
-            for (auto child = n->GetAttributes(); child; child = child->GetNext()) {
+            for (auto child = node->GetAttributes(); child; child = child->GetNext()) {
                 ps->push_back(child);
             }
-        return ns.size() + (ps ? ps->size() : 0);
+        return nodes.size() + (ps ? ps->size() : 0);
     }
 
     void FillXML(Cell *c, wxXmlNode *n, bool attributestoo) {
