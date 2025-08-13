@@ -917,20 +917,21 @@ struct Document {
             case A_IMPTXTC:
             case A_IMPTXTS:
             case A_IMPTXTT: {
-                wxArrayString fns;
-                GetFilesFromUser(fns, sys->frame, _(L"Please select file(s) to import:"),
+                wxArrayString filenames;
+                GetFilesFromUser(filenames, sys->frame, _(L"Please select file(s) to import:"),
                                  _(L"*.*"));
                 const wxChar *msg = nullptr;
-                for (auto &fn : fns) msg = sys->Import(fn, k);
+                for (auto &fn : filenames) msg = sys->Import(fn, k);
                 return msg;
             }
 
             case wxID_OPEN: {
-                wxArrayString fns;
-                GetFilesFromUser(fns, sys->frame, _(L"Please select TreeSheets file(s) to load:"),
+                wxArrayString filenames;
+                GetFilesFromUser(filenames, sys->frame,
+                                 _(L"Please select TreeSheets file(s) to load:"),
                                  _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"));
                 const wxChar *msg = nullptr;
-                for (auto &fn : fns) msg = sys->Open(fn);
+                for (auto &fn : filenames) msg = sys->Open(fn);
                 return msg;
             }
 
