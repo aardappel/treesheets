@@ -721,9 +721,9 @@ struct Document {
     const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
         Cell *exportroot = currentview ? curdrawroot : root;
         if (k == A_EXPIMAGE) {
-            auto bm = GetBitmap();
+            auto bitmap = GetBitmap();
             sw->Refresh();
-            if (!bm.SaveFile(fn, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
+            if (!bitmap.SaveFile(fn, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
         } else {
             wxFFileOutputStream fos(fn, L"w+b");
             if (!fos.IsOk()) {
