@@ -285,7 +285,7 @@ struct System {
 
                         auto end_loading_time = wxGetLocalTimeMillis();
 
-                        doc->scrolledwindow->Status(
+                        frame->SetStatus(
                             wxString::Format(
                                 _(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
                                 filename.c_str(), numcells, textbytes,

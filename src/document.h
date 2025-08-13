@@ -210,7 +210,7 @@ struct Document {
         UpdateFileName(page);
         if (success) *success = true;
 
-        scrolledwindow->Status(
+        sys->frame->SetStatus(
             wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."), filename.c_str(),
                              (int)((end_saving_time - start_saving_time).GetValue()))
                 .c_str());
@@ -1960,7 +1960,7 @@ struct Document {
             const wxArrayString &as = fdo.GetFilenames();
             if (!as.size()) return;
             if (as.size() > 1) {
-                scrolledwindow->Status(_(L"Cannot drag & drop more than 1 file."));
+                sys->frame->SetStatus(_(L"Cannot drag & drop more than 1 file."));
                 return;
             }
             wxString fpath = as[0];
@@ -1975,7 +1975,7 @@ struct Document {
                           L"What would you like to do?"),
                         _(L"Open TreeSheets file"), _(L"Paste file path"), _(L"Cancel"));
                     switch (tcd.Run()) {
-                        case 0: scrolledwindow->Status(sys->LoadDB(fpath));
+                        case 0: sys->frame->SetStatus(sys->LoadDB(fpath));
                         case 2: return;
                         default:
                         case 1:;
