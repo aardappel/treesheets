@@ -1136,7 +1136,7 @@ struct Document {
                 if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
                 break;
             case A_OPENIMGDROPDOWN:
-                if (sys->frame->idd) sys->frame->idd->ShowPopup();
+                if (sys->frame->imagedropdown) sys->frame->imagedropdown->ShowPopup();
                 break;
 
             case A_REPLACEONCE:

@@ -21,7 +21,7 @@ struct TSFrame : wxFrame {
     ColorDropdown *celldd {nullptr};
     ColorDropdown *textdd {nullptr};
     ColorDropdown *borddd {nullptr};
-    ImageDropdown *idd {nullptr};
+    ImageDropdown *imagedropdown {nullptr};
     wxString imagepath;
     int refreshhack {0};
     int refreshhackinstances {0};
@@ -922,8 +922,8 @@ struct TSFrame : wxFrame {
         toolbar->AddControl(borddd);
         toolbar->AddSeparator();
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Image ")));
-        idd = new ImageDropdown(toolbar, imagepath);
-        toolbar->AddControl(idd);
+        imagedropdown = new ImageDropdown(toolbar, imagepath);
+        toolbar->AddControl(imagedropdown);
         toolbar->Realize();
         toolbar->Show(sys->showtoolbar);
     }
@@ -1168,7 +1168,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnDDImage(wxCommandEvent &ce) {
-        GetCurTab()->doc->ImageChange(idd->filenames[ce.GetInt()], dd_icon_res_scale);
+        GetCurTab()->doc->ImageChange(imagedropdown->filenames[ce.GetInt()], dd_icon_res_scale);
         ReFocus();
     }
 
