@@ -116,9 +116,9 @@ struct System {
 
         if (filename.Len()) LoadDB(filename);
 
-        if (!frame->nb->GetPageCount()) LoadTut();
+        if (!frame->notebook->GetPageCount()) LoadTut();
 
-        if (!frame->nb->GetPageCount()) InitDB(10);
+        if (!frame->notebook->GetPageCount()) InitDB(10);
 
         // Refresh();
         every_second_timer.Start(1000);
@@ -346,8 +346,8 @@ struct System {
 
     void RememberOpenFiles() {
         auto namedfiles = 0;
-        loop(i, frame->nb->GetPageCount()) {
-            auto page = (TSCanvas *)frame->nb->GetPage(i);
+        loop(i, frame->notebook->GetPageCount()) {
+            auto page = (TSCanvas *)frame->notebook->GetPage(i);
             if (page->doc->filename.Len()) {
                 cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), page->doc->filename);
                 namedfiles++;
@@ -359,13 +359,13 @@ struct System {
     }
 
     void SaveCheck() {
-        loop(i, frame->nb->GetPageCount()) {
-            ((TSCanvas *)frame->nb->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
+        loop(i, frame->notebook->GetPageCount()) {
+            ((TSCanvas *)frame->notebook->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
         }
     }
 
     void SaveAll() {
-        loop(i, frame->nb->GetPageCount()) {
+        loop(i, frame->notebook->GetPageCount()) {
             frame->GetCurTab()->doc->Save(false);
             frame->CycleTabs(1);
         }

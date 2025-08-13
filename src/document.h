@@ -770,11 +770,11 @@ struct Document {
 
     const wxChar *Save(bool saveas, bool *success = nullptr) {
         if (!saveas && !filename.empty()) { return SaveDB(success); }
-        auto fn = ::wxFileSelector(_(L"Choose TreeSheets file to save:"), L"", L"", L"cts",
-                                   _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
-                                   wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
-        if (fn.empty()) return _(L"Save cancelled.");  // avoid name being set to ""
-        ChangeFileName(fn, true);
+        auto filename = ::wxFileSelector(_(L"Choose TreeSheets file to save:"), L"", L"", L"cts",
+                                         _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
+                                         wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
+        if (filename.empty()) return _(L"Save cancelled.");  // avoid name being set to ""
+        ChangeFileName(filename, true);
         return SaveDB(success);
     }
 
@@ -935,16 +935,16 @@ struct Document {
             }
 
             case wxID_CLOSE: {
-                if (sys->frame->nb->GetPageCount() <= 1) {
+                if (sys->frame->notebook->GetPageCount() <= 1) {
                     sys->frame->fromclosebox = false;
                     sys->frame->Close();
                     return nullptr;
                 }
 
                 if (!CloseDocument()) {
-                    int p = sys->frame->nb->GetSelection();
-                    // sys->frame->nb->AdvanceSelection();
-                    sys->frame->nb->DeletePage(p);
+                    int pagenumber = sys->frame->notebook->GetSelection();
+                    // sys->frame->notebook->AdvanceSelection();
+                    sys->frame->notebook->DeletePage(pagenumber);
                 }
                 return nullptr;
             }

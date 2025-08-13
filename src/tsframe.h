@@ -7,7 +7,7 @@ struct TSFrame : wxFrame {
     wxFileHistory filehistory;
     wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
     wxFileSystemWatcher *watcher;
-    wxAuiNotebook *nb {nullptr};
+    wxAuiNotebook *notebook {nullptr};
     wxAuiManager aui {this};
     wxBitmap line_nw;
     wxBitmap line_sw;
@@ -727,10 +727,11 @@ struct TSFrame : wxFrame {
         SetDPIAwareStatusWidths();
         sb->Show(sys->showstatusbar);
 
-        nb = new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                               wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT | wxAUI_NB_SCROLL_BUTTONS |
-                                   wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_CLOSE_ON_ALL_TABS |
-                                   (lefttabs ? wxAUI_NB_BOTTOM : wxAUI_NB_TOP));
+        notebook =
+            new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                              wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT | wxAUI_NB_SCROLL_BUTTONS |
+                                  wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_CLOSE_ON_ALL_TABS |
+                                  (lefttabs ? wxAUI_NB_BOTTOM : wxAUI_NB_TOP));
 
         int display_id = wxDisplay::GetFromWindow(this);
         wxRect disprect = wxDisplay(display_id == wxNOT_FOUND ? 0 : display_id).GetClientArea();
@@ -764,7 +765,7 @@ struct TSFrame : wxFrame {
         bool ismax;
         sys->cfg->Read(L"maximized", &ismax, true);
 
-        aui.AddPane(nb, wxCENTER);
+        aui.AddPane(notebook, wxCENTER);
         aui.Update();
 
         Show(!IsIconized());
@@ -784,25 +785,25 @@ struct TSFrame : wxFrame {
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
-        TSCanvas *sw = new TSCanvas(this, nb);
+        TSCanvas *sw = new TSCanvas(this, notebook);
         sw->doc = doc;
         doc->sw = sw;
         sw->SetScrollRate(1, 1);
         if (append)
-            nb->AddPage(sw, _(L"<unnamed>"), true, wxNullBitmap);
+            notebook->AddPage(sw, _(L"<unnamed>"), true, wxNullBitmap);
         else
-            nb->InsertPage(0, sw, _(L"<unnamed>"), true, wxNullBitmap);
+            notebook->InsertPage(0, sw, _(L"<unnamed>"), true, wxNullBitmap);
         sw->SetDropTarget(new DropTarget(doc->dndobjc));
         sw->SetFocus();
         return sw;
     }
 
-    TSCanvas *GetCurTab() { return nb ? (TSCanvas *)nb->GetCurrentPage() : nullptr; }
+    TSCanvas *GetCurTab() { return notebook ? (TSCanvas *)notebook->GetCurrentPage() : nullptr; }
     TSCanvas *GetTabByFileName(const wxString &fn) {
-        if (nb) loop(i, nb->GetPageCount()) {
-                auto page = (TSCanvas *)nb->GetPage(i);
+        if (notebook) loop(i, notebook->GetPageCount()) {
+                auto page = (TSCanvas *)notebook->GetPage(i);
                 if (page->doc->filename == fn) {
-                    nb->SetSelection(i);
+                    notebook->SetSelection(i);
                     return page;
                 }
             }
@@ -810,21 +811,21 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
+        TSCanvas *sw = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
         sw->Status();
         sys->TabChange(sw->doc);
     }
 
     void TabsReset() {
-        if (nb) loop(i, nb->GetPageCount()) {
-                auto page = (TSCanvas *)nb->GetPage(i);
+        if (notebook) loop(i, notebook->GetPageCount()) {
+                auto page = (TSCanvas *)notebook->GetPage(i);
                 page->doc->root->ResetChildren();
             }
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        TSCanvas *sw = (TSCanvas *)nb->GetPage(nbe.GetSelection());
-        if (nb->GetPageCount() <= 1) {
+        TSCanvas *sw = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
+        if (notebook->GetPageCount() <= 1) {
             nbe.Veto();
             Close();
         } else if (sw->doc->CloseDocument()) {
@@ -833,17 +834,17 @@ struct TSFrame : wxFrame {
     }
 
     void CycleTabs(int offset = 1) {
-        auto numtabs = (int)nb->GetPageCount();
+        auto numtabs = (int)notebook->GetPageCount();
         offset = ((offset >= 0) ? 1 : numtabs - 1);  // normalize to non-negative wrt modulo
-        nb->SetSelection((nb->GetSelection() + offset) % numtabs);
+        notebook->SetSelection((notebook->GetSelection() + offset) % numtabs);
     }
 
     void SetPageTitle(const wxString &fn, wxString mods, int page = -1) {
-        if (page < 0) page = nb->GetSelection();
+        if (page < 0) page = notebook->GetSelection();
         if (page < 0) return;
-        if (page == nb->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
-        nb->SetPageText(page,
-                        (fn.empty() ? wxString(_(L"<unnamed>")) : wxFileName(fn).GetName()) + mods);
+        if (page == notebook->GetSelection()) SetTitle(L"TreeSheets - " + fn + mods);
+        notebook->SetPageText(
+            page, (fn.empty() ? wxString(_(L"<unnamed>")) : wxFileName(fn).GetName()) + mods);
     }
 
     void ConstructToolBar() {
@@ -1271,10 +1272,10 @@ struct TSFrame : wxFrame {
         sys->RememberOpenFiles();
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
-            loop(i, nb->GetPageCount()) {
-                auto page = (TSCanvas *)nb->GetPage(i);
+            loop(i, notebook->GetPageCount()) {
+                auto page = (TSCanvas *)notebook->GetPage(i);
                 if (page->doc->modified) {
-                    nb->SetSelection(i);
+                    notebook->SetSelection(i);
                     if (page->doc->CheckForChanges()) {
                         ce.Veto();
                         return;
@@ -1282,9 +1283,9 @@ struct TSFrame : wxFrame {
                 }
             }
             // all files have been saved/discarded
-            while (nb->GetPageCount()) {
+            while (notebook->GetPageCount()) {
                 GetCurTab()->doc->RemoveTmpFile();
-                nb->DeletePage(nb->GetSelection());
+                notebook->DeletePage(notebook->GetSelection());
             }
         }
         sys->every_second_timer.Stop();
@@ -1332,10 +1333,10 @@ struct TSFrame : wxFrame {
 
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
         // 0xF == create/delete/rename/modify
-        if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !nb) return;
+        if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !notebook) return;
         const auto &modfile = event.GetPath().GetFullPath();
-        loop(i, nb->GetPageCount()) {
-            Document *doc = ((TSCanvas *)nb->GetPage(i))->doc;
+        loop(i, notebook->GetPageCount()) {
+            Document *doc = ((TSCanvas *)notebook->GetPage(i))->doc;
             if (modfile == doc->filename) {
                 auto modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
@@ -1367,8 +1368,8 @@ struct TSFrame : wxFrame {
                 if (*msg) {
                     GetCurTab()->Status(msg);
                 } else {
-                    loop(j, nb->GetPageCount()) if (((TSCanvas *)nb->GetPage(j))->doc == doc)
-                        nb->DeletePage(j);
+                    loop(j, notebook->GetPageCount()) if (((TSCanvas *)notebook->GetPage(j))->doc ==
+                                                          doc) notebook->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     GetCurTab()->Status(
                         _(L"File has been re-loaded because of modifications of another program / computer"));
