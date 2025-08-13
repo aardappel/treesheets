@@ -193,36 +193,36 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 };
 
-static void ScaleBitmap(const wxBitmap &src, double sc, wxBitmap &dest) {
-    dest = wxBitmap(src.ConvertToImage().Scale(src.GetWidth() * sc, src.GetHeight() * sc,
-                                               wxIMAGE_QUALITY_HIGH));
+static void ScaleBitmap(const wxBitmap &source, double scale, wxBitmap &destination) {
+    destination = wxBitmap(source.ConvertToImage().Scale(
+        source.GetWidth() * scale, source.GetHeight() * scale, wxIMAGE_QUALITY_HIGH));
 }
 
-static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &im, wxBitmapType bmt) {
+static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &image, wxBitmapType bmt) {
     wxMemoryOutputStream mos(NULL, 0);
-    im.SaveFile(mos, bmt);
-    auto sz = mos.TellO();
-    vector<uint8_t> buf(sz);
-    mos.CopyTo(buf.data(), sz);
-    return buf;
+    image.SaveFile(mos, bmt);
+    auto size = mos.TellO();
+    vector<uint8_t> buffer(size);
+    mos.CopyTo(buffer.data(), size);
+    return buffer;
 }
 
-static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buf, wxBitmapType bmt) {
-    wxMemoryInputStream mis(buf.data(), buf.size());
-    wxImage im(mis, bmt);
-    if (!im.IsOk()) {
-        int sz = 32;
-        im.Create(sz, sz, false);
-        im.SetRGB(wxRect(0, 0, sz, sz), 0xFF, 0, 0);
+static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buffer, wxBitmapType bmt) {
+    wxMemoryInputStream mis(buffer.data(), buffer.size());
+    wxImage image(mis, bmt);
+    if (!image.IsOk()) {
+        int size = 32;
+        image.Create(size, size, false);
+        image.SetRGB(wxRect(0, 0, size, size), 0xFF, 0, 0);
         // Set to red to indicate error.
     }
-    return im;
+    return image;
 }
 
-static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buf, wxBitmapType bmt) {
-    auto im = ConvertBufferToWxImage(buf, bmt);
-    wxBitmap bm(im, 32);
-    return bm;
+static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buffer, wxBitmapType bmt) {
+    auto image = ConvertBufferToWxImage(buffer, bmt);
+    wxBitmap bitmap(image, 32);
+    return bitmap;
 }
 
 static uint64_t CalculateHash(vector<uint8_t> &data) {
@@ -230,9 +230,9 @@ static uint64_t CalculateHash(vector<uint8_t> &data) {
     return FNV1A64(data.data(), min(data.size(), max));
 }
 
-static void GetFilesFromUser(wxArrayString &filenames, wxWindow *w, const wxChar *title,
+static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const wxChar *title,
                              const wxChar *filter) {
-    wxFileDialog fd(w, title, L"", L"", filter,
-                    wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
-    if (fd.ShowModal() == wxID_OK) fd.GetPaths(filenames);
+    wxFileDialog filedialog(parent, title, L"", L"", filter,
+                            wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
+    if (filedialog.ShowModal() == wxID_OK) filedialog.GetPaths(filenames);
 }
