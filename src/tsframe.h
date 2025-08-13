@@ -1225,7 +1225,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        if (toolbar) DELETEP(toolbar);
+        DELETEP(toolbar);
         ConstructToolBar();
         se.Skip();
     }
