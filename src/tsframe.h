@@ -1167,7 +1167,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnDDImage(wxCommandEvent &ce) {
-        GetCurTab()->doc->ImageChange(idd->as[ce.GetInt()], dd_icon_res_scale);
+        GetCurTab()->doc->ImageChange(idd->filenames[ce.GetInt()], dd_icon_res_scale);
         ReFocus();
     }
 
