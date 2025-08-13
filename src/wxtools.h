@@ -12,15 +12,17 @@ struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data) {};
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
-        auto scrolledwindow = sys->frame->GetCurTab();
+        auto scrolledwindow = sys->frame->GetCurrentTab();
         scrolledwindow->RefreshHover(x, y);
         return scrolledwindow->doc->hover.g ? wxDragCopy : wxDragNone;
     }
 
-    bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
+    bool OnDrop(wxCoord x, wxCoord y) {
+        return sys->frame->GetCurrentTab()->doc->hover.g != nullptr;
+    }
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
-        Document *doc = sys->frame->GetCurTab()->doc;
+        Document *doc = sys->frame->GetCurrentTab()->doc;
         doc->paintselectclick = true;
         doc->paintdrop = true;
         doc->scrolledwindow->RefreshHover(x, y);
@@ -104,7 +106,7 @@ struct ColorPopup : wxVListBoxComboPopup {
     ColorPopup(wxWindow *parent) {}
 
     void OnComboDoubleClick() {
-        sys->frame->GetCurTab()->doc->ColorChange(m_combo->GetId(), GetSelection());
+        sys->frame->GetCurrentTab()->doc->ColorChange(m_combo->GetId(), GetSelection());
     }
 };
 
@@ -148,7 +150,7 @@ static uint PickColor(wxFrame *frame, uint defaultcolor) {
 struct ImagePopup : wxVListBoxComboPopup {
     void OnComboDoubleClick() {
         auto filename = GetString(GetSelection());
-        sys->frame->GetCurTab()->doc->ImageChange(filename, dd_icon_res_scale);
+        sys->frame->GetCurrentTab()->doc->ImageChange(filename, dd_icon_res_scale);
     }
 };
 

@@ -798,7 +798,9 @@ struct TSFrame : wxFrame {
         return scrolledwindow;
     }
 
-    TSCanvas *GetCurTab() { return notebook ? (TSCanvas *)notebook->GetCurrentPage() : nullptr; }
+    TSCanvas *GetCurrentTab() {
+        return notebook ? (TSCanvas *)notebook->GetCurrentPage() : nullptr;
+    }
     TSCanvas *GetTabByFileName(const wxString &filename) {
         if (notebook) loop(i, notebook->GetPageCount()) {
                 auto page = (TSCanvas *)notebook->GetPage(i);
@@ -930,7 +932,7 @@ struct TSFrame : wxFrame {
 
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
-        auto scrolledwindow = GetCurTab();
+        auto scrolledwindow = GetCurrentTab();
         if (((tc = filter) && filter == wxWindow::FindFocus()) ||
             ((tc = replaces) && replaces == wxWindow::FindFocus())) {
             long from, to;
@@ -1141,7 +1143,7 @@ struct TSFrame : wxFrame {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
-        TSCanvas *scrolledwindow = GetCurTab();
+        TSCanvas *scrolledwindow = GetCurrentTab();
         Document *doc = scrolledwindow->doc;
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
@@ -1151,7 +1153,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        auto scrolledwindow = GetCurTab();
+        auto scrolledwindow = GetCurrentTab();
         if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty())
             scrolledwindow->SetFocus();
         else
@@ -1159,16 +1161,16 @@ struct TSFrame : wxFrame {
     }
 
     void ReFocus() {
-        if (TSCanvas *scrolledwindow = GetCurTab()) scrolledwindow->SetFocus();
+        if (TSCanvas *scrolledwindow = GetCurrentTab()) scrolledwindow->SetFocus();
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
-        GetCurTab()->doc->ColorChange(ce.GetId(), ce.GetInt());
+        GetCurrentTab()->doc->ColorChange(ce.GetId(), ce.GetInt());
         ReFocus();
     }
 
     void OnDDImage(wxCommandEvent &ce) {
-        GetCurTab()->doc->ImageChange(imagedropdown->filenames[ce.GetInt()], dd_icon_res_scale);
+        GetCurrentTab()->doc->ImageChange(imagedropdown->filenames[ce.GetInt()], dd_icon_res_scale);
         ReFocus();
     }
 
@@ -1196,7 +1198,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
-        if (TSCanvas *scrolledwindow = GetCurTab()) UpdateStatus(scrolledwindow->doc->selected);
+        if (TSCanvas *scrolledwindow = GetCurrentTab()) UpdateStatus(scrolledwindow->doc->selected);
     }
 
     void SetStatus(const wxChar *message = nullptr) {
@@ -1258,7 +1260,7 @@ struct TSFrame : wxFrame {
                 Show(true);
             }
             #endif
-            if (TSCanvas *tab = GetCurTab()) tab->SetFocus();
+            if (TSCanvas *tab = GetCurrentTab()) tab->SetFocus();
         }
     }
 
@@ -1297,7 +1299,7 @@ struct TSFrame : wxFrame {
             }
             // all files have been saved/discarded
             while (notebook->GetPageCount()) {
-                GetCurTab()->doc->RemoveTmpFile();
+                GetCurrentTab()->doc->RemoveTmpFile();
                 notebook->DeletePage(notebook->GetSelection());
             }
         }

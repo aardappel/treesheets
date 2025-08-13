@@ -366,7 +366,7 @@ struct System {
 
     void SaveAll() {
         loop(i, frame->notebook->GetPageCount()) {
-            frame->GetCurTab()->doc->Save(false);
+            frame->GetCurrentTab()->doc->Save(false);
             frame->CycleTabs(1);
         }
     }
@@ -418,9 +418,9 @@ struct System {
                     break;
                 }
             }
-            frame->GetCurTab()->doc->modified = true;
-            frame->GetCurTab()->doc->UpdateFileName();
-            frame->GetCurTab()->doc->ClearSelectionRefresh();
+            frame->GetCurrentTab()->doc->modified = true;
+            frame->GetCurrentTab()->doc->UpdateFileName();
+            frame->GetCurrentTab()->doc->ClearSelectionRefresh();
         }
         return nullptr;
     problem:
