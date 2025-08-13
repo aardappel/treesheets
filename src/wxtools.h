@@ -137,9 +137,9 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
     }
 };
 
-static uint PickColor(wxFrame *fr, uint defcol) {
-    auto col = wxGetColourFromUser(fr, wxColour(defcol));
-    if (col.IsOk()) return (col.Blue() << 16) + (col.Green() << 8) + col.Red();
+static uint PickColor(wxFrame *frame, uint defaultcolor) {
+    auto color = wxGetColourFromUser(frame, wxColour(defaultcolor));
+    if (color.IsOk()) return (color.Blue() << 16) + (color.Green() << 8) + color.Red();
     return -1;
 }
 
@@ -147,20 +147,20 @@ static uint PickColor(wxFrame *fr, uint defcol) {
 
 struct ImagePopup : wxVListBoxComboPopup {
     void OnComboDoubleClick() {
-        auto s = GetString(GetSelection());
-        sys->frame->GetCurTab()->doc->ImageChange(s, dd_icon_res_scale);
+        auto filename = GetString(GetSelection());
+        sys->frame->GetCurTab()->doc->ImageChange(filename, dd_icon_res_scale);
     }
 };
 
 struct ImageDropdown : wxOwnerDrawnComboBox {
     vector<unique_ptr<wxBitmap>> bitmaps_display;
-    wxArrayString as;
+    wxArrayString filenames;
     const int image_space = 22;
 
     ImageDropdown(wxWindow *parent, const wxString &path) {
         FillBitmapVector(path);
         Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
-               FromDIP(wxSize(image_space * 2, image_space)), as,
+               FromDIP(wxSize(image_space * 2, image_space)), filenames,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ImagePopup());
         SetSelection(0);
@@ -179,16 +179,16 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     void FillBitmapVector(const wxString &path) {
         if (!bitmaps_display.empty()) bitmaps_display.resize(0);
-        auto f = wxFindFirstFile(path + L"*.*");
-        while (!f.empty()) {
-            wxBitmap bm;
-            if (bm.LoadFile(f, wxBITMAP_TYPE_PNG)) {
-                auto dbm = make_unique<wxBitmap>();
-                ScaleBitmap(bm, FromDIP(1.0) / dd_icon_res_scale, *dbm);
-                bitmaps_display.push_back(std::move(dbm));
-                as.Add(f);
+        auto filename = wxFindFirstFile(path + L"*.*");
+        while (!filename.empty()) {
+            wxBitmap bitmap;
+            if (bitmap.LoadFile(filename, wxBITMAP_TYPE_PNG)) {
+                auto scaledbitmap = make_unique<wxBitmap>();
+                ScaleBitmap(bitmap, FromDIP(1.0) / dd_icon_res_scale, *scaledbitmap);
+                bitmaps_display.push_back(std::move(scaledbitmap));
+                filenames.Add(filename);
             }
-            f = wxFindNextFile();
+            filename = wxFindNextFile();
         }
     }
 };
