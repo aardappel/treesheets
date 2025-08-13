@@ -972,7 +972,7 @@ struct Document {
                 return nullptr;
             }
 
-            case wxID_HELP: sys->LoadTut(); return nullptr;
+            case wxID_HELP: sys->LoadTutorial(); return nullptr;
 
             case A_HELP_OP_REF: sys->LoadOpRef(); return nullptr;
 
