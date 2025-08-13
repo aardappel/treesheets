@@ -129,8 +129,8 @@ struct TSCanvas : public wxScrolledCanvas {
         #endif
 
         bool unprocessed = false;
-        Status(doc->Key(ce.GetUnicodeKey(), ce.GetKeyCode(), ce.AltDown(), ce.CmdDown(),
-                        ce.ShiftDown(), unprocessed));
+        sys->frame->SetStatus(doc->Key(ce.GetUnicodeKey(), ce.GetKeyCode(), ce.AltDown(),
+                                       ce.CmdDown(), ce.ShiftDown(), unprocessed));
         if (unprocessed) ce.Skip();
     }
 
@@ -142,7 +142,7 @@ struct TSCanvas : public wxScrolledCanvas {
             int steps = mousewheelaccum / me.GetWheelDelta();
             if (!steps) return;
             mousewheelaccum -= steps * me.GetWheelDelta();
-            Status(doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown()));
+            sys->frame->SetStatus(doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown()));
         } else if (me.GetWheelAxis()) {
             CursorScroll(me.GetWheelRotation() * g_scrollratewheel, 0);
         } else {
@@ -174,11 +174,6 @@ struct TSCanvas : public wxScrolledCanvas {
         // EnableScrolling(true, true);
         Scroll(x, y);
         // EnableScrolling(false, false);
-    }
-
-    void Status(const wxChar *message = nullptr) {
-        if (frame->GetStatusBar() && (!message || *message))
-            frame->SetStatusText(message ? message : L"", 0);
     }
 
     DECLARE_EVENT_TABLE()

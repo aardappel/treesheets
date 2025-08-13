@@ -135,7 +135,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetStatusMessage(std::string_view message) {
         auto ws = wxString(message.data(), message.size());
-        sys->frame->GetCurTab()->Status(ws);
+        sys->frame->SetStatus(ws);
     }
 
     void SetWindowSize(int width, int height) { sys->frame->SetSize(width, height); }

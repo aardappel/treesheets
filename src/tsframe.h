@@ -812,7 +812,7 @@ struct TSFrame : wxFrame {
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
         TSCanvas *scrolledwindow = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
-        scrolledwindow->Status();
+        SetStatus();
         sys->TabChange(scrolledwindow->doc);
     }
 
@@ -996,7 +996,7 @@ struct TSFrame : wxFrame {
         }
         auto Check = [&](const wxChar *cfg) {
             sys->cfg->Write(cfg, ce.IsChecked());
-            scrolledwindow->Status(_(L"change will take effect next run of TreeSheets"));
+            SetStatus(_(L"change will take effect next run of TreeSheets"));
         };
         switch (ce.GetId()) {
             case A_NOP: break;
@@ -1083,16 +1083,14 @@ struct TSFrame : wxFrame {
                 break;
             case A_FULLSCREEN:
                 ShowFullScreen(!IsFullScreen());
-                if (IsFullScreen())
-                    scrolledwindow->Status(_(L"Press F11 to exit fullscreen mode."));
+                if (IsFullScreen()) SetStatus(_(L"Press F11 to exit fullscreen mode."));
                 break;
             case wxID_FIND:
                 if (filter) {
                     filter->SetFocus();
                     filter->SetSelection(0, 1000);
                 } else {
-                    scrolledwindow->Status(
-                        _(L"Please enable (Options -> Show Toolbar) to use search."));
+                    SetStatus(_(L"Please enable (Options -> Show Toolbar) to use search."));
                 }
                 break;
             case wxID_REPLACE:
@@ -1100,13 +1098,12 @@ struct TSFrame : wxFrame {
                     replaces->SetFocus();
                     replaces->SetSelection(0, 1000);
                 } else {
-                    scrolledwindow->Status(
-                        _(L"Please enable (Options -> Show Toolbar) to use replace."));
+                    SetStatus(_(L"Please enable (Options -> Show Toolbar) to use replace."));
                 }
                 break;
             #ifdef __WXMAC__
                 case wxID_OSX_HIDE: Iconize(true); break;
-                case wxID_OSX_HIDEOTHERS: scrolledwindow->Status(L"NOT IMPLEMENTED"); break;
+                case wxID_OSX_HIDEOTHERS: SetStatus(L"NOT IMPLEMENTED"); break;
                 case wxID_OSX_SHOWALL: Iconize(false); break;
                 case wxID_ABOUT: scrolledwindow->doc->Action(wxID_ABOUT); break;
                 case wxID_PREFERENCES: scrolledwindow->doc->Action(wxID_SELECT_FONT); break;
@@ -1121,16 +1118,16 @@ struct TSFrame : wxFrame {
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
-                    scrolledwindow->Status(sys->Open(f));
+                    SetStatus(sys->Open(f));
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
-                    scrolledwindow->Status(scrolledwindow->doc->TagSet(ce.GetId() - A_TAGSET));
+                    SetStatus(scrolledwindow->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
                     auto message =
                         tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
                     message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
-                    scrolledwindow->Status(wxString(message));
+                    SetStatus(wxString(message));
                 } else {
-                    scrolledwindow->Status(scrolledwindow->doc->Action(ce.GetId()));
+                    SetStatus(scrolledwindow->doc->Action(ce.GetId()));
                     break;
                 }
         }
@@ -1196,6 +1193,10 @@ struct TSFrame : wxFrame {
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
         if (TSCanvas *scrolledwindow = GetCurTab()) UpdateStatus(scrolledwindow->doc->selected);
+    }
+
+    void SetStatus(const wxChar *message = nullptr) {
+        if (GetStatusBar() && (!message || *message)) SetStatusText(message ? message : L"", 0);
     }
 
     void UpdateStatus(const Selection &s) {
@@ -1374,12 +1375,12 @@ struct TSFrame : wxFrame {
                 auto message = sys->LoadDB(doc->filename, true);
                 assert(message);
                 if (*message) {
-                    GetCurTab()->Status(message);
+                    SetStatus(message);
                 } else {
                     loop(j, notebook->GetPageCount()) if (((TSCanvas *)notebook->GetPage(j))->doc ==
                                                           doc) notebook->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
-                    GetCurTab()->Status(
+                    SetStatus(
                         _(L"File has been re-loaded because of modifications of another program / computer"));
                 }
                 return;
