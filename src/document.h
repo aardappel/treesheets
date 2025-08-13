@@ -689,8 +689,8 @@ struct Document {
         return keep;
     }
 
-    const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *msg, int k) {
-        auto fn = ::wxFileSelector(msg, L"", L"", fmt, pat,
+    const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *message, int k) {
+        auto fn = ::wxFileSelector(message, L"", L"", fmt, pat,
                                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (fn.empty()) return _(L"Export cancelled.");
         return ExportFile(fn, k, true);
@@ -920,9 +920,9 @@ struct Document {
                 wxArrayString filenames;
                 GetFilesFromUser(filenames, sys->frame, _(L"Please select file(s) to import:"),
                                  _(L"*.*"));
-                const wxChar *msg = nullptr;
-                for (auto &fn : filenames) msg = sys->Import(fn, k);
-                return msg;
+                const wxChar *message = nullptr;
+                for (auto &fn : filenames) message = sys->Import(fn, k);
+                return message;
             }
 
             case wxID_OPEN: {
@@ -930,9 +930,9 @@ struct Document {
                 GetFilesFromUser(filenames, sys->frame,
                                  _(L"Please select TreeSheets file(s) to load:"),
                                  _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"));
-                const wxChar *msg = nullptr;
-                for (auto &fn : filenames) msg = sys->Open(fn);
-                return msg;
+                const wxChar *message = nullptr;
+                for (auto &fn : filenames) message = sys->Open(fn);
+                return message;
             }
 
             case wxID_CLOSE: {
@@ -1110,9 +1110,9 @@ struct Document {
                 sys->searchstring = (sys->casesensitivesearch)
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
-                auto msg = SearchNext(false, false, false);
+                auto message = SearchNext(false, false, false);
                 sw->Refresh();
-                return msg;
+                return message;
             }
 
             case A_ROUND0:
