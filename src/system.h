@@ -461,8 +461,8 @@ struct System {
         }
 
         vector<wxXmlNode *> nodes;
-        vector<wxXmlAttribute *> ps;
-        auto numrows = GetXMLNodes(node, nodes, &ps, attributestoo);
+        vector<wxXmlAttribute *> attributes;
+        auto numrows = GetXMLNodes(node, nodes, &attributes, attributestoo);
         if (!numrows) return;
 
         if (nodes.size() == 1 && (!c->text.t.Len() || nodes[0]->IsWhitespaceOnly()) &&
@@ -491,8 +491,9 @@ struct System {
             } else {
                 c->AddGrid(1, numrows);
                 SetGridSettingsFromXML(c, node);
-                loopv(i, ps) c->grid->C(0, i)->text.t = ps[i]->GetValue();
-                loopv(i, nodes) FillXML(c->grid->C(0, i + ps.size()), nodes[i], attributestoo);
+                loopv(i, attributes) c->grid->C(0, i)->text.t = attributes[i]->GetValue();
+                loopv(i, nodes)
+                    FillXML(c->grid->C(0, i + attributes.size()), nodes[i], attributestoo);
             }
         }
     }
