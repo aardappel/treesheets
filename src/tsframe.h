@@ -2,7 +2,7 @@ struct TSFrame : wxFrame {
     wxString exepath_;
     TSApp *app;
     wxIcon icon;
-    wxTaskBarIcon tbi;
+    wxTaskBarIcon taskbaricon;
     wxMenu *editmenupopup;
     wxFileHistory filehistory;
     wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
@@ -139,10 +139,10 @@ struct TSFrame : wxFrame {
         imagepath = GetDataPath("images/nuvola/dropdown/");
 
         if (sys->singletray)
-            tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
+            taskbaricon.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
                         wxTaskBarIconEventHandler(TSFrame::OnTBIDBLClick), nullptr, this);
         else
-            tbi.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
+            taskbaricon.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
                         wxTaskBarIconEventHandler(TSFrame::OnTBIDBLClick), nullptr, this);
 
         bool showtbar, showsbar, lefttabs;
@@ -1234,7 +1234,7 @@ struct TSFrame : wxFrame {
         if (me.IsIconized()) {
             #ifndef __WXMAC__
             if (sys->totray) {
-                tbi.SetIcon(icon, L"TreeSheets");
+                taskbaricon.SetIcon(icon, L"TreeSheets");
                 Show(false);
                 Iconize();
             }
@@ -1256,7 +1256,7 @@ struct TSFrame : wxFrame {
         }
         Show(true);
         Iconize(false);
-        tbi.RemoveIcon();
+        taskbaricon.RemoveIcon();
     }
 
     void OnTBIDBLClick(wxTaskBarIconEvent &e) { DeIconize(); }
