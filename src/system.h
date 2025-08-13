@@ -394,10 +394,10 @@ struct System {
                 case A_IMPTXTC:
                 case A_IMPTXTS:
                 case A_IMPTXTT: {
-                    wxFFile f(fn);
-                    if (!f.IsOpened()) goto problem;
+                    wxFFile file(fn);
+                    if (!file.IsOpened()) goto problem;
                     wxString s;
-                    if (!f.ReadAll(&s)) goto problem;
+                    if (!file.ReadAll(&s)) goto problem;
                     const auto &lines = wxStringTokenize(s, LINE_SEPERATOR);
 
                     if (lines.size()) switch (k) {
