@@ -402,8 +402,8 @@ struct System {
 
                     if (as.size()) switch (k) {
                             case A_IMPTXTI: {
-                                Cell *r = InitDB(1);
-                                FillRows(r->grid, as, CountCol(as[0]), 0, 0);
+                                Cell *root = InitDB(1);
+                                FillRows(root->grid, as, CountCol(as[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
                                 InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
