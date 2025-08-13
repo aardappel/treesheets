@@ -142,9 +142,9 @@ struct TSApp : wxApp {
         return 0;
     }
 
-    void MacOpenFiles(const auto &fns) {
+    void MacOpenFiles(const auto &filenames) {
         if (!sys) return;
-        for (auto &fn : fns) { sys->Open(fn); }
+        for (auto &fn : filenames) { sys->Open(fn); }
     }
 
     DECLARE_EVENT_TABLE()

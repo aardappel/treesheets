@@ -230,9 +230,9 @@ static uint64_t CalculateHash(vector<uint8_t> &data) {
     return FNV1A64(data.data(), min(data.size(), max));
 }
 
-static void GetFilesFromUser(wxArrayString &fns, wxWindow *w, const wxChar *title,
+static void GetFilesFromUser(wxArrayString &filenames, wxWindow *w, const wxChar *title,
                              const wxChar *filter) {
     wxFileDialog fd(w, title, L"", L"", filter,
                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
-    if (fd.ShowModal() == wxID_OK) fd.GetPaths(fns);
+    if (fd.ShowModal() == wxID_OK) fd.GetPaths(filenames);
 }
