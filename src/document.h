@@ -152,13 +152,13 @@ struct Document {
             if (!istempfile && sys->makebaks && ::wxFileExists(filename)) {
                 ::wxRenameFile(filename, sys->BakName(filename));
             }
-            auto sfn = istempfile ? sys->TmpName(filename) : filename;
-            wxFFileOutputStream fos(sfn);
+            auto savefilename = istempfile ? sys->TmpName(filename) : filename;
+            wxFFileOutputStream fos(savefilename);
             if (!fos.IsOk()) {
                 if (!istempfile)
                     wxMessageBox(
                         _(L"Error writing TreeSheets file! (try saving under new filename)."),
-                        sfn.wx_str(), wxOK, sys->frame);
+                        savefilename.wx_str(), wxOK, sys->frame);
                 return _(L"Error writing to file.");
             }
 
@@ -690,10 +690,10 @@ struct Document {
     }
 
     const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *message, int k) {
-        auto fn = ::wxFileSelector(message, L"", L"", fmt, pat,
-                                   wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
-        if (fn.empty()) return _(L"Export cancelled.");
-        return ExportFile(fn, k, true);
+        auto filename = ::wxFileSelector(message, L"", L"", fmt, pat,
+                                         wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
+        if (filename.empty()) return _(L"Export cancelled.");
+        return ExportFile(filename, k, true);
     }
 
     wxBitmap GetBitmap() {
@@ -718,16 +718,16 @@ struct Document {
         root->ImageRefCount(includefolded);
     }
 
-    const wxChar *ExportFile(const wxString &fn, int k, bool currentview) {
+    const wxChar *ExportFile(const wxString &filename, int k, bool currentview) {
         Cell *exportroot = currentview ? curdrawroot : root;
         if (k == A_EXPIMAGE) {
             auto bitmap = GetBitmap();
             scrolledwindow->Refresh();
-            if (!bitmap.SaveFile(fn, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
+            if (!bitmap.SaveFile(filename, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
         } else {
-            wxFFileOutputStream fos(fn, L"w+b");
+            wxFFileOutputStream fos(filename, L"w+b");
             if (!fos.IsOk()) {
-                wxMessageBox(_(L"Error exporting file!"), fn.wx_str(), wxOK, sys->frame);
+                wxMessageBox(_(L"Error exporting file!"), filename.wx_str(), wxOK, sys->frame);
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
@@ -754,7 +754,7 @@ struct Document {
                         L" padding: 3px; vertical-align: top; }\n"
                         L"li { }\n</style>\n"
                         L"<title>export of TreeSheets file ");
-                    dos.WriteString(filename);
+                    dos.WriteString(this->filename);
                     dos.WriteString(
                         L"</title>\n<meta charset=\"UTF-8\" />\n"
                         L"</head>\n<body>\n");
@@ -921,7 +921,7 @@ struct Document {
                 GetFilesFromUser(filenames, sys->frame, _(L"Please select file(s) to import:"),
                                  _(L"*.*"));
                 const wxChar *message = nullptr;
-                for (auto &fn : filenames) message = sys->Import(fn, k);
+                for (auto &filename : filenames) message = sys->Import(filename, k);
                 return message;
             }
 
@@ -931,7 +931,7 @@ struct Document {
                                  _(L"Please select TreeSheets file(s) to load:"),
                                  _(L"TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"));
                 const wxChar *message = nullptr;
-                for (auto &fn : filenames) message = sys->Open(fn);
+                for (auto &filename : filenames) message = sys->Open(filename);
                 return message;
             }
 
@@ -1501,11 +1501,11 @@ struct Document {
 
             case A_IMAGE: {
                 if (!(c = selected.ThinExpand(this))) return OneCell();
-                auto fn =
+                auto filename =
                     ::wxFileSelector(_(L"Please select an image file:"), L"", L"", L"", L"*.*",
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 c->AddUndo(this);
-                LoadImageIntoCell(fn, c, sys->frame->FromDIP(1.0));
+                LoadImageIntoCell(filename, c, sys->frame->FromDIP(1.0));
                 scrolledwindow->Refresh();
                 return nullptr;
             }
@@ -2162,20 +2162,20 @@ struct Document {
         c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(data), 'I')].get();
     }
 
-    bool LoadImageIntoCell(const wxString &fn, Cell *c, double sc) {
-        if (fn.empty()) return false;
-        wxImage im;
-        if (!im.LoadFile(fn)) return false;
-        auto data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-        SetImageBM(c, std::move(data), sc);
+    bool LoadImageIntoCell(const wxString &filename, Cell *c, double scale) {
+        if (filename.empty()) return false;
+        wxImage image;
+        if (!image.LoadFile(filename)) return false;
+        auto buffer = ConvertWxImageToBuffer(image, wxBITMAP_TYPE_PNG);
+        SetImageBM(c, std::move(buffer), scale);
         c->Reset();
         return true;
     }
 
-    void ImageChange(wxString &fn, double sc) {
+    void ImageChange(wxString &filename, double scale) {
         if (!selected.g) return;
         selected.g->cell->AddUndo(this);
-        loopallcellssel(c, false) LoadImageIntoCell(fn, c, sc);
+        loopallcellssel(c, false) LoadImageIntoCell(filename, c, scale);
         scrolledwindow->Refresh();
     }
 
