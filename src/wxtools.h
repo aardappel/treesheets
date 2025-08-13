@@ -12,9 +12,9 @@ struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data) {};
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
-        auto sw = sys->frame->GetCurTab();
-        sw->RefreshHover(x, y);
-        return sw->doc->hover.g ? wxDragCopy : wxDragNone;
+        auto scrolledwindow = sys->frame->GetCurTab();
+        scrolledwindow->RefreshHover(x, y);
+        return scrolledwindow->doc->hover.g ? wxDragCopy : wxDragNone;
     }
 
     bool OnDrop(wxCoord x, wxCoord y) { return sys->frame->GetCurTab()->doc->hover.g != nullptr; }
@@ -23,7 +23,7 @@ struct DropTarget : wxDropTarget {
         Document *doc = sys->frame->GetCurTab()->doc;
         doc->paintselectclick = true;
         doc->paintdrop = true;
-        doc->sw->RefreshHover(x, y);
+        doc->scrolledwindow->RefreshHover(x, y);
         return wxDragCopy;
     }
 };

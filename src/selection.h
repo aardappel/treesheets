@@ -44,7 +44,7 @@ class Selection {
         ::SetCursor((HCURSOR)c.GetHCURSOR());
         #endif
         // this doesn't change the cursor immediately, only on mousemove:
-        doc->sw->SetCursor(c);
+        doc->scrolledwindow->SetCursor(c);
 
         firstdx = firstdy = 0;
     }
@@ -362,7 +362,7 @@ class Selection {
         delete old;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
-        doc->sw->Refresh();
+        doc->scrolledwindow->Refresh();
         return nullptr;
     }
 

@@ -46,7 +46,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void RefreshHover(int mx, int my) {
         doc->mx = mx;
         doc->my = my;
-        doc->sw->Refresh();
+        doc->scrolledwindow->Refresh();
     }
 
     void OnMotion(wxMouseEvent &me) {
@@ -76,7 +76,7 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnLeftDown(wxMouseEvent &me) {
         #ifndef __WXMSW__
-        // seems to not want to give the sw focus otherwise (thinks its already in focus
+        // seems to not want to give the scrolledwindow focus otherwise (thinks its already in focus
         // when its not?)
         if (frame->filter) frame->filter->SetFocus();
         #endif

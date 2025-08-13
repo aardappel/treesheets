@@ -100,7 +100,7 @@ struct System {
 
     void TabChange(Document *newdoc) {
         // SetSelect(hover = Selection());
-        newdoc->sw->SetFocus();
+        newdoc->scrolledwindow->SetFocus();
         newdoc->UpdateFileName();
     }
 
@@ -285,7 +285,7 @@ struct System {
 
                         auto end_loading_time = wxGetLocalTimeMillis();
 
-                        doc->sw->Status(
+                        doc->scrolledwindow->Status(
                             wxString::Format(
                                 _(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
                                 filename.c_str(), numcells, textbytes,
