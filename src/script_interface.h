@@ -30,7 +30,7 @@ struct ScriptInterface {
     virtual void SetBorderColor(uint32_t col) = 0;
     virtual void SetRelativeSize(int s) = 0;
     virtual void SetStyle(int s) = 0;
-    virtual void SetStatusMessage(std::string_view msg) = 0;
+    virtual void SetStatusMessage(std::string_view message) = 0;
     virtual void SetWindowSize(int width, int height) = 0;
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
     virtual std::string GetFileName() = 0;

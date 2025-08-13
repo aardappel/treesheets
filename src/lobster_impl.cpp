@@ -153,7 +153,7 @@ nfr("set_style_bits", "s", "I", "",
         return NoVal();
     });
 
-nfr("set_status_message", "msg", "S", "", "sets the status message in TreeSheets.",
+nfr("set_status_message", "message", "S", "", "sets the status message in TreeSheets.",
     [](StackPtr &, VM &, Value s) {
         si->SetStatusMessage(s.sval()->strv());
         return NoVal();

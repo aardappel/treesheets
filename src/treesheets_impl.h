@@ -38,8 +38,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     bool LoadDocument(const char *filename) {
-        auto msg = sys->LoadDB(filename);
-        if (*msg) return false;
+        auto message = sys->LoadDB(filename);
+        if (*message) return false;
 
         SwitchToCurrentDoc();
         return true;
@@ -133,8 +133,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         cur->text.stylebits = s;
     }
 
-    void SetStatusMessage(std::string_view msg) {
-        auto ws = wxString(msg.data(), msg.size());
+    void SetStatusMessage(std::string_view message) {
+        auto ws = wxString(message.data(), message.size());
         sys->frame->GetCurTab()->Status(ws);
     }
 

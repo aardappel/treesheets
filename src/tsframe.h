@@ -85,13 +85,13 @@ struct TSFrame : wxFrame {
         #endif
 
         class MyLog : public wxLog {
-            void DoLogString(const wxChar *msg, time_t timestamp) { DoLogText(*msg); }
-            void DoLogText(const wxString &msg) {
+            void DoLogString(const wxChar *message, time_t timestamp) { DoLogText(*message); }
+            void DoLogText(const wxString &message) {
                 #ifdef WIN32
-                OutputDebugString(msg.c_str());
+                OutputDebugString(message.c_str());
                 OutputDebugString(L"\n");
                 #else
-                fputws(msg.c_str(), stderr);
+                fputws(message.c_str(), stderr);
                 fputws(L"\n", stderr);
                 #endif
             }
@@ -1117,10 +1117,10 @@ struct TSFrame : wxFrame {
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                    auto msg =
+                    auto message =
                         tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
-                    msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
-                    sw->Status(wxString(msg));
+                    message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
+                    sw->Status(wxString(message));
                 } else {
                     sw->Status(sw->doc->Action(ce.GetId()));
                     break;
@@ -1354,19 +1354,19 @@ struct TSFrame : wxFrame {
                     // version on another computer.
                     // for now, we leave this code active, and guard it with
                     // watcherwaitingforuser
-                    auto msg = wxString::Format(
+                    auto message = wxString::Format(
                         _(L"%s\nhas been modified on disk by another program / computer:\nWould you like to discard your changes and re-load from disk?"),
                         doc->filename);
                     watcherwaitingforuser = true;
-                    int res = wxMessageBox(msg, _(L"File modification conflict!"),
+                    int res = wxMessageBox(message, _(L"File modification conflict!"),
                                            wxYES_NO | wxICON_QUESTION, this);
                     watcherwaitingforuser = false;
                     if (res != wxYES) return;
                 }
-                auto msg = sys->LoadDB(doc->filename, true);
-                assert(msg);
-                if (*msg) {
-                    GetCurTab()->Status(msg);
+                auto message = sys->LoadDB(doc->filename, true);
+                assert(message);
+                if (*message) {
+                    GetCurTab()->Status(message);
                 } else {
                     loop(j, notebook->GetPageCount()) if (((TSCanvas *)notebook->GetPage(j))->doc ==
                                                           doc) notebook->DeletePage(j);
