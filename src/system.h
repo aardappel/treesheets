@@ -398,21 +398,21 @@ struct System {
                     if (!f.IsOpened()) goto problem;
                     wxString s;
                     if (!f.ReadAll(&s)) goto problem;
-                    const auto &as = wxStringTokenize(s, LINE_SEPERATOR);
+                    const auto &lines = wxStringTokenize(s, LINE_SEPERATOR);
 
-                    if (as.size()) switch (k) {
+                    if (lines.size()) switch (k) {
                             case A_IMPTXTI: {
                                 Cell *root = InitDB(1);
-                                FillRows(root->grid, as, CountCol(as[0]), 0, 0);
+                                FillRows(root->grid, lines, CountCol(lines[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L',');
+                                InitDB(1, (int)lines.size())->grid->CSVImport(lines, L',');
                                 break;
                             case A_IMPTXTS:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L';');
+                                InitDB(1, (int)lines.size())->grid->CSVImport(lines, L';');
                                 break;
                             case A_IMPTXTT:
-                                InitDB(1, (int)as.size())->grid->CSVImport(as, L'\t');
+                                InitDB(1, (int)lines.size())->grid->CSVImport(lines, L'\t');
                                 break;
                         }
                     break;
