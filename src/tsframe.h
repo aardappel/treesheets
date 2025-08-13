@@ -14,7 +14,7 @@ struct TSFrame : wxFrame {
     wxBitmap foldicon;
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
-    wxToolBar *tb {nullptr};
+    wxToolBar *toolbar {nullptr};
     wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
     wxTextCtrl *replaces {nullptr};
@@ -848,20 +848,20 @@ struct TSFrame : wxFrame {
     }
 
     void ConstructToolBar() {
-        tb = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
-        tb->SetOwnBackgroundColour(toolbgcol);
+        toolbar = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
+        toolbar->SetOwnBackgroundColour(toolbgcol);
 
         #ifdef __WXMAC__
         #define SEPARATOR
         #else
-        #define SEPARATOR tb->AddSeparator()
+        #define SEPARATOR toolbar->AddSeparator()
         #endif
 
         auto iconpath = GetDataPath(L"images/material/toolbar/");
 
         auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
                              wxString darkicon) {
-            tb->AddTool(
+            toolbar->AddTool(
                 action, name,
                 wxBitmapBundle::FromSVGFile(
                     iconpath + (wxSystemSettings::GetAppearance().IsDark() ? darkicon : lighticon),
@@ -889,42 +889,42 @@ struct TSFrame : wxFrame {
         AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
         SEPARATOR;
         AddTBIcon(_(L"Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
-        tb->AddSeparator();
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Search ")));
-        tb->AddControl(filter = new wxTextCtrl(tb, A_SEARCH, "", wxDefaultPosition,
-                                               FromDIP(wxSize(80, 22)),
-                                               wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        toolbar->AddSeparator();
+        toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Search ")));
+        toolbar->AddControl(filter = new wxTextCtrl(toolbar, A_SEARCH, "", wxDefaultPosition,
+                                                    FromDIP(wxSize(80, 22)),
+                                                    wxWANTS_CHARS | wxTE_PROCESS_ENTER));
         AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg", L"cancel_dark.svg");
         AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath, L"search.svg",
                   L"search_dark.svg");
         SEPARATOR;
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Replace ")));
-        tb->AddControl(replaces = new wxTextCtrl(tb, A_REPLACE, "", wxDefaultPosition,
-                                                 FromDIP(wxSize(80, 22)),
-                                                 wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Replace ")));
+        toolbar->AddControl(replaces = new wxTextCtrl(toolbar, A_REPLACE, "", wxDefaultPosition,
+                                                      FromDIP(wxSize(80, 22)),
+                                                      wxWANTS_CHARS | wxTE_PROCESS_ENTER));
         AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath, L"cancel.svg", L"cancel_dark.svg");
         AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath, L"replace.svg",
                   L"replace_dark.svg");
         AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
                   L"replaceall_dark.svg");
-        tb->AddSeparator();
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Cell ")));
-        celldd = new ColorDropdown(tb, A_CELLCOLOR, 1);
-        tb->AddControl(celldd);
+        toolbar->AddSeparator();
+        toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Cell ")));
+        celldd = new ColorDropdown(toolbar, A_CELLCOLOR, 1);
+        toolbar->AddControl(celldd);
         SEPARATOR;
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Text ")));
-        textdd = new ColorDropdown(tb, A_TEXTCOLOR, 2);
-        tb->AddControl(textdd);
+        toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Text ")));
+        textdd = new ColorDropdown(toolbar, A_TEXTCOLOR, 2);
+        toolbar->AddControl(textdd);
         SEPARATOR;
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Border ")));
-        borddd = new ColorDropdown(tb, A_BORDCOLOR, 7);
-        tb->AddControl(borddd);
-        tb->AddSeparator();
-        tb->AddControl(new wxStaticText(tb, wxID_ANY, _(L"Image ")));
-        idd = new ImageDropdown(tb, imagepath);
-        tb->AddControl(idd);
-        tb->Realize();
-        tb->Show(sys->showtoolbar);
+        toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Border ")));
+        borddd = new ColorDropdown(toolbar, A_BORDCOLOR, 7);
+        toolbar->AddControl(borddd);
+        toolbar->AddSeparator();
+        toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Image ")));
+        idd = new ImageDropdown(toolbar, imagepath);
+        toolbar->AddControl(idd);
+        toolbar->Realize();
+        toolbar->Show(sys->showtoolbar);
     }
 
     void OnMenu(wxCommandEvent &ce) {
@@ -1225,7 +1225,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        if (tb) DELETEP(tb);
+        if (toolbar) DELETEP(toolbar);
         ConstructToolBar();
         se.Skip();
     }
