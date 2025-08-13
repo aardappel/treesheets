@@ -785,17 +785,17 @@ struct TSFrame : wxFrame {
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
-        TSCanvas *sw = new TSCanvas(this, notebook);
-        sw->doc = doc;
-        doc->sw = sw;
-        sw->SetScrollRate(1, 1);
+        TSCanvas *scrolledwindow = new TSCanvas(this, notebook);
+        scrolledwindow->doc = doc;
+        doc->scrolledwindow = scrolledwindow;
+        scrolledwindow->SetScrollRate(1, 1);
         if (append)
-            notebook->AddPage(sw, _(L"<unnamed>"), true, wxNullBitmap);
+            notebook->AddPage(scrolledwindow, _(L"<unnamed>"), true, wxNullBitmap);
         else
-            notebook->InsertPage(0, sw, _(L"<unnamed>"), true, wxNullBitmap);
-        sw->SetDropTarget(new DropTarget(doc->dndobjc));
-        sw->SetFocus();
-        return sw;
+            notebook->InsertPage(0, scrolledwindow, _(L"<unnamed>"), true, wxNullBitmap);
+        scrolledwindow->SetDropTarget(new DropTarget(doc->dndobjc));
+        scrolledwindow->SetFocus();
+        return scrolledwindow;
     }
 
     TSCanvas *GetCurTab() { return notebook ? (TSCanvas *)notebook->GetCurrentPage() : nullptr; }
@@ -811,9 +811,9 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        TSCanvas *sw = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
-        sw->Status();
-        sys->TabChange(sw->doc);
+        TSCanvas *scrolledwindow = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
+        scrolledwindow->Status();
+        sys->TabChange(scrolledwindow->doc);
     }
 
     void TabsReset() {
@@ -824,11 +824,11 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        TSCanvas *sw = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
+        TSCanvas *scrolledwindow = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
         if (notebook->GetPageCount() <= 1) {
             nbe.Veto();
             Close();
-        } else if (sw->doc->CloseDocument()) {
+        } else if (scrolledwindow->doc->CloseDocument()) {
             nbe.Veto();
         }
     }
@@ -929,7 +929,7 @@ struct TSFrame : wxFrame {
 
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
-        auto sw = GetCurTab();
+        auto scrolledwindow = GetCurTab();
         if (((tc = filter) && filter == wxWindow::FindFocus()) ||
             ((tc = replaces) && replaces == wxWindow::FindFocus())) {
             long from, to;
@@ -976,32 +976,35 @@ struct TSFrame : wxFrame {
                         // OnSearchEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
                         if (sys->searchstring.IsEmpty()) {
-                            sw->SetFocus();
+                            scrolledwindow->SetFocus();
                         } else {
-                            sw->doc->Action(A_SEARCHNEXT);
+                            scrolledwindow->doc->Action(A_SEARCHNEXT);
                         }
                     } else if (tc == replaces) {
                         // OnReplaceEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
-                        sw->doc->Action(A_REPLACEONCEJ);
+                        scrolledwindow->doc->Action(A_REPLACEONCEJ);
                     }
                     return;
                 }
                 #endif
-                case A_CANCELEDIT: tc->Clear(); sw->SetFocus(); return;
+                case A_CANCELEDIT:
+                    tc->Clear();
+                    scrolledwindow->SetFocus();
+                    return;
             }
         }
         auto Check = [&](const wxChar *cfg) {
             sys->cfg->Write(cfg, ce.IsChecked());
-            sw->Status(_(L"change will take effect next run of TreeSheets"));
+            scrolledwindow->Status(_(L"change will take effect next run of TreeSheets"));
         };
         switch (ce.GetId()) {
             case A_NOP: break;
 
-            case A_ALEFT: sw->CursorScroll(-g_scrollratecursor, 0); break;
-            case A_ARIGHT: sw->CursorScroll(g_scrollratecursor, 0); break;
-            case A_AUP: sw->CursorScroll(0, -g_scrollratecursor); break;
-            case A_ADOWN: sw->CursorScroll(0, g_scrollratecursor); break;
+            case A_ALEFT: scrolledwindow->CursorScroll(-g_scrollratecursor, 0); break;
+            case A_ARIGHT: scrolledwindow->CursorScroll(g_scrollratecursor, 0); break;
+            case A_AUP: scrolledwindow->CursorScroll(0, -g_scrollratecursor); break;
+            case A_ADOWN: scrolledwindow->CursorScroll(0, g_scrollratecursor); break;
 
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
@@ -1080,14 +1083,16 @@ struct TSFrame : wxFrame {
                 break;
             case A_FULLSCREEN:
                 ShowFullScreen(!IsFullScreen());
-                if (IsFullScreen()) sw->Status(_(L"Press F11 to exit fullscreen mode."));
+                if (IsFullScreen())
+                    scrolledwindow->Status(_(L"Press F11 to exit fullscreen mode."));
                 break;
             case wxID_FIND:
                 if (filter) {
                     filter->SetFocus();
                     filter->SetSelection(0, 1000);
                 } else {
-                    sw->Status(_(L"Please enable (Options -> Show Toolbar) to use search."));
+                    scrolledwindow->Status(
+                        _(L"Please enable (Options -> Show Toolbar) to use search."));
                 }
                 break;
             case wxID_REPLACE:
@@ -1095,34 +1100,37 @@ struct TSFrame : wxFrame {
                     replaces->SetFocus();
                     replaces->SetSelection(0, 1000);
                 } else {
-                    sw->Status(_(L"Please enable (Options -> Show Toolbar) to use replace."));
+                    scrolledwindow->Status(
+                        _(L"Please enable (Options -> Show Toolbar) to use replace."));
                 }
                 break;
             #ifdef __WXMAC__
                 case wxID_OSX_HIDE: Iconize(true); break;
-                case wxID_OSX_HIDEOTHERS: sw->Status(L"NOT IMPLEMENTED"); break;
+                case wxID_OSX_HIDEOTHERS: scrolledwindow->Status(L"NOT IMPLEMENTED"); break;
                 case wxID_OSX_SHOWALL: Iconize(false); break;
-                case wxID_ABOUT: sw->doc->Action(wxID_ABOUT); break;
-                case wxID_PREFERENCES: sw->doc->Action(wxID_SELECT_FONT); break;
+                case wxID_ABOUT: scrolledwindow->doc->Action(wxID_ABOUT); break;
+                case wxID_PREFERENCES: scrolledwindow->doc->Action(wxID_SELECT_FONT); break;
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
                 Close();
                 break;
-            case wxID_CLOSE: sw->doc->Action(ce.GetId()); break;  // sw dangling pointer on return
+            case wxID_CLOSE:
+                scrolledwindow->doc->Action(ce.GetId());
+                break;  // scrolledwindow dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
-                    sw->Status(sys->Open(f));
+                    scrolledwindow->Status(sys->Open(f));
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
-                    sw->Status(sw->doc->TagSet(ce.GetId() - A_TAGSET));
+                    scrolledwindow->Status(scrolledwindow->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
                     auto message =
                         tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
                     message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
-                    sw->Status(wxString(message));
+                    scrolledwindow->Status(wxString(message));
                 } else {
-                    sw->Status(sw->doc->Action(ce.GetId()));
+                    scrolledwindow->Status(scrolledwindow->doc->Action(ce.GetId()));
                     break;
                 }
         }
@@ -1132,25 +1140,25 @@ struct TSFrame : wxFrame {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
-        TSCanvas *sw = GetCurTab();
-        Document *doc = sw->doc;
+        TSCanvas *scrolledwindow = GetCurTab();
+        Document *doc = scrolledwindow->doc;
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
         }
-        sw->Refresh();
+        scrolledwindow->Refresh();
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        auto sw = GetCurTab();
+        auto scrolledwindow = GetCurTab();
         if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty())
-            sw->SetFocus();
+            scrolledwindow->SetFocus();
         else
-            sw->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
+            scrolledwindow->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
     }
 
     void ReFocus() {
-        if (TSCanvas *sw = GetCurTab()) sw->SetFocus();
+        if (TSCanvas *scrolledwindow = GetCurTab()) scrolledwindow->SetFocus();
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
@@ -1187,7 +1195,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
-        if (TSCanvas *sw = GetCurTab()) UpdateStatus(sw->doc->selected);
+        if (TSCanvas *scrolledwindow = GetCurTab()) UpdateStatus(scrolledwindow->doc->selected);
     }
 
     void UpdateStatus(const Selection &s) {

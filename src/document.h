@@ -8,7 +8,7 @@ struct UndoItem {
 };
 
 struct Document {
-    TSCanvas *sw {nullptr};
+    TSCanvas *scrolledwindow {nullptr};
     Cell *root {nullptr};
     Selection hover;
     Selection selected;
@@ -210,10 +210,10 @@ struct Document {
         UpdateFileName(page);
         if (success) *success = true;
 
-        sw->Status(wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."),
-                                    filename.c_str(),
-                                    (int)((end_saving_time - start_saving_time).GetValue()))
-                       .c_str());
+        scrolledwindow->Status(
+            wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."), filename.c_str(),
+                             (int)((end_saving_time - start_saving_time).GetValue()))
+                .c_str());
 
         return _(L"");
     }
@@ -226,12 +226,12 @@ struct Document {
 
     void RefreshMove() {
         paintscrolltoselection = true;
-        sw->Refresh();
+        scrolledwindow->Refresh();
     }
 
     void UpdateHover(wxDC &dc) {
         int x, y;
-        sw->CalcUnscrolledPosition(mx, my, &x, &y);
+        scrolledwindow->CalcUnscrolledPosition(mx, my, &x, &y);
         Selection prev = hover;
         hover = Selection();
         auto drawroot = WalkPath(drawpath);
@@ -245,15 +245,15 @@ struct Document {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
             int canvasw, canvash;
-            sw->GetClientSize(&canvasw, &canvash);
+            scrolledwindow->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && sel.g) {
                 wxRect r = sel.g->GetRect(this, sel);
                 if (r.y < scrolly || r.y + r.height > maxy || r.x < scrollx || r.x + r.width > maxx) {
-                    sw->Scroll(r.width > canvasw || r.x < scrollx ? r.x
-                               : r.x + r.width > maxx             ? r.x + r.width - canvasw
+                    scrolledwindow->Scroll(r.width > canvasw || r.x < scrollx ? r.x
+                                           : r.x + r.width > maxx ? r.x + r.width - canvasw
                                                                   : scrollx,
-                               r.height > canvash || r.y < scrolly ? r.y
-                               : r.y + r.height > maxy             ? r.y + r.height - canvash
+                                           r.height > canvash || r.y < scrolly ? r.y
+                                           : r.y + r.height > maxy ? r.y + r.height - canvash
                                                                    : scrolly);
                 }
             }
@@ -353,7 +353,7 @@ struct Document {
                         dragdata.Add(htmlobj);
                     }
                 }
-                wxDropSource dragsource(dragdata, sw);
+                wxDropSource dragsource(dragdata, scrolledwindow);
                 dragsource.DoDragDrop(true);
                 break;
             }
@@ -517,7 +517,7 @@ struct Document {
         dc.SetBackground(wxBrush(wxColor(Background())));
         dc.Clear();
         if (!root) return;
-        sw->GetClientSize(&maxx, &maxy);
+        scrolledwindow->GetClientSize(&maxx, &maxy);
         Layout(dc);
         double xscale = maxx / (double)layoutxs;
         double yscale = maxy / (double)layoutys;
@@ -528,15 +528,15 @@ struct Document {
             currentviewscale = 1;
         if (scaledviewingmode && currentviewscale > 1) {
             dc.SetUserScale(currentviewscale, currentviewscale);
-            sw->SetVirtualSize(maxx, maxy);
+            scrolledwindow->SetVirtualSize(maxx, maxy);
             maxx /= currentviewscale;
             maxy /= currentviewscale;
             scrollx = scrolly = 0;
         } else {
             currentviewscale = 1;
             dc.SetUserScale(1, 1);
-            sw->SetVirtualSize(layoutxs, layoutys);
-            sw->GetViewStart(&scrollx, &scrolly);
+            scrolledwindow->SetVirtualSize(layoutxs, layoutys);
+            scrolledwindow->GetViewStart(&scrollx, &scrolly);
             maxx += scrollx;
             maxy += scrolly;
         }
@@ -602,9 +602,9 @@ struct Document {
         }
         Render(dc);
         DrawSelect(dc, selected);
-        wxQueueEvent(sw->frame, new wxCommandEvent(UPDATE_STATUSBAR_REQUEST));
+        wxQueueEvent(scrolledwindow->frame, new wxCommandEvent(UPDATE_STATUSBAR_REQUEST));
         if (paintscrolltoselection) {
-            wxQueueEvent(sw, new wxCommandEvent(SCROLLTOSELECTION_REQUEST));
+            wxQueueEvent(scrolledwindow, new wxCommandEvent(SCROLLTOSELECTION_REQUEST));
             paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
@@ -656,7 +656,7 @@ struct Document {
     void ClearSelectionRefresh() {
         selected.g = nullptr;
         begindrag.g = nullptr;
-        sw->Refresh();
+        scrolledwindow->Refresh();
     }
 
     bool CheckForChanges() {
@@ -722,7 +722,7 @@ struct Document {
         Cell *exportroot = currentview ? curdrawroot : root;
         if (k == A_EXPIMAGE) {
             auto bitmap = GetBitmap();
-            sw->Refresh();
+            scrolledwindow->Refresh();
             if (!bitmap.SaveFile(fn, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
         } else {
             wxFFileOutputStream fos(fn, L"w+b");
@@ -798,8 +798,8 @@ struct Document {
                                   // trigger from there?
                     return Action(A_CANCELEDIT);
                 #ifdef WIN32  // works fine on Linux, not sure OS X
-                    case WXK_PAGEDOWN: sw->CursorScroll(0, g_scrollratecursor); return nullptr;
-                    case WXK_PAGEUP: sw->CursorScroll(0, -g_scrollratecursor); return nullptr;
+                    case WXK_PAGEDOWN: scrolledwindow->CursorScroll(0, g_scrollratecursor); return nullptr;
+                    case WXK_PAGEUP: scrolledwindow->CursorScroll(0, -g_scrollratecursor); return nullptr;
                 #endif
                 #ifdef __WXGTK__
                 // Due to limitations within GTK, wxGTK does not support specific keycodes 
@@ -842,12 +842,12 @@ struct Document {
                     case WXK_PAGEUP:
                         if (ctrl) return Action(alt ? A_INCWIDTHNH : A_ZOOMIN);
                         if (shift) return Action(A_INCSIZE);
-                        if (!alt) sw->CursorScroll(0, -g_scrollratecursor);
+                        if (!alt) scrolledwindow->CursorScroll(0, -g_scrollratecursor);
                         return nullptr;
                     case WXK_PAGEDOWN:
                         if (ctrl) return Action(alt ? A_DECWIDTHNH : A_ZOOMOUT);
                         if (shift) return Action(A_DECSIZE);
-                        if (!alt) sw->CursorScroll(0, g_scrollratecursor);
+                        if (!alt) scrolledwindow->CursorScroll(0, g_scrollratecursor);
                         return nullptr;
                 #endif
             }
@@ -1023,7 +1023,7 @@ struct Document {
                     }
                     // root->ResetChildren();
                     sys->frame->TabsReset();  // ResetChildren on all
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 return nullptr;
             }
@@ -1077,7 +1077,7 @@ struct Document {
                         if (c->cellcolor == oldbg && (!c->parent || c->parent->cellcolor == color))
                             c->cellcolor = color;
                     }
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 return nullptr;
             }
@@ -1085,7 +1085,7 @@ struct Document {
             case A_DEFCURCOL: {
                 if (auto color = PickColor(sys->frame, sys->cursorcolor); color != (uint)-1) {
                     sys->cfg->Write(L"cursorcolor", sys->cursorcolor = color);
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 return nullptr;
             }
@@ -1111,7 +1111,7 @@ struct Document {
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
                 auto message = SearchNext(false, false, false);
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return message;
             }
 
@@ -1123,7 +1123,7 @@ struct Document {
             case A_ROUND5:
             case A_ROUND6:
                 sys->cfg->Write(L"roundness", long(sys->roundness = k - A_ROUND0));
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_OPENCELLCOLOR:
@@ -1150,7 +1150,7 @@ struct Document {
                     root->AddUndo(this);  // expensive?
                     root->FindReplaceAll(replaces, lreplaces);
                     root->ResetChildren();
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 } else {
                     loopallcellssel(c, true) if (c->text.IsInSearch()) c->AddUndo(this);
                     selected.g->ReplaceStr(this, replaces, lreplaces, selected);
@@ -1161,20 +1161,20 @@ struct Document {
 
             case A_CLEARREPLACE: {
                 sys->frame->replaces->Clear();
-                sw->SetFocus();
+                scrolledwindow->SetFocus();
                 return nullptr;
             }
 
             case A_CLEARSEARCH: {
                 sys->frame->filter->Clear();
-                sw->SetFocus();
+                scrolledwindow->SetFocus();
                 return nullptr;
             }
 
             case A_SCALED:
                 scaledviewingmode = !scaledviewingmode;
                 root->ResetChildren();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return scaledviewingmode ? _(L"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal.")
                                          : _(L"1:1 scale restored.");
 
@@ -1253,7 +1253,7 @@ struct Document {
                     if (selected.cursorend == 0) return nullptr;
                     c->AddUndo(this);
                     c->text.Backspace(selected);
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 } else {
                     selected.g->MultiCellDelete(this, selected);
                     SetSelect(selected);
@@ -1273,7 +1273,7 @@ struct Document {
                     if (selected.cursor == c->text.t.Len()) return nullptr;
                     c->AddUndo(this);
                     c->text.Delete(selected);
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 } else {
                     selected.g->MultiCellDelete(this, selected);
                     SetSelect(selected);
@@ -1286,7 +1286,7 @@ struct Document {
                     if (selected.cursor == c->text.t.Len()) return nullptr;
                     c->AddUndo(this);
                     c->text.DeleteWord(selected);
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 ZoomOutIfNoGrid();
                 return nullptr;
@@ -1309,7 +1309,7 @@ struct Document {
                         c->AddUndo(this);
                         c->text.Backspace(selected);
                     }
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 ZoomOutIfNoGrid();
                 return nullptr;
@@ -1340,13 +1340,13 @@ struct Document {
                 selected.g->MultiCellDeleteSub(this, deletesel);
                 SetSelect(Selection(selected.g, selected.x, selected.y, 1, 1));
                 fc->ResetLayout();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
             case wxID_SELECTALL:
                 selected.SelAll();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_UP:
@@ -1369,12 +1369,12 @@ struct Document {
                 if (!selected.TextEdit() && k == A_SCLEFT) {
                     selected.xs = selected.Thin() ? selected.x : selected.x + 1;
                     selected.x = 0;
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                     return nullptr;
                 }
                 if (!selected.TextEdit() && k == A_SCRIGHT) {
                     selected.xs = selected.g->xs - selected.x;
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                     return nullptr;
                 }
                 selected.Cursor(this, k - A_SCUP + A_UP, true, true);
@@ -1385,11 +1385,11 @@ struct Document {
                 if (!selected.TextEdit() && k == A_SCUP) {
                     selected.ys = selected.Thin() ? selected.y : selected.y + 1;
                     selected.y = 0;
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 if (!selected.TextEdit() && k == A_SCDOWN) {
                     selected.ys = selected.g->ys - selected.y;
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 return nullptr;
 
@@ -1422,7 +1422,7 @@ struct Document {
                 loopallcellssel(c, false) {
                     c->celltype =
                         (newcelltype == CT_CODE) ? sys->ev.InferCellType(c->text) : newcelltype;
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 return nullptr;
             }
@@ -1468,10 +1468,10 @@ struct Document {
                         PasteOrDrop(tdo);
                     }
                     wxTheClipboard->Close();
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 } else if (sys->cellclipboard) {
                     c->Paste(this, sys->cellclipboard.get(), selected);
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 }
                 return nullptr;
 
@@ -1480,7 +1480,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 selected.g->SetStyles(selected, sys->cellclipboard.get());
                 selected.g->cell->ResetChildren();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_ENTERCELL:
@@ -1506,7 +1506,7 @@ struct Document {
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 c->AddUndo(this);
                 LoadImageIntoCell(fn, c, sys->frame->FromDIP(1.0));
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
@@ -1514,7 +1514,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 selected.g->ClearImages(selected);
                 selected.g->cell->ResetChildren();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
@@ -1524,13 +1524,13 @@ struct Document {
             case A_SCOLS:
                 selected.y = 0;
                 selected.ys = selected.g->ys;
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_SROWS:
                 selected.x = 0;
                 selected.xs = selected.g->xs;
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_BORD0:
@@ -1542,7 +1542,7 @@ struct Document {
                 selected.g->cell->AddUndo(this);
                 selected.g->SetBorder(k - A_BORD0 + 1, selected);
                 selected.g->cell->ResetChildren();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_TEXTGRID: return layrender(-1, true, true);
@@ -1589,7 +1589,7 @@ struct Document {
                         break;
                 }
                 selected.g->cell->ResetChildren();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_MINISIZE: {
@@ -1606,7 +1606,7 @@ struct Document {
                 }
                 outer.clear();
                 selected.g->cell->ResetChildren();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
@@ -1618,7 +1618,7 @@ struct Document {
                     c->grid->folded = k == A_FOLD ? !c->grid->folded : k == A_FOLDALL;
                     c->ResetChildren();
                 }
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_HOME:
@@ -1659,7 +1659,7 @@ struct Document {
                 }
                 curdrawroot->ResetChildren();
                 curdrawroot->ResetLayout();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
@@ -1669,7 +1669,7 @@ struct Document {
                 }
                 curdrawroot->ResetChildren();
                 curdrawroot->ResetLayout();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
@@ -1761,13 +1761,13 @@ struct Document {
                     if (!c->text.t.Len()) continue;
                     tags[c->text.t] = g_tagcolor_default;
                 }
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
             case A_TAGREMOVE: {
                 loopallcellssel(c, false) tags.erase(c->text.t);
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
         }
@@ -1781,7 +1781,7 @@ struct Document {
                         ac->grid->Transpose();
                         ac->ResetChildren();
                         SetSelect(ac->parent ? ac->parent->grid->FindCell(ac) : Selection());
-                        sw->Refresh();
+                        scrolledwindow->Refresh();
                         return nullptr;
                     } else
                         return NoGrid();
@@ -1858,14 +1858,14 @@ struct Document {
                 SetSelect(pp->grid->HierarchySwap(c->text.t));
                 pp->ResetChildren();
                 pp->ResetLayout();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
 
             case A_FILTERBYCELLBG:
                 loopallcells(ci) ci->text.filtered = ci->cellcolor != c->cellcolor;
                 root->ResetChildren();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
 
             case A_FILTERMATCHNEXT:
@@ -1873,7 +1873,7 @@ struct Document {
                 Cell *next = root->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
                 if (!next) return _(L"No matches for filter.");
                 if (next->parent) SetSelect(next->parent->grid->FindCell(next));
-                sw->SetFocus();
+                scrolledwindow->SetFocus();
                 ScrollOrZoom(true);
                 return nullptr;
         }
@@ -1885,7 +1885,7 @@ struct Document {
                 if (LastUndoSameCellTextEdit(c))
                     Undo(undolist, redolist);
                 else
-                    sw->Refresh();
+                    scrolledwindow->Refresh();
                 selected.ExitEdit(this);
                 return nullptr;
 
@@ -1893,7 +1893,7 @@ struct Document {
                 if (selected.cursorend == 0) return nullptr;
                 c->AddUndo(this);
                 c->text.BackspaceWord(selected);
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 ZoomOutIfNoGrid();
                 return nullptr;
 
@@ -1930,7 +1930,7 @@ struct Document {
         if (!next) return _(L"No matches for search.");
         if (!jump) return nullptr;
         SetSelect(next->parent->grid->FindCell(next));
-        if (focusmatch) sw->SetFocus();
+        if (focusmatch) scrolledwindow->SetFocus();
         ScrollOrZoom(true);
         return nullptr;
     }
@@ -1942,7 +1942,7 @@ struct Document {
         if (ds >= 0 && selected.IsAll()) selected.g->cell->drawstyle = ds;
         selected.g->SetGridTextLayout(ds, v, noset, selected);
         selected.g->cell->ResetChildren();
-        sw->Refresh();
+        scrolledwindow->Refresh();
         return nullptr;
     }
 
@@ -1960,7 +1960,7 @@ struct Document {
             const wxArrayString &as = fdo.GetFilenames();
             if (!as.size()) return;
             if (as.size() > 1) {
-                sw->Status(_(L"Cannot drag & drop more than 1 file."));
+                scrolledwindow->Status(_(L"Cannot drag & drop more than 1 file."));
                 return;
             }
             wxString fpath = as[0];
@@ -1975,7 +1975,7 @@ struct Document {
                           L"What would you like to do?"),
                         _(L"Open TreeSheets file"), _(L"Paste file path"), _(L"Cancel"));
                     switch (tcd.Run()) {
-                        case 0: sw->Status(sys->LoadDB(fpath));
+                        case 0: scrolledwindow->Status(sys->LoadDB(fpath));
                         case 2: return;
                         default:
                         case 1:;
@@ -2031,7 +2031,7 @@ struct Document {
                 L"Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
         selected.g->cell->AddUndo(this);
         selected.g->Sort(selected, descending);
-        sw->Refresh();
+        scrolledwindow->Refresh();
         return nullptr;
     }
 
@@ -2044,7 +2044,7 @@ struct Document {
                 selected.g->DeleteCells(dx, dy, nxs, nys);
                 v -= dec;
             }
-            sw->Refresh();
+            scrolledwindow->Refresh();
         }
     }
 
@@ -2143,7 +2143,7 @@ struct Document {
         if (selected.g)
             ScrollOrZoom();
         else
-            sw->Refresh();
+            scrolledwindow->Refresh();
         UpdateFileName();
     }
 
@@ -2176,7 +2176,7 @@ struct Document {
         if (!selected.g) return;
         selected.g->cell->AddUndo(this);
         loopallcellssel(c, false) LoadImageIntoCell(fn, c, sc);
-        sw->Refresh();
+        scrolledwindow->Refresh();
     }
 
     void RecreateTagMenu(wxMenu &menu) {
@@ -2198,7 +2198,7 @@ struct Document {
                 }
                 selected.g->cell->ResetChildren();
                 selected.g->cell->ResetLayout();
-                sw->Refresh();
+                scrolledwindow->Refresh();
                 return nullptr;
             }
         ASSERT(0);
@@ -2226,7 +2226,7 @@ struct Document {
         });
         loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
         root->ResetChildren();
-        sw->Refresh();
+        scrolledwindow->Refresh();
     }
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
@@ -2237,7 +2237,7 @@ struct Document {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }
         root->ResetChildren();
-        sw->Refresh();
+        scrolledwindow->Refresh();
     }
 
     wxDateTime ParseDateTimeString(const wxString &s) {
@@ -2252,6 +2252,6 @@ struct Document {
         paintscrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         root->ResetChildren();
-        sw->Refresh();
+        scrolledwindow->Refresh();
     }
 };
