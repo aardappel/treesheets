@@ -441,68 +441,68 @@ struct System {
         return nodes.size() + (ps ? ps->size() : 0);
     }
 
-    void FillXML(Cell *c, wxXmlNode *n, bool attributestoo) {
-        const auto &as = wxStringTokenize(n->GetType() == wxXML_ELEMENT_NODE ? n->GetNodeContent()
-                                                                             : n->GetContent());
+    void FillXML(Cell *c, wxXmlNode *node, bool attributestoo) {
+        const auto &as = wxStringTokenize(
+            node->GetType() == wxXML_ELEMENT_NODE ? node->GetNodeContent() : node->GetContent());
         loop(i, as.GetCount()) {
             if (c->text.t.Len()) c->text.t.Append(L' ');
             c->text.t.Append(as[i]);
         }
 
-        if (n->GetName() == L"cell") {
-            c->text.relsize = -wxAtoi(n->GetAttribute(L"relsize", L"0"));
-            c->text.stylebits = wxAtoi(n->GetAttribute(L"stylebits", L"0"));
+        if (node->GetName() == L"cell") {
+            c->text.relsize = -wxAtoi(node->GetAttribute(L"relsize", L"0"));
+            c->text.stylebits = wxAtoi(node->GetAttribute(L"stylebits", L"0"));
             c->cellcolor =
-                std::stoi(n->GetAttribute(L"colorbg", L"0xFFFFFF").ToStdString(), nullptr, 0);
+                std::stoi(node->GetAttribute(L"colorbg", L"0xFFFFFF").ToStdString(), nullptr, 0);
             c->textcolor =
-                std::stoi(n->GetAttribute(L"colorfg", L"0x000000").ToStdString(), nullptr, 0);
-            c->celltype = wxAtoi(n->GetAttribute(L"type", L"0"));
+                std::stoi(node->GetAttribute(L"colorfg", L"0x000000").ToStdString(), nullptr, 0);
+            c->celltype = wxAtoi(node->GetAttribute(L"type", L"0"));
         }
 
-        vector<wxXmlNode *> ns;
+        vector<wxXmlNode *> nodes;
         vector<wxXmlAttribute *> ps;
-        auto numrows = GetXMLNodes(n, ns, &ps, attributestoo);
+        auto numrows = GetXMLNodes(node, nodes, &ps, attributestoo);
         if (!numrows) return;
 
-        if (ns.size() == 1 && (!c->text.t.Len() || ns[0]->IsWhitespaceOnly()) &&
-            ns[0]->GetName() != L"row") {
-            FillXML(c, ns[0], attributestoo);
+        if (nodes.size() == 1 && (!c->text.t.Len() || nodes[0]->IsWhitespaceOnly()) &&
+            nodes[0]->GetName() != L"row") {
+            FillXML(c, nodes[0], attributestoo);
         } else {
-            auto allrow = n->GetName() == L"grid";
-            for (auto n : ns)
-                if (n->GetName() != L"row") {
+            auto allrow = node->GetName() == L"grid";
+            for (auto node : nodes)
+                if (node->GetName() != L"row") {
                     allrow = false;
                     break;
                 }
             if (allrow) {
                 int desiredxs;
-                loopv(i, ns) {
+                loopv(i, nodes) {
                     vector<wxXmlNode *> ins;
-                    auto xs = GetXMLNodes(ns[i], ins);
+                    auto xs = GetXMLNodes(nodes[i], ins);
                     if (!i) {
                         desiredxs = xs ? xs : 1;
-                        c->AddGrid(desiredxs, ns.size());
-                        SetGridSettingsFromXML(c, n);
+                        c->AddGrid(desiredxs, nodes.size());
+                        SetGridSettingsFromXML(c, node);
                     }
                     loop(j, desiredxs) if (ins.size() > j)
                         FillXML(c->grid->C(j, i), ins[j], attributestoo);
                 }
             } else {
                 c->AddGrid(1, numrows);
-                SetGridSettingsFromXML(c, n);
+                SetGridSettingsFromXML(c, node);
                 loopv(i, ps) c->grid->C(0, i)->text.t = ps[i]->GetValue();
-                loopv(i, ns) FillXML(c->grid->C(0, i + ps.size()), ns[i], attributestoo);
+                loopv(i, nodes) FillXML(c->grid->C(0, i + ps.size()), nodes[i], attributestoo);
             }
         }
     }
 
-    void SetGridSettingsFromXML(Cell *c, wxXmlNode *n) {
-        c->grid->folded = wxAtoi(n->GetAttribute(L"folded", L"0"));
+    void SetGridSettingsFromXML(Cell *c, wxXmlNode *node) {
+        c->grid->folded = wxAtoi(node->GetAttribute(L"folded", L"0"));
         c->grid->bordercolor = std::stoi(
-            n->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default).ToStdString(),
+            node->GetAttribute(L"bordercolor", wxString() << g_bordercolor_default).ToStdString(),
             nullptr, 0);
-        c->grid->user_grid_outer_spacing =
-            wxAtoi(n->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
+        c->grid->user_grid_outer_spacing = wxAtoi(
+            node->GetAttribute(L"outerspacing", wxString() << g_usergridouterspacing_default));
     }
 
     int CountCol(const auto &s) {
