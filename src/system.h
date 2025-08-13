@@ -371,14 +371,14 @@ struct System {
         }
     }
 
-    const wxChar *Import(const wxString &fn, int k) {
-        if (!fn.empty()) {
+    const wxChar *Import(const wxString &filename, int k) {
+        if (!filename.empty()) {
             wxBusyCursor wait;
             switch (k) {
                 case A_IMPXML:
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
-                    if (!doc.Load(fn)) goto problem;
+                    if (!doc.Load(filename)) goto problem;
                     Cell *&r = InitDB(1);
                     Cell *c = *r->grid->cells;
                     FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
@@ -394,7 +394,7 @@ struct System {
                 case A_IMPTXTC:
                 case A_IMPTXTS:
                 case A_IMPTXTT: {
-                    wxFFile file(fn);
+                    wxFFile file(filename);
                     if (!file.IsOpened()) goto problem;
                     wxString s;
                     if (!file.ReadAll(&s)) goto problem;
@@ -425,7 +425,7 @@ struct System {
         }
         return nullptr;
     problem:
-        wxMessageBox(_(L"couldn't import file!"), fn, wxOK, frame);
+        wxMessageBox(_(L"couldn't import file!"), filename, wxOK, frame);
         return _(L"File load error.");
     }
 
