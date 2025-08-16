@@ -1130,7 +1130,7 @@ struct Document {
                 if (sys->frame->cellcolordropdown) sys->frame->cellcolordropdown->ShowPopup();
                 break;
             case A_OPENTEXTCOLOR:
-                if (sys->frame->textdd) sys->frame->textdd->ShowPopup();
+                if (sys->frame->textcolordropdown) sys->frame->textcolordropdown->ShowPopup();
                 break;
             case A_OPENBORDCOLOR:
                 if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
