@@ -1133,7 +1133,7 @@ struct Document {
                 if (sys->frame->textcolordropdown) sys->frame->textcolordropdown->ShowPopup();
                 break;
             case A_OPENBORDCOLOR:
-                if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
+                if (sys->frame->bordercolordropdown) sys->frame->bordercolordropdown->ShowPopup();
                 break;
             case A_OPENIMGDROPDOWN:
                 if (sys->frame->imagedropdown) sys->frame->imagedropdown->ShowPopup();

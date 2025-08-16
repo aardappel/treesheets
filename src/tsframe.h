@@ -20,7 +20,7 @@ struct TSFrame : wxFrame {
     wxTextCtrl *replaces {nullptr};
     ColorDropdown *cellcolordropdown {nullptr};
     ColorDropdown *textcolordropdown {nullptr};
-    ColorDropdown *borddd {nullptr};
+    ColorDropdown *bordercolordropdown {nullptr};
     ImageDropdown *imagedropdown {nullptr};
     wxString imagepath;
     int refreshhack {0};
@@ -920,8 +920,8 @@ struct TSFrame : wxFrame {
         toolbar->AddControl(textcolordropdown);
         SEPARATOR;
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Border ")));
-        borddd = new ColorDropdown(toolbar, A_BORDCOLOR, 7);
-        toolbar->AddControl(borddd);
+        bordercolordropdown = new ColorDropdown(toolbar, A_BORDCOLOR, 7);
+        toolbar->AddControl(bordercolordropdown);
         toolbar->AddSeparator();
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Image ")));
         imagedropdown = new ImageDropdown(toolbar, imagepath);
