@@ -18,7 +18,7 @@ struct TSFrame : wxFrame {
     wxColour toolbgcol {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
     wxTextCtrl *replaces {nullptr};
-    ColorDropdown *celldd {nullptr};
+    ColorDropdown *cellcolordropdown {nullptr};
     ColorDropdown *textdd {nullptr};
     ColorDropdown *borddd {nullptr};
     ImageDropdown *imagedropdown {nullptr};
@@ -912,8 +912,8 @@ struct TSFrame : wxFrame {
                   L"replaceall_dark.svg");
         toolbar->AddSeparator();
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Cell ")));
-        celldd = new ColorDropdown(toolbar, A_CELLCOLOR, 1);
-        toolbar->AddControl(celldd);
+        cellcolordropdown = new ColorDropdown(toolbar, A_CELLCOLOR, 1);
+        toolbar->AddControl(cellcolordropdown);
         SEPARATOR;
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Text ")));
         textdd = new ColorDropdown(toolbar, A_TEXTCOLOR, 2);
