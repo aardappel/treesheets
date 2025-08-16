@@ -15,7 +15,7 @@ struct TSFrame : wxFrame {
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
     wxToolBar *toolbar {nullptr};
-    wxColour toolbgcol {0xD8C7BC};
+    wxColour toolbarbackgroundcolor {0xD8C7BC};
     wxTextCtrl *filter {nullptr};
     wxTextCtrl *replaces {nullptr};
     ColorDropdown *cellcolordropdown {nullptr};
@@ -852,7 +852,7 @@ struct TSFrame : wxFrame {
 
     void ConstructToolBar() {
         toolbar = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
-        toolbar->SetOwnBackgroundColour(toolbgcol);
+        toolbar->SetOwnBackgroundColour(toolbarbackgroundcolor);
 
         #ifdef __WXMAC__
         #define SEPARATOR
