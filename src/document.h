@@ -1127,13 +1127,13 @@ struct Document {
                 return nullptr;
 
             case A_OPENCELLCOLOR:
-                if (sys->frame->celldd) sys->frame->celldd->ShowPopup();
+                if (sys->frame->cellcolordropdown) sys->frame->cellcolordropdown->ShowPopup();
                 break;
             case A_OPENTEXTCOLOR:
-                if (sys->frame->textdd) sys->frame->textdd->ShowPopup();
+                if (sys->frame->textcolordropdown) sys->frame->textcolordropdown->ShowPopup();
                 break;
             case A_OPENBORDCOLOR:
-                if (sys->frame->borddd) sys->frame->borddd->ShowPopup();
+                if (sys->frame->bordercolordropdown) sys->frame->bordercolordropdown->ShowPopup();
                 break;
             case A_OPENIMGDROPDOWN:
                 if (sys->frame->imagedropdown) sys->frame->imagedropdown->ShowPopup();
