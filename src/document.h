@@ -2011,14 +2011,14 @@ struct Document {
         }
     }
 
-    void PasteOrDrop(const wxBitmapDataObject &bdo) {
-        if (bdo.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
-            Cell *c = selected.ThinExpand(this);
-            c->AddUndo(this);
-            auto im = bdo.GetBitmap().ConvertToImage();
-            vector<uint8_t> data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-            SetImageBM(c, std::move(data), sys->frame->FromDIP(1.0));
-            c->Reset();
+    void PasteOrDrop(const wxBitmapDataObject &bitmapdataobject) {
+        if (bitmapdataobject.GetBitmap().GetRefData() != wxNullBitmap.GetRefData()) {
+            Cell *cell = selected.ThinExpand(this);
+            cell->AddUndo(this);
+            auto image = bitmapdataobject.GetBitmap().ConvertToImage();
+            vector<uint8_t> buffer = ConvertWxImageToBuffer(image, wxBITMAP_TYPE_PNG);
+            SetImageBM(cell, std::move(buffer), sys->frame->FromDIP(1.0));
+            cell->Reset();
         }
     }
 
