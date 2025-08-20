@@ -1129,8 +1129,8 @@ struct TSFrame : wxFrame {
                 break;  // scrolledwindow dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
-                    wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
-                    SetStatus(sys->Open(f));
+                    wxString filename(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
+                    SetStatus(sys->Open(filename));
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     SetStatus(scrolledwindow->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
