@@ -1332,10 +1332,10 @@ struct TSFrame : wxFrame {
     }
 
     #ifdef WIN32
-    void SetRegKey(const wxChar *key, wxString val) {
-        wxRegKey rk(key);
-        rk.Create();
-        rk.SetValue(L"", val);
+    void SetRegKey(const wxChar *key, wxString value) {
+        wxRegKey registrykey(key);
+        registrykey.Create();
+        registrykey.SetValue(L"", value);
     }
     #endif
 
