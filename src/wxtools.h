@@ -201,18 +201,18 @@ static void ScaleBitmap(const wxBitmap &source, double scale, wxBitmap &destinat
         source.GetWidth() * scale, source.GetHeight() * scale, wxIMAGE_QUALITY_HIGH));
 }
 
-static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &image, wxBitmapType bmt) {
-    wxMemoryOutputStream mos(NULL, 0);
-    image.SaveFile(mos, bmt);
-    auto size = mos.TellO();
+static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &image, wxBitmapType bitmaptype) {
+    wxMemoryOutputStream imageoutputstream(NULL, 0);
+    image.SaveFile(imageoutputstream, bitmaptype);
+    auto size = imageoutputstream.TellO();
     vector<uint8_t> buffer(size);
-    mos.CopyTo(buffer.data(), size);
+    imageoutputstream.CopyTo(buffer.data(), size);
     return buffer;
 }
 
-static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buffer, wxBitmapType bmt) {
-    wxMemoryInputStream mis(buffer.data(), buffer.size());
-    wxImage image(mis, bmt);
+static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buffer, wxBitmapType bitmaptype) {
+    wxMemoryInputStream imageinputstream(buffer.data(), buffer.size());
+    wxImage image(imageinputstream, bitmaptype);
     if (!image.IsOk()) {
         int size = 32;
         image.Create(size, size, false);
