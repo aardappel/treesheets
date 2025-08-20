@@ -140,8 +140,8 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
     }
 };
 
-static uint PickColor(wxFrame *frame, uint defaultcolor) {
-    auto color = wxGetColourFromUser(frame, wxColour(defaultcolor));
+static uint PickColor(wxWindow *parent, uint defaultcolor) {
+    auto color = wxGetColourFromUser(parent, wxColour(defaultcolor));
     if (color.IsOk()) return (color.Blue() << 16) + (color.Green() << 8) + color.Red();
     return -1;
 }
@@ -201,18 +201,18 @@ static void ScaleBitmap(const wxBitmap &source, double scale, wxBitmap &destinat
         source.GetWidth() * scale, source.GetHeight() * scale, wxIMAGE_QUALITY_HIGH));
 }
 
-static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &image, wxBitmapType bmt) {
-    wxMemoryOutputStream mos(NULL, 0);
-    image.SaveFile(mos, bmt);
-    auto size = mos.TellO();
+static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &image, wxBitmapType bitmaptype) {
+    wxMemoryOutputStream imageoutputstream(NULL, 0);
+    image.SaveFile(imageoutputstream, bitmaptype);
+    auto size = imageoutputstream.TellO();
     vector<uint8_t> buffer(size);
-    mos.CopyTo(buffer.data(), size);
+    imageoutputstream.CopyTo(buffer.data(), size);
     return buffer;
 }
 
-static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buffer, wxBitmapType bmt) {
-    wxMemoryInputStream mis(buffer.data(), buffer.size());
-    wxImage image(mis, bmt);
+static wxImage ConvertBufferToWxImage(const vector<uint8_t> &buffer, wxBitmapType bitmaptype) {
+    wxMemoryInputStream imageinputstream(buffer.data(), buffer.size());
+    wxImage image(imageinputstream, bitmaptype);
     if (!image.IsOk()) {
         int size = 32;
         image.Create(size, size, false);
@@ -228,9 +228,9 @@ static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buffer, wxBitmapT
     return bitmap;
 }
 
-static uint64_t CalculateHash(vector<uint8_t> &data) {
+static uint64_t CalculateHash(vector<uint8_t> &buffer) {
     int max = 4096;
-    return FNV1A64(data.data(), min(data.size(), max));
+    return FNV1A64(buffer.data(), min(buffer.size(), max));
 }
 
 static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const wxChar *title,
