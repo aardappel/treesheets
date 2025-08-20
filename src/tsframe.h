@@ -862,8 +862,8 @@ struct TSFrame : wxFrame {
 
         auto iconpath = GetDataPath(L"images/material/toolbar/");
 
-        auto AddTBIcon = [&](const wxChar *name, int action, wxString iconpath, wxString lighticon,
-                             wxString darkicon) {
+        auto AddToolbarIcon = [&](const wxChar *name, int action, wxString iconpath,
+                                  wxString lighticon, wxString darkicon) {
             toolbar->AddTool(
                 action, name,
                 wxBitmapBundle::FromSVGFile(
@@ -872,44 +872,50 @@ struct TSFrame : wxFrame {
                 name, wxITEM_NORMAL);
         };
 
-        AddTBIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
-        AddTBIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg", L"fileopen_dark.svg");
-        AddTBIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg", L"filesave_dark.svg");
-        AddTBIcon(_(L"Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg",
-                  L"filesaveas_dark.svg");
+        AddToolbarIcon(_(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg", L"filenew_dark.svg");
+        AddToolbarIcon(_(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg",
+                       L"fileopen_dark.svg");
+        AddToolbarIcon(_(L"Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg",
+                       L"filesave_dark.svg");
+        AddToolbarIcon(_(L"Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg",
+                       L"filesaveas_dark.svg");
         SEPARATOR;
-        AddTBIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
-        AddTBIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg", L"editcopy_dark.svg");
-        AddTBIcon(_(L"Paste (CTRL+v)"), wxID_PASTE, iconpath, L"editpaste.svg",
-                  L"editpaste_dark.svg");
+        AddToolbarIcon(_(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg", L"undo_dark.svg");
+        AddToolbarIcon(_(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg",
+                       L"editcopy_dark.svg");
+        AddToolbarIcon(_(L"Paste (CTRL+v)"), wxID_PASTE, iconpath, L"editpaste.svg",
+                       L"editpaste_dark.svg");
         SEPARATOR;
-        AddTBIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, L"zoomin.svg",
-                  L"zoomin_dark.svg");
-        AddTBIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, L"zoomout.svg",
-                  L"zoomout_dark.svg");
+        AddToolbarIcon(_(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, L"zoomin.svg",
+                       L"zoomin_dark.svg");
+        AddToolbarIcon(_(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, L"zoomout.svg",
+                       L"zoomout_dark.svg");
         SEPARATOR;
-        AddTBIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath, L"newgrid.svg", L"newgrid_dark.svg");
-        AddTBIcon(_(L"Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
+        AddToolbarIcon(_(L"New Grid (INS)"), A_NEWGRID, iconpath, L"newgrid.svg",
+                       L"newgrid_dark.svg");
+        AddToolbarIcon(_(L"Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
         SEPARATOR;
-        AddTBIcon(_(L"Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
+        AddToolbarIcon(_(L"Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
         toolbar->AddSeparator();
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Search ")));
         toolbar->AddControl(filter = new wxTextCtrl(toolbar, A_SEARCH, "", wxDefaultPosition,
                                                     FromDIP(wxSize(80, 22)),
                                                     wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddTBIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg", L"cancel_dark.svg");
-        AddTBIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath, L"search.svg",
-                  L"search_dark.svg");
+        AddToolbarIcon(_(L"Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg",
+                       L"cancel_dark.svg");
+        AddToolbarIcon(_(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath, L"search.svg",
+                       L"search_dark.svg");
         SEPARATOR;
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Replace ")));
         toolbar->AddControl(replaces = new wxTextCtrl(toolbar, A_REPLACE, "", wxDefaultPosition,
                                                       FromDIP(wxSize(80, 22)),
                                                       wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddTBIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath, L"cancel.svg", L"cancel_dark.svg");
-        AddTBIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath, L"replace.svg",
-                  L"replace_dark.svg");
-        AddTBIcon(_(L"Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
-                  L"replaceall_dark.svg");
+        AddToolbarIcon(_(L"Clear replace"), A_CLEARREPLACE, iconpath, L"cancel.svg",
+                       L"cancel_dark.svg");
+        AddToolbarIcon(_(L"Replace in selection"), A_REPLACEONCE, iconpath, L"replace.svg",
+                       L"replace_dark.svg");
+        AddToolbarIcon(_(L"Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
+                       L"replaceall_dark.svg");
         toolbar->AddSeparator();
         toolbar->AddControl(new wxStaticText(toolbar, wxID_ANY, _(L"Cell ")));
         cellcolordropdown = new ColorDropdown(toolbar, A_CELLCOLOR, 1);
@@ -1123,8 +1129,8 @@ struct TSFrame : wxFrame {
                 break;  // scrolledwindow dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
-                    wxString f(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
-                    SetStatus(sys->Open(f));
+                    wxString filename(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
+                    SetStatus(sys->Open(filename));
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                     SetStatus(scrolledwindow->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
@@ -1193,8 +1199,8 @@ struct TSFrame : wxFrame {
     }
 
     void SetDPIAwareStatusWidths() {
-        int swidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
-        SetStatusWidths(5, swidths);
+        int statusbarfieldwidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
+        SetStatusWidths(5, statusbarfieldwidths);
     }
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
@@ -1326,21 +1332,21 @@ struct TSFrame : wxFrame {
     }
 
     #ifdef WIN32
-    void SetRegKey(const wxChar *key, wxString val) {
-        wxRegKey rk(key);
-        rk.Create();
-        rk.SetValue(L"", val);
+    void SetRegistryKey(const wxChar *key, wxString value) {
+        wxRegKey registrykey(key);
+        registrykey.Create();
+        registrykey.SetValue(L"", value);
     }
     #endif
 
     void SetFileAssoc(wxString &exename) {
         #ifdef WIN32
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
-                  wxString(L"\"") + exename + L"\" \"%1\"");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
-                  wxString(L"\"") + exename + L"\",0");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
+                       wxString(L"\"") + exename + L"\" \"%1\"");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
+                       wxString(L"\"") + exename + L"\",0");
         #else
         // TODO: do something similar for mac/kde/gnome?
         #endif
