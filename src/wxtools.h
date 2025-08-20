@@ -140,8 +140,8 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
     }
 };
 
-static uint PickColor(wxFrame *parentframe, uint defaultcolor) {
-    auto color = wxGetColourFromUser(parentframe, wxColour(defaultcolor));
+static uint PickColor(wxWindow *parent, uint defaultcolor) {
+    auto color = wxGetColourFromUser(parent, wxColour(defaultcolor));
     if (color.IsOk()) return (color.Blue() << 16) + (color.Green() << 8) + color.Red();
     return -1;
 }
