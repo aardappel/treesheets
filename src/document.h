@@ -1987,27 +1987,25 @@ struct Document {
             PasteSingleText(cell, filename);
     }
 
-    void PasteOrDrop(const wxTextDataObject &tdo) {
-        if (tdo.GetText() != wxEmptyString) {
-            Cell *c = selected.ThinExpand(this);
-            auto s = tdo.GetText();
-            if ((sys->clipboardcopy == s) && sys->cellclipboard) {
-                c->Paste(this, sys->cellclipboard.get(), selected);
+    void PasteOrDrop(const wxTextDataObject &textdataobject) {
+        if (textdataobject.GetText() != wxEmptyString) {
+            Cell *cell = selected.ThinExpand(this);
+            auto text = textdataobject.GetText();
+            if ((sys->clipboardcopy == text) && sys->cellclipboard) {
+                cell->Paste(this, sys->cellclipboard.get(), selected);
             } else {
-                const wxArrayString &as = wxStringTokenize(s, LINE_SEPERATOR);
-                if (as.size()) {
-                    if (as.size() <= 1) {
-                        c->AddUndo(this);
-                        c->ResetLayout();
-                        PasteSingleText(c, as[0]);
-                    } else {
-                        c->parent->AddUndo(this);
-                        c->ResetLayout();
-                        DELETEP(c->grid);
-                        sys->FillRows(c->AddGrid(), as, sys->CountCol(as[0]), 0, 0);
-                        if (!c->HasText())
-                            c->grid->MergeWithParent(c->parent->grid, selected, this);
-                    }
+                const wxArrayString &lines = wxStringTokenize(text, LINE_SEPERATOR);
+                if (lines.size() == 1) {
+                    cell->AddUndo(this);
+                    cell->ResetLayout();
+                    PasteSingleText(cell, lines[0]);
+                } else if (lines.size() > 1) {
+                    cell->parent->AddUndo(this);
+                    cell->ResetLayout();
+                    DELETEP(cell->grid);
+                    sys->FillRows(cell->AddGrid(), lines, sys->CountCol(lines[0]), 0, 0);
+                    if (!cell->HasText())
+                        cell->grid->MergeWithParent(cell->parent->grid, selected, this);
                 }
             }
         }
