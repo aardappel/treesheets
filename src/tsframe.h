@@ -785,17 +785,17 @@ struct TSFrame : wxFrame {
     }
 
     TSCanvas *NewTab(Document *doc, bool append = false) {
-        TSCanvas *scrolledwindow = new TSCanvas(this, notebook);
-        scrolledwindow->doc = doc;
-        doc->scrolledwindow = scrolledwindow;
-        scrolledwindow->SetScrollRate(1, 1);
+        TSCanvas *canvas = new TSCanvas(this, notebook);
+        canvas->doc = doc;
+        doc->canvas = canvas;
+        canvas->SetScrollRate(1, 1);
         if (append)
-            notebook->AddPage(scrolledwindow, _(L"<unnamed>"), true, wxNullBitmap);
+            notebook->AddPage(canvas, _(L"<unnamed>"), true, wxNullBitmap);
         else
-            notebook->InsertPage(0, scrolledwindow, _(L"<unnamed>"), true, wxNullBitmap);
-        scrolledwindow->SetDropTarget(new DropTarget(doc->dndobjc));
-        scrolledwindow->SetFocus();
-        return scrolledwindow;
+            notebook->InsertPage(0, canvas, _(L"<unnamed>"), true, wxNullBitmap);
+        canvas->SetDropTarget(new DropTarget(doc->dndobjc));
+        canvas->SetFocus();
+        return canvas;
     }
 
     TSCanvas *GetCurrentTab() {
@@ -813,9 +813,9 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        TSCanvas *scrolledwindow = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
+        TSCanvas *canvas = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
         SetStatus();
-        sys->TabChange(scrolledwindow->doc);
+        sys->TabChange(canvas->doc);
     }
 
     void TabsReset() {
@@ -826,11 +826,11 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        TSCanvas *scrolledwindow = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
+        TSCanvas *canvas = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
         if (notebook->GetPageCount() <= 1) {
             nbe.Veto();
             Close();
-        } else if (scrolledwindow->doc->CloseDocument()) {
+        } else if (canvas->doc->CloseDocument()) {
             nbe.Veto();
         }
     }
@@ -938,7 +938,7 @@ struct TSFrame : wxFrame {
 
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
-        auto scrolledwindow = GetCurrentTab();
+        auto canvas = GetCurrentTab();
         if (((tc = filter) && filter == wxWindow::FindFocus()) ||
             ((tc = replaces) && replaces == wxWindow::FindFocus())) {
             long from, to;
@@ -985,21 +985,21 @@ struct TSFrame : wxFrame {
                         // OnSearchEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
                         if (sys->searchstring.IsEmpty()) {
-                            scrolledwindow->SetFocus();
+                            canvas->SetFocus();
                         } else {
-                            scrolledwindow->doc->Action(A_SEARCHNEXT);
+                            canvas->doc->Action(A_SEARCHNEXT);
                         }
                     } else if (tc == replaces) {
                         // OnReplaceEnter equivalent implementation for MSW
                         // as EVT_TEXT_ENTER event is not generated.
-                        scrolledwindow->doc->Action(A_REPLACEONCEJ);
+                        canvas->doc->Action(A_REPLACEONCEJ);
                     }
                     return;
                 }
                 #endif
                 case A_CANCELEDIT:
                     tc->Clear();
-                    scrolledwindow->SetFocus();
+                    canvas->SetFocus();
                     return;
             }
         }
@@ -1010,10 +1010,10 @@ struct TSFrame : wxFrame {
         switch (ce.GetId()) {
             case A_NOP: break;
 
-            case A_ALEFT: scrolledwindow->CursorScroll(-g_scrollratecursor, 0); break;
-            case A_ARIGHT: scrolledwindow->CursorScroll(g_scrollratecursor, 0); break;
-            case A_AUP: scrolledwindow->CursorScroll(0, -g_scrollratecursor); break;
-            case A_ADOWN: scrolledwindow->CursorScroll(0, g_scrollratecursor); break;
+            case A_ALEFT: canvas->CursorScroll(-g_scrollratecursor, 0); break;
+            case A_ARIGHT: canvas->CursorScroll(g_scrollratecursor, 0); break;
+            case A_AUP: canvas->CursorScroll(0, -g_scrollratecursor); break;
+            case A_ADOWN: canvas->CursorScroll(0, g_scrollratecursor); break;
 
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
@@ -1117,29 +1117,29 @@ struct TSFrame : wxFrame {
                 case wxID_OSX_HIDE: Iconize(true); break;
                 case wxID_OSX_HIDEOTHERS: SetStatus(L"NOT IMPLEMENTED"); break;
                 case wxID_OSX_SHOWALL: Iconize(false); break;
-                case wxID_ABOUT: scrolledwindow->doc->Action(wxID_ABOUT); break;
-                case wxID_PREFERENCES: scrolledwindow->doc->Action(wxID_SELECT_FONT); break;
+                case wxID_ABOUT: canvas->doc->Action(wxID_ABOUT); break;
+                case wxID_PREFERENCES: canvas->doc->Action(wxID_SELECT_FONT); break;
             #endif
             case wxID_EXIT:
                 fromclosebox = false;
                 Close();
                 break;
             case wxID_CLOSE:
-                scrolledwindow->doc->Action(ce.GetId());
-                break;  // scrolledwindow dangling pointer on return
+                canvas->doc->Action(ce.GetId());
+                break;  // canvas dangling pointer on return
             default:
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString filename(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
                     SetStatus(sys->Open(filename));
                 } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
-                    SetStatus(scrolledwindow->doc->TagSet(ce.GetId() - A_TAGSET));
+                    SetStatus(canvas->doc->TagSet(ce.GetId() - A_TAGSET));
                 } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
                     auto message =
                         tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
                     message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
                     SetStatus(wxString(message));
                 } else {
-                    SetStatus(scrolledwindow->doc->Action(ce.GetId()));
+                    SetStatus(canvas->doc->Action(ce.GetId()));
                     break;
                 }
         }
@@ -1149,25 +1149,25 @@ struct TSFrame : wxFrame {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
-        TSCanvas *scrolledwindow = GetCurrentTab();
-        Document *doc = scrolledwindow->doc;
+        TSCanvas *canvas = GetCurrentTab();
+        Document *doc = canvas->doc;
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
         }
-        scrolledwindow->Refresh();
+        canvas->Refresh();
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        auto scrolledwindow = GetCurrentTab();
+        auto canvas = GetCurrentTab();
         if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty())
-            scrolledwindow->SetFocus();
+            canvas->SetFocus();
         else
-            scrolledwindow->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
+            canvas->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
     }
 
     void ReFocus() {
-        if (TSCanvas *scrolledwindow = GetCurrentTab()) scrolledwindow->SetFocus();
+        if (TSCanvas *canvas = GetCurrentTab()) canvas->SetFocus();
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
@@ -1204,7 +1204,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
-        if (TSCanvas *scrolledwindow = GetCurrentTab()) UpdateStatus(scrolledwindow->doc->selected);
+        if (TSCanvas *canvas = GetCurrentTab()) UpdateStatus(canvas->doc->selected);
     }
 
     void SetStatus(const wxChar *message = nullptr) {

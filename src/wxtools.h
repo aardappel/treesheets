@@ -12,9 +12,9 @@ struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data) {};
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
-        auto scrolledwindow = sys->frame->GetCurrentTab();
-        scrolledwindow->RefreshHover(x, y);
-        return scrolledwindow->doc->hover.g ? wxDragCopy : wxDragNone;
+        auto canvas = sys->frame->GetCurrentTab();
+        canvas->RefreshHover(x, y);
+        return canvas->doc->hover.g ? wxDragCopy : wxDragNone;
     }
 
     bool OnDrop(wxCoord x, wxCoord y) {
@@ -25,7 +25,7 @@ struct DropTarget : wxDropTarget {
         Document *doc = sys->frame->GetCurrentTab()->doc;
         doc->paintselectclick = true;
         doc->paintdrop = true;
-        doc->scrolledwindow->RefreshHover(x, y);
+        doc->canvas->RefreshHover(x, y);
         return wxDragCopy;
     }
 };

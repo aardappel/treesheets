@@ -100,7 +100,7 @@ struct System {
 
     void TabChange(Document *newdoc) {
         // SetSelect(hover = Selection());
-        newdoc->scrolledwindow->SetFocus();
+        newdoc->canvas->SetFocus();
         newdoc->UpdateFileName();
     }
 
