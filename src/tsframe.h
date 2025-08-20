@@ -1332,7 +1332,7 @@ struct TSFrame : wxFrame {
     }
 
     #ifdef WIN32
-    void SetRegKey(const wxChar *key, wxString value) {
+    void SetRegistryKey(const wxChar *key, wxString value) {
         wxRegKey registrykey(key);
         registrykey.Create();
         registrykey.SetValue(L"", value);
@@ -1341,12 +1341,12 @@ struct TSFrame : wxFrame {
 
     void SetFileAssoc(wxString &exename) {
         #ifdef WIN32
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
-                  wxString(L"\"") + exename + L"\" \"%1\"");
-        SetRegKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
-                  wxString(L"\"") + exename + L"\",0");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
+                       wxString(L"\"") + exename + L"\" \"%1\"");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
+                       wxString(L"\"") + exename + L"\",0");
         #else
         // TODO: do something similar for mac/kde/gnome?
         #endif
