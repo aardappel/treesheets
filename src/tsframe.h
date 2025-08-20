@@ -1199,8 +1199,8 @@ struct TSFrame : wxFrame {
     }
 
     void SetDPIAwareStatusWidths() {
-        int swidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
-        SetStatusWidths(5, swidths);
+        int statusbarfieldwidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
+        SetStatusWidths(5, statusbarfieldwidths);
     }
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
