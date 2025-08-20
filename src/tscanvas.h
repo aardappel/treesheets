@@ -12,7 +12,7 @@ struct TSCanvas : public wxScrolledCanvas {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetBackgroundColour(*wxWHITE);
         DisableKeyboardScrolling();
-        // Without this, ScrolledWindow does its own scrolling upon mousewheel events, which
+        // Without this, canvas does its own scrolling upon mousewheel events, which
         // interferes with our own.
         EnableScrolling(false, false);
     }
@@ -46,7 +46,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void RefreshHover(int mx, int my) {
         doc->mx = mx;
         doc->my = my;
-        doc->scrolledwindow->Refresh();
+        doc->canvas->Refresh();
     }
 
     void OnMotion(wxMouseEvent &me) {
@@ -76,7 +76,7 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnLeftDown(wxMouseEvent &me) {
         #ifndef __WXMSW__
-        // seems to not want to give the scrolledwindow focus otherwise (thinks its already in focus
+        // seems to not want to give the canvas focus otherwise (thinks its already in focus
         // when its not?)
         if (frame->filter) frame->filter->SetFocus();
         #endif
