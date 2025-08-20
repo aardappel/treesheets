@@ -1955,36 +1955,36 @@ struct Document {
     // Polymorphism with wxDataObjectSimple does not work on Windows; bitmap format seems to not be
     // recognized.
 
-    void PasteOrDrop(const wxFileDataObject &fdo) {
-        const wxArrayString &as = fdo.GetFilenames();
-        if (!as.size()) return;
-        if (as.size() > 1) {
-            sys->frame->SetStatus(_(L"Cannot drag & drop more than 1 file."));
+    void PasteOrDrop(const wxFileDataObject &filedataobject) {
+        const wxArrayString &filenames = filedataobject.GetFilenames();
+        if (filenames.size() != 1) {
+            sys->frame->SetStatus(_(L"Can paste or drop only exactly one file."));
             return;
         }
-        Cell *c = selected.ThinExpand(this);
-        wxString fpath = as[0];
-        wxFFileInputStream fis(fpath);
-        if (fis.IsOk()) {
-            char buf[4];
-            fis.Read(buf, 4);
-            if (!strncmp(buf, "TSFF", 4)) {
-                ThreeChoiceDialog tcd(sys->frame, fpath,
-                                      _(L"It seems that you are about to drop a TreeSheets file. "
-                                        L"What would you like to do?"),
-                                      _(L"Open TreeSheets file"), _(L"Paste file path"),
-                                      _(L"Cancel"));
-                switch (tcd.Run()) {
-                    case 0: sys->frame->SetStatus(sys->LoadDB(fpath));
+        Cell *cell = selected.ThinExpand(this);
+        wxString filename = filenames[0];
+        wxFFileInputStream fileinputstream(filename);
+        if (fileinputstream.IsOk()) {
+            char buffer[4];
+            fileinputstream.Read(buffer, 4);
+            if (!strncmp(buffer, "TSFF", 4)) {
+                ThreeChoiceDialog askuser(
+                    sys->frame, filename,
+                    _(L"It seems that you are about to paste or drop a TreeSheets file. "
+                      L"What would you like to do?"),
+                    _(L"Open TreeSheets file"), _(L"Paste file path"), _(L"Cancel"));
+                switch (askuser.Run()) {
+                    case 0: sys->frame->SetStatus(sys->LoadDB(filename));
                     case 2: return;
                     default:
                     case 1:;
                 }
             }
         }
-        if (!c) return;
-        c->AddUndo(this);
-        if (!LoadImageIntoCell(as[0], c, sys->frame->FromDIP(1.0))) PasteSingleText(c, as[0]);
+        if (!cell) return;
+        cell->AddUndo(this);
+        if (!LoadImageIntoCell(filename, cell, sys->frame->FromDIP(1.0)))
+            PasteSingleText(cell, filename);
     }
 
     void PasteOrDrop(const wxTextDataObject &tdo) {
