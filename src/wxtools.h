@@ -228,9 +228,9 @@ static wxBitmap ConvertBufferToWxBitmap(const vector<uint8_t> &buffer, wxBitmapT
     return bitmap;
 }
 
-static uint64_t CalculateHash(vector<uint8_t> &data) {
+static uint64_t CalculateHash(vector<uint8_t> &buffer) {
     int max = 4096;
-    return FNV1A64(data.data(), min(data.size(), max));
+    return FNV1A64(buffer.data(), min(buffer.size(), max));
 }
 
 static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const wxChar *title,
