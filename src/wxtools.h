@@ -160,8 +160,8 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     wxArrayString filenames;
     const int image_space = 22;
 
-    ImageDropdown(wxWindow *parent, const wxString &path) {
-        FillBitmapVector(path);
+    ImageDropdown(wxWindow *parent, const wxString &directory) {
+        FillBitmapVector(directory);
         Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
                FromDIP(wxSize(image_space * 2, image_space)), filenames,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
@@ -180,9 +180,9 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         sys->ImageDraw(bitmaps_display[item].get(), dc, rect.x + FromDIP(3), rect.y + FromDIP(3));
     }
 
-    void FillBitmapVector(const wxString &path) {
+    void FillBitmapVector(const wxString &directory) {
         if (!bitmaps_display.empty()) bitmaps_display.resize(0);
-        auto filename = wxFindFirstFile(path + L"*.*");
+        auto filename = wxFindFirstFile(directory + L"*.*");
         while (!filename.empty()) {
             wxBitmap bitmap;
             if (bitmap.LoadFile(filename, wxBITMAP_TYPE_PNG)) {
