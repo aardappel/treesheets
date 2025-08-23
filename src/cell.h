@@ -404,27 +404,28 @@ struct Cell {
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 
-    void Paste(Document *doc, const Cell *c, Selection &sel) {
-        parent->AddUndo(doc);
+    void Paste(Document *document, const Cell *original, Selection &selection) {
+        parent->AddUndo(document);
         ResetLayout();
-        if (c->HasText()) {
-            if (!HasText() || !sel.TextEdit()) {
-                cellcolor = c->cellcolor;
-                textcolor = c->textcolor;
-                text.stylebits = c->text.stylebits;
+        if (original->HasText()) {
+            if (!HasText() || !selection.TextEdit()) {
+                cellcolor = original->cellcolor;
+                textcolor = original->textcolor;
+                text.stylebits = original->text.stylebits;
             }
-            text.Insert(doc, c->text.t, sel, false);
+            text.Insert(document, original->text.t, selection, false);
         }
-        if (c->text.image) text.image = c->text.image;
-        if (c->grid) {
-            auto cg = new Grid(c->grid->xs, c->grid->ys);
-            cg->cell = this;
-            c->grid->Clone(cg);
+        if (original->text.image) text.image = original->text.image;
+        if (original->grid) {
+            auto gridclone = new Grid(original->grid->xs, original->grid->ys);
+            gridclone->cell = this;
+            original->grid->Clone(gridclone);
             // Note: deleting grid may invalidate c if its a child of grid, so clear it.
-            c = nullptr;
+            original = nullptr;
             DELETEP(grid);  // FIXME: could merge instead?
-            grid = cg;
-            if (!HasText()) grid->MergeWithParent(parent->grid, sel, doc);  // deletes grid/this.
+            grid = gridclone;
+            if (!HasText())
+                grid->MergeWithParent(parent->grid, selection, document);  // deletes grid/this.
         }
     }
 
