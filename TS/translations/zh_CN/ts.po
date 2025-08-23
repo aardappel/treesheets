@@ -3,22 +3,22 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-19 20:25+0100\n"
-"PO-Revision-Date: 2023-11-23 14:11+0800\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2025-07-03 18:36+0300\n"
+"PO-Revision-Date: 2025-08-24 00:32+0800\n"
+"Last-Translator: xbeta\n"
+"Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.7\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%d cell(s)"
 msgstr "%d 个单元格"
 
@@ -29,20 +29,20 @@ msgid ""
 "Would you like to discard your changes and re-load from disk?"
 msgstr ""
 "%s\n"
-"已被另一个程序/计算机修改上：\n"
-"是否要放弃所做的更改并从磁盘重新加载？"
+"已被另一个程序/计算机在磁盘上修改：\n"
+"您想放弃您的更改并从磁盘重新加载吗？"
 
 msgid "&About..."
 msgstr "关于(&A)..."
 
 msgid "&Add Cell Text as Tag"
-msgstr "将单元格文本添加为标记(&A)"
+msgstr "将单元格文本添加为标签(&A)"
 
-msgid "&Add Image"
-msgstr "添加图像(&A)"
+msgid "&Add..."
+msgstr "添加(&A)..."
 
-msgid "&Browsing..."
-msgstr "浏览(&B)..."
+msgid "&Browsing"
+msgstr "浏览(&B)"
 
 msgid "&Clear Views"
 msgstr "清除视图(&C)"
@@ -63,10 +63,10 @@ msgid "&Data"
 msgstr "数据(&D)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
-msgstr "减小文字大小 (shift 鼠标滚轮)(&D)"
+msgstr "减小文本大小 (SHIFT+鼠标滚轮)(&D)"
 
 msgid "&Delete After"
-msgstr "删除后(&D)"
+msgstr "删除后面内容(&D)"
 
 msgid "&Edit"
 msgstr "编辑(&E)"
@@ -80,11 +80,8 @@ msgstr "文件(&F)"
 msgid "&Flatten"
 msgstr "扁平化(&F)"
 
-msgid "&Go To Next Search Result"
-msgstr "转到下一个搜索结果(&G)"
-
-msgid "&Grid Reorganization..."
-msgstr "网格重组(&G)..."
+msgid "&Grid Reorganization"
+msgstr "网格重组(&G)"
 
 msgid "&HTML (Tables+Styling)..."
 msgstr "HTML (表格+样式)(&H)..."
@@ -93,7 +90,7 @@ msgid "&Help"
 msgstr "帮助(&H)"
 
 msgid "&Hierarchify"
-msgstr "层次结构(&H)"
+msgstr "层级化(&H)"
 
 msgid "&Horizontal View"
 msgstr "水平视图(&H)"
@@ -101,17 +98,17 @@ msgstr "水平视图(&H)"
 msgid "&Image..."
 msgstr "图像(&I)..."
 
-msgid "&Images..."
-msgstr "图像(&I)..."
+msgid "&Images"
+msgstr "图像(&I)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
-msgstr "增加文字大小 (shift 鼠标滚轮)(&I)"
+msgstr "增大文本大小 (SHIFT+鼠标滚轮)(&I)"
 
 msgid "&Insert New Grid"
 msgstr "插入新网格(&I)"
 
-msgid "&Layout && Render Style..."
-msgstr "布局渲染样式(&L)..."
+msgid "&Layout && Render Style"
+msgstr "布局与渲染样式(&L)"
 
 msgid "&Mark as"
 msgstr "标记为(&M)"
@@ -119,17 +116,26 @@ msgstr "标记为(&M)"
 msgid "&New"
 msgstr "新建(&N)"
 
+msgid "&Next Match"
+msgstr "下一个匹配(&N)"
+
+msgid "&Next tab"
+msgstr "下一个标签页(&N)"
+
 msgid "&Open..."
 msgstr "打开(&O)..."
 
 msgid "&Operation"
-msgstr "操作(&O)..."
+msgstr "操作(&O)"
 
 msgid "&Options"
 msgstr "选项(&O)"
 
 msgid "&Paste"
 msgstr "粘贴(&P)"
+
+msgid "&Previous Match"
+msgstr "上一个匹配(&P)"
 
 msgid "&Print..."
 msgstr "打印(&P)..."
@@ -138,22 +144,19 @@ msgid "&Program"
 msgstr "程序(&P)"
 
 msgid "&Recent files"
-msgstr "最近的文件(&R)"
+msgstr "最近文件(&R)"
 
 msgid "&Redo"
 msgstr "重做(&R)"
 
 msgid "&Remove Cell Text from Tags"
-msgstr "从标签中删除单元格文本(&R)"
-
-msgid "&Remove Image(s)"
-msgstr "删除图像(&R)"
+msgstr "从标签中移除单元格文本(&R)"
 
 msgid "&Replace"
 msgstr "替换(&R)"
 
 msgid "&Reset Scale (display only)"
-msgstr "重置缩放(仅显示)(&R)"
+msgstr "重置缩放 (仅显示)(&R)"
 
 msgid "&Reset text sizes"
 msgstr "重置文本大小(&R)"
@@ -161,8 +164,8 @@ msgstr "重置文本大小(&R)"
 msgid "&Reset text styles"
 msgstr "重置文本样式(&R)"
 
-msgid "&Roundness of grid borders..."
-msgstr "网格边界的圆度(&R)..."
+msgid "&Roundness of grid borders"
+msgstr "网格边框圆角(&R)"
 
 msgid "&Run"
 msgstr "运行(&R)"
@@ -170,26 +173,20 @@ msgstr "运行(&R)"
 msgid "&Save"
 msgstr "保存(&S)"
 
-msgid "&Scale Image (display only)"
-msgstr "缩放图像(仅显示)(&S)"
-
-msgid "&Scale Image (re-sample pixels, by %)"
-msgstr "缩放图像(按%重新采样像素)(&S)"
-
-msgid "&Scale Image (re-sample pixels, by width)"
-msgstr "缩放图像(按宽度重新采样像素)(&S)"
+msgid "&Save as..."
+msgstr "另存为(&S)..."
 
 msgid "&Search"
 msgstr "搜索(&S)"
 
-msgid "&Selection..."
-msgstr "选择...(&S)"
+msgid "&Selection"
+msgstr "选择(&S)"
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
-msgstr "将单元格文本设置为标记 (使用 CTRL+RMB)(&S)"
+msgstr "设置单元格文本为标签 (使用 CTRL+右键)(&S)"
 
-msgid "&Set Custom Color From Cell BG"
-msgstr "设置单元格背景色(&S)"
+msgid "&Set custom color from cell background"
+msgstr "从单元格背景设置自定义颜色(&S)"
 
 msgid "&Shrink text of all sub-grids"
 msgstr "收缩所有子网格的文本(&S)"
@@ -198,7 +195,7 @@ msgid "&Transpose"
 msgstr "转置(&T)"
 
 msgid "&Undo"
-msgstr "撤消(&U)"
+msgstr "撤销(&U)"
 
 msgid "&Vertical View"
 msgstr "垂直视图(&V)"
@@ -207,52 +204,67 @@ msgid "&View"
 msgstr "视图(&V)"
 
 msgid "&Wrap in new parent"
-msgstr "包装在新的父项中(&W)"
+msgstr "包裹到新父级中(&W)"
 
 msgid "&XML..."
-msgstr "XML...(&X)"
+msgstr "XML(&X)..."
+
+msgid "*.*"
+msgstr "*.*"
 
 msgid "1:1 scale restored."
-msgstr "已恢复 1:1 比例。"
+msgstr "已恢复 1:1 缩放。"
 
 msgid "<unnamed>"
-msgstr ",<未命名>"
+msgstr "<未命名>"
 
 msgid "A temporary autosave file exists, would you like to load it instead?"
-msgstr "存在临时自动保存文件，是否要改为加载该文件？"
+msgstr "存在一个临时自动保存文件，您想加载它吗？"
 
 msgid "Add Image"
 msgstr "添加图像"
 
-msgid "Adds a grid to the selected cell"
-msgstr "将网格添加到选定的单元格"
+msgid "Add Lobster scripts to the menu"
+msgstr "将 Lobster 脚本添加到菜单"
 
-msgid "Adds an image to the selected cell"
-msgstr "将图像添加到选定的单元格"
+msgid "Add an image to the selected cell"
+msgstr "向所选单元格添加图像"
+
+msgid "Add..."
+msgstr "添加(&A)..."
+
+msgid "Adds a grid to the selected cell"
+msgstr "向所选单元格添加网格"
 
 msgid "Apply last border color"
-msgstr "应用上次边框颜色"
+msgstr "应用上次的边框颜色"
 
 msgid "Apply last cell color"
-msgstr "应用上次单元格颜色"
+msgstr "应用上次的单元格颜色"
 
 msgid "Apply last text color"
-msgstr "应用上次文字颜色"
+msgstr "应用上次的文本颜色"
 
 msgid "At least one file could not be opened."
 msgstr "至少有一个文件无法打开。"
 
-msgid "Auto reload documents"
+msgid "Autoexport to HTML"
+msgstr "自动导出为 HTML"
+
+msgid "Autoreload documents"
 msgstr "自动重新加载文档"
 
-msgid "Automatically export a .html on every save"
-msgstr "每次保存时自动导出 .html"
+msgid "Autosave"
+msgstr "自动保存"
 
 msgid "Autosave load"
-msgstr "自动保存负载"
+msgstr "加载自动保存"
 
-msgid "Autosave to .tmp"
-msgstr "自动保存到 .tmp"
+msgid "Background color..."
+msgstr "背景颜色..."
+
+msgid "Backup files"
+msgstr "备份文件"
 
 msgid "Bitmap copied to clipboard"
 msgstr "位图已复制到剪贴板"
@@ -279,18 +291,18 @@ msgid "Border &5"
 msgstr "边框 &5"
 
 msgid "Bubble Style Rendering"
-msgstr "气泡风格渲染"
+msgstr "气泡样式渲染"
 
 msgid "Can only move this cell from a Nx1 or 1xN grid."
-msgstr "只能从Nx1或1xN网格中移动此单元格。"
+msgstr "只能从 Nx1 或 1xN 网格中移动此单元格。"
 
 msgid "Can only move this cell into a Nx1 or 1xN grid."
-msgstr "只能将此单元格移动到Nx1或1xN网格中。"
+msgstr "只能将此单元格移动到 Nx1 或 1xN 网格中。"
 
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
-msgstr "无法排序：选择一块 1xN 区域以指明需要排序的列，以及受影响的行"
+msgstr "无法排序：请进行 1xN 选择以指定要排序的列以及要影响的行"
 
 msgid "Cancel"
 msgstr "取消"
@@ -299,7 +311,7 @@ msgid "Cancel text edits"
 msgstr "取消文本编辑"
 
 msgid "Cannot decompress file."
-msgstr "无法解压缩文件。"
+msgstr "无法解压文件。"
 
 msgid "Cannot drag & drop more than 1 file."
 msgstr "无法拖放超过 1 个文件。"
@@ -307,38 +319,38 @@ msgstr "无法拖放超过 1 个文件。"
 msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
 "or use Flatten)."
-msgstr "无法导出不平坦的网格 (将视图缩放到所需的网格，或使用 \"平展\")。"
+msgstr "无法导出非扁平化的网格（请将视图缩放至所需网格，或使用“扁平化”功能）。"
 
 msgid "Cannot move this cell up in the hierarchy."
-msgstr "无法在层次结构中向上移动此单元格。"
+msgstr "无法在层级中上移此单元格。"
 
 msgid "Cannot open file."
 msgstr "无法打开文件。"
 
 msgid "Case-sensitive search"
-msgstr "区分大小写的搜索"
+msgstr "区分大小写搜索"
 
 msgid "Cell "
 msgstr "单元格 "
 
-msgid "Change a key binding..."
-msgstr "更改绑定按键..."
+msgid ""
+"Change the image(s) scale to match DPI of the current display. Applies to "
+"all uses of this image."
+msgstr "更改图像缩放以匹配当前显示器的 DPI。此操作将应用于该图像的所有实例。"
 
 msgid ""
-"Change the image size if it is too big or too small, by changing the size "
+"Change the image(s) size if it is too big or too small, by changing the size "
 "shown on screen. Applies to all uses of this image."
 msgstr ""
-"如果图像太大或太小，请通过更改屏幕上显示的大小来更改图像大小。 禁止使用此图"
-"像。"
+"通过更改屏幕上显示的尺寸来更改过大或过小的图像。此操作将应用于该图像的所有实"
+"例。"
 
 msgid ""
-"Change the image size if it is too big, by reducing the amount of pixels"
-msgstr "如果图像太大，请通过减少像素数量来更改图像大小"
+"Change the image(s) size if it is too big, by reducing the amount of pixels"
+msgstr "通过减少像素数量来更改过大的图像尺寸"
 
-msgid ""
-"Change the scale to match DPI of the current display. Applies to all uses of "
-"this image."
-msgstr "更改比例以匹配当前显示的DPI。 禁止使用此图像。"
+msgid "Change the key binding of a menu item"
+msgstr "更改菜单项的快捷键绑定"
 
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "已进行更改，您确定要继续吗？"
@@ -356,32 +368,31 @@ msgid "Choose Text file to write"
 msgstr "选择要写入的文本文件"
 
 msgid "Choose TreeSheets file to save:"
-msgstr "选择 TreeSheets  文件以保存："
+msgstr "选择要保存的 TreeSheets 文件："
 
 msgid "Choose XML file to write"
-msgstr "选择要编写的 XML 文件"
+msgstr "选择要写入的 XML 文件"
 
 msgid "Choose image file to save:"
-msgstr "选择图像文件以保存："
+msgstr "选择要保存的图像文件："
 
 msgid "Clear replace"
-msgstr "清除替换"
+msgstr "清除替换内容"
 
 msgid "Clear search"
-msgstr "清除搜索"
+msgstr "清除搜索内容"
 
-#, fuzzy
 msgid "Close current document"
-msgstr "自动重新加载文档"
+msgstr "关闭当前文档"
 
 msgid "Collapse Ce&lls"
 msgstr "折叠单元格(&L)"
 
 msgid "Column width decreased."
-msgstr "列宽度已减小。"
+msgstr "列宽已减小。"
 
 msgid "Column width increased."
-msgstr "列宽度已增加。"
+msgstr "列宽已增大。"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "逗号分隔文本 (CSV)..."
@@ -390,8 +401,8 @@ msgid ""
 "Convert an NxN grid with repeating elements per column into an 1xN grid with "
 "hierarchy, useful to convert data from spreadsheets"
 msgstr ""
-"将每列重复元素的 NxN 网格转换为具有层次结构的 1xN 网格，可用于从电子表格中转"
-"换数据"
+"将每列具有重复元素的 NxN 网格转换为具有层级结构的 1xN 网格，有助于转换电子表"
+"格数据"
 
 msgid "Copy (CTRL+c)"
 msgstr "复制 (CTRL+c)"
@@ -399,72 +410,82 @@ msgstr "复制 (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "复制为连续文本"
 
-#, fuzzy
 msgid "Copy selection"
-msgstr "在选区中替换"
+msgstr "复制所选内容"
 
 msgid "Copy with &Images"
 msgstr "带图像复制(&I)"
 
 msgid "Corrupt PNG header."
-msgstr "损坏的 PNG 标头。"
+msgstr "PNG 文件头损坏。"
 
 msgid "Corrupt block header."
-msgstr "损坏的块标头。"
-
-msgid "Create .bak files"
-msgstr "创建 .bak 文件"
+msgstr "数据块头损坏。"
 
 msgid "Create a new document"
-msgstr ""
+msgstr "创建新文档"
+
+msgid "Create backup file before document is saved to file"
+msgstr "在文档保存到文件前创建备份文件"
 
 msgid "Creates a new level of hierarchy around the current selection"
-msgstr "围绕当前所选内容创建新级别的层次结构"
+msgstr "在当前所选内容周围创建一个新的层级"
+
+msgid "Cu&rsor color..."
+msgstr "光标颜色(&R)..."
 
 msgid "Cu&t"
 msgstr "剪切(&T)"
 
 msgid "Cursor Left"
-msgstr "光标左侧"
+msgstr "光标左移"
 
 msgid "Cursor Right"
-msgstr "光标右侧"
+msgstr "光标右移"
 
-#, fuzzy
+msgid "Custom &color..."
+msgstr "自定义颜色(&C)..."
+
 msgid "Cut selection"
-msgstr "向上扩展选择"
+msgstr "剪切所选内容"
 
 msgid "Date and time range"
 msgstr "日期和时间范围"
 
 msgid "Decrease column width (ALT+mousewheel)"
-msgstr "减小列宽度 (alt 鼠标滚轮)"
+msgstr "减小列宽 (ALT+鼠标滚轮)"
 
 msgid "Decrease column width (no sub grids)"
-msgstr "减小列宽度 (无子网格)"
+msgstr "减小列宽 (无子网格)"
+
+msgid "Default column width"
+msgstr "默认列宽"
+
+msgid "Default column width..."
+msgstr "默认列宽..."
 
 msgid "Delete Before"
-msgstr "返回前删除"
+msgstr "删除前面内容"
 
 msgid "Delete Word After"
-msgstr "删除后面的单词"
+msgstr "删除后一个单词"
 
 msgid "Delete Word Before"
-msgstr "删除之前的单词"
+msgstr "删除前一个单词"
 
 msgid ""
 "Deletes the column of cells after the selected grid line, or the row below"
-msgstr "删除选定网格线之后的单元格列，或删除下面的行"
+msgstr "删除所选网格线后的单元格列，或下方的行"
 
 msgid ""
 "Deletes the column of cells before the selected grid line, or the row above"
-msgstr "删除选定网格线之前的单元格列，或上面的行"
+msgstr "删除所选网格线前的单元格列，或上方的行"
 
 msgid "Deletes the entire word after the cursor"
-msgstr "在光标后删除整个单词"
+msgstr "删除光标后的整个单词"
 
 msgid "Deletes the entire word before the cursor"
-msgstr "将光标前的整个单词删除"
+msgstr "删除光标前的整个单词"
 
 msgid "Discard Changes"
 msgstr "放弃更改"
@@ -473,35 +494,48 @@ msgstr "放弃更改"
 msgid "Edited %s %s"
 msgstr "已编辑 %s %s"
 
+msgid "Embed as &JPEG"
+msgstr "嵌入为 JPEG(&J)"
+
+msgid "Embed as &PNG"
+msgstr "嵌入为 PNG(&P)"
+
+msgid ""
+"Embed the image(s) in the selected cells in JPEG format (reduces data size)"
+msgstr "将所选单元格中的图像以 JPEG 格式嵌入 (减小数据大小)"
+
+msgid "Embed the image(s) in the selected cells in PNG format (default)"
+msgstr "将所选单元格中的图像以 PNG 格式嵌入 (默认)"
+
 msgid "End date and time"
 msgstr "结束日期和时间"
 
 msgid "End of line of text"
-msgstr "文本行的结尾"
+msgstr "行尾"
 
 msgid "End of text"
-msgstr "文本的结尾"
+msgstr "文末"
 
 msgid "Enter/exit text edit mode"
-msgstr "输入/退出文本编辑模式"
+msgstr "进入/退出文本编辑模式"
 
 msgid "Enter/exit text edit to the right"
-msgstr "在右侧输入/退出文本编辑"
+msgstr "向右进入/退出文本编辑"
 
 msgid "Error exporting file!"
 msgstr "导出文件时出错！"
 
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr "加载核心数据文件时出错 (树表格安装不正确？)"
+msgstr "加载核心数据文件时出错 (TreeSheets 未正确安装？)"
 
 msgid "Error writing PNG file!"
 msgstr "写入 PNG 文件时出错！"
 
 msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr "写入树表格文件时出错!(尝试在新文件名下保存)。"
+msgstr "写入 TreeSheets 文件时出错！（请尝试使用新文件名保存）。"
 
 msgid "Error writing image file! (try saving under new filename)."
-msgstr "写入图像文件时出错！ (尝试在新文件名下保存）。"
+msgstr "写入图像文件时出错！（请尝试使用新文件名保存）。"
 
 msgid "Error writing to file!"
 msgstr "写入文件时出错！"
@@ -513,7 +547,7 @@ msgid "Evaluation finished."
 msgstr "评估完成。"
 
 msgid "Export &view as"
-msgstr "导出视图为(&V)"
+msgstr "将视图导出为(&V)"
 
 msgid "Export cancelled."
 msgstr "导出已取消。"
@@ -522,56 +556,71 @@ msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
 "works on grids with no sub-grids (use the Flatten operation first if need be)"
 msgstr ""
-"将当前视图导出为 CSV。适用于电子表格和数据库。仅适用于没有子网格的网格（如有"
-"需要，请首先使用 flatten 操作）"
+"将当前视图导出为 CSV。适用于电子表格和数据库。仅对没有子网格的网格有效（如有"
+"需要，请先使用“扁平化”操作）"
 
 msgid "Export the current view as HTML as nested bullet points."
-msgstr "以嵌套要点的形式将当前视图导出为 HTML。"
+msgstr "将当前视图导出为嵌套项目符号的 HTML。"
 
 msgid ""
 "Export the current view as HTML as nested headers, suitable for importing "
 "into Word's outline mode"
-msgstr "将当前视图导出为嵌套标头的 HTML，适合导入到 Word 的大纲模式中"
+msgstr "将当前视图导出为嵌套标题的 HTML，适合导入 Word 的大纲模式"
 
 msgid ""
 "Export the current view as HTML using nested tables, that will look somewhat "
 "like the TreeSheet"
-msgstr "使用嵌套表将当前视图导出为 HTML，这看起来有点像树表"
+msgstr "使用嵌套表格将当前视图导出为 HTML，外观将类似于 TreeSheet"
 
 msgid ""
 "Export the current view as XML (which can also be reimported without losing "
 "structure)"
-msgstr "将当前视图导出为 XML (也可以在不丢失结构的情况下重新导入)"
+msgstr "将当前视图导出为 XML（可以重新导入而不会丢失结构）"
 
 msgid ""
 "Export the current view as an image. Useful for faithful renderings of the "
 "TreeSheet, and programs that don't accept any of the above options"
 msgstr ""
-"将当前视图导出为图像。对于忠实呈现 TreeSheet 和不接受上述任何选项的程序非常有"
-"用"
+"将当前视图导出为图像。适用于 TreeSheet 的忠实渲染，以及不接受上述任何选项的程"
+"序"
 
 msgid ""
 "Export the current view as tree structured text, using spaces for each "
 "indentation level. Suitable for importing into mindmanagers and general text "
 "programs"
 msgstr ""
-"将当前视图导出为树结构化文本，对每个缩进级别使用空格。适用于导入 "
-"mindmanagers 和一般文本程序"
+"将当前视图导出为树状结构文本，每个缩进级别使用空格。适合导入思维导图和通用文"
+"本程序"
+
+msgid "Export to a HTML file when document is saved"
+msgstr "在文档保存时导出为 HTML 文件"
+
+msgid "Extend Selection Columns Down"
+msgstr "向下扩展选择列"
+
+msgid "Extend Selection Columns Up"
+msgstr "向上扩展选择列"
 
 msgid "Extend Selection Down"
-msgstr "向下扩展所选内容"
+msgstr "向下扩展选择"
 
 msgid "Extend Selection Full Columns"
-msgstr "扩展所选内容的完整列"
+msgstr "扩展选择至整列"
 
 msgid "Extend Selection Full Rows"
-msgstr "扩展所选内容的完整行"
+msgstr "扩展选择至整行"
 
 msgid "Extend Selection Left"
-msgstr "向左扩展所选内容"
+msgstr "向左扩展选择"
 
 msgid "Extend Selection Right"
-msgstr "扩展选择权限"
+msgstr "向右扩展选择"
+
+msgid "Extend Selection Rows Left"
+msgstr "向左扩展选择行"
+
+msgid "Extend Selection Rows Right"
+msgstr "向右扩展选择行"
 
 msgid "Extend Selection Up"
 msgstr "向上扩展选择"
@@ -580,30 +629,30 @@ msgid "Extend Selection Word Left"
 msgstr "向左扩展选择单词"
 
 msgid "Extend Selection Word Right"
-msgstr "向右扩展所选单词"
+msgstr "向右扩展选择单词"
 
 msgid "Extend Selection to End"
-msgstr "将所选内容扩展到结束"
+msgstr "扩展选择至末尾"
 
 msgid "Extend Selection to Start"
-msgstr "将所选内容扩展到开始"
+msgstr "扩展选择至开头"
 
 msgid "Faster line rendering"
-msgstr "更快的线渲染"
+msgstr "更快的线条渲染"
 
 msgid "File Tabs on the bottom"
-msgstr "底部的文件选项卡"
+msgstr "文件标签页置于底部"
 
 msgid "File corrupted!"
 msgstr "文件已损坏！"
 
 msgid "File exported successfully."
-msgstr "文件已成功导出。"
+msgstr "文件导出成功。"
 
 msgid ""
 "File has been re-loaded because of modifications of another program / "
 "computer"
-msgstr "由于另一个程序/计算机的修改，文件已重新加载"
+msgstr "由于其他程序/计算机的修改，文件已重新加载"
 
 msgid "File load error."
 msgstr "文件加载错误。"
@@ -612,144 +661,164 @@ msgid "File modification conflict!"
 msgstr "文件修改冲突！"
 
 msgid "File of newer version."
-msgstr "较新版本的文件。"
+msgstr "文件版本较新。"
 
 msgid "Filter"
 msgstr "筛选"
 
 msgid "Filter by the same cell color"
-msgstr "按相同的单元格颜色筛选"
-
-msgid "Filter..."
-msgstr "筛选..."
+msgstr "按相同单元格颜色筛选"
 
 msgid "Find and replace in document"
-msgstr ""
+msgstr "在文档中查找和替换"
 
 msgid "Find in document"
-msgstr ""
+msgstr "在文档中查找"
 
 msgid "Fold All"
-msgstr "折叠全部"
+msgstr "全部折叠"
 
 msgid "Folds the grid of the selected cell(s) recursively"
-msgstr "递归折叠选定单元格的网格"
+msgstr "递归折叠所选单元格的网格"
+
+msgid "Font..."
+msgstr "字体..."
 
 msgid "Found an image type that is not defined in this program."
-msgstr "发现一个未在本程序中定义的图像类型。"
+msgstr "发现此程序未定义的图像类型。"
 
 msgid "Go To &Matching Cell (Text)"
-msgstr "转到匹配单元格(文字)"
-
-msgid "Go To &Previous Search Result"
-msgstr "转到上一个搜索结果(&G)"
+msgstr "转到匹配的单元格 (文本)(&M)"
 
 msgid "Go To Matching Cell (Image)"
-msgstr "转到匹配单元格(图像)"
+msgstr "转到匹配的单元格 (图像)"
 
 msgid "Go To Matching Cell (Image, Reverse)"
-msgstr "转到匹配单元格 (图像,反向)"
+msgstr "转到匹配的单元格 (图像, 反向)"
 
 msgid "Go To Matching Cell (Text, Reverse)"
-msgstr "转到匹配单元格 (文字,反向)"
+msgstr "转到匹配的单元格 (文本, 反向)"
 
 msgid "Go to Next Search Result"
 msgstr "转到下一个搜索结果"
 
 msgid "Go to next filter match"
-msgstr "转到下一个匹配过滤器"
+msgstr "转到下一个筛选匹配项"
+
+msgid "Go to next search match"
+msgstr "转到下一个搜索匹配项"
+
+msgid "Go to previous search match"
+msgstr "转到上一个搜索匹配项"
+
+msgid "Go to the document in the next tab"
+msgstr "转到下一个标签页中的文档"
+
+msgid "Go to the document in the previous tab"
+msgstr "转到上一个标签页中的文档"
 
 msgid "Grid Style Rendering"
 msgstr "网格样式渲染"
 
 msgid "HTML (&Bullet points)..."
-msgstr "HTML 要点(&B)..."
+msgstr "HTML (项目符号)(&B)..."
 
 msgid "HTML (&Outline)..."
-msgstr "HTML 大纲(&O)..."
+msgstr "HTML (大纲)(&O)..."
 
 msgid "Hierarchy &Swap"
-msgstr "层次结构交换(&S)"
+msgstr "层级交换(&S)"
 
 msgid ""
 "Hold CTRL while pressing right mouse button to quickly set a tag for the "
 "current cell using a popup menu"
-msgstr "按住 CTRL 键，同时使用弹出菜单快速设置当前单元格的标记"
+msgstr "按住 CTRL 并单击鼠标右键，可使用弹出菜单快速为当前单元格设置标签"
 
 msgid "Horizontal Layout with Bubble Style Rendering"
-msgstr "水平布局:气泡"
+msgstr "水平布局与气泡样式渲染"
 
 msgid "Horizontal Layout with Grid Style Rendering"
-msgstr "水平布局:网格"
+msgstr "水平布局与网格样式渲染"
 
 msgid "Horizontal Layout with Line Style Rendering"
-msgstr "水平布局:线条"
-
-msgid "Hover shadow"
-msgstr "悬停阴影"
+msgstr "水平布局与线条样式渲染"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
-msgstr "一个页面应该有多少像素宽？(0 为自动配合)"
+msgstr "页面应为多少像素宽？(0 表示自动适应)"
 
 msgid "Image "
 msgstr "图像 "
 
 msgid "Image Resize"
-msgstr "图像调整大小"
+msgstr "调整图像大小"
 
-msgid "Import file from"
-msgstr "导入文件"
+msgid "Image(s) have been saved to disk."
+msgstr "图像已保存到磁盘。"
+
+msgid "Images in selected cells have been converted to JPEG format."
+msgstr "所选单元格中的图像已转换为 JPEG 格式。"
+
+msgid "Images in selected cells have been converted to PNG format."
+msgstr "所选单元格中的图像已转换为 PNG 格式。"
+
+msgid "Import from"
+msgstr "导入自"
 
 msgid "Increase column width (ALT+mousewheel)"
-msgstr "增加列宽度 (alt 鼠标滚轮)"
+msgstr "增大列宽 (ALT+鼠标滚轮)"
 
 msgid "Increase column width (no sub grids)"
-msgstr "增加列宽度 (无子网格)"
+msgstr "增大列宽 (无子网格)"
 
 msgid "Indented &Text..."
-msgstr "文本缩进(&T)..."
+msgstr "缩进文本(&T)..."
 
 msgid "Indented text..."
-msgstr "文本缩进..."
+msgstr "缩进文本..."
 
 msgid "Initialization Error"
 msgstr "初始化错误"
 
+msgid "Interactive &tutorial"
+msgstr "交互式教程(&T)"
+
 msgid "Internal error: unimplemented operation!"
 msgstr "内部错误：未实现的操作！"
 
-msgid "It seems that you are about to drop a TreeSheets file. What would you like to do?"
-msgstr "您似乎要删除一个 TreeSheets 文件。您想做什么？"
+msgid ""
+"It seems that you are about to drop a TreeSheets file. What would you like "
+"to do?"
+msgstr "您似乎要拖放一个 TreeSheets 文件。您想做什么？"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 文件已损坏！"
 
 msgid "Key binding"
-msgstr "键绑定"
+msgstr "按键绑定"
+
+msgid "Key bindings..."
+msgstr "按键绑定..."
 
 msgid "Keybinding cancelled."
-msgstr "取消了绑定。"
+msgstr "按键绑定已取消。"
 
 msgid "Line Style Rendering"
 msgstr "线条样式渲染"
 
-msgid "Load interactive &tutorial..."
-msgstr "加载交互式教程(&T)..."
-
-msgid "Load operation reference..."
-msgstr "加载操作参考..."
-
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "加载 %s（%d 个单元格，%d 个字符）在 %d 毫秒内。"
+msgstr "加载了 %s (%d 个单元格, %d 个字符)，用时 %d 毫秒。"
+
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "Lobster 文件 (*.lobster)|*.lobster|所有文件 (*.*)|*.*"
 
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
 "affect"
-msgstr "选定一块 1xN 区域以指明要对哪一列进行排序，以及哪些行受影响"
+msgstr "进行 1xN 选择以指定要排序的列以及要影响的行"
 
 msgid "Make a hierarchy layout more vertical (default) or more horizontal"
-msgstr "使层次结构布局更垂直 (默认) 或更水平"
+msgstr "使层级布局更垂直 (默认) 或更水平"
 
 msgid "Maximum number of launches reached."
 msgstr "已达到最大启动次数。"
@@ -758,46 +827,46 @@ msgid "Minimize on close"
 msgstr "关闭时最小化"
 
 msgid "Minimize to tray"
-msgstr "最小化到托盘"
+msgstr "最小化到系统托盘"
 
 msgid "More than one cell must be selected."
 msgstr "必须选择多个单元格。"
 
 msgid "Move Cells Down"
-msgstr "向下移动单元格"
+msgstr "下移单元格"
 
 msgid "Move Cells Left"
-msgstr "向左移动单元格"
+msgstr "左移单元格"
 
 msgid "Move Cells Right"
-msgstr "向右移动单元格"
+msgstr "右移单元格"
 
 msgid "Move Cells Up"
-msgstr "向上移动单元格"
+msgstr "上移单元格"
 
 msgid "Move Selection Down"
-msgstr "向下移动所选内容"
+msgstr "下移选择"
 
 msgid "Move Selection Down (DOWN)"
-msgstr "向下移动所选内容 (DOWN)"
+msgstr "下移选择 (DOWN)"
 
 msgid "Move Selection Left"
-msgstr "向左移动所选内容"
+msgstr "左移选择"
 
 msgid "Move Selection Left (LEFT)"
-msgstr "向左移动所选内容 (LEFT)"
+msgstr "左移选择 (LEFT)"
 
 msgid "Move Selection Right"
-msgstr "向右移动选择"
+msgstr "右移选择"
 
 msgid "Move Selection Right (RIGHT)"
-msgstr "向右移动选择 (RIGHT)"
+msgstr "右移选择 (RIGHT)"
 
 msgid "Move Selection Up"
-msgstr "上移所选内容"
+msgstr "上移选择"
 
 msgid "Move Selection Up (UP)"
-msgstr "上移所选内容 (UP)"
+msgstr "上移选择 (UP)"
 
 msgid "Move to next cell"
 msgstr "移动到下一个单元格"
@@ -812,7 +881,7 @@ msgid "Move to previous cell (SHIFT+TAB)"
 msgstr "移动到上一个单元格 (SHIFT+TAB)"
 
 msgid "NOTE: key binding will take effect next run of TreeSheets."
-msgstr "注：键绑定将在下一次运行的树表中生效。"
+msgstr "注意：按键绑定将在下次运行 TreeSheets 时生效。"
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "使用光标键在单元格之间导航"
@@ -821,57 +890,57 @@ msgid "New (CTRL+n)"
 msgstr "新建 (CTRL+n)"
 
 msgid "New Grid (INS)"
-msgstr "新网格 (ins)"
+msgstr "新建网格 (INS)"
 
 msgid "New Sheet"
-msgstr "新工作表"
+msgstr "新建工作表"
 
 msgid "New file cancelled."
-msgstr "新文件已取消。"
+msgstr "新建文件已取消。"
 
 msgid "No image in this cell."
 msgstr "此单元格中没有图像。"
 
 msgid "No matches for filter."
-msgstr "没有匹配的筛选。"
+msgstr "没有与筛选匹配的项。"
 
 msgid "No matches for search."
-msgstr "没有用于搜索的匹配项。"
+msgstr "没有与搜索匹配的项。"
 
 msgid "No matching cell found!"
-msgstr "找不到匹配的单元格！"
+msgstr "未找到匹配的单元格！"
 
 msgid "No search string."
 msgstr "没有搜索字符串。"
 
 msgid "No search."
-msgstr "不搜索。"
+msgstr "无搜索。"
 
 msgid "No style to paste."
-msgstr "没有要粘贴的样式。"
+msgstr "没有可粘贴的样式。"
 
 msgid "No text in this cell."
-msgstr "此单元格中没有文字。"
+msgstr "此单元格中没有文本。"
 
 msgid "No text selected."
 msgstr "未选择文本。"
 
 msgid "No text to search for."
-msgstr "无文本可搜索"
+msgstr "没有要搜索的文本。"
 
 msgid "Not a TreeSheets file."
-msgstr "不是 \"TreeSheets\" 文件。"
+msgstr "不是 TreeSheets 文件。"
 
 msgid "Nothing more to redo."
-msgstr "没有什么可重做的了。"
+msgstr "没有更多可重做的操作。"
 
 msgid "Nothing more to undo."
-msgstr "没有更多的撤消。"
+msgstr "没有更多可撤销的操作。"
 
 msgid ""
 "Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
 "normal."
-msgstr "现在查看树板以完全适合屏幕，按 F12 返回正常状态。"
+msgstr "当前正在以适应屏幕方式查看 TreeSheet，按 F12 恢复正常视图。"
 
 msgid "Open &file"
 msgstr "打开文件(&F)"
@@ -883,7 +952,7 @@ msgid "Open TreeSheets file"
 msgstr "打开 TreeSheets 文件"
 
 msgid "Open an existing document"
-msgstr ""
+msgstr "打开现有文档"
 
 msgid "Open border colors"
 msgstr "打开边框颜色"
@@ -894,6 +963,9 @@ msgstr "打开单元格颜色"
 msgid "Open file cancelled."
 msgstr "打开文件已取消。"
 
+msgid "Open image dropdown"
+msgstr "打开图像下拉菜单"
+
 msgid "Open link in &browser"
 msgstr "在浏览器中打开链接(&B)"
 
@@ -903,19 +975,22 @@ msgstr "打开文本颜色"
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
 "URL)"
-msgstr "在浏览器中打开选定单元格中的文本 (开始时应该是有效的 url)"
+msgstr "在浏览器中打开所选单元格中的文本 (应为有效的 URL)"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
 "type"
-msgstr "在文件类型的默认应用程序中打开选定单元格中的文本"
+msgstr "使用文件类型的默认应用程序打开所选单元格中的文本"
+
+msgid "Operation reference"
+msgstr "操作参考"
 
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
 msgstr ""
-"PNG 解码本文档中的某些图像时失败\n"
-"它们已被红色方块所取代。"
+"本文档中部分图像 PNG 解码失败\n"
+"它们已被红色方块替换。"
 
 msgid "PNG decoder failure"
 msgstr "PNG 解码器故障"
@@ -933,55 +1008,55 @@ msgid "Paste Style Only"
 msgstr "仅粘贴样式"
 
 msgid "Paste clipboard contents"
-msgstr ""
+msgstr "粘贴剪贴板内容"
 
 msgid "Paste file path"
 msgstr "粘贴文件路径"
 
-msgid "Pick Cu&rsor Color..."
-msgstr "选择颜色...(&C)..."
-
-msgid "Pick Custom &Color..."
-msgstr "选择自定义颜色(&C)..."
-
-msgid "Pick Default Font..."
-msgstr "选择默认字体..."
-
-msgid "Pick Document Background..."
-msgstr "选择文档背景..."
-
 msgid "Please enable (Options -> Show Toolbar) to use replace."
-msgstr "请启用 (选项-> 显示工具栏) 以便用于替换。"
+msgstr "请启用 (选项 -> 显示工具栏) 以使用替换功能。"
 
 msgid "Please enable (Options -> Show Toolbar) to use search."
-msgstr "请启用 (选项-> 显示工具栏) 以便用于搜索。"
+msgstr "请启用 (选项 -> 显示工具栏) 以使用搜索功能。"
+
+msgid "Please enter the default column width:"
+msgstr "请输入默认列宽："
 
 msgid "Please enter the new image width:"
 msgstr "请输入新的图像宽度："
 
 msgid "Please enter the new key binding string"
-msgstr "请输入新的密钥绑定字符串："
+msgstr "请输入新的按键绑定字符串"
 
 msgid "Please enter the percentage you want the image scaled by:"
-msgstr "请输入要按以下方式缩放图像的百分比："
+msgstr "请输入您希望图像缩放的百分比："
 
 msgid "Please pick a menu item to change the key binding for"
-msgstr "请选择一个菜单项来更改的键绑定"
+msgstr "请选择一个菜单项以更改其按键绑定"
 
-msgid "Please select a TreeSheets file to load:"
-msgstr "请选择要加载的树表格文件："
+msgid "Please select Lobster script file(s):"
+msgstr "请选择 Lobster 脚本文件："
+
+msgid "Please select TreeSheets file(s) to load:"
+msgstr "请选择要加载的 TreeSheets 文件："
 
 msgid "Please select an image file:"
-msgstr "请选择图像文件："
+msgstr "请选择一个图像文件："
 
-msgid "Please select file to import:"
+msgid "Please select file(s) to import:"
 msgstr "请选择要导入的文件："
 
 msgid "Please select the datetime range."
-msgstr "请选择日期范围。"
+msgstr "请选择日期时间范围。"
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "请选择您想从列表中移除的脚本："
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "按 F11 退出全屏模式。"
+
+msgid "Previous tab"
+msgstr "上一个标签页"
 
 msgid "Print Preview"
 msgstr "打印预览"
@@ -990,39 +1065,51 @@ msgid "Print preview..."
 msgstr "打印预览..."
 
 msgid "Quit this program"
-msgstr ""
+msgstr "退出此程序"
 
 msgid "Radius &0"
-msgstr "半径0(&0)"
+msgstr "圆角 &0"
 
 msgid "Radius &1"
-msgstr "半径1(&1)"
+msgstr "圆角 &1"
 
 msgid "Radius &2"
-msgstr "半径2(&2)"
+msgstr "圆角 &2"
 
 msgid "Radius &3"
-msgstr "半径3(&3)"
+msgstr "圆角 &3"
 
 msgid "Radius &4"
-msgstr "半径4(&4)"
+msgstr "圆角 &4"
 
 msgid "Radius &5"
-msgstr "半径5(&5)"
+msgstr "圆角 &5"
 
 msgid "Radius &6"
-msgstr "半径6(&6)"
+msgstr "圆角 &6"
 
 msgid ""
-"Reloads when another computer has changed a file (if you have made changes, "
+"Reload when another computer has changed a file (if you have made changes, "
 "asks)"
-msgstr "当另一台计算机更改了文件时重新加载（若更改会询问）"
+msgstr "当其他计算机更改文件时重新加载 (如果您已做更改，则会询问)"
+
+msgid "Remo&ve"
+msgstr "移除(&V)"
 
 msgid "Remove image(s) from the selected cells"
-msgstr "从选定单元格中删除图像"
+msgstr "从所选单元格中移除图像"
+
+msgid "Remove script from list in the menu"
+msgstr "从菜单列表中移除脚本"
+
+msgid "Remove script from list..."
+msgstr "从列表中移除脚本..."
+
+msgid "Remove..."
+msgstr "移除(&R)..."
 
 msgid "Render document centered"
-msgstr "呈现文档居中"
+msgstr "居中渲染文档"
 
 msgid "Replace "
 msgstr "替换 "
@@ -1034,19 +1121,19 @@ msgid "Replace All"
 msgstr "全部替换"
 
 msgid "Replace in Current &Selection"
-msgstr "在当前选区中替换(&R)"
+msgstr "在当前选择中替换(&S)"
 
 msgid "Replace in Current Selection && &Jump Next"
-msgstr "在当前选区中替换&&跳转到下一个(&R)"
+msgstr "在当前选择中替换并跳转到下一个(&J)"
 
 msgid "Replace in selection"
-msgstr "在选区中替换"
+msgstr "在选择中替换"
 
 msgid "Reset &colors"
 msgstr "重置颜色(&C)"
 
 msgid "Reset column widths"
-msgstr "重置列宽度"
+msgstr "重置列宽"
 
 msgid "Run"
 msgstr "运行"
@@ -1060,47 +1147,46 @@ msgstr "保存 (CTRL+s)"
 msgid "Save All"
 msgstr "全部保存"
 
-msgid "Save As"
-msgstr "另存为"
-
-msgid "Save Image(s) to disk"
-msgstr "保存图像到磁盘"
-
 msgid "Save and Close"
 msgstr "保存并关闭"
+
+msgid "Save as..."
+msgstr "另存为..."
 
 msgid "Save cancelled."
 msgstr "保存已取消。"
 
 msgid "Save current document"
-msgstr ""
+msgstr "保存当前文档"
 
 msgid "Save current document with a different filename"
-msgstr ""
-
-msgid "Save image as JPEG"
-msgstr "保存图像为 JPEG"
-
-msgid "Save image as PNG (default)"
-msgstr "保存图像为 PNG(默认)"
+msgstr "使用不同文件名保存当前文档"
 
 msgid ""
-"Save image(s) to disk. Multiple images will be saved with a counter appended "
-"to each file name."
-msgstr "将图像保存到磁盘。 将保存多个图像，并在每个文件名后附加一个计数器。"
+"Save image(s) from selected cell(s) to disk. Multiple images will be saved "
+"with a counter appended to each file name."
+msgstr ""
+"将所选单元格中的图像保存到磁盘。多个图像将在每个文件名后附加一个计数器进行保"
+"存。"
 
-msgid "Save the image in the TreeSheets file in JPEG format"
-msgstr "保存 JPEG 格式的 TreeSheets 文件中的图像"
-
-msgid "Save the image in the TreeSheets file in PNG format"
-msgstr "保存 PNG 格式的 TreeSheets 文件中的图像"
+msgid "Save open documents periodically to temporary files"
+msgstr "定期将打开的文档保存到临时文件"
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "已成功保存%s（在%d毫秒内）。"
+msgstr "成功保存 %s (用时 %d 毫秒)。"
+
+msgid "Scale (&display only)"
+msgstr "缩放 (仅显示)(&D)"
+
+msgid "Scale (re-sa&mple pixels, by %)"
+msgstr "缩放 (重采样像素, 按 %)(&M)"
+
+msgid "Scale (re-sample pixels, by &width)"
+msgstr "缩放 (重采样像素, 按宽度)(&W)"
 
 msgid "Script"
-msgstr "脚本(&S)"
+msgstr "脚本(&T)"
 
 msgid "Scroll Down (mousewheel)"
 msgstr "向下滚动 (鼠标滚轮)"
@@ -1111,8 +1197,8 @@ msgstr "向左滚动"
 msgid "Scroll Right"
 msgstr "向右滚动"
 
-msgid "Scroll Sheet..."
-msgstr "滚动表格..."
+msgid "Scroll Sheet"
+msgstr "滚动工作表"
 
 msgid "Scroll Up (mousewheel)"
 msgstr "向上滚动 (鼠标滚轮)"
@@ -1121,179 +1207,194 @@ msgid "Search "
 msgstr "搜索 "
 
 msgid "Select &Parent"
-msgstr "选择父项(&P)"
+msgstr "选择父级(&P)"
 
 msgid "Select &all in current grid/cell"
-msgstr "在当前网格/单元格中选择所有(&A)"
+msgstr "选择当前网格/单元格中的全部(&A)"
 
 msgid "Select First &Child"
-msgstr "选择第一个子项(&C)"
+msgstr "选择第一个子级(&C)"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr "选定的网格不是表：单元格不能已经有子网格。"
+msgstr "所选网格不是表格：单元格不能已有子网格。"
 
 #, c-format
 msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr "所选内容包含 %d 个单元格，其中有 %d 个字符。"
+msgstr "所选内容包含 %d 个单元格，共 %d 个字符。"
 
 msgid "Semi-Colon delimited text (CSV)..."
-msgstr "半冒号分隔文本 (CSV)..."
+msgstr "分号分隔文本 (CSV)..."
 
-msgid "Set Grid Border Width..."
-msgstr "设置网格边框宽度..."
+msgid "Set Grid Border Width"
+msgstr "设置网格边框宽度"
 
 msgid "Set Print Scale"
-msgstr "设置打印比例"
+msgstr "设置打印缩放"
 
 msgid "Set Print Scale..."
-msgstr "设置打印比例..."
+msgstr "设置打印缩放..."
+
+msgid "Set a custom color for the color dropdowns"
+msgstr "为颜色下拉菜单设置自定义颜色"
+
+msgid ""
+"Set a custom color for the color dropdowns from the selected cell background"
+msgstr "从所选单元格背景为颜色下拉菜单设置自定义颜色"
+
+msgid "Set the color for the document background"
+msgstr "设置文档背景颜色"
+
+msgid "Set the color for the text cursor"
+msgstr "设置文本光标颜色"
+
+msgid "Set the default column width for a new grid"
+msgstr "为新网格设置默认列宽"
+
+msgid "Set the font the document text is displayed with"
+msgstr "设置文档文本显示的字体"
+
+msgid "Set the font the typewriter text is displayed with."
+msgstr "设置打字机文本显示的字体。"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
-msgstr "显示比上次筛选少 1% 的内容"
+msgstr "比上次筛选少显示 1%"
 
 #, no-c-format
 msgid "Show 1% more than the last filter"
-msgstr "显示比上次筛选多 1% 的内容"
+msgstr "比上次筛选多显示 1%"
 
 #, no-c-format
 msgid "Show 10% of last edits"
-msgstr "显示 10% 的上次编辑"
+msgstr "显示最近编辑的 10%"
 
 #, no-c-format
 msgid "Show 20% of last edits"
-msgstr "显示 20% 的上次编辑"
+msgstr "显示最近编辑的 20%"
 
 #, no-c-format
 msgid "Show 5% of last edits"
-msgstr "显示 5% 的上次编辑"
+msgstr "显示最近编辑的 5%"
 
 #, no-c-format
 msgid "Show 50% of last edits"
-msgstr "显示 50% 的上次编辑"
+msgstr "显示最近编辑的 50%"
 
 msgid "Show About dialog"
-msgstr ""
-
-msgid "Show Statusbar"
-msgstr "显示状态栏"
-
-msgid "Show Toolbar"
-msgstr "显示工具栏"
+msgstr "显示“关于”对话框"
 
 msgid "Show last edits in specific date range"
-msgstr "显示特定日期范围内的最后一次编辑"
+msgstr "显示特定日期范围内的最近编辑"
 
 msgid "Show only cells in current search"
-msgstr "仅在当前搜索中显示单元格"
+msgstr "仅显示当前搜索中的单元格"
 
 msgid "Show statistics"
-msgstr "显示统计数据"
+msgstr "显示统计信息"
 
 msgid "Single click maximize from tray"
-msgstr "托盘单击最大化"
+msgstr "单击系统托盘图标最大化"
 
 #, c-format
 msgid "Size %d"
-msgstr "尺寸 %d"
+msgstr "大小 %d"
 
 msgid "Sort &Ascending"
-msgstr "排序升序(&A)"
+msgstr "升序排序(&A)"
 
 msgid "Sort &Descending"
-msgstr "排序降序(&D)"
+msgstr "降序排序(&D)"
 
 msgid "Start date and time"
 msgstr "开始日期和时间"
 
 msgid "Start of line of text"
-msgstr "文本行首"
+msgstr "行首"
 
 msgid "Start of text"
-msgstr "文本首"
+msgstr "文首"
+
+msgid "Statusbar"
+msgstr "状态栏"
 
 msgid "Swap all cells with this text at this level (or above) with the parent"
-msgstr "将此文本与父级 (或更高版本) 的所有单元格交换"
+msgstr "将当前层级（或以上）所有包含此文本的单元格与其父级交换"
 
 msgid "Swap mousewheel scrolling and zooming"
-msgstr "交换鼠标滚轮滚动和缩放"
-
-msgid "Switch to &next file/tab"
-msgstr "切换到下一个文件/选项卡(&N)"
-
-msgid "Switch to &previous file/tab"
-msgstr "切换到上个文件/选项卡(&P)"
+msgstr "交换鼠标滚轮的滚动与缩放功能"
 
 msgid "Tab delimited text..."
-msgstr "制表符分隔的文本格式..."
+msgstr "制表符分隔文本..."
 
-msgid "Tag..."
-msgstr "标记..."
+msgid "Tag"
+msgstr "标签"
 
 msgid ""
 "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
 "grid, useful for export to spreadsheets"
 msgstr ""
-"采用层次结构 (嵌套 1xn 或 1xN 网格) 并将其转换为平面 1xN 网格，可用于导出到电"
-"子表格"
+"将一个层级结构 (嵌套的 1xN 或 Nx1 网格) 转换为扁平的 NxN 网格，便于导出到电子"
+"表格"
 
 msgid "Text "
 msgstr "文本 "
 
-msgid "Text &Editing..."
-msgstr "文本编辑(&E)..."
+msgid "Text &Editing"
+msgstr "文本编辑(&E)"
 
-msgid "Text Sizing..."
-msgstr "文本大小..."
+msgid "Text Sizing"
+msgstr "文本大小"
 
-msgid "Text Style..."
-msgstr "文本样式..."
+msgid "Text Style"
+msgstr "文本样式"
 
 msgid "Text has been replaced."
 msgstr "文本已被替换。"
 
 msgid "Text size decreased."
-msgstr "文本大小减小。"
+msgstr "文本大小已减小。"
 
 msgid "Text size increased."
-msgstr "文本大小增加。"
+msgstr "文本大小已增大。"
 
 msgid "The Free Form Hierarchical Information Organizer"
-msgstr "自由形式分层信息管理器"
+msgstr "自由形态的层级信息组织器"
 
 msgid "The browser could not open at least one link."
-msgstr "浏览器无法打开上次链接。"
+msgstr "浏览器未能打开至少一个链接。"
+
+msgid "There are no images in the selection."
+msgstr "所选内容中没有图像。"
 
 msgid "There is no content to collapse."
-msgstr "没有内容可以折叠。"
+msgstr "没有可折叠的内容。"
 
 msgid "This operation doesn't work on thin selections."
-msgstr "此操作不适用于精简选择。"
+msgstr "此操作不适用于细长选择区。"
 
 msgid "This operation requires a cell that contains a grid."
-msgstr "此操作需要一个包含网格的单元格。"
+msgstr "此操作要求单元格包含一个网格。"
 
 msgid "This operation requires a selection."
-msgstr "此操作需要选择。"
+msgstr "此操作需要一个选择区。"
 
 msgid "This operation works on a single selected cell only."
-msgstr "此操作仅适用于单个选定的单元格。"
+msgstr "此操作仅对单个选定单元格有效。"
 
 msgid "Toggle &Fullscreen View"
 msgstr "切换全屏视图(&F)"
 
 msgid "Toggle &Scaled Presentation View"
-msgstr "切换缩放的演示文稿视图(&S)"
+msgstr "切换缩放演示视图(&S)"
 
 msgid "Toggle Fold"
 msgstr "切换折叠"
 
-#, fuzzy
 msgid "Toggle Vertical Layout"
 msgstr "切换垂直布局"
 
 msgid "Toggle cell &BOLD"
-msgstr "切换单元格(&B)"
+msgstr "切换单元格粗体(&B)"
 
 msgid "Toggle cell &ITALIC"
 msgstr "切换单元格斜体(&I)"
@@ -1302,13 +1403,45 @@ msgid "Toggle cell &strikethrough"
 msgstr "切换单元格删除线(&S)"
 
 msgid "Toggle cell &typewriter"
-msgstr "切换单元格和打字机(&T)"
+msgstr "切换单元格打字机样式(&T)"
 
 msgid "Toggle cell &underlined"
 msgstr "切换单元格下划线(&U)"
 
+msgid "Toggle whether documents are rendered centered or left aligned"
+msgstr "切换文档渲染方式为居中或左对齐"
+
+msgid "Toggle whether file tabs are shown on top or on bottom of the documents"
+msgstr "切换文件标签页显示在文档顶部或底部"
+
+msgid "Toggle whether lines are drawn solid (faster rendering) or dashed"
+msgstr "切换线条绘制方式为实线 (渲染更快) 或虚线"
+
+msgid "Toggle whether only one click is required to maximize from system tray"
+msgstr "切换是否只需单击系统托盘图标即可最大化"
+
+msgid "Toggle whether statusbar is shown below the documents"
+msgstr "切换是否在文档下方显示状态栏"
+
+msgid ""
+"Toggle whether the cursor keys are used for navigation in addition to text "
+"editing"
+msgstr "切换光标键是否除文本编辑外也用于导航"
+
+msgid "Toggle whether the window is minimized instead of closed"
+msgstr "切换窗口是最小化还是关闭"
+
+msgid "Toggle whether toolbar is shown between menu bar and documents"
+msgstr "切换是否在菜单栏和文档之间显示工具栏"
+
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "切换显示所选单元格的网格"
+
+msgid "Toogle whether window is minimized to system tray"
+msgstr "切换窗口是否最小化到系统托盘"
+
+msgid "Toolbar"
+msgstr "工具栏"
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "TreeSheets 文件 (*.cts)|*.cts|所有文件 (*.*)|*.*"
@@ -1316,38 +1449,41 @@ msgstr "TreeSheets 文件 (*.cts)|*.cts|所有文件 (*.*)|*.*"
 msgid "Turn filter &off"
 msgstr "关闭筛选(&O)"
 
+msgid "Tutorial &web page"
+msgstr "教程网页(&W)"
+
+msgid "Typewriter font..."
+msgstr "打字机字体..."
+
 msgid "Undo (CTRL+z)"
-msgstr "撤消 (CTRL+z)"
+msgstr "撤销 (CTRL+z)"
 
 msgid "Unfold All"
 msgstr "全部展开"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
-msgstr "递归展开选定单元格的网格"
+msgstr "递归展开所选单元格的网格"
 
 msgid "Uses"
-msgstr "用户"
+msgstr "使用"
 
 msgid "Variable &Assign"
-msgstr "变量分配(&A)"
+msgstr "变量赋值(&A)"
 
 msgid "Variable &Read"
 msgstr "变量读取(&R)"
 
 msgid "Vertical Layout with Bubble Style Rendering"
-msgstr "垂直布局:气泡"
+msgstr "垂直布局与气泡样式渲染"
 
 msgid "Vertical Layout with Grid Style Rendering"
-msgstr "垂直布局:网格"
+msgstr "垂直布局与网格样式渲染"
 
 msgid "Vertical Layout with Line Style Rendering"
-msgstr "垂直布局:线条"
-
-msgid "View tutorial &web page..."
-msgstr "查看教程网页(&W)..."
+msgstr "垂直布局与线条样式渲染"
 
 msgid "What size grid would you like to start with?"
-msgstr "您希望从什么尺寸的网格开始？"
+msgstr "您想以多大尺寸的网格开始？"
 
 msgid "Width"
 msgstr "宽度"
@@ -1357,28 +1493,28 @@ msgid "Width %d"
 msgstr "宽度 %d"
 
 msgid "Word Left"
-msgstr "左边的单词"
+msgstr "左一个单词"
 
 msgid "Word Right"
-msgstr "右文字"
+msgstr "右一个单词"
 
 msgid "XML (attributes too, for OPML etc)..."
-msgstr "XML (属性，用于 OPML 等)..."
+msgstr "XML (也包含属性, 用于 OPML 等)..."
 
 msgid "XML..."
 msgstr "XML..."
 
 msgid "You need to select one cell if you want to search for its text."
-msgstr "如果要搜索一个单元格的文本，则需要选择该单元格。"
+msgstr "如果您想搜索单元格的文本，需要先选中该单元格。"
 
 msgid "Zlib error while writing file."
-msgstr "写入文件时出现 zlib 错误。"
+msgstr "写入文件时发生 Zlib 错误。"
 
 msgid "Zoom &In (CTRL+mousewheel)"
-msgstr "放大 (CTRL+鼠标滚轮)(&I)"
+msgstr "放大(&I) (CTRL+鼠标滚轮)"
 
 msgid "Zoom &Out (CTRL+mousewheel)"
-msgstr "缩小 (CTRL+鼠标滚轮)(&O)"
+msgstr "缩小(&O) (CTRL+鼠标滚轮)"
 
 msgid "Zoom In (CTRL+mousewheel)"
 msgstr "放大 (CTRL+鼠标滚轮)"
@@ -1393,7 +1529,7 @@ msgid "Zoomed out."
 msgstr "已缩小。"
 
 msgid "change will take effect next run of TreeSheets"
-msgstr "更改将在下一次运行的树表中生效"
+msgstr "更改将在下次运行 TreeSheets 时生效"
 
 msgid "changes the orientation of a grid"
 msgstr "更改网格的方向"
@@ -1402,16 +1538,16 @@ msgid "couldn't import file!"
 msgstr "无法导入文件！"
 
 msgid "only sets the colors and style of the copied cell, and keeps the text"
-msgstr "仅设置复制单元格的颜色和样式，并保留文本"
+msgstr "仅设置所复制单元格的颜色和样式，并保留文本"
 
 msgid "only works in cell text mode"
-msgstr "仅在单元格文本模式下工作"
+msgstr "仅在单元格文本模式下有效"
 
 msgid "redo any undo steps, if you haven't made changes since"
-msgstr "重做任何撤消步骤，如果你没有做的更改，因为"
+msgstr "如果您之后未做任何更改，则可重做任何已撤销的步骤"
 
 msgid "revert the changes, one step at a time"
-msgstr "恢复更改，一步一次"
+msgstr "逐步还原更改"
 
 msgid "scale:"
 msgstr "缩放："
