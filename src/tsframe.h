@@ -163,6 +163,12 @@ struct TSFrame : wxFrame {
             #define CTRLORALT "ALT"
         #endif
 
+        #ifdef __WXMAC__
+            #define ALTORCTRL "ALT"
+        #else
+            #define ALTORCTRL "CTRL"
+        #endif
+
         auto expmenu = new wxMenu();
         MyAppend(expmenu, A_EXPXML, _(L"&XML..."),
                  _(L"Export the current view as XML (which can also be reimported without losing structure)"));
@@ -335,9 +341,12 @@ struct TSFrame : wxFrame {
             temenu->AppendSeparator();
             MyAppend(temenu, A_ENTERCELL, _(L"Enter/exit text edit mode") + "\tENTER");
             MyAppend(temenu, A_ENTERCELL_JUMPTOEND,
-                     _(L"Enter/exit text edit to the right") + "\tF2");
+                     _(L"...and jump to the end of the text") + "\tF2");
+            MyAppend(
+                temenu, A_ENTERCELL_JUMPTOSTART,
+                _(L"...and progress to the first cell in the new row") + "\t" ALTORCTRL "+ENTER");
             MyAppend(temenu, A_PROGRESSCELL,
-                     _(L"Enter/exit text edit to the right") + "\t" CTRLORALT "+ENTER");
+                     _(L"...and progress to the next cell on the right") + "\t" CTRLORALT "+ENTER");
             MyAppend(temenu, A_CANCELEDIT, _(L"Cancel text edits") + "\tESC");
 
             auto stmenu = new wxMenu();
