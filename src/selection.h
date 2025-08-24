@@ -366,16 +366,18 @@ class Selection {
         return nullptr;
     }
 
-    Cell *ThinExpand(Document *doc) {
+    Cell *ThinExpand(Document *doc, bool jumptofirst = false) {
         if (Thin()) {
             if (xs) {
                 g->cell->AddUndo(doc);
                 g->InsertCells(-1, y, 0, 1);
                 ys = 1;
+                if (jumptofirst) x = 0;
             } else {
                 g->cell->AddUndo(doc);
                 g->InsertCells(x, -1, 1, 0);
                 xs = 1;
+                if (jumptofirst) y = 0;
             }
         }
         return GetCell();

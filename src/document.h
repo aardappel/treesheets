@@ -793,7 +793,10 @@ struct Document {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
                     if (!ctrl) return Action(A_BACKSPACE);
                     break;  // Prevent Ctrl+H from being treated as Backspace
-                case WXK_RETURN: return Action(shift ? A_ENTERGRID : A_ENTERCELL);
+                case WXK_RETURN:
+                    return Action(shift  ? A_ENTERGRID
+                                  : ctrl ? A_ENTERCELL_JUMPTOSTART
+                                         : A_ENTERCELL);
                 case WXK_ESCAPE:  // docs say it can be used as a menu accelerator, but it does not
                                   // trigger from there?
                     return Action(A_CANCELEDIT);
@@ -1485,14 +1488,16 @@ struct Document {
 
             case A_ENTERCELL:
             case A_ENTERCELL_JUMPTOEND:
+            case A_ENTERCELL_JUMPTOSTART:
             case A_PROGRESSCELL: {
-                if (!(c = selected.ThinExpand(this))) return OneCell();
+                if (!(c = selected.ThinExpand(this, k == A_ENTERCELL_JUMPTOSTART)))
+                    return OneCell();
                 if (selected.TextEdit()) {
-                    selected.Cursor(this, (k == A_ENTERCELL ? A_DOWN : A_RIGHT), false, false,
+                    selected.Cursor(this, k == A_PROGRESSCELL ? A_RIGHT : A_DOWN, false, false,
                                     true);
                 } else {
                     selected.EnterEdit(this,
-                                       (k == A_ENTERCELL_JUMPTOEND) ? (int)c->text.t.Len() : 0,
+                                       k == A_ENTERCELL_JUMPTOEND ? (int)c->text.t.Len() : 0,
                                        (int)c->text.t.Len());
                     RefreshMove();
                 }
