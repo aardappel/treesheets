@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.2\n"
+"Project-Id-Version: TreeSheets_RU 3.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-03 18:36+0300\n"
-"PO-Revision-Date: 2025-07-03 19:22+0300\n"
+"POT-Creation-Date: 2025-08-25 18:20+0300\n"
+"PO-Revision-Date: 2025-08-25 19:12+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -216,6 +216,18 @@ msgstr "XML..."
 msgid "*.*"
 msgstr "*.*"
 
+# п. Меню (нет & в исходном тексте)
+msgid "...and jump to the end of the text"
+msgstr ".. и встать в конец текста"
+
+# п. Меню (нет & в исходном тексте)
+msgid "...and progress to the first cell in the new row"
+msgstr ".. и переместиться к первой ячейке в новой строке"
+
+# п. Меню (нет & в исходном тексте)
+msgid "...and progress to the next cell on the right"
+msgstr ".. и переместиться к следующей ячейке справа"
+
 # Сообщение (после действия или события)
 msgid "1:1 scale restored."
 msgstr "Масштаб 1:1 восстановлен."
@@ -318,6 +330,10 @@ msgstr "Переместить эту ячейку можно только из 
 # Сообщение (после действия или события)
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "Переместить эту ячейку можно только в сетку Nx1 или 1xN."
+
+# Сообщение (после действия или события)
+msgid "Can paste or drop only exactly one file."
+msgstr "Можно вставить или отбросить только один файл."
 
 # Сообщение (после действия или события)
 msgid "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect"
@@ -848,6 +864,10 @@ msgstr "Внутренняя ошибка: операция не выполне�
 # Сообщение (после действия или события)
 msgid "It seems that you are about to drop a TreeSheets file. What would you like to do?"
 msgstr "Похоже, вы собираетесь сбросить файл TreeSheet. Что вы хотите сделать?"
+
+# Сообщение (после действия или события)
+msgid "It seems that you are about to paste or drop a TreeSheets file. What would you like to do?"
+msgstr "Похоже, вы собираетесь вставить или отбросить файл TreeSheet. Что вы хотите сделать?"
 
 # Сообщение (после действия или события)
 msgid "JPEG file is corrupted!"
