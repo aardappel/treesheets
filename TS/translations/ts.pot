@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-03 18:36+0300\n"
+"POT-Creation-Date: 2025-08-25 18:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -208,6 +208,15 @@ msgstr ""
 msgid "*.*"
 msgstr ""
 
+msgid "...and jump to the end of the text"
+msgstr ""
+
+msgid "...and progress to the first cell in the new row"
+msgstr ""
+
+msgid "...and progress to the next cell on the right"
+msgstr ""
+
 msgid "1:1 scale restored."
 msgstr ""
 
@@ -293,6 +302,9 @@ msgid "Can only move this cell from a Nx1 or 1xN grid."
 msgstr ""
 
 msgid "Can only move this cell into a Nx1 or 1xN grid."
+msgstr ""
+
+msgid "Can paste or drop only exactly one file."
 msgstr ""
 
 msgid ""
@@ -774,6 +786,11 @@ msgstr ""
 msgid ""
 "It seems that you are about to drop a TreeSheets file. What would you like "
 "to do?"
+msgstr ""
+
+msgid ""
+"It seems that you are about to paste or drop a TreeSheets file. What would "
+"you like to do?"
 msgstr ""
 
 msgid "JPEG file is corrupted!"
