@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-03 18:36+0300\n"
-"PO-Revision-Date: 2025-07-04 02:15+0900\n"
+"POT-Creation-Date: 2025-08-25 18:20+0300\n"
+"PO-Revision-Date: 2025-08-27 13:56+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
-"Language-Team: VenusGirl (https://venusgirls.tistory.com/)\n"
+"Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.7\n"
 
 #, c-format
 msgid "%d cell(s)"
@@ -212,6 +212,15 @@ msgstr "XML(&X)..."
 msgid "*.*"
 msgstr "*.*"
 
+msgid "...and jump to the end of the text"
+msgstr "...그리고 텍스트의 끝으로 이동합니다"
+
+msgid "...and progress to the first cell in the new row"
+msgstr "...그리고 새 행의 첫 번째 셀로 진행합니다"
+
+msgid "...and progress to the next cell on the right"
+msgstr "...그리고 오른쪽의 다음 셀로 진행합니다"
+
 msgid "1:1 scale restored."
 msgstr "1:1 비율로 복원합니다."
 
@@ -298,6 +307,9 @@ msgstr "이 셀은 Nx1 또는 1xN 격자에서만 이동할 수 있습니다."
 
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "이 셀은 Nx1 또는 1xN 격자로만 이동할 수 있습니다."
+
+msgid "Can paste or drop only exactly one file."
+msgstr "파일을 정확히 하나만 붙여넣거나 삭제할 수 있습니다."
 
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
@@ -804,6 +816,13 @@ msgid ""
 "It seems that you are about to drop a TreeSheets file. What would you like "
 "to do?"
 msgstr "TreeSheets 파일을 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니까?"
+
+msgid ""
+"It seems that you are about to paste or drop a TreeSheets file. What would "
+"you like to do?"
+msgstr ""
+"TreeSheets 파일을 붙여넣거나 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니"
+"까?"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 파일이 손상되었습니다!"
@@ -1435,7 +1454,7 @@ msgid "Toggle whether file tabs are shown on top or on bottom of the documents"
 msgstr "파일 탭을 문서의 위쪽 또는 아래쪽에 표시할지 전환"
 
 msgid "Toggle whether lines are drawn solid (faster rendering) or dashed"
-msgstr "선을 실선으로 그릴지 (렌더링 속도 향상) 또는 점선으로 그릴지 전환"
+msgstr "선을 실선으로 그릴지 (더 빠른 렌더링) 또는 점선으로 그릴지 전환"
 
 msgid "Toggle whether only one click is required to maximize from system tray"
 msgstr "시스템 트레이에서 최대화를 위해 한 번의 클릭만 필요한지 전환"
