@@ -40,7 +40,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     lobster
     GIT_REPOSITORY https://github.com/aardappel/lobster
-    GIT_TAG v2025.2
+    GIT_TAG v2025.3
 )
 FetchContent_MakeAvailable(wxwidgets lobster)
 
@@ -63,13 +63,11 @@ add_library(lobster STATIC
     ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/util.cpp
     ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
     ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
-    ${lobster_SOURCE_DIR}/dev/src/disasm.cpp
     ${lobster_SOURCE_DIR}/dev/src/file.cpp
     ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
     ${lobster_SOURCE_DIR}/dev/src/platform.cpp
     ${lobster_SOURCE_DIR}/dev/src/vm.cpp
     ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
-    ${lobster_SOURCE_DIR}/dev/src/tocpp.cpp
     ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
     ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c
 )
