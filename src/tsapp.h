@@ -1,4 +1,3 @@
-
 struct IPCServer : wxServer {
     wxConnectionBase *OnAcceptConnection(const wxString &topic) {
         sys->frame->DeIconize();

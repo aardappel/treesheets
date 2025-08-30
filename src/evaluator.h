@@ -1,4 +1,3 @@
-
 /*
     A structure describing an operation.
 */

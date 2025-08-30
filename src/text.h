@@ -1,4 +1,3 @@
-
 struct Text {
     Cell *cell {nullptr};
     Image *image {nullptr};

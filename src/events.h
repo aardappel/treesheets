@@ -1,4 +1,3 @@
-
 BEGIN_EVENT_TABLE(treesheets::TSFrame, wxFrame)
   EVT_DPI_CHANGED(treesheets::TSFrame::OnDPIChanged)
   EVT_SIZING(treesheets::TSFrame::OnSizing)

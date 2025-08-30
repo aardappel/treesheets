@@ -1,4 +1,3 @@
-
 struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *doc = nullptr;
     Cell *cur = nullptr;
