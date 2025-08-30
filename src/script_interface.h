@@ -1,4 +1,3 @@
-
 namespace script {
 
 typedef std::pair<int, int> icoord;

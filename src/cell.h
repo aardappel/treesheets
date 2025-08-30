@@ -1,4 +1,3 @@
-
 /* The evaluation types for a cell.
 CT_DATA: "Data"
 CT_CODE: "Operation"

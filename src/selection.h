@@ -1,4 +1,3 @@
-
 class Selection {
     bool textedit {false};
 

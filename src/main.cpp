@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 
 static const auto TS_VERSION = 24;

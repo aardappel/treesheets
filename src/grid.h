@@ -1,4 +1,3 @@
-
 struct Grid {
     // owning cell.
     Cell *cell;

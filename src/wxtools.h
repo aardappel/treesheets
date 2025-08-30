@@ -1,4 +1,3 @@
-
 static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline = false) {
     if (outline)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);

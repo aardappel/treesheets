@@ -1,4 +1,3 @@
-
 #include "lobster/stdafx.h"
 
 #include "script_interface.h"
