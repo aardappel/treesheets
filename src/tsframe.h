@@ -710,7 +710,7 @@ struct TSFrame : wxFrame {
         menubar->Append(semenu, _(L"&Search"));
         menubar->Append(viewmenu, _(L"&View"));
         menubar->Append(optmenu, _(L"&Options"));
-        menubar->Append(scriptmenu, _(L"Script"));
+        menubar->Append(scriptmenu, _(L"S&cript"));
         menubar->Append(langmenu, _(L"&Program"));
         menubar->Append(helpmenu,
                         #ifdef __WXMAC__
