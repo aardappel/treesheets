@@ -2160,8 +2160,8 @@ struct Document {
         selected.g->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, auto &&data, double sc) {
-        c->text.image = sys->imagelist[sys->AddImageToList(sc, std::move(data), 'I')].get();
+    void SetImageBM(Cell *c, auto &&data, double scale) {
+        c->text.image = sys->imagelist[sys->AddImageToList(scale, std::move(data), 'I')].get();
     }
 
     bool LoadImageIntoCell(const wxString &filename, Cell *c, double scale) {
