@@ -204,10 +204,11 @@ string RunLobster(std::string_view filename, std::string_view code, bool dump_bu
     string err;
     try {
         string bytecode;
-        Compile(natreg, filename, code, bytecode, nullptr, nullptr,
-                false, RUNTIME_ASSERT, nullptr, 0, true);
-        auto ret = RunTCC(natreg, bytecode, filename, nullptr, {}, TraceMode::OFF, false, err,
-                          RUNTIME_ASSERT, true, false);
+        string codegen;
+        Compile(natreg, filename, code, bytecode, nullptr, nullptr, false, RUNTIME_ASSERT, nullptr,
+                1, false, true, codegen, false, filename);
+        auto ret = RunTCC(natreg, bytecode, filename, nullptr, {}, false, err, RUNTIME_ASSERT, true,
+                          false, codegen);
     } catch (string &s) {
         err = s;
     }
