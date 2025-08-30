@@ -14,7 +14,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void MarkDocAsModified() {
         if (docmodified) return;
-        doc->AddUndo(cur);
+        // Consider the case that script operates on multiple cells in a grid
+        doc->AddUndo(cur->parent ? cur->parent : cur);
         docmodified = true;
     }
 
