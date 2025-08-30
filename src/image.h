@@ -16,22 +16,22 @@ struct Image {
     Image(auto _hash, auto _sc, auto &&_data, auto _type)
         : hash(_hash), display_scale(_sc), data(std::move(_data)), type(_type) {}
 
-    void ImageRescale(double sc) {
+    void ImageRescale(double scale) {
         auto &[it, mime] = imagetypes.at(type);
         auto im = ConvertBufferToWxImage(data, it);
-        im.Rescale(im.GetWidth() * sc, im.GetHeight() * sc);
+        im.Rescale(im.GetWidth() * scale, im.GetHeight() * scale);
         data = ConvertWxImageToBuffer(im, it);
         hash = CalculateHash(data);
         bm_display = wxNullBitmap;
     }
 
-    void DisplayScale(double sc) {
-        display_scale /= sc;
+    void DisplayScale(double scale) {
+        display_scale /= scale;
         bm_display = wxNullBitmap;
     }
 
-    void ResetScale(double sc) {
-        display_scale = sc;
+    void ResetScale(double scale) {
+        display_scale = scale;
         bm_display = wxNullBitmap;
     }
 
