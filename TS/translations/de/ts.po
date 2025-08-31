@@ -812,13 +812,8 @@ msgstr "Interaktives &Tutorial"
 msgid "Internal error: unimplemented operation!"
 msgstr "Interner Fehler: Nicht implementierter Vorgang!"
 
-#, fuzzy
-msgid ""
-"It seems that you are about to paste or drop a TreeSheets file. What would "
-"you like to do?"
-msgstr ""
-"Es scheint, dass Sie gerade eine TreeSheets-Datei in das Fenster ziehen. Was "
-"möchten Sie gerne tun?"
+msgid "It seems that you are about to paste or drop a TreeSheets file. What would you like to do?"
+msgstr "Es scheint, dass Sie gerade eine TreeSheets-Datei einfügen oder in das Fenster ziehen. Was möchten Sie gerne tun?"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG-Datei ist fehlerhaft/beschädigt!"
@@ -1112,7 +1107,6 @@ msgstr "Radius &5"
 msgid "Radius &6"
 msgstr "Radius &6"
 
-#, fuzzy
 msgid "Reload when another computer has changed a file (if you have made changes, asks)"
 msgstr "Lädt neu wenn ein anderer Rechner die Datei geändert hat (wenn Sie die Änderungen vorgenommen haben, wird das Programm nachfragen)"
 
@@ -1161,9 +1155,8 @@ msgstr "Spaltenbreiten zurücksetzen"
 msgid "Run"
 msgstr "Ausführen"
 
-#, fuzzy
 msgid "S&cript"
-msgstr "Skript"
+msgstr "S&kript"
 
 msgid "Save &As..."
 msgstr "Speichern &unter..."
@@ -1189,9 +1182,8 @@ msgstr "Aktuelles Dokument speichern"
 msgid "Save current document with a different filename"
 msgstr "Das aktuelle Dokument unter einem anderen Dateinamen speichern"
 
-#, fuzzy
 msgid "Save image(s) from selected cell(s) to disk. Multiple images will be saved with a counter appended to each file name."
-msgstr "Bild(er) auf Datenträgern speichern. Mehrere Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt."
+msgstr "Bild(er) aus den ausgewählten Zellen auf Datenträger speichern. Mehrere Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt."
 
 msgid "Save open documents periodically to temporary files"
 msgstr "Geöffnete Dokumente periodisch in temporären Dateien sichern"
@@ -1271,9 +1263,8 @@ msgstr "Die Standardspaltenbreite für eine neue Tabelle setzen"
 msgid "Set the font the document text is displayed with"
 msgstr "Die Schrift auswählen, in der der Dokumententext angezeigt wird"
 
-#, fuzzy
 msgid "Set the font the typewriter text is displayed with."
-msgstr "Die Schrift auswählen, in der der Dokumententext angezeigt wird"
+msgstr "Die proportionale Schrift auswählen, in der der Dokumententext angezeigt wird"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
@@ -1375,9 +1366,8 @@ msgstr "Der formfreie hierarchische Informationsorganisator"
 msgid "The browser could not open at least one link."
 msgstr "Der Browser konnte mindestens einen Link nicht öffnen."
 
-#, fuzzy
 msgid "There are no images in the selection."
-msgstr "Dieser Vorgang benötigt eine Auswahl."
+msgstr "Es befinden sich keine Bilder in der Auswahl."
 
 msgid "There is no content to collapse."
 msgstr "Es gibt keinen Inhalt zum Zusammenlegen."
