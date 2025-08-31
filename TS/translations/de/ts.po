@@ -1264,7 +1264,7 @@ msgid "Set the font the document text is displayed with"
 msgstr "Die Schrift auswählen, in der der Dokumententext angezeigt wird"
 
 msgid "Set the font the typewriter text is displayed with."
-msgstr "Die proportionale Schrift auswählen, in der der Dokumententext angezeigt wird"
+msgstr "Die Schreibmaschinenschrift auswählen, in der der Dokumententext angezeigt wird"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
@@ -1406,7 +1406,7 @@ msgid "Toggle cell &strikethrough"
 msgstr "Zellentext durchstreichen (ein/aus)"
 
 msgid "Toggle cell &typewriter"
-msgstr "Proportionaler Zellen&text (ein/aus)"
+msgstr "Zellen&text in Schreibmaschinenschrift (ein/aus)"
 
 msgid "Toggle cell &underlined"
 msgstr "Zellentext unterstreichen (ein/aus)"
@@ -1454,7 +1454,7 @@ msgid "Tutorial &web page"
 msgstr "Tutorial-&Webseite"
 
 msgid "Typewriter font..."
-msgstr ""
+msgstr "Schreibmaschinenschrift..."
 
 msgid "Undo (CTRL+z)"
 msgstr "Rückgängig machen (STRG+z)"
