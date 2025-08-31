@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 18:20+0300\n"
+"POT-Creation-Date: 2025-08-30 19:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #, c-format
@@ -321,9 +321,6 @@ msgstr ""
 msgid "Cannot decompress file."
 msgstr ""
 
-msgid "Cannot drag & drop more than 1 file."
-msgstr ""
-
 msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
 "or use Flatten)."
@@ -521,9 +518,6 @@ msgid "End of text"
 msgstr ""
 
 msgid "Enter/exit text edit mode"
-msgstr ""
-
-msgid "Enter/exit text edit to the right"
 msgstr ""
 
 msgid "Error exporting file!"
@@ -781,11 +775,6 @@ msgid "Interactive &tutorial"
 msgstr ""
 
 msgid "Internal error: unimplemented operation!"
-msgstr ""
-
-msgid ""
-"It seems that you are about to drop a TreeSheets file. What would you like "
-"to do?"
 msgstr ""
 
 msgid ""
@@ -1139,6 +1128,9 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
+msgid "S&cript"
+msgstr ""
+
 msgid "Save &As..."
 msgstr ""
 
@@ -1184,9 +1176,6 @@ msgstr ""
 msgid "Scale (re-sample pixels, by &width)"
 msgstr ""
 
-msgid "Script"
-msgstr ""
-
 msgid "Scroll Down (mousewheel)"
 msgstr ""
 
@@ -1215,10 +1204,6 @@ msgid "Select First &Child"
 msgstr ""
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr ""
-
-#, c-format
-msgid "Selection contains %d cell(s) with %d character(s)."
 msgstr ""
 
 msgid "Semi-Colon delimited text (CSV)..."
@@ -1286,9 +1271,6 @@ msgid "Show last edits in specific date range"
 msgstr ""
 
 msgid "Show only cells in current search"
-msgstr ""
-
-msgid "Show statistics"
 msgstr ""
 
 msgid "Single click maximize from tray"
