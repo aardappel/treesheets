@@ -213,13 +213,13 @@ msgid "*.*"
 msgstr "*.*"
 
 msgid "...and jump to the end of the text"
-msgstr ""
+msgstr "...und mit dem Cursor an das Textende springen"
 
 msgid "...and progress to the first cell in the new row"
-msgstr ""
+msgstr "...and bei der ersten Zelle in der neuen Zeile fortfahren"
 
 msgid "...and progress to the next cell on the right"
-msgstr ""
+msgstr "...und bei der nächsten Zelle rechts fortfahren"
 
 msgid "1:1 scale restored."
 msgstr "1:1-Skalierung wurde wiederhergestellt."
