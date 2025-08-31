@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-22 22:55+0200\n"
+"POT-Creation-Date: 2025-08-30 19:48+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -212,6 +212,15 @@ msgstr "&XML..."
 msgid "*.*"
 msgstr "*.*"
 
+msgid "...and jump to the end of the text"
+msgstr "...und mit dem Cursor an das Textende springen"
+
+msgid "...and progress to the first cell in the new row"
+msgstr "...and bei der ersten Zelle in der neuen Zeile fortfahren"
+
+msgid "...and progress to the next cell on the right"
+msgstr "...und bei der nächsten Zelle rechts fortfahren"
+
 msgid "1:1 scale restored."
 msgstr "1:1-Skalierung wurde wiederhergestellt."
 
@@ -299,12 +308,11 @@ msgstr "Es kann nur diese Zelle aus einer Nx1- oder 1xN-Tabelle verschoben werde
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "Es kann nur diese Zelle in eine Nx1- oder 1xN-Tabelle verschoben werden."
 
-msgid ""
-"Can't sort: make a 1xN selection to indicate what column to sort on, and "
-"what rows to affect"
-msgstr ""
-"Kann nicht sortieren: bitte führen Sie eine 1xN-Auswahl durch, um die zu "
-"sortierende Spalte anzugeben, und welche Zeilen verarbeitet werden sollen"
+msgid "Can paste or drop only exactly one file."
+msgstr "Es kann nur genau eine Datei eingefügt oder in das Fenster gezogen werden."
+
+msgid "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect"
+msgstr "Kann nicht sortieren: bitte führen Sie eine 1xN-Auswahl durch, um die zu sortierende Spalte anzugeben, und welche Zeilen verarbeitet werden sollen"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -315,19 +323,12 @@ msgstr "Textbearbeitungen abbrechen"
 msgid "Cannot decompress file."
 msgstr "Datei konnte nicht dekomprimiert werden."
 
-msgid "Cannot drag & drop more than 1 file."
-msgstr "Es konnte nicht mehr als 1 Datei gedrag-&dropped werden."
-
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
+msgid "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
 "or use Flatten)."
-msgstr ""
-"Kann die nicht-flache Tabelle nicht exportieren (Vergrößern Sie auf die "
-"gewünschte Tabelle und/oder benutzen Sie die Verflachen-Funktion)"
+msgstr "Kann die nicht-flache Tabelle nicht exportieren (Vergrößern Sie auf die gewünschte Tabelle und/oder benutzen Sie die Verflachen-Funktion)"
 
 msgid "Cannot move this cell up in the hierarchy."
-msgstr ""
-"Diese Zelle konnte in der Hierarchie nicht nach oben verschoben werden."
+msgstr "Diese Zelle konnte in der Hierarchie nicht nach oben verschoben werden."
 
 msgid "Cannot open file."
 msgstr "Die Datei konnte nicht geöffnet werden."
@@ -769,6 +770,15 @@ msgstr "Symbol "
 msgid "Image Resize"
 msgstr "Bildgröße verändern..."
 
+msgid "Image(s) have been saved to disk."
+msgstr "Bild(er) wurde(n) auf Datenträger gespeichert"
+
+msgid "Images in selected cells have been converted to JPEG format."
+msgstr "Bilder in den ausgewählten Zellen wurden in das JPEG-Format konvertiert"
+
+msgid "Images in selected cells have been converted to PNG format."
+msgstr "Bilder in den ausgewählten Zellen wurden in das PNG-Format konvertiert"
+
 msgid "Import from"
 msgstr "Import von"
 
@@ -793,12 +803,8 @@ msgstr "Interaktives &Tutorial"
 msgid "Internal error: unimplemented operation!"
 msgstr "Interner Fehler: Nicht implementierter Vorgang!"
 
-msgid ""
-"It seems that you are about to drop a TreeSheets file. What would you like "
-"to do?"
-msgstr ""
-"Es scheint, dass Sie gerade eine TreeSheets-Datei in das Fenster ziehen. Was "
-"möchten Sie gerne tun?"
+msgid "It seems that you are about to paste or drop a TreeSheets file. What would you like to do?"
+msgstr "Es scheint, dass Sie gerade eine TreeSheets-Datei einfügen oder in das Fenster ziehen. Was möchten Sie gerne tun?"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG-Datei ist fehlerhaft/beschädigt!"
@@ -1092,7 +1098,6 @@ msgstr "Radius &5"
 msgid "Radius &6"
 msgstr "Radius &6"
 
-#, fuzzy
 msgid "Reload when another computer has changed a file (if you have made changes, asks)"
 msgstr "Lädt neu wenn ein anderer Rechner die Datei geändert hat (wenn Sie die Änderungen vorgenommen haben, wird das Programm nachfragen)"
 
@@ -1141,6 +1146,9 @@ msgstr "Spaltenbreiten zurücksetzen"
 msgid "Run"
 msgstr "Ausführen"
 
+msgid "S&cript"
+msgstr "S&kript"
+
 msgid "Save &As..."
 msgstr "Speichern &unter..."
 
@@ -1165,9 +1173,8 @@ msgstr "Aktuelles Dokument speichern"
 msgid "Save current document with a different filename"
 msgstr "Das aktuelle Dokument unter einem anderen Dateinamen speichern"
 
-#, fuzzy
 msgid "Save image(s) from selected cell(s) to disk. Multiple images will be saved with a counter appended to each file name."
-msgstr "Bild(er) auf Datenträgern speichern. Mehrere Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt."
+msgstr "Bild(er) aus den ausgewählten Zellen auf Datenträger speichern. Mehrere Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt."
 
 msgid "Save open documents periodically to temporary files"
 msgstr "Geöffnete Dokumente periodisch in temporären Dateien sichern"
@@ -1184,9 +1191,6 @@ msgstr "Skalieren (Pixel &resampeln, Prozent)"
 
 msgid "Scale (re-sample pixels, by &width)"
 msgstr "Skalieren (Pixel &resampeln, Breite)"
-
-msgid "Script"
-msgstr "Skript"
 
 msgid "Scroll Down (mousewheel)"
 msgstr "Herunterscrollen (Mausrad)"
@@ -1218,10 +1222,6 @@ msgstr "Erstes untergeordnetes Element auswählen"
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr "Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren Untertabellen haben."
 
-#, c-format
-msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr "Die Auswahl enthält %d Zelle(n) mit %d Zeichen."
-
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Text mit Semikolon als Trennzeichen (CSV)..."
 
@@ -1251,6 +1251,9 @@ msgstr "Die Standardspaltenbreite für eine neue Tabelle setzen"
 
 msgid "Set the font the document text is displayed with"
 msgstr "Die Schrift auswählen, in der der Dokumententext angezeigt wird"
+
+msgid "Set the font the typewriter text is displayed with."
+msgstr "Die Schreibmaschinenschrift auswählen, in der der Dokumententext angezeigt wird"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
@@ -1284,9 +1287,6 @@ msgstr "Die letzten Bearbeitungen in einem bestimmten Datumsbereich anzeigen"
 
 msgid "Show only cells in current search"
 msgstr "Nur Zellen in der aktuellen Suche anzeigen"
-
-msgid "Show statistics"
-msgstr "Statistiken anzeigen"
 
 msgid "Single click maximize from tray"
 msgstr "Ein Klick im Benachrichtungsfeld maximiert das Fenster"
@@ -1355,6 +1355,9 @@ msgstr "Der formfreie hierarchische Informationsorganisator"
 msgid "The browser could not open at least one link."
 msgstr "Der Browser konnte mindestens einen Link nicht öffnen."
 
+msgid "There are no images in the selection."
+msgstr "Es befinden sich keine Bilder in der Auswahl."
+
 msgid "There is no content to collapse."
 msgstr "Es gibt keinen Inhalt zum Zusammenlegen."
 
@@ -1392,7 +1395,7 @@ msgid "Toggle cell &strikethrough"
 msgstr "Zellentext durchstreichen (ein/aus)"
 
 msgid "Toggle cell &typewriter"
-msgstr "Proportionaler Zellen&text (ein/aus)"
+msgstr "Zellen&text in Schreibmaschinenschrift (ein/aus)"
 
 msgid "Toggle cell &underlined"
 msgstr "Zellentext unterstreichen (ein/aus)"
@@ -1438,6 +1441,9 @@ msgstr "Filter deaktivieren"
 
 msgid "Tutorial &web page"
 msgstr "Tutorial-&Webseite"
+
+msgid "Typewriter font..."
+msgstr "Schreibmaschinenschrift..."
 
 msgid "Undo (CTRL+z)"
 msgstr "Rückgängig machen (STRG+z)"
