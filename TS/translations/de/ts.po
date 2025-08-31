@@ -1220,9 +1220,7 @@ msgid "Select First &Child"
 msgstr "Erstes untergeordnetes Element auswählen"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
-msgstr ""
-"Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren "
-"Untertabellen haben."
+msgstr "Ausgewähltes Raster ist keine Tabelle: Zellen dürfen keine weiteren Untertabellen haben."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Text mit Semikolon als Trennzeichen (CSV)..."
