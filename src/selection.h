@@ -53,10 +53,10 @@ class Selection {
         textedit = true;
         SetCursorEdit(doc, true);
     }
-    void EnterEdit(Document *doc, int c = 0, int ce = 0) {
+    void EnterEdit(Document *doc, int cursor = 0, int cursorend = 0) {
         EnterEditOnly(doc);
-        cursor = c;
-        cursorend = ce;
+        this->cursor = cursor;
+        this->cursorend = cursorend;
     }
     void ExitEdit(Document *doc) {
         textedit = false;
