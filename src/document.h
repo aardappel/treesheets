@@ -338,11 +338,11 @@ struct Document {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
                 wxDataObjectComposite dragdata;
                 if (c && !c->text.t && c->text.image) {
-                    auto img = c->text.image;
-                    if (!img->data.empty()) {
-                        auto &[it, mime] = imagetypes.at(img->type);
-                        auto bm = ConvertBufferToWxBitmap(img->data, it);
-                        dragdata.Add(new wxBitmapDataObject(bm));
+                    auto image = c->text.image;
+                    if (!image->data.empty()) {
+                        auto &[it, mime] = imagetypes.at(image->type);
+                        auto bitmap = ConvertBufferToWxBitmap(image->data, it);
+                        dragdata.Add(new wxBitmapDataObject(bitmap));
                     }
                 } else {
                     auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
@@ -375,11 +375,11 @@ struct Document {
             default: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
                 if (c && !c->text.t && c->text.image) {
-                    auto img = c->text.image;
-                    if (!img->data.empty() && wxTheClipboard->Open()) {
-                        auto &[it, mime] = imagetypes.at(img->type);
-                        auto bm = ConvertBufferToWxBitmap(img->data, it);
-                        wxTheClipboard->SetData(new wxBitmapDataObject(bm));
+                    auto image = c->text.image;
+                    if (!image->data.empty() && wxTheClipboard->Open()) {
+                        auto &[it, mime] = imagetypes.at(image->type);
+                        auto bitmap = ConvertBufferToWxBitmap(image->data, it);
+                        wxTheClipboard->SetData(new wxBitmapDataObject(bitmap));
                         wxTheClipboard->Close();
                     }
                 } else {
@@ -1659,14 +1659,14 @@ struct Document {
                         _(L"Image Resize"), 50, 5, 400, sys->frame);
                 }
                 if (v < 0) return nullptr;
-                for (auto img : imagestomanipulate) {
+                for (auto image : imagestomanipulate) {
                     if (action == A_IMAGESCW) {
-                        int pw = img->pixel_width;
-                        if (pw) img->ImageRescale((double)v / (double)pw);
+                        int pw = image->pixel_width;
+                        if (pw) image->ImageRescale((double)v / (double)pw);
                     } else if (action == A_IMAGESCP) {
-                        img->ImageRescale(v / 100.0);
+                        image->ImageRescale(v / 100.0);
                     } else {
-                        img->DisplayScale(v / 100.0);
+                        image->DisplayScale(v / 100.0);
                     }
                 }
                 curdrawroot->ResetChildren();
@@ -1716,17 +1716,18 @@ struct Document {
             case A_SAVE_AS_JPEG:
             case A_SAVE_AS_PNG:
                 loopallcellssel(c, true) {
-                    auto img = c->text.image;
-                    if (action == A_SAVE_AS_JPEG && img && img->type == 'I') {
-                        auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_PNG);
-                        img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
-                        img->type = 'J';
+                    auto image = c->text.image;
+                    if (action == A_SAVE_AS_JPEG && image && image->type == 'I') {
+                        auto transferimage = ConvertBufferToWxImage(image->data, wxBITMAP_TYPE_PNG);
+                        image->data = ConvertWxImageToBuffer(transferimage, wxBITMAP_TYPE_JPEG);
+                        image->type = 'J';
                         return _(L"Images in selected cells have been converted to JPEG format.");
                     }
-                    if (action == A_SAVE_AS_PNG && img && img->type == 'J') {
-                        auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_JPEG);
-                        img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
-                        img->type = 'I';
+                    if (action == A_SAVE_AS_PNG && image && image->type == 'J') {
+                        auto transferimage =
+                            ConvertBufferToWxImage(image->data, wxBITMAP_TYPE_JPEG);
+                        image->data = ConvertWxImageToBuffer(transferimage, wxBITMAP_TYPE_PNG);
+                        image->type = 'I';
                         return _(L"Images in selected cells have been converted to PNG format.");
                     }
                 }
