@@ -371,17 +371,17 @@ struct System {
         }
     }
 
-    const wxChar *Import(const wxString &filename, int k) {
+    const wxChar *Import(const wxString &filename, int action) {
         if (!filename.empty()) {
             wxBusyCursor wait;
-            switch (k) {
+            switch (action) {
                 case A_IMPXML:
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(filename)) goto problem;
                     Cell *&root = InitDB(1);
                     Cell *c = *root->grid->cells;
-                    FillXML(c, doc.GetRoot(), k == A_IMPXMLA);
+                    FillXML(c, doc.GetRoot(), action == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
                         *root->grid->cells = nullptr;
                         delete root;
@@ -400,7 +400,7 @@ struct System {
                     if (!file.ReadAll(&content)) goto problem;
                     const auto &lines = wxStringTokenize(content, LINE_SEPERATOR);
 
-                    if (lines.size()) switch (k) {
+                    if (lines.size()) switch (action) {
                             case A_IMPTXTI: {
                                 Cell *root = InitDB(1);
                                 FillRows(root->grid, lines, CountCol(lines[0]), 0, 0);

@@ -322,18 +322,18 @@ struct Document {
         }
     }
 
-    auto CopyEntireCells(wxString &s, int k) {
+    auto CopyEntireCells(wxString &s, int action) {
         sys->clipboardcopy = s;
         auto html = selected.grid->ConvertToText(
-            selected, 0, k == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT, this, false, curdrawroot);
+            selected, 0, action == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT, this, false, curdrawroot);
         return new wxHTMLDataObject(html);
     }
 
-    void Copy(int k) {
+    void Copy(int action) {
         auto c = selected.GetCell();
         sys->clipboardcopy = wxEmptyString;
 
-        switch (k) {
+        switch (action) {
             case A_DRAGANDDROP: {
                 sys->cellclipboard = c ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
                 wxDataObjectComposite dragdata;
@@ -388,7 +388,7 @@ struct Document {
                                                           curdrawroot);
                     clipboarddata->Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
-                        auto htmlobj = CopyEntireCells(s, k);
+                        auto htmlobj = CopyEntireCells(s, action);
                         clipboarddata->Add(htmlobj);
                     }
                     if (wxTheClipboard->Open()) {
@@ -689,11 +689,11 @@ struct Document {
         return keep;
     }
 
-    const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *message, int k) {
+    const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *message, int action) {
         auto filename = ::wxFileSelector(message, L"", L"", fmt, pat,
                                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (filename.empty()) return _(L"Export cancelled.");
-        return ExportFile(filename, k, true);
+        return ExportFile(filename, action, true);
     }
 
     wxBitmap GetBitmap() {
@@ -718,9 +718,9 @@ struct Document {
         root->ImageRefCount(includefolded);
     }
 
-    const wxChar *ExportFile(const wxString &filename, int k, bool currentview) {
+    const wxChar *ExportFile(const wxString &filename, int action, bool currentview) {
         Cell *exportroot = currentview ? curdrawroot : root;
-        if (k == A_EXPIMAGE) {
+        if (action == A_EXPIMAGE) {
             auto bitmap = GetBitmap();
             canvas->Refresh();
             if (!bitmap.SaveFile(filename, wxBITMAP_TYPE_PNG)) return _(L"Error writing PNG file!");
@@ -731,8 +731,8 @@ struct Document {
                 return _(L"Error writing to file!");
             }
             wxTextOutputStream dos(fos);
-            wxString content = exportroot->ToText(0, Selection(), k, this, true, exportroot);
-            switch (k) {
+            wxString content = exportroot->ToText(0, Selection(), action, this, true, exportroot);
+            switch (action) {
                 case A_EXPXML:
                     dos.WriteString(
                         L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -871,8 +871,8 @@ struct Document {
         return nullptr;
     }
 
-    const wxChar *Action(int k) {
-        switch (k) {
+    const wxChar *Action(int action) {
+        switch (action) {
             case wxID_EXECUTE:
                 sys->ev.Eval(root);
                 root->ResetChildren();
@@ -899,19 +899,22 @@ struct Document {
             case wxID_SAVEAS: return Save(true);
             case A_SAVEALL: sys->SaveAll(); return nullptr;
 
-            case A_EXPXML: return Export(L"xml", L"*.xml", _(L"Choose XML file to write"), k);
+            case A_EXPXML: return Export(L"xml", L"*.xml", _(L"Choose XML file to write"), action);
             case A_EXPHTMLT:
             case A_EXPHTMLB:
-            case A_EXPHTMLO: return Export(L"html", L"*.html", _(L"Choose HTML file to write"), k);
-            case A_EXPTEXT: return Export(L"txt", L"*.txt", _(L"Choose Text file to write"), k);
-            case A_EXPIMAGE: return Export(L"png", L"*.png", _(L"Choose PNG file to write"), k);
+            case A_EXPHTMLO:
+                return Export(L"html", L"*.html", _(L"Choose HTML file to write"), action);
+            case A_EXPTEXT:
+                return Export(L"txt", L"*.txt", _(L"Choose Text file to write"), action);
+            case A_EXPIMAGE:
+                return Export(L"png", L"*.png", _(L"Choose PNG file to write"), action);
             case A_EXPCSV: {
                 int maxdepth = 0, leaves = 0;
                 curdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
                 if (maxdepth > 1)
                     return _(
                         L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
-                return Export(L"csv", L"*.csv", _(L"Choose CSV file to write"), k);
+                return Export(L"csv", L"*.csv", _(L"Choose CSV file to write"), action);
             }
 
             case A_IMPXML:
@@ -924,7 +927,7 @@ struct Document {
                 GetFilesFromUser(filenames, sys->frame, _(L"Please select file(s) to import:"),
                                  _(L"*.*"));
                 const wxChar *message = nullptr;
-                for (auto &filename : filenames) message = sys->Import(filename, k);
+                for (auto &filename : filenames) message = sys->Import(filename, action);
                 return message;
             }
 
@@ -1005,16 +1008,16 @@ struct Document {
             case wxID_SELECT_FONT:
             case A_SET_FIXED_FONT: {
                 wxFontData fdat;
-                fdat.SetInitialFont(
-                    wxFont(g_deftextsize,
-                           k == wxID_SELECT_FONT ? wxFONTFAMILY_DEFAULT : wxFONTFAMILY_TELETYPE,
-                           wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false,
-                           k == wxID_SELECT_FONT ? sys->defaultfont : sys->defaultfixedfont));
+                fdat.SetInitialFont(wxFont(
+                    g_deftextsize,
+                    action == wxID_SELECT_FONT ? wxFONTFAMILY_DEFAULT : wxFONTFAMILY_TELETYPE,
+                    wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false,
+                    action == wxID_SELECT_FONT ? sys->defaultfont : sys->defaultfixedfont));
                 if (wxFontDialog fd(sys->frame, fdat); fd.ShowModal() == wxID_OK) {
                     wxFont font = fd.GetFontData().GetChosenFont();
                     g_deftextsize = min(20, max(10, font.GetPointSize()));
                     sys->cfg->Write(L"defaultfontsize", g_deftextsize);
-                    switch (k) {
+                    switch (action) {
                         case wxID_SELECT_FONT:
                             sys->defaultfont = font.GetFaceName();
                             sys->cfg->Write(L"defaultfont", sys->defaultfont);
@@ -1095,7 +1098,7 @@ struct Document {
 
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {
-                if (sys->searchstring.Len()) return SearchNext(false, true, k == A_SEARCHPREV);
+                if (sys->searchstring.Len()) return SearchNext(false, true, action == A_SEARCHPREV);
                 if (auto c = selected.GetCell()) {
                     auto s = c->text.ToText(0, selected, A_EXPTEXT);
                     if (!s.Len()) return _(L"No text to search for.");
@@ -1125,7 +1128,7 @@ struct Document {
             case A_ROUND4:
             case A_ROUND5:
             case A_ROUND6:
-                sys->cfg->Write(L"roundness", long(sys->roundness = k - A_ROUND0));
+                sys->cfg->Write(L"roundness", long(sys->roundness = action - A_ROUND0));
                 canvas->Refresh();
                 return nullptr;
 
@@ -1149,7 +1152,7 @@ struct Document {
                 auto replaces = sys->frame->replaces->GetValue();
                 auto lreplaces =
                     sys->casesensitivesearch ? (wxString)wxEmptyString : replaces.Lower();
-                if (k == A_REPLACEALL) {
+                if (action == A_REPLACEALL) {
                     root->AddUndo(this);  // expensive?
                     root->FindReplaceAll(replaces, lreplaces);
                     root->ResetChildren();
@@ -1157,7 +1160,7 @@ struct Document {
                 } else {
                     loopallcellssel(c, true) if (c->text.IsInSearch()) c->AddUndo(this);
                     selected.grid->ReplaceStr(this, replaces, lreplaces, selected);
-                    if (k == A_REPLACEONCEJ) return SearchNext(false, true, false);
+                    if (action == A_REPLACEONCEJ) return SearchNext(false, true, false);
                 }
                 return _(L"Text has been replaced.");
             }
@@ -1245,7 +1248,7 @@ struct Document {
 
         auto cell = selected.GetCell();
 
-        switch (k) {
+        switch (action) {
             case A_BACKSPACE:
                 if (selected.Thin()) {
                     if (selected.xs)
@@ -1302,8 +1305,8 @@ struct Document {
                 if (selected.TextEdit()) {
                     if (selected.cursor == selected.cursorend) return _(L"No text selected.");
                 }
-                Copy(k);
-                if (k == wxID_CUT) {
+                Copy(action);
+                if (action == wxID_CUT) {
                     if (!selected.TextEdit()) {
                         selected.grid->cell->AddUndo(this);
                         selected.grid->MultiCellDelete(this, selected);
@@ -1355,42 +1358,46 @@ struct Document {
             case A_UP:
             case A_DOWN:
             case A_LEFT:
-            case A_RIGHT: selected.Cursor(this, k, false, false); return nullptr;
+            case A_RIGHT: selected.Cursor(this, action, false, false); return nullptr;
 
             case A_MUP:
             case A_MDOWN:
             case A_MLEFT:
-            case A_MRIGHT: selected.Cursor(this, k - A_MUP + A_UP, true, false); return nullptr;
+            case A_MRIGHT:
+                selected.Cursor(this, action - A_MUP + A_UP, true, false);
+                return nullptr;
 
             case A_SUP:
             case A_SDOWN:
             case A_SLEFT:
-            case A_SRIGHT: selected.Cursor(this, k - A_SUP + A_UP, false, true); return nullptr;
+            case A_SRIGHT:
+                selected.Cursor(this, action - A_SUP + A_UP, false, true);
+                return nullptr;
 
             case A_SCLEFT:
             case A_SCRIGHT:
-                if (!selected.TextEdit() && k == A_SCLEFT) {
+                if (!selected.TextEdit() && action == A_SCLEFT) {
                     selected.xs = selected.Thin() ? selected.x : selected.x + 1;
                     selected.x = 0;
                     canvas->Refresh();
                     return nullptr;
                 }
-                if (!selected.TextEdit() && k == A_SCRIGHT) {
+                if (!selected.TextEdit() && action == A_SCRIGHT) {
                     selected.xs = selected.grid->xs - selected.x;
                     canvas->Refresh();
                     return nullptr;
                 }
-                selected.Cursor(this, k - A_SCUP + A_UP, true, true);
+                selected.Cursor(this, action - A_SCUP + A_UP, true, true);
                 return nullptr;
 
             case A_SCUP:
             case A_SCDOWN:
-                if (!selected.TextEdit() && k == A_SCUP) {
+                if (!selected.TextEdit() && action == A_SCUP) {
                     selected.ys = selected.Thin() ? selected.y : selected.y + 1;
                     selected.y = 0;
                     canvas->Refresh();
                 }
-                if (!selected.TextEdit() && k == A_SCDOWN) {
+                if (!selected.TextEdit() && action == A_SCDOWN) {
                     selected.ys = selected.grid->ys - selected.y;
                     canvas->Refresh();
                 }
@@ -1413,7 +1420,7 @@ struct Document {
             case A_MARKVIEWV:
             case A_MARKCODE: {
                 int newcelltype;
-                switch (k) {
+                switch (action) {
                     case A_MARKDATA: newcelltype = CT_DATA; break;
                     case A_MARKVARD: newcelltype = CT_VARD; break;
                     case A_MARKVARU: newcelltype = CT_VARU; break;
@@ -1490,15 +1497,15 @@ struct Document {
             case A_ENTERCELL_JUMPTOEND:
             case A_ENTERCELL_JUMPTOSTART:
             case A_PROGRESSCELL: {
-                if (!(cell = selected.ThinExpand(this, k == A_ENTERCELL_JUMPTOSTART)))
+                if (!(cell = selected.ThinExpand(this, action == A_ENTERCELL_JUMPTOSTART)))
                     return OneCell();
                 if (selected.TextEdit()) {
-                    selected.Cursor(this, k == A_PROGRESSCELL ? A_RIGHT : A_DOWN, false, false,
+                    selected.Cursor(this, action == A_PROGRESSCELL ? A_RIGHT : A_DOWN, false, false,
                                     true);
                 } else {
-                    selected.EnterEdit(this,
-                                       k == A_ENTERCELL_JUMPTOEND ? (int)cell->text.t.Len() : 0,
-                                       (int)cell->text.t.Len());
+                    selected.EnterEdit(
+                        this, action == A_ENTERCELL_JUMPTOEND ? (int)cell->text.t.Len() : 0,
+                        (int)cell->text.t.Len());
                     RefreshMove();
                 }
                 return nullptr;
@@ -1545,7 +1552,7 @@ struct Document {
             case A_BORD4:
             case A_BORD5:
                 selected.grid->cell->AddUndo(this);
-                selected.grid->SetBorder(k - A_BORD0 + 1, selected);
+                selected.grid->SetBorder(action - A_BORD0 + 1, selected);
                 selected.grid->cell->ResetChildren();
                 canvas->Refresh();
                 return nullptr;
@@ -1572,7 +1579,7 @@ struct Document {
             case A_LASTTEXTCOLOR:
             case A_LASTBORDCOLOR:
                 selected.grid->cell->AddUndo(this);
-                loopallcellssel(c, true) switch (k) {
+                loopallcellssel(c, true) switch (action) {
                     case A_RESETSIZE: c->text.relsize = 0; break;
                     case A_RESETWIDTH:
                         if (c->grid) c->grid->InitColWidths();
@@ -1618,9 +1625,9 @@ struct Document {
             case A_FOLD:
             case A_FOLDALL:
             case A_UNFOLDALL:
-                loopallcellssel(c, k != A_FOLD) if (c->grid) {
+                loopallcellssel(c, action != A_FOLD) if (c->grid) {
                     c->AddUndo(this);
-                    c->grid->folded = k == A_FOLD ? !c->grid->folded : k == A_FOLDALL;
+                    c->grid->folded = action == A_FOLD ? !c->grid->folded : action == A_FOLDALL;
                     c->ResetChildren();
                 }
                 canvas->Refresh();
@@ -1631,7 +1638,7 @@ struct Document {
             case A_CHOME:
             case A_CEND:
                 if (selected.TextEdit()) break;
-                selected.HomeEnd(this, k == A_HOME || k == A_CHOME);
+                selected.HomeEnd(this, action == A_HOME || action == A_CHOME);
                 return nullptr;
 
             case A_IMAGESCP:
@@ -1643,7 +1650,7 @@ struct Document {
                     if (c->text.image) { imagestomanipulate.insert(c->text.image); }
                 }
                 if (imagestomanipulate.empty()) return nullptr;
-                if (k == A_IMAGESCW) {
+                if (action == A_IMAGESCW) {
                     v = wxGetNumberFromUser(_(L"Please enter the new image width:"), _(L"Width"),
                                             _(L"Image Resize"), 500, 10, 4000, sys->frame);
                 } else {
@@ -1653,10 +1660,10 @@ struct Document {
                 }
                 if (v < 0) return nullptr;
                 for (auto img : imagestomanipulate) {
-                    if (k == A_IMAGESCW) {
+                    if (action == A_IMAGESCW) {
                         int pw = img->pixel_width;
                         if (pw) img->ImageRescale((double)v / (double)pw);
-                    } else if (k == A_IMAGESCP) {
+                    } else if (action == A_IMAGESCP) {
                         img->ImageRescale(v / 100.0);
                     } else {
                         img->DisplayScale(v / 100.0);
@@ -1710,13 +1717,13 @@ struct Document {
             case A_SAVE_AS_PNG:
                 loopallcellssel(c, true) {
                     auto img = c->text.image;
-                    if (k == A_SAVE_AS_JPEG && img && img->type == 'I') {
+                    if (action == A_SAVE_AS_JPEG && img && img->type == 'I') {
                         auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_PNG);
                         img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_JPEG);
                         img->type = 'J';
                         return _(L"Images in selected cells have been converted to JPEG format.");
                     }
-                    if (k == A_SAVE_AS_PNG && img && img->type == 'J') {
+                    if (action == A_SAVE_AS_PNG && img && img->type == 'J') {
                         auto im = ConvertBufferToWxImage(img->data, wxBITMAP_TYPE_JPEG);
                         img->data = ConvertWxImageToBuffer(im, wxBITMAP_TYPE_PNG);
                         img->type = 'I';
@@ -1779,7 +1786,7 @@ struct Document {
 
         if (cell || (!cell && selected.IsAll())) {
             auto ac = cell ? cell : selected.grid->cell;
-            switch (k) {
+            switch (action) {
                 case A_TRANSPOSE:
                     if (ac->grid) {
                         ac->AddUndo(this);
@@ -1822,7 +1829,7 @@ struct Document {
 
         if (!cell) return OneCell();
 
-        switch (k) {
+        switch (action) {
             case A_NEXT: selected.Next(this, false); return nullptr;
             case A_PREV: selected.Next(this, true); return nullptr;
 
@@ -1836,14 +1843,14 @@ struct Document {
             case A_LINKIMG:
             case A_LINKREV:
             case A_LINKIMGREV: {
-                if ((k == A_LINK || k == A_LINKREV) && !cell->text.t.Len())
+                if ((action == A_LINK || action == A_LINKREV) && !cell->text.t.Len())
                     return _(L"No text in this cell.");
-                if ((k == A_LINKIMG || k == A_LINKIMGREV) && !cell->text.image)
+                if ((action == A_LINKIMG || action == A_LINKIMGREV) && !cell->text.image)
                     return _(L"No image in this cell.");
                 bool t1 = false, t2 = false;
-                auto link =
-                    root->FindLink(selected, cell, nullptr, t1, t2, k == A_LINK || k == A_LINKIMG,
-                                   k == A_LINKIMG || k == A_LINKIMGREV);
+                auto link = root->FindLink(selected, cell, nullptr, t1, t2,
+                                           action == A_LINK || action == A_LINKIMG,
+                                           action == A_LINKIMG || action == A_LINKIMGREV);
                 if (!link || !link->parent) return _(L"No matching cell found!");
                 SetSelect(link->parent->grid->FindCell(link));
                 ScrollOrZoom(true);
@@ -1885,7 +1892,7 @@ struct Document {
 
         if (!selected.TextEdit()) return _(L"only works in cell text mode");
 
-        switch (k) {
+        switch (action) {
             case A_CANCELEDIT:
                 if (LastUndoSameCellTextEdit(cell))
                     Undo(undolist, redolist);
@@ -1908,7 +1915,7 @@ struct Document {
             case A_CEND:
             case A_HOME:
             case A_END: {
-                switch (k) {
+                switch (action) {
                     case A_SHOME:  // FIXME: this functionality is really SCHOME, SHOME should be
                                    // within line
                         selected.cursor = 0;
