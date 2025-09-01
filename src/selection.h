@@ -2,7 +2,7 @@ class Selection {
     bool textedit {false};
 
     public:
-    Grid *g;
+    Grid *grid;
     int x;
     int y;
     int xs;
@@ -12,8 +12,8 @@ class Selection {
     int firstdx {0};
     int firstdy {0};
 
-    Selection(Grid *_g = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
-        : g(_g), x(_x), y(_y), xs(_xs), ys(_ys) {}
+    Selection(Grid *_grid = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
+        : grid(_grid), x(_x), y(_y), xs(_xs), ys(_ys) {}
 
     void SelAll() {
         if (textedit) {
@@ -21,21 +21,21 @@ class Selection {
             cursorend = MaxCursor();
         } else {
             x = y = 0;
-            xs = g->xs;
-            ys = g->ys;
+            xs = grid->xs;
+            ys = grid->ys;
         }
     }
 
-    Cell *GetCell() const { return g && xs == 1 && ys == 1 ? g->C(x, y) : nullptr; }
-    Cell *GetFirst() const { return g && xs >= 1 && ys >= 1 ? g->C(x, y) : nullptr; }
+    Cell *GetCell() const { return grid && xs == 1 && ys == 1 ? grid->C(x, y) : nullptr; }
+    Cell *GetFirst() const { return grid && xs >= 1 && ys >= 1 ? grid->C(x, y) : nullptr; }
     bool EqLoc(const Selection &s) {
-        return g == s.g && x == s.x && y == s.y && xs == s.xs && ys == s.ys;
+        return grid == s.grid && x == s.x && y == s.y && xs == s.xs && ys == s.ys;
     }
     bool operator==(Selection &s) {
         return EqLoc(s) && cursor == s.cursor && cursorend == s.cursorend;
     }
     bool Thin() const { return !(xs * ys); }
-    bool IsAll() const { return xs == g->xs && ys == g->ys; }
+    bool IsAll() const { return xs == grid->xs && ys == grid->ys; }
     void SetCursorEdit(Document *doc, bool edit) {
         wxCursor c(edit ? wxCURSOR_IBEAM : wxCURSOR_ARROW);
         #ifdef WIN32
@@ -65,15 +65,15 @@ class Selection {
     }
 
     bool IsInside(Selection &o) {
-        if (!o.g || !g) return false;
-        if (g != o.g)
-            return g->cell->parent && g->cell->parent->grid->FindCell(g->cell).IsInside(o);
+        if (!o.grid || !grid) return false;
+        if (grid != o.grid)
+            return grid->cell->parent && grid->cell->parent->grid->FindCell(grid->cell).IsInside(o);
         return x >= o.x && y >= o.y && x + xs <= o.x + o.xs && y + ys <= o.y + o.ys;
     }
 
     void Merge(const Selection &a, const Selection &b) {
         textedit = false;
-        if (a.g == b.g) {
+        if (a.grid == b.grid) {
             if (a.GetCell() == b.GetCell() && a.GetCell() && (a.textedit || b.textedit)) {
                 if (a.cursor != a.cursorend) {
                     Selection c = b;
@@ -99,7 +99,7 @@ class Selection {
             Merge(g->FindCell(at->Parent(ad - i)), g->FindCell(bt->Parent(bd - i)));
             return;
         }
-        g = a.g;
+        grid = a.grid;
         x = min(a.x, b.x);
         y = min(a.y, b.y);
         xs = abs(a.x - b.x) + 1;
@@ -123,16 +123,16 @@ class Selection {
     void Dir(Document *doc, bool ctrl, bool shift, int dx, int dy, int &v, int &vs, int &ovs,
              bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
-            g->cell->AddUndo(doc);
+            grid->cell->AddUndo(doc);
 
-            g->Move(dx, dy, *this);
-            x = (x + dx + g->xs) % g->xs;
-            y = (y + dy + g->ys) % g->ys;
-            if (x + xs > g->xs || y + ys > g->ys) g = nullptr;
+            grid->Move(dx, dy, *this);
+            x = (x + dx + grid->xs) % grid->xs;
+            y = (y + dy + grid->ys) % grid->ys;
+            if (x + xs > grid->xs || y + ys > grid->ys) grid = nullptr;
 
             // FIXME: this is null in the case of a whole column selection, and doesn't do the right
             // thing.
-            if (g) g->cell->ResetChildren();
+            if (grid) grid->cell->ResetChildren();
             doc->RefreshMove();
         } else {
             if (ctrl && dx)  // implies textedit
@@ -193,11 +193,11 @@ class Selection {
                         y = 0;
                         ys--;
                     }
-                    if (x + xs > g->xs) xs--;
-                    if (y + ys > g->ys) ys--;
+                    if (x + xs > grid->xs) xs--;
+                    if (y + ys > grid->ys) ys--;
                     if (!xs) firstdx = 0;
                     if (!ys) firstdy = 0;
-                    if (!xs && !ys) g = nullptr;
+                    if (!xs && !ys) grid = nullptr;
                 }
             } else {
                 if (vs) {
@@ -266,8 +266,8 @@ class Selection {
                                 vs = 0;  // make it a thin selection, in direction
                                 ovs = 1;
                             } else {
-                                if (x + dx >= 0 && x + dx + xs <= g->xs && y + dy >= 0 &&
-                                    y + dy + ys <= g->ys) {
+                                if (x + dx >= 0 && x + dx + xs <= grid->xs && y + dy >= 0 &&
+                                    y + dy + ys <= grid->ys) {
                                     x += dx;
                                     y += dy;
                                 }
@@ -283,17 +283,17 @@ class Selection {
                     if (dx + dy < 0) v--;
                     vs = 1;  // make it a cell selection
                 } else {     // selection cycle, jump to the opposite side of the grid
-                    if (y + dy > g->ys) {
+                    if (y + dy > grid->ys) {
                         y = 0;
                         vs = 1;
                     } else if (y + dy < 0) {
-                        y = g->ys - 1;
+                        y = grid->ys - 1;
                         vs = 1;
-                    } else if (x + dx > g->xs) {
+                    } else if (x + dx > grid->xs) {
                         x = 0;
                         vs = 1;
                     } else if (x + dx < 0) {
-                        x = g->xs - 1;
+                        x = grid->xs - 1;
                         vs = 1;
                     }
                 };
@@ -306,11 +306,11 @@ class Selection {
         switch (k) {
             case A_UP: Dir(doc, ctrl, shift, 0, -1, y, ys, xs, y != 0, y != 0, exitedit); break;
             case A_DOWN:
-                Dir(doc, ctrl, shift, 0, 1, y, ys, xs, y < g->ys, y < g->ys - 1, exitedit);
+                Dir(doc, ctrl, shift, 0, 1, y, ys, xs, y < grid->ys, y < grid->ys - 1, exitedit);
                 break;
             case A_LEFT: Dir(doc, ctrl, shift, -1, 0, x, xs, ys, x != 0, x != 0, exitedit); break;
             case A_RIGHT:
-                Dir(doc, ctrl, shift, 1, 0, x, xs, ys, x < g->xs, x < g->xs - 1, exitedit);
+                Dir(doc, ctrl, shift, 1, 0, x, xs, ys, x < grid->xs, x < grid->xs - 1, exitedit);
                 break;
         }
     }
@@ -322,15 +322,15 @@ class Selection {
                 x--;
             else if (y > 0) {
                 y--;
-                x = g->xs - 1;
+                x = grid->xs - 1;
             } else {
-                x = g->xs - 1;
-                y = g->ys - 1;
+                x = grid->xs - 1;
+                y = grid->ys - 1;
             }
         } else {
-            if (x < g->xs - 1)
+            if (x < grid->xs - 1)
                 x++;
-            else if (y < g->ys - 1) {
+            else if (y < grid->ys - 1) {
                 y++;
                 x = 0;
             } else
@@ -342,22 +342,22 @@ class Selection {
 
     const wxChar *Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
-        g->cell->AddUndo(doc);
-        auto np = g->CloneSel(*this).release();
-        g->C(x, y)->text.t = ".";  // avoid this cell getting deleted
+        grid->cell->AddUndo(doc);
+        auto np = grid->CloneSel(*this).release();
+        grid->C(x, y)->text.t = ".";  // avoid this cell getting deleted
         if (xs > 1) {
-            Selection s(g, x + 1, y, xs - 1, ys);
-            g->MultiCellDeleteSub(doc, s);
+            Selection s(grid, x + 1, y, xs - 1, ys);
+            grid->MultiCellDeleteSub(doc, s);
         }
         if (ys > 1) {
-            Selection s(g, x, y + 1, 1, ys - 1);
-            g->MultiCellDeleteSub(doc, s);
+            Selection s(grid, x, y + 1, 1, ys - 1);
+            grid->MultiCellDeleteSub(doc, s);
         }
-        auto old = g->C(x, y);
+        auto old = grid->C(x, y);
         np->text.relsize = old->text.relsize;
         np->CloneStyleFrom(old);
-        g->ReplaceCell(old, np);
-        np->parent = g->cell;
+        grid->ReplaceCell(old, np);
+        np->parent = grid->cell;
         delete old;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
@@ -368,13 +368,13 @@ class Selection {
     Cell *ThinExpand(Document *doc, bool jumptofirst = false) {
         if (Thin()) {
             if (xs) {
-                g->cell->AddUndo(doc);
-                g->InsertCells(-1, y, 0, 1);
+                grid->cell->AddUndo(doc);
+                grid->InsertCells(-1, y, 0, 1);
                 ys = 1;
                 if (jumptofirst) x = 0;
             } else {
-                g->cell->AddUndo(doc);
-                g->InsertCells(x, -1, 1, 0);
+                grid->cell->AddUndo(doc);
+                grid->InsertCells(x, -1, 1, 0);
                 xs = 1;
                 if (jumptofirst) y = 0;
             }
@@ -387,8 +387,8 @@ class Selection {
         if (ishome)
             x = y = 0;
         else {
-            x = g->xs - 1;
-            y = g->ys - 1;
+            x = grid->xs - 1;
+            y = grid->ys - 1;
         }
         doc->RefreshMove();
     }
