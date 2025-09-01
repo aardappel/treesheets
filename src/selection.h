@@ -302,8 +302,8 @@ class Selection {
         };
     }
 
-    void Cursor(Document *doc, int k, bool ctrl, bool shift, bool exitedit = false) {
-        switch (k) {
+    void Cursor(Document *doc, int action, bool ctrl, bool shift, bool exitedit = false) {
+        switch (action) {
             case A_UP: Dir(doc, ctrl, shift, 0, -1, y, ys, xs, y != 0, y != 0, exitedit); break;
             case A_DOWN:
                 Dir(doc, ctrl, shift, 0, 1, y, ys, xs, y < grid->ys, y < grid->ys - 1, exitedit);
