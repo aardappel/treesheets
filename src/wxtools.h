@@ -13,11 +13,11 @@ struct DropTarget : wxDropTarget {
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
         auto canvas = sys->frame->GetCurrentTab();
         canvas->RefreshHover(x, y);
-        return canvas->doc->hover.g ? wxDragCopy : wxDragNone;
+        return canvas->doc->hover.grid ? wxDragCopy : wxDragNone;
     }
 
     bool OnDrop(wxCoord x, wxCoord y) {
-        return sys->frame->GetCurrentTab()->doc->hover.g != nullptr;
+        return sys->frame->GetCurrentTab()->doc->hover.grid != nullptr;
     }
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();

@@ -1224,7 +1224,7 @@ struct TSFrame : wxFrame {
         if (GetStatusBar()) {
             if (Cell *c = s.GetCell(); c && s.xs) {
                 SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
-                SetStatusText(wxString::Format(_(L"Width %d"), s.g->colwidths[s.x]), 2);
+                SetStatusText(wxString::Format(_(L"Width %d"), s.grid->colwidths[s.x]), 2);
                 SetStatusText(
                     wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
                                      c->text.lastedit.FormatTime().c_str()),

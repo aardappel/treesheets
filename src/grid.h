@@ -92,9 +92,9 @@ struct Grid {
     }
 
     unique_ptr<Cell> CloneSel(const Selection &sel) {
-        auto cl = make_unique<Cell>(nullptr, sel.g->cell, CT_DATA, new Grid(sel.xs, sel.ys));
+        auto cl = make_unique<Cell>(nullptr, sel.grid->cell, CT_DATA, new Grid(sel.xs, sel.ys));
         foreachcellinsel(c, sel) cl->grid->C(x - sel.x, y - sel.y) = c->Clone(cl.get()).release();
-        loop(i, sel.xs) cl->grid->colwidths[i] = sel.g->colwidths[i];
+        loop(i, sel.xs) cl->grid->colwidths[i] = sel.grid->colwidths[i];
         return cl;
     }
 
@@ -286,7 +286,7 @@ struct Grid {
             }
             if (c->IsInside(bx, by)) {
                 if (c->GridShown(doc)) c->grid->FindXY(doc, bx, by, dc);
-                if (doc->hover.g) return;
+                if (doc->hover.grid) return;
                 doc->hover = Selection(this, x, y, 1, 1);
                 if (c->HasText()) {
                     c->text.FindCursor(doc, bx, by - c->ycenteroff, dc, doc->hover, colwidths[x]);
@@ -470,7 +470,7 @@ struct Grid {
     }
 
     void DelSelf(Document *doc, Selection &s) {
-        if (!doc->drawpath.empty() && doc->drawpath.back().g == this) {
+        if (!doc->drawpath.empty() && doc->drawpath.back().grid == this) {
             doc->drawpath.pop_back();
             doc->curdrawroot = doc->WalkPath(doc->drawpath);
         }
@@ -645,7 +645,7 @@ struct Grid {
             c->parent = p->cell;
             c = nullptr;
         }
-        sel.g = p;
+        sel.grid = p;
         sel.xs += xs - 1;
         sel.ys += ys - 1;
         sel.ExitEdit(doc);

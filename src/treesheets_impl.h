@@ -47,7 +47,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void GoToRoot() { cur = doc->root; }
     void GoToView() { cur = doc->curdrawroot; }
-    bool HasSelection() { return doc->selected.g; }
+    bool HasSelection() { return doc->selected.grid; }
     void GoToSelection() {
         auto c = doc->selected.GetFirst();
         if (c) cur = c;
@@ -64,7 +64,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     ibox SelectionBox() {
         auto &s = doc->selected;
-        return s.g ? ibox(icoord(s.x, s.y), icoord(s.xs, s.ys)) : ibox(icoord(0, 0), icoord(0, 0));
+        return s.grid ? ibox(icoord(s.x, s.y), icoord(s.xs, s.ys))
+                      : ibox(icoord(0, 0), icoord(0, 0));
     }
 
     void GoToChild(int n) {
