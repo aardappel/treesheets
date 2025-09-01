@@ -1,9 +1,10 @@
-static void DrawRectangle(wxDC &dc, uint c, int x, int y, int xs, int ys, bool outline = false) {
+static void DrawRectangle(wxDC &dc, uint color, int x, int y, int xs, int ys,
+                          bool outline = false) {
     if (outline)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     else
-        dc.SetBrush(wxBrush(wxColour(c)));
-    dc.SetPen(wxPen(wxColour(c)));
+        dc.SetBrush(wxBrush(wxColour(color)));
+    dc.SetPen(wxPen(wxColour(color)));
     dc.DrawRectangle(x, y, xs, ys);
 }
 
