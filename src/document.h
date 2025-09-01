@@ -1243,7 +1243,7 @@ struct Document {
 
         if (!selected.grid) return NoSel();
 
-        auto c = selected.GetCell();
+        auto cell = selected.GetCell();
 
         switch (k) {
             case A_BACKSPACE:
@@ -1252,10 +1252,10 @@ struct Document {
                         DelRowCol(selected.y, 0, selected.grid->ys, 1, -1, selected.y - 1, 0, -1);
                     else
                         DelRowCol(selected.x, 0, selected.grid->xs, 1, selected.x - 1, -1, -1, 0);
-                } else if (c && selected.TextEdit()) {
+                } else if (cell && selected.TextEdit()) {
                     if (selected.cursorend == 0) return nullptr;
-                    c->AddUndo(this);
-                    c->text.Backspace(selected);
+                    cell->AddUndo(this);
+                    cell->text.Backspace(selected);
                     canvas->Refresh();
                 } else {
                     selected.grid->MultiCellDelete(this, selected);
@@ -1272,10 +1272,10 @@ struct Document {
                     else
                         DelRowCol(selected.x, selected.grid->xs, selected.grid->xs, 0, selected.x,
                                   -1, -1, 0);
-                } else if (c && selected.TextEdit()) {
-                    if (selected.cursor == c->text.t.Len()) return nullptr;
-                    c->AddUndo(this);
-                    c->text.Delete(selected);
+                } else if (cell && selected.TextEdit()) {
+                    if (selected.cursor == cell->text.t.Len()) return nullptr;
+                    cell->AddUndo(this);
+                    cell->text.Delete(selected);
                     canvas->Refresh();
                 } else {
                     selected.grid->MultiCellDelete(this, selected);
@@ -1285,10 +1285,10 @@ struct Document {
                 return nullptr;
 
             case A_DELETE_WORD:
-                if (c && selected.TextEdit()) {
-                    if (selected.cursor == c->text.t.Len()) return nullptr;
-                    c->AddUndo(this);
-                    c->text.DeleteWord(selected);
+                if (cell && selected.TextEdit()) {
+                    if (selected.cursor == cell->text.t.Len()) return nullptr;
+                    cell->AddUndo(this);
+                    cell->text.DeleteWord(selected);
                     canvas->Refresh();
                 }
                 ZoomOutIfNoGrid();
@@ -1308,9 +1308,9 @@ struct Document {
                         selected.grid->cell->AddUndo(this);
                         selected.grid->MultiCellDelete(this, selected);
                         SetSelect(selected);
-                    } else if (c) {
-                        c->AddUndo(this);
-                        c->text.Backspace(selected);
+                    } else if (cell) {
+                        cell->AddUndo(this);
+                        cell->text.Backspace(selected);
                     }
                     canvas->Refresh();
                 }
@@ -1441,20 +1441,20 @@ struct Document {
                 return nullptr;
 
             case A_NEWGRID:
-                if (!(c = selected.ThinExpand(this))) return OneCell();
-                if (c->grid) {
-                    SetSelect(Selection(c->grid, 0, c->grid->ys, 1, 0));
+                if (!(cell = selected.ThinExpand(this))) return OneCell();
+                if (cell->grid) {
+                    SetSelect(Selection(cell->grid, 0, cell->grid->ys, 1, 0));
                     ScrollOrZoom(true);
                 } else {
-                    c->AddUndo(this);
-                    c->AddGrid();
-                    SetSelect(Selection(c->grid, 0, 0, 1, 1));
+                    cell->AddUndo(this);
+                    cell->AddGrid();
+                    SetSelect(Selection(cell->grid, 0, 0, 1, 1));
                     RefreshMove();
                 }
                 return nullptr;
 
             case wxID_PASTE:
-                if (!(c = selected.ThinExpand(this))) return OneCell();
+                if (!(cell = selected.ThinExpand(this))) return OneCell();
                 if (wxTheClipboard->Open()) {
                     if (wxTheClipboard->IsSupported(wxDF_BITMAP)) {
                         wxBitmapDataObject bdo;
@@ -1473,7 +1473,7 @@ struct Document {
                     wxTheClipboard->Close();
                     canvas->Refresh();
                 } else if (sys->cellclipboard) {
-                    c->Paste(this, sys->cellclipboard.get(), selected);
+                    cell->Paste(this, sys->cellclipboard.get(), selected);
                     canvas->Refresh();
                 }
                 return nullptr;
@@ -1490,27 +1490,27 @@ struct Document {
             case A_ENTERCELL_JUMPTOEND:
             case A_ENTERCELL_JUMPTOSTART:
             case A_PROGRESSCELL: {
-                if (!(c = selected.ThinExpand(this, k == A_ENTERCELL_JUMPTOSTART)))
+                if (!(cell = selected.ThinExpand(this, k == A_ENTERCELL_JUMPTOSTART)))
                     return OneCell();
                 if (selected.TextEdit()) {
                     selected.Cursor(this, k == A_PROGRESSCELL ? A_RIGHT : A_DOWN, false, false,
                                     true);
                 } else {
                     selected.EnterEdit(this,
-                                       k == A_ENTERCELL_JUMPTOEND ? (int)c->text.t.Len() : 0,
-                                       (int)c->text.t.Len());
+                                       k == A_ENTERCELL_JUMPTOEND ? (int)cell->text.t.Len() : 0,
+                                       (int)cell->text.t.Len());
                     RefreshMove();
                 }
                 return nullptr;
             }
 
             case A_IMAGE: {
-                if (!(c = selected.ThinExpand(this))) return OneCell();
+                if (!(cell = selected.ThinExpand(this))) return OneCell();
                 auto filename =
                     ::wxFileSelector(_(L"Please select an image file:"), L"", L"", L"", L"*.*",
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
-                c->AddUndo(this);
-                LoadImageIntoCell(filename, c, sys->frame->FromDIP(1.0));
+                cell->AddUndo(this);
+                LoadImageIntoCell(filename, cell, sys->frame->FromDIP(1.0));
                 canvas->Refresh();
                 return nullptr;
             }
@@ -1777,8 +1777,8 @@ struct Document {
             }
         }
 
-        if (c || (!c && selected.IsAll())) {
-            auto ac = c ? c : selected.grid->cell;
+        if (cell || (!cell && selected.IsAll())) {
+            auto ac = cell ? cell : selected.grid->cell;
             switch (k) {
                 case A_TRANSPOSE:
                     if (ac->grid) {
@@ -1820,15 +1820,15 @@ struct Document {
             }
         }
 
-        if (!c) return OneCell();
+        if (!cell) return OneCell();
 
         switch (k) {
             case A_NEXT: selected.Next(this, false); return nullptr;
             case A_PREV: selected.Next(this, true); return nullptr;
 
             case A_ENTERGRID:
-                if (!c->grid) Action(A_NEWGRID);
-                SetSelect(Selection(c->grid, 0, 0, 1, 1));
+                if (!cell->grid) Action(A_NEWGRID);
+                SetSelect(Selection(cell->grid, 0, 0, 1, 1));
                 ScrollOrZoom(true);
                 return nullptr;
 
@@ -1836,13 +1836,13 @@ struct Document {
             case A_LINKIMG:
             case A_LINKREV:
             case A_LINKIMGREV: {
-                if ((k == A_LINK || k == A_LINKREV) && !c->text.t.Len())
+                if ((k == A_LINK || k == A_LINKREV) && !cell->text.t.Len())
                     return _(L"No text in this cell.");
-                if ((k == A_LINKIMG || k == A_LINKIMGREV) && !c->text.image)
+                if ((k == A_LINKIMG || k == A_LINKIMGREV) && !cell->text.image)
                     return _(L"No image in this cell.");
                 bool t1 = false, t2 = false;
                 auto link =
-                    root->FindLink(selected, c, nullptr, t1, t2, k == A_LINK || k == A_LINKIMG,
+                    root->FindLink(selected, cell, nullptr, t1, t2, k == A_LINK || k == A_LINKIMG,
                                    k == A_LINKIMG || k == A_LINKIMGREV);
                 if (!link || !link->parent) return _(L"No matching cell found!");
                 SetSelect(link->parent->grid->FindCell(link));
@@ -1850,17 +1850,17 @@ struct Document {
                 return nullptr;
             }
 
-            case A_COLCELL: sys->customcolor = c->cellcolor; return nullptr;
+            case A_COLCELL: sys->customcolor = cell->cellcolor; return nullptr;
 
             case A_HSWAP: {
-                auto pp = c->parent->parent;
+                auto pp = cell->parent->parent;
                 if (!pp) return _(L"Cannot move this cell up in the hierarchy.");
                 if (pp->grid->xs != 1 && pp->grid->ys != 1)
                     return _(L"Can only move this cell into a Nx1 or 1xN grid.");
-                if (c->parent->grid->xs != 1 && c->parent->grid->ys != 1)
+                if (cell->parent->grid->xs != 1 && cell->parent->grid->ys != 1)
                     return _(L"Can only move this cell from a Nx1 or 1xN grid.");
                 pp->AddUndo(this);
-                SetSelect(pp->grid->HierarchySwap(c->text.t));
+                SetSelect(pp->grid->HierarchySwap(cell->text.t));
                 pp->ResetChildren();
                 pp->ResetLayout();
                 canvas->Refresh();
@@ -1868,7 +1868,7 @@ struct Document {
             }
 
             case A_FILTERBYCELLBG:
-                loopallcells(ci) ci->text.filtered = ci->cellcolor != c->cellcolor;
+                loopallcells(ci) ci->text.filtered = ci->cellcolor != cell->cellcolor;
                 root->ResetChildren();
                 canvas->Refresh();
                 return nullptr;
@@ -1887,7 +1887,7 @@ struct Document {
 
         switch (k) {
             case A_CANCELEDIT:
-                if (LastUndoSameCellTextEdit(c))
+                if (LastUndoSameCellTextEdit(cell))
                     Undo(undolist, redolist);
                 else
                     canvas->Refresh();
@@ -1896,8 +1896,8 @@ struct Document {
 
             case A_BACKSPACE_WORD:
                 if (selected.cursorend == 0) return nullptr;
-                c->AddUndo(this);
-                c->text.BackspaceWord(selected);
+                cell->AddUndo(this);
+                cell->text.BackspaceWord(selected);
                 canvas->Refresh();
                 ZoomOutIfNoGrid();
                 return nullptr;
@@ -1913,11 +1913,11 @@ struct Document {
                                    // within line
                         selected.cursor = 0;
                         break;
-                    case A_SEND: selected.cursorend = (int)c->text.t.Len(); break;
+                    case A_SEND: selected.cursorend = (int)cell->text.t.Len(); break;
                     case A_CHOME: selected.cursor = selected.cursorend = 0; break;
                     case A_CEND: selected.cursor = selected.cursorend = selected.MaxCursor(); break;
-                    case A_HOME: c->text.HomeEnd(selected, true); break;
-                    case A_END: c->text.HomeEnd(selected, false); break;
+                    case A_HOME: cell->text.HomeEnd(selected, true); break;
+                    case A_END: cell->text.HomeEnd(selected, false); break;
                 }
                 RefreshMove();
                 return nullptr;
