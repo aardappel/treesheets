@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 18:20+0300\n"
-"PO-Revision-Date: 2025-08-27 13:56+0900\n"
+"POT-Creation-Date: 2025-08-30 19:48+0200\n"
+"PO-Revision-Date: 2025-09-02 05:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -326,9 +326,6 @@ msgstr "텍스트 편집 취소"
 msgid "Cannot decompress file."
 msgstr "파일 압축을 해제할 수 없습니다."
 
-msgid "Cannot drag & drop more than 1 file."
-msgstr "파일을 두 개 이상 끌어서 놓기를 할 수 없습니다."
-
 msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
 "or use Flatten)."
@@ -535,9 +532,6 @@ msgstr "텍스트의 끝"
 
 msgid "Enter/exit text edit mode"
 msgstr "텍스트 편집 모드 진입/종료"
-
-msgid "Enter/exit text edit to the right"
-msgstr "오른쪽으로 텍스트 편집 입력/종료"
 
 msgid "Error exporting file!"
 msgstr "파일을 내보내는 중 오류가 발생했습니다!"
@@ -811,11 +805,6 @@ msgstr "대화형 자습서(&T)"
 
 msgid "Internal error: unimplemented operation!"
 msgstr "내부 오류: 구현되지 않은 동작!"
-
-msgid ""
-"It seems that you are about to drop a TreeSheets file. What would you like "
-"to do?"
-msgstr "TreeSheets 파일을 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니까?"
 
 msgid ""
 "It seems that you are about to paste or drop a TreeSheets file. What would "
@@ -1173,6 +1162,9 @@ msgstr "열 너비 재설정"
 msgid "Run"
 msgstr "실행"
 
+msgid "S&cript"
+msgstr "스크립트(&C)"
+
 msgid "Save &As..."
 msgstr "다른 이름으로 저장(&A)..."
 
@@ -1220,9 +1212,6 @@ msgstr "비율 (픽셀 재샘플링, %)(&M)"
 msgid "Scale (re-sample pixels, by &width)"
 msgstr "비율 (픽셀 재샘플링, 너비 기준)(&W)"
 
-msgid "Script"
-msgstr "스크립트"
-
 msgid "Scroll Down (mousewheel)"
 msgstr "아래로 스크롤 (마우스 휠)"
 
@@ -1252,10 +1241,6 @@ msgstr "첫 번째 자식 선택(&C)"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr "선택한 격자는 표가 아닙니다: 셀에 하위 격자가 있어서는 안됩니다."
-
-#, c-format
-msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr "선택 항목에 %d개 셀 / %d개 문자가 포함되어 있습니다."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "세미콜론으로 구분된 텍스트 (CSV)..."
@@ -1323,9 +1308,6 @@ msgstr "특정 날짜 범위에서 마지막 편집 표시"
 
 msgid "Show only cells in current search"
 msgstr "현재 검색에서 셀만 표시"
-
-msgid "Show statistics"
-msgstr "통계 표시"
 
 msgid "Single click maximize from tray"
 msgstr "트레이에서 한 번 클릭으로 최대화"
@@ -1593,3 +1575,21 @@ msgstr "비율:"
 
 msgid "size:"
 msgstr "크기:"
+
+#~ msgid "Cannot drag & drop more than 1 file."
+#~ msgstr "파일을 두 개 이상 끌어서 놓기를 할 수 없습니다."
+
+#~ msgid "Enter/exit text edit to the right"
+#~ msgstr "오른쪽으로 텍스트 편집 입력/종료"
+
+#~ msgid ""
+#~ "It seems that you are about to drop a TreeSheets file. What would you "
+#~ "like to do?"
+#~ msgstr "TreeSheets 파일을 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니까?"
+
+#, c-format
+#~ msgid "Selection contains %d cell(s) with %d character(s)."
+#~ msgstr "선택 항목에 %d개 셀 / %d개 문자가 포함되어 있습니다."
+
+#~ msgid "Show statistics"
+#~ msgstr "통계 표시"
