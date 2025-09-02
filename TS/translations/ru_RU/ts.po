@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.3\n"
+"Project-Id-Version: TreeSheets_RU 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 18:20+0300\n"
-"PO-Revision-Date: 2025-08-25 19:12+0300\n"
+"POT-Creation-Date: 2025-08-30 19:48+0200\n"
+"PO-Revision-Date: 2025-09-02 17:14+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.7\n"
 
 # комментарий к эл-ту Главного Окна (Инф Строка)
 #, c-format
@@ -352,10 +352,6 @@ msgid "Cannot decompress file."
 msgstr "Невозможно распаковать файл."
 
 # Сообщение (после действия или события)
-msgid "Cannot drag & drop more than 1 file."
-msgstr "Невозможно перетащить более 1 файла."
-
-# Сообщение (после действия или события)
 msgid "Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten)."
 msgstr "Невозможно экспортировать сетку, которая не является плоской. Увеличьте масштаб просмотра до нужной сетки и/или реорганизуйте сетку \"к Табличному виду\"."
 
@@ -569,16 +565,13 @@ msgid "End date and time"
 msgstr "Дата и Время Завершения"
 
 msgid "End of line of text"
-msgstr "В Конец..."
+msgstr "Конец строки текста"
 
 msgid "End of text"
-msgstr "В Конец..."
+msgstr "Конец текста"
 
 msgid "Enter/exit text edit mode"
 msgstr "Вх/Вых из реж. Редактирования"
-
-msgid "Enter/exit text edit to the right"
-msgstr "Вх/Вых из реж. Редактирования сПрава"
 
 # Сообщение (после действия или события)
 msgid "Error exporting file!"
@@ -860,10 +853,6 @@ msgstr "Интерактивный &Учебник"
 # Сообщение (после действия или события)
 msgid "Internal error: unimplemented operation!"
 msgstr "Внутренняя ошибка: операция не выполнена!"
-
-# Сообщение (после действия или события)
-msgid "It seems that you are about to drop a TreeSheets file. What would you like to do?"
-msgstr "Похоже, вы собираетесь сбросить файл TreeSheet. Что вы хотите сделать?"
 
 # Сообщение (после действия или события)
 msgid "It seems that you are about to paste or drop a TreeSheets file. What would you like to do?"
@@ -1267,6 +1256,9 @@ msgstr "Сбросить &Ширину Столбца"
 msgid "Run"
 msgstr "Запустить"
 
+msgid "S&cript"
+msgstr "Сценарий"
+
 # раздел Меню - Файл
 msgid "Save &As..."
 msgstr "Сохранить &Как..."
@@ -1320,9 +1312,6 @@ msgstr "&Масштабировать (поПиксельно, в %)"
 msgid "Scale (re-sample pixels, by &width)"
 msgstr ".. (поПиксельно, по &Ширине)"
 
-msgid "Script"
-msgstr "Сценарий"
-
 msgid "Scroll Down (mousewheel)"
 msgstr ".. вНиз (КМ)"
 
@@ -1354,11 +1343,6 @@ msgstr "Выбрать Первого &Потомка"
 # Сообщение (после действия или события)
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr "Выбранная сетка не является таблицей: ячейки не должны иметь подсеток (вложенных сеток)."
-
-# Показать статистику
-#, c-format
-msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr "Выделение содержит %d ячеек с %d символами."
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "CSV (разделитель - точка &с запятой)..."
@@ -1436,9 +1420,6 @@ msgstr "Показать Изменения в Диапазоне Дат и Вр
 
 msgid "Show only cells in current search"
 msgstr "Показывать Ячейки только в Текущем Поиске"
-
-msgid "Show statistics"
-msgstr "Показать Статистику"
 
 msgid "Single click maximize from tray"
 msgstr "Развернуть одним щелчком мыши из Трея"
@@ -1745,6 +1726,25 @@ msgstr "масштаб:"
 
 msgid "size:"
 msgstr "размер:"
+
+# Сообщение (после действия или события)
+#~ msgid "Cannot drag & drop more than 1 file."
+#~ msgstr "Невозможно перетащить более 1 файла."
+
+#~ msgid "Enter/exit text edit to the right"
+#~ msgstr "Вх/Вых из реж. Редактирования сПрава"
+
+# Сообщение (после действия или события)
+#~ msgid "It seems that you are about to drop a TreeSheets file. What would you like to do?"
+#~ msgstr "Похоже, вы собираетесь сбросить файл TreeSheet. Что вы хотите сделать?"
+
+# Показать статистику
+#, c-format
+#~ msgid "Selection contains %d cell(s) with %d character(s)."
+#~ msgstr "Выделение содержит %d ячеек с %d символами."
+
+#~ msgid "Show statistics"
+#~ msgstr "Показать Статистику"
 
 # п. Меню (нет & в исходном тексте), отсутствует в Linux
 #~ msgid "Hover shadow"
