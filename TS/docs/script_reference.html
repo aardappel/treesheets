@@ -79,7 +79,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_style_bits</b>(s<font color="#666666">: int</font>)</tt></td><td class="a">sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8, strikethru = 16) on the current cell.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_status_message</b>(msg<font color="#666666">: string</font>)</tt></td><td class="a">sets the status message in TreeSheets.</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_status_message</b>(message<font color="#666666">: string</font>)</tt></td><td class="a">sets the status message in TreeSheets.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_filename_from_user</b>(is_save<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">gets a filename using a file dialog. empty string if cancelled.</td>
@@ -94,7 +94,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_window_size</b>(width<font color="#666666">: int</font>, height<font color="#666666">: int</font>)</tt></td><td class="a">resizes the window</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.last_edit</b>() -> <font color="#666666">int</font></tt></td><td class="a">gets the timestamp of the last edit in milliseconds since the Unix/C epoch</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_last_edit</b>() -> <font color="#666666">int</font></tt></td><td class="a">gets the timestamp of the last edit in milliseconds since the Unix/C epoch</td>
 
 </tr>
 </table></td></tr>
@@ -393,6 +393,9 @@
 <tr class="a" valign=top><td class="a"><tt><b>rnd_seed</b>(seed<font color="#666666">: int</font>)</tt></td><td class="a">explicitly set a random seed for reproducable randomness</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>rnd_select</b>(index<font color="#666666">: int</font>)</tt></td><td class="a">select a different random number generator to be active. default is 0, max is 1000000</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>rndm</b>(max<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">deprecated: old mersenne twister version of the above for backwards compat.</td>
 
 </tr>
@@ -582,6 +585,9 @@
 <tr class="a" valign=top><td class="a"><tt><b>type_field_value</b>(obj<font color="#666666">: any</font>, idx<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">string representing the value of a field in an object, or empty for other reference types</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>type_enum_value_name</b>(enum_type_id<font color="#666666">: typeid(any)</font>, idx<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">string representing the name of an enum value, belonging to the enum (use typeof)</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>program_name</b>() -> <font color="#666666">string</font></tt></td><td class="a">returns the name of the main program (e.g. "foo.lobster"), "" if running from lpak.</td>
 
 </tr>
@@ -610,9 +616,6 @@
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>pass</b>()</tt></td><td class="a">does nothing. useful for empty bodies of control structures.</td>
-
-</tr>
-<tr class="a" valign=top><td class="a"><tt><b>trace_bytecode</b>(mode<font color="#666666">: int</font>)</tt></td><td class="a">tracing shows each bytecode instruction as it is being executed, not very useful unless you are trying to isolate a compiler bug. Mode is off(0), on(1) or tail only (2)</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>reference_count</b>(val<font color="#666666">: any</font>) -> <font color="#666666">int</font></tt></td><td class="a">get the reference count of any value. for compiler debugging, mostly</td>
