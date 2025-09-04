@@ -302,21 +302,21 @@ struct Document {
 
     void SelectUp(wxDC &dc) {
         if (!isctrlshiftdrag || isctrlshiftdrag == 3 || begindrag.EqLoc(selected)) return;
-        auto c = selected.GetCell();
-        if (!c) return;
-        auto tc = begindrag.ThinExpand(this);
+        auto cell = selected.GetCell();
+        if (!cell) return;
+        auto targetcell = begindrag.ThinExpand(this);
         selected = begindrag;
-        if (tc) {
-            auto is_parent = tc->IsParentOf(c);
-            auto tc_parent = tc->parent;  // tc may be deleted.
-            tc->Paste(this, c, begindrag);
-            // If is_parent, c has been deleted already.
+        if (targetcell) {
+            auto is_parent = targetcell->IsParentOf(cell);
+            auto targetcell_parent = targetcell->parent;  // targetcell may be deleted.
+            targetcell->Paste(this, cell, begindrag);
+            // If is_parent, cell has been deleted already.
             if (isctrlshiftdrag == 1 && !is_parent) {
-                c->parent->AddUndo(this);
-                Selection cs = c->parent->grid->FindCell(c);
-                c->parent->grid->MultiCellDeleteSub(this, cs);
+                cell->parent->AddUndo(this);
+                Selection cellselection = cell->parent->grid->FindCell(cell);
+                cell->parent->grid->MultiCellDeleteSub(this, cellselection);
             }
-            hover = tc_parent ? tc_parent->grid->FindCell(tc) : Selection();
+            hover = targetcell_parent ? targetcell_parent->grid->FindCell(targetcell) : Selection();
             SetSelect(hover);
             Layout(dc);
         }
