@@ -985,10 +985,19 @@ struct Document {
 
             case A_HELP:
                 #ifdef __WXMAC__
-                wxLaunchDefaultBrowser(L"file://" +
+                    wxLaunchDefaultBrowser(L"file://" +
                                        sys->frame->GetDocPath(L"docs/tutorial.html"));  // RbrtPntn
                 #else
-                wxLaunchDefaultBrowser(sys->frame->GetDocPath(L"docs/tutorial.html"));
+                    wxLaunchDefaultBrowser(sys->frame->GetDocPath(L"docs/tutorial.html"));
+                #endif
+                return nullptr;
+
+            case A_SCRIPTREFERENCE:
+                #ifdef __WXMAC__
+                    wxLaunchDefaultBrowser(L"file://" +
+                                       sys->frame->GetDocPath(L"docs/script_reference.html"));  // RbrtPntn
+                #else
+                    wxLaunchDefaultBrowser(sys->frame->GetDocPath(L"docs/script_reference.html"));
                 #endif
                 return nullptr;
 
