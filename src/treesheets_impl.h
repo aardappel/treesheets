@@ -1,13 +1,13 @@
 struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *doc = nullptr;
-    Cell *cur = nullptr;
+    Cell *current = nullptr;
     bool docmodified = false;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDoc() {
         doc = sys->frame->GetCurrentTab()->doc;
-        cur = doc->root;
+        current = doc->root;
         docmodified = false;
     }
 
@@ -32,7 +32,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         doc->canvas->Refresh();
 
         doc = nullptr;
-        cur = nullptr;
+        current = nullptr;
 
         return err;
     }
@@ -45,21 +45,21 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return true;
     }
 
-    void GoToRoot() { cur = doc->root; }
-    void GoToView() { cur = doc->curdrawroot; }
+    void GoToRoot() { current = doc->root; }
+    void GoToView() { current = doc->curdrawroot; }
     bool HasSelection() { return doc->selected.grid; }
     void GoToSelection() {
         auto c = doc->selected.GetFirst();
-        if (c) cur = c;
+        if (c) current = c;
     }
-    bool HasParent() { return cur->parent; }
+    bool HasParent() { return current->parent; }
     void GoToParent() {
-        if (cur->parent) cur = cur->parent;
+        if (current->parent) current = current->parent;
     }
-    int NumChildren() { return cur->grid ? cur->grid->xs * cur->grid->ys : 0; }
+    int NumChildren() { return current->grid ? current->grid->xs * current->grid->ys : 0; }
 
     icoord NumColumnsRows() {
-        return cur->grid ? icoord(cur->grid->xs, cur->grid->ys) : icoord(0, 0);
+        return current->grid ? icoord(current->grid->xs, current->grid->ys) : icoord(0, 0);
     }
 
     ibox SelectionBox() {
@@ -69,48 +69,51 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void GoToChild(int n) {
-        if (cur->grid && n < cur->grid->xs * cur->grid->ys) cur = cur->grid->cells[n];
+        if (current->grid && n < current->grid->xs * current->grid->ys)
+            current = current->grid->cells[n];
     }
 
     void GoToColumnRow(int x, int y) {
-        if (cur->grid && x < cur->grid->xs && y < cur->grid->ys) cur = cur->grid->C(x, y);
+        if (current->grid && x < current->grid->xs && y < current->grid->ys)
+            current = current->grid->C(x, y);
     }
 
-    std::string GetText() { return cur->text.t.utf8_string(); }
+    std::string GetText() { return current->text.t.utf8_string(); }
 
     void SetText(std::string_view t) {
-        if (cur->parent) {
+        if (current->parent) {
             MarkDocAsModified();
-            cur->text.t = wxString::FromUTF8(t.data(), t.size());
+            current->text.t = wxString::FromUTF8(t.data(), t.size());
         }
     }
 
     void CreateGrid(int x, int y) {
         if (x > 0 && y > 0 && x * y < max_new_grid_cells) {
             MarkDocAsModified();
-            cur->AddGrid(x, y);
+            current->AddGrid(x, y);
         }
     }
 
     void InsertColumn(int x) {
-        if (cur->grid && x >= 0 && x <= cur->grid->xs) {
+        if (current->grid && x >= 0 && x <= current->grid->xs) {
             MarkDocAsModified();
-            cur->grid->InsertCells(x, -1, 1, 0);
+            current->grid->InsertCells(x, -1, 1, 0);
         }
     }
 
     void InsertRow(int y) {
-        if (cur->grid && y >= 0 && y <= cur->grid->ys) {
+        if (current->grid && y >= 0 && y <= current->grid->ys) {
             MarkDocAsModified();
-            cur->grid->InsertCells(-1, y, 0, 1);
+            current->grid->InsertCells(-1, y, 0, 1);
         }
     }
 
     void Delete(int x, int y, int xs, int ys) {
-        if (cur->grid && x >= 0 && x + xs <= cur->grid->xs && y >= 0 && y + ys <= cur->grid->ys) {
+        if (current->grid && x >= 0 && x + xs <= current->grid->xs && y >= 0 &&
+            y + ys <= current->grid->ys) {
             MarkDocAsModified();
-            Selection s(cur->grid, x, y, xs, ys);
-            cur->grid->MultiCellDeleteSub(doc, s);
+            Selection s(current->grid, x, y, xs, ys);
+            current->grid->MultiCellDeleteSub(doc, s);
             doc->SetSelect(Selection());
             doc->Zoom(-100);
         }
@@ -118,32 +121,32 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetBackgroundColor(uint col) {
         MarkDocAsModified();
-        cur->cellcolor = col;
+        current->cellcolor = col;
     }
     void SetTextColor(uint col) {
         MarkDocAsModified();
-        cur->textcolor = col;
+        current->textcolor = col;
     }
     void SetTextFiltered(bool filtered) {
-        if (cur->parent) {
+        if (current->parent) {
             MarkDocAsModified();
-            cur->text.filtered = filtered;
+            current->text.filtered = filtered;
         }
     }
-    bool IsTextFiltered() { return cur->text.filtered; }
+    bool IsTextFiltered() { return current->text.filtered; }
     void SetBorderColor(uint col) {
-        if (cur->grid) {
+        if (current->grid) {
             MarkDocAsModified();
-            cur->grid->bordercolor = col;
+            current->grid->bordercolor = col;
         }
     }
     void SetRelativeSize(int s) {
         MarkDocAsModified();
-        cur->text.relsize = s;
+        current->text.relsize = s;
     }
     void SetStyle(int s) {
         MarkDocAsModified();
-        cur->text.stylebits = s;
+        current->text.stylebits = s;
     }
 
     void SetStatusMessage(std::string_view message) {
@@ -165,7 +168,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     std::string GetFileName() { return doc->filename.utf8_string(); }
 
-    int64_t GetLastEdit() { return cur->text.lastedit.GetValue().GetValue(); }
+    int64_t GetLastEdit() { return current->text.lastedit.GetValue().GetValue(); }
 };
 
 static int64_t TreeSheetsLoader(string_view_nt absfilename, std::string *dest, int64_t start,
