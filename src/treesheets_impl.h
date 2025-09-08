@@ -26,7 +26,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             //dump_builtins = true;
         #endif
 
-        auto err = RunLobster(filename, {}, dump_builtins);
+        auto errormessage = RunLobster(filename, {}, dump_builtins);
 
         doc->root->ResetChildren();
         doc->canvas->Refresh();
@@ -34,7 +34,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         doc = nullptr;
         current = nullptr;
 
-        return err;
+        return errormessage;
     }
 
     bool LoadDocument(const char *filename) {
@@ -49,8 +49,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void GoToView() { current = doc->curdrawroot; }
     bool HasSelection() { return doc->selected.grid; }
     void GoToSelection() {
-        auto c = doc->selected.GetFirst();
-        if (c) current = c;
+        auto cell = doc->selected.GetFirst();
+        if (cell) current = cell;
     }
     bool HasParent() { return current->parent; }
     void GoToParent() {
@@ -63,8 +63,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     ibox SelectionBox() {
-        auto &s = doc->selected;
-        return s.grid ? ibox(icoord(s.x, s.y), icoord(s.xs, s.ys))
+        auto &selection = doc->selected;
+        return selection.grid ? ibox(icoord(selection.x, selection.y), icoord(selection.xs, selection.ys))
                       : ibox(icoord(0, 0), icoord(0, 0));
     }
 
@@ -119,13 +119,13 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         }
     }
 
-    void SetBackgroundColor(uint col) {
+    void SetBackgroundColor(uint color) {
         MarkDocAsModified();
-        current->cellcolor = col;
+        current->cellcolor = color;
     }
-    void SetTextColor(uint col) {
+    void SetTextColor(uint color) {
         MarkDocAsModified();
-        current->textcolor = col;
+        current->textcolor = color;
     }
     void SetTextFiltered(bool filtered) {
         if (current->parent) {
@@ -134,19 +134,19 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         }
     }
     bool IsTextFiltered() { return current->text.filtered; }
-    void SetBorderColor(uint col) {
+    void SetBorderColor(uint color) {
         if (current->grid) {
             MarkDocAsModified();
-            current->grid->bordercolor = col;
+            current->grid->bordercolor = color;
         }
     }
-    void SetRelativeSize(int s) {
+    void SetRelativeSize(int relsize) {
         MarkDocAsModified();
-        current->text.relsize = s;
+        current->text.relsize = relsize;
     }
-    void SetStyle(int s) {
+    void SetStyle(int stylebits) {
         MarkDocAsModified();
-        current->text.stylebits = s;
+        current->text.stylebits = stylebits;
     }
 
     void SetStatusMessage(std::string_view message) {
