@@ -11,7 +11,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         docmodified = false;
     }
 
-    void MarkDocAsModified() {
+    void AddUndoIfUnmodified() {
         if (docmodified) return;
         // The script can operate on multiple cells throughout the document
         doc->AddUndo(doc->root);
@@ -82,28 +82,28 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetText(std::string_view t) {
         if (current->parent) {
-            MarkDocAsModified();
+            AddUndoIfUnmodified();
             current->text.t = wxString::FromUTF8(t.data(), t.size());
         }
     }
 
     void CreateGrid(int x, int y) {
         if (x > 0 && y > 0 && x * y < max_new_grid_cells) {
-            MarkDocAsModified();
+            AddUndoIfUnmodified();
             current->AddGrid(x, y);
         }
     }
 
     void InsertColumn(int x) {
         if (current->grid && x >= 0 && x <= current->grid->xs) {
-            MarkDocAsModified();
+            AddUndoIfUnmodified();
             current->grid->InsertCells(x, -1, 1, 0);
         }
     }
 
     void InsertRow(int y) {
         if (current->grid && y >= 0 && y <= current->grid->ys) {
-            MarkDocAsModified();
+            AddUndoIfUnmodified();
             current->grid->InsertCells(-1, y, 0, 1);
         }
     }
@@ -111,7 +111,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void Delete(int x, int y, int xs, int ys) {
         if (current->grid && x >= 0 && x + xs <= current->grid->xs && y >= 0 &&
             y + ys <= current->grid->ys) {
-            MarkDocAsModified();
+            AddUndoIfUnmodified();
             Selection s(current->grid, x, y, xs, ys);
             current->grid->MultiCellDeleteSub(doc, s);
             doc->SetSelect(Selection());
@@ -120,32 +120,32 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetBackgroundColor(uint color) {
-        MarkDocAsModified();
+        AddUndoIfUnmodified();
         current->cellcolor = color;
     }
     void SetTextColor(uint color) {
-        MarkDocAsModified();
+        AddUndoIfUnmodified();
         current->textcolor = color;
     }
     void SetTextFiltered(bool filtered) {
         if (current->parent) {
-            MarkDocAsModified();
+            AddUndoIfUnmodified();
             current->text.filtered = filtered;
         }
     }
     bool IsTextFiltered() { return current->text.filtered; }
     void SetBorderColor(uint color) {
         if (current->grid) {
-            MarkDocAsModified();
+            AddUndoIfUnmodified();
             current->grid->bordercolor = color;
         }
     }
     void SetRelativeSize(int relsize) {
-        MarkDocAsModified();
+        AddUndoIfUnmodified();
         current->text.relsize = relsize;
     }
     void SetStyle(int stylebits) {
-        MarkDocAsModified();
+        AddUndoIfUnmodified();
         current->text.stylebits = stylebits;
     }
 
