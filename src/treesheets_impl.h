@@ -79,28 +79,36 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     std::string GetText() { return cur->text.t.utf8_string(); }
 
     void SetText(std::string_view t) {
-        MarkDocAsModified();
-        if (cur->parent) cur->text.t = wxString::FromUTF8(t.data(), t.size());
+        if (cur->parent) {
+            MarkDocAsModified();
+            cur->text.t = wxString::FromUTF8(t.data(), t.size());
+        }
     }
 
     void CreateGrid(int x, int y) {
-        MarkDocAsModified();
-        if (x > 0 && y > 0 && x * y < max_new_grid_cells) cur->AddGrid(x, y);
+        if (x > 0 && y > 0 && x * y < max_new_grid_cells) {
+            MarkDocAsModified();
+            cur->AddGrid(x, y);
+        }
     }
 
     void InsertColumn(int x) {
-        MarkDocAsModified();
-        if (cur->grid && x >= 0 && x <= cur->grid->xs) cur->grid->InsertCells(x, -1, 1, 0);
+        if (cur->grid && x >= 0 && x <= cur->grid->xs) {
+            MarkDocAsModified();
+            cur->grid->InsertCells(x, -1, 1, 0);
+        }
     }
 
     void InsertRow(int y) {
-        MarkDocAsModified();
-        if (cur->grid && y >= 0 && y <= cur->grid->ys) cur->grid->InsertCells(-1, y, 0, 1);
+        if (cur->grid && y >= 0 && y <= cur->grid->ys) {
+            MarkDocAsModified();
+            cur->grid->InsertCells(-1, y, 0, 1);
+        }
     }
 
     void Delete(int x, int y, int xs, int ys) {
-        MarkDocAsModified();
         if (cur->grid && x >= 0 && x + xs <= cur->grid->xs && y >= 0 && y + ys <= cur->grid->ys) {
+            MarkDocAsModified();
             Selection s(cur->grid, x, y, xs, ys);
             cur->grid->MultiCellDeleteSub(doc, s);
             doc->SetSelect(Selection());
@@ -117,13 +125,17 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         cur->textcolor = col;
     }
     void SetTextFiltered(bool filtered) {
-        MarkDocAsModified();
-        if (cur->parent) cur->text.filtered = filtered;
+        if (cur->parent) {
+            MarkDocAsModified();
+            cur->text.filtered = filtered;
+        }
     }
     bool IsTextFiltered() { return cur->text.filtered; }
     void SetBorderColor(uint col) {
-        MarkDocAsModified();
-        if (cur->grid) cur->grid->bordercolor = col;
+        if (cur->grid) {
+            MarkDocAsModified();
+            cur->grid->bordercolor = col;
+        }
     }
     void SetRelativeSize(int s) {
         MarkDocAsModified();
