@@ -693,9 +693,12 @@ struct TSFrame : wxFrame {
 
         auto helpmenu = new wxMenu();
         MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."), _(L"Show About dialog"));
+        helpmenu->AppendSeparator();
         MyAppend(helpmenu, wxID_HELP, _(L"Interactive &tutorial") + "\tF1");
         MyAppend(helpmenu, A_HELP_OP_REF, _(L"Operation reference") + "\tCTRL+ALT+F1");
+        helpmenu->AppendSeparator();
         MyAppend(helpmenu, A_HELP, _(L"Tutorial &web page"));
+        MyAppend(helpmenu, A_SCRIPTREFERENCE, _(L"&Script reference"));
 
         wxAcceleratorEntry entries[3];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);

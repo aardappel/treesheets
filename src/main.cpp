@@ -89,6 +89,7 @@ enum {
     A_IMPTXTS,
     A_IMPTXTT,
     A_HELP,
+    A_SCRIPTREFERENCE,
     A_MARKVARD,
     A_MARKVARU,
     A_SHOWSBAR,
