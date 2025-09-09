@@ -10,7 +10,7 @@ struct System {
     wxString defaultfixedfont {L"Courier New"};
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
-    Evaluator ev;
+    Evaluator evaluator;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
     vector<unique_ptr<Image>> imagelist;
@@ -105,7 +105,7 @@ struct System {
     }
 
     void Init(const wxString &filename) {
-        ev.Init();
+        evaluator.Init();
 
         auto numfiles = (int)cfg->Read(L"numopenfiles", (long)0);
         loop(i, numfiles) {
