@@ -1,25 +1,25 @@
 struct TreeSheetsScriptImpl : public ScriptInterface {
-    Document *doc = nullptr;
+    Document *document = nullptr;
     Cell *current = nullptr;
     bool docmodified = false;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
-    void SwitchToCurrentDoc() {
-        doc = sys->frame->GetCurrentTab()->doc;
-        current = doc->root;
+    void SwitchToCurrentDocument() {
+        document = sys->frame->GetCurrentTab()->doc;
+        current = document->root;
         docmodified = false;
     }
 
     void AddUndoIfUnmodified() {
         if (docmodified) return;
         // The script can operate on multiple cells throughout the document
-        doc->AddUndo(doc->root);
+        document->AddUndo(document->root);
         docmodified = true;
     }
 
     std::string ScriptRun(const char *filename) {
-        SwitchToCurrentDoc();
+        SwitchToCurrentDocument();
 
         bool dump_builtins = false;
         #ifdef _DEBUG
@@ -28,10 +28,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
         auto errormessage = RunLobster(filename, {}, dump_builtins);
 
-        doc->root->ResetChildren();
-        doc->canvas->Refresh();
+        document->root->ResetChildren();
+        document->canvas->Refresh();
 
-        doc = nullptr;
+        document = nullptr;
         current = nullptr;
 
         return errormessage;
@@ -41,15 +41,15 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         auto message = sys->LoadDB(filename);
         if (*message) return false;
 
-        SwitchToCurrentDoc();
+        SwitchToCurrentDocument();
         return true;
     }
 
-    void GoToRoot() { current = doc->root; }
-    void GoToView() { current = doc->currentdrawroot; }
-    bool HasSelection() { return doc->selected.grid; }
+    void GoToRoot() { current = document->root; }
+    void GoToView() { current = document->currentdrawroot; }
+    bool HasSelection() { return document->selected.grid; }
     void GoToSelection() {
-        auto cell = doc->selected.GetFirst();
+        auto cell = document->selected.GetFirst();
         if (cell) current = cell;
     }
     bool HasParent() { return current->parent; }
@@ -63,7 +63,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     ibox SelectionBox() {
-        auto &selection = doc->selected;
+        auto &selection = document->selected;
         return selection.grid ? ibox(icoord(selection.x, selection.y), icoord(selection.xs, selection.ys))
                       : ibox(icoord(0, 0), icoord(0, 0));
     }
@@ -113,9 +113,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             y + ys <= current->grid->ys) {
             AddUndoIfUnmodified();
             Selection s(current->grid, x, y, xs, ys);
-            current->grid->MultiCellDeleteSub(doc, s);
-            doc->SetSelect(Selection());
-            doc->Zoom(-100);
+            current->grid->MultiCellDeleteSub(document, s);
+            document->SetSelect(Selection());
+            document->Zoom(-100);
         }
     }
 
@@ -166,7 +166,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return fn.utf8_string();
     }
 
-    std::string GetFileName() { return doc->filename.utf8_string(); }
+    std::string GetFileName() { return document->filename.utf8_string(); }
 
     int64_t GetLastEdit() { return current->text.lastedit.GetValue().GetValue(); }
 };
