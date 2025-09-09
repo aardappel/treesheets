@@ -512,9 +512,11 @@ struct TSFrame : wxFrame {
         MyAppend(semenu, wxID_FIND, _(L"&Search") + "\tCTRL+f", _(L"Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _(L"Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
+        semenu->AppendSeparator();
         MyAppend(semenu, A_SEARCHNEXT, _(L"&Next Match") + "\tF3", _(L"Go to next search match"));
         MyAppend(semenu, A_SEARCHPREV, _(L"&Previous Match") + "\tSHIFT+F3",
                  _(L"Go to previous search match"));
+        semenu->AppendSeparator();
         MyAppend(semenu, wxID_REPLACE, _(L"&Replace") + "\tCTRL+h",
                  _(L"Find and replace in document"));
         MyAppend(semenu, A_REPLACEONCE, _(L"Replace in Current &Selection") + "\tCTRL+k");
@@ -552,6 +554,7 @@ struct TSFrame : wxFrame {
         auto viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _(L"Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
         MyAppend(viewmenu, A_ZOOMOUT, _(L"Zoom &Out (CTRL+mousewheel)") + "\tCTRL+PGDN");
+        viewmenu->AppendSeparator();
         MyAppend(
             viewmenu, A_NEXTFILE,
             _(L"&Next tab")
@@ -564,6 +567,7 @@ struct TSFrame : wxFrame {
             _(L"Go to the document in the next tab"));
         MyAppend(viewmenu, A_PREVFILE, _(L"Previous tab") + "\tCTRL+SHIFT+TAB",
                  _(L"Go to the document in the previous tab"));
+        viewmenu->AppendSeparator();
         MyAppend(viewmenu, A_FULLSCREEN,
                  #ifdef __WXMAC__
                  _(L"Toggle &Fullscreen View") + "\tCTRL+F11");
@@ -576,6 +580,7 @@ struct TSFrame : wxFrame {
                  #else
                  _(L"Toggle &Scaled Presentation View") + "\tF12");
                  #endif
+        viewmenu->AppendSeparator();
         viewmenu->AppendSubMenu(scrollmenu, _(L"Scroll Sheet"));
         viewmenu->AppendSubMenu(filtermenu, _(L"Filter"));
 
