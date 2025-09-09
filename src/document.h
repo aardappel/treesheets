@@ -874,6 +874,7 @@ struct Document {
     const wxChar *Action(int action) {
         switch (action) {
             case wxID_EXECUTE:
+                root->AddUndo(this);
                 sys->ev.Eval(root);
                 root->ResetChildren();
                 ClearSelectionRefresh();
