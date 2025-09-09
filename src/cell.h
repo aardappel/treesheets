@@ -65,7 +65,9 @@ struct Cell {
     bool HasTextState() const { return HasTextSize() || text.image; }
     bool HasHeader() const { return HasText() || text.image; }
     bool HasContent() const { return HasHeader() || grid; }
-    bool GridShown(Document *doc) const { return grid && (!grid->folded || this == doc->curdrawroot); }
+    bool GridShown(Document *doc) const {
+        return grid && (!grid->folded || this == doc->currentdrawroot);
+    }
     int MinRelsize()  // the smallest relsize is actually the biggest text
     {
         int rs = INT_MAX;
@@ -140,10 +142,10 @@ struct Cell {
             default: actualcellcolor = cellcolor; break;
         }
         uint parentcolor = doc->Background();
-        if (parent && this != doc->curdrawroot) {
+        if (parent && this != doc->currentdrawroot) {
             Cell *p = parent;
             while (p && p->drawstyle == DS_BLOBLINE)
-                p = p == doc->curdrawroot ? nullptr : p->parent;
+                p = p == doc->currentdrawroot ? nullptr : p->parent;
             if (p) parentcolor = p->actualcellcolor;
         }
 

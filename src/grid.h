@@ -472,7 +472,7 @@ struct Grid {
     void DelSelf(Document *doc, Selection &s) {
         if (!doc->drawpath.empty() && doc->drawpath.back().grid == this) {
             doc->drawpath.pop_back();
-            doc->curdrawroot = doc->WalkPath(doc->drawpath);
+            doc->currentdrawroot = doc->WalkPath(doc->drawpath);
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);

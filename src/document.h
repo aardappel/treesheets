@@ -28,7 +28,7 @@ struct Document {
     int fgutter {6};
     int lasttextsize;
     int laststylebits;
-    Cell *curdrawroot;  // for use during Render() calls
+    Cell *currentdrawroot;  // for use during Render() calls
     vector<unique_ptr<UndoItem>> undolist;
     vector<unique_ptr<UndoItem>> redolist;
     vector<Selection> drawpath;
@@ -324,8 +324,9 @@ struct Document {
 
     auto CopyEntireCells(wxString &s, int action) {
         sys->clipboardcopy = s;
-        auto html = selected.grid->ConvertToText(
-            selected, 0, action == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT, this, false, curdrawroot);
+        auto html =
+            selected.grid->ConvertToText(selected, 0, action == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT,
+                                         this, false, currentdrawroot);
         return new wxHTMLDataObject(html);
     }
 
@@ -346,7 +347,7 @@ struct Document {
                     }
                 } else {
                     auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
-                                                          curdrawroot);
+                                                          currentdrawroot);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s, wxID_COPY);
@@ -385,7 +386,7 @@ struct Document {
                 } else {
                     auto clipboarddata = new wxDataObjectComposite();
                     auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
-                                                          curdrawroot);
+                                                          currentdrawroot);
                     clipboarddata->Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto htmlobj = CopyEntireCells(s, action);
@@ -469,20 +470,20 @@ struct Document {
     void Layout(wxDC &dc) {
         ResetFont();
         dc.SetUserScale(1, 1);
-        curdrawroot = WalkPath(drawpath);
-        int psb = curdrawroot == root ? 0 : curdrawroot->MinRelsize();
+        currentdrawroot = WalkPath(drawpath);
+        int psb = currentdrawroot == root ? 0 : currentdrawroot->MinRelsize();
         if (psb < 0 || psb == INT_MAX) psb = 0;
-        if (psb != pathscalebias) curdrawroot->ResetChildren();
+        if (psb != pathscalebias) currentdrawroot->ResetChildren();
         pathscalebias = psb;
-        curdrawroot->LazyLayout(this, dc, 0, curdrawroot->ColWidth(), false);
+        currentdrawroot->LazyLayout(this, dc, 0, currentdrawroot->ColWidth(), false);
         ResetFont();
         PickFont(dc, 0, 0, 0);
         hierarchysize = 0;
-        for (Cell *p = curdrawroot->parent; p; p = p->parent)
+        for (Cell *p = currentdrawroot->parent; p; p = p->parent)
             if (p->text.t.Len()) hierarchysize += dc.GetCharHeight();
         hierarchysize += fgutter;
-        layoutxs = curdrawroot->sx + hierarchysize + fgutter;
-        layoutys = curdrawroot->sy + hierarchysize + fgutter;
+        layoutxs = currentdrawroot->sx + hierarchysize + fgutter;
+        layoutys = currentdrawroot->sy + hierarchysize + fgutter;
     }
 
     void ShiftToCenter(wxDC &dc) {
@@ -497,7 +498,7 @@ struct Document {
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
         int i = 0;
-        for (auto p = curdrawroot->parent; p; p = p->parent)
+        for (auto p = currentdrawroot->parent; p; p = p->parent)
             if (p->text.t.Len()) {
                 int off = hierarchysize - dc.GetCharHeight() * ++i;
                 auto s = p->text.t;
@@ -509,8 +510,8 @@ struct Document {
                 dc.DrawText(s, off, off);
             }
         dc.SetTextForeground(*wxBLACK);
-        curdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
-                            curdrawroot->ColWidth(), 0);
+        currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
+                                currentdrawroot->ColWidth(), 0);
     }
 
     void Draw(wxDC &dc) {
@@ -719,7 +720,7 @@ struct Document {
     }
 
     const wxChar *ExportFile(const wxString &filename, int action, bool currentview) {
-        Cell *exportroot = currentview ? curdrawroot : root;
+        Cell *exportroot = currentview ? currentdrawroot : root;
         if (action == A_EXPIMAGE) {
             auto bitmap = GetBitmap();
             canvas->Refresh();
@@ -911,7 +912,7 @@ struct Document {
                 return Export(L"png", L"*.png", _(L"Choose PNG file to write"), action);
             case A_EXPCSV: {
                 int maxdepth = 0, leaves = 0;
-                curdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
+                currentdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
                 if (maxdepth > 1)
                     return _(
                         L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
@@ -1679,8 +1680,8 @@ struct Document {
                         image->DisplayScale(v / 100.0);
                     }
                 }
-                curdrawroot->ResetChildren();
-                curdrawroot->ResetLayout();
+                currentdrawroot->ResetChildren();
+                currentdrawroot->ResetLayout();
                 canvas->Refresh();
                 return nullptr;
             }
@@ -1689,8 +1690,8 @@ struct Document {
                 loopallcellssel(c, true) if (c->text.image) {
                     c->text.image->ResetScale(sys->frame->FromDIP(1.0));
                 }
-                curdrawroot->ResetChildren();
-                curdrawroot->ResetLayout();
+                currentdrawroot->ResetChildren();
+                currentdrawroot->ResetLayout();
                 canvas->Refresh();
                 return nullptr;
             }
