@@ -983,7 +983,7 @@ struct Document {
 
             case A_HELP_OP_REF: sys->LoadOpRef(); return nullptr;
 
-            case A_HELP:
+            case A_TUTORIALWEBPAGE:
                 #ifdef __WXMAC__
                     wxLaunchDefaultBrowser(L"file://" +
                                        sys->frame->GetDocPath(L"docs/tutorial.html"));  // RbrtPntn

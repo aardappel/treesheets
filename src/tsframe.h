@@ -697,7 +697,7 @@ struct TSFrame : wxFrame {
         MyAppend(helpmenu, wxID_HELP, _(L"Interactive &tutorial") + "\tF1");
         MyAppend(helpmenu, A_HELP_OP_REF, _(L"Operation reference") + "\tCTRL+ALT+F1");
         helpmenu->AppendSeparator();
-        MyAppend(helpmenu, A_HELP, _(L"Tutorial &web page"));
+        MyAppend(helpmenu, A_TUTORIALWEBPAGE, _(L"Tutorial &web page"));
         MyAppend(helpmenu, A_SCRIPTREFERENCE, _(L"&Script reference"));
 
         wxAcceleratorEntry entries[3];
