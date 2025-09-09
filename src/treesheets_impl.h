@@ -46,7 +46,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void GoToRoot() { current = doc->root; }
-    void GoToView() { current = doc->curdrawroot; }
+    void GoToView() { current = doc->currentdrawroot; }
     bool HasSelection() { return doc->selected.grid; }
     void GoToSelection() {
         auto cell = doc->selected.GetFirst();
