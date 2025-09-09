@@ -876,7 +876,7 @@ struct Document {
         switch (action) {
             case wxID_EXECUTE:
                 root->AddUndo(this);
-                sys->ev.Eval(root);
+                sys->evaluator.Eval(root);
                 root->ResetChildren();
                 ClearSelectionRefresh();
                 return _(L"Evaluation finished.");
@@ -1441,8 +1441,8 @@ struct Document {
                 }
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, false) {
-                    c->celltype =
-                        (newcelltype == CT_CODE) ? sys->ev.InferCellType(c->text) : newcelltype;
+                    c->celltype = (newcelltype == CT_CODE) ? sys->evaluator.InferCellType(c->text)
+                                                           : newcelltype;
                     canvas->Refresh();
                 }
                 return nullptr;
