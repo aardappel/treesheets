@@ -1,36 +1,19 @@
 struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *document = nullptr;
     Cell *current = nullptr;
-    Cell *lowestcommonancestor = nullptr;
+    bool docmodified = false;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDocument() {
         document = sys->frame->GetCurrentTab()->doc;
         current = document->root;
-        lowestcommonancestor = nullptr;
+        docmodified = false;
     }
 
-    void AddUndoIfNecessary() {
-        if (!lowestcommonancestor) {
-            UpdateLowestCommonAncestor();
-        } else {
-            for (auto p = current; p; p = p->parent) {
-                if (p == lowestcommonancestor) {
-                    // There is no need to add current to the undo stack as
-                    // lowestcommonancestor including subordinated current
-                    // is already in there.
-                    return;
-                }
-            }
-            UpdateLowestCommonAncestor();
-        }
-    }
-
-    void UpdateLowestCommonAncestor() {
-        // Use parent as lowestcommonancestor so changes to siblings are already covered
-        lowestcommonancestor = current->parent;
-        document->AddUndo(lowestcommonancestor);
+    void AddUndo() {
+        document->AddUndo(current, !docmodified);
+        if (!docmodified) docmodified = true;
     }
 
     std::string ScriptRun(const char *filename) {
@@ -97,28 +80,28 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetText(std::string_view t) {
         if (current->parent) {
-            AddUndoIfNecessary();
+            AddUndo();
             current->text.t = wxString::FromUTF8(t.data(), t.size());
         }
     }
 
     void CreateGrid(int x, int y) {
         if (x > 0 && y > 0 && x * y < max_new_grid_cells) {
-            AddUndoIfNecessary();
+            AddUndo();
             current->AddGrid(x, y);
         }
     }
 
     void InsertColumn(int x) {
         if (current->grid && x >= 0 && x <= current->grid->xs) {
-            AddUndoIfNecessary();
+            AddUndo();
             current->grid->InsertCells(x, -1, 1, 0);
         }
     }
 
     void InsertRow(int y) {
         if (current->grid && y >= 0 && y <= current->grid->ys) {
-            AddUndoIfNecessary();
+            AddUndo();
             current->grid->InsertCells(-1, y, 0, 1);
         }
     }
@@ -126,7 +109,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void Delete(int x, int y, int xs, int ys) {
         if (current->grid && x >= 0 && x + xs <= current->grid->xs && y >= 0 &&
             y + ys <= current->grid->ys) {
-            AddUndoIfNecessary();
+            AddUndo();
             Selection s(current->grid, x, y, xs, ys);
             current->grid->MultiCellDeleteSub(document, s);
             document->SetSelect(Selection());
@@ -135,32 +118,32 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetBackgroundColor(uint color) {
-        AddUndoIfNecessary();
+        AddUndo();
         current->cellcolor = color;
     }
     void SetTextColor(uint color) {
-        AddUndoIfNecessary();
+        AddUndo();
         current->textcolor = color;
     }
     void SetTextFiltered(bool filtered) {
         if (current->parent) {
-            AddUndoIfNecessary();
+            AddUndo();
             current->text.filtered = filtered;
         }
     }
     bool IsTextFiltered() { return current->text.filtered; }
     void SetBorderColor(uint color) {
         if (current->grid) {
-            AddUndoIfNecessary();
+            AddUndo();
             current->grid->bordercolor = color;
         }
     }
     void SetRelativeSize(int relsize) {
-        AddUndoIfNecessary();
+        AddUndo();
         current->text.relsize = relsize;
     }
     void SetStyle(int stylebits) {
-        AddUndoIfNecessary();
+        AddUndo();
         current->text.stylebits = stylebits;
     }
 
