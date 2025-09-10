@@ -5,6 +5,7 @@ struct UndoItem {
     unique_ptr<Cell> clone;
     size_t estimated_size {0};
     uintptr_t cloned_from;  // May be dead.
+    int generation {0};
 };
 
 struct Document {
@@ -2104,7 +2105,7 @@ struct Document {
                (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);
     }
 
-    void AddUndo(Cell *c) {
+    void AddUndo(Cell *c, bool newgeneration = true) {
         redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
         if (!modified) {
@@ -2117,6 +2118,7 @@ struct Document {
         ui->estimated_size = c->EstimatedMemoryUse();
         ui->sel = selected;
         ui->cloned_from = (uintptr_t)c;
+        if (newgeneration && undolist.size()) ui->generation = undolist.back()->generation + 1;
         CreatePath(c, ui->path);
         if (selected.grid) CreatePath(selected.grid->cell, ui->selpath);
         undolist.push_back(std::move(ui));
@@ -2161,6 +2163,11 @@ struct Document {
         if (undolistsizeatfullsave > undolist.size())
             undolistsizeatfullsave = -1;  // gone beyond the save point, always modified
         modified = undolistsizeatfullsave != undolist.size();
+        if (fromlist.size() && tolist.size() &&
+            fromlist.back()->generation == tolist.back()->generation) {
+            Undo(fromlist, tolist, redo);
+            return;
+        }
         if (selected.grid)
             ScrollOrZoom();
         else
