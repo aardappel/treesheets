@@ -5,6 +5,7 @@ struct UndoItem {
     unique_ptr<Cell> clone;
     size_t estimated_size {0};
     uintptr_t cloned_from;  // May be dead.
+    int generation {0};
 };
 
 struct Document {
@@ -2104,7 +2105,7 @@ struct Document {
                (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);
     }
 
-    void AddUndo(Cell *c) {
+    void AddUndo(Cell *c, bool newgeneration = true) {
         redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
         if (!modified) {
@@ -2117,6 +2118,7 @@ struct Document {
         ui->estimated_size = c->EstimatedMemoryUse();
         ui->sel = selected;
         ui->cloned_from = (uintptr_t)c;
+        if (undolist.size()) ui->generation = undolist.back()->generation + (newgeneration ? 1 : 0);
         CreatePath(c, ui->path);
         if (selected.grid) CreatePath(selected.grid->cell, ui->selpath);
         undolist.push_back(std::move(ui));
@@ -2138,6 +2140,21 @@ struct Document {
     }
 
     void Undo(auto &fromlist, auto &tolist, bool redo = false) {
+        for (bool next = true; next; ) {
+            UndoEach(fromlist, tolist, redo);
+            next = (fromlist.size() && tolist.size() &&
+                    fromlist.back()->generation == tolist.back()->generation)
+                       ? true
+                       : false;
+        }
+        if (selected.grid)
+            ScrollOrZoom();
+        else
+            canvas->Refresh();
+        UpdateFileName();
+    }
+
+    void UndoEach(auto &fromlist, auto &tolist, bool redo = false) {
         auto beforesel = selected;
         vector<Selection> beforepath;
         if (beforesel.grid) CreatePath(beforesel.grid->cell, beforepath);
@@ -2161,11 +2178,6 @@ struct Document {
         if (undolistsizeatfullsave > undolist.size())
             undolistsizeatfullsave = -1;  // gone beyond the save point, always modified
         modified = undolistsizeatfullsave != undolist.size();
-        if (selected.grid)
-            ScrollOrZoom();
-        else
-            canvas->Refresh();
-        UpdateFileName();
     }
 
     void ColorChange(int which, int idx) {

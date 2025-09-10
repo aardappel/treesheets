@@ -1,36 +1,19 @@
 struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *document = nullptr;
     Cell *current = nullptr;
-    Cell *lowestcommonancestor = nullptr;
+    bool docmodified = false;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDocument() {
         document = sys->frame->GetCurrentTab()->doc;
         current = document->root;
-        lowestcommonancestor = nullptr;
+        docmodified = false;
     }
 
     void AddUndoIfNecessary() {
-        if (!lowestcommonancestor) {
-            UpdateLowestCommonAncestor();
-        } else {
-            for (auto p = current; p; p = p->parent) {
-                if (p == lowestcommonancestor) {
-                    // There is no need to add current to the undo stack as
-                    // lowestcommonancestor including subordinated current
-                    // is already in there.
-                    return;
-                }
-            }
-            UpdateLowestCommonAncestor();
-        }
-    }
-
-    void UpdateLowestCommonAncestor() {
-        // Use parent as lowestcommonancestor so changes to siblings are already covered
-        lowestcommonancestor = current->parent;
-        document->AddUndo(lowestcommonancestor);
+        document->AddUndo(current, !docmodified);
+        if (!docmodified) docmodified = true;
     }
 
     std::string ScriptRun(const char *filename) {
