@@ -182,6 +182,14 @@ nfr("set_window_size", "width,height", "II", "", "resizes the window",
 nfr("get_last_edit", "", "", "I",
     "gets the timestamp of the last edit in milliseconds since the Unix/C epoch",
     [](StackPtr &, VM &) { return Value(si->GetLastEdit()); });
+
+nfr("get_current_time", "", "", "I",
+    "gets the current timestamp in milliseconds since the Unix/C epoch", [](StackPtr &, VM &) {
+        auto now = std::chrono::system_clock::now();
+        auto duration = now.time_since_epoch();
+        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+        return Value(milliseconds);
+    });
 }
 
 NativeRegistry natreg;  // FIXME: global.
