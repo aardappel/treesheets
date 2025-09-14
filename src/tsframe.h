@@ -699,11 +699,15 @@ struct TSFrame : wxFrame {
         auto helpmenu = new wxMenu();
         MyAppend(helpmenu, wxID_ABOUT, _(L"&About..."), _(L"Show About dialog"));
         helpmenu->AppendSeparator();
-        MyAppend(helpmenu, wxID_HELP, _(L"Interactive &tutorial") + "\tF1");
-        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Operation reference") + "\tCTRL+ALT+F1");
+        MyAppend(helpmenu, wxID_HELP, _(L"Interactive &tutorial") + "\tF1",
+                 _(L"Load an interactive tutorial in TreeSheets"));
+        MyAppend(helpmenu, A_HELP_OP_REF, _(L"Operation reference") + "\tCTRL+ALT+F1",
+                 _(L"Load an interactive program operation reference in TreeSheets"));
         helpmenu->AppendSeparator();
-        MyAppend(helpmenu, A_TUTORIALWEBPAGE, _(L"Tutorial &web page"));
-        MyAppend(helpmenu, A_SCRIPTREFERENCE, _(L"&Script reference"));
+        MyAppend(helpmenu, A_TUTORIALWEBPAGE, _(L"Tutorial &web page"),
+                 _(L"Open the tutorial web page in browser"));
+        MyAppend(helpmenu, A_SCRIPTREFERENCE, _(L"&Script reference"),
+                 _(L"Open the Lobster script reference in browser"));
 
         wxAcceleratorEntry entries[3];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
