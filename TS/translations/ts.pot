@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-30 19:48+0200\n"
+"POT-Creation-Date: 2025-09-14 06:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #, c-format
@@ -170,6 +170,9 @@ msgid "&Save"
 msgstr ""
 
 msgid "&Save as..."
+msgstr ""
+
+msgid "&Script reference"
 msgstr ""
 
 msgid "&Search"
@@ -797,6 +800,12 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr ""
 
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr ""
+
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr ""
+
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr ""
@@ -962,6 +971,12 @@ msgid "Open link in &browser"
 msgstr ""
 
 msgid "Open text colors"
+msgstr ""
+
+msgid "Open the Lobster script reference in browser"
+msgstr ""
+
+msgid "Open the tutorial web page in browser"
 msgstr ""
 
 msgid ""
