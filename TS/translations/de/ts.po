@@ -176,9 +176,8 @@ msgstr "&Speichern"
 msgid "&Save as..."
 msgstr "&Speichern unter..."
 
-#, fuzzy
 msgid "&Script reference"
-msgstr "Programmierreferenz"
+msgstr "&Skriptreferenz"
 
 msgid "&Search"
 msgstr "&Suche"
