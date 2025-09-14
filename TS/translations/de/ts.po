@@ -826,11 +826,10 @@ msgid "Line Style Rendering"
 msgstr "Zeilenstil-Rendering"
 
 msgid "Load an interactive program operation reference in TreeSheets"
-msgstr ""
+msgstr "Die interaktive Programmierreferenz in TreeSheets öffnen"
 
-#, fuzzy
 msgid "Load an interactive tutorial in TreeSheets"
-msgstr "Interaktives &Tutorial"
+msgstr "Das interaktive &Tutorial in TreeSheets öffnen"
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
@@ -1000,10 +999,10 @@ msgid "Open text colors"
 msgstr "Textfarben öffnen"
 
 msgid "Open the Lobster script reference in browser"
-msgstr ""
+msgstr "Die Lobster-Skriptreferenz im Browser öffnen"
 
 msgid "Open the tutorial web page in browser"
-msgstr ""
+msgstr "Die Tutorial-Webseite im Browser öffnen"
 
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
@@ -1569,6 +1568,3 @@ msgstr "Skalierung:"
 
 msgid "size:"
 msgstr "Größe:"
-
-#~ msgid "Enter/exit text edit to the right"
-#~ msgstr "Textbearbeitungsmodus nach rechts betreten/verlassen"
