@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-30 19:48+0200\n"
+"POT-Creation-Date: 2025-09-14 06:44+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -175,6 +175,9 @@ msgstr "&Speichern"
 
 msgid "&Save as..."
 msgstr "&Speichern unter..."
+
+msgid "&Script reference"
+msgstr "&Skriptreferenz"
 
 msgid "&Search"
 msgstr "&Suche"
@@ -821,6 +824,12 @@ msgstr "Zuweisen zu einer Tastenkombination wurde abgebrochen."
 msgid "Line Style Rendering"
 msgstr "Zeilenstil-Rendering"
 
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr "Die interaktive Programmierreferenz in TreeSheets öffnen"
+
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr "Das interaktive Tutorial in TreeSheets öffnen"
+
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "%s geladen (%d Zellen, %d Zeichen) in %d Millisekunden."
@@ -988,11 +997,25 @@ msgstr "Link im &Browser öffnen"
 msgid "Open text colors"
 msgstr "Textfarben öffnen"
 
-msgid "Opens up the text from the selected cell in browser (should start be a valid URL)"
-msgstr "Öffnet den Text von der ausgewählten Zelle in einem Browser (sollte mit einer gültigen URL beginnen)"
+msgid "Open the Lobster script reference in browser"
+msgstr "Die Lobster-Skriptreferenz im Browser öffnen"
 
-msgid "Opens up the text from the selected cell in default application for the file type"
-msgstr "Öffnet den Text von der ausgewählten Zelle in der Standardanwendung für den Dateitypen"
+msgid "Open the tutorial web page in browser"
+msgstr "Die Tutorial-Webseite im Browser öffnen"
+
+msgid ""
+"Opens up the text from the selected cell in browser (should start be a valid "
+"URL)"
+msgstr ""
+"Öffnet den Text von der ausgewählten Zelle in einem Browser (sollte mit "
+"einer gültigen URL beginnen)"
+
+msgid ""
+"Opens up the text from the selected cell in default application for the file "
+"type"
+msgstr ""
+"Öffnet den Text von der ausgewählten Zelle in der Standardanwendung für den "
+"Dateitypen"
 
 msgid "Operation reference"
 msgstr "Programmierreferenz"
