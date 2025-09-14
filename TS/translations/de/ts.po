@@ -829,7 +829,7 @@ msgid "Load an interactive program operation reference in TreeSheets"
 msgstr "Die interaktive Programmierreferenz in TreeSheets öffnen"
 
 msgid "Load an interactive tutorial in TreeSheets"
-msgstr "Das interaktive &Tutorial in TreeSheets öffnen"
+msgstr "Das interaktive Tutorial in TreeSheets öffnen"
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
