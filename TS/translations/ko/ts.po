@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-30 19:48+0200\n"
-"PO-Revision-Date: 2025-09-02 05:06+0900\n"
+"POT-Creation-Date: 2025-09-14 06:44+0200\n"
+"PO-Revision-Date: 2025-09-14 16:08+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -175,6 +175,9 @@ msgstr "저장(&S)"
 
 msgid "&Save as..."
 msgstr "다른 이름으로 저장(&S)..."
+
+msgid "&Script reference"
+msgstr "스크립트 참조(&S)"
 
 msgid "&Search"
 msgstr "검색(&S)"
@@ -828,6 +831,12 @@ msgstr "키 바인딩이 취소되었습니다."
 msgid "Line Style Rendering"
 msgstr "선 스타일 렌더링"
 
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr "TreeSheets에서 대화형 프로그램 작업 참조 불러오기"
+
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr "TreeSheets에서 대화형 자습서 불러오기"
+
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "%s (%d 셀, %d 문자)를 %d 밀리초 단위로 로드했습니다."
@@ -995,6 +1004,12 @@ msgstr "브라우저에서 링크 열기(&B)"
 
 msgid "Open text colors"
 msgstr "텍스트 색상 열기"
+
+msgid "Open the Lobster script reference in browser"
+msgstr "브라우저에서 Lobster 스크립트 참조 열기"
+
+msgid "Open the tutorial web page in browser"
+msgstr "브라우저에서 튜토리얼 웹 페이지 열기"
 
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
