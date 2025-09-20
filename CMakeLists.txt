@@ -153,11 +153,11 @@ target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 
 ## Platform specific installation paths
 
-if(LINUX)
+if(LINUX OR BSD)
     OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
 endif()
 
-if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
+if((LINUX OR BSD) AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     include(GNUInstallDirs)
 
     set(TREESHEETS_BINDIR ${CMAKE_INSTALL_BINDIR})
@@ -166,7 +166,7 @@ if(LINUX AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     set(TREESHEETS_PKGDATADIR ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME})
     set(TREESHEETS_FULL_PKGDATADIR ${CMAKE_INSTALL_FULL_DATADIR}/${CMAKE_PROJECT_NAME})
 
-    # Convert relative to absolute paths because only absolute paths are looked up on Linux
+    # Convert relative to absolute paths because only absolute paths are looked up on Linux (and BSD)
     target_compile_definitions(TreeSheets PRIVATE
         "LOCALEDIR=L\"${CMAKE_INSTALL_FULL_LOCALEDIR}\""
         "TREESHEETS_DOCDIR=\"${TREESHEETS_FULL_DOCDIR}\""
