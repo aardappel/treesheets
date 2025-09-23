@@ -43,13 +43,48 @@ struct TSApp : wxApp {
             InitUnhandledExceptionFilter(argc, argv);
 
             // wxWidgets should really be doing this itself, but it doesn't (or expects you to
-            // want to use a manifest), so we have to call it ourselves.
+            // want to use a manifest), so we call numerous Windows API to declare ourselves as
+            // HiDPI compatible.
 
-            // Attempt to load the different HiDPI functions provided by the Windows API
-            SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-            if (GetLastError() == ERROR_PROC_NOT_FOUND) {
+            #ifndef DPI_ENUMS_DECLARED
+            typedef enum PROCESS_DPI_AWARENESS {
+                PROCESS_DPI_UNAWARE = 0,
+                PROCESS_SYSTEM_DPI_AWARE = 1,
+                PROCESS_PER_MONITOR_DPI_AWARE = 2
+            } PROCESS_DPI_AWARENESS;
+            #endif
+
+            typedef BOOL (WINAPI * SETPROCESSDPIAWARE_T)(void);
+            typedef HRESULT (WINAPI * SETPROCESSDPIAWARENESS_T)(PROCESS_DPI_AWARENESS);
+            typedef BOOL (WINAPI * SETPROCESSDPIAWARENESSCONTEXT_T)(DPI_AWARENESS_CONTEXT);
+            SETPROCESSDPIAWARE_T SetProcessDPIAware = NULL;
+            SETPROCESSDPIAWARENESS_T SetProcessDpiAwareness = NULL;
+            SETPROCESSDPIAWARENESSCONTEXT_T SetProcessDpiAwarenessContext = NULL;
+            HMODULE user32 = LoadLibraryA("User32.dll");
+            HMODULE shcore = LoadLibraryA("Shcore.dll");
+            if (user32) {
+                SetProcessDPIAware =
+                    (SETPROCESSDPIAWARE_T)GetProcAddress(user32, "SetProcessDPIAware");
+                SetProcessDpiAwarenessContext = (SETPROCESSDPIAWARENESSCONTEXT_T)GetProcAddress(
+                    user32, "SetProcessDpiAwarenessContext");
+            }
+            if (shcore) {
+                SetProcessDpiAwareness =
+                    (SETPROCESSDPIAWARENESS_T)GetProcAddress(shcore, "SetProcessDpiAwareness");
+            }
+
+            // Call HiDPI API functions
+
+            if (SetProcessDpiAwarenessContext) {
+                SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            } else if (SetProcessDpiAwareness) {
+                SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+            } else if (SetProcessDPIAware) {
                 SetProcessDPIAware();
             }
+
+            if (user32) FreeLibrary(user32);
+            if (shcore) FreeLibrary(shcore);
         #endif
 
         auto language = wxLocale::GetSystemLanguage();
