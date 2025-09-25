@@ -54,23 +54,26 @@ struct TSApp : wxApp {
             } PROCESS_DPI_AWARENESS;
             #endif
 
-            typedef BOOL (WINAPI * SETPROCESSDPIAWARE_T)(void);
-            typedef HRESULT (WINAPI * SETPROCESSDPIAWARENESS_T)(PROCESS_DPI_AWARENESS);
-            typedef BOOL (WINAPI * SETPROCESSDPIAWARENESSCONTEXT_T)(DPI_AWARENESS_CONTEXT);
-            SETPROCESSDPIAWARE_T SetProcessDPIAware = NULL;
-            SETPROCESSDPIAWARENESS_T SetProcessDpiAwareness = NULL;
-            SETPROCESSDPIAWARENESSCONTEXT_T SetProcessDpiAwarenessContext = NULL;
+            using SetProcessDPIAware_T = BOOL(WINAPI *)(void);
+            using SetProcessDpiAwareness_T = HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS);
+            using SetProcessDpiAwarenessContext_T = BOOL(WINAPI *)(DPI_AWARENESS_CONTEXT);
+
+            SetProcessDPIAware_T SetProcessDPIAware = nullptr;
+            SetProcessDpiAwareness_T SetProcessDpiAwareness = nullptr;
+            SetProcessDpiAwarenessContext_T SetProcessDpiAwarenessContext = nullptr;
+
             HMODULE user32 = LoadLibraryA("User32.dll");
             HMODULE shcore = LoadLibraryA("Shcore.dll");
+
             if (user32) {
                 SetProcessDPIAware =
-                    (SETPROCESSDPIAWARE_T)GetProcAddress(user32, "SetProcessDPIAware");
-                SetProcessDpiAwarenessContext = (SETPROCESSDPIAWARENESSCONTEXT_T)GetProcAddress(
+                    (SetProcessDPIAware_T)GetProcAddress(user32, "SetProcessDPIAware");
+                SetProcessDpiAwarenessContext = (SetProcessDpiAwarenessContext_T)GetProcAddress(
                     user32, "SetProcessDpiAwarenessContext");
             }
             if (shcore) {
                 SetProcessDpiAwareness =
-                    (SETPROCESSDPIAWARENESS_T)GetProcAddress(shcore, "SetProcessDpiAwareness");
+                    (SetProcessDpiAwareness_T)GetProcAddress(shcore, "SetProcessDpiAwareness");
             }
 
             // Call HiDPI API functions
