@@ -187,8 +187,7 @@ struct System {
             wxFFileInputStream fis(fn);
             wxDataInputStream dis(fis);
             if (!fis.IsOk()) {
-                auto count = frame->filehistory.GetCount();
-                for (auto i = 0; i < count; i++) {
+                for (int i = 0, n = frame->filehistory.GetCount(); i < n; i++) {
                     if (frame->filehistory.GetHistoryFile(i) == filename)
                         frame->filehistory.RemoveFileFromHistory(i);
                 }
@@ -515,7 +514,7 @@ struct System {
 
     int FillRows(Grid *g, const wxArrayString &as, int column, int startrow, int starty) {
         auto y = starty;
-        for (auto i = startrow; i < as.size(); i++) {
+        for (int i = startrow, n = as.size(); i < n; i++) {
             auto s = as[i];
             auto col = CountCol(s);
             if (col < column && startrow != 0) return i;

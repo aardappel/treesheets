@@ -1072,7 +1072,7 @@ struct TSFrame : wxFrame {
 
             case A_DETSCRIPT: {
                 wxArrayString filenames;
-                for (auto i = 0; i < scripts.GetCount(); i++) {
+                for (int i = 0, n = scripts.GetCount(); i < n; i++) {
                     filenames.Add(scripts.GetHistoryFile(i));
                 }
                 auto dialog = wxSingleChoiceDialog(
