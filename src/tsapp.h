@@ -66,9 +66,7 @@ struct TSApp : wxApp {
             }
         }
 
-        #if wxCHECK_VERSION(3, 1, 1)
-            wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
-        #endif
+        wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
 
         auto exepath = argv[0];
         #if defined(__WXMAC__)
