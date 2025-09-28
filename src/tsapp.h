@@ -14,20 +14,6 @@ struct TSApp : wxApp {
     wxLocale locale;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
 
-    void AddTranslation(const wxString &basepath) {
-        #ifdef __WXGTK__
-            locale.AddCatalogLookupPathPrefix(L"/usr");
-            locale.AddCatalogLookupPathPrefix(L"/usr/local");
-            #ifdef LOCALEDIR
-                locale.AddCatalogLookupPathPrefix(LOCALEDIR);
-            #endif
-            wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
-            locale.AddCatalogLookupPathPrefix(prefix);
-        #endif
-        locale.AddCatalogLookupPathPrefix(basepath);
-        locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
-    }
-
     bool OnInit() {
         #if wxUSE_UNICODE == 0
             #error "must use unicode version of wx libs to ensure data integrity of .cts files"
@@ -131,6 +117,20 @@ struct TSApp : wxApp {
     int OnExit() {
         DELETEP(sys);
         return 0;
+    }
+
+    void AddTranslation(const wxString &basepath) {
+        #ifdef __WXGTK__
+            locale.AddCatalogLookupPathPrefix(L"/usr");
+            locale.AddCatalogLookupPathPrefix(L"/usr/local");
+            #ifdef LOCALEDIR
+                locale.AddCatalogLookupPathPrefix(LOCALEDIR);
+            #endif
+            wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
+            locale.AddCatalogLookupPathPrefix(prefix);
+        #endif
+        locale.AddCatalogLookupPathPrefix(basepath);
+        locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
     }
 
     void MacOpenFiles(const auto &filenames) {
