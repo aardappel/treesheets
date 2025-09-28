@@ -30,11 +30,7 @@ struct TSApp : wxApp {
             DeclareHiDpiAwareOnWindows();
         #endif
 
-        auto language = wxLocale::GetSystemLanguage();
-        if (language == wxLANGUAGE_UNKNOWN || !wxLocale::IsAvailable(language)) {
-            language = wxLANGUAGE_ENGLISH;
-        }
-        locale.Init(language);
+        SetupLanguage();
 
         bool portable = false;
         bool single_instance = true;
@@ -68,24 +64,8 @@ struct TSApp : wxApp {
 
         wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
 
-        auto exepath = argv[0];
-        #if defined(__WXMAC__)
-            char path[PATH_MAX];
-            uint32_t size = sizeof(path);
-            if(_NSGetExecutablePath(path, &size) == 0) exepath = path;
-        #elif defined(__WXGTK__)
-            // argv[0] could be relative, this is apparently a more robust way to get the
-            // full path.
-            char path[PATH_MAX];
-            auto len = readlink("/proc/self/exe", path, PATH_MAX - 1);
-            if (len >= 0) {
-                path[len] = 0;
-                exepath = path;
-            }
-        #endif
-
         sys = new System(portable);
-        frame = new TSFrame(exepath, this);
+        frame = new TSFrame(GetExecutablePath(), this);
 
         auto serr = ScriptInit(frame->GetDataPath("scripts/"));
         if (!serr.empty()) {
@@ -117,6 +97,14 @@ struct TSApp : wxApp {
         return 0;
     }
 
+    void SetupLanguage() {
+        auto language = wxLocale::GetSystemLanguage();
+        if (language == wxLANGUAGE_UNKNOWN || !wxLocale::IsAvailable(language)) {
+            language = wxLANGUAGE_ENGLISH;
+        }
+        locale.Init(language);
+    }
+
     void AddTranslation(const wxString &basepath) {
         #ifdef __WXGTK__
             locale.AddCatalogLookupPathPrefix(L"/usr");
@@ -129,6 +117,25 @@ struct TSApp : wxApp {
         #endif
         locale.AddCatalogLookupPathPrefix(basepath);
         locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
+    }
+
+    wxString GetExecutablePath() {
+        wxString executablepath = argv[0];
+        #if defined(__WXMAC__)
+            char path[PATH_MAX];
+            uint32_t size = sizeof(path);
+            if(_NSGetExecutablePath(path, &size) == 0) executablepath = path;
+        #elif defined(__WXGTK__)
+            // argv[0] could be relative, this is apparently a more robust way to get the
+            // full path.
+            char path[PATH_MAX];
+            auto len = readlink("/proc/self/exe", path, PATH_MAX - 1);
+            if (len >= 0) {
+                path[len] = 0;
+                executablepath = path;
+            }
+        #endif
+        return executablepath;
     }
 
     #ifdef __WXMAC__
