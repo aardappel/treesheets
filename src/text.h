@@ -18,12 +18,7 @@ struct Text {
     }
 
     size_t EstimatedMemoryUse() {
-        return sizeof(Text) + t.Length() *
-            #if wxUSE_UNICODE
-            sizeof(wchar_t);
-            #else
-            sizeof(char);
-            #endif
+        return sizeof(Text) + t.Length() * sizeof(wchar_t);
     }
 
     double GetNum() {
