@@ -14,80 +14,20 @@ struct TSApp : wxApp {
     wxLocale locale;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
 
-    void AddTranslation(const wxString &basepath) {
-        #ifdef __WXGTK__
-            locale.AddCatalogLookupPathPrefix(L"/usr");
-            locale.AddCatalogLookupPathPrefix(L"/usr/local");
-            #ifdef LOCALEDIR
-                locale.AddCatalogLookupPathPrefix(LOCALEDIR);
-            #endif
-            wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
-            locale.AddCatalogLookupPathPrefix(prefix);
-        #endif
-        locale.AddCatalogLookupPathPrefix(basepath);
-        locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
-    }
-
     bool OnInit() {
         #if wxUSE_UNICODE == 0
-        #error "must use unicode version of wx libs to ensure data integrity of .cts files"
+            #error "must use unicode version of wx libs to ensure data integrity of .cts files"
         #endif
         ASSERT(wxUSE_UNICODE);
 
         #ifdef __WXMAC__
-        wxDisableAsserts();
-        //wxSystemOptions::SetOption("mac.toolbar.no-native", 1);
+            wxDisableAsserts();
+            // wxSystemOptions::SetOption("mac.toolbar.no-native", 1);
         #endif
 
         #ifdef __WXMSW__
             InitUnhandledExceptionFilter(argc, argv);
-
-            // wxWidgets should really be doing this itself, but it doesn't (or expects you to
-            // want to use a manifest), so we call numerous Windows API to declare ourselves as
-            // HiDPI compatible.
-
-            #ifndef DPI_ENUMS_DECLARED
-            typedef enum PROCESS_DPI_AWARENESS {
-                PROCESS_DPI_UNAWARE = 0,
-                PROCESS_SYSTEM_DPI_AWARE = 1,
-                PROCESS_PER_MONITOR_DPI_AWARE = 2
-            } PROCESS_DPI_AWARENESS;
-            #endif
-
-            using SetProcessDPIAware_T = BOOL(WINAPI *)(void);
-            using SetProcessDpiAwareness_T = HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS);
-            using SetProcessDpiAwarenessContext_T = BOOL(WINAPI *)(DPI_AWARENESS_CONTEXT);
-
-            SetProcessDPIAware_T SetProcessDPIAware = nullptr;
-            SetProcessDpiAwareness_T SetProcessDpiAwareness = nullptr;
-            SetProcessDpiAwarenessContext_T SetProcessDpiAwarenessContext = nullptr;
-
-            HMODULE user32 = LoadLibraryA("User32.dll");
-            HMODULE shcore = LoadLibraryA("Shcore.dll");
-
-            if (user32) {
-                SetProcessDPIAware =
-                    (SetProcessDPIAware_T)GetProcAddress(user32, "SetProcessDPIAware");
-                SetProcessDpiAwarenessContext = (SetProcessDpiAwarenessContext_T)GetProcAddress(
-                    user32, "SetProcessDpiAwarenessContext");
-            }
-            if (shcore) {
-                SetProcessDpiAwareness =
-                    (SetProcessDpiAwareness_T)GetProcAddress(shcore, "SetProcessDpiAwareness");
-            }
-
-            // Call HiDPI API functions
-
-            if (SetProcessDpiAwarenessContext) {
-                SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-            } else if (SetProcessDpiAwareness) {
-                SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
-            } else if (SetProcessDPIAware) {
-                SetProcessDPIAware();
-            }
-
-            if (user32) FreeLibrary(user32);
-            if (shcore) FreeLibrary(shcore);
+            DeclareHiDpiAwareOnWindows();
         #endif
 
         auto language = wxLocale::GetSystemLanguage();
@@ -179,10 +119,74 @@ struct TSApp : wxApp {
         return 0;
     }
 
-    void MacOpenFiles(const auto &filenames) {
-        if (!sys) return;
-        for (auto &fn : filenames) { sys->Open(fn); }
+    void AddTranslation(const wxString &basepath) {
+        #ifdef __WXGTK__
+            locale.AddCatalogLookupPathPrefix(L"/usr");
+            locale.AddCatalogLookupPathPrefix(L"/usr/local");
+            #ifdef LOCALEDIR
+                locale.AddCatalogLookupPathPrefix(LOCALEDIR);
+            #endif
+            wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
+            locale.AddCatalogLookupPathPrefix(prefix);
+        #endif
+        locale.AddCatalogLookupPathPrefix(basepath);
+        locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
     }
+
+    #ifdef __WXMAC__
+        void MacOpenFiles(const auto &filenames) {
+            if (!sys) return;
+            for (auto &fn : filenames) { sys->Open(fn); }
+        }
+    #endif
+
+    #ifdef __WXMSW__
+        void DeclareHiDpiAwareOnWindows() {
+            // wxWidgets should really be doing this itself, but it does not (or expects you to
+            // want to use a manifest), so we try to use the most recent Windows API to declare
+            // ourselves as HiDPI compatible.
+
+            #ifndef DPI_ENUMS_DECLARED
+                typedef enum PROCESS_DPI_AWARENESS {
+                    PROCESS_DPI_UNAWARE = 0,
+                    PROCESS_SYSTEM_DPI_AWARE = 1,
+                    PROCESS_PER_MONITOR_DPI_AWARE = 2
+                } PROCESS_DPI_AWARENESS;
+            #endif
+
+            using SetProcessDPIAware_T = BOOL(WINAPI *)(void);
+            using SetProcessDpiAwareness_T = HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS);
+            using SetProcessDpiAwarenessContext_T = BOOL(WINAPI *)(DPI_AWARENESS_CONTEXT);
+
+            SetProcessDPIAware_T SetProcessDPIAware = nullptr;
+            SetProcessDpiAwareness_T SetProcessDpiAwareness = nullptr;
+            SetProcessDpiAwarenessContext_T SetProcessDpiAwarenessContext = nullptr;
+
+            HMODULE user32 = LoadLibraryA("User32.dll");
+            HMODULE shcore = LoadLibraryA("Shcore.dll");
+
+            if (user32) {
+                SetProcessDPIAware = (SetProcessDPIAware_T)GetProcAddress(user32, "SetProcessDPIAware");
+                SetProcessDpiAwarenessContext = (SetProcessDpiAwarenessContext_T)GetProcAddress(
+                    user32, "SetProcessDpiAwarenessContext");
+            }
+            if (shcore) {
+                SetProcessDpiAwareness =
+                    (SetProcessDpiAwareness_T)GetProcAddress(shcore, "SetProcessDpiAwareness");
+            }
+
+            if (SetProcessDpiAwarenessContext) {
+                SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            } else if (SetProcessDpiAwareness) {
+                SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+            } else if (SetProcessDPIAware) {
+                SetProcessDPIAware();
+            }
+
+            if (user32) FreeLibrary(user32);
+            if (shcore) FreeLibrary(shcore);
+        }
+    #endif
 
     DECLARE_EVENT_TABLE()
 };
