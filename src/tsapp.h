@@ -133,10 +133,12 @@ struct TSApp : wxApp {
         locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
     }
 
-    void MacOpenFiles(const auto &filenames) {
-        if (!sys) return;
-        for (auto &fn : filenames) { sys->Open(fn); }
-    }
+    #ifdef __WXMAC__
+        void MacOpenFiles(const auto &filenames) {
+            if (!sys) return;
+            for (auto &fn : filenames) { sys->Open(fn); }
+        }
+    #endif
 
     #ifdef __WXMSW__
         void DeclareHiDpiAwareOnWindows() {
