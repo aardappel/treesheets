@@ -18,6 +18,7 @@ struct Text {
     }
 
     size_t EstimatedMemoryUse() {
+        ASSERT(wxUSE_UNICODE);
         return sizeof(Text) + t.Length() * sizeof(wchar_t);
     }
 
