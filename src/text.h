@@ -295,19 +295,29 @@ struct Text {
                         dc.GetTextExtent(ls, &x2, nullptr);
                         ls.Truncate(max(s.cursor, start) - start);
                         dc.GetTextExtent(ls, &x1, nullptr);
-                        if (x1 != x2)
+                        if (x1 != x2) {
+                            int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
+                            int starty =
+                                cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
+                            int height = h - 1;
                             DrawRectangle(
-                                dc, color, cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra,
-                                cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra,
-                                x2 - x1, h - 1, true);
+                                dc, color, startx, starty, x2 - x1, height, true);
+                            #ifdef __WXMSW__
+                                HintWindowsIMELocation(doc->canvas->GetHandle(), startx, starty + height);
+                            #endif
+                        }
                     }
                 } else if (s.cursor >= start && s.cursor <= end) {
                     ls.Truncate(s.cursor - start);
                     auto x = 0;
                     dc.GetTextExtent(ls, &x, nullptr);
-                    DrawRectangle(dc, color, cell->GetX(doc) + x + 1 + ixs + g_margin_extra,
-                                  cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra,
-                                  2, h - 2);
+                    int startx = cell->GetX(doc) + x + 1 + ixs + g_margin_extra;
+                    int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
+                    int height = h - 2;
+                    DrawRectangle(dc, color, startx, starty, 2, height);
+                    #ifdef __WXMSW__
+                        HintWindowsIMELocation(doc->canvas->GetHandle(), startx, starty + height);
+                    #endif
                     break;
                 }
 

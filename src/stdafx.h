@@ -24,6 +24,10 @@
 
 #ifdef _WIN32
     #include <WinUser.h>
+    #include <imm.h>
+    #ifdef _MSC_VER
+        #pragma comment(lib, "imm32")
+    #endif
     #include <wx/msw/dc.h>
     #include <wx/msw/regconf.h>
 #endif
