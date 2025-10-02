@@ -240,8 +240,9 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
     if (filedialog.ShowModal() == wxID_OK) filedialog.GetPaths(filenames);
 }
 
-#ifdef __WXMSW__
-    static void HintWindowsIMELocation(Document *doc, int bx, int by) {
+static void HintIMELocation(Document *doc, int bx, int by) {
+    // TODO: implement on other platforms
+    #ifdef __WXMSW__
         HWND hwnd = doc->canvas->GetHandle();
         if (hwnd == 0) return;
         int windowx = doc->centerx + (bx + doc->hierarchysize) * doc->currentviewscale;
@@ -267,5 +268,5 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
             ImmSetCandidateWindow(himc, &caf);
             ImmReleaseContext(hwnd, himc);
         }
-    }
-#endif
+    #endif
+}
