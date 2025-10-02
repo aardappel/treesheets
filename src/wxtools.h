@@ -247,14 +247,24 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
         int windowx = doc->centerx + (bx + doc->hierarchysize) * doc->currentviewscale;
         int windowy = doc->centery + (by + doc->hierarchysize) * doc->currentviewscale;
         if (HIMC himc = ImmGetContext(hwnd)) {
-            CANDIDATEFORM cf = {
-                .dwStyle = CFS_POINT,
+            // Place composition window at the cursor position
+            COMPOSITIONFORM cof = {
+                .dwStyle = CFS_FORCE_POSITION,
                 .ptCurrentPos = {
                     .x = windowx,
                     .y = windowy
                 }
             };
-            ImmSetCandidateWindow(himc, &cf);
+            ImmSetCompositionWindow(himc, &cof);
+            // Place candidate window (list to choose from) at the cursor position
+            CANDIDATEFORM caf = {
+                .dwStyle = CFS_CANDIDATEPOS,
+                .ptCurrentPos = {
+                    .x = windowx,
+                    .y = windowy
+                }
+            };
+            ImmSetCandidateWindow(himc, &caf);
             ImmReleaseContext(hwnd, himc);
         }
     }
