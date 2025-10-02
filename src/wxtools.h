@@ -239,3 +239,20 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
                             wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
     if (filedialog.ShowModal() == wxID_OK) filedialog.GetPaths(filenames);
 }
+
+#ifdef __WXMSW__
+    static void HintWindowsIMELocation(HWND hwnd, int x, int y) {
+        if (hwnd == 0) return;
+        if (HIMC himc = ImmGetContext(hwnd)) {
+            CANDIDATEFORM cf = {
+                .dwStyle = CFS_POINT,
+                .ptCurrentPos = {
+                    .x = x,
+                    .y = y
+                }
+            };
+            ImmSetCandidateWindow(himc, &cf);
+            ImmReleaseContext(hwnd, himc);
+        }
+    }
+#endif
