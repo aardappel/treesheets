@@ -303,7 +303,7 @@ struct Text {
                             DrawRectangle(
                                 dc, color, startx, starty, x2 - x1, height, true);
                             #ifdef __WXMSW__
-                                HintWindowsIMELocation(doc->canvas->GetHandle(), startx, starty + height);
+                                HintWindowsIMELocation(doc, startx, starty + height);
                             #endif
                         }
                     }
@@ -316,7 +316,7 @@ struct Text {
                     int height = h - 2;
                     DrawRectangle(dc, color, startx, starty, 2, height);
                     #ifdef __WXMSW__
-                        HintWindowsIMELocation(doc->canvas->GetHandle(), startx, starty + height);
+                        HintWindowsIMELocation(doc, startx, starty + height);
                     #endif
                     break;
                 }
