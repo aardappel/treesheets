@@ -244,8 +244,8 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
     static void HintWindowsIMELocation(Document *doc, int bx, int by) {
         HWND hwnd = doc->canvas->GetHandle();
         if (hwnd == 0) return;
-        int windowx = (bx + doc->centerx / doc->currentviewscale + doc->hierarchysize) * doc->currentviewscale;
-        int windowy = (by + doc->centery / doc->currentviewscale + doc->hierarchysize) * doc->currentviewscale;
+        int windowx = doc->centerx + (bx + doc->hierarchysize) * doc->currentviewscale;
+        int windowy = doc->centery + (by + doc->hierarchysize) * doc->currentviewscale;
         if (HIMC himc = ImmGetContext(hwnd)) {
             CANDIDATEFORM cf = {
                 .dwStyle = CFS_POINT,
