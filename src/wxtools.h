@@ -241,14 +241,17 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
 }
 
 #ifdef __WXMSW__
-    static void HintWindowsIMELocation(HWND hwnd, int x, int y) {
+    static void HintWindowsIMELocation(Document *doc, int bx, int by) {
+        HWND hwnd = doc->canvas->GetHandle();
         if (hwnd == 0) return;
+        int windowx = (bx + doc->centerx / doc->currentviewscale + doc->hierarchysize) * doc->currentviewscale;
+        int windowy = (by + doc->centery / doc->currentviewscale + doc->hierarchysize) * doc->currentviewscale;
         if (HIMC himc = ImmGetContext(hwnd)) {
             CANDIDATEFORM cf = {
                 .dwStyle = CFS_POINT,
                 .ptCurrentPos = {
-                    .x = x,
-                    .y = y
+                    .x = windowx,
+                    .y = windowy
                 }
             };
             ImmSetCandidateWindow(himc, &cf);
