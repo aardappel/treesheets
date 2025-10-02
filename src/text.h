@@ -302,9 +302,7 @@ struct Text {
                             int height = h - 1;
                             DrawRectangle(
                                 dc, color, startx, starty, x2 - x1, height, true);
-                            #ifdef __WXMSW__
-                                HintWindowsIMELocation(doc, startx, starty + height);
-                            #endif
+                            HintIMELocation(doc, startx, starty + height);
                         }
                     }
                 } else if (s.cursor >= start && s.cursor <= end) {
@@ -315,9 +313,7 @@ struct Text {
                     int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
                     int height = h - 2;
                     DrawRectangle(dc, color, startx, starty, 2, height);
-                    #ifdef __WXMSW__
-                        HintWindowsIMELocation(doc, startx, starty + height);
-                    #endif
+                    HintIMELocation(doc, startx, starty + height);
                     break;
                 }
 
