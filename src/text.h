@@ -299,10 +299,8 @@ struct Text {
                             int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
                             int starty =
                                 cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                            int height = h - 1;
-                            DrawRectangle(
-                                dc, color, startx, starty, x2 - x1, height, true);
-                            HintIMELocation(doc, startx, starty + height);
+                            DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
+                            HintIMELocation(doc, startx, starty);
                         }
                     }
                 } else if (s.cursor >= start && s.cursor <= end) {
@@ -311,9 +309,8 @@ struct Text {
                     dc.GetTextExtent(ls, &x, nullptr);
                     int startx = cell->GetX(doc) + x + 1 + ixs + g_margin_extra;
                     int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                    int height = h - 2;
-                    DrawRectangle(dc, color, startx, starty, 2, height);
-                    HintIMELocation(doc, startx, starty + height);
+                    DrawRectangle(dc, color, startx, starty, 2, h - 2);
+                    HintIMELocation(doc, startx, starty);
                     break;
                 }
 
