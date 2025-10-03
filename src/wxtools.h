@@ -240,20 +240,24 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
     if (filedialog.ShowModal() == wxID_OK) filedialog.GetPaths(filenames);
 }
 
-static void HintIMELocation(Document *doc, int bx, int by) {
+static void HintIMELocation(Document *doc, int bx, int by, int bh) {
     // TODO: implement on other platforms
     #ifdef __WXMSW__
         HWND hwnd = doc->canvas->GetHandle();
         if (hwnd == 0) return;
-        int windowx = doc->centerx + (bx + doc->hierarchysize) * doc->currentviewscale;
-        int windowy = doc->centery + (by + doc->hierarchysize) * doc->currentviewscale;
+        int imex = doc->centerx + (bx + doc->hierarchysize) * doc->currentviewscale;
+        int imey = doc->centery + (by + doc->hierarchysize) * doc->currentviewscale;
+        int imeh = bh * doc->currentviewscale;
+        int imew = 5 * imeh;
         if (HIMC himc = ImmGetContext(hwnd)) {
             // Place composition window at the cursor position
             COMPOSITIONFORM cof = {
-                .dwStyle = CFS_FORCE_POSITION,
-                .ptCurrentPos = {
-                    .x = windowx,
-                    .y = windowy
+                .dwStyle = CFS_RECT,
+                .rcArea = {
+                    .left = imex,
+                    .top = imey,
+                    .right = imex + imew,
+                    .bottom = imey + imeh
                 }
             };
             ImmSetCompositionWindow(himc, &cof);
@@ -261,8 +265,8 @@ static void HintIMELocation(Document *doc, int bx, int by) {
             CANDIDATEFORM caf = {
                 .dwStyle = CFS_CANDIDATEPOS,
                 .ptCurrentPos = {
-                    .x = windowx,
-                    .y = windowy
+                    .x = imex,
+                    .y = imey
                 }
             };
             ImmSetCandidateWindow(himc, &caf);
