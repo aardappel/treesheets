@@ -824,10 +824,10 @@ struct TSFrame : wxFrame {
     }
     TSCanvas *GetTabByFileName(const wxString &filename) {
         if (notebook) loop(i, notebook->GetPageCount()) {
-                auto page = static_cast<TSCanvas *>(notebook->GetPage(i));
-                if (page->doc->filename == filename) {
+                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+                if (canvas->doc->filename == filename) {
                     notebook->SetSelection(i);
-                    return page;
+                    return canvas;
                 }
             }
         return nullptr;
@@ -841,8 +841,8 @@ struct TSFrame : wxFrame {
 
     void TabsReset() {
         if (notebook) loop(i, notebook->GetPageCount()) {
-                auto page = static_cast<TSCanvas *>(notebook->GetPage(i));
-                page->doc->root->ResetChildren();
+                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+                canvas->doc->root->ResetChildren();
             }
     }
 
@@ -1287,7 +1287,7 @@ struct TSFrame : wxFrame {
                 Show(true);
             }
             #endif
-            if (TSCanvas *tab = GetCurrentTab()) tab->SetFocus();
+            if (TSCanvas *canvas = GetCurrentTab()) canvas->SetFocus();
         }
     }
 
@@ -1315,10 +1315,10 @@ struct TSFrame : wxFrame {
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, notebook->GetPageCount()) {
-                auto page = static_cast<TSCanvas *>(notebook->GetPage(i));
-                if (page->doc->modified) {
+                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+                if (canvas->doc->modified) {
                     notebook->SetSelection(i);
-                    if (page->doc->CheckForChanges()) {
+                    if (canvas->doc->CheckForChanges()) {
                         ce.Veto();
                         return;
                     }
