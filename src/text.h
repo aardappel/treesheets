@@ -300,7 +300,7 @@ struct Text {
                             int starty =
                                 cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
                             DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
-                            HintIMELocation(doc, startx, starty, h - 1);
+                            HintIMELocation(doc, startx, starty, h - 1, stylebits);
                         }
                     }
                 } else if (s.cursor >= start && s.cursor <= end) {
@@ -310,7 +310,7 @@ struct Text {
                     int startx = cell->GetX(doc) + x + 1 + ixs + g_margin_extra;
                     int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
                     DrawRectangle(dc, color, startx, starty, 2, h - 2);
-                    HintIMELocation(doc, startx, starty, h - 2);
+                    HintIMELocation(doc, startx, starty, h - 2, stylebits);
                     break;
                 }
 

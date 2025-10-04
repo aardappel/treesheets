@@ -240,7 +240,7 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
     if (filedialog.ShowModal() == wxID_OK) filedialog.GetPaths(filenames);
 }
 
-static void HintIMELocation(Document *doc, int bx, int by, int bh) {
+static void HintIMELocation(Document *doc, int bx, int by, int bh, int stylebits) {
     // TODO: implement on other platforms
     #ifdef __WXMSW__
         HWND hwnd = doc->canvas->GetHandle();
@@ -253,7 +253,14 @@ static void HintIMELocation(Document *doc, int bx, int by, int bh) {
             COMPOSITIONFORM cof = {.dwStyle = CFS_FORCE_POSITION,
                                    .ptCurrentPos = {.x = imx, .y = imy}};
             ImmSetCompositionWindow(himc, &cof);
-            LOGFONT lf = {.lfHeight = static_cast<LONG>(-bh * doc->currentviewscale)};
+            LOGFONT lf = {.lfHeight = static_cast<LONG>(-bh * doc->currentviewscale),
+                          .lfWeight = stylebits & STYLE_BOLD ? FW_BOLD : FW_REGULAR,
+                          .lfItalic = static_cast<BYTE>(stylebits & STYLE_ITALIC),
+                          .lfUnderline = static_cast<BYTE>(stylebits & STYLE_UNDERLINE),
+                          .lfStrikeOut = static_cast<BYTE>(stylebits & STYLE_STRIKETHRU),
+                          .lfPitchAndFamily = static_cast<BYTE>(stylebits & STYLE_FIXED
+                                                                    ? FIXED_PITCH | FF_MODERN
+                                                                    : VARIABLE_PITCH | FF_SWISS)};
             ImmSetCompositionFont(himc, &lf);
             CANDIDATEFORM caf = {.dwStyle = CFS_CANDIDATEPOS, .ptCurrentPos = {.x = imx, .y = imy}};
             ImmSetCandidateWindow(himc, &caf);
