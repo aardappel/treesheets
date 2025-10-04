@@ -419,7 +419,7 @@ struct Grid {
             if (sel.TextEdit()) {
                 DrawCursor(doc, dc, sel, true, sys->cursorcolor);
             } else {
-                HintIMELocation(doc, g.x, g.y);
+                HintIMELocation(doc, g.x, g.y, 0);
             }
         }
     }
