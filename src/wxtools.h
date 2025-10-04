@@ -240,7 +240,7 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
     if (filedialog.ShowModal() == wxID_OK) filedialog.GetPaths(filenames);
 }
 
-static void HintIMELocation(Document *doc, int bx, int by) {
+static void HintIMELocation(Document *doc, int bx, int by, int bh) {
     // TODO: implement on other platforms
     #ifdef __WXMSW__
         HWND hwnd = doc->canvas->GetHandle();
@@ -250,11 +250,11 @@ static void HintIMELocation(Document *doc, int bx, int by) {
         int imx = doc->centerx + (bx + doc->hierarchysize) * doc->currentviewscale - scrollx;
         int imy = doc->centery + (by + doc->hierarchysize) * doc->currentviewscale - scrolly;
         if (HIMC himc = ImmGetContext(hwnd)) {
-            // Place composition window at the cursor position
             COMPOSITIONFORM cof = {.dwStyle = CFS_FORCE_POSITION,
                                    .ptCurrentPos = {.x = imx, .y = imy}};
             ImmSetCompositionWindow(himc, &cof);
-            // Place candidate window (list to choose character from) at the cursor position
+            LOGFONT lf = {.lfHeight = static_cast<LONG>(-bh * doc->currentviewscale)};
+            ImmSetCompositionFont(himc, &lf);
             CANDIDATEFORM caf = {.dwStyle = CFS_CANDIDATEPOS, .ptCurrentPos = {.x = imx, .y = imy}};
             ImmSetCandidateWindow(himc, &caf);
             ImmReleaseContext(hwnd, himc);
