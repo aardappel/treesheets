@@ -521,8 +521,8 @@ struct Document {
         if (!root) return;
         canvas->GetClientSize(&maxx, &maxy);
         Layout(dc);
-        double xscale = maxx / (double)layoutxs;
-        double yscale = maxy / (double)layoutys;
+        double xscale = maxx / static_cast<double>(layoutxs);
+        double yscale = maxy / static_cast<double>(layoutys);
         currentviewscale = min(xscale, yscale);
         if (currentviewscale > 5)
             currentviewscale = 5;
@@ -1675,7 +1675,8 @@ struct Document {
                 for (auto image : imagestomanipulate) {
                     if (action == A_IMAGESCW) {
                         int pw = image->pixel_width;
-                        if (pw) image->ImageRescale((double)v / (double)pw);
+                        if (pw)
+                            image->ImageRescale(static_cast<double>(v) / static_cast<double>(pw));
                     } else if (action == A_IMAGESCP) {
                         image->ImageRescale(v / 100.0);
                     } else {
