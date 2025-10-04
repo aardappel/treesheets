@@ -682,7 +682,7 @@ struct Grid {
 
     void CSVImport(const wxArrayString &as, wxString sep) {
         int cy = 0;
-        loop(y, (int)as.size()) {
+        loop(y, static_cast<int>(as.size())) {
             auto s = as[y];
             wxString word;
             for (int x = 0; s[0]; x++) {
@@ -690,7 +690,7 @@ struct Grid {
                     word = L"";
                     for (int i = 1;; i++) {
                         if (!s[i]) {
-                            if (y < (int)as.size() - 1) {
+                            if (y < static_cast<int>(as.size()) - 1) {
                                 s = as[++y];
                                 i = 0;
                             } else {

@@ -213,7 +213,7 @@ struct Document {
 
         sys->frame->SetStatus(
             wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."), filename.c_str(),
-                             (int)((end_saving_time - start_saving_time).GetValue()))
+                             static_cast<int>((end_saving_time - start_saving_time).GetValue()))
                 .c_str());
 
         return _(L"");
@@ -416,7 +416,7 @@ struct Document {
             if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
-        if (auto diff = (int)drawpath.size() - max(0, len); diff > 0)
+        if (auto diff = static_cast<int>(drawpath.size()) - max(0, len); diff > 0)
             drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
     }
 
@@ -503,7 +503,7 @@ struct Document {
             if (p->text.t.Len()) {
                 int off = hierarchysize - dc.GetCharHeight() * ++i;
                 auto s = p->text.t;
-                if ((int)s.Len() > sys->defaultmaxcolwidth) {
+                if (static_cast<int>(s.Len()) > sys->defaultmaxcolwidth) {
                     // should take the width of these into account for layoutys, but really, the
                     // worst that can happen on a thin window is that its rendering gets cut off
                     s = s.Left(sys->defaultmaxcolwidth) + L"...";
@@ -960,9 +960,9 @@ struct Document {
             }
 
             case wxID_NEW: {
-                int size =
-                    (int)::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
-                                               _(L"size:"), _(L"New Sheet"), 10, 1, 25, sys->frame);
+                int size = static_cast<int>(
+                    ::wxGetNumberFromUser(_(L"What size grid would you like to start with?"),
+                                          _(L"size:"), _(L"New Sheet"), 10, 1, 25, sys->frame));
                 if (size < 0) return _(L"New file cancelled.");
                 sys->InitDB(size);
                 sys->frame->GetCurrentTab()->Refresh();
@@ -1516,8 +1516,9 @@ struct Document {
                                     true);
                 } else {
                     selected.EnterEdit(
-                        this, action == A_ENTERCELL_JUMPTOEND ? (int)cell->text.t.Len() : 0,
-                        (int)cell->text.t.Len());
+                        this,
+                        action == A_ENTERCELL_JUMPTOEND ? static_cast<int>(cell->text.t.Len()) : 0,
+                        static_cast<int>(cell->text.t.Len()));
                     RefreshMove();
                 }
                 return nullptr;
@@ -1933,7 +1934,7 @@ struct Document {
                                    // within line
                         selected.cursor = 0;
                         break;
-                    case A_SEND: selected.cursorend = (int)cell->text.t.Len(); break;
+                    case A_SEND: selected.cursorend = static_cast<int>(cell->text.t.Len()); break;
                     case A_CHOME: selected.cursor = selected.cursorend = 0; break;
                     case A_CEND: selected.cursor = selected.cursorend = selected.MaxCursor(); break;
                     case A_HOME: cell->text.HomeEnd(selected, true); break;
@@ -2125,7 +2126,7 @@ struct Document {
         size_t total_usage = 0;
         size_t old_list_size = undolist.size();
         // Cull undolist. Always at least keeps last item.
-        for (auto i = (int)undolist.size() - 1; i >= 0; i--) {
+        for (auto i = static_cast<int>(undolist.size()) - 1; i >= 0; i--) {
             // Cull old items if using more than 100MB or 1000 items, whichever comes first.
             // TODO: make configurable?
             if (total_usage < 100 * 1024 * 1024 && undolist.size() - i < 1000) {

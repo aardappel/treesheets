@@ -216,7 +216,7 @@ class Selection {
                                 for (int l = 0;; l++) {
                                     int start = i;
                                     auto ls = text.GetLine(i, maxcolwidth);
-                                    int len = (int)ls.Len();
+                                    auto len = static_cast<int>(ls.Len());
                                     int end = start + len;
 
                                     if (len && nextoffset >= 0) {
