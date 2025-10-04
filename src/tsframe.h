@@ -820,11 +820,11 @@ struct TSFrame : wxFrame {
     }
 
     TSCanvas *GetCurrentTab() {
-        return notebook ? (TSCanvas *)notebook->GetCurrentPage() : nullptr;
+        return notebook ? static_cast<TSCanvas *>(notebook->GetCurrentPage()) : nullptr;
     }
     TSCanvas *GetTabByFileName(const wxString &filename) {
         if (notebook) loop(i, notebook->GetPageCount()) {
-                auto page = (TSCanvas *)notebook->GetPage(i);
+                auto page = static_cast<TSCanvas *>(notebook->GetPage(i));
                 if (page->doc->filename == filename) {
                     notebook->SetSelection(i);
                     return page;
@@ -834,20 +834,20 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        TSCanvas *canvas = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
+        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         SetStatus();
         sys->TabChange(canvas->doc);
     }
 
     void TabsReset() {
         if (notebook) loop(i, notebook->GetPageCount()) {
-                auto page = (TSCanvas *)notebook->GetPage(i);
+                auto page = static_cast<TSCanvas *>(notebook->GetPage(i));
                 page->doc->root->ResetChildren();
             }
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        TSCanvas *canvas = (TSCanvas *)notebook->GetPage(nbe.GetSelection());
+        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         if (notebook->GetPageCount() <= 1) {
             nbe.Veto();
             Close();
@@ -1315,7 +1315,7 @@ struct TSFrame : wxFrame {
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, notebook->GetPageCount()) {
-                auto page = (TSCanvas *)notebook->GetPage(i);
+                auto page = static_cast<TSCanvas *>(notebook->GetPage(i));
                 if (page->doc->modified) {
                     notebook->SetSelection(i);
                     if (page->doc->CheckForChanges()) {
@@ -1378,7 +1378,7 @@ struct TSFrame : wxFrame {
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !notebook) return;
         const auto &modfile = event.GetPath().GetFullPath();
         loop(i, notebook->GetPageCount()) {
-            Document *doc = ((TSCanvas *)notebook->GetPage(i))->doc;
+            Document *doc = static_cast<TSCanvas *>(notebook->GetPage(i))->doc;
             if (modfile == doc->filename) {
                 auto modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
@@ -1410,8 +1410,9 @@ struct TSFrame : wxFrame {
                 if (*message) {
                     SetStatus(message);
                 } else {
-                    loop(j, notebook->GetPageCount()) if (((TSCanvas *)notebook->GetPage(j))->doc ==
-                                                          doc) notebook->DeletePage(j);
+                    loop(j,
+                         notebook->GetPageCount()) if (static_cast<TSCanvas *>(notebook->GetPage(j))
+                                                           ->doc == doc) notebook->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     SetStatus(
                         _(L"File has been re-loaded because of modifications of another program / computer"));

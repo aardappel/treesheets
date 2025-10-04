@@ -347,7 +347,7 @@ struct System {
     void RememberOpenFiles() {
         auto namedfiles = 0;
         loop(i, frame->notebook->GetPageCount()) {
-            auto page = (TSCanvas *)frame->notebook->GetPage(i);
+            auto page = static_cast<TSCanvas *>(frame->notebook->GetPage(i));
             if (page->doc->filename.Len()) {
                 cfg->Write(wxString::Format(L"lastopenfile_%d", namedfiles), page->doc->filename);
                 namedfiles++;
@@ -360,7 +360,8 @@ struct System {
 
     void SaveCheck() {
         loop(i, frame->notebook->GetPageCount()) {
-            ((TSCanvas *)frame->notebook->GetPage(i))->doc->AutoSave(!frame->IsActive(), i);
+            static_cast<TSCanvas *>(frame->notebook->GetPage(i))
+                ->doc->AutoSave(!frame->IsActive(), i);
         }
     }
 
