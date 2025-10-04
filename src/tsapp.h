@@ -37,7 +37,7 @@ struct TSApp : wxApp {
         bool dump_builtins = false;
         for (int i = 1; i < argc; i++) {
             if (argv[i][0] == '-') {
-                switch ((int)argv[i][1]) {
+                switch (static_cast<int>(argv[i][1])) {
                     case 'p': portable = true; break;
                     case 'i': single_instance = false; break;
                     case 'd':
