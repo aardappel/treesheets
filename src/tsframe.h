@@ -174,6 +174,8 @@ struct TSFrame : wxFrame {
                  _(L"Export the current view as XML (which can also be reimported without losing structure)"));
         MyAppend(expmenu, A_EXPHTMLT, _(L"&HTML (Tables+Styling)..."),
                  _(L"Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet"));
+        MyAppend(expmenu, A_EXPHTMLTE, _(L"&HTML (Tables+Styling+Images)..."),
+                 _(L"Export the curent view as HTML using nested tables and exported images"));
         MyAppend(expmenu, A_EXPHTMLB, _(L"HTML (&Bullet points)..."),
                  _(L"Export the current view as HTML as nested bullet points."));
         MyAppend(expmenu, A_EXPHTMLO, _(L"HTML (&Outline)..."),

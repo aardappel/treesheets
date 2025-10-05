@@ -746,6 +746,8 @@ struct Document {
                     dos.WriteString(content);
                     break;
                 case A_EXPHTMLT:
+                case A_EXPHTMLTI:
+                case A_EXPHTMLTE:
                 case A_EXPHTMLB:
                 case A_EXPHTMLO:
                     dos.WriteString(
@@ -766,6 +768,7 @@ struct Document {
                 case A_EXPCSV:
                 case A_EXPTEXT: dos.WriteString(content); break;
             }
+            if (action == A_EXPHTMLTE) ExportAllImages(filename, exportroot);
         }
         return _(L"File exported successfully.");
     }
@@ -904,6 +907,7 @@ struct Document {
 
             case A_EXPXML: return Export(L"xml", L"*.xml", _(L"Choose XML file to write"), action);
             case A_EXPHTMLT:
+            case A_EXPHTMLTE:
             case A_EXPHTMLB:
             case A_EXPHTMLO:
                 return Export(L"html", L"*.html", _(L"Choose HTML file to write"), action);
@@ -2288,5 +2292,28 @@ struct Document {
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         root->ResetChildren();
         canvas->Refresh();
+    }
+
+    void ExportAllImages(const wxString &filename, Cell *exportroot) {
+        std::set<Image *> exportimages;
+        CollectCells(exportroot);
+        for (auto c : itercells)
+            if (c->text.image) exportimages.insert(c->text.image);
+        wxFileName fn(filename);
+        auto directory = fn.GetPathWithSep();
+        for (auto &image : exportimages) ExportImage(image, directory);
+    }
+
+    void ExportImage(Image *image, const wxString &directory) {
+        wxString targetname = directory + wxString::Format("%llu", image->hash) + L"."
+        + (image->type == 'I' ? L"png" : L"jpg");
+        wxFFileOutputStream os(targetname, L"w+b");
+        if (!os.IsOk()) {
+            wxMessageBox(
+                _(L"Error writing image file! (try saving under new filename)."),
+            targetname.wx_str(), wxOK, sys->frame);
+            return;
+        }
+        os.Write(image->data.data(), image->data.size());
     }
 };

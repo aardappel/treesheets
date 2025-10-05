@@ -216,7 +216,7 @@ struct Cell {
     wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle,
                     Cell *root) {
         wxString str = text.ToText(indent, sel, format);
-        if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) &&
+        if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) && this != root &&
             !str.IsEmpty()) {
             wxString spanstyle = L"text-decoration:";
@@ -264,7 +264,8 @@ struct Cell {
             str.Prepend(L"<cell");
             str.Append(L' ', indent);
             str.Append(L"</cell>\n");
-        } else if ((format == A_EXPHTMLT || format == A_EXPHTMLTI) && this != root) {
+        } else if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
+                   this != root) {
             wxString style;
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
