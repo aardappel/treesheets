@@ -2301,19 +2301,7 @@ struct Document {
             if (c->text.image) exportimages.insert(c->text.image);
         wxFileName fn(filename);
         auto directory = fn.GetPathWithSep();
-        for (auto &image : exportimages) ExportImage(image, directory);
-    }
-
-    void ExportImage(Image *image, const wxString &directory) {
-        wxString targetname = directory + wxString::Format("%llu", image->hash) + L"."
-        + (image->type == 'I' ? L"png" : L"jpg");
-        wxFFileOutputStream os(targetname, L"w+b");
-        if (!os.IsOk()) {
-            wxMessageBox(
-                _(L"Error writing image file! (try saving under new filename)."),
-            targetname.wx_str(), wxOK, sys->frame);
-            return;
-        }
-        os.Write(image->data.data(), image->data.size());
+        for (auto &image : exportimages)
+            if (!image->ExportToDirectory(directory)) break;
     }
 };
