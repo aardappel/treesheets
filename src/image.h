@@ -47,4 +47,16 @@ struct Image {
         }
         return bm_display;
     }
+
+    bool ExportToDirectory(const wxString &directory) {
+        wxString targetname =
+            directory + wxString::Format("%llu", hash) + L"." + (type == 'I' ? L"png" : L"jpg");
+        wxFFileOutputStream os(targetname, L"w+b");
+        if (!os.IsOk()) {
+            wxMessageBox(_(L"Error writing image file!"), targetname.wx_str(), wxOK, sys->frame);
+            return false;
+        }
+        os.Write(data.data(), data.size());
+        return true;
+    }
 };
