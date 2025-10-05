@@ -2301,7 +2301,7 @@ struct Document {
             if (c->text.image) exportimages.insert(c->text.image);
         wxFileName fn(filename);
         auto directory = fn.GetPathWithSep();
-        for (auto &image : exportimages)
+        for (auto image : exportimages)
             if (!image->ExportToDirectory(directory)) break;
     }
 };
