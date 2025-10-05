@@ -68,11 +68,14 @@ struct Text {
     wxString ToText(int indent, const Selection &s, int format) {
         wxString str = s.cursor != s.cursorend ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
         if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
-            format == A_EXPHTMLO || format == A_EXPHTMLB)
+            format == A_EXPHTMLTE || format == A_EXPHTMLO || format == A_EXPHTMLB)
             str = htmlify(str);
         if (format == A_EXPHTMLTI && image)
             str.Prepend(L"<img src=\"data:" + imagetypes.at(image->type).second + ";base64," +
                         wxBase64Encode(image->data.data(), image->data.size()) + "\" />");
+        else if (format == A_EXPHTMLTE && image)
+            str.Prepend(L"<img src=\"" + wxString::Format("%llu", image->hash) + L"." +
+                        (image->type == 'I' ? L"png" : L"jpg") + L"\" />");
         return str;
     };
 

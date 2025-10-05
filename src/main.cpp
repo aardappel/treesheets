@@ -52,6 +52,7 @@ enum {
     A_EXPXML,
     A_EXPHTMLT,
     A_EXPHTMLTI,
+    A_EXPHTMLTE,
     A_EXPHTMLO,
     A_EXPHTMLB,
     A_EXPTEXT,
