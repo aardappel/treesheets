@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-14 06:44+0200\n"
+"POT-Creation-Date: 2025-10-05 21:40+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -85,6 +85,9 @@ msgstr "&Tabellen-Umstrukturierung"
 
 msgid "&HTML (Tables+Styling)..."
 msgstr "&HTML (Tabellen + Stil)..."
+
+msgid "&HTML (Tables+Styling+Images)..."
+msgstr "&HTML (Tabellen + Stil + Bilder)..."
 
 msgid "&Help"
 msgstr "&Hilfe"
@@ -557,6 +560,9 @@ msgstr "&Ansicht exportieren als"
 
 msgid "Export cancelled."
 msgstr "Export wurde abgebrochen."
+
+msgid "Export the curent view as HTML using nested tables and exported images"
+msgstr "Die aktuelle Ansicht als HTML mit Tabellen und Bildern exportieren."
 
 msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
