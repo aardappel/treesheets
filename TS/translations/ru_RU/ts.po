@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.4\n"
+"Project-Id-Version: TreeSheets_RU 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-30 19:48+0200\n"
-"PO-Revision-Date: 2025-09-02 17:14+0300\n"
+"POT-Creation-Date: 2025-10-05 21:40+0200\n"
+"PO-Revision-Date: 2025-10-07 19:41+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -88,6 +88,9 @@ msgstr "Ре&организация Сетки"
 
 msgid "&HTML (Tables+Styling)..."
 msgstr "HTML (Таблицы&+Оформление)..."
+
+msgid "&HTML (Tables+Styling+Images)..."
+msgstr "HTML (Таблицы&+Оформление+Изображения)..."
 
 msgid "&Help"
 msgstr "П&омощь"
@@ -179,6 +182,9 @@ msgstr "Сохранить"
 # Изображение на диск...
 msgid "&Save as..."
 msgstr "&Сохранить как..."
+
+msgid "&Script reference"
+msgstr "Справочник &Функций"
 
 msgid "&Search"
 msgstr "&Поиск"
@@ -613,6 +619,10 @@ msgid "Export cancelled."
 msgstr "Экспорт Отменён."
 
 # Комметарий п. меню.
+msgid "Export the curent view as HTML using nested tables and exported images"
+msgstr "Экспорт в HTML с использованием вложенных таблиц и экспортированных изображений"
+
+# Комметарий п. меню.
 msgid "Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"
 msgstr "Экспорт в CSV. Для электронных таблиц и баз данных. Работает только с сетками, без подсеток (при необходимости, реорганизуйте сетку \"к Табличному виду\")"
 
@@ -877,6 +887,14 @@ msgstr "Привязка клавиш отменена."
 msgid "Line Style Rendering"
 msgstr ".. в стиле &Линий"
 
+# комментарий к п. Меню
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr "Загрузить справочник по интерактивной работе Программы в TreeSheets"
+
+# комментарий к эл-ту Главного Окна
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr "Загрузить интерактивный учебник TreeSheets"
+
 # Сообщение (после действия или события)
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
@@ -1067,6 +1085,14 @@ msgid "Open text colors"
 msgstr ".. Цвета &Текста"
 
 # комментарий к п. Меню
+msgid "Open the Lobster script reference in browser"
+msgstr "Открыть справочник по функциям Lobster в браузере"
+
+# комментарий к п. Меню
+msgid "Open the tutorial web page in browser"
+msgstr "Открыть веб-страницу Краткого Введения в браузере"
+
+# комментарий к п. Меню
 msgid "Opens up the text from the selected cell in browser (should start be a valid URL)"
 msgstr "Открывает текст из выбранной ячейки в браузере (в начале должен быть действительный URL)"
 
@@ -1075,7 +1101,7 @@ msgid "Opens up the text from the selected cell in default application for the f
 msgstr "Открывает текст из выбранной ячейки в приложении, ассоциированном с данным типом файла"
 
 msgid "Operation reference"
-msgstr "Справочник Операций"
+msgstr "Справочник по Программе"
 
 # Сообщение (после действия или события)
 msgid ""
@@ -1135,9 +1161,9 @@ msgstr "Введите новую строку привязки клавиш"
 msgid "Please enter the percentage you want the image scaled by:"
 msgstr "Введите процент, на который вы хотите масштабировать изображение:"
 
-# Меню
+# в Окне (выбор п. Меню)
 msgid "Please pick a menu item to change the key binding for"
-msgstr "Выберите пункт меню, чтобы изменить привязку клавиш для:"
+msgstr "Выберите пункт меню, чтобы изменить назначение клавиш для"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Please select Lobster script file(s):"
@@ -1157,7 +1183,7 @@ msgstr "Выберите файл(ы) для импорта:"
 
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Please select the datetime range."
-msgstr "Выберите Диапазон"
+msgstr "Выберите Диапазон."
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Выберите сценарий, который вы хотите удалить из списка:"
