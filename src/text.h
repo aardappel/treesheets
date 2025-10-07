@@ -73,9 +73,13 @@ struct Text {
         if (format == A_EXPHTMLTI && image)
             str.Prepend(L"<img src=\"data:" + imagetypes.at(image->type).second + ";base64," +
                         wxBase64Encode(image->data.data(), image->data.size()) + "\" />");
-        else if (format == A_EXPHTMLTE && image)
+        else if (format == A_EXPHTMLTE && image) {
+            wxString relsize = wxString::Format(
+                "%d%%", static_cast<int>(100.0 * sys->frame->FromDIP(1.0) / image->display_scale));
             str.Prepend(L"<img src=\"" + wxString::Format("%llu", image->hash) + L"." +
-                        (image->type == 'I' ? L"png" : L"jpg") + L"\" />");
+                        (image->type == 'I' ? L"png" : L"jpg") + L"\" width=\"" + relsize +
+                        L"\" height=\"" + relsize + L"\" />");
+        }
         return str;
     };
 
