@@ -364,6 +364,7 @@ struct TSFrame : wxFrame {
             MyAppend(stmenu, A_LASTCELLCOLOR, _(L"Apply last cell color") + "\tSHIFT+ALT+c");
             MyAppend(stmenu, A_LASTTEXTCOLOR, _(L"Apply last text color") + "\tSHIFT+ALT+t");
             MyAppend(stmenu, A_LASTBORDCOLOR, _(L"Apply last border color") + "\tSHIFT+ALT+b");
+            MyAppend(stmenu, A_LASTIMAGE, _(L"Apply last image") + "\tSHIFT+ALT+i");
             MyAppend(stmenu, A_OPENCELLCOLOR, _(L"Open cell colors") + "\tSHIFT+ALT+F9");
             MyAppend(stmenu, A_OPENTEXTCOLOR, _(L"Open text colors") + "\tSHIFT+ALT+F10");
             MyAppend(stmenu, A_OPENBORDCOLOR, _(L"Open border colors") + "\tSHIFT+ALT+F11");
