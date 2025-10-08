@@ -53,6 +53,7 @@ struct System {
     uint lastcellcolor {0xFFFFFF};
     uint lasttextcolor {0};
     uint lastbordcolor {0xA0A0A0};
+    Image *lastimage {nullptr};
     int customcolor {0xFFFFFF};
     int cursorcolor {0x00FF00};
 

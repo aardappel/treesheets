@@ -1595,6 +1595,7 @@ struct Document {
             case A_LASTCELLCOLOR:
             case A_LASTTEXTCOLOR:
             case A_LASTBORDCOLOR:
+            case A_LASTIMAGE:
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, true) switch (action) {
                     case A_RESETSIZE: c->text.relsize = 0; break;
@@ -1615,6 +1616,9 @@ struct Document {
                     case A_LASTTEXTCOLOR: c->textcolor = sys->lasttextcolor; break;
                     case A_LASTBORDCOLOR:
                         if (c->grid) c->grid->bordercolor = sys->lastbordcolor;
+                        break;
+                    case A_LASTIMAGE:
+                        if (sys->lastimage) c->text.image = sys->lastimage;
                         break;
                 }
                 selected.grid->cell->ResetChildren();
@@ -2198,7 +2202,8 @@ struct Document {
     }
 
     void SetImageBM(Cell *c, auto &&data, double scale) {
-        c->text.image = sys->imagelist[sys->AddImageToList(scale, std::move(data), 'I')].get();
+        c->text.image = sys->lastimage =
+            sys->imagelist[sys->AddImageToList(scale, std::move(data), 'I')].get();
     }
 
     bool LoadImageIntoCell(const wxString &filename, Cell *c, double scale) {
