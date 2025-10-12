@@ -25,53 +25,7 @@ struct TSFrame : wxFrame {
     wxString imagepath;
     int refreshhack {0};
     int refreshhackinstances {0};
-
-    wxString GetDocPath(const wxString &relpath) {
-        std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
-            #ifdef TREESHEETS_DOCDIR
-                std::filesystem::path(TREESHEETS_DOCDIR "/" + relpath.ToStdString()),
-            #endif
-        };
-        std::filesystem::path relativePath;
-        for (auto path : candidatePaths) {
-            relativePath = path;
-            if (std::filesystem::exists(relativePath)) { break; }
-        }
-
-        return wxString(relativePath.c_str());
-    }
-    wxString GetDataPath(const wxString &relpath) {
-        std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
-            #ifdef TREESHEETS_DATADIR
-                std::filesystem::path(TREESHEETS_DATADIR "/" + relpath.ToStdString()),
-            #endif
-        };
-        std::filesystem::path relativePath;
-        for (auto path : candidatePaths) {
-            relativePath = path;
-            if (std::filesystem::exists(relativePath)) { break; }
-        }
-
-        return wxString(relativePath.c_str());
-    }
-
     std::map<wxString, wxString> menustrings;
-
-    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"") {
-        auto item = contents;
-        wxString key = L"";
-        if (int pos = contents.Find("\t"); pos >= 0) {
-            item = contents.Mid(0, pos);
-            key = contents.Mid(pos + 1);
-        }
-        key = sys->cfg->Read(item, key);
-        auto newcontents = item;
-        if (key.Length()) newcontents += "\t" + key;
-        menu->Append(tag, newcontents, help);
-        menustrings[item] = key;
-    }
 
     TSFrame(wxString exename, TSApp *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
@@ -805,78 +759,6 @@ struct TSFrame : wxFrame {
         wxSafeYield();
     }
 
-    void AppOnEventLoopEnter() {
-        watcher = new wxFileSystemWatcher();
-        watcher->SetOwner(this);
-        Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(TSFrame::OnFileSystemEvent));
-    }
-
-    TSCanvas *NewTab(Document *doc, bool append = false) {
-        TSCanvas *canvas = new TSCanvas(this, notebook);
-        canvas->doc = doc;
-        doc->canvas = canvas;
-        canvas->SetScrollRate(1, 1);
-        if (append)
-            notebook->AddPage(canvas, _(L"<unnamed>"), true, wxNullBitmap);
-        else
-            notebook->InsertPage(0, canvas, _(L"<unnamed>"), true, wxNullBitmap);
-        canvas->SetDropTarget(new DropTarget(doc->dndobjc));
-        canvas->SetFocus();
-        return canvas;
-    }
-
-    TSCanvas *GetCurrentTab() {
-        return notebook ? static_cast<TSCanvas *>(notebook->GetCurrentPage()) : nullptr;
-    }
-    TSCanvas *GetTabByFileName(const wxString &filename) {
-        if (notebook) loop(i, notebook->GetPageCount()) {
-                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
-                if (canvas->doc->filename == filename) {
-                    notebook->SetSelection(i);
-                    return canvas;
-                }
-            }
-        return nullptr;
-    }
-
-    void OnTabChange(wxAuiNotebookEvent &nbe) {
-        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
-        SetStatus();
-        sys->TabChange(canvas->doc);
-    }
-
-    void TabsReset() {
-        if (notebook) loop(i, notebook->GetPageCount()) {
-                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
-                canvas->doc->root->ResetChildren();
-            }
-    }
-
-    void OnTabClose(wxAuiNotebookEvent &nbe) {
-        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
-        if (notebook->GetPageCount() <= 1) {
-            nbe.Veto();
-            Close();
-        } else if (canvas->doc->CloseDocument()) {
-            nbe.Veto();
-        }
-    }
-
-    void CycleTabs(int offset = 1) {
-        auto numtabs = static_cast<int>(notebook->GetPageCount());
-        offset = offset >= 0 ? 1 : numtabs - 1;  // normalize to non-negative wrt modulo
-        notebook->SetSelection((notebook->GetSelection() + offset) % numtabs);
-    }
-
-    void SetPageTitle(const wxString &filename, wxString mods, int page = -1) {
-        if (page < 0) page = notebook->GetSelection();
-        if (page < 0) return;
-        if (page == notebook->GetSelection()) SetTitle(L"TreeSheets - " + filename + mods);
-        notebook->SetPageText(
-            page,
-            (filename.empty() ? wxString(_(L"<unnamed>")) : wxFileName(filename).GetName()) + mods);
-    }
-
     void ConstructToolBar() {
         toolbar = CreateToolBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_FLAT | wxTB_NODIVIDER);
         toolbar->SetOwnBackgroundColour(toolbarbackgroundcolor);
@@ -962,6 +844,14 @@ struct TSFrame : wxFrame {
         toolbar->Realize();
         toolbar->Show(sys->showtoolbar);
     }
+
+    void AppOnEventLoopEnter() {
+        watcher = new wxFileSystemWatcher();
+        watcher->SetOwner(this);
+        Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(TSFrame::OnFileSystemEvent));
+    }
+
+    // event handling functions
 
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
@@ -1172,6 +1062,26 @@ struct TSFrame : wxFrame {
         }
     }
 
+    void OnTabChange(wxAuiNotebookEvent &nbe) {
+        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
+        SetStatus();
+        sys->TabChange(canvas->doc);
+    }
+
+    void OnTabClose(wxAuiNotebookEvent &nbe) {
+        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
+        if (notebook->GetPageCount() <= 1) {
+            nbe.Veto();
+            Close();
+        } else if (canvas->doc->CloseDocument()) {
+            nbe.Veto();
+        }
+    }
+
+    void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
+        if (TSCanvas *canvas = GetCurrentTab()) UpdateStatus(canvas->doc->selected);
+    }
+
     void OnSearch(wxCommandEvent &ce) {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
@@ -1193,10 +1103,6 @@ struct TSFrame : wxFrame {
             canvas->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
     }
 
-    void ReFocus() {
-        if (TSCanvas *canvas = GetCurrentTab()) canvas->SetFocus();
-    }
-
     void OnChangeColor(wxCommandEvent &ce) {
         GetCurrentTab()->doc->ColorChange(ce.GetId(), ce.GetInt());
         ReFocus();
@@ -1207,75 +1113,17 @@ struct TSFrame : wxFrame {
         ReFocus();
     }
 
-    void OnSizing(wxSizeEvent &se) { se.Skip(); }
-    void OnMaximize(wxMaximizeEvent &me) {
-        ReFocus();
-        me.Skip();
-    }
     void OnActivate(wxActivateEvent &ae) {
         // This causes warnings in the debug log, but without it keyboard entry upon window select
         // doesn't work.
         ReFocus();
     }
 
-    void RenderFolderIcon() {
-        wxImage foldiconi;
-        foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
-        foldicon = wxBitmap(foldiconi);
-        ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
-    }
+    void OnSizing(wxSizeEvent &se) { se.Skip(); }
 
-    void SetDPIAwareStatusWidths() {
-        int statusbarfieldwidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
-        SetStatusWidths(5, statusbarfieldwidths);
-    }
-
-    void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
-        if (TSCanvas *canvas = GetCurrentTab()) UpdateStatus(canvas->doc->selected);
-    }
-
-    void SetStatus(const wxChar *message = nullptr) {
-        if (GetStatusBar() && (!message || *message)) SetStatusText(message ? message : L"", 0);
-    }
-
-    void UpdateStatus(const Selection &s) {
-        if (GetStatusBar()) {
-            if (Cell *c = s.GetCell(); c && s.xs) {
-                SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
-                SetStatusText(wxString::Format(_(L"Width %d"), s.grid->colwidths[s.x]), 2);
-                SetStatusText(
-                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
-                                     c->text.lastedit.FormatTime().c_str()),
-                    1);
-            } else
-                for (int field : {1, 2, 3}) SetStatusText("", field);
-            SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
-        }
-    }
-
-    void OnDPIChanged(wxDPIChangedEvent &dce) {
-        // block all other events until we finished preparing
-        wxEventBlocker blocker(this);
-        wxBusyCursor wait;
-        {
-            ThreadPool pool(std::thread::hardware_concurrency());
-            for (const auto &image : sys->imagelist) {
-                pool.enqueue(
-                    [](auto img) {
-                        img->bm_display = wxNullBitmap;
-                        img->Display();
-                    },
-                    image.get());
-            }
-        }  // wait until all tasks are finished
-        RenderFolderIcon();
-        dce.Skip();
-    }
-
-    void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        DELETEP(toolbar);
-        ConstructToolBar();
-        se.Skip();
+    void OnMaximize(wxMaximizeEvent &me) {
+        ReFocus();
+        me.Skip();
     }
 
     void OnIconize(wxIconizeEvent &me) {
@@ -1295,16 +1143,6 @@ struct TSFrame : wxFrame {
             #endif
             if (TSCanvas *canvas = GetCurrentTab()) canvas->SetFocus();
         }
-    }
-
-    void DeIconize() {
-        if (!IsIconized()) {
-            RequestUserAttention();
-            return;
-        }
-        Show(true);
-        Iconize(false);
-        taskbaricon.RemoveIcon();
     }
 
     void OnTBIDBLClick(wxTaskBarIconEvent &e) { DeIconize(); }
@@ -1358,27 +1196,6 @@ struct TSFrame : wxFrame {
         Destroy();
     }
 
-    #ifdef WIN32
-    void SetRegistryKey(const wxChar *key, wxString value) {
-        wxRegKey registrykey(key);
-        registrykey.Create();
-        registrykey.SetValue(L"", value);
-    }
-    #endif
-
-    void SetFileAssoc(wxString &exename) {
-        #ifdef WIN32
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
-                       wxString(L"\"") + exename + L"\" \"%1\"");
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
-                       wxString(L"\"") + exename + L"\",0");
-        #else
-        // TODO: do something similar for mac/kde/gnome?
-        #endif
-    }
-
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
         // 0xF == create/delete/rename/modify
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !notebook) return;
@@ -1425,6 +1242,196 @@ struct TSFrame : wxFrame {
                 }
                 return;
             }
+        }
+    }
+
+    void OnDPIChanged(wxDPIChangedEvent &dce) {
+        // block all other events until we finished preparing
+        wxEventBlocker blocker(this);
+        wxBusyCursor wait;
+        {
+            ThreadPool pool(std::thread::hardware_concurrency());
+            for (const auto &image : sys->imagelist) {
+                pool.enqueue(
+                    [](auto img) {
+                        img->bm_display = wxNullBitmap;
+                        img->Display();
+                    },
+                    image.get());
+            }
+        }  // wait until all tasks are finished
+        RenderFolderIcon();
+        dce.Skip();
+    }
+
+    void OnSysColourChanged(wxSysColourChangedEvent &se) {
+        DELETEP(toolbar);
+        ConstructToolBar();
+        se.Skip();
+    }
+
+    // helper functions
+
+    void CycleTabs(int offset = 1) {
+        auto numtabs = static_cast<int>(notebook->GetPageCount());
+        offset = offset >= 0 ? 1 : numtabs - 1;  // normalize to non-negative wrt modulo
+        notebook->SetSelection((notebook->GetSelection() + offset) % numtabs);
+    }
+
+    void DeIconize() {
+        if (!IsIconized()) {
+            RequestUserAttention();
+            return;
+        }
+        Show(true);
+        Iconize(false);
+        taskbaricon.RemoveIcon();
+    }
+
+    TSCanvas *GetCurrentTab() {
+        return notebook ? static_cast<TSCanvas *>(notebook->GetCurrentPage()) : nullptr;
+    }
+
+    wxString GetDataPath(const wxString &relpath) {
+        std::filesystem::path candidatePaths[] = {
+            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
+            #ifdef TREESHEETS_DATADIR
+                std::filesystem::path(TREESHEETS_DATADIR "/" + relpath.ToStdString()),
+            #endif
+        };
+        std::filesystem::path relativePath;
+        for (auto path : candidatePaths) {
+            relativePath = path;
+            if (std::filesystem::exists(relativePath)) { break; }
+        }
+
+        return wxString(relativePath.c_str());
+    }
+
+    wxString GetDocPath(const wxString &relpath) {
+        std::filesystem::path candidatePaths[] = {
+            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
+            #ifdef TREESHEETS_DOCDIR
+                std::filesystem::path(TREESHEETS_DOCDIR "/" + relpath.ToStdString()),
+            #endif
+        };
+        std::filesystem::path relativePath;
+        for (auto path : candidatePaths) {
+            relativePath = path;
+            if (std::filesystem::exists(relativePath)) { break; }
+        }
+
+        return wxString(relativePath.c_str());
+    }
+
+    TSCanvas *GetTabByFileName(const wxString &filename) {
+        if (notebook) loop(i, notebook->GetPageCount()) {
+                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+                if (canvas->doc->filename == filename) {
+                    notebook->SetSelection(i);
+                    return canvas;
+                }
+            }
+        return nullptr;
+    }
+
+    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"") {
+        auto item = contents;
+        wxString key = L"";
+        if (int pos = contents.Find("\t"); pos >= 0) {
+            item = contents.Mid(0, pos);
+            key = contents.Mid(pos + 1);
+        }
+        key = sys->cfg->Read(item, key);
+        auto newcontents = item;
+        if (key.Length()) newcontents += "\t" + key;
+        menu->Append(tag, newcontents, help);
+        menustrings[item] = key;
+    }
+
+    TSCanvas *NewTab(Document *doc, bool append = false) {
+        TSCanvas *canvas = new TSCanvas(this, notebook);
+        canvas->doc = doc;
+        doc->canvas = canvas;
+        canvas->SetScrollRate(1, 1);
+        if (append)
+            notebook->AddPage(canvas, _(L"<unnamed>"), true, wxNullBitmap);
+        else
+            notebook->InsertPage(0, canvas, _(L"<unnamed>"), true, wxNullBitmap);
+        canvas->SetDropTarget(new DropTarget(doc->dndobjc));
+        canvas->SetFocus();
+        return canvas;
+    }
+
+    void ReFocus() {
+        if (TSCanvas *canvas = GetCurrentTab()) canvas->SetFocus();
+    }
+
+    void RenderFolderIcon() {
+        wxImage foldiconi;
+        foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
+        foldicon = wxBitmap(foldiconi);
+        ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
+    }
+
+    void SetDPIAwareStatusWidths() {
+        int statusbarfieldwidths[] = {-1, FromDIP(300), FromDIP(120), FromDIP(100), FromDIP(150)};
+        SetStatusWidths(5, statusbarfieldwidths);
+    }
+
+    void SetFileAssoc(wxString &exename) {
+        #ifdef WIN32
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
+                       wxString(L"\"") + exename + L"\" \"%1\"");
+        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
+                       wxString(L"\"") + exename + L"\",0");
+        #else
+        // TODO: do something similar for mac/kde/gnome?
+        #endif
+    }
+
+    void SetPageTitle(const wxString &filename, wxString mods, int page = -1) {
+        if (page < 0) page = notebook->GetSelection();
+        if (page < 0) return;
+        if (page == notebook->GetSelection()) SetTitle(L"TreeSheets - " + filename + mods);
+        notebook->SetPageText(
+            page,
+            (filename.empty() ? wxString(_(L"<unnamed>")) : wxFileName(filename).GetName()) + mods);
+    }
+
+    #ifdef WIN32
+    void SetRegistryKey(const wxChar *key, wxString value) {
+        wxRegKey registrykey(key);
+        registrykey.Create();
+        registrykey.SetValue(L"", value);
+    }
+    #endif
+
+    void SetStatus(const wxChar *message = nullptr) {
+        if (GetStatusBar() && (!message || *message)) SetStatusText(message ? message : L"", 0);
+    }
+
+    void TabsReset() {
+        if (notebook) loop(i, notebook->GetPageCount()) {
+                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+                canvas->doc->root->ResetChildren();
+            }
+    }
+
+    void UpdateStatus(const Selection &s) {
+        if (GetStatusBar()) {
+            if (Cell *c = s.GetCell(); c && s.xs) {
+                SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
+                SetStatusText(wxString::Format(_(L"Width %d"), s.grid->colwidths[s.x]), 2);
+                SetStatusText(
+                    wxString::Format(_(L"Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
+                                     c->text.lastedit.FormatTime().c_str()),
+                    1);
+            } else
+                for (int field : {1, 2, 3}) SetStatusText("", field);
+            SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
         }
     }
 
