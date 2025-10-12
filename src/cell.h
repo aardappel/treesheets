@@ -540,7 +540,7 @@ struct Cell {
     }
 
     Cell *Graph() {
-        auto n = static_cast<int>(text.GetNum());
+        auto n = text.GetNum();
         text.t.Clear();
         text.t.Append(L'|', n);
         return this;
