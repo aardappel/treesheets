@@ -863,7 +863,7 @@ struct TSFrame : wxFrame {
     }
 
     void CycleTabs(int offset = 1) {
-        auto numtabs = static_cast<int>(notebook->GetPageCount());
+        auto numtabs = notebook->GetPageCount();
         offset = ((offset >= 0) ? 1 : numtabs - 1);  // normalize to non-negative wrt modulo
         notebook->SetSelection((notebook->GetSelection() + offset) % numtabs);
     }
