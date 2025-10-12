@@ -249,12 +249,12 @@ struct Cell {
             }
             if (cellcolor != 0xFFFFFF) {
                 str.Prepend(L"\"");
-                str.Prepend(wxString::Format(wxT("0x%06X"), cellcolor));
+                str.Prepend(wxString::Format(L"0x%06X", cellcolor));
                 str.Prepend(L" colorbg=\"");
             }
             if (textcolor != 0x000000) {
                 str.Prepend(L"\"");
-                str.Prepend(wxString::Format(wxT("0x%06X"), textcolor));
+                str.Prepend(wxString::Format(L"0x%06X", textcolor));
                 str.Prepend(L" colorfg=\"");
             }
             if (celltype != CT_DATA) {

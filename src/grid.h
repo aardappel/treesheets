@@ -571,12 +571,12 @@ struct Grid {
             cell == doc->root ? root_grid_spacing : user_grid_outer_spacing - 1;
 
         wxString xmlstr(L"<grid");
-        if (folded) xmlstr.Append(wxString::Format(wxT(" folded=\"%d\""), folded));
+        if (folded) xmlstr.Append(wxString::Format(L" folded=\"%d\"", folded));
         if (bordercolor != g_bordercolor_default) {
-            xmlstr.Append(wxString::Format(wxT(" bordercolor=\"0x%06X\""), bordercolor));
+            xmlstr.Append(wxString::Format(L" bordercolor=\"0x%06X\"", bordercolor));
         }
         if (user_grid_outer_spacing != g_usergridouterspacing_default) {
-            xmlstr.Append(wxString::Format(wxT(" outerspacing=\"%d\""), user_grid_outer_spacing));
+            xmlstr.Append(wxString::Format(L" outerspacing=\"%d\"", user_grid_outer_spacing));
         }
         xmlstr.Append(L">\n");
 
