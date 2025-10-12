@@ -966,8 +966,8 @@ struct TSFrame : wxFrame {
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc;
         auto canvas = GetCurrentTab();
-        if (((tc = filter) && filter == wxWindow::FindFocus()) ||
-            ((tc = replaces) && replaces == wxWindow::FindFocus())) {
+        if ((tc = filter) && filter == wxWindow::FindFocus() ||
+            (tc = replaces) && replaces == wxWindow::FindFocus()) {
             long from, to;
             tc->GetSelection(&from, &to);
             switch (ce.GetId()) {
