@@ -211,10 +211,10 @@ struct Document {
         UpdateFileName(page);
         if (success) *success = true;
 
-        sys->frame->SetStatus(
-            wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."), filename.c_str(),
-                             static_cast<int>((end_saving_time - start_saving_time).GetValue()))
-                .c_str());
+        sys->frame->SetStatus(wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."),
+                                               filename.c_str(),
+                                               end_saving_time - start_saving_time)
+                                  .c_str());
 
         return _(L"");
     }
