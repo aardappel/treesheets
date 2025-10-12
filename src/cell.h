@@ -271,15 +271,15 @@ struct Cell {
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD))
                 style +=
-                    (text.stylebits & STYLE_BOLD) ? L"font-weight: bold;" : L"font-weight: normal;";
+                    text.stylebits & STYLE_BOLD ? L"font-weight: bold;" : L"font-weight: normal;";
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_ITALIC) != (parent->text.stylebits & STYLE_ITALIC))
-                style += (text.stylebits & STYLE_ITALIC) ? L"font-style: italic;"
-                                                         : L"font-style: normal;";
+                style +=
+                    text.stylebits & STYLE_ITALIC ? L"font-style: italic;" : L"font-style: normal;";
             if (!inheritstyle || !parent ||
                 (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED))
-                style += (text.stylebits & STYLE_FIXED) ? L"font-family: monospace;"
-                                                        : L"font-family: sans-serif;";
+                style += text.stylebits & STYLE_FIXED ? L"font-family: monospace;"
+                                                      : L"font-family: sans-serif;";
             if (!inheritstyle || cellcolor != (parent ? parent->cellcolor : doc->Background()))
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
             auto exporttextcolor = IsTag(doc) ? doc->tags[text.t] : textcolor;
