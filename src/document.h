@@ -793,7 +793,7 @@ struct Document {
     }
 
     const wxChar *Key(int uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed) {
-        if (uk == WXK_NONE || (k < ' ' && k) || k == WXK_DELETE) {
+        if (uk == WXK_NONE || k < ' ' && k || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
                     if (!ctrl) return Action(A_BACKSPACE);
