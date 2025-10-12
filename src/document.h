@@ -1720,7 +1720,7 @@ struct Document {
                 for (Image *im : is) {
                     wxFileName fn(f);
                     wxString tf = fn.GetPathWithSep() + fn.GetName() +
-                                  ((i == 0) ? wxString() : wxString::Format(L"%d", i)) +
+                                  (i == 0 ? wxString() : wxString::Format(L"%d", i)) +
                                   wxString(L".") + fn.GetExt();
                     wxFFileOutputStream os(tf, L"w+b");
                     if (!os.IsOk()) {
