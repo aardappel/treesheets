@@ -869,8 +869,10 @@ struct TSFrame : wxFrame {
     }
 
     void SetPageTitle(const wxString &filename, wxString mods, int page = -1) {
-        if (page < 0) page = notebook->GetSelection();
-        if (page < 0) return;
+        if (page < 0) {
+            page = notebook->GetSelection();
+            return;
+        }
         if (page == notebook->GetSelection()) SetTitle(L"TreeSheets - " + filename + mods);
         notebook->SetPageText(
             page,
