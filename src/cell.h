@@ -342,7 +342,7 @@ struct Cell {
         dos.Write32(cellcolor);
         dos.Write32(textcolor);
         dos.Write8(drawstyle);
-        uint cellflags = (this == ocs) ? TS_SELECTION_MASK : 0;
+        uint cellflags = this == ocs ? TS_SELECTION_MASK : 0;
         if (HasTextState()) {
             cellflags |= grid ? TS_BOTH : TS_TEXT;
             dos.Write8(cellflags);
