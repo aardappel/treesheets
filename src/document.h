@@ -211,7 +211,7 @@ struct Document {
         UpdateFileName(page);
         if (success) *success = true;
 
-        sys->frame->SetStatus(wxString::Format(_(L"Saved %s successfully (in %d milliseconds)."),
+        sys->frame->SetStatus(wxString::Format(_(L"Saved %s successfully (in %lld milliseconds)."),
                                                filename.c_str(),
                                                end_saving_time - start_saving_time)
                                   .c_str());
