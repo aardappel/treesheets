@@ -219,11 +219,10 @@ struct Cell {
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) && this != root &&
             !str.IsEmpty()) {
-            wxString spanstyle =
-                wxString(L"text-decoration:") +
-                wxString(text.stylebits & STYLE_UNDERLINE ? L" underline" : L"") +
-                wxString(text.stylebits & STYLE_STRIKETHRU ? L" line-through" : L"") +
-                wxString(L";");
+            wxString spanstyle = L"text-decoration:";
+            spanstyle += (text.stylebits & STYLE_UNDERLINE) ? L" underline" : wxEmptyString;
+            spanstyle += (text.stylebits & STYLE_STRIKETHRU) ? L" line-through" : wxEmptyString;
+            spanstyle += L";";
             str.Prepend(L"<span style=\"" + spanstyle + L"\">");
             str.Append(L"</span>");
         }
