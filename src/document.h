@@ -206,7 +206,8 @@ struct Document {
             if (::wxFileExists(sys->TmpName(filename))) ::wxRemoveFile(sys->TmpName(filename));
         }
         if (sys->autohtmlexport) {
-            ExportFile(sys->ExtName(filename, L".html"), A_EXPHTMLT, false);
+            ExportFile(sys->ExtName(filename, L".html"),
+                       sys->autohtmlexport == 1 ? A_EXPHTMLTE : A_EXPHTMLT, false);
         }
         UpdateFileName(page);
         if (success) *success = true;

@@ -33,7 +33,7 @@ struct System {
     bool singletray {false};
     bool centered {true};
     bool fswatch {true};
-    bool autohtmlexport {false};
+    int autohtmlexport {0};
     bool casesensitivesearch {true};
     bool darkennonmatchingcells {false};
     bool fastrender {true};
@@ -69,6 +69,7 @@ struct System {
         pen_thinselect.SetStyle(wxPENSTYLE_USER_DASH);
 
         roundness = static_cast<int>(cfg->Read(L"roundness", roundness));
+        autohtmlexport = static_cast<int>(cfg->Read(L"autohtmlexport", autohtmlexport));
         defaultfont = cfg->Read(L"defaultfont", defaultfont);
         defaultfixedfont = cfg->Read(L"defaultfixedfont", defaultfixedfont);
         cfg->Read(L"defaultmaxcolwidth", &defaultmaxcolwidth, defaultmaxcolwidth);
@@ -82,7 +83,6 @@ struct System {
         cfg->Read(L"singletray", &singletray, singletray);
         cfg->Read(L"centered", &centered, centered);
         cfg->Read(L"fswatch", &fswatch, fswatch);
-        cfg->Read(L"autohtmlexport", &autohtmlexport, autohtmlexport);
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read(L"defaultfontsize", &g_deftextsize, g_deftextsize);
         cfg->Read(L"customcolor", &customcolor, customcolor);
