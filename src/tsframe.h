@@ -559,7 +559,7 @@ struct TSFrame : wxFrame {
         autoexportmenu->AppendRadioItem(A_AUTOEXPORT1, _(L"Export with images"),
             _(L"Export to a HTML file with exported images alongside the original TreeSheets file when document is saved"));
         autoexportmenu->AppendRadioItem(A_AUTOEXPORT2, _(L"Export without images"),
-             _(L"Export to a HTML file alongside the original TreeSheets file when document is saved"));
+            _(L"Export to a HTML file alongside the original TreeSheets file when document is saved"));
         autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT0, true);
 
         auto optmenu = new wxMenu();

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-09 17:45+0200\n"
+"POT-Creation-Date: 2025-10-18 11:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -593,7 +593,19 @@ msgid ""
 "programs"
 msgstr ""
 
+msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"
+msgstr ""
+
 msgid "Export to a HTML file when document is saved"
+msgstr ""
+
+msgid "Export to a HTML file with exported images alongside the original TreeSheets file when document is saved"
+msgstr ""
+
+msgid "Export with images"
+msgstr ""
+
+msgid "Export without images"
 msgstr ""
 
 msgid "Extend Selection Columns Down"
@@ -911,6 +923,9 @@ msgstr ""
 msgid "New file cancelled."
 msgstr ""
 
+msgid "No autoexport"
+msgstr ""
+
 msgid "No image in this cell."
 msgstr ""
 
@@ -1192,6 +1207,10 @@ msgstr ""
 
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
+msgstr ""
+
+#, c-format
+msgid "Saved %s successfully (in %lld milliseconds)."
 msgstr ""
 
 msgid "Scale (&display only)"
