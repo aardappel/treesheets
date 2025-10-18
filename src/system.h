@@ -287,10 +287,9 @@ struct System {
 
                         frame->SetStatus(
                             wxString::Format(
-                                _(L"Loaded %s (%d cells, %d characters) in %d milliseconds."),
+                                _(L"Loaded %s (%d cells, %d characters) in %lld milliseconds."),
                                 filename.c_str(), numcells, textbytes,
-                                static_cast<int>(
-                                    (end_loading_time - start_loading_time).GetValue()))
+                                end_loading_time - start_loading_time)
                                 .c_str());
 
                         goto done;
