@@ -554,6 +554,15 @@ struct TSFrame : wxFrame {
         roundmenu->AppendRadioItem(A_ROUND6, _(L"Radius &6"));
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
+        auto autoexportmenu = new wxMenu();
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT0, _(L"No autoexport"));
+        autoexportmenu->AppendRadioItem(
+            A_AUTOEXPORT1, _(L"Export with images"),
+            _(L"Export to a HTML file with exported images when document is saved"));
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT2, _(L"Export without images"),
+                                        _(L"Export to a HTML file when document is saved"));
+        autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT0, true);
+
         auto optmenu = new wxMenu();
         MyAppend(optmenu, wxID_SELECT_FONT, _(L"Font..."),
                  _(L"Set the font the document text is displayed with"));
@@ -612,9 +621,7 @@ struct TSFrame : wxFrame {
             A_FSWATCH, _(L"Autoreload documents"),
             _(L"Reload when another computer has changed a file (if you have made changes, asks)"));
         optmenu->Check(A_FSWATCH, sys->fswatch);
-        optmenu->AppendCheckItem(A_AUTOEXPORT, _(L"Autoexport to HTML"),
-                                 _(L"Export to a HTML file when document is saved"));
-        optmenu->Check(A_AUTOEXPORT, sys->autohtmlexport);
+        optmenu->AppendSubMenu(autoexportmenu, _(L"Autoexport to HTML"));
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(
             A_CENTERED, _(L"Render document centered"),
@@ -1003,8 +1010,14 @@ struct TSFrame : wxFrame {
                 Check(L"fswatch");
                 sys->fswatch = ce.IsChecked();
                 break;
-            case A_AUTOEXPORT:
-                sys->cfg->Write(L"autohtmlexport", sys->autohtmlexport = ce.IsChecked());
+            case A_AUTOEXPORT0:
+                sys->cfg->Write(L"autohtmlexport", static_cast<long>(sys->autohtmlexport = 0));
+                break;
+            case A_AUTOEXPORT1:
+                sys->cfg->Write(L"autohtmlexport", static_cast<long>(sys->autohtmlexport = 1));
+                break;
+            case A_AUTOEXPORT2:
+                sys->cfg->Write(L"autohtmlexport", static_cast<long>(sys->autohtmlexport = 2));
                 break;
             case A_FASTRENDER:
                 sys->cfg->Write(L"fastrender", sys->fastrender = ce.IsChecked());
