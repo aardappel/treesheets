@@ -1263,6 +1263,17 @@ struct Document {
 
         if (!selected.grid) return NoSel();
 
+        switch (action) {
+            case A_RESETCOLWIDTHS:
+                selected.grid->cell->AddUndo(this);
+                for (int x = selected.x; x < selected.x + selected.xs; x++)
+                    selected.grid->colwidths[x] = sys->defaultmaxcolwidth;
+                selected.grid->cell->ResetLayout();
+                selected.grid->cell->ResetChildren();
+                canvas->Refresh();
+                return nullptr;
+        }
+
         auto cell = selected.GetCell();
 
         switch (action) {
