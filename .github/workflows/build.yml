@@ -68,8 +68,7 @@ jobs:
 
   build-windows:
     name: Build Windows
-    # windows-2025 does not include NSIS, so revert to Windows Server 2022 for now
-    runs-on: windows-2022
+    runs-on: windows-latest
     permissions:
       contents: write
     steps:
