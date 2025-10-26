@@ -1191,9 +1191,6 @@ msgstr "&Farben zurücksetzen"
 msgid "Reset column widths"
 msgstr "Spaltenbreiten zurücksetzen"
 
-msgid "Reset column widths\tCTRL+R"
-msgstr "Spaltenbreiten zurücksetzen\tCTRL+R"
-
 msgid "Reset the column widths in the selection to the default column width"
 msgstr "Die Spaltenbreiten in der Auswahl auf die Standardspaltenbreite zurücksetzen"
 
