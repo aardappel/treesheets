@@ -1171,9 +1171,6 @@ msgstr ""
 msgid "Reset column widths"
 msgstr ""
 
-msgid "Reset column widths\tCTRL+R"
-msgstr ""
-
 msgid "Reset the column widths in the selection to the default column width"
 msgstr ""
 
