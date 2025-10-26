@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-05 21:40+0200\n"
+"POT-Creation-Date: 2025-10-19 18:37+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -615,8 +615,20 @@ msgstr ""
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
 
+msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"
+msgstr "In eine HTML-Datei exportieren, die beim Speichern neben der TreeSheets-Datei abgelegt wird"
+
 msgid "Export to a HTML file when document is saved"
-msgstr "In eine HTML-Datei exportieren wenn das Dokument gespeichert wird"
+msgstr "In eine HTML-Datei exportieren, wenn das Dokument gespeichert wird"
+
+msgid "Export to a HTML file with exported images alongside the original TreeSheets file when document is saved"
+msgstr "In eine HTML-Datei mit Bildern exportieren, die beim Speichern neben der TreeSheets-Datei abgelegt wird"
+
+msgid "Export with images"
+msgstr "Mit Bildern exportieren"
+
+msgid "Export without images"
+msgstr "Ohne Bilder exportieren"
 
 msgid "Extend Selection Columns Down"
 msgstr "Auswahl in den Spalten nach unten ausweiten"
@@ -840,6 +852,10 @@ msgstr "Das interaktive Tutorial in TreeSheets öffnen"
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "%s geladen (%d Zellen, %d Zeichen) in %d Millisekunden."
 
+#, c-format
+msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
+msgstr "%s geladen (%d Zellen, %d Zeichen) in %lld Millisekunden."
+
 msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
 msgstr "Lobster-Dateien (*.lobster)|*.lobster|Alle Dateien (*.*)|*.*"
 
@@ -930,6 +946,9 @@ msgstr "Neues Blatt"
 
 msgid "New file cancelled."
 msgstr "Erstellen der neuen Datei abgebrochen!"
+
+msgid "No autoexport"
+msgstr "Kein automatischer Export"
 
 msgid "No image in this cell."
 msgstr "Kein Bild in dieser Zelle"
@@ -1172,6 +1191,12 @@ msgstr "&Farben zurücksetzen"
 msgid "Reset column widths"
 msgstr "Spaltenbreiten zurücksetzen"
 
+msgid "Reset column widths\tCTRL+R"
+msgstr "Spaltenbreiten zurücksetzen\tCTRL+R"
+
+msgid "Reset the column widths in the selection to the default column width"
+msgstr "Die Spaltenbreiten in der Auswahl auf die Standardspaltenbreite zurücksetzen"
+
 msgid "Run"
 msgstr "Ausführen"
 
@@ -1211,6 +1236,10 @@ msgstr "Geöffnete Dokumente periodisch in temporären Dateien sichern"
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
 msgstr "%s erfolgreich gespeichert (in %d Millisekunden)."
+
+#, c-format
+msgid "Saved %s successfully (in %lld milliseconds)."
+msgstr "%s erfolgreich gespeichert (in %lld Millisekunden)."
 
 msgid "Scale (&display only)"
 msgstr "Skalieren (nur Anzeige)"
