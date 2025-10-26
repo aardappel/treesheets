@@ -76,7 +76,7 @@ struct Text {
         else if (format == A_EXPHTMLTE && image) {
             wxString relsize = wxString::Format(
                 "%d%%", static_cast<int>(100.0 * sys->frame->FromDIP(1.0) / image->display_scale));
-            str.Prepend(L"<img src=\"" + wxString::Format("%llu", image->hash) + L"." +
+            str.Prepend(L"<img src=\"" + wxString::Format("%llu", image->hash) +
                         image->GetFileExtension() + L"\" width=\"" + relsize + L"\" height=\"" +
                         relsize + L"\" />");
         }

@@ -1734,7 +1734,7 @@ struct Document {
                     wxFileName fn(filename);
                     wxString finalfilename = fn.GetPathWithSep() + fn.GetName() +
                                              (i == 0 ? wxString() : wxString::Format(L"%d", i)) +
-                                             L"." + image->GetFileExtension();
+                                             image->GetFileExtension();
                     wxFFileOutputStream os(finalfilename, L"w+b");
                     if (!os.IsOk()) {
                         wxMessageBox(
