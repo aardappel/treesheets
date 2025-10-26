@@ -344,7 +344,7 @@ struct TSFrame : wxFrame {
                      _(L"Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"));
             MyAppend(orgmenu, A_FLATTEN, _(L"&Flatten"),
                      _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"));
-            MyAppend(orgmenu, A_RESETCOLWIDTHS, _(L"Reset column widths\tCTRL+R"),
+            MyAppend(orgmenu, A_RESETCOLWIDTHS, _(L"Reset column widths") + L"\tCTRL+R",
                      _(L"Reset the column widths in the selection to the default column width"));
 
             auto imgmenu = new wxMenu();
