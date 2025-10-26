@@ -1263,17 +1263,6 @@ struct Document {
 
         if (!selected.grid) return NoSel();
 
-        switch (action) {
-            case A_RESETCOLWIDTHS:
-                selected.grid->cell->AddUndo(this);
-                for (int x = selected.x; x < selected.x + selected.xs; x++)
-                    selected.grid->colwidths[x] = sys->defaultmaxcolwidth;
-                selected.grid->cell->ResetLayout();
-                selected.grid->cell->ResetChildren();
-                canvas->Refresh();
-                return nullptr;
-        }
-
         auto cell = selected.GetCell();
 
         switch (action) {
@@ -1612,7 +1601,9 @@ struct Document {
                 loopallcellssel(c, true) switch (action) {
                     case A_RESETSIZE: c->text.relsize = 0; break;
                     case A_RESETWIDTH:
-                        if (c->grid) c->grid->InitColWidths();
+                        for (int x = selected.x; x < selected.x + selected.xs; x++)
+                            selected.grid->colwidths[x] = sys->defaultmaxcolwidth;
+                        selected.grid->cell->ResetLayout();
                         break;
                     case A_RESETSTYLE: c->text.stylebits = 0; break;
                     case A_RESETCOLOR:

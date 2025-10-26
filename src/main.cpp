@@ -160,7 +160,6 @@ enum {
     A_WRAP,
     A_HIFY,
     A_FLATTEN,
-    A_RESETCOLWIDTHS,
     A_BROWSEF,
     A_ROUND0,
     A_ROUND1,
