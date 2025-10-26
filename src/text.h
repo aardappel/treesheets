@@ -77,8 +77,8 @@ struct Text {
             wxString relsize = wxString::Format(
                 "%d%%", static_cast<int>(100.0 * sys->frame->FromDIP(1.0) / image->display_scale));
             str.Prepend(L"<img src=\"" + wxString::Format("%llu", image->hash) + L"." +
-                        (image->type == 'I' ? L"png" : L"jpg") + L"\" width=\"" + relsize +
-                        L"\" height=\"" + relsize + L"\" />");
+                        image->GetFileExtension() + L"\" width=\"" + relsize + L"\" height=\"" +
+                        relsize + L"\" />");
         }
         return str;
     };
