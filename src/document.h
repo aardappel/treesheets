@@ -1720,28 +1720,29 @@ struct Document {
             }
 
             case A_IMAGESVA: {
-                set<Image *> is;
-                loopallcellssel(c, true) if (Image *im = c->text.image) is.insert(im);
-                if (!is.size()) return _(L"There are no images in the selection.");
-                wxString f = ::wxFileSelector(
+                set<Image *> imagestosave;
+                loopallcellssel(c, true) if (auto image = c->text.image)
+                    imagestosave.insert(image);
+                if (!imagestosave.size()) return _(L"There are no images in the selection.");
+                wxString filename = ::wxFileSelector(
                     _(L"Choose image file to save:"), L"", L"", L"",
                     _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
-                if (f.empty()) return _(L"Save cancelled.");
+                if (filename.empty()) return _(L"Save cancelled.");
                 auto i = 0;
-                for (Image *im : is) {
-                    wxFileName fn(f);
-                    wxString tf = fn.GetPathWithSep() + fn.GetName() +
-                                  (i == 0 ? wxString() : wxString::Format(L"%d", i)) + L"." +
-                                  im->GetFileExtension();
-                    wxFFileOutputStream os(tf, L"w+b");
+                for (auto image : imagestosave) {
+                    wxFileName fn(filename);
+                    wxString finalfilename = fn.GetPathWithSep() + fn.GetName() +
+                                             (i == 0 ? wxString() : wxString::Format(L"%d", i)) +
+                                             L"." + image->GetFileExtension();
+                    wxFFileOutputStream os(finalfilename, L"w+b");
                     if (!os.IsOk()) {
                         wxMessageBox(
                             _(L"Error writing image file! (try saving under new filename)."),
-                            tf.wx_str(), wxOK, sys->frame);
+                            finalfilename.wx_str(), wxOK, sys->frame);
                         return _(L"Error writing to file.");
                     }
-                    os.Write(im->data.data(), im->data.size());
+                    os.Write(image->data.data(), image->data.size());
                     i++;
                 }
                 return _(L"Image(s) have been saved to disk.");
