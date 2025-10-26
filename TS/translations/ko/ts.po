@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-14 06:44+0200\n"
-"PO-Revision-Date: 2025-09-15 05:49+0900\n"
+"POT-Creation-Date: 2025-10-19 18:37+0200\n"
+"PO-Revision-Date: 2025-10-27 04:46+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #, c-format
 msgid "%d cell(s)"
-msgstr "%d 셀"
+msgstr "%d셀"
 
 #, c-format
 msgid ""
@@ -85,6 +85,9 @@ msgstr "격자 재구성(&G)"
 
 msgid "&HTML (Tables+Styling)..."
 msgstr "HTML (표+스타일링)(&H)..."
+
+msgid "&HTML (Tables+Styling+Images)..."
+msgstr "HTML (표+스타일링+이미지)..."
 
 msgid "&Help"
 msgstr "도움말(&H)"
@@ -570,6 +573,9 @@ msgstr "내보내기(&V)"
 msgid "Export cancelled."
 msgstr "내보내기가 취소되었습니다."
 
+msgid "Export the curent view as HTML using nested tables and exported images"
+msgstr "중첩된 테이블과 내보낸 이미지를 사용하여 현재 보기를 HTML로 내보내기"
+
 msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
 "works on grids with no sub-grids (use the Flatten operation first if need be)"
@@ -614,8 +620,26 @@ msgstr ""
 "현재 보기를 각 들여쓰기 수준에 맞는 공백을 사용하여 트리 구조 텍스트로 내보냅"
 "니다. 마인드 매니저 및 일반 텍스트 프로그램으로 가져오기에 적합합니다"
 
+msgid ""
+"Export to a HTML file alongside the original TreeSheets file when document "
+"is saved"
+msgstr "문서가 저장될 때 원본 TreeSheets 파일과 함께 HTML 파일로 내보내기"
+
 msgid "Export to a HTML file when document is saved"
 msgstr "문서가 저장될 때 HTML 파일로 내보내기"
+
+msgid ""
+"Export to a HTML file with exported images alongside the original TreeSheets "
+"file when document is saved"
+msgstr ""
+"문서가 저장될 때 원본 TreeSheets 파일과 함께 내보낸 이미지가 포함된 HTML 파일"
+"로 내보내기"
+
+msgid "Export with images"
+msgstr "이미지 포함 내보내기"
+
+msgid "Export without images"
+msgstr "이미지 없이 내보내기"
 
 msgid "Extend Selection Columns Down"
 msgstr "선택 열 아래로 확장"
@@ -803,6 +827,12 @@ msgstr "텍스트 들여쓰기..."
 msgid "Initialization Error"
 msgstr "초기화 오류"
 
+msgid "Insert last image"
+msgstr "마지막 이미지 삽입"
+
+msgid "Insert the last image that has been inserted before in TreeSheets."
+msgstr "이전에 삽입된 마지막 이미지를 TreeSheets에 삽입합니다."
+
 msgid "Interactive &tutorial"
 msgstr "대화형 자습서(&T)"
 
@@ -840,6 +870,10 @@ msgstr "TreeSheets에서 대화형 자습서 불러오기"
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "%s (%d 셀, %d 문자)를 %d 밀리초 단위로 로드했습니다."
+
+#, c-format
+msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
+msgstr "%s (%d셀, %d문자)를 %lld 밀리초 단위로 로드했습니다."
 
 msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
 msgstr "Lobster 파일 (*.lobster)|*.lobster|모든 파일 (*.*)|*.*"
@@ -929,6 +963,9 @@ msgstr "새 시트"
 
 msgid "New file cancelled."
 msgstr "새 파일이 취소되었습니다."
+
+msgid "No autoexport"
+msgstr "자동 내보내기 안 함"
 
 msgid "No image in this cell."
 msgstr "이 셀에는 이미지가 없습니다."
@@ -1174,6 +1211,9 @@ msgstr "색상 재설정(&C)"
 msgid "Reset column widths"
 msgstr "열 너비 재설정"
 
+msgid "Reset the column widths in the selection to the default column width"
+msgstr "선택 항목의 열 너비를 기본 열 너비로 재설정"
+
 msgid "Run"
 msgstr "실행"
 
@@ -1217,6 +1257,10 @@ msgstr "열린 문서를 임시 파일에 주기적으로 저장"
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
 msgstr "%s을(를) 성공적으로 저장했습니다 (%d 밀리초 단위)."
+
+#, c-format
+msgid "Saved %s successfully (in %lld milliseconds)."
+msgstr "%s을(를) 성공적으로 저장했습니다 (%lld 밀리초 단위)."
 
 msgid "Scale (&display only)"
 msgstr "비율 (표시 전용)(&D)"
