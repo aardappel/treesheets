@@ -1732,8 +1732,8 @@ struct Document {
                 for (Image *im : is) {
                     wxFileName fn(f);
                     wxString tf = fn.GetPathWithSep() + fn.GetName() +
-                                  (i == 0 ? wxString() : wxString::Format(L"%d", i)) +
-                                  wxString(L".") + wxString(im->type == 'I' ? L"png" : L"jpg");
+                                  (i == 0 ? wxString() : wxString::Format(L"%d", i)) + L"." +
+                                  im->GetFileExtension();
                     wxFFileOutputStream os(tf, L"w+b");
                     if (!os.IsOk()) {
                         wxMessageBox(
