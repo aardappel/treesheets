@@ -194,7 +194,8 @@ struct TSFrame : wxFrame {
                      _(L"Increase column width (no sub grids)") + L"\tCTRL+ALT+PGUP");
             MyAppend(sizemenu, A_DECWIDTHNH,
                      _(L"Decrease column width (no sub grids)") + L"\tCTRL+ALT+PGDN");
-            MyAppend(sizemenu, A_RESETWIDTH, _(L"Reset column widths") + L"\tCTRL+SHIFT+w");
+            MyAppend(sizemenu, A_RESETWIDTH, _(L"Reset column widths") + L"\tCTRL+R",
+                     _(L"Reset the column widths in the selection to the default column width"));
 
             auto bordmenu = new wxMenu();
             MyAppend(bordmenu, A_BORD0, _(L"Border &0") + L"\tCTRL+SHIFT+9");
@@ -344,8 +345,6 @@ struct TSFrame : wxFrame {
                      _(L"Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"));
             MyAppend(orgmenu, A_FLATTEN, _(L"&Flatten"),
                      _(L"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"));
-            MyAppend(orgmenu, A_RESETCOLWIDTHS, _(L"Reset column widths") + L"\tCTRL+R",
-                     _(L"Reset the column widths in the selection to the default column width"));
 
             auto imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _(L"&Add..."), _(L"Add an image to the selected cell"));
