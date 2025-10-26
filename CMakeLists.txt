@@ -265,16 +265,6 @@ elseif(WIN32)
     set(CPACK_INNOSETUP_RUN_EXECUTABLES "TreeSheets")
     set(CPACK_INNOSETUP_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
     set(CPACK_INNOSETUP_SETUP_PrivilegesRequired "lowest")
-    set(CPACK_INNOSETUP_LANGUAGES
-        "brazilianPortuguese"
-        "chinese"
-        "english"
-        "french"
-        "german"
-        "italian"
-        "korean"
-        "russian"
-    )
     set(CPACK_INNOSETUP_IGNORE_README_PAGE ON)
     set(CPACK_INNOSETUP_IGNORE_LICENSE_PAGE ON)
     set(CPACK_INNOSETUP_USE_MODERN_WIZARD ON)
