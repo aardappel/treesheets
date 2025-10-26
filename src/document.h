@@ -1724,7 +1724,7 @@ struct Document {
                 loopallcellssel(c, true) if (Image *im = c->text.image) is.insert(im);
                 if (!is.size()) return _(L"There are no images in the selection.");
                 wxString f = ::wxFileSelector(
-                    _(L"Choose image file to save:"), L"", L"", L"png|jpg",
+                    _(L"Choose image file to save:"), L"", L"", L"",
                     _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                 if (f.empty()) return _(L"Save cancelled.");
@@ -1733,7 +1733,7 @@ struct Document {
                     wxFileName fn(f);
                     wxString tf = fn.GetPathWithSep() + fn.GetName() +
                                   (i == 0 ? wxString() : wxString::Format(L"%d", i)) +
-                                  wxString(L".") + fn.GetExt();
+                                  wxString(L".") + wxString(im->type == 'I' ? L"png" : L"jpg");
                     wxFFileOutputStream os(tf, L"w+b");
                     if (!os.IsOk()) {
                         wxMessageBox(
