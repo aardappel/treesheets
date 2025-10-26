@@ -407,7 +407,7 @@ struct Document {
 
     void ZoomSetDrawPath(int dir, bool fromroot = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
-        if (!len && !drawpath.size()) return;
+        if (!len && drawpath.empty()) return;
         if (dir > 0) {
             if (!selected.grid) return;
             auto c = selected.GetCell();
@@ -1723,7 +1723,7 @@ struct Document {
                 set<Image *> imagestosave;
                 loopallcellssel(c, true) if (auto image = c->text.image)
                     imagestosave.insert(image);
-                if (!imagestosave.size()) return _(L"There are no images in the selection.");
+                if (imagestosave.empty()) return _(L"There are no images in the selection.");
                 wxString filename = ::wxFileSelector(
                     _(L"Choose image file to save:"), L"", L"", L"",
                     _(L"PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
