@@ -948,7 +948,7 @@ msgid "New file cancelled."
 msgstr "Erstellen der neuen Datei abgebrochen!"
 
 msgid "No autoexport"
-msgstr ""
+msgstr "Kein automatischer Export"
 
 msgid "No image in this cell."
 msgstr "Kein Bild in dieser Zelle"
