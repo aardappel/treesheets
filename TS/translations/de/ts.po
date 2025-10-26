@@ -615,27 +615,20 @@ msgstr ""
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
 
-#, fuzzy
-msgid ""
-"Export to a HTML file alongside the original TreeSheets file when document "
-"is saved"
-msgstr "In eine HTML-Datei exportieren wenn das Dokument gespeichert wird"
+msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"
+msgstr "In eine HTML-Datei exportieren, die beim Speichern neben der TreeSheets-Datei abgelegt wird"
 
 msgid "Export to a HTML file when document is saved"
-msgstr "In eine HTML-Datei exportieren wenn das Dokument gespeichert wird"
+msgstr "In eine HTML-Datei exportieren, wenn das Dokument gespeichert wird"
 
-msgid ""
-"Export to a HTML file with exported images alongside the original TreeSheets "
-"file when document is saved"
-msgstr ""
+msgid "Export to a HTML file with exported images alongside the original TreeSheets file when document is saved"
+msgstr "In eine HTML-Datei mit Bildern exportieren, die beim Speichern neben der TreeSheets-Datei abgelegt wird"
 
-#, fuzzy
 msgid "Export with images"
-msgstr "Mit &Bildern kopieren"
+msgstr "Mit Bildern exportieren"
 
-#, fuzzy
 msgid "Export without images"
-msgstr "Mit &Bildern kopieren"
+msgstr "Ohne Bilder exportieren"
 
 msgid "Extend Selection Columns Down"
 msgstr "Auswahl in den Spalten nach unten ausweiten"
@@ -859,9 +852,9 @@ msgstr "Das interaktive Tutorial in TreeSheets öffnen"
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "%s geladen (%d Zellen, %d Zeichen) in %d Millisekunden."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
-msgstr "%s geladen (%d Zellen, %d Zeichen) in %d Millisekunden."
+msgstr "%s geladen (%d Zellen, %d Zeichen) in %lld Millisekunden."
 
 msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
 msgstr "Lobster-Dateien (*.lobster)|*.lobster|Alle Dateien (*.*)|*.*"
@@ -1198,13 +1191,11 @@ msgstr "&Farben zurücksetzen"
 msgid "Reset column widths"
 msgstr "Spaltenbreiten zurücksetzen"
 
-#, fuzzy
 msgid "Reset column widths\tCTRL+R"
-msgstr "Spaltenbreiten zurücksetzen"
+msgstr "Spaltenbreiten zurücksetzen\tCTRL+R"
 
-#, fuzzy
 msgid "Reset the column widths in the selection to the default column width"
-msgstr "Bitte geben Sie die neue standardmäßige Spaltenbreite an:"
+msgstr "Die Spaltenbreiten in der Auswahl auf die Standardspaltenbreite zurücksetzen"
 
 msgid "Run"
 msgstr "Ausführen"
@@ -1246,9 +1237,9 @@ msgstr "Geöffnete Dokumente periodisch in temporären Dateien sichern"
 msgid "Saved %s successfully (in %d milliseconds)."
 msgstr "%s erfolgreich gespeichert (in %d Millisekunden)."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Saved %s successfully (in %lld milliseconds)."
-msgstr "%s erfolgreich gespeichert (in %d Millisekunden)."
+msgstr "%s erfolgreich gespeichert (in %lld Millisekunden)."
 
 msgid "Scale (&display only)"
 msgstr "Skalieren (nur Anzeige)"
