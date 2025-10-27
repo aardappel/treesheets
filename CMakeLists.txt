@@ -270,6 +270,7 @@ elseif(WIN32)
         "french"
         "german"
         "italian"
+        "korean"
         "russian"
     )
     set(CPACK_INNOSETUP_SETUP_PrivilegesRequired "lowest")
