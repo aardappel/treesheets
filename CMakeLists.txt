@@ -266,6 +266,7 @@ elseif(WIN32)
     set(CPACK_INNOSETUP_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
     set(CPACK_INNOSETUP_LANGUAGES
         "brazilianPortuguese"
+        "chineseSimplified"
         "english"
         "french"
         "german"
