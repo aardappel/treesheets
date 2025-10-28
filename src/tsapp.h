@@ -92,6 +92,19 @@ struct TSApp : wxApp {
         }
     }
 
+    #ifdef __WXMAC__
+        void MacOpenFiles(const wxArrayString &filenames) {
+            if (!sys) return;
+            // MacOpenFiles does not trigger OnEventLoopEnter so we need
+            // to do this manually
+            if (!initiateventloop) {
+                initiateventloop = true;
+                frame->AppOnEventLoopEnter();
+            }
+            for (auto &fn : filenames) { sys->Init(fn); }
+        }
+    #endif
+
     int OnExit() {
         DELETEP(sys);
         return 0;
@@ -137,13 +150,6 @@ struct TSApp : wxApp {
         #endif
         return executablepath;
     }
-
-    #ifdef __WXMAC__
-        void MacOpenFiles(const auto &filenames) {
-            if (!sys) return;
-            for (auto &fn : filenames) { sys->Open(fn); }
-        }
-    #endif
 
     #ifdef __WXMSW__
         void DeclareHiDpiAwareOnWindows() {
