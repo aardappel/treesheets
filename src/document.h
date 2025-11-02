@@ -207,7 +207,10 @@ struct Document {
         }
         if (sys->autohtmlexport) {
             ExportFile(sys->ExtName(filename, L".html"),
-                       sys->autohtmlexport == 1 ? A_EXPHTMLTE : A_EXPHTMLT, false);
+                       sys->autohtmlexport == A_AUTOEXPORT_HTML_WITH_IMAGES - A_AUTOEXPORT_HTML_NONE
+                           ? A_EXPHTMLTE
+                           : A_EXPHTMLT,
+                       false);
         }
         UpdateFileName(page);
         if (success) *success = true;

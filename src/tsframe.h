@@ -556,12 +556,15 @@ struct TSFrame : wxFrame {
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
         auto autoexportmenu = new wxMenu();
-        autoexportmenu->AppendRadioItem(A_AUTOEXPORT0, _(L"No autoexport"));
-        autoexportmenu->AppendRadioItem(A_AUTOEXPORT1, _(L"Export with images"),
-            _(L"Export to a HTML file with exported images alongside the original TreeSheets file when document is saved"));
-        autoexportmenu->AppendRadioItem(A_AUTOEXPORT2, _(L"Export without images"),
-            _(L"Export to a HTML file alongside the original TreeSheets file when document is saved"));
-        autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT0, true);
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_NONE, _(L"No autoexport"));
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITH_IMAGES, _(L"Export with images"),
+                                        _(L"Export to a HTML file with exported images alongside "
+                                          L"the original TreeSheets file when document is saved"));
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITHOUT_IMAGES,
+                                        _(L"Export without images"),
+                                        _(L"Export to a HTML file alongside the original "
+                                          L"TreeSheets file when document is saved"));
+        autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT_HTML_NONE, true);
 
         auto optmenu = new wxMenu();
         MyAppend(optmenu, wxID_SELECT_FONT, _(L"Font..."),
@@ -1010,14 +1013,12 @@ struct TSFrame : wxFrame {
                 Check(L"fswatch");
                 sys->fswatch = ce.IsChecked();
                 break;
-            case A_AUTOEXPORT0:
-                sys->cfg->Write(L"autohtmlexport", static_cast<long>(sys->autohtmlexport = 0));
-                break;
-            case A_AUTOEXPORT1:
-                sys->cfg->Write(L"autohtmlexport", static_cast<long>(sys->autohtmlexport = 1));
-                break;
-            case A_AUTOEXPORT2:
-                sys->cfg->Write(L"autohtmlexport", static_cast<long>(sys->autohtmlexport = 2));
+            case A_AUTOEXPORT_HTML_NONE:
+            case A_AUTOEXPORT_HTML_WITH_IMAGES:
+            case A_AUTOEXPORT_HTML_WITHOUT_IMAGES:
+                sys->cfg->Write(
+                    L"autohtmlexport",
+                    static_cast<long>(sys->autohtmlexport = ce.GetId() - A_AUTOEXPORT_HTML_NONE));
                 break;
             case A_FASTRENDER:
                 sys->cfg->Write(L"fastrender", sys->fastrender = ce.IsChecked());
