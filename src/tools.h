@@ -52,15 +52,15 @@ typedef unsigned int uint;
 // Macos: older versions use \r and newer \n in clipboard?
 // Linux: should only ever be \n but if we encounter \r we want to strip it.
 #ifdef __WXMAC__
-    #define LINE_SEPERATOR L"\n"
+    #define LINE_SEPARATOR L"\n"
 #else
-    #define LINE_SEPERATOR L"\r\n"
+    #define LINE_SEPARATOR L"\r\n"
 #endif
 
 #ifdef WIN32
-#define PATH_SEPERATOR L"\\"
+#define PATH_SEPARATOR L"\\"
 #else
-#define PATH_SEPERATOR L"/"
+#define PATH_SEPARATOR L"/"
 #define __cdecl
 #define _vsnprintf vsnprintf
 #endif

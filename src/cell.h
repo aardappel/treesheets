@@ -232,7 +232,7 @@ struct Cell {
             return L"\"" + str + L"\"";
         }
         if (sel.cursor != sel.cursorend) return str;
-        str.Append(LINE_SEPERATOR);
+        str.Append(LINE_SEPARATOR);
         if (grid) str.Append(grid->ToText(indent, sel, format, doc, inheritstyle, root));
         if (format == A_EXPXML) {
             str.Prepend(L">");

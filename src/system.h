@@ -399,7 +399,7 @@ struct System {
                     if (!file.IsOpened()) goto problem;
                     wxString content;
                     if (!file.ReadAll(&content)) goto problem;
-                    const auto &lines = wxStringTokenize(content, LINE_SEPERATOR);
+                    const auto &lines = wxStringTokenize(content, LINE_SEPARATOR);
 
                     if (lines.size()) switch (action) {
                             case A_IMPTXTI: {
