@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.5\n"
+"Project-Id-Version: TreeSheets_RU 3.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-05 21:40+0200\n"
-"PO-Revision-Date: 2025-10-07 19:41+0300\n"
+"POT-Creation-Date: 2025-10-19 18:37+0200\n"
+"PO-Revision-Date: 2025-11-06 09:52+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 # комментарий к эл-ту Главного Окна (Инф Строка)
 #, c-format
@@ -651,8 +651,24 @@ msgid "Export the current view as tree structured text, using spaces for each in
 msgstr "Экспорт в виде древовидного структурированного текста с пробелами для каждого уровня отступа. Для импорта в менеджеры интеллект-карт и текстовые программы общего назначения"
 
 # комментарий к п. Меню
+msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"
+msgstr "Экспорт в HTML-файл (без изображений) совместно с сохранением документа TreeSheets"
+
+# комментарий к п. Меню
 msgid "Export to a HTML file when document is saved"
 msgstr "Экспорт в HTML-файл при сохранении документа"
+
+# комментарий к п. Меню
+msgid "Export to a HTML file with exported images alongside the original TreeSheets file when document is saved"
+msgstr "Экспорт в HTML-файл (с изображениями) совместно с сохранением документа TreeSheets"
+
+# п. Меню (нет & в исходном тексте)
+msgid "Export with images"
+msgstr "Экспорт с изображениями"
+
+# п. Меню (нет & в исходном тексте)
+msgid "Export without images"
+msgstr "Экспорт без изображений"
 
 msgid "Extend Selection Columns Down"
 msgstr ".. по Cтолбцам вНиз"
@@ -857,6 +873,14 @@ msgstr "&Текст с Отступами..."
 msgid "Initialization Error"
 msgstr "Ошибка инициализации"
 
+# п. Меню (нет & в исходном тексте)
+msgid "Insert last image"
+msgstr "Вставить последнее изображение"
+
+# комментарий к п. Меню
+msgid "Insert the last image that has been inserted before in TreeSheets."
+msgstr "Вставить последнее вставленное в TreeSheets изображение."
+
 msgid "Interactive &tutorial"
 msgstr "Интерактивный &Учебник"
 
@@ -899,6 +923,11 @@ msgstr "Загрузить интерактивный учебник TreeSheets"
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
 msgstr "Загружено %s (%d ячеек, %d символов) за %d миллисекунд."
+
+# Сообщение (после действия или события)
+#, c-format
+msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
+msgstr "Загружено %s (%d ячеек, %d символов) за %lld миллисекунд."
 
 # в Окне (выбор п. Меню)
 msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
@@ -996,6 +1025,10 @@ msgstr "Новый Лист"
 # Сообщение (после действия или события)
 msgid "New file cancelled."
 msgstr "Создание нового файла отменено."
+
+# п. Меню (нет & в исходном тексте)
+msgid "No autoexport"
+msgstr "Не экспортировать"
 
 # ??? Сообщение (после действия или события)
 msgid "No image in this cell."
@@ -1279,6 +1312,10 @@ msgstr ".. &Цвета"
 msgid "Reset column widths"
 msgstr "Сбросить &Ширину Столбца"
 
+# комментарий к п. Меню
+msgid "Reset the column widths in the selection to the default column width"
+msgstr "Сбросить ширину столбцов в выделенной области до ширины по умолчанию"
+
 msgid "Run"
 msgstr "Запустить"
 
@@ -1328,6 +1365,11 @@ msgstr "Периодически сохранять открытые докум�
 #, c-format
 msgid "Saved %s successfully (in %d milliseconds)."
 msgstr "Файл %s успешно сохранён (за %d миллисекунд)."
+
+# Сообщение (после действия или события)
+#, c-format
+msgid "Saved %s successfully (in %lld milliseconds)."
+msgstr "Файл %s успешно сохранён (за %lld миллисекунд)."
 
 msgid "Scale (&display only)"
 msgstr ".. (только &Отображение)"
