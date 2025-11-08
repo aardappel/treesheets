@@ -642,6 +642,7 @@ struct TSFrame : wxFrame {
         MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove...") + L"\tCTRL+SHIFT+ALT+L",
                  _(L"Remove script from list in the menu"));
         scripts.UseMenu(scriptmenu);
+        scripts.SetMenuPathStyle(wxFH_PATH_SHOW_NEVER);
         scripts.AddFilesToMenu();
 
         auto scriptpath = GetDataPath("scripts/");
