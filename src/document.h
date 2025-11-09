@@ -696,7 +696,8 @@ struct Document {
     }
 
     const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *message, int action) {
-        auto filename = ::wxFileSelector(message, L"", L"", fmt, pat,
+        wxFileName fn(filename);
+        auto filename = ::wxFileSelector(message, fn.GetPath(), fn.GetName(), fmt, pat,
                                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (filename.empty()) return _(L"Export cancelled.");
         return ExportFile(filename, action, true);
