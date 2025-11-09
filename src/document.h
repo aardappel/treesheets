@@ -696,11 +696,16 @@ struct Document {
     }
 
     const wxChar *Export(const wxChar *fmt, const wxChar *pat, const wxChar *message, int action) {
-        wxFileName fn(filename);
-        auto filename = ::wxFileSelector(message, fn.GetPath(), fn.GetName(), fmt, pat,
-                                         wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
-        if (filename.empty()) return _(L"Export cancelled.");
-        return ExportFile(filename, action, true);
+        wxFileName tsfn(filename);
+        auto exportfilename = ::wxFileSelector(message, tsfn.GetPath(), tsfn.GetName(), fmt, pat,
+                                               wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
+        if (exportfilename.empty()) return _(L"Export cancelled.");
+        wxFileName expfn(exportfilename);
+        if (!expfn.HasExt()) {
+            expfn.SetExt(fmt);
+            exportfilename = expfn.GetFullPath();
+        }
+        return ExportFile(exportfilename, action, true);
     }
 
     wxBitmap GetBitmap() {
