@@ -3,147 +3,186 @@ name: CI
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
+      - main
+  workflow_dispatch:
 
 jobs:
-  build-linux:
-    name: Build Linux
+  build-linux-x64:
+    name: Build Linux x64
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update apt cache
+        run: sudo apt-get -o Acquire::Retries=3 update
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get -o Acquire::Retries=3 install \
+            cmake g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
+            libgtk-3-dev dpkg-dev file
+
+      - name: Configure TreeSheets
+        run: |
+          cmake -S . -B _build \
+            -DCMAKE_INSTALL_PREFIX=/usr \
+            -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DGIT_WXWIDGETS_SUBMODULES=ON \
+            -DwxUSE_SYS_LIBS=OFF
+
+      - name: Build TreeSheets
+        run: cmake --build _build --target all -j4
+
+      - name: Run tests
+        run: ctest --test-dir _build --output-on-failure
+
+      - name: Package TreeSheets
+        run: cmake --build _build --target package -j4
+
+      - name: Sanitize Debian artifact filenames
+        run: |
+          shopt -s nullglob
+          for file in _build/treesheets_*.deb; do
+            base="$(basename "$file")"
+            sanitized="$(printf '%s' "$base" | sed -E 's/^(treesheets_)[0-9]+:/\1/; s/:/-/g')"
+            if [[ "$sanitized" != "$base" ]]; then
+              mv -v "$file" "_build/$sanitized"
+            fi
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64-builds
+          path: _build/treesheets_*.deb
+
+  build-linux-arm64:
+    name: Build Linux ARM64
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build in ARM64 Debian Bookworm container
+        run: |
+          docker run --rm --platform linux/arm64 --user "$(id -u):$(id -g)" \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            arm64v8/debian:bookworm \
+            bash -c "set -euo pipefail && \
+              apt-get update && \
+              DEBIAN_FRONTEND=noninteractive apt-get install -y \
+                cmake g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
+                libgtk-3-dev dpkg-dev file && \
+              cmake -S . -B _build \
+                -DCMAKE_INSTALL_PREFIX=/usr \
+                -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DGIT_WXWIDGETS_SUBMODULES=ON \
+                -DwxUSE_SYS_LIBS=OFF && \
+              cmake --build _build --target all -j4 && \
+              ctest --test-dir _build --output-on-failure && \
+              cmake --build _build --target package -j4"
+
+      - name: Sanitize Debian artifact filenames
+        run: |
+          shopt -s nullglob
+          for file in _build/treesheets_*.deb; do
+            base="$(basename "$file")"
+            sanitized="$(printf '%s' "$base" | sed -E 's/^(treesheets_)[0-9]+:/\1/; s/:/-/g')"
+            if [[ "$sanitized" != "$base" ]]; then
+              mv -v "$file" "_build/$sanitized"
+            fi
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-arm64-builds
+          path: _build/treesheets_*.deb
+
+  build-windows:
+    name: Build Windows x64
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Configure TreeSheets
+        run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DGIT_WXWIDGETS_SUBMODULES=ON
+
+      - name: Build TreeSheets
+        run: cmake --build _build --config Release --target ALL_BUILD -j
+
+      - name: Run tests
+        run: ctest --test-dir _build --output-on-failure -C Release
+
+      - name: Package TreeSheets
+        run: cmake --build _build --config Release --target package -j
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-builds
+          path: |
+            _build/TreeSheets-*.exe
+            _build/TreeSheets-*.zip
+
+  publish-release:
+    name: Publish release
+    needs:
+      - build-linux-x64
+      - build-linux-arm64
+      - build-windows
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    if: ${{ github.event_name == 'push' }}
     steps:
-    - uses: actions/checkout@v5
-    - name: cache build
-      uses: actions/cache@v4
-      with:
-        path: _build/_deps
-        key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-02-build
-    - name: apt update
-      run: sudo apt-get -o Acquire::Retries=3 update
-    - name: install opengl
-      run: sudo apt-get -o Acquire::Retries=3 install mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev
-    - name: install gtk
-      run: sudo apt-get -o Acquire::Retries=3 install libgtk-3-dev
-    - name: cmake
-      # starting with wxWidgets 3.0.0 we will be able to use wxUSE_SYS_LIBS
-      run: |
-        cmake -S . -B _build \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DwxBUILD_SHARED=OFF \
-        -DwxBUILD_INSTALL=OFF \
-        -DwxUSE_REGEX=builtin \
-        -DwxUSE_ZLIB=builtin \
-        -DwxUSE_EXPAT=builtin \
-        -DwxUSE_LIBJPEG=builtin \
-        -DwxUSE_LIBPNG=builtin \
-        -DwxUSE_LIBTIFF=builtin \
-        -DwxUSE_LIBWEBP=builtin \
-        -DwxUSE_NANOSVG=builtin \
-        -DTREESHEETS_VERSION=${{ github.run_number }}
-    - name: build and package TreeSheets
-      run: cmake --build _build --target package -j4
-    - name: Remove epoch from .deb filename
-      run: for file in _build/treesheets_2:*.deb; do mv -v "${file}" "${file/treesheets_2:/treesheets_}"; done
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/treesheets_*.deb"
-    - name: Upload artifacts
-      if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v4
-      with:
-        name: linux-builds
-        path: _build/treesheets_*.deb
+      - name: Download Linux x64 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-x64-builds
+          path: release/linux-x64
 
-  build-windows:
-    name: Build Windows
-    runs-on: windows-latest
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v5
-    - name: cache build
-      uses: actions/cache@v4
-      with:
-        path: _build
-        key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-02-build
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
-    - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
-    - name: build and package
-      run: cmake --build _build --config Release --target package -j
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/TreeSheets-*.exe, _build/TreeSheets-*.zip"
-    - name: Upload artifacts
-      if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-builds
-        path: |
-          _build/TreeSheets-*.exe
-          _build/TreeSheets-*.zip
-    - name: Remove CPack artifacts
-      run: |
-        Remove-Item -Path _build/TreeSheets-*.exe -Force
-        Remove-Item -Path _build/TreeSheets-*.zip -Force
-      shell: powershell
+      - name: Download Linux ARM64 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-arm64-builds
+          path: release/linux-arm64
 
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-builds
+          path: release/windows
 
-  build-mac:
-    name: Build Mac
-    runs-on: macos-latest
-    env:
-      minmac: 10.15
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v5
-    - name: cache build
-      uses: actions/cache@v4
-      with:
-        path: _build/_deps
-        key: ${{ runner.os }}-cmake-03-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-03-build
-    - name: Prepare Plist
-      run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
-    - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
-    - name: Build and package TreeSheets
-      run: cmake --build _build --target package -j4
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/TreeSheets-*.dmg"
-    - name: Upload artifacts
-      if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-disk-image
-        path: _build/TreeSheets-*.dmg
-    - name: Remove CPack artifact
-      run: rm -f _build/TreeSheets-*.dmg
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: build-${{ github.run_id }}
+          name: TreeSheets build ${{ github.run_id }}
+          body: "Automated build for commit ${{ github.sha }}"
+          allowUpdates: true
+          commit: ${{ github.sha }}
+          artifacts: |
+            release/linux-x64/treesheets_*.deb
+            release/linux-arm64/treesheets_*.deb
+            release/windows/TreeSheets-*.exe
+            release/windows/TreeSheets-*.zip
