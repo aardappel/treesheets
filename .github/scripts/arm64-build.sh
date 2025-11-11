@@ -5,22 +5,19 @@ phase() { echo "::group::$*"; }
 endphase() { echo "::endgroup::"; }
 
 phase "Base APT bootstrap"
-# Allow archived repos (expired metadata) and explicit insecure repos for archive.debian.org
-printf 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\n' > /etc/apt/apt.conf.d/99archive
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   ca-certificates wget gnupg debian-archive-keyring
 update-ca-certificates || true
 endphase
 
-phase "Configure archived Debian bullseye sources (main, updates, security, backports)"
-# Use HTTP for archive endpoints to avoid TLS friction in minimal images
+phase "Configure active Debian bullseye sources (main, updates, security, backports)"
 cat > /etc/apt/sources.list <<'EOF'
-deb http://archive.debian.org/debian bullseye main
-deb http://archive.debian.org/debian bullseye-updates main
-deb http://archive.debian.org/debian-security bullseye-security main
+deb http://ftp.debian.org/debian bullseye main
+deb http://ftp.debian.org/debian bullseye-updates main
+deb http://security.debian.org/debian-security bullseye-security main
 EOF
-echo 'deb http://archive.debian.org/debian bullseye-backports main' \
+echo 'deb http://ftp.debian.org/debian bullseye-backports main' \
   > /etc/apt/sources.list.d/backports.list
 apt-get update
 endphase
@@ -56,7 +53,6 @@ fi
 endphase
 
 phase "Configure (use gcc-11/g++-11 and static libstdc++)"
-# Ensure CMake picks the newer compilers and link libstdc++/libgcc statically for the executable
 cmake -S . -B _build \
   -G Ninja \
   -DCMAKE_INSTALL_PREFIX=/usr \
