@@ -123,7 +123,7 @@ jobs:
               update-ca-certificates || true; \
               # Add Kitware APT repo for Debian Bullseye (ARM64)
               install -d -m 0755 /usr/share/keyrings; \
-              wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg; \
+              wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg || { echo "Failed to download or install Kitware GPG key"; exit 1; }; \
               echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/debian/ bullseye main' > /etc/apt/sources.list.d/kitware.list; \
               chmod 0644 /usr/share/keyrings/kitware-archive-keyring.gpg || true; \
               apt-get update; \
