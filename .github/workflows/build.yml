@@ -112,6 +112,8 @@ jobs:
           set -euo pipefail
           HOST_UID="$(id -u)"
           HOST_GID="$(id -g)"
+          # NOTE: bullseye-backports is served from archive.debian.org; the script handles this.
+          # Optional future-proofing: consider moving to a bookworm-based image to avoid archives.
           docker run --rm --pull=always --platform linux/arm64 \
             -v "${{ github.workspace }}:/workspace" \
             -w /workspace \
