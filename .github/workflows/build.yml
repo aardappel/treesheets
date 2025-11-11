@@ -112,8 +112,6 @@ jobs:
           set -euo pipefail
           HOST_UID=$(id -u)
           HOST_GID=$(id -g)
-          # Using Debian Bullseye (glibc 2.31) for better compatibility with older systems
-          # Bookworm (glibc 2.36) creates packages requiring libc6 >= 2.34, which Bullseye doesn't have
           docker run --rm --pull=always --platform linux/arm64 \
             -v "${{ github.workspace }}:/workspace" \
             -w /workspace \
@@ -121,10 +119,16 @@ jobs:
             bash -c "set -euo pipefail; \
               apt-get update; \
               DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-                ca-certificates \
+                ca-certificates wget gnupg lsb-release apt-transport-https; \
+              update-ca-certificates || true; \
+              # Add Kitware APT repo to get modern CMake on Bullseye (ARM64)
+              wget -O /tmp/kitware-archive.sh https://apt.kitware.com/kitware-archive.sh; \
+              bash /tmp/kitware-archive.sh; \
+              apt-get update; \
+              DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
                 cmake g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
                 libgtk-3-dev dpkg-dev file ccache ninja-build; \
-              update-ca-certificates || true; \
+              cmake --version; \
               cmake -S . -B _build \
                 -G Ninja \
                 -DCMAKE_INSTALL_PREFIX=/usr \
