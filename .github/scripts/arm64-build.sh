@@ -12,21 +12,21 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 update-ca-certificates || true
 endphase
 
-phase "Add Kitware APT repository (Bullseye ARM64)"
-install -d -m 0755 /usr/share/keyrings
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc \
-  | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg \
-  || { echo 'Failed to download or install Kitware GPG key'; exit 1; }
-echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/debian/ bullseye main' \
-  > /etc/apt/sources.list.d/kitware.list
-chmod 0644 /usr/share/keyrings/kitware-archive-keyring.gpg
+phase "Enable bullseye-backports"
+echo 'deb https://deb.debian.org/debian bullseye-backports main' \
+  > /etc/apt/sources.list.d/backports.list
 apt-get update
 endphase
 
-phase "Install build dependencies"
+phase "Install build dependencies (excluding CMake)"
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  cmake g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
+  g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
   libgtk-3-dev dpkg-dev file ccache ninja-build
+endphase
+
+phase "Install CMake from bullseye-backports"
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  -t bullseye-backports cmake
 endphase
 
 phase "Verify CMake version"
