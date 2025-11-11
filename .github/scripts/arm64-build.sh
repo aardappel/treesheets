@@ -13,7 +13,7 @@ update-ca-certificates || true
 endphase
 
 phase "Enable bullseye-backports"
-echo 'deb http://deb.debian.org/debian bullseye-backports main' \
+echo 'deb https://deb.debian.org/debian bullseye-backports main' \
   > /etc/apt/sources.list.d/backports.list
 apt-get update
 endphase
