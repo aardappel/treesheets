@@ -125,7 +125,7 @@ jobs:
               install -d -m 0755 /usr/share/keyrings; \
               wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg || { echo "Failed to download or install Kitware GPG key"; exit 1; }; \
               echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/debian/ bullseye main' > /etc/apt/sources.list.d/kitware.list; \
-              chmod 0644 /usr/share/keyrings/kitware-archive-keyring.gpg || true; \
+              chmod 0644 /usr/share/keyrings/kitware-archive-keyring.gpg; \
               apt-get update; \
               DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
                 cmake g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
