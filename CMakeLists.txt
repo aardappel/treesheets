@@ -19,8 +19,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 ## Compiler-specific
 
-# Use statically-linked runtime library for MSVC
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+# Use dynamically-linked runtime library for MSVC (/MD, /MDd)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 
 # Silence warnings in GCC that contain lots of false positives
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -31,6 +31,13 @@ endif()
 ### Thirdparty dependencies
 
 include(FetchContent)
+
+# Build wxWidgets as shared and with dynamic runtime on Windows
+if(WIN32)
+    set(wxBUILD_SHARED ON CACHE BOOL "" FORCE)
+    set(wxBUILD_USE_STATIC_RUNTIME OFF CACHE BOOL "" FORCE)
+endif()
+
 FetchContent_Declare(
     wxwidgets
     GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
@@ -204,6 +211,18 @@ set(lobster_modules
     ${lobster_SOURCE_DIR}/modules/color.lobster
 )
 install(FILES ${lobster_modules} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
+
+# On Windows with shared wxWidgets, install the required wx DLLs next to the executable
+if(WIN32 AND wxBUILD_SHARED)
+    install(FILES
+        $<TARGET_FILE:wx::core>
+        $<TARGET_FILE:wx::adv>
+        $<TARGET_FILE:wx::aui>
+        $<TARGET_FILE:wx::xml>
+        $<TARGET_FILE:wx::net>
+        DESTINATION ${TREESHEETS_BINDIR}
+    )
+endif()
 
 ## Apple icon set
 if(APPLE)
