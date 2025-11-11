@@ -81,7 +81,7 @@ gid="${HOST_GID:-1000}"
 if [[ -z "${HOST_UID:-}" ]] || [[ -z "${HOST_GID:-}" ]]; then
   echo "Warning: HOST_UID or HOST_GID not set, using defaults (uid=$uid, gid=$gid)"
 fi
-chown -R "$uid:$gid" _build || true
+chown -R "$uid:$gid" _build || { echo "Warning: Failed to set ownership on _build"; exit 1; }
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 endphase
