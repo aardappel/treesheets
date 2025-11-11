@@ -119,16 +119,19 @@ jobs:
             bash -c "set -euo pipefail; \
               apt-get update; \
               DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-                ca-certificates wget gnupg lsb-release apt-transport-https; \
+                ca-certificates wget gnupg; \
               update-ca-certificates || true; \
-              # Add Kitware APT repo to get modern CMake on Bullseye (ARM64)
-              wget -O /tmp/kitware-archive.sh https://apt.kitware.com/kitware-archive.sh; \
-              bash /tmp/kitware-archive.sh; \
+              # Add Kitware APT repo for Debian Bullseye (ARM64)
+              install -d -m 0755 /usr/share/keyrings; \
+              wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg || { echo "Failed to download or install Kitware GPG key"; exit 1; }; \
+              echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/debian/ bullseye main' > /etc/apt/sources.list.d/kitware.list; \
+              chmod 0644 /usr/share/keyrings/kitware-archive-keyring.gpg; \
               apt-get update; \
               DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
                 cmake g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
                 libgtk-3-dev dpkg-dev file ccache ninja-build; \
               cmake --version; \
+              required=3.25.0; inst=\$(cmake --version | awk '/cmake version/{print \$3}'); dpkg --compare-versions "\$inst" ge "\$required" || { echo "CMake version \$inst is less than required \$required"; exit 1; }; \
               cmake -S . -B _build \
                 -G Ninja \
                 -DCMAKE_INSTALL_PREFIX=/usr \
