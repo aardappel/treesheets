@@ -19,9 +19,9 @@ jobs:
   build-linux-x64:
     name: Build Linux x64
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 300
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout (shallow + submodules)
         uses: actions/checkout@v4
@@ -84,14 +84,14 @@ jobs:
         with:
           name: linux-x64-builds
           path: _build/treesheets_*.deb
-          retention-days: 7
+          retention-days: 90
 
   build-linux-arm64:
     name: Build Linux ARM64
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 300
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout (shallow + submodules)
         uses: actions/checkout@v4
@@ -149,14 +149,14 @@ jobs:
         with:
           name: linux-arm64-builds
           path: _build/treesheets_*.deb
-          retention-days: 7
+          retention-days: 90
 
   build-windows:
     name: Build Windows x64
     runs-on: windows-latest
-    timeout-minutes: 60
+    timeout-minutes: 300
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout (shallow + submodules)
         uses: actions/checkout@v4
@@ -190,7 +190,7 @@ jobs:
           path: |
             _build/TreeSheets-*.exe
             _build/TreeSheets-*.zip
-          retention-days: 7
+          retention-days: 90
 
   publish-release:
     name: Publish release
@@ -199,7 +199,7 @@ jobs:
       - build-linux-arm64
       - build-windows
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 300
     permissions:
       contents: write
     if: ${{ github.event_name == 'push' }}
