@@ -19,12 +19,12 @@ apt-get update
 endphase
 
 phase "Install build dependencies (including newer compiler and image libs)"
-# g++-12 provides floating-point std::from_chars; keep glibc at bullseye (2.31).
+# g++-11 provides floating-point std::from_chars; keep glibc at bullseye (2.31).
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
   libgtk-3-dev dpkg-dev file ccache ninja-build \
   libjpeg-dev libtiff-dev \
-  -t bullseye-backports gcc-12 g++-12
+  -t bullseye-backports gcc-11 g++-11
 endphase
 
 phase "Install CMake from bullseye-backports"
@@ -42,7 +42,7 @@ if ! dpkg --compare-versions "$inst" ge "$required"; then
 fi
 endphase
 
-phase "Configure (use gcc-12/g++-12 and static libstdc++)"
+phase "Configure (use gcc-11/g++-11 and static libstdc++)"
 # Ensure CMake picks the newer compilers and link libstdc++/libgcc statically for the executable
 cmake -S . -B _build \
   -G Ninja \
@@ -51,8 +51,8 @@ cmake -S . -B _build \
   -DCMAKE_BUILD_TYPE=Release \
   -DGIT_WXWIDGETS_SUBMODULES=ON \
   -DwxUSE_SYS_LIBS=OFF \
-  -DCMAKE_C_COMPILER=/usr/bin/gcc-12 \
-  -DCMAKE_CXX_COMPILER=/usr/bin/g++-12 \
+  -DCMAKE_C_COMPILER=/usr/bin/gcc-11 \
+  -DCMAKE_CXX_COMPILER=/usr/bin/g++-11 \
   -DCMAKE_EXE_LINKER_FLAGS="-static-libstdc++ -static-libgcc" \
   -DCMAKE_C_COMPILER_LAUNCHER=ccache \
   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
