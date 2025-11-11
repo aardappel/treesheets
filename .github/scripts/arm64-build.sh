@@ -6,14 +6,20 @@ phase() { echo "::group::$*"; }
 endphase() { echo "::endgroup::"; }
 
 phase "Base APT bootstrap"
+# Allow using archived Debian suites whose Release metadata is expired.
+# This must be in place BEFORE any apt-get update to avoid failures.
+printf 'Acquire::Check-Valid-Until "false";\n' > /etc/apt/apt.conf.d/99no-check-valid-until
+
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   ca-certificates wget gnupg
 update-ca-certificates || true
 endphase
 
-phase "Enable bullseye-backports"
-echo 'deb https://deb.debian.org/debian bullseye-backports main' \
+phase "Enable bullseye-backports (archived)"
+# Use the archived mirror for bullseye-backports and overwrite any existing list
+# to avoid duplicate/conflicting entries across images or prior runs.
+echo 'deb https://archive.debian.org/debian bullseye-backports main' \
   > /etc/apt/sources.list.d/backports.list
 apt-get update
 endphase
