@@ -78,6 +78,9 @@ phase "Ownership and cleanup"
 # HOST_UID / HOST_GID exported via docker run env or fallback.
 uid="${HOST_UID:-1000}"
 gid="${HOST_GID:-1000}"
+if [[ -z "${HOST_UID:-}" ]] || [[ -z "${HOST_GID:-}" ]]; then
+  echo "Warning: HOST_UID or HOST_GID not set, using defaults (uid=$uid, gid=$gid)"
+fi
 chown -R "$uid:$gid" _build || true
 apt-get clean
 rm -rf /var/lib/apt/lists/*
