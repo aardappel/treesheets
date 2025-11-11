@@ -110,48 +110,15 @@ jobs:
       - name: Build, test, and package in ARM64 Debian container (Ninja + ccache)
         run: |
           set -euo pipefail
-          HOST_UID=$(id -u)
-          HOST_GID=$(id -g)
+          HOST_UID="$(id -u)"
+          HOST_GID="$(id -g)"
           docker run --rm --pull=always --platform linux/arm64 \
             -v "${{ github.workspace }}:/workspace" \
             -w /workspace \
+            -e HOST_UID="$HOST_UID" \
+            -e HOST_GID="$HOST_GID" \
             arm64v8/debian:bullseye \
-            bash -c "set -euo pipefail; \
-              apt-get update; \
-              DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-                ca-certificates wget gnupg; \
-              update-ca-certificates || true; \
-              # Add Kitware APT repo for Debian Bullseye (ARM64)
-              install -d -m 0755 /usr/share/keyrings; \
-              wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg || { echo "Failed to download or install Kitware GPG key"; exit 1; }; \
-              echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/debian/ bullseye main' > /etc/apt/sources.list.d/kitware.list; \
-              chmod 0644 /usr/share/keyrings/kitware-archive-keyring.gpg; \
-              apt-get update; \
-              DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-                cmake g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
-                libgtk-3-dev dpkg-dev file ccache ninja-build; \
-              cmake --version; \
-              required=3.25.0; inst=\$(cmake --version | awk '/cmake version/{print \$3}'); dpkg --compare-versions "\$inst" ge "\$required" || { echo "CMake version \$inst is less than required \$required"; exit 1; }; \
-              cmake -S . -B _build \
-                -G Ninja \
-                -DCMAKE_INSTALL_PREFIX=/usr \
-                -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
-                -DCMAKE_BUILD_TYPE=Release \
-                -DGIT_WXWIDGETS_SUBMODULES=ON \
-                -DwxUSE_SYS_LIBS=OFF \
-                -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-                -DCMAKE_CXX_COMPILER_LAUNCHER=ccache; \
-              cmake --build _build --target all -j\$(nproc); \
-              ctest --test-dir _build --output-on-failure; \
-              cmake --build _build --target package -j\$(nproc); \
-              shopt -s nullglob; \
-              for file in _build/treesheets_*.deb; do \
-                base=\$(basename \"\$file\"); \
-                sanitized=\$(printf '%s' \"\$base\" | sed -E 's/^(treesheets_)[0-9]+:/\\1/; s/:/-/g'); \
-                if [ \"\$sanitized\" != \"\$base\" ]; then mv -v \"\$file\" \"_build/\$sanitized\"; fi; \
-              done; \
-              chown -R ${HOST_UID}:${HOST_GID} _build; \
-              apt-get clean; rm -rf /var/lib/apt/lists/*"
+            bash -lc "/workspace/.github/scripts/arm64-build.sh"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
