@@ -171,7 +171,7 @@ jobs:
 
       - name: Configure TreeSheets
         run: |
-          cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DGIT_WXWIDGETS_SUBMODULES=ON
+          cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DGIT_WXWIDGETS_SUBMODULES=ON -DwxBUILD_SHARED=ON -DwxBUILD_USE_STATIC_RUNTIME=OFF
 
       - name: Build TreeSheets
         run: |
@@ -232,8 +232,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.RELEASE_PREFIX }}-${{ github.run_id }}-${{ steps.sha.outputs.short_sha }}
-          name: TreeSheets build ${{ github.run_id }} (${{
-            steps.sha.outputs.short_sha }})
+          name: TreeSheets build ${{ github.run_id }} (${{ steps.sha.outputs.short_sha }})
           body: "Automated build for commit ${{ github.sha }}"
           allowUpdates: true
           commit: ${{ github.sha }}
