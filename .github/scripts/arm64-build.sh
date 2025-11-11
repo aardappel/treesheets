@@ -5,26 +5,39 @@ phase() { echo "::group::$*"; }
 endphase() { echo "::endgroup::"; }
 
 phase "Base APT bootstrap"
-printf 'Acquire::Check-Valid-Until "false";\n' > /etc/apt/apt.conf.d/99no-check-valid-until
+# Allow archived repos (expired metadata) and explicit insecure repos for archive.debian.org
+printf 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\n' > /etc/apt/apt.conf.d/99archive
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  ca-certificates wget gnupg
+  ca-certificates wget gnupg debian-archive-keyring
 update-ca-certificates || true
 endphase
 
-phase "Enable bullseye-backports (archived)"
-echo 'deb https://archive.debian.org/debian bullseye-backports main' \
+phase "Configure archived Debian bullseye sources (main, updates, security, backports)"
+# Use HTTP for archive endpoints to avoid TLS friction in minimal images
+cat > /etc/apt/sources.list <<'EOF'
+deb http://archive.debian.org/debian bullseye main
+deb http://archive.debian.org/debian bullseye-updates main
+deb http://archive.debian.org/debian-security bullseye-security main
+EOF
+echo 'deb http://archive.debian.org/debian bullseye-backports main' \
   > /etc/apt/sources.list.d/backports.list
 apt-get update
 endphase
 
-phase "Install build dependencies (including newer compiler and image libs)"
-# g++-11 provides floating-point std::from_chars; keep glibc at bullseye (2.31).
+phase "Install base build dependencies (bullseye)"
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  g++ git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
-  libgtk-3-dev dpkg-dev file ccache ninja-build \
-  libjpeg-dev libtiff-dev \
+  build-essential git mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev \
+  libgtk-3-dev dpkg-dev file ccache ninja-build libjpeg-dev libtiff-dev
+endphase
+
+phase "Install newer compiler from bullseye-backports (gcc-11/g++-11)"
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   -t bullseye-backports gcc-11 g++-11
+update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-11 110 \
+                     --slave /usr/bin/gcc gcc /usr/bin/gcc-11
+update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-11 110 \
+                     --slave /usr/bin/g++ g++ /usr/bin/g++-11
 endphase
 
 phase "Install CMake from bullseye-backports"
