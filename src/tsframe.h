@@ -634,6 +634,9 @@ struct TSFrame : wxFrame {
             A_FASTRENDER, _(L"Faster line rendering"),
             _(L"Toggle whether lines are drawn solid (faster rendering) or dashed"));
         optmenu->Check(A_FASTRENDER, sys->fastrender);
+        optmenu->AppendCheckItem(A_INVERTRENDER, _(L"Invert in dark mode"),
+                                 _(L"Invert the document in dark mode"));
+        optmenu->Check(A_INVERTRENDER, sys->invertindarkmode);
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders"));
 
         auto scriptmenu = new wxMenu();
@@ -1023,6 +1026,10 @@ struct TSFrame : wxFrame {
                 break;
             case A_FASTRENDER:
                 sys->cfg->Write(L"fastrender", sys->fastrender = ce.IsChecked());
+                Refresh();
+                break;
+            case A_INVERTRENDER:
+                sys->cfg->Write(L"invertindarkmode", sys->invertindarkmode = ce.IsChecked());
                 Refresh();
                 break;
             case A_FULLSCREEN:

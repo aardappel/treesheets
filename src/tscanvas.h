@@ -23,17 +23,32 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnPaint(wxPaintEvent &event) {
-        #ifndef __WXMSW__
-            wxPaintDC dc(this);
-        #else
-            auto sz = GetClientSize();
-            if (sz.GetX() <= 0 || sz.GetY() <= 0) return;
-            wxBitmap buffer(sz.GetX(), sz.GetY(), 24);
-            wxBufferedPaintDC dc(this, buffer);
-        #endif
+        auto sz = GetClientSize();
+        auto sf = GetDPIScaleFactor();
+        if (sz.GetX() <= 0 || sz.GetY() <= 0) return;
+        wxBitmap bmp;
+        bmp.CreateWithDIPSize(sz, sf, 24);
+        wxBufferedPaintDC dc(this, bmp);
         DoPrepareDC(dc);
         doc->Draw(dc);
+        if (sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()) {
+            dc.SelectObject(wxNullBitmap);
+            InvertBitmap(bmp);
+            bmp.SetScaleFactor(sf);
+            dc.SelectObject(bmp);
+        }
     };
+
+    void InvertBitmap(wxBitmap &bmp) {
+        if (!bmp.IsOk()) return;
+        auto image = bmp.ConvertToImage();
+        if (!image.IsOk()) return;
+        if (auto size = image.GetWidth() * image.GetHeight() * 3; size > 0) {
+            auto data = image.GetData();
+            for (auto i = 0; i < size; i++) { data[i] = 255 - data[i]; }
+            bmp = wxBitmap(image);
+        }
+    }
 
     void OnScrollToSelectionRequest(wxCommandEvent &event) {
         doc->ScrollIfSelectionOutOfView(doc->selected);
