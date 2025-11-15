@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 18:37+0200\n"
+"POT-Creation-Date: 2025-11-15 16:22+0100\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -818,14 +818,30 @@ msgstr "Eingerückter Text..."
 msgid "Initialization Error"
 msgstr "Initialisierungsfehler"
 
+msgid "Insert last image"
+msgstr "Das zuletzt eingefügte Bild einfügen"
+
+msgid "Insert the last image that has been inserted before in TreeSheets."
+msgstr "Das Bild einfügen, welches davor bereits in TreeSheets eingefügt wurde."
+
 msgid "Interactive &tutorial"
 msgstr "Interaktives &Tutorial"
 
 msgid "Internal error: unimplemented operation!"
 msgstr "Interner Fehler: Nicht implementierter Vorgang!"
 
-msgid "It seems that you are about to paste or drop a TreeSheets file. What would you like to do?"
-msgstr "Es scheint, dass Sie gerade eine TreeSheets-Datei einfügen oder in das Fenster ziehen. Was möchten Sie gerne tun?"
+msgid "Invert in dark mode"
+msgstr "Im dunklen Modus invertieren"
+
+msgid "Invert the document in dark mode"
+msgstr "Im dunklen Modus die Farben des Dokuments invertieren"
+
+msgid ""
+"It seems that you are about to paste or drop a TreeSheets file. What would "
+"you like to do?"
+msgstr ""
+"Es scheint, dass Sie gerade eine TreeSheets-Datei einfügen oder in das "
+"Fenster ziehen. Was möchten Sie gerne tun?"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG-Datei ist fehlerhaft/beschädigt!"
