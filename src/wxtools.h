@@ -179,7 +179,11 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     wxCoord OnMeasureItem(size_t item) const { return FromDIP(image_space); }
     wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(image_space); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
+        DrawRectangle(dc,
+                      sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
+                          ? 0x000000
+                          : 0xFFFFFF,
+                      rect.x, rect.y, rect.width, rect.height);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
