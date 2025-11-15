@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 18:37+0200\n"
+"POT-Creation-Date: 2025-11-15 16:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -802,6 +802,12 @@ msgid "Interactive &tutorial"
 msgstr ""
 
 msgid "Internal error: unimplemented operation!"
+msgstr ""
+
+msgid "Invert in dark mode"
+msgstr ""
+
+msgid "Invert the document in dark mode"
 msgstr ""
 
 msgid ""
