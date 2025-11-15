@@ -819,10 +819,10 @@ msgid "Initialization Error"
 msgstr "Initialisierungsfehler"
 
 msgid "Insert last image"
-msgstr ""
+msgstr "Das zuletzt eingefügte Bild einfügen"
 
 msgid "Insert the last image that has been inserted before in TreeSheets."
-msgstr ""
+msgstr "Das Bild einfügen, welches davor bereits in TreeSheets eingefügt wurde."
 
 msgid "Interactive &tutorial"
 msgstr "Interaktives &Tutorial"
@@ -831,11 +831,10 @@ msgid "Internal error: unimplemented operation!"
 msgstr "Interner Fehler: Nicht implementierter Vorgang!"
 
 msgid "Invert in dark mode"
-msgstr ""
+msgstr "Im dunklen Modus invertieren"
 
-#, fuzzy
 msgid "Invert the document in dark mode"
-msgstr "Zum Dokument im nächsten Tab springen"
+msgstr "Im dunklen Modus die Farben des Dokuments invertieren"
 
 msgid ""
 "It seems that you are about to paste or drop a TreeSheets file. What would "
