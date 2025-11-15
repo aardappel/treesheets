@@ -124,12 +124,13 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
     wxCoord OnMeasureItem(size_t item) const { return FromDIP(22); }
     wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(40); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        DrawRectangle(dc, flags & wxODCB_PAINTING_SELECTED ? 0xA9A9A9 : 0xFFFFFF, rect.x, rect.y,
-                      rect.width, rect.height);
+        DrawRectangle(dc, flags & wxODCB_PAINTING_SELECTED ? 0xA9A9A9 : LightColor(0xFFFFFF),
+                      rect.x, rect.y, rect.width, rect.height);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        DrawRectangle(dc, item == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[item],
+        DrawRectangle(dc,
+                      LightColor(item == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[item]),
                       rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
         if (item == CUSTOMCOLORIDX) {
             dc.SetTextForeground(*wxBLACK);
@@ -144,6 +145,11 @@ static uint PickColor(wxWindow *parent, uint defaultcolor) {
     auto color = wxGetColourFromUser(parent, wxColour(defaultcolor));
     if (color.IsOk()) return (color.Blue() << 16) + (color.Green() << 8) + color.Red();
     return -1;
+}
+
+static uint LightColor(uint color) {
+    if (sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()) color ^= 0x00FFFFFF;
+    return color;
 }
 
 #define dd_icon_res_scale 3.0
@@ -173,7 +179,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     wxCoord OnMeasureItem(size_t item) const { return FromDIP(image_space); }
     wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(image_space); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
+        DrawRectangle(dc, LightColor(0xFFFFFF), rect.x, rect.y, rect.width, rect.height);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
