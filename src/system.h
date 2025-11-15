@@ -39,6 +39,7 @@ struct System {
     bool fastrender {true};
     bool showtoolbar {true};
     bool showstatusbar {true};
+    bool invertindarkmode {false};
     int sortcolumn;
     int sortxs;
     int sortdescending;
@@ -79,6 +80,7 @@ struct System {
         cfg->Read(L"thinselc", &thinselc, thinselc);
         cfg->Read(L"autosave", &autosave, autosave);
         cfg->Read(L"fastrender", &fastrender, fastrender);
+        cfg->Read(L"invertindarkmode", &invertindarkmode, invertindarkmode);
         cfg->Read(L"minclose", &minclose, minclose);
         cfg->Read(L"singletray", &singletray, singletray);
         cfg->Read(L"centered", &centered, centered);
