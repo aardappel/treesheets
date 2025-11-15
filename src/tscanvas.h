@@ -24,9 +24,9 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnPaint(wxPaintEvent &event) {
         auto sz = GetClientSize();
-        auto sf = GetDPIScaleFactor();
         if (sz.GetX() <= 0 || sz.GetY() <= 0) return;
         wxBitmap bmp;
+        auto sf = GetDPIScaleFactor();
         bmp.CreateWithDIPSize(sz, sf, 24);
         wxBufferedPaintDC dc(this, bmp);
         DoPrepareDC(dc);
