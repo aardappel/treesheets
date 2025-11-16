@@ -1819,22 +1819,26 @@ struct Document {
                 canvas->Refresh();
                 return nullptr;
             }
+
+            case A_TRANSPOSE: {
+                if (selected.Thin()) return NoThin();
+                auto ac = selected.grid->cell;
+                ac->AddUndo(this);
+                if (selected.IsAll()) {
+                    ac->grid->Transpose();
+                    SetSelect(ac->parent ? ac->parent->grid->FindCell(ac) : Selection());
+                } else {
+                    loopallcellssel(c, false) if (c->grid) c->grid->Transpose();
+                }
+                ac->ResetChildren();
+                canvas->Refresh();
+                return nullptr;
+            }
         }
 
         if (cell || (!cell && selected.IsAll())) {
             auto ac = cell ? cell : selected.grid->cell;
             switch (action) {
-                case A_TRANSPOSE:
-                    if (ac->grid) {
-                        ac->AddUndo(this);
-                        ac->grid->Transpose();
-                        ac->ResetChildren();
-                        SetSelect(ac->parent ? ac->parent->grid->FindCell(ac) : Selection());
-                        canvas->Refresh();
-                        return nullptr;
-                    } else
-                        return NoGrid();
-
                 case A_HIFY:
                     if (!ac->grid) return NoGrid();
                     if (!ac->grid->IsTable())
