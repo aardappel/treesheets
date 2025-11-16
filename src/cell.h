@@ -508,7 +508,7 @@ struct Cell {
                 }
                 break;
             case A_BORDCOLOR:
-                if (grid) grid->bordercolor = color;
+                if (parent && parent->grid) parent->grid->bordercolor = color;
                 break;
         }
         text.WasEdited();

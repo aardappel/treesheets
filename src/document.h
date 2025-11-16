@@ -1627,7 +1627,8 @@ struct Document {
                     case A_LASTCELLCOLOR: c->cellcolor = sys->lastcellcolor; break;
                     case A_LASTTEXTCOLOR: c->textcolor = sys->lasttextcolor; break;
                     case A_LASTBORDCOLOR:
-                        if (c->grid) c->grid->bordercolor = sys->lastbordcolor;
+                        if (c->parent && c->parent->grid)
+                            c->parent->grid->bordercolor = sys->lastbordcolor;
                         break;
                     case A_LASTIMAGE:
                         if (sys->lastimage) c->text.image = sys->lastimage;
