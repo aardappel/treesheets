@@ -17,8 +17,8 @@ static const auto BLINK_TIME = 400;
 static const auto CUSTOMCOLORIDX = 0;
 static const auto TS_SELECTION_MASK = 0x80;
 static const auto g_bordercolor_default = 0xA0A0A0;
-static const auto g_cellcolor_default = 0xFFFFFFu;
-static const auto g_textcolor_default = 0x000000u;
+static const auto g_cellcolor_default = 0xFFFFFFU;
+static const auto g_textcolor_default = 0x000000U;
 static const auto g_tagcolor_default = 0xFF0000;
 static const std::array<uint, 42> celltextcolors = {
     0xFFFFFF,  // CUSTOM COLOR!
