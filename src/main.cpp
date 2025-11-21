@@ -279,8 +279,9 @@ struct string_view_nt {
         return sv.data();
     }
 };
-typedef int64_t (*FileLoader)(string_view_nt absfilename, std::string *dest, int64_t start,
-                              int64_t len);
+
+using FileLoader = int64_t (*)(string_view_nt absfilename, std::string *dest, int64_t start,
+                               int64_t len);
 
 #include "script_interface.h"
 
