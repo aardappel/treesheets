@@ -12,62 +12,62 @@ ScriptInterface *si = nullptr;
 
 void AddTreeSheets(NativeRegistry &nfr) {
 nfr("goto_root", "", "", "",
-    "makes the root of the document the current cell. this is the default at the start"
+    "makes the root of the document the current cell. this is the default at the start "
     "of any script, so this function is only needed to return there.",
     [](StackPtr &, VM &) {
         si->GoToRoot();
         return NilVal();
     });
 
-nfr("goto_view", "", "", "", "makes what the user has zoomed into the current cell.",
+nfr("goto_view", "", "", "", "makes what the user has zoomed into the current cell",
     [](StackPtr &, VM &) {
         si->GoToView();
         return NilVal();
     });
 
-nfr("has_selection", "", "", "I", "whether there is a selection.",
+nfr("has_selection", "", "", "I", "whether there is a selection",
     [](StackPtr &, VM &) { return Value(si->HasSelection()); });
 
 nfr("goto_selection", "", "", "",
-    "makes the current cell the one selected, or the first of a selection.",
+    "makes the current cell the one selected, or the first of a selection",
     [](StackPtr &, VM &) {
         si->GoToSelection();
         return NilVal();
     });
 
-nfr("has_parent", "", "", "I", "whether the current cell has a parent (is the root cell).",
+nfr("has_parent", "", "", "I", "whether the current cell has a parent (is the root cell)",
     [](StackPtr &, VM &) { return Value(si->HasParent()); });
 
-nfr("goto_parent", "", "", "", "makes the current cell the parent of the current cell, if any.",
+nfr("goto_parent", "", "", "", "makes the current cell the parent of the current cell, if any",
     [](StackPtr &, VM &) {
         si->GoToParent();
         return NilVal();
     });
 
 nfr("num_children", "", "", "I",
-    "returns the total number of children of the current cell (rows * columns)."
+    "returns the total number of children of the current cell (rows * columns). "
     "returns 0 if this cell doesn't have a sub-grid at all.",
     [](StackPtr &, VM &) { return Value(si->NumChildren()); });
 
 nfr("num_columns_rows", "", "", "I}:2",
-    "returns the number of columns & rows in the current cell.",
+    "returns the number of columns & rows in the current cell",
     [](StackPtr &sp, VM &) { PushVec(sp, int2(si->NumColumnsRows())); });
 
 nfr("selection", "", "", "I}:2I}:2",
-    "returns the (xs,ys) and (x,y) of the current selection, or zeroes if none.",
+    "returns the (xs,ys) and (x,y) of the current selection, or zeroes if none",
     [](StackPtr &sp, VM &) {
         auto b = si->SelectionBox();
         PushVec(sp, int2(b.second));
         PushVec(sp, int2(b.first));
     });
 
-nfr("goto_child", "n", "I", "", "makes the current cell the nth child of the current cell.",
+nfr("goto_child", "n", "I", "", "makes the current cell the nth child of the current cell",
     [](StackPtr &, VM &, Value n) {
         si->GoToChild(n.intval());
         return NilVal();
     });
 
-nfr("goto_column_row", "col,row", "II", "", "makes the current cell the child at col / row.",
+nfr("goto_column_row", "col,row", "II", "", "makes the current cell the child at col / row",
     [](StackPtr &, VM &, Value x, Value y) {
         si->GoToColumnRow(x.intval(), y.intval());
         return NilVal();
@@ -76,33 +76,33 @@ nfr("goto_column_row", "col,row", "II", "", "makes the current cell the child at
 nfr("get_text", "", "", "S", "gets the text of the current cell.",
     [](StackPtr &, VM &vm) { return Value(vm.NewString(si->GetText())); });
 
-nfr("set_text", "text", "S", "", "sets the text of the current cell.",
+nfr("set_text", "text", "S", "", "sets the text of the current cell",
     [](StackPtr &, VM &, Value s) {
         si->SetText(s.sval()->strv());
         return NilVal();
     });
 
 nfr("create_grid", "cols,rows", "II", "",
-    "creates a grid in the current cell if there isn't one yet.",
+    "creates a grid in the current cell if there isn't one yet",
     [](StackPtr &, VM &, Value x, Value y) {
         si->CreateGrid(x.intval(), y.intval());
         return NilVal();
     });
 
-nfr("insert_column", "c", "I", "", "insert n columns before column c in an existing grid.",
+nfr("insert_column", "c", "I", "", "inserts n columns before column c in an existing grid",
     [](StackPtr &, VM &, Value x) {
         si->InsertColumn(x.intval());
         return NilVal();
     });
 
-nfr("insert_row", "r", "I", "", "insert n rows before row r in an existing grid.",
+nfr("insert_row", "r", "I", "", "inserts n rows before row r in an existing grid",
     [](StackPtr &, VM &, Value x) {
         si->InsertRow(x.intval());
         return NilVal();
     });
 
 nfr("delete", "pos,size", "I}:2I}:2", "",
-    "clears the cells denoted by pos/size. also removes columns/rows if they become"
+    "clears the cells denoted by pos/size. also removes columns/rows if they become "
     "completely empty, or the entire grid.",
     [](StackPtr &sp, VM &) {
         auto s = PopVec<int2>(sp);
@@ -146,13 +146,13 @@ nfr("set_relative_size", "s", "I", "",
 
 nfr("set_style_bits", "s", "I", "",
     "sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8,"
-    " strikethru = 16) on the current cell.",
+    " strikethru = 16) on the current cell",
     [](StackPtr &, VM &, Value s) {
         si->SetStyle(s.intval());
         return NilVal();
     });
 
-nfr("set_status_message", "message", "S", "", "sets the status message in TreeSheets.",
+nfr("set_status_message", "message", "S", "", "sets the status message in TreeSheets",
     [](StackPtr &, VM &, Value s) {
         si->SetStatusMessage(s.sval()->strv());
         return NilVal();
@@ -164,7 +164,7 @@ nfr("get_filename_from_user", "is_save", "I", "S",
         return Value(vm.NewString(si->GetFileNameFromUser(is_save.True())));
     });
 
-nfr("get_filename", "", "", "S", "gets the current documents file name.",
+nfr("get_filename", "", "", "S", "gets the current documents file name",
     [](StackPtr &, VM &vm) { return Value(vm.NewString(si->GetFileName())); });
 
 nfr("load_document", "filename", "S", "B",
