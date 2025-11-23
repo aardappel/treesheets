@@ -35,12 +35,14 @@ FetchContent_Declare(
     wxwidgets
     GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
     GIT_TAG v3.2.8
+    GIT_SHALLOW ON
     FIND_PACKAGE_ARGS 3.2.8 NAMES wxWidgets
 )
 FetchContent_Declare(
     lobster
     GIT_REPOSITORY https://github.com/aardappel/lobster
     GIT_TAG v2025.4
+    GIT_SHALLOW ON
 )
 FetchContent_MakeAvailable(wxwidgets lobster)
 
