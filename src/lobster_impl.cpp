@@ -16,13 +16,13 @@ nfr("goto_root", "", "", "",
     "of any script, so this function is only needed to return there.",
     [](StackPtr &, VM &) {
         si->GoToRoot();
-        return NoVal();
+        return NilVal();
     });
 
 nfr("goto_view", "", "", "", "makes what the user has zoomed into the current cell.",
     [](StackPtr &, VM &) {
         si->GoToView();
-        return NoVal();
+        return NilVal();
     });
 
 nfr("has_selection", "", "", "I", "whether there is a selection.",
@@ -32,7 +32,7 @@ nfr("goto_selection", "", "", "",
     "makes the current cell the one selected, or the first of a selection.",
     [](StackPtr &, VM &) {
         si->GoToSelection();
-        return NoVal();
+        return NilVal();
     });
 
 nfr("has_parent", "", "", "I", "whether the current cell has a parent (is the root cell).",
@@ -41,7 +41,7 @@ nfr("has_parent", "", "", "I", "whether the current cell has a parent (is the ro
 nfr("goto_parent", "", "", "", "makes the current cell the parent of the current cell, if any.",
     [](StackPtr &, VM &) {
         si->GoToParent();
-        return NoVal();
+        return NilVal();
     });
 
 nfr("num_children", "", "", "I",
@@ -64,13 +64,13 @@ nfr("selection", "", "", "I}:2I}:2",
 nfr("goto_child", "n", "I", "", "makes the current cell the nth child of the current cell.",
     [](StackPtr &, VM &, Value n) {
         si->GoToChild(n.intval());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("goto_column_row", "col,row", "II", "", "makes the current cell the child at col / row.",
     [](StackPtr &, VM &, Value x, Value y) {
         si->GoToColumnRow(x.intval(), y.intval());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("get_text", "", "", "S", "gets the text of the current cell.",
@@ -79,26 +79,26 @@ nfr("get_text", "", "", "S", "gets the text of the current cell.",
 nfr("set_text", "text", "S", "", "sets the text of the current cell.",
     [](StackPtr &, VM &, Value s) {
         si->SetText(s.sval()->strv());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("create_grid", "cols,rows", "II", "",
     "creates a grid in the current cell if there isn't one yet.",
     [](StackPtr &, VM &, Value x, Value y) {
         si->CreateGrid(x.intval(), y.intval());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("insert_column", "c", "I", "", "insert n columns before column c in an existing grid.",
     [](StackPtr &, VM &, Value x) {
         si->InsertColumn(x.intval());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("insert_row", "r", "I", "", "insert n rows before row r in an existing grid.",
     [](StackPtr &, VM &, Value x) {
         si->InsertRow(x.intval());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("delete", "pos,size", "I}:2I}:2", "",
@@ -125,7 +125,7 @@ nfr("set_text_color", "col", "F}:4", "", "sets the text color of the current cel
 nfr("set_text_filtered", "filtered", "B", "", "sets the text filtered of the current cell",
     [](StackPtr &, VM &, Value filtered) {
         si->SetTextFiltered(filtered.True());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("is_text_filtered", "", "", "B", "whether the text of the current cell is filtered",
@@ -141,7 +141,7 @@ nfr("set_relative_size", "s", "I", "",
     "sets the relative size (0 is normal, -1 is smaller etc.) of the current cell",
     [](StackPtr &, VM &, Value s) {
         si->SetRelativeSize(geom::clamp(s.intval(), -10, 10));
-        return NoVal();
+        return NilVal();
     });
 
 nfr("set_style_bits", "s", "I", "",
@@ -149,13 +149,13 @@ nfr("set_style_bits", "s", "I", "",
     " strikethru = 16) on the current cell.",
     [](StackPtr &, VM &, Value s) {
         si->SetStyle(s.intval());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("set_status_message", "message", "S", "", "sets the status message in TreeSheets.",
     [](StackPtr &, VM &, Value s) {
         si->SetStatusMessage(s.sval()->strv());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("get_filename_from_user", "is_save", "I", "S",
@@ -176,7 +176,7 @@ nfr("load_document", "filename", "S", "B",
 nfr("set_window_size", "width,height", "II", "", "resizes the window",
     [](StackPtr &, VM &, Value w, Value h) {
         si->SetWindowSize(w.intval(), h.intval());
-        return NoVal();
+        return NilVal();
     });
 
 nfr("get_last_edit", "", "", "I",

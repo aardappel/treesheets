@@ -40,7 +40,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     lobster
     GIT_REPOSITORY https://github.com/aardappel/lobster
-    GIT_TAG v2025.3
+    GIT_TAG v2025.4
 )
 FetchContent_MakeAvailable(wxwidgets lobster)
 

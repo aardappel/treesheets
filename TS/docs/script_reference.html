@@ -651,13 +651,16 @@
 <tr class="a" valign=top><td class="a"><tt><b>workers_alive</b>() -> <font color="#666666">int</font></tt></td><td class="a">whether workers should continue doing work. returns false after stop_worker_threads() has been called.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>thread_write</b>(struct<font color="#666666">: any</font>)</tt></td><td class="a">put this struct in the thread queue</td>
+<tr class="a" valign=top><td class="a"><tt><b>thread_write</b>(object<font color="#666666">: any</font>)</tt></td><td class="a">put this object in the thread queue</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>thread_read</b>(type<font color="#666666">: typeid(any)</font>) -> <font color="#666666">any?</font></tt></td><td class="a">get a struct from the thread queue. pass the typeof struct. blocks if no suchstructs available. returns struct, or nil if stop_worker_threads() was called</td>
+<tr class="a" valign=top><td class="a"><tt><b>thread_read</b>(type<font color="#666666">: typeid(any)</font>) -> <font color="#666666">any?</font></tt></td><td class="a">get an object from the thread queue. pass the typeof object. blocks if no such objects available. returns object, or nil if this was the result of thread_wake() or stop_worker_threads() was called</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>thread_check</b>(type<font color="#666666">: typeid(any)</font>) -> <font color="#666666">any?</font></tt></td><td class="a">tests if a struct is available on the thread queue. pass the typeof struct. returns struct, or nil if none available, or if stop_worker_threads() was called</td>
+<tr class="a" valign=top><td class="a"><tt><b>thread_check</b>(type<font color="#666666">: typeid(any)</font>) -> <font color="#666666">any?</font></tt></td><td class="a">tests if an object is available on the thread queue. pass the typeof object. returns object, or nil if none available, or if stop_worker_threads() was called</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>thread_wake</b>(type<font color="#666666">: typeid(any)</font>)</tt></td><td class="a">wakes up one thread that are currently blocked on a thread_read for this type. this will cause them to return nil since no object is sent. it is similar to thread_write(nil)</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>crash_test_cpp_nullptr_exception</b>()</tt></td><td class="a">only for testing crash dump functionality, don't use! :)</td>
