@@ -50,7 +50,7 @@ nfr("num_children", "", "", "I",
     [](StackPtr &, VM &) { return Value(si->NumChildren()); });
 
 nfr("num_columns_rows", "", "", "I}:2",
-    "returns the number of columns & rows in the current cell",
+    "returns the number of columns and rows in the current cell",
     [](StackPtr &sp, VM &) { PushVec(sp, int2(si->NumColumnsRows())); });
 
 nfr("selection", "", "", "I}:2I}:2",
@@ -83,26 +83,26 @@ nfr("set_text", "text", "S", "", "sets the text of the current cell",
     });
 
 nfr("create_grid", "cols,rows", "II", "",
-    "creates a grid in the current cell if there isn't one yet",
+    "creates a grid in the current cell if there is not one yet",
     [](StackPtr &, VM &, Value x, Value y) {
         si->CreateGrid(x.intval(), y.intval());
         return NilVal();
     });
 
-nfr("insert_column", "c", "I", "", "inserts n columns before column c in an existing grid",
+nfr("insert_column", "c", "I", "", "inserts a column before column c in an existing grid",
     [](StackPtr &, VM &, Value x) {
         si->InsertColumn(x.intval());
         return NilVal();
     });
 
-nfr("insert_row", "r", "I", "", "inserts n rows before row r in an existing grid",
+nfr("insert_row", "r", "I", "", "inserts a row before row r in an existing grid",
     [](StackPtr &, VM &, Value x) {
         si->InsertRow(x.intval());
         return NilVal();
     });
 
-nfr("delete", "pos,size", "I}:2I}:2", "",
-    "clears the cells denoted by pos/size. also removes columns/rows if they become "
+nfr("delete", "position,size", "I}:2I}:2", "",
+    "clears the cells denoted by position/size. also removes columns/rows if they become "
     "completely empty, or the entire grid.",
     [](StackPtr &sp, VM &) {
         auto s = PopVec<int2>(sp);
@@ -110,13 +110,13 @@ nfr("delete", "pos,size", "I}:2I}:2", "",
         si->Delete(p.x, p.y, s.x, s.y);
     });
 
-nfr("set_background_color", "col", "F}:4", "", "sets the background color of the current cell",
+nfr("set_background_color", "color", "F}:4", "", "sets the background color of the current cell",
     [](StackPtr &sp, VM &) {
         auto col = PopVec<float3>(sp);
         si->SetBackgroundColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
-nfr("set_text_color", "col", "F}:4", "", "sets the text color of the current cell",
+nfr("set_text_color", "color", "F}:4", "", "sets the text color of the current cell",
     [](StackPtr &sp, VM &) {
         auto col = PopVec<float3>(sp);
         si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data());
@@ -131,20 +131,20 @@ nfr("set_text_filtered", "filtered", "B", "", "sets the text filtered of the cur
 nfr("is_text_filtered", "", "", "B", "whether the text of the current cell is filtered",
     [](StackPtr &, VM &) { return Value(si->IsTextFiltered()); });
 
-nfr("set_border_color", "col", "F}:4", "", "sets the border color of the current grid",
+nfr("set_border_color", "color", "F}:4", "", "sets the border color of the current grid",
     [](StackPtr &sp, VM &) {
         auto col = PopVec<float3>(sp);
         si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
-nfr("set_relative_size", "s", "I", "",
+nfr("set_relative_size", "size", "I", "",
     "sets the relative size (0 is normal, -1 is smaller etc.) of the current cell",
     [](StackPtr &, VM &, Value s) {
         si->SetRelativeSize(geom::clamp(s.intval(), -10, 10));
         return NilVal();
     });
 
-nfr("set_style_bits", "s", "I", "",
+nfr("set_style_bits", "stylebits", "I", "",
     "sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8,"
     " strikethru = 16) on the current cell",
     [](StackPtr &, VM &, Value s) {
