@@ -28,7 +28,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.num_children</b>() -> <font color="#666666">int</font></tt></td><td class="a">returns the total number of children of the current cell (rows * columns). returns 0 if this cell doesn't have a sub-grid at all.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.num_columns_rows</b>() -> <font color="#666666">int2</font></tt></td><td class="a">returns the number of columns &amp; rows in the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.num_columns_rows</b>() -> <font color="#666666">int2</font></tt></td><td class="a">returns the number of columns and rows in the current cell</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.selection</b>() -> <font color="#666666">int2</font>, <font color="#666666">int2</font></tt></td><td class="a">returns the (xs,ys) and (x,y) of the current selection, or zeroes if none</td>
@@ -46,22 +46,22 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text</b>(text<font color="#666666">: string</font>)</tt></td><td class="a">sets the text of the current cell</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.create_grid</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">creates a grid in the current cell if there isn't one yet</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.create_grid</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">creates a grid in the current cell if there is not one yet</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.insert_column</b>(c<font color="#666666">: int</font>)</tt></td><td class="a">inserts n columns before column c in an existing grid</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.insert_column</b>(c<font color="#666666">: int</font>)</tt></td><td class="a">inserts a column before column c in an existing grid</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.insert_row</b>(r<font color="#666666">: int</font>)</tt></td><td class="a">inserts n rows before row r in an existing grid</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.insert_row</b>(r<font color="#666666">: int</font>)</tt></td><td class="a">inserts a row before row r in an existing grid</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.delete</b>(pos<font color="#666666">: int2</font>, size<font color="#666666">: int2</font>)</tt></td><td class="a">clears the cells denoted by pos/size. also removes columns/rows if they become completely empty, or the entire grid.</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.delete</b>(position<font color="#666666">: int2</font>, size<font color="#666666">: int2</font>)</tt></td><td class="a">clears the cells denoted by position/size. also removes columns/rows if they become completely empty, or the entire grid.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_background_color</b>(col<font color="#666666">: float4</font>)</tt></td><td class="a">sets the background color of the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_background_color</b>(color<font color="#666666">: float4</font>)</tt></td><td class="a">sets the background color of the current cell</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_text_color</b>(col<font color="#666666">: float4</font>)</tt></td><td class="a">sets the text color of the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_text_color</b>(color<font color="#666666">: float4</font>)</tt></td><td class="a">sets the text color of the current cell</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text_filtered</b>(filtered<font color="#666666">: bool</font>)</tt></td><td class="a">sets the text filtered of the current cell</td>
@@ -70,13 +70,13 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.is_text_filtered</b>() -> <font color="#666666">int</font></tt></td><td class="a">whether the text of the current cell is filtered</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_border_color</b>(col<font color="#666666">: float4</font>)</tt></td><td class="a">sets the border color of the current grid</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_border_color</b>(color<font color="#666666">: float4</font>)</tt></td><td class="a">sets the border color of the current grid</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_relative_size</b>(s<font color="#666666">: int</font>)</tt></td><td class="a">sets the relative size (0 is normal, -1 is smaller etc.) of the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_relative_size</b>(size<font color="#666666">: int</font>)</tt></td><td class="a">sets the relative size (0 is normal, -1 is smaller etc.) of the current cell</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_style_bits</b>(s<font color="#666666">: int</font>)</tt></td><td class="a">sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8, strikethru = 16) on the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_style_bits</b>(stylebits<font color="#666666">: int</font>)</tt></td><td class="a">sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8, strikethru = 16) on the current cell</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_status_message</b>(message<font color="#666666">: string</font>)</tt></td><td class="a">sets the status message in TreeSheets</td>
