@@ -162,8 +162,8 @@ struct Cell {
                 auto cp = (uchar *)&actualcellcolor;
                 loop(i, 4) cp[i] = cp[i] * 850 / 1000;
             }
-            dc.SetBrush(wxBrush(actualcellcolor));
-            dc.SetPen(wxPen(actualcellcolor));
+            dc.SetBrush(wxBrush(LightColor(actualcellcolor)));
+            dc.SetPen(wxPen(LightColor(actualcellcolor)));
 
             if (drawstyle == DS_BLOBSHIER)
                 dc.DrawRoundedRectangle(bx - cell_margin, by - cell_margin, minx + cell_margin * 2,
@@ -175,7 +175,7 @@ struct Cell {
                                         tys + cell_margin * 2 + g_margin_extra, sys->roundness);
             // FIXME: this half a g_margin_extra is a bit of hack
         }
-        dc.SetTextBackground(wxColour(actualcellcolor));
+        dc.SetTextBackground(wxColour(LightColor(actualcellcolor)));
         int xoff = verticaltextandgrid ? 0 : text.extent - depth * dc.GetCharHeight();
         int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
         yoff = verticaltextandgrid ? yoff : 0;

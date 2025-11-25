@@ -3,8 +3,8 @@ static void DrawRectangle(wxDC &dc, uint color, int x, int y, int xs, int ys,
     if (outline)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     else
-        dc.SetBrush(wxBrush(wxColour(color)));
-    dc.SetPen(wxPen(wxColour(color)));
+        dc.SetBrush(wxBrush(wxColour(LightColor(color))));
+    dc.SetPen(wxPen(wxColour(LightColor(color))));
     dc.DrawRectangle(x, y, xs, ys);
 }
 
@@ -179,7 +179,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     wxCoord OnMeasureItem(size_t item) const { return FromDIP(image_space); }
     wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(image_space); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        DrawRectangle(dc, LightColor(0xFFFFFF), rect.x, rect.y, rect.width, rect.height);
+        DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {

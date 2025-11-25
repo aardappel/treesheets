@@ -187,7 +187,9 @@ struct Grid {
                 }
             };
             if (!sys->fastrender && view_grid_outer_spacing && cell->cellcolor != 0xFFFFFF) {
-                dc.SetPen(*wxWHITE_PEN);
+                dc.SetPen(sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
+                              ? *wxBLACK_PEN
+                              : *wxWHITE_PEN);
                 drawlines();
             }
             // dotted lines result in very expensive drawline calls
@@ -250,7 +252,7 @@ struct Grid {
         }
         if (view_grid_outer_spacing && cell->drawstyle == DS_GRID) {
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
-            dc.SetPen(wxPen(wxColour(bordercolor)));
+            dc.SetPen(wxPen(wxColour(LightColor(bordercolor))));
             loop(i, view_grid_outer_spacing - 1) {
                 dc.DrawRoundedRectangle(
                     bx + xoff + view_grid_outer_spacing - i,
@@ -400,8 +402,12 @@ struct Grid {
         if (sel.Thin()) {
             DrawInsert(doc, dc, sel, 0);
         } else {
-            dc.SetBrush(*wxBLACK_BRUSH);
-            dc.SetPen(*wxBLACK_PEN);
+            dc.SetBrush(sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
+                            ? *wxWHITE_BRUSH
+                            : *wxBLACK_BRUSH);
+            dc.SetPen(sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
+                          ? *wxWHITE_PEN
+                          : *wxBLACK_PEN);
             wxRect g = GetRect(doc, sel);
             int lw = g_line_width;
             int te = sel.TextEdit();
