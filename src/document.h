@@ -514,13 +514,15 @@ struct Document {
                 }
                 dc.DrawText(s, off, off);
             }
-        dc.SetTextForeground(*wxBLACK);
+        dc.SetTextForeground(sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
+                                 ? *wxWHITE
+                                 : *wxBLACK);
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
     }
 
     void Draw(wxDC &dc) {
-        dc.SetBackground(wxBrush(wxColor(Background())));
+        dc.SetBackground(wxBrush(wxColor(LightColor(Background()))));
         dc.Clear();
         if (!root) return;
         canvas->GetClientSize(&maxx, &maxy);
