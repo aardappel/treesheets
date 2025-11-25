@@ -34,6 +34,7 @@ struct ScriptInterface {
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
     virtual std::string GetFileName() = 0;
     virtual int64_t GetLastEdit() = 0;
+    virtual bool IsTag() = 0;
     virtual ~ScriptInterface() {};
 };
 
