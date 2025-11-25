@@ -124,16 +124,17 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
     wxCoord OnMeasureItem(size_t item) const { return FromDIP(22); }
     wxCoord OnMeasureItemWidth(size_t item) const { return FromDIP(40); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        DrawRectangle(dc, flags & wxODCB_PAINTING_SELECTED ? 0xA9A9A9 : LightColor(0xFFFFFF),
-                      rect.x, rect.y, rect.width, rect.height);
+        DrawRectangle(dc, flags & wxODCB_PAINTING_SELECTED ? 0xA9A9A9 : 0xFFFFFF, rect.x, rect.y,
+                      rect.width, rect.height);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const {
-        DrawRectangle(dc,
-                      LightColor(item == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[item]),
+        DrawRectangle(dc, item == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[item],
                       rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
         if (item == CUSTOMCOLORIDX) {
-            dc.SetTextForeground(*wxBLACK);
+            dc.SetTextForeground(sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
+                                     ? *wxWHITE
+                                     : *wxBLACK);
             dc.SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
                               false, L""));
             dc.DrawText(L"Custom", rect.x + 1, rect.y + 1);
