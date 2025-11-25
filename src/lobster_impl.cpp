@@ -190,6 +190,11 @@ nfr("get_current_time", "", "", "I",
         auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
         return Value(milliseconds);
     });
+
+nfr("is_tag", "", "", "B", "whether the current cell text is a tag",
+    [](StackPtr &, VM &) {
+        return Value(si->IsTag());
+    });
 }
 
 NativeRegistry natreg;  // FIXME: global.
