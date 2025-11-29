@@ -514,9 +514,7 @@ struct Document {
                 }
                 dc.DrawText(s, off, off);
             }
-        dc.SetTextForeground(sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
-                                 ? *wxWHITE
-                                 : *wxBLACK);
+        dc.SetTextForeground(sys->darkmode ? *wxWHITE : *wxBLACK);
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
     }

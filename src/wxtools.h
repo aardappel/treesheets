@@ -132,9 +132,7 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
         DrawRectangle(dc, item == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[item],
                       rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
         if (item == CUSTOMCOLORIDX) {
-            dc.SetTextForeground(sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()
-                                     ? *wxWHITE
-                                     : *wxBLACK);
+            dc.SetTextForeground(sys->darkmode ? *wxWHITE : *wxBLACK);
             dc.SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
                               false, L""));
             dc.DrawText(L"Custom", rect.x + 1, rect.y + 1);
@@ -149,7 +147,7 @@ static uint PickColor(wxWindow *parent, uint defaultcolor) {
 }
 
 static uint LightColor(uint color) {
-    if (sys->invertindarkmode && wxSystemSettings::GetAppearance().IsDark()) color ^= 0x00FFFFFF;
+    if (sys->darkmode) color ^= 0x00FFFFFF;
     return color;
 }
 
