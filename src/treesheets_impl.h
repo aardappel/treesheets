@@ -138,31 +138,39 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         AddUndoIfNecessary();
         current->cellcolor = color;
     }
+
     void SetTextColor(uint color) {
         AddUndoIfNecessary();
         current->textcolor = color;
     }
+
     void SetTextFiltered(bool filtered) {
         if (current->parent) {
             AddUndoIfNecessary();
             current->text.filtered = filtered;
         }
     }
+
     bool IsTextFiltered() { return current->text.filtered; }
+
     void SetBorderColor(uint color) {
         if (current->grid) {
             AddUndoIfNecessary();
             current->grid->bordercolor = color;
         }
     }
+
     void SetRelativeSize(int relsize) {
         AddUndoIfNecessary();
         current->text.relsize = relsize;
     }
+
     void SetStyle(int stylebits) {
         AddUndoIfNecessary();
         current->text.stylebits = stylebits;
     }
+
+    int GetStyle() { return current->text.stylebits; }
 
     void SetStatusMessage(std::string_view message) {
         auto ws = wxString(message.data(), message.size());
