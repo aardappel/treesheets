@@ -39,7 +39,8 @@ struct System {
     bool fastrender {true};
     bool showtoolbar {true};
     bool showstatusbar {true};
-    bool invertindarkmode {false};
+    bool followdarkmode {false};
+    bool darkmode {false};
     int sortcolumn;
     int sortxs;
     int sortdescending;
@@ -80,7 +81,7 @@ struct System {
         cfg->Read(L"thinselc", &thinselc, thinselc);
         cfg->Read(L"autosave", &autosave, autosave);
         cfg->Read(L"fastrender", &fastrender, fastrender);
-        cfg->Read(L"invertindarkmode", &invertindarkmode, invertindarkmode);
+        cfg->Read(L"followdarkmode", &followdarkmode, followdarkmode);
         cfg->Read(L"minclose", &minclose, minclose);
         cfg->Read(L"singletray", &singletray, singletray);
         cfg->Read(L"centered", &centered, centered);
@@ -93,6 +94,7 @@ struct System {
         cfg->Read(L"showstatusbar", &showstatusbar, showstatusbar);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
+        darkmode = followdarkmode && wxSystemSettings::GetAppearance().IsDark();
     }
 
     auto NewTabDoc(bool append = false) {

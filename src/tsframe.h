@@ -636,7 +636,7 @@ struct TSFrame : wxFrame {
         optmenu->Check(A_FASTRENDER, sys->fastrender);
         optmenu->AppendCheckItem(A_INVERTRENDER, _(L"Invert in dark mode"),
                                  _(L"Invert the document in dark mode"));
-        optmenu->Check(A_INVERTRENDER, sys->invertindarkmode);
+        optmenu->Check(A_INVERTRENDER, sys->followdarkmode);
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders"));
 
         auto scriptmenu = new wxMenu();
@@ -1029,7 +1029,8 @@ struct TSFrame : wxFrame {
                 Refresh();
                 break;
             case A_INVERTRENDER:
-                sys->cfg->Write(L"invertindarkmode", sys->invertindarkmode = ce.IsChecked());
+                sys->cfg->Write(L"followdarkmode", sys->followdarkmode = ce.IsChecked());
+                sys->darkmode = sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark();
                 Refresh();
                 break;
             case A_FULLSCREEN:
@@ -1287,6 +1288,7 @@ struct TSFrame : wxFrame {
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
+        sys->darkmode = sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark();
         DELETEP(toolbar);
         ConstructToolBar();
         se.Skip();
