@@ -33,8 +33,10 @@ struct TSCanvas : public wxScrolledCanvas {
         #else
             wxPaintDC dc(this);
         #endif
-        DoPrepareDC(dc);
-        doc->Draw(dc);
+        wxGraphicsContext *gc = wxGraphicsContext::Create(dc);
+        wxGCDC gcdc(gc);
+        DoPrepareDC(gcdc);
+        doc->Draw(gcdc);
     };
 
     void InvertBitmap(wxBitmap &bmp) {

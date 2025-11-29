@@ -56,6 +56,8 @@
 #include <wx/taskbar.h>
 #include <wx/timectrl.h>
 #include <wx/xml/xml.h>
+#include <wx/graphics.h>
+#include <wx/dcgraph.h>
 
 #include <algorithm>
 #include <array>
