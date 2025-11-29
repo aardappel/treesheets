@@ -152,6 +152,9 @@ nfr("set_style_bits", "stylebits", "I", "",
         return NilVal();
     });
 
+nfr("get_style_bits", "", "", "I", "returns the stylebits of the current cell",
+    [](StackPtr &, VM &) { return Value(si->GetStyle()); });
+
 nfr("set_status_message", "message", "S", "", "sets the status message in TreeSheets",
     [](StackPtr &, VM &, Value s) {
         si->SetStatusMessage(s.sval()->strv());
