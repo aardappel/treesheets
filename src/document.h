@@ -612,7 +612,11 @@ struct Document {
         DrawSelect(dc, selected);
         wxQueueEvent(canvas->frame, new wxCommandEvent(UPDATE_STATUSBAR_REQUEST));
         if (paintscrolltoselection) {
-            wxQueueEvent(canvas, new wxCommandEvent(SCROLLTOSELECTION_REQUEST));
+            #ifndef __WXMAC__
+                ScrollIfSelectionOutOfView(selected);
+            #else
+                wxQueueEvent(canvas, new wxCommandEvent(SCROLLTOSELECTION_REQUEST));
+            #endif
             paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
