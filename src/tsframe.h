@@ -27,12 +27,12 @@ struct TSFrame : wxFrame {
     int refreshhackinstances {0};
     std::map<wxString, wxString> menustrings;
 
-    TSFrame(wxString exename, TSApp *_app)
+    TSFrame(TSApp *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
                   wxDEFAULT_FRAME_STYLE),
           app(_app) {
         sys->frame = this;
-        exepath_ = wxFileName(exename).GetPath();
+        exepath_ = wxFileName(app->exename).GetPath();
         #ifdef __WXMAC__
         int cut = exepath_.Find("/MacOS");
         if (cut > 0) { exepath_ = exepath_.SubString(0, cut) + "/Resources"; }
@@ -768,7 +768,7 @@ struct TSFrame : wxFrame {
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
         if (ismax && !IsIconized()) Maximize(true);
 
-        SetFileAssoc(exename);
+        SetFileAssoc(app->exename);
 
         wxSafeYield();
     }
