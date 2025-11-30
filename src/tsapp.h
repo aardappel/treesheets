@@ -25,8 +25,8 @@ struct TSApp : wxApp {
         exename = GetExecutablePath();
         exepath = wxFileName(exename).GetPath();
         #ifdef __WXMAC__
-            int cut = exepath_.Find("/MacOS");
-            if (cut > 0) { exepath_ = exepath_.SubString(0, cut) + "/Resources"; }
+            int cut = exepath.Find("/MacOS");
+            if (cut > 0) { exepath = exepath.SubString(0, cut) + "/Resources"; }
         #endif
 
         #ifdef __WXMAC__
