@@ -125,9 +125,6 @@ struct TSApp : wxApp {
             language = wxLANGUAGE_ENGLISH;
         }
         locale.Init(language);
-    }
-
-    void AddTranslation(const wxString &basepath) {
         #ifdef __WXGTK__
             locale.AddCatalogLookupPathPrefix(L"/usr");
             locale.AddCatalogLookupPathPrefix(L"/usr/local");
@@ -137,7 +134,7 @@ struct TSApp : wxApp {
             wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
             locale.AddCatalogLookupPathPrefix(prefix);
         #endif
-        locale.AddCatalogLookupPathPrefix(basepath);
+        locale.AddCatalogLookupPathPrefix(GetDataPath("translations"));
         locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
     }
 
