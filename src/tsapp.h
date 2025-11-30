@@ -133,8 +133,8 @@ struct TSApp : wxApp {
         wxFileTranslationsLoader::AddCatalogLookupPathPrefix(GetDataPath("translations"));
 
         auto trans = new wxTranslations();
-        wxTranslations::Set(trans);
         trans->AddCatalog("ts");
+        wxTranslations::Set(trans);
     }
 
     wxString GetExecutablePath() {
