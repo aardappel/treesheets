@@ -38,17 +38,6 @@ struct TSCanvas : public wxScrolledCanvas {
         event.Skip();
     };
 
-    void InvertBitmap(wxBitmap &bmp) {
-        if (!bmp.IsOk()) return;
-        auto image = bmp.ConvertToImage();
-        if (!image.IsOk()) return;
-        if (auto size = image.GetWidth() * image.GetHeight() * 3; size > 0) {
-            auto data = image.GetData();
-            for (auto i = 0; i < size; i++) { data[i] = 255 - data[i]; }
-            bmp = wxBitmap(image);
-        }
-    }
-
     void OnScrollToSelectionRequest(wxPaintEvent &event) {
         if (doc->paintscrolltoselection) {
             doc->ScrollIfSelectionOutOfView(doc->selected);
