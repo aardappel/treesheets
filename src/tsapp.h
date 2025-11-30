@@ -12,6 +12,8 @@ struct TSApp : wxApp {
     wxString filename;
     bool initiateventloop {false};
     wxLocale locale;
+    wxString exename;
+    wxString exepath;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
 
     bool OnInit() override {
@@ -19,6 +21,13 @@ struct TSApp : wxApp {
             #error "must use unicode version of wx libs to ensure data integrity of .cts files"
         #endif
         ASSERT(wxUSE_UNICODE);
+
+        exename = GetExecutablePath();
+        exepath = wxFileName(exename).GetPath();
+        #ifdef __WXMAC__
+            int cut = exepath_.Find("/MacOS");
+            if (cut > 0) { exepath_ = exepath_.SubString(0, cut) + "/Resources"; }
+        #endif
 
         #ifdef __WXMAC__
             wxDisableAsserts();
@@ -65,7 +74,7 @@ struct TSApp : wxApp {
         wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
 
         sys = new System(portable);
-        frame = new TSFrame(GetExecutablePath(), this);
+        frame = new TSFrame(this);
 
         auto serr = ScriptInit(frame->GetDataPath("scripts/"));
         if (!serr.empty()) {

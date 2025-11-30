@@ -1,5 +1,4 @@
 struct TSFrame : wxFrame {
-    wxString exepath_;
     TSApp *app;
     wxIcon icon;
     wxTaskBarIcon taskbaricon;
@@ -27,16 +26,11 @@ struct TSFrame : wxFrame {
     int refreshhackinstances {0};
     std::map<wxString, wxString> menustrings;
 
-    TSFrame(wxString exename, TSApp *_app)
+    TSFrame(TSApp *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
                   wxDEFAULT_FRAME_STYLE),
           app(_app) {
         sys->frame = this;
-        exepath_ = wxFileName(exename).GetPath();
-        #ifdef __WXMAC__
-        int cut = exepath_.Find("/MacOS");
-        if (cut > 0) { exepath_ = exepath_.SubString(0, cut) + "/Resources"; }
-        #endif
 
         class MyLog : public wxLog {
             void DoLogString(const wxChar *message, time_t timestamp) { DoLogText(*message); }
@@ -768,7 +762,7 @@ struct TSFrame : wxFrame {
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
         if (ismax && !IsIconized()) Maximize(true);
 
-        SetFileAssoc(exename);
+        SetFileAssoc(app->exename);
 
         wxSafeYield();
     }
@@ -1318,7 +1312,9 @@ struct TSFrame : wxFrame {
 
     wxString GetDataPath(const wxString &relpath) {
         std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
+            std::filesystem::path(app->exepath.Length()
+                                      ? app->exepath.ToStdString() + "/" + relpath.ToStdString()
+                                      : relpath.ToStdString()),
             #ifdef TREESHEETS_DATADIR
                 std::filesystem::path(TREESHEETS_DATADIR "/" + relpath.ToStdString()),
             #endif
@@ -1334,7 +1330,9 @@ struct TSFrame : wxFrame {
 
     wxString GetDocPath(const wxString &relpath) {
         std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(exepath_.Length() ? exepath_.ToStdString() + "/" + relpath.ToStdString() : relpath.ToStdString()),
+            std::filesystem::path(app->exepath.Length()
+                                      ? app->exepath.ToStdString() + "/" + relpath.ToStdString()
+                                      : relpath.ToStdString()),
             #ifdef TREESHEETS_DOCDIR
                 std::filesystem::path(TREESHEETS_DOCDIR "/" + relpath.ToStdString()),
             #endif
