@@ -51,7 +51,7 @@ struct TSFrame : wxFrame {
 
         wxLogMessage(L"locale: %s", std::setlocale(LC_CTYPE, nullptr));
 
-        app->AddTranslation(GetDataPath("translations"));
+        app->AddTranslation(app->GetDataPath("translations"));
 
         wxInitAllImageHandlers();
 
@@ -61,12 +61,12 @@ struct TSFrame : wxFrame {
             int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
             int iconlarge = ::GetSystemMetrics(SM_CXICON);
         #endif
-        icon.LoadFile(GetDataPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG
+        icon.LoadFile(app->GetDataPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG
             #ifdef WIN32
                 , iconsmall, iconsmall
             #endif
         );
-        iconbig.LoadFile(GetDataPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG
+        iconbig.LoadFile(app->GetDataPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG
             #ifdef WIN32
                 , iconlarge, iconlarge
             #endif
@@ -81,10 +81,10 @@ struct TSFrame : wxFrame {
         SetIcons(icons);
 
         RenderFolderIcon();
-        line_nw.LoadFile(GetDataPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
-        line_sw.LoadFile(GetDataPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
+        line_nw.LoadFile(app->GetDataPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
+        line_sw.LoadFile(app->GetDataPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
 
-        imagepath = GetDataPath("images/nuvola/dropdown/");
+        imagepath = app->GetDataPath("images/nuvola/dropdown/");
 
         if (sys->singletray)
             taskbaricon.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
@@ -642,7 +642,7 @@ struct TSFrame : wxFrame {
         scripts.SetMenuPathStyle(wxFH_PATH_SHOW_NEVER);
         scripts.AddFilesToMenu();
 
-        auto scriptpath = GetDataPath("scripts/");
+        auto scriptpath = app->GetDataPath("scripts/");
         auto sf = wxFindFirstFile(scriptpath + L"*.lobster");
         int sidx = 0;
         while (!sf.empty()) {
@@ -777,7 +777,7 @@ struct TSFrame : wxFrame {
         #define SEPARATOR toolbar->AddSeparator()
         #endif
 
-        auto iconpath = GetDataPath(L"images/material/toolbar/");
+        auto iconpath = app->GetDataPath(L"images/material/toolbar/");
 
         auto AddToolbarIcon = [&](const wxChar *name, int action, wxString iconpath,
                                   wxString lighticon, wxString darkicon) {
@@ -1310,42 +1310,6 @@ struct TSFrame : wxFrame {
         return notebook ? static_cast<TSCanvas *>(notebook->GetCurrentPage()) : nullptr;
     }
 
-    wxString GetDataPath(const wxString &relpath) {
-        std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(app->exepath.Length()
-                                      ? app->exepath.ToStdString() + "/" + relpath.ToStdString()
-                                      : relpath.ToStdString()),
-            #ifdef TREESHEETS_DATADIR
-                std::filesystem::path(TREESHEETS_DATADIR "/" + relpath.ToStdString()),
-            #endif
-        };
-        std::filesystem::path relativePath;
-        for (auto path : candidatePaths) {
-            relativePath = path;
-            if (std::filesystem::exists(relativePath)) { break; }
-        }
-
-        return wxString(relativePath.c_str());
-    }
-
-    wxString GetDocPath(const wxString &relpath) {
-        std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(app->exepath.Length()
-                                      ? app->exepath.ToStdString() + "/" + relpath.ToStdString()
-                                      : relpath.ToStdString()),
-            #ifdef TREESHEETS_DOCDIR
-                std::filesystem::path(TREESHEETS_DOCDIR "/" + relpath.ToStdString()),
-            #endif
-        };
-        std::filesystem::path relativePath;
-        for (auto path : candidatePaths) {
-            relativePath = path;
-            if (std::filesystem::exists(relativePath)) { break; }
-        }
-
-        return wxString(relativePath.c_str());
-    }
-
     TSCanvas *GetTabByFileName(const wxString &filename) {
         if (notebook) loop(i, notebook->GetPageCount()) {
                 auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
@@ -1391,7 +1355,7 @@ struct TSFrame : wxFrame {
 
     void RenderFolderIcon() {
         wxImage foldiconi;
-        foldiconi.LoadFile(GetDataPath(L"images/nuvola/fold.png"));
+        foldiconi.LoadFile(app->GetDataPath(L"images/nuvola/fold.png"));
         foldicon = wxBitmap(foldiconi);
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
     }

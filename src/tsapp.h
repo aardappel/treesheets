@@ -76,7 +76,7 @@ struct TSApp : wxApp {
         sys = new System(portable);
         frame = new TSFrame(this);
 
-        auto serr = ScriptInit(frame->GetDataPath("scripts/"));
+        auto serr = ScriptInit(GetDataPath("scripts/"));
         if (!serr.empty()) {
             wxLogFatalError(L"Script system could not initialize: %s", serr);
             return false;
@@ -158,6 +158,42 @@ struct TSApp : wxApp {
             }
         #endif
         return executablepath;
+    }
+
+    wxString GetDataPath(const wxString &relpath) {
+        std::filesystem::path candidatePaths[] = {
+            std::filesystem::path(exepath.Length()
+                                      ? exepath.ToStdString() + "/" + relpath.ToStdString()
+                                      : relpath.ToStdString()),
+            #ifdef TREESHEETS_DATADIR
+                std::filesystem::path(TREESHEETS_DATADIR "/" + relpath.ToStdString()),
+            #endif
+        };
+        std::filesystem::path relativePath;
+        for (auto path : candidatePaths) {
+            relativePath = path;
+            if (std::filesystem::exists(relativePath)) { break; }
+        }
+
+        return wxString(relativePath.c_str());
+    }
+
+    wxString GetDocPath(const wxString &relpath) {
+        std::filesystem::path candidatePaths[] = {
+            std::filesystem::path(exepath.Length()
+                                      ? exepath.ToStdString() + "/" + relpath.ToStdString()
+                                      : relpath.ToStdString()),
+            #ifdef TREESHEETS_DOCDIR
+                std::filesystem::path(TREESHEETS_DOCDIR "/" + relpath.ToStdString()),
+            #endif
+        };
+        std::filesystem::path relativePath;
+        for (auto path : candidatePaths) {
+            relativePath = path;
+            if (std::filesystem::exists(relativePath)) { break; }
+        }
+
+        return wxString(relativePath.c_str());
     }
 
     #ifdef __WXMSW__

@@ -1003,18 +1003,18 @@ struct Document {
             case A_TUTORIALWEBPAGE:
                 #ifdef __WXMAC__
                     wxLaunchDefaultBrowser(L"file://" +
-                                       sys->frame->GetDocPath(L"docs/tutorial.html"));  // RbrtPntn
+                                       sys->frame->app->GetDocPath(L"docs/tutorial.html"));  // RbrtPntn
                 #else
-                    wxLaunchDefaultBrowser(sys->frame->GetDocPath(L"docs/tutorial.html"));
+                    wxLaunchDefaultBrowser(sys->frame->app->GetDocPath(L"docs/tutorial.html"));
                 #endif
                 return nullptr;
 
             case A_SCRIPTREFERENCE:
                 #ifdef __WXMAC__
                     wxLaunchDefaultBrowser(L"file://" +
-                                       sys->frame->GetDocPath(L"docs/script_reference.html"));  // RbrtPntn
+                                       sys->frame->app->GetDocPath(L"docs/script_reference.html"));  // RbrtPntn
                 #else
-                    wxLaunchDefaultBrowser(sys->frame->GetDocPath(L"docs/script_reference.html"));
+                    wxLaunchDefaultBrowser(sys->frame->app->GetDocPath(L"docs/script_reference.html"));
                 #endif
                 return nullptr;
 

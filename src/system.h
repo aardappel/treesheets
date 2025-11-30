@@ -133,20 +133,20 @@ struct System {
         auto language = frame->app->locale.GetCanonicalName();
 
         if (language.Len() == 5 &&
-            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + language + ".cts"))[0]) {
+            !LoadDB(frame->app->GetDocPath(L"examples/tutorial-" + language + ".cts"))[0]) {
             return;
         }
 
         language.Truncate(2);
         if (language.Len() == 2 &&
-            !LoadDB(frame->GetDocPath(L"examples/tutorial-" + language + ".cts"))[0]) {
+            !LoadDB(frame->app->GetDocPath(L"examples/tutorial-" + language + ".cts"))[0]) {
             return;
         }
 
-        LoadDB(frame->GetDocPath(L"examples/tutorial.cts"));
+        LoadDB(frame->app->GetDocPath(L"examples/tutorial.cts"));
     }
 
-    void LoadOpRef() { LoadDB(frame->GetDocPath(L"examples/operation-reference.cts")); }
+    void LoadOpRef() { LoadDB(frame->app->GetDocPath(L"examples/operation-reference.cts")); }
 
     Cell *&InitDB(int sizex, int sizey = 0) {
         auto c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
