@@ -35,6 +35,7 @@ struct TSCanvas : public wxScrolledCanvas {
         #endif
         DoPrepareDC(dc);
         doc->Draw(dc);
+        event.Skip();
     };
 
     void InvertBitmap(wxBitmap &bmp) {
@@ -48,12 +49,21 @@ struct TSCanvas : public wxScrolledCanvas {
         }
     }
 
-    void OnScrollToSelectionRequest(wxCommandEvent &event) {
-        doc->ScrollIfSelectionOutOfView(doc->selected);
-        #ifdef __WXMAC__
-            Refresh();
-            Update();
-        #endif
+    void OnScrollToSelectionRequest(wxPaintEvent &event) {
+        if (doc->paintscrolltoselection) {
+            doc->ScrollIfSelectionOutOfView(doc->selected);
+            #ifdef __WXMAC__
+                Refresh();
+                Update();
+            #endif
+            doc->paintscrolltoselection = false;
+        }
+        event.Skip();
+    }
+
+    void OnUpdateStatusBarRequest(wxPaintEvent &event) {
+        frame->UpdateStatus(doc->selected);
+        event.Skip();
     }
 
     void RefreshHover(int mx, int my) {
