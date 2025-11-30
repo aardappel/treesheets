@@ -23,22 +23,16 @@ struct TSApp : wxApp {
 
         exename = GetExecutablePath();
         exepath = wxFileName(exename).GetPath();
-        #ifdef __WXMAC__
+
+        #if defined(__WXMAC__)
             int cut = exepath.Find("/MacOS");
             if (cut > 0) { exepath = exepath.SubString(0, cut) + "/Resources"; }
-        #endif
-
-        #ifdef __WXMAC__
             wxDisableAsserts();
             // wxSystemOptions::SetOption("mac.toolbar.no-native", 1);
-        #endif
-
-        #ifdef __WXMSW__
+        #elif defined(__WXMSW__)
             InitUnhandledExceptionFilter(argc, argv);
             DeclareHiDpiAwareOnWindows();
         #endif
-
-        SetupLanguage();
 
         bool portable = false;
         bool single_instance = true;
@@ -71,8 +65,8 @@ struct TSApp : wxApp {
         }
 
         wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
-
         sys = new System(portable);
+        SetupInternationalization();
         frame = new TSFrame(this);
 
         auto serr = ScriptInit(GetDataPath("scripts/"));
@@ -80,6 +74,7 @@ struct TSApp : wxApp {
             wxLogFatalError(L"Script system could not initialize: %s", serr);
             return false;
         }
+
         if (dump_builtins) {
             TSDumpBuiltinDoc();
             return false;
@@ -88,7 +83,6 @@ struct TSApp : wxApp {
         SetTopWindow(frame);
 
         serv->Create(L"4242");
-
         return true;
     }
 
@@ -118,25 +112,6 @@ struct TSApp : wxApp {
         return 0;
     }
 
-    void SetupLanguage() {
-        wxUILocale::UseDefault();
-
-        #ifdef __WXGTK__
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr");
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr/local");
-            #ifdef LOCALEDIR
-                wxFileTranslationsLoader::AddCatalogLookupPathPrefix(LOCALEDIR);
-            #endif
-            wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(prefix);
-        #endif
-        wxFileTranslationsLoader::AddCatalogLookupPathPrefix(GetDataPath("translations"));
-
-        auto trans = new wxTranslations();
-        trans->AddCatalog("ts");
-        wxTranslations::Set(trans);
-    }
-
     wxString GetExecutablePath() {
         wxString executablepath = argv[0];
         #if defined(__WXMAC__)
@@ -154,6 +129,26 @@ struct TSApp : wxApp {
             }
         #endif
         return executablepath;
+    }
+
+    void SetupInternationalization() {
+        wxUILocale::UseDefault();
+
+        #ifdef __WXGTK__
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr");
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr/local");
+            #ifdef LOCALEDIR
+                wxFileTranslationsLoader::AddCatalogLookupPathPrefix(LOCALEDIR);
+            #endif
+            wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(prefix);
+        #endif
+        wxFileTranslationsLoader::AddCatalogLookupPathPrefix(GetDataPath("translations"));
+
+        auto trans = new wxTranslations();
+        trans->AddCatalog(L"ts");
+
+        wxTranslations::Set(trans);
     }
 
     wxString GetDataPath(const wxString &relpath) {
