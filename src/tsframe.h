@@ -49,8 +49,6 @@ struct TSFrame : wxFrame {
 
         wxLogMessage(L"%s", wxVERSION_STRING);
 
-        wxLogMessage(L"locale: %s", std::setlocale(LC_CTYPE, nullptr));
-
         wxInitAllImageHandlers();
 
         wxIconBundle icons;
