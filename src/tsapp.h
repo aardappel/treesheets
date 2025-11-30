@@ -13,6 +13,7 @@ struct TSApp : wxApp {
     bool initiateventloop {false};
     wxLocale locale;
     wxString exename;
+    wxString exepath;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
 
     bool OnInit() override {
@@ -22,6 +23,11 @@ struct TSApp : wxApp {
         ASSERT(wxUSE_UNICODE);
 
         exename = GetExecutablePath();
+        exepath = wxFileName(exename).GetPath();
+        #ifdef __WXMAC__
+            int cut = exepath_.Find("/MacOS");
+            if (cut > 0) { exepath_ = exepath_.SubString(0, cut) + "/Resources"; }
+        #endif
 
         #ifdef __WXMAC__
             wxDisableAsserts();
