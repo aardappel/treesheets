@@ -11,7 +11,6 @@ struct TSApp : wxApp {
     unique_ptr<IPCServer> serv {make_unique<IPCServer>()};
     wxString filename;
     bool initiateventloop {false};
-    wxLocale locale;
     wxString exename;
     wxString exepath;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
@@ -120,22 +119,22 @@ struct TSApp : wxApp {
     }
 
     void SetupLanguage() {
-        auto language = wxLocale::GetSystemLanguage();
-        if (language == wxLANGUAGE_UNKNOWN || !wxLocale::IsAvailable(language)) {
-            language = wxLANGUAGE_ENGLISH;
-        }
-        locale.Init(language);
+        wxUILocale::UseDefault();
+
         #ifdef __WXGTK__
-            locale.AddCatalogLookupPathPrefix(L"/usr");
-            locale.AddCatalogLookupPathPrefix(L"/usr/local");
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr");
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr/local");
             #ifdef LOCALEDIR
-                locale.AddCatalogLookupPathPrefix(LOCALEDIR);
+                wxFileTranslationsLoader::AddCatalogLookupPathPrefix(LOCALEDIR);
             #endif
             wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
-            locale.AddCatalogLookupPathPrefix(prefix);
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(prefix);
         #endif
-        locale.AddCatalogLookupPathPrefix(GetDataPath("translations"));
-        locale.AddCatalog(L"ts", (wxLanguage)locale.GetLanguage());
+        wxFileTranslationsLoader::AddCatalogLookupPathPrefix(GetDataPath("translations"));
+
+        auto trans = new wxTranslations();
+        wxTranslations::Set(trans);
+        trans->AddCatalog("ts");
     }
 
     wxString GetExecutablePath() {

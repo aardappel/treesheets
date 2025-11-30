@@ -55,6 +55,8 @@
 #include <wx/sysopt.h>
 #include <wx/taskbar.h>
 #include <wx/timectrl.h>
+#include <wx/translation.h>
+#include <wx/uilocale.h>
 #include <wx/xml/xml.h>
 
 #include <algorithm>
