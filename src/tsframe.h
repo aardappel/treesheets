@@ -1091,6 +1091,10 @@ struct TSFrame : wxFrame {
         }
     }
 
+    void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
+        if (TSCanvas *canvas = GetCurrentTab()) UpdateStatus(canvas->doc->selected);
+    }
+
     void OnSearch(wxCommandEvent &ce) {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
