@@ -1092,7 +1092,8 @@ struct TSFrame : wxFrame {
     }
 
     void OnUpdateStatusBarRequest(wxCommandEvent &ce) {
-        if (TSCanvas *canvas = GetCurrentTab()) UpdateStatus(canvas->doc->selected);
+        TSCanvas *canvas = GetCurrentTab();
+        if (canvas && canvas->doc->selected.grid) UpdateStatus(canvas->doc->selected);
     }
 
     void OnSearch(wxCommandEvent &ce) {
