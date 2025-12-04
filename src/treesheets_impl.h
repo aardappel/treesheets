@@ -77,6 +77,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return current->grid ? icoord(current->grid->xs, current->grid->ys) : icoord(0, 0);
     }
 
+    int GetColWidth() { return current->parent ? current->parent->grid->GetColWidth(current) : 0; }
+
     ibox SelectionBox() {
         auto &selection = document->selected;
         return selection.grid ? ibox(icoord(selection.x, selection.y), icoord(selection.xs, selection.ys))

@@ -198,6 +198,11 @@ nfr("is_tag", "", "", "B", "whether the current cell text is a tag",
     [](StackPtr &, VM &) {
         return Value(si->IsTag());
     });
+
+nfr("get_column_width", "", "", "I", "get the column width of the current cell",
+    [](StackPtr &, VM &) {
+        return Value(si->GetColWidth());
+    });
 }
 
 NativeRegistry natreg;  // FIXME: global.
