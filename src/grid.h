@@ -1062,6 +1062,14 @@ struct Grid {
         return 0;
     }
 
+    void SetColWidth(Cell *ct, int w) {
+        foreachcell(c) {
+            if (c == ct) {
+                colwidths[x] = w;
+                return;
+            }
+        }
+    }
 
     void CollectCells(auto &itercells) { foreachcell(c) c->CollectCells(itercells); }
     void CollectCellsSel(auto &itercells, const Selection &sel, bool recurse) {
