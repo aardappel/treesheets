@@ -203,6 +203,12 @@ nfr("get_column_width", "", "", "I", "get the column width of the current cell",
     [](StackPtr &, VM &) {
         return Value(si->GetColWidth());
     });
+
+nfr("set_column_width", "width", "I", "", "set the column width of the current cell",
+    [](StackPtr &, VM &, Value w) {
+        si->SetColWidth(w.intval());
+        return NilVal();
+    });
 }
 
 NativeRegistry natreg;  // FIXME: global.
