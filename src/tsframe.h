@@ -1079,6 +1079,7 @@ struct TSFrame : wxFrame {
         auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         SetStatus();
         sys->TabChange(canvas->doc);
+        nbe.Skip();
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
