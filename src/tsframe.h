@@ -1089,6 +1089,8 @@ struct TSFrame : wxFrame {
             Close();
         } else if (canvas->doc->CloseDocument()) {
             nbe.Veto();
+        } else {
+            nbe.Skip();
         }
     }
 
