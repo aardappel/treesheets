@@ -611,9 +611,7 @@ struct Document {
         wxQueueEvent(canvas->frame, new wxCommandEvent(UPDATE_STATUSBAR_REQUEST));
         if (paintscrolltoselection) {
             wxQueueEvent(canvas, new wxCommandEvent(SCROLLTOSELECTION_REQUEST));
-            while (paintscrolltoselection) {
-                // wait
-            }
+            paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
