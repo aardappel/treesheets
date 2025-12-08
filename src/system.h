@@ -8,6 +8,7 @@ struct System {
         #endif
     };
     wxString defaultfixedfont {L"Courier New"};
+    wxString defaultlang {wxEmptyString};
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
     Evaluator evaluator;
@@ -74,6 +75,7 @@ struct System {
         autohtmlexport = static_cast<int>(cfg->Read(L"autohtmlexport", autohtmlexport));
         defaultfont = cfg->Read(L"defaultfont", defaultfont);
         defaultfixedfont = cfg->Read(L"defaultfixedfont", defaultfixedfont);
+        defaultlang = cfg->Read(L"defaultlang", defaultlang);
         cfg->Read(L"defaultmaxcolwidth", &defaultmaxcolwidth, defaultmaxcolwidth);
         cfg->Read(L"makebaks", &makebaks, makebaks);
         cfg->Read(L"totray", &totray, totray);
