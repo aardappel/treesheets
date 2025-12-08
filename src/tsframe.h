@@ -563,6 +563,7 @@ struct TSFrame : wxFrame {
                  _(L"Set the font the typewriter text is displayed with."));
         MyAppend(optmenu, A_CUSTKEY, _(L"Key bindings..."),
                  _(L"Change the key binding of a menu item"));
+        MyAppend(optmenu, A_SETLANG, _(L"Change language..."), _(L"Change interface language"));
         MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _(L"Default column width..."),
                  _(L"Set the default column width for a new grid"));
         optmenu->AppendSeparator();

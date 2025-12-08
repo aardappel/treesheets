@@ -1268,6 +1268,20 @@ struct Document {
                 }
                 return _(L"Keybinding cancelled.");
             }
+
+            case A_SETLANG: {
+                auto trans = wxTranslations::Get();
+                if (!trans) return _(L"Failed to get translation.");
+                wxArrayString langs = trans->GetAvailableTranslations(L"ts");
+                langs.Insert(wxEmptyString, 0);
+                wxSingleChoiceDialog choice(
+                    sys->frame, _(L"Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."),
+                    _(L"Available languages"), langs);
+                if (choice.ShowModal() == wxID_OK) {
+                    sys->cfg->Write(L"defaultlang", choice.GetStringSelection());
+                }
+                return nullptr;
+            }
         }
 
         if (!selected.grid) return NoSel();
