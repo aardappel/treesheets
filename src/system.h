@@ -132,7 +132,8 @@ struct System {
     }
 
     void LoadTutorial() {
-        auto language = wxUILocale::GetLanguageCanonicalName(wxUILocale::GetSystemLanguage());
+        auto trans = wxTranslations::Get();
+        auto language = trans ? trans->GetBestTranslation(L"ts") : wxString(L"");
 
         if (language.Len() == 5 &&
             !LoadDB(frame->app->GetDocPath(L"examples/tutorial-" + language + ".cts"))[0]) {
