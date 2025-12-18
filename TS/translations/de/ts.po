@@ -274,7 +274,7 @@ msgid "Autosave load"
 msgstr "Automatische Sicherungskopien laden"
 
 msgid "Available languages"
-msgstr ""
+msgstr "Verfügbare Sprachen"
 
 msgid "Background color..."
 msgstr "Hintergrundfarbe"
@@ -346,10 +346,10 @@ msgid "Cell "
 msgstr "Zelle "
 
 msgid "Change interface language"
-msgstr ""
+msgstr "Benutzeroberflächensprache ändern"
 
 msgid "Change language..."
-msgstr ""
+msgstr "Sprache ändern..."
 
 msgid "Change the image(s) scale to match DPI of the current display. Applies to all uses of this image."
 msgstr "Die Bildskalierung ändern, um mit der DPI der aktuellen Anzeige übereinzustimmen. Dies wird bei allen Benutzungen dieses Bildes angewendet."
@@ -1068,7 +1068,7 @@ msgid "Please select the datetime range."
 msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
 
 msgid "Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."
-msgstr ""
+msgstr "Bitte wählen Sie die Sprache für die Benutzeroberfläche aus (benötigt einen Neustart). Bitte wählen Sie die leere Zeile aus, wenn Sie die Standardsprache des Systems nutzen möchten."
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Bitte wählen Sie das Skript aus, das sie aus der Liste entfernen möchten:"
