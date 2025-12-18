@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-15 16:22+0100\n"
+"POT-Creation-Date: 2025-12-09 00:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -271,6 +271,9 @@ msgstr ""
 msgid "Autosave load"
 msgstr ""
 
+msgid "Available languages"
+msgstr ""
+
 msgid "Background color..."
 msgstr ""
 
@@ -342,6 +345,12 @@ msgid "Case-sensitive search"
 msgstr ""
 
 msgid "Cell "
+msgstr ""
+
+msgid "Change interface language"
+msgstr ""
+
+msgid "Change language..."
 msgstr ""
 
 msgid ""
@@ -648,6 +657,9 @@ msgid "Extend Selection to End"
 msgstr ""
 
 msgid "Extend Selection to Start"
+msgstr ""
+
+msgid "Failed to get translation."
 msgstr ""
 
 msgid "Faster line rendering"
@@ -1089,6 +1101,9 @@ msgid "Please select file(s) to import:"
 msgstr ""
 
 msgid "Please select the datetime range."
+msgstr ""
+
+msgid "Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."
 msgstr ""
 
 msgid "Please select the script you want to remove from the list:"
