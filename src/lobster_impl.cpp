@@ -137,6 +137,9 @@ nfr("set_border_color", "color", "F}:4", "", "sets the border color of the curre
         si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
+nfr("get_relative_size", "", "", "I", "return the relative text size",
+    [](StackPtr &, VM &) { return Value(si->GetRelativeSize()); });
+
 nfr("set_relative_size", "size", "I", "",
     "sets the relative size (0 is normal, -1 is smaller etc.) of the current cell",
     [](StackPtr &, VM &, Value s) {
@@ -209,9 +212,6 @@ nfr("set_column_width", "width", "I", "", "set the column width of the current c
         si->SetColWidth(w.intval());
         return NilVal();
     });
-
-nfr("get_relsize", "", "", "I", "return the relative text size",
-    [](StackPtr &, VM &) { return Value(si->GetRelSize()); });
 }
 
 NativeRegistry natreg;  // FIXME: global.
