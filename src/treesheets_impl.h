@@ -166,9 +166,11 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         }
     }
 
+    int GetRelativeSize() { return -current->text.relsize; }
+
     void SetRelativeSize(int relsize) {
         AddUndoIfNecessary();
-        current->text.relsize = relsize;
+        current->text.relsize = -relsize;
     }
 
     void SetStyle(int stylebits) {
@@ -200,8 +202,6 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     int64_t GetLastEdit() { return current->text.lastedit.GetValue().GetValue(); }
 
     bool IsTag() { return current->IsTag(document); }
-
-    int GetRelSize() { return -current->text.relsize; }
 };
 
 static int64_t TreeSheetsLoader(string_view_nt absfilename, std::string *dest, int64_t start,

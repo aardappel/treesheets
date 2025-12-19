@@ -27,6 +27,7 @@ struct ScriptInterface {
     virtual void SetTextFiltered(bool filtered) = 0;
     virtual bool IsTextFiltered() = 0;
     virtual void SetBorderColor(uint32_t col) = 0;
+    virtual int GetRelativeSize() = 0;
     virtual void SetRelativeSize(int s) = 0;
     virtual void SetStyle(int s) = 0;
     virtual int GetStyle() = 0;
@@ -38,7 +39,6 @@ struct ScriptInterface {
     virtual std::string GetFileName() = 0;
     virtual int64_t GetLastEdit() = 0;
     virtual bool IsTag() = 0;
-    virtual int GetRelSize() = 0;
     virtual ~ScriptInterface() {};
 };
 
