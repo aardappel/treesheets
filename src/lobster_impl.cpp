@@ -137,7 +137,7 @@ nfr("set_border_color", "color", "F}:4", "", "sets the border color of the curre
         si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
     });
 
-nfr("get_relative_size", "", "", "I", "return the relative text size",
+nfr("get_relative_size", "", "", "I", "returns the relative text size of the current cell",
     [](StackPtr &, VM &) { return Value(si->GetRelativeSize()); });
 
 nfr("set_relative_size", "size", "I", "",
