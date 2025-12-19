@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-15 16:22+0100\n"
-"PO-Revision-Date: 2025-11-16 05:32+0900\n"
+"POT-Creation-Date: 2025-12-09 00:00+0100\n"
+"PO-Revision-Date: 2025-12-19 13:21+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -275,6 +275,9 @@ msgstr "자동 저장"
 msgid "Autosave load"
 msgstr "자동 저장 로드"
 
+msgid "Available languages"
+msgstr "사용 가능한 언어"
+
 msgid "Background color..."
 msgstr "배경 색상..."
 
@@ -350,6 +353,12 @@ msgstr "대소문자 구분 검색"
 
 msgid "Cell "
 msgstr "셀 "
+
+msgid "Change interface language"
+msgstr "인터페이스 언어 변경"
+
+msgid "Change language..."
+msgstr "언어 변경..."
 
 msgid ""
 "Change the image(s) scale to match DPI of the current display. Applies to "
@@ -682,6 +691,9 @@ msgstr "선택을 끝까지 확장"
 
 msgid "Extend Selection to Start"
 msgstr "선택을 시작으로 확장"
+
+msgid "Failed to get translation."
+msgstr "번역을 가져오는 데 실패했습니다."
 
 msgid "Faster line rendering"
 msgstr "더 빠른 선 렌더링"
@@ -1130,6 +1142,13 @@ msgstr "가져올 파일을 선택하세요:"
 
 msgid "Please select the datetime range."
 msgstr "날짜 범위를 선택해 주세요."
+
+msgid ""
+"Please select the language for the interface (requires restart). Please "
+"select the empty row if you want to use the default language."
+msgstr ""
+"인터페이스 언어를 선택해 주세요 (재시작 필요). 기본 언어를 사용하려면 빈 행"
+"을 선택해 주세요."
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "목록에서 제거하려는 스크립트를 선택하세요:"
