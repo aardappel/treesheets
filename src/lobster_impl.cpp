@@ -209,6 +209,9 @@ nfr("set_column_width", "width", "I", "", "set the column width of the current c
         si->SetColWidth(w.intval());
         return NilVal();
     });
+
+nfr("get_relsize", "", "", "I", "return the relative text size",
+    [](StackPtr &, VM &) { return Value(si->GetRelSize()); });
 }
 
 NativeRegistry natreg;  // FIXME: global.
