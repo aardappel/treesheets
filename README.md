@@ -2,7 +2,7 @@
   <img src="https://github.com/user-attachments/assets/1d6dc57a-5db2-48ce-82b9-5e7675bf0e7d">
 </p>
 
-TreeSheets is a "hierarchical spreadsheet" that is a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
+TreeSheets ([https://strlen.com/treesheets/](https://strlen.com/treesheets/)) is a "hierarchical spreadsheet" that is a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
 
 Suitable for any kind of data organization, such as todo lists, calendars, project management, brainstorming, organizing ideas, planning, requirements gathering, presentation of information, etc.
 
