@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: cache build
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: _build/_deps
         key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
@@ -76,7 +76,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: cache build
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: _build
         key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
@@ -121,7 +121,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: cache build
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: _build/_deps
         key: ${{ runner.os }}-cmake-03-build-${{ hashFiles('CMakeLists.txt') }}
