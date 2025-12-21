@@ -82,7 +82,7 @@ jobs:
         key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ runner.os }}-cmake-02-build
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v2
     - name: cmake
       run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
     - name: build and package
