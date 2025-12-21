@@ -30,7 +30,6 @@ struct TSApp : wxApp {
             wxDisableAsserts();
             // wxSystemOptions::SetOption("mac.toolbar.no-native", 1);
         #elif defined(__WXMSW__)
-            InitUnhandledExceptionFilter(argc, argv);
             DeclareHiDpiAwareOnWindows();
         #endif
 

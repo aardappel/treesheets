@@ -84,10 +84,6 @@
 #include "threadpool.h"
 #include "tools.h"
 
-#ifdef _WIN32
-    #include "StackWalkerHelpers.h"
-#endif
-
 #ifdef __WXMAC__
     #include <mach-o/dyld.h>
 #endif
