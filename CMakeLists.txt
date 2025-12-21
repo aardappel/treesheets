@@ -55,7 +55,7 @@ if (WITH_CLANG_TIDY)
     set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 endif()
 
-### Libraries (lobster, lobster-impl, StackWalker)
+### Libraries (lobster, lobster-impl)
 
 ## lobster (script interpreter)
 
@@ -71,8 +71,12 @@ add_library(lobster STATIC
     ${lobster_SOURCE_DIR}/dev/src/vm.cpp
     ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
     ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
-    ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c
-)
+    ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c)
+if(WIN32)
+    target_sources(lobster PRIVATE
+        ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalker.cpp
+        ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalkerHelpers.cpp)
+endif()
 target_include_directories(lobster PRIVATE
     ${lobster_SOURCE_DIR}/dev/src
     ${lobster_SOURCE_DIR}/dev/include
@@ -87,18 +91,9 @@ target_include_directories(lobster-impl PRIVATE
     ${lobster_SOURCE_DIR}/dev/include)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
-## StackWalker (only on Windows)
-
-if(WIN32)
-    add_library(StackWalker STATIC 
-        thirdparty/StackWalker/StackWalker.cpp
-        thirdparty/StackWalker/StackWalkerHelpers.cpp)
-    target_include_directories(StackWalker PRIVATE thirdparty/StackWalker)
-endif()
-
 ### TreeSheets executable
 
-set(treesheets_sources
+add_executable(TreeSheets
     src/main.cpp
     # The header files are included in order to make them appear in IDEs
     src/cell.h
@@ -116,14 +111,13 @@ set(treesheets_sources
     src/system.h
     src/text.h
     src/threadpool.h
-    src/tools.h
-)
+    src/tools.h)
 
 if(WIN32)
-    list(APPEND treesheets_sources platform/win/icon.rc)
+    target_sources(TreeSheets PRIVATE
+        platform/win/icon.rc)
 endif()
 
-add_executable(TreeSheets ${treesheets_sources})
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
 
 if(APPLE)
@@ -144,12 +138,8 @@ endif()
 
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
-## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
-set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net lobster-impl)
-if(WIN32)
-    list(APPEND TREESHEETS_LIBS StackWalker)
-endif()
-target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
+## Link wxWidgets and lobster-impl into TreeSheets
+target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net lobster-impl)
 
 ### Installation
 
