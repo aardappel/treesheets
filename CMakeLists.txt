@@ -41,7 +41,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     lobster
     GIT_REPOSITORY https://github.com/aardappel/lobster
-    GIT_TAG v2025.4
+    GIT_TAG 628b632249fa9deff56e1921ef1374a83eadf43e
     GIT_SHALLOW ON
 )
 FetchContent_MakeAvailable(wxwidgets lobster)
@@ -82,6 +82,11 @@ target_include_directories(lobster PRIVATE
     ${lobster_SOURCE_DIR}/dev/include
     ${lobster_SOURCE_DIR}/dev/external
     ${lobster_SOURCE_DIR}/dev/external/libtcc)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64")
+    set_source_files_properties(${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c
+        PROPERTIES COMPILE_DEFINITIONS "TCC_TARGET_ARM64=1;TCC_IS_NATIVE=1")
+endif()
 
 ## lobster-impl (provider of TreeSheets functions in lobster)
 
