@@ -44,12 +44,16 @@ FetchContent_Declare(
     GIT_TAG v2025.4
     GIT_SHALLOW ON
 )
-FetchContent_Declare(
-    stackwalker
-    GIT_REPOSITORY https://github.com/JochenKalmbach/StackWalker
-    GIT_TAG 2023-06-24
-    GIT_SHALLOW ON)
-FetchContent_MakeAvailable(wxwidgets lobster stackwalker)
+if(WIN32)
+    FetchContent_Declare(
+        stackwalker
+        GIT_REPOSITORY https://github.com/JochenKalmbach/StackWalker
+        GIT_TAG 2023-06-24
+        GIT_SHALLOW ON)
+    FetchContent_MakeAvailable(wxwidgets lobster stackwalker)
+else()
+    FetchContent_MakeAvailable(wxwidgets lobster)
+endif()
 
 ### Options
 
