@@ -101,7 +101,7 @@ target_link_libraries(lobster-impl PRIVATE lobster)
 if(WIN32)
     add_library(TStackWalker STATIC
         ${stackwalker_SOURCE_DIR}/Main/StackWalker/StackWalker.cpp)
-    target_include_directories(TStackWalker PRIVATE
+    target_include_directories(TStackWalker PUBLIC
         ${stackwalker_SOURCE_DIR}/Main/StackWalker)
 endif()
 
