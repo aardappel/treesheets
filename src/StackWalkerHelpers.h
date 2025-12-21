@@ -10,7 +10,7 @@
  *
  **********************************************************************/
 
-#include "stackwalker.h"
+#include "StackWalker.h"
 #include <stdio.h>
 #include <tchar.h>
 
