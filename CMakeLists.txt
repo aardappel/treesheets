@@ -44,7 +44,12 @@ FetchContent_Declare(
     GIT_TAG v2025.4
     GIT_SHALLOW ON
 )
-FetchContent_MakeAvailable(wxwidgets lobster)
+FetchContent_Declare(
+    stackwalker
+    GIT_REPOSITORY https://github.com/JochenKalmbach/StackWalker
+    GIT_TAG 2023-06-24
+    GIT_SHALLOW ON)
+FetchContent_MakeAvailable(wxwidgets lobster stackwalker)
 
 ### Options
 
@@ -86,15 +91,6 @@ target_include_directories(lobster-impl PRIVATE
     ${lobster_SOURCE_DIR}/dev/src
     ${lobster_SOURCE_DIR}/dev/include)
 target_link_libraries(lobster-impl PRIVATE lobster)
-
-## StackWalker (only on Windows)
-
-if(WIN32)
-    add_library(StackWalker STATIC 
-        thirdparty/StackWalker/StackWalker.cpp
-        thirdparty/StackWalker/StackWalkerHelpers.cpp)
-    target_include_directories(StackWalker PRIVATE thirdparty/StackWalker)
-endif()
 
 ### TreeSheets executable
 
