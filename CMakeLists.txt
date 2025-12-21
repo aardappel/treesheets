@@ -96,6 +96,15 @@ target_include_directories(lobster-impl PRIVATE
     ${lobster_SOURCE_DIR}/dev/include)
 target_link_libraries(lobster-impl PRIVATE lobster)
 
+## StackWalker (only on Windows)
+
+if(WIN32)
+    add_library(TStackWalker STATIC
+        ${stackwalker_SOURCE_DIR}/Main/StackWalker/StackWalker.cpp)
+    target_include_directories(TStackWalker PRIVATE
+        ${stackwalker_SOURCE_DIR}/Main/StackWalker)
+endif()
+
 ### TreeSheets executable
 
 set(treesheets_sources
@@ -147,7 +156,7 @@ target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 ## Link wxWidgets, lobster-impl and StackWalker into TreeSheets
 set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net lobster-impl)
 if(WIN32)
-    list(APPEND TREESHEETS_LIBS StackWalker)
+    list(APPEND TREESHEETS_LIBS TStackWalker)
 endif()
 target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 
