@@ -1009,14 +1009,16 @@ struct Document {
                 #endif
                 return nullptr;
 
-            case A_SCRIPTREFERENCE:
-                #ifdef __WXMAC__
-                    wxLaunchDefaultBrowser(L"file://" +
-                                       sys->frame->app->GetDocPath(L"docs/script_reference.html"));  // RbrtPntn
-                #else
-                    wxLaunchDefaultBrowser(sys->frame->app->GetDocPath(L"docs/script_reference.html"));
-                #endif
-                return nullptr;
+            #ifdef ENABLE_LOBSTER
+                case A_SCRIPTREFERENCE:
+                    #ifdef __WXMAC__
+                        wxLaunchDefaultBrowser(L"file://" +
+                                           sys->frame->app->GetDocPath(L"docs/script_reference.html"));  // RbrtPntn
+                    #else
+                        wxLaunchDefaultBrowser(sys->frame->app->GetDocPath(L"docs/script_reference.html"));
+                    #endif
+                    return nullptr;
+            #endif
 
             case A_ZOOMIN:
                 return Wheel(1, false, true,

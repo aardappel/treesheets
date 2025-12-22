@@ -68,14 +68,18 @@ struct TSApp : wxApp {
         SetupInternationalization();
         frame = new TSFrame(this);
 
-        auto serr = ScriptInit(GetDataPath("scripts/"));
-        if (!serr.empty()) {
-            wxLogFatalError(L"Script system could not initialize: %s", serr);
-            return false;
-        }
+        #ifdef ENABLE_LOBSTER
+            auto serr = ScriptInit(GetDataPath("scripts/"));
+            if (!serr.empty()) {
+                wxLogFatalError(L"Script system could not initialize: %s", serr);
+                return false;
+            }
+        #endif
 
         if (dump_builtins) {
-            TSDumpBuiltinDoc();
+            #ifdef ENABLE_LOBSTER
+                TSDumpBuiltinDoc();
+            #endif
             return false;
         }
 

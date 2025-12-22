@@ -4,7 +4,9 @@ struct TSFrame : wxFrame {
     wxTaskBarIcon taskbaricon;
     wxMenu *editmenupopup;
     wxFileHistory filehistory;
-    wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
+    #ifdef ENABLE_LOBSTER
+        wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
+    #endif
     wxFileSystemWatcher *watcher;
     wxAuiNotebook *notebook {nullptr};
     wxAuiManager aui {this};
@@ -96,10 +98,12 @@ struct TSFrame : wxFrame {
         sys->cfg->Read(L"lefttabs", &lefttabs, true);
 
         filehistory.Load(*sys->cfg);
-        auto oldpath = sys->cfg->GetPath();
-        sys->cfg->SetPath("/scripts");
-        scripts.Load(*sys->cfg);
-        sys->cfg->SetPath(oldpath);
+        #ifdef ENABLE_LOBSTER
+            auto oldpath = sys->cfg->GetPath();
+            sys->cfg->SetPath("/scripts");
+            scripts.Load(*sys->cfg);
+            sys->cfg->SetPath(oldpath);
+        #endif
 
         #ifdef __WXMAC__
             #define CTRLORALT "CTRL"
@@ -630,23 +634,25 @@ struct TSFrame : wxFrame {
         optmenu->Check(A_INVERTRENDER, sys->followdarkmode);
         optmenu->AppendSubMenu(roundmenu, _(L"&Roundness of grid borders"));
 
-        auto scriptmenu = new wxMenu();
-        MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add...") + L"\tCTRL+ALT+L",
-                 _(L"Add Lobster scripts to the menu"));
-        MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove...") + L"\tCTRL+SHIFT+ALT+L",
-                 _(L"Remove script from list in the menu"));
-        scripts.UseMenu(scriptmenu);
-        scripts.SetMenuPathStyle(wxFH_PATH_SHOW_NEVER);
-        scripts.AddFilesToMenu();
+        #ifdef ENABLE_LOBSTER
+            auto scriptmenu = new wxMenu();
+            MyAppend(scriptmenu, A_ADDSCRIPT, _(L"Add...") + L"\tCTRL+ALT+L",
+                     _(L"Add Lobster scripts to the menu"));
+            MyAppend(scriptmenu, A_DETSCRIPT, _(L"Remove...") + L"\tCTRL+SHIFT+ALT+L",
+                     _(L"Remove script from list in the menu"));
+            scripts.UseMenu(scriptmenu);
+            scripts.SetMenuPathStyle(wxFH_PATH_SHOW_NEVER);
+            scripts.AddFilesToMenu();
 
-        auto scriptpath = app->GetDataPath("scripts/");
-        auto sf = wxFindFirstFile(scriptpath + L"*.lobster");
-        int sidx = 0;
-        while (!sf.empty()) {
-            auto fn = wxFileName::FileName(sf).GetFullName();
-            scripts.AddFileToHistory(fn);
-            sf = wxFindNextFile();
-        }
+            auto scriptpath = app->GetDataPath("scripts/");
+            auto sf = wxFindFirstFile(scriptpath + L"*.lobster");
+            int sidx = 0;
+            while (!sf.empty()) {
+                auto fn = wxFileName::FileName(sf).GetFullName();
+                scripts.AddFileToHistory(fn);
+                sf = wxFindNextFile();
+            }
+        #endif
 
         auto markmenu = new wxMenu();
         MyAppend(markmenu, A_MARKDATA, _(L"&Data") + L"\tCTRL+ALT+D");
@@ -671,8 +677,10 @@ struct TSFrame : wxFrame {
         helpmenu->AppendSeparator();
         MyAppend(helpmenu, A_TUTORIALWEBPAGE, _(L"Tutorial &web page"),
                  _(L"Open the tutorial web page in browser"));
-        MyAppend(helpmenu, A_SCRIPTREFERENCE, _(L"&Script reference"),
+        #ifdef ENABLE_LOBSTER
+            MyAppend(helpmenu, A_SCRIPTREFERENCE, _(L"&Script reference"),
                  _(L"Open the Lobster script reference in browser"));
+        #endif
 
         wxAcceleratorEntry entries[3];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
@@ -687,7 +695,9 @@ struct TSFrame : wxFrame {
         menubar->Append(semenu, _(L"&Search"));
         menubar->Append(viewmenu, _(L"&View"));
         menubar->Append(optmenu, _(L"&Options"));
-        menubar->Append(scriptmenu, _(L"S&cript"));
+        #ifdef ENABLE_LOBSTER
+            menubar->Append(scriptmenu, _(L"S&cript"));
+        #endif
         menubar->Append(langmenu, _(L"&Program"));
         menubar->Append(helpmenu,
                         #ifdef __WXMAC__
@@ -963,26 +973,28 @@ struct TSFrame : wxFrame {
                 break;
             }
 
-            case A_ADDSCRIPT: {
-                wxArrayString filenames;
-                GetFilesFromUser(filenames, this, _(L"Please select Lobster script file(s):"),
-                                 _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"));
-                for (auto &filename : filenames) scripts.AddFileToHistory(filename);
-                break;
-            }
-
-            case A_DETSCRIPT: {
-                wxArrayString filenames;
-                for (int i = 0, n = scripts.GetCount(); i < n; i++) {
-                    filenames.Add(scripts.GetHistoryFile(i));
+            #ifdef ENABLE_LOBSTER
+                case A_ADDSCRIPT: {
+                    wxArrayString filenames;
+                    GetFilesFromUser(filenames, this, _(L"Please select Lobster script file(s):"),
+                                     _(L"Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"));
+                    for (auto &filename : filenames) scripts.AddFileToHistory(filename);
+                    break;
                 }
-                auto dialog = wxSingleChoiceDialog(
-                    this, _(L"Please select the script you want to remove from the list:"),
-                    _(L"Remove script from list..."), filenames);
-                if (dialog.ShowModal() == wxID_OK)
-                    scripts.RemoveFileFromHistory(dialog.GetSelection());
-                break;
-            }
+
+                case A_DETSCRIPT: {
+                    wxArrayString filenames;
+                    for (int i = 0, n = scripts.GetCount(); i < n; i++) {
+                        filenames.Add(scripts.GetHistoryFile(i));
+                    }
+                    auto dialog = wxSingleChoiceDialog(
+                        this, _(L"Please select the script you want to remove from the list:"),
+                        _(L"Remove script from list..."), filenames);
+                    if (dialog.ShowModal() == wxID_OK)
+                        scripts.RemoveFileFromHistory(dialog.GetSelection());
+                    break;
+                }
+            #endif
 
             case A_DEFAULTMAXCOLWIDTH: {
                 int w = wxGetNumberFromUser(_(L"Please enter the default column width:"),
@@ -1062,13 +1074,18 @@ struct TSFrame : wxFrame {
                 if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
                     wxString filename(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
                     SetStatus(sys->Open(filename));
-                } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
-                    SetStatus(canvas->doc->TagSet(ce.GetId() - A_TAGSET));
-                } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                    auto message =
-                        tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
-                    message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
-                    SetStatus(wxString(message));
+                #ifdef ENABLE_LOBSTER
+                    } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
+                        SetStatus(canvas->doc->TagSet(ce.GetId() - A_TAGSET));
+                    } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
+                        auto message =
+                            tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
+                        message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
+                        SetStatus(wxString(message));
+                #else
+                    } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_MAXACTION) {
+                        SetStatus(canvas->doc->TagSet(ce.GetId() - A_TAGSET));
+                #endif
                 } else {
                     SetStatus(canvas->doc->Action(ce.GetId()));
                     break;
@@ -1194,10 +1211,12 @@ struct TSFrame : wxFrame {
         }
         sys->every_second_timer.Stop();
         filehistory.Save(*sys->cfg);
-        auto oldpath = sys->cfg->GetPath();
-        sys->cfg->SetPath("/scripts");
-        scripts.Save(*sys->cfg);
-        sys->cfg->SetPath(oldpath);
+        #ifdef ENABLE_LOBSTER
+            auto oldpath = sys->cfg->GetPath();
+            sys->cfg->SetPath("/scripts");
+            scripts.Save(*sys->cfg);
+            sys->cfg->SetPath(oldpath);
+        #endif
         if (!IsIconized()) {
             sys->cfg->Write(L"maximized", IsMaximized());
             if (!IsMaximized()) {

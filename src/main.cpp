@@ -90,7 +90,9 @@ enum {
     A_IMPTXTS,
     A_IMPTXTT,
     A_TUTORIALWEBPAGE,
-    A_SCRIPTREFERENCE,
+    #ifdef ENABLE_LOBSTER
+        A_SCRIPTREFERENCE,
+    #endif
     A_MARKVARD,
     A_MARKVARU,
     A_SHOWSBAR,
@@ -242,12 +244,16 @@ enum {
     A_AUTOEXPORT_HTML_WITHOUT_IMAGES,
     A_DRAGANDDROP,
     A_DEFAULTMAXCOLWIDTH,
-    A_ADDSCRIPT,
-    A_DETSCRIPT,
+    #ifdef ENABLE_LOBSTER
+        A_ADDSCRIPT,
+        A_DETSCRIPT,
+    #endif
     A_SET_FIXED_FONT,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
-    A_SCRIPT = 2000,  // and all values from here on
+    #ifdef ENABLE_LOBSTER
+        A_SCRIPT = 2000,  // and all values from here on
+    #endif
     A_MAXACTION = 3000
 };
 
@@ -261,38 +267,44 @@ enum {
 
 enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 
-// script_interface.h is both used by TreeSheets and lobster-impl
-// and uses data types that are already defined by lobster.
+#ifdef ENABLE_LOBSTER
 
-// Define these data types separately on the TreeSheets side here
-// to avoid redefinitions.
+    // script_interface.h is both used by TreeSheets and lobster-impl
+    // and uses data types that are already defined by lobster.
 
-struct string_view_nt {
-    string_view sv;
-    string_view_nt(const string &s) : sv(s) {}
-    explicit string_view_nt(const char *s) : sv(s) {}
-    explicit string_view_nt(string_view osv) : sv(osv) { check_null_terminated(); }
-    void check_null_terminated() const { assert(!sv.data()[sv.size()]); }
-    size_t size() const { return sv.size(); }
-    const char *data() const { return sv.data(); }
-    const char *c_str() const {
-        check_null_terminated();  // Catch appends to parent buffer since construction.
-        return sv.data();
-    }
-};
+    // Define these data types separately on the TreeSheets side here
+    // to avoid redefinitions.
 
-using FileLoader = int64_t (*)(string_view_nt absfilename, std::string *dest, int64_t start,
-                               int64_t len);
+    struct string_view_nt {
+        string_view sv;
+        string_view_nt(const string &s) : sv(s) {}
+        explicit string_view_nt(const char *s) : sv(s) {}
+        explicit string_view_nt(string_view osv) : sv(osv) { check_null_terminated(); }
+        void check_null_terminated() const { assert(!sv.data()[sv.size()]); }
+        size_t size() const { return sv.size(); }
+        const char *data() const { return sv.data(); }
+        const char *c_str() const {
+            check_null_terminated();  // Catch appends to parent buffer since construction.
+            return sv.data();
+        }
+    };
 
-#include "script_interface.h"
+    using FileLoader = int64_t (*)(string_view_nt absfilename, std::string *dest, int64_t start,
+                                   int64_t len);
 
-using namespace script;
+    #include "script_interface.h"
+
+    using namespace script;
+
+#endif
 
 wxDEFINE_EVENT(UPDATE_STATUSBAR_REQUEST, wxCommandEvent);
 wxDEFINE_EVENT(SCROLLTOSELECTION_REQUEST, wxCommandEvent);
 
 struct treesheets {
-    struct TreeSheetsScriptImpl;
+    #ifdef ENABLE_LOBSTER
+        struct TreeSheetsScriptImpl;
+    #endif
 
     struct Image;
     struct Text;
@@ -309,7 +321,9 @@ struct treesheets {
 
     static System *sys;
 
-    #include "treesheets_impl.h"
+    #ifdef ENABLE_LOBSTER
+        #include "treesheets_impl.h"
+    #endif
 
     #include "image.h"
     #include "text.h"
@@ -328,7 +342,9 @@ struct treesheets {
 };
 
 treesheets::System *treesheets::sys = nullptr;
-treesheets::TreeSheetsScriptImpl treesheets::tssi;
+#ifdef ENABLE_LOBSTER
+    treesheets::TreeSheetsScriptImpl treesheets::tssi;
+#endif
 
 IMPLEMENT_APP(treesheets::TSApp)
 
