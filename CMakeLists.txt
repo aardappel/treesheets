@@ -255,19 +255,21 @@ elseif(WIN32)
     set(CPACK_GENERATOR "INNOSETUP" "ZIP")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CMAKE_PROJECT_NAME})
     set(CPACK_PACKAGE_EXECUTABLES "TreeSheets" "TreeSheets")
+    if(CMAKE_VS_PLATFORM_NAME STREQUAL "ARM64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64|arm64")
+        set(CPACK_INNOSETUP_SETUP_ArchitecturesAllowed "arm64")
+        set(ARCH_NAME "arm64")
+    else()
+        set(CPACK_INNOSETUP_SETUP_ArchitecturesAllowed "x64compatible")
+        set(ARCH_NAME "x64")
+    endif()
+    set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${ARCH_NAME}")
     set(CPACK_INNOSETUP_RUN_EXECUTABLES "TreeSheets")
     set(CPACK_INNOSETUP_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
     set(CPACK_INNOSETUP_LANGUAGES
-        "brazilianPortuguese"
-        "english"
-        "french"
-        "german"
-        "italian"
-        "korean"
-        "russian"
+        "brazilianPortuguese" "english" "french" "german" 
+        "italian" "korean" "russian"
     )
     set(CPACK_INNOSETUP_SETUP_PrivilegesRequired "lowest")
-    set(CPACK_INNOSETUP_SETUP_ArchitecturesAllowed "x64compatible")
     set(CPACK_INNOSETUP_IGNORE_README_PAGE ON)
     set(CPACK_INNOSETUP_IGNORE_LICENSE_PAGE ON)
     set(CPACK_INNOSETUP_USE_MODERN_WIZARD ON)
