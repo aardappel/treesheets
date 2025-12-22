@@ -16,6 +16,7 @@ project(TreeSheets
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+OPTION(ENABLE_LOBSTER "Enable Lobster scripting" ON)
 
 ## Compiler-specific
 
@@ -38,13 +39,18 @@ FetchContent_Declare(
     GIT_SHALLOW ON
     FIND_PACKAGE_ARGS 3.2.9 NAMES wxWidgets
 )
-FetchContent_Declare(
-    lobster
-    GIT_REPOSITORY https://github.com/aardappel/lobster
-    GIT_TAG v2025.4
-    GIT_SHALLOW ON
-)
-FetchContent_MakeAvailable(wxwidgets lobster)
+if(ENABLE_LOBSTER)
+    FetchContent_Declare(
+        lobster
+        GIT_REPOSITORY https://github.com/aardappel/lobster
+        GIT_TAG v2025.4
+        GIT_SHALLOW ON
+    )
+    FetchContent_MakeAvailable(wxwidgets lobster)
+else(ENABLE_LOBSTER)
+    FetchContent_MakeAvailable(wxwidgets)
+endif(ENABLE_LOBSTER)
+
 
 ### Options
 
@@ -58,60 +64,46 @@ endif()
 ### Libraries (lobster, lobster-impl)
 
 ## lobster (script interpreter)
-
-add_library(lobster STATIC
-    ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_gen_text.cpp
-    ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_parser.cpp
-    ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/util.cpp
-    ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
-    ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
-    ${lobster_SOURCE_DIR}/dev/src/file.cpp
-    ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
-    ${lobster_SOURCE_DIR}/dev/src/platform.cpp
-    ${lobster_SOURCE_DIR}/dev/src/vm.cpp
-    ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
-    ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
-    ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c)
-if(WIN32)
-    target_sources(lobster PRIVATE
-        ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalker.cpp
-        ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalkerHelpers.cpp)
-endif()
-target_include_directories(lobster PRIVATE
-    ${lobster_SOURCE_DIR}/dev/src
-    ${lobster_SOURCE_DIR}/dev/include
-    ${lobster_SOURCE_DIR}/dev/external
-    ${lobster_SOURCE_DIR}/dev/external/libtcc)
+if(ENABLE_LOBSTER)
+    add_library(lobster STATIC
+        ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_gen_text.cpp
+        ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_parser.cpp
+        ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/util.cpp
+        ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
+        ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
+        ${lobster_SOURCE_DIR}/dev/src/file.cpp
+        ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
+        ${lobster_SOURCE_DIR}/dev/src/platform.cpp
+        ${lobster_SOURCE_DIR}/dev/src/vm.cpp
+        ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
+        ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
+        ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c)
+    if(WIN32)
+        target_sources(lobster PRIVATE
+            ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalker.cpp
+            ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalkerHelpers.cpp)
+    endif(WIN32)
+    target_include_directories(lobster PRIVATE
+        ${lobster_SOURCE_DIR}/dev/src
+        ${lobster_SOURCE_DIR}/dev/include
+        ${lobster_SOURCE_DIR}/dev/external
+        ${lobster_SOURCE_DIR}/dev/external/libtcc)
+endif(ENABLE_LOBSTER)
 
 ## lobster-impl (provider of TreeSheets functions in lobster)
 
-add_library(lobster-impl STATIC src/lobster_impl.cpp)
-target_include_directories(lobster-impl PRIVATE 
-    ${lobster_SOURCE_DIR}/dev/src
-    ${lobster_SOURCE_DIR}/dev/include)
-target_link_libraries(lobster-impl PRIVATE lobster)
+if(ENABLE_LOBSTER)
+    add_library(lobster-impl STATIC src/lobster_impl.cpp)
+    target_include_directories(lobster-impl PRIVATE 
+        ${lobster_SOURCE_DIR}/dev/src
+        ${lobster_SOURCE_DIR}/dev/include)
+    target_link_libraries(lobster-impl PRIVATE lobster)
+endif(ENABLE_LOBSTER)
 
 ### TreeSheets executable
 
 add_executable(TreeSheets
-    src/main.cpp
-    # The header files are included in order to make them appear in IDEs
-    src/cell.h
-    src/document.h
-    src/evaluator.h
-    src/grid.h
-    src/tsapp.h
-    src/tscanvas.h
-    src/events.h
-    src/tsframe.h
-    src/wxtools.h
-    src/script_interface.h
-    src/selection.h
-    src/stdafx.h
-    src/system.h
-    src/text.h
-    src/threadpool.h
-    src/tools.h)
+    src/main.cpp)
 
 if(WIN32)
     target_sources(TreeSheets PRIVATE
@@ -119,6 +111,9 @@ if(WIN32)
 endif()
 
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
+if(ENABLE_LOBSTER)
+    target_compile_definitions(TreeSheets PRIVATE "ENABLE_LOBSTER=1")
+endif(ENABLE_LOBSTER)
 
 if(APPLE)
     set_target_properties(TreeSheets PROPERTIES
@@ -139,7 +134,11 @@ endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 ## Link wxWidgets and lobster-impl into TreeSheets
-target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net lobster-impl)
+set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
+if(ENABLE_LOBSTER)
+    list(APPEND TREESHEETS_LIBS lobster-impl)
+endif(ENABLE_LOBSTER)
+target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 
 ### Installation
 
@@ -189,13 +188,15 @@ install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
 
 install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
 install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
-set(lobster_modules
-    ${lobster_SOURCE_DIR}/modules/std.lobster
-    ${lobster_SOURCE_DIR}/modules/stdtype.lobster
-    ${lobster_SOURCE_DIR}/modules/vec.lobster
-    ${lobster_SOURCE_DIR}/modules/color.lobster
-)
-install(FILES ${lobster_modules} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
+if(ENABLE_LOBSTER)
+    set(lobster_modules
+        ${lobster_SOURCE_DIR}/modules/std.lobster
+        ${lobster_SOURCE_DIR}/modules/stdtype.lobster
+        ${lobster_SOURCE_DIR}/modules/vec.lobster
+        ${lobster_SOURCE_DIR}/modules/color.lobster
+    )
+    install(FILES ${lobster_modules} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
+endif(ENABLE_LOBSTER)
 
 ## Apple icon set
 if(APPLE)
@@ -254,19 +255,21 @@ elseif(WIN32)
     set(CPACK_GENERATOR "INNOSETUP" "ZIP")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CMAKE_PROJECT_NAME})
     set(CPACK_PACKAGE_EXECUTABLES "TreeSheets" "TreeSheets")
+    if(CMAKE_VS_PLATFORM_NAME STREQUAL "ARM64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64|arm64")
+        set(CPACK_INNOSETUP_SETUP_ArchitecturesAllowed "arm64")
+        set(ARCH_NAME "winarm64")
+    else()
+        set(CPACK_INNOSETUP_SETUP_ArchitecturesAllowed "x64compatible")
+        set(ARCH_NAME "winx64")
+    endif()
+    set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${ARCH_NAME}")
     set(CPACK_INNOSETUP_RUN_EXECUTABLES "TreeSheets")
     set(CPACK_INNOSETUP_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
     set(CPACK_INNOSETUP_LANGUAGES
-        "brazilianPortuguese"
-        "english"
-        "french"
-        "german"
-        "italian"
-        "korean"
-        "russian"
+        "brazilianPortuguese" "english" "french" "german" 
+        "italian" "korean" "russian"
     )
     set(CPACK_INNOSETUP_SETUP_PrivilegesRequired "lowest")
-    set(CPACK_INNOSETUP_SETUP_ArchitecturesAllowed "x64compatible")
     set(CPACK_INNOSETUP_IGNORE_README_PAGE ON)
     set(CPACK_INNOSETUP_IGNORE_LICENSE_PAGE ON)
     set(CPACK_INNOSETUP_USE_MODERN_WIZARD ON)

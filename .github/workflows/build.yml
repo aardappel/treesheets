@@ -69,8 +69,17 @@ jobs:
         path: _build/treesheets_*.deb
 
   build-windows:
-    name: Build Windows
-    runs-on: windows-latest
+    name: Build Windows (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            os: windows-latest
+            extra_flags: "-A x64"
+          - arch: arm64
+            os: windows-11-arm
+            extra_flags: "-A ARM64 -DENABLE_LOBSTER=OFF" # tinycc currently does not fully support Windows on ARM
     permissions:
       contents: write
     steps:
@@ -79,12 +88,18 @@ jobs:
       uses: actions/cache@v5
       with:
         path: _build
-        key: ${{ runner.os }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-02-build
+        key: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
+      run: >
+        cmake -S . -B _build 
+        -DCMAKE_BUILD_TYPE=Release 
+        -DwxBUILD_SHARED=OFF 
+        -DwxBUILD_INSTALL=OFF 
+        -DTREESHEETS_VERSION=${{ github.run_number }}
+        ${{ matrix.extra_flags }}
     - name: build and package
       run: cmake --build _build --config Release --target package -j
     - name: Create release
@@ -100,7 +115,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v4
       with:
-        name: windows-builds
+        name: windows-builds-${{ matrix.arch }}
         path: |
           _build/TreeSheets-*.exe
           _build/TreeSheets-*.zip
