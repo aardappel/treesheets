@@ -105,11 +105,6 @@ endif(ENABLE_LOBSTER)
 add_executable(TreeSheets
     src/main.cpp)
 
-if(WIN32)
-    target_sources(TreeSheets PRIVATE
-        platform/win/icon.rc)
-endif()
-
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
 if(ENABLE_LOBSTER)
     target_compile_definitions(TreeSheets PRIVATE "ENABLE_LOBSTER=1")
@@ -126,6 +121,8 @@ if(APPLE)
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
     )
 elseif(WIN32)
+    target_sources(TreeSheets PRIVATE
+        platform/win/icon.rc)
     set_target_properties(TreeSheets PROPERTIES
         WIN32_EXECUTABLE TRUE
     )
