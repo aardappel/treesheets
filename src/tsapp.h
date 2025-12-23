@@ -9,6 +9,13 @@ struct IPCServer : wxServer {
 struct TSApp : wxApp {
     TSFrame *frame {nullptr};
     unique_ptr<IPCServer> serv {make_unique<IPCServer>()};
+    wxString service {
+        #ifdef __WXMSW__
+                L"4242"
+        #else
+                L"/tmp/TreeSheets-socket"
+        #endif
+    };
     wxString filename;
     bool initiateventloop {false};
     wxString exename;
@@ -57,7 +64,7 @@ struct TSApp : wxApp {
             if (instance_checker->IsAnotherRunning()) {
                 wxClient client;
                 client.MakeConnection(
-                    L"localhost", L"4242",
+                    L"localhost", service,
                     filename.Len() ? filename.wc_str() : L"*");  // fire and forget
                 return false;
             }
@@ -85,7 +92,7 @@ struct TSApp : wxApp {
 
         SetTopWindow(frame);
 
-        serv->Create(L"4242");
+        serv->Create(service);
         return true;
     }
 
