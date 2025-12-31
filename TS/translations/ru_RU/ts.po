@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.6\n"
+"Project-Id-Version: TreeSheets_RU 3.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 18:37+0200\n"
-"PO-Revision-Date: 2025-11-06 09:52+0300\n"
+"POT-Creation-Date: 2025-12-09 00:00+0100\n"
+"PO-Revision-Date: 2025-12-31 17:55+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -292,6 +292,10 @@ msgstr "Автосохранение"
 msgid "Autosave load"
 msgstr "Загрузка автосохранения"
 
+# Заголовок Окна (выбор п. Меню)
+msgid "Available languages"
+msgstr "Доступные языки"
+
 # п. Меню (нет & в исходном тексте)
 msgid "Background color..."
 msgstr "Цвет Фона &документа..."
@@ -375,6 +379,14 @@ msgstr "Поиск с учетом &Регистра"
 # эл-т Главного Окна
 msgid "Cell "
 msgstr "Ячейка "
+
+# комментарий к п. Меню
+msgid "Change interface language"
+msgstr "Изменить язык интерфейса"
+
+# п. Меню (нет & в исходном тексте)
+msgid "Change language..."
+msgstr "Изменить язык..."
 
 # Сообщение (после действия или события)
 msgid "Change the image(s) scale to match DPI of the current display. Applies to all uses of this image."
@@ -712,6 +724,10 @@ msgstr ".. до Конца Ячейки"
 msgid "Extend Selection to Start"
 msgstr ".. до Начала Ячейки"
 
+# Сообщение (после действия или события)
+msgid "Failed to get translation."
+msgstr "Не удалось получить перевод."
+
 msgid "Faster line rendering"
 msgstr "Ускоренная отрисовка линий"
 
@@ -887,6 +903,14 @@ msgstr "Интерактивный &Учебник"
 # Сообщение (после действия или события)
 msgid "Internal error: unimplemented operation!"
 msgstr "Внутренняя ошибка: операция не выполнена!"
+
+# п. Меню (нет & в исходном тексте)
+msgid "Invert in dark mode"
+msgstr "Переключить в тёмный режим"
+
+# комментарий к п. Меню
+msgid "Invert the document in dark mode"
+msgstr "Инвертировать документ в темном режиме"
 
 # Сообщение (после действия или события)
 msgid "It seems that you are about to paste or drop a TreeSheets file. What would you like to do?"
@@ -1218,6 +1242,10 @@ msgstr "Выберите файл(ы) для импорта:"
 msgid "Please select the datetime range."
 msgstr "Выберите Диапазон."
 
+# Сообщение в Окне (выбор п. Меню)
+msgid "Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."
+msgstr "Выберите язык интерфейса (требуется перезапуск). Если вы хотите использовать язык по умолчанию, выберите пустую строку."
+
 msgid "Please select the script you want to remove from the list:"
 msgstr "Выберите сценарий, который вы хотите удалить из списка:"
 
@@ -1288,7 +1316,7 @@ msgstr "Отображать документ по Центру"
 
 # эл-т Главного Окна
 msgid "Replace "
-msgstr "Заменить"
+msgstr "Заменить "
 
 msgid "Replace &All"
 msgstr "Заменить &Всё"
