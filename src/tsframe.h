@@ -582,6 +582,8 @@ struct TSFrame : wxFrame {
         MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
                  _(L"Set the color for the text cursor"));
         optmenu->AppendSeparator();
+        MyAppend(optmenu, A_RESETPERSPECTIVE, _(L"Reset perspective"),
+                 _(L"Reset the toolbar appearance"));
         optmenu->AppendCheckItem(
             A_SHOWTBAR, _(L"Toolbar"),
             _(L"Toggle whether toolbar is shown between menu bar and documents"));
@@ -1076,7 +1078,11 @@ struct TSFrame : wxFrame {
             case A_ARIGHT: canvas->CursorScroll(g_scrollratecursor, 0); break;
             case A_AUP: canvas->CursorScroll(0, -g_scrollratecursor); break;
             case A_ADOWN: canvas->CursorScroll(0, g_scrollratecursor); break;
-
+            case A_RESETPERSPECTIVE:
+                RefreshToolBar();
+                sys->showtoolbar = true;
+                aui.Update();
+                break;
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());

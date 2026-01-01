@@ -232,6 +232,7 @@ enum {
     A_FSWATCH,
     A_DEFBGCOL,
     A_DEFCURCOL,
+    A_RESETPERSPECTIVE,
     A_THINSELC,
     A_COPYCT,
     A_COPYBM,
