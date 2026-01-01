@@ -582,7 +582,7 @@ struct TSFrame : wxFrame {
         MyAppend(optmenu, A_DEFCURCOL, _(L"Cu&rsor color..."),
                  _(L"Set the color for the text cursor"));
         optmenu->AppendSeparator();
-        MyAppend(optmenu, A_RESETPERSPECTIVE, _(L"Reset perspective"),
+        MyAppend(optmenu, A_RESETPERSPECTIVE, _(L"Reset toolbar"),
                  _(L"Reset the toolbar appearance"));
         optmenu->AppendCheckItem(
             A_SHOWTBAR, _(L"Toolbar"),
