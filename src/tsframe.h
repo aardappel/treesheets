@@ -26,6 +26,9 @@ struct TSFrame : wxFrame {
     int refreshhack {0};
     int refreshhackinstances {0};
     std::map<wxString, wxString> menustrings;
+    const wxArrayString tbNames = {L"filetb",        L"edittb", L"zoomtb",      L"celltb",
+                                   L"findtb",        L"repltb", L"cellcolortb", L"textcolortb",
+                                   L"bordercolortb", L"imagetb"};
 
     TSFrame(TSApp *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
@@ -790,14 +793,8 @@ struct TSFrame : wxFrame {
     }
 
     void RefreshToolBar() {
-        const wxArrayString tbNames = {L"filetb",        L"edittb", L"zoomtb",      L"celltb",
-                                       L"findtb",        L"repltb", L"cellcolortb", L"textcolortb",
-                                       L"bordercolortb", L"imagetb"};
-
         for (const auto &name : tbNames) { DestroyToolbarPane(name); }
-
         auto iconpath = app->GetDataPath(L"images/material/toolbar/");
-
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
                                   wxString iconpath, wxString lighticon, wxString darkicon) {
             tb->AddTool(
@@ -1096,9 +1093,6 @@ struct TSFrame : wxFrame {
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
-                    const wxArrayString tbNames = {
-                        L"filetb", L"edittb",      L"zoomtb",      L"celltb",        L"findtb",
-                        L"repltb", L"cellcolortb", L"textcolortb", L"bordercolortb", L"imagetb"};
                     for (const auto &name : tbNames) {
                         if (sys->showtoolbar)
                             aui.GetPane(name).Show();
@@ -1300,9 +1294,6 @@ struct TSFrame : wxFrame {
         int currentX = 0;
         int currentRow = 0;
         int currentPos = 0;
-        const wxArrayString tbNames = {L"filetb", L"edittb", L"zoomtb", L"celltb",
-                                       L"findtb", L"repltb", L"cellcolortb", L"textcolortb",
-                                       L"bordercolortb", L"imagetb"};
         for (const auto& name : tbNames) {
             wxAuiPaneInfo& pane = aui.GetPane(name);
             if (!pane.IsOk() || !pane.IsShown()) continue;
