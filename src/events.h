@@ -1,6 +1,6 @@
 BEGIN_EVENT_TABLE(treesheets::TSFrame, wxFrame)
   EVT_DPI_CHANGED(treesheets::TSFrame::OnDPIChanged)
-  EVT_SIZE(treesheets::TSFrame::OnSize)
+  EVT_SIZING(treesheets::TSFrame::OnSizing)
   EVT_MENU(wxID_ANY, treesheets::TSFrame::OnMenu)
   EVT_TEXT(A_SEARCH, treesheets::TSFrame::OnSearch)
   EVT_TEXT_ENTER(A_SEARCH, treesheets::TSFrame::OnSearchReplaceEnter)

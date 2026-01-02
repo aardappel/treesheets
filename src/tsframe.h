@@ -1289,28 +1289,7 @@ struct TSFrame : wxFrame {
         ReFocus();
     }
 
-    void OnSize(wxSizeEvent &se) {
-        int maxWidth = GetClientSize().GetWidth();
-        int currentX = 0;
-        int currentRow = 0;
-        int currentPos = 0;
-        for (const auto& name : tbNames) {
-            wxAuiPaneInfo& pane = aui.GetPane(name);
-            if (!pane.IsOk() || !pane.IsShown()) continue;
-            int toolBarWidth = pane.window->GetSize().GetWidth();
-            int effectiveWidth = toolBarWidth + 5;
-            if (currentX + effectiveWidth > maxWidth && currentX > 0) {
-                currentRow++;
-                currentX = 0;
-                currentPos = 0;
-            }
-            pane.Row(currentRow).Position(currentPos);
-            currentX += effectiveWidth;
-            currentPos++;
-        }
-        aui.Update();
-        se.Skip();
-    }
+    void OnSizing(wxSizeEvent &se) { se.Skip(); }
 
     void OnMaximize(wxMaximizeEvent &me) {
         ReFocus();
