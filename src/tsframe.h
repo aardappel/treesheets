@@ -1295,7 +1295,34 @@ struct TSFrame : wxFrame {
         ReFocus();
     }
 
-    void OnSizing(wxSizeEvent &se) { se.Skip(); }
+    void OnSize(wxSizeEvent &se) {
+        int maxWidth = GetClientSize().GetWidth();
+        int currentX = 0;
+        int currentRow = 0;
+        int currentPos = 0;
+
+        // List of your toolbar names in the order they should appear
+        const wxArrayString tbNames = {L"filetb", L"edittb", L"zoomtb", L"celltb",
+                                       L"findtb", L"repltb", L"cellcolortb", L"textcolortb",
+                                       L"bordercolortb", L"imagetb"};
+
+        for (const auto& name : tbNames) {
+            wxAuiPaneInfo& pane = aui.GetPane(name);
+            if (!pane.IsOk() || !pane.IsShown()) continue;
+            int toolBarWidth = pane.window->GetSize().GetWidth();
+            int effectiveWidth = toolBarWidth + 5;
+            if (currentX + effectiveWidth > maxWidth && currentX > 0) {
+                currentRow++;
+                currentX = 0;
+                currentPos = 0;
+            }
+            pane.Row(currentRow).Position(currentPos);
+            currentX += effectiveWidth;
+            currentPos++;
+        }
+        aui.Update();
+        se.Skip();
+    }
 
     void OnMaximize(wxMaximizeEvent &me) {
         ReFocus();
