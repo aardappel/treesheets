@@ -1300,12 +1300,9 @@ struct TSFrame : wxFrame {
         int currentX = 0;
         int currentRow = 0;
         int currentPos = 0;
-
-        // List of your toolbar names in the order they should appear
         const wxArrayString tbNames = {L"filetb", L"edittb", L"zoomtb", L"celltb",
                                        L"findtb", L"repltb", L"cellcolortb", L"textcolortb",
                                        L"bordercolortb", L"imagetb"};
-
         for (const auto& name : tbNames) {
             wxAuiPaneInfo& pane = aui.GetPane(name);
             if (!pane.IsOk() || !pane.IsShown()) continue;
