@@ -26,9 +26,6 @@ struct TSFrame : wxFrame {
     int refreshhack {0};
     int refreshhackinstances {0};
     std::map<wxString, wxString> menustrings;
-    const wxArrayString tbNames = {L"filetb",        L"edittb", L"zoomtb",      L"celltb",
-                                   L"findtb",        L"repltb", L"cellcolortb", L"textcolortb",
-                                   L"bordercolortb", L"imagetb"};
 
     TSFrame(TSApp *_app)
         : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
@@ -783,6 +780,16 @@ struct TSFrame : wxFrame {
         wxSafeYield();
     }
 
+    wxArrayString GetToolbarPaneNames() {
+        wxArrayString toolbarNames;
+        wxAuiPaneInfoArray &all_panes = aui.GetAllPanes();
+        for (size_t i = 0; i < all_panes.GetCount(); ++i) {
+            wxAuiPaneInfo &pane = all_panes.Item(i);
+            if (pane.IsToolbar()) { toolbarNames.Add(pane.name); }
+        }
+        return toolbarNames;
+    }
+
     void DestroyToolbarPane(const wxString &name) {
         wxAuiPaneInfo &pane = aui.GetPane(name);
         if (pane.IsOk()) {
@@ -793,7 +800,7 @@ struct TSFrame : wxFrame {
     }
 
     void RefreshToolBar() {
-        for (const auto &name : tbNames) { DestroyToolbarPane(name); }
+        for (const auto &name : GetToolbarPaneNames()) { DestroyToolbarPane(name); }
         auto iconpath = app->GetDataPath(L"images/material/toolbar/");
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
                                   wxString iconpath, wxString lighticon, wxString darkicon) {
@@ -1093,7 +1100,7 @@ struct TSFrame : wxFrame {
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
-                    for (const auto &name : tbNames) {
+                    for (const auto &name : GetToolbarPaneNames()) {
                         if (sys->showtoolbar)
                             aui.GetPane(name).Show();
                         else
