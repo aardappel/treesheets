@@ -49,8 +49,8 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->UpdateHover(dc, me.GetX(), me.GetY());
         if (me.LeftIsDown() || me.RightIsDown()) {
             if (me.AltDown() && me.ShiftDown()) {
-                Refresh();
                 doc->Copy(A_DRAGANDDROP);
+                Refresh();
             } else {
                 if (doc->isctrlshiftdrag) {
                     doc->begindrag = doc->hover;
