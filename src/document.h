@@ -74,7 +74,6 @@ struct Document {
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
     bool scaledviewingmode {false};
-    bool paintselectclick {false};
     bool paintdoubleclick {false};
     bool paintdrag {false};
     bool paintdrop {false};
@@ -522,6 +521,18 @@ struct Document {
         Layout(dc);
     }
 
+    void SelectClick() {
+        begindrag = Selection();
+        if (!(paintclickright && hover.IsInside(selected))) {
+            if (selected.GetCell() == hover.GetCell() && hover.GetCell())
+                hover.EnterEditOnly(this);
+            else
+                hover.ExitEdit(this);
+            SetSelect(hover);
+        }
+        paintclickright = false;
+    }
+
     void Draw(wxDC &dc) {
         if (!root) return;
         Layout();
@@ -555,18 +566,6 @@ struct Document {
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
         ShiftToCenter(dc);
-        if (paintselectclick) {
-            begindrag = Selection();
-            if (!(paintclickright && hover.IsInside(selected))) {
-                if (selected.GetCell() == hover.GetCell() && hover.GetCell())
-                    hover.EnterEditOnly(this);
-                else
-                    hover.ExitEdit(this);
-                SetSelect(hover);
-            }
-            paintselectclick = false;
-            paintclickright = false;
-        }
         if (paintdoubleclick) {
             SetSelect(hover);
             if (selected.Thin() && selected.grid) {
