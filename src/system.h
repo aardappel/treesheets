@@ -432,7 +432,9 @@ struct System {
             Document *doc = frame->GetCurrentTab()->doc;
             doc->modified = true;
             doc->UpdateFileName();
-            doc->ClearSelectionRefresh();
+            doc->selected = Selection();
+            doc->begindrag = Selection();
+            doc->canvas->Refresh();
         }
         return nullptr;
     problem:

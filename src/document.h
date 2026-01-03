@@ -657,12 +657,6 @@ struct Document {
         laststylebits = -1;
     }
 
-    void ClearSelectionRefresh() {
-        selected.grid = nullptr;
-        begindrag.grid = nullptr;
-        canvas->Refresh();
-    }
-
     bool CheckForChanges() {
         if (modified) {
             ThreeChoiceDialog tcd(sys->frame, filename,
@@ -890,7 +884,9 @@ struct Document {
                 root->AddUndo(this);
                 sys->evaluator.Eval(root);
                 root->ResetChildren();
-                ClearSelectionRefresh();
+                selected = Selection();
+                begindrag = Selection();
+                canvas->Refresh();
                 return _(L"Evaluation finished.");
 
             case wxID_UNDO:
@@ -1861,7 +1857,9 @@ struct Document {
                     ac->AddUndo(this);
                     ac->grid->Hierarchify(this);
                     ac->ResetChildren();
-                    ClearSelectionRefresh();
+                    selected = Selection();
+                    begindrag = Selection();
+                    canvas->Refresh();
                     return nullptr;
 
                 case A_FLATTEN: {
@@ -1876,7 +1874,9 @@ struct Document {
                     ac->grid = g;
                     g->ReParent(ac);
                     ac->ResetChildren();
-                    ClearSelectionRefresh();
+                    selected = Selection();
+                    begindrag = Selection();
+                    canvas->Refresh();
                     return nullptr;
                 }
             }
