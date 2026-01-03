@@ -122,7 +122,7 @@ if(APPLE)
     )
 elseif(WIN32)
     target_sources(TreeSheets PRIVATE
-        platform/win/icon.rc)
+        platform/win/treesheets.rc)
     set_target_properties(TreeSheets PROPERTIES
         WIN32_EXECUTABLE TRUE
     )
