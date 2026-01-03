@@ -11,6 +11,7 @@ struct UndoItem {
 struct Document {
     TSCanvas *canvas {nullptr};
     Cell *root {nullptr};
+    Selection prev;
     Selection hover;
     Selection selected;
     Selection begindrag;
@@ -24,8 +25,6 @@ struct Document {
     int layoutxs;
     int layoutys;
     int hierarchysize;
-    int mx;
-    int my;
     int fgutter {6};
     int lasttextsize;
     int laststylebits;
@@ -234,10 +233,10 @@ struct Document {
         canvas->Refresh();
     }
 
-    void UpdateHover(wxDC &dc) {
+    void UpdateHover(wxDC &dc, int mx, int my) {
         int x, y;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
-        Selection prev = hover;
+        prev = hover;
         hover = Selection();
         auto drawroot = WalkPath(drawpath);
         if (drawroot->grid)
@@ -553,7 +552,6 @@ struct Document {
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
         ShiftToCenter(dc);
-        UpdateHover(dc);
         if (paintselectclick) {
             begindrag = Selection();
             if (!(paintclickright && hover.IsInside(selected))) {

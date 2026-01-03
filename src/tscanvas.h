@@ -44,35 +44,35 @@ struct TSCanvas : public wxScrolledCanvas {
         #endif
     }
 
-    void RefreshHover(int mx, int my) {
-        doc->mx = mx;
-        doc->my = my;
-        doc->canvas->Refresh();
-    }
-
     void OnMotion(wxMouseEvent &me) {
+        wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
+        doc->UpdateHover(dc, me.GetX(), me.GetY());
         if (me.LeftIsDown() || me.RightIsDown()) {
             if (me.AltDown() && me.ShiftDown()) {
-                RefreshHover(me.GetX(), me.GetY());
+                Refresh();
                 doc->Copy(A_DRAGANDDROP);
             } else {
                 doc->paintdrag = true;
-                RefreshHover(me.GetX(), me.GetY());
+                Refresh();
             }
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
+        } else {
+            if (doc->hover != doc->prev) sys->frame->UpdateStatus(doc->hover);
         }
         lastmousepos = me.GetPosition();
     }
 
     void SelectClick(int mx, int my, bool right, int isctrlshift) {
+        wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
         if (mx < 0 || my < 0)
             return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
         doc->paintselectclick = true;
         doc->paintclickright = right;
         doc->isctrlshiftdrag = isctrlshift;
-        RefreshHover(mx, my);
+        doc->UpdateHover(dc, mx, my);
+        Refresh();
     }
 
     void OnLeftDown(wxMouseEvent &me) {
@@ -90,8 +90,10 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnLeftUp(wxMouseEvent &me) {
         if (me.CmdDown() || me.AltDown()) {
+            wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
             doc->paintselectup = true;
-            RefreshHover(me.GetX(), me.GetY());
+            doc->UpdateHover(dc, me.GetX(), me.GetY());
+            Refresh();
         }
     }
 
@@ -106,7 +108,9 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnLeftDoubleClick(wxMouseEvent &me) {
         doc->paintdoubleclick = true;
-        RefreshHover(me.GetX(), me.GetY());
+        wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
+        doc->UpdateHover(dc, me.GetX(), me.GetY());
+        Refresh();
     }
 
     void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }
