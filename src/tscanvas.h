@@ -59,7 +59,7 @@ struct TSCanvas : public wxScrolledCanvas {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         } else {
-            if (doc->hover != doc->prev) sys->frame->UpdateStatus(doc->hover);
+            if (doc->hover != doc->prev && !doc->hover.Thin()) sys->frame->UpdateStatus(doc->hover);
         }
         lastmousepos = me.GetPosition();
     }
