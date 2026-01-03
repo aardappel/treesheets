@@ -227,11 +227,6 @@ struct Document {
         s.grid->DrawSelect(this, dc, s);
     }
 
-    void RefreshMove() {
-        paintscrolltoselection = true;
-        canvas->Refresh();
-    }
-
     void UpdateHover(wxDC &dc, int mx, int my) {
         int x, y;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
@@ -280,7 +275,8 @@ struct Document {
         for (auto cg = selected.grid->cell; cg; cg = cg->parent)
             if (cg == drawroot) {
                 if (zoomiftiny) ZoomTiny();
-                RefreshMove();
+                paintscrolltoselection = true;
+                canvas->Refresh();
                 return;
             }
         Zoom(-100, false);
@@ -431,7 +427,8 @@ struct Document {
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
-        RefreshMove();
+        paintscrolltoselection = true;
+        canvas->Refresh();
     }
 
     const wxChar *NoSel() { return _(L"This operation requires a selection."); }
@@ -448,7 +445,8 @@ struct Document {
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
                 selected.grid->cell->ResetLayout();
                 selected.grid->cell->ResetChildren();
-                RefreshMove();
+                paintscrolltoselection = true;
+                canvas->Refresh();
                 return dir > 0 ? _(L"Column width increased.") : _(L"Column width decreased.");
             }
             return L"nothing to resize";
@@ -457,7 +455,8 @@ struct Document {
             selected.grid->cell->AddUndo(this);
             selected.grid->ResetChildren();
             selected.grid->RelSize(-dir, selected, pathscalebias);
-            RefreshMove();
+            paintscrolltoselection = true;
+            canvas->Refresh();
             return dir > 0 ? _(L"Text size increased.") : _(L"Text size decreased.");
         } else if (ctrl) {
             int steps = abs(dir);
@@ -871,7 +870,8 @@ struct Document {
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
             c->text.Key(this, uk, selected);
-            RefreshMove();
+            paintscrolltoselection = true;
+            canvas->Refresh();
             return nullptr;
         }
         unprocessed = true;
@@ -1492,7 +1492,8 @@ struct Document {
                     cell->AddUndo(this);
                     cell->AddGrid();
                     SetSelect(Selection(cell->grid, 0, 0, 1, 1));
-                    RefreshMove();
+                    paintscrolltoselection = true;
+                    canvas->Refresh();
                 }
                 return nullptr;
 
@@ -1543,7 +1544,8 @@ struct Document {
                         this,
                         action == A_ENTERCELL_JUMPTOEND ? static_cast<int>(cell->text.t.Len()) : 0,
                         static_cast<int>(cell->text.t.Len()));
-                    RefreshMove();
+                    paintscrolltoselection = true;
+                    canvas->Refresh();
                 }
                 return nullptr;
             }
@@ -1981,7 +1983,8 @@ struct Document {
                     case A_HOME: cell->text.HomeEnd(selected, true); break;
                     case A_END: cell->text.HomeEnd(selected, false); break;
                 }
-                RefreshMove();
+                paintscrolltoselection = true;
+                canvas->Refresh();
                 return nullptr;
             }
             default: return _(L"Internal error: unimplemented operation!");
