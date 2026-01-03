@@ -79,7 +79,6 @@ struct Document {
     bool paintdrag {false};
     bool paintdrop {false};
     bool paintclickright {false};
-    bool paintselectup {false};
     bool paintscrolltoselection {true};
     double currentviewscale {1.0};
     bool searchfilter {false};
@@ -304,7 +303,7 @@ struct Document {
         begindrag = sel;
     }
 
-    void SelectUp(wxDC &dc) {
+    void SelectUp() {
         if (!isctrlshiftdrag || isctrlshiftdrag == 3 || begindrag.EqLoc(selected)) return;
         auto cell = selected.GetCell();
         if (!cell) return;
@@ -322,7 +321,7 @@ struct Document {
             }
             hover = targetcell_parent ? targetcell_parent->grid->FindCell(targetcell) : Selection();
             SetSelect(hover);
-            Layout(dc);
+            Layout();
         }
     }
 
@@ -593,10 +592,6 @@ struct Document {
                 }
             }
             paintdrag = false;
-        }
-        if (paintselectup) {
-            SelectUp(dc);
-            paintselectup = false;
         }
         if (paintdrop) {
             switch (dndobjc->GetReceivedFormat().GetType()) {

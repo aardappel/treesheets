@@ -91,8 +91,8 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnLeftUp(wxMouseEvent &me) {
         if (me.CmdDown() || me.AltDown()) {
             wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
-            doc->paintselectup = true;
             doc->UpdateHover(dc, me.GetX(), me.GetY());
+            doc->SelectUp();
             Refresh();
         }
     }
