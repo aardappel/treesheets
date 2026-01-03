@@ -1,1 +1,2 @@
+#include "wx/msw/wx.rc"
 IDI_ICON1 ICON DISCARDABLE "icon1.ico"
