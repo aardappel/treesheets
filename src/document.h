@@ -518,12 +518,17 @@ struct Document {
                                 currentdrawroot->ColWidth(), 0);
     }
 
+    void Layout() {
+        canvas->GetClientSize(&maxx, &maxy);
+        wxClientDC dc(canvas); // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
+        Layout(dc);
+    }
+
     void Draw(wxDC &dc) {
+        if (!root) return;
+        Layout();
         dc.SetBackground(wxBrush(wxColor(LightColor(Background()))));
         dc.Clear();
-        if (!root) return;
-        canvas->GetClientSize(&maxx, &maxy);
-        Layout(dc);
         double xscale = maxx / static_cast<double>(layoutxs);
         double yscale = maxy / static_cast<double>(layoutys);
         currentviewscale = min(xscale, yscale);
@@ -601,7 +606,7 @@ struct Document {
                 case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
                 default:;
             }
-            Layout(dc);
+            Layout();
             paintdrop = false;
         }
         Render(dc);
