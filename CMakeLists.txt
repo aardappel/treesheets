@@ -87,20 +87,15 @@ if(ENABLE_LOBSTER)
             ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalker.cpp
             ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalkerHelpers.cpp)
     endif(WIN32)
-    target_include_directories(lobster PRIVATE
+    target_include_directories(lobster PUBLIC
         ${lobster_SOURCE_DIR}/dev/src
         ${lobster_SOURCE_DIR}/dev/include
         ${lobster_SOURCE_DIR}/dev/external
         ${lobster_SOURCE_DIR}/dev/external/libtcc)
-endif(ENABLE_LOBSTER)
 
-## lobster-impl (provider of TreeSheets functions in lobster)
+    ## lobster-impl (provider of TreeSheets functions in lobster)
 
-if(ENABLE_LOBSTER)
     add_library(lobster-impl STATIC src/lobster_impl.cpp)
-    target_include_directories(lobster-impl PRIVATE 
-        ${lobster_SOURCE_DIR}/dev/src
-        ${lobster_SOURCE_DIR}/dev/include)
     target_link_libraries(lobster-impl PRIVATE lobster)
 endif(ENABLE_LOBSTER)
 
