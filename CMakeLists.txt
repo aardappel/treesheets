@@ -20,8 +20,12 @@ OPTION(ENABLE_LOBSTER "Enable Lobster scripting" ON)
 
 ## Compiler-specific
 
-# Use statically-linked runtime library for MSVC
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+# Use statically-linked libraries with MSVC
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set(wxBUILD_USE_STATIC_RUNTIME ON CACHE BOOL "" FORCE)
+    set(wxBUILD_SHARED OFF CACHE BOOL "" FORCE)
+endif(MSVC)
 
 # Silence warnings in GCC that contain lots of false positives
 if(CMAKE_COMPILER_IS_GNUCXX)
