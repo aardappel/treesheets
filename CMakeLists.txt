@@ -32,6 +32,7 @@ endif()
 ### Thirdparty dependencies
 
 include(FetchContent)
+
 FetchContent_Declare(
     wxwidgets
     GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
@@ -39,6 +40,8 @@ FetchContent_Declare(
     GIT_SHALLOW ON
     FIND_PACKAGE_ARGS 3.2.9 NAMES wxWidgets
 )
+FetchContent_MakeAvailable(wxwidgets)
+
 if(ENABLE_LOBSTER)
     FetchContent_Declare(
         lobster
@@ -46,11 +49,8 @@ if(ENABLE_LOBSTER)
         GIT_TAG v2025.4
         GIT_SHALLOW ON
     )
-    FetchContent_MakeAvailable(wxwidgets lobster)
-else(ENABLE_LOBSTER)
-    FetchContent_MakeAvailable(wxwidgets)
-endif(ENABLE_LOBSTER)
-
+    FetchContent_MakeAvailable(lobster)
+endif()
 
 ### Options
 
