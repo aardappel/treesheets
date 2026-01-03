@@ -52,8 +52,22 @@ struct TSCanvas : public wxScrolledCanvas {
                 Refresh();
                 doc->Copy(A_DRAGANDDROP);
             } else {
-                doc->paintdrag = true;
-                Refresh();
+                if (doc->isctrlshiftdrag) {
+                    doc->begindrag = doc->hover;
+                } else if (!doc->hover.Thin()) {
+                    if (doc->begindrag.Thin() || doc->selected.Thin()) {
+                        doc->SetSelect(doc->hover);
+                        doc->ResetCursor();
+                        Refresh();
+                    } else {
+                        Selection old = doc->selected;
+                        doc->selected.Merge(doc->begindrag, doc->hover);
+                        if (!(old == doc->selected)) {
+                            doc->ResetCursor();
+                            Refresh();
+                        }
+                    }
+                }
             }
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;

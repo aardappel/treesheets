@@ -75,7 +75,6 @@ struct Document {
     uint printscale {0};
     bool scaledviewingmode {false};
     bool paintdoubleclick {false};
-    bool paintdrag {false};
     bool paintdrop {false};
     bool paintclickright {false};
     bool paintscrolltoselection {true};
@@ -576,20 +575,6 @@ struct Document {
                 begindrag = selected;
             }
             paintdoubleclick = false;
-        }
-        if (paintdrag && selected.grid && hover.grid && begindrag.grid) {
-            if (isctrlshiftdrag) { begindrag = hover; }
-            else if (!hover.Thin()) {
-                if (begindrag.Thin() || selected.Thin()) {
-                    SetSelect(hover);
-                    ResetCursor();
-                } else {
-                    Selection old = selected;
-                    selected.Merge(begindrag, hover);
-                    if (!(old == selected)) { ResetCursor(); }
-                }
-            }
-            paintdrag = false;
         }
         if (paintdrop) {
             switch (dndobjc->GetReceivedFormat().GetType()) {
