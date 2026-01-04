@@ -40,7 +40,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnScrollToSelectionRequest(wxCommandEvent &event) {
         doc->ScrollIfSelectionOutOfView(doc->selected);
         #ifdef __WXMAC__
-            Update();
+            Refresh();
         #endif
     }
 
