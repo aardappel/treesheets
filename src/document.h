@@ -315,7 +315,8 @@ struct Document {
             }
             hover = targetcell_parent ? targetcell_parent->grid->FindCell(targetcell) : Selection();
             SetSelect(hover);
-            Layout();
+            wxClientDC dc(canvas); // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
+            Layout(dc);
         }
     }
 
@@ -514,12 +515,6 @@ struct Document {
                                 currentdrawroot->ColWidth(), 0);
     }
 
-    void Layout() {
-        canvas->GetClientSize(&maxx, &maxy);
-        wxClientDC dc(canvas); // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
-        Layout(dc);
-    }
-
     void SelectClick() {
         begindrag = Selection();
         if (!(paintclickright && hover.IsInside(selected))) {
@@ -534,7 +529,8 @@ struct Document {
 
     void Draw(wxDC &dc) {
         if (!root) return;
-        Layout();
+        canvas->GetClientSize(&maxx, &maxy);
+        Layout(dc);
         dc.SetBackground(wxBrush(wxColor(LightColor(Background()))));
         dc.Clear();
         double xscale = maxx / static_cast<double>(layoutxs);
@@ -584,7 +580,7 @@ struct Document {
                 case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
                 default:;
             }
-            Layout();
+            Layout(dc);
             paintdrop = false;
         }
         Render(dc);
