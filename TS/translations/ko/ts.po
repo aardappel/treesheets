@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-09 00:00+0100\n"
-"PO-Revision-Date: 2025-12-19 13:21+0900\n"
+"POT-Creation-Date: 2026-01-04 18:45+0100\n"
+"PO-Revision-Date: 2026-01-05 03:56+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -1238,6 +1238,12 @@ msgstr "열 너비 재설정"
 
 msgid "Reset the column widths in the selection to the default column width"
 msgstr "선택 항목의 열 너비를 기본 열 너비로 재설정"
+
+msgid "Reset the toolbar appearance"
+msgstr "도구 모음 모양 재설정"
+
+msgid "Reset toolbar"
+msgstr "도구 모음 재설정"
 
 msgid "Run"
 msgstr "실행"
