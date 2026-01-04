@@ -24,10 +24,10 @@ struct DropTarget : wxDropTarget {
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
         auto canvas = sys->frame->GetCurrentTab();
-        canvas->doc->paintdrop = true;
         wxClientDC dc(canvas);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
         canvas->doc->UpdateHover(dc, x, y);
         canvas->doc->SelectClick();
+        canvas->doc->Drop();
         canvas->Refresh();
         return wxDragCopy;
     }

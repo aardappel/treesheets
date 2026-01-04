@@ -74,7 +74,6 @@ struct Document {
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
     bool scaledviewingmode {false};
-    bool paintdrop {false};
     bool paintclickright {false};
     bool paintscrolltoselection {true};
     double currentviewscale {1.0};
@@ -330,6 +329,16 @@ struct Document {
         }
     }
 
+    void Drop() {
+        switch (dndobjc->GetReceivedFormat().GetType()) {
+            case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
+            case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
+            case wxDF_TEXT:
+            case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
+            default:;
+        }
+    }
+
     auto CopyEntireCells(wxString &s, int action) {
         sys->clipboardcopy = s;
         auto html =
@@ -571,17 +580,6 @@ struct Document {
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
         ShiftToCenter(dc);
-        if (paintdrop) {
-            switch (dndobjc->GetReceivedFormat().GetType()) {
-                case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
-                case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
-                case wxDF_TEXT:
-                case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
-                default:;
-            }
-            Layout(dc);
-            paintdrop = false;
-        }
         Render(dc);
         DrawSelect(dc, selected);
         wxQueueEvent(canvas->frame, new wxCommandEvent(UPDATE_STATUSBAR_REQUEST));
