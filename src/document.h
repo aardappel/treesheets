@@ -581,7 +581,12 @@ struct Document {
         Render(dc);
         DrawSelect(dc, selected);
         if (paintscrolltoselection) {
-            wxQueueEvent(canvas, new wxCommandEvent(SCROLLTOSELECTION_REQUEST));
+            wxTheApp->CallAfter([this](){
+                ScrollIfSelectionOutOfView(selected);
+                #ifdef __WXMAC__
+                    canvas->Refresh();
+                #endif
+            });
             paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }

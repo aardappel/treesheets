@@ -299,8 +299,6 @@ enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 
 #endif
 
-wxDEFINE_EVENT(SCROLLTOSELECTION_REQUEST, wxCommandEvent);
-
 struct treesheets {
     #ifdef ENABLE_LOBSTER
         struct TreeSheetsScriptImpl;
