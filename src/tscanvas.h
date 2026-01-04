@@ -121,9 +121,9 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftDoubleClick(wxMouseEvent &me) {
-        doc->paintdoubleclick = true;
         wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
         doc->UpdateHover(dc, me.GetX(), me.GetY());
+        doc->DoubleClick();
         Refresh();
     }
 

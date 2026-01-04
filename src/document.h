@@ -74,7 +74,6 @@ struct Document {
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
     bool scaledviewingmode {false};
-    bool paintdoubleclick {false};
     bool paintdrop {false};
     bool paintclickright {false};
     bool paintscrolltoselection {true};
@@ -320,6 +319,17 @@ struct Document {
         }
     }
 
+    void DoubleClick() {
+        SetSelect(hover);
+        if (selected.Thin() && selected.grid) {
+            selected.SelAll();
+        } else if (Cell *c = selected.GetCell()) {
+            selected.EnterEditOnly(this);
+            c->text.SelectWord(selected);
+            begindrag = selected;
+        }
+    }
+
     auto CopyEntireCells(wxString &s, int action) {
         sys->clipboardcopy = s;
         auto html =
@@ -561,17 +571,6 @@ struct Document {
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
         ShiftToCenter(dc);
-        if (paintdoubleclick) {
-            SetSelect(hover);
-            if (selected.Thin() && selected.grid) {
-                selected.SelAll();
-            } else if (Cell *c = selected.GetCell()) {
-                selected.EnterEditOnly(this);
-                c->text.SelectWord(selected);
-                begindrag = selected;
-            }
-            paintdoubleclick = false;
-        }
         if (paintdrop) {
             switch (dndobjc->GetReceivedFormat().GetType()) {
                 case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
