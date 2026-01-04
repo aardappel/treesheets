@@ -37,13 +37,6 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->Draw(dc);
     };
 
-    void OnScrollToSelectionRequest(wxCommandEvent &event) {
-        doc->ScrollIfSelectionOutOfView(doc->selected);
-        #ifdef __WXMAC__
-            Refresh();
-        #endif
-    }
-
     void OnMotion(wxMouseEvent &me) {
         wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
         doc->UpdateHover(dc, me.GetX(), me.GetY());
