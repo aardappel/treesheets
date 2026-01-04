@@ -2224,14 +2224,19 @@ struct Document {
         if (filename.empty()) return false;
         auto pnghandler = wxImage::FindHandler(wxBITMAP_TYPE_PNG);
         auto jpghandler = wxImage::FindHandler(wxBITMAP_TYPE_JPEG);
-        if (pnghandler && pnghandler->CanRead(filename) ||
-            jpghandler && jpghandler->CanRead(filename)) {
+        wxImageHandler *activeHandler = nullptr;
+        if (pnghandler && pnghandler->CanRead(filename)) {
+            activeHandler = pnghandler;
+        } else if (jpghandler && jpghandler->CanRead(filename)) {
+            activeHandler = jpghandler;
+        }
+        if (activeHandler) {
             wxFFileInputStream fis(filename);
             if (!fis.IsOk()) return false;
             auto size = fis.GetSize();
             vector<uint8_t> buffer(size);
             fis.Read(buffer.data(), size);
-            SetImageBM(c, std::move(buffer), pnghandler->CanRead(filename) ? 'I' : 'J', scale);
+            SetImageBM(c, std::move(buffer), (activeHandler == pnghandler) ? 'I' : 'J', scale);
         } else {
             wxImage image;
             if (!image.LoadFile(filename)) return false;
