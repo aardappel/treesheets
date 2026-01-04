@@ -2066,7 +2066,7 @@ struct Document {
             cell->AddUndo(this);
             auto image = bitmapdataobject.GetBitmap().ConvertToImage();
             vector<uint8_t> buffer = ConvertWxImageToBuffer(image, wxBITMAP_TYPE_PNG);
-            SetImageBM(cell, std::move(buffer), sys->frame->FromDIP(1.0));
+            SetImageBM(cell, std::move(buffer), 'I', sys->frame->FromDIP(1.0));
             cell->Reset();
         }
     }
@@ -2215,26 +2215,28 @@ struct Document {
         selected.grid->ColorChange(this, which, col, selected);
     }
 
-    void SetImageBM(Cell *c, auto &&data, double scale) {
+    void SetImageBM(Cell *c, auto &&data, char type, double scale) {
         c->text.image = sys->lastimage =
-            sys->imagelist[sys->AddImageToList(scale, std::move(data), 'I')].get();
+            sys->imagelist[sys->AddImageToList(scale, std::move(data), type)].get();
     }
 
     bool LoadImageIntoCell(const wxString &filename, Cell *c, double scale) {
         if (filename.empty()) return false;
         auto pnghandler = wxImage::FindHandler(wxBITMAP_TYPE_PNG);
-        if (pnghandler && pnghandler->CanRead(filename)) {
+        auto jpghandler = wxImage::FindHandler(wxBITMAP_TYPE_JPEG);
+        if (pnghandler && pnghandler->CanRead(filename) ||
+            jpghandler && jpghandler->CanRead(filename)) {
             wxFFileInputStream fis(filename);
             if (!fis.IsOk()) return false;
             auto size = fis.GetSize();
             vector<uint8_t> buffer(size);
             fis.Read(buffer.data(), size);
-            SetImageBM(c, std::move(buffer), scale);
+            SetImageBM(c, std::move(buffer), pnghandler->CanRead(filename) ? 'I' : 'J', scale);
         } else {
             wxImage image;
             if (!image.LoadFile(filename)) return false;
             auto buffer = ConvertWxImageToBuffer(image, wxBITMAP_TYPE_PNG);
-            SetImageBM(c, std::move(buffer), scale);
+            SetImageBM(c, std::move(buffer), 'I', scale);
         }
         c->Reset();
         return true;
