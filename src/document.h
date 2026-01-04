@@ -74,7 +74,6 @@ struct Document {
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
     bool scaledviewingmode {false};
-    bool paintclickright {false};
     bool paintscrolltoselection {true};
     double currentviewscale {1.0};
     bool searchfilter {false};
@@ -534,16 +533,15 @@ struct Document {
                                 currentdrawroot->ColWidth(), 0);
     }
 
-    void SelectClick() {
+    void SelectClick(bool right = false) {
         begindrag = Selection();
-        if (!(paintclickright && hover.IsInside(selected))) {
+        if (!(right && hover.IsInside(selected))) {
             if (selected.GetCell() == hover.GetCell() && hover.GetCell())
                 hover.EnterEditOnly(this);
             else
                 hover.ExitEdit(this);
             SetSelect(hover);
         }
-        paintclickright = false;
     }
 
     void Draw(wxDC &dc) {
