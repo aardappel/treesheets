@@ -2222,10 +2222,20 @@ struct Document {
 
     bool LoadImageIntoCell(const wxString &filename, Cell *c, double scale) {
         if (filename.empty()) return false;
-        wxImage image;
-        if (!image.LoadFile(filename)) return false;
-        auto buffer = ConvertWxImageToBuffer(image, wxBITMAP_TYPE_PNG);
-        SetImageBM(c, std::move(buffer), scale);
+        auto pnghandler = wxImage::FindHandler(wxBITMAP_TYPE_PNG);
+        if (pnghandler && pnghandler->CanRead(filename)) {
+            wxFFileInputStream fis(filename);
+            if (!fis.IsOk()) return false;
+            auto size = fis.GetSize();
+            vector<uint8_t> buffer(size);
+            fis.Read(buffer.data(), size);
+            SetImageBM(c, std::move(buffer), scale);
+        } else {
+            wxImage image;
+            if (!image.LoadFile(filename)) return false;
+            auto buffer = ConvertWxImageToBuffer(image, wxBITMAP_TYPE_PNG);
+            SetImageBM(c, std::move(buffer), scale);
+        }
         c->Reset();
         return true;
     }
