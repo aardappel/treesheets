@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-09 00:00+0100\n"
+"POT-Creation-Date: 2026-01-04 18:45+0100\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -1155,7 +1155,15 @@ msgid "Reset column widths"
 msgstr "Spaltenbreiten zurücksetzen"
 
 msgid "Reset the column widths in the selection to the default column width"
-msgstr "Die Spaltenbreiten in der Auswahl auf die Standardspaltenbreite zurücksetzen"
+msgstr ""
+"Die Spaltenbreiten in der Auswahl auf die Standardspaltenbreite zurücksetzen"
+
+msgid "Reset the toolbar appearance"
+msgstr ""
+
+#, fuzzy
+msgid "Reset toolbar"
+msgstr "&Farben zurücksetzen"
 
 msgid "Run"
 msgstr "Ausführen"
