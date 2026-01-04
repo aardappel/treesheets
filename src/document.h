@@ -2231,11 +2231,10 @@ struct Document {
             activeHandler = jpghandler;
         }
         if (activeHandler) {
-            wxFFileInputStream fis(filename);
-            if (!fis.IsOk()) return false;
-            auto size = fis.GetSize();
-            vector<uint8_t> buffer(size);
-            fis.Read(buffer.data(), size);
+            wxFile fn(filename);
+            if (!fn.IsOpened()) return false;
+            vector<uint8_t> buffer(fn.Length());
+            fn.Read(buffer.data(), buffer.size());
             SetImageBM(c, std::move(buffer), (activeHandler == pnghandler) ? 'I' : 'J', scale);
         } else {
             wxImage image;
