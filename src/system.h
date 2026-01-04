@@ -546,12 +546,12 @@ struct System {
         return static_cast<int>(as.size());
     }
 
-    int AddImageToList(double scale, auto &&data, char iti) {
+    int AddImageToList(double scale, auto &&data, char type) {
         auto hash = CalculateHash(data);
         loopv(i, imagelist) {
-            if (imagelist[i]->hash == hash) return i;
+            if (imagelist[i]->hash == hash && imagelist[i]->type == type) return i;
         }
-        imagelist.push_back(make_unique<Image>(hash, scale, std::move(data), iti));
+        imagelist.push_back(make_unique<Image>(hash, scale, std::move(data), type));
         return imagelist.size() - 1;
     }
 
