@@ -16,7 +16,6 @@ BEGIN_EVENT_TABLE(treesheets::TSFrame, wxFrame)
   EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, treesheets::TSFrame::OnTabChange)
   EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, treesheets::TSFrame::OnTabClose)
   EVT_SYS_COLOUR_CHANGED(treesheets::TSFrame::OnSysColourChanged)
-  EVT_COMMAND(wxID_ANY, UPDATE_STATUSBAR_REQUEST, treesheets::TSFrame::OnUpdateStatusBarRequest)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(treesheets::TSApp, wxApp)
