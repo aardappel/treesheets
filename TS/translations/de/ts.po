@@ -1155,15 +1155,13 @@ msgid "Reset column widths"
 msgstr "Spaltenbreiten zurücksetzen"
 
 msgid "Reset the column widths in the selection to the default column width"
-msgstr ""
-"Die Spaltenbreiten in der Auswahl auf die Standardspaltenbreite zurücksetzen"
+msgstr "Die Spaltenbreiten in der Auswahl auf die Standardspaltenbreite zurücksetzen"
 
 msgid "Reset the toolbar appearance"
-msgstr ""
+msgstr "Das Erscheinungsbild der Werkzeugleiste zurücksetzen"
 
-#, fuzzy
 msgid "Reset toolbar"
-msgstr "&Farben zurücksetzen"
+msgstr "Werkzeugleiste zurücksetzen"
 
 msgid "Run"
 msgstr "Ausführen"
