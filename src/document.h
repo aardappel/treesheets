@@ -223,6 +223,7 @@ struct Document {
     }
 
     void UpdateHover(wxDC &dc, int mx, int my) {
+        ResetFont();
         int x, y;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
         prev = hover;
