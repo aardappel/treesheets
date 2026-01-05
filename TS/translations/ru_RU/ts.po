@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.7\n"
+"Project-Id-Version: TreeSheets_RU 3.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-09 00:00+0100\n"
-"PO-Revision-Date: 2025-12-31 17:55+0300\n"
+"POT-Creation-Date: 2026-01-04 18:45+0100\n"
+"PO-Revision-Date: 2026-01-05 14:37+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -1343,6 +1343,14 @@ msgstr "Сбросить &Ширину Столбца"
 # комментарий к п. Меню
 msgid "Reset the column widths in the selection to the default column width"
 msgstr "Сбросить ширину столбцов в выделенной области до ширины по умолчанию"
+
+# комментарий к п. Меню
+msgid "Reset the toolbar appearance"
+msgstr "Сбросить внешний вид панели инструментов"
+
+# п. Меню (нет & в исходном тексте)
+msgid "Reset toolbar"
+msgstr "Сбросить панель инструментов"
 
 msgid "Run"
 msgstr "Запустить"
