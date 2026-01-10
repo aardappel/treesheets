@@ -249,9 +249,6 @@ struct Document {
                                    r.height > canvash || r.y < scrolly ? r.y
                                    : r.y + r.height > maxy             ? r.y + r.height - canvash
                                                                        : scrolly);
-                    #ifdef __WXMAC__
-                        canvas->Refresh();
-                    #endif
                 }
             }
         }
@@ -587,6 +584,9 @@ struct Document {
         if (paintscrolltoselection) {
             wxTheApp->CallAfter([this](){
                 ScrollIfSelectionOutOfView(selected);
+                #ifdef __WXMAC__
+                    canvas->Refresh();
+                #endif
             });
             paintscrolltoselection = false;
         }
