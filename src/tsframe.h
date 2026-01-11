@@ -813,7 +813,7 @@ struct TSFrame : wxFrame {
         };
 
         auto filetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE);
+                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         AddToolbarIcon(filetb, _(L"New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg",
                        L"filenew_dark.svg");
         AddToolbarIcon(filetb, _(L"Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg",
@@ -825,7 +825,7 @@ struct TSFrame : wxFrame {
         filetb->Realize();
 
         auto edittb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE);
+                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         AddToolbarIcon(edittb, _(L"Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg",
                        L"undo_dark.svg");
         AddToolbarIcon(edittb, _(L"Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg",
@@ -835,7 +835,7 @@ struct TSFrame : wxFrame {
         edittb->Realize();
 
         auto zoomtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE);
+                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         AddToolbarIcon(zoomtb, _(L"Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, L"zoomin.svg",
                        L"zoomin_dark.svg");
         AddToolbarIcon(zoomtb, _(L"Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath,
@@ -843,7 +843,7 @@ struct TSFrame : wxFrame {
         zoomtb->Realize();
 
         auto celltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE);
+                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         AddToolbarIcon(celltb, _(L"New Grid (INS)"), A_NEWGRID, iconpath, L"newgrid.svg",
                        L"newgrid_dark.svg");
         AddToolbarIcon(celltb, _(L"Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
@@ -851,7 +851,7 @@ struct TSFrame : wxFrame {
         celltb->Realize();
 
         auto findtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE);
+                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         findtb->AddControl(new wxStaticText(findtb, wxID_ANY, _(L"Search ")));
         findtb->AddControl(filter = new wxTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
                                                    FromDIP(wxSize(80, 22)),
@@ -863,7 +863,7 @@ struct TSFrame : wxFrame {
         findtb->Realize();
 
         auto repltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE);
+                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         repltb->AddControl(new wxStaticText(repltb, wxID_ANY, _(L"Replace ")));
         repltb->AddControl(replaces = new wxTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
                                                      FromDIP(wxSize(80, 22)),
@@ -877,28 +877,28 @@ struct TSFrame : wxFrame {
         repltb->Realize();
 
         auto cellcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                            wxAUI_TB_DEFAULT_STYLE);
+                                            wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         cellcolortb->AddControl(new wxStaticText(cellcolortb, wxID_ANY, _(L"Cell ")));
         cellcolordropdown = new ColorDropdown(cellcolortb, A_CELLCOLOR, 1);
         cellcolortb->AddControl(cellcolordropdown);
         cellcolortb->Realize();
 
         auto textcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                            wxAUI_TB_DEFAULT_STYLE);
+                                            wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         textcolortb->AddControl(new wxStaticText(textcolortb, wxID_ANY, _(L"Text ")));
         textcolordropdown = new ColorDropdown(textcolortb, A_TEXTCOLOR, 2);
         textcolortb->AddControl(textcolordropdown);
         textcolortb->Realize();
 
         auto bordercolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                              wxAUI_TB_DEFAULT_STYLE);
+                                              wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         bordercolortb->AddControl(new wxStaticText(bordercolortb, wxID_ANY, _(L"Border ")));
         bordercolordropdown = new ColorDropdown(bordercolortb, A_BORDCOLOR, 7);
         bordercolortb->AddControl(bordercolordropdown);
         bordercolortb->Realize();
 
         auto imagetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE);
+                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         imagetb->AddControl(new wxStaticText(imagetb, wxID_ANY, _(L"Image ")));
         imagedropdown = new ImageDropdown(imagetb, imagepath);
         imagetb->AddControl(imagedropdown);
