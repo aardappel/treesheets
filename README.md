@@ -15,13 +15,13 @@ It's like a mind mapper, but more organized and compact.
 It's like an outliner, but in more than one dimension.
 It's like a text editor, but with structure.
 
-Community:
-----------
+Community
+---------
 If you like, you are kindly invited to join the [Discord channel](https://discord.gg/HAfKkJz) and 
 the [Google group](https://groups.google.com/group/treesheets) for discussion.
 
-Installation:
--------------
+Installation
+------------
 
 Pre-built binaries for Windows, macOS (Darwin) and Debian-based Linux distributions are available at the
 [Release section](https://github.com/aardappel/treesheets/releases). 
@@ -30,8 +30,8 @@ Please note that the packages for Debian-based distributions provided are built 
 
 If you use Flatpak, you can install [TreeSheets from Flathub](https://flathub.org/apps/com.strlen.TreeSheets).
 
-Source Code:
-------------
+Source Code
+-----------
 This repository contains all the files needed to build TreeSheets for various platforms.
 
 ### License
@@ -52,8 +52,8 @@ in the root of this folder, and distributing to users is then a matter of giving
 `TODO.txt` is the random notes I kept on ideas of myself and others on what future features could be added.
 
 
-Building:
----------
+Building
+--------
 This project uses CMake to enable compilation on various platforms and CPack on top of it to package the produced binaries. The build, installation and packaging instructions are within `CMakeLists.txt`.
 Please note that you are responsible to know how to use compilers and C++, the hints below are all the help we will give you for building TreeSheets:
 
@@ -81,8 +81,8 @@ cd treesheets
 
 If you do not have `wxWidgets` installed, you may want to set `wxBUILD_INSTALL` and `wxBUILD_SHARED` to off in the build configuration. This ensures a TreeSheets build with wxWidgets libraries statically linked in.
 
-Contributing:
--------------
+Contributing
+------------
 I welcome contributions, especially in the form of neatly prepared pull requests. The main thing to keep in mind when
 contributing is to keep as close as you can to both the format and the spirit of the existing code, even if it goes
 against the grain of how you program normally. That means not only using the same formatting and naming conventions
