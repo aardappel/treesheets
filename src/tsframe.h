@@ -1569,7 +1569,7 @@ struct TSFrame : wxFrame {
             }
     }
 
-    void UpdateStatus(const Selection &s) {
+    void UpdateStatus(const Selection &s, bool updateamount) {
         if (GetStatusBar()) {
             if (Cell *c = s.GetCell(); c && s.xs) {
                 SetStatusText(wxString::Format(_(L"Size %d"), -c->text.relsize), 3);
@@ -1580,7 +1580,7 @@ struct TSFrame : wxFrame {
                     1);
             } else
                 for (int field : {1, 2, 3}) SetStatusText("", field);
-            SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
+            if (updateamount) SetStatusText(wxString::Format(_(L"%d cell(s)"), s.xs * s.ys), 4);
         }
     }
 

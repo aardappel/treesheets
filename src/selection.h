@@ -315,7 +315,7 @@ class Selection {
                 Dir(doc, ctrl, shift, 1, 0, x, xs, ys, x < grid->xs, x < grid->xs - 1, exitedit);
                 break;
         }
-        sys->frame->UpdateStatus(doc->selected);
+        sys->frame->UpdateStatus(doc->selected, true);
     }
 
     void Next(Document *doc, bool backwards) {

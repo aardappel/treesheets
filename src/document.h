@@ -1369,7 +1369,7 @@ struct Document {
             case wxID_SELECTALL:
                 selected.SelAll();
                 canvas->Refresh();
-                sys->frame->UpdateStatus(selected);
+                sys->frame->UpdateStatus(selected, true);
                 return nullptr;
 
             case A_UP:

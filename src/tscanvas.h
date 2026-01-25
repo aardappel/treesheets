@@ -62,12 +62,12 @@ struct TSCanvas : public wxScrolledCanvas {
                     }
                 }
             }
-            sys->frame->UpdateStatus(doc->selected);
+            sys->frame->UpdateStatus(doc->selected, true);
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         } else {
-            if (doc->hover != doc->prev && !doc->hover.Thin()) sys->frame->UpdateStatus(doc->hover);
+            if (doc->hover != doc->prev && !doc->hover.Thin()) sys->frame->UpdateStatus(doc->hover, false);
         }
         lastmousepos = me.GetPosition();
     }
@@ -79,7 +79,7 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->isctrlshiftdrag = isctrlshift;
         doc->UpdateHover(dc, mx, my);
         doc->SelectClick(right);
-        sys->frame->UpdateStatus(doc->selected);
+        sys->frame->UpdateStatus(doc->selected, true);
         Refresh();
     }
 
@@ -101,7 +101,7 @@ struct TSCanvas : public wxScrolledCanvas {
             wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
             doc->UpdateHover(dc, me.GetX(), me.GetY());
             doc->SelectUp();
-            sys->frame->UpdateStatus(doc->selected);
+            sys->frame->UpdateStatus(doc->selected, true);
             Refresh();
         }
     }
@@ -119,7 +119,7 @@ struct TSCanvas : public wxScrolledCanvas {
         wxClientDC dc(this);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
         doc->UpdateHover(dc, me.GetX(), me.GetY());
         doc->DoubleClick();
-        sys->frame->UpdateStatus(doc->selected);
+        sys->frame->UpdateStatus(doc->selected, true);
         Refresh();
     }
 
