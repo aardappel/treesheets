@@ -114,6 +114,7 @@ struct Document {
         SetSelect(initialselected->parent->grid->FindCell(initialselected));
         selected.xs = xsize;
         selected.ys = ysize;
+        sys->frame->UpdateStatus(selected, true);
     }
 
     void InitWith(Cell *root, const wxString &filename, Cell *initialselected, int xsize, int ysize) {
