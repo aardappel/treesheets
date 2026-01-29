@@ -103,6 +103,7 @@ endif(ENABLE_LOBSTER)
 
 add_executable(TreeSheets
     src/main.cpp)
+set_target_properties(TreeSheets PROPERTIES OUTPUT_NAME "treesheetsv2")
 
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
 if(ENABLE_LOBSTER)
@@ -110,9 +111,10 @@ if(ENABLE_LOBSTER)
 endif(ENABLE_LOBSTER)
 
 if(APPLE)
+    set_target_properties(TreeSheets PROPERTIES INSTALL_RPATH "@executable_path/../../../lib")
     set_target_properties(TreeSheets PROPERTIES
         MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_BUNDLE_NAME "${CMAKE_PROJECT_NAME}"
+        MACOSX_BUNDLE_BUNDLE_NAME "treesheetsv2"
         MACOSX_BUNDLE_BUNDLE_VERSION "${CMAKE_PROJECT_VERSION}"
         MACOSX_BUNDLE_COPYRIGHT "Copyright © 2025 Wouter van Oortmerssen and Tobias Predel. All rights reserved."
         MACOSX_BUNDLE_GUI_IDENTIFIER "com.strlen.TreeSheets"
@@ -277,4 +279,6 @@ else()
     set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
     set(CPACK_DEBIAN_PACKAGE_EPOCH 2)
 endif()
+
+set(CPACK_PACKAGE_FILE_NAME "treesheetsv2")
 include(CPack)

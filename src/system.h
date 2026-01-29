@@ -59,11 +59,13 @@ struct System {
     Image *lastimage {nullptr};
     int customcolor {0xFFFFFF};
     int cursorcolor {0x00FF00};
+    wxDialog *notedialog {nullptr};
+    Document *notedialogdoc {nullptr};
 
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(
-                             L"", wxT(""), wxGetCwd() + wxT("/TreeSheets.ini"), wxT(""), 0)
-                       : (wxConfigBase *)new wxConfig(L"TreeSheets")) {
+                             L"", wxT(""), wxGetCwd() + wxT("/TreeSheetsv2.ini"), wxT(""), 0)
+                       : (wxConfigBase *)new wxConfig(L"TreeSheetsv2")) {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);

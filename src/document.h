@@ -102,7 +102,14 @@ struct Document {
         dndobjc->Add(dndobjf);
     }
 
-    ~Document() { DELETEP(root); }
+    ~Document() {
+        if (sys->notedialogdoc == this && sys->notedialog) {
+             sys->notedialog->Destroy();
+             sys->notedialog = nullptr;
+             sys->notedialogdoc = nullptr;
+        }
+        DELETEP(root);
+    }
 
     uint Background() { return root ? root->cellcolor : 0xFFFFFF; }
 
@@ -1503,6 +1510,58 @@ struct Document {
                     canvas->Refresh();
                 }
                 return nullptr;
+            
+            case A_EDITNOTE: {
+                if (sys->notedialog) {
+                    sys->notedialog->Destroy();
+                    sys->notedialog = nullptr;
+                    sys->notedialogdoc = nullptr;
+                    return nullptr;
+                }
+
+                if (!(cell = selected.ThinExpand(this))) return OneCell();
+                
+                auto *dlg = new wxDialog(sys->frame, wxID_ANY, _(L"Note"), wxDefaultPosition, wxSize(300, 225), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                auto *sizer = new wxBoxSizer(wxVERTICAL);
+                auto *text = new wxTextCtrl(dlg, wxID_ANY, cell->note, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+                sizer->Add(text, 1, wxEXPAND | wxALL, 10);
+                
+                auto *btns = dlg->CreateButtonSizer(wxOK | wxCANCEL);
+                sizer->Add(btns, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+                
+                dlg->SetSizer(sizer);
+                
+                dlg->Bind(wxEVT_CLOSE_WINDOW, [this, dlg](wxCloseEvent& e) {
+                    sys->notedialog = nullptr; 
+                    sys->notedialogdoc = nullptr;
+                    dlg->Destroy();
+                });
+                
+                auto *okBtn = dlg->FindWindow(wxID_OK);
+                if (okBtn) okBtn->SetFocus();
+
+                dlg->Bind(wxEVT_BUTTON, [this, dlg, text, cell](wxCommandEvent&) {
+                    cell->AddUndo(this);
+                    cell->note = text->GetValue();
+                    canvas->Refresh();
+                    
+                    sys->notedialog = nullptr;
+                    sys->notedialogdoc = nullptr;
+                    dlg->Destroy(); 
+                }, wxID_OK);
+                
+                dlg->Bind(wxEVT_BUTTON, [this, dlg](wxCommandEvent&) {
+                    sys->notedialog = nullptr;
+                    sys->notedialogdoc = nullptr;
+                    dlg->Destroy();
+                }, wxID_CANCEL);
+                
+                sys->notedialog = dlg;
+                sys->notedialogdoc = this;
+                
+                dlg->Show();
+                return nullptr;
+            }
 
             case A_PASTESTYLE:
                 if (!sys->cellclipboard) return _(L"No style to paste.");
