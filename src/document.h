@@ -1987,6 +1987,12 @@ struct Document {
                 canvas->Refresh();
                 return nullptr;
 
+            case A_FILTERNOTE:
+                loopallcells(ci) ci->text.filtered = ci->note.IsEmpty();
+                root->ResetChildren();
+                canvas->Refresh();
+                return nullptr;
+
             case A_FILTERMATCHNEXT:
                 bool lastsel = true;
                 Cell *next = root->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);

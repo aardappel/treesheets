@@ -507,6 +507,7 @@ struct TSFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERM, _(L"Show 1% more than the last filter"));
         // xgettext:no-c-format
         MyAppend(filtermenu, A_FILTERL, _(L"Show 1% less than the last filter"));
+        MyAppend(filtermenu, A_FILTERNOTE, _(L"Show cells with notes"));
         MyAppend(filtermenu, A_FILTERBYCELLBG, _(L"Filter by the same cell color"));
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _(L"Go to next filter match") + L"\tCTRL+F3");
 
