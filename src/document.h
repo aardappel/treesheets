@@ -1540,9 +1540,6 @@ struct Document {
                     dlg->Destroy();
                 });
 
-                auto *okBtn = dlg->FindWindow(wxID_OK);
-                if (okBtn) okBtn->SetFocus();
-
                 dlg->Bind(
                     wxEVT_BUTTON,
                     [this, dlg, text, cell](wxCommandEvent &) {
@@ -1568,6 +1565,7 @@ struct Document {
                 sys->notedialog = dlg;
                 sys->notedialogdoc = this;
 
+                text->SetFocus();
                 dlg->Show();
                 return nullptr;
             }
