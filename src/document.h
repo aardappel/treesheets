@@ -1534,7 +1534,7 @@ struct Document {
 
                 dlg->SetSizer(sizer);
 
-                dlg->Bind(wxEVT_CLOSE_WINDOW, [this, dlg](wxCloseEvent &e) {
+                dlg->Bind(wxEVT_CLOSE_WINDOW, [this, dlg](wxCloseEvent&) {
                     sys->notedialog = nullptr;
                     sys->notedialogdoc = nullptr;
                     dlg->Destroy();
