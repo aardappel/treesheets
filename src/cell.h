@@ -190,8 +190,8 @@ struct Cell {
             points[0] = wxPoint(right, top);
             points[1] = wxPoint(right, top + size);
             points[2] = wxPoint(right - size, top);
-            dc.SetBrush(sys->darkmode ? *wxWHITE_BRUSH : *wxBLACK_BRUSH);
-            dc.SetPen(sys->darkmode ? *wxWHITE_PEN : *wxBLACK_PEN);
+            dc.SetBrush(wxColour(LightColor(textcolor)));
+            dc.SetPen(wxColour(LightColor(textcolor)));
             dc.DrawPolygon(3, points);
         }
     }
