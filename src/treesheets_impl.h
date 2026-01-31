@@ -101,10 +101,19 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     std::string GetText() { return current->text.t.utf8_string(); }
 
+    std::string GetNote() { return current->note.utf8_string(); }
+
     void SetText(std::string_view t) {
         if (current->parent) {
             AddUndoIfNecessary();
             current->text.t = wxString::FromUTF8(t.data(), t.size());
+        }
+    }
+
+    void SetNote(std::string_view t) {
+        if (current->parent) {
+            AddUndoIfNecessary();
+            current->note = wxString::FromUTF8(t.data(), t.size());
         }
     }
 

@@ -17,7 +17,9 @@ struct ScriptInterface {
     virtual void GoToChild(int n) = 0;
     virtual void GoToColumnRow(int x, int y) = 0;
     virtual std::string GetText() = 0;
+    virtual std::string GetNote() = 0;
     virtual void SetText(std::string_view t) = 0;
+    virtual void SetNote(std::string_view t) = 0;
     virtual void CreateGrid(int x, int n) = 0;
     virtual void InsertColumn(int x) = 0;
     virtual void InsertRow(int y) = 0;

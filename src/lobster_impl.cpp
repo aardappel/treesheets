@@ -76,9 +76,18 @@ nfr("goto_column_row", "col,row", "II", "", "makes the current cell the child at
 nfr("get_text", "", "", "S", "gets the text of the current cell.",
     [](StackPtr &, VM &vm) { return Value(vm.NewString(si->GetText())); });
 
+nfr("get_note", "", "", "S", "gets the note of the current cell.",
+    [](StackPtr &, VM &vm) { return Value(vm.NewString(si->GetNote())); });
+
 nfr("set_text", "text", "S", "", "sets the text of the current cell",
     [](StackPtr &, VM &, Value s) {
         si->SetText(s.sval()->strv());
+        return NilVal();
+    });
+
+nfr("set_note", "text", "S", "", "sets the note of the current cell",
+    [](StackPtr &, VM &, Value s) {
+        si->SetNote(s.sval()->strv());
         return NilVal();
     });
 
