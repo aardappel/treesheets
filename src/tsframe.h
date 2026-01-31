@@ -410,6 +410,9 @@ struct TSFrame : wxFrame {
                      _(L"only sets the colors and style of the copied cell, and keeps the text"));
             MyAppend(editmenu, A_COLLAPSE, _(L"Collapse Ce&lls") + L"\tCTRL+L");
             editmenu->AppendSeparator();
+
+            MyAppend(editmenu, A_EDITNOTE, _(L"Edit &Note"),
+                     _(L"Edit the note of the selected cell"));
             MyAppend(editmenu, wxID_UNDO, _(L"&Undo") + L"\tCTRL+Z",
                      _(L"revert the changes, one step at a time"));
             MyAppend(editmenu, wxID_REDO, _(L"&Redo") + L"\tCTRL+Y",

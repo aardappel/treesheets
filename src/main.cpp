@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-static const auto TS_VERSION = 24;
+static const auto TS_VERSION = 25;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
 static const auto g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -250,6 +250,7 @@ enum {
         A_DETSCRIPT,
     #endif
     A_SET_FIXED_FONT,
+    A_EDITNOTE,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     #ifdef ENABLE_LOBSTER

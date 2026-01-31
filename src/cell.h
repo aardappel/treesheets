@@ -39,6 +39,7 @@ struct Cell {
     bool tiny {false};
     bool verticaltextandgrid {true};
     wxUint8 drawstyle {DS_GRID};
+    wxString note;
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
          Grid *_g = nullptr)
@@ -180,6 +181,19 @@ struct Cell {
         int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
         yoff = verticaltextandgrid ? yoff : 0;
         if (GridShown(doc)) grid->Render(doc, bx, by, dc, depth, sx - xoff, sy - yoff, xoff, yoff);
+
+        if (!note.IsEmpty() && !tiny && this != doc->currentdrawroot) {
+            wxPoint points[3];
+            int size = 6;
+            int right = bx + sx + mr;
+            int top = by - mt;
+            points[0] = wxPoint(right, top);
+            points[1] = wxPoint(right, top + size);
+            points[2] = wxPoint(right - size, top);
+            dc.SetBrush(*wxBLACK_BRUSH);
+            dc.SetPen(*wxBLACK_PEN);
+            dc.DrawPolygon(3, points);
+        }
     }
 
     void CloneStyleFrom(Cell const *o) {
@@ -188,6 +202,7 @@ struct Cell {
         verticaltextandgrid = o->verticaltextandgrid;
         drawstyle = o->drawstyle;
         text.stylebits = o->text.stylebits;
+        note = o->note;
     }
 
     unique_ptr<Cell> Clone(Cell *_parent) const {
@@ -195,6 +210,7 @@ struct Cell {
                                    grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
         c->text.cell = c.get();
+        c->note = note;
         if (grid) { grid->Clone(c->grid); }
         return c;
     }
@@ -342,6 +358,7 @@ struct Cell {
         dos.Write32(cellcolor);
         dos.Write32(textcolor);
         dos.Write8(drawstyle);
+        dos.WriteString(note);
         uint cellflags = this == ocs ? TS_SELECTION_MASK : 0;
         if (HasTextState()) {
             cellflags |= grid ? TS_BOTH : TS_TEXT;
@@ -384,6 +401,7 @@ struct Cell {
             c->textcolor = dis.Read32() & 0xFFFFFF;
         }
         if (sys->versionlastloaded >= 15) c->drawstyle = dis.Read8();
+        if (sys->versionlastloaded >= 25) c->note = dis.ReadString();
         int ts = dis.Read8();
         if (ts & TS_SELECTION_MASK) {
             ics = c;
@@ -409,6 +427,7 @@ struct Cell {
     void Paste(Document *document, const Cell *original, Selection &selection) {
         parent->AddUndo(document);
         ResetLayout();
+        if (!HasText() || !selection.TextEdit()) { note = original->note; }
         if (original->HasText()) {
             if (!HasText() || !selection.TextEdit()) {
                 cellcolor = original->cellcolor;
