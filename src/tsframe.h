@@ -411,7 +411,7 @@ struct TSFrame : wxFrame {
             MyAppend(editmenu, A_COLLAPSE, _(L"Collapse Ce&lls") + L"\tCTRL+L");
             editmenu->AppendSeparator();
 
-            MyAppend(editmenu, A_EDITNOTE, _(L"Edit &Note"),
+            MyAppend(editmenu, A_EDITNOTE, _(L"Edit &Note") + L"\tCTRL+E",
                      _(L"Edit the note of the selected cell"));
             MyAppend(editmenu, wxID_UNDO, _(L"&Undo") + L"\tCTRL+Z",
                      _(L"revert the changes, one step at a time"));
