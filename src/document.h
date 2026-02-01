@@ -1543,9 +1543,11 @@ struct Document {
                 dlg->Bind(
                     wxEVT_BUTTON,
                     [this, dlg, text, cell](wxCommandEvent &) {
-                        cell->AddUndo(this);
-                        cell->note = text->GetValue();
-                        canvas->Refresh();
+                        if (cell->note != text->GetValue()) {
+                            cell->AddUndo(this);
+                            cell->note = text->GetValue();
+                            canvas->Refresh();
+                        }
                         sys->notesizex = dlg->GetSize().x;
                         sys->notesizey = dlg->GetSize().y;
                         sys->notedialog = nullptr;
