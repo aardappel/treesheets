@@ -1370,6 +1370,8 @@ struct TSFrame : wxFrame {
                 sys->cfg->Write(L"posy", GetPosition().y);
             }
         }
+        sys->cfg->Write(L"notesizex", sys->notesizex);
+        sys->cfg->Write(L"notesizey", sys->notesizey);
         sys->cfg->Write(L"perspective", aui.SavePerspective());
         aui.ClearEventHashTable();
         aui.UnInit();

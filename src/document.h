@@ -1521,9 +1521,9 @@ struct Document {
 
                 if (!(cell = selected.ThinExpand(this))) return OneCell();
 
-                auto *dlg =
-                    new wxDialog(sys->frame, wxID_ANY, _(L"Note"), wxDefaultPosition,
-                                 wxSize(300, 225), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                auto *dlg = new wxDialog(sys->frame, wxID_ANY, _(L"Note"), wxDefaultPosition,
+                                         wxSize(sys->notesizex, sys->notesizey),
+                                         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
                 auto *sizer = new wxBoxSizer(wxVERTICAL);
                 auto *text = new wxTextCtrl(dlg, wxID_ANY, cell->note, wxDefaultPosition,
                                             wxDefaultSize, wxTE_MULTILINE);
@@ -1546,7 +1546,8 @@ struct Document {
                         cell->AddUndo(this);
                         cell->note = text->GetValue();
                         canvas->Refresh();
-
+                        sys->notesizex = dlg->GetSize().x;
+                        sys->notesizey = dlg->GetSize().y;
                         sys->notedialog = nullptr;
                         sys->notedialogdoc = nullptr;
                         dlg->Destroy();

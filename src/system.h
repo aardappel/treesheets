@@ -45,6 +45,8 @@ struct System {
     int sortcolumn;
     int sortxs;
     int sortdescending;
+    int notesizex {300};
+    int notesizey {255};
     std::set<wxString> watchedpaths;
     bool insidefiledialog {false};
     struct TimerStruct : wxTimer {
@@ -96,6 +98,8 @@ struct System {
         cfg->Read(L"cursorcolor", &cursorcolor, cursorcolor);
         cfg->Read(L"showtoolbar", &showtoolbar, showtoolbar);
         cfg->Read(L"showstatusbar", &showstatusbar, showstatusbar);
+        cfg->Read(L"notesizex", &notesizex, notesizex);
+        cfg->Read(L"notesizey", &notesizey, notesizey);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
         darkmode = followdarkmode && wxSystemSettings::GetAppearance().IsDark();
