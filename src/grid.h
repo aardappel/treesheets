@@ -1082,6 +1082,7 @@ struct Grid {
             c->textcolor = o->textcolor;
             c->text.stylebits = o->text.stylebits;
             c->text.image = o->text.image;
+            c->note = o->note;
         }
     }
 

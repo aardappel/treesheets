@@ -202,7 +202,6 @@ struct Cell {
         verticaltextandgrid = o->verticaltextandgrid;
         drawstyle = o->drawstyle;
         text.stylebits = o->text.stylebits;
-        note = o->note;
     }
 
     unique_ptr<Cell> Clone(Cell *_parent) const {
