@@ -853,6 +853,7 @@ struct Document {
             c->text.Key(this, uk, selected);
             paintscrolltoselection = true;
             canvas->Refresh();
+            canvas->Update();
             return nullptr;
         }
         unprocessed = true;
