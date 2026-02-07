@@ -61,8 +61,6 @@ struct System {
     Image *lastimage {nullptr};
     int customcolor {0xFFFFFF};
     int cursorcolor {0x00FF00};
-    wxDialog *notedialog {nullptr};
-    Document *notedialogdoc {nullptr};
 
     System(bool portable)
         : cfg(portable ? (wxConfigBase *)new wxFileConfig(

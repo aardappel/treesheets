@@ -102,14 +102,7 @@ struct Document {
         dndobjc->Add(dndobjf);
     }
 
-    ~Document() {
-        if (sys->notedialogdoc == this && sys->notedialog) {
-            sys->notedialog->Destroy();
-            sys->notedialog = nullptr;
-            sys->notedialogdoc = nullptr;
-        }
-        DELETEP(root);
-    }
+    ~Document() { DELETEP(root); }
 
     uint Background() { return root ? root->cellcolor : 0xFFFFFF; }
 
@@ -1512,64 +1505,30 @@ struct Document {
                 return nullptr;
 
             case A_EDITNOTE: {
-                if (sys->notedialog) {
-                    sys->notedialog->Destroy();
-                    sys->notedialog = nullptr;
-                    sys->notedialogdoc = nullptr;
-                    return nullptr;
-                }
-
                 if (!(cell = selected.ThinExpand(this))) return OneCell();
 
-                auto *dlg = new wxDialog(sys->frame, wxID_ANY, _(L"Note"), wxDefaultPosition,
-                                         wxSize(sys->notesizex, sys->notesizey),
-                                         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                wxDialog dlg(sys->frame, wxID_ANY, _(L"Note"), wxDefaultPosition,
+                             wxSize(sys->notesizex, sys->notesizey),
+                             wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
                 auto *sizer = new wxBoxSizer(wxVERTICAL);
-                auto *text = new wxTextCtrl(dlg, wxID_ANY, cell->note, wxDefaultPosition,
-                                            wxDefaultSize, wxTE_MULTILINE);
-                sizer->Add(text, 1, wxEXPAND | wxALL, 10);
-
-                auto *btns = dlg->CreateButtonSizer(wxOK | wxCANCEL);
+                wxTextCtrl text(&dlg, wxID_ANY, cell->note, wxDefaultPosition, wxDefaultSize,
+                                wxTE_MULTILINE);
+                sizer->Add(&text, 1, wxEXPAND | wxALL, 10);
+                auto *btns = dlg.CreateButtonSizer(wxOK | wxCANCEL);
                 sizer->Add(btns, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+                dlg.SetSizer(sizer);
 
-                dlg->SetSizer(sizer);
+                text.SetFocus();
 
-                dlg->Bind(wxEVT_CLOSE_WINDOW, [this, dlg](wxCloseEvent&) {
-                    sys->notedialog = nullptr;
-                    sys->notedialogdoc = nullptr;
-                    dlg->Destroy();
-                });
-
-                dlg->Bind(
-                    wxEVT_BUTTON,
-                    [this, dlg, text, cell](wxCommandEvent &) {
-                        if (cell->note != text->GetValue()) {
-                            cell->AddUndo(this);
-                            cell->note = text->GetValue();
-                            canvas->Refresh();
-                        }
-                        sys->notesizex = dlg->GetSize().x;
-                        sys->notesizey = dlg->GetSize().y;
-                        sys->notedialog = nullptr;
-                        sys->notedialogdoc = nullptr;
-                        dlg->Destroy();
-                    },
-                    wxID_OK);
-
-                dlg->Bind(
-                    wxEVT_BUTTON,
-                    [this, dlg](wxCommandEvent &) {
-                        sys->notedialog = nullptr;
-                        sys->notedialogdoc = nullptr;
-                        dlg->Destroy();
-                    },
-                    wxID_CANCEL);
-
-                sys->notedialog = dlg;
-                sys->notedialogdoc = this;
-
-                text->SetFocus();
-                dlg->Show();
+                if (dlg.ShowModal() == wxID_OK) {
+                    if (cell->note != text.GetValue()) {
+                        cell->AddUndo(this);
+                        cell->note = text.GetValue();
+                        canvas->Refresh();
+                    }
+                    sys->notesizex = dlg.GetSize().x;
+                    sys->notesizey = dlg.GetSize().y;
+                }
                 return nullptr;
             }
 
