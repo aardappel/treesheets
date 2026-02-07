@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 18:37+0200\n"
-"PO-Revision-Date: 2025-10-27 12:01-0300\n"
+"POT-Creation-Date: 2026-02-07 09:39+0100\n"
+"PO-Revision-Date: 2026-02-07 10:43-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -279,6 +279,9 @@ msgstr "Salvar &automaticamente"
 msgid "Autosave load"
 msgstr "Carregar do salvamento automático"
 
+msgid "Available languages"
+msgstr "Idiomas disponíveis"
+
 msgid "Background color..."
 msgstr "Cor do plano de fu&ndo..."
 
@@ -348,13 +351,19 @@ msgid "Cannot move this cell up in the hierarchy."
 msgstr "Não é possível mover essa célula para cima na hierarquia."
 
 msgid "Cannot open file."
-msgstr "Não foi possível abrir o arquivo."
+msgstr "Não é possível abrir o arquivo."
 
 msgid "Case-sensitive search"
 msgstr "&Diferenciar maiúsculas de minúsculas"
 
 msgid "Cell "
 msgstr "Célula "
+
+msgid "Change interface language"
+msgstr "Mudar idioma da interface"
+
+msgid "Change language..."
+msgstr "Mudar idioma..."
 
 msgid ""
 "Change the image(s) scale to match DPI of the current display. Applies to "
@@ -520,6 +529,12 @@ msgstr "Exclui a palavra antes do cursor"
 
 msgid "Discard Changes"
 msgstr "Descartar Mudanças"
+
+msgid "Edit &Note"
+msgstr "Editar Anotação"
+
+msgid "Edit the note of the selected cell"
+msgstr "Editar a anotação da célula selecionada"
 
 #, c-format
 msgid "Edited %s %s"
@@ -705,6 +720,9 @@ msgstr "Estender Seleção para o Fim da Linha"
 msgid "Extend Selection to Start"
 msgstr "Estender Seleção para o Início da Linha"
 
+msgid "Failed to get translation."
+msgstr "Não foi possível obter a tradução."
+
 msgid "Faster line rendering"
 msgstr "Renderização de linhas mais &veloz"
 
@@ -867,6 +885,12 @@ msgstr "&Tutorial interativo"
 
 msgid "Internal error: unimplemented operation!"
 msgstr "Erro interno: operação não implementada!"
+
+msgid "Invert in dark mode"
+msgstr "Inverter em modo escuro"
+
+msgid "Invert the document in dark mode"
+msgstr "Inverter o documento em modo escuro"
 
 msgid ""
 "It seems that you are about to paste or drop a TreeSheets file. What would "
@@ -1035,6 +1059,9 @@ msgstr "Não há texto para buscar."
 msgid "Not a TreeSheets file."
 msgstr "Não é um arquivo do TreeSheets."
 
+msgid "Note"
+msgstr "Anotação"
+
 msgid "Nothing more to redo."
 msgstr "Não há mais nada para refazer."
 
@@ -1172,6 +1199,13 @@ msgstr "Por favor selecione o(s) arquivo(s) a importar:"
 msgid "Please select the datetime range."
 msgstr "Por favor selecione a data/hora inicial e a final."
 
+msgid ""
+"Please select the language for the interface (requires restart). Please "
+"select the empty row if you want to use the default language."
+msgstr ""
+"Por favor escolha o idioma da interface (requer reinício). Se quiser usar o "
+"idioma padrão, escolha a linha vazia."
+
 msgid "Please select the script you want to remove from the list:"
 msgstr "Por favor selecione o script que deseja remover da lista:"
 
@@ -1263,6 +1297,12 @@ msgstr "Redefinir largura das colunas"
 msgid "Reset the column widths in the selection to the default column width"
 msgstr ""
 "Redefinir largura das colunas na seleção para a largura padrão de coluna"
+
+msgid "Reset the toolbar appearance"
+msgstr "Redefinir a aparência da barra de ferramentas"
+
+msgid "Reset toolbar"
+msgstr "Redefinir barra de ferramentas"
 
 msgid "Run"
 msgstr "Executar"
@@ -1415,6 +1455,9 @@ msgstr "Evidenciar edições mais recentes: últimas 50%"
 
 msgid "Show About dialog"
 msgstr "Mostra a caixa de diálogo Sobre"
+
+msgid "Show cells with notes"
+msgstr "Mostrar células com anotações"
 
 msgid "Show last edits in specific date range"
 msgstr "Evidenciar edições feitas em um intervalo específico de datas/horas..."
