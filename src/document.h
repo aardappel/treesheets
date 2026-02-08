@@ -250,6 +250,7 @@ struct Document {
                                    r.height > canvash || r.y < scrolly ? r.y
                                    : r.y + r.height > maxy             ? r.y + r.height - canvash
                                                                        : scrolly);
+                    canvas->Update();
                 }
             }
         }
@@ -276,13 +277,17 @@ struct Document {
                 canvas->Refresh();
                 return;
             }
-        Zoom(-100, false);
+        int canvasw, canvash;
+        canvas->GetClientSize(&canvasw, &canvash);
+        Zoom(-100, canvasw / 2, canvash / 2, false);
         if (zoomiftiny) ZoomTiny();
     }
 
     void ZoomTiny() {
         if (auto c = selected.GetCell(); c && c->tiny) {
-            Zoom(1);  // seems to leave selection box in a weird location?
+            int canvasw, canvash;
+        canvas->GetClientSize(&canvasw, &canvash);
+        Zoom(1, canvasw / 2, canvash / 2);  // seems to leave selection box in a weird location?
             if (selected.GetCell() != c) ZoomTiny();
         }
     }
@@ -437,17 +442,50 @@ struct Document {
             drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
     }
 
-    void Zoom(int dir, bool fromroot = false) {
+    void Zoom(int dir, int mouse_x, int mouse_y, bool fromroot = false) {
+        // 1. Get current logical mouse position (before scale change)
+        int canvasw, canvash;
+        canvas->GetClientSize(&canvasw, &canvash);
+
+        // Synchronize Document::scrollx/y with wxScrolledWindow's internal state
+        int current_view_start_x, current_view_start_y;
+        canvas->GetViewStart(&current_view_start_x, &current_view_start_y);
+        int pixels_per_scroll_unit_x, pixels_per_scroll_unit_y;
+        canvas->GetScrollPixelsPerUnit(&pixels_per_scroll_unit_x, &pixels_per_scroll_unit_y);
+        int actual_scroll_x = current_view_start_x * pixels_per_scroll_unit_x;
+        int actual_scroll_y = current_view_start_y * pixels_per_scroll_unit_y;
+
+        // Get the logical coordinates under the mouse pointer
+        double old_logical_mouse_x = (actual_scroll_x + mouse_x) / currentviewscale;
+        double old_logical_mouse_y = (actual_scroll_y + mouse_y) / currentviewscale;
+
+        // Perform the zoom operation (this will eventually change currentviewscale)
         ZoomSetDrawPath(dir, fromroot);
         auto drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
-            // We can't have the drawroot selected, so we must move the selection to the children.
             SetSelect(Selection(drawroot->grid, 0, 0, drawroot->grid->xs, drawroot->grid->ys));
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
-        paintscrolltoselection = true;
-        canvas->Refresh();
+
+        // 2. Force a layout calculation to get the new currentviewscale and layoutxs/ys
+        wxMemoryDC temp_dc; // Create a temporary DC to call Layout
+        Layout(temp_dc); // This will update layoutxs, layoutys, and currentviewscale.
+
+        // 3. Calculate new scroll position to keep the logical point under the mouse
+        int new_scrollx = static_cast<int>(std::round(old_logical_mouse_x * currentviewscale - mouse_x));
+        int new_scrolly = static_cast<int>(std::round(old_logical_mouse_y * currentviewscale - mouse_y));
+        
+        canvas->SetScrollbars(1, 1, static_cast<int>(std::round(layoutxs * currentviewscale)), static_cast<int>(std::round(layoutys * currentviewscale)), new_scrollx, new_scrolly);
+
+        // Update Document::scrollx/y to reflect the actual scroll state of wxScrolledWindow
+        int new_view_start_x, new_view_start_y;
+        canvas->GetViewStart(&new_view_start_x, &new_view_start_y);
+        scrollx = new_view_start_x * pixels_per_scroll_unit_x;
+        scrolly = new_view_start_y * pixels_per_scroll_unit_y;
+
+        paintscrolltoselection = false; // We just scrolled to mouse position, no need for ScrollIfSelectionOutOfView
+        canvas->Refresh(); // Request a full repaint after scrolling
     }
 
     const wxChar *NoSel() { return _(L"This operation requires a selection."); }
@@ -455,7 +493,7 @@ struct Document {
     const wxChar *NoThin() { return _(L"This operation doesn't work on thin selections."); }
     const wxChar *NoGrid() { return _(L"This operation requires a cell that contains a grid."); }
 
-    const wxChar *Wheel(int dir, bool alt, bool ctrl, bool shift, bool hierarchical = true) {
+    const wxChar *Wheel(int dir, bool alt, bool ctrl, bool shift, int mouse_x, int mouse_y, bool hierarchical = true) {
         if (!dir) return nullptr;
         if (alt) {
             if (!selected.grid) return NoSel();
@@ -480,7 +518,7 @@ struct Document {
         } else if (ctrl) {
             int steps = abs(dir);
             dir = sign(dir);
-            loop(i, steps) Zoom(dir);
+            loop(i, steps) Zoom(dir, mouse_x, mouse_y);
             return dir > 0 ? _(L"Zoomed in.") : _(L"Zoomed out.");
         } else {
             ASSERT(0);
@@ -585,9 +623,6 @@ struct Document {
         if (paintscrolltoselection) {
             wxTheApp->CallAfter([this](){
                 ScrollIfSelectionOutOfView(selected);
-                #ifdef __WXMAC__
-                    canvas->Refresh();
-                #endif
             });
             paintscrolltoselection = false;
         }
@@ -861,6 +896,8 @@ struct Document {
     }
 
     const wxChar *Action(int action) {
+        int canvasw, canvash;
+        canvas->GetClientSize(&canvasw, &canvash);
         switch (action) {
             case wxID_EXECUTE:
                 root->AddUndo(this);
@@ -998,16 +1035,16 @@ struct Document {
 
             case A_ZOOMIN:
                 return Wheel(1, false, true,
-                             false);  // Zoom( 1, dc); return "zoomed in (menu)";
+                             false, canvasw / 2, canvash / 2);  // Zoom( 1, dc); return "zoomed in (menu)";
             case A_ZOOMOUT:
                 return Wheel(-1, false, true,
-                             false);  // Zoom(-1, dc); return "zoomed out (menu)";
-            case A_INCSIZE: return Wheel(1, false, false, true);
-            case A_DECSIZE: return Wheel(-1, false, false, true);
-            case A_INCWIDTH: return Wheel(1, true, false, false);
-            case A_DECWIDTH: return Wheel(-1, true, false, false);
-            case A_INCWIDTHNH: return Wheel(1, true, false, false, false);
-            case A_DECWIDTHNH: return Wheel(-1, true, false, false, false);
+                             false, canvasw / 2, canvash / 2);  // Zoom(-1, dc); return "zoomed out (menu)";
+            case A_INCSIZE: return Wheel(1, false, false, true, canvasw / 2, canvash / 2);
+            case A_DECSIZE: return Wheel(-1, false, false, true, canvasw / 2, canvash / 2);
+            case A_INCWIDTH: return Wheel(1, true, false, false, canvasw / 2, canvash / 2);
+            case A_DECWIDTH: return Wheel(-1, true, false, false, canvasw / 2, canvash / 2);
+            case A_INCWIDTHNH: return Wheel(1, true, false, false, canvasw / 2, canvash / 2, false);
+            case A_DECWIDTHNH: return Wheel(-1, true, false, false, canvasw / 2, canvash / 2, false);
 
             case wxID_SELECT_FONT:
             case A_SET_FIXED_FONT: {
@@ -2034,7 +2071,9 @@ struct Document {
     }
 
     void ZoomOutIfNoGrid() {
-        if (!WalkPath(drawpath)->grid) Zoom(-1);
+        int canvasw, canvash;
+        canvas->GetClientSize(&canvasw, &canvash);
+        if (!WalkPath(drawpath)->grid) Zoom(-1, canvasw / 2, canvash / 2);
     }
 
     void PasteSingleText(Cell *c, const wxString &s) { c->text.Insert(this, s, selected, false); }

@@ -326,7 +326,9 @@ struct System {
         }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
-        doc->Zoom(zoomlevel, true);
+        int canvasw, canvash;
+        doc->canvas->GetClientSize(&canvasw, &canvash);
+        doc->Zoom(zoomlevel, canvasw / 2, canvash / 2, true);
         if (anyimagesfailed)
             wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _(L"PNG decoder failure"), wxOK, frame);
