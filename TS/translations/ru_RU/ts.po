@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 3.8\n"
+"Project-Id-Version: TreeSheets_RU 3.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 18:45+0100\n"
-"PO-Revision-Date: 2026-01-05 14:37+0300\n"
+"POT-Creation-Date: 2026-02-07 09:39+0100\n"
+"PO-Revision-Date: 2026-02-09 14:18+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -559,6 +559,13 @@ msgstr "Удаляет все слово перед курсором"
 msgid "Discard Changes"
 msgstr "Закрыть Без Изменений"
 
+msgid "Edit &Note"
+msgstr "Редактировать &Заметку"
+
+# комментарий к п. Меню
+msgid "Edit the note of the selected cell"
+msgstr "Редактировать заметку выбранной ячейки"
+
 # комментарий к эл-ту Главного Окна (Инф Строка)
 #, c-format
 msgid "Edited %s %s"
@@ -1098,6 +1105,10 @@ msgstr "Отсутствует текст для поиска."
 msgid "Not a TreeSheets file."
 msgstr "Файл не является файлом TreeSheets."
 
+# Заголовок Окна (выбор п. Меню)
+msgid "Note"
+msgstr "Заметка"
+
 msgid "Nothing more to redo."
 msgstr "Больше нечего возвращать."
 
@@ -1518,6 +1529,10 @@ msgstr ".. 50%"
 # комментарий к п. Меню
 msgid "Show About dialog"
 msgstr "Показать окно \"О программе\""
+
+# п. Меню (нет & в исходном тексте)
+msgid "Show cells with notes"
+msgstr "Показать ячейки с Заметками"
 
 msgid "Show last edits in specific date range"
 msgstr "Показать Изменения в Диапазоне Дат и Времени"
