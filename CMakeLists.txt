@@ -36,6 +36,17 @@ endif()
 ### Thirdparty dependencies
 
 include(FetchContent)
+FetchContent_Declare(
+    fault
+    GIT_REPOSITORY [https://github.com/Ridrik/fault.git](https://github.com/Ridrik/fault.git) # or, via codeberg: https://codeberg.org/ridrik/fault.git
+    GIT_TAG v0.5.0
+)
+FetchContent_MakeAvailable(fault)
+
+# Link to your application
+target_link_libraries(TreeSheets PRIVATE fault::fault)
+
+include(FetchContent)
 
 FetchContent_Declare(
     wxwidgets
