@@ -15,8 +15,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch: x64
-            os: ubuntu-latest
           - arch: arm64
             os: ubuntu-24.04-arm
     permissions:
@@ -34,14 +32,16 @@ jobs:
     - name: install opengl
       run: sudo apt-get -o Acquire::Retries=3 install mesa-common-dev libgl1-mesa-dev libgl1 libglx-mesa0 libxext-dev
     - name: install gtk
-      run: sudo apt-get -o Acquire::Retries=3 install libgtk-3-dev
+      run: sudo apt-get -o Acquire::Retries=3 install libgtk-3-dev squashfs-tools
+    - name: Install fpm
+      run: gem install fpm
     - name: cmake
       # starting with wxWidgets 3.3.0 we will be able to use wxUSE_SYS_LIBS
       run: |
         cmake -S . -B _build \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_BUILD_TYPE=Release \
         -DwxBUILD_SHARED=OFF \
         -DwxBUILD_INSTALL=OFF \
         -DwxUSE_REGEX=builtin \
@@ -59,6 +59,12 @@ jobs:
       run: |
         shopt -s extglob
         for file in _build/treesheets_*:*.deb; do mv -v "${file}" "${file/_+([[:digit:]]):/_}"; done
+    - name: build rpm package
+      run: |
+        shopt -s extglob
+        for file in _build/*.deb; do
+          fpm -s deb -t rpm -a aarch64 --no-depends --name treesheets $file
+        done       
     - name: Create release
       if: github.event_name == 'push'
       uses: ncipollo/release-action@v1
@@ -67,109 +73,14 @@ jobs:
         allowUpdates: true
         omitBody: true
         commit: ${{ github.sha }}
-        artifacts: "_build/treesheets_*.deb"
+        artifacts:
+          - "_build/*.deb"
+          - "_build/*.rpm"  
     - name: Upload artifacts
       if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v4
       with:
         name: linux-builds-${{ matrix.arch }}
-        path: _build/treesheets_*.deb
+        path: _build/treesheets*
     - name: Remove CPack artifact
-      run: rm -f _build/treesheets_*.deb
-
-  build-windows:
-    name: Build Windows (${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - arch: x64
-            os: windows-latest
-            extra_flags: "-A x64"
-          - arch: arm64
-            os: windows-11-arm
-            extra_flags: "-A ARM64 -DENABLE_LOBSTER=OFF" # tinycc currently does not fully support Windows on ARM
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v6
-    - name: cache build
-      uses: actions/cache@v5
-      with:
-        path: _build
-        key: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
-    - name: cmake
-      run: >
-        cmake -S . -B _build 
-        -DCMAKE_BUILD_TYPE=Release 
-        -DwxBUILD_SHARED=OFF 
-        -DwxBUILD_INSTALL=OFF 
-        -DTREESHEETS_VERSION=${{ github.run_number }}
-        ${{ matrix.extra_flags }}
-    - name: build and package
-      run: cmake --build _build --config Release --target package -j
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/TreeSheets-*.exe, _build/TreeSheets-*.zip"
-    - name: Upload artifacts
-      if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-builds-${{ matrix.arch }}
-        path: |
-          _build/TreeSheets-*.exe
-          _build/TreeSheets-*.zip
-    - name: Remove CPack artifacts
-      run: |
-        Remove-Item -Path _build/TreeSheets-*.exe -Force
-        Remove-Item -Path _build/TreeSheets-*.zip -Force
-      shell: powershell
-
-
-  build-mac:
-    name: Build Mac
-    runs-on: macos-latest
-    env:
-      minmac: 10.15
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v6
-    - name: cache build
-      uses: actions/cache@v5
-      with:
-        path: _build/_deps
-        key: ${{ runner.os }}-cmake-03-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-cmake-03-build
-    - name: Prepare Plist
-      run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
-    - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
-    - name: Build and package TreeSheets
-      run: cmake --build _build --target package -j4
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/TreeSheets-*.dmg"
-    - name: Upload artifacts
-      if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-disk-image
-        path: _build/TreeSheets-*.dmg
-    - name: Remove CPack artifact
-      run: rm -f _build/TreeSheets-*.dmg
+      run: rm -f _build/treesheets*
