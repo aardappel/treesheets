@@ -41,7 +41,7 @@ jobs:
         cmake -S . -B _build \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_BUILD_TYPE=Debug \
         -DwxBUILD_SHARED=OFF \
         -DwxBUILD_INSTALL=OFF \
         -DwxUSE_REGEX=builtin \
@@ -52,6 +52,7 @@ jobs:
         -DwxUSE_LIBTIFF=builtin \
         -DwxUSE_LIBWEBP=builtin \
         -DwxUSE_NANOSVG=builtin \
+        -DTREESHEETS_RELOCATABLE_INSTALLATION=ON \
         -DTREESHEETS_VERSION=${{ github.run_number }}
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
