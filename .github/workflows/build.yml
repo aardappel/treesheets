@@ -92,7 +92,7 @@ jobs:
           omitBody: true
           commit: ${{ github.sha }}
           # Must be a scalar string (comma-delimited list is supported)
-          artifacts: "_build/*.deb,_build/*.rpm"
+          artifacts: "_build/*.deb,*.rpm"
 
       - name: Upload artifacts
         if: github.event_name == 'pull_request'
