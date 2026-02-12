@@ -43,9 +43,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(fault)
 
-# Link to your application
-target_link_libraries(TreeSheets PRIVATE fault::fault)
-
 include(FetchContent)
 
 FetchContent_Declare(
@@ -141,7 +138,7 @@ endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 ## Link wxWidgets and lobster-impl into TreeSheets
-set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
+set(TREESHEETS_LIBS fault::fault wx::aui wx::adv wx::core wx::xml wx::net)
 if(ENABLE_LOBSTER)
     list(APPEND TREESHEETS_LIBS lobster-impl)
 endif(ENABLE_LOBSTER)
@@ -152,7 +149,7 @@ target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 ## Platform specific installation paths
 
 if(LINUX OR BSD)
-    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
+    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" ON)
 endif()
 
 if((LINUX OR BSD) AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
