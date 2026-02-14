@@ -139,7 +139,8 @@ struct Document {
 
     const wxChar *SaveDB(bool *success, bool istempfile = false, int page = -1) {
         if (filename.empty()) return _(L"Save cancelled.");
-        auto *ocs = selected.None() ? nullptr : selected.grid->C(selected.x, selected.y);
+        auto *ocs = selected.xs == 0 && selected.ys == 0 ? nullptr
+                                                         : selected.grid->C(selected.x, selected.y);
         auto start_saving_time = wxGetLocalTimeMillis();
 
         {  // limit destructors
