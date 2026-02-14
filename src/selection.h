@@ -34,6 +34,7 @@ class Selection {
     bool operator==(Selection &s) {
         return EqLoc(s) && cursor == s.cursor && cursorend == s.cursorend;
     }
+    bool None() const { return xs == 0 && ys == 0; }
     bool Thin() const { return !xs != !ys; }
     bool IsAll() const { return xs == grid->xs && ys == grid->ys; }
     void SetCursorEdit(Document *doc, bool edit) {
