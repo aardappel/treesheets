@@ -34,7 +34,7 @@ class Selection {
     bool operator==(Selection &s) {
         return EqLoc(s) && cursor == s.cursor && cursorend == s.cursorend;
     }
-    bool Thin() const { return !(xs * ys); }
+    bool Thin() const { return !xs != !ys; }
     bool IsAll() const { return xs == grid->xs && ys == grid->ys; }
     void SetCursorEdit(Document *doc, bool edit) {
         wxCursor c(edit ? wxCURSOR_IBEAM : wxCURSOR_ARROW);
