@@ -50,7 +50,7 @@ if(ENABLE_LOBSTER)
     FetchContent_Declare(
         lobster
         GIT_REPOSITORY https://github.com/aardappel/lobster
-        GIT_TAG v2025.4
+        GIT_TAG v2026.1
         GIT_SHALLOW ON
     )
     FetchContent_MakeAvailable(lobster)
