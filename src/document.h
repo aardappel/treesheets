@@ -467,6 +467,7 @@ struct Document {
                 selected.grid->cell->ResetChildren();
                 paintscrolltoselection = true;
                 canvas->Refresh();
+                sys->frame->UpdateStatus(selected, false);
                 return dir > 0 ? _(L"Column width increased.") : _(L"Column width decreased.");
             }
             return L"nothing to resize";
