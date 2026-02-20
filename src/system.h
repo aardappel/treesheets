@@ -32,6 +32,7 @@ struct System {
     bool thinselc {true};
     bool minclose {false};
     bool singletray {false};
+    bool startminimized {false};
     bool centered {true};
     bool fswatch {true};
     int autohtmlexport {0};
@@ -88,6 +89,7 @@ struct System {
         cfg->Read(L"followdarkmode", &followdarkmode, followdarkmode);
         cfg->Read(L"minclose", &minclose, minclose);
         cfg->Read(L"singletray", &singletray, singletray);
+        cfg->Read(L"startminimized", &startminimized, startminimized);
         cfg->Read(L"centered", &centered, centered);
         cfg->Read(L"fswatch", &fswatch, fswatch);
         cfg->Read(L"casesensitivesearch", &casesensitivesearch, casesensitivesearch);
