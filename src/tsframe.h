@@ -893,10 +893,10 @@ struct TSFrame : wxFrame {
         repltb->Realize();
 
         auto GetColorIndex = [&](int targetcolor) {
-            if (sys->customcolor == targetcolor) return 0;
             for (auto i = 1; i < celltextcolors.size(); ++i) {
                 if (celltextcolors[i] == targetcolor) return i;
             }
+            if (sys->customcolor == targetcolor) return 0;
             return 1;
         };
 
