@@ -890,24 +890,36 @@ struct TSFrame : wxFrame {
                        L"replaceall_dark.svg");
         repltb->Realize();
 
+        auto GetColorIndex = [&](int targetcolor, int defaultindex) {
+            if (sys->customcolor == targetcolor) return 0;
+            for (auto i = 0; i < celltextcolors.size(); ++i) {
+                if (celltextcolors[i] == targetcolor) return i;
+            }
+            return defaultindex;
+        };
+
         auto cellcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                             wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         cellcolortb->AddControl(new wxStaticText(cellcolortb, wxID_ANY, _(L"Cell ")));
-        cellcolordropdown = new ColorDropdown(cellcolortb, A_CELLCOLOR, 1);
+
+        cellcolordropdown =
+            new ColorDropdown(cellcolortb, A_CELLCOLOR, GetColorIndex(sys->lastcellcolor, 1));
         cellcolortb->AddControl(cellcolordropdown);
         cellcolortb->Realize();
 
         auto textcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                             wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         textcolortb->AddControl(new wxStaticText(textcolortb, wxID_ANY, _(L"Text ")));
-        textcolordropdown = new ColorDropdown(textcolortb, A_TEXTCOLOR, 2);
+        textcolordropdown =
+            new ColorDropdown(textcolortb, A_TEXTCOLOR, GetColorIndex(sys->lasttextcolor, 2));
         textcolortb->AddControl(textcolordropdown);
         textcolortb->Realize();
 
         auto bordercolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                               wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         bordercolortb->AddControl(new wxStaticText(bordercolortb, wxID_ANY, _(L"Border ")));
-        bordercolordropdown = new ColorDropdown(bordercolortb, A_BORDCOLOR, 7);
+        bordercolordropdown =
+            new ColorDropdown(bordercolortb, A_BORDCOLOR, GetColorIndex(sys->lastbordcolor, 7));
         bordercolortb->AddControl(bordercolordropdown);
         bordercolortb->Realize();
 
@@ -1384,6 +1396,9 @@ struct TSFrame : wxFrame {
         sys->cfg->Write(L"notesizex", sys->notesizex);
         sys->cfg->Write(L"notesizey", sys->notesizey);
         sys->cfg->Write(L"perspective", aui.SavePerspective());
+        sys->cfg->Write(L"lastcellcolor", sys->lastcellcolor);
+        sys->cfg->Write(L"lasttextcolor", sys->lasttextcolor);
+        sys->cfg->Write(L"lastbordcolor", sys->lastbordcolor);
         aui.ClearEventHashTable();
         aui.UnInit();
         DELETEP(editmenupopup);

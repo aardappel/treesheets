@@ -56,9 +56,9 @@ struct System {
             sys->cfg->Flush();
         }
     } every_second_timer;
-    uint lastcellcolor {0xFFFFFF};
-    uint lasttextcolor {0};
-    uint lastbordcolor {0xA0A0A0};
+    int lastcellcolor {0xFFFFFF};
+    int lasttextcolor {0};
+    int lastbordcolor {0xA0A0A0};
     Image *lastimage {nullptr};
     int customcolor {0xFFFFFF};
     int cursorcolor {0x00FF00};
@@ -100,6 +100,9 @@ struct System {
         cfg->Read(L"showstatusbar", &showstatusbar, showstatusbar);
         cfg->Read(L"notesizex", &notesizex, notesizex);
         cfg->Read(L"notesizey", &notesizey, notesizey);
+        cfg->Read(L"lastcellcolor", &lastcellcolor, lastcellcolor);
+        cfg->Read(L"lasttextcolor", &lasttextcolor, lasttextcolor);
+        cfg->Read(L"lastbordcolor", &lastbordcolor, lastbordcolor);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
         darkmode = followdarkmode && wxSystemSettings::GetAppearance().IsDark();
