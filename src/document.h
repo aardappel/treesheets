@@ -1661,6 +1661,7 @@ struct Document {
                 }
                 selected.grid->cell->ResetChildren();
                 canvas->Refresh();
+                sys->frame->UpdateStatus(selected, false);
                 return nullptr;
 
             case A_MINISIZE: {
