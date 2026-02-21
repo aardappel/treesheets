@@ -35,8 +35,15 @@ endif()
 
 ### Thirdparty dependencies
 
-include(FetchContent)
+### include(FetchContent)
+### FetchContent_Declare(
+###     fault
+###     GIT_REPOSITORY https://github.com/Ridrik/fault.git
+###     GIT_TAG v0.5.0
+### )
+### FetchContent_MakeAvailable(fault)
 
+include(FetchContent)
 FetchContent_Declare(
     wxwidgets
     GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
@@ -130,6 +137,7 @@ endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 ## Link wxWidgets and lobster-impl into TreeSheets
+### set(TREESHEETS_LIBS fault::fault wx::aui wx::adv wx::core wx::xml wx::net)
 set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
 if(ENABLE_LOBSTER)
     list(APPEND TREESHEETS_LIBS lobster-impl)
@@ -141,7 +149,7 @@ target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 ## Platform specific installation paths
 
 if(LINUX OR BSD)
-    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
+    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" ON)
 endif()
 
 if((LINUX OR BSD) AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
