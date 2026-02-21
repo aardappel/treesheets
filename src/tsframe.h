@@ -874,6 +874,7 @@ struct TSFrame : wxFrame {
                        L"cancel_dark.svg");
         AddToolbarIcon(findtb, _(L"Go to Next Search Result"), A_SEARCHNEXT, iconpath,
                        L"search.svg", L"search_dark.svg");
+        findtb->AddStretchSpacer();
         findtb->Realize();
 
         auto repltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -888,6 +889,7 @@ struct TSFrame : wxFrame {
                        L"replace_dark.svg");
         AddToolbarIcon(repltb, _(L"Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
                        L"replaceall_dark.svg");
+        repltb->AddStretchSpacer();
         repltb->Realize();
 
         auto GetColorIndex = [&](int targetcolor) {
