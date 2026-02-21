@@ -890,12 +890,12 @@ struct TSFrame : wxFrame {
                        L"replaceall_dark.svg");
         repltb->Realize();
 
-        auto GetColorIndex = [&](int targetcolor, int defaultindex) {
+        auto GetColorIndex = [&](int targetcolor) {
             if (sys->customcolor == targetcolor) return 0;
             for (auto i = 1; i < celltextcolors.size(); ++i) {
                 if (celltextcolors[i] == targetcolor) return i;
             }
-            return defaultindex;
+            return 1;
         };
 
         auto cellcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -903,7 +903,7 @@ struct TSFrame : wxFrame {
         cellcolortb->AddControl(new wxStaticText(cellcolortb, wxID_ANY, _(L"Cell ")));
 
         cellcolordropdown =
-            new ColorDropdown(cellcolortb, A_CELLCOLOR, GetColorIndex(sys->lastcellcolor, 1));
+            new ColorDropdown(cellcolortb, A_CELLCOLOR, GetColorIndex(sys->lastcellcolor));
         cellcolortb->AddControl(cellcolordropdown);
         cellcolortb->Realize();
 
@@ -911,7 +911,7 @@ struct TSFrame : wxFrame {
                                             wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         textcolortb->AddControl(new wxStaticText(textcolortb, wxID_ANY, _(L"Text ")));
         textcolordropdown =
-            new ColorDropdown(textcolortb, A_TEXTCOLOR, GetColorIndex(sys->lasttextcolor, 2));
+            new ColorDropdown(textcolortb, A_TEXTCOLOR, GetColorIndex(sys->lasttextcolor));
         textcolortb->AddControl(textcolordropdown);
         textcolortb->Realize();
 
@@ -919,7 +919,7 @@ struct TSFrame : wxFrame {
                                               wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         bordercolortb->AddControl(new wxStaticText(bordercolortb, wxID_ANY, _(L"Border ")));
         bordercolordropdown =
-            new ColorDropdown(bordercolortb, A_BORDCOLOR, GetColorIndex(sys->lastbordcolor, 7));
+            new ColorDropdown(bordercolortb, A_BORDCOLOR, GetColorIndex(sys->lastbordcolor));
         bordercolortb->AddControl(bordercolordropdown);
         bordercolortb->Realize();
 
