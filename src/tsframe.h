@@ -782,7 +782,12 @@ struct TSFrame : wxFrame {
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
         if (ismax && !IsIconized()) Maximize(true);
 
-        if (sys->startminimized) Iconize(true);
+        if (sys->startminimized)
+            #ifdef __WXGTK__
+                CallAfter([this]() { Iconize(true); });
+            #else
+                Iconize(true);
+            #endif
 
         SetFileAssoc(app->exename);
 
