@@ -43,11 +43,13 @@ struct TSApp : wxApp {
         bool portable = false;
         bool single_instance = true;
         bool dump_builtins = false;
+        bool start_minimized = false;
         for (int i = 1; i < argc; i++) {
             if (argv[i][0] == '-') {
                 switch (static_cast<int>(argv[i][1])) {
                     case 'p': portable = true; break;
                     case 'i': single_instance = false; break;
+                    case 'm': start_minimized = true; break;
                     case 'd':
                         dump_builtins = true;
                         single_instance = false;
@@ -72,6 +74,7 @@ struct TSApp : wxApp {
 
         wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
         sys = new System(portable);
+        if (start_minimized) sys->startminimized = true;
         SetupInternationalization();
         frame = new TSFrame(this);
 

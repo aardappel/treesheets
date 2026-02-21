@@ -217,6 +217,7 @@ enum {
     A_DDIMAGE,
     A_MINCLOSE,
     A_SINGLETRAY,
+    A_STARTMINIMIZED,
     A_CENTERED,
     A_SORTD,
     A_FOLD,

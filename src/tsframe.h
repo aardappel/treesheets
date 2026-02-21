@@ -609,6 +609,9 @@ struct TSFrame : wxFrame {
             A_SINGLETRAY, _(L"Single click maximize from tray"),
             _(L"Toggle whether only one click is required to maximize from system tray"));
         optmenu->Check(A_SINGLETRAY, sys->singletray);
+        optmenu->AppendCheckItem(A_STARTMINIMIZED, _(L"Start minimized"),
+                                 _(L"Start the application minimized"));
+        optmenu->Check(A_STARTMINIMIZED, sys->startminimized);
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_ZOOMSCR, _(L"Swap mousewheel scrolling and zooming"));
         optmenu->Check(A_ZOOMSCR, sys->zoomscroll);
@@ -778,6 +781,8 @@ struct TSFrame : wxFrame {
 
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
         if (ismax && !IsIconized()) Maximize(true);
+
+        if (sys->startminimized) Iconize(true);
 
         SetFileAssoc(app->exename);
 
@@ -1158,6 +1163,7 @@ struct TSFrame : wxFrame {
             case A_MAKEBAKS: sys->cfg->Write(L"makebaks", sys->makebaks = ce.IsChecked()); break;
             case A_TOTRAY: sys->cfg->Write(L"totray", sys->totray = ce.IsChecked()); break;
             case A_MINCLOSE: sys->cfg->Write(L"minclose", sys->minclose = ce.IsChecked()); break;
+            case A_STARTMINIMIZED: sys->cfg->Write(L"startminimized", sys->startminimized = ce.IsChecked()); break;
             case A_ZOOMSCR: sys->cfg->Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
             case A_THINSELC: sys->cfg->Write(L"thinselc", sys->thinselc = ce.IsChecked()); break;
             case A_AUTOSAVE: sys->cfg->Write(L"autosave", sys->autosave = ce.IsChecked()); break;
