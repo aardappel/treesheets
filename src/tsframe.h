@@ -892,7 +892,7 @@ struct TSFrame : wxFrame {
 
         auto GetColorIndex = [&](int targetcolor, int defaultindex) {
             if (sys->customcolor == targetcolor) return 0;
-            for (auto i = 0; i < celltextcolors.size(); ++i) {
+            for (auto i = 1; i < celltextcolors.size(); ++i) {
                 if (celltextcolors[i] == targetcolor) return i;
             }
             return defaultindex;
