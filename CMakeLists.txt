@@ -130,11 +130,10 @@ endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 ## Link wxWidgets and lobster-impl into TreeSheets
-set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
 if(ENABLE_LOBSTER)
-    list(APPEND TREESHEETS_LIBS lobster-impl)
+    target_link_libraries(TreeSheets PRIVATE lobster-impl)
 endif(ENABLE_LOBSTER)
-target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
+target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net)
 
 ### Installation
 
