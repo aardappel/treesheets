@@ -17,6 +17,7 @@ project(TreeSheets
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 OPTION(ENABLE_LOBSTER "Enable Lobster scripting" ON)
+OPTION(EXTERNAL_WXWIDGETS "Download and build wxWidgets" ON)
 
 ## Compiler-specific
 
@@ -37,14 +38,21 @@ endif()
 
 include(FetchContent)
 
-FetchContent_Declare(
-    wxwidgets
-    GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
-    GIT_TAG v3.2.9
-    GIT_SHALLOW ON
-    FIND_PACKAGE_ARGS 3.2.9 NAMES wxWidgets
-)
-FetchContent_MakeAvailable(wxwidgets)
+if(EXTERNAL_WXWIDGETS)
+    FetchContent_Declare(
+        wxwidgets
+        GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
+        GIT_TAG v3.2.9
+        GIT_SHALLOW ON
+        FIND_PACKAGE_ARGS 3.2.9 NAMES wxWidgets
+    )
+    FetchContent_MakeAvailable(wxwidgets)
+else()
+    find_package(wxWidgets REQUIRED COMPONENTS adv aui base core net xml)
+    if(wxWidgets_USE_FILE) # not defined in CONFIG mode
+        include(${wxWidgets_USE_FILE})
+    endif()
+endif()
 
 if(ENABLE_LOBSTER)
     FetchContent_Declare(
@@ -130,11 +138,15 @@ endif()
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 ## Link wxWidgets and lobster-impl into TreeSheets
-set(TREESHEETS_LIBS wx::aui wx::adv wx::core wx::xml wx::net)
+if(EXTERNAL_WXWIDGETS)
+    target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net)
+else()
+    target_link_libraries(TreeSheets PRIVATE ${wxWidgets_LIBRARIES})
+endif()
+
 if(ENABLE_LOBSTER)
-    list(APPEND TREESHEETS_LIBS lobster-impl)
+    target_link_libraries(TreeSheets PRIVATE lobster-impl)
 endif(ENABLE_LOBSTER)
-target_link_libraries(TreeSheets PRIVATE ${TREESHEETS_LIBS})
 
 ### Installation
 
