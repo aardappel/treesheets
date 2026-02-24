@@ -162,6 +162,7 @@ if((LINUX OR BSD) AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     install(FILES platform/linux/com.strlen.TreeSheets.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
     install(FILES platform/linux/com.strlen.TreeSheets.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
     install(FILES platform/linux/com.strlen.TreeSheets.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
+    install(FILES platform/linux/com.strlen.TreeSheets.metainfo.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
 elseif(APPLE)
     # Paths must be relative to use with CPack
     set(TREESHEETS_BINDIR .)

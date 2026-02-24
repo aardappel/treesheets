@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2026  Wouter van Oortmerssen and Tobias Predel -->
+<component type="desktop">
+  <id>com.strlen.TreeSheets.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>Zlib</project_license>
+  <name>TreeSheets</name>
+  <summary>Free form data organizer</summary>
+  <description>
+    <p>
+      A "hierarchical spreadsheet" that is a great replacement for
+      spreadsheets, mind mappers, outliners, PIMs, text editors and small
+      databases.
+    </p>
+    <p>
+      Suitable for any kind of data organization, such as todo lists,
+      calendars, project management, brainstorming, organizing ideas, planning,
+      requirements gathering, presentation of information, etc.
+    </p>
+    <p>
+      It's like a spreadsheet, immediately familiar, but much more suitable
+      for complex data because it's hierarchical.
+    </p>
+    <ul>
+        <li>It's like a mind mapper, but more organized and compact.</li>
+        <li>It's like an outliner, but in more than one dimension.</li>
+        <li>It's like a text editor, but with structure.</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_todo.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_unicode.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_tutorial.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://strlen.com/treesheets</url>
+</component>
