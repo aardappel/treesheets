@@ -102,7 +102,14 @@ struct Document {
         dndobjc->Add(dndobjf);
     }
 
-    ~Document() { DELETEP(root); }
+    ~Document() {
+        if (sys->notedialogdoc == this && sys->notedialog) {
+            sys->notedialog->Destroy();
+            sys->notedialog = nullptr;
+            sys->notedialogdoc = nullptr;
+        }
+        DELETEP(root);
+    }
 
     uint Background() { return root ? root->cellcolor : 0xFFFFFF; }
 
@@ -775,6 +782,18 @@ struct Document {
     }
 
     const wxChar *Key(int uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed) {
+        // UNIVERSAL FOCUS GUARD: If any wxTextCtrl currently has keyboard focus
+        // (AI chat prompt, note dialog, search bar, etc.), do NOT process canvas
+        // key actions. The text control handles its own input natively.
+        // TSCanvas itself is a wxScrolledWindow — never a wxTextCtrl — so this
+        // check is safe and will never block normal canvas cell editing.
+        if (auto *focused = wxWindow::FindFocus()) {
+            if (focused->IsKindOf(wxCLASSINFO(wxTextCtrl))) {
+                unprocessed = true;
+                return nullptr;
+            }
+        }
+
         if (uk == WXK_NONE || k < ' ' && k || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
@@ -1259,6 +1278,175 @@ struct Document {
                 }
                 return nullptr;
             }
+
+            case A_AISETTINGS: {
+                // Multi-model AI Settings dialog
+                wxDialog dlg(sys->frame, wxID_ANY, _(L"AI Assistant Settings"),
+                             wxDefaultPosition, wxSize(600, 450),
+                             wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                auto *mainSizer = new wxBoxSizer(wxVERTICAL);
+
+                mainSizer->Add(new wxStaticText(&dlg, wxID_ANY, _(L"Configured AI Models:")),
+                               0, wxLEFT | wxTOP, 10);
+
+                // Model list
+                auto *listBox = new wxListBox(&dlg, wxID_ANY, wxDefaultPosition, wxSize(-1, 120));
+
+                // Load existing models
+                struct ModelEntry {
+                    wxString name, key, url, model_id;
+                };
+                vector<ModelEntry> modelEntries;
+
+                auto count = sys->cfg->Read(L"ai_models_count", 0L);
+                if (count == 0 && !sys->ai_api_key.IsEmpty()) {
+                    // Migrate legacy single model
+                    modelEntries.push_back({
+                        sys->ai_model.IsEmpty() ? wxString(L"Default") : sys->ai_model,
+                        sys->ai_api_key, sys->ai_api_url, sys->ai_model});
+                } else {
+                    for (long i = 0; i < count; i++) {
+                        ModelEntry e;
+                        e.name = sys->cfg->Read(wxString::Format(L"ai_model_%ld_name", i), L"");
+                        e.key = sys->cfg->Read(wxString::Format(L"ai_model_%ld_key", i), L"");
+                        e.url = sys->cfg->Read(wxString::Format(L"ai_model_%ld_url", i), L"");
+                        e.model_id = sys->cfg->Read(wxString::Format(L"ai_model_%ld_id", i), L"");
+                        modelEntries.push_back(e);
+                    }
+                }
+
+                auto refreshList = [&]() {
+                    listBox->Clear();
+                    for (auto &e : modelEntries) listBox->Append(e.name);
+                };
+                refreshList();
+                mainSizer->Add(listBox, 0, wxEXPAND | wxALL, 10);
+
+                // Edit fields
+                auto *formSizer = new wxFlexGridSizer(2, 8, 8);
+                formSizer->AddGrowableCol(1, 1);
+                formSizer->Add(new wxStaticText(&dlg, wxID_ANY, _(L"Display Name:")), 0, wxALIGN_CENTER_VERTICAL);
+                auto *nameCtrl = new wxTextCtrl(&dlg, wxID_ANY);
+                formSizer->Add(nameCtrl, 1, wxEXPAND);
+                formSizer->Add(new wxStaticText(&dlg, wxID_ANY, _(L"API Key:")), 0, wxALIGN_CENTER_VERTICAL);
+                auto *keyCtrl = new wxTextCtrl(&dlg, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+                formSizer->Add(keyCtrl, 1, wxEXPAND);
+                formSizer->Add(new wxStaticText(&dlg, wxID_ANY, _(L"API Endpoint URL:")), 0, wxALIGN_CENTER_VERTICAL);
+                auto *urlCtrl = new wxTextCtrl(&dlg, wxID_ANY, L"https://api.openai.com/v1/chat/completions");
+                formSizer->Add(urlCtrl, 1, wxEXPAND);
+                formSizer->Add(new wxStaticText(&dlg, wxID_ANY, _(L"Model ID:")), 0, wxALIGN_CENTER_VERTICAL);
+                auto *modelCtrl = new wxTextCtrl(&dlg, wxID_ANY, L"gpt-4o-mini");
+                formSizer->Add(modelCtrl, 1, wxEXPAND);
+                mainSizer->Add(formSizer, 0, wxEXPAND | wxLEFT | wxRIGHT, 10);
+
+                // Buttons: Add, Update, Remove
+                auto *btnRow = new wxBoxSizer(wxHORIZONTAL);
+                auto *addBtn = new wxButton(&dlg, wxID_ANY, _(L"Add Model"));
+                auto *updateBtn = new wxButton(&dlg, wxID_ANY, _(L"Update Selected"));
+                auto *removeBtn = new wxButton(&dlg, wxID_ANY, _(L"Remove Selected"));
+                btnRow->Add(addBtn, 0, wxRIGHT, 5);
+                btnRow->Add(updateBtn, 0, wxRIGHT, 5);
+                btnRow->Add(removeBtn, 0);
+                mainSizer->Add(btnRow, 0, wxALIGN_CENTER | wxALL, 10);
+
+                mainSizer->Add(dlg.CreateButtonSizer(wxOK | wxCANCEL), 0, wxALIGN_CENTER | wxBOTTOM, 10);
+                dlg.SetSizer(mainSizer);
+
+                // Selection handler: populate form fields when a model is selected
+                listBox->Bind(wxEVT_LISTBOX, [&](wxCommandEvent &) {
+                    int sel = listBox->GetSelection();
+                    if (sel >= 0 && sel < (int)modelEntries.size()) {
+                        nameCtrl->SetValue(modelEntries[sel].name);
+                        keyCtrl->SetValue(modelEntries[sel].key);
+                        urlCtrl->SetValue(modelEntries[sel].url);
+                        modelCtrl->SetValue(modelEntries[sel].model_id);
+                    }
+                });
+
+                addBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent &) {
+                    auto name = nameCtrl->GetValue().Trim();
+                    if (name.IsEmpty()) name = modelCtrl->GetValue().Trim();
+                    if (name.IsEmpty()) name = L"New Model";
+                    modelEntries.push_back({name, keyCtrl->GetValue(), urlCtrl->GetValue(), modelCtrl->GetValue()});
+                    refreshList();
+                    listBox->SetSelection((int)modelEntries.size() - 1);
+                });
+
+                updateBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent &) {
+                    int sel = listBox->GetSelection();
+                    if (sel < 0 || sel >= (int)modelEntries.size()) return;
+                    auto name = nameCtrl->GetValue().Trim();
+                    if (name.IsEmpty()) name = modelCtrl->GetValue().Trim();
+                    if (name.IsEmpty()) name = L"Model";
+                    modelEntries[sel] = {name, keyCtrl->GetValue(), urlCtrl->GetValue(), modelCtrl->GetValue()};
+                    refreshList();
+                    listBox->SetSelection(sel);
+                });
+
+                removeBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent &) {
+                    int sel = listBox->GetSelection();
+                    if (sel < 0 || sel >= (int)modelEntries.size()) return;
+                    modelEntries.erase(modelEntries.begin() + sel);
+                    refreshList();
+                    if (!modelEntries.empty()) {
+                        int newSel = min(sel, (int)modelEntries.size() - 1);
+                        listBox->SetSelection(newSel);
+                    }
+                });
+
+                if (dlg.ShowModal() == wxID_OK) {
+                    // Save all models to config
+                    // Clear old entries first
+                    auto oldCount = sys->cfg->Read(L"ai_models_count", 0L);
+                    for (long i = 0; i < oldCount; i++) {
+                        sys->cfg->DeleteEntry(wxString::Format(L"ai_model_%ld_name", i));
+                        sys->cfg->DeleteEntry(wxString::Format(L"ai_model_%ld_key", i));
+                        sys->cfg->DeleteEntry(wxString::Format(L"ai_model_%ld_url", i));
+                        sys->cfg->DeleteEntry(wxString::Format(L"ai_model_%ld_id", i));
+                    }
+                    // Write new entries
+                    sys->cfg->Write(L"ai_models_count", static_cast<long>(modelEntries.size()));
+                    for (long i = 0; i < static_cast<long>(modelEntries.size()); i++) {
+                        auto prefix = wxString::Format(L"ai_model_%ld", i);
+                        sys->cfg->Write(prefix + L"_name", modelEntries[i].name);
+                        sys->cfg->Write(prefix + L"_key", modelEntries[i].key);
+                        sys->cfg->Write(prefix + L"_url", modelEntries[i].url);
+                        sys->cfg->Write(prefix + L"_id", modelEntries[i].model_id);
+                    }
+                    // Also update legacy fields for backward compat
+                    if (!modelEntries.empty()) {
+                        sys->ai_api_key = modelEntries[0].key;
+                        sys->ai_api_url = modelEntries[0].url;
+                        sys->ai_model = modelEntries[0].model_id;
+                        sys->cfg->Write(L"ai_api_key", sys->ai_api_key);
+                        sys->cfg->Write(L"ai_api_url", sys->ai_api_url);
+                        sys->cfg->Write(L"ai_model", sys->ai_model);
+                    }
+                    sys->cfg->Flush();
+                    // Refresh the chat panel model list
+                    if (sys->aichatpanel) sys->aichatpanel->RefreshModelList();
+                    return _(L"AI settings saved.");
+                }
+                return nullptr;
+            }
+
+            case A_AICHAT: {
+                // Toggle the AI Chat panel visibility
+                auto &pane = sys->frame->aui.GetPane(L"aichat");
+                if (pane.IsOk()) {
+                    bool wasShown = pane.IsShown();
+                    pane.Show(!wasShown);
+                    sys->frame->aui.Update();
+                    // Give keyboard focus to the prompt input when the panel opens,
+                    // so the user can type immediately without clicking.
+                    if (!wasShown && sys->aichatpanel && sys->aichatpanel->promptInput) {
+                        sys->aichatpanel->promptInput->CallAfter([panel = sys->aichatpanel]() {
+                            if (panel && panel->promptInput) panel->promptInput->SetFocus();
+                        });
+                    }
+                }
+                return nullptr;
+            }
         }
 
         if (!selected.grid) return NoSel();
@@ -1267,6 +1455,24 @@ struct Document {
 
         switch (action) {
             case A_BACKSPACE:
+                if (sys->notedialog) {
+                     // The user is in the note dialog, but the "Backspace" key event was intercepted 
+                     // by the menu accelerator (Edit -> Delete/Backspace).
+                     // We need to manually perform a backspace on the text control.
+                     const int ID_NOTE_TEXT = wxID_HIGHEST + 100;
+                     wxTextCtrl* text = (wxTextCtrl*)sys->notedialog->FindWindow(ID_NOTE_TEXT);
+                     if (text) {
+                         long from, to;
+                         text->GetSelection(&from, &to);
+                         if (from != to) {
+                             text->Remove(from, to); // Delete selection
+                         } else if (from > 0) {
+                             text->Remove(from - 1, from); // Backspace one char
+                         }
+                     }
+                     return nullptr; // Consumed
+                }
+                
                 if (selected.Thin()) {
                     if (selected.xs)
                         DelRowCol(selected.y, 0, selected.grid->ys, 1, -1, selected.y - 1, 0, -1);
@@ -1503,6 +1709,182 @@ struct Document {
                     canvas->Refresh();
                 }
                 return nullptr;
+            
+            case A_EDITNOTE: {
+                if (!(cell = selected.ThinExpand(this))) return OneCell();
+                
+                const int ID_NOTE_TEXT = wxID_HIGHEST + 100;
+
+                if (sys->notedialog) {
+                    // Toggle Off logic: Save and Close
+                    wxTextCtrl* text = (wxTextCtrl*)sys->notedialog->FindWindow(ID_NOTE_TEXT); 
+                    if (text && sys->notedialogdoc == this && selected.GetCell()) {
+                        auto current_cell = selected.GetCell();
+                        current_cell->AddUndo(this);
+                        current_cell->note = text->GetValue();
+                        canvas->Refresh();
+                    }
+                    sys->notedialog->Destroy();
+                    sys->notedialog = nullptr;
+                    sys->notedialogdoc = nullptr;
+                    return nullptr;
+                }
+
+                // Open new non-modal dialog
+                sys->notedialog = new wxDialog(sys->frame, wxID_ANY, _(L"Note"), wxDefaultPosition, wxSize(300, 225), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                sys->notedialogdoc = this;
+                
+                auto *sizer = new wxBoxSizer(wxVERTICAL);
+                auto *text = new wxTextCtrl(sys->notedialog, ID_NOTE_TEXT, cell->note, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_PROCESS_ENTER);
+                sizer->Add(text, 1, wxEXPAND | wxALL, 10);
+                
+                auto *btns = sys->notedialog->CreateButtonSizer(wxOK | wxCANCEL);
+                auto *delBtn = new wxButton(sys->notedialog, wxID_DELETE, _(L"Delete Note"));
+                btns->Add(delBtn, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
+                sizer->Add(btns, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+                
+                // Bind buttons
+                sys->notedialog->Bind(wxEVT_BUTTON, [this, text](wxCommandEvent&) {
+                    // OK Button - Save and Close
+                     if (sys->notedialogdoc == this && selected.GetCell()) {
+                        selected.GetCell()->AddUndo(this);
+                        selected.GetCell()->note = text->GetValue();
+                        canvas->Refresh();
+                     }
+                     sys->notedialog->Destroy();
+                     sys->notedialog = nullptr;
+                     sys->notedialogdoc = nullptr;
+                }, wxID_OK);
+
+                sys->notedialog->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
+                    // Cancel Button - Close without saving
+                     sys->notedialog->Destroy();
+                     sys->notedialog = nullptr;
+                     sys->notedialogdoc = nullptr;
+                }, wxID_CANCEL);
+
+                delBtn->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
+                    // Delete Button - Clear note and Close
+                     if (sys->notedialogdoc == this && selected.GetCell()) {
+                        selected.GetCell()->AddUndo(this);
+                        selected.GetCell()->note.Clear();
+                        canvas->Refresh();
+                     }
+                     sys->notedialog->Destroy();
+                     sys->notedialog = nullptr;
+                     sys->notedialogdoc = nullptr;
+                });
+                
+                sys->notedialog->SetSizer(sizer);
+                text->SetFocus();
+
+                // Intercept Enter on the DIALOG (not just the text ctrl) via KEY_DOWN.
+                text->Bind(wxEVT_KEY_DOWN, [text](wxKeyEvent &evt) {
+                    if (evt.GetKeyCode() == WXK_RETURN || evt.GetKeyCode() == WXK_NUMPAD_ENTER) {
+                        text->WriteText(L"\n");   // insert newline; do NOT skip — consumes the event
+                    } else {
+                        evt.Skip();
+                    }
+                });
+
+                // When the dialog is closed via the 'X' button, we should also save.
+                sys->notedialog->Bind(wxEVT_CLOSE_WINDOW, [this, text](wxCloseEvent& event) {
+                     if (sys->notedialogdoc == this && selected.GetCell()) {
+                        selected.GetCell()->AddUndo(this);
+                        selected.GetCell()->note = text->GetValue();
+                        canvas->Refresh();
+                     }
+                     sys->notedialog->Destroy();
+                     sys->notedialog = nullptr;
+                     sys->notedialogdoc = nullptr;
+                });
+                
+                sys->notedialog->Show();
+                return nullptr;
+            }
+
+            case A_DELETENOTE:
+                selected.grid->cell->AddUndo(this);
+                loopallcellssel(c, true) {
+                    if (!c->note.IsEmpty()) {
+                        c->note.Clear();
+                    }
+                }
+                canvas->Refresh();
+                return nullptr;
+
+            case A_INSERTLINK: {
+                 if (!selected.TextEdit()) return _(L"Select text to link.");
+                 if (selected.cursor == selected.cursorend) return _(L"Select text to link.");
+
+                 wxString url = ::wxGetTextFromUser(_(L"Enter URL:"), _(L"Insert Link"), L"", sys->frame);
+                 if (url.IsEmpty()) return nullptr;
+
+                 cell = selected.GetCell();
+                 cell->AddUndo(this);
+                 
+                 int start = min(selected.cursor, selected.cursorend);
+                 int end = max(selected.cursor, selected.cursorend);
+                 
+                 cell->text.links.push_back({start, end, url});
+                 canvas->Refresh();
+                 return nullptr;
+            }
+
+            case A_REMOVELINK: {
+                if (!cell) cell = selected.GetCell();
+                if (cell) {
+                    cell->AddUndo(this);
+                    if (selected.TextEdit()) {
+                         // Remove links overlapping cursor logic
+                         for (auto it = cell->text.links.begin(); it != cell->text.links.end(); ) {
+                             if (selected.cursor >= it->start && selected.cursor <= it->end) {
+                                 it = cell->text.links.erase(it);
+                             } else {
+                                 ++it;
+                             }
+                         }
+                    } else {
+                        // Clear all links in selection
+                        loopallcellssel(c, true) {
+                             c->text.links.clear();
+                        }
+                    }
+                    canvas->Refresh();
+                }
+                return nullptr;
+            }
+
+            case A_OPENLINK: {
+                wxString url;
+                if (!cell) cell = selected.GetCell();
+                if (cell) {
+                    if (selected.TextEdit()) {
+                         for (auto& l : cell->text.links) {
+                             if (selected.cursor >= l.start && selected.cursor <= l.end) {
+                                 url = l.url;
+                                 break;
+                             }
+                         }
+                    }
+                    if (url.IsEmpty() && !cell->text.links.empty()) {
+                        url = cell->text.links[0].url;
+                    }
+                    if (url.IsEmpty()) {
+                        // Fallback: Check if text itself is a URL (basic check)
+                        if (cell->text.t.StartsWith("http://") || cell->text.t.StartsWith("https://") || cell->text.t.StartsWith("www.")) {
+                            url = cell->text.t;
+                        }
+                    }
+                }
+                
+                if (!url.IsEmpty()) {
+                    ::wxLaunchDefaultBrowser(url);
+                } else {
+                    return _(L"No link found.");
+                }
+                return nullptr;
+            }
 
             case A_PASTESTYLE:
                 if (!sys->cellclipboard) return _(L"No style to paste.");
@@ -1542,6 +1924,43 @@ struct Document {
                 canvas->Refresh();
                 return nullptr;
             }
+
+            case A_TOGGLE_BG_IMAGE: {
+                selected.grid->cell->AddUndo(this);
+                loopallcellssel(c, true) {
+                    if (c->text.image) {
+                        c->text.bg_image = !c->text.bg_image;
+                    }
+                }
+                selected.grid->cell->ResetChildren();
+                canvas->Refresh();
+                return nullptr;
+            }
+            case A_TOGGLE_FREEZE_ROW: {
+                selected.grid->cell->AddUndo(this);
+                if (selected.grid->frozen_rows > 0) {
+                     selected.grid->frozen_rows = 0;
+                } else {
+                     selected.grid->frozen_rows = selected.y + 1;
+                }
+                selected.grid->cell->ResetChildren();
+                canvas->Refresh();
+                return nullptr;
+            }
+
+            case A_TOGGLE_FREEZE_COLUMN: {
+                selected.grid->cell->AddUndo(this);
+                if (selected.grid->frozen_columns > 0) {
+                     selected.grid->frozen_columns = 0;
+                } else {
+                     selected.grid->frozen_columns = selected.x + 1;
+                }
+                selected.grid->cell->ResetChildren();
+                canvas->Refresh();
+                return nullptr;
+            }
+
+            // A_AICHAT is now handled in the first switch block (no cell selection required)
 
             case A_IMAGER: {
                 selected.grid->cell->AddUndo(this);
