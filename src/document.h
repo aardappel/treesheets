@@ -1397,31 +1397,27 @@ struct Document {
 
             case A_SCLEFT:
             case A_SCRIGHT:
-                if (!selected.TextEdit()) {
-                    if (action == A_SCLEFT) {
-                        selected.xs = selected.x + (selected.Thin() ? 0 : 1);
-                        selected.x = 0;
-                    } else {
-                        selected.xs = selected.grid->xs - selected.x;
-                    }
-                    sys->frame->UpdateStatus(selected, true);
-                    canvas->Refresh();
-                } else {
-                    selected.Cursor(this, action - A_SCUP + A_UP, true, true);
-                }
-                return nullptr;
-
             case A_SCUP:
             case A_SCDOWN:
                 if (!selected.TextEdit()) {
-                    if (action == A_SCUP) {
-                        selected.ys = selected.y + (selected.Thin() ? 0 : 1);
-                        selected.y = 0;
+                    bool horiz = (action == A_SCLEFT || action == A_SCRIGHT);
+                    bool ismin = (action == A_SCLEFT || action == A_SCUP);
+
+                    int &pos = horiz ? selected.x : selected.y;
+                    int &ext = horiz ? selected.xs : selected.ys;
+                    int gridmax = horiz ? selected.grid->xs : selected.grid->ys;
+
+                    if (ismin) {
+                        ext = pos + (selected.Thin() ? 0 : 1);
+                        pos = 0;
                     } else {
-                        selected.ys = selected.grid->ys - selected.y;
+                        ext = gridmax - pos;
                     }
+
                     sys->frame->UpdateStatus(selected, true);
                     canvas->Refresh();
+                } else if (action == A_SCLEFT || action == A_SCRIGHT) {
+                    selected.Cursor(this, action - A_SCUP + A_UP, true, true);
                 }
                 return nullptr;
 
