@@ -23,6 +23,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnPaint(wxPaintEvent &event) {
+        if (!doc->root) return;
         #ifdef __WXMSW__
             auto sz = GetClientSize();
             if (sz.GetX() <= 0 || sz.GetY() <= 0) return;
@@ -34,7 +35,15 @@ struct TSCanvas : public wxScrolledCanvas {
             wxPaintDC dc(this);
         #endif
         DoPrepareDC(dc);
+        GetClientSize(&doc->maxx, &doc->maxy);
+        doc->Layout(dc);
         doc->Draw(dc);
+        if (doc->paintscrolltoselection) {
+            doc->paintscrolltoselection = false;
+            CallAfter([this](){
+                doc->ScrollIfSelectionOutOfView(doc->selected);
+            });
+        }
     };
 
     void OnMotion(wxMouseEvent &me) {
