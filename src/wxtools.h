@@ -3,8 +3,8 @@ static void DrawRectangle(wxDC &dc, uint color, int x, int y, int xs, int ys,
     if (outline)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     else
-        dc.SetBrush(wxBrush(wxColour(LightColor(color))));
-    dc.SetPen(wxPen(wxColour(LightColor(color))));
+        dc.SetBrush(wxBrush(LightColor(color)));
+    dc.SetPen(wxPen(LightColor(color)));
     dc.DrawRectangle(x, y, xs, ys);
 }
 

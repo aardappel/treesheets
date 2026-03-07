@@ -203,7 +203,7 @@ struct Text {
             else if (filtered)
                 dc.SetPen(*wxLIGHT_GREY_PEN);
             else if (istag)
-                dc.SetPen(wxColour(LightColor(doc->tags[t])));
+                dc.SetPen(wxPen(LightColor(doc->tags[t])));
             else
                 dc.SetPen(sys->pen_tinytext);
         }
@@ -236,7 +236,7 @@ struct Text {
                 else if (filtered)
                     dc.SetTextForeground(*wxLIGHT_GREY);
                 else if (istag)
-                    dc.SetTextForeground(wxColour(LightColor(doc->tags[t])));
+                    dc.SetTextForeground(LightColor(doc->tags[t]));
                 else if (cell->textcolor)
                     dc.SetTextForeground(LightColor(cell->textcolor));  // FIXME: clean up
                 auto tx = bx + 2 + ixs;

@@ -250,7 +250,7 @@ struct Grid {
         }
         if (view_grid_outer_spacing && cell->drawstyle == DS_GRID) {
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
-            dc.SetPen(wxPen(wxColour(LightColor(bordercolor))));
+            dc.SetPen(wxPen(LightColor(bordercolor)));
             loop(i, view_grid_outer_spacing - 1) {
                 dc.DrawRoundedRectangle(
                     bx + xoff + view_grid_outer_spacing - i,

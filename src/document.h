@@ -552,7 +552,7 @@ struct Document {
         if (!root) return;
         canvas->GetClientSize(&maxx, &maxy);
         Layout(dc);
-        dc.SetBackground(wxBrush(wxColor(LightColor(Background()))));
+        dc.SetBackground(wxBrush(LightColor(Background())));
         dc.Clear();
         double xscale = maxx / static_cast<double>(layoutxs);
         double yscale = maxy / static_cast<double>(layoutys);

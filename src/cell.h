@@ -176,7 +176,7 @@ struct Cell {
                                         tys + cell_margin * 2 + g_margin_extra, sys->roundness);
             // FIXME: this half a g_margin_extra is a bit of hack
         }
-        dc.SetTextBackground(wxColour(LightColor(actualcellcolor)));
+        dc.SetTextBackground(LightColor(actualcellcolor));
         int xoff = verticaltextandgrid ? 0 : text.extent - depth * dc.GetCharHeight();
         int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
         yoff = verticaltextandgrid ? yoff : 0;
@@ -190,8 +190,8 @@ struct Cell {
             points[0] = wxPoint(right, top);
             points[1] = wxPoint(right, top + size);
             points[2] = wxPoint(right - size, top);
-            dc.SetBrush(wxColour(LightColor(textcolor)));
-            dc.SetPen(wxColour(LightColor(textcolor)));
+            dc.SetBrush(wxBrush(LightColor(textcolor)));
+            dc.SetPen(wxPen(LightColor(textcolor)));
             dc.DrawPolygon(3, points);
         }
     }
