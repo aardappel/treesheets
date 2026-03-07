@@ -149,9 +149,8 @@ static uint PickColor(wxWindow *parent, uint defaultcolor) {
     return -1;
 }
 
-static uint LightColor(uint color) {
-    if (sys->darkmode) color ^= 0x00FFFFFF;
-    return color;
+inline static uint LightColor(uint color) {
+    return sys->darkmode ? (color ^ 0x00FFFFFF) : color;
 }
 
 #define dd_icon_res_scale 3.0
