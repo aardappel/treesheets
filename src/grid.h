@@ -187,7 +187,7 @@ struct Grid {
                 }
             };
             if (!sys->fastrender && view_grid_outer_spacing && cell->cellcolor != 0xFFFFFF) {
-                dc.SetPen(sys->colormask ? *wxBLACK_PEN : *wxWHITE_PEN);
+                dc.SetPen(wxPen(LightColor(0xFFFFFF)));
                 drawlines();
             }
             // dotted lines result in very expensive drawline calls
@@ -400,8 +400,8 @@ struct Grid {
         if (sel.Thin()) {
             DrawInsert(doc, dc, sel, 0);
         } else {
-            dc.SetBrush(sys->colormask ? *wxWHITE_BRUSH : *wxBLACK_BRUSH);
-            dc.SetPen(sys->colormask ? *wxWHITE_PEN : *wxBLACK_PEN);
+            dc.SetBrush(wxBrush(LightColor(0x000000)));
+            dc.SetPen(wxPen(LightColor(0x000000)));
             wxRect g = GetRect(doc, sel);
             int lw = g_line_width;
             int te = sel.TextEdit();

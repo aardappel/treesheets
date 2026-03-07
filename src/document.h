@@ -532,7 +532,7 @@ struct Document {
                 }
                 dc.DrawText(s, off, off);
             }
-        dc.SetTextForeground(sys->colormask ? *wxWHITE : *wxBLACK);
+        dc.SetTextForeground(LightColor(0x000000));
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
     }

@@ -243,7 +243,7 @@ struct Text {
                 auto ty = by + lines * h;
                 dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
                 if (searchfound || filtered || istag || cell->textcolor)
-                    dc.SetTextForeground(sys->colormask ? *wxWHITE : *wxBLACK);
+                    dc.SetTextForeground(LightColor(0x000000));
             }
             lines++;
         }
