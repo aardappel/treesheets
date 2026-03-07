@@ -549,6 +549,9 @@ struct Document {
     }
 
     void Draw(wxDC &dc) {
+        if (!root) return;
+        canvas->GetClientSize(&maxx, &maxy);
+        Layout(dc);
         dc.SetBackground(wxBrush(wxColor(LightColor(Background()))));
         dc.Clear();
         double xscale = maxx / static_cast<double>(layoutxs);
@@ -581,6 +584,15 @@ struct Document {
         ShiftToCenter(dc);
         Render(dc);
         DrawSelect(dc, selected);
+        if (paintscrolltoselection) {
+            wxTheApp->CallAfter([this](){
+                ScrollIfSelectionOutOfView(selected);
+                #ifdef __WXMAC__
+                    canvas->Refresh();
+                #endif
+            });
+            paintscrolltoselection = false;
+        }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
