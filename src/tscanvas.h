@@ -37,13 +37,13 @@ struct TSCanvas : public wxScrolledCanvas {
         DoPrepareDC(dc);
         GetClientSize(&doc->maxx, &doc->maxy);
         doc->Layout(dc);
+        doc->Draw(dc);
         if (doc->paintscrolltoselection) {
             doc->paintscrolltoselection = false;
             CallAfter([this](){
                 doc->ScrollIfSelectionOutOfView(doc->selected);
             });
         }
-        doc->Draw(dc);
     };
 
     void OnMotion(wxMouseEvent &me) {
