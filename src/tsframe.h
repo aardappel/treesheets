@@ -1207,7 +1207,9 @@ struct TSFrame : wxFrame {
                 break;
             case A_INVERTRENDER:
                 sys->cfg->Write(L"followdarkmode", sys->followdarkmode = ce.IsChecked());
-                sys->darkmode = sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark();
+                sys->colormask = (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark())
+                                     ? 0x00FFFFFF
+                                     : 0;
                 Refresh();
                 break;
             case A_FULLSCREEN:
@@ -1477,7 +1479,8 @@ struct TSFrame : wxFrame {
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        sys->darkmode = sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark();
+        sys->colormask =
+            (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
         auto perspective = aui.SavePerspective();
         RefreshToolBar();
         aui.LoadPerspective(perspective);

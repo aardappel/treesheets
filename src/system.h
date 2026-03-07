@@ -42,7 +42,7 @@ struct System {
     bool showtoolbar {true};
     bool showstatusbar {true};
     bool followdarkmode {false};
-    bool darkmode {false};
+    uint colormask {0};
     int sortcolumn;
     int sortxs;
     int sortdescending;
@@ -105,7 +105,7 @@ struct System {
         cfg->Read(L"lastbordcolor", &lastbordcolor, lastbordcolor);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
-        darkmode = followdarkmode && wxSystemSettings::GetAppearance().IsDark();
+        colormask = (followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
     }
 
     auto NewTabDoc(bool append = false) {
