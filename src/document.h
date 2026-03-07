@@ -585,7 +585,7 @@ struct Document {
         Render(dc);
         DrawSelect(dc, selected);
         if (paintscrolltoselection) {
-            wxTheApp->CallAfter([this](){
+            canvas->CallAfter([this](){
                 ScrollIfSelectionOutOfView(selected);
                 #ifdef __WXMAC__
                     canvas->Refresh();
