@@ -74,6 +74,7 @@ struct Document {
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
     bool scaledviewingmode {false};
+    bool paintscrolltoselection {true};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -238,9 +239,6 @@ struct Document {
 
     void ScrollIfSelectionOutOfView(Selection &sel) {
         if (!scaledviewingmode) {
-            wxClientDC dc(canvas);
-            canvas->DoPrepareDC(dc);
-            Layout(dc);
             // required, since sizes of things may have been reset by the last editing operation
             int canvasw, canvash;
             canvas->GetClientSize(&canvasw, &canvash);
@@ -275,7 +273,7 @@ struct Document {
         for (auto cg = selected.grid->cell; cg; cg = cg->parent)
             if (cg == drawroot) {
                 if (zoomiftiny) ZoomTiny();
-                ScrollIfSelectionOutOfView(selected);
+                paintscrolltoselection = true;
                 canvas->Refresh();
                 return;
             }
@@ -449,7 +447,7 @@ struct Document {
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
-        ScrollIfSelectionOutOfView(selected);
+        paintscrolltoselection = true;
         canvas->Refresh();
     }
 
@@ -467,7 +465,7 @@ struct Document {
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
                 selected.grid->cell->ResetLayout();
                 selected.grid->cell->ResetChildren();
-                ScrollIfSelectionOutOfView(selected);
+                paintscrolltoselection = true;
                 canvas->Refresh();
                 sys->frame->UpdateStatus(selected, false);
                 return dir > 0 ? _(L"Column width increased.") : _(L"Column width decreased.");
@@ -478,7 +476,7 @@ struct Document {
             selected.grid->cell->AddUndo(this);
             selected.grid->ResetChildren();
             selected.grid->RelSize(-dir, selected, pathscalebias);
-            ScrollIfSelectionOutOfView(selected);
+            paintscrolltoselection = true;
             canvas->Refresh();
             return dir > 0 ? _(L"Text size increased.") : _(L"Text size decreased.");
         } else if (ctrl) {
@@ -586,6 +584,15 @@ struct Document {
         ShiftToCenter(dc);
         Render(dc);
         DrawSelect(dc, selected);
+        if (paintscrolltoselection) {
+            canvas->CallAfter([this](){
+                ScrollIfSelectionOutOfView(selected);
+                #ifdef __WXMAC__
+                    canvas->Refresh();
+                #endif
+            });
+            paintscrolltoselection = false;
+        }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
@@ -846,7 +853,7 @@ struct Document {
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
             c->text.Key(this, uk, selected);
-            ScrollIfSelectionOutOfView(selected);
+            paintscrolltoselection = true;
             canvas->Refresh();
             canvas->Update();
             return nullptr;
@@ -1467,7 +1474,7 @@ struct Document {
                     cell->AddUndo(this);
                     cell->AddGrid();
                     SetSelect(Selection(cell->grid, 0, 0, 1, 1));
-                    ScrollIfSelectionOutOfView(selected);
+                    paintscrolltoselection = true;
                     canvas->Refresh();
                 }
                 return nullptr;
@@ -1547,7 +1554,7 @@ struct Document {
                         this,
                         action == A_ENTERCELL_JUMPTOEND ? static_cast<int>(cell->text.t.Len()) : 0,
                         static_cast<int>(cell->text.t.Len()));
-                    ScrollIfSelectionOutOfView(selected);
+                    paintscrolltoselection = true;
                     canvas->Refresh();
                 }
                 return nullptr;
@@ -1993,7 +2000,7 @@ struct Document {
                     case A_HOME: cell->text.HomeEnd(selected, true); break;
                     case A_END: cell->text.HomeEnd(selected, false); break;
                 }
-                ScrollIfSelectionOutOfView(selected);
+                paintscrolltoselection = true;
                 canvas->Refresh();
                 return nullptr;
             }
@@ -2322,7 +2329,7 @@ struct Document {
 
     void ApplyEditFilter() {
         searchfilter = false;
-        ScrollIfSelectionOutOfView(selected);
+        paintscrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(root);
         ranges::sort(itercells, [](auto a, auto b) {
@@ -2336,7 +2343,7 @@ struct Document {
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
-        ScrollIfSelectionOutOfView(selected);
+        paintscrolltoselection = true;
         CollectCells(root);
         for (auto c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
@@ -2354,7 +2361,7 @@ struct Document {
 
     void SetSearchFilter(bool on) {
         searchfilter = on;
-        ScrollIfSelectionOutOfView(selected);
+        paintscrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         root->ResetChildren();
         canvas->Refresh();

@@ -133,7 +133,7 @@ class Selection {
             // FIXME: this is null in the case of a whole column selection, and doesn't do the right
             // thing.
             if (grid) grid->cell->ResetChildren();
-            doc->ScrollIfSelectionOutOfView(doc->selected);
+            doc->paintscrolltoselection = true;
             doc->canvas->Refresh();
         } else {
             if (ctrl && dx)  // implies textedit
@@ -299,7 +299,7 @@ class Selection {
                     }
                 };
             }
-            doc->ScrollIfSelectionOutOfView(doc->selected);
+            doc->paintscrolltoselection = true;
             doc->canvas->Refresh();
         };
     }
@@ -340,7 +340,7 @@ class Selection {
                 x = y = 0;
         }
         EnterEdit(doc, 0, MaxCursor());
-        doc->ScrollIfSelectionOutOfView(doc->selected);
+        doc->paintscrolltoselection = true;
         doc->canvas->Refresh();
     }
 
@@ -394,7 +394,7 @@ class Selection {
             x = grid->xs - 1;
             y = grid->ys - 1;
         }
-        doc->ScrollIfSelectionOutOfView(doc->selected);
+        doc->paintscrolltoselection = true;
         doc->canvas->Refresh();
     }
 };
