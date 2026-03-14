@@ -422,11 +422,11 @@ struct Document {
         return;
     }
 
-    void ZoomSetDrawPath(int dir, bool fromroot = true) {
+    bool ZoomSetDrawPath(int dir, bool fromroot = true) {
         int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
-        if (!len && drawpath.empty()) return;
+        if (!len && drawpath.empty()) return false;
         if (dir > 0) {
-            if (!selected.grid) return;
+            if (!selected.grid) return false;
             auto c = selected.GetCell();
             CreatePath(c && c->grid ? c : selected.grid->cell, drawpath);
         } else if (dir < 0) {
@@ -434,12 +434,13 @@ struct Document {
             if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
-        if (auto diff = static_cast<int>(drawpath.size()) - max(0, len); diff > 0)
-            drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
+        auto diff = static_cast<int>(drawpath.size()) - max(0, len);
+        if (diff > 0) drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
+        return diff;
     }
 
     void Zoom(int dir, bool fromroot = false) {
-        ZoomSetDrawPath(dir, fromroot);
+        if (!ZoomSetDrawPath(dir, fromroot)) return;
         auto drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
