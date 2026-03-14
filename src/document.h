@@ -423,9 +423,9 @@ struct Document {
     }
 
     bool ZoomSetDrawPath(int dir, bool fromroot = true) {
-        auto oldlen = drawpath.size();
-        int len = max(0, (fromroot ? 0 : oldlen) + dir);
-        if (!len && drawpath.empty()) return false;
+        int oldlen = drawpath.size();
+        int targetlen = max(0, (fromroot ? 0 : oldlen) + dir);
+        if (!targetlen && drawpath.empty()) return false;
         if (dir > 0) {
             if (!selected.grid) return false;
             auto c = selected.GetCell();
@@ -435,8 +435,8 @@ struct Document {
             if (drawroot->grid && drawroot->grid->folded)
                 SetSelect(drawroot->parent->grid->FindCell(drawroot));
         }
-        auto diff = static_cast<int>(drawpath.size()) - max(0, len);
-        if (diff > 0) drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
+        int tail = static_cast<int>(drawpath.size()) - targetlen;
+        if (tail > 0) drawpath.erase(drawpath.begin(), drawpath.begin() + tail);
         return drawpath.size() != oldlen;
     }
 
