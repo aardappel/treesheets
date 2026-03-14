@@ -423,7 +423,8 @@ struct Document {
     }
 
     bool ZoomSetDrawPath(int dir, bool fromroot = true) {
-        int len = max(0, (fromroot ? 0 : drawpath.size()) + dir);
+        auto oldlen = drawpath.size();
+        int len = max(0, (fromroot ? 0 : oldlen) + dir);
         if (!len && drawpath.empty()) return false;
         if (dir > 0) {
             if (!selected.grid) return false;
@@ -436,7 +437,7 @@ struct Document {
         }
         auto diff = static_cast<int>(drawpath.size()) - max(0, len);
         if (diff > 0) drawpath.erase(drawpath.begin(), drawpath.begin() + diff);
-        return diff;
+        return drawpath.size() != oldlen;
     }
 
     void Zoom(int dir, bool fromroot = false) {
