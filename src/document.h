@@ -742,6 +742,10 @@ struct Document {
                         L"body { font-family: sans-serif; }\n"
                         L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
                         L" padding: 3px; vertical-align: top; }\n"
+                        L"@media (prefers-color-scheme: dark) {\n"
+                        L"  html { filter: invert(1) hue-rotate(180deg); }\n"
+                        L"  img { filter: invert(1) hue-rotate(180deg); }\n"
+                        L"}\n"
                         L"li { }\n</style>\n"
                         L"<title>export of TreeSheets file ");
                     dos.WriteString(this->filename);
