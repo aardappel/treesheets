@@ -743,15 +743,18 @@ struct Document {
                         L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
                         L" padding: 3px; vertical-align: top; }\n"
                         L"@media (prefers-color-scheme: dark) {\n"
-                        L"  html { filter: invert(1) hue-rotate(180deg); }\n"
-                        L"  img { filter: invert(1) hue-rotate(180deg); }\n"
+                        L"  html { filter: invert(1); }\n"
+                        L"  img { filter: invert(1); }\n"
                         L"}\n"
                         L"li { }\n</style>\n"
                         L"<title>export of TreeSheets file ");
                     dos.WriteString(this->filename);
                     dos.WriteString(
-                        L"</title>\n<meta charset=\"UTF-8\" />\n"
-                        L"</head>\n<body>\n");
+                        wxString(L"</title>\n<meta charset=\"UTF-8\" />\n") +
+                        L"</head>\n<body style=\"" +
+                        wxString::Format(L"background-color: #%06X;", SwapColor(root->cellcolor)) +
+                        L"\">\n"
+                    );
                     dos.WriteString(content);
                     dos.WriteString(L"</body>\n</html>\n");
                     break;
