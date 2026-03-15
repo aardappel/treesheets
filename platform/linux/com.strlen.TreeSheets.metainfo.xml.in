@@ -6,6 +6,7 @@
   <summary>Free Form Data Organizer</summary>
   <url type="homepage">https://strlen.com/treesheets</url>
   <url type="bugtracker">https://github.com/aardappel/treesheets/issues</url>
+  <url type="vcs-browser">https://github.com/aardappel/treesheets</url>
   <url type="contribute">https://github.com/aardappel/treesheets</url>
   <url type="donation">https://github.com/sponsors/aardappel</url>
   <metadata_license>CC0-1.0</metadata_license>
@@ -39,12 +40,15 @@
   <screenshots>
     <screenshot type="default">
       <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_todo.png</image>
+      <caption>A to-do list organized using TreeSheets' hierarchical grid</caption>
     </screenshot>
     <screenshot>
       <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_unicode.png</image>
+      <caption>Support for complex Unicode characters and varied formatting</caption>
     </screenshot>
     <screenshot>
       <image>https://strlen.com/treesheets/docs/images/screenshots/screenshot_tutorial.png</image>
+      <caption>An interactive tutorial demonstrating the grid-within-grid structure</caption>
     </screenshot>
   </screenshots>
   <releases>
