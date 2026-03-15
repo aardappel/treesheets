@@ -8,6 +8,8 @@ static void DrawRectangle(wxDC &dc, uint color, int x, int y, int xs, int ys,
     dc.DrawRectangle(x, y, xs, ys);
 }
 
+static uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
+
 struct DropTarget : wxDropTarget {
     DropTarget(wxDataObject *data) : wxDropTarget(data) {};
 

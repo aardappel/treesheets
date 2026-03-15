@@ -227,7 +227,6 @@ struct Cell {
         return c->parent == this || (c->parent && IsParentOf(c->parent));
     }
 
-    uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
     wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle,
                     Cell *root) {
         wxString str = text.ToText(indent, sel, format);
