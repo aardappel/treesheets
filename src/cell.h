@@ -384,7 +384,9 @@ struct Cell {
 
     Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         int xs = dis.Read32();
-        auto g = new Grid(xs, dis.Read32());
+        int ys = dis.Read32();
+        if (xs <= 0 || ys <= 0 || (int64_t)xs * (int64_t)ys > INT_MAX) return nullptr;
+        auto g = new Grid(xs, ys);
         grid = g;
         g->cell = this;
         if (!g->LoadContents(dis, numcells, textbytes, ics)) return nullptr;
