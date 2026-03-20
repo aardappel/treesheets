@@ -895,6 +895,7 @@ struct Grid {
                     auto t = new Cell(f, p);
                     t->text = p->text;
                     t->text.cell = t;
+                    t->note = p->note;
                     t->grid = f->grid;
                     if (t->grid) t->grid->ReParent(t);
                     f->grid = new Grid(1, 1);
