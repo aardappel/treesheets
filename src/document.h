@@ -737,25 +737,23 @@ struct Document {
                 case A_EXPHTMLB:
                 case A_EXPHTMLO: {
                     wxString output;
-                    output  << L"<!DOCTYPE html>\n"
-                            << L"<html>\n<head>\n<style>\n"
-                            << L"body { font-family: sans-serif; }\n"
-                            << L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
-                            << L" padding: 3px; vertical-align: top; }\n"
-                            << L"@media (prefers-color-scheme: dark) {\n"
-                            << L"  html { filter: invert(1); }\n"
-                            << L"  img { filter: invert(1); }\n"
-                            << L"}\n"
-                            << L"li { }\n</style>\n"
-                            << L"<title>export of TreeSheets file "
-                            << this->filename
-                            << L"</title>\n<meta charset=\"UTF-8\" />\n"
-                            << L"</head>\n<body style=\""
-                            << wxString::Format(L"background-color: #%06X;", SwapColor(root->cellcolor))
-                            << L"\">"
-                            << content
-                            << L"</body>\n</html>\n";
-                     dos.WriteString(output);
+                    output
+                        << L"<!DOCTYPE html>\n"
+                        << L"<html>\n<head>\n<style>\n"
+                        << L"body { font-family: '" << sys->defaultfont << L"', sans-serif; }\n"
+                        << L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
+                        << L" padding: 3px; vertical-align: top; }\n"
+                        << L"@media (prefers-color-scheme: dark) {\n"
+                        << L"  html { filter: invert(1); }\n"
+                        << L"  img { filter: invert(1); }\n"
+                        << L"}\n"
+                        << L"li { }\n</style>\n"
+                        << L"<title>export of TreeSheets file " << this->filename
+                        << L"</title>\n<meta charset=\"UTF-8\" />\n"
+                        << L"</head>\n<body style=\""
+                        << wxString::Format(L"background-color: #%06X;", SwapColor(root->cellcolor))
+                        << L"\">" << content << L"</body>\n</html>\n";
+                    dos.WriteString(output);
                     break;
                 }
                 case A_EXPCSV:
