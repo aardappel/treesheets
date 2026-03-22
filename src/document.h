@@ -587,12 +587,16 @@ struct Document {
         Render(dc);
         DrawSelect(dc, selected);
         if (paintscrolltoselection) {
-            canvas->CallAfter([this](){
+            #ifdef __WXGTK__
                 ScrollIfSelectionOutOfView(selected);
-                #ifdef __WXMAC__
-                    canvas->Refresh();
-                #endif
-            });
+            #else
+                canvas->CallAfter([this](){
+                    ScrollIfSelectionOutOfView(selected);
+                    #ifdef __WXMAC__
+                        canvas->Refresh();
+                    #endif
+                });
+            #endif
             paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
