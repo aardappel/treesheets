@@ -290,9 +290,11 @@ struct Cell {
                 style +=
                     text.stylebits & STYLE_ITALIC ? L"font-style: italic;" : L"font-style: normal;";
             if (!inheritstyle || !parent ||
-                (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED))
-                style += text.stylebits & STYLE_FIXED ? L"font-family: monospace;"
-                                                      : L"font-family: sans-serif;";
+                (text.stylebits & STYLE_FIXED) != (parent->text.stylebits & STYLE_FIXED)) {
+                style += L"font-family: '";
+                style += text.stylebits & STYLE_FIXED ? sys->defaultfixedfont + L"', monospace;"
+                                                      : sys->defaultfont + L"', sans-serif;";
+            }
             if (!inheritstyle || cellcolor != (parent ? parent->cellcolor : doc->Background()))
                 style += wxString::Format(L"background-color: #%06X;", SwapColor(cellcolor));
             auto exporttextcolor = IsTag(doc) ? doc->tags[text.t] : textcolor;
