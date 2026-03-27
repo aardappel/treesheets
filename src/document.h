@@ -26,7 +26,7 @@ struct Document {
     int layoutys;
     int hierarchysize;
     int fgutter {6};
-    int lasttextsize;
+    int lasttextsize; int textycenteroff;
     int laststylebits;
     Cell *currentdrawroot;  // for use during Render() calls
     vector<unique_ptr<UndoItem>> undolist;
