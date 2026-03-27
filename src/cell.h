@@ -27,7 +27,7 @@ struct Cell {
     int oy {0};
     int minx {0};
     int miny {0};
-    int ycenteroff {0};
+    int ycenteroff {g_textycenteroff_default};
     int txs {0};
     int tys {0};
     int celltype;
