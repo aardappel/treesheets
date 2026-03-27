@@ -6,6 +6,7 @@ CT_VARU: "Variable Read"
 CT_VIEWH: "Horizontal View"
 CT_VIEWV: "Vertical View"
 */
+#include "wxtools.h"
 enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV };
 
 /* The drawstyles for a cell:

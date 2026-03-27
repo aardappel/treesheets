@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "wxtools.h"
 
 static const auto TS_VERSION = 25;
 static const auto g_grid_margin = 1;
