@@ -56,6 +56,7 @@ set(wxUSE_STC FALSE)
 set(wxUSE_RIBBON FALSE)
 set(wxUSE_PROPGRID FALSE)
 set(wxUSE_RICHTEXT FALSE)
+set(wxUSE_MEDIACTRL FALSE)
 
 # Include dependencies
 
