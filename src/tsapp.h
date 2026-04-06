@@ -38,6 +38,7 @@ struct TSApp : wxApp {
             // wxSystemOptions::SetOption("mac.toolbar.no-native", 1);
         #elif defined(__WXMSW__)
             DeclareHiDpiAwareOnWindows();
+            MSWEnableDarkMode();
         #endif
 
         bool portable = false;
