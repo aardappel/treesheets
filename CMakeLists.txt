@@ -49,6 +49,16 @@ endif()
 
 ### Thirdparty dependencies
 
+# Set wxWidgets options to exclude unused libraries
+
+set(wxUSE_WEBVIEW FALSE)
+set(wxUSE_STC FALSE)
+set(wxUSE_RIBBON FALSE)
+set(wxUSE_PROPGRID FALSE)
+set(wxUSE_RICHTEXT FALSE)
+
+# Include dependencies
+
 include(FetchContent)
 
 FetchContent_Declare(
