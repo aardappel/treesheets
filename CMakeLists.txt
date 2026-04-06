@@ -21,6 +21,16 @@ project(TreeSheets
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 OPTION(ENABLE_LOBSTER "Enable Lobster scripting" ON)
+option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
+if(ENABLE_IPO)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT iporesult OUTPUT output)
+    if(iporesult)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    else()
+        message(WARNING "IPO is not supported: ${output}")
+    endif()
+endif()
 
 ## Compiler-specific
 
