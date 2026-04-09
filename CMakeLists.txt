@@ -57,6 +57,8 @@ set(wxUSE_RIBBON FALSE)
 set(wxUSE_PROPGRID FALSE)
 set(wxUSE_RICHTEXT FALSE)
 set(wxUSE_MEDIACTRL FALSE)
+set(wxUSE_HTML FALSE)
+set(wxUSE_WXHTML_HELP FALSE)
 
 # Include dependencies
 
