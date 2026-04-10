@@ -1784,23 +1784,28 @@ struct Document {
             }
 
             case A_SAVE_AS_JPEG:
-            case A_SAVE_AS_PNG:
+            case A_SAVE_AS_PNG: {
+                const wxChar *returnmessage = _(L"No image found to convert");
                 loopallcellssel(c, true) {
                     auto image = c->text.image;
                     if (action == A_SAVE_AS_JPEG && image && image->type == 'I') {
                         auto transferimage = ConvertBufferToWxImage(image->data, wxBITMAP_TYPE_PNG);
                         image->data = ConvertWxImageToBuffer(transferimage, wxBITMAP_TYPE_JPEG);
                         image->type = 'J';
-                        return _(L"Images in selected cells have been converted to JPEG format.");
+                        returnmessage =
+                            _(L"Images in selected cells have been converted to JPEG format.");
                     }
                     if (action == A_SAVE_AS_PNG && image && image->type == 'J') {
                         auto transferimage =
                             ConvertBufferToWxImage(image->data, wxBITMAP_TYPE_JPEG);
                         image->data = ConvertWxImageToBuffer(transferimage, wxBITMAP_TYPE_PNG);
                         image->type = 'I';
-                        return _(L"Images in selected cells have been converted to PNG format.");
+                        returnmessage =
+                            _(L"Images in selected cells have been converted to PNG format.");
                     }
                 }
+                return returnmessage;
+            }
 
             case A_BROWSE: {
                 const wxChar *returnmessage = nullptr;
