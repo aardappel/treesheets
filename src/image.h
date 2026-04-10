@@ -52,7 +52,7 @@ struct Image {
         wxString targetname = directory + wxString::Format("%llu", hash) + GetFileExtension();
         wxFFileOutputStream os(targetname, L"w+b");
         if (!os.IsOk()) {
-            wxMessageBox(_(L"Error writing image file!"), targetname.wx_str(), wxOK, sys->frame);
+            wxMessageBox(_("Error writing image file!"), targetname.wx_str(), wxOK, sys->frame);
             return false;
         }
         os.Write(data.data(), data.size());

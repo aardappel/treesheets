@@ -185,8 +185,8 @@ struct System {
 
             if (::wxFileExists(TmpName(filename))) {
                 if (::wxMessageBox(
-                        _(L"A temporary autosave file exists, would you like to load it instead?"),
-                        _(L"Autosave load"), wxYES_NO, frame) == wxYES) {
+                        _("A temporary autosave file exists, would you like to load it instead?"),
+                        _("Autosave load"), wxYES_NO, frame) == wxYES) {
                     fn = TmpName(filename);
                     loadedfromtmp = true;
                 }
@@ -330,8 +330,8 @@ struct System {
         FileUsed(filename, doc);
         doc->Zoom(zoomlevel, true);
         if (anyimagesfailed)
-            wxMessageBox(_(L"PNG decode failed on some images in this document\nThey have been replaced by red squares."),
-                         _(L"PNG decoder failure"), wxOK, frame);
+            wxMessageBox(_("PNG decode failed on some images in this document\nThey have been replaced by red squares."),
+                         _("PNG decoder failure"), wxOK, frame);
 
         return wxEmptyString;
     }
@@ -444,7 +444,7 @@ struct System {
         }
         return wxEmptyString;
     problem:
-        wxMessageBox(_(L"couldn't import file!"), filename, wxOK, frame);
+        wxMessageBox(_("couldn't import file!"), filename, wxOK, frame);
         return _("File load error.");
     }
 
