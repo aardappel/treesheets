@@ -59,11 +59,11 @@ struct Image {
         return true;
     }
 
-    const wxChar *GetFileExtension() {
+    wxString GetFileExtension() {
         switch (type) {
-            case 'J': return L".jpg";
+            case 'J': return ".jpg";
             case 'I':
-            default: return L".png";
+            default: return ".png";
         }
     }
 };

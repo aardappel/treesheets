@@ -1269,7 +1269,7 @@ struct TSFrame : wxFrame {
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
         auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
-        SetStatus();
+        ClearStatus();
         sys->TabChange(canvas->doc);
         nbe.Skip();
     }
@@ -1441,8 +1441,7 @@ struct TSFrame : wxFrame {
                     if (res != wxYES) return;
                 }
                 auto message = sys->LoadDB(doc->filename, true);
-                assert(message);
-                if (*message) {
+                if (!message.IsEmpty()) {
                     SetStatus(message);
                 } else {
                     loop(j,
@@ -1563,7 +1562,7 @@ struct TSFrame : wxFrame {
         SetStatusWidths(5, statusbarfieldwidths);
     }
 
-    void SetFileAssoc(wxString &exename) {
+    void SetFileAssoc(const wxString &exename) {
         #ifdef WIN32
         SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
         SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
@@ -1593,8 +1592,12 @@ struct TSFrame : wxFrame {
     }
     #endif
 
-    void SetStatus(const wxChar *message = nullptr) {
-        if (GetStatusBar() && (!message || *message)) SetStatusText(message ? message : L"", 0);
+    void SetStatus(const wxString &message) {
+        if (GetStatusBar() && !message.IsEmpty()) SetStatusText(message, 0);
+    }
+
+    void ClearStatus() {
+        if (GetStatusBar()) SetStatusText("", 0);
     }
 
     void TabsReset() {

@@ -344,7 +344,7 @@ class Selection {
         doc->canvas->Refresh();
     }
 
-    const wxChar *Wrap(Document *doc) {
+    wxString Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
         grid->cell->AddUndo(doc);
         auto np = grid->CloneSel(*this).release();
@@ -366,7 +366,7 @@ class Selection {
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
         doc->canvas->Refresh();
-        return nullptr;
+        return wxEmptyString;
     }
 
     Cell *ThinExpand(Document *doc, bool jumptofirst = false) {
