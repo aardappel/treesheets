@@ -197,7 +197,6 @@ struct System {
         auto anyimagesfailed = false;
         auto start_loading_time = wxGetLocalTimeMillis();
         int zoomlevel = 0;
-        wxString returnmessage = "";
 
         {  // limit destructors
             wxBusyCursor wait;
