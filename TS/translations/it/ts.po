@@ -1,7 +1,7 @@
 # ITALIAN TRANSLATION.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Albano Battistella <albano_battistella@hotmail.comS>, 2019,2021.
+# Albano Battistella <albanobattistella@gmail.com>, 2019,2021,2026.
 #
 msgid ""
 msgstr ""
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%d cell(s)"
-msgstr "%d celle"
+msgstr "%d cella(e)"
 
 #, c-format
 msgid ""
@@ -319,7 +319,7 @@ msgid "Cannot open file."
 msgstr "Non è possibile aprire questo file."
 
 msgid "Case-sensitive search"
-msgstr ""
+msgstr "Ricerca sensibile alle maiuscole/minuscole"
 
 msgid "Cell "
 msgstr "Cella"
@@ -331,6 +331,8 @@ msgid ""
 "Change the image size if it is too big or too small, by changing the size "
 "shown on screen. Applies to all uses of this image."
 msgstr ""
+"Ridimensiona l'immagine se è troppo grande o troppo piccola, modificando le dimensioni "
+"visualizzate sullo schermo. Si applica a tutti gli utilizzi di questa immagine."
 
 msgid ""
 "Change the image size if it is too big, by reducing the amount of pixels"
@@ -340,6 +342,8 @@ msgid ""
 "Change the scale to match DPI of the current display. Applies to all uses of "
 "this image."
 msgstr ""
+"Modifica la scala in modo che corrisponda ai DPI del display corrente. Si applica a tutti gli utilizzi di "
+"questa immagine."
 
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Sono state apportate modifiche, sei sicuro di voler continuare?"
@@ -371,9 +375,8 @@ msgstr "Cancella la sostituzione"
 msgid "Clear search"
 msgstr "Cancella la ricerca"
 
-#, fuzzy
 msgid "Close current document"
-msgstr "Auto caricamento documenti"
+msgstr "Chiudi il documento corrente"
 
 msgid "Collapse Ce&lls"
 msgstr "Collasa le ce&llule"
@@ -400,9 +403,8 @@ msgstr "Copia (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copia come testo continuo"
 
-#, fuzzy
 msgid "Copy selection"
-msgstr "Sostituisci nella selezione corrente"
+msgstr "Copia selezione"
 
 msgid "Copy with &Images"
 msgstr "Copia con &immagini"
@@ -417,7 +419,7 @@ msgid "Create .bak files"
 msgstr "Crea file .bak"
 
 msgid "Create a new document"
-msgstr ""
+msgstr "Crea un nuovo documento"
 
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Crea un nuovo livello di gerarchia attorno alla selezione corrente"
@@ -431,9 +433,8 @@ msgstr "Cursore a sinistra"
 msgid "Cursor Right"
 msgstr "Cursore a destra"
 
-#, fuzzy
 msgid "Cut selection"
-msgstr "Estendi selezione su"
+msgstr "Taglia selezione"
 
 msgid "Date and time range"
 msgstr "Data e ora d'inizio e fine"
@@ -466,10 +467,10 @@ msgstr ""
 "della riga sopra"
 
 msgid "Deletes the entire word after the cursor"
-msgstr ""
+msgstr "Elimina l'intera parola dopo il cursore"
 
 msgid "Deletes the entire word before the cursor"
-msgstr ""
+msgstr "Elimina l'intera parola prima del cursore"
 
 msgid "Discard Changes"
 msgstr "Non salvare le modifiche"
@@ -647,10 +648,10 @@ msgid "Filter..."
 msgstr "Filtro..."
 
 msgid "Find and replace in document"
-msgstr ""
+msgstr "Trova e sostituisci nel documento"
 
 msgid "Find in document"
-msgstr ""
+msgstr "Trova nel documento"
 
 msgid "Fold All"
 msgstr "Piega tutto"
@@ -765,7 +766,7 @@ msgid "Load interactive &tutorial..."
 msgstr "Carica interattivo e tutorial ..."
 
 msgid "Load operation reference..."
-msgstr ""
+msgstr "Riferimento all'operazione di caricamento..."
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
@@ -918,7 +919,7 @@ msgid "Open TreeSheets file"
 msgstr "Aprire il file TreeSheets"
 
 msgid "Open an existing document"
-msgstr ""
+msgstr "Apri un documento esistente"
 
 msgid "Open border colors"
 msgstr "Apri colori del bordo"
@@ -972,7 +973,7 @@ msgid "Paste Style Only"
 msgstr "Incolla solo stile"
 
 msgid "Paste clipboard contents"
-msgstr ""
+msgstr "Incolla il contenuto degli appunti"
 
 msgid "Paste file path"
 msgstr "Incolla il percorso del file"
@@ -1034,7 +1035,7 @@ msgid "Print preview..."
 msgstr "Anteprima di stampa..."
 
 msgid "Quit this program"
-msgstr ""
+msgstr "Esci da questo programma"
 
 msgid "Radius &0"
 msgstr "Raggio &0"
@@ -1119,10 +1120,10 @@ msgid "Save cancelled."
 msgstr "Salvataggio annullato"
 
 msgid "Save current document"
-msgstr ""
+msgstr "Salva il documento corrente"
 
 msgid "Save current document with a different filename"
-msgstr ""
+msgstr "Salva il documento corrente con un nome file diverso"
 
 msgid "Save image as JPEG"
 msgstr "Salva immagine come JPEG"
@@ -1134,6 +1135,8 @@ msgid ""
 "Save image(s) to disk. Multiple images will be saved with a counter appended "
 "to each file name."
 msgstr ""
+"Salva l'immagine/le immagini su disco. Verranno salvate più immagini, ciascuna "
+"con un contatore aggiunto al nome del file."
 
 msgid "Save the image in the TreeSheets file in JPEG format"
 msgstr "Salvare l'immagine nel file TreeSheets in formato JPEG."
@@ -1221,7 +1224,7 @@ msgid "Show 50% of last edits"
 msgstr "Mostra il 50% delle ultime modifiche"
 
 msgid "Show About dialog"
-msgstr ""
+msgstr "Mostra la finestra di dialogo"
 
 msgid "Show Statusbar"
 msgstr "Mostra la barra di stato"
