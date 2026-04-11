@@ -109,7 +109,7 @@ struct Grid {
         if (ys > xs) horiz = false;
     }
 
-    bool Layout(Document *doc, wxDC &dc, int depth, int &sx, int &sy, int startx, int starty,
+    bool Layout(Document *doc, wxReadOnlyDC &dc, int depth, int &sx, int &sy, int startx, int starty,
                 bool forcetiny) {
         auto xa = new int[xs];
         auto ya = new int[ys];
@@ -262,7 +262,7 @@ struct Grid {
         }
     }
 
-    void FindXY(Document *doc, int px, int py, wxDC &dc) {
+    void FindXY(Document *doc, int px, int py, wxReadOnlyDC &dc) {
         foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;

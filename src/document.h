@@ -219,7 +219,7 @@ struct Document {
         s.grid->DrawSelect(this, dc, s);
     }
 
-    void UpdateHover(wxDC &dc, int mx, int my) {
+    void UpdateHover(wxReadOnlyDC &dc, int mx, int my) {
         ResetFont();
         int x, y;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
@@ -310,7 +310,7 @@ struct Document {
             }
             hover = targetcell_parent ? targetcell_parent->grid->FindCell(targetcell) : Selection();
             SetSelect(hover);
-            wxClientDC dc(canvas); // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
+            wxInfoDC dc(canvas);
             Layout(dc);
         }
     }
@@ -487,7 +487,7 @@ struct Document {
         }
     }
 
-    void Layout(wxDC &dc) {
+    void Layout(wxReadOnlyDC &dc) {
         ResetFont();
         dc.SetUserScale(1, 1);
         currentdrawroot = WalkPath(drawpath);
@@ -506,7 +506,7 @@ struct Document {
         layoutys = currentdrawroot->sy + hierarchysize + fgutter;
     }
 
-    void ShiftToCenter(wxDC &dc) {
+    void ShiftToCenter(wxReadOnlyDC &dc) {
         int dlx = dc.DeviceToLogicalX(0);
         int dly = dc.DeviceToLogicalY(0);
         dc.SetDeviceOrigin(dlx > 0 ? -dlx : centerx, dly > 0 ? -dly : centery);
@@ -618,7 +618,7 @@ struct Document {
 
     bool FontIsMini(int textsize) { return textsize == g_mintextsize(); }
 
-    bool PickFont(wxDC &dc, int depth, int relsize, int stylebits) {
+    bool PickFont(wxReadOnlyDC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
             wxFont font(textsize - (while_printing || scaledviewingmode),

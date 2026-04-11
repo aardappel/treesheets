@@ -15,7 +15,7 @@ struct DropTarget : wxDropTarget {
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
         auto canvas = sys->frame->GetCurrentTab();
-        wxClientDC dc(canvas);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
+        wxInfoDC dc(canvas);
         canvas->doc->UpdateHover(dc, x, y);
         return canvas->doc->hover.grid ? wxDragCopy : wxDragNone;
     }
@@ -26,7 +26,7 @@ struct DropTarget : wxDropTarget {
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) {
         GetData();
         auto canvas = sys->frame->GetCurrentTab();
-        wxClientDC dc(canvas);  // TODO: replace with wxInfoDC starting wxWidgets 3.3.0
+        wxInfoDC dc(canvas);
         canvas->doc->UpdateHover(dc, x, y);
         canvas->doc->SelectClick();
         canvas->doc->Drop();

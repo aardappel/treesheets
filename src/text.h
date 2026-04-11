@@ -150,7 +150,7 @@ struct Text {
         // return GetLinePart(i, l, l);     // big word was the last one
     }
 
-    void TextSize(wxDC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth) {
+    void TextSize(wxReadOnlyDC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth) {
         sx = sy = 0;
         auto i = 0;
         for (;;) {
@@ -251,7 +251,7 @@ struct Text {
         return max(lines * h, iys);
     }
 
-    void FindCursor(Document *doc, int bx, int by, wxDC &dc, Selection &s, int maxcolwidth) {
+    void FindCursor(Document *doc, int bx, int by, wxReadOnlyDC &dc, Selection &s, int maxcolwidth) {
         bx -= g_margin_extra;
         by -= g_margin_extra;
 

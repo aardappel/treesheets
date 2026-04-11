@@ -86,7 +86,7 @@ struct Cell {
         return sizeof(Cell) + text.EstimatedMemoryUse() + (grid ? grid->EstimatedMemoryUse() : 0);
     }
 
-    void Layout(Document *doc, wxDC &dc, int depth, int maxcolwidth, bool forcetiny) {
+    void Layout(Document *doc, wxReadOnlyDC &dc, int depth, int maxcolwidth, bool forcetiny) {
         tiny = text.filtered && !grid || forcetiny ||
                doc->PickFont(dc, depth, text.relsize, text.stylebits);
         int ixs = 0, iys = 0;
@@ -337,7 +337,7 @@ struct Cell {
         if (parent) parent->ResetLayout();
     }
 
-    void LazyLayout(Document *doc, wxDC &dc, int depth, int maxcolwidth, bool forcetiny) {
+    void LazyLayout(Document *doc, wxReadOnlyDC &dc, int depth, int maxcolwidth, bool forcetiny) {
         if (sx == 0) {
             Layout(doc, dc, depth, maxcolwidth, forcetiny);
             minx = sx;
