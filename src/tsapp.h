@@ -1,7 +1,7 @@
 struct IPCServer : wxServer {
     wxConnectionBase *OnAcceptConnection(const wxString &topic) {
         sys->frame->DeIconize();
-        if (topic.Len() && topic != L"*") sys->Open(topic);
+        if (topic.Len() && topic != "*") sys->Open(topic);
         return new wxConnection();
     }
 };
@@ -11,9 +11,9 @@ struct TSApp : wxApp {
     unique_ptr<IPCServer> serv {make_unique<IPCServer>()};
     wxString service {
         #ifdef __WXMSW__
-                L"4242"
+                "4242"
         #else
-                L"/tmp/TreeSheets-socket"
+                "/tmp/TreeSheets-socket"
         #endif
     };
     wxString filename;
@@ -66,9 +66,8 @@ struct TSApp : wxApp {
                 wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir()));
             if (instance_checker->IsAnotherRunning()) {
                 wxClient client;
-                client.MakeConnection(
-                    L"localhost", service,
-                    filename.Len() ? filename.wc_str() : L"*");  // fire and forget
+                client.MakeConnection("localhost", service,
+                                      filename.Len() ? filename : wxString("*"));  // fire and forget
                 return false;
             }
         }
@@ -82,7 +81,7 @@ struct TSApp : wxApp {
         #ifdef ENABLE_LOBSTER
             auto serr = ScriptInit(GetDataPath("scripts/"));
             if (!serr.empty()) {
-                wxLogFatalError(L"Script system could not initialize: %s", serr);
+                wxLogFatalError("Script system could not initialize: %s", serr);
                 return false;
             }
         #endif
@@ -149,8 +148,8 @@ struct TSApp : wxApp {
         wxUILocale::UseDefault();
 
         #ifdef __WXGTK__
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr");
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(L"/usr/local");
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix("/usr");
+            wxFileTranslationsLoader::AddCatalogLookupPathPrefix("/usr/local");
             #ifdef LOCALEDIR
                 wxFileTranslationsLoader::AddCatalogLookupPathPrefix(LOCALEDIR);
             #endif
@@ -161,7 +160,7 @@ struct TSApp : wxApp {
 
         auto trans = new wxTranslations();
         trans->SetLanguage(sys->defaultlang);
-        trans->AddCatalog(L"ts");
+        trans->AddCatalog("ts");
 
         wxTranslations::Set(trans);
     }

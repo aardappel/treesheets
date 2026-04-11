@@ -50,7 +50,7 @@ struct Image {
 
     bool ExportToDirectory(const wxString &directory) {
         wxString targetname = directory + wxString::Format("%llu", hash) + GetFileExtension();
-        wxFFileOutputStream os(targetname, L"w+b");
+        wxFFileOutputStream os(targetname, "w+b");
         if (!os.IsOk()) {
             wxMessageBox(_("Error writing image file!"), targetname.wx_str(), wxOK, sys->frame);
             return false;

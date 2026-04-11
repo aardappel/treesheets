@@ -28,7 +28,7 @@ struct TSFrame : wxFrame {
     std::map<wxString, wxString> menustrings;
 
     TSFrame(TSApp *_app)
-        : wxFrame((wxFrame *)nullptr, wxID_ANY, L"TreeSheets", wxDefaultPosition, wxDefaultSize,
+        : wxFrame((wxFrame *)nullptr, wxID_ANY, "TreeSheets", wxDefaultPosition, wxDefaultSize,
                   wxDEFAULT_FRAME_STYLE),
           app(_app) {
         sys->frame = this;
@@ -48,7 +48,7 @@ struct TSFrame : wxFrame {
 
         wxLog::SetActiveTarget(new MyLog());
 
-        wxLogMessage(L"%s", wxVERSION_STRING);
+        wxLogMessage("%s", wxVERSION_STRING);
 
         aui.SetManagedWindow(this);
 
@@ -60,12 +60,12 @@ struct TSFrame : wxFrame {
             int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
             int iconlarge = ::GetSystemMetrics(SM_CXICON);
         #endif
-        icon.LoadFile(app->GetDataPath(L"images/icon16.png"), wxBITMAP_TYPE_PNG
+        icon.LoadFile(app->GetDataPath("images/icon16.png"), wxBITMAP_TYPE_PNG
             #ifdef WIN32
                 , iconsmall, iconsmall
             #endif
         );
-        iconbig.LoadFile(app->GetDataPath(L"images/icon32.png"), wxBITMAP_TYPE_PNG
+        iconbig.LoadFile(app->GetDataPath("images/icon32.png"), wxBITMAP_TYPE_PNG
             #ifdef WIN32
                 , iconlarge, iconlarge
             #endif
@@ -80,8 +80,8 @@ struct TSFrame : wxFrame {
         SetIcons(icons);
 
         RenderFolderIcon();
-        line_nw.LoadFile(app->GetDataPath(L"images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
-        line_sw.LoadFile(app->GetDataPath(L"images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
+        line_nw.LoadFile(app->GetDataPath("images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
+        line_sw.LoadFile(app->GetDataPath("images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
 
         imagepath = app->GetDataPath("images/nuvola/dropdown/");
 
@@ -94,9 +94,9 @@ struct TSFrame : wxFrame {
 
         bool showtbar, showsbar, lefttabs;
 
-        sys->cfg->Read(L"showtbar", &showtbar, true);
-        sys->cfg->Read(L"showsbar", &showsbar, true);
-        sys->cfg->Read(L"lefttabs", &lefttabs, true);
+        sys->cfg->Read("showtbar", &showtbar, true);
+        sys->cfg->Read("showsbar", &showsbar, true);
+        sys->cfg->Read("lefttabs", &lefttabs, true);
 
         filehistory.Load(*sys->cfg);
         #ifdef ENABLE_LOBSTER
@@ -554,12 +554,12 @@ struct TSFrame : wxFrame {
         auto autoexportmenu = new wxMenu();
         autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_NONE, _("No autoexport"));
         autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITH_IMAGES, _("Export with images"),
-                                        _(L"Export to a HTML file with exported images alongside "
-                                          L"the original TreeSheets file when document is saved"));
+                                        _("Export to a HTML file with exported images alongside "
+                                          "the original TreeSheets file when document is saved"));
         autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITHOUT_IMAGES,
                                         _("Export without images"),
-                                        _(L"Export to a HTML file alongside the original "
-                                          L"TreeSheets file when document is saved"));
+                                        _("Export to a HTML file alongside the original "
+                                          "TreeSheets file when document is saved"));
         autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT_HTML_NONE, true);
 
         auto optmenu = new wxMenu();
@@ -652,7 +652,7 @@ struct TSFrame : wxFrame {
             scripts.AddFilesToMenu();
 
             auto scriptpath = app->GetDataPath("scripts/");
-            auto sf = wxFindFirstFile(scriptpath + L"*.lobster");
+            auto sf = wxFindFirstFile(scriptpath + "*.lobster");
             int sidx = 0;
             while (!sf.empty()) {
                 auto fn = wxFileName::FileName(sf).GetFullName();
@@ -742,10 +742,10 @@ struct TSFrame : wxFrame {
         const int defx = disprect.width - 2 * boundary;
         const int defy = disprect.height - 2 * boundary;
         int resx, resy, posx, posy;
-        sys->cfg->Read(L"resx", &resx, defx);
-        sys->cfg->Read(L"resy", &resy, defy);
-        sys->cfg->Read(L"posx", &posx, boundary + disprect.x);
-        sys->cfg->Read(L"posy", &posy, boundary + disprect.y);
+        sys->cfg->Read("resx", &resx, defx);
+        sys->cfg->Read("resy", &resy, defy);
+        sys->cfg->Read("posx", &posx, boundary + disprect.x);
+        sys->cfg->Read("posy", &posy, boundary + disprect.y);
         #ifndef __WXGTK__
         // On X11, disprect only refers to the primary screen. Thus, for a multi-head display,
         // the conditions below might be fulfilled (e.g. large window spanning multiple screens
@@ -766,12 +766,12 @@ struct TSFrame : wxFrame {
         Move(posx, posy);
 
         bool ismax;
-        sys->cfg->Read(L"maximized", &ismax, true);
+        sys->cfg->Read("maximized", &ismax, true);
 
         aui.AddPane(
             notebook,
             wxAuiPaneInfo().Name("notebook").Caption("Notebook").CenterPane().PaneBorder(false));
-        aui.LoadPerspective(sys->cfg->Read(L"perspective", L""));
+        aui.LoadPerspective(sys->cfg->Read("perspective", ""));
         aui.Update();
 
         Show(!IsIconized());
@@ -812,7 +812,7 @@ struct TSFrame : wxFrame {
 
     void RefreshToolBar() {
         for (const auto &name : GetToolbarPaneNames()) { DestroyToolbarPane(name); }
-        auto iconpath = app->GetDataPath(L"images/material/toolbar/");
+        auto iconpath = app->GetDataPath("images/material/toolbar/");
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
                                   wxString iconpath, wxString lighticon, wxString darkicon) {
             tb->AddTool(
@@ -825,40 +825,40 @@ struct TSFrame : wxFrame {
 
         auto filetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        AddToolbarIcon(filetb, _("New (CTRL+n)"), wxID_NEW, iconpath, L"filenew.svg",
-                       L"filenew_dark.svg");
-        AddToolbarIcon(filetb, _("Open (CTRL+o)"), wxID_OPEN, iconpath, L"fileopen.svg",
-                       L"fileopen_dark.svg");
-        AddToolbarIcon(filetb, _("Save (CTRL+s)"), wxID_SAVE, iconpath, L"filesave.svg",
-                       L"filesave_dark.svg");
-        AddToolbarIcon(filetb, _("Save as..."), wxID_SAVEAS, iconpath, L"filesaveas.svg",
-                       L"filesaveas_dark.svg");
+        AddToolbarIcon(filetb, _("New (CTRL+n)"), wxID_NEW, iconpath, "filenew.svg",
+                       "filenew_dark.svg");
+        AddToolbarIcon(filetb, _("Open (CTRL+o)"), wxID_OPEN, iconpath, "fileopen.svg",
+                       "fileopen_dark.svg");
+        AddToolbarIcon(filetb, _("Save (CTRL+s)"), wxID_SAVE, iconpath, "filesave.svg",
+                       "filesave_dark.svg");
+        AddToolbarIcon(filetb, _("Save as..."), wxID_SAVEAS, iconpath, "filesaveas.svg",
+                       "filesaveas_dark.svg");
         filetb->Realize();
 
         auto edittb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, iconpath, L"undo.svg",
-                       L"undo_dark.svg");
-        AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, iconpath, L"editcopy.svg",
-                       L"editcopy_dark.svg");
-        AddToolbarIcon(edittb, _("Paste (CTRL+v)"), wxID_PASTE, iconpath, L"editpaste.svg",
-                       L"editpaste_dark.svg");
+        AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, iconpath, "undo.svg",
+                       "undo_dark.svg");
+        AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, iconpath, "editcopy.svg",
+                       "editcopy_dark.svg");
+        AddToolbarIcon(edittb, _("Paste (CTRL+v)"), wxID_PASTE, iconpath, "editpaste.svg",
+                       "editpaste_dark.svg");
         edittb->Realize();
 
         auto zoomtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        AddToolbarIcon(zoomtb, _("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, L"zoomin.svg",
-                       L"zoomin_dark.svg");
-        AddToolbarIcon(zoomtb, _("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath,
-                       L"zoomout.svg", L"zoomout_dark.svg");
+        AddToolbarIcon(zoomtb, _("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, "zoomin.svg",
+                       "zoomin_dark.svg");
+        AddToolbarIcon(zoomtb, _("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, "zoomout.svg",
+                       "zoomout_dark.svg");
         zoomtb->Realize();
 
         auto celltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        AddToolbarIcon(celltb, _("New Grid (INS)"), A_NEWGRID, iconpath, L"newgrid.svg",
-                       L"newgrid_dark.svg");
-        AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, iconpath, L"image.svg", L"image_dark.svg");
-        AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, iconpath, L"run.svg", L"run_dark.svg");
+        AddToolbarIcon(celltb, _("New Grid (INS)"), A_NEWGRID, iconpath, "newgrid.svg",
+                       "newgrid_dark.svg");
+        AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, iconpath, "image.svg", "image_dark.svg");
+        AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, iconpath, "run.svg", "run_dark.svg");
         celltb->Realize();
 
         auto findtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -867,10 +867,10 @@ struct TSFrame : wxFrame {
         findtb->AddControl(filter = new wxTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
                                                    FromDIP(wxSize(80, 22)),
                                                    wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, iconpath, L"cancel.svg",
-                       L"cancel_dark.svg");
-        AddToolbarIcon(findtb, _("Go to Next Search Result"), A_SEARCHNEXT, iconpath,
-                       L"search.svg", L"search_dark.svg");
+        AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, iconpath, "cancel.svg",
+                       "cancel_dark.svg");
+        AddToolbarIcon(findtb, _("Go to Next Search Result"), A_SEARCHNEXT, iconpath, "search.svg",
+                       "search_dark.svg");
         findtb->Realize();
 
         auto repltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -879,12 +879,12 @@ struct TSFrame : wxFrame {
         repltb->AddControl(replaces = new wxTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
                                                      FromDIP(wxSize(80, 22)),
                                                      wxWANTS_CHARS | wxTE_PROCESS_ENTER));
-        AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, iconpath, L"cancel.svg",
-                       L"cancel_dark.svg");
-        AddToolbarIcon(repltb, _("Replace in selection"), A_REPLACEONCE, iconpath, L"replace.svg",
-                       L"replace_dark.svg");
-        AddToolbarIcon(repltb, _("Replace All"), A_REPLACEALL, iconpath, L"replaceall.svg",
-                       L"replaceall_dark.svg");
+        AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, iconpath, "cancel.svg",
+                       "cancel_dark.svg");
+        AddToolbarIcon(repltb, _("Replace in selection"), A_REPLACEONCE, iconpath, "replace.svg",
+                       "replace_dark.svg");
+        AddToolbarIcon(repltb, _("Replace All"), A_REPLACEALL, iconpath, "replaceall.svg",
+                       "replaceall_dark.svg");
         repltb->Realize();
 
         auto GetColorIndex = [&](int targetcolor, int defaultindex) {
@@ -1097,7 +1097,7 @@ struct TSFrame : wxFrame {
                     return;
             }
         }
-        auto Check = [&](const wxChar *cfg) {
+        auto Check = [&](const wxString &cfg) {
             sys->cfg->Write(cfg, ce.IsChecked());
             SetStatus(_("change will take effect next run of TreeSheets"));
         };
@@ -1115,7 +1115,7 @@ struct TSFrame : wxFrame {
                 break;
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
-                    sys->cfg->Write(L"showstatusbar", sys->showstatusbar = ce.IsChecked());
+                    sys->cfg->Write("showstatusbar", sys->showstatusbar = ce.IsChecked());
                     auto wsb = GetStatusBar();
                     wsb->Show(sys->showstatusbar);
                     SendSizeEvent();
@@ -1125,7 +1125,7 @@ struct TSFrame : wxFrame {
                 break;
             case A_SHOWTBAR:
                 if (!IsFullScreen()) {
-                    sys->cfg->Write(L"showtoolbar", sys->showtoolbar = ce.IsChecked());
+                    sys->cfg->Write("showtoolbar", sys->showtoolbar = ce.IsChecked());
                     for (const auto &name : GetToolbarPaneNames()) {
                         if (sys->showtoolbar)
                             aui.GetPane(name).Show();
@@ -1137,7 +1137,7 @@ struct TSFrame : wxFrame {
                 break;
             case A_CUSTCOL: {
                 if (auto color = PickColor(sys->frame, sys->customcolor); color != (uint)-1)
-                    sys->cfg->Write(L"customcolor", sys->customcolor = color);
+                    sys->cfg->Write("customcolor", sys->customcolor = color);
                 break;
             }
 
@@ -1168,40 +1168,42 @@ struct TSFrame : wxFrame {
                 int w = wxGetNumberFromUser(_("Please enter the default column width:"),
                                             _("Width"), _("Default column width"),
                                             sys->defaultmaxcolwidth, 1, 1000, sys->frame);
-                if (w > 0) sys->cfg->Write(L"defaultmaxcolwidth", sys->defaultmaxcolwidth = w);
+                if (w > 0) sys->cfg->Write("defaultmaxcolwidth", sys->defaultmaxcolwidth = w);
                 break;
             }
 
-            case A_LEFTTABS: Check(L"lefttabs"); break;
-            case A_SINGLETRAY: Check(L"singletray"); break;
-            case A_MAKEBAKS: sys->cfg->Write(L"makebaks", sys->makebaks = ce.IsChecked()); break;
-            case A_TOTRAY: sys->cfg->Write(L"totray", sys->totray = ce.IsChecked()); break;
-            case A_MINCLOSE: sys->cfg->Write(L"minclose", sys->minclose = ce.IsChecked()); break;
-            case A_STARTMINIMIZED: sys->cfg->Write(L"startminimized", sys->startminimized = ce.IsChecked()); break;
-            case A_ZOOMSCR: sys->cfg->Write(L"zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
-            case A_THINSELC: sys->cfg->Write(L"thinselc", sys->thinselc = ce.IsChecked()); break;
-            case A_AUTOSAVE: sys->cfg->Write(L"autosave", sys->autosave = ce.IsChecked()); break;
+            case A_LEFTTABS: Check("lefttabs"); break;
+            case A_SINGLETRAY: Check("singletray"); break;
+            case A_MAKEBAKS: sys->cfg->Write("makebaks", sys->makebaks = ce.IsChecked()); break;
+            case A_TOTRAY: sys->cfg->Write("totray", sys->totray = ce.IsChecked()); break;
+            case A_MINCLOSE: sys->cfg->Write("minclose", sys->minclose = ce.IsChecked()); break;
+            case A_STARTMINIMIZED:
+                sys->cfg->Write("startminimized", sys->startminimized = ce.IsChecked());
+                break;
+            case A_ZOOMSCR: sys->cfg->Write("zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
+            case A_THINSELC: sys->cfg->Write("thinselc", sys->thinselc = ce.IsChecked()); break;
+            case A_AUTOSAVE: sys->cfg->Write("autosave", sys->autosave = ce.IsChecked()); break;
             case A_CENTERED:
-                sys->cfg->Write(L"centered", sys->centered = ce.IsChecked());
+                sys->cfg->Write("centered", sys->centered = ce.IsChecked());
                 Refresh();
                 break;
             case A_FSWATCH:
-                Check(L"fswatch");
+                Check("fswatch");
                 sys->fswatch = ce.IsChecked();
                 break;
             case A_AUTOEXPORT_HTML_NONE:
             case A_AUTOEXPORT_HTML_WITH_IMAGES:
             case A_AUTOEXPORT_HTML_WITHOUT_IMAGES:
                 sys->cfg->Write(
-                    L"autohtmlexport",
+                    "autohtmlexport",
                     static_cast<long>(sys->autohtmlexport = ce.GetId() - A_AUTOEXPORT_HTML_NONE));
                 break;
             case A_FASTRENDER:
-                sys->cfg->Write(L"fastrender", sys->fastrender = ce.IsChecked());
+                sys->cfg->Write("fastrender", sys->fastrender = ce.IsChecked());
                 Refresh();
                 break;
             case A_INVERTRENDER:
-                sys->cfg->Write(L"followdarkmode", sys->followdarkmode = ce.IsChecked());
+                sys->cfg->Write("followdarkmode", sys->followdarkmode = ce.IsChecked());
                 sys->colormask = (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark())
                                      ? 0x00FFFFFF
                                      : 0;
@@ -1229,7 +1231,7 @@ struct TSFrame : wxFrame {
                 break;
             #ifdef __WXMAC__
                 case wxID_OSX_HIDE: Iconize(true); break;
-                case wxID_OSX_HIDEOTHERS: SetStatus(L"NOT IMPLEMENTED"); break;
+                case wxID_OSX_HIDEOTHERS: SetStatus("NOT IMPLEMENTED"); break;
                 case wxID_OSX_SHOWALL: Iconize(false); break;
                 case wxID_ABOUT: canvas->doc->Action(wxID_ABOUT); break;
                 case wxID_PREFERENCES: canvas->doc->Action(wxID_SELECT_FONT); break;
@@ -1331,7 +1333,7 @@ struct TSFrame : wxFrame {
         if (me.IsIconized()) {
             #ifndef __WXMAC__
             if (sys->totray) {
-                taskbaricon.SetIcon(icon, L"TreeSheets");
+                taskbaricon.SetIcon(icon, "TreeSheets");
                 Show(false);
                 Iconize();
             }
@@ -1384,20 +1386,20 @@ struct TSFrame : wxFrame {
             sys->cfg->SetPath(oldpath);
         #endif
         if (!IsIconized()) {
-            sys->cfg->Write(L"maximized", IsMaximized());
+            sys->cfg->Write("maximized", IsMaximized());
             if (!IsMaximized()) {
-                sys->cfg->Write(L"resx", GetSize().x);
-                sys->cfg->Write(L"resy", GetSize().y);
-                sys->cfg->Write(L"posx", GetPosition().x);
-                sys->cfg->Write(L"posy", GetPosition().y);
+                sys->cfg->Write("resx", GetSize().x);
+                sys->cfg->Write("resy", GetSize().y);
+                sys->cfg->Write("posx", GetPosition().x);
+                sys->cfg->Write("posy", GetPosition().y);
             }
         }
-        sys->cfg->Write(L"notesizex", sys->notesizex);
-        sys->cfg->Write(L"notesizey", sys->notesizey);
-        sys->cfg->Write(L"perspective", aui.SavePerspective());
-        sys->cfg->Write(L"lastcellcolor", sys->lastcellcolor);
-        sys->cfg->Write(L"lasttextcolor", sys->lasttextcolor);
-        sys->cfg->Write(L"lastbordcolor", sys->lastbordcolor);
+        sys->cfg->Write("notesizex", sys->notesizex);
+        sys->cfg->Write("notesizey", sys->notesizey);
+        sys->cfg->Write("perspective", aui.SavePerspective());
+        sys->cfg->Write("lastcellcolor", sys->lastcellcolor);
+        sys->cfg->Write("lasttextcolor", sys->lasttextcolor);
+        sys->cfg->Write("lastbordcolor", sys->lastbordcolor);
         aui.ClearEventHashTable();
         aui.UnInit();
         DELETEP(editmenupopup);
@@ -1515,9 +1517,9 @@ struct TSFrame : wxFrame {
         return nullptr;
     }
 
-    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wchar_t *help = L"") {
+    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wxString &help = "") {
         auto item = contents;
-        wxString key = L"";
+        wxString key = "";
         if (int pos = contents.Find("\t"); pos >= 0) {
             item = contents.Mid(0, pos);
             key = contents.Mid(pos + 1);
@@ -1549,7 +1551,7 @@ struct TSFrame : wxFrame {
 
     void RenderFolderIcon() {
         wxImage foldiconi;
-        foldiconi.LoadFile(app->GetDataPath(L"images/nuvola/fold.png"));
+        foldiconi.LoadFile(app->GetDataPath("images/nuvola/fold.png"));
         foldicon = wxBitmap(foldiconi);
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
     }
@@ -1561,12 +1563,12 @@ struct TSFrame : wxFrame {
 
     void SetFileAssoc(const wxString &exename) {
         #ifdef WIN32
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\.cts", L"TreeSheets");
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", L"TreeSheets file");
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
-                       wxString(L"\"") + exename + L"\" \"%1\"");
-        SetRegistryKey(L"HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
-                       wxString(L"\"") + exename + L"\",0");
+        SetRegistryKey("HKEY_CURRENT_USER\\Software\\Classes\\.cts", "TreeSheets");
+        SetRegistryKey("HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets", "TreeSheets file");
+        SetRegistryKey("HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\Shell\\Open\\Command",
+                       "\"" + exename + "\" \"%1\"");
+        SetRegistryKey("HKEY_CURRENT_USER\\Software\\Classes\\TreeSheets\\DefaultIcon",
+                       "\"" + exename + "\",0");
         #else
         // TODO: do something similar for mac/kde/gnome?
         #endif
@@ -1575,17 +1577,17 @@ struct TSFrame : wxFrame {
     void SetPageTitle(const wxString &filename, wxString mods, int page = -1) {
         if (page < 0) page = notebook->GetSelection();
         if (page < 0) return;
-        if (page == notebook->GetSelection()) SetTitle(L"TreeSheets - " + filename + mods);
+        if (page == notebook->GetSelection()) SetTitle("TreeSheets - " + filename + mods);
         notebook->SetPageText(
             page,
             (filename.empty() ? wxString(_("<unnamed>")) : wxFileName(filename).GetName()) + mods);
     }
 
     #ifdef WIN32
-    void SetRegistryKey(const wxChar *key, wxString value) {
+    void SetRegistryKey(const wxString &key, wxString value) {
         wxRegKey registrykey(key);
         registrykey.Create();
-        registrykey.SetValue(L"", value);
+        registrykey.SetValue("", value);
     }
     #endif
 

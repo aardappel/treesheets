@@ -207,7 +207,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             flags |= wxFD_OVERWRITE_PROMPT | wxFD_SAVE;
         else
             flags |= wxFD_OPEN | wxFD_FILE_MUST_EXIST;
-        wxString fn = ::wxFileSelector(_("Choose file:"), L"", L"", L"", L"*.*", flags);
+        wxString fn = ::wxFileSelector(_("Choose file:"), "", "", "", "*.*", flags);
         return fn.utf8_string();
     }
 

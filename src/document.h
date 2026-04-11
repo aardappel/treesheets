@@ -33,7 +33,7 @@ struct Document {
     vector<unique_ptr<UndoItem>> redolist;
     vector<Selection> drawpath;
     int pathscalebias {0};
-    wxString filename {L""};
+    wxString filename {""};
     long lastmodsinceautosave {0};
     long undolistsizeatfullsave {0};
     long lastsave {wxGetLocalTime()};
@@ -46,7 +46,7 @@ struct Document {
 
     struct Printout : wxPrintout {
         Document *doc;
-        Printout(Document *d) : wxPrintout(L"printout"), doc(d) {}
+        Printout(Document *d) : wxPrintout("printout"), doc(d) {}
 
         bool OnPrintPage(int page) {
             auto dc = GetDC();
@@ -124,7 +124,7 @@ struct Document {
     }
 
     void UpdateFileName(int page = -1) {
-        sys->frame->SetPageTitle(filename, modified ? (lastmodsinceautosave ? L"*" : L"+") : L"",
+        sys->frame->SetPageTitle(filename, modified ? (lastmodsinceautosave ? "*" : "+") : "",
                                  page);
     }
 
@@ -132,7 +132,7 @@ struct Document {
         filename = newfilename;
         if (checkext) {
             wxFileName wxfn(filename);
-            if (!wxfn.HasExt()) filename.Append(L".cts");
+            if (!wxfn.HasExt()) filename.Append(".cts");
         }
         UpdateFileName();
     }
@@ -201,7 +201,7 @@ struct Document {
             if (::wxFileExists(sys->TmpName(filename))) ::wxRemoveFile(sys->TmpName(filename));
         }
         if (sys->autohtmlexport) {
-            ExportFile(sys->ExtName(filename, L".html"),
+            ExportFile(sys->ExtName(filename, ".html"),
                        sys->autohtmlexport == A_AUTOEXPORT_HTML_WITH_IMAGES - A_AUTOEXPORT_HTML_NONE
                            ? A_EXPHTMLTE
                            : A_EXPHTMLT,
@@ -525,7 +525,7 @@ struct Document {
                 if (static_cast<int>(s.Len()) > sys->defaultmaxcolwidth) {
                     // should take the width of these into account for layoutys, but really, the
                     // worst that can happen on a thin window is that its rendering gets cut off
-                    s = s.Left(sys->defaultmaxcolwidth) + L"...";
+                    s = s.Left(sys->defaultmaxcolwidth) + "...";
                 }
                 dc.DrawText(s, off, off);
             }
@@ -644,7 +644,7 @@ struct Document {
         if (modified) {
             ThreeChoiceDialog tcd(sys->frame, filename,
                                   _("Changes have been made, are you sure you wish to continue?"),
-                                  _("Save and Close"), _("Discard Changes"), _(L"Cancel"));
+                                  _("Save and Close"), _("Discard Changes"), _("Cancel"));
             switch (tcd.Run()) {
                 case 0: {
                     bool success = false;
@@ -670,7 +670,7 @@ struct Document {
         return keep;
     }
 
-    wxString Export(const wxChar *fmt, const wxChar *pat, const wxChar *message, int action) {
+    wxString Export(const wxString &fmt, const wxString &pat, const wxString &message, int action) {
         wxFileName tsfn(filename);
         auto exportfilename = ::wxFileSelector(message, tsfn.GetPath(), tsfn.GetName(), fmt, pat,
                                                wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
@@ -712,7 +712,7 @@ struct Document {
             canvas->Refresh();
             if (!bitmap.SaveFile(filename, wxBITMAP_TYPE_PNG)) return _("Error writing PNG file!");
         } else {
-            wxFFileOutputStream fos(filename, L"w+b");
+            wxFFileOutputStream fos(filename, "w+b");
             if (!fos.IsOk()) {
                 wxMessageBox(_("Error exporting file!"), filename.wx_str(), wxOK, sys->frame);
                 return _("Error writing to file!");
@@ -722,12 +722,12 @@ struct Document {
             switch (action) {
                 case A_EXPXML:
                     dos.WriteString(
-                        L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                        L"<!DOCTYPE cell [\n"
-                        L"<!ELEMENT cell (grid)>\n"
-                        L"<!ELEMENT grid (row*)>\n"
-                        L"<!ELEMENT row (cell*)>\n"
-                        L"]>\n");
+                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                        "<!DOCTYPE cell [\n"
+                        "<!ELEMENT cell (grid)>\n"
+                        "<!ELEMENT grid (row*)>\n"
+                        "<!ELEMENT row (cell*)>\n"
+                        "]>\n");
                     dos.WriteString(content);
                     break;
                 case A_EXPHTMLT:
@@ -737,21 +737,21 @@ struct Document {
                 case A_EXPHTMLO: {
                     wxString output;
                     output
-                        << L"<!DOCTYPE html>\n"
-                        << L"<html>\n<head>\n<style>\n"
-                        << L"body { font-family: '" << sys->defaultfont << L"', sans-serif; }\n"
-                        << L"table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
-                        << L" padding: 3px; vertical-align: top; }\n"
-                        << L"@media (prefers-color-scheme: dark) {\n"
-                        << L"  html { filter: invert(1); }\n"
-                        << L"  img { filter: invert(1); }\n"
-                        << L"}\n"
-                        << L"li { }\n</style>\n"
-                        << L"<title>export of TreeSheets file " << this->filename
-                        << L"</title>\n<meta charset=\"UTF-8\" />\n"
-                        << L"</head>\n<body style=\""
-                        << wxString::Format(L"background-color: #%06X;", SwapColor(root->cellcolor))
-                        << L"\">" << content << L"</body>\n</html>\n";
+                        << "<!DOCTYPE html>\n"
+                        << "<html>\n<head>\n<style>\n"
+                        << "body { font-family: '" << sys->defaultfont << "', sans-serif; }\n"
+                        << "table, th, td { border: 1px solid #A0A0A0; border-collapse: collapse;"
+                        << " padding: 3px; vertical-align: top; }\n"
+                        << "@media (prefers-color-scheme: dark) {\n"
+                        << "  html { filter: invert(1); }\n"
+                        << "  img { filter: invert(1); }\n"
+                        << "}\n"
+                        << "li { }\n</style>\n"
+                        << "<title>export of TreeSheets file " << this->filename
+                        << "</title>\n<meta charset=\"UTF-8\" />\n"
+                        << "</head>\n<body style=\""
+                        << wxString::Format("background-color: #%06X;", SwapColor(root->cellcolor))
+                        << "\">" << content << "</body>\n</html>\n";
                     dos.WriteString(output);
                     break;
                 }
@@ -765,7 +765,7 @@ struct Document {
 
     wxString Save(bool saveas, bool *success = nullptr) {
         if (!saveas && !filename.empty()) { return SaveDB(success); }
-        auto filename = ::wxFileSelector(_("Choose TreeSheets file to save:"), L"", L"", L"cts",
+        auto filename = ::wxFileSelector(_("Choose TreeSheets file to save:"), "", "", "cts",
                                          _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
                                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
         if (filename.empty()) return _("Save cancelled.");  // avoid name being set to ""
@@ -899,23 +899,21 @@ struct Document {
             case wxID_SAVEAS: return Save(true);
             case A_SAVEALL: sys->SaveAll(); return wxEmptyString;
 
-            case A_EXPXML: return Export(L"xml", L"*.xml", _("Choose XML file to write"), action);
+            case A_EXPXML: return Export("xml", "*.xml", _("Choose XML file to write"), action);
             case A_EXPHTMLT:
             case A_EXPHTMLTE:
             case A_EXPHTMLB:
             case A_EXPHTMLO:
-                return Export(L"html", L"*.html", _("Choose HTML file to write"), action);
-            case A_EXPTEXT:
-                return Export(L"txt", L"*.txt", _("Choose Text file to write"), action);
-            case A_EXPIMAGE:
-                return Export(L"png", L"*.png", _("Choose PNG file to write"), action);
+                return Export("html", "*.html", _("Choose HTML file to write"), action);
+            case A_EXPTEXT: return Export("txt", "*.txt", _("Choose Text file to write"), action);
+            case A_EXPIMAGE: return Export("png", "*.png", _("Choose PNG file to write"), action);
             case A_EXPCSV: {
                 int maxdepth = 0, leaves = 0;
                 currentdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
                 if (maxdepth > 1)
                     return _(
-                        L"Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
-                return Export(L"csv", L"*.csv", _("Choose CSV file to write"), action);
+                        "Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
+                return Export("csv", "*.csv", _("Choose CSV file to write"), action);
             }
 
             case A_IMPXML:
@@ -969,10 +967,10 @@ struct Document {
 
             case wxID_ABOUT: {
                 wxAboutDialogInfo info;
-                info.SetName(L"TreeSheets");
+                info.SetName("TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));
-                info.SetCopyright(L"(C) 2026 Wouter van Oortmerssen and Tobias Predel");
-                auto desc = wxString::Format(L"%s\n\n%s " wxVERSION_STRING,
+                info.SetCopyright("(C) 2026 Wouter van Oortmerssen and Tobias Predel");
+                auto desc = wxString::Format("%s\n\n%s " wxVERSION_STRING,
                                              _("The Free Form Hierarchical Information Organizer"),
                                              _("Uses"));
                 info.SetDescription(desc);
@@ -986,20 +984,22 @@ struct Document {
 
             case A_TUTORIALWEBPAGE:
                 #ifdef __WXMAC__
-                    wxLaunchDefaultBrowser(L"file://" +
-                                       sys->frame->app->GetDocPath(L"docs/tutorial.html"));  // RbrtPntn
+                wxLaunchDefaultBrowser(
+                    "file://" + sys->frame->app->GetDocPath("docs/tutorial.html"));  // RbrtPntn
                 #else
-                    wxLaunchDefaultBrowser(sys->frame->app->GetDocPath(L"docs/tutorial.html"));
+                wxLaunchDefaultBrowser(sys->frame->app->GetDocPath("docs/tutorial.html"));
                 #endif
                     return wxEmptyString;
 
             #ifdef ENABLE_LOBSTER
                 case A_SCRIPTREFERENCE:
                     #ifdef __WXMAC__
-                        wxLaunchDefaultBrowser(L"file://" +
-                                           sys->frame->app->GetDocPath(L"docs/script_reference.html"));  // RbrtPntn
+                    wxLaunchDefaultBrowser(
+                        "file://" +
+                        sys->frame->app->GetDocPath("docs/script_reference.html"));  // RbrtPntn
                     #else
-                        wxLaunchDefaultBrowser(sys->frame->app->GetDocPath(L"docs/script_reference.html"));
+                    wxLaunchDefaultBrowser(
+                        sys->frame->app->GetDocPath("docs/script_reference.html"));
                     #endif
                         return wxEmptyString;
             #endif
@@ -1028,15 +1028,15 @@ struct Document {
                 if (wxFontDialog fd(sys->frame, fdat); fd.ShowModal() == wxID_OK) {
                     wxFont font = fd.GetFontData().GetChosenFont();
                     g_deftextsize = min(20, max(10, font.GetPointSize()));
-                    sys->cfg->Write(L"defaultfontsize", g_deftextsize);
+                    sys->cfg->Write("defaultfontsize", g_deftextsize);
                     switch (action) {
                         case wxID_SELECT_FONT:
                             sys->defaultfont = font.GetFaceName();
-                            sys->cfg->Write(L"defaultfont", sys->defaultfont);
+                            sys->cfg->Write("defaultfont", sys->defaultfont);
                             break;
                         case A_SET_FIXED_FONT:
                             sys->defaultfixedfont = font.GetFaceName();
-                            sys->cfg->Write(L"defaultfixedfont", sys->defaultfixedfont);
+                            sys->cfg->Write("defaultfixedfont", sys->defaultfixedfont);
                             break;
                     }
                     // root->ResetChildren();
@@ -1102,7 +1102,7 @@ struct Document {
 
             case A_DEFCURCOL: {
                 if (auto color = PickColor(sys->frame, sys->cursorcolor); color != (uint)-1) {
-                    sys->cfg->Write(L"cursorcolor", sys->cursorcolor = color);
+                    sys->cfg->Write("cursorcolor", sys->cursorcolor = color);
                     canvas->Refresh();
                 }
                 return wxEmptyString;
@@ -1124,7 +1124,7 @@ struct Document {
 
             case A_CASESENSITIVESEARCH: {
                 sys->casesensitivesearch = !(sys->casesensitivesearch);
-                sys->cfg->Write(L"casesensitivesearch", sys->casesensitivesearch);
+                sys->cfg->Write("casesensitivesearch", sys->casesensitivesearch);
                 sys->searchstring = (sys->casesensitivesearch)
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
@@ -1140,7 +1140,7 @@ struct Document {
             case A_ROUND4:
             case A_ROUND5:
             case A_ROUND6:
-                sys->cfg->Write(L"roundness", long(sys->roundness = action - A_ROUND0));
+                sys->cfg->Write("roundness", long(sys->roundness = action - A_ROUND0));
                 canvas->Refresh();
                 return wxEmptyString;
 
@@ -1258,13 +1258,13 @@ struct Document {
             case A_SETLANG: {
                 auto trans = wxTranslations::Get();
                 if (!trans) return _("Failed to get translation.");
-                wxArrayString langs = trans->GetAvailableTranslations(L"ts");
+                wxArrayString langs = trans->GetAvailableTranslations("ts");
                 langs.Insert(wxEmptyString, 0);
                 wxSingleChoiceDialog choice(
                     sys->frame, _("Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."),
                     _("Available languages"), langs);
                 if (choice.ShowModal() == wxID_OK) {
-                    sys->cfg->Write(L"defaultlang", choice.GetStringSelection());
+                    sys->cfg->Write("defaultlang", choice.GetStringSelection());
                 }
                 return wxEmptyString;
             }
@@ -1573,7 +1573,7 @@ struct Document {
             case A_IMAGE: {
                 if (!(cell = selected.ThinExpand(this))) return OneCell();
                 auto filename =
-                    ::wxFileSelector(_("Please select an image file:"), L"", L"", L"", L"*.*",
+                    ::wxFileSelector(_("Please select an image file:"), "", "", "", "*.*",
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 cell->AddUndo(this);
                 LoadImageIntoCell(filename, cell, sys->frame->FromDIP(1.0));
@@ -1722,7 +1722,7 @@ struct Document {
                                             _("Image Resize"), 500, 10, 4000, sys->frame);
                 } else {
                     v = wxGetNumberFromUser(
-                        _("Please enter the percentage you want the image scaled by:"), L"%",
+                        _("Please enter the percentage you want the image scaled by:"), "%",
                         _("Image Resize"), 50, 5, 400, sys->frame);
                 }
                 if (v < 0) return wxEmptyString;
@@ -1759,7 +1759,7 @@ struct Document {
                     imagestosave.insert(image);
                 if (imagestosave.empty()) return _("There are no images in the selection.");
                 wxString filename = ::wxFileSelector(
-                    _("Choose image file to save:"), L"", L"", L"",
+                    _("Choose image file to save:"), "", "", "",
                     _("PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"),
                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
                 if (filename.empty()) return _("Save cancelled.");
@@ -1767,9 +1767,9 @@ struct Document {
                 for (auto image : imagestosave) {
                     wxFileName fn(filename);
                     wxString finalfilename = fn.GetPathWithSep() + fn.GetName() +
-                                             (i == 0 ? wxString() : wxString::Format(L"%d", i)) +
+                                             (i == 0 ? wxString() : wxString::Format("%d", i)) +
                                              image->GetFileExtension();
-                    wxFFileOutputStream os(finalfilename, L"w+b");
+                    wxFFileOutputStream os(finalfilename, "w+b");
                     if (!os.IsOk()) {
                         wxMessageBox(
                             _("Error writing image file! (try saving under new filename)."),
@@ -1881,7 +1881,7 @@ struct Document {
                     if (!ac->grid) return NoGrid();
                     if (!ac->grid->IsTable())
                         return _(
-                            L"Selected grid is not a table: cells must not already have sub-grids.");
+                            "Selected grid is not a table: cells must not already have sub-grids.");
                     ac->AddUndo(this);
                     ac->grid->Hierarchify(this);
                     ac->ResetChildren();
@@ -2072,9 +2072,9 @@ struct Document {
             if (!strncmp(buffer, "TSFF", 4)) {
                 ThreeChoiceDialog askuser(
                     sys->frame, filename,
-                    _(L"It seems that you are about to paste or drop a TreeSheets file. "
-                      L"What would you like to do?"),
-                    _("Open TreeSheets file"), _("Paste file path"), _(L"Cancel"));
+                    _("It seems that you are about to paste or drop a TreeSheets file. "
+                      "What would you like to do?"),
+                    _("Open TreeSheets file"), _("Paste file path"), _("Cancel"));
                 switch (askuser.Run()) {
                     case 0: sys->frame->SetStatus(sys->LoadDB(filename));
                     case 2: return;
@@ -2127,7 +2127,7 @@ struct Document {
     wxString Sort(bool descending) {
         if (selected.xs != 1 && selected.ys <= 1)
             return _(
-                L"Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
+                "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
         selected.grid->cell->AddUndo(this);
         selected.grid->Sort(selected, descending);
         canvas->Refresh();

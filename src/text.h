@@ -56,9 +56,9 @@ struct Text {
         wxString r;
         for (auto cref : str) {
             switch (wxChar c = cref.GetValue()) {
-                case '&': r += L"&amp;"; break;
-                case '<': r += L"&lt;"; break;
-                case '>': r += L"&gt;"; break;
+                case '&': r += "&amp;"; break;
+                case '<': r += "&lt;"; break;
+                case '>': r += "&gt;"; break;
                 default: r += c;
             }
         }
@@ -71,14 +71,14 @@ struct Text {
             format == A_EXPHTMLTE || format == A_EXPHTMLO || format == A_EXPHTMLB)
             str = htmlify(str);
         if (format == A_EXPHTMLTI && image)
-            str.Prepend(L"<img src=\"data:" + imagetypes.at(image->type).second + ";base64," +
+            str.Prepend("<img src=\"data:" + imagetypes.at(image->type).second + ";base64," +
                         wxBase64Encode(image->data.data(), image->data.size()) + "\" />");
         else if (format == A_EXPHTMLTE && image) {
             wxString relsize = wxString::Format(
                 "%d%%", static_cast<int>(100.0 * sys->frame->FromDIP(1.0) / image->display_scale));
-            str.Prepend(L"<img src=\"" + wxString::Format("%llu", image->hash) +
-                        image->GetFileExtension() + L"\" width=\"" + relsize + L"\" height=\"" +
-                        relsize + L"\" />");
+            str.Prepend("<img src=\"" + wxString::Format("%llu", image->hash) +
+                        image->GetFileExtension() + "\" width=\"" + relsize + "\" height=\"" +
+                        relsize + "\" />");
         }
         return str;
     };

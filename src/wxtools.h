@@ -118,8 +118,8 @@ struct ColorPopup : wxVListBoxComboPopup {
 struct ColorDropdown : wxOwnerDrawnComboBox {
     ColorDropdown(wxWindow *parent, wxWindowID id, int sel) {
         wxArrayString as;
-        as.Add(L"", sizeof(celltextcolors) / sizeof(uint));
-        Create(parent, id, L"", wxDefaultPosition, FromDIP(wxSize(44, 22)), as,
+        as.Add("", sizeof(celltextcolors) / sizeof(uint));
+        Create(parent, id, "", wxDefaultPosition, FromDIP(wxSize(44, 22)), as,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ColorPopup(this));
         SetSelection(sel);
@@ -139,8 +139,8 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
         if (item == CUSTOMCOLORIDX) {
             dc.SetTextForeground(LightColor(0x000000));
             dc.SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
-                              false, L""));
-            dc.DrawText(L"Custom", rect.x + 1, rect.y + 1);
+                              false, ""));
+            dc.DrawText("Custom", rect.x + 1, rect.y + 1);
         }
     }
 };
@@ -169,7 +169,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     ImageDropdown(wxWindow *parent, const wxString &directory) {
         FillBitmapVector(directory);
-        Create(parent, A_DDIMAGE, L"", wxDefaultPosition,
+        Create(parent, A_DDIMAGE, "", wxDefaultPosition,
                FromDIP(wxSize(image_space * 2, image_space)), filenames,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ImagePopup());
@@ -189,7 +189,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     void FillBitmapVector(const wxString &directory) {
         if (!bitmaps_display.empty()) bitmaps_display.resize(0);
-        auto filename = wxFindFirstFile(directory + L"*.*");
+        auto filename = wxFindFirstFile(directory + "*.*");
         while (!filename.empty()) {
             wxBitmap bitmap;
             if (bitmap.LoadFile(filename, wxBITMAP_TYPE_PNG)) {
@@ -239,9 +239,9 @@ static uint64_t CalculateHash(vector<uint8_t> &buffer) {
     return FNV1A64(buffer.data(), buffer.size());
 }
 
-static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const wxChar *title,
-                             const wxChar *filter) {
-    wxFileDialog filedialog(parent, title, L"", L"", filter,
+static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const wxString &title,
+                             const wxString &filter) {
+    wxFileDialog filedialog(parent, title, "", "", filter,
                             wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | wxFD_MULTIPLE);
     if (filedialog.ShowModal() == wxID_OK) filedialog.GetPaths(filenames);
 }
