@@ -121,6 +121,7 @@ struct TSFrame : wxFrame {
         auto expmenu = new wxMenu();
         MyAppend(expmenu, A_EXPXML, _("&XML..."),
                  _("Export the current view as XML (which can also be reimported without losing structure)"));
+        expmenu->AppendSeparator();
         MyAppend(expmenu, A_EXPHTMLT, _("&HTML (Tables+Styling)..."),
                  _("Export the current view as HTML using nested tables, that will look somewhat like the TreeSheet"));
         MyAppend(expmenu, A_EXPHTMLTE, _("&HTML (Tables+Styling+Images)..."),
@@ -129,14 +130,18 @@ struct TSFrame : wxFrame {
                  _("Export the current view as HTML as nested bullet points."));
         MyAppend(expmenu, A_EXPHTMLO, _("HTML (&Outline)..."),
                  _("Export the current view as HTML as nested headers, suitable for importing into Word's outline mode"));
+        expmenu->AppendSeparator();
         MyAppend(
             expmenu, A_EXPTEXT, _("Indented &Text..."),
             _("Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"));
         MyAppend(
             expmenu, A_EXPCSV, _("&Comma delimited text (CSV)..."),
             _("Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"));
+        expmenu->AppendSeparator();
         MyAppend(expmenu, A_EXPIMAGE, _("&Image..."),
                  _("Export the current view as an image. Useful for faithful renderings of the TreeSheet, and programs that don't accept any of the above options"));
+        MyAppend(expmenu, A_EXPSVG, _("&Vector graphics..."),
+                _("Export the current view to a SVG vector file."));
 
         auto impmenu = new wxMenu();
         MyAppend(impmenu, A_IMPXML, _("XML..."));

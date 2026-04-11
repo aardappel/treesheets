@@ -37,6 +37,7 @@
 #include <wx/bmpbndl.h>
 #include <wx/colordlg.h>
 #include <wx/datectrl.h>
+#include <wx/dcsvg.h>
 #include <wx/display.h>
 #include <wx/docview.h>
 #include <wx/filename.h>

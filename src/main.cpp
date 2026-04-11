@@ -49,6 +49,7 @@ enum {
     A_MARKCODE,
     A_IMAGE,
     A_EXPIMAGE,
+    A_EXPSVG,
     A_EXPXML,
     A_EXPHTMLT,
     A_EXPHTMLTI,
