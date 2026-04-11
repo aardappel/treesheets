@@ -1611,10 +1611,9 @@ struct TSFrame : wxFrame {
             if (Cell *c = s.GetCell(); c && s.xs) {
                 SetStatusText(wxString::Format(_("Size %d"), -c->text.relsize), 3);
                 SetStatusText(wxString::Format(_("Width %d"), s.grid->colwidths[s.x]), 2);
-                SetStatusText(
-                    wxString::Format(_("Edited %s %s"), c->text.lastedit.FormatDate().c_str(),
-                                     c->text.lastedit.FormatTime().c_str()),
-                    1);
+                SetStatusText(wxString::Format(_("Edited %s %s"), c->text.lastedit.FormatDate(),
+                                               c->text.lastedit.FormatTime()),
+                              1);
             } else
                 for (int field : {1, 2, 3}) SetStatusText("", field);
             if (updateamount) SetStatusText(wxString::Format(_("%d cell(s)"), s.xs * s.ys), 4);

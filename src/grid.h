@@ -582,9 +582,8 @@ struct Grid {
 
         Formatter(r, format, indent, xmlstr,
                   wxString::Format("<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
-                                   grid_border_width, font_size)
-                      .wc_str(),
-                  wxString::Format("<ul style=\"font-size: %dpt;\">\n", font_size).wc_str());
+                                   grid_border_width, font_size),
+                  wxString::Format("<ul style=\"font-size: %dpt;\">\n", font_size));
         foreachcellinsel(c, sel) {
             if (x == sel.x) Formatter(r, format, indent, "<row>\n", "<tr>\n", "");
             r.Append(c->ToText(indent, sel, format, doc, inheritstyle, root));

@@ -180,7 +180,7 @@ struct TSApp : wxApp {
             if (std::filesystem::exists(relativePath)) { break; }
         }
 
-        return wxString(relativePath.c_str());
+        return wxString(relativePath);
     }
 
     wxString GetDocPath(const wxString &relpath) {
@@ -198,7 +198,7 @@ struct TSApp : wxApp {
             if (std::filesystem::exists(relativePath)) { break; }
         }
 
-        return wxString(relativePath.c_str());
+        return wxString(relativePath);
     }
 
     #ifdef __WXMSW__
