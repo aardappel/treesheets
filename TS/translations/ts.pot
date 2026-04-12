@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 09:39+0100\n"
+"POT-Creation-Date: 2026-04-12 16:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #, c-format
@@ -197,6 +197,9 @@ msgid "&Transpose"
 msgstr ""
 
 msgid "&Undo"
+msgstr ""
+
+msgid "&Vector graphics..."
 msgstr ""
 
 msgid "&Vertical View"
@@ -382,6 +385,9 @@ msgstr ""
 msgid "Choose PNG file to write"
 msgstr ""
 
+msgid "Choose SVG file to write"
+msgstr ""
+
 msgid "Choose Text file to write"
 msgstr ""
 
@@ -457,6 +463,9 @@ msgid "Cursor Left"
 msgstr ""
 
 msgid "Cursor Right"
+msgstr ""
+
+msgid "Custom"
 msgstr ""
 
 msgid "Custom &color..."
@@ -544,6 +553,9 @@ msgstr ""
 msgid "Error exporting file!"
 msgstr ""
 
+msgid "Error exporting to SVG file!"
+msgstr ""
+
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr ""
 
@@ -608,13 +620,17 @@ msgid ""
 "programs"
 msgstr ""
 
-msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"
+msgid "Export the current view to a SVG vector file."
 msgstr ""
 
-msgid "Export to a HTML file when document is saved"
+msgid ""
+"Export to a HTML file alongside the original TreeSheets file when document "
+"is saved"
 msgstr ""
 
-msgid "Export to a HTML file with exported images alongside the original TreeSheets file when document is saved"
+msgid ""
+"Export to a HTML file with exported images alongside the original TreeSheets "
+"file when document is saved"
 msgstr ""
 
 msgid "Export with images"
@@ -855,10 +871,6 @@ msgid "Load an interactive tutorial in TreeSheets"
 msgstr ""
 
 #, c-format
-msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr ""
-
-#, c-format
 msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
 msgstr ""
 
@@ -952,6 +964,9 @@ msgid "New file cancelled."
 msgstr ""
 
 msgid "No autoexport"
+msgstr ""
+
+msgid "No image found to convert"
 msgstr ""
 
 msgid "No image in this cell."
@@ -1112,7 +1127,9 @@ msgstr ""
 msgid "Please select the datetime range."
 msgstr ""
 
-msgid "Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."
+msgid ""
+"Please select the language for the interface (requires restart). Please "
+"select the empty row if you want to use the default language."
 msgstr ""
 
 msgid "Please select the script you want to remove from the list:"
@@ -1249,10 +1266,6 @@ msgid "Save open documents periodically to temporary files"
 msgstr ""
 
 #, c-format
-msgid "Saved %s successfully (in %d milliseconds)."
-msgstr ""
-
-#, c-format
 msgid "Saved %s successfully (in %lld milliseconds)."
 msgstr ""
 
@@ -1381,10 +1394,16 @@ msgstr ""
 msgid "Start date and time"
 msgstr ""
 
+msgid "Start minimized"
+msgstr ""
+
 msgid "Start of line of text"
 msgstr ""
 
 msgid "Start of text"
+msgstr ""
+
+msgid "Start the application minimized"
 msgstr ""
 
 msgid "Statusbar"
@@ -1606,6 +1625,9 @@ msgid "changes the orientation of a grid"
 msgstr ""
 
 msgid "couldn't import file!"
+msgstr ""
+
+msgid "nothing to resize"
 msgstr ""
 
 msgid "only sets the colors and style of the copied cell, and keeps the text"
