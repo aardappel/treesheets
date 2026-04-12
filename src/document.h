@@ -1629,7 +1629,7 @@ struct Document {
             case A_BORD4:
             case A_BORD5:
                 selected.grid->cell->AddUndo(this);
-                selected.grid->SetBorder(action - A_BORD0 + 1, selected);
+                selected.grid->SetBorder(action - A_BORD0 + 1);
                 selected.grid->cell->ResetChildren();
                 canvas->Refresh();
                 return wxEmptyString;

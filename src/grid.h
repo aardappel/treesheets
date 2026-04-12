@@ -598,9 +598,10 @@ struct Grid {
     void RelSize(int dir, const Selection &sel, int zoomdepth) {
         foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth);
     }
-    void SetBorder(int width, const Selection &sel) {
-        foreachcellinsel(c, sel) c->SetBorder(width);
+    void SetBorder(int width) {
+        user_grid_outer_spacing = width;
     }
+
     int MinRelsize(int rs) {
         foreachcell(c) {
             int crs = c->MinRelsize();

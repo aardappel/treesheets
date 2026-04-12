@@ -512,10 +512,6 @@ struct Cell {
         if (text.image) text.image->trefc++;
     }
 
-    void SetBorder(int width) {
-        if (grid) grid->user_grid_outer_spacing = width;
-    }
-
     void ColorChange(Document *doc, int which, uint color) {
         switch (which) {
             case A_CELLCOLOR: cellcolor = color; break;
