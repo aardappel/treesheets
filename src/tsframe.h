@@ -261,11 +261,11 @@ struct TSFrame : wxFrame {
             MyAppend(selmenu, A_SUP, _("Extend Selection Up") + "\tSHIFT+UP");
             MyAppend(selmenu, A_SDOWN, _("Extend Selection Down") + "\tSHIFT+DOWN");
             selmenu->AppendSeparator();
-            MyAppend(selmenu, A_SROWS, _("Extend Selection Full Rows"));
+            MyAppend(selmenu, A_SROWS, _("Extend Selection Full Rows") + "\tCTRL+SHIFT+B");
             MyAppend(selmenu, A_SCLEFT, _("Extend Selection Rows Left") + "\tCTRL+SHIFT+LEFT");
             MyAppend(selmenu, A_SCRIGHT, _("Extend Selection Rows Right") + "\tCTRL+SHIFT+RIGHT");
             selmenu->AppendSeparator();
-            MyAppend(selmenu, A_SCOLS, _("Extend Selection Full Columns") + "\tCTRL+SHIFT+a");
+            MyAppend(selmenu, A_SCOLS, _("Extend Selection Full Columns") + "\tCTRL+SHIFT+A");
             MyAppend(selmenu, A_SCUP, _("Extend Selection Columns Up") + "\tCTRL+SHIFT+UP");
             MyAppend(selmenu, A_SCDOWN, _("Extend Selection Columns Down") + "\tCTRL+SHIFT+DOWN");
             selmenu->AppendSeparator();
