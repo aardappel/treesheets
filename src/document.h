@@ -467,7 +467,7 @@ struct Document {
                 sys->frame->UpdateStatus(selected, false);
                 return dir > 0 ? _("Column width increased.") : _("Column width decreased.");
             }
-            return "nothing to resize";
+            return _("nothing to resize");
         } else if (shift) {
             if (!selected.grid) return NoSel();
             selected.grid->cell->AddUndo(this);
