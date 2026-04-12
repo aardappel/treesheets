@@ -35,6 +35,13 @@ struct DropTarget : wxDropTarget {
     }
 };
 
+struct TSStackWalker : public wxStackWalker {
+    void OnStackFrame(const wxStackFrame &frame) override {
+        wxLogMessage("[%zu] %s (%s:%zu)", frame.GetLevel(), frame.GetName(), frame.GetFileName(),
+                     frame.GetLine());
+    }
+};
+
 struct ThreeChoiceDialog : public wxDialog {
     ThreeChoiceDialog(wxWindow *parent, const wxString &title, const wxString &msg,
                       const wxString &ch1, const wxString &ch2, const wxString &ch3)

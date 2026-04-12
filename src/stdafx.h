@@ -16,6 +16,7 @@
 #include <wx/dnd.h>
 #include <wx/fileconf.h>
 #include <wx/numdlg.h>
+#include <wx/stackwalk.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
