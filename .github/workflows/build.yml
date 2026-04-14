@@ -43,7 +43,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
         -DwxBUILD_SHARED=OFF \
         -DwxBUILD_INSTALL=OFF \
-        -DwxUSE_SYS_LIBS=ON \
+        -DwxUSE_SYS_LIBS=OFF \
         -DTREESHEETS_VERSION=${{ github.run_number }}
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
