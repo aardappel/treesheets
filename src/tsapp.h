@@ -23,10 +23,6 @@ struct TSApp : wxApp {
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
 
     bool OnInit() override {
-        SetAppName("TreeSheets");
-        SetVendorName("The TreeSheets Authors");
-        wxHandleFatalExceptions(true);
-
         #if wxUSE_UNICODE == 0
             #error "must use unicode version of wx libs to ensure data integrity of .cts files"
         #endif
@@ -60,12 +56,6 @@ struct TSApp : wxApp {
                 filename = argv[i];
             }
         }
-
-        wxFileName fn(portable ? wxGetCwd() : wxStandardPaths::Get().GetUserDataDir(),
-                      "errors.log");
-        if (!portable) fn.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
-        static wxFFile f(fn.GetFullPath(), "w");
-        if (f.IsOpened()) wxLog::SetActiveTarget(new wxLogStderr(f.fp()));
 
         if (single_instance) {
             instance_checker.reset(new wxSingleInstanceChecker(
@@ -107,14 +97,6 @@ struct TSApp : wxApp {
 
         serv->Create(service);
         return true;
-    }
-
-    void OnFatalException() override {
-        TSStackWalker walker;
-        walker.WalkFromException();
-        wxLog::FlushActive();
-        wxSafeShowMessage("TreeSheets crash detected",
-                          "Please consult the log file for further details.");
     }
 
     void OnEventLoopEnter(wxEventLoopBase *WXUNUSED(loop)) override {
