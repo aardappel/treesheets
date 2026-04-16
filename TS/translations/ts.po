@@ -1,0 +1,1643 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-04-16 10:45+0700\n"
+"Last-Translator: Vũ Anh Vũ\n"
+"Language-Team: Vietnamese\n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
+
+#, c-format
+msgid "%d cell(s)"
+msgstr "%d ô"
+
+#, c-format
+msgid ""
+"%s\n"
+"has been modified on disk by another program / computer:\n"
+"Would you like to discard your changes and re-load from disk?"
+msgstr "%s\nđã bị thay đổi trên đĩa bởi một chương trình / máy tính khác:\nBạn có muốn hủy bỏ các thay đổi và tải lại từ đĩa không?"
+
+msgid "&About..."
+msgstr "&Thông tin..."
+
+msgid "&Add Cell Text as Tag"
+msgstr "&Thêm văn bản ô thành thẻ"
+
+msgid "&Add..."
+msgstr "&Thêm..."
+
+msgid "&Browsing"
+msgstr "&Duyệt"
+
+msgid "&Clear Views"
+msgstr "&Xóa các chế độ xem"
+
+msgid "&Close"
+msgstr "Đóng (&C)"
+
+msgid "&Comma delimited text (CSV)..."
+msgstr "Văn bản phân tách bằng dấu phẩy (&CSV)..."
+
+msgid "&Copy"
+msgstr "Sao chép (&C)"
+
+msgid "&Copy as Bitmap"
+msgstr "Sao chép dưới dạng &Bitmap"
+
+msgid "&Data"
+msgstr "&Dữ liệu"
+
+msgid "&Decrease text size (SHIFT+mousewheel)"
+msgstr "&Giảm kích thước chữ (SHIFT+lăn chuột)"
+
+msgid "&Delete After"
+msgstr "&Xóa phần sau"
+
+msgid "&Edit"
+msgstr "Chỉnh &sửa"
+
+msgid "&Exit"
+msgstr "Thoát (&X)"
+
+msgid "&File"
+msgstr "Tệp (&F)"
+
+msgid "&Flatten"
+msgstr "Làm &phẳng"
+
+msgid "&Grid Reorganization"
+msgstr "Tổ chức lại &lưới"
+
+msgid "&HTML (Tables+Styling)..."
+msgstr "&HTML (Bảng+Định dạng)..."
+
+msgid "&HTML (Tables+Styling+Images)..."
+msgstr "&HTML (Bảng+Định dạng+Hình ảnh)..."
+
+msgid "&Help"
+msgstr "Trợ giúp (&H)"
+
+msgid "&Hierarchify"
+msgstr "Phân cấp &hóa"
+
+msgid "&Horizontal View"
+msgstr "Chế độ xem ngang (&H)"
+
+msgid "&Image..."
+msgstr "Hình ảnh (&I)..."
+
+msgid "&Images"
+msgstr "Hình ảnh (&I)"
+
+msgid "&Increase text size (SHIFT+mousewheel)"
+msgstr "Tăng kích thước chữ (&I) (SHIFT+lăn chuột)"
+
+msgid "&Insert New Grid"
+msgstr "Chèn lướ&i mới"
+
+msgid "&Layout && Render Style"
+msgstr "Bố cục && Phong cách hiển thị (&L)"
+
+msgid "&Mark as"
+msgstr "Đánh dấu là (&M)"
+
+msgid "&New"
+msgstr "Mới (&N)"
+
+msgid "&Next Match"
+msgstr "Kết quả tiếp theo (&N)"
+
+msgid "&Next tab"
+msgstr "Tab tiếp theo (&N)"
+
+msgid "&Open..."
+msgstr "Mở (&O)..."
+
+msgid "&Operation"
+msgstr "Thao tác (&O)"
+
+msgid "&Options"
+msgstr "Tùy chọn (&O)"
+
+msgid "&Paste"
+msgstr "Dán (&P)"
+
+msgid "&Previous Match"
+msgstr "Kết quả trước (&P)"
+
+msgid "&Print..."
+msgstr "In (&P)..."
+
+msgid "&Program"
+msgstr "Chương trình (&P)"
+
+msgid "&Recent files"
+msgstr "Các tệp gần đây (&R)"
+
+msgid "&Redo"
+msgstr "Làm lại (&R)"
+
+msgid "&Remove Cell Text from Tags"
+msgstr "Xóa văn bản ô khỏi các thẻ (&R)"
+
+msgid "&Replace"
+msgstr "Thay thế (&R)"
+
+msgid "&Reset Scale (display only)"
+msgstr "Đặt lại tỷ lệ (&R) (chỉ hiển thị)"
+
+msgid "&Reset text sizes"
+msgstr "Đặt lại kích thước chữ (&R)"
+
+msgid "&Reset text styles"
+msgstr "Đặt lại định dạng chữ (&R)"
+
+msgid "&Roundness of grid borders"
+msgstr "Độ bo góc của viền lưới (&R)"
+
+msgid "&Run"
+msgstr "Chạy (&R)"
+
+msgid "&Save"
+msgstr "Lưu (&S)"
+
+msgid "&Save as..."
+msgstr "Lưu dưới dạng (&S)..."
+
+msgid "&Script reference"
+msgstr "Tham chiếu kịch bản (&S)"
+
+msgid "&Search"
+msgstr "Tìm kiếm (&S)"
+
+msgid "&Selection"
+msgstr "Vùng chọn (&S)"
+
+msgid "&Set Cell Text to tag (use CTRL+RMB)"
+msgstr "Đặt văn bản ô thành thẻ (&S) (dùng CTRL+Chuột phải)"
+
+msgid "&Set custom color from cell background"
+msgstr "Đặt màu tùy chỉnh từ nền ô (&S)"
+
+msgid "&Shrink text of all sub-grids"
+msgstr "Thu nhỏ văn bản của tất cả lưới con (&S)"
+
+msgid "&Transpose"
+msgstr "Chuyển vị (&T)"
+
+msgid "&Undo"
+msgstr "Hoàn tác (&U)"
+
+msgid "&Vector graphics..."
+msgstr "Đồ họa &vector..."
+
+msgid "&Vertical View"
+msgstr "Chế độ xem dọc (&V)"
+
+msgid "&View"
+msgstr "Hiển thị (&V)"
+
+msgid "&Wrap in new parent"
+msgstr "Bao quanh trong mục cha mới (&W)"
+
+msgid "&XML..."
+msgstr "&XML..."
+
+msgid "*.*"
+msgstr "*.*"
+
+msgid "...and jump to the end of the text"
+msgstr "...và nhảy đến cuối văn bản"
+
+msgid "...and progress to the first cell in the new row"
+msgstr "...và chuyển đến ô đầu tiên trong hàng mới"
+
+msgid "...and progress to the next cell on the right"
+msgstr "...và chuyển đến ô tiếp theo bên phải"
+
+msgid "1:1 scale restored."
+msgstr "Đã khôi phục tỷ lệ 1:1."
+
+msgid "<unnamed>"
+msgstr "<chưa đặt tên>"
+
+msgid "A temporary autosave file exists, would you like to load it instead?"
+msgstr "Có tệp tự động lưu tạm thời, bạn có muốn tải tệp đó không?"
+
+msgid "Add Image"
+msgstr "Thêm hình ảnh"
+
+msgid "Add Lobster scripts to the menu"
+msgstr "Thêm kịch bản Lobster vào menu"
+
+msgid "Add an image to the selected cell"
+msgstr "Thêm hình ảnh vào ô được chọn"
+
+msgid "Add..."
+msgstr "Thêm..."
+
+msgid "Adds a grid to the selected cell"
+msgstr "Thêm lưới vào ô được chọn"
+
+msgid "Apply last border color"
+msgstr "Áp dụng màu viền gần nhất"
+
+msgid "Apply last cell color"
+msgstr "Áp dụng màu ô gần nhất"
+
+msgid "Apply last text color"
+msgstr "Áp dụng màu chữ gần nhất"
+
+msgid "At least one file could not be opened."
+msgstr "Ít nhất một tệp không thể mở được."
+
+msgid "Autoexport to HTML"
+msgstr "Tự động xuất sang HTML"
+
+msgid "Autoreload documents"
+msgstr "Tự động tải lại tài liệu"
+
+msgid "Autosave"
+msgstr "Tự động lưu"
+
+msgid "Autosave load"
+msgstr "Tải bản tự động lưu"
+
+msgid "Available languages"
+msgstr "Ngôn ngữ hiện có"
+
+msgid "Background color..."
+msgstr "Màu nền..."
+
+msgid "Backup files"
+msgstr "Sao lưu tệp"
+
+msgid "Bitmap copied to clipboard"
+msgstr "Đã sao chép ảnh bitmap vào khay nhớ tạm"
+
+msgid "Border "
+msgstr "Viền "
+
+msgid "Border &0"
+msgstr "Viền &0"
+
+msgid "Border &1"
+msgstr "Viền &1"
+
+msgid "Border &2"
+msgstr "Viền &2"
+
+msgid "Border &3"
+msgstr "Viền &3"
+
+msgid "Border &4"
+msgstr "Viền &4"
+
+msgid "Border &5"
+msgstr "Viền &5"
+
+msgid "Bubble Style Rendering"
+msgstr "Hiển thị theo kiểu bong bóng"
+
+msgid "Can only move this cell from a Nx1 or 1xN grid."
+msgstr "Chỉ có thể di chuyển ô này từ lưới Nx1 hoặc 1xN."
+
+msgid "Can only move this cell into a Nx1 or 1xN grid."
+msgstr "Chỉ có thể di chuyển ô này vào lưới Nx1 hoặc 1xN."
+
+msgid "Can paste or drop only exactly one file."
+msgstr "Chỉ có thể dán hoặc thả chính xác một tệp."
+
+msgid ""
+"Can't sort: make a 1xN selection to indicate what column to sort on, and "
+"what rows to affect"
+msgstr "Không thể sắp xếp: hãy chọn vùng 1xN để chỉ định cột cần sắp xếp và các hàng bị ảnh hưởng"
+
+msgid "Cancel"
+msgstr "Hủy"
+
+msgid "Cancel text edits"
+msgstr "Hủy chỉnh sửa văn bản"
+
+msgid "Cannot decompress file."
+msgstr "Không thể giải nén tệp."
+
+msgid ""
+"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
+"or use Flatten)."
+msgstr "Không thể xuất lưới chưa được làm phẳng (hãy phóng to lưới mong muốn và/hoặc sử dụng Làm phẳng)."
+
+msgid "Cannot move this cell up in the hierarchy."
+msgstr "Không thể di chuyển ô này lên cấp cao hơn."
+
+msgid "Cannot open file."
+msgstr "Không thể mở tệp."
+
+msgid "Case-sensitive search"
+msgstr "Tìm kiếm phân biệt hoa thường"
+
+msgid "Cell "
+msgstr "Ô "
+
+msgid "Change interface language"
+msgstr "Thay đổi ngôn ngữ giao diện"
+
+msgid "Change language..."
+msgstr "Thay đổi ngôn ngữ..."
+
+msgid ""
+"Change the image(s) scale to match DPI of the current display. Applies to "
+"all uses of this image."
+msgstr "Thay đổi tỷ lệ hình ảnh để khớp với DPI của màn hình hiện tại. Áp dụng cho tất cả vị trí sử dụng ảnh này."
+
+msgid ""
+"Change the image(s) size if it is too big or too small, by changing the size "
+"shown on screen. Applies to all uses of this image."
+msgstr "Thay đổi kích thước hình ảnh nếu quá lớn hoặc quá nhỏ bằng cách đổi kích cỡ hiển thị. Áp dụng cho tất cả vị trí sử dụng ảnh này."
+
+msgid ""
+"Change the image(s) size if it is too big, by reducing the amount of pixels"
+msgstr "Thay đổi kích thước hình ảnh nếu quá lớn bằng cách giảm số lượng điểm ảnh"
+
+msgid "Change the key binding of a menu item"
+msgstr "Thay đổi phím tắt của một mục menu"
+
+msgid "Changes have been made, are you sure you wish to continue?"
+msgstr "Các thay đổi đã được thực hiện, bạn có chắc chắn muốn tiếp tục không?"
+
+msgid "Choose CSV file to write"
+msgstr "Chọn tệp CSV để ghi"
+
+msgid "Choose HTML file to write"
+msgstr "Chọn tệp HTML để ghi"
+
+msgid "Choose PNG file to write"
+msgstr "Chọn tệp PNG để ghi"
+
+msgid "Choose SVG file to write"
+msgstr "Chọn tệp SVG để ghi"
+
+msgid "Choose Text file to write"
+msgstr "Chọn tệp văn bản để ghi"
+
+msgid "Choose TreeSheets file to save:"
+msgstr "Chọn tệp TreeSheets để lưu:"
+
+msgid "Choose XML file to write"
+msgstr "Chọn tệp XML để ghi"
+
+msgid "Choose image file to save:"
+msgstr "Chọn tệp hình ảnh để lưu:"
+
+msgid "Clear replace"
+msgstr "Xóa thay thế"
+
+msgid "Clear search"
+msgstr "Xóa tìm kiếm"
+
+msgid "Close current document"
+msgstr "Đóng tài liệu hiện tại"
+
+msgid "Collapse Ce&lls"
+msgstr "Thu gọn các ô (&L)"
+
+msgid "Column width decreased."
+msgstr "Đã giảm chiều rộng cột."
+
+msgid "Column width increased."
+msgstr "Đã tăng chiều rộng cột."
+
+msgid "Comma delimited text (CSV)..."
+msgstr "Văn bản phân tách bằng dấu phẩy (CSV)..."
+
+msgid ""
+"Convert an NxN grid with repeating elements per column into an 1xN grid with "
+"hierarchy, useful to convert data from spreadsheets"
+msgstr "Chuyển đổi lưới NxN với các thành phần lặp lại theo cột thành lưới 1xN có phân cấp, hữu ích khi chuyển đổi dữ liệu từ bảng tính"
+
+msgid "Copy (CTRL+c)"
+msgstr "Sao chép (CTRL+c)"
+
+msgid "Copy As Continuous Text"
+msgstr "Sao chép dưới dạng văn bản liên tục"
+
+msgid "Copy selection"
+msgstr "Sao chép vùng chọn"
+
+msgid "Copy with &Images"
+msgstr "Sao chép kèm theo hình &ảnh"
+
+msgid "Corrupt PNG header."
+msgstr "Tiêu đề PNG bị hỏng."
+
+msgid "Corrupt block header."
+msgstr "Tiêu đề khối bị hỏng."
+
+msgid "Create a new document"
+msgstr "Tạo tài liệu mới"
+
+msgid "Create backup file before document is saved to file"
+msgstr "Tạo tệp sao lưu trước khi lưu tài liệu vào tệp"
+
+msgid "Creates a new level of hierarchy around the current selection"
+msgstr "Tạo một cấp phân cấp mới bao quanh vùng chọn hiện tại"
+
+msgid "Cu&rsor color..."
+msgstr "Màu con t&rỏ..."
+
+msgid "Cu&t"
+msgstr "Cắ&t"
+
+msgid "Cursor Left"
+msgstr "Con trỏ sang trái"
+
+msgid "Cursor Right"
+msgstr "Con trỏ sang phải"
+
+msgid "Custom"
+msgstr "Tùy chỉnh"
+
+msgid "Custom &color..."
+msgstr "Màu tùy &chỉnh..."
+
+msgid "Cut selection"
+msgstr "Cắt vùng chọn"
+
+msgid "Date and time range"
+msgstr "Khoảng ngày và giờ"
+
+msgid "Decrease column width (ALT+mousewheel)"
+msgstr "Giảm chiều rộng cột (ALT+lăn chuột)"
+
+msgid "Decrease column width (no sub grids)"
+msgstr "Giảm chiều rộng cột (không có lưới con)"
+
+msgid "Default column width"
+msgstr "Chiều rộng cột mặc định"
+
+msgid "Default column width..."
+msgstr "Chiều rộng cột mặc định..."
+
+msgid "Delete Before"
+msgstr "Xóa phần trước"
+
+msgid "Delete Word After"
+msgstr "Xóa từ phía sau"
+
+msgid "Delete Word Before"
+msgstr "Xóa từ phía trước"
+
+msgid ""
+"Deletes the column of cells after the selected grid line, or the row below"
+msgstr "Xóa cột các ô sau đường lưới được chọn, hoặc hàng bên dưới"
+
+msgid ""
+"Deletes the column of cells before the selected grid line, or the row above"
+msgstr "Xóa cột các ô trước đường lưới được chọn, hoặc hàng bên trên"
+
+msgid "Deletes the entire word after the cursor"
+msgstr "Xóa toàn bộ từ sau con trỏ"
+
+msgid "Deletes the entire word before the cursor"
+msgstr "Xóa toàn bộ từ trước con trỏ"
+
+msgid "Discard Changes"
+msgstr "Hủy bỏ thay đổi"
+
+msgid "Edit &Note"
+msgstr "Chỉnh sửa ghi &chú"
+
+msgid "Edit the note of the selected cell"
+msgstr "Chỉnh sửa ghi chú của ô được chọn"
+
+#, c-format
+msgid "Edited %s %s"
+msgstr "Đã chỉnh sửa %s %s"
+
+msgid "Embed as &JPEG"
+msgstr "Nhúng dưới dạng &JPEG"
+
+msgid "Embed as &PNG"
+msgstr "Nhúng dưới dạng &PNG"
+
+msgid ""
+"Embed the image(s) in the selected cells in JPEG format (reduces data size)"
+msgstr "Nhúng (các) hình ảnh trong các ô được chọn dưới định dạng JPEG (giảm kích thước dữ liệu)"
+
+msgid "Embed the image(s) in the selected cells in PNG format (default)"
+msgstr "Nhúng (các) hình ảnh trong các ô được chọn dưới định dạng PNG (mặc định)"
+
+msgid "End date and time"
+msgstr "Ngày và giờ kết thúc"
+
+msgid "End of line of text"
+msgstr "Cuối dòng văn bản"
+
+msgid "End of text"
+msgstr "Cuối văn bản"
+
+msgid "Enter/exit text edit mode"
+msgstr "Vào/thoát chế độ chỉnh sửa văn bản"
+
+msgid "Error exporting file!"
+msgstr "Lỗi khi xuất tệp!"
+
+msgid "Error exporting to SVG file!"
+msgstr "Lỗi khi xuất sang tệp SVG!"
+
+msgid "Error loading core data file (TreeSheets not installed correctly?)"
+msgstr "Lỗi khi tải tệp dữ liệu cốt lõi (TreeSheets chưa được cài đặt đúng cách?)"
+
+msgid "Error writing PNG file!"
+msgstr "Lỗi khi ghi tệp PNG!"
+
+msgid "Error writing TreeSheets file! (try saving under new filename)."
+msgstr "Lỗi khi ghi tệp TreeSheets! (hãy thử lưu với tên tệp mới)."
+
+msgid "Error writing image file! (try saving under new filename)."
+msgstr "Lỗi khi ghi tệp hình ảnh! (hãy thử lưu với tên tệp mới)."
+
+msgid "Error writing to file!"
+msgstr "Lỗi khi ghi vào tệp!"
+
+msgid "Error writing to file."
+msgstr "Lỗi khi ghi vào tệp."
+
+msgid "Evaluation finished."
+msgstr "Quá trình đánh giá đã hoàn tất."
+
+msgid "Export &view as"
+msgstr "Xuất chế độ &xem dưới dạng"
+
+msgid "Export cancelled."
+msgstr "Đã hủy xuất."
+
+msgid "Export the curent view as HTML using nested tables and exported images"
+msgstr "Xuất chế độ xem hiện tại dưới dạng HTML sử dụng các bảng lồng nhau và hình ảnh đã xuất"
+
+msgid ""
+"Export the current view as CSV. Good for spreadsheets and databases. Only "
+"works on grids with no sub-grids (use the Flatten operation first if need be)"
+msgstr "Xuất chế độ xem hiện tại dưới dạng CSV. Phù hợp cho bảng tính và cơ sở dữ liệu. Chỉ hoạt động trên các lưới không có lưới con (sử dụng thao tác Làm phẳng trước nếu cần)"
+
+msgid "Export the current view as HTML as nested bullet points."
+msgstr "Xuất chế độ xem hiện tại dưới dạng HTML dưới dạng các dấu đầu dòng lồng nhau."
+
+msgid ""
+"Export the current view as HTML as nested headers, suitable for importing "
+"into Word's outline mode"
+msgstr "Xuất chế độ xem hiện tại dưới dạng HTML dưới dạng các tiêu đề lồng nhau, thích hợp để nhập vào chế độ Outline của Word"
+
+msgid ""
+"Export the current view as HTML using nested tables, that will look somewhat "
+"like the TreeSheet"
+msgstr "Xuất chế độ xem hiện tại dưới dạng HTML sử dụng các bảng lồng nhau, trông sẽ gần giống như TreeSheet"
+
+msgid ""
+"Export the current view as XML (which can also be reimported without losing "
+"structure)"
+msgstr "Xuất chế độ xem hiện tại dưới dạng XML (cũng có thể được nhập lại mà không làm mất cấu trúc)"
+
+msgid ""
+"Export the current view as an image. Useful for faithful renderings of the "
+"TreeSheet, and programs that don't accept any of the above options"
+msgstr "Xuất chế độ xem hiện tại dưới dạng hình ảnh. Hữu ích để hiển thị trung thực TreeSheet và cho các chương trình không chấp nhận bất kỳ tùy chọn nào ở trên"
+
+msgid ""
+"Export the current view as tree structured text, using spaces for each "
+"indentation level. Suitable for importing into mindmanagers and general text "
+"programs"
+msgstr "Xuất chế độ xem hiện tại dưới dạng văn bản cấu trúc cây, sử dụng khoảng trắng cho mỗi cấp độ thụt đầu dòng. Thích hợp để nhập vào các trình quản lý sơ đồ tư duy và các chương trình văn bản thông thường"
+
+msgid "Export the current view to a SVG vector file."
+msgstr "Xuất chế độ xem hiện tại sang tệp vector SVG."
+
+msgid ""
+"Export to a HTML file alongside the original TreeSheets file when document "
+"is saved"
+msgstr "Xuất sang tệp HTML cùng với tệp TreeSheets gốc khi tài liệu được lưu"
+
+msgid ""
+"Export to a HTML file with exported images alongside the original TreeSheets "
+"file when document is saved"
+msgstr "Xuất sang tệp HTML kèm theo các hình ảnh đã xuất cùng với tệp TreeSheets gốc khi tài liệu được lưu"
+
+msgid "Export with images"
+msgstr "Xuất kèm hình ảnh"
+
+msgid "Export without images"
+msgstr "Xuất không kèm hình ảnh"
+
+msgid "Extend Selection Columns Down"
+msgstr "Mở rộng vùng chọn cột xuống dưới"
+
+msgid "Extend Selection Columns Up"
+msgstr "Mở rộng vùng chọn cột lên trên"
+
+msgid "Extend Selection Down"
+msgstr "Mở rộng vùng chọn xuống dưới"
+
+msgid "Extend Selection Full Columns"
+msgstr "Mở rộng vùng chọn toàn bộ cột"
+
+msgid "Extend Selection Full Rows"
+msgstr "Mở rộng vùng chọn toàn bộ hàng"
+
+msgid "Extend Selection Left"
+msgstr "Mở rộng vùng chọn sang trái"
+
+msgid "Extend Selection Right"
+msgstr "Mở rộng vùng chọn sang phải"
+
+msgid "Extend Selection Rows Left"
+msgstr "Mở rộng vùng chọn hàng sang trái"
+
+msgid "Extend Selection Rows Right"
+msgstr "Mở rộng vùng chọn hàng sang phải"
+
+msgid "Extend Selection Up"
+msgstr "Mở rộng vùng chọn lên trên"
+
+msgid "Extend Selection Word Left"
+msgstr "Mở rộng vùng chọn từ sang trái"
+
+msgid "Extend Selection Word Right"
+msgstr "Mở rộng vùng chọn từ sang phải"
+
+msgid "Extend Selection to End"
+msgstr "Mở rộng vùng chọn đến cuối"
+
+msgid "Extend Selection to Start"
+msgstr "Mở rộng vùng chọn đến đầu"
+
+msgid "Failed to get translation."
+msgstr "Không thể lấy bản dịch."
+
+msgid "Faster line rendering"
+msgstr "Hiển thị đường kẻ nhanh hơn"
+
+msgid "File Tabs on the bottom"
+msgstr "Các tab tệp ở phía dưới"
+
+msgid "File corrupted!"
+msgstr "Tệp bị hỏng!"
+
+msgid "File exported successfully."
+msgstr "Tệp đã được xuất thành công."
+
+msgid ""
+"File has been re-loaded because of modifications of another program / "
+"computer"
+msgstr "Tệp đã được tải lại vì có sự thay đổi từ một chương trình / máy tính khác"
+
+msgid "File load error."
+msgstr "Lỗi tải tệp."
+
+msgid "File modification conflict!"
+msgstr "Xung đột thay đổi tệp!"
+
+msgid "File of newer version."
+msgstr "Tệp thuộc phiên bản mới hơn."
+
+msgid "Filter"
+msgstr "Bộ lọc"
+
+msgid "Filter by the same cell color"
+msgstr "Lọc theo cùng màu ô"
+
+msgid "Find and replace in document"
+msgstr "Tìm kiếm và thay thế trong tài liệu"
+
+msgid "Find in document"
+msgstr "Tìm trong tài liệu"
+
+msgid "Fold All"
+msgstr "Gập tất cả"
+
+msgid "Folds the grid of the selected cell(s) recursively"
+msgstr "Gập lưới của (các) ô được chọn một cách đệ quy"
+
+msgid "Font..."
+msgstr "Phông chữ..."
+
+msgid "Found an image type that is not defined in this program."
+msgstr "Tìm thấy loại hình ảnh không được định nghĩa trong chương trình này."
+
+msgid "Go To &Matching Cell (Text)"
+msgstr "Đi đến ô khớp tương ứng (&Văn bản)"
+
+msgid "Go To Matching Cell (Image)"
+msgstr "Đi đến ô khớp tương ứng (Hình ảnh)"
+
+msgid "Go To Matching Cell (Image, Reverse)"
+msgstr "Đi đến ô khớp tương ứng (Hình ảnh, Ngược lại)"
+
+msgid "Go To Matching Cell (Text, Reverse)"
+msgstr "Đi đến ô khớp tương ứng (Văn bản, Ngược lại)"
+
+msgid "Go to Next Search Result"
+msgstr "Đi đến kết quả tìm kiếm tiếp theo"
+
+msgid "Go to next filter match"
+msgstr "Đi đến kết quả lọc tiếp theo"
+
+msgid "Go to next search match"
+msgstr "Đi đến kết quả tìm kiếm tiếp theo"
+
+msgid "Go to previous search match"
+msgstr "Đi đến kết quả tìm kiếm trước đó"
+
+msgid "Go to the document in the next tab"
+msgstr "Đi đến tài liệu ở tab tiếp theo"
+
+msgid "Go to the document in the previous tab"
+msgstr "Đi đến tài liệu ở tab trước đó"
+
+msgid "Grid Style Rendering"
+msgstr "Hiển thị kiểu lưới"
+
+msgid "HTML (&Bullet points)..."
+msgstr "HTML (Dấu đầu dòng)... (&B)"
+
+msgid "HTML (&Outline)..."
+msgstr "HTML (Dàn bài)... (&O)"
+
+msgid "Hierarchy &Swap"
+msgstr "Hoán đổi phân cấp (&S)"
+
+msgid ""
+"Hold CTRL while pressing right mouse button to quickly set a tag for the "
+"current cell using a popup menu"
+msgstr "Nhấn giữ CTRL trong khi bấm chuột phải để đặt nhanh thẻ cho ô hiện tại bằng menu bật lên"
+
+msgid "Horizontal Layout with Bubble Style Rendering"
+msgstr "Bố cục ngang với hiển thị kiểu bong bóng"
+
+msgid "Horizontal Layout with Grid Style Rendering"
+msgstr "Bố cục ngang với hiển thị kiểu lưới"
+
+msgid "Horizontal Layout with Line Style Rendering"
+msgstr "Bố cục ngang với hiển thị kiểu đường kẻ"
+
+msgid "How many pixels wide should a page be? (0 for auto fit)"
+msgstr "Trang nên rộng bao nhiêu pixel? (0 để tự động khớp)"
+
+msgid "Image "
+msgstr "Hình ảnh "
+
+msgid "Image Resize"
+msgstr "Thay đổi kích thước hình ảnh"
+
+msgid "Image(s) have been saved to disk."
+msgstr "(Các) hình ảnh đã được lưu vào đĩa."
+
+msgid "Images in selected cells have been converted to JPEG format."
+msgstr "Hình ảnh trong các ô được chọn đã được chuyển sang định dạng JPEG."
+
+msgid "Images in selected cells have been converted to PNG format."
+msgstr "Hình ảnh trong các ô được chọn đã được chuyển sang định dạng PNG."
+
+msgid "Import from"
+msgstr "Nhập từ"
+
+msgid "Increase column width (ALT+mousewheel)"
+msgstr "Tăng chiều rộng cột (ALT+lăn chuột)"
+
+msgid "Increase column width (no sub grids)"
+msgstr "Tăng chiều rộng cột (không có lưới con)"
+
+msgid "Indented &Text..."
+msgstr "Văn bản thụt đầu dòng... (&T)"
+
+msgid "Indented text..."
+msgstr "Văn bản thụt đầu dòng..."
+
+msgid "Initialization Error"
+msgstr "Lỗi khởi tạo"
+
+msgid "Insert last image"
+msgstr "Chèn hình ảnh cuối cùng"
+
+msgid "Insert the last image that has been inserted before in TreeSheets."
+msgstr "Chèn hình ảnh cuối cùng đã từng được chèn vào TreeSheets trước đó."
+
+msgid "Interactive &tutorial"
+msgstr "Hướng dẫn tương tác (&T)"
+
+msgid "Internal error: unimplemented operation!"
+msgstr "Lỗi nội bộ: thao tác chưa được thực hiện!"
+
+msgid "Invert in dark mode"
+msgstr "Đảo màu trong chế độ tối"
+
+msgid "Invert the document in dark mode"
+msgstr "Đảo màu tài liệu trong chế độ tối"
+
+msgid ""
+"It seems that you are about to paste or drop a TreeSheets file. What would "
+"you like to do?"
+msgstr "Có vẻ như bạn sắp dán hoặc thả một tệp TreeSheets. Bạn muốn làm gì?"
+
+msgid "JPEG file is corrupted!"
+msgstr "Tệp JPEG bị hỏng!"
+
+msgid "Key binding"
+msgstr "Gán phím"
+
+msgid "Key bindings..."
+msgstr "Gán phím..."
+
+msgid "Keybinding cancelled."
+msgstr "Đã hủy gán phím."
+
+msgid "Line Style Rendering"
+msgstr "Hiển thị kiểu đường kẻ"
+
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr "Tải tài liệu tham khảo thao tác chương trình tương tác trong TreeSheets"
+
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr "Tải hướng dẫn tương tác trong TreeSheets"
+
+#, c-format
+msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
+msgstr "Đã tải %s (%d ô, %d ký tự) trong %lld mili giây."
+
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "Tệp Lobster (*.lobster)|*.lobster|Tất cả các tệp (*.*)|*.*"
+
+msgid ""
+"Make a 1xN selection to indicate which column to sort on, and which rows to "
+"affect"
+msgstr "Chọn vùng 1xN để chỉ định cột nào cần sắp xếp và những hàng nào bị ảnh hưởng"
+
+msgid "Make a hierarchy layout more vertical (default) or more horizontal"
+msgstr "Đặt bố cục phân cấp theo chiều dọc hơn (mặc định) hoặc theo chiều ngang hơn"
+
+msgid "Maximum number of launches reached."
+msgstr "Đã đạt số lần khởi chạy tối đa."
+
+msgid "Minimize on close"
+msgstr "Thu nhỏ khi đóng"
+
+msgid "Minimize to tray"
+msgstr "Thu nhỏ vào khay hệ thống"
+
+msgid "More than one cell must be selected."
+msgstr "Phải chọn nhiều hơn một ô."
+
+msgid "Move Cells Down"
+msgstr "Di chuyển các ô xuống dưới"
+
+msgid "Move Cells Left"
+msgstr "Di chuyển các ô sang trái"
+
+msgid "Move Cells Right"
+msgstr "Di chuyển các ô sang phải"
+
+msgid "Move Cells Up"
+msgstr "Di chuyển các ô lên trên"
+
+msgid "Move Selection Down"
+msgstr "Di chuyển vùng chọn xuống dưới"
+
+msgid "Move Selection Down (DOWN)"
+msgstr "Di chuyển vùng chọn xuống dưới (DOWN)"
+
+msgid "Move Selection Left"
+msgstr "Di chuyển vùng chọn sang trái"
+
+msgid "Move Selection Left (LEFT)"
+msgstr "Di chuyển vùng chọn sang trái (LEFT)"
+
+msgid "Move Selection Right"
+msgstr "Di chuyển vùng chọn sang phải"
+
+msgid "Move Selection Right (RIGHT)"
+msgstr "Di chuyển vùng chọn sang phải (RIGHT)"
+
+msgid "Move Selection Up"
+msgstr "Di chuyển vùng chọn lên trên"
+
+msgid "Move Selection Up (UP)"
+msgstr "Di chuyển vùng chọn lên trên (UP)"
+
+msgid "Move to next cell"
+msgstr "Di chuyển đến ô tiếp theo"
+
+msgid "Move to next cell (TAB)"
+msgstr "Di chuyển đến ô tiếp theo (TAB)"
+
+msgid "Move to previous cell"
+msgstr "Di chuyển về ô trước đó"
+
+msgid "Move to previous cell (SHIFT+TAB)"
+msgstr "Di chuyển về ô trước đó (SHIFT+TAB)"
+
+msgid "NOTE: key binding will take effect next run of TreeSheets."
+msgstr "LƯU Ý: phím tắt sẽ có hiệu lực trong lần chạy tiếp theo của TreeSheets."
+
+msgid "Navigate in between cells with cursor keys"
+msgstr "Di chuyển giữa các ô bằng các phím mũi tên"
+
+msgid "New (CTRL+n)"
+msgstr "Mới (CTRL+n)"
+
+msgid "New Grid (INS)"
+msgstr "Lưới mới (INS)"
+
+msgid "New Sheet"
+msgstr "Bảng tính mới"
+
+msgid "New file cancelled."
+msgstr "Đã hủy tạo tệp mới."
+
+msgid "No autoexport"
+msgstr "Không tự động xuất"
+
+msgid "No image found to convert"
+msgstr "Không tìm thấy hình ảnh nào để chuyển đổi"
+
+msgid "No image in this cell."
+msgstr "Không có hình ảnh trong ô này."
+
+msgid "No matches for filter."
+msgstr "Không có kết quả khớp cho bộ lọc."
+
+msgid "No matches for search."
+msgstr "Không có kết quả khớp cho tìm kiếm."
+
+msgid "No matching cell found!"
+msgstr "Không tìm thấy ô khớp tương ứng!"
+
+msgid "No search string."
+msgstr "Không có chuỗi tìm kiếm."
+
+msgid "No search."
+msgstr "Không tìm kiếm."
+
+msgid "No style to paste."
+msgstr "Không có định dạng để dán."
+
+msgid "No text in this cell."
+msgstr "Không có văn bản trong ô này."
+
+msgid "No text selected."
+msgstr "Chưa chọn văn bản."
+
+msgid "No text to search for."
+msgstr "Không có văn bản để tìm kiếm."
+
+msgid "Not a TreeSheets file."
+msgstr "Không phải là tệp TreeSheets."
+
+msgid "Note"
+msgstr "Ghi chú"
+
+msgid "Nothing more to redo."
+msgstr "Không còn gì để làm lại."
+
+msgid "Nothing more to undo."
+msgstr "Không còn gì để hoàn tác."
+
+msgid ""
+"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
+"normal."
+msgstr "Đang xem TreeSheet vừa khít màn hình, nhấn F12 để quay lại bình thường."
+
+msgid "Open &file"
+msgstr "Mở tệp (&F)"
+
+msgid "Open (CTRL+o)"
+msgstr "Mở (CTRL+o)"
+
+msgid "Open TreeSheets file"
+msgstr "Mở tệp TreeSheets"
+
+msgid "Open an existing document"
+msgstr "Mở một tài liệu đã có"
+
+msgid "Open border colors"
+msgstr "Mở bảng màu viền"
+
+msgid "Open cell colors"
+msgstr "Mở bảng màu ô"
+
+msgid "Open file cancelled."
+msgstr "Đã hủy mở tệp."
+
+msgid "Open image dropdown"
+msgstr "Mở danh sách hình ảnh"
+
+msgid "Open link in &browser"
+msgstr "Mở liên kết trong trình &duyệt"
+
+msgid "Open text colors"
+msgstr "Mở bảng màu chữ"
+
+msgid "Open the Lobster script reference in browser"
+msgstr "Mở tài liệu tham khảo kịch bản Lobster trong trình duyệt"
+
+msgid "Open the tutorial web page in browser"
+msgstr "Mở trang web hướng dẫn trong trình duyệt"
+
+msgid ""
+"Opens up the text from the selected cell in browser (should start be a valid "
+"URL)"
+msgstr "Mở văn bản từ ô được chọn trong trình duyệt (phải là một URL hợp lệ)"
+
+msgid ""
+"Opens up the text from the selected cell in default application for the file "
+"type"
+msgstr "Mở văn bản từ ô được chọn bằng ứng dụng mặc định cho loại tệp đó"
+
+msgid "Operation reference"
+msgstr "Tham chiếu thao tác"
+
+msgid ""
+"PNG decode failed on some images in this document\n"
+"They have been replaced by red squares."
+msgstr "Giải mã PNG thất bại ở một số hình ảnh trong tài liệu này\nChúng đã được thay thế bằng các ô vuông màu đỏ."
+
+msgid "PNG decoder failure"
+msgstr "Lỗi bộ giải mã PNG"
+
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr "Tệp PNG (*.png)|*.png|Tệp JPEG (*.jpg)|*.jpg|Tất cả các tệp (*.*)|*.*"
+
+msgid "Page Setup..."
+msgstr "Thiết lập trang..."
+
+msgid "Paste (CTRL+v)"
+msgstr "Dán (CTRL+v)"
+
+msgid "Paste Style Only"
+msgstr "Chỉ dán định dạng"
+
+msgid "Paste clipboard contents"
+msgstr "Dán nội dung khay nhớ tạm"
+
+msgid "Paste file path"
+msgstr "Dán đường dẫn tệp"
+
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr "Vui lòng bật (Tùy chọn -> Hiển thị thanh công cụ) để sử dụng chức năng thay thế."
+
+msgid "Please enable (Options -> Show Toolbar) to use search."
+msgstr "Vui lòng bật (Tùy chọn -> Hiển thị thanh công cụ) để sử dụng chức năng tìm kiếm."
+
+msgid "Please enter the default column width:"
+msgstr "Vui lòng nhập chiều rộng cột mặc định:"
+
+msgid "Please enter the new image width:"
+msgstr "Vui lòng nhập chiều rộng hình ảnh mới:"
+
+msgid "Please enter the new key binding string"
+msgstr "Vui lòng nhập chuỗi phím tắt mới"
+
+msgid "Please enter the percentage you want the image scaled by:"
+msgstr "Vui lòng nhập tỷ lệ phần trăm bạn muốn thu phóng hình ảnh:"
+
+msgid "Please pick a menu item to change the key binding for"
+msgstr "Vui lòng chọn một mục menu để thay đổi phím tắt"
+
+msgid "Please select Lobster script file(s):"
+msgstr "Vui lòng chọn (các) tệp kịch bản Lobster:"
+
+msgid "Please select TreeSheets file(s) to load:"
+msgstr "Vui lòng chọn (các) tệp TreeSheets để tải:"
+
+msgid "Please select an image file:"
+msgstr "Vui lòng chọn một tệp hình ảnh:"
+
+msgid "Please select file(s) to import:"
+msgstr "Vui lòng chọn (các) tệp để nhập:"
+
+msgid "Please select the datetime range."
+msgstr "Vui lòng chọn khoảng ngày giờ."
+
+msgid ""
+"Please select the language for the interface (requires restart). Please "
+"select the empty row if you want to use the default language."
+msgstr "Vui lòng chọn ngôn ngữ giao diện (yêu cầu khởi động lại). Chọn dòng trống nếu bạn muốn dùng ngôn ngữ mặc định."
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "Vui lòng chọn kịch bản bạn muốn xóa khỏi danh sách:"
+
+msgid "Press F11 to exit fullscreen mode."
+msgstr "Nhấn F11 để thoát chế độ toàn màn hình."
+
+msgid "Previous tab"
+msgstr "Tab trước đó"
+
+msgid "Print Preview"
+msgstr "Xem trước bản in"
+
+msgid "Print preview..."
+msgstr "Xem trước bản in..."
+
+msgid "Quit this program"
+msgstr "Thoát chương trình này"
+
+msgid "Radius &0"
+msgstr "Bán kính &0"
+
+msgid "Radius &1"
+msgstr "Bán kính &1"
+
+msgid "Radius &2"
+msgstr "Bán kính &2"
+
+msgid "Radius &3"
+msgstr "Bán kính &3"
+
+msgid "Radius &4"
+msgstr "Bán kính &4"
+
+msgid "Radius &5"
+msgstr "Bán kính &5"
+
+msgid "Radius &6"
+msgstr "Bán kính &6"
+
+msgid ""
+"Reload when another computer has changed a file (if you have made changes, "
+"asks)"
+msgstr "Tải lại khi máy tính khác đã thay đổi tệp (sẽ hỏi nếu bạn cũng có thay đổi)"
+
+msgid "Remo&ve"
+msgstr "Xóa bỏ (&V)"
+
+msgid "Remove image(s) from the selected cells"
+msgstr "Xóa (các) hình ảnh khỏi các ô được chọn"
+
+msgid "Remove script from list in the menu"
+msgstr "Xóa kịch bản khỏi danh sách trong menu"
+
+msgid "Remove script from list..."
+msgstr "Xóa kịch bản khỏi danh sách..."
+
+msgid "Remove..."
+msgstr "Xóa..."
+
+msgid "Render document centered"
+msgstr "Hiển thị tài liệu căn giữa"
+
+msgid "Replace "
+msgstr "Thay thế "
+
+msgid "Replace &All"
+msgstr "Thay thế tất cả (&A)"
+
+msgid "Replace All"
+msgstr "Thay thế tất cả"
+
+msgid "Replace in Current &Selection"
+msgstr "Thay thế trong vùng chọn hiện tại (&S)"
+
+msgid "Replace in Current Selection && &Jump Next"
+msgstr "Thay thế trong vùng chọn && Nhảy đến mục tiếp (&J)"
+
+msgid "Replace in selection"
+msgstr "Thay thế trong vùng chọn"
+
+msgid "Reset &colors"
+msgstr "Đặt lại màu sắc (&C)"
+
+msgid "Reset column widths"
+msgstr "Đặt lại chiều rộng cột"
+
+msgid "Reset the column widths in the selection to the default column width"
+msgstr "Đặt lại chiều rộng cột trong vùng chọn về chiều rộng mặc định"
+
+msgid "Reset the toolbar appearance"
+msgstr "Đặt lại giao diện thanh công cụ"
+
+msgid "Reset toolbar"
+msgstr "Đặt lại thanh công cụ"
+
+msgid "Run"
+msgstr "Chạy"
+
+msgid "S&cript"
+msgstr "Kị&ch bản"
+
+msgid "Save &As..."
+msgstr "Lưu dưới dạng (&A)..."
+
+msgid "Save (CTRL+s)"
+msgstr "Lưu (CTRL+s)"
+
+msgid "Save All"
+msgstr "Lưu tất cả"
+
+msgid "Save and Close"
+msgstr "Lưu và Đóng"
+
+msgid "Save as..."
+msgstr "Lưu dưới dạng..."
+
+msgid "Save cancelled."
+msgstr "Đã hủy lưu."
+
+msgid "Save current document"
+msgstr "Lưu tài liệu hiện tại"
+
+msgid "Save current document with a different filename"
+msgstr "Lưu tài liệu hiện tại với tên tệp khác"
+
+msgid ""
+"Save image(s) from selected cell(s) to disk. Multiple images will be saved "
+"with a counter appended to each file name."
+msgstr "Lưu (các) hình ảnh từ (các) ô được chọn vào đĩa. Nhiều hình ảnh sẽ được lưu với một bộ đếm đính kèm vào mỗi tên tệp."
+
+msgid "Save open documents periodically to temporary files"
+msgstr "Định kỳ lưu các tài liệu đang mở vào các tệp tạm thời"
+
+#, c-format
+msgid "Saved %s successfully (in %lld milliseconds)."
+msgstr "Đã lưu %s thành công (trong %lld mili giây)."
+
+msgid "Scale (&display only)"
+msgstr "Tỷ lệ (chỉ hiển thị) (&D)"
+
+msgid "Scale (re-sa&mple pixels, by %)"
+msgstr "Tỷ lệ (lấy lại mẫu điểm ảnh, theo %) (&M)"
+
+msgid "Scale (re-sample pixels, by &width)"
+msgstr "Tỷ lệ (lấy lại mẫu điểm ảnh, theo chiều rộng) (&W)"
+
+msgid "Scroll Down (mousewheel)"
+msgstr "Cuộn xuống (lăn chuột)"
+
+msgid "Scroll Left"
+msgstr "Cuộn sang trái"
+
+msgid "Scroll Right"
+msgstr "Cuộn sang phải"
+
+msgid "Scroll Sheet"
+msgstr "Cuộn bảng"
+
+msgid "Scroll Up (mousewheel)"
+msgstr "Cuộn lên (lăn chuột)"
+
+msgid "Search "
+msgstr "Tìm kiếm "
+
+msgid "Select &Parent"
+msgstr "Chọn mục cha (&P)"
+
+msgid "Select &all in current grid/cell"
+msgstr "Chọn tất cả trong lưới/ô hiện tại (&A)"
+
+msgid "Select First &Child"
+msgstr "Chọn mục con đầu tiên (&C)"
+
+msgid "Selected grid is not a table: cells must not already have sub-grids."
+msgstr "Lưới được chọn không phải là một bảng: các ô không được có lưới con sẵn."
+
+msgid "Semi-Colon delimited text (CSV)..."
+msgstr "Văn bản phân tách bằng dấu chấm phẩy (CSV)..."
+
+msgid "Set Grid Border Width"
+msgstr "Đặt độ dày viền lưới"
+
+msgid "Set Print Scale"
+msgstr "Đặt tỷ lệ in"
+
+msgid "Set Print Scale..."
+msgstr "Đặt tỷ lệ in..."
+
+msgid "Set a custom color for the color dropdowns"
+msgstr "Đặt màu tùy chỉnh cho danh sách màu thả xuống"
+
+msgid ""
+"Set a custom color for the color dropdowns from the selected cell background"
+msgstr "Đặt màu tùy chỉnh cho danh sách màu thả xuống từ nền ô được chọn"
+
+msgid "Set the color for the document background"
+msgstr "Đặt màu cho nền tài liệu"
+
+msgid "Set the color for the text cursor"
+msgstr "Đặt màu cho con trỏ văn bản"
+
+msgid "Set the default column width for a new grid"
+msgstr "Đặt chiều rộng cột mặc định cho lưới mới"
+
+msgid "Set the font the document text is displayed with"
+msgstr "Đặt phông chữ hiển thị văn bản tài liệu"
+
+msgid "Set the font the typewriter text is displayed with."
+msgstr "Đặt phông chữ hiển thị văn bản đánh máy (typewriter)."
+
+#, no-c-format
+msgid "Show 1% less than the last filter"
+msgstr "Hiển thị ít hơn 1% so với bộ lọc cuối"
+
+#, no-c-format
+msgid "Show 1% more than the last filter"
+msgstr "Hiển thị nhiều hơn 1% so với bộ lọc cuối"
+
+#, no-c-format
+msgid "Show 10% of last edits"
+msgstr "Hiển thị 10% các chỉnh sửa cuối"
+
+#, no-c-format
+msgid "Show 20% of last edits"
+msgstr "Hiển thị 20% các chỉnh sửa cuối"
+
+#, no-c-format
+msgid "Show 5% of last edits"
+msgstr "Hiển thị 5% các chỉnh sửa cuối"
+
+#, no-c-format
+msgid "Show 50% of last edits"
+msgstr "Hiển thị 50% các chỉnh sửa cuối"
+
+msgid "Show About dialog"
+msgstr "Hiển thị hộp thoại thông tin"
+
+msgid "Show cells with notes"
+msgstr "Hiển thị các ô có ghi chú"
+
+msgid "Show last edits in specific date range"
+msgstr "Hiển thị các chỉnh sửa cuối trong khoảng ngày cụ thể"
+
+msgid "Show only cells in current search"
+msgstr "Chỉ hiển thị các ô trong tìm kiếm hiện tại"
+
+msgid "Single click maximize from tray"
+msgstr "Nhấp chuột một lần để phóng to từ khay hệ thống"
+
+#, c-format
+msgid "Size %d"
+msgstr "Kích cỡ %d"
+
+msgid "Sort &Ascending"
+msgstr "Sắp xếp tăng dần (&A)"
+
+msgid "Sort &Descending"
+msgstr "Sắp xếp giảm dần (&D)"
+
+msgid "Start date and time"
+msgstr "Ngày và giờ bắt đầu"
+
+msgid "Start minimized"
+msgstr "Khởi động thu nhỏ"
+
+msgid "Start of line of text"
+msgstr "Đầu dòng văn bản"
+
+msgid "Start of text"
+msgstr "Đầu văn bản"
+
+msgid "Start the application minimized"
+msgstr "Khởi chạy ứng dụng ở trạng thái thu nhỏ"
+
+msgid "Statusbar"
+msgstr "Thanh trạng thái"
+
+msgid "Swap all cells with this text at this level (or above) with the parent"
+msgstr "Hoán đổi tất cả các ô có văn bản này ở cấp độ này (hoặc cao hơn) với mục cha"
+
+msgid "Swap mousewheel scrolling and zooming"
+msgstr "Hoán đổi chức năng cuộn và thu phóng của nút cuộn chuột"
+
+msgid "Tab delimited text..."
+msgstr "Văn bản phân tách bằng tab..."
+
+msgid "Tag"
+msgstr "Thẻ"
+
+msgid ""
+"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
+"grid, useful for export to spreadsheets"
+msgstr "Lấy một phân cấp (lưới 1xN hoặc Nx1 lồng nhau) và chuyển đổi nó thành lưới NxN phẳng, hữu ích để xuất sang bảng tính"
+
+msgid "Text "
+msgstr "Văn bản "
+
+msgid "Text &Editing"
+msgstr "Chỉnh sửa văn bản (&E)"
+
+msgid "Text Sizing"
+msgstr "Kích thước văn bản"
+
+msgid "Text Style"
+msgstr "Kiểu văn bản"
+
+msgid "Text has been replaced."
+msgstr "Văn bản đã được thay thế."
+
+msgid "Text size decreased."
+msgstr "Đã giảm kích thước văn bản."
+
+msgid "Text size increased."
+msgstr "Đã tăng kích thước văn bản."
+
+msgid "The Free Form Hierarchical Information Organizer"
+msgstr "Trình tổ chức thông tin phân cấp tự do"
+
+msgid "The browser could not open at least one link."
+msgstr "Trình duyệt không thể mở ít nhất một liên kết."
+
+msgid "There are no images in the selection."
+msgstr "Không có hình ảnh nào trong vùng chọn."
+
+msgid "There is no content to collapse."
+msgstr "Không có nội dung nào để thu gọn."
+
+msgid "This operation doesn't work on thin selections."
+msgstr "Thao tác này không hoạt động trên các vùng chọn mỏng."
+
+msgid "This operation requires a cell that contains a grid."
+msgstr "Thao tác này yêu cầu một ô có chứa lưới."
+
+msgid "This operation requires a selection."
+msgstr "Thao tác này yêu cầu một vùng chọn."
+
+msgid "This operation works on a single selected cell only."
+msgstr "Thao tác này chỉ hoạt động trên một ô được chọn duy nhất."
+
+msgid "Toggle &Fullscreen View"
+msgstr "Bật/tắt chế độ toàn màn hình (&F)"
+
+msgid "Toggle &Scaled Presentation View"
+msgstr "Bật/tắt chế độ trình diễn theo tỷ lệ (&S)"
+
+msgid "Toggle Fold"
+msgstr "Bật/tắt gấp (Fold)"
+
+msgid "Toggle Vertical Layout"
+msgstr "Bật/tắt bố cục dọc"
+
+msgid "Toggle cell &BOLD"
+msgstr "Bật/tắt chữ đậm (&B)"
+
+msgid "Toggle cell &ITALIC"
+msgstr "Bật/tắt chữ nghiêng (&I)"
+
+msgid "Toggle cell &strikethrough"
+msgstr "Bật/tắt chữ gạch ngang (&S)"
+
+msgid "Toggle cell &typewriter"
+msgstr "Bật/tắt kiểu chữ đánh máy (&T)"
+
+msgid "Toggle cell &underlined"
+msgstr "Bật/tắt chữ gạch chân (&U)"
+
+msgid "Toggle whether documents are rendered centered or left aligned"
+msgstr "Bật/tắt hiển thị tài liệu căn giữa hoặc căn trái"
+
+msgid "Toggle whether file tabs are shown on top or on bottom of the documents"
+msgstr "Bật/tắt hiển thị các tab tệp ở phía trên hoặc phía dưới tài liệu"
+
+msgid "Toggle whether lines are drawn solid (faster rendering) or dashed"
+msgstr "Bật/tắt vẽ đường kẻ liền (hiển thị nhanh hơn) hoặc đường đứt nét"
+
+msgid "Toggle whether only one click is required to maximize from system tray"
+msgstr "Bật/tắt việc chỉ cần một lần nhấp để phóng to từ khay hệ thống"
+
+msgid "Toggle whether statusbar is shown below the documents"
+msgstr "Bật/tắt hiển thị thanh trạng thái bên dưới tài liệu"
+
+msgid ""
+"Toggle whether the cursor keys are used for navigation in addition to text "
+"editing"
+msgstr "Bật/tắt việc sử dụng các phím mũi tên để điều hướng bên cạnh việc chỉnh sửa văn bản"
+
+msgid "Toggle whether the window is minimized instead of closed"
+msgstr "Bật/tắt việc thu nhỏ cửa sổ thay vì đóng hẳn"
+
+msgid "Toggle whether toolbar is shown between menu bar and documents"
+msgstr "Bật/tắt hiển thị thanh công cụ giữa thanh menu và tài liệu"
+
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "Bật/tắt hiển thị lưới của (các) ô được chọn"
+
+msgid "Toogle whether window is minimized to system tray"
+msgstr "Bật/tắt việc thu nhỏ cửa sổ vào khay hệ thống"
+
+msgid "Toolbar"
+msgstr "Thanh công cụ"
+
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "Tệp TreeSheets (*.cts)|*.cts|Tất cả tệp (*.*)|*.*"
+
+msgid "Turn filter &off"
+msgstr "Tắt bộ lọc (&O)"
+
+msgid "Tutorial &web page"
+msgstr "Trang web hướng dẫn (&W)"
+
+msgid "Typewriter font..."
+msgstr "Phông chữ đánh máy..."
+
+msgid "Undo (CTRL+z)"
+msgstr "Hoàn tác (CTRL+z)"
+
+msgid "Unfold All"
+msgstr "Mở tất cả"
+
+msgid "Unfolds the grid of the selected cell(s) recursively"
+msgstr "Mở lưới của (các) ô được chọn một cách đệ quy"
+
+msgid "Uses"
+msgstr "Sử dụng"
+
+msgid "Variable &Assign"
+msgstr "Gán biến (&A)"
+
+msgid "Variable &Read"
+msgstr "Đọc biến (&R)"
+
+msgid "Vertical Layout with Bubble Style Rendering"
+msgstr "Bố cục dọc với hiển thị kiểu bong bóng"
+
+msgid "Vertical Layout with Grid Style Rendering"
+msgstr "Bố cục dọc với hiển thị kiểu lưới"
+
+msgid "Vertical Layout with Line Style Rendering"
+msgstr "Bố cục dọc với hiển thị kiểu đường kẻ"
+
+msgid "What size grid would you like to start with?"
+msgstr "Bạn muốn bắt đầu với lưới kích thước bao nhiêu?"
+
+msgid "Width"
+msgstr "Chiều rộng"
+
+#, c-format
+msgid "Width %d"
+msgstr "Chiều rộng %d"
+
+msgid "Word Left"
+msgstr "Sang trái một từ"
+
+msgid "Word Right"
+msgstr "Sang phải một từ"
+
+msgid "XML (attributes too, for OPML etc)..."
+msgstr "XML (bao gồm cả thuộc tính, cho OPML v.v.)..."
+
+msgid "XML..."
+msgstr "XML..."
+
+msgid "You need to select one cell if you want to search for its text."
+msgstr "Bạn cần chọn một ô nếu muốn tìm kiếm văn bản của nó."
+
+msgid "Zlib error while writing file."
+msgstr "Lỗi Zlib trong khi ghi tệp."
+
+msgid "Zoom &In (CTRL+mousewheel)"
+msgstr "Phóng to (&I) (CTRL+lăn chuột)"
+
+msgid "Zoom &Out (CTRL+mousewheel)"
+msgstr "Thu nhỏ (&O) (CTRL+lăn chuột)"
+
+msgid "Zoom In (CTRL+mousewheel)"
+msgstr "Phóng to (CTRL+lăn chuột)"
+
+msgid "Zoom Out (CTRL+mousewheel)"
+msgstr "Thu nhỏ (CTRL+lăn chuột)"
+
+msgid "Zoomed in."
+msgstr "Đã phóng to."
+
+msgid "Zoomed out."
+msgstr "Đã thu nhỏ."
+
+msgid "change will take effect next run of TreeSheets"
+msgstr "thay đổi sẽ có hiệu lực trong lần chạy tiếp theo của TreeSheets"
+
+msgid "changes the orientation of a grid"
+msgstr "thay đổi hướng của lưới"
+
+msgid "couldn't import file!"
+msgstr "không thể nhập tệp!"
+
+msgid "nothing to resize"
+msgstr "không có gì để thay đổi kích thước"
+
+msgid "only sets the colors and style of the copied cell, and keeps the text"
+msgstr "chỉ đặt màu sắc và định dạng của ô đã sao chép, và giữ nguyên văn bản"
+
+msgid "only works in cell text mode"
+msgstr "chỉ hoạt động trong chế độ văn bản ô"
+
+msgid "redo any undo steps, if you haven't made changes since"
+msgstr "làm lại các bước đã hoàn tác, nếu bạn chưa thực hiện thay đổi nào kể từ đó"
+
+msgid "revert the changes, one step at a time"
+msgstr "đảo ngược các thay đổi, từng bước một"
+
+msgid "scale:"
+msgstr "tỷ lệ:"
+
+msgid "size:"
+msgstr "kích cỡ:"
