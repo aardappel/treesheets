@@ -857,7 +857,7 @@ struct Grid {
     void Transpose() {
         vector<Cell *> tr(xs * ys);
         foreachcell(c) tr[y + x * ys] = c;
-        cells = tr;
+        cells = std::move(tr);
         swap_(xs, ys);
         SetOrient();
         InitColWidths();
