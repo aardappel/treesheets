@@ -497,8 +497,8 @@ struct Grid {
     void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
         assert(((dx < 0) == (nxs == 0)) && ((dy < 0) == (nys == 0)));
         assert(nxs + nys == 1);
-        vector<Cell *> ocells = cells;
-        cells = vector<Cell *>((xs + nxs) * (ys + nys));
+        vector<Cell *> ocells = std::move(cells);
+        cells.assign((xs + nxs) * (ys + nys), nullptr);
         xs += nxs;
         ys += nys;
         SetOrient();
