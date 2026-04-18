@@ -351,7 +351,6 @@ struct System {
     wxString Open(const wxString &filename) {
         if (!filename.empty()) {
             auto msg = LoadDB(filename);
-            assert(msg);
             if (!msg.IsEmpty()) wxMessageBox(msg, filename, wxOK, frame);
             return msg;
         }
@@ -395,10 +394,10 @@ struct System {
                     wxXmlDocument doc;
                     if (!doc.Load(filename)) goto problem;
                     Cell *&root = InitDB(1);
-                    Cell *c = *root->grid->cells;
+                    Cell *c = root->grid->cells[0];
                     FillXML(c, doc.GetRoot(), action == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        *root->grid->cells = nullptr;
+                        root->grid->cells.clear();
                         delete root;
                         root = c;
                         c->parent = nullptr;
