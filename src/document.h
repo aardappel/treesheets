@@ -139,8 +139,9 @@ struct Document {
 
     wxString SaveDB(bool *success, bool istempfile = false, int page = -1) {
         if (filename.empty()) return _("Save cancelled.");
-        auto *ocs = selected.xs == 0 && selected.ys == 0 ? nullptr
-                                                         : selected.grid->C(selected.x, selected.y);
+        Cell *ocs = selected.xs == 0 && selected.ys == 0
+                        ? nullptr
+                        : selected.grid->C(selected.x, selected.y).get();
         auto start_saving_time = wxGetLocalTimeMillis();
 
         {  // limit destructors
@@ -2201,7 +2202,7 @@ struct Document {
             Grid *g = c->grid;
             if (!g) return c;
             ASSERT(g && s.x < g->xs && s.y < g->ys);
-            c = g->C(s.x, s.y);
+            c = g->C(s.x, s.y).get();
         }
         return c;
     }
@@ -2253,7 +2254,8 @@ struct Document {
         undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
-    void Undo(auto &fromlist, auto &tolist, bool redo = false) {
+    void Undo(vector<unique_ptr<UndoItem>> &fromlist, vector<unique_ptr<UndoItem>> &tolist,
+              bool redo = false) {
         for (bool next = true; next; ) {
             UndoEach(fromlist, tolist, redo);
             next = (fromlist.size() && tolist.size() &&
@@ -2268,30 +2270,42 @@ struct Document {
         UpdateFileName();
     }
 
-    void UndoEach(auto &fromlist, auto &tolist, bool redo = false) {
+    void UndoEach(vector<unique_ptr<UndoItem>> &fromlist, vector<unique_ptr<UndoItem>> &tolist,
+                  bool redo = false) {
         auto beforesel = selected;
         vector<Selection> beforepath;
         if (beforesel.grid) CreatePath(beforesel.grid->cell, beforepath);
+
         auto ui = std::move(fromlist.back());
         fromlist.pop_back();
-        auto c = WalkPath(ui->path);
-        auto clone = ui->clone.release();
-        ui->clone.reset(c);
+
+        Cell *c = WalkPath(ui->path);
+
         if (c->parent && c->parent->grid) {
-            c->parent->grid->ReplaceCell(c, clone);
-            clone->parent = c->parent;
-        } else
-            root = clone;
-        clone->ResetLayout();
+            Grid *g = c->parent->grid;
+            Selection s = g->FindCell(c);
+            std::swap(ui->clone, g->C(s.x, s.y));
+            c = g->C(s.x, s.y).get();
+            c->parent = ui->clone->parent;
+        } else {
+            Cell *oroot = root;
+            root = ui->clone.release();
+            ui->clone.reset(oroot);
+            c = root;
+            c->parent = nullptr;
+        }
+        c->ResetLayout();
+
         SetSelect(ui->sel);
-        if (selected.grid) selected.grid = WalkPath(ui->selpath)->grid;
+        if (selected.grid) { selected.grid = WalkPath(ui->selpath)->grid; }
+
         begindrag = selected;
         ui->sel = beforesel;
         ui->selpath = std::move(beforepath);
         tolist.push_back(std::move(ui));
-        if (undolistsizeatfullsave > undolist.size())
-            undolistsizeatfullsave = -1;  // gone beyond the save point, always modified
-        modified = undolistsizeatfullsave != undolist.size();
+
+        if (undolistsizeatfullsave > (int)undolist.size()) undolistsizeatfullsave = -1;
+        modified = undolistsizeatfullsave != (int)undolist.size();
     }
 
     void ColorChange(int which, int idx) {

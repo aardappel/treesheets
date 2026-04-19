@@ -91,12 +91,12 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void GoToChild(int n) {
         if (current->grid && n < current->grid->xs * current->grid->ys)
-            current = current->grid->cells[n];
+            current = current->grid->cells[n].get();
     }
 
     void GoToColumnRow(int x, int y) {
         if (current->grid && x < current->grid->xs && y < current->grid->ys)
-            current = current->grid->C(x, y);
+            current = current->grid->C(x, y).get();
     }
 
     std::string GetText() { return current->text.t.utf8_string(); }
