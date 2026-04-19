@@ -1000,14 +1000,33 @@ struct Document {
 
             case A_HELP_OP_REF: sys->LoadOpRef(); return wxEmptyString;
 
-            case A_TUTORIALWEBPAGE:
-                #ifdef __WXMAC__
-                wxLaunchDefaultBrowser(
-                    "file://" + sys->frame->app->GetDocPath("docs/tutorial.html"));  // RbrtPntn
-                #else
-                wxLaunchDefaultBrowser(sys->frame->app->GetDocPath("docs/tutorial.html"));
-                #endif
+            case A_TUTORIALWEBPAGE: {
+                wxTranslations *trans = wxTranslations::Get();
+                wxString lang = trans ? trans->GetBestTranslation("ts") : wxString("");
+                wxString tutorialpath;
+
+                for (const wxString &suffix : {"-" + lang, "-" + lang.Left(2), wxString("")}) {
+                    if (suffix.Length() == 1) continue;
+
+                    wxString candidate =
+                        sys->frame->app->GetDocPath("docs/tutorial" + suffix + ".html");
+                    if (::wxFileExists(candidate)) {
+                        tutorialpath = candidate;
+                        break;
+                    }
+                }
+
+                if (!tutorialpath.IsEmpty()) {
+                    #ifdef __WXMAC__
+                        wxLaunchDefaultBrowser("file://" + tutorialpath);
+                    #else
+                        wxLaunchDefaultBrowser(tutorialpath);
+                    #endif
                     return wxEmptyString;
+                } else {
+                    return _("Tutorial web page could not be found.");
+                }
+            }
 
             #ifdef ENABLE_LOBSTER
                 case A_SCRIPTREFERENCE:
