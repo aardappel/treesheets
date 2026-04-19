@@ -205,8 +205,8 @@ struct Cell {
     }
 
     unique_ptr<Cell> Clone(Cell *_parent) const {
-        auto c = make_unique<Cell>(_parent, this, celltype,
-                                   grid ? new Grid(grid->xs, grid->ys) : nullptr);
+        unique_ptr<Cell> c = make_unique<Cell>(_parent, this, celltype,
+                                               grid ? new Grid(grid->xs, grid->ys) : nullptr);
         c->text = text;
         c->text.cell = c.get();
         c->note = note;

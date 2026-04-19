@@ -13,24 +13,21 @@ struct Operation {
     virtual double runnn(double a, double b) const { return 0; }
 };
 
-WX_DECLARE_STRING_HASH_MAP(Operation *, wxHashMapOperation);
-WX_DECLARE_STRING_HASH_MAP(Cell *, wxHashMapCell);
+typedef std::unordered_map<wxString, unique_ptr<Operation>> OperationMap;
+typedef std::unordered_map<wxString, unique_ptr<Cell>> VariableMap;
 
 /*
     Provides running evaluation of a grid.
 */
 struct Evaluator {
-    wxHashMapOperation ops;
-    wxHashMapCell vars;
+    OperationMap ops;
+    VariableMap vars;
     bool vert;
 
-    ~Evaluator() {
-        WX_CLEAR_HASH_MAP(wxHashMapOperation, ops);
-        ClearVars();
-    }
+    ~Evaluator() {}
 
     void ClearVars() {
-        WX_CLEAR_HASH_MAP(wxHashMapCell, vars);
+        vars.clear();
     }
 
     #define OP(_n, _c, _args, _f)           \
@@ -39,7 +36,7 @@ struct Evaluator {
                 _op() { args = _args; };    \
                 _f const override { return _c; }; \
             };                              \
-            ops[L## #_n] = new _op();       \
+            ops[L## #_n] = make_unique<_op>();       \
         }
 
     #define OPNN(_n, _c) OP(_n, _c, "nn", double runnn(double a, double b))
@@ -71,7 +68,7 @@ struct Evaluator {
         struct _if : Operation {
             _if() { args = "nLL"; };
         };
-        ops[L"if"] = new _if();
+        ops[L"if"] = make_unique<_if>();
     }
 
     int InferCellType(Text &t) {
@@ -82,16 +79,14 @@ struct Evaluator {
     }
 
     unique_ptr<Cell> Lookup(const wxString &name) {
-        wxHashMapCell::iterator lookup = vars.find(name);
-        return (lookup != vars.end()) ? lookup->second->Clone(nullptr) : nullptr;
+        auto it = vars.find(name);
+        return (it != vars.end()) ? it->second->Clone(nullptr) : nullptr;
     }
 
     bool IsValidSymbol(wxString const &symbol) const { return !symbol.IsEmpty(); }
     void SetSymbol(wxString const &symbol, unique_ptr<Cell> val) {
         if (!this->IsValidSymbol(symbol)) { return; }
-        Cell *old = vars[symbol];
-        DELETEP(old);
-        vars[symbol] = val.release();
+        vars[symbol] = std::move(val);
     }
 
     void Assign(const Cell *sym, const Cell *val) {
@@ -104,14 +99,12 @@ struct Evaluator {
         Grid const *vg = val->grid;
         if (ng->xs == vg->xs && ng->ys == vg->ys) {
             loop(x, ng->xs) loop(y, ng->ys) {
-                Cell *nc = ng->C(x, y);
-                Cell *vc = vg->C(x, y);
-                this->SetSymbol(nc->text.t, vc->Clone(nullptr));
+                this->SetSymbol(ng->C(x, y)->text.t, vg->C(x, y)->Clone(nullptr));
             }
         }
     }
 
-    Operation *FindOp(wxString &name) { return ops[name]; }
+    Operation *FindOp(wxString &name) { return ops[name].get(); }
 
     unique_ptr<Cell> Execute(const Operation *op) { return op->run(); }
 
@@ -124,16 +117,22 @@ struct Evaluator {
                     t.SetNum(op->runn(t.GetNum()));
                     return left;
                 } else if (g) {
-                    foreachcellingrid(c, g) c =
-                        Execute(op, unique_ptr<Cell>(c)).release()->SetParent(left.get());
+                    foreachcellingrid(c, g) {
+                        unique_ptr<Cell> temp = std::move(c);
+                        c = Execute(op, std::move(temp));
+                        c->SetParent(left.get());
+                    }
                 }
                 break;
             case 't':
                 if (t.t.Len()) {
                     return op->runc(std::move(left));
                 } else if (g) {
-                    foreachcellingrid(c, g) c =
-                        Execute(op, unique_ptr<Cell>(c)).release()->SetParent(left.get());
+                    foreachcellingrid(c, g) {
+                        unique_ptr<Cell> temp = std::move(c);
+                        c = Execute(op, std::move(temp));
+                        c->SetParent(left.get());
+                    }
                 }
                 break;
             case 'l':
@@ -146,8 +145,9 @@ struct Evaluator {
                         g = new Grid(vert ? gs.size() : 1, vert ? 1 : gs.size());
                         auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
                         loopv(i, gs) {
-                            auto v = op->runl(gs[i].get()).release();
-                            g->C(vert ? i : 0, vert ? 0 : i) = v->SetParent(c.get());
+                            auto res = op->runl(gs[i].get());
+                            res->SetParent(c.get());
+                            g->C(vert ? i : 0, vert ? 0 : i) = std::move(res);
                         }
                         return c;
                     }
@@ -176,18 +176,18 @@ struct Evaluator {
                     Grid *g = new Grid(g1->xs, g1->ys);
                     auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
                     loop(x, g->xs) loop(y, g->ys) {
-                        Cell *&c1 = g1->C(x, y);
-                        Cell *&c2 = g2->C(x, y);
-                        g->C(x, y) =
-                            Execute(op, unique_ptr<Cell>(c1), c2).release()->SetParent(c.get());
-                        c1 = nullptr;
+                        unique_ptr<Cell> c1 = std::move(g1->C(x, y));
+                        Cell *c2 = g2->C(x, y).get();
+                        auto res = Execute(op, std::move(c1), c2);
+                        res->SetParent(c.get());
+                        g->C(x, y) = std::move(res);
                     }
                     return c;
                 } else if (g1 && t2.t.Len()) {
                     foreachcellingrid(c, g1) {
-                        c = Execute(op, unique_ptr<Cell>(c), right.get())
-                                .release()
-                                ->SetParent(left.get());
+                        unique_ptr<Cell> res = Execute(op, std::move(c), right.get());
+                        res->SetParent(left.get());
+                        c = std::move(res);
                     }
                 }
                 break;

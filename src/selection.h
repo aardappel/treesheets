@@ -26,8 +26,8 @@ class Selection {
         }
     }
 
-    Cell *GetCell() const { return grid && xs == 1 && ys == 1 ? grid->C(x, y) : nullptr; }
-    Cell *GetFirst() const { return grid && xs >= 1 && ys >= 1 ? grid->C(x, y) : nullptr; }
+    Cell *GetCell() const { return grid && xs == 1 && ys == 1 ? grid->C(x, y).get() : nullptr; }
+    Cell *GetFirst() const { return grid && xs >= 1 && ys >= 1 ? grid->C(x, y).get() : nullptr; }
     bool EqLoc(const Selection &s) {
         return grid == s.grid && x == s.x && y == s.y && xs == s.xs && ys == s.ys;
     }
@@ -347,7 +347,7 @@ class Selection {
     wxString Wrap(Document *doc) {
         if (Thin()) return doc->NoThin();
         grid->cell->AddUndo(doc);
-        auto np = grid->CloneSel(*this).release();
+        Cell *np = grid->CloneSel(*this).release();
         grid->C(x, y)->text.t = ".";  // avoid this cell getting deleted
         if (xs > 1) {
             Selection s(grid, x + 1, y, xs - 1, ys);
@@ -357,12 +357,11 @@ class Selection {
             Selection s(grid, x, y + 1, 1, ys - 1);
             grid->MultiCellDeleteSub(doc, s);
         }
-        auto old = grid->C(x, y);
+        Cell *old = grid->C(x, y).get();
         np->text.relsize = old->text.relsize;
         np->CloneStyleFrom(old);
-        grid->ReplaceCell(old, np);
+        grid->C(x, y).reset(np);
         np->parent = grid->cell;
-        delete old;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
         doc->canvas->Refresh();

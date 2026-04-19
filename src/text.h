@@ -360,7 +360,7 @@ struct Text {
         for (auto i = 0; i < 4; i++) {
             auto x = max(0, min(s.x + dd[i * 2], s.grid->xs - 1));
             auto y = max(0, min(s.y + dd[i * 2 + 1], s.grid->ys - 1));
-            auto c = s.grid->C(x, y);
+            auto c = s.grid->C(x, y).get();
             if (c->text.t.Len()) {
                 relsize = c->text.relsize;
                 break;

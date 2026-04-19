@@ -394,13 +394,13 @@ struct System {
                     wxXmlDocument doc;
                     if (!doc.Load(filename)) goto problem;
                     Cell *&root = InitDB(1);
-                    Cell *c = root->grid->cells[0];
+                    Cell *c = root->grid->cells[0].get();
                     FillXML(c, doc.GetRoot(), action == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        root->grid->cells.clear();
+                        unique_ptr<Cell> ch = std::move(root->grid->cells[0]);
                         delete root;
-                        root = c;
-                        c->parent = nullptr;
+                        root = ch.release();
+                        root->parent = nullptr;
                     }
                     break;
                 }
@@ -505,14 +505,14 @@ struct System {
                         SetGridSettingsFromXML(c, node);
                     }
                     loop(j, desiredxs) if (ins.size() > j)
-                        FillXML(c->grid->C(j, i), ins[j], attributestoo);
+                        FillXML(c->grid->C(j, i).get(), ins[j], attributestoo);
                 }
             } else {
                 c->AddGrid(1, numrows);
                 SetGridSettingsFromXML(c, node);
                 loopv(i, attributes) c->grid->C(0, i)->text.t = attributes[i]->GetValue();
                 loopv(i, nodes)
-                    FillXML(c->grid->C(0, i + attributes.size()), nodes[i], attributestoo);
+                    FillXML(c->grid->C(0, i + attributes.size()).get(), nodes[i], attributestoo);
             }
         }
     }
@@ -539,7 +539,7 @@ struct System {
             auto col = CountCol(s);
             if (col < column && startrow != 0) return i;
             if (col > column) {
-                auto c = g->C(0, y - 1);
+                auto c = g->C(0, y - 1).get();
                 auto sg = c->grid;
                 i = FillRows(sg ? sg : c->AddGrid(), as, col, i, sg ? sg->ys : 0) - 1;
             } else {
