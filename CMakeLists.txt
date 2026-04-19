@@ -66,9 +66,8 @@ include(FetchContent)
 
 FetchContent_Declare(
     wxwidgets
-    GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
-    GIT_TAG v3.3.2
-    GIT_SHALLOW ON
+    URL https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.tar.bz2
+    URL_HASH SHA256=50a28cb668de47b0e006cd6ebed8cf4f76c1cac6116fb3c978c44478219103f2
     FIND_PACKAGE_ARGS 3.3.2 NAMES wxWidgets
 )
 FetchContent_MakeAvailable(wxwidgets)
@@ -76,9 +75,8 @@ FetchContent_MakeAvailable(wxwidgets)
 if(ENABLE_LOBSTER)
     FetchContent_Declare(
         lobster
-        GIT_REPOSITORY https://github.com/aardappel/lobster
-        GIT_TAG v2026.1
-        GIT_SHALLOW ON
+        URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.1.tar.gz
+        URL_HASH SHA256=fecd443c8bf03052f0eca3308bb8428e1f40292d61fb370e060e55094f853d67
     )
     FetchContent_MakeAvailable(lobster)
 endif()
