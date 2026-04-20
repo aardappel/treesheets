@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 09:39+0100\n"
-"PO-Revision-Date: 2026-02-09 18:16+0900\n"
+"POT-Creation-Date: 2026-04-12 16:37+0200\n"
+"PO-Revision-Date: 2026-04-21 00:21+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #, c-format
 msgid "%d cell(s)"
@@ -202,6 +202,9 @@ msgstr "순서 바꾸기(&T)"
 
 msgid "&Undo"
 msgstr "실행 취소(&U)"
+
+msgid "&Vector graphics..."
+msgstr "벡터 그래픽(&V)..."
 
 msgid "&Vertical View"
 msgstr "세로 보기(&V)"
@@ -393,6 +396,9 @@ msgstr "작성할 HTML 파일 선택"
 msgid "Choose PNG file to write"
 msgstr "작성할 PNG 파일 선택"
 
+msgid "Choose SVG file to write"
+msgstr "작성할 SVG 파일 선택"
+
 msgid "Choose Text file to write"
 msgstr "작성할 텍스트 파일 선택"
 
@@ -471,6 +477,9 @@ msgstr "커서 왼쪽"
 
 msgid "Cursor Right"
 msgstr "커서 오른쪽"
+
+msgid "Custom"
+msgstr "사용자 지정"
 
 msgid "Custom &color..."
 msgstr "사용자 지정 색상(&C)..."
@@ -557,6 +566,9 @@ msgstr "텍스트 편집 모드 진입/종료"
 msgid "Error exporting file!"
 msgstr "파일을 내보내는 중 오류가 발생했습니다!"
 
+msgid "Error exporting to SVG file!"
+msgstr "SVG 파일로 내보내는 중 오류가 발생했습니다!"
+
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr ""
 "코어 데이터 파일을 로드하는 중 오류가 발생했습니다 (TreeSheets가 올바르게 설"
@@ -635,13 +647,13 @@ msgstr ""
 "현재 보기를 각 들여쓰기 수준에 맞는 공백을 사용하여 트리 구조 텍스트로 내보냅"
 "니다. 마인드 매니저 및 일반 텍스트 프로그램으로 가져오기에 적합합니다"
 
+msgid "Export the current view to a SVG vector file."
+msgstr "현재 보기를 SVG 벡터 파일로 내보냅니다."
+
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
 "is saved"
 msgstr "문서가 저장될 때 원본 TreeSheets 파일과 함께 HTML 파일로 내보내기"
-
-msgid "Export to a HTML file when document is saved"
-msgstr "문서가 저장될 때 HTML 파일로 내보내기"
 
 msgid ""
 "Export to a HTML file with exported images alongside the original TreeSheets "
@@ -892,10 +904,6 @@ msgid "Load an interactive tutorial in TreeSheets"
 msgstr "TreeSheets에서 대화형 자습서 불러오기"
 
 #, c-format
-msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "%s (%d 셀, %d 문자)를 %d 밀리초 단위로 로드했습니다."
-
-#, c-format
 msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
 msgstr "%s (%d셀, %d문자)를 %lld 밀리초 단위로 로드했습니다."
 
@@ -990,6 +998,9 @@ msgstr "새 파일이 취소되었습니다."
 
 msgid "No autoexport"
 msgstr "자동 내보내기 안 함"
+
+msgid "No image found to convert"
+msgstr "변환할 이미지를 찾을 수 없습니다"
 
 msgid "No image in this cell."
 msgstr "이 셀에는 이미지가 없습니다."
@@ -1295,10 +1306,6 @@ msgid "Save open documents periodically to temporary files"
 msgstr "열린 문서를 임시 파일에 주기적으로 저장"
 
 #, c-format
-msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "%s을(를) 성공적으로 저장했습니다 (%d 밀리초 단위)."
-
-#, c-format
 msgid "Saved %s successfully (in %lld milliseconds)."
 msgstr "%s을(를) 성공적으로 저장했습니다 (%lld 밀리초 단위)."
 
@@ -1427,11 +1434,17 @@ msgstr "내림차순 정렬(&D)"
 msgid "Start date and time"
 msgstr "시작 날짜 및 시간"
 
+msgid "Start minimized"
+msgstr "최소화로 시작"
+
 msgid "Start of line of text"
 msgstr "텍스트의 줄의 시작"
 
 msgid "Start of text"
 msgstr "텍스트의 시작"
+
+msgid "Start the application minimized"
+msgstr "응용 프로그램 최소화 시작"
 
 msgid "Statusbar"
 msgstr "상태 표시줄"
@@ -1660,6 +1673,9 @@ msgstr "격자의 방향을 변경합니다"
 msgid "couldn't import file!"
 msgstr "파일을 가져올 수 없습니다!"
 
+msgid "nothing to resize"
+msgstr "크기 조정할 항목 없음"
+
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr "복사된 셀의 색상과 스타일만 설정하고 텍스트를 보관합니다"
 
@@ -1677,6 +1693,17 @@ msgstr "비율:"
 
 msgid "size:"
 msgstr "크기:"
+
+#~ msgid "Export to a HTML file when document is saved"
+#~ msgstr "문서가 저장될 때 HTML 파일로 내보내기"
+
+#, c-format
+#~ msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
+#~ msgstr "%s (%d 셀, %d 문자)를 %d 밀리초 단위로 로드했습니다."
+
+#, c-format
+#~ msgid "Saved %s successfully (in %d milliseconds)."
+#~ msgstr "%s을(를) 성공적으로 저장했습니다 (%d 밀리초 단위)."
 
 #~ msgid "Cannot drag & drop more than 1 file."
 #~ msgstr "파일을 두 개 이상 끌어서 놓기를 할 수 없습니다."
