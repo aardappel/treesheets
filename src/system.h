@@ -366,7 +366,7 @@ struct System {
     void RememberOpenFiles() {
         cfg->Write("lastopenfile", frame->GetCurrentTab()->doc->filename);
         auto namedfiles = 0;
-        loop(i, frame->notebook->GetPageCount()) {
+        for(auto i: frame->notebook->GetPagesInDisplayOrder(frame->notebook->GetActiveTabCtrl())) {
             auto canvas = static_cast<TSCanvas *>(frame->notebook->GetPage(i));
             if (canvas->doc->filename.Len()) {
                 cfg->Write(wxString::Format("lastopenfile_%d", namedfiles), canvas->doc->filename);
