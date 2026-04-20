@@ -7,7 +7,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SwitchToCurrentDocument() {
         document = sys->frame->GetCurrentTab()->doc;
-        current = document->root;
+        current = document->root.get();
         lowestcommonancestor = nullptr;
     }
 
@@ -60,7 +60,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return true;
     }
 
-    void GoToRoot() { current = document->root; }
+    void GoToRoot() { current = document->root.get(); }
     void GoToView() { current = document->currentdrawroot; }
     bool HasSelection() { return document->selected.grid; }
     void GoToSelection() {

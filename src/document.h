@@ -10,7 +10,7 @@ struct UndoItem {
 
 struct Document {
     TSCanvas *canvas {nullptr};
-    Cell *root {nullptr};
+    unique_ptr<Cell> root {nullptr};
     Selection prev;
     Selection hover;
     Selection selected;
@@ -86,7 +86,7 @@ struct Document {
         CollectCells(par);      \
         loopv(_i, itercells) for (auto c = itercells[_i]; c; c = nullptr)
     #define loopallcells(c)     \
-        CollectCells(root); \
+        CollectCells(root.get()); \
         for (auto c : itercells)
     #define loopallcellssel(c, rec) \
         CollectCellsSel(rec);     \
@@ -102,8 +102,6 @@ struct Document {
         dndobjc->Add(dndobjf);
     }
 
-    ~Document() { DELETEP(root); }
-
     uint Background() { return root ? root->cellcolor : 0xFFFFFF; }
 
     void InitCellSelect(Cell *initialselected, int xsize, int ysize) {
@@ -117,8 +115,8 @@ struct Document {
         sys->frame->UpdateStatus(selected, true);
     }
 
-    void InitWith(Cell *root, const wxString &filename, Cell *initialselected, int xsize, int ysize) {
-        this->root = root;
+    void InitWith(unique_ptr<Cell> root, const wxString &filename, Cell *initialselected, int xsize, int ysize) {
+        this->root = std::move(root);
         InitCellSelect(initialselected, xsize, ysize);
         ChangeFileName(filename, false);
     }
@@ -492,7 +490,7 @@ struct Document {
         ResetFont();
         dc.SetUserScale(1, 1);
         currentdrawroot = WalkPath(drawpath);
-        int psb = currentdrawroot == root ? 0 : currentdrawroot->MinRelsize();
+        int psb = currentdrawroot == root.get() ? 0 : currentdrawroot->MinRelsize();
         if (psb < 0 || psb == INT_MAX) psb = 0;
         if (psb != pathscalebias) currentdrawroot->ResetChildren();
         pathscalebias = psb;
@@ -721,7 +719,7 @@ struct Document {
     }
 
     wxString ExportFile(const wxString &filename, int action, bool currentview) {
-        Cell *exportroot = currentview ? currentdrawroot : root;
+        Cell *exportroot = currentview ? currentdrawroot : root.get();
         if (action == A_EXPIMAGE) {
             auto bitmap = GetBitmap();
             canvas->Refresh();
@@ -890,7 +888,7 @@ struct Document {
         switch (action) {
             case wxID_EXECUTE:
                 root->AddUndo(this);
-                sys->evaluator.Eval(root);
+                sys->evaluator.Eval(root.get());
                 root->ResetChildren();
                 selected = Selection();
                 begindrag = Selection();
@@ -2196,7 +2194,7 @@ struct Document {
     }
 
     Cell *WalkPath(auto &path) {
-        Cell *c = root;
+        Cell *c = root.get();
         loopvrev(i, path) {
             Selection &s = path[i];
             Grid *g = c->grid;
@@ -2288,10 +2286,8 @@ struct Document {
             c = g->C(s.x, s.y).get();
             c->parent = ui->clone->parent;
         } else {
-            Cell *oroot = root;
-            root = ui->clone.release();
-            ui->clone.reset(oroot);
-            c = root;
+            std::swap(ui->clone, root);
+            c = root.get();
             c->parent = nullptr;
         }
         c->ResetLayout();
@@ -2397,7 +2393,7 @@ struct Document {
         searchfilter = false;
         paintscrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
-        CollectCells(root);
+        CollectCells(root.get());
         ranges::sort(itercells, [](auto a, auto b) {
             // sort in descending order
             return a->text.lastedit > b->text.lastedit;
@@ -2410,7 +2406,7 @@ struct Document {
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
         paintscrolltoselection = true;
-        CollectCells(root);
+        CollectCells(root.get());
         for (auto c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }

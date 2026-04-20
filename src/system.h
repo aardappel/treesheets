@@ -160,12 +160,12 @@ struct System {
 
     void LoadOpRef() { LoadDB(frame->app->GetDocPath("examples/operation-reference.cts")); }
 
-    Cell *&InitDB(int sizex, int sizey = 0) {
-        auto c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
+    unique_ptr<Cell> &InitDB(int sizex, int sizey = 0) {
+        unique_ptr<Cell> c = make_unique<Cell>(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
         auto doc = NewTabDoc();
-        doc->InitWith(c, "", nullptr, 1, 1);
+        doc->InitWith(std::move(c), "", nullptr, 1, 1);
         return doc->root;
     }
 
@@ -280,7 +280,7 @@ struct System {
                         if (!zis.IsOk()) return _("Cannot decompress file.");
                         wxDataInputStream dis(zis);
                         auto numcells = 0, textbytes = 0;
-                        auto root = Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics);
+                        unique_ptr<Cell> root(Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics));
                         if (!root) return _("File corrupted!");
 
                         doc = NewTabDoc(true);
@@ -289,7 +289,7 @@ struct System {
                                 -1;  // if not, user will lose tmp without warning when he closes
                             doc->modified = true;
                         }
-                        doc->InitWith(root, filename, ics, xs, ys);
+                        doc->InitWith(std::move(root), filename, ics, xs, ys);
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
@@ -393,13 +393,12 @@ struct System {
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
                     if (!doc.Load(filename)) goto problem;
-                    Cell *&root = InitDB(1);
+                    unique_ptr<Cell> &root = InitDB(1);
                     Cell *c = root->grid->cells[0].get();
                     FillXML(c, doc.GetRoot(), action == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        unique_ptr<Cell> ch = std::move(root->grid->cells[0]);
-                        delete root;
-                        root = ch.release();
+                        unique_ptr<Cell> child = std::move(root->grid->cells[0]);
+                        root = std::move(child);
                         root->parent = nullptr;
                     }
                     break;
@@ -416,7 +415,7 @@ struct System {
 
                     if (lines.size()) switch (action) {
                             case A_IMPTXTI: {
-                                Cell *root = InitDB(1);
+                                unique_ptr<Cell> &root = InitDB(1);
                                 FillRows(root->grid, lines, CountCol(lines[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
