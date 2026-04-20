@@ -7,10 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 09:39+0100\n"
+"POT-Creation-Date: 2026-04-12 16:37+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
-"Last-Translator: Tobias Prdel <tobias.predel@gmail.com>\n"
-"Language-Team: GERMAN <LL@li.org>\n"
+"Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -202,6 +201,9 @@ msgstr "&Transponieren"
 
 msgid "&Undo"
 msgstr "&Rückgängig machen"
+
+msgid "&Vector graphics..."
+msgstr "&Vektorgrafik..."
 
 msgid "&Vertical View"
 msgstr "&Vertikale Ansicht"
@@ -405,6 +407,9 @@ msgstr "HTML-Datei zum Schreiben auswählen"
 msgid "Choose PNG file to write"
 msgstr "PNG-Datei zum Schreiben auswählen"
 
+msgid "Choose SVG file to write"
+msgstr "SVG-Datei zum Schreiben auswählen"
+
 msgid "Choose Text file to write"
 msgstr "Textdatei zum Schreiben auswählen"
 
@@ -484,6 +489,9 @@ msgstr "Cursor links"
 
 msgid "Cursor Right"
 msgstr "Cursor rechts"
+
+msgid "Custom"
+msgstr "Benutzerdef."
 
 msgid "Custom &color..."
 msgstr "Benutzer&definierte Farbe..."
@@ -578,6 +586,9 @@ msgstr "Textbearbeitungsmodus betreten/verlassen"
 msgid "Error exporting file!"
 msgstr "Fehler beim Exportieren der Datei!"
 
+msgid "Error exporting to SVG file!"
+msgstr "Fehler beim Exportieren der SVG-Datei!"
+
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr ""
 "Fehler beim Laden von Kerndaten (TreeSheets ggf. nicht korrekt installiert?)"
@@ -664,15 +675,15 @@ msgstr ""
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
 
+msgid "Export the current view to a SVG vector file."
+msgstr "Die aktuelle Ansicht als SVG-Vektorgrafik exportieren."
+
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
 "is saved"
 msgstr ""
 "In eine HTML-Datei exportieren, die beim Speichern neben der TreeSheets-"
 "Datei abgelegt wird"
-
-msgid "Export to a HTML file when document is saved"
-msgstr "In eine HTML-Datei exportieren, wenn das Dokument gespeichert wird"
 
 msgid ""
 "Export to a HTML file with exported images alongside the original TreeSheets "
@@ -929,10 +940,6 @@ msgid "Load an interactive tutorial in TreeSheets"
 msgstr "Das interaktive Tutorial in TreeSheets öffnen"
 
 #, c-format
-msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "%s geladen (%d Zellen, %d Zeichen) in %d Millisekunden."
-
-#, c-format
 msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
 msgstr "%s geladen (%d Zellen, %d Zeichen) in %lld Millisekunden."
 
@@ -1034,6 +1041,9 @@ msgstr "Erstellen der neuen Datei abgebrochen!"
 
 msgid "No autoexport"
 msgstr "Kein automatischer Export"
+
+msgid "No image found to convert"
+msgstr "Kein Bild zum Konvertieren gefunden"
 
 msgid "No image in this cell."
 msgstr "Kein Bild in dieser Zelle"
@@ -1357,10 +1367,6 @@ msgid "Save open documents periodically to temporary files"
 msgstr "Geöffnete Dokumente periodisch in temporären Dateien sichern"
 
 #, c-format
-msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "%s erfolgreich gespeichert (in %d Millisekunden)."
-
-#, c-format
 msgid "Saved %s successfully (in %lld milliseconds)."
 msgstr "%s erfolgreich gespeichert (in %lld Millisekunden)."
 
@@ -1495,11 +1501,17 @@ msgstr "Absteigen&d sortieren"
 msgid "Start date and time"
 msgstr "Startdatum und -zeit"
 
+msgid "Start minimized"
+msgstr "Minimiert starten"
+
 msgid "Start of line of text"
 msgstr "Beginn der Zeile des Texte"
 
 msgid "Start of text"
 msgstr "Beginn des Textes"
+
+msgid "Start the application minimized"
+msgstr "Die Anwendung minimiert starten"
 
 msgid "Statusbar"
 msgstr "Statuszeile"
@@ -1739,6 +1751,9 @@ msgstr "Ändert die Ausrichtung einer Tabelle."
 msgid "couldn't import file!"
 msgstr "Datei konnte nicht importiert werden!"
 
+msgid "nothing to resize"
+msgstr "Nichts zum Ändern der Größe"
+
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr ""
 "Setzt nur die Farben und den Stil der kopierten Zelle und hält den Text bei."
@@ -1759,6 +1774,3 @@ msgstr "Skalierung:"
 
 msgid "size:"
 msgstr "Größe:"
-
-#~ msgid "Enter/exit text edit to the right"
-#~ msgstr "Textbearbeitungsmodus nach rechts betreten/verlassen"
