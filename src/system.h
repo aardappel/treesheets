@@ -124,13 +124,19 @@ struct System {
         evaluator.Init();
 
         auto numfiles = static_cast<int>(cfg->Read("numopenfiles", static_cast<long>(0)));
+        wxString focusfile = cfg->Read("lastopenfile", "");
+        int selection = 0;
         loop(i, numfiles) {
             wxString filename;
             cfg->Read(wxString::Format("lastopenfile_%d", i), &filename);
-            LoadDB(filename);
+            if (!LoadDB(filename) && filename == focusfile) selection = i;
         }
 
-        if (filename.Len()) LoadDB(filename);
+        if (!filename.IsEmpty()) {
+            LoadDB(filename);
+        } else if (selection > 0) {
+            frame->notebook->SetSelection(selection);
+        }
 
         if (!frame->notebook->GetPageCount()) LoadTutorial();
 
@@ -358,6 +364,7 @@ struct System {
     }
 
     void RememberOpenFiles() {
+        cfg->Write("lastopenfile", frame->GetCurrentTab()->doc->filename);
         auto namedfiles = 0;
         loop(i, frame->notebook->GetPageCount()) {
             auto canvas = static_cast<TSCanvas *>(frame->notebook->GetPage(i));
