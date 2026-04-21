@@ -108,10 +108,10 @@ struct System {
         colormask = (followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
     }
 
-    auto NewTabDoc(bool append = false) {
-        auto doc = new Document();
-        frame->NewTab(doc, append);
-        return doc;
+    Document *NewTabDoc(bool append = false) {
+        auto doc = make_unique<Document>();
+        auto canvas = frame->NewTab(std::move(doc), append);
+        return canvas->doc.get();
     }
 
     void TabChange(Document *newdoc) {
@@ -440,7 +440,7 @@ struct System {
                     break;
                 }
             }
-            Document *doc = frame->GetCurrentTab()->doc;
+            Document *doc = frame->GetCurrentTab()->doc.get();
             doc->modified = true;
             doc->UpdateFileName();
             doc->selected = Selection();

@@ -1274,7 +1274,7 @@ struct TSFrame : wxFrame {
     void OnTabChange(wxAuiNotebookEvent &nbe) {
         auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         ClearStatus();
-        sys->TabChange(canvas->doc);
+        sys->TabChange(canvas->doc.get());
         nbe.Skip();
     }
 
@@ -1295,7 +1295,7 @@ struct TSFrame : wxFrame {
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
         TSCanvas *canvas = GetCurrentTab();
-        Document *doc = canvas->doc;
+        Document *doc = canvas->doc.get();
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
@@ -1417,7 +1417,7 @@ struct TSFrame : wxFrame {
         if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !notebook) return;
         const auto &modfile = event.GetPath().GetFullPath();
         loop(i, notebook->GetPageCount()) {
-            Document *doc = static_cast<TSCanvas *>(notebook->GetPage(i))->doc;
+            Document *doc = static_cast<TSCanvas *>(notebook->GetPage(i))->doc.get();
             if (modfile == doc->filename) {
                 auto modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
@@ -1450,7 +1450,8 @@ struct TSFrame : wxFrame {
                 } else {
                     loop(j,
                          notebook->GetPageCount()) if (static_cast<TSCanvas *>(notebook->GetPage(j))
-                                                           ->doc == doc) notebook->DeletePage(j);
+                                                           ->doc.get() == doc)
+                        notebook->DeletePage(j);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     SetStatus(
                         _("File has been re-loaded because of modifications of another program / computer"));
@@ -1536,16 +1537,16 @@ struct TSFrame : wxFrame {
         menustrings[item] = key;
     }
 
-    TSCanvas *NewTab(Document *doc, bool append = false) {
+    TSCanvas *NewTab(unique_ptr<Document> doc, bool append = false) {
         TSCanvas *canvas = new TSCanvas(this, notebook);
-        canvas->doc = doc;
         doc->canvas = canvas;
+        canvas->doc = std::move(doc);
         canvas->SetScrollRate(1, 1);
         if (append)
             notebook->AddPage(canvas, _("<unnamed>"), true, wxNullBitmap);
         else
             notebook->InsertPage(0, canvas, _("<unnamed>"), true, wxNullBitmap);
-        canvas->SetDropTarget(new DropTarget(doc->dndobjc));
+        canvas->SetDropTarget(new DropTarget(canvas->doc->dndobjc));
         canvas->SetFocus();
         return canvas;
     }

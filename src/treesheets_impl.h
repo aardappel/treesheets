@@ -6,7 +6,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
     void SwitchToCurrentDocument() {
-        document = sys->frame->GetCurrentTab()->doc;
+        document = sys->frame->GetCurrentTab()->doc.get();
         current = document->root.get();
         lowestcommonancestor = nullptr;
     }
