@@ -422,8 +422,7 @@ struct System {
 
                     if (lines.size()) switch (action) {
                             case A_IMPTXTI: {
-                                unique_ptr<Cell> &root = InitDB(1);
-                                FillRows(root->grid, lines, CountCol(lines[0]), 0, 0);
+                                FillRows(InitDB(1)->grid, lines, CountCol(lines[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
                                 InitDB(1, static_cast<int>(lines.size()))
