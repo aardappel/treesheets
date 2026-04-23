@@ -901,15 +901,15 @@ struct Grid {
                     // Special case check: if parents have same name, this would cause infinite
                     // swapping.
                     if (p->text.t == tag) done = true;
-                    auto t = new Cell(f, p);
+                    auto t = make_unique<Cell>(f, p);
                     t->text = p->text;
-                    t->text.cell = t;
+                    t->text.cell = t.get();
                     t->note = p->note;
                     t->grid = f->grid;
-                    if (t->grid) t->grid->ReParent(t);
+                    if (t->grid) t->grid->ReParent(t.get());
                     f->grid = new Grid(1, 1);
                     f->grid->cell = f;
-                    f->grid->cells[0].reset(t);
+                    f->grid->cells[0] = std::move(t);
                 }
                 // remove cell from parent, recursively if parent becomes empty
                 for (auto r = f; r && r != cell; r = r->parent->grid->DeleteTagParent(r, cell, f));
