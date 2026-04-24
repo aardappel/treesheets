@@ -507,6 +507,7 @@ struct Grid {
             if (x == dx || y == dy) {
                 if (nc) {
                     c.reset(nc);
+                    nc = nullptr;
                 } else {
                     int sx = nxs ? max(0, min(dx - 1, xs - 1)) : x;
                     int sy = nxs ? y : max(0, min(dy - 1, ys - 1));
@@ -919,7 +920,7 @@ struct Grid {
                     f->parent = cell;
                     selcell = f;
                 } else {
-                    MergeTagCell(f, selcell);
+                    MergeTagCell(unique_ptr<Cell>(f), selcell);
                 }
                 goto lookformore;
             }
@@ -934,28 +935,34 @@ struct Grid {
     }
 
     Cell *DeleteTagParent(Cell *tag, Cell *basecell, Cell *found) {
-        ReplaceCell(tag, nullptr);
+        Cell *next = tag->parent;
+        unique_ptr<Cell> detached_tag;
+        int found_x = -1, found_y = -1;
+        foreachcell(c) if (c.get() == tag) {
+            detached_tag = std::move(c);
+            found_x = x;
+            found_y = y;
+            break;
+        }
+        ASSERT(detached_tag);
         if (xs * ys == 1) {
             if (cell != basecell) {
                 cell->grid = nullptr;
                 delete this;
             }
-            auto next = tag->parent;
-            if (tag != found) delete tag;
+            if (tag == found) detached_tag.release();
             return next;
-        } else
-            foreachcell(c) if (c == nullptr) {
-                if (ys > 1)
-                    DeleteCells(-1, y, 0, -1);
-                else
-                    DeleteCells(x, -1, -1, 0);
-                return nullptr;
-            }
-        ASSERT(0);
-        return nullptr;
+        } else {
+            if (ys > 1)
+                DeleteCells(-1, found_y, 0, -1);
+            else
+                DeleteCells(found_x, -1, -1, 0);
+            if (tag == found) detached_tag.release();
+            return nullptr;
+        }
     }
 
-    void MergeTagCell(Cell *f, Cell *&selcell) {
+    void MergeTagCell(unique_ptr<Cell> f, Cell *&selcell) {
         foreachcell(c) if (c->text.t == f->text.t) {
             if (!selcell) selcell = c.get();
 
@@ -968,17 +975,15 @@ struct Grid {
                     f->grid = nullptr;
                 }
             }
-            delete f;
             return;
         }
-        if (!selcell) selcell = f;
-        Add(f);
+        if (!selcell) selcell = f.get();
+        Add(f.release());
     }
 
     void MergeTagAll(Cell *into) {
         foreachcell(c) {
-            Cell *rc = c.release();
-            into->grid->MergeTagCell(rc, into /*dummy*/);
+            into->grid->MergeTagCell(std::move(c), into /*dummy*/);
         }
     }
 

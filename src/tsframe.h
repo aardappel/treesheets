@@ -337,10 +337,8 @@ struct TSFrame : wxFrame {
                      _("Make a 1xN selection to indicate which column to sort on, and which rows to affect"));
             MyAppend(orgmenu, A_SORTD, _("Sort &Descending"),
                      _("Make a 1xN selection to indicate which column to sort on, and which rows to affect"));
-            /*
             MyAppend(orgmenu, A_HSWAP, _("Hierarchy &Swap") + "\tF8",
                      _("Swap all cells with this text at this level (or above) with the parent"));
-            */
             MyAppend(orgmenu, A_HIFY, _("&Hierarchify"),
                      _("Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"));
             MyAppend(orgmenu, A_FLATTEN, _("&Flatten"),
