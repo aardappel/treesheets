@@ -865,21 +865,30 @@ struct Grid {
         InitColWidths();
     }
 
-    static int sortfunc(const Cell **a, const Cell **b) {
-        loop(i, sys->sortxs) {
-            int off = (i + sys->sortcolumn) % sys->sortxs;
-            int cmp = (*(a + off))->text.t.CmpNoCase((*(b + off))->text.t);
-            if (cmp) return sys->sortdescending ? -cmp : cmp;
-        }
-        return 0;
-    }
-
     void Sort(Selection &sel, bool descending) {
-        sys->sortcolumn = sel.x;
-        sys->sortxs = xs;
-        sys->sortdescending = descending;
-        qsort(&cells[sel.y * xs], sel.ys, sizeof(Cell *) * xs,
-              (int(__cdecl *)(const void *, const void *))sortfunc);
+        vector<int> row_indices(sel.ys);
+        loop(i, sel.ys) row_indices[i] = i;
+
+        std::stable_sort(row_indices.begin(), row_indices.end(), [&](int i, int j) {
+            loop(k, xs) {
+                int col = (k + sel.x) % xs;
+                int cmp = C(col, sel.y + i)->text.t.CmpNoCase(C(col, sel.y + j)->text.t);
+                if (cmp) return descending ? cmp > 0 : cmp < 0;
+            }
+            return false;
+        });
+
+        vector<unique_ptr<Cell>> new_cells;
+        new_cells.reserve(sel.ys * xs);
+        for (int i : row_indices) {
+            loop(c, xs) {
+                new_cells.push_back(std::move(C(c, sel.y + i)));
+            }
+        }
+
+        loop(i, sel.ys * xs) {
+            cells[sel.y * xs + i] = std::move(new_cells[i]);
+        }
     }
 
     Cell *FindExact(const wxString &s) {

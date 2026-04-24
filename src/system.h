@@ -43,9 +43,6 @@ struct System {
     bool showstatusbar {true};
     bool followdarkmode {false};
     uint colormask {0};
-    int sortcolumn;
-    int sortxs;
-    int sortdescending;
     int notesizex {300};
     int notesizey {255};
     std::set<wxString> watchedpaths;
