@@ -2,7 +2,7 @@ class Selection {
     bool textedit {false};
 
     public:
-    Grid *grid;
+    shared_ptr<Grid> grid;
     int x;
     int y;
     int xs;
@@ -12,7 +12,7 @@ class Selection {
     int firstdx {0};
     int firstdy {0};
 
-    Selection(Grid *_grid = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
+    Selection(shared_ptr<Grid> _grid = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
         : grid(_grid), x(_x), y(_y), xs(_xs), ys(_ys) {}
 
     void SelAll() {

@@ -32,7 +32,7 @@ struct Cell {
     int tys {0};
     int celltype;
     Text text;
-    Grid *grid;
+    shared_ptr<Grid> grid;
     uint cellcolor {g_cellcolor_default};
     uint actualcellcolor {g_cellcolor_default};
     uint textcolor {g_textcolor_default};
@@ -42,7 +42,7 @@ struct Cell {
     wxString note;
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
-         Grid *_g = nullptr)
+         shared_ptr<Grid> _g = nullptr)
         : parent(_p), celltype(_ct), grid(_g) {
         text.cell = this;
         if (_g) _g->cell = this;
@@ -53,9 +53,8 @@ struct Cell {
         if (_clonefrom) CloneStyleFrom(_clonefrom);
     }
 
-    ~Cell() { DELETEP(grid); }
     void Clear() {
-        DELETEP(grid);
+        grid = nullptr;
         text.t.Clear();
         text.image = nullptr;
         Reset();
@@ -206,7 +205,7 @@ struct Cell {
 
     unique_ptr<Cell> Clone(Cell *_parent) const {
         unique_ptr<Cell> c = make_unique<Cell>(_parent, this, celltype,
-                                               grid ? new Grid(grid->xs, grid->ys) : nullptr);
+                                               grid ? make_shared<Grid>(grid->xs, grid->ys) : nullptr);
         c->text = text;
         c->text.cell = c.get();
         c->note = note;
@@ -375,18 +374,18 @@ struct Cell {
         }
     }
 
-    Grid *AddGrid(int x = 1, int y = 1) {
+    Grid* AddGrid(int x = 1, int y = 1) {
         if (!grid) {
-            grid = new Grid(x, y, this);
+            grid = make_shared<Grid>(x, y, this);
             grid->InitCells(this);
             if (parent) grid->CloneStyleFrom(parent->grid);
         }
-        return grid;
+        return grid.get();
     }
 
     Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         int xs = dis.Read32();
-        auto g = new Grid(xs, dis.Read32());
+        auto g = make_shared<Grid>(xs, dis.Read32());
         grid = g;
         g->cell = this;
         if (!g->LoadContents(dis, numcells, textbytes, ics)) return nullptr;
@@ -438,12 +437,11 @@ struct Cell {
         }
         if (original->text.image) text.image = original->text.image;
         if (original->grid) {
-            auto gridclone = new Grid(original->grid->xs, original->grid->ys);
+            shared_ptr<Grid> gridclone = make_shared<Grid>(original->grid->xs, original->grid->ys);
             gridclone->cell = this;
             original->grid->Clone(gridclone);
             // Note: deleting grid may invalidate c if its a child of grid, so clear it.
             original = nullptr;
-            DELETEP(grid);  // FIXME: could merge instead?
             grid = gridclone;
             if (!HasText())
                 grid->MergeWithParent(parent->grid, selection, document);  // deletes grid/this.

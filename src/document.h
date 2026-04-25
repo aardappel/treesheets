@@ -1936,10 +1936,9 @@ struct Document {
                     ac->AddUndo(this);
                     int maxdepth = 0, leaves = 0;
                     ac->MaxDepthLeaves(0, maxdepth, leaves);
-                    auto g = new Grid(maxdepth, leaves);
+                    auto g = make_shared<Grid>(maxdepth, leaves);
                     g->InitCells();
-                    ac->grid->Flatten(0, 0, g);
-                    DELETEP(ac->grid);
+                    ac->grid->Flatten(0, 0, g.get());
                     ac->grid = g;
                     g->ReParent(ac);
                     ac->ResetChildren();
@@ -2145,7 +2144,7 @@ struct Document {
                 } else if (lines.size() > 1) {
                     cell->parent->AddUndo(this);
                     cell->ResetLayout();
-                    DELETEP(cell->grid);
+                    cell->grid = nullptr;
                     sys->FillRows(cell->AddGrid(), lines, sys->CountCol(lines[0]), 0, 0);
                     if (!cell->HasText())
                         cell->grid->MergeWithParent(cell->parent->grid, selected, this);
@@ -2202,7 +2201,7 @@ struct Document {
         Cell *c = root.get();
         loopvrev(i, path) {
             Selection &s = path[i];
-            Grid *g = c->grid;
+            Grid *g = c->grid.get();
             if (!g) return c;
             ASSERT(g && s.x < g->xs && s.y < g->ys);
             c = g->C(s.x, s.y).get();
@@ -2285,7 +2284,7 @@ struct Document {
         Cell *c = WalkPath(ui->path);
 
         if (c->parent && c->parent->grid) {
-            Grid *g = c->parent->grid;
+            Grid *g = c->parent->grid.get();
             Selection s = g->FindCell(c);
             std::swap(ui->clone, g->C(s.x, s.y));
             c = g->C(s.x, s.y).get();

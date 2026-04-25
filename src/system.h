@@ -164,7 +164,7 @@ struct System {
     void LoadOpRef() { LoadDB(frame->app->GetDocPath("examples/operation-reference.cts")); }
 
     unique_ptr<Cell> &InitDB(int sizex, int sizey = 0) {
-        unique_ptr<Cell> c = make_unique<Cell>(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
+        unique_ptr<Cell> c = make_unique<Cell>(nullptr, nullptr, CT_DATA, make_shared<Grid>(sizex, sizey ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
         auto doc = NewTabDoc();
@@ -420,7 +420,7 @@ struct System {
 
                     if (lines.size()) switch (action) {
                             case A_IMPTXTI: {
-                                FillRows(InitDB(1)->grid, lines, CountCol(lines[0]), 0, 0);
+                                FillRows(InitDB(1)->grid.get(), lines, CountCol(lines[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
                                 InitDB(1, static_cast<int>(lines.size()))
@@ -543,7 +543,7 @@ struct System {
             if (col < column && startrow != 0) return i;
             if (col > column) {
                 auto c = g->C(0, y - 1).get();
-                auto sg = c->grid;
+                auto sg = c->grid.get();
                 i = FillRows(sg ? sg : c->AddGrid(), as, col, i, sg ? sg->ys : 0) - 1;
             } else {
                 if (g->ys <= y) g->InsertCells(-1, y, 0, 1);

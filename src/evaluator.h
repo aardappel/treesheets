@@ -7,8 +7,8 @@ struct Operation {
 
     virtual unique_ptr<Cell> run() const { return nullptr; }
     virtual double runn(double a) const { return 0; }
-    virtual unique_ptr<Cell> runl(Grid *l) const { return nullptr; }
-    virtual void rung(Grid *g) const {}
+    virtual unique_ptr<Cell> runl(shared_ptr<Grid> l) const { return nullptr; }
+    virtual void rung(shared_ptr<Grid> g) const {}
     virtual unique_ptr<Cell> runc(unique_ptr<Cell> c) const { return nullptr; }
     virtual double runnn(double a, double b) const { return 0; }
 };
@@ -43,8 +43,8 @@ struct Evaluator {
     #define OPN(_n, _c) OP(_n, _c, "n", double runn(double a))
     #define OPT(_n, _c) OP(_n, _c, "t", unique_ptr<Cell> runc(unique_ptr<Cell> c))
     #define OPC(_n, _c) OP(_n, _c, "c", unique_ptr<Cell> runc(unique_ptr<Cell> c))
-    #define OPL(_n, _c) OP(_n, _c, "l", unique_ptr<Cell> runl(Grid *a))
-    #define OPG(_n, _c) OP(_n, _c, "g", void rung(Grid *a))
+    #define OPL(_n, _c) OP(_n, _c, "l", unique_ptr<Cell> runl(shared_ptr<Grid> a))
+    #define OPG(_n, _c) OP(_n, _c, "g", void rung(shared_ptr<Grid> a))
 
     void Init() {
         OPNN(+, a + b);
@@ -94,9 +94,9 @@ struct Evaluator {
         if (sym->grid && val->grid) this->DestructuringAssign(sym->grid, val->Clone(nullptr));
     }
 
-    void DestructuringAssign(Grid const *names, unique_ptr<Cell> val) {
-        Grid const *ng = names;
-        Grid const *vg = val->grid;
+    void DestructuringAssign(shared_ptr<Grid> names, unique_ptr<Cell> val) {
+        Grid const *ng = names.get();
+        Grid const *vg = val->grid.get();
         if (ng->xs == vg->xs && ng->ys == vg->ys) {
             loop(x, ng->xs) loop(y, ng->ys) {
                 this->SetSymbol(ng->C(x, y)->text.t, vg->C(x, y)->Clone(nullptr));
@@ -110,7 +110,7 @@ struct Evaluator {
 
     unique_ptr<Cell> Execute(const Operation *op, unique_ptr<Cell> left) {
         Text &t = left->text;
-        Grid *g = left->grid;
+        shared_ptr<Grid> g = left->grid;
         switch (op->args[0]) {
             case 'n':
                 if (t.t.Len()) {
@@ -140,12 +140,12 @@ struct Evaluator {
                     if (g->xs == 1 || g->ys == 1) {
                         return op->runl(g);
                     } else {
-                        vector<unique_ptr<Grid>> gs;
+                        vector<shared_ptr<Grid>> gs;
                         g->Split(gs, vert);
-                        g = new Grid(vert ? gs.size() : 1, vert ? 1 : gs.size());
+                        g = make_shared<Grid>(vert ? gs.size() : 1, vert ? 1 : gs.size());
                         auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
                         loopv(i, gs) {
-                            auto res = op->runl(gs[i].get());
+                            auto res = op->runl(gs[i]);
                             res->SetParent(c.get());
                             g->C(vert ? i : 0, vert ? 0 : i) = std::move(res);
                         }
@@ -166,14 +166,14 @@ struct Evaluator {
         if (!right) return left;
         Text &t1 = left->text;
         Text &t2 = right->text;
-        Grid *g1 = left->grid;
-        Grid *g2 = right->grid;
+        shared_ptr<Grid> g1 = left->grid;
+        shared_ptr<Grid> g2 = right->grid;
         switch (op->args[0]) {
             case 'n':
                 if (t1.t.Len() && t2.t.Len()) {
                     t1.SetNum(op->runnn(t1.GetNum(), t2.GetNum()));
                 } else if (g1 && g2 && g1->xs == g2->xs && g1->ys == g2->ys) {
-                    Grid *g = new Grid(g1->xs, g1->ys);
+                    auto g = make_shared<Grid>(g1->xs, g1->ys);
                     auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
                     loop(x, g->xs) loop(y, g->ys) {
                         unique_ptr<Cell> c1 = std::move(g1->C(x, y));

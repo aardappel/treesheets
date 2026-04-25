@@ -89,7 +89,7 @@ struct Grid {
     }
 
     /* Clones g into this grid. This mutates the grid this function is called on. */
-    void Clone(Grid *g) {
+    void Clone(shared_ptr<Grid> g) {
         g->bordercolor = bordercolor;
         g->user_grid_outer_spacing = user_grid_outer_spacing;
         g->folded = folded;
@@ -98,7 +98,7 @@ struct Grid {
     }
 
     unique_ptr<Cell> CloneSel(const Selection &sel) {
-        auto cl = make_unique<Cell>(nullptr, sel.grid->cell, CT_DATA, new Grid(sel.xs, sel.ys));
+        auto cl = make_unique<Cell>(nullptr, sel.grid->cell, CT_DATA, make_shared<Grid>(sel.xs, sel.ys));
         foreachcellinsel(c, sel) cl->grid->C(x - sel.x, y - sel.y) = c->Clone(cl.get());
         loop(i, sel.xs) cl->grid->colwidths[i] = sel.grid->colwidths[i];
         return cl;
@@ -273,27 +273,27 @@ struct Grid {
             int bx = px - c->ox;
             int by = py - c->oy;
             if (bx >= 0 && by >= -g_line_width - g_selmargin && bx < c->sx && by < g_selmargin) {
-                doc->hover = Selection(this, x, y, 1, 0);
+                doc->hover = Selection(cell->grid, x, y, 1, 0);
                 return;
             }
             if (bx >= 0 && by >= c->sy - g_selmargin && bx < c->sx &&
                 by < c->sy + g_line_width + g_selmargin) {
-                doc->hover = Selection(this, x, y + 1, 1, 0);
+                doc->hover = Selection(cell->grid, x, y + 1, 1, 0);
                 return;
             }
             if (bx >= -g_line_width - g_selmargin && by >= 0 && bx < g_selmargin && by < c->sy) {
-                doc->hover = Selection(this, x, y, 0, 1);
+                doc->hover = Selection(cell->grid, x, y, 0, 1);
                 return;
             }
             if (bx >= c->sx - g_selmargin && by >= 0 && bx < c->sx + g_line_width + g_selmargin &&
                 by < c->sy) {
-                doc->hover = Selection(this, x + 1, y, 0, 1);
+                doc->hover = Selection(cell->grid, x + 1, y, 0, 1);
                 return;
             }
             if (c->IsInside(bx, by)) {
                 if (c->GridShown(doc)) c->grid->FindXY(doc, bx, by, dc);
                 if (doc->hover.grid) return;
-                doc->hover = Selection(this, x, y, 1, 1);
+                doc->hover = Selection(cell->grid, x, y, 1, 1);
                 if (c->HasText()) {
                     c->text.FindCursor(doc, bx, by - c->ycenteroff, dc, doc->hover, colwidths[x]);
                 }
@@ -337,11 +337,11 @@ struct Grid {
 
     void ReplaceCell(Cell *o, Cell *n) { foreachcell(c) if (c.get() == o) c.reset(n); }
     Selection FindCell(Cell *o) {
-        foreachcell(c) if (c.get() == o) return Selection(this, x, y, 1, 1);
+        foreachcell(c) if (c.get() == o) return Selection(cell->grid, x, y, 1, 1);
         return Selection();
     }
 
-    Selection SelectAll() { return Selection(this, 0, 0, xs, ys); }
+    Selection SelectAll() { return Selection(cell->grid, 0, 0, xs, ys); }
     void ImageRefCount(bool includefolded) {
         if (includefolded || !folded) foreachcell(c) c->ImageRefCount(includefolded);
     }
@@ -479,14 +479,13 @@ struct Grid {
     }
 
     void DelSelf(Document *doc, Selection &s) {
-        if (!doc->drawpath.empty() && doc->drawpath.back().grid == this) {
+        if (!doc->drawpath.empty() && doc->drawpath.back().grid == cell->grid) {
             doc->drawpath.pop_back();
             doc->currentdrawroot = doc->WalkPath(doc->drawpath);
         }
         if (!cell->parent) return;  // FIXME: deletion of root cell, what would be better?
         s = cell->parent->grid->FindCell(cell);
-        auto &pthis = cell->grid;
-        DELETEP(pthis);
+        cell->grid = nullptr;
     }
 
     void InsertCells(int dx, int dy, int nxs, int nys, unique_ptr<Cell> nc = nullptr) {
@@ -645,8 +644,8 @@ struct Grid {
             InsertCells(-1, ys, 0, 1, std::move(c));
     }
 
-    void MergeWithParent(Grid *p, Selection &sel, Document *doc) {
-        cell->grid = nullptr;
+    void MergeWithParent(shared_ptr<Grid> p, Selection &sel, Document *doc) {
+        shared_ptr<Grid> keepalive = cell->grid;
         foreachcell(c) {
             if (x + sel.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
             if (y + sel.y >= p->ys) p->InsertCells(-1, p->ys, 0, 1);
@@ -666,7 +665,7 @@ struct Grid {
         sel.xs += xs - 1;
         sel.ys += ys - 1;
         sel.ExitEdit(doc);
-        delete this;
+        cell->grid = nullptr;
     }
 
     void SetStyle(Document *doc, const Selection &sel, int sb) {
@@ -836,7 +835,7 @@ struct Grid {
         return acc;
     }
 
-    void Split(vector<unique_ptr<Grid>> &gs, bool vert) {
+    void Split(vector<shared_ptr<Grid>> &gs, bool vert) {
         loop(i, vert ? xs : ys) gs.push_back(make_unique<Grid>(vert ? 1 : xs, vert ? ys : 1));
         foreachcell(c) {
             auto g = gs[vert ? x : y].get();
@@ -916,7 +915,7 @@ struct Grid {
                     t->note = p->note;
                     t->grid = f->grid;
                     if (t->grid) t->grid->ReParent(t.get());
-                    f->grid = new Grid(1, 1);
+                    f->grid = make_shared<Grid>(1, 1);
                     f->grid->cell = f;
                     f->grid->cells[0] = std::move(t);
                 }
@@ -943,6 +942,7 @@ struct Grid {
     }
 
     Cell *DeleteTagParent(Cell *tag, Cell *basecell, Cell *found) {
+        shared_ptr<Grid> keepalive = cell->grid;
         Cell *next = tag->parent;
         unique_ptr<Cell> detached_tag;
         int found_x = -1, found_y = -1;
@@ -956,7 +956,6 @@ struct Grid {
         if (xs * ys == 1) {
             if (cell != basecell) {
                 cell->grid = nullptr;
-                delete this;
             }
             if (tag == found) detached_tag.release();
             return next;
@@ -1008,7 +1007,7 @@ struct Grid {
         loop(y, ys) {
             unique_ptr<Cell> rest;
             if (xs > 1) {
-                Selection s(this, 1, y, xs - 1, 1);
+                Selection s(cell->grid, 1, y, xs - 1, 1);
                 rest = CloneSel(s);
             }
             Cell *c = C(0, y).get();
@@ -1016,11 +1015,11 @@ struct Grid {
                 if (Cell *prev = C(0, prevy).get(); prev->text.t == c->text.t) {
                     if (rest) {
                         ASSERT(prev->grid);
-                        prev->grid->MergeRow(rest->grid);
+                        prev->grid->MergeRow(rest->grid.get());
                         rest = nullptr;
                     }
 
-                    Selection s(this, 0, y, xs, 1);
+                    Selection s(cell->grid, 0, y, xs, 1);
                     MultiCellDeleteSub(doc, s);
                     y--;
 
@@ -1028,12 +1027,12 @@ struct Grid {
                 }
             }
             if (rest) {
-                swap_(c->grid, rest->grid);
+                std::swap(c->grid, rest->grid);
                 c->grid->ReParent(c);
             }
         done:;
         }
-        Selection s(this, 1, 0, xs - 1, ys);
+        Selection s(cell->grid, 1, 0, xs - 1, ys);
         MultiCellDeleteSub(doc, s);
         foreachcell(c) if (c->grid && c->grid->xs > 1) c->grid->Hierarchify(doc);
     }
