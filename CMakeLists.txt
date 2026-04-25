@@ -129,7 +129,8 @@ endif(ENABLE_LOBSTER)
 ### TreeSheets executable
 
 add_executable(TreeSheets
-    src/main.cpp)
+    src/main.cpp
+    src/stdafx.cpp)
 
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VERSION}\"")
 if(ENABLE_LOBSTER)
