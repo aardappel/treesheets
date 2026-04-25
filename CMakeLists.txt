@@ -242,41 +242,22 @@ endif()
 
 # Install translations to correct platform-specific path.
 # See: https://docs.wxwidgets.org/trunk/overview_i18n.html#overview_i18n_mofiles
-file(
-    GLOB locales
-    LIST_DIRECTORIES true
-    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/TS/translations
-    TS/translations/*/ts.mo
-)
-list(
-    TRANSFORM locales
-    REPLACE "/ts\\.mo$" ""
-)
-if(WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
-    foreach(locale ${locales})
-        install(
-            FILES "TS/translations/${locale}/ts.mo"
-            # Paths must be relative to use with CPack
-            DESTINATION "translations/${locale}"
-        )
-    endforeach()
-elseif(APPLE)
-    foreach(locale ${locales})
-        install(
-            FILES "TS/translations/${locale}/ts.mo"
-            # Paths must be relative to use with CPack
-            DESTINATION "TreeSheets.app/Contents/Resources/translations/${locale}.lproj"
-        )
-    endforeach()
-else()
-    # Falling back to GNU scheme
-    foreach(locale ${locales})
-        install(
-            FILES "TS/translations/${locale}/ts.mo"
-            DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES"
-        )
-    endforeach()
-endif()
+file(GLOB mo_files "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations/*/ts.mo")
+foreach(mo_file IN LISTS mo_files)
+    cmake_path(GET mo_file PARENT_PATH locale_dir)
+    cmake_path(GET locale_dir FILENAME locale)
+
+    if(WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
+        # Paths must be relative to use with CPack
+        install(FILES "${mo_file}" DESTINATION "translations/${locale}")
+    elseif(APPLE)
+        # Paths must be relative to use with CPack
+        install(FILES "${mo_file}" DESTINATION "TreeSheets.app/Contents/Resources/translations/${locale}.lproj")
+    else()
+        # Falling back to GNU scheme
+        install(FILES "${mo_file}" DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES")
+    endif()
+endforeach()
 
 ### Packaging with CPack
 
