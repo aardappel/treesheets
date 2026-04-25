@@ -122,7 +122,7 @@ struct System {
 
         auto numfiles = static_cast<int>(cfg->Read("numopenfiles", static_cast<long>(0)));
         wxString focusfile = cfg->Read("lastopenfile", "");
-        int selection = 0;
+        int selection = -1;
         loop(i, numfiles) {
             wxString filename;
             cfg->Read(wxString::Format("lastopenfile_%d", i), &filename);
@@ -131,7 +131,7 @@ struct System {
 
         if (!filename.IsEmpty()) {
             LoadDB(filename);
-        } else if (selection > 0) {
+        } else if (selection >= 0) {
             frame->notebook->SetSelection(selection);
         }
 
