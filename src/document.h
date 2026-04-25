@@ -142,12 +142,11 @@ struct Document {
                         : selected.grid->C(selected.x, selected.y).get();
         auto start_saving_time = wxGetLocalTimeMillis();
 
+        auto targetfilename = istempfile ? sys->TmpName(filename) : filename;
+        auto savefilename = sys->NewName(targetfilename);
+
         {  // limit destructors
             wxBusyCursor wait;
-            if (!istempfile && sys->makebaks && ::wxFileExists(filename)) {
-                ::wxRenameFile(filename, sys->BakName(filename));
-            }
-            auto savefilename = istempfile ? sys->TmpName(filename) : filename;
             wxFFileOutputStream fos(savefilename);
             if (!fos.IsOk()) {
                 if (!istempfile)
@@ -188,6 +187,16 @@ struct Document {
             }
             dos.WriteString(wxEmptyString);
         }
+
+        if (!istempfile && sys->makebaks && ::wxFileExists(filename)) {
+            ::wxRemoveFile(sys->BakName(filename));
+            ::wxRenameFile(filename, sys->BakName(filename));
+        }
+
+        if (!::wxRenameFile(savefilename, targetfilename, true)) {
+            return _("Error renaming temporary file.");
+        }
+
         lastmodsinceautosave = 0;
         lastsave = wxGetLocalTime();
         auto end_saving_time = wxGetLocalTimeMillis();

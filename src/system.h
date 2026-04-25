@@ -174,6 +174,7 @@ struct System {
 
     wxString BakName(const wxString &filename) { return ExtName(filename, ".bak"); }
     wxString TmpName(const wxString &filename) { return ExtName(filename, ".tmp"); }
+    wxString NewName(const wxString &filename) { return filename + ".new"; }
     wxString ExtName(const wxString &filename, auto ext) {
         wxFileName fn(filename);
         return fn.GetPathWithSep() + fn.GetName() + ext;
