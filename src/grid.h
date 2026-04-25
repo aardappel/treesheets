@@ -489,7 +489,7 @@ struct Grid {
         DELETEP(pthis);
     }
 
-    void InsertCells(int dx, int dy, int nxs, int nys, Cell *nc = nullptr) {
+    void InsertCells(int dx, int dy, int nxs, int nys, unique_ptr<Cell> nc = nullptr) {
         vector<unique_ptr<Cell>> ocells = std::move(cells);
         cells.clear();
         cells.resize((xs + nxs) * (ys + nys));
@@ -506,8 +506,7 @@ struct Grid {
         foreachcell(c) {
             if (x == dx || y == dy) {
                 if (nc) {
-                    c.reset(nc);
-                    nc = nullptr;
+                    c = std::move(nc);
                 } else {
                     int sx = nxs ? max(0, min(dx - 1, xs - 1)) : x;
                     int sy = nxs ? y : max(0, min(dy - 1, ys - 1));
@@ -638,12 +637,12 @@ struct Grid {
             foreachcellinselrev(c, sel) std::swap(c, C((x + dx + xs) % xs, (y + dy + ys) % ys));
     }
 
-    void Add(Cell *c) {
-        if (horiz)
-            InsertCells(xs, -1, 1, 0, c);
-        else
-            InsertCells(-1, ys, 0, 1, c);
+    void Add(unique_ptr<Cell> c) {
         c->parent = cell;
+        if (horiz)
+            InsertCells(xs, -1, 1, 0, std::move(c));
+        else
+            InsertCells(-1, ys, 0, 1, std::move(c));
     }
 
     void MergeWithParent(Grid *p, Selection &sel, Document *doc) {
@@ -987,7 +986,7 @@ struct Grid {
             return;
         }
         if (!selcell) selcell = f.get();
-        Add(f.release());
+        Add(std::move(f));
     }
 
     void MergeTagAll(Cell *into) {
@@ -1041,7 +1040,7 @@ struct Grid {
 
     void MergeRow(Grid *tm) {
         ASSERT(xs == tm->xs && tm->ys == 1);
-        InsertCells(-1, ys, 0, 1, nullptr);
+        InsertCells(-1, ys, 0, 1);
         loop(x, xs) {
             std::swap(C(x, ys - 1), tm->C(x, 0));
             C(x, ys - 1)->parent = cell;
