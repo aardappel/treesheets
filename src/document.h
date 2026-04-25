@@ -240,20 +240,20 @@ struct Document {
                 y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
     }
 
-    void ScrollIfSelectionOutOfView(Selection &sel) {
+    void ScrollIfSelectionOutOfView(const Selection &sel, int sx, int sy, int mx, int my) {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
             int canvasw, canvash;
             canvas->GetClientSize(&canvasw, &canvash);
             if ((layoutys > canvash || layoutxs > canvasw) && sel.grid) {
                 wxRect r = sel.grid->GetRect(this, sel);
-                if (r.y < scrolly || r.y + r.height > maxy || r.x < scrollx || r.x + r.width > maxx) {
-                    canvas->Scroll(r.width > canvasw || r.x < scrollx ? r.x
-                                   : r.x + r.width > maxx             ? r.x + r.width - canvasw
-                                                                      : scrollx,
-                                   r.height > canvash || r.y < scrolly ? r.y
-                                   : r.y + r.height > maxy             ? r.y + r.height - canvash
-                                                                       : scrolly);
+                if (r.y < sy || r.y + r.height > my || r.x < sx || r.x + r.width > mx) {
+                    canvas->Scroll(r.width > canvasw || r.x < sx ? r.x
+                                   : r.x + r.width > mx             ? r.x + r.width - canvasw
+                                                                      : sx,
+                                   r.height > canvash || r.y < sy ? r.y
+                                   : r.y + r.height > my             ? r.y + r.height - canvash
+                                                                       : sy);
                 }
             }
         }
@@ -590,17 +590,13 @@ struct Document {
         Render(dc);
         DrawSelect(dc, selected);
         if (paintscrolltoselection) {
-            #ifdef __WXGTK__
-                ScrollIfSelectionOutOfView(selected);
-            #else
-                canvas->CallAfter([this](){
-                    ScrollIfSelectionOutOfView(selected);
+            paintscrolltoselection = false;
+                canvas->CallAfter([this, sel = selected, sx = scrollx, sy = scrolly, mx = maxx, my = maxy](){
+                    ScrollIfSelectionOutOfView(sel, sx, sy, mx, my);
                     #ifdef __WXMAC__
                         canvas->Refresh();
                     #endif
                 });
-            #endif
-            paintscrolltoselection = false;
         }
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
