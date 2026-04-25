@@ -105,9 +105,9 @@ struct System {
         colormask = (followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
     }
 
-    Document *NewTabDoc(bool append = false) {
+    Document *NewTabDoc(bool append = false, int insert_at = -1) {
         auto doc = make_unique<Document>();
-        auto canvas = frame->NewTab(std::move(doc), append);
+        auto canvas = frame->NewTab(std::move(doc), append, insert_at);
         return canvas->doc.get();
     }
 
@@ -180,7 +180,7 @@ struct System {
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    wxString LoadDB(const wxString &filename, bool fromreload = false) {
+    wxString LoadDB(const wxString &filename, bool fromreload = false, int insert_at = -1) {
         auto fn = filename;
         auto loadedfromtmp = false;
 
@@ -287,7 +287,7 @@ struct System {
                         unique_ptr<Cell> root(Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics));
                         if (!root) return _("File corrupted!");
 
-                        doc = NewTabDoc(true);
+                        doc = NewTabDoc(true, insert_at);
                         if (loadedfromtmp) {
                             doc->undolistsizeatfullsave =
                                 -1;  // if not, user will lose tmp without warning when he closes

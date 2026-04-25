@@ -1444,14 +1444,11 @@ struct TSFrame : wxFrame {
                     watcherwaitingforuser = false;
                     if (res != wxYES) return;
                 }
-                auto message = sys->LoadDB(doc->filename, true);
+                auto message = sys->LoadDB(doc->filename, true, i);
                 if (!message.IsEmpty()) {
                     SetStatus(message);
                 } else {
-                    loop(j,
-                         notebook->GetPageCount()) if (static_cast<TSCanvas *>(notebook->GetPage(j))
-                                                           ->doc.get() == doc)
-                        notebook->DeletePage(j);
+                    notebook->DeletePage(i + 1);
                     ::wxRemoveFile(sys->TmpName(modfile));
                     SetStatus(
                         _("File has been re-loaded because of modifications of another program / computer"));
@@ -1537,12 +1534,14 @@ struct TSFrame : wxFrame {
         menustrings[item] = key;
     }
 
-    TSCanvas *NewTab(unique_ptr<Document> doc, bool append = false) {
+    TSCanvas *NewTab(unique_ptr<Document> doc, bool append = false, int insert_at = -1) {
         TSCanvas *canvas = new TSCanvas(this, notebook);
         doc->canvas = canvas;
         canvas->doc = std::move(doc);
         canvas->SetScrollRate(1, 1);
-        if (append)
+        if (insert_at >= 0)
+            notebook->InsertPage(insert_at, canvas, _("<unnamed>"), true, wxNullBitmap);
+        else if (append)
             notebook->AddPage(canvas, _("<unnamed>"), true, wxNullBitmap);
         else
             notebook->InsertPage(0, canvas, _("<unnamed>"), true, wxNullBitmap);
