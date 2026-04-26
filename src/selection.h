@@ -13,7 +13,7 @@ class Selection {
     int firstdy {0};
 
     Selection(shared_ptr<Grid> _grid = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
-        : grid(_grid), x(_x), y(_y), xs(_xs), ys(_ys) {}
+        : grid(std::move(_grid)), x(_x), y(_y), xs(_xs), ys(_ys) {}
 
     void SelAll() {
         if (textedit) {
