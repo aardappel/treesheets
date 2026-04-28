@@ -188,13 +188,93 @@ struct Document {
             dos.WriteString(wxEmptyString);
         }
 
+        wxString backupfilename;
+        wxString stagedbackupfilename;
+        wxString oldbackupfilename;
+        wxString backup_warning;
+        bool staged_backup = false;
+        auto append_backup_warning = [&](const wxString &warning) {
+            if (!backup_warning.IsEmpty()) backup_warning += "\n";
+            backup_warning += warning;
+        };
+
         if (!istempfile && sys->makebaks && ::wxFileExists(filename)) {
-            ::wxRemoveFile(sys->BakName(filename));
-            ::wxRenameFile(filename, sys->BakName(filename));
+            backupfilename = sys->BakName(filename);
+            stagedbackupfilename = sys->ExtName(filename, ".bak.staged");
+            oldbackupfilename = sys->ExtName(filename, ".bak.old");
+
+            if (::wxFileExists(stagedbackupfilename) && !::wxRemoveFile(stagedbackupfilename)) {
+                ::wxRemoveFile(savefilename);
+                return _("Error replacing temporary backup file.");
+            }
+
+            if (!::wxRenameFile(filename, stagedbackupfilename, false)) {
+                ::wxRemoveFile(savefilename);
+                return _("Error creating backup file.");
+            }
+
+            staged_backup = true;
         }
 
-        if (!::wxRenameFile(savefilename, targetfilename, true)) {
-            return _("Error renaming temporary file.");
+        if (!::wxRenameFile(savefilename, targetfilename, !staged_backup)) {
+            wxString message = _("Error renaming temporary file.");
+            if (::wxFileExists(savefilename)) ::wxRemoveFile(savefilename);
+            if (staged_backup && !::wxRenameFile(stagedbackupfilename, filename, true)) {
+                message += "\n";
+                message += _("Error restoring original file from backup.");
+            }
+            return message;
+        }
+
+        if (staged_backup) {
+            bool old_backup_rotated = false;
+            bool backup_finalized = false;
+            if (::wxFileExists(backupfilename)) {
+                if (::wxFileExists(oldbackupfilename) && !::wxRemoveFile(oldbackupfilename)) {
+                    append_backup_warning(
+                        _("Saved file, but could not remove the old backup file before rotation."));
+                }
+
+                if (!::wxRenameFile(backupfilename, oldbackupfilename, false)) {
+                    append_backup_warning(
+                        _("Saved file, but could not rotate the previous backup file."));
+                } else {
+                    old_backup_rotated = true;
+                }
+            }
+
+            if (::wxRenameFile(stagedbackupfilename, backupfilename, false)) {
+                backup_finalized = true;
+            } else if (::wxFileExists(backupfilename) &&
+                       ::wxRenameFile(stagedbackupfilename, backupfilename, true)) {
+                // If rotation of an existing .bak could not complete, still prefer the
+                // freshly staged backup as the primary .bak instead of discarding it.
+                backup_finalized = true;
+            } else {
+                append_backup_warning(_("Saved file, but could not finalize the backup file."));
+                if (old_backup_rotated) {
+                    ::wxRenameFile(oldbackupfilename, backupfilename, true);
+                }
+            }
+
+            if (backup_finalized) {
+                if (::wxFileExists(oldbackupfilename) && !::wxRemoveFile(oldbackupfilename)) {
+                    append_backup_warning(_("Saved file, but could not remove the old backup file."));
+                }
+            } else if (::wxFileExists(oldbackupfilename) && !::wxFileExists(backupfilename) &&
+                       !::wxRenameFile(oldbackupfilename, backupfilename, true)) {
+                append_backup_warning(
+                    _("Saved file, but could not restore the previous backup file."));
+            }
+
+            if (!backup_finalized && ::wxFileExists(stagedbackupfilename)) {
+                // Preserve the staged backup as a last-resort copy. Removing it here would
+                // discard the most recent previous version after a successful save.
+            } else if (::wxFileExists(stagedbackupfilename) &&
+                       !::wxRemoveFile(stagedbackupfilename)) {
+                append_backup_warning(
+                    _("Saved file, but could not remove the staged backup file."));
+            }
         }
 
         lastmodsinceautosave = 0;
@@ -217,8 +297,13 @@ struct Document {
         }
         UpdateFileName(page);
         if (success) *success = true;
-        return wxString::Format(_("Saved %s successfully (in %lld milliseconds)."), filename,
-                                end_saving_time - start_saving_time);
+        wxString message = wxString::Format(_("Saved %s successfully (in %lld milliseconds)."),
+                                            filename, end_saving_time - start_saving_time);
+        if (!backup_warning.IsEmpty()) {
+            message += "\n";
+            message += backup_warning;
+        }
+        return message;
     }
 
     void DrawSelect(wxDC &dc, Selection &s) {
@@ -2284,11 +2369,12 @@ struct Document {
         Cell *c = WalkPath(ui->path);
 
         if (c->parent && c->parent->grid) {
-            Grid *g = c->parent->grid.get();
+            Cell *old_parent = c->parent;
+            Grid *g = old_parent->grid.get();
             Selection s = g->FindCell(c);
             std::swap(ui->clone, g->C(s.x, s.y));
             c = g->C(s.x, s.y).get();
-            c->parent = ui->clone->parent;
+            c->parent = old_parent;
         } else {
             std::swap(ui->clone, root);
             c = root.get();
