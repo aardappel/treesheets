@@ -124,14 +124,20 @@ struct System {
         wxString focusfile = cfg->Read("lastopenfile", "");
         int selection = -1;
         loop(i, numfiles) {
-            wxString filename;
-            cfg->Read(wxString::Format("lastopenfile_%d", i), &filename);
-            if (!LoadDB(filename) && filename == focusfile) selection = i;
+            wxString remembered;
+            cfg->Read(wxString::Format("lastopenfile_%d", i), &remembered);
+            if (remembered.IsEmpty()) continue;
+
+            auto message = LoadDB(remembered);
+            if (message.IsEmpty() && remembered == focusfile) {
+                selection = frame->notebook->GetSelection();
+            }
         }
 
         if (!filename.IsEmpty()) {
             LoadDB(filename);
-        } else if (selection >= 0) {
+        } else if (selection >= 0 &&
+                   selection < static_cast<int>(frame->notebook->GetPageCount())) {
             frame->notebook->SetSelection(selection);
         }
 
@@ -147,15 +153,17 @@ struct System {
         auto trans = wxTranslations::Get();
         auto language = trans ? trans->GetBestTranslation("ts") : wxString("");
 
-        if (language.Len() == 5 &&
-            !LoadDB(frame->app->GetDocPath("examples/tutorial-" + language + ".cts"))[0]) {
-            return;
+        if (language.Len() == 5) {
+            auto localized = frame->app->GetDocPath("examples/tutorial-" + language + ".cts");
+            auto message = LoadDB(localized);
+            if (message.IsEmpty()) return;
         }
 
         language.Truncate(2);
-        if (language.Len() == 2 &&
-            !LoadDB(frame->app->GetDocPath("examples/tutorial-" + language + ".cts"))[0]) {
-            return;
+        if (language.Len() == 2) {
+            auto localized = frame->app->GetDocPath("examples/tutorial-" + language + ".cts");
+            auto message = LoadDB(localized);
+            if (message.IsEmpty()) return;
         }
 
         LoadDB(frame->app->GetDocPath("examples/tutorial.cts"));
