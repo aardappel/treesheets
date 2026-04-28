@@ -122,23 +122,20 @@ struct System {
 
         auto numfiles = static_cast<int>(cfg->Read("numopenfiles", static_cast<long>(0)));
         wxString focusfile = cfg->Read("lastopenfile", "");
-        int selection = -1;
         loop(i, numfiles) {
             wxString remembered;
             cfg->Read(wxString::Format("lastopenfile_%d", i), &remembered);
             if (remembered.IsEmpty()) continue;
 
-            auto message = LoadDB(remembered);
-            if (message.IsEmpty() && remembered == focusfile) {
-                selection = frame->notebook->GetSelection();
-            }
+            LoadDB(remembered);
         }
 
         if (!filename.IsEmpty()) {
             LoadDB(filename);
-        } else if (selection >= 0 &&
-                   selection < static_cast<int>(frame->notebook->GetPageCount())) {
-            frame->notebook->SetSelection(selection);
+        } else if (!focusfile.IsEmpty()) {
+            // Re-select by filename after all tabs are loaded because insertion at index 0 shifts
+            // page indices for previously loaded tabs.
+            frame->GetTabByFileName(focusfile);
         }
 
         if (!frame->notebook->GetPageCount()) LoadTutorial();
