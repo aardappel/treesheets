@@ -646,20 +646,17 @@ struct Grid {
 
     void MergeWithParent(shared_ptr<Grid> p, Selection &sel, Document *doc) {
         shared_ptr<Grid> keepalive = cell->grid;
+        int target_xs = sel.x + xs;
+        int target_ys = sel.y + ys;
+        while (p->xs < target_xs) p->InsertCells(p->xs, -1, 1, 0);
+        while (p->ys < target_ys) p->InsertCells(-1, p->ys, 0, 1);
         foreachcell(c) {
-            if (x + sel.x >= p->xs) p->InsertCells(p->xs, -1, 1, 0);
-            if (y + sel.y >= p->ys) p->InsertCells(-1, p->ys, 0, 1);
-            Cell *pc = p->C(x + sel.x, y + sel.y).get();
-            if (pc->HasContent()) {
-                if (x) p->InsertCells(sel.x + x, -1, 1, 0);
-                pc = p->C(x + sel.x, y + sel.y).get();
-                if (pc->HasContent()) {
-                    if (y) p->InsertCells(-1, sel.y + y, 0, 1);
-                    pc = p->C(x + sel.x, y + sel.y).get();
-                }
+            int tx = x + sel.x;
+            int ty = y + sel.y;
+            p->C(tx, ty) = std::move(c);
+            if (p->C(tx, ty)) {
+                p->C(tx, ty)->parent = p->cell;
             }
-            p->C(x + sel.x, y + sel.y) = std::move(c);
-            p->C(x + sel.x, y + sel.y)->parent = p->cell;
         }
         sel.grid = p;
         sel.xs += xs - 1;
