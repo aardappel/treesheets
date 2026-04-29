@@ -490,32 +490,28 @@ struct Grid {
 
     void InsertCells(int dx, int dy, int nxs, int nys, unique_ptr<Cell> nc = nullptr) {
         vector<unique_ptr<Cell>> ocells = std::move(cells);
-        cells.clear();
-        cells.resize((xs + nxs) * (ys + nys));
-
         int oxs = xs;
         int oys = ys;
         xs += nxs;
         ys += nys;
+        cells.resize(xs * ys);
         SetOrient();
         int opos = 0;
         foreachcell(c) {
-            if (x != dx && y != dy) { c = std::move(ocells[opos++]); }
-        }
-        foreachcell(c) {
-            if (x == dx || y == dy) {
+            if ((nxs > 0 && x == dx) || (nys > 0 && y == dy)) {
                 if (nc) {
                     c = std::move(nc);
                 } else {
                     int sx = nxs ? max(0, min(dx - 1, xs - 1)) : x;
-                    int sy = nxs ? y : max(0, min(dy - 1, ys - 1));
+                    int sy = nys ? max(0, min(dy - 1, ys - 1)) : y;
                     Cell *colcell = C(sx, sy).get();
                     c = make_unique<Cell>(cell, colcell);
                     if (colcell) c->text.relsize = colcell->text.relsize;
                 }
+            } else {
+                c = std::move(ocells[opos++]);
             }
         }
-
         if (dx >= 0) colwidths.insert(colwidths.begin() + dx, cell->ColWidth());
     }
 
