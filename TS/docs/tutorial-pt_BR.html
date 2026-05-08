@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Tutorial do TreeSheets</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+<!--
+.style2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+}
+.style6 {font-family: "Courier New", Courier, mono; font-size: medium; font-weight: bold; }
+.style8 {font-family: "Courier New", Courier, mono; font-size: x-large; font-weight: bold; }
+.style11 {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: large; }
+body {
+	background-color: #666666;
+}
+.style13 {font-size: xx-large}
+div#rounded{
+	background: #FFF;
+	width: 580px;
+	margin-left: auto;
+	margin-right: auto;
+}
+div#roundedcontent{
+	padding: 20px;
+}
+b.rtop, b.rbottom{display:block;background: #666}
+b.rtop b, b.rbottom b{display:block;height: 1px; overflow: hidden; background: #FFF}
+b.r1{margin: 0 5px}
+b.r2{margin: 0 3px}
+b.r3{margin: 0 2px}
+b.rtop b.r4, b.rbottom b.r4{margin: 0 1px;height: 2px}
+.style14 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+	font-style: italic;
+	color: #F00;
+}
+-->
+</style>
+</head>
+
+<body>
+
+
+<div id="rounded"><b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b><div id="roundedcontent">
+
+
+<p align="center" class="style11 style13"><img src="images/treesheets_logo.png" width="507" height="156"></p>
+<p align="center" class="style11 style13">Tutorial &amp; Descrição de recursos</p>
+
+<p class="style2">Há três formas de aprender como  o TreeSheets funciona:</p>
+
+<p align="center" class="style11">1. Tutorial embutido no aplicativo:</p>
+<p class="style2">Experimente a funcionalidade enquanto lê sobre ela, no documento de tutorial que é carregado quando você inicia o programa pela primeira vez (ou pressiona F1).</p>
+
+<p align="center" class="style11">2. Assista a este vídeo:</p>
+<p class="style2">William Ranvaud gentilmente fez um vídeo de tutorial:</p>
+
+<p align="center" class="style2">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/UB-saQZfrsw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</p>
+
+<p align="center" class="style11">3. Ou, leia sobre ele nesta página:</p>
+
+<p class="style14">[<strong>Nota</strong>: O texto e as imagens abaixo estão um pouco desatualizados, mas ainda assim devem lhe dar a ideia geral.]</p>
+<p class="style2">Comece criando um novo arquivo (menu <span class="style6">Arquivo/Novo</span>, ou <span class="style6">CTRL+N</span>). Não se preocupe com as dimensões da grade, é muito fácil criar e excluir linhas e colunas.</p>
+<p class="style2"><img src="images/documentation/new.png" width="59" height="68"></p>
+      <p class="style2">Para inserir texto, simplesmente <span class="style6">CliqueComOBotãoEsquerdo</span> em uma célula para selecioná-la, e comece a digitar:</p>
+      <p class="style2"><img src="images/documentation/edit.png" width="81" height="70"></p>
+      <p class="style2">Quando começar a digitar em uma célula selecionada, uma borda fina vai indicar que você está em modo de edição de texto (parecido com planilhas eletrônicas).</p>
+      <p class="style2">Clique em uma linha de grade entre duas células vizinhas. Vai aparecer uma borda grossa:</p>
+    <p class="style2"><img src="images/documentation/gridline.png" width="88" height="74"></p>
+      <p class="style2">Agora, para inserir uma linha ou coluna naquele local, comece a digitar. Entre as células vizinhas onde você clicou, o TreeSheets vai criar uma nova linha ou coluna:</p>
+      <p class="style2"><img src="images/documentation/insert.png" width="87" height="94"></p>
+      <p class="style2">Assim como criamos, também podemos excluir linhas ou colunas clicando em uma linha de grade...</p>
+      <p class="style2"><img src="images/documentation/gridline2.png" width="86" height="95"></p>
+      <p class="style2">... e então pressionando <span class="style6">BACKSPACE</span> (exclui a linha acima, ou a coluna à esquerda) ou <span class="style6">DELETE</span> (exclui a linha abaixo, ou a coluna à direita):</p>
+      <p class="style2"><img src="images/documentation/deleted.png" width="71" height="96"></p>
+      <p class="style2">Intuitivamente funciona como um editor de texto, experimente. Não se preocupe com exclusões acidentais, você pode desfazer quantas ações quiser (<span class="style6">Editar/Desfazer</span> ou <span class="style6">CTRL+Z</span>).</p>
+      <p class="style2">Salvar (<span class="style6">Arquivo/Salvar</span> ou <span class="style6">CTRL+S</span>, <span class="style6">Arquivo/Salvar Como</span>) e Abrir (<span class="style6">Arquivo/Abrir</span> ou <span class="style6">CTRL+O</span>) funcionam como se espera de qualquer aplicativo de produtividade. Ao iniciar, o TreeSheets carrega automaticamente o último arquivo <span class="style6">.cts</span> salvo. Use <span class="style6">Arquivo/Exportar visualização como</span> se você precisar usar seus dados fora do TreeSheets.</p>
+      <p class="style2">Isso foi o básico sobre editar uma grade simples, mas a diversão de verdade só começa quando você organiza seus dados com grades dentro de outras grades. Simplesmente selecione uma célula, e use <span class="style6">Editar/Inserir Nova Grade</span> ou tecle <span class="style6">INSERT</span>:</p>
+      <p class="style2"><img src="images/documentation/pregrid.png" width="70" height="92" align="middle"> <span class="style8">-&gt;</span> <img src="images/documentation/postgrid.png" width="72" height="120" align="middle"></p>
+      <p class="style2">A célula que você selecionou agora tem uma subgrade 1x1. Edite essa célula, e crie algumas células adicionais nessa nova grade para pegar o jeito de como ela funciona em relação à célula "mãe":</p>
+      <p class="style2"><img src="images/documentation/grid.png" width="129" height="134"></p>
+      <p class="style2">Você pode selecionar múltiplas células simplesmente usando <span class="style6">CliqueEArrasteComOBotãoEsquerdo</span>, como se faz nas planilhas. Isso funciona inclusive entre níveis hierárquicos de grades, onde cruzar um limite seleciona automaticamente a grade "filha" inteira:</p>
+      <p class="style2"><img src="images/documentation/gridsel1.png" width="124" height="129" align="middle"> ou <img src="images/documentation/gridsel2.png" width="127" height="134" align="middle"></p>
+      <p class="style2">Algumas operações só funcionam em uma única célula (tal como inserir novos dados acima), mas muitas também funcionam em seleções maiores. Por exemplo, você pode usar <span class="style6">DELETE</span> para limpar/excluir qualquer subseleção de uma grade, e <span class="style6">CTRL+ESQUERDA|DIREITA|CIMA|BAIXO</span> para mover uma seleção dentro de uma grade:</p>
+    <p class="style2"><img src="images/documentation/gridsel1.png" width="124" height="129" align="middle"> <span class="style8">-&gt;</span> <img src="images/documentation/gridsel3.png" width="125" height="131" align="middle"></p>
+      <p class="style2">Repare que com toda operação de edição, o redimensionamento ao conteúdo é automático. O TreeSheets torna muito fácil organizar os dados, e assim você tem sempre o layout mais compacto com o uso ideal do espaço. Você pode influenciar quanto espaço qualquer coisa ocupa usando <span class="style6">SHIFT+RodaDoMouse</span> com qualquer número de células selecionadas:</p>
+      <p class="style2"><img src="images/documentation/textsize.png" width="109" height="126"></p>
+      <p class="style2">Isso muda o <em>tamanho relativo</em> de uma célula. O tamanho é relativo à profundidade de aninhamento (como você viu, uma grade aninhada já tinha uma fonte menor). Usar tamanho relativo é uma ótima ferramenta para fazer certas coisas importantes (como cabeçalhos) se destacarem e deixar dados menos importantes ainda legíveis, mas bem pequenos e assim ocupando menos espaço. O TreeSheets foi projetado com a filosofia que para conjuntos de dados enormes e complexos você ainda deve poder encolher dados (para até um único pixel por caractere!) em vez de usar quantidades excessivas de espaço que lhe exigiriam muita rolagem de tela. Mas depois que você diminui algo a ponto de deixar ilegível, como fazer para deixar legível/editável de novo? É aqui que entra o recurso de zoom do TreeSheets. Simplesmente faça qualquer seleção, em qualquer nível de aninhamento, e então use <span class="style6">CTRL+RodaDoMouse</span> (para a frente):</p>
+      <p class="style2"><img src="images/documentation/zoomed.png" width="110" height="71"></p>
+      <p class="style2">Cada avanço da roda do mouse aumenta um nível de zoom, então mesmo grades muito profundamente aninhadas podem ser alcançadas instantaneamente com um rápido movimento do mouse. E já que tamanhos de texto são relativos, a raiz do que estiver sendo mostrado no momento sempre terá a fonte com o tamanho padrão, tornando-o legível e editável. Esse sistema permite que você crie documentos contendo enormes quantidades de dados onde somente a estrutura geral é visível no nível raiz, mas ainda assim tudo pode ser alcançado rapidamente.</p>
+      <p class="style2">Reduzir o zoom para voltar à raiz é ainda mais fácil já que nem precisa que algo esteja selecionado: simplesmente use <span class="style6">CTRL+RodaDoMouse</span> (para trás).</p>
+      <p class="style2">(Qualquer uso da roda do mouse pode ser substituído por <span class="style6">PageUp</span>/<span class="style6">PageDown</span>, que pode ser mais conveniente em laptops). </p>
+      <p class="style2">O TreeSheets vai mostrar barras de rolagem quando os dados atuais não couberem na tela, mas lhe encoraja a descobrir o quanto é mais fácil trabalhar sem barras de rolagem, encolhendo itens até que eles caibam. Você pode encolher dados menos importantes até ficarem do tamanho de um pixel (!), que aí só serão legíveis aumentando o zoom. </p>
+      <p class="style2">Outra ferramenta para mudar o layout do seu documento é a largura da coluna. O TreeSheets trata cada célula como uma única linha de texto em termos de edição, mas você pode quebrar essa linha de edição em tantas linhas de exibição quanto quiser. Isso é útil para impedir que linhas longas estiquem o layout dos seus dados. Simplesmente use <span class="style6">ALT+RodaDoMouse</span> para aumentar ou diminuir a largura da coluna:</p>
+      <p class="style2">originalmente: <img src="images/documentation/long1.png" width="423" height="129" align="middle"></p>
+      <p class="style2">menor: <img src="images/documentation/long2.png" width="275" height="130" align="middle"></p>
+      <p class="style2">muito pequena: <img src="images/documentation/long3.png" width="174" height="165" align="middle"></p>
+      <p class="style2">Recortar (<span class="style6">Editar/Recortar</span> ou <span class="style6">CTRL+X</span>), Copiar (<span class="style6">Editar/Copiar</span> ou <span class="style6">CTRL+C</span>) e Colar (<span class="style6">Editar/Colar</span> ou <span class="style6">CTRL+V</span>) funcionam como o esperado, mas ao Colar o destino deve ser uma única célula. Você pode Copiar para outros aplicativos também, com qualquer seleção sendo convertida em linhas de texto e a indentação indicando níveis de hierarquia. Também pode Colar de outros aplicativos, e se algum texto usar indentação para indicar a hierarquia, ao colar no TreeSheets essa estrutura será reproduzida.</p>
+    <p class="style2">Outras funcionalidades interessantes para experimentar:</p>
+      <ul>
+        <li><p class="style2">Use as <span class="style6">teclas de seta</span> para mover sua seleção</p></li>
+        <li><p class="style2">Importe de XML, ou cole em uma célula um texto ASCII que tenha indentação para criar uma estrutura em árvore de acordo com a indentação</p></li>
+        <li><p class="style2">Configure sua fonte favorita para visualizar seus documentos com (<span class="style6">Opções/Fonte...</span>)</p></li>
+        <li>
+          <p class="style2">Você pode adicionar imagens a qualquer célula (<span class="style6">Editar/Imagens</span>). A imagem será convenientemente armazenada como parte do arquivo. Depois que tiver carregado uma imagem em uma célula pela primeira vez, você pode copiá-la e colá-la em quantas células do documento quiser. Imagens sempre são exibidas à esquerda de qualquer texto que também for parte da célula (e acima de qualquer subgrade); se você quiser uma orientação diferente, simplesmente ponha o texto e as imagens em células separadas.</p></li>
+        <li class="style2">O TreeSheets tem muitas opções de estilo e layout (confira a página de prints de tela para ver alguns exemplos)</li>
+      </ul>      
+    
+    
+</div><b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b></div>
+
+</body>
+</html>
