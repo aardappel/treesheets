@@ -19,7 +19,7 @@ project(TreeSheets
 ### Settings
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(ENABLE_LOBSTER "Enable Lobster scripting" ON)
 option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
 if(ENABLE_IPO)
