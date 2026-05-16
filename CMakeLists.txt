@@ -227,8 +227,8 @@ install(FILES ${treesheets_readme_files} DESTINATION ${TREESHEETS_DOCDIR})
 install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
 
 install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
-install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
 if(ENABLE_LOBSTER)
+    install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
     set(lobster_modules
         ${lobster_SOURCE_DIR}/modules/std.lobster
         ${lobster_SOURCE_DIR}/modules/stdtype.lobster
