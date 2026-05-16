@@ -112,6 +112,7 @@ if(ENABLE_LOBSTER)
         ${lobster_SOURCE_DIR}/dev/include
         ${lobster_SOURCE_DIR}/dev/external
         ${lobster_SOURCE_DIR}/dev/external/libtcc)
+    target_compile_definitions(lobster PRIVATE "LOBSTER_ENGINE=0")
 
     ## lobster-impl (provider of TreeSheets functions in lobster)
 
@@ -129,7 +130,6 @@ target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VE
 
 if(ENABLE_LOBSTER)
     target_compile_definitions(TreeSheets PRIVATE "ENABLE_LOBSTER=1")
-    target_compile_definitions(lobster PRIVATE "LOBSTER_ENGINE=0")
 endif(ENABLE_LOBSTER)
 
 if(ENABLE_CLANG_TIDY)
