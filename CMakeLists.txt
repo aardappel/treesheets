@@ -20,7 +20,7 @@ project(TreeSheets
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-OPTION(ENABLE_LOBSTER "Enable Lobster scripting" ON)
+option(ENABLE_LOBSTER "Enable Lobster scripting" ON)
 option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
 if(ENABLE_IPO)
     include(CheckIPOSupported)
@@ -31,8 +31,8 @@ if(ENABLE_IPO)
         message(WARNING "IPO is not supported: ${output}")
     endif()
 endif()
-OPTION(ENABLE_CLANG_TIDY "Run clang-tidy linter" OFF)
-OPTION(ENABLE_ASAN "Enable AddressSanitizer" OFF)
+option(ENABLE_CLANG_TIDY "Run clang-tidy linter" OFF)
+option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 
 ## Compiler-specific
 
@@ -176,7 +176,7 @@ target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::ne
 ## Platform specific installation paths
 
 if(LINUX OR BSD)
-    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
+    option(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
 endif()
 
 if((LINUX OR BSD) AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
