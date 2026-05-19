@@ -590,11 +590,19 @@ struct Document {
             wxInfoDC dc(canvas);
             Layout(dc);
         }
-        if (scaledviewingmode) {
-            int client_x, client_y;
-            canvas->GetClientSize(&client_x, &client_y);
+        int client_x, client_y;
+        canvas->GetClientSize(&client_x, &client_y);
+        if (layoutxs <= 0 || layoutys <= 0) { return; }
+
+        double xscale = client_x / static_cast<double>(layoutxs);
+        double yscale = client_y / static_cast<double>(layoutys);
+        currentviewscale = std::min(xscale, yscale);
+        currentviewscale = std::max(1.0, std::min(currentviewscale, 5.0));
+
+        if (scaledviewingmode && currentviewscale > 1) {
             canvas->SetVirtualSize(client_x, client_y);
         } else {
+            currentviewscale = 1.0;
             canvas->SetVirtualSize(layoutxs, layoutys);
         }
     }
@@ -605,11 +613,6 @@ struct Document {
         int client_x, client_y;
         canvas->GetClientSize(&client_x, &client_y);
         if (scaledviewingmode && currentviewscale > 1) {
-            double xscale = client_x / static_cast<double>(layoutxs);
-            double yscale = client_y / static_cast<double>(layoutys);
-            currentviewscale = std::min(xscale, yscale);
-            currentviewscale = std::max(1.0, std::min(currentviewscale, 5.0));
-            dc.SetUserScale(currentviewscale, currentviewscale);
             dc.DestroyClippingRegion();
             scrollx = scrolly = 0;
             maxx = client_x / currentviewscale;
@@ -617,7 +620,6 @@ struct Document {
             dc.SetBackground(wxBrush(LightColor(Background())));
             dc.Clear();
         } else {
-            currentviewscale = 1.0;
             dc.SetUserScale(1, 1);
             canvas->PrepareDC(dc);
             dc.DestroyClippingRegion();
