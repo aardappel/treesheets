@@ -135,8 +135,7 @@ struct Selection {
             // thing.
             if (grid) { grid->cell->ResetChildren(); }
             doc->UpdateLayout();
-            doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
-                                            doc->maxy);
+            doc->ScrollIfSelectionOutOfView();
             doc->canvas->Refresh();
         } else {
             if (ctrl && dx != 0)  // implies textedit
@@ -312,8 +311,7 @@ struct Selection {
                 };
             }
             doc->UpdateLayout();
-            doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
-                                            doc->maxy);
+            doc->ScrollIfSelectionOutOfView();
             doc->canvas->Refresh();
         };
     }
@@ -356,8 +354,7 @@ struct Selection {
         }
         EnterEdit(doc, 0, MaxCursor());
         doc->UpdateLayout();
-        doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
-                                        doc->maxy);
+        doc->ScrollIfSelectionOutOfView();
         doc->canvas->Refresh();
     }
 
@@ -411,8 +408,7 @@ struct Selection {
             x = grid->xs - 1;
             y = grid->ys - 1;
         }
-        doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
-                                        doc->maxy);
+        doc->ScrollIfSelectionOutOfView();
         doc->canvas->Refresh();
     }
 };

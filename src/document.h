@@ -118,7 +118,7 @@ struct Document {
         InitCellSelect(initialselected, xsize, ysize);
         ChangeFileName(filename, false);
         UpdateLayout();
-        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+        ScrollIfSelectionOutOfView();
         canvas->Refresh();
     }
 
@@ -255,21 +255,26 @@ struct Document {
         }
     }
 
-    void ScrollIfSelectionOutOfView(const Selection &sel, int sx, int sy, int mx, int my) {
+    void ScrollIfSelectionOutOfView() {
         if (!scaledviewingmode) {
             // required, since sizes of things may have been reset by the last editing operation
-            int canvasw = 0;
-            int canvash = 0;
-            canvas->GetClientSize(&canvasw, &canvash);
-            if ((layoutys > canvash || layoutxs > canvasw) && sel.grid) {
-                wxRect r = sel.grid->GetRect(this, sel);
+            int cw = 0;
+            int ch = 0;
+            canvas->GetClientSize(&cw, &ch);
+            int sx = 0;
+            int sy = 0;
+            canvas->GetViewStart(&sx, &sy);
+            int mx = cw + sx;
+            int my = ch + sy;
+            if ((layoutys > ch || layoutxs > cw) && selected.grid) {
+                wxRect r = selected.grid->GetRect(this, selected);
                 if (r.y < sy || r.y + r.height > my || r.x < sx || r.x + r.width > mx) {
-                    canvas->Scroll(r.width > canvasw || r.x < sx ? r.x
-                                   : r.x + r.width > mx             ? r.x + r.width - canvasw
-                                                                      : sx,
-                                   r.height > canvash || r.y < sy ? r.y
-                                   : r.y + r.height > my             ? r.y + r.height - canvash
-                                                                       : sy);
+                    canvas->Scroll(r.width > cw || r.x < sx ? r.x
+                                   : r.x + r.width > mx     ? r.x + r.width - cw
+                                                            : sx,
+                                   r.height > ch || r.y < sy ? r.y
+                                   : r.y + r.height > my     ? r.y + r.height - ch
+                                                             : sy);
                 }
             }
         }
@@ -293,7 +298,7 @@ struct Document {
             if (cg == drawroot) {
                 if (zoomiftiny) { ZoomTiny(); }
                 UpdateLayout();
-                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+                ScrollIfSelectionOutOfView();
                 canvas->Refresh();
                 return;
             }
@@ -474,7 +479,7 @@ struct Document {
         drawroot->ResetLayout();
         drawroot->ResetChildren();
         UpdateLayout();
-        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+        ScrollIfSelectionOutOfView();
         canvas->Refresh();
     }
 
@@ -495,7 +500,7 @@ struct Document {
                 selected.grid->cell->ResetLayout();
                 selected.grid->cell->ResetChildren();
                 UpdateLayout();
-                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+                ScrollIfSelectionOutOfView();
                 canvas->Refresh();
                 sys->frame->UpdateStatus(selected, false);
                 return dir > 0 ? _("Column width increased.") : _("Column width decreased.");
@@ -509,7 +514,7 @@ struct Document {
             selected.grid->ResetChildren();
             selected.grid->RelSize(-dir, selected, pathscalebias);
             UpdateLayout();
-            ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+            ScrollIfSelectionOutOfView();
             canvas->Refresh();
             return dir > 0 ? _("Text size increased.") : _("Text size decreased.");
         } else if (ctrl) {
@@ -928,7 +933,7 @@ struct Document {
                                // keystroke undos within same cell
             c->text.Key(this, uk, selected);
             UpdateLayout();
-            ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+            ScrollIfSelectionOutOfView();
             canvas->Refresh();
             canvas->Update();
             return wxEmptyString;
@@ -1620,7 +1625,7 @@ struct Document {
                 cell->AddGrid(size, size);
                 SetSelect(Selection(cell->grid, 0, 0, 1, 1));
                 UpdateLayout();
-                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+                ScrollIfSelectionOutOfView();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -1707,7 +1712,7 @@ struct Document {
                         action == A_ENTERCELL_JUMPTOEND ? static_cast<int>(cell->text.t.Len()) : 0,
                         static_cast<int>(cell->text.t.Len()));
                     UpdateLayout();
-                    ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+                    ScrollIfSelectionOutOfView();
                     canvas->Refresh();
                 }
                 return wxEmptyString;
@@ -2182,7 +2187,7 @@ struct Document {
                     case A_HOME: cell->text.HomeEnd(selected, true); break;
                     case A_END: cell->text.HomeEnd(selected, false); break;
                 }
-                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+                ScrollIfSelectionOutOfView();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -2549,7 +2554,7 @@ struct Document {
         loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
         root->ResetChildren();
         UpdateLayout();
-        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+        ScrollIfSelectionOutOfView();
         canvas->Refresh();
     }
 
@@ -2561,7 +2566,7 @@ struct Document {
         }
         root->ResetChildren();
         UpdateLayout();
-        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+        ScrollIfSelectionOutOfView();
         canvas->Refresh();
     }
 
@@ -2577,7 +2582,7 @@ struct Document {
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         root->ResetChildren();
         UpdateLayout();
-        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+        ScrollIfSelectionOutOfView();
         canvas->Refresh();
     }
 
