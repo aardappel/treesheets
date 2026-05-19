@@ -182,14 +182,10 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnScroll(wxScrollEvent &se) {
-        doc->UpdateLayout();
-        Refresh();
         se.Skip();  // Use default scrolling behavior.
     }
 
     void OnScrollWin(wxScrollWinEvent &se) {
-        doc->UpdateLayout();
-        Refresh();
         se.Skip();  // Use default scrolling behavior.
     }
 
