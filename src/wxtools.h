@@ -31,6 +31,7 @@ struct DropTarget : wxDropTarget {
         canvas->doc->UpdateHover(dc, x, y);
         canvas->doc->SelectClick();
         canvas->doc->Drop();
+        canvas->doc->UpdateLayout();
         canvas->Refresh();
         return wxDragCopy;
     }

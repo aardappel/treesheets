@@ -134,7 +134,9 @@ struct Selection {
             // FIXME: this is null in the case of a whole column selection, and doesn't do the right
             // thing.
             if (grid) { grid->cell->ResetChildren(); }
-            doc->paintscrolltoselection = true;
+            doc->UpdateLayout();
+            doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
+                                            doc->maxy);
             doc->canvas->Refresh();
         } else {
             if (ctrl && dx != 0)  // implies textedit
@@ -309,7 +311,9 @@ struct Selection {
                     }
                 };
             }
-            doc->paintscrolltoselection = true;
+            doc->UpdateLayout();
+            doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
+                                            doc->maxy);
             doc->canvas->Refresh();
         };
     }
@@ -351,7 +355,9 @@ struct Selection {
             }
         }
         EnterEdit(doc, 0, MaxCursor());
-        doc->paintscrolltoselection = true;
+        doc->UpdateLayout();
+        doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
+                                        doc->maxy);
         doc->canvas->Refresh();
     }
 
@@ -375,6 +381,7 @@ struct Selection {
         np->parent = grid->cell;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
+        doc->UpdateLayout();
         doc->canvas->Refresh();
         return wxEmptyString;
     }
@@ -404,8 +411,8 @@ struct Selection {
             x = grid->xs - 1;
             y = grid->ys - 1;
         }
-        doc->paintscrolltoselection = true;
-        doc->skiplayout = true;
+        doc->ScrollIfSelectionOutOfView(doc->selected, doc->scrollx, doc->scrolly, doc->maxx,
+                                        doc->maxy);
         doc->canvas->Refresh();
     }
 };

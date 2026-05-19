@@ -1294,7 +1294,6 @@ struct TSFrame : wxFrame {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
         }
-        canvas->doc->skiplayout = true;
         canvas->Refresh();
     }
 

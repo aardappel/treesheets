@@ -476,6 +476,7 @@ struct System {
             doc->UpdateFileName();
             doc->selected = Selection();
             doc->begindrag = Selection();
+            doc->UpdateLayout();
             doc->canvas->Refresh();
         }
         return wxEmptyString;

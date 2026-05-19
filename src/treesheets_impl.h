@@ -44,6 +44,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         auto errormessage = RunLobster(filename, {}, dump_builtins);
 
         document->root->ResetChildren();
+        document->UpdateLayout();
         document->canvas->Refresh();
 
         document = nullptr;

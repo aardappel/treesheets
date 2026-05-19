@@ -37,7 +37,6 @@ struct Document {
     long lastmodsinceautosave {0};
     long undolistsizeatfullsave {0};
     long lastsave {wxGetLocalTime()};
-    bool skiplayout {false};
     bool modified {false};
     bool tmpsavesuccess {true};
     wxDataObjectComposite *dndobjc {new wxDataObjectComposite()};
@@ -75,7 +74,6 @@ struct Document {
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
     bool scaledviewingmode {false};
-    bool paintscrolltoselection {true};
     double currentviewscale {1.0};
     bool searchfilter {false};
     int editfilter {0};
@@ -119,6 +117,9 @@ struct Document {
         this->root = std::move(root);
         InitCellSelect(initialselected, xsize, ysize);
         ChangeFileName(filename, false);
+        UpdateLayout();
+        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
+        canvas->Refresh();
     }
 
     void UpdateFileName(int page = -1) const {
@@ -291,7 +292,8 @@ struct Document {
         for (auto *cg = selected.grid->cell; cg != nullptr; cg = cg->parent) {
             if (cg == drawroot) {
                 if (zoomiftiny) { ZoomTiny(); }
-                paintscrolltoselection = true;
+                UpdateLayout();
+                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
                 canvas->Refresh();
                 return;
             }
@@ -471,7 +473,8 @@ struct Document {
         }
         drawroot->ResetLayout();
         drawroot->ResetChildren();
-        paintscrolltoselection = true;
+        UpdateLayout();
+        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
         canvas->Refresh();
     }
 
@@ -491,7 +494,8 @@ struct Document {
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
                 selected.grid->cell->ResetLayout();
                 selected.grid->cell->ResetChildren();
-                paintscrolltoselection = true;
+                UpdateLayout();
+                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
                 canvas->Refresh();
                 sys->frame->UpdateStatus(selected, false);
                 return dir > 0 ? _("Column width increased.") : _("Column width decreased.");
@@ -504,7 +508,8 @@ struct Document {
             selected.grid->cell->AddUndo(this);
             selected.grid->ResetChildren();
             selected.grid->RelSize(-dir, selected, pathscalebias);
-            paintscrolltoselection = true;
+            UpdateLayout();
+            ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
             canvas->Refresh();
             return dir > 0 ? _("Text size increased.") : _("Text size decreased.");
         } else if (ctrl) {
@@ -579,56 +584,61 @@ struct Document {
         }
     }
 
+    void UpdateLayout() {
+        if (!root) { return; }
+        {
+            wxInfoDC dc(canvas);
+            Layout(dc);
+        }
+        if (scaledviewingmode) {
+            int client_x, client_y;
+            canvas->GetClientSize(&client_x, &client_y);
+            canvas->SetVirtualSize(client_x, client_y);
+        } else {
+            canvas->SetVirtualSize(layoutxs, layoutys);
+        }
+    }
+
     void Draw(wxDC &dc) {
         if (!root) { return; }
-        canvas->GetClientSize(&maxx, &maxy);
-        if (!skiplayout) {
-            Layout(dc);
-        } else {
-            skiplayout = false;
-        }
-        dc.SetBackground(wxBrush(LightColor(Background())));
-        dc.Clear();
-        double xscale = maxx / static_cast<double>(layoutxs);
-        double yscale = maxy / static_cast<double>(layoutys);
-        currentviewscale = min(xscale, yscale);
-        if (currentviewscale > 5) {
-            currentviewscale = 5;
-        } else if (currentviewscale < 1) {
-            currentviewscale = 1;
-        }
+        if (layoutxs <= 0 || layoutys <= 0) { return; }
+        int client_x, client_y;
+        canvas->GetClientSize(&client_x, &client_y);
         if (scaledviewingmode && currentviewscale > 1) {
+            double xscale = client_x / static_cast<double>(layoutxs);
+            double yscale = client_y / static_cast<double>(layoutys);
+            currentviewscale = std::min(xscale, yscale);
+            currentviewscale = std::max(1.0, std::min(currentviewscale, 5.0));
             dc.SetUserScale(currentviewscale, currentviewscale);
-            canvas->SetVirtualSize(maxx, maxy);
-            maxx /= currentviewscale;
-            maxy /= currentviewscale;
+            dc.DestroyClippingRegion();
             scrollx = scrolly = 0;
+            maxx = client_x / currentviewscale;
+            maxy = client_y / currentviewscale;
+            dc.SetBackground(wxBrush(LightColor(Background())));
+            dc.Clear();
         } else {
-            currentviewscale = 1;
+            currentviewscale = 1.0;
             dc.SetUserScale(1, 1);
-            canvas->SetVirtualSize(layoutxs, layoutys);
+            canvas->PrepareDC(dc);
+            dc.DestroyClippingRegion();
             canvas->GetViewStart(&scrollx, &scrolly);
-            maxx += scrollx;
-            maxy += scrolly;
+            maxx = client_x + scrollx;
+            maxy = client_y + scrolly;
+            dc.SetBackground(wxBrush(LightColor(Background())));
+            dc.Clear();
         }
+
         centerx = sys->centered && scrollx == 0 && maxx > layoutxs
                       ? (maxx - layoutxs) / 2 * currentviewscale
                       : 0;
         centery = sys->centered && scrolly == 0 && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
+
         ShiftToCenter(dc);
         Render(dc);
         DrawSelect(dc, selected);
-        if (paintscrolltoselection) {
-            paintscrolltoselection = false;
-                canvas->CallAfter([this, sel = selected, sx = scrollx, sy = scrolly, mx = maxx, my = maxy](){
-                    ScrollIfSelectionOutOfView(sel, sx, sy, mx, my);
-                    #ifdef __WXMAC__
-                        canvas->Refresh();
-                    #endif
-                });
-        }
+
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
     }
 
@@ -915,7 +925,8 @@ struct Document {
             c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
                                // keystroke undos within same cell
             c->text.Key(this, uk, selected);
-            paintscrolltoselection = true;
+            UpdateLayout();
+            ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
             canvas->Refresh();
             canvas->Update();
             return wxEmptyString;
@@ -932,6 +943,7 @@ struct Document {
                 root->ResetChildren();
                 selected = Selection();
                 begindrag = Selection();
+                UpdateLayout();
                 canvas->Refresh();
                 return _("Evaluation finished.");
 
@@ -1020,6 +1032,7 @@ struct Document {
                                           _("size:"), _("New Sheet"), 10, 1, 25, sys->frame));
                 if (size < 0) { return _("New file cancelled."); }
                 sys->InitDB(size);
+                sys->frame->GetCurrentTab()->doc->UpdateLayout();
                 sys->frame->GetCurrentTab()->Refresh();
                 return wxEmptyString;
             }
@@ -1119,6 +1132,7 @@ struct Document {
                     }
                     // root->ResetChildren();
                     sys->frame->TabsReset();  // ResetChildren on all
+                    UpdateLayout();
                     canvas->Refresh();
                 }
                 return wxEmptyString;
@@ -1175,7 +1189,6 @@ struct Document {
                             c->cellcolor = color;
                         }
                     }
-                    skiplayout = true;
                     canvas->Refresh();
                 }
                 return wxEmptyString;
@@ -1185,7 +1198,6 @@ struct Document {
                 if (auto color = PickColor(sys->frame, sys->cursorcolor);
                     color != static_cast<uint>(-1)) {
                     sys->cfg->Write("cursorcolor", sys->cursorcolor = color);
-                    skiplayout = true;
                     canvas->Refresh();
                 }
                 return wxEmptyString;
@@ -1214,7 +1226,6 @@ struct Document {
                                         ? sys->frame->filter->GetValue()
                                         : sys->frame->filter->GetValue().Lower();
                 auto message = SearchNext(false, false, false);
-                skiplayout = true;
                 canvas->Refresh();
                 return message;
             }
@@ -1227,6 +1238,7 @@ struct Document {
             case A_ROUND5:
             case A_ROUND6:
                 sys->cfg->Write("roundness", static_cast<long>(sys->roundness = action - A_ROUND0));
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
@@ -1261,6 +1273,7 @@ struct Document {
                     root->AddUndo(this);  // expensive?
                     root->FindReplaceAll(replaces, lreplaces);
                     root->ResetChildren();
+                    UpdateLayout();
                     canvas->Refresh();
                 } else {
                     loopallcellssel(c, true) if (c->text.IsInSearch()) { c->AddUndo(this); }
@@ -1285,6 +1298,7 @@ struct Document {
             case A_SCALED:
                 scaledviewingmode = !scaledviewingmode;
                 root->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return scaledviewingmode ? _("Now viewing TreeSheet to fit to the screen exactly, press F12 to return to normal.")
                                          : _("1:1 scale restored.");
@@ -1380,6 +1394,7 @@ struct Document {
                     if (selected.cursorend == 0) { return wxEmptyString; }
                     cell->AddUndo(this);
                     cell->text.Backspace(selected);
+                    UpdateLayout();
                     canvas->Refresh();
                 } else {
                     selected.grid->MultiCellDelete(this, selected);
@@ -1401,6 +1416,7 @@ struct Document {
                     if (selected.cursor == cell->text.t.Len()) { return wxEmptyString; }
                     cell->AddUndo(this);
                     cell->text.Delete(selected);
+                    UpdateLayout();
                     canvas->Refresh();
                 } else {
                     selected.grid->MultiCellDelete(this, selected);
@@ -1414,6 +1430,7 @@ struct Document {
                     if (selected.cursor == cell->text.t.Len()) { return wxEmptyString; }
                     cell->AddUndo(this);
                     cell->text.DeleteWord(selected);
+                    UpdateLayout();
                     canvas->Refresh();
                 }
                 ZoomOutIfNoGrid();
@@ -1439,6 +1456,7 @@ struct Document {
                         cell->AddUndo(this);
                         cell->text.Backspace(selected);
                     }
+                    UpdateLayout();
                     canvas->Refresh();
                 }
                 ZoomOutIfNoGrid();
@@ -1476,13 +1494,13 @@ struct Document {
                 selected.grid->MultiCellDeleteSub(this, deletesel);
                 SetSelect(Selection(selected.grid, selected.x, selected.y, 1, 1));
                 fc->ResetLayout();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
 
             case wxID_SELECTALL:
                 selected.SelAll();
-                skiplayout = true;
                 canvas->Refresh();
                 sys->frame->UpdateStatus(selected, true);
                 return wxEmptyString;
@@ -1526,7 +1544,6 @@ struct Document {
                     }
 
                     sys->frame->UpdateStatus(selected, true);
-                    skiplayout = true;
                     canvas->Refresh();
                 } else if (action == A_SCLEFT || action == A_SCRIGHT) {
                     selected.Cursor(this, action - A_SCUP + A_UP, true, true);
@@ -1566,8 +1583,9 @@ struct Document {
                 loopallcellssel(c, false) {
                     c->celltype = (newcelltype == CT_CODE) ? sys->evaluator.InferCellType(c->text)
                                                            : newcelltype;
-                    canvas->Refresh();
                 }
+                UpdateLayout();
+                canvas->Refresh();
                 return wxEmptyString;
             }
 
@@ -1599,7 +1617,8 @@ struct Document {
                 cell->AddUndo(this);
                 cell->AddGrid(size, size);
                 SetSelect(Selection(cell->grid, 0, 0, 1, 1));
-                paintscrolltoselection = true;
+                UpdateLayout();
+                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -1622,9 +1641,11 @@ struct Document {
                         PasteOrDrop(tdo);
                     }
                     wxTheClipboard->Close();
+                    UpdateLayout();
                     canvas->Refresh();
                 } else if (sys->cellclipboard) {
                     cell->Paste(this, sys->cellclipboard.get(), selected);
+                    UpdateLayout();
                     canvas->Refresh();
                 }
                 return wxEmptyString;
@@ -1649,6 +1670,7 @@ struct Document {
                     if (cell->note != text.GetValue()) {
                         cell->AddUndo(this);
                         cell->note = text.GetValue();
+                        UpdateLayout();
                         canvas->Refresh();
                     }
                     sys->notesizex = dlg.GetSize().x;
@@ -1662,6 +1684,7 @@ struct Document {
                 selected.grid->cell->AddUndo(this);
                 selected.grid->SetStyles(selected, sys->cellclipboard.get());
                 selected.grid->cell->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
@@ -1681,7 +1704,8 @@ struct Document {
                         this,
                         action == A_ENTERCELL_JUMPTOEND ? static_cast<int>(cell->text.t.Len()) : 0,
                         static_cast<int>(cell->text.t.Len()));
-                    paintscrolltoselection = true;
+                    UpdateLayout();
+                    ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
                     canvas->Refresh();
                 }
                 return wxEmptyString;
@@ -1694,6 +1718,7 @@ struct Document {
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
                 cell->AddUndo(this);
                 LoadImageIntoCell(filename, cell, sys->frame->FromDIP(1.0));
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -1702,6 +1727,7 @@ struct Document {
                 selected.grid->cell->AddUndo(this);
                 selected.grid->ClearImages(selected);
                 selected.grid->cell->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -1730,6 +1756,7 @@ struct Document {
                 selected.grid->cell->AddUndo(this);
                 selected.grid->SetBorder(action - A_BORD0 + 1);
                 selected.grid->cell->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
@@ -1786,6 +1813,7 @@ struct Document {
                         break;
                 }
                 selected.grid->cell->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 sys->frame->UpdateStatus(selected, false);
                 return wxEmptyString;
@@ -1804,6 +1832,7 @@ struct Document {
                 }
                 outer.clear();
                 selected.grid->cell->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -1816,6 +1845,7 @@ struct Document {
                     c->grid->folded = action == A_FOLD ? !c->grid->folded : action == A_FOLDALL;
                     c->ResetChildren();
                 }
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
@@ -1859,6 +1889,7 @@ struct Document {
                 }
                 currentdrawroot->ResetChildren();
                 currentdrawroot->ResetLayout();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -1869,6 +1900,7 @@ struct Document {
                 }
                 currentdrawroot->ResetChildren();
                 currentdrawroot->ResetLayout();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -1990,6 +2022,7 @@ struct Document {
                     loopallcellssel(c, false) if (c->grid) { c->grid->Transpose(); }
                 }
                 ac->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -2009,6 +2042,7 @@ struct Document {
                     ac->ResetChildren();
                     selected = Selection();
                     begindrag = Selection();
+                    UpdateLayout();
                     canvas->Refresh();
                     return wxEmptyString;
 
@@ -2026,6 +2060,7 @@ struct Document {
                     ac->ResetChildren();
                     selected = Selection();
                     begindrag = Selection();
+                    UpdateLayout();
                     canvas->Refresh();
                     return wxEmptyString;
                 }
@@ -2077,6 +2112,7 @@ struct Document {
                 SetSelect(pp->grid->HierarchySwap(cell->text.t));
                 pp->ResetChildren();
                 pp->ResetLayout();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -2084,12 +2120,14 @@ struct Document {
             case A_FILTERBYCELLBG:
                 loopallcells(ci) ci->text.filtered = ci->cellcolor != cell->cellcolor;
                 root->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
             case A_FILTERNOTE:
                 loopallcells(ci) ci->text.filtered = ci->note.IsEmpty();
                 root->ResetChildren();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
@@ -2110,6 +2148,7 @@ struct Document {
                 if (LastUndoSameCellTextEdit(cell)) {
                     Undo(undolist, redolist);
                 } else {
+                    UpdateLayout();
                     canvas->Refresh();
                 }
                 selected.ExitEdit(this);
@@ -2119,6 +2158,7 @@ struct Document {
                 if (selected.cursorend == 0) { return wxEmptyString; }
                 cell->AddUndo(this);
                 cell->text.BackspaceWord(selected);
+                UpdateLayout();
                 canvas->Refresh();
                 ZoomOutIfNoGrid();
                 return wxEmptyString;
@@ -2140,8 +2180,7 @@ struct Document {
                     case A_HOME: cell->text.HomeEnd(selected, true); break;
                     case A_END: cell->text.HomeEnd(selected, false); break;
                 }
-                paintscrolltoselection = true;
-                skiplayout = true;
+                ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -2172,6 +2211,7 @@ struct Document {
         if (ds >= 0 && selected.IsAll()) { selected.grid->cell->drawstyle = ds; }
         selected.grid->SetGridTextLayout(ds, v, noset, selected);
         selected.grid->cell->ResetChildren();
+        UpdateLayout();
         canvas->Refresh();
         return wxEmptyString;
     }
@@ -2262,6 +2302,7 @@ struct Document {
         }
         selected.grid->cell->AddUndo(this);
         selected.grid->Sort(selected, descending);
+        UpdateLayout();
         canvas->Refresh();
         return wxEmptyString;
     }
@@ -2275,6 +2316,7 @@ struct Document {
                 selected.grid->DeleteCells(dx, dy, nxs, nys);
                 v -= dec;
             }
+            UpdateLayout();
             canvas->Refresh();
         }
     }
@@ -2360,6 +2402,7 @@ struct Document {
         if (selected.grid) {
             ScrollOrZoom();
         } else {
+            UpdateLayout();
             canvas->Refresh();
         }
         UpdateFileName();
@@ -2451,6 +2494,7 @@ struct Document {
         if (!selected.grid) { return; }
         selected.grid->cell->AddUndo(this);
         loopallcellssel(c, false) LoadImageIntoCell(filename, c, scale);
+        UpdateLayout();
         canvas->Refresh();
     }
 
@@ -2473,6 +2517,7 @@ struct Document {
                 }
                 selected.grid->cell->ResetChildren();
                 selected.grid->cell->ResetLayout();
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }
@@ -2493,7 +2538,6 @@ struct Document {
 
     void ApplyEditFilter() {
         searchfilter = false;
-        paintscrolltoselection = true;
         editfilter = min(max(editfilter, 1), 99);
         CollectCells(root.get());
         ranges::sort(itercells, [](auto a, auto b) {
@@ -2502,17 +2546,20 @@ struct Document {
         });
         loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
         root->ResetChildren();
+        UpdateLayout();
+        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
         canvas->Refresh();
     }
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
         searchfilter = false;
-        paintscrolltoselection = true;
         CollectCells(root.get());
         for (auto *c : itercells) {
             c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }
         root->ResetChildren();
+        UpdateLayout();
+        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
         canvas->Refresh();
     }
 
@@ -2525,9 +2572,10 @@ struct Document {
 
     void SetSearchFilter(bool on) {
         searchfilter = on;
-        paintscrolltoselection = true;
         loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
         root->ResetChildren();
+        UpdateLayout();
+        ScrollIfSelectionOutOfView(selected, scrollx, scrolly, maxx, maxy);
         canvas->Refresh();
     }
 

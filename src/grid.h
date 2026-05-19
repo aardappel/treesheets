@@ -452,6 +452,7 @@ struct Grid {
     void MultiCellDelete(Document *doc, Selection &sel) {
         cell->AddUndo(doc);
         MultiCellDeleteSub(doc, sel);
+        doc->UpdateLayout();
         doc->canvas->Refresh();
     }
 
@@ -683,6 +684,7 @@ struct Grid {
             c->text.stylebits ^= sb;
             c->text.WasEdited();
         }
+        doc->UpdateLayout();
         doc->canvas->Refresh();
     }
 
@@ -690,6 +692,7 @@ struct Grid {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->ColorChange(doc, which, color);
+        doc->UpdateLayout();
         doc->canvas->Refresh();
     }
 
@@ -697,6 +700,7 @@ struct Grid {
         cell->AddUndo(doc);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->text.ReplaceStr(s, ls);
+        doc->UpdateLayout();
         doc->canvas->Refresh();
     }
 
