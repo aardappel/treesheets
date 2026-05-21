@@ -595,17 +595,18 @@ struct Document {
             wxInfoDC dc(canvas);
             Layout(dc);
         }
-        int client_x, client_y;
-        canvas->GetClientSize(&client_x, &client_y);
+        int clientx = 0;
+        int clienty = 0;
+        canvas->GetClientSize(&clientx, &clienty);
         if (layoutxs <= 0 || layoutys <= 0) { return; }
 
-        double xscale = client_x / static_cast<double>(layoutxs);
-        double yscale = client_y / static_cast<double>(layoutys);
+        double xscale = clientx / static_cast<double>(layoutxs);
+        double yscale = clienty / static_cast<double>(layoutys);
         currentviewscale = std::min(xscale, yscale);
         currentviewscale = std::max(1.0, std::min(currentviewscale, 5.0));
 
         if (scaledviewingmode && currentviewscale > 1) {
-            canvas->SetVirtualSize(client_x, client_y);
+            canvas->SetVirtualSize(clientx, clienty);
         } else {
             currentviewscale = 1.0;
             canvas->SetVirtualSize(layoutxs, layoutys);
@@ -615,20 +616,21 @@ struct Document {
     void Draw(wxDC &dc) {
         if (!root) { return; }
         if (layoutxs <= 0 || layoutys <= 0) { return; }
-        int client_x, client_y;
-        canvas->GetClientSize(&client_x, &client_y);
+        int clientx = 0;
+        int clienty = 0;
+        canvas->GetClientSize(&clientx, &clienty);
         if (scaledviewingmode && currentviewscale > 1) {
             scrollx = scrolly = 0;
-            maxx = client_x / currentviewscale;
-            maxy = client_y / currentviewscale;
+            maxx = clientx / currentviewscale;
+            maxy = clienty / currentviewscale;
             dc.SetBackground(wxBrush(LightColor(Background())));
             dc.Clear();
         } else {
             dc.SetUserScale(1, 1);
             canvas->PrepareDC(dc);
             canvas->GetViewStart(&scrollx, &scrolly);
-            maxx = client_x + scrollx;
-            maxy = client_y + scrolly;
+            maxx = clientx + scrollx;
+            maxy = clienty + scrolly;
             dc.SetBackground(wxBrush(LightColor(Background())));
             dc.Clear();
         }
