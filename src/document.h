@@ -618,7 +618,6 @@ struct Document {
         int client_x, client_y;
         canvas->GetClientSize(&client_x, &client_y);
         if (scaledviewingmode && currentviewscale > 1) {
-            dc.DestroyClippingRegion();
             scrollx = scrolly = 0;
             maxx = client_x / currentviewscale;
             maxy = client_y / currentviewscale;
@@ -627,7 +626,6 @@ struct Document {
         } else {
             dc.SetUserScale(1, 1);
             canvas->PrepareDC(dc);
-            dc.DestroyClippingRegion();
             canvas->GetViewStart(&scrollx, &scrolly);
             maxx = client_x + scrollx;
             maxy = client_y + scrolly;
