@@ -1649,10 +1649,12 @@ struct Document {
                     }
                     wxTheClipboard->Close();
                     UpdateLayout();
+                    ScrollIfSelectionOutOfView();
                     canvas->Refresh();
                 } else if (sys->cellclipboard) {
                     cell->Paste(this, sys->cellclipboard.get(), selected);
                     UpdateLayout();
+                    ScrollIfSelectionOutOfView();
                     canvas->Refresh();
                 }
                 return wxEmptyString;
