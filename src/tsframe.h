@@ -1606,6 +1606,7 @@ struct TSFrame : wxFrame {
             loop(i, notebook->GetPageCount()) {
                 auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
                 canvas->doc->root->ResetChildren();
+                canvas->doc->UpdateLayout();
             }
         }
     }
