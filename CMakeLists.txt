@@ -79,8 +79,8 @@ FetchContent_MakeAvailable(wxwidgets)
 if(ENABLE_LOBSTER)
     FetchContent_Declare(
         lobster
-        URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.2.tar.gz
-        URL_HASH SHA256=b926d34f55c94d3cd814d258ad96d319db711f231e33c9ddeaca0fb7095f587e
+        URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.3.tar.gz
+        URL_HASH SHA256=403ef33cbe9680afd0e316e6f82f1abf06f3e3782e38cd87e05f49dd350db14a
     )
     FetchContent_MakeAvailable(lobster)
 endif()
