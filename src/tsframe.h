@@ -430,7 +430,7 @@ struct TSFrame : wxFrame {
                      #ifdef __WXMAC__
                      _("&Insert New Grid") + "\tCTRL+G",
                      #else
-                     _("&Insert New Grid") + "\tINS",
+                     _("&Insert New Grid") + "\tINSERT",
                      #endif
                      _("Adds a grid to the selected cell"));
             MyAppend(editmenu, A_ENTERGRIDN, _("Insert New &NxN Grid") + "\tCTRL+SHIFT+ENTER",
