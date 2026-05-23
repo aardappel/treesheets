@@ -671,11 +671,12 @@ struct TSFrame : wxFrame {
                  _("Open the Lobster script reference in browser"));
         #endif
 
-        wxAcceleratorEntry entries[3];
+        wxAcceleratorEntry entries[4];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-        entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-        entries[2].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-        wxAcceleratorTable accel(3, entries);
+        entries[1].Set(wxACCEL_NORMAL, WXK_INSERT, A_ENTERGRID);
+        entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
+        entries[3].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
+        wxAcceleratorTable accel(4, entries);
         SetAcceleratorTable(accel);
 
         auto *menubar = new wxMenuBar();
