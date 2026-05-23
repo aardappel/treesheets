@@ -361,7 +361,7 @@ struct TSFrame : wxFrame {
             MyAppend(imgmenu, A_SAVE_AS_PNG, _("Embed as &PNG"),
                      _("Embed the image(s) in the selected cells in PNG format (default)"));
             imgmenu->AppendSeparator();
-            MyAppend(imgmenu, A_LASTIMAGE, _("Insert last image") + "\tSHIFT+ALT+i",
+            MyAppend(imgmenu, A_LASTIMAGE, _("Insert last image") + "\tSHIFT+ALT+I",
                      _("Insert the last image that has been inserted before in TreeSheets."));
             MyAppend(imgmenu, A_IMAGER, _("Remo&ve"),
                      _("Remove image(s) from the selected cells"));
