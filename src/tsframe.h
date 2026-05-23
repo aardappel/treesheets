@@ -1607,7 +1607,9 @@ struct TSFrame : wxFrame {
                 auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
                 canvas->doc->root->ResetChildren();
                 canvas->doc->UpdateLayout();
+                canvas->doc->ScrollIfSelectionOutOfView();
             }
+            notebook->Refresh();
         }
     }
 

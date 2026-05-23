@@ -1137,8 +1137,7 @@ struct Document {
                             sys->cfg->Write("defaultfixedfont", sys->defaultfixedfont);
                             break;
                     }
-                    sys->frame->TabsReset();  // ResetChildren and UpdateLayout on all
-                    canvas->Refresh();
+                    sys->frame->TabsReset();  // ResetChildren, UpdateLayout and Refresh on all
                 }
                 return wxEmptyString;
             }
