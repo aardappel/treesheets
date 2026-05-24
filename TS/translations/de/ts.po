@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-12 16:37+0200\n"
+"POT-Creation-Date: 2026-05-23 09:32+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -251,6 +251,9 @@ msgstr "Ein Bild in die ausgewählte Zelle einfügen"
 
 msgid "Add..."
 msgstr "Hinzufügen..."
+
+msgid "Adds a NxN grid to the selected cell"
+msgstr "Eine NxN-Tabelle in die ausgewählte Zelle einfügen"
 
 msgid "Adds a grid to the selected cell"
 msgstr "Eine Tabelle in die ausgewählte Zelle einfügen"
@@ -593,13 +596,17 @@ msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr ""
 "Fehler beim Laden von Kerndaten (TreeSheets ggf. nicht korrekt installiert?)"
 
+msgid "Error renaming temporary file."
+msgstr "Fehler beim Umbenennen der temporären Datei."
+
 msgid "Error writing PNG file!"
 msgstr "Fehler beim Schreiben der PNG-Datei!"
 
-msgid "Error writing TreeSheets file! (try saving under new filename)."
+msgid ""
+"Error writing TreeSheets file! Would you like to save at a different "
+"location?"
 msgstr ""
-"Fehler beim Schreiben der TreeSheets-Datei (bitte versuchen Sie mit einem "
-"neuen Dateinamen erneut)."
+"Fehler beim Schreiben der TreeSheets-Datei! Möchten Sie versuchen, die Datei an einem anderen Ort zu speichern?"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
@@ -892,6 +899,9 @@ msgstr "Eingerückter Text..."
 msgid "Initialization Error"
 msgstr "Initialisierungsfehler"
 
+msgid "Insert New &NxN Grid"
+msgstr "Neue &NxN-Tabelle einfügen"
+
 msgid "Insert last image"
 msgstr "Das zuletzt eingefügte Bild einfügen"
 
@@ -1039,6 +1049,9 @@ msgstr "Neues Blatt"
 msgid "New file cancelled."
 msgstr "Erstellen der neuen Datei abgebrochen!"
 
+msgid "New subgrid"
+msgstr "Neue Untertabelle"
+
 msgid "No autoexport"
 msgstr "Kein automatischer Export"
 
@@ -1065,6 +1078,9 @@ msgstr "Keine Suche!"
 
 msgid "No style to paste."
 msgstr "Kein Stil zum Einfügen!"
+
+msgid "No subgrid created."
+msgstr "Keine Untertabelle erstellt."
 
 msgid "No text in this cell."
 msgstr "Kein Text in dieser Zelle!"
@@ -1664,6 +1680,9 @@ msgstr "Filter deaktivieren"
 msgid "Tutorial &web page"
 msgstr "Tutorial-&Webseite"
 
+msgid "Tutorial web page could not be found."
+msgstr "Die Tutorialwebseite konnte nicht gefunden werden."
+
 msgid "Typewriter font..."
 msgstr "Schreibmaschinenschrift..."
 
@@ -1698,6 +1717,9 @@ msgstr "Vertikale Anordnung mit Zeilenstil-Rendering"
 
 msgid "What size grid would you like to start with?"
 msgstr "Mit welcher Tabellengröße möchten Sie beginnen?"
+
+msgid "What subgrid size would you like to start with?"
+msgstr "Mit welcher Größe für die Untertabelle möchten Sie beginnen?"
 
 msgid "Width"
 msgstr "Breite"
