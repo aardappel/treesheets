@@ -474,9 +474,9 @@ struct System {
             Document *doc = frame->GetCurrentTab()->doc.get();
             doc->modified = true;
             doc->UpdateFileName();
-            doc->selected = Selection();
-            doc->begindrag = Selection();
+            doc->root->ResetChildren();
             doc->UpdateLayout();
+            doc->SetSelect(Selection(doc->root->grid, 0, 0, 1, 1));
             doc->canvas->Refresh();
         }
         return wxEmptyString;
