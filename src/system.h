@@ -147,6 +147,11 @@ struct System {
     }
 
     void LoadTutorial() {
+        if (sys->defaultlang == "en") {
+            LoadDB(frame->app->GetDocPath("examples/tutorial.cts"));
+            return;
+        }
+
         auto *trans = wxTranslations::Get();
         auto language = trans != nullptr ? trans->GetBestTranslation("ts") : wxString("");
 

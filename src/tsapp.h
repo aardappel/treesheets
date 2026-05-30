@@ -143,8 +143,15 @@ struct TSApp : wxApp {
         wxFileTranslationsLoader::AddCatalogLookupPathPrefix(GetDataPath("translations"));
 
         auto *trans = new wxTranslations();
-        trans->SetLanguage(sys->defaultlang);
-        trans->AddCatalog("ts");
+        if (sys->defaultlang.IsEmpty()) {
+            trans->SetLanguage(wxEmptyString);
+            trans->AddCatalog("ts");
+        } else if (sys->defaultlang == "en") {
+            trans->SetLanguage(wxLANGUAGE_UNKNOWN);
+        } else {
+            trans->SetLanguage(sys->defaultlang);
+            trans->AddCatalog("ts");
+        }
 
         wxTranslations::Set(trans);
     }

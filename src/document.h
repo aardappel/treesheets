@@ -1063,7 +1063,9 @@ struct Document {
 
             case A_TUTORIALWEBPAGE: {
                 wxTranslations *trans = wxTranslations::Get();
-                wxString lang = trans != nullptr ? trans->GetBestTranslation("ts") : wxString("");
+                wxString lang = trans != nullptr && sys->defaultlang != "en"
+                                    ? trans->GetBestTranslation("ts")
+                                    : wxString("");
                 wxString tutorialpath;
 
                 for (const wxString &suffix : {"-" + lang, "-" + lang.Left(2), wxString("")}) {
@@ -1370,13 +1372,29 @@ struct Document {
             case A_SETLANG: {
                 auto *trans = wxTranslations::Get();
                 if (trans == nullptr) { return _("Failed to get translation."); }
+
                 wxArrayString langs = trans->GetAvailableTranslations("ts");
-                langs.Insert(wxEmptyString, 0);
+
+                const wxString syslang = _("System Default");
+                const wxString en = _("English");
+
+                langs.Insert(en, 0);
+                langs.Insert(syslang, 0);
+
                 wxSingleChoiceDialog choice(
-                    sys->frame, _("Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."),
+                    sys->frame,
+                    _("Please select the language for the interface (requires restart)."),
                     _("Available languages"), langs);
+
                 if (choice.ShowModal() == wxID_OK) {
-                    sys->cfg->Write("defaultlang", choice.GetStringSelection());
+                    wxString lang = choice.GetStringSelection();
+                    if (lang == syslang) {
+                        sys->cfg->Write("defaultlang", wxEmptyString);
+                    } else if (lang == en) {
+                        sys->cfg->Write("defaultlang", "en");
+                    } else {
+                        sys->cfg->Write("defaultlang", lang);
+                    }
                 }
                 return wxEmptyString;
             }
