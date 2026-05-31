@@ -1372,28 +1372,36 @@ struct Document {
             case A_SETLANG: {
                 auto *trans = wxTranslations::Get();
                 if (trans == nullptr) { return _("Failed to get translation."); }
-
-                wxArrayString langs = trans->GetAvailableTranslations("ts");
-
+                wxArrayString catcodes = trans->GetAvailableTranslations("ts");
+                wxArrayString labels;
+                wxArrayString codes;
                 const wxString syslang = _("System Default");
                 const wxString en = _("English");
+                labels.Add(syslang);
+                codes.Add(wxEmptyString);
+                labels.Add(en);
+                codes.Add("en");
+                for (const auto &code : catcodes) {
+                    if (code.StartsWith("en")) continue;
 
-                langs.Insert(en, 0);
-                langs.Insert(syslang, 0);
-
+                    const wxLanguageInfo *info = wxLocale::FindLanguageInfo(code);
+                    if (info) {
+                        labels.Add(info->Description);
+                    } else {
+                        labels.Add(code);
+                    }
+                    codes.Add(code);
+                }
                 wxSingleChoiceDialog choice(
                     sys->frame,
                     _("Please select the language for the interface (requires restart)."),
-                    _("Available languages"), langs);
+                    _("Available languages"), labels);
 
                 if (choice.ShowModal() == wxID_OK) {
-                    wxString lang = choice.GetStringSelection();
-                    if (lang == syslang) {
-                        sys->cfg->Write("defaultlang", wxEmptyString);
-                    } else if (lang == en) {
-                        sys->cfg->Write("defaultlang", "en");
-                    } else {
-                        sys->cfg->Write("defaultlang", lang);
+                    int i = choice.GetSelection();
+                    if (i != wxNOT_FOUND) {
+                        wxString code = codes[i];
+                        sys->cfg->Write("defaultlang", code);
                     }
                 }
                 return wxEmptyString;
