@@ -675,6 +675,7 @@ struct Grid {
         sel.xs += xs - 1;
         sel.ys += ys - 1;
         sel.ExitEdit(doc);
+        cell->grid.reset();
     }
 
     void SetStyle(Document *doc, const Selection &sel, int sb) {
