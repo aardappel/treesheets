@@ -1381,16 +1381,16 @@ struct Document {
                 codes.Add(wxEmptyString);
                 labels.Add(en);
                 codes.Add("en");
-                for (const auto &code : catcodes) {
-                    if (code.StartsWith("en")) continue;
+                for (const auto &catcode : catcodes) {
+                    if (catcode.StartsWith("en")) continue;
 
-                    const wxLanguageInfo *info = wxLocale::FindLanguageInfo(code);
+                    const wxLanguageInfo *info = wxLocale::FindLanguageInfo(catcode);
                     if (info) {
                         labels.Add(info->Description);
                     } else {
-                        labels.Add(code);
+                        labels.Add(catcode);
                     }
-                    codes.Add(code);
+                    codes.Add(catcode);
                 }
                 wxSingleChoiceDialog choice(
                     sys->frame,
