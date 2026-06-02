@@ -1,5 +1,5 @@
 struct System {
-    TSFrame *frame;
+    TSFrame *frame {nullptr};
     wxString defaultfont {
         #ifdef WIN32
             "Lucida Sans Unicode"
@@ -11,6 +11,7 @@ struct System {
     wxString defaultlang {wxEmptyString};
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
+    wxArrayString scripts;
     Evaluator evaluator;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
@@ -18,7 +19,7 @@ struct System {
     vector<int> loadimageids;
     uchar versionlastloaded {0};
     wxLongLong fakelasteditonload;
-    wxPen pen_tinytext {wxColour(0x808080ul)};
+    wxPen pen_tinytext {wxColour(0x808080UL)};
     wxPen pen_gridborder {wxColour(0xb5a6a4)};
     wxPen pen_tinygridlines {wxColour(0xf2dcd8)};
     wxPen pen_gridlines {wxColour(0xe5b7b0)};
@@ -43,15 +44,12 @@ struct System {
     bool showstatusbar {true};
     bool followdarkmode {false};
     uint colormask {0};
-    int sortcolumn;
-    int sortxs;
-    int sortdescending;
     int notesizex {300};
     int notesizey {255};
     std::set<wxString> watchedpaths;
     bool insidefiledialog {false};
     struct TimerStruct : wxTimer {
-        void Notify() {
+        void Notify() override {
             sys->SaveCheck();
             sys->cfg->Flush();
         }
@@ -64,9 +62,8 @@ struct System {
     int cursorcolor {0x00FF00};
 
     System(bool portable)
-        : cfg(portable
-                  ? (wxConfigBase *)new wxFileConfig("", "", wxGetCwd() + "/TreeSheets.ini", "", 0)
-                  : (wxConfigBase *)new wxConfig("TreeSheets")) {
+        : cfg(portable ? new wxFileConfig("", "", wxGetCwd() + "/TreeSheets.ini", "", 0)
+                       : new wxFileConfig("TreeSheets")) {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
@@ -103,18 +100,21 @@ struct System {
         cfg->Read("lastcellcolor", &lastcellcolor, lastcellcolor);
         cfg->Read("lasttextcolor", &lasttextcolor, lasttextcolor);
         cfg->Read("lastbordcolor", &lastbordcolor, lastbordcolor);
+        #ifdef ENABLE_LOBSTER
+            ReadScripts();
+        #endif
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
         colormask = (followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
     }
 
-    auto NewTabDoc(bool append = false) {
-        auto doc = new Document();
-        frame->NewTab(doc, append);
-        return doc;
+    Document *NewTabDoc(bool append = false, int insert_at = -1) const {
+        auto doc = make_unique<Document>();
+        auto *canvas = frame->NewTab(std::move(doc), append, insert_at);
+        return canvas->doc.get();
     }
 
-    void TabChange(Document *newdoc) {
+    static void TabChange(Document *newdoc) {
         // SetSelect(hover = Selection());
         newdoc->canvas->SetFocus();
         newdoc->UpdateFileName();
@@ -124,25 +124,36 @@ struct System {
         evaluator.Init();
 
         auto numfiles = static_cast<int>(cfg->Read("numopenfiles", static_cast<long>(0)));
+        wxString focusfile = cfg->Read("lastopenfile", "");
+        int selection = -1;
         loop(i, numfiles) {
             wxString filename;
             cfg->Read(wxString::Format("lastopenfile_%d", i), &filename);
-            LoadDB(filename);
+            if (!LoadDB(filename) && filename == focusfile) { selection = i; }
         }
 
-        if (filename.Len()) LoadDB(filename);
+        if (!filename.IsEmpty()) {
+            LoadDB(filename);
+        } else if (selection >= 0) {
+            frame->notebook->SetSelection(selection);
+        }
 
-        if (!frame->notebook->GetPageCount()) LoadTutorial();
+        if (frame->notebook->GetPageCount() == 0U) { LoadTutorial(); }
 
-        if (!frame->notebook->GetPageCount()) InitDB(10);
+        if (frame->notebook->GetPageCount() == 0U) { InitDB(10); }
 
         // Refresh();
         every_second_timer.Start(1000);
     }
 
     void LoadTutorial() {
-        auto trans = wxTranslations::Get();
-        auto language = trans ? trans->GetBestTranslation("ts") : wxString("");
+        if (sys->defaultlang == "en") {
+            LoadDB(frame->app->GetDocPath("examples/tutorial.cts"));
+            return;
+        }
+
+        auto *trans = wxTranslations::Get();
+        auto language = trans != nullptr ? trans->GetBestTranslation("ts") : wxString("");
 
         if (language.Len() == 5 &&
             !LoadDB(frame->app->GetDocPath("examples/tutorial-" + language + ".cts"))[0]) {
@@ -160,29 +171,32 @@ struct System {
 
     void LoadOpRef() { LoadDB(frame->app->GetDocPath("examples/operation-reference.cts")); }
 
-    Cell *&InitDB(int sizex, int sizey = 0) {
-        auto c = new Cell(nullptr, nullptr, CT_DATA, new Grid(sizex, sizey ? sizey : sizex));
+    unique_ptr<Cell> &InitDB(int sizex, int sizey = 0) const {
+        unique_ptr<Cell> c = make_unique<Cell>(
+            nullptr, nullptr, CT_DATA, make_shared<Grid>(sizex, sizey != 0 ? sizey : sizex));
         c->cellcolor = 0xCCDCE2;
         c->grid->InitCells();
-        auto doc = NewTabDoc();
-        doc->InitWith(c, "", nullptr, 1, 1);
+        auto *doc = NewTabDoc();
+        doc->InitWith(std::move(c), "", nullptr, 1, 1);
         return doc->root;
     }
 
-    wxString BakName(const wxString &filename) { return ExtName(filename, ".bak"); }
-    wxString TmpName(const wxString &filename) { return ExtName(filename, ".tmp"); }
-    wxString ExtName(const wxString &filename, auto ext) {
+    static wxString BakName(const wxString &filename) { return ExtName(filename, ".bak"); }
+    static wxString TmpName(const wxString &filename) { return ExtName(filename, ".tmp"); }
+    static wxString NewName(const wxString &filename) { return filename + ".new"; }
+    static wxString ExtName(const wxString &filename, const wxString &ext) {
         wxFileName fn(filename);
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    wxString LoadDB(const wxString &filename, bool fromreload = false) {
+    wxString LoadDB(const wxString &filename, bool fromreload = false, int insert_at = -1) {
         auto fn = filename;
         auto loadedfromtmp = false;
 
         if (!fromreload) {
-            if (frame->GetTabByFileName(filename))
+            if (frame->GetTabByFileName(filename) != nullptr) {
                 return wxEmptyString;  //"this file is already loaded";
+            }
 
             if (::wxFileExists(TmpName(filename))) {
                 if (::wxMessageBox(
@@ -205,18 +219,19 @@ struct System {
             wxFFileInputStream fis(fn);
             wxDataInputStream dis(fis);
             if (!fis.IsOk()) {
-                for (int i = 0, n = frame->filehistory.GetCount(); i < n; i++) {
-                    if (frame->filehistory.GetHistoryFile(i) == filename)
+                for (int i = static_cast<int>(frame->filehistory.GetCount()) - 1; i >= 0; i--) {
+                    if (frame->filehistory.GetHistoryFile(i) == filename) {
                         frame->filehistory.RemoveFileFromHistory(i);
+                    }
                 }
                 return _("Cannot open file.");
             }
 
             char buf[4];
             fis.Read(buf, 4);
-            if (strncmp(buf, "TSFF", 4)) return _("Not a TreeSheets file.");
+            if (strncmp(buf, "TSFF", 4) != 0) { return _("Not a TreeSheets file."); }
             fis.Read(&versionlastloaded, 1);
-            if (versionlastloaded > TS_VERSION) return _("File of newer version.");
+            if (versionlastloaded > TS_VERSION) { return _("File of newer version."); }
             auto xs = versionlastloaded >= 21 ? dis.Read8() : 1;
             auto ys = versionlastloaded >= 21 ? dis.Read8() : 1;
             zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
@@ -230,13 +245,14 @@ struct System {
                     case 'I':
                     case 'J': {
                         char iti = *buf;
-                        if (!imagetypes.contains(iti))
+                        if (!imagetypes.contains(iti)) {
                             return _("Found an image type that is not defined in this program.");
-                        if (versionlastloaded < 9) dis.ReadString();
+                        }
+                        if (versionlastloaded < 9) { dis.ReadString(); }
                         auto sc = versionlastloaded >= 19 ? dis.ReadDouble() : 1.0;
                         vector<uint8_t> image_data;
                         if (versionlastloaded >= 22) {
-                            auto imagelen = (size_t)dis.Read64();
+                            auto imagelen = static_cast<size_t>(dis.Read64());
                             image_data.resize(imagelen);
                             fis.Read(image_data.data(), imagelen);
                         } else {
@@ -246,7 +262,9 @@ struct System {
                                 uchar header[8];
                                 fis.Read(header, 8);
                                 uchar expected[] = {0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
-                                if (memcmp(header, expected, 8)) return _("Corrupt PNG header.");
+                                if (memcmp(header, expected, 8) != 0) {
+                                    return _("Corrupt PNG header.");
+                                }
                                 dis.BigEndianOrdered(true);
                                 for (;;) {  // Skip all chunks.
                                     wxInt32 len = dis.Read32();
@@ -254,7 +272,7 @@ struct System {
                                     fis.Read(fourcc, 4);
                                     fis.SeekI(len, wxFromCurrent);  // skip data
                                     dis.Read32();                   // skip CRC
-                                    if (memcmp(fourcc, "IEND", 4) == 0) break;
+                                    if (memcmp(fourcc, "IEND", 4) == 0) { break; }
                                 }
                             } else if (iti == 'J') {
                                 wxImage im;
@@ -269,7 +287,7 @@ struct System {
                             fis.Read(image_data.data(), sz);
                             fis.SeekI(afterimage);
                         }
-                        if (!fis.IsOk()) image_data.clear();
+                        if (!fis.IsOk()) { image_data.clear(); }
 
                         loadimageids.push_back(AddImageToList(sc, std::move(image_data), iti));
                         break;
@@ -277,24 +295,25 @@ struct System {
 
                     case 'D': {
                         wxZlibInputStream zis(fis);
-                        if (!zis.IsOk()) return _("Cannot decompress file.");
+                        if (!zis.IsOk()) { return _("Cannot decompress file."); }
                         wxDataInputStream dis(zis);
-                        auto numcells = 0, textbytes = 0;
-                        auto root = Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics);
-                        if (!root) return _("File corrupted!");
+                        auto numcells = 0;
+                        auto textbytes = 0;
+                        unique_ptr<Cell> root(Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics));
+                        if (!root) { return _("File corrupted!"); }
 
-                        doc = NewTabDoc(true);
+                        doc = NewTabDoc(true, insert_at);
                         if (loadedfromtmp) {
                             doc->undolistsizeatfullsave =
                                 -1;  // if not, user will lose tmp without warning when he closes
                             doc->modified = true;
                         }
-                        doc->InitWith(root, filename, ics, xs, ys);
+                        doc->InitWith(std::move(root), filename, ics, xs, ys);
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
                                 auto tag = dis.ReadString();
-                                if (!tag.Len()) break;
+                                if (tag.IsEmpty()) { break; }
                                 doc->tags[tag] =
                                     versionlastloaded >= 24 ? dis.Read32() : g_tagcolor_default;
                             }
@@ -322,7 +341,7 @@ struct System {
             for (const auto &image : sys->imagelist) {
                 pool.enqueue(
                     [](auto img) {
-                        if (img->trefc) img->Display();
+                        if (img->trefc) { img->Display(); }
                     },
                     image.get());
             }
@@ -330,9 +349,10 @@ struct System {
 
         FileUsed(filename, doc);
         doc->Zoom(zoomlevel, true);
-        if (anyimagesfailed)
+        if (anyimagesfailed) {
             wxMessageBox(_("PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _("PNG decoder failure"), wxOK, frame);
+        }
 
         return wxEmptyString;
     }
@@ -351,18 +371,18 @@ struct System {
     wxString Open(const wxString &filename) {
         if (!filename.empty()) {
             auto msg = LoadDB(filename);
-            assert(msg);
-            if (!msg.IsEmpty()) wxMessageBox(msg, filename, wxOK, frame);
+            if (!msg.IsEmpty()) { wxMessageBox(msg, filename, wxOK, frame); }
             return msg;
         }
         return _("Open file cancelled.");
     }
 
-    void RememberOpenFiles() {
+    void RememberOpenFiles() const {
+        cfg->Write("lastopenfile", frame->GetCurrentTab()->doc->filename);
         auto namedfiles = 0;
-        loop(i, frame->notebook->GetPageCount()) {
-            auto canvas = static_cast<TSCanvas *>(frame->notebook->GetPage(i));
-            if (canvas->doc->filename.Len()) {
+        for(auto i: frame->notebook->GetPagesInDisplayOrder(frame->notebook->GetActiveTabCtrl())) {
+            auto *canvas = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i));
+            if (!canvas->doc->filename.IsEmpty()) {
                 cfg->Write(wxString::Format("lastopenfile_%d", namedfiles), canvas->doc->filename);
                 namedfiles++;
             }
@@ -372,14 +392,34 @@ struct System {
         cfg->Flush();
     }
 
-    void SaveCheck() {
+    #ifdef ENABLE_LOBSTER
+        void RememberScripts() const {
+            cfg->Write("numscripts", scripts.GetCount());
+            for (auto i = 0; i < scripts.GetCount(); ++i) {
+                cfg->Write(wxString::Format("script_%d", i), scripts[i]);
+            }
+        }
+
+        void ReadScripts() {
+            auto numscripts = 0;
+            if (cfg->Read("numscripts", &numscripts)) {
+                loop(i, numscripts) {
+                    wxString script {};
+                    cfg->Read(wxString::Format("script_%d", i), &script);
+                    if (!script.IsEmpty()) { scripts.Add(script); }
+                }
+            }
+        }
+    #endif
+
+    void SaveCheck() const {
         loop(i, frame->notebook->GetPageCount()) {
-            static_cast<TSCanvas *>(frame->notebook->GetPage(i))
+            dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i))
                 ->doc->AutoSave(!frame->IsActive(), i);
         }
     }
 
-    void SaveAll() {
+    void SaveAll() const {
         loop(i, frame->notebook->GetPageCount()) {
             frame->GetCurrentTab()->doc->Save(false);
             frame->CycleTabs(1);
@@ -393,15 +433,14 @@ struct System {
                 case A_IMPXML:
                 case A_IMPXMLA: {
                     wxXmlDocument doc;
-                    if (!doc.Load(filename)) goto problem;
-                    Cell *&root = InitDB(1);
-                    Cell *c = *root->grid->cells;
+                    if (!doc.Load(filename)) { goto problem; }
+                    unique_ptr<Cell> &root = InitDB(1);
+                    Cell *c = root->grid->cells[0].get();
                     FillXML(c, doc.GetRoot(), action == A_IMPXMLA);
                     if (!c->HasText() && c->grid) {
-                        *root->grid->cells = nullptr;
-                        delete root;
-                        root = c;
-                        c->parent = nullptr;
+                        unique_ptr<Cell> child = std::move(root->grid->cells[0]);
+                        root = std::move(child);
+                        root->parent = nullptr;
                     }
                     break;
                 }
@@ -410,15 +449,15 @@ struct System {
                 case A_IMPTXTS:
                 case A_IMPTXTT: {
                     wxFFile file(filename);
-                    if (!file.IsOpened()) goto problem;
+                    if (!file.IsOpened()) { goto problem; }
                     wxString content;
-                    if (!file.ReadAll(&content)) goto problem;
+                    if (!file.ReadAll(&content)) { goto problem; }
                     const auto &lines = wxStringTokenize(content, LINE_SEPARATOR);
 
-                    if (lines.size()) switch (action) {
+                    if (!lines.empty()) {
+                        switch (action) {
                             case A_IMPTXTI: {
-                                Cell *root = InitDB(1);
-                                FillRows(root->grid, lines, CountCol(lines[0]), 0, 0);
+                                FillRows(InitDB(1)->grid.get(), lines, CountCol(lines[0]), 0, 0);
                             }; break;
                             case A_IMPTXTC:
                                 InitDB(1, static_cast<int>(lines.size()))
@@ -433,14 +472,16 @@ struct System {
                                     ->grid->CSVImport(lines, L'\t');
                                 break;
                         }
+                    }
                     break;
                 }
             }
-            Document *doc = frame->GetCurrentTab()->doc;
+            Document *doc = frame->GetCurrentTab()->doc.get();
             doc->modified = true;
             doc->UpdateFileName();
-            doc->selected = Selection();
-            doc->begindrag = Selection();
+            doc->root->ResetChildren();
+            doc->UpdateLayout();
+            doc->SetSelect(Selection(doc->root->grid, 0, 0, 1, 1));
             doc->canvas->Refresh();
         }
         return wxEmptyString;
@@ -449,24 +490,26 @@ struct System {
         return _("File load error.");
     }
 
-    int GetXMLNodes(wxXmlNode *node, auto &nodes, vector<wxXmlAttribute *> *attributes = nullptr,
-                    bool attributestoo = false) {
-        for (auto child = node->GetChildren(); child; child = child->GetNext()) {
-            if (child->GetType() == wxXML_ELEMENT_NODE) nodes.push_back(child);
+    static int GetXMLNodes(wxXmlNode *node, vector<wxXmlNode *> &nodes,
+                           vector<wxXmlAttribute *> *const attributes = nullptr,
+                           bool attributestoo = false) {
+        for (auto *child = node->GetChildren(); child != nullptr; child = child->GetNext()) {
+            if (child->GetType() == wxXML_ELEMENT_NODE) { nodes.push_back(child); }
         }
-        if (attributestoo && attributes)
-            for (auto attribute = node->GetAttributes(); attribute;
+        if (attributestoo && attributes != nullptr) {
+            for (auto *attribute = node->GetAttributes(); attribute != nullptr;
                  attribute = attribute->GetNext()) {
                 attributes->push_back(attribute);
             }
-        return nodes.size() + (attributes ? attributes->size() : 0);
+        }
+        return nodes.size() + (attributes != nullptr ? attributes->size() : 0);
     }
 
     void FillXML(Cell *c, wxXmlNode *node, bool attributestoo) {
         const auto &words = wxStringTokenize(
             node->GetType() == wxXML_ELEMENT_NODE ? node->GetNodeContent() : node->GetContent());
         loop(i, words.GetCount()) {
-            if (c->text.t.Len()) c->text.t.Append(L' ');
+            if (!c->text.t.IsEmpty()) { c->text.t.Append(L' '); }
             c->text.t.Append(words[i]);
         }
 
@@ -483,43 +526,45 @@ struct System {
         vector<wxXmlNode *> nodes;
         vector<wxXmlAttribute *> attributes;
         auto numrows = GetXMLNodes(node, nodes, &attributes, attributestoo);
-        if (!numrows) return;
+        if (numrows == 0) { return; }
 
-        if (nodes.size() == 1 && (!c->text.t.Len() || nodes[0]->IsWhitespaceOnly()) &&
+        if (nodes.size() == 1 && (c->text.t.IsEmpty() || nodes[0]->IsWhitespaceOnly()) &&
             nodes[0]->GetName() != "row") {
             FillXML(c, nodes[0], attributestoo);
         } else {
             auto allrow = node->GetName() == "grid";
-            for (auto node : nodes)
+            for (auto *node : nodes) {
                 if (node->GetName() != "row") {
                     allrow = false;
                     break;
                 }
+            }
             if (allrow) {
-                int desiredxs;
+                int desiredxs = 0;
                 loopv(i, nodes) {
                     vector<wxXmlNode *> ins;
                     auto xs = GetXMLNodes(nodes[i], ins);
-                    if (!i) {
-                        desiredxs = xs ? xs : 1;
+                    if (i == 0) {
+                        desiredxs = xs != 0 ? xs : 1;
                         c->AddGrid(desiredxs, nodes.size());
                         SetGridSettingsFromXML(c, node);
                     }
-                    loop(j, desiredxs) if (ins.size() > j)
-                        FillXML(c->grid->C(j, i), ins[j], attributestoo);
+                    loop(j, desiredxs) if (ins.size() > j) {
+                        FillXML(c->grid->C(j, i).get(), ins[j], attributestoo);
+                    }
                 }
             } else {
                 c->AddGrid(1, numrows);
                 SetGridSettingsFromXML(c, node);
                 loopv(i, attributes) c->grid->C(0, i)->text.t = attributes[i]->GetValue();
                 loopv(i, nodes)
-                    FillXML(c->grid->C(0, i + attributes.size()), nodes[i], attributestoo);
+                    FillXML(c->grid->C(0, i + attributes.size()).get(), nodes[i], attributestoo);
             }
         }
     }
 
-    void SetGridSettingsFromXML(Cell *c, wxXmlNode *node) {
-        c->grid->folded = wxAtoi(node->GetAttribute("folded", "0"));
+    static void SetGridSettingsFromXML(Cell *c, wxXmlNode *node) {
+        c->grid->folded = wxAtoi(node->GetAttribute("folded", "0")) != 0;
         c->grid->bordercolor = std::stoi(
             node->GetAttribute("bordercolor", wxString() << g_bordercolor_default).ToStdString(),
             nullptr, 0);
@@ -527,9 +572,9 @@ struct System {
             node->GetAttribute("outerspacing", wxString() << g_usergridouterspacing_default));
     }
 
-    int CountCol(const auto &s) {
+    static int CountCol(const wxString &s) {
         auto col = 0;
-        while (s[col] == ' ' || s[col] == '\t') col++;
+        while (s[col] == ' ' || s[col] == '\t') { col++; }
         return col;
     }
 
@@ -538,13 +583,15 @@ struct System {
         for (int i = startrow, n = as.size(); i < n; i++) {
             auto s = as[i];
             auto col = CountCol(s);
-            if (col < column && startrow != 0) return i;
+            if (col < column && startrow != 0) { return i; }
             if (col > column) {
-                auto c = g->C(0, y - 1);
-                auto sg = c->grid;
-                i = FillRows(sg ? sg : c->AddGrid(), as, col, i, sg ? sg->ys : 0) - 1;
+                auto *c = g->C(0, y - 1).get();
+                auto *sg = c->grid.get();
+                i = FillRows(sg != nullptr ? sg : c->AddGrid(), as, col, i,
+                             sg != nullptr ? sg->ys : 0) -
+                    1;
             } else {
-                if (g->ys <= y) g->InsertCells(-1, y, 0, 1);
+                if (g->ys <= y) { g->InsertCells(-1, y, 0, 1); }
                 auto &t = g->C(0, y)->text;
                 t.t = s.Trim(false);
                 y++;
@@ -553,20 +600,20 @@ struct System {
         return static_cast<int>(as.size());
     }
 
-    int AddImageToList(double scale, auto &&data, char type) {
+    int AddImageToList(double scale, vector<uint8_t> &&data, char type) {
         auto hash = CalculateHash(data);
         loopv(i, imagelist) {
-            if (imagelist[i]->hash == hash && imagelist[i]->type == type) return i;
+            if (imagelist[i]->hash == hash && imagelist[i]->type == type) { return i; }
         }
         imagelist.push_back(make_unique<Image>(hash, scale, std::move(data), type));
         return imagelist.size() - 1;
     }
 
-    void ImageSize(wxBitmap *bm, int &xs, int &ys) {
-        if (!bm) return;
+    static void ImageSize(wxBitmap *bm, int &xs, int &ys) {
+        if (bm == nullptr) { return; }
         xs = bm->GetWidth();
         ys = bm->GetHeight();
     }
 
-    void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
+    static void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
 };

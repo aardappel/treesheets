@@ -13,11 +13,11 @@ struct Image {
     double display_scale;
     int pixel_width {0};
 
-    Image(auto _hash, auto _sc, auto &&_data, auto _type)
+    Image(uint64_t _hash, double _sc, vector<uint8_t> &&_data, char _type)
         : hash(_hash), display_scale(_sc), data(std::move(_data)), type(_type) {}
 
     void ImageRescale(double scale) {
-        auto &[it, mime] = imagetypes.at(type);
+        const auto &[it, mime] = imagetypes.at(type);
         auto im = ConvertBufferToWxImage(data, it);
         im.Rescale(im.GetWidth() * scale, im.GetHeight() * scale);
         data = ConvertWxImageToBuffer(im, it);
@@ -40,7 +40,7 @@ struct Image {
         // so this function must not touch any global resources
         // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
-            auto &[it, mime] = imagetypes.at(type);
+            const auto &[it, mime] = imagetypes.at(type);
             auto bm = ConvertBufferToWxBitmap(data, it);
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
@@ -59,7 +59,7 @@ struct Image {
         return true;
     }
 
-    wxString GetFileExtension() {
+    wxString GetFileExtension() const {
         switch (type) {
             case 'J': return ".jpg";
             case 'I':

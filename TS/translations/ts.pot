@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-12 16:37+0200\n"
+"POT-Creation-Date: 2026-05-23 09:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -245,6 +245,9 @@ msgid "Add an image to the selected cell"
 msgstr ""
 
 msgid "Add..."
+msgstr ""
+
+msgid "Adds a NxN grid to the selected cell"
 msgstr ""
 
 msgid "Adds a grid to the selected cell"
@@ -559,10 +562,15 @@ msgstr ""
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr ""
 
+msgid "Error renaming temporary file."
+msgstr ""
+
 msgid "Error writing PNG file!"
 msgstr ""
 
-msgid "Error writing TreeSheets file! (try saving under new filename)."
+msgid ""
+"Error writing TreeSheets file! Would you like to save at a different "
+"location?"
 msgstr ""
 
 msgid "Error writing image file! (try saving under new filename)."
@@ -826,6 +834,9 @@ msgstr ""
 msgid "Initialization Error"
 msgstr ""
 
+msgid "Insert New &NxN Grid"
+msgstr ""
+
 msgid "Insert last image"
 msgstr ""
 
@@ -963,6 +974,9 @@ msgstr ""
 msgid "New file cancelled."
 msgstr ""
 
+msgid "New subgrid"
+msgstr ""
+
 msgid "No autoexport"
 msgstr ""
 
@@ -988,6 +1002,9 @@ msgid "No search."
 msgstr ""
 
 msgid "No style to paste."
+msgstr ""
+
+msgid "No subgrid created."
 msgstr ""
 
 msgid "No text in this cell."
@@ -1542,6 +1559,9 @@ msgstr ""
 msgid "Tutorial &web page"
 msgstr ""
 
+msgid "Tutorial web page could not be found."
+msgstr ""
+
 msgid "Typewriter font..."
 msgstr ""
 
@@ -1573,6 +1593,9 @@ msgid "Vertical Layout with Line Style Rendering"
 msgstr ""
 
 msgid "What size grid would you like to start with?"
+msgstr ""
+
+msgid "What subgrid size would you like to start with?"
 msgstr ""
 
 msgid "Width"

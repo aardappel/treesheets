@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 09:39+0100\n"
-"PO-Revision-Date: 2026-02-07 10:43-0300\n"
+"POT-Creation-Date: 2026-05-08 09:01-0300\n"
+"PO-Revision-Date: 2026-05-08 10:34-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
 "Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
@@ -205,6 +205,9 @@ msgstr "&Transpor"
 msgid "&Undo"
 msgstr "&Desfazer"
 
+msgid "&Vector graphics..."
+msgstr "Gráfico &vetorial..."
+
 msgid "&Vertical View"
 msgstr "Visualização &Vertical"
 
@@ -244,13 +247,16 @@ msgid "Add Image"
 msgstr "Adicionar Imagem"
 
 msgid "Add Lobster scripts to the menu"
-msgstr "Adicionar script(s) Lobster ao menu"
+msgstr "Adiciona script(s) Lobster ao menu"
 
 msgid "Add an image to the selected cell"
 msgstr "Adiciona uma imagem à célula selecionada"
 
 msgid "Add..."
 msgstr "&Adicionar..."
+
+msgid "Adds a NxN grid to the selected cell"
+msgstr "Adiciona uma grade NxN à célula selecionada"
 
 msgid "Adds a grid to the selected cell"
 msgstr "Adiciona uma grade à célula selecionada"
@@ -360,7 +366,7 @@ msgid "Cell "
 msgstr "Célula "
 
 msgid "Change interface language"
-msgstr "Mudar idioma da interface"
+msgstr "Muda idioma da interface"
 
 msgid "Change language..."
 msgstr "Mudar idioma..."
@@ -386,7 +392,7 @@ msgstr ""
 "pixels"
 
 msgid "Change the key binding of a menu item"
-msgstr "Modificar a associação de teclas de um item de menu"
+msgstr "Modifica a associação de teclas de um item de menu"
 
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Houve mudanças, tem certeza que deseja continuar?"
@@ -399,6 +405,9 @@ msgstr "Informe o arquivo HTML a gravar"
 
 msgid "Choose PNG file to write"
 msgstr "Informe o arquivo PNG a gravar"
+
+msgid "Choose SVG file to write"
+msgstr "Informe o arquivo SVG a gravar"
 
 msgid "Choose Text file to write"
 msgstr "Informe o arquivo de texto a gravar"
@@ -444,7 +453,7 @@ msgid "Copy (CTRL+c)"
 msgstr "Copiar (CTRL+c)"
 
 msgid "Copy As Continuous Text"
-msgstr "Copiar como Te&xto Contínuo"
+msgstr "Copiar como Texto Contín&uo"
 
 msgid "Copy selection"
 msgstr "Copia a seleção"
@@ -462,7 +471,7 @@ msgid "Create a new document"
 msgstr "Cria um novo documento"
 
 msgid "Create backup file before document is saved to file"
-msgstr "Criar arquivo de backup antes de salvar o documento"
+msgstr "Cria arquivo de backup antes de salvar o documento"
 
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Cria um novo nível de hierarquia ao redor da seleção atual"
@@ -478,6 +487,9 @@ msgstr "Mover o cursor um caractere à esquerda"
 
 msgid "Cursor Right"
 msgstr "Mover o cursor um caractere à direita"
+
+msgid "Custom"
+msgstr "Personalizada"
 
 msgid "Custom &color..."
 msgstr "Cor &personalizada..."
@@ -534,7 +546,7 @@ msgid "Edit &Note"
 msgstr "Editar Anotação"
 
 msgid "Edit the note of the selected cell"
-msgstr "Editar a anotação da célula selecionada"
+msgstr "Edita a anotação da célula selecionada"
 
 #, c-format
 msgid "Edited %s %s"
@@ -549,12 +561,12 @@ msgstr "Embutir como &PNG"
 msgid ""
 "Embed the image(s) in the selected cells in JPEG format (reduces data size)"
 msgstr ""
-"Embutir a(s) imagem(ns) das células selecionadas em formato JPEG (reduz o "
+"Embute a(s) imagem(ns) das células selecionadas em formato JPEG (reduz o "
 "tamanho)"
 
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
-"Embutir a(s) imagem(ns) das células selecionadas em formato PNG (padrão)"
+"Embute a(s) imagem(ns) das células selecionadas em formato PNG (padrão)"
 
 msgid "End date and time"
 msgstr "Data/hora final"
@@ -569,27 +581,33 @@ msgid "Enter/exit text edit mode"
 msgstr "Entrar/sair do modo de edição de texto"
 
 msgid "Error exporting file!"
-msgstr "Erro ao exportar o arquivo!"
+msgstr "Erro ao exportar arquivo!"
+
+msgid "Error exporting to SVG file!"
+msgstr "Erro ao exportar arquivo SVG!"
 
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr ""
 "Erro ao carregar arquivo de dados essencial (o TreeSheets não foi instalado "
 "corretamente?)"
 
+msgid "Error renaming temporary file."
+msgstr "Erro ao renomear arquivo temporário."
+
 msgid "Error writing PNG file!"
-msgstr "Erro ao gravar o arquivo PNG!"
+msgstr "Erro ao gravar arquivo PNG!"
 
 msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr "Erro ao gravar o arquivo do TreeSheets! (tente salvar com outro nome)."
+msgstr "Erro ao gravar arquivo do TreeSheets! (tente salvar com outro nome)."
 
 msgid "Error writing image file! (try saving under new filename)."
-msgstr "Erro ao gravar o arquivo de imagem! (tente salvar com outro nome)."
+msgstr "Erro ao gravar arquivo de imagem! (tente salvar com outro nome)."
 
 msgid "Error writing to file!"
-msgstr "Erro ao gravar o arquivo!"
+msgstr "Erro ao gravar arquivo!"
 
 msgid "Error writing to file."
-msgstr "Erro ao gravar o arquivo."
+msgstr "Erro ao gravar arquivo."
 
 msgid "Evaluation finished."
 msgstr "Execução concluída."
@@ -655,21 +673,21 @@ msgstr ""
 "espaços para cada nível de indentação. Pode ser usado para importar em "
 "programas de mapas mentais e editores de texto em geral"
 
+msgid "Export the current view to a SVG vector file."
+msgstr "Exporta a visualização atual para um arquivo vetorial SVG."
+
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
 "is saved"
 msgstr ""
-"Exportar para um arquivo HTML junto com o arquivo original do TreeSheets ao "
+"Exporta para um arquivo HTML junto com o arquivo original do TreeSheets ao "
 "salvar o documento"
-
-msgid "Export to a HTML file when document is saved"
-msgstr "Exportar para um arquivo HTML ao salvar o documento"
 
 msgid ""
 "Export to a HTML file with exported images alongside the original TreeSheets "
 "file when document is saved"
 msgstr ""
-"Exportar para um arquivo HTML com imagens exportadas junto com o arquivo "
+"Exporta para um arquivo HTML com imagens exportadas junto com o arquivo "
 "original do TreeSheets ao salvar o documento"
 
 msgid "Export with images"
@@ -730,26 +748,26 @@ msgid "File Tabs on the bottom"
 msgstr "Abas de arquivos na parte &inferior da tela"
 
 msgid "File corrupted!"
-msgstr "O arquivo está corrompido!"
+msgstr "Arquivo está corrompido!"
 
 msgid "File exported successfully."
-msgstr "O arquivo foi exportado com sucesso."
+msgstr "Arquivo foi exportado com sucesso."
 
 msgid ""
 "File has been re-loaded because of modifications of another program / "
 "computer"
 msgstr ""
-"O arquivo foi recarregado por causa de modificações de outro programa / "
+"Arquivo foi recarregado por causa de modificações de outro programa / "
 "computador"
 
 msgid "File load error."
 msgstr "Houve um erro ao carregar o arquivo."
 
 msgid "File modification conflict!"
-msgstr "O arquivo tem modificações conflitantes!"
+msgstr "Arquivo tem modificações conflitantes!"
 
 msgid "File of newer version."
-msgstr "O arquivo é de uma versão mais recente."
+msgstr "Arquivo é de uma versão mais recente."
 
 msgid "Filter"
 msgstr "&Filtrar"
@@ -794,16 +812,16 @@ msgid "Go to next filter match"
 msgstr "Ir para célula evidenciada seguinte"
 
 msgid "Go to next search match"
-msgstr "Ir para resultado seguinte da busca"
+msgstr "Vai para resultado seguinte da busca"
 
 msgid "Go to previous search match"
-msgstr "Ir para resultado anterior da busca"
+msgstr "Vai para resultado anterior da busca"
 
 msgid "Go to the document in the next tab"
-msgstr "Ir para o documento na aba seguinte"
+msgstr "Vai para o documento na aba seguinte"
 
 msgid "Go to the document in the previous tab"
-msgstr "Ir para o documento na aba anterior"
+msgstr "Vai para o documento na aba anterior"
 
 msgid "Grid Style Rendering"
 msgstr "Renderização com Estilo de Grade"
@@ -873,6 +891,9 @@ msgstr "Texto &indentado..."
 msgid "Initialization Error"
 msgstr "Erro de Inicialização"
 
+msgid "Insert New &NxN Grid"
+msgstr "Inserir Nova Grade N&xN"
+
 msgid "Insert last image"
 msgstr "&Inserir última imagem"
 
@@ -890,7 +911,7 @@ msgid "Invert in dark mode"
 msgstr "Inverter em modo escuro"
 
 msgid "Invert the document in dark mode"
-msgstr "Inverter o documento em modo escuro"
+msgstr "Inverte o documento em modo escuro"
 
 msgid ""
 "It seems that you are about to paste or drop a TreeSheets file. What would "
@@ -900,7 +921,7 @@ msgstr ""
 "que gostaria de fazer?"
 
 msgid "JPEG file is corrupted!"
-msgstr "O arquivo JPEG está corrompido!"
+msgstr "Arquivo JPEG está corrompido!"
 
 msgid "Key binding"
 msgstr "Associação de teclas"
@@ -920,10 +941,6 @@ msgstr ""
 
 msgid "Load an interactive tutorial in TreeSheets"
 msgstr "Carrega um tutorial interativo no TreeSheets"
-
-#, c-format
-msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "%s (%d célula(s), %d caractere(s)) carregado em %d milissegundo(s)."
 
 #, c-format
 msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
@@ -1023,8 +1040,14 @@ msgstr "Nova TreeSheet"
 msgid "New file cancelled."
 msgstr "O novo arquivo foi cancelado."
 
+msgid "New subgrid"
+msgstr "Nova subgrade"
+
 msgid "No autoexport"
 msgstr "&Não autoexportar"
+
+msgid "No image found to convert"
+msgstr "Nenhuma imagem encontrada para converter"
 
 msgid "No image in this cell."
 msgstr "Essa célula não contém imagem."
@@ -1046,6 +1069,9 @@ msgstr "Não há busca."
 
 msgid "No style to paste."
 msgstr "Não há estilo na área de transferência para colar."
+
+msgid "No subgrid created."
+msgstr "Nenhuma subgrade criada."
 
 msgid "No text in this cell."
 msgstr "Essa célula não contém texto."
@@ -1082,7 +1108,7 @@ msgid "Open (CTRL+o)"
 msgstr "Abrir (CTRL+o)"
 
 msgid "Open TreeSheets file"
-msgstr "Abrir o arquivo do TreeSheets"
+msgstr "Abrir arquivo do TreeSheets"
 
 msgid "Open an existing document"
 msgstr "Abre um documento existente"
@@ -1222,7 +1248,7 @@ msgid "Print preview..."
 msgstr "&Visualização de impressão..."
 
 msgid "Quit this program"
-msgstr "Sai deste programa"
+msgstr "Sai do programa"
 
 msgid "Radius &0"
 msgstr "Raio &0"
@@ -1249,7 +1275,7 @@ msgid ""
 "Reload when another computer has changed a file (if you have made changes, "
 "asks)"
 msgstr ""
-"Recarregar quando outro computador tiver modificado um arquivo (se você "
+"Recarrega quando outro computador tiver modificado um arquivo (se você "
 "também tiver feito modificações, pergunta antes)"
 
 msgid "Remo&ve"
@@ -1259,7 +1285,7 @@ msgid "Remove image(s) from the selected cells"
 msgstr "Remove imagem(ns) das células selecionadas"
 
 msgid "Remove script from list in the menu"
-msgstr "Remover script da lista no meu"
+msgstr "Remove script da lista no meu"
 
 msgid "Remove script from list..."
 msgstr "Remover script da lista..."
@@ -1296,10 +1322,10 @@ msgstr "Redefinir largura das colunas"
 
 msgid "Reset the column widths in the selection to the default column width"
 msgstr ""
-"Redefinir largura das colunas na seleção para a largura padrão de coluna"
+"Redefine largura das colunas na seleção para a largura padrão de coluna"
 
 msgid "Reset the toolbar appearance"
-msgstr "Redefinir a aparência da barra de ferramentas"
+msgstr "Redefine a aparência da barra de ferramentas"
 
 msgid "Reset toolbar"
 msgstr "Redefinir barra de ferramentas"
@@ -1342,15 +1368,11 @@ msgstr ""
 "acrescentado ao nome de cada arquivo."
 
 msgid "Save open documents periodically to temporary files"
-msgstr "Salvar documentos abertos para arquivos temporários periodicamente"
-
-#, c-format
-msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "O arquivo %s foi salvo com sucesso (em %d milissegundo(s))."
+msgstr "Salva documentos abertos para arquivos temporários periodicamente"
 
 #, c-format
 msgid "Saved %s successfully (in %lld milliseconds)."
-msgstr "O arquivo %s foi salvo com sucesso (em %lld milissegundo(s))."
+msgstr "Arquivo %s foi salvo com sucesso (em %lld milissegundo(s))."
 
 msgid "Scale (&display only)"
 msgstr "Escala (somente da exibição)"
@@ -1406,28 +1428,28 @@ msgid "Set Print Scale..."
 msgstr "Definir Esca&la de Impressão..."
 
 msgid "Set a custom color for the color dropdowns"
-msgstr "Definir uma cor personalizada para as listas dropdown de cor"
+msgstr "Define uma cor personalizada para as listas dropdown de cor"
 
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr ""
-"Definir uma cor personalizada para as listas dropdown de cor a partir do "
+"Define uma cor personalizada para as listas dropdown de cor a partir do "
 "plano de fundo da célula selecionada"
 
 msgid "Set the color for the document background"
-msgstr "Definir a cor do plano de fundo do documento"
+msgstr "Define a cor do plano de fundo do documento"
 
 msgid "Set the color for the text cursor"
-msgstr "Definir a cor do cursor"
+msgstr "Define a cor do cursor"
 
 msgid "Set the default column width for a new grid"
-msgstr "Definir largura padrão das colunas para uma nova grade"
+msgstr "Define largura padrão das colunas para uma nova grade"
 
 msgid "Set the font the document text is displayed with"
-msgstr "Definir a fonte padrão"
+msgstr "Define a fonte padrão"
 
 msgid "Set the font the typewriter text is displayed with."
-msgstr "Definir a fonte monoespaçada"
+msgstr "Define a fonte monoespaçada"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
@@ -1481,11 +1503,17 @@ msgstr "Classificar em Ordem &Descendente"
 msgid "Start date and time"
 msgstr "Data/hora inicial"
 
+msgid "Start minimized"
+msgstr "Iniciar minimizado"
+
 msgid "Start of line of text"
 msgstr "Mover o cursor para o início da linha"
 
 msgid "Start of text"
 msgstr "Mover o cursor para o início do texto"
+
+msgid "Start the application minimized"
+msgstr "O TreeSheets inicia minimizado"
 
 msgid "Statusbar"
 msgstr "Barra de &status"
@@ -1586,44 +1614,44 @@ msgstr "Aplicar/remover &sublinhado"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr ""
-"Definir se os documentos são exibidos centralizados ou alinhados à esquerda"
+"Define se os documentos são exibidos centralizados ou alinhados à esquerda"
 
 msgid "Toggle whether file tabs are shown on top or on bottom of the documents"
 msgstr ""
-"Definir se as abas dos arquivos são mostradas acima ou abaixo dos documentos"
+"Define se as abas dos arquivos são mostradas acima ou abaixo dos documentos"
 
 msgid "Toggle whether lines are drawn solid (faster rendering) or dashed"
 msgstr ""
-"Definir se as linhas são desenhadas sólidas (mais rápido) ou pontilhadas "
+"Define se as linhas são desenhadas sólidas (mais rápido) ou pontilhadas "
 "(mais lento)"
 
 msgid "Toggle whether only one click is required to maximize from system tray"
 msgstr ""
-"Definir se só um clique é suficiente para restaurar da bandeja do sistema"
+"Define se só um clique é suficiente para restaurar da bandeja do sistema"
 
 msgid "Toggle whether statusbar is shown below the documents"
-msgstr "Definir se a barra de status é mostrada abaixo dos documentos"
+msgstr "Define se a barra de status é mostrada abaixo dos documentos"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
 "editing"
 msgstr ""
-"Definir se as teclas direcionais, além de editar, são usadas também para "
+"Define se as teclas direcionais, além de editar, são usadas também para "
 "navegar"
 
 msgid "Toggle whether the window is minimized instead of closed"
-msgstr "Definir se a janela é minimizada em vez de fechada"
+msgstr "Define se a janela é minimizada em vez de fechada"
 
 msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr ""
-"Definir se a barra de ferramentas é mostrada entre a barra de menu e os "
+"Define se a barra de ferramentas é mostrada entre a barra de menu e os "
 "documentos"
 
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr "Mostra/oculta a grade da(s) célula(s) selecionada(s)"
 
 msgid "Toogle whether window is minimized to system tray"
-msgstr "Definir se a janela é minimizada para a bandeja do sistema"
+msgstr "Define se a janela é minimizada para a bandeja do sistema"
 
 msgid "Toolbar"
 msgstr "&Barra de ferramentas"
@@ -1635,7 +1663,10 @@ msgid "Turn filter &off"
 msgstr "&Retirar filtro"
 
 msgid "Tutorial &web page"
-msgstr "&Página de tutorial no site"
+msgstr "&Página web de tutorial"
+
+msgid "Tutorial web page could not be found."
+msgstr "Página web de tutorial não foi encontrada."
 
 msgid "Typewriter font..."
 msgstr "Fonte &monoespaçada..."
@@ -1669,6 +1700,9 @@ msgstr "Layout Vertical, Renderização com Estilo de Linha"
 
 msgid "What size grid would you like to start with?"
 msgstr "Com que tamanho de grade deseja começar?"
+
+msgid "What subgrid size would you like to start with?"
+msgstr "Com que tamanho de subgrade deseja começar?"
 
 msgid "Width"
 msgstr "Largura"
@@ -1722,6 +1756,9 @@ msgstr "Muda a orientação de uma grade"
 msgid "couldn't import file!"
 msgstr "não foi possível importar o arquivo!"
 
+msgid "nothing to resize"
+msgstr "nada para redimensionar"
+
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr "Cola as cores e o estilo, mas não o texto, da célula que foi copiada"
 
@@ -1739,6 +1776,17 @@ msgstr "escala:"
 
 msgid "size:"
 msgstr "tamanho:"
+
+#~ msgid "Export to a HTML file when document is saved"
+#~ msgstr "Exportar para um arquivo HTML ao salvar o documento"
+
+#, c-format
+#~ msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
+#~ msgstr "%s (%d célula(s), %d caractere(s)) carregado em %d milissegundo(s)."
+
+#, c-format
+#~ msgid "Saved %s successfully (in %d milliseconds)."
+#~ msgstr "O arquivo %s foi salvo com sucesso (em %d milissegundo(s))."
 
 #~ msgid "Reset column widths\tCTRL+R"
 #~ msgstr "Redefinir largura das colunas\tCTRL+R"
@@ -1786,9 +1834,6 @@ msgstr "tamanho:"
 
 #~ msgid "Create .bak files"
 #~ msgstr "Criar arquivos .ba&k"
-
-#~ msgid "Custom"
-#~ msgstr "Personalizada"
 
 #~ msgid "Filter..."
 #~ msgstr "&Filtrar"

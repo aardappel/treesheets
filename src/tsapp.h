@@ -1,7 +1,7 @@
 struct IPCServer : wxServer {
-    wxConnectionBase *OnAcceptConnection(const wxString &topic) {
+    wxConnectionBase *OnAcceptConnection(const wxString &topic) override {
         sys->frame->DeIconize();
-        if (topic.Len() && topic != "*") sys->Open(topic);
+        if (!topic.IsEmpty() && topic != "*") { sys->Open(topic); }
         return new wxConnection();
     }
 };
@@ -28,7 +28,7 @@ struct TSApp : wxApp {
         #endif
         ASSERT(wxUSE_UNICODE);
 
-        exename = GetExecutablePath();
+        exename = wxStandardPaths::Get().GetExecutablePath();
         exepath = wxFileName(exename).GetPath();
 
         #ifdef __WXMAC__
@@ -62,19 +62,22 @@ struct TSApp : wxApp {
                 wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir()));
             if (instance_checker->IsAnotherRunning()) {
                 wxClient client;
-                client.MakeConnection("localhost", service,
-                                      filename.Len() ? filename : wxString("*"));  // fire and forget
+                client.MakeConnection(
+                    "localhost", service,
+                    !filename.IsEmpty() ? filename : wxString("*"));  // fire and forget
                 return false;
             }
         }
 
         wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
-        sys = new System(portable);
-        if (start_minimized) sys->startminimized = true;
+        #ifdef __WXMSW__
+            MSWEnableDarkMode();
+        #endif
+        sys = make_unique<System>(portable);
+        if (start_minimized) { sys->startminimized = true; }
         SetupInternationalization();
         #ifdef __WXMSW__
             DeclareHiDpiAwareOnWindows();
-            MSWEnableDarkMode();
         #endif
         frame = new TSFrame(this);
 
@@ -121,30 +124,11 @@ struct TSApp : wxApp {
     #endif
 
     int OnExit() override {
-        DELETEP(sys);
+        sys.reset();
         return 0;
     }
 
-    wxString GetExecutablePath() {
-        wxString executablepath = argv[0];
-        #if defined(__WXMAC__)
-            char path[PATH_MAX];
-            uint32_t size = sizeof(path);
-            if(_NSGetExecutablePath(path, &size) == 0) executablepath = path;
-        #elif defined(__WXGTK__)
-            // argv[0] could be relative, this is apparently a more robust way to get the
-            // full path.
-            char path[PATH_MAX];
-            auto len = readlink("/proc/self/exe", path, PATH_MAX - 1);
-            if (len >= 0) {
-                path[len] = 0;
-                executablepath = path;
-            }
-        #endif
-        return executablepath;
-    }
-
-    void SetupInternationalization() {
+    void SetupInternationalization() const {
         wxUILocale::UseDefault();
 
         #ifdef __WXGTK__
@@ -158,16 +142,23 @@ struct TSApp : wxApp {
         #endif
         wxFileTranslationsLoader::AddCatalogLookupPathPrefix(GetDataPath("translations"));
 
-        auto trans = new wxTranslations();
-        trans->SetLanguage(sys->defaultlang);
-        trans->AddCatalog("ts");
+        auto *trans = new wxTranslations();
+        if (sys->defaultlang.IsEmpty()) {
+            trans->SetLanguage(wxEmptyString);
+            trans->AddCatalog("ts");
+        } else if (sys->defaultlang == "en") {
+            trans->SetLanguage(wxLANGUAGE_UNKNOWN);
+        } else {
+            trans->SetLanguage(sys->defaultlang);
+            trans->AddCatalog("ts");
+        }
 
         wxTranslations::Set(trans);
     }
 
-    wxString GetDataPath(const wxString &relpath) {
+    wxString GetDataPath(const wxString &relpath) const {
         std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(exepath.Length()
+            std::filesystem::path(!exepath.IsEmpty()
                                       ? exepath.ToStdString() + "/" + relpath.ToStdString()
                                       : relpath.ToStdString()),
             #ifdef TREESHEETS_DATADIR
@@ -175,17 +166,17 @@ struct TSApp : wxApp {
             #endif
         };
         std::filesystem::path relativePath;
-        for (auto path : candidatePaths) {
+        for (const auto &path : candidatePaths) {
             relativePath = path;
             if (std::filesystem::exists(relativePath)) { break; }
         }
 
-        return wxString(relativePath);
+        return {relativePath};
     }
 
-    wxString GetDocPath(const wxString &relpath) {
+    wxString GetDocPath(const wxString &relpath) const {
         std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(exepath.Length()
+            std::filesystem::path(!exepath.IsEmpty()
                                       ? exepath.ToStdString() + "/" + relpath.ToStdString()
                                       : relpath.ToStdString()),
             #ifdef TREESHEETS_DOCDIR
@@ -193,12 +184,12 @@ struct TSApp : wxApp {
             #endif
         };
         std::filesystem::path relativePath;
-        for (auto path : candidatePaths) {
+        for (const auto &path : candidatePaths) {
             relativePath = path;
             if (std::filesystem::exists(relativePath)) { break; }
         }
 
-        return wxString(relativePath);
+        return {relativePath};
     }
 
     #ifdef __WXMSW__

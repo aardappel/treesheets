@@ -6,7 +6,7 @@ Welcome to the TreeSheets productivity tool!
 </p>
 
 
-TreeSheets ([https://strlen.com/treesheets/](https://strlen.com/treesheets/)) is an Open Source Free Form Data Organizer that leverages the power of hierarchical spreadsheets. Hierarchical spreadsheets serve as a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
+[TreeSheets](https://strlen.com/treesheets/) is an Open Source Free Form Data Organizer that leverages the power of hierarchical spreadsheets. Hierarchical spreadsheets serve as a great replacement for spreadsheets, mind mappers, outliners, PIMs, text editors and small databases.
 
 Suitable for any kind of data organization, such as todo lists, calendars, project management, brainstorming, organizing ideas, planning, requirements gathering, presentation of information, etc.
 

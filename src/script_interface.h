@@ -1,7 +1,7 @@
 namespace script {
 
-typedef std::pair<int, int> icoord;
-typedef std::pair<icoord, icoord> ibox;
+using icoord = std::pair<int, int>;
+using ibox = std::pair<icoord, icoord>;
 
 struct ScriptInterface {
     virtual bool LoadDocument(const char *filename) = 0;
@@ -44,7 +44,7 @@ struct ScriptInterface {
     virtual bool HasImage() = 0;
     virtual void RemoveImage() = 0;
     virtual bool SetImage(std::string_view filename) = 0;
-    virtual ~ScriptInterface() {};
+    virtual ~ScriptInterface() = default;
 };
 
 extern std::string InitLobster(ScriptInterface *_si, const char *exefilepath,

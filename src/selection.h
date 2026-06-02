@@ -1,8 +1,5 @@
-class Selection {
-    bool textedit {false};
-
-    public:
-    Grid *grid;
+struct Selection {
+    shared_ptr<Grid> grid;
     int x;
     int y;
     int xs;
@@ -11,9 +8,10 @@ class Selection {
     int cursorend {0};
     int firstdx {0};
     int firstdy {0};
+    bool textedit {false};
 
-    Selection(Grid *_grid = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
-        : grid(_grid), x(_x), y(_y), xs(_xs), ys(_ys) {}
+    Selection(shared_ptr<Grid> _grid = nullptr, int _x = 0, int _y = 0, int _xs = 0, int _ys = 0)
+        : grid(std::move(_grid)), x(_x), y(_y), xs(_xs), ys(_ys) {}
 
     void SelAll() {
         if (textedit) {
@@ -26,15 +24,15 @@ class Selection {
         }
     }
 
-    Cell *GetCell() const { return grid && xs == 1 && ys == 1 ? grid->C(x, y) : nullptr; }
-    Cell *GetFirst() const { return grid && xs >= 1 && ys >= 1 ? grid->C(x, y) : nullptr; }
-    bool EqLoc(const Selection &s) {
+    Cell *GetCell() const { return grid && xs == 1 && ys == 1 ? grid->C(x, y).get() : nullptr; }
+    Cell *GetFirst() const { return grid && xs >= 1 && ys >= 1 ? grid->C(x, y).get() : nullptr; }
+    bool EqLoc(const Selection &s) const {
         return grid == s.grid && x == s.x && y == s.y && xs == s.xs && ys == s.ys;
     }
     bool operator==(Selection &s) {
         return EqLoc(s) && cursor == s.cursor && cursorend == s.cursorend;
     }
-    bool Thin() const { return !(xs * ys); }
+    bool Thin() const { return (xs * ys) == 0; }
     bool IsAll() const { return xs == grid->xs && ys == grid->ys; }
     void SetCursorEdit(Document *doc, bool edit) {
         wxCursor c(edit ? wxCURSOR_IBEAM : wxCURSOR_ARROW);
@@ -48,7 +46,7 @@ class Selection {
         firstdx = firstdy = 0;
     }
 
-    bool TextEdit() { return textedit; }
+    bool TextEdit() const { return textedit; }
     void EnterEditOnly(Document *doc) {
         textedit = true;
         SetCursorEdit(doc, true);
@@ -65,16 +63,19 @@ class Selection {
     }
 
     bool IsInside(Selection &o) {
-        if (!o.grid || !grid) return false;
-        if (grid != o.grid)
-            return grid->cell->parent && grid->cell->parent->grid->FindCell(grid->cell).IsInside(o);
+        if (!o.grid || !grid) { return false; }
+        if (grid != o.grid) {
+            return grid->cell->parent != nullptr &&
+                   grid->cell->parent->grid->FindCell(grid->cell).IsInside(o);
+        }
         return x >= o.x && y >= o.y && x + xs <= o.x + o.xs && y + ys <= o.y + o.ys;
     }
 
     void Merge(const Selection &a, const Selection &b) {
         textedit = false;
         if (a.grid == b.grid) {
-            if (a.GetCell() == b.GetCell() && a.GetCell() && (a.textedit || b.textedit)) {
+            if (a.GetCell() != nullptr && a.GetCell() == b.GetCell() &&
+                (a.textedit || b.textedit)) {
                 if (a.cursor != a.cursorend) {
                     Selection c = b;
                     a.GetCell()->text.SelectWord(c);
@@ -89,12 +90,12 @@ class Selection {
                 cursor = cursorend = 0;
             }
         } else {
-            auto at = a.GetCell();
-            auto bt = b.GetCell();
+            auto *at = a.GetCell();
+            auto *bt = b.GetCell();
             int ad = at->Depth();
             int bd = bt->Depth();
             int i = 0;
-            while (i < ad && i < bd && at->Parent(ad - i) == bt->Parent(bd - i)) i++;
+            while (i < ad && i < bd && at->Parent(ad - i) == bt->Parent(bd - i)) { i++; }
             auto g = at->Parent(ad - i + 1)->grid;
             Merge(g->FindCell(at->Parent(ad - i)), g->FindCell(bt->Parent(bd - i)));
             return;
@@ -106,17 +107,17 @@ class Selection {
         ys = abs(a.y - b.y) + 1;
     }
 
-    int MaxCursor() { return int(GetCell()->text.t.Len()); }
+    int MaxCursor() const { return static_cast<int>(GetCell()->text.t.Len()); }
 
-    inline bool IsWordSep(wxChar ch) {
+    static bool IsWordSep(wxChar ch) {
         // represents: !"#$%&'()*+,-./    :;<=>?@    [\]^    {|}~    `
         return 32 < ch && ch < 48 || 57 < ch && ch < 65 || 90 < ch && ch < 95 ||
                122 < ch && ch < 127 || ch == 96;
     }
 
-    inline int CharType(wxChar ch) {
-        if (wxIsspace(ch)) return TEXT_SPACE;
-        if (IsWordSep(ch)) return TEXT_SEP;
+    static int CharType(wxChar ch) {
+        if (wxIsspace(ch)) { return TEXT_SPACE; }
+        if (IsWordSep(ch)) { return TEXT_SEP; }
         return TEXT_CHAR;
     }
 
@@ -128,20 +129,21 @@ class Selection {
             grid->Move(dx, dy, *this);
             x = (x + dx + grid->xs) % grid->xs;
             y = (y + dy + grid->ys) % grid->ys;
-            if (x + xs > grid->xs || y + ys > grid->ys) grid = nullptr;
+            if (x + xs > grid->xs || y + ys > grid->ys) { grid = nullptr; }
 
             // FIXME: this is null in the case of a whole column selection, and doesn't do the right
             // thing.
-            if (grid) grid->cell->ResetChildren();
-            doc->paintscrolltoselection = true;
+            if (grid) { grid->cell->ResetChildren(); }
+            doc->UpdateLayout();
+            doc->ScrollIfSelectionOutOfView();
             doc->canvas->Refresh();
         } else {
-            if (ctrl && dx)  // implies textedit
+            if (ctrl && dx != 0)  // implies textedit
             {
-                if (cursor == cursorend) firstdx = dx;
+                if (cursor == cursorend) { firstdx = dx; }
                 int &curs = firstdx < 0 ? cursor : cursorend;
                 int c = curs + dx;
-                wxChar ch;
+                wxChar ch = 0;
                 if (c >= 0 && c <= MaxCursor()) {
                     ch = GetCell()->text.t[min(c, curs)];
                     // TEXT_SPACE > TEXT_SEP > TEXT_CHAR > 0.
@@ -151,41 +153,46 @@ class Selection {
                     curs = c;
                     for (;;) {
                         c += dx;
-                        if (c < 0 || c > MaxCursor()) break;
+                        if (c < 0 || c > MaxCursor()) { break; }
                         ch = GetCell()->text.t[min(c, curs)];
                         int chtype = CharType(ch);
                         // type increase when positive or type change when negative => break
-                        if (chtype > allowed && chtype != -allowed) break;
+                        if (chtype > allowed && chtype != -allowed) { break; }
                         curs = c;
                         // type decrease when positive => negate
-                        if (chtype < allowed) allowed = -chtype;
+                        if (chtype < allowed) { allowed = -chtype; }
                     }
                 }
                 if (shift) {
-                    if (cursorend < cursor) swap_(cursorend, cursor);
-                } else
+                    if (cursorend < cursor) { swap_(cursorend, cursor); }
+                } else {
                     cursorend = cursor = curs;
+                }
             } else if (shift) {
                 if (textedit) {
-                    if (cursor == cursorend) firstdx = dx;
+                    if (cursor == cursorend) { firstdx = dx; }
                     (firstdx < 0 ? cursor : cursorend) += dx;
-                    if (cursor < 0) cursor = 0;
-                    if (cursorend > MaxCursor()) cursorend = MaxCursor();
+                    cursor = std::max(cursor, 0);
+                    cursorend = std::min(cursorend, MaxCursor());
                 } else {
-                    if (!xs) firstdx = 0;  // redundant: just in case someone else changed it
-                    if (!ys) firstdy = 0;
-                    if (!firstdx) firstdx = dx;
-                    if (!firstdy) firstdy = dy;
+                    if (xs == 0) {
+                        firstdx = 0;  // redundant: just in case someone else changed it
+                    }
+                    if (ys == 0) { firstdy = 0; }
+                    if (firstdx == 0) { firstdx = dx; }
+                    if (firstdy == 0) { firstdy = dy; }
                     if (firstdx < 0) {
                         x += dx;
                         xs += -dx;
-                    } else
+                    } else {
                         xs += dx;
+                    }
                     if (firstdy < 0) {
                         y += dy;
                         ys += -dy;
-                    } else
+                    } else {
                         ys += dy;
+                    }
                     if (x < 0) {
                         x = 0;
                         xs--;
@@ -194,25 +201,26 @@ class Selection {
                         y = 0;
                         ys--;
                     }
-                    if (x + xs > grid->xs) xs--;
-                    if (y + ys > grid->ys) ys--;
-                    if (!xs) firstdx = 0;
-                    if (!ys) firstdy = 0;
-                    if (!xs && !ys) grid = nullptr;
+                    if (x + xs > grid->xs) { xs--; }
+                    if (y + ys > grid->ys) { ys--; }
+                    if (xs == 0) { firstdx = 0; }
+                    if (ys == 0) { firstdy = 0; }
+                    if (xs == 0 && ys == 0) { grid = nullptr; }
                 }
             } else {
-                if (vs) {
-                    if (ovs)  // (multi) cell selection
+                if (vs != 0) {
+                    if (ovs != 0)  // (multi) cell selection
                     {
                         bool intracell = true;
-                        if (textedit && !exitedit && GetCell()) {
-                            if (dy) {
+                        if (GetCell() != nullptr && textedit && !exitedit) {
+                            if (dy != 0) {
                                 cursorend = cursor;
                                 auto &text = GetCell()->text;
                                 int maxcolwidth = GetCell()->parent->grid->colwidths[x];
 
                                 int i = 0;
-                                int laststart, lastlen;
+                                int laststart = 0;
+                                int lastlen = 0;
                                 int nextoffset = -1;
                                 for (int l = 0;; l++) {
                                     int start = i;
@@ -220,7 +228,7 @@ class Selection {
                                     auto len = static_cast<int>(ls.Len());
                                     int end = start + len;
 
-                                    if (len && nextoffset >= 0) {
+                                    if (len != 0 && nextoffset >= 0) {
                                         cursor = cursorend =
                                             start + (nextoffset > len ? len : nextoffset);
                                         intracell = false;
@@ -245,25 +253,28 @@ class Selection {
                                     laststart = start;
                                     lastlen = len;
 
-                                    if (!len) break;
+                                    if (len == 0) { break; }
                                 }
                             } else {
                                 intracell = false;
                                 if (cursor != cursorend) {
-                                    if (dx < 0)
+                                    if (dx < 0) {
                                         cursorend = cursor;
-                                    else
+                                    } else {
                                         cursor = cursorend;
+                                    }
                                 } else {
-                                    if ((dx < 0 && cursor) || (dx > 0 && MaxCursor() > cursor))
+                                    if ((dx < 0 && cursor != 0) ||
+                                        (dx > 0 && MaxCursor() > cursor)) {
                                         cursorend = cursor += dx;
+                                    }
                                 }
                             }
                         }
 
                         if (intracell) {
                             if (sys->thinselc) {
-                                if (dx + dy > 0) v += vs;
+                                if (dx + dy > 0) { v += vs; }
                                 vs = 0;  // make it a thin selection, in direction
                                 ovs = 1;
                             } else {
@@ -281,7 +292,7 @@ class Selection {
                     }
                 } else if (notboundaryperp)  // thin selection, moving in perpendicular direction
                 {
-                    if (dx + dy < 0) v--;
+                    if (dx + dy < 0) { v--; }
                     vs = 1;  // make it a cell selection
                 } else {     // selection cycle, jump to the opposite side of the grid
                     if (y + dy > grid->ys) {
@@ -299,7 +310,8 @@ class Selection {
                     }
                 };
             }
-            doc->paintscrolltoselection = true;
+            doc->UpdateLayout();
+            doc->ScrollIfSelectionOutOfView();
             doc->canvas->Refresh();
         };
     }
@@ -321,9 +333,9 @@ class Selection {
     void Next(Document *doc, bool backwards) {
         ExitEdit(doc);
         if (backwards) {
-            if (x > 0)
+            if (x > 0) {
                 x--;
-            else if (y > 0) {
+            } else if (y > 0) {
                 y--;
                 x = grid->xs - 1;
             } else {
@@ -331,23 +343,25 @@ class Selection {
                 y = grid->ys - 1;
             }
         } else {
-            if (x < grid->xs - 1)
+            if (x < grid->xs - 1) {
                 x++;
-            else if (y < grid->ys - 1) {
+            } else if (y < grid->ys - 1) {
                 y++;
                 x = 0;
-            } else
+            } else {
                 x = y = 0;
+            }
         }
         EnterEdit(doc, 0, MaxCursor());
-        doc->paintscrolltoselection = true;
+        doc->UpdateLayout();
+        doc->ScrollIfSelectionOutOfView();
         doc->canvas->Refresh();
     }
 
     wxString Wrap(Document *doc) {
-        if (Thin()) return doc->NoThin();
+        if (Thin()) { return treesheets::Document::NoThin(); }
         grid->cell->AddUndo(doc);
-        auto np = grid->CloneSel(*this).release();
+        Cell *np = grid->CloneSel(*this).release();
         grid->C(x, y)->text.t = ".";  // avoid this cell getting deleted
         if (xs > 1) {
             Selection s(grid, x + 1, y, xs - 1, ys);
@@ -357,30 +371,30 @@ class Selection {
             Selection s(grid, x, y + 1, 1, ys - 1);
             grid->MultiCellDeleteSub(doc, s);
         }
-        auto old = grid->C(x, y);
+        Cell *old = grid->C(x, y).get();
         np->text.relsize = old->text.relsize;
         np->CloneStyleFrom(old);
-        grid->ReplaceCell(old, np);
+        grid->C(x, y).reset(np);
         np->parent = grid->cell;
-        delete old;
         xs = ys = 1;
         EnterEdit(doc, MaxCursor(), MaxCursor());
+        doc->UpdateLayout();
         doc->canvas->Refresh();
         return wxEmptyString;
     }
 
     Cell *ThinExpand(Document *doc, bool jumptofirst = false) {
         if (Thin()) {
-            if (xs) {
+            if (xs != 0) {
                 grid->cell->AddUndo(doc);
                 grid->InsertCells(-1, y, 0, 1);
                 ys = 1;
-                if (jumptofirst) x = 0;
+                if (jumptofirst) { x = 0; }
             } else {
                 grid->cell->AddUndo(doc);
                 grid->InsertCells(x, -1, 1, 0);
                 xs = 1;
-                if (jumptofirst) y = 0;
+                if (jumptofirst) { y = 0; }
             }
         }
         return GetCell();
@@ -388,13 +402,13 @@ class Selection {
 
     void HomeEnd(Document *doc, bool ishome) {
         xs = ys = 1;
-        if (ishome)
+        if (ishome) {
             x = y = 0;
-        else {
+        } else {
             x = grid->xs - 1;
             y = grid->ys - 1;
         }
-        doc->paintscrolltoselection = true;
+        doc->ScrollIfSelectionOutOfView();
         doc->canvas->Refresh();
     }
 };

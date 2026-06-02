@@ -3,11 +3,11 @@ struct TSFrame : wxFrame {
     wxIcon icon;
     wxTaskBarIcon taskbaricon;
     wxMenu *editmenupopup;
-    wxFileHistory filehistory;
     #ifdef ENABLE_LOBSTER
-        wxFileHistory scripts {A_MAXACTION - A_SCRIPT, A_SCRIPT};
+        wxMenu *scriptmenu {nullptr};
     #endif
-    wxFileSystemWatcher *watcher;
+    wxFileHistory filehistory;
+    wxFileSystemWatcher *watcher {nullptr};
     wxAuiNotebook *notebook {nullptr};
     wxAuiManager aui {this};
     wxBitmap line_nw;
@@ -35,7 +35,7 @@ struct TSFrame : wxFrame {
 
         class MyLog : public wxLog {
             void DoLogString(const wxChar *message, time_t timestamp) { DoLogText(*message); }
-            void DoLogText(const wxString &message) {
+            void DoLogText(const wxString &message) override {
                 #ifdef WIN32
                 OutputDebugString(message.c_str());
                 OutputDebugString(L"\n");
@@ -85,26 +85,21 @@ struct TSFrame : wxFrame {
 
         imagepath = app->GetDataPath("images/nuvola/dropdown/");
 
-        if (sys->singletray)
+        if (sys->singletray) {
             taskbaricon.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
                         wxTaskBarIconEventHandler(TSFrame::OnTBIDBLClick), nullptr, this);
-        else
+        } else {
             taskbaricon.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
                         wxTaskBarIconEventHandler(TSFrame::OnTBIDBLClick), nullptr, this);
+        }
 
-        bool showtbar, showsbar, lefttabs;
+        bool showtbar = false;
+        bool showsbar = false;
+        bool lefttabs = false;
 
         sys->cfg->Read("showtbar", &showtbar, true);
         sys->cfg->Read("showsbar", &showsbar, true);
         sys->cfg->Read("lefttabs", &lefttabs, true);
-
-        filehistory.Load(*sys->cfg);
-        #ifdef ENABLE_LOBSTER
-            auto oldpath = sys->cfg->GetPath();
-            sys->cfg->SetPath("/scripts");
-            scripts.Load(*sys->cfg);
-            sys->cfg->SetPath(oldpath);
-        #endif
 
         #ifdef __WXMAC__
             #define CTRLORALT "CTRL"
@@ -118,7 +113,7 @@ struct TSFrame : wxFrame {
             #define ALTORCTRL "CTRL"
         #endif
 
-        auto expmenu = new wxMenu();
+        auto *expmenu = new wxMenu();
         MyAppend(expmenu, A_EXPXML, _("&XML..."),
                  _("Export the current view as XML (which can also be reimported without losing structure)"));
         expmenu->AppendSeparator();
@@ -143,7 +138,7 @@ struct TSFrame : wxFrame {
         MyAppend(expmenu, A_EXPSVG, _("&Vector graphics..."),
                 _("Export the current view to a SVG vector file."));
 
-        auto impmenu = new wxMenu();
+        auto *impmenu = new wxMenu();
         MyAppend(impmenu, A_IMPXML, _("XML..."));
         MyAppend(impmenu, A_IMPXMLA, _("XML (attributes too, for OPML etc)..."));
         MyAppend(impmenu, A_IMPTXTI, _("Indented text..."));
@@ -151,11 +146,11 @@ struct TSFrame : wxFrame {
         MyAppend(impmenu, A_IMPTXTS, _("Semi-Colon delimited text (CSV)..."));
         MyAppend(impmenu, A_IMPTXTT, _("Tab delimited text..."));
 
-        auto recentmenu = new wxMenu();
+        auto *recentmenu = new wxMenu();
         filehistory.UseMenu(recentmenu);
         filehistory.AddFilesToMenu();
 
-        auto filemenu = new wxMenu();
+        auto *filemenu = new wxMenu();
         MyAppend(filemenu, wxID_NEW, _("&New") + "\tCTRL+N", _("Create a new document"));
         MyAppend(filemenu, wxID_OPEN, _("&Open...") + "\tCTRL+O", _("Open an existing document"));
         MyAppend(filemenu, wxID_CLOSE, _("&Close") + "\tCTRL+W", _("Close current document"));
@@ -175,9 +170,9 @@ struct TSFrame : wxFrame {
         filemenu->AppendSeparator();
         MyAppend(filemenu, wxID_EXIT, _("&Exit") + "\tCTRL+Q", _("Quit this program"));
 
-        wxMenu *editmenu;
+        wxMenu *editmenu = nullptr;
         loop(twoeditmenus, 2) {
-            auto sizemenu = new wxMenu();
+            auto *sizemenu = new wxMenu();
             MyAppend(sizemenu, A_INCSIZE,
                      _("&Increase text size (SHIFT+mousewheel)") + "\tSHIFT+PGUP");
             MyAppend(sizemenu, A_DECSIZE,
@@ -196,7 +191,7 @@ struct TSFrame : wxFrame {
             MyAppend(sizemenu, A_RESETWIDTH, _("Reset column widths") + "\tCTRL+R",
                      _("Reset the column widths in the selection to the default column width"));
 
-            auto bordmenu = new wxMenu();
+            auto *bordmenu = new wxMenu();
             MyAppend(bordmenu, A_BORD0, _("Border &0") + "\tCTRL+SHIFT+9");
             MyAppend(bordmenu, A_BORD1, _("Border &1") + "\tCTRL+SHIFT+1");
             MyAppend(bordmenu, A_BORD2, _("Border &2") + "\tCTRL+SHIFT+2");
@@ -204,7 +199,7 @@ struct TSFrame : wxFrame {
             MyAppend(bordmenu, A_BORD4, _("Border &4") + "\tCTRL+SHIFT+4");
             MyAppend(bordmenu, A_BORD5, _("Border &5") + "\tCTRL+SHIFT+5");
 
-            auto selmenu = new wxMenu();
+            auto *selmenu = new wxMenu();
             MyAppend(selmenu, A_NEXT,
                 #ifdef __WXGTK__
                     _("Move to next cell (TAB)")
@@ -278,7 +273,7 @@ struct TSFrame : wxFrame {
             MyAppend(selmenu, A_LINKIMGREV,
                      _("Go To Matching Cell (Image, Reverse)") + "\tSHIFT+F7");
 
-            auto temenu = new wxMenu();
+            auto *temenu = new wxMenu();
             MyAppend(temenu, A_LEFT, _("Cursor Left") + "\tLEFT");
             MyAppend(temenu, A_RIGHT, _("Cursor Right") + "\tRIGHT");
             MyAppend(temenu, A_MLEFT, _("Word Left") + "\tCTRL+LEFT");
@@ -306,7 +301,7 @@ struct TSFrame : wxFrame {
                      _("...and progress to the next cell on the right") + "\t" CTRLORALT "+ENTER");
             MyAppend(temenu, A_CANCELEDIT, _("Cancel text edits") + "\tESC");
 
-            auto stmenu = new wxMenu();
+            auto *stmenu = new wxMenu();
             MyAppend(stmenu, wxID_BOLD, _("Toggle cell &BOLD") + "\tCTRL+B");
             MyAppend(stmenu, wxID_ITALIC, _("Toggle cell &ITALIC") + "\tCTRL+I");
             MyAppend(stmenu, A_TT, _("Toggle cell &typewriter") + "\tCTRL+ALT+T");
@@ -324,13 +319,13 @@ struct TSFrame : wxFrame {
             MyAppend(stmenu, A_OPENBORDCOLOR, _("Open border colors") + "\tSHIFT+ALT+F11");
             MyAppend(stmenu, A_OPENIMGDROPDOWN, _("Open image dropdown") + "\tSHIFT+ALT+F12");
 
-            auto tagmenu = new wxMenu();
+            auto *tagmenu = new wxMenu();
             MyAppend(tagmenu, A_TAGADD, _("&Add Cell Text as Tag"));
             MyAppend(tagmenu, A_TAGREMOVE, _("&Remove Cell Text from Tags"));
             MyAppend(tagmenu, A_NOP, _("&Set Cell Text to tag (use CTRL+RMB)"),
                      _("Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"));
 
-            auto orgmenu = new wxMenu();
+            auto *orgmenu = new wxMenu();
             MyAppend(orgmenu, A_TRANSPOSE, _("&Transpose") + "\tCTRL+SHIFT+T",
                      _("changes the orientation of a grid"));
             MyAppend(orgmenu, A_SORT, _("Sort &Ascending"),
@@ -344,7 +339,7 @@ struct TSFrame : wxFrame {
             MyAppend(orgmenu, A_FLATTEN, _("&Flatten"),
                      _("Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN grid, useful for export to spreadsheets"));
 
-            auto imgmenu = new wxMenu();
+            auto *imgmenu = new wxMenu();
             MyAppend(imgmenu, A_IMAGE, _("&Add..."), _("Add an image to the selected cell"));
             MyAppend(imgmenu, A_IMAGESVA, _("&Save as..."),
                      _("Save image(s) from selected cell(s) to disk. Multiple images will be saved with a counter appended to each file name."));
@@ -366,18 +361,18 @@ struct TSFrame : wxFrame {
             MyAppend(imgmenu, A_SAVE_AS_PNG, _("Embed as &PNG"),
                      _("Embed the image(s) in the selected cells in PNG format (default)"));
             imgmenu->AppendSeparator();
-            MyAppend(imgmenu, A_LASTIMAGE, _("Insert last image") + "\tSHIFT+ALT+i",
+            MyAppend(imgmenu, A_LASTIMAGE, _("Insert last image") + "\tSHIFT+ALT+I",
                      _("Insert the last image that has been inserted before in TreeSheets."));
             MyAppend(imgmenu, A_IMAGER, _("Remo&ve"),
                      _("Remove image(s) from the selected cells"));
 
-            auto navmenu = new wxMenu();
+            auto *navmenu = new wxMenu();
             MyAppend(navmenu, A_BROWSE, _("Open link in &browser") + "\tF5",
                      _("Opens up the text from the selected cell in browser (should start be a valid URL)"));
             MyAppend(navmenu, A_BROWSEF, _("Open &file") + "\tF4",
                      _("Opens up the text from the selected cell in default application for the file type"));
 
-            auto laymenu = new wxMenu();
+            auto *laymenu = new wxMenu();
             MyAppend(laymenu, A_V_GS,
                      _("Vertical Layout with Grid Style Rendering") + "\t" CTRLORALT "+1");
             MyAppend(laymenu, A_V_BS,
@@ -431,13 +426,15 @@ struct TSFrame : wxFrame {
             MyAppend(editmenu, A_BACKSPACE_WORD, _("Delete Word Before") + "\tCTRL+BACK",
                      _("Deletes the entire word before the cursor"));
             editmenu->AppendSeparator();
-            MyAppend(editmenu, A_NEWGRID,
+            MyAppend(editmenu, A_ENTERGRID,
                      #ifdef __WXMAC__
                      _("&Insert New Grid") + "\tCTRL+G",
                      #else
-                     _("&Insert New Grid") + "\tINS",
+                     _("&Insert New Grid") + "\tINSERT",
                      #endif
                      _("Adds a grid to the selected cell"));
+            MyAppend(editmenu, A_ENTERGRIDN, _("Insert New &NxN Grid") + "\tCTRL+SHIFT+ENTER",
+                     _("Adds a NxN grid to the selected cell"));
             MyAppend(editmenu, A_WRAP, _("&Wrap in new parent") + "\tF9",
                      _("Creates a new level of hierarchy around the current selection"));
             editmenu->AppendSeparator();
@@ -466,10 +463,10 @@ struct TSFrame : wxFrame {
             editmenu->AppendSubMenu(bordmenu, _("Set Grid Border Width"));
             editmenu->AppendSubMenu(tagmenu, _("Tag"));
 
-            if (!twoeditmenus) editmenupopup = editmenu;
+            if (twoeditmenus == 0) { editmenupopup = editmenu; }
         }
 
-        auto semenu = new wxMenu();
+        auto *semenu = new wxMenu();
         MyAppend(semenu, wxID_FIND, _("&Search") + "\tCTRL+F", _("Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _("Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
@@ -485,7 +482,7 @@ struct TSFrame : wxFrame {
                  _("Replace in Current Selection && &Jump Next") + "\tCTRL+J");
         MyAppend(semenu, A_REPLACEALL, _("Replace &All"));
 
-        auto scrollmenu = new wxMenu();
+        auto *scrollmenu = new wxMenu();
         MyAppend(scrollmenu, A_AUP, _("Scroll Up (mousewheel)") + "\tPGUP");
         MyAppend(scrollmenu, A_AUP, _("Scroll Up (mousewheel)") + "\tALT+UP");
         MyAppend(scrollmenu, A_ADOWN, _("Scroll Down (mousewheel)") + "\tPGDN");
@@ -493,7 +490,7 @@ struct TSFrame : wxFrame {
         MyAppend(scrollmenu, A_ALEFT, _("Scroll Left") + "\tALT+LEFT");
         MyAppend(scrollmenu, A_ARIGHT, _("Scroll Right") + "\tALT+RIGHT");
 
-        auto filtermenu = new wxMenu();
+        auto *filtermenu = new wxMenu();
         MyAppend(filtermenu, A_FILTEROFF, _("Turn filter &off") + "\tCTRL+SHIFT+F");
         MyAppend(filtermenu, A_FILTERS, _("Show only cells in current search"));
         MyAppend(filtermenu, A_FILTERRANGE, _("Show last edits in specific date range"));
@@ -513,7 +510,7 @@ struct TSFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERBYCELLBG, _("Filter by the same cell color"));
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _("Go to next filter match") + "\tCTRL+F3");
 
-        auto viewmenu = new wxMenu();
+        auto *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _("Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
         MyAppend(viewmenu, A_ZOOMOUT, _("Zoom &Out (CTRL+mousewheel)") + "\tCTRL+PGDN");
         viewmenu->AppendSeparator();
@@ -546,7 +543,7 @@ struct TSFrame : wxFrame {
         viewmenu->AppendSubMenu(scrollmenu, _("Scroll Sheet"));
         viewmenu->AppendSubMenu(filtermenu, _("Filter"));
 
-        auto roundmenu = new wxMenu();
+        auto *roundmenu = new wxMenu();
         roundmenu->AppendRadioItem(A_ROUND0, _("Radius &0"));
         roundmenu->AppendRadioItem(A_ROUND1, _("Radius &1"));
         roundmenu->AppendRadioItem(A_ROUND2, _("Radius &2"));
@@ -556,7 +553,7 @@ struct TSFrame : wxFrame {
         roundmenu->AppendRadioItem(A_ROUND6, _("Radius &6"));
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
-        auto autoexportmenu = new wxMenu();
+        auto *autoexportmenu = new wxMenu();
         autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_NONE, _("No autoexport"));
         autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITH_IMAGES, _("Export with images"),
                                         _("Export to a HTML file with exported images alongside "
@@ -567,7 +564,7 @@ struct TSFrame : wxFrame {
                                           "TreeSheets file when document is saved"));
         autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT_HTML_NONE, true);
 
-        auto optmenu = new wxMenu();
+        auto *optmenu = new wxMenu();
         MyAppend(optmenu, wxID_SELECT_FONT, _("Font..."),
                  _("Set the font the document text is displayed with"));
         MyAppend(optmenu, A_SET_FIXED_FONT, _("Typewriter font..."),
@@ -646,27 +643,7 @@ struct TSFrame : wxFrame {
         optmenu->Check(A_INVERTRENDER, sys->followdarkmode);
         optmenu->AppendSubMenu(roundmenu, _("&Roundness of grid borders"));
 
-        #ifdef ENABLE_LOBSTER
-            auto scriptmenu = new wxMenu();
-            MyAppend(scriptmenu, A_ADDSCRIPT, _("Add...") + "\tCTRL+ALT+L",
-                     _("Add Lobster scripts to the menu"));
-            MyAppend(scriptmenu, A_DETSCRIPT, _("Remove...") + "\tCTRL+SHIFT+ALT+L",
-                     _("Remove script from list in the menu"));
-            scripts.UseMenu(scriptmenu);
-            scripts.SetMenuPathStyle(wxFH_PATH_SHOW_NEVER);
-            scripts.AddFilesToMenu();
-
-            auto scriptpath = app->GetDataPath("scripts/");
-            auto sf = wxFindFirstFile(scriptpath + "*.lobster");
-            int sidx = 0;
-            while (!sf.empty()) {
-                auto fn = wxFileName::FileName(sf).GetFullName();
-                scripts.AddFileToHistory(fn);
-                sf = wxFindNextFile();
-            }
-        #endif
-
-        auto markmenu = new wxMenu();
+        auto *markmenu = new wxMenu();
         MyAppend(markmenu, A_MARKDATA, _("&Data") + "\tCTRL+ALT+D");
         MyAppend(markmenu, A_MARKCODE, _("&Operation") + "\tCTRL+ALT+O");
         MyAppend(markmenu, A_MARKVARD, _("Variable &Assign") + "\tCTRL+ALT+A");
@@ -674,12 +651,12 @@ struct TSFrame : wxFrame {
         MyAppend(markmenu, A_MARKVIEWH, _("&Horizontal View") + "\tCTRL+ALT+.");
         MyAppend(markmenu, A_MARKVIEWV, _("&Vertical View") + "\tCTRL+ALT+,");
 
-        auto langmenu = new wxMenu();
+        auto *langmenu = new wxMenu();
         MyAppend(langmenu, wxID_EXECUTE, _("&Run") + "\tCTRL+ALT+F5");
         langmenu->AppendSubMenu(markmenu, _("&Mark as"));
         MyAppend(langmenu, A_CLRVIEW, _("&Clear Views"));
 
-        auto helpmenu = new wxMenu();
+        auto *helpmenu = new wxMenu();
         MyAppend(helpmenu, wxID_ABOUT, _("&About..."), _("Show About dialog"));
         helpmenu->AppendSeparator();
         MyAppend(helpmenu, wxID_HELP, _("Interactive &tutorial") + "\tF1",
@@ -694,20 +671,23 @@ struct TSFrame : wxFrame {
                  _("Open the Lobster script reference in browser"));
         #endif
 
-        wxAcceleratorEntry entries[3];
+        wxAcceleratorEntry entries[4];
         entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-        entries[1].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-        entries[2].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-        wxAcceleratorTable accel(3, entries);
+        entries[1].Set(wxACCEL_NORMAL, WXK_INSERT, A_ENTERGRID);
+        entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
+        entries[3].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
+        wxAcceleratorTable accel(4, entries);
         SetAcceleratorTable(accel);
 
-        auto menubar = new wxMenuBar();
+        auto *menubar = new wxMenuBar();
         menubar->Append(filemenu, _("&File"));
         menubar->Append(editmenu, _("&Edit"));
         menubar->Append(semenu, _("&Search"));
         menubar->Append(viewmenu, _("&View"));
         menubar->Append(optmenu, _("&Options"));
         #ifdef ENABLE_LOBSTER
+            scriptmenu = new wxMenu();
+            UpdateScriptMenu(scriptmenu);
             menubar->Append(scriptmenu, _("S&cript"));
         #endif
         menubar->Append(langmenu, _("&Program"));
@@ -730,7 +710,7 @@ struct TSFrame : wxFrame {
 
         RefreshToolBar();
 
-        auto sb = CreateStatusBar(5);
+        auto *sb = CreateStatusBar(5);
         SetStatusBarPane(0);
         SetDPIAwareStatusWidths();
         sb->Show(sys->showstatusbar);
@@ -746,7 +726,10 @@ struct TSFrame : wxFrame {
         const int boundary = 64;
         const int defx = disprect.width - 2 * boundary;
         const int defy = disprect.height - 2 * boundary;
-        int resx, resy, posx, posy;
+        int resx = 0;
+        int resy = 0;
+        int posx = 0;
+        int posy = 0;
         sys->cfg->Read("resx", &resx, defx);
         sys->cfg->Read("resy", &resy, defy);
         sys->cfg->Read("posx", &posx, boundary + disprect.x);
@@ -770,7 +753,7 @@ struct TSFrame : wxFrame {
         SetSize(resx, resy);
         Move(posx, posy);
 
-        bool ismax;
+        bool ismax = false;
         sys->cfg->Read("maximized", &ismax, true);
 
         aui.AddPane(
@@ -782,14 +765,15 @@ struct TSFrame : wxFrame {
         Show(!IsIconized());
 
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
-        if (ismax && !IsIconized()) Maximize(true);
+        if (ismax && !IsIconized()) { Maximize(true); }
 
-        if (sys->startminimized)
+        if (sys->startminimized) {
             #ifdef __WXGTK__
                 CallAfter([this]() { Iconize(true); });
             #else
                 Iconize(true);
             #endif
+        }
 
         SetFileAssoc(app->exename);
 
@@ -811,7 +795,7 @@ struct TSFrame : wxFrame {
         if (pane.IsOk()) {
             wxWindow *wnd = pane.window;
             aui.DetachPane(wnd);
-            if (wnd) { wnd->Destroy(); }
+            if (wnd != nullptr) { wnd->Destroy(); }
         }
     }
 
@@ -819,7 +803,7 @@ struct TSFrame : wxFrame {
         for (const auto &name : GetToolbarPaneNames()) { DestroyToolbarPane(name); }
         auto iconpath = app->GetDataPath("images/material/toolbar/");
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
-                                  wxString iconpath, wxString lighticon, wxString darkicon) {
+                                  const wxString &iconpath, const wxString &lighticon, const wxString &darkicon) {
             tb->AddTool(
                 action, name,
                 wxBitmapBundle::FromSVGFile(
@@ -828,8 +812,8 @@ struct TSFrame : wxFrame {
                 name, wxITEM_NORMAL);
         };
 
-        auto filetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *filetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         AddToolbarIcon(filetb, _("New (CTRL+n)"), wxID_NEW, iconpath, "filenew.svg",
                        "filenew_dark.svg");
         AddToolbarIcon(filetb, _("Open (CTRL+o)"), wxID_OPEN, iconpath, "fileopen.svg",
@@ -840,8 +824,8 @@ struct TSFrame : wxFrame {
                        "filesaveas_dark.svg");
         filetb->Realize();
 
-        auto edittb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *edittb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, iconpath, "undo.svg",
                        "undo_dark.svg");
         AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, iconpath, "editcopy.svg",
@@ -850,24 +834,24 @@ struct TSFrame : wxFrame {
                        "editpaste_dark.svg");
         edittb->Realize();
 
-        auto zoomtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *zoomtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         AddToolbarIcon(zoomtb, _("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, "zoomin.svg",
                        "zoomin_dark.svg");
         AddToolbarIcon(zoomtb, _("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, "zoomout.svg",
                        "zoomout_dark.svg");
         zoomtb->Realize();
 
-        auto celltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        AddToolbarIcon(celltb, _("New Grid (INS)"), A_NEWGRID, iconpath, "newgrid.svg",
+        auto *celltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        AddToolbarIcon(celltb, _("New Grid (INS)"), A_ENTERGRID, iconpath, "newgrid.svg",
                        "newgrid_dark.svg");
         AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, iconpath, "image.svg", "image_dark.svg");
         AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, iconpath, "run.svg", "run_dark.svg");
         celltb->Realize();
 
-        auto findtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *findtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         findtb->AddControl(new wxStaticText(findtb, wxID_ANY, _("Search ")));
         findtb->AddControl(filter = new wxTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
                                                    FromDIP(wxSize(80, 22)),
@@ -878,8 +862,8 @@ struct TSFrame : wxFrame {
                        "search_dark.svg");
         findtb->Realize();
 
-        auto repltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *repltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         repltb->AddControl(new wxStaticText(repltb, wxID_ANY, _("Replace ")));
         repltb->AddControl(replaces = new wxTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
                                                      FromDIP(wxSize(80, 22)),
@@ -894,14 +878,14 @@ struct TSFrame : wxFrame {
 
         auto GetColorIndex = [&](int targetcolor, int defaultindex) {
             for (auto i = 1; i < celltextcolors.size(); ++i) {
-                if (celltextcolors[i] == targetcolor) return i;
+                if (celltextcolors[i] == targetcolor) { return i; }
             }
-            if (sys->customcolor == targetcolor) return 0;
+            if (sys->customcolor == targetcolor) { return 0; }
             return defaultindex;
         };
 
-        auto cellcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                            wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *cellcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                             wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         cellcolortb->AddControl(new wxStaticText(cellcolortb, wxID_ANY, _("Cell ")));
 
         cellcolordropdown =
@@ -909,24 +893,24 @@ struct TSFrame : wxFrame {
         cellcolortb->AddControl(cellcolordropdown);
         cellcolortb->Realize();
 
-        auto textcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                            wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *textcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                             wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         textcolortb->AddControl(new wxStaticText(textcolortb, wxID_ANY, _("Text ")));
         textcolordropdown =
             new ColorDropdown(textcolortb, A_TEXTCOLOR, GetColorIndex(sys->lasttextcolor, 2));
         textcolortb->AddControl(textcolordropdown);
         textcolortb->Realize();
 
-        auto bordercolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                              wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *bordercolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                               wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         bordercolortb->AddControl(new wxStaticText(bordercolortb, wxID_ANY, _("Border ")));
         bordercolordropdown =
             new ColorDropdown(bordercolortb, A_BORDCOLOR, GetColorIndex(sys->lastbordcolor, 7));
         bordercolortb->AddControl(bordercolordropdown);
         bordercolortb->Realize();
 
-        auto imagetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *imagetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                         wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         imagetb->AddControl(new wxStaticText(imagetb, wxID_ANY, _("Image ")));
         imagedropdown = new ImageDropdown(imagetb, imagepath);
         imagetb->AddControl(imagedropdown);
@@ -1022,7 +1006,7 @@ struct TSFrame : wxFrame {
                                  .LeftDockable(false)
                                  .RightDockable(false)
                                  .Gripper(true));
-        auto artprovider = aui.GetArtProvider();
+        auto *artprovider = aui.GetArtProvider();
         artprovider->SetColour(wxAUI_DOCKART_BACKGROUND_COLOUR, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         artprovider->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 0);
     }
@@ -1036,11 +1020,12 @@ struct TSFrame : wxFrame {
     // event handling functions
 
     void OnMenu(wxCommandEvent &ce) {
-        wxTextCtrl *tc;
-        auto canvas = GetCurrentTab();
-        if ((tc = filter) && filter == wxWindow::FindFocus() ||
-            (tc = replaces) && replaces == wxWindow::FindFocus()) {
-            long from, to;
+        wxTextCtrl *tc = nullptr;
+        auto *canvas = GetCurrentTab();
+        if ((tc = filter) != nullptr && filter == wxWindow::FindFocus() ||
+            (tc = replaces) != nullptr && replaces == wxWindow::FindFocus()) {
+            long from = 0;
+            long to = 0;
             tc->GetSelection(&from, &to);
             switch (ce.GetId()) {
                 #if defined(__WXMSW__) || defined(__WXMAC__)
@@ -1121,7 +1106,7 @@ struct TSFrame : wxFrame {
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
                     sys->cfg->Write("showstatusbar", sys->showstatusbar = ce.IsChecked());
-                    auto wsb = GetStatusBar();
+                    auto *wsb = GetStatusBar();
                     wsb->Show(sys->showstatusbar);
                     SendSizeEvent();
                     Refresh();
@@ -1132,39 +1117,50 @@ struct TSFrame : wxFrame {
                 if (!IsFullScreen()) {
                     sys->cfg->Write("showtoolbar", sys->showtoolbar = ce.IsChecked());
                     for (const auto &name : GetToolbarPaneNames()) {
-                        if (sys->showtoolbar)
+                        if (sys->showtoolbar) {
                             aui.GetPane(name).Show();
-                        else
+                        } else {
                             aui.GetPane(name).Hide();
+                        }
                     }
                     aui.Update();
                 }
                 break;
             case A_CUSTCOL: {
-                if (auto color = PickColor(sys->frame, sys->customcolor); color != (uint)-1)
+                if (auto color = PickColor(sys->frame, sys->customcolor);
+                    color != static_cast<uint>(-1)) {
                     sys->cfg->Write("customcolor", sys->customcolor = color);
+                }
                 break;
             }
 
             #ifdef ENABLE_LOBSTER
                 case A_ADDSCRIPT: {
                     wxArrayString filenames;
+                    wxString path = app->GetDataPath("scripts/");
+                    if (!wxDirExists(path) || !sys->scripts.IsEmpty()) path = "";
                     GetFilesFromUser(filenames, this, _("Please select Lobster script file(s):"),
-                                     _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"));
-                    for (auto &filename : filenames) scripts.AddFileToHistory(filename);
+                                     _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
+                                     path);
+                    if (!filenames.IsEmpty()) {
+                        for (auto &filename : filenames) {
+                            if (sys->scripts.Index(filename) == wxNOT_FOUND) {
+                                sys->scripts.Add(filename);
+                            }
+                        }
+                        UpdateScriptMenu(scriptmenu);
+                    }
                     break;
                 }
 
                 case A_DETSCRIPT: {
-                    wxArrayString filenames;
-                    for (int i = 0, n = scripts.GetCount(); i < n; i++) {
-                        filenames.Add(scripts.GetHistoryFile(i));
-                    }
                     auto dialog = wxSingleChoiceDialog(
                         this, _("Please select the script you want to remove from the list:"),
-                        _("Remove script from list..."), filenames);
-                    if (dialog.ShowModal() == wxID_OK)
-                        scripts.RemoveFileFromHistory(dialog.GetSelection());
+                        _("Remove script from list..."), sys->scripts);
+                    if (dialog.ShowModal() == wxID_OK && dialog.GetSelection() >= 0) {
+                        sys->scripts.RemoveAt(dialog.GetSelection());
+                        UpdateScriptMenu(scriptmenu);
+                    }
                     break;
                 }
             #endif
@@ -1173,7 +1169,7 @@ struct TSFrame : wxFrame {
                 int w = wxGetNumberFromUser(_("Please enter the default column width:"),
                                             _("Width"), _("Default column width"),
                                             sys->defaultmaxcolwidth, 1, 1000, sys->frame);
-                if (w > 0) sys->cfg->Write("defaultmaxcolwidth", sys->defaultmaxcolwidth = w);
+                if (w > 0) { sys->cfg->Write("defaultmaxcolwidth", sys->defaultmaxcolwidth = w); }
                 break;
             }
 
@@ -1216,10 +1212,10 @@ struct TSFrame : wxFrame {
                 break;
             case A_FULLSCREEN:
                 ShowFullScreen(!IsFullScreen());
-                if (IsFullScreen()) SetStatus(_("Press F11 to exit fullscreen mode."));
+                if (IsFullScreen()) { SetStatus(_("Press F11 to exit fullscreen mode.")); }
                 break;
             case wxID_FIND:
-                if (filter) {
+                if (filter != nullptr) {
                     filter->SetFocus();
                     filter->SetSelection(0, 1000);
                 } else {
@@ -1227,7 +1223,7 @@ struct TSFrame : wxFrame {
                 }
                 break;
             case wxID_REPLACE:
-                if (replaces) {
+                if (replaces != nullptr) {
                     replaces->SetFocus();
                     replaces->SetSelection(0, 1000);
                 } else {
@@ -1256,8 +1252,7 @@ struct TSFrame : wxFrame {
                     } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
                         SetStatus(canvas->doc->TagSet(ce.GetId() - A_TAGSET));
                     } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                        auto message =
-                            tssi.ScriptRun(scripts.GetHistoryFile(ce.GetId() - A_SCRIPT).c_str());
+                        auto message = tssi.ScriptRun(sys->scripts[ce.GetId() - A_SCRIPT].c_str());
                         message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
                         SetStatus(wxString(message));
                 #else
@@ -1272,14 +1267,14 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
-        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
+        auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         ClearStatus();
-        sys->TabChange(canvas->doc);
+        treesheets::System::TabChange(canvas->doc.get());
         nbe.Skip();
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
-        auto canvas = static_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
+        auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         if (notebook->GetPageCount() <= 1) {
             nbe.Veto();
             Close();
@@ -1295,7 +1290,7 @@ struct TSFrame : wxFrame {
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
         TSCanvas *canvas = GetCurrentTab();
-        Document *doc = canvas->doc;
+        Document *doc = canvas->doc.get();
         if (doc->searchfilter) {
             doc->SetSearchFilter(sys->searchstring.Len() != 0);
             doc->searchfilter = true;
@@ -1304,11 +1299,12 @@ struct TSFrame : wxFrame {
     }
 
     void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        auto canvas = GetCurrentTab();
-        if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty())
+        auto *canvas = GetCurrentTab();
+        if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty()) {
             canvas->SetFocus();
-        else
+        } else {
             canvas->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
+        }
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
@@ -1349,7 +1345,7 @@ struct TSFrame : wxFrame {
                 Show(true);
             }
             #endif
-            if (TSCanvas *canvas = GetCurrentTab()) canvas->SetFocus();
+            if (TSCanvas *canvas = GetCurrentTab()) { canvas->SetFocus(); }
         }
     }
 
@@ -1364,10 +1360,13 @@ struct TSFrame : wxFrame {
             return;
         }
         sys->RememberOpenFiles();
+        #ifdef ENABLE_LOBSTER
+            sys->RememberScripts();
+        #endif
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, notebook->GetPageCount()) {
-                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+                auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
                 if (canvas->doc->modified) {
                     notebook->SetSelection(i);
                     if (canvas->doc->CheckForChanges()) {
@@ -1377,19 +1376,13 @@ struct TSFrame : wxFrame {
                 }
             }
             // all files have been saved/discarded
-            while (notebook->GetPageCount()) {
+            while (notebook->GetPageCount() != 0U) {
                 GetCurrentTab()->doc->RemoveTmpFile();
                 notebook->DeletePage(notebook->GetSelection());
             }
         }
         sys->every_second_timer.Stop();
         filehistory.Save(*sys->cfg);
-        #ifdef ENABLE_LOBSTER
-            auto oldpath = sys->cfg->GetPath();
-            sys->cfg->SetPath("/scripts");
-            scripts.Save(*sys->cfg);
-            sys->cfg->SetPath(oldpath);
-        #endif
         if (!IsIconized()) {
             sys->cfg->Write("maximized", IsMaximized());
             if (!IsMaximized()) {
@@ -1414,10 +1407,12 @@ struct TSFrame : wxFrame {
 
     void OnFileSystemEvent(wxFileSystemWatcherEvent &event) {
         // 0xF == create/delete/rename/modify
-        if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || !notebook) return;
+        if ((event.GetChangeType() & 0xF) == 0 || watcherwaitingforuser || notebook == nullptr) {
+            return;
+        }
         const auto &modfile = event.GetPath().GetFullPath();
         loop(i, notebook->GetPageCount()) {
-            Document *doc = static_cast<TSCanvas *>(notebook->GetPage(i))->doc;
+            Document *doc = dynamic_cast<TSCanvas *>(notebook->GetPage(i))->doc.get();
             if (modfile == doc->filename) {
                 auto modtime = wxFileName(modfile).GetModificationTime();
                 // Compare with last modified to trigger multiple times.
@@ -1442,16 +1437,14 @@ struct TSFrame : wxFrame {
                     int res = wxMessageBox(message, _("File modification conflict!"),
                                            wxYES_NO | wxICON_QUESTION, this);
                     watcherwaitingforuser = false;
-                    if (res != wxYES) return;
+                    if (res != wxYES) { return; }
                 }
-                auto message = sys->LoadDB(doc->filename, true);
+                auto message = sys->LoadDB(doc->filename, true, i);
                 if (!message.IsEmpty()) {
                     SetStatus(message);
                 } else {
-                    loop(j,
-                         notebook->GetPageCount()) if (static_cast<TSCanvas *>(notebook->GetPage(j))
-                                                           ->doc == doc) notebook->DeletePage(j);
-                    ::wxRemoveFile(sys->TmpName(modfile));
+                    notebook->DeletePage(i + 1);
+                    ::wxRemoveFile(treesheets::System::TmpName(modfile));
                     SetStatus(
                         _("File has been re-loaded because of modifications of another program / computer"));
                 }
@@ -1491,7 +1484,7 @@ struct TSFrame : wxFrame {
 
     // helper functions
 
-    void CycleTabs(int offset = 1) {
+    void CycleTabs(int offset = 1) const {
         auto numtabs = static_cast<int>(notebook->GetPageCount());
         offset = offset >= 0 ? 1 : numtabs - 1;  // normalize to non-negative wrt modulo
         notebook->SetSelection((notebook->GetSelection() + offset) % numtabs);
@@ -1507,18 +1500,20 @@ struct TSFrame : wxFrame {
         taskbaricon.RemoveIcon();
     }
 
-    TSCanvas *GetCurrentTab() {
-        return notebook ? static_cast<TSCanvas *>(notebook->GetCurrentPage()) : nullptr;
+    TSCanvas *GetCurrentTab() const {
+        return notebook != nullptr ? dynamic_cast<TSCanvas *>(notebook->GetCurrentPage()) : nullptr;
     }
 
-    TSCanvas *GetTabByFileName(const wxString &filename) {
-        if (notebook) loop(i, notebook->GetPageCount()) {
-                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+    TSCanvas *GetTabByFileName(const wxString &filename) const {
+        if (notebook != nullptr) {
+            loop(i, notebook->GetPageCount()) {
+                auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
                 if (canvas->doc->filename == filename) {
                     notebook->SetSelection(i);
                     return canvas;
                 }
             }
+        }
         return nullptr;
     }
 
@@ -1531,27 +1526,30 @@ struct TSFrame : wxFrame {
         }
         key = sys->cfg->Read(item, key);
         auto newcontents = item;
-        if (key.Length()) newcontents += "\t" + key;
+        if (!key.IsEmpty()) { newcontents += "\t" + key; }
         menu->Append(tag, newcontents, help);
         menustrings[item] = key;
     }
 
-    TSCanvas *NewTab(Document *doc, bool append = false) {
-        TSCanvas *canvas = new TSCanvas(this, notebook);
-        canvas->doc = doc;
+    TSCanvas *NewTab(unique_ptr<Document> doc, bool append = false, int insert_at = -1) {
+        auto *canvas = new TSCanvas(this, notebook);
         doc->canvas = canvas;
+        canvas->doc = std::move(doc);
         canvas->SetScrollRate(1, 1);
-        if (append)
+        if (insert_at >= 0) {
+            notebook->InsertPage(insert_at, canvas, _("<unnamed>"), true, wxNullBitmap);
+        } else if (append) {
             notebook->AddPage(canvas, _("<unnamed>"), true, wxNullBitmap);
-        else
+        } else {
             notebook->InsertPage(0, canvas, _("<unnamed>"), true, wxNullBitmap);
-        canvas->SetDropTarget(new DropTarget(doc->dndobjc));
+        }
+        canvas->SetDropTarget(new DropTarget(canvas->doc->dndobjc));
         canvas->SetFocus();
         return canvas;
     }
 
-    void ReFocus() {
-        if (TSCanvas *canvas = GetCurrentTab()) canvas->SetFocus();
+    void ReFocus() const {
+        if (TSCanvas *canvas = GetCurrentTab()) { canvas->SetFocus(); }
     }
 
     void RenderFolderIcon() {
@@ -1579,10 +1577,10 @@ struct TSFrame : wxFrame {
         #endif
     }
 
-    void SetPageTitle(const wxString &filename, wxString mods, int page = -1) {
-        if (page < 0) page = notebook->GetSelection();
-        if (page < 0) return;
-        if (page == notebook->GetSelection()) SetTitle("TreeSheets - " + filename + mods);
+    void SetPageTitle(const wxString &filename, const wxString &mods, int page = -1) {
+        if (page < 0) { page = notebook->GetSelection(); }
+        if (page < 0) { return; }
+        if (page == notebook->GetSelection()) { SetTitle("TreeSheets - " + filename + mods); }
         notebook->SetPageText(
             page,
             (filename.empty() ? wxString(_("<unnamed>")) : wxFileName(filename).GetName()) + mods);
@@ -1597,33 +1595,59 @@ struct TSFrame : wxFrame {
     #endif
 
     void SetStatus(const wxString &message) {
-        if (GetStatusBar() && !message.IsEmpty()) SetStatusText(message, 0);
+        if (GetStatusBar() != nullptr && !message.IsEmpty()) { SetStatusText(message, 0); }
     }
 
     void ClearStatus() {
-        if (GetStatusBar()) SetStatusText("", 0);
+        if (GetStatusBar() != nullptr) { SetStatusText("", 0); }
     }
 
-    void TabsReset() {
-        if (notebook) loop(i, notebook->GetPageCount()) {
-                auto canvas = static_cast<TSCanvas *>(notebook->GetPage(i));
+    void TabsReset() const {
+        if (notebook != nullptr) {
+            loop(i, notebook->GetPageCount()) {
+                auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
                 canvas->doc->root->ResetChildren();
+                canvas->doc->UpdateLayout();
+                canvas->doc->ScrollIfSelectionOutOfView();
             }
+            notebook->Refresh();
+        }
     }
 
     void UpdateStatus(const Selection &s, bool updateamount) {
-        if (GetStatusBar()) {
-            if (Cell *c = s.GetCell(); c && s.xs) {
+        if (GetStatusBar() != nullptr) {
+            if (Cell *c = s.GetCell(); c != nullptr && s.xs != 0) {
                 SetStatusText(wxString::Format(_("Size %d"), -c->text.relsize), 3);
                 SetStatusText(wxString::Format(_("Width %d"), s.grid->colwidths[s.x]), 2);
                 SetStatusText(wxString::Format(_("Edited %s %s"), c->text.lastedit.FormatDate(),
                                                c->text.lastedit.FormatTime()),
                               1);
-            } else
-                for (int field : {1, 2, 3}) SetStatusText("", field);
-            if (updateamount) SetStatusText(wxString::Format(_("%d cell(s)"), s.xs * s.ys), 4);
+            } else {
+                for (int field : {1, 2, 3}) { SetStatusText("", field); }
+            }
+            if (updateamount) { SetStatusText(wxString::Format(_("%d cell(s)"), s.xs * s.ys), 4); }
         }
     }
+
+    #ifdef ENABLE_LOBSTER
+        void UpdateScriptMenu(wxMenu *menu) const {
+            if (!menu) return;
+            while (menu->GetMenuItemCount() > 0) {
+                menu->Delete(menu->GetMenuItems().Item(0)->GetData());
+            }
+            menu->Append(A_ADDSCRIPT, _("Add...") + "\tCTRL+ALT+L",
+                         _("Add Lobster scripts to the menu"));
+            menu->Append(A_DETSCRIPT, _("Remove...") + "\tCTRL+SHIFT+ALT+L",
+                         _("Remove script from list in the menu"));
+            if (!sys->scripts.IsEmpty()) { menu->AppendSeparator(); }
+            for (size_t i = 0; i < sys->scripts.GetCount(); ++i) {
+                wxFileName fn(sys->scripts[i]);
+                int snum = static_cast<int>(i) + 1;
+                wxString label = wxString::Format("%s\tCTRL+ALT+%d", fn.GetFullName(), snum);
+                menu->Append(A_SCRIPT + static_cast<int>(i), label);
+            }
+        }
+    #endif
 
     DECLARE_EVENT_TABLE()
 };

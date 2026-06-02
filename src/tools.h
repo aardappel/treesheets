@@ -13,8 +13,6 @@ typedef unsigned int uint;
 #define loopv(i, v) for (int i = 0; i < (v).size(); i++)
 #define loopvrev(i, v) for (int i = (v).size() - 1; i >= 0; i--)
 
-#define max(a, b) ((a) < (b) ? (b) : (a))
-#define min(a, b) ((a) > (b) ? (b) : (a))
 #define sign(x) ((x) < 0 ? -1 : 1)
 
 #define varargs(v, fmt, body) \
@@ -30,13 +28,6 @@ typedef unsigned int uint;
         if (p) {         \
             delete p;    \
             p = nullptr; \
-        }                \
-    }
-#define DELETEA(a)       \
-    {                    \
-        if (a) {         \
-            delete[] a;  \
-            a = nullptr; \
         }                \
     }
 

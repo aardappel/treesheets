@@ -41,7 +41,8 @@ enum { TS_TEXT = 0, TS_GRID = 1, TS_BOTH = 2, TS_NEITHER = 3 };
 enum {
     A_SAVEALL = 500,
     A_COLLAPSE,
-    A_NEWGRID,
+    A_ENTERGRID,
+    A_ENTERGRIDN,
     A_CLRVIEW,
     A_MARKDATA,
     A_MARKVIEWH,
@@ -131,7 +132,6 @@ enum {
     A_DECSIZE,
     A_INCWIDTH,
     A_DECWIDTH,
-    A_ENTERGRID,
     A_LINK,
     A_LINKREV,
     A_LINKIMG,
@@ -285,10 +285,10 @@ enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
         string_view_nt(const string &s) : sv(s) {}
         explicit string_view_nt(const char *s) : sv(s) {}
         explicit string_view_nt(string_view osv) : sv(osv) { check_null_terminated(); }
-        void check_null_terminated() const { assert(!sv.data()[sv.size()]); }
+        void check_null_terminated() { assert(!sv.data()[sv.size()]); }
         size_t size() const { return sv.size(); }
         const char *data() const { return sv.data(); }
-        const char *c_str() const {
+        const char *c_str() {
             check_null_terminated();  // Catch appends to parent buffer since construction.
             return sv.data();
         }
@@ -321,7 +321,7 @@ struct treesheets {
     struct TSFrame;
     struct TSApp;
 
-    static System *sys;
+    static inline unique_ptr<System> sys = nullptr;
 
     #ifdef ENABLE_LOBSTER
         #include "treesheets_impl.h"
@@ -343,7 +343,6 @@ struct treesheets {
     #include "tsapp.h"
 };
 
-treesheets::System *treesheets::sys = nullptr;
 #ifdef ENABLE_LOBSTER
     treesheets::TreeSheetsScriptImpl treesheets::tssi;
 #endif

@@ -2,35 +2,32 @@
     A structure describing an operation.
 */
 struct Operation {
-    virtual ~Operation() {};
-    const char *args;
+    virtual ~Operation() = default;
+    const char *args {};
 
     virtual unique_ptr<Cell> run() const { return nullptr; }
     virtual double runn(double a) const { return 0; }
-    virtual unique_ptr<Cell> runl(Grid *l) const { return nullptr; }
-    virtual void rung(Grid *g) const {}
+    virtual unique_ptr<Cell> runl(const shared_ptr<Grid> &l) const { return nullptr; }
+    virtual void rung(const shared_ptr<Grid> &g) const {}
     virtual unique_ptr<Cell> runc(unique_ptr<Cell> c) const { return nullptr; }
     virtual double runnn(double a, double b) const { return 0; }
 };
 
-WX_DECLARE_STRING_HASH_MAP(Operation *, wxHashMapOperation);
-WX_DECLARE_STRING_HASH_MAP(Cell *, wxHashMapCell);
+using OperationMap = std::unordered_map<wxString, unique_ptr<Operation>>;
+using VariableMap = std::unordered_map<wxString, unique_ptr<Cell>>;
 
 /*
     Provides running evaluation of a grid.
 */
 struct Evaluator {
-    wxHashMapOperation ops;
-    wxHashMapCell vars;
-    bool vert;
+    OperationMap ops;
+    VariableMap vars;
+    bool vert {false};
 
-    ~Evaluator() {
-        WX_CLEAR_HASH_MAP(wxHashMapOperation, ops);
-        ClearVars();
-    }
+    ~Evaluator() = default;
 
     void ClearVars() {
-        WX_CLEAR_HASH_MAP(wxHashMapCell, vars);
+        vars.clear();
     }
 
     #define OP(_n, _c, _args, _f)           \
@@ -39,15 +36,15 @@ struct Evaluator {
                 _op() { args = _args; };    \
                 _f const override { return _c; }; \
             };                              \
-            ops[L## #_n] = new _op();       \
+            ops[L## #_n] = make_unique<_op>();       \
         }
 
     #define OPNN(_n, _c) OP(_n, _c, "nn", double runnn(double a, double b))
     #define OPN(_n, _c) OP(_n, _c, "n", double runn(double a))
     #define OPT(_n, _c) OP(_n, _c, "t", unique_ptr<Cell> runc(unique_ptr<Cell> c))
     #define OPC(_n, _c) OP(_n, _c, "c", unique_ptr<Cell> runc(unique_ptr<Cell> c))
-    #define OPL(_n, _c) OP(_n, _c, "l", unique_ptr<Cell> runl(Grid *a))
-    #define OPG(_n, _c) OP(_n, _c, "g", void rung(Grid *a))
+    #define OPL(_n, _c) OP(_n, _c, "l", unique_ptr<Cell> runl(const shared_ptr<Grid> &a))
+    #define OPG(_n, _c) OP(_n, _c, "g", void rung(const shared_ptr<Grid> &a))
 
     void Init() {
         OPNN(+, a + b);
@@ -71,69 +68,72 @@ struct Evaluator {
         struct _if : Operation {
             _if() { args = "nLL"; };
         };
-        ops[L"if"] = new _if();
+        ops[L"if"] = make_unique<_if>();
     }
 
     int InferCellType(Text &t) {
-        if (ops[t.t])
+        if (ops[t.t]) {
             return CT_CODE;
-        else
+        } else {
             return CT_DATA;
+        }
     }
 
     unique_ptr<Cell> Lookup(const wxString &name) {
-        wxHashMapCell::iterator lookup = vars.find(name);
-        return (lookup != vars.end()) ? lookup->second->Clone(nullptr) : nullptr;
+        auto it = vars.find(name);
+        return (it != vars.end()) ? it->second->Clone(nullptr) : nullptr;
     }
 
-    bool IsValidSymbol(wxString const &symbol) const { return !symbol.IsEmpty(); }
+    static bool IsValidSymbol(wxString const &symbol) { return !symbol.IsEmpty(); }
     void SetSymbol(wxString const &symbol, unique_ptr<Cell> val) {
-        if (!this->IsValidSymbol(symbol)) { return; }
-        Cell *old = vars[symbol];
-        DELETEP(old);
-        vars[symbol] = val.release();
+        if (!treesheets::Evaluator::IsValidSymbol(symbol)) { return; }
+        vars[symbol] = std::move(val);
     }
 
     void Assign(const Cell *sym, const Cell *val) {
         this->SetSymbol(sym->text.t, val->Clone(nullptr));
-        if (sym->grid && val->grid) this->DestructuringAssign(sym->grid, val->Clone(nullptr));
+        if (sym->grid && val->grid) { this->DestructuringAssign(sym->grid, val->Clone(nullptr)); }
     }
 
-    void DestructuringAssign(Grid const *names, unique_ptr<Cell> val) {
-        Grid const *ng = names;
-        Grid const *vg = val->grid;
+    void DestructuringAssign(const shared_ptr<Grid> &names, unique_ptr<Cell> val) {
+        Grid const *ng = names.get();
+        Grid const *vg = val->grid.get();
         if (ng->xs == vg->xs && ng->ys == vg->ys) {
             loop(x, ng->xs) loop(y, ng->ys) {
-                Cell *nc = ng->C(x, y);
-                Cell *vc = vg->C(x, y);
-                this->SetSymbol(nc->text.t, vc->Clone(nullptr));
+                this->SetSymbol(ng->C(x, y)->text.t, vg->C(x, y)->Clone(nullptr));
             }
         }
     }
 
-    Operation *FindOp(wxString &name) { return ops[name]; }
+    Operation *FindOp(wxString &name) { return ops[name].get(); }
 
-    unique_ptr<Cell> Execute(const Operation *op) { return op->run(); }
+    static unique_ptr<Cell> Execute(const Operation *op) { return op->run(); }
 
     unique_ptr<Cell> Execute(const Operation *op, unique_ptr<Cell> left) {
         Text &t = left->text;
-        Grid *g = left->grid;
+        shared_ptr<Grid> g = left->grid;
         switch (op->args[0]) {
             case 'n':
-                if (t.t.Len()) {
+                if (!t.t.IsEmpty()) {
                     t.SetNum(op->runn(t.GetNum()));
                     return left;
                 } else if (g) {
-                    foreachcellingrid(c, g) c =
-                        Execute(op, unique_ptr<Cell>(c)).release()->SetParent(left.get());
+                    foreachcellingrid(c, g) {
+                        unique_ptr<Cell> temp = std::move(c);
+                        c = Execute(op, std::move(temp));
+                        c->SetParent(left.get());
+                    }
                 }
                 break;
             case 't':
-                if (t.t.Len()) {
+                if (!t.t.IsEmpty()) {
                     return op->runc(std::move(left));
                 } else if (g) {
-                    foreachcellingrid(c, g) c =
-                        Execute(op, unique_ptr<Cell>(c)).release()->SetParent(left.get());
+                    foreachcellingrid(c, g) {
+                        unique_ptr<Cell> temp = std::move(c);
+                        c = Execute(op, std::move(temp));
+                        c->SetParent(left.get());
+                    }
                 }
                 break;
             case 'l':
@@ -141,20 +141,21 @@ struct Evaluator {
                     if (g->xs == 1 || g->ys == 1) {
                         return op->runl(g);
                     } else {
-                        vector<unique_ptr<Grid>> gs;
+                        vector<shared_ptr<Grid>> gs;
                         g->Split(gs, vert);
-                        g = new Grid(vert ? gs.size() : 1, vert ? 1 : gs.size());
+                        g = make_shared<Grid>(vert ? gs.size() : 1, vert ? 1 : gs.size());
                         auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
                         loopv(i, gs) {
-                            auto v = op->runl(gs[i].get()).release();
-                            g->C(vert ? i : 0, vert ? 0 : i) = v->SetParent(c.get());
+                            auto res = op->runl(gs[i]);
+                            res->SetParent(c.get());
+                            g->C(vert ? i : 0, vert ? 0 : i) = std::move(res);
                         }
                         return c;
                     }
                 }
                 break;
             case 'g':
-                if (g) op->rung(g);
+                if (g) { op->rung(g); }
                 break;
             case 'c': return op->runc(std::move(left));
         }
@@ -163,31 +164,31 @@ struct Evaluator {
 
     unique_ptr<Cell> Execute(const Operation *op, unique_ptr<Cell> left, const Cell *_right) {
         auto right = _right->Eval(*this);
-        if (!right) return left;
+        if (!right) { return left; }
         Text &t1 = left->text;
         Text &t2 = right->text;
-        Grid *g1 = left->grid;
-        Grid *g2 = right->grid;
+        shared_ptr<Grid> g1 = left->grid;
+        shared_ptr<Grid> g2 = right->grid;
         switch (op->args[0]) {
             case 'n':
-                if (t1.t.Len() && t2.t.Len()) {
+                if (!t1.t.IsEmpty() && !t2.t.IsEmpty()) {
                     t1.SetNum(op->runnn(t1.GetNum(), t2.GetNum()));
                 } else if (g1 && g2 && g1->xs == g2->xs && g1->ys == g2->ys) {
-                    Grid *g = new Grid(g1->xs, g1->ys);
+                    auto g = make_shared<Grid>(g1->xs, g1->ys);
                     auto c = make_unique<Cell>(nullptr, left.get(), CT_DATA, g);
                     loop(x, g->xs) loop(y, g->ys) {
-                        Cell *&c1 = g1->C(x, y);
-                        Cell *&c2 = g2->C(x, y);
-                        g->C(x, y) =
-                            Execute(op, unique_ptr<Cell>(c1), c2).release()->SetParent(c.get());
-                        c1 = nullptr;
+                        unique_ptr<Cell> c1 = std::move(g1->C(x, y));
+                        Cell *c2 = g2->C(x, y).get();
+                        auto res = Execute(op, std::move(c1), c2);
+                        res->SetParent(c.get());
+                        g->C(x, y) = std::move(res);
                     }
                     return c;
-                } else if (g1 && t2.t.Len()) {
+                } else if (g1 && !t2.t.IsEmpty()) {
                     foreachcellingrid(c, g1) {
-                        c = Execute(op, unique_ptr<Cell>(c), right.get())
-                                .release()
-                                ->SetParent(left.get());
+                        unique_ptr<Cell> res = Execute(op, std::move(c), right.get());
+                        res->SetParent(left.get());
+                        c = std::move(res);
                     }
                 }
                 break;
@@ -199,7 +200,7 @@ struct Evaluator {
     unique_ptr<Cell> Execute(const Operation *op, unique_ptr<Cell> left, const Cell *a,
                              const Cell *b) {
         Text &l = left->text;
-        if (!l.t.Len()) return left;
+        if (l.t.IsEmpty()) { return left; }
         bool cond = l.GetNum() != 0;
         return (cond ? a : b)->Eval(*this);
     }

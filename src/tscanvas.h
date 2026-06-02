@@ -1,6 +1,6 @@
 struct TSCanvas : public wxScrolledCanvas {
     TSFrame *frame;
-    Document *doc {nullptr};
+    unique_ptr<Document> doc {nullptr};
     int mousewheelaccum {0};
     bool lastrmbwaswithctrl {false};
     wxPoint lastmousepos;
@@ -17,10 +17,7 @@ struct TSCanvas : public wxScrolledCanvas {
         EnableScrolling(false, false);
     }
 
-    ~TSCanvas() {
-        DELETEP(doc);
-        frame = nullptr;
-    }
+    ~TSCanvas() override { frame = nullptr; }
 
     void OnPaint(wxPaintEvent &event) {
         #ifdef __WXMSW__
@@ -33,7 +30,6 @@ struct TSCanvas : public wxScrolledCanvas {
         #else
             wxPaintDC dc(this);
         #endif
-        DoPrepareDC(dc);
         doc->Draw(dc);
     };
 
@@ -45,7 +41,7 @@ struct TSCanvas : public wxScrolledCanvas {
                 doc->Copy(A_DRAGANDDROP);
                 Refresh();
             } else {
-                if (doc->isctrlshiftdrag) {
+                if (doc->isctrlshiftdrag != 0) {
                     doc->begindrag = doc->hover;
                 } else if (!doc->hover.Thin()) {
                     if (doc->begindrag.Thin() || doc->selected.Thin()) {
@@ -67,15 +63,18 @@ struct TSCanvas : public wxScrolledCanvas {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         } else {
-            if (doc->hover != doc->prev && !doc->hover.Thin()) sys->frame->UpdateStatus(doc->hover, false);
+            if (doc->hover != doc->prev && !doc->hover.Thin()) {
+                sys->frame->UpdateStatus(doc->hover, false);
+            }
         }
         lastmousepos = me.GetPosition();
     }
 
     void SelectClick(int mx, int my, bool right, int isctrlshift) {
         wxInfoDC dc(this);
-        if (mx < 0 || my < 0)
+        if (mx < 0 || my < 0) {
             return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
+        }
         doc->isctrlshiftdrag = isctrlshift;
         doc->UpdateHover(dc, mx, my);
         doc->SelectClick(right);
@@ -87,13 +86,15 @@ struct TSCanvas : public wxScrolledCanvas {
         #ifndef __WXMSW__
         // seems to not want to give the canvas focus otherwise (thinks its already in focus
         // when its not?)
-        if (frame->filter) frame->filter->SetFocus();
+        if (frame->filter != nullptr) { frame->filter->SetFocus(); }
         #endif
         SetFocus();
-        if (me.ShiftDown())
+        if (me.ShiftDown()) {
             OnMotion(me);
-        else
-            SelectClick(me.GetX(), me.GetY(), false, me.CmdDown() + me.AltDown() * 2);
+        } else {
+            SelectClick(me.GetX(), me.GetY(), false,
+                        static_cast<int>(me.CmdDown()) + static_cast<int>(me.AltDown()) * 2);
+        }
     }
 
     void OnLeftUp(wxMouseEvent &me) {
@@ -146,26 +147,30 @@ struct TSCanvas : public wxScrolledCanvas {
         bool unprocessed = false;
         sys->frame->SetStatus(doc->Key(ce.GetUnicodeKey(), ce.GetKeyCode(), ce.AltDown(),
                                        ce.CmdDown(), ce.ShiftDown(), unprocessed));
-        if (unprocessed) ce.Skip();
+        if (unprocessed) { ce.Skip(); }
     }
 
     void OnMouseWheel(wxMouseEvent &me) {
         bool ctrl = me.CmdDown();
-        if (sys->zoomscroll) ctrl = !ctrl;
+        if (sys->zoomscroll) { ctrl = !ctrl; }
         if (me.AltDown() || ctrl || me.ShiftDown()) {
             mousewheelaccum += me.GetWheelRotation();
             int steps = mousewheelaccum / me.GetWheelDelta();
-            if (!steps) return;
+            if (steps == 0) { return; }
             mousewheelaccum -= steps * me.GetWheelDelta();
             sys->frame->SetStatus(doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown()));
-        } else if (me.GetWheelAxis()) {
+        } else if (me.GetWheelAxis() != 0U) {
             CursorScroll(me.GetWheelRotation() * g_scrollratewheel, 0);
         } else {
             CursorScroll(0, -me.GetWheelRotation() * g_scrollratewheel);
         }
     }
 
-    void OnSize(wxSizeEvent &se) {}
+    void OnSize(wxSizeEvent &se) {
+        doc->UpdateLayout();
+        Refresh();
+        se.Skip();
+    }
     void OnContextMenuClick(wxContextMenuEvent &cme) {
         if (lastrmbwaswithctrl) {
             auto tagmenu = make_unique<wxMenu>();
@@ -176,13 +181,17 @@ struct TSCanvas : public wxScrolledCanvas {
         }
     }
 
-    void OnScrollWin(wxScrollWinEvent &swe) {
-        // This only gets called when scrolling using the scroll bar, not with mousewheel.
-        swe.Skip();  // Use default scrolling behavior.
+    void OnScroll(wxScrollEvent &se) {
+        se.Skip();  // Use default scrolling behavior.
+    }
+
+    void OnScrollWin(wxScrollWinEvent &se) {
+        se.Skip();  // Use default scrolling behavior.
     }
 
     void CursorScroll(int dx, int dy) {
-        int x, y;
+        int x = 0;
+        int y = 0;
         GetViewStart(&x, &y);
         x += dx;
         y += dy;

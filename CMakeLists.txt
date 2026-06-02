@@ -19,8 +19,8 @@ project(TreeSheets
 ### Settings
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-OPTION(ENABLE_LOBSTER "Enable Lobster scripting" ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+option(ENABLE_LOBSTER "Enable Lobster scripting" ON)
 option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
 if(ENABLE_IPO)
     include(CheckIPOSupported)
@@ -31,6 +31,8 @@ if(ENABLE_IPO)
         message(WARNING "IPO is not supported: ${output}")
     endif()
 endif()
+option(ENABLE_CLANG_TIDY "Run clang-tidy linter" OFF)
+option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 
 ## Compiler-specific
 
@@ -57,8 +59,10 @@ set(wxUSE_RIBBON FALSE)
 set(wxUSE_PROPGRID FALSE)
 set(wxUSE_RICHTEXT FALSE)
 set(wxUSE_MEDIACTRL FALSE)
-set(wxUSE_HTML FALSE)
-set(wxUSE_WXHTML_HELP FALSE)
+if (NOT wxBUILD_SHARED)
+    set(wxUSE_HTML FALSE)
+    set(wxUSE_WXHTML_HELP FALSE)
+endif()
 
 # Include dependencies
 
@@ -66,9 +70,8 @@ include(FetchContent)
 
 FetchContent_Declare(
     wxwidgets
-    GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
-    GIT_TAG v3.3.2
-    GIT_SHALLOW ON
+    URL https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.tar.bz2
+    URL_HASH SHA256=50a28cb668de47b0e006cd6ebed8cf4f76c1cac6116fb3c978c44478219103f2
     FIND_PACKAGE_ARGS 3.3.2 NAMES wxWidgets
 )
 FetchContent_MakeAvailable(wxwidgets)
@@ -76,20 +79,10 @@ FetchContent_MakeAvailable(wxwidgets)
 if(ENABLE_LOBSTER)
     FetchContent_Declare(
         lobster
-        GIT_REPOSITORY https://github.com/aardappel/lobster
-        GIT_TAG v2026.1
-        GIT_SHALLOW ON
+        URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.3.tar.gz
+        URL_HASH SHA256=403ef33cbe9680afd0e316e6f82f1abf06f3e3782e38cd87e05f49dd350db14a
     )
     FetchContent_MakeAvailable(lobster)
-endif()
-
-### Options
-
-## Run clang-tidy linter
-
-OPTION(WITH_CLANG_TIDY "Run clang-tidy linter" OFF)
-if (WITH_CLANG_TIDY)
-    set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*,clang-analyzer-*,readability-*,performance-*,portability-*,concurrency-*,modernize-*)
 endif()
 
 ### Libraries (lobster, lobster-impl)
@@ -119,6 +112,7 @@ if(ENABLE_LOBSTER)
         ${lobster_SOURCE_DIR}/dev/include
         ${lobster_SOURCE_DIR}/dev/external
         ${lobster_SOURCE_DIR}/dev/external/libtcc)
+    target_compile_definitions(lobster PRIVATE "LOBSTER_ENGINE=0")
 
     ## lobster-impl (provider of TreeSheets functions in lobster)
 
@@ -129,12 +123,27 @@ endif(ENABLE_LOBSTER)
 ### TreeSheets executable
 
 add_executable(TreeSheets
-    src/main.cpp)
+    src/main.cpp
+    src/stdafx.cpp)
 
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VERSION}\"")
+
 if(ENABLE_LOBSTER)
     target_compile_definitions(TreeSheets PRIVATE "ENABLE_LOBSTER=1")
 endif(ENABLE_LOBSTER)
+
+if(ENABLE_CLANG_TIDY)
+    set_target_properties(TreeSheets PROPERTIES CXX_CLANG_TIDY "clang-tidy")
+endif(ENABLE_CLANG_TIDY)
+
+if(ENABLE_ASAN)
+    if(MSVC)
+        target_compile_options(TreeSheets PRIVATE /fsanitize=address)
+    else()
+        target_compile_options(TreeSheets PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+        target_link_options(TreeSheets PRIVATE -fsanitize=address)
+    endif()
+endif(ENABLE_ASAN)
 
 if(APPLE)
     set_target_properties(TreeSheets PROPERTIES
@@ -167,7 +176,7 @@ target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::ne
 ## Platform specific installation paths
 
 if(LINUX OR BSD)
-    OPTION(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
+    option(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
 endif()
 
 if((LINUX OR BSD) AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
@@ -218,8 +227,8 @@ install(FILES ${treesheets_readme_files} DESTINATION ${TREESHEETS_DOCDIR})
 install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
 
 install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
-install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
 if(ENABLE_LOBSTER)
+    install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
     set(lobster_modules
         ${lobster_SOURCE_DIR}/modules/std.lobster
         ${lobster_SOURCE_DIR}/modules/stdtype.lobster
@@ -241,41 +250,22 @@ endif()
 
 # Install translations to correct platform-specific path.
 # See: https://docs.wxwidgets.org/trunk/overview_i18n.html#overview_i18n_mofiles
-file(
-    GLOB locales
-    LIST_DIRECTORIES true
-    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/TS/translations
-    TS/translations/*/ts.mo
-)
-list(
-    TRANSFORM locales
-    REPLACE "/ts\\.mo$" ""
-)
-if(WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
-    foreach(locale ${locales})
-        install(
-            FILES "TS/translations/${locale}/ts.mo"
-            # Paths must be relative to use with CPack
-            DESTINATION "translations/${locale}"
-        )
-    endforeach()
-elseif(APPLE)
-    foreach(locale ${locales})
-        install(
-            FILES "TS/translations/${locale}/ts.mo"
-            # Paths must be relative to use with CPack
-            DESTINATION "TreeSheets.app/Contents/Resources/translations/${locale}.lproj"
-        )
-    endforeach()
-else()
-    # Falling back to GNU scheme
-    foreach(locale ${locales})
-        install(
-            FILES "TS/translations/${locale}/ts.mo"
-            DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES"
-        )
-    endforeach()
-endif()
+file(GLOB mo_files "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations/*/ts.mo")
+foreach(mo_file IN LISTS mo_files)
+    cmake_path(GET mo_file PARENT_PATH locale_dir)
+    cmake_path(GET locale_dir FILENAME locale)
+
+    if(WIN32 OR TREESHEETS_RELOCATABLE_INSTALLATION)
+        # Paths must be relative to use with CPack
+        install(FILES "${mo_file}" DESTINATION "translations/${locale}")
+    elseif(APPLE)
+        # Paths must be relative to use with CPack
+        install(FILES "${mo_file}" DESTINATION "TreeSheets.app/Contents/Resources/translations/${locale}.lproj")
+    else()
+        # Falling back to GNU scheme
+        install(FILES "${mo_file}" DESTINATION "${CMAKE_INSTALL_LOCALEDIR}/${locale}/LC_MESSAGES")
+    endif()
+endforeach()
 
 ### Packaging with CPack
 
