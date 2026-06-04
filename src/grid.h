@@ -509,18 +509,21 @@ struct Grid {
         SetOrient();
         int opos = 0;
         foreachcell(c) {
+            if (!(nxs > 0 && x >= dx && x < dx + nxs) && !(nys > 0 && y >= dy && y < dy + nys)) {
+                c = std::move(ocells[opos++]);
+            }
+        }
+        foreachcell(c) {
             if ((nxs > 0 && x >= dx && x < dx + nxs) || (nys > 0 && y >= dy && y < dy + nys)) {
                 if (nc) {
                     c = std::move(nc);
                 } else {
-                    int sx = nxs != 0 ? max(0, min(dx - 1, xs - 1)) : x;
-                    int sy = nys != 0 ? max(0, min(dy - 1, ys - 1)) : y;
+                    int sx = nxs != 0 ? dx == 0 ? nxs : max(0, min(dx - 1, xs - 1)) : x;
+                    int sy = nys != 0 ? dy == 0 ? nys : max(0, min(dy - 1, ys - 1)) : y;
                     Cell *colcell = C(sx, sy).get();
                     c = make_unique<Cell>(cell, colcell);
                     if (colcell != nullptr) { c->text.relsize = colcell->text.relsize; }
                 }
-            } else {
-                c = std::move(ocells[opos++]);
             }
         }
         if (dx >= 0 && nxs > 0) { colwidths.insert(colwidths.begin() + dx, nxs, cell->ColWidth()); }
