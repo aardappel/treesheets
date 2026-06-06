@@ -2156,6 +2156,13 @@ struct Document {
                 canvas->Refresh();
                 return wxEmptyString;
 
+            case A_FILTERBYSTYLE:
+                loopallcells(ci) ci->text.filtered = ci->text.stylebits != cell->text.stylebits;
+                root->ResetChildren();
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+
             case A_FILTERNOTE:
                 loopallcells(ci) ci->text.filtered = ci->note.IsEmpty();
                 root->ResetChildren();

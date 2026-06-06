@@ -493,6 +493,7 @@ struct TSFrame : wxFrame {
         auto *filtermenu = new wxMenu();
         MyAppend(filtermenu, A_FILTEROFF, _("Turn filter &off") + "\tCTRL+SHIFT+F");
         MyAppend(filtermenu, A_FILTERS, _("Show only cells in current search"));
+        filtermenu->AppendSeparator();
         MyAppend(filtermenu, A_FILTERRANGE, _("Show last edits in specific date range"));
         // xgettext:no-c-format
         MyAppend(filtermenu, A_FILTER5, _("Show 5% of last edits"));
@@ -506,8 +507,11 @@ struct TSFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERM, _("Show 1% more than the last filter"));
         // xgettext:no-c-format
         MyAppend(filtermenu, A_FILTERL, _("Show 1% less than the last filter"));
+        filtermenu->AppendSeparator();
+        MyAppend(filtermenu, A_FILTERBYCELLBG, _("Show cells with the same cell color"));
+        MyAppend(filtermenu, A_FILTERBYSTYLE, _("Show cells with the same style"));
         MyAppend(filtermenu, A_FILTERNOTE, _("Show cells with notes"));
-        MyAppend(filtermenu, A_FILTERBYCELLBG, _("Filter by the same cell color"));
+        filtermenu->AppendSeparator();
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _("Go to next filter match") + "\tCTRL+F3");
 
         auto *viewmenu = new wxMenu();
