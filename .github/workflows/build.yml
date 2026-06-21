@@ -27,8 +27,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: _build/_deps
-        key: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build
+        key: ${{ runner.os }}-${{ matrix.arch }}-cmake-03-build-${{ hashFiles('CMakeLists.txt') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cmake-03-build
     - name: apt update
       run: sudo apt-get -o Acquire::Retries=3 update
     - name: install opengl
@@ -79,7 +79,7 @@ jobs:
             os: windows-latest
             extra_flags: "-A x64"
           - arch: arm64
-            os: windows-11-arm
+            os: windows-11-vs2026-arm
             extra_flags: "-A ARM64 -DENABLE_LOBSTER=OFF" # tinycc currently does not fully support Windows on ARM
     permissions:
       contents: write
@@ -89,13 +89,14 @@ jobs:
       uses: actions/cache@v5
       with:
         path: _build
-        key: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build-${{ hashFiles('CMakeLists.txt') }}
-        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cmake-02-build
+        key: ${{ runner.os }}-${{ matrix.arch }}-cmake-03-build-${{ hashFiles('CMakeLists.txt') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-cmake-03-build
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v3
     - name: cmake
       run: >
         cmake -S . -B _build 
+        -G "Visual Studio 18 2026" 
         -DCMAKE_BUILD_TYPE=Release 
         -DwxBUILD_SHARED=OFF 
         -DwxBUILD_INSTALL=OFF 
