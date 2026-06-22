@@ -21,8 +21,6 @@ struct System {
     wxLongLong fakelasteditonload;
     wxPen pen_tinytext {wxColour(0x808080UL)};
     wxPen pen_gridborder {wxColour(0xb5a6a4)};
-    wxPen pen_tinygridlines {wxColour(0xf2dcd8)};
-    wxPen pen_gridlines {wxColour(0xe5b7b0)};
     wxPen pen_thinselect {*wxLIGHT_GREY};
     int roundness {3};
     int defaultmaxcolwidth {80};
@@ -64,9 +62,6 @@ struct System {
     System(bool portable)
         : cfg(portable ? new wxFileConfig("", "", wxGetCwd() + "/TreeSheets.ini", "", 0)
                        : new wxFileConfig("TreeSheets")) {
-        static const wxDash glpattern[] = {1, 3};
-        pen_gridlines.SetDashes(2, glpattern);
-        pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
         static const wxDash tspattern[] = {2, 4};
         pen_thinselect.SetDashes(2, tspattern);
         pen_thinselect.SetStyle(wxPENSTYLE_USER_DASH);

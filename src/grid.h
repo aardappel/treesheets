@@ -197,8 +197,13 @@ struct Grid {
                 drawlines();
             }
             // dotted lines result in very expensive drawline calls
-            dc.SetPen(view_grid_outer_spacing != 0 && !sys->fastrender ? sys->pen_gridlines
-                                                                       : sys->pen_tinygridlines);
+            wxPen borderpen {LightColor(bordercolor)};
+            if (view_grid_outer_spacing != 0 && !sys->fastrender) {
+                static const wxDash glpattern[] = {1, 3};
+                borderpen.SetDashes(2, glpattern);
+                borderpen.SetStyle(wxPENSTYLE_USER_DASH);
+            }
+            dc.SetPen(borderpen);
             drawlines();
         }
 
