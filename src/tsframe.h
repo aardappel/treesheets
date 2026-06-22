@@ -642,6 +642,9 @@ struct TSFrame : wxFrame {
             A_FASTRENDER, _("Faster line rendering"),
             _("Toggle whether lines are drawn solid (faster rendering) or dashed"));
         optmenu->Check(A_FASTRENDER, sys->fastrender);
+        optmenu->AppendCheckItem(A_INNERBORDERCOLOR, _("Colorize inner grid border"),
+                                 _("Also colorize the inner grid border"));
+        optmenu->Check(A_INNERBORDERCOLOR, sys->innerbordercolor);
         optmenu->AppendCheckItem(A_INVERTRENDER, _("Invert in dark mode"),
                                  _("Invert the document in dark mode"));
         optmenu->Check(A_INVERTRENDER, sys->followdarkmode);
@@ -1205,6 +1208,10 @@ struct TSFrame : wxFrame {
                 break;
             case A_FASTRENDER:
                 sys->cfg->Write("fastrender", sys->fastrender = ce.IsChecked());
+                Refresh();
+                break;
+            case A_INNERBORDERCOLOR:
+                sys->cfg->Write("innerbordercolor", sys->innerbordercolor = ce.IsChecked());
                 Refresh();
                 break;
             case A_INVERTRENDER:

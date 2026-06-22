@@ -22,6 +22,8 @@ struct System {
     wxPen pen_tinytext {wxColour(0x808080UL)};
     wxPen pen_gridborder {wxColour(0xb5a6a4)};
     wxPen pen_thinselect {*wxLIGHT_GREY};
+    uint pen_tinygridlines {0xf2dcd8UL};
+    uint pen_gridlines {0xe5b7b0UL};
     int roundness {3};
     int defaultmaxcolwidth {80};
     bool makebaks {true};
@@ -41,6 +43,7 @@ struct System {
     bool showtoolbar {true};
     bool showstatusbar {true};
     bool followdarkmode {false};
+    bool innerbordercolor {false};
     uint colormask {0};
     int notesizex {300};
     int notesizey {255};
@@ -78,6 +81,7 @@ struct System {
         cfg->Read("thinselc", &thinselc, thinselc);
         cfg->Read("autosave", &autosave, autosave);
         cfg->Read("fastrender", &fastrender, fastrender);
+        cfg->Read("innerbordercolor", &innerbordercolor, innerbordercolor);
         cfg->Read("followdarkmode", &followdarkmode, followdarkmode);
         cfg->Read("minclose", &minclose, minclose);
         cfg->Read("singletray", &singletray, singletray);

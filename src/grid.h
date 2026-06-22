@@ -192,13 +192,16 @@ struct Grid {
                     }
                 }
             };
-            if (!sys->fastrender && view_grid_outer_spacing != 0 && cell->cellcolor != 0xFFFFFF) {
+            bool dashed = !sys->fastrender && view_grid_outer_spacing != 0;
+            if (dashed && cell->cellcolor != 0xFFFFFF) {
                 dc.SetPen(wxPen(LightColor(0xFFFFFF)));
                 drawlines();
             }
             // dotted lines result in very expensive drawline calls
-            wxPen borderpen {LightColor(bordercolor)};
-            if (view_grid_outer_spacing != 0 && !sys->fastrender) {
+            wxPen borderpen {LightColor(sys->innerbordercolor ? bordercolor
+                                        : dashed              ? sys->pen_gridlines
+                                                              : sys->pen_tinygridlines)};
+            if (dashed) {
                 static const wxDash glpattern[] = {1, 3};
                 borderpen.SetDashes(2, glpattern);
                 borderpen.SetStyle(wxPENSTYLE_USER_DASH);
