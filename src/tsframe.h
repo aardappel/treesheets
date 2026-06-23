@@ -1486,6 +1486,7 @@ struct TSFrame : wxFrame {
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
         sys->colormask =
             (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
+        sys->UpdatePens();
         auto perspective = aui.SavePerspective();
         RefreshToolBar();
         aui.LoadPerspective(perspective);

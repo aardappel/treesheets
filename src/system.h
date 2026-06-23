@@ -22,8 +22,8 @@ struct System {
     wxPen pen_tinytext {wxColour(0x808080UL)};
     wxPen pen_gridborder {wxColour(0xb5a6a4)};
     wxPen pen_thinselect {*wxLIGHT_GREY};
-    uint pen_tinygridlines {0xf2dcd8UL};
-    uint pen_gridlines {0xe5b7b0UL};
+    wxPen pen_tinygridlines;
+    wxPen pen_gridlines;
     int roundness {3};
     int defaultmaxcolwidth {80};
     bool makebaks {true};
@@ -105,6 +105,14 @@ struct System {
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
         colormask = (followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
+    }
+
+    void UpdatePens() {
+        pen_tinygridlines = wxPen(wxColour(LightColor(0xf2dcd8UL)));
+        pen_gridlines = wxPen(wxColour(LightColor(0xe5b7b0UL)));
+        static const wxDash glpattern[] = {1, 3};
+        pen_gridlines.SetDashes(2, glpattern);
+        pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
     }
 
     Document *NewTabDoc(bool append = false, int insert_at = -1) const {

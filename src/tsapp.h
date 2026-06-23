@@ -74,6 +74,7 @@ struct TSApp : wxApp {
             MSWEnableDarkMode();
         #endif
         sys = make_unique<System>(portable);
+        sys->UpdatePens();
         if (start_minimized) { sys->startminimized = true; }
         SetupInternationalization();
         #ifdef __WXMSW__
