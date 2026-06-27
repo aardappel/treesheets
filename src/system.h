@@ -329,11 +329,6 @@ struct System {
                         }
 
                         doc->InitWith(std::move(root), filename, ics, xs, ys);
-                        if (zoomlevel == 0) {
-                            doc->UpdateLayout();
-                            doc->ScrollIfSelectionOutOfView();
-                            doc->canvas->Refresh();
-                        }
 
                         auto end_loading_time = wxGetLocalTimeMillis();
 
@@ -364,7 +359,13 @@ struct System {
         }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
-        if (zoomlevel > 0) doc->Zoom(zoomlevel, true);
+        if (zoomlevel == 0) {
+            doc->UpdateLayout();
+            doc->ScrollIfSelectionOutOfView();
+            doc->canvas->Refresh();
+        } else {
+            doc->Zoom(zoomlevel, true);
+        }
         if (anyimagesfailed) {
             wxMessageBox(_("PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _("PNG decoder failure"), wxOK, frame);
