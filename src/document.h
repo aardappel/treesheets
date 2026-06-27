@@ -117,9 +117,6 @@ struct Document {
         this->root = std::move(root);
         InitCellSelect(initialselected, xsize, ysize);
         ChangeFileName(filename, false);
-        UpdateLayout();
-        ScrollIfSelectionOutOfView();
-        canvas->Refresh();
     }
 
     void UpdateFileName(int page = -1) const {

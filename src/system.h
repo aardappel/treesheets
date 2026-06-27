@@ -185,6 +185,9 @@ struct System {
         c->grid->InitCells();
         auto *doc = NewTabDoc();
         doc->InitWith(std::move(c), "", nullptr, 1, 1);
+        doc->UpdateLayout();
+        doc->ScrollIfSelectionOutOfView();
+        doc->canvas->Refresh();
         return doc->root;
     }
 
@@ -315,7 +318,6 @@ struct System {
                                 -1;  // if not, user will lose tmp without warning when he closes
                             doc->modified = true;
                         }
-                        doc->InitWith(std::move(root), filename, ics, xs, ys);
 
                         if (versionlastloaded >= 11) {
                             for (;;) {
@@ -324,6 +326,13 @@ struct System {
                                 doc->tags[tag] =
                                     versionlastloaded >= 24 ? dis.Read32() : g_tagcolor_default;
                             }
+                        }
+
+                        doc->InitWith(std::move(root), filename, ics, xs, ys);
+                        if (zoomlevel == 0) {
+                            doc->UpdateLayout();
+                            doc->ScrollIfSelectionOutOfView();
+                            doc->canvas->Refresh();
                         }
 
                         auto end_loading_time = wxGetLocalTimeMillis();
@@ -355,7 +364,7 @@ struct System {
         }  // wait until all tasks are finished
 
         FileUsed(filename, doc);
-        doc->Zoom(zoomlevel, true);
+        if (zoomlevel > 0) doc->Zoom(zoomlevel, true);
         if (anyimagesfailed) {
             wxMessageBox(_("PNG decode failed on some images in this document\nThey have been replaced by red squares."),
                          _("PNG decoder failure"), wxOK, frame);
