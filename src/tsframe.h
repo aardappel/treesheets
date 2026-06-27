@@ -1279,8 +1279,9 @@ struct TSFrame : wxFrame {
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
         auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
-        ClearStatus();
-        treesheets::System::TabChange(canvas->doc.get());
+        canvas->SetFocus();
+        canvas->doc->UpdateFileName();
+        UpdateStatus(canvas->doc->selected, true);
         nbe.Skip();
     }
 
@@ -1608,10 +1609,6 @@ struct TSFrame : wxFrame {
 
     void SetStatus(const wxString &message) {
         if (GetStatusBar() != nullptr && !message.IsEmpty()) { SetStatusText(message, 0); }
-    }
-
-    void ClearStatus() {
-        if (GetStatusBar() != nullptr) { SetStatusText("", 0); }
     }
 
     void TabsReset() const {

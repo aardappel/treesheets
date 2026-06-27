@@ -121,12 +121,6 @@ struct System {
         return canvas->doc.get();
     }
 
-    static void TabChange(Document *newdoc) {
-        // SetSelect(hover = Selection());
-        newdoc->canvas->SetFocus();
-        newdoc->UpdateFileName();
-    }
-
     void Init(const wxString &filename) {
         evaluator.Init();
 
