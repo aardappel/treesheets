@@ -357,8 +357,6 @@ struct System {
                     image.get());
             }
         }  // wait until all tasks are finished
-
-        FileUsed(filename, doc);
         if (zoomlevel == 0) {
             doc->UpdateLayout();
             doc->ScrollIfSelectionOutOfView();
@@ -371,6 +369,7 @@ struct System {
                          _("PNG decoder failure"), wxOK, frame);
         }
 
+        FileUsed(filename, doc);
         return wxEmptyString;
     }
 
