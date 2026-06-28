@@ -590,7 +590,7 @@ msgid "End of text"
 msgstr "Ende des Textes"
 
 msgid "English"
-msgstr ""
+msgstr "Englisch"
 
 msgid "Enter/exit text edit mode"
 msgstr "Textbearbeitungsmodus betreten/verlassen"
