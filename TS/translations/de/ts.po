@@ -440,9 +440,8 @@ msgstr "Aktuelles Dokument schließen"
 msgid "Collapse Ce&lls"
 msgstr "Ze&llen zusammenlegen"
 
-#, fuzzy
 msgid "Colorize inner grid border"
-msgstr "&Abrundung der Tabellenränder"
+msgstr "Innere Tabellenlinien einfärben"
 
 msgid "Column width decreased."
 msgstr "Spaltenbreite wurde verkleinert."
@@ -1246,12 +1245,8 @@ msgstr "Bitte wählen Sie Datei(en) zum Importieren aus:"
 msgid "Please select the datetime range."
 msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
 
-#, fuzzy
 msgid "Please select the language for the interface (requires restart)."
-msgstr ""
-"Bitte wählen Sie die Sprache für die Benutzeroberfläche aus (benötigt einen "
-"Neustart). Bitte wählen Sie die leere Zeile aus, wenn Sie die "
-"Standardsprache des Systems nutzen möchten."
+msgstr "Bitte wählen Sie eine Sprache für die Benutzeroberfäche aus (benötigt Neustart)."
 
 msgid ""
 "Please select the language for the interface (requires restart). Please "
@@ -1513,13 +1508,11 @@ msgstr "Den Über-Dialog anzeigen"
 msgid "Show cells with notes"
 msgstr "Zellen mit Notizen anzeigen"
 
-#, fuzzy
 msgid "Show cells with the same cell color"
 msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
 
-#, fuzzy
 msgid "Show cells with the same style"
-msgstr "Zellen mit Notizen anzeigen"
+msgstr "Nur Zellen mit dem gleichen Stil anzeigen"
 
 msgid "Show last edits in specific date range"
 msgstr "Die letzten Bearbeitungen in einem bestimmten Datumsbereich anzeigen"
@@ -1567,7 +1560,7 @@ msgid "Swap mousewheel scrolling and zooming"
 msgstr "Mausrad-Scrolling und Mausrad-Vergrößern/Verkleinern tauschen"
 
 msgid "System Default"
-msgstr ""
+msgstr "Systemstandard"
 
 msgid "Tab delimited text..."
 msgstr "Text mit Tabulator als Trennzeichen..."
