@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-12 16:37+0200\n"
-"PO-Revision-Date: 2026-04-21 00:21+0900\n"
+"POT-Creation-Date: 2026-06-27 12:14+0200\n"
+"PO-Revision-Date: 2026-06-28 18:24+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -251,8 +251,14 @@ msgstr "선택한 셀에 이미지 추가"
 msgid "Add..."
 msgstr "추가..."
 
+msgid "Adds a NxN grid to the selected cell"
+msgstr "선택한 셀에 NxN 격자 추가"
+
 msgid "Adds a grid to the selected cell"
 msgstr "선택한 셀에 격자 추가"
+
+msgid "Also colorize the inner grid border"
+msgstr "내부 그리드도 테두리 색칠"
 
 msgid "Apply last border color"
 msgstr "마지막 테두리 색상 적용"
@@ -423,6 +429,9 @@ msgstr "현재 문서 닫기"
 msgid "Collapse Ce&lls"
 msgstr "셀 축소"
 
+msgid "Colorize inner grid border"
+msgstr "내부 격자 테두리 색칠"
+
 msgid "Column width decreased."
 msgstr "열 너비가 감소했습니다."
 
@@ -560,6 +569,9 @@ msgstr "텍스트의 줄의 끝"
 msgid "End of text"
 msgstr "텍스트의 끝"
 
+msgid "English"
+msgstr "영어"
+
 msgid "Enter/exit text edit mode"
 msgstr "텍스트 편집 모드 진입/종료"
 
@@ -574,12 +586,17 @@ msgstr ""
 "코어 데이터 파일을 로드하는 중 오류가 발생했습니다 (TreeSheets가 올바르게 설"
 "치되지 않았나요?)"
 
+msgid "Error renaming temporary file."
+msgstr "임시 파일 이름을 변경하는 중 오류가 발생했습니다."
+
 msgid "Error writing PNG file!"
 msgstr "PNG 파일 작성 중 오류 발생가 발생했습니다!"
 
-msgid "Error writing TreeSheets file! (try saving under new filename)."
+msgid ""
+"Error writing TreeSheets file! Would you like to save at a different "
+"location?"
 msgstr ""
-"TreeSheets 파일을 쓰는 중 오류가 발생했습니다! (새 파일 이름으로 저장 시도)."
+"TreeSheets 파일을 쓰는 중 오류가 발생했습니다! 다른 위치에 저장하시겠습니까?"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
@@ -857,6 +874,9 @@ msgstr "텍스트 들여쓰기..."
 msgid "Initialization Error"
 msgstr "초기화 오류"
 
+msgid "Insert New &NxN Grid"
+msgstr "새 NxN 격자 삽입(&N)"
+
 msgid "Insert last image"
 msgstr "최근 이미지 삽입"
 
@@ -996,6 +1016,9 @@ msgstr "새 시트"
 msgid "New file cancelled."
 msgstr "새 파일이 취소되었습니다."
 
+msgid "New subgrid"
+msgstr "새 하위 격자"
+
 msgid "No autoexport"
 msgstr "자동 내보내기 안 함"
 
@@ -1022,6 +1045,9 @@ msgstr "검색이 없습니다."
 
 msgid "No style to paste."
 msgstr "붙여넣을 스타일이 없습니다."
+
+msgid "No subgrid created."
+msgstr "하위 격자가 생성되지 않았습니다."
 
 msgid "No text in this cell."
 msgstr "이 셀에는 텍스트가 없습니다."
@@ -1162,6 +1188,9 @@ msgstr "가져올 파일을 선택하세요:"
 
 msgid "Please select the datetime range."
 msgstr "날짜 범위를 선택해 주세요."
+
+msgid "Please select the language for the interface (requires restart)."
+msgstr "인터페이스 언어를 선택해 주세요 (재시작 필요)."
 
 msgid ""
 "Please select the language for the interface (requires restart). Please "
@@ -1412,6 +1441,12 @@ msgstr "정보 대화상자 표시"
 msgid "Show cells with notes"
 msgstr "노트가 있는 셀 표시"
 
+msgid "Show cells with the same cell color"
+msgstr "동일한 셀 색상의 셀 표시"
+
+msgid "Show cells with the same style"
+msgstr "동일한 스타일의 셀 표시"
+
 msgid "Show last edits in specific date range"
 msgstr "특정 날짜 범위에서 마지막 편집 표시"
 
@@ -1455,6 +1490,9 @@ msgstr ""
 
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "마우스 휠 스크롤 및 확대/축소 전환"
+
+msgid "System Default"
+msgstr "시스템 기본값"
 
 msgid "Tab delimited text..."
 msgstr "탭으로 구분된 텍스트..."
@@ -1588,6 +1626,9 @@ msgstr "필터 끄기(&O)"
 msgid "Tutorial &web page"
 msgstr "자습서 웹 페이지(&W)"
 
+msgid "Tutorial web page could not be found."
+msgstr "자습서 웹 페이지를 찾을 수 없습니다."
+
 msgid "Typewriter font..."
 msgstr "타자기 글꼴..."
 
@@ -1620,6 +1661,9 @@ msgstr "선 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "What size grid would you like to start with?"
 msgstr "어떤 크기의 격자로 시작하시겠습니까?"
+
+msgid "What subgrid size would you like to start with?"
+msgstr "어떤 하위 격자 크기로 시작하시겠습니까?"
 
 msgid "Width"
 msgstr "너비"
