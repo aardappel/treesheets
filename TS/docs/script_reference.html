@@ -432,7 +432,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>rnd_seed</b>(seed<font color="#666666">: int</font>)</tt></td><td class="a">explicitly set a random seed for reproducable randomness</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>rnd_select</b>(index<font color="#666666">: int</font>)</tt></td><td class="a">select a different random number generator to be active. default is 0, max is 1000000</td>
+<tr class="a" valign=top><td class="a"><tt><b>rnd_select</b>(index<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">select a different random number generator to be active. default is 0, max is 1000000. returns previous value.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>rndm</b>(max<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">deprecated: old mersenne twister version of the above for backwards compat.</td>
@@ -736,7 +736,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>launch_subprocess</b>(commandline<font color="#666666">: [string]</font>, stdin<font color="#666666">: string</font> = nil) -> <font color="#666666">int</font>, <font color="#666666">string</font></tt></td><td class="a">launches a sub process, with optionally a stdin for the process, and returns its return code (or -1 if it couldn't launch at all), and any output</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>vector_to_buffer</b>(vec<font color="#666666">: [any]</font>, width<font color="#666666">: int</font> = 4) -> <font color="#666666">string</font></tt></td><td class="a">converts a vector of ints/floats (or structs of them) to a buffer, where each scalar is written with "width" bytes (1/2/4/8, default 4). Returns nil if the type couldn't be converted. Uses native endianness.</td>
+<tr class="a" valign=top><td class="a"><tt><b>vector_to_buffer</b>(vec<font color="#666666">: [any]</font>, width<font color="#666666">: int</font> = 4, offset<font color="#666666">: int</font> = 0, len<font color="#666666">: int</font> = 0) -> <font color="#666666">string</font></tt></td><td class="a">converts a vector of ints/floats (or structs of them) to a buffer, where each scalar is written with "width" bytes (1/2/4/8, default 4). Returns nil if the type couldn't be converted. Uses native endianness. Offset and len can specify a slice of the input, but if not specified default to all.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ensure_size</b>(string<font color="#666666">: string</font>, size<font color="#666666">: int</font>, char<font color="#666666">: int</font>, extra<font color="#666666">: int</font> = 0) -> <font color="#666666">string</font></tt></td><td class="a">ensures a string is at least size characters. if it is, just returns the existing string, otherwise returns a new string of that size (with optionally extra bytes added), with any new characters set to char. You can specify a negative size to mean relative to the end, i.e. new characters will be added at the start. </td>
