@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 09:32+0200\n"
+"POT-Creation-Date: 2026-06-27 12:14+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -258,6 +258,9 @@ msgstr "Eine NxN-Tabelle in die ausgewählte Zelle einfügen"
 msgid "Adds a grid to the selected cell"
 msgstr "Eine Tabelle in die ausgewählte Zelle einfügen"
 
+msgid "Also colorize the inner grid border"
+msgstr ""
+
 msgid "Apply last border color"
 msgstr "Letzte Randfarbe anwenden"
 
@@ -437,6 +440,10 @@ msgstr "Aktuelles Dokument schließen"
 msgid "Collapse Ce&lls"
 msgstr "Ze&llen zusammenlegen"
 
+#, fuzzy
+msgid "Colorize inner grid border"
+msgstr "&Abrundung der Tabellenränder"
+
 msgid "Column width decreased."
 msgstr "Spaltenbreite wurde verkleinert."
 
@@ -583,6 +590,9 @@ msgstr "Ende der Zeile des Textes"
 msgid "End of text"
 msgstr "Ende des Textes"
 
+msgid "English"
+msgstr ""
+
 msgid "Enter/exit text edit mode"
 msgstr "Textbearbeitungsmodus betreten/verlassen"
 
@@ -606,7 +616,8 @@ msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"
 msgstr ""
-"Fehler beim Schreiben der TreeSheets-Datei! Möchten Sie versuchen, die Datei an einem anderen Ort zu speichern?"
+"Fehler beim Schreiben der TreeSheets-Datei! Möchten Sie versuchen, die Datei "
+"an einem anderen Ort zu speichern?"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
@@ -1235,6 +1246,13 @@ msgstr "Bitte wählen Sie Datei(en) zum Importieren aus:"
 msgid "Please select the datetime range."
 msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
 
+#, fuzzy
+msgid "Please select the language for the interface (requires restart)."
+msgstr ""
+"Bitte wählen Sie die Sprache für die Benutzeroberfläche aus (benötigt einen "
+"Neustart). Bitte wählen Sie die leere Zeile aus, wenn Sie die "
+"Standardsprache des Systems nutzen möchten."
+
 msgid ""
 "Please select the language for the interface (requires restart). Please "
 "select the empty row if you want to use the default language."
@@ -1495,6 +1513,14 @@ msgstr "Den Über-Dialog anzeigen"
 msgid "Show cells with notes"
 msgstr "Zellen mit Notizen anzeigen"
 
+#, fuzzy
+msgid "Show cells with the same cell color"
+msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
+
+#, fuzzy
+msgid "Show cells with the same style"
+msgstr "Zellen mit Notizen anzeigen"
+
 msgid "Show last edits in specific date range"
 msgstr "Die letzten Bearbeitungen in einem bestimmten Datumsbereich anzeigen"
 
@@ -1539,6 +1565,9 @@ msgstr ""
 
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "Mausrad-Scrolling und Mausrad-Vergrößern/Verkleinern tauschen"
+
+msgid "System Default"
+msgstr ""
 
 msgid "Tab delimited text..."
 msgstr "Text mit Tabulator als Trennzeichen..."
