@@ -23,6 +23,7 @@ END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(treesheets::TSCanvas, wxScrolledWindow)
   EVT_MOUSEWHEEL(treesheets::TSCanvas::OnMouseWheel)
+  EVT_GESTURE_ZOOM(wxID_ANY, treesheets::TSCanvas::OnZoomGesture)
   EVT_PAINT(treesheets::TSCanvas::OnPaint)
   EVT_MOTION(treesheets::TSCanvas::OnMotion)
   EVT_LEFT_DOWN(treesheets::TSCanvas::OnLeftDown)
