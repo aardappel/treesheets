@@ -4,6 +4,7 @@ struct TSCanvas : public wxScrolledCanvas {
     int mousewheelaccum {0};
     bool lastrmbwaswithctrl {false};
     wxPoint lastmousepos;
+    double zoomgesturebase {1.0};
 
     TSCanvas(TSFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
         : wxScrolledCanvas(parent, wxID_ANY, wxDefaultPosition, size,
@@ -15,6 +16,9 @@ struct TSCanvas : public wxScrolledCanvas {
         // Without this, canvas does its own scrolling upon mousewheel events, which
         // interferes with our own.
         EnableScrolling(false, false);
+        // Enable pinch-to-zoom (magnify) gestures where the platform supports them
+        // (macOS trackpads, touch screens). A harmless no-op elsewhere.
+        EnableTouchEvents(wxTOUCH_ZOOM_GESTURE);
     }
 
     ~TSCanvas() override { frame = nullptr; }
@@ -164,6 +168,29 @@ struct TSCanvas : public wxScrolledCanvas {
         } else {
             CursorScroll(0, -me.GetWheelRotation() * g_scrollratewheel);
         }
+    }
+
+    void OnZoomGesture(wxZoomGestureEvent &ge) {
+        // A pinch maps to the same hierarchical zoom as Ctrl+mousewheel and the
+        // Zoom In / Zoom Out menu items. wxZoomGestureEvent reports a cumulative
+        // factor that is 1.0 when the gesture starts, grows as the fingers spread
+        // (zoom in) and shrinks as they pinch together (zoom out). We turn that
+        // continuous factor into discrete zoom steps each time it crosses a fixed
+        // ratio threshold, similar to how mousewheelaccum batches wheel events.
+        if (ge.IsGestureStart()) { zoomgesturebase = 1.0; }
+        double factor = ge.GetZoomFactor();
+        if (factor <= 0.0) { return; }
+        const double stepfactor = 1.4;  // pinch ratio required per zoom step
+        int steps = 0;
+        while (factor / zoomgesturebase >= stepfactor) {
+            steps++;
+            zoomgesturebase *= stepfactor;
+        }
+        while (zoomgesturebase / factor >= stepfactor) {
+            steps--;
+            zoomgesturebase /= stepfactor;
+        }
+        if (steps != 0) { sys->frame->SetStatus(doc->Wheel(steps, false, true, false)); }
     }
 
     void OnSize(wxSizeEvent &se) {
