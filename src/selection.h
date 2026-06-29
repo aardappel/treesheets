@@ -90,7 +90,7 @@ struct Selection {
                 cursor = cursorend = 0;
             }
         } else {
-            auto *at = a.GetCell();
+            auto *at = a.GetFirst();
             auto *bt = b.GetCell();
             int ad = at->Depth();
             int bd = bt->Depth();
