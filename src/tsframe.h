@@ -1624,7 +1624,7 @@ struct TSFrame : wxFrame {
     }
 
     void UpdateStatus(const Selection &s, bool updateamount) {
-        if (GetStatusBar() != nullptr) {
+        if (GetStatusBar() != nullptr && s.grid != nullptr) {
             if (Cell *c = s.GetCell(); c != nullptr && s.xs != 0) {
                 SetStatusText(wxString::Format(_("Size %d"), -c->text.relsize), 3);
                 SetStatusText(wxString::Format(_("Width %d"), s.grid->colwidths[s.x]), 2);
