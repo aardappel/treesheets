@@ -23,7 +23,7 @@
 #include <wx/zstream.h>
 
 #ifdef _WIN32
-    #include <WinUser.h>
+    #include <winuser.h>
     #include <imm.h>
     #include <wx/msw/dc.h>
     #include <wx/msw/regconf.h>
