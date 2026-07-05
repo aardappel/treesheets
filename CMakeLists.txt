@@ -161,6 +161,7 @@ elseif(WIN32)
     set_target_properties(TreeSheets PROPERTIES
         WIN32_EXECUTABLE TRUE
     )
+    target_link_libraries(TreeSheets PRIVATE imm32)
 endif()
 
 target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
