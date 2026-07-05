@@ -232,7 +232,7 @@ struct Document {
     }
 
     void DrawSelect(wxDC &dc, Selection &s) {
-        if (!s.grid) { return; }
+        if (s.grid == nullptr) { return; }
         ResetFont();
         s.grid->DrawSelect(this, dc, s);
     }
@@ -263,7 +263,7 @@ struct Document {
             canvas->GetViewStart(&sx, &sy);
             int mx = cw + sx;
             int my = ch + sy;
-            if ((layoutys > ch || layoutxs > cw) && selected.grid) {
+            if ((layoutys > ch || layoutxs > cw) && selected.grid != nullptr) {
                 wxRect r = selected.grid->GetRect(this, selected);
                 if (r.y < sy || r.y + r.height > my || r.x < sx || r.x + r.width > mx) {
                     canvas->Scroll(r.width > cw || r.x < sx ? r.x
@@ -278,7 +278,7 @@ struct Document {
     }
 
     void ScrollOrZoom(bool zoomiftiny = false) {
-        if (!selected.grid) { return; }
+        if (selected.grid == nullptr) { return; }
         auto *drawroot = WalkPath(drawpath);
         // If we jumped to a cell which may be insided a folded cell, we have to unfold it
         // because the rest of the code doesn't deal with a selection that is invisible :)
@@ -312,7 +312,7 @@ struct Document {
     }
 
     void ResetCursor() {
-        if (selected.grid) { selected.SetCursorEdit(this, selected.TextEdit()); }
+        if (selected.grid != nullptr) { selected.SetCursorEdit(this, selected.TextEdit()); }
     }
 
     void SetSelect(const Selection &sel = Selection()) {
@@ -346,7 +346,7 @@ struct Document {
 
     void DoubleClick() {
         SetSelect(hover);
-        if (selected.Thin() && selected.grid) {
+        if (selected.Thin() && selected.grid != nullptr) {
             selected.SelAll();
         } else if (Cell *c = selected.GetCell()) {
             selected.EnterEditOnly(this);
@@ -452,7 +452,7 @@ struct Document {
         int targetlen = max(0, (fromroot ? 0 : oldlen) + dir);
         if (targetlen == 0 && drawpath.empty()) { return false; }
         if (dir > 0) {
-            if (!selected.grid) { return false; }
+            if (selected.grid == nullptr) { return false; }
             auto *c = selected.GetCell();
             CreatePath(c != nullptr && c->grid ? c : selected.grid->cell, drawpath);
         } else if (dir < 0) {
@@ -488,7 +488,7 @@ struct Document {
     wxString Wheel(int dir, bool alt, bool ctrl, bool shift, bool hierarchical = true) {
         if (dir == 0) { return wxEmptyString; }
         if (alt) {
-            if (!selected.grid) { return NoSel(); }
+            if (selected.grid == nullptr) { return NoSel(); }
             if (selected.xs > 0) {
                 if (!LastUndoSameCellAny(selected.grid->cell)) {
                     selected.grid->cell->AddUndo(this);
@@ -504,9 +504,7 @@ struct Document {
             }
             return _("nothing to resize");
         } else if (shift) {
-            if (!selected.grid) {
-                return NoSel();
-            }
+            if (selected.grid == nullptr) { return NoSel(); }
             selected.grid->cell->AddUndo(this);
             selected.grid->ResetChildren();
             selected.grid->RelSize(-dir, selected, pathscalebias);
@@ -920,7 +918,7 @@ struct Document {
                 #endif
             }
         } else if (uk >= ' ') {
-            if (!selected.grid) { return NoSel(); }
+            if (selected.grid == nullptr) { return NoSel(); }
             auto *c = selected.ThinExpand(this);
             if (c == nullptr) {
                 selected.Wrap(this);
@@ -1405,7 +1403,7 @@ struct Document {
             }
         }
 
-        if (!selected.grid) { return NoSel(); }
+        if (selected.grid == nullptr) { return NoSel(); }
 
         auto *cell = selected.GetCell();
 
@@ -2361,7 +2359,7 @@ struct Document {
         path.clear();
         while (c->parent != nullptr) {
             const Selection &s = c->parent->grid->FindCell(c);
-            ASSERT(s.grid);
+            ASSERT(s.grid != nullptr);
             path.push_back(s);
             c = c->parent;
         }
@@ -2409,7 +2407,7 @@ struct Document {
             ui->generation = undolist.back()->generation + (newgeneration ? 1 : 0);
         }
         CreatePath(c, ui->path);
-        if (selected.grid) { CreatePath(selected.grid->cell, ui->selpath); }
+        if (selected.grid != nullptr) { CreatePath(selected.grid->cell, ui->selpath); }
         undolist.push_back(std::move(ui));
         size_t total_usage = 0;
         size_t old_list_size = undolist.size();
@@ -2435,7 +2433,7 @@ struct Document {
             next = !fromlist.empty() && !tolist.empty() &&
                    fromlist.back()->generation == tolist.back()->generation;
         }
-        if (selected.grid) {
+        if (selected.grid != nullptr) {
             ScrollOrZoom();
         } else {
             UpdateLayout();
@@ -2471,7 +2469,7 @@ struct Document {
         c->ResetLayout();
 
         SetSelect(ui->sel);
-        if (selected.grid) { selected.grid = WalkPath(ui->selpath)->grid; }
+        if (selected.grid != nullptr) { selected.grid = WalkPath(ui->selpath)->grid; }
 
         begindrag = selected;
         ui->sel = beforesel;
@@ -2485,7 +2483,7 @@ struct Document {
     }
 
     void ColorChange(int which, int idx) {
-        if (!selected.grid) { return; }
+        if (selected.grid == nullptr) { return; }
         auto col = idx == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[idx];
         switch (which) {
             case A_CELLCOLOR: sys->lastcellcolor = col; break;
@@ -2527,7 +2525,7 @@ struct Document {
     }
 
     void ImageChange(const wxString &filename, double scale) {
-        if (!selected.grid) { return; }
+        if (selected.grid == nullptr) { return; }
         selected.grid->cell->AddUndo(this);
         loopallcellssel(c, false) LoadImageIntoCell(filename, c, scale);
         UpdateLayout();
@@ -2569,7 +2567,9 @@ struct Document {
 
     void CollectCellsSel(bool recurse) {
         itercells.clear();
-        if (selected.grid) { selected.grid->CollectCellsSel(itercells, selected, recurse); }
+        if (selected.grid != nullptr) {
+            selected.grid->CollectCellsSel(itercells, selected, recurse);
+        }
     }
 
     void ApplyEditFilter() {
