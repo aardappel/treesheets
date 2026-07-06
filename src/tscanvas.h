@@ -19,6 +19,21 @@ struct TSCanvas : public wxScrolledCanvas {
         // Enable pinch-to-zoom (magnify) gestures where the platform supports them
         // (macOS trackpads, touch screens). A harmless no-op elsewhere.
         EnableTouchEvents(wxTOUCH_ZOOM_GESTURE);
+
+        Bind(wxEVT_MOUSEWHEEL, &TSCanvas::OnMouseWheel, this);
+        Bind(wxEVT_GESTURE_ZOOM, &TSCanvas::OnZoomGesture, this, wxID_ANY);
+        Bind(wxEVT_PAINT, &TSCanvas::OnPaint, this);
+        Bind(wxEVT_MOTION, &TSCanvas::OnMotion, this);
+        Bind(wxEVT_LEFT_DOWN, &TSCanvas::OnLeftDown, this);
+        Bind(wxEVT_LEFT_UP, &TSCanvas::OnLeftUp, this);
+        Bind(wxEVT_RIGHT_DOWN, &TSCanvas::OnRightDown, this);
+        Bind(wxEVT_LEFT_DCLICK, &TSCanvas::OnLeftDoubleClick, this);
+        Bind(wxEVT_CHAR, &TSCanvas::OnChar, this);
+        Bind(wxEVT_KEY_DOWN, &TSCanvas::OnKeyDown, this);
+        Bind(wxEVT_CONTEXT_MENU, &TSCanvas::OnContextMenuClick, this);
+        Bind(wxEVT_SIZE, &TSCanvas::OnSize, this);
+        Bind(wxEVT_SCROLL_THUMBTRACK, &TSCanvas::OnScroll, this);
+        Bind(wxEVT_SCROLLWIN_THUMBTRACK, &TSCanvas::OnScrollWin, this);
     }
 
     ~TSCanvas() override { frame = nullptr; }
@@ -226,6 +241,4 @@ struct TSCanvas : public wxScrolledCanvas {
         Scroll(x, y);
         // EnableScrolling(false, false);
     }
-
-    DECLARE_EVENT_TABLE()
 };

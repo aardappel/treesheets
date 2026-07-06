@@ -240,6 +240,4 @@ struct TSApp : wxApp {
             if (shcore) FreeLibrary(shcore);
         }
     #endif
-
-    DECLARE_EVENT_TABLE()
 };
