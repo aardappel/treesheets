@@ -784,6 +784,24 @@ struct TSFrame : wxFrame {
 
         SetFileAssoc(app->exename);
 
+        Bind(wxEVT_DPI_CHANGED, &TSFrame::OnDPIChanged, this);
+        Bind(wxEVT_SIZING, &TSFrame::OnSizing, this);
+        Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
+        Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
+        Bind(wxEVT_TEXT_ENTER, &TSFrame::OnSearchReplaceEnter, this, A_SEARCH);
+        Bind(wxEVT_TEXT_ENTER, &TSFrame::OnSearchReplaceEnter, this, A_REPLACE);
+        Bind(wxEVT_CLOSE_WINDOW, &TSFrame::OnClosing, this);
+        Bind(wxEVT_MAXIMIZE, &TSFrame::OnMaximize, this);
+        Bind(wxEVT_ACTIVATE_APP, &TSFrame::OnActivate, this);
+        Bind(wxEVT_COMBOBOX, &TSFrame::OnChangeColor, this, A_CELLCOLOR);
+        Bind(wxEVT_COMBOBOX, &TSFrame::OnChangeColor, this, A_TEXTCOLOR);
+        Bind(wxEVT_COMBOBOX, &TSFrame::OnChangeColor, this, A_BORDCOLOR);
+        Bind(wxEVT_COMBOBOX, &TSFrame::OnDDImage, this, A_DDIMAGE);
+        Bind(wxEVT_ICONIZE, &TSFrame::OnIconize, this);
+        Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &TSFrame::OnTabChange, this, wxID_ANY);
+        Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &TSFrame::OnTabClose, this, wxID_ANY);
+        Bind(wxEVT_SYS_COLOUR_CHANGED, &TSFrame::OnSysColourChanged, this);
+
         wxSafeYield();
     }
 
@@ -1657,6 +1675,4 @@ struct TSFrame : wxFrame {
             }
         }
     #endif
-
-    DECLARE_EVENT_TABLE()
 };

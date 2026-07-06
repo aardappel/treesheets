@@ -350,5 +350,3 @@ struct treesheets {
 #endif
 
 IMPLEMENT_APP(treesheets::TSApp)
-
-#include "events.h"

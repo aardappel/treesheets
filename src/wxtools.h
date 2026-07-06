@@ -52,11 +52,10 @@ struct ThreeChoiceDialog : public wxDialog {
         bsv->Add(bsb, 1, wxEXPAND);
         SetSizer(bsv);
         bsv->SetSizeHints(this);
-    }
 
-    void OnButton(wxCommandEvent &ce) { EndModal(ce.GetId()); }
+        Bind(wxEVT_BUTTON, [this](wxCommandEvent &ce) { EndModal(ce.GetId()); }, wxID_ANY);
+    }
     int Run() { return ShowModal(); }
-    DECLARE_EVENT_TABLE()
 };
 
 struct DateTimeRangeDialog : public wxDialog {
@@ -91,6 +90,8 @@ struct DateTimeRangeDialog : public wxDialog {
         topsizer->Add(btnsizer, sizerflags);
         SetSizerAndFit(topsizer);
         topsizer->SetSizeHints(this);
+
+        Bind(wxEVT_BUTTON, &DateTimeRangeDialog::OnButton, this, wxID_ANY);
     }
     void OnButton(wxCommandEvent &ce) {
         if (ce.GetId() == wxID_OK) {
@@ -110,7 +111,6 @@ struct DateTimeRangeDialog : public wxDialog {
         EndModal(ce.GetId());
     }
     int Run() { return ShowModal(); }
-    DECLARE_EVENT_TABLE()
 };
 
 struct ColorPopup : wxVListBoxComboPopup {
