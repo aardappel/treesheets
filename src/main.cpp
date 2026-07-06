@@ -349,4 +349,4 @@ struct treesheets {
     treesheets::TreeSheetsScriptImpl treesheets::tssi;
 #endif
 
-IMPLEMENT_APP(treesheets::TSApp)
+wxIMPLEMENT_APP(treesheets::TSApp);
