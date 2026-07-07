@@ -70,9 +70,9 @@ include(FetchContent)
 
 FetchContent_Declare(
     wxwidgets
-    URL https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.tar.bz2
-    URL_HASH SHA256=50a28cb668de47b0e006cd6ebed8cf4f76c1cac6116fb3c978c44478219103f2
-    FIND_PACKAGE_ARGS 3.3.2 NAMES wxWidgets
+    URL https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.3/wxWidgets-3.3.3.tar.bz2
+    URL_HASH SHA256=0d55c1b9dadb31536c922b846194072aaf608641cd7e314a3b983996d1a30ccd
+    FIND_PACKAGE_ARGS 3.3.3 NAMES wxWidgets
 )
 FetchContent_MakeAvailable(wxwidgets)
 
