@@ -128,6 +128,16 @@ add_executable(TreeSheets
 
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VERSION}\"")
 
+if(MSVC)
+    # Disable warnings with Microsoft Visual C++ compiler
+    target_compile_options(TreeSheets PRIVATE
+        /w34189  # Set warning 4189 (initialized but not referenced) to warning level 3
+        /wd4244  # Disable warning 4244 (conversion from int to float)
+        /wd4355  # Disable warning 4355 ('this' used in base initializer list)
+        /wd4996  # Disable warning 4996 (deprecated functions like strncpy)
+    )
+endif(MSVC)
+
 if(ENABLE_LOBSTER)
     target_compile_definitions(TreeSheets PRIVATE "ENABLE_LOBSTER=1")
 endif(ENABLE_LOBSTER)
