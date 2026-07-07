@@ -62,13 +62,6 @@ template<class T> inline void swap_(T &a, T &b) {
     b = c;
 };
 
-#ifdef WIN32
-#pragma warning(3 : 4189)        // local variable is initialized but not referenced
-#pragma warning(disable : 4244)  // conversion from 'int' to 'float', possible loss of data
-#pragma warning(disable : 4355)  // 'this' : used in base member initializer list
-#pragma warning(disable : 4996)  // 'strncpy' was declared deprecated
-#endif
-
 inline uchar *loadfile(const char *fn, size_t *lenret = nullptr) {
     FILE *f = fopen(fn, "rb");
     if (!f) return nullptr;
