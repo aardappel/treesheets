@@ -79,11 +79,11 @@
 #include <utility>
 #include <vector>
 
-#include "threadpool.h"
-#include "tools.h"
-
 #ifdef __WXMAC__
     #include <mach-o/dyld.h>
 #endif
 
 using namespace std;
+
+#include "threadpool.h"
+#include "tools.h"
