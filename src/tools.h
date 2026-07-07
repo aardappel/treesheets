@@ -84,24 +84,6 @@ inline uchar *loadfile(const char *fn, size_t *lenret = nullptr) {
     return buf;
 }
 
-// for use with vc++ crtdbg
-
-#if defined(_DEBUG) && defined(_WIN32)
-inline void *__cdecl operator new(size_t n, const char *fn, int l) {
-    return ::operator new(n, 1, fn, l);
-}
-inline void *__cdecl operator new[](size_t n, const char *fn, int l) {
-    return ::operator new[](n, 1, fn, l);
-}
-inline void __cdecl operator delete(void *p, const char *fn, int l) {
-    ::operator delete(p, 1, fn, l);
-}
-inline void __cdecl operator delete[](void *p, const char *fn, int l) {
-    ::operator delete[](p, 1, fn, l);
-}
-#define new new (__FILE__, __LINE__)
-#endif
-
 inline uint64_t FNV1A64(uint8_t *data, size_t size) {
     uint64_t hash = 0xCBF29CE484222325;
     for (size_t i = 0; i < size; ++i) {
