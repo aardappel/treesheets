@@ -160,7 +160,6 @@ struct Text {
                   int maxcolwidth) const {
         sx = sy = 0;
         auto i = 0;
-        auto d = 0;
         for (;;) {
             auto curl = GetLine(i, maxcolwidth);
             if (curl.IsEmpty()) { break; }
@@ -170,16 +169,10 @@ struct Text {
                 x = static_cast<int>(curl.Len());
                 y = 1;
             } else {
-                dc.GetTextExtent(curl, &x, &y, &d);
+                dc.GetTextExtent(curl, &x, &y);
             }
             sx = max(x, sx);
-            #ifdef __WXMAC__
-                // macOS gives more height considering descents,
-                // reduce height here to avoid excessive padding
-                sy += y - d + 2;
-            #else
-                sy += y;
-            #endif
+            sy += y;
             leftoffset = y;
         }
         if (tiny == 0) { sx += 4; }
