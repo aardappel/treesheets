@@ -190,7 +190,11 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     wxCoord OnMeasureItem(size_t item) const override { return FromDIP(image_space); }
     wxCoord OnMeasureItemWidth(size_t item) const override { return FromDIP(image_space); }
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const override {
-        DrawRectangle(dc, 0xFFFFFF, rect.x, rect.y, rect.width, rect.height);
+        DrawRectangle(dc,
+                      (flags & wxODCB_PAINTING_SELECTED) && !(flags & wxODCB_PAINTING_CONTROL)
+                          ? 0xA9A9A9
+                          : 0xFFFFFF,
+                      rect.x, rect.y, rect.width, rect.height, true);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const override {
