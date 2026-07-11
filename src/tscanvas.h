@@ -39,9 +39,13 @@ struct TSCanvas : public wxScrolledCanvas {
     ~TSCanvas() override { frame = nullptr; }
 
     void OnPaint(wxPaintEvent &event) {
-        wxAutoBufferedPaintDC pdc(this);
-        wxGCDC gcdc(pdc);
-        doc->Draw(gcdc);
+        wxAutoBufferedPaintDC dc(this);
+        #ifdef __WXMSW__
+            doc->Draw(dc);
+        #else
+            wxGCDC gcdc(dc);
+            doc->Draw(gcdc);
+        #endif
     };
 
     void OnMotion(wxMouseEvent &me) {
