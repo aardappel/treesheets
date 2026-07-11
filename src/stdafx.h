@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/datstrm.h>
 #include <wx/dcbuffer.h>
+#include <wx/dcgraph.h>
 #include <wx/dir.h>
 #include <wx/dnd.h>
 #include <wx/fileconf.h>
