@@ -134,9 +134,13 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
 
     wxCoord OnMeasureItem(size_t item) const override { return FromDIP(22); }
     wxCoord OnMeasureItemWidth(size_t item) const override { return FromDIP(40); }
+
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const override {
-        DrawRectangle(dc, (flags & wxODCB_PAINTING_SELECTED) != 0 ? 0xA9A9A9 : 0xFFFFFF, rect.x,
-                      rect.y, rect.width, rect.height);
+        DrawRectangle(dc,
+                      (flags & wxODCB_PAINTING_SELECTED) && !(flags & wxODCB_PAINTING_CONTROL)
+                          ? 0xA9A9A9
+                          : 0xFFFFFF,
+                      rect.x, rect.y, rect.width, rect.height);
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const override {
