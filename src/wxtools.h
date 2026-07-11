@@ -198,7 +198,14 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const override {
-        treesheets::System::ImageDraw(bitmaps_display[item].get(), dc, rect.x + FromDIP(3),
+        // conceded rectangle to draw bitmap into differs on some platforms for popup list and
+        // toolbar control and can change when High DPI is toggled, so scale bitmap dynamically
+        auto *bitmap = bitmaps_display[item].get();
+        auto scale = min((static_cast<double>(rect.height) - FromDIP(6)) / bitmap->GetHeight(),
+                         (static_cast<double>(rect.width) - FromDIP(6)) / bitmap->GetWidth());
+        auto itembitmap = make_unique<wxBitmap>();
+        ScaleBitmap(*bitmap, scale, *itembitmap);
+        treesheets::System::ImageDraw(itembitmap.get(), dc, rect.x + FromDIP(3),
                                       rect.y + FromDIP(3));
     }
 
@@ -206,11 +213,9 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         if (!bitmaps_display.empty()) { bitmaps_display.resize(0); }
         auto filename = wxFindFirstFile(directory + "*.*");
         while (!filename.empty()) {
-            wxBitmap bitmap;
-            if (bitmap.LoadFile(filename, wxBITMAP_TYPE_PNG)) {
-                auto scaledbitmap = make_unique<wxBitmap>();
-                ScaleBitmap(bitmap, FromDIP(1.0) / dd_icon_res_scale, *scaledbitmap);
-                bitmaps_display.push_back(std::move(scaledbitmap));
+            auto bitmap = make_unique<wxBitmap>();
+            if (bitmap->LoadFile(filename, wxBITMAP_TYPE_PNG)) {
+                bitmaps_display.push_back(std::move(bitmap));
                 filenames.Add(filename);
             }
             filename = wxFindNextFile();
