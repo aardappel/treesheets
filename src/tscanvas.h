@@ -40,12 +40,7 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnPaint(wxPaintEvent &event) {
         wxAutoBufferedPaintDC dc(this);
-        #ifdef __WXMSW__
-            doc->Draw(dc);
-        #else
-            wxGCDC gcdc(dc);
-            doc->Draw(gcdc);
-        #endif
+        doc->Draw(dc);
     };
 
     void OnMotion(wxMouseEvent &me) {
