@@ -220,13 +220,13 @@ if((LINUX OR BSD) AND NOT TREESHEETS_RELOCATABLE_INSTALLATION)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/com.strlen.TreeSheets.metainfo.xml" DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
 elseif(APPLE)
     # Paths must be relative to use with CPack
-    set(TREESHEETS_BINDIR "")
+    set(TREESHEETS_BINDIR .)
     set(TREESHEETS_DOCDIR TreeSheets.app/Contents/Resources)
     set(TREESHEETS_PKGDATADIR TreeSheets.app/Contents/Resources)
 else()
-    set(TREESHEETS_BINDIR "")
-    set(TREESHEETS_DOCDIR "")
-    set(TREESHEETS_PKGDATADIR "")
+    set(TREESHEETS_BINDIR .)
+    set(TREESHEETS_DOCDIR .)
+    set(TREESHEETS_PKGDATADIR .)
 endif()
 
 ## Installation
