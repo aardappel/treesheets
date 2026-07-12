@@ -670,6 +670,10 @@ struct Grid {
 
     void MergeWithParent(const shared_ptr<Grid> &p, Selection &sel, Document *doc) {
         shared_ptr<Grid> keepalive = cell->grid;
+        // insert blank rows in addition to the one blank row inserted by
+        // the thin expansion so they can be filled from this grid without
+        // overwriting existing cells
+        if (ys > 1) p->InsertCells(-1, sel.y, 0, ys - 1);
         int nxs = sel.x + xs - p->xs;
         int nys = sel.y + ys - p->ys;
         if (nxs > 0 || nys > 0) {
