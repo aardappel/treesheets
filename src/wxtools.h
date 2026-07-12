@@ -203,9 +203,9 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         auto *bitmap = bitmaps_display[item].get();
         auto scale = min((static_cast<double>(rect.height) - FromDIP(6)) / bitmap->GetHeight(),
                          (static_cast<double>(rect.width) - FromDIP(6)) / bitmap->GetWidth());
-        auto itembitmap = make_unique<wxBitmap>();
-        ScaleBitmap(*bitmap, scale, *itembitmap);
-        treesheets::System::ImageDraw(itembitmap.get(), dc, rect.x + FromDIP(3),
+        wxBitmap itembitmap;
+        ScaleBitmap(*bitmap, scale, itembitmap);
+        treesheets::System::ImageDraw(&itembitmap, dc, rect.x + FromDIP(3),
                                       rect.y + FromDIP(3));
     }
 
