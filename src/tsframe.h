@@ -787,8 +787,8 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_DPI_CHANGED, &TSFrame::OnDPIChanged, this);
         Bind(wxEVT_SIZING, &TSFrame::OnSizing, this);
         Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
-        Bind(wxEVT_CHAR_HOOK, &TSFrame::OnSearchReplaceEnter, this, A_SEARCH);
-        Bind(wxEVT_CHAR_HOOK, &TSFrame::OnSearchReplaceEnter, this, A_REPLACE);
+        Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
+        Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
         Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
         Bind(wxEVT_CLOSE_WINDOW, &TSFrame::OnClosing, this);
         Bind(wxEVT_MAXIMIZE, &TSFrame::OnMaximize, this);
@@ -1086,10 +1086,6 @@ struct TSFrame : wxFrame {
                 case A_END: tc->SetSelection(1000, 1000); return;
                 case wxID_SELECTALL: tc->SetSelection(0, 1000); return;
                 #endif
-                case A_CANCELEDIT:
-                    tc->Clear();
-                    canvas->SetFocus();
-                    return;
             }
         }
         auto Check = [&](const wxString &cfg) {
@@ -1308,22 +1304,33 @@ struct TSFrame : wxFrame {
         canvas->Refresh();
     }
 
-    void OnSearchReplaceEnter(wxKeyEvent &ke) {
-        if (ke.GetKeyCode() != WXK_RETURN) {
-            ke.Skip();
-            return;
-        }
+    void OnCharHook(wxKeyEvent &ke) {
         auto *canvas = GetCurrentTab();
         if (!canvas) return;
-        auto issearch = ke.GetId() == A_SEARCH;
-        if (issearch) {
-            auto *textctrl = wxDynamicCast(ke.GetEventObject(), wxTextCtrl);
-            if (textctrl && textctrl->IsEmpty()) {
+        auto *textctrl = wxDynamicCast(ke.GetEventObject(), wxTextCtrl);
+        switch (ke.GetKeyCode()) {
+            case WXK_RETURN: {
+                auto issearch = ke.GetId() == A_SEARCH;
+                if (issearch) {
+                    if (textctrl && textctrl->IsEmpty()) {
+                        canvas->SetFocus();
+                        return;
+                    }
+                }
+                if (canvas->doc) {
+                    canvas->doc->Action(issearch ? A_SEARCHNEXT : A_REPLACEONCEJ);
+                    return;
+                }
+            }
+            case WXK_ESCAPE: {
+                textctrl->Clear();
                 canvas->SetFocus();
                 return;
             }
+            default: {
+                ke.Skip();
+            }
         }
-        if (canvas->doc) { canvas->doc->Action(issearch ? A_SEARCHNEXT : A_REPLACEONCEJ); }
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
