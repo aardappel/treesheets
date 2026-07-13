@@ -787,9 +787,9 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_DPI_CHANGED, &TSFrame::OnDPIChanged, this);
         Bind(wxEVT_SIZING, &TSFrame::OnSizing, this);
         Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
+        Bind(wxEVT_CHAR_HOOK, &TSFrame::OnSearchReplaceEnter, this, A_SEARCH);
+        Bind(wxEVT_CHAR_HOOK, &TSFrame::OnSearchReplaceEnter, this, A_REPLACE);
         Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
-        Bind(wxEVT_TEXT_ENTER, &TSFrame::OnSearchReplaceEnter, this, A_SEARCH);
-        Bind(wxEVT_TEXT_ENTER, &TSFrame::OnSearchReplaceEnter, this, A_REPLACE);
         Bind(wxEVT_CLOSE_WINDOW, &TSFrame::OnClosing, this);
         Bind(wxEVT_MAXIMIZE, &TSFrame::OnMaximize, this);
         Bind(wxEVT_ACTIVATE_APP, &TSFrame::OnActivate, this);
@@ -879,8 +879,7 @@ struct TSFrame : wxFrame {
                                         wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         findtb->AddControl(new wxStaticText(findtb, wxID_ANY, _("Search ")));
         findtb->AddControl(filter = new wxTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
-                                                   FromDIP(wxSize(80, 22)),
-                                                   wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+                                                   FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
         AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, iconpath, "cancel.svg",
                        "cancel_dark.svg");
         AddToolbarIcon(findtb, _("Go to Next Search Result"), A_SEARCHNEXT, iconpath, "search.svg",
@@ -891,8 +890,7 @@ struct TSFrame : wxFrame {
                                         wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         repltb->AddControl(new wxStaticText(repltb, wxID_ANY, _("Replace ")));
         repltb->AddControl(replaces = new wxTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
-                                                     FromDIP(wxSize(80, 22)),
-                                                     wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+                                                     FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
         AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, iconpath, "cancel.svg",
                        "cancel_dark.svg");
         AddToolbarIcon(repltb, _("Replace in selection"), A_REPLACEONCE, iconpath, "replace.svg",
@@ -1087,24 +1085,6 @@ struct TSFrame : wxFrame {
                 case A_HOME: tc->SetSelection(0, 0); return;
                 case A_END: tc->SetSelection(1000, 1000); return;
                 case wxID_SELECTALL: tc->SetSelection(0, 1000); return;
-                #endif
-                #ifdef __WXMSW__
-                case A_ENTERCELL: {
-                    if (tc == filter) {
-                        // OnSearchEnter equivalent implementation for MSW
-                        // as EVT_TEXT_ENTER event is not generated.
-                        if (sys->searchstring.IsEmpty()) {
-                            canvas->SetFocus();
-                        } else {
-                            canvas->doc->Action(A_SEARCHNEXT);
-                        }
-                    } else if (tc == replaces) {
-                        // OnReplaceEnter equivalent implementation for MSW
-                        // as EVT_TEXT_ENTER event is not generated.
-                        canvas->doc->Action(A_REPLACEONCEJ);
-                    }
-                    return;
-                }
                 #endif
                 case A_CANCELEDIT:
                     tc->Clear();
@@ -1328,13 +1308,22 @@ struct TSFrame : wxFrame {
         canvas->Refresh();
     }
 
-    void OnSearchReplaceEnter(wxCommandEvent &ce) {
-        auto *canvas = GetCurrentTab();
-        if (ce.GetId() == A_SEARCH && ce.GetString().IsEmpty()) {
-            canvas->SetFocus();
-        } else {
-            canvas->doc->Action(ce.GetId() == A_SEARCH ? A_SEARCHNEXT : A_REPLACEONCEJ);
+    void OnSearchReplaceEnter(wxKeyEvent &ke) {
+        if (ke.GetKeyCode() != WXK_RETURN) {
+            ke.Skip();
+            return;
         }
+        auto *canvas = GetCurrentTab();
+        if (!canvas) return;
+        auto issearch = ke.GetId() == A_SEARCH;
+        if (issearch) {
+            auto *textctrl = wxDynamicCast(ke.GetEventObject(), wxTextCtrl);
+            if (textctrl && textctrl->IsEmpty()) {
+                canvas->SetFocus();
+                return;
+            }
+        }
+        if (canvas->doc) { canvas->doc->Action(issearch ? A_SEARCHNEXT : A_REPLACEONCEJ); }
     }
 
     void OnChangeColor(wxCommandEvent &ce) {
