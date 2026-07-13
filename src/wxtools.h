@@ -173,9 +173,27 @@ struct ImagePopup : wxVListBoxComboPopup {
 };
 
 struct ImageDropdown : wxOwnerDrawnComboBox {
+    struct BitmapCacheKey {
+        int item;
+        int width;
+        int height;
+
+        bool operator==(const BitmapCacheKey &other) const {
+            return item == other.item && width == other.width && height == other.height;
+        }
+    };
+
+    struct BitmapCacheHash {
+        std::size_t operator()(const BitmapCacheKey &key) const {
+            return static_cast<std::size_t>(
+                FNV1A64(reinterpret_cast<const uint8_t *>(&key), sizeof(BitmapCacheKey)));
+        }
+    };
+
     vector<unique_ptr<wxBitmap>> bitmaps_display;
     wxArrayString filenames;
     const int image_space = 22;
+    mutable std::unordered_map<BitmapCacheKey, wxBitmap, BitmapCacheHash> scaled_bitmap_cache;
 
     ImageDropdown(wxWindow *parent, const wxString &directory) {
         FillBitmapVector(directory);
@@ -189,6 +207,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
 
     wxCoord OnMeasureItem(size_t item) const override { return FromDIP(image_space); }
     wxCoord OnMeasureItemWidth(size_t item) const override { return FromDIP(image_space); }
+
     void OnDrawBackground(wxDC &dc, const wxRect &rect, int item, int flags) const override {
         DrawRectangle(dc,
                       (flags & wxODCB_PAINTING_SELECTED) && !(flags & wxODCB_PAINTING_CONTROL)
@@ -198,19 +217,24 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 
     void OnDrawItem(wxDC &dc, const wxRect &rect, int item, int flags) const override {
-        // conceded rectangle to draw bitmap into differs on some platforms for popup list and
-        // toolbar control and can change when High DPI is toggled, so scale bitmap dynamically
-        auto *bitmap = bitmaps_display[item].get();
-        auto scale = min((static_cast<double>(rect.height) - FromDIP(6)) / bitmap->GetHeight(),
-                         (static_cast<double>(rect.width) - FromDIP(6)) / bitmap->GetWidth());
-        wxBitmap itembitmap;
-        ScaleBitmap(*bitmap, scale, itembitmap);
-        treesheets::System::ImageDraw(&itembitmap, dc, rect.x + FromDIP(3),
-                                      rect.y + FromDIP(3));
+        BitmapCacheKey key {item, rect.width, rect.height};
+        auto it = scaled_bitmap_cache.find(key);
+        if (it == scaled_bitmap_cache.end()) {
+            auto *bitmap = bitmaps_display[item].get();
+            auto scale = min((static_cast<double>(rect.height) - FromDIP(6)) / bitmap->GetHeight(),
+                             (static_cast<double>(rect.width) - FromDIP(6)) / bitmap->GetWidth());
+            wxBitmap scaled_bitmap;
+            ScaleBitmap(*bitmap, scale, scaled_bitmap);
+            it = scaled_bitmap_cache.emplace(key, scaled_bitmap).first;
+        }
+        treesheets::System::ImageDraw(&it->second, dc, rect.x + FromDIP(3), rect.y + FromDIP(3));
     }
 
     void FillBitmapVector(const wxString &directory) {
-        if (!bitmaps_display.empty()) { bitmaps_display.resize(0); }
+        if (!bitmaps_display.empty()) {
+            bitmaps_display.clear();
+            scaled_bitmap_cache.clear();
+        }
         auto filename = wxFindFirstFile(directory + "*.*");
         while (!filename.empty()) {
             auto bitmap = make_unique<wxBitmap>();

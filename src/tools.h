@@ -84,7 +84,7 @@ inline uchar *loadfile(const char *fn, size_t *lenret = nullptr) {
     return buf;
 }
 
-inline uint64_t FNV1A64(uint8_t *data, size_t size) {
+inline uint64_t FNV1A64(const uint8_t *data, size_t size) {
     uint64_t hash = 0xCBF29CE484222325;
     for (size_t i = 0; i < size; ++i) {
         hash ^= data[i];
