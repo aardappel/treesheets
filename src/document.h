@@ -605,13 +605,10 @@ struct Document {
         } else {
             currentviewscale = 1.0;
             canvas->SetVirtualSize(layoutxs, layoutys);
-            canvas->SetScrollbars(
-                layoutxs < clientx ? 0 : 1,
-                layoutys < clienty ? 0 : 1,
-                layoutxs < clientx ? 0 : layoutxs,
-                layoutys < clienty ? 0 : layoutys
-            );
         }
+        // Reset scrollbar state (avoid stale scrollbars)
+        canvas->SetScrollbars(layoutxs < clientx ? 0 : 1, layoutys < clienty ? 0 : 1,
+                              layoutxs < clientx ? 0 : layoutxs, layoutys < clienty ? 0 : layoutys);
     }
 
     void Draw(wxDC &dc) {
