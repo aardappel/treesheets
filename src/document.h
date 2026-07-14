@@ -606,11 +606,6 @@ struct Document {
             currentviewscale = 1.0;
             canvas->SetVirtualSize(layoutxs, layoutys);
         }
-        #ifdef __WXGTK__
-            // Reset scrollbar state (avoid stale scrollbars)
-            canvas->SetScrollbars(layoutxs < clientx ? 0 : 1, layoutys < clienty ? 0 : 1,
-                                  layoutxs < clientx ? 0 : layoutxs, layoutys < clienty ? 0 : layoutys);
-        #endif
     }
 
     void Draw(wxDC &dc) {
