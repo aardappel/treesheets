@@ -605,8 +605,12 @@ struct Document {
         } else {
             currentviewscale = 1.0;
             canvas->SetVirtualSize(layoutxs, layoutys);
-            canvas->ShowScrollbars(layoutxs < clientx ? wxSHOW_SB_NEVER : wxSHOW_SB_DEFAULT,
-                                   layoutys < clienty ? wxSHOW_SB_NEVER : wxSHOW_SB_DEFAULT);
+            canvas->SetScrollbars(
+                layoutxs < clientx ? 0 : 1,
+                layoutys < clienty ? 0 : 1,
+                layoutxs < clientx ? 0 : layoutxs,
+                layoutys < clienty ? 0 : layoutys
+            );
         }
     }
 
