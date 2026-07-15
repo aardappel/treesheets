@@ -593,6 +593,12 @@ struct Document {
         int clientx = 0;
         int clienty = 0;
         canvas->GetClientSize(&clientx, &clienty);
+        #ifdef __WXGTK__
+            // Needed for the scrollbar workaround at the end
+            int gtkscrollx = 0;
+            int gtkscrolly = 0;
+            canvas->GetViewStart(&gtkscrollx, &gtkscrolly);
+        #endif
         if (layoutxs <= 0 || layoutys <= 0) { return; }
 
         double xscale = clientx / static_cast<double>(layoutxs);
@@ -606,6 +612,15 @@ struct Document {
             currentviewscale = 1.0;
             canvas->SetVirtualSize(layoutxs, layoutys);
         }
+        #ifdef __WXGTK__
+            // When scrollbar was active before and with the set virtual size
+            // is not needed anymore, a stale scrollbar artifact is left on wxGTK,
+            // allowing weird scrolling. Manually reset the scrollbar to workaround
+            // this bug.
+            canvas->SetScrollbars(layoutxs < clientx ? 0 : 1, layoutys < clienty ? 0 : 1,
+                                  layoutxs < clientx ? 0 : layoutxs, layoutys < clienty ? 0 : layoutys,
+                                  layoutxs < clientx ? 0 : gtkscrollx, layoutys < clienty ? 0 : gtkscrolly);
+        #endif
     }
 
     void Draw(wxDC &dc) {
