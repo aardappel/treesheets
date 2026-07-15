@@ -133,7 +133,9 @@ struct Cell {
     }
 
     void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int ml, int mr, int mt, int mb,
-                int maxcolwidth, int cell_margin) {
+                int maxcolwidth, int cell_margin, const wxRect &clip) {
+        wxRect rect(bx, by, sx, sy);
+        if (!clip.IsEmpty() && !clip.Intersects(rect)) return;
         // Choose color from celltype (program operations)
         switch (celltype) {
             case CT_VARD: actualcellcolor = 0xFF8080; break;
@@ -184,7 +186,7 @@ struct Cell {
         int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
         yoff = verticaltextandgrid ? yoff : 0;
         if (GridShown(doc)) {
-            grid->Render(doc, bx, by, dc, depth, sx - xoff, sy - yoff, xoff, yoff);
+            grid->Render(doc, bx, by, dc, depth, sx - xoff, sy - yoff, xoff, yoff, clip);
         }
 
         if (!note.IsEmpty() && !tiny && this != doc->currentdrawroot) {

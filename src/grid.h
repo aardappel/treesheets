@@ -162,7 +162,7 @@ struct Grid {
     }
 
     void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int sx, int sy, int xoff,
-                int yoff) {
+                int yoff, const wxRect &clip) {
         xoff = C(0, 0)->ox - view_margin - view_grid_outer_spacing - 1;
         yoff = C(0, 0)->oy - view_margin - view_grid_outer_spacing - 1;
         int maxx = C(xs - 1, 0)->ox + C(xs - 1, 0)->sx;
@@ -220,7 +220,8 @@ struct Grid {
                 c->Render(doc, cx, cy, dc, depth + 1, static_cast<int>(x == 0) * view_margin,
                           static_cast<int>(x == xs - 1) * view_margin,
                           static_cast<int>(y == 0) * view_margin,
-                          static_cast<int>(y == ys - 1) * view_margin, colwidths[x], cell_margin);
+                          static_cast<int>(y == ys - 1) * view_margin, colwidths[x], cell_margin,
+                          clip);
             }
         }
 
