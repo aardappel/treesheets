@@ -550,7 +550,7 @@ struct Document {
         dc.SetUserScale(currentviewscale, currentviewscale);
     }
 
-    void Render(wxDC &dc, const wxRect &clip = {}) {
+    void Render(wxDC &dc) {
         ResetFont();
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
@@ -569,7 +569,7 @@ struct Document {
         }
         dc.SetTextForeground(LightColor(0x000000));
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
-                                currentdrawroot->ColWidth(), 0, clip);
+                                currentdrawroot->ColWidth(), 0);
     }
 
     void SelectClick(bool right = false) {
@@ -655,27 +655,7 @@ struct Document {
                       : 0;
 
         ShiftToCenter(dc);
-
-        wxRect clip;
-        wxRect box = canvas->GetUpdateRegion().GetBox();
-        if (scaledviewingmode && currentviewscale > 1) {
-            if (box.IsEmpty())
-                clip = wxRect(0, 0, maxx, maxy);
-            else {
-                clip = wxRect(box.x / currentviewscale, box.y / currentviewscale,
-                              box.width / currentviewscale, box.height / currentviewscale);
-            }
-        } else {
-            if (box.IsEmpty())
-                clip = wxRect(scrollx, scrolly, clientx, clienty);
-            else {
-                wxPoint topleft = dc.DeviceToLogical(box.GetTopLeft());
-                wxPoint bottomright = dc.DeviceToLogical(box.GetBottomRight());
-                clip = wxRect(topleft, bottomright);
-            }
-        }
-
-        Render(dc, clip);
+        Render(dc);
         DrawSelect(dc, selected);
 
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
