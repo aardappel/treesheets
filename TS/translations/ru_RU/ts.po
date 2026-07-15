@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 4.0\n"
+"Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-12 16:37+0200\n"
-"PO-Revision-Date: 2026-04-20 18:05+0300\n"
+"POT-Creation-Date: 2026-06-27 12:14+0200\n"
+"PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -263,8 +263,16 @@ msgid "Add..."
 msgstr "Добавить..."
 
 # комментарий к п. Меню
+msgid "Adds a NxN grid to the selected cell"
+msgstr "Добавить сетку размером NxN в выбранную ячейку"
+
+# комментарий к п. Меню
 msgid "Adds a grid to the selected cell"
 msgstr "Добавить сетку в выбранную ячейку"
+
+# комментарий к п. Меню
+msgid "Also colorize the inner grid border"
+msgstr "Придать цвет внутренним границам сетки аналогично внешней границе"
 
 msgid "Apply last border color"
 msgstr ".. последний Цвет &Границы"
@@ -456,6 +464,10 @@ msgstr "Закрыть текущий документ"
 msgid "Collapse Ce&lls"
 msgstr "Слияние Ячеек"
 
+# п. Меню (нет & в исходном тексте)
+msgid "Colorize inner grid border"
+msgstr "Раскрасить внутренние границы сетки"
+
 # Сообщение (после действия или события)
 msgid "Column width decreased."
 msgstr "Ширина столбца уменьшена."
@@ -606,6 +618,9 @@ msgstr "Конец строки текста"
 msgid "End of text"
 msgstr "Конец текста"
 
+msgid "English"
+msgstr "Английский"
+
 msgid "Enter/exit text edit mode"
 msgstr "Вх/Вых из реж. Редактирования"
 
@@ -622,12 +637,16 @@ msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr "Ошибка загрузки файла данных ядра (проверьте корректность установки TreeSheets)"
 
 # Сообщение (после действия или события)
+msgid "Error renaming temporary file."
+msgstr "Ошибка при переименовании временного файла."
+
+# Сообщение (после действия или события)
 msgid "Error writing PNG file!"
 msgstr "Ошибка записи PNG-файла!"
 
 # Сообщение (после действия или события)
-msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr "Ошибка записи файла TreeSheets! (попробуйте сохранить под другим именем)."
+msgid "Error writing TreeSheets file! Would you like to save at a different location?"
+msgstr "Ошибка записи файла TreeSheets! Хотите сохранить файл в другом месте?"
 
 # Сообщение (после действия или события)
 msgid "Error writing image file! (try saving under new filename)."
@@ -911,6 +930,9 @@ msgstr "&Текст с Отступами..."
 msgid "Initialization Error"
 msgstr "Ошибка инициализации"
 
+msgid "Insert New &NxN Grid"
+msgstr "&Вставить Новую Сетку NxN"
+
 # п. Меню (нет & в исходном тексте)
 msgid "Insert last image"
 msgstr "Вставить последнее изображение"
@@ -1067,6 +1089,10 @@ msgstr "Новый Лист"
 msgid "New file cancelled."
 msgstr "Создание нового файла отменено."
 
+# Заголовок Окна (выбор п. Меню)
+msgid "New subgrid"
+msgstr "Новая подсетка"
+
 # п. Меню (нет & в исходном тексте)
 msgid "No autoexport"
 msgstr "Не экспортировать"
@@ -1102,6 +1128,10 @@ msgstr "Поиск не выполнен."
 # ??? Сообщение (после действия или события)
 msgid "No style to paste."
 msgstr "Нет стиля для вставки."
+
+# Сообщение (после действия или события)
+msgid "No subgrid created."
+msgstr "Подсетка не создана."
 
 # Сообщение (после действия или события)
 msgid "No text in this cell."
@@ -1266,6 +1296,10 @@ msgstr "Выберите файл(ы) для импорта:"
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Please select the datetime range."
 msgstr "Выберите Диапазон."
+
+# Сообщение в Окне (выбор п. Меню)
+msgid "Please select the language for the interface (requires restart)."
+msgstr "Выберите язык интерфейса (требуется перезапуск)."
 
 # Сообщение в Окне (выбор п. Меню)
 msgid "Please select the language for the interface (requires restart). Please select the empty row if you want to use the default language."
@@ -1543,6 +1577,14 @@ msgstr "Показать окно \"О программе\""
 msgid "Show cells with notes"
 msgstr "Показать ячейки с Заметками"
 
+# п. Меню (нет & в исходном тексте)
+msgid "Show cells with the same cell color"
+msgstr "Показать ячейки с таким же цветом"
+
+# п. Меню (нет & в исходном тексте)
+msgid "Show cells with the same style"
+msgstr "Показать ячейки с таким же стилем"
+
 msgid "Show last edits in specific date range"
 msgstr "Показать Изменения в Диапазоне Дат и Времени"
 
@@ -1591,6 +1633,10 @@ msgstr "Поменять местами все ячейки с этим текс
 
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "Поменять Прокрутку и Масштабирование КМ (Колесом Мыши)"
+
+# вариант выбора языка
+msgid "System Default"
+msgstr "Системный, по умолчанию"
 
 msgid "Tab delimited text..."
 msgstr "Текст (разделитель - та&буляция)..."
@@ -1743,6 +1789,10 @@ msgstr "&Выключить Фильтр"
 msgid "Tutorial &web page"
 msgstr "&Bеб-страница Краткого Введения"
 
+# Сообщение (после действия или события)
+msgid "Tutorial web page could not be found."
+msgstr "Не удалось найти веб-страницу с учебным руководством."
+
 # п. Меню (нет & в исходном тексте)
 msgid "Typewriter font..."
 msgstr "Шрифт для Машинописи..."
@@ -1780,6 +1830,10 @@ msgstr ".. в стиле &Линий"
 # в Окне (выбор п. Меню) - Файл / Новый
 msgid "What size grid would you like to start with?"
 msgstr "С какой размерности сетки вы хотели бы начать?"
+
+# Сообщение в Окне (выбор п. Меню)
+msgid "What subgrid size would you like to start with?"
+msgstr "С какого размера подсетки вы хотели бы начать?"
 
 # в Окне (выбор п. Меню)
 msgid "Width"
