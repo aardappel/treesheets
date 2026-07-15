@@ -617,9 +617,11 @@ struct Document {
             // is not needed anymore, a stale scrollbar artifact is left on wxGTK,
             // allowing weird scrolling. Manually reset the scrollbar to workaround
             // this bug.
-            canvas->SetScrollbars(layoutxs < clientx ? 0 : 1, layoutys < clienty ? 0 : 1,
-                                  layoutxs < clientx ? 0 : layoutxs, layoutys < clienty ? 0 : layoutys,
-                                  layoutxs < clientx ? 0 : gtkscrollx, layoutys < clienty ? 0 : gtkscrolly);
+        canvas->SetScrollbars(
+            layoutxs < clientx ? 0 : 1, layoutys < clienty ? 0 : 1,
+            layoutxs < clientx ? 0 : layoutxs, layoutys < clienty ? 0 : layoutys,
+            layoutxs < clientx ? 0 : gtkscrollx - max(0, gtkscrollx + clientx - layoutxs),
+            layoutys < clienty ? 0 : gtkscrolly - max(0, gtkscrolly + clienty - layoutys));
         #endif
     }
 
