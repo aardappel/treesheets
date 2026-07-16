@@ -1653,21 +1653,21 @@ struct TSFrame : wxFrame {
     }
 
     #ifdef ENABLE_LOBSTER
-        void UpdateScriptMenu(wxMenu *menu) const {
+        void UpdateScriptMenu(wxMenu *menu) {
             if (!menu) return;
             while (menu->GetMenuItemCount() > 0) {
                 menu->Delete(menu->GetMenuItems().Item(0)->GetData());
             }
-            menu->Append(A_ADDSCRIPT, _("Add...") + "\tCTRL+ALT+L",
+            MyAppend(menu, A_ADDSCRIPT, _("Add...") + "\tCTRL+ALT+L",
                          _("Add Lobster scripts to the menu"));
-            menu->Append(A_DETSCRIPT, _("Remove...") + "\tCTRL+SHIFT+ALT+L",
+            MyAppend(menu, A_DETSCRIPT, _("Remove...") + "\tCTRL+SHIFT+ALT+L",
                          _("Remove script from list in the menu"));
             if (!sys->scripts.IsEmpty()) { menu->AppendSeparator(); }
             for (size_t i = 0; i < sys->scripts.GetCount(); ++i) {
                 wxFileName fn(sys->scripts[i]);
                 int snum = static_cast<int>(i) + 1;
                 wxString label = wxString::Format("%s\tCTRL+ALT+%d", fn.GetFullName(), snum);
-                menu->Append(A_SCRIPT + static_cast<int>(i), label);
+                MyAppend(menu, A_SCRIPT + static_cast<int>(i), label);
             }
         }
     #endif
