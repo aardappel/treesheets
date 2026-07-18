@@ -635,17 +635,16 @@ struct Document {
             scrollx = scrolly = 0;
             maxx = clientx / currentviewscale;
             maxy = clienty / currentviewscale;
-            dc.SetBackground(wxBrush(LightColor(Background())));
-            dc.Clear();
         } else {
             dc.SetUserScale(1, 1);
             canvas->PrepareDC(dc);
             canvas->GetViewStart(&scrollx, &scrolly);
             maxx = clientx + scrollx;
             maxy = clienty + scrolly;
-            dc.SetBackground(wxBrush(LightColor(Background())));
-            dc.Clear();
         }
+        dc.SetClippingRegion(scrollx, scrolly, clientx, clienty);
+        dc.SetBackground(wxBrush(LightColor(Background())));
+        dc.Clear();
 
         centerx = sys->centered && scrollx == 0 && maxx > layoutxs
                       ? (maxx - layoutxs) / 2 * currentviewscale
@@ -659,6 +658,7 @@ struct Document {
         DrawSelect(dc, selected);
 
         if (scaledviewingmode) { dc.SetUserScale(1, 1); }
+        dc.DestroyClippingRegion();
     }
 
     void Print(wxDC &dc, wxPrintout &po) {
