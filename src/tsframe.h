@@ -1496,17 +1496,7 @@ struct TSFrame : wxFrame {
         // block all other events until we finished preparing
         wxEventBlocker blocker(this);
         wxBusyCursor wait;
-        {
-            ThreadPool pool(std::thread::hardware_concurrency());
-            for (const auto &image : sys->imagelist) {
-                pool.enqueue(
-                    [](auto img) {
-                        img->bm_display = wxNullBitmap;
-                        img->Display();
-                    },
-                    image.get());
-            }
-        }  // wait until all tasks are finished
+        for (const auto &image : sys->imagelist) image->ClearBitmap();
         RenderFolderIcon();
         dce.Skip();
     }

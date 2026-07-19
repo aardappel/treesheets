@@ -343,16 +343,6 @@ struct System {
     done:
 
         doc->RefreshImageRefCount(false);
-        {
-            ThreadPool pool(std::thread::hardware_concurrency());
-            for (const auto &image : sys->imagelist) {
-                pool.enqueue(
-                    [](auto img) {
-                        if (img->trefc) { img->Display(); }
-                    },
-                    image.get());
-            }
-        }  // wait until all tasks are finished
         if (zoomlevel == 0) {
             doc->UpdateLayout();
             doc->ScrollIfSelectionOutOfView();

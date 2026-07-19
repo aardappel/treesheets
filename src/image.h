@@ -1,7 +1,8 @@
 struct Image {
     vector<uint8_t> data;
     char type;
-    wxBitmap bm_display;
+    wxBitmap bm_display {wxNullBitmap};
+    bool displayed {false};
     int trefc {0};
     int savedindex {-1};
     uint64_t hash {0};
@@ -35,6 +36,8 @@ struct Image {
         bm_display = wxNullBitmap;
     }
 
+    void ClearBitmap() { bm_display = wxNullBitmap; }
+
     wxBitmap &Display() {
         // This might run in multiple threads in parallel
         // so this function must not touch any global resources
@@ -45,6 +48,7 @@ struct Image {
             pixel_width = bm.GetWidth();
             ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
         }
+        displayed = true;
         return bm_display;
     }
 
