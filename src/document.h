@@ -385,7 +385,7 @@ struct Document {
                 if (c != nullptr && !c->text.t && c->text.image != nullptr) {
                     auto *image = c->text.image;
                     if (!image->data.empty()) {
-                        const auto &[it, mime] = imagetypes.at(image->type);
+                        auto &it = imagetypes.at(image->type).first;
                         auto bitmap = ConvertBufferToWxBitmap(image->data, it);
                         dragdata.Add(new wxBitmapDataObject(bitmap));
                     }
@@ -423,7 +423,7 @@ struct Document {
                 if (c != nullptr && !c->text.t && c->text.image != nullptr) {
                     auto *image = c->text.image;
                     if (!image->data.empty() && wxTheClipboard->Open()) {
-                        const auto &[it, mime] = imagetypes.at(image->type);
+                        auto &it = imagetypes.at(image->type).first;
                         auto bitmap = ConvertBufferToWxBitmap(image->data, it);
                         wxTheClipboard->SetData(new wxBitmapDataObject(bitmap));
                         wxTheClipboard->Close();
