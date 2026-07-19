@@ -568,6 +568,11 @@ struct TSFrame : wxFrame {
                                           "TreeSheets file when document is saved"));
         autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT_HTML_NONE, true);
 
+        auto *defaultimagemenu = new wxMenu();
+        defaultimagemenu->AppendRadioItem(A_DEFAULTIMAGE_PNG, _("PNG"));
+        defaultimagemenu->AppendRadioItem(A_DEFAULTIMAGE_JPEG, _("JPEG"));
+        defaultimagemenu->Check(sys->defaultimageformat + A_DEFAULTIMAGE_PNG, true);
+
         auto *optmenu = new wxMenu();
         MyAppend(optmenu, wxID_SELECT_FONT, _("Font..."),
                  _("Set the font the document text is displayed with"));
@@ -633,6 +638,8 @@ struct TSFrame : wxFrame {
             _("Reload when another computer has changed a file (if you have made changes, asks)"));
         optmenu->Check(A_FSWATCH, sys->fswatch);
         optmenu->AppendSubMenu(autoexportmenu, _("Autoexport to HTML"));
+        optmenu->AppendSubMenu(defaultimagemenu, _("Default image format"),
+                               _("Default format when image is pasted from clipboard or dropped"));
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(
             A_CENTERED, _("Render document centered"),
@@ -1199,6 +1206,12 @@ struct TSFrame : wxFrame {
                 sys->cfg->Write(
                     "autohtmlexport",
                     static_cast<long>(sys->autohtmlexport = ce.GetId() - A_AUTOEXPORT_HTML_NONE));
+                break;
+            case A_DEFAULTIMAGE_PNG:
+            case A_DEFAULTIMAGE_JPEG:
+                sys->cfg->Write(
+                    "defaultimageformat",
+                    static_cast<long>(sys->defaultimageformat = ce.GetId() - A_DEFAULTIMAGE_PNG));
                 break;
             case A_FASTRENDER:
                 sys->cfg->Write("fastrender", sys->fastrender = ce.IsChecked());
