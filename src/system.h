@@ -37,6 +37,7 @@ struct System {
     bool centered {true};
     bool fswatch {true};
     int autohtmlexport {0};
+    int defaultimageformat {0};
     bool casesensitivesearch {true};
     bool darkennonmatchingcells {false};
     bool fastrender {true};
@@ -71,6 +72,7 @@ struct System {
 
         roundness = static_cast<int>(cfg->Read("roundness", roundness));
         autohtmlexport = static_cast<int>(cfg->Read("autohtmlexport", autohtmlexport));
+        defaultimageformat = static_cast<int>(cfg->Read("defaultimageformat", defaultimageformat));
         defaultfont = cfg->Read("defaultfont", defaultfont);
         defaultfixedfont = cfg->Read("defaultfixedfont", defaultfixedfont);
         defaultlang = cfg->Read("defaultlang", defaultlang);
