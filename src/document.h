@@ -2340,10 +2340,10 @@ struct Document {
             Cell *cell = selected.ThinExpand(this);
             cell->AddUndo(this);
             auto image = bitmapdataobject.GetBitmap().ConvertToImage();
-            vector<uint8_t> buffer = ConvertWxImageToBuffer(
-                image, sys->defaultimageformat == 0 ? wxBITMAP_TYPE_PNG : wxBITMAP_TYPE_JPEG);
-            SetImageBM(cell, std::move(buffer), sys->defaultimageformat == 0 ? 'I' : 'J',
-                       sys->frame->FromDIP(1.0));
+            bool ispng = sys->defaultimageformat == 0;
+            vector<uint8_t> buffer =
+                ConvertWxImageToBuffer(image, ispng ? wxBITMAP_TYPE_PNG : wxBITMAP_TYPE_JPEG);
+            SetImageBM(cell, std::move(buffer), ispng ? 'I' : 'J', sys->frame->FromDIP(1.0));
             cell->Reset();
         }
     }
