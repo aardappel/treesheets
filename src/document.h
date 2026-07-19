@@ -570,6 +570,17 @@ struct Document {
         dc.SetTextForeground(LightColor(0x000000));
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
+        ClearUnusedBitmaps();
+    }
+
+    void ClearUnusedBitmaps() {
+        for (const auto &image : sys->imagelist) {
+            if (image->displayed) {
+                image->displayed = false;
+            } else {
+                image->ClearBitmap();
+            }
+        }
     }
 
     void SelectClick(bool right = false) {
