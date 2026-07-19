@@ -575,11 +575,8 @@ struct Document {
 
     void ClearUnusedBitmaps() {
         for (const auto &image : sys->imagelist) {
-            if (image->displayed) {
-                image->displayed = false;
-            } else {
-                image->ClearBitmap();
-            }
+            if (!image->displayed) image->ClearBitmap();
+            image->displayed = false;
         }
     }
 
