@@ -19,6 +19,10 @@ project(TreeSheets
 ### Settings
 
 set(CMAKE_CXX_STANDARD 20)
+if(APPLE)
+    enable_language(OBJCXX)
+    set(CMAKE_OBJCXX_STANDARD 20)
+endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(ENABLE_LOBSTER "Enable Lobster scripting" ON)
 option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
@@ -122,9 +126,16 @@ endif(ENABLE_LOBSTER)
 
 ### TreeSheets executable
 
+set(TREESHEETS_PLATFORM_SOURCES)
+if(APPLE)
+    list(APPEND TREESHEETS_PLATFORM_SOURCES src/macclipboard.mm)
+endif()
+
 add_executable(TreeSheets
     src/main.cpp
-    src/stdafx.cpp)
+    src/stdafx.cpp
+    ${TREESHEETS_PLATFORM_SOURCES}
+)
 
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VERSION}\"")
 
@@ -165,6 +176,7 @@ if(APPLE)
         MACOSX_BUNDLE_ICON_FILE "App.icns"
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/platform/osx/Info.plist"
     )
+    target_link_libraries(TreeSheets PRIVATE "-framework AppKit")
 elseif(WIN32)
     target_sources(TreeSheets PRIVATE
         platform/win/treesheets.rc)

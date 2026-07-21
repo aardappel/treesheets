@@ -1673,8 +1673,20 @@ struct Document {
                 return wxEmptyString;
             }
 
-            case wxID_PASTE:
+            case wxID_PASTE: {
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
+
+                #ifdef __WXMAC__
+                    wxImage img = GetImageFromMacClipboard();
+                    if (img.IsOk()) {
+                        PasteOrDrop(img);
+                        UpdateLayout();
+                        ScrollIfSelectionOutOfView();
+                        canvas->Refresh();
+                        return wxEmptyString;
+                    }
+                #endif
+
                 if (wxTheClipboard->Open()) {
                     if (wxTheClipboard->IsSupported(wxDF_BITMAP)) {
                         wxBitmapDataObject bdo;
@@ -1701,6 +1713,7 @@ struct Document {
                     canvas->Refresh();
                 }
                 return wxEmptyString;
+            }
 
             case A_EDITNOTE: {
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
@@ -2355,6 +2368,16 @@ struct Document {
             cell->Reset();
         }
     }
+
+    #ifdef __WXMAC__
+        void PasteOrDrop(const wxImage &img) {
+            Cell *cell = selected.ThinExpand(this);
+            cell->AddUndo(this);
+            vector<uint8_t> buffer = ConvertWxImageToBuffer(img, wxBITMAP_TYPE_PNG);
+            SetImageBM(cell, std::move(buffer), 'I', sys->frame->FromDIP(1.0));
+            cell->Reset();
+        }
+    #endif
 
     wxString Sort(bool descending) {
         if (selected.xs != 1 && selected.ys <= 1) {
