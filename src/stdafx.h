@@ -83,6 +83,7 @@
 
 #ifdef __WXMAC__
     #include <mach-o/dyld.h>
+    #include "macclipboard.h"
 #endif
 
 using namespace std;
