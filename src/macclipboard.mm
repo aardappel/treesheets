@@ -5,14 +5,19 @@
 wxImage GetImageFromMacClipboard() {
   @autoreleasepool {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSData *pngData = [pasteboard dataForType:NSPasteboardTypePNG];
-    if (!pngData || [pngData length] == 0) {
+    NSArray *supportedTypes = @[ NSPasteboardTypePNG, NSPasteboardTypeTIFF, @"public.jpeg" ];
+    NSString *bestType = [pasteboard availableTypeFromArray:supportedTypes];
+    if (!bestType) {
       return wxNullImage;
     }
-    wxMemoryInputStream stream([pngData bytes], [pngData length]);
-    wxImage image;
-    if (image.LoadFile(stream, wxBITMAP_TYPE_PNG)) {
-      return image;
+    NSData *imageData = [pasteboard dataForType:bestType];
+    if (!imageData || imageData.length == 0) {
+      return wxNullImage;
+    }
+    wxMemoryInputStream stream([imageData bytes], [imageData length]);
+    wxImage wxImg;
+    if (wxImg.LoadFile(stream, wxBITMAP_TYPE_ANY)) {
+      return wxImg;
     }
     return wxNullImage;
   }
