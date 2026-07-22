@@ -5,7 +5,7 @@
 wxImage GetImageFromMacClipboard() {
   @autoreleasepool {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSArray *supportedTypes = @[ NSPasteboardTypePNG, NSPasteboardTypeTIFF, @"public.jpeg" ];
+    NSArray *supportedTypes = @[ NSPasteboardTypeTIFF, NSPasteboardTypePNG, @"public.jpeg" ];
     NSString *bestType = [pasteboard availableTypeFromArray:supportedTypes];
     if (!bestType) {
       return wxNullImage;
