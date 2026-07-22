@@ -2373,8 +2373,10 @@ struct Document {
         void PasteOrDrop(const wxImage &img) {
             Cell *cell = selected.ThinExpand(this);
             cell->AddUndo(this);
-            vector<uint8_t> buffer = ConvertWxImageToBuffer(img, wxBITMAP_TYPE_PNG);
-            SetImageBM(cell, std::move(buffer), 'I', sys->frame->FromDIP(1.0));
+            bool ispng = sys->defaultimageformat == 0;
+            vector<uint8_t> buffer =
+                ConvertWxImageToBuffer(img, ispng ? wxBITMAP_TYPE_PNG : wxBITMAP_TYPE_JPEG);
+            SetImageBM(cell, std::move(buffer), ispng ? 'I' : 'J', sys->frame->FromDIP(1.0));
             cell->Reset();
         }
     #endif
