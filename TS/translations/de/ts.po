@@ -259,7 +259,7 @@ msgid "Adds a grid to the selected cell"
 msgstr "Eine Tabelle in die ausgewählte Zelle einfügen"
 
 msgid "Also colorize the inner grid border"
-msgstr ""
+msgstr "Die inneren Tabellenränder auch einfärben"
 
 msgid "Apply last border color"
 msgstr "Letzte Randfarbe anwenden"
@@ -524,10 +524,10 @@ msgid "Default column width..."
 msgstr "Standardspaltenbreite..."
 
 msgid "Default format when image is pasted from clipboard or dropped"
-msgstr ""
+msgstr "Standard-Format, wenn Bild aus der Zwischenablage kopiert wird oder gedroppt wird"
 
 msgid "Default image format"
-msgstr ""
+msgstr "Standardbildformat"
 
 msgid "Delete Before"
 msgstr "Vorhergehendes Element löschen"
@@ -945,7 +945,7 @@ msgstr ""
 "Fenster ziehen. Was möchten Sie gerne tun?"
 
 msgid "JPEG"
-msgstr ""
+msgstr "JPEG"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG-Datei ist fehlerhaft/beschädigt!"
@@ -1183,7 +1183,7 @@ msgid "Operation reference"
 msgstr "Programmierreferenz"
 
 msgid "PNG"
-msgstr ""
+msgstr "PNG"
 
 msgid ""
 "PNG decode failed on some images in this document\n"
