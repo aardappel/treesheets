@@ -1,24 +1,45 @@
 #import <AppKit/AppKit.h>
-#include <wx/image.h>
-#include <wx/mstream.h>
 
-wxImage GetImageFromMacClipboard() {
+MacClipboardResult GetImageFromMacClipboard() {
   @autoreleasepool {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSArray *supportedTypes = @[ NSPasteboardTypeTIFF, NSPasteboardTypePNG, @"public.jpeg" ];
-    NSString *bestType = [pasteboard availableTypeFromArray:supportedTypes];
-    if (!bestType) {
-      return wxNullImage;
+    NSArray *classes = @[ [NSImage class] ];
+    NSDictionary *options = @{};
+
+    if (![pasteboard canReadObjectForClasses:classes options:options]) {
+      return {wxNullImage, 1.0};
     }
-    NSData *imageData = [pasteboard dataForType:bestType];
-    if (!imageData || imageData.length == 0) {
-      return wxNullImage;
+
+    NSArray *copiedItems = [pasteboard readObjectsForClasses:classes options:options];
+    if (copiedItems.count == 0) {
+      return {wxNullImage, 1.0};
     }
-    wxMemoryInputStream stream([imageData bytes], [imageData length]);
+
+    NSImage *nsImage = copiedItems.firstObject;
+    if (!nsImage) return {wxNullImage, 1.0};
+
+    double scaleFactor = 1.0;
+    NSSize pointSize = [nsImage size];
+
+    for (NSImageRep *rep in [nsImage representations]) {
+      if ([rep isKindOfClass:[NSBitmapImageRep class]]) {
+        NSInteger pixelWidth = [rep pixelsWide];
+        if (pointSize.width > 0 && pixelWidth > 0) {
+          scaleFactor = (double)pixelWidth / pointSize.width;
+        }
+        break;
+      }
+    }
+
+    NSData *tiffData = [nsImage TIFFRepresentation];
+    if (!tiffData) return {wxNullImage, 1.0};
+
+    wxMemoryInputStream stream([tiffData bytes], [tiffData length]);
     wxImage wxImg;
     if (wxImg.LoadFile(stream, wxBITMAP_TYPE_ANY)) {
-      return wxImg;
+      return {wxImg, scaleFactor};
     }
-    return wxNullImage;
+
+    return {wxNullImage, 1.0};
   }
 }
