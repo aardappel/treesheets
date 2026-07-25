@@ -28,12 +28,20 @@ struct Image {
 
     void DisplayScale(double scale) {
         display_scale /= scale;
-        bm_display = wxNullBitmap;
+        #ifndef __WXMSW__
+            bm_display.SetScaleFactor(display_scale);
+        #else
+            bm_display = wxNullBitmap;
+        #endif
     }
 
     void ResetScale(double scale) {
         display_scale = scale;
-        bm_display = wxNullBitmap;
+        #ifndef __WXMSW__
+            bm_display.SetScaleFactor(display_scale);
+        #else
+            bm_display = wxNullBitmap;
+        #endif
     }
 
     void ClearBitmap() { bm_display = wxNullBitmap; }
