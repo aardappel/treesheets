@@ -613,8 +613,8 @@ struct System {
 
     static void ImageSize(wxBitmap *bm, int &xs, int &ys) {
         if (bm == nullptr) { return; }
-        xs = bm->GetWidth();
-        ys = bm->GetHeight();
+        xs = bm->GetLogicalWidth();  // returns GetWidth on wxMSW
+        ys = bm->GetLogicalHeight();
     }
 
     static void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) { dc.DrawBitmap(*bm, x, y); }
