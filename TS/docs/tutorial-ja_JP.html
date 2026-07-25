@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>TreeSheets チュートリアル</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+<!--
+.style2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+}
+.style6 {font-family: "Courier New", Courier, mono; font-size: medium; font-weight: bold; }
+.style8 {font-family: "Courier New", Courier, mono; font-size: x-large; font-weight: bold; }
+.style11 {font-family: Verdana, Arial, Helvetica, sans-serif; font-size: large; }
+body {
+	background-color: #666666;
+}
+.style13 {font-size: xx-large}
+div#rounded{
+	background: #FFF;
+	width: 580px;
+	margin-left: auto;
+	margin-right: auto;
+}
+div#roundedcontent{
+	padding: 20px;
+}
+b.rtop, b.rbottom{display:block;background: #666}
+b.rtop b, b.rbottom b{display:block;height: 1px; overflow: hidden; background: #FFF}
+b.r1{margin: 0 5px}
+b.r2{margin: 0 3px}
+b.r3{margin: 0 2px}
+b.rtop b.r4, b.rbottom b.r4{margin: 0 1px;height: 2px}
+.style14 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+	font-style: italic;
+	color: #F00;
+}
+-->
+</style>
+</head>
+
+<body>
+
+
+<div id="rounded"><b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b><div id="roundedcontent">
+
+
+<p align="center" class="style11 style13"><img src="images/treesheets_logo.png" width="507" height="156"></p>
+<p align="center" class="style11 style13">チュートリアル &amp; 機能説明</p>
+
+<p class="style2">TreeSheetsの使い方を学ぶ方法は3つあります：</p>
+
+<p align="center" class="style11">1. アプリ内ライブチュートリアル：</p>
+<p class="style2">プログラムを初めて起動したときに読み込まれるチュートリアルドキュメント（またはF1キーを押す）で、機能を実際に試しながら読み進めることができます。</p>
+
+<p align="center" class="style11">2. このビデオを観る：</p>
+<p class="style2">William Ranvaud がチュートリアルビデオを作成してくれました：</p>
+
+<p align="center" class="style2">
+<object width="425" height="350">
+  <param name="movie" value="https://www.youtube.com/v/UB-saQZfrsw" />
+  <param name="wmode" value="transparent" />
+  <embed src="https://www.youtube.com/v/UB-saQZfrsw"
+         type="application/x-shockwave-flash"
+         wmode="transparent" width="507" height="400" />
+</object>
+
+</p>
+
+<p align="center" class="style11">3. または、このページで読む：</p>
+
+<p class="style14">[<strong>注意</strong>：以下のテキスト/画像は少し古いですが、全体的な考え方は理解できるはずです。]</p>
+<p class="style2">まずは新しいグリッドを作成します（メニュー <span class="style6">ファイル/新規</span>、または <span class="style6">Ctrl+N</span>）。サイズについてはあまり心配しないでください。行や列の挿入/削除は最も簡単な操作です。</p>
+<p class="style2"><img src="images/documentation/new.png" width="59" height="68"></p>
+      <p class="style2">データを入力するには、セル内を <span class="style6">左クリック</span> して選択し、そのまま入力を開始します：</p>
+      <p class="style2"><img src="images/documentation/edit.png" width="81" height="70"></p>
+      <p class="style2">選択したセルで入力を開始すると、より細い枠線が表示され、テキスト編集モードになったことがわかります（スプレッドシートと同様です）。</p>
+      <p class="style2">グリッド線を選択します（<span class="style6">左クリック</span>）：</p>
+    <p class="style2"><img src="images/documentation/gridline.png" width="88" height="74"></p>
+      <p class="style2">その位置に行または列を挿入するには、そのまま入力を開始します。新しい内容は、クリックしたセルの間（線の選択部分の太い部分）に挿入されます：</p>
+      <p class="style2"><img src="images/documentation/insert.png" width="87" height="94"></p>
+      <p class="style2">同様に、グリッド線を再度選択することで、行や列を削除できます：</p>
+      <p class="style2"><img src="images/documentation/gridline2.png" width="86" height="95"></p>
+      <p class="style2">そして <span class="style6">Backspace</span> キー（上の行、または前の列）または <span class="style6">Delete</span> キー（下の行、または次の列）を使用して削除します：</p>
+      <p class="style2"><img src="images/documentation/deleted.png" width="71" height="96"></p>
+      <p class="style2">この操作はテキストエディタと非常に似た直感的な動作です。ぜひ試してみてください。誤って削除しても心配ありません。すべての操作は無制限に元に戻せます（<span class="style6">編集/元に戻す</span> または <span class="style6">Ctrl+Z</span>）。</p>
+      <p class="style2">保存（<span class="style6">ファイル/保存</span> または <span class="style6">Ctrl+S</span>、<span class="style6">ファイル/名前を付けて保存</span>）と読み込み（<span class="style6">ファイル/開く</span> または <span class="style6">Ctrl+O</span>）は、他の生産性アプリケーションと同様に機能します。TreeSheetsは起動時に最後に保存された <span class="style6">.cts</span> ファイルを自動的に読み込みます。TreeSheetsの外部でデータを使用する必要がある場合は、<span class="style6">ファイル/エクスポート XML / HTML / テキスト</span> を使用してください。</p>
+      <p class="style2">これらは単一のグリッドを編集する基本ですが、本当の楽しさは、グリッドの中にグリッドを入れてデータを整理し始めたときに始まります。単一のセルを選択し、<span class="style6">編集/新規グリッド</span> または <span class="style6">Insert</span> を使用します：</p>
+      <p class="style2"><img src="images/documentation/pregrid.png" width="70" height="92" align="middle"> <span class="style8">→</span> <img src="images/documentation/postgrid.png" width="72" height="120" align="middle"></p>
+      <p class="style2">選択していたセルに 1x1 のサブグリッドができました。このセルを編集し、この新しいグリッドにいくつかセルを追加して、親グリッドとの関係を理解しましょう：</p>
+      <p class="style2"><img src="images/documentation/grid.png" width="129" height="134"></p>
+      <p class="style2">スプレッドシートと同様に、<span class="style6">左クリック＋ドラッグ</span> で複数のセルを選択できます。これはグリッドの階層レベルをまたいでも機能し、境界を越えると子全体が自動的に選択されます：</p>
+      <p class="style2"><img src="images/documentation/gridsel1.png" width="124" height="129" align="middle"> または <img src="images/documentation/gridsel2.png" width="127" height="134" align="middle"></p>
+      <p class="style2">一部の操作は単一セルでのみ機能しますが（上に新しいデータを挿入するなど）、多くの操作はこれらの大きな選択範囲でも機能します。例えば、<span class="style6">Delete</span> キーを使用してグリッドの任意の選択範囲をクリア/削除できますし、<span class="style6">Ctrl+←/→/↑/↓</span> でグリッド内の選択範囲を移動できます：</p>
+    <p class="style2"><img src="images/documentation/gridsel1.png" width="124" height="129" align="middle"> <span class="style8">→</span> <img src="images/documentation/gridsel3.png" width="125" height="131" align="middle"></p>
+      <p class="style2">すべての編集操作において、内容に合わせたサイズ調整が自動的に行われることに注目してください。TreeSheetsは複雑な方法でのデータ整理を非常に簡単にし、常に最もコンパクトで理想的なスペース使用のレイアウトを実現します。任意の数のセルを選択した状態で <span class="style6">Shift+マウスホイール</span> を使用すると、各要素が占めるスペースの量を調整できます：</p>
+      <p class="style2"><img src="images/documentation/textsize.png" width="109" height="126"></p>
+      <p class="style2">これによりセルの<em>相対サイズ</em>が変わります。これはネストの深さに相対的なサイズです（見ての通り、ネストされたグリッドは既に小さなフォントになっています）。相対サイズを使用すると、重要なもの（キャプションなど）を目立たせ、重要でないデータは読み取り可能でありながら非常に小さくしてスペースを節約することができます。TreeSheetsは、非常に大規模で複雑なデータセットに対して、大量のスクロールを必要とする過剰なスペースを使用するのではなく、データを縮小（1文字あたり1ピクセルまで！）できるようにするという哲学で設計されています。しかし、読み取れないほど小さくしてしまったものを、どうやって再び読み取り/編集可能にするのでしょうか？ここでTreeSheetsのズーム機能が登場します。任意のネストレベルで任意の選択を行い、<span class="style6">Ctrl+マウスホイール</span>（前方）を使用します：</p>
+      <p class="style2"><img src="images/documentation/zoomed.png" width="110" height="71"></p>
+      <p class="style2">マウスホイールをクリックするたびに1レベルズームインするため、非常に深くネストされたグリッドでもマウスホイールを素早く回すだけで即座に到達できます。また、テキストサイズは相対的なため、現在表示されているルートは常にデフォルトのフォントサイズになり、読み取りと編集が可能です。このシステムにより、ルートレベルでは全体の構造だけが見え、すべてがすぐにアクセス可能でありながら、膨大な量のデータを含むTreeSheetsを作成できます。</p>
+      <p class="style2">ルートへのズームアウトはさらに簡単で、選択も必要ありません。マウスホイールを逆方向に回すだけです。</p>
+      <p class="style2">（マウスホイールの操作はすべて <span class="style6">PageUp</span>/<span class="style6">PageDown</span> に置き換えることができ、ノートパソコンではより便利かもしれません）。</p>
+      <p class="style2">TreeSheetsは現在のデータが画面に収まらない場合にスクロールバーを表示しますが、項目を縮小して収まるようにすることで、スクロールバーなしで作業する方がどれだけ簡単かをぜひ体験してみてください。重要でないテキストは1ピクセル（！）まで縮小し、ズームインしたときだけ読み取り可能にすることができます。</p>
+      <p class="style2">TreeSheetsのレイアウトに影響を与えるもう一つのツールは列幅です。TreeSheetsは編集に関して各セルを単一行のテキストとして扱いますが、その行を任意の行数にわたって折り返すことができます。これは、長い行がデータのレイアウトを引き伸ばすのを防ぐのに便利です。簡単に <span class="style6">Alt+マウスホイール</span> を使用して列幅を増減できます：</p>
+      <p class="style2">元の状態： <img src="images/documentation/long1.png" width="423" height="129" align="middle"></p>
+      <p class="style2">狭くした場合： <img src="images/documentation/long2.png" width="275" height="130" align="middle"></p>
+      <p class="style2">非常に狭くした場合： <img src="images/documentation/long3.png" width="174" height="165" align="middle"></p>
+      <p class="style2">切り取り（<span class="style6">編集/切り取り</span> または <span class="style6">Ctrl+X</span>）、コピー（<span class="style6">編集/コピー</span> または <span class="style6">Ctrl+C</span>）、貼り付け（<span class="style6">編集/貼り付け</span> または <span class="style6">Ctrl+V</span>）は期待通りに機能しますが、貼り付けの対象は単一のセルである必要があります。コピーと貼り付けは他のアプリケーションとの間でも機能し、選択範囲はインデントで階層レベルを示すテキスト行に変換されます。同様に、階層にインデントを使用しているテキストをTreeSheetsに貼り付けると、その構造が再現されます。</p>
+    <p class="style2">その他の試していただきたい便利な機能：</p>
+      <ul>
+        <li><p class="style2"><span class="style6">カーソルキー</span> を使用して選択範囲を移動したり、<span class="style6">Enter</span> キーで次の行に移動したりできます</p></li>
+        <li><p class="style2">XMLからインポートするか、インデント付きの任意のASCIIテキストをセルにコピー＆ペーストすると、インデントに従ったツリー構造が作成されます</p></li>
+        <li><p class="style2">お好みのフォントを設定してTreeSheetsを表示できます（<span class="style6">表示/デフォルトフォントを選択</span>）</p></li>
+        <li>
+          <p class="style2">任意のセルに画像を追加できます（<span class="style6">編集/画像...</span>）。画像はファイルの一部として便利に保存されます。一度セルに画像を読み込んだら、シート内の任意の数のセルにコピー＆ペーストできます。画像は常にそのセルのテキスト（およびサブグリッド）の前面にレンダリングされます。異なる配置にしたい場合は、テキストと画像を別々のセルに配置するだけです。</p></li>
+        <li class="style2">TreeSheetsには多くのスタイリングオプションとレイアウトオプションがあります（いくつかの例はスクリーンショットページをご覧ください）</li>
+      </ul>      
+    
+    
+</div><b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b></div>
+
+</body>
+</html>
