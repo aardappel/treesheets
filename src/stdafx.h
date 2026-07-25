@@ -88,4 +88,11 @@
 
 using namespace std;
 
+#ifdef ENABLE_LOBSTER
+    #include <span>
+    #include "lobster/tools.h"
+    #include "lobster/string_tools.h"
+    #include "lobster/platform.h"
+#endif
+
 #include "tools.h"

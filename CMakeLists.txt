@@ -121,7 +121,7 @@ if(ENABLE_LOBSTER)
     ## lobster-impl (provider of TreeSheets functions in lobster)
 
     add_library(lobster-impl STATIC src/lobster_impl.cpp)
-    target_link_libraries(lobster-impl PRIVATE lobster)
+    target_link_libraries(lobster-impl PUBLIC lobster)
 endif(ENABLE_LOBSTER)
 
 ### TreeSheets executable
@@ -129,11 +129,12 @@ endif(ENABLE_LOBSTER)
 set(TREESHEETS_PLATFORM_SOURCES)
 if(APPLE)
     list(APPEND TREESHEETS_PLATFORM_SOURCES src/macclipboard.mm)
+elseif(MSVC)
+    list(APPEND TREESHEETS_PLATFORM_SOURCES src/stdafx.cpp)
 endif()
 
 add_executable(TreeSheets
     src/main.cpp
-    src/stdafx.cpp
     ${TREESHEETS_PLATFORM_SOURCES}
 )
 
@@ -190,7 +191,7 @@ target_precompile_headers(TreeSheets PUBLIC src/stdafx.h)
 
 ## Link wxWidgets and lobster-impl into TreeSheets
 if(ENABLE_LOBSTER)
-    target_link_libraries(TreeSheets PRIVATE lobster-impl)
+    target_link_libraries(TreeSheets PUBLIC lobster-impl)
 endif(ENABLE_LOBSTER)
 target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net)
 
