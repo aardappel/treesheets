@@ -44,9 +44,15 @@ struct Image {
         // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
             auto &it = imagetypes.at(type).first;
-            auto bm = ConvertBufferToWxBitmap(data, it);
-            pixel_width = bm.GetWidth();
-            ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
+            #ifndef __WXMSW__
+                bm_display = ConvertBufferToWxBitmap(data, it);
+                pixel_width = bm_display.GetWidth();
+                bm_display.SetScaleFactor(display_scale);
+            #else
+                auto bm = ConvertBufferToWxBitmap(data, it);
+                pixel_width = bm.GetWidth();
+                ScaleBitmap(bm, sys->frame->FromDIP(1.0) / display_scale, bm_display);
+            #endif
         }
         displayed = true;
         return bm_display;
