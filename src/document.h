@@ -1677,9 +1677,9 @@ struct Document {
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
                 #ifdef __WXMAC__
-                    wxImage img = GetImageFromMacClipboard();
+                    auto [img, scale] = GetImageFromMacClipboard();
                     if (img.IsOk()) {
-                        PasteOrDrop(img);
+                        PasteOrDrop(img, scale);
                         UpdateLayout();
                         ScrollIfSelectionOutOfView();
                         canvas->Refresh();
@@ -2370,15 +2370,15 @@ struct Document {
     }
 
     #ifdef __WXMAC__
-        void PasteOrDrop(const wxImage &img) {
-            Cell *cell = selected.ThinExpand(this);
-            cell->AddUndo(this);
-            bool ispng = sys->defaultimageformat == 0;
-            vector<uint8_t> buffer =
-                ConvertWxImageToBuffer(img, ispng ? wxBITMAP_TYPE_PNG : wxBITMAP_TYPE_JPEG);
-            SetImageBM(cell, std::move(buffer), ispng ? 'I' : 'J', sys->frame->FromDIP(1.0));
-            cell->Reset();
-        }
+    void PasteOrDrop(const wxImage &img, double scale) {
+        Cell *cell = selected.ThinExpand(this);
+        cell->AddUndo(this);
+        bool ispng = sys->defaultimageformat == 0;
+        vector<uint8_t> buffer =
+            ConvertWxImageToBuffer(img, ispng ? wxBITMAP_TYPE_PNG : wxBITMAP_TYPE_JPEG);
+        SetImageBM(cell, std::move(buffer), ispng ? 'I' : 'J', scale);
+        cell->Reset();
+    }
     #endif
 
     wxString Sort(bool descending) {
