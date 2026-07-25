@@ -1,0 +1,1775 @@
+# Japanese translations for TreeSheets
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# coolvitto <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: TreeSheets\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-22 06:54+0200\n"
+"PO-Revision-Date: 2026-07-26 01:47+0900\n"
+"Last-Translator: coolvitto\n"
+"Language-Team: \n"
+"Language: ja_JP\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#, c-format
+msgid "%d cell(s)"
+msgstr "%d セル"
+
+#, c-format
+msgid ""
+"%s\n"
+"has been modified on disk by another program / computer:\n"
+"Would you like to discard your changes and re-load from disk?"
+msgstr ""
+"%s\n"
+"は別のプログラム/コンピュータによってディスク上で変更されました :\n"
+"変更を破棄してディスクから再読み込みしますか？"
+
+msgid "&About..."
+msgstr "TreeSheets について(&A)..."
+
+msgid "&Add Cell Text as Tag"
+msgstr "セルテキストをタグとして追加(&A)"
+
+msgid "&Add..."
+msgstr "追加(&A)..."
+
+msgid "&Browsing"
+msgstr "参照(&B)"
+
+msgid "&Clear Views"
+msgstr "ビューをクリア(&C)"
+
+msgid "&Close"
+msgstr "閉じる(&C)"
+
+msgid "&Comma delimited text (CSV)..."
+msgstr "カンマ区切りテキスト(&C) (CSV)..."
+
+msgid "&Copy"
+msgstr "コピー(&C)"
+
+msgid "&Copy as Bitmap"
+msgstr "ビットマップとしてコピー(&C)"
+
+msgid "&Data"
+msgstr "データ(&D)"
+
+msgid "&Decrease text size (SHIFT+mousewheel)"
+msgstr "テキストサイズを縮小(&D) (SHIFT+マウスホイール)"
+
+msgid "&Delete After"
+msgstr "後方を削除(&D)"
+
+msgid "&Edit"
+msgstr "編集(&E)"
+
+msgid "&Exit"
+msgstr "終了(&E)"
+
+msgid "&File"
+msgstr "ファイル(&F)"
+
+msgid "&Flatten"
+msgstr "フラット化(&F)"
+
+msgid "&Grid Reorganization"
+msgstr "グリッド再構成(&G)"
+
+msgid "&HTML (Tables+Styling)..."
+msgstr "HTML(&H) (テーブル+スタイル)..."
+
+msgid "&HTML (Tables+Styling+Images)..."
+msgstr "HTML(&H) (テーブル+スタイル+画像)..."
+
+msgid "&Help"
+msgstr "ヘルプ(&H)"
+
+msgid "&Hierarchify"
+msgstr "階層化(&H)"
+
+msgid "&Horizontal View"
+msgstr "水平ビュー(&H)"
+
+msgid "&Image..."
+msgstr "画像(&I)..."
+
+msgid "&Images"
+msgstr "画像(&I)"
+
+msgid "&Increase text size (SHIFT+mousewheel)"
+msgstr "テキストサイズを拡大(&I) (SHIFT+マウスホイール)"
+
+msgid "&Insert New Grid"
+msgstr "新規グリッドを挿入(&I)"
+
+msgid "&Layout && Render Style"
+msgstr "レイアウトとレンダリングスタイル(&L)"
+
+msgid "&Mark as"
+msgstr "マーク(&M)"
+
+msgid "&New"
+msgstr "新規(&N)"
+
+msgid "&Next Match"
+msgstr "次の一致(&N)"
+
+msgid "&Next tab"
+msgstr "次のタブ(&N)"
+
+msgid "&Open..."
+msgstr "開く(&O)..."
+
+msgid "&Operation"
+msgstr "操作(&O)"
+
+msgid "&Options"
+msgstr "オプション(&O)"
+
+msgid "&Paste"
+msgstr "貼り付け(&P)"
+
+msgid "&Previous Match"
+msgstr "前の一致(&P)"
+
+msgid "&Print..."
+msgstr "印刷(&P)..."
+
+msgid "&Program"
+msgstr "プログラム(&P)"
+
+msgid "&Recent files"
+msgstr "最近使ったファイル(&R)"
+
+msgid "&Redo"
+msgstr "やり直し(&R)"
+
+msgid "&Remove Cell Text from Tags"
+msgstr "タグからセルテキストを削除(&R)"
+
+msgid "&Replace"
+msgstr "置換(&R)"
+
+msgid "&Reset Scale (display only)"
+msgstr "スケールをリセット(&R) (表示のみ)"
+
+msgid "&Reset text sizes"
+msgstr "テキストサイズをリセット(&R)"
+
+msgid "&Reset text styles"
+msgstr "テキストスタイルをリセット(&R)"
+
+msgid "&Roundness of grid borders"
+msgstr "グリッド境界の丸み(&R)"
+
+msgid "&Run"
+msgstr "実行(&R)"
+
+msgid "&Save"
+msgstr "保存(&S)"
+
+msgid "&Save as..."
+msgstr "名前を付けて保存(&S)..."
+
+msgid "&Script reference"
+msgstr "スクリプトリファレンス(&S)"
+
+msgid "&Search"
+msgstr "検索(&S)"
+
+msgid "&Selection"
+msgstr "選択(&S)"
+
+msgid "&Set Cell Text to tag (use CTRL+RMB)"
+msgstr "セルテキストをタグに設定(&S) (CTRL+右クリックを使用)"
+
+msgid "&Set custom color from cell background"
+msgstr "セルの背景からカスタムカラーを設定(&S)"
+
+msgid "&Shrink text of all sub-grids"
+msgstr "すべてのサブグリッドのテキストを縮小(&S)"
+
+msgid "&Transpose"
+msgstr "転置(&T)"
+
+msgid "&Undo"
+msgstr "元に戻す(&U)"
+
+msgid "&Vector graphics..."
+msgstr "ベクターグラフィック(&V)..."
+
+msgid "&Vertical View"
+msgstr "垂直ビュー(&V)"
+
+msgid "&View"
+msgstr "表示(&V)"
+
+msgid "&Wrap in new parent"
+msgstr "新しい親でラップ(&W)"
+
+msgid "&XML..."
+msgstr "XML(&X)..."
+
+msgid "*.*"
+msgstr "*.*"
+
+msgid "...and jump to the end of the text"
+msgstr "...そしてテキストの終わりにジャンプ"
+
+msgid "...and progress to the first cell in the new row"
+msgstr "...そして新しい行の最初のセルに移動"
+
+msgid "...and progress to the next cell on the right"
+msgstr "...そして右隣のセルに移動"
+
+msgid "1:1 scale restored."
+msgstr "1:1 スケールに戻しました。"
+
+msgid "<unnamed>"
+msgstr "<名前なし>"
+
+msgid "A temporary autosave file exists, would you like to load it instead?"
+msgstr "一時的な自動保存ファイルが存在します。代わりにそれを読み込みますか？"
+
+msgid "Add Image"
+msgstr "画像を追加"
+
+msgid "Add Lobster scripts to the menu"
+msgstr "Lobster スクリプトをメニューに追加"
+
+msgid "Add an image to the selected cell"
+msgstr "選択したセルに画像を追加"
+
+msgid "Add..."
+msgstr "追加..."
+
+msgid "Adds a NxN grid to the selected cell"
+msgstr "選択したセルに NxN グリッドを追加"
+
+msgid "Adds a grid to the selected cell"
+msgstr "選択したセルにグリッドを追加"
+
+msgid "Also colorize the inner grid border"
+msgstr "内部のグリッド境界も色付けする"
+
+msgid "Apply last border color"
+msgstr "直前の境界色を適用"
+
+msgid "Apply last cell color"
+msgstr "直前のセル色を適用"
+
+msgid "Apply last text color"
+msgstr "直前のテキスト色を適用"
+
+msgid "At least one file could not be opened."
+msgstr "少なくとも 1つのファイルを開けませんでした。"
+
+msgid "Autoexport to HTML"
+msgstr "HTML への自動エクスポート"
+
+msgid "Autoreload documents"
+msgstr "ドキュメントの自動リロード"
+
+msgid "Autosave"
+msgstr "自動保存"
+
+msgid "Autosave load"
+msgstr "自動保存の読み込み"
+
+msgid "Available languages"
+msgstr "利用可能な言語"
+
+msgid "Background color..."
+msgstr "背景色..."
+
+msgid "Backup files"
+msgstr "バックアップファイル"
+
+msgid "Bitmap copied to clipboard"
+msgstr "ビットマップをクリップボードにコピーしました"
+
+msgid "Border "
+msgstr "境界 "
+
+msgid "Border &0"
+msgstr "境界 0(&0)"
+
+msgid "Border &1"
+msgstr "境界 1(&1)"
+
+msgid "Border &2"
+msgstr "境界 2(&2)"
+
+msgid "Border &3"
+msgstr "境界 3(&3)"
+
+msgid "Border &4"
+msgstr "境界 4(&4)"
+
+msgid "Border &5"
+msgstr "境界 5(&5)"
+
+msgid "Bubble Style Rendering"
+msgstr "バブルスタイルレンダリング"
+
+msgid "Can only move this cell from a Nx1 or 1xN grid."
+msgstr "このセルは Nx1 または 1xN グリッドからのみ移動できます。"
+
+msgid "Can only move this cell into a Nx1 or 1xN grid."
+msgstr "このセルは Nx1 または 1xN グリッドにのみ移動できます。"
+
+msgid "Can paste or drop only exactly one file."
+msgstr "貼り付けまたはドロップできるファイルは正確に 1つだけです。"
+
+msgid ""
+"Can't sort: make a 1xN selection to indicate what column to sort on, and "
+"what rows to affect"
+msgstr ""
+"ソートできません : ソート対象の列と影響を受ける行を指定するために、1xN の選択"
+"を行ってください"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Cancel text edits"
+msgstr "テキスト編集をキャンセル"
+
+msgid "Cannot decompress file."
+msgstr "ファイルを解凍できません。"
+
+msgid ""
+"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
+"or use Flatten)."
+msgstr ""
+"フラットでないグリッドはエクスポートできません (ビューを目的のグリッドにズー"
+"ムするか、フラット化を使用してください)。"
+
+msgid "Cannot move this cell up in the hierarchy."
+msgstr "このセルを階層内で上に移動できません。"
+
+msgid "Cannot open file."
+msgstr "ファイルを開けません。"
+
+msgid "Case-sensitive search"
+msgstr "大文字と小文字を区別する検索"
+
+msgid "Cell "
+msgstr "セル "
+
+msgid "Change interface language"
+msgstr "インターフェース言語を変更"
+
+msgid "Change language..."
+msgstr "言語の変更..."
+
+msgid ""
+"Change the image(s) scale to match DPI of the current display. Applies to "
+"all uses of this image."
+msgstr ""
+"画像のスケールを現在のディスプレイの DPI に合わせて変更します。この画像の全て"
+"の使用に適用されます。"
+
+msgid ""
+"Change the image(s) size if it is too big or too small, by changing the size "
+"shown on screen. Applies to all uses of this image."
+msgstr ""
+"画面に表示されるサイズを変更することで、画像が大きすぎる場合や小さすぎる場合"
+"にサイズを変更します。この画像の全ての使用に適用されます。"
+
+msgid ""
+"Change the image(s) size if it is too big, by reducing the amount of pixels"
+msgstr "画像が大きすぎる場合に、ピクセル数を減らしてサイズを変更します"
+
+msgid "Change the key binding of a menu item"
+msgstr "メニュー項目のキーバインドを変更"
+
+msgid "Changes have been made, are you sure you wish to continue?"
+msgstr "変更が加えられています。続行してもよろしいですか？"
+
+msgid "Choose CSV file to write"
+msgstr "書き込む CSV ファイルを選択"
+
+msgid "Choose HTML file to write"
+msgstr "書き込む HTML ファイルを選択"
+
+msgid "Choose PNG file to write"
+msgstr "書き込む PNG ファイルを選択"
+
+msgid "Choose SVG file to write"
+msgstr "書き込む SVG ファイルを選択"
+
+msgid "Choose Text file to write"
+msgstr "書き込むテキストファイルを選択"
+
+msgid "Choose TreeSheets file to save:"
+msgstr "保存する TreeSheets ファイルを選択 :"
+
+msgid "Choose XML file to write"
+msgstr "書き込む XML ファイルを選択"
+
+msgid "Choose image file to save:"
+msgstr "保存する画像ファイルを選択 :"
+
+msgid "Clear replace"
+msgstr "置換をクリア"
+
+msgid "Clear search"
+msgstr "検索をクリア"
+
+msgid "Close current document"
+msgstr "現在のドキュメントを閉じる"
+
+msgid "Collapse Ce&lls"
+msgstr "セルを折りたたむ(&L)"
+
+msgid "Colorize inner grid border"
+msgstr "内部のグリッド境界を色付け"
+
+msgid "Column width decreased."
+msgstr "列幅を狭くしました。"
+
+msgid "Column width increased."
+msgstr "列幅を広くしました。"
+
+msgid "Comma delimited text (CSV)..."
+msgstr "カンマ区切りテキスト (CSV)..."
+
+msgid ""
+"Convert an NxN grid with repeating elements per column into an 1xN grid with "
+"hierarchy, useful to convert data from spreadsheets"
+msgstr ""
+"列ごとに繰り返し要素を持つ NxN グリッドを、階層を持つ 1xN グリッドに変換しま"
+"す。スプレッドシートからのデータ変換に便利です"
+
+msgid "Copy (CTRL+c)"
+msgstr "コピー (CTRL+C)"
+
+msgid "Copy As Continuous Text"
+msgstr "連続テキストとしてコピー"
+
+msgid "Copy selection"
+msgstr "選択範囲をコピー"
+
+msgid "Copy with &Images"
+msgstr "画像付きでコピー(&I)"
+
+msgid "Corrupt PNG header."
+msgstr "PNG ヘッダーが破損しています。"
+
+msgid "Corrupt block header."
+msgstr "ブロックヘッダーが破損しています。"
+
+msgid "Create a new document"
+msgstr "新規ドキュメントを作成"
+
+msgid "Create backup file before document is saved to file"
+msgstr "ドキュメントをファイルに保存する前にバックアップファイルを作成"
+
+msgid "Creates a new level of hierarchy around the current selection"
+msgstr "現在の選択の周囲に新しい階層レベルを作成します"
+
+msgid "Cu&rsor color..."
+msgstr "カーソル色(&R)..."
+
+msgid "Cu&t"
+msgstr "切り取り(&T)"
+
+msgid "Cursor Left"
+msgstr "カーソルを左へ"
+
+msgid "Cursor Right"
+msgstr "カーソルを右へ"
+
+msgid "Custom"
+msgstr "カスタム"
+
+msgid "Custom &color..."
+msgstr "カスタムカラー(&C)..."
+
+msgid "Cut selection"
+msgstr "選択範囲を切り取り"
+
+msgid "Date and time range"
+msgstr "日時範囲"
+
+msgid "Decrease column width (ALT+mousewheel)"
+msgstr "列幅を狭くする (ALT+マウスホイール)"
+
+msgid "Decrease column width (no sub grids)"
+msgstr "列幅を狭くする (サブグリッドなし)"
+
+msgid "Default column width"
+msgstr "デフォルトの列幅"
+
+msgid "Default column width..."
+msgstr "デフォルトの列幅..."
+
+msgid "Default format when image is pasted from clipboard or dropped"
+msgstr ""
+"画像がクリップボードから貼り付けられたとき、またはドロップされたときのデフォ"
+"ルトフォーマット"
+
+msgid "Default image format"
+msgstr "デフォルトの画像フォーマット"
+
+msgid "Delete Before"
+msgstr "前方を削除"
+
+msgid "Delete Word After"
+msgstr "後方の単語を削除"
+
+msgid "Delete Word Before"
+msgstr "前方の単語を削除"
+
+msgid ""
+"Deletes the column of cells after the selected grid line, or the row below"
+msgstr "選択されたグリッド線の後ろのセル列、または下の行を削除します"
+
+msgid ""
+"Deletes the column of cells before the selected grid line, or the row above"
+msgstr "選択されたグリッド線の前のセル列、または上の行を削除します"
+
+msgid "Deletes the entire word after the cursor"
+msgstr "カーソル位置より後ろの単語全体を削除します"
+
+msgid "Deletes the entire word before the cursor"
+msgstr "カーソル位置より前の単語全体を削除します"
+
+msgid "Discard Changes"
+msgstr "変更を破棄"
+
+msgid "Edit &Note"
+msgstr "ノートを編集(&N)"
+
+msgid "Edit the note of the selected cell"
+msgstr "選択したセルのノートを編集"
+
+#, c-format
+msgid "Edited %s %s"
+msgstr "%s %s を編集しました"
+
+msgid "Embed as &JPEG"
+msgstr "JPEG として埋め込み(&J)"
+
+msgid "Embed as &PNG"
+msgstr "PNG として埋め込み(&P)"
+
+msgid ""
+"Embed the image(s) in the selected cells in JPEG format (reduces data size)"
+msgstr "選択したセルの画像を JPEG 形式で埋め込みます (データサイズを削減)"
+
+msgid "Embed the image(s) in the selected cells in PNG format (default)"
+msgstr "選択したセルの画像を PNG 形式で埋め込みます (デフォルト)"
+
+msgid "End date and time"
+msgstr "終了日時"
+
+msgid "End of line of text"
+msgstr "テキストの行末"
+
+msgid "End of text"
+msgstr "テキストの終わり"
+
+msgid "English"
+msgstr "英語"
+
+msgid "Enter/exit text edit mode"
+msgstr "テキスト編集モードに入る/終了する"
+
+msgid "Error exporting file!"
+msgstr "ファイルのエクスポート中にエラーが発生しました！"
+
+msgid "Error exporting to SVG file!"
+msgstr "SVG ファイルへのエクスポート中にエラーが発生しました！"
+
+msgid "Error loading core data file (TreeSheets not installed correctly?)"
+msgstr ""
+"コアデータファイルの読み込み中にエラーが発生しました (TreeSheets が正しくイン"
+"ストールされていませんか？)"
+
+msgid "Error renaming temporary file."
+msgstr "一時ファイルの名前変更中にエラーが発生しました。"
+
+msgid "Error writing PNG file!"
+msgstr "PNG ファイルの書き込み中にエラーが発生しました！"
+
+msgid ""
+"Error writing TreeSheets file! Would you like to save at a different "
+"location?"
+msgstr ""
+"TreeSheets ファイルの書き込み中にエラーが発生しました！別の場所に保存します"
+"か？"
+
+msgid "Error writing image file! (try saving under new filename)."
+msgstr ""
+"画像ファイルの書き込み中にエラーが発生しました！ (新しいファイル名で保存して"
+"みてください)。"
+
+msgid "Error writing to file!"
+msgstr "ファイルへの書き込み中にエラーが発生しました！"
+
+msgid "Error writing to file."
+msgstr "ファイルへの書き込み中にエラーが発生しました。"
+
+msgid "Evaluation finished."
+msgstr "評価が完了しました。"
+
+msgid "Export &view as"
+msgstr "ビューをエクスポート(&V)"
+
+msgid "Export cancelled."
+msgstr "エクスポートがキャンセルされました。"
+
+msgid "Export the curent view as HTML using nested tables and exported images"
+msgstr ""
+"現在のビューをネストされたテーブルとエクスポートされた画像を使用して HTML と"
+"してエクスポートします"
+
+msgid ""
+"Export the current view as CSV. Good for spreadsheets and databases. Only "
+"works on grids with no sub-grids (use the Flatten operation first if need be)"
+msgstr ""
+"現在のビューを CSV としてエクスポートします。スプレッドシートやデータベースに"
+"適しています。サブグリッドのないグリッドでのみ機能します（必要に応じて最初に"
+"フラット化操作を使用してください）"
+
+msgid "Export the current view as HTML as nested bullet points."
+msgstr "現在のビューをネストされた箇条書きとして HTML にエクスポートします。"
+
+msgid ""
+"Export the current view as HTML as nested headers, suitable for importing "
+"into Word's outline mode"
+msgstr ""
+"現在のビューをネストされたヘッダーとして HTML にエクスポートします。Word のア"
+"ウトラインモードへのインポートに適しています"
+
+msgid ""
+"Export the current view as HTML using nested tables, that will look somewhat "
+"like the TreeSheet"
+msgstr ""
+"現在のビューをネストされたテーブルを使用して HTML にエクスポートします。"
+"TreeSheet に似た外観になります"
+
+msgid ""
+"Export the current view as XML (which can also be reimported without losing "
+"structure)"
+msgstr ""
+"現在のビューを XML としてエクスポートします（構造を失わずに再インポートするこ"
+"ともできます）"
+
+msgid ""
+"Export the current view as an image. Useful for faithful renderings of the "
+"TreeSheet, and programs that don't accept any of the above options"
+msgstr ""
+"現在のビューを画像としてエクスポートします。TreeSheet の忠実なレンダリング"
+"や、上記のオプションを受け付けないプログラムに便利です"
+
+msgid ""
+"Export the current view as tree structured text, using spaces for each "
+"indentation level. Suitable for importing into mindmanagers and general text "
+"programs"
+msgstr ""
+"現在のビューをツリー構造のテキストとしてエクスポートします。各インデントレベ"
+"ルにスペースを使用します。マインドマネージャーや一般的なテキストプログラムへ"
+"のインポートに適しています"
+
+msgid "Export the current view to a SVG vector file."
+msgstr "現在のビューを SVG ベクターファイルにエクスポートします。"
+
+msgid ""
+"Export to a HTML file alongside the original TreeSheets file when document "
+"is saved"
+msgstr ""
+"ドキュメント保存時に元の TreeSheets ファイルと一緒に HTML ファイルにエクス"
+"ポートします"
+
+msgid ""
+"Export to a HTML file with exported images alongside the original TreeSheets "
+"file when document is saved"
+msgstr ""
+"ドキュメント保存時にエクスポートされた画像と共に、元の TreeSheets ファイルと"
+"一緒に HTML ファイルにエクスポートします"
+
+msgid "Export with images"
+msgstr "画像付きでエクスポート"
+
+msgid "Export without images"
+msgstr "画像なしでエクスポート"
+
+msgid "Extend Selection Columns Down"
+msgstr "選択範囲を列単位で下に拡張"
+
+msgid "Extend Selection Columns Up"
+msgstr "選択範囲を列単位で上に拡張"
+
+msgid "Extend Selection Down"
+msgstr "選択範囲を下に拡張"
+
+msgid "Extend Selection Full Columns"
+msgstr "選択範囲を列全体に拡張"
+
+msgid "Extend Selection Full Rows"
+msgstr "選択範囲を行全体に拡張"
+
+msgid "Extend Selection Left"
+msgstr "選択範囲を左に拡張"
+
+msgid "Extend Selection Right"
+msgstr "選択範囲を右に拡張"
+
+msgid "Extend Selection Rows Left"
+msgstr "選択範囲を行単位で左に拡張"
+
+msgid "Extend Selection Rows Right"
+msgstr "選択範囲を行単位で右に拡張"
+
+msgid "Extend Selection Up"
+msgstr "選択範囲を上に拡張"
+
+msgid "Extend Selection Word Left"
+msgstr "選択範囲を左の単語まで拡張"
+
+msgid "Extend Selection Word Right"
+msgstr "選択範囲を右の単語まで拡張"
+
+msgid "Extend Selection to End"
+msgstr "選択範囲を末尾まで拡張"
+
+msgid "Extend Selection to Start"
+msgstr "選択範囲を先頭まで拡張"
+
+msgid "Failed to get translation."
+msgstr "翻訳の取得に失敗しました。"
+
+msgid "Faster line rendering"
+msgstr "高速な線レンダリング"
+
+msgid "File Tabs on the bottom"
+msgstr "ファイルタブを下部に表示"
+
+msgid "File corrupted!"
+msgstr "ファイルが破損しています！"
+
+msgid "File exported successfully."
+msgstr "ファイルは正常にエクスポートされました。"
+
+msgid ""
+"File has been re-loaded because of modifications of another program / "
+"computer"
+msgstr ""
+"別のプログラム/コンピュータによる変更のため、ファイルが再読み込みされました"
+
+msgid "File load error."
+msgstr "ファイル読み込みエラー。"
+
+msgid "File modification conflict!"
+msgstr "ファイル変更の競合が発生しました！"
+
+msgid "File of newer version."
+msgstr "新しいバージョンのファイルです。"
+
+msgid "Filter"
+msgstr "フィルター"
+
+msgid "Filter by the same cell color"
+msgstr "同じセル色でフィルター"
+
+msgid "Find and replace in document"
+msgstr "ドキュメント内を検索して置換"
+
+msgid "Find in document"
+msgstr "ドキュメント内を検索"
+
+msgid "Fold All"
+msgstr "すべて折りたたむ"
+
+msgid "Folds the grid of the selected cell(s) recursively"
+msgstr "選択したセルのグリッドを再帰的に折りたたみます"
+
+msgid "Font..."
+msgstr "フォント..."
+
+msgid "Found an image type that is not defined in this program."
+msgstr "このプログラムで定義されていない画像タイプが見つかりました。"
+
+msgid "Go To &Matching Cell (Text)"
+msgstr "一致するセルへ移動（テキスト）(&M)"
+
+msgid "Go To Matching Cell (Image)"
+msgstr "一致するセルへ移動（画像）"
+
+msgid "Go To Matching Cell (Image, Reverse)"
+msgstr "一致するセルへ移動（画像、逆方向）"
+
+msgid "Go To Matching Cell (Text, Reverse)"
+msgstr "一致するセルへ移動（テキスト、逆方向）"
+
+msgid "Go to Next Search Result"
+msgstr "次の検索結果へ"
+
+msgid "Go to next filter match"
+msgstr "次のフィルター一致へ"
+
+msgid "Go to next search match"
+msgstr "次の検索一致へ"
+
+msgid "Go to previous search match"
+msgstr "前の検索一致へ"
+
+msgid "Go to the document in the next tab"
+msgstr "次のタブのドキュメントへ"
+
+msgid "Go to the document in the previous tab"
+msgstr "前のタブのドキュメントへ"
+
+msgid "Grid Style Rendering"
+msgstr "グリッドスタイルレンダリング"
+
+msgid "HTML (&Bullet points)..."
+msgstr "HTML（箇条書き）(&B)..."
+
+msgid "HTML (&Outline)..."
+msgstr "HTML（アウトライン）(&O)..."
+
+msgid "Hierarchy &Swap"
+msgstr "階層の入れ替え(&S)"
+
+msgid ""
+"Hold CTRL while pressing right mouse button to quickly set a tag for the "
+"current cell using a popup menu"
+msgstr ""
+"CTRLキーを押しながらマウスの右ボタンを押すと、ポップアップメニューを使用して"
+"現在のセルにタグをすばやく設定できます"
+
+msgid "Horizontal Layout with Bubble Style Rendering"
+msgstr "バブルスタイルレンダリングの水平レイアウト"
+
+msgid "Horizontal Layout with Grid Style Rendering"
+msgstr "グリッドスタイルレンダリングの水平レイアウト"
+
+msgid "Horizontal Layout with Line Style Rendering"
+msgstr "ラインスタイルレンダリングの水平レイアウト"
+
+msgid "How many pixels wide should a page be? (0 for auto fit)"
+msgstr "ページの幅は何ピクセルにしますか？（0は自動フィット）"
+
+msgid "Image "
+msgstr "画像 "
+
+msgid "Image Resize"
+msgstr "画像サイズ変更"
+
+msgid "Image(s) have been saved to disk."
+msgstr "画像はディスクに保存されました。"
+
+msgid "Images in selected cells have been converted to JPEG format."
+msgstr "選択したセルの画像は JPEG 形式に変換されました。"
+
+msgid "Images in selected cells have been converted to PNG format."
+msgstr "選択したセルの画像は PNG 形式に変換されました。"
+
+msgid "Import from"
+msgstr "インポート元"
+
+msgid "Increase column width (ALT+mousewheel)"
+msgstr "列幅を広くする (ALT+マウスホイール)"
+
+msgid "Increase column width (no sub grids)"
+msgstr "列幅を広くする (サブグリッドなし)"
+
+msgid "Indented &Text..."
+msgstr "インデントされたテキスト(&T)..."
+
+msgid "Indented text..."
+msgstr "インデントされたテキスト..."
+
+msgid "Initialization Error"
+msgstr "初期化エラー"
+
+msgid "Insert New &NxN Grid"
+msgstr "新しい NxN グリッドを挿入(&N)"
+
+msgid "Insert last image"
+msgstr "最後の画像を挿入"
+
+msgid "Insert the last image that has been inserted before in TreeSheets."
+msgstr "TreeSheets で以前に挿入された最後の画像を挿入します。"
+
+msgid "Interactive &tutorial"
+msgstr "対話型チュートリアル(&T)"
+
+msgid "Internal error: unimplemented operation!"
+msgstr "内部エラー : 未実装の操作です！"
+
+msgid "Invert in dark mode"
+msgstr "ダークモードで反転"
+
+msgid "Invert the document in dark mode"
+msgstr "ダークモードでドキュメントを反転"
+
+msgid ""
+"It seems that you are about to paste or drop a TreeSheets file. What would "
+"you like to do?"
+msgstr ""
+"TreeSheets ファイルを貼り付けまたはドロップしようとしています。どうしますか？"
+
+msgid "JPEG"
+msgstr "JPEG"
+
+msgid "JPEG file is corrupted!"
+msgstr "JPEG ファイルが破損しています！"
+
+msgid "Key binding"
+msgstr "キーバインド"
+
+msgid "Key bindings..."
+msgstr "キーバインド..."
+
+msgid "Keybinding cancelled."
+msgstr "キーバインドがキャンセルされました。"
+
+msgid "Line Style Rendering"
+msgstr "ラインスタイルレンダリング"
+
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr "TreeSheets に対話型プログラム操作リファレンスを読み込む"
+
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr "TreeSheets に対話型チュートリアルを読み込む"
+
+#, c-format
+msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
+msgstr "%s を読み込みました（%d セル、%d 文字）%lld ミリ秒。"
+
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "Lobster ファイル (*.lobster)|*.lobster|すべてのファイル (*.*)|*.*"
+
+msgid ""
+"Make a 1xN selection to indicate which column to sort on, and which rows to "
+"affect"
+msgstr ""
+"ソート対象の列と影響を受ける行を指定するために、1xN の選択を行ってください"
+
+msgid "Make a hierarchy layout more vertical (default) or more horizontal"
+msgstr "階層レイアウトをより垂直（デフォルト）またはより水平にします"
+
+msgid "Maximum number of launches reached."
+msgstr "起動可能な最大回数に達しました。"
+
+msgid "Minimize on close"
+msgstr "閉じるときに最小化"
+
+msgid "Minimize to tray"
+msgstr "トレイに最小化"
+
+msgid "More than one cell must be selected."
+msgstr "複数のセルを選択する必要があります。"
+
+msgid "Move Cells Down"
+msgstr "セルを下に移動"
+
+msgid "Move Cells Left"
+msgstr "セルを左に移動"
+
+msgid "Move Cells Right"
+msgstr "セルを右に移動"
+
+msgid "Move Cells Up"
+msgstr "セルを上に移動"
+
+msgid "Move Selection Down"
+msgstr "選択を下に移動"
+
+msgid "Move Selection Down (DOWN)"
+msgstr "選択を下に移動 (↓)"
+
+msgid "Move Selection Left"
+msgstr "選択を左に移動"
+
+msgid "Move Selection Left (LEFT)"
+msgstr "選択を左に移動 (←)"
+
+msgid "Move Selection Right"
+msgstr "選択を右に移動"
+
+msgid "Move Selection Right (RIGHT)"
+msgstr "選択を右に移動 (→)"
+
+msgid "Move Selection Up"
+msgstr "選択を上に移動"
+
+msgid "Move Selection Up (UP)"
+msgstr "選択を上に移動 (↑)"
+
+msgid "Move to next cell"
+msgstr "次のセルへ移動"
+
+msgid "Move to next cell (TAB)"
+msgstr "次のセルへ移動 (Tab)"
+
+msgid "Move to previous cell"
+msgstr "前のセルへ移動"
+
+msgid "Move to previous cell (SHIFT+TAB)"
+msgstr "前のセルへ移動 (Shift+Tab)"
+
+msgid "NOTE: key binding will take effect next run of TreeSheets."
+msgstr "注意：キーバインドは次回の TreeSheets 起動時に有効になります。"
+
+msgid "Navigate in between cells with cursor keys"
+msgstr "カーソルキーでセル間を移動"
+
+msgid "New (CTRL+n)"
+msgstr "新規 (Ctrl+N)"
+
+msgid "New Grid (INS)"
+msgstr "新規グリッド (Ins)"
+
+msgid "New Sheet"
+msgstr "新しいシート"
+
+msgid "New file cancelled."
+msgstr "新規ファイル作成がキャンセルされました。"
+
+msgid "New subgrid"
+msgstr "新しいサブグリッド"
+
+msgid "No autoexport"
+msgstr "自動エクスポートなし"
+
+msgid "No image found to convert"
+msgstr "変換する画像が見つかりません"
+
+msgid "No image in this cell."
+msgstr "このセルには画像がありません。"
+
+msgid "No matches for filter."
+msgstr "フィルターに一致するものがありません。"
+
+msgid "No matches for search."
+msgstr "検索に一致するものがありません。"
+
+msgid "No matching cell found!"
+msgstr "一致するセルが見つかりません！"
+
+msgid "No search string."
+msgstr "検索文字列がありません。"
+
+msgid "No search."
+msgstr "検索がありません。"
+
+msgid "No style to paste."
+msgstr "貼り付けるスタイルがありません。"
+
+msgid "No subgrid created."
+msgstr "サブグリッドは作成されませんでした。"
+
+msgid "No text in this cell."
+msgstr "このセルにはテキストがありません。"
+
+msgid "No text selected."
+msgstr "テキストが選択されていません。"
+
+msgid "No text to search for."
+msgstr "検索するテキストがありません。"
+
+msgid "Not a TreeSheets file."
+msgstr "TreeSheets ファイルではありません。"
+
+msgid "Note"
+msgstr "ノート"
+
+msgid "Nothing more to redo."
+msgstr "やり直す操作はこれ以上ありません。"
+
+msgid "Nothing more to undo."
+msgstr "元に戻す操作はこれ以上ありません。"
+
+msgid ""
+"Now viewing TreeSheet to fit to the screen exactly, press F12 to return to "
+"normal."
+msgstr ""
+"TreeSheet を画面に正確に合わせて表示しています。通常に戻るには F12 を押してく"
+"ださい。"
+
+msgid "Open &file"
+msgstr "ファイルを開く(&F)"
+
+msgid "Open (CTRL+o)"
+msgstr "開く (Ctrl+O)"
+
+msgid "Open TreeSheets file"
+msgstr "TreeSheetsファイルを開く"
+
+msgid "Open an existing document"
+msgstr "既存のドキュメントを開く"
+
+msgid "Open border colors"
+msgstr "境界の色を開く"
+
+msgid "Open cell colors"
+msgstr "セルの色を開く"
+
+msgid "Open file cancelled."
+msgstr "ファイルを開く操作がキャンセルされました。"
+
+msgid "Open image dropdown"
+msgstr "画像ドロップダウンを開く"
+
+msgid "Open link in &browser"
+msgstr "リンクをブラウザで開く(&B)"
+
+msgid "Open text colors"
+msgstr "テキストの色を開く"
+
+msgid "Open the Lobster script reference in browser"
+msgstr "Lobster スクリプトリファレンスをブラウザで開く"
+
+msgid "Open the tutorial web page in browser"
+msgstr "チュートリアルのウェブページをブラウザで開く"
+
+msgid ""
+"Opens up the text from the selected cell in browser (should start be a valid "
+"URL)"
+msgstr ""
+"選択したセルのテキストをブラウザで開きます（有効な URL で始まる必要がありま"
+"す）"
+
+msgid ""
+"Opens up the text from the selected cell in default application for the file "
+"type"
+msgstr ""
+"選択したセルのテキストをファイルタイプに対応するデフォルトアプリケーションで"
+"開きます"
+
+msgid "Operation reference"
+msgstr "操作リファレンス"
+
+msgid "PNG"
+msgstr "PNG"
+
+msgid ""
+"PNG decode failed on some images in this document\n"
+"They have been replaced by red squares."
+msgstr ""
+"このドキュメント内の一部の画像で PNG デコードに失敗しました\n"
+"それらは赤い四角で置き換えられています。"
+
+msgid "PNG decoder failure"
+msgstr "PNG デコーダーエラー"
+
+msgid "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|All Files (*.*)|*.*"
+msgstr ""
+"PNG ファイル (*.png)|*.png|JPEGファイル (*.jpg)|*.jpg|すべてのファイル (*.*)|"
+"*.*"
+
+msgid "Page Setup..."
+msgstr "ページ設定..."
+
+msgid "Paste (CTRL+v)"
+msgstr "貼り付け (Ctrl+V)"
+
+msgid "Paste Style Only"
+msgstr "スタイルのみ貼り付け"
+
+msgid "Paste clipboard contents"
+msgstr "クリップボードの内容を貼り付け"
+
+msgid "Paste file path"
+msgstr "ファイルパスを貼り付け"
+
+msgid "Please enable (Options -> Show Toolbar) to use replace."
+msgstr ""
+"置換を使用するには、（オプション→ツールバーを表示）を有効にしてください。"
+
+msgid "Please enable (Options -> Show Toolbar) to use search."
+msgstr ""
+"検索を使用するには、（オプション→ツールバーを表示）を有効にしてください。"
+
+msgid "Please enter the default column width:"
+msgstr "デフォルトの列幅を入力してください："
+
+msgid "Please enter the new image width:"
+msgstr "新しい画像の幅を入力してください："
+
+msgid "Please enter the new key binding string"
+msgstr "新しいキーバインド文字列を入力してください"
+
+msgid "Please enter the percentage you want the image scaled by:"
+msgstr "画像をスケールするパーセンテージを入力してください :"
+
+msgid "Please pick a menu item to change the key binding for"
+msgstr "キーバインドを変更するメニュー項目を選択してください"
+
+msgid "Please select Lobster script file(s):"
+msgstr "Lobsterスクリプトファイルを選択してください :"
+
+msgid "Please select TreeSheets file(s) to load:"
+msgstr "読み込むTreeSheetsファイルを選択してください :"
+
+msgid "Please select an image file:"
+msgstr "画像ファイルを選択してください :"
+
+msgid "Please select file(s) to import:"
+msgstr "インポートするファイルを選択してください :"
+
+msgid "Please select the datetime range."
+msgstr "日時範囲を選択してください。"
+
+msgid "Please select the language for the interface (requires restart)."
+msgstr "インターフェースの言語を選択してください（再起動が必要です）。"
+
+msgid ""
+"Please select the language for the interface (requires restart). Please "
+"select the empty row if you want to use the default language."
+msgstr ""
+"インターフェースの言語を選択してください（再起動が必要です）。デフォルト言語"
+"を使用する場合は、空の行を選択してください。"
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "リストから削除するスクリプトを選択してください："
+
+msgid "Press F11 to exit fullscreen mode."
+msgstr "全画面モードを終了するには F11 を押してください。"
+
+msgid "Previous tab"
+msgstr "前のタブ"
+
+msgid "Print Preview"
+msgstr "印刷プレビュー"
+
+msgid "Print preview..."
+msgstr "印刷プレビュー..."
+
+msgid "Quit this program"
+msgstr "このプログラムを終了"
+
+msgid "Radius &0"
+msgstr "半径 0(&0)"
+
+msgid "Radius &1"
+msgstr "半径 1(&1)"
+
+msgid "Radius &2"
+msgstr "半径 2(&2)"
+
+msgid "Radius &3"
+msgstr "半径 3(&3)"
+
+msgid "Radius &4"
+msgstr "半径 4(&4)"
+
+msgid "Radius &5"
+msgstr "半径 5(&5)"
+
+msgid "Radius &6"
+msgstr "半径 6(&6)"
+
+msgid ""
+"Reload when another computer has changed a file (if you have made changes, "
+"asks)"
+msgstr ""
+"別のコンピュータがファイルを変更したときに再読み込みする（変更がある場合は確"
+"認します）"
+
+msgid "Remo&ve"
+msgstr "削除(&V)"
+
+msgid "Remove image(s) from the selected cells"
+msgstr "選択したセルから画像を削除"
+
+msgid "Remove script from list in the menu"
+msgstr "メニューのリストからスクリプトを削除"
+
+msgid "Remove script from list..."
+msgstr "リストからスクリプトを削除..."
+
+msgid "Remove..."
+msgstr "削除..."
+
+msgid "Render document centered"
+msgstr "ドキュメントを中央揃えでレンダリング"
+
+msgid "Replace "
+msgstr "置換 "
+
+msgid "Replace &All"
+msgstr "すべて置換(&A)"
+
+msgid "Replace All"
+msgstr "すべて置換"
+
+msgid "Replace in Current &Selection"
+msgstr "現在の選択範囲内を置換(&S)"
+
+msgid "Replace in Current Selection && &Jump Next"
+msgstr "現在の選択範囲内を置換して次へジャンプ(&J)"
+
+msgid "Replace in selection"
+msgstr "選択範囲内を置換"
+
+msgid "Reset &colors"
+msgstr "色をリセット(&C)"
+
+msgid "Reset column widths"
+msgstr "列幅をリセット"
+
+msgid "Reset the column widths in the selection to the default column width"
+msgstr "選択範囲内の列幅をデフォルトの列幅にリセット"
+
+msgid "Reset the toolbar appearance"
+msgstr "ツールバーの外観をリセット"
+
+msgid "Reset toolbar"
+msgstr "ツールバーをリセット"
+
+msgid "Run"
+msgstr "実行"
+
+msgid "S&cript"
+msgstr "スクリプト(&C)"
+
+msgid "Save &As..."
+msgstr "名前を付けて保存(&A)..."
+
+msgid "Save (CTRL+s)"
+msgstr "保存 (Ctrl+S)"
+
+msgid "Save All"
+msgstr "すべて保存"
+
+msgid "Save and Close"
+msgstr "保存して閉じる"
+
+msgid "Save as..."
+msgstr "名前を付けて保存..."
+
+msgid "Save cancelled."
+msgstr "保存がキャンセルされました。"
+
+msgid "Save current document"
+msgstr "現在のドキュメントを保存"
+
+msgid "Save current document with a different filename"
+msgstr "現在のドキュメントを別のファイル名で保存"
+
+msgid ""
+"Save image(s) from selected cell(s) to disk. Multiple images will be saved "
+"with a counter appended to each file name."
+msgstr ""
+"選択したセルから画像をディスクに保存します。複数の画像は、各ファイル名に連番"
+"が追加されて保存されます。"
+
+msgid "Save open documents periodically to temporary files"
+msgstr "開いているドキュメントを定期的に一時ファイルに保存"
+
+#, c-format
+msgid "Saved %s successfully (in %lld milliseconds)."
+msgstr "%s を正常に保存しました（%lld ミリ秒）。"
+
+msgid "Scale (&display only)"
+msgstr "スケール（表示のみ）(&D)"
+
+msgid "Scale (re-sa&mple pixels, by %)"
+msgstr "スケール（ピクセル再サンプリング、%）(&M)"
+
+msgid "Scale (re-sample pixels, by &width)"
+msgstr "スケール（ピクセル再サンプリング、幅指定）(&W)"
+
+msgid "Scroll Down (mousewheel)"
+msgstr "下にスクロール（マウスホイール）"
+
+msgid "Scroll Left"
+msgstr "左にスクロール"
+
+msgid "Scroll Right"
+msgstr "右にスクロール"
+
+msgid "Scroll Sheet"
+msgstr "シートをスクロール"
+
+msgid "Scroll Up (mousewheel)"
+msgstr "上にスクロール（マウスホイール）"
+
+msgid "Search "
+msgstr "検索 "
+
+msgid "Select &Parent"
+msgstr "親を選択(&P)"
+
+msgid "Select &all in current grid/cell"
+msgstr "現在のグリッド/セル内をすべて選択(&A)"
+
+msgid "Select First &Child"
+msgstr "最初の子を選択(&C)"
+
+msgid "Selected grid is not a table: cells must not already have sub-grids."
+msgstr ""
+"選択されたグリッドはテーブルではありません。セルにサブグリッドが既に存在して"
+"いてはいけません。"
+
+msgid "Semi-Colon delimited text (CSV)..."
+msgstr "セミコロン区切りテキスト (CSV)..."
+
+msgid "Set Grid Border Width"
+msgstr "グリッド境界の幅を設定"
+
+msgid "Set Print Scale"
+msgstr "印刷スケールを設定"
+
+msgid "Set Print Scale..."
+msgstr "印刷スケールを設定..."
+
+msgid "Set a custom color for the color dropdowns"
+msgstr "カラードロップダウン用のカスタムカラーを設定"
+
+msgid ""
+"Set a custom color for the color dropdowns from the selected cell background"
+msgstr "選択したセルの背景からカラードロップダウン用のカスタムカラーを設定"
+
+msgid "Set the color for the document background"
+msgstr "ドキュメントの背景色を設定"
+
+msgid "Set the color for the text cursor"
+msgstr "テキストカーソルの色を設定"
+
+msgid "Set the default column width for a new grid"
+msgstr "新しいグリッドのデフォルト列幅を設定"
+
+msgid "Set the font the document text is displayed with"
+msgstr "ドキュメントテキストの表示フォントを設定"
+
+msgid "Set the font the typewriter text is displayed with."
+msgstr "タイプライターテキストの表示フォントを設定。"
+
+#, no-c-format
+msgid "Show 1% less than the last filter"
+msgstr "前回のフィルターより 1% 少なく表示"
+
+#, no-c-format
+msgid "Show 1% more than the last filter"
+msgstr "前回のフィルターより 1% 多く表示"
+
+#, no-c-format
+msgid "Show 10% of last edits"
+msgstr "前回の編集の 10% を表示"
+
+#, no-c-format
+msgid "Show 20% of last edits"
+msgstr "前回の編集の 20% を表示"
+
+#, no-c-format
+msgid "Show 5% of last edits"
+msgstr "前回の編集の 5% を表示"
+
+#, no-c-format
+msgid "Show 50% of last edits"
+msgstr "前回の編集の 50% を表示"
+
+msgid "Show About dialog"
+msgstr "About ダイアログを表示"
+
+msgid "Show cells with notes"
+msgstr "ノートがあるセルを表示"
+
+msgid "Show cells with the same cell color"
+msgstr "同じセル色のセルを表示"
+
+msgid "Show cells with the same style"
+msgstr "同じスタイルのセルを表示"
+
+msgid "Show last edits in specific date range"
+msgstr "特定の日付範囲の最終編集を表示"
+
+msgid "Show only cells in current search"
+msgstr "現在の検索に一致するセルのみ表示"
+
+msgid "Single click maximize from tray"
+msgstr "トレイからシングルクリックで最大化"
+
+#, c-format
+msgid "Size %d"
+msgstr "サイズ %d"
+
+msgid "Sort &Ascending"
+msgstr "昇順ソート(&A)"
+
+msgid "Sort &Descending"
+msgstr "降順ソート(&D)"
+
+msgid "Start date and time"
+msgstr "開始日時"
+
+msgid "Start minimized"
+msgstr "最小化して起動"
+
+msgid "Start of line of text"
+msgstr "テキストの行頭"
+
+msgid "Start of text"
+msgstr "テキストの先頭"
+
+msgid "Start the application minimized"
+msgstr "アプリケーションを最小化して起動"
+
+msgid "Statusbar"
+msgstr "ステータスバー"
+
+msgid "Swap all cells with this text at this level (or above) with the parent"
+msgstr ""
+"このレベル（またはそれ以上）でこのテキストを持つすべてのセルを親と入れ替える"
+
+msgid "Swap mousewheel scrolling and zooming"
+msgstr "マウスホイールのスクロールとズームを入れ替える"
+
+msgid "System Default"
+msgstr "システムデフォルト"
+
+msgid "Tab delimited text..."
+msgstr "タブ区切りテキスト..."
+
+msgid "Tag"
+msgstr "タグ"
+
+msgid ""
+"Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
+"grid, useful for export to spreadsheets"
+msgstr ""
+"階層（ネストされた 1xN または Nx1 グリッド）を平坦な NxN グリッドに変換しま"
+"す。スプレッドシートへのエクスポートに便利です"
+
+msgid "Text "
+msgstr "テキスト "
+
+msgid "Text &Editing"
+msgstr "テキスト編集(&E)"
+
+msgid "Text Sizing"
+msgstr "テキストサイズ"
+
+msgid "Text Style"
+msgstr "テキストスタイル"
+
+msgid "Text has been replaced."
+msgstr "テキストは置換されました。"
+
+msgid "Text size decreased."
+msgstr "テキストサイズを縮小しました。"
+
+msgid "Text size increased."
+msgstr "テキストサイズを拡大しました。"
+
+msgid "The Free Form Hierarchical Information Organizer"
+msgstr "フリーフォーム階層型情報オーガナイザー"
+
+msgid "The browser could not open at least one link."
+msgstr "ブラウザが少なくとも1つのリンクを開けませんでした。"
+
+msgid "There are no images in the selection."
+msgstr "選択範囲内に画像がありません。"
+
+msgid "There is no content to collapse."
+msgstr "折りたたむ内容がありません。"
+
+msgid "This operation doesn't work on thin selections."
+msgstr "この操作は薄い選択範囲では機能しません。"
+
+msgid "This operation requires a cell that contains a grid."
+msgstr "この操作にはグリッドを含むセルが必要です。"
+
+msgid "This operation requires a selection."
+msgstr "この操作には選択範囲が必要です。"
+
+msgid "This operation works on a single selected cell only."
+msgstr "この操作は単一の選択セルのみで機能します。"
+
+msgid "Toggle &Fullscreen View"
+msgstr "全画面表示を切り替え(&F)"
+
+msgid "Toggle &Scaled Presentation View"
+msgstr "スケール表示プレゼンテーションビューを切り替え(&S)"
+
+msgid "Toggle Fold"
+msgstr "折りたたみを切り替え"
+
+msgid "Toggle Vertical Layout"
+msgstr "垂直レイアウトを切り替え"
+
+msgid "Toggle cell &BOLD"
+msgstr "セルの太字を切り替え(&B)"
+
+msgid "Toggle cell &ITALIC"
+msgstr "セルの斜体を切り替え(&I)"
+
+msgid "Toggle cell &strikethrough"
+msgstr "セルの取り消し線を切り替え(&S)"
+
+msgid "Toggle cell &typewriter"
+msgstr "セルのタイプライターを切り替え(&T)"
+
+msgid "Toggle cell &underlined"
+msgstr "セルの下線を切り替え(&U)"
+
+msgid "Toggle whether documents are rendered centered or left aligned"
+msgstr "ドキュメントを中央揃えで表示するか左揃えで表示するかを切り替え"
+
+msgid "Toggle whether file tabs are shown on top or on bottom of the documents"
+msgstr "ファイルタブをドキュメントの上部に表示するか下部に表示するかを切り替え"
+
+msgid "Toggle whether lines are drawn solid (faster rendering) or dashed"
+msgstr "線を実線（高速レンダリング）で描画するか破線で描画するかを切り替え"
+
+msgid "Toggle whether only one click is required to maximize from system tray"
+msgstr "システムトレイから最大化するのに1クリックだけでよいかどうかを切り替え"
+
+msgid "Toggle whether statusbar is shown below the documents"
+msgstr "ステータスバーをドキュメントの下に表示するかどうかを切り替え"
+
+msgid ""
+"Toggle whether the cursor keys are used for navigation in addition to text "
+"editing"
+msgstr ""
+"テキスト編集に加えてカーソルキーをナビゲーションに使用するかどうかを切り替え"
+
+msgid "Toggle whether the window is minimized instead of closed"
+msgstr "ウィンドウを閉じる代わりに最小化するかどうかを切り替え"
+
+msgid "Toggle whether toolbar is shown between menu bar and documents"
+msgstr "ツールバーをメニューバーとドキュメントの間に表示するかどうかを切り替え"
+
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "選択したセルのグリッドの表示を切り替え"
+
+msgid "Toogle whether window is minimized to system tray"
+msgstr "ウィンドウをシステムトレイに最小化するかどうかを切り替え"
+
+msgid "Toolbar"
+msgstr "ツールバー"
+
+msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
+msgstr "TreeSheets ファイル (*.cts)|*.cts|すべてのファイル (*.*)|*.*"
+
+msgid "Turn filter &off"
+msgstr "フィルターをオフにする(&O)"
+
+msgid "Tutorial &web page"
+msgstr "チュートリアルウェブページ(&W)"
+
+msgid "Tutorial web page could not be found."
+msgstr "チュートリアルのウェブページが見つかりませんでした。"
+
+msgid "Typewriter font..."
+msgstr "タイプライターフォント..."
+
+msgid "Undo (CTRL+z)"
+msgstr "元に戻す (Ctrl+Z)"
+
+msgid "Unfold All"
+msgstr "すべて展開"
+
+msgid "Unfolds the grid of the selected cell(s) recursively"
+msgstr "選択したセルのグリッドを再帰的に展開します"
+
+msgid "Uses"
+msgstr "使用"
+
+msgid "Variable &Assign"
+msgstr "変数代入(&A)"
+
+msgid "Variable &Read"
+msgstr "変数読み取り(&R)"
+
+msgid "Vertical Layout with Bubble Style Rendering"
+msgstr "バブルスタイルレンダリングの垂直レイアウト"
+
+msgid "Vertical Layout with Grid Style Rendering"
+msgstr "グリッドスタイルレンダリングの垂直レイアウト"
+
+msgid "Vertical Layout with Line Style Rendering"
+msgstr "ラインスタイルレンダリングの垂直レイアウト"
+
+msgid "What size grid would you like to start with?"
+msgstr "どのサイズのグリッドで開始しますか？"
+
+msgid "What subgrid size would you like to start with?"
+msgstr "どのサイズのサブグリッドで開始しますか？"
+
+msgid "Width"
+msgstr "幅"
+
+#, c-format
+msgid "Width %d"
+msgstr "幅 %d"
+
+msgid "Word Left"
+msgstr "左の単語"
+
+msgid "Word Right"
+msgstr "右の単語"
+
+msgid "XML (attributes too, for OPML etc)..."
+msgstr "XML（OPMLなどの属性も含む）..."
+
+msgid "XML..."
+msgstr "XML..."
+
+msgid "You need to select one cell if you want to search for its text."
+msgstr "テキストを検索する場合は、1つのセルを選択する必要があります。"
+
+msgid "Zlib error while writing file."
+msgstr "ファイル書き込み中に Zlib エラーが発生しました。"
+
+msgid "Zoom &In (CTRL+mousewheel)"
+msgstr "ズームイン(&I) (Ctrl+マウスホイール)"
+
+msgid "Zoom &Out (CTRL+mousewheel)"
+msgstr "ズームアウト(&O) (Ctrl+マウスホイール)"
+
+msgid "Zoom In (CTRL+mousewheel)"
+msgstr "ズームイン (Ctrl+マウスホイール)"
+
+msgid "Zoom Out (CTRL+mousewheel)"
+msgstr "ズームアウト (Ctrl+マウスホイール)"
+
+msgid "Zoomed in."
+msgstr "ズームインしました。"
+
+msgid "Zoomed out."
+msgstr "ズームアウトしました。"
+
+msgid "change will take effect next run of TreeSheets"
+msgstr "変更は次回の TreeSheets 起動時に有効になります"
+
+msgid "changes the orientation of a grid"
+msgstr "グリッドの向きを変更します"
+
+msgid "couldn't import file!"
+msgstr "ファイルをインポートできませんでした！"
+
+msgid "nothing to resize"
+msgstr "サイズ変更するものはありません"
+
+msgid "only sets the colors and style of the copied cell, and keeps the text"
+msgstr "コピーしたセルの色とスタイルのみを設定し、テキストは保持します"
+
+msgid "only works in cell text mode"
+msgstr "セルテキストモードでのみ機能します"
+
+msgid "redo any undo steps, if you haven't made changes since"
+msgstr "元に戻した操作をやり直します（その後変更を加えていない場合）"
+
+msgid "revert the changes, one step at a time"
+msgstr "変更を1ステップずつ元に戻します"
+
+msgid "scale:"
+msgstr "スケール :"
+
+msgid "size:"
+msgstr "サイズ :"
