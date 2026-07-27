@@ -44,7 +44,8 @@ jobs:
         -DwxBUILD_SHARED=OFF \
         -DwxBUILD_INSTALL=OFF \
         -DwxUSE_SYS_LIBS=OFF \
-        -DTREESHEETS_VERSION=${{ github.run_number }}
+        -DTREESHEETS_VERSION=${{ github.run_number }} \
+        -DENABLE_WXPDFDOC=ON
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Remove epoch from .deb filename
@@ -95,12 +96,13 @@ jobs:
       uses: microsoft/setup-msbuild@v3
     - name: cmake
       run: >
-        cmake -S . -B _build 
-        -G "Visual Studio 18 2026" 
-        -DCMAKE_BUILD_TYPE=Release 
-        -DwxBUILD_SHARED=OFF 
-        -DwxBUILD_INSTALL=OFF 
+        cmake -S . -B _build
+        -G "Visual Studio 18 2026"
+        -DCMAKE_BUILD_TYPE=Release
+        -DwxBUILD_SHARED=OFF
+        -DwxBUILD_INSTALL=OFF
         -DTREESHEETS_VERSION=${{ github.run_number }}
+        -DENABLE_WXPDFDOC=ON
         ${{ matrix.extra_flags }}
     - name: build and package
       run: cmake --build _build --config Release --target package -j
@@ -146,7 +148,7 @@ jobs:
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }} -DENABLE_WXPDFDOC=ON
     - name: Build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Create release
