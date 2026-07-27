@@ -778,30 +778,33 @@ struct Document {
     }
 
     #ifdef ENABLE_WXPDFDOC
-        bool DrawPDF(const wxString &filename) {
+        bool DrawPDF(const wxString &expfilename) {
             maxx = layoutxs;
             maxy = layoutys;
             scrollx = scrolly = 0;
 
             wxPrintData printData;
-            printData.SetOrientation(wxPORTRAIT);
-            printData.SetPaperId(wxPAPER_A4);
-            printData.SetFilename(filename);
-            {
-                wxPdfDC dc(printData);
-                dc.SetMapModeStyle(wxPDF_MAPMODESTYLE_PDF);
-                dc.SetMapMode(wxMM_POINTS);
-                bool ok = dc.StartDoc(_("Printing ..."));
-                if (ok)
-                {
-                  dc.StartPage();
-                  DrawView(dc);
-                  dc.EndPage();
-                  dc.EndDoc();
-                }
-                return ok;
+            printData.SetFilename(expfilename);
+
+            wxPdfDC dc(printData);
+            dc.SetMapModeStyle(wxPDF_MAPMODESTYLE_PDF);
+            dc.SetMapMode(wxMM_POINTS);
+
+            if (!dc.StartDoc(_("Printing ..."))) return false;
+
+            wxPdfDocument *pdf = dc.GetPdfDocument();
+            if (pdf == nullptr) {
+                dc.EndDoc();
+                return false;
             }
-            return false;
+
+            pdf->SetTitle(filename);
+            pdf->AddPage(wxPORTRAIT, maxx, maxy);
+
+            DrawView(dc);
+
+            dc.EndDoc();
+            return true;
         }
     #endif
 
