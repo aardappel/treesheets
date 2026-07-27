@@ -58,6 +58,12 @@
 #include <wx/uilocale.h>
 #include <wx/xml/xml.h>
 
+#ifdef ENABLE_WXPDFDOC
+    #include "wx/pdfdc.h"
+    #include "wx/pdffontmanager.h"
+    #include "wx/pdfprint.h"
+#endif
+
 #include <algorithm>
 #include <array>
 #include <clocale>

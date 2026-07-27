@@ -777,6 +777,34 @@ struct Document {
         return sdc.IsOk();
     }
 
+    #ifdef ENABLE_WXPDFDOC
+        bool DrawPDF(const wxString &filename) {
+            maxx = layoutxs;
+            maxy = layoutys;
+            scrollx = scrolly = 0;
+
+            wxPrintData printData;
+            printData.SetOrientation(wxPORTRAIT);
+            printData.SetPaperId(wxPAPER_A4);
+            printData.SetFilename(filename);
+            {
+                wxPdfDC dc(printData);
+                dc.SetMapModeStyle(wxPDF_MAPMODESTYLE_PDF);
+                dc.SetMapMode(wxMM_POINTS);
+                bool ok = dc.StartDoc(_("Printing ..."));
+                if (ok)
+                {
+                  dc.StartPage();
+                  DrawView(dc);
+                  dc.EndPage();
+                  dc.EndDoc();
+                }
+                return ok;
+            }
+            return false;
+        }
+    #endif
+
     void DrawView(wxDC &dc) {
         DrawRectangle(dc, Background(), 0, 0, maxx, maxy);
         Layout(dc);
@@ -804,7 +832,14 @@ struct Document {
         } else if (action == A_EXPSVG) {
             if (!DrawSVG(filename)) { return _("Error exporting to SVG file!"); }
             canvas->Refresh();
-        } else {
+        } 
+        #ifdef ENABLE_WXPDFDOC
+            else if (action == A_EXPPDF) {
+                if (!DrawPDF(filename)) { return _("Error exporting to PDF file!"); }
+                canvas->Refresh();
+            }
+        #endif
+        else {
             wxFFileOutputStream fos(filename, "w+b");
             if (!fos.IsOk()) {
                 wxMessageBox(_("Error exporting file!"), filename.wx_str(), wxOK, sys->frame);
@@ -1003,6 +1038,9 @@ struct Document {
             case A_EXPTEXT: return Export("txt", "*.txt", _("Choose Text file to write"), action);
             case A_EXPIMAGE: return Export("png", "*.png", _("Choose PNG file to write"), action);
             case A_EXPSVG: return Export("svg", "*.svg", _("Choose SVG file to write"), action);
+            #ifdef ENABLE_WXPDFDOC
+                case A_EXPPDF: return Export("pdf", "*.pdf", _("Choose PDF file to write"), action); 
+            #endif
             case A_EXPCSV: {
                 int maxdepth = 0;
                 int leaves = 0;

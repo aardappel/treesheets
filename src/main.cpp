@@ -51,6 +51,9 @@ enum {
     A_IMAGE,
     A_EXPIMAGE,
     A_EXPSVG,
+    #ifdef ENABLE_WXPDFDOC
+        A_EXPPDF,
+    #endif
     A_EXPXML,
     A_EXPHTMLT,
     A_EXPHTMLTI,

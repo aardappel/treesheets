@@ -137,6 +137,9 @@ struct TSFrame : wxFrame {
                  _("Export the current view as an image. Useful for faithful renderings of the TreeSheet, and programs that don't accept any of the above options"));
         MyAppend(expmenu, A_EXPSVG, _("&Vector graphics..."),
                 _("Export the current view to a SVG vector file."));
+        #ifdef ENABLE_WXPDFDOC
+            MyAppend(expmenu, A_EXPPDF, _("&PDF..."), _("Export the current view to a PDF file."));
+        #endif
 
         auto *impmenu = new wxMenu();
         MyAppend(impmenu, A_IMPXML, _("XML..."));
