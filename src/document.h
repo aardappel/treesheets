@@ -231,13 +231,13 @@ struct Document {
                                 end_saving_time - start_saving_time);
     }
 
-    void DrawSelect(wxDC &dc, Selection &s) {
+    template<typename DC> void DrawSelect(DC &dc, Selection &s) {
         if (s.grid == nullptr) { return; }
         ResetFont();
         s.grid->DrawSelect(this, dc, s);
     }
 
-    void UpdateHover(wxReadOnlyDC &dc, int mx, int my) {
+    template<typename DC> void UpdateHover(DC &dc, int mx, int my) {
         ResetFont();
         int x = 0;
         int y = 0;
@@ -523,7 +523,7 @@ struct Document {
         }
     }
 
-    void Layout(wxReadOnlyDC &dc) {
+    template<typename DC> void Layout(DC &dc) {
         ResetFont();
         dc.SetUserScale(1, 1);
         currentdrawroot = WalkPath(drawpath);
@@ -543,14 +543,14 @@ struct Document {
         layoutys = currentdrawroot->sy + hierarchysize + fgutter;
     }
 
-    void ShiftToCenter(wxReadOnlyDC &dc) const {
+    template<typename DC> void ShiftToCenter(DC &dc) const {
         int dlx = dc.DeviceToLogicalX(0);
         int dly = dc.DeviceToLogicalY(0);
         dc.SetDeviceOrigin(dlx > 0 ? -dlx : centerx, dly > 0 ? -dly : centery);
         dc.SetUserScale(currentviewscale, currentviewscale);
     }
 
-    void Render(wxDC &dc) {
+    template<typename DC> void Render(DC &dc) {
         ResetFont();
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
@@ -633,7 +633,7 @@ struct Document {
         #endif
     }
 
-    void Draw(wxDC &dc) {
+    template<typename DC> void Draw(DC &dc) {
         if (!root) { return; }
         if (layoutxs <= 0 || layoutys <= 0) { return; }
         int clientx = 0;
@@ -690,7 +690,7 @@ struct Document {
 
     static bool FontIsMini(int textsize) { return textsize == g_mintextsize(); }
 
-    bool PickFont(wxReadOnlyDC &dc, int depth, int relsize, int stylebits) {
+    template<typename DC> bool PickFont(DC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
             wxFont font(
@@ -808,11 +808,11 @@ struct Document {
         }
     #endif
 
-    void DrawView(wxDC &dc) {
-        DrawRectangle(dc, Background(), 0, 0, maxx, maxy);
-        Layout(dc);
-        Render(dc);
-    }
+        template<typename DC> void DrawView(DC &dc) {
+            DrawRectangle(dc, Background(), 0, 0, maxx, maxy);
+            Layout(dc);
+            Render(dc);
+        }
 
     wxBitmap GetSubBitmap(const Selection &sel) {
         wxRect r = sel.grid->GetRect(this, sel, true);

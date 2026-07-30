@@ -618,17 +618,15 @@ struct System {
     }
 
     static void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) {
-        #if defined(ENABLE_WXPDFDOC) && !defined(__WXMSW__)
-            if (auto *pdfdc = dynamic_cast<wxPdfDC*>(&dc)) {
-                // wxPdfDC cannot handle scaled bitmaps, so we do it on our own
-                wxBitmap pdfbm;
-                ScaleBitmap(*bm, 1 / bm->GetScaleFactor(), pdfbm);
-                dc.DrawBitmap(pdfbm, x, y);
-            } else {
-                dc.DrawBitmap(*bm, x, y);
-            }
-        #else
-            dc.DrawBitmap(*bm, x, y);
-        #endif
+        dc.DrawBitmap(*bm, x, y);
     }
+
+    #if defined(ENABLE_WXPDFDOC) && !defined(__WXMSW__)
+        static void ImageDraw(wxBitmap *bm, wxPdfDC &dc, int x, int y) {
+            // wxPdfDC cannot handle scaled bitmaps, so we do it on our own
+            wxBitmap pdfbm;
+            ScaleBitmap(*bm, 1 / bm->GetScaleFactor(), pdfbm);
+            dc.DrawBitmap(pdfbm, x, y);
+        }
+    #endif
 };

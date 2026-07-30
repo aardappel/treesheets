@@ -115,7 +115,8 @@ struct Grid {
         if (ys > xs) { horiz = false; }
     }
 
-    bool Layout(Document *doc, wxReadOnlyDC &dc, int depth, int &sx, int &sy, int startx, int starty,
+    template<typename DC>
+    bool Layout(Document *doc, DC &dc, int depth, int &sx, int &sy, int startx, int starty,
                 bool forcetiny) {
         vector<int> xa(xs, 0);
         vector<int> ya(ys, 0);
@@ -161,7 +162,8 @@ struct Grid {
         return tinyborder;
     }
 
-    void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int sx, int sy, int xoff,
+    template<typename DC>
+    void Render(Document *doc, int bx, int by, DC &dc, int depth, int sx, int sy, int xoff,
                 int yoff) {
         xoff = C(0, 0)->ox - view_margin - view_grid_outer_spacing - 1;
         yoff = C(0, 0)->oy - view_margin - view_grid_outer_spacing - 1;
@@ -281,7 +283,7 @@ struct Grid {
         }
     }
 
-    void FindXY(Document *doc, int px, int py, wxReadOnlyDC &dc) {
+    template<typename DC> void FindXY(Document *doc, int px, int py, DC &dc) {
         foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;
@@ -361,13 +363,14 @@ struct Grid {
         if (includefolded || !folded) { foreachcell(c) c->ImageRefCount(includefolded); }
     }
 
-    void DrawCursor(Document *doc, wxDC &dc, Selection &sel, bool full, uint color) {
+    template<typename DC>
+    void DrawCursor(Document *doc, DC &dc, Selection &sel, bool full, uint color) {
         if (auto *c = sel.GetCell(); c != nullptr && !c->tiny && (c->HasText() || !c->grid)) {
             c->text.DrawCursor(doc, dc, sel, full, color, colwidths[sel.x]);
         }
     }
 
-    void DrawInsert(Document *doc, wxDC &dc, Selection &sel, uint colour) {
+    template<typename DC> void DrawInsert(Document *doc, DC &dc, Selection &sel, uint colour) {
         dc.SetPen(sys->pen_thinselect);
         if (sel.xs == 0) {
             auto *c = C(sel.x - static_cast<int>(sel.x == xs), sel.y).get();
@@ -420,7 +423,7 @@ struct Grid {
         }
     }
 
-    void DrawSelect(Document *doc, wxDC &dc, Selection &sel) {
+    template<typename DC> void DrawSelect(Document *doc, DC &dc, Selection &sel) {
         if (sel.Thin()) {
             DrawInsert(doc, dc, sel, 0);
         } else {
