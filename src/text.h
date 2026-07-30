@@ -156,8 +156,8 @@ struct Text {
         // return GetLinePart(i, l, l);     // big word was the last one
     }
 
-    void TextSize(wxReadOnlyDC &dc, int &sx, int &sy, int tiny, int &leftoffset,
-                  int maxcolwidth) const {
+    template<typename DC>
+    void TextSize(DC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth) const {
         sx = sy = 0;
         auto i = 0;
         for (;;) {
@@ -184,7 +184,8 @@ struct Text {
                                          : t.Lower().Find(sys->searchstring)) >= 0;
     }
 
-    int Render(Document *doc, int bx, int by, int depth, wxDC &dc, int &leftoffset,
+    template<typename DC>
+    int Render(Document *doc, int bx, int by, int depth, DC &dc, int &leftoffset,
                int maxcolwidth) const {
         auto ixs = 0;
         auto iys = 0;
@@ -299,7 +300,8 @@ struct Text {
         ASSERT(s.cursor >= 0 && s.cursor <= static_cast<int>(t.Len()));
     }
 
-    void DrawCursor(Document *doc, wxDC &dc, Selection &s, bool full, uint color,
+    template<typename DC>
+    void DrawCursor(Document *doc, DC &dc, Selection &s, bool full, uint color,
                     int maxcolwidth) const {
         auto ixs = 0;
         auto iys = 0;

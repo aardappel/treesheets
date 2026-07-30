@@ -85,7 +85,8 @@ struct Cell {
         return sizeof(Cell) + text.EstimatedMemoryUse() + (grid ? grid->EstimatedMemoryUse() : 0);
     }
 
-    void Layout(Document *doc, wxReadOnlyDC &dc, int depth, int maxcolwidth, bool forcetiny) {
+    template<typename DC>
+    void Layout(Document *doc, DC &dc, int depth, int maxcolwidth, bool forcetiny) {
         tiny = text.filtered && !grid || forcetiny ||
                doc->PickFont(dc, depth, text.relsize, text.stylebits);
         int ixs = 0;
@@ -132,8 +133,9 @@ struct Cell {
         }
     }
 
-    void Render(Document *doc, int bx, int by, wxDC &dc, int depth, int ml, int mr, int mt, int mb,
-                int maxcolwidth, int cell_margin) {
+    template<typename DCType>
+    void Render(Document *doc, int bx, int by, DCType &dc, int depth, int ml, int mr, int mt,
+                int mb, int maxcolwidth, int cell_margin) {
         // Choose color from celltype (program operations)
         switch (celltype) {
             case CT_VARD: actualcellcolor = 0xFF8080; break;
@@ -355,7 +357,8 @@ struct Cell {
         }
     }
 
-    void LazyLayout(Document *doc, wxReadOnlyDC &dc, int depth, int maxcolwidth, bool forcetiny) {
+    template<typename DC>
+    void LazyLayout(Document *doc, DC &dc, int depth, int maxcolwidth, bool forcetiny) {
         if (sx == 0) {
             Layout(doc, dc, depth, maxcolwidth, forcetiny);
             minx = sx;

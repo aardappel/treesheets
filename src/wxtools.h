@@ -1,5 +1,5 @@
-static void DrawRectangle(wxDC &dc, uint color, int x, int y, int xs, int ys,
-                          bool outline = false) {
+template<typename DC>
+static void DrawRectangle(DC &dc, uint color, int x, int y, int xs, int ys, bool outline = false) {
     if (outline) {
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     } else {
