@@ -1334,7 +1334,8 @@ struct TSFrame : wxFrame {
                     }
                 }
                 if (canvas->doc) {
-                    canvas->doc->Action(issearch ? A_SEARCHNEXT : A_REPLACEONCEJ);
+                    canvas->doc->Action(issearch ? ke.ShiftDown() ? A_SEARCHPREV : A_SEARCHNEXT
+                                                 : A_REPLACEONCEJ);
                     return;
                 }
             }
