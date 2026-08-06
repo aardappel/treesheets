@@ -787,8 +787,6 @@ struct Document {
             printData.SetFilename(expfilename);
 
             wxPdfDC dc(printData);
-            dc.SetMapModeStyle(wxPDF_MAPMODESTYLE_PDF);
-            dc.SetMapMode(wxMM_POINTS);
 
             if (!dc.StartDoc(_("Printing ..."))) return false;
 
