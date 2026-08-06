@@ -810,7 +810,6 @@ struct Document {
 
         template<typename DC> void DrawView(DC &dc) {
             DrawRectangle(dc, Background(), 0, 0, maxx, maxy);
-            Layout(dc);
             Render(dc);
         }
 
