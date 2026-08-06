@@ -52,17 +52,13 @@ struct Text {
         t = s;
     }
 
-    static wxString htmlify(wxString &str) {
-        wxString r;
-        for (auto cref : str) {
-            switch (wxChar c = cref.GetValue()) {
-                case '&': r += "&amp;"; break;
-                case '<': r += "&lt;"; break;
-                case '>': r += "&gt;"; break;
-                default: r += c;
-            }
-        }
-        return r;
+    static wxString htmlify(wxString str) {
+        str.Replace("&", "&amp;");
+        str.Replace("<", "&lt;");
+        str.Replace(">", "&gt;");
+        str.Replace("\"", "&quot;");
+        str.Replace("  ", " &nbsp;");
+        return str;
     }
 
     wxString ToText(int indent, const Selection &s, int format) const {
