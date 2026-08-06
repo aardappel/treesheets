@@ -1587,9 +1587,7 @@ struct TSFrame : wxFrame {
     }
 
     void RenderFolderIcon() {
-        wxImage foldiconi;
-        foldiconi.LoadFile(app->GetDataPath("images/nuvola/fold.png"));
-        foldicon = wxBitmap(foldiconi);
+        foldicon.LoadFile(app->GetDataPath("images/nuvola/fold.png"), wxBITMAP_TYPE_PNG);
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
     }
 
