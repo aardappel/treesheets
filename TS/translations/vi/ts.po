@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 09:32+0200\n"
-"PO-Revision-Date: 2026-06-02 19:18+0700\n"
+"POT-Creation-Date: 2026-07-22 06:54+0200\n"
+"PO-Revision-Date: 2026-04-16 10:45+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
@@ -251,6 +251,9 @@ msgstr "Thêm một lưới NxN vào ô được chọn"
 msgid "Adds a grid to the selected cell"
 msgstr "Thêm lưới vào ô được chọn"
 
+msgid "Also colorize the inner grid border"
+msgstr "Đồng thời tô màu đường viền lưới bên trong"
+
 msgid "Apply last border color"
 msgstr "Áp dụng màu viền gần nhất"
 
@@ -421,6 +424,8 @@ msgstr "Đóng tài liệu hiện tại"
 
 msgid "Collapse Ce&lls"
 msgstr "Thu gọn các ô (&L)"
+msgid "Colorize inner grid border"
+msgstr "Tô màu đường viền lưới bên trong (&R)"
 
 msgid "Column width decreased."
 msgstr "Đã giảm chiều rộng cột."
@@ -501,6 +506,12 @@ msgstr "Chiều rộng cột mặc định"
 msgid "Default column width..."
 msgstr "Chiều rộng cột mặc định..."
 
+msgid "Default format when image is pasted from clipboard or dropped"
+msgstr "Định dạng mặc định khi hình ảnh được dán từ clipboard hoặc thả vào"
+
+msgid "Default image format"
+msgstr "Định dạng hình ảnh mặc định"
+
 msgid "Delete Before"
 msgstr "Xóa phần trước"
 
@@ -561,6 +572,9 @@ msgstr "Cuối dòng văn bản"
 
 msgid "End of text"
 msgstr "Cuối văn bản"
+
+msgid "English"
+msgstr ""
 
 msgid "Enter/exit text edit mode"
 msgstr "Vào/thoát chế độ chỉnh sửa văn bản"
@@ -895,6 +909,9 @@ msgid ""
 "you like to do?"
 msgstr "Có vẻ như bạn sắp dán hoặc thả một tệp TreeSheets. Bạn muốn làm gì?"
 
+msgid "JPEG"
+msgstr "JPEG"
+
 msgid "JPEG file is corrupted!"
 msgstr "Tệp JPEG bị hỏng!"
 
@@ -1122,6 +1139,9 @@ msgstr "Mở văn bản từ ô được chọn bằng ứng dụng mặc địn
 msgid "Operation reference"
 msgstr "Tham chiếu thao tác"
 
+msgid "PNG"
+msgstr "PNG"
+
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
@@ -1190,12 +1210,8 @@ msgstr "Vui lòng chọn (các) tệp để nhập:"
 msgid "Please select the datetime range."
 msgstr "Vui lòng chọn khoảng ngày giờ."
 
-msgid ""
-"Please select the language for the interface (requires restart). Please "
-"select the empty row if you want to use the default language."
-msgstr ""
-"Vui lòng chọn ngôn ngữ giao diện (yêu cầu khởi động lại). Chọn dòng trống "
-"nếu bạn muốn dùng ngôn ngữ mặc định."
+msgid "Please select the language for the interface (requires restart)."
+msgstr "Vui lòng chọn ngôn ngữ giao diện (yêu cầu khởi động lại)."
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Vui lòng chọn kịch bản bạn muốn xóa khỏi danh sách:"
@@ -1441,6 +1457,14 @@ msgstr "Hiển thị hộp thoại thông tin"
 msgid "Show cells with notes"
 msgstr "Hiển thị các ô có ghi chú"
 
+#, fuzzy
+msgid "Show cells with the same cell color"
+msgstr "Lọc theo cùng màu ô"
+
+#, fuzzy
+msgid "Show cells with the same style"
+msgstr "Hiển thị các ô có ghi chú"
+
 msgid "Show last edits in specific date range"
 msgstr "Hiển thị các chỉnh sửa cuối trong khoảng ngày cụ thể"
 
@@ -1484,6 +1508,9 @@ msgstr ""
 
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "Hoán đổi chức năng cuộn và thu phóng của nút cuộn chuột"
+
+msgid "System Default"
+msgstr "Mặc định hệ thống"
 
 msgid "Tab delimited text..."
 msgstr "Văn bản phân tách bằng tab..."
