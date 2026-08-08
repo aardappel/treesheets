@@ -420,27 +420,24 @@ struct Document {
             default: {
                 sys->cellclipboard =
                     c != nullptr ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
+                auto *clipboarddata = new wxDataObjectComposite();
+                auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
+                                                      currentdrawroot);
+                clipboarddata->Add(new wxTextDataObject(s));
+                if (!selected.TextEdit()) {
+                    auto *htmlobj = CopyEntireCells(s, action);
+                    clipboarddata->Add(htmlobj);
+                }
                 if (c != nullptr && !c->text.t && c->text.image != nullptr) {
                     auto *image = c->text.image;
-                    if (!image->data.empty() && wxTheClipboard->Open()) {
-                        auto &it = imagetypes.at(image->type).first;
-                        auto bitmap = ConvertBufferToWxBitmap(image->data, it);
-                        wxTheClipboard->SetData(new wxBitmapDataObject(bitmap));
-                        wxTheClipboard->Close();
-                    }
-                } else {
-                    auto *clipboarddata = new wxDataObjectComposite();
-                    auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
-                                                          currentdrawroot);
-                    clipboarddata->Add(new wxTextDataObject(s));
-                    if (!selected.TextEdit()) {
-                        auto *htmlobj = CopyEntireCells(s, action);
-                        clipboarddata->Add(htmlobj);
-                    }
-                    if (wxTheClipboard->Open()) {
-                        wxTheClipboard->SetData(clipboarddata);
-                        wxTheClipboard->Close();
-                    }
+                    auto &it = imagetypes.at(image->type).first;
+                    auto bitmap = ConvertBufferToWxBitmap(image->data, it);
+                    auto *bmpobj = new wxBitmapDataObject(bitmap);
+                    clipboarddata->Add(bmpobj);
+                }
+                if (wxTheClipboard->Open()) {
+                    wxTheClipboard->SetData(clipboarddata);
+                    wxTheClipboard->Close();
                 }
                 break;
             }
@@ -1714,31 +1711,17 @@ struct Document {
             case wxID_PASTE: {
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
-                #ifdef __WXMAC__
-                    auto [img, scale] = GetImageFromMacClipboard();
-                    if (img.IsOk()) {
-                        PasteOrDrop(img, scale);
-                        UpdateLayout();
-                        ScrollIfSelectionOutOfView();
-                        canvas->Refresh();
-                        return wxEmptyString;
-                    }
-                #endif
-
                 if (wxTheClipboard->Open()) {
-                    if (wxTheClipboard->IsSupported(wxDF_BITMAP)) {
-                        wxBitmapDataObject bdo;
-                        wxTheClipboard->GetData(bdo);
-                        PasteOrDrop(bdo);
-                    } else if (wxTheClipboard->IsSupported(wxDF_FILENAME)) {
-                        wxFileDataObject fdo;
-                        wxTheClipboard->GetData(fdo);
-                        PasteOrDrop(fdo);
-                    } else if (wxTheClipboard->IsSupported(wxDF_TEXT) ||
-                               wxTheClipboard->IsSupported(wxDF_UNICODETEXT)) {
-                        wxTextDataObject tdo;
-                        wxTheClipboard->GetData(tdo);
+                    if (wxTextDataObject tdo; wxTheClipboard->GetData(tdo)) {
                         PasteOrDrop(tdo);
+                    } else if (wxFileDataObject fdo; wxTheClipboard->GetData(fdo)) {
+                        PasteOrDrop(fdo);
+                    #ifdef __WXMAC__
+                        } else if (auto [img, scale] = GetImageFromMacClipboard(); img.IsOk()) {
+                            PasteOrDrop(img, scale);
+                    #endif
+                    } else if (wxBitmapDataObject bdo; wxTheClipboard->GetData(bdo)) {
+                        PasteOrDrop(bdo);
                     }
                     wxTheClipboard->Close();
                     UpdateLayout();

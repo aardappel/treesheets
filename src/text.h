@@ -63,6 +63,7 @@ struct Text {
 
     wxString ToText(int indent, const Selection &s, int format) const {
         wxString str = s.cursor != s.cursorend ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
+        if (format == A_EXPTEXT && image != nullptr) str.Append(" ");
         if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
             format == A_EXPHTMLTE || format == A_EXPHTMLO || format == A_EXPHTMLB) {
             str = htmlify(str);
