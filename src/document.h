@@ -1712,15 +1712,18 @@ struct Document {
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
                 if (wxTheClipboard->Open()) {
-                    if (wxTextDataObject tdo; wxTheClipboard->GetData(tdo)) {
+                    if (wxTextDataObject tdo;
+                        wxTheClipboard->GetData(tdo) && tdo.GetText().Len() > 0) {
                         PasteOrDrop(tdo);
-                    } else if (wxFileDataObject fdo; wxTheClipboard->GetData(fdo)) {
+                    } else if (wxFileDataObject fdo;
+                               wxTheClipboard->GetData(fdo) && fdo.GetFilenames().GetCount() > 0) {
                         PasteOrDrop(fdo);
                     #ifdef __WXMAC__
                         } else if (auto [img, scale] = GetImageFromMacClipboard(); img.IsOk()) {
                             PasteOrDrop(img, scale);
                     #endif
-                    } else if (wxBitmapDataObject bdo; wxTheClipboard->GetData(bdo)) {
+                    } else if (wxBitmapDataObject bdo;
+                               wxTheClipboard->GetData(bdo) && bdo.GetBitmap().IsOk()) {
                         PasteOrDrop(bdo);
                     }
                     wxTheClipboard->Close();
