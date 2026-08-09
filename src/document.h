@@ -608,8 +608,7 @@ struct Document {
 
         double xscale = clientx / static_cast<double>(layoutxs);
         double yscale = clienty / static_cast<double>(layoutys);
-        currentviewscale = std::min(xscale, yscale);
-        currentviewscale = std::max(1.0, std::min(currentviewscale, 5.0));
+        currentviewscale = std::clamp(1.0, std::min(xscale, yscale), 5.0);
 
         if (scaledviewingmode && currentviewscale > 1) {
             canvas->SetVirtualSize(clientx, clienty);
