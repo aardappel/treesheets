@@ -253,26 +253,25 @@ struct Document {
     }
 
     void ScrollIfSelectionOutOfView() {
-        if (!scaledviewingmode) {
-            // required, since sizes of things may have been reset by the last editing operation
-            int cw = 0;
-            int ch = 0;
-            canvas->GetClientSize(&cw, &ch);
-            int sx = 0;
-            int sy = 0;
-            canvas->GetViewStart(&sx, &sy);
-            int mx = cw + sx;
-            int my = ch + sy;
-            if ((layoutys > ch || layoutxs > cw) && selected.grid != nullptr) {
-                wxRect r = selected.grid->GetRect(this, selected);
-                if (r.y < sy || r.y + r.height > my || r.x < sx || r.x + r.width > mx) {
-                    canvas->Scroll(r.width > cw || r.x < sx ? r.x
-                                   : r.x + r.width > mx     ? r.x + r.width - cw
-                                                            : sx,
-                                   r.height > ch || r.y < sy ? r.y
-                                   : r.y + r.height > my     ? r.y + r.height - ch
-                                                             : sy);
-                }
+        // required, since sizes of things may have been reset by the last editing operation
+        int cw = 0;
+        int ch = 0;
+        canvas->GetClientSize(&cw, &ch);
+        int sx = 0;
+        int sy = 0;
+        canvas->GetViewStart(&sx, &sy);
+        int mx = cw + sx;
+        int my = ch + sy;
+        if ((layoutys * currentviewscale > ch || layoutxs * currentviewscale > cw) &&
+            selected.grid != nullptr) {
+            wxRect r = selected.grid->GetRect(this, selected);
+            if (r.y < sy || r.y + r.height > my || r.x < sx || r.x + r.width > mx) {
+                canvas->Scroll(r.width > cw || r.x < sx ? r.x
+                               : r.x + r.width > mx     ? r.x + r.width - cw
+                                                        : sx,
+                               r.height > ch || r.y < sy ? r.y
+                               : r.y + r.height > my     ? r.y + r.height - ch
+                                                         : sy);
             }
         }
     }
@@ -544,7 +543,6 @@ struct Document {
         int dlx = dc.DeviceToLogicalX(0);
         int dly = dc.DeviceToLogicalY(0);
         dc.SetDeviceOrigin(dlx > 0 ? -dlx : centerx, dly > 0 ? -dly : centery);
-        dc.SetUserScale(currentviewscale, currentviewscale);
     }
 
     template<typename DC> void Render(DC &dc) {
@@ -590,11 +588,12 @@ struct Document {
     }
 
     void UpdateLayout() {
-        if (!root) { return; }
+        if (!root) return;
         {
             wxInfoDC dc(canvas);
             Layout(dc);
         }
+        if (layoutxs <= 0 || layoutys <= 0) return;
         int clientx = 0;
         int clienty = 0;
         canvas->GetClientSize(&clientx, &clienty);
@@ -604,18 +603,14 @@ struct Document {
             int gtkscrolly = 0;
             canvas->GetViewStart(&gtkscrollx, &gtkscrolly);
         #endif
-        if (layoutxs <= 0 || layoutys <= 0) { return; }
 
         double xscale = clientx / static_cast<double>(layoutxs);
         double yscale = clienty / static_cast<double>(layoutys);
-        currentviewscale = std::clamp(1.0, std::min(xscale, yscale), 5.0);
+        currentviewscale = scaledviewingmode 
+                            ? std::clamp(1.0, std::min(xscale, yscale), 5.0)
+                            : 1.0;
 
-        if (scaledviewingmode && currentviewscale > 1) {
-            canvas->SetVirtualSize(clientx, clienty);
-        } else {
-            currentviewscale = 1.0;
-            canvas->SetVirtualSize(layoutxs, layoutys);
-        }
+        canvas->SetVirtualSize(layoutxs * currentviewscale, layoutys * currentviewscale);
         #ifdef __WXGTK__
             // When scrollbar was active before and with the set virtual size
             // is not needed anymore, a stale scrollbar artifact is left on wxGTK,
@@ -630,17 +625,16 @@ struct Document {
     }
 
     template<typename DC> void Draw(DC &dc) {
-        if (!root) { return; }
-        if (layoutxs <= 0 || layoutys <= 0) { return; }
+        if (!root) return;
+        if (layoutxs <= 0 || layoutys <= 0) return;
         int clientx = 0;
         int clienty = 0;
         canvas->GetClientSize(&clientx, &clienty);
-        if (scaledviewingmode && currentviewscale > 1) {
+        if (currentviewscale > 1.0) {
             scrollx = scrolly = 0;
             maxx = clientx / currentviewscale;
             maxy = clienty / currentviewscale;
         } else {
-            dc.SetUserScale(1, 1);
             canvas->PrepareDC(dc);
             canvas->GetViewStart(&scrollx, &scrolly);
             maxx = clientx + scrollx;
@@ -658,10 +652,11 @@ struct Document {
                       : 0;
 
         ShiftToCenter(dc);
+        dc.SetUserScale(currentviewscale, currentviewscale);
         Render(dc);
         DrawSelect(dc, selected);
 
-        if (scaledviewingmode) { dc.SetUserScale(1, 1); }
+        if (currentviewscale != 1.0) { dc.SetUserScale(1.0, 1.0); }
         dc.DestroyClippingRegion();
     }
 
@@ -690,7 +685,7 @@ struct Document {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
             wxFont font(
-                textsize - static_cast<int>(while_printing || scaledviewingmode),
+                textsize - static_cast<int>(while_printing),
                 (stylebits & STYLE_FIXED) != 0 ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
                 (stylebits & STYLE_ITALIC) != 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
                 (stylebits & STYLE_BOLD) != 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
