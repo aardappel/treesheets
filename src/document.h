@@ -607,7 +607,7 @@ struct Document {
         double xscale = clientx / static_cast<double>(layoutxs);
         double yscale = clienty / static_cast<double>(layoutys);
         currentviewscale = scaledviewingmode 
-                            ? std::clamp(1.0, std::min(xscale, yscale), 5.0)
+                            ? std::clamp(std::min(xscale, yscale), 1.0, 5.0)
                             : 1.0;
 
         canvas->SetVirtualSize(layoutxs * currentviewscale, layoutys * currentviewscale);
@@ -1176,7 +1176,7 @@ struct Document {
                     action == wxID_SELECT_FONT ? sys->defaultfont : sys->defaultfixedfont));
                 if (wxFontDialog fd(sys->frame, fdat); fd.ShowModal() == wxID_OK) {
                     wxFont font = fd.GetFontData().GetChosenFont();
-                    g_deftextsize = min(20, max(10, font.GetPointSize()));
+                    g_deftextsize = std::clamp(font.GetPointSize(), 10, 20);
                     sys->cfg->Write("defaultfontsize", g_deftextsize);
                     switch (action) {
                         case wxID_SELECT_FONT:
