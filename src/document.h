@@ -403,13 +403,13 @@ struct Document {
             }
             case A_COPYCT: {
                 sys->cellclipboard = nullptr;
-                auto *clipboardtextdata = new wxDataObjectComposite();
+                auto clipboardtextdata = make_unique<wxDataObjectComposite>();
                 wxString s = "";
                 loopallcellssel(c, true) if (!c->text.t.IsEmpty()) { s += c->text.t + " "; }
                 if (!selected.TextEdit()) { sys->clipboardcopy = s; }
                 clipboardtextdata->Add(new wxTextDataObject(s));
                 if (wxTheClipboard->Open()) {
-                    wxTheClipboard->SetData(clipboardtextdata);
+                    wxTheClipboard->SetData(clipboardtextdata.release());
                     wxTheClipboard->Close();
                 }
                 break;
@@ -419,7 +419,7 @@ struct Document {
             default: {
                 sys->cellclipboard =
                     c != nullptr ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
-                auto *clipboarddata = new wxDataObjectComposite();
+                auto clipboarddata = make_unique<wxDataObjectComposite>();
                 auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
                                                       currentdrawroot);
                 clipboarddata->Add(new wxTextDataObject(s));
@@ -435,7 +435,7 @@ struct Document {
                     clipboarddata->Add(bmpobj);
                 }
                 if (wxTheClipboard->Open()) {
-                    wxTheClipboard->SetData(clipboarddata);
+                    wxTheClipboard->SetData(clipboarddata.release());
                     wxTheClipboard->Close();
                 }
                 break;
