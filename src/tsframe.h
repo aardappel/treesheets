@@ -1642,6 +1642,7 @@ struct TSFrame : wxFrame {
                 canvas->doc->ScrollIfSelectionOutOfView();
             }
             notebook->Refresh();
+            notebook->Update();
         }
     }
 
