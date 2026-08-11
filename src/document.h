@@ -1193,6 +1193,14 @@ struct Document {
                 return wxEmptyString;
             }
 
+            case A_INCFONTSIZE:
+            case A_DECFONTSIZE: {
+                if (action == A_INCFONTSIZE) g_deftextsize++;
+                if (action == A_DECFONTSIZE) g_deftextsize--;
+                sys->frame->TabsReset();
+                return wxEmptyString;
+            }
+
             case wxID_PRINT: {
                 wxPrintDialogData printDialogData(printData);
                 wxPrinter printer(&printDialogData);

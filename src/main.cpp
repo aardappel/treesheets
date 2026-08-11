@@ -63,6 +63,8 @@ enum {
     A_EXPTEXT,
     A_ZOOMIN,
     A_ZOOMOUT,
+    A_INCFONTSIZE,
+    A_DECFONTSIZE,
     A_TRANSPOSE,
     A_DELETE,
     A_BACKSPACE,
