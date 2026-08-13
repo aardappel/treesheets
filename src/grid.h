@@ -618,7 +618,7 @@ struct Grid {
         xmlstr.Append(">\n");
 
         Formatter(r, format, indent, xmlstr,
-                  wxString::Format("<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
+                  wxString::Format("<table style=\"border-width: %dpt; font-size: %dpt; white-space: pre;\">\n",
                                    grid_border_width, font_size),
                   wxString::Format("<ul style=\"font-size: %dpt;\">\n", font_size));
         foreachcellinsel(c, sel) {

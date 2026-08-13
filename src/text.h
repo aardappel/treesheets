@@ -57,7 +57,6 @@ struct Text {
         str.Replace("<", "&lt;");
         str.Replace(">", "&gt;");
         str.Replace("\"", "&quot;");
-        str.Replace("  ", " &nbsp;");
         return str;
     }
 
