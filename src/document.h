@@ -2658,7 +2658,7 @@ struct Document {
 
     void ApplyEditFilter() {
         searchfilter = false;
-        editfilter = min(max(editfilter, 1), 99);
+        editfilter = std::clamp(editfilter, 1, 99);
         CollectCells(root.get());
         ranges::sort(itercells, [](auto a, auto b) {
             // sort in descending order
