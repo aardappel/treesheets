@@ -523,6 +523,7 @@ struct TSFrame : wxFrame {
         viewmenu->AppendSeparator();
         MyAppend(viewmenu, A_INCFONTSIZE, _("&Increase font size") + "\tCTRL+.");
         MyAppend(viewmenu, A_DECFONTSIZE, _("&Decrease font size") + "\tCTRL+,");
+        MyAppend(viewmenu, A_RESETFONTSIZE, _("&Reset font size") + "\tCTRL+-");
         viewmenu->AppendSeparator();
         MyAppend(
             viewmenu, A_NEXTFILE,

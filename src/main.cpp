@@ -10,7 +10,6 @@ static const auto g_selmargin = 2;
 static const auto g_scrollratecursor = 240;  // FIXME: must be configurable
 static const auto g_scrollratewheel = 2;  // relative to 1 step on a fixed wheel usually being 120
 static const auto g_max_launches = 20;
-static const auto g_deftextsize_default = 12;
 static const auto g_mintextsize_delta = 8;
 static const auto g_maxtextsize_delta = 32;
 static const auto BLINK_TIME = 400;
@@ -32,6 +31,7 @@ static const std::array<uint, 42> celltextcolors = {
 static const std::map<char, pair<wxBitmapType, wxString>> imagetypes = {
     {'I', {wxBITMAP_TYPE_PNG, "image/png"}}, {'J', {wxBITMAP_TYPE_JPEG, "image/jpeg"}}};
 
+static auto g_deftextsize_default = 12;
 static auto g_deftextsize = g_deftextsize_default;
 static int g_mintextsize() { return g_deftextsize - g_mintextsize_delta; }
 static int g_maxtextsize() { return g_deftextsize + g_maxtextsize_delta; }
@@ -65,6 +65,7 @@ enum {
     A_ZOOMOUT,
     A_INCFONTSIZE,
     A_DECFONTSIZE,
+    A_RESETFONTSIZE,
     A_TRANSPOSE,
     A_DELETE,
     A_BACKSPACE,
