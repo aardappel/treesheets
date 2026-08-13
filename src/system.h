@@ -91,7 +91,8 @@ struct System {
         cfg->Read("centered", &centered, centered);
         cfg->Read("fswatch", &fswatch, fswatch);
         cfg->Read("casesensitivesearch", &casesensitivesearch, casesensitivesearch);
-        cfg->Read("defaultfontsize", &g_deftextsize, g_deftextsize);
+        cfg->Read("defaultfontsize", &g_deftextsize_default, g_deftextsize_default);
+        g_deftextsize = g_deftextsize_default;
         cfg->Read("customcolor", &customcolor, customcolor);
         cfg->Read("cursorcolor", &cursorcolor, cursorcolor);
         cfg->Read("showtoolbar", &showtoolbar, showtoolbar);

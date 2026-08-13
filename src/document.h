@@ -1176,7 +1176,7 @@ struct Document {
                     action == wxID_SELECT_FONT ? sys->defaultfont : sys->defaultfixedfont));
                 if (wxFontDialog fd(sys->frame, fdat); fd.ShowModal() == wxID_OK) {
                     wxFont font = fd.GetFontData().GetChosenFont();
-                    g_deftextsize = std::clamp(font.GetPointSize(), 10, 20);
+                    g_deftextsize_default = g_deftextsize = std::clamp(font.GetPointSize(), 10, 20);
                     sys->cfg->Write("defaultfontsize", g_deftextsize);
                     switch (action) {
                         case wxID_SELECT_FONT:
@@ -1197,6 +1197,12 @@ struct Document {
             case A_DECFONTSIZE: {
                 if (action == A_INCFONTSIZE) g_deftextsize++;
                 if (action == A_DECFONTSIZE) g_deftextsize--;
+                sys->frame->TabsReset();
+                return wxEmptyString;
+            }
+
+            case A_RESETFONTSIZE: {
+                g_deftextsize = g_deftextsize_default;
                 sys->frame->TabsReset();
                 return wxEmptyString;
             }
