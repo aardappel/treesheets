@@ -243,7 +243,7 @@ struct Cell {
         wxString str = text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             this != root && !str.IsEmpty()) {
-            wxString spanstyle = "white-space: pre;";
+            wxString spanstyle = "white-space: pre-wrap;";
             if ((text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) != 0) {
                 spanstyle += "text-decoration:";
                 spanstyle += (text.stylebits & STYLE_UNDERLINE) != 0 ? " underline" : "";
