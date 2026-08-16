@@ -645,6 +645,10 @@ struct TSFrame : wxFrame {
             _("Reload when another computer has changed a file (if you have made changes, asks)"));
         optmenu->Check(A_FSWATCH, sys->fswatch);
         optmenu->AppendSubMenu(autoexportmenu, _("Autoexport to HTML"));
+        #ifdef ENABLE_WXPDFDOC
+            optmenu->AppendCheckItem(A_AUTOEXPORT_PDF, _("Autoexport to PDF"));
+            optmenu->Check(A_AUTOEXPORT_PDF, sys->autopdfexport);
+        #endif
         optmenu->AppendSubMenu(defaultimagemenu, _("Default image format"),
                                _("Default format when image is pasted from clipboard or dropped"));
         optmenu->AppendSeparator();
@@ -1214,6 +1218,11 @@ struct TSFrame : wxFrame {
                     "autohtmlexport",
                     static_cast<long>(sys->autohtmlexport = ce.GetId() - A_AUTOEXPORT_HTML_NONE));
                 break;
+            #ifdef ENABLE_WXPDFDOC
+                case A_AUTOEXPORT_PDF:
+                    sys->cfg->Write("autopdfexport", sys->autopdfexport = ce.IsChecked());
+                    break;
+            #endif
             case A_DEFAULTIMAGE_PNG:
             case A_DEFAULTIMAGE_JPEG:
                 sys->cfg->Write(
