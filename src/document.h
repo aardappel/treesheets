@@ -870,7 +870,6 @@ struct Document {
                         << "</title>\n<meta charset=\"UTF-8\" />\n"
                         << "</head>\n<body style=\""
                         << wxString::Format("background-color: #%06X;", SwapColor(root->cellcolor))
-                        << "white-space: pre;"
                         << "\">" << content << "</body>\n</html>\n";
                     dos.WriteString(output);
                     break;
