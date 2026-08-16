@@ -37,6 +37,9 @@ struct System {
     bool centered {true};
     bool fswatch {true};
     int autohtmlexport {0};
+    #ifdef ENABLE_WXPDFDOC
+        bool autopdfexport {false};
+    #endif
     int defaultimageformat {0};
     bool casesensitivesearch {true};
     bool darkennonmatchingcells {false};
@@ -72,6 +75,9 @@ struct System {
 
         roundness = static_cast<int>(cfg->Read("roundness", roundness));
         autohtmlexport = static_cast<int>(cfg->Read("autohtmlexport", autohtmlexport));
+        #ifdef ENABLE_WXPDFDOC
+            cfg->Read("autopdfexport", &autopdfexport, autopdfexport);
+        #endif
         defaultimageformat = static_cast<int>(cfg->Read("defaultimageformat", defaultimageformat));
         defaultfont = cfg->Read("defaultfont", defaultfont);
         defaultfixedfont = cfg->Read("defaultfixedfont", defaultfixedfont);

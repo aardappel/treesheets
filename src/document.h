@@ -225,6 +225,11 @@ struct Document {
                            : A_EXPHTMLT,
                        false);
         }
+        #ifdef ENABLE_WXPDFDOC
+            if (sys->autopdfexport) {
+                ExportFile(treesheets::System::ExtName(filename, ".pdf"), A_EXPPDF, false);
+            }
+        #endif
         UpdateFileName(page);
         if (success != nullptr) { *success = true; }
         return wxString::Format(_("Saved %s successfully (in %lld milliseconds)."), filename,
