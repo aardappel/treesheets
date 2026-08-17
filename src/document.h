@@ -773,17 +773,37 @@ struct Document {
         return sdc.IsOk();
     }
 
+
     #ifdef ENABLE_WXPDFDOC
         bool DrawPDF(const wxString &expfilename) {
-            maxx = layoutxs;
-            maxy = layoutys;
-            scrollx = scrolly = 0;
+            {
+                // Use a temporary in-memory wxPdfDC for layout measurement
+                // that will match with the drawing with the wxPdfDC
+                wxPdfDC measureDC;
+                if (!measureDC.StartDoc(wxEmptyString)) return false;
+
+                wxPdfDocument *measurePdf = measureDC.GetPdfDocument();
+                if (measurePdf == nullptr) {
+                    measureDC.EndDoc();
+                    return false;
+                }
+
+                measurePdf->AddPage();
+
+                root->ResetChildren();
+                Layout(measureDC);
+
+                maxx = layoutxs;
+                maxy = layoutys;
+                scrollx = scrolly = 0;
+
+                measureDC.EndDoc();
+            }
 
             wxPrintData printData;
             printData.SetFilename(expfilename);
 
             wxPdfDC dc(printData);
-
             if (!dc.StartDoc(_("Printing ..."))) return false;
 
             wxPdfDocument *pdf = dc.GetPdfDocument();
@@ -794,18 +814,20 @@ struct Document {
 
             pdf->SetTitle(filename);
             pdf->AddPage(wxPORTRAIT, maxx, maxy);
-
             DrawView(dc);
 
             dc.EndDoc();
+
+            root->ResetChildren();
+            UpdateLayout();
             return true;
         }
     #endif
 
-        template<typename DC> void DrawView(DC &dc) {
+    template<typename DC> void DrawView(DC &dc) {
             DrawRectangle(dc, Background(), 0, 0, maxx, maxy);
             Render(dc);
-        }
+    }
 
     wxBitmap GetSubBitmap(const Selection &sel) {
         wxRect r = sel.grid->GetRect(this, sel, true);
