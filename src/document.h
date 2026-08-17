@@ -790,7 +790,7 @@ struct Document {
 
                 measurePdf->AddPage();
 
-                root->ResetChildren();
+                currentdrawroot->ResetChildren();
                 Layout(measureDC);
 
                 maxx = layoutxs;
@@ -818,7 +818,7 @@ struct Document {
 
             dc.EndDoc();
 
-            root->ResetChildren();
+            currentdrawroot->ResetChildren();
             UpdateLayout();
             return true;
         }
