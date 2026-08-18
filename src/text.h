@@ -31,20 +31,13 @@ struct Text {
 
     void SetNum(double d) {
         std::wstringstream ss;
-        ss << std::fixed;
-
-        // We're going to use at most 19 digits after '.'. Add small value round remainder.
-        size_t max_significant = 10;
-        d += 0.00000000005;
-
-        ss << d;
+        // Fixed notation with a limited number of decimals, so we don't show garbage digits
+        // beyond the precision, and never resort to an exponent.
+        ss << std::fixed << std::setprecision(10) << d;
 
         auto s = ss.str();
-        // First trim whatever lies beyond the precision to avoid garbage digits.
-        max_significant += 2;  // "0."
-        if (s[0] == '-') { max_significant++; }
-        if (s.length() > max_significant) { s.erase(max_significant); }
-        // Now strip unnecessary trailing zeroes.
+        // Strip unnecessary trailing zeroes. This stops at the '.', so it can't eat into the
+        // integer part.
         while (s.back() == '0') { s.pop_back(); }
         // If there were only zeroes, remove '.'.
         if (s.back() == '.') { s.pop_back(); }
