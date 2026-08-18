@@ -10,6 +10,7 @@ static const auto g_selmargin = 2;
 static const auto g_scrollratecursor = 240;  // FIXME: must be configurable
 static const auto g_scrollratewheel = 2;  // relative to 1 step on a fixed wheel usually being 120
 static const auto g_max_launches = 20;
+static const auto g_max_grid_cells = 4 * 1024 * 1024;
 static const auto g_mintextsize_delta = 8;
 static const auto g_maxtextsize_delta = 32;
 static const auto BLINK_TIME = 400;
