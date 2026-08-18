@@ -409,7 +409,11 @@ struct Cell {
 
     Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         int xs = dis.Read32();
-        auto g = make_shared<Grid>(xs, dis.Read32());
+        int ys = dis.Read32();
+        if (xs < 1 || ys < 1 || static_cast<int64_t>(xs) * ys > g_max_grid_cells) {
+            return nullptr;
+        }
+        auto g = make_shared<Grid>(xs, ys);
         grid = g;
         g->cell = this;
         if (!g->LoadContents(dis, numcells, textbytes, ics)) { return nullptr; }
@@ -417,7 +421,7 @@ struct Cell {
     }
 
     static Cell *LoadWhich(wxDataInputStream &dis, Cell *_p, int &numcells, int &textbytes, Cell *&ics) {
-        auto *c = new Cell(_p, nullptr, dis.Read8());
+        auto c = make_unique<Cell>(_p, nullptr, dis.Read8());
         numcells++;
         if (sys->versionlastloaded >= 8) {
             c->cellcolor = dis.Read32() & 0xFFFFFF;
@@ -427,7 +431,7 @@ struct Cell {
         if (sys->versionlastloaded >= 25) { c->note = dis.ReadString(); }
         int ts = dis.Read8();
         if ((ts & TS_SELECTION_MASK) != 0) {
-            ics = c;
+            ics = c.get();
             ts &= ~TS_SELECTION_MASK;
         }
         switch (ts) {
@@ -435,9 +439,11 @@ struct Cell {
             case TS_TEXT:
                 c->text.Load(dis);
                 textbytes += c->text.t.Len();
-                if (ts == TS_TEXT) { return c; }
-            case TS_GRID: return c->LoadGrid(dis, numcells, textbytes, ics);
-            case TS_NEITHER: return c;
+                if (ts == TS_TEXT) { return c.release(); }
+            case TS_GRID:
+                return c->LoadGrid(dis, numcells, textbytes, ics) != nullptr ? c.release()
+                                                                             : nullptr;
+            case TS_NEITHER: return c.release();
             default: return nullptr;
         }
     }
