@@ -308,7 +308,10 @@ struct System {
                             fis.Read(image_data.data(), sz);
                             fis.SeekI(afterimage);
                         }
-                        if (!fis.IsOk()) { image_data.clear(); }
+                        if (!fis.IsOk()) {
+                            image_data.clear();
+                            anyimagesfailed = true;
+                        }
 
                         loadimageids.push_back(AddImageToList(sc, std::move(image_data), iti));
                         break;
