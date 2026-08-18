@@ -2321,7 +2321,7 @@ struct Document {
         bool lastsel = true;
         Cell *next = root->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
                                                lastsel, reverse);
-        if (next == nullptr) { return _("No matches for search."); }
+        if (next == nullptr || next->parent == nullptr) { return _("No matches for search."); }
         if (!jump) { return wxEmptyString; }
         SetSelect(next->parent->grid->FindCell(next));
         if (focusmatch) { canvas->SetFocus(); }
