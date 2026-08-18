@@ -254,6 +254,9 @@ struct System {
 
             for (;;) {
                 fis.Read(buf, 1);
+                // Read() leaves buf untouched at EOF, so without this a truncated file would keep
+                // seeing the previous block header and loop forever.
+                if (fis.LastRead() != 1) { return _("File corrupted!"); }
                 switch (*buf) {
                     case 'I':
                     case 'J': {
@@ -266,6 +269,11 @@ struct System {
                         vector<uint8_t> image_data;
                         if (versionlastloaded >= 22) {
                             auto imagelen = static_cast<size_t>(dis.Read64());
+                            auto filelen = fis.GetLength();
+                            if (filelen == wxInvalidOffset ||
+                                imagelen > static_cast<size_t>(filelen)) {
+                                return _("File corrupted!");
+                            }
                             image_data.resize(imagelen);
                             fis.Read(image_data.data(), imagelen);
                         } else {
