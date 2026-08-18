@@ -473,7 +473,7 @@ struct System {
                     if (!file.IsOpened()) { goto problem; }
                     wxString content;
                     if (!file.ReadAll(&content)) { goto problem; }
-                    const auto &lines = wxStringTokenize(content, LINE_SEPARATOR);
+                    const auto &lines = wxStringTokenize(content, LINE_DELIMITERS);
 
                     if (!lines.empty()) {
                         switch (action) {

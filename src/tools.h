@@ -38,10 +38,13 @@ typedef unsigned int uint;
         if (v < (s)) v = (s); \
     }
 
-// Use the same on all platforms, because:
+// Any of these ends a line in text we take in, on all platforms, because:
 // Win32: usually contains both.
 // Macos: older versions use \r and newer \n in clipboard?
 // Linux: should only ever be \n but if we encounter \r we want to strip it.
+#define LINE_DELIMITERS "\r\n"
+
+// What we write out ourselves.
 #ifdef __WXGTK__
     #define LINE_SEPARATOR "\r\n"
 #else
