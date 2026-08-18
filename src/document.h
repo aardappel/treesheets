@@ -1351,22 +1351,22 @@ struct Document {
                 if (sys->frame->cellcolordropdown != nullptr) {
                     sys->frame->cellcolordropdown->ShowPopup();
                 }
-                break;
+                return wxEmptyString;
             case A_OPENTEXTCOLOR:
                 if (sys->frame->textcolordropdown != nullptr) {
                     sys->frame->textcolordropdown->ShowPopup();
                 }
-                break;
+                return wxEmptyString;
             case A_OPENBORDCOLOR:
                 if (sys->frame->bordercolordropdown != nullptr) {
                     sys->frame->bordercolordropdown->ShowPopup();
                 }
-                break;
+                return wxEmptyString;
             case A_OPENIMGDROPDOWN:
                 if (sys->frame->imagedropdown != nullptr) {
                     sys->frame->imagedropdown->ShowPopup();
                 }
-                break;
+                return wxEmptyString;
             case A_REPLACEONCE:
             case A_REPLACEONCEJ:
             case A_REPLACEALL: {
