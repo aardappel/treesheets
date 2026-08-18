@@ -589,7 +589,7 @@ struct Cell {
     Cell *Graph() {
         auto n = text.GetNum();
         text.t.Clear();
-        text.t.Append(L'|', n);
+        text.t.Append(L'|', n > 0 ? static_cast<size_t>(min(n, 1000.0)) : 0);
         return this;
     }
 };
