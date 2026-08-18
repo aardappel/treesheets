@@ -818,6 +818,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_ICONIZE, &TSFrame::OnIconize, this);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &TSFrame::OnTabChange, this, wxID_ANY);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &TSFrame::OnTabClose, this, wxID_ANY);
+        Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSED, &TSFrame::OnTabClosed, this, wxID_ANY);
         Bind(wxEVT_SYS_COLOUR_CHANGED, &TSFrame::OnSysColourChanged, this);
 
         wxSafeYield();
@@ -1320,6 +1321,11 @@ struct TSFrame : wxFrame {
         }
     }
 
+    void OnTabClosed(wxAuiNotebookEvent &nbe) {
+        sys->PurgeUnusedImages();
+        nbe.Skip();
+    }
+
     void OnSearch(wxCommandEvent &ce) {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
@@ -1500,6 +1506,7 @@ struct TSFrame : wxFrame {
                     SetStatus(message);
                 } else {
                     notebook->DeletePage(i + 1);
+                    sys->PurgeUnusedImages();
                     ::wxRemoveFile(treesheets::System::TmpName(modfile));
                     SetStatus(
                         _("File has been re-loaded because of modifications of another program / computer"));

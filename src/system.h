@@ -632,6 +632,23 @@ struct System {
         return imagelist.size() - 1;
     }
 
+    // Cells refer to images with a raw pointer, so everything that can own cells has to be
+    // counted here before anything is erased: the open documents, the clones held by their undo
+    // and redo lists, and the cell clipboard. lastimage is counted in as well so that inserting
+    // the last image still works after the document it came from was closed.
+    void PurgeUnusedImages() {
+        loopv(i, imagelist) imagelist[i]->trefc = 0;
+        loop(i, frame->notebook->GetPageCount()) {
+            auto *doc = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i))->doc.get();
+            if (doc->root) { doc->root->ImageRefCount(true); }
+            for (auto &undoitem : doc->undolist) { undoitem->clone->ImageRefCount(true); }
+            for (auto &redoitem : doc->redolist) { redoitem->clone->ImageRefCount(true); }
+        }
+        if (cellclipboard) { cellclipboard->ImageRefCount(true); }
+        if (lastimage != nullptr) { lastimage->trefc++; }
+        std::erase_if(imagelist, [](const unique_ptr<Image> &image) { return image->trefc == 0; });
+    }
+
     static void ImageSize(wxBitmap *bm, int &xs, int &ys) {
         if (bm == nullptr) { return; }
         xs = bm->GetLogicalWidth();  // returns GetWidth on wxMSW

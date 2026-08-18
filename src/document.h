@@ -1107,6 +1107,7 @@ struct Document {
                     int pagenumber = sys->frame->notebook->GetSelection();
                     // sys->frame->notebook->AdvanceSelection();
                     sys->frame->notebook->DeletePage(pagenumber);
+                    sys->PurgeUnusedImages();
                 }
                 return wxEmptyString;
             }
