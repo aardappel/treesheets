@@ -1591,6 +1591,7 @@ struct Document {
                 return wxEmptyString;
 
             case A_COLLAPSE: {
+                if (selected.Thin()) { return NoThin(); }
                 if (selected.xs * selected.ys == 1) {
                     return _("More than one cell must be selected.");
                 }
