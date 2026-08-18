@@ -675,7 +675,12 @@ struct Grid {
     }
 
     void MergeWithParent(const shared_ptr<Grid> &p, Selection &sel, Document *doc) {
+        // The loop below overwrites the parent's slot for the cell owning this grid, which
+        // destroys that cell, so detach from it before it can become a dangling pointer.
+        ASSERT(p->C(sel.x, sel.y).get() == cell);
         shared_ptr<Grid> keepalive = cell->grid;
+        cell->grid.reset();
+        cell = nullptr;
         int nxs = sel.x + xs - p->xs;
         int nys = sel.y + ys - p->ys;
         if (nxs > 0 || nys > 0) {
@@ -694,7 +699,6 @@ struct Grid {
         sel.xs += xs - 1;
         sel.ys += ys - 1;
         sel.ExitEdit(doc);
-        cell->grid.reset();
     }
 
     void SetStyle(Document *doc, const Selection &sel, int sb) {
