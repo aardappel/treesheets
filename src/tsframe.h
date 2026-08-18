@@ -1064,6 +1064,7 @@ struct TSFrame : wxFrame {
     void OnMenu(wxCommandEvent &ce) {
         wxTextCtrl *tc = nullptr;
         auto *canvas = GetCurrentTab();
+        if (canvas == nullptr) { return; }
         if ((tc = filter) != nullptr && filter == wxWindow::FindFocus() ||
             (tc = replaces) != nullptr && replaces == wxWindow::FindFocus()) {
             long from = 0;
