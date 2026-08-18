@@ -749,8 +749,11 @@ struct Grid {
                     for (int i = 1;; i++) {
                         if (!s[i]) {
                             if (y < static_cast<int>(as.size()) - 1) {
+                                // A quoted field that continues on the next line keeps the line
+                                // break that ended this one.
+                                word += LINE_SEPARATOR;
                                 s = as[++y];
-                                i = 0;
+                                i = -1;
                             } else {
                                 s = L"";
                                 break;
