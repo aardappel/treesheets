@@ -1035,6 +1035,17 @@ struct Document {
                 canvas->Refresh();
                 return _("Evaluation finished.");
 
+            case A_CLRVIEW: {
+                root->AddUndo(this);
+                loopallcells(c) {
+                    if (c->celltype == CT_VIEWH || c->celltype == CT_VIEWV) { c->Clear(); }
+                }
+                root->ResetChildren();
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
+
             case wxID_UNDO:
                 if (!undolist.empty()) {
                     Undo(undolist, redolist);
