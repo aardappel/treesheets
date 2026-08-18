@@ -20,7 +20,8 @@ struct Image {
     vector<uint8_t> RescaledData(double scale) const {
         auto &it = imagetypes.at(type).first;
         auto im = ConvertBufferToWxImage(data, it);
-        im.Rescale(im.GetWidth() * scale, im.GetHeight() * scale);
+        im.Rescale(std::max(1, static_cast<int>(im.GetWidth() * scale)),
+                   std::max(1, static_cast<int>(im.GetHeight() * scale)));
         return ConvertWxImageToBuffer(im, it);
     }
 
