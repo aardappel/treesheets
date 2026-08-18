@@ -1377,7 +1377,6 @@ struct Document {
                     canvas->Refresh();
                 } else {
                     if (selected.grid == nullptr) { return NoSel(); }
-                    loopallcellssel(c, true) if (c->text.IsInSearch()) { c->AddUndo(this); }
                     selected.grid->ReplaceStr(this, replaces, lreplaces, selected);
                     if (action == A_REPLACEONCEJ) { return SearchNext(false, true, false); }
                 }
@@ -1574,7 +1573,6 @@ struct Document {
                 Copy(action);
                 if (action == wxID_CUT) {
                     if (!selected.TextEdit()) {
-                        selected.grid->cell->AddUndo(this);
                         selected.grid->MultiCellDelete(this, selected);
                         SetSelect(selected);
                     } else if (cell != nullptr) {

@@ -422,7 +422,7 @@ struct Text {
     void ReplaceStr(const wxString &str, const wxString &lstr) {
         if (sys->casesensitivesearch) {
             for (auto i = 0, j = 0; (j = t.Mid(i).Find(sys->searchstring)) >= 0;) {
-                // does this need WasEdited()?
+                WasEdited();
                 i += j;
                 t.Remove(i, sys->searchstring.Len());
                 t.insert(i, str);
@@ -431,7 +431,7 @@ struct Text {
         } else {
             auto lowert = t.Lower();
             for (auto i = 0, j = 0; (j = lowert.Mid(i).Find(sys->searchstring)) >= 0;) {
-                // does this need WasEdited()?
+                WasEdited();
                 i += j;
                 lowert.Remove(i, sys->searchstring.Len());
                 t.Remove(i, sys->searchstring.Len());
