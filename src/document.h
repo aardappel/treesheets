@@ -668,6 +668,9 @@ struct Document {
     }
 
     void Print(wxDC &dc, wxPrintout &po) {
+        // Cell sizes are cached, so they have to be thrown away to lay the document out with the
+        // font metrics of the printer instead of those of the screen.
+        currentdrawroot->ResetChildren();
         Layout(dc);
         maxx = layoutxs;
         maxy = layoutys;
@@ -680,6 +683,8 @@ struct Document {
         while_printing = true;
         Render(dc);
         while_printing = false;
+        currentdrawroot->ResetChildren();
+        UpdateLayout();
     }
 
     int TextSize(int depth, int relsize) const {
