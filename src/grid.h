@@ -511,8 +511,10 @@ struct Grid {
         // Detaching the grid from its cell at the end of this function is what destroys this
         // object, so it has to be kept alive until then.
         shared_ptr<Grid> keepalive = cell->grid;
-        if (!doc->drawpath.empty() && doc->drawpath.back().grid == cell->grid) {
-            doc->drawpath.pop_back();
+        // The draw path runs from the deepest cell up to the root, so the entry that points
+        // into the grid about to disappear is its first one.
+        if (!doc->drawpath.empty() && doc->drawpath.front().grid == cell->grid) {
+            doc->drawpath.erase(doc->drawpath.begin());
             doc->currentdrawroot = doc->WalkPath(doc->drawpath);
         }
         if (cell->parent == nullptr) {
