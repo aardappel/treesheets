@@ -231,10 +231,9 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 
     void FillBitmapVector(const wxString &directory) {
-        if (!bitmaps_display.empty()) {
-            bitmaps_display.clear();
-            scaled_bitmap_cache.clear();
-        }
+        bitmaps_display.clear();
+        filenames.clear();
+        scaled_bitmap_cache.clear();
         auto filename = wxFindFirstFile(directory + "*.*");
         while (!filename.empty()) {
             auto bitmap = make_unique<wxBitmap>();
