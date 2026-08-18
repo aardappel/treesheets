@@ -2412,7 +2412,7 @@ struct Document {
             if ((sys->clipboardcopy == text) && sys->cellclipboard) {
                 cell->Paste(this, sys->cellclipboard.get(), selected);
             } else {
-                const wxArrayString &lines = wxStringTokenize(text, LINE_SEPARATOR);
+                const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
                 if (lines.size() == 1) {
                     cell->AddUndo(this);
                     cell->ResetLayout();
