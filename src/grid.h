@@ -463,13 +463,17 @@ struct Grid {
     }
 
     void MultiCellDelete(Document *doc, Selection &sel) {
+        // The delete below may detach this grid from its cell, which would otherwise destroy it
+        // while we are still running on it.
+        shared_ptr<Grid> keepalive = cell->grid;
         cell->AddUndo(doc);
         MultiCellDeleteSub(doc, sel);
         doc->UpdateLayout();
         doc->canvas->Refresh();
     }
 
-    void MultiCellDeleteSub(Document *doc, Selection &sel) {
+    // Returns false if the grid deleted itself, in which case it may not be used any further.
+    bool MultiCellDeleteSub(Document *doc, Selection &sel) {
         foreachcellinsel(c, sel) c->Clear();
         bool delhoriz = true;
         bool delvert = true;
@@ -481,7 +485,7 @@ struct Grid {
         }
         if (delhoriz && (!delvert || sel.xs >= sel.ys)) {
             if (sel.ys == ys) {
-                DelSelf(doc, sel);
+                return !DelSelf(doc, sel);
             } else {
                 loop(i, sel.ys) DeleteCells(-1, sel.y, 0, -1);
                 sel.ys = 0;
@@ -489,7 +493,7 @@ struct Grid {
             }
         } else if (delvert) {
             if (sel.xs == xs) {
-                DelSelf(doc, sel);
+                return !DelSelf(doc, sel);
             } else {
                 loop(i, sel.xs) DeleteCells(sel.x, -1, -1, 0);
                 sel.xs = 0;
@@ -498,9 +502,12 @@ struct Grid {
         } else {
             if (sel.GetCell() != nullptr) { sel.EnterEdit(doc); }
         }
+        return true;
     }
 
-    void DelSelf(Document *doc, Selection &s) {
+    // Returns whether the grid detached itself from its cell, which destroys it unless the
+    // caller holds a reference of its own.
+    bool DelSelf(Document *doc, Selection &s) {
         // Detaching the grid from its cell at the end of this function is what destroys this
         // object, so it has to be kept alive until then.
         shared_ptr<Grid> keepalive = cell->grid;
@@ -509,10 +516,11 @@ struct Grid {
             doc->currentdrawroot = doc->WalkPath(doc->drawpath);
         }
         if (cell->parent == nullptr) {
-            return;  // FIXME: deletion of root cell, what would be better?
+            return false;  // FIXME: deletion of root cell, what would be better?
         }
         s = cell->parent->grid->FindCell(cell);
         cell->grid = nullptr;
+        return true;
     }
 
     void InsertCells(int dx, int dy, int nxs, int nys, unique_ptr<Cell> nc = nullptr) {
@@ -1066,7 +1074,7 @@ struct Grid {
                     }
 
                     Selection s(cell->grid, 0, y, xs, 1);
-                    MultiCellDeleteSub(doc, s);
+                    if (!MultiCellDeleteSub(doc, s)) { return; }
                     y--;
 
                     goto done;
@@ -1079,7 +1087,7 @@ struct Grid {
         done:;
         }
         Selection s(cell->grid, 1, 0, xs - 1, ys);
-        MultiCellDeleteSub(doc, s);
+        if (!MultiCellDeleteSub(doc, s)) { return; }
         foreachcell(c) if (c->grid && c->grid->xs > 1) { c->grid->Hierarchify(doc); }
     }
 
