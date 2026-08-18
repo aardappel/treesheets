@@ -2609,6 +2609,7 @@ struct Document {
 
     void ColorChange(int which, int idx) {
         if (selected.grid == nullptr) { return; }
+        if (idx < 0 || idx >= static_cast<int>(celltextcolors.size())) { return; }
         auto col = idx == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[idx];
         switch (which) {
             case A_CELLCOLOR: sys->lastcellcolor = col; break;
