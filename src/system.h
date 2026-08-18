@@ -523,6 +523,12 @@ struct System {
         return nodes.size() + (attributes != nullptr ? attributes->size() : 0);
     }
 
+    static uint ParseColorAttribute(wxXmlNode *node, const wxString &name, uint def) {
+        unsigned long color = 0;
+        return node->GetAttribute(name, wxEmptyString).ToULong(&color, 0) ? static_cast<uint>(color)
+                                                                         : def;
+    }
+
     void FillXML(Cell *c, wxXmlNode *node, bool attributestoo) {
         const auto &words = wxStringTokenize(
             node->GetType() == wxXML_ELEMENT_NODE ? node->GetNodeContent() : node->GetContent());
@@ -534,10 +540,8 @@ struct System {
         if (node->GetName() == "cell") {
             c->text.relsize = -wxAtoi(node->GetAttribute("relsize", "0"));
             c->text.stylebits = wxAtoi(node->GetAttribute("stylebits", "0"));
-            c->cellcolor =
-                std::stoi(node->GetAttribute("colorbg", "0xFFFFFF").ToStdString(), nullptr, 0);
-            c->textcolor =
-                std::stoi(node->GetAttribute("colorfg", "0x000000").ToStdString(), nullptr, 0);
+            c->cellcolor = ParseColorAttribute(node, "colorbg", g_cellcolor_default);
+            c->textcolor = ParseColorAttribute(node, "colorfg", g_textcolor_default);
             c->celltype = wxAtoi(node->GetAttribute("type", "0"));
         }
 
@@ -583,9 +587,7 @@ struct System {
 
     static void SetGridSettingsFromXML(Cell *c, wxXmlNode *node) {
         c->grid->folded = wxAtoi(node->GetAttribute("folded", "0")) != 0;
-        c->grid->bordercolor = std::stoi(
-            node->GetAttribute("bordercolor", wxString() << g_bordercolor_default).ToStdString(),
-            nullptr, 0);
+        c->grid->bordercolor = ParseColorAttribute(node, "bordercolor", g_bordercolor_default);
         c->grid->user_grid_outer_spacing = wxAtoi(
             node->GetAttribute("outerspacing", wxString() << g_usergridouterspacing_default));
     }
