@@ -378,6 +378,7 @@ struct Document {
     }
 
     void Copy(int action) {
+        if (selected.grid == nullptr || selected.Thin()) { return; }
         auto *c = selected.GetCell();
         sys->clipboardcopy = wxEmptyString;
 
@@ -1372,6 +1373,7 @@ struct Document {
                     UpdateLayout();
                     canvas->Refresh();
                 } else {
+                    if (selected.grid == nullptr) { return NoSel(); }
                     loopallcellssel(c, true) if (c->text.IsInSearch()) { c->AddUndo(this); }
                     selected.grid->ReplaceStr(this, replaces, lreplaces, selected);
                     if (action == A_REPLACEONCEJ) { return SearchNext(false, true, false); }
@@ -2653,6 +2655,7 @@ struct Document {
     }
 
     wxString TagSet(int tagno) {
+        if (selected.grid == nullptr) { return NoSel(); }
         int i = 0;
         for (auto &[tag, color] : tags) {
             if (i++ == tagno) {
