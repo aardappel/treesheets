@@ -28,8 +28,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void UpdateLowestCommonAncestor(bool newgeneration) {
-        // Use parent as lowestcommonancestor so changes to siblings are already covered
-        lowestcommonancestor = current->parent;
+        // Use parent as lowestcommonancestor so changes to siblings are already covered.
+        // The root has no parent, so there it is its own undo scope.
+        lowestcommonancestor = current->parent != nullptr ? current->parent : current;
         document->AddUndo(lowestcommonancestor, newgeneration);
     }
 
