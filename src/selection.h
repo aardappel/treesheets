@@ -127,13 +127,17 @@ struct Selection {
             grid->cell->AddUndo(doc);
 
             grid->Move(dx, dy, *this);
-            x = (x + dx + grid->xs) % grid->xs;
-            y = (y + dy + grid->ys) % grid->ys;
-            if (x + xs > grid->xs || y + ys > grid->ys) { grid = nullptr; }
+            // If the moved selection would no longer fit in the grid it stays where it is, which
+            // is also the right answer for a selection spanning a whole row or column: its cells
+            // are rotated within it, so the same cells stay selected.
+            auto nx = (x + dx + grid->xs) % grid->xs;
+            auto ny = (y + dy + grid->ys) % grid->ys;
+            if (nx + xs <= grid->xs && ny + ys <= grid->ys) {
+                x = nx;
+                y = ny;
+            }
 
-            // FIXME: this is null in the case of a whole column selection, and doesn't do the right
-            // thing.
-            if (grid) { grid->cell->ResetChildren(); }
+            grid->cell->ResetChildren();
             doc->UpdateLayout();
             doc->ScrollIfSelectionOutOfView();
             doc->canvas->Refresh();
