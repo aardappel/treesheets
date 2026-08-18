@@ -567,7 +567,8 @@ struct Grid {
     bool LoadContents(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         if (sys->versionlastloaded >= 10) {
             bordercolor = dis.Read32() & 0xFFFFFF;
-            user_grid_outer_spacing = dis.Read32();
+            user_grid_outer_spacing =
+                std::clamp(static_cast<int>(dis.Read32()), 0, g_max_grid_outer_spacing);
             if (sys->versionlastloaded >= 11) {
                 cell->verticaltextandgrid = dis.Read8() != 0;
                 if (sys->versionlastloaded >= 13) {
@@ -579,7 +580,8 @@ struct Grid {
                             cell->text.image = nullptr;
                         }
                     }
-                    loop(x, xs) colwidths[x] = dis.Read32();
+                    loop(x, xs) colwidths[x] =
+                        std::max(static_cast<int>(dis.Read32()), g_min_colwidth);
                 }
             }
         }
@@ -1129,7 +1131,7 @@ struct Grid {
     void ResizeColWidths(int dir, const Selection &sel, bool hierarchical) {
         for (int x = sel.x; x < sel.x + sel.xs; x++) {
             colwidths[x] += dir * 5;
-            colwidths[x] = std::max(colwidths[x], 5);
+            colwidths[x] = std::max(colwidths[x], g_min_colwidth);
             loop(y, ys) {
                 if (C(x, y)->grid && hierarchical) {
                     C(x, y)->grid->ResizeColWidths(dir, C(x, y)->grid->SelectAll(), hierarchical);

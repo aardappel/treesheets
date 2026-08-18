@@ -588,8 +588,9 @@ struct System {
     static void SetGridSettingsFromXML(Cell *c, wxXmlNode *node) {
         c->grid->folded = wxAtoi(node->GetAttribute("folded", "0")) != 0;
         c->grid->bordercolor = ParseColorAttribute(node, "bordercolor", g_bordercolor_default);
-        c->grid->user_grid_outer_spacing = wxAtoi(
-            node->GetAttribute("outerspacing", wxString() << g_usergridouterspacing_default));
+        c->grid->user_grid_outer_spacing = std::clamp(
+            wxAtoi(node->GetAttribute("outerspacing", wxString() << g_usergridouterspacing_default)),
+            0, g_max_grid_outer_spacing);
     }
 
     static int CountCol(const wxString &s) {
