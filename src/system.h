@@ -620,7 +620,12 @@ struct System {
     int AddImageToList(double scale, vector<uint8_t> &&data, char type) {
         auto hash = CalculateHash(data);
         loopv(i, imagelist) {
-            if (imagelist[i]->hash == hash && imagelist[i]->type == type) { return i; }
+            // The scale is part of an image's identity: cells showing the same picture at
+            // different sizes must not be merged, here or when the document is loaded again.
+            if (imagelist[i]->hash == hash && imagelist[i]->type == type &&
+                imagelist[i]->display_scale == scale) {
+                return i;
+            }
         }
         imagelist.push_back(make_unique<Image>(hash, scale, std::move(data), type));
         return imagelist.size() - 1;
