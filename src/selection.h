@@ -92,10 +92,14 @@ struct Selection {
         } else {
             auto *at = a.GetFirst();
             auto *bt = b.GetCell();
+            if (at == nullptr || bt == nullptr) { return; }
             int ad = at->Depth();
             int bd = bt->Depth();
             int i = 0;
             while (i < ad && i < bd && at->Parent(ad - i) == bt->Parent(bd - i)) { i++; }
+            // Cells that share no ancestor at all are not in the same document, and have no
+            // grid to merge them in.
+            if (i == 0) { return; }
             auto g = at->Parent(ad - i + 1)->grid;
             Merge(g->FindCell(at->Parent(ad - i)), g->FindCell(bt->Parent(bd - i)));
             return;
