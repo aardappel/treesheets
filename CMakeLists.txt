@@ -84,8 +84,8 @@ FetchContent_MakeAvailable(wxwidgets)
 if(ENABLE_LOBSTER)
     FetchContent_Declare(
         lobster
-        URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.4.tar.gz
-        URL_HASH SHA256=db430e0310adddb5667648597b56efc2c198659626f92805b2e4f35932f88d8f
+        URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.5.tar.gz
+        URL_HASH SHA256=2c5ee444af86b6b57558ebccb1fbadce8afbad32ce08cfc79dcc42d7fe885284
     )
     FetchContent_MakeAvailable(lobster)
 endif()
@@ -112,6 +112,7 @@ if(ENABLE_LOBSTER)
         ${lobster_SOURCE_DIR}/dev/src/file.cpp
         ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
         ${lobster_SOURCE_DIR}/dev/src/platform.cpp
+        ${lobster_SOURCE_DIR}/dev/src/simplex.cpp
         ${lobster_SOURCE_DIR}/dev/src/vm.cpp
         ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
         ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
