@@ -920,7 +920,10 @@ struct Grid {
         cells = std::move(tr);
         swap_(xs, ys);
         SetOrient();
-        InitColWidths();
+        // Columns that were rows have no width of their own, so they get the width of the last
+        // column that did.
+        auto width = colwidths.back();
+        colwidths.resize(xs, width);
     }
 
     void Sort(Selection &sel, bool descending) {
