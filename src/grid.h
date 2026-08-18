@@ -743,7 +743,7 @@ struct Grid {
         loop(y, as.size()) {
             auto s = as[y];
             wxString word;
-            for (int x = 0; s[0]; x++) {
+            for (int x = 0; !s.empty(); x++) {
                 if (s[0] == '\"') {
                     word = "";
                     for (int i = 1;; i++) {
@@ -786,7 +786,8 @@ struct Grid {
             cy++;
         }
 
-        ys = cy;  // throws memory away, but doesn't matter
+        ys = cy;
+        cells.resize(xs * ys);
     }
 
     unique_ptr<Cell> EvalGridCell(Evaluator &ev, unique_ptr<Cell> &c, unique_ptr<Cell> acc, int &x,
