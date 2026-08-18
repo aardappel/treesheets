@@ -683,7 +683,8 @@ struct Document {
     }
 
     int TextSize(int depth, int relsize) const {
-        return max(g_mintextsize(), g_deftextsize - depth - relsize + pathscalebias);
+        return std::clamp(g_deftextsize - depth - relsize + pathscalebias, g_mintextsize(),
+                          g_maxtextsize());
     }
 
     static bool FontIsMini(int textsize) { return textsize == g_mintextsize(); }

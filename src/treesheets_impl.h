@@ -84,7 +84,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetColWidth(int w) override {
-        if (current->parent != nullptr) { current->parent->grid->SetColWidth(current, w); }
+        if (current->parent != nullptr) {
+            current->parent->grid->SetColWidth(current, std::max(w, g_min_colwidth));
+        }
     }
 
     ibox SelectionBox() override {
