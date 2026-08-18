@@ -1678,9 +1678,10 @@ struct Document {
                     int gridmax = horiz ? selected.grid->xs : selected.grid->ys;
 
                     if (ismin) {
-                        // At the first row/column there is nothing to extend to, and a selection
-                        // that is thin in both directions has no cells to point at.
-                        if (auto newext = pos + (selected.Thin() ? 0 : 1); newext > 0) {
+                        // Keep the far end of the selection where it is, and leave a thin
+                        // selection at the first row/column alone: it has nothing to extend
+                        // over, and would end up pointing at no cells at all.
+                        if (auto newext = pos + ext; newext > 0) {
                             ext = newext;
                             pos = 0;
                         }
