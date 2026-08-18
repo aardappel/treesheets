@@ -96,13 +96,14 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void GoToChild(int n) override {
-        if (current->grid && n < current->grid->xs * current->grid->ys) {
+        if (current->grid && n >= 0 && n < current->grid->xs * current->grid->ys) {
             current = current->grid->cells[n].get();
         }
     }
 
     void GoToColumnRow(int x, int y) override {
-        if (current->grid && x < current->grid->xs && y < current->grid->ys) {
+        if (current->grid && x >= 0 && x < current->grid->xs && y >= 0 &&
+            y < current->grid->ys) {
             current = current->grid->C(x, y).get();
         }
     }
