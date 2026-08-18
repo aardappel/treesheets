@@ -500,7 +500,10 @@ struct Grid {
         }
     }
 
-    void DelSelf(Document *doc, Selection &s) const {
+    void DelSelf(Document *doc, Selection &s) {
+        // Detaching the grid from its cell at the end of this function is what destroys this
+        // object, so it has to be kept alive until then.
+        shared_ptr<Grid> keepalive = cell->grid;
         if (!doc->drawpath.empty() && doc->drawpath.back().grid == cell->grid) {
             doc->drawpath.pop_back();
             doc->currentdrawroot = doc->WalkPath(doc->drawpath);
