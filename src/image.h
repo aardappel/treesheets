@@ -17,31 +17,16 @@ struct Image {
     Image(uint64_t _hash, double _sc, vector<uint8_t> &&_data, char _type)
         : hash(_hash), display_scale(_sc), data(std::move(_data)), type(_type) {}
 
-    void ImageRescale(double scale) {
+    vector<uint8_t> RescaledData(double scale) const {
         auto &it = imagetypes.at(type).first;
         auto im = ConvertBufferToWxImage(data, it);
         im.Rescale(im.GetWidth() * scale, im.GetHeight() * scale);
-        data = ConvertWxImageToBuffer(im, it);
-        hash = CalculateHash(data);
-        bm_display = wxNullBitmap;
+        return ConvertWxImageToBuffer(im, it);
     }
 
-    void DisplayScale(double scale) {
-        display_scale /= scale;
-        #ifndef __WXMSW__
-            bm_display.SetScaleFactor(display_scale);
-        #else
-            bm_display = wxNullBitmap;
-        #endif
-    }
-
-    void ResetScale(double scale) {
-        display_scale = scale;
-        #ifndef __WXMSW__
-            bm_display.SetScaleFactor(display_scale);
-        #else
-            bm_display = wxNullBitmap;
-        #endif
+    vector<uint8_t> ConvertedData(char newtype) const {
+        return ConvertWxImageToBuffer(ConvertBufferToWxImage(data, imagetypes.at(type).first),
+                                      imagetypes.at(newtype).first);
     }
 
     void ClearBitmap() { bm_display = wxNullBitmap; }

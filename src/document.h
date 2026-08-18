@@ -1987,12 +1987,8 @@ struct Document {
             case A_IMAGESCP:
             case A_IMAGESCW:
             case A_IMAGESCF: {
-                std::set<Image *> imagestomanipulate;
                 long v = 0.0;
-                loopallcellssel(c, true) {
-                    if (c->text.image != nullptr) { imagestomanipulate.insert(c->text.image); }
-                }
-                if (imagestomanipulate.empty()) { return wxEmptyString; }
+                if (!AnyImagesInSelection()) { return wxEmptyString; }
                 if (action == A_IMAGESCW) {
                     v = wxGetNumberFromUser(_("Please enter the new image width:"), _("Width"),
                                             _("Image Resize"), 500, 10, 4000, sys->frame);
@@ -2002,18 +1998,17 @@ struct Document {
                         _("Image Resize"), 50, 5, 400, sys->frame);
                 }
                 if (v < 0) { return wxEmptyString; }
-                for (auto *image : imagestomanipulate) {
-                    if (action == A_IMAGESCW) {
-                        int pw = image->pixel_width;
-                        if (pw != 0) {
-                            image->ImageRescale(static_cast<double>(v) / static_cast<double>(pw));
-                        }
-                    } else if (action == A_IMAGESCP) {
-                        image->ImageRescale(v / 100.0);
-                    } else {
-                        image->DisplayScale(v / 100.0);
+                ReplaceSelectedImages([&](const Image &image) -> Image * {
+                    if (action == A_IMAGESCF) {
+                        return NewImage(image.display_scale / (v / 100.0),
+                                        vector<uint8_t>(image.data), image.type);
                     }
-                }
+                    if (action == A_IMAGESCW && image.pixel_width == 0) { return nullptr; }
+                    auto scale = action == A_IMAGESCW
+                                     ? static_cast<double>(v) / image.pixel_width
+                                     : v / 100.0;
+                    return NewImage(image.display_scale, image.RescaledData(scale), image.type);
+                });
                 currentdrawroot->ResetChildren();
                 currentdrawroot->ResetLayout();
                 UpdateLayout();
@@ -2022,9 +2017,10 @@ struct Document {
             }
 
             case A_IMAGESCN: {
-                loopallcellssel(c, true) if (c->text.image != nullptr) {
-                    c->text.image->ResetScale(sys->frame->FromDIP(1.0));
-                }
+                ReplaceSelectedImages([](const Image &image) {
+                    return NewImage(sys->frame->FromDIP(1.0), vector<uint8_t>(image.data),
+                                    image.type);
+                });
                 currentdrawroot->ResetChildren();
                 currentdrawroot->ResetLayout();
                 UpdateLayout();
@@ -2064,26 +2060,19 @@ struct Document {
 
             case A_SAVE_AS_JPEG:
             case A_SAVE_AS_PNG: {
-                wxString returnmessage = _("No image found to convert");
-                loopallcellssel(c, true) {
-                    auto *image = c->text.image;
-                    if (action == A_SAVE_AS_JPEG && image != nullptr && image->type == 'I') {
-                        auto transferimage = ConvertBufferToWxImage(image->data, wxBITMAP_TYPE_PNG);
-                        image->data = ConvertWxImageToBuffer(transferimage, wxBITMAP_TYPE_JPEG);
-                        image->type = 'J';
-                        returnmessage =
-                            _("Images in selected cells have been converted to JPEG format.");
-                    }
-                    if (action == A_SAVE_AS_PNG && image != nullptr && image->type == 'J') {
-                        auto transferimage =
-                            ConvertBufferToWxImage(image->data, wxBITMAP_TYPE_JPEG);
-                        image->data = ConvertWxImageToBuffer(transferimage, wxBITMAP_TYPE_PNG);
-                        image->type = 'I';
-                        returnmessage =
-                            _("Images in selected cells have been converted to PNG format.");
-                    }
-                }
-                return returnmessage;
+                char newtype = action == A_SAVE_AS_JPEG ? 'J' : 'I';
+                bool converted = false;
+                ReplaceSelectedImages([&](const Image &image) -> Image * {
+                    if (image.type == newtype) { return nullptr; }
+                    converted = true;
+                    return NewImage(image.display_scale, image.ConvertedData(newtype), newtype);
+                });
+                if (!converted) { return _("No image found to convert"); }
+                UpdateLayout();
+                canvas->Refresh();
+                return action == A_SAVE_AS_JPEG
+                           ? _("Images in selected cells have been converted to JPEG format.")
+                           : _("Images in selected cells have been converted to PNG format.");
             }
 
             case A_BROWSE: {
@@ -2607,9 +2596,32 @@ struct Document {
         selected.grid->ColorChange(this, which, col, selected);
     }
 
+    static Image *NewImage(double scale, vector<uint8_t> &&data, char type) {
+        return sys->imagelist[sys->AddImageToList(scale, std::move(data), type)].get();
+    }
+
+    bool AnyImagesInSelection() {
+        loopallcellssel(c, true) if (c->text.image != nullptr) { return true; }
+        return false;
+    }
+
+    // An image is shared by every cell holding the same picture, in this document and in any
+    // other open one, so changing one means handing the cells it applies to a new image.
+    void ReplaceSelectedImages(const std::function<Image *(const Image &)> &transform) {
+        if (!AnyImagesInSelection()) { return; }
+        selected.grid->cell->AddUndo(this);
+        std::map<Image *, Image *> replacements;
+        loopallcellssel(c, true) {
+            auto *image = c->text.image;
+            if (image == nullptr) { continue; }
+            auto [it, inserted] = replacements.try_emplace(image, nullptr);
+            if (inserted) { it->second = transform(*image); }
+            if (it->second != nullptr) { c->text.image = it->second; }
+        }
+    }
+
     static void SetImageBM(Cell *c, vector<uint8_t> &&data, char type, double scale) {
-        c->text.image = sys->lastimage =
-            sys->imagelist[sys->AddImageToList(scale, std::move(data), type)].get();
+        c->text.image = sys->lastimage = NewImage(scale, std::move(data), type);
     }
 
     static bool LoadImageIntoCell(const wxString &filename, Cell *c, double scale) {
