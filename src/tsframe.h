@@ -1355,11 +1355,11 @@ struct TSFrame : wxFrame {
                 if (canvas->doc) {
                     canvas->doc->Action(issearch ? ke.ShiftDown() ? A_SEARCHPREV : A_SEARCHNEXT
                                                  : A_REPLACEONCEJ);
-                    return;
                 }
+                return;
             }
             case WXK_ESCAPE: {
-                textctrl->Clear();
+                if (textctrl) { textctrl->Clear(); }
                 canvas->SetFocus();
                 return;
             }
