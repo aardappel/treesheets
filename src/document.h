@@ -2695,9 +2695,10 @@ struct Document {
             if (i++ == tagno) {
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, false) {
-                    c->text.Clear(this, selected);
-                    c->text.Insert(this, tag, selected, true);
+                    c->text.t = tag;
+                    c->text.WasEdited();
                 }
+                selected.ExitEdit(this);
                 selected.grid->cell->ResetChildren();
                 selected.grid->cell->ResetLayout();
                 UpdateLayout();
