@@ -71,13 +71,7 @@ struct Evaluator {
         ops[L"if"] = make_unique<_if>();
     }
 
-    int InferCellType(Text &t) {
-        if (ops[t.t]) {
-            return CT_CODE;
-        } else {
-            return CT_DATA;
-        }
-    }
+    int InferCellType(Text &t) { return ops.contains(t.t) ? CT_CODE : CT_DATA; }
 
     unique_ptr<Cell> Lookup(const wxString &name) {
         auto it = vars.find(name);
@@ -105,7 +99,10 @@ struct Evaluator {
         }
     }
 
-    Operation *FindOp(wxString &name) { return ops[name].get(); }
+    Operation *FindOp(wxString &name) {
+        auto it = ops.find(name);
+        return it != ops.end() ? it->second.get() : nullptr;
+    }
 
     static unique_ptr<Cell> Execute(const Operation *op) { return op->run(); }
 
