@@ -880,7 +880,11 @@ struct Grid {
         // If all data is true then we can exit now.
         if (alldata) {
             auto result = cell->Clone(nullptr);  // Potential result if all data.
-            foreachcellingrid(rc, result->grid) { rc = rc->Eval(ev); }
+            foreachcellingrid(rc, result->grid) {
+                // A cell whose evaluation failed keeps its original contents, since the rest of
+                // the program can't deal with a grid that has holes in it.
+                if (auto evaluated = rc->Eval(ev)) { rc = std::move(evaluated); }
+            }
             return result;
         }
         return acc;
