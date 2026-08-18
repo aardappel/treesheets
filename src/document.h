@@ -1588,6 +1588,7 @@ struct Document {
                 return wxEmptyString;
 
             case A_COPYBM:
+                if (selected.Thin()) { return NoThin(); }
                 if (wxTheClipboard->Open()) {
                     wxTheClipboard->SetData(new wxBitmapDataObject(GetSubBitmap(selected)));
                     wxTheClipboard->Close();
