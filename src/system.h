@@ -321,7 +321,8 @@ struct System {
                         auto numcells = 0;
                         auto textbytes = 0;
                         unique_ptr<Cell> root(Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics));
-                        if (!root) { return _("File corrupted!"); }
+                        // The rest of the program assumes the root cell has a grid.
+                        if (!root || !root->grid) { return _("File corrupted!"); }
 
                         doc = NewTabDoc(true, insert_at);
                         if (loadedfromtmp) {

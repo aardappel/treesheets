@@ -103,13 +103,14 @@ struct Document {
     uint Background() const { return root ? root->cellcolor : 0xFFFFFF; }
 
     void InitCellSelect(Cell *initialselected, int xsize, int ysize) {
-        if (initialselected == nullptr) {
+        if (initialselected == nullptr || initialselected->parent == nullptr) {
             SetSelect(Selection(root->grid, 0, 0, 1, 1));
             return;
         }
         SetSelect(initialselected->parent->grid->FindCell(initialselected));
-        selected.xs = xsize;
-        selected.ys = ysize;
+        if (selected.grid == nullptr) { return; }
+        selected.xs = std::clamp(xsize, 1, selected.grid->xs - selected.x);
+        selected.ys = std::clamp(ysize, 1, selected.grid->ys - selected.y);
         sys->frame->UpdateStatus(selected, true);
     }
 
