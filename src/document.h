@@ -820,7 +820,7 @@ struct Document {
                 return false;
             }
 
-            pdf->SetTitle(filename);
+            pdf->SetTitle(wxEmptyString);
             pdf->AddPage(wxPORTRAIT, maxx, maxy);
             DrawView(dc);
 
