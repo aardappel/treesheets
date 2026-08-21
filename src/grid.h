@@ -165,6 +165,18 @@ struct Grid {
     template<typename DC>
     void Render(Document *doc, int bx, int by, DC &dc, int depth, int sx, int sy, int xoff,
                 int yoff) {
+        foreachcell(c) {
+            int cx = bx + c->ox;
+            int cy = by + c->oy;
+            if (cx < doc->maxx && cx + c->sx > doc->scrollx && cy < doc->maxy &&
+                cy + c->sy > doc->scrolly) {
+                c->Render(doc, cx, cy, dc, depth + 1, static_cast<int>(x == 0) * view_margin,
+                          static_cast<int>(x == xs - 1) * view_margin,
+                          static_cast<int>(y == 0) * view_margin,
+                          static_cast<int>(y == ys - 1) * view_margin, colwidths[x], cell_margin);
+            }
+        }
+
         xoff = C(0, 0)->ox - view_margin - view_grid_outer_spacing - 1;
         yoff = C(0, 0)->oy - view_margin - view_grid_outer_spacing - 1;
         int maxx = C(xs - 1, 0)->ox + C(xs - 1, 0)->sx;
@@ -212,18 +224,6 @@ struct Grid {
                 dc.SetPen(dashed ? sys->pen_gridlines : sys->pen_tinygridlines);
             }
             drawlines();
-        }
-
-        foreachcell(c) {
-            int cx = bx + c->ox;
-            int cy = by + c->oy;
-            if (cx < doc->maxx && cx + c->sx > doc->scrollx && cy < doc->maxy &&
-                cy + c->sy > doc->scrolly) {
-                c->Render(doc, cx, cy, dc, depth + 1, static_cast<int>(x == 0) * view_margin,
-                          static_cast<int>(x == xs - 1) * view_margin,
-                          static_cast<int>(y == 0) * view_margin,
-                          static_cast<int>(y == ys - 1) * view_margin, colwidths[x], cell_margin);
-            }
         }
 
         if (cell->drawstyle == DS_BLOBLINE && !tinyborder && cell->HasHeader() && !cell->tiny) {
