@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-27 12:14+0200\n"
-"PO-Revision-Date: 2026-06-28 18:24+0900\n"
+"POT-Creation-Date: 2026-07-22 06:54+0200\n"
+"PO-Revision-Date: 2026-08-21 23:28+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -511,6 +511,12 @@ msgstr "기본 열 너비"
 msgid "Default column width..."
 msgstr "기본 열 너비..."
 
+msgid "Default format when image is pasted from clipboard or dropped"
+msgstr "클립보드에서 붙여넣거나 놓은 이미지의 기본 형식"
+
+msgid "Default image format"
+msgstr "기본 이미지 형식"
+
 msgid "Delete Before"
 msgstr "이전 삭제"
 
@@ -902,6 +908,9 @@ msgstr ""
 "TreeSheets 파일을 붙여넣거나 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니"
 "까?"
 
+msgid "JPEG"
+msgstr "JPEG"
+
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 파일이 손상되었습니다!"
 
@@ -1124,6 +1133,9 @@ msgstr "파일 형식에 대한 기본 응용 프로그램에서 선택한 셀�
 
 msgid "Operation reference"
 msgstr "작동 참조"
+
+msgid "PNG"
+msgstr "PNG"
 
 msgid ""
 "PNG decode failed on some images in this document\n"
@@ -1600,7 +1612,7 @@ msgstr "상태 표시줄이 문서 아래에 표시될지 전환"
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
 "editing"
-msgstr "커서 키를 텍스트 편집 외에 탐색에 사용할지 전환"
+msgstr "커서 키가 텍스트 편집 외에도 탐색에 사용되는지 여부 전환"
 
 msgid "Toggle whether the window is minimized instead of closed"
 msgstr "창이 닫히지 않고 최소화되는지 여부를 전환"
