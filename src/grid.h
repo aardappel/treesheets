@@ -170,10 +170,9 @@ struct Grid {
             int cy = by + c->oy;
             if (cx < doc->maxx && cx + c->sx > doc->scrollx && cy < doc->maxy &&
                 cy + c->sy > doc->scrolly) {
-                c->Render(doc, cx, cy, dc, depth + 1, static_cast<int>(x == 0) * view_margin,
-                          static_cast<int>(x == xs - 1) * view_margin,
-                          static_cast<int>(y == 0) * view_margin,
-                          static_cast<int>(y == ys - 1) * view_margin, colwidths[x], cell_margin);
+                c->Render(doc, cx, cy, dc, depth + 1, x == 0 ? view_margin : g_line_width,
+                          x == xs - 1 ? view_margin : 0, y == 0 ? view_margin : g_line_width,
+                          y == ys - 1 ? view_margin : 0, colwidths[x], cell_margin);
             }
         }
 
