@@ -48,6 +48,7 @@ struct System {
     bool showstatusbar {true};
     bool followdarkmode {false};
     bool innerbordercolor {false};
+    bool searchfolded {true};
     uint colormask {0};
     int notesizex {300};
     int notesizey {255};
@@ -97,6 +98,7 @@ struct System {
         cfg->Read("centered", &centered, centered);
         cfg->Read("fswatch", &fswatch, fswatch);
         cfg->Read("casesensitivesearch", &casesensitivesearch, casesensitivesearch);
+        cfg->Read("searchfolded", &searchfolded, searchfolded);
         cfg->Read("defaultfontsize", &g_deftextsize_default, g_deftextsize_default);
         g_deftextsize = g_deftextsize_default;
         cfg->Read("customcolor", &customcolor, customcolor);

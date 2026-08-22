@@ -473,6 +473,8 @@ struct TSFrame : wxFrame {
         MyAppend(semenu, wxID_FIND, _("&Search") + "\tCTRL+F", _("Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _("Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
+        semenu->AppendCheckItem(A_SEARCHFOLDED, _("Search in folded grids"));
+        semenu->Check(A_SEARCHFOLDED, sys->searchfolded);
         semenu->AppendSeparator();
         MyAppend(semenu, A_SEARCHNEXT, _("&Next Match") + "\tF3", _("Go to next search match"));
         MyAppend(semenu, A_SEARCHPREV, _("&Previous Match") + "\tSHIFT+F3",
@@ -1154,7 +1156,6 @@ struct TSFrame : wxFrame {
                 }
                 break;
             }
-
             #ifdef ENABLE_LOBSTER
                 case A_ADDSCRIPT: {
                     wxArrayString filenames;
@@ -1257,6 +1258,9 @@ struct TSFrame : wxFrame {
                 } else {
                     SetStatus(_("Please enable (Options -> Show Toolbar) to use search."));
                 }
+                break;
+            case A_SEARCHFOLDED:
+                sys->cfg->Write("searchfolded", sys->searchfolded = ce.IsChecked());
                 break;
             case wxID_REPLACE:
                 if (replaces != nullptr) {
