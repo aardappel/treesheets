@@ -785,37 +785,37 @@ struct Document {
         bool DrawPDF(const wxString &expfilename) {
             {
                 wxPdfDocument measurePdf;
-                wxPdfDC measureDC(&measurePdf, 0, 0);
                 measurePdf.AddPage();
 
-                currentdrawroot->ResetChildren();
-                Layout(measureDC);
+                {
+                    wxPdfDC measureDC(&measurePdf, 0, 0);
+                    if (!measureDC.StartDoc(wxEmptyString)) return false;
+                    currentdrawroot->ResetChildren();
+                    Layout(measureDC);
+                    measureDC.EndDoc();
+                }
 
                 maxx = layoutxs;
                 maxy = layoutys;
                 scrollx = scrolly = 0;
             }
 
-            wxPrintData printData;
-            printData.SetFilename(expfilename);
+            wxPdfDocument pdf(wxPORTRAIT, wxT("pt"));
+            pdf.SetTitle(wxEmptyString);
+            pdf.AddPage(wxPORTRAIT, maxx, maxy);
 
-            wxPdfDC dc(printData);
-            if (!dc.StartDoc(_("Printing ..."))) return false;
-
-            wxPdfDocument *pdf = dc.GetPdfDocument();
-            if (pdf == nullptr) {
+            {
+                wxPdfDC dc(&pdf, maxx, maxy);
+                if (!dc.StartDoc(wxEmptyString)) return false;
+                DrawView(dc);
                 dc.EndDoc();
-                return false;
             }
 
-            pdf->SetTitle(wxEmptyString);
-            pdf->AddPage(wxPORTRAIT, maxx, maxy);
-            DrawView(dc);
-            dc.EndDoc();
+            bool saved = pdf.SaveAsFile(expfilename);
 
             currentdrawroot->ResetChildren();
             UpdateLayout();
-            return true;
+            return saved;
         }
     #endif
 
