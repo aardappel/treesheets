@@ -781,22 +781,12 @@ struct Document {
         return sdc.IsOk();
     }
 
-
     #ifdef ENABLE_WXPDFDOC
         bool DrawPDF(const wxString &expfilename) {
             {
-                // Use a temporary in-memory wxPdfDC for layout measurement
-                // that will match with the drawing with the wxPdfDC
-                wxPdfDC measureDC;
-                if (!measureDC.StartDoc(wxEmptyString)) return false;
-
-                wxPdfDocument *measurePdf = measureDC.GetPdfDocument();
-                if (measurePdf == nullptr) {
-                    measureDC.EndDoc();
-                    return false;
-                }
-
-                measurePdf->AddPage();
+                wxPdfDocument measurePdf;
+                wxPdfDC measureDC(&measurePdf, 0, 0);
+                measurePdf.AddPage();
 
                 currentdrawroot->ResetChildren();
                 Layout(measureDC);
@@ -804,8 +794,6 @@ struct Document {
                 maxx = layoutxs;
                 maxy = layoutys;
                 scrollx = scrolly = 0;
-
-                measureDC.EndDoc();
             }
 
             wxPrintData printData;
@@ -823,7 +811,6 @@ struct Document {
             pdf->SetTitle(wxEmptyString);
             pdf->AddPage(wxPORTRAIT, maxx, maxy);
             DrawView(dc);
-
             dc.EndDoc();
 
             currentdrawroot->ResetChildren();
