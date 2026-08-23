@@ -800,9 +800,9 @@ struct Document {
                 scrollx = scrolly = 0;
             }
 
-            wxPdfDocument pdf(wxPORTRAIT, wxT("pt"));
+            wxPdfDocument pdf(wxPORTRAIT, maxx, maxy, wxT("pt"));
             pdf.SetTitle(wxEmptyString);
-            pdf.AddPage(wxPORTRAIT, maxx, maxy);
+            pdf.AddPage();
 
             {
                 wxPdfDC dc(&pdf, maxx, maxy);
