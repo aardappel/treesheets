@@ -233,6 +233,20 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return treesheets::Document::LoadImageIntoCell(wxString::FromUTF8(fn.data(), fn.size()),
                                                        current, sys->frame->FromDIP(1.0));
     }
+
+    void SetImageDisplayScale(int scale) override {
+        AddUndoIfNecessary();
+        if (scale < 0 || scale == 100) return;
+        auto *image = current->text.image;
+        if (image == nullptr) return;
+        image = Document::NewImage(image->display_scale / (scale / 100.0),
+                                   vector<uint8_t>(image->data), image->type);
+        if (image != nullptr) { current->text.image = image; }
+        document->currentdrawroot->ResetChildren();
+        document->currentdrawroot->ResetLayout();
+        document->UpdateLayout();
+        document->canvas->Refresh();
+    }
 };
 
 static int64_t TreeSheetsLoader(string_view_nt absfilename, std::string *dest, int64_t start,
