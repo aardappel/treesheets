@@ -233,6 +233,12 @@ nfr("remove_image", "", "", "", "remove image in the current cell",
 
 nfr("set_image", "filename", "S", "B", "set image for the current cell",
     [](StackPtr &, VM &, Value filename) { return Value(si->SetImage(filename.sval()->data())); });
+
+nfr("set_image_display_scale", "scale", "I", "", "set display scale (in integer percentage)",
+    [](StackPtr &, VM &, Value w) {
+        si->SetImageDisplayScale(w.intval());
+        return NilVal();
+    });
 }
 
 NativeRegistry natreg;  // FIXME: global.
