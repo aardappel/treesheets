@@ -236,7 +236,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetImageDisplayScale(int scale) override {
         AddUndoIfNecessary();
-        if (scale < 0 || scale == 100) return;
+        if (scale <= 0 || scale == 100) return;
         auto *image = current->text.image;
         if (image == nullptr) return;
         image = Document::NewImage(image->display_scale / (scale / 100.0),
