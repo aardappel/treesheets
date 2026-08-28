@@ -514,6 +514,7 @@ struct Document {
             UpdateLayout();
             ScrollIfSelectionOutOfView();
             canvas->Refresh();
+            sys->frame->UpdateStatus(selected, false);
             return dir > 0 ? _("Text size increased.") : _("Text size decreased.");
         } else if (ctrl) {
             int steps = abs(dir);
