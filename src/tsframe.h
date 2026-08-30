@@ -1209,7 +1209,10 @@ struct TSFrame : wxFrame {
             case A_THINSELC: sys->cfg->Write("thinselc", sys->thinselc = ce.IsChecked()); break;
             case A_HOVERZOOM:
                 sys->cfg->Write("hoverzoom", sys->hoverzoom = ce.IsChecked());
-                if (!sys->hoverzoom) GetCurrentTab()->SetCursor(wxNullCursor);
+                if (!sys->hoverzoom) loop(i, notebook->GetPageCount()) {
+                        auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
+                        if (!canvas->doc->selected.TextEdit()) canvas->SetCursor(wxNullCursor);
+                    }
                 break;
             case A_AUTOSAVE: sys->cfg->Write("autosave", sys->autosave = ce.IsChecked()); break;
             case A_CENTERED:
