@@ -2130,7 +2130,7 @@ struct Document {
             case A_TAGADD: {
                 loopallcellssel(c, false) {
                     if (c->text.t.IsEmpty()) { continue; }
-                    tags[c->text.t] = {g_cellcolor_default, g_tagtextcolor_default};
+                    tags[c->text.t] = {c->cellcolor, c->textcolor};
                 }
                 canvas->Refresh();
                 return wxEmptyString;
