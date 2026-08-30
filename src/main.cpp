@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-static const auto TS_VERSION = 25;
+static const auto TS_VERSION = 26;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
 static const auto g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -23,7 +23,7 @@ static const auto TS_SELECTION_MASK = 0x80;
 static const auto g_bordercolor_default = 0xA0A0A0;
 static const auto g_cellcolor_default = 0xFFFFFFU;
 static const auto g_textcolor_default = 0x000000U;
-static const auto g_tagcolor_default = 0xFF0000;
+static const auto g_tagtextcolor_default = 0xFF0000;
 static const std::array<uint, 42> celltextcolors = {
     0xFFFFFF,  // CUSTOM COLOR!
     0xFFFFFF, 0x000000, 0x202020, 0x404040, 0x606060, 0x808080, 0xA0A0A0, 0xC0C0C0, 0xD0D0D0,

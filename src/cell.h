@@ -145,6 +145,7 @@ struct Cell {
             case CT_CODE: actualcellcolor = 0x8080FF; break;
             default: actualcellcolor = cellcolor; break;
         }
+        if (IsTag(doc)) actualcellcolor = doc->tags[text.t].first;
         uint parentcolor = doc->Background();
         if (parent != nullptr && this != doc->currentdrawroot) {
             Cell *p = parent;
@@ -311,14 +312,18 @@ struct Cell {
                              ? sys->defaultfixedfont + "', monospace;"
                              : sys->defaultfont + "', sans-serif;";
             }
-            if (!inheritstyle ||
-                cellcolor != (parent != nullptr ? parent->cellcolor : doc->Background())) {
+            auto exportcellcolor = IsTag(doc) ? doc->tags[text.t].first : cellcolor;
+            auto parentcellcolor =
+                parent != nullptr
+                    ? parent->IsTag(doc) ? doc->tags[parent->text.t].first : parent->cellcolor
+                    : doc->Background();
+            if (!inheritstyle || exportcellcolor != parentcellcolor) {
                 style += wxString::Format("background-color: #%06X;", SwapColor(cellcolor));
             }
-            auto exporttextcolor = IsTag(doc) ? doc->tags[text.t] : textcolor;
+            auto exporttextcolor = IsTag(doc) ? doc->tags[text.t].second : textcolor;
             auto parenttextcolor =
                 parent != nullptr
-                    ? parent->IsTag(doc) ? doc->tags[parent->text.t] : parent->textcolor
+                    ? parent->IsTag(doc) ? doc->tags[parent->text.t].second : parent->textcolor
                     : 0x000000;
             if (!inheritstyle || exporttextcolor != parenttextcolor) {
                 style += wxString::Format("color: #%06X;", SwapColor(exporttextcolor));
@@ -545,10 +550,16 @@ struct Cell {
 
     void ColorChange(Document *doc, int which, uint color) {
         switch (which) {
-            case A_CELLCOLOR: cellcolor = color; break;
+            case A_CELLCOLOR:
+                if (IsTag(doc)) {
+                    doc->tags[text.t].first = color;
+                } else {
+                    cellcolor = color;
+                }
+                break;
             case A_TEXTCOLOR:
                 if (IsTag(doc)) {
-                    doc->tags[text.t] = color;
+                    doc->tags[text.t].second = color;
                 } else {
                     textcolor = color;
                 }
