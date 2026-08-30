@@ -251,6 +251,7 @@ enum {
     A_DEFCURCOL,
     A_RESETPERSPECTIVE,
     A_THINSELC,
+    A_HOVERZOOM,
     A_COPYCT,
     A_COPYBM,
     A_COPYWI,
