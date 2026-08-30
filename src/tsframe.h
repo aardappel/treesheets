@@ -635,6 +635,8 @@ struct TSFrame : wxFrame {
         optmenu->AppendCheckItem(A_THINSELC, _("Navigate in between cells with cursor keys"),
                                  _("Toggle whether the cursor keys are used for navigation in addition to text editing"));
         optmenu->Check(A_THINSELC, sys->thinselc);
+        optmenu->AppendCheckItem(A_HOVERZOOM, _("Hover zoom"), _("Zoom on cells cursor hovers on"));
+        optmenu->Check(A_HOVERZOOM, sys->hoverzoom);
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_MAKEBAKS, _("Backup files"),
                                  _("Create backup file before document is saved to file"));
@@ -1205,6 +1207,10 @@ struct TSFrame : wxFrame {
                 break;
             case A_ZOOMSCR: sys->cfg->Write("zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
             case A_THINSELC: sys->cfg->Write("thinselc", sys->thinselc = ce.IsChecked()); break;
+            case A_HOVERZOOM:
+                sys->cfg->Write("hoverzoom", sys->hoverzoom = ce.IsChecked());
+                if (!sys->hoverzoom) GetCurrentTab()->SetCursor(wxNullCursor);
+                break;
             case A_AUTOSAVE: sys->cfg->Write("autosave", sys->autosave = ce.IsChecked()); break;
             case A_CENTERED:
                 sys->cfg->Write("centered", sys->centered = ce.IsChecked());

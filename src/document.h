@@ -470,6 +470,7 @@ struct Document {
     }
 
     void Zoom(int dir, bool fromroot = false) {
+        if (sys->hoverzoom && hover.grid != nullptr) SetSelect(hover);
         if (!ZoomSetDrawPath(dir, fromroot)) { return; }
         auto *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {

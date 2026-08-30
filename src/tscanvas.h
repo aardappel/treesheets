@@ -75,6 +75,9 @@ struct TSCanvas : public wxScrolledCanvas {
         } else {
             if (doc->hover != doc->prev && !doc->hover.Thin()) {
                 sys->frame->UpdateStatus(doc->hover, false);
+                if (sys->hoverzoom && !doc->selected.TextEdit()) {
+                    SetCursor(wxCursor(wxCURSOR_CROSS));
+                }
             }
         }
         lastmousepos = me.GetPosition();

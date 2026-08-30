@@ -31,6 +31,7 @@ struct System {
     bool autosave {true};
     bool zoomscroll {false};
     bool thinselc {true};
+    bool hoverzoom {false};
     bool minclose {false};
     bool singletray {false};
     bool startminimized {false};
@@ -88,6 +89,7 @@ struct System {
         cfg->Read("totray", &totray, totray);
         cfg->Read("zoomscroll", &zoomscroll, zoomscroll);
         cfg->Read("thinselc", &thinselc, thinselc);
+        cfg->Read("hoverzoom", &hoverzoom, hoverzoom);
         cfg->Read("autosave", &autosave, autosave);
         cfg->Read("fastrender", &fastrender, fastrender);
         cfg->Read("innerbordercolor", &innerbordercolor, innerbordercolor);
