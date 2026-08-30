@@ -342,8 +342,10 @@ struct System {
                             for (;;) {
                                 auto tag = dis.ReadString();
                                 if (tag.IsEmpty()) { break; }
-                                doc->tags[tag] =
-                                    versionlastloaded >= 24 ? dis.Read32() : g_tagcolor_default;
+                                doc->tags[tag] = {
+                                    versionlastloaded >= 24 ? dis.Read32() : g_cellcolor_default,
+                                    versionlastloaded >= 24 ? dis.Read32()
+                                                            : g_tagtextcolor_default};
                             }
                         }
 

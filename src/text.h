@@ -203,7 +203,7 @@ struct Text {
             } else if (filtered) {
                 dc.SetPen(*wxLIGHT_GREY_PEN);
             } else if (istag) {
-                dc.SetPen(wxPen(LightColor(doc->tags[t])));
+                dc.SetPen(wxPen(LightColor(doc->tags[t].second)));
             } else {
                 dc.SetPen(sys->pen_tinytext);
             }
@@ -239,7 +239,7 @@ struct Text {
                 } else if (filtered) {
                     dc.SetTextForeground(*wxLIGHT_GREY);
                 } else if (istag) {
-                    dc.SetTextForeground(LightColor(doc->tags[t]));
+                    dc.SetTextForeground(LightColor(doc->tags[t].second));
                 } else if (cell->textcolor != 0U) {
                     dc.SetTextForeground(LightColor(cell->textcolor));  // FIXME: clean up
                 }

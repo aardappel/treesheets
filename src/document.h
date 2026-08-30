@@ -78,7 +78,7 @@ struct Document {
     bool searchfilter {false};
     int editfilter {0};
     wxDateTime lastmodificationtime;
-    map<wxString, uint> tags;
+    map<wxString, pair<uint, uint>> tags;
     vector<Cell *> itercells;
 
     #define loopcellsin(par, c) \
@@ -190,9 +190,11 @@ struct Document {
             if (!zos.IsOk()) { return _("Zlib error while writing file."); }
             wxDataOutputStream dos(zos);
             root->Save(dos, ocs);
-            for (auto &[tag, color] : tags) {
+            for (auto &[tag, colors] : tags) {
+                auto &[cellcolor, textcolor] = colors;
                 dos.WriteString(tag);
-                dos.Write32(color);
+                dos.Write32(cellcolor);
+                dos.Write32(textcolor);
             }
             dos.WriteString(wxEmptyString);
         }
@@ -1934,7 +1936,7 @@ struct Document {
                     case A_RESETSTYLE: c->text.stylebits = 0; break;
                     case A_RESETCOLOR:
                         if (c->IsTag(this)) {
-                            tags[c->text.t] = g_tagcolor_default;
+                            tags[c->text.t] = {g_cellcolor_default, g_tagtextcolor_default};
                         } else {
                             c->textcolor = g_textcolor_default;
                         }
@@ -2128,7 +2130,7 @@ struct Document {
             case A_TAGADD: {
                 loopallcellssel(c, false) {
                     if (c->text.t.IsEmpty()) { continue; }
-                    tags[c->text.t] = g_tagcolor_default;
+                    tags[c->text.t] = {g_cellcolor_default, g_tagtextcolor_default};
                 }
                 canvas->Refresh();
                 return wxEmptyString;
@@ -2674,7 +2676,7 @@ struct Document {
 
     void RecreateTagMenu(wxMenu &menu) const {
         int i = A_TAGSET;
-        for (const auto &[tag, color] : tags) { menu.Append(i++, tag); }
+        for (const auto &[tag, colors] : tags) { menu.Append(i++, tag); }
         if (!tags.empty()) { menu.AppendSeparator(); }
         menu.Append(A_TAGADD, _("&Add Cell Text as Tag"));
         menu.Append(A_TAGREMOVE, _("&Remove Cell Text from Tags"));
@@ -2683,7 +2685,7 @@ struct Document {
     wxString TagSet(int tagno) {
         if (selected.grid == nullptr) { return NoSel(); }
         int i = 0;
-        for (auto &[tag, color] : tags) {
+        for (auto &[tag, colors] : tags) {
             if (i++ == tagno) {
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, false) {
