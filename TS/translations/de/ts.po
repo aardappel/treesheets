@@ -62,7 +62,7 @@ msgid "&Data"
 msgstr "&Daten"
 
 msgid "&Decrease font size"
-msgstr "Textgröße ver&kleinern"
+msgstr "Schriftgröße ver&ringern"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)"
@@ -107,7 +107,7 @@ msgid "&Images"
 msgstr "&Bilder"
 
 msgid "&Increase font size"
-msgstr "Textgröße ver&größern"
+msgstr "Schriftgröße er&höhen"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Textgröße vergrößern (UMSCHALT+Mausrad)"
@@ -170,7 +170,7 @@ msgid "&Reset Scale (display only)"
 msgstr "Skalierung zu&rücksetzen (nur Anzeige)"
 
 msgid "&Reset font size"
-msgstr "Textgröße zu&rücksetzen"
+msgstr "Schriftgröße zu&rücksetzen"
 
 msgid "&Reset text sizes"
 msgstr "Textgröße zu&rücksetzen"
