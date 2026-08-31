@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 06:54+0200\n"
+"POT-Creation-Date: 2026-08-30 16:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,6 +58,9 @@ msgstr ""
 msgid "&Data"
 msgstr ""
 
+msgid "&Decrease font size"
+msgstr ""
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr ""
 
@@ -100,6 +103,9 @@ msgstr ""
 msgid "&Images"
 msgstr ""
 
+msgid "&Increase font size"
+msgstr ""
+
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr ""
 
@@ -130,6 +136,9 @@ msgstr ""
 msgid "&Options"
 msgstr ""
 
+msgid "&PDF..."
+msgstr ""
+
 msgid "&Paste"
 msgstr ""
 
@@ -155,6 +164,9 @@ msgid "&Replace"
 msgstr ""
 
 msgid "&Reset Scale (display only)"
+msgstr ""
+
+msgid "&Reset font size"
 msgstr ""
 
 msgid "&Reset text sizes"
@@ -269,6 +281,9 @@ msgid "At least one file could not be opened."
 msgstr ""
 
 msgid "Autoexport to HTML"
+msgstr ""
+
+msgid "Autoexport to PDF"
 msgstr ""
 
 msgid "Autoreload documents"
@@ -386,6 +401,9 @@ msgid "Choose CSV file to write"
 msgstr ""
 
 msgid "Choose HTML file to write"
+msgstr ""
+
+msgid "Choose PDF file to write"
 msgstr ""
 
 msgid "Choose PNG file to write"
@@ -571,6 +589,9 @@ msgstr ""
 msgid "Error exporting file!"
 msgstr ""
 
+msgid "Error exporting to PDF file!"
+msgstr ""
+
 msgid "Error exporting to SVG file!"
 msgstr ""
 
@@ -641,6 +662,9 @@ msgid ""
 "Export the current view as tree structured text, using spaces for each "
 "indentation level. Suitable for importing into mindmanagers and general text "
 "programs"
+msgstr ""
+
+msgid "Export the current view to a PDF file."
 msgstr ""
 
 msgid "Export the current view to a SVG vector file."
@@ -811,6 +835,9 @@ msgid "Horizontal Layout with Grid Style Rendering"
 msgstr ""
 
 msgid "Horizontal Layout with Line Style Rendering"
+msgstr ""
+
+msgid "Hover zoom"
 msgstr ""
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
@@ -1337,6 +1364,9 @@ msgstr ""
 msgid "Search "
 msgstr ""
 
+msgid "Search in folded grids"
+msgstr ""
+
 msgid "Select &Parent"
 msgstr ""
 
@@ -1666,6 +1696,9 @@ msgid "Zoom In (CTRL+mousewheel)"
 msgstr ""
 
 msgid "Zoom Out (CTRL+mousewheel)"
+msgstr ""
+
+msgid "Zoom on cells cursor hovers on"
 msgstr ""
 
 msgid "Zoomed in."
