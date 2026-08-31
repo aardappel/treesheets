@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 06:54+0200\n"
+"POT-Creation-Date: 2026-08-30 16:33+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -61,6 +61,10 @@ msgstr "Als &Bild kopieren"
 msgid "&Data"
 msgstr "&Daten"
 
+#, fuzzy
+msgid "&Decrease font size"
+msgstr "Textgröße zu&rücksetzen"
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)"
 
@@ -103,6 +107,10 @@ msgstr "&Bild..."
 msgid "&Images"
 msgstr "&Bilder"
 
+#, fuzzy
+msgid "&Increase font size"
+msgstr "Textgröße zu&rücksetzen"
+
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Textgröße vergrößern (UMSCHALT+Mausrad)"
 
@@ -133,6 +141,9 @@ msgstr "&Bedienung..."
 msgid "&Options"
 msgstr "&Optionen"
 
+msgid "&PDF..."
+msgstr ""
+
 msgid "&Paste"
 msgstr "&Einfügen"
 
@@ -159,6 +170,10 @@ msgstr "E&rsetzen"
 
 msgid "&Reset Scale (display only)"
 msgstr "Skalierung zu&rücksetzen (nur Anzeige)"
+
+#, fuzzy
+msgid "&Reset font size"
+msgstr "Textgröße zu&rücksetzen"
 
 msgid "&Reset text sizes"
 msgstr "Textgröße zu&rücksetzen"
@@ -274,6 +289,10 @@ msgid "At least one file could not be opened."
 msgstr "Mindestens eine Datei konnte nicht geöffnet werden."
 
 msgid "Autoexport to HTML"
+msgstr "In HTML automatisch exportieren"
+
+#, fuzzy
+msgid "Autoexport to PDF"
 msgstr "In HTML automatisch exportieren"
 
 msgid "Autoreload documents"
@@ -409,6 +428,10 @@ msgstr "CSV-Datei zum Schreiben auswählen"
 
 msgid "Choose HTML file to write"
 msgstr "HTML-Datei zum Schreiben auswählen"
+
+#, fuzzy
+msgid "Choose PDF file to write"
+msgstr "PNG-Datei zum Schreiben auswählen"
 
 msgid "Choose PNG file to write"
 msgstr "PNG-Datei zum Schreiben auswählen"
@@ -604,6 +627,10 @@ msgstr "Textbearbeitungsmodus betreten/verlassen"
 msgid "Error exporting file!"
 msgstr "Fehler beim Exportieren der Datei!"
 
+#, fuzzy
+msgid "Error exporting to PDF file!"
+msgstr "Fehler beim Exportieren der SVG-Datei!"
+
 msgid "Error exporting to SVG file!"
 msgstr "Fehler beim Exportieren der SVG-Datei!"
 
@@ -697,6 +724,10 @@ msgstr ""
 "Die aktuelle Ansicht als baumstrukturierten Text exportieren, dabei werden "
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
+
+#, fuzzy
+msgid "Export the current view to a PDF file."
+msgstr "Die aktuelle Ansicht als SVG-Vektorgrafik exportieren."
 
 msgid "Export the current view to a SVG vector file."
 msgstr "Die aktuelle Ansicht als SVG-Vektorgrafik exportieren."
@@ -876,6 +907,9 @@ msgstr "Horizontale Anordnung mit Tabellenstil-Rendering"
 
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Horizontale Anordnung mit Zeilenstil-Rendering"
+
+msgid "Hover zoom"
+msgstr ""
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr ""
@@ -1438,6 +1472,9 @@ msgstr "Hochscrollen (Mausrad)"
 msgid "Search "
 msgstr "Suche "
 
+msgid "Search in folded grids"
+msgstr ""
+
 msgid "Select &Parent"
 msgstr "&Übergeordnetes Element auswählen"
 
@@ -1791,6 +1828,9 @@ msgstr "Zoom vergrößern (STRG+Mausrad)"
 
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "Zoom verkleinern (STRG+Mausrad)"
+
+msgid "Zoom on cells cursor hovers on"
+msgstr ""
 
 msgid "Zoomed in."
 msgstr "Zoom vergrößert."
