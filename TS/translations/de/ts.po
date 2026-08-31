@@ -61,9 +61,8 @@ msgstr "Als &Bild kopieren"
 msgid "&Data"
 msgstr "&Daten"
 
-#, fuzzy
 msgid "&Decrease font size"
-msgstr "Textgröße zu&rücksetzen"
+msgstr "Textgröße ver&kleinern"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)"
@@ -107,9 +106,8 @@ msgstr "&Bild..."
 msgid "&Images"
 msgstr "&Bilder"
 
-#, fuzzy
 msgid "&Increase font size"
-msgstr "Textgröße zu&rücksetzen"
+msgstr "Textgröße ver&größern"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Textgröße vergrößern (UMSCHALT+Mausrad)"
@@ -171,7 +169,6 @@ msgstr "E&rsetzen"
 msgid "&Reset Scale (display only)"
 msgstr "Skalierung zu&rücksetzen (nur Anzeige)"
 
-#, fuzzy
 msgid "&Reset font size"
 msgstr "Textgröße zu&rücksetzen"
 
@@ -291,9 +288,8 @@ msgstr "Mindestens eine Datei konnte nicht geöffnet werden."
 msgid "Autoexport to HTML"
 msgstr "In HTML automatisch exportieren"
 
-#, fuzzy
 msgid "Autoexport to PDF"
-msgstr "In HTML automatisch exportieren"
+msgstr "In PDF automatisch exportieren"
 
 msgid "Autoreload documents"
 msgstr "Dokument automatisch neu laden"
@@ -429,9 +425,8 @@ msgstr "CSV-Datei zum Schreiben auswählen"
 msgid "Choose HTML file to write"
 msgstr "HTML-Datei zum Schreiben auswählen"
 
-#, fuzzy
 msgid "Choose PDF file to write"
-msgstr "PNG-Datei zum Schreiben auswählen"
+msgstr "PDF-Datei zum Schreiben auswählen"
 
 msgid "Choose PNG file to write"
 msgstr "PNG-Datei zum Schreiben auswählen"
@@ -627,9 +622,8 @@ msgstr "Textbearbeitungsmodus betreten/verlassen"
 msgid "Error exporting file!"
 msgstr "Fehler beim Exportieren der Datei!"
 
-#, fuzzy
 msgid "Error exporting to PDF file!"
-msgstr "Fehler beim Exportieren der SVG-Datei!"
+msgstr "Fehler beim Exportieren der PDF-Datei!"
 
 msgid "Error exporting to SVG file!"
 msgstr "Fehler beim Exportieren der SVG-Datei!"
@@ -725,9 +719,8 @@ msgstr ""
 "Leerzeichen für jede Einrückebene verwendet. Dies eignet sich für den Import "
 "in Mindmanager und allgemeine Textprogramme."
 
-#, fuzzy
 msgid "Export the current view to a PDF file."
-msgstr "Die aktuelle Ansicht als SVG-Vektorgrafik exportieren."
+msgstr "Die aktuelle Ansicht als PDF-Datei exportieren."
 
 msgid "Export the current view to a SVG vector file."
 msgstr "Die aktuelle Ansicht als SVG-Vektorgrafik exportieren."
@@ -909,7 +902,7 @@ msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Horizontale Anordnung mit Zeilenstil-Rendering"
 
 msgid "Hover zoom"
-msgstr ""
+msgstr "Schwebezoom"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr ""
