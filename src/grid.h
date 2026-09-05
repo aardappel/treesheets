@@ -282,7 +282,7 @@ struct Grid {
         }
     }
 
-    template<typename DC> void FindXY(Document *doc, int px, int py, DC &dc) {
+    void FindXY(Document *doc, int px, int py) {
         foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;
@@ -305,11 +305,11 @@ struct Grid {
                 return;
             }
             if (c->IsInside(bx, by)) {
-                if (c->GridShown(doc)) { c->grid->FindXY(doc, bx, by, dc); }
+                if (c->GridShown(doc)) { c->grid->FindXY(doc, bx, by); }
                 if (doc->hover.grid) { return; }
                 doc->hover = Selection(cell->grid, x, y, 1, 1);
                 if (c->HasText()) {
-                    c->text.FindCursor(doc, bx, by - c->ycenteroff, dc, doc->hover, colwidths[x]);
+                    c->text.FindCursor(doc, bx, by - c->ycenteroff, doc->hover);
                 }
                 return;
             }
