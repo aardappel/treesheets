@@ -245,8 +245,7 @@ struct Document {
         s.grid->DrawSelect(this, dc, s);
     }
 
-    template<typename DC> void UpdateHover(DC &dc, int mx, int my) {
-        ResetFont();
+    void UpdateHover(int mx, int my) {
         int x = 0;
         int y = 0;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
@@ -256,7 +255,7 @@ struct Document {
         if (drawroot->grid) {
             drawroot->grid->FindXY(
                 this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
-                y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
+                y / currentviewscale - centery / currentviewscale - hierarchysize);
         }
     }
 

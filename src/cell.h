@@ -99,6 +99,8 @@ struct Cell {
             } else {
                 leftoffset = dc.GetCharHeight();
             }
+            text.charheight = tiny ? 1 : dc.GetCharHeight();
+            text.lines.clear();
         } else {
             text.TextSize(dc, sx, sy, static_cast<int>(tiny), leftoffset, maxcolwidth);
         }
