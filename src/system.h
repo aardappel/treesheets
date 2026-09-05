@@ -12,6 +12,7 @@ struct System {
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
     wxArrayString scripts;
+    wxString lastopenfile;
     Evaluator evaluator;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
@@ -138,12 +139,12 @@ struct System {
         evaluator.Init();
 
         auto numfiles = static_cast<int>(cfg->Read("numopenfiles", static_cast<long>(0)));
-        wxString focusfile = cfg->Read("lastopenfile", "");
+        lastopenfile = cfg->Read("lastopenfile", "");
         int selection = -1;
         loop(i, numfiles) {
             wxString filename;
             cfg->Read(wxString::Format("lastopenfile_%d", i), &filename);
-            if (!LoadDB(filename) && filename == focusfile) { selection = i; }
+            if (!LoadDB(filename) && filename == lastopenfile) { selection = i; }
         }
 
         if (!filename.IsEmpty()) {
@@ -398,7 +399,11 @@ struct System {
     wxString Open(const wxString &filename) {
         if (!filename.empty()) {
             auto msg = LoadDB(filename);
-            if (!msg.IsEmpty()) { wxMessageBox(msg, filename, wxOK, frame); }
+            if (!msg.IsEmpty()) {
+                wxMessageBox(msg, filename, wxOK, frame);
+            } else {
+                lastopenfile = filename;
+            }
             return msg;
         }
         return _("Open file cancelled.");
