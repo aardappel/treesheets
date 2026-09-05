@@ -1095,9 +1095,11 @@ struct Document {
 
             case wxID_OPEN: {
                 wxArrayString filenames;
+                wxFileName fn(sys->lastopenfile);
+                wxString lastdir = fn.DirExists() ? fn.GetPath() : "";
                 GetFilesFromUser(filenames, sys->frame,
                                  _("Please select TreeSheets file(s) to load:"),
-                                 _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"));
+                                 _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"), lastdir);
                 wxString message = "";
                 for (auto &filename : filenames) { message = sys->Open(filename); }
                 return message;
