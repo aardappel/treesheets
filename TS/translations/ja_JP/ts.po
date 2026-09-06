@@ -61,6 +61,9 @@ msgstr "ビットマップとしてコピー(&C)"
 msgid "&Data"
 msgstr "データ(&D)"
 
+msgid "&Decrease font size"
+msgstr "フォントサイズを縮小(&D)"
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "テキストサイズを縮小(&D) (SHIFT+マウスホイール)"
 
@@ -103,6 +106,9 @@ msgstr "画像(&I)..."
 msgid "&Images"
 msgstr "画像(&I)"
 
+msgid "&Increase font size"
+msgstr "フォントサイズを拡大(&I)"
+
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "テキストサイズを拡大(&I) (SHIFT+マウスホイール)"
 
@@ -133,6 +139,9 @@ msgstr "操作(&O)"
 msgid "&Options"
 msgstr "オプション(&O)"
 
+msgid "&PDF..."
+msgstr "PDF(&P)"
+
 msgid "&Paste"
 msgstr "貼り付け(&P)"
 
@@ -159,6 +168,9 @@ msgstr "置換(&R)"
 
 msgid "&Reset Scale (display only)"
 msgstr "スケールをリセット(&R) (表示のみ)"
+
+msgid "&Reset font size"
+msgstr "フォントサイズをリセット(&R)"
 
 msgid "&Reset text sizes"
 msgstr "テキストサイズをリセット(&R)"
@@ -273,6 +285,9 @@ msgstr "少なくとも 1つのファイルを開けませんでした。"
 
 msgid "Autoexport to HTML"
 msgstr "HTML への自動エクスポート"
+
+msgid "Autoexport to PDF"
+msgstr "PDF への自動エクスポート"
 
 msgid "Autoreload documents"
 msgstr "ドキュメントの自動リロード"
@@ -399,6 +414,9 @@ msgstr "書き込む CSV ファイルを選択"
 msgid "Choose HTML file to write"
 msgstr "書き込む HTML ファイルを選択"
 
+msgid "Choose PDF file to write"
+msgstr "書き込む PDF ファイルを選択"
+
 msgid "Choose PNG file to write"
 msgstr "書き込む PNG ファイルを選択"
 
@@ -473,7 +491,7 @@ msgid "Create backup file before document is saved to file"
 msgstr "ドキュメントをファイルに保存する前にバックアップファイルを作成"
 
 msgid "Creates a new level of hierarchy around the current selection"
-msgstr "現在の選択の周囲に新しい階層レベルを作成します"
+msgstr "現在の選択範囲の周囲に新しい階層レベルを作成します"
 
 msgid "Cu&rsor color..."
 msgstr "カーソル色(&R)..."
@@ -586,6 +604,9 @@ msgstr "テキスト編集モードに入る/終了する"
 msgid "Error exporting file!"
 msgstr "ファイルのエクスポート中にエラーが発生しました！"
 
+msgid "Error exporting to PDF file!"
+msgstr "PDF ファイルへのエクスポート中にエラーが発生しました！"
+
 msgid "Error exporting to SVG file!"
 msgstr "SVG ファイルへのエクスポート中にエラーが発生しました！"
 
@@ -679,6 +700,9 @@ msgstr ""
 "現在のビューをツリー構造のテキストとしてエクスポートします。各インデントレベ"
 "ルにスペースを使用します。マインドマネージャーや一般的なテキストプログラムへ"
 "のインポートに適しています"
+
+msgid "Export the current view to a PDF file."
+msgstr "現在のビューを PDF ファイルにエクスポートします。"
 
 msgid "Export the current view to a SVG vector file."
 msgstr "現在のビューを SVG ベクターファイルにエクスポートします。"
@@ -857,6 +881,9 @@ msgstr "グリッドスタイルレンダリングの水平レイアウト"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "ラインスタイルレンダリングの水平レイアウト"
 
+msgid "Hover zoom"
+msgstr "ホバーズーム"
+
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "ページの幅は何ピクセルにしますか？（0は自動フィット）"
 
@@ -985,28 +1012,28 @@ msgid "Move Cells Up"
 msgstr "セルを上に移動"
 
 msgid "Move Selection Down"
-msgstr "選択を下に移動"
+msgstr "選択範囲を下に移動"
 
 msgid "Move Selection Down (DOWN)"
 msgstr "選択を下に移動 (↓)"
 
 msgid "Move Selection Left"
-msgstr "選択を左に移動"
+msgstr "選択範囲を左に移動"
 
 msgid "Move Selection Left (LEFT)"
-msgstr "選択を左に移動 (←)"
+msgstr "選択範囲を左に移動 (←)"
 
 msgid "Move Selection Right"
-msgstr "選択を右に移動"
+msgstr "選択範囲を右に移動"
 
 msgid "Move Selection Right (RIGHT)"
-msgstr "選択を右に移動 (→)"
+msgstr "選択範囲を右に移動 (→)"
 
 msgid "Move Selection Up"
-msgstr "選択を上に移動"
+msgstr "選択範囲を上に移動"
 
 msgid "Move Selection Up (UP)"
-msgstr "選択を上に移動 (↑)"
+msgstr "選択範囲を上に移動 (↑)"
 
 msgid "Move to next cell"
 msgstr "次のセルへ移動"
@@ -1401,6 +1428,9 @@ msgstr "上にスクロール（マウスホイール）"
 msgid "Search "
 msgstr "検索 "
 
+msgid "Search in folded grids"
+msgstr "折り畳まれたグリッド内を検索"
+
 msgid "Select &Parent"
 msgstr "親を選択(&P)"
 
@@ -1579,7 +1609,7 @@ msgid "There is no content to collapse."
 msgstr "折りたたむ内容がありません。"
 
 msgid "This operation doesn't work on thin selections."
-msgstr "この操作は薄い選択範囲では機能しません。"
+msgstr "境界線の選択状態では、この操作は実行できません。"
 
 msgid "This operation requires a cell that contains a grid."
 msgstr "この操作にはグリッドを含むセルが必要です。"
@@ -1737,6 +1767,9 @@ msgstr "ズームイン (Ctrl+マウスホイール)"
 
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "ズームアウト (Ctrl+マウスホイール)"
+
+msgid "Zoom on cells cursor hovers on"
+msgstr "カーソルを合わせたセルを拡大表示"
 
 msgid "Zoomed in."
 msgstr "ズームインしました。"
