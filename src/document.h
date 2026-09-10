@@ -572,7 +572,7 @@ struct Document {
                 dc.DrawText(s, off, off);
             }
         }
-        dc.SetTextForeground(LightColor(0x000000));
+        dc.SetTextForeground(sys->rubberbandcolor);
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
         ClearUnusedBitmaps();

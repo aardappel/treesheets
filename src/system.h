@@ -25,6 +25,7 @@ struct System {
     wxPen pen_thinselect {*wxLIGHT_GREY};
     wxPen pen_tinygridlines;
     wxPen pen_gridlines;
+    wxColour rubberbandcolor;
     wxPen pen_rubberband;
     wxBrush brush_rubberband;
     int roundness {3};
@@ -129,7 +130,7 @@ struct System {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
-        const wxColour rubberbandcolor = LightColor(0x000000);
+        rubberbandcolor = LightColor(0x000000);
         brush_rubberband = wxBrush(rubberbandcolor);
         pen_rubberband = wxPen(rubberbandcolor);
     }
