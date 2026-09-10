@@ -1,11 +1,12 @@
 template<typename DC>
 static void DrawRectangle(DC &dc, uint color, int x, int y, int xs, int ys, bool outline = false) {
+    const wxColour lightCol = LightColor(color);
     if (outline) {
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     } else {
-        dc.SetBrush(wxBrush(LightColor(color)));
+        dc.SetBrush(wxBrush(lightCol));
     }
-    dc.SetPen(wxPen(LightColor(color)));
+    dc.SetPen(wxPen(lightCol));
     dc.DrawRectangle(x, y, xs, ys);
 }
 
