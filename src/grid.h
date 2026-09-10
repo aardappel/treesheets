@@ -427,8 +427,8 @@ struct Grid {
         if (sel.Thin()) {
             DrawInsert(doc, dc, sel, 0);
         } else {
-            dc.SetBrush(wxBrush(LightColor(0x000000)));
-            dc.SetPen(wxPen(LightColor(0x000000)));
+            dc.SetBrush(sys->brush_rubberband);
+            dc.SetPen(sys->pen_rubberband);
             wxRect g = GetRect(doc, sel);
             int lw = g_line_width;
             int te = static_cast<int>(sel.TextEdit());

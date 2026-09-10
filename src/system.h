@@ -25,6 +25,8 @@ struct System {
     wxPen pen_thinselect {*wxLIGHT_GREY};
     wxPen pen_tinygridlines;
     wxPen pen_gridlines;
+    wxPen pen_rubberband;
+    wxBrush brush_rubberband;
     int roundness {3};
     int defaultmaxcolwidth {80};
     bool makebaks {true};
@@ -127,6 +129,9 @@ struct System {
         static const wxDash glpattern[] = {1, 3};
         pen_gridlines.SetDashes(2, glpattern);
         pen_gridlines.SetStyle(wxPENSTYLE_USER_DASH);
+        const wxColour rubberbandcolor = LightColor(0x000000);
+        brush_rubberband = wxBrush(rubberbandcolor);
+        pen_rubberband = wxPen(rubberbandcolor);
     }
 
     Document *NewTabDoc(bool append = false, int insert_at = -1) const {
