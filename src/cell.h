@@ -541,8 +541,9 @@ struct Cell {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls) {
-        if (grid) { grid->FindReplaceAll(s, ls); }
+    void FindReplaceAll(const wxString &s, const wxString &ls, Cell *replaceroot) {
+        if (sys->searchview && tiny) return;
+        if (grid) { grid->FindReplaceAll(s, ls, replaceroot); }
         text.ReplaceStr(s, ls);
     }
 

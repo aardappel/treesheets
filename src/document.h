@@ -1379,9 +1379,10 @@ struct Document {
                 auto lreplaces =
                     sys->casesensitivesearch ? wxString(wxEmptyString) : replaces.Lower();
                 if (action == A_REPLACEALL) {
-                    root->AddUndo(this);  // expensive?
-                    root->FindReplaceAll(replaces, lreplaces);
-                    root->ResetChildren();
+                    Cell *replaceroot = sys->searchview ? currentdrawroot : root.get();
+                    replaceroot->AddUndo(this);  // expensive?
+                    replaceroot->FindReplaceAll(replaces, lreplaces, replaceroot);
+                    replaceroot->ResetChildren();
                     UpdateLayout();
                     canvas->Refresh();
                 } else {

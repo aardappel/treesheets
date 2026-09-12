@@ -473,9 +473,10 @@ struct TSFrame : wxFrame {
         MyAppend(semenu, wxID_FIND, _("&Search") + "\tCTRL+F", _("Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _("Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
-        semenu->AppendCheckItem(A_SEARCHVIEW, _("Restrict search to view"),
-                                _("Search in the visible content of the current view (no folded "
-                                  "grids, no tiny cells)"));
+        semenu->AppendCheckItem(
+            A_SEARCHVIEW, _("Restrict search and replace to view"),
+            _("Search and replace in the visible content of the current view (no folded "
+              "grids, no tiny cells)"));
         semenu->Check(A_SEARCHVIEW, sys->searchview);
         semenu->AppendSeparator();
         MyAppend(semenu, A_SEARCHNEXT, _("&Next Match") + "\tF3", _("Go to next search match"));

@@ -346,8 +346,9 @@ struct Grid {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls) {
-        foreachcell(c) c->FindReplaceAll(s, ls);
+    void FindReplaceAll(const wxString &s, const wxString &ls, Cell *replaceroot) {
+        if (sys->searchview && folded && replaceroot != cell) return;
+        foreachcell(c) c->FindReplaceAll(s, ls, replaceroot);
     }
 
     void ReplaceCell(Cell *o, Cell *n) {
