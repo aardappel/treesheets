@@ -495,7 +495,7 @@ struct Cell {
             best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse,
                                              restrictroot);
         }
-        if ((sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
+        if (this != restrictroot && (sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
             if (lastwasselected) { best = this; }
             lastwasselected = false;
         }
@@ -544,7 +544,7 @@ struct Cell {
     void FindReplaceAll(const wxString &s, const wxString &ls, Cell *restrictroot) {
         if (restrictroot != nullptr && tiny) return;
         if (grid) { grid->FindReplaceAll(s, ls, restrictroot); }
-        text.ReplaceStr(s, ls);
+        if (restrictroot != this) text.ReplaceStr(s, ls);
     }
 
     Cell *FindExact(const wxString &s) {
