@@ -2335,7 +2335,7 @@ struct Document {
         bool lastsel = true;
         Cell *searchroot = sys->searchview ? currentdrawroot : root.get();
         Cell *next = searchroot->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
-                                               lastsel, reverse);
+                                               lastsel, reverse, searchroot);
         if (next == nullptr || next->parent == nullptr) { return _("No matches for search."); }
         if (!jump) { return wxEmptyString; }
         SetSelect(next->parent->grid->FindCell(next));

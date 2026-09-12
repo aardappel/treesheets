@@ -329,14 +329,14 @@ struct Grid {
     }
 
     Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
-                              bool &lastwasselected, bool reverse) {
-        if (sys->searchview && folded) return best;
+                              bool &lastwasselected, bool reverse, Cell *searchroot) {
+        if (sys->searchview && folded && cell != searchroot) return best;
         if (reverse) {
             foreachcellrev(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected,
-                                                            reverse);
+                                                            reverse, searchroot);
         } else {
             foreachcell(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected,
-                                                         reverse);
+                                                         reverse, searchroot);
         }
         return best;
     }

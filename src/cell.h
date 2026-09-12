@@ -489,11 +489,11 @@ struct Cell {
     }
 
     Cell *FindNextSearchMatch(const wxString &s, Cell *best, Cell *selected, bool &lastwasselected,
-                              bool reverse) {
+                              bool reverse, Cell *searchroot) {
         if (sys->searchview && tiny) return best;
         if (reverse && grid) {
             best =
-                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse);
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, searchroot);
         }
         if ((sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
             if (lastwasselected) { best = this; }
@@ -502,7 +502,7 @@ struct Cell {
         if (selected == this) { lastwasselected = true; }
         if (!reverse && grid) {
             best =
-                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse);
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, searchroot);
         }
         return best;
     }
