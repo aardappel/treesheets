@@ -490,7 +490,6 @@ struct Cell {
 
     Cell *FindNextSearchMatch(const wxString &s, Cell *best, Cell *selected, bool &lastwasselected,
                               bool reverse, Cell *restrictroot) {
-        if (restrictroot != nullptr && tiny) return best;
         if (reverse && grid) {
             best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse,
                                              restrictroot);
@@ -542,7 +541,6 @@ struct Cell {
     }
 
     void FindReplaceAll(const wxString &s, const wxString &ls, Cell *restrictroot) {
-        if (restrictroot != nullptr && tiny) return;
         if (grid) { grid->FindReplaceAll(s, ls, restrictroot); }
         if (restrictroot != this) text.ReplaceStr(s, ls);
     }

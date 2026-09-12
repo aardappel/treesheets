@@ -330,13 +330,20 @@ struct Grid {
 
     Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
                               bool &lastwasselected, bool reverse, Cell *restrictroot) {
-        if (restrictroot != nullptr && folded && restrictroot != cell) return best;
+        bool restricted = (restrictroot != nullptr);
+        if (restricted && folded && restrictroot != cell) return best;
         if (reverse) {
-            foreachcellrev(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected,
-                                                            reverse, restrictroot);
+            foreachcellrev(c) {
+                if (restricted && c->tiny) continue;
+                best = c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse,
+                                              restrictroot);
+            }
         } else {
-            foreachcell(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected,
-                                                         reverse, restrictroot);
+            foreachcell(c) {
+                if (restricted && c->tiny) continue;
+                best = c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse,
+                                              restrictroot);
+            }
         }
         return best;
     }
@@ -347,8 +354,12 @@ struct Grid {
     }
 
     void FindReplaceAll(const wxString &s, const wxString &ls, Cell *restrictroot) {
-        if (restrictroot != nullptr && folded && restrictroot != cell) return;
-        foreachcell(c) c->FindReplaceAll(s, ls, restrictroot);
+        bool restricted = (restrictroot != nullptr);
+        if (restricted && folded && restrictroot != cell) return;
+        foreachcell(c) {
+            if (restricted && c->tiny) continue;
+            c->FindReplaceAll(s, ls, restrictroot);
+        }
     }
 
     void ReplaceCell(Cell *o, Cell *n) {
