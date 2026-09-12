@@ -2328,12 +2328,13 @@ struct Document {
     }
 
     wxString SearchNext(bool focusmatch, bool jump, bool reverse) {
-        if (!root) {
+        if (root == nullptr || currentdrawroot == nullptr) {
             return wxEmptyString;  // fix crash when opening new doc
         }
         if (sys->searchstring.IsEmpty()) { return _("No search string."); }
         bool lastsel = true;
-        Cell *next = root->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
+        Cell *searchroot = sys->searchview ? currentdrawroot : root.get();
+        Cell *next = searchroot->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
                                                lastsel, reverse);
         if (next == nullptr || next->parent == nullptr) { return _("No matches for search."); }
         if (!jump) { return wxEmptyString; }
