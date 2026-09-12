@@ -1381,8 +1381,7 @@ struct Document {
                 if (action == A_REPLACEALL) {
                     Cell *replaceroot = sys->restrictview ? currentdrawroot : root.get();
                     replaceroot->AddUndo(this);  // expensive?
-                    replaceroot->FindReplaceAll(replaces, lreplaces,
-                                                sys->restrictview ? replaceroot : nullptr);
+                    replaceroot->FindReplaceAllStart(replaces, lreplaces, sys->restrictview);
                     replaceroot->ResetChildren();
                     UpdateLayout();
                     canvas->Refresh();
@@ -2336,9 +2335,8 @@ struct Document {
         if (sys->searchstring.IsEmpty()) { return _("No search string."); }
         bool lastsel = true;
         Cell *searchroot = sys->restrictview ? currentdrawroot : root.get();
-        Cell *next =
-            searchroot->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel,
-                                            reverse, sys->restrictview ? searchroot : nullptr);
+        Cell *next = searchroot->FindNextSearchMatchStart(
+            sys->searchstring, nullptr, selected.GetCell(), lastsel, reverse, sys->restrictview);
         if (next == nullptr || next->parent == nullptr) { return _("No matches for search."); }
         if (!jump) { return wxEmptyString; }
         SetSelect(next->parent->grid->FindCell(next));

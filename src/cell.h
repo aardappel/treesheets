@@ -488,20 +488,30 @@ struct Cell {
         }
     }
 
-    Cell *FindNextSearchMatch(const wxString &s, Cell *best, Cell *selected, bool &lastwasselected,
-                              bool reverse, Cell *restrictroot) {
-        if (reverse && grid) {
-            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse,
-                                             restrictroot);
+    Cell *FindNextSearchMatchStart(const wxString &s, Cell *best, Cell *selected,
+                                   bool &lastwasselected, bool reverse, bool restricted) {
+        // Skip cell content on starting node
+        if (grid) {
+            best =
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, restricted);
         }
-        if (this != restrictroot && (sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
+        return best;
+    }
+
+    Cell *FindNextSearchMatch(const wxString &s, Cell *best, Cell *selected, bool &lastwasselected,
+                              bool reverse, bool restricted) {
+        if (reverse && grid && !(restricted && grid->folded)) {
+            best =
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, restricted);
+        }
+        if ((sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
             if (lastwasselected) { best = this; }
             lastwasselected = false;
         }
         if (selected == this) { lastwasselected = true; }
-        if (!reverse && grid) {
-            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse,
-                                             restrictroot);
+        if (!reverse && grid && !(restricted && grid->folded)) {
+            best =
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, restricted);
         }
         return best;
     }
@@ -540,9 +550,14 @@ struct Cell {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls, Cell *restrictroot) {
-        if (grid) { grid->FindReplaceAll(s, ls, restrictroot); }
-        if (restrictroot != this) text.ReplaceStr(s, ls);
+    void FindReplaceAllStart(const wxString &s, const wxString &ls, bool restricted) {
+        // Skip cell content on starting node
+        if (grid) { grid->FindReplaceAll(s, ls, restricted); }
+    }
+
+    void FindReplaceAll(const wxString &s, const wxString &ls, bool restricted) {
+        if (grid && !(restricted && grid->folded)) { grid->FindReplaceAll(s, ls, restricted); }
+        text.ReplaceStr(s, ls);
     }
 
     Cell *FindExact(const wxString &s) {
