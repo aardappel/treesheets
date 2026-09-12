@@ -474,10 +474,10 @@ struct TSFrame : wxFrame {
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _("Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
         semenu->AppendCheckItem(
-            A_SEARCHVIEW, _("Restrict search and replace to view"),
+            A_RESTRICTVIEW, _("Restrict search and replace to view"),
             _("Search and replace in the visible content of the current view (no folded "
               "grids, no tiny cells)"));
-        semenu->Check(A_SEARCHVIEW, sys->searchview);
+        semenu->Check(A_RESTRICTVIEW, sys->restrictview);
         semenu->AppendSeparator();
         MyAppend(semenu, A_SEARCHNEXT, _("&Next Match") + "\tF3", _("Go to next search match"));
         MyAppend(semenu, A_SEARCHPREV, _("&Previous Match") + "\tSHIFT+F3",
@@ -1272,8 +1272,8 @@ struct TSFrame : wxFrame {
                     SetStatus(_("Please enable (Options -> Show Toolbar) to use search."));
                 }
                 break;
-            case A_SEARCHVIEW:
-                sys->cfg->Write("searchview", sys->searchview = ce.IsChecked());
+            case A_RESTRICTVIEW:
+                sys->cfg->Write("restrictview", sys->restrictview = ce.IsChecked());
                 break;
             case wxID_REPLACE:
                 if (replaces != nullptr) {

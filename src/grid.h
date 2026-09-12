@@ -329,14 +329,14 @@ struct Grid {
     }
 
     Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
-                              bool &lastwasselected, bool reverse, Cell *searchroot) {
-        if (sys->searchview && folded && cell != searchroot) return best;
+                              bool &lastwasselected, bool reverse, Cell *restrictroot) {
+        if (restrictroot != nullptr && folded && restrictroot != cell) return best;
         if (reverse) {
             foreachcellrev(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected,
-                                                            reverse, searchroot);
+                                                            reverse, restrictroot);
         } else {
             foreachcell(c) best = c->FindNextSearchMatch(search, best, selected, lastwasselected,
-                                                         reverse, searchroot);
+                                                         reverse, restrictroot);
         }
         return best;
     }
@@ -346,9 +346,9 @@ struct Grid {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls, Cell *replaceroot) {
-        if (sys->searchview && folded && replaceroot != cell) return;
-        foreachcell(c) c->FindReplaceAll(s, ls, replaceroot);
+    void FindReplaceAll(const wxString &s, const wxString &ls, Cell *restrictroot) {
+        if (restrictroot != nullptr && folded && restrictroot != cell) return;
+        foreachcell(c) c->FindReplaceAll(s, ls, restrictroot);
     }
 
     void ReplaceCell(Cell *o, Cell *n) {

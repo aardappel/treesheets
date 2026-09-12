@@ -1379,9 +1379,10 @@ struct Document {
                 auto lreplaces =
                     sys->casesensitivesearch ? wxString(wxEmptyString) : replaces.Lower();
                 if (action == A_REPLACEALL) {
-                    Cell *replaceroot = sys->searchview ? currentdrawroot : root.get();
+                    Cell *replaceroot = sys->restrictview ? currentdrawroot : root.get();
                     replaceroot->AddUndo(this);  // expensive?
-                    replaceroot->FindReplaceAll(replaces, lreplaces, replaceroot);
+                    replaceroot->FindReplaceAll(replaces, lreplaces,
+                                                sys->restrictview ? replaceroot : nullptr);
                     replaceroot->ResetChildren();
                     UpdateLayout();
                     canvas->Refresh();
@@ -2334,9 +2335,10 @@ struct Document {
         }
         if (sys->searchstring.IsEmpty()) { return _("No search string."); }
         bool lastsel = true;
-        Cell *searchroot = sys->searchview ? currentdrawroot : root.get();
-        Cell *next = searchroot->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
-                                               lastsel, reverse, searchroot);
+        Cell *searchroot = sys->restrictview ? currentdrawroot : root.get();
+        Cell *next =
+            searchroot->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(), lastsel,
+                                            reverse, sys->restrictview ? searchroot : nullptr);
         if (next == nullptr || next->parent == nullptr) { return _("No matches for search."); }
         if (!jump) { return wxEmptyString; }
         SetSelect(next->parent->grid->FindCell(next));

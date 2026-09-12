@@ -489,11 +489,11 @@ struct Cell {
     }
 
     Cell *FindNextSearchMatch(const wxString &s, Cell *best, Cell *selected, bool &lastwasselected,
-                              bool reverse, Cell *searchroot) {
-        if (sys->searchview && tiny) return best;
+                              bool reverse, Cell *restrictroot) {
+        if (restrictroot != nullptr && tiny) return best;
         if (reverse && grid) {
-            best =
-                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, searchroot);
+            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse,
+                                             restrictroot);
         }
         if ((sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
             if (lastwasselected) { best = this; }
@@ -501,8 +501,8 @@ struct Cell {
         }
         if (selected == this) { lastwasselected = true; }
         if (!reverse && grid) {
-            best =
-                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, searchroot);
+            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse,
+                                             restrictroot);
         }
         return best;
     }
@@ -541,9 +541,9 @@ struct Cell {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls, Cell *replaceroot) {
-        if (sys->searchview && tiny) return;
-        if (grid) { grid->FindReplaceAll(s, ls, replaceroot); }
+    void FindReplaceAll(const wxString &s, const wxString &ls, Cell *restrictroot) {
+        if (restrictroot != nullptr && tiny) return;
+        if (grid) { grid->FindReplaceAll(s, ls, restrictroot); }
         text.ReplaceStr(s, ls);
     }
 
