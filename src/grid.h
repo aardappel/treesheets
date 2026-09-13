@@ -243,20 +243,22 @@ struct Grid {
 
             bool dashed = !sys->fastrender && view_grid_outer_spacing != 0;
             if (dashed && cell->cellcolor != 0xFFFFFF) {
-                dc.SetPen(wxPen(LightColor(0xFFFFFF)));
+                doc->SetPen(dc, 0xFFFFFF);
                 drawlines();
             }
             // dotted lines result in very expensive drawline calls
             if (sys->innerbordercolor) {
-                wxPen borderpen {LightColor(bordercolor)};
                 if (dashed) {
+                    wxPen borderpen {LightColor(bordercolor)};
                     static const wxDash glpattern[] = {1, 3};
                     borderpen.SetDashes(2, glpattern);
                     borderpen.SetStyle(wxPENSTYLE_USER_DASH);
+                    doc->SetPen(dc, borderpen);
+                } else {
+                    doc->SetPen(dc, bordercolor);
                 }
-                dc.SetPen(borderpen);
             } else {
-                dc.SetPen(dashed ? sys->pen_gridlines : sys->pen_tinygridlines);
+                doc->SetPen(dc, dashed ? sys->pen_gridlines : sys->pen_tinygridlines);
             }
             drawlines();
         }
@@ -269,7 +271,7 @@ struct Grid {
             int srcx = bx + (cell->verticaltextandgrid ? 8 : cell->txs + 4) + g_margin_extra;
             int destyfirst = -1;
             int destylast = -1;
-            dc.SetPen(*wxGREY_PEN);
+            doc->SetPen(dc, *wxGREY_PEN);
             foreachcelly(c) if (c->HasContent() && !c->tiny) {
                 int desty = c->ycenteroff + by + c->oy + c->tys / 2 + g_margin_extra;
                 int destx = bx + c->ox - 2 + g_margin_extra;
@@ -305,8 +307,8 @@ struct Grid {
             }
         }
         if (view_grid_outer_spacing != 0 && cell->drawstyle == DS_GRID) {
-            dc.SetBrush(*wxTRANSPARENT_BRUSH);
-            dc.SetPen(wxPen(LightColor(bordercolor)));
+            doc->SetBrush(dc, *wxTRANSPARENT_BRUSH);
+            doc->SetPen(dc, bordercolor);
             loop(i, view_grid_outer_spacing - 1) {
                 dc.DrawRoundedRectangle(
                     bx + xoff + view_grid_outer_spacing - i,
