@@ -206,7 +206,7 @@ struct Text {
 
     template<typename DC>
     int Render(Document *doc, int bx, int by, int depth, DC &dc, int &leftoffset,
-               int maxcolwidth) const {
+               int /*maxcolwidth*/) const {
         auto ixs = 0;
         auto iys = 0;
         if (!cell->tiny) { treesheets::System::ImageSize(DisplayImage(), ixs, iys); }
@@ -224,10 +224,10 @@ struct Text {
 
         auto h = cell->tiny ? 1 : dc.GetCharHeight();
         leftoffset = h;
-        auto i = 0;
-        auto lines = 0;
         auto searchfound = IsInSearch();
         auto istag = cell->IsTag(doc);
+        int line_count = static_cast<int>(lines.size());
+
         if (cell->tiny) {
             if (searchfound) {
                 dc.SetPen(*wxRED_PEN);
@@ -238,25 +238,22 @@ struct Text {
             } else {
                 dc.SetPen(sys->pen_tinytext);
             }
-        }
-        for (;;) {
-            auto curl = GetLine(i, maxcolwidth);
-            if (curl.IsEmpty()) { break; }
-            if (cell->tiny) {
-                if (sys->fastrender) {
-                    dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + static_cast<int>(curl.Len()),
-                                by + lines * h);
-                    /*
-                    wxPoint points[] = { wxPoint(bx + ixs, by + lines * h), wxPoint(bx + ixs +
-                    curl.Len(), by + lines * h) }; dc.DrawLines(1, points, 0, 0);
-                     */
-                } else {
+
+            if (sys->fastrender) {
+                for (int line = 0; line < line_count; line++) {
+                    int len = static_cast<int>(lines[line].widths.size());
+                    dc.DrawLine(bx + ixs, by + line * h, bx + ixs + len, by + line * h);
+                }
+            } else {
+                for (int line = 0; line < line_count; line++) {
+                    const auto &tl = lines[line];
+                    int len = static_cast<int>(tl.widths.size());
                     auto word = 0;
-                    loop(p, static_cast<int>(curl.Len()) + 1) {
-                        if (static_cast<int>(curl.Len()) <= p || curl[p] == ' ') {
+                    loop(p, len + 1) {
+                        if (p >= len || t[tl.linestart + p] == ' ') {
                             if (word != 0) {
-                                dc.DrawLine(bx + p - word + ixs, by + lines * h, bx + p,
-                                            by + lines * h);
+                                dc.DrawLine(bx + p - word + ixs, by + line * h, bx + p,
+                                            by + line * h);
                             }
                             word = 0;
                         } else {
@@ -264,27 +261,32 @@ struct Text {
                         }
                     }
                 }
-            } else {
-                if (searchfound) {
-                    dc.SetTextForeground(*wxRED);
-                } else if (filtered) {
-                    dc.SetTextForeground(*wxLIGHT_GREY);
-                } else if (istag) {
-                    dc.SetTextForeground(LightColor(doc->tags[t].second));
-                } else if (cell->textcolor != 0U) {
-                    dc.SetTextForeground(LightColor(cell->textcolor));  // FIXME: clean up
-                }
-                auto tx = bx + 2 + ixs;
-                auto ty = by + lines * h;
-                dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
-                if (searchfound || filtered || istag || cell->textcolor != 0U) {
-                    dc.SetTextForeground(sys->rubberbandcolor);
-                }
             }
-            lines++;
+        } else {
+            if (searchfound) {
+                dc.SetTextForeground(*wxRED);
+            } else if (filtered) {
+                dc.SetTextForeground(*wxLIGHT_GREY);
+            } else if (istag) {
+                dc.SetTextForeground(LightColor(doc->tags[t].second));
+            } else if (cell->textcolor != 0U) {
+                dc.SetTextForeground(LightColor(cell->textcolor));
+            }
+
+            for (int line = 0; line < line_count; line++) {
+                const auto &tl = lines[line];
+                wxString curl = t.Mid(tl.linestart, tl.widths.size());
+                auto tx = bx + 2 + ixs;
+                auto ty = by + line * h;
+                dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
+            }
+
+            if (searchfound || filtered || istag || cell->textcolor != 0U) {
+                dc.SetTextForeground(sys->rubberbandcolor);
+            }
         }
 
-        return max(lines * h, iys);
+        return max(line_count * h, iys);
     }
 
     void FindCursor(Document *doc, int bx, int by, Selection &s) const {
