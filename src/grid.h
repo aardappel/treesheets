@@ -165,12 +165,35 @@ struct Grid {
     template<typename DC>
     void Render(Document *doc, int bx, int by, DC &dc, int depth, int sx, int sy, int xoff,
                 int yoff) {
-        foreachcell(c) {
-            int cx = bx + c->ox;
-            int cy = by + c->oy;
-            if (cx < doc->maxx && cx + c->sx > doc->scrollx && cy < doc->maxy &&
-                cy + c->sy > doc->scrolly) {
-                c->Render(doc, cx, cy, dc, depth + 1, x == 0 ? view_margin : g_line_width,
+        // Grid-level bounding box check
+        if (bx + sx <= doc->scrollx || bx >= doc->maxx || by + sy <= doc->scrolly || by >= doc->maxy) {
+            return;
+        }
+
+        // Get visible columns
+        int min_x = xs, max_x = -1;
+        for (int x = 0; x < xs; x++) {
+            if (bx + C(x, 0)->ox + C(x, 0)->sx > doc->scrollx) { min_x = x; break; }
+        }
+        for (int x = min_x; x < xs; x++) {
+            if (bx + C(x, 0)->ox >= doc->maxx) break;
+            max_x = x;
+        }
+
+        // Get visible rows
+        int min_y = ys, max_y = -1;
+        for (int y = 0; y < ys; y++) {
+            if (by + C(0, y)->oy + C(0, y)->sy > doc->scrolly) { min_y = y; break; }
+        }
+        for (int y = min_y; y < ys; y++) {
+            if (by + C(0, y)->oy >= doc->maxy) break;
+            max_y = y;
+        }
+        
+        for (int y = min_y; y <= max_y; y++) {
+            for (int x = min_x; x <= max_x; x++) {
+                Cell *c = C(x, y).get();
+                c->Render(doc, bx + c->ox, by + c->oy, dc, depth + 1, x == 0 ? view_margin : g_line_width,
                           x == xs - 1 ? view_margin : 0, y == 0 ? view_margin : g_line_width,
                           y == ys - 1 ? view_margin : 0, colwidths[x], cell_margin);
             }
