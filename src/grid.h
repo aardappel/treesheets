@@ -321,20 +321,6 @@ struct Grid {
     }
 
     void FindXY(Document *doc, int px, int py) {
-        if (xs == 0 || ys == 0) return;
-
-        Cell *br = C(xs - 1, ys - 1).get();
-        if (!br) return;
-
-        int total_width = br->ox + br->sx;
-        int total_height = br->oy + br->sy;
-
-        int margin = g_line_width + g_selmargin;
-        if (px < -margin || py < -margin || px >= total_width + margin ||
-            py >= total_height + margin) {
-            return;
-        }
-
         foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;
