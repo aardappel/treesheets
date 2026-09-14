@@ -253,28 +253,17 @@ struct Document {
     }
 
     void UpdateHover(int mx, int my) {
-        int x = 0, y = 0;
+        int x = 0;
+        int y = 0;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
-        int doc_x = x / currentviewscale - centerx / currentviewscale - hierarchysize;
-        int doc_y = y / currentviewscale - centery / currentviewscale - hierarchysize;
-        if (hover.grid && hover.x < hover.grid->xs && hover.y < hover.grid->ys) {
-            Cell *c = hover.grid->C(hover.x, hover.y).get();
-            int bx = doc_x - c->ox;
-            int by = doc_y - c->oy;
-
-            if (c && c->IsInside(bx, by) && !c->GridShown(this)) {
-                prev = hover;
-                if (c->HasText()) {
-                    hover = Selection(hover.grid, hover.x, hover.y, 1, 1);
-                    c->text.FindCursor(this, bx, by - c->ycenteroff, hover);
-                }
-                return;
-            }
-        }
         prev = hover;
         hover = Selection();
         auto *drawroot = WalkPath(drawpath);
-        if (drawroot->grid) { drawroot->grid->FindXY(this, doc_x, doc_y); }
+        if (drawroot->grid) {
+            drawroot->grid->FindXY(
+                this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
+                y / currentviewscale - centery / currentviewscale - hierarchysize);
+        }
     }
 
     void ScrollIfSelectionOutOfView() {
