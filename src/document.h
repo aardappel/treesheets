@@ -28,13 +28,6 @@ struct Document {
     int fgutter {6};
     int lasttextsize {0};
     int laststylebits {0};
-    uint last_pen_color {0xFFFFFFFF};
-    int last_pen_style {-1};
-    uint last_brush_color {0xFFFFFFFF};
-    int last_brush_style {-1};
-    uint last_text_bg {0xFFFFFFFF};
-    uint last_text_fg {0xFFFFFFFF};
-    unordered_map<uint32_t, wxFont> font_cache;
     Cell *currentdrawroot {nullptr};  // for use during Render() calls
     vector<unique_ptr<UndoItem>> undolist;
     vector<unique_ptr<UndoItem>> redolist;
@@ -248,7 +241,7 @@ struct Document {
 
     template<typename DC> void DrawSelect(DC &dc, Selection &s) {
         if (s.grid == nullptr) { return; }
-        ResetDCState();
+        ResetFont();
         s.grid->DrawSelect(this, dc, s);
     }
 
@@ -563,9 +556,9 @@ struct Document {
     }
 
     template<typename DC> void Render(DC &dc) {
-        ResetDCState();
+        ResetFont();
         PickFont(dc, 0, 0, 0);
-        SetTextForeground(dc, *wxLIGHT_GREY);
+        dc.SetTextForeground(*wxLIGHT_GREY);
         int i = 0;
         for (auto *p = currentdrawroot->parent; p != nullptr; p = p->parent) {
             if (!p->text.t.IsEmpty()) {
@@ -579,7 +572,7 @@ struct Document {
                 dc.DrawText(s, off, off);
             }
         }
-        SetTextForeground(dc, sys->rubberbandcolor);
+        dc.SetTextForeground(sys->rubberbandcolor);
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
         ClearUnusedBitmaps();
@@ -707,22 +700,15 @@ struct Document {
     template<typename DC> bool PickFont(DC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
-            uint32_t font_key = (static_cast<uint32_t>(textsize) << 8) |
-                                (static_cast<uint32_t>(stylebits) & 0xFF) |
-                                (static_cast<uint32_t>(while_printing) << 16);
-            auto it = font_cache.find(font_key);
-            if (it == font_cache.end()) {
-                wxFont font(
-                    textsize - static_cast<int>(while_printing),
-                    (stylebits & STYLE_FIXED) != 0 ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
-                    (stylebits & STYLE_ITALIC) != 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-                    (stylebits & STYLE_BOLD) != 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-                    (stylebits & STYLE_UNDERLINE) != 0,
-                    (stylebits & STYLE_FIXED) != 0 ? sys->defaultfixedfont : sys->defaultfont);
-                if ((stylebits & STYLE_STRIKETHRU) != 0) { font.SetStrikethrough(true); }
-                it = font_cache.emplace(font_key, font).first;
-            }
-            dc.SetFont(it->second);
+            wxFont font(
+                textsize - static_cast<int>(while_printing),
+                (stylebits & STYLE_FIXED) != 0 ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
+                (stylebits & STYLE_ITALIC) != 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+                (stylebits & STYLE_BOLD) != 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+                (stylebits & STYLE_UNDERLINE) != 0,
+                (stylebits & STYLE_FIXED) != 0 ? sys->defaultfixedfont : sys->defaultfont);
+            if ((stylebits & STYLE_STRIKETHRU) != 0) { font.SetStrikethrough(true); }
+            dc.SetFont(font);
             lasttextsize = textsize;
             laststylebits = stylebits;
         }
@@ -732,89 +718,6 @@ struct Document {
     void ResetFont() {
         lasttextsize = INT_MAX;
         laststylebits = -1;
-    }
-
-    void ResetDCState() {
-        ResetFont();
-        last_pen_color = 0xFFFFFFFF;
-        last_pen_style = -1;
-        last_brush_color = 0xFFFFFFFF;
-        last_brush_style = -1;
-        last_text_bg = 0xFFFFFFFF;
-        last_text_fg = 0xFFFFFFFF;
-    }
-
-    template<typename DC>
-    void SetPen(DC &dc, uint color, int style = wxPENSTYLE_SOLID) {
-        if (color != last_pen_color || style != last_pen_style) {
-            wxPen pen(LightColor(color));
-            if (style != wxPENSTYLE_SOLID) {
-                pen.SetStyle(static_cast<wxPenStyle>(style));
-            }
-            dc.SetPen(pen);
-            last_pen_color = color;
-            last_pen_style = style;
-        }
-    }
-
-    template<typename DC>
-    void SetPen(DC &dc, const wxPen &pen) {
-        dc.SetPen(pen);
-        last_pen_color = 0xFFFFFFFF;
-        last_pen_style = -1;
-    }
-
-    template<typename DC>
-    void SetBrush(DC &dc, uint color, int style = wxBRUSHSTYLE_SOLID) {
-        if (color != last_brush_color || style != last_brush_style) {
-            wxBrush brush(LightColor(color));
-            if (style != wxBRUSHSTYLE_SOLID) {
-                brush.SetStyle(static_cast<wxBrushStyle>(style));
-            }
-            dc.SetBrush(brush);
-            last_brush_color = color;
-            last_brush_style = style;
-        }
-    }
-
-    template<typename DC>
-    void SetBrush(DC &dc, const wxBrush &brush) {
-        dc.SetBrush(brush);
-        last_brush_color = 0xFFFFFFFF;
-        last_brush_style = -1;
-    }
-
-    template<typename DC>
-    void SetTextBackground(DC &dc, uint color) {
-        if (color != last_text_bg) {
-            dc.SetTextBackground(LightColor(color));
-            last_text_bg = color;
-        }
-    }
-
-    template<typename DC>
-    void SetTextForeground(DC &dc, uint color) {
-        if (color != last_text_fg) {
-            dc.SetTextForeground(LightColor(color));
-            last_text_fg = color;
-        }
-    }
-
-    template<typename DC>
-    void SetTextForeground(DC &dc, const wxColour &color) {
-        dc.SetTextForeground(color);
-        last_text_fg = 0xFFFFFFFF;
-    }
-
-    template<typename DC>
-    void DrawRect(DC &dc, uint color, int x, int y, int xs, int ys, bool outline = false) {
-        if (outline) {
-            SetBrush(dc, *wxTRANSPARENT_BRUSH);
-        } else {
-            SetBrush(dc, color, wxBRUSHSTYLE_SOLID);
-        }
-        SetPen(dc, color, wxPENSTYLE_SOLID);
-        dc.DrawRectangle(x, y, xs, ys);
     }
 
     bool CheckForChanges() {
@@ -920,7 +823,7 @@ struct Document {
     #endif
 
     template<typename DC> void DrawView(DC &dc) {
-            DrawRect(dc, Background(), 0, 0, maxx, maxy);
+            DrawRectangle(dc, Background(), 0, 0, maxx, maxy);
             Render(dc);
     }
 
@@ -1319,12 +1222,10 @@ struct Document {
                         case wxID_SELECT_FONT:
                             sys->defaultfont = font.GetFaceName();
                             sys->cfg->Write("defaultfont", sys->defaultfont);
-                            font_cache.clear();
                             break;
                         case A_SET_FIXED_FONT:
                             sys->defaultfixedfont = font.GetFaceName();
                             sys->cfg->Write("defaultfixedfont", sys->defaultfixedfont);
-                            font_cache.clear();
                             break;
                     }
                     sys->frame->TabsReset();  // ResetChildren, UpdateLayout and Refresh on all

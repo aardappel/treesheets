@@ -163,15 +163,16 @@ struct Cell {
         }
 
         if (drawstyle == DS_GRID && actualcellcolor != parentcolor) {
-            doc->DrawRect(dc, actualcellcolor, bx - ml, by - mt, sx + ml + mr, sy + mt + mb);
+            DrawRectangle(dc, actualcellcolor, bx - ml, by - mt, sx + ml + mr, sy + mt + mb);
         }
+        const wxColour wxactualcellcolor = LightColor(actualcellcolor);
         if (drawstyle != DS_GRID && HasContent() && !tiny) {
             if (actualcellcolor == parentcolor) {
                 auto *cp = reinterpret_cast<uchar *>(&actualcellcolor);
                 loop(i, 4) cp[i] = cp[i] * 850 / 1000;
             }
-            doc->SetBrush(dc, actualcellcolor);
-            doc->SetPen(dc, actualcellcolor);
+            dc.SetBrush(wxBrush(wxactualcellcolor));
+            dc.SetPen(wxPen(wxactualcellcolor));
 
             if (drawstyle == DS_BLOBSHIER) {
                 dc.DrawRoundedRectangle(bx - cell_margin, by - cell_margin, minx + cell_margin * 2,
@@ -184,9 +185,7 @@ struct Cell {
             // FIXME: this half a g_margin_extra is a bit of hack
             }
         }
-        if (HasText()) {
-            doc->SetTextBackground(dc, actualcellcolor);
-        }
+        dc.SetTextBackground(wxactualcellcolor);
         int xoff = verticaltextandgrid ? 0 : text.extent - depth * dc.GetCharHeight();
         int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
         yoff = verticaltextandgrid ? yoff : 0;
@@ -202,8 +201,9 @@ struct Cell {
             points[0] = wxPoint(right, top);
             points[1] = wxPoint(right, top + size);
             points[2] = wxPoint(right - size, top);
-            doc->SetBrush(dc, textcolor);
-            doc->SetPen(dc, textcolor);
+            const wxColour wxtextcolor = LightColor(textcolor);
+            dc.SetBrush(wxBrush(wxtextcolor));
+            dc.SetPen(wxPen(wxtextcolor));
             dc.DrawPolygon(3, points);
         }
     }
