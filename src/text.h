@@ -230,13 +230,13 @@ struct Text {
 
         if (cell->tiny) {
             if (searchfound) {
-                doc->SetPen(dc, *wxRED_PEN);
+                dc.SetPen(*wxRED_PEN);
             } else if (filtered) {
-                doc->SetPen(dc, *wxLIGHT_GREY_PEN);
+                dc.SetPen(*wxLIGHT_GREY_PEN);
             } else if (istag) {
-                doc->SetPen(dc, doc->tags.at(t).second);
+                dc.SetPen(wxPen(LightColor(doc->tags[t].second)));
             } else {
-                doc->SetPen(dc, sys->pen_tinytext);
+                dc.SetPen(sys->pen_tinytext);
             }
 
             if (sys->fastrender) {
@@ -264,13 +264,13 @@ struct Text {
             }
         } else {
             if (searchfound) {
-                doc->SetTextForeground(dc, *wxRED);
+                dc.SetTextForeground(*wxRED);
             } else if (filtered) {
-                doc->SetTextForeground(dc, *wxLIGHT_GREY);
+                dc.SetTextForeground(*wxLIGHT_GREY);
             } else if (istag) {
-                doc->SetTextForeground(dc, doc->tags.at(t).second);
+                dc.SetTextForeground(LightColor(doc->tags[t].second));
             } else if (cell->textcolor != 0U) {
-                doc->SetTextForeground(dc, cell->textcolor);
+                dc.SetTextForeground(LightColor(cell->textcolor));
             }
 
             for (int line = 0; line < line_count; line++) {
@@ -282,7 +282,7 @@ struct Text {
             }
 
             if (searchfound || filtered || istag || cell->textcolor != 0U) {
-                doc->SetTextForeground(dc, sys->rubberbandcolor);
+                dc.SetTextForeground(sys->rubberbandcolor);
             }
         }
 
