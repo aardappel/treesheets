@@ -206,41 +206,28 @@ struct Grid {
         if (tinyborder || cell->drawstyle == DS_GRID) {
             int ldelta = static_cast<int>(view_grid_outer_spacing != 0);
             auto drawlines = [&]() {
-                // 1. Vertical grid lines (between columns)
-                int y_top = max(doc->scrolly, by + yoff + view_grid_outer_spacing);
-                int y_bottom = min(doc->maxy, by + maxy + g_line_width) + view_margin;
-                if (y_top <= y_bottom) {
-                    int start_x = std::max(ldelta, std::min(min_x, xs - ldelta));
-                    int end_x = max_x >= 0 ? std::min(xs - ldelta, max_x + 1) : xs - ldelta;
-                    for (int x = start_x; x <= end_x; x++) {
-                        int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
-                        if (xl > doc->maxx) break;
-                        if (xl + g_line_width > doc->scrollx) {
-                            loop(line, g_line_width) {
-                                dc.DrawLine(xl + line, y_top, xl + line, y_bottom);
-                            }
+                for (int x = ldelta; x <= xs - ldelta; x++) {
+                    int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
+                    if (xl >= doc->scrollx && xl <= doc->maxx) {
+                        loop(line, g_line_width) {
+                            dc.DrawLine(
+                                xl + line, max(doc->scrolly, by + yoff + view_grid_outer_spacing),
+                                xl + line, min(doc->maxy, by + maxy + g_line_width) + view_margin);
                         }
                     }
                 }
-
-                // 2. Horizontal grid lines (between rows)
-                int x_left = max(doc->scrollx, bx + xoff + view_grid_outer_spacing + g_line_width);
-                int x_right = min(doc->maxx, bx + maxx) + view_margin;
-                if (x_left <= x_right) {
-                    int start_y = std::max(ldelta, std::min(min_y, ys - ldelta));
-                    int end_y = max_y >= 0 ? std::min(ys - ldelta, max_y + 1) : ys - ldelta;
-                    for (int y = start_y; y <= end_y; y++) {
-                        int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
-                        if (yl > doc->maxy) break;
-                        if (yl + g_line_width > doc->scrolly) {
-                            loop(line, g_line_width) {
-                                dc.DrawLine(x_left, yl + line, x_right, yl + line);
-                            }
+                for (int y = ldelta; y <= ys - ldelta; y++) {
+                    int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
+                    if (yl >= doc->scrolly && yl <= doc->maxy) {
+                        loop(line, g_line_width) {
+                            dc.DrawLine(max(doc->scrollx,
+                                            bx + xoff + view_grid_outer_spacing + g_line_width),
+                                        yl + line, min(doc->maxx, bx + maxx) + view_margin,
+                                        yl + line);
                         }
                     }
                 }
             };
-
             bool dashed = !sys->fastrender && view_grid_outer_spacing != 0;
             if (dashed && cell->cellcolor != 0xFFFFFF) {
                 doc->SetPen(dc, 0xFFFFFF);
