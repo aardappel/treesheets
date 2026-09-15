@@ -137,7 +137,7 @@ struct Cell {
 
     template<typename DCType>
     void Render(Document *doc, int bx, int by, DCType &dc, int depth, int ml, int mr, int mt,
-                int mb, int maxcolwidth, int cell_margin) {
+                int mb, int cell_margin) {
         // Choose color from celltype (program operations)
         switch (celltype) {
             case CT_VARD: actualcellcolor = 0xFF8080; break;
