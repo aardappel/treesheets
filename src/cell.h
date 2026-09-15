@@ -99,8 +99,6 @@ struct Cell {
             } else {
                 leftoffset = dc.GetCharHeight();
             }
-            text.charheight = tiny ? 1 : dc.GetCharHeight();
-            text.lines.clear();
         } else {
             text.TextSize(dc, sx, sy, static_cast<int>(tiny), leftoffset, maxcolwidth);
         }
@@ -137,7 +135,7 @@ struct Cell {
 
     template<typename DCType>
     void Render(Document *doc, int bx, int by, DCType &dc, int depth, int ml, int mr, int mt,
-                int mb, int cell_margin) {
+                int mb, int maxcolwidth, int cell_margin) {
         // Choose color from celltype (program operations)
         switch (celltype) {
             case CT_VARD: actualcellcolor = 0xFF8080; break;
@@ -187,7 +185,7 @@ struct Cell {
         }
         dc.SetTextBackground(wxactualcellcolor);
         int xoff = verticaltextandgrid ? 0 : text.extent - depth * dc.GetCharHeight();
-        int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff);
+        int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
         yoff = verticaltextandgrid ? yoff : 0;
         if (GridShown(doc)) {
             grid->Render(doc, bx, by, dc, depth, sx - xoff, sy - yoff, xoff, yoff);

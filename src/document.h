@@ -245,7 +245,8 @@ struct Document {
         s.grid->DrawSelect(this, dc, s);
     }
 
-    void UpdateHover(int mx, int my) {
+    template<typename DC> void UpdateHover(DC &dc, int mx, int my) {
+        ResetFont();
         int x = 0;
         int y = 0;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
@@ -255,7 +256,7 @@ struct Document {
         if (drawroot->grid) {
             drawroot->grid->FindXY(
                 this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
-                y / currentviewscale - centery / currentviewscale - hierarchysize);
+                y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
         }
     }
 
@@ -573,7 +574,8 @@ struct Document {
             }
         }
         dc.SetTextForeground(sys->rubberbandcolor);
-        currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0, 0);
+        currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
+                                currentdrawroot->ColWidth(), 0);
         ClearUnusedBitmaps();
     }
 
