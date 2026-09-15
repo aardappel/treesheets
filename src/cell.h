@@ -187,7 +187,7 @@ struct Cell {
         }
         dc.SetTextBackground(wxactualcellcolor);
         int xoff = verticaltextandgrid ? 0 : text.extent - depth * dc.GetCharHeight();
-        int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
+        int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff);
         yoff = verticaltextandgrid ? yoff : 0;
         if (GridShown(doc)) {
             grid->Render(doc, bx, by, dc, depth, sx - xoff, sy - yoff, xoff, yoff);
