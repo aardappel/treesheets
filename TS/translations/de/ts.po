@@ -1395,7 +1395,7 @@ msgid "Reset toolbar"
 msgstr "Werkzeugleiste zurücksetzen"
 
 msgid "Restrict search and replace to view"
-msgstr ""
+msgstr "Suchen und Ersetzen auf aktuelle Sicht beschränken"
 
 msgid "Run"
 msgstr "Ausführen"
@@ -1471,10 +1471,8 @@ msgstr "Suche "
 msgid ""
 "Search and replace in the visible content of the current view (no folded "
 "grids, no tiny cells)"
-msgstr ""
+msgstr "Im sichtbaren Bereich der aktuellen Ansicht suchen und ersetzen (keine eingeklappten Tabellen, keine schmalen Zellen)"
 
-msgid "Search in folded grids"
-msgstr ""
 
 msgid "Select &Parent"
 msgstr "&Übergeordnetes Element auswählen"
