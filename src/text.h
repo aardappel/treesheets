@@ -205,8 +205,7 @@ struct Text {
     }
 
     template<typename DC>
-    int Render(Document *doc, int bx, int by, int depth, DC &dc, int &leftoffset,
-               int /*maxcolwidth*/) const {
+    int Render(Document *doc, int bx, int by, int depth, DC &dc, int &leftoffset) const {
         auto ixs = 0;
         auto iys = 0;
         if (!cell->tiny) { treesheets::System::ImageSize(DisplayImage(), ixs, iys); }
