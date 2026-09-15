@@ -44,7 +44,8 @@ struct TSCanvas : public wxScrolledCanvas {
     };
 
     void OnMotion(wxMouseEvent &me) {
-        doc->UpdateHover(me.GetX(), me.GetY());
+        wxInfoDC dc(this);
+        doc->UpdateHover(dc, me.GetX(), me.GetY());
         if (me.LeftIsDown() || me.RightIsDown()) {
             if (me.AltDown() && me.ShiftDown()) {
                 doc->Copy(A_DRAGANDDROP);
@@ -83,11 +84,12 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void SelectClick(int mx, int my, bool right, int isctrlshift) {
+        wxInfoDC dc(this);
         if (mx < 0 || my < 0) {
             return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
         }
         doc->isctrlshiftdrag = isctrlshift;
-        doc->UpdateHover(mx, my);
+        doc->UpdateHover(dc, mx, my);
         doc->SelectClick(right);
         sys->frame->UpdateStatus(doc->selected, true);
         Refresh();
@@ -110,7 +112,8 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnLeftUp(wxMouseEvent &me) {
         if (me.CmdDown() || me.AltDown()) {
-            doc->UpdateHover(me.GetX(), me.GetY());
+            wxInfoDC dc(this);
+            doc->UpdateHover(dc, me.GetX(), me.GetY());
             doc->SelectUp();
             sys->frame->UpdateStatus(doc->selected, true);
             Refresh();
@@ -127,7 +130,8 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftDoubleClick(wxMouseEvent &me) {
-        doc->UpdateHover(me.GetX(), me.GetY());
+        wxInfoDC dc(this);
+        doc->UpdateHover(dc, me.GetX(), me.GetY());
         doc->DoubleClick();
         sys->frame->UpdateStatus(doc->selected, true);
         Refresh();

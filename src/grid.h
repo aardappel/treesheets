@@ -172,7 +172,7 @@ struct Grid {
                 cy + c->sy > doc->scrolly) {
                 c->Render(doc, cx, cy, dc, depth + 1, x == 0 ? view_margin : g_line_width,
                           x == xs - 1 ? view_margin : 0, y == 0 ? view_margin : g_line_width,
-                          y == ys - 1 ? view_margin : 0, cell_margin);
+                          y == ys - 1 ? view_margin : 0, colwidths[x], cell_margin);
             }
         }
 
@@ -282,7 +282,7 @@ struct Grid {
         }
     }
 
-    void FindXY(Document *doc, int px, int py) {
+    template<typename DC> void FindXY(Document *doc, int px, int py, DC &dc) {
         foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;
@@ -305,11 +305,11 @@ struct Grid {
                 return;
             }
             if (c->IsInside(bx, by)) {
-                if (c->GridShown(doc)) { c->grid->FindXY(doc, bx, by); }
+                if (c->GridShown(doc)) { c->grid->FindXY(doc, bx, by, dc); }
                 if (doc->hover.grid) { return; }
                 doc->hover = Selection(cell->grid, x, y, 1, 1);
                 if (c->HasText()) {
-                    c->text.FindCursor(doc, bx, by - c->ycenteroff, doc->hover);
+                    c->text.FindCursor(doc, bx, by - c->ycenteroff, dc, doc->hover, colwidths[x]);
                 }
                 return;
             }
