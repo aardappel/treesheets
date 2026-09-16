@@ -3,6 +3,7 @@ struct UndoItem {
     vector<Selection> selpath;
     Selection sel;
     unique_ptr<Cell> clone;
+    bool textedit {false};  // A gridless snapshot; undo swaps only the Text state.
     size_t estimated_size {0};
     uintptr_t cloned_from {};  // May be dead.
     int generation {0};
@@ -503,7 +504,7 @@ struct Document {
         if (alt) {
             if (selected.grid == nullptr) { return NoSel(); }
             if (selected.xs > 0) {
-                if (!LastUndoSameCellAny(selected.grid->cell)) {
+                if (!LastUndoSameCellStructure(selected.grid->cell)) {
                     selected.grid->cell->AddUndo(this);
                 }
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
@@ -1037,8 +1038,7 @@ struct Document {
                 selected.Wrap(this);
                 c = selected.GetCell();
             }
-            c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
-                               // keystroke undos within same cell
+            c->AddUndo(this, true);
             c->text.Key(this, uk, selected);
             UpdateLayout();
             ScrollIfSelectionOutOfView();
@@ -1563,7 +1563,7 @@ struct Document {
                     }
                 } else if (cell != nullptr && selected.TextEdit()) {
                     if (selected.cursorend == 0) { return wxEmptyString; }
-                    cell->AddUndo(this);
+                    cell->AddUndo(this, true);
                     cell->text.Backspace(selected);
                     UpdateLayout();
                     canvas->Refresh();
@@ -1585,7 +1585,7 @@ struct Document {
                     }
                 } else if (cell != nullptr && selected.TextEdit()) {
                     if (selected.cursor == cell->text.t.Len()) { return wxEmptyString; }
-                    cell->AddUndo(this);
+                    cell->AddUndo(this, true);
                     cell->text.Delete(selected);
                     UpdateLayout();
                     canvas->Refresh();
@@ -1599,7 +1599,7 @@ struct Document {
             case A_DELETE_WORD:
                 if (cell != nullptr && selected.TextEdit()) {
                     if (selected.cursor == cell->text.t.Len()) { return wxEmptyString; }
-                    cell->AddUndo(this);
+                    cell->AddUndo(this, true);
                     cell->text.DeleteWord(selected);
                     UpdateLayout();
                     canvas->Refresh();
@@ -1623,7 +1623,7 @@ struct Document {
                         selected.grid->MultiCellDelete(this, selected);
                         SetSelect(selected);
                     } else if (cell != nullptr) {
-                        cell->AddUndo(this);
+                        cell->AddUndo(this, true);
                         cell->text.Backspace(selected);
                     }
                     UpdateLayout();
@@ -2333,7 +2333,7 @@ struct Document {
 
             case A_BACKSPACE_WORD:
                 if (selected.cursorend == 0) { return wxEmptyString; }
-                cell->AddUndo(this);
+                cell->AddUndo(this, true);
                 cell->text.BackspaceWord(selected);
                 UpdateLayout();
                 canvas->Refresh();
@@ -2535,30 +2535,42 @@ struct Document {
         return c;
     }
 
-    bool LastUndoSameCellAny(Cell *c) {
+    bool LastUndoSameCellStructure(Cell *c) {
         return !undolist.empty() && undolist.size() != undolistsizeatfullsave &&
+               !undolist.back()->textedit &&
                undolist.back()->cloned_from == (uintptr_t)c;
     }
 
     bool LastUndoSameCellTextEdit(Cell *c) {
         // hacky way to detect word boundaries to stop coalescing, but works, and
         // not a big deal if selected is not actually related to this cell
-        return !undolist.empty() && !c->grid && undolist.size() != undolistsizeatfullsave &&
+        return !undolist.empty() && undolist.back()->textedit &&
+               undolist.back()->cloned_from == (uintptr_t)c && c->parent != nullptr &&
+               undolist.size() != undolistsizeatfullsave &&
                undolist.back()->sel.EqLoc(c->parent->grid->FindCell(c)) &&
                (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);
     }
 
-    void AddUndo(Cell *c, bool newgeneration = true) {
+    void AddUndo(Cell *c, bool newgeneration = true, bool textedit = false) {
         redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
         if (!modified) {
             modified = true;
             UpdateFileName();
         }
-        if (LastUndoSameCellTextEdit(c)) { return; }
+        if (textedit && LastUndoSameCellTextEdit(c)) { return; }
         auto ui = make_unique<UndoItem>();
-        ui->clone = c->Clone(nullptr);
-        ui->estimated_size = c->EstimatedMemoryUse();
+        ui->textedit = textedit;
+        if (textedit) {
+            // Keep a cell snapshot so image lifetime accounting also sees its text image.
+            // Text edits never modify the nested grid, which can be much larger than the text.
+            ui->clone = make_unique<Cell>();
+            ui->clone->text = c->text;
+            ui->clone->text.cell = ui->clone.get();
+        } else {
+            ui->clone = c->Clone(nullptr);
+        }
+        ui->estimated_size = ui->clone->EstimatedMemoryUse();
         ui->sel = selected;
         ui->cloned_from = (uintptr_t)c;
         if (!undolist.empty()) {
@@ -2613,7 +2625,11 @@ struct Document {
 
         Cell *c = WalkPath(ui->path);
 
-        if (c->parent != nullptr && c->parent->grid) {
+        if (ui->textedit) {
+            std::swap(ui->clone->text, c->text);
+            c->text.cell = c;
+            ui->clone->text.cell = ui->clone.get();
+        } else if (c->parent != nullptr && c->parent->grid) {
             Grid *g = c->parent->grid.get();
             Selection s = g->FindCell(c);
             std::swap(ui->clone, g->C(s.x, s.y));
