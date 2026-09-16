@@ -28,6 +28,13 @@ struct Document {
     int fgutter {6};
     int lasttextsize {0};
     int laststylebits {0};
+    // Only screen DCs share fonts. Printer/export DCs select their own resources.
+    map<pair<int, int>, wxFont> fontcache;
+    wxString fontcacheface, fontcachefixedface;
+    wxSize fontcachedpi;
+    double fontcachescale {0};
+    int fontcachebasesize {0};
+    bool usescreenfonts {false};
     Cell *currentdrawroot {nullptr};  // for use during Render() calls
     vector<unique_ptr<UndoItem>> undolist;
     vector<unique_ptr<UndoItem>> redolist;
@@ -241,12 +248,12 @@ struct Document {
 
     template<typename DC> void DrawSelect(DC &dc, Selection &s) {
         if (s.grid == nullptr) { return; }
-        ResetFont();
+        ResetFont(dc);
         s.grid->DrawSelect(this, dc, s);
     }
 
     template<typename DC> void UpdateHover(DC &dc, int mx, int my) {
-        ResetFont();
+        ResetFont(dc);
         int x = 0;
         int y = 0;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
@@ -531,7 +538,7 @@ struct Document {
     }
 
     template<typename DC> void Layout(DC &dc) {
-        ResetFont();
+        ResetFont(dc);
         dc.SetUserScale(1, 1);
         currentdrawroot = WalkPath(drawpath);
         int psb = currentdrawroot == root.get() ? 0 : currentdrawroot->MinRelsize();
@@ -539,7 +546,7 @@ struct Document {
         if (psb != pathscalebias) { currentdrawroot->ResetChildren(); }
         pathscalebias = psb;
         currentdrawroot->LazyLayout(this, dc, 0, currentdrawroot->ColWidth(), false);
-        ResetFont();
+        ResetFont(dc);
         PickFont(dc, 0, 0, 0);
         hierarchysize = 0;
         for (Cell *p = currentdrawroot->parent; p != nullptr; p = p->parent) {
@@ -557,7 +564,7 @@ struct Document {
     }
 
     template<typename DC> void Render(DC &dc) {
-        ResetFont();
+        ResetFont(dc);
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
         int i = 0;
@@ -701,15 +708,24 @@ struct Document {
     template<typename DC> bool PickFont(DC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
-            wxFont font(
-                textsize - static_cast<int>(while_printing),
-                (stylebits & STYLE_FIXED) != 0 ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
-                (stylebits & STYLE_ITALIC) != 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-                (stylebits & STYLE_BOLD) != 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-                (stylebits & STYLE_UNDERLINE) != 0,
-                (stylebits & STYLE_FIXED) != 0 ? sys->defaultfixedfont : sys->defaultfont);
-            if ((stylebits & STYLE_STRIKETHRU) != 0) { font.SetStrikethrough(true); }
-            dc.SetFont(font);
+            auto key = make_pair(textsize, stylebits & (STYLE_BOLD | STYLE_ITALIC | STYLE_FIXED |
+                                                       STYLE_UNDERLINE | STYLE_STRIKETHRU));
+            auto it = fontcache.find(key);
+            if (usescreenfonts && it != fontcache.end()) {
+                dc.SetFont(it->second);
+            } else {
+                wxFont font(
+                    textsize - static_cast<int>(while_printing),
+                    (stylebits & STYLE_FIXED) != 0 ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
+                    (stylebits & STYLE_ITALIC) != 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+                    (stylebits & STYLE_BOLD) != 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+                    (stylebits & STYLE_UNDERLINE) != 0,
+                    (stylebits & STYLE_FIXED) != 0 ? sys->defaultfixedfont : sys->defaultfont);
+                if ((stylebits & STYLE_STRIKETHRU) != 0) { font.SetStrikethrough(true); }
+                dc.SetFont(font);
+                // Retain the resource after wx has adjusted it to the window's DPI.
+                if (usescreenfonts) { fontcache.emplace(key, dc.GetFont()); }
+            }
             lasttextsize = textsize;
             laststylebits = stylebits;
         }
@@ -719,6 +735,26 @@ struct Document {
     void ResetFont() {
         lasttextsize = INT_MAX;
         laststylebits = -1;
+    }
+
+    template<typename DC> void ResetFont(DC &dc) {
+        ResetFont();
+        usescreenfonts = dc.GetWindow() == canvas && canvas != nullptr && !while_printing;
+        if (!usescreenfonts) { return; }
+        auto dpi = canvas->GetDPI();
+        auto scale = dc.GetContentScaleFactor();
+        if (fontcachedpi != dpi || fontcachescale != scale ||
+            fontcacheface != sys->defaultfont || fontcachefixedface != sys->defaultfixedfont ||
+            fontcachebasesize != g_deftextsize) {
+            fontcache.clear();
+            fontcachedpi = dpi;
+            fontcachescale = scale;
+            fontcacheface = sys->defaultfont;
+            fontcachefixedface = sys->defaultfixedfont;
+            fontcachebasesize = g_deftextsize;
+        }
+        // TextSize clamps the size range, and the key has only five style bits.
+        // Clearing on a base-size change keeps the cache bounded across zooms.
     }
 
     bool CheckForChanges() {
