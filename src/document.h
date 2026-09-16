@@ -1042,8 +1042,8 @@ struct Document {
             c->text.Key(this, uk, selected);
             UpdateLayout();
             ScrollIfSelectionOutOfView();
+            // Let the event loop combine paints when several text events are queued.
             canvas->Refresh();
-            canvas->Update();
             return wxEmptyString;
         }
         unprocessed = true;
