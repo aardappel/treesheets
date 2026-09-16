@@ -40,6 +40,8 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnPaint(wxPaintEvent &event) {
         wxAutoBufferedPaintDC dc(this);
+        // Layout already supplies our bounds. Avoid measuring text again after drawing it.
+        dc.DisableAutomaticBoundingBoxUpdates();
         doc->Draw(dc);
     };
 
