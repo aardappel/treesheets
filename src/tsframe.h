@@ -1547,6 +1547,8 @@ struct TSFrame : wxFrame {
         wxBusyCursor wait;
         for (const auto &image : sys->imagelist) image->ClearBitmap();
         RenderFolderIcon();
+        // Re-layout after child windows have received their new DPI as well.
+        CallAfter([this]() { TabsReset(); });
         dce.Skip();
     }
 
