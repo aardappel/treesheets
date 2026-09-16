@@ -378,9 +378,9 @@ struct Cell {
         }
     }
 
-    void AddUndo(Document *doc) {
+    void AddUndo(Document *doc, bool textedit = false) {
         ResetLayout();
-        doc->AddUndo(this);
+        doc->AddUndo(this, true, textedit);
     }
 
     void Save(wxDataOutputStream &dos, Cell *ocs) const {
