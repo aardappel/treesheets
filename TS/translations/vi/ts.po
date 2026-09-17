@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 06:54+0200\n"
-"PO-Revision-Date: 2026-04-16 10:45+0700\n"
+"POT-Creation-Date: 2026-09-15 22:37+0200\n"
+"PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
@@ -56,6 +56,9 @@ msgstr "Sao chép dưới dạng &Bitmap"
 msgid "&Data"
 msgstr "&Dữ liệu"
 
+msgid "&Decrease font size"
+msgstr "Giảm kích thước phông chữ (&D)"
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Giảm kích thước chữ (SHIFT+lăn chuột)"
 
@@ -98,6 +101,9 @@ msgstr "Hình ảnh (&I)..."
 msgid "&Images"
 msgstr "Hình ảnh (&I)"
 
+msgid "&Increase font size"
+msgstr "Tăng kích thước phông chữ (&I)"
+
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "Tăng kích thước chữ (&I) (SHIFT+lăn chuột)"
 
@@ -128,6 +134,9 @@ msgstr "Thao tác (&O)"
 msgid "&Options"
 msgstr "Tùy chọn (&O)"
 
+msgid "&PDF..."
+msgstr "PDF... (&P)"
+
 msgid "&Paste"
 msgstr "Dán (&P)"
 
@@ -154,6 +163,9 @@ msgstr "Thay thế (&R)"
 
 msgid "&Reset Scale (display only)"
 msgstr "Đặt lại tỷ lệ (&R) (chỉ hiển thị)"
+
+msgid "&Reset font size"
+msgstr "Đặt lại kích thước phông chữ (&R)"
 
 msgid "&Reset text sizes"
 msgstr "Đặt lại kích thước chữ (&R)"
@@ -268,6 +280,9 @@ msgstr "Ít nhất một tệp không thể mở được."
 
 msgid "Autoexport to HTML"
 msgstr "Tự động xuất sang HTML"
+
+msgid "Autoexport to PDF"
+msgstr "Tự động xuất sang PDF"
 
 msgid "Autoreload documents"
 msgstr "Tự động tải lại tài liệu"
@@ -395,6 +410,9 @@ msgstr "Chọn tệp CSV để ghi"
 msgid "Choose HTML file to write"
 msgstr "Chọn tệp HTML để ghi"
 
+msgid "Choose PDF file to write"
+msgstr "Chọn tệp PDF để ghi"
+
 msgid "Choose PNG file to write"
 msgstr "Chọn tệp PNG để ghi"
 
@@ -424,6 +442,7 @@ msgstr "Đóng tài liệu hiện tại"
 
 msgid "Collapse Ce&lls"
 msgstr "Thu gọn các ô (&L)"
+
 msgid "Colorize inner grid border"
 msgstr "Tô màu đường viền lưới bên trong (&R)"
 
@@ -574,13 +593,16 @@ msgid "End of text"
 msgstr "Cuối văn bản"
 
 msgid "English"
-msgstr ""
+msgstr "Tiếng Anh"
 
 msgid "Enter/exit text edit mode"
 msgstr "Vào/thoát chế độ chỉnh sửa văn bản"
 
 msgid "Error exporting file!"
 msgstr "Lỗi khi xuất tệp!"
+
+msgid "Error exporting to PDF file!"
+msgstr "Lỗi khi xuất sang tệp PDF!"
 
 msgid "Error exporting to SVG file!"
 msgstr "Lỗi khi xuất sang tệp SVG!"
@@ -671,6 +693,9 @@ msgstr ""
 "Xuất chế độ xem hiện tại dưới dạng văn bản cấu trúc cây, sử dụng khoảng "
 "trắng cho mỗi cấp độ thụt đầu dòng. Thích hợp để nhập vào các trình quản lý "
 "sơ đồ tư duy và các chương trình văn bản thông thường"
+
+msgid "Export the current view to a PDF file."
+msgstr "Xuất chế độ xem hiện tại ra tệp PDF."
 
 msgid "Export the current view to a SVG vector file."
 msgstr "Xuất chế độ xem hiện tại sang tệp vector SVG."
@@ -846,6 +871,9 @@ msgstr "Bố cục ngang với hiển thị kiểu lưới"
 
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Bố cục ngang với hiển thị kiểu đường kẻ"
+
+msgid "Hover zoom"
+msgstr "Thu phóng khi di chuột"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "Trang nên rộng bao nhiêu pixel? (0 để tự động khớp)"
@@ -1213,6 +1241,13 @@ msgstr "Vui lòng chọn khoảng ngày giờ."
 msgid "Please select the language for the interface (requires restart)."
 msgstr "Vui lòng chọn ngôn ngữ giao diện (yêu cầu khởi động lại)."
 
+msgid ""
+"Please select the language for the interface (requires restart). Please "
+"select the empty row if you want to use the default language."
+msgstr ""
+"Vui lòng chọn ngôn ngữ cho giao diện (cần khởi động lại). Vui lòng chọn hàng "
+"trống nếu bạn muốn sử dụng ngôn ngữ mặc định."
+
 msgid "Please select the script you want to remove from the list:"
 msgstr "Vui lòng chọn kịch bản bạn muốn xóa khỏi danh sách:"
 
@@ -1309,6 +1344,9 @@ msgstr "Đặt lại giao diện thanh công cụ"
 msgid "Reset toolbar"
 msgstr "Đặt lại thanh công cụ"
 
+msgid "Restrict search and replace to view"
+msgstr "Giới hạn tìm kiếm và thay thế để xem"
+
 msgid "Run"
 msgstr "Chạy"
 
@@ -1379,6 +1417,16 @@ msgstr "Cuộn lên (lăn chuột)"
 
 msgid "Search "
 msgstr "Tìm kiếm "
+
+msgid ""
+"Search and replace in the visible content of the current view (no folded "
+"grids, no tiny cells)"
+msgstr ""
+"Tìm kiếm và thay thế trong nội dung hiển thị của chế độ xem hiện tại (không "
+"có lưới gấp, không có ô nhỏ)"
+
+msgid "Search in folded grids"
+msgstr "Tìm kiếm trong lưới gấp"
 
 msgid "Select &Parent"
 msgstr "Chọn mục cha (&P)"
@@ -1457,13 +1505,11 @@ msgstr "Hiển thị hộp thoại thông tin"
 msgid "Show cells with notes"
 msgstr "Hiển thị các ô có ghi chú"
 
-#, fuzzy
 msgid "Show cells with the same cell color"
-msgstr "Lọc theo cùng màu ô"
+msgstr "Hiển thị các ô có cùng màu ô"
 
-#, fuzzy
 msgid "Show cells with the same style"
-msgstr "Hiển thị các ô có ghi chú"
+msgstr "Hiển thị các ô có cùng kiểu"
 
 msgid "Show last edits in specific date range"
 msgstr "Hiển thị các chỉnh sửa cuối trong khoảng ngày cụ thể"
@@ -1718,6 +1764,9 @@ msgstr "Phóng to (CTRL+lăn chuột)"
 
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "Thu nhỏ (CTRL+lăn chuột)"
+
+msgid "Zoom on cells cursor hovers on"
+msgstr "Thu phóng các ô con trỏ di chuyển trên"
 
 msgid "Zoomed in."
 msgstr "Đã phóng to."
