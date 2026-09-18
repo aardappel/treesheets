@@ -54,6 +54,7 @@ struct System {
     bool followdarkmode {false};
     bool innerbordercolor {false};
     bool restrictview {false};
+    bool filtershowrows {false};
     uint colormask {0};
     int notesizex {300};
     int notesizey {255};
@@ -105,6 +106,7 @@ struct System {
         cfg->Read("fswatch", &fswatch, fswatch);
         cfg->Read("casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read("restrictview", &restrictview, restrictview);
+        cfg->Read("filtershowrows", &filtershowrows, filtershowrows);
         cfg->Read("defaultfontsize", &g_deftextsize_default, g_deftextsize_default);
         g_deftextsize = g_deftextsize_default;
         cfg->Read("customcolor", &customcolor, customcolor);

@@ -2454,27 +2454,30 @@ struct Document {
             }
 
             case A_FILTERBYCELLBG:
-                loopallcells(ci) ci->text.filtered = ci->cellcolor != cell->cellcolor;
+                loopallcells(ci) ci->text.filteredraw = ci->cellcolor != cell->cellcolor;
+                ApplyRowFilterExpansion();
                 root->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
             case A_FILTERBYSTYLE:
-                loopallcells(ci) ci->text.filtered = ci->text.stylebits != cell->text.stylebits;
+                loopallcells(ci) ci->text.filteredraw = ci->text.stylebits != cell->text.stylebits;
+                ApplyRowFilterExpansion();
                 root->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
             case A_FILTERNOTE:
-                loopallcells(ci) ci->text.filtered = ci->note.IsEmpty();
+                loopallcells(ci) ci->text.filteredraw = ci->note.IsEmpty();
+                ApplyRowFilterExpansion();
                 root->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
-            case A_FILTERMATCHNEXT:
+            case A_FILTERMATCHNEXT: {
                 bool lastsel = true;
                 Cell *next = root->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
                 if (next == nullptr) { return _("No matches for filter."); }
@@ -2482,6 +2485,16 @@ struct Document {
                 canvas->SetFocus();
                 ScrollOrZoom(true);
                 return wxEmptyString;
+            }
+
+            case A_FILTERSHOWROWS: {
+                sys->cfg->Write("filtershowrows", sys->filtershowrows = !sys->filtershowrows);
+                ApplyRowFilterExpansion();
+                root->ResetChildren();
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
         }
 
         if (!selected.TextEdit()) { return _("only works in cell text mode"); }
@@ -2931,6 +2944,39 @@ struct Document {
         c->CollectCells(itercells);
     }
 
+    // Derives the displayed `filtered` flag from the raw per-cell `filteredraw` match
+    // result. When "show entire row on match" is on, any row containing a match (a cell
+    // with filteredraw == false) has its filtered flag cleared for the whole row, so it
+    // displays normally rather than tagged as filtered. Recurses into sub-grids so nested
+    // tables get the same treatment. Always deriving from filteredraw (rather than mutating
+    // filtered in place) keeps this idempotent, so toggling the option can simply re-run it.
+    void RecomputeFilteredDisplay(Grid *g) {
+        for (int y = 0; y < g->ys; y++) {
+            bool rowmatches = false;
+            if (sys->filtershowrows) {
+                for (int x = 0; x < g->xs; x++) {
+                    if (!g->C(x, y)->text.filteredraw) {
+                        rowmatches = true;
+                        break;
+                    }
+                }
+            }
+            for (int x = 0; x < g->xs; x++) {
+                Cell *c = g->C(x, y).get();
+                c->text.filtered = rowmatches ? false : c->text.filteredraw;
+            }
+        }
+        for (int y = 0; y < g->ys; y++) {
+            for (int x = 0; x < g->xs; x++) {
+                if (Cell *c = g->C(x, y).get(); c->grid) { RecomputeFilteredDisplay(c->grid.get()); }
+            }
+        }
+    }
+
+    void ApplyRowFilterExpansion() {
+        if (root->grid) { RecomputeFilteredDisplay(root->grid.get()); }
+    }
+
     void CollectCellsSel(bool recurse) {
         itercells.clear();
         if (selected.grid != nullptr) {
@@ -2946,7 +2992,8 @@ struct Document {
             // sort in descending order
             return a->text.lastedit > b->text.lastedit;
         });
-        loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
+        loopv(i, itercells) itercells[i]->text.filteredraw = i > itercells.size() * editfilter / 100;
+        ApplyRowFilterExpansion();
         root->ResetChildren();
         UpdateLayout();
         ScrollIfSelectionOutOfView();
@@ -2957,8 +3004,9 @@ struct Document {
         searchfilter = false;
         CollectCells(root.get());
         for (auto *c : itercells) {
-            c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
+            c->text.filteredraw = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }
+        ApplyRowFilterExpansion();
         root->ResetChildren();
         UpdateLayout();
         ScrollIfSelectionOutOfView();
@@ -2974,7 +3022,8 @@ struct Document {
 
     void SetSearchFilter(bool on) {
         searchfilter = on;
-        loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
+        loopallcells(c) c->text.filteredraw = on && !c->text.IsInSearch();
+        ApplyRowFilterExpansion();
         root->ResetChildren();
         UpdateLayout();
         ScrollIfSelectionOutOfView();
