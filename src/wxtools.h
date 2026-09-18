@@ -82,23 +82,21 @@ struct DateTimeRangeDialog : public wxDialog {
             enddate.SetValue(lastend);
             endtime.SetValue(lastend);
         }
-        wxSizerFlags sizerflags(1);
-        auto *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
-        startsizer->Add(&startdate, 0, wxALL, 5);
-        startsizer->Add(&starttime, 0, wxALL, 5);
-        auto *endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
-        endsizer->Add(&enddate, 0, wxALL, 5);
-        endsizer->Add(&endtime, 0, wxALL, 5);
-        auto *btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
-        btnsizer->Add(&okbtn, 0, wxALL, 5);
-        btnsizer->Add(&cancelbtn, 0, wxALL, 5);
+        // Lays out two controls side by side, e.g. a date picker next to its time picker.
+        auto MakePairSizer = [](wxWindow *first, wxWindow *second) {
+            auto *sizer = new wxFlexGridSizer(2, wxSize(5, 5));
+            sizer->Add(first, 0, wxALL, 5);
+            sizer->Add(second, 0, wxALL, 5);
+            return sizer;
+        };
+
         auto *topsizer = new wxFlexGridSizer(1);
         topsizer->Add(&introtext, 0, wxALL, 5);
         topsizer->Add(&starttext, 0, wxALL, 5);
-        topsizer->Add(startsizer, sizerflags);
+        topsizer->Add(MakePairSizer(&startdate, &starttime), wxSizerFlags(1));
         topsizer->Add(&endtext, 0, wxALL, 5);
-        topsizer->Add(endsizer, sizerflags);
-        topsizer->Add(btnsizer, sizerflags);
+        topsizer->Add(MakePairSizer(&enddate, &endtime), wxSizerFlags(1));
+        topsizer->Add(MakePairSizer(&okbtn, &cancelbtn), wxSizerFlags(1));
         SetSizerAndFit(topsizer);
         topsizer->SetSizeHints(this);
 
@@ -106,18 +104,15 @@ struct DateTimeRangeDialog : public wxDialog {
     }
     void OnButton(wxCommandEvent &ce) {
         if (ce.GetId() == wxID_OK) {
-            int starthour = 0;
-            int startmin = 0;
-            int startsec = 0;
-            starttime.GetTime(&starthour, &startmin, &startsec);
-            wxTimeSpan starttimespan(starthour, startmin, startsec);
-            int endhour = 0;
-            int endmin = 0;
-            int endsec = 0;
-            endtime.GetTime(&endhour, &endmin, &endsec);
-            wxTimeSpan endtimespan(endhour, endmin, endsec);
-            begin = startdate.GetValue().Add(starttimespan);
-            end = enddate.GetValue().Add(endtimespan);
+            auto CombineDateAndTime = [](wxDatePickerCtrl &date, wxTimePickerCtrl &time) {
+                int hour = 0;
+                int min = 0;
+                int sec = 0;
+                time.GetTime(&hour, &min, &sec);
+                return date.GetValue().Add(wxTimeSpan(hour, min, sec));
+            };
+            begin = CombineDateAndTime(startdate, starttime);
+            end = CombineDateAndTime(enddate, endtime);
             lastbegin = begin;
             lastend = end;
         }
