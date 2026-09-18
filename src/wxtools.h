@@ -71,7 +71,17 @@ struct DateTimeRangeDialog : public wxDialog {
     wxButton cancelbtn {this, wxID_CANCEL, _("Cancel")};
     wxDateTime begin;
     wxDateTime end;
+    // Remembers the last chosen range across dialog instances so reopening starts
+    // from where the user left off instead of resetting to "now".
+    static inline wxDateTime lastbegin;
+    static inline wxDateTime lastend;
     DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _("Date and time range")) {
+        if (lastbegin.IsValid() && lastend.IsValid()) {
+            startdate.SetValue(lastbegin);
+            starttime.SetValue(lastbegin);
+            enddate.SetValue(lastend);
+            endtime.SetValue(lastend);
+        }
         wxSizerFlags sizerflags(1);
         auto *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
         startsizer->Add(&startdate, 0, wxALL, 5);
@@ -108,6 +118,8 @@ struct DateTimeRangeDialog : public wxDialog {
             wxTimeSpan endtimespan(endhour, endmin, endsec);
             begin = startdate.GetValue().Add(starttimespan);
             end = enddate.GetValue().Add(endtimespan);
+            lastbegin = begin;
+            lastend = end;
         }
         EndModal(ce.GetId());
     }
