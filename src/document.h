@@ -329,6 +329,45 @@ struct Document {
         canvas->RefreshRect(wxRect(devx, devy, r.width, r.height), false);
     }
 
+    // Grid::Layout() has to revisit every cell in a grid on every call, even when only
+    // one cell actually changed, because that's the only way it can tell whether the
+    // edited cell's column/row is still governed by some other (unchanged) cell's size.
+    // For a single text edit we can usually answer that in O(1) instead: if the edited
+    // cell's new size still fits within its column/row's cached max (Grid::colmaxcache/
+    // rowmaxcache, kept current by the last full Layout()), then by construction no
+    // other cell's position could have shifted, and the whole document-wide relayout
+    // (UpdateLayout(), which Grid::Layout() is called from) can be skipped entirely.
+    // `oldsizes` is the (cell, old sx, old sy) chain AddUndo()'s ResetLayout() zeroed
+    // out for `editedsel`'s cell and its ancestors up to currentdrawroot (see Key());
+    // since nothing changed, restoring those exact values undoes that reset correctly.
+    // Returns false (having changed nothing but the edited cell's own now-current
+    // natural size, harmlessly pre-computed for whichever path ends up doing the full
+    // layout) whenever the fast path doesn't apply, so the caller can fall back to the
+    // normal UpdateLayout().
+    bool FastRelayoutAfterEdit(const Selection &editedsel,
+                               const vector<pair<Cell *, pair<int, int>>> &oldsizes) {
+        Grid *g = editedsel.grid.get();
+        if (g->cell->tiny) { return false; }
+        if (g->colmaxcache.size() != static_cast<size_t>(g->xs) ||
+            g->rowmaxcache.size() != static_cast<size_t>(g->ys)) {
+            return false;
+        }
+        wxInfoDC dc(canvas);
+        ResetFont(dc);
+        dc.SetUserScale(1, 1);
+        Cell *c = g->C(editedsel.x, editedsel.y).get();
+        int celldepth = c->Depth() - drawpath.size();
+        c->LazyLayout(this, dc, celldepth, g->colwidths[editedsel.x], false);
+        if (c->sx > g->colmaxcache[editedsel.x] || c->sy > g->rowmaxcache[editedsel.y]) {
+            return false;
+        }
+        for (auto &[p, oldsz] : oldsizes) {
+            p->sx = oldsz.first;
+            p->sy = oldsz.second;
+        }
+        return true;
+    }
+
     void ScrollOrZoom(bool zoomiftiny = false) {
         if (selected.grid == nullptr) { return; }
         auto *drawroot = WalkPath(drawpath);
@@ -1122,7 +1161,7 @@ struct Document {
 
             c->AddUndo(this, true);
             c->text.Key(this, uk, selected);
-            UpdateLayout();
+            if (!safe || !FastRelayoutAfterEdit(editedsel, oldsizes)) { UpdateLayout(); }
 
             int vx0 = 0, vy0 = 0, vx1 = 0, vy1 = 0;
             canvas->GetViewStart(&vx0, &vy0);
