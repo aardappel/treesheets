@@ -7,6 +7,10 @@ struct Text {
     int extent {0};
     wxDateTime lastedit;
     bool filtered {false};
+    // The raw (per-cell) filter match result, before "show entire row on match" expansion
+    // is applied. Kept separate from `filtered` so that toggling that option can recompute
+    // the displayed `filtered` flag without having to re-run the underlying filter.
+    bool filteredraw {false};
 
     void WasEdited() { lastedit = wxDateTime::Now(); }
 

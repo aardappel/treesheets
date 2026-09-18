@@ -521,6 +521,12 @@ struct TSFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERNOTE, _("Show cells with notes"));
         filtermenu->AppendSeparator();
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _("Go to next filter match") + "\tCTRL+F3");
+        filtermenu->AppendSeparator();
+        filtermenu->AppendCheckItem(
+            A_FILTERSHOWROWS, _("Show entire row on match"),
+            _("When a cell in a row matches the current filter, show the whole row "
+              "normally instead of only the matching cell"));
+        filtermenu->Check(A_FILTERSHOWROWS, sys->filtershowrows);
 
         auto *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _("Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
