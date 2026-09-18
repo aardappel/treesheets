@@ -9,6 +9,26 @@ struct UndoItem {
     int generation {0};
 };
 
+// Caches the result of locating the thin (non-range) text cursor within its cell's
+// wrapped lines -- see Text::DrawCursor. That lookup is redrawn on every repaint while
+// a cell is being edited, not just on edits, and its expensive part (scanning wrapped
+// lines and measuring them with GetTextExtent) is a pure function of the text, cursor
+// index, font and column width. The cell's actual screen position and row height are
+// deliberately *not* cached here (they can shift for reasons unrelated to this cell)
+// and are recomputed fresh on every use instead.
+struct CursorPosCache {
+    Cell *cell {nullptr};
+    Image *image {nullptr};
+    wxString text;
+    int cursor {-1};
+    int stylebits {-1};
+    int relsize {INT_MIN};
+    int maxcolwidth {-1};
+    bool found {false};
+    int localdx {0};  // horizontal offset from the cell's own origin
+    int line {0};      // which wrapped line the cursor is on
+};
+
 struct Document {
     TSCanvas *canvas {nullptr};
     unique_ptr<Cell> root {nullptr};
@@ -37,6 +57,7 @@ struct Document {
     int fontcachebasesize {0};
     bool usescreenfonts {false};
     Cell *currentdrawroot {nullptr};  // for use during Render() calls
+    CursorPosCache cursorposcache;
     vector<unique_ptr<UndoItem>> undolist;
     vector<unique_ptr<UndoItem>> redolist;
     vector<Selection> drawpath;
