@@ -29,6 +29,14 @@ struct CursorPosCache {
     int line {0};      // which wrapped line the cursor is on
 };
 
+// Every field Cell::Reset() zeroes out. Document::Key()'s fast path (see
+// FastRelayoutAfterEdit) needs to undo that reset precisely for the cells it decides
+// not to relayout, or their cached geometry is left zeroed/stale -- see
+// FastRelayoutAfterEdit for which fields that applies to for which cell.
+struct CellGeom {
+    int sx, sy, ox, oy, minx, miny, ycenteroff;
+};
+
 struct Document {
     TSCanvas *canvas {nullptr};
     unique_ptr<Cell> root {nullptr};
@@ -337,15 +345,22 @@ struct Document {
     // rowmaxcache, kept current by the last full Layout()), then by construction no
     // other cell's position could have shifted, and the whole document-wide relayout
     // (UpdateLayout(), which Grid::Layout() is called from) can be skipped entirely.
-    // `oldsizes` is the (cell, old sx, old sy) chain AddUndo()'s ResetLayout() zeroed
-    // out for `editedsel`'s cell and its ancestors up to currentdrawroot (see Key());
-    // since nothing changed, restoring those exact values undoes that reset correctly.
+    // `oldsizes` is the (cell, old geometry) chain AddUndo()'s ResetLayout() zeroed out
+    // -- via Cell::Reset(), which clears sx/sy/ox/oy/minx/miny/ycenteroff -- for
+    // `editedsel`'s cell and its ancestors up to currentdrawroot (see Key()); since
+    // nothing changed, restoring those exact values undoes that reset correctly. The
+    // edited cell itself (oldsizes[0]) is the exception: its sx/sy/ox/oy/ycenteroff are
+    // still restored (they equal what they were before -- the column/row max didn't
+    // change, which is what "fits in the cache" below means), but its minx/miny must be
+    // left alone, since LazyLayout() just correctly recomputed them for the new text;
+    // restoring the old ones would silently revert the edit the next time this cell's
+    // cached (non-zero sx) branch of LazyLayout() is taken.
     // Returns false (having changed nothing but the edited cell's own now-current
-    // natural size, harmlessly pre-computed for whichever path ends up doing the full
-    // layout) whenever the fast path doesn't apply, so the caller can fall back to the
-    // normal UpdateLayout().
+    // natural size and cache, harmlessly pre-computed for whichever path ends up doing
+    // the full layout) whenever the fast path doesn't apply, so the caller can fall
+    // back to the normal UpdateLayout().
     bool FastRelayoutAfterEdit(const Selection &editedsel,
-                               const vector<pair<Cell *, pair<int, int>>> &oldsizes) {
+                               const vector<pair<Cell *, CellGeom>> &oldsizes) {
         Grid *g = editedsel.grid.get();
         if (g->cell->tiny) { return false; }
         if (g->colmaxcache.size() != static_cast<size_t>(g->xs) ||
@@ -361,9 +376,17 @@ struct Document {
         if (c->sx > g->colmaxcache[editedsel.x] || c->sy > g->rowmaxcache[editedsel.y]) {
             return false;
         }
-        for (auto &[p, oldsz] : oldsizes) {
-            p->sx = oldsz.first;
-            p->sy = oldsz.second;
+        for (size_t i = 0; i < oldsizes.size(); i++) {
+            auto &[p, old] = oldsizes[i];
+            p->sx = old.sx;
+            p->sy = old.sy;
+            p->ox = old.ox;
+            p->oy = old.oy;
+            p->ycenteroff = old.ycenteroff;
+            if (i != 0) {
+                p->minx = old.minx;
+                p->miny = old.miny;
+            }
         }
         return true;
     }
@@ -1142,11 +1165,12 @@ struct Document {
             // else could have shifted position either, so nothing else needs repainting.
             bool safe = !selected.Thin();
             wxRect oldrect;
-            vector<pair<Cell *, pair<int, int>>> oldsizes;
+            vector<pair<Cell *, CellGeom>> oldsizes;
             if (safe) {
                 oldrect = selected.grid->GetRect(this, selected);
                 for (Cell *p = selected.GetCell(); p != nullptr; p = p->parent) {
-                    oldsizes.emplace_back(p, make_pair(p->sx, p->sy));
+                    oldsizes.emplace_back(
+                        p, CellGeom {p->sx, p->sy, p->ox, p->oy, p->minx, p->miny, p->ycenteroff});
                     if (p == currentdrawroot) break;
                 }
             }
@@ -1170,7 +1194,7 @@ struct Document {
             safe = safe && vx0 == vx1 && vy0 == vy1;
 
             for (auto &[p, oldsz] : oldsizes) {
-                if (p->sx != oldsz.first || p->sy != oldsz.second) {
+                if (p->sx != oldsz.sx || p->sy != oldsz.sy) {
                     safe = false;
                     break;
                 }
