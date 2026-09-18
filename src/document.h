@@ -292,6 +292,22 @@ struct Document {
         }
     }
 
+    // Converts a rectangle from document (unscrolled content) coordinates -- the space
+    // Cell::ox/oy and Grid::GetRect() use -- into window coordinates, and refreshes just
+    // that area instead of the whole visible viewport. Centering and the scaled-viewing-
+    // mode zoom both add transforms on top of the plain scroll offset that aren't worth
+    // replicating here, so those (uncommon) modes fall back to a full refresh.
+    void RefreshDocRect(wxRect r) {
+        if (centerx != 0 || centery != 0 || currentviewscale != 1.0) {
+            canvas->Refresh();
+            return;
+        }
+        r.Inflate(4, 4);  // slack for borders, the cursor caret, antialiasing
+        int devx = 0, devy = 0;
+        canvas->CalcScrolledPosition(r.x, r.y, &devx, &devy);
+        canvas->RefreshRect(wxRect(devx, devy, r.width, r.height), false);
+    }
+
     void ScrollOrZoom(bool zoomiftiny = false) {
         if (selected.grid == nullptr) { return; }
         auto *drawroot = WalkPath(drawpath);
@@ -659,16 +675,40 @@ struct Document {
             maxx = clientx + scrollx;
             maxy = clienty + scrolly;
         }
-        dc.SetClippingRegion(scrollx, scrolly, clientx, clienty);
-        dc.SetBackground(wxBrush(LightColor(Background())));
-        dc.Clear();
-
         centerx = sys->centered && scrollx == 0 && maxx > layoutxs
                       ? (maxx - layoutxs) / 2 * currentviewscale
                       : 0;
         centery = sys->centered && scrolly == 0 && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
+
+        // Restrict actual drawing to the area wx says needs repainting (which reflects
+        // both an explicit RefreshRect() and a real, WM-driven partial expose), instead
+        // of always redoing the entire visible viewport. Grid::Render already culls
+        // cells against scrollx/scrolly/maxx/maxy, so narrowing those means cells
+        // outside the dirty area skip their (Pango-backed, and measured to be the
+        // dominant per-paint cost) DrawText call entirely, rather than being drawn and
+        // then clipped away. This is always safe: callers that still invalidate the
+        // whole window (the vast majority today) get an update region that already
+        // covers the full viewport, so nothing narrows and behaviour is unchanged.
+        if (currentviewscale == 1.0 && centerx == 0 && centery == 0) {
+            wxRect updatebox = canvas->GetUpdateRegion().GetBox();
+            if (!updatebox.IsEmpty()) {
+                int ux0 = 0, uy0 = 0, ux1 = 0, uy1 = 0;
+                canvas->CalcUnscrolledPosition(updatebox.GetLeft(), updatebox.GetTop(), &ux0,
+                                                &uy0);
+                canvas->CalcUnscrolledPosition(updatebox.GetRight() + 1, updatebox.GetBottom() + 1,
+                                                &ux1, &uy1);
+                scrollx = max(scrollx, ux0);
+                scrolly = max(scrolly, uy0);
+                maxx = min(maxx, ux1);
+                maxy = min(maxy, uy1);
+            }
+        }
+
+        dc.SetClippingRegion(scrollx, scrolly, maxx - scrollx, maxy - scrolly);
+        dc.SetBackground(wxBrush(LightColor(Background())));
+        dc.Clear();
 
         ShiftToCenter(dc);
         dc.SetUserScale(currentviewscale, currentviewscale);
@@ -1033,17 +1073,57 @@ struct Document {
             }
         } else if (uk >= ' ') {
             if (selected.grid == nullptr) { return NoSel(); }
+
+            // Capture enough state before the edit to tell, after laying it out,
+            // whether it's safe to repaint just the edited cell's area instead of the
+            // whole visible viewport. "Safe" means: the selection didn't need a row or
+            // column inserted (a structural change, handled below), and no cell from
+            // the edited one up to the draw root changed size -- if none did, nothing
+            // else could have shifted position either, so nothing else needs repainting.
+            bool safe = !selected.Thin();
+            wxRect oldrect;
+            vector<pair<Cell *, pair<int, int>>> oldsizes;
+            if (safe) {
+                oldrect = selected.grid->GetRect(this, selected);
+                for (Cell *p = selected.GetCell(); p != nullptr; p = p->parent) {
+                    oldsizes.emplace_back(p, make_pair(p->sx, p->sy));
+                    if (p == currentdrawroot) break;
+                }
+            }
+
             auto *c = selected.ThinExpand(this);
             if (c == nullptr) {
                 selected.Wrap(this);
                 c = selected.GetCell();
+                safe = false;
             }
+            Selection editedsel = selected;
+
             c->AddUndo(this, true);
             c->text.Key(this, uk, selected);
             UpdateLayout();
+
+            int vx0 = 0, vy0 = 0, vx1 = 0, vy1 = 0;
+            canvas->GetViewStart(&vx0, &vy0);
             ScrollIfSelectionOutOfView();
+            canvas->GetViewStart(&vx1, &vy1);
+            safe = safe && vx0 == vx1 && vy0 == vy1;
+
+            for (auto &[p, oldsz] : oldsizes) {
+                if (p->sx != oldsz.first || p->sy != oldsz.second) {
+                    safe = false;
+                    break;
+                }
+            }
+
             // Let the event loop combine paints when several text events are queued.
-            canvas->Refresh();
+            if (safe) {
+                wxRect newrect = editedsel.grid->GetRect(this, editedsel);
+                newrect.Union(oldrect);
+                RefreshDocRect(newrect);
+            } else {
+                canvas->Refresh();
+            }
             return wxEmptyString;
         }
         unprocessed = true;
