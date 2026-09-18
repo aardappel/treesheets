@@ -298,43 +298,81 @@ struct Text {
         if (ixs != 0) { ixs += 2; }
         doc->PickFont(dc, cell->Depth() - doc->drawpath.size(), relsize, stylebits);
         auto h = dc.GetCharHeight();
-        {
+
+        if (s.cursor != s.cursorend) {
+            // A range selection can span multiple lines (one rectangle drawn per line
+            // below); it changes far less often than the plain typing caret below, so
+            // it isn't worth caching.
             auto i = 0;
             for (auto l = 0;; l++) {
                 auto start = i;
                 auto ls = GetLine(i, maxcolwidth);
                 auto len = static_cast<int>(ls.Len());
                 auto end = start + len;
-
-                if (s.cursor != s.cursorend) {
-                    if (s.cursor <= end && s.cursorend >= start) {
-                        ls.Truncate(min(s.cursorend, end) - start);
-                        auto x1 = 0;
-                        auto x2 = 0;
-                        dc.GetTextExtent(ls, &x2, nullptr);
-                        ls.Truncate(max(s.cursor, start) - start);
-                        dc.GetTextExtent(ls, &x1, nullptr);
-                        if (x1 != x2) {
-                            int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
-                            int starty =
-                                cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                            DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
-                            HintIMELocation(doc, startx, starty, h - 1, stylebits);
-                        }
+                if (s.cursor <= end && s.cursorend >= start) {
+                    ls.Truncate(min(s.cursorend, end) - start);
+                    auto x1 = 0;
+                    auto x2 = 0;
+                    dc.GetTextExtent(ls, &x2, nullptr);
+                    ls.Truncate(max(s.cursor, start) - start);
+                    dc.GetTextExtent(ls, &x1, nullptr);
+                    if (x1 != x2) {
+                        int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
+                        int starty =
+                            cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
+                        DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
+                        HintIMELocation(doc, startx, starty, h - 1, stylebits);
                     }
-                } else if (s.cursor >= start && s.cursor <= end) {
+                }
+                if (len == 0) { break; }
+            }
+            return;
+        }
+
+        // Thin cursor (the common case: redrawn on every repaint while a cell is being
+        // edited, including repaints the edit itself didn't cause, e.g. a resize or an
+        // edit elsewhere). Which wrapped line it's on and its horizontal offset from
+        // the cell's own origin are a deterministic function of the text, cursor
+        // index, font and column width alone, so cache those and skip the line scan
+        // and GetTextExtent measurement -- the dominant cost here -- when none of them
+        // changed since the last time we drew it. The cell's actual screen position
+        // and row height are recomputed fresh below regardless (cheap, and can shift
+        // for reasons unrelated to this cell, e.g. a sibling growing).
+        auto &cc = doc->cursorposcache;
+        if (cc.cell != cell || cc.image != image || cc.cursor != s.cursor ||
+            cc.stylebits != stylebits || cc.relsize != relsize || cc.maxcolwidth != maxcolwidth ||
+            cc.text != t) {
+            cc.cell = cell;
+            cc.image = image;
+            cc.text = t;
+            cc.cursor = s.cursor;
+            cc.stylebits = stylebits;
+            cc.relsize = relsize;
+            cc.maxcolwidth = maxcolwidth;
+            cc.found = false;
+            auto i = 0;
+            for (auto l = 0;; l++) {
+                auto start = i;
+                auto ls = GetLine(i, maxcolwidth);
+                auto len = static_cast<int>(ls.Len());
+                auto end = start + len;
+                if (s.cursor >= start && s.cursor <= end) {
                     ls.Truncate(s.cursor - start);
                     auto x = 0;
                     dc.GetTextExtent(ls, &x, nullptr);
-                    int startx = cell->GetX(doc) + x + 1 + ixs + g_margin_extra;
-                    int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                    DrawRectangle(dc, color, startx, starty, 2, h - 2);
-                    HintIMELocation(doc, startx, starty, h - 2, stylebits);
+                    cc.localdx = x + 1 + ixs + g_margin_extra;
+                    cc.line = l;
+                    cc.found = true;
                     break;
                 }
-
                 if (len == 0) { break; }
             }
+        }
+        if (cc.found) {
+            int startx = cell->GetX(doc) + cc.localdx;
+            int starty = cell->GetY(doc) + cc.line * h + 1 + cell->ycenteroff + g_margin_extra;
+            DrawRectangle(dc, color, startx, starty, 2, h - 2);
+            HintIMELocation(doc, startx, starty, h - 2, stylebits);
         }
     }
 
