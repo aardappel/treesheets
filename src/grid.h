@@ -5,6 +5,14 @@ struct Grid {
     vector<unique_ptr<Cell>> cells;
     // widths for each column
     vector<int> colwidths;
+    // The max cell width/height per column/row, as of the last full Layout(). Used by
+    // Document::FastRelayoutAfterEdit() to tell, in O(1), whether a single edited
+    // cell's new size still fits within its existing column/row -- if so, nothing
+    // else in the grid could have moved and the full O(cells) Layout() rescan below
+    // can be skipped. Only ever written here (Layout() always keeps it current);
+    // readers must check its size against xs/ys since it starts empty.
+    vector<int> colmaxcache;
+    vector<int> rowmaxcache;
     // xsize, ysize
     int xs;
     int ys;
@@ -127,6 +135,8 @@ struct Grid {
             xa[x] = max(xa[x], c->sx);
             ya[y] = max(ya[y], c->sy);
         }
+        colmaxcache = xa;
+        rowmaxcache = ya;
         view_grid_outer_spacing =
             tinyborder || cell->drawstyle != DS_GRID ? 0 : user_grid_outer_spacing;
         view_margin = tinyborder || cell->drawstyle != DS_GRID ? 0 : g_grid_margin;
