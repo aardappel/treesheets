@@ -323,18 +323,20 @@ struct Document {
 
     // Converts a rectangle from document (unscrolled content) coordinates -- the space
     // Cell::ox/oy and Grid::GetRect() use -- into window coordinates, and refreshes just
-    // that area instead of the whole visible viewport. Centering and the scaled-viewing-
-    // mode zoom both add transforms on top of the plain scroll offset that aren't worth
-    // replicating here, so those (uncommon) modes fall back to a full refresh.
+    // that area instead of the whole visible viewport. Centering is just a constant
+    // (centerx, centery) pixel offset on top of the scroll position (see ShiftToCenter),
+    // so it's cheap to replicate here. The scaled-viewing-mode zoom instead scales the
+    // rect itself, which is more involved for a mode that's rarer and has less on
+    // screen anyway, so that one still falls back to a full refresh.
     void RefreshDocRect(wxRect r) {
-        if (centerx != 0 || centery != 0 || currentviewscale != 1.0) {
+        if (currentviewscale != 1.0) {
             canvas->Refresh();
             return;
         }
         r.Inflate(4, 4);  // slack for borders, the cursor caret, antialiasing
         int devx = 0, devy = 0;
         canvas->CalcScrolledPosition(r.x, r.y, &devx, &devy);
-        canvas->RefreshRect(wxRect(devx, devy, r.width, r.height), false);
+        canvas->RefreshRect(wxRect(devx + centerx, devy + centery, r.width, r.height), false);
     }
 
     // Grid::Layout() has to revisit every cell in a grid on every call, even when only
