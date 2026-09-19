@@ -680,16 +680,43 @@ struct System {
         ys = bm->GetLogicalHeight();
     }
 
-    static void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y) {
+    static void ImageDraw(wxBitmap *bm, wxDC &dc, int x, int y, const Image *image = nullptr) {
         dc.DrawBitmap(*bm, x, y);
     }
 
-    #if defined(ENABLE_WXPDFDOC) && !defined(__WXMSW__)
-        static void ImageDraw(wxBitmap *bm, wxPdfDC &dc, int x, int y) {
-            // wxPdfDC cannot handle scaled bitmaps, so we do it on our own
-            wxBitmap pdfbm;
-            ScaleBitmap(*bm, 1 / bm->GetScaleFactor(), pdfbm);
-            dc.DrawBitmap(pdfbm, x, y);
+    #ifdef ENABLE_WXPDFDOC
+        // wxPdfDC ignores wxBitmap::GetScaleFactor() and sizes images by their pixel size, but
+        // it honors the DC's user scale, so shrink the user scale instead of the pixels.
+        static void DrawBitmapPdf(wxPdfDC &dc, const wxBitmap &bm, int x, int y, double f) {
+            double sx, sy;
+            dc.GetUserScale(&sx, &sy);
+            dc.SetUserScale(sx / f, sy / f);
+            dc.DrawBitmap(bm, wxRound(x * f), wxRound(y * f));
+            dc.SetUserScale(sx, sy);
         }
+
+        #ifndef __WXMSW__
+            static void ImageDraw(wxBitmap *bm, wxPdfDC &dc, int x, int y,
+                                  const Image *image = nullptr) {
+                DrawBitmapPdf(dc, *bm, x, y, bm->GetScaleFactor());
+            }
+        #else
+            static void ImageDraw(wxBitmap *bm, wxPdfDC &dc, int x, int y,
+                                  const Image *image = nullptr) {
+                // Image::Display() pre-scales the bitmap on wxMSW, so decode the original
+                // pixels again to avoid blurry images in the PDF.
+                if (image != nullptr) {
+                    auto original =
+                        ConvertBufferToWxBitmap(image->data, imagetypes.at(image->type).first);
+                    if (original.IsOk()) {
+                        const double f = static_cast<double>(original.GetWidth()) /
+                                         std::max(1, bm->GetWidth());
+                        DrawBitmapPdf(dc, original, x, y, f);
+                        return;
+                    }
+                }
+                dc.DrawBitmap(*bm, x, y);
+            }
+        #endif
     #endif
 };

@@ -192,7 +192,8 @@ struct Text {
 
         if (ixs != 0 && iys != 0) {
             treesheets::System::ImageDraw(DisplayImage(), dc, bx + 1 + g_margin_extra,
-                                          by + (cell->tys - iys) / 2 + g_margin_extra);
+                                          by + (cell->tys - iys) / 2 + g_margin_extra,
+                                          (cell->grid && cell->grid->folded) ? nullptr : image);
             ixs += 2;
             iys += 2;
         }
