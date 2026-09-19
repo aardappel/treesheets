@@ -1,3 +1,28 @@
+// Text control for the toolbar: on Windows, menu accelerators (LEFT, HOME, BACK, CTRL+A, ...) are
+// translated before the focused control sees the key. Opting out of message pre-processing for
+// text editing keys lets the control handle them natively instead of emulating them in OnMenu.
+struct TSTextCtrl : wxTextCtrl {
+    using wxTextCtrl::wxTextCtrl;
+    #ifdef __WXMSW__
+        bool MSWShouldPreProcessMessage(WXMSG *msg) override {
+            if (msg->message == WM_KEYDOWN) {
+                switch (msg->wParam) {
+                    case VK_LEFT:
+                    case VK_RIGHT:
+                    case VK_HOME:
+                    case VK_END:
+                    case VK_BACK:
+                    case VK_DELETE: return false;
+                    case 'A':
+                        if (wxGetKeyState(WXK_CONTROL)) return false;
+                        break;
+                }
+            }
+            return wxTextCtrl::MSWShouldPreProcessMessage(msg);
+        }
+    #endif
+};
+
 struct TSFrame : wxFrame {
     TSApp *app;
     wxIcon icon;
@@ -17,8 +42,8 @@ struct TSFrame : wxFrame {
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
     wxColour toolbarbackgroundcolor {0xD8C7BC};
-    wxTextCtrl *filter {nullptr};
-    wxTextCtrl *replaces {nullptr};
+    TSTextCtrl *filter {nullptr};
+    TSTextCtrl *replaces {nullptr};
     ColorDropdown *cellcolordropdown {nullptr};
     ColorDropdown *textcolordropdown {nullptr};
     ColorDropdown *bordercolordropdown {nullptr};
@@ -914,7 +939,7 @@ struct TSFrame : wxFrame {
 
         auto *findtb = NewToolbar();
         AddToolbarLabel(findtb, _("Search "));
-        findtb->AddControl(filter = new wxTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
+        findtb->AddControl(filter = new TSTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
                                                    FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
         AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, iconpath, "cancel.svg",
                        "cancel_dark.svg");
@@ -924,7 +949,7 @@ struct TSFrame : wxFrame {
 
         auto *repltb = NewToolbar();
         AddToolbarLabel(repltb, _("Replace "));
-        repltb->AddControl(replaces = new wxTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
+        repltb->AddControl(replaces = new TSTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
                                                      FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
         AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, iconpath, "cancel.svg",
                        "cancel_dark.svg");
@@ -1013,8 +1038,9 @@ struct TSFrame : wxFrame {
             long to = 0;
             tc->GetSelection(&from, &to);
             switch (ce.GetId()) {
-                #if defined(__WXMSW__) || defined(__WXMAC__)
-                // FIXME: have to emulate this behavior on Windows and Mac because menu always captures these events (??)
+                #if defined(__WXMAC__)
+                // FIXME: have to emulate this behavior on Mac because menu always captures these events (??)
+                // (on Windows this is handled by TSTextCtrl::MSWShouldPreProcessMessage)
                 case A_MLEFT:
                 case A_LEFT:
                     if (from != to)
