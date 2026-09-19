@@ -1,17 +1,18 @@
-# Japanese translations for TreeSheets
-# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# coolvitto <EMAIL@ADDRESS>, 2026.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 06:54+0200\n"
-"PO-Revision-Date: 2026-07-26 01:47+0900\n"
+"POT-Creation-Date: 2026-09-15 22:37+0200\n"
+"PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
-"Language: ja_JP\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -373,7 +374,7 @@ msgid "Cannot open file."
 msgstr "ファイルを開けません。"
 
 msgid "Case-sensitive search"
-msgstr "大文字と小文字を区別する検索"
+msgstr "大文字と小文字を区別する"
 
 msgid "Cell "
 msgstr "セル "
@@ -1357,6 +1358,9 @@ msgstr "ツールバーの外観をリセット"
 msgid "Reset toolbar"
 msgstr "ツールバーをリセット"
 
+msgid "Restrict search and replace to view"
+msgstr "検索と置換の対象を表示範囲に限定する"
+
 msgid "Run"
 msgstr "実行"
 
@@ -1427,6 +1431,13 @@ msgstr "上にスクロール（マウスホイール）"
 
 msgid "Search "
 msgstr "検索 "
+
+msgid ""
+"Search and replace in the visible content of the current view (no folded "
+"grids, no tiny cells)"
+msgstr ""
+"現在の表示範囲内 (折りたたまれたグリッドや極小のセルは対象外) で検索と置換を"
+"行います"
 
 msgid "Search in folded grids"
 msgstr "折り畳まれたグリッド内を検索"
