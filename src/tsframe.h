@@ -13,6 +13,7 @@ struct TSFrame : wxFrame {
     wxBitmap line_nw;
     wxBitmap line_sw;
     wxBitmap foldicon;
+    map<int, wxBitmap> foldicons;  // scaled variants, keyed by text size
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
     wxColour toolbarbackgroundcolor {0xD8C7BC};
@@ -1642,6 +1643,19 @@ struct TSFrame : wxFrame {
     void RenderFolderIcon() {
         foldicon.LoadFile(app->GetDataPath("images/nuvola/fold.png"), wxBITMAP_TYPE_PNG);
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
+        foldicons.clear();
+    }
+
+    // Fold icon scaled relative to the default text size, so it matches the displayed text.
+    wxBitmap *GetFoldIcon(int textsize) {
+        if (textsize == g_deftextsize || !foldicon.IsOk()) { return &foldicon; }
+        auto it = foldicons.find(textsize);
+        if (it == foldicons.end()) {
+            wxBitmap scaled;
+            ScaleBitmap(foldicon, static_cast<double>(textsize) / g_deftextsize, scaled);
+            it = foldicons.emplace(textsize, scaled).first;
+        }
+        return &it->second;
     }
 
     void SetDPIAwareStatusWidths() {
