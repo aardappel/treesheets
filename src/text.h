@@ -17,8 +17,14 @@ struct Text {
     Text() { WasEdited(); }
 
     wxBitmap *DisplayImage() const {
-        return cell->grid && cell->grid->folded ? &sys->frame->foldicon
-                                                : (image != nullptr ? &image->Display() : nullptr);
+        if (cell->grid && cell->grid->folded) {
+            auto *tab = sys->frame->GetCurrentTab();
+            if (!tab) { return &sys->frame->foldicon; }
+            auto *doc = tab->doc.get();
+            return sys->frame->GetFoldIcon(
+                doc->TextSize(cell->Depth() - doc->drawpath.size(), relsize));
+        }
+        return image != nullptr ? &image->Display() : nullptr;
     }
 
     size_t EstimatedMemoryUse() const {
