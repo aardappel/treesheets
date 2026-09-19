@@ -197,9 +197,15 @@ struct Grid {
                     int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
                     if (xl >= doc->scrollx && xl <= doc->maxx) {
                         loop(line, g_line_width) {
-                            dc.DrawLine(
-                                xl + line, max(doc->scrolly, by + yoff + view_grid_outer_spacing),
-                                xl + line, min(doc->maxy, by + maxy + g_line_width) + view_margin);
+                            // Extend by ldelta so the line overlaps the rounded outer border
+                            // (drawn afterwards) instead of leaving a 1px gap where the
+                            // exclusive-endpoint line and the inclusive rounded-rect edge meet.
+                            dc.DrawLine(xl + line,
+                                        max(doc->scrolly,
+                                            by + yoff + view_grid_outer_spacing - ldelta),
+                                        xl + line,
+                                        min(doc->maxy, by + maxy + g_line_width) + view_margin +
+                                            ldelta);
                         }
                     }
                 }
@@ -207,10 +213,11 @@ struct Grid {
                     int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
                     if (yl >= doc->scrolly && yl <= doc->maxy) {
                         loop(line, g_line_width) {
-                            dc.DrawLine(max(doc->scrollx,
-                                            bx + xoff + view_grid_outer_spacing + g_line_width),
-                                        yl + line, min(doc->maxx, bx + maxx) + view_margin,
-                                        yl + line);
+                            dc.DrawLine(
+                                max(doc->scrollx, bx + xoff + view_grid_outer_spacing +
+                                                       g_line_width - ldelta),
+                                yl + line,
+                                min(doc->maxx, bx + maxx) + view_margin + ldelta, yl + line);
                         }
                     }
                 }
