@@ -1,11 +1,12 @@
 template<typename DC>
 static void DrawRectangle(DC &dc, uint color, int x, int y, int xs, int ys, bool outline = false) {
+    const wxColour lightCol = LightColor(color);
     if (outline) {
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
     } else {
-        dc.SetBrush(wxBrush(LightColor(color)));
+        dc.SetBrush(wxBrush(lightCol));
     }
-    dc.SetPen(wxPen(LightColor(color)));
+    dc.SetPen(wxPen(lightCol));
     dc.DrawRectangle(x, y, xs, ys);
 }
 
@@ -16,7 +17,8 @@ struct DropTarget : wxDropTarget {
 
     wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def) override {
         auto *canvas = sys->frame->GetCurrentTab();
-        canvas->doc->UpdateHover(x, y);
+        wxInfoDC dc(canvas);
+        canvas->doc->UpdateHover(dc, x, y);
         return canvas->doc->hover.grid ? wxDragCopy : wxDragNone;
     }
 
@@ -26,7 +28,8 @@ struct DropTarget : wxDropTarget {
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) override {
         GetData();
         auto *canvas = sys->frame->GetCurrentTab();
-        canvas->doc->UpdateHover(x, y);
+        wxInfoDC dc(canvas);
+        canvas->doc->UpdateHover(dc, x, y);
         canvas->doc->SelectClick();
         canvas->doc->Drop();
         canvas->doc->UpdateLayout();
@@ -68,24 +71,32 @@ struct DateTimeRangeDialog : public wxDialog {
     wxButton cancelbtn {this, wxID_CANCEL, _("Cancel")};
     wxDateTime begin;
     wxDateTime end;
+    // Remembers the last chosen range across dialog instances so reopening starts
+    // from where the user left off instead of resetting to "now".
+    static inline wxDateTime lastbegin;
+    static inline wxDateTime lastend;
     DateTimeRangeDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _("Date and time range")) {
-        wxSizerFlags sizerflags(1);
-        auto *startsizer = new wxFlexGridSizer(2, wxSize(5, 5));
-        startsizer->Add(&startdate, 0, wxALL, 5);
-        startsizer->Add(&starttime, 0, wxALL, 5);
-        auto *endsizer = new wxFlexGridSizer(2, wxSize(5, 5));
-        endsizer->Add(&enddate, 0, wxALL, 5);
-        endsizer->Add(&endtime, 0, wxALL, 5);
-        auto *btnsizer = new wxFlexGridSizer(2, wxSize(5, 5));
-        btnsizer->Add(&okbtn, 0, wxALL, 5);
-        btnsizer->Add(&cancelbtn, 0, wxALL, 5);
+        if (lastbegin.IsValid() && lastend.IsValid()) {
+            startdate.SetValue(lastbegin);
+            starttime.SetValue(lastbegin);
+            enddate.SetValue(lastend);
+            endtime.SetValue(lastend);
+        }
+        // Lays out two controls side by side, e.g. a date picker next to its time picker.
+        auto MakePairSizer = [](wxWindow *first, wxWindow *second) {
+            auto *sizer = new wxFlexGridSizer(2, wxSize(5, 5));
+            sizer->Add(first, 0, wxALL, 5);
+            sizer->Add(second, 0, wxALL, 5);
+            return sizer;
+        };
+
         auto *topsizer = new wxFlexGridSizer(1);
         topsizer->Add(&introtext, 0, wxALL, 5);
         topsizer->Add(&starttext, 0, wxALL, 5);
-        topsizer->Add(startsizer, sizerflags);
+        topsizer->Add(MakePairSizer(&startdate, &starttime), wxSizerFlags(1));
         topsizer->Add(&endtext, 0, wxALL, 5);
-        topsizer->Add(endsizer, sizerflags);
-        topsizer->Add(btnsizer, sizerflags);
+        topsizer->Add(MakePairSizer(&enddate, &endtime), wxSizerFlags(1));
+        topsizer->Add(MakePairSizer(&okbtn, &cancelbtn), wxSizerFlags(1));
         SetSizerAndFit(topsizer);
         topsizer->SetSizeHints(this);
 
@@ -93,18 +104,17 @@ struct DateTimeRangeDialog : public wxDialog {
     }
     void OnButton(wxCommandEvent &ce) {
         if (ce.GetId() == wxID_OK) {
-            int starthour = 0;
-            int startmin = 0;
-            int startsec = 0;
-            starttime.GetTime(&starthour, &startmin, &startsec);
-            wxTimeSpan starttimespan(starthour, startmin, startsec);
-            int endhour = 0;
-            int endmin = 0;
-            int endsec = 0;
-            endtime.GetTime(&endhour, &endmin, &endsec);
-            wxTimeSpan endtimespan(endhour, endmin, endsec);
-            begin = startdate.GetValue().Add(starttimespan);
-            end = enddate.GetValue().Add(endtimespan);
+            auto CombineDateAndTime = [](wxDatePickerCtrl &date, wxTimePickerCtrl &time) {
+                int hour = 0;
+                int min = 0;
+                int sec = 0;
+                time.GetTime(&hour, &min, &sec);
+                return date.GetValue().Add(wxTimeSpan(hour, min, sec));
+            };
+            begin = CombineDateAndTime(startdate, starttime);
+            end = CombineDateAndTime(enddate, endtime);
+            lastbegin = begin;
+            lastend = end;
         }
         EndModal(ce.GetId());
     }
@@ -145,7 +155,7 @@ struct ColorDropdown : wxOwnerDrawnComboBox {
         DrawRectangle(dc, item == CUSTOMCOLORIDX ? sys->customcolor : celltextcolors[item],
                       rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
         if (item == CUSTOMCOLORIDX) {
-            dc.SetTextForeground(LightColor(0x000000));
+            dc.SetTextForeground(sys->rubberbandcolor);
             dc.SetFont(wxFont(9, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
                               false, ""));
             dc.DrawText(_("Custom"), rect.x + 1, rect.y + 1);

@@ -1,9 +1,4 @@
 struct Text {
-    struct TextLine {
-        int linestart {0};
-        vector<int> widths;
-    };
-
     Cell *cell {nullptr};
     Image *image {nullptr};
     wxString t {wxEmptyString};
@@ -12,25 +7,29 @@ struct Text {
     int extent {0};
     wxDateTime lastedit;
     bool filtered {false};
-    int charheight {0};
-    vector<TextLine> lines;
+    // The raw (per-cell) filter match result, before "show entire row on match" expansion
+    // is applied. Kept separate from `filtered` so that toggling that option can recompute
+    // the displayed `filtered` flag without having to re-run the underlying filter.
+    bool filteredraw {false};
 
     void WasEdited() { lastedit = wxDateTime::Now(); }
 
     Text() { WasEdited(); }
 
     wxBitmap *DisplayImage() const {
-        return cell->grid && cell->grid->folded ? &sys->frame->foldicon
-                                                : (image != nullptr ? &image->Display() : nullptr);
+        if (cell->grid && cell->grid->folded) {
+            auto *tab = sys->frame->GetCurrentTab();
+            if (!tab) { return &sys->frame->foldicon; }
+            auto *doc = tab->doc.get();
+            return sys->frame->GetFoldIcon(
+                doc->TextSize(cell->Depth() - doc->drawpath.size(), relsize));
+        }
+        return image != nullptr ? &image->Display() : nullptr;
     }
 
     size_t EstimatedMemoryUse() const {
         ASSERT(wxUSE_UNICODE);
-        size_t mem = sizeof(Text) + t.Length() * sizeof(wchar_t);
-        for (const auto &l : lines) {
-            mem += sizeof(TextLine) + l.widths.size() * sizeof(int);
-        }
-        return mem;
+        return sizeof(Text) + t.Length() * sizeof(wchar_t);
     }
 
     double GetNum() const {
@@ -157,40 +156,20 @@ struct Text {
     }
 
     template<typename DC>
-    void TextSize(DC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth) {
+    void TextSize(DC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth) const {
         sx = sy = 0;
-        lines.clear();
-        charheight = tiny != 0 ? 1 : dc.GetCharHeight();
         auto i = 0;
         for (;;) {
-            auto linestart = i;
             auto curl = GetLine(i, maxcolwidth);
             if (curl.IsEmpty()) { break; }
             int x = 0;
             int y = 0;
-            TextLine tl;
-            tl.linestart = linestart;
             if (tiny != 0) {
                 x = static_cast<int>(curl.Len());
                 y = 1;
-                tl.widths.resize(curl.Len());
-                for (size_t c = 0; c < tl.widths.size(); c++) {
-                    tl.widths[c] = static_cast<int>(c + 1);
-                }
             } else {
                 dc.GetTextExtent(curl, &x, &y);
-                wxArrayInt w;
-                dc.GetPartialTextExtents(curl, w);
-                if (w.size() == curl.Len()) {
-                    tl.widths.assign(w.begin(), w.end());
-                } else {
-                    tl.widths.resize(curl.Len());
-                    for (size_t c = 0; c < tl.widths.size(); c++) {
-                        tl.widths[c] = static_cast<int>(x * (c + 1) / curl.Len());
-                    }
-                }
             }
-            lines.push_back(std::move(tl));
             sx = max(x, sx);
             sy += y;
             leftoffset = y;
@@ -278,7 +257,7 @@ struct Text {
                 auto ty = by + lines * h;
                 dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
                 if (searchfound || filtered || istag || cell->textcolor != 0U) {
-                    dc.SetTextForeground(LightColor(0x000000));
+                    dc.SetTextForeground(sys->rubberbandcolor);
                 }
             }
             lines++;
@@ -287,7 +266,7 @@ struct Text {
         return max(lines * h, iys);
     }
 
-    void FindCursor(Document *doc, int bx, int by, Selection &s) const {
+    void FindCursor(Document *doc, int bx, int by, wxReadOnlyDC &dc, Selection &s, int maxcolwidth) const {
         bx -= g_margin_extra;
         by -= g_margin_extra;
 
@@ -296,27 +275,27 @@ struct Text {
         if (!cell->tiny) { treesheets::System::ImageSize(DisplayImage(), ixs, iys); }
         if (ixs != 0) { ixs += 2; }
 
-        if (lines.empty()) {
-            s.cursor = s.cursorend = 0;
-            return;
+        doc->PickFont(dc, cell->Depth() - doc->drawpath.size(), relsize, stylebits);
+
+        auto i = 0;
+        auto linestart = 0;
+        auto line = by / dc.GetCharHeight();
+        wxString ls;
+
+        loop(l, line + 1) {
+            linestart = i;
+            ls = GetLine(i, maxcolwidth);
         }
 
-        int h = max(1, charheight);
-        int line = by < 0 ? 0 : by / h;
-        if (line >= static_cast<int>(lines.size())) {
-            s.cursor = s.cursorend = static_cast<int>(t.Len());
-            return;
+        for (;;) {
+            auto x = 0;
+            auto y = 0;
+            dc.GetTextExtent(ls, &x, &y);  // FIXME: can we do this more intelligently?
+            if (x <= bx - ixs + 2 || x == 0) { break; }
+            ls.Truncate(ls.Len() - 1);
         }
 
-        const auto &li = lines[line];
-        int target_x = bx - ixs + 2;
-        int len = static_cast<int>(li.widths.size());
-        int k = len;
-        while (k > 0 && li.widths[k - 1] > target_x) {
-            k--;
-        }
-
-        s.cursor = s.cursorend = li.linestart + k;
+        s.cursor = s.cursorend = linestart + static_cast<int>(ls.Len());
         ASSERT(s.cursor >= 0 && s.cursor <= static_cast<int>(t.Len()));
     }
 
@@ -329,43 +308,81 @@ struct Text {
         if (ixs != 0) { ixs += 2; }
         doc->PickFont(dc, cell->Depth() - doc->drawpath.size(), relsize, stylebits);
         auto h = dc.GetCharHeight();
-        {
+
+        if (s.cursor != s.cursorend) {
+            // A range selection can span multiple lines (one rectangle drawn per line
+            // below); it changes far less often than the plain typing caret below, so
+            // it isn't worth caching.
             auto i = 0;
             for (auto l = 0;; l++) {
                 auto start = i;
                 auto ls = GetLine(i, maxcolwidth);
                 auto len = static_cast<int>(ls.Len());
                 auto end = start + len;
-
-                if (s.cursor != s.cursorend) {
-                    if (s.cursor <= end && s.cursorend >= start) {
-                        ls.Truncate(min(s.cursorend, end) - start);
-                        auto x1 = 0;
-                        auto x2 = 0;
-                        dc.GetTextExtent(ls, &x2, nullptr);
-                        ls.Truncate(max(s.cursor, start) - start);
-                        dc.GetTextExtent(ls, &x1, nullptr);
-                        if (x1 != x2) {
-                            int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
-                            int starty =
-                                cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                            DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
-                            HintIMELocation(doc, startx, starty, h - 1, stylebits);
-                        }
+                if (s.cursor <= end && s.cursorend >= start) {
+                    ls.Truncate(min(s.cursorend, end) - start);
+                    auto x1 = 0;
+                    auto x2 = 0;
+                    dc.GetTextExtent(ls, &x2, nullptr);
+                    ls.Truncate(max(s.cursor, start) - start);
+                    dc.GetTextExtent(ls, &x1, nullptr);
+                    if (x1 != x2) {
+                        int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
+                        int starty =
+                            cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
+                        DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
+                        HintIMELocation(doc, startx, starty, h - 1, stylebits);
                     }
-                } else if (s.cursor >= start && s.cursor <= end) {
+                }
+                if (len == 0) { break; }
+            }
+            return;
+        }
+
+        // Thin cursor (the common case: redrawn on every repaint while a cell is being
+        // edited, including repaints the edit itself didn't cause, e.g. a resize or an
+        // edit elsewhere). Which wrapped line it's on and its horizontal offset from
+        // the cell's own origin are a deterministic function of the text, cursor
+        // index, font and column width alone, so cache those and skip the line scan
+        // and GetTextExtent measurement -- the dominant cost here -- when none of them
+        // changed since the last time we drew it. The cell's actual screen position
+        // and row height are recomputed fresh below regardless (cheap, and can shift
+        // for reasons unrelated to this cell, e.g. a sibling growing).
+        auto &cc = doc->cursorposcache;
+        if (cc.cell != cell || cc.image != image || cc.cursor != s.cursor ||
+            cc.stylebits != stylebits || cc.relsize != relsize || cc.maxcolwidth != maxcolwidth ||
+            cc.text != t) {
+            cc.cell = cell;
+            cc.image = image;
+            cc.text = t;
+            cc.cursor = s.cursor;
+            cc.stylebits = stylebits;
+            cc.relsize = relsize;
+            cc.maxcolwidth = maxcolwidth;
+            cc.found = false;
+            auto i = 0;
+            for (auto l = 0;; l++) {
+                auto start = i;
+                auto ls = GetLine(i, maxcolwidth);
+                auto len = static_cast<int>(ls.Len());
+                auto end = start + len;
+                if (s.cursor >= start && s.cursor <= end) {
                     ls.Truncate(s.cursor - start);
                     auto x = 0;
                     dc.GetTextExtent(ls, &x, nullptr);
-                    int startx = cell->GetX(doc) + x + 1 + ixs + g_margin_extra;
-                    int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                    DrawRectangle(dc, color, startx, starty, 2, h - 2);
-                    HintIMELocation(doc, startx, starty, h - 2, stylebits);
+                    cc.localdx = x + 1 + ixs + g_margin_extra;
+                    cc.line = l;
+                    cc.found = true;
                     break;
                 }
-
                 if (len == 0) { break; }
             }
+        }
+        if (cc.found) {
+            int startx = cell->GetX(doc) + cc.localdx;
+            int starty = cell->GetY(doc) + cc.line * h + 1 + cell->ycenteroff + g_margin_extra;
+            DrawRectangle(dc, color, startx, starty, 2, h - 2);
+            HintIMELocation(doc, startx, starty, h - 2, stylebits);
         }
     }
 
@@ -475,7 +492,6 @@ struct Text {
 
     void Clear(Document *doc, Selection &s) {
         t.Clear();
-        lines.clear();
         s.EnterEdit(doc);
     }
 

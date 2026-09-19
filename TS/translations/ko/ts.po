@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 06:54+0200\n"
-"PO-Revision-Date: 2026-08-21 23:28+0900\n"
+"POT-Creation-Date: 2026-08-30 16:33+0200\n"
+"PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -62,6 +62,9 @@ msgstr "비트맵으로 복사(&C)"
 msgid "&Data"
 msgstr "데이터(&D)"
 
+msgid "&Decrease font size"
+msgstr "글꼴 크기 줄이기(&D)"
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "텍스트 크기 줄이기 (Shift+마우스 휠)(&D)"
 
@@ -104,6 +107,9 @@ msgstr "이미지(&I)..."
 msgid "&Images"
 msgstr "이미지(&I)"
 
+msgid "&Increase font size"
+msgstr "글꼴 크기 키우기(&R)"
+
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "텍스트 크기 늘이기 (SHIFT+마우스 휠)(&I)"
 
@@ -134,6 +140,9 @@ msgstr "작동(&O)"
 msgid "&Options"
 msgstr "옵션(&O)"
 
+msgid "&PDF..."
+msgstr "PDF(&P)..."
+
 msgid "&Paste"
 msgstr "붙여넣기(&P)"
 
@@ -160,6 +169,9 @@ msgstr "바꾸기(&R)"
 
 msgid "&Reset Scale (display only)"
 msgstr "비율 재설정 (표시 전용)(&R)"
+
+msgid "&Reset font size"
+msgstr "글꼴 크기 재설정(&R)"
 
 msgid "&Reset text sizes"
 msgstr "텍스트 크기 재설정(&R)"
@@ -274,6 +286,9 @@ msgstr "파일을 하나 이상 열 수 없습니다."
 
 msgid "Autoexport to HTML"
 msgstr "HTML로 자동 내보내기"
+
+msgid "Autoexport to PDF"
+msgstr "PDF로 자동 내보내기"
 
 msgid "Autoreload documents"
 msgstr "문서 자동 다시 로드"
@@ -398,6 +413,9 @@ msgstr "작성할 CSV 파일 선택"
 
 msgid "Choose HTML file to write"
 msgstr "작성할 HTML 파일 선택"
+
+msgid "Choose PDF file to write"
+msgstr "작성할 PDF 파일 선택"
 
 msgid "Choose PNG file to write"
 msgstr "작성할 PNG 파일 선택"
@@ -584,6 +602,9 @@ msgstr "텍스트 편집 모드 진입/종료"
 msgid "Error exporting file!"
 msgstr "파일을 내보내는 중 오류가 발생했습니다!"
 
+msgid "Error exporting to PDF file!"
+msgstr "PDF 파일로 내보내는 중 오류가 발생했습니다!"
+
 msgid "Error exporting to SVG file!"
 msgstr "SVG 파일로 내보내는 중 오류가 발생했습니다!"
 
@@ -669,6 +690,9 @@ msgid ""
 msgstr ""
 "현재 보기를 각 들여쓰기 수준에 맞는 공백을 사용하여 트리 구조 텍스트로 내보냅"
 "니다. 마인드 매니저 및 일반 텍스트 프로그램으로 가져오기에 적합합니다"
+
+msgid "Export the current view to a PDF file."
+msgstr "현재 보기를 PDF 파일로 내보내세요."
 
 msgid "Export the current view to a SVG vector file."
 msgstr "현재 보기를 SVG 벡터 파일로 내보냅니다."
@@ -843,6 +867,9 @@ msgstr "격자 스타일 렌더링을 사용한 가로 레이아웃"
 
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "선 스타일 렌더링을 사용한 가로 레이아웃"
+
+msgid "Hover zoom"
+msgstr "호버 확대/축소"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "페이지 너비는 몇 픽셀이어야 하나요? (자동 맞춤의 경우 0)"
@@ -1377,6 +1404,9 @@ msgstr "위로 스크롤 (마우스 휠)"
 msgid "Search "
 msgstr "검색 "
 
+msgid "Search in folded grids"
+msgstr "접힌 격자에서 검색"
+
 msgid "Select &Parent"
 msgstr "부모 선택(&P)"
 
@@ -1713,6 +1743,9 @@ msgstr "확대 (Ctrl+마우스 휠)"
 
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "축소 (Ctrl+마우스 휠)"
+
+msgid "Zoom on cells cursor hovers on"
+msgstr "커서가 있는 셀을 확대/축소"
 
 msgid "Zoomed in."
 msgstr "확대합니다."

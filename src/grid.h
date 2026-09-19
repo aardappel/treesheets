@@ -5,6 +5,14 @@ struct Grid {
     vector<unique_ptr<Cell>> cells;
     // widths for each column
     vector<int> colwidths;
+    // The max cell width/height per column/row, as of the last full Layout(). Used by
+    // Document::FastRelayoutAfterEdit() to tell, in O(1), whether a single edited
+    // cell's new size still fits within its existing column/row -- if so, nothing
+    // else in the grid could have moved and the full O(cells) Layout() rescan below
+    // can be skipped. Only ever written here (Layout() always keeps it current);
+    // readers must check its size against xs/ys since it starts empty.
+    vector<int> colmaxcache;
+    vector<int> rowmaxcache;
     // xsize, ysize
     int xs;
     int ys;
@@ -127,6 +135,8 @@ struct Grid {
             xa[x] = max(xa[x], c->sx);
             ya[y] = max(ya[y], c->sy);
         }
+        colmaxcache = xa;
+        rowmaxcache = ya;
         view_grid_outer_spacing =
             tinyborder || cell->drawstyle != DS_GRID ? 0 : user_grid_outer_spacing;
         view_margin = tinyborder || cell->drawstyle != DS_GRID ? 0 : g_grid_margin;
@@ -187,9 +197,15 @@ struct Grid {
                     int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
                     if (xl >= doc->scrollx && xl <= doc->maxx) {
                         loop(line, g_line_width) {
-                            dc.DrawLine(
-                                xl + line, max(doc->scrolly, by + yoff + view_grid_outer_spacing),
-                                xl + line, min(doc->maxy, by + maxy + g_line_width) + view_margin);
+                            // Extend by ldelta so the line overlaps the rounded outer border
+                            // (drawn afterwards) instead of leaving a 1px gap where the
+                            // exclusive-endpoint line and the inclusive rounded-rect edge meet.
+                            dc.DrawLine(xl + line,
+                                        max(doc->scrolly,
+                                            by + yoff + view_grid_outer_spacing - ldelta),
+                                        xl + line,
+                                        min(doc->maxy, by + maxy + g_line_width) + view_margin +
+                                            ldelta);
                         }
                     }
                 }
@@ -197,10 +213,11 @@ struct Grid {
                     int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
                     if (yl >= doc->scrolly && yl <= doc->maxy) {
                         loop(line, g_line_width) {
-                            dc.DrawLine(max(doc->scrollx,
-                                            bx + xoff + view_grid_outer_spacing + g_line_width),
-                                        yl + line, min(doc->maxx, bx + maxx) + view_margin,
-                                        yl + line);
+                            dc.DrawLine(
+                                max(doc->scrollx, bx + xoff + view_grid_outer_spacing +
+                                                       g_line_width - ldelta),
+                                yl + line,
+                                min(doc->maxx, bx + maxx) + view_margin + ldelta, yl + line);
                         }
                     }
                 }
@@ -282,7 +299,7 @@ struct Grid {
         }
     }
 
-    void FindXY(Document *doc, int px, int py) {
+    template<typename DC> void FindXY(Document *doc, int px, int py, DC &dc) {
         foreachcell(c) {
             int bx = px - c->ox;
             int by = py - c->oy;
@@ -305,11 +322,11 @@ struct Grid {
                 return;
             }
             if (c->IsInside(bx, by)) {
-                if (c->GridShown(doc)) { c->grid->FindXY(doc, bx, by); }
+                if (c->GridShown(doc)) { c->grid->FindXY(doc, bx, by, dc); }
                 if (doc->hover.grid) { return; }
                 doc->hover = Selection(cell->grid, x, y, 1, 1);
                 if (c->HasText()) {
-                    c->text.FindCursor(doc, bx, by - c->ycenteroff, doc->hover);
+                    c->text.FindCursor(doc, bx, by - c->ycenteroff, dc, doc->hover, colwidths[x]);
                 }
                 return;
             }
@@ -329,14 +346,19 @@ struct Grid {
     }
 
     Cell *FindNextSearchMatch(const wxString &search, Cell *best, Cell *selected,
-                              bool &lastwasselected, bool reverse) {
-        if (folded && !sys->searchfolded) return best;
+                              bool &lastwasselected, bool reverse, bool restricted) {
         if (reverse) {
-            foreachcellrev(c) best =
-                c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
+            foreachcellrev(c) {
+                if (restricted && c->tiny) continue;
+                best = c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse,
+                                              restricted);
+            }
         } else {
-            foreachcell(c) best =
-                c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse);
+            foreachcell(c) {
+                if (restricted && c->tiny) continue;
+                best = c->FindNextSearchMatch(search, best, selected, lastwasselected, reverse,
+                                              restricted);
+            }
         }
         return best;
     }
@@ -346,8 +368,11 @@ struct Grid {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls) {
-        foreachcell(c) c->FindReplaceAll(s, ls);
+    void FindReplaceAll(const wxString &s, const wxString &ls, bool restricted) {
+        foreachcell(c) {
+            if (restricted && c->tiny) continue;
+            c->FindReplaceAll(s, ls, restricted);
+        }
     }
 
     void ReplaceCell(Cell *o, Cell *n) {
@@ -427,8 +452,8 @@ struct Grid {
         if (sel.Thin()) {
             DrawInsert(doc, dc, sel, 0);
         } else {
-            dc.SetBrush(wxBrush(LightColor(0x000000)));
-            dc.SetPen(wxPen(LightColor(0x000000)));
+            dc.SetBrush(sys->brush_rubberband);
+            dc.SetPen(sys->pen_rubberband);
             wxRect g = GetRect(doc, sel);
             int lw = g_line_width;
             int te = static_cast<int>(sel.TextEdit());

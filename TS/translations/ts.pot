@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 16:33+0200\n"
+"POT-Creation-Date: 2026-09-15 22:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1295,6 +1295,9 @@ msgstr ""
 msgid "Reset toolbar"
 msgstr ""
 
+msgid "Restrict search and replace to view"
+msgstr ""
+
 msgid "Run"
 msgstr ""
 
@@ -1362,6 +1365,11 @@ msgid "Scroll Up (mousewheel)"
 msgstr ""
 
 msgid "Search "
+msgstr ""
+
+msgid ""
+"Search and replace in the visible content of the current view (no folded "
+"grids, no tiny cells)"
 msgstr ""
 
 msgid "Search in folded grids"

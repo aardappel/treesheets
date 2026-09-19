@@ -1,3 +1,28 @@
+// Text control for the toolbar: on Windows, menu accelerators (LEFT, HOME, BACK, CTRL+A, ...) are
+// translated before the focused control sees the key. Opting out of message pre-processing for
+// text editing keys lets the control handle them natively instead of emulating them in OnMenu.
+struct TSTextCtrl : wxTextCtrl {
+    using wxTextCtrl::wxTextCtrl;
+    #ifdef __WXMSW__
+        bool MSWShouldPreProcessMessage(WXMSG *msg) override {
+            if (msg->message == WM_KEYDOWN) {
+                switch (msg->wParam) {
+                    case VK_LEFT:
+                    case VK_RIGHT:
+                    case VK_HOME:
+                    case VK_END:
+                    case VK_BACK:
+                    case VK_DELETE: return false;
+                    case 'A':
+                        if (wxGetKeyState(WXK_CONTROL)) return false;
+                        break;
+                }
+            }
+            return wxTextCtrl::MSWShouldPreProcessMessage(msg);
+        }
+    #endif
+};
+
 struct TSFrame : wxFrame {
     TSApp *app;
     wxIcon icon;
@@ -13,11 +38,12 @@ struct TSFrame : wxFrame {
     wxBitmap line_nw;
     wxBitmap line_sw;
     wxBitmap foldicon;
+    map<int, wxBitmap> foldicons;  // scaled variants, keyed by text size
     bool fromclosebox {true};
     bool watcherwaitingforuser {false};
     wxColour toolbarbackgroundcolor {0xD8C7BC};
-    wxTextCtrl *filter {nullptr};
-    wxTextCtrl *replaces {nullptr};
+    TSTextCtrl *filter {nullptr};
+    TSTextCtrl *replaces {nullptr};
     ColorDropdown *cellcolordropdown {nullptr};
     ColorDropdown *textcolordropdown {nullptr};
     ColorDropdown *bordercolordropdown {nullptr};
@@ -473,8 +499,11 @@ struct TSFrame : wxFrame {
         MyAppend(semenu, wxID_FIND, _("&Search") + "\tCTRL+F", _("Find in document"));
         semenu->AppendCheckItem(A_CASESENSITIVESEARCH, _("Case-sensitive search"));
         semenu->Check(A_CASESENSITIVESEARCH, sys->casesensitivesearch);
-        semenu->AppendCheckItem(A_SEARCHFOLDED, _("Search in folded grids"));
-        semenu->Check(A_SEARCHFOLDED, sys->searchfolded);
+        semenu->AppendCheckItem(
+            A_RESTRICTVIEW, _("Restrict search and replace to view"),
+            _("Search and replace in the visible content of the current view (no folded "
+              "grids, no tiny cells)"));
+        semenu->Check(A_RESTRICTVIEW, sys->restrictview);
         semenu->AppendSeparator();
         MyAppend(semenu, A_SEARCHNEXT, _("&Next Match") + "\tF3", _("Go to next search match"));
         MyAppend(semenu, A_SEARCHPREV, _("&Previous Match") + "\tSHIFT+F3",
@@ -518,6 +547,12 @@ struct TSFrame : wxFrame {
         MyAppend(filtermenu, A_FILTERNOTE, _("Show cells with notes"));
         filtermenu->AppendSeparator();
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _("Go to next filter match") + "\tCTRL+F3");
+        filtermenu->AppendSeparator();
+        filtermenu->AppendCheckItem(
+            A_FILTERSHOWROWS, _("Show entire row on match"),
+            _("When a cell in a row matches the current filter, show the whole row "
+              "normally instead of only the matching cell"));
+        filtermenu->Check(A_FILTERSHOWROWS, sys->filtershowrows);
 
         auto *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _("Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
@@ -860,8 +895,15 @@ struct TSFrame : wxFrame {
                 name, wxITEM_NORMAL);
         };
 
-        auto *filetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto NewToolbar = [&]() {
+            return new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                    wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        };
+        auto AddToolbarLabel = [&](wxAuiToolBar *tb, const wxString &label) {
+            tb->AddControl(new wxStaticText(tb, wxID_ANY, label));
+        };
+
+        auto *filetb = NewToolbar();
         AddToolbarIcon(filetb, _("New (CTRL+n)"), wxID_NEW, iconpath, "filenew.svg",
                        "filenew_dark.svg");
         AddToolbarIcon(filetb, _("Open (CTRL+o)"), wxID_OPEN, iconpath, "fileopen.svg",
@@ -872,8 +914,7 @@ struct TSFrame : wxFrame {
                        "filesaveas_dark.svg");
         filetb->Realize();
 
-        auto *edittb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *edittb = NewToolbar();
         AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, iconpath, "undo.svg",
                        "undo_dark.svg");
         AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, iconpath, "editcopy.svg",
@@ -882,26 +923,23 @@ struct TSFrame : wxFrame {
                        "editpaste_dark.svg");
         edittb->Realize();
 
-        auto *zoomtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *zoomtb = NewToolbar();
         AddToolbarIcon(zoomtb, _("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, "zoomin.svg",
                        "zoomin_dark.svg");
         AddToolbarIcon(zoomtb, _("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, "zoomout.svg",
                        "zoomout_dark.svg");
         zoomtb->Realize();
 
-        auto *celltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
+        auto *celltb = NewToolbar();
         AddToolbarIcon(celltb, _("New Grid (INS)"), A_ENTERGRID, iconpath, "newgrid.svg",
                        "newgrid_dark.svg");
         AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, iconpath, "image.svg", "image_dark.svg");
         AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, iconpath, "run.svg", "run_dark.svg");
         celltb->Realize();
 
-        auto *findtb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        findtb->AddControl(new wxStaticText(findtb, wxID_ANY, _("Search ")));
-        findtb->AddControl(filter = new wxTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
+        auto *findtb = NewToolbar();
+        AddToolbarLabel(findtb, _("Search "));
+        findtb->AddControl(filter = new TSTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
                                                    FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
         AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, iconpath, "cancel.svg",
                        "cancel_dark.svg");
@@ -909,10 +947,9 @@ struct TSFrame : wxFrame {
                        "search_dark.svg");
         findtb->Realize();
 
-        auto *repltb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        repltb->AddControl(new wxStaticText(repltb, wxID_ANY, _("Replace ")));
-        repltb->AddControl(replaces = new wxTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
+        auto *repltb = NewToolbar();
+        AddToolbarLabel(repltb, _("Replace "));
+        repltb->AddControl(replaces = new TSTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
                                                      FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
         AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, iconpath, "cancel.svg",
                        "cancel_dark.svg");
@@ -930,130 +967,56 @@ struct TSFrame : wxFrame {
             return defaultindex;
         };
 
-        auto *cellcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                             wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        cellcolortb->AddControl(new wxStaticText(cellcolortb, wxID_ANY, _("Cell ")));
+        auto *cellcolortb = NewToolbar();
+        AddToolbarLabel(cellcolortb, _("Cell "));
 
         cellcolordropdown =
             new ColorDropdown(cellcolortb, A_CELLCOLOR, GetColorIndex(sys->lastcellcolor, 1));
         cellcolortb->AddControl(cellcolordropdown);
         cellcolortb->Realize();
 
-        auto *textcolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                             wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        textcolortb->AddControl(new wxStaticText(textcolortb, wxID_ANY, _("Text ")));
+        auto *textcolortb = NewToolbar();
+        AddToolbarLabel(textcolortb, _("Text "));
         textcolordropdown =
             new ColorDropdown(textcolortb, A_TEXTCOLOR, GetColorIndex(sys->lasttextcolor, 2));
         textcolortb->AddControl(textcolordropdown);
         textcolortb->Realize();
 
-        auto *bordercolortb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                               wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        bordercolortb->AddControl(new wxStaticText(bordercolortb, wxID_ANY, _("Border ")));
+        auto *bordercolortb = NewToolbar();
+        AddToolbarLabel(bordercolortb, _("Border "));
         bordercolordropdown =
             new ColorDropdown(bordercolortb, A_BORDCOLOR, GetColorIndex(sys->lastbordcolor, 7));
         bordercolortb->AddControl(bordercolordropdown);
         bordercolortb->Realize();
 
-        auto *imagetb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
-        imagetb->AddControl(new wxStaticText(imagetb, wxID_ANY, _("Image ")));
+        auto *imagetb = NewToolbar();
+        AddToolbarLabel(imagetb, _("Image "));
         imagedropdown = new ImageDropdown(imagetb, imagepath);
         imagetb->AddControl(imagedropdown);
         imagetb->Realize();
 
-        aui.AddPane(filetb, wxAuiPaneInfo()
-                                .Name("filetb")
-                                .Caption("File operations")
+        auto add_toolbar = [&](wxAuiToolBar *tb, const char *name, const char *caption) {
+            aui.AddPane(tb, wxAuiPaneInfo()
+                                .Name(name)
+                                .Caption(caption)
                                 .ToolbarPane()
                                 .Top()
                                 .Row(0)
                                 .LeftDockable(false)
                                 .RightDockable(false)
                                 .Gripper(true));
-        aui.AddPane(edittb, wxAuiPaneInfo()
-                                .Name("edittb")
-                                .Caption("Edit operations")
-                                .ToolbarPane()
-                                .Top()
-                                .Row(0)
-                                .LeftDockable(false)
-                                .RightDockable(false)
-                                .Gripper(true));
-        aui.AddPane(zoomtb, wxAuiPaneInfo()
-                                .Name("zoomtb")
-                                .Caption("Zoom operations")
-                                .ToolbarPane()
-                                .Top()
-                                .Row(0)
-                                .LeftDockable(false)
-                                .RightDockable(false)
-                                .Gripper(true));
-        aui.AddPane(celltb, wxAuiPaneInfo()
-                                .Name("celltb")
-                                .Caption("Cell operations")
-                                .ToolbarPane()
-                                .Top()
-                                .Row(0)
-                                .LeftDockable(false)
-                                .RightDockable(false)
-                                .Gripper(true));
-        aui.AddPane(findtb, wxAuiPaneInfo()
-                                .Name("findtb")
-                                .Caption("Find operations")
-                                .ToolbarPane()
-                                .Top()
-                                .Row(0)
-                                .LeftDockable(false)
-                                .RightDockable(false)
-                                .Gripper(true));
-        aui.AddPane(repltb, wxAuiPaneInfo()
-                                .Name("repltb")
-                                .Caption("Replace operations")
-                                .ToolbarPane()
-                                .Top()
-                                .Row(0)
-                                .LeftDockable(false)
-                                .RightDockable(false)
-                                .Gripper(true));
-        aui.AddPane(cellcolortb, wxAuiPaneInfo()
-                                     .Name("cellcolortb")
-                                     .Caption("Cell color operations")
-                                     .ToolbarPane()
-                                     .Top()
-                                     .Row(0)
-                                     .LeftDockable(false)
-                                     .RightDockable(false)
-                                     .Gripper(true));
-        aui.AddPane(textcolortb, wxAuiPaneInfo()
-                                     .Name("textcolortb")
-                                     .Caption("Text color operations")
-                                     .ToolbarPane()
-                                     .Top()
-                                     .Row(0)
-                                     .LeftDockable(false)
-                                     .RightDockable(false)
-                                     .Gripper(true));
-        aui.AddPane(bordercolortb, wxAuiPaneInfo()
-                                       .Name("bordercolortb")
-                                       .Caption("Border color operations")
-                                       .ToolbarPane()
-                                       .Top()
-                                       .Row(0)
-                                       .LeftDockable(false)
-                                       .RightDockable(false)
-                                       .Gripper(true));
-        aui.AddPane(imagetb, wxAuiPaneInfo()
-                                 .Name("imagetb")
-                                 .Caption("Image operations")
-                                 .ToolbarPane()
-                                 .Top()
-                                 .Row(0)
-                                 .LeftDockable(false)
-                                 .RightDockable(false)
-                                 .Gripper(true));
+        };
+        add_toolbar(filetb, "filetb", "File operations");
+        add_toolbar(edittb, "edittb", "Edit operations");
+        add_toolbar(zoomtb, "zoomtb", "Zoom operations");
+        add_toolbar(celltb, "celltb", "Cell operations");
+        add_toolbar(findtb, "findtb", "Find operations");
+        add_toolbar(repltb, "repltb", "Replace operations");
+        add_toolbar(cellcolortb, "cellcolortb", "Cell color operations");
+        add_toolbar(textcolortb, "textcolortb", "Text color operations");
+        add_toolbar(bordercolortb, "bordercolortb", "Border color operations");
+        add_toolbar(imagetb, "imagetb", "Image operations");
         auto *artprovider = aui.GetArtProvider();
-        artprovider->SetColour(wxAUI_DOCKART_BACKGROUND_COLOUR, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         artprovider->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 0);
     }
 
@@ -1075,8 +1038,9 @@ struct TSFrame : wxFrame {
             long to = 0;
             tc->GetSelection(&from, &to);
             switch (ce.GetId()) {
-                #if defined(__WXMSW__) || defined(__WXMAC__)
-                // FIXME: have to emulate this behavior on Windows and Mac because menu always captures these events (??)
+                #if defined(__WXMAC__)
+                // FIXME: have to emulate this behavior on Mac because menu always captures these events (??)
+                // (on Windows this is handled by TSTextCtrl::MSWShouldPreProcessMessage)
                 case A_MLEFT:
                 case A_LEFT:
                     if (from != to)
@@ -1158,11 +1122,19 @@ struct TSFrame : wxFrame {
                 }
                 break;
             }
+
             #ifdef ENABLE_LOBSTER
                 case A_ADDSCRIPT: {
+                    wxString path;
+                    if (!sys->scripts.IsEmpty()) {
+                        path = wxFileName(sys->scripts.Last()).GetPath();
+                    }
+                    if (path.IsEmpty() || !wxDirExists(path)) {
+                        path = app->GetDataPath("scripts/");
+                        if (!wxDirExists(path)) path.Clear();
+                    }
+
                     wxArrayString filenames;
-                    wxString path = app->GetDataPath("scripts/");
-                    if (!wxDirExists(path) || !sys->scripts.IsEmpty()) path = "";
                     GetFilesFromUser(filenames, this, _("Please select Lobster script file(s):"),
                                      _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
                                      path);
@@ -1268,8 +1240,8 @@ struct TSFrame : wxFrame {
                     SetStatus(_("Please enable (Options -> Show Toolbar) to use search."));
                 }
                 break;
-            case A_SEARCHFOLDED:
-                sys->cfg->Write("searchfolded", sys->searchfolded = ce.IsChecked());
+            case A_RESTRICTVIEW:
+                sys->cfg->Write("restrictview", sys->restrictview = ce.IsChecked());
                 break;
             case wxID_REPLACE:
                 if (replaces != nullptr) {
@@ -1536,6 +1508,8 @@ struct TSFrame : wxFrame {
         wxBusyCursor wait;
         for (const auto &image : sys->imagelist) image->ClearBitmap();
         RenderFolderIcon();
+        // Re-layout after child windows have received their new DPI as well.
+        CallAfter([this]() { TabsReset(); });
         dce.Skip();
     }
 
@@ -1624,6 +1598,19 @@ struct TSFrame : wxFrame {
     void RenderFolderIcon() {
         foldicon.LoadFile(app->GetDataPath("images/nuvola/fold.png"), wxBITMAP_TYPE_PNG);
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
+        foldicons.clear();
+    }
+
+    // Fold icon scaled relative to the default text size, so it matches the displayed text.
+    wxBitmap *GetFoldIcon(int textsize) {
+        if (textsize == g_deftextsize || !foldicon.IsOk()) { return &foldicon; }
+        auto it = foldicons.find(textsize);
+        if (it == foldicons.end()) {
+            wxBitmap scaled;
+            ScaleBitmap(foldicon, static_cast<double>(textsize) / g_deftextsize, scaled);
+            it = foldicons.emplace(textsize, scaled).first;
+        }
+        return &it->second;
     }
 
     void SetDPIAwareStatusWidths() {

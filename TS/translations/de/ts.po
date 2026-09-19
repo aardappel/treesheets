@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 16:33+0200\n"
+"POT-Creation-Date: 2026-09-15 22:37+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -1394,6 +1394,9 @@ msgstr "Das Erscheinungsbild der Werkzeugleiste zurücksetzen"
 msgid "Reset toolbar"
 msgstr "Werkzeugleiste zurücksetzen"
 
+msgid "Restrict search and replace to view"
+msgstr "Suchen und Ersetzen auf aktuelle Sicht beschränken"
+
 msgid "Run"
 msgstr "Ausführen"
 
@@ -1465,8 +1468,11 @@ msgstr "Hochscrollen (Mausrad)"
 msgid "Search "
 msgstr "Suche "
 
-msgid "Search in folded grids"
-msgstr ""
+msgid ""
+"Search and replace in the visible content of the current view (no folded "
+"grids, no tiny cells)"
+msgstr "Im sichtbaren Bereich der aktuellen Ansicht suchen und ersetzen (keine eingeklappten Tabellen, keine schmalen Zellen)"
+
 
 msgid "Select &Parent"
 msgstr "&Übergeordnetes Element auswählen"

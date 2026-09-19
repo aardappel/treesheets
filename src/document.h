@@ -3,9 +3,38 @@ struct UndoItem {
     vector<Selection> selpath;
     Selection sel;
     unique_ptr<Cell> clone;
+    bool textedit {false};  // A gridless snapshot; undo swaps only the Text state.
     size_t estimated_size {0};
     uintptr_t cloned_from {};  // May be dead.
     int generation {0};
+};
+
+// Caches the result of locating the thin (non-range) text cursor within its cell's
+// wrapped lines -- see Text::DrawCursor. That lookup is redrawn on every repaint while
+// a cell is being edited, not just on edits, and its expensive part (scanning wrapped
+// lines and measuring them with GetTextExtent) is a pure function of the text, cursor
+// index, font and column width. The cell's actual screen position and row height are
+// deliberately *not* cached here (they can shift for reasons unrelated to this cell)
+// and are recomputed fresh on every use instead.
+struct CursorPosCache {
+    Cell *cell {nullptr};
+    Image *image {nullptr};
+    wxString text;
+    int cursor {-1};
+    int stylebits {-1};
+    int relsize {INT_MIN};
+    int maxcolwidth {-1};
+    bool found {false};
+    int localdx {0};  // horizontal offset from the cell's own origin
+    int line {0};      // which wrapped line the cursor is on
+};
+
+// Every field Cell::Reset() zeroes out. Document::Key()'s fast path (see
+// FastRelayoutAfterEdit) needs to undo that reset precisely for the cells it decides
+// not to relayout, or their cached geometry is left zeroed/stale -- see
+// FastRelayoutAfterEdit for which fields that applies to for which cell.
+struct CellGeom {
+    int sx, sy, ox, oy, minx, miny, ycenteroff;
 };
 
 struct Document {
@@ -28,7 +57,15 @@ struct Document {
     int fgutter {6};
     int lasttextsize {0};
     int laststylebits {0};
+    // Only screen DCs share fonts. Printer/export DCs select their own resources.
+    map<pair<int, int>, wxFont> fontcache;
+    wxString fontcacheface, fontcachefixedface;
+    wxSize fontcachedpi;
+    double fontcachescale {0};
+    int fontcachebasesize {0};
+    bool usescreenfonts {false};
     Cell *currentdrawroot {nullptr};  // for use during Render() calls
+    CursorPosCache cursorposcache;
     vector<unique_ptr<UndoItem>> undolist;
     vector<unique_ptr<UndoItem>> redolist;
     vector<Selection> drawpath;
@@ -241,11 +278,12 @@ struct Document {
 
     template<typename DC> void DrawSelect(DC &dc, Selection &s) {
         if (s.grid == nullptr) { return; }
-        ResetFont();
+        ResetFont(dc);
         s.grid->DrawSelect(this, dc, s);
     }
 
-    void UpdateHover(int mx, int my) {
+    template<typename DC> void UpdateHover(DC &dc, int mx, int my) {
+        ResetFont(dc);
         int x = 0;
         int y = 0;
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
@@ -255,7 +293,7 @@ struct Document {
         if (drawroot->grid) {
             drawroot->grid->FindXY(
                 this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
-                y / currentviewscale - centery / currentviewscale - hierarchysize);
+                y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
         }
     }
 
@@ -281,6 +319,78 @@ struct Document {
                                                          : sy);
             }
         }
+    }
+
+    // Converts a rectangle from document (unscrolled content) coordinates -- the space
+    // Cell::ox/oy and Grid::GetRect() use -- into window coordinates, and refreshes just
+    // that area instead of the whole visible viewport. Centering is just a constant
+    // (centerx, centery) pixel offset on top of the scroll position (see ShiftToCenter),
+    // so it's cheap to replicate here. The scaled-viewing-mode zoom instead scales the
+    // rect itself, which is more involved for a mode that's rarer and has less on
+    // screen anyway, so that one still falls back to a full refresh.
+    void RefreshDocRect(wxRect r) {
+        if (currentviewscale != 1.0) {
+            canvas->Refresh();
+            return;
+        }
+        r.Inflate(4, 4);  // slack for borders, the cursor caret, antialiasing
+        int devx = 0, devy = 0;
+        canvas->CalcScrolledPosition(r.x, r.y, &devx, &devy);
+        canvas->RefreshRect(wxRect(devx + centerx, devy + centery, r.width, r.height), false);
+    }
+
+    // Grid::Layout() has to revisit every cell in a grid on every call, even when only
+    // one cell actually changed, because that's the only way it can tell whether the
+    // edited cell's column/row is still governed by some other (unchanged) cell's size.
+    // For a single text edit we can usually answer that in O(1) instead: if the edited
+    // cell's new size still fits within its column/row's cached max (Grid::colmaxcache/
+    // rowmaxcache, kept current by the last full Layout()), then by construction no
+    // other cell's position could have shifted, and the whole document-wide relayout
+    // (UpdateLayout(), which Grid::Layout() is called from) can be skipped entirely.
+    // `oldsizes` is the (cell, old geometry) chain AddUndo()'s ResetLayout() zeroed out
+    // -- via Cell::Reset(), which clears sx/sy/ox/oy/minx/miny/ycenteroff -- for
+    // `editedsel`'s cell and its ancestors up to currentdrawroot (see Key()); since
+    // nothing changed, restoring those exact values undoes that reset correctly. The
+    // edited cell itself (oldsizes[0]) is the exception: its sx/sy/ox/oy/ycenteroff are
+    // still restored (they equal what they were before -- the column/row max didn't
+    // change, which is what "fits in the cache" below means), but its minx/miny must be
+    // left alone, since LazyLayout() just correctly recomputed them for the new text;
+    // restoring the old ones would silently revert the edit the next time this cell's
+    // cached (non-zero sx) branch of LazyLayout() is taken.
+    // Returns false (having changed nothing but the edited cell's own now-current
+    // natural size and cache, harmlessly pre-computed for whichever path ends up doing
+    // the full layout) whenever the fast path doesn't apply, so the caller can fall
+    // back to the normal UpdateLayout().
+    bool FastRelayoutAfterEdit(const Selection &editedsel,
+                               const vector<pair<Cell *, CellGeom>> &oldsizes) {
+        Grid *g = editedsel.grid.get();
+        if (g->cell->tiny) { return false; }
+        if (g->colmaxcache.size() != static_cast<size_t>(g->xs) ||
+            g->rowmaxcache.size() != static_cast<size_t>(g->ys)) {
+            return false;
+        }
+        wxInfoDC dc(canvas);
+        ResetFont(dc);
+        dc.SetUserScale(1, 1);
+        Cell *c = g->C(editedsel.x, editedsel.y).get();
+        int celldepth = c->Depth() - drawpath.size();
+        c->LazyLayout(this, dc, celldepth, g->colwidths[editedsel.x], false);
+        if (c->sx > g->colmaxcache[editedsel.x] || c->sy > g->rowmaxcache[editedsel.y]) {
+            return false;
+        }
+        for (size_t i = 0; i < oldsizes.size(); i++) {
+            auto &[p, old] = oldsizes[i];
+            p->sx = old.sx;
+            p->sy = old.sy;
+            p->ox = old.ox;
+            p->oy = old.oy;
+            p->ycenteroff = old.ycenteroff;
+            if (i != 0) {
+                p->minx = old.minx;
+                p->miny = old.miny;
+            }
+        }
+        return true;
     }
 
     void ScrollOrZoom(bool zoomiftiny = false) {
@@ -495,7 +605,7 @@ struct Document {
         if (alt) {
             if (selected.grid == nullptr) { return NoSel(); }
             if (selected.xs > 0) {
-                if (!LastUndoSameCellAny(selected.grid->cell)) {
+                if (!LastUndoSameCellStructure(selected.grid->cell)) {
                     selected.grid->cell->AddUndo(this);
                 }
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
@@ -530,7 +640,7 @@ struct Document {
     }
 
     template<typename DC> void Layout(DC &dc) {
-        ResetFont();
+        ResetFont(dc);
         dc.SetUserScale(1, 1);
         currentdrawroot = WalkPath(drawpath);
         int psb = currentdrawroot == root.get() ? 0 : currentdrawroot->MinRelsize();
@@ -538,7 +648,7 @@ struct Document {
         if (psb != pathscalebias) { currentdrawroot->ResetChildren(); }
         pathscalebias = psb;
         currentdrawroot->LazyLayout(this, dc, 0, currentdrawroot->ColWidth(), false);
-        ResetFont();
+        ResetFont(dc);
         PickFont(dc, 0, 0, 0);
         hierarchysize = 0;
         for (Cell *p = currentdrawroot->parent; p != nullptr; p = p->parent) {
@@ -556,7 +666,7 @@ struct Document {
     }
 
     template<typename DC> void Render(DC &dc) {
-        ResetFont();
+        ResetFont(dc);
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
         int i = 0;
@@ -572,7 +682,7 @@ struct Document {
                 dc.DrawText(s, off, off);
             }
         }
-        dc.SetTextForeground(LightColor(0x000000));
+        dc.SetTextForeground(sys->rubberbandcolor);
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
         ClearUnusedBitmaps();
@@ -650,16 +760,40 @@ struct Document {
             maxx = clientx + scrollx;
             maxy = clienty + scrolly;
         }
-        dc.SetClippingRegion(scrollx, scrolly, clientx, clienty);
-        dc.SetBackground(wxBrush(LightColor(Background())));
-        dc.Clear();
-
         centerx = sys->centered && scrollx == 0 && maxx > layoutxs
                       ? (maxx - layoutxs) / 2 * currentviewscale
                       : 0;
         centery = sys->centered && scrolly == 0 && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
+
+        // Restrict actual drawing to the area wx says needs repainting (which reflects
+        // both an explicit RefreshRect() and a real, WM-driven partial expose), instead
+        // of always redoing the entire visible viewport. Grid::Render already culls
+        // cells against scrollx/scrolly/maxx/maxy, so narrowing those means cells
+        // outside the dirty area skip their (Pango-backed, and measured to be the
+        // dominant per-paint cost) DrawText call entirely, rather than being drawn and
+        // then clipped away. This is always safe: callers that still invalidate the
+        // whole window (the vast majority today) get an update region that already
+        // covers the full viewport, so nothing narrows and behaviour is unchanged.
+        if (currentviewscale == 1.0 && centerx == 0 && centery == 0) {
+            wxRect updatebox = canvas->GetUpdateRegion().GetBox();
+            if (!updatebox.IsEmpty()) {
+                int ux0 = 0, uy0 = 0, ux1 = 0, uy1 = 0;
+                canvas->CalcUnscrolledPosition(updatebox.GetLeft(), updatebox.GetTop(), &ux0,
+                                                &uy0);
+                canvas->CalcUnscrolledPosition(updatebox.GetRight() + 1, updatebox.GetBottom() + 1,
+                                                &ux1, &uy1);
+                scrollx = max(scrollx, ux0);
+                scrolly = max(scrolly, uy0);
+                maxx = min(maxx, ux1);
+                maxy = min(maxy, uy1);
+            }
+        }
+
+        dc.SetClippingRegion(scrollx, scrolly, maxx - scrollx, maxy - scrolly);
+        dc.SetBackground(wxBrush(LightColor(Background())));
+        dc.Clear();
 
         ShiftToCenter(dc);
         dc.SetUserScale(currentviewscale, currentviewscale);
@@ -700,15 +834,24 @@ struct Document {
     template<typename DC> bool PickFont(DC &dc, int depth, int relsize, int stylebits) {
         int textsize = TextSize(depth, relsize);
         if (textsize != lasttextsize || stylebits != laststylebits) {
-            wxFont font(
-                textsize - static_cast<int>(while_printing),
-                (stylebits & STYLE_FIXED) != 0 ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
-                (stylebits & STYLE_ITALIC) != 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-                (stylebits & STYLE_BOLD) != 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-                (stylebits & STYLE_UNDERLINE) != 0,
-                (stylebits & STYLE_FIXED) != 0 ? sys->defaultfixedfont : sys->defaultfont);
-            if ((stylebits & STYLE_STRIKETHRU) != 0) { font.SetStrikethrough(true); }
-            dc.SetFont(font);
+            auto key = make_pair(textsize, stylebits & (STYLE_BOLD | STYLE_ITALIC | STYLE_FIXED |
+                                                       STYLE_UNDERLINE | STYLE_STRIKETHRU));
+            auto it = fontcache.find(key);
+            if (usescreenfonts && it != fontcache.end()) {
+                dc.SetFont(it->second);
+            } else {
+                wxFont font(
+                    textsize - static_cast<int>(while_printing),
+                    (stylebits & STYLE_FIXED) != 0 ? wxFONTFAMILY_TELETYPE : wxFONTFAMILY_DEFAULT,
+                    (stylebits & STYLE_ITALIC) != 0 ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+                    (stylebits & STYLE_BOLD) != 0 ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+                    (stylebits & STYLE_UNDERLINE) != 0,
+                    (stylebits & STYLE_FIXED) != 0 ? sys->defaultfixedfont : sys->defaultfont);
+                if ((stylebits & STYLE_STRIKETHRU) != 0) { font.SetStrikethrough(true); }
+                dc.SetFont(font);
+                // Retain the resource after wx has adjusted it to the window's DPI.
+                if (usescreenfonts) { fontcache.emplace(key, dc.GetFont()); }
+            }
             lasttextsize = textsize;
             laststylebits = stylebits;
         }
@@ -718,6 +861,26 @@ struct Document {
     void ResetFont() {
         lasttextsize = INT_MAX;
         laststylebits = -1;
+    }
+
+    template<typename DC> void ResetFont(DC &dc) {
+        ResetFont();
+        usescreenfonts = dc.GetWindow() == canvas && canvas != nullptr && !while_printing;
+        if (!usescreenfonts) { return; }
+        auto dpi = canvas->GetDPI();
+        auto scale = dc.GetContentScaleFactor();
+        if (fontcachedpi != dpi || fontcachescale != scale ||
+            fontcacheface != sys->defaultfont || fontcachefixedface != sys->defaultfixedfont ||
+            fontcachebasesize != g_deftextsize) {
+            fontcache.clear();
+            fontcachedpi = dpi;
+            fontcachescale = scale;
+            fontcacheface = sys->defaultfont;
+            fontcachefixedface = sys->defaultfixedfont;
+            fontcachebasesize = g_deftextsize;
+        }
+        // TextSize clamps the size range, and the key has only five style bits.
+        // Clearing on a base-size change keeps the cache bounded across zooms.
     }
 
     bool CheckForChanges() {
@@ -995,18 +1158,58 @@ struct Document {
             }
         } else if (uk >= ' ') {
             if (selected.grid == nullptr) { return NoSel(); }
+
+            // Capture enough state before the edit to tell, after laying it out,
+            // whether it's safe to repaint just the edited cell's area instead of the
+            // whole visible viewport. "Safe" means: the selection didn't need a row or
+            // column inserted (a structural change, handled below), and no cell from
+            // the edited one up to the draw root changed size -- if none did, nothing
+            // else could have shifted position either, so nothing else needs repainting.
+            bool safe = !selected.Thin();
+            wxRect oldrect;
+            vector<pair<Cell *, CellGeom>> oldsizes;
+            if (safe) {
+                oldrect = selected.grid->GetRect(this, selected);
+                for (Cell *p = selected.GetCell(); p != nullptr; p = p->parent) {
+                    oldsizes.emplace_back(
+                        p, CellGeom {p->sx, p->sy, p->ox, p->oy, p->minx, p->miny, p->ycenteroff});
+                    if (p == currentdrawroot) break;
+                }
+            }
+
             auto *c = selected.ThinExpand(this);
             if (c == nullptr) {
                 selected.Wrap(this);
                 c = selected.GetCell();
+                safe = false;
             }
-            c->AddUndo(this);  // FIXME: not needed for all keystrokes, or at least, merge all
-                               // keystroke undos within same cell
+            Selection editedsel = selected;
+
+            c->AddUndo(this, true);
             c->text.Key(this, uk, selected);
-            UpdateLayout();
+            if (!safe || !FastRelayoutAfterEdit(editedsel, oldsizes)) { UpdateLayout(); }
+
+            int vx0 = 0, vy0 = 0, vx1 = 0, vy1 = 0;
+            canvas->GetViewStart(&vx0, &vy0);
             ScrollIfSelectionOutOfView();
-            canvas->Refresh();
-            canvas->Update();
+            canvas->GetViewStart(&vx1, &vy1);
+            safe = safe && vx0 == vx1 && vy0 == vy1;
+
+            for (auto &[p, oldsz] : oldsizes) {
+                if (p->sx != oldsz.sx || p->sy != oldsz.sy) {
+                    safe = false;
+                    break;
+                }
+            }
+
+            // Let the event loop combine paints when several text events are queued.
+            if (safe) {
+                wxRect newrect = editedsel.grid->GetRect(this, editedsel);
+                newrect.Union(oldrect);
+                RefreshDocRect(newrect);
+            } else {
+                canvas->Refresh();
+            }
             return wxEmptyString;
         }
         unprocessed = true;
@@ -1379,9 +1582,10 @@ struct Document {
                 auto lreplaces =
                     sys->casesensitivesearch ? wxString(wxEmptyString) : replaces.Lower();
                 if (action == A_REPLACEALL) {
-                    root->AddUndo(this);  // expensive?
-                    root->FindReplaceAll(replaces, lreplaces);
-                    root->ResetChildren();
+                    Cell *replaceroot = sys->restrictview ? currentdrawroot : root.get();
+                    replaceroot->AddUndo(this);  // expensive?
+                    replaceroot->FindReplaceAllStart(replaces, lreplaces, sys->restrictview);
+                    replaceroot->ResetChildren();
                     UpdateLayout();
                     canvas->Refresh();
                 } else {
@@ -1525,7 +1729,7 @@ struct Document {
                     }
                 } else if (cell != nullptr && selected.TextEdit()) {
                     if (selected.cursorend == 0) { return wxEmptyString; }
-                    cell->AddUndo(this);
+                    cell->AddUndo(this, true);
                     cell->text.Backspace(selected);
                     UpdateLayout();
                     canvas->Refresh();
@@ -1547,7 +1751,7 @@ struct Document {
                     }
                 } else if (cell != nullptr && selected.TextEdit()) {
                     if (selected.cursor == cell->text.t.Len()) { return wxEmptyString; }
-                    cell->AddUndo(this);
+                    cell->AddUndo(this, true);
                     cell->text.Delete(selected);
                     UpdateLayout();
                     canvas->Refresh();
@@ -1561,7 +1765,7 @@ struct Document {
             case A_DELETE_WORD:
                 if (cell != nullptr && selected.TextEdit()) {
                     if (selected.cursor == cell->text.t.Len()) { return wxEmptyString; }
-                    cell->AddUndo(this);
+                    cell->AddUndo(this, true);
                     cell->text.DeleteWord(selected);
                     UpdateLayout();
                     canvas->Refresh();
@@ -1585,7 +1789,7 @@ struct Document {
                         selected.grid->MultiCellDelete(this, selected);
                         SetSelect(selected);
                     } else if (cell != nullptr) {
-                        cell->AddUndo(this);
+                        cell->AddUndo(this, true);
                         cell->text.Backspace(selected);
                     }
                     UpdateLayout();
@@ -2250,27 +2454,30 @@ struct Document {
             }
 
             case A_FILTERBYCELLBG:
-                loopallcells(ci) ci->text.filtered = ci->cellcolor != cell->cellcolor;
+                loopallcells(ci) ci->text.filteredraw = ci->cellcolor != cell->cellcolor;
+                ApplyRowFilterExpansion();
                 root->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
             case A_FILTERBYSTYLE:
-                loopallcells(ci) ci->text.filtered = ci->text.stylebits != cell->text.stylebits;
+                loopallcells(ci) ci->text.filteredraw = ci->text.stylebits != cell->text.stylebits;
+                ApplyRowFilterExpansion();
                 root->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
             case A_FILTERNOTE:
-                loopallcells(ci) ci->text.filtered = ci->note.IsEmpty();
+                loopallcells(ci) ci->text.filteredraw = ci->note.IsEmpty();
+                ApplyRowFilterExpansion();
                 root->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
 
-            case A_FILTERMATCHNEXT:
+            case A_FILTERMATCHNEXT: {
                 bool lastsel = true;
                 Cell *next = root->FindNextFilterMatch(nullptr, selected.GetCell(), lastsel);
                 if (next == nullptr) { return _("No matches for filter."); }
@@ -2278,6 +2485,16 @@ struct Document {
                 canvas->SetFocus();
                 ScrollOrZoom(true);
                 return wxEmptyString;
+            }
+
+            case A_FILTERSHOWROWS: {
+                sys->cfg->Write("filtershowrows", sys->filtershowrows = !sys->filtershowrows);
+                ApplyRowFilterExpansion();
+                root->ResetChildren();
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
         }
 
         if (!selected.TextEdit()) { return _("only works in cell text mode"); }
@@ -2295,7 +2512,7 @@ struct Document {
 
             case A_BACKSPACE_WORD:
                 if (selected.cursorend == 0) { return wxEmptyString; }
-                cell->AddUndo(this);
+                cell->AddUndo(this, true);
                 cell->text.BackspaceWord(selected);
                 UpdateLayout();
                 canvas->Refresh();
@@ -2328,13 +2545,14 @@ struct Document {
     }
 
     wxString SearchNext(bool focusmatch, bool jump, bool reverse) {
-        if (!root) {
+        if (root == nullptr || currentdrawroot == nullptr) {
             return wxEmptyString;  // fix crash when opening new doc
         }
         if (sys->searchstring.IsEmpty()) { return _("No search string."); }
         bool lastsel = true;
-        Cell *next = root->FindNextSearchMatch(sys->searchstring, nullptr, selected.GetCell(),
-                                               lastsel, reverse);
+        Cell *searchroot = sys->restrictview ? currentdrawroot : root.get();
+        Cell *next = searchroot->FindNextSearchMatchStart(
+            sys->searchstring, nullptr, selected.GetCell(), lastsel, reverse, sys->restrictview);
         if (next == nullptr || next->parent == nullptr) { return _("No matches for search."); }
         if (!jump) { return wxEmptyString; }
         SetSelect(next->parent->grid->FindCell(next));
@@ -2496,30 +2714,42 @@ struct Document {
         return c;
     }
 
-    bool LastUndoSameCellAny(Cell *c) {
+    bool LastUndoSameCellStructure(Cell *c) {
         return !undolist.empty() && undolist.size() != undolistsizeatfullsave &&
+               !undolist.back()->textedit &&
                undolist.back()->cloned_from == (uintptr_t)c;
     }
 
     bool LastUndoSameCellTextEdit(Cell *c) {
         // hacky way to detect word boundaries to stop coalescing, but works, and
         // not a big deal if selected is not actually related to this cell
-        return !undolist.empty() && !c->grid && undolist.size() != undolistsizeatfullsave &&
+        return !undolist.empty() && undolist.back()->textedit &&
+               undolist.back()->cloned_from == (uintptr_t)c && c->parent != nullptr &&
+               undolist.size() != undolistsizeatfullsave &&
                undolist.back()->sel.EqLoc(c->parent->grid->FindCell(c)) &&
                (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);
     }
 
-    void AddUndo(Cell *c, bool newgeneration = true) {
+    void AddUndo(Cell *c, bool newgeneration = true, bool textedit = false) {
         redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
         if (!modified) {
             modified = true;
             UpdateFileName();
         }
-        if (LastUndoSameCellTextEdit(c)) { return; }
+        if (textedit && LastUndoSameCellTextEdit(c)) { return; }
         auto ui = make_unique<UndoItem>();
-        ui->clone = c->Clone(nullptr);
-        ui->estimated_size = c->EstimatedMemoryUse();
+        ui->textedit = textedit;
+        if (textedit) {
+            // Keep a cell snapshot so image lifetime accounting also sees its text image.
+            // Text edits never modify the nested grid, which can be much larger than the text.
+            ui->clone = make_unique<Cell>();
+            ui->clone->text = c->text;
+            ui->clone->text.cell = ui->clone.get();
+        } else {
+            ui->clone = c->Clone(nullptr);
+        }
+        ui->estimated_size = ui->clone->EstimatedMemoryUse();
         ui->sel = selected;
         ui->cloned_from = (uintptr_t)c;
         if (!undolist.empty()) {
@@ -2574,7 +2804,11 @@ struct Document {
 
         Cell *c = WalkPath(ui->path);
 
-        if (c->parent != nullptr && c->parent->grid) {
+        if (ui->textedit) {
+            std::swap(ui->clone->text, c->text);
+            c->text.cell = c;
+            ui->clone->text.cell = ui->clone.get();
+        } else if (c->parent != nullptr && c->parent->grid) {
             Grid *g = c->parent->grid.get();
             Selection s = g->FindCell(c);
             std::swap(ui->clone, g->C(s.x, s.y));
@@ -2710,6 +2944,39 @@ struct Document {
         c->CollectCells(itercells);
     }
 
+    // Derives the displayed `filtered` flag from the raw per-cell `filteredraw` match
+    // result. When "show entire row on match" is on, any row containing a match (a cell
+    // with filteredraw == false) has its filtered flag cleared for the whole row, so it
+    // displays normally rather than tagged as filtered. Recurses into sub-grids so nested
+    // tables get the same treatment. Always deriving from filteredraw (rather than mutating
+    // filtered in place) keeps this idempotent, so toggling the option can simply re-run it.
+    void RecomputeFilteredDisplay(Grid *g) {
+        for (int y = 0; y < g->ys; y++) {
+            bool rowmatches = false;
+            if (sys->filtershowrows) {
+                for (int x = 0; x < g->xs; x++) {
+                    if (!g->C(x, y)->text.filteredraw) {
+                        rowmatches = true;
+                        break;
+                    }
+                }
+            }
+            for (int x = 0; x < g->xs; x++) {
+                Cell *c = g->C(x, y).get();
+                c->text.filtered = rowmatches ? false : c->text.filteredraw;
+            }
+        }
+        for (int y = 0; y < g->ys; y++) {
+            for (int x = 0; x < g->xs; x++) {
+                if (Cell *c = g->C(x, y).get(); c->grid) { RecomputeFilteredDisplay(c->grid.get()); }
+            }
+        }
+    }
+
+    void ApplyRowFilterExpansion() {
+        if (root->grid) { RecomputeFilteredDisplay(root->grid.get()); }
+    }
+
     void CollectCellsSel(bool recurse) {
         itercells.clear();
         if (selected.grid != nullptr) {
@@ -2725,7 +2992,8 @@ struct Document {
             // sort in descending order
             return a->text.lastedit > b->text.lastedit;
         });
-        loopv(i, itercells) itercells[i]->text.filtered = i > itercells.size() * editfilter / 100;
+        loopv(i, itercells) itercells[i]->text.filteredraw = i > itercells.size() * editfilter / 100;
+        ApplyRowFilterExpansion();
         root->ResetChildren();
         UpdateLayout();
         ScrollIfSelectionOutOfView();
@@ -2736,8 +3004,9 @@ struct Document {
         searchfilter = false;
         CollectCells(root.get());
         for (auto *c : itercells) {
-            c->text.filtered = !c->text.lastedit.IsBetween(rangebegin, rangeend);
+            c->text.filteredraw = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         }
+        ApplyRowFilterExpansion();
         root->ResetChildren();
         UpdateLayout();
         ScrollIfSelectionOutOfView();
@@ -2753,7 +3022,8 @@ struct Document {
 
     void SetSearchFilter(bool on) {
         searchfilter = on;
-        loopallcells(c) c->text.filtered = on && !c->text.IsInSearch();
+        loopallcells(c) c->text.filteredraw = on && !c->text.IsInSearch();
+        ApplyRowFilterExpansion();
         root->ResetChildren();
         UpdateLayout();
         ScrollIfSelectionOutOfView();

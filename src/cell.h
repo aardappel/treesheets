@@ -99,8 +99,6 @@ struct Cell {
             } else {
                 leftoffset = dc.GetCharHeight();
             }
-            text.charheight = tiny ? 1 : dc.GetCharHeight();
-            text.lines.clear();
         } else {
             text.TextSize(dc, sx, sy, static_cast<int>(tiny), leftoffset, maxcolwidth);
         }
@@ -165,13 +163,14 @@ struct Cell {
         if (drawstyle == DS_GRID && actualcellcolor != parentcolor) {
             DrawRectangle(dc, actualcellcolor, bx - ml, by - mt, sx + ml + mr, sy + mt + mb);
         }
+        const wxColour wxactualcellcolor = LightColor(actualcellcolor);
         if (drawstyle != DS_GRID && HasContent() && !tiny) {
             if (actualcellcolor == parentcolor) {
                 auto *cp = reinterpret_cast<uchar *>(&actualcellcolor);
                 loop(i, 4) cp[i] = cp[i] * 850 / 1000;
             }
-            dc.SetBrush(wxBrush(LightColor(actualcellcolor)));
-            dc.SetPen(wxPen(LightColor(actualcellcolor)));
+            dc.SetBrush(wxBrush(wxactualcellcolor));
+            dc.SetPen(wxPen(wxactualcellcolor));
 
             if (drawstyle == DS_BLOBSHIER) {
                 dc.DrawRoundedRectangle(bx - cell_margin, by - cell_margin, minx + cell_margin * 2,
@@ -184,7 +183,7 @@ struct Cell {
             // FIXME: this half a g_margin_extra is a bit of hack
             }
         }
-        dc.SetTextBackground(LightColor(actualcellcolor));
+        dc.SetTextBackground(wxactualcellcolor);
         int xoff = verticaltextandgrid ? 0 : text.extent - depth * dc.GetCharHeight();
         int yoff = text.Render(doc, bx, by + ycenteroff, depth, dc, xoff, maxcolwidth);
         yoff = verticaltextandgrid ? yoff : 0;
@@ -200,8 +199,9 @@ struct Cell {
             points[0] = wxPoint(right, top);
             points[1] = wxPoint(right, top + size);
             points[2] = wxPoint(right - size, top);
-            dc.SetBrush(wxBrush(LightColor(textcolor)));
-            dc.SetPen(wxPen(LightColor(textcolor)));
+            const wxColour wxtextcolor = LightColor(textcolor);
+            dc.SetBrush(wxBrush(wxtextcolor));
+            dc.SetPen(wxPen(wxtextcolor));
             dc.DrawPolygon(3, points);
         }
     }
@@ -378,9 +378,9 @@ struct Cell {
         }
     }
 
-    void AddUndo(Document *doc) {
+    void AddUndo(Document *doc, bool textedit = false) {
         ResetLayout();
-        doc->AddUndo(this);
+        doc->AddUndo(this, true, textedit);
     }
 
     void Save(wxDataOutputStream &dos, Cell *ocs) const {
@@ -486,18 +486,30 @@ struct Cell {
         }
     }
 
+    Cell *FindNextSearchMatchStart(const wxString &s, Cell *best, Cell *selected,
+                                   bool &lastwasselected, bool reverse, bool restricted) {
+        // Skip cell content on starting node
+        if (grid) {
+            best =
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, restricted);
+        }
+        return best;
+    }
+
     Cell *FindNextSearchMatch(const wxString &s, Cell *best, Cell *selected, bool &lastwasselected,
-                              bool reverse) {
-        if (reverse && grid) {
-            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse);
+                              bool reverse, bool restricted) {
+        if (reverse && grid && !(restricted && grid->folded)) {
+            best =
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, restricted);
         }
         if ((sys->casesensitivesearch ? text.t.Find(s) : text.t.Lower().Find(s)) >= 0) {
             if (lastwasselected) { best = this; }
             lastwasselected = false;
         }
         if (selected == this) { lastwasselected = true; }
-        if (!reverse && grid) {
-            best = grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse);
+        if (!reverse && grid && !(restricted && grid->folded)) {
+            best =
+                grid->FindNextSearchMatch(s, best, selected, lastwasselected, reverse, restricted);
         }
         return best;
     }
@@ -536,8 +548,13 @@ struct Cell {
         return best;
     }
 
-    void FindReplaceAll(const wxString &s, const wxString &ls) {
-        if (grid) { grid->FindReplaceAll(s, ls); }
+    void FindReplaceAllStart(const wxString &s, const wxString &ls, bool restricted) {
+        // Skip cell content on starting node
+        if (grid) { grid->FindReplaceAll(s, ls, restricted); }
+    }
+
+    void FindReplaceAll(const wxString &s, const wxString &ls, bool restricted) {
+        if (grid && !(restricted && grid->folded)) { grid->FindReplaceAll(s, ls, restricted); }
         text.ReplaceStr(s, ls);
     }
 
