@@ -52,8 +52,7 @@ struct TSFrame : wxFrame {
     struct ToolbarIcon {
         wxAuiToolBar *toolbar;
         int action;
-        wxString lighticon;
-        wxString darkicon;
+        wxString icon;
     };
     std::vector<ToolbarIcon> toolbaricons;
     wxString toolbariconpath;
@@ -891,15 +890,14 @@ struct TSFrame : wxFrame {
         }
     }
 
-    wxBitmapBundle LoadToolbarIcon(const wxString &lighticon, const wxString &darkicon) const {
-        return wxBitmapBundle::FromSVGFile(
-            toolbariconpath + (wxSystemSettings::GetAppearance().IsDark() ? darkicon : lighticon),
-            wxSize(24, 24));
+    wxBitmapBundle LoadToolbarIcon(const wxString &icon) const {
+        auto suffix = wxSystemSettings::GetAppearance().IsDark() ? "_dark.svg" : ".svg";
+        return wxBitmapBundle::FromSVGFile(toolbariconpath + icon + suffix, wxSize(24, 24));
     }
 
     void UpdateToolbarIcons() {
         for (const auto &icon : toolbaricons) {
-            icon.toolbar->SetToolBitmap(icon.action, LoadToolbarIcon(icon.lighticon, icon.darkicon));
+            icon.toolbar->SetToolBitmap(icon.action, LoadToolbarIcon(icon.icon));
         }
         for (const auto &name : GetToolbarPaneNames()) {
             auto *wnd = aui.GetPane(name).window;
@@ -911,11 +909,10 @@ struct TSFrame : wxFrame {
         for (const auto &name : GetToolbarPaneNames()) { DestroyToolbarPane(name); }
         toolbaricons.clear();
         toolbariconpath = app->GetDataPath("images/material/toolbar/");
-        auto iconpath = toolbariconpath;
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
-                                  const wxString &iconpath, const wxString &lighticon, const wxString &darkicon) {
-            toolbaricons.push_back({tb, action, lighticon, darkicon});
-            tb->AddTool(action, name, LoadToolbarIcon(lighticon, darkicon), name, wxITEM_NORMAL);
+                                  const wxString &icon) {
+            toolbaricons.push_back({tb, action, icon});
+            tb->AddTool(action, name, LoadToolbarIcon(icon), name, wxITEM_NORMAL);
         };
 
         auto NewToolbar = [&]() {
@@ -927,59 +924,44 @@ struct TSFrame : wxFrame {
         };
 
         auto *filetb = NewToolbar();
-        AddToolbarIcon(filetb, _("New (CTRL+n)"), wxID_NEW, iconpath, "filenew.svg",
-                       "filenew_dark.svg");
-        AddToolbarIcon(filetb, _("Open (CTRL+o)"), wxID_OPEN, iconpath, "fileopen.svg",
-                       "fileopen_dark.svg");
-        AddToolbarIcon(filetb, _("Save (CTRL+s)"), wxID_SAVE, iconpath, "filesave.svg",
-                       "filesave_dark.svg");
-        AddToolbarIcon(filetb, _("Save as..."), wxID_SAVEAS, iconpath, "filesaveas.svg",
-                       "filesaveas_dark.svg");
+        AddToolbarIcon(filetb, _("New (CTRL+n)"), wxID_NEW, "filenew");
+        AddToolbarIcon(filetb, _("Open (CTRL+o)"), wxID_OPEN, "fileopen");
+        AddToolbarIcon(filetb, _("Save (CTRL+s)"), wxID_SAVE, "filesave");
+        AddToolbarIcon(filetb, _("Save as..."), wxID_SAVEAS, "filesaveas");
         filetb->Realize();
 
         auto *edittb = NewToolbar();
-        AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, iconpath, "undo.svg",
-                       "undo_dark.svg");
-        AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, iconpath, "editcopy.svg",
-                       "editcopy_dark.svg");
-        AddToolbarIcon(edittb, _("Paste (CTRL+v)"), wxID_PASTE, iconpath, "editpaste.svg",
-                       "editpaste_dark.svg");
+        AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, "undo");
+        AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, "editcopy");
+        AddToolbarIcon(edittb, _("Paste (CTRL+v)"), wxID_PASTE, "editpaste");
         edittb->Realize();
 
         auto *zoomtb = NewToolbar();
-        AddToolbarIcon(zoomtb, _("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, iconpath, "zoomin.svg",
-                       "zoomin_dark.svg");
-        AddToolbarIcon(zoomtb, _("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, iconpath, "zoomout.svg",
-                       "zoomout_dark.svg");
+        AddToolbarIcon(zoomtb, _("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, "zoomin");
+        AddToolbarIcon(zoomtb, _("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, "zoomout");
         zoomtb->Realize();
 
         auto *celltb = NewToolbar();
-        AddToolbarIcon(celltb, _("New Grid (INS)"), A_ENTERGRID, iconpath, "newgrid.svg",
-                       "newgrid_dark.svg");
-        AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, iconpath, "image.svg", "image_dark.svg");
-        AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, iconpath, "run.svg", "run_dark.svg");
+        AddToolbarIcon(celltb, _("New Grid (INS)"), A_ENTERGRID, "newgrid");
+        AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, "image");
+        AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, "run");
         celltb->Realize();
 
         auto *findtb = NewToolbar();
         AddToolbarLabel(findtb, _("Search "));
         findtb->AddControl(filter = new TSTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
                                                    FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
-        AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, iconpath, "cancel.svg",
-                       "cancel_dark.svg");
-        AddToolbarIcon(findtb, _("Go to Next Search Result"), A_SEARCHNEXT, iconpath, "search.svg",
-                       "search_dark.svg");
+        AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, "cancel");
+        AddToolbarIcon(findtb, _("Go to Next Search Result"), A_SEARCHNEXT, "search");
         findtb->Realize();
 
         auto *repltb = NewToolbar();
         AddToolbarLabel(repltb, _("Replace "));
         repltb->AddControl(replaces = new TSTextCtrl(repltb, A_REPLACE, "", wxDefaultPosition,
                                                      FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
-        AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, iconpath, "cancel.svg",
-                       "cancel_dark.svg");
-        AddToolbarIcon(repltb, _("Replace in selection"), A_REPLACEONCE, iconpath, "replace.svg",
-                       "replace_dark.svg");
-        AddToolbarIcon(repltb, _("Replace All"), A_REPLACEALL, iconpath, "replaceall.svg",
-                       "replaceall_dark.svg");
+        AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, "cancel");
+        AddToolbarIcon(repltb, _("Replace in selection"), A_REPLACEONCE, "replace");
+        AddToolbarIcon(repltb, _("Replace All"), A_REPLACEALL, "replaceall");
         repltb->Realize();
 
         auto GetColorIndex = [&](int targetcolor, int defaultindex) {
