@@ -1666,12 +1666,30 @@ struct TSFrame : wxFrame {
 
     void UpdateStatus(const Selection &s, bool updateamount) {
         if (GetStatusBar() != nullptr && s.grid != nullptr) {
-            if (Cell *c = s.GetCell(); c != nullptr && s.xs != 0) {
-                SetStatusText(wxString::Format(_("Size %d"), -c->text.relsize), 3);
-                SetStatusText(wxString::Format(_("Width %d"), s.grid->colwidths[s.x]), 2);
-                SetStatusText(wxString::Format(_("Edited %s %s"), c->text.lastedit.FormatDate(),
-                                               c->text.lastedit.FormatTime()),
-                              1);
+            if (!s.Thin()) {
+                // Aggregate over the selection; for a single cell this is just its own values.
+                int minsize = INT_MAX, maxsize = INT_MIN, minwidth = INT_MAX, maxwidth = INT_MIN;
+                wxDateTime lastedit;
+                for (int x = s.x; x < s.x + s.xs; x++) {
+                    minwidth = min(minwidth, s.grid->colwidths[x]);
+                    maxwidth = max(maxwidth, s.grid->colwidths[x]);
+                    for (int y = s.y; y < s.y + s.ys; y++) {
+                        const Cell *c = s.grid->C(x, y).get();
+                        minsize = min(minsize, -c->text.relsize);
+                        maxsize = max(maxsize, -c->text.relsize);
+                        if (!lastedit.IsValid() || c->text.lastedit > lastedit) {
+                            lastedit = c->text.lastedit;
+                        }
+                    }
+                }
+                auto range = [](int lo, int hi) {
+                    return lo == hi ? wxString::Format("%d", lo) : wxString::Format("%d-%d", lo, hi);
+                };
+                SetStatusText(wxString::Format(_("Size %s"), range(minsize, maxsize)), 3);
+                SetStatusText(wxString::Format(_("Width %s"), range(minwidth, maxwidth)), 2);
+                SetStatusText(
+                    wxString::Format(_("Edited %s %s"), lastedit.FormatDate(), lastedit.FormatTime()),
+                    1);
             } else {
                 for (int field : {1, 2, 3}) { SetStatusText("", field); }
             }
