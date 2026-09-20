@@ -1837,9 +1837,6 @@ msgstr "Zoom vergrößert."
 msgid "Zoomed out."
 msgstr "Zoom verkleinert."
 
-msgid "change will take effect next run of TreeSheets"
-msgstr "Die Änderung wird erst nach einem Neustart von TreeSheets wirksam."
-
 msgid "changes the orientation of a grid"
 msgstr "Ändert die Ausrichtung einer Tabelle."
 

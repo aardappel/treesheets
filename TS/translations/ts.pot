@@ -1715,9 +1715,6 @@ msgstr ""
 msgid "Zoomed out."
 msgstr ""
 
-msgid "change will take effect next run of TreeSheets"
-msgstr ""
-
 msgid "changes the orientation of a grid"
 msgstr ""
 

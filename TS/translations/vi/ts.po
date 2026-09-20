@@ -1774,9 +1774,6 @@ msgstr "Đã phóng to."
 msgid "Zoomed out."
 msgstr "Đã thu nhỏ."
 
-msgid "change will take effect next run of TreeSheets"
-msgstr "thay đổi sẽ có hiệu lực trong lần chạy tiếp theo của TreeSheets"
-
 msgid "changes the orientation of a grid"
 msgstr "thay đổi hướng của lưới"
 

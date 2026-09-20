@@ -1791,9 +1791,6 @@ msgstr "Mais zoom aplicado."
 msgid "Zoomed out."
 msgstr "Menos zoom aplicado."
 
-msgid "change will take effect next run of TreeSheets"
-msgstr "a mudança passará a valer na próxima execução do TreeSheets"
-
 msgid "changes the orientation of a grid"
 msgstr "Muda a orientação de uma grade"
 
