@@ -961,12 +961,6 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, "run");
         FinishToolbar(celltb, "celltb", "Cell operations");
 
-        // The pressed state of these follows the selected text, see OnUpdateStyle.
-        auto *styletb = NewToolbar();
-        AddToolbarIcon(styletb, _("Bold (CTRL+b)"), wxID_BOLD, "bold", wxITEM_CHECK);
-        AddToolbarIcon(styletb, _("Italic (CTRL+i)"), wxID_ITALIC, "italic", wxITEM_CHECK);
-        FinishToolbar(styletb, "styletb", "Text style operations");
-
         auto *findtb = NewToolbar();
         AddToolbarLabel(findtb, _("Search "));
         findtb->AddControl(filter = new TSTextCtrl(findtb, A_SEARCH, "", wxDefaultPosition,
@@ -1014,6 +1008,13 @@ struct TSFrame : wxFrame {
         AddToolbarLabel(imagetb, _("Image "));
         imagetb->AddControl(imagedropdown = new ImageDropdown(imagetb, imagepath));
         FinishToolbar(imagetb, "imagetb", "Image operations");
+
+        // Last, so that on narrow windows, where toolbars get cut off, it doesn't push the others
+        // out. The pressed state of these follows the selected text, see OnUpdateStyle.
+        auto *styletb = NewToolbar();
+        AddToolbarIcon(styletb, _("Bold (CTRL+b)"), wxID_BOLD, "bold", wxITEM_CHECK);
+        AddToolbarIcon(styletb, _("Italic (CTRL+i)"), wxID_ITALIC, "italic", wxITEM_CHECK);
+        FinishToolbar(styletb, "styletb", "Text style operations");
 
         auto *artprovider = aui.GetArtProvider();
         artprovider->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 0);
