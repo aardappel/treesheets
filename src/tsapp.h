@@ -1,3 +1,7 @@
+#if wxUSE_UNICODE == 0
+    #error "must use unicode version of wx libs to ensure data integrity of .cts files"
+#endif
+
 struct IPCServer : wxServer {
     wxConnectionBase *OnAcceptConnection(const wxString &topic) override {
         sys->frame->DeIconize();
@@ -22,60 +26,68 @@ struct TSApp : wxApp {
     wxString exepath;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
 
-    bool OnInit() override {
-        #if wxUSE_UNICODE == 0
-            #error "must use unicode version of wx libs to ensure data integrity of .cts files"
-        #endif
-        ASSERT(wxUSE_UNICODE);
+    struct CmdLine {
+        bool portable {false};
+        bool single_instance {true};
+        bool dump_builtins {false};
+        bool start_minimized {false};
+    };
 
+    CmdLine ParseCommandLine() {
+        CmdLine cl;
+        for (int i = 1; i < argc; i++) {
+            if (argv[i][0] != '-') {
+                filename = argv[i];
+                continue;
+            }
+            switch (static_cast<int>(argv[i][1])) {
+                case 'p': cl.portable = true; break;
+                case 'i': cl.single_instance = false; break;
+                case 'm': cl.start_minimized = true; break;
+                case 'd':
+                    cl.dump_builtins = true;
+                    cl.single_instance = false;
+                    break;
+            }
+        }
+        return cl;
+    }
+
+    void InitPaths() {
         exename = wxStandardPaths::Get().GetExecutablePath();
         exepath = wxFileName(exename).GetPath();
-
         #ifdef __WXMAC__
             int cut = exepath.Find("/MacOS");
             if (cut > 0) { exepath = exepath.SubString(0, cut) + "/Resources"; }
+        #endif
+    }
+
+    // Returns true if another instance is running and the request was forwarded to it.
+    bool ForwardToRunningInstance() {
+        instance_checker = make_unique<wxSingleInstanceChecker>(
+            wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir());
+        if (!instance_checker->IsAnotherRunning()) return false;
+        wxClient client;
+        client.MakeConnection("localhost", service,
+                              !filename.IsEmpty() ? filename : wxString("*"));  // fire and forget
+        return true;
+    }
+
+    bool OnInit() override {
+        #ifdef __WXMAC__
             wxDisableAsserts();
         #endif
-
-        bool portable = false;
-        bool single_instance = true;
-        bool dump_builtins = false;
-        bool start_minimized = false;
-        for (int i = 1; i < argc; i++) {
-            if (argv[i][0] == '-') {
-                switch (static_cast<int>(argv[i][1])) {
-                    case 'p': portable = true; break;
-                    case 'i': single_instance = false; break;
-                    case 'm': start_minimized = true; break;
-                    case 'd':
-                        dump_builtins = true;
-                        single_instance = false;
-                        break;
-                }
-            } else {
-                filename = argv[i];
-            }
-        }
-
-        if (single_instance) {
-            instance_checker.reset(new wxSingleInstanceChecker(
-                wxTheApp->GetAppName() + '-' + wxGetUserId(), wxStandardPaths::Get().GetTempDir()));
-            if (instance_checker->IsAnotherRunning()) {
-                wxClient client;
-                client.MakeConnection(
-                    "localhost", service,
-                    !filename.IsEmpty() ? filename : wxString("*"));  // fire and forget
-                return false;
-            }
-        }
+        InitPaths();
+        const CmdLine cl = ParseCommandLine();
+        if (cl.single_instance && ForwardToRunningInstance()) return false;
 
         wxStandardPaths::Get().SetFileLayout(wxStandardPathsBase::FileLayout_XDG);
         #ifdef __WXMSW__
             MSWEnableDarkMode();
         #endif
-        sys = make_unique<System>(portable);
+        sys = make_unique<System>(cl.portable);
         sys->UpdatePens();
-        if (start_minimized) { sys->startminimized = true; }
+        if (cl.start_minimized) { sys->startminimized = true; }
         SetupInternationalization();
         #ifdef __WXMSW__
             DeclareHiDpiAwareOnWindows();
@@ -88,17 +100,11 @@ struct TSApp : wxApp {
                 wxLogFatalError("Script system could not initialize: %s", serr);
                 return false;
             }
+            if (cl.dump_builtins) { TSDumpBuiltinDoc(); }
         #endif
-
-        if (dump_builtins) {
-            #ifdef ENABLE_LOBSTER
-                TSDumpBuiltinDoc();
-            #endif
-            return false;
-        }
+        if (cl.dump_builtins) return false;
 
         SetTopWindow(frame);
-
         serv->Create(service);
         return true;
     }
