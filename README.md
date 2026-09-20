@@ -81,6 +81,30 @@ cd treesheets
 
 If you do not have `wxWidgets` installed, you may want to set `wxBUILD_INSTALL` and `wxBUILD_SHARED` to off in the build configuration. This ensures a TreeSheets build with wxWidgets libraries statically linked in.
 
+Translating
+-----------
+The user interface is translated with [gettext](https://www.gnu.org/software/gettext/). The translations live in
+`TS/translations/<language>/ts.po`, and the template they are derived from is `TS/translations/ts.pot`. You need the
+gettext tools (`xgettext`, `msgmerge`, `msgfmt`, and `msginit` for new languages), which are usually already present
+on Linux and macOS, or see [here](https://mlocati.github.io/articles/gettext-iconv-windows.html) for Windows. After
+configuring the build as described above (step 3.1), the workflow is driven by three CMake targets:
+
+| Step | Command | What it does |
+| ---- | ------- | ------------ |
+| 1 | `cmake --build _build --target update-pot` | Extracts the translatable strings from the source code into `ts.pot` |
+| 2 | `cmake --build _build --target update-po` | Merges the new strings from `ts.pot` into all `ts.po` files |
+| 3 | Translate the new (empty or fuzzy) entries in your language's `ts.po`, e.g. with [Poedit](https://poedit.net/) or a text editor | |
+| 4 | `cmake --build _build --target update-mo` | Compiles all `ts.po` files into the binary `ts.mo` files the program loads |
+
+Step 1 is normally done by the developer after changing strings in the source code. To add a new language, run this
+inside `TS/translations` (replace `lang` with a code like `it`, or `pt_BR`), then continue with step 3:
+
+```sh
+msginit --input ts.pot --locale=lang --output=lang/ts.po
+```
+
+More details can be found in `TS/translations/readme_translations.txt`.
+
 Contributing
 ------------
 I welcome contributions, especially in the form of neatly prepared pull requests. The main thing to keep in mind when
