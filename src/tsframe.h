@@ -654,9 +654,9 @@ struct TSFrame : wxFrame {
                                  _("Toggle whether statusbar is shown below the documents"));
         optmenu->Check(A_SHOWSBAR, sys->showstatusbar);
         optmenu->AppendCheckItem(
-            A_LEFTTABS, _("File Tabs on the bottom"),
+            A_BOTTOMTABS, _("File Tabs on the bottom"),
             _("Toggle whether file tabs are shown on top or on bottom of the documents"));
-        optmenu->Check(A_LEFTTABS, sys->lefttabs);
+        optmenu->Check(A_BOTTOMTABS, sys->bottomtabs);
         optmenu->AppendCheckItem(A_TOTRAY, _("Minimize to tray"),
                                  _("Toogle whether window is minimized to system tray"));
         optmenu->Check(A_TOTRAY, sys->totray);
@@ -789,7 +789,7 @@ struct TSFrame : wxFrame {
             new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                               wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT | wxAUI_NB_SCROLL_BUTTONS |
                                   wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_CLOSE_ON_ALL_TABS |
-                                  (sys->lefttabs ? wxAUI_NB_BOTTOM : wxAUI_NB_TOP));
+                                  GetTabPosition());
 
         int display_id = wxDisplay::GetFromWindow(this);
         wxRect disprect = wxDisplay(display_id == wxNOT_FOUND ? 0 : display_id).GetClientArea();
@@ -868,6 +868,8 @@ struct TSFrame : wxFrame {
 
         wxSafeYield();
     }
+
+    long GetTabPosition() const { return sys->bottomtabs ? wxAUI_NB_BOTTOM : wxAUI_NB_TOP; }
 
     wxArrayString GetToolbarPaneNames() {
         wxArrayString toolbarNames;
@@ -1161,10 +1163,12 @@ struct TSFrame : wxFrame {
                 break;
             }
 
-            case A_LEFTTABS:
-                Toggle("lefttabs", sys->lefttabs);
-                NeedsRestart();
+            case A_BOTTOMTABS: {
+                Toggle("bottomtabs", sys->bottomtabs);
+                auto style = notebook->GetWindowStyleFlag() & ~(wxAUI_NB_TOP | wxAUI_NB_BOTTOM);
+                notebook->SetWindowStyleFlag(style | GetTabPosition());
                 break;
+            }
             case A_SINGLETRAY:
                 Toggle("singletray", sys->singletray);
                 NeedsRestart();

@@ -110,7 +110,7 @@ enum {
     A_MARKVARU,
     A_SHOWSBAR,
     A_SHOWTBAR,
-    A_LEFTTABS,
+    A_BOTTOMTABS,
     A_TRADSCROLL,
     A_HOME,
     A_END,
