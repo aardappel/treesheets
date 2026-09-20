@@ -38,6 +38,7 @@ struct System {
     bool hoverzoom {false};
     bool minclose {false};
     bool singletray {false};
+    bool lefttabs {true};
     bool startminimized {false};
     bool centered {true};
     bool fswatch {true};
@@ -101,6 +102,7 @@ struct System {
         cfg->Read("followdarkmode", &followdarkmode, followdarkmode);
         cfg->Read("minclose", &minclose, minclose);
         cfg->Read("singletray", &singletray, singletray);
+        cfg->Read("lefttabs", &lefttabs, lefttabs);
         cfg->Read("startminimized", &startminimized, startminimized);
         cfg->Read("centered", &centered, centered);
         cfg->Read("fswatch", &fswatch, fswatch);

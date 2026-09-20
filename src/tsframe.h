@@ -129,11 +129,9 @@ struct TSFrame : wxFrame {
 
         bool showtbar = false;
         bool showsbar = false;
-        bool lefttabs = false;
 
         sys->cfg->Read("showtbar", &showtbar, true);
         sys->cfg->Read("showsbar", &showsbar, true);
-        sys->cfg->Read("lefttabs", &lefttabs, true);
 
         #ifdef __WXMAC__
             #define CTRLORALT "CTRL"
@@ -658,7 +656,7 @@ struct TSFrame : wxFrame {
         optmenu->AppendCheckItem(
             A_LEFTTABS, _("File Tabs on the bottom"),
             _("Toggle whether file tabs are shown on top or on bottom of the documents"));
-        optmenu->Check(A_LEFTTABS, lefttabs);
+        optmenu->Check(A_LEFTTABS, sys->lefttabs);
         optmenu->AppendCheckItem(A_TOTRAY, _("Minimize to tray"),
                                  _("Toogle whether window is minimized to system tray"));
         optmenu->Check(A_TOTRAY, sys->totray);
@@ -791,7 +789,7 @@ struct TSFrame : wxFrame {
             new wxAuiNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                               wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT | wxAUI_NB_SCROLL_BUTTONS |
                                   wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_CLOSE_ON_ALL_TABS |
-                                  (lefttabs ? wxAUI_NB_BOTTOM : wxAUI_NB_TOP));
+                                  (sys->lefttabs ? wxAUI_NB_BOTTOM : wxAUI_NB_TOP));
 
         int display_id = wxDisplay::GetFromWindow(this);
         wxRect disprect = wxDisplay(display_id == wxNOT_FOUND ? 0 : display_id).GetClientArea();
@@ -1164,7 +1162,7 @@ struct TSFrame : wxFrame {
             }
 
             case A_LEFTTABS:
-                sys->cfg->Write("lefttabs", ce.IsChecked());
+                Toggle("lefttabs", sys->lefttabs);
                 NeedsRestart();
                 break;
             case A_SINGLETRAY:
