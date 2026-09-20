@@ -69,15 +69,42 @@ git clone https://github.com/aardappel/treesheets
 cd treesheets
 ```
 
-3. Steps for building and installation/packaging for binary distribution
+3. Configure the build system
 
-| Step | Command | Windows | macOS | Linux |
-| ---- | ------- | ------- | ----- | ----- |
-| 3.1 Configure the build system | `cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release` | needs Visual Studio C++ compiler for succesful compilation | | |
-| 3.2 Build and package for binary distribution | `cmake --build _build --target package -j` | creates a ZIP archive for portable usage and a Nullsoft installer | creates a disk image for Drag and Drop installation | creates a binary Debian package |
-| or |
-| 3.2 Build only | `cmake --build _build -j` | Append `--config Release` | | |
-| 3.3 Install | `cmake --install _build` | | Append `--prefix <directory>` to specify another installation root for the bundle | usually requires root privileges, e.g. run this command with `sudo` |
+```sh
+cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release
+```
+
+   On Windows this needs the Visual Studio C++ compiler.
+
+4. Build and package for binary distribution
+
+```sh
+cmake --build _build --target package -j
+```
+
+   | Platform | Result |
+   | -------- | ------ |
+   | Windows | A ZIP archive for portable usage and a Nullsoft installer |
+   | macOS | A disk image for Drag and Drop installation |
+   | Linux | A binary Debian package |
+
+   Alternatively, to only build without packaging:
+
+```sh
+cmake --build _build -j
+```
+
+   On Windows, append `--config Release`.
+
+5. Install (optional)
+
+```sh
+cmake --install _build
+```
+
+   - **macOS:** append `--prefix <directory>` to specify another installation root for the bundle.
+   - **Linux:** usually requires root privileges, e.g. run this command with `sudo`.
 
 If you do not have `wxWidgets` installed, you may want to set `wxBUILD_INSTALL` and `wxBUILD_SHARED` to off in the build configuration. This ensures a TreeSheets build with wxWidgets libraries statically linked in.
 
@@ -87,7 +114,7 @@ The user interface is translated with [gettext](https://www.gnu.org/software/get
 `TS/translations/<language>/ts.po`, and the template they are derived from is `TS/translations/ts.pot`. You need the
 gettext tools (`xgettext`, `msgmerge`, `msgfmt`, and `msginit` for new languages), which are usually already present
 on Linux and macOS, or see [here](https://mlocati.github.io/articles/gettext-iconv-windows.html) for Windows. After
-configuring the build as described above (step 3.1), the workflow is driven by three CMake targets:
+configuring the build as described above (step 3), the workflow is driven by three CMake targets:
 
 | Step | Command | What it does |
 | ---- | ------- | ------------ |
