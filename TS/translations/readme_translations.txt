@@ -18,8 +18,9 @@ replacing "lang" with either the 2-letter ISO 639-1 code (e.g. "it") or the
 for the new language.
 
 To merge the translation for an existing language with the strings from the
-recompiled main template file, run lang/merge.bat, replacing "lang" as
-described above.
+recompiled main template file (all languages at once), build the CMake
+target "update-po":
+  cmake --build <builddir> --target update-po
 
 To re-compile the language definitions (all languages at once), build the
 CMake target "update-mo":

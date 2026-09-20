@@ -352,6 +352,24 @@ if(XGETTEXT_EXECUTABLE)
     )
 endif()
 
+# Target to merge the strings of the translation template (.pot) into the translations (.po):
+#   cmake --build <builddir> --target update-po
+find_program(MSGMERGE_EXECUTABLE msgmerge)
+if(MSGMERGE_EXECUTABLE)
+    file(GLOB po_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations/*/ts.po")
+    set(po_commands)
+    foreach(po_file IN LISTS po_files)
+        list(APPEND po_commands COMMAND "${MSGMERGE_EXECUTABLE}" --update --backup=none
+             "${po_file}" "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations/ts.pot")
+    endforeach()
+    add_custom_target(
+        update-po
+        ${po_commands}
+        COMMENT "Merging TS/translations/ts.pot into TS/translations/*/ts.po"
+        VERBATIM
+    )
+endif()
+
 # Target to recompile the translations (.po) into the binary form used by the program (.mo):
 #   cmake --build <builddir> --target update-mo
 find_program(MSGFMT_EXECUTABLE msgfmt)
