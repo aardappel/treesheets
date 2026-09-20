@@ -1167,6 +1167,8 @@ struct TSFrame : wxFrame {
                 Toggle("bottomtabs", sys->bottomtabs);
                 auto style = notebook->GetWindowStyleFlag() & ~(wxAUI_NB_TOP | wxAUI_NB_BOTTOM);
                 notebook->SetWindowStyleFlag(style | GetTabPosition());
+                notebook->SendSizeEvent();
+                notebook->Refresh();
                 break;
             }
             case A_SINGLETRAY:
