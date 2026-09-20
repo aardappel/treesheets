@@ -276,6 +276,12 @@ struct Text {
         return all;
     }
 
+    // Whether all the text has the style bit. For an empty text that is the base style.
+    bool HasStyleAll(int bit) const {
+        return t.IsEmpty() ? (stylebits & bit) == bit
+                           : HasStyle(bit, 0, static_cast<int>(t.Len()));
+    }
+
     // Toggles a style bit on the text range [from, to): removes it if the whole range has it,
     // adds it otherwise.
     void ToggleStyle(int bit, int from, int to) {
