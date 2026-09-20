@@ -331,8 +331,8 @@ struct TSFrame : wxFrame {
             MyAppend(temenu, A_CANCELEDIT, _("Cancel text edits") + "\tESC");
 
             auto *stmenu = new wxMenu();
-            MyAppend(stmenu, wxID_BOLD, _("Toggle cell &BOLD") + "\tCTRL+B");
-            MyAppend(stmenu, wxID_ITALIC, _("Toggle cell &ITALIC") + "\tCTRL+I");
+            MyAppend(stmenu, wxID_BOLD, _("Toggle cell &BOLD") + "\tCTRL+B", "", wxITEM_CHECK);
+            MyAppend(stmenu, wxID_ITALIC, _("Toggle cell &ITALIC") + "\tCTRL+I", "", wxITEM_CHECK);
             MyAppend(stmenu, A_TT, _("Toggle cell &typewriter") + "\tCTRL+ALT+T");
             MyAppend(stmenu, wxID_UNDERLINE, _("Toggle cell &underlined") + "\tCTRL+U");
             MyAppend(stmenu, wxID_STRIKETHROUGH, _("Toggle cell &strikethrough") + "\tCTRL+T");
@@ -844,6 +844,8 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_DPI_CHANGED, &TSFrame::OnDPIChanged, this);
         Bind(wxEVT_SIZING, &TSFrame::OnSizing, this);
         Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_BOLD);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_ITALIC);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
         Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
@@ -1012,6 +1014,14 @@ struct TSFrame : wxFrame {
     }
 
     // event handling functions
+
+    // Shows whether the selected text is bold/italic in the check state of the menu items.
+    void OnUpdateStyle(wxUpdateUIEvent &ue) {
+        auto *canvas = GetCurrentTab();
+        ue.Check(canvas != nullptr &&
+                 canvas->doc->SelectionHasStyle(ue.GetId() == wxID_BOLD ? STYLE_BOLD
+                                                                        : STYLE_ITALIC));
+    }
 
     void OnMenu(wxCommandEvent &ce) {
         auto *canvas = GetCurrentTab();
@@ -1559,7 +1569,8 @@ struct TSFrame : wxFrame {
         return nullptr;
     }
 
-    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wxString &help = "") {
+    void MyAppend(wxMenu *menu, int tag, const wxString &contents, const wxString &help = "",
+                  wxItemKind kind = wxITEM_NORMAL) {
         auto item = contents;
         wxString key = "";
         if (int pos = contents.Find("\t"); pos >= 0) {
@@ -1569,7 +1580,7 @@ struct TSFrame : wxFrame {
         key = sys->cfg->Read(item, key);
         auto newcontents = item;
         if (!key.IsEmpty()) { newcontents += "\t" + key; }
-        menu->Append(tag, newcontents, help);
+        menu->Append(tag, newcontents, help, kind);
         menustrings[item] = key;
     }
 

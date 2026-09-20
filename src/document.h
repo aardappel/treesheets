@@ -2904,6 +2904,21 @@ struct Document {
         return sys->imagelist[sys->AddImageToList(scale, std::move(data), type)].get();
     }
 
+    // Whether all the text a style command would change has the style: the selected range while
+    // editing text, otherwise the text of all selected cells.
+    bool SelectionHasStyle(int bit) {
+        if (selected.grid == nullptr || selected.Thin()) { return false; }
+        if (selected.TextEdit() && selected.cursor != selected.cursorend) {
+            auto *c = selected.GetCell();
+            return c != nullptr && c->text.HasStyle(bit, selected.cursor, selected.cursorend);
+        }
+        auto all = true;
+        loopallcellssel(c, false) {
+            if (!c->text.HasStyleAll(bit)) { all = false; }
+        }
+        return all;
+    }
+
     bool AnyImagesInSelection() {
         loopallcellssel(c, true) if (c->text.image != nullptr) { return true; }
         return false;
