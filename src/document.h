@@ -2912,11 +2912,7 @@ struct Document {
             auto *c = selected.GetCell();
             return c != nullptr && c->text.HasStyle(bit, selected.cursor, selected.cursorend);
         }
-        auto all = true;
-        loopallcellssel(c, false) {
-            if (!c->text.HasStyleAll(bit)) { all = false; }
-        }
-        return all;
+        return selected.grid->AllHaveStyle(selected, bit);
     }
 
     bool AnyImagesInSelection() {

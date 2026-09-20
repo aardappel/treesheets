@@ -738,6 +738,15 @@ struct Grid {
         sel.ExitEdit(doc);
     }
 
+    // Whether the text of all selected cells has the style. Stops at the first cell that hasn't,
+    // as the toolbar asks this on every idle event.
+    bool AllHaveStyle(const Selection &sel, int sb) {
+        foreachcellinsel(c, sel) {
+            if (!c->text.HasStyleAll(sb)) { return false; }
+        }
+        return true;
+    }
+
     void SetStyle(Document *doc, const Selection &sel, int sb) {
         cell->AddUndo(doc);
         cell->ResetChildren();
@@ -745,14 +754,7 @@ struct Grid {
         // or all selected cells: on, unless all of them already have it (see
         // Document::SelectionHasStyle, which shows this state in the menu).
         auto range = sel.TextEdit() && sel.cursor != sel.cursorend;
-        auto set = true;
-        if (!range) {
-            auto all = true;
-            foreachcellinsel(c, sel) {
-                if (!c->text.HasStyleAll(sb)) { all = false; }
-            }
-            set = !all;
-        }
+        auto set = range || !AllHaveStyle(sel, sb);
         foreachcellinsel(c, sel) {
             if (range) {
                 c->text.ToggleStyle(sb, sel.cursor, sel.cursorend);

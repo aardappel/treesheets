@@ -912,9 +912,9 @@ struct TSFrame : wxFrame {
         toolbaricons.clear();
         toolbariconpath = app->GetDataPath("images/material/toolbar/");
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
-                                  const wxString &icon) {
+                                  const wxString &icon, wxItemKind kind = wxITEM_NORMAL) {
             toolbaricons.push_back({tb, action, icon});
-            tb->AddTool(action, name, LoadToolbarIcon(icon), name, wxITEM_NORMAL);
+            tb->AddTool(action, name, LoadToolbarIcon(icon), name, kind);
         };
 
         auto NewToolbar = [&]() {
@@ -960,6 +960,12 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, "image");
         AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, "run");
         FinishToolbar(celltb, "celltb", "Cell operations");
+
+        // The pressed state of these follows the selected text, see OnUpdateStyle.
+        auto *styletb = NewToolbar();
+        AddToolbarIcon(styletb, _("Bold (CTRL+b)"), wxID_BOLD, "bold", wxITEM_CHECK);
+        AddToolbarIcon(styletb, _("Italic (CTRL+i)"), wxID_ITALIC, "italic", wxITEM_CHECK);
+        FinishToolbar(styletb, "styletb", "Text style operations");
 
         auto *findtb = NewToolbar();
         AddToolbarLabel(findtb, _("Search "));
@@ -1021,7 +1027,8 @@ struct TSFrame : wxFrame {
 
     // event handling functions
 
-    // Shows whether the selected text has a style in the check state of its menu item.
+    // Shows whether the selected text has a style in the check state of its menu item, and of
+    // its toolbar button if it has one.
     void OnUpdateStyle(wxUpdateUIEvent &ue) {
         auto *canvas = GetCurrentTab();
         auto bit = 0;
