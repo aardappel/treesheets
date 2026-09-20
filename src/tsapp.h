@@ -163,40 +163,32 @@ struct TSApp : wxApp {
         wxTranslations::Set(trans);
     }
 
-    wxString GetDataPath(const wxString &relpath) const {
-        std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(!exepath.IsEmpty()
-                                      ? exepath.ToStdString() + "/" + relpath.ToStdString()
-                                      : relpath.ToStdString()),
-            #ifdef TREESHEETS_DATADIR
-                std::filesystem::path(TREESHEETS_DATADIR "/" + relpath.ToStdString()),
-            #endif
-        };
-        std::filesystem::path relativePath;
-        for (const auto &path : candidatePaths) {
-            relativePath = path;
-            if (std::filesystem::exists(relativePath)) { break; }
+    // Looks next to the executable first, then in the install dir (if any). Returns the first
+    // existing candidate, or the last one if none exist.
+    wxString ResolvePath(const wxString &relpath, const char *installdir) const {
+        std::filesystem::path path(
+            !exepath.IsEmpty() ? exepath.ToStdString() + "/" + relpath.ToStdString()
+                               : relpath.ToStdString());
+        if (installdir && !std::filesystem::exists(path)) {
+            path = std::filesystem::path(installdir) / relpath.ToStdString();
         }
+        return {path};
+    }
 
-        return {relativePath};
+    wxString GetDataPath(const wxString &relpath) const {
+        #ifdef TREESHEETS_DATADIR
+            return ResolvePath(relpath, TREESHEETS_DATADIR);
+        #else
+            return ResolvePath(relpath, nullptr);
+        #endif
     }
 
     wxString GetDocPath(const wxString &relpath) const {
-        std::filesystem::path candidatePaths[] = {
-            std::filesystem::path(!exepath.IsEmpty()
-                                      ? exepath.ToStdString() + "/" + relpath.ToStdString()
-                                      : relpath.ToStdString()),
-            #ifdef TREESHEETS_DOCDIR
-                std::filesystem::path(TREESHEETS_DOCDIR "/" + relpath.ToStdString()),
-            #endif
-        };
-        std::filesystem::path relativePath;
-        for (const auto &path : candidatePaths) {
-            relativePath = path;
-            if (std::filesystem::exists(relativePath)) { break; }
-        }
-
-        return {relativePath};
+        #ifdef TREESHEETS_DOCDIR
+            return ResolvePath(relpath, TREESHEETS_DOCDIR);
+        #else
+            return ResolvePath(relpath, nullptr);
+        #endif
     }
 
     #ifdef __WXMSW__
