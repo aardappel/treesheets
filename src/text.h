@@ -211,6 +211,64 @@ struct Text {
 
     // Rich text lines have one uniform height: every style's font is aligned on a common
     // baseline, and the line is as tall as that takes.
+    // Whether every character in [from, to) has all the style bits in `bit`.
+    bool HasStyle(int bit, int from, int to) const {
+        auto all = true;
+        ForEachSegment(from, to - from, [&](int, int, int sb, bool, uint) {
+            if ((sb & bit) != bit) { all = false; }
+        });
+        return all;
+    }
+
+    // Toggles a style bit on the text range [from, to): removes it if the whole range has it,
+    // adds it otherwise.
+    void ToggleStyle(int bit, int from, int to) {
+        auto len = static_cast<int>(t.Len());
+        from = max(from, 0);
+        to = min(to, len);
+        if (from >= to) { return; }
+        auto set = !HasStyle(bit, from, to);
+        runs.Modify(from, to, len, stylebits, [&](TextRun &r) {
+            r.stylebits = set ? (r.stylebits | bit) : (r.stylebits & ~bit);
+        });
+        CheckRuns();
+    }
+
+    // Toggles a style bit on the whole text, i.e. the base style and all runs.
+    void ToggleStyleAll(int bit) {
+        if (runs.empty()) {
+            stylebits ^= bit;
+            return;
+        }
+        auto set = !HasStyle(bit, 0, static_cast<int>(t.Len()));
+        auto apply = [&](int &sb) { sb = set ? (sb | bit) : (sb & ~bit); };
+        apply(stylebits);
+        for (auto &r : runs.v) { apply(r.stylebits); }
+        runs.Normalize(stylebits);
+        CheckRuns();
+    }
+
+    void SetRunColor(uint color, int from, int to) {
+        auto len = static_cast<int>(t.Len());
+        runs.Modify(from, to, len, stylebits, [&](TextRun &r) {
+            r.hascolor = true;
+            r.color = color & 0xFFFFFF;
+        });
+        CheckRuns();
+    }
+
+    // Makes the whole text use the cell's text color again.
+    void ClearRunColors() {
+        for (auto &r : runs.v) { r.hascolor = false; }
+        runs.Normalize(stylebits);
+    }
+
+    // Resets the whole text to the plain base style.
+    void ResetStyle() {
+        stylebits = 0;
+        runs.clear();
+    }
+
     struct LineMetrics {
         int height {0};
         int ascent {0};

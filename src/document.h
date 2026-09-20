@@ -2182,18 +2182,27 @@ struct Document {
                         }
                         selected.grid->cell->ResetLayout();
                         break;
-                    case A_RESETSTYLE: c->text.stylebits = 0; break;
+                    case A_RESETSTYLE: c->text.ResetStyle(); break;
                     case A_RESETCOLOR:
                         if (c->IsTag(this)) {
                             tags[c->text.t] = {g_cellcolor_default, g_tagtextcolor_default};
                         } else {
                             c->textcolor = g_textcolor_default;
+                            c->text.ClearRunColors();
                         }
                         c->cellcolor = g_cellcolor_default;
                         if (c->grid) { c->grid->bordercolor = g_bordercolor_default; }
                         break;
                     case A_LASTCELLCOLOR: c->cellcolor = sys->lastcellcolor; break;
-                    case A_LASTTEXTCOLOR: c->textcolor = sys->lasttextcolor; break;
+                    case A_LASTTEXTCOLOR:
+                        if (selected.TextEdit() && selected.cursor != selected.cursorend) {
+                            c->text.SetRunColor(sys->lasttextcolor, selected.cursor,
+                                                selected.cursorend);
+                        } else {
+                            c->textcolor = sys->lasttextcolor;
+                            c->text.ClearRunColors();
+                        }
+                        break;
                     case A_LASTBORDCOLOR:
                         if (c->parent != nullptr && c->parent->grid) {
                             c->parent->grid->bordercolor = sys->lastbordcolor;

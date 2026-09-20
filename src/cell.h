@@ -581,6 +581,7 @@ struct Cell {
                     doc->tags[text.t].second = color;
                 } else {
                     textcolor = color;
+                    text.ClearRunColors();
                 }
                 break;
             case A_BORDCOLOR:
