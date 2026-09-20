@@ -741,8 +741,14 @@ struct Grid {
     void SetStyle(Document *doc, const Selection &sel, int sb) {
         cell->AddUndo(doc);
         cell->ResetChildren();
+        // Only a selected range of text gets the style; otherwise it applies to the whole cell.
+        auto range = sel.TextEdit() && sel.cursor != sel.cursorend;
         foreachcellinsel(c, sel) {
-            c->text.stylebits ^= sb;
+            if (range) {
+                c->text.ToggleStyle(sb, sel.cursor, sel.cursorend);
+            } else {
+                c->text.ToggleStyleAll(sb);
+            }
             c->text.WasEdited();
         }
         doc->UpdateLayout();
@@ -752,7 +758,15 @@ struct Grid {
     void ColorChange(Document *doc, int which, uint color, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
-        foreachcellinsel(c, sel) c->ColorChange(doc, which, color);
+        auto range = which == A_TEXTCOLOR && sel.TextEdit() && sel.cursor != sel.cursorend;
+        foreachcellinsel(c, sel) {
+            if (range) {
+                c->text.SetRunColor(color, sel.cursor, sel.cursorend);
+                c->text.WasEdited();
+            } else {
+                c->ColorChange(doc, which, color);
+            }
+        }
         doc->UpdateLayout();
         doc->canvas->Refresh();
     }

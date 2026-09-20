@@ -194,6 +194,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SetStyle(int stylebits) override {
         AddUndoIfNecessary();
         current->text.stylebits = stylebits;
+        current->text.runs.clear();
     }
 
     int GetStyle() override { return current->text.stylebits; }
