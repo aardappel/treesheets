@@ -48,6 +48,15 @@ struct TSFrame : wxFrame {
     ColorDropdown *textcolordropdown {nullptr};
     ColorDropdown *bordercolordropdown {nullptr};
     ImageDropdown *imagedropdown {nullptr};
+
+    struct ToolbarIcon {
+        wxAuiToolBar *toolbar;
+        int action;
+        wxString lighticon;
+        wxString darkicon;
+    };
+    std::vector<ToolbarIcon> toolbaricons;
+    wxString toolbariconpath;
     wxString imagepath;
     int refreshhack {0};
     int refreshhackinstances {0};
@@ -882,17 +891,31 @@ struct TSFrame : wxFrame {
         }
     }
 
+    wxBitmapBundle LoadToolbarIcon(const wxString &lighticon, const wxString &darkicon) const {
+        return wxBitmapBundle::FromSVGFile(
+            toolbariconpath + (wxSystemSettings::GetAppearance().IsDark() ? darkicon : lighticon),
+            wxSize(24, 24));
+    }
+
+    void UpdateToolbarIcons() {
+        for (const auto &icon : toolbaricons) {
+            icon.toolbar->SetToolBitmap(icon.action, LoadToolbarIcon(icon.lighticon, icon.darkicon));
+        }
+        for (const auto &name : GetToolbarPaneNames()) {
+            auto *wnd = aui.GetPane(name).window;
+            if (wnd != nullptr) { wnd->Refresh(); }
+        }
+    }
+
     void RefreshToolBar() {
         for (const auto &name : GetToolbarPaneNames()) { DestroyToolbarPane(name); }
-        auto iconpath = app->GetDataPath("images/material/toolbar/");
+        toolbaricons.clear();
+        toolbariconpath = app->GetDataPath("images/material/toolbar/");
+        auto iconpath = toolbariconpath;
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
                                   const wxString &iconpath, const wxString &lighticon, const wxString &darkicon) {
-            tb->AddTool(
-                action, name,
-                wxBitmapBundle::FromSVGFile(
-                    iconpath + (wxSystemSettings::GetAppearance().IsDark() ? darkicon : lighticon),
-                    wxSize(24, 24)),
-                name, wxITEM_NORMAL);
+            toolbaricons.push_back({tb, action, lighticon, darkicon});
+            tb->AddTool(action, name, LoadToolbarIcon(lighticon, darkicon), name, wxITEM_NORMAL);
         };
 
         auto NewToolbar = [&]() {
@@ -1517,10 +1540,7 @@ struct TSFrame : wxFrame {
         sys->colormask =
             (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
         sys->UpdatePens();
-        auto perspective = aui.SavePerspective();
-        RefreshToolBar();
-        aui.LoadPerspective(perspective);
-        aui.Update();
+        UpdateToolbarIcons();
         se.Skip();
     }
 
