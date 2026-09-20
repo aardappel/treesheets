@@ -397,12 +397,28 @@ struct System {
 
     void FileUsed(const wxString &filename, Document *doc) {
         frame->filehistory.AddFileToHistory(filename);
+        WatchFile(filename, doc);
+    }
+
+    void WatchFile(const wxString &filename, Document *doc) {
+        if (!fswatch || filename.IsEmpty()) { return; }
+        doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
+        const auto &directorypath =
+            wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+        if (watchedpaths.insert(directorypath).second) {
+            frame->watcher->Add(wxFileName(directorypath), wxFSW_EVENT_ALL);
+        }
+    }
+
+    void UpdateFileSystemWatching() {
         if (fswatch) {
-            doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
-            const auto &directorypath = wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            if (watchedpaths.insert(directorypath).second) {
-                frame->watcher->Add(wxFileName(directorypath), wxFSW_EVENT_ALL);
+            loop(i, frame->notebook->GetPageCount()) {
+                auto *doc = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i))->doc.get();
+                WatchFile(doc->filename, doc);
             }
+        } else {
+            frame->watcher->RemoveAll();
+            watchedpaths.clear();
         }
     }
 

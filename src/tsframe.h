@@ -1195,7 +1195,7 @@ struct TSFrame : wxFrame {
                 break;
             case A_FSWATCH:
                 Toggle("fswatch", sys->fswatch);
-                NeedsRestart();
+                sys->UpdateFileSystemWatching();
                 break;
             case A_AUTOEXPORT_HTML_NONE:
             case A_AUTOEXPORT_HTML_WITH_IMAGES:
