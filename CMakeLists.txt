@@ -326,6 +326,25 @@ if(ENABLE_LOBSTER)
     install(FILES ${lobster_modules} DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
 endif(ENABLE_LOBSTER)
 
+## Script reference
+
+# Target to regenerate the Lobster script reference from the builtin functions registered in the
+# TreeSheets executable (needs a display, as the application is started to dump the documentation):
+#   cmake --build <builddir> --target update-script-reference
+if(ENABLE_LOBSTER)
+    add_custom_target(
+        update-script-reference
+        COMMAND ${CMAKE_COMMAND}
+            "-DTREESHEETS_EXE=$<TARGET_FILE:TreeSheets>"
+            "-DSCRIPTS_SRC=${CMAKE_CURRENT_SOURCE_DIR}/TS/scripts"
+            "-DOUTPUT=${CMAKE_CURRENT_SOURCE_DIR}/TS/docs/script_reference.html"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/UpdateScriptReference.cmake"
+        DEPENDS TreeSheets
+        COMMENT "Updating TS/docs/script_reference.html from the builtin function documentation"
+        VERBATIM
+    )
+endif(ENABLE_LOBSTER)
+
 ## Apple icon set
 if(APPLE)
     install(

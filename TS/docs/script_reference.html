@@ -130,6 +130,9 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_image</b>(filename<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">set image for the current cell</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_image_display_scale</b>(scale<font color="#666666">: int</font>)</tt></td><td class="a">set display scale (in integer percentage)</td>
+
+</tr>
 </table></td></tr>
 <tr class="a" valign=top><td><h3>builtin</h3></td></tr>
 <tr><td><table class="a" border=1 cellspacing=0 cellpadding=4><tr class="a" valign=top><td class="a"><tt><b>print</b>(x<font color="#666666">: string</font>)</tt></td><td class="a">output any value to the console (with linefeed).</td>
@@ -258,7 +261,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>replace_string</b>(s<font color="#666666">: string</font>, a<font color="#666666">: string</font>, b<font color="#666666">: string</font>, count<font color="#666666">: int</font> = 0) -> <font color="#666666">string</font></tt></td><td class="a">returns a copy of s where all occurrences of a have been replaced with b. if a is empty, no replacements are made. if count is specified, makes at most that many replacements</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>string_to_int</b>(s<font color="#666666">: string</font>, base<font color="#666666">: int</font> = 0) -> <font color="#666666">int</font>, <font color="#666666">int</font></tt></td><td class="a">converts a string to an int given the base (2..36, e.g. 16 for hex, default is 10).returns 0 if no numeric data could be parsed; second return value is true if allcharacters of the string were parsed.</td>
+<tr class="a" valign=top><td class="a"><tt><b>string_to_int</b>(s<font color="#666666">: string</font>, base<font color="#666666">: int</font> = 0) -> <font color="#666666">int</font>, <font color="#666666">int</font></tt></td><td class="a">converts a string to an int given the base (2..36, e.g. 16 for hex, default is 10).returns 0 if no numeric data could be parsed (or overflow); second return value is true if allcharacters of the string were parsed (and no overflow).</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>string_to_float</b>(s<font color="#666666">: string</font>) -> <font color="#666666">float</font>, <font color="#666666">int</font></tt></td><td class="a">converts a string to a float. returns 0.0 if no numeric data could be parsed;second return value is true if all characters of the string were parsed.</td>
@@ -297,7 +300,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>pow</b>(a<font color="#666666">: float</font>, b<font color="#666666">: float</font>) -> <font color="#666666">float</font></tt></td><td class="a">a raised to the power of b</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>pow</b>(a<font color="#666666">: floatN</font>, b<font color="#666666">: float</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">vector elements raised to the power of b</td>
+<tr class="a" valign=top><td class="a"><tt><b>pow</b>(a<font color="#666666">: floatN</font>, b<font color="#666666">: float</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">struct elements raised to the power of b</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>log</b>(a<font color="#666666">: float</font>) -> <font color="#666666">float</font></tt></td><td class="a">natural logaritm of a</td>
@@ -324,25 +327,25 @@
 <tr class="a" valign=top><td class="a"><tt><b>int</b>(f<font color="#666666">: float</font>) -> <font color="#666666">int</font></tt></td><td class="a">converts a float to an int by dropping the fraction</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>int</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">converts a vector of floats to ints by dropping the fraction</td>
+<tr class="a" valign=top><td class="a"><tt><b>int</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">converts a struct of floats to ints by dropping the fraction</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>round</b>(f<font color="#666666">: float</font>) -> <font color="#666666">int</font></tt></td><td class="a">converts a float to the closest int</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>round</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">converts a vector of floats to the closest ints</td>
+<tr class="a" valign=top><td class="a"><tt><b>round</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">converts a struct of floats to the closest ints</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>fraction</b>(f<font color="#666666">: float</font>) -> <font color="#666666">float</font></tt></td><td class="a">returns the fractional part of a float: short for f - floor(f)</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>fraction</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">returns the fractional part of a vector of floats</td>
+<tr class="a" valign=top><td class="a"><tt><b>fraction</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">returns the fractional part of a struct of floats</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>float</b>(i<font color="#666666">: int</font>) -> <font color="#666666">float</font></tt></td><td class="a">converts an int to float</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>float</b>(v<font color="#666666">: intN</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">converts a vector of ints to floats</td>
+<tr class="a" valign=top><td class="a"><tt><b>float</b>(v<font color="#666666">: intN</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">converts a struct of ints to floats</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>sin</b>(angle<font color="#666666">: float</font>) -> <font color="#666666">float</font></tt></td><td class="a">the y coordinate of the normalized vector indicated by angle (in degrees)</td>
@@ -420,7 +423,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>rnd</b>(max<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">a random value [0..max).</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>rnd</b>(max<font color="#666666">: intN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">a random vector within the range of an input vector.</td>
+<tr class="a" valign=top><td class="a"><tt><b>rnd</b>(max<font color="#666666">: intN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">a random struct within the range of an input struct.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>rnd_float</b>() -> <font color="#666666">float</font></tt></td><td class="a">a random float [0..1)</td>
@@ -450,10 +453,10 @@
 <tr class="a" valign=top><td class="a"><tt><b>clamp</b>(x<font color="#666666">: float</font>, min<font color="#666666">: float</font>, max<font color="#666666">: float</font>) -> <font color="#666666">float</font></tt></td><td class="a">forces a float to be in the range between min and max (inclusive)</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>clamp</b>(x<font color="#666666">: intN</font>, min<font color="#666666">: intN</font>, max<font color="#666666">: intN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">forces an integer vector to be in the range between min and max (inclusive)</td>
+<tr class="a" valign=top><td class="a"><tt><b>clamp</b>(x<font color="#666666">: intN</font>, min<font color="#666666">: intN</font>, max<font color="#666666">: intN</font>) -> <font color="#666666">intN</font></tt></td><td class="a">forces an integer struct to be in the range between min and max (inclusive)</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>clamp</b>(x<font color="#666666">: floatN</font>, min<font color="#666666">: floatN</font>, max<font color="#666666">: floatN</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">forces a float vector to be in the range between min and max (inclusive)</td>
+<tr class="a" valign=top><td class="a"><tt><b>clamp</b>(x<font color="#666666">: floatN</font>, min<font color="#666666">: floatN</font>, max<font color="#666666">: floatN</font>) -> <font color="#666666">floatN</font></tt></td><td class="a">forces a float struct to be in the range between min and max (inclusive)</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>in_range</b>(x<font color="#666666">: int</font>, range<font color="#666666">: int</font>, bias<font color="#666666">: int</font> = 0) -> <font color="#666666">int</font></tt></td><td class="a">checks if an integer is &gt;= bias and &lt; bias + range. Bias defaults to 0.</td>
@@ -516,10 +519,10 @@
 <tr class="a" valign=top><td class="a"><tt><b>min</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">float</font></tt></td><td class="a">smallest component of a float vector.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>min</b>(v<font color="#666666">: [int]</font>) -> <font color="#666666">int</font></tt></td><td class="a">smallest component of a int vector, or INT_MAX if length 0.</td>
+<tr class="a" valign=top><td class="a"><tt><b>min</b>(v<font color="#666666">: [int]</font>) -> <font color="#666666">int</font></tt></td><td class="a">smallest component of a int vector, or INT64_MAX if length 0.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>min</b>(v<font color="#666666">: [float]</font>) -> <font color="#666666">float</font></tt></td><td class="a">smallest component of a float vector, or FLT_MAX if length 0.</td>
+<tr class="a" valign=top><td class="a"><tt><b>min</b>(v<font color="#666666">: [float]</font>) -> <font color="#666666">float</font></tt></td><td class="a">smallest component of a float vector, or DBL_MAX if length 0.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>max</b>(x<font color="#666666">: int</font>, y<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">largest of 2 integers.</td>
@@ -540,10 +543,10 @@
 <tr class="a" valign=top><td class="a"><tt><b>max</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">float</font></tt></td><td class="a">largest component of a float vector.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>max</b>(v<font color="#666666">: [int]</font>) -> <font color="#666666">int</font></tt></td><td class="a">largest component of a int vector, or INT_MIN if length 0.</td>
+<tr class="a" valign=top><td class="a"><tt><b>max</b>(v<font color="#666666">: [int]</font>) -> <font color="#666666">int</font></tt></td><td class="a">largest component of a int vector, or INT64_MIN if length 0.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>max</b>(v<font color="#666666">: [float]</font>) -> <font color="#666666">float</font></tt></td><td class="a">largest component of a float vector, or FLT_MIN if length 0.</td>
+<tr class="a" valign=top><td class="a"><tt><b>max</b>(v<font color="#666666">: [float]</font>) -> <font color="#666666">float</font></tt></td><td class="a">largest component of a float vector, or -DBL_MAX if length 0.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>popcount</b>(x<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">number of bits set in an integer</td>
@@ -594,10 +597,10 @@
 <tr class="a" valign=top><td class="a"><tt><b>hash</b>(x<font color="#666666">: float</font>) -> <font color="#666666">int</font></tt></td><td class="a">hashes a float value into a positive int</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>hash</b>(v<font color="#666666">: intN</font>) -> <font color="#666666">int</font></tt></td><td class="a">hashes a int vector into a positive int</td>
+<tr class="a" valign=top><td class="a"><tt><b>hash</b>(v<font color="#666666">: intN</font>) -> <font color="#666666">int</font></tt></td><td class="a">hashes a int struct into a positive int</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>hash</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">int</font></tt></td><td class="a">hashes a float vector into a positive int</td>
+<tr class="a" valign=top><td class="a"><tt><b>hash</b>(v<font color="#666666">: floatN</font>) -> <font color="#666666">int</font></tt></td><td class="a">hashes a float struct into a positive int</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>call_function_value</b>(x<font color="#666666">: function</font>)</tt></td><td class="a">calls a void / no args function value.. you shouldn't need to use this, it is a demonstration of how native code can call back into Lobster</td>
@@ -708,6 +711,9 @@
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>compile_run_file</b>(filename<font color="#666666">: string</font>, args<font color="#666666">: [string]</font>) -> <font color="#666666">string</font>, <font color="#666666">string?</font></tt></td><td class="a">same as compile_run_code(), only now you pass a filename.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>compile_run_c_code</b>(code<font color="#666666">: string</font>, input<font color="#666666">: string</font>) -> <font color="#666666">string?</font>, <font color="#666666">string?</font></tt></td><td class="a">compiles and runs C source code using the built-in C compiler (available in JIT mode only). the code must contain a main() function, which will be called. input must be a string, whose (mutable) contents are available to the C code thru input_buf() and input_len() (in bytes). additionally available: output_buf(ptr, len) to return a buffer allocated thru malloc/realloc as a string (ownership is transferred, do not free), and further malloc/realloc/free/memcpy/memmove/memset/strlen. all these are pre-declared. returns the output as a string (or nil if output_buf() was never called), plus an error string as second return value (nil if none). note the C code can also modify the input buffer in-place as a way to return data.</td>
 
 </tr>
 </table></td></tr>
@@ -947,6 +953,17 @@
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>matrix.translation</b>(trans<font color="#666666">: float3</font>) -> <font color="#666666">[float]</font></tt></td><td class="a"></td>
+
+</tr>
+</table></td></tr>
+<tr class="a" valign=top><td><h3>noise</h3></td></tr>
+<tr><td><table class="a" border=1 cellspacing=0 cellpadding=4><tr class="a" valign=top><td class="a"><tt><b>simplex</b>(pos<font color="#666666">: floatN</font>, octaves<font color="#666666">: int</font>, scale<font color="#666666">: float</font>, persistence<font color="#666666">: float</font>) -> <font color="#666666">float</font></tt></td><td class="a">returns a simplex noise value [-1..1] given a 2D/3D location, the number of octaves (try 6), a scale (try 0.01), and persistence from one octave to the next (try 0.5). This function is the same as calling fast_noise with simplex/fbm flags.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>simplex_raw</b>(pos<font color="#666666">: floatN</font>) -> <font color="#666666">float</font></tt></td><td class="a">returns a simplex noise value [-1..1] given a 2D/3D location</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>fast_noise</b>(pos<font color="#666666">: floatN</font>, octaves<font color="#666666">: int</font>, scale<font color="#666666">: float</font>, persistence<font color="#666666">: float</font>, noise_type<font color="#666666">: int</font>, fractal_type<font color="#666666">: int</font>) -> <font color="#666666">float</font></tt></td><td class="a">returns a noise value [-1..1] given a 2D/3Dlocation, the number of octaves (try 6), a scale (try 0.01), and persistence from one octave to the next (try 0.5). see noise.lobster for constants for the type params.</td>
 
 </tr>
 </table></td></tr>
