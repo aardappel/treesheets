@@ -1071,8 +1071,7 @@ struct TSFrame : wxFrame {
         auto Toggle = [&](const wxString &cfg, auto &var) {
             sys->cfg->Write(cfg, var = ce.IsChecked());
         };
-        auto Check = [&](const wxString &cfg) {
-            sys->cfg->Write(cfg, ce.IsChecked());
+        auto NeedsRestart = [&]() {
             SetStatus(_("change will take effect next run of TreeSheets"));
         };
         // Persist a radio menu item group whose ids start at `first`.
@@ -1164,8 +1163,14 @@ struct TSFrame : wxFrame {
                 break;
             }
 
-            case A_LEFTTABS: Check("lefttabs"); break;
-            case A_SINGLETRAY: Check("singletray"); break;
+            case A_LEFTTABS:
+                sys->cfg->Write("lefttabs", ce.IsChecked());
+                NeedsRestart();
+                break;
+            case A_SINGLETRAY:
+                Toggle("singletray", sys->singletray);
+                NeedsRestart();
+                break;
             case A_MAKEBAKS: Toggle("makebaks", sys->makebaks); break;
             case A_TOTRAY: Toggle("totray", sys->totray); break;
             case A_MINCLOSE: Toggle("minclose", sys->minclose); break;
@@ -1187,8 +1192,8 @@ struct TSFrame : wxFrame {
                 Refresh();
                 break;
             case A_FSWATCH:
-                Check("fswatch");
-                sys->fswatch = ce.IsChecked();
+                Toggle("fswatch", sys->fswatch);
+                NeedsRestart();
                 break;
             case A_AUTOEXPORT_HTML_NONE:
             case A_AUTOEXPORT_HTML_WITH_IMAGES:
