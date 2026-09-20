@@ -49,15 +49,14 @@
 
 > *Обычно* файл Шаблона *создаётся и обновляется разработчиком*.
 
-#### Создание
-Чтобы *создать* основной файл шаблона `/TS/translations/ts.pot`, находясь в каталоге `src/`, запустите `genpot.bat` или выполните команду:
+#### Создание и обновление
+Чтобы *создать* основной файл шаблона `/TS/translations/ts.pot` или *обновить* его (*после изменения исходников* в новой версии программы), выполните цель CMake `update-pot`:
 ```sh
-xgettext --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot tsframe.h document.h system.h wxtools.h
+cmake --build <каталог_сборки> --target update-pot
 ```
-#### Обновление
-Чтобы *обновить* файла шаблона (*после изменения исходников* в новой версии программы), находясь в каталоге `src/`, запустите `./pot_update.sh` или выполните команду:
+Либо, находясь в каталоге `src/`, выполните команду вручную:
 ```sh
-xgettext -j --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot tsframe.h document.h system.h wxtools.h
+xgettext --from-code=UTF-8 --keyword=_ --sort-output --no-location -o ../TS/translations/ts.pot tsframe.h document.h system.h wxtools.h
 ```
 
 ### 2.1 Создание файл перевода (po-файл)

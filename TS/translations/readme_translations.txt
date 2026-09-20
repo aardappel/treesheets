@@ -8,7 +8,8 @@ This generally follows the gettext standard, see e.g.
 http://www.labri.fr/perso/fleury/posts/programming/a-quick-gettext-tutorial.html
 
 To recompile the main template file (extracting strings from the source code),
-run src/genpot.bat or similar.
+build the CMake target "update-pot":
+  cmake --build <builddir> --target update-pot
 
 To create a translation for a new language, run (inside TS/translations):
 msginit --input ts.pot --locale=lang --output=lang/ts.po
