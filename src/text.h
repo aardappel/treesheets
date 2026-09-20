@@ -98,13 +98,69 @@ struct Text {
         return str;
     }
 
+    static bool IsRichFormat(int format) {
+        return format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
+               format == A_EXPHTMLTE;
+    }
+
+    // The text range [from, to) as XML (<run> elements) or HTML (<span> elements), escaped.
+    // Text with the base style is left unmarked; the cell's own markup covers that.
+    wxString RichMarkup(int from, int to, int format) const {
+        wxString out;
+        ForEachSegment(from, to - from, [&](int s, int l, int sb, bool hascolor, uint color) {
+            auto seg = htmlify(t.Mid(s, l));
+            if (format == A_EXPXML) {
+                if (sb == stylebits && !hascolor) {
+                    out += seg;
+                    return;
+                }
+                out += wxString::Format("<run stylebits=\"%d\"", sb);
+                if (hascolor) { out += wxString::Format(" colorfg=\"0x%06X\"", color); }
+                out += ">" + seg + "</run>";
+                return;
+            }
+            // In the HTML cell markup only the differences to the cell's style are needed, except
+            // for text decorations, which can't be undone by a nested element, so Cell::ToText
+            // leaves them to us for cells with runs.
+            wxString style;
+            if (((sb ^ stylebits) & STYLE_BOLD) != 0) {
+                style += (sb & STYLE_BOLD) != 0 ? "font-weight: bold;" : "font-weight: normal;";
+            }
+            if (((sb ^ stylebits) & STYLE_ITALIC) != 0) {
+                style += (sb & STYLE_ITALIC) != 0 ? "font-style: italic;" : "font-style: normal;";
+            }
+            if (((sb ^ stylebits) & STYLE_FIXED) != 0) {
+                style += "font-family: '";
+                style += (sb & STYLE_FIXED) != 0 ? sys->defaultfixedfont + "', monospace;"
+                                                 : sys->defaultfont + "', sans-serif;";
+            }
+            if ((sb & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) != 0) {
+                style += "text-decoration:";
+                style += (sb & STYLE_UNDERLINE) != 0 ? " underline" : "";
+                style += (sb & STYLE_STRIKETHRU) != 0 ? " line-through" : "";
+                style += ";";
+            }
+            if (hascolor) { style += wxString::Format("color: #%06X;", SwapColor(color)); }
+            out += style.IsEmpty() ? seg : "<span style=\"" + style + "\">" + seg + "</span>";
+        });
+        return out;
+    }
+
     wxString ToText(int indent, const Selection &s, int format) const {
-        wxString str = s.cursor != s.cursorend ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
-        if (format == A_EXPTEXT && image != nullptr) str.Append(" ");
-        if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
-            format == A_EXPHTMLTE || format == A_EXPHTMLO || format == A_EXPHTMLB) {
-            str = htmlify(str);
+        auto range = s.cursor != s.cursorend;
+        wxString str;
+        if (!runs.empty() && IsRichFormat(format)) {
+            auto len = static_cast<int>(t.Len());
+            str = range ? RichMarkup(max(s.cursor, 0), min(s.cursorend, len), format)
+                        : RichMarkup(0, len, format);
+        } else {
+            str = range ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
+            if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
+                format == A_EXPHTMLTE || format == A_EXPHTMLO || format == A_EXPHTMLB) {
+                str = htmlify(str);
+            }
         }
+        if (format == A_EXPTEXT && image != nullptr) str.Append(" ");
         if (format == A_EXPHTMLTI && image != nullptr) {
             str.Prepend("<img src=\"data:" + imagetypes.at(image->type).second + ";base64," +
                         wxBase64Encode(image->data.data(), image->data.size()) + "\" />");
@@ -629,12 +685,29 @@ struct Text {
         }
     }
 
-    auto Insert(Document *doc, const wxString &ins, Selection &s, bool keeprelsize) {
+    // After inserting the text of `src` at pos, gives it the styling it had there.
+    void OverlayRuns(int pos, const Text &src) {
+        auto len = static_cast<int>(t.Len());
+        src.ForEachSegment(0, static_cast<int>(src.t.Len()),
+                           [&](int s, int l, int sb, bool hascolor, uint color) {
+            runs.Modify(pos + s, pos + s + l, len, stylebits, [&](TextRun &r) {
+                r.stylebits = sb;
+                r.hascolor = hascolor;
+                r.color = color;
+            });
+        });
+        CheckRuns();
+    }
+
+    // `src`: the Text that `ins` was taken from, if its runs should come along.
+    auto Insert(Document *doc, const wxString &ins, Selection &s, bool keeprelsize,
+                const Text *src = nullptr) {
         auto prevl = t.Len();
         if (!s.TextEdit()) { Clear(doc, s); }
         RangeSelRemove(s);
         if (prevl == 0U && !keeprelsize) { SetRelSize(s); }
         InsertText(s.cursor, ins);
+        if (src != nullptr && !src->runs.empty() && src->t == ins) { OverlayRuns(s.cursor, *src); }
         s.cursor = s.cursorend = s.cursor + static_cast<int>(ins.Len());
     }
 
