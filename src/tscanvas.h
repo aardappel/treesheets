@@ -30,6 +30,8 @@ struct TSCanvas : public wxScrolledCanvas {
         Bind(wxEVT_LEFT_DCLICK, &TSCanvas::OnLeftDoubleClick, this);
         Bind(wxEVT_CHAR, &TSCanvas::OnChar, this);
         Bind(wxEVT_KEY_DOWN, &TSCanvas::OnKeyDown, this);
+        Bind(wxEVT_KEY_UP, &TSCanvas::OnKeyUp, this);
+        Bind(wxEVT_KILL_FOCUS, &TSCanvas::OnKillFocus, this);
         Bind(wxEVT_CONTEXT_MENU, &TSCanvas::OnContextMenuClick, this);
         Bind(wxEVT_SIZE, &TSCanvas::OnSize, this);
         Bind(wxEVT_SCROLL_THUMBTRACK, &TSCanvas::OnScroll, this);
@@ -140,6 +142,17 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }
+    // Text size / column width changes made with Shift/Alt+wheel skip relayouting until the
+    // modifier is released.
+    void OnKeyUp(wxKeyEvent &ke) {
+        int code = ke.GetKeyCode();
+        if (code == WXK_SHIFT || code == WXK_ALT) { doc->FlushPendingLayout(); }
+        ke.Skip();
+    }
+    void OnKillFocus(wxFocusEvent &fe) {
+        if (doc) { doc->FlushPendingLayout(); }
+        fe.Skip();
+    }
     void OnChar(wxKeyEvent &ce) {
         /*
         if (sys->insidefiledialog)
@@ -173,7 +186,9 @@ struct TSCanvas : public wxScrolledCanvas {
             int steps = mousewheelaccum / me.GetWheelDelta();
             if (steps == 0) { return; }
             mousewheelaccum -= steps * me.GetWheelDelta();
-            sys->frame->SetStatus(doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown()));
+            bool deferlayout = me.AltDown() || me.ShiftDown();
+            sys->frame->SetStatus(
+                doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown(), true, deferlayout));
         } else if (me.GetWheelAxis() != 0U) {
             CursorScroll(me.GetWheelRotation() * g_scrollratewheel, 0);
         } else {
