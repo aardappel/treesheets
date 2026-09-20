@@ -39,6 +39,13 @@ struct CellGeom {
 
 struct Document {
     TSCanvas *canvas {nullptr};
+    // Set while Wheel(..., deferlayout = true) changed sizes/widths but left the cached cell
+    // geometry untouched (so paints and hover stay consistent); UpdateLayout() resets it.
+    bool layoutpending {false};
+    // Identifies the undo item added by the current deferred burst, so that further steps of the
+    // burst (which the user can't see individually) don't each add another one.
+    Cell *pendingundocell {nullptr};
+    size_t pendingundosize {0};
     unique_ptr<Cell> root {nullptr};
     Selection prev;
     Selection hover;
@@ -600,32 +607,63 @@ struct Document {
     static wxString NoThin() { return _("This operation doesn't work on thin selections."); }
     static wxString NoGrid() { return _("This operation requires a cell that contains a grid."); }
 
-    wxString Wheel(int dir, bool alt, bool ctrl, bool shift, bool hierarchical = true) {
+    void AddDeferredUndo(Cell *c) {
+        if (layoutpending && pendingundocell == c && pendingundosize == undolist.size()) { return; }
+        AddUndo(c);  // not Cell::AddUndo(), which would zero the cached geometry
+        pendingundocell = c;
+        pendingundosize = undolist.size();
+    }
+
+    // Performs the relayout and redraw that Wheel(..., deferlayout = true) postponed.
+    void FlushPendingLayout() {
+        if (!layoutpending) { return; }
+        UpdateLayout();  // also clears layoutpending and resets the stale geometry
+        ScrollIfSelectionOutOfView();
+        canvas->Refresh();
+        sys->frame->UpdateStatus(selected, false);
+    }
+
+    wxString Wheel(int dir, bool alt, bool ctrl, bool shift, bool hierarchical = true,
+                   bool deferlayout = false) {
         if (dir == 0) { return wxEmptyString; }
         if (alt) {
             if (selected.grid == nullptr) { return NoSel(); }
             if (selected.xs > 0) {
                 if (!LastUndoSameCellStructure(selected.grid->cell)) {
-                    selected.grid->cell->AddUndo(this);
+                    if (deferlayout) {
+                        AddDeferredUndo(selected.grid->cell);
+                    } else {
+                        selected.grid->cell->AddUndo(this);
+                    }
                 }
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
-                selected.grid->cell->ResetLayout();
-                selected.grid->cell->ResetChildren();
-                UpdateLayout();
-                ScrollIfSelectionOutOfView();
-                canvas->Refresh();
+                if (deferlayout) {
+                    layoutpending = true;
+                } else {
+                    selected.grid->cell->ResetLayout();
+                    selected.grid->cell->ResetChildren();
+                    UpdateLayout();
+                    ScrollIfSelectionOutOfView();
+                    canvas->Refresh();
+                }
                 sys->frame->UpdateStatus(selected, false);
                 return dir > 0 ? _("Column width increased.") : _("Column width decreased.");
             }
             return _("nothing to resize");
         } else if (shift) {
             if (selected.grid == nullptr) { return NoSel(); }
-            selected.grid->cell->AddUndo(this);
-            selected.grid->ResetChildren();
-            selected.grid->RelSize(-dir, selected, pathscalebias);
-            UpdateLayout();
-            ScrollIfSelectionOutOfView();
-            canvas->Refresh();
+            if (deferlayout) {
+                AddDeferredUndo(selected.grid->cell);
+                selected.grid->RelSize(-dir, selected, pathscalebias);
+                layoutpending = true;
+            } else {
+                selected.grid->cell->AddUndo(this);
+                selected.grid->ResetChildren();
+                selected.grid->RelSize(-dir, selected, pathscalebias);
+                UpdateLayout();
+                ScrollIfSelectionOutOfView();
+                canvas->Refresh();
+            }
             sys->frame->UpdateStatus(selected, false);
             return dir > 0 ? _("Text size increased.") : _("Text size decreased.");
         } else if (ctrl) {
@@ -709,6 +747,11 @@ struct Document {
 
     void UpdateLayout() {
         if (!root) return;
+        if (layoutpending) {
+            // Deferred Wheel() changes left the cached geometry stale (deliberately not reset).
+            layoutpending = false;
+            root->ResetChildren();
+        }
         {
             wxInfoDC dc(canvas);
             Layout(dc);
