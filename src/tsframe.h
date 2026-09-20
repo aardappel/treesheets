@@ -333,9 +333,12 @@ struct TSFrame : wxFrame {
             auto *stmenu = new wxMenu();
             MyAppend(stmenu, wxID_BOLD, _("Toggle cell &BOLD") + "\tCTRL+B", "", wxITEM_CHECK);
             MyAppend(stmenu, wxID_ITALIC, _("Toggle cell &ITALIC") + "\tCTRL+I", "", wxITEM_CHECK);
-            MyAppend(stmenu, A_TT, _("Toggle cell &typewriter") + "\tCTRL+ALT+T");
-            MyAppend(stmenu, wxID_UNDERLINE, _("Toggle cell &underlined") + "\tCTRL+U");
-            MyAppend(stmenu, wxID_STRIKETHROUGH, _("Toggle cell &strikethrough") + "\tCTRL+T");
+            MyAppend(stmenu, A_TT, _("Toggle cell &typewriter") + "\tCTRL+ALT+T", "",
+                     wxITEM_CHECK);
+            MyAppend(stmenu, wxID_UNDERLINE, _("Toggle cell &underlined") + "\tCTRL+U", "",
+                     wxITEM_CHECK);
+            MyAppend(stmenu, wxID_STRIKETHROUGH, _("Toggle cell &strikethrough") + "\tCTRL+T",
+                     "", wxITEM_CHECK);
             stmenu->AppendSeparator();
             MyAppend(stmenu, A_RESETSTYLE, _("&Reset text styles") + "\tCTRL+SHIFT+R");
             MyAppend(stmenu, A_RESETCOLOR, _("Reset &colors") + "\tCTRL+SHIFT+C");
@@ -846,6 +849,9 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_BOLD);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_ITALIC);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, A_TT);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_UNDERLINE);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_STRIKETHROUGH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
         Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
@@ -1015,12 +1021,18 @@ struct TSFrame : wxFrame {
 
     // event handling functions
 
-    // Shows whether the selected text is bold/italic in the check state of the menu items.
+    // Shows whether the selected text has a style in the check state of its menu item.
     void OnUpdateStyle(wxUpdateUIEvent &ue) {
         auto *canvas = GetCurrentTab();
-        ue.Check(canvas != nullptr &&
-                 canvas->doc->SelectionHasStyle(ue.GetId() == wxID_BOLD ? STYLE_BOLD
-                                                                        : STYLE_ITALIC));
+        auto bit = 0;
+        switch (ue.GetId()) {
+            case wxID_BOLD: bit = STYLE_BOLD; break;
+            case wxID_ITALIC: bit = STYLE_ITALIC; break;
+            case A_TT: bit = STYLE_FIXED; break;
+            case wxID_UNDERLINE: bit = STYLE_UNDERLINE; break;
+            case wxID_STRIKETHROUGH: bit = STYLE_STRIKETHRU; break;
+        }
+        ue.Check(canvas != nullptr && bit != 0 && canvas->doc->SelectionHasStyle(bit));
     }
 
     void OnMenu(wxCommandEvent &ce) {
