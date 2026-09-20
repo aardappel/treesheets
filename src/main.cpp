@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "textruns.h"
 
-static const auto TS_VERSION = 26;
+static const auto TS_VERSION = 27;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
 static const auto g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -289,6 +289,9 @@ enum {
     STYLE_UNDERLINE = 8,
     STYLE_STRIKETHRU = 16
 };
+
+// Flag in the saved color of a text run: it has its own color instead of the cell's text color.
+static const uint TS_RUN_HASCOLOR = 0x1000000;
 
 enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 
