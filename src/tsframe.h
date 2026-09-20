@@ -1020,11 +1020,11 @@ struct TSFrame : wxFrame {
     // event handling functions
 
     void OnMenu(wxCommandEvent &ce) {
-        wxTextCtrl *tc = nullptr;
         auto *canvas = GetCurrentTab();
         if (canvas == nullptr) { return; }
-        if ((tc = filter) != nullptr && filter == wxWindow::FindFocus() ||
-            (tc = replaces) != nullptr && replaces == wxWindow::FindFocus()) {
+        auto *focus = wxWindow::FindFocus();
+        if (focus != nullptr && (focus == filter || focus == replaces)) {
+            auto *tc = static_cast<wxTextCtrl *>(focus);
             long from = 0;
             long to = 0;
             tc->GetSelection(&from, &to);
@@ -1067,9 +1067,17 @@ struct TSFrame : wxFrame {
                 #endif
             }
         }
+        // Persist a checkbox menu item in the config, and optionally in a system variable.
+        auto Toggle = [&](const wxString &cfg, auto &var) {
+            sys->cfg->Write(cfg, var = ce.IsChecked());
+        };
         auto Check = [&](const wxString &cfg) {
             sys->cfg->Write(cfg, ce.IsChecked());
             SetStatus(_("change will take effect next run of TreeSheets"));
+        };
+        // Persist a radio menu item group whose ids start at `first`.
+        auto Choose = [&](const wxString &cfg, auto &var, int first) {
+            sys->cfg->Write(cfg, static_cast<long>(var = ce.GetId() - first));
         };
         switch (ce.GetId()) {
             case A_NOP: break;
@@ -1097,11 +1105,7 @@ struct TSFrame : wxFrame {
                 if (!IsFullScreen()) {
                     sys->cfg->Write("showtoolbar", sys->showtoolbar = ce.IsChecked());
                     for (const auto &name : GetToolbarPaneNames()) {
-                        if (sys->showtoolbar) {
-                            aui.GetPane(name).Show();
-                        } else {
-                            aui.GetPane(name).Hide();
-                        }
+                        aui.GetPane(name).Show(sys->showtoolbar);
                     }
                     aui.Update();
                 }
@@ -1162,24 +1166,24 @@ struct TSFrame : wxFrame {
 
             case A_LEFTTABS: Check("lefttabs"); break;
             case A_SINGLETRAY: Check("singletray"); break;
-            case A_MAKEBAKS: sys->cfg->Write("makebaks", sys->makebaks = ce.IsChecked()); break;
-            case A_TOTRAY: sys->cfg->Write("totray", sys->totray = ce.IsChecked()); break;
-            case A_MINCLOSE: sys->cfg->Write("minclose", sys->minclose = ce.IsChecked()); break;
-            case A_STARTMINIMIZED:
-                sys->cfg->Write("startminimized", sys->startminimized = ce.IsChecked());
-                break;
-            case A_ZOOMSCR: sys->cfg->Write("zoomscroll", sys->zoomscroll = ce.IsChecked()); break;
-            case A_THINSELC: sys->cfg->Write("thinselc", sys->thinselc = ce.IsChecked()); break;
+            case A_MAKEBAKS: Toggle("makebaks", sys->makebaks); break;
+            case A_TOTRAY: Toggle("totray", sys->totray); break;
+            case A_MINCLOSE: Toggle("minclose", sys->minclose); break;
+            case A_STARTMINIMIZED: Toggle("startminimized", sys->startminimized); break;
+            case A_ZOOMSCR: Toggle("zoomscroll", sys->zoomscroll); break;
+            case A_THINSELC: Toggle("thinselc", sys->thinselc); break;
             case A_HOVERZOOM:
-                sys->cfg->Write("hoverzoom", sys->hoverzoom = ce.IsChecked());
-                if (!sys->hoverzoom) loop(i, notebook->GetPageCount()) {
-                        auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
-                        if (!canvas->doc->selected.TextEdit()) canvas->SetCursor(wxNullCursor);
+                Toggle("hoverzoom", sys->hoverzoom);
+                if (!sys->hoverzoom) {
+                    loop(i, notebook->GetPageCount()) {
+                        auto *tab = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
+                        if (!tab->doc->selected.TextEdit()) tab->SetCursor(wxNullCursor);
                     }
+                }
                 break;
-            case A_AUTOSAVE: sys->cfg->Write("autosave", sys->autosave = ce.IsChecked()); break;
+            case A_AUTOSAVE: Toggle("autosave", sys->autosave); break;
             case A_CENTERED:
-                sys->cfg->Write("centered", sys->centered = ce.IsChecked());
+                Toggle("centered", sys->centered);
                 Refresh();
                 break;
             case A_FSWATCH:
@@ -1189,31 +1193,27 @@ struct TSFrame : wxFrame {
             case A_AUTOEXPORT_HTML_NONE:
             case A_AUTOEXPORT_HTML_WITH_IMAGES:
             case A_AUTOEXPORT_HTML_WITHOUT_IMAGES:
-                sys->cfg->Write(
-                    "autohtmlexport",
-                    static_cast<long>(sys->autohtmlexport = ce.GetId() - A_AUTOEXPORT_HTML_NONE));
+                Choose("autohtmlexport", sys->autohtmlexport, A_AUTOEXPORT_HTML_NONE);
                 break;
             #ifdef ENABLE_WXPDFDOC
                 case A_AUTOEXPORT_PDF:
-                    sys->cfg->Write("autopdfexport", sys->autopdfexport = ce.IsChecked());
+                    Toggle("autopdfexport", sys->autopdfexport);
                     break;
             #endif
             case A_DEFAULTIMAGE_PNG:
             case A_DEFAULTIMAGE_JPEG:
-                sys->cfg->Write(
-                    "defaultimageformat",
-                    static_cast<long>(sys->defaultimageformat = ce.GetId() - A_DEFAULTIMAGE_PNG));
+                Choose("defaultimageformat", sys->defaultimageformat, A_DEFAULTIMAGE_PNG);
                 break;
             case A_FASTRENDER:
-                sys->cfg->Write("fastrender", sys->fastrender = ce.IsChecked());
+                Toggle("fastrender", sys->fastrender);
                 Refresh();
                 break;
             case A_INNERBORDERCOLOR:
-                sys->cfg->Write("innerbordercolor", sys->innerbordercolor = ce.IsChecked());
+                Toggle("innerbordercolor", sys->innerbordercolor);
                 Refresh();
                 break;
             case A_INVERTRENDER:
-                sys->cfg->Write("followdarkmode", sys->followdarkmode = ce.IsChecked());
+                Toggle("followdarkmode", sys->followdarkmode);
                 sys->colormask = (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark())
                                      ? 0x00FFFFFF
                                      : 0;
@@ -1232,7 +1232,7 @@ struct TSFrame : wxFrame {
                 }
                 break;
             case A_RESTRICTVIEW:
-                sys->cfg->Write("restrictview", sys->restrictview = ce.IsChecked());
+                Toggle("restrictview", sys->restrictview);
                 break;
             case wxID_REPLACE:
                 if (replaces != nullptr) {
