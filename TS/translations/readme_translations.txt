@@ -21,5 +21,6 @@ To merge the translation for an existing language with the strings from the
 recompiled main template file, run lang/merge.bat, replacing "lang" as
 described above.
 
-To re-compile the language definitions, run lang/compile.bat, replacing "lang"
-as described above.
+To re-compile the language definitions (all languages at once), build the
+CMake target "update-mo":
+  cmake --build <builddir> --target update-mo

@@ -352,6 +352,24 @@ if(XGETTEXT_EXECUTABLE)
     )
 endif()
 
+# Target to recompile the translations (.po) into the binary form used by the program (.mo):
+#   cmake --build <builddir> --target update-mo
+find_program(MSGFMT_EXECUTABLE msgfmt)
+if(MSGFMT_EXECUTABLE)
+    file(GLOB po_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations/*/ts.po")
+    set(mo_commands)
+    foreach(po_file IN LISTS po_files)
+        cmake_path(REPLACE_EXTENSION po_file LAST_ONLY ".mo" OUTPUT_VARIABLE mo_file)
+        list(APPEND mo_commands COMMAND "${MSGFMT_EXECUTABLE}" -o "${mo_file}" "${po_file}")
+    endforeach()
+    add_custom_target(
+        update-mo
+        ${mo_commands}
+        COMMENT "Compiling TS/translations/*/ts.po into ts.mo files"
+        VERBATIM
+    )
+endif()
+
 # Install translations to correct platform-specific path.
 # See: https://docs.wxwidgets.org/trunk/overview_i18n.html#overview_i18n_mofiles
 file(GLOB mo_files "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations/*/ts.mo")
