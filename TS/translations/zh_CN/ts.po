@@ -1528,9 +1528,6 @@ msgstr "已放大。"
 msgid "Zoomed out."
 msgstr "已缩小。"
 
-msgid "change will take effect next run of TreeSheets"
-msgstr "更改将在下次运行 TreeSheets 时生效"
-
 msgid "changes the orientation of a grid"
 msgstr "更改网格的方向"
 

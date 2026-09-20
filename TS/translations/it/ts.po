@@ -1445,9 +1445,6 @@ msgstr "Ingrandito."
 msgid "Zoomed out."
 msgstr "Rimpicciolito"
 
-msgid "change will take effect next run of TreeSheets"
-msgstr "il cambiamento avrà effetto la prossima esecuzione di TreeSheets"
-
 msgid "changes the orientation of a grid"
 msgstr "cambia l'orientamento di una griglia"
 

@@ -1788,9 +1788,6 @@ msgstr "ズームインしました。"
 msgid "Zoomed out."
 msgstr "ズームアウトしました。"
 
-msgid "change will take effect next run of TreeSheets"
-msgstr "変更は次回の TreeSheets 起動時に有効になります"
-
 msgid "changes the orientation of a grid"
 msgstr "グリッドの向きを変更します"
 

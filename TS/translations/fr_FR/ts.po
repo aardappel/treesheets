@@ -1456,10 +1456,6 @@ msgstr "Zoom avant."
 msgid "Zoomed out."
 msgstr "Zoom arrière."
 
-msgid "change will take effect next run of TreeSheets"
-msgstr ""
-"le changement prendra effet lors de la prochaine exécution de TreeSheets"
-
 msgid "changes the orientation of a grid"
 msgstr "change l'orientation d'une grille"
 

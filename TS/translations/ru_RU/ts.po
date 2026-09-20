@@ -1885,9 +1885,6 @@ msgid "Zoomed out."
 msgstr "Уменьшено."
 
 # Сообщение (после действия или события)
-msgid "change will take effect next run of TreeSheets"
-msgstr "изменения вступят в силу при следующем запуске TreeSheets"
-
 # комментарий к п. Меню
 msgid "changes the orientation of a grid"
 msgstr "изменение ориентации сетки"
