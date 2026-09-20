@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-23 09:32+0200\n"
+"POT-Creation-Date: 2026-09-20 10:31+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -60,6 +60,9 @@ msgstr "複製為點陣圖(&C)"
 msgid "&Data"
 msgstr "資料(&D)"
 
+msgid "&Decrease font size"
+msgstr "縮小文字大小(&D)"
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "縮小文字大小（Shift + 滑鼠滾輪）(&D)"
 
@@ -102,6 +105,9 @@ msgstr "圖片(&I)..."
 msgid "&Images"
 msgstr "圖片(&I)"
 
+msgid "&Increase font size"
+msgstr "放大文字大小(&I)"
+
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "放大文字大小（Shift + 滑鼠滾輪）(&I)"
 
@@ -132,6 +138,9 @@ msgstr "操作(&O)"
 msgid "&Options"
 msgstr "選項(&O)"
 
+msgid "&PDF..."
+msgstr "&PDF..."
+
 msgid "&Paste"
 msgstr "貼上(&P)"
 
@@ -158,6 +167,9 @@ msgstr "取代(&R)"
 
 msgid "&Reset Scale (display only)"
 msgstr "重設縮放（僅顯示）(&R)"
+
+msgid "&Reset font size"
+msgstr "重設文字大小(&R)"
 
 msgid "&Reset text sizes"
 msgstr "重設文字大小(&R)"
@@ -255,6 +267,9 @@ msgstr "將 NxN 網格加入選取的儲存格"
 msgid "Adds a grid to the selected cell"
 msgstr "將網格加入選取的儲存格"
 
+msgid "Also colorize the inner grid border"
+msgstr "同時為內部網格框線著色"
+
 msgid "Apply last border color"
 msgstr "套用上次的框線色彩"
 
@@ -269,6 +284,9 @@ msgstr "至少有一個檔案無法開啟。"
 
 msgid "Autoexport to HTML"
 msgstr "自動匯出為 HTML"
+
+msgid "Autoexport to PDF"
+msgstr "自動匯出為 PDF"
 
 msgid "Autoreload documents"
 msgstr "自動重新載入文件"
@@ -327,9 +345,7 @@ msgstr "只能貼上或拖放一個檔案。"
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
-msgstr ""
-"無法排序：請進行 1xN 選取以指定排序欄位"
-"及受影響的列"
+msgstr "無法排序：請進行 1xN 選取以指定排序欄位及受影響的列"
 
 msgid "Cancel"
 msgstr "取消"
@@ -344,8 +360,7 @@ msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
 "or use Flatten)."
 msgstr ""
-"無法匯出非扁平化的網格（請將檢視縮放至目標網格，"
-"或使用「扁平化」功能）。"
+"無法匯出非扁平化的網格（請將檢視縮放至目標網格，或使用「扁平化」功能）。"
 
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "無法在階層中上移此儲存格。"
@@ -368,16 +383,14 @@ msgstr "變更語言..."
 msgid ""
 "Change the image(s) scale to match DPI of the current display. Applies to "
 "all uses of this image."
-msgstr ""
-"調整圖片縮放以符合目前顯示器的 DPI。"
-"此操作會套用到該圖片的所有使用處。"
+msgstr "調整圖片縮放以符合目前顯示器的 DPI。此操作會套用到該圖片的所有使用處。"
 
 msgid ""
 "Change the image(s) size if it is too big or too small, by changing the size "
 "shown on screen. Applies to all uses of this image."
 msgstr ""
-"調整畫面上的顯示尺寸，讓過大或過小的圖片更合適。"
-"此操作會套用到該圖片的所有使用處。"
+"調整畫面上的顯示尺寸，讓過大或過小的圖片更合適。此操作會套用到該圖片的所有使"
+"用處。"
 
 msgid ""
 "Change the image(s) size if it is too big, by reducing the amount of pixels"
@@ -394,6 +407,9 @@ msgstr "選擇要寫入的 CSV 檔案"
 
 msgid "Choose HTML file to write"
 msgstr "選擇要寫入的 HTML 檔案"
+
+msgid "Choose PDF file to write"
+msgstr "選擇要寫入的 PDF 檔案"
 
 msgid "Choose PNG file to write"
 msgstr "選擇要寫入的 PNG 檔案"
@@ -425,6 +441,9 @@ msgstr "關閉目前文件"
 msgid "Collapse Ce&lls"
 msgstr "摺疊儲存格(&L)"
 
+msgid "Colorize inner grid border"
+msgstr "為內部網格框線著色"
+
 msgid "Column width decreased."
 msgstr "已縮減欄寬。"
 
@@ -438,8 +457,8 @@ msgid ""
 "Convert an NxN grid with repeating elements per column into an 1xN grid with "
 "hierarchy, useful to convert data from spreadsheets"
 msgstr ""
-"將每欄包含重複元素的 NxN 網格轉換為帶有階層結構的 1xN 網格，"
-"適合轉換試算表資料"
+"將每欄包含重複元素的 NxN 網格轉換為帶有階層結構的 1xN 網格，適合轉換試算表資"
+"料"
 
 msgid "Copy (CTRL+c)"
 msgstr "複製（Ctrl + C）"
@@ -504,6 +523,12 @@ msgstr "預設欄寬"
 msgid "Default column width..."
 msgstr "預設欄寬..."
 
+msgid "Default format when image is pasted from clipboard or dropped"
+msgstr "從剪貼簿貼上或拖放圖片時的預設格式"
+
+msgid "Default image format"
+msgstr "預設圖片格式"
+
 msgid "Delete Before"
 msgstr "刪除前方內容"
 
@@ -562,11 +587,17 @@ msgstr "行尾"
 msgid "End of text"
 msgstr "文末"
 
+msgid "English"
+msgstr "English"
+
 msgid "Enter/exit text edit mode"
 msgstr "進入/離開文字編輯模式"
 
 msgid "Error exporting file!"
 msgstr "匯出檔案時發生錯誤！"
+
+msgid "Error exporting to PDF file!"
+msgstr "匯出為 PDF 檔案時發生錯誤！"
 
 msgid "Error exporting to SVG file!"
 msgstr "匯出為 SVG 檔案時發生錯誤！"
@@ -610,8 +641,8 @@ msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
 "works on grids with no sub-grids (use the Flatten operation first if need be)"
 msgstr ""
-"將目前檢視匯出為 CSV。適用於試算表與資料庫。"
-"僅適用於無子網格的網格（如有需要請先使用「扁平化」操作）"
+"將目前檢視匯出為 CSV。適用於試算表與資料庫。僅適用於無子網格的網格（如有需要"
+"請先使用「扁平化」操作）"
 
 msgid "Export the current view as HTML as nested bullet points."
 msgstr "將目前檢視匯出為巢狀項目符號的 HTML。"
@@ -619,16 +650,12 @@ msgstr "將目前檢視匯出為巢狀項目符號的 HTML。"
 msgid ""
 "Export the current view as HTML as nested headers, suitable for importing "
 "into Word's outline mode"
-msgstr ""
-"將目前檢視匯出為巢狀標題的 HTML，"
-"適合匯入 Word 的大綱模式"
+msgstr "將目前檢視匯出為巢狀標題的 HTML，適合匯入 Word 的大綱模式"
 
 msgid ""
 "Export the current view as HTML using nested tables, that will look somewhat "
 "like the TreeSheet"
-msgstr ""
-"使用巢狀表格將目前檢視匯出為 HTML，"
-"外觀會接近 TreeSheet 的呈現方式"
+msgstr "使用巢狀表格將目前檢視匯出為 HTML，外觀會接近 TreeSheet 的呈現方式"
 
 msgid ""
 "Export the current view as XML (which can also be reimported without losing "
@@ -639,16 +666,19 @@ msgid ""
 "Export the current view as an image. Useful for faithful renderings of the "
 "TreeSheet, and programs that don't accept any of the above options"
 msgstr ""
-"將目前檢視匯出為圖片。適合忠實呈現 TreeSheet 的內容，"
-"也適用於不接受上述任何選項的程式"
+"將目前檢視匯出為圖片。適合忠實呈現 TreeSheet 的內容，也適用於不接受上述任何選"
+"項的程式"
 
 msgid ""
 "Export the current view as tree structured text, using spaces for each "
 "indentation level. Suitable for importing into mindmanagers and general text "
 "programs"
 msgstr ""
-"將目前檢視匯出為樹狀結構文字，每個縮排層級使用空格。"
-"適合匯入心智圖軟體及一般文字程式"
+"將目前檢視匯出為樹狀結構文字，每個縮排層級使用空格。適合匯入心智圖軟體及一般"
+"文字程式"
+
+msgid "Export the current view to a PDF file."
+msgstr "將目前檢視匯出為 PDF 檔案。"
 
 msgid "Export the current view to a SVG vector file."
 msgstr "將目前檢視匯出為 SVG 向量檔案。"
@@ -661,9 +691,7 @@ msgstr "儲存文件時同時匯出 HTML 檔案至原始 TreeSheets 檔案旁"
 msgid ""
 "Export to a HTML file with exported images alongside the original TreeSheets "
 "file when document is saved"
-msgstr ""
-"儲存文件時同時匯出含圖片的 HTML 檔案"
-"至原始 TreeSheets 檔案旁"
+msgstr "儲存文件時同時匯出含圖片的 HTML 檔案至原始 TreeSheets 檔案旁"
 
 msgid "Export with images"
 msgstr "匯出（含圖片）"
@@ -745,9 +773,6 @@ msgstr "檔案版本較新。"
 msgid "Filter"
 msgstr "篩選"
 
-msgid "Filter by the same cell color"
-msgstr "依相同儲存格色彩篩選"
-
 msgid "Find and replace in document"
 msgstr "在文件中尋找並取代"
 
@@ -822,6 +847,9 @@ msgstr "水平版面配置搭配網格樣式繪製"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "水平版面配置搭配線條樣式繪製"
 
+msgid "Hover zoom"
+msgstr "游標懸停縮放"
+
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "頁面寬度應為多少像素？（輸入 0 表示自動調整）"
 
@@ -883,6 +911,9 @@ msgid ""
 "It seems that you are about to paste or drop a TreeSheets file. What would "
 "you like to do?"
 msgstr "偵測到即將貼上或拖放 TreeSheets 檔案。請問要如何處理？"
+
+msgid "JPEG"
+msgstr "JPEG"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 檔案已毀損！"
@@ -1106,6 +1137,9 @@ msgstr "使用此檔案類型的預設應用程式，開啟選取儲存格中的
 msgid "Operation reference"
 msgstr "操作參考"
 
+msgid "PNG"
+msgstr "PNG"
+
 msgid ""
 "PNG decode failed on some images in this document\n"
 "They have been replaced by red squares."
@@ -1170,12 +1204,8 @@ msgstr "請選擇要匯入的檔案："
 msgid "Please select the datetime range."
 msgstr "請選擇日期時間範圍。"
 
-msgid ""
-"Please select the language for the interface (requires restart). Please "
-"select the empty row if you want to use the default language."
-msgstr ""
-"請選擇介面語言（需要重新啟動）。"
-"如果要使用預設語言，請選擇空白列。"
+msgid "Please select the language for the interface (requires restart)."
+msgstr "請選擇介面語言（需要重新啟動）。"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "請選擇要從清單中移除的指令碼："
@@ -1272,6 +1302,9 @@ msgstr "重設工具列外觀"
 msgid "Reset toolbar"
 msgstr "重設工具列"
 
+msgid "Restrict search and replace to view"
+msgstr "將搜尋與取代限制在目前檢視"
+
 msgid "Run"
 msgstr "執行"
 
@@ -1305,9 +1338,7 @@ msgstr "以不同檔名儲存目前文件"
 msgid ""
 "Save image(s) from selected cell(s) to disk. Multiple images will be saved "
 "with a counter appended to each file name."
-msgstr ""
-"將選取儲存格中的圖片儲存至磁碟。"
-"多張圖片會在每個檔名後附加編號。"
+msgstr "將選取儲存格中的圖片儲存至磁碟。多張圖片會在每個檔名後附加編號。"
 
 msgid "Save open documents periodically to temporary files"
 msgstr "定期將已開啟的文件儲存至暫存檔"
@@ -1342,6 +1373,11 @@ msgstr "向上捲動（滑鼠滾輪）"
 
 msgid "Search "
 msgstr "搜尋 "
+
+msgid ""
+"Search and replace in the visible content of the current view (no folded "
+"grids, no tiny cells)"
+msgstr "在目前檢視的可見內容中搜尋與取代（不含已摺疊的網格與過小的儲存格）"
 
 msgid "Select &Parent"
 msgstr "選取父層級(&P)"
@@ -1419,6 +1455,15 @@ msgstr "顯示「關於」對話方塊"
 msgid "Show cells with notes"
 msgstr "顯示含備註的儲存格"
 
+msgid "Show cells with the same cell color"
+msgstr "顯示相同儲存格色彩的儲存格"
+
+msgid "Show cells with the same style"
+msgstr "顯示相同樣式的儲存格"
+
+msgid "Show entire row on match"
+msgstr "符合時顯示整列"
+
 msgid "Show last edits in specific date range"
 msgstr "顯示特定日期範圍內的最近編輯"
 
@@ -1462,6 +1507,9 @@ msgstr "將此層級（或以上）所有包含此文字的儲存格與其父層
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "交換滑鼠滾輪的捲動與縮放功能"
 
+msgid "System Default"
+msgstr "系統預設"
+
 msgid "Tab delimited text..."
 msgstr "定位字元分隔文字..."
 
@@ -1472,8 +1520,7 @@ msgid ""
 "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
 "grid, useful for export to spreadsheets"
 msgstr ""
-"將階層結構（巢狀的 1xN 或 Nx1 網格）轉換為扁平的 NxN 網格，"
-"適合匯出至試算表"
+"將階層結構（巢狀的 1xN 或 Nx1 網格）轉換為扁平的 NxN 網格，適合匯出至試算表"
 
 msgid "Text "
 msgstr "文字 "
@@ -1630,6 +1677,12 @@ msgstr "要以多大的網格開始？"
 msgid "What subgrid size would you like to start with?"
 msgstr "要以多大的子網格開始？"
 
+msgid ""
+"When a cell in a row matches the current filter, show the whole row normally "
+"instead of only the matching cell"
+msgstr ""
+"當某列中的儲存格符合目前的篩選條件時，正常顯示整列，而不只顯示符合的儲存格"
+
 msgid "Width"
 msgstr "寬度"
 
@@ -1666,6 +1719,9 @@ msgstr "放大（Ctrl + 滑鼠滾輪）"
 
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "縮小（Ctrl + 滑鼠滾輪）"
+
+msgid "Zoom on cells cursor hovers on"
+msgstr "縮放游標所在的儲存格"
 
 msgid "Zoomed in."
 msgstr "已放大。"
