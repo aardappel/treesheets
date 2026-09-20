@@ -73,17 +73,16 @@ struct TextRuns
 
 struct Run
 {
-    uint start;     // position of the first character in the cell's text
-    uint length;    // number of characters, at least 1
+    uint start;     // position of the first code point in the cell's text
+    uint length;    // number of code points, at least 1
     uint stylebits; // complete style of the run (not relative to the base style), same enum as above
     uint color;     // bits 0..23: text color, in the same encoding as the cell's textcolor
                     // bit 24 (0x1000000): set if the run has its own color, otherwise the run
                     // uses the cell's textcolor and bits 0..23 are ignored
 }
-// Runs must be sorted by start, must not overlap and must lie within the text. Positions are
-// counted in characters of the text as wxString counts them, which differs between platforms for
-// characters outside the Basic Multilingual Plane (UTF-16 code units vs. code points).
-// A reader should discard runs that violate this. Readers for versions before 27 don't know about
-// runs, and refuse to open files of a newer version.
+// Runs must be sorted by start, must not overlap and must lie within the text. Positions and
+// lengths are counted in Unicode code points (not in UTF-16 code units, and not in bytes of the
+// UTF-8 string). A reader should discard runs that violate this. Readers for versions before 27
+// don't know about runs, and refuse to open files of a newer version.
 
 struct String  // as wxDataOutputStream::WriteString writes it, apparently UTF-8 prefixed by length

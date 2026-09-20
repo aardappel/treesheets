@@ -789,11 +789,16 @@ struct Text {
         dos.Write32(stylebits);
         wxLongLong le = lastedit.GetValue();
         dos.Write64(&le, 1);
-        // Rich text runs (file version 27). Almost always zero.
+        // Rich text runs (file version 27). Almost always zero. Positions are counted in
+        // Unicode code points, so files don't depend on how this platform stores the text.
         dos.Write32(static_cast<wxUint32>(runs.v.size()));
+        CodePointCursor cursor {[&](int i) { return static_cast<uint>(t[i].GetValue()); },
+                                static_cast<int>(t.Len())};
         for (const auto &r : runs.v) {
-            dos.Write32(r.start);
-            dos.Write32(r.len);
+            auto start = cursor.CodePointAt(r.start);
+            auto end = cursor.CodePointAt(r.end());
+            dos.Write32(start);
+            dos.Write32(end - start);
             dos.Write32(r.stylebits);
             dos.Write32((r.color & 0xFFFFFF) | (r.hascolor ? TS_RUN_HASCOLOR : 0));
         }
@@ -832,22 +837,28 @@ struct Text {
             // A run is at least one character, so more runs than characters means a corrupt file.
             if (numruns <= t.Len()) {
                 runs.v.reserve(numruns);
-                auto pos = 0;
+                auto getunit = [&](int i) { return static_cast<uint>(t[i].GetValue()); };
                 auto len = static_cast<int>(t.Len());
+                auto numcodepoints = CodePointCursor {getunit, len}.CodePointAt(len);
+                CodePointCursor cursor {getunit, len};
+                auto pos = 0;  // in code points
                 for (wxUint32 i = 0; i < numruns; i++) {
                     TextRun r;
-                    r.start = static_cast<int>(dis.Read32());
-                    r.len = static_cast<int>(dis.Read32());
+                    // Positions in the file are in code points, see Save.
+                    auto start = static_cast<int>(dis.Read32());
+                    auto length = static_cast<int>(dis.Read32());
                     r.stylebits = static_cast<int>(dis.Read32());
                     auto col = dis.Read32();
                     r.color = col & 0xFFFFFF;
                     r.hascolor = (col & TS_RUN_HASCOLOR) != 0;
                     // Defend against corrupt data: keep runs sorted, disjoint and inside the text.
-                    r.start = max(r.start, pos);
-                    r.len = min(r.len, len - r.start);
-                    if (r.len > 0) {
-                        pos = r.end();
-                        runs.v.push_back(r);
+                    start = max(start, pos);
+                    length = min(length, numcodepoints - start);
+                    if (length > 0) {
+                        pos = start + length;
+                        r.start = cursor.UnitAt(start);
+                        r.len = cursor.UnitAt(pos) - r.start;
+                        if (r.len > 0) { runs.v.push_back(r); }
                     }
                 }
                 runs.Normalize(stylebits);

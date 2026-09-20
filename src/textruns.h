@@ -27,6 +27,41 @@ struct TextRun {
     }
 };
 
+// Converts between positions in a string, counted in its code units, and positions counted in
+// Unicode code points. They differ where the string is stored as UTF-16 (as wxString is on
+// Windows) and contains characters outside the Basic Multilingual Plane, which take two units
+// (a surrogate pair). Where units are code points, both are the same.
+// Positions have to be asked for in ascending order.
+template<typename Get> struct CodePointCursor {
+    Get get;  // get(unit) returns the code unit at a position
+    int len;  // number of code units
+    int unit {0};
+    int codepoint {0};
+
+    int Step() const {
+        auto c = get(unit);
+        if (c < 0xD800 || c > 0xDBFF || unit + 1 >= len) { return 1; }
+        auto next = get(unit + 1);
+        return next >= 0xDC00 && next <= 0xDFFF ? 2 : 1;
+    }
+    // The code point position of the code unit position `at`.
+    int CodePointAt(int at) {
+        while (unit < at && unit < len) {
+            unit += Step();
+            codepoint++;
+        }
+        return codepoint;
+    }
+    // The code unit position of the code point position `at`.
+    int UnitAt(int at) {
+        while (codepoint < at && unit < len) {
+            unit += Step();
+            codepoint++;
+        }
+        return unit;
+    }
+};
+
 struct TextRuns {
     std::vector<TextRun> v;
 
