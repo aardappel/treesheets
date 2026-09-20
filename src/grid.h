@@ -808,7 +808,7 @@ struct Grid {
                 }
                 if (x >= xs) { InsertCells(x, -1, 1, 0); }
                 Cell *c = C(x, cy).get();
-                c->text.t = word;
+                c->text.SetText(word);
             }
             cy++;
         }

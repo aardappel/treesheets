@@ -55,7 +55,7 @@ struct Cell {
 
     void Clear() {
         grid = nullptr;
-        text.t.Clear();
+        text.SetText(wxEmptyString);
         text.image = nullptr;
         Reset();
     }
@@ -618,7 +618,7 @@ struct Cell {
 
     Cell *Graph() {
         auto n = text.GetNum();
-        text.t.Clear();
+        text.SetText(wxEmptyString);
         text.t.Append(L'|', n > 0 ? static_cast<size_t>(min(n, 1000.0)) : 0);
         return this;
     }

@@ -2967,7 +2967,7 @@ struct Document {
             if (i++ == tagno) {
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, false) {
-                    c->text.t = tag;
+                    c->text.SetText(tag);
                     c->text.WasEdited();
                 }
                 selected.ExitEdit(this);
