@@ -106,7 +106,7 @@ cmake --install _build
    - **macOS:** append `--prefix <directory>` to specify another installation root for the bundle.
    - **Linux:** usually requires root privileges, e.g. run this command with `sudo`.
 
-If you do not have `wxWidgets` installed separately and use it within the TreeSheets CMake project, you may want to set `wxBUILD_INSTALL` and `wxBUILD_SHARED` to off in the build configuration. This ensures a TreeSheets build with wxWidgets libraries statically linked in.
+If you do not have `wxWidgets` installed separately (e.g. as shared library on your distribution or operating system) and want to build it within the TreeSheets CMake project as a static library, you may want to set `wxBUILD_INSTALL` and `wxBUILD_SHARED` to off in the build configuration. This ensures a TreeSheets build with wxWidgets libraries statically linked in and no additional wxWidgets stuff getting installed.
 
 Translating
 -----------
