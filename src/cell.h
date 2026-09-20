@@ -100,7 +100,7 @@ struct Cell {
                 leftoffset = dc.GetCharHeight();
             }
         } else {
-            text.TextSize(dc, sx, sy, static_cast<int>(tiny), leftoffset, maxcolwidth);
+            text.TextSize(dc, sx, sy, static_cast<int>(tiny), leftoffset, maxcolwidth, doc, depth);
         }
         if (ixs != 0 && iys != 0) {
             sx += ixs + 2;

@@ -20,6 +20,7 @@ struct CursorPosCache {
     Cell *cell {nullptr};
     Image *image {nullptr};
     wxString text;
+    std::vector<TextRun> runs;
     int cursor {-1};
     int stylebits {-1};
     int relsize {INT_MIN};
