@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-19 20:25+0100\n"
+"POT-Creation-Date: 2026-09-20 10:31+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -26,6 +26,7 @@ msgid ""
 "has been modified on disk by another program / computer:\n"
 "Would you like to discard your changes and re-load from disk?"
 msgstr ""
+"%s\n"
 "è stato modificato sul disco da un altro programma / computer:\n"
 "Volete ignorare le modifiche e ricaricarle dal disco?"
 
@@ -35,11 +36,11 @@ msgstr "&Riguardo a..."
 msgid "&Add Cell Text as Tag"
 msgstr "&Aggiungi il testo della cella come tag"
 
-msgid "&Add Image"
-msgstr "&Aggiungi immagine"
+msgid "&Add..."
+msgstr "&Aggiungi..."
 
-msgid "&Browsing..."
-msgstr "&Sfoglia..."
+msgid "&Browsing"
+msgstr "&Navigazione"
 
 msgid "&Clear Views"
 msgstr "&Cancella Visualizzazioni"
@@ -59,6 +60,9 @@ msgstr "&Copia come bitmap"
 msgid "&Data"
 msgstr "&Dati"
 
+msgid "&Decrease font size"
+msgstr "&Riduci dimensione del testo"
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Riduci la dimensione del testo (MAIUSC + rotella del mouse)"
 
@@ -77,14 +81,14 @@ msgstr "&File"
 msgid "&Flatten"
 msgstr "&Appiattire"
 
-msgid "&Go To Next Search Result"
-msgstr "&Vai al risultato della ricerca successiva"
-
-msgid "&Grid Reorganization..."
-msgstr "&Riorganizzazione della griglia ..."
+msgid "&Grid Reorganization"
+msgstr "&Riorganizzazione della griglia"
 
 msgid "&HTML (Tables+Styling)..."
 msgstr "&HTML (tabelle + stile)..."
+
+msgid "&HTML (Tables+Styling+Images)..."
+msgstr "&HTML (Tabelle+Stile+Immagini)..."
 
 msgid "&Help"
 msgstr "&Aiuto"
@@ -98,8 +102,11 @@ msgstr "Vista &Orizzontale"
 msgid "&Image..."
 msgstr "&Immagine..."
 
-msgid "&Images..."
-msgstr "&Immagini..."
+msgid "&Images"
+msgstr "&Immagini"
+
+msgid "&Increase font size"
+msgstr "&Aumenta dimensione del testo"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Aumentare la dimensione del testo (MAIUSC + rotellina del mouse)"
@@ -107,14 +114,20 @@ msgstr "&Aumentare la dimensione del testo (MAIUSC + rotellina del mouse)"
 msgid "&Insert New Grid"
 msgstr "&Inserisci nuova griglia"
 
-msgid "&Layout && Render Style..."
-msgstr "&Layout && Stile di rendering ..."
+msgid "&Layout && Render Style"
+msgstr "&Layout e stile di rendering"
 
 msgid "&Mark as"
 msgstr "&Segna come"
 
 msgid "&New"
 msgstr "&Nuovo"
+
+msgid "&Next Match"
+msgstr "Corrispondenza &successiva"
+
+msgid "&Next tab"
+msgstr "Scheda &successiva"
 
 msgid "&Open..."
 msgstr "&Apri ..."
@@ -125,8 +138,14 @@ msgstr "&Operazione"
 msgid "&Options"
 msgstr "&Opzioni"
 
+msgid "&PDF..."
+msgstr "&PDF..."
+
 msgid "&Paste"
 msgstr "&Incolla"
+
+msgid "&Previous Match"
+msgstr "Corrispondenza &precedente"
 
 msgid "&Print..."
 msgstr "&Stampa..."
@@ -143,14 +162,14 @@ msgstr "&Ripristina"
 msgid "&Remove Cell Text from Tags"
 msgstr "&Rimuovi il testo della cella dai tag"
 
-msgid "&Remove Image(s)"
-msgstr "&Rimuovi immagine(s)"
-
 msgid "&Replace"
 msgstr "&Sostituisci"
 
 msgid "&Reset Scale (display only)"
 msgstr "Reimposta la scala (solo display)"
+
+msgid "&Reset font size"
+msgstr "Reimposta dimensione del &testo"
 
 msgid "&Reset text sizes"
 msgstr "&Reimposta la dimensione del testo"
@@ -158,8 +177,8 @@ msgstr "&Reimposta la dimensione del testo"
 msgid "&Reset text styles"
 msgstr "&Ripristina stili di testo"
 
-msgid "&Roundness of grid borders..."
-msgstr "&Rotondità dei bordi della griglia..."
+msgid "&Roundness of grid borders"
+msgstr "&Arrotondamento dei bordi della griglia"
 
 msgid "&Run"
 msgstr "&Eseguisci"
@@ -167,26 +186,23 @@ msgstr "&Eseguisci"
 msgid "&Save"
 msgstr "&Salva"
 
-msgid "&Scale Image (display only)"
-msgstr "&Scala l'immagine (solo display)"
+msgid "&Save as..."
+msgstr "Salva con &nome..."
 
-msgid "&Scale Image (re-sample pixels, by %)"
-msgstr "&Scala immagine (ricampiona i pixel, in %)"
-
-msgid "&Scale Image (re-sample pixels, by width)"
-msgstr "&Scala immagine (ricampiona i pixel, per larghezza)"
+msgid "&Script reference"
+msgstr "Riferimento &script"
 
 msgid "&Search"
 msgstr "&Cerca"
 
-msgid "&Selection..."
-msgstr "&Selezione.."
+msgid "&Selection"
+msgstr "&Selezione"
 
 msgid "&Set Cell Text to tag (use CTRL+RMB)"
 msgstr "&Imposta il testo della cella da taggare (usa CTRL+RMB)"
 
-msgid "&Set Custom Color From Cell BG"
-msgstr "&Imposta colore personalizzato dalla cella BG"
+msgid "&Set custom color from cell background"
+msgstr "Imposta colore per&sonalizzato dallo sfondo della cella"
 
 msgid "&Shrink text of all sub-grids"
 msgstr "&Riduci il testo di tutte le griglie secondarie"
@@ -196,6 +212,9 @@ msgstr "&Trasponi"
 
 msgid "&Undo"
 msgstr "&Annulla"
+
+msgid "&Vector graphics..."
+msgstr "Grafica &vettoriale..."
 
 msgid "&Vertical View"
 msgstr "&Vista verticale"
@@ -208,6 +227,18 @@ msgstr "&Avvia il nuovo genitore"
 
 msgid "&XML..."
 msgstr "&XML..."
+
+msgid "*.*"
+msgstr "*.*"
+
+msgid "...and jump to the end of the text"
+msgstr "...e vai alla fine del testo"
+
+msgid "...and progress to the first cell in the new row"
+msgstr "...e passa alla prima cella della nuova riga"
+
+msgid "...and progress to the next cell on the right"
+msgstr "...e passa alla cella successiva a destra"
 
 msgid "1:1 scale restored."
 msgstr "Scala 1: 1 ripristinata."
@@ -223,11 +254,23 @@ msgstr ""
 msgid "Add Image"
 msgstr "Aggiungi Immagine"
 
+msgid "Add Lobster scripts to the menu"
+msgstr "Aggiungi script Lobster al menu"
+
+msgid "Add an image to the selected cell"
+msgstr "Aggiunge un'immagine alla cella selezionata"
+
+msgid "Add..."
+msgstr "Aggiungi..."
+
+msgid "Adds a NxN grid to the selected cell"
+msgstr "Aggiunge una griglia NxN alla cella selezionata"
+
 msgid "Adds a grid to the selected cell"
 msgstr "Aggiunge una griglia alla cella selezionata"
 
-msgid "Adds an image to the selected cell"
-msgstr "Aggiunge un'immagine alla cella selezionata"
+msgid "Also colorize the inner grid border"
+msgstr "Colora anche il bordo interno della griglia"
 
 msgid "Apply last border color"
 msgstr "Applica il colore del bordo recente"
@@ -241,17 +284,29 @@ msgstr "Applica il colore del testo recente"
 msgid "At least one file could not be opened."
 msgstr "Non è stato possibile aprire almeno un file."
 
-msgid "Auto reload documents"
-msgstr "Auto caricamento documenti"
+msgid "Autoexport to HTML"
+msgstr "Esportazione automatica in HTML"
 
-msgid "Automatically export a .html on every save"
-msgstr "Esporta automaticamente un .html ad ogni salvataggio"
+msgid "Autoexport to PDF"
+msgstr "Esportazione automatica in PDF"
+
+msgid "Autoreload documents"
+msgstr "Ricarica automaticamente i documenti"
+
+msgid "Autosave"
+msgstr "Salvataggio automatico"
 
 msgid "Autosave load"
 msgstr "Salvataggio automatico"
 
-msgid "Autosave to .tmp"
-msgstr "Salvataggio automatico su .tmp"
+msgid "Available languages"
+msgstr "Lingue disponibili"
+
+msgid "Background color..."
+msgstr "Colore dello &sfondo..."
+
+msgid "Backup files"
+msgstr "File di backup"
 
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiata negli appunti"
@@ -286,6 +341,9 @@ msgstr "Può solo spostare questa cella in una griglia Nx1 o 1xN."
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "Può solo spostare questa cella in una griglia Nx1 o 1xN."
 
+msgid "Can paste or drop only exactly one file."
+msgstr "È possibile incollare o trascinare un solo file alla volta."
+
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
@@ -301,9 +359,6 @@ msgstr "Annulla le modifiche al testo"
 
 msgid "Cannot decompress file."
 msgstr "Impossibile decomprimere il file."
-
-msgid "Cannot drag & drop more than 1 file."
-msgstr "Non è possibile trascinare e rilasciare più di 1 file."
 
 msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
@@ -324,26 +379,35 @@ msgstr "Ricerca sensibile alle maiuscole/minuscole"
 msgid "Cell "
 msgstr "Cella"
 
-msgid "Change a key binding..."
-msgstr "Modificare una chiave vincolante..."
+msgid "Change interface language"
+msgstr "Cambia la lingua dell'interfaccia"
+
+msgid "Change language..."
+msgstr "Cambia lingua..."
 
 msgid ""
-"Change the image size if it is too big or too small, by changing the size "
+"Change the image(s) scale to match DPI of the current display. Applies to "
+"all uses of this image."
+msgstr ""
+"Modifica la scala dell'immagine per adattarla ai DPI dello schermo corrente. "
+"Si applica a tutti gli usi di questa immagine."
+
+msgid ""
+"Change the image(s) size if it is too big or too small, by changing the size "
 "shown on screen. Applies to all uses of this image."
 msgstr ""
-"Ridimensiona l'immagine se è troppo grande o troppo piccola, modificando le dimensioni "
-"visualizzate sullo schermo. Si applica a tutti gli utilizzi di questa immagine."
-
-msgid ""
-"Change the image size if it is too big, by reducing the amount of pixels"
-msgstr "Cambia la dimensione dell'immagine se è troppo grande o troppo piccola"
-
-msgid ""
-"Change the scale to match DPI of the current display. Applies to all uses of "
-"this image."
-msgstr ""
-"Modifica la scala in modo che corrisponda ai DPI del display corrente. Si applica a tutti gli utilizzi di "
+"Modifica la dimensione dell'immagine se è troppo grande o troppo piccola, "
+"cambiando la dimensione mostrata a schermo. Si applica a tutti gli usi di "
 "questa immagine."
+
+msgid ""
+"Change the image(s) size if it is too big, by reducing the amount of pixels"
+msgstr ""
+"Modifica la dimensione dell'immagine se è troppo grande, riducendo il numero "
+"di pixel"
+
+msgid "Change the key binding of a menu item"
+msgstr "Modifica la scorciatoia da tastiera di una voce di menu"
 
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Sono state apportate modifiche, sei sicuro di voler continuare?"
@@ -354,8 +418,14 @@ msgstr "Scegli il file CSV per scrivere"
 msgid "Choose HTML file to write"
 msgstr "Scegli il file HTML da scrivere"
 
+msgid "Choose PDF file to write"
+msgstr "Scegli il file PDF da scrivere"
+
 msgid "Choose PNG file to write"
 msgstr "Scegli il file PNG per scrivere"
+
+msgid "Choose SVG file to write"
+msgstr "Scegli il file SVG da scrivere"
 
 msgid "Choose Text file to write"
 msgstr "Scegli il file di testo da scrivere"
@@ -380,6 +450,9 @@ msgstr "Chiudi il documento corrente"
 
 msgid "Collapse Ce&lls"
 msgstr "Collasa le ce&llule"
+
+msgid "Colorize inner grid border"
+msgstr "Colora bordo interno della griglia"
 
 msgid "Column width decreased."
 msgstr "La larghezza della colonna è diminuita."
@@ -415,14 +488,17 @@ msgstr "Intestazione PNG corrotta."
 msgid "Corrupt block header."
 msgstr "intestazione blocco corrotto."
 
-msgid "Create .bak files"
-msgstr "Crea file .bak"
-
 msgid "Create a new document"
 msgstr "Crea un nuovo documento"
 
+msgid "Create backup file before document is saved to file"
+msgstr "Crea un file di backup prima di salvare il documento"
+
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Crea un nuovo livello di gerarchia attorno alla selezione corrente"
+
+msgid "Cu&rsor color..."
+msgstr "Colore del cu&rsore..."
 
 msgid "Cu&t"
 msgstr "Taglia"
@@ -432,6 +508,12 @@ msgstr "Cursore a sinistra"
 
 msgid "Cursor Right"
 msgstr "Cursore a destra"
+
+msgid "Custom"
+msgstr "Personalizzato"
+
+msgid "Custom &color..."
+msgstr "&Colore personalizzato..."
 
 msgid "Cut selection"
 msgstr "Taglia selezione"
@@ -444,6 +526,20 @@ msgstr "Riduci larghezza colonna (ALT + rotellina del mouse)"
 
 msgid "Decrease column width (no sub grids)"
 msgstr "Diminuisci larghezza colonna (nessuna sottogriglia)"
+
+msgid "Default column width"
+msgstr "Larghezza predefinita delle colonne"
+
+msgid "Default column width..."
+msgstr "Larghezza predefinita delle colonne..."
+
+msgid "Default format when image is pasted from clipboard or dropped"
+msgstr ""
+"Formato predefinito quando un'immagine viene incollata dagli appunti o "
+"trascinata"
+
+msgid "Default image format"
+msgstr "Formato immagine predefinito"
 
 msgid "Delete Before"
 msgstr "Eliminare Prima"
@@ -475,9 +571,31 @@ msgstr "Elimina l'intera parola prima del cursore"
 msgid "Discard Changes"
 msgstr "Non salvare le modifiche"
 
+msgid "Edit &Note"
+msgstr "Modifica &nota"
+
+msgid "Edit the note of the selected cell"
+msgstr "Modifica la nota della cella selezionata"
+
 #, c-format
 msgid "Edited %s %s"
 msgstr "Modificato %s %s"
+
+msgid "Embed as &JPEG"
+msgstr "Incorpora come &JPEG"
+
+msgid "Embed as &PNG"
+msgstr "Incorpora come &PNG"
+
+msgid ""
+"Embed the image(s) in the selected cells in JPEG format (reduces data size)"
+msgstr ""
+"Incorpora le immagini nelle celle selezionate in formato JPEG (riduce le "
+"dimensioni dei dati)"
+
+msgid "Embed the image(s) in the selected cells in PNG format (default)"
+msgstr ""
+"Incorpora le immagini nelle celle selezionate in formato PNG (predefinito)"
 
 msgid "End date and time"
 msgstr "Data e ora di fine"
@@ -488,27 +606,38 @@ msgstr "Fine della riga di testo"
 msgid "End of text"
 msgstr "Fine del testo"
 
-msgid "Enter/exit text edit mode"
-msgstr "Entra/esci da modalità modifica testo"
+msgid "English"
+msgstr "Inglese"
 
-msgid "Enter/exit text edit to the right"
+msgid "Enter/exit text edit mode"
 msgstr "Entra/esci da modalità modifica testo"
 
 msgid "Error exporting file!"
 msgstr "Errore durante l'esportazione del file!"
+
+msgid "Error exporting to PDF file!"
+msgstr "Errore durante l'esportazione nel file PDF!"
+
+msgid "Error exporting to SVG file!"
+msgstr "Errore durante l'esportazione nel file SVG!"
 
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr ""
 "Errore durante il caricamento del file di dati di base (i fogli dell'albero "
 "non sono stati installati correttamente?)"
 
+msgid "Error renaming temporary file."
+msgstr "Errore durante la ridenominazione del file temporaneo."
+
 msgid "Error writing PNG file!"
 msgstr "Errore durante la scrittura del file PNG!"
 
-msgid "Error writing TreeSheets file! (try saving under new filename)."
+msgid ""
+"Error writing TreeSheets file! Would you like to save at a different "
+"location?"
 msgstr ""
-"Errore durante la scrittura del file TreeSheets! (prova a salvare con il "
-"nuovo nome file)."
+"Errore durante la scrittura del file TreeSheets! Vuoi salvare in un'altra "
+"posizione?"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
@@ -529,6 +658,11 @@ msgstr "Esporta &visualizza come"
 
 msgid "Export cancelled."
 msgstr "Esportazione annullata"
+
+msgid "Export the curent view as HTML using nested tables and exported images"
+msgstr ""
+"Esporta la vista corrente come HTML usando tabelle annidate e immagini "
+"esportate"
 
 msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
@@ -580,6 +714,38 @@ msgstr ""
 "per ogni livello di indentazione, adatto per l'importazione in mind manager "
 "e testo generaleprogrammi"
 
+msgid "Export the current view to a PDF file."
+msgstr "Esporta la vista corrente in un file PDF."
+
+msgid "Export the current view to a SVG vector file."
+msgstr "Esporta la vista corrente in un file vettoriale SVG."
+
+msgid ""
+"Export to a HTML file alongside the original TreeSheets file when document "
+"is saved"
+msgstr ""
+"Esporta in un file HTML accanto al file TreeSheets originale quando il "
+"documento viene salvato"
+
+msgid ""
+"Export to a HTML file with exported images alongside the original TreeSheets "
+"file when document is saved"
+msgstr ""
+"Esporta in un file HTML con le immagini esportate accanto al file TreeSheets "
+"originale quando il documento viene salvato"
+
+msgid "Export with images"
+msgstr "Esporta con immagini"
+
+msgid "Export without images"
+msgstr "Esporta senza immagini"
+
+msgid "Extend Selection Columns Down"
+msgstr "Estendi la selezione delle colonne verso il basso"
+
+msgid "Extend Selection Columns Up"
+msgstr "Estendi la selezione delle colonne verso l'alto"
+
 msgid "Extend Selection Down"
 msgstr "Estendi selezione giù"
 
@@ -595,6 +761,12 @@ msgstr "Estendi selezione a sinistra"
 msgid "Extend Selection Right"
 msgstr "Estendi la selezione a destra"
 
+msgid "Extend Selection Rows Left"
+msgstr "Estendi la selezione delle righe a sinistra"
+
+msgid "Extend Selection Rows Right"
+msgstr "Estendi la selezione delle righe a destra"
+
 msgid "Extend Selection Up"
 msgstr "Estendi selezione su"
 
@@ -609,6 +781,9 @@ msgstr "Estendi selezione per terminare"
 
 msgid "Extend Selection to Start"
 msgstr "Estendi selezione per avviare"
+
+msgid "Failed to get translation."
+msgstr "Impossibile ottenere la traduzione."
 
 msgid "Faster line rendering"
 msgstr "Rendering della linea più veloce"
@@ -641,12 +816,6 @@ msgstr "File della versione più recente."
 msgid "Filter"
 msgstr "Filtro"
 
-msgid "Filter by the same cell color"
-msgstr "Filtra per lo stesso colore di cella"
-
-msgid "Filter..."
-msgstr "Filtro..."
-
 msgid "Find and replace in document"
 msgstr "Trova e sostituisci nel documento"
 
@@ -659,14 +828,14 @@ msgstr "Piega tutto"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Piega la griglia delle celle selezionate in modo ricorsivo"
 
+msgid "Font..."
+msgstr "Carattere..."
+
 msgid "Found an image type that is not defined in this program."
 msgstr "È stato trovato un tipo di immagine non definito in questo programma."
 
 msgid "Go To &Matching Cell (Text)"
 msgstr "Vai alla cella corrispondente (testo)"
-
-msgid "Go To &Previous Search Result"
-msgstr "&Vai al risultato della ricerca precedente"
 
 msgid "Go To Matching Cell (Image)"
 msgstr "Vai alla cella corrispondente (immagine)"
@@ -682,6 +851,18 @@ msgstr "Vai al risultato della ricerca successiva"
 
 msgid "Go to next filter match"
 msgstr "Vai alla corrispondenza del filtro successivo"
+
+msgid "Go to next search match"
+msgstr "Vai alla corrispondenza di ricerca successiva"
+
+msgid "Go to previous search match"
+msgstr "Vai alla corrispondenza di ricerca precedente"
+
+msgid "Go to the document in the next tab"
+msgstr "Vai al documento nella scheda successiva"
+
+msgid "Go to the document in the previous tab"
+msgstr "Vai al documento nella scheda precedente"
 
 msgid "Grid Style Rendering"
 msgstr "Grid Style Rendering"
@@ -711,8 +892,8 @@ msgstr "Layout orizzontale con Rendering stile griglia"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Layout orizzontale con Rendering stile linea"
 
-msgid "Hover shadow"
-msgstr "Ombra a bilico"
+msgid "Hover zoom"
+msgstr "Zoom al passaggio"
 
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "Di quanti pixel deve essere una pagina? (0 per adattamento automatico)"
@@ -723,8 +904,19 @@ msgstr "Immagine"
 msgid "Image Resize"
 msgstr "Ridimensiona mmagine"
 
-msgid "Import file from"
-msgstr "Importa file da"
+msgid "Image(s) have been saved to disk."
+msgstr "Le immagini sono state salvate su disco."
+
+msgid "Images in selected cells have been converted to JPEG format."
+msgstr ""
+"Le immagini nelle celle selezionate sono state convertite in formato JPEG."
+
+msgid "Images in selected cells have been converted to PNG format."
+msgstr ""
+"Le immagini nelle celle selezionate sono state convertite in formato PNG."
+
+msgid "Import from"
+msgstr "Importa da"
 
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "Aumentare la larghezza della colonna (ALT+rotellina del mouse)"
@@ -741,14 +933,36 @@ msgstr "Testo rientrato..."
 msgid "Initialization Error"
 msgstr "Errore di inizializzazione"
 
+msgid "Insert New &NxN Grid"
+msgstr "Inserisci nuova griglia &NxN"
+
+msgid "Insert last image"
+msgstr "Inserisci ultima immagine"
+
+msgid "Insert the last image that has been inserted before in TreeSheets."
+msgstr "Inserisce l'ultima immagine inserita in precedenza in TreeSheets."
+
+msgid "Interactive &tutorial"
+msgstr "&Tutorial interattivo"
+
 msgid "Internal error: unimplemented operation!"
 msgstr "Errore interno: operazione non implementata!"
 
+msgid "Invert in dark mode"
+msgstr "Inverti in modalità scura"
+
+msgid "Invert the document in dark mode"
+msgstr "Inverte i colori del documento in modalità scura"
+
 msgid ""
-"It seems that you are about to drop a TreeSheets file. What would you like "
-"to do?"
-msgstr "Sembra che si stia per rilasciare (trascinare) un file TreeSheets. "
-"Cosa si desidera fare?"
+"It seems that you are about to paste or drop a TreeSheets file. What would "
+"you like to do?"
+msgstr ""
+"Sembra che tu stia per incollare o trascinare un file TreeSheets. Cosa vuoi "
+"fare?"
+
+msgid "JPEG"
+msgstr "JPEG"
 
 msgid "JPEG file is corrupted!"
 msgstr "File JPEG è corrotto!"
@@ -756,21 +970,29 @@ msgstr "File JPEG è corrotto!"
 msgid "Key binding"
 msgstr "chiave di rilegatura"
 
+msgid "Key bindings..."
+msgstr "Scorciatoie da tastiera..."
+
 msgid "Keybinding cancelled."
 msgstr "Combinazione di tasti annullato."
 
 msgid "Line Style Rendering"
 msgstr "Rendering stile linea"
 
-msgid "Load interactive &tutorial..."
-msgstr "Carica interattivo e tutorial ..."
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr ""
+"Carica in TreeSheets un riferimento interattivo sul funzionamento del "
+"programma"
 
-msgid "Load operation reference..."
-msgstr "Riferimento all'operazione di caricamento..."
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr "Carica un tutorial interattivo in TreeSheets"
 
 #, c-format
-msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "Caricato %s (%d celle, %d caratteri) in %d millisecondi."
+msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
+msgstr "Caricato %s (%d celle, %d caratteri) in %lld millisecondi."
+
+msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
+msgstr "File Lobster (*.lobster)|*.lobster|Tutti i file (*.*)|*.*"
 
 msgid ""
 "Make a 1xN selection to indicate which column to sort on, and which rows to "
@@ -863,6 +1085,15 @@ msgstr "Nuovo foglio"
 msgid "New file cancelled."
 msgstr "Nuovo file annullato."
 
+msgid "New subgrid"
+msgstr "Nuova sottogriglia"
+
+msgid "No autoexport"
+msgstr "Nessuna esportazione automatica"
+
+msgid "No image found to convert"
+msgstr "Nessuna immagine da convertire"
+
 msgid "No image in this cell."
 msgstr "Nessuna immagine in questa cella."
 
@@ -884,6 +1115,9 @@ msgstr "Nessuna ricerca."
 msgid "No style to paste."
 msgstr "Nessuno stile da incollare."
 
+msgid "No subgrid created."
+msgstr "Nessuna sottogriglia creata."
+
 msgid "No text in this cell."
 msgstr "Nessun testo in questa cella."
 
@@ -895,6 +1129,9 @@ msgstr "Nessun testo da cercare."
 
 msgid "Not a TreeSheets file."
 msgstr "Non un file TreeSheets."
+
+msgid "Note"
+msgstr "Nota"
 
 msgid "Nothing more to redo."
 msgstr "Niente da ripetere."
@@ -930,11 +1167,20 @@ msgstr "Apri colori della cella"
 msgid "Open file cancelled."
 msgstr "Apri file cancellato."
 
+msgid "Open image dropdown"
+msgstr "Apri il menu a discesa delle immagini"
+
 msgid "Open link in &browser"
 msgstr "Apri link in &browser"
 
 msgid "Open text colors"
 msgstr "Apri colori del testo"
+
+msgid "Open the Lobster script reference in browser"
+msgstr "Apre il riferimento degli script Lobster nel browser"
+
+msgid "Open the tutorial web page in browser"
+msgstr "Apre la pagina web del tutorial nel browser"
 
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
@@ -949,6 +1195,12 @@ msgid ""
 msgstr ""
 "Apre il testo dalla cella selezionata nell'applicazione predefinita per il "
 "file tipo"
+
+msgid "Operation reference"
+msgstr "Riferimento operazioni"
+
+msgid "PNG"
+msgstr "PNG"
 
 msgid ""
 "PNG decode failed on some images in this document\n"
@@ -978,18 +1230,6 @@ msgstr "Incolla il contenuto degli appunti"
 msgid "Paste file path"
 msgstr "Incolla il percorso del file"
 
-msgid "Pick Cu&rsor Color..."
-msgstr "Scegli colore del cu&rsore......"
-
-msgid "Pick Custom &Color..."
-msgstr "Scegli colore personalizzato..."
-
-msgid "Pick Default Font..."
-msgstr "Scegli il carattere di default..."
-
-msgid "Pick Document Background..."
-msgstr "Scegli lo sfondo del documento..."
-
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
 "Si prega di abilitare (Opzioni -> Mostra la barra degli strumenti) per "
@@ -999,6 +1239,9 @@ msgid "Please enable (Options -> Show Toolbar) to use search."
 msgstr ""
 "Si prega di abilitare (Opzioni -> Mostra la barra degli strumenti) per "
 "utilizzare la ricerca."
+
+msgid "Please enter the default column width:"
+msgstr "Inserisci la larghezza predefinita delle colonne:"
 
 msgid "Please enter the new image width:"
 msgstr "Si prega di inserire la nuova larghezza dell'immagine:"
@@ -1013,20 +1256,32 @@ msgid "Please pick a menu item to change the key binding for"
 msgstr ""
 "Si prega di scegliere una voce di menu per modificare la legatura chiave per"
 
-msgid "Please select a TreeSheets file to load:"
-msgstr "Seleziona un file TreeSheets da caricare:"
+msgid "Please select Lobster script file(s):"
+msgstr "Seleziona i file di script Lobster:"
+
+msgid "Please select TreeSheets file(s) to load:"
+msgstr "Seleziona i file TreeSheets da caricare:"
 
 msgid "Please select an image file:"
 msgstr "Si prega di selezionare un file immagine:"
 
-msgid "Please select file to import:"
-msgstr "Si prega di selezionare il file da importare:"
+msgid "Please select file(s) to import:"
+msgstr "Seleziona i file da importare:"
 
 msgid "Please select the datetime range."
 msgstr "Si prega di selezionare l'intervallo di date e ora."
 
+msgid "Please select the language for the interface (requires restart)."
+msgstr "Seleziona la lingua dell'interfaccia (richiede il riavvio)."
+
+msgid "Please select the script you want to remove from the list:"
+msgstr "Seleziona lo script da rimuovere dall'elenco:"
+
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Premere F11 per uscire dalla modalità a schermo intero."
+
+msgid "Previous tab"
+msgstr "Scheda precedente"
 
 msgid "Print Preview"
 msgstr "Anteprima di stampa"
@@ -1059,14 +1314,26 @@ msgid "Radius &6"
 msgstr "Raggio &6"
 
 msgid ""
-"Reloads when another computer has changed a file (if you have made changes, "
+"Reload when another computer has changed a file (if you have made changes, "
 "asks)"
 msgstr ""
-"Ricarica quando un altro computer ha cambiato un file (se hai apportato "
-"modifiche, Chiedi)"
+"Ricarica quando un altro computer ha modificato un file (chiede conferma se "
+"hai apportato modifiche)"
+
+msgid "Remo&ve"
+msgstr "Rimuo&vi"
 
 msgid "Remove image(s) from the selected cells"
 msgstr "Rimuovi immagine(i) dalle celle selezionate"
+
+msgid "Remove script from list in the menu"
+msgstr "Rimuove uno script dall'elenco nel menu"
+
+msgid "Remove script from list..."
+msgstr "Rimuovi script dall'elenco..."
+
+msgid "Remove..."
+msgstr "Rimuovi..."
 
 msgid "Render document centered"
 msgstr "Render del documento centrato"
@@ -1095,8 +1362,25 @@ msgstr "Ripristina &colori"
 msgid "Reset column widths"
 msgstr "Ripristina le larghezze delle colonne"
 
+msgid "Reset the column widths in the selection to the default column width"
+msgstr ""
+"Reimposta le larghezze delle colonne nella selezione alla larghezza "
+"predefinita"
+
+msgid "Reset the toolbar appearance"
+msgstr "Reimposta l'aspetto della barra degli strumenti"
+
+msgid "Reset toolbar"
+msgstr "Reimposta barra degli strumenti"
+
+msgid "Restrict search and replace to view"
+msgstr "Limita ricerca e sostituzione alla vista"
+
 msgid "Run"
 msgstr "Avvia"
+
+msgid "S&cript"
+msgstr "S&cript"
 
 msgid "Save &As..."
 msgstr "Salva &come..."
@@ -1107,14 +1391,11 @@ msgstr "Salva (CTRL+s)"
 msgid "Save All"
 msgstr "Salva tutto"
 
-msgid "Save As"
-msgstr "Salva come"
-
-msgid "Save Image(s) to disk"
-msgstr "Salva immagine su disco"
-
 msgid "Save and Close"
 msgstr "Salva e chiudi"
+
+msgid "Save as..."
+msgstr "Salva con nome..."
 
 msgid "Save cancelled."
 msgstr "Salvataggio annullato"
@@ -1125,31 +1406,28 @@ msgstr "Salva il documento corrente"
 msgid "Save current document with a different filename"
 msgstr "Salva il documento corrente con un nome file diverso"
 
-msgid "Save image as JPEG"
-msgstr "Salva immagine come JPEG"
-
-msgid "Save image as PNG (default)"
-msgstr "Salva immagine come PNG (predefinito)"
-
 msgid ""
-"Save image(s) to disk. Multiple images will be saved with a counter appended "
-"to each file name."
+"Save image(s) from selected cell(s) to disk. Multiple images will be saved "
+"with a counter appended to each file name."
 msgstr ""
-"Salva l'immagine/le immagini su disco. Verranno salvate più immagini, ciascuna "
-"con un contatore aggiunto al nome del file."
+"Salva su disco le immagini delle celle selezionate. Più immagini vengono "
+"salvate con un contatore aggiunto a ogni nome di file."
 
-msgid "Save the image in the TreeSheets file in JPEG format"
-msgstr "Salvare l'immagine nel file TreeSheets in formato JPEG."
-
-msgid "Save the image in the TreeSheets file in PNG format"
-msgstr "Salvare l'immagine nel file TreeSheets in formato PNG."
+msgid "Save open documents periodically to temporary files"
+msgstr "Salva periodicamente i documenti aperti in file temporanei"
 
 #, c-format
-msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "Salvato %s con successo (in %d millisecondi)."
+msgid "Saved %s successfully (in %lld milliseconds)."
+msgstr "%s salvato con successo (in %lld millisecondi)."
 
-msgid "Script"
-msgstr "Script"
+msgid "Scale (&display only)"
+msgstr "Scala (solo &visualizzazione)"
+
+msgid "Scale (re-sa&mple pixels, by %)"
+msgstr "Scala (ricampiona i pi&xel, in %)"
+
+msgid "Scale (re-sample pixels, by &width)"
+msgstr "Scala (ricampiona i pixel, per &larghezza)"
 
 msgid "Scroll Down (mousewheel)"
 msgstr "Scorri verso il basso (rotellina)"
@@ -1160,14 +1438,21 @@ msgstr "Scorri a sinistra"
 msgid "Scroll Right"
 msgstr "Scorri a destra"
 
-msgid "Scroll Sheet..."
-msgstr "Scorri foglio..."
+msgid "Scroll Sheet"
+msgstr "Scorri il foglio"
 
 msgid "Scroll Up (mousewheel)"
 msgstr "Scorri verso l'alto (rotellina)"
 
 msgid "Search "
 msgstr "Cerca"
+
+msgid ""
+"Search and replace in the visible content of the current view (no folded "
+"grids, no tiny cells)"
+msgstr ""
+"Cerca e sostituisce nel contenuto visibile della vista corrente (escluse "
+"griglie ripiegate e celle minuscole)"
 
 msgid "Select &Parent"
 msgstr "Seleziona &Genitore"
@@ -1183,21 +1468,43 @@ msgstr ""
 "La griglia selezionata non è una tabella: le celle non devono avere già "
 "sottogriglie."
 
-#, c-format
-msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr "La selezione contiene %d celle con %d caratteri."
-
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "Testo delimitato da semi-colonna (CSV)..."
 
-msgid "Set Grid Border Width..."
-msgstr "Imposta la larghezza del bordo della griglia..."
+msgid "Set Grid Border Width"
+msgstr "Imposta lo spessore dei bordi della griglia"
 
 msgid "Set Print Scale"
 msgstr "Imposta scala di stampa"
 
 msgid "Set Print Scale..."
 msgstr "Imposta scala di stampa..."
+
+msgid "Set a custom color for the color dropdowns"
+msgstr "Imposta un colore personalizzato per i menu a discesa dei colori"
+
+msgid ""
+"Set a custom color for the color dropdowns from the selected cell background"
+msgstr ""
+"Imposta un colore personalizzato per i menu a discesa dei colori dallo "
+"sfondo della cella selezionata"
+
+msgid "Set the color for the document background"
+msgstr "Imposta il colore dello sfondo del documento"
+
+msgid "Set the color for the text cursor"
+msgstr "Imposta il colore del cursore di testo"
+
+msgid "Set the default column width for a new grid"
+msgstr "Imposta la larghezza predefinita delle colonne per una nuova griglia"
+
+msgid "Set the font the document text is displayed with"
+msgstr "Imposta il carattere con cui viene visualizzato il testo del documento"
+
+msgid "Set the font the typewriter text is displayed with."
+msgstr ""
+"Imposta il carattere con cui viene visualizzato il testo a macchina da "
+"scrivere."
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
@@ -1226,20 +1533,23 @@ msgstr "Mostra il 50% delle ultime modifiche"
 msgid "Show About dialog"
 msgstr "Mostra la finestra di dialogo"
 
-msgid "Show Statusbar"
-msgstr "Mostra la barra di stato"
+msgid "Show cells with notes"
+msgstr "Mostra le celle con note"
 
-msgid "Show Toolbar"
-msgstr "Mostra la barra degli strumenti"
+msgid "Show cells with the same cell color"
+msgstr "Mostra le celle con lo stesso colore"
+
+msgid "Show cells with the same style"
+msgstr "Mostra le celle con lo stesso stile"
+
+msgid "Show entire row on match"
+msgstr "Mostra l'intera riga in caso di corrispondenza"
 
 msgid "Show last edits in specific date range"
 msgstr "Mostra le ultime modifiche in un intervallo di date specifico"
 
 msgid "Show only cells in current search"
 msgstr "Mostra solo le celle nella ricerca corrente"
-
-msgid "Show statistics"
-msgstr "Mostra le statistiche"
 
 msgid "Single click maximize from tray"
 msgstr "Un singolo clic ingrandisce dal vassoio"
@@ -1257,11 +1567,20 @@ msgstr "Ordine &Decrescente"
 msgid "Start date and time"
 msgstr "Data e ora di inizio"
 
+msgid "Start minimized"
+msgstr "Avvia ridotto a icona"
+
 msgid "Start of line of text"
 msgstr "Inizio della riga di testo"
 
 msgid "Start of text"
 msgstr "Inizio del testo"
+
+msgid "Start the application minimized"
+msgstr "Avvia l'applicazione ridotta a icona"
+
+msgid "Statusbar"
+msgstr "Barra di stato"
 
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
@@ -1271,17 +1590,14 @@ msgstr ""
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "Scambia la rotellina del mouse per scorrere e zoomare"
 
-msgid "Switch to &next file/tab"
-msgstr "Passa a &successivo file/scheda"
-
-msgid "Switch to &previous file/tab"
-msgstr "Passa al file/scheda precedente"
+msgid "System Default"
+msgstr "Predefinito di sistema"
 
 msgid "Tab delimited text..."
 msgstr "Testo delimitato da tabulazioni..."
 
-msgid "Tag..."
-msgstr "Tag..."
+msgid "Tag"
+msgstr "Tag"
 
 msgid ""
 "Takes a hierarchy (nested 1xN or Nx1 grids) and converts it into a flat NxN "
@@ -1293,14 +1609,14 @@ msgstr ""
 msgid "Text "
 msgstr "Testo"
 
-msgid "Text &Editing..."
-msgstr "Testo e modifica..."
+msgid "Text &Editing"
+msgstr "&Modifica del testo"
 
-msgid "Text Sizing..."
-msgstr "Dimensionamento del testo..."
+msgid "Text Sizing"
+msgstr "Dimensioni del testo"
 
-msgid "Text Style..."
-msgstr "Stile di testo..."
+msgid "Text Style"
+msgstr "Stile del testo"
 
 msgid "Text has been replaced."
 msgstr "Il testo è stato sostituito."
@@ -1316,6 +1632,9 @@ msgstr "Organizzatore di informazioni gerarchico a forma libera"
 
 msgid "The browser could not open at least one link."
 msgstr "Il browser non è riuscito ad aprire almeno un link."
+
+msgid "There are no images in the selection."
+msgstr "Non ci sono immagini nella selezione."
 
 msgid "There is no content to collapse."
 msgstr "Non ci sono contenuti da far crollare."
@@ -1359,15 +1678,65 @@ msgstr "Attiva/disattiva la cella e la macchina da scrivere"
 msgid "Toggle cell &underlined"
 msgstr "Attiva/disattiva sottolineatura cella"
 
+msgid "Toggle whether documents are rendered centered or left aligned"
+msgstr ""
+"Attiva/disattiva la visualizzazione dei documenti centrata o allineata a "
+"sinistra"
+
+msgid "Toggle whether file tabs are shown on top or on bottom of the documents"
+msgstr ""
+"Attiva/disattiva la posizione delle schede dei file sopra o sotto i documenti"
+
+msgid "Toggle whether lines are drawn solid (faster rendering) or dashed"
+msgstr ""
+"Attiva/disattiva le linee continue (rendering più veloce) o tratteggiate"
+
+msgid "Toggle whether only one click is required to maximize from system tray"
+msgstr "Attiva/disattiva il ripristino dall'area di notifica con un solo clic"
+
+msgid "Toggle whether statusbar is shown below the documents"
+msgstr "Mostra o nasconde la barra di stato sotto i documenti"
+
+msgid ""
+"Toggle whether the cursor keys are used for navigation in addition to text "
+"editing"
+msgstr ""
+"Attiva/disattiva l'uso dei tasti freccia per la navigazione oltre che per la "
+"modifica del testo"
+
+msgid "Toggle whether the window is minimized instead of closed"
+msgstr ""
+"Attiva/disattiva la riduzione a icona della finestra invece della chiusura"
+
+msgid "Toggle whether toolbar is shown between menu bar and documents"
+msgstr ""
+"Mostra o nasconde la barra degli strumenti tra la barra dei menu e i "
+"documenti"
+
 msgid "Toggles showing the grid of the selected cell(s)"
 msgstr ""
 "Attiva/disattiva la visualizzazione della griglia delle cella(e) selezionate"
+
+msgid "Toogle whether window is minimized to system tray"
+msgstr "Attiva/disattiva la riduzione della finestra nell'area di notifica"
+
+msgid "Toolbar"
+msgstr "Barra degli strumenti"
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "Files TreeSheets (*.cts)|*.cts|Tutti i file (*.*)|*.*"
 
 msgid "Turn filter &off"
 msgstr "Spegni il filtro"
+
+msgid "Tutorial &web page"
+msgstr "Pagina &web del tutorial"
+
+msgid "Tutorial web page could not be found."
+msgstr "Impossibile trovare la pagina web del tutorial."
+
+msgid "Typewriter font..."
+msgstr "Carattere macchina da scrivere..."
 
 msgid "Undo (CTRL+z)"
 msgstr "Annulla (CTRL+z)"
@@ -1396,11 +1765,18 @@ msgstr "Layout verticale con rendering a stile griglia"
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "Layout verticale con Rendering stile linea"
 
-msgid "View tutorial &web page..."
-msgstr "Visualizza tutorial e pagina web..."
-
 msgid "What size grid would you like to start with?"
 msgstr "Con quale dimensioni di griglia vorresti iniziare?"
+
+msgid "What subgrid size would you like to start with?"
+msgstr "Con quale dimensione di sottogriglia vuoi iniziare?"
+
+msgid ""
+"When a cell in a row matches the current filter, show the whole row normally "
+"instead of only the matching cell"
+msgstr ""
+"Quando una cella di una riga corrisponde al filtro corrente, mostra "
+"normalmente l'intera riga invece della sola cella corrispondente"
 
 msgid "Width"
 msgstr "Larghezza"
@@ -1439,6 +1815,9 @@ msgstr "Zoom avanti (CTRL+rotellina del mouse)"
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "Zoom indietro (CTR+rotellina del mouse)"
 
+msgid "Zoom on cells cursor hovers on"
+msgstr "Ingrandisci le celle sotto il cursore del mouse"
+
 msgid "Zoomed in."
 msgstr "Ingrandito."
 
@@ -1450,6 +1829,9 @@ msgstr "cambia l'orientamento di una griglia"
 
 msgid "couldn't import file!"
 msgstr "impossibile importare il file!"
+
+msgid "nothing to resize"
+msgstr "niente da ridimensionare"
 
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr ""
@@ -1471,3 +1853,61 @@ msgstr "scala:"
 
 msgid "size:"
 msgstr "dimensione:"
+
+#~ msgid "&Add Image"
+#~ msgstr "&Aggiungi immagine"
+
+#~ msgid "&Go To Next Search Result"
+#~ msgstr "&Vai al risultato della ricerca successiva"
+
+#~ msgid "&Remove Image(s)"
+#~ msgstr "&Rimuovi immagine(s)"
+
+#~ msgid "&Scale Image (display only)"
+#~ msgstr "&Scala l'immagine (solo display)"
+
+#~ msgid "Automatically export a .html on every save"
+#~ msgstr "Esporta automaticamente un .html ad ogni salvataggio"
+
+#~ msgid "Autosave to .tmp"
+#~ msgstr "Salvataggio automatico su .tmp"
+
+#~ msgid "Cannot drag & drop more than 1 file."
+#~ msgstr "Non è possibile trascinare e rilasciare più di 1 file."
+
+#~ msgid "Create .bak files"
+#~ msgstr "Crea file .bak"
+
+#~ msgid "Enter/exit text edit to the right"
+#~ msgstr "Entra/esci da modalità modifica testo"
+
+#~ msgid "Filter..."
+#~ msgstr "Filtro..."
+
+#~ msgid "Pick Default Font..."
+#~ msgstr "Scegli il carattere di default..."
+
+#~ msgid "Pick Document Background..."
+#~ msgstr "Scegli lo sfondo del documento..."
+
+#~ msgid "Save As"
+#~ msgstr "Salva come"
+
+#~ msgid "Save Image(s) to disk"
+#~ msgstr "Salva immagine su disco"
+
+#~ msgid "Save image as PNG (default)"
+#~ msgstr "Salva immagine come PNG (predefinito)"
+
+#, c-format
+#~ msgid "Selection contains %d cell(s) with %d character(s)."
+#~ msgstr "La selezione contiene %d celle con %d caratteri."
+
+#~ msgid "Show statistics"
+#~ msgstr "Mostra le statistiche"
+
+#~ msgid "Switch to &next file/tab"
+#~ msgstr "Passa a &successivo file/scheda"
+
+#~ msgid "Switch to &previous file/tab"
+#~ msgstr "Passa al file/scheda precedente"

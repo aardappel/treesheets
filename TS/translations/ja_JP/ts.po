@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 22:37+0200\n"
+"POT-Creation-Date: 2026-09-20 10:31+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -803,9 +803,6 @@ msgstr "新しいバージョンのファイルです。"
 msgid "Filter"
 msgstr "フィルター"
 
-msgid "Filter by the same cell color"
-msgstr "同じセル色でフィルター"
-
 msgid "Find and replace in document"
 msgstr "ドキュメント内を検索して置換"
 
@@ -1254,13 +1251,6 @@ msgstr "日時範囲を選択してください。"
 msgid "Please select the language for the interface (requires restart)."
 msgstr "インターフェースの言語を選択してください（再起動が必要です）。"
 
-msgid ""
-"Please select the language for the interface (requires restart). Please "
-"select the empty row if you want to use the default language."
-msgstr ""
-"インターフェースの言語を選択してください（再起動が必要です）。デフォルト言語"
-"を使用する場合は、空の行を選択してください。"
-
 msgid "Please select the script you want to remove from the list:"
 msgstr "リストから削除するスクリプトを選択してください："
 
@@ -1439,9 +1429,6 @@ msgstr ""
 "現在の表示範囲内 (折りたたまれたグリッドや極小のセルは対象外) で検索と置換を"
 "行います"
 
-msgid "Search in folded grids"
-msgstr "折り畳まれたグリッド内を検索"
-
 msgid "Select &Parent"
 msgstr "親を選択(&P)"
 
@@ -1525,6 +1512,9 @@ msgstr "同じセル色のセルを表示"
 
 msgid "Show cells with the same style"
 msgstr "同じスタイルのセルを表示"
+
+msgid "Show entire row on match"
+msgstr "一致した行全体を表示"
 
 msgid "Show last edits in specific date range"
 msgstr "特定の日付範囲の最終編集を表示"
@@ -1742,6 +1732,13 @@ msgstr "どのサイズのグリッドで開始しますか？"
 msgid "What subgrid size would you like to start with?"
 msgstr "どのサイズのサブグリッドで開始しますか？"
 
+msgid ""
+"When a cell in a row matches the current filter, show the whole row normally "
+"instead of only the matching cell"
+msgstr ""
+"行内のセルが現在のフィルターに一致した場合、一致したセルだけでなく行全体を通"
+"常どおり表示します"
+
 msgid "Width"
 msgstr "幅"
 
@@ -1814,3 +1811,16 @@ msgstr "スケール :"
 
 msgid "size:"
 msgstr "サイズ :"
+
+#~ msgid "Filter by the same cell color"
+#~ msgstr "同じセル色でフィルター"
+
+#~ msgid ""
+#~ "Please select the language for the interface (requires restart). Please "
+#~ "select the empty row if you want to use the default language."
+#~ msgstr ""
+#~ "インターフェースの言語を選択してください（再起動が必要です）。デフォルト言"
+#~ "語を使用する場合は、空の行を選択してください。"
+
+#~ msgid "Search in folded grids"
+#~ msgstr "折り畳まれたグリッド内を検索"

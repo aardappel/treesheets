@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 22:37+0200\n"
+"POT-Creation-Date: 2026-09-20 10:31+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -140,7 +140,7 @@ msgid "&Options"
 msgstr "&Optionen"
 
 msgid "&PDF..."
-msgstr ""
+msgstr "&PDF..."
 
 msgid "&Paste"
 msgstr "&Einfügen"
@@ -542,7 +542,9 @@ msgid "Default column width..."
 msgstr "Standardspaltenbreite..."
 
 msgid "Default format when image is pasted from clipboard or dropped"
-msgstr "Standard-Format, wenn Bild aus der Zwischenablage kopiert wird oder gedroppt wird"
+msgstr ""
+"Standard-Format, wenn Bild aus der Zwischenablage kopiert wird oder gedroppt "
+"wird"
 
 msgid "Default image format"
 msgstr "Standardbildformat"
@@ -820,9 +822,6 @@ msgstr "Datei weist einen neueren Versionsstand auf."
 
 msgid "Filter"
 msgstr "Filter..."
-
-msgid "Filter by the same cell color"
-msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
 
 msgid "Find and replace in document"
 msgstr "Im Dokument suchen und ersetzen"
@@ -1285,15 +1284,9 @@ msgid "Please select the datetime range."
 msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
 
 msgid "Please select the language for the interface (requires restart)."
-msgstr "Bitte wählen Sie eine Sprache für die Benutzeroberfäche aus (benötigt Neustart)."
-
-msgid ""
-"Please select the language for the interface (requires restart). Please "
-"select the empty row if you want to use the default language."
 msgstr ""
-"Bitte wählen Sie die Sprache für die Benutzeroberfläche aus (benötigt einen "
-"Neustart). Bitte wählen Sie die leere Zeile aus, wenn Sie die "
-"Standardsprache des Systems nutzen möchten."
+"Bitte wählen Sie eine Sprache für die Benutzeroberfäche aus (benötigt "
+"Neustart)."
 
 msgid "Please select the script you want to remove from the list:"
 msgstr ""
@@ -1471,8 +1464,9 @@ msgstr "Suche "
 msgid ""
 "Search and replace in the visible content of the current view (no folded "
 "grids, no tiny cells)"
-msgstr "Im sichtbaren Bereich der aktuellen Ansicht suchen und ersetzen (keine eingeklappten Tabellen, keine schmalen Zellen)"
-
+msgstr ""
+"Im sichtbaren Bereich der aktuellen Ansicht suchen und ersetzen (keine "
+"eingeklappten Tabellen, keine schmalen Zellen)"
 
 msgid "Select &Parent"
 msgstr "&Übergeordnetes Element auswählen"
@@ -1561,6 +1555,9 @@ msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
 
 msgid "Show cells with the same style"
 msgstr "Nur Zellen mit dem gleichen Stil anzeigen"
+
+msgid "Show entire row on match"
+msgstr "Ganze Zeile bei Treffer anzeigen"
 
 msgid "Show last edits in specific date range"
 msgstr "Die letzten Bearbeitungen in einem bestimmten Datumsbereich anzeigen"
@@ -1791,6 +1788,13 @@ msgstr "Mit welcher Tabellengröße möchten Sie beginnen?"
 msgid "What subgrid size would you like to start with?"
 msgstr "Mit welcher Größe für die Untertabelle möchten Sie beginnen?"
 
+msgid ""
+"When a cell in a row matches the current filter, show the whole row normally "
+"instead of only the matching cell"
+msgstr ""
+"Wenn eine Zelle in einer Zeile dem aktuellen Filter entspricht, die ganze "
+"Zeile normal anzeigen statt nur der passenden Zelle"
+
 msgid "Width"
 msgstr "Breite"
 
@@ -1829,7 +1833,7 @@ msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "Zoom verkleinern (STRG+Mausrad)"
 
 msgid "Zoom on cells cursor hovers on"
-msgstr ""
+msgstr "Zelle unter dem Mauszeiger vergrößern"
 
 msgid "Zoomed in."
 msgstr "Zoom vergrößert."
@@ -1866,3 +1870,14 @@ msgstr "Skalierung:"
 
 msgid "size:"
 msgstr "Größe:"
+
+#~ msgid "Filter by the same cell color"
+#~ msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
+
+#~ msgid ""
+#~ "Please select the language for the interface (requires restart). Please "
+#~ "select the empty row if you want to use the default language."
+#~ msgstr ""
+#~ "Bitte wählen Sie die Sprache für die Benutzeroberfläche aus (benötigt "
+#~ "einen Neustart). Bitte wählen Sie die leere Zeile aus, wenn Sie die "
+#~ "Standardsprache des Systems nutzen möchten."

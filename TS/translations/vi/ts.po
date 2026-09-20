@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 22:37+0200\n"
+"POT-Creation-Date: 2026-09-20 10:31+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -793,9 +793,6 @@ msgstr "Tệp thuộc phiên bản mới hơn."
 msgid "Filter"
 msgstr "Bộ lọc"
 
-msgid "Filter by the same cell color"
-msgstr "Lọc theo cùng màu ô"
-
 msgid "Find and replace in document"
 msgstr "Tìm kiếm và thay thế trong tài liệu"
 
@@ -1241,13 +1238,6 @@ msgstr "Vui lòng chọn khoảng ngày giờ."
 msgid "Please select the language for the interface (requires restart)."
 msgstr "Vui lòng chọn ngôn ngữ giao diện (yêu cầu khởi động lại)."
 
-msgid ""
-"Please select the language for the interface (requires restart). Please "
-"select the empty row if you want to use the default language."
-msgstr ""
-"Vui lòng chọn ngôn ngữ cho giao diện (cần khởi động lại). Vui lòng chọn hàng "
-"trống nếu bạn muốn sử dụng ngôn ngữ mặc định."
-
 msgid "Please select the script you want to remove from the list:"
 msgstr "Vui lòng chọn kịch bản bạn muốn xóa khỏi danh sách:"
 
@@ -1425,9 +1415,6 @@ msgstr ""
 "Tìm kiếm và thay thế trong nội dung hiển thị của chế độ xem hiện tại (không "
 "có lưới gấp, không có ô nhỏ)"
 
-msgid "Search in folded grids"
-msgstr "Tìm kiếm trong lưới gấp"
-
 msgid "Select &Parent"
 msgstr "Chọn mục cha (&P)"
 
@@ -1510,6 +1497,9 @@ msgstr "Hiển thị các ô có cùng màu ô"
 
 msgid "Show cells with the same style"
 msgstr "Hiển thị các ô có cùng kiểu"
+
+msgid "Show entire row on match"
+msgstr "Hiện toàn bộ hàng khi khớp"
 
 msgid "Show last edits in specific date range"
 msgstr "Hiển thị các chỉnh sửa cuối trong khoảng ngày cụ thể"
@@ -1728,6 +1718,13 @@ msgstr "Bạn muốn bắt đầu với lưới kích thước bao nhiêu?"
 msgid "What subgrid size would you like to start with?"
 msgstr "Bạn muốn bắt đầu với kích thước lưới phụ nào?"
 
+msgid ""
+"When a cell in a row matches the current filter, show the whole row normally "
+"instead of only the matching cell"
+msgstr ""
+"Khi một ô trong hàng khớp với bộ lọc hiện tại, hiện toàn bộ hàng bình thường "
+"thay vì chỉ ô khớp"
+
 msgid "Width"
 msgstr "Chiều rộng"
 
@@ -1801,3 +1798,16 @@ msgstr "tỷ lệ:"
 
 msgid "size:"
 msgstr "kích cỡ:"
+
+#~ msgid "Filter by the same cell color"
+#~ msgstr "Lọc theo cùng màu ô"
+
+#~ msgid ""
+#~ "Please select the language for the interface (requires restart). Please "
+#~ "select the empty row if you want to use the default language."
+#~ msgstr ""
+#~ "Vui lòng chọn ngôn ngữ cho giao diện (cần khởi động lại). Vui lòng chọn "
+#~ "hàng trống nếu bạn muốn sử dụng ngôn ngữ mặc định."
+
+#~ msgid "Search in folded grids"
+#~ msgstr "Tìm kiếm trong lưới gấp"

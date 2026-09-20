@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-03 18:36+0300\n"
+"POT-Creation-Date: 2026-09-20 10:31+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -62,6 +62,9 @@ msgstr "复制为位图(&C)"
 msgid "&Data"
 msgstr "数据(&D)"
 
+msgid "&Decrease font size"
+msgstr "缩小文字大小(&D)"
+
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "减小文本大小 (SHIFT+鼠标滚轮)(&D)"
 
@@ -86,6 +89,9 @@ msgstr "网格重组(&G)"
 msgid "&HTML (Tables+Styling)..."
 msgstr "HTML (表格+样式)(&H)..."
 
+msgid "&HTML (Tables+Styling+Images)..."
+msgstr "&HTML（表格+样式+图片）..."
+
 msgid "&Help"
 msgstr "帮助(&H)"
 
@@ -100,6 +106,9 @@ msgstr "图像(&I)..."
 
 msgid "&Images"
 msgstr "图像(&I)"
+
+msgid "&Increase font size"
+msgstr "放大文字大小(&I)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "增大文本大小 (SHIFT+鼠标滚轮)(&I)"
@@ -131,6 +140,9 @@ msgstr "操作(&O)"
 msgid "&Options"
 msgstr "选项(&O)"
 
+msgid "&PDF..."
+msgstr "&PDF..."
+
 msgid "&Paste"
 msgstr "粘贴(&P)"
 
@@ -158,6 +170,9 @@ msgstr "替换(&R)"
 msgid "&Reset Scale (display only)"
 msgstr "重置缩放 (仅显示)(&R)"
 
+msgid "&Reset font size"
+msgstr "重置文字大小(&R)"
+
 msgid "&Reset text sizes"
 msgstr "重置文本大小(&R)"
 
@@ -175,6 +190,9 @@ msgstr "保存(&S)"
 
 msgid "&Save as..."
 msgstr "另存为(&S)..."
+
+msgid "&Script reference"
+msgstr "脚本参考(&S)"
 
 msgid "&Search"
 msgstr "搜索(&S)"
@@ -197,6 +215,9 @@ msgstr "转置(&T)"
 msgid "&Undo"
 msgstr "撤销(&U)"
 
+msgid "&Vector graphics..."
+msgstr "矢量图形(&V)..."
+
 msgid "&Vertical View"
 msgstr "垂直视图(&V)"
 
@@ -211,6 +232,15 @@ msgstr "XML(&X)..."
 
 msgid "*.*"
 msgstr "*.*"
+
+msgid "...and jump to the end of the text"
+msgstr "...并跳到文本末尾"
+
+msgid "...and progress to the first cell in the new row"
+msgstr "...并前进到新行的第一个单元格"
+
+msgid "...and progress to the next cell on the right"
+msgstr "...并前进到右侧的下一个单元格"
 
 msgid "1:1 scale restored."
 msgstr "已恢复 1:1 缩放。"
@@ -233,8 +263,14 @@ msgstr "向所选单元格添加图像"
 msgid "Add..."
 msgstr "添加(&A)..."
 
+msgid "Adds a NxN grid to the selected cell"
+msgstr "向所选单元格添加 NxN 网格"
+
 msgid "Adds a grid to the selected cell"
 msgstr "向所选单元格添加网格"
+
+msgid "Also colorize the inner grid border"
+msgstr "同时为内部网格边框着色"
 
 msgid "Apply last border color"
 msgstr "应用上次的边框颜色"
@@ -251,6 +287,9 @@ msgstr "至少有一个文件无法打开。"
 msgid "Autoexport to HTML"
 msgstr "自动导出为 HTML"
 
+msgid "Autoexport to PDF"
+msgstr "自动导出为 PDF"
+
 msgid "Autoreload documents"
 msgstr "自动重新加载文档"
 
@@ -259,6 +298,9 @@ msgstr "自动保存"
 
 msgid "Autosave load"
 msgstr "加载自动保存"
+
+msgid "Available languages"
+msgstr "可用语言"
 
 msgid "Background color..."
 msgstr "背景颜色..."
@@ -299,6 +341,9 @@ msgstr "只能从 Nx1 或 1xN 网格中移动此单元格。"
 msgid "Can only move this cell into a Nx1 or 1xN grid."
 msgstr "只能将此单元格移动到 Nx1 或 1xN 网格中。"
 
+msgid "Can paste or drop only exactly one file."
+msgstr "只能粘贴或拖放一个文件。"
+
 msgid ""
 "Can't sort: make a 1xN selection to indicate what column to sort on, and "
 "what rows to affect"
@@ -312,9 +357,6 @@ msgstr "取消文本编辑"
 
 msgid "Cannot decompress file."
 msgstr "无法解压文件。"
-
-msgid "Cannot drag & drop more than 1 file."
-msgstr "无法拖放超过 1 个文件。"
 
 msgid ""
 "Cannot export grid that is not flat (zoom the view to the desired grid, and/"
@@ -332,6 +374,12 @@ msgstr "区分大小写搜索"
 
 msgid "Cell "
 msgstr "单元格 "
+
+msgid "Change interface language"
+msgstr "更改界面语言"
+
+msgid "Change language..."
+msgstr "更改语言..."
 
 msgid ""
 "Change the image(s) scale to match DPI of the current display. Applies to "
@@ -361,8 +409,14 @@ msgstr "选择要写入的 CSV 文件"
 msgid "Choose HTML file to write"
 msgstr "选择要写入的 HTML 文件"
 
+msgid "Choose PDF file to write"
+msgstr "选择要写入的 PDF 文件"
+
 msgid "Choose PNG file to write"
 msgstr "选择要写入的 PNG 文件"
+
+msgid "Choose SVG file to write"
+msgstr "选择要写入的 SVG 文件"
 
 msgid "Choose Text file to write"
 msgstr "选择要写入的文本文件"
@@ -387,6 +441,9 @@ msgstr "关闭当前文档"
 
 msgid "Collapse Ce&lls"
 msgstr "折叠单元格(&L)"
+
+msgid "Colorize inner grid border"
+msgstr "为内部网格边框着色"
 
 msgid "Column width decreased."
 msgstr "列宽已减小。"
@@ -443,6 +500,9 @@ msgstr "光标左移"
 msgid "Cursor Right"
 msgstr "光标右移"
 
+msgid "Custom"
+msgstr "自定义"
+
 msgid "Custom &color..."
 msgstr "自定义颜色(&C)..."
 
@@ -463,6 +523,12 @@ msgstr "默认列宽"
 
 msgid "Default column width..."
 msgstr "默认列宽..."
+
+msgid "Default format when image is pasted from clipboard or dropped"
+msgstr "从剪贴板粘贴或拖放图片时的默认格式"
+
+msgid "Default image format"
+msgstr "默认图片格式"
 
 msgid "Delete Before"
 msgstr "删除前面内容"
@@ -490,6 +556,12 @@ msgstr "删除光标前的整个单词"
 msgid "Discard Changes"
 msgstr "放弃更改"
 
+msgid "Edit &Note"
+msgstr "编辑备注(&N)"
+
+msgid "Edit the note of the selected cell"
+msgstr "编辑所选单元格的备注"
+
 #, c-format
 msgid "Edited %s %s"
 msgstr "已编辑 %s %s"
@@ -516,23 +588,34 @@ msgstr "行尾"
 msgid "End of text"
 msgstr "文末"
 
+msgid "English"
+msgstr "English"
+
 msgid "Enter/exit text edit mode"
 msgstr "进入/退出文本编辑模式"
-
-msgid "Enter/exit text edit to the right"
-msgstr "向右进入/退出文本编辑"
 
 msgid "Error exporting file!"
 msgstr "导出文件时出错！"
 
+msgid "Error exporting to PDF file!"
+msgstr "导出为 PDF 文件时出错！"
+
+msgid "Error exporting to SVG file!"
+msgstr "导出为 SVG 文件时出错！"
+
 msgid "Error loading core data file (TreeSheets not installed correctly?)"
 msgstr "加载核心数据文件时出错 (TreeSheets 未正确安装？)"
+
+msgid "Error renaming temporary file."
+msgstr "重命名临时文件时出错。"
 
 msgid "Error writing PNG file!"
 msgstr "写入 PNG 文件时出错！"
 
-msgid "Error writing TreeSheets file! (try saving under new filename)."
-msgstr "写入 TreeSheets 文件时出错！（请尝试使用新文件名保存）。"
+msgid ""
+"Error writing TreeSheets file! Would you like to save at a different "
+"location?"
+msgstr "写入 TreeSheets 文件时出错！是否要保存到其他位置？"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr "写入图像文件时出错！（请尝试使用新文件名保存）。"
@@ -551,6 +634,9 @@ msgstr "将视图导出为(&V)"
 
 msgid "Export cancelled."
 msgstr "导出已取消。"
+
+msgid "Export the curent view as HTML using nested tables and exported images"
+msgstr "使用嵌套表格和导出的图片将当前视图导出为 HTML"
 
 msgid ""
 "Export the current view as CSV. Good for spreadsheets and databases. Only "
@@ -592,8 +678,27 @@ msgstr ""
 "将当前视图导出为树状结构文本，每个缩进级别使用空格。适合导入思维导图和通用文"
 "本程序"
 
-msgid "Export to a HTML file when document is saved"
-msgstr "在文档保存时导出为 HTML 文件"
+msgid "Export the current view to a PDF file."
+msgstr "将当前视图导出为 PDF 文件。"
+
+msgid "Export the current view to a SVG vector file."
+msgstr "将当前视图导出为 SVG 矢量文件。"
+
+msgid ""
+"Export to a HTML file alongside the original TreeSheets file when document "
+"is saved"
+msgstr "保存文档时，在原 TreeSheets 文件旁导出为 HTML 文件"
+
+msgid ""
+"Export to a HTML file with exported images alongside the original TreeSheets "
+"file when document is saved"
+msgstr "保存文档时，在原 TreeSheets 文件旁导出为带导出图片的 HTML 文件"
+
+msgid "Export with images"
+msgstr "导出并包含图片"
+
+msgid "Export without images"
+msgstr "导出但不含图片"
 
 msgid "Extend Selection Columns Down"
 msgstr "向下扩展选择列"
@@ -637,6 +742,9 @@ msgstr "扩展选择至末尾"
 msgid "Extend Selection to Start"
 msgstr "扩展选择至开头"
 
+msgid "Failed to get translation."
+msgstr "获取翻译失败。"
+
 msgid "Faster line rendering"
 msgstr "更快的线条渲染"
 
@@ -665,9 +773,6 @@ msgstr "文件版本较新。"
 
 msgid "Filter"
 msgstr "筛选"
-
-msgid "Filter by the same cell color"
-msgstr "按相同单元格颜色筛选"
 
 msgid "Find and replace in document"
 msgstr "在文档中查找和替换"
@@ -743,6 +848,9 @@ msgstr "水平布局与网格样式渲染"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "水平布局与线条样式渲染"
 
+msgid "Hover zoom"
+msgstr "悬停缩放"
+
 msgid "How many pixels wide should a page be? (0 for auto fit)"
 msgstr "页面应为多少像素宽？(0 表示自动适应)"
 
@@ -779,16 +887,34 @@ msgstr "缩进文本..."
 msgid "Initialization Error"
 msgstr "初始化错误"
 
+msgid "Insert New &NxN Grid"
+msgstr "插入新的 &NxN 网格"
+
+msgid "Insert last image"
+msgstr "插入上一张图片"
+
+msgid "Insert the last image that has been inserted before in TreeSheets."
+msgstr "插入之前在 TreeSheets 中插入过的最后一张图片。"
+
 msgid "Interactive &tutorial"
 msgstr "交互式教程(&T)"
 
 msgid "Internal error: unimplemented operation!"
 msgstr "内部错误：未实现的操作！"
 
+msgid "Invert in dark mode"
+msgstr "深色模式下反色"
+
+msgid "Invert the document in dark mode"
+msgstr "在深色模式下对文档反色"
+
 msgid ""
-"It seems that you are about to drop a TreeSheets file. What would you like "
-"to do?"
-msgstr "您似乎要拖放一个 TreeSheets 文件。您想做什么？"
+"It seems that you are about to paste or drop a TreeSheets file. What would "
+"you like to do?"
+msgstr "您似乎要粘贴或拖放一个 TreeSheets 文件。您想怎么做？"
+
+msgid "JPEG"
+msgstr "JPEG"
 
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 文件已损坏！"
@@ -805,9 +931,15 @@ msgstr "按键绑定已取消。"
 msgid "Line Style Rendering"
 msgstr "线条样式渲染"
 
+msgid "Load an interactive program operation reference in TreeSheets"
+msgstr "在 TreeSheets 中载入交互式程序操作参考"
+
+msgid "Load an interactive tutorial in TreeSheets"
+msgstr "在 TreeSheets 中载入交互式教程"
+
 #, c-format
-msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-msgstr "加载了 %s (%d 个单元格, %d 个字符)，用时 %d 毫秒。"
+msgid "Loaded %s (%d cells, %d characters) in %lld milliseconds."
+msgstr "已载入 %s（%d 个单元格，%d 个字符），用时 %lld 毫秒。"
 
 msgid "Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"
 msgstr "Lobster 文件 (*.lobster)|*.lobster|所有文件 (*.*)|*.*"
@@ -898,6 +1030,15 @@ msgstr "新建工作表"
 msgid "New file cancelled."
 msgstr "新建文件已取消。"
 
+msgid "New subgrid"
+msgstr "新建子网格"
+
+msgid "No autoexport"
+msgstr "不自动导出"
+
+msgid "No image found to convert"
+msgstr "未找到可转换的图片"
+
 msgid "No image in this cell."
 msgstr "此单元格中没有图像。"
 
@@ -919,6 +1060,9 @@ msgstr "无搜索。"
 msgid "No style to paste."
 msgstr "没有可粘贴的样式。"
 
+msgid "No subgrid created."
+msgstr "未创建子网格。"
+
 msgid "No text in this cell."
 msgstr "此单元格中没有文本。"
 
@@ -930,6 +1074,9 @@ msgstr "没有要搜索的文本。"
 
 msgid "Not a TreeSheets file."
 msgstr "不是 TreeSheets 文件。"
+
+msgid "Note"
+msgstr "备注"
 
 msgid "Nothing more to redo."
 msgstr "没有更多可重做的操作。"
@@ -972,6 +1119,12 @@ msgstr "在浏览器中打开链接(&B)"
 msgid "Open text colors"
 msgstr "打开文本颜色"
 
+msgid "Open the Lobster script reference in browser"
+msgstr "在浏览器中打开 Lobster 脚本参考"
+
+msgid "Open the tutorial web page in browser"
+msgstr "在浏览器中打开教程网页"
+
 msgid ""
 "Opens up the text from the selected cell in browser (should start be a valid "
 "URL)"
@@ -984,6 +1137,9 @@ msgstr "使用文件类型的默认应用程序打开所选单元格中的文本
 
 msgid "Operation reference"
 msgstr "操作参考"
+
+msgid "PNG"
+msgstr "PNG"
 
 msgid ""
 "PNG decode failed on some images in this document\n"
@@ -1048,6 +1204,9 @@ msgstr "请选择要导入的文件："
 
 msgid "Please select the datetime range."
 msgstr "请选择日期时间范围。"
+
+msgid "Please select the language for the interface (requires restart)."
+msgstr "请选择界面语言（需要重新启动）。"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "请选择您想从列表中移除的脚本："
@@ -1135,8 +1294,23 @@ msgstr "重置颜色(&C)"
 msgid "Reset column widths"
 msgstr "重置列宽"
 
+msgid "Reset the column widths in the selection to the default column width"
+msgstr "将所选内容中的列宽重置为默认列宽"
+
+msgid "Reset the toolbar appearance"
+msgstr "重置工具栏外观"
+
+msgid "Reset toolbar"
+msgstr "重置工具栏"
+
+msgid "Restrict search and replace to view"
+msgstr "将查找和替换限制在当前视图"
+
 msgid "Run"
 msgstr "运行"
+
+msgid "S&cript"
+msgstr "脚本(&C)"
 
 msgid "Save &As..."
 msgstr "另存为(&A)..."
@@ -1173,8 +1347,8 @@ msgid "Save open documents periodically to temporary files"
 msgstr "定期将打开的文档保存到临时文件"
 
 #, c-format
-msgid "Saved %s successfully (in %d milliseconds)."
-msgstr "成功保存 %s (用时 %d 毫秒)。"
+msgid "Saved %s successfully (in %lld milliseconds)."
+msgstr "已成功保存 %s（用时 %lld 毫秒）。"
 
 msgid "Scale (&display only)"
 msgstr "缩放 (仅显示)(&D)"
@@ -1184,9 +1358,6 @@ msgstr "缩放 (重采样像素, 按 %)(&M)"
 
 msgid "Scale (re-sample pixels, by &width)"
 msgstr "缩放 (重采样像素, 按宽度)(&W)"
-
-msgid "Script"
-msgstr "脚本(&T)"
 
 msgid "Scroll Down (mousewheel)"
 msgstr "向下滚动 (鼠标滚轮)"
@@ -1206,6 +1377,11 @@ msgstr "向上滚动 (鼠标滚轮)"
 msgid "Search "
 msgstr "搜索 "
 
+msgid ""
+"Search and replace in the visible content of the current view (no folded "
+"grids, no tiny cells)"
+msgstr "在当前视图的可见内容中查找和替换（不含已折叠的网格和过小的单元格）"
+
 msgid "Select &Parent"
 msgstr "选择父级(&P)"
 
@@ -1217,10 +1393,6 @@ msgstr "选择第一个子级(&C)"
 
 msgid "Selected grid is not a table: cells must not already have sub-grids."
 msgstr "所选网格不是表格：单元格不能已有子网格。"
-
-#, c-format
-msgid "Selection contains %d cell(s) with %d character(s)."
-msgstr "所选内容包含 %d 个单元格，共 %d 个字符。"
 
 msgid "Semi-Colon delimited text (CSV)..."
 msgstr "分号分隔文本 (CSV)..."
@@ -1283,14 +1455,23 @@ msgstr "显示最近编辑的 50%"
 msgid "Show About dialog"
 msgstr "显示“关于”对话框"
 
+msgid "Show cells with notes"
+msgstr "显示有备注的单元格"
+
+msgid "Show cells with the same cell color"
+msgstr "显示单元格颜色相同的单元格"
+
+msgid "Show cells with the same style"
+msgstr "显示样式相同的单元格"
+
+msgid "Show entire row on match"
+msgstr "匹配时显示整行"
+
 msgid "Show last edits in specific date range"
 msgstr "显示特定日期范围内的最近编辑"
 
 msgid "Show only cells in current search"
 msgstr "仅显示当前搜索中的单元格"
-
-msgid "Show statistics"
-msgstr "显示统计信息"
 
 msgid "Single click maximize from tray"
 msgstr "单击系统托盘图标最大化"
@@ -1308,11 +1489,17 @@ msgstr "降序排序(&D)"
 msgid "Start date and time"
 msgstr "开始日期和时间"
 
+msgid "Start minimized"
+msgstr "启动时最小化"
+
 msgid "Start of line of text"
 msgstr "行首"
 
 msgid "Start of text"
 msgstr "文首"
+
+msgid "Start the application minimized"
+msgstr "以最小化方式启动应用程序"
 
 msgid "Statusbar"
 msgstr "状态栏"
@@ -1322,6 +1509,9 @@ msgstr "将当前层级（或以上）所有包含此文本的单元格与其父
 
 msgid "Swap mousewheel scrolling and zooming"
 msgstr "交换鼠标滚轮的滚动与缩放功能"
+
+msgid "System Default"
+msgstr "系统默认"
 
 msgid "Tab delimited text..."
 msgstr "制表符分隔文本..."
@@ -1452,6 +1642,9 @@ msgstr "关闭筛选(&O)"
 msgid "Tutorial &web page"
 msgstr "教程网页(&W)"
 
+msgid "Tutorial web page could not be found."
+msgstr "找不到教程网页。"
+
 msgid "Typewriter font..."
 msgstr "打字机字体..."
 
@@ -1484,6 +1677,15 @@ msgstr "垂直布局与线条样式渲染"
 
 msgid "What size grid would you like to start with?"
 msgstr "您想以多大尺寸的网格开始？"
+
+msgid "What subgrid size would you like to start with?"
+msgstr "您想从多大的子网格开始？"
+
+msgid ""
+"When a cell in a row matches the current filter, show the whole row normally "
+"instead of only the matching cell"
+msgstr ""
+"当某行中的单元格匹配当前筛选条件时，正常显示整行，而不仅仅是匹配的单元格"
 
 msgid "Width"
 msgstr "宽度"
@@ -1522,6 +1724,9 @@ msgstr "放大 (CTRL+鼠标滚轮)"
 msgid "Zoom Out (CTRL+mousewheel)"
 msgstr "缩小 (CTRL+鼠标滚轮)"
 
+msgid "Zoom on cells cursor hovers on"
+msgstr "缩放光标悬停的单元格"
+
 msgid "Zoomed in."
 msgstr "已放大。"
 
@@ -1533,6 +1738,9 @@ msgstr "更改网格的方向"
 
 msgid "couldn't import file!"
 msgstr "无法导入文件！"
+
+msgid "nothing to resize"
+msgstr "没有可调整大小的内容"
 
 msgid "only sets the colors and style of the copied cell, and keeps the text"
 msgstr "仅设置所复制单元格的颜色和样式，并保留文本"
@@ -1551,3 +1759,16 @@ msgstr "缩放："
 
 msgid "size:"
 msgstr "大小："
+
+#~ msgid "Cannot drag & drop more than 1 file."
+#~ msgstr "无法拖放超过 1 个文件。"
+
+#~ msgid "Enter/exit text edit to the right"
+#~ msgstr "向右进入/退出文本编辑"
+
+#, c-format
+#~ msgid "Selection contains %d cell(s) with %d character(s)."
+#~ msgstr "所选内容包含 %d 个单元格，共 %d 个字符。"
+
+#~ msgid "Show statistics"
+#~ msgstr "显示统计信息"
