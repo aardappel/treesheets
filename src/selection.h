@@ -370,7 +370,7 @@ struct Selection {
         if (Thin()) { return treesheets::Document::NoThin(); }
         grid->cell->AddUndo(doc);
         Cell *np = grid->CloneSel(*this).release();
-        grid->C(x, y)->text.t = ".";  // avoid this cell getting deleted
+        grid->C(x, y)->text.SetText(".");  // avoid this cell getting deleted
         if (xs > 1) {
             Selection s(grid, x + 1, y, xs - 1, ys);
             grid->MultiCellDeleteSub(doc, s);

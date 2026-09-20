@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "textruns.h"
 
 static const auto TS_VERSION = 26;
 static const auto g_grid_margin = 1;

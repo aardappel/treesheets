@@ -115,7 +115,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SetText(std::string_view t) override {
         if (current->parent != nullptr) {
             AddUndoIfNecessary();
-            current->text.t = wxString::FromUTF8(t.data(), t.size());
+            current->text.SetText(wxString::FromUTF8(t.data(), t.size()));
         }
     }
 

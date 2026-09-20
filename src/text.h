@@ -1,9 +1,13 @@
 struct Text {
     Cell *cell {nullptr};
     Image *image {nullptr};
+    // Never modify `t` other than appending at the end without going through the methods below
+    // (SetText, Clear, InsertText, RemoveText, ReplaceText), or `runs` gets out of sync.
     wxString t {wxEmptyString};
     int relsize {0};
     int stylebits {0};
+    // Rich text: ranges of `t` that deviate from the base style (`stylebits`, cell->textcolor).
+    TextRuns runs;
     int extent {0};
     wxDateTime lastedit;
     bool filtered {false};
@@ -13,6 +17,37 @@ struct Text {
     bool filteredraw {false};
 
     void WasEdited() { lastedit = wxDateTime::Now(); }
+
+    void SetText(const wxString &str) {
+        t = str;
+        runs.clear();
+    }
+
+    void InsertText(int pos, const wxString &ins) {
+        t.insert(pos, ins);
+        runs.Insert(pos, static_cast<int>(ins.Len()));
+        CheckRuns();
+    }
+
+    void RemoveText(int pos, int len) {
+        t.Remove(pos, len);
+        runs.Remove(pos, len, stylebits);
+        CheckRuns();
+    }
+
+    // The replacement takes the style of the first replaced character.
+    void ReplaceText(int pos, int len, const wxString &str) {
+        t.Remove(pos, len);
+        t.insert(pos, str);
+        runs.Replace(pos, len, static_cast<int>(str.Len()), stylebits);
+        CheckRuns();
+    }
+
+    void CheckRuns() const {
+#ifdef _DEBUG
+        ASSERT(runs.Valid(static_cast<int>(t.Len())));
+#endif
+    }
 
     Text() { WasEdited(); }
 
@@ -29,7 +64,7 @@ struct Text {
 
     size_t EstimatedMemoryUse() const {
         ASSERT(wxUSE_UNICODE);
-        return sizeof(Text) + t.Length() * sizeof(wchar_t);
+        return sizeof(Text) + t.Length() * sizeof(wchar_t) + runs.v.capacity() * sizeof(TextRun);
     }
 
     double GetNum() const {
@@ -52,7 +87,7 @@ struct Text {
         // If there were only zeroes, remove '.'.
         if (s.back() == '.') { s.pop_back(); }
 
-        t = s;
+        SetText(s);
     }
 
     static wxString htmlify(wxString str) {
@@ -410,7 +445,7 @@ struct Text {
     bool RangeSelRemove(Selection &s) {
         WasEdited();
         if (s.cursor != s.cursorend) {
-            t.Remove(s.cursor, s.cursorend - s.cursor);
+            RemoveText(s.cursor, s.cursorend - s.cursor);
             s.cursorend = s.cursor;
             return true;
         }
@@ -436,7 +471,7 @@ struct Text {
         if (!s.TextEdit()) { Clear(doc, s); }
         RangeSelRemove(s);
         if (prevl == 0U && !keeprelsize) { SetRelSize(s); }
-        t.insert(s.cursor, ins);
+        InsertText(s.cursor, ins);
         s.cursor = s.cursorend = s.cursor + static_cast<int>(ins.Len());
     }
 
@@ -448,13 +483,13 @@ struct Text {
 
     void Delete(Selection &s) {
         if (!RangeSelRemove(s)) {
-            if (s.cursor < static_cast<int>(t.Len())) { t.Remove(s.cursor, 1); };
+            if (s.cursor < static_cast<int>(t.Len())) { RemoveText(s.cursor, 1); };
         }
     }
     void Backspace(Selection &s) {
         if (!RangeSelRemove(s)) {
             if (s.cursor > 0) {
-                t.Remove(--s.cursor, 1);
+                RemoveText(--s.cursor, 1);
                 --s.cursorend;
             }
         }
@@ -473,8 +508,7 @@ struct Text {
             for (auto i = 0, j = 0; (j = t.Mid(i).Find(sys->searchstring)) >= 0;) {
                 WasEdited();
                 i += j;
-                t.Remove(i, sys->searchstring.Len());
-                t.insert(i, str);
+                ReplaceText(i, static_cast<int>(sys->searchstring.Len()), str);
                 i += str.Len();
             }
         } else {
@@ -483,9 +517,8 @@ struct Text {
                 WasEdited();
                 i += j;
                 lowert.Remove(i, sys->searchstring.Len());
-                t.Remove(i, sys->searchstring.Len());
+                ReplaceText(i, static_cast<int>(sys->searchstring.Len()), str);
                 lowert.insert(i, lstr);
-                t.insert(i, str);
                 i += str.Len();
             }
         }
@@ -493,6 +526,7 @@ struct Text {
 
     void Clear(Document *doc, Selection &s) {
         t.Clear();
+        runs.clear();
         s.EnterEdit(doc);
     }
 
@@ -557,7 +591,7 @@ struct Text {
                 if (!v) {
                     v = cell->Clone(nullptr);
                     v->celltype = CT_DATA;
-                    v->text.t = "**Variable Load Error**";
+                    v->text.SetText("**Variable Load Error**");
                 }
                 return v;
             }

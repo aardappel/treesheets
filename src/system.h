@@ -618,7 +618,7 @@ struct System {
             } else {
                 c->AddGrid(1, numrows);
                 SetGridSettingsFromXML(c, node);
-                loopv(i, attributes) c->grid->C(0, i)->text.t = attributes[i]->GetValue();
+                loopv(i, attributes) c->grid->C(0, i)->text.SetText(attributes[i]->GetValue());
                 loopv(i, nodes)
                     FillXML(c->grid->C(0, i + attributes.size()).get(), nodes[i], attributestoo);
             }
