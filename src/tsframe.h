@@ -119,13 +119,7 @@ struct TSFrame : wxFrame {
 
         imagepath = app->GetDataPath("images/nuvola/dropdown/");
 
-        if (sys->singletray) {
-            taskbaricon.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_UP,
-                        wxTaskBarIconEventHandler(TSFrame::OnTBIDBLClick), nullptr, this);
-        } else {
-            taskbaricon.Connect(wxID_ANY, wxEVT_TASKBAR_LEFT_DCLICK,
-                        wxTaskBarIconEventHandler(TSFrame::OnTBIDBLClick), nullptr, this);
-        }
+        UpdateTaskBarIconEvents();
 
         bool showtbar = false;
         bool showsbar = false;
@@ -1067,12 +1061,9 @@ struct TSFrame : wxFrame {
                 #endif
             }
         }
-        // Persist a checkbox menu item in the config, and optionally in a system variable.
+        // Store a checkbox menu item in a system variable and persist it in the config.
         auto Toggle = [&](const wxString &cfg, auto &var) {
             sys->cfg->Write(cfg, var = ce.IsChecked());
-        };
-        auto NeedsRestart = [&]() {
-            SetStatus(_("change will take effect next run of TreeSheets"));
         };
         // Persist a radio menu item group whose ids start at `first`.
         auto Choose = [&](const wxString &cfg, auto &var, int first) {
@@ -1173,7 +1164,7 @@ struct TSFrame : wxFrame {
             }
             case A_SINGLETRAY:
                 Toggle("singletray", sys->singletray);
-                NeedsRestart();
+                UpdateTaskBarIconEvents();
                 break;
             case A_MAKEBAKS: Toggle("makebaks", sys->makebaks); break;
             case A_TOTRAY: Toggle("totray", sys->totray); break;
@@ -1402,6 +1393,13 @@ struct TSFrame : wxFrame {
     }
 
     void OnTBIDBLClick(wxTaskBarIconEvent &e) { DeIconize(); }
+
+    void UpdateTaskBarIconEvents() {
+        taskbaricon.Unbind(wxEVT_TASKBAR_LEFT_UP, &TSFrame::OnTBIDBLClick, this);
+        taskbaricon.Unbind(wxEVT_TASKBAR_LEFT_DCLICK, &TSFrame::OnTBIDBLClick, this);
+        taskbaricon.Bind(sys->singletray ? wxEVT_TASKBAR_LEFT_UP : wxEVT_TASKBAR_LEFT_DCLICK,
+                         &TSFrame::OnTBIDBLClick, this);
+    }
 
     void OnClosing(wxCloseEvent &ce) {
         bool fcb = fromclosebox;
