@@ -1,13 +1,14 @@
-File format spec for TreeSheets .cts files, version 23. This should be enough for a programmer to write an importer/exporter.
+File format spec for TreeSheets .cts files, version 27. This should be enough for a programmer to write an importer/exporter.
 
 struct File     // not really a struct, i.e. no alignment, read an element at a time
 {
     char magic[4] = "TSFF";
-    char version = 23;
+    char version = 27;
     // TreeSheets saves the selection and the zoom level when the file is saved.
-    int xs; // xs is the number of cells within the selection in x direction
-    int ys; // ys is the number of cells within the selection in y direction
-    int zoomlevel; // zoom level of the document
+    // These three are single bytes (only present if version >= 21, and zoomlevel if version >= 23).
+    uchar xs; // xs is the number of cells within the selection in x direction
+    uchar ys; // ys is the number of cells within the selection in y direction
+    uchar zoomlevel; // zoom level of the document
     
     Image images[0 or more];
 
@@ -17,8 +18,9 @@ struct File     // not really a struct, i.e. no alignment, read an element at a 
     Cell root;
 
     for (;;) {
-        String tagname; // terminated by empty string];
-        int tagcolor;
+        String tagname; // terminated by empty string
+        uint cellcolor;  // only if version >= 24
+        uint textcolor;  // only if version >= 24
     }
 }
 
@@ -37,6 +39,7 @@ struct Cell
     uint cellcolor;
     uint textcolor;
     uchar drawstyle;    // enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };
+    String note;        // only if version >= 25
     uchar cellcontents; // enum { TS_TEXT = 0, TS_GRID, TS_BOTH, TS_NEITHER };
     // The first cell that is within the selection is marked with the highest bit set to 1 (1 x x x x x x x) in cellcontents.
     if (TS_TEXT or TS_BOTH)
@@ -46,6 +49,7 @@ struct Cell
         uint imageindex; // or 0xFFFFFFFF for no image
         uint stylebits;   // enum { STYLE_BOLD = 1, STYLE_ITALIC = 2, STYLE_FIXED = 4, STYLE_UNDERLINE = 8, STYLE_STRIKETHRU = 16 };
         uint64 lastedit;    // internal representation of wxDateTime
+        TextRuns runs;      // only if version >= 27
     }
     if (TS_GRID or TS_BOTH)
     {
@@ -58,5 +62,28 @@ struct Cell
         Cell cells[xs * ys]; // row major
     }
 }
+
+// Rich text. The text of a cell has a base style: the cell's stylebits and textcolor. Runs mark
+// ranges of the text that are styled differently; all text outside of runs has the base style.
+struct TextRuns
+{
+    uint numruns;   // usually 0; more than the number of characters in the text is invalid
+    Run runs[numruns];
+}
+
+struct Run
+{
+    uint start;     // position of the first character in the cell's text
+    uint length;    // number of characters, at least 1
+    uint stylebits; // complete style of the run (not relative to the base style), same enum as above
+    uint color;     // bits 0..23: text color, in the same encoding as the cell's textcolor
+                    // bit 24 (0x1000000): set if the run has its own color, otherwise the run
+                    // uses the cell's textcolor and bits 0..23 are ignored
+}
+// Runs must be sorted by start, must not overlap and must lie within the text. Positions are
+// counted in characters of the text as wxString counts them, which differs between platforms for
+// characters outside the Basic Multilingual Plane (UTF-16 code units vs. code points).
+// A reader should discard runs that violate this. Readers for versions before 27 don't know about
+// runs, and refuse to open files of a newer version.
 
 struct String  // as wxDataOutputStream::WriteString writes it, apparently UTF-8 prefixed by length
