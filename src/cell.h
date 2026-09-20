@@ -247,7 +247,7 @@ struct Cell {
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             this != root && !str.IsEmpty()) {
             wxString spanstyle = "white-space: pre-wrap;";
-            if ((text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) != 0) {
+            if (text.runs.empty() && (text.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) != 0) {
                 spanstyle += "text-decoration:";
                 spanstyle += (text.stylebits & STYLE_UNDERLINE) != 0 ? " underline" : "";
                 spanstyle += (text.stylebits & STYLE_STRIKETHRU) != 0 ? " line-through" : "";
@@ -470,7 +470,7 @@ struct Cell {
                 textcolor = original->textcolor;
                 text.stylebits = original->text.stylebits;
             }
-            text.Insert(document, original->text.t, selection, false);
+            text.Insert(document, original->text.t, selection, false, &original->text);
         }
         if (original->text.image != nullptr) { text.image = original->text.image; }
         if (original->grid) {

@@ -548,11 +548,19 @@ struct System {
         return _("File load error.");
     }
 
+    // <run> elements inside a TreeSheets <cell> are styled text, not sub-cells.
+    static bool IsRunNode(wxXmlNode *node, wxXmlNode *child) {
+        return node->GetName() == "cell" && child->GetType() == wxXML_ELEMENT_NODE &&
+               child->GetName() == "run";
+    }
+
     static int GetXMLNodes(wxXmlNode *node, vector<wxXmlNode *> &nodes,
                            vector<wxXmlAttribute *> *const attributes = nullptr,
                            bool attributestoo = false) {
         for (auto *child = node->GetChildren(); child != nullptr; child = child->GetNext()) {
-            if (child->GetType() == wxXML_ELEMENT_NODE) { nodes.push_back(child); }
+            if (child->GetType() == wxXML_ELEMENT_NODE && !IsRunNode(node, child)) {
+                nodes.push_back(child);
+            }
         }
         if (attributestoo && attributes != nullptr) {
             for (auto *attribute = node->GetAttributes(); attribute != nullptr;
@@ -569,12 +577,58 @@ struct System {
                                                                          : def;
     }
 
+    // Text with <run> elements: unlike the plain path this keeps whitespace as is, since it
+    // matters at the boundaries of runs.
+    static void FillXMLRichText(Text &text, wxXmlNode *node) {
+        vector<wxXmlNode *> parts;
+        for (auto *child = node->GetChildren(); child != nullptr; child = child->GetNext()) {
+            auto type = child->GetType();
+            if (type == wxXML_TEXT_NODE || type == wxXML_CDATA_SECTION_NODE ||
+                IsRunNode(node, child)) {
+                parts.push_back(child);
+            } else if (type == wxXML_ELEMENT_NODE) {
+                break;  // what follows are sub-cells, and the indentation in front of them
+            }
+        }
+        loopv(i, parts) {
+            auto *part = parts[i];
+            if (part->GetType() == wxXML_ELEMENT_NODE) {
+                auto content = part->GetNodeContent();
+                if (content.IsEmpty()) { continue; }
+                TextRun r;
+                r.start = static_cast<int>(text.t.Len());
+                r.len = static_cast<int>(content.Len());
+                r.stylebits = wxAtoi(part->GetAttribute("stylebits", "0"));
+                r.hascolor = part->HasAttribute("colorfg");
+                r.color = ParseColorAttribute(part, "colorfg", 0) & 0xFFFFFF;
+                text.t.Append(content);
+                text.runs.v.push_back(r);
+            } else {
+                auto content = part->GetContent();
+                // Whatever text follows the last run is padded by the exporter.
+                if (i + 1 == parts.size()) { content.Trim(); }
+                text.t.Append(content);
+            }
+        }
+    }
+
     void FillXML(Cell *c, wxXmlNode *node, bool attributestoo) {
-        const auto &words = wxStringTokenize(
-            node->GetType() == wxXML_ELEMENT_NODE ? node->GetNodeContent() : node->GetContent());
-        loop(i, words.GetCount()) {
-            if (!c->text.t.IsEmpty()) { c->text.t.Append(L' '); }
-            c->text.t.Append(words[i]);
+        auto hasruns = false;
+        if (node->GetName() == "cell") {
+            for (auto *child = node->GetChildren(); child != nullptr; child = child->GetNext()) {
+                if (IsRunNode(node, child)) { hasruns = true; }
+            }
+        }
+        if (hasruns) {
+            FillXMLRichText(c->text, node);
+        } else {
+            const auto &words = wxStringTokenize(node->GetType() == wxXML_ELEMENT_NODE
+                                                     ? node->GetNodeContent()
+                                                     : node->GetContent());
+            loop(i, words.GetCount()) {
+                if (!c->text.t.IsEmpty()) { c->text.t.Append(L' '); }
+                c->text.t.Append(words[i]);
+            }
         }
 
         if (node->GetName() == "cell") {
@@ -584,6 +638,7 @@ struct System {
             c->textcolor = ParseColorAttribute(node, "colorfg", g_textcolor_default);
             c->celltype = wxAtoi(node->GetAttribute("type", "0"));
         }
+        c->text.runs.Normalize(c->text.stylebits);
 
         vector<wxXmlNode *> nodes;
         vector<wxXmlAttribute *> attributes;
