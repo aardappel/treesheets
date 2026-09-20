@@ -18,8 +18,8 @@ elseif(WIN32)
     set(CPACK_INNOSETUP_RUN_EXECUTABLES "TreeSheets")
     set(CPACK_INNOSETUP_PACKAGE_NAME ${PROJECT_NAME})
     set(CPACK_INNOSETUP_LANGUAGES
-        "brazilianPortuguese" "english" "french" "german"
-        "italian" "japanese" "korean" "russian"
+        "brazilianPortuguese" "chineseSimplified" "chineseTraditional"
+        "english" "french" "german" "italian" "japanese" "korean" "russian"
     )
     set(CPACK_INNOSETUP_SETUP_PrivilegesRequired "lowest")
     set(CPACK_INNOSETUP_IGNORE_README_PAGE ON)
