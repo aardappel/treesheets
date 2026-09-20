@@ -190,11 +190,82 @@ struct Text {
         // return GetLinePart(i, l, l);     // big word was the last one
     }
 
+    // Calls f(start, len, stylebits, hascolor, color) for consecutive segments of the text range
+    // [start, start + len) that each have a single style.
+    template<typename F> void ForEachSegment(int start, int len, F f) const {
+        auto pos = start;
+        auto end = start + len;
+        for (const auto &r : runs.v) {
+            if (r.end() <= pos) { continue; }
+            if (r.start >= end) { break; }
+            if (r.start > pos) {
+                f(pos, r.start - pos, stylebits, false, 0U);
+                pos = r.start;
+            }
+            auto segend = min(r.end(), end);
+            f(pos, segend - pos, r.stylebits, r.hascolor, r.color);
+            pos = segend;
+        }
+        if (pos < end) { f(pos, end - pos, stylebits, false, 0U); }
+    }
+
+    // Rich text lines have one uniform height: every style's font is aligned on a common
+    // baseline, and the line is as tall as that takes.
+    struct LineMetrics {
+        int height {0};
+        int ascent {0};
+    };
+
+    // Leaves the base font selected.
+    template<typename DC> LineMetrics GetLineMetrics(Document *doc, DC &dc, int depth) const {
+        doc->PickFont(dc, depth, relsize, stylebits);
+        LineMetrics lm;
+        lm.height = dc.GetCharHeight();
+        if (runs.empty()) { return lm; }
+        lm.ascent = dc.GetFontMetrics().ascent;
+        auto maxdescent = lm.height - lm.ascent;
+        auto last = stylebits;
+        for (const auto &r : runs.v) {
+            if (r.stylebits == last) { continue; }
+            last = r.stylebits;
+            doc->PickFont(dc, depth, relsize, last);
+            auto ascent = dc.GetFontMetrics().ascent;
+            lm.ascent = max(lm.ascent, ascent);
+            maxdescent = max(maxdescent, dc.GetCharHeight() - ascent);
+        }
+        lm.height = lm.ascent + maxdescent;
+        doc->PickFont(dc, depth, relsize, stylebits);
+        return lm;
+    }
+
+    // Width of the text range [start, start + len), which must not span lines. Without runs
+    // this expects the base font to be selected already; with runs it leaves it selected.
     template<typename DC>
-    void TextSize(DC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth) const {
+    int RangeWidth(Document *doc, DC &dc, int depth, int start, int len) const {
+        auto total = 0;
+        if (runs.empty()) {
+            dc.GetTextExtent(t.Mid(start, len), &total, nullptr);
+            return total;
+        }
+        ForEachSegment(start, len, [&](int s, int l, int sb, bool, uint) {
+            doc->PickFont(dc, depth, relsize, sb);
+            auto w = 0;
+            dc.GetTextExtent(t.Mid(s, l), &w, nullptr);
+            total += w;
+        });
+        doc->PickFont(dc, depth, relsize, stylebits);
+        return total;
+    }
+
+    template<typename DC>
+    void TextSize(DC &dc, int &sx, int &sy, int tiny, int &leftoffset, int maxcolwidth,
+                  Document *doc, int depth) const {
         sx = sy = 0;
         auto i = 0;
+        auto rich = tiny == 0 && !runs.empty();
+        auto lm = rich ? GetLineMetrics(doc, dc, depth) : LineMetrics();
         for (;;) {
+            auto start = i;
             auto curl = GetLine(i, maxcolwidth);
             if (curl.IsEmpty()) { break; }
             int x = 0;
@@ -202,6 +273,9 @@ struct Text {
             if (tiny != 0) {
                 x = static_cast<int>(curl.Len());
                 y = 1;
+            } else if (rich) {
+                x = RangeWidth(doc, dc, depth, start, static_cast<int>(curl.Len()));
+                y = lm.height;
             } else {
                 dc.GetTextExtent(curl, &x, &y);
             }
@@ -237,7 +311,9 @@ struct Text {
 
         doc->PickFont(dc, depth, relsize, stylebits);
 
-        auto h = cell->tiny ? 1 : dc.GetCharHeight();
+        auto rich = !cell->tiny && !runs.empty();
+        auto lm = rich ? GetLineMetrics(doc, dc, depth) : LineMetrics();
+        auto h = cell->tiny ? 1 : (rich ? lm.height : dc.GetCharHeight());
         leftoffset = h;
         auto i = 0;
         auto lines = 0;
@@ -255,6 +331,7 @@ struct Text {
             }
         }
         for (;;) {
+            auto start = i;
             auto curl = GetLine(i, maxcolwidth);
             if (curl.IsEmpty()) { break; }
             if (cell->tiny) {
@@ -279,6 +356,33 @@ struct Text {
                         }
                     }
                 }
+            } else if (rich) {
+                auto x = bx + 2 + ixs + g_margin_extra;
+                auto ty = by + lines * h + g_margin_extra;
+                ForEachSegment(start, static_cast<int>(curl.Len()),
+                               [&](int s, int l, int sb, bool hascolor, uint color) {
+                    doc->PickFont(dc, depth, relsize, sb);
+                    if (searchfound) {
+                        dc.SetTextForeground(*wxRED);
+                    } else if (filtered) {
+                        dc.SetTextForeground(*wxLIGHT_GREY);
+                    } else if (istag) {
+                        dc.SetTextForeground(LightColor(doc->tags[t].second));
+                    } else if (hascolor) {
+                        dc.SetTextForeground(LightColor(color));
+                    } else if (cell->textcolor != 0U) {
+                        dc.SetTextForeground(LightColor(cell->textcolor));
+                    } else {
+                        dc.SetTextForeground(sys->rubberbandcolor);
+                    }
+                    auto str = t.Mid(s, l);
+                    auto w = 0;
+                    dc.GetTextExtent(str, &w, nullptr);
+                    dc.DrawText(str, x, ty + lm.ascent - dc.GetFontMetrics().ascent);
+                    x += w;
+                });
+                doc->PickFont(dc, depth, relsize, stylebits);
+                dc.SetTextForeground(sys->rubberbandcolor);
             } else {
                 if (searchfound) {
                     dc.SetTextForeground(*wxRED);
@@ -311,11 +415,12 @@ struct Text {
         if (!cell->tiny) { treesheets::System::ImageSize(DisplayImage(), ixs, iys); }
         if (ixs != 0) { ixs += 2; }
 
-        doc->PickFont(dc, cell->Depth() - doc->drawpath.size(), relsize, stylebits);
+        auto depth = cell->Depth() - static_cast<int>(doc->drawpath.size());
+        doc->PickFont(dc, depth, relsize, stylebits);
 
         auto i = 0;
         auto linestart = 0;
-        auto line = by / dc.GetCharHeight();
+        auto line = by / (runs.empty() ? dc.GetCharHeight() : GetLineMetrics(doc, dc, depth).height);
         wxString ls;
 
         loop(l, line + 1) {
@@ -325,8 +430,12 @@ struct Text {
 
         for (;;) {
             auto x = 0;
-            auto y = 0;
-            dc.GetTextExtent(ls, &x, &y);  // FIXME: can we do this more intelligently?
+            if (runs.empty()) {
+                dc.GetTextExtent(ls, &x, nullptr);
+            } else {
+                x = RangeWidth(doc, dc, depth, linestart, static_cast<int>(ls.Len()));
+            }
+            // FIXME: can we do this more intelligently?
             if (x <= bx - ixs + 2 || x == 0) { break; }
             ls.Truncate(ls.Len() - 1);
         }
@@ -342,8 +451,9 @@ struct Text {
         auto iys = 0;
         if (!cell->tiny) { treesheets::System::ImageSize(DisplayImage(), ixs, iys); }
         if (ixs != 0) { ixs += 2; }
-        doc->PickFont(dc, cell->Depth() - doc->drawpath.size(), relsize, stylebits);
-        auto h = dc.GetCharHeight();
+        auto depth = cell->Depth() - static_cast<int>(doc->drawpath.size());
+        doc->PickFont(dc, depth, relsize, stylebits);
+        auto h = runs.empty() ? dc.GetCharHeight() : GetLineMetrics(doc, dc, depth).height;
 
         if (s.cursor != s.cursorend) {
             // A range selection can span multiple lines (one rectangle drawn per line
@@ -356,12 +466,8 @@ struct Text {
                 auto len = static_cast<int>(ls.Len());
                 auto end = start + len;
                 if (s.cursor <= end && s.cursorend >= start) {
-                    ls.Truncate(min(s.cursorend, end) - start);
-                    auto x1 = 0;
-                    auto x2 = 0;
-                    dc.GetTextExtent(ls, &x2, nullptr);
-                    ls.Truncate(max(s.cursor, start) - start);
-                    dc.GetTextExtent(ls, &x1, nullptr);
+                    auto x2 = RangeWidth(doc, dc, depth, start, min(s.cursorend, end) - start);
+                    auto x1 = RangeWidth(doc, dc, depth, start, max(s.cursor, start) - start);
                     if (x1 != x2) {
                         int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
                         int starty =
@@ -387,10 +493,11 @@ struct Text {
         auto &cc = doc->cursorposcache;
         if (cc.cell != cell || cc.image != image || cc.cursor != s.cursor ||
             cc.stylebits != stylebits || cc.relsize != relsize || cc.maxcolwidth != maxcolwidth ||
-            cc.text != t) {
+            cc.text != t || cc.runs != runs.v) {
             cc.cell = cell;
             cc.image = image;
             cc.text = t;
+            cc.runs = runs.v;
             cc.cursor = s.cursor;
             cc.stylebits = stylebits;
             cc.relsize = relsize;
@@ -403,9 +510,7 @@ struct Text {
                 auto len = static_cast<int>(ls.Len());
                 auto end = start + len;
                 if (s.cursor >= start && s.cursor <= end) {
-                    ls.Truncate(s.cursor - start);
-                    auto x = 0;
-                    dc.GetTextExtent(ls, &x, nullptr);
+                    auto x = RangeWidth(doc, dc, depth, start, s.cursor - start);
                     cc.localdx = x + 1 + ixs + g_margin_extra;
                     cc.line = l;
                     cc.found = true;
