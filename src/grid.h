@@ -741,13 +741,23 @@ struct Grid {
     void SetStyle(Document *doc, const Selection &sel, int sb) {
         cell->AddUndo(doc);
         cell->ResetChildren();
-        // Only a selected range of text gets the style; otherwise it applies to the whole cell.
+        // Only a selected range of text gets the style; otherwise it applies to the whole cell,
+        // or all selected cells: on, unless all of them already have it (see
+        // Document::SelectionHasStyle, which shows this state in the menu).
         auto range = sel.TextEdit() && sel.cursor != sel.cursorend;
+        auto set = true;
+        if (!range) {
+            auto all = true;
+            foreachcellinsel(c, sel) {
+                if (!c->text.HasStyleAll(sb)) { all = false; }
+            }
+            set = !all;
+        }
         foreachcellinsel(c, sel) {
             if (range) {
                 c->text.ToggleStyle(sb, sel.cursor, sel.cursorend);
             } else {
-                c->text.ToggleStyleAll(sb);
+                c->text.SetStyleAll(sb, set);
             }
             c->text.WasEdited();
         }

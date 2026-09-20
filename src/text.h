@@ -296,15 +296,11 @@ struct Text {
         CheckRuns();
     }
 
-    // Toggles a style bit on the whole text, i.e. the base style and all runs.
-    void ToggleStyleAll(int bit) {
-        if (runs.empty()) {
-            stylebits ^= bit;
-            return;
-        }
-        auto set = !HasStyle(bit, 0, static_cast<int>(t.Len()));
+    // Sets or clears a style bit on the whole text, i.e. the base style and all runs.
+    void SetStyleAll(int bit, bool set) {
         auto apply = [&](int &sb) { sb = set ? (sb | bit) : (sb & ~bit); };
         apply(stylebits);
+        if (runs.empty()) { return; }
         for (auto &r : runs.v) { apply(r.stylebits); }
         runs.Normalize(stylebits);
         CheckRuns();
