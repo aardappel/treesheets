@@ -1256,25 +1256,29 @@ struct TSFrame : wxFrame {
             case wxID_CLOSE:
                 canvas->doc->Action(ce.GetId());
                 break;  // canvas dangling pointer on return
-            default:
-                if (ce.GetId() >= wxID_FILE1 && ce.GetId() <= wxID_FILE9) {
-                    wxString filename(filehistory.GetHistoryFile(ce.GetId() - wxID_FILE1));
-                    SetStatus(sys->Open(filename));
+            default: {
+                auto id = ce.GetId();
                 #ifdef ENABLE_LOBSTER
-                    } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_SCRIPT) {
-                        SetStatus(canvas->doc->TagSet(ce.GetId() - A_TAGSET));
-                    } else if (ce.GetId() >= A_SCRIPT && ce.GetId() < A_MAXACTION) {
-                        auto message = tssi.ScriptRun(sys->scripts[ce.GetId() - A_SCRIPT].c_str());
-                        message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
-                        SetStatus(wxString(message));
+                    const int tagsend = A_SCRIPT;
                 #else
-                    } else if (ce.GetId() >= A_TAGSET && ce.GetId() < A_MAXACTION) {
-                        SetStatus(canvas->doc->TagSet(ce.GetId() - A_TAGSET));
+                    const int tagsend = A_MAXACTION;
+                #endif
+                if (id >= wxID_FILE1 && id <= wxID_FILE9) {
+                    SetStatus(sys->Open(filehistory.GetHistoryFile(id - wxID_FILE1)));
+                } else if (id >= A_TAGSET && id < tagsend) {
+                    SetStatus(canvas->doc->TagSet(id - A_TAGSET));
+                #ifdef ENABLE_LOBSTER
+                } else if (id >= A_SCRIPT && id < A_MAXACTION) {
+                    auto message = tssi.ScriptRun(sys->scripts[id - A_SCRIPT].c_str());
+                    message.erase(std::remove(message.begin(), message.end(), '\n'),
+                                  message.end());
+                    SetStatus(wxString(message));
                 #endif
                 } else {
-                    SetStatus(canvas->doc->Action(ce.GetId()));
-                    break;
+                    SetStatus(canvas->doc->Action(id));
                 }
+                break;
+            }
         }
     }
 
