@@ -911,6 +911,22 @@ struct TSFrame : wxFrame {
         }
     }
 
+    // wxAuiToolBar and wxAuiManager cache pixel sizes, so after a DPI change (e.g. moving the
+    // window to a display with another scale factor) toolbars would keep stale, differing heights.
+    void RefitToolbars() {
+        UpdateToolbarIcons();
+        for (const auto &name : GetToolbarPaneNames()) {
+            auto &pane = aui.GetPane(name);
+            if (pane.window == nullptr) { continue; }
+            auto *tb = wxDynamicCast(pane.window, wxAuiToolBar);
+            if (tb != nullptr) { tb->Realize(); }
+            pane.window->InvalidateBestSize();
+            pane.BestSize(wxDefaultSize).MinSize(wxDefaultSize).FloatingSize(wxDefaultSize);
+        }
+        aui.Update();
+        ReflowToolbars();
+    }
+
     void RefreshToolBar() {
         for (const auto &name : GetToolbarPaneNames()) { DestroyToolbarPane(name); }
         toolbaricons.clear();
@@ -1634,7 +1650,10 @@ struct TSFrame : wxFrame {
         for (const auto &image : sys->imagelist) image->ClearBitmap();
         RenderFolderIcon();
         // Re-layout after child windows have received their new DPI as well.
-        CallAfter([this]() { TabsReset(); });
+        CallAfter([this]() {
+            RefitToolbars();
+            TabsReset();
+        });
         dce.Skip();
     }
 
