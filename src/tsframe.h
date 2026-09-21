@@ -863,6 +863,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_COMBOBOX, &TSFrame::OnChangeColor, this, A_BORDCOLOR);
         Bind(wxEVT_COMBOBOX, &TSFrame::OnDDImage, this, A_DDIMAGE);
         Bind(wxEVT_ICONIZE, &TSFrame::OnIconize, this);
+        Bind(wxEVT_SIZE, &TSFrame::OnSize, this);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &TSFrame::OnTabChange, this, wxID_ANY);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &TSFrame::OnTabClose, this, wxID_ANY);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSED, &TSFrame::OnTabClosed, this, wxID_ANY);
@@ -1018,6 +1019,66 @@ struct TSFrame : wxFrame {
 
         auto *artprovider = aui.GetArtProvider();
         artprovider->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 0);
+    }
+
+    using ToolbarLayout = std::map<wxString, std::pair<int, int>>;
+    ToolbarLayout preferredlayout;  // rows as arranged by the user, ignoring window width
+    ToolbarLayout appliedlayout;    // what the last reflow produced
+
+    // wxAuiManager never wraps docked toolbars, those that don't fit in a row are cut off. So
+    // split rows that are too wide ourselves. Rows the user arranged are remembered and restored
+    // once the window is wide enough again.
+    void ReflowToolbars() {
+        std::vector<wxAuiPaneInfo *> toolbars;
+        ToolbarLayout current;
+        auto &panes = aui.GetAllPanes();
+        for (size_t i = 0; i < panes.GetCount(); i++) {
+            auto &pane = panes.Item(i);
+            if (pane.IsToolbar() && pane.IsShown() && pane.IsDocked() &&
+                pane.dock_direction == wxAUI_DOCK_TOP && pane.window != nullptr) {
+                toolbars.push_back(&pane);
+                current[pane.name] = {pane.dock_row, pane.dock_pos};
+            }
+        }
+        if (toolbars.empty()) { return; }
+        // If the layout is not what we produced, the user (or a perspective) changed it.
+        if (current != appliedlayout) { preferredlayout = current; }
+        auto preferred = [&](const wxAuiPaneInfo *p) {
+            auto it = preferredlayout.find(p->name);
+            return it != preferredlayout.end() ? it->second : current[p->name];
+        };
+        std::stable_sort(toolbars.begin(), toolbars.end(),
+                         [&](const wxAuiPaneInfo *a, const wxAuiPaneInfo *b) {
+                             return preferred(a) < preferred(b);
+                         });
+        auto maxwidth = GetClientSize().x;
+        auto gripper = FromDIP(12);
+        auto row = -1;
+        auto pos = 0;
+        auto used = 0;
+        auto prefrow = 0;
+        for (auto *pane : toolbars) {
+            auto width = pane->window->GetBestSize().x + gripper;
+            auto pr = preferred(pane).first;
+            if (row < 0 || pr != prefrow || used + width > maxwidth) {
+                row++;
+                pos = 0;
+                used = 0;
+                prefrow = pr;
+            }
+            pane->Row(row).Position(pos++);
+            used += width;
+        }
+        ToolbarLayout wanted;
+        for (auto *pane : toolbars) { wanted[pane->name] = {pane->dock_row, pane->dock_pos}; }
+        if (wanted != current) { aui.Update(); }
+        appliedlayout.clear();
+        for (auto *pane : toolbars) { appliedlayout[pane->name] = {pane->dock_row, pane->dock_pos}; }
+    }
+
+    void OnSize(wxSizeEvent &se) {
+        se.Skip();
+        ReflowToolbars();
     }
 
     void AppOnEventLoopEnter() {
