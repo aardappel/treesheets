@@ -1071,13 +1071,13 @@ struct TSFrame : wxFrame {
                              return preferred(a) < preferred(b);
                          });
         auto maxwidth = GetClientSize().x;
-        auto gripper = FromDIP(12);
         auto row = -1;
         auto pos = 0;
         auto used = 0;
         auto prefrow = 0;
         for (auto *pane : toolbars) {
-            auto width = pane->window->GetBestSize().x + gripper;
+            // Includes the toolbar's own gripper, wxAuiManager's is turned off for toolbars.
+            auto width = pane->window->GetBestSize().x;
             auto pr = preferred(pane).first;
             if (row < 0 || pr != prefrow || used + width > maxwidth) {
                 row++;
