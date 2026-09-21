@@ -1076,6 +1076,34 @@ struct TSFrame : wxFrame {
         for (auto *pane : toolbars) { appliedlayout[pane->name] = {pane->dock_row, pane->dock_pos}; }
     }
 
+    // The perspective to persist: like the current one, but with toolbar rows as arranged by the
+    // user rather than as split up by ReflowToolbars for the current window width.
+    wxString SavePreferredPerspective() {
+        auto &panes = aui.GetAllPanes();
+        std::vector<std::tuple<wxAuiPaneInfo *, int, int>> restore;
+        ToolbarLayout current;
+        for (size_t i = 0; i < panes.GetCount(); i++) {
+            auto &pane = panes.Item(i);
+            if (pane.IsToolbar() && pane.IsShown() && pane.IsDocked() &&
+                pane.dock_direction == wxAUI_DOCK_TOP && pane.window != nullptr)
+                current[pane.name] = {pane.dock_row, pane.dock_pos};
+        }
+        // Only if the layout is still what the last reflow produced, otherwise the user changed
+        // it since and it is the preferred one.
+        if (current == appliedlayout) {
+            for (size_t i = 0; i < panes.GetCount(); i++) {
+                auto &pane = panes.Item(i);
+                auto it = preferredlayout.find(pane.name);
+                if (it == preferredlayout.end() || !current.count(pane.name)) continue;
+                restore.emplace_back(&pane, pane.dock_row, pane.dock_pos);
+                pane.Row(it->second.first).Position(it->second.second);
+            }
+        }
+        auto perspective = aui.SavePerspective();
+        for (auto &[pane, row, pos] : restore) pane->Row(row).Position(pos);
+        return perspective;
+    }
+
     void OnSize(wxSizeEvent &se) {
         se.Skip();
         ReflowToolbars();
@@ -1535,7 +1563,7 @@ struct TSFrame : wxFrame {
         }
         sys->cfg->Write("notesizex", sys->notesizex);
         sys->cfg->Write("notesizey", sys->notesizey);
-        sys->cfg->Write("perspective", aui.SavePerspective());
+        sys->cfg->Write("perspective", SavePreferredPerspective());
         sys->cfg->Write("lastcellcolor", sys->lastcellcolor);
         sys->cfg->Write("lasttextcolor", sys->lasttextcolor);
         sys->cfg->Write("lastbordcolor", sys->lastbordcolor);
