@@ -448,12 +448,13 @@ struct Document {
         if (isctrlshiftdrag == 0 || isctrlshiftdrag == 3 || begindrag.EqLoc(selected)) { return; }
         auto *cell = selected.GetCell();
         if (cell == nullptr) { return; }
+        bool pushcolumns = begindrag.Thin() && begindrag.xs == 0;
         auto *targetcell = begindrag.ThinExpand(this);
         selected = begindrag;
         if (targetcell != nullptr) {
             auto is_parent = targetcell->IsParentOf(cell);
             auto *targetcell_parent = targetcell->parent;  // targetcell may be deleted.
-            targetcell->Paste(this, cell, begindrag);
+            targetcell->Paste(this, cell, begindrag, pushcolumns);
             // If is_parent, cell has been deleted already.
             if (isctrlshiftdrag == 1 && !is_parent) {
                 cell->parent->AddUndo(this);
@@ -480,11 +481,12 @@ struct Document {
     }
 
     void Drop() {
+        bool pushcolumns = selected.Thin() && selected.xs == 0;
         switch (dndobjc->GetReceivedFormat().GetType()) {
             case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
             case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
             case wxDF_TEXT:
-            case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt);
+            case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt, pushcolumns);
             default:;
         }
     }
@@ -2011,12 +2013,14 @@ struct Document {
             }
 
             case wxID_PASTE: {
+                // A thin selection on the left/right makes room by columns, else by rows.
+                bool pushcolumns = selected.Thin() && selected.xs == 0;
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
                 if (wxTheClipboard->Open()) {
                     if (wxTextDataObject tdo;
                         wxTheClipboard->GetData(tdo) && tdo.GetText().Len() > 0) {
-                        PasteOrDrop(tdo);
+                        PasteOrDrop(tdo, pushcolumns);
                     } else if (wxFileDataObject fdo;
                                wxTheClipboard->GetData(fdo) && fdo.GetFilenames().GetCount() > 0) {
                         PasteOrDrop(fdo);
@@ -2033,7 +2037,7 @@ struct Document {
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
                 } else if (sys->cellclipboard) {
-                    cell->Paste(this, sys->cellclipboard.get(), selected);
+                    cell->Paste(this, sys->cellclipboard.get(), selected, pushcolumns);
                     UpdateLayout();
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
@@ -2668,12 +2672,12 @@ struct Document {
         }
     }
 
-    void PasteOrDrop(const wxTextDataObject &textdataobject) {
+    void PasteOrDrop(const wxTextDataObject &textdataobject, bool pushcolumns = false) {
         if (textdataobject.GetText() != wxEmptyString) {
             Cell *cell = selected.ThinExpand(this);
             auto text = textdataobject.GetText();
             if ((sys->clipboardcopy == text) && sys->cellclipboard) {
-                cell->Paste(this, sys->cellclipboard.get(), selected);
+                cell->Paste(this, sys->cellclipboard.get(), selected, pushcolumns);
             } else {
                 const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
                 if (lines.size() == 1) {
@@ -2687,7 +2691,7 @@ struct Document {
                     sys->FillRows(cell->AddGrid(), lines, treesheets::System::CountCol(lines[0]), 0,
                                   0);
                     if (!cell->HasText()) {
-                        cell->grid->MergeWithParent(cell->parent->grid, selected, this);
+                        cell->grid->MergeWithParent(cell->parent->grid, selected, this, pushcolumns);
                     }
                 }
             }
