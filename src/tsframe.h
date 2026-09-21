@@ -834,6 +834,9 @@ struct TSFrame : wxFrame {
         // needs to be after Show() to avoid scrollbars rendered in the wrong place?
         if (ismax && !IsIconized()) { Maximize(true); }
 
+        // No size event necessarily follows, so fit the loaded toolbar layout to the window now.
+        ReflowToolbars();
+
         if (sys->startminimized) {
             #ifdef __WXGTK__
                 CallAfter([this]() { Iconize(true); });
@@ -1199,6 +1202,7 @@ struct TSFrame : wxFrame {
                 RefreshToolBar();
                 sys->showtoolbar = true;
                 aui.Update();
+                ReflowToolbars();
                 break;
             case A_SHOWSBAR:
                 if (!IsFullScreen()) {
