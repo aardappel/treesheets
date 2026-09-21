@@ -460,7 +460,8 @@ struct Cell {
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 
-    void Paste(Document *document, const Cell *original, Selection &selection) {
+    void Paste(Document *document, const Cell *original, Selection &selection,
+               bool pushcolumns = false) {
         parent->AddUndo(document);
         ResetLayout();
         if (!HasText() || !selection.TextEdit()) { note = original->note; }
@@ -481,7 +482,7 @@ struct Cell {
             original = nullptr;
             grid = gridclone;
             if (!HasText()) {
-                grid->MergeWithParent(parent->grid, selection, document);  // deletes grid/this.
+                grid->MergeWithParent(parent->grid, selection, document, pushcolumns);  // deletes grid/this.
             }
         }
     }

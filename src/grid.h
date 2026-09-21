@@ -711,18 +711,40 @@ struct Grid {
         }
     }
 
-    void MergeWithParent(const shared_ptr<Grid> &p, Selection &sel, Document *doc) {
+    // Pastes this grid into the parent at sel. Conflicting content is never overwritten: rows
+    // (or columns, if pushcolumns) of the parent that have content in the way are pushed away
+    // entirely, an entirely empty one is reused (the cell being replaced doesn't count). In the
+    // other direction the parent only grows past its edge, so there's no offset both ways.
+    void MergeWithParent(const shared_ptr<Grid> &p, Selection &sel, Document *doc,
+                         bool pushcolumns = false) {
         // The loop below overwrites the parent's slot for the cell owning this grid, which
         // destroys that cell, so detach from it before it can become a dangling pointer.
         ASSERT(p->C(sel.x, sel.y).get() == cell);
         shared_ptr<Grid> keepalive = cell->grid;
         cell->grid.reset();
         cell = nullptr;
+        const Cell *self = p->C(sel.x, sel.y).get();
+        auto isempty = [&](const Cell *c) {
+            return c == self || (c && !c->HasText() && !c->grid && !c->text.image);
+        };
         int nxs = sel.x + xs - p->xs;
         int nys = sel.y + ys - p->ys;
-        if (nxs > 0 || nys > 0) {
-            p->InsertCells(nxs > 0 ? p->xs : -1, nys > 0 ? p->ys : -1, nxs > 0 ? nxs : 0,
-                           nys > 0 ? nys : 0);
+        if (pushcolumns) {
+            if (nys > 0) { p->InsertCells(-1, p->ys, 0, nys); }
+            for (int i = 0; i < xs; i++) {
+                int tx = sel.x + i;
+                bool empty = tx < p->xs;
+                for (int py = 0; empty && py < p->ys; py++) { empty = isempty(p->C(tx, py).get()); }
+                if (!empty) { p->InsertCells(tx, -1, 1, 0); }
+            }
+        } else {
+            if (nxs > 0) { p->InsertCells(p->xs, -1, nxs, 0); }
+            for (int j = 0; j < ys; j++) {
+                int ty = sel.y + j;
+                bool empty = ty < p->ys;
+                for (int px = 0; empty && px < p->xs; px++) { empty = isempty(p->C(px, ty).get()); }
+                if (!empty) { p->InsertCells(-1, ty, 0, 1); }
+            }
         }
         foreachcell(c) {
             int tx = x + sel.x;
