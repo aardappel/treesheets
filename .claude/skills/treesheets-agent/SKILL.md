@@ -85,6 +85,16 @@ Wine maps the Windows TCP socket onto a real host socket on `127.0.0.1`.
   once (about 10 seconds), then `WINEPREFIX=/tmp/ts_wine wine TreeSheets.exe -a -i`.
   On Windows, TreeSheets keeps its settings (and the list of files to restore
   on startup) in the registry, which lives inside the prefix.
+- **Older TreeSheets builds show an error box at startup in a new prefix**:
+  *"Can't open registry key 'HKCU\Control Panel\International\User
+  Profile' (error 2: File not found.)"*. It's harmless: a wxWidgets 3.3 bug
+  logs an error when this key is missing, but the UI language is still
+  detected correctly (fix proposed in wxWidgets/wxWidgets#27067). Current
+  TreeSheets filters that message out (`SetupInternationalization()` in
+  `src/tsapp.h`). For an older binary, the box stays open until someone
+  clicks OK, which gets in the way of unattended runs, so create the key
+  once per prefix before launching:
+  `WINEPREFIX=/tmp/ts_wine wine reg add 'HKCU\Control Panel\International\User Profile' /f`.
 - The client finds the `.port` file in `$WINEPREFIX` (or `~/.wine`) on its
   own when no native Linux socket exists, so export the same `WINEPREFIX` for
   it. Otherwise pass `--endpoint <prefix>/drive_c/users/<user>/AppData/Local/Temp/TreeSheets-agent-<user>.port`.
