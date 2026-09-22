@@ -295,6 +295,91 @@ BUILTIN(set_image_display_scale, "scale", "I", "", "set display scale (in intege
     si->SetImageDisplayScale((int)w);
 }
 
+BUILTIN(undo, "", "", "B", "undoes the last edit, if any. returns whether there was one.")
+(VM &) {
+    return (iint)si->Undo();
+}
+
+BUILTIN(redo, "", "", "B", "redoes the last undone edit, if any. returns whether there was one.")
+(VM &) {
+    return (iint)si->Redo();
+}
+
+BUILTIN(is_grid, "", "", "B", "whether the current cell has a sub-grid")
+(VM &) {
+    return (iint)si->IsGrid();
+}
+
+BUILTIN(get_cell_type, "", "", "I",
+    "returns the evaluation type of the current cell: 0 = data, 1 = operation, "
+    "2 = variable assign, 3 = horizontal view, 4 = variable read, 5 = vertical view")
+(VM &) {
+    return (iint)si->GetCellType();
+}
+
+BUILTIN(is_folded, "", "", "B", "whether the current cell's grid is folded (collapsed)")
+(VM &) {
+    return (iint)si->IsFolded();
+}
+
+BUILTIN(set_folded, "folded", "B", "", "folds or unfolds the current cell's grid")
+(VM &, iint folded) {
+    si->SetFolded(folded != 0);
+}
+
+BUILTIN(get_background_color, "", "", "F}:4", "gets the background color of the current cell")
+(VM &) {
+    uint32_t c = si->GetBackgroundColor();
+    return ToVec<double4>(color2vec(*(byte4 *)&c));
+}
+
+BUILTIN(get_text_color, "", "", "F}:4", "gets the text color of the current cell")
+(VM &) {
+    uint32_t c = si->GetTextColor();
+    return ToVec<double4>(color2vec(*(byte4 *)&c));
+}
+
+BUILTIN(get_border_color, "", "", "F}:4", "gets the border color of the current grid")
+(VM &) {
+    uint32_t c = si->GetBorderColor();
+    return ToVec<double4>(color2vec(*(byte4 *)&c));
+}
+
+BUILTIN(get_version, "", "", "S", "returns the TreeSheets version string")
+(VM &vm) {
+    return vm.NewString(si->GetVersion());
+}
+
+BUILTIN(find_exact, "text", "S", "B",
+    "searches the subtree of the current cell (including itself) for a cell whose text exactly "
+    "equals the given string, and makes it current if found. returns whether a match was found.")
+(VM &, LString *text) {
+    return (iint)si->FindExact(text->strv());
+}
+
+BUILTIN(copy_current, "", "", "",
+    "deep-clones the current cell, including its subtree, into an in-process scripting "
+    "clipboard, for use with paste_into_current()")
+(VM &) {
+    si->CopyCurrent();
+}
+
+BUILTIN(paste_into_current, "", "", "B",
+    "pastes the contents of the scripting clipboard (see copy_current()) into the current "
+    "cell, the same way a manual paste would. returns false if nothing has been copied yet, "
+    "or the current cell has no parent (is the root).")
+(VM &) {
+    return (iint)si->PasteIntoCurrent();
+}
+
+BUILTIN(get_subtree_text, "format", "I", "S",
+    "exports the subtree of the current cell to text in one call: 0 = plain indented text, "
+    "1 = csv, 2 = xml. much cheaper than manually walking the subtree with goto_child/get_text "
+    "in a loop.")
+(VM &vm, iint format) {
+    return vm.NewString(si->GetSubtreeText((int)format));
+}
+
 #undef BUILTIN_GROUP
 #undef BUILTIN_SYM
 

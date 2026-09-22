@@ -2,6 +2,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *document = nullptr;
     Cell *current = nullptr;
     Cell *lowestcommonancestor = nullptr;
+    unique_ptr<Cell> script_clipboard;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
@@ -121,6 +122,28 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return current->grid ? icoord(current->grid->xs, current->grid->ys) : icoord(0, 0);
     }
 
+    bool IsGrid() override { return current->grid != nullptr; }
+
+    int GetCellType() override { return current->celltype; }
+
+    bool IsFolded() override { return current->grid && current->grid->folded; }
+
+    void SetFolded(bool folded) override {
+        if (current->grid) {
+            AddUndoIfNecessary();
+            current->grid->folded = folded;
+        }
+    }
+
+    // Searches the subtree of the current cell (including itself) for a cell whose text
+    // exactly equals `text`, and makes it current if found.
+    bool FindExact(std::string_view text) override {
+        auto *f = current->FindExact(wxString::FromUTF8(text.data(), text.size()));
+        if (f == nullptr) return false;
+        current = f;
+        return true;
+    }
+
     int GetColWidth() override {
         return current->parent != nullptr ? current->parent->grid->GetColWidth(current) : 0;
     }
@@ -205,10 +228,14 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         current->cellcolor = color;
     }
 
+    uint32_t GetBackgroundColor() override { return current->cellcolor; }
+
     void SetTextColor(uint color) override {
         AddUndoIfNecessary();
         current->textcolor = color;
     }
+
+    uint32_t GetTextColor() override { return current->textcolor; }
 
     void SetTextFiltered(bool filtered) override {
         if (current->parent != nullptr) {
@@ -224,6 +251,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             AddUndoIfNecessary();
             current->grid->bordercolor = color;
         }
+    }
+
+    uint32_t GetBorderColor() override {
+        return current->grid ? (uint32_t)current->grid->bordercolor : 0;
     }
 
     int GetRelativeSize() override { return -current->text.relsize; }
@@ -301,6 +332,49 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         document->currentdrawroot->ResetLayout();
         document->UpdateLayout();
         document->canvas->Refresh();
+    }
+
+    // Undo/redo may replace the current cell tree wholesale, so `current` is reset to the root
+    // afterwards rather than risk it dangling into a tree the undo/redo just discarded.
+    bool Undo() override {
+        if (document->undolist.empty()) return false;
+        document->Undo(document->undolist, document->redolist);
+        current = document->root.get();
+        return true;
+    }
+
+    bool Redo() override {
+        if (document->redolist.empty()) return false;
+        document->Undo(document->redolist, document->undolist, true);
+        current = document->root.get();
+        return true;
+    }
+
+    std::string GetVersion() override { return PACKAGE_VERSION; }
+
+    void CopyCurrent() override { script_clipboard = current->Clone(nullptr); }
+
+    bool PasteIntoCurrent() override {
+        if (!script_clipboard || current->parent == nullptr) return false;
+        Selection s = current->parent->grid->FindCell(current);
+        if (!s.grid) return false;
+        AddUndoIfNecessary();
+        current->Paste(document, script_clipboard.get(), s);
+        return true;
+    }
+
+    std::string GetSubtreeText(int format) override {
+        if (!current->grid) return current->text.t.utf8_string();
+        int exp_format;
+        switch (format) {
+            case 1: exp_format = A_EXPCSV; break;
+            case 2: exp_format = A_EXPXML; break;
+            default: exp_format = A_EXPTEXT; break;
+        }
+        // ToText() always exports its whole grid regardless of the selection passed in, hence
+        // the empty Selection() here.
+        return current->grid->ToText(0, Selection(), exp_format, document, false, current)
+            .utf8_string();
     }
 };
 
