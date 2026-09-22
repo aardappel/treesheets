@@ -62,12 +62,21 @@ on `ok`, 1 otherwise.
 
 ## Writing the Lobster side
 
-- The full `ts.*` API lives in `src/script_interface.h` /
-  `src/lobster_impl.cpp`: navigation (`goto_root`, `goto_child`,
+- **Look up the `ts.*` API in `TS/docs/script_reference.html` first** — it's
+  the generated, authoritative function reference (signatures, param types,
+  one-line docs) and needs no build: navigation (`goto_root`, `goto_child`,
   `goto_parent`, `goto_selection`, `goto_column_row`...), reading/writing
   cells (`get_text`, `set_text`, `get_note`, `set_note`...), grid ops
-  (`create_grid`, `insert_column`, `insert_row`, `delete`...), styling,
-  images, and more.
+  (`create_grid`, `insert_column`, `insert_row`, `delete`...), document
+  creation (`new_document`), styling, images, and more. It's also installed
+  into any built app at `Contents/Resources/docs/script_reference.html`
+  (`TreeSheets.app/Contents/Resources/...` on macOS) and reachable in the UI
+  via Help > Script reference. If it looks stale for a given build, or this
+  file isn't available at all, regenerate it straight from that binary with
+  `TreeSheets -d` (writes `builtin_functions_reference.html`, covering every
+  builtin including non-`ts` ones, into the current directory) — only fall
+  back to reading `src/script_interface.h` / `src/lobster_impl.cpp` if
+  neither is available.
 - `ts.agent_result(s)` is the one addition made for this channel: call it to
   hand a string back in the response's `result` field. Without it, `result`
   is always `""`.
