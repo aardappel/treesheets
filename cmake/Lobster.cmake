@@ -3,6 +3,8 @@
 # after the TreeSheets target and the TREESHEETS_*DIR install variables have been defined.
 
 # Lobster gates some Windows code on _MSC_VER instead of _WIN32, so MinGW builds need a patch.
+# The patch is applied once after extracting. Changing the URL re-extracts and re-applies it, but
+# editing the patch file doesn't: delete <builddir>/_deps/lobster-{src,subbuild} after doing so.
 set(lobster_patch)
 if(WIN32 AND NOT MSVC)
     find_program(PATCH_EXECUTABLE patch REQUIRED)
