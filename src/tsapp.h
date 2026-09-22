@@ -25,7 +25,7 @@ struct TSApp : wxApp {
     wxString exename;
     wxString exepath;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
-    #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+    #ifdef TS_AGENT_SERVER
         unique_ptr<AgentServer> agent_server {nullptr};
     #endif
 
@@ -109,7 +109,7 @@ struct TSApp : wxApp {
         #endif
         if (cl.dump_builtins) return false;
 
-        #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+        #ifdef TS_AGENT_SERVER
             if (cl.enable_agent) {
                 agent_server = make_unique<AgentServer>();
                 if (!agent_server->Start()) { agent_server.reset(); }
@@ -147,7 +147,7 @@ struct TSApp : wxApp {
         }
     #endif
 
-    #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+    #ifdef TS_AGENT_SERVER
         void OnEndSession(wxCloseEvent &event) {
             agent_server.reset();
             event.Skip();
@@ -155,7 +155,7 @@ struct TSApp : wxApp {
     #endif
 
     int OnExit() override {
-        #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+        #ifdef TS_AGENT_SERVER
             agent_server.reset();
         #endif
         sys.reset();
