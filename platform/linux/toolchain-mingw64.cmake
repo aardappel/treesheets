@@ -22,5 +22,4 @@ set(CMAKE_SHARED_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static" CACHE I
 set(CMAKE_MODULE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static" CACHE INTERNAL "module link flags")
 
 # Hard overrides for TreeSheets specific options to ensure a smooth MinGW cross-compile
-set(ENABLE_LOBSTER OFF CACHE BOOL "Disable Lobster for MinGW build" FORCE)
 set(ENABLE_IPO OFF CACHE BOOL "Disable LTO to prevent multiple-definition errors" FORCE)

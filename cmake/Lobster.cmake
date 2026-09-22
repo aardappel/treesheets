@@ -2,10 +2,19 @@
 # script reference target. Included from the top-level CMakeLists.txt when ENABLE_LOBSTER is ON,
 # after the TreeSheets target and the TREESHEETS_*DIR install variables have been defined.
 
+# Lobster gates some Windows code on _MSC_VER instead of _WIN32, so MinGW builds need a patch.
+set(lobster_patch)
+if(WIN32 AND NOT MSVC)
+    find_program(PATCH_EXECUTABLE patch REQUIRED)
+    set(lobster_patch PATCH_COMMAND
+        ${PATCH_EXECUTABLE} -p1 -N -i ${CMAKE_CURRENT_LIST_DIR}/patches/lobster-mingw.patch)
+endif()
+
 FetchContent_Declare(
     lobster
     URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.7.tar.gz
     URL_HASH SHA256=b19315a013106cd8611b34152fe48c0c45ef9f5bf89aab4b6df9b37951da3499
+    ${lobster_patch}
 )
 FetchContent_MakeAvailable(lobster)
 
@@ -27,7 +36,7 @@ add_library(lobster STATIC
     ${lobster_SOURCE_DIR}/dev/src/vmdata.cpp
     ${lobster_SOURCE_DIR}/dev/src/tccbind.cpp
     ${lobster_SOURCE_DIR}/dev/external/libtcc/libtcc.c)
-if(WIN32)
+if(MSVC)
     target_sources(lobster PRIVATE
         ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalker.cpp
         ${lobster_SOURCE_DIR}/dev/include/StackWalker/StackWalkerHelpers.cpp)
@@ -38,6 +47,10 @@ target_include_directories(lobster PUBLIC
     ${lobster_SOURCE_DIR}/dev/external
     ${lobster_SOURCE_DIR}/dev/external/libtcc)
 target_compile_definitions(lobster PRIVATE "LOBSTER_ENGINE=0")
+if(WIN32 AND NOT MSVC)
+    # Text-to-speech in platform.cpp needs the SAPI GUIDs, which MSVC resolves implicitly.
+    target_link_libraries(lobster PUBLIC sapi)
+endif()
 
 ## lobster-impl (provider of TreeSheets functions in lobster)
 
