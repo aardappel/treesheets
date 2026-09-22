@@ -173,6 +173,13 @@ nfr("set_status_message", "message", "S", "", "sets the status message in TreeSh
         return NilVal();
     });
 
+nfr("agent_result", "result", "S", "",
+    "reports a value back to the connected agent for the current eval request, if any",
+    [](StackPtr &, VM &, Value s) {
+        si->SetAgentResult(s.sval()->strv());
+        return NilVal();
+    });
+
 nfr("get_filename_from_user", "is_save", "I", "S",
     "gets a filename using a file dialog. empty string if cancelled.",
     [](StackPtr &, VM &vm, Value is_save) {
@@ -186,6 +193,14 @@ nfr("load_document", "filename", "S", "B",
     "loads a document, and makes it the active one. returns false if failed.",
     [](StackPtr &, VM &, Value filename) {
         return Value(si->LoadDocument(filename.sval()->data()));
+    });
+
+nfr("new_document", "cols,rows", "II", "",
+    "opens a new, unsaved document in a new tab with a root grid of the given size, and makes "
+    "it the active one",
+    [](StackPtr &, VM &, Value cols, Value rows) {
+        si->NewDocument(cols.intval(), rows.intval());
+        return NilVal();
     });
 
 nfr("set_window_size", "width,height", "II", "", "resizes the window",

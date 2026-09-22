@@ -49,6 +49,7 @@
 #include <wx/printdlg.h>
 #include <wx/sizer.h>
 #include <wx/snglinst.h>
+#include <wx/socket.h>
 #include <wx/srchctrl.h>
 #include <wx/stdpaths.h>
 #include <wx/sysopt.h>
@@ -78,6 +79,7 @@
 #include <mutex>
 #include <new>
 #include <queue>
+#include <random>
 #include <set>
 #include <sstream>
 #include <stdexcept>

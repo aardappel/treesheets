@@ -25,12 +25,16 @@ struct TSApp : wxApp {
     wxString exename;
     wxString exepath;
     unique_ptr<wxSingleInstanceChecker> instance_checker {nullptr};
+    #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+        unique_ptr<AgentServer> agent_server {nullptr};
+    #endif
 
     struct CmdLine {
         bool portable {false};
         bool single_instance {true};
         bool dump_builtins {false};
         bool start_minimized {false};
+        bool enable_agent {false};
     };
 
     CmdLine ParseCommandLine() {
@@ -44,6 +48,7 @@ struct TSApp : wxApp {
                 case 'p': cl.portable = true; break;
                 case 'i': cl.single_instance = false; break;
                 case 'm': cl.start_minimized = true; break;
+                case 'a': cl.enable_agent = true; break;
                 case 'd':
                     cl.dump_builtins = true;
                     cl.single_instance = false;
@@ -104,6 +109,18 @@ struct TSApp : wxApp {
         #endif
         if (cl.dump_builtins) return false;
 
+        #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+            if (cl.enable_agent) {
+                agent_server = make_unique<AgentServer>();
+                if (!agent_server->Start()) { agent_server.reset(); }
+            }
+            // On macOS, Cmd+Q / "Quit" (incl. via AppleScript) is delivered as an Apple Event
+            // that wx turns into wxEVT_END_SESSION on the app and then exits the main loop
+            // directly, bypassing TSFrame::OnClosing()/Destroy(). Clean up here too so the
+            // socket/token files don't outlive the process in that case.
+            Bind(wxEVT_END_SESSION, &TSApp::OnEndSession, this);
+        #endif
+
         SetTopWindow(frame);
         serv->Create(service);
         return true;
@@ -130,7 +147,17 @@ struct TSApp : wxApp {
         }
     #endif
 
+    #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+        void OnEndSession(wxCloseEvent &event) {
+            agent_server.reset();
+            event.Skip();
+        }
+    #endif
+
     int OnExit() override {
+        #if defined(ENABLE_LOBSTER) && defined(wxHAS_UNIX_DOMAIN_SOCKETS)
+            agent_server.reset();
+        #endif
         sys.reset();
         return 0;
     }

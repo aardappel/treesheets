@@ -5,6 +5,7 @@ using ibox = std::pair<icoord, icoord>;
 
 struct ScriptInterface {
     virtual bool LoadDocument(const char *filename) = 0;
+    virtual void NewDocument(int cols, int rows) = 0;
     virtual void GoToRoot() = 0;
     virtual void GoToView() = 0;
     virtual bool HasSelection() = 0;
@@ -36,6 +37,7 @@ struct ScriptInterface {
     virtual int GetColWidth() = 0;
     virtual void SetColWidth(int w) = 0;
     virtual void SetStatusMessage(std::string_view message) = 0;
+    virtual void SetAgentResult(std::string_view result) = 0;
     virtual void SetWindowSize(int width, int height) = 0;
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
     virtual std::string GetFileName() = 0;
