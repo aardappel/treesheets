@@ -175,9 +175,11 @@ Other things worth knowing regardless of how you looked up the API:
   scriptable case, and the one to use after editing a document you loaded or
   created via `new_document`. **If the document has no filename yet, or you
   pass `true`, it pops a blocking native "Save As" file dialog on the GUI
-  thread** — same synchronous-`ScriptRun` situation as the recursive-traversal
-  trap below: the `eval` call (and the whole app) hangs until a human
-  fills in and confirms that dialog. Don't call it that way from an
+  thread** — `HandleLine()` runs `ScriptRun()` synchronously on the wx main
+  thread with no timeout, so the `eval` call (and the whole app) hangs until
+  a human fills in and confirms that dialog; this one is a TreeSheets-side
+  behavior, not a Lobster engine bug, and is not affected by the Lobster
+  version. Don't call it that way from an
   unattended script; if you need to save a brand-new, never-saved document
   non-interactively, give it a filename first some other way (e.g. save the
   `.cts` once by hand, or `ts.load_document()` an existing file before
@@ -190,112 +192,35 @@ Other things worth knowing regardless of how you looked up the API:
   the same place. Appends `.cts` automatically if the given filename has no
   extension.
 
-## Known trap: recursive traversal + string concat hangs the whole app
+## Resolved: recursive-traversal slowdown / nested-loop silent drop
 
-Do **not** write a recursive Lobster function that both (a) calls `ts.*`
-native functions (e.g. `goto_child`/`goto_parent`/`get_text`) and (b) mutates
-a captured/outer string variable via `+=` on each call, e.g.:
+Earlier versions of the bundled Lobster engine (pre-v2026.7) had two related
+bugs, both filed as
+[aardappel/lobster#449](https://github.com/aardappel/lobster/issues/449):
+a recursive Lobster function combining `ts.*` native calls with `+=`
+accumulation into a captured string went pathologically slow (tens of
+seconds to minutes) past roughly 250-300 such calls, freezing the whole app
+with no way to cancel; and, separately and much less reliably, a flat
+non-recursive nested-`for`-loop script was once seen to silently drop its
+response past ~700-800 native calls in one `eval`, though this could not be
+reproduced on demand even on the buggy version.
 
-```
-def dump(depth):
-    out += ts.get_text() + "\n"          # BAD: recursive + native calls + += to a captured var
-    for(ts.num_children()) i:
-        ts.goto_child(i)
-        dump(depth + 1)
-        ts.goto_parent()
-```
+Both are fixed upstream as of Lobster v2026.7, which `cmake/Lobster.cmake`
+now pins. Re-verified directly: the same recursive-traversal repro that
+used to reliably wedge the app at ~250-300 calls now completes in well
+under 100ms at 1,600+ recursive native-call-laden invocations (5-6x the old
+trigger scale), and the nested-loop repro returns correctly at ~800 calls.
+Writing a straightforward recursive traversal (e.g. "dump the whole
+document as text" as a recursive function) is safe again; no need to
+rewrite it as an explicit-stack iterative loop.
 
-This reliably goes pathologically slow (tens of seconds to minutes, for what
-should be trivial work) once the traversal has made roughly **250-300 such
-calls** — confirmed by isolating the variables experimentally: recursion
-alone, `ts.*` calls alone, and `+=` accumulation alone are each fine even at
-tens of thousands of iterations; only the combination of all three inside a
-*recursive* function blows up. This looks like a refcounting/free-variable
-bug in the bundled Lobster engine's TCC-JIT codegen path (`RunTCC` in
-`src/lobster_impl.cpp`, `VM_JIT_MODE=1` — see `stdafx.h`), not a bug in
-TreeSheets' own code, but it's real and easy to hit by accident (e.g. "dump
-the whole document as text" is a very natural first script to write).
-
-**Worse, there is no recovery once you hit it**: `agent_server.h`'s
-`HandleLine()` runs `ScriptRun()` synchronously on the wx main/GUI thread with
-no timeout or cancellation. A script that trips this doesn't just fail its
-own request — it freezes the *entire app* (UI included) and the socket stops
-accepting/answering *any* request (including `ping`) until the runaway script
-eventually finishes on its own. There's nothing to do but wait it out (it
-does eventually complete, it's pathologically slow, not truly infinite) — so
-avoid triggering it rather than trying to cancel it once started.
-
-**Fix: traverse iteratively, not recursively.** An explicit-stack `while`
-loop calling the exact same `ts.*` functions and doing the exact same `+=`
-accumulation has no such ceiling — verified traversing an entire ~60,000-cell
-document (3.7MB of accumulated text) in ~10 seconds:
-
-```
-var ni = [0, 0, 0, 0, 0, 0, 0, 0]  // one slot per tree depth level you expect to reach
-var depth = 0
-var out = ""
-
-ts.goto_root()
-while true:
-    out += ts.get_text() + "\n"
-    let n = ts.num_children()
-    if n > 0 and ni[depth] < n:
-        let i = ni[depth]
-        ni[depth] += 1
-        ts.goto_child(i)
-        depth += 1
-        ni[depth] = 0
-    else:
-        if depth == 0: break
-        ts.goto_parent()
-        depth -= 1
-
-ts.agent_result(out)
-```
-
-A **non-recursive** helper function called from a loop (i.e. the function
-itself never calls itself) is also fine — the trap is specifically
-recursion, not "having a function" or "calling `ts.*` from inside one". If
-you need recursion for something else entirely (no `ts.*` calls, or no
-mutation of a captured accumulator), that's fine too — it's only the
-three-way combination that's dangerous. When in doubt, prefer the iterative
-pattern above for any full-document traversal/dump.
-
-### A second, harder-to-pin-down variant: nested `for` loops with no recursion, seen once
-
-The above was diagnosed as specifically about *recursive* functions. On one
-occasion it wasn't the whole story: a flat, non-recursive script — outer
-`for(...)` over rows, inner `for(...)` over columns, calling `ts.*` natives
-and accumulating into `out` with `+=`, exactly the "safe" shape described
-above — silently dropped its response (no error, no crash) on a document
-with ~700-800 total native calls for the request. Splitting the identical
-work into two ~400-call `eval` calls returned correctly both times.
-
-**This was not reproducible on demand.** Retried later on a freshly
-relaunched process, deliberately matching the same nesting shape and pushing
-to over **13,000** native calls / ~122KB of accumulated string in one
-`eval` call — it succeeded every time, fast. So "~700-800 calls in one
-`eval`" is not by itself a reliable trigger; whatever happened that one time
-was not purely a function of a single script's call count. A plausible but
-*unverified* guess: it depends on cumulative state built up over many prior
-`eval` calls in the same long-lived process (each `eval` independently
-JIT-compiles fresh machine code via `RunTCC`/libtcc — see the source
-pointers below), not something a short-lived fresh process doing lots of
-work in one call will hit. Filed as
-[aardappel/lobster#449](https://github.com/aardappel/lobster/issues/449),
-including this non-reproducibility as a correction to the original report.
-
-**Practical takeaway:** if a single `eval` call seems to hang or drop its
-response with no error, don't assume it's this — check the obvious things
-first (shell-quoting mangling a `-c` inline script if you didn't write it to
-a file; a trailing `save_document(...)` call left over from a copy-pasted
-script, which pops a **blocking native Save-As dialog** if the document has
-no filename yet — see above — and looks identical to a full app hang,
-`ping` included, from the outside). Only reach for "split the work across
-multiple `eval` calls" as a mitigation if a large script's response is
-actually missing with the app otherwise idle and responsive to `ping`, not
-as a reflexive precaution — the failure has not been shown to reproduce
-reliably at any particular size on a fresh process.
+If a single `eval` call still seems to hang or drop its response with no
+error on this version, don't assume it's this — check the obvious things
+first: shell-quoting mangling a `-c` inline script if you didn't write it
+to a file, or a trailing `save_document(...)` call left over from a
+copy-pasted script, which pops a **blocking native Save-As dialog** if the
+document has no filename yet (see above) and looks identical to a full app
+hang, `ping` included, from the outside.
 
 ## Protocol reference
 
