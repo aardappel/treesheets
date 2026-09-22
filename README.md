@@ -34,7 +34,7 @@ Using TreeSheets with an AI agent
 ----------------------------------
 
 Starting TreeSheets with the `-a` flag opens a local, token-authenticated
-Unix domain socket that lets an external agent run [Lobster](https://strlen.com/lobster/)
+socket that lets an external agent run [Lobster](https://strlen.com/lobster/)
 script against whatever document you currently have open, and read the
 result back — useful if you want an AI coding assistant to inspect,
 automate, or build up a TreeSheets document on your behalf.
@@ -45,8 +45,15 @@ TreeSheets -a
 
 It's off by default, only listens locally, and the socket is authenticated
 with a random, per-launch token file readable only by you. It's available on
-macOS and Linux (it relies on Unix domain sockets); there is no Windows
-support yet. If `-a` doesn't produce a socket, your TreeSheets build predates
+macOS, Linux and Windows:
+
+- **macOS and Linux:** a Unix domain socket, `/tmp/TreeSheets-agent-<user>.sock`.
+- **Windows:** a TCP socket on `127.0.0.1`, on a port chosen at each launch
+  and written to `%TEMP%\TreeSheets-agent-<user>.port`. This also works for
+  the Windows build running under Wine on Linux.
+
+In both cases the token is in the same path with `.token` appended. If `-a`
+doesn't produce a socket (or `.port` file), your TreeSheets build predates
 this feature.
 
 If you're using [Claude Code](https://claude.com/claude-code) in this
