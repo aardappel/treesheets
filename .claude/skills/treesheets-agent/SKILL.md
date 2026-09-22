@@ -21,17 +21,27 @@ working directory is elsewhere.
 
 ## Prerequisites
 
-TreeSheets must already be running, started with `-a`. From a dev build in
-this repo:
+TreeSheets must already be running, started with `-a`. Add `-i` too if you
+want a fresh instance for testing instead of forwarding to one that's already
+running. If nothing is running with `-a`, the socket and token files won't
+exist and every request below fails to connect — say so plainly and offer to
+launch it rather than guessing.
+
+The socket/protocol code itself (`src/agent_server.h`) is platform-generic —
+it's gated on `wxHAS_UNIX_DOMAIN_SOCKETS`, which wx defines for any Unix
+(`__UNIX__ && !__WINDOWS__ && !__WINE__`), so macOS and Linux both get the
+same `/tmp/TreeSheets-agent-<user>.sock` behavior. What differs between them
+is only the binary layout and how a dev build finds its data files. The macOS
+steps below were exercised directly in this repo's dev environment; the Linux
+steps follow from reading `CMakeLists.txt` and `src/tsapp.h`'s `ResolvePath`/
+`GetDataPath` but weren't run on an actual Linux box — sanity-check the first
+launch before relying on it.
+
+### macOS
 
 ```bash
 ./_build/TreeSheets.app/Contents/MacOS/TreeSheets -a
 ```
-
-Add `-i` too if you want a fresh instance for testing instead of forwarding to
-one that's already running. If nothing is running with `-a`, the socket and
-token files won't exist and every request below fails to connect — say so
-plainly and offer to launch it rather than guessing.
 
 A dev build that was only `cmake --build`'d (never installed) is missing
 `Contents/Resources` and hangs at startup behind an invisible modal alert
@@ -41,6 +51,41 @@ with, from the build directory:
 ```bash
 cmake --install . --prefix "$(pwd)"
 ```
+
+### Linux
+
+There's no app bundle — the build produces a plain `TreeSheets` binary
+directly in the build directory:
+
+```bash
+./_build/TreeSheets -a
+```
+
+Resource lookup works differently here than on macOS. By default (unless
+configured with `-DTREESHEETS_RELOCATABLE_INSTALLATION=ON`), `TREESHEETS_DATADIR`/
+`TREESHEETS_DOCDIR` are baked into the binary at configure time as *absolute*
+paths under `CMAKE_INSTALL_PREFIX` (GNUInstallDirs layout, e.g.
+`<prefix>/share/TreeSheets`, `<prefix>/share/doc/TreeSheets`) — `ResolvePath()`
+looks next to the executable first, then falls back to that compiled-in path.
+So the macOS trick of `cmake --install . --prefix "$(pwd)"` from the build
+directory won't line up on Linux; the same "hangs behind an invisible modal
+about missing icons" failure is likely on an uninstalled dev build unless
+either:
+
+- you actually install to the configured prefix (`sudo cmake --install .`, or
+  `sudo cmake --install . --prefix /usr/local` matching whatever
+  `CMAKE_INSTALL_PREFIX` was at configure time), or
+- you reconfigure with `-DTREESHEETS_RELOCATABLE_INSTALLATION=ON` first, which
+  should make it behave like the macOS case (data resolved relative to the
+  binary, so `cmake --install . --prefix "$(pwd)"` from the build dir works).
+
+Quitting: the macOS-specific `wxEVT_END_SESSION` handling in `TSApp` (added to
+work around Cmd+Q bypassing the normal close chain — see `src/tsapp.h`) is a
+Cocoa quirk from how wx maps the Apple "quit" event. On Linux/GTK, closing the
+window should go through the ordinary `wxEVT_CLOSE_WINDOW` →
+`TSFrame::OnClosing()` → `wxApp::OnExit()` chain, so socket/token cleanup
+should already be reliable there without it — but this hasn't been verified
+on an actual GTK session either.
 
 ## Talking to it
 
