@@ -261,35 +261,41 @@ mutation of a captured accumulator), that's fine too — it's only the
 three-way combination that's dangerous. When in doubt, prefer the iterative
 pattern above for any full-document traversal/dump.
 
-### A second, worse-to-diagnose variant: nested `for` loops with no recursion at all
+### A second, harder-to-pin-down variant: nested `for` loops with no recursion, seen once
 
-The above was diagnosed as specifically about *recursive* functions. It
-isn't the whole story. A flat, non-recursive script — just an outer
-`for(...)` over rows with an inner `for(...)` over columns, calling `ts.*`
-natives and accumulating into `out` with `+=`, exactly the "safe" shape
-described above — was confirmed to **silently drop the response** once the
-total `ts.*` call count for the request got into the ~700-800 range (reading
-3 fields from each of 81 grid cells, ~9 native calls per cell). The identical
-work, split into two separate `eval` calls of ~400 calls each, returned
-correctly both times, in well under a second each.
+The above was diagnosed as specifically about *recursive* functions. On one
+occasion it wasn't the whole story: a flat, non-recursive script — outer
+`for(...)` over rows, inner `for(...)` over columns, calling `ts.*` natives
+and accumulating into `out` with `+=`, exactly the "safe" shape described
+above — silently dropped its response (no error, no crash) on a document
+with ~700-800 total native calls for the request. Splitting the identical
+work into two ~400-call `eval` calls returned correctly both times.
 
-This is worse than the recursive trap in one way: **the app does not hang.**
-`ping` and other requests keep working normally right after the timeout —
-there's no visible sign anything is wrong except that one `eval` call never
-gets a reply and the client-side socket read times out. It's easy to mistake
-for a network/client hiccup rather than a script-size problem.
+**This was not reproducible on demand.** Retried later on a freshly
+relaunched process, deliberately matching the same nesting shape and pushing
+to over **13,000** native calls / ~122KB of accumulated string in one
+`eval` call — it succeeded every time, fast. So "~700-800 calls in one
+`eval`" is not by itself a reliable trigger; whatever happened that one time
+was not purely a function of a single script's call count. A plausible but
+*unverified* guess: it depends on cumulative state built up over many prior
+`eval` calls in the same long-lived process (each `eval` independently
+JIT-compiles fresh machine code via `RunTCC`/libtcc — see the source
+pointers below), not something a short-lived fresh process doing lots of
+work in one call will hit. Filed as
+[aardappel/lobster#449](https://github.com/aardappel/lobster/issues/449),
+including this non-reproducibility as a correction to the original report.
 
-Root cause not confirmed (plausibly related to the same JIT/codegen path,
-plausibly something else in the agent server's response handling for a
-request that produced a very large accumulated string) — flagged upstream,
-not yet fixed as of this writing. Precision is limited to the two data
-points above: ~400 calls in one `eval` is fine, ~800 combined is not.
-
-**Workaround: keep any single `eval` call's total `ts.*` native-call count
-comfortably under a few hundred.** For a full-document dump or any loop
-touching many cells, split the work across multiple `eval -f` calls (e.g. by
-row-index range) rather than one script that walks everything at once, even
-when the loop itself is provably non-recursive.
+**Practical takeaway:** if a single `eval` call seems to hang or drop its
+response with no error, don't assume it's this — check the obvious things
+first (shell-quoting mangling a `-c` inline script if you didn't write it to
+a file; a trailing `save_document(...)` call left over from a copy-pasted
+script, which pops a **blocking native Save-As dialog** if the document has
+no filename yet — see above — and looks identical to a full app hang,
+`ping` included, from the outside). Only reach for "split the work across
+multiple `eval` calls" as a mitigation if a large script's response is
+actually missing with the app otherwise idle and responsive to `ping`, not
+as a reflexive precaution — the failure has not been shown to reproduce
+reliably at any particular size on a fresh process.
 
 ## Protocol reference
 
