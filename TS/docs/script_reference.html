@@ -94,6 +94,9 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_status_message</b>(message<font color="#666666">: string</font>)</tt></td><td class="a">sets the status message in TreeSheets</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.agent_result</b>(result<font color="#666666">: string</font>)</tt></td><td class="a">reports a value back to the connected agent for the current eval request, if any</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_filename_from_user</b>(is_save<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">gets a filename using a file dialog. empty string if cancelled.</td>
 
 </tr>
@@ -101,6 +104,9 @@
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.load_document</b>(filename<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">loads a document, and makes it the active one. returns false if failed.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.new_document</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">opens a new, unsaved document in a new tab with a root grid of the given size, and makes it the active one</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_window_size</b>(width<font color="#666666">: int</font>, height<font color="#666666">: int</font>)</tt></td><td class="a">resizes the window</td>
