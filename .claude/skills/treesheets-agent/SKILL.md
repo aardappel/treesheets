@@ -167,6 +167,21 @@ Other things worth knowing regardless of how you looked up the API:
   a fully-emptied column/row also removes it, so this restores the original
   shape exactly. Or use `ts.new_document(cols, rows)` to open a fresh,
   unsaved tab instead of touching whatever's already open.
+- `ts.save_document(saveas: int) -> int` writes the current document to disk
+  — same as the Save (`saveas` false/0) / Save As (`saveas` true/1) menu
+  actions, returns false on failure/cancel. Plain `save_document(false)` on a
+  document that already has a filename (e.g. one just opened with
+  `ts.load_document(...)`) saves silently with no dialog — that's the safe,
+  scriptable case, and the one to use after editing a document you loaded or
+  created via `new_document`. **If the document has no filename yet, or you
+  pass `true`, it pops a blocking native "Save As" file dialog on the GUI
+  thread** — same synchronous-`ScriptRun` situation as the recursive-traversal
+  trap below: the `eval` call (and the whole app) hangs until a human
+  fills in and confirms that dialog. Don't call it that way from an
+  unattended script; if you need to save a brand-new, never-saved document
+  non-interactively, give it a filename first some other way (e.g. save the
+  `.cts` once by hand, or `ts.load_document()` an existing file before
+  editing) so `save_document(false)` has a filename to write to.
 
 ## Known trap: recursive traversal + string concat hangs the whole app
 

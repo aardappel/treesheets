@@ -71,6 +71,15 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         SwitchToCurrentDocument();
     }
 
+    // Same as the "Save" (saveas=false) / "Save As" (saveas=true) menu actions. If saveas is
+    // false and the document has no filename yet, this falls back to the save dialog same as
+    // Save As. Returns false if the save failed or the dialog was cancelled.
+    bool SaveDocument(bool saveas) override {
+        bool success = false;
+        document->Save(saveas, &success);
+        return success;
+    }
+
     void GoToRoot() override { current = document->root.get(); }
     void GoToView() override { current = document->currentdrawroot; }
     bool HasSelection() override { return document->selected.grid != nullptr; }

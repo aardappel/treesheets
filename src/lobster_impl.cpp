@@ -203,6 +203,14 @@ nfr("new_document", "cols,rows", "II", "",
         return NilVal();
     });
 
+nfr("save_document", "saveas", "I", "B",
+    "saves the current document to disk, same as the Save (saveas=false) / Save As "
+    "(saveas=true) menu actions. if the document has no filename yet, always shows a save "
+    "dialog. returns false if the save failed or the dialog was cancelled.",
+    [](StackPtr &, VM &, Value saveas) {
+        return Value(si->SaveDocument(saveas.True()));
+    });
+
 nfr("set_window_size", "width,height", "II", "", "resizes the window",
     [](StackPtr &, VM &, Value w, Value h) {
         si->SetWindowSize(w.intval(), h.intval());

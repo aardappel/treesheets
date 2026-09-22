@@ -109,6 +109,9 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.new_document</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">opens a new, unsaved document in a new tab with a root grid of the given size, and makes it the active one</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.save_document</b>(saveas<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">saves the current document to disk, same as the Save (saveas=false) / Save As (saveas=true) menu actions. if the document has no filename yet, always shows a save dialog. returns false if the save failed or the dialog was cancelled.</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_window_size</b>(width<font color="#666666">: int</font>, height<font color="#666666">: int</font>)</tt></td><td class="a">resizes the window</td>
 
 </tr>
