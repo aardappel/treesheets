@@ -4,8 +4,8 @@
 
 FetchContent_Declare(
     lobster
-    URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.6.tar.gz
-    URL_HASH SHA256=47a2279af57e49419e12342c5ed22666de9ccbbaf67bb61144bfc659cfdff388
+    URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.7.tar.gz
+    URL_HASH SHA256=b19315a013106cd8611b34152fe48c0c45ef9f5bf89aab4b6df9b37951da3499
 )
 FetchContent_MakeAvailable(lobster)
 
@@ -15,9 +15,11 @@ add_library(lobster STATIC
     ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_gen_text.cpp
     ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/idl_parser.cpp
     ${lobster_SOURCE_DIR}/dev/external/flatbuffers/src/util.cpp
+    ${lobster_SOURCE_DIR}/dev/src/builtindoc.cpp
     ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
     ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
     ${lobster_SOURCE_DIR}/dev/src/file.cpp
+    ${lobster_SOURCE_DIR}/dev/src/pakfile.cpp
     ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
     ${lobster_SOURCE_DIR}/dev/src/platform.cpp
     ${lobster_SOURCE_DIR}/dev/src/simplex.cpp

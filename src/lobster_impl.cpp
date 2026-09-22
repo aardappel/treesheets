@@ -3,274 +3,300 @@
 #include "script_interface.h"
 
 #include "lobster/compiler.h"
+#include "lobster/tonative.h"
 
 using namespace lobster;
+
+namespace lobster {
+
+// TreeSheets only runs the JIT with JitOptions::mir left at its default (false), i.e. via the
+// libtcc backend (RunTCC, in liblobster). The MIR backend (mirbind.cpp) vendors its own large
+// external MIR/c2mir sources that TreeSheets doesn't build, so provide a stub to satisfy RunC's
+// (tonative.h) unconditional reference to RunMIR at link time; it must never actually run.
+bool RunMIR(const char *, const char *, string &error, const void **, const char **,
+            const JitOptions &, function<bool(void **)>) {
+    error = "RunMIR: MIR backend not built into TreeSheets";
+    return false;
+}
+
+}  // namespace lobster
 
 namespace script {
 
 ScriptInterface *si = nullptr;
 
-void AddTreeSheets(NativeRegistry &nfr) {
-nfr("goto_root", "", "", "",
+BuiltinGroup treesheets_builtins;
+#define BUILTIN_GROUP treesheets_builtins
+#define BUILTIN_SYM(name) builtin_ts_##name
+
+BUILTIN(goto_root, "", "", "",
     "makes the root of the document the current cell. this is the default at the start "
-    "of any script, so this function is only needed to return there.",
-    [](StackPtr &, VM &) {
-        si->GoToRoot();
-        return NilVal();
-    });
+    "of any script, so this function is only needed to return there.")
+(VM &) {
+    si->GoToRoot();
+}
 
-nfr("goto_view", "", "", "", "makes what the user has zoomed into the current cell",
-    [](StackPtr &, VM &) {
-        si->GoToView();
-        return NilVal();
-    });
+BUILTIN(goto_view, "", "", "", "makes what the user has zoomed into the current cell")
+(VM &) {
+    si->GoToView();
+}
 
-nfr("has_selection", "", "", "I", "whether there is a selection",
-    [](StackPtr &, VM &) { return Value(si->HasSelection()); });
+BUILTIN(has_selection, "", "", "B", "whether there is a selection")
+(VM &) {
+    return (iint)si->HasSelection();
+}
 
-nfr("goto_selection", "", "", "",
-    "makes the current cell the one selected, or the first of a selection",
-    [](StackPtr &, VM &) {
-        si->GoToSelection();
-        return NilVal();
-    });
+BUILTIN(goto_selection, "", "", "",
+    "makes the current cell the one selected, or the first of a selection")
+(VM &) {
+    si->GoToSelection();
+}
 
-nfr("has_parent", "", "", "I", "whether the current cell has a parent (is the root cell)",
-    [](StackPtr &, VM &) { return Value(si->HasParent()); });
+BUILTIN(has_parent, "", "", "B", "whether the current cell has a parent (is the root cell)")
+(VM &) {
+    return (iint)si->HasParent();
+}
 
-nfr("goto_parent", "", "", "", "makes the current cell the parent of the current cell, if any",
-    [](StackPtr &, VM &) {
-        si->GoToParent();
-        return NilVal();
-    });
+BUILTIN(goto_parent, "", "", "", "makes the current cell the parent of the current cell, if any")
+(VM &) {
+    si->GoToParent();
+}
 
-nfr("num_children", "", "", "I",
+BUILTIN(num_children, "", "", "I",
     "returns the total number of children of the current cell (rows * columns). "
-    "returns 0 if this cell doesn't have a sub-grid at all.",
-    [](StackPtr &, VM &) { return Value(si->NumChildren()); });
+    "returns 0 if this cell doesn't have a sub-grid at all.")
+(VM &) {
+    return (iint)si->NumChildren();
+}
 
-nfr("num_columns_rows", "", "", "I}:2",
-    "returns the number of columns and rows in the current cell",
-    [](StackPtr &sp, VM &) { PushVec(sp, int2(si->NumColumnsRows())); });
+BUILTIN(num_columns_rows, "", "", "I}:2",
+    "returns the number of columns and rows in the current cell")
+(VM &) {
+    return ToVec<iint2>(int2(si->NumColumnsRows()));
+}
 
-nfr("selection", "", "", "I}:2I}:2",
-    "returns the (xs,ys) and (x,y) of the current selection, or zeroes if none",
-    [](StackPtr &sp, VM &) {
-        auto b = si->SelectionBox();
-        PushVec(sp, int2(b.second));
-        PushVec(sp, int2(b.first));
-    });
+BUILTIN_OUTS(selection, "", "", "I}:2I}:2",
+    "returns the (xs,ys) and (x,y) of the current selection, or zeroes if none")
+(VM &, iint2 *out0, iint2 *out1) {
+    auto b = si->SelectionBox();
+    *out0 = ToVec<iint2>(int2(b.second));
+    *out1 = ToVec<iint2>(int2(b.first));
+}
 
-nfr("goto_child", "n", "I", "", "makes the current cell the nth child of the current cell",
-    [](StackPtr &, VM &, Value n) {
-        si->GoToChild(n.intval());
-        return NilVal();
-    });
+BUILTIN(goto_child, "n", "I", "", "makes the current cell the nth child of the current cell")
+(VM &, iint n) {
+    si->GoToChild((int)n);
+}
 
-nfr("goto_column_row", "col,row", "II", "", "makes the current cell the child at col / row",
-    [](StackPtr &, VM &, Value x, Value y) {
-        si->GoToColumnRow(x.intval(), y.intval());
-        return NilVal();
-    });
+BUILTIN(goto_column_row, "col,row", "II", "", "makes the current cell the child at col / row")
+(VM &, iint x, iint y) {
+    si->GoToColumnRow((int)x, (int)y);
+}
 
-nfr("get_text", "", "", "S", "gets the text of the current cell.",
-    [](StackPtr &, VM &vm) { return Value(vm.NewString(si->GetText())); });
+BUILTIN(get_text, "", "", "S", "gets the text of the current cell.")
+(VM &vm) {
+    return vm.NewString(si->GetText());
+}
 
-nfr("get_note", "", "", "S", "gets the note of the current cell.",
-    [](StackPtr &, VM &vm) { return Value(vm.NewString(si->GetNote())); });
+BUILTIN(get_note, "", "", "S", "gets the note of the current cell.")
+(VM &vm) {
+    return vm.NewString(si->GetNote());
+}
 
-nfr("set_text", "text", "S", "", "sets the text of the current cell",
-    [](StackPtr &, VM &, Value s) {
-        si->SetText(s.sval()->strv());
-        return NilVal();
-    });
+BUILTIN(set_text, "text", "S", "", "sets the text of the current cell")
+(VM &, LString *s) {
+    si->SetText(s->strv());
+}
 
-nfr("set_note", "text", "S", "", "sets the note of the current cell",
-    [](StackPtr &, VM &, Value s) {
-        si->SetNote(s.sval()->strv());
-        return NilVal();
-    });
+BUILTIN(set_note, "text", "S", "", "sets the note of the current cell")
+(VM &, LString *s) {
+    si->SetNote(s->strv());
+}
 
-nfr("create_grid", "cols,rows", "II", "",
-    "creates a grid in the current cell if there is not one yet",
-    [](StackPtr &, VM &, Value x, Value y) {
-        si->CreateGrid(x.intval(), y.intval());
-        return NilVal();
-    });
+BUILTIN(create_grid, "cols,rows", "II", "",
+    "creates a grid in the current cell if there is not one yet")
+(VM &, iint x, iint y) {
+    si->CreateGrid((int)x, (int)y);
+}
 
-nfr("insert_column", "c", "I", "", "inserts a column before column c in an existing grid",
-    [](StackPtr &, VM &, Value x) {
-        si->InsertColumn(x.intval());
-        return NilVal();
-    });
+BUILTIN(insert_column, "c", "I", "", "inserts a column before column c in an existing grid")
+(VM &, iint x) {
+    si->InsertColumn((int)x);
+}
 
-nfr("insert_row", "r", "I", "", "inserts a row before row r in an existing grid",
-    [](StackPtr &, VM &, Value x) {
-        si->InsertRow(x.intval());
-        return NilVal();
-    });
+BUILTIN(insert_row, "r", "I", "", "inserts a row before row r in an existing grid")
+(VM &, iint x) {
+    si->InsertRow((int)x);
+}
 
-nfr("delete", "position,size", "I}:2I}:2", "",
+BUILTIN(delete, "position,size", "I}:2I}:2", "",
     "clears the cells denoted by position/size. also removes columns/rows if they become "
-    "completely empty, or the entire grid.",
-    [](StackPtr &sp, VM &) {
-        auto s = PopVec<int2>(sp);
-        auto p = PopVec<int2>(sp);
-        si->Delete(p.x, p.y, s.x, s.y);
-    });
+    "completely empty, or the entire grid.")
+(VM &, iint2 position, iint2 size) {
+    auto p = ToVec<int2>(position);
+    auto s = ToVec<int2>(size);
+    si->Delete(p.x, p.y, s.x, s.y);
+}
 
-nfr("set_background_color", "color", "F}:4", "", "sets the background color of the current cell",
-    [](StackPtr &sp, VM &) {
-        auto col = PopVec<float3>(sp);
-        si->SetBackgroundColor(*(uint32_t *)quantizec(col, 0.0f).data());
-    });
+BUILTIN(set_background_color, "color", "F}:4", "", "sets the background color of the current cell")
+(VM &, double4 color) {
+    auto col = ToVec<float3>(color);
+    si->SetBackgroundColor(*(uint32_t *)quantizec(col, 0.0f).data());
+}
 
-nfr("set_text_color", "color", "F}:4", "", "sets the text color of the current cell",
-    [](StackPtr &sp, VM &) {
-        auto col = PopVec<float3>(sp);
-        si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data());
-    });
+BUILTIN(set_text_color, "color", "F}:4", "", "sets the text color of the current cell")
+(VM &, double4 color) {
+    auto col = ToVec<float3>(color);
+    si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data());
+}
 
-nfr("set_text_filtered", "filtered", "B", "", "sets the text filtered of the current cell",
-    [](StackPtr &, VM &, Value filtered) {
-        si->SetTextFiltered(filtered.True());
-        return NilVal();
-    });
+BUILTIN(set_text_filtered, "filtered", "B", "", "sets the text filtered of the current cell")
+(VM &, iint filtered) {
+    si->SetTextFiltered(filtered != 0);
+}
 
-nfr("is_text_filtered", "", "", "B", "whether the text of the current cell is filtered",
-    [](StackPtr &, VM &) { return Value(si->IsTextFiltered()); });
+BUILTIN(is_text_filtered, "", "", "B", "whether the text of the current cell is filtered")
+(VM &) {
+    return (iint)si->IsTextFiltered();
+}
 
-nfr("set_border_color", "color", "F}:4", "", "sets the border color of the current grid",
-    [](StackPtr &sp, VM &) {
-        auto col = PopVec<float3>(sp);
-        si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
-    });
+BUILTIN(set_border_color, "color", "F}:4", "", "sets the border color of the current grid")
+(VM &, double4 color) {
+    auto col = ToVec<float3>(color);
+    si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
+}
 
-nfr("get_relative_size", "", "", "I", "returns the relative text size of the current cell",
-    [](StackPtr &, VM &) { return Value(si->GetRelativeSize()); });
+BUILTIN(get_relative_size, "", "", "I", "returns the relative text size of the current cell")
+(VM &) {
+    return (iint)si->GetRelativeSize();
+}
 
-nfr("set_relative_size", "size", "I", "",
-    "sets the relative size (0 is normal, -1 is smaller etc.) of the current cell",
-    [](StackPtr &, VM &, Value s) {
-        si->SetRelativeSize(geom::clamp(s.intval(), -10, 10));
-        return NilVal();
-    });
+BUILTIN(set_relative_size, "size", "I", "",
+    "sets the relative size (0 is normal, -1 is smaller etc.) of the current cell")
+(VM &, iint s) {
+    si->SetRelativeSize(geom::clamp((int)s, -10, 10));
+}
 
-nfr("set_style_bits", "stylebits", "I", "",
+BUILTIN(set_style_bits, "stylebits", "I", "",
     "sets one or more styles (bold = 1, italic = 2, fixed = 4, underline = 8,"
-    " strikethru = 16) on the current cell",
-    [](StackPtr &, VM &, Value s) {
-        si->SetStyle(s.intval());
-        return NilVal();
-    });
+    " strikethru = 16) on the current cell")
+(VM &, iint s) {
+    si->SetStyle((int)s);
+}
 
-nfr("get_style_bits", "", "", "I", "returns the stylebits of the current cell",
-    [](StackPtr &, VM &) { return Value(si->GetStyle()); });
+BUILTIN(get_style_bits, "", "", "I", "returns the stylebits of the current cell")
+(VM &) {
+    return (iint)si->GetStyle();
+}
 
-nfr("set_status_message", "message", "S", "", "sets the status message in TreeSheets",
-    [](StackPtr &, VM &, Value s) {
-        si->SetStatusMessage(s.sval()->strv());
-        return NilVal();
-    });
+BUILTIN(set_status_message, "message", "S", "", "sets the status message in TreeSheets")
+(VM &, LString *s) {
+    si->SetStatusMessage(s->strv());
+}
 
-nfr("agent_result", "result", "S", "",
-    "reports a value back to the connected agent for the current eval request, if any",
-    [](StackPtr &, VM &, Value s) {
-        si->SetAgentResult(s.sval()->strv());
-        return NilVal();
-    });
+BUILTIN(agent_result, "result", "S", "",
+    "reports a value back to the connected agent for the current eval request, if any")
+(VM &, LString *s) {
+    si->SetAgentResult(s->strv());
+}
 
-nfr("get_filename_from_user", "is_save", "I", "S",
-    "gets a filename using a file dialog. empty string if cancelled.",
-    [](StackPtr &, VM &vm, Value is_save) {
-        return Value(vm.NewString(si->GetFileNameFromUser(is_save.True())));
-    });
+BUILTIN(get_filename_from_user, "is_save", "I", "S",
+    "gets a filename using a file dialog. empty string if cancelled.")
+(VM &vm, iint is_save) {
+    return vm.NewString(si->GetFileNameFromUser(is_save != 0));
+}
 
-nfr("get_filename", "", "", "S", "gets the current documents file name",
-    [](StackPtr &, VM &vm) { return Value(vm.NewString(si->GetFileName())); });
+BUILTIN(get_filename, "", "", "S", "gets the current documents file name")
+(VM &vm) {
+    return vm.NewString(si->GetFileName());
+}
 
-nfr("load_document", "filename", "S", "B",
-    "loads a document, and makes it the active one. returns false if failed.",
-    [](StackPtr &, VM &, Value filename) {
-        return Value(si->LoadDocument(filename.sval()->data()));
-    });
+BUILTIN(load_document, "filename", "S", "B",
+    "loads a document, and makes it the active one. returns false if failed.")
+(VM &, LString *filename) {
+    return (iint)si->LoadDocument(filename->data());
+}
 
-nfr("new_document", "cols,rows", "II", "",
+BUILTIN(new_document, "cols,rows", "II", "",
     "opens a new, unsaved document in a new tab with a root grid of the given size, and makes "
-    "it the active one",
-    [](StackPtr &, VM &, Value cols, Value rows) {
-        si->NewDocument(cols.intval(), rows.intval());
-        return NilVal();
-    });
+    "it the active one")
+(VM &, iint cols, iint rows) {
+    si->NewDocument((int)cols, (int)rows);
+}
 
-nfr("save_document", "saveas", "I", "B",
+BUILTIN(save_document, "saveas", "I", "B",
     "saves the current document to disk, same as the Save (saveas=false) / Save As "
     "(saveas=true) menu actions. if the document has no filename yet, always shows a save "
-    "dialog. returns false if the save failed or the dialog was cancelled.",
-    [](StackPtr &, VM &, Value saveas) {
-        return Value(si->SaveDocument(saveas.True()));
-    });
+    "dialog. returns false if the save failed or the dialog was cancelled.")
+(VM &, iint saveas) {
+    return (iint)si->SaveDocument(saveas != 0);
+}
 
-nfr("save_document_as", "filename", "S", "B",
+BUILTIN(save_document_as, "filename", "S", "B",
     "saves the current document to the given filename, without ever showing a save dialog "
     "(unlike save_document(true)). appends .cts if filename has no extension, and makes this "
-    "the document's filename for subsequent save_document() calls. returns false if failed.",
-    [](StackPtr &, VM &, Value filename) {
-        return Value(si->SaveDocumentAs(filename.sval()->data()));
-    });
-
-nfr("set_window_size", "width,height", "II", "", "resizes the window",
-    [](StackPtr &, VM &, Value w, Value h) {
-        si->SetWindowSize(w.intval(), h.intval());
-        return NilVal();
-    });
-
-nfr("get_last_edit", "", "", "I",
-    "gets the timestamp of the last edit in milliseconds since the Unix/C epoch",
-    [](StackPtr &, VM &) { return Value(si->GetLastEdit()); });
-
-nfr("get_current_time", "", "", "I",
-    "gets the current timestamp in milliseconds since the Unix/C epoch", [](StackPtr &, VM &) {
-        auto now = std::chrono::system_clock::now();
-        auto duration = now.time_since_epoch();
-        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-        return Value(milliseconds);
-    });
-
-nfr("is_tag", "", "", "B", "whether the current cell text is a tag",
-    [](StackPtr &, VM &) {
-        return Value(si->IsTag());
-    });
-
-nfr("has_image", "", "", "B", "whether the current cell has an image",
-    [](StackPtr &, VM &) { return Value(si->HasImage()); });
-
-nfr("get_column_width", "", "", "I", "get the column width of the current cell",
-    [](StackPtr &, VM &) {
-        return Value(si->GetColWidth());
-    });
-
-nfr("set_column_width", "width", "I", "", "set the column width of the current cell",
-    [](StackPtr &, VM &, Value w) {
-        si->SetColWidth(w.intval());
-        return NilVal();
-    });
-
-nfr("remove_image", "", "", "", "remove image in the current cell",
-    [](StackPtr &, VM &) {
-        si->RemoveImage();
-        return NilVal();
-    });
-
-nfr("set_image", "filename", "S", "B", "set image for the current cell",
-    [](StackPtr &, VM &, Value filename) { return Value(si->SetImage(filename.sval()->data())); });
-
-nfr("set_image_display_scale", "scale", "I", "", "set display scale (in integer percentage)",
-    [](StackPtr &, VM &, Value w) {
-        si->SetImageDisplayScale(w.intval());
-        return NilVal();
-    });
+    "the document's filename for subsequent save_document() calls. returns false if failed.")
+(VM &, LString *filename) {
+    return (iint)si->SaveDocumentAs(filename->data());
 }
+
+BUILTIN(set_window_size, "width,height", "II", "", "resizes the window")
+(VM &, iint w, iint h) {
+    si->SetWindowSize((int)w, (int)h);
+}
+
+BUILTIN(get_last_edit, "", "", "I",
+    "gets the timestamp of the last edit in milliseconds since the Unix/C epoch")
+(VM &) {
+    return (iint)si->GetLastEdit();
+}
+
+BUILTIN(get_current_time, "", "", "I",
+    "gets the current timestamp in milliseconds since the Unix/C epoch")
+(VM &) {
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    return (iint)milliseconds;
+}
+
+BUILTIN(is_tag, "", "", "B", "whether the current cell text is a tag")
+(VM &) {
+    return (iint)si->IsTag();
+}
+
+BUILTIN(has_image, "", "", "B", "whether the current cell has an image")
+(VM &) {
+    return (iint)si->HasImage();
+}
+
+BUILTIN(get_column_width, "", "", "I", "get the column width of the current cell")
+(VM &) {
+    return (iint)si->GetColWidth();
+}
+
+BUILTIN(set_column_width, "width", "I", "", "set the column width of the current cell")
+(VM &, iint w) {
+    si->SetColWidth((int)w);
+}
+
+BUILTIN(remove_image, "", "", "", "remove image in the current cell")
+(VM &) {
+    si->RemoveImage();
+}
+
+BUILTIN(set_image, "filename", "S", "B", "set image for the current cell")
+(VM &, LString *filename) {
+    return (iint)si->SetImage(filename->data());
+}
+
+BUILTIN(set_image_display_scale, "scale", "I", "", "set display scale (in integer percentage)")
+(VM &, iint w) {
+    si->SetImageDisplayScale((int)w);
+}
+
+#undef BUILTIN_GROUP
+#undef BUILTIN_SYM
 
 NativeRegistry natreg;  // FIXME: global.
 
@@ -280,22 +306,27 @@ string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *au
     min_output_level = OUTPUT_PROGRAM;
     string err;
     try {
-        InitPlatform(exefilepath, auxfilepath, from_bundle, sl);
-        RegisterBuiltin(natreg, "ts", "treesheets", AddTreeSheets);
+        RegisterBuiltin(natreg, "ts", "treesheets", treesheets_builtins);
         RegisterCoreLanguageBuiltins(natreg);
+        // Finalizes registration, filling in the JIT symbol table RunTCC/RunMIR link the
+        // generated code against; RunTCC segfaults walking that table if this is skipped.
+        EnginePreInit(natreg);
+        InitPlatform(exefilepath, auxfilepath, from_bundle, sl);
     } catch (string &s) { err = s; }
     return err;
 }
 
 string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins) {
+    (void)dump_builtins;
     string err;
     try {
-        string bytecode;
-        string codegen;
-        Compile(natreg, filename, code, bytecode, nullptr, nullptr, false, RUNTIME_ASSERT, nullptr,
-                1, false, true, codegen, false, filename);
-        auto ret = RunTCC(natreg, bytecode, filename, nullptr, {}, false, err, RUNTIME_ASSERT, true,
-                          false, codegen);
+        CompileOptions opts;
+        string c_codegen;
+        err = Compile(natreg, filename, code, opts, c_codegen);
+        if (err.empty()) {
+            RunOptions ropts;
+            RunJIT(natreg, filename, c_codegen, {}, opts, ropts, err);
+        }
     } catch (string &s) {
         err = s;
     }
