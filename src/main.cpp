@@ -339,6 +339,9 @@ struct treesheets {
     #include "wxtools.h"
     #include "tscanvas.h"
     #include "tsframe.h"
+    #ifdef ENABLE_LOBSTER
+        #include "agent_server.h"
+    #endif
     #include "tsapp.h"
 };
 

@@ -34,7 +34,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         document->AddUndo(lowestcommonancestor, newgeneration);
     }
 
-    std::string ScriptRun(const char *filename) {
+    // If code is non-empty it is run directly (filename is then only used to label errors),
+    // otherwise filename is loaded from disk.
+    std::string ScriptRun(const char *filename, std::string_view code = {}) {
         SwitchToCurrentDocument();
 
         bool dump_builtins = false;
@@ -42,7 +44,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             //dump_builtins = true;
         #endif
 
-        auto errormessage = RunLobster(filename, {}, dump_builtins);
+        auto errormessage = RunLobster(filename, code, dump_builtins);
 
         document->root->ResetChildren();
         document->UpdateLayout();
@@ -60,6 +62,13 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
         SwitchToCurrentDocument();
         return true;
+    }
+
+    // Opens a new, unsaved tab (same as the "New" menu action / startup default) with a root
+    // grid of the given size, and makes it current.
+    void NewDocument(int cols, int rows) override {
+        sys->InitDB(std::max(cols, 1), std::max(rows, 1));
+        SwitchToCurrentDocument();
     }
 
     void GoToRoot() override { current = document->root.get(); }
@@ -207,6 +216,18 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SetStatusMessage(std::string_view message) override {
         auto ws = wxString(message.data(), message.size());
         sys->frame->SetStatus(ws);
+    }
+
+    // Set by the running script via ts.agent_result(), consumed by the agent server after
+    // ScriptRun() returns. Empty if the script never called it.
+    std::string agent_result;
+
+    void SetAgentResult(std::string_view result) override { agent_result = result; }
+
+    std::string TakeAgentResult() {
+        std::string result = std::move(agent_result);
+        agent_result.clear();
+        return result;
     }
 
     void SetWindowSize(int width, int height) override { sys->frame->SetSize(width, height); }
