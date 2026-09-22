@@ -163,6 +163,22 @@ struct TSApp : wxApp {
     }
 
     void SetupInternationalization() const {
+        #ifdef __WXMSW__
+            // wxWidgets 3.3 logs an error when "HKCU\Control Panel\International\User Profile"
+            // doesn't exist (e.g. under Wine), although it then finds the preferred UI languages
+            // another way. This early the error is shown as a message box, so drop only that
+            // message while this runs (once the frame exists, MyLog doesn't show boxes anyway).
+            // TODO: remove once https://github.com/wxWidgets/wxWidgets/pull/27067 is in the
+            // wxWidgets version used.
+            struct IgnoreMissingLanguagesKey : wxLogChain {
+                IgnoreMissingLanguagesKey() : wxLogChain(nullptr) {}
+                void DoLogRecord(wxLogLevel level, const wxString &msg,
+                                 const wxLogRecordInfo &info) override {
+                    if (msg.Contains("\\Control Panel\\International\\User Profile")) return;
+                    wxLogChain::DoLogRecord(level, msg, info);
+                }
+            } ignore_missing_languages_key;
+        #endif
         wxUILocale::UseDefault();
 
         #ifdef __WXGTK__
