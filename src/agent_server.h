@@ -1,6 +1,11 @@
 // Lets an external agent (e.g. an AI coding assistant) run Lobster script against the
 // currently open document over a local socket. Opt-in via -a / --agent.
 //
+// Transport: a Unix domain socket where available (/tmp/TreeSheets-agent-<user>.sock), and on
+// Windows a TCP socket on 127.0.0.1 with an OS-assigned port, which is written as a decimal number
+// to %TEMP%\TreeSheets-agent-<user>.port. Either way, the per-launch token is in the endpoint
+// file's path plus ".token", and both files are removed again on a clean exit.
+//
 // Wire protocol: newline-delimited JSON, one request per line in, one response per line out.
 // Only a flat, all-string-valued object shape is needed, so parsing/building it is hand-rolled
 // here rather than pulling in a JSON library.
@@ -155,22 +160,31 @@ struct AgentJson {
     }
 };
 
-#ifdef wxHAS_UNIX_DOMAIN_SOCKETS
+#if defined(wxHAS_UNIX_DOMAIN_SOCKETS) || defined(__WXMSW__)
+
+#define TS_AGENT_SERVER 1
 
 struct AgentServer : wxEvtHandler {
     unique_ptr<wxSocketServer> listener;
     std::map<wxSocketBase *, std::string> conns;  // socket -> pending input buffer
     std::string token;
-    wxString socket_path;
+    wxString endpoint_path;  // the socket itself, or on Windows the file holding the port
     wxString token_path;
 
     ~AgentServer() override { Stop(); }
 
-    static wxString SocketPath() {
-        return wxString::Format("/tmp/TreeSheets-agent-%s.sock", wxGetUserId());
+    static wxString EndpointPath() {
+        #ifdef wxHAS_UNIX_DOMAIN_SOCKETS
+            return wxString::Format("/tmp/TreeSheets-agent-%s.sock", wxGetUserId());
+        #else
+            // The per-user temp dir, so other users can't read the token.
+            return wxFileName(wxFileName::GetTempDir(),
+                              wxString::Format("TreeSheets-agent-%s.port", wxGetUserId()))
+                .GetFullPath();
+        #endif
     }
 
-    static wxString TokenPath() { return SocketPath() + ".token"; }
+    static wxString TokenPath() { return EndpointPath() + ".token"; }
 
     static std::string GenerateToken() {
         static const char *hex = "0123456789abcdef";
@@ -182,9 +196,9 @@ struct AgentServer : wxEvtHandler {
     }
 
     bool Start() {
-        socket_path = SocketPath();
+        endpoint_path = EndpointPath();
         token_path = TokenPath();
-        ::wxRemoveFile(socket_path);  // stale socket left behind by an unclean exit
+        ::wxRemoveFile(endpoint_path);  // stale endpoint left behind by an unclean exit
 
         token = GenerateToken();
         wxFile tf;
@@ -194,14 +208,37 @@ struct AgentServer : wxEvtHandler {
         }
         tf.Close();
 
-        wxUNIXaddress addr;
-        addr.Filename(socket_path);
-        listener = make_unique<wxSocketServer>(addr, wxSOCKET_REUSEADDR);
-        if (!listener->IsOk()) {
-            wxLogWarning("Agent server: could not listen on %s", socket_path);
-            listener.reset();
-            return false;
-        }
+        #ifdef wxHAS_UNIX_DOMAIN_SOCKETS
+            wxUNIXaddress addr;
+            addr.Filename(endpoint_path);
+            listener = make_unique<wxSocketServer>(addr, wxSOCKET_REUSEADDR);
+            if (!listener->IsOk()) {
+                wxLogWarning("Agent server: could not listen on %s", endpoint_path);
+                listener.reset();
+                return false;
+            }
+        #else
+            wxIPV4address addr;
+            addr.Hostname("127.0.0.1");
+            addr.Service(0);  // let the OS pick a free port
+            // No wxSOCKET_REUSEADDR: on Windows it would let another process bind the same port.
+            listener = make_unique<wxSocketServer>(addr);
+            wxIPV4address local;
+            if (!listener->IsOk() || !listener->GetLocal(local)) {
+                wxLogWarning("Agent server: could not listen on 127.0.0.1");
+                listener.reset();
+                return false;
+            }
+            // Written only once listening, so the file existing means the port is ready.
+            wxFile pf;
+            if (!pf.Create(endpoint_path, true) ||
+                !pf.Write(wxString::Format("%u", static_cast<unsigned>(local.Service())))) {
+                wxLogWarning("Agent server: could not write port file %s", endpoint_path);
+                listener.reset();
+                return false;
+            }
+            pf.Close();
+        #endif
         listener->SetEventHandler(*this);
         listener->SetNotify(wxSOCKET_CONNECTION_FLAG);
         listener->Notify(true);
@@ -213,7 +250,7 @@ struct AgentServer : wxEvtHandler {
         for (auto &kv : conns) kv.first->Destroy();
         conns.clear();
         listener.reset();
-        if (!socket_path.IsEmpty()) ::wxRemoveFile(socket_path);
+        if (!endpoint_path.IsEmpty()) ::wxRemoveFile(endpoint_path);
         if (!token_path.IsEmpty()) ::wxRemoveFile(token_path);
     }
 
@@ -286,4 +323,4 @@ struct AgentServer : wxEvtHandler {
     }
 };
 
-#endif  // wxHAS_UNIX_DOMAIN_SOCKETS
+#endif  // wxHAS_UNIX_DOMAIN_SOCKETS || __WXMSW__

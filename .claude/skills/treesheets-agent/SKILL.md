@@ -4,18 +4,29 @@ description: >-
   Talk directly to a running TreeSheets instance over its local agent socket —
   run Lobster script (inline or from a file) against whatever document is
   currently open and get results or errors back. Works against any TreeSheets
-  binary (dev build or installed distribution), source tree optional. Use
+  binary (dev build or installed distribution) on macOS, Linux or Windows
+  (including a Windows build under Wine), source tree optional. Use
   when the user wants to inspect, automate, or script the currently open
   TreeSheets document, or asks to test/exercise the TreeSheets agent socket.
 ---
 
 TreeSheets can run Lobster script against whatever document is open in a
 running instance and hand a result back, over a local, token-authenticated
-Unix domain socket. It only exists when TreeSheets was launched with `-a`
-(agent mode) — **and only in a binary built after this feature landed**; if
-`-a` produces no socket, that TreeSheets predates it (see "No socket appears"
-below). Currently macOS/Linux only (Unix domain sockets); no Windows
-equivalent yet.
+socket. It only exists when TreeSheets was launched with `-a` (agent mode) —
+**and only in a binary built after this feature landed**; if `-a` produces
+no endpoint, that TreeSheets predates it (see "No socket appears" below).
+
+The transport depends on the platform; the protocol on top is the same:
+
+| Platform | Endpoint | Token |
+|---|---|---|
+| macOS / Linux | Unix domain socket `/tmp/TreeSheets-agent-<user>.sock` | `<endpoint>.token` |
+| Windows | TCP on `127.0.0.1`, port written to `%TEMP%\TreeSheets-agent-<user>.port` | `<endpoint>.token` |
+| Windows build under Wine | same `.port` file, inside the Wine prefix (`<prefix>/drive_c/users/<user>/AppData/Local/Temp/`) | `<endpoint>.token` |
+
+The Windows port is picked by the OS on every launch, so always read it from
+the `.port` file. Only a Windows binary built after TCP support was added
+writes one.
 
 Nothing in this skill requires the TreeSheets source tree — the socket, the
 protocol, and `scripts/ts_agent.py` all work against a bare installed binary.
@@ -30,9 +41,8 @@ to lives.
 ## Prerequisites
 
 TreeSheets must already be running, started with `-a`. Check first rather
-than assuming: the socket and token exist at `/tmp/TreeSheets-agent-<user>.sock`
-and `.sock.token` (substitute your actual username) only while such an
-instance is up.
+than assuming: the endpoint and token files from the table above exist only
+while such an instance is up (substitute your actual username).
 
 If nothing is running with `-a`, launch (or relaunch) one — add `-i` too if
 you want a fresh instance for testing instead of forwarding to one that's
@@ -51,8 +61,42 @@ already running:
   - Linux: `command -v treesheets` / `command -v TreeSheets`, or check
     whatever package manager installed it (`dpkg -L`/`rpm -ql` for the
     TreeSheets package), or ask.
+  - Windows: `where TreeSheets` in a shell, the Start-menu shortcut's target,
+    or the usual `C:\Program Files\TreeSheets\TreeSheets.exe`, or ask. Launch
+    it as `TreeSheets.exe -a`.
   - If you can't find an installed copy at all, say so and ask rather than
     silently giving up or fabricating a path.
+
+### Windows build under Wine (Linux host)
+
+A Windows `TreeSheets.exe` (e.g. from the MinGW cross-build in
+`_build_win32/`) works under Wine, and the Linux-side client can reach it:
+Wine maps the Windows TCP socket onto a real host socket on `127.0.0.1`.
+
+- The exe needs its data next to it: `scripts/` (including Lobster's
+  `modules/*.lobster`) and `images/`. A bare `cmake --build` directory
+  doesn't have them; `cmake --install` into a folder, or copy `TS/scripts`,
+  `TS/images` and the Lobster modules (`_build_win32/_deps/lobster-src/modules/{std,stdtype,vec,color}.lobster`
+  into `scripts/modules/`) next to the exe.
+- Launch it from that folder: `wine TreeSheets.exe -a -i`
+  (add `WINEDEBUG=-all` to silence Wine's console noise).
+- For testing, use a throwaway prefix instead of relying on `-i`, just like
+  the throwaway `$HOME` advice below: `WINEPREFIX=/tmp/ts_wine wineboot -i`
+  once (about 10 seconds), then `WINEPREFIX=/tmp/ts_wine wine TreeSheets.exe -a -i`.
+  On Windows, TreeSheets keeps its settings (and the list of files to restore
+  on startup) in the registry, which lives inside the prefix.
+- The client finds the `.port` file in `$WINEPREFIX` (or `~/.wine`) on its
+  own when no native Linux socket exists, so export the same `WINEPREFIX` for
+  it. Otherwise pass `--endpoint <prefix>/drive_c/users/<user>/AppData/Local/Temp/TreeSheets-agent-<user>.port`.
+- `eval -f /host/path.lobster` works: the client converts the path to a
+  Windows path that Wine can open (`winepath -w`, or `Z:\...` if `winepath`
+  is missing). The error label then shows that Windows path.
+- **Closing the window with unsaved changes shows an "are you sure?" prompt
+  whose window title is empty**: `wmctrl -l` lists it as a window with a
+  blank name (class `treesheets.exe`), not under the main window's title.
+  Until someone answers it, the app doesn't exit and the `.port`/`.token`
+  files stay. Answer it rather than killing the process; that leaves a stale
+  autosave file behind, see below.
 
 **Dev-build gotcha (only affects a `cmake --build`-only checkout, not an
 installed distribution):** the resources directory may be missing, which
@@ -120,7 +164,7 @@ it instead?"*. This is a genuinely separate top-level window (title
     a stale `.tmp` next to a real document, mention it rather than silently
     deleting — it lives next to the user's actual data.
 
-### No socket appears even after a clean launch
+### No socket (or `.port` file) appears even after a clean launch
 
 Two different causes, worth telling apart:
 
@@ -143,9 +187,12 @@ python3 /absolute/path/to/treesheets-agent/scripts/ts_agent.py eval -c "ts.agent
 python3 /absolute/path/to/treesheets-agent/scripts/ts_agent.py eval -f /path/to/script.lobster
 ```
 
-It finds the socket and reads its per-launch token itself
-(`/tmp/TreeSheets-agent-<user>.sock` and `.sock.token`) — no setup needed
-beyond TreeSheets running with `-a`. Pass `--json` (after the subcommand,
+It finds the endpoint and reads its per-launch token itself (see the table at
+the top: the Unix socket, the Windows `.port` file, or a Wine prefix's `.port`
+file if no native socket exists) — no setup needed beyond TreeSheets running
+with `-a`. To target one explicitly, pass `--endpoint <socket or .port file>`
+(`--socket` still works as an alias). On Windows, run it with `python` or
+`py` instead of `python3` if that is how Python is installed. Pass `--json` (after the subcommand,
 e.g. `eval -c "..." --json`) to get the raw `{"ok":...,"error":...,"result":...}`
 response instead of the human-readable summary; prefer `--json` when parsing
 output programmatically. Exit code is 0 on `ok`, 1 otherwise.
@@ -272,7 +319,8 @@ hang, `ping` included, from the outside.
 ## Protocol reference
 
 Only needed if not using the script. Newline-delimited JSON over the Unix
-domain socket, one request per line in, one response per line out:
+domain socket (or, on Windows, a TCP connection to `127.0.0.1:<port from the
+.port file>`), one request per line in, one response per line out:
 
 ```
 -> {"id":"1","token":"<token>","cmd":"ping"}

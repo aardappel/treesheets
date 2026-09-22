@@ -2,31 +2,69 @@
 """Client for TreeSheets' local agent socket.
 
 TreeSheets (this repo), when launched with -a, listens on a token-authenticated
-Unix domain socket and runs Lobster script against whatever document is
-currently open, returning the result. See ../SKILL.md for the full protocol
-and usage notes. This script needs no setup beyond TreeSheets already running
-with -a: it finds the socket and reads its per-launch token itself.
+local socket and runs Lobster script against whatever document is currently
+open, returning the result. See ../SKILL.md for the full protocol and usage
+notes. This script needs no setup beyond TreeSheets already running with -a:
+it finds the endpoint and reads its per-launch token itself.
+
+Endpoints (the token is always in "<endpoint>.token"):
+  - macOS/Linux: Unix domain socket /tmp/TreeSheets-agent-<user>.sock
+  - Windows: %TEMP%\\TreeSheets-agent-<user>.port, a file holding the TCP port
+    TreeSheets listens on at 127.0.0.1
+  - Windows build under Wine, client on the Linux host: that same .port file
+    inside the Wine prefix, found automatically if no native socket exists
 """
 import argparse
 import getpass
+import glob
 import json
 import os
+import shutil
 import socket
+import subprocess
 import sys
+import tempfile
 
 
-def default_socket_path():
-    user = os.environ.get("USER") or os.environ.get("LOGNAME")
-    if not user:
-        try:
-            user = getpass.getuser()
-        except Exception:
-            user = "unknown"
-    return f"/tmp/TreeSheets-agent-{user}.sock"
+def current_user():
+    try:
+        return getpass.getuser()
+    except Exception:
+        return "unknown"
 
 
-def read_token(socket_path):
-    token_path = socket_path + ".token"
+def wine_port_files():
+    """.port files of Windows TreeSheets instances running under Wine, newest first."""
+    prefixes = [os.environ.get("WINEPREFIX"), os.path.expanduser("~/.wine")]
+    found = set()
+    for prefix in filter(None, prefixes):
+        for temp in ("AppData/Local/Temp", "Temp", "Local Settings/Temp"):
+            pattern = os.path.join(prefix, "drive_c/users/*", temp, "TreeSheets-agent-*.port")
+            found.update(glob.glob(pattern))
+    return sorted(found, key=os.path.getmtime, reverse=True)
+
+
+def default_endpoint():
+    if sys.platform == "win32":
+        return os.path.join(tempfile.gettempdir(), f"TreeSheets-agent-{current_user()}.port")
+    native = f"/tmp/TreeSheets-agent-{current_user()}.sock"
+    if not os.path.exists(native):
+        wine = wine_port_files()
+        if wine:
+            return wine[0]
+    return native
+
+
+def is_tcp(endpoint):
+    return endpoint.endswith(".port")
+
+
+def is_wine(endpoint):
+    return is_tcp(endpoint) and sys.platform != "win32"
+
+
+def read_token(endpoint):
+    token_path = endpoint + ".token"
     try:
         with open(token_path) as f:
             return f.read().strip()
@@ -37,20 +75,43 @@ def read_token(socket_path):
         )
 
 
-def send(socket_path, token, req, timeout):
+def connect(endpoint, timeout):
+    try:
+        if is_tcp(endpoint):
+            with open(endpoint) as f:
+                port = int(f.read().strip())
+            return socket.create_connection(("127.0.0.1", port), timeout=timeout)
+        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        s.connect(endpoint)
+        return s
+    except (OSError, ValueError) as e:
+        raise SystemExit(
+            f"error: can't connect via {endpoint}: {e}\n"
+            f"Is TreeSheets running with -a (agent mode)?"
+        )
+
+
+def to_wine_path(path):
+    """TreeSheets under Wine opens files by Windows path; map a host path onto one."""
+    path = os.path.abspath(path)
+    if shutil.which("winepath"):
+        try:
+            out = subprocess.run(["winepath", "-w", path], capture_output=True, text=True,
+                                 timeout=30, check=True).stdout.strip()
+            if out:
+                return out
+        except (OSError, subprocess.SubprocessError):
+            pass
+    return "Z:" + path.replace("/", "\\")  # Wine's default mapping of the host root
+
+
+def send(endpoint, token, req, timeout):
     req = dict(req)
     req["token"] = token
     req.setdefault("id", "1")
 
-    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    s.settimeout(timeout)
-    try:
-        s.connect(socket_path)
-    except OSError as e:
-        raise SystemExit(
-            f"error: can't connect to {socket_path}: {e}\n"
-            f"Is TreeSheets running with -a (agent mode)?"
-        )
+    s = connect(endpoint, timeout)
 
     f = s.makefile("rwb", buffering=0)
     f.write((json.dumps(req) + "\n").encode("utf-8"))
@@ -61,7 +122,7 @@ def send(socket_path, token, req, timeout):
 
 
 def cmd_ping(args):
-    resp = send(args.socket, read_token(args.socket), {"cmd": "ping"}, args.timeout)
+    resp = send(args.endpoint, read_token(args.endpoint), {"cmd": "ping"}, args.timeout)
     if args.json:
         print(json.dumps(resp))
     else:
@@ -74,13 +135,13 @@ def cmd_eval(args):
     if args.code is not None:
         req["code"] = args.code
     elif args.file is not None:
-        req["file"] = args.file
+        req["file"] = to_wine_path(args.file) if is_wine(args.endpoint) else args.file
     elif args.stdin:
         req["code"] = sys.stdin.read()
     else:
         raise SystemExit("error: eval needs --code, --file, or --stdin")
 
-    resp = send(args.socket, read_token(args.socket), req, args.timeout)
+    resp = send(args.endpoint, read_token(args.endpoint), req, args.timeout)
     if args.json:
         print(json.dumps(resp))
     elif resp.get("ok"):
@@ -93,13 +154,15 @@ def cmd_eval(args):
 
 
 def main():
-    # A shared parent so --socket/--timeout/--json work both before and after the
+    # A shared parent so --endpoint/--timeout/--json work both before and after the
     # subcommand (argparse doesn't forward parent-only options placed after it).
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument(
+        "--endpoint",
         "--socket",
-        default=default_socket_path(),
-        help="path to the agent socket (default: %(default)s)",
+        default=None,
+        help="the agent's Unix socket, or on Windows its .port file "
+        "(default: found automatically, see the module docstring)",
     )
     common.add_argument("--timeout", type=float, default=10.0, help="socket timeout in seconds")
     common.add_argument(
@@ -124,6 +187,8 @@ def main():
     sp.set_defaults(func=cmd_eval)
 
     args = p.parse_args()
+    if args.endpoint is None:
+        args.endpoint = default_endpoint()
     sys.exit(args.func(args))
 
 
