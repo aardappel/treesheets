@@ -79,11 +79,46 @@ verified on an actual Linux machine.)
 
 Cleanup on quit: macOS needed an explicit `wxEVT_END_SESSION` handler because
 Cmd+Q / AppleScript "quit" bypass the normal close chain there (a Cocoa/wx
-quirk — see `src/tsapp.h` if you have source). On Linux/GTK, closing the
-window should go through the ordinary close chain and clean up the
-socket/token files without needing that workaround — but this hasn't been
-verified on an actual GTK session. If you find a stale socket/token file
-after quitting on Linux, that's the first thing to check.
+quirk — see `src/tsapp.h` if you have source). **Verified on Linux/GTK**: a
+real window-close request (`wmctrl -c <window-id>`, or the window manager's
+close button) goes through the ordinary close chain and removes both the
+`.sock` and `.sock.token` files, no workaround needed. `SIGTERM`/`kill`
+against the process, unsurprisingly, does *not* — that bypasses `OnClosing`
+entirely, same as it would on any platform, so don't read a leftover
+socket/token file after a forceful kill as a bug. Sending the `Ctrl+Q` /
+`Exit` accelerator via a synthetic key event (`xdotool key ctrl+q`) was
+unreliable in testing (silently did nothing, no dialog, no exit) — if you
+need to script a quit for testing, prefer a real close request
+(`wmctrl -c`) over synthesizing the keypress.
+
+**A stale autosave file can make the app look hung on launch.** If a
+`<name>.tmp` file exists next to `<name>.cts` when that file is (re)opened —
+including via TreeSheets' own session restore on startup, not just an
+explicit open — `LoadDB()` (`src/system.h` around line 230) pops a blocking
+`wxMessageBox`: *"A temporary autosave file exists, would you like to load
+it instead?"*. This is a genuinely separate top-level window (title
+"Autosave load"), not a child of the main frame, so it's easy to miss in a
+`wmctrl -l` grep for the main window's title. While it's open:
+  - The tab/document being loaded doesn't finish loading, and normal window
+    controls, plus the actual `Ctrl+Q`/close on that frame, **don't get
+    ack'd until it's dismissed** — that's what "the app won't quit" usually
+    is, not a socket-cleanup bug.
+  - The agent socket itself stays responsive for whatever document *is*
+    already loaded (`ping` and `eval` both keep working against the
+    previously-active tab) — the modal only blocks the one file that's
+    mid-load, not the whole process.
+  - Dismiss it by clicking **No** (keep the saved file, discard the
+    autosave) unless you specifically want the recovered content; after
+    that, a normal close/quit works immediately.
+  - This is caused by an *ungraceful* prior exit of TreeSheets on that same
+    file (crash, `kill -9`, `SIGTERM`) leaving its periodic-autosave `.tmp`
+    behind — so it's easy to trigger by accident while testing this skill
+    itself (e.g. `pkill`ing a test instance instead of closing it), and then
+    hitting it again on your *next* launch since session restore reopens
+    the same files. Prefer closing test instances (`wmctrl -c`) over
+    killing them to avoid seeding this for next time; if you do end up with
+    a stale `.tmp` next to a real document, mention it rather than silently
+    deleting — it lives next to the user's actual data.
 
 ### No socket appears even after a clean launch
 
@@ -167,6 +202,18 @@ Other things worth knowing regardless of how you looked up the API:
   a fully-emptied column/row also removes it, so this restores the original
   shape exactly. Or use `ts.new_document(cols, rows)` to open a fresh,
   unsaved tab instead of touching whatever's already open.
+- **To test this skill itself (launching/killing instances, exercising quit
+  behavior, etc.) without any risk to real documents**, launch with an
+  isolated, throwaway `$HOME`/`$XDG_CONFIG_HOME` instead of relying on
+  `-i` alone — `-i` only forces a *new process*, it does nothing to stop
+  that process from reading the normal config and restoring the same real
+  session tabs. E.g.:
+  `HOME=/tmp/ts_test_home XDG_CONFIG_HOME=/tmp/ts_test_home/.config
+  ./TreeSheets -a -i`. With no prior config there, it opens fresh (the
+  bundled tutorial doc) instead of session-restoring the user's real files,
+  and anything the test does — including intentionally crashing it to
+  reproduce autosave-dialog behavior — stays inside that throwaway
+  directory. Delete the throwaway `$HOME` afterward.
 - `ts.save_document(saveas: int) -> int` writes the current document to disk
   — same as the Save (`saveas` false/0) / Save As (`saveas` true/1) menu
   actions, returns false on failure/cancel. Plain `save_document(false)` on a
