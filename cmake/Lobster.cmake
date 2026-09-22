@@ -2,21 +2,10 @@
 # script reference target. Included from the top-level CMakeLists.txt when ENABLE_LOBSTER is ON,
 # after the TreeSheets target and the TREESHEETS_*DIR install variables have been defined.
 
-# Lobster gates some Windows code on _MSC_VER instead of _WIN32, so MinGW builds need a patch.
-# The patch is applied once after extracting. Changing the URL re-extracts and re-applies it, but
-# editing the patch file doesn't: delete <builddir>/_deps/lobster-{src,subbuild} after doing so.
-set(lobster_patch)
-if(WIN32 AND NOT MSVC)
-    find_program(PATCH_EXECUTABLE patch REQUIRED)
-    set(lobster_patch PATCH_COMMAND
-        ${PATCH_EXECUTABLE} -p1 -N -i ${CMAKE_CURRENT_LIST_DIR}/patches/lobster-mingw.patch)
-endif()
-
 FetchContent_Declare(
     lobster
-    URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.7.tar.gz
-    URL_HASH SHA256=b19315a013106cd8611b34152fe48c0c45ef9f5bf89aab4b6df9b37951da3499
-    ${lobster_patch}
+    URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.8.tar.gz
+    URL_HASH SHA256=9be91bdadd0987caa62f6e3450efa3943b3a4b337fc51c28826984717cc6d8da
 )
 FetchContent_MakeAvailable(lobster)
 

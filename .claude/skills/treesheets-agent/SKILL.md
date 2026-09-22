@@ -309,8 +309,8 @@ non-recursive nested-`for`-loop script was once seen to silently drop its
 response past ~700-800 native calls in one `eval`, though this could not be
 reproduced on demand even on the buggy version.
 
-Both are fixed upstream as of Lobster v2026.7, which `cmake/Lobster.cmake`
-now pins. Re-verified directly: the same recursive-traversal repro that
+Both are fixed upstream as of Lobster v2026.7 (`cmake/Lobster.cmake` pins
+that or newer). Re-verified directly: the same recursive-traversal repro that
 used to reliably wedge the app at ~250-300 calls now completes in well
 under 100ms at 1,600+ recursive native-call-laden invocations (5-6x the old
 trigger scale), and the nested-loop repro returns correctly at ~800 calls.
