@@ -3,89 +3,100 @@ name: treesheets-agent
 description: >-
   Talk directly to a running TreeSheets instance over its local agent socket —
   run Lobster script (inline or from a file) against whatever document is
-  currently open and get results or errors back. Use when the user wants to
-  inspect, automate, or script the currently open TreeSheets document, or asks
-  to test/exercise the TreeSheets agent socket.
+  currently open and get results or errors back. Works against any TreeSheets
+  binary (dev build or installed distribution), source tree optional. Use
+  when the user wants to inspect, automate, or script the currently open
+  TreeSheets document, or asks to test/exercise the TreeSheets agent socket.
 ---
 
-TreeSheets (this repo) can run Lobster script against whatever document is
-open in a running instance and hand a result back, over a local,
-token-authenticated Unix domain socket. It only exists when TreeSheets was
-launched with `-a` (agent mode). Implementation: `src/agent_server.h`,
-`src/tsapp.h`, `src/treesheets_impl.h`, `src/lobster_impl.cpp`. Currently
-macOS/Linux only (Unix domain sockets); there is no Windows equivalent yet.
+TreeSheets can run Lobster script against whatever document is open in a
+running instance and hand a result back, over a local, token-authenticated
+Unix domain socket. It only exists when TreeSheets was launched with `-a`
+(agent mode) — **and only in a binary built after this feature landed**; if
+`-a` produces no socket, that TreeSheets predates it (see "No socket appears"
+below). Currently macOS/Linux only (Unix domain sockets); no Windows
+equivalent yet.
+
+Nothing in this skill requires the TreeSheets source tree — the socket, the
+protocol, and `scripts/ts_agent.py` all work against a bare installed binary.
+Source references below (file paths under `src/`) are call-outs for when you
+happen to have the source checked out, not a requirement; skip them freely.
 
 The harness reports the absolute path to this `SKILL.md`. Resolve
-`scripts/ts_agent.py` relative to its parent directory, even when the current
-working directory is elsewhere.
+`scripts/ts_agent.py` relative to its parent directory — that's this skill's
+own directory, independent of wherever the TreeSheets binary you're talking
+to lives.
 
 ## Prerequisites
 
-TreeSheets must already be running, started with `-a`. Add `-i` too if you
-want a fresh instance for testing instead of forwarding to one that's already
-running. If nothing is running with `-a`, the socket and token files won't
-exist and every request below fails to connect — say so plainly and offer to
-launch it rather than guessing.
+TreeSheets must already be running, started with `-a`. Check first rather
+than assuming: the socket and token exist at `/tmp/TreeSheets-agent-<user>.sock`
+and `.sock.token` (substitute your actual username) only while such an
+instance is up.
 
-The socket/protocol code itself (`src/agent_server.h`) is platform-generic —
-it's gated on `wxHAS_UNIX_DOMAIN_SOCKETS`, which wx defines for any Unix
-(`__UNIX__ && !__WINDOWS__ && !__WINE__`), so macOS and Linux both get the
-same `/tmp/TreeSheets-agent-<user>.sock` behavior. What differs between them
-is only the binary layout and how a dev build finds its data files. The macOS
-steps below were exercised directly in this repo's dev environment; the Linux
-steps follow from reading `CMakeLists.txt` and `src/tsapp.h`'s `ResolvePath`/
-`GetDataPath` but weren't run on an actual Linux box — sanity-check the first
-launch before relying on it.
+If nothing is running with `-a`, launch (or relaunch) one — add `-i` too if
+you want a fresh instance for testing instead of forwarding to one that's
+already running:
 
-### macOS
+- **If you have a TreeSheets source checkout and dev build** (e.g. this
+  repo): `./_build/TreeSheets.app/Contents/MacOS/TreeSheets -a` on macOS, or
+  `./_build/TreeSheets -a` on Linux (see "Dev-build gotcha" below).
+- **If you only have an installed/binary distribution**, find it first — do
+  not guess a path:
+  - macOS: `mdfind "kMDItemCFBundleIdentifier == 'com.strlen.TreeSheets'"` or
+    `mdfind -name TreeSheets.app`, or just ask the person where it's
+    installed. Then `open -a "<path to TreeSheets.app>" --args -a` (or run
+    the binary inside `Contents/MacOS/` directly, same as the dev-build
+    case, if you need to see its stdout/stderr).
+  - Linux: `command -v treesheets` / `command -v TreeSheets`, or check
+    whatever package manager installed it (`dpkg -L`/`rpm -ql` for the
+    TreeSheets package), or ask.
+  - If you can't find an installed copy at all, say so and ask rather than
+    silently giving up or fabricating a path.
 
-```bash
-./_build/TreeSheets.app/Contents/MacOS/TreeSheets -a
-```
+**Dev-build gotcha (only affects a `cmake --build`-only checkout, not an
+installed distribution):** the resources directory may be missing, which
+makes the app hang at startup behind an invisible modal alert about missing
+icons — the socket never appears in that case. On macOS, fix once from the
+build directory with `cmake --install . --prefix "$(pwd)"`. On Linux this
+doesn't translate directly (see "Linux" below); a proper installed
+distribution already has this handled by its installer/package, so this
+whole gotcha doesn't apply there.
 
-A dev build that was only `cmake --build`'d (never installed) is missing
-`Contents/Resources` and hangs at startup behind an invisible modal alert
-about missing icons — the agent socket never appears in that case. Fix once
-with, from the build directory:
+### Linux resource-path notes (dev builds only)
 
-```bash
-cmake --install . --prefix "$(pwd)"
-```
+By default (unless configured with `-DTREESHEETS_RELOCATABLE_INSTALLATION=ON`),
+`TREESHEETS_DATADIR`/`TREESHEETS_DOCDIR` are baked into the binary at
+configure time as *absolute* paths under `CMAKE_INSTALL_PREFIX` (GNUInstallDirs
+layout, e.g. `<prefix>/share/TreeSheets`, `<prefix>/share/doc/TreeSheets`);
+`ResolvePath()` looks next to the executable first, then falls back to that
+compiled-in path. So the macOS `cmake --install . --prefix "$(pwd)"` dev
+trick doesn't line up on Linux — either actually install to the configured
+prefix (`sudo cmake --install .`), or reconfigure with
+`-DTREESHEETS_RELOCATABLE_INSTALLATION=ON` first so it behaves like the
+macOS case. (Sourced from reading `CMakeLists.txt`/`src/tsapp.h`, not
+verified on an actual Linux machine.)
 
-### Linux
+Cleanup on quit: macOS needed an explicit `wxEVT_END_SESSION` handler because
+Cmd+Q / AppleScript "quit" bypass the normal close chain there (a Cocoa/wx
+quirk — see `src/tsapp.h` if you have source). On Linux/GTK, closing the
+window should go through the ordinary close chain and clean up the
+socket/token files without needing that workaround — but this hasn't been
+verified on an actual GTK session. If you find a stale socket/token file
+after quitting on Linux, that's the first thing to check.
 
-There's no app bundle — the build produces a plain `TreeSheets` binary
-directly in the build directory:
+### No socket appears even after a clean launch
 
-```bash
-./_build/TreeSheets -a
-```
+Two different causes, worth telling apart:
 
-Resource lookup works differently here than on macOS. By default (unless
-configured with `-DTREESHEETS_RELOCATABLE_INSTALLATION=ON`), `TREESHEETS_DATADIR`/
-`TREESHEETS_DOCDIR` are baked into the binary at configure time as *absolute*
-paths under `CMAKE_INSTALL_PREFIX` (GNUInstallDirs layout, e.g.
-`<prefix>/share/TreeSheets`, `<prefix>/share/doc/TreeSheets`) — `ResolvePath()`
-looks next to the executable first, then falls back to that compiled-in path.
-So the macOS trick of `cmake --install . --prefix "$(pwd)"` from the build
-directory won't line up on Linux; the same "hangs behind an invisible modal
-about missing icons" failure is likely on an uninstalled dev build unless
-either:
-
-- you actually install to the configured prefix (`sudo cmake --install .`, or
-  `sudo cmake --install . --prefix /usr/local` matching whatever
-  `CMAKE_INSTALL_PREFIX` was at configure time), or
-- you reconfigure with `-DTREESHEETS_RELOCATABLE_INSTALLATION=ON` first, which
-  should make it behave like the macOS case (data resolved relative to the
-  binary, so `cmake --install . --prefix "$(pwd)"` from the build dir works).
-
-Quitting: the macOS-specific `wxEVT_END_SESSION` handling in `TSApp` (added to
-work around Cmd+Q bypassing the normal close chain — see `src/tsapp.h`) is a
-Cocoa quirk from how wx maps the Apple "quit" event. On Linux/GTK, closing the
-window should go through the ordinary `wxEVT_CLOSE_WINDOW` →
-`TSFrame::OnClosing()` → `wxApp::OnExit()` chain, so socket/token cleanup
-should already be reliable there without it — but this hasn't been verified
-on an actual GTK session either.
+1. **Missing resources** (dev build only, see above) — the process hangs
+   before ever reaching the point where it opens the socket.
+2. **This binary predates the agent-socket feature** — it starts fine, `-a`
+   is silently ignored (unrecognized single-char flags are no-ops), and no
+   socket ever appears. There's nothing to talk to until that TreeSheets is
+   rebuilt from a source tree that has this feature, or a newer release
+   ships it. Don't spend long debugging a launch that "works" but never
+   produces a socket — check this early.
 
 ## Talking to it
 
@@ -102,26 +113,38 @@ It finds the socket and reads its per-launch token itself
 beyond TreeSheets running with `-a`. Pass `--json` (after the subcommand,
 e.g. `eval -c "..." --json`) to get the raw `{"ok":...,"error":...,"result":...}`
 response instead of the human-readable summary; prefer `--json` when parsing
-output programmatically. Exit code is 0
-on `ok`, 1 otherwise.
+output programmatically. Exit code is 0 on `ok`, 1 otherwise.
 
 ## Writing the Lobster side
 
-- **Look up the `ts.*` API in `TS/docs/script_reference.html` first** — it's
-  the generated, authoritative function reference (signatures, param types,
-  one-line docs) and needs no build: navigation (`goto_root`, `goto_child`,
-  `goto_parent`, `goto_selection`, `goto_column_row`...), reading/writing
-  cells (`get_text`, `set_text`, `get_note`, `set_note`...), grid ops
-  (`create_grid`, `insert_column`, `insert_row`, `delete`...), document
-  creation (`new_document`), styling, images, and more. It's also installed
-  into any built app at `Contents/Resources/docs/script_reference.html`
-  (`TreeSheets.app/Contents/Resources/...` on macOS) and reachable in the UI
-  via Help > Script reference. If it looks stale for a given build, or this
-  file isn't available at all, regenerate it straight from that binary with
-  `TreeSheets -d` (writes `builtin_functions_reference.html`, covering every
-  builtin including non-`ts` ones, into the current directory) — only fall
-  back to reading `src/script_interface.h` / `src/lobster_impl.cpp` if
-  neither is available.
+Look up the `ts.*` API — navigation (`goto_root`, `goto_child`,
+`goto_parent`, `goto_selection`, `goto_column_row`...), reading/writing
+cells (`get_text`, `set_text`, `get_note`, `set_note`...), grid ops
+(`create_grid`, `insert_column`, `insert_row`, `delete`...), document
+creation (`new_document`), styling, images, and more — from whichever of
+these is available, in this order:
+
+1. **The running app's own Help > Script reference menu item** — works no
+   matter how TreeSheets was installed.
+2. **`TS/docs/script_reference.html`**, if you have the source tree — the
+   generated, authoritative function reference, no build needed to read it.
+3. **The installed copy of that same file** next to wherever TreeSheets put
+   its docs (e.g. `Contents/Resources/docs/script_reference.html` inside a
+   macOS `.app`; location varies for Linux packages) — search for
+   `script_reference.html` under the app's install location if unsure.
+4. **Regenerate it straight from the binary**, no source or existing docs
+   install required: `<treesheets-binary> -d`. This writes
+   `builtin_functions_reference.html` (covering every builtin, not just
+   `ts.*`) into a directory derived from that build's own data path, not
+   necessarily the current directory or the binary's directory — after
+   running it, search for the file (e.g. `find <install-or-build-dir> -name
+   builtin_functions_reference.html`) rather than assuming where it landed.
+5. Only if you have the source tree and everything above is somehow
+   unavailable: read `src/script_interface.h` / `src/lobster_impl.cpp`
+   directly.
+
+Other things worth knowing regardless of how you looked up the API:
+
 - `ts.agent_result(s)` is the one addition made for this channel: call it to
   hand a string back in the response's `result` field. Without it, `result`
   is always `""`.
@@ -142,7 +165,8 @@ on `ok`, 1 otherwise.
   end of the root grid, `goto_column_row(xs, 0)` into the new cell, do the
   work there, then `goto_root(); delete(int2{xs, 0}, int2{1, ys})` — deleting
   a fully-emptied column/row also removes it, so this restores the original
-  shape exactly.
+  shape exactly. Or use `ts.new_document(cols, rows)` to open a fresh,
+  unsaved tab instead of touching whatever's already open.
 
 ## Protocol reference
 
