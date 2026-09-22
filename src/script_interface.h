@@ -6,6 +6,7 @@ using ibox = std::pair<icoord, icoord>;
 struct ScriptInterface {
     virtual bool LoadDocument(const char *filename) = 0;
     virtual void NewDocument(int cols, int rows) = 0;
+    virtual bool SaveDocument(bool saveas) = 0;
     virtual void GoToRoot() = 0;
     virtual void GoToView() = 0;
     virtual bool HasSelection() = 0;
