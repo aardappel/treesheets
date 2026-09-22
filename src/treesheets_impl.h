@@ -44,7 +44,22 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             //dump_builtins = true;
         #endif
 
-        auto errormessage = RunLobster(filename, code, dump_builtins);
+        // RunLobster() only catches (and converts to a returned error string) exceptions of
+        // type `string` (Lobster compile errors / RUNTIME_ASSERT failures). Anything else that
+        // escapes the VM/JIT layer must not be allowed to propagate further: the agent socket's
+        // HandleLine() (agent_server.h) has no try/catch of its own around this call, so an
+        // uncaught exception here would skip straight past writing a socket reply, silently
+        // dropping the response to that request while the rest of the app (wx's event loop)
+        // carries on as if nothing happened -- indistinguishable from the server having hung,
+        // except it hasn't, which makes it far harder to diagnose than an outright hang.
+        std::string errormessage;
+        try {
+            errormessage = RunLobster(filename, code, dump_builtins);
+        } catch (const std::exception &e) {
+            errormessage = std::string("internal error running script: ") + e.what();
+        } catch (...) {
+            errormessage = "internal error running script: unknown exception";
+        }
 
         document->root->ResetChildren();
         document->UpdateLayout();
