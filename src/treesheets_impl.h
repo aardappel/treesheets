@@ -80,6 +80,15 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return success;
     }
 
+    // Saves to an explicit filename without ever showing the Save As dialog, unlike
+    // SaveDocument(true). Mirrors LoadDocument() in taking a raw path.
+    bool SaveDocumentAs(const char *filename) override {
+        document->ChangeFileName(wxString::FromUTF8(filename), true);
+        bool success = false;
+        document->SaveDB(&success);
+        return success;
+    }
+
     void GoToRoot() override { current = document->root.get(); }
     void GoToView() override { current = document->currentdrawroot; }
     bool HasSelection() override { return document->selected.grid != nullptr; }

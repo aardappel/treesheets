@@ -181,7 +181,14 @@ Other things worth knowing regardless of how you looked up the API:
   unattended script; if you need to save a brand-new, never-saved document
   non-interactively, give it a filename first some other way (e.g. save the
   `.cts` once by hand, or `ts.load_document()` an existing file before
-  editing) so `save_document(false)` has a filename to write to.
+  editing) so `save_document(false)` has a filename to write to. Or, better:
+  use `ts.save_document_as(filename: string) -> int` instead, which writes to
+  the given path directly and never shows a dialog — this is the one to use
+  when scripting "create a new document and save it to a specific path"
+  end-to-end without any human interaction. It also sets that path as the
+  document's filename, so a later plain `save_document(false)` re-saves to
+  the same place. Appends `.cts` automatically if the given filename has no
+  extension.
 
 ## Known trap: recursive traversal + string concat hangs the whole app
 

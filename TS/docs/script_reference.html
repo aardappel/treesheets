@@ -112,6 +112,9 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.save_document</b>(saveas<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">saves the current document to disk, same as the Save (saveas=false) / Save As (saveas=true) menu actions. if the document has no filename yet, always shows a save dialog. returns false if the save failed or the dialog was cancelled.</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.save_document_as</b>(filename<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">saves the current document to the given filename, without ever showing a save dialog (unlike save_document(true)). appends .cts if filename has no extension, and makes this the document's filename for subsequent save_document() calls. returns false if failed.</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_window_size</b>(width<font color="#666666">: int</font>, height<font color="#666666">: int</font>)</tt></td><td class="a">resizes the window</td>
 
 </tr>
