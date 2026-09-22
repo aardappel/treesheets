@@ -261,6 +261,36 @@ mutation of a captured accumulator), that's fine too — it's only the
 three-way combination that's dangerous. When in doubt, prefer the iterative
 pattern above for any full-document traversal/dump.
 
+### A second, worse-to-diagnose variant: nested `for` loops with no recursion at all
+
+The above was diagnosed as specifically about *recursive* functions. It
+isn't the whole story. A flat, non-recursive script — just an outer
+`for(...)` over rows with an inner `for(...)` over columns, calling `ts.*`
+natives and accumulating into `out` with `+=`, exactly the "safe" shape
+described above — was confirmed to **silently drop the response** once the
+total `ts.*` call count for the request got into the ~700-800 range (reading
+3 fields from each of 81 grid cells, ~9 native calls per cell). The identical
+work, split into two separate `eval` calls of ~400 calls each, returned
+correctly both times, in well under a second each.
+
+This is worse than the recursive trap in one way: **the app does not hang.**
+`ping` and other requests keep working normally right after the timeout —
+there's no visible sign anything is wrong except that one `eval` call never
+gets a reply and the client-side socket read times out. It's easy to mistake
+for a network/client hiccup rather than a script-size problem.
+
+Root cause not confirmed (plausibly related to the same JIT/codegen path,
+plausibly something else in the agent server's response handling for a
+request that produced a very large accumulated string) — flagged upstream,
+not yet fixed as of this writing. Precision is limited to the two data
+points above: ~400 calls in one `eval` is fine, ~800 combined is not.
+
+**Workaround: keep any single `eval` call's total `ts.*` native-call count
+comfortably under a few hundred.** For a full-document dump or any loop
+touching many cells, split the work across multiple `eval -f` calls (e.g. by
+row-index range) rather than one script that walks everything at once, even
+when the loop itself is provably non-recursive.
+
 ## Protocol reference
 
 Only needed if not using the script. Newline-delimited JSON over the Unix
