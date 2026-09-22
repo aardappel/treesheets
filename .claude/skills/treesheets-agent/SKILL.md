@@ -168,6 +168,77 @@ Other things worth knowing regardless of how you looked up the API:
   shape exactly. Or use `ts.new_document(cols, rows)` to open a fresh,
   unsaved tab instead of touching whatever's already open.
 
+## Known trap: recursive traversal + string concat hangs the whole app
+
+Do **not** write a recursive Lobster function that both (a) calls `ts.*`
+native functions (e.g. `goto_child`/`goto_parent`/`get_text`) and (b) mutates
+a captured/outer string variable via `+=` on each call, e.g.:
+
+```
+def dump(depth):
+    out += ts.get_text() + "\n"          # BAD: recursive + native calls + += to a captured var
+    for(ts.num_children()) i:
+        ts.goto_child(i)
+        dump(depth + 1)
+        ts.goto_parent()
+```
+
+This reliably goes pathologically slow (tens of seconds to minutes, for what
+should be trivial work) once the traversal has made roughly **250-300 such
+calls** — confirmed by isolating the variables experimentally: recursion
+alone, `ts.*` calls alone, and `+=` accumulation alone are each fine even at
+tens of thousands of iterations; only the combination of all three inside a
+*recursive* function blows up. This looks like a refcounting/free-variable
+bug in the bundled Lobster engine's TCC-JIT codegen path (`RunTCC` in
+`src/lobster_impl.cpp`, `VM_JIT_MODE=1` — see `stdafx.h`), not a bug in
+TreeSheets' own code, but it's real and easy to hit by accident (e.g. "dump
+the whole document as text" is a very natural first script to write).
+
+**Worse, there is no recovery once you hit it**: `agent_server.h`'s
+`HandleLine()` runs `ScriptRun()` synchronously on the wx main/GUI thread with
+no timeout or cancellation. A script that trips this doesn't just fail its
+own request — it freezes the *entire app* (UI included) and the socket stops
+accepting/answering *any* request (including `ping`) until the runaway script
+eventually finishes on its own. There's nothing to do but wait it out (it
+does eventually complete, it's pathologically slow, not truly infinite) — so
+avoid triggering it rather than trying to cancel it once started.
+
+**Fix: traverse iteratively, not recursively.** An explicit-stack `while`
+loop calling the exact same `ts.*` functions and doing the exact same `+=`
+accumulation has no such ceiling — verified traversing an entire ~60,000-cell
+document (3.7MB of accumulated text) in ~10 seconds:
+
+```
+var ni = [0, 0, 0, 0, 0, 0, 0, 0]  // one slot per tree depth level you expect to reach
+var depth = 0
+var out = ""
+
+ts.goto_root()
+while true:
+    out += ts.get_text() + "\n"
+    let n = ts.num_children()
+    if n > 0 and ni[depth] < n:
+        let i = ni[depth]
+        ni[depth] += 1
+        ts.goto_child(i)
+        depth += 1
+        ni[depth] = 0
+    else:
+        if depth == 0: break
+        ts.goto_parent()
+        depth -= 1
+
+ts.agent_result(out)
+```
+
+A **non-recursive** helper function called from a loop (i.e. the function
+itself never calls itself) is also fine — the trap is specifically
+recursion, not "having a function" or "calling `ts.*` from inside one". If
+you need recursion for something else entirely (no `ts.*` calls, or no
+mutation of a captured accumulator), that's fine too — it's only the
+three-way combination that's dangerous. When in doubt, prefer the iterative
+pattern above for any full-document traversal/dump.
+
 ## Protocol reference
 
 Only needed if not using the script. Newline-delimited JSON over the Unix
