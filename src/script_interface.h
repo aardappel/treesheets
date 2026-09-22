@@ -49,6 +49,27 @@ struct ScriptInterface {
     virtual void SetImageDisplayScale(int scale) = 0;
     virtual void RemoveImage() = 0;
     virtual bool SetImage(std::string_view filename) = 0;
+    virtual bool Undo() = 0;
+    virtual bool Redo() = 0;
+    virtual bool IsGrid() = 0;
+    virtual int GetCellType() = 0;
+    virtual bool IsFolded() = 0;
+    virtual void SetFolded(bool folded) = 0;
+    virtual uint32_t GetBackgroundColor() = 0;
+    virtual uint32_t GetTextColor() = 0;
+    virtual uint32_t GetBorderColor() = 0;
+    virtual std::string GetVersion() = 0;
+    // Searches the subtree of the current cell (including itself) for a cell whose text
+    // exactly equals `text`, and makes it current if found.
+    virtual bool FindExact(std::string_view text) = 0;
+    // Deep-clones the current cell (and its subtree) into an in-process scripting clipboard.
+    virtual void CopyCurrent() = 0;
+    // Pastes the scripting clipboard (see CopyCurrent()) into the current cell. False if there
+    // is nothing copied yet, or the current cell has no parent (is the root).
+    virtual bool PasteIntoCurrent() = 0;
+    // Exports the subtree of the current cell to text in one call. format: 0 = plain indented
+    // text, 1 = csv, 2 = xml.
+    virtual std::string GetSubtreeText(int format) = 0;
     virtual ~ScriptInterface() = default;
 };
 
