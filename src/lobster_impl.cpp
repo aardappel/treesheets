@@ -211,6 +211,14 @@ nfr("save_document", "saveas", "I", "B",
         return Value(si->SaveDocument(saveas.True()));
     });
 
+nfr("save_document_as", "filename", "S", "B",
+    "saves the current document to the given filename, without ever showing a save dialog "
+    "(unlike save_document(true)). appends .cts if filename has no extension, and makes this "
+    "the document's filename for subsequent save_document() calls. returns false if failed.",
+    [](StackPtr &, VM &, Value filename) {
+        return Value(si->SaveDocumentAs(filename.sval()->data()));
+    });
+
 nfr("set_window_size", "width,height", "II", "", "resizes the window",
     [](StackPtr &, VM &, Value w, Value h) {
         si->SetWindowSize(w.intval(), h.intval());
