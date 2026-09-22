@@ -30,6 +30,34 @@ Please note that the packages for Debian-based distributions provided are built 
 
 If you use Flatpak, you can install [TreeSheets from Flathub](https://flathub.org/apps/com.strlen.TreeSheets).
 
+Using TreeSheets with an AI agent
+----------------------------------
+
+Starting TreeSheets with the `-a` flag opens a local, token-authenticated
+Unix domain socket that lets an external agent run [Lobster](https://strlen.com/lobster/)
+script against whatever document you currently have open, and read the
+result back — useful if you want an AI coding assistant to inspect,
+automate, or build up a TreeSheets document on your behalf.
+
+```sh
+TreeSheets -a
+```
+
+It's off by default, only listens locally, and the socket is authenticated
+with a random, per-launch token file readable only by you. It's available on
+macOS and Linux (it relies on Unix domain sockets); there is no Windows
+support yet. If `-a` doesn't produce a socket, your TreeSheets build predates
+this feature.
+
+If you're using [Claude Code](https://claude.com/claude-code) in this
+repository, it can drive a running TreeSheets directly through the bundled
+`treesheets-agent` skill (`.claude/skills/treesheets-agent`) — just ask it to
+inspect or script your open document once TreeSheets is running with `-a`.
+The skill's `SKILL.md` also documents the underlying wire protocol (a small
+newline-delimited JSON format) and works whether or not you have this
+repository checked out, so other agents or tools can talk to the socket
+directly without any TreeSheets-specific client library.
+
 Source Code
 -----------
 This repository contains all the files needed to build TreeSheets for various platforms.
