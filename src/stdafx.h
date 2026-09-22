@@ -98,6 +98,7 @@
 using namespace std;
 
 #ifdef ENABLE_LOBSTER
+    #include <charconv>
     #include <span>
     #include "lobster/tools.h"
     #include "lobster/string_tools.h"
