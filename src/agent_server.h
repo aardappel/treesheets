@@ -1,10 +1,12 @@
 // Lets an external agent (e.g. an AI coding assistant) run Lobster script against the
 // currently open document over a local socket. Opt-in via -a / --agent.
 //
-// Transport: a Unix domain socket where available (/tmp/TreeSheets-agent-<user>.sock), and on
-// Windows a TCP socket on 127.0.0.1 with an OS-assigned port, which is written as a decimal number
-// to %TEMP%\TreeSheets-agent-<user>.port. Either way, the per-launch token is in the endpoint
-// file's path plus ".token", and both files are removed again on a clean exit.
+// Transport: a Unix domain socket where available (/tmp/TreeSheets-agent-<user>-<pid>.sock), and
+// on Windows a TCP socket on 127.0.0.1 with an OS-assigned port, which is written as a decimal
+// number to %TEMP%\TreeSheets-agent-<user>-<pid>.port. The PID keeps several instances started
+// with -i from taking over (and on exit, deleting) each other's endpoint. Either way, the
+// per-launch token is in the endpoint file's path plus ".token", and both files are removed again
+// on a clean exit.
 //
 // Wire protocol: newline-delimited JSON, one request per line in, one response per line out.
 // Only a flat, all-string-valued object shape is needed, so parsing/building it is hand-rolled
@@ -20,7 +22,9 @@
 //   <- {"id":"3","ok":true,"error":"","result":""}
 //
 // "code" takes precedence over "file" if both are given; a script can report a value back via
-// the ts.agent_result() builtin, which ends up in the "result" field.
+// the ts.agent_result() builtin, which ends up in the "result" field. An eval that arrives while
+// a script is still running (possible while it shows a modal dialog) is answered with the error
+// "busy" instead of being run.
 
 struct AgentJson {
     static void EscapeInto(std::string &out, std::string_view s) {
@@ -175,11 +179,13 @@ struct AgentServer : wxEvtHandler {
 
     static wxString EndpointPath() {
         #ifdef wxHAS_UNIX_DOMAIN_SOCKETS
-            return wxString::Format("/tmp/TreeSheets-agent-%s.sock", wxGetUserId());
+            return wxString::Format("/tmp/TreeSheets-agent-%s-%lu.sock", wxGetUserId(),
+                                    wxGetProcessId());
         #else
             // The per-user temp dir, so other users can't read the token.
             return wxFileName(wxFileName::GetTempDir(),
-                              wxString::Format("TreeSheets-agent-%s.port", wxGetUserId()))
+                              wxString::Format("TreeSheets-agent-%s-%lu.port", wxGetUserId(),
+                                               wxGetProcessId()))
                 .GetFullPath();
         #endif
     }
@@ -198,7 +204,9 @@ struct AgentServer : wxEvtHandler {
     bool Start() {
         endpoint_path = EndpointPath();
         token_path = TokenPath();
-        ::wxRemoveFile(endpoint_path);  // stale endpoint left behind by an unclean exit
+        // Stale endpoint of an earlier process with this PID. Checked first since wxRemoveFile()
+        // logs an error for a missing file, and wxFileExists() is false for a socket.
+        if (wxFileName::Exists(endpoint_path, wxFILE_EXISTS_ANY)) ::wxRemoveFile(endpoint_path);
 
         token = GenerateToken();
         wxFile tf;
@@ -309,6 +317,7 @@ struct AgentServer : wxEvtHandler {
             if (!sys || sys->frame == nullptr || sys->frame->GetCurrentTab() == nullptr) {
                 return AgentJson::BuildReply(id, false, "no document open", "");
             }
+            if (tssi.running) return AgentJson::BuildReply(id, false, "busy", "");
             std::string code = req.count("code") ? req["code"] : "";
             std::string file = req.count("file") ? req["file"] : "agent";
             if (code.empty() && !req.count("file")) {

@@ -8,17 +8,21 @@ notes. This script needs no setup beyond TreeSheets already running with -a:
 it finds the endpoint and reads its per-launch token itself.
 
 Endpoints (the token is always in "<endpoint>.token"):
-  - macOS/Linux: Unix domain socket /tmp/TreeSheets-agent-<user>.sock
-  - Windows: %TEMP%\\TreeSheets-agent-<user>.port, a file holding the TCP port
-    TreeSheets listens on at 127.0.0.1
+  - macOS/Linux: Unix domain socket /tmp/TreeSheets-agent-<user>-<pid>.sock
+  - Windows: %TEMP%\\TreeSheets-agent-<user>-<pid>.port, a file holding the TCP
+    port TreeSheets listens on at 127.0.0.1
   - Windows build under Wine, client on the Linux host: that same .port file
     inside the Wine prefix, found automatically if no native socket exists
+Builds from before the PID was added use the same names without "-<pid>"; those
+are found too. If more than one instance is reachable, pick one with --pid or
+--endpoint.
 """
 import argparse
 import getpass
 import glob
 import json
 import os
+import re
 import shutil
 import socket
 import subprocess
@@ -33,26 +37,65 @@ def current_user():
         return "unknown"
 
 
-def wine_port_files():
-    """.port files of Windows TreeSheets instances running under Wine, newest first."""
+# Optional "-<pid>": builds from before the PID was added leave it out.
+ENDPOINT_RE = re.compile(r"^TreeSheets-agent-(?P<user>.+?)(?:-(?P<pid>\d+))?\.(?:sock|port)$")
+
+
+def endpoint_pid(endpoint):
+    m = ENDPOINT_RE.match(os.path.basename(endpoint))
+    return int(m["pid"]) if m and m["pid"] else None
+
+
+def native_endpoints():
+    if sys.platform == "win32":
+        pattern = os.path.join(tempfile.gettempdir(), "TreeSheets-agent-*.port")
+    else:
+        pattern = "/tmp/TreeSheets-agent-*.sock"
+    user = current_user()
+    return [p for p in glob.glob(pattern)
+            if (m := ENDPOINT_RE.match(os.path.basename(p))) and m["user"] == user]
+
+
+def wine_endpoints():
+    """.port files of Windows TreeSheets instances running under Wine."""
     prefixes = [os.environ.get("WINEPREFIX"), os.path.expanduser("~/.wine")]
     found = set()
     for prefix in filter(None, prefixes):
         for temp in ("AppData/Local/Temp", "Temp", "Local Settings/Temp"):
             pattern = os.path.join(prefix, "drive_c/users/*", temp, "TreeSheets-agent-*.port")
-            found.update(glob.glob(pattern))
-    return sorted(found, key=os.path.getmtime, reverse=True)
+            found.update(p for p in glob.glob(pattern) if ENDPOINT_RE.match(os.path.basename(p)))
+    return list(found)
 
 
-def default_endpoint():
-    if sys.platform == "win32":
-        return os.path.join(tempfile.gettempdir(), f"TreeSheets-agent-{current_user()}.port")
-    native = f"/tmp/TreeSheets-agent-{current_user()}.sock"
-    if not os.path.exists(native):
-        wine = wine_port_files()
-        if wine:
-            return wine[0]
-    return native
+def is_live(endpoint):
+    """Whether something accepts connections there. Files left behind by a killed
+    instance refuse the connection, so this filters those out on every platform,
+    including Wine, whose Windows PIDs can't be checked from the host."""
+    try:
+        open_socket(endpoint, 2.0).close()
+        return True
+    except (OSError, ValueError):
+        return False
+
+
+def find_endpoint(pid):
+    for candidates in (native_endpoints(), wine_endpoints()):
+        if pid is not None:
+            candidates = [p for p in candidates if endpoint_pid(p) == pid]
+        live = sorted((p for p in candidates if is_live(p)), key=os.path.getmtime, reverse=True)
+        if len(live) == 1:
+            return live[0]
+        if len(live) > 1:
+            lines = "\n".join(f"  pid {endpoint_pid(p) or '?'}: {p}" for p in live)
+            raise SystemExit(
+                f"error: {len(live)} TreeSheets agent endpoints are reachable:\n{lines}\n"
+                f"Pick one with --pid or --endpoint."
+            )
+    which = f" with pid {pid}" if pid is not None else ""
+    raise SystemExit(
+        f"error: no reachable TreeSheets agent endpoint{which} found.\n"
+        f"Is TreeSheets running with -a (agent mode)?"
+    )
 
 
 def is_tcp(endpoint):
@@ -75,16 +118,24 @@ def read_token(endpoint):
         )
 
 
-def connect(endpoint, timeout):
+def open_socket(endpoint, timeout):
+    if is_tcp(endpoint):
+        with open(endpoint) as f:
+            port = int(f.read().strip())
+        return socket.create_connection(("127.0.0.1", port), timeout=timeout)
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
-        if is_tcp(endpoint):
-            with open(endpoint) as f:
-                port = int(f.read().strip())
-            return socket.create_connection(("127.0.0.1", port), timeout=timeout)
-        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.settimeout(timeout)
         s.connect(endpoint)
-        return s
+    except OSError:
+        s.close()
+        raise
+    return s
+
+
+def connect(endpoint, timeout):
+    try:
+        return open_socket(endpoint, timeout)
     except (OSError, ValueError) as e:
         raise SystemExit(
             f"error: can't connect via {endpoint}: {e}\n"
@@ -164,6 +215,12 @@ def main():
         help="the agent's Unix socket, or on Windows its .port file "
         "(default: found automatically, see the module docstring)",
     )
+    common.add_argument(
+        "--pid",
+        type=int,
+        default=None,
+        help="talk to the instance with this process ID (under Wine: its Windows PID)",
+    )
     common.add_argument("--timeout", type=float, default=10.0, help="socket timeout in seconds")
     common.add_argument(
         "--json", action="store_true", help="print the raw JSON response instead of a summary"
@@ -188,7 +245,7 @@ def main():
 
     args = p.parse_args()
     if args.endpoint is None:
-        args.endpoint = default_endpoint()
+        args.endpoint = find_endpoint(args.pid)
     sys.exit(args.func(args))
 
 

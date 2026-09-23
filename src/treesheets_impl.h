@@ -3,6 +3,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     Cell *current = nullptr;
     Cell *lowestcommonancestor = nullptr;
     unique_ptr<Cell> script_clipboard;
+    // Set while ScriptRun() is executing. A script that opens a modal dialog (e.g. Save As)
+    // runs a nested event loop, which can deliver another agent request or menu action; a
+    // nested ScriptRun() would reset document/current underneath the outer script.
+    bool running = false;
 
     enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
 
@@ -38,6 +42,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     // If code is non-empty it is run directly (filename is then only used to label errors),
     // otherwise filename is loaded from disk.
     std::string ScriptRun(const char *filename, std::string_view code = {}) {
+        if (running) return "a script is already running";
+        running = true;
         SwitchToCurrentDocument();
 
         bool dump_builtins = false;
@@ -68,6 +74,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
         document = nullptr;
         current = nullptr;
+        running = false;
 
         return errormessage;
     }
