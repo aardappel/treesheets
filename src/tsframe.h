@@ -1836,8 +1836,19 @@ struct TSFrame : wxFrame {
             } else {
                 for (int field : {1, 2, 3}) { SetStatusText("", field); }
             }
-            if (updateamount) { SetStatusText(wxString::Format(_("%d cell(s)"), s.xs * s.ys), 4); }
+            if (updateamount) { UpdateAmountStatus(s); }
         }
+    }
+
+    // Shows the number of selected characters while text inside a cell is selected, and the
+    // number of selected cells otherwise.
+    void UpdateAmountStatus(const Selection &s) {
+        if (GetStatusBar() == nullptr || s.grid == nullptr) { return; }
+        auto amount = s.TextEdit() && s.cursor != s.cursorend
+                          ? wxString::Format(_("%d character(s)"), abs(s.cursorend - s.cursor))
+                          : wxString::Format(_("%d cell(s)"), s.xs * s.ys);
+        // Called on every repaint, so avoid touching the status bar when nothing changed.
+        if (GetStatusBar()->GetStatusText(4) != amount) { SetStatusText(amount, 4); }
     }
 
     #ifdef ENABLE_LOBSTER

@@ -45,6 +45,10 @@ struct TSCanvas : public wxScrolledCanvas {
         // Layout already supplies our bounds. Avoid measuring text again after drawing it.
         dc.DisableAutomaticBoundingBoxUpdates();
         doc->Draw(dc);
+        // Every change of the text selection ends in a repaint, so keep the amount current here.
+        if (frame != nullptr && frame->GetCurrentTab() == this) {
+            frame->UpdateAmountStatus(doc->selected);
+        }
     };
 
     void OnMotion(wxMouseEvent &me) {
