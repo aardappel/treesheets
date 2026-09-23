@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -21,6 +21,10 @@ msgstr ""
 #, c-format
 msgid "%d cell(s)"
 msgstr "%d セル"
+
+#, c-format
+msgid "%d character(s)"
+msgstr "%d 文字"
 
 #, c-format
 msgid ""
@@ -310,6 +314,9 @@ msgstr "バックアップファイル"
 
 msgid "Bitmap copied to clipboard"
 msgstr "ビットマップをクリップボードにコピーしました"
+
+msgid "Bold (CTRL+b)"
+msgstr "太字 (Ctrl+B)"
 
 msgid "Border "
 msgstr "境界 "
@@ -945,6 +952,9 @@ msgid ""
 msgstr ""
 "TreeSheets ファイルを貼り付けまたはドロップしようとしています。どうしますか？"
 
+msgid "Italic (CTRL+i)"
+msgstr "斜体 (Ctrl+I)"
+
 msgid "JPEG"
 msgstr "JPEG"
 
@@ -1526,8 +1536,8 @@ msgid "Single click maximize from tray"
 msgstr "トレイからシングルクリックで最大化"
 
 #, c-format
-msgid "Size %d"
-msgstr "サイズ %d"
+msgid "Size %s"
+msgstr "サイズ %s"
 
 msgid "Sort &Ascending"
 msgstr "昇順ソート(&A)"
@@ -1743,8 +1753,8 @@ msgid "Width"
 msgstr "幅"
 
 #, c-format
-msgid "Width %d"
-msgstr "幅 %d"
+msgid "Width %s"
+msgstr "幅 %s"
 
 msgid "Word Left"
 msgstr "左の単語"

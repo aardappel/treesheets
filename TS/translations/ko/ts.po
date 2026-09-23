@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -21,6 +21,10 @@ msgstr ""
 #, c-format
 msgid "%d cell(s)"
 msgstr "%d셀"
+
+#, c-format
+msgid "%d character(s)"
+msgstr "%d자"
 
 #, c-format
 msgid ""
@@ -310,6 +314,9 @@ msgstr "파일 백업"
 
 msgid "Bitmap copied to clipboard"
 msgstr "클립보드에 복사된 비트맵"
+
+msgid "Bold (CTRL+b)"
+msgstr "굵게 (Ctrl+B)"
 
 msgid "Border "
 msgstr "테두리 "
@@ -932,6 +939,9 @@ msgstr ""
 "TreeSheets 파일을 붙여넣거나 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니"
 "까?"
 
+msgid "Italic (CTRL+i)"
+msgstr "기울임꼴 (Ctrl+I)"
+
 msgid "JPEG"
 msgstr "JPEG"
 
@@ -1499,8 +1509,8 @@ msgid "Single click maximize from tray"
 msgstr "트레이에서 한 번 클릭으로 최대화"
 
 #, c-format
-msgid "Size %d"
-msgstr "크기 %d"
+msgid "Size %s"
+msgstr "크기 %s"
 
 msgid "Sort &Ascending"
 msgstr "오름차순 정렬(&A)"
@@ -1718,8 +1728,8 @@ msgid "Width"
 msgstr "너비"
 
 #, c-format
-msgid "Width %d"
-msgstr "너비 %d"
+msgid "Width %s"
+msgstr "너비 %s"
 
 msgid "Word Left"
 msgstr "단어 왼쪽"

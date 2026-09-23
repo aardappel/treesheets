@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -23,6 +23,10 @@ msgstr ""
 #, c-format
 msgid "%d cell(s)"
 msgstr "%d célula(s)"
+
+#, c-format
+msgid "%d character(s)"
+msgstr "%d caractere(s)"
 
 #, c-format
 msgid ""
@@ -314,6 +318,9 @@ msgstr "Fazer bac&kup"
 
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiado para a área de transferência"
+
+msgid "Bold (CTRL+b)"
+msgstr "Negrito (CTRL+b)"
 
 msgid "Border "
 msgstr "Borda "
@@ -965,6 +972,9 @@ msgstr ""
 "Parece que você está prestes a colar ou soltar um arquivo do TreeSheets. O "
 "que gostaria de fazer?"
 
+msgid "Italic (CTRL+i)"
+msgstr "Itálico (CTRL+i)"
+
 msgid "JPEG"
 msgstr "JPEG"
 
@@ -1557,8 +1567,8 @@ msgid "Single click maximize from tray"
 msgstr "Maximizar da bandeja com um único cli&que"
 
 #, c-format
-msgid "Size %d"
-msgstr "Tamanho %d"
+msgid "Size %s"
+msgstr "Tamanho %s"
 
 msgid "Sort &Ascending"
 msgstr "Classificar em Ordem &Ascendente"
@@ -1784,8 +1794,8 @@ msgid "Width"
 msgstr "Largura"
 
 #, c-format
-msgid "Width %d"
-msgstr "Largura %d"
+msgid "Width %s"
+msgstr "Largura %s"
 
 msgid "Word Left"
 msgstr "Mover o cursor uma palavra à esquerda"
