@@ -19,8 +19,6 @@ jobs:
             os: ubuntu-latest
           - arch: arm64
             os: ubuntu-24.04-arm
-    permissions:
-      contents: write
     steps:
     - uses: actions/checkout@v7
     - name: cache build
@@ -52,17 +50,7 @@ jobs:
       run: |
         shopt -s extglob
         for file in _build/treesheets_*:*.deb; do mv -v "${file}" "${file/_+([[:digit:]]):/_}"; done
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/treesheets_*.deb"
     - name: Upload artifacts
-      if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v7
       with:
         name: linux-builds-${{ matrix.arch }}
@@ -82,8 +70,6 @@ jobs:
           - arch: arm64
             os: windows-11-vs2026-arm
             extra_flags: "-A ARM64 -DENABLE_LOBSTER=OFF" # tinycc currently does not fully support Windows on ARM
-    permissions:
-      contents: write
     steps:
     - uses: actions/checkout@v7
     - name: cache build
@@ -106,17 +92,7 @@ jobs:
         ${{ matrix.extra_flags }}
     - name: build and package
       run: cmake --build _build --config Release --target package -j
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/TreeSheets-*.exe, _build/TreeSheets-*.zip"
     - name: Upload artifacts
-      if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v7
       with:
         name: windows-builds-${{ matrix.arch }}
@@ -135,8 +111,6 @@ jobs:
     runs-on: macos-latest
     env:
       minmac: 10.15
-    permissions:
-      contents: write
     steps:
     - uses: actions/checkout@v7
     - name: cache build
@@ -151,20 +125,32 @@ jobs:
       run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }} -DENABLE_WXPDFDOC=ON
     - name: Build and package TreeSheets
       run: cmake --build _build --target package -j4
-    - name: Create release
-      if: github.event_name == 'push'
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
-        commit: ${{ github.sha }}
-        artifacts: "_build/TreeSheets-*.dmg"
     - name: Upload artifacts
-      if: github.event_name == 'pull_request'
       uses: actions/upload-artifact@v7
       with:
         name: macos-disk-image
         path: _build/TreeSheets-*.dmg
     - name: Remove CPack artifact
       run: rm -f _build/TreeSheets-*.dmg
+
+  release:
+    name: Create release
+    if: github.event_name == 'push'
+    needs: [build-linux, build-windows, build-mac]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v8
+      with:
+        path: dist
+        merge-multiple: true
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.run_number }}
+        allowUpdates: true
+        omitBody: true
+        commit: ${{ github.sha }}
+        artifacts: "dist/*"
