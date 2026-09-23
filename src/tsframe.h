@@ -1425,7 +1425,7 @@ struct TSFrame : wxFrame {
         auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         canvas->SetFocus();
         canvas->doc->UpdateFileName();
-        UpdateStatus(canvas->doc->selected, true);
+        UpdateStatus(canvas->doc->selected);
         nbe.Skip();
     }
 
@@ -1807,7 +1807,9 @@ struct TSFrame : wxFrame {
         }
     }
 
-    void UpdateStatus(const Selection &s, bool updateamount) {
+    // Updates the edited, width and size fields. The amount field is kept current by the canvas'
+    // paint handler through UpdateAmountStatus().
+    void UpdateStatus(const Selection &s) {
         if (GetStatusBar() != nullptr && s.grid != nullptr) {
             if (!s.Thin()) {
                 // Aggregate over the selection; for a single cell this is just its own values.
@@ -1836,7 +1838,6 @@ struct TSFrame : wxFrame {
             } else {
                 for (int field : {1, 2, 3}) { SetStatusText("", field); }
             }
-            if (updateamount) { UpdateAmountStatus(s); }
         }
     }
 

@@ -45,7 +45,8 @@ struct TSCanvas : public wxScrolledCanvas {
         // Layout already supplies our bounds. Avoid measuring text again after drawing it.
         dc.DisableAutomaticBoundingBoxUpdates();
         doc->Draw(dc);
-        // Every change of the text selection ends in a repaint, so keep the amount current here.
+        // Every change of the cell or text selection ends in a repaint, so this is the one place
+        // that keeps the amount current.
         if (frame != nullptr && frame->GetCurrentTab() == this) {
             frame->UpdateAmountStatus(doc->selected);
         }
@@ -76,13 +77,13 @@ struct TSCanvas : public wxScrolledCanvas {
                     }
                 }
             }
-            sys->frame->UpdateStatus(doc->selected, true);
+            sys->frame->UpdateStatus(doc->selected);
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         } else {
             if (doc->hover != doc->prev && !doc->hover.Thin()) {
-                sys->frame->UpdateStatus(doc->hover, false);
+                sys->frame->UpdateStatus(doc->hover);
                 if (sys->hoverzoom && !doc->selected.TextEdit()) {
                     SetCursor(wxCursor(wxCURSOR_CROSS));
                 }
@@ -99,7 +100,7 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->isctrlshiftdrag = isctrlshift;
         doc->UpdateHover(dc, mx, my);
         doc->SelectClick(right);
-        sys->frame->UpdateStatus(doc->selected, true);
+        sys->frame->UpdateStatus(doc->selected);
         Refresh();
     }
 
@@ -123,7 +124,7 @@ struct TSCanvas : public wxScrolledCanvas {
             wxInfoDC dc(this);
             doc->UpdateHover(dc, me.GetX(), me.GetY());
             doc->SelectUp();
-            sys->frame->UpdateStatus(doc->selected, true);
+            sys->frame->UpdateStatus(doc->selected);
             Refresh();
         }
     }
@@ -141,7 +142,7 @@ struct TSCanvas : public wxScrolledCanvas {
         wxInfoDC dc(this);
         doc->UpdateHover(dc, me.GetX(), me.GetY());
         doc->DoubleClick();
-        sys->frame->UpdateStatus(doc->selected, true);
+        sys->frame->UpdateStatus(doc->selected);
         Refresh();
     }
 
