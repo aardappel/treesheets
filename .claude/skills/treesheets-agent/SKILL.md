@@ -20,12 +20,15 @@ The transport depends on the platform; the protocol on top is the same:
 
 | Platform | Endpoint | Token |
 |---|---|---|
-| macOS / Linux | Unix domain socket `/tmp/TreeSheets-agent-<user>.sock` | `<endpoint>.token` |
-| Windows | TCP on `127.0.0.1`, port written to `%TEMP%\TreeSheets-agent-<user>.port` | `<endpoint>.token` |
+| macOS / Linux | Unix domain socket `/tmp/TreeSheets-agent-<user>-<pid>.sock` | `<endpoint>.token` |
+| Windows | TCP on `127.0.0.1`, port written to `%TEMP%\TreeSheets-agent-<user>-<pid>.port` | `<endpoint>.token` |
 | Windows build under Wine | same `.port` file, inside the Wine prefix (`<prefix>/drive_c/users/<user>/AppData/Local/Temp/`) | `<endpoint>.token` |
 
-The Windows port is picked by the OS on every launch, so always read it from
-the `.port` file. Only a Windows binary built after TCP support was added
+`<pid>` is the TreeSheets process ID, so each instance started with `-i` gets
+its own endpoint (under Wine it's the Windows PID, not the host one). Builds
+from before that change use the same names without `-<pid>`; the client finds
+those too. The Windows port is picked by the OS on every launch, so always
+read it from the `.port` file. Only a Windows binary built after TCP support was added
 writes one.
 
 Nothing in this skill requires the TreeSheets source tree — the socket, the
@@ -97,7 +100,7 @@ Wine maps the Windows TCP socket onto a real host socket on `127.0.0.1`.
   `WINEPREFIX=/tmp/ts_wine wine reg add 'HKCU\Control Panel\International\User Profile' /f`.
 - The client finds the `.port` file in `$WINEPREFIX` (or `~/.wine`) on its
   own when no native Linux socket exists, so export the same `WINEPREFIX` for
-  it. Otherwise pass `--endpoint <prefix>/drive_c/users/<user>/AppData/Local/Temp/TreeSheets-agent-<user>.port`.
+  it. Otherwise pass `--endpoint <prefix>/drive_c/users/<user>/AppData/Local/Temp/TreeSheets-agent-<user>-<pid>.port`.
 - `eval -f /host/path.lobster` works: the client converts the path to a
   Windows path that Wine can open (`winepath -w`, or `Z:\...` if `winepath`
   is missing). The error label then shows that Windows path.
@@ -200,12 +203,35 @@ python3 /absolute/path/to/treesheets-agent/scripts/ts_agent.py eval -f /path/to/
 It finds the endpoint and reads its per-launch token itself (see the table at
 the top: the Unix socket, the Windows `.port` file, or a Wine prefix's `.port`
 file if no native socket exists) — no setup needed beyond TreeSheets running
-with `-a`. To target one explicitly, pass `--endpoint <socket or .port file>`
+with `-a`. It ignores endpoint files left behind by a killed instance (nothing
+accepts connections there). If more than one instance is reachable, it lists
+them and exits with an error instead of guessing: pick one with `--pid <pid>`,
+e.g. the `$!` of an instance you launched yourself (not under Wine, where the
+PID in the name is the Windows one), or with `--endpoint <socket or .port file>`
 (`--socket` still works as an alias). On Windows, run it with `python` or
 `py` instead of `python3` if that is how Python is installed. Pass `--json` (after the subcommand,
 e.g. `eval -c "..." --json`) to get the raw `{"ok":...,"error":...,"result":...}`
 response instead of the human-readable summary; prefer `--json` when parsing
 output programmatically. Exit code is 0 on `ok`, 1 otherwise.
+
+## Several sessions at once
+
+Each connection is independent, but the instance runs one script at a time on
+its GUI thread, and every `eval` works on whatever tab is active in the shared
+app, with no locking between calls:
+
+- An `eval` that arrives while another script is still running (only possible
+  while that script shows a modal dialog, e.g. a Save As) gets
+  `{"ok":false,"error":"busy",...}` and is not run. Retry later. `ping` still
+  works then.
+- Otherwise requests queue. A long `eval` can make another client hit its
+  `--timeout`, but that client's request was already sent and may still run
+  afterwards: don't assume a timed-out `eval` had no effect.
+- Another session can switch tabs (`new_document`, `load_document`) or edit the
+  grid between your calls, so re-read positions/sizes in the same `eval` that
+  acts on them instead of reusing numbers from an earlier call.
+- For work that must not interfere, give each session its own instance
+  (`-a -i` with its own throwaway `$HOME`) and address it with `--pid`.
 
 ## Writing the Lobster side
 
@@ -344,5 +370,6 @@ domain socket (or, on Windows, a TCP connection to `127.0.0.1:<port from the
 ```
 
 `code` takes precedence over `file` if both are given. A wrong `token` gets
-`{"ok":false,"error":"bad token",...}`; no document open gets
+`{"ok":false,"error":"bad token",...}`; an `eval` while a script is already
+running gets `{"ok":false,"error":"busy",...}`; no document open gets
 `{"ok":false,"error":"no document open",...}`.
