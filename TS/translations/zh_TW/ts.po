@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -19,6 +19,10 @@ msgstr ""
 #, c-format
 msgid "%d cell(s)"
 msgstr "%d 個儲存格"
+
+#, c-format
+msgid "%d character(s)"
+msgstr "%d 個字元"
 
 #, c-format
 msgid ""
@@ -308,6 +312,9 @@ msgstr "備份檔案"
 
 msgid "Bitmap copied to clipboard"
 msgstr "已將點陣圖複製到剪貼簿"
+
+msgid "Bold (CTRL+b)"
+msgstr "粗體（Ctrl + B）"
 
 msgid "Border "
 msgstr "框線 "
@@ -912,6 +919,9 @@ msgid ""
 "you like to do?"
 msgstr "偵測到即將貼上或拖放 TreeSheets 檔案。請問要如何處理？"
 
+msgid "Italic (CTRL+i)"
+msgstr "斜體（Ctrl + I）"
+
 msgid "JPEG"
 msgstr "JPEG"
 
@@ -1474,8 +1484,8 @@ msgid "Single click maximize from tray"
 msgstr "按一下系統匣圖示即可最大化"
 
 #, c-format
-msgid "Size %d"
-msgstr "大小 %d"
+msgid "Size %s"
+msgstr "大小 %s"
 
 msgid "Sort &Ascending"
 msgstr "遞增排序(&A)"
@@ -1687,8 +1697,8 @@ msgid "Width"
 msgstr "寬度"
 
 #, c-format
-msgid "Width %d"
-msgstr "寬度 %d"
+msgid "Width %s"
+msgstr "寬度 %s"
 
 msgid "Word Left"
 msgstr "左移一個字詞"

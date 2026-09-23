@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -15,6 +15,10 @@ msgstr ""
 #, c-format
 msgid "%d cell(s)"
 msgstr "%d ô"
+
+#, c-format
+msgid "%d character(s)"
+msgstr "%d ký tự"
 
 #, c-format
 msgid ""
@@ -304,6 +308,9 @@ msgstr "Sao lưu tệp"
 
 msgid "Bitmap copied to clipboard"
 msgstr "Đã sao chép ảnh bitmap vào khay nhớ tạm"
+
+msgid "Bold (CTRL+b)"
+msgstr "In đậm (CTRL+b)"
 
 msgid "Border "
 msgstr "Viền "
@@ -934,6 +941,9 @@ msgid ""
 "you like to do?"
 msgstr "Có vẻ như bạn sắp dán hoặc thả một tệp TreeSheets. Bạn muốn làm gì?"
 
+msgid "Italic (CTRL+i)"
+msgstr "In nghiêng (CTRL+i)"
+
 msgid "JPEG"
 msgstr "JPEG"
 
@@ -1511,8 +1521,8 @@ msgid "Single click maximize from tray"
 msgstr "Nhấp chuột một lần để phóng to từ khay hệ thống"
 
 #, c-format
-msgid "Size %d"
-msgstr "Kích cỡ %d"
+msgid "Size %s"
+msgstr "Kích cỡ %s"
 
 msgid "Sort &Ascending"
 msgstr "Sắp xếp tăng dần (&A)"
@@ -1729,8 +1739,8 @@ msgid "Width"
 msgstr "Chiều rộng"
 
 #, c-format
-msgid "Width %d"
-msgstr "Chiều rộng %d"
+msgid "Width %s"
+msgstr "Chiều rộng %s"
 
 msgid "Word Left"
 msgstr "Sang trái một từ"

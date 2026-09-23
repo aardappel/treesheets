@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -20,6 +20,10 @@ msgstr ""
 #, c-format
 msgid "%d cell(s)"
 msgstr "%d cellule(s)"
+
+#, c-format
+msgid "%d character(s)"
+msgstr "%d caractère(s)"
 
 #, c-format
 msgid ""
@@ -314,6 +318,9 @@ msgstr "Fichiers de sauvegarde"
 
 msgid "Bitmap copied to clipboard"
 msgstr "Bitmap copiée dans le presse-papier"
+
+msgid "Bold (CTRL+b)"
+msgstr "Gras (CTRL+b)"
 
 msgid "Border "
 msgstr "Bordure "
@@ -972,6 +979,9 @@ msgstr ""
 "Il semble que vous soyez sur le point de coller ou déposer un fichier "
 "TreeSheets. Que voulez-vous faire ?"
 
+msgid "Italic (CTRL+i)"
+msgstr "Italique (CTRL+i)"
+
 msgid "JPEG"
 msgstr "JPEG"
 
@@ -1571,8 +1581,8 @@ msgid "Single click maximize from tray"
 msgstr "Maximiser par Un simple clic"
 
 #, c-format
-msgid "Size %d"
-msgstr "Taille %d"
+msgid "Size %s"
+msgstr "Taille %s"
 
 msgid "Sort &Ascending"
 msgstr "Tri Croiss&ant"
@@ -1708,8 +1718,7 @@ msgstr ""
 "Bascule entre des lignes continues (rendu plus rapide) ou en pointillés"
 
 msgid "Toggle whether only one click is required to maximize from system tray"
-msgstr ""
-"Bascule la restauration depuis la zone de notification en un seul clic"
+msgstr "Bascule la restauration depuis la zone de notification en un seul clic"
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Affiche ou masque la barre d'état sous les documents"
@@ -1796,8 +1805,8 @@ msgid "Width"
 msgstr "Largeur"
 
 #, c-format
-msgid "Width %d"
-msgstr "Largeur %d"
+msgid "Width %s"
+msgstr "Largeur %s"
 
 msgid "Word Left"
 msgstr "Début de mot"

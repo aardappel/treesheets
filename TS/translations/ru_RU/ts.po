@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -24,6 +24,11 @@ msgstr ""
 #, c-format
 msgid "%d cell(s)"
 msgstr "%d ячейка(и)"
+
+# комментарий к эл-ту Главного Окна (Инф Строка)
+#, c-format
+msgid "%d character(s)"
+msgstr "%d символ(ов)"
 
 # Сообщение (после действия или события)
 #, c-format
@@ -337,6 +342,9 @@ msgstr "Создавать .bak файлы"
 # Сообщение (после действия или события)
 msgid "Bitmap copied to clipboard"
 msgstr "Растровое изображение скопировано в буфер обмена"
+
+msgid "Bold (CTRL+b)"
+msgstr "Жирный (CTRL+b)"
 
 # эл-т Главного Окна
 msgid "Border "
@@ -1082,6 +1090,10 @@ msgstr ""
 "Похоже, вы собираетесь вставить или отбросить файл TreeSheet. Что вы хотите "
 "сделать?"
 
+# комментарий к эл-ту Главного Окна
+msgid "Italic (CTRL+i)"
+msgstr "Курсив (CTRL+i)"
+
 msgid "JPEG"
 msgstr "JPEG"
 
@@ -1767,8 +1779,8 @@ msgstr "Развернуть одним щелчком мыши из Трея"
 
 # Сообщение (после действия или события)
 #, c-format
-msgid "Size %d"
-msgstr "Размер %d"
+msgid "Size %s"
+msgstr "Размер %s"
 
 msgid "Sort &Ascending"
 msgstr "Сортировать по &Возрастанию"
@@ -2034,8 +2046,8 @@ msgstr "Ширина"
 
 # Сообщение (после действия или события)
 #, c-format
-msgid "Width %d"
-msgstr "Ширина %d"
+msgid "Width %s"
+msgstr "Ширина %s"
 
 msgid "Word Left"
 msgstr "На Слово вЛево"

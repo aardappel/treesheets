@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 10:31+0200\n"
+"POT-Creation-Date: 2026-09-23 15:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,10 @@ msgstr ""
 
 #, c-format
 msgid "%d cell(s)"
+msgstr ""
+
+#, c-format
+msgid "%d character(s)"
 msgstr ""
 
 #, c-format
@@ -305,6 +309,9 @@ msgid "Backup files"
 msgstr ""
 
 msgid "Bitmap copied to clipboard"
+msgstr ""
+
+msgid "Bold (CTRL+b)"
 msgstr ""
 
 msgid "Border "
@@ -899,6 +906,9 @@ msgid ""
 "you like to do?"
 msgstr ""
 
+msgid "Italic (CTRL+i)"
+msgstr ""
+
 msgid "JPEG"
 msgstr ""
 
@@ -1459,7 +1469,7 @@ msgid "Single click maximize from tray"
 msgstr ""
 
 #, c-format
-msgid "Size %d"
+msgid "Size %s"
 msgstr ""
 
 msgid "Sort &Ascending"
@@ -1670,7 +1680,7 @@ msgid "Width"
 msgstr ""
 
 #, c-format
-msgid "Width %d"
+msgid "Width %s"
 msgstr ""
 
 msgid "Word Left"
