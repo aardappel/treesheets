@@ -1417,6 +1417,8 @@ struct TSFrame : wxFrame {
                 } else {
                     SetStatus(canvas->doc->Action(id));
                 }
+                // Actions such as cursor movement or select all change the text selection.
+                if (auto *tab = GetCurrentTab()) { UpdateAmountStatus(tab->doc->selected); }
                 break;
             }
         }
@@ -1426,7 +1428,7 @@ struct TSFrame : wxFrame {
         auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         canvas->SetFocus();
         canvas->doc->UpdateFileName();
-        UpdateStatus(canvas->doc->selected);
+        UpdateStatus(canvas->doc->selected, true);
         nbe.Skip();
     }
 
@@ -1470,6 +1472,7 @@ struct TSFrame : wxFrame {
                 if (canvas->doc) {
                     canvas->doc->Action(issearch ? ke.ShiftDown() ? A_SEARCHPREV : A_SEARCHNEXT
                                                  : A_REPLACEONCEJ);
+                    UpdateAmountStatus(canvas->doc->selected);
                 }
                 return;
             }
@@ -1802,9 +1805,7 @@ struct TSFrame : wxFrame {
         }
     }
 
-    // Updates the edited, width and size fields. The amount field is kept current by the canvas'
-    // paint handler through UpdateAmountStatus().
-    void UpdateStatus(const Selection &s) {
+    void UpdateStatus(const Selection &s, bool updateamount) {
         if (GetStatusBar() != nullptr && s.grid != nullptr) {
             if (!s.Thin()) {
                 // Aggregate over the selection; for a single cell this is just its own values.
@@ -1833,6 +1834,7 @@ struct TSFrame : wxFrame {
             } else {
                 for (int field : {1, 2, 3}) { SetStatusText("", field); }
             }
+            if (updateamount) { UpdateAmountStatus(s); }
         }
     }
 
@@ -1843,7 +1845,7 @@ struct TSFrame : wxFrame {
         auto amount = s.TextEdit() && s.cursor != s.cursorend
                           ? wxString::Format(_("%d character(s)"), abs(s.cursorend - s.cursor))
                           : wxString::Format(_("%d cell(s)"), s.xs * s.ys);
-        // Called on every repaint, so avoid touching the status bar when nothing changed.
+        // Avoid touching the status bar when nothing changed.
         if (GetStatusBar()->GetStatusText(4) != amount) { SetStatusText(amount, 4); }
     }
 
