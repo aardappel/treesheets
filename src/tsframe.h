@@ -547,6 +547,7 @@ struct TSFrame : wxFrame {
         filtermenu->AppendSeparator();
         MyAppend(filtermenu, A_FILTERBYCELLBG, _("Show cells with the same cell color"));
         MyAppend(filtermenu, A_FILTERBYSTYLE, _("Show cells with the same style"));
+        MyAppend(filtermenu, A_FILTERBYTEXT, _("Show cells with the same text"));
         MyAppend(filtermenu, A_FILTERNOTE, _("Show cells with notes"));
         filtermenu->AppendSeparator();
         MyAppend(filtermenu, A_FILTERMATCHNEXT, _("Go to next filter match") + "\tCTRL+F3");

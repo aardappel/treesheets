@@ -2525,6 +2525,14 @@ struct Document {
                 canvas->Refresh();
                 return wxEmptyString;
 
+            case A_FILTERBYTEXT:
+                loopallcells(ci) ci->text.filteredraw = ci->text.t != cell->text.t;
+                ApplyRowFilterExpansion();
+                root->ResetChildren();
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+
             case A_FILTERNOTE:
                 loopallcells(ci) ci->text.filteredraw = ci->note.IsEmpty();
                 ApplyRowFilterExpansion();
