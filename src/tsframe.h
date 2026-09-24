@@ -1450,13 +1450,7 @@ struct TSFrame : wxFrame {
         auto searchstring = ce.GetString();
         sys->darkennonmatchingcells = searchstring.Len() != 0;
         sys->searchstring = sys->casesensitivesearch ? searchstring : searchstring.Lower();
-        TSCanvas *canvas = GetCurrentTab();
-        Document *doc = canvas->doc.get();
-        if (doc->searchfilter) {
-            doc->SetSearchFilter(sys->searchstring.Len() != 0);
-            doc->searchfilter = true;
-        }
-        canvas->Refresh();
+        GetCurrentTab()->Refresh();
     }
 
     void OnCharHook(wxKeyEvent &ke) {

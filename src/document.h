@@ -120,7 +120,6 @@ struct Document {
     uint printscale {0};
     bool scaledviewingmode {false};
     double currentviewscale {1.0};
-    bool searchfilter {false};
     int editfilter {0};
     wxDateTime lastmodificationtime;
     map<wxString, pair<uint, uint>> tags;
@@ -3053,7 +3052,6 @@ struct Document {
     }
 
     void ApplyEditFilter() {
-        searchfilter = false;
         editfilter = std::clamp(editfilter, 1, 99);
         CollectCells(root.get());
         ranges::sort(itercells, [](auto a, auto b) {
@@ -3069,7 +3067,6 @@ struct Document {
     }
 
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
-        searchfilter = false;
         CollectCells(root.get());
         for (auto *c : itercells) {
             c->text.filteredraw = !c->text.lastedit.IsBetween(rangebegin, rangeend);
@@ -3089,7 +3086,6 @@ struct Document {
     }
 
     void SetSearchFilter(bool on) {
-        searchfilter = on;
         loopallcells(c) c->text.filteredraw = on && !c->text.IsInSearch();
         ApplyRowFilterExpansion();
         root->ResetChildren();
