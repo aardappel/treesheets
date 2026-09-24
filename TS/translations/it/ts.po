@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 15:45+0200\n"
+"POT-Creation-Date: 2026-09-24 16:38+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -1551,6 +1551,9 @@ msgstr "Mostra le celle con lo stesso colore"
 
 msgid "Show cells with the same style"
 msgstr "Mostra le celle con lo stesso stile"
+
+msgid "Show cells with the same text"
+msgstr "Mostra le celle con lo stesso testo"
 
 msgid "Show entire row on match"
 msgstr "Mostra l'intera riga in caso di corrispondenza"

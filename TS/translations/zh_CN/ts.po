@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 15:45+0200\n"
+"POT-Creation-Date: 2026-09-24 16:38+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1473,6 +1473,9 @@ msgstr "显示单元格颜色相同的单元格"
 
 msgid "Show cells with the same style"
 msgstr "显示样式相同的单元格"
+
+msgid "Show cells with the same text"
+msgstr "显示文本相同的单元格"
 
 msgid "Show entire row on match"
 msgstr "匹配时显示整行"

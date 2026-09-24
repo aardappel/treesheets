@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 15:45+0200\n"
+"POT-Creation-Date: 2026-09-24 16:38+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -1470,6 +1470,9 @@ msgstr "顯示相同儲存格色彩的儲存格"
 
 msgid "Show cells with the same style"
 msgstr "顯示相同樣式的儲存格"
+
+msgid "Show cells with the same text"
+msgstr "顯示相同文字的儲存格"
 
 msgid "Show entire row on match"
 msgstr "符合時顯示整列"
