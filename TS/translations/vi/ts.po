@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 15:45+0200\n"
+"POT-Creation-Date: 2026-09-24 16:38+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -1507,6 +1507,9 @@ msgstr "Hiển thị các ô có cùng màu ô"
 
 msgid "Show cells with the same style"
 msgstr "Hiển thị các ô có cùng kiểu"
+
+msgid "Show cells with the same text"
+msgstr "Hiển thị các ô có cùng văn bản"
 
 msgid "Show entire row on match"
 msgstr "Hiện toàn bộ hàng khi khớp"
