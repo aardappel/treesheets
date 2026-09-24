@@ -155,7 +155,7 @@ struct Document {
         if (selected.grid == nullptr) { return; }
         selected.xs = std::clamp(xsize, 1, selected.grid->xs - selected.x);
         selected.ys = std::clamp(ysize, 1, selected.grid->ys - selected.y);
-        sys->frame->UpdateStatus(selected);
+        sys->frame->UpdateStatus(selected, true);
     }
 
     void InitWith(unique_ptr<Cell> root, const wxString &filename, Cell *initialselected, int xsize, int ysize) {
@@ -622,7 +622,7 @@ struct Document {
         UpdateLayout();  // also clears layoutpending and resets the stale geometry
         ScrollIfSelectionOutOfView();
         canvas->Refresh();
-        sys->frame->UpdateStatus(selected);
+        sys->frame->UpdateStatus(selected, false);
     }
 
     wxString Wheel(int dir, bool alt, bool ctrl, bool shift, bool hierarchical = true,
@@ -648,7 +648,7 @@ struct Document {
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
                 }
-                sys->frame->UpdateStatus(selected);
+                sys->frame->UpdateStatus(selected, false);
                 return dir > 0 ? _("Column width increased.") : _("Column width decreased.");
             }
             return _("nothing to resize");
@@ -666,7 +666,7 @@ struct Document {
                 ScrollIfSelectionOutOfView();
                 canvas->Refresh();
             }
-            sys->frame->UpdateStatus(selected);
+            sys->frame->UpdateStatus(selected, false);
             return dir > 0 ? _("Text size increased.") : _("Text size decreased.");
         } else if (ctrl) {
             int steps = abs(dir);
@@ -1885,7 +1885,7 @@ struct Document {
             case wxID_SELECTALL:
                 selected.SelAll();
                 canvas->Refresh();
-                sys->frame->UpdateStatus(selected);
+                sys->frame->UpdateStatus(selected, true);
                 return wxEmptyString;
 
             case A_UP:
@@ -1931,7 +1931,7 @@ struct Document {
                         ext = gridmax - pos;
                     }
 
-                    sys->frame->UpdateStatus(selected);
+                    sys->frame->UpdateStatus(selected, true);
                     canvas->Refresh();
                 } else if (action == A_SCLEFT || action == A_SCRIGHT) {
                     selected.Cursor(this, action - A_SCUP + A_UP, true, true);
@@ -2218,7 +2218,7 @@ struct Document {
                 selected.grid->cell->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
-                sys->frame->UpdateStatus(selected);
+                sys->frame->UpdateStatus(selected, false);
                 return wxEmptyString;
 
             case A_MINISIZE: {
