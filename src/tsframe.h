@@ -912,6 +912,8 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_COMBOBOX, &TSFrame::OnChangeColor, this, A_TEXTCOLOR);
         Bind(wxEVT_COMBOBOX, &TSFrame::OnChangeColor, this, A_BORDCOLOR);
         Bind(wxEVT_COMBOBOX, &TSFrame::OnDDImage, this, A_DDIMAGE);
+        // Also give the keyboard back to the document when a dropdown closes without a choice.
+        Bind(wxEVT_COMBOBOX_CLOSEUP, [this](wxCommandEvent &) { ReFocus(); });
         Bind(wxEVT_ICONIZE, &TSFrame::OnIconize, this);
         Bind(wxEVT_SIZE, &TSFrame::OnSize, this);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &TSFrame::OnTabChange, this, wxID_ANY);
