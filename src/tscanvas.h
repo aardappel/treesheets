@@ -5,11 +5,15 @@ struct TSCanvas : public wxScrolledCanvas {
     bool lastrmbwaswithctrl {false};
     wxPoint lastmousepos;
     double zoomgesturebase {1.0};
+    // Scrolls while a selection is dragged beyond the edge of the canvas, which the pointer
+    // standing still out there doesn't report motion events for.
+    wxTimer autoscrolltimer;
 
     TSCanvas(TSFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
         : wxScrolledCanvas(parent, wxID_ANY, wxDefaultPosition, size,
                            wxScrolledWindowStyle | wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE),
-          frame(fr) {
+          frame(fr),
+          autoscrolltimer(this) {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetBackgroundColour(*wxWHITE);
         DisableKeyboardScrolling();
@@ -26,8 +30,12 @@ struct TSCanvas : public wxScrolledCanvas {
         Bind(wxEVT_MOTION, &TSCanvas::OnMotion, this);
         Bind(wxEVT_LEAVE_WINDOW, [this](wxMouseEvent &me) {
             doc->SetHoverShade(wxRect());
+            if ((me.LeftIsDown() || me.RightIsDown()) && !(me.AltDown() && me.ShiftDown())) {
+                StartAutoScroll();
+            }
             me.Skip();
         });
+        Bind(wxEVT_TIMER, &TSCanvas::OnAutoScroll, this);
         Bind(wxEVT_LEFT_DOWN, &TSCanvas::OnLeftDown, this);
         Bind(wxEVT_LEFT_UP, &TSCanvas::OnLeftUp, this);
         Bind(wxEVT_RIGHT_DOWN, &TSCanvas::OnRightDown, this);
@@ -61,24 +69,9 @@ struct TSCanvas : public wxScrolledCanvas {
                 doc->Copy(A_DRAGANDDROP);
                 Refresh();
             } else {
-                if (doc->isctrlshiftdrag != 0) {
-                    doc->begindrag = doc->hover;
-                } else if (!doc->hover.Thin()) {
-                    if (doc->begindrag.Thin() || doc->selected.Thin()) {
-                        doc->SetSelect(doc->hover);
-                        doc->ResetCursor();
-                        Refresh();
-                    } else {
-                        Selection old = doc->selected;
-                        doc->selected.Merge(doc->begindrag, doc->hover);
-                        if (!(old == doc->selected)) {
-                            doc->ResetCursor();
-                            Refresh();
-                        }
-                    }
-                }
+                DragToHover();
+                if (!AutoScrollFreeRect().Contains(me.GetPosition())) { StartAutoScroll(); }
             }
-            sys->frame->UpdateStatus(doc->selected, true);
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
@@ -91,6 +84,70 @@ struct TSCanvas : public wxScrolledCanvas {
             }
         }
         lastmousepos = me.GetPosition();
+    }
+
+    // Extends the dragged selection, or moves the target of a ctrl/alt drag, to the hovered
+    // cell.
+    void DragToHover() {
+        if (doc->isctrlshiftdrag != 0) {
+            doc->begindrag = doc->hover;
+        } else if (!doc->hover.Thin()) {
+            if (doc->begindrag.Thin() || doc->selected.Thin()) {
+                doc->SetSelect(doc->hover);
+                doc->ResetCursor();
+                Refresh();
+            } else {
+                Selection old = doc->selected;
+                doc->selected.Merge(doc->begindrag, doc->hover);
+                if (!(old == doc->selected)) {
+                    doc->ResetCursor();
+                    Refresh();
+                }
+            }
+        }
+        sys->frame->UpdateStatus(doc->selected, true);
+    }
+
+    // Dragging beyond this rectangle scrolls. It leaves out a strip along the edges of the
+    // canvas, since a maximized window leaves no room beyond them, and overlay scrollbars
+    // cover them.
+    wxRect AutoScrollFreeRect() const { return GetClientRect().Deflate(8); }
+
+    void StartAutoScroll() {
+        if (!autoscrolltimer.IsRunning()) { autoscrolltimer.Start(30); }
+    }
+
+    // Scrolls by how far the pointer is beyond AutoScrollFreeRect(), and drags the selection
+    // to the cell nearest to it in that rectangle.
+    void OnAutoScroll(wxTimerEvent &) {
+        auto state = wxGetMouseState();
+        auto p = ScreenToClient(state.GetPosition());
+        auto r = AutoScrollFreeRect();
+        auto dx = p.x < r.GetLeft() ? p.x - r.GetLeft() : max(0, p.x - r.GetRight());
+        auto dy = p.y < r.GetTop() ? p.y - r.GetTop() : max(0, p.y - r.GetBottom());
+        if (!(state.LeftIsDown() || state.RightIsDown()) || (dx == 0 && dy == 0)) {
+            autoscrolltimer.Stop();
+            return;
+        }
+        // Start at a speed of its own, the pointer can't get far beyond a canvas at the edge of
+        // the screen, and speed up with the distance from there.
+        auto speed = [](int d) { return d == 0 ? 0 : d + (d > 0 ? 8 : -8); };
+        CursorScroll(speed(dx), speed(dy));
+        // Once scrolled to the end, the edge of the canvas shows the margin around the cells.
+        // Stay clear of that, and of the cells' edges, where a thin selection would be hovered.
+        auto *root = doc->currentdrawroot;
+        if (root != nullptr && root->grid && doc->currentviewscale == 1.0) {
+            auto &grid = root->grid;
+            wxRect cells = grid->GetRect(doc.get(), Selection(grid, 0, 0, grid->xs, grid->ys));
+            cells.Deflate(grid->cell_margin + g_selmargin + 1);
+            CalcScrolledPosition(cells.x, cells.y, &cells.x, &cells.y);
+            cells.Offset(doc->centerx, doc->centery);
+            if (cells.Intersects(r)) { r.Intersect(cells); }
+        }
+        wxInfoDC dc(this);
+        doc->UpdateHover(dc, std::clamp(p.x, r.GetLeft(), r.GetRight()),
+                         std::clamp(p.y, r.GetTop(), r.GetBottom()));
+        DragToHover();
     }
 
     void SelectClick(int mx, int my, bool right, int isctrlshift) {

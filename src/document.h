@@ -369,20 +369,37 @@ struct Document {
         int sx = 0;
         int sy = 0;
         canvas->GetViewStart(&sx, &sy);
-        int mx = cw + sx;
-        int my = ch + sy;
         if ((layoutys * currentviewscale > ch || layoutxs * currentviewscale > cw) &&
             selected.grid != nullptr) {
             wxRect r = selected.grid->GetRect(this, selected);
-            if (r.y < sy || r.y + r.height > my || r.x < sx || r.x + r.width > mx) {
-                canvas->Scroll(r.width > cw || r.x < sx ? r.x
-                               : r.x + r.width > mx     ? r.x + r.width - cw
-                                                        : sx,
-                               r.height > ch || r.y < sy ? r.y
-                               : r.y + r.height > my     ? r.y + r.height - ch
-                                                         : sy);
+            // A selection larger than the view can't be shown whole. Show the corner that
+            // shift+cursor keys extend it at instead, so the view follows its growing edge.
+            if (!selected.Thin() && (r.width > cw || r.height > ch)) {
+                Selection lead(selected.grid,
+                               selected.firstdx > 0 ? selected.x + selected.xs - 1 : selected.x,
+                               selected.firstdy > 0 ? selected.y + selected.ys - 1 : selected.y,
+                               1, 1);
+                wxRect lr = selected.grid->GetRect(this, lead);
+                if (r.width > cw) {
+                    r.x = lr.x;
+                    r.width = lr.width;
+                }
+                if (r.height > ch) {
+                    r.y = lr.y;
+                    r.height = lr.height;
+                }
             }
+            canvas->Scroll(ScrollPosToShow(r.x, r.width, sx, cw),
+                           ScrollPosToShow(r.y, r.height, sy, ch));
         }
+    }
+
+    // The scroll position along one axis that brings [pos, pos + size) into a view of
+    // viewsize starting at start, scrolling as little as possible.
+    static int ScrollPosToShow(int pos, int size, int start, int viewsize) {
+        if (size > viewsize || pos < start) { return pos; }
+        if (pos + size > start + viewsize) { return pos + size - viewsize; }
+        return start;
     }
 
     // Converts a rectangle from document (unscrolled content) coordinates -- the space
