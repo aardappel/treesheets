@@ -692,6 +692,8 @@ struct TSFrame : wxFrame {
         optmenu->AppendCheckItem(A_HOVERSHADOW, _("Hover shadow"),
                                  _("Shade the cell the mouse pointer hovers over"));
         optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
+        MyAppend(optmenu, A_HOVERSHADOWCOL, _("Hover shadow color..."),
+                 _("Set the color of the hover shadow"));
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_MAKEBAKS, _("Backup files"),
                                  _("Create backup file before document is saved to file"));
