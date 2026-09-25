@@ -21,16 +21,15 @@ jobs:
             os: ubuntu-24.04-arm
     steps:
     - uses: actions/checkout@v7
-    - name: runner image
-      id: image
-      shell: bash
-      run: echo "os=${ImageOS:-unknown}" >> "$GITHUB_OUTPUT"
+    - name: compiler version
+      id: compiler
+      run: echo "id=${ImageOS:-unknown}-$(c++ -dumpfullversion 2>/dev/null || c++ -dumpversion)" >> "$GITHUB_OUTPUT"
     - name: cache build
       uses: actions/cache@v6
       with:
         path: _build
-        key: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.image.outputs.os }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
-        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.image.outputs.os }}-cmake-04-build-
+        key: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.compiler.outputs.id }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.compiler.outputs.id }}-cmake-04-build-
     - name: apt update
       run: sudo apt-get -o Acquire::Retries=3 update
     - name: install opengl
@@ -75,16 +74,19 @@ jobs:
             extra_flags: "-A ARM64 -DENABLE_LOBSTER=OFF" # tinycc currently does not fully support Windows on ARM
     steps:
     - uses: actions/checkout@v7
-    - name: runner image
-      id: image
-      shell: bash
-      run: echo "os=${ImageOS:-unknown}" >> "$GITHUB_OUTPUT"
+    - name: compiler version
+      id: compiler
+      shell: pwsh
+      run: |
+        $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath
+        $msvc = Get-Content "$vs\VC\Auxiliary\Build\Microsoft.VCToolsVersion.default.txt"
+        "id=$env:ImageOS-msvc$msvc" >> $env:GITHUB_OUTPUT
     - name: cache build
       uses: actions/cache@v6
       with:
         path: _build
-        key: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.image.outputs.os }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
-        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.image.outputs.os }}-cmake-04-build-
+        key: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.compiler.outputs.id }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.arch }}-${{ steps.compiler.outputs.id }}-cmake-04-build-
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v3
     - name: cmake
@@ -119,16 +121,15 @@ jobs:
       minmac: 10.15
     steps:
     - uses: actions/checkout@v7
-    - name: runner image
-      id: image
-      shell: bash
-      run: echo "os=${ImageOS:-unknown}" >> "$GITHUB_OUTPUT"
+    - name: compiler version
+      id: compiler
+      run: echo "id=${ImageOS:-unknown}-$(c++ -dumpfullversion 2>/dev/null || c++ -dumpversion)" >> "$GITHUB_OUTPUT"
     - name: cache build
       uses: actions/cache@v6
       with:
         path: _build
-        key: ${{ runner.os }}-${{ steps.image.outputs.os }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
-        restore-keys: ${{ runner.os }}-${{ steps.image.outputs.os }}-cmake-04-build-
+        key: ${{ runner.os }}-${{ steps.compiler.outputs.id }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
+        restore-keys: ${{ runner.os }}-${{ steps.compiler.outputs.id }}-cmake-04-build-
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
