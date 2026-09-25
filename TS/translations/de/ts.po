@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -950,6 +950,9 @@ msgstr "Horizontale Anordnung mit Zeilenstil-Rendering"
 msgid "Hover shadow"
 msgstr "Schwebeschatten"
 
+msgid "Hover shadow color..."
+msgstr "Farbe des Schwebeschattens..."
+
 msgid "Hover zoom"
 msgstr "Schwebezoom"
 
@@ -1561,6 +1564,9 @@ msgstr "Die Farbe für den Dokumentenhintergrund wählen"
 
 msgid "Set the color for the text cursor"
 msgstr "Die Farbe des Textcursors auswählen"
+
+msgid "Set the color of the hover shadow"
+msgstr "Die Farbe des Schwebeschattens auswählen"
 
 msgid "Set the default column width for a new grid"
 msgstr "Die Standardspaltenbreite für eine neue Tabelle setzen"

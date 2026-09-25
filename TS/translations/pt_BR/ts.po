@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -943,6 +943,9 @@ msgstr "Layout Horizontal, Renderização com Estilo de Linha"
 msgid "Hover shadow"
 msgstr "Sombrear célula sob o ponteiro do mouse"
 
+msgid "Hover shadow color..."
+msgstr "Cor da sombra sob o ponteiro..."
+
 msgid "Hover zoom"
 msgstr "Ampliar célula sob o po&nteiro do mouse"
 
@@ -1551,6 +1554,9 @@ msgstr "Define a cor do plano de fundo do documento"
 
 msgid "Set the color for the text cursor"
 msgstr "Define a cor do cursor"
+
+msgid "Set the color of the hover shadow"
+msgstr "Define a cor da sombra da célula sob o ponteiro do mouse"
 
 msgid "Set the default column width for a new grid"
 msgstr "Define largura padrão das colunas para uma nova grade"
