@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -915,6 +915,9 @@ msgstr "선 스타일 렌더링을 사용한 가로 레이아웃"
 msgid "Hover shadow"
 msgstr "호버 그림자"
 
+msgid "Hover shadow color..."
+msgstr "호버 그림자 색상..."
+
 msgid "Hover zoom"
 msgstr "호버 확대/축소"
 
@@ -1493,6 +1496,9 @@ msgstr "문서 배경의 색상 설정"
 
 msgid "Set the color for the text cursor"
 msgstr "텍스트 커서의 색상 설정"
+
+msgid "Set the color of the hover shadow"
+msgstr "호버 그림자의 색상 설정"
 
 msgid "Set the default column width for a new grid"
 msgstr "새 격자의 기본 열 너비 설정"

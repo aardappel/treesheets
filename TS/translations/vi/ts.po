@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -919,6 +919,9 @@ msgstr "Bố cục ngang với hiển thị kiểu đường kẻ"
 msgid "Hover shadow"
 msgstr "Tô bóng khi di chuột"
 
+msgid "Hover shadow color..."
+msgstr "Màu tô bóng khi di chuột..."
+
 msgid "Hover zoom"
 msgstr "Thu phóng khi di chuột"
 
@@ -1505,6 +1508,9 @@ msgstr "Đặt màu cho nền tài liệu"
 
 msgid "Set the color for the text cursor"
 msgstr "Đặt màu cho con trỏ văn bản"
+
+msgid "Set the color of the hover shadow"
+msgstr "Đặt màu tô bóng khi di chuột"
 
 msgid "Set the default column width for a new grid"
 msgstr "Đặt chiều rộng cột mặc định cho lưới mới"

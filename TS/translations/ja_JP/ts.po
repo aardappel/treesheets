@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -929,6 +929,9 @@ msgstr "ラインスタイルレンダリングの水平レイアウト"
 msgid "Hover shadow"
 msgstr "ホバーシャドウ"
 
+msgid "Hover shadow color..."
+msgstr "ホバーシャドウの色..."
+
 msgid "Hover zoom"
 msgstr "ホバーズーム"
 
@@ -1520,6 +1523,9 @@ msgstr "ドキュメントの背景色を設定"
 
 msgid "Set the color for the text cursor"
 msgstr "テキストカーソルの色を設定"
+
+msgid "Set the color of the hover shadow"
+msgstr "ホバーシャドウの色を設定"
 
 msgid "Set the default column width for a new grid"
 msgstr "新しいグリッドのデフォルト列幅を設定"

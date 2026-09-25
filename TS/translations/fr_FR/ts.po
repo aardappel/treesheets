@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -950,6 +950,9 @@ msgstr "Disposition horizontale mode Ligne"
 msgid "Hover shadow"
 msgstr "Ombre au survol"
 
+msgid "Hover shadow color..."
+msgstr "Couleur de l'ombre au survol..."
+
 msgid "Hover zoom"
 msgstr "Zoom au survol"
 
@@ -1565,6 +1568,9 @@ msgstr "Définit la couleur de l'arrière-plan du document"
 
 msgid "Set the color for the text cursor"
 msgstr "Définit la couleur du curseur de texte"
+
+msgid "Set the color of the hover shadow"
+msgstr "Définit la couleur de l'ombre au survol"
 
 msgid "Set the default column width for a new grid"
 msgstr "Définit la largeur de colonne par défaut d'une nouvelle grille"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -1054,6 +1054,9 @@ msgstr ".. в стиле &Линий"
 msgid "Hover shadow"
 msgstr "Затенение при наведении"
 
+msgid "Hover shadow color..."
+msgstr "Цвет затенения при наведении..."
+
 # п. Меню (нет & в исходном тексте), отсутствует в Linux
 msgid "Hover zoom"
 msgstr "Увеличение при наведении"
@@ -1758,6 +1761,9 @@ msgstr "Установите цвет фона документа"
 # комментарий к п. Меню
 msgid "Set the color for the text cursor"
 msgstr "Установите цвет текстового курсора"
+
+msgid "Set the color of the hover shadow"
+msgstr "Установите цвет затенения при наведении"
 
 # комментарий к п. Меню
 msgid "Set the default column width for a new grid"

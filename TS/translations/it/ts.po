@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:41+0200\n"
+"POT-Creation-Date: 2026-09-25 11:56+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -942,6 +942,9 @@ msgstr "Layout orizzontale con Rendering stile linea"
 msgid "Hover shadow"
 msgstr "Ombra al passaggio"
 
+msgid "Hover shadow color..."
+msgstr "Colore dell'ombra al passaggio..."
+
 msgid "Hover zoom"
 msgstr "Zoom al passaggio"
 
@@ -1547,6 +1550,9 @@ msgstr "Imposta il colore dello sfondo del documento"
 
 msgid "Set the color for the text cursor"
 msgstr "Imposta il colore del cursore di testo"
+
+msgid "Set the color of the hover shadow"
+msgstr "Imposta il colore dell'ombra al passaggio"
 
 msgid "Set the default column width for a new grid"
 msgstr "Imposta la larghezza predefinita delle colonne per una nuova griglia"
