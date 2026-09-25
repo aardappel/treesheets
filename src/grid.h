@@ -765,12 +765,12 @@ struct Grid {
         }
     }
 
-    // Pastes this grid into the parent at sel. Conflicting content is never overwritten: if all
-    // cells the grid lands on are empty (the cell being replaced doesn't count), it just goes
-    // there, growing the parent past its edges as needed. Otherwise rows (or columns, if
-    // pushcolumns) of the parent that have content in the way are pushed away entirely, an
-    // entirely empty one is reused. In the other direction the parent only grows past its edge,
-    // so there's no offset both ways.
+    // Pastes this grid into the parent at sel. Conflicting content is never overwritten: a row
+    // (or column, if pushcolumns) of the parent that has content in the cells the grid lands on
+    // is pushed away, together with all rows after it; one that is empty there is reused (the
+    // cell being replaced doesn't count). So only as many rows are inserted as needed to move
+    // the first conflicting one past the pasted grid. In the other direction the parent only
+    // grows past its edge, so there's no offset both ways.
     void MergeWithParent(const shared_ptr<Grid> &p, Selection &sel, Document *doc,
                          bool pushcolumns = false) {
         // The loop below overwrites the parent's slot for the cell owning this grid, which
@@ -785,21 +785,14 @@ struct Grid {
         };
         int nxs = sel.x + xs - p->xs;
         int nys = sel.y + ys - p->ys;
-        bool targetempty = true;
-        for (int ty = sel.y; targetempty && ty < min(sel.y + ys, p->ys); ty++) {
-            for (int tx = sel.x; targetempty && tx < min(sel.x + xs, p->xs); tx++) {
-                targetempty = isempty(p->C(tx, ty).get());
-            }
-        }
-        if (targetempty) {
-            if (nxs > 0) { p->InsertCells(p->xs, -1, nxs, 0); }
-            if (nys > 0) { p->InsertCells(-1, p->ys, 0, nys); }
-        } else if (pushcolumns) {
+        if (pushcolumns) {
             if (nys > 0) { p->InsertCells(-1, p->ys, 0, nys); }
             for (int i = 0; i < xs; i++) {
                 int tx = sel.x + i;
                 bool empty = tx < p->xs;
-                for (int py = 0; empty && py < p->ys; py++) { empty = isempty(p->C(tx, py).get()); }
+                for (int j = 0; empty && j < ys; j++) {
+                    empty = isempty(p->C(tx, sel.y + j).get());
+                }
                 if (!empty) { p->InsertCells(tx, -1, 1, 0); }
             }
         } else {
@@ -807,7 +800,9 @@ struct Grid {
             for (int j = 0; j < ys; j++) {
                 int ty = sel.y + j;
                 bool empty = ty < p->ys;
-                for (int px = 0; empty && px < p->xs; px++) { empty = isempty(p->C(px, ty).get()); }
+                for (int i = 0; empty && i < xs; i++) {
+                    empty = isempty(p->C(sel.x + i, ty).get());
+                }
                 if (!empty) { p->InsertCells(-1, ty, 0, 1); }
             }
         }
