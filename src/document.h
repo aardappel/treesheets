@@ -2008,7 +2008,7 @@ struct Document {
             case A_ALIGNLEFT:
             case A_ALIGNCENTER:
             case A_ALIGNRIGHT:
-                selected.grid->SetTextAlign(this, selected, action - A_ALIGNAUTO + TA_AUTO);
+                selected.grid->SetTextAlign(this, selected, action - A_ALIGNAUTO + TEXTALIGN_AUTO);
                 return wxEmptyString;
 
             case A_MARKDATA:
@@ -2246,7 +2246,7 @@ struct Document {
                         break;
                     case A_RESETSTYLE:
                         c->text.ResetStyle();
-                        c->textalign = TA_AUTO;
+                        c->textalign = TEXTALIGN_AUTO;
                         break;
                     case A_RESETCOLOR:
                         if (c->IsTag(this)) {

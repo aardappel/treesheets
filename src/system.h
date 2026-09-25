@@ -640,7 +640,8 @@ struct System {
             c->textcolor = ParseColorAttribute(node, "colorfg", g_textcolor_default);
             c->celltype = wxAtoi(node->GetAttribute("type", "0"));
             auto align = wxAtoi(node->GetAttribute("align", "0"));
-            c->textalign = align >= TA_AUTO && align <= TA_RIGHT ? align : TA_AUTO;
+            c->textalign =
+                align >= TEXTALIGN_AUTO && align <= TEXTALIGN_RIGHT ? align : TEXTALIGN_AUTO;
         }
         c->text.runs.Normalize(c->text.stylebits);
 
