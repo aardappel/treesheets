@@ -39,8 +39,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCPACK_PACKAGING_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=Release \
-        -DwxBUILD_SHARED=OFF \
-        -DwxBUILD_INSTALL=OFF \
+        -DTREESHEETS_BUNDLE_WXWIDGETS=ON \
         -DwxUSE_SYS_LIBS=OFF \
         -DTREESHEETS_VERSION=${{ github.run_number }} \
         -DENABLE_WXPDFDOC=ON
@@ -85,8 +84,7 @@ jobs:
         cmake -S . -B _build
         -G "Visual Studio 18 2026"
         -DCMAKE_BUILD_TYPE=Release
-        -DwxBUILD_SHARED=OFF
-        -DwxBUILD_INSTALL=OFF
+        -DTREESHEETS_BUNDLE_WXWIDGETS=ON
         -DTREESHEETS_VERSION=${{ github.run_number }}
         -DENABLE_WXPDFDOC=ON
         ${{ matrix.extra_flags }}
@@ -122,7 +120,7 @@ jobs:
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DwxBUILD_SHARED=OFF -DwxBUILD_INSTALL=OFF -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }} -DENABLE_WXPDFDOC=ON
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DTREESHEETS_BUNDLE_WXWIDGETS=ON -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }} -DENABLE_WXPDFDOC=ON
     - name: Build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Upload artifacts
