@@ -24,6 +24,10 @@ struct TSCanvas : public wxScrolledCanvas {
         Bind(wxEVT_GESTURE_ZOOM, &TSCanvas::OnZoomGesture, this, wxID_ANY);
         Bind(wxEVT_PAINT, &TSCanvas::OnPaint, this);
         Bind(wxEVT_MOTION, &TSCanvas::OnMotion, this);
+        Bind(wxEVT_LEAVE_WINDOW, [this](wxMouseEvent &me) {
+            doc->SetHoverShade(wxRect());
+            me.Skip();
+        });
         Bind(wxEVT_LEFT_DOWN, &TSCanvas::OnLeftDown, this);
         Bind(wxEVT_LEFT_UP, &TSCanvas::OnLeftUp, this);
         Bind(wxEVT_RIGHT_DOWN, &TSCanvas::OnRightDown, this);

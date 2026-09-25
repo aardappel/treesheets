@@ -52,6 +52,10 @@ struct Document {
     unique_ptr<Cell> root {nullptr};
     Selection prev;
     Selection hover;
+    // With the hover shadow option: the shaded area of the hovered cell, in document
+    // coordinates, or empty. A rect rather than `hover`, as that may point into a grid that
+    // has been deleted since.
+    wxRect hovershade;
     Selection selected;
     Selection begindrag;
     int isctrlshiftdrag {0};
@@ -306,6 +310,37 @@ struct Document {
             drawroot->grid->FindXY(
                 this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
                 y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
+        }
+        wxRect shade;
+        if (sys->hovershadow && hover.grid != nullptr && !hover.Thin()) {
+            shade = hover.grid->GetRect(this, hover);
+        }
+        SetHoverShade(shade);
+    }
+
+    // Moves the hover shadow, repainting just the cells it leaves and enters.
+    void SetHoverShade(const wxRect &shade) {
+        if (shade == hovershade) { return; }
+        if (!hovershade.IsEmpty()) { RefreshDocRect(hovershade); }
+        if (!shade.IsEmpty()) { RefreshDocRect(shade); }
+        hovershade = shade;
+    }
+
+    // Shades the hovered cell by drawing translucent gray over it, which darkens light and
+    // lightens dark cell colors. Without a graphics context (GDI on Windows) there is no
+    // alpha, so XOR a dark gray instead.
+    template<typename DC> void DrawHoverShade(DC &dc) {
+        const auto &r = hovershade;
+        if (auto *gc = dc.GetGraphicsContext(); gc != nullptr) {
+            gc->SetPen(*wxTRANSPARENT_PEN);
+            gc->SetBrush(wxBrush(wxColour(128, 128, 128, 56)));
+            gc->DrawRectangle(r.x, r.y, r.width, r.height);
+        } else {
+            dc.SetLogicalFunction(wxXOR);
+            dc.SetPen(*wxTRANSPARENT_PEN);
+            dc.SetBrush(wxBrush(wxColour(0x14, 0x10, 0x10)));
+            dc.DrawRectangle(r);
+            dc.SetLogicalFunction(wxCOPY);
         }
     }
 
@@ -754,6 +789,8 @@ struct Document {
 
     void UpdateLayout() {
         if (!root) return;
+        // Cells may move: drop the shadow until the pointer moves again.
+        SetHoverShade(wxRect());
         if (layoutpending) {
             // Deferred Wheel() changes left the cached geometry stale (deliberately not reset).
             layoutpending = false;
@@ -848,6 +885,7 @@ struct Document {
         ShiftToCenter(dc);
         dc.SetUserScale(currentviewscale, currentviewscale);
         Render(dc);
+        if (sys->hovershadow && !hovershade.IsEmpty()) { DrawHoverShade(dc); }
         DrawSelect(dc, selected);
 
         if (currentviewscale != 1.0) { dc.SetUserScale(1.0, 1.0); }
