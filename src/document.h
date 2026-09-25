@@ -881,12 +881,24 @@ struct Document {
             maxx = clientx + scrollx;
             maxy = clienty + scrolly;
         }
+        int oldcenterx = centerx;
+        int oldcentery = centery;
         centerx = sys->centered && scrollx == 0 && maxx > layoutxs
                       ? (maxx - layoutxs) / 2 * currentviewscale
                       : 0;
         centery = sys->centered && scrolly == 0 && maxy > layoutys
                       ? (maxy - layoutys) / 2 * currentviewscale
                       : 0;
+        // The centering offset can change without a full repaint. What is already on screen
+        // was then drawn at the old offset, and repainting just part of it (the hover shadow,
+        // a partial expose) would leave that part shifted against the rest. E.g. wxGTK 3.3
+        // subtracts overlay scrollbars from the client size while one appears or disappears,
+        // and restores the right size without a size event. That's fixed in wxWidgets master
+        // (wxWidgets/wxWidgets#26889), but not in a release yet.
+        if ((centerx != oldcenterx || centery != oldcentery) &&
+            !canvas->GetUpdateRegion().GetBox().Contains(wxRect(0, 0, clientx, clienty))) {
+            canvas->Refresh();
+        }
 
         // Restrict actual drawing to the area wx says needs repainting (which reflects
         // both an explicit RefreshRect() and a real, WM-driven partial expose), instead
