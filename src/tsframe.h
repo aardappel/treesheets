@@ -1394,15 +1394,7 @@ struct TSFrame : wxFrame {
             case A_STARTMINIMIZED: Toggle("startminimized", sys->startminimized); break;
             case A_ZOOMSCR: Toggle("zoomscroll", sys->zoomscroll); break;
             case A_THINSELC: Toggle("thinselc", sys->thinselc); break;
-            case A_HOVERZOOM:
-                Toggle("hoverzoom", sys->hoverzoom);
-                if (!sys->hoverzoom) {
-                    loop(i, notebook->GetPageCount()) {
-                        auto *tab = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
-                        if (!tab->doc->selected.TextEdit()) tab->SetCursor(wxNullCursor);
-                    }
-                }
-                break;
+            case A_HOVERZOOM: Toggle("hoverzoom", sys->hoverzoom); break;
             case A_HOVERSHADOW:
                 Toggle("hovershadow", sys->hovershadow);
                 if (!sys->hovershadow) {
