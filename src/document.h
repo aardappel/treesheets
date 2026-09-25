@@ -1789,6 +1789,25 @@ struct Document {
             case A_FILTERS: SetSearchFilter(true); return wxEmptyString;
             case A_FILTEROFF: SetSearchFilter(false); return wxEmptyString;
 
+            case A_FILTERSHOWROWS: {
+                sys->cfg->Write("filtershowrows", sys->filtershowrows = !sys->filtershowrows);
+                ApplyRowFilterExpansion();
+                root->ResetChildren();
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
+
+            case A_FILTERSHOWSUBGRIDS: {
+                sys->cfg->Write("filtershowsubgrids",
+                                sys->filtershowsubgrids = !sys->filtershowsubgrids);
+                ApplyRowFilterExpansion();
+                root->ResetChildren();
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
+
             case A_CUSTKEY: {
                 wxArrayString strs;
                 wxArrayString keys;
@@ -2646,15 +2665,6 @@ struct Document {
                 ScrollOrZoom(true);
                 return wxEmptyString;
             }
-
-            case A_FILTERSHOWROWS: {
-                sys->cfg->Write("filtershowrows", sys->filtershowrows = !sys->filtershowrows);
-                ApplyRowFilterExpansion();
-                root->ResetChildren();
-                UpdateLayout();
-                canvas->Refresh();
-                return wxEmptyString;
-            }
         }
 
         if (!selected.TextEdit()) { return _("only works in cell text mode"); }
@@ -3141,27 +3151,32 @@ struct Document {
     // result. When "show entire row on match" is on, any row containing a match (a cell
     // with filteredraw == false) has its filtered flag cleared for the whole row, so it
     // displays normally rather than tagged as filtered. Recurses into sub-grids so nested
-    // tables get the same treatment. Always deriving from filteredraw (rather than mutating
-    // filtered in place) keeps this idempotent, so toggling the option can simply re-run it.
-    void RecomputeFilteredDisplay(Grid *g) {
+    // tables get the same treatment. When "show sub-grids on match" is on, everything inside
+    // a cell displayed normally is displayed normally too (showall). Always deriving from
+    // filteredraw (rather than mutating filtered in place) keeps this idempotent, so toggling
+    // an option can simply re-run it.
+    void RecomputeFilteredDisplay(Grid *g, bool showall = false) {
         for (int y = 0; y < g->ys; y++) {
-            bool rowmatches = false;
-            if (sys->filtershowrows) {
+            bool showrow = showall;
+            if (sys->filtershowrows && !showrow) {
                 for (int x = 0; x < g->xs; x++) {
                     if (!g->C(x, y)->text.filteredraw) {
-                        rowmatches = true;
+                        showrow = true;
                         break;
                     }
                 }
             }
             for (int x = 0; x < g->xs; x++) {
                 Cell *c = g->C(x, y).get();
-                c->text.filtered = rowmatches ? false : c->text.filteredraw;
+                c->text.filtered = showrow ? false : c->text.filteredraw;
             }
         }
         for (int y = 0; y < g->ys; y++) {
             for (int x = 0; x < g->xs; x++) {
-                if (Cell *c = g->C(x, y).get(); c->grid) { RecomputeFilteredDisplay(c->grid.get()); }
+                if (Cell *c = g->C(x, y).get(); c->grid) {
+                    RecomputeFilteredDisplay(c->grid.get(),
+                                             sys->filtershowsubgrids && !c->text.filtered);
+                }
             }
         }
     }

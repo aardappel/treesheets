@@ -570,6 +570,11 @@ struct TSFrame : wxFrame {
             _("When a cell in a row matches the current filter, show the whole row "
               "normally instead of only the matching cell"));
         filtermenu->Check(A_FILTERSHOWROWS, sys->filtershowrows);
+        filtermenu->AppendCheckItem(
+            A_FILTERSHOWSUBGRIDS, _("Show sub-grids on match"),
+            _("When a cell matches the current filter, show everything in the grid inside it "
+              "normally instead of filtering it too"));
+        filtermenu->Check(A_FILTERSHOWSUBGRIDS, sys->filtershowsubgrids);
 
         auto *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _("Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
