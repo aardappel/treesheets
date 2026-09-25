@@ -39,6 +39,7 @@ struct Cell {
     bool tiny {false};
     bool verticaltextandgrid {true};
     wxUint8 drawstyle {DS_GRID};
+    wxUint8 textalign {TA_AUTO};
     wxString note;
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
@@ -211,7 +212,23 @@ struct Cell {
         textcolor = o->textcolor;
         verticaltextandgrid = o->verticaltextandgrid;
         drawstyle = o->drawstyle;
+        textalign = o->textalign;
         text.stylebits = o->text.stylebits;
+    }
+
+    // The alignment the text is drawn with: never TA_AUTO.
+    int TextAlign() const {
+        if (textalign != TA_AUTO) { return textalign; }
+        return text.IsRightToLeft() ? TA_RIGHT : TA_LEFT;
+    }
+
+    // The width the lines of text are aligned in, from the left edge of the text (after the
+    // image). Text above its grid lines up with the whole cell. Text beside its grid, or drawn
+    // as a blob, only has its own width, so there alignment only lines up the lines with
+    // each other.
+    int TextAlignWidth(int ixs) const {
+        auto w = verticaltextandgrid && drawstyle == DS_GRID ? sx - g_margin_extra * 2 : txs;
+        return w - ixs - 4;
     }
 
     unique_ptr<Cell> Clone(Cell *_parent) const {
@@ -291,6 +308,11 @@ struct Cell {
                 str.Prepend(wxString() << celltype);
                 str.Prepend(" type=\"");
             }
+            if (textalign != TA_AUTO) {
+                str.Prepend("\"");
+                str.Prepend(wxString() << static_cast<int>(textalign));
+                str.Prepend(" align=\"");
+            }
             str.Prepend("<cell");
             str.Append(' ', indent);
             str.Append("</cell>\n");
@@ -313,6 +335,13 @@ struct Cell {
                 style += (text.stylebits & STYLE_FIXED) != 0
                              ? sys->defaultfixedfont + "', monospace;"
                              : sys->defaultfont + "', sans-serif;";
+            }
+            // Nested tables inherit text-align, so give it wherever it differs from the parent.
+            auto align = TextAlign();
+            auto parentalign = parent != nullptr && parent != root ? parent->TextAlign() : TA_LEFT;
+            if (align != parentalign) {
+                static const char *const aligns[] = {"", "left", "center", "right"};
+                style += wxString("text-align: ") + aligns[align] + ";";
             }
             auto exportcellcolor = IsTag(doc) ? doc->tags[text.t].first : cellcolor;
             auto parentcellcolor =
@@ -389,6 +418,7 @@ struct Cell {
         dos.Write32(textcolor);
         dos.Write8(drawstyle);
         dos.WriteString(note);
+        dos.Write8(textalign);
         uint cellflags = this == ocs ? TS_SELECTION_MASK : 0;
         if (HasTextState()) {
             cellflags |= grid ? TS_BOTH : TS_TEXT;
@@ -436,6 +466,10 @@ struct Cell {
         }
         if (sys->versionlastloaded >= 15) { c->drawstyle = dis.Read8(); }
         if (sys->versionlastloaded >= 25) { c->note = dis.ReadString(); }
+        if (sys->versionlastloaded >= 28) {
+            c->textalign = dis.Read8();
+            if (c->textalign > TA_RIGHT) { c->textalign = TA_AUTO; }
+        }
         int ts = dis.Read8();
         if ((ts & TS_SELECTION_MASK) != 0) {
             ics = c.get();

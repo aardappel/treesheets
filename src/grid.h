@@ -843,6 +843,21 @@ struct Grid {
         doc->canvas->Refresh();
     }
 
+    bool AllHaveTextAlign(const Selection &sel, int align) {
+        foreachcellinsel(c, sel) {
+            if (c->textalign != align) { return false; }
+        }
+        return true;
+    }
+
+    void SetTextAlign(Document *doc, const Selection &sel, int align) {
+        cell->AddUndo(doc);
+        cell->ResetChildren();
+        foreachcellinsel(c, sel) c->textalign = align;
+        doc->UpdateLayout();
+        doc->canvas->Refresh();
+    }
+
     void ColorChange(Document *doc, int which, uint color, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
@@ -1302,6 +1317,7 @@ struct Grid {
             c->cellcolor = o->cellcolor;
             c->textcolor = o->textcolor;
             c->text.stylebits = o->text.stylebits;
+            c->textalign = o->textalign;
             c->text.image = o->text.image;
             c->note = o->note;
         }

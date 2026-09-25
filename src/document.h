@@ -13,7 +13,7 @@ struct UndoItem {
 // wrapped lines -- see Text::DrawCursor. That lookup is redrawn on every repaint while
 // a cell is being edited, not just on edits, and its expensive part (scanning wrapped
 // lines and measuring them with GetTextExtent) is a pure function of the text, cursor
-// index, font and column width. The cell's actual screen position and row height are
+// index, font, column width and alignment. The cell's actual screen position and row height are
 // deliberately *not* cached here (they can shift for reasons unrelated to this cell)
 // and are recomputed fresh on every use instead.
 struct CursorPosCache {
@@ -25,6 +25,8 @@ struct CursorPosCache {
     int stylebits {-1};
     int relsize {INT_MIN};
     int maxcolwidth {-1};
+    int align {-1};
+    int alignwidth {-1};  // Cell::TextAlignWidth(), which aligned text depends on
     bool found {false};
     int localdx {0};  // horizontal offset from the cell's own origin
     int line {0};      // which wrapped line the cursor is on
@@ -1964,6 +1966,13 @@ struct Document {
                 selected.grid->SetStyle(this, selected, STYLE_STRIKETHRU);
                 return wxEmptyString;
 
+            case A_ALIGNAUTO:
+            case A_ALIGNLEFT:
+            case A_ALIGNCENTER:
+            case A_ALIGNRIGHT:
+                selected.grid->SetTextAlign(this, selected, action - A_ALIGNAUTO + TA_AUTO);
+                return wxEmptyString;
+
             case A_MARKDATA:
             case A_MARKVARD:
             case A_MARKVARU:
@@ -2197,7 +2206,10 @@ struct Document {
                         }
                         selected.grid->cell->ResetLayout();
                         break;
-                    case A_RESETSTYLE: c->text.ResetStyle(); break;
+                    case A_RESETSTYLE:
+                        c->text.ResetStyle();
+                        c->textalign = TA_AUTO;
+                        break;
                     case A_RESETCOLOR:
                         if (c->IsTag(this)) {
                             tags[c->text.t] = {g_cellcolor_default, g_tagtextcolor_default};
@@ -2936,6 +2948,11 @@ struct Document {
             return c != nullptr && c->text.HasStyle(bit, selected.cursor, selected.cursorend);
         }
         return selected.grid->AllHaveStyle(selected, bit);
+    }
+
+    bool SelectionHasTextAlign(int align) {
+        if (selected.grid == nullptr || selected.Thin()) { return false; }
+        return selected.grid->AllHaveTextAlign(selected, align);
     }
 
     bool AnyImagesInSelection() {

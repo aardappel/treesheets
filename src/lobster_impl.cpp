@@ -200,6 +200,24 @@ BUILTIN(get_style_bits, "", "", "I", "returns the stylebits of the current cell"
     return (iint)si->GetStyle();
 }
 
+BUILTIN(set_text_alignment, "alignment", "I", "",
+    "sets the text alignment of the current cell (automatic = 0, left = 1, center = 2,"
+    " right = 3). Automatic aligns right-to-left text (such as Arabic or Hebrew) right,"
+    " and all other text left")
+(VM &vm, iint a) {
+    if (a < 0 || a > 3) {
+        vm.BuiltinError(
+            cat("ts.set_text_alignment: alignment ", a, " is invalid, it must be 0..3"));
+    }
+    si->SetTextAlignment((int)a);
+}
+
+BUILTIN(get_text_alignment, "", "", "I",
+    "returns the text alignment of the current cell (see set_text_alignment)")
+(VM &) {
+    return (iint)si->GetTextAlignment();
+}
+
 BUILTIN(set_status_message, "message", "S", "", "sets the status message in TreeSheets")
 (VM &, LString *s) {
     si->SetStatusMessage(s->strv());

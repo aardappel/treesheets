@@ -402,6 +402,56 @@ struct Text {
         if (tiny == 0) { sx += 4; }
     }
 
+    // The direction of a character for picking the alignment of automatically aligned text:
+    // 1 for right-to-left letters, -1 for other letters, 0 for characters without a direction
+    // of their own (digits, punctuation, spaces, symbols, marks).
+    static int StrongDirection(uint c) {
+        if (c < 0x80) { return (c | 0x20) >= 'a' && (c | 0x20) <= 'z' ? -1 : 0; }
+        if ((c >= 0x0660 && c <= 0x066C) || (c >= 0x06F0 && c <= 0x06F9)) {
+            return 0;  // Arabic digits and separators
+        }
+        if ((c >= 0x0590 && c <= 0x08FF) || (c >= 0xFB1D && c <= 0xFDFF) ||
+            (c >= 0xFE70 && c <= 0xFEFF) || (c >= 0x10800 && c <= 0x10FFF) ||
+            (c >= 0x1E800 && c <= 0x1EFFF)) {
+            return 1;  // Hebrew, Arabic, Syriac, Thaana, N'Ko and the like
+        }
+        if (c < 0xC0 || c == 0xD7 || c == 0xF7 || (c >= 0x0300 && c <= 0x036F) ||
+            (c >= 0x2000 && c <= 0x2BFF) || (c >= 0x3000 && c <= 0x303F) ||
+            (c >= 0xD800 && c <= 0xF8FF) || (c >= 0xFE00 && c <= 0xFE0F) ||
+            (c >= 0xFF00 && c <= 0xFF20) || c >= 0x1F000) {
+            return 0;
+        }
+        return -1;
+    }
+
+    // Whether the first character with a direction is a right-to-left one, like HTML's
+    // dir="auto".
+    bool IsRightToLeft() const {
+        auto len = static_cast<int>(t.Len());
+        for (auto i = 0; i < len; i++) {
+            auto c = static_cast<uint>(t[i].GetValue());
+            // Where wxString is UTF-16, combine surrogate pairs.
+            if (c >= 0xD800 && c <= 0xDBFF && i + 1 < len) {
+                auto lo = static_cast<uint>(t[i + 1].GetValue());
+                if (lo >= 0xDC00 && lo <= 0xDFFF) {
+                    c = 0x10000 + ((c - 0xD800) << 10) + (lo - 0xDC00);
+                    i++;
+                }
+            }
+            if (auto d = StrongDirection(c); d != 0) { return d > 0; }
+        }
+        return false;
+    }
+
+    // How far a line of width `w` is moved right from the left edge of the text, by the
+    // alignment (see Cell::TextAlign).
+    int AlignOffset(int align, int w, int ixs) const {
+        if (align == TA_LEFT || cell->tiny) { return 0; }
+        auto room = cell->TextAlignWidth(ixs) - w;
+        if (room <= 0) { return 0; }
+        return align == TA_CENTER ? room / 2 : room;
+    }
+
     bool IsInSearch() const {
         return !sys->searchstring.IsEmpty() &&
                (sys->casesensitivesearch ? t.Find(sys->searchstring)
@@ -435,6 +485,7 @@ struct Text {
         auto lines = 0;
         auto searchfound = IsInSearch();
         auto istag = cell->IsTag(doc);
+        auto align = cell->tiny ? TA_LEFT : cell->TextAlign();
         if (cell->tiny) {
             if (searchfound) {
                 dc.SetPen(*wxRED_PEN);
@@ -474,6 +525,10 @@ struct Text {
                 }
             } else if (rich) {
                 auto x = bx + 2 + ixs + g_margin_extra;
+                if (align != TA_LEFT) {
+                    auto w = RangeWidth(doc, dc, depth, start, static_cast<int>(curl.Len()));
+                    x += AlignOffset(align, w, ixs);
+                }
                 auto ty = by + lines * h + g_margin_extra;
                 ForEachSegment(start, static_cast<int>(curl.Len()),
                                [&](int s, int l, int sb, bool hascolor, uint color) {
@@ -510,6 +565,11 @@ struct Text {
                     dc.SetTextForeground(LightColor(cell->textcolor));  // FIXME: clean up
                 }
                 auto tx = bx + 2 + ixs;
+                if (align != TA_LEFT) {
+                    auto w = 0;
+                    dc.GetTextExtent(curl, &w, nullptr);
+                    tx += AlignOffset(align, w, ixs);
+                }
                 auto ty = by + lines * h;
                 DrawText(dc, curl, tx + g_margin_extra, ty + g_margin_extra);
                 if (searchfound || filtered || istag || cell->textcolor != 0U) {
@@ -544,6 +604,11 @@ struct Text {
             ls = GetLine(i, maxcolwidth);
         }
 
+        if (auto align = cell->TextAlign(); align != TA_LEFT) {
+            auto w = RangeWidth(doc, dc, depth, linestart, static_cast<int>(ls.Len()));
+            bx -= AlignOffset(align, w, ixs);
+        }
+
         for (;;) {
             auto x = 0;
             if (runs.empty()) {
@@ -570,6 +635,11 @@ struct Text {
         auto depth = cell->Depth() - static_cast<int>(doc->drawpath.size());
         doc->PickFont(dc, depth, relsize, stylebits);
         auto h = runs.empty() ? doc->CharHeight(dc) : GetLineMetrics(doc, dc, depth).height;
+        auto align = cell->TextAlign();
+        auto lineoffset = [&](int start, int len) {
+            if (align == TA_LEFT) { return 0; }
+            return AlignOffset(align, RangeWidth(doc, dc, depth, start, len), ixs);
+        };
 
         if (s.cursor != s.cursorend) {
             // A range selection can span multiple lines (one rectangle drawn per line
@@ -585,7 +655,8 @@ struct Text {
                     auto x2 = RangeWidth(doc, dc, depth, start, min(s.cursorend, end) - start);
                     auto x1 = RangeWidth(doc, dc, depth, start, max(s.cursor, start) - start);
                     if (x1 != x2) {
-                        int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra;
+                        int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra +
+                                     lineoffset(start, len);
                         int starty =
                             cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
                         DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
@@ -601,7 +672,7 @@ struct Text {
         // edited, including repaints the edit itself didn't cause, e.g. a resize or an
         // edit elsewhere). Which wrapped line it's on and its horizontal offset from
         // the cell's own origin are a deterministic function of the text, cursor
-        // index, font and column width alone, so cache those and skip the line scan
+        // index, font, column width and alignment alone, so cache those and skip the line scan
         // and GetTextExtent measurement -- the dominant cost here -- when none of them
         // changed since the last time we drew it. The cell's actual screen position
         // and row height are recomputed fresh below regardless (cheap, and can shift
@@ -609,6 +680,7 @@ struct Text {
         auto &cc = doc->cursorposcache;
         if (cc.cell != cell || cc.image != image || cc.cursor != s.cursor ||
             cc.stylebits != stylebits || cc.relsize != relsize || cc.maxcolwidth != maxcolwidth ||
+            cc.align != align || (align != TA_LEFT && cc.alignwidth != cell->TextAlignWidth(ixs)) ||
             cc.text != t || cc.runs != runs.v) {
             cc.cell = cell;
             cc.image = image;
@@ -618,6 +690,8 @@ struct Text {
             cc.stylebits = stylebits;
             cc.relsize = relsize;
             cc.maxcolwidth = maxcolwidth;
+            cc.align = align;
+            cc.alignwidth = cell->TextAlignWidth(ixs);
             cc.found = false;
             auto i = 0;
             for (auto l = 0;; l++) {
@@ -627,7 +701,7 @@ struct Text {
                 auto end = start + len;
                 if (s.cursor >= start && s.cursor <= end) {
                     auto x = RangeWidth(doc, dc, depth, start, s.cursor - start);
-                    cc.localdx = x + 1 + ixs + g_margin_extra;
+                    cc.localdx = x + 1 + ixs + g_margin_extra + lineoffset(start, len);
                     cc.line = l;
                     cc.found = true;
                     break;
