@@ -521,13 +521,13 @@ struct Document {
         if (isctrlshiftdrag == 0 || isctrlshiftdrag == 3 || begindrag.EqLoc(selected)) { return; }
         auto *cell = selected.GetCell();
         if (cell == nullptr) { return; }
-        bool pushcolumns = begindrag.Thin() && begindrag.xs == 0;
+        int pastemode = begindrag.PasteMode();
         auto *targetcell = begindrag.ThinExpand(this);
         selected = begindrag;
         if (targetcell != nullptr) {
             auto is_parent = targetcell->IsParentOf(cell);
             auto *targetcell_parent = targetcell->parent;  // targetcell may be deleted.
-            targetcell->Paste(this, cell, begindrag, pushcolumns);
+            targetcell->Paste(this, cell, begindrag, pastemode);
             // If is_parent, cell has been deleted already.
             if (isctrlshiftdrag == 1 && !is_parent) {
                 cell->parent->AddUndo(this);
@@ -554,12 +554,12 @@ struct Document {
     }
 
     void Drop() {
-        bool pushcolumns = selected.Thin() && selected.xs == 0;
+        int pastemode = selected.PasteMode();
         switch (dndobjc->GetReceivedFormat().GetType()) {
             case wxDF_BITMAP: PasteOrDrop(*dndobji); break;
             case wxDF_FILENAME: PasteOrDrop(*dndobjf); break;
             case wxDF_TEXT:
-            case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt, pushcolumns);
+            case wxDF_UNICODETEXT: PasteOrDrop(*dndobjt, pastemode);
             default:;
         }
     }
@@ -2114,14 +2114,13 @@ struct Document {
             }
 
             case wxID_PASTE: {
-                // A thin selection on the left/right makes room by columns, else by rows.
-                bool pushcolumns = selected.Thin() && selected.xs == 0;
+                int pastemode = selected.PasteMode();
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
                 if (wxTheClipboard->Open()) {
                     if (wxTextDataObject tdo;
                         wxTheClipboard->GetData(tdo) && tdo.GetText().Len() > 0) {
-                        PasteOrDrop(tdo, pushcolumns);
+                        PasteOrDrop(tdo, pastemode);
                     } else if (wxFileDataObject fdo;
                                wxTheClipboard->GetData(fdo) && fdo.GetFilenames().GetCount() > 0) {
                         PasteOrDrop(fdo);
@@ -2138,7 +2137,7 @@ struct Document {
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
                 } else if (sys->cellclipboard) {
-                    cell->Paste(this, sys->cellclipboard.get(), selected, pushcolumns);
+                    cell->Paste(this, sys->cellclipboard.get(), selected, pastemode);
                     UpdateLayout();
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
@@ -2784,12 +2783,12 @@ struct Document {
         }
     }
 
-    void PasteOrDrop(const wxTextDataObject &textdataobject, bool pushcolumns = false) {
+    void PasteOrDrop(const wxTextDataObject &textdataobject, int pastemode = PASTE_FIT) {
         if (textdataobject.GetText() != wxEmptyString) {
             Cell *cell = selected.ThinExpand(this);
             auto text = textdataobject.GetText();
             if ((sys->clipboardcopy == text) && sys->cellclipboard) {
-                cell->Paste(this, sys->cellclipboard.get(), selected, pushcolumns);
+                cell->Paste(this, sys->cellclipboard.get(), selected, pastemode);
             } else {
                 const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
                 if (lines.size() == 1) {
@@ -2803,7 +2802,7 @@ struct Document {
                     sys->FillRows(cell->AddGrid(), lines, treesheets::System::CountCol(lines[0]), 0,
                                   0);
                     if (!cell->HasText()) {
-                        cell->grid->MergeWithParent(cell->parent->grid, selected, this, pushcolumns);
+                        cell->grid->MergeWithParent(cell->parent->grid, selected, this, pastemode);
                     }
                 }
             }

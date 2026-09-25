@@ -33,6 +33,11 @@ struct Selection {
         return EqLoc(s) && cursor == s.cursor && cursorend == s.cursorend;
     }
     bool Thin() const { return (xs * ys) == 0; }
+    // A paste at a thin selection between rows or columns inserts the pasted grid there, anything
+    // else fits it into the cells it lands on.
+    int PasteMode() const {
+        return !Thin() ? PASTE_FIT : xs != 0 ? PASTE_INSERTROWS : PASTE_INSERTCOLUMNS;
+    }
     bool IsAll() const { return xs == grid->xs && ys == grid->ys; }
     void SetCursorEdit(Document *doc, bool edit) {
         wxCursor c(edit ? wxCURSOR_IBEAM : wxCURSOR_ARROW);
