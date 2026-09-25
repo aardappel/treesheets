@@ -39,7 +39,7 @@ struct Cell {
     bool tiny {false};
     bool verticaltextandgrid {true};
     wxUint8 drawstyle {DS_GRID};
-    wxUint8 textalign {TA_AUTO};
+    wxUint8 textalign {TEXTALIGN_AUTO};
     wxString note;
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
@@ -216,10 +216,10 @@ struct Cell {
         text.stylebits = o->text.stylebits;
     }
 
-    // The alignment the text is drawn with: never TA_AUTO.
+    // The alignment the text is drawn with: never TEXTALIGN_AUTO.
     int TextAlign() const {
-        if (textalign != TA_AUTO) { return textalign; }
-        return text.IsRightToLeft() ? TA_RIGHT : TA_LEFT;
+        if (textalign != TEXTALIGN_AUTO) { return textalign; }
+        return text.IsRightToLeft() ? TEXTALIGN_RIGHT : TEXTALIGN_LEFT;
     }
 
     // The width the lines of text are aligned in, from the left edge of the text (after the
@@ -308,7 +308,7 @@ struct Cell {
                 str.Prepend(wxString() << celltype);
                 str.Prepend(" type=\"");
             }
-            if (textalign != TA_AUTO) {
+            if (textalign != TEXTALIGN_AUTO) {
                 str.Prepend("\"");
                 str.Prepend(wxString() << static_cast<int>(textalign));
                 str.Prepend(" align=\"");
@@ -338,7 +338,8 @@ struct Cell {
             }
             // Nested tables inherit text-align, so give it wherever it differs from the parent.
             auto align = TextAlign();
-            auto parentalign = parent != nullptr && parent != root ? parent->TextAlign() : TA_LEFT;
+            auto parentalign =
+                parent != nullptr && parent != root ? parent->TextAlign() : TEXTALIGN_LEFT;
             if (align != parentalign) {
                 static const char *const aligns[] = {"", "left", "center", "right"};
                 style += wxString("text-align: ") + aligns[align] + ";";
@@ -468,7 +469,7 @@ struct Cell {
         if (sys->versionlastloaded >= 25) { c->note = dis.ReadString(); }
         if (sys->versionlastloaded >= 28) {
             c->textalign = dis.Read8();
-            if (c->textalign > TA_RIGHT) { c->textalign = TA_AUTO; }
+            if (c->textalign > TEXTALIGN_RIGHT) { c->textalign = TEXTALIGN_AUTO; }
         }
         int ts = dis.Read8();
         if ((ts & TS_SELECTION_MASK) != 0) {

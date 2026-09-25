@@ -298,7 +298,7 @@ enum {
 
 // Horizontal alignment of a cell's text. Automatic aligns right-to-left text (e.g. Arabic or
 // Hebrew) right and everything else left, by the direction of the first strong character.
-enum { TA_AUTO = 0, TA_LEFT, TA_CENTER, TA_RIGHT };
+enum { TEXTALIGN_AUTO = 0, TEXTALIGN_LEFT, TEXTALIGN_CENTER, TEXTALIGN_RIGHT };
 
 // Flag in the saved color of a text run: it has its own color instead of the cell's text color.
 static const uint TS_RUN_HASCOLOR = 0x1000000;

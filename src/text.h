@@ -446,10 +446,10 @@ struct Text {
     // How far a line of width `w` is moved right from the left edge of the text, by the
     // alignment (see Cell::TextAlign).
     int AlignOffset(int align, int w, int ixs) const {
-        if (align == TA_LEFT || cell->tiny) { return 0; }
+        if (align == TEXTALIGN_LEFT || cell->tiny) { return 0; }
         auto room = cell->TextAlignWidth(ixs) - w;
         if (room <= 0) { return 0; }
-        return align == TA_CENTER ? room / 2 : room;
+        return align == TEXTALIGN_CENTER ? room / 2 : room;
     }
 
     bool IsInSearch() const {
@@ -485,7 +485,7 @@ struct Text {
         auto lines = 0;
         auto searchfound = IsInSearch();
         auto istag = cell->IsTag(doc);
-        auto align = cell->tiny ? TA_LEFT : cell->TextAlign();
+        auto align = cell->tiny ? TEXTALIGN_LEFT : cell->TextAlign();
         if (cell->tiny) {
             if (searchfound) {
                 dc.SetPen(*wxRED_PEN);
@@ -525,7 +525,7 @@ struct Text {
                 }
             } else if (rich) {
                 auto x = bx + 2 + ixs + g_margin_extra;
-                if (align != TA_LEFT) {
+                if (align != TEXTALIGN_LEFT) {
                     auto w = RangeWidth(doc, dc, depth, start, static_cast<int>(curl.Len()));
                     x += AlignOffset(align, w, ixs);
                 }
@@ -565,7 +565,7 @@ struct Text {
                     dc.SetTextForeground(LightColor(cell->textcolor));  // FIXME: clean up
                 }
                 auto tx = bx + 2 + ixs;
-                if (align != TA_LEFT) {
+                if (align != TEXTALIGN_LEFT) {
                     auto w = 0;
                     dc.GetTextExtent(curl, &w, nullptr);
                     tx += AlignOffset(align, w, ixs);
@@ -604,7 +604,7 @@ struct Text {
             ls = GetLine(i, maxcolwidth);
         }
 
-        if (auto align = cell->TextAlign(); align != TA_LEFT) {
+        if (auto align = cell->TextAlign(); align != TEXTALIGN_LEFT) {
             auto w = RangeWidth(doc, dc, depth, linestart, static_cast<int>(ls.Len()));
             bx -= AlignOffset(align, w, ixs);
         }
@@ -637,7 +637,7 @@ struct Text {
         auto h = runs.empty() ? doc->CharHeight(dc) : GetLineMetrics(doc, dc, depth).height;
         auto align = cell->TextAlign();
         auto lineoffset = [&](int start, int len) {
-            if (align == TA_LEFT) { return 0; }
+            if (align == TEXTALIGN_LEFT) { return 0; }
             return AlignOffset(align, RangeWidth(doc, dc, depth, start, len), ixs);
         };
 
@@ -680,7 +680,8 @@ struct Text {
         auto &cc = doc->cursorposcache;
         if (cc.cell != cell || cc.image != image || cc.cursor != s.cursor ||
             cc.stylebits != stylebits || cc.relsize != relsize || cc.maxcolwidth != maxcolwidth ||
-            cc.align != align || (align != TA_LEFT && cc.alignwidth != cell->TextAlignWidth(ixs)) ||
+            cc.align != align ||
+            (align != TEXTALIGN_LEFT && cc.alignwidth != cell->TextAlignWidth(ixs)) ||
             cc.text != t || cc.runs != runs.v) {
             cc.cell = cell;
             cc.image = image;

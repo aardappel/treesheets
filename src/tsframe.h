@@ -1212,7 +1212,7 @@ struct TSFrame : wxFrame {
     void OnUpdateTextAlign(wxUpdateUIEvent &ue) {
         auto *canvas = GetCurrentTab();
         ue.Check(canvas != nullptr &&
-                 canvas->doc->SelectionHasTextAlign(ue.GetId() - A_ALIGNAUTO + TA_AUTO));
+                 canvas->doc->SelectionHasTextAlign(ue.GetId() - A_ALIGNAUTO + TEXTALIGN_AUTO));
     }
 
     void OnMenu(wxCommandEvent &ce) {
