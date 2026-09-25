@@ -412,6 +412,26 @@ BUILTIN(get_subtree_text, "format", "I", "S",
     return vm.NewString(si->GetSubtreeText((int)format));
 }
 
+BUILTIN(set_cell_type, "type", "I", "",
+    "sets the evaluation type of the current cell (see get_cell_type), same as the Program "
+    "menu items. like there, a cell only becomes an operation (1) if its text is one, "
+    "otherwise it becomes data. any other type than 0..5 is a runtime error.")
+(VM &vm, iint type) {
+    if (type < 0 || type > 5) {
+        vm.BuiltinError(cat("ts.set_cell_type: type ", type, " is invalid, it must be 0..5"));
+    }
+    si->SetCellType((int)type);
+}
+
+BUILTIN(evaluate, "format", "I", "S",
+    "evaluates the current cell the way Program > Run evaluates the whole document (which is "
+    "what this does on the root cell): fills in the result views in its grid, and returns "
+    "the result in the given format (see get_subtree_text), or an empty string if there is "
+    "none. can be undone like any other edit.")
+(VM &vm, iint format) {
+    return vm.NewString(si->Evaluate((int)format));
+}
+
 BUILTIN(grid_count, "", "", "I",
     "returns the number of cells in the grid of the current cell whose text is a number. "
     "cells with other text and empty cells are skipped, as is anything inside sub-grids "

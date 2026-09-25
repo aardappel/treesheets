@@ -381,8 +381,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return true;
     }
 
-    std::string GetSubtreeText(int format) override {
-        if (!current->grid) return current->text.t.utf8_string();
+    std::string GetSubtreeText(int format) override { return CellText(current, format); }
+
+    std::string CellText(Cell *c, int format) {
+        if (!c->grid) return c->text.t.utf8_string();
         int exp_format;
         switch (format) {
             case 1: exp_format = A_EXPCSV; break;
@@ -391,8 +393,19 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         }
         // ToText() always exports its whole grid regardless of the selection passed in, hence
         // the empty Selection() here.
-        return current->grid->ToText(0, Selection(), exp_format, document, false, current)
-            .utf8_string();
+        return c->grid->ToText(0, Selection(), exp_format, document, false, c).utf8_string();
+    }
+
+    void SetCellType(int type) override {
+        AddUndoIfNecessary();
+        current->celltype = type == CT_CODE ? sys->evaluator.InferCellType(current->text) : type;
+    }
+
+    std::string Evaluate(int format) override {
+        AddUndoIfNecessary();
+        auto result = current->Eval(sys->evaluator);
+        sys->evaluator.ClearVars();
+        return result ? CellText(result.get(), format) : std::string();
     }
 
     std::vector<double> GridNumbers() override {
