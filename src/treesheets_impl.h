@@ -8,8 +8,6 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     // nested ScriptRun() would reset document/current underneath the outer script.
     bool running = false;
 
-    enum { max_new_grid_cells = 256 * 256 };  // Don't allow crazy sizes.
-
     void SwitchToCurrentDocument() {
         document = sys->frame->GetCurrentTab()->doc.get();
         current = document->root.get();
@@ -199,7 +197,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void CreateGrid(int x, int y) override {
-        if (x > 0 && y > 0 && x * y < max_new_grid_cells) {
+        if (x > 0 && y > 0 && static_cast<int64_t>(x) * y <= max_new_grid_cells) {
             AddUndoIfNecessary();
             current->AddGrid(x, y);
         }
