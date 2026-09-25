@@ -388,6 +388,18 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return current->grid->ToText(0, Selection(), exp_format, document, false, current)
             .utf8_string();
     }
+
+    std::vector<double> GridNumbers() override {
+        std::vector<double> numbers;
+        if (!current->grid) return numbers;
+        for (auto &c : current->grid->cells) {
+            double d;
+            if (wxString(c->text.t).Trim(true).Trim(false).ToCDouble(&d) && std::isfinite(d)) {
+                numbers.push_back(d);
+            }
+        }
+        return numbers;
+    }
 };
 
 static int64_t TreeSheetsLoader(string_view_nt absfilename, std::string *dest, int64_t start,

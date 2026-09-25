@@ -75,6 +75,9 @@ struct ScriptInterface {
     // Exports the subtree of the current cell to text in one call. format: 0 = plain indented
     // text, 1 = csv, 2 = xml.
     virtual std::string GetSubtreeText(int format) = 0;
+    // The values of the cells in the grid of the current cell whose whole text is a number,
+    // in grid order. Other cells, and cells of sub-grids, are skipped.
+    virtual std::vector<double> GridNumbers() = 0;
     virtual ~ScriptInterface() = default;
 };
 

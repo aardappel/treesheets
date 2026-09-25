@@ -1,5 +1,7 @@
 #include "lobster/stdafx.h"
 
+#include <numeric>
+
 #include "script_interface.h"
 
 #include "lobster/compiler.h"
@@ -409,6 +411,62 @@ BUILTIN(get_subtree_text, "format", "I", "S",
     "in a loop.")
 (VM &vm, iint format) {
     return vm.NewString(si->GetSubtreeText((int)format));
+}
+
+BUILTIN(grid_count, "", "", "I",
+    "returns the number of cells in the grid of the current cell whose text is a number. "
+    "cells with other text and empty cells are skipped, as is anything inside sub-grids "
+    "(only the direct children count). this is also what grid_sum, grid_min, grid_max, "
+    "grid_avg and grid_median aggregate.")
+(VM &) {
+    return (iint)si->GridNumbers().size();
+}
+
+BUILTIN(grid_sum, "", "", "F",
+    "returns the sum of the numbers in the grid of the current cell (see grid_count), "
+    "or 0 if there are none")
+(VM &) {
+    auto numbers = si->GridNumbers();
+    return std::accumulate(numbers.begin(), numbers.end(), 0.0);
+}
+
+BUILTIN(grid_min, "", "", "F",
+    "returns the smallest number in the grid of the current cell (see grid_count), "
+    "or 0 if there are none")
+(VM &) {
+    auto numbers = si->GridNumbers();
+    return numbers.empty() ? 0.0 : *std::min_element(numbers.begin(), numbers.end());
+}
+
+BUILTIN(grid_max, "", "", "F",
+    "returns the largest number in the grid of the current cell (see grid_count), "
+    "or 0 if there are none")
+(VM &) {
+    auto numbers = si->GridNumbers();
+    return numbers.empty() ? 0.0 : *std::max_element(numbers.begin(), numbers.end());
+}
+
+BUILTIN(grid_avg, "", "", "F",
+    "returns the average of the numbers in the grid of the current cell (see grid_count), "
+    "or 0 if there are none")
+(VM &) {
+    auto numbers = si->GridNumbers();
+    if (numbers.empty()) return 0.0;
+    return std::accumulate(numbers.begin(), numbers.end(), 0.0) / numbers.size();
+}
+
+BUILTIN(grid_median, "", "", "F",
+    "returns the median of the numbers in the grid of the current cell (see grid_count), "
+    "i.e. the middle one when sorted, or the average of the two middle ones if their count "
+    "is even. 0 if there are none.")
+(VM &) {
+    auto numbers = si->GridNumbers();
+    if (numbers.empty()) return 0.0;
+    auto n = numbers.size();
+    auto mid = numbers.begin() + n / 2;
+    std::nth_element(numbers.begin(), mid, numbers.end());
+    if (n % 2) return *mid;
+    return (*mid + *std::max_element(numbers.begin(), mid)) / 2;
 }
 
 #undef BUILTIN_GROUP
