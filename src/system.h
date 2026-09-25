@@ -58,6 +58,7 @@ struct System {
     bool innerbordercolor {false};
     bool restrictview {false};
     bool filtershowrows {false};
+    bool filtershowsubgrids {false};
     uint colormask {0};
     int notesizex {300};
     int notesizey {255};
@@ -113,6 +114,7 @@ struct System {
         cfg->Read("casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read("restrictview", &restrictview, restrictview);
         cfg->Read("filtershowrows", &filtershowrows, filtershowrows);
+        cfg->Read("filtershowsubgrids", &filtershowsubgrids, filtershowsubgrids);
         cfg->Read("defaultfontsize", &g_deftextsize_default, g_deftextsize_default);
         g_deftextsize = g_deftextsize_default;
         cfg->Read("customcolor", &customcolor, customcolor);
