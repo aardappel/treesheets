@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -912,6 +912,9 @@ msgstr "격자 스타일 렌더링을 사용한 가로 레이아웃"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "선 스타일 렌더링을 사용한 가로 레이아웃"
 
+msgid "Hover shadow"
+msgstr "호버 그림자"
+
 msgid "Hover zoom"
 msgstr "호버 확대/축소"
 
@@ -1499,6 +1502,9 @@ msgstr "문서 텍스트가 표시되는 글꼴 설정"
 
 msgid "Set the font the typewriter text is displayed with."
 msgstr "타자기 텍스트가 표시되는 글꼴을 설정합니다."
+
+msgid "Shade the cell the mouse pointer hovers over"
+msgstr "마우스 포인터가 있는 셀에 그림자 표시"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"

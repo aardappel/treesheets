@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -939,6 +939,9 @@ msgstr "Layout orizzontale con Rendering stile griglia"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Layout orizzontale con Rendering stile linea"
 
+msgid "Hover shadow"
+msgstr "Ombra al passaggio"
+
 msgid "Hover zoom"
 msgstr "Zoom al passaggio"
 
@@ -1555,6 +1558,9 @@ msgid "Set the font the typewriter text is displayed with."
 msgstr ""
 "Imposta il carattere con cui viene visualizzato il testo a macchina da "
 "scrivere."
+
+msgid "Shade the cell the mouse pointer hovers over"
+msgstr "Ombreggia la cella sotto il puntatore del mouse"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"

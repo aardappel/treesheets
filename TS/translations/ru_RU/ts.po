@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -1051,6 +1051,10 @@ msgid "Horizontal Layout with Line Style Rendering"
 msgstr ".. в стиле &Линий"
 
 # п. Меню (нет & в исходном тексте), отсутствует в Linux
+msgid "Hover shadow"
+msgstr "Затенение при наведении"
+
+# п. Меню (нет & в исходном тексте), отсутствует в Linux
 msgid "Hover zoom"
 msgstr "Увеличение при наведении"
 
@@ -1767,6 +1771,9 @@ msgstr "Установите шрифт, которым будет отобра�
 msgid "Set the font the typewriter text is displayed with."
 msgstr "Установите шрифт для стиля Машинопись (печатной машинки)."
 
+msgid "Shade the cell the mouse pointer hovers over"
+msgstr "Затенять ячейку под указателем мыши"
+
 #, no-c-format
 msgid "Show 1% less than the last filter"
 msgstr ".. на 1% Меньше"
@@ -2219,10 +2226,6 @@ msgstr "размер:"
 
 #~ msgid "Show statistics"
 #~ msgstr "Показать Статистику"
-
-# УТОЧНИТЬ к чему относится... похоже, только для Windows
-#~ msgid "Shadow the cell the pointer hovers over"
-#~ msgstr "Зтенить ячейку, на которую наведен указатель"
 
 #~ msgid "&Add Image"
 #~ msgstr "Доб&авить Изображение"
