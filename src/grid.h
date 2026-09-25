@@ -868,6 +868,13 @@ struct Grid {
         return true;
     }
 
+    bool AllHaveCellType(const Selection &sel, int celltype) {
+        foreachcellinsel(c, sel) {
+            if (c->celltype != celltype) { return false; }
+        }
+        return true;
+    }
+
     void SetTextAlign(Document *doc, const Selection &sel, int align) {
         cell->AddUndo(doc);
         cell->ResetChildren();
