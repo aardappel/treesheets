@@ -689,6 +689,9 @@ struct TSFrame : wxFrame {
         optmenu->Check(A_THINSELC, sys->thinselc);
         optmenu->AppendCheckItem(A_HOVERZOOM, _("Hover zoom"), _("Zoom on cells cursor hovers on"));
         optmenu->Check(A_HOVERZOOM, sys->hoverzoom);
+        optmenu->AppendCheckItem(A_HOVERSHADOW, _("Hover shadow"),
+                                 _("Shade the cell the mouse pointer hovers over"));
+        optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_MAKEBAKS, _("Backup files"),
                                  _("Create backup file before document is saved to file"));
@@ -1378,6 +1381,15 @@ struct TSFrame : wxFrame {
                     loop(i, notebook->GetPageCount()) {
                         auto *tab = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
                         if (!tab->doc->selected.TextEdit()) tab->SetCursor(wxNullCursor);
+                    }
+                }
+                break;
+            case A_HOVERSHADOW:
+                Toggle("hovershadow", sys->hovershadow);
+                if (!sys->hovershadow) {
+                    loop(i, notebook->GetPageCount()) {
+                        auto *tab = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
+                        tab->doc->SetHoverShade(wxRect());
                     }
                 }
                 break;
