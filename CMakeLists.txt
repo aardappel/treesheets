@@ -5,6 +5,10 @@ cmake_minimum_required(VERSION 3.25)
 if(POLICY CMP0156)
     cmake_policy(SET CMP0156 NEW)
 endif()
+# Normalize install() destinations, e.g. ./scripts/modules when the data dir is the install root.
+if(POLICY CMP0177)
+    cmake_policy(SET CMP0177 NEW)
+endif()
 
 ### Project
 
