@@ -23,6 +23,7 @@ option(ENABLE_WXPDFDOC "Enable direct PDF Export" OFF)
 option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
 option(ENABLE_CLANG_TIDY "Run clang-tidy linter" OFF)
 option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
+option(TREESHEETS_BUNDLE_WXWIDGETS "Always build wxWidgets from source as static libraries linked into TreeSheets, without installing them" OFF)
 if(LINUX OR BSD)
     option(TREESHEETS_RELOCATABLE_INSTALLATION "Install data relative to the TreeSheets binary, instead of respecting the Filesystem Hierarchy Standard" OFF)
 endif()
@@ -67,6 +68,11 @@ endif()
 foreach(option WEBVIEW STC RIBBON PROPGRID RICHTEXT MEDIACTRL)
     set(wxUSE_${option} FALSE)
 endforeach()
+# Bundle wxWidgets statically into the executable, so none of its libraries or headers are installed
+if(TREESHEETS_BUNDLE_WXWIDGETS)
+    set(wxBUILD_SHARED OFF CACHE BOOL "" FORCE)
+    set(wxBUILD_INSTALL OFF CACHE BOOL "" FORCE)
+endif()
 # wxWidgets only declares wxBUILD_SHARED when it's configured below, so declare it here with its
 # default (shared, unless BUILD_SHARED_LIBS says otherwise) to see the value it will use.
 if(DEFINED BUILD_SHARED_LIBS)
@@ -81,11 +87,15 @@ endif()
 
 include(FetchContent)
 
+# Use an installed wxWidgets if there is one, unless it's to be bundled
+if(NOT TREESHEETS_BUNDLE_WXWIDGETS)
+    set(wxwidgets_find_package_args FIND_PACKAGE_ARGS 3.3.2 NAMES wxWidgets)
+endif()
 FetchContent_Declare(
     wxwidgets
     URL https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.tar.bz2
     URL_HASH SHA256=50a28cb668de47b0e006cd6ebed8cf4f76c1cac6116fb3c978c44478219103f2
-    FIND_PACKAGE_ARGS 3.3.2 NAMES wxWidgets
+    ${wxwidgets_find_package_args}
 )
 FetchContent_MakeAvailable(wxwidgets)
 
