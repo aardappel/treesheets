@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "textruns.h"
 
-static const auto TS_VERSION = 27;
+static const auto TS_VERSION = 28;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
 static const auto g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -275,6 +275,10 @@ enum {
     #endif
     A_SET_FIXED_FONT,
     A_EDITNOTE,
+    A_ALIGNAUTO,
+    A_ALIGNLEFT,
+    A_ALIGNCENTER,
+    A_ALIGNRIGHT,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     #ifdef ENABLE_LOBSTER
@@ -290,6 +294,10 @@ enum {
     STYLE_UNDERLINE = 8,
     STYLE_STRIKETHRU = 16
 };
+
+// Horizontal alignment of a cell's text. Automatic aligns right-to-left text (e.g. Arabic or
+// Hebrew) right and everything else left, by the direction of the first strong character.
+enum { TA_AUTO = 0, TA_LEFT, TA_CENTER, TA_RIGHT };
 
 // Flag in the saved color of a text run: it has its own color instead of the cell's text color.
 static const uint TS_RUN_HASCOLOR = 0x1000000;

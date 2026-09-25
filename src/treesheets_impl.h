@@ -277,6 +277,13 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     int GetStyle() override { return current->text.stylebits; }
 
+    void SetTextAlignment(int align) override {
+        AddUndoIfNecessary();
+        current->textalign = align;
+    }
+
+    int GetTextAlignment() override { return current->textalign; }
+
     void RemoveImage() override {
         AddUndoIfNecessary();
         current->text.image = nullptr;

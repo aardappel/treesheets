@@ -340,7 +340,20 @@ struct TSFrame : wxFrame {
             MyAppend(stmenu, wxID_STRIKETHROUGH, _("Toggle cell &strikethrough") + "\tCTRL+T",
                      "", wxITEM_CHECK);
             stmenu->AppendSeparator();
-            MyAppend(stmenu, A_RESETSTYLE, _("&Reset text styles") + "\tCTRL+SHIFT+R");
+            auto *alignmenu = new wxMenu();
+            MyAppend(alignmenu, A_ALIGNAUTO, _("Align &automatically") + "\tCTRL+SHIFT+D",
+                     _("Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+                       "text left"),
+                     wxITEM_CHECK);
+            MyAppend(alignmenu, A_ALIGNLEFT, _("Align &left") + "\tCTRL+SHIFT+L",
+                     _("Align the text of the cell left"), wxITEM_CHECK);
+            MyAppend(alignmenu, A_ALIGNCENTER, _("Align &center") + "\tCTRL+SHIFT+E",
+                     _("Center the text of the cell"), wxITEM_CHECK);
+            MyAppend(alignmenu, A_ALIGNRIGHT, _("Align &right") + "\tCTRL+SHIFT+R",
+                     _("Align the text of the cell right"), wxITEM_CHECK);
+            stmenu->AppendSubMenu(alignmenu, _("Text &alignment"));
+            stmenu->AppendSeparator();
+            MyAppend(stmenu, A_RESETSTYLE, _("&Reset text styles") + "\tCTRL+SHIFT+K");
             MyAppend(stmenu, A_RESETCOLOR, _("Reset &colors") + "\tCTRL+SHIFT+C");
             stmenu->AppendSeparator();
             MyAppend(stmenu, A_LASTCELLCOLOR, _("Apply last cell color") + "\tSHIFT+ALT+C");
@@ -827,7 +840,34 @@ struct TSFrame : wxFrame {
         aui.AddPane(
             notebook,
             wxAuiPaneInfo().Name("notebook").Caption("Notebook").CenterPane().PaneBorder(false));
-        aui.LoadPerspective(sys->cfg->Read("perspective", ""));
+        auto perspective = sys->cfg->Read("perspective", "");
+        aui.LoadPerspective(perspective);
+        // LoadPerspective() hides every pane the saved layout doesn't mention, so toolbars
+        // added in a later version would never show up. Show those, right after the toolbar
+        // created before them.
+        if (!perspective.IsEmpty()) {
+            wxAuiPaneInfo *prev = nullptr;
+            for (const auto &name : GetToolbarPaneNames()) {
+                auto &pane = aui.GetPane(name);
+                if (!perspective.Contains("name=" + name + ";")) {
+                    pane.Show();
+                    if (prev != nullptr) {
+                        auto &panes = aui.GetAllPanes();
+                        for (size_t i = 0; i < panes.GetCount(); i++) {
+                            auto &p = panes.Item(i);
+                            if (p.IsToolbar() && p.dock_direction == prev->dock_direction &&
+                                p.dock_row == prev->dock_row && p.dock_pos > prev->dock_pos) {
+                                p.dock_pos++;
+                            }
+                        }
+                        pane.Direction(prev->dock_direction)
+                            .Row(prev->dock_row)
+                            .Position(prev->dock_pos + 1);
+                    }
+                }
+                prev = &pane;
+            }
+        }
         aui.Update();
 
         Show(!IsIconized());
@@ -856,6 +896,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, A_TT);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_UNDERLINE);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_STRIKETHROUGH);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateTextAlign, this, A_ALIGNAUTO, A_ALIGNRIGHT);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
         Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
@@ -1037,6 +1078,18 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(styletb, _("Italic (CTRL+i)"), wxID_ITALIC, "italic", wxITEM_CHECK);
         FinishToolbar(styletb, "styletb", "Text style operations");
 
+        // The pressed state of these follows the selected cells, see OnUpdateTextAlign.
+        auto *aligntb = NewToolbar();
+        AddToolbarIcon(aligntb, _("Align automatically (CTRL+SHIFT+d)"), A_ALIGNAUTO, "alignauto",
+                       wxITEM_CHECK);
+        AddToolbarIcon(aligntb, _("Align left (CTRL+SHIFT+l)"), A_ALIGNLEFT, "alignleft",
+                       wxITEM_CHECK);
+        AddToolbarIcon(aligntb, _("Center (CTRL+SHIFT+e)"), A_ALIGNCENTER, "aligncenter",
+                       wxITEM_CHECK);
+        AddToolbarIcon(aligntb, _("Align right (CTRL+SHIFT+r)"), A_ALIGNRIGHT, "alignright",
+                       wxITEM_CHECK);
+        FinishToolbar(aligntb, "aligntb", "Text alignment operations");
+
         auto *artprovider = aui.GetArtProvider();
         artprovider->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 0);
     }
@@ -1150,6 +1203,13 @@ struct TSFrame : wxFrame {
             case wxID_STRIKETHROUGH: bit = STYLE_STRIKETHRU; break;
         }
         ue.Check(canvas != nullptr && bit != 0 && canvas->doc->SelectionHasStyle(bit));
+    }
+
+    // Checks the alignment all selected cells have, if they have the same one.
+    void OnUpdateTextAlign(wxUpdateUIEvent &ue) {
+        auto *canvas = GetCurrentTab();
+        ue.Check(canvas != nullptr &&
+                 canvas->doc->SelectionHasTextAlign(ue.GetId() - A_ALIGNAUTO + TA_AUTO));
     }
 
     void OnMenu(wxCommandEvent &ce) {
