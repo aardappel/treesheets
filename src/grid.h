@@ -765,10 +765,12 @@ struct Grid {
         }
     }
 
-    // Pastes this grid into the parent at sel. Conflicting content is never overwritten: rows
-    // (or columns, if pushcolumns) of the parent that have content in the way are pushed away
-    // entirely, an entirely empty one is reused (the cell being replaced doesn't count). In the
-    // other direction the parent only grows past its edge, so there's no offset both ways.
+    // Pastes this grid into the parent at sel. Conflicting content is never overwritten: if all
+    // cells the grid lands on are empty (the cell being replaced doesn't count), it just goes
+    // there, growing the parent past its edges as needed. Otherwise rows (or columns, if
+    // pushcolumns) of the parent that have content in the way are pushed away entirely, an
+    // entirely empty one is reused. In the other direction the parent only grows past its edge,
+    // so there's no offset both ways.
     void MergeWithParent(const shared_ptr<Grid> &p, Selection &sel, Document *doc,
                          bool pushcolumns = false) {
         // The loop below overwrites the parent's slot for the cell owning this grid, which
@@ -783,7 +785,16 @@ struct Grid {
         };
         int nxs = sel.x + xs - p->xs;
         int nys = sel.y + ys - p->ys;
-        if (pushcolumns) {
+        bool targetempty = true;
+        for (int ty = sel.y; targetempty && ty < min(sel.y + ys, p->ys); ty++) {
+            for (int tx = sel.x; targetempty && tx < min(sel.x + xs, p->xs); tx++) {
+                targetempty = isempty(p->C(tx, ty).get());
+            }
+        }
+        if (targetempty) {
+            if (nxs > 0) { p->InsertCells(p->xs, -1, nxs, 0); }
+            if (nys > 0) { p->InsertCells(-1, p->ys, 0, nys); }
+        } else if (pushcolumns) {
             if (nys > 0) { p->InsertCells(-1, p->ys, 0, nys); }
             for (int i = 0; i < xs; i++) {
                 int tx = sel.x + i;
