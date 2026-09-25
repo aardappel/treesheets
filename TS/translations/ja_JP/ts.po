@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -273,6 +273,40 @@ msgstr "選択したセルに NxN グリッドを追加"
 msgid "Adds a grid to the selected cell"
 msgstr "選択したセルにグリッドを追加"
 
+msgid "Align &automatically"
+msgstr "自動で揃える(&A)"
+
+msgid "Align &center"
+msgstr "中央揃え(&C)"
+
+msgid "Align &left"
+msgstr "左揃え(&L)"
+
+msgid "Align &right"
+msgstr "右揃え(&R)"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "自動で揃える (Ctrl+Shift+D)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "左揃え (Ctrl+Shift+L)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "右揃え (Ctrl+Shift+R)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"右から左に書く文字(アラビア語やヘブライ語など)のテキストは右揃え、それ以外の"
+"テキストは左揃えにします"
+
+msgid "Align the text of the cell left"
+msgstr "セルのテキストを左揃えにします"
+
+msgid "Align the text of the cell right"
+msgstr "セルのテキストを右揃えにします"
+
 msgid "Also colorize the inner grid border"
 msgstr "内部のグリッド境界も色付けする"
 
@@ -385,6 +419,12 @@ msgstr "大文字と小文字を区別する"
 
 msgid "Cell "
 msgstr "セル "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "中央揃え (Ctrl+Shift+E)"
+
+msgid "Center the text of the cell"
+msgstr "セルのテキストを中央揃えにします"
 
 msgid "Change interface language"
 msgstr "インターフェース言語を変更"
@@ -1594,6 +1634,9 @@ msgstr "テキスト "
 
 msgid "Text &Editing"
 msgstr "テキスト編集(&E)"
+
+msgid "Text &alignment"
+msgstr "テキストの配置(&A)"
 
 msgid "Text Sizing"
 msgstr "テキストサイズ"

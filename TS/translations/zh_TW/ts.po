@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -271,6 +271,39 @@ msgstr "將 NxN 網格加入選取的儲存格"
 msgid "Adds a grid to the selected cell"
 msgstr "將網格加入選取的儲存格"
 
+msgid "Align &automatically"
+msgstr "自動對齊(&A)"
+
+msgid "Align &center"
+msgstr "置中(&C)"
+
+msgid "Align &left"
+msgstr "靠左對齊(&L)"
+
+msgid "Align &right"
+msgstr "靠右對齊(&R)"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "自動對齊（Ctrl + Shift + D）"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "靠左對齊（Ctrl + Shift + L）"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "靠右對齊（Ctrl + Shift + R）"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"將由右至左書寫的文字（例如阿拉伯文或希伯來文）靠右對齊，其他文字靠左對齊"
+
+msgid "Align the text of the cell left"
+msgstr "將儲存格文字靠左對齊"
+
+msgid "Align the text of the cell right"
+msgstr "將儲存格文字靠右對齊"
+
 msgid "Also colorize the inner grid border"
 msgstr "同時為內部網格框線著色"
 
@@ -380,6 +413,12 @@ msgstr "區分大小寫搜尋"
 
 msgid "Cell "
 msgstr "儲存格 "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "置中（Ctrl + Shift + E）"
+
+msgid "Center the text of the cell"
+msgstr "將儲存格文字置中"
 
 msgid "Change interface language"
 msgstr "變更介面語言"
@@ -1540,6 +1579,9 @@ msgstr "文字 "
 
 msgid "Text &Editing"
 msgstr "文字編輯(&E)"
+
+msgid "Text &alignment"
+msgstr "文字對齊(&A)"
 
 msgid "Text Sizing"
 msgstr "文字大小"

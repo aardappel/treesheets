@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -277,6 +277,40 @@ msgstr "Ajoute une grille NxN à la cellule sélectionnée"
 msgid "Adds a grid to the selected cell"
 msgstr "Ajouter une grille à la cellule sélectionnée"
 
+msgid "Align &automatically"
+msgstr "Alignement &automatique"
+
+msgid "Align &center"
+msgstr "&Centrer"
+
+msgid "Align &left"
+msgstr "Aligner à &gauche"
+
+msgid "Align &right"
+msgstr "Aligner à &droite"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "Alignement automatique (CTRL+SHIFT+d)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "Aligner à gauche (CTRL+SHIFT+l)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "Aligner à droite (CTRL+SHIFT+r)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"Aligner à droite le texte écrit de droite à gauche (comme l'arabe ou "
+"l'hébreu), et tout autre texte à gauche"
+
+msgid "Align the text of the cell left"
+msgstr "Aligner le texte de la cellule à gauche"
+
+msgid "Align the text of the cell right"
+msgstr "Aligner le texte de la cellule à droite"
+
 msgid "Also colorize the inner grid border"
 msgstr "Colorer aussi la bordure intérieure de la grille"
 
@@ -391,6 +425,12 @@ msgstr "Recherche sensible à la casse"
 
 msgid "Cell "
 msgstr "Cellule "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "Centrer (CTRL+SHIFT+e)"
+
+msgid "Center the text of the cell"
+msgstr "Centrer le texte de la cellule"
 
 msgid "Change interface language"
 msgstr "Changer la langue de l'interface"
@@ -1641,6 +1681,9 @@ msgstr "Texte "
 msgid "Text &Editing"
 msgstr "&Édition de texte"
 
+msgid "Text &alignment"
+msgstr "&Alignement du texte"
+
 msgid "Text Sizing"
 msgstr "Dimensionnement du texte"
 
@@ -1904,9 +1947,6 @@ msgstr "taille:"
 
 #~ msgid "Create .bak files"
 #~ msgstr "Générer des fichiers .bak"
-
-#~ msgid "Enter/exit text edit to the right"
-#~ msgstr "Entrée/Sortie mode de saisie de texte à droite"
 
 #~ msgid "Filter..."
 #~ msgstr "Filtre..."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -269,6 +269,38 @@ msgstr ""
 msgid "Adds a grid to the selected cell"
 msgstr ""
 
+msgid "Align &automatically"
+msgstr ""
+
+msgid "Align &center"
+msgstr ""
+
+msgid "Align &left"
+msgstr ""
+
+msgid "Align &right"
+msgstr ""
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr ""
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr ""
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr ""
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+
+msgid "Align the text of the cell left"
+msgstr ""
+
+msgid "Align the text of the cell right"
+msgstr ""
+
 msgid "Also colorize the inner grid border"
 msgstr ""
 
@@ -376,6 +408,12 @@ msgid "Case-sensitive search"
 msgstr ""
 
 msgid "Cell "
+msgstr ""
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr ""
+
+msgid "Center the text of the cell"
 msgstr ""
 
 msgid "Change interface language"
@@ -1523,6 +1561,9 @@ msgid "Text "
 msgstr ""
 
 msgid "Text &Editing"
+msgstr ""
+
+msgid "Text &alignment"
 msgstr ""
 
 msgid "Text Sizing"

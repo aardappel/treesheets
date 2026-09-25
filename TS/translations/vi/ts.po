@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -267,6 +267,40 @@ msgstr "Thêm một lưới NxN vào ô được chọn"
 msgid "Adds a grid to the selected cell"
 msgstr "Thêm lưới vào ô được chọn"
 
+msgid "Align &automatically"
+msgstr "Căn lề tự động (&A)"
+
+msgid "Align &center"
+msgstr "Căn giữa (&C)"
+
+msgid "Align &left"
+msgstr "Căn trái (&L)"
+
+msgid "Align &right"
+msgstr "Căn phải (&R)"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "Căn lề tự động (CTRL+SHIFT+d)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "Căn trái (CTRL+SHIFT+l)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "Căn phải (CTRL+SHIFT+r)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"Căn phải văn bản viết từ phải sang trái (như tiếng Ả Rập hoặc tiếng Do "
+"Thái), và căn trái mọi văn bản khác"
+
+msgid "Align the text of the cell left"
+msgstr "Căn trái văn bản của ô"
+
+msgid "Align the text of the cell right"
+msgstr "Căn phải văn bản của ô"
+
 msgid "Also colorize the inner grid border"
 msgstr "Đồng thời tô màu đường viền lưới bên trong"
 
@@ -379,6 +413,12 @@ msgstr "Tìm kiếm phân biệt hoa thường"
 
 msgid "Cell "
 msgstr "Ô "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "Căn giữa (CTRL+SHIFT+e)"
+
+msgid "Center the text of the cell"
+msgstr "Căn giữa văn bản của ô"
 
 msgid "Change interface language"
 msgstr "Thay đổi ngôn ngữ giao diện"
@@ -1579,6 +1619,9 @@ msgstr "Văn bản "
 
 msgid "Text &Editing"
 msgstr "Chỉnh sửa văn bản (&E)"
+
+msgid "Text &alignment"
+msgstr "Căn lề văn bản (&A)"
 
 msgid "Text Sizing"
 msgstr "Kích thước văn bản"
