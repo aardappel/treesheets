@@ -396,15 +396,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     std::vector<double> GridNumbers() override {
-        std::vector<double> numbers;
-        if (!current->grid) return numbers;
-        for (auto &c : current->grid->cells) {
-            double d;
-            if (wxString(c->text.t).Trim(true).Trim(false).ToCDouble(&d) && std::isfinite(d)) {
-                numbers.push_back(d);
-            }
-        }
-        return numbers;
+        return current->grid ? current->grid->Numbers() : std::vector<double>();
     }
 };
 
