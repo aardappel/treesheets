@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -940,6 +940,9 @@ msgstr "Layout Horizontal, Renderização com Estilo de Grade"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Layout Horizontal, Renderização com Estilo de Linha"
 
+msgid "Hover shadow"
+msgstr "Sombrear célula sob o ponteiro do mouse"
+
 msgid "Hover zoom"
 msgstr "Ampliar célula sob o po&nteiro do mouse"
 
@@ -1557,6 +1560,9 @@ msgstr "Define a fonte padrão"
 
 msgid "Set the font the typewriter text is displayed with."
 msgstr "Define a fonte monoespaçada"
+
+msgid "Shade the cell the mouse pointer hovers over"
+msgstr "Sombrear a célula sob o ponteiro do mouse"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -916,6 +916,9 @@ msgstr "Bố cục ngang với hiển thị kiểu lưới"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "Bố cục ngang với hiển thị kiểu đường kẻ"
 
+msgid "Hover shadow"
+msgstr "Tô bóng khi di chuột"
+
 msgid "Hover zoom"
 msgstr "Thu phóng khi di chuột"
 
@@ -1511,6 +1514,9 @@ msgstr "Đặt phông chữ hiển thị văn bản tài liệu"
 
 msgid "Set the font the typewriter text is displayed with."
 msgstr "Đặt phông chữ hiển thị văn bản đánh máy (typewriter)."
+
+msgid "Shade the cell the mouse pointer hovers over"
+msgstr "Tô bóng ô mà con trỏ chuột đang di chuyển trên"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"

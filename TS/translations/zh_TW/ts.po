@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -893,6 +893,9 @@ msgstr "水平版面配置搭配網格樣式繪製"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "水平版面配置搭配線條樣式繪製"
 
+msgid "Hover shadow"
+msgstr "游標懸停陰影"
+
 msgid "Hover zoom"
 msgstr "游標懸停縮放"
 
@@ -1473,6 +1476,9 @@ msgstr "設定文件文字的顯示字型"
 
 msgid "Set the font the typewriter text is displayed with."
 msgstr "設定打字機文字的顯示字型。"
+
+msgid "Shade the cell the mouse pointer hovers over"
+msgstr "為滑鼠游標所在的儲存格加上陰影"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"

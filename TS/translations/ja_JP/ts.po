@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -926,6 +926,9 @@ msgstr "グリッドスタイルレンダリングの水平レイアウト"
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr "ラインスタイルレンダリングの水平レイアウト"
 
+msgid "Hover shadow"
+msgstr "ホバーシャドウ"
+
 msgid "Hover zoom"
 msgstr "ホバーズーム"
 
@@ -1526,6 +1529,9 @@ msgstr "ドキュメントテキストの表示フォントを設定"
 
 msgid "Set the font the typewriter text is displayed with."
 msgstr "タイプライターテキストの表示フォントを設定。"
+
+msgid "Shade the cell the mouse pointer hovers over"
+msgstr "マウスポインターを合わせたセルに影を付ける"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"

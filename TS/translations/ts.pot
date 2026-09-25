@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:28+0200\n"
+"POT-Creation-Date: 2026-09-25 11:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -879,6 +879,9 @@ msgstr ""
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr ""
 
+msgid "Hover shadow"
+msgstr ""
+
 msgid "Hover zoom"
 msgstr ""
 
@@ -1456,6 +1459,9 @@ msgid "Set the font the document text is displayed with"
 msgstr ""
 
 msgid "Set the font the typewriter text is displayed with."
+msgstr ""
+
+msgid "Shade the cell the mouse pointer hovers over"
 msgstr ""
 
 #, no-c-format
