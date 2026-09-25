@@ -193,6 +193,24 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_subtree_text</b>(format<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">exports the subtree of the current cell to text in one call: 0 = plain indented text, 1 = csv, 2 = xml. much cheaper than manually walking the subtree with goto_child/get_text in a loop.</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.grid_count</b>() -> <font color="#666666">int</font></tt></td><td class="a">returns the number of cells in the grid of the current cell whose text is a number. cells with other text and empty cells are skipped, as is anything inside sub-grids (only the direct children count). this is also what grid_sum, grid_min, grid_max, grid_avg and grid_median aggregate.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.grid_sum</b>() -> <font color="#666666">float</font></tt></td><td class="a">returns the sum of the numbers in the grid of the current cell (see grid_count), or 0 if there are none</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.grid_min</b>() -> <font color="#666666">float</font></tt></td><td class="a">returns the smallest number in the grid of the current cell (see grid_count), or 0 if there are none</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.grid_max</b>() -> <font color="#666666">float</font></tt></td><td class="a">returns the largest number in the grid of the current cell (see grid_count), or 0 if there are none</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.grid_avg</b>() -> <font color="#666666">float</font></tt></td><td class="a">returns the average of the numbers in the grid of the current cell (see grid_count), or 0 if there are none</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.grid_median</b>() -> <font color="#666666">float</font></tt></td><td class="a">returns the median of the numbers in the grid of the current cell (see grid_count), i.e. the middle one when sorted, or the average of the two middle ones if their count is even. 0 if there are none.</td>
+
+</tr>
 </table></td></tr>
 <tr class="a" valign=top><td><h3>builtin</h3></td></tr>
 <tr><td><table class="a" border=1 cellspacing=0 cellpadding=4><tr class="a" valign=top><td class="a"><tt><b>print</b>(x<font color="#666666">: string</font>)</tt></td><td class="a">output any value to the console (with linefeed).</td>
