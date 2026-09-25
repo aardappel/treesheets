@@ -90,6 +90,20 @@ target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VE
 target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net)
 target_precompile_headers(TreeSheets PRIVATE src/stdafx.h)
 
+# With wxGTK 3, text is drawn with Pango directly where possible, to reuse the layouts of
+# strings drawn before (see TextLayoutCache in src/wxtools.h). Optional: without the GTK 3
+# development files, text is drawn through wx instead.
+if(LINUX OR BSD)
+    find_package(PkgConfig QUIET)
+    if(PKG_CONFIG_FOUND)
+        pkg_check_modules(GTK3 QUIET IMPORTED_TARGET gtk+-3.0)
+        if(GTK3_FOUND)
+            target_link_libraries(TreeSheets PRIVATE PkgConfig::GTK3)
+            target_compile_definitions(TreeSheets PRIVATE TREESHEETS_USE_PANGO)
+        endif()
+    endif()
+endif()
+
 if(MSVC)
     target_sources(TreeSheets PRIVATE src/stdafx.cpp)
     # Disable warnings with Microsoft Visual C++ compiler

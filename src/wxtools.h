@@ -10,15 +10,169 @@ static void DrawRectangle(DC &dc, uint color, int x, int y, int xs, int ys, bool
     dc.DrawRectangle(x, y, xs, ys);
 }
 
+#if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
+// wxGTK's graphics context creates, lays out (itemizes, breaks and shapes) and discards a new
+// PangoLayout for every string it draws, which is most of the time spent drawing a screenful of
+// cells. This keeps the layouts of the most recently drawn strings instead, and draws them the
+// same way wxCairoContext::DoDrawText() would.
+struct TextLayoutCache {
+    struct Key {
+        wxString text;
+        size_t font;  // Hash of the font description, underline and strikethrough.
+        bool operator==(const Key &o) const { return font == o.font && text == o.text; }
+    };
+    struct KeyHash {
+        size_t operator()(const Key &k) const {
+            return std::hash<wxString>()(k.text) ^ (k.font * 0x9E3779B97F4A7C15ULL);
+        }
+    };
+    struct Entry {
+        PangoLayout *layout;
+        // To tell apart fonts with the same hash.
+        PangoFontDescription *font;
+        bool underlined;
+        bool strikethrough;
+        uint64_t lastuse;
+    };
+    enum { max_entries = 4096 };
+    unordered_map<Key, Entry, KeyHash> entries;
+    uint64_t uses {0};
+    float fontscale {0};
+    // The context of all layouts, and the parts of the cairo context it was last updated from
+    // (see UpdateContext()).
+    PangoContext *context {nullptr};
+    cairo_font_options_t *surfaceoptions {nullptr};
+    cairo_font_options_t *options {nullptr};
+    double matrix[4] {};
+
+    static TextLayoutCache &Get() {
+        // Never destroyed: Pango may be gone by the time static destructors run.
+        static auto *cache = new TextLayoutCache();
+        return *cache;
+    }
+
+    static void Free(Entry &e) {
+        g_object_unref(e.layout);
+        pango_font_description_free(e.font);
+    }
+
+    void Clear() {
+        for (auto &[k, e] : entries) { Free(e); }
+        entries.clear();
+    }
+
+    // Drops the least recently used half of the entries.
+    void Evict() {
+        vector<uint64_t> lastuses;
+        lastuses.reserve(entries.size());
+        for (auto &[k, e] : entries) { lastuses.push_back(e.lastuse); }
+        auto mid = lastuses.begin() + lastuses.size() / 2;
+        nth_element(lastuses.begin(), mid, lastuses.end());
+        auto cutoff = *mid;
+        for (auto it = entries.begin(); it != entries.end();) {
+            if (it->second.lastuse < cutoff) {
+                Free(it->second);
+                it = entries.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+
+    // Makes the context match cr, like pango_cairo_create_layout() does for every layout it
+    // creates. But unlike pango_cairo_update_context(), only touches the context when that
+    // changes anything: it always marks the context as changed, so every layout would be laid
+    // out again.
+    void UpdateContext(cairo_t *cr) {
+        auto *newsurfaceoptions = cairo_font_options_create();
+        cairo_surface_get_font_options(cairo_get_target(cr), newsurfaceoptions);
+        auto *newoptions = cairo_font_options_create();
+        cairo_get_font_options(cr, newoptions);
+        cairo_matrix_t m;
+        cairo_get_matrix(cr, &m);
+        // Pango ignores the translation.
+        double newmatrix[4] {m.xx, m.yx, m.xy, m.yy};
+        if (context == nullptr) {
+            context = pango_cairo_create_context(cr);
+        } else if (!cairo_font_options_equal(newsurfaceoptions, surfaceoptions) ||
+                   !cairo_font_options_equal(newoptions, options) ||
+                   memcmp(newmatrix, matrix, sizeof(matrix)) != 0) {
+            pango_cairo_update_context(cr, context);
+        } else {
+            cairo_font_options_destroy(newsurfaceoptions);
+            cairo_font_options_destroy(newoptions);
+            return;
+        }
+        if (surfaceoptions != nullptr) { cairo_font_options_destroy(surfaceoptions); }
+        if (options != nullptr) { cairo_font_options_destroy(options); }
+        surfaceoptions = newsurfaceoptions;
+        options = newoptions;
+        memcpy(matrix, newmatrix, sizeof(matrix));
+    }
+
+    // Draws the text like gc->DrawText() does, with the DC's font and text color.
+    void Draw(wxGraphicsContext *gc, const wxFont &font, const wxColour &color,
+              const wxString &text, int x, int y) {
+        auto *cr = static_cast<cairo_t *>(gc->GetNativeContext());
+        UpdateContext(cr);
+        // The system font scaling that wxCairoContext applies to every font.
+        auto *screen = gdk_screen_get_default();
+        auto scale = screen != nullptr ? float(gdk_screen_get_resolution(screen) / 96.0) : 1.0f;
+        if (scale != fontscale) {
+            Clear();
+            fontscale = scale;
+        }
+        auto *desc = font.GetNativeFontInfo()->description;
+        auto underlined = font.GetUnderlined();
+        auto strikethrough = font.GetStrikethrough();
+        Key key {text, pango_font_description_hash(desc) ^ (underlined ? 1U << 30 : 0U) ^
+                           (strikethrough ? 1U << 31 : 0U)};
+        auto it = entries.find(key);
+        if (it != entries.end() && (!pango_font_description_equal(it->second.font, desc) ||
+                                    it->second.underlined != underlined ||
+                                    it->second.strikethrough != strikethrough)) {
+            Free(it->second);
+            entries.erase(it);
+            it = entries.end();
+        }
+        if (it == entries.end()) {
+            if (entries.size() >= max_entries) { Evict(); }
+            auto *layout = pango_layout_new(context);
+            pango_layout_set_font_description(
+                layout, (scale == 1.0f ? font : font.Scaled(scale)).GetNativeFontInfo()->description);
+            auto utf8 = text.utf8_str();
+            pango_layout_set_text(layout, utf8, static_cast<int>(utf8.length()));
+            font.GTKSetPangoAttrs(layout);
+            it = entries
+                     .emplace(std::move(key), Entry {layout, pango_font_description_copy(desc),
+                                                     underlined, strikethrough, 0})
+                     .first;
+        }
+        it->second.lastuse = ++uses;
+        cairo_set_source_rgba(cr, color.Red() / 255.0, color.Green() / 255.0,
+                              color.Blue() / 255.0, color.Alpha() / 255.0);
+        cairo_move_to(cr, x, y);
+        pango_cairo_show_layout(cr, it->second.layout);
+    }
+};
+#endif
+
 // Same as dc.DrawText(). But wxGTK's DrawText() first lays out and measures the text with Pango,
 // only to update the DC's bounding box and to mirror the text in right-to-left layouts, and then
 // lays it out a second time to draw it. Where neither applies, draw it with the DC's graphics
-// context directly, which lays it out only once.
+// context directly, which lays it out only once, and with wxGTK 3 reuses the layout of an
+// earlier call with the same text and font (see TextLayoutCache).
 template<typename DC> static void DrawText(DC &dc, const wxString &text, int x, int y) {
     auto *gc = dc.GetGraphicsContext();
     if (gc != nullptr && !dc.AreAutomaticBoundingBoxUpdatesEnabled() &&
         dc.GetLayoutDirection() != wxLayout_RightToLeft &&
         dc.GetBackgroundMode() == wxBRUSHSTYLE_TRANSPARENT) {
+        #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
+            if (!text.empty() && dc.GetFont().IsOk()) {
+                TextLayoutCache::Get().Draw(gc, dc.GetFont(), dc.GetTextForeground(), text, x, y);
+                return;
+            }
+        #endif
         gc->DrawText(text, x, y);
     } else {
         dc.DrawText(text, x, y);
