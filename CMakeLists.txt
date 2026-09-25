@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.25)
 
+# The static wx libraries depend on each other, so they come up repeatedly on the link line.
+# Let CMake drop the repeats where the linker doesn't need them, as Apple's ld warns about them.
+if(POLICY CMP0156)
+    cmake_policy(SET CMP0156 NEW)
+endif()
+
 ### Project
 
 set(TREESHEETS_VERSION "" CACHE STRING "Version string (e.g., 1.2.3). Leave empty for auto-timestamp.")
