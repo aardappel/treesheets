@@ -371,7 +371,13 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         Selection s = current->parent->grid->FindCell(current);
         if (!s.grid) return false;
         AddUndoIfNecessary();
+        // Pasting a grid into a cell without text merges it into the parent grid (see
+        // Grid::MergeWithParent), which deletes current, so continue at the cell in its place.
+        auto *parent = current->parent;
+        int x = s.x, y = s.y;
+        if (lowestcommonancestor == current) { lowestcommonancestor = parent; }
         current->Paste(document, script_clipboard.get(), s);
+        current = parent->grid->C(x, y).get();
         return true;
     }
 
