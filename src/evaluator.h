@@ -64,6 +64,10 @@ struct Evaluator {
         OPN(neg, -a);
         OPT(graph, (c->Graph(), std::move(c)));
         OPL(sum, a->Sum())
+        OPL(min, a->Aggregate(aggregate::Min))
+        OPL(max, a->Aggregate(aggregate::Max))
+        OPL(avg, a->Aggregate(aggregate::Avg))
+        OPL(median, a->Aggregate(aggregate::Median))
         OPG(transpose, a->Transpose())
         struct _if : Operation {
             _if() { args = "nLL"; };

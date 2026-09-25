@@ -309,6 +309,8 @@ enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 // How a grid pasted into another grid makes room there, see Grid::MergeWithParent.
 enum { PASTE_FIT = 0, PASTE_INSERTROWS, PASTE_INSERTCOLUMNS };
 
+#include "aggregate.h"
+
 #ifdef ENABLE_LOBSTER
     #include "script_interface.h"
 

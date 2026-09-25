@@ -1077,6 +1077,24 @@ struct Grid {
         return c;
     }
 
+    // The numbers of the cells whose text is one (see Text::GetStrictNum), in grid order.
+    // Sub-grids are not searched.
+    vector<double> Numbers() {
+        vector<double> numbers;
+        double d;
+        foreachcell(c) {
+            if (c->text.GetStrictNum(d)) { numbers.push_back(d); }
+        }
+        return numbers;
+    }
+
+    // A cell holding the result of an aggregate:: function over Numbers().
+    template<typename F> unique_ptr<Cell> Aggregate(F f) {
+        auto c = make_unique<Cell>();
+        c->text.SetNum(f(Numbers()));
+        return c;
+    }
+
     void Transpose() {
         vector<unique_ptr<Cell>> tr(xs * ys);
         foreachcell(c) tr[y + x * ys] = std::move(c);

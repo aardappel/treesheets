@@ -1,7 +1,6 @@
 #include "lobster/stdafx.h"
 
-#include <numeric>
-
+#include "aggregate.h"
 #include "script_interface.h"
 
 #include "lobster/compiler.h"
@@ -426,33 +425,28 @@ BUILTIN(grid_sum, "", "", "F",
     "returns the sum of the numbers in the grid of the current cell (see grid_count), "
     "or 0 if there are none")
 (VM &) {
-    auto numbers = si->GridNumbers();
-    return std::accumulate(numbers.begin(), numbers.end(), 0.0);
+    return aggregate::Sum(si->GridNumbers());
 }
 
 BUILTIN(grid_min, "", "", "F",
     "returns the smallest number in the grid of the current cell (see grid_count), "
     "or 0 if there are none")
 (VM &) {
-    auto numbers = si->GridNumbers();
-    return numbers.empty() ? 0.0 : *std::min_element(numbers.begin(), numbers.end());
+    return aggregate::Min(si->GridNumbers());
 }
 
 BUILTIN(grid_max, "", "", "F",
     "returns the largest number in the grid of the current cell (see grid_count), "
     "or 0 if there are none")
 (VM &) {
-    auto numbers = si->GridNumbers();
-    return numbers.empty() ? 0.0 : *std::max_element(numbers.begin(), numbers.end());
+    return aggregate::Max(si->GridNumbers());
 }
 
 BUILTIN(grid_avg, "", "", "F",
     "returns the average of the numbers in the grid of the current cell (see grid_count), "
     "or 0 if there are none")
 (VM &) {
-    auto numbers = si->GridNumbers();
-    if (numbers.empty()) return 0.0;
-    return std::accumulate(numbers.begin(), numbers.end(), 0.0) / numbers.size();
+    return aggregate::Avg(si->GridNumbers());
 }
 
 BUILTIN(grid_median, "", "", "F",
@@ -460,13 +454,7 @@ BUILTIN(grid_median, "", "", "F",
     "i.e. the middle one when sorted, or the average of the two middle ones if their count "
     "is even. 0 if there are none.")
 (VM &) {
-    auto numbers = si->GridNumbers();
-    if (numbers.empty()) return 0.0;
-    auto n = numbers.size();
-    auto mid = numbers.begin() + n / 2;
-    std::nth_element(numbers.begin(), mid, numbers.end());
-    if (n % 2) return *mid;
-    return (*mid + *std::max_element(numbers.begin(), mid)) / 2;
+    return aggregate::Median(si->GridNumbers());
 }
 
 #undef BUILTIN_GROUP

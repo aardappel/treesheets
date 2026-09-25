@@ -74,6 +74,12 @@ struct Text {
         return r;
     }
 
+    // Stricter than GetNum(): only succeeds if the whole text (ignoring surrounding spaces) is
+    // a finite number, so "12abc" or "abc" are not numbers here, rather than 12 and 0.
+    bool GetStrictNum(double &d) const {
+        return wxString(t).Trim(true).Trim(false).ToCDouble(&d) && std::isfinite(d);
+    }
+
     void SetNum(double d) {
         std::wstringstream ss;
         // Fixed notation with a limited number of decimals, so we don't show garbage digits
