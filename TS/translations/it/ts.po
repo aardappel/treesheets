@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -273,6 +273,40 @@ msgstr "Aggiunge una griglia NxN alla cella selezionata"
 msgid "Adds a grid to the selected cell"
 msgstr "Aggiunge una griglia alla cella selezionata"
 
+msgid "Align &automatically"
+msgstr "Allineamento &automatico"
+
+msgid "Align &center"
+msgstr "&Centra"
+
+msgid "Align &left"
+msgstr "Allinea a &sinistra"
+
+msgid "Align &right"
+msgstr "Allinea a &destra"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "Allineamento automatico (CTRL+MAIUSC+d)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "Allinea a sinistra (CTRL+MAIUSC+l)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "Allinea a destra (CTRL+MAIUSC+r)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"Allinea a destra il testo scritto da destra a sinistra (come l'arabo o "
+"l'ebraico) e tutto il resto del testo a sinistra"
+
+msgid "Align the text of the cell left"
+msgstr "Allinea a sinistra il testo della cella"
+
+msgid "Align the text of the cell right"
+msgstr "Allinea a destra il testo della cella"
+
 msgid "Also colorize the inner grid border"
 msgstr "Colora anche il bordo interno della griglia"
 
@@ -385,6 +419,12 @@ msgstr "Ricerca sensibile alle maiuscole/minuscole"
 
 msgid "Cell "
 msgstr "Cella"
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "Centra (CTRL+MAIUSC+e)"
+
+msgid "Center the text of the cell"
+msgstr "Centra il testo della cella"
 
 msgid "Change interface language"
 msgstr "Cambia la lingua dell'interfaccia"
@@ -1625,6 +1665,9 @@ msgstr "Testo"
 msgid "Text &Editing"
 msgstr "&Modifica del testo"
 
+msgid "Text &alignment"
+msgstr "&Allineamento del testo"
+
 msgid "Text Sizing"
 msgstr "Dimensioni del testo"
 
@@ -1890,9 +1933,6 @@ msgstr "dimensione:"
 
 #~ msgid "Create .bak files"
 #~ msgstr "Crea file .bak"
-
-#~ msgid "Enter/exit text edit to the right"
-#~ msgstr "Entra/esci da modalità modifica testo"
 
 #~ msgid "Filter..."
 #~ msgstr "Filtro..."

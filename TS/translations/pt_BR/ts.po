@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -277,6 +277,40 @@ msgstr "Adiciona uma grade NxN à célula selecionada"
 msgid "Adds a grid to the selected cell"
 msgstr "Adiciona uma grade à célula selecionada"
 
+msgid "Align &automatically"
+msgstr "Alinhar &automaticamente"
+
+msgid "Align &center"
+msgstr "&Centralizar"
+
+msgid "Align &left"
+msgstr "Alinhar à &esquerda"
+
+msgid "Align &right"
+msgstr "Alinhar à &direita"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "Alinhar automaticamente (CTRL+SHIFT+d)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "Alinhar à esquerda (CTRL+SHIFT+l)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "Alinhar à direita (CTRL+SHIFT+r)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"Alinhar à direita o texto escrito da direita para a esquerda (como árabe ou "
+"hebraico), e todo o resto do texto à esquerda"
+
+msgid "Align the text of the cell left"
+msgstr "Alinhar o texto da célula à esquerda"
+
+msgid "Align the text of the cell right"
+msgstr "Alinhar o texto da célula à direita"
+
 msgid "Also colorize the inner grid border"
 msgstr "Coloriza também a borda interna da grade"
 
@@ -389,6 +423,12 @@ msgstr "&Diferenciar maiúsculas de minúsculas"
 
 msgid "Cell "
 msgstr "Célula "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "Centralizar (CTRL+SHIFT+e)"
+
+msgid "Center the text of the cell"
+msgstr "Centralizar o texto da célula"
 
 msgid "Change interface language"
 msgstr "Muda idioma da interface"
@@ -1628,6 +1668,9 @@ msgstr "Texto "
 msgid "Text &Editing"
 msgstr "Edi&ção de Texto"
 
+msgid "Text &alignment"
+msgstr "&Alinhamento do texto"
+
 msgid "Text Sizing"
 msgstr "&Tamanho do Texto"
 
@@ -1885,9 +1928,6 @@ msgstr "tamanho:"
 
 #~ msgid "Cannot drag & drop more than 1 file."
 #~ msgstr "Não é possível arrastar & soltar mais de um arquivo."
-
-#~ msgid "Enter/exit text edit to the right"
-#~ msgstr "Entrar/sair do modo de edição de texto, à direita"
 
 #~ msgid ""
 #~ "It seems that you are about to drop a TreeSheets file. What would you "

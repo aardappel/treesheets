@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -274,6 +274,40 @@ msgstr "Eine NxN-Tabelle in die ausgewählte Zelle einfügen"
 msgid "Adds a grid to the selected cell"
 msgstr "Eine Tabelle in die ausgewählte Zelle einfügen"
 
+msgid "Align &automatically"
+msgstr "&Automatisch ausrichten"
+
+msgid "Align &center"
+msgstr "&Zentrieren"
+
+msgid "Align &left"
+msgstr "&Linksbündig"
+
+msgid "Align &right"
+msgstr "&Rechtsbündig"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "Automatisch ausrichten (STRG+UMSCHALT+d)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "Linksbündig (STRG+UMSCHALT+l)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "Rechtsbündig (STRG+UMSCHALT+r)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"Text in Schriften von rechts nach links (wie Arabisch oder Hebräisch) "
+"rechtsbündig ausrichten, alle anderen Texte linksbündig"
+
+msgid "Align the text of the cell left"
+msgstr "Text der Zelle linksbündig ausrichten"
+
+msgid "Align the text of the cell right"
+msgstr "Text der Zelle rechtsbündig ausrichten"
+
 msgid "Also colorize the inner grid border"
 msgstr "Die inneren Tabellenränder auch einfärben"
 
@@ -390,6 +424,12 @@ msgstr "Groß- und Kleinschreibung beachten"
 
 msgid "Cell "
 msgstr "Zelle "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "Zentrieren (STRG+UMSCHALT+e)"
+
+msgid "Center the text of the cell"
+msgstr "Text der Zelle zentrieren"
 
 msgid "Change interface language"
 msgstr "Benutzeroberflächensprache ändern"
@@ -1638,6 +1678,9 @@ msgstr "Text "
 
 msgid "Text &Editing"
 msgstr "Text&bearbeitung"
+
+msgid "Text &alignment"
+msgstr "Text&ausrichtung"
 
 msgid "Text Sizing"
 msgstr "Textgröße"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -273,6 +273,40 @@ msgstr "선택한 셀에 NxN 격자 추가"
 msgid "Adds a grid to the selected cell"
 msgstr "선택한 셀에 격자 추가"
 
+msgid "Align &automatically"
+msgstr "자동 맞춤(&A)"
+
+msgid "Align &center"
+msgstr "가운데 맞춤(&C)"
+
+msgid "Align &left"
+msgstr "왼쪽 맞춤(&L)"
+
+msgid "Align &right"
+msgstr "오른쪽 맞춤(&R)"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "자동 맞춤 (Ctrl+Shift+D)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "왼쪽 맞춤 (Ctrl+Shift+L)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "오른쪽 맞춤 (Ctrl+Shift+R)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"오른쪽에서 왼쪽으로 쓰는 텍스트(아랍어, 히브리어 등)는 오른쪽에, 그 밖의 텍스"
+"트는 왼쪽에 맞춥니다"
+
+msgid "Align the text of the cell left"
+msgstr "셀의 텍스트를 왼쪽에 맞춥니다"
+
+msgid "Align the text of the cell right"
+msgstr "셀의 텍스트를 오른쪽에 맞춥니다"
+
 msgid "Also colorize the inner grid border"
 msgstr "내부 그리드도 테두리 색칠"
 
@@ -384,6 +418,12 @@ msgstr "대소문자 구분 검색"
 
 msgid "Cell "
 msgstr "셀 "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "가운데 맞춤 (Ctrl+Shift+E)"
+
+msgid "Center the text of the cell"
+msgstr "셀의 텍스트를 가운데에 맞춥니다"
 
 msgid "Change interface language"
 msgstr "인터페이스 언어 변경"
@@ -1568,6 +1608,9 @@ msgstr "텍스트 "
 msgid "Text &Editing"
 msgstr "텍스트 편집(&E)"
 
+msgid "Text &alignment"
+msgstr "텍스트 맞춤(&A)"
+
 msgid "Text Sizing"
 msgstr "텍스트 크기"
 
@@ -1826,9 +1869,6 @@ msgstr "크기:"
 
 #~ msgid "Cannot drag & drop more than 1 file."
 #~ msgstr "파일을 두 개 이상 끌어서 놓기를 할 수 없습니다."
-
-#~ msgid "Enter/exit text edit to the right"
-#~ msgstr "오른쪽으로 텍스트 편집 입력/종료"
 
 #~ msgid ""
 #~ "It seems that you are about to drop a TreeSheets file. What would you "

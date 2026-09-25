@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 16:38+0200\n"
+"POT-Creation-Date: 2026-09-25 11:28+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -290,6 +290,41 @@ msgstr "Добавить сетку размером NxN в выбранную �
 msgid "Adds a grid to the selected cell"
 msgstr "Добавить сетку в выбранную ячейку"
 
+msgid "Align &automatically"
+msgstr "&Автоматическое выравнивание"
+
+msgid "Align &center"
+msgstr "По &центру"
+
+msgid "Align &left"
+msgstr "По &левому краю"
+
+msgid "Align &right"
+msgstr "По &правому краю"
+
+msgid "Align automatically (CTRL+SHIFT+d)"
+msgstr "Автоматическое выравнивание (CTRL+SHIFT+d)"
+
+msgid "Align left (CTRL+SHIFT+l)"
+msgstr "По левому краю (CTRL+SHIFT+l)"
+
+msgid "Align right (CTRL+SHIFT+r)"
+msgstr "По правому краю (CTRL+SHIFT+r)"
+
+msgid ""
+"Align right-to-left text (such as Arabic or Hebrew) right, and all other "
+"text left"
+msgstr ""
+"Выравнивать текст с письмом справа налево (например, арабский или иврит) по "
+"правому краю, а весь остальной текст — по левому"
+
+# комментарий к п. Меню
+msgid "Align the text of the cell left"
+msgstr "Выровнять текст ячейки по левому краю"
+
+msgid "Align the text of the cell right"
+msgstr "Выровнять текст ячейки по правому краю"
+
 # комментарий к п. Меню
 msgid "Also colorize the inner grid border"
 msgstr "Придать цвет внутренним границам сетки аналогично внешней границе"
@@ -424,6 +459,13 @@ msgstr "Поиск с учетом &Регистра"
 # эл-т Главного Окна
 msgid "Cell "
 msgstr "Ячейка "
+
+msgid "Center (CTRL+SHIFT+e)"
+msgstr "По центру (CTRL+SHIFT+e)"
+
+# комментарий к п. Меню
+msgid "Center the text of the cell"
+msgstr "Выровнять текст ячейки по центру"
 
 # комментарий к п. Меню
 msgid "Change interface language"
@@ -1849,6 +1891,9 @@ msgstr "Текст "
 msgid "Text &Editing"
 msgstr "Текст - &Редактирование"
 
+msgid "Text &alignment"
+msgstr "&Выравнивание текста"
+
 # п. Меню (нет & в исходном тексте)
 msgid "Text Sizing"
 msgstr "Текст - Ра&змеры"
@@ -2159,9 +2204,6 @@ msgstr "размер:"
 # Сообщение (после действия или события)
 #~ msgid "Cannot drag & drop more than 1 file."
 #~ msgstr "Невозможно перетащить более 1 файла."
-
-#~ msgid "Enter/exit text edit to the right"
-#~ msgstr "Вх/Вых из реж. Редактирования сПрава"
 
 # Сообщение (после действия или события)
 #~ msgid ""
