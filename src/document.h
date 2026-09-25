@@ -892,9 +892,8 @@ struct Document {
         // The centering offset can change without a full repaint. What is already on screen
         // was then drawn at the old offset, and repainting just part of it (the hover shadow,
         // a partial expose) would leave that part shifted against the rest. E.g. wxGTK 3.3
-        // subtracts overlay scrollbars from the client size while one appears or disappears,
-        // and restores the right size without a size event. That's fixed in wxWidgets master
-        // (wxWidgets/wxWidgets#26889), but not in a release yet.
+        // changes the client size by the width of an overlay scrollbar without a size event
+        // (see TSCanvas::DoGetClientSize).
         if ((centerx != oldcenterx || centery != oldcentery) &&
             !canvas->GetUpdateRegion().GetBox().Contains(wxRect(0, 0, clientx, clienty))) {
             canvas->Refresh();

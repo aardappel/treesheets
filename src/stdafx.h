@@ -32,6 +32,7 @@
 
 #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
     #include <gdk/gdk.h>
+    #include <gtk/gtk.h>
     #include <pango/pangocairo.h>
     #include <wx/fontutil.h>
 #endif

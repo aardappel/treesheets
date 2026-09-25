@@ -317,4 +317,40 @@ struct TSCanvas : public wxScrolledCanvas {
         Scroll(x, y);
         // EnableScrolling(false, false);
     }
+
+    #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
+    // wxGTK 3.3 subtracts overlay scrollbars from the client size, although they are drawn on
+    // top of the canvas, and by a width that changes without a size event as they react to
+    // the pointer. Zooming out to a view that needs a scrollbar, and then moving the pointer,
+    // thereby shifted the centered document sideways by a few pixels. That's fixed in
+    // wxWidgets master (wxWidgets/wxWidgets#26889), but not in a release yet, so this does
+    // the same.
+    static bool UsesOverlayScrollbars(GtkWidget *widget) {
+        if (!GTK_IS_SCROLLED_WINDOW(widget) || gtk_check_version(3, 16, 0) != nullptr) {
+            return false;
+        }
+        if (!gtk_scrolled_window_get_overlay_scrolling(GTK_SCROLLED_WINDOW(widget))) {
+            return false;
+        }
+        auto *settings = gtk_widget_get_settings(widget);
+        if (settings != nullptr &&
+            g_object_class_find_property(G_OBJECT_GET_CLASS(settings), "gtk-overlay-scrolling")) {
+            gboolean enabled = TRUE;
+            g_object_get(settings, "gtk-overlay-scrolling", &enabled, nullptr);
+            if (!enabled) { return false; }
+        }
+        static const bool disabledinenv = g_strcmp0(getenv("GTK_OVERLAY_SCROLLING"), "0") == 0;
+        return !disabledinenv;
+    }
+
+    void DoGetClientSize(int *width, int *height) const override {
+        if (!UsesOverlayScrollbars(GetHandle())) {
+            wxScrolledCanvas::DoGetClientSize(width, height);
+            return;
+        }
+        wxSize size = GetSize() - GetWindowBorderSize();
+        if (width != nullptr) { *width = max(0, size.x); }
+        if (height != nullptr) { *height = max(0, size.y); }
+    }
+    #endif
 };
