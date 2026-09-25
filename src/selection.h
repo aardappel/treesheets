@@ -45,8 +45,11 @@ struct Selection {
         // this changes the cursor instantly, but gets overridden by the local window cursor
         ::SetCursor((HCURSOR)c.GetHCURSOR());
         #endif
-        // this doesn't change the cursor immediately, only on mousemove:
-        doc->canvas->SetCursor(c);
+        // this doesn't change the cursor immediately, only on mousemove.
+        // Outside of text editing, go back to the inherited default cursor: on wxGTK, the stock
+        // arrow has GTK's cursor theme size, which can be larger than the desktop's (e.g. XFCE
+        // with an unset cursor size).
+        doc->canvas->SetCursor(edit ? c : wxNullCursor);
 
         firstdx = firstdy = 0;
     }
