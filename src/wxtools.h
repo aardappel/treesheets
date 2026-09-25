@@ -290,7 +290,20 @@ struct DateTimeRangeDialog : public wxDialog {
     int Run() { return ShowModal(); }
 };
 
-struct ColorPopup : wxVListBoxComboPopup {
+// The list of a color or image dropdown.
+struct DropdownPopup : wxVListBoxComboPopup {
+    #ifdef __WXMSW__
+        // Keys go to the menu accelerators of the frame first on Windows, even with the list
+        // focused. Navigating it with the cursor keys, Page Up/Down, Home/End, Return and Escape
+        // would then act on the document instead, so keep all keys for the list.
+        bool MSWShouldPreProcessMessage(WXMSG *msg) override {
+            return msg->message != WM_KEYDOWN &&
+                   wxVListBoxComboPopup::MSWShouldPreProcessMessage(msg);
+        }
+    #endif
+};
+
+struct ColorPopup : DropdownPopup {
     ColorPopup(wxWindow *parent) {}
 
     void OnComboDoubleClick() override {
@@ -342,7 +355,7 @@ static uint LightColor(uint color) { return color ^ sys->colormask; }
 
 #define dd_icon_res_scale 3.0
 
-struct ImagePopup : wxVListBoxComboPopup {
+struct ImagePopup : DropdownPopup {
     void OnComboDoubleClick() override {
         auto filename = GetString(GetSelection());
         sys->frame->GetCurrentTab()->doc->ImageChange(filename, dd_icon_res_scale);
