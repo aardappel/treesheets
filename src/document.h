@@ -2060,15 +2060,7 @@ struct Document {
             case A_MARKVIEWH:
             case A_MARKVIEWV:
             case A_MARKCODE: {
-                int newcelltype = 0;
-                switch (action) {
-                    case A_MARKDATA: newcelltype = CT_DATA; break;
-                    case A_MARKVARD: newcelltype = CT_VARD; break;
-                    case A_MARKVARU: newcelltype = CT_VARU; break;
-                    case A_MARKVIEWH: newcelltype = CT_VIEWH; break;
-                    case A_MARKVIEWV: newcelltype = CT_VIEWV; break;
-                    case A_MARKCODE: newcelltype = CT_CODE; break;
-                }
+                int newcelltype = MarkCellType(action);
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, false) {
                     c->celltype = (newcelltype == CT_CODE) ? sys->evaluator.InferCellType(c->text)
@@ -3033,6 +3025,23 @@ struct Document {
     bool SelectionHasTextAlign(int align) {
         if (selected.grid == nullptr || selected.Thin()) { return false; }
         return selected.grid->AllHaveTextAlign(selected, align);
+    }
+
+    // The cell type a Program > Mark as menu item marks cells as.
+    static int MarkCellType(int action) {
+        switch (action) {
+            case A_MARKVARD: return CT_VARD;
+            case A_MARKVARU: return CT_VARU;
+            case A_MARKVIEWH: return CT_VIEWH;
+            case A_MARKVIEWV: return CT_VIEWV;
+            case A_MARKCODE: return CT_CODE;
+            default: return CT_DATA;
+        }
+    }
+
+    bool SelectionHasCellType(int celltype) {
+        if (selected.grid == nullptr || selected.Thin()) { return false; }
+        return selected.grid->AllHaveCellType(selected, celltype);
     }
 
     bool AnyImagesInSelection() {

@@ -730,12 +730,12 @@ struct TSFrame : wxFrame {
         optmenu->AppendSubMenu(roundmenu, _("&Roundness of grid borders"));
 
         auto *markmenu = new wxMenu();
-        MyAppend(markmenu, A_MARKDATA, _("&Data") + "\tCTRL+ALT+D");
-        MyAppend(markmenu, A_MARKCODE, _("&Operation") + "\tCTRL+ALT+O");
-        MyAppend(markmenu, A_MARKVARD, _("Variable &Assign") + "\tCTRL+ALT+A");
-        MyAppend(markmenu, A_MARKVARU, _("Variable &Read") + "\tCTRL+ALT+R");
-        MyAppend(markmenu, A_MARKVIEWH, _("&Horizontal View") + "\tCTRL+ALT+.");
-        MyAppend(markmenu, A_MARKVIEWV, _("&Vertical View") + "\tCTRL+ALT+,");
+        MyAppend(markmenu, A_MARKDATA, _("&Data") + "\tCTRL+ALT+D", "", wxITEM_CHECK);
+        MyAppend(markmenu, A_MARKCODE, _("&Operation") + "\tCTRL+ALT+O", "", wxITEM_CHECK);
+        MyAppend(markmenu, A_MARKVARD, _("Variable &Assign") + "\tCTRL+ALT+A", "", wxITEM_CHECK);
+        MyAppend(markmenu, A_MARKVARU, _("Variable &Read") + "\tCTRL+ALT+R", "", wxITEM_CHECK);
+        MyAppend(markmenu, A_MARKVIEWH, _("&Horizontal View") + "\tCTRL+ALT+.", "", wxITEM_CHECK);
+        MyAppend(markmenu, A_MARKVIEWV, _("&Vertical View") + "\tCTRL+ALT+,", "", wxITEM_CHECK);
 
         auto *langmenu = new wxMenu();
         MyAppend(langmenu, wxID_EXECUTE, _("&Run") + "\tCTRL+ALT+F5");
@@ -902,6 +902,9 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_UNDERLINE);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_STRIKETHROUGH);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateTextAlign, this, A_ALIGNAUTO, A_ALIGNRIGHT);
+        for (int id : {A_MARKDATA, A_MARKCODE, A_MARKVARD, A_MARKVARU, A_MARKVIEWH, A_MARKVIEWV}) {
+            Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateCellType, this, id);
+        }
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
         Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
@@ -1217,6 +1220,13 @@ struct TSFrame : wxFrame {
         auto *canvas = GetCurrentTab();
         ue.Check(canvas != nullptr &&
                  canvas->doc->SelectionHasTextAlign(ue.GetId() - A_ALIGNAUTO + TEXTALIGN_AUTO));
+    }
+
+    // Checks the cell type all selected cells have, if they have the same one.
+    void OnUpdateCellType(wxUpdateUIEvent &ue) {
+        auto *canvas = GetCurrentTab();
+        ue.Check(canvas != nullptr &&
+                 canvas->doc->SelectionHasCellType(Document::MarkCellType(ue.GetId())));
     }
 
     void OnMenu(wxCommandEvent &ce) {
