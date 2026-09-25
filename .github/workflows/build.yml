@@ -78,9 +78,9 @@ jobs:
       id: compiler
       shell: pwsh
       run: |
-        $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath
-        $msvc = Get-Content "$vs\VC\Auxiliary\Build\Microsoft.VCToolsVersion.default.txt"
-        "id=$env:ImageOS-msvc$msvc" >> $env:GITHUB_OUTPUT
+        # Updates of Visual Studio can change cl.exe within the same MSVC toolset directory
+        $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationVersion
+        "id=$env:ImageOS-vs$vs" >> $env:GITHUB_OUTPUT
     - name: cache build
       uses: actions/cache@v6
       with:
