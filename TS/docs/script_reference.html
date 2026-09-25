@@ -193,6 +193,12 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_subtree_text</b>(format<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">exports the subtree of the current cell to text in one call: 0 = plain indented text, 1 = csv, 2 = xml. much cheaper than manually walking the subtree with goto_child/get_text in a loop.</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_cell_type</b>(type<font color="#666666">: int</font>)</tt></td><td class="a">sets the evaluation type of the current cell (see get_cell_type), same as the Program menu items. like there, a cell only becomes an operation (1) if its text is one, otherwise it becomes data. any other type than 0..5 is a runtime error.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.evaluate</b>(format<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">evaluates the current cell the way Program &gt; Run evaluates the whole document (which is what this does on the root cell): fills in the result views in its grid, and returns the result in the given format (see get_subtree_text), or an empty string if there is none. can be undone like any other edit.</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.grid_count</b>() -> <font color="#666666">int</font></tt></td><td class="a">returns the number of cells in the grid of the current cell whose text is a number. cells with other text and empty cells are skipped, as is anything inside sub-grids (only the direct children count). this is also what grid_sum, grid_min, grid_max, grid_avg and grid_median aggregate.</td>
 
 </tr>
