@@ -765,14 +765,15 @@ struct Grid {
         }
     }
 
-    // Pastes this grid into the parent at sel. Conflicting content is never overwritten: a row
-    // (or column, if pushcolumns) of the parent that has content in the cells the grid lands on
-    // is pushed away, together with all rows after it; one that is empty there is reused (the
-    // cell being replaced doesn't count). So only as many rows are inserted as needed to move
-    // the first conflicting one past the pasted grid. In the other direction the parent only
-    // grows past its edge, so there's no offset both ways.
+    // Pastes this grid into the parent at sel, never overwriting content. With PASTE_INSERTROWS
+    // (or PASTE_INSERTCOLUMNS), sel is the row (column) just inserted at a thin selection, and the
+    // grid goes into new rows (columns) there. With PASTE_FIT, cells it lands on that are empty
+    // are reused (the cell being replaced doesn't count). If there is content in the way, the
+    // first row with content, and all rows after it, are pushed past the grid, or the columns
+    // likewise, whichever inserts fewer (on a tie, along the longer side of the grid). Otherwise
+    // the parent only grows past its edges.
     void MergeWithParent(const shared_ptr<Grid> &p, Selection &sel, Document *doc,
-                         bool pushcolumns = false) {
+                         int pastemode = PASTE_FIT) {
         // The loop below overwrites the parent's slot for the cell owning this grid, which
         // destroys that cell, so detach from it before it can become a dangling pointer.
         ASSERT(p->C(sel.x, sel.y).get() == cell);
@@ -783,29 +784,40 @@ struct Grid {
         auto isempty = [&](const Cell *c) {
             return c == self || (c && !c->HasText() && !c->grid && !c->text.image);
         };
-        int nxs = sel.x + xs - p->xs;
-        int nys = sel.y + ys - p->ys;
-        if (pushcolumns) {
-            if (nys > 0) { p->InsertCells(-1, p->ys, 0, nys); }
-            for (int i = 0; i < xs; i++) {
-                int tx = sel.x + i;
-                bool empty = tx < p->xs;
-                for (int j = 0; empty && j < ys; j++) {
-                    empty = isempty(p->C(tx, sel.y + j).get());
+        // The first row (or column) of this grid that would land on content in the parent.
+        auto firstconflict = [&](bool columns) {
+            int n = columns ? xs : ys;
+            int m = columns ? ys : xs;
+            for (int k = 0; k < n; k++) {
+                for (int l = 0; l < m; l++) {
+                    int tx = sel.x + (columns ? k : l);
+                    int ty = sel.y + (columns ? l : k);
+                    if (tx < p->xs && ty < p->ys && !isempty(p->C(tx, ty).get())) { return k; }
                 }
-                if (!empty) { p->InsertCells(tx, -1, 1, 0); }
             }
+            return n;
+        };
+        int insertrows = 0;
+        int insertcolumns = 0;
+        if (pastemode == PASTE_INSERTROWS) {
+            insertrows = ys - 1;
+        } else if (pastemode == PASTE_INSERTCOLUMNS) {
+            insertcolumns = xs - 1;
         } else {
-            if (nxs > 0) { p->InsertCells(p->xs, -1, nxs, 0); }
-            for (int j = 0; j < ys; j++) {
-                int ty = sel.y + j;
-                bool empty = ty < p->ys;
-                for (int i = 0; empty && i < xs; i++) {
-                    empty = isempty(p->C(sel.x + i, ty).get());
-                }
-                if (!empty) { p->InsertCells(-1, ty, 0, 1); }
+            int rows = ys - firstconflict(false);
+            int columns = xs - firstconflict(true);
+            if (columns < rows || (columns == rows && xs > ys)) {
+                insertcolumns = columns;
+            } else {
+                insertrows = rows;
             }
         }
+        // Inserted rows (columns) end right after the grid, so a thin selection's new row
+        // (column) stays at sel, and the cell being replaced with it.
+        if (insertrows > 0) { p->InsertCells(-1, sel.y + ys - insertrows, 0, insertrows); }
+        if (insertcolumns > 0) { p->InsertCells(sel.x + xs - insertcolumns, -1, insertcolumns, 0); }
+        if (sel.x + xs > p->xs) { p->InsertCells(p->xs, -1, sel.x + xs - p->xs, 0); }
+        if (sel.y + ys > p->ys) { p->InsertCells(-1, p->ys, 0, sel.y + ys - p->ys); }
         foreachcell(c) {
             int tx = x + sel.x;
             int ty = y + sel.y;

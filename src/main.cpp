@@ -306,6 +306,9 @@ static const uint TS_RUN_HASCOLOR = 0x1000000;
 
 enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 
+// How a grid pasted into another grid makes room there, see Grid::MergeWithParent.
+enum { PASTE_FIT = 0, PASTE_INSERTROWS, PASTE_INSERTCOLUMNS };
+
 #ifdef ENABLE_LOBSTER
     #include "script_interface.h"
 

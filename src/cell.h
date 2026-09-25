@@ -496,7 +496,7 @@ struct Cell {
     }
 
     void Paste(Document *document, const Cell *original, Selection &selection,
-               bool pushcolumns = false) {
+               int pastemode = PASTE_FIT) {
         parent->AddUndo(document);
         ResetLayout();
         if (!HasText() || !selection.TextEdit()) { note = original->note; }
@@ -517,7 +517,7 @@ struct Cell {
             original = nullptr;
             grid = gridclone;
             if (!HasText()) {
-                grid->MergeWithParent(parent->grid, selection, document, pushcolumns);  // deletes grid/this.
+                grid->MergeWithParent(parent->grid, selection, document, pastemode);  // deletes grid/this.
             }
         }
     }
