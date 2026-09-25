@@ -215,7 +215,7 @@ struct TSApp : wxApp {
         if (installdir && !std::filesystem::exists(path)) {
             path = std::filesystem::path(installdir) / relpath.ToStdString();
         }
-        return {path};
+        return wxString(path.native());
     }
 
     wxString GetDataPath(const wxString &relpath) const {

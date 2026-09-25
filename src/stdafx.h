@@ -84,6 +84,7 @@
 #include <memory>
 #include <mutex>
 #include <new>
+#include <numeric>
 #include <queue>
 #include <random>
 #include <set>
