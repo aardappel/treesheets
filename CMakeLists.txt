@@ -67,6 +67,13 @@ endif()
 foreach(option WEBVIEW STC RIBBON PROPGRID RICHTEXT MEDIACTRL)
     set(wxUSE_${option} FALSE)
 endforeach()
+# wxWidgets only declares wxBUILD_SHARED when it's configured below, so declare it here with its
+# default (shared, unless BUILD_SHARED_LIBS says otherwise) to see the value it will use.
+if(DEFINED BUILD_SHARED_LIBS)
+    set(wxBUILD_SHARED ${BUILD_SHARED_LIBS} CACHE BOOL "Build wx libraries as shared libs")
+else()
+    set(wxBUILD_SHARED ON CACHE BOOL "Build wx libraries as shared libs")
+endif()
 if(NOT wxBUILD_SHARED)
     set(wxUSE_HTML FALSE)
     set(wxUSE_WXHTML_HELP FALSE)
