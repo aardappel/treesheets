@@ -256,6 +256,7 @@ enum {
     A_THINSELC,
     A_HOVERZOOM,
     A_HOVERSHADOW,
+    A_HOVERSHADOWCOL,
     A_COPYCT,
     A_COPYBM,
     A_COPYWI,

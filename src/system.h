@@ -37,6 +37,7 @@ struct System {
     bool thinselc {true};
     bool hoverzoom {false};
     bool hovershadow {false};
+    int hovershadowcolor {0x808080};
     bool minclose {false};
     bool singletray {false};
     bool bottomtabs {true};
@@ -98,6 +99,7 @@ struct System {
         cfg->Read("thinselc", &thinselc, thinselc);
         cfg->Read("hoverzoom", &hoverzoom, hoverzoom);
         cfg->Read("hovershadow", &hovershadow, hovershadow);
+        cfg->Read("hovershadowcolor", &hovershadowcolor, hovershadowcolor);
         cfg->Read("autosave", &autosave, autosave);
         cfg->Read("fastrender", &fastrender, fastrender);
         cfg->Read("innerbordercolor", &innerbordercolor, innerbordercolor);

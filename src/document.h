@@ -326,22 +326,39 @@ struct Document {
         hovershade = shade;
     }
 
-    // Shades the hovered cell by drawing translucent gray over it, which darkens light and
-    // lightens dark cell colors. Without a graphics context (GDI on Windows) there is no
-    // alpha, so XOR a dark gray instead.
+    // Shades the hovered cell by drawing the hover shadow color translucently over it. The
+    // default gray darkens light and lightens dark cell colors.
     template<typename DC> void DrawHoverShade(DC &dc) {
         const auto &r = hovershade;
+        const wxColour base(LightColor(sys->hovershadowcolor));
+        const wxColour color(base.Red(), base.Green(), base.Blue(), 56);
         if (auto *gc = dc.GetGraphicsContext(); gc != nullptr) {
             gc->SetPen(*wxTRANSPARENT_PEN);
-            gc->SetBrush(wxBrush(wxColour(128, 128, 128, 56)));
+            gc->SetBrush(wxBrush(color));
             gc->DrawRectangle(r.x, r.y, r.width, r.height);
-        } else {
-            dc.SetLogicalFunction(wxXOR);
-            dc.SetPen(*wxTRANSPARENT_PEN);
-            dc.SetBrush(wxBrush(wxColour(0x14, 0x10, 0x10)));
-            dc.DrawRectangle(r);
-            dc.SetLogicalFunction(wxCOPY);
+            return;
         }
+        #ifdef __WXMSW__
+            // A GDI DC can't blend. Draw with GDI+ on its HDC instead, in device coordinates:
+            // wx keeps the DC's origin and scale to itself rather than in the HDC.
+            if (unique_ptr<wxGraphicsContext> gc(
+                    wxGraphicsContext::CreateFromNativeHDC(dc.GetHDC()));
+                gc) {
+                auto x0 = dc.LogicalToDeviceX(r.x);
+                auto y0 = dc.LogicalToDeviceY(r.y);
+                gc->SetPen(*wxTRANSPARENT_PEN);
+                gc->SetBrush(wxBrush(color));
+                gc->DrawRectangle(x0, y0, dc.LogicalToDeviceX(r.x + r.width) - x0,
+                                  dc.LogicalToDeviceY(r.y + r.height) - y0);
+                return;
+            }
+        #endif
+        // No alpha at all: XOR a dark gray, like TreeSheets used to.
+        dc.SetLogicalFunction(wxXOR);
+        dc.SetPen(*wxTRANSPARENT_PEN);
+        dc.SetBrush(wxBrush(wxColour(0x14, 0x10, 0x10)));
+        dc.DrawRectangle(r);
+        dc.SetLogicalFunction(wxCOPY);
     }
 
     void ScrollIfSelectionOutOfView() {
@@ -1608,6 +1625,15 @@ struct Document {
                     color != static_cast<uint>(-1)) {
                     sys->cfg->Write("cursorcolor", sys->cursorcolor = color);
                     canvas->Refresh();
+                }
+                return wxEmptyString;
+            }
+
+            case A_HOVERSHADOWCOL: {
+                if (auto color = PickColor(sys->frame, sys->hovershadowcolor);
+                    color != static_cast<uint>(-1)) {
+                    sys->cfg->Write("hovershadowcolor", sys->hovershadowcolor = color);
+                    if (!hovershade.IsEmpty()) { RefreshDocRect(hovershade); }
                 }
                 return wxEmptyString;
             }
