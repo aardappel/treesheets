@@ -65,6 +65,9 @@ struct Document {
     int fgutter {6};
     int lasttextsize {0};
     int laststylebits {0};
+    // dc.GetCharHeight() of the font PickFont() last selected, or -1 if not measured yet. See
+    // CharHeight().
+    int lastcharheight {-1};
     // Only screen DCs share fonts. Printer/export DCs select their own resources.
     map<pair<int, int>, wxFont> fontcache;
     wxString fontcacheface, fontcachefixedface;
@@ -719,7 +722,7 @@ struct Document {
                     // worst that can happen on a thin window is that its rendering gets cut off
                     s = s.Left(sys->defaultmaxcolwidth) + "...";
                 }
-                dc.DrawText(s, off, off);
+                DrawText(dc, s, off, off);
             }
         }
         dc.SetTextForeground(sys->rubberbandcolor);
@@ -899,13 +902,22 @@ struct Document {
             }
             lasttextsize = textsize;
             laststylebits = stylebits;
+            lastcharheight = -1;
         }
         return FontIsMini(textsize);
+    }
+
+    // Same as dc.GetCharHeight() for the font PickFont() selected, but only measured once per
+    // font change: with wxGCDC (GTK, macOS), every call lays out and measures a string.
+    template<typename DC> int CharHeight(DC &dc) {
+        if (lastcharheight < 0) { lastcharheight = dc.GetCharHeight(); }
+        return lastcharheight;
     }
 
     void ResetFont() {
         lasttextsize = INT_MAX;
         laststylebits = -1;
+        lastcharheight = -1;
     }
 
     template<typename DC> void ResetFont(DC &dc) {

@@ -10,6 +10,21 @@ static void DrawRectangle(DC &dc, uint color, int x, int y, int xs, int ys, bool
     dc.DrawRectangle(x, y, xs, ys);
 }
 
+// Same as dc.DrawText(). But wxGTK's DrawText() first lays out and measures the text with Pango,
+// only to update the DC's bounding box and to mirror the text in right-to-left layouts, and then
+// lays it out a second time to draw it. Where neither applies, draw it with the DC's graphics
+// context directly, which lays it out only once.
+template<typename DC> static void DrawText(DC &dc, const wxString &text, int x, int y) {
+    auto *gc = dc.GetGraphicsContext();
+    if (gc != nullptr && !dc.AreAutomaticBoundingBoxUpdatesEnabled() &&
+        dc.GetLayoutDirection() != wxLayout_RightToLeft &&
+        dc.GetBackgroundMode() == wxBRUSHSTYLE_TRANSPARENT) {
+        gc->DrawText(text, x, y);
+    } else {
+        dc.DrawText(text, x, y);
+    }
+}
+
 static uint SwapColor(uint c) { return ((c & 0xFF) << 16) | (c & 0xFF00) | ((c & 0xFF0000) >> 16); }
 
 struct DropTarget : wxDropTarget {

@@ -336,7 +336,7 @@ struct Text {
     template<typename DC> LineMetrics GetLineMetrics(Document *doc, DC &dc, int depth) const {
         doc->PickFont(dc, depth, relsize, stylebits);
         LineMetrics lm;
-        lm.height = dc.GetCharHeight();
+        lm.height = doc->CharHeight(dc);
         if (runs.empty()) { return lm; }
         lm.ascent = dc.GetFontMetrics().ascent;
         auto maxdescent = lm.height - lm.ascent;
@@ -347,7 +347,7 @@ struct Text {
             doc->PickFont(dc, depth, relsize, last);
             auto ascent = dc.GetFontMetrics().ascent;
             lm.ascent = max(lm.ascent, ascent);
-            maxdescent = max(maxdescent, dc.GetCharHeight() - ascent);
+            maxdescent = max(maxdescent, doc->CharHeight(dc) - ascent);
         }
         lm.height = lm.ascent + maxdescent;
         doc->PickFont(dc, depth, relsize, stylebits);
@@ -429,7 +429,7 @@ struct Text {
 
         auto rich = !cell->tiny && !runs.empty();
         auto lm = rich ? GetLineMetrics(doc, dc, depth) : LineMetrics();
-        auto h = cell->tiny ? 1 : (rich ? lm.height : dc.GetCharHeight());
+        auto h = cell->tiny ? 1 : (rich ? lm.height : doc->CharHeight(dc));
         leftoffset = h;
         auto i = 0;
         auto lines = 0;
@@ -494,7 +494,7 @@ struct Text {
                     auto str = t.Mid(s, l);
                     auto w = 0;
                     dc.GetTextExtent(str, &w, nullptr);
-                    dc.DrawText(str, x, ty + lm.ascent - dc.GetFontMetrics().ascent);
+                    DrawText(dc, str, x, ty + lm.ascent - dc.GetFontMetrics().ascent);
                     x += w;
                 });
                 doc->PickFont(dc, depth, relsize, stylebits);
@@ -511,7 +511,7 @@ struct Text {
                 }
                 auto tx = bx + 2 + ixs;
                 auto ty = by + lines * h;
-                dc.DrawText(curl, tx + g_margin_extra, ty + g_margin_extra);
+                DrawText(dc, curl, tx + g_margin_extra, ty + g_margin_extra);
                 if (searchfound || filtered || istag || cell->textcolor != 0U) {
                     dc.SetTextForeground(sys->rubberbandcolor);
                 }
@@ -536,7 +536,7 @@ struct Text {
 
         auto i = 0;
         auto linestart = 0;
-        auto line = by / (runs.empty() ? dc.GetCharHeight() : GetLineMetrics(doc, dc, depth).height);
+        auto line = by / (runs.empty() ? doc->CharHeight(dc) : GetLineMetrics(doc, dc, depth).height);
         wxString ls;
 
         loop(l, line + 1) {
@@ -569,7 +569,7 @@ struct Text {
         if (ixs != 0) { ixs += 2; }
         auto depth = cell->Depth() - static_cast<int>(doc->drawpath.size());
         doc->PickFont(dc, depth, relsize, stylebits);
-        auto h = runs.empty() ? dc.GetCharHeight() : GetLineMetrics(doc, dc, depth).height;
+        auto h = runs.empty() ? doc->CharHeight(dc) : GetLineMetrics(doc, dc, depth).height;
 
         if (s.cursor != s.cursorend) {
             // A range selection can span multiple lines (one rectangle drawn per line
