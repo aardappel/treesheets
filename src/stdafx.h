@@ -30,6 +30,12 @@
     #include <wx/msw/regconf.h>
 #endif
 
+#if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
+    #include <gdk/gdk.h>
+    #include <pango/pangocairo.h>
+    #include <wx/fontutil.h>
+#endif
+
 #include <wx/aui/aui.h>
 #include <wx/base64.h>
 #include <wx/bmpbndl.h>
