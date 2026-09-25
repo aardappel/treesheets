@@ -113,9 +113,20 @@ BUILTIN(set_note, "text", "S", "", "sets the note of the current cell")
     si->SetNote(s->strv());
 }
 
+// Raises a runtime error unless a cols x rows grid is one a script may create.
+static void CheckNewGridSize(VM &vm, const char *builtin, iint cols, iint rows) {
+    if (cols < 1 || rows < 1 || cols > max_new_grid_cells || rows > max_new_grid_cells ||
+        cols * rows > max_new_grid_cells) {
+        vm.BuiltinError(cat(builtin, ": a ", cols, " x ", rows, " grid is invalid, cols and rows "
+                            "must be at least 1 and cols * rows at most ", max_new_grid_cells));
+    }
+}
+
 BUILTIN(create_grid, "cols,rows", "II", "",
-    "creates a grid in the current cell if there is not one yet")
-(VM &, iint x, iint y) {
+    "creates a grid in the current cell if there is not one yet. cols and rows must be at "
+    "least 1, and cols * rows at most 65536, or this is a runtime error.")
+(VM &vm, iint x, iint y) {
+    CheckNewGridSize(vm, "ts.create_grid", x, y);
     si->CreateGrid((int)x, (int)y);
 }
 
@@ -219,8 +230,10 @@ BUILTIN(load_document, "filename", "S", "B",
 
 BUILTIN(new_document, "cols,rows", "II", "",
     "opens a new, unsaved document in a new tab with a root grid of the given size, and makes "
-    "it the active one")
-(VM &, iint cols, iint rows) {
+    "it the active one. cols and rows must be at least 1, and cols * rows at most 65536, or "
+    "this is a runtime error.")
+(VM &vm, iint cols, iint rows) {
+    CheckNewGridSize(vm, "ts.new_document", cols, rows);
     si->NewDocument((int)cols, (int)rows);
 }
 

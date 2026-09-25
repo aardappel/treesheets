@@ -52,7 +52,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_note</b>(text<font color="#666666">: string</font>)</tt></td><td class="a">sets the note of the current cell</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.create_grid</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">creates a grid in the current cell if there is not one yet</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.create_grid</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">creates a grid in the current cell if there is not one yet. cols and rows must be at least 1, and cols * rows at most 65536, or this is a runtime error.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.insert_column</b>(c<font color="#666666">: int</font>)</tt></td><td class="a">inserts a column before column c in an existing grid</td>
@@ -106,7 +106,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.load_document</b>(filename<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">loads a document, and makes it the active one. returns false if failed.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.new_document</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">opens a new, unsaved document in a new tab with a root grid of the given size, and makes it the active one</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.new_document</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">opens a new, unsaved document in a new tab with a root grid of the given size, and makes it the active one. cols and rows must be at least 1, and cols * rows at most 65536, or this is a runtime error.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.save_document</b>(saveas<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">saves the current document to disk, same as the Save (saveas=false) / Save As (saveas=true) menu actions. if the document has no filename yet, always shows a save dialog. returns false if the save failed or the dialog was cancelled.</td>

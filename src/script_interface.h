@@ -3,6 +3,9 @@ namespace script {
 using icoord = std::pair<int, int>;
 using ibox = std::pair<icoord, icoord>;
 
+// The largest grid (in cells) a script may create in one go. Don't allow crazy sizes.
+inline constexpr int64_t max_new_grid_cells = 256 * 256;
+
 struct ScriptInterface {
     virtual bool LoadDocument(const char *filename) = 0;
     virtual void NewDocument(int cols, int rows) = 0;

@@ -275,7 +275,11 @@ Other things worth knowing regardless of how you looked up the API:
 - `int2` values (from `num_columns_rows()`, or arguments to `delete(...)`)
   print as `int2{x, y}` and are indexed as `v[0]`/`v[1]`; construct one as
   `int2{x, y}`. `create_grid(cols, rows)` only creates a grid if the current
-  cell doesn't have one yet — safe to call speculatively.
+  cell doesn't have one yet — safe to call speculatively. It (like
+  `new_document(cols, rows)`) is a runtime error (the `eval` fails) if
+  `cols`/`rows` is below 1 or `cols * rows` exceeds 65536; for a bigger grid, create it within that limit and grow it
+  with `insert_row`/`insert_column`. Builds from before this check silently
+  did nothing instead.
 - **The currently open document is very likely real user data** (TreeSheets
   restores the last session's open files on launch, `-a`/`-i` don't change
   that) — check `ts.get_filename()` first. To experiment with a grid without
