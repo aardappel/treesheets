@@ -13,6 +13,12 @@ struct Grid {
     // readers must check its size against xs/ys since it starts empty.
     vector<int> colmaxcache;
     vector<int> rowmaxcache;
+    // The offset (ox/oy) of each column/row, as of the last full Layout(), which gives every
+    // cell in a column/row the same offset and size. Together with colmaxcache/rowmaxcache
+    // this lets Render() and FindXY() binary search the few columns/rows that overlap a
+    // region, instead of testing every cell in the grid. See HasCachedGeometry().
+    vector<int> coloffsets;
+    vector<int> rowoffsets;
     // xsize, ysize
     int xs;
     int ys;
@@ -153,7 +159,11 @@ struct Grid {
             cx += g_margin_extra;
             cy += g_margin_extra;
         }
+        coloffsets.resize(xs);
+        rowoffsets.resize(ys);
         foreachcell(c) {
+            if (y == 0) { coloffsets[x] = cx; }
+            if (x == 0) { rowoffsets[y] = cy; }
             c->ox = cx;
             c->oy = cy;
             if (c->drawstyle == DS_BLOBLINE && !c->grid) {
@@ -172,10 +182,50 @@ struct Grid {
         return tinyborder;
     }
 
+    // Whether coloffsets/rowoffsets/colmaxcache/rowmaxcache describe the current layout: any
+    // change to this grid goes through a ResetLayout() of its cell, which clears the cell's sx
+    // until the next Layout() (or FastRelayoutAfterEdit(), which only applies when nothing in
+    // the grid moved).
+    bool HasCachedGeometry() const {
+        return cell->sx != 0 && coloffsets.size() == static_cast<size_t>(xs) &&
+               rowoffsets.size() == static_cast<size_t>(ys) &&
+               colmaxcache.size() == static_cast<size_t>(xs) &&
+               rowmaxcache.size() == static_cast<size_t>(ys);
+    }
+
+    // The range [first, last) of the columns/rows whose span (offset, offset + size) overlaps
+    // [lo, hi). Relies on both offsets and offsets + sizes increasing, as Layout() makes them.
+    static pair<int, int> OverlappingRange(const vector<int> &offsets, const vector<int> &sizes,
+                                           int lo, int hi) {
+        int first = 0;
+        int last = static_cast<int>(offsets.size());
+        for (int n = last; first < n;) {
+            int m = (first + n) / 2;
+            if (offsets[m] + sizes[m] <= lo) first = m + 1; else n = m;
+        }
+        for (int f = first; f < last;) {
+            int m = (f + last) / 2;
+            if (offsets[m] < hi) f = m + 1; else last = m;
+        }
+        return {first, last};
+    }
+
+    // The columns [x0, x1) and rows [y0, y1) that may overlap the region [lx, hx) x [ly, hy)
+    // (relative to this grid's cell), or all of them if the cached geometry isn't current.
+    tuple<int, int, int, int> OverlappingCells(int lx, int hx, int ly, int hy) const {
+        if (!HasCachedGeometry()) { return {0, xs, 0, ys}; }
+        auto [x0, x1] = OverlappingRange(coloffsets, colmaxcache, lx, hx);
+        auto [y0, y1] = OverlappingRange(rowoffsets, rowmaxcache, ly, hy);
+        return {x0, x1, y0, y1};
+    }
+
     template<typename DC>
     void Render(Document *doc, int bx, int by, DC &dc, int depth, int sx, int sy, int xoff,
                 int yoff) {
-        foreachcell(c) {
+        auto [x0, x1, y0, y1] =
+            OverlappingCells(doc->scrollx - bx, doc->maxx - bx, doc->scrolly - by, doc->maxy - by);
+        for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
+            auto &c = C(x, y);
             int cx = bx + c->ox;
             int cy = by + c->oy;
             if (cx < doc->maxx && cx + c->sx > doc->scrollx && cy < doc->maxy &&
@@ -300,7 +350,11 @@ struct Grid {
     }
 
     template<typename DC> void FindXY(Document *doc, int px, int py, DC &dc) {
-        foreachcell(c) {
+        // Each cell reacts to a point up to g_line_width + g_selmargin outside of it (see below).
+        int m = g_line_width + g_selmargin;
+        auto [x0, x1, y0, y1] = OverlappingCells(px - m, px + m + 1, py - m, py + m + 1);
+        for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
+            auto &c = C(x, y);
             int bx = px - c->ox;
             int by = py - c->oy;
             if (bx >= 0 && by >= -g_line_width - g_selmargin && bx < c->sx && by < g_selmargin) {
