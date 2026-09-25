@@ -1,0 +1,7 @@
+# LeakSanitizer suppressions for builds with ENABLE_ASAN, e.g.:
+#   LSAN_OPTIONS=suppressions=platform/linux/lsan.supp ./TreeSheets
+#
+# fontconfig (used through Pango/GTK) keeps its configuration and font pattern caches for the
+# lifetime of the process and never frees them, so every run reports ~2 MB in ~50k allocations.
+# A plain Pango program shows the same, and none once it calls FcFini() before exiting.
+leak:libfontconfig.so

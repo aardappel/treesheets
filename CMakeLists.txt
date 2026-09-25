@@ -126,6 +126,7 @@ if(ENABLE_CLANG_TIDY)
     set_target_properties(TreeSheets PROPERTIES CXX_CLANG_TIDY "clang-tidy")
 endif()
 
+# Suppressions for leaks reported in system libraries: platform/linux/lsan.supp
 if(ENABLE_ASAN)
     if(MSVC)
         target_compile_options(TreeSheets PRIVATE /fsanitize=address)
