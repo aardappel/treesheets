@@ -1147,6 +1147,10 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(styletb, _("Typewriter (CTRL+ALT+t)"), A_TT, "typewriter", wxITEM_CHECK);
         FinishToolbar(styletb, "styletb", "Text style operations");
 
+        auto *notetb = NewToolbar();
+        AddToolbarIcon(notetb, _("Edit Note (CTRL+e)"), A_EDITNOTE, "note");
+        FinishToolbar(notetb, "notetb", "Note operations");
+
         // The pressed state of these follows the selected cells, see OnUpdateTextAlign and
         // OnUpdateVertAlign.
         auto *aligntb = NewToolbar();
