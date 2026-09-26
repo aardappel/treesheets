@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-26 11:44+0200\n"
-"PO-Revision-Date: 2026-09-07 01:06+0900\n"
+"PO-Revision-Date: 2026-09-26 21:33+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -274,78 +274,78 @@ msgid "Adds a grid to the selected cell"
 msgstr "선택한 셀에 격자 추가"
 
 msgid "Align &automatically"
-msgstr "자동 맞춤(&A)"
+msgstr "자동으로 정렬(&A)"
 
 msgid "Align &bottom"
-msgstr "아래쪽 맞춤(&B)"
+msgstr "아래 정렬(&B)"
 
 msgid "Align &center"
-msgstr "가운데 맞춤(&C)"
+msgstr "가운데 정렬(&C)"
 
 msgid "Align &left"
-msgstr "왼쪽 맞춤(&L)"
+msgstr "왼쪽 정렬(&L)"
 
 msgid "Align &middle"
-msgstr "세로 가운데 맞춤(&M)"
+msgstr "중앙 정렬(&M)"
 
 msgid "Align &right"
-msgstr "오른쪽 맞춤(&R)"
+msgstr "오른쪽 정렬(&R)"
 
 msgid "Align &top"
-msgstr "위쪽 맞춤(&T)"
+msgstr "위 정렬(&T)"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
-msgstr "자동 맞춤 (Ctrl+Shift+D)"
+msgstr "자동으로 정렬 (CTRL+SHIFT+D)"
 
 msgid "Align bottom (CTRL+SHIFT+n)"
-msgstr "아래쪽 맞춤 (Ctrl+Shift+N)"
+msgstr "아래 정렬 (CTRL+SHIFT+N)"
 
 msgid "Align left (CTRL+SHIFT+l)"
-msgstr "왼쪽 맞춤 (Ctrl+Shift+L)"
+msgstr "왼쪽 정렬 (CTRL+SHIFT+L)"
 
 msgid "Align middle (CTRL+SHIFT+h)"
-msgstr "세로 가운데 맞춤 (Ctrl+Shift+H)"
+msgstr "중앙 정렬 (CTRL+SHIFT+H)"
 
 msgid "Align right (CTRL+SHIFT+r)"
-msgstr "오른쪽 맞춤 (Ctrl+Shift+R)"
+msgstr "오른쪽 정렬 (CTRL+SHIFT+R)"
 
 msgid ""
 "Align right-to-left text (such as Arabic or Hebrew) right, and all other "
 "text left"
 msgstr ""
-"오른쪽에서 왼쪽으로 쓰는 텍스트(아랍어, 히브리어 등)는 오른쪽에, 그 밖의 텍스"
-"트는 왼쪽에 맞춥니다"
+"오른쪽에서 왼쪽으로 정렬되는 텍스트 (예: 아랍어 또는 히브리어)는 오른쪽으로, "
+"그 외 모든 텍스트는 왼쪽으로 정렬합니다"
 
 msgid "Align the content of the cell at the bottom"
-msgstr "셀의 내용을 아래쪽에 맞춥니다"
+msgstr "셀의 내용을 아래쪽에 맞추기"
 
 msgid "Align the content of the cell at the top"
-msgstr "셀의 내용을 위쪽에 맞춥니다"
+msgstr "셀의 내용을 위쪽에 맞추기"
 
 msgid ""
 "Align the content of the cell at the top, or in the middle in line style if "
 "it has no grid"
 msgstr ""
-"셀의 내용을 위쪽에 맞춥니다. 선 스타일에서 격자가 없으면 세로 가운데에 맞춥니"
+"셀의 내용을 상단에 정렬하거나, 격자가 없을 경우 줄 스타일에서 가운데 정렬합니"
 "다"
 
 msgid "Align the content of the cell in the middle"
-msgstr "셀의 내용을 세로 가운데에 맞춥니다"
+msgstr "셀의 내용을 가운데 정렬"
 
 msgid "Align the text of the cell left"
-msgstr "셀의 텍스트를 왼쪽에 맞춥니다"
+msgstr "셀 텍스트를 왼쪽으로 정렬"
 
 msgid "Align the text of the cell right"
-msgstr "셀의 텍스트를 오른쪽에 맞춥니다"
+msgstr "셀 텍스트를 오른쪽으로 정렬"
 
 msgid "Align top (CTRL+SHIFT+y)"
-msgstr "위쪽 맞춤 (Ctrl+Shift+Y)"
+msgstr "위 정렬 (CTRL+SHIFT+Y)"
 
 msgid "Align vertically aut&omatically"
-msgstr "세로 자동 맞춤(&O)"
+msgstr "수직으로 자동 정렬(&O)"
 
 msgid "Align vertically automatically"
-msgstr "세로 자동 맞춤"
+msgstr "수직으로 자동 정렬"
 
 msgid "Also colorize the inner grid border"
 msgstr "내부 그리드도 테두리 색칠"
@@ -390,7 +390,7 @@ msgid "Bitmap copied to clipboard"
 msgstr "클립보드에 복사된 비트맵"
 
 msgid "Bold (CTRL+b)"
-msgstr "굵게 (Ctrl+B)"
+msgstr "굵게 (CTRL+b)"
 
 msgid "Border "
 msgstr "테두리 "
@@ -460,10 +460,10 @@ msgid "Cell "
 msgstr "셀 "
 
 msgid "Center (CTRL+SHIFT+e)"
-msgstr "가운데 맞춤 (Ctrl+Shift+E)"
+msgstr "가운데 (CTRL+SHIFT+e)"
 
 msgid "Center the text of the cell"
-msgstr "셀의 텍스트를 가운데에 맞춥니다"
+msgstr "셀 텍스트 가운데 정렬"
 
 msgid "Change interface language"
 msgstr "인터페이스 언어 변경"
@@ -523,7 +523,7 @@ msgid "Choose image file to save:"
 msgstr "저장할 이미지 파일 선택:"
 
 msgid "Choose one of the example documents that come with TreeSheets to open"
-msgstr "TreeSheets와 함께 제공되는 예제 문서 중 하나를 골라 열기"
+msgstr "TreeSheets에 포함된 예시 문서 중 하나를 선택하여 엽니다"
 
 msgid "Clear replace"
 msgstr "바꾸기 지우기"
@@ -547,7 +547,7 @@ msgid "Column width increased."
 msgstr "열 너비가 증가했습니다."
 
 msgid "Columns:"
-msgstr "열 수:"
+msgstr "열:"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "쉼표로 구분된 텍스트 (CSV)..."
@@ -658,7 +658,7 @@ msgid "Edit &Note"
 msgstr "노트 편집(&N)"
 
 msgid "Edit Note (CTRL+e)"
-msgstr "노트 편집 (Ctrl+E)"
+msgstr "노트 편집 (CTRL+e)"
 
 msgid "Edit the note of the selected cell"
 msgstr "선택한 셀의 노트 편집"
@@ -965,7 +965,7 @@ msgid "Hover shadow"
 msgstr "호버 그림자"
 
 msgid "Hover shadow color..."
-msgstr "호버 그림자 색상..."
+msgstr "마우스 오버 시 그림자 색상..."
 
 msgid "Hover zoom"
 msgstr "호버 확대/축소"
@@ -1035,7 +1035,7 @@ msgstr ""
 "까?"
 
 msgid "Italic (CTRL+i)"
-msgstr "기울임꼴 (Ctrl+I)"
+msgstr "기울임꼴 (CTRL+i)"
 
 msgid "JPEG"
 msgstr "JPEG"
@@ -1233,7 +1233,7 @@ msgid "Open cell colors"
 msgstr "셀 색상 열기"
 
 msgid "Open e&xample..."
-msgstr "예제 열기(&X)..."
+msgstr "예시 열기(&X)..."
 
 msgid "Open file cancelled."
 msgstr "파일 열기가 취소되었습니다."
@@ -1328,7 +1328,7 @@ msgid "Please select an image file:"
 msgstr "이미지 파일을 선택하세요:"
 
 msgid "Please select example file(s) to load:"
-msgstr "로드할 예제 파일을 선택하세요:"
+msgstr "로드할 예시 파일을 선택해 주세요:"
 
 msgid "Please select file(s) to import:"
 msgstr "가져올 파일을 선택하세요:"
@@ -1435,10 +1435,10 @@ msgid "Reset toolbar"
 msgstr "도구 모음 재설정"
 
 msgid "Restrict search and replace to view"
-msgstr "검색 및 바꾸기를 현재 보기로 제한"
+msgstr "보기로 검색 및 바꾸기를 제한"
 
 msgid "Rows:"
-msgstr "행 수:"
+msgstr "행:"
 
 msgid "Run"
 msgstr "실행"
@@ -1515,8 +1515,7 @@ msgid ""
 "Search and replace in the visible content of the current view (no folded "
 "grids, no tiny cells)"
 msgstr ""
-"현재 보기에서 보이는 내용에서만 검색 및 바꾸기 (접힌 그리드와 아주 작은 셀 제"
-"외)"
+"현재 보기의 표시 가능한 내용에서 검색 및 바꾸기 (접힌 격자 및 작은 셀 없음)"
 
 msgid "Select &Parent"
 msgstr "부모 선택(&P)"
@@ -1556,7 +1555,7 @@ msgid "Set the color for the text cursor"
 msgstr "텍스트 커서의 색상 설정"
 
 msgid "Set the color of the hover shadow"
-msgstr "호버 그림자의 색상 설정"
+msgstr "마우스 오버 그림자 색상 설정"
 
 msgid "Set the default column width for a new grid"
 msgstr "새 격자의 기본 열 너비 설정"
@@ -1568,7 +1567,7 @@ msgid "Set the font the typewriter text is displayed with."
 msgstr "타자기 텍스트가 표시되는 글꼴을 설정합니다."
 
 msgid "Shade the cell the mouse pointer hovers over"
-msgstr "마우스 포인터가 있는 셀에 그림자 표시"
+msgstr "마우스 포인터가 올려진 셀 음영 처리"
 
 #, no-c-format
 msgid "Show 1% less than the last filter"
@@ -1607,7 +1606,7 @@ msgid "Show cells with the same style"
 msgstr "동일한 스타일의 셀 표시"
 
 msgid "Show cells with the same text"
-msgstr "동일한 텍스트의 셀 표시"
+msgstr "같은 텍스트를 가진 셀 표시"
 
 msgid "Show entire row on match"
 msgstr "일치 시 행 전체 표시"
@@ -1619,10 +1618,10 @@ msgid "Show only cells in current search"
 msgstr "현재 검색에서 셀만 표시"
 
 msgid "Show sub-grids on match"
-msgstr "일치 시 하위 격자 표시"
+msgstr "일치하는 하위 격자 표시"
 
 msgid "Shrink text in nested grids"
-msgstr "중첩된 격자의 텍스트 축소"
+msgstr "중첩 격자에서 텍스트 축소"
 
 msgid "Single click maximize from tray"
 msgstr "트레이에서 한 번 클릭으로 최대화"
@@ -1656,7 +1655,7 @@ msgid "Statusbar"
 msgstr "상태 표시줄"
 
 msgid "Strikethrough (CTRL+t)"
-msgstr "취소선 (Ctrl+T)"
+msgstr "취소선 (CTRL+t)"
 
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
@@ -1688,7 +1687,7 @@ msgid "Text &Editing"
 msgstr "텍스트 편집(&E)"
 
 msgid "Text &alignment"
-msgstr "텍스트 맞춤(&A)"
+msgstr "텍스트 정렬 (&A)"
 
 msgid "Text Sizing"
 msgstr "텍스트 크기"
@@ -1775,7 +1774,7 @@ msgid "Toggle whether statusbar is shown below the documents"
 msgstr "상태 표시줄이 문서 아래에 표시될지 전환"
 
 msgid "Toggle whether text gets smaller the deeper a grid is nested"
-msgstr "격자가 깊이 중첩될수록 텍스트를 작게 할지 전환"
+msgstr "격자가 더 깊게 중첩될수록 텍스트 크기가 작아지는지 여부 전환"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
@@ -1810,13 +1809,13 @@ msgid "Tutorial web page could not be found."
 msgstr "자습서 웹 페이지를 찾을 수 없습니다."
 
 msgid "Typewriter (CTRL+ALT+t)"
-msgstr "타자기체 (Ctrl+Alt+T)"
+msgstr "타자기체 (CTRL+ALT+T)"
 
 msgid "Typewriter font..."
 msgstr "타자기 글꼴..."
 
 msgid "Underline (CTRL+u)"
-msgstr "밑줄 (Ctrl+U)"
+msgstr "밑줄 (CTRL+u)"
 
 msgid "Undo (CTRL+z)"
 msgstr "실행 취소 (Ctrl+Z)"
@@ -1855,15 +1854,15 @@ msgid ""
 "When a cell in a row matches the current filter, show the whole row normally "
 "instead of only the matching cell"
 msgstr ""
-"행의 셀이 현재 필터와 일치하면 일치하는 셀만이 아니라 행 전체를 정상적으로 표"
-"시합니다"
+"행의 셀이 현재 필터와 일치하면, 일치하는 셀만이 아니라 해당 행 전체를 일반적"
+"으로 표시합니다"
 
 msgid ""
 "When a cell matches the current filter, show everything in the grid inside "
 "it normally instead of filtering it too"
 msgstr ""
-"셀이 현재 필터와 일치하면 그 안의 격자도 필터링하지 않고 모두 정상적으로 표시"
-"합니다"
+"셀이 현재 필터와 일치하면, 그 안의 격자에 있는 모든 항목을 일반적으로 표시하"
+"고 필터링은 적용하지 않습니다"
 
 msgid "Width"
 msgstr "너비"
@@ -1935,9 +1934,6 @@ msgstr "변경 사항을 한 번에 한 단계씩 되돌리기"
 msgid "scale:"
 msgstr "비율:"
 
-#~ msgid "size:"
-#~ msgstr "크기:"
-
 #~ msgid "Filter by the same cell color"
 #~ msgstr "동일한 셀 색상으로 필터링"
 
@@ -1950,6 +1946,12 @@ msgstr "비율:"
 
 #~ msgid "Search in folded grids"
 #~ msgstr "접힌 격자에서 검색"
+
+#~ msgid "change will take effect next run of TreeSheets"
+#~ msgstr "변경 사항은 다음 TreeSheets 실행 시 적용됩니다"
+
+#~ msgid "size:"
+#~ msgstr "크기:"
 
 #~ msgid "Export to a HTML file when document is saved"
 #~ msgstr "문서가 저장될 때 HTML 파일로 내보내기"
