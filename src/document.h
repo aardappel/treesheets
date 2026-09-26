@@ -962,6 +962,7 @@ struct Document {
     }
 
     int TextSize(int depth, int relsize) const {
+        if (!sys->shrinktext) { depth = 0; }
         return std::clamp(g_deftextsize - depth - relsize + pathscalebias, g_mintextsize(),
                           g_maxtextsize());
     }
@@ -2379,7 +2380,8 @@ struct Document {
                 for (auto *o : outer) {
                     if (o->grid) {
                         loopcellsin(o, c) if (_i != 0) {
-                            c->text.relsize = g_deftextsize - g_mintextsize() - c->Depth();
+                            c->text.relsize =
+                                g_deftextsize - g_mintextsize() - (sys->shrinktext ? c->Depth() : 0);
                         }
                     }
                 }

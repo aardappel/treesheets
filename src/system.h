@@ -52,6 +52,7 @@ struct System {
     bool casesensitivesearch {true};
     bool darkennonmatchingcells {false};
     bool fastrender {true};
+    bool shrinktext {true};
     bool showtoolbar {true};
     bool showstatusbar {true};
     bool followdarkmode {false};
@@ -103,6 +104,7 @@ struct System {
         cfg->Read("hovershadowcolor", &hovershadowcolor, hovershadowcolor);
         cfg->Read("autosave", &autosave, autosave);
         cfg->Read("fastrender", &fastrender, fastrender);
+        cfg->Read("shrinktext", &shrinktext, shrinktext);
         cfg->Read("innerbordercolor", &innerbordercolor, innerbordercolor);
         cfg->Read("followdarkmode", &followdarkmode, followdarkmode);
         cfg->Read("minclose", &minclose, minclose);
