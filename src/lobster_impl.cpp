@@ -22,6 +22,9 @@ bool RunMIR(const char *, const char *, string &error, const void **, const char
 
 }  // namespace lobster
 
+// Lobster's (global) file search path, not declared in platform.h. See RunLobster().
+extern vector<string> data_dirs;
+
 namespace script {
 
 ScriptInterface *si = nullptr;
@@ -580,6 +583,22 @@ string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *au
 
 string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins) {
     (void)dump_builtins;
+    // Like the lobster executable does for its main file, look for files next to the script
+    // first, but only while it runs: another script may be in another folder.
+    struct ScriptDir {
+        string dir;
+        ~ScriptDir() {
+            if (!dir.empty()) { std::erase(data_dirs, dir); }
+        }
+    } scriptdir;
+    if (code.empty()) {
+        auto path = SanitizePath(filename);
+        if (string dir(StripFilePart(path));
+            !dir.empty() && std::ranges::find(data_dirs, dir) == data_dirs.end()) {
+            data_dirs.insert(data_dirs.begin(), dir);
+            scriptdir.dir = dir;
+        }
+    }
     string err;
     try {
         CompileOptions opts;
