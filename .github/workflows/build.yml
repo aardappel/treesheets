@@ -126,8 +126,8 @@ jobs:
       uses: actions/cache@v6
       with:
         path: _build
-        key: ${{ runner.os }}-${{ steps.compiler.outputs.id }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
-        restore-keys: ${{ runner.os }}-${{ steps.compiler.outputs.id }}-cmake-04-build-
+        key: ${{ runner.os }}-arm64-${{ env.minmac }}-${{ steps.compiler.outputs.id }}-cmake-04-build-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
+        restore-keys: ${{ runner.os }}-arm64-${{ env.minmac }}-${{ steps.compiler.outputs.id }}-cmake-04-build-
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
