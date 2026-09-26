@@ -1492,6 +1492,11 @@ struct TSFrame : wxFrame {
             case A_AUTOSAVE: Toggle("autosave", sys->autosave); break;
             case A_CENTERED:
                 Toggle("centered", sys->centered);
+                if (notebook != nullptr) {
+                    loop(i, notebook->GetPageCount()) {
+                        dynamic_cast<TSCanvas *>(notebook->GetPage(i))->doc->ResetAnchor();
+                    }
+                }
                 Refresh();
                 break;
             case A_SHRINKTEXT:

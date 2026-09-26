@@ -291,10 +291,15 @@ struct TSCanvas : public wxScrolledCanvas {
             steps--;
             zoomgesturebase /= stepfactor;
         }
-        if (steps != 0) { sys->frame->SetStatus(doc->Wheel(steps, false, true, false)); }
+        // Zoom at the fingers: on a touch screen, they don't move the mouse pointer.
+        if (steps != 0) {
+            sys->frame->SetStatus(
+                doc->Wheel(steps, false, true, false, true, false, ge.GetPosition()));
+        }
     }
 
     void OnSize(wxSizeEvent &se) {
+        doc->ResetAnchor();
         doc->UpdateLayout();
         Refresh();
         se.Skip();
@@ -317,16 +322,7 @@ struct TSCanvas : public wxScrolledCanvas {
         se.Skip();  // Use default scrolling behavior.
     }
 
-    void CursorScroll(int dx, int dy) {
-        int x = 0;
-        int y = 0;
-        GetViewStart(&x, &y);
-        x += dx;
-        y += dy;
-        // EnableScrolling(true, true);
-        Scroll(x, y);
-        // EnableScrolling(false, false);
-    }
+    void CursorScroll(int dx, int dy) { doc->ScrollBy(dx, dy); }
 
     #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
     // wxGTK 3.3 subtracts overlay scrollbars from the client size, although they are drawn on

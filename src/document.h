@@ -66,6 +66,13 @@ struct Document {
     int maxy {0};
     int centerx {0};
     int centery {0};
+    // With hover zoom, zooming with the mouse wheel keeps the point of the cell under the
+    // pointer where it is (see ZoomAtPointer). That can take scrolling beyond the edges of the
+    // document, which the scrollbars can't. (anchorx, anchory) is the pixel offset of the
+    // document that makes up for that. While anchored, it replaces the centering offset.
+    bool anchored {false};
+    int anchorx {0};
+    int anchory {0};
     int layoutxs {0};
     int layoutys {0};
     int hierarchysize {0};
@@ -370,7 +377,7 @@ struct Document {
         int sx = 0;
         int sy = 0;
         canvas->GetViewStart(&sx, &sy);
-        if ((layoutys * currentviewscale > ch || layoutxs * currentviewscale > cw) &&
+        if ((anchored || layoutys * currentviewscale > ch || layoutxs * currentviewscale > cw) &&
             selected.grid != nullptr) {
             wxRect r = selected.grid->GetRect(this, selected);
             // A selection larger than the view can't be shown whole. Show the corner that
@@ -390,9 +397,112 @@ struct Document {
                     r.height = lr.height;
                 }
             }
-            canvas->Scroll(ScrollPosToShow(r.x, r.width, sx, cw),
-                           ScrollPosToShow(r.y, r.height, sy, ch));
+            if (anchored) {
+                // The view starts at the scroll position minus the anchor offset.
+                int vx = sx - anchorx;
+                int vy = sy - anchory;
+                ScrollBy(ScrollPosToShow(r.x, r.width, vx, cw) - vx,
+                         ScrollPosToShow(r.y, r.height, vy, ch) - vy);
+            } else {
+                canvas->Scroll(ScrollPosToShow(r.x, r.width, sx, cw),
+                               ScrollPosToShow(r.y, r.height, sy, ch));
+            }
         }
+    }
+
+    void ResetAnchor() {
+        if (!anchored) { return; }
+        anchored = false;
+        anchorx = anchory = 0;
+        canvas->Refresh();
+    }
+
+    void SetAnchor(int x, int y) {
+        anchored = true;
+        // Also takes effect before the next paint recomputes the offset, e.g. in UpdateHover().
+        centerx = anchorx = x;
+        centery = anchory = y;
+    }
+
+    // The largest scroll positions: the scrollbars only cover the document.
+    wxSize MaxScroll() const {
+        int cw = 0;
+        int ch = 0;
+        canvas->GetClientSize(&cw, &ch);
+        return {max(0, static_cast<int>(layoutxs * currentviewscale) - cw),
+                max(0, static_cast<int>(layoutys * currentviewscale) - ch)};
+    }
+
+    // Moves the view along one axis from scroll position s and anchor offset o by d pixels.
+    // The offset only shrinks: it takes up what the scrollbar can't, towards the document,
+    // but never goes further beyond its edges.
+    static void ScrollAxis(int d, int &s, int &o, int smax) {
+        int v = s - o + d;
+        int no = std::clamp(v, 0, smax) - v;
+        o = o >= 0 ? std::clamp(no, 0, o) : std::clamp(no, o, 0);
+        s = std::clamp(v + o, 0, smax);
+    }
+
+    // Scrolls the view by (dx, dy) pixels, using up the anchor offset first.
+    void ScrollBy(int dx, int dy) {
+        int sx = 0;
+        int sy = 0;
+        canvas->GetViewStart(&sx, &sy);
+        if (!anchored) {
+            canvas->Scroll(sx + dx, sy + dy);
+            return;
+        }
+        auto smax = MaxScroll();
+        int ox = anchorx;
+        int oy = anchory;
+        ScrollAxis(dx, sx, ox, smax.x);
+        ScrollAxis(dy, sy, oy, smax.y);
+        canvas->Scroll(sx, sy);
+        if (ox != anchorx || oy != anchory) {
+            SetAnchor(ox, oy);
+            canvas->Refresh();
+        }
+    }
+
+    // The area of a cell in document coordinates.
+    wxRect CellRect(Cell *c) { return {c->GetX(this), c->GetY(this), c->sx, c->sy}; }
+
+    // Zooms like Zoom() on the cell under the pointer at p (in window coordinates), and
+    // scrolls such that the same point of that cell stays under the pointer. Where that
+    // would take scrolling beyond the edges of the document, it is moved by the anchor
+    // offset, and not centered.
+    void ZoomAtPointer(int dir, wxPoint p) {
+        {
+            wxInfoDC dc(canvas);
+            UpdateHover(dc, p.x, p.y);
+        }
+        if (hover.grid == nullptr) {
+            Zoom(dir);
+            return;
+        }
+        auto *c = hover.Thin() ? hover.grid->cell : hover.GetCell();
+        int sx = 0;
+        int sy = 0;
+        canvas->GetViewStart(&sx, &sy);
+        auto before = CellRect(c);
+        // The pointer in document coordinates, as a fraction of the cell's size.
+        double docx = (p.x + sx - centerx) / currentviewscale;
+        double docy = (p.y + sy - centery) / currentviewscale;
+        double fx = before.width > 0 ? (docx - before.x) / before.width : 0.0;
+        double fy = before.height > 0 ? (docy - before.y) / before.height : 0.0;
+        if (!Zoom(dir)) { return; }
+        auto after = CellRect(c);
+        // Where the view has to start for that point to be under the pointer again.
+        int vx = lround((after.x + fx * after.width) * currentviewscale) - p.x;
+        int vy = lround((after.y + fy * after.height) * currentviewscale) - p.y;
+        auto smax = MaxScroll();
+        canvas->Scroll(std::clamp(vx, 0, smax.x), std::clamp(vy, 0, smax.y));
+        // wx may clamp the scroll position differently, so take the offset from where it went.
+        canvas->GetViewStart(&sx, &sy);
+        SetAnchor(sx - vx, sy - vy);
+        canvas->Refresh();
+        wxInfoDC dc(canvas);
+        UpdateHover(dc, p.x, p.y);
     }
 
     // The scroll position along one axis that brings [pos, pos + size) into a view of
@@ -666,9 +776,10 @@ struct Document {
         return drawpath.size() != oldlen;
     }
 
-    void Zoom(int dir, bool fromroot = false) {
+    bool Zoom(int dir, bool fromroot = false) {
         if (sys->hoverzoom && hover.grid != nullptr) SetSelect(hover);
-        if (!ZoomSetDrawPath(dir, fromroot)) { return; }
+        if (!ZoomSetDrawPath(dir, fromroot)) { return false; }
+        ResetAnchor();
         auto *drawroot = WalkPath(drawpath);
         if (selected.GetCell() == drawroot && drawroot->grid) {
             // We can't have the drawroot selected, so we must move the selection to the children.
@@ -679,6 +790,7 @@ struct Document {
         UpdateLayout();
         ScrollIfSelectionOutOfView();
         canvas->Refresh();
+        return true;
     }
 
     static wxString NoSel() { return _("This operation requires a selection."); }
@@ -702,8 +814,10 @@ struct Document {
         sys->frame->UpdateStatus(selected, false);
     }
 
+    // `at` is where a zoom gesture happened, in window coordinates. Otherwise the zoom follows the
+    // mouse pointer.
     wxString Wheel(int dir, bool alt, bool ctrl, bool shift, bool hierarchical = true,
-                   bool deferlayout = false) {
+                   bool deferlayout = false, optional<wxPoint> at = nullopt) {
         if (dir == 0) { return wxEmptyString; }
         if (alt) {
             if (selected.grid == nullptr) { return NoSel(); }
@@ -748,7 +862,16 @@ struct Document {
         } else if (ctrl) {
             int steps = abs(dir);
             dir = sign(dir);
-            loop(i, steps) Zoom(dir);
+            // With hover zoom, the wheel zooms at the pointer, if it's over the canvas.
+            auto pointer = at.value_or(canvas->ScreenToClient(wxGetMousePosition()));
+            bool atpointer = sys->hoverzoom && canvas->GetClientRect().Contains(pointer);
+            loop(i, steps) {
+                if (atpointer) {
+                    ZoomAtPointer(dir, pointer);
+                } else {
+                    Zoom(dir);
+                }
+            }
             return dir > 0 ? _("Zoomed in.") : _("Zoomed out.");
         } else {
             ASSERT(0);
@@ -780,7 +903,7 @@ struct Document {
     template<typename DC> void ShiftToCenter(DC &dc) const {
         int dlx = dc.DeviceToLogicalX(0);
         int dly = dc.DeviceToLogicalY(0);
-        dc.SetDeviceOrigin(dlx > 0 ? -dlx : centerx, dly > 0 ? -dly : centery);
+        dc.SetDeviceOrigin((dlx > 0 ? -dlx : 0) + centerx, (dly > 0 ? -dly : 0) + centery);
     }
 
     template<typename DC> void Render(DC &dc) {
@@ -887,12 +1010,21 @@ struct Document {
         }
         int oldcenterx = centerx;
         int oldcentery = centery;
-        centerx = sys->centered && scrollx == 0 && maxx > layoutxs
-                      ? (maxx - layoutxs) / 2 * currentviewscale
-                      : 0;
-        centery = sys->centered && scrolly == 0 && maxy > layoutys
-                      ? (maxy - layoutys) / 2 * currentviewscale
-                      : 0;
+        if (anchored) {
+            centerx = anchorx;
+            centery = anchory;
+            // Shifted towards the top left, the document shows more of itself at the bottom
+            // right. Grid::Render() culls cells against maxx/maxy.
+            maxx -= min(0, centerx) / currentviewscale;
+            maxy -= min(0, centery) / currentviewscale;
+        } else {
+            centerx = sys->centered && scrollx == 0 && maxx > layoutxs
+                          ? (maxx - layoutxs) / 2 * currentviewscale
+                          : 0;
+            centery = sys->centered && scrolly == 0 && maxy > layoutys
+                          ? (maxy - layoutys) / 2 * currentviewscale
+                          : 0;
+        }
         // The centering offset can change without a full repaint. What is already on screen
         // was then drawn at the old offset, and repainting just part of it (the hover shadow,
         // a partial expose) would leave that part shifted against the rest. E.g. wxGTK 3.3
