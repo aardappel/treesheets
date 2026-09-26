@@ -6,6 +6,9 @@ struct Selection {
     int ys;
     int cursor {0};
     int cursorend {0};
+    // The cursor is drawn before the character at it rather than after the one before it, while
+    // it is at this position. Only the arrow keys put it there, see Text::ArrowKeyMove().
+    int leadingcursor {-1};
     int firstdx {0};
     int firstdy {0};
     bool textedit {false};
@@ -273,18 +276,20 @@ struct Selection {
                                 }
                             } else {
                                 intracell = false;
+                                // Left and right as seen on the screen, which differs from the
+                                // order of the text in right-to-left text.
+                                auto &text = GetCell()->text;
+                                int maxcolwidth = GetCell()->parent->grid->colwidths[x];
+                                auto leading = cursor == leadingcursor;
                                 if (cursor != cursorend) {
-                                    if (dx < 0) {
-                                        cursorend = cursor;
-                                    } else {
-                                        cursor = cursorend;
-                                    }
+                                    cursor = cursorend =
+                                        text.ArrowKeyCollapse(cursor, cursorend, dx, maxcolwidth);
+                                    leading = false;
                                 } else {
-                                    if ((dx < 0 && cursor != 0) ||
-                                        (dx > 0 && MaxCursor() > cursor)) {
-                                        cursorend = cursor += dx;
-                                    }
+                                    cursorend = cursor =
+                                        text.ArrowKeyMove(cursor, leading, dx, maxcolwidth);
                                 }
+                                leadingcursor = leading ? cursor : -1;
                             }
                         }
 

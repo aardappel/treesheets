@@ -558,9 +558,12 @@ struct Text {
     // direction, or at a line start before the first character. Leaves the base font selected.
     template<typename DC>
     int BidiCursorX(Document *doc, DC &dc, int depth, const std::vector<BidiPiece> &pieces,
-                    int linestart, int pos) const {
+                    int linestart, int pos, bool leading = false) const {
         auto x = 0;
-        auto at = pos > linestart ? pos - 1 : pos;
+        auto lineend = pieces.empty() ? linestart : pieces[0].start;
+        for (const auto &p : pieces) { lineend = max(lineend, p.end()); }
+        // Before its own character if asked to (see ArrowKeyMove()), or at the start of a line.
+        auto at = pos > linestart && !(leading && pos < lineend) ? pos - 1 : pos;
         for (const auto &p : pieces) {
             if (at >= p.start && at < p.end()) {
                 x = BidiPieceX(doc, dc, depth, p, pos);
@@ -569,6 +572,96 @@ struct Text {
         }
         doc->PickFont(dc, depth, relsize, stylebits);
         return x;
+    }
+
+    // Where the cursor at each position of the line [start, end] can be on the screen, as the
+    // index of the gap between two characters, counted from the left: right after the character
+    // before it (`trailing`), or right before its own character (`leading`), or -1 if there is no
+    // such character on the line. At a direction change these are different places, and each
+    // gap is one of them for some position.
+    struct CursorPlaces {
+        std::vector<int> trailing;
+        std::vector<int> leading;
+
+        // Where BidiCursorX() draws the cursor: after the character before it, unless it is
+        // `leading` or at the start of the line.
+        int Place(int i, bool lead) const {
+            if ((lead || trailing[i] < 0) && leading[i] >= 0) { return leading[i]; }
+            return max(trailing[i], 0);
+        }
+    };
+
+    CursorPlaces GetCursorPlaces(const Bidi &b, int start, int end) const {
+        CursorPlaces cp {std::vector<int>(end - start + 1, -1),
+                         std::vector<int>(end - start + 1, -1)};
+        auto left = 0;  // the gap at the left edge of the run
+        for (const auto &r : bidi::VisualRuns(b.classes, b.levels, b.base, start, end)) {
+            for (auto k = 0; k < r.len; k++) {
+                // The k-th character from the left of the run, and the gaps on its sides.
+                auto c = (r.RightToLeft() ? r.start + r.len - 1 - k : r.start + k) - start;
+                auto lgap = left + k;
+                cp.leading[c] = r.RightToLeft() ? lgap + 1 : lgap;
+                cp.trailing[c + 1] = r.RightToLeft() ? lgap : lgap + 1;
+            }
+            left += r.len;
+        }
+        return cp;
+    }
+
+    // Finds the line the position `pos` is on: returns its start, and its end in `end`.
+    int LineOf(int pos, int maxcolwidth, int &end) const {
+        auto i = 0;
+        for (;;) {
+            auto start = i;
+            auto len = static_cast<int>(GetLine(i, maxcolwidth).Len());
+            end = start + len;
+            if ((pos >= start && pos <= end) || len == 0) { return start; }
+        }
+    }
+
+    // Where the left (dx < 0) or right arrow key moves the cursor from `pos` (drawn before its
+    // own character if `leading`): across the next character on the screen in that direction,
+    // which is not the next one in the text where the text goes from right to left. Returns the
+    // new position, and in `leading` how to draw it there. At the end of a line, it goes on to
+    // the next or previous line in the direction of the text.
+    int ArrowKeyMove(int pos, bool &leading, int dx, int maxcolwidth) const {
+        auto len = static_cast<int>(t.Len());
+        auto b = GetBidi();
+        if (!b.Empty()) {
+            auto end = 0;
+            auto start = LineOf(pos, maxcolwidth, end);
+            auto cp = GetCursorPlaces(b, start, end);
+            auto from = cp.Place(pos - start, leading);
+            auto to = from + (dx < 0 ? -1 : 1);
+            for (auto c = 0; c < end - start; c++) {
+                // The character between the two places: the cursor ends up at its edge there,
+                // which is before it or after it depending on its direction.
+                auto lead = cp.leading[c];
+                auto trail = cp.trailing[c + 1];
+                if (min(lead, trail) != min(from, to) || max(lead, trail) != max(from, to)) {
+                    continue;
+                }
+                auto i = lead == to ? c : c + 1;
+                // Only remember `leading` where it makes a difference.
+                leading = lead == to && cp.Place(i, false) != to;
+                return start + i;
+            }
+            if (b.base != 0) { dx = -dx; }
+        }
+        leading = false;
+        return max(0, min(len, pos + dx));
+    }
+
+    // Which end of the range [from, to) the left (dx < 0) or right arrow key leaves the cursor
+    // at: the one on that side on the screen.
+    int ArrowKeyCollapse(int from, int to, int dx, int maxcolwidth) const {
+        auto b = GetBidi();
+        auto end = 0;
+        auto start = LineOf(from, maxcolwidth, end);
+        if (b.Empty() || to > end) { return dx < 0 ? from : to; }
+        auto cp = GetCursorPlaces(b, start, end);
+        auto fromleft = cp.Place(from - start, false) < cp.Place(to - start, false);
+        return (dx < 0) == fromleft ? from : to;
     }
 
     // How far a line of width `w` is moved right from the left edge of the text, by the
@@ -877,8 +970,10 @@ struct Text {
         // and row height are recomputed fresh below regardless (cheap, and can shift
         // for reasons unrelated to this cell, e.g. a sibling growing).
         auto &cc = doc->cursorposcache;
+        auto leading = s.leadingcursor == s.cursor;
         if (cc.cell != cell || cc.image != image || cc.cursor != s.cursor ||
-            cc.stylebits != stylebits || cc.relsize != relsize || cc.maxcolwidth != maxcolwidth ||
+            cc.leading != leading || cc.stylebits != stylebits || cc.relsize != relsize ||
+            cc.maxcolwidth != maxcolwidth ||
             cc.align != align ||
             (align != TEXTALIGN_LEFT && cc.alignwidth != cell->TextAlignWidth(ixs)) ||
             cc.text != t || cc.runs != runs.v) {
@@ -887,6 +982,7 @@ struct Text {
             cc.text = t;
             cc.runs = runs.v;
             cc.cursor = s.cursor;
+            cc.leading = leading;
             cc.stylebits = stylebits;
             cc.relsize = relsize;
             cc.maxcolwidth = maxcolwidth;
@@ -906,8 +1002,9 @@ struct Text {
                         cc.localdx = x + 1 + ixs + g_margin_extra + lineoffset(start, len);
                     } else {
                         auto w = BidiLine(doc, dc, depth, bd, start, len, pieces);
-                        cc.localdx = BidiCursorX(doc, dc, depth, pieces, start, s.cursor) + 1 +
-                                     ixs + g_margin_extra + AlignOffset(align, w, ixs);
+                        cc.localdx =
+                            BidiCursorX(doc, dc, depth, pieces, start, s.cursor, leading) + 1 +
+                            ixs + g_margin_extra + AlignOffset(align, w, ixs);
                     }
                     cc.line = l;
                     cc.found = true;
