@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -498,6 +498,9 @@ msgstr "列宽已减小。"
 
 msgid "Column width increased."
 msgstr "列宽已增大。"
+
+msgid "Columns:"
+msgstr "列数："
 
 msgid "Comma delimited text (CSV)..."
 msgstr "逗号分隔文本 (CSV)..."
@@ -1369,6 +1372,9 @@ msgstr "重置工具栏"
 msgid "Restrict search and replace to view"
 msgstr "将查找和替换限制在当前视图"
 
+msgid "Rows:"
+msgstr "行数："
+
 msgid "Run"
 msgstr "运行"
 
@@ -1851,8 +1857,8 @@ msgstr "逐步还原更改"
 msgid "scale:"
 msgstr "缩放："
 
-msgid "size:"
-msgstr "大小："
+#~ msgid "size:"
+#~ msgstr "大小："
 
 #~ msgid "Cannot drag & drop more than 1 file."
 #~ msgstr "无法拖放超过 1 个文件。"

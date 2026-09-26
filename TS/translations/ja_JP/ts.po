@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -506,6 +506,9 @@ msgstr "列幅を狭くしました。"
 
 msgid "Column width increased."
 msgstr "列幅を広くしました。"
+
+msgid "Columns:"
+msgstr "列数:"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "カンマ区切りテキスト (CSV)..."
@@ -1416,6 +1419,9 @@ msgstr "ツールバーをリセット"
 msgid "Restrict search and replace to view"
 msgstr "検索と置換の対象を表示範囲に限定する"
 
+msgid "Rows:"
+msgstr "行数:"
+
 msgid "Run"
 msgstr "実行"
 
@@ -1905,8 +1911,8 @@ msgstr "変更を1ステップずつ元に戻します"
 msgid "scale:"
 msgstr "スケール :"
 
-msgid "size:"
-msgstr "サイズ :"
+#~ msgid "size:"
+#~ msgstr "サイズ :"
 
 #~ msgid "Filter by the same cell color"
 #~ msgstr "同じセル色でフィルター"

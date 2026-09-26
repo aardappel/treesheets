@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -569,6 +569,9 @@ msgstr "Ширина столбца уменьшена."
 # Сообщение (после действия или события)
 msgid "Column width increased."
 msgstr "Ширина столбца увеличена."
+
+msgid "Columns:"
+msgstr "Столбцов:"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "CSV (разделитель - &запятая)..."
@@ -1635,6 +1638,9 @@ msgstr "Сбросить панель инструментов"
 msgid "Restrict search and replace to view"
 msgstr "Ограничить поиск и замену текущим видом"
 
+msgid "Rows:"
+msgstr "Строк:"
+
 msgid "Run"
 msgstr "Запустить"
 
@@ -2217,8 +2223,8 @@ msgstr "отменять изменения, шаг за шагом"
 msgid "scale:"
 msgstr "масштаб:"
 
-msgid "size:"
-msgstr "размер:"
+#~ msgid "size:"
+#~ msgstr "размер:"
 
 #~ msgid "Filter by the same cell color"
 #~ msgstr "Фильтр по Цвету Ячейки"

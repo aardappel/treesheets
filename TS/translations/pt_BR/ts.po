@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -513,6 +513,9 @@ msgstr "A largura da coluna diminuiu."
 
 msgid "Column width increased."
 msgstr "A largura da coluna aumentou."
+
+msgid "Columns:"
+msgstr "Colunas:"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "Texto delimitado por vírgulas (&CSV)..."
@@ -1446,6 +1449,9 @@ msgstr "Redefinir barra de ferramentas"
 msgid "Restrict search and replace to view"
 msgstr "Restringir pesquisa e substituição à visualização"
 
+msgid "Rows:"
+msgstr "Linhas:"
+
 msgid "Run"
 msgstr "Executar"
 
@@ -1947,8 +1953,8 @@ msgstr "Reverte as mudanças, um passo de cada vez"
 msgid "scale:"
 msgstr "escala:"
 
-msgid "size:"
-msgstr "tamanho:"
+#~ msgid "size:"
+#~ msgstr "tamanho:"
 
 #~ msgid "Printing ..."
 #~ msgstr "Imprimindo..."

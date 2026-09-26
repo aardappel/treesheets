@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -498,6 +498,9 @@ msgstr "已縮減欄寬。"
 
 msgid "Column width increased."
 msgstr "已增加欄寬。"
+
+msgid "Columns:"
+msgstr "欄數："
 
 msgid "Comma delimited text (CSV)..."
 msgstr "逗號分隔文字 (CSV)..."
@@ -1369,6 +1372,9 @@ msgstr "重設工具列"
 msgid "Restrict search and replace to view"
 msgstr "將搜尋與取代限制在目前檢視"
 
+msgid "Rows:"
+msgstr "列數："
+
 msgid "Run"
 msgstr "執行"
 
@@ -1848,5 +1854,5 @@ msgstr "逐步還原變更"
 msgid "scale:"
 msgstr "縮放："
 
-msgid "size:"
-msgstr "大小："
+#~ msgid "size:"
+#~ msgstr "大小："
