@@ -84,13 +84,30 @@ BUILTIN_OUTS(selection, "", "", "I}:2I}:2",
     *out1 = ToVec<iint2>(int2(b.first));
 }
 
-BUILTIN(goto_child, "n", "I", "", "makes the current cell the nth child of the current cell")
-(VM &, iint n) {
+BUILTIN(goto_child, "n", "I", "",
+    "makes the current cell the nth child of the current cell. it is a runtime error if the "
+    "current cell has no sub-grid, or n is not in 0..num_children() - 1.")
+(VM &vm, iint n) {
+    auto num = si->NumChildren();
+    if (n < 0 || n >= num) {
+        vm.BuiltinError(num == 0 ? cat("ts.goto_child: the current cell has no sub-grid")
+                                 : cat("ts.goto_child: child ", n, " is invalid, it must be 0..",
+                                       num - 1));
+    }
     si->GoToChild((int)n);
 }
 
-BUILTIN(goto_column_row, "col,row", "II", "", "makes the current cell the child at col / row")
-(VM &, iint x, iint y) {
+BUILTIN(goto_column_row, "col,row", "II", "",
+    "makes the current cell the child at col / row. it is a runtime error if the current cell "
+    "has no sub-grid, or col / row is outside of it (see num_columns_rows()).")
+(VM &vm, iint x, iint y) {
+    auto [cols, rows] = si->NumColumnsRows();
+    if (x < 0 || x >= cols || y < 0 || y >= rows) {
+        vm.BuiltinError(cols == 0 ? cat("ts.goto_column_row: the current cell has no sub-grid")
+                                  : cat("ts.goto_column_row: column ", x, ", row ", y,
+                                        " is invalid, the grid has ", cols, " columns and ", rows,
+                                        " rows"));
+    }
     si->GoToColumnRow((int)x, (int)y);
 }
 

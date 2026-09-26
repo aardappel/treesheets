@@ -280,6 +280,10 @@ Other things worth knowing regardless of how you looked up the API:
   `cols`/`rows` is below 1 or `cols * rows` exceeds 65536; for a bigger grid, create it within that limit and grow it
   with `insert_row`/`insert_column`. Builds from before this check silently
   did nothing instead.
+- `goto_child(n)` and `goto_column_row(col, row)` are a runtime error if the
+  current cell has no sub-grid or the index is outside of it; check
+  `num_children()`/`num_columns_rows()` first when unsure. Older builds
+  silently stayed on the current cell, so the script went on in the wrong place.
 - **The currently open document is very likely real user data** (TreeSheets
   restores the last session's open files on launch, `-a`/`-i` don't change
   that) — check `ts.get_filename()` first. To experiment with a grid without
