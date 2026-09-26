@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -293,20 +293,35 @@ msgstr "Добавить сетку в выбранную ячейку"
 msgid "Align &automatically"
 msgstr "&Автоматическое выравнивание"
 
+msgid "Align &bottom"
+msgstr "По &нижнему краю"
+
 msgid "Align &center"
 msgstr "По &центру"
 
 msgid "Align &left"
 msgstr "По &левому краю"
 
+msgid "Align &middle"
+msgstr "По &середине"
+
 msgid "Align &right"
 msgstr "По &правому краю"
+
+msgid "Align &top"
+msgstr "По &верхнему краю"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "Автоматическое выравнивание (CTRL+SHIFT+d)"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "По нижнему краю (CTRL+SHIFT+n)"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "По левому краю (CTRL+SHIFT+l)"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "По середине (CTRL+SHIFT+h)"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "По правому краю (CTRL+SHIFT+r)"
@@ -319,11 +334,39 @@ msgstr ""
 "правому краю, а весь остальной текст — по левому"
 
 # комментарий к п. Меню
+msgid "Align the content of the cell at the bottom"
+msgstr "Выровнять содержимое ячейки по нижнему краю"
+
+# комментарий к п. Меню
+msgid "Align the content of the cell at the top"
+msgstr "Выровнять содержимое ячейки по верхнему краю"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr ""
+"Выровнять содержимое ячейки по верхнему краю, или по середине в стиле линий, "
+"если у неё нет сетки"
+
+# комментарий к п. Меню
+msgid "Align the content of the cell in the middle"
+msgstr "Выровнять содержимое ячейки по середине"
+
+# комментарий к п. Меню
 msgid "Align the text of the cell left"
 msgstr "Выровнять текст ячейки по левому краю"
 
 msgid "Align the text of the cell right"
 msgstr "Выровнять текст ячейки по правому краю"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "По верхнему краю (CTRL+SHIFT+y)"
+
+msgid "Align vertically aut&omatically"
+msgstr "Автоматическое выравнивание по верт&икали"
+
+msgid "Align vertically automatically"
+msgstr "Автоматическое выравнивание по вертикали"
 
 # комментарий к п. Меню
 msgid "Also colorize the inner grid border"

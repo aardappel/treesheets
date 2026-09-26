@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -280,20 +280,35 @@ msgstr "Adiciona uma grade à célula selecionada"
 msgid "Align &automatically"
 msgstr "Alinhar &automaticamente"
 
+msgid "Align &bottom"
+msgstr "Alinhar na &base"
+
 msgid "Align &center"
 msgstr "&Centralizar"
 
 msgid "Align &left"
 msgstr "Alinhar à &esquerda"
 
+msgid "Align &middle"
+msgstr "Alinhar no &meio"
+
 msgid "Align &right"
 msgstr "Alinhar à &direita"
+
+msgid "Align &top"
+msgstr "Alinhar no &topo"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "Alinhar automaticamente (CTRL+SHIFT+d)"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "Alinhar na base (CTRL+SHIFT+n)"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "Alinhar à esquerda (CTRL+SHIFT+l)"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "Alinhar no meio (CTRL+SHIFT+h)"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "Alinhar à direita (CTRL+SHIFT+r)"
@@ -305,11 +320,36 @@ msgstr ""
 "Alinhar à direita o texto escrito da direita para a esquerda (como árabe ou "
 "hebraico), e todo o resto do texto à esquerda"
 
+msgid "Align the content of the cell at the bottom"
+msgstr "Alinhar o conteúdo da célula na base"
+
+msgid "Align the content of the cell at the top"
+msgstr "Alinhar o conteúdo da célula no topo"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr ""
+"Alinhar o conteúdo da célula no topo, ou no meio no estilo de linha se ela "
+"não tiver grade"
+
+msgid "Align the content of the cell in the middle"
+msgstr "Alinhar o conteúdo da célula no meio"
+
 msgid "Align the text of the cell left"
 msgstr "Alinhar o texto da célula à esquerda"
 
 msgid "Align the text of the cell right"
 msgstr "Alinhar o texto da célula à direita"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "Alinhar no topo (CTRL+SHIFT+y)"
+
+msgid "Align vertically aut&omatically"
+msgstr "Alinhamento &vertical automático"
+
+msgid "Align vertically automatically"
+msgstr "Alinhamento vertical automático"
 
 msgid "Also colorize the inner grid border"
 msgstr "Coloriza também a borda interna da grade"

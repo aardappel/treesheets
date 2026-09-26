@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -274,20 +274,35 @@ msgstr "將網格加入選取的儲存格"
 msgid "Align &automatically"
 msgstr "自動對齊(&A)"
 
+msgid "Align &bottom"
+msgstr "靠下對齊(&B)"
+
 msgid "Align &center"
 msgstr "置中(&C)"
 
 msgid "Align &left"
 msgstr "靠左對齊(&L)"
 
+msgid "Align &middle"
+msgstr "垂直置中(&M)"
+
 msgid "Align &right"
 msgstr "靠右對齊(&R)"
+
+msgid "Align &top"
+msgstr "靠上對齊(&T)"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "自動對齊（Ctrl + Shift + D）"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "靠下對齊（Ctrl + Shift + N）"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "靠左對齊（Ctrl + Shift + L）"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "垂直置中（Ctrl + Shift + H）"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "靠右對齊（Ctrl + Shift + R）"
@@ -298,11 +313,34 @@ msgid ""
 msgstr ""
 "將由右至左書寫的文字（例如阿拉伯文或希伯來文）靠右對齊，其他文字靠左對齊"
 
+msgid "Align the content of the cell at the bottom"
+msgstr "將儲存格內容靠下對齊"
+
+msgid "Align the content of the cell at the top"
+msgstr "將儲存格內容靠上對齊"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr "將儲存格內容靠上對齊；在線條樣式中，沒有網格的儲存格垂直置中"
+
+msgid "Align the content of the cell in the middle"
+msgstr "將儲存格內容垂直置中"
+
 msgid "Align the text of the cell left"
 msgstr "將儲存格文字靠左對齊"
 
 msgid "Align the text of the cell right"
 msgstr "將儲存格文字靠右對齊"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "靠上對齊（Ctrl + Shift + Y）"
+
+msgid "Align vertically aut&omatically"
+msgstr "自動垂直對齊(&O)"
+
+msgid "Align vertically automatically"
+msgstr "自動垂直對齊"
 
 msgid "Also colorize the inner grid border"
 msgstr "同時為內部網格框線著色"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -276,20 +276,35 @@ msgstr "選択したセルにグリッドを追加"
 msgid "Align &automatically"
 msgstr "自動で揃える(&A)"
 
+msgid "Align &bottom"
+msgstr "下揃え(&B)"
+
 msgid "Align &center"
 msgstr "中央揃え(&C)"
 
 msgid "Align &left"
 msgstr "左揃え(&L)"
 
+msgid "Align &middle"
+msgstr "上下中央揃え(&M)"
+
 msgid "Align &right"
 msgstr "右揃え(&R)"
+
+msgid "Align &top"
+msgstr "上揃え(&T)"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "自動で揃える (Ctrl+Shift+D)"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "下揃え (Ctrl+Shift+N)"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "左揃え (Ctrl+Shift+L)"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "上下中央揃え (Ctrl+Shift+H)"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "右揃え (Ctrl+Shift+R)"
@@ -301,11 +316,36 @@ msgstr ""
 "右から左に書く文字(アラビア語やヘブライ語など)のテキストは右揃え、それ以外の"
 "テキストは左揃えにします"
 
+msgid "Align the content of the cell at the bottom"
+msgstr "セルの内容を下揃えにします"
+
+msgid "Align the content of the cell at the top"
+msgstr "セルの内容を上揃えにします"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr ""
+"セルの内容を上揃えにします。ラインスタイルでグリッドがない場合は上下中央に揃"
+"えます"
+
+msgid "Align the content of the cell in the middle"
+msgstr "セルの内容を上下中央揃えにします"
+
 msgid "Align the text of the cell left"
 msgstr "セルのテキストを左揃えにします"
 
 msgid "Align the text of the cell right"
 msgstr "セルのテキストを右揃えにします"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "上揃え (Ctrl+Shift+Y)"
+
+msgid "Align vertically aut&omatically"
+msgstr "縦方向を自動で揃える(&O)"
+
+msgid "Align vertically automatically"
+msgstr "縦方向を自動で揃える"
 
 msgid "Also colorize the inner grid border"
 msgstr "内部のグリッド境界も色付けする"

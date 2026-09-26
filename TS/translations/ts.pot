@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -272,19 +272,34 @@ msgstr ""
 msgid "Align &automatically"
 msgstr ""
 
+msgid "Align &bottom"
+msgstr ""
+
 msgid "Align &center"
 msgstr ""
 
 msgid "Align &left"
 msgstr ""
 
+msgid "Align &middle"
+msgstr ""
+
 msgid "Align &right"
+msgstr ""
+
+msgid "Align &top"
 msgstr ""
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr ""
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr ""
+
 msgid "Align left (CTRL+SHIFT+l)"
+msgstr ""
+
+msgid "Align middle (CTRL+SHIFT+h)"
 msgstr ""
 
 msgid "Align right (CTRL+SHIFT+r)"
@@ -295,10 +310,33 @@ msgid ""
 "text left"
 msgstr ""
 
+msgid "Align the content of the cell at the bottom"
+msgstr ""
+
+msgid "Align the content of the cell at the top"
+msgstr ""
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr ""
+
+msgid "Align the content of the cell in the middle"
+msgstr ""
+
 msgid "Align the text of the cell left"
 msgstr ""
 
 msgid "Align the text of the cell right"
+msgstr ""
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr ""
+
+msgid "Align vertically aut&omatically"
+msgstr ""
+
+msgid "Align vertically automatically"
 msgstr ""
 
 msgid "Also colorize the inner grid border"
