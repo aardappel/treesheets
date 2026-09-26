@@ -239,6 +239,7 @@ enum {
     A_SINGLETRAY,
     A_STARTMINIMIZED,
     A_CENTERED,
+    A_SHRINKTEXT,
     A_SORTD,
     A_FOLD,
     A_FOLDALL,

@@ -752,6 +752,9 @@ struct TSFrame : wxFrame {
             A_CENTERED, _("Render document centered"),
             _("Toggle whether documents are rendered centered or left aligned"));
         optmenu->Check(A_CENTERED, sys->centered);
+        optmenu->AppendCheckItem(A_SHRINKTEXT, _("Shrink text in nested grids"),
+                                 _("Toggle whether text gets smaller the deeper a grid is nested"));
+        optmenu->Check(A_SHRINKTEXT, sys->shrinktext);
         optmenu->AppendCheckItem(
             A_FASTRENDER, _("Faster line rendering"),
             _("Toggle whether lines are drawn solid (faster rendering) or dashed"));
@@ -1476,6 +1479,16 @@ struct TSFrame : wxFrame {
             case A_CENTERED:
                 Toggle("centered", sys->centered);
                 Refresh();
+                break;
+            case A_SHRINKTEXT:
+                Toggle("shrinktext", sys->shrinktext);
+                if (notebook != nullptr) {
+                    loop(i, notebook->GetPageCount()) {
+                        auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
+                        canvas->doc->cursorposcache = {};
+                    }
+                }
+                TabsReset();
                 break;
             case A_FSWATCH:
                 Toggle("fswatch", sys->fswatch);
