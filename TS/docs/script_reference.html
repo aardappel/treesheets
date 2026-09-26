@@ -193,6 +193,15 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_version</b>() -> <font color="#666666">string</font></tt></td><td class="a">returns the TreeSheets version string</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_executable_path</b>() -> <font color="#666666">string</font></tt></td><td class="a">returns the path of the running TreeSheets executable</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_data_path</b>(relpath<font color="#666666">: string</font>) -> <font color="#666666">string</font></tt></td><td class="a">returns the path of a data file or folder of TreeSheets, such as "scripts/": next to the executable if it exists there, else in the installed data folder</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_doc_path</b>(relpath<font color="#666666">: string</font>) -> <font color="#666666">string</font></tt></td><td class="a">returns the path of a documentation file or folder of TreeSheets, such as "examples/" or "docs/": next to the executable if it exists there, else in the installed doc folder</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.find_exact</b>(text<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">searches the subtree of the current cell (including itself) for a cell whose text exactly equals the given string, and makes it current if found. returns whether a match was found.</td>
 
 </tr>

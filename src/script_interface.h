@@ -68,6 +68,11 @@ struct ScriptInterface {
     virtual uint32_t GetTextColor() = 0;
     virtual uint32_t GetBorderColor() = 0;
     virtual std::string GetVersion() = 0;
+    virtual std::string GetExecutablePath() = 0;
+    // Where TreeSheets finds relpath: next to the executable, or else in the installed data or
+    // doc folder.
+    virtual std::string GetDataPath(std::string_view relpath) = 0;
+    virtual std::string GetDocPath(std::string_view relpath) = 0;
     // Searches the subtree of the current cell (including itself) for a cell whose text
     // exactly equals `text`, and makes it current if found.
     virtual bool FindExact(std::string_view text) = 0;

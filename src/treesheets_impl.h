@@ -406,6 +406,18 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     std::string GetVersion() override { return PACKAGE_VERSION; }
 
+    std::string GetExecutablePath() override { return sys->frame->app->exename.utf8_string(); }
+
+    std::string GetDataPath(std::string_view relpath) override {
+        return sys->frame->app->GetDataPath(wxString::FromUTF8(relpath.data(), relpath.size()))
+            .utf8_string();
+    }
+
+    std::string GetDocPath(std::string_view relpath) override {
+        return sys->frame->app->GetDocPath(wxString::FromUTF8(relpath.data(), relpath.size()))
+            .utf8_string();
+    }
+
     void CopyCurrent() override { script_clipboard = current->Clone(nullptr); }
 
     bool PasteIntoCurrent() override {

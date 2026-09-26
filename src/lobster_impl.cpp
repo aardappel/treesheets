@@ -443,6 +443,25 @@ BUILTIN(get_version, "", "", "S", "returns the TreeSheets version string")
     return vm.NewString(si->GetVersion());
 }
 
+BUILTIN(get_executable_path, "", "", "S", "returns the path of the running TreeSheets executable")
+(VM &vm) {
+    return vm.NewString(si->GetExecutablePath());
+}
+
+BUILTIN(get_data_path, "relpath", "S", "S",
+    "returns the path of a data file or folder of TreeSheets, such as \"scripts/\": next to "
+    "the executable if it exists there, else in the installed data folder")
+(VM &vm, LString *relpath) {
+    return vm.NewString(si->GetDataPath(relpath->strv()));
+}
+
+BUILTIN(get_doc_path, "relpath", "S", "S",
+    "returns the path of a documentation file or folder of TreeSheets, such as \"examples/\" or "
+    "\"docs/\": next to the executable if it exists there, else in the installed doc folder")
+(VM &vm, LString *relpath) {
+    return vm.NewString(si->GetDocPath(relpath->strv()));
+}
+
 BUILTIN(find_exact, "text", "S", "B",
     "searches the subtree of the current cell (including itself) for a cell whose text exactly "
     "equals the given string, and makes it current if found. returns whether a match was found.")
