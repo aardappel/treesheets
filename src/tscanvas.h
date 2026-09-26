@@ -31,9 +31,10 @@ struct TSCanvas : public wxScrolledCanvas {
         Bind(wxEVT_PAINT, &TSCanvas::OnPaint, this);
         Bind(wxEVT_MOTION, &TSCanvas::OnMotion, this);
         Bind(wxEVT_LEAVE_WINDOW, [this](wxMouseEvent &me) {
-            doc->SetHoverShade(wxRect());
-            if ((me.LeftIsDown() || me.RightIsDown()) && !(me.AltDown() && me.ShiftDown())) {
+            if (DragsBeyondEdge(me)) {
                 StartAutoScroll();
+            } else {
+                doc->SetHoverShade(wxRect());
             }
             me.Skip();
         });
@@ -64,16 +65,18 @@ struct TSCanvas : public wxScrolledCanvas {
     };
 
     void OnMotion(wxMouseEvent &me) {
+        auto beyondedge = DragsBeyondEdge(me);
         wxInfoDC dc(this);
-        doc->UpdateHover(dc, me.GetX(), me.GetY());
+        if (!beyondedge) { doc->UpdateHover(dc, me.GetX(), me.GetY()); }
         if (me.LeftIsDown() || me.RightIsDown()) {
             AltWithMouse(me);
             if (me.AltDown() && me.ShiftDown()) {
                 doc->Copy(A_DRAGANDDROP);
                 Refresh();
+            } else if (beyondedge) {
+                StartAutoScroll();
             } else {
                 DragToHover();
-                if (!AutoScrollFreeRect().Contains(me.GetPosition())) { StartAutoScroll(); }
             }
         } else if (me.MiddleIsDown()) {
             wxPoint p = me.GetPosition() - lastmousepos;
@@ -114,8 +117,17 @@ struct TSCanvas : public wxScrolledCanvas {
     // cover them.
     wxRect AutoScrollFreeRect() const { return GetClientRect().Deflate(8); }
 
+    // Beyond the edge, OnAutoScroll() hovers and drags to the cell nearest to the pointer
+    // instead. Hovering what's under the pointer as well would flip the hover shadow between
+    // the two on every motion event, repainting large parts of the canvas.
+    bool DragsBeyondEdge(const wxMouseEvent &me) const {
+        return pressedoncanvas && (me.LeftIsDown() || me.RightIsDown()) &&
+               !(me.AltDown() && me.ShiftDown()) &&
+               !AutoScrollFreeRect().Contains(me.GetPosition());
+    }
+
     void StartAutoScroll() {
-        if (pressedoncanvas && !autoscrolltimer.IsRunning()) { autoscrolltimer.Start(30); }
+        if (!autoscrolltimer.IsRunning()) { autoscrolltimer.Start(30); }
     }
 
     // Scrolls by how far the pointer is beyond AutoScrollFreeRect(), and drags the selection
@@ -128,6 +140,7 @@ struct TSCanvas : public wxScrolledCanvas {
         auto dy = p.y < r.GetTop() ? p.y - r.GetTop() : max(0, p.y - r.GetBottom());
         if (!(state.LeftIsDown() || state.RightIsDown())) { pressedoncanvas = false; }
         if (!pressedoncanvas || (dx == 0 && dy == 0)) {
+            if (!GetClientRect().Contains(p)) { doc->SetHoverShade(wxRect()); }
             autoscrolltimer.Stop();
             return;
         }
