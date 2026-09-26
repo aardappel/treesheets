@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -647,6 +647,9 @@ msgstr "放弃更改"
 
 msgid "Edit &Note"
 msgstr "编辑备注(&N)"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "编辑备注 (CTRL+e)"
 
 msgid "Edit the note of the selected cell"
 msgstr "编辑所选单元格的备注"
@@ -1592,6 +1595,9 @@ msgstr "仅显示当前搜索中的单元格"
 msgid "Show sub-grids on match"
 msgstr "匹配时显示子网格"
 
+msgid "Shrink text in nested grids"
+msgstr "收缩嵌套网格中的文本"
+
 msgid "Single click maximize from tray"
 msgstr "单击系统托盘图标最大化"
 
@@ -1737,6 +1743,9 @@ msgstr "切换是否只需单击系统托盘图标即可最大化"
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "切换是否在文档下方显示状态栏"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "切换网格嵌套越深文本是否越小"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "

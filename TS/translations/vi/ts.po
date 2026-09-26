@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -652,6 +652,9 @@ msgstr "Hủy bỏ thay đổi"
 
 msgid "Edit &Note"
 msgstr "Chỉnh sửa ghi &chú"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "Chỉnh sửa ghi chú (CTRL+e)"
 
 msgid "Edit the note of the selected cell"
 msgstr "Chỉnh sửa ghi chú của ô được chọn"
@@ -1630,6 +1633,9 @@ msgstr "Chỉ hiển thị các ô trong tìm kiếm hiện tại"
 msgid "Show sub-grids on match"
 msgstr "Hiện lưới con khi khớp"
 
+msgid "Shrink text in nested grids"
+msgstr "Thu nhỏ văn bản trong lưới lồng nhau"
+
 msgid "Single click maximize from tray"
 msgstr "Nhấp chuột một lần để phóng to từ khay hệ thống"
 
@@ -1776,6 +1782,9 @@ msgstr "Bật/tắt việc chỉ cần một lần nhấp để phóng to từ k
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Bật/tắt hiển thị thanh trạng thái bên dưới tài liệu"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "Bật/tắt việc thu nhỏ văn bản khi lưới được lồng càng sâu"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "

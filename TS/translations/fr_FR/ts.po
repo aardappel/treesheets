@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -674,6 +674,9 @@ msgstr "Supprimer les modifications"
 
 msgid "Edit &Note"
 msgstr "Modifier la &note"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "Modifier la note (CTRL+e)"
 
 msgid "Edit the note of the selected cell"
 msgstr "Modifie la note de la cellule sélectionnée"
@@ -1691,6 +1694,9 @@ msgstr "Afficher uniquement les cellules de la recherche courante"
 msgid "Show sub-grids on match"
 msgstr "Afficher les sous-grilles en cas de correspondance"
 
+msgid "Shrink text in nested grids"
+msgstr "Réduire le texte des grilles imbriquées"
+
 msgid "Single click maximize from tray"
 msgstr "Maximiser par Un simple clic"
 
@@ -1842,6 +1848,9 @@ msgstr "Bascule la restauration depuis la zone de notification en un seul clic"
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Affiche ou masque la barre d'état sous les documents"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "Bascule la réduction du texte à mesure qu'une grille est plus profondément imbriquée"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
