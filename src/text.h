@@ -541,6 +541,11 @@ struct Text {
 
     // Where the position `pos` (between two characters, in [p.start, p.end()]) is in the piece,
     // from the left edge of the line. Leaves the piece's font selected.
+    //
+    // The text before `pos` is measured on its own. In cursive scripts its last letter then
+    // takes the form of a letter at the end of a word, which can be much wider than the form it
+    // has in the piece, joined to the letter after it. A tatweel (U+0640, a joining stroke
+    // that fonts with these scripts have) makes it join, and its own width is taken off again.
     template<typename DC>
     int BidiPieceX(Document *doc, DC &dc, int depth, const BidiPiece &p, int pos) const {
         auto w = 0;
@@ -548,7 +553,17 @@ struct Text {
             w = p.w;
         } else if (pos > p.start) {
             doc->PickFont(dc, depth, relsize, p.stylebits);
-            dc.GetTextExtent(t.Mid(p.start, pos - p.start), &w, nullptr);
+            auto next = pos;
+            while (next < p.end() && bidi::Classify(t[next].GetValue()) == bidi::NSM) { next++; }
+            if (p.rtl && next < p.end() && bidi::JoinsToPrevious(t[next].GetValue())) {
+                const wxString tatweel(wxUniChar(0x0640));
+                auto tw = 0;
+                dc.GetTextExtent(t.Mid(p.start, pos - p.start) + tatweel, &w, nullptr);
+                dc.GetTextExtent(tatweel, &tw, nullptr);
+                w = std::clamp(w - tw, 0, p.w);
+            } else {
+                dc.GetTextExtent(t.Mid(p.start, pos - p.start), &w, nullptr);
+            }
         }
         return p.rtl ? p.x + p.w - w : p.x + w;
     }
