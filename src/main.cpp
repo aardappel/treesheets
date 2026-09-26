@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "textruns.h"
+#include "bidi.h"
 
 static const auto TS_VERSION = 28;
 static const auto g_grid_margin = 1;
