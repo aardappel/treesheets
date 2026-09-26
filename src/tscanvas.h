@@ -65,6 +65,7 @@ struct TSCanvas : public wxScrolledCanvas {
         wxInfoDC dc(this);
         doc->UpdateHover(dc, me.GetX(), me.GetY());
         if (me.LeftIsDown() || me.RightIsDown()) {
+            AltWithMouse(me);
             if (me.AltDown() && me.ShiftDown()) {
                 doc->Copy(A_DRAGANDDROP);
                 Refresh();
@@ -160,6 +161,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftDown(wxMouseEvent &me) {
+        AltWithMouse(me);
         #ifndef __WXMSW__
         // seems to not want to give the canvas focus otherwise (thinks its already in focus
         // when its not?)
@@ -175,6 +177,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnLeftUp(wxMouseEvent &me) {
+        AltWithMouse(me);
         if (me.CmdDown() || me.AltDown()) {
             wxInfoDC dc(this);
             doc->UpdateHover(dc, me.GetX(), me.GetY());
@@ -185,6 +188,7 @@ struct TSCanvas : public wxScrolledCanvas {
     }
 
     void OnRightDown(wxMouseEvent &me) {
+        AltWithMouse(me);
         SetFocus();
         SelectClick(me.GetX(), me.GetY(), true, 0);
         lastrmbwaswithctrl = me.CmdDown();
@@ -240,7 +244,16 @@ struct TSCanvas : public wxScrolledCanvas {
         if (unprocessed) { ce.Skip(); }
     }
 
+    // Keeps releasing Alt after using it with the mouse from opening the menu bar, see
+    // TSFrame::altwithmouse.
+    void AltWithMouse(const wxMouseEvent &me) {
+        #ifdef __WXMSW__
+            if (me.AltDown()) { frame->altwithmouse = true; }
+        #endif
+    }
+
     void OnMouseWheel(wxMouseEvent &me) {
+        AltWithMouse(me);
         bool ctrl = me.CmdDown();
         if (sys->zoomscroll) { ctrl = !ctrl; }
         if (me.AltDown() || ctrl || me.ShiftDown()) {
