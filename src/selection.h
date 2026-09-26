@@ -383,6 +383,7 @@ struct Selection {
         if (Thin()) { return treesheets::Document::NoThin(); }
         grid->cell->AddUndo(doc);
         Cell *np = grid->CloneSel(*this).release();
+        np->grid->CloneStyleFrom(grid.get());
         grid->C(x, y)->text.SetText(".");  // avoid this cell getting deleted
         if (xs > 1) {
             Selection s(grid, x + 1, y, xs - 1, ys);
