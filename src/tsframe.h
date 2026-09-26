@@ -217,12 +217,18 @@ struct TSFrame : wxFrame {
                      _("Reset the column widths in the selection to the default column width"));
 
             auto *bordmenu = new wxMenu();
-            MyAppend(bordmenu, A_BORD0, _("Border &0") + "\tCTRL+SHIFT+9");
-            MyAppend(bordmenu, A_BORD1, _("Border &1") + "\tCTRL+SHIFT+1");
-            MyAppend(bordmenu, A_BORD2, _("Border &2") + "\tCTRL+SHIFT+2");
-            MyAppend(bordmenu, A_BORD3, _("Border &3") + "\tCTRL+SHIFT+3");
-            MyAppend(bordmenu, A_BORD4, _("Border &4") + "\tCTRL+SHIFT+4");
-            MyAppend(bordmenu, A_BORD5, _("Border &5") + "\tCTRL+SHIFT+5");
+            MyAppend(bordmenu, A_BORD0, _("Border &0") + "\tCTRL+SHIFT+9", "",
+                     wxITEM_CHECK);
+            MyAppend(bordmenu, A_BORD1, _("Border &1") + "\tCTRL+SHIFT+1", "",
+                     wxITEM_CHECK);
+            MyAppend(bordmenu, A_BORD2, _("Border &2") + "\tCTRL+SHIFT+2", "",
+                     wxITEM_CHECK);
+            MyAppend(bordmenu, A_BORD3, _("Border &3") + "\tCTRL+SHIFT+3", "",
+                     wxITEM_CHECK);
+            MyAppend(bordmenu, A_BORD4, _("Border &4") + "\tCTRL+SHIFT+4", "",
+                     wxITEM_CHECK);
+            MyAppend(bordmenu, A_BORD5, _("Border &5") + "\tCTRL+SHIFT+5", "",
+                     wxITEM_CHECK);
 
             auto *selmenu = new wxMenu();
             MyAppend(selmenu, A_NEXT,
@@ -930,6 +936,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_STRIKETHROUGH);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateTextAlign, this, A_ALIGNAUTO, A_ALIGNRIGHT);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateVertAlign, this, A_VALIGNAUTO, A_ALIGNBOTTOM);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateBorder, this, A_BORD0, A_BORD5);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateNote, this, A_EDITNOTE);
         for (int id : {A_MARKDATA, A_MARKCODE, A_MARKVARD, A_MARKVARU, A_MARKVIEWH, A_MARKVIEWV}) {
             Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateCellType, this, id);
@@ -1283,6 +1290,13 @@ struct TSFrame : wxFrame {
         auto *canvas = GetCurrentTab();
         ue.Check(canvas != nullptr &&
                  canvas->doc->SelectionHasVertAlign(ue.GetId() - A_VALIGNAUTO + VERTALIGN_AUTO));
+    }
+
+    // Checks the border width of the grid the selection is in.
+    void OnUpdateBorder(wxUpdateUIEvent &ue) {
+        auto *canvas = GetCurrentTab();
+        ue.Check(canvas != nullptr && canvas->doc->selected.grid &&
+                 canvas->doc->selected.grid->user_grid_outer_spacing == ue.GetId() - A_BORD0 + 1);
     }
 
     // Shows whether the selected cell has a note by checking its toolbar button. The menu item
