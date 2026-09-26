@@ -339,8 +339,23 @@ struct DateTimeRangeDialog : public wxDialog {
     int Run() { return ShowModal(); }
 };
 
-// The list of a color or image dropdown.
+// The list of a color or image dropdown. A click on the current value applies it, the button
+// opens the list.
 struct DropdownPopup : wxVListBoxComboPopup {
+    DropdownPopup(wxWindow *combo) {
+        combo->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &me) {
+            if (m_combo->IsPopupShown() || !m_combo->GetTextRect().Contains(me.GetPosition())) {
+                me.Skip();
+                return;
+            }
+            Apply();
+            sys->frame->ReFocus();
+        });
+    }
+
+    virtual void Apply() = 0;
+    void OnComboDoubleClick() override {}
+
     #ifdef __WXMSW__
         // Keys go to the menu accelerators of the frame first on Windows, even with the list
         // focused. Navigating it with the cursor keys, Page Up/Down, Home/End, Return and Escape
@@ -353,9 +368,9 @@ struct DropdownPopup : wxVListBoxComboPopup {
 };
 
 struct ColorPopup : DropdownPopup {
-    ColorPopup(wxWindow *parent) {}
+    using DropdownPopup::DropdownPopup;
 
-    void OnComboDoubleClick() override {
+    void Apply() override {
         sys->frame->GetCurrentTab()->doc->ColorChange(m_combo->GetId(), GetSelection());
     }
 };
@@ -449,7 +464,9 @@ struct EmbeddedTranslationsLoader : wxTranslationsLoader {
 #define dd_icon_res_scale 3.0
 
 struct ImagePopup : DropdownPopup {
-    void OnComboDoubleClick() override {
+    using DropdownPopup::DropdownPopup;
+
+    void Apply() override {
         if (auto *image = GetEmbeddedImage(GetString(GetSelection()))) {
             sys->frame->GetCurrentTab()->doc->ImageChange(*image, dd_icon_res_scale);
         }
@@ -484,7 +501,7 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         Create(parent, A_DDIMAGE, "", wxDefaultPosition,
                FromDIP(wxSize(image_space * 2, image_space)), filenames,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
-        SetPopupControl(new ImagePopup());
+        SetPopupControl(new ImagePopup(this));
         SetSelection(0);
         SetPopupMaxHeight(wxDisplay().GetGeometry().GetHeight() * 3 / 4);
     }
