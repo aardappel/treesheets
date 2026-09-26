@@ -8,6 +8,8 @@ struct TSCanvas : public wxScrolledCanvas {
     // Scrolls while a selection is dragged beyond the edge of the canvas, which the pointer
     // standing still out there doesn't report motion events for.
     wxTimer autoscrolltimer;
+    // Only a drag started on the canvas autoscrolls, not one that resizes the window.
+    bool pressedoncanvas {false};
 
     TSCanvas(TSFrame *fr, wxWindow *parent, const wxSize &size = wxDefaultSize)
         : wxScrolledCanvas(parent, wxID_ANY, wxDefaultPosition, size,
@@ -77,6 +79,7 @@ struct TSCanvas : public wxScrolledCanvas {
             wxPoint p = me.GetPosition() - lastmousepos;
             CursorScroll(-p.x, -p.y);
         } else {
+            pressedoncanvas = false;
             if (doc->hover != doc->prev && !doc->hover.Thin()) {
                 sys->frame->UpdateStatus(doc->hover, false);
             }
@@ -112,7 +115,7 @@ struct TSCanvas : public wxScrolledCanvas {
     wxRect AutoScrollFreeRect() const { return GetClientRect().Deflate(8); }
 
     void StartAutoScroll() {
-        if (!autoscrolltimer.IsRunning()) { autoscrolltimer.Start(30); }
+        if (pressedoncanvas && !autoscrolltimer.IsRunning()) { autoscrolltimer.Start(30); }
     }
 
     // Scrolls by how far the pointer is beyond AutoScrollFreeRect(), and drags the selection
@@ -123,7 +126,8 @@ struct TSCanvas : public wxScrolledCanvas {
         auto r = AutoScrollFreeRect();
         auto dx = p.x < r.GetLeft() ? p.x - r.GetLeft() : max(0, p.x - r.GetRight());
         auto dy = p.y < r.GetTop() ? p.y - r.GetTop() : max(0, p.y - r.GetBottom());
-        if (!(state.LeftIsDown() || state.RightIsDown()) || (dx == 0 && dy == 0)) {
+        if (!(state.LeftIsDown() || state.RightIsDown())) { pressedoncanvas = false; }
+        if (!pressedoncanvas || (dx == 0 && dy == 0)) {
             autoscrolltimer.Stop();
             return;
         }
@@ -168,6 +172,7 @@ struct TSCanvas : public wxScrolledCanvas {
         if (frame->filter != nullptr) { frame->filter->SetFocus(); }
         #endif
         SetFocus();
+        pressedoncanvas = true;
         if (me.ShiftDown()) {
             OnMotion(me);
         } else {
@@ -178,6 +183,7 @@ struct TSCanvas : public wxScrolledCanvas {
 
     void OnLeftUp(wxMouseEvent &me) {
         AltWithMouse(me);
+        pressedoncanvas = false;
         if (me.CmdDown() || me.AltDown()) {
             wxInfoDC dc(this);
             doc->UpdateHover(dc, me.GetX(), me.GetY());
@@ -190,6 +196,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnRightDown(wxMouseEvent &me) {
         AltWithMouse(me);
         SetFocus();
+        pressedoncanvas = true;
         SelectClick(me.GetX(), me.GetY(), true, 0);
         lastrmbwaswithctrl = me.CmdDown();
         #ifndef __WXMSW__
