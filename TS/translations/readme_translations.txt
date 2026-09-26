@@ -25,3 +25,6 @@ target "update-po":
 To re-compile the language definitions (all languages at once), build the
 CMake target "update-mo":
   cmake --build <builddir> --target update-mo
+
+The compiled translations (ts.mo) are embedded into the TreeSheets executable,
+so rebuild TreeSheets to try out a changed translation.

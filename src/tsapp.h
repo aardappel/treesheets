@@ -181,18 +181,8 @@ struct TSApp : wxApp {
         #endif
         wxUILocale::UseDefault();
 
-        #ifdef __WXGTK__
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix("/usr");
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix("/usr/local");
-            #ifdef LOCALEDIR
-                wxFileTranslationsLoader::AddCatalogLookupPathPrefix(LOCALEDIR);
-            #endif
-            wxString prefix = wxStandardPaths::Get().GetInstallPrefix();
-            wxFileTranslationsLoader::AddCatalogLookupPathPrefix(prefix);
-        #endif
-        wxFileTranslationsLoader::AddCatalogLookupPathPrefix(GetDataPath("translations"));
-
         auto *trans = new wxTranslations();
+        trans->SetLoader(new EmbeddedTranslationsLoader());
         if (sys->defaultlang.IsEmpty()) {
             trans->SetLanguage(wxEmptyString);
             trans->AddCatalog("ts");

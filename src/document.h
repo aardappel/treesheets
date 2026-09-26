@@ -3283,7 +3283,7 @@ struct Document {
         return true;
     }
 
-    void ImageChange(const EmbeddedImage &image, double scale) {
+    void ImageChange(const EmbeddedFile &image, double scale) {
         if (selected.grid == nullptr) { return; }
         selected.grid->cell->AddUndo(this);
         loopallcellssel(c, false) {
