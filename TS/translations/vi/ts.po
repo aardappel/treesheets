@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 18:09+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -182,6 +182,9 @@ msgstr "Độ bo góc của viền lưới (&R)"
 
 msgid "&Run"
 msgstr "Chạy (&R)"
+
+msgid "&Run..."
+msgstr "Chạy (&R)..."
 
 msgid "&Save"
 msgstr "Lưu (&S)"
@@ -1345,6 +1348,9 @@ msgstr "Vui lòng chọn (các) tệp ví dụ để tải:"
 msgid "Please select file(s) to import:"
 msgstr "Vui lòng chọn (các) tệp để nhập:"
 
+msgid "Please select the Lobster script to run:"
+msgstr "Vui lòng chọn tệp kịch bản Lobster để chạy:"
+
 msgid "Please select the datetime range."
 msgstr "Vui lòng chọn khoảng ngày giờ."
 
@@ -1455,6 +1461,9 @@ msgstr "Số hàng:"
 
 msgid "Run"
 msgstr "Chạy"
+
+msgid "Run a Lobster script without adding it to the menu"
+msgstr "Chạy kịch bản Lobster mà không cần thêm vào menu"
 
 msgid "S&cript"
 msgstr "Kị&ch bản"

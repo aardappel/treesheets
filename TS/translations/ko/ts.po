@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 18:09+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: 2026-09-26 21:33+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -188,6 +188,9 @@ msgstr "격자 테두리의 둥글기(&R)"
 
 msgid "&Run"
 msgstr "실행(&R)"
+
+msgid "&Run..."
+msgstr "실행(&R)..."
 
 msgid "&Save"
 msgstr "저장(&S)"
@@ -1334,6 +1337,9 @@ msgstr "로드할 예시 파일을 선택해 주세요:"
 msgid "Please select file(s) to import:"
 msgstr "가져올 파일을 선택하세요:"
 
+msgid "Please select the Lobster script to run:"
+msgstr "실행할 Lobster 스크립트를 선택하세요:"
+
 msgid "Please select the datetime range."
 msgstr "날짜 범위를 선택해 주세요."
 
@@ -1443,6 +1449,9 @@ msgstr "행:"
 
 msgid "Run"
 msgstr "실행"
+
+msgid "Run a Lobster script without adding it to the menu"
+msgstr "메뉴에 추가하지 않고 Lobster 스크립트 실행"
 
 msgid "S&cript"
 msgstr "스크립트(&C)"

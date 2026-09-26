@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:01+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,6 +183,9 @@ msgid "&Roundness of grid borders"
 msgstr ""
 
 msgid "&Run"
+msgstr ""
+
+msgid "&Run..."
 msgstr ""
 
 msgid "&Save"
@@ -1296,6 +1299,9 @@ msgstr ""
 msgid "Please select file(s) to import:"
 msgstr ""
 
+msgid "Please select the Lobster script to run:"
+msgstr ""
+
 msgid "Please select the datetime range."
 msgstr ""
 
@@ -1404,6 +1410,9 @@ msgid "Rows:"
 msgstr ""
 
 msgid "Run"
+msgstr ""
+
+msgid "Run a Lobster script without adding it to the menu"
 msgstr ""
 
 msgid "S&cript"

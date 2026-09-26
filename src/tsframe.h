@@ -1403,20 +1403,20 @@ struct TSFrame : wxFrame {
             }
 
             #ifdef ENABLE_LOBSTER
-                case A_ADDSCRIPT: {
-                    wxString path;
-                    if (!sys->scripts.IsEmpty()) {
-                        path = wxFileName(sys->scripts.Last()).GetPath();
-                    }
-                    if (path.IsEmpty() || !wxDirExists(path)) {
-                        path = app->GetDataPath("scripts/");
-                        if (!wxDirExists(path)) path.Clear();
-                    }
+                case A_RUNSCRIPT: {
+                    auto filename = ::wxFileSelector(
+                        _("Please select the Lobster script to run:"), ScriptDir(), "", "lobster",
+                        _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
+                        wxFD_OPEN | wxFD_FILE_MUST_EXIST, this);
+                    if (!filename.IsEmpty()) { RunScript(filename); }
+                    break;
+                }
 
+                case A_ADDSCRIPT: {
                     wxArrayString filenames;
                     GetFilesFromUser(filenames, this, _("Please select Lobster script file(s):"),
                                      _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
-                                     path);
+                                     ScriptDir());
                     if (!filenames.IsEmpty()) {
                         for (auto &filename : filenames) {
                             if (sys->scripts.Index(filename) == wxNOT_FOUND) {
@@ -1579,10 +1579,7 @@ struct TSFrame : wxFrame {
                     SetStatus(canvas->doc->TagSet(id - A_TAGSET));
                 #ifdef ENABLE_LOBSTER
                 } else if (id >= A_SCRIPT && id < A_MAXACTION) {
-                    auto message = tssi.ScriptRun(sys->scripts[id - A_SCRIPT].c_str());
-                    message.erase(std::remove(message.begin(), message.end(), '\n'),
-                                  message.end());
-                    SetStatus(wxString(message));
+                    RunScript(sys->scripts[id - A_SCRIPT]);
                 #endif
                 } else {
                     SetStatus(canvas->doc->Action(id));
@@ -2022,9 +2019,28 @@ struct TSFrame : wxFrame {
     }
 
     #ifdef ENABLE_LOBSTER
+        void RunScript(const wxString &filename) {
+            auto message = tssi.ScriptRun(filename.c_str());
+            message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
+            SetStatus(wxString(message));
+        }
+
+        // The folder of the most recently added script, or else the bundled scripts.
+        wxString ScriptDir() {
+            wxString path;
+            if (!sys->scripts.IsEmpty()) { path = wxFileName(sys->scripts.Last()).GetPath(); }
+            if (path.IsEmpty() || !wxDirExists(path)) {
+                path = app->GetDataPath("scripts/");
+                if (!wxDirExists(path)) path.Clear();
+            }
+            return path;
+        }
+
         void UpdateScriptMenu(wxMenu *menu) {
             if (!menu) return;
             while (menu->GetMenuItemCount() > 0) { menu->Destroy(menu->FindItemByPosition(0)); }
+            MyAppend(menu, A_RUNSCRIPT, _("&Run..."),
+                     _("Run a Lobster script without adding it to the menu"));
             MyAppend(menu, A_ADDSCRIPT, _("Add...") + "\tCTRL+ALT+L",
                      _("Add Lobster scripts to the menu"));
             MyAppend(menu, A_DETSCRIPT, _("Remove...") + "\tCTRL+SHIFT+ALT+L",

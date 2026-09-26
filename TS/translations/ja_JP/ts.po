@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 18:09+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -188,6 +188,9 @@ msgstr "グリッド境界の丸み(&R)"
 
 msgid "&Run"
 msgstr "実行(&R)"
+
+msgid "&Run..."
+msgstr "実行(&R)..."
 
 msgid "&Save"
 msgstr "保存(&S)"
@@ -1357,6 +1360,9 @@ msgstr "読み込むサンプルファイルを選択してください :"
 msgid "Please select file(s) to import:"
 msgstr "インポートするファイルを選択してください :"
 
+msgid "Please select the Lobster script to run:"
+msgstr "実行する Lobster スクリプトを選択してください :"
+
 msgid "Please select the datetime range."
 msgstr "日時範囲を選択してください。"
 
@@ -1468,6 +1474,9 @@ msgstr "行数:"
 
 msgid "Run"
 msgstr "実行"
+
+msgid "Run a Lobster script without adding it to the menu"
+msgstr "Lobster スクリプトをメニューに追加せずに実行"
 
 msgid "S&cript"
 msgstr "スクリプト(&C)"

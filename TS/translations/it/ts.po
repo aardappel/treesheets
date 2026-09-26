@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 18:09+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -186,6 +186,9 @@ msgstr "&Arrotondamento dei bordi della griglia"
 
 msgid "&Run"
 msgstr "&Eseguisci"
+
+msgid "&Run..."
+msgstr "&Esegui..."
 
 msgid "&Save"
 msgstr "&Salva"
@@ -1380,6 +1383,9 @@ msgstr "Seleziona i file di esempio da caricare:"
 msgid "Please select file(s) to import:"
 msgstr "Seleziona i file da importare:"
 
+msgid "Please select the Lobster script to run:"
+msgstr "Seleziona lo script Lobster da eseguire:"
+
 msgid "Please select the datetime range."
 msgstr "Si prega di selezionare l'intervallo di date e ora."
 
@@ -1493,6 +1499,9 @@ msgstr "Righe:"
 
 msgid "Run"
 msgstr "Avvia"
+
+msgid "Run a Lobster script without adding it to the menu"
+msgstr "Esegui uno script Lobster senza aggiungerlo al menu"
 
 msgid "S&cript"
 msgstr "S&cript"

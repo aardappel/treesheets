@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 18:09+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -186,6 +186,9 @@ msgstr "網格框線圓角(&R)"
 
 msgid "&Run"
 msgstr "執行(&R)"
+
+msgid "&Run..."
+msgstr "執行(&R)..."
 
 msgid "&Save"
 msgstr "儲存(&S)"
@@ -1312,6 +1315,9 @@ msgstr "請選擇要載入的範例檔案："
 msgid "Please select file(s) to import:"
 msgstr "請選擇要匯入的檔案："
 
+msgid "Please select the Lobster script to run:"
+msgstr "請選擇要執行的 Lobster 指令碼："
+
 msgid "Please select the datetime range."
 msgstr "請選擇日期時間範圍。"
 
@@ -1421,6 +1427,9 @@ msgstr "列數："
 
 msgid "Run"
 msgstr "執行"
+
+msgid "Run a Lobster script without adding it to the menu"
+msgstr "執行 Lobster 指令碼而不加入選單"
 
 msgid "S&cript"
 msgstr "指令碼(&C)"

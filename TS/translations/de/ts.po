@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 18:09+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -187,6 +187,9 @@ msgstr "&Abrundung der Tabellenränder"
 
 msgid "&Run"
 msgstr "Ausführen"
+
+msgid "&Run..."
+msgstr "&Ausführen..."
 
 msgid "&Save"
 msgstr "&Speichern"
@@ -1394,6 +1397,9 @@ msgstr "Bitte wählen Sie Beispieldatei(en) zum Laden aus:"
 msgid "Please select file(s) to import:"
 msgstr "Bitte wählen Sie Datei(en) zum Importieren aus:"
 
+msgid "Please select the Lobster script to run:"
+msgstr "Bitte wählen Sie das auszuführende Lobster-Skript aus:"
+
 msgid "Please select the datetime range."
 msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
 
@@ -1509,6 +1515,9 @@ msgstr "Zeilen:"
 
 msgid "Run"
 msgstr "Ausführen"
+
+msgid "Run a Lobster script without adding it to the menu"
+msgstr "Ein Lobster-Skript ausführen, ohne es zum Menü hinzuzufügen"
 
 msgid "S&cript"
 msgstr "S&kript"

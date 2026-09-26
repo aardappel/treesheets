@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 18:09+0200\n"
+"POT-Creation-Date: 2026-09-26 21:53+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -193,6 +193,9 @@ msgstr "&Округлость Границ сетки"
 
 msgid "&Run"
 msgstr "За&пустить"
+
+msgid "&Run..."
+msgstr "За&пустить..."
 
 msgid "&Save"
 msgstr "Сохранить"
@@ -1563,6 +1566,9 @@ msgstr "Выберите файл(ы) примеров для загрузки:"
 msgid "Please select file(s) to import:"
 msgstr "Выберите файл(ы) для импорта:"
 
+msgid "Please select the Lobster script to run:"
+msgstr "Выберите Lobster-сценарий для запуска:"
+
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Please select the datetime range."
 msgstr "Выберите Диапазон."
@@ -1689,6 +1695,9 @@ msgstr "Строк:"
 
 msgid "Run"
 msgstr "Запустить"
+
+msgid "Run a Lobster script without adding it to the menu"
+msgstr "Запустить сценарий Lobster, не добавляя его в меню"
 
 msgid "S&cript"
 msgstr "Сценарий"
