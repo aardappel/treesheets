@@ -7,6 +7,9 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     // runs a nested event loop, which can deliver another agent request or menu action; a
     // nested ScriptRun() would reset document/current underneath the outer script.
     bool running = false;
+    // The document whose selection the script set with select()/select_range(), which is
+    // brought into view once the script is done.
+    Document *selecteddoc = nullptr;
 
     void SwitchToCurrentDocument() {
         document = sys->frame->GetCurrentTab()->doc.get();
@@ -42,6 +45,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     std::string ScriptRun(const char *filename, std::string_view code = {}) {
         if (running) return "a script is already running";
         running = true;
+        selecteddoc = nullptr;
         SwitchToCurrentDocument();
 
         bool dump_builtins = false;
@@ -69,6 +73,18 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         document->root->ResetChildren();
         document->UpdateLayout();
         document->canvas->Refresh();
+        if (selecteddoc != nullptr) {
+            // Later changes by the script may have removed the selected cells again.
+            auto &s = selecteddoc->selected;
+            if (!s.grid || !ContainsGrid(selecteddoc->root.get(), s.grid.get()) ||
+                s.x + s.xs > s.grid->xs || s.y + s.ys > s.grid->ys) {
+                selecteddoc->SetSelect();
+            } else if (selecteddoc == document) {
+                document->ScrollOrZoom(true);
+                sys->frame->UpdateStatus(document->selected, true);
+            }
+            selecteddoc = nullptr;
+        }
 
         document = nullptr;
         current = nullptr;
@@ -176,6 +192,25 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             y < current->grid->ys) {
             current = current->grid->C(x, y).get();
         }
+    }
+
+    void SelectCurrent() override {
+        document->SetSelect(current->parent->grid->FindCell(current));
+        selecteddoc = document;
+    }
+
+    void SelectRange(int x, int y, int xs, int ys) override {
+        document->SetSelect(Selection(current->grid, x, y, xs, ys));
+        selecteddoc = document;
+    }
+
+    static bool ContainsGrid(Cell *c, const Grid *g) {
+        if (!c->grid) { return false; }
+        if (c->grid.get() == g) { return true; }
+        for (auto &child : c->grid->cells) {
+            if (ContainsGrid(child.get(), g)) { return true; }
+        }
+        return false;
     }
 
     std::string GetText() override { return current->text.t.utf8_string(); }

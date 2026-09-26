@@ -22,6 +22,8 @@ struct ScriptInterface {
     virtual ibox SelectionBox() = 0;
     virtual void GoToChild(int n) = 0;
     virtual void GoToColumnRow(int x, int y) = 0;
+    virtual void SelectCurrent() = 0;
+    virtual void SelectRange(int x, int y, int xs, int ys) = 0;
     virtual std::string GetText() = 0;
     virtual std::string GetNote() = 0;
     virtual void SetText(std::string_view t) = 0;

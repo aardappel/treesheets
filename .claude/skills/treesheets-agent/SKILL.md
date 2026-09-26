@@ -284,6 +284,11 @@ Other things worth knowing regardless of how you looked up the API:
   current cell has no sub-grid or the index is outside of it; check
   `num_children()`/`num_columns_rows()` first when unsure. Older builds
   silently stayed on the current cell, so the script went on in the wrong place.
+- The script's current cell is not the UI selection: `goto_selection()` reads
+  the selection, and `select()` (the current cell) or
+  `select_range(int2{x, y}, int2{xs, ys})` (cells in the current cell's grid)
+  set it. It's brought into view once the eval is done, which is how to put
+  the selection on a cell before sending keys to the window.
 - **The currently open document is very likely real user data** (TreeSheets
   restores the last session's open files on launch, `-a`/`-i` don't change
   that) — check `ts.get_filename()` first. To experiment with a grid without
