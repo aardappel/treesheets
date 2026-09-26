@@ -90,6 +90,7 @@
 #include <queue>
 #include <random>
 #include <set>
+#include <span>
 #include <sstream>
 #include <stdexcept>
 #include <string>
