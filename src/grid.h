@@ -20,10 +20,12 @@ struct Grid {
     vector<int> coloffsets;
     vector<int> rowoffsets;
     // Where the grid starts and ends in its cell, as of the last Layout(), and how far its cells
-    // have been moved right since then by the alignment of the cell (see Cell::AlignGrid()).
+    // have been moved right and down since then by the alignment of the cell (see
+    // Cell::AlignContent()).
     int start {0};
     int extent {0};
     int alignshift {0};
+    int alignshifty {0};
     // xsize, ysize
     int xs;
     int ys;
@@ -171,13 +173,9 @@ struct Grid {
             if (x == 0) { rowoffsets[y] = cy; }
             c->ox = cx;
             c->oy = cy;
-            if (c->drawstyle == DS_BLOBLINE && !c->grid) {
-                assert(c->sy <= ya[y]);
-                c->ycenteroff = (ya[y] - c->sy) / 2;
-            }
             c->sx = xa[x];
             c->sy = ya[y];
-            c->AlignGrid(doc);
+            c->AlignContent(doc);
             cx += xa[x] + g_line_width + cell_margin * 2;
             if (x == xs - 1) {
                 cy += ya[y] + g_line_width + cell_margin * 2;
@@ -188,6 +186,7 @@ struct Grid {
         start = startx;
         extent = sx;
         alignshift = 0;
+        alignshifty = 0;
         return tinyborder;
     }
 
@@ -198,6 +197,15 @@ struct Grid {
         foreachcell(c) c->ox += delta;
         for (auto &o : coloffsets) { o += delta; }
         alignshift = shift;
+    }
+
+    // Moves the cells down, to `shift` from where Layout() put them.
+    void ShiftY(int shift) {
+        auto delta = shift - alignshifty;
+        if (delta == 0) { return; }
+        foreachcell(c) c->oy += delta;
+        for (auto &o : rowoffsets) { o += delta; }
+        alignshifty = shift;
     }
 
     // Whether coloffsets/rowoffsets/colmaxcache/rowmaxcache describe the current layout: any
@@ -901,6 +909,21 @@ struct Grid {
         doc->canvas->Refresh();
     }
 
+    bool AllHaveVertAlign(const Selection &sel, int align) {
+        foreachcellinsel(c, sel) {
+            if (c->vertalign != align) { return false; }
+        }
+        return true;
+    }
+
+    void SetVertAlign(Document *doc, const Selection &sel, int align) {
+        cell->AddUndo(doc);
+        cell->ResetChildren();
+        foreachcellinsel(c, sel) c->vertalign = align;
+        doc->UpdateLayout();
+        doc->canvas->Refresh();
+    }
+
     void ColorChange(Document *doc, int which, uint color, const Selection &sel) {
         cell->AddUndo(doc);
         cell->ResetChildren();
@@ -1412,6 +1435,7 @@ struct Grid {
             c->textcolor = o->textcolor;
             c->text.stylebits = o->text.stylebits;
             c->textalign = o->textalign;
+            c->vertalign = o->vertalign;
             c->text.image = o->text.image;
             c->note = o->note;
         }

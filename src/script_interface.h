@@ -41,6 +41,8 @@ struct ScriptInterface {
     virtual int GetStyle() = 0;
     virtual void SetTextAlignment(int align) = 0;
     virtual int GetTextAlignment() = 0;
+    virtual void SetVerticalAlignment(int align) = 0;
+    virtual int GetVerticalAlignment() = 0;
     virtual int GetColWidth() = 0;
     virtual void SetColWidth(int w) = 0;
     virtual void SetStatusMessage(std::string_view message) = 0;
