@@ -322,7 +322,16 @@ enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 enum { PASTE_FIT = 0, PASTE_INSERTROWS, PASTE_INSERTCOLUMNS };
 
 #include "aggregate.h"
+
+// Files compiled into the executable by cmake/EmbedFiles.cmake, named by their relative path.
+struct EmbeddedFile {
+    const char *name;
+    const unsigned char *data;
+    size_t size;
+};
+
 #include "embedded_images.h"
+#include "embedded_translations.h"
 
 #ifdef ENABLE_LOBSTER
     #include "script_interface.h"

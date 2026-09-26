@@ -402,12 +402,17 @@ static uint PickColor(wxWindow *parent, uint defaultcolor) {
 
 static uint LightColor(uint color) { return color ^ sys->colormask; }
 
-// Images compiled into the executable from TS/images, by their path relative to it.
-static const EmbeddedImage *GetEmbeddedImage(const wxString &name) {
-    for (const auto &image : embedded_images) {
-        if (name == image.name) { return &image; }
+static const EmbeddedFile *FindEmbeddedFile(std::span<const EmbeddedFile> files,
+                                             const wxString &name) {
+    for (const auto &file : files) {
+        if (name == file.name) { return &file; }
     }
     return nullptr;
+}
+
+// Images compiled into the executable from TS/images, by their path relative to it.
+static const EmbeddedFile *GetEmbeddedImage(const wxString &name) {
+    return FindEmbeddedFile(embedded_images, name);
 }
 
 static wxBitmap LoadEmbeddedBitmap(const wxString &name) {
@@ -420,6 +425,26 @@ static wxBitmapBundle LoadEmbeddedSVG(const wxString &name, const wxSize &size) 
     return image != nullptr ? wxBitmapBundle::FromSVG(image->data, image->size, size)
                             : wxBitmapBundle();
 }
+
+// Loads the translations compiled into the executable from TS/translations/<language>/<domain>.mo.
+struct EmbeddedTranslationsLoader : wxTranslationsLoader {
+    wxMsgCatalog *LoadCatalog(const wxString &domain, const wxString &lang) override {
+        auto *file = FindEmbeddedFile(embedded_translations, lang + "/" + domain + ".mo");
+        if (file == nullptr) { return nullptr; }
+        return wxMsgCatalog::CreateFromData(
+            wxCharBuffer::CreateNonOwned(reinterpret_cast<const char *>(file->data), file->size),
+            domain);
+    }
+
+    wxArrayString GetAvailableTranslations(const wxString &domain) const override {
+        wxArrayString langs;
+        for (const auto &file : embedded_translations) {
+            wxString name = file.name;
+            if (name.AfterFirst('/') == domain + ".mo") { langs.Add(name.BeforeFirst('/')); }
+        }
+        return langs;
+    }
+};
 
 #define dd_icon_res_scale 3.0
 
