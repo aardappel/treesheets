@@ -408,45 +408,167 @@ struct Text {
         if (tiny == 0) { sx += 4; }
     }
 
-    // The direction of a character for picking the alignment of automatically aligned text:
-    // 1 for right-to-left letters, -1 for other letters, 0 for characters without a direction
-    // of their own (digits, punctuation, spaces, symbols, marks).
-    static int StrongDirection(uint c) {
-        if (c < 0x80) { return (c | 0x20) >= 'a' && (c | 0x20) <= 'z' ? -1 : 0; }
-        if ((c >= 0x0660 && c <= 0x066C) || (c >= 0x06F0 && c <= 0x06F9)) {
-            return 0;  // Arabic digits and separators
-        }
-        if ((c >= 0x0590 && c <= 0x08FF) || (c >= 0xFB1D && c <= 0xFDFF) ||
-            (c >= 0xFE70 && c <= 0xFEFF) || (c >= 0x10800 && c <= 0x10FFF) ||
-            (c >= 0x1E800 && c <= 0x1EFFF)) {
-            return 1;  // Hebrew, Arabic, Syriac, Thaana, N'Ko and the like
-        }
-        if (c < 0xC0 || c == 0xD7 || c == 0xF7 || (c >= 0x0300 && c <= 0x036F) ||
-            (c >= 0x2000 && c <= 0x2BFF) || (c >= 0x3000 && c <= 0x303F) ||
-            (c >= 0xD800 && c <= 0xF8FF) || (c >= 0xFE00 && c <= 0xFE0F) ||
-            (c >= 0xFF00 && c <= 0xFF20) || c >= 0x1F000) {
-            return 0;
-        }
-        return -1;
+    std::vector<bidi::Class> BidiClasses() const {
+        return bidi::Classes([&](int i) { return static_cast<uint>(t[i].GetValue()); },
+                             static_cast<int>(t.Len()));
     }
 
     // Whether the first character with a direction is a right-to-left one, like HTML's
-    // dir="auto".
+    // dir="auto". This is the base direction of the text, whatever its alignment.
     bool IsRightToLeft() const {
-        auto len = static_cast<int>(t.Len());
-        for (auto i = 0; i < len; i++) {
-            auto c = static_cast<uint>(t[i].GetValue());
-            // Where wxString is UTF-16, combine surrogate pairs.
-            if (c >= 0xD800 && c <= 0xDBFF && i + 1 < len) {
-                auto lo = static_cast<uint>(t[i + 1].GetValue());
-                if (lo >= 0xDC00 && lo <= 0xDFFF) {
-                    c = 0x10000 + ((c - 0xD800) << 10) + (lo - 0xDC00);
-                    i++;
-                }
+        auto rtl = false;
+        bidi::ForEachCodePoint([&](int i) { return static_cast<uint>(t[i].GetValue()); },
+                               static_cast<int>(t.Len()), [&](int, int, uint c) {
+            auto k = bidi::Classify(c);
+            if (k == bidi::L) { return false; }
+            if (k == bidi::R || k == bidi::AL) {
+                rtl = true;
+                return false;
             }
-            if (auto d = StrongDirection(c); d != 0) { return d > 0; }
+            return true;
+        });
+        return rtl;
+    }
+
+    // Whether the text has any right-to-left letters, which are never below U+0590.
+    bool HasRightToLeft() const {
+        auto rtl = false;
+        bidi::ForEachCodePoint([&](int i) { return static_cast<uint>(t[i].GetValue()); },
+                               static_cast<int>(t.Len()), [&](int, int, uint c) {
+            if (c < 0x0590) { return true; }
+            auto k = bidi::Classify(c);
+            rtl = k == bidi::R || k == bidi::AL;
+            return !rtl;
+        });
+        return rtl;
+    }
+
+    // The bidirectional structure of the whole text, which its lines are laid out with. Empty
+    // (`levels` is) for text without right-to-left letters, which is laid out left to right.
+    struct Bidi {
+        std::vector<bidi::Class> classes;
+        std::vector<uint8_t> levels;
+        int base {0};
+
+        bool Empty() const { return levels.empty(); }
+    };
+
+    Bidi GetBidi() const {
+        Bidi b;
+        if (cell->tiny || !HasRightToLeft()) { return b; }
+        b.classes = BidiClasses();
+        b.base = bidi::IsRightToLeft(b.classes) ? 1 : 0;
+        b.levels = bidi::ResolveLevels(b.classes, b.base);
+        return b;
+    }
+
+    // A part of a line of bidirectional text with one direction and one style.
+    struct BidiPiece {
+        int start {0};
+        int len {0};
+        bool rtl {false};  // the characters go from right to left
+        bool blank {false};  // only spaces, which take room but aren't drawn
+        int stylebits {0};
+        bool hascolor {false};
+        uint color {0};
+        int x {0};  // from the left edge of the line
+        int w {0};
+
+        int end() const { return start + len; }
+    };
+
+    // What is drawn for a piece: a single neutral character of right-to-left text is mirrored
+    // here, see BidiLine.
+    wxString BidiPieceText(const BidiPiece &p) const {
+        if (p.rtl && p.len == 1) {
+            return wxString(wxUniChar(bidi::Mirror(t[p.start].GetValue())));
         }
-        return false;
+        return t.Mid(p.start, p.len);
+    }
+
+    // Lays out the line [start, start + len) as pieces in visual order from left to right, and
+    // returns its width. Leaves the base font selected.
+    //
+    // Each piece is drawn on its own, so the platform lays it out without knowing its
+    // direction. Platforms guess that from its first letter, or make it left-to-right, and
+    // differ in whether and how they honor direction marks in the text (Wine draws them with a
+    // width). A right-to-left piece therefore always starts and ends with a right-to-left
+    // letter: spaces and punctuation at its ends, whose side would depend on that direction,
+    // are split off into pieces of one character each, which are mirrored ("(" becomes ")")
+    // by BidiPieceText instead of by the platform.
+    template<typename DC>
+    int BidiLine(Document *doc, DC &dc, int depth, const Bidi &b, int start, int len,
+                 std::vector<BidiPiece> &pieces) const {
+        pieces.clear();
+        auto neutral = [&](int i) {
+            auto c = b.classes[i];
+            return (c == bidi::WS || c == bidi::ON || c == bidi::CS || c == bidi::ES ||
+                    c == bidi::ET || c == bidi::S || c == bidi::B) &&
+                   (t[i].GetValue() < 0xD800 || t[i].GetValue() > 0xDFFF);
+        };
+        for (const auto &r : bidi::VisualRuns(b.classes, b.levels, b.base, start, start + len)) {
+            auto first = pieces.size();
+            ForEachSegment(r.start, r.len, [&](int s, int l, int sb, bool hascolor, uint color) {
+                if (!r.RightToLeft()) {
+                    pieces.push_back({s, l, false, false, sb, hascolor, color});
+                    return;
+                }
+                auto single = [&](int i) {
+                    pieces.push_back({i, 1, true, wxIsspace(t[i]) != 0, sb, hascolor, color});
+                };
+                auto e = s + l;
+                auto from = s;
+                auto to = e;
+                while (from < to && neutral(from)) { single(from++); }
+                while (to > from && neutral(to - 1)) { to--; }
+                if (to > from) {
+                    pieces.push_back({from, to - from, true, false, sb, hascolor, color});
+                }
+                for (auto i = to; i < e; i++) { single(i); }
+            });
+            if (r.RightToLeft()) { std::reverse(pieces.begin() + first, pieces.end()); }
+        }
+        auto x = 0;
+        for (auto &p : pieces) {
+            doc->PickFont(dc, depth, relsize, p.stylebits);
+            dc.GetTextExtent(BidiPieceText(p), &p.w, nullptr);
+            p.x = x;
+            x += p.w;
+        }
+        doc->PickFont(dc, depth, relsize, stylebits);
+        return x;
+    }
+
+    // Where the position `pos` (between two characters, in [p.start, p.end()]) is in the piece,
+    // from the left edge of the line. Leaves the piece's font selected.
+    template<typename DC>
+    int BidiPieceX(Document *doc, DC &dc, int depth, const BidiPiece &p, int pos) const {
+        auto w = 0;
+        if (pos >= p.end()) {
+            w = p.w;
+        } else if (pos > p.start) {
+            doc->PickFont(dc, depth, relsize, p.stylebits);
+            dc.GetTextExtent(t.Mid(p.start, pos - p.start), &w, nullptr);
+        }
+        return p.rtl ? p.x + p.w - w : p.x + w;
+    }
+
+    // Where the cursor at `pos` is on the line starting at `linestart`, from its left edge: right
+    // after the character before it, so that it follows the text being typed whichever its
+    // direction, or at a line start before the first character. Leaves the base font selected.
+    template<typename DC>
+    int BidiCursorX(Document *doc, DC &dc, int depth, const std::vector<BidiPiece> &pieces,
+                    int linestart, int pos) const {
+        auto x = 0;
+        auto at = pos > linestart ? pos - 1 : pos;
+        for (const auto &p : pieces) {
+            if (at >= p.start && at < p.end()) {
+                x = BidiPieceX(doc, dc, depth, p, pos);
+                break;
+            }
+        }
+        doc->PickFont(dc, depth, relsize, stylebits);
+        return x;
     }
 
     // How far a line of width `w` is moved right from the left edge of the text, by the
@@ -492,6 +614,23 @@ struct Text {
         auto searchfound = IsInSearch();
         auto istag = cell->IsTag(doc);
         auto align = cell->tiny ? TEXTALIGN_LEFT : cell->TextAlign();
+        auto bd = GetBidi();
+        std::vector<BidiPiece> pieces;
+        auto setforeground = [&](bool hascolor, uint color) {
+            if (searchfound) {
+                dc.SetTextForeground(*wxRED);
+            } else if (filtered) {
+                dc.SetTextForeground(*wxLIGHT_GREY);
+            } else if (istag) {
+                dc.SetTextForeground(LightColor(doc->tags[t].second));
+            } else if (hascolor) {
+                dc.SetTextForeground(LightColor(color));
+            } else if (cell->textcolor != 0U) {
+                dc.SetTextForeground(LightColor(cell->textcolor));
+            } else {
+                dc.SetTextForeground(sys->rubberbandcolor);
+            }
+        };
         if (cell->tiny) {
             if (searchfound) {
                 dc.SetPen(*wxRED_PEN);
@@ -529,6 +668,22 @@ struct Text {
                         }
                     }
                 }
+            } else if (!bd.Empty()) {
+                auto w = BidiLine(doc, dc, depth, bd, start, static_cast<int>(curl.Len()),
+                                  pieces);
+                auto x = bx + 2 + ixs + g_margin_extra + AlignOffset(align, w, ixs);
+                auto ty = by + lines * h + g_margin_extra;
+                for (const auto &p : pieces) {
+                    if (p.blank && (p.stylebits & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) == 0) {
+                        continue;
+                    }
+                    doc->PickFont(dc, depth, relsize, p.stylebits);
+                    setforeground(p.hascolor, p.color);
+                    auto dy = rich ? lm.ascent - dc.GetFontMetrics().ascent : 0;
+                    DrawText(dc, BidiPieceText(p), x + p.x, ty + dy);
+                }
+                doc->PickFont(dc, depth, relsize, stylebits);
+                dc.SetTextForeground(sys->rubberbandcolor);
             } else if (rich) {
                 auto x = bx + 2 + ixs + g_margin_extra;
                 if (align != TEXTALIGN_LEFT) {
@@ -539,19 +694,7 @@ struct Text {
                 ForEachSegment(start, static_cast<int>(curl.Len()),
                                [&](int s, int l, int sb, bool hascolor, uint color) {
                     doc->PickFont(dc, depth, relsize, sb);
-                    if (searchfound) {
-                        dc.SetTextForeground(*wxRED);
-                    } else if (filtered) {
-                        dc.SetTextForeground(*wxLIGHT_GREY);
-                    } else if (istag) {
-                        dc.SetTextForeground(LightColor(doc->tags[t].second));
-                    } else if (hascolor) {
-                        dc.SetTextForeground(LightColor(color));
-                    } else if (cell->textcolor != 0U) {
-                        dc.SetTextForeground(LightColor(cell->textcolor));
-                    } else {
-                        dc.SetTextForeground(sys->rubberbandcolor);
-                    }
+                    setforeground(hascolor, color);
                     auto str = t.Mid(s, l);
                     auto w = 0;
                     dc.GetTextExtent(str, &w, nullptr);
@@ -610,6 +753,27 @@ struct Text {
             ls = GetLine(i, maxcolwidth);
         }
 
+        if (auto bd = GetBidi(); !bd.Empty()) {
+            // The position nearest to the click, of all the positions on the line.
+            std::vector<BidiPiece> pieces;
+            auto len = static_cast<int>(ls.Len());
+            auto w = BidiLine(doc, dc, depth, bd, linestart, len, pieces);
+            auto x = bx - ixs - 2 - AlignOffset(cell->TextAlign(), w, ixs);
+            s.cursor = linestart;
+            auto best = INT_MAX;
+            for (const auto &p : pieces) {
+                for (auto pos = p.start; pos <= p.end(); pos++) {
+                    if (auto d = abs(BidiPieceX(doc, dc, depth, p, pos) - x); d < best) {
+                        best = d;
+                        s.cursor = pos;
+                    }
+                }
+            }
+            doc->PickFont(dc, depth, relsize, stylebits);
+            s.cursorend = s.cursor;
+            return;
+        }
+
         if (auto align = cell->TextAlign(); align != TEXTALIGN_LEFT) {
             auto w = RangeWidth(doc, dc, depth, linestart, static_cast<int>(ls.Len()));
             bx -= AlignOffset(align, w, ixs);
@@ -646,18 +810,47 @@ struct Text {
             if (align == TEXTALIGN_LEFT) { return 0; }
             return AlignOffset(align, RangeWidth(doc, dc, depth, start, len), ixs);
         };
+        std::vector<BidiPiece> pieces;
 
         if (s.cursor != s.cursorend) {
             // A range selection can span multiple lines (one rectangle drawn per line
             // below); it changes far less often than the plain typing caret below, so
             // it isn't worth caching.
+            auto bd = GetBidi();
             auto i = 0;
             for (auto l = 0;; l++) {
                 auto start = i;
                 auto ls = GetLine(i, maxcolwidth);
                 auto len = static_cast<int>(ls.Len());
                 auto end = start + len;
-                if (s.cursor <= end && s.cursorend >= start) {
+                if (!bd.Empty() && s.cursor <= end && s.cursorend >= start) {
+                    // In bidirectional text a range can be in several places on the line: one
+                    // rectangle for each, from the parts of the range in the pieces, left to
+                    // right.
+                    auto w = BidiLine(doc, dc, depth, bd, start, len, pieces);
+                    auto linex = cell->GetX(doc) + 2 + ixs + g_margin_extra +
+                                 AlignOffset(align, w, ixs);
+                    int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
+                    std::vector<std::pair<int, int>> spans;
+                    for (const auto &p : pieces) {
+                        auto from = max(s.cursor, p.start);
+                        auto to = min(s.cursorend, p.end());
+                        if (from >= to) { continue; }
+                        auto x1 = BidiPieceX(doc, dc, depth, p, from);
+                        auto x2 = BidiPieceX(doc, dc, depth, p, to);
+                        if (x1 > x2) { swap(x1, x2); }
+                        if (!spans.empty() && spans.back().second == x1) {
+                            spans.back().second = x2;
+                        } else {
+                            spans.emplace_back(x1, x2);
+                        }
+                    }
+                    doc->PickFont(dc, depth, relsize, stylebits);
+                    for (auto [x1, x2] : spans) {
+                        DrawRectangle(dc, color, linex + x1, starty, x2 - x1, h - 1, true);
+                        HintIMELocation(doc, linex + x1, starty, h - 1, stylebits);
+                    }
+                } else if (s.cursor <= end && s.cursorend >= start) {
                     auto x2 = RangeWidth(doc, dc, depth, start, min(s.cursorend, end) - start);
                     auto x1 = RangeWidth(doc, dc, depth, start, max(s.cursor, start) - start);
                     if (x1 != x2) {
@@ -700,6 +893,7 @@ struct Text {
             cc.align = align;
             cc.alignwidth = cell->TextAlignWidth(ixs);
             cc.found = false;
+            auto bd = GetBidi();
             auto i = 0;
             for (auto l = 0;; l++) {
                 auto start = i;
@@ -707,8 +901,14 @@ struct Text {
                 auto len = static_cast<int>(ls.Len());
                 auto end = start + len;
                 if (s.cursor >= start && s.cursor <= end) {
-                    auto x = RangeWidth(doc, dc, depth, start, s.cursor - start);
-                    cc.localdx = x + 1 + ixs + g_margin_extra + lineoffset(start, len);
+                    if (bd.Empty()) {
+                        auto x = RangeWidth(doc, dc, depth, start, s.cursor - start);
+                        cc.localdx = x + 1 + ixs + g_margin_extra + lineoffset(start, len);
+                    } else {
+                        auto w = BidiLine(doc, dc, depth, bd, start, len, pieces);
+                        cc.localdx = BidiCursorX(doc, dc, depth, pieces, start, s.cursor) + 1 +
+                                     ixs + g_margin_extra + AlignOffset(align, w, ixs);
+                    }
                     cc.line = l;
                     cc.found = true;
                     break;
