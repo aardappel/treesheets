@@ -646,6 +646,9 @@ struct System {
             auto align = wxAtoi(node->GetAttribute("align", "0"));
             c->textalign =
                 align >= TEXTALIGN_AUTO && align <= TEXTALIGN_RIGHT ? align : TEXTALIGN_AUTO;
+            auto valign = wxAtoi(node->GetAttribute("valign", "0"));
+            c->vertalign =
+                valign >= VERTALIGN_AUTO && valign <= VERTALIGN_BOTTOM ? valign : VERTALIGN_AUTO;
         }
         c->text.runs.Normalize(c->text.stylebits);
 

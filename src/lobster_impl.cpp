@@ -219,6 +219,24 @@ BUILTIN(get_text_alignment, "", "", "I",
     return (iint)si->GetTextAlignment();
 }
 
+BUILTIN(set_vertical_alignment, "alignment", "I", "",
+    "sets the vertical alignment of the current cell's text and grid in the height of its row"
+    " (automatic = 0, top = 1, middle = 2, bottom = 3). Automatic is top, except for cells"
+    " without a grid in line style, which are centered")
+(VM &vm, iint a) {
+    if (a < 0 || a > 3) {
+        vm.BuiltinError(
+            cat("ts.set_vertical_alignment: alignment ", a, " is invalid, it must be 0..3"));
+    }
+    si->SetVerticalAlignment((int)a);
+}
+
+BUILTIN(get_vertical_alignment, "", "", "I",
+    "returns the vertical alignment of the current cell (see set_vertical_alignment)")
+(VM &) {
+    return (iint)si->GetVerticalAlignment();
+}
+
 BUILTIN(set_status_message, "message", "S", "", "sets the status message in TreeSheets")
 (VM &, LString *s) {
     si->SetStatusMessage(s->strv());

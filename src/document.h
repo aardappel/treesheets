@@ -472,7 +472,7 @@ struct Document {
             }
         }
         // LazyLayout() laid out its grid again for its own width, not the column's.
-        c->AlignGrid(this);
+        c->AlignContent(this);
         return true;
     }
 
@@ -764,7 +764,7 @@ struct Document {
         if (psb != pathscalebias) { currentdrawroot->ResetChildren(); }
         pathscalebias = psb;
         currentdrawroot->LazyLayout(this, dc, 0, currentdrawroot->ColWidth(), false);
-        currentdrawroot->AlignGrid(this);
+        currentdrawroot->AlignContent(this);
         ResetFont(dc);
         PickFont(dc, 0, 0, 0);
         hierarchysize = 0;
@@ -2096,6 +2096,13 @@ struct Document {
                 selected.grid->SetTextAlign(this, selected, action - A_ALIGNAUTO + TEXTALIGN_AUTO);
                 return wxEmptyString;
 
+            case A_VALIGNAUTO:
+            case A_ALIGNTOP:
+            case A_ALIGNMIDDLE:
+            case A_ALIGNBOTTOM:
+                selected.grid->SetVertAlign(this, selected, action - A_VALIGNAUTO + VERTALIGN_AUTO);
+                return wxEmptyString;
+
             case A_MARKDATA:
             case A_MARKVARD:
             case A_MARKVARU:
@@ -2326,6 +2333,7 @@ struct Document {
                     case A_RESETSTYLE:
                         c->text.ResetStyle();
                         c->textalign = TEXTALIGN_AUTO;
+                        c->vertalign = VERTALIGN_AUTO;
                         break;
                     case A_RESETCOLOR:
                         if (c->IsTag(this)) {
@@ -3061,6 +3069,11 @@ struct Document {
     bool SelectionHasTextAlign(int align) {
         if (selected.grid == nullptr || selected.Thin()) { return false; }
         return selected.grid->AllHaveTextAlign(selected, align);
+    }
+
+    bool SelectionHasVertAlign(int align) {
+        if (selected.grid == nullptr || selected.Thin()) { return false; }
+        return selected.grid->AllHaveVertAlign(selected, align);
     }
 
     // The cell type a Program > Mark as menu item marks cells as.

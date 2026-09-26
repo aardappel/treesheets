@@ -28,10 +28,11 @@ struct Cell {
     int minx {0};
     int miny {0};
     int ycenteroff {0};
+    int ycenterbase {0};  // ycenteroff before the vertical alignment, see AlignContent()
     int txs {0};
     int tys {0};
     // The room right of a grid beside the text, which the text and the grid are aligned in
-    // together, or -1 if the grid isn't beside the text. See AlignGrid().
+    // together, or -1 if the grid isn't beside the text. See AlignContent().
     int roombesidegrid {-1};
     int celltype;
     Text text;
@@ -43,6 +44,7 @@ struct Cell {
     bool verticaltextandgrid {true};
     wxUint8 drawstyle {DS_GRID};
     wxUint8 textalign {TEXTALIGN_AUTO};
+    wxUint8 vertalign {VERTALIGN_AUTO};
     wxString note;
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
@@ -130,7 +132,7 @@ struct Cell {
                 tiny = grid->Layout(doc, dc, depth, sx, sy, 0, 0, forcetiny);
             }
         }
-        ycenteroff = !verticaltextandgrid ? (sy - tys) / 2 : 0;
+        ycenteroff = ycenterbase = !verticaltextandgrid ? (sy - tys) / 2 : 0;
         if (!tiny) {
             sx += g_margin_extra * 2;
             sy += g_margin_extra * 2;
@@ -216,6 +218,7 @@ struct Cell {
         verticaltextandgrid = o->verticaltextandgrid;
         drawstyle = o->drawstyle;
         textalign = o->textalign;
+        vertalign = o->vertalign;
         text.stylebits = o->text.stylebits;
     }
 
@@ -227,7 +230,7 @@ struct Cell {
 
     // The width the lines of text are aligned in, from the left edge of the text (after the
     // image). Text lines up with the whole cell, except beside its grid, where it moves along
-    // with the grid by the room right of it (see AlignGrid()). Text drawn as a blob only has
+    // with the grid by the room right of it (see AlignContent()). Text drawn as a blob only has
     // its own width, so there alignment only lines up the lines with each other.
     int TextAlignWidth(int ixs) const {
         auto w = drawstyle != DS_GRID      ? txs
@@ -236,13 +239,27 @@ struct Cell {
         return w - ixs - 4;
     }
 
-    // Moves the grid by the alignment of the cell (not of the cells in the grid, which have their
-    // own), within the room below or beside the text. Like the text, a grid drawn as a blob only
-    // has the cell's own width, so that it stays inside the blob, while in a grid it lines up
-    // with the whole cell, which is as wide as its column.
-    void AlignGrid(Document *doc) {
+    // Moves the content of the cell by its alignment, once it got the size of its column and row.
+    //
+    // Horizontally that's the grid (not the alignment of the cells in it, which have their own),
+    // within the room below or beside the text. Like the text, a grid drawn as a blob only has
+    // the cell's own width, so that it stays inside the blob, while in a grid it lines up with
+    // the whole cell, which is as wide as its column.
+    //
+    // Vertically, the text and the grid move together in the height of the row. A bubble has
+    // the cell's own height, so there nothing moves.
+    void AlignContent(Document *doc) {
+        auto vroom = drawstyle == DS_BLOBSHIER ? 0 : max(sy - miny, 0);
+        auto valign = vertalign == VERTALIGN_AUTO
+                          ? (drawstyle == DS_BLOBLINE && !grid ? VERTALIGN_MIDDLE : VERTALIGN_TOP)
+                          : vertalign;
+        auto vshift = valign == VERTALIGN_BOTTOM   ? vroom
+                      : valign == VERTALIGN_MIDDLE ? vroom / 2
+                                                   : 0;
+        ycenteroff = ycenterbase + vshift;
         roombesidegrid = -1;
         if (!GridShown(doc)) { return; }
+        grid->ShiftY(vshift);
         auto width = (drawstyle == DS_GRID ? sx : minx) - (tiny ? 0 : g_margin_extra * 2);
         // The indent of a grid below the text only matters for left-aligned text, except for the
         // lines of line style, which run in it.
@@ -338,6 +355,11 @@ struct Cell {
                 str.Prepend(wxString() << static_cast<int>(textalign));
                 str.Prepend(" align=\"");
             }
+            if (vertalign != VERTALIGN_AUTO) {
+                str.Prepend("\"");
+                str.Prepend(wxString() << static_cast<int>(vertalign));
+                str.Prepend(" valign=\"");
+            }
             str.Prepend("<cell");
             str.Append(' ', indent);
             str.Append("</cell>\n");
@@ -368,6 +390,11 @@ struct Cell {
             if (align != parentalign) {
                 static const char *const aligns[] = {"", "left", "center", "right"};
                 style += wxString("text-align: ") + aligns[align] + ";";
+            }
+            // The page makes cells align at the top.
+            if (vertalign == VERTALIGN_MIDDLE || vertalign == VERTALIGN_BOTTOM) {
+                style += vertalign == VERTALIGN_MIDDLE ? "vertical-align: middle;"
+                                                       : "vertical-align: bottom;";
             }
             auto exportcellcolor = IsTag(doc) ? doc->tags[text.t].first : cellcolor;
             auto parentcellcolor =
@@ -445,6 +472,7 @@ struct Cell {
         dos.Write8(drawstyle);
         dos.WriteString(note);
         dos.Write8(textalign);
+        dos.Write8(vertalign);
         uint cellflags = this == ocs ? TS_SELECTION_MASK : 0;
         if (HasTextState()) {
             cellflags |= grid ? TS_BOTH : TS_TEXT;
@@ -495,6 +523,10 @@ struct Cell {
         if (sys->versionlastloaded >= 28) {
             c->textalign = dis.Read8();
             if (c->textalign > TEXTALIGN_RIGHT) { c->textalign = TEXTALIGN_AUTO; }
+        }
+        if (sys->versionlastloaded >= 29) {
+            c->vertalign = dis.Read8();
+            if (c->vertalign > VERTALIGN_BOTTOM) { c->vertalign = VERTALIGN_AUTO; }
         }
         int ts = dis.Read8();
         if ((ts & TS_SELECTION_MASK) != 0) {

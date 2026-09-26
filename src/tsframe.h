@@ -351,6 +351,19 @@ struct TSFrame : wxFrame {
                      _("Center the text of the cell"), wxITEM_CHECK);
             MyAppend(alignmenu, A_ALIGNRIGHT, _("Align &right") + "\tCTRL+SHIFT+R",
                      _("Align the text of the cell right"), wxITEM_CHECK);
+            alignmenu->AppendSeparator();
+            // Y, H and N are above each other on the keyboard. (Not U: CTRL+SHIFT+U starts
+            // entering a character by its code in GTK.)
+            MyAppend(alignmenu, A_VALIGNAUTO, _("Align vertically aut&omatically"),
+                     _("Align the content of the cell at the top, or in the middle in line style "
+                       "if it has no grid"),
+                     wxITEM_CHECK);
+            MyAppend(alignmenu, A_ALIGNTOP, _("Align &top") + "\tCTRL+SHIFT+Y",
+                     _("Align the content of the cell at the top"), wxITEM_CHECK);
+            MyAppend(alignmenu, A_ALIGNMIDDLE, _("Align &middle") + "\tCTRL+SHIFT+H",
+                     _("Align the content of the cell in the middle"), wxITEM_CHECK);
+            MyAppend(alignmenu, A_ALIGNBOTTOM, _("Align &bottom") + "\tCTRL+SHIFT+N",
+                     _("Align the content of the cell at the bottom"), wxITEM_CHECK);
             stmenu->AppendSubMenu(alignmenu, _("Text &alignment"));
             stmenu->AppendSeparator();
             MyAppend(stmenu, A_RESETSTYLE, _("&Reset text styles") + "\tCTRL+SHIFT+K");
@@ -915,6 +928,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_UNDERLINE);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_STRIKETHROUGH);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateTextAlign, this, A_ALIGNAUTO, A_ALIGNRIGHT);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateVertAlign, this, A_VALIGNAUTO, A_ALIGNBOTTOM);
         for (int id : {A_MARKDATA, A_MARKCODE, A_MARKVARD, A_MARKVARU, A_MARKVIEWH, A_MARKVIEWV}) {
             Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateCellType, this, id);
         }
@@ -1106,7 +1120,8 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(styletb, _("Typewriter (CTRL+ALT+t)"), A_TT, "typewriter", wxITEM_CHECK);
         FinishToolbar(styletb, "styletb", "Text style operations");
 
-        // The pressed state of these follows the selected cells, see OnUpdateTextAlign.
+        // The pressed state of these follows the selected cells, see OnUpdateTextAlign and
+        // OnUpdateVertAlign.
         auto *aligntb = NewToolbar();
         AddToolbarIcon(aligntb, _("Align automatically (CTRL+SHIFT+d)"), A_ALIGNAUTO, "alignauto",
                        wxITEM_CHECK);
@@ -1115,6 +1130,15 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(aligntb, _("Center (CTRL+SHIFT+e)"), A_ALIGNCENTER, "aligncenter",
                        wxITEM_CHECK);
         AddToolbarIcon(aligntb, _("Align right (CTRL+SHIFT+r)"), A_ALIGNRIGHT, "alignright",
+                       wxITEM_CHECK);
+        aligntb->AddSeparator();
+        AddToolbarIcon(aligntb, _("Align vertically automatically"), A_VALIGNAUTO, "valignauto",
+                       wxITEM_CHECK);
+        AddToolbarIcon(aligntb, _("Align top (CTRL+SHIFT+y)"), A_ALIGNTOP, "aligntop",
+                       wxITEM_CHECK);
+        AddToolbarIcon(aligntb, _("Align middle (CTRL+SHIFT+h)"), A_ALIGNMIDDLE, "alignmiddle",
+                       wxITEM_CHECK);
+        AddToolbarIcon(aligntb, _("Align bottom (CTRL+SHIFT+n)"), A_ALIGNBOTTOM, "alignbottom",
                        wxITEM_CHECK);
         FinishToolbar(aligntb, "aligntb", "Text alignment operations");
 
@@ -1238,6 +1262,13 @@ struct TSFrame : wxFrame {
         auto *canvas = GetCurrentTab();
         ue.Check(canvas != nullptr &&
                  canvas->doc->SelectionHasTextAlign(ue.GetId() - A_ALIGNAUTO + TEXTALIGN_AUTO));
+    }
+
+    // Checks the vertical alignment all selected cells have, if they have the same one.
+    void OnUpdateVertAlign(wxUpdateUIEvent &ue) {
+        auto *canvas = GetCurrentTab();
+        ue.Check(canvas != nullptr &&
+                 canvas->doc->SelectionHasVertAlign(ue.GetId() - A_VALIGNAUTO + VERTALIGN_AUTO));
     }
 
     // Checks the cell type all selected cells have, if they have the same one.
