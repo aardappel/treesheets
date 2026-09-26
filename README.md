@@ -84,7 +84,7 @@ with all functionality easy to find and only in one place (no copy pasting or ov
 `TS` is the folder that contains all user-facing files, typically the build process results in an executable to be put
 in the root of this folder, and distributing to users is then a matter of giving them this folder.
 
-`TODO.txt` is the random notes I kept on ideas of myself and others on what future features could be added.
+Ideas for future features and known bugs are tracked in the [issues](https://github.com/aardappel/treesheets/issues).
 
 
 Building

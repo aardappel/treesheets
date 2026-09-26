@@ -14,7 +14,6 @@ overview; this file covers what you need to change the code safely.
 | `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon; Windows `.rc`/icon |
 | `.github/workflows/build.yml` | CI: Linux (x64, arm64), Windows MSVC (x64, arm64), macOS (arm64), then a release per push to `master` |
 | `.claude/skills/treesheets-agent/` | Skill and wire protocol for driving a running TreeSheets over its agent socket |
-| `TODO.txt` | Loose feature ideas and known bugs |
 
 ### Unity build: one translation unit
 
