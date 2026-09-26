@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -467,6 +467,9 @@ msgid "Choose XML file to write"
 msgstr ""
 
 msgid "Choose image file to save:"
+msgstr ""
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
 msgstr ""
 
 msgid "Clear replace"
@@ -1147,6 +1150,9 @@ msgstr ""
 msgid "Open cell colors"
 msgstr ""
 
+msgid "Open e&xample..."
+msgstr ""
+
 msgid "Open file cancelled."
 msgstr ""
 
@@ -1235,6 +1241,9 @@ msgid "Please select TreeSheets file(s) to load:"
 msgstr ""
 
 msgid "Please select an image file:"
+msgstr ""
+
+msgid "Please select example file(s) to load:"
 msgstr ""
 
 msgid "Please select file(s) to import:"
@@ -1518,6 +1527,9 @@ msgstr ""
 msgid "Show only cells in current search"
 msgstr ""
 
+msgid "Show sub-grids on match"
+msgstr ""
+
 msgid "Single click maximize from tray"
 msgstr ""
 
@@ -1730,6 +1742,11 @@ msgstr ""
 msgid ""
 "When a cell in a row matches the current filter, show the whole row normally "
 "instead of only the matching cell"
+msgstr ""
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
 msgstr ""
 
 msgid "Width"

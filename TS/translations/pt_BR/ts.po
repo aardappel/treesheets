@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -488,6 +488,10 @@ msgstr "Informe o arquivo XML a gravar"
 
 msgid "Choose image file to save:"
 msgstr "Informe o arquivo de imagem a salvar:"
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr ""
+"Escolhe um dos documentos de exemplo que acompanham o TreeSheets para abrir"
 
 msgid "Clear replace"
 msgstr "Limpar substituição"
@@ -1223,6 +1227,9 @@ msgstr "Abrir lista dropdown Borda"
 msgid "Open cell colors"
 msgstr "Abrir lista dropdown Célula"
 
+msgid "Open e&xample..."
+msgstr "Abrir e&xemplo..."
+
 msgid "Open file cancelled."
 msgstr "A abertura de arquivo foi cancelada."
 
@@ -1325,6 +1332,9 @@ msgstr "Por favor selecione arquivo(s) do TreeSheets para carregar:"
 
 msgid "Please select an image file:"
 msgstr "Por favor selecione um arquivo de imagem:"
+
+msgid "Please select example file(s) to load:"
+msgstr "Por favor selecione arquivo(s) de exemplo para carregar:"
 
 msgid "Please select file(s) to import:"
 msgstr "Por favor selecione o(s) arquivo(s) a importar:"
@@ -1618,6 +1628,9 @@ msgstr "Evidenciar edições feitas em um intervalo específico de datas/horas..
 msgid "Show only cells in current search"
 msgstr "Evidenciar células que contiverem resultados da busca"
 
+msgid "Show sub-grids on match"
+msgstr "Mostrar subgrades na correspondência"
+
 msgid "Single click maximize from tray"
 msgstr "Maximizar da bandeja com um único cli&que"
 
@@ -1847,6 +1860,13 @@ msgid ""
 msgstr ""
 "Quando uma célula de uma linha corresponde ao filtro atual, mostra a linha "
 "inteira normalmente em vez de apenas a célula correspondente"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"Quando uma célula corresponde ao filtro atual, mostra tudo na grade dentro "
+"dela normalmente em vez de filtrá-la também"
 
 msgid "Width"
 msgstr "Largura"

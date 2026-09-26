@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -477,6 +477,9 @@ msgstr "Chọn tệp XML để ghi"
 
 msgid "Choose image file to save:"
 msgstr "Chọn tệp hình ảnh để lưu:"
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr "Chọn một trong các tài liệu ví dụ đi kèm TreeSheets để mở"
 
 msgid "Clear replace"
 msgstr "Xóa thay thế"
@@ -1189,6 +1192,9 @@ msgstr "Mở bảng màu viền"
 msgid "Open cell colors"
 msgstr "Mở bảng màu ô"
 
+msgid "Open e&xample..."
+msgstr "Mở ví dụ (&X)..."
+
 msgid "Open file cancelled."
 msgstr "Đã hủy mở tệp."
 
@@ -1284,6 +1290,9 @@ msgstr "Vui lòng chọn (các) tệp TreeSheets để tải:"
 
 msgid "Please select an image file:"
 msgstr "Vui lòng chọn một tệp hình ảnh:"
+
+msgid "Please select example file(s) to load:"
+msgstr "Vui lòng chọn (các) tệp ví dụ để tải:"
 
 msgid "Please select file(s) to import:"
 msgstr "Vui lòng chọn (các) tệp để nhập:"
@@ -1572,6 +1581,9 @@ msgstr "Hiển thị các chỉnh sửa cuối trong khoảng ngày cụ thể"
 msgid "Show only cells in current search"
 msgstr "Chỉ hiển thị các ô trong tìm kiếm hiện tại"
 
+msgid "Show sub-grids on match"
+msgstr "Hiện lưới con khi khớp"
+
 msgid "Single click maximize from tray"
 msgstr "Nhấp chuột một lần để phóng to từ khay hệ thống"
 
@@ -1792,6 +1804,13 @@ msgid ""
 msgstr ""
 "Khi một ô trong hàng khớp với bộ lọc hiện tại, hiện toàn bộ hàng bình thường "
 "thay vì chỉ ô khớp"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"Khi một ô khớp với bộ lọc hiện tại, hiện mọi thứ trong lưới bên trong nó "
+"bình thường thay vì cũng lọc chúng"
 
 msgid "Width"
 msgstr "Chiều rộng"
