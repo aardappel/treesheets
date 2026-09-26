@@ -1494,6 +1494,16 @@ struct Document {
 
             case A_HELP_OP_REF: sys->LoadOpRef(); return wxEmptyString;
 
+            case A_HELP_EXAMPLES: {
+                wxArrayString filenames;
+                GetFilesFromUser(filenames, sys->frame, _("Please select example file(s) to load:"),
+                                 _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
+                                 sys->frame->app->GetDocPath("examples"));
+                wxString message = "";
+                for (auto &filename : filenames) { message = sys->Open(filename); }
+                return message;
+            }
+
             case A_TUTORIALWEBPAGE: {
                 wxTranslations *trans = wxTranslations::Get();
                 wxString lang = trans != nullptr && sys->defaultlang != "en"
