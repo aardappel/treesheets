@@ -465,9 +465,6 @@ struct Cell {
         if (!grid) {
             grid = make_shared<Grid>(x, y, this);
             grid->InitCells(this);
-            // The alignment of the cell only moves the grid (see AlignGrid()), its cells have
-            // their own.
-            for (auto &c : grid->cells) { c->textalign = TEXTALIGN_AUTO; }
             if (parent != nullptr) { grid->CloneStyleFrom(parent->grid.get()); }
         }
         return grid.get();
