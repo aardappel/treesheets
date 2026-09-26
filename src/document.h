@@ -1467,11 +1467,10 @@ struct Document {
             }
 
             case wxID_NEW: {
-                int size = static_cast<int>(
-                    ::wxGetNumberFromUser(_("What size grid would you like to start with?"),
-                                          _("size:"), _("New Sheet"), 10, 1, 25, sys->frame));
-                if (size < 0) { return _("New file cancelled."); }
-                sys->InitDB(size);
+                GridSizeDialog dialog(sys->frame, _("New Sheet"),
+                                      _("What size grid would you like to start with?"), 10, 25);
+                if (dialog.ShowModal() != wxID_OK) { return _("New file cancelled."); }
+                sys->InitDB(dialog.columns->GetValue(), dialog.rows->GetValue());
                 sys->frame->GetCurrentTab()->doc->UpdateLayout();
                 sys->frame->GetCurrentTab()->Refresh();
                 return wxEmptyString;
@@ -2129,15 +2128,18 @@ struct Document {
                     ScrollOrZoom(true);
                     return wxEmptyString;
                 }
-                int size = 1;
+                auto columns = 1;
+                auto rows = 1;
                 if (action == A_ENTERGRIDN) {
-                    size = static_cast<int>(
-                        ::wxGetNumberFromUser(_("What subgrid size would you like to start with?"),
-                                              _("size:"), _("New subgrid"), 10, 1, 25, sys->frame));
-                    if (size == -1) { return _("No subgrid created."); }
+                    GridSizeDialog dialog(sys->frame, _("New subgrid"),
+                                          _("What subgrid size would you like to start with?"), 10,
+                                          25);
+                    if (dialog.ShowModal() != wxID_OK) { return _("No subgrid created."); }
+                    columns = dialog.columns->GetValue();
+                    rows = dialog.rows->GetValue();
                 }
                 cell->AddUndo(this);
-                cell->AddGrid(size, size);
+                cell->AddGrid(columns, rows);
                 SetSelect(Selection(cell->grid, 0, 0, 1, 1));
                 UpdateLayout();
                 ScrollIfSelectionOutOfView();
