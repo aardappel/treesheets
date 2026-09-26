@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:39+0200\n"
+"POT-Creation-Date: 2026-09-26 09:52+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -1615,6 +1615,9 @@ msgstr "Khởi chạy ứng dụng ở trạng thái thu nhỏ"
 msgid "Statusbar"
 msgstr "Thanh trạng thái"
 
+msgid "Strikethrough (CTRL+t)"
+msgstr "Gạch ngang (CTRL+t)"
+
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
 "Hoán đổi tất cả các ô có văn bản này ở cấp độ này (hoặc cao hơn) với mục cha"
@@ -1762,8 +1765,14 @@ msgstr "Trang web hướng dẫn (&W)"
 msgid "Tutorial web page could not be found."
 msgstr "Không tìm thấy trang web hướng dẫn."
 
+msgid "Typewriter (CTRL+ALT+t)"
+msgstr "Kiểu chữ đánh máy (CTRL+ALT+t)"
+
 msgid "Typewriter font..."
 msgstr "Phông chữ đánh máy..."
+
+msgid "Underline (CTRL+u)"
+msgstr "Gạch chân (CTRL+u)"
 
 msgid "Undo (CTRL+z)"
 msgstr "Hoàn tác (CTRL+z)"

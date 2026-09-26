@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:39+0200\n"
+"POT-Creation-Date: 2026-09-26 09:52+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1579,6 +1579,9 @@ msgstr "以最小化方式启动应用程序"
 msgid "Statusbar"
 msgstr "状态栏"
 
+msgid "Strikethrough (CTRL+t)"
+msgstr "删除线 (CTRL+t)"
+
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr "将当前层级（或以上）所有包含此文本的单元格与其父级交换"
 
@@ -1723,8 +1726,14 @@ msgstr "教程网页(&W)"
 msgid "Tutorial web page could not be found."
 msgstr "找不到教程网页。"
 
+msgid "Typewriter (CTRL+ALT+t)"
+msgstr "打字机样式 (CTRL+ALT+t)"
+
 msgid "Typewriter font..."
 msgstr "打字机字体..."
+
+msgid "Underline (CTRL+u)"
+msgstr "下划线 (CTRL+u)"
 
 msgid "Undo (CTRL+z)"
 msgstr "撤销 (CTRL+z)"

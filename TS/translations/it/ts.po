@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:39+0200\n"
+"POT-Creation-Date: 2026-09-26 09:52+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -1659,6 +1659,9 @@ msgstr "Avvia l'applicazione ridotta a icona"
 msgid "Statusbar"
 msgstr "Barra di stato"
 
+msgid "Strikethrough (CTRL+t)"
+msgstr "Barrato (CTRL+t)"
+
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
 "Scambia tutte le celle con questo testo a questo livello (o sopra) con il "
@@ -1815,8 +1818,14 @@ msgstr "Pagina &web del tutorial"
 msgid "Tutorial web page could not be found."
 msgstr "Impossibile trovare la pagina web del tutorial."
 
+msgid "Typewriter (CTRL+ALT+t)"
+msgstr "Macchina da scrivere (CTRL+ALT+t)"
+
 msgid "Typewriter font..."
 msgstr "Carattere macchina da scrivere..."
+
+msgid "Underline (CTRL+u)"
+msgstr "Sottolineato (CTRL+u)"
 
 msgid "Undo (CTRL+z)"
 msgstr "Annulla (CTRL+z)"

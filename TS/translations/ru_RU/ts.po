@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:39+0200\n"
+"POT-Creation-Date: 2026-09-26 09:52+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -1883,6 +1883,9 @@ msgstr "Запустить приложение в свернутом виде"
 msgid "Statusbar"
 msgstr "Строка Состояния"
 
+msgid "Strikethrough (CTRL+t)"
+msgstr "Зачёркнутый (CTRL+t)"
+
 # Сообщение (после действия или события)
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
@@ -2065,9 +2068,16 @@ msgstr "&Bеб-страница Краткого Введения"
 msgid "Tutorial web page could not be found."
 msgstr "Не удалось найти веб-страницу с учебным руководством."
 
+msgid "Typewriter (CTRL+ALT+t)"
+msgstr "Машинопись (CTRL+ALT+t)"
+
 # п. Меню (нет & в исходном тексте)
 msgid "Typewriter font..."
 msgstr "Шрифт для Машинописи..."
+
+# комментарий к эл-ту Главного Окна
+msgid "Underline (CTRL+u)"
+msgstr "Подчёркнутый (CTRL+u)"
 
 # комментарий к эл-ту Главного Окна
 msgid "Undo (CTRL+z)"
