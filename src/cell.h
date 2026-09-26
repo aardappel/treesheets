@@ -30,6 +30,9 @@ struct Cell {
     int ycenteroff {0};
     int txs {0};
     int tys {0};
+    // The room right of a grid beside the text, which the text and the grid are aligned in
+    // together, or -1 if the grid isn't beside the text. See AlignGrid().
+    int roombesidegrid {-1};
     int celltype;
     Text text;
     shared_ptr<Grid> grid;
@@ -223,12 +226,34 @@ struct Cell {
     }
 
     // The width the lines of text are aligned in, from the left edge of the text (after the
-    // image). Text above its grid lines up with the whole cell. Text beside its grid, or drawn
-    // as a blob, only has its own width, so there alignment only lines up the lines with
-    // each other.
+    // image). Text lines up with the whole cell, except beside its grid, where it moves along
+    // with the grid by the room right of it (see AlignGrid()). Text drawn as a blob only has
+    // its own width, so there alignment only lines up the lines with each other.
     int TextAlignWidth(int ixs) const {
-        auto w = verticaltextandgrid && drawstyle == DS_GRID ? sx - g_margin_extra * 2 : txs;
+        auto w = drawstyle != DS_GRID      ? txs
+                 : roombesidegrid >= 0     ? txs + roombesidegrid
+                                           : sx - g_margin_extra * 2;
         return w - ixs - 4;
+    }
+
+    // Moves the grid by the alignment of the cell (not of the cells in the grid, which have their
+    // own), within the room below or beside the text. Like the text, a grid drawn as a blob only
+    // has the cell's own width, so that it stays inside the blob, while in a grid it lines up
+    // with the whole cell, which is as wide as its column.
+    void AlignGrid(Document *doc) {
+        roombesidegrid = -1;
+        if (!GridShown(doc)) { return; }
+        auto width = (drawstyle == DS_GRID ? sx : minx) - (tiny ? 0 : g_margin_extra * 2);
+        // The indent of a grid below the text only matters for left-aligned text, except for the
+        // lines of line style, which run in it.
+        auto from = verticaltextandgrid && drawstyle == DS_GRID ? 0 : grid->start;
+        auto room = width - from - (grid->extent - grid->start);
+        if (!verticaltextandgrid) { roombesidegrid = max(room, 0); }
+        auto align = TextAlign();
+        auto left = align == TEXTALIGN_RIGHT    ? from + room
+                    : align == TEXTALIGN_CENTER ? from + room / 2
+                                                : grid->start;
+        grid->ShiftX(max(left, from) - grid->start);
     }
 
     unique_ptr<Cell> Clone(Cell *_parent) const {
@@ -440,6 +465,9 @@ struct Cell {
         if (!grid) {
             grid = make_shared<Grid>(x, y, this);
             grid->InitCells(this);
+            // The alignment of the cell only moves the grid (see AlignGrid()), its cells have
+            // their own.
+            for (auto &c : grid->cells) { c->textalign = TEXTALIGN_AUTO; }
             if (parent != nullptr) { grid->CloneStyleFrom(parent->grid.get()); }
         }
         return grid.get();
