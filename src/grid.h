@@ -1213,10 +1213,23 @@ struct Grid {
             if (tag == found) { detached_tag.release(); }
             return next;
         } else {
-            if (ys > 1) {
+            // In a 2D grid, deleting the row or column of the tag would take the cells next to it
+            // along, so do that only if they are all empty, and otherwise leave an empty cell.
+            auto empty = [&](int x, int y) {
+                auto &c = C(x, y);
+                return !c || (c->text.t.IsEmpty() && !c->text.image && !c->grid &&
+                              c->note.IsEmpty());
+            };
+            auto rowempty = true;
+            loop(x, xs) rowempty = rowempty && empty(x, found_y);
+            auto colempty = true;
+            loop(y, ys) colempty = colempty && empty(found_x, y);
+            if (ys > 1 && (xs == 1 || rowempty)) {
                 DeleteCells(-1, found_y, 0, -1);
-            } else {
+            } else if (ys == 1 || colempty) {
                 DeleteCells(found_x, -1, -1, 0);
+            } else {
+                C(found_x, found_y) = make_unique<Cell>(cell);
             }
             if (tag == found) { detached_tag.release(); }
             return nullptr;
