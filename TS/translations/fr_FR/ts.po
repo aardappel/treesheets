@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -280,20 +280,35 @@ msgstr "Ajouter une grille à la cellule sélectionnée"
 msgid "Align &automatically"
 msgstr "Alignement &automatique"
 
+msgid "Align &bottom"
+msgstr "Aligner en &bas"
+
 msgid "Align &center"
 msgstr "&Centrer"
 
 msgid "Align &left"
 msgstr "Aligner à &gauche"
 
+msgid "Align &middle"
+msgstr "Aligner au &milieu"
+
 msgid "Align &right"
 msgstr "Aligner à &droite"
+
+msgid "Align &top"
+msgstr "Aligner en &haut"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "Alignement automatique (CTRL+SHIFT+d)"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "Aligner en bas (CTRL+SHIFT+n)"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "Aligner à gauche (CTRL+SHIFT+l)"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "Aligner au milieu (CTRL+SHIFT+h)"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "Aligner à droite (CTRL+SHIFT+r)"
@@ -305,11 +320,36 @@ msgstr ""
 "Aligner à droite le texte écrit de droite à gauche (comme l'arabe ou "
 "l'hébreu), et tout autre texte à gauche"
 
+msgid "Align the content of the cell at the bottom"
+msgstr "Aligner le contenu de la cellule en bas"
+
+msgid "Align the content of the cell at the top"
+msgstr "Aligner le contenu de la cellule en haut"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr ""
+"Aligner le contenu de la cellule en haut, ou au milieu en mode ligne si elle "
+"n'a pas de grille"
+
+msgid "Align the content of the cell in the middle"
+msgstr "Aligner le contenu de la cellule au milieu"
+
 msgid "Align the text of the cell left"
 msgstr "Aligner le texte de la cellule à gauche"
 
 msgid "Align the text of the cell right"
 msgstr "Aligner le texte de la cellule à droite"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "Aligner en haut (CTRL+SHIFT+y)"
+
+msgid "Align vertically aut&omatically"
+msgstr "Alignement &vertical automatique"
+
+msgid "Align vertically automatically"
+msgstr "Alignement vertical automatique"
 
 msgid "Also colorize the inner grid border"
 msgstr "Colorer aussi la bordure intérieure de la grille"

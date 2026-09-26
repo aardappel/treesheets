@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -276,20 +276,35 @@ msgstr "Aggiunge una griglia alla cella selezionata"
 msgid "Align &automatically"
 msgstr "Allineamento &automatico"
 
+msgid "Align &bottom"
+msgstr "Allinea in &basso"
+
 msgid "Align &center"
 msgstr "&Centra"
 
 msgid "Align &left"
 msgstr "Allinea a &sinistra"
 
+msgid "Align &middle"
+msgstr "Centra &verticalmente"
+
 msgid "Align &right"
 msgstr "Allinea a &destra"
+
+msgid "Align &top"
+msgstr "Allinea in al&to"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "Allineamento automatico (CTRL+MAIUSC+d)"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "Allinea in basso (CTRL+MAIUSC+n)"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "Allinea a sinistra (CTRL+MAIUSC+l)"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "Centra verticalmente (CTRL+MAIUSC+h)"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "Allinea a destra (CTRL+MAIUSC+r)"
@@ -301,11 +316,36 @@ msgstr ""
 "Allinea a destra il testo scritto da destra a sinistra (come l'arabo o "
 "l'ebraico) e tutto il resto del testo a sinistra"
 
+msgid "Align the content of the cell at the bottom"
+msgstr "Allinea il contenuto della cella in basso"
+
+msgid "Align the content of the cell at the top"
+msgstr "Allinea il contenuto della cella in alto"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr ""
+"Allinea il contenuto della cella in alto, o al centro nello stile linea se "
+"non ha una griglia"
+
+msgid "Align the content of the cell in the middle"
+msgstr "Centra verticalmente il contenuto della cella"
+
 msgid "Align the text of the cell left"
 msgstr "Allinea a sinistra il testo della cella"
 
 msgid "Align the text of the cell right"
 msgstr "Allinea a destra il testo della cella"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "Allinea in alto (CTRL+MAIUSC+y)"
+
+msgid "Align vertically aut&omatically"
+msgstr "Allineamento verticale a&utomatico"
+
+msgid "Align vertically automatically"
+msgstr "Allineamento verticale automatico"
 
 msgid "Also colorize the inner grid border"
 msgstr "Colora anche il bordo interno della griglia"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -270,20 +270,35 @@ msgstr "Thêm lưới vào ô được chọn"
 msgid "Align &automatically"
 msgstr "Căn lề tự động (&A)"
 
+msgid "Align &bottom"
+msgstr "Căn dưới (&B)"
+
 msgid "Align &center"
 msgstr "Căn giữa (&C)"
 
 msgid "Align &left"
 msgstr "Căn trái (&L)"
 
+msgid "Align &middle"
+msgstr "Căn giữa theo chiều dọc (&M)"
+
 msgid "Align &right"
 msgstr "Căn phải (&R)"
+
+msgid "Align &top"
+msgstr "Căn trên (&T)"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "Căn lề tự động (CTRL+SHIFT+d)"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "Căn dưới (CTRL+SHIFT+n)"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "Căn trái (CTRL+SHIFT+l)"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "Căn giữa theo chiều dọc (CTRL+SHIFT+h)"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "Căn phải (CTRL+SHIFT+r)"
@@ -295,11 +310,36 @@ msgstr ""
 "Căn phải văn bản viết từ phải sang trái (như tiếng Ả Rập hoặc tiếng Do "
 "Thái), và căn trái mọi văn bản khác"
 
+msgid "Align the content of the cell at the bottom"
+msgstr "Căn nội dung của ô xuống dưới"
+
+msgid "Align the content of the cell at the top"
+msgstr "Căn nội dung của ô lên trên"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr ""
+"Căn nội dung của ô lên trên, hoặc vào giữa theo kiểu đường kẻ nếu ô không có "
+"lưới"
+
+msgid "Align the content of the cell in the middle"
+msgstr "Căn nội dung của ô vào giữa theo chiều dọc"
+
 msgid "Align the text of the cell left"
 msgstr "Căn trái văn bản của ô"
 
 msgid "Align the text of the cell right"
 msgstr "Căn phải văn bản của ô"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "Căn trên (CTRL+SHIFT+y)"
+
+msgid "Align vertically aut&omatically"
+msgstr "Căn dọc tự động (&O)"
+
+msgid "Align vertically automatically"
+msgstr "Căn dọc tự động"
 
 msgid "Also colorize the inner grid border"
 msgstr "Đồng thời tô màu đường viền lưới bên trong"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:00+0200\n"
+"POT-Creation-Date: 2026-09-26 10:43+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -276,20 +276,35 @@ msgstr "向所选单元格添加网格"
 msgid "Align &automatically"
 msgstr "自动对齐(&A)"
 
+msgid "Align &bottom"
+msgstr "底端对齐(&B)"
+
 msgid "Align &center"
 msgstr "居中(&C)"
 
 msgid "Align &left"
 msgstr "左对齐(&L)"
 
+msgid "Align &middle"
+msgstr "垂直居中(&M)"
+
 msgid "Align &right"
 msgstr "右对齐(&R)"
+
+msgid "Align &top"
+msgstr "顶端对齐(&T)"
 
 msgid "Align automatically (CTRL+SHIFT+d)"
 msgstr "自动对齐 (CTRL+SHIFT+d)"
 
+msgid "Align bottom (CTRL+SHIFT+n)"
+msgstr "底端对齐 (CTRL+SHIFT+n)"
+
 msgid "Align left (CTRL+SHIFT+l)"
 msgstr "左对齐 (CTRL+SHIFT+l)"
+
+msgid "Align middle (CTRL+SHIFT+h)"
+msgstr "垂直居中 (CTRL+SHIFT+h)"
 
 msgid "Align right (CTRL+SHIFT+r)"
 msgstr "右对齐 (CTRL+SHIFT+r)"
@@ -299,11 +314,34 @@ msgid ""
 "text left"
 msgstr "将从右向左书写的文本（如阿拉伯语或希伯来语）右对齐，其他文本左对齐"
 
+msgid "Align the content of the cell at the bottom"
+msgstr "将单元格内容底端对齐"
+
+msgid "Align the content of the cell at the top"
+msgstr "将单元格内容顶端对齐"
+
+msgid ""
+"Align the content of the cell at the top, or in the middle in line style if "
+"it has no grid"
+msgstr "将单元格内容顶端对齐；在线条样式中，没有网格的单元格垂直居中"
+
+msgid "Align the content of the cell in the middle"
+msgstr "将单元格内容垂直居中"
+
 msgid "Align the text of the cell left"
 msgstr "将单元格文本左对齐"
 
 msgid "Align the text of the cell right"
 msgstr "将单元格文本右对齐"
+
+msgid "Align top (CTRL+SHIFT+y)"
+msgstr "顶端对齐 (CTRL+SHIFT+y)"
+
+msgid "Align vertically aut&omatically"
+msgstr "自动垂直对齐(&O)"
+
+msgid "Align vertically automatically"
+msgstr "自动垂直对齐"
 
 msgid "Also colorize the inner grid border"
 msgstr "同时为内部网格边框着色"
