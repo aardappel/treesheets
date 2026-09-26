@@ -62,6 +62,17 @@ struct Text {
         return image != nullptr ? &image->Display() : nullptr;
     }
 
+    // Whether the cell relative point is on the icon that DisplayImage() shows for a folded grid.
+    bool OnFoldIcon(int bx, int by) const {
+        if (cell->tiny || !cell->grid || !cell->grid->folded) { return false; }
+        auto ixs = 0;
+        auto iys = 0;
+        treesheets::System::ImageSize(DisplayImage(), ixs, iys);
+        bx -= 1 + g_margin_extra;
+        by -= (cell->tys - iys) / 2 + g_margin_extra;
+        return bx >= 0 && by >= 0 && bx < ixs && by < iys;
+    }
+
     size_t EstimatedMemoryUse() const {
         ASSERT(wxUSE_UNICODE);
         return sizeof(Text) + t.Length() * sizeof(wchar_t) + runs.v.capacity() * sizeof(TextRun);

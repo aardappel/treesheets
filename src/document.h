@@ -53,6 +53,7 @@ struct Document {
     unique_ptr<Cell> root {nullptr};
     Selection prev;
     Selection hover;
+    bool hoverfoldicon {false};  // The pointer is on the fold icon of the hovered cell.
     // With the hover shadow option: the shaded area of the hovered cell, in document
     // coordinates, or empty. A rect rather than `hover`, as that may point into a grid that
     // has been deleted since.
@@ -313,6 +314,7 @@ struct Document {
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
         prev = hover;
         hover = Selection();
+        hoverfoldicon = false;
         auto *drawroot = WalkPath(drawpath);
         if (drawroot->grid) {
             drawroot->grid->FindXY(
@@ -938,6 +940,16 @@ struct Document {
 
     void SelectClick(bool right = false) {
         begindrag = Selection();
+        if (!right && hoverfoldicon && isctrlshiftdrag == 0) {
+            auto *c = hover.GetCell();
+            c->AddUndo(this);
+            c->grid->folded = false;
+            c->ResetChildren();
+            hover.ExitEdit(this);
+            SetSelect(hover);
+            UpdateLayout();
+            return;
+        }
         if (!(right && hover.IsInside(selected))) {
             if (hover.GetCell() != nullptr && selected.GetCell() == hover.GetCell()) {
                 hover.EnterEditOnly(this);
