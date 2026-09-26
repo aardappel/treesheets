@@ -44,8 +44,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
         -DTREESHEETS_BUNDLE_WXWIDGETS=ON \
         -DwxUSE_SYS_LIBS=OFF \
-        -DTREESHEETS_VERSION=${{ github.run_number }} \
-        -DENABLE_WXPDFDOC=ON
+        -DTREESHEETS_VERSION=${{ github.run_number }}
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Remove epoch from .deb filename
@@ -96,7 +95,6 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release
         -DTREESHEETS_BUNDLE_WXWIDGETS=ON
         -DTREESHEETS_VERSION=${{ github.run_number }}
-        -DENABLE_WXPDFDOC=ON
         ${{ matrix.extra_flags }}
     - name: build and package
       run: cmake --build _build --config Release --target package -j
@@ -133,7 +131,7 @@ jobs:
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DTREESHEETS_BUNDLE_WXWIDGETS=ON -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }} -DENABLE_WXPDFDOC=ON
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DTREESHEETS_BUNDLE_WXWIDGETS=ON -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
     - name: Build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Upload artifacts

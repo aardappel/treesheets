@@ -29,7 +29,7 @@ project(TreeSheets
 ### Options
 
 option(ENABLE_LOBSTER "Enable Lobster scripting" ON)
-option(ENABLE_WXPDFDOC "Enable direct PDF Export" OFF)
+option(ENABLE_WXPDFDOC "Enable direct PDF Export" ON)
 option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
 option(ENABLE_CLANG_TIDY "Run clang-tidy linter" OFF)
 option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
