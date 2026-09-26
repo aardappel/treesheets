@@ -1227,6 +1227,26 @@ struct Grid {
         foreachcell(c) if (c->text.t == f->text.t) {
             if (selcell == nullptr) { selcell = c.get(); }
 
+            // Like their children, the notes of the merged cells are all kept, separated by an
+            // empty line. Each part only once: swapping back gives every copy of the cell the
+            // merged note, and swapping again shouldn't repeat it.
+            auto paragraphs = [](const wxString &note) {
+                vector<wxString> v;
+                for (size_t pos = 0; pos < note.Len();) {
+                    auto end = note.find("\n\n", pos);
+                    if (end == wxString::npos) { end = note.Len(); }
+                    if (end > pos) { v.push_back(note.Mid(pos, end - pos)); }
+                    pos = end + 2;
+                }
+                return v;
+            };
+            auto parts = paragraphs(c->note);
+            for (const auto &part : paragraphs(f->note)) {
+                if (std::find(parts.begin(), parts.end(), part) != parts.end()) { continue; }
+                parts.push_back(part);
+                c->note += (c->note.IsEmpty() ? "" : "\n\n") + part;
+            }
+
             if (f->grid) {
                 if (c->grid) {
                     f->grid->MergeTagAll(c.get());
