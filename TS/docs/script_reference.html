@@ -34,10 +34,10 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.selection</b>() -> <font color="#666666">int2</font>, <font color="#666666">int2</font></tt></td><td class="a">returns the (xs,ys) and (x,y) of the current selection, or zeroes if none</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.goto_child</b>(n<font color="#666666">: int</font>)</tt></td><td class="a">makes the current cell the nth child of the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.goto_child</b>(n<font color="#666666">: int</font>)</tt></td><td class="a">makes the current cell the nth child of the current cell. it is a runtime error if the current cell has no sub-grid, or n is not in 0..num_children() - 1.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.goto_column_row</b>(col<font color="#666666">: int</font>, row<font color="#666666">: int</font>)</tt></td><td class="a">makes the current cell the child at col / row</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.goto_column_row</b>(col<font color="#666666">: int</font>, row<font color="#666666">: int</font>)</tt></td><td class="a">makes the current cell the child at col / row. it is a runtime error if the current cell has no sub-grid, or col / row is outside of it (see num_columns_rows()).</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_text</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the text of the current cell.</td>
