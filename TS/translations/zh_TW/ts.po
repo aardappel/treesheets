@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -695,9 +695,6 @@ msgstr "匯出為 PDF 檔案時發生錯誤！"
 msgid "Error exporting to SVG file!"
 msgstr "匯出為 SVG 檔案時發生錯誤！"
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr "載入核心資料檔時發生錯誤（TreeSheets 是否未正確安裝？）"
-
 msgid "Error renaming temporary file."
 msgstr "重新命名暫存檔時發生錯誤。"
 
@@ -982,9 +979,6 @@ msgstr "縮排文字(&T)..."
 msgid "Indented text..."
 msgstr "縮排文字..."
 
-msgid "Initialization Error"
-msgstr "初始化錯誤"
-
 msgid "Insert New &NxN Grid"
 msgstr "插入新的 NxN 網格(&N)"
 
@@ -1267,11 +1261,17 @@ msgstr "貼上（Ctrl + V）"
 msgid "Paste Style Only"
 msgstr "僅貼上樣式"
 
+msgid "Paste as &Text"
+msgstr "貼上為文字(&T)"
+
 msgid "Paste clipboard contents"
 msgstr "貼上剪貼簿內容"
 
 msgid "Paste file path"
 msgstr "貼上檔案路徑"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "貼上剪貼簿中的文字，不帶所複製儲存格的樣式"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr "請啟用 [選項 -> 顯示工具列] 以使用取代功能。"
@@ -1900,6 +1900,12 @@ msgstr "逐步還原變更"
 
 msgid "scale:"
 msgstr "縮放："
+
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr "載入核心資料檔時發生錯誤（TreeSheets 是否未正確安裝？）"
+
+#~ msgid "Initialization Error"
+#~ msgstr "初始化錯誤"
 
 #~ msgid "size:"
 #~ msgstr "大小："

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -721,11 +721,6 @@ msgstr "Erro ao exportar arquivo PDF!"
 msgid "Error exporting to SVG file!"
 msgstr "Erro ao exportar arquivo SVG!"
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"Erro ao carregar arquivo de dados essencial (o TreeSheets não foi instalado "
-"corretamente?)"
-
 msgid "Error renaming temporary file."
 msgstr "Erro ao renomear arquivo temporário."
 
@@ -1036,9 +1031,6 @@ msgstr "Texto &Indentado..."
 msgid "Indented text..."
 msgstr "Texto &indentado..."
 
-msgid "Initialization Error"
-msgstr "Erro de Inicialização"
-
 msgid "Insert New &NxN Grid"
 msgstr "Inserir Nova Grade N&xN"
 
@@ -1338,11 +1330,17 @@ msgstr "Colar (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Colar &Estilo"
 
+msgid "Paste as &Text"
+msgstr "Colar como &texto"
+
 msgid "Paste clipboard contents"
 msgstr "Cola o conteúdo da área de transferência"
 
 msgid "Paste file path"
 msgstr "Colar o caminho do arquivo"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "Cola o texto da área de transferência sem os estilos das células copiadas"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1838,7 +1836,9 @@ msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Define se a barra de status é mostrada abaixo dos documentos"
 
 msgid "Toggle whether text gets smaller the deeper a grid is nested"
-msgstr "Define se o texto fica menor quanto mais profundamente uma grade está aninhada"
+msgstr ""
+"Define se o texto fica menor quanto mais profundamente uma grade está "
+"aninhada"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
@@ -2001,6 +2001,14 @@ msgstr "Reverte as mudanças, um passo de cada vez"
 
 msgid "scale:"
 msgstr "escala:"
+
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr ""
+#~ "Erro ao carregar arquivo de dados essencial (o TreeSheets não foi "
+#~ "instalado corretamente?)"
+
+#~ msgid "Initialization Error"
+#~ msgstr "Erro de Inicialização"
 
 #~ msgid "size:"
 #~ msgstr "tamanho:"

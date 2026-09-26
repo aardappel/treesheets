@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -717,11 +717,6 @@ msgstr "Errore durante l'esportazione nel file PDF!"
 msgid "Error exporting to SVG file!"
 msgstr "Errore durante l'esportazione nel file SVG!"
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"Errore durante il caricamento del file di dati di base (i fogli dell'albero "
-"non sono stati installati correttamente?)"
-
 msgid "Error renaming temporary file."
 msgstr "Errore durante la ridenominazione del file temporaneo."
 
@@ -1032,9 +1027,6 @@ msgstr "Testo &rientrato..."
 msgid "Indented text..."
 msgstr "Testo rientrato..."
 
-msgid "Initialization Error"
-msgstr "Errore di inizializzazione"
-
 msgid "Insert New &NxN Grid"
 msgstr "Inserisci nuova griglia &NxN"
 
@@ -1332,11 +1324,17 @@ msgstr "Incolla (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Incolla solo stile"
 
+msgid "Paste as &Text"
+msgstr "Incolla come &testo"
+
 msgid "Paste clipboard contents"
 msgstr "Incolla il contenuto degli appunti"
 
 msgid "Paste file path"
 msgstr "Incolla il percorso del file"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "Incolla il testo degli appunti senza gli stili delle celle copiate"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1833,7 +1831,8 @@ msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Mostra o nasconde la barra di stato sotto i documenti"
 
 msgid "Toggle whether text gets smaller the deeper a grid is nested"
-msgstr "Attiva/disattiva la riduzione del testo quanto più una griglia è annidata"
+msgstr ""
+"Attiva/disattiva la riduzione del testo quanto più una griglia è annidata"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
@@ -2001,6 +2000,14 @@ msgstr "ripristinare le modifiche, un passo alla volta"
 
 msgid "scale:"
 msgstr "scala:"
+
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr ""
+#~ "Errore durante il caricamento del file di dati di base (i fogli "
+#~ "dell'albero non sono stati installati correttamente?)"
+
+#~ msgid "Initialization Error"
+#~ msgstr "Errore di inizializzazione"
 
 #~ msgid "size:"
 #~ msgstr "dimensione:"

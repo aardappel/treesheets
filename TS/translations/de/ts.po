@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -727,10 +727,6 @@ msgstr "Fehler beim Exportieren der PDF-Datei!"
 msgid "Error exporting to SVG file!"
 msgstr "Fehler beim Exportieren der SVG-Datei!"
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"Fehler beim Laden von Kerndaten (TreeSheets ggf. nicht korrekt installiert?)"
-
 msgid "Error renaming temporary file."
 msgstr "Fehler beim Umbenennen der temporären Datei."
 
@@ -1041,9 +1037,6 @@ msgstr "Eingerückter &Text"
 msgid "Indented text..."
 msgstr "Eingerückter Text..."
 
-msgid "Initialization Error"
-msgstr "Initialisierungsfehler"
-
 msgid "Insert New &NxN Grid"
 msgstr "Neue &NxN-Tabelle einfügen"
 
@@ -1343,11 +1336,17 @@ msgstr "Einfügen (STRG+v)"
 msgid "Paste Style Only"
 msgstr "Nur Stil einfügen"
 
+msgid "Paste as &Text"
+msgstr "Als &Text einfügen"
+
 msgid "Paste clipboard contents"
 msgstr "Inhalte aus der Zwischenablage einfügen"
 
 msgid "Paste file path"
 msgstr "Dateipfad einfügen"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "Den Text aus der Zwischenablage ohne die Stile der kopierten Zellen einfügen"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1851,7 +1850,9 @@ msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Auswählen, ob die Statuszeile unterhalb der Dokumente angezeigt wird"
 
 msgid "Toggle whether text gets smaller the deeper a grid is nested"
-msgstr "Auswählen, ob Text umso kleiner wird, je tiefer eine Tabelle verschachtelt ist"
+msgstr ""
+"Auswählen, ob Text umso kleiner wird, je tiefer eine Tabelle verschachtelt "
+"ist"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
@@ -2019,6 +2020,14 @@ msgstr "Nimmt die Änderungen Schritt für Schritt zurück"
 
 msgid "scale:"
 msgstr "Skalierung:"
+
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr ""
+#~ "Fehler beim Laden von Kerndaten (TreeSheets ggf. nicht korrekt "
+#~ "installiert?)"
+
+#~ msgid "Initialization Error"
+#~ msgstr "Initialisierungsfehler"
 
 #~ msgid "size:"
 #~ msgstr "Größe:"

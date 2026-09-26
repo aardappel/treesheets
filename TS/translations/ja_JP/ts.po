@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -707,11 +707,6 @@ msgstr "PDF ファイルへのエクスポート中にエラーが発生しま�
 msgid "Error exporting to SVG file!"
 msgstr "SVG ファイルへのエクスポート中にエラーが発生しました！"
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"コアデータファイルの読み込み中にエラーが発生しました (TreeSheets が正しくイン"
-"ストールされていませんか？)"
-
 msgid "Error renaming temporary file."
 msgstr "一時ファイルの名前変更中にエラーが発生しました。"
 
@@ -1017,9 +1012,6 @@ msgstr "インデントされたテキスト(&T)..."
 msgid "Indented text..."
 msgstr "インデントされたテキスト..."
 
-msgid "Initialization Error"
-msgstr "初期化エラー"
-
 msgid "Insert New &NxN Grid"
 msgstr "新しい NxN グリッドを挿入(&N)"
 
@@ -1312,11 +1304,17 @@ msgstr "貼り付け (Ctrl+V)"
 msgid "Paste Style Only"
 msgstr "スタイルのみ貼り付け"
 
+msgid "Paste as &Text"
+msgstr "テキストとして貼り付け(&T)"
+
 msgid "Paste clipboard contents"
 msgstr "クリップボードの内容を貼り付け"
 
 msgid "Paste file path"
 msgstr "ファイルパスを貼り付け"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "コピーしたセルのスタイルを除いて、クリップボードのテキストを貼り付け"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1959,6 +1957,14 @@ msgstr "変更を1ステップずつ元に戻します"
 
 msgid "scale:"
 msgstr "スケール :"
+
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr ""
+#~ "コアデータファイルの読み込み中にエラーが発生しました (TreeSheets が正しく"
+#~ "インストールされていませんか？)"
+
+#~ msgid "Initialization Error"
+#~ msgstr "初期化エラー"
 
 #~ msgid "size:"
 #~ msgstr "サイズ :"

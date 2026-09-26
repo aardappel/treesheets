@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -687,9 +687,6 @@ msgstr ""
 msgid "Error exporting to SVG file!"
 msgstr ""
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-
 msgid "Error renaming temporary file."
 msgstr ""
 
@@ -966,9 +963,6 @@ msgid "Indented &Text..."
 msgstr ""
 
 msgid "Indented text..."
-msgstr ""
-
-msgid "Initialization Error"
 msgstr ""
 
 msgid "Insert New &NxN Grid"
@@ -1251,10 +1245,16 @@ msgstr ""
 msgid "Paste Style Only"
 msgstr ""
 
+msgid "Paste as &Text"
+msgstr ""
+
 msgid "Paste clipboard contents"
 msgstr ""
 
 msgid "Paste file path"
+msgstr ""
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
 msgstr ""
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
