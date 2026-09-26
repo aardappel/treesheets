@@ -879,6 +879,12 @@ struct TSFrame : wxFrame {
                 }
                 prev = &pane;
             }
+            // It also has the sizes of the toolbars, which are too small for toolbars that got
+            // buttons in a later version, so these would be cut off.
+            for (const auto &name : GetToolbarPaneNames()) {
+                auto &pane = aui.GetPane(name);
+                if (pane.window != nullptr) { pane.BestSize(pane.window->GetBestSize()); }
+            }
         }
         aui.Update();
 
@@ -1093,6 +1099,11 @@ struct TSFrame : wxFrame {
         auto *styletb = NewToolbar();
         AddToolbarIcon(styletb, _("Bold (CTRL+b)"), wxID_BOLD, "bold", wxITEM_CHECK);
         AddToolbarIcon(styletb, _("Italic (CTRL+i)"), wxID_ITALIC, "italic", wxITEM_CHECK);
+        AddToolbarIcon(styletb, _("Underline (CTRL+u)"), wxID_UNDERLINE, "underline",
+                       wxITEM_CHECK);
+        AddToolbarIcon(styletb, _("Strikethrough (CTRL+t)"), wxID_STRIKETHROUGH, "strikethrough",
+                       wxITEM_CHECK);
+        AddToolbarIcon(styletb, _("Typewriter (CTRL+ALT+t)"), A_TT, "typewriter", wxITEM_CHECK);
         FinishToolbar(styletb, "styletb", "Text style operations");
 
         // The pressed state of these follows the selected cells, see OnUpdateTextAlign.
