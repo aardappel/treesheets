@@ -135,35 +135,16 @@ msgfmt --output-file=ts.mo ts.po
 
 ### Оперативная визуализация процесса перевода
 
-Для оперативного просмотра вносимых изменений в процессе перевода, нам необходимо "скормить" программе наш файл перевода `ts.mo` (вместо родного).
+Файлы перевода `ts.mo` *встраиваются в исполняемый файл* TreeSheets при сборке, поэтому программа не читает их из системных каталогов (`/usr/share/locale`, Flatpak и т. п.) - подмена или ссылка на файл `ts.mo` там *ничего не изменит*.
 
-#### **Debian** (Ubuntu)
-
-> Файл **ts.mo**  находится здесь: `/usr/share/locale/ru_RU/LC_MESSAGES/ts.mo`
-
-Можно создать ссылку на файл, в котором выполняется перевод, вместо соответствующего файла ts.mo (*предварительно переименовав существующий файл!*):
+Чтобы увидеть вносимые изменения, обновите [[TreeSheets#3 Машиночитаемый Объект (.mo-файл) - сборка|.mo-файл]], пересоберите программу и запустите собранный исполняемый файл:
 ```sh
-cd /usr/share/locale/ru_RU/LC_MESSAGES/ && mv -i ts.mo ts.mo.1 && ls
-ln -s .../GIT/TreeSheets/TS/translations/ru_RU/ts.mo /usr/share/locale/ru_RU/LC_MESSAGES/ts.mo
+cmake --build <каталог_сборки>
+<каталог_сборки>/TreeSheets
 ```
-... и перезапустить программу.
+При сборке изменённые файлы `ts.mo` встраиваются заново автоматически.
 
-
-#### **Flatpak**
-
-> Файл **ts.mo**  находится здесь: `/var/lib/flatpak/runtime/com.strlen.TreeSheets.Locale/x86_64/stable/active/files/ru/share/ru_RU/LC_MESSAGES/ts.mo`
-
-Можно создать ссылку на файл, в котором выполняется перевод, вместо существующего файла ts.mo (*предварительно переименовав существующий файл!*):
-```sh
-ln -s .../GIT/TreeSheets/TS/translations/ru_RU/ts.mo /var/lib/flatpak/runtime/com.strlen.TreeSheets.Locale/x86_64/stable/active/files/ru/share/ru_RU/LC_MESSAGES/ts.mo
-```
-
-
-Также, можно создать ссылку на каталог ru_RU (в котором выполняется перевод) в  соответствующем каталоге программы (*предварительно переименовав существующую там ссылку!*):
-
-```sh
-ln -s .../GIT/TreeSheets/TS/translations/ru_RU /var/lib/flatpak/app/com.strlen.TreeSheets/current/active/files/share/locale/ru_RU
-```
+Если язык системы отличается от языка перевода, выберите его в меню «Параметры» → «Изменить язык...» и перезапустите программу.
 
 
 ### & в Меню (F10)
