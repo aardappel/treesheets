@@ -2270,6 +2270,10 @@ struct Document {
                 if (selected.TextEdit()) { break; }
                 if (selected.grid->cell->parent != nullptr) {
                     SetSelect(selected.grid->cell->parent->grid->FindCell(selected.grid->cell));
+                } else if (selected.IsAll() && sys->frame->IsFullScreen()) {
+                    // Nothing left to escape from: a way out for those who forget F11.
+                    sys->frame->ShowFullScreen(false);
+                    return wxEmptyString;
                 } else {
                     selected.SelAll();
                 }
