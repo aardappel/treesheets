@@ -40,6 +40,12 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.goto_column_row</b>(col<font color="#666666">: int</font>, row<font color="#666666">: int</font>)</tt></td><td class="a">makes the current cell the child at col / row. it is a runtime error if the current cell has no sub-grid, or col / row is outside of it (see num_columns_rows()).</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.select</b>()</tt></td><td class="a">selects the current cell in the document, unfolding, zooming and scrolling to show it once the script is done. it is a runtime error if the current cell is the root, which has no parent grid to select it in.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.select_range</b>(position<font color="#666666">: int2</font>, size<font color="#666666">: int2</font>)</tt></td><td class="a">selects the cells denoted by position/size in the grid of the current cell (see selection()), unfolding, zooming and scrolling to show them once the script is done. it is a runtime error if the current cell has no sub-grid, or the cells are not all inside it.</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_text</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the text of the current cell.</td>
 
 </tr>

@@ -111,6 +111,32 @@ BUILTIN(goto_column_row, "col,row", "II", "",
     si->GoToColumnRow((int)x, (int)y);
 }
 
+BUILTIN(select, "", "", "",
+    "selects the current cell in the document, unfolding, zooming and scrolling to show it once "
+    "the script is done. it is a runtime error if the current cell is the root, which has no "
+    "parent grid to select it in.")
+(VM &vm) {
+    if (!si->HasParent()) { vm.BuiltinError("ts.select: the root cell can't be selected"); }
+    si->SelectCurrent();
+}
+
+BUILTIN(select_range, "position,size", "I}:2I}:2", "",
+    "selects the cells denoted by position/size in the grid of the current cell (see "
+    "selection()), unfolding, zooming and scrolling to show them once the script is done. it is "
+    "a runtime error if the current cell has no sub-grid, or the cells are not all inside it.")
+(VM &vm, iint2 position, iint2 size) {
+    auto p = ToVec<int2>(position);
+    auto s = ToVec<int2>(size);
+    auto [cols, rows] = si->NumColumnsRows();
+    if (cols == 0) { vm.BuiltinError("ts.select_range: the current cell has no sub-grid"); }
+    if (p.x < 0 || p.y < 0 || s.x < 1 || s.y < 1 || p.x + s.x > cols || p.y + s.y > rows) {
+        vm.BuiltinError(cat("ts.select_range: position ", p.x, ", ", p.y, " with size ", s.x,
+                            " x ", s.y, " is invalid, the grid has ", cols, " columns and ", rows,
+                            " rows"));
+    }
+    si->SelectRange(p.x, p.y, s.x, s.y);
+}
+
 BUILTIN(get_text, "", "", "S", "gets the text of the current cell.")
 (VM &vm) {
     return vm.NewString(si->GetText());
