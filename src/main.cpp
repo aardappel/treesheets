@@ -283,6 +283,7 @@ enum {
     A_ALIGNLEFT,
     A_ALIGNCENTER,
     A_ALIGNRIGHT,
+    A_HELP_EXAMPLES,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     #ifdef ENABLE_LOBSTER

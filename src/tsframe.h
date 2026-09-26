@@ -754,6 +754,8 @@ struct TSFrame : wxFrame {
                  _("Load an interactive tutorial in TreeSheets"));
         MyAppend(helpmenu, A_HELP_OP_REF, _("Operation reference") + "\tCTRL+ALT+F1",
                  _("Load an interactive program operation reference in TreeSheets"));
+        MyAppend(helpmenu, A_HELP_EXAMPLES, _("Open e&xample..."),
+                 _("Choose one of the example documents that come with TreeSheets to open"));
         helpmenu->AppendSeparator();
         MyAppend(helpmenu, A_TUTORIALWEBPAGE, _("Tutorial &web page"),
                  _("Open the tutorial web page in browser"));
