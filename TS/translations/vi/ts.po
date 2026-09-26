@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -501,6 +501,9 @@ msgstr "Đã giảm chiều rộng cột."
 
 msgid "Column width increased."
 msgstr "Đã tăng chiều rộng cột."
+
+msgid "Columns:"
+msgstr "Số cột:"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "Văn bản phân tách bằng dấu phẩy (CSV)..."
@@ -1402,6 +1405,9 @@ msgstr "Đặt lại thanh công cụ"
 msgid "Restrict search and replace to view"
 msgstr "Giới hạn tìm kiếm và thay thế để xem"
 
+msgid "Rows:"
+msgstr "Số hàng:"
+
 msgid "Run"
 msgstr "Chạy"
 
@@ -1892,8 +1898,8 @@ msgstr "đảo ngược các thay đổi, từng bước một"
 msgid "scale:"
 msgstr "tỷ lệ:"
 
-msgid "size:"
-msgstr "kích cỡ:"
+#~ msgid "size:"
+#~ msgstr "kích cỡ:"
 
 #~ msgid "Filter by the same cell color"
 #~ msgstr "Lọc theo cùng màu ô"

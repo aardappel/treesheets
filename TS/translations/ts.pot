@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -491,6 +491,9 @@ msgid "Column width decreased."
 msgstr ""
 
 msgid "Column width increased."
+msgstr ""
+
+msgid "Columns:"
 msgstr ""
 
 msgid "Comma delimited text (CSV)..."
@@ -1353,6 +1356,9 @@ msgstr ""
 msgid "Restrict search and replace to view"
 msgstr ""
 
+msgid "Rows:"
+msgstr ""
+
 msgid "Run"
 msgstr ""
 
@@ -1826,7 +1832,4 @@ msgid "revert the changes, one step at a time"
 msgstr ""
 
 msgid "scale:"
-msgstr ""
-
-msgid "size:"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -505,6 +505,9 @@ msgstr "열 너비가 감소했습니다."
 
 msgid "Column width increased."
 msgstr "열 너비가 증가했습니다."
+
+msgid "Columns:"
+msgstr "열 수:"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "쉼표로 구분된 텍스트 (CSV)..."
@@ -1391,6 +1394,9 @@ msgstr "도구 모음 재설정"
 msgid "Restrict search and replace to view"
 msgstr "검색 및 바꾸기를 현재 보기로 제한"
 
+msgid "Rows:"
+msgstr "행 수:"
+
 msgid "Run"
 msgstr "실행"
 
@@ -1880,8 +1886,8 @@ msgstr "변경 사항을 한 번에 한 단계씩 되돌리기"
 msgid "scale:"
 msgstr "비율:"
 
-msgid "size:"
-msgstr "크기:"
+#~ msgid "size:"
+#~ msgstr "크기:"
 
 #~ msgid "Filter by the same cell color"
 #~ msgstr "동일한 셀 색상으로 필터링"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:52+0200\n"
+"POT-Creation-Date: 2026-09-26 10:00+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -516,6 +516,9 @@ msgstr "Largeur de la colonne réduite."
 
 msgid "Column width increased."
 msgstr "Largeur de la colonne augmentée."
+
+msgid "Columns:"
+msgstr "Colonnes :"
 
 msgid "Comma delimited text (CSV)..."
 msgstr "Texte séparateur virgule (CSV)..."
@@ -1457,6 +1460,9 @@ msgstr "Réinitialiser la barre d'outils"
 msgid "Restrict search and replace to view"
 msgstr "Limiter la recherche et le remplacement à la vue"
 
+msgid "Rows:"
+msgstr "Lignes :"
+
 msgid "Run"
 msgstr "Calculer"
 
@@ -1962,8 +1968,8 @@ msgstr "annule les changements, une étape à la fois"
 msgid "scale:"
 msgstr "échelle:"
 
-msgid "size:"
-msgstr "taille:"
+#~ msgid "size:"
+#~ msgstr "taille:"
 
 #~ msgid "&Add Image"
 #~ msgstr "&Ajouter Image"
