@@ -190,6 +190,17 @@ template<typename Get> std::vector<Class> Classes(Get get, int len) {
     return classes;
 }
 
+// Whether c is a letter of a cursive script (Arabic, Syriac, N'Ko, ...) that joins to the
+// letter before it, so that letter takes a different, often narrower, form. Approximated by
+// ranges: all of their letters except hamza and a few rare ones.
+inline bool JoinsToPrevious(unsigned c) {
+    return (c >= 0x0622 && c <= 0x064A) || (c >= 0x066E && c <= 0x0673) ||
+           (c >= 0x0675 && c <= 0x06D3) || c == 0x06D5 || c == 0x06EE || c == 0x06EF ||
+           (c >= 0x06FA && c <= 0x06FC) || c == 0x06FF || (c >= 0x0710 && c <= 0x072F) ||
+           (c >= 0x074D && c <= 0x077F) || (c >= 0x07CA && c <= 0x07EA) ||
+           (c >= 0x0840 && c <= 0x0858) || (c >= 0x08A0 && c <= 0x08C8) || c == 0x200D;
+}
+
 // Whether the paragraph is right-to-left: whether its first letter is (rule P2, like HTML's
 // dir="auto").
 inline bool IsRightToLeft(const std::vector<Class> &classes) {
