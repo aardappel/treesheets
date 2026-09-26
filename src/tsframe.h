@@ -459,6 +459,8 @@ struct TSFrame : wxFrame {
             MyAppend(editmenu, wxID_PASTE, _("&Paste") + "\tCTRL+V", _("Paste clipboard contents"));
             MyAppend(editmenu, A_PASTESTYLE, _("Paste Style Only") + "\tCTRL+SHIFT+V",
                      _("only sets the colors and style of the copied cell, and keeps the text"));
+            MyAppend(editmenu, A_PASTETEXT, _("Paste as &Text"),
+                     _("Paste the text of the clipboard without the styles of the copied cells"));
             MyAppend(editmenu, A_COLLAPSE, _("Collapse Ce&lls") + "\tCTRL+L");
             editmenu->AppendSeparator();
 

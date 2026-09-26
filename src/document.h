@@ -2291,14 +2291,17 @@ struct Document {
                 return wxEmptyString;
             }
 
-            case wxID_PASTE: {
+            case wxID_PASTE:
+            case A_PASTETEXT: {
                 int pastemode = selected.PasteMode();
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
                 if (wxTheClipboard->Open()) {
                     if (wxTextDataObject tdo;
                         wxTheClipboard->GetData(tdo) && tdo.GetText().Len() > 0) {
-                        PasteOrDrop(tdo, pastemode);
+                        PasteOrDrop(tdo, pastemode, action == A_PASTETEXT);
+                    } else if (action == A_PASTETEXT) {
+                        // Only text can be pasted as text.
                     } else if (wxFileDataObject fdo;
                                wxTheClipboard->GetData(fdo) && fdo.GetFilenames().GetCount() > 0) {
                         PasteOrDrop(fdo);
@@ -2314,7 +2317,7 @@ struct Document {
                     UpdateLayout();
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
-                } else if (sys->cellclipboard) {
+                } else if (sys->cellclipboard && action == wxID_PASTE) {
                     cell->Paste(this, sys->cellclipboard.get(), selected, pastemode);
                     UpdateLayout();
                     ScrollIfSelectionOutOfView();
@@ -2954,11 +2957,13 @@ struct Document {
         }
     }
 
-    void PasteOrDrop(const wxTextDataObject &textdataobject, int pastemode = PASTE_FIT) {
+    void PasteOrDrop(const wxTextDataObject &textdataobject, int pastemode = PASTE_FIT,
+                     bool astext = false) {
         if (textdataobject.GetText() != wxEmptyString) {
             Cell *cell = selected.ThinExpand(this);
             auto text = textdataobject.GetText();
-            if ((sys->clipboardcopy == text) && sys->cellclipboard) {
+            // The cells copied last, with their styles, unless only their text is wanted.
+            if (!astext && sys->clipboardcopy == text && sys->cellclipboard) {
                 cell->Paste(this, sys->cellclipboard.get(), selected, pastemode);
             } else {
                 const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
