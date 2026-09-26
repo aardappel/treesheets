@@ -1336,6 +1336,9 @@ msgstr "Einfügen (STRG+v)"
 msgid "Paste Style Only"
 msgstr "Nur Stil einfügen"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "Nur Stil einfügen (STRG+UMSCHALT+v)"
+
 msgid "Paste as &Text"
 msgstr "Als &Text einfügen"
 

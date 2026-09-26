@@ -1261,6 +1261,9 @@ msgstr "粘贴 (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "仅粘贴样式"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "仅粘贴样式 (CTRL+SHIFT+v)"
+
 msgid "Paste as &Text"
 msgstr "粘贴为文本(&T)"
 

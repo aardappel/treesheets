@@ -1494,6 +1494,9 @@ msgstr "Вставить (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Вставить только Стиль"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "Вставить только стиль (CTRL+SHIFT+v)"
+
 msgid "Paste as &Text"
 msgstr "Вставить как &текст"
 

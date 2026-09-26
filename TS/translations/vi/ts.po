@@ -1290,6 +1290,9 @@ msgstr "Dán (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Chỉ dán định dạng"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "Chỉ dán định dạng (CTRL+SHIFT+v)"
+
 msgid "Paste as &Text"
 msgstr "Dán dạng văn bản (&T)"
 

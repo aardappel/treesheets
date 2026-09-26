@@ -1055,6 +1055,7 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, "undo");
         AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, "editcopy");
         AddToolbarIcon(edittb, _("Paste (CTRL+v)"), wxID_PASTE, "editpaste");
+        AddToolbarIcon(edittb, _("Paste Style Only (CTRL+SHIFT+v)"), A_PASTESTYLE, "pastestyle");
         FinishToolbar(edittb, "edittb", "Edit operations");
 
         auto *zoomtb = NewToolbar();

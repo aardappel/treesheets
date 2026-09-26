@@ -1324,6 +1324,9 @@ msgstr "Incolla (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Incolla solo stile"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "Incolla solo stile (CTRL+MAIUSC+v)"
+
 msgid "Paste as &Text"
 msgstr "Incolla come &testo"
 

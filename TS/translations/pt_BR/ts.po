@@ -1330,6 +1330,9 @@ msgstr "Colar (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Colar &Estilo"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "Colar apenas o estilo (CTRL+SHIFT+v)"
+
 msgid "Paste as &Text"
 msgstr "Colar como &texto"
 

@@ -1304,6 +1304,9 @@ msgstr "貼り付け (Ctrl+V)"
 msgid "Paste Style Only"
 msgstr "スタイルのみ貼り付け"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "スタイルのみ貼り付け (Ctrl+Shift+V)"
+
 msgid "Paste as &Text"
 msgstr "テキストとして貼り付け(&T)"
 

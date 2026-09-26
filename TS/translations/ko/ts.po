@@ -1283,6 +1283,9 @@ msgstr "붙여넣기 (Ctrl+V)"
 msgid "Paste Style Only"
 msgstr "스타일만 붙여넣기"
 
+msgid "Paste Style Only (CTRL+SHIFT+v)"
+msgstr "스타일만 붙여넣기 (CTRL+SHIFT+V)"
+
 msgid "Paste as &Text"
 msgstr "텍스트로 붙여넣기(&T)"
 
