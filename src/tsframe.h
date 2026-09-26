@@ -25,6 +25,23 @@ struct TSTextCtrl : wxTextCtrl {
 
 struct TSFrame : wxFrame {
     TSApp *app;
+    #ifdef __WXMSW__
+        // Whether Alt was used with the mouse since it was pressed, e.g. Alt+mousewheel to
+        // change the width of a column (see TSCanvas::AltWithMouse()). Windows opens the menu
+        // bar when Alt is released without another key in between, mouse buttons and the
+        // mousewheel don't count, and then the menu bar takes the mousewheel (issue #268).
+        bool altwithmouse {false};
+
+        WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wparam, WXLPARAM lparam) override {
+            // Opening the menu bar by releasing Alt: lparam is 0 when it's from the keyboard.
+            if (message == WM_SYSCOMMAND && (wparam & 0xFFF0) == SC_KEYMENU && lparam == 0 &&
+                altwithmouse) {
+                altwithmouse = false;
+                return 0;
+            }
+            return wxFrame::MSWWindowProc(message, wparam, lparam);
+        }
+    #endif
     wxIcon icon;
     wxTaskBarIcon taskbaricon;
     wxMenu *editmenupopup;
@@ -934,6 +951,13 @@ struct TSFrame : wxFrame {
         }
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
+        #ifdef __WXMSW__
+            // Wherever the focus is. Holding Alt repeats it, also while using it with the mouse.
+            Bind(wxEVT_CHAR_HOOK, [this](wxKeyEvent &ke) {
+                if (ke.GetKeyCode() == WXK_ALT && !ke.IsAutoRepeat()) { altwithmouse = false; }
+                ke.Skip();
+            });
+        #endif
         Bind(wxEVT_TEXT, &TSFrame::OnSearch, this, A_SEARCH);
         Bind(wxEVT_CLOSE_WINDOW, &TSFrame::OnClosing, this);
         Bind(wxEVT_MAXIMIZE, &TSFrame::OnMaximize, this);
