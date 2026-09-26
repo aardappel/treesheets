@@ -19,6 +19,11 @@ struct Grid {
     // region, instead of testing every cell in the grid. See HasCachedGeometry().
     vector<int> coloffsets;
     vector<int> rowoffsets;
+    // Where the grid starts and ends in its cell, as of the last Layout(), and how far its cells
+    // have been moved right since then by the alignment of the cell (see Cell::AlignGrid()).
+    int start {0};
+    int extent {0};
+    int alignshift {0};
     // xsize, ysize
     int xs;
     int ys;
@@ -172,6 +177,7 @@ struct Grid {
             }
             c->sx = xa[x];
             c->sy = ya[y];
+            c->AlignGrid(doc);
             cx += xa[x] + g_line_width + cell_margin * 2;
             if (x == xs - 1) {
                 cy += ya[y] + g_line_width + cell_margin * 2;
@@ -179,7 +185,19 @@ struct Grid {
                 if (!cell->tiny) { cx += g_margin_extra; }
             }
         }
+        start = startx;
+        extent = sx;
+        alignshift = 0;
         return tinyborder;
+    }
+
+    // Moves the cells right, to `shift` from where Layout() put them.
+    void ShiftX(int shift) {
+        auto delta = shift - alignshift;
+        if (delta == 0) { return; }
+        foreachcell(c) c->ox += delta;
+        for (auto &o : coloffsets) { o += delta; }
+        alignshift = shift;
     }
 
     // Whether coloffsets/rowoffsets/colmaxcache/rowmaxcache describe the current layout: any

@@ -471,6 +471,8 @@ struct Document {
                 p->miny = old.miny;
             }
         }
+        // LazyLayout() laid out its grid again for its own width, not the column's.
+        c->AlignGrid(this);
         return true;
     }
 
@@ -762,6 +764,7 @@ struct Document {
         if (psb != pathscalebias) { currentdrawroot->ResetChildren(); }
         pathscalebias = psb;
         currentdrawroot->LazyLayout(this, dc, 0, currentdrawroot->ColWidth(), false);
+        currentdrawroot->AlignGrid(this);
         ResetFont(dc);
         PickFont(dc, 0, 0, 0);
         hierarchysize = 0;
