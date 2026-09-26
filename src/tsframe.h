@@ -949,6 +949,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_STRIKETHROUGH);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateTextAlign, this, A_ALIGNAUTO, A_ALIGNRIGHT);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateVertAlign, this, A_VALIGNAUTO, A_ALIGNBOTTOM);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateNote, this, A_EDITNOTE);
         for (int id : {A_MARKDATA, A_MARKCODE, A_MARKVARD, A_MARKVARU, A_MARKVIEWH, A_MARKVIEWV}) {
             Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateCellType, this, id);
         }
@@ -1148,7 +1149,8 @@ struct TSFrame : wxFrame {
         FinishToolbar(styletb, "styletb", "Text style operations");
 
         auto *notetb = NewToolbar();
-        AddToolbarIcon(notetb, _("Edit Note (CTRL+e)"), A_EDITNOTE, "note");
+        // Pressed when the selected cell has a note, see OnUpdateNote.
+        AddToolbarIcon(notetb, _("Edit Note (CTRL+e)"), A_EDITNOTE, "note", wxITEM_CHECK);
         FinishToolbar(notetb, "notetb", "Note operations");
 
         // The pressed state of these follows the selected cells, see OnUpdateTextAlign and
@@ -1300,6 +1302,14 @@ struct TSFrame : wxFrame {
         auto *canvas = GetCurrentTab();
         ue.Check(canvas != nullptr &&
                  canvas->doc->SelectionHasVertAlign(ue.GetId() - A_VALIGNAUTO + VERTALIGN_AUTO));
+    }
+
+    // Shows whether the selected cell has a note by checking its toolbar button. The menu item
+    // can't be checked.
+    void OnUpdateNote(wxUpdateUIEvent &ue) {
+        if (wxDynamicCast(ue.GetEventObject(), wxAuiToolBar) == nullptr) { return; }
+        auto *canvas = GetCurrentTab();
+        ue.Check(canvas != nullptr && canvas->doc->SelectionHasNote());
     }
 
     // Checks the cell type all selected cells have, if they have the same one.

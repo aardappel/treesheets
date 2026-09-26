@@ -3079,6 +3079,11 @@ struct Document {
         return selected.grid->AllHaveVertAlign(selected, align);
     }
 
+    bool SelectionHasNote() {
+        auto *c = selected.GetCell();
+        return c != nullptr && !c->note.IsEmpty();
+    }
+
     // The cell type a Program > Mark as menu item marks cells as.
     static int MarkCellType(int action) {
         switch (action) {
