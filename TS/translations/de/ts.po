@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -492,6 +492,10 @@ msgstr "XML-Datei zum Schreiben auswählen"
 
 msgid "Choose image file to save:"
 msgstr "Bilddatei zum Abspeichern angeben:"
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr ""
+"Eines der Beispieldokumente öffnen, die mit TreeSheets geliefert werden"
 
 msgid "Clear replace"
 msgstr "Textkasten (Ersetzen) leeren"
@@ -1229,6 +1233,9 @@ msgstr "&Randfarben öffnen"
 msgid "Open cell colors"
 msgstr "Zellfarben öffnen"
 
+msgid "Open e&xample..."
+msgstr "&Beispiel öffnen..."
+
 msgid "Open file cancelled."
 msgstr "Öffnen der Datei wurde abgebrochen."
 
@@ -1332,6 +1339,9 @@ msgstr "Bitte wählen Sie TreeSheets-Datei(en) zum Laden aus:"
 
 msgid "Please select an image file:"
 msgstr "Bitte wählen Sie eine Bilddatei aus:"
+
+msgid "Please select example file(s) to load:"
+msgstr "Bitte wählen Sie Beispieldatei(en) zum Laden aus:"
 
 msgid "Please select file(s) to import:"
 msgstr "Bitte wählen Sie Datei(en) zum Importieren aus:"
@@ -1630,6 +1640,9 @@ msgstr "Die letzten Bearbeitungen in einem bestimmten Datumsbereich anzeigen"
 msgid "Show only cells in current search"
 msgstr "Nur Zellen in der aktuellen Suche anzeigen"
 
+msgid "Show sub-grids on match"
+msgstr "Untergeordnete Tabellen bei Treffer anzeigen"
+
 msgid "Single click maximize from tray"
 msgstr "Ein Klick im Benachrichtungsfeld maximiert das Fenster"
 
@@ -1862,6 +1875,13 @@ msgid ""
 msgstr ""
 "Wenn eine Zelle in einer Zeile dem aktuellen Filter entspricht, die ganze "
 "Zeile normal anzeigen statt nur der passenden Zelle"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"Wenn eine Zelle dem aktuellen Filter entspricht, alles in der Tabelle in ihr "
+"normal anzeigen, statt es ebenfalls zu filtern"
 
 msgid "Width"
 msgstr "Breite"

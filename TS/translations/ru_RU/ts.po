@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -539,6 +539,10 @@ msgstr "Укажите XML-файл для сохранения"
 # Заголовок Окна (выбор п. Меню)
 msgid "Choose image file to save:"
 msgstr "Укажите файл изображения для сохранения:"
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr ""
+"Выбрать и открыть один из примеров документов, поставляемых с TreeSheets"
 
 # комментарий к эл-ту Главного Окна
 msgid "Clear replace"
@@ -1378,6 +1382,9 @@ msgstr ".. Цвета &Границы"
 msgid "Open cell colors"
 msgstr "Открыть Цвета &Ячейки"
 
+msgid "Open e&xample..."
+msgstr "Открыть &пример..."
+
 # Сообщение (после действия или события)
 msgid "Open file cancelled."
 msgstr "Открытие файла отменено."
@@ -1498,6 +1505,10 @@ msgstr "Выберите TreeSheets-файл(ы) для загрузки:"
 # Заголовок Окна (выбор п. Меню)
 msgid "Please select an image file:"
 msgstr "Выберите файл изображения:"
+
+# Заголовок Окна (выбор п. Меню)
+msgid "Please select example file(s) to load:"
+msgstr "Выберите файл(ы) примеров для загрузки:"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Please select file(s) to import:"
@@ -1833,6 +1844,9 @@ msgstr "Показать Изменения в Диапазоне Дат и Вр
 msgid "Show only cells in current search"
 msgstr "Показывать Ячейки только в Текущем Поиске"
 
+msgid "Show sub-grids on match"
+msgstr "Показывать подсетки при совпадении"
+
 msgid "Single click maximize from tray"
 msgstr "Развернуть одним щелчком мыши из Трея"
 
@@ -2101,6 +2115,13 @@ msgid ""
 msgstr ""
 "Если ячейка в строке соответствует текущему фильтру, показывать всю строку "
 "как обычно, а не только совпавшую ячейку"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"Если ячейка соответствует текущему фильтру, показывать всё в её сетке как "
+"обычно, а не фильтровать его тоже"
 
 # в Окне (выбор п. Меню)
 msgid "Width"

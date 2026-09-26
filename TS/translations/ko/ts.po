@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -481,6 +481,9 @@ msgstr "작성할 XML 파일 선택"
 
 msgid "Choose image file to save:"
 msgstr "저장할 이미지 파일 선택:"
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr "TreeSheets와 함께 제공되는 예제 문서 중 하나를 골라 열기"
 
 msgid "Clear replace"
 msgstr "바꾸기 지우기"
@@ -1183,6 +1186,9 @@ msgstr "테두리 색상 열기"
 msgid "Open cell colors"
 msgstr "셀 색상 열기"
 
+msgid "Open e&xample..."
+msgstr "예제 열기(&X)..."
+
 msgid "Open file cancelled."
 msgstr "파일 열기가 취소되었습니다."
 
@@ -1274,6 +1280,9 @@ msgstr "로드할 TreeSheets 파일을 선택하세요:"
 
 msgid "Please select an image file:"
 msgstr "이미지 파일을 선택하세요:"
+
+msgid "Please select example file(s) to load:"
+msgstr "로드할 예제 파일을 선택하세요:"
 
 msgid "Please select file(s) to import:"
 msgstr "가져올 파일을 선택하세요:"
@@ -1560,6 +1569,9 @@ msgstr "특정 날짜 범위에서 마지막 편집 표시"
 msgid "Show only cells in current search"
 msgstr "현재 검색에서 셀만 표시"
 
+msgid "Show sub-grids on match"
+msgstr "일치 시 하위 격자 표시"
+
 msgid "Single click maximize from tray"
 msgstr "트레이에서 한 번 클릭으로 최대화"
 
@@ -1781,6 +1793,13 @@ msgid ""
 msgstr ""
 "행의 셀이 현재 필터와 일치하면 일치하는 셀만이 아니라 행 전체를 정상적으로 표"
 "시합니다"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"셀이 현재 필터와 일치하면 그 안의 격자도 필터링하지 않고 모두 정상적으로 표시"
+"합니다"
 
 msgid "Width"
 msgstr "너비"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -485,6 +485,9 @@ msgstr "Scegli il file XML da scrivere"
 
 msgid "Choose image file to save:"
 msgstr "Scegli il file immagine da salvare:"
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr "Scegli uno dei documenti di esempio forniti con TreeSheets da aprire"
 
 msgid "Clear replace"
 msgstr "Cancella la sostituzione"
@@ -1220,6 +1223,9 @@ msgstr "Apri colori del bordo"
 msgid "Open cell colors"
 msgstr "Apri colori della cella"
 
+msgid "Open e&xample..."
+msgstr "Apri un &esempio..."
+
 msgid "Open file cancelled."
 msgstr "Apri file cancellato."
 
@@ -1320,6 +1326,9 @@ msgstr "Seleziona i file TreeSheets da caricare:"
 
 msgid "Please select an image file:"
 msgstr "Si prega di selezionare un file immagine:"
+
+msgid "Please select example file(s) to load:"
+msgstr "Seleziona i file di esempio da caricare:"
 
 msgid "Please select file(s) to import:"
 msgstr "Seleziona i file da importare:"
@@ -1616,6 +1625,9 @@ msgstr "Mostra le ultime modifiche in un intervallo di date specifico"
 msgid "Show only cells in current search"
 msgstr "Mostra solo le celle nella ricerca corrente"
 
+msgid "Show sub-grids on match"
+msgstr "Mostra le griglie secondarie in caso di corrispondenza"
+
 msgid "Single click maximize from tray"
 msgstr "Un singolo clic ingrandisce dal vassoio"
 
@@ -1845,6 +1857,13 @@ msgid ""
 msgstr ""
 "Quando una cella di una riga corrisponde al filtro corrente, mostra "
 "normalmente l'intera riga invece della sola cella corrispondente"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"Quando una cella corrisponde al filtro corrente, mostra normalmente tutto il "
+"contenuto della griglia al suo interno invece di filtrarlo"
 
 msgid "Width"
 msgstr "Larghezza"

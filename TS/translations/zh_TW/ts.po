@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -474,6 +474,9 @@ msgstr "選擇要寫入的 XML 檔案"
 
 msgid "Choose image file to save:"
 msgstr "選擇要儲存的圖片檔案："
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr "從 TreeSheets 隨附的範例文件中選擇一個開啟"
 
 msgid "Clear replace"
 msgstr "清除取代內容"
@@ -1161,6 +1164,9 @@ msgstr "開啟框線色彩"
 msgid "Open cell colors"
 msgstr "開啟儲存格色彩"
 
+msgid "Open e&xample..."
+msgstr "開啟範例(&X)..."
+
 msgid "Open file cancelled."
 msgstr "開啟檔案已取消。"
 
@@ -1252,6 +1258,9 @@ msgstr "請選擇要載入的 TreeSheets 檔案："
 
 msgid "Please select an image file:"
 msgstr "請選擇圖片檔案："
+
+msgid "Please select example file(s) to load:"
+msgstr "請選擇要載入的範例檔案："
 
 msgid "Please select file(s) to import:"
 msgstr "請選擇要匯入的檔案："
@@ -1534,6 +1543,9 @@ msgstr "顯示特定日期範圍內的最近編輯"
 msgid "Show only cells in current search"
 msgstr "僅顯示目前搜尋中的儲存格"
 
+msgid "Show sub-grids on match"
+msgstr "符合時顯示子網格"
+
 msgid "Single click maximize from tray"
 msgstr "按一下系統匣圖示即可最大化"
 
@@ -1749,6 +1761,13 @@ msgid ""
 "instead of only the matching cell"
 msgstr ""
 "當某列中的儲存格符合目前的篩選條件時，正常顯示整列，而不只顯示符合的儲存格"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"當某個儲存格符合目前的篩選條件時，正常顯示其內部網格中的所有內容，而不是也對"
+"其進行篩選"
 
 msgid "Width"
 msgstr "寬度"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -491,6 +491,10 @@ msgstr "Choisir le fichier XML à éditer"
 
 msgid "Choose image file to save:"
 msgstr "Choisir le fichier image à sauvegarder:"
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr ""
+"Choisir l'un des documents d'exemple fournis avec TreeSheets et l'ouvrir"
 
 msgid "Clear replace"
 msgstr "Réinitialiser et remplacer"
@@ -1232,6 +1236,9 @@ msgstr "Sélectionner une couleur de bordure"
 msgid "Open cell colors"
 msgstr "Séléctionner une couleur de fond"
 
+msgid "Open e&xample..."
+msgstr "Ouvrir un e&xemple..."
+
 msgid "Open file cancelled."
 msgstr "Ouverture de fichier abandonnée."
 
@@ -1335,6 +1342,9 @@ msgstr "Veuillez sélectionner le ou les fichiers TreeSheets à charger :"
 
 msgid "Please select an image file:"
 msgstr "Veuillez sélectionner un fichier image:"
+
+msgid "Please select example file(s) to load:"
+msgstr "Veuillez sélectionner le ou les fichiers d'exemple à charger :"
 
 msgid "Please select file(s) to import:"
 msgstr "Veuillez sélectionner le ou les fichiers à importer :"
@@ -1632,6 +1642,9 @@ msgstr "Montrer les dernières modification dans une période donnée"
 msgid "Show only cells in current search"
 msgstr "Afficher uniquement les cellules de la recherche courante"
 
+msgid "Show sub-grids on match"
+msgstr "Afficher les sous-grilles en cas de correspondance"
+
 msgid "Single click maximize from tray"
 msgstr "Maximiser par Un simple clic"
 
@@ -1858,6 +1871,13 @@ msgid ""
 msgstr ""
 "Lorsqu'une cellule d'une ligne correspond au filtre actuel, affiche "
 "normalement toute la ligne au lieu de seulement la cellule correspondante"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"Lorsqu'une cellule correspond au filtre actuel, affiche normalement tout le "
+"contenu de la grille qu'elle contient au lieu de le filtrer aussi"
 
 msgid "Width"
 msgstr "Largeur"

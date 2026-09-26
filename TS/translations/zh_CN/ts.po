@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 11:56+0200\n"
+"POT-Creation-Date: 2026-09-26 09:39+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -474,6 +474,9 @@ msgstr "选择要写入的 XML 文件"
 
 msgid "Choose image file to save:"
 msgstr "选择要保存的图像文件："
+
+msgid "Choose one of the example documents that come with TreeSheets to open"
+msgstr "从 TreeSheets 附带的示例文档中选择一个打开"
 
 msgid "Clear replace"
 msgstr "清除替换内容"
@@ -1161,6 +1164,9 @@ msgstr "打开边框颜色"
 msgid "Open cell colors"
 msgstr "打开单元格颜色"
 
+msgid "Open e&xample..."
+msgstr "打开示例(&X)..."
+
 msgid "Open file cancelled."
 msgstr "打开文件已取消。"
 
@@ -1252,6 +1258,9 @@ msgstr "请选择要加载的 TreeSheets 文件："
 
 msgid "Please select an image file:"
 msgstr "请选择一个图像文件："
+
+msgid "Please select example file(s) to load:"
+msgstr "请选择要加载的示例文件："
 
 msgid "Please select file(s) to import:"
 msgstr "请选择要导入的文件："
@@ -1536,6 +1545,9 @@ msgstr "显示特定日期范围内的最近编辑"
 msgid "Show only cells in current search"
 msgstr "仅显示当前搜索中的单元格"
 
+msgid "Show sub-grids on match"
+msgstr "匹配时显示子网格"
+
 msgid "Single click maximize from tray"
 msgstr "单击系统托盘图标最大化"
 
@@ -1752,6 +1764,13 @@ msgid ""
 "instead of only the matching cell"
 msgstr ""
 "当某行中的单元格匹配当前筛选条件时，正常显示整行，而不仅仅是匹配的单元格"
+
+msgid ""
+"When a cell matches the current filter, show everything in the grid inside "
+"it normally instead of filtering it too"
+msgstr ""
+"当某个单元格匹配当前筛选条件时，正常显示其内部网格中的所有内容，而不是也对其"
+"进行筛选"
 
 msgid "Width"
 msgstr "宽度"
