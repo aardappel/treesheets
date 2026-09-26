@@ -3283,10 +3283,13 @@ struct Document {
         return true;
     }
 
-    void ImageChange(const wxString &filename, double scale) {
+    void ImageChange(const EmbeddedImage &image, double scale) {
         if (selected.grid == nullptr) { return; }
         selected.grid->cell->AddUndo(this);
-        loopallcellssel(c, false) LoadImageIntoCell(filename, c, scale);
+        loopallcellssel(c, false) {
+            SetImageBM(c, vector<uint8_t>(image.data, image.data + image.size), 'I', scale);
+            c->Reset();
+        }
         UpdateLayout();
         canvas->Refresh();
     }

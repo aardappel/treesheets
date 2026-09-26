@@ -402,12 +402,32 @@ static uint PickColor(wxWindow *parent, uint defaultcolor) {
 
 static uint LightColor(uint color) { return color ^ sys->colormask; }
 
+// Images compiled into the executable from TS/images, by their path relative to it.
+static const EmbeddedImage *GetEmbeddedImage(const wxString &name) {
+    for (const auto &image : embedded_images) {
+        if (name == image.name) { return &image; }
+    }
+    return nullptr;
+}
+
+static wxBitmap LoadEmbeddedBitmap(const wxString &name) {
+    auto *image = GetEmbeddedImage(name);
+    return image != nullptr ? wxBitmap::NewFromPNGData(image->data, image->size) : wxNullBitmap;
+}
+
+static wxBitmapBundle LoadEmbeddedSVG(const wxString &name, const wxSize &size) {
+    auto *image = GetEmbeddedImage(name);
+    return image != nullptr ? wxBitmapBundle::FromSVG(image->data, image->size, size)
+                            : wxBitmapBundle();
+}
+
 #define dd_icon_res_scale 3.0
 
 struct ImagePopup : DropdownPopup {
     void OnComboDoubleClick() override {
-        auto filename = GetString(GetSelection());
-        sys->frame->GetCurrentTab()->doc->ImageChange(filename, dd_icon_res_scale);
+        if (auto *image = GetEmbeddedImage(GetString(GetSelection()))) {
+            sys->frame->GetCurrentTab()->doc->ImageChange(*image, dd_icon_res_scale);
+        }
     }
 };
 
@@ -473,14 +493,14 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
         bitmaps_display.clear();
         filenames.clear();
         scaled_bitmap_cache.clear();
-        auto filename = wxFindFirstFile(directory + "*.*");
-        while (!filename.empty()) {
-            auto bitmap = make_unique<wxBitmap>();
-            if (bitmap->LoadFile(filename, wxBITMAP_TYPE_PNG)) {
+        for (const auto &image : embedded_images) {
+            wxString name = image.name;
+            if (!name.StartsWith(directory) || !name.EndsWith(".png")) { continue; }
+            auto bitmap = make_unique<wxBitmap>(wxBitmap::NewFromPNGData(image.data, image.size));
+            if (bitmap->IsOk()) {
                 bitmaps_display.push_back(std::move(bitmap));
-                filenames.Add(filename);
+                filenames.Add(name);
             }
-            filename = wxFindNextFile();
         }
     }
 };

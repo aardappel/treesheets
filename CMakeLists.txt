@@ -117,6 +117,26 @@ target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VE
 target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net)
 target_precompile_headers(TreeSheets PRIVATE src/stdafx.h)
 
+# Compile the images into the executable (see src/wxtools.h, GetEmbeddedImage)
+file(GLOB_RECURSE treesheets_images CONFIGURE_DEPENDS TS/images/*.png TS/images/*.svg)
+set(treesheets_embedded_images "${CMAKE_CURRENT_BINARY_DIR}/generated/embedded_images.h")
+# Record the list of images, so that removing one regenerates the header as well
+list(JOIN treesheets_images "\n" treesheets_images_list)
+set(treesheets_images_list_file "${CMAKE_CURRENT_BINARY_DIR}/generated/embedded_images.txt")
+file(CONFIGURE OUTPUT "${treesheets_images_list_file}" CONTENT "${treesheets_images_list}\n")
+add_custom_command(
+    OUTPUT "${treesheets_embedded_images}"
+    COMMAND ${CMAKE_COMMAND}
+        "-DIMAGES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/TS/images"
+        "-DOUTPUT=${treesheets_embedded_images}"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/EmbedImages.cmake"
+    DEPENDS ${treesheets_images} "${treesheets_images_list_file}" cmake/EmbedImages.cmake
+    COMMENT "Embedding images"
+    VERBATIM
+)
+target_sources(TreeSheets PRIVATE "${treesheets_embedded_images}")
+target_include_directories(TreeSheets PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/generated")
+
 # With wxGTK 3, text is drawn with Pango directly where possible, to reuse the layouts of
 # strings drawn before (see TextLayoutCache in src/wxtools.h). Optional: without the GTK 3
 # development files, text is drawn through wx instead.
@@ -232,7 +252,12 @@ install(DIRECTORY TS/docs DESTINATION ${TREESHEETS_DOCDIR})
 file(GLOB treesheets_readme_files "TS/readme*.html")
 install(FILES ${treesheets_readme_files} DESTINATION ${TREESHEETS_DOCDIR})
 install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
-install(DIRECTORY TS/images DESTINATION ${TREESHEETS_PKGDATADIR})
+# The images themselves are compiled into the executable, only their licenses are installed
+install(FILES TS/images/material/LICENSE.material TS/images/material/LICENSE.vscode-icons
+        DESTINATION ${TREESHEETS_DOCDIR}/images/material)
+install(FILES TS/images/nuvola/author TS/images/nuvola/license.txt TS/images/nuvola/readme.txt
+              TS/images/nuvola/thanks.to
+        DESTINATION ${TREESHEETS_DOCDIR}/images/nuvola)
 
 if(APPLE)
     install(FILES platform/osx/App.icns DESTINATION TreeSheets.app/Contents/Resources)
