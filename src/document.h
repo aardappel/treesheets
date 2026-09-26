@@ -27,6 +27,7 @@ struct CursorPosCache {
     int maxcolwidth {-1};
     int align {-1};
     int alignwidth {-1};  // Cell::TextAlignWidth(), which aligned text depends on
+    bool leading {false};  // drawn before the character at the cursor, see Selection
     bool found {false};
     int localdx {0};  // horizontal offset from the cell's own origin
     int line {0};      // which wrapped line the cursor is on
