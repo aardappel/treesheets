@@ -228,6 +228,55 @@ struct ThreeChoiceDialog : public wxDialog {
     int Run() { return ShowModal(); }
 };
 
+// Asks for the number of rows and columns of a new grid. The columns follow the rows, so that
+// a square grid only needs one number, until the user changes the columns.
+struct GridSizeDialog : public wxDialog {
+    wxSpinCtrl *rows {nullptr};
+    wxSpinCtrl *columns {nullptr};
+    bool columnschanged {false};
+    bool syncing {false};
+
+    GridSizeDialog(wxWindow *parent, const wxString &title, const wxString &message, int size,
+                   int maxsize)
+        : wxDialog(parent, wxID_ANY, title) {
+        rows = new wxSpinCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                              wxSP_ARROW_KEYS, 1, maxsize, size);
+        columns = new wxSpinCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                 wxSP_ARROW_KEYS, 1, maxsize, size);
+        auto *grid = new wxFlexGridSizer(2, wxSize(10, 5));
+        grid->Add(new wxStaticText(this, wxID_ANY, _("Rows:")), 0, wxALIGN_CENTER_VERTICAL);
+        grid->Add(rows);
+        grid->Add(new wxStaticText(this, wxID_ANY, _("Columns:")), 0, wxALIGN_CENTER_VERTICAL);
+        grid->Add(columns);
+        auto *sizer = new wxBoxSizer(wxVERTICAL);
+        sizer->Add(new wxStaticText(this, wxID_ANY, message), 0, wxALL, 10);
+        sizer->Add(grid, 0, wxLEFT | wxRIGHT | wxBOTTOM, 10);
+        sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxALL, 10);
+        SetSizerAndFit(sizer);
+
+        // Typing only sends text events, whose value the control doesn't have yet.
+        auto onrows = [this](const wxString &text) {
+            long n = 0;
+            if (columnschanged || !text.ToLong(&n) || n < 1 || n > rows->GetMax()) { return; }
+            syncing = true;
+            columns->SetValue(static_cast<int>(n));
+            syncing = false;
+        };
+        rows->Bind(wxEVT_TEXT, [=](wxCommandEvent &ce) { onrows(ce.GetString()); });
+        rows->Bind(wxEVT_SPINCTRL, [=](wxSpinEvent &se) {
+            onrows(wxString::Format("%d", se.GetPosition()));
+        });
+        auto oncolumns = [this](wxCommandEvent &) {
+            if (!syncing) { columnschanged = true; }
+        };
+        columns->Bind(wxEVT_TEXT, oncolumns);
+        columns->Bind(wxEVT_SPINCTRL, oncolumns);
+
+        rows->SetFocus();
+        rows->SetSelection(-1, -1);
+    }
+};
+
 struct DateTimeRangeDialog : public wxDialog {
     wxStaticText introtext {this, wxID_ANY, _("Please select the datetime range.")};
     wxStaticText starttext {this, wxID_ANY, _("Start date and time")};
