@@ -225,7 +225,17 @@ struct TSCanvas : public wxScrolledCanvas {
         Refresh();
     }
 
-    void OnKeyDown(wxKeyEvent &ce) { ce.Skip(); }
+    void OnKeyDown(wxKeyEvent &ke) {
+        #ifdef __WXGTK__
+            // Char events can't tell CTRL+TAB from CTRL+I (see Document::Key()), and letting GTK
+            // have it moves the focus away from the canvas.
+            if (ke.GetKeyCode() == WXK_TAB && ke.GetModifiers() & wxMOD_CONTROL) {
+                sys->frame->SetStatus(doc->Action(ke.ShiftDown() ? A_PREVFILE : A_NEXTFILE));
+                return;
+            }
+        #endif
+        ke.Skip();
+    }
     // Text size / column width changes made with Shift/Alt+wheel skip relayouting until the
     // modifier is released.
     void OnKeyUp(wxKeyEvent &ke) {

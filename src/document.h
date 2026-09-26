@@ -1422,19 +1422,10 @@ struct Document {
                     case WXK_END:
                         return Action(shift ? (ctrl ? A_SEND : A_SEND) : (ctrl ? A_CEND : A_END));
                     case WXK_TAB:
-                        if (ctrl && !shift) {
-                            // WXK_CONTROL_I (italics) arrives as the same keycode as WXK_TAB + ctrl
-                            // on Linux?? They're both keycode 9 in defs.h We ignore it here, such
-                            // that CTRL+I works, but it means only CTRL+SHIFT+TAB works on Linux as
-                            // a way to switch tabs.
-                            // Also, even though we ignore CTRL+TAB, and it is not assigned in the
-                            // menus, it still has the
-                            // effect of de-selecting
-                            // the current tab (requires a click to re-activate). FIXME??
-                            break;
-                        }
-                        return Action(shift ? (ctrl ? A_PREVFILE : A_PREV)
-                                            : (ctrl ? A_NEXTFILE : A_NEXT));
+                        // CTRL+I (italics) arrives as the same keycode as CTRL+TAB, which
+                        // TSCanvas::OnKeyDown() handles instead.
+                        if (ctrl) { break; }
+                        return Action(shift ? A_PREV : A_NEXT);
                     case WXK_PAGEUP:
                         if (ctrl) { return Action(alt ? A_INCWIDTHNH : A_ZOOMIN); }
                         if (shift) { return Action(A_INCSIZE); }

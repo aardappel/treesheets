@@ -601,16 +601,8 @@ struct TSFrame : wxFrame {
         MyAppend(viewmenu, A_DECFONTSIZE, _("&Decrease font size") + "\tCTRL+,");
         MyAppend(viewmenu, A_RESETFONTSIZE, _("&Reset font size") + "\tCTRL+-");
         viewmenu->AppendSeparator();
-        MyAppend(
-            viewmenu, A_NEXTFILE,
-            _("&Next tab")
-                 #ifndef __WXGTK__
-                    // On Linux, this conflicts with CTRL+I, see Document::Key()
-                    // CTRL+SHIFT+TAB below still works, so that will have to be used to switch tabs.
-                     + "\tCTRL+TAB"
-                 #endif
-            ,
-            _("Go to the document in the next tab"));
+        MyAppend(viewmenu, A_NEXTFILE, _("&Next tab") + "\tCTRL+TAB",
+                 _("Go to the document in the next tab"));
         MyAppend(viewmenu, A_PREVFILE, _("Previous tab") + "\tCTRL+SHIFT+TAB",
                  _("Go to the document in the previous tab"));
         viewmenu->AppendSeparator();
