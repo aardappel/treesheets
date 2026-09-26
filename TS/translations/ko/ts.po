@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2026-09-26 21:33+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -704,11 +704,6 @@ msgstr "PDF 파일로 내보내는 중 오류가 발생했습니다!"
 msgid "Error exporting to SVG file!"
 msgstr "SVG 파일로 내보내는 중 오류가 발생했습니다!"
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"코어 데이터 파일을 로드하는 중 오류가 발생했습니다 (TreeSheets가 올바르게 설"
-"치되지 않았나요?)"
-
 msgid "Error renaming temporary file."
 msgstr "임시 파일 이름을 변경하는 중 오류가 발생했습니다."
 
@@ -1003,9 +998,6 @@ msgstr "텍스트 들여쓰기(&T)..."
 msgid "Indented text..."
 msgstr "텍스트 들여쓰기..."
 
-msgid "Initialization Error"
-msgstr "초기화 오류"
-
 msgid "Insert New &NxN Grid"
 msgstr "새 NxN 격자 삽입(&N)"
 
@@ -1291,11 +1283,17 @@ msgstr "붙여넣기 (Ctrl+V)"
 msgid "Paste Style Only"
 msgstr "스타일만 붙여넣기"
 
+msgid "Paste as &Text"
+msgstr "텍스트로 붙여넣기(&T)"
+
 msgid "Paste clipboard contents"
 msgstr "클립보드 내용 붙여넣기"
 
 msgid "Paste file path"
 msgstr "파일 경로 붙여넣기"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "복사한 셀의 스타일 없이 클립보드의 텍스트 붙여넣기"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr "바꾸기를 사용하려면 (옵션 -> 도구 모음 표시)을 활성화하세요."
@@ -1933,6 +1931,14 @@ msgstr "변경 사항을 한 번에 한 단계씩 되돌리기"
 
 msgid "scale:"
 msgstr "비율:"
+
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr ""
+#~ "코어 데이터 파일을 로드하는 중 오류가 발생했습니다 (TreeSheets가 올바르게 "
+#~ "설치되지 않았나요?)"
+
+#~ msgid "Initialization Error"
+#~ msgstr "초기화 오류"
 
 #~ msgid "Filter by the same cell color"
 #~ msgstr "동일한 셀 색상으로 필터링"

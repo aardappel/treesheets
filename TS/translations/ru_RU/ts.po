@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -800,12 +800,6 @@ msgid "Error exporting to SVG file!"
 msgstr "Ошибка экспорта в SVG-файл!"
 
 # Сообщение (после действия или события)
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"Ошибка загрузки файла данных ядра (проверьте корректность установки "
-"TreeSheets)"
-
-# Сообщение (после действия или события)
 msgid "Error renaming temporary file."
 msgstr "Ошибка при переименовании временного файла."
 
@@ -1155,10 +1149,6 @@ msgstr "&Текст с Отступами..."
 msgid "Indented text..."
 msgstr "&Текст с Отступами..."
 
-# Сообщение (после действия или события)
-msgid "Initialization Error"
-msgstr "Ошибка инициализации"
-
 msgid "Insert New &NxN Grid"
 msgstr "&Вставить Новую Сетку NxN"
 
@@ -1504,6 +1494,9 @@ msgstr "Вставить (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Вставить только Стиль"
 
+msgid "Paste as &Text"
+msgstr "Вставить как &текст"
+
 # комментарий к п. Меню
 msgid "Paste clipboard contents"
 msgstr "Вставить содержимое буфера обмена"
@@ -1511,6 +1504,9 @@ msgstr "Вставить содержимое буфера обмена"
 # ??? Сообщение (после действия или события)
 msgid "Paste file path"
 msgstr "Вставить путь к файлу"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "Вставить текст из буфера обмена без стилей скопированных ячеек"
 
 # ??? Сообщение (после действия или события)
 msgid "Please enable (Options -> Show Toolbar) to use replace."
@@ -2275,6 +2271,16 @@ msgstr "отменять изменения, шаг за шагом"
 
 msgid "scale:"
 msgstr "масштаб:"
+
+# Сообщение (после действия или события)
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr ""
+#~ "Ошибка загрузки файла данных ядра (проверьте корректность установки "
+#~ "TreeSheets)"
+
+# Сообщение (после действия или события)
+#~ msgid "Initialization Error"
+#~ msgstr "Ошибка инициализации"
 
 #~ msgid "size:"
 #~ msgstr "размер:"

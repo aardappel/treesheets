@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:44+0200\n"
+"POT-Creation-Date: 2026-09-26 18:09+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -725,11 +725,6 @@ msgstr "Erreur lors de l'export vers le fichier PDF !"
 msgid "Error exporting to SVG file!"
 msgstr "Erreur lors de l'export vers le fichier SVG !"
 
-msgid "Error loading core data file (TreeSheets not installed correctly?)"
-msgstr ""
-"Erreur lors du chargement du fichier de données de base (Installation "
-"TreeSheets incorrecte?)"
-
 msgid "Error renaming temporary file."
 msgstr "Erreur lors du renommage du fichier temporaire."
 
@@ -1043,9 +1038,6 @@ msgstr "&Texte indenté..."
 msgid "Indented text..."
 msgstr "Texte indenté..."
 
-msgid "Initialization Error"
-msgstr "Erreur d'initialisation"
-
 msgid "Insert New &NxN Grid"
 msgstr "Insérer une nouvelle grille &NxN"
 
@@ -1346,11 +1338,17 @@ msgstr "Coller (CTRL+v)"
 msgid "Paste Style Only"
 msgstr "Coller le style uniquement"
 
+msgid "Paste as &Text"
+msgstr "Coller comme &texte"
+
 msgid "Paste clipboard contents"
 msgstr "Coller le contenu du presse-papiers"
 
 msgid "Paste file path"
 msgstr "Coller le chemin d'accès au fichier"
+
+msgid "Paste the text of the clipboard without the styles of the copied cells"
+msgstr "Coller le texte du presse-papiers sans les styles des cellules copiées"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1850,7 +1848,9 @@ msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Affiche ou masque la barre d'état sous les documents"
 
 msgid "Toggle whether text gets smaller the deeper a grid is nested"
-msgstr "Bascule la réduction du texte à mesure qu'une grille est plus profondément imbriquée"
+msgstr ""
+"Bascule la réduction du texte à mesure qu'une grille est plus profondément "
+"imbriquée"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "
@@ -2016,6 +2016,14 @@ msgstr "annule les changements, une étape à la fois"
 
 msgid "scale:"
 msgstr "échelle:"
+
+#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
+#~ msgstr ""
+#~ "Erreur lors du chargement du fichier de données de base (Installation "
+#~ "TreeSheets incorrecte?)"
+
+#~ msgid "Initialization Error"
+#~ msgstr "Erreur d'initialisation"
 
 #~ msgid "size:"
 #~ msgstr "taille:"
