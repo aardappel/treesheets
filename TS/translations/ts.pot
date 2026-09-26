@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:39+0200\n"
+"POT-Creation-Date: 2026-09-26 09:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1561,6 +1561,9 @@ msgstr ""
 msgid "Statusbar"
 msgstr ""
 
+msgid "Strikethrough (CTRL+t)"
+msgstr ""
+
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
 
@@ -1703,7 +1706,13 @@ msgstr ""
 msgid "Tutorial web page could not be found."
 msgstr ""
 
+msgid "Typewriter (CTRL+ALT+t)"
+msgstr ""
+
 msgid "Typewriter font..."
+msgstr ""
+
+msgid "Underline (CTRL+u)"
 msgstr ""
 
 msgid "Undo (CTRL+z)"

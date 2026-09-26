@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:39+0200\n"
+"POT-Creation-Date: 2026-09-26 09:52+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -1630,6 +1630,9 @@ msgstr "アプリケーションを最小化して起動"
 msgid "Statusbar"
 msgstr "ステータスバー"
 
+msgid "Strikethrough (CTRL+t)"
+msgstr "取り消し線 (Ctrl+T)"
+
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
 "このレベル（またはそれ以上）でこのテキストを持つすべてのセルを親と入れ替える"
@@ -1776,8 +1779,14 @@ msgstr "チュートリアルウェブページ(&W)"
 msgid "Tutorial web page could not be found."
 msgstr "チュートリアルのウェブページが見つかりませんでした。"
 
+msgid "Typewriter (CTRL+ALT+t)"
+msgstr "タイプライター (Ctrl+Alt+T)"
+
 msgid "Typewriter font..."
 msgstr "タイプライターフォント..."
+
+msgid "Underline (CTRL+u)"
+msgstr "下線 (Ctrl+U)"
 
 msgid "Undo (CTRL+z)"
 msgstr "元に戻す (Ctrl+Z)"

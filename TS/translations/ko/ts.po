@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 09:39+0200\n"
+"POT-Creation-Date: 2026-09-26 09:52+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -1603,6 +1603,9 @@ msgstr "응용 프로그램 최소화 시작"
 msgid "Statusbar"
 msgstr "상태 표시줄"
 
+msgid "Strikethrough (CTRL+t)"
+msgstr "취소선 (Ctrl+T)"
+
 msgid "Swap all cells with this text at this level (or above) with the parent"
 msgstr ""
 "이 수준 (또는 그 이상)에서 이 텍스트를 가진 모든 셀을 부모와 교체합니다"
@@ -1751,8 +1754,14 @@ msgstr "자습서 웹 페이지(&W)"
 msgid "Tutorial web page could not be found."
 msgstr "자습서 웹 페이지를 찾을 수 없습니다."
 
+msgid "Typewriter (CTRL+ALT+t)"
+msgstr "타자기체 (Ctrl+Alt+T)"
+
 msgid "Typewriter font..."
 msgstr "타자기 글꼴..."
+
+msgid "Underline (CTRL+u)"
+msgstr "밑줄 (Ctrl+U)"
 
 msgid "Undo (CTRL+z)"
 msgstr "실행 취소 (Ctrl+Z)"
