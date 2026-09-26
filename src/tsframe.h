@@ -72,8 +72,6 @@ struct TSFrame : wxFrame {
         wxString icon;
     };
     std::vector<ToolbarIcon> toolbaricons;
-    wxString toolbariconpath;
-    wxString imagepath;
     int refreshhack {0};
     int refreshhackinstances {0};
     std::map<wxString, wxString> menustrings;
@@ -107,34 +105,15 @@ struct TSFrame : wxFrame {
 
         wxIconBundle icons;
         wxIcon iconbig;
-        #ifdef WIN32
-            int iconsmall = ::GetSystemMetrics(SM_CXSMICON);
-            int iconlarge = ::GetSystemMetrics(SM_CXICON);
-        #endif
-        icon.LoadFile(app->GetDataPath("images/icon16.png"), wxBITMAP_TYPE_PNG
-            #ifdef WIN32
-                , iconsmall, iconsmall
-            #endif
-        );
-        iconbig.LoadFile(app->GetDataPath("images/icon32.png"), wxBITMAP_TYPE_PNG
-            #ifdef WIN32
-                , iconlarge, iconlarge
-            #endif
-        );
-        if (!icon.IsOk() || !iconbig.IsOk()) {
-            wxMessageBox(_("Error loading core data file (TreeSheets not installed correctly?)"),
-                         _("Initialization Error"), wxOK, this);
-            exit(1);
-        }
+        icon.CopyFromBitmap(LoadEmbeddedBitmap("icon16.png"));
+        iconbig.CopyFromBitmap(LoadEmbeddedBitmap("icon32.png"));
         icons.AddIcon(icon);
         icons.AddIcon(iconbig);
         SetIcons(icons);
 
         RenderFolderIcon();
-        line_nw.LoadFile(app->GetDataPath("images/render/line_nw.png"), wxBITMAP_TYPE_PNG);
-        line_sw.LoadFile(app->GetDataPath("images/render/line_sw.png"), wxBITMAP_TYPE_PNG);
-
-        imagepath = app->GetDataPath("images/nuvola/dropdown/");
+        line_nw = LoadEmbeddedBitmap("render/line_nw.png");
+        line_sw = LoadEmbeddedBitmap("render/line_sw.png");
 
         UpdateTaskBarIconEvents();
 
@@ -1005,7 +984,7 @@ struct TSFrame : wxFrame {
 
     wxBitmapBundle LoadToolbarIcon(const wxString &icon) const {
         auto suffix = wxSystemSettings::GetAppearance().IsDark() ? "_dark.svg" : ".svg";
-        return wxBitmapBundle::FromSVGFile(toolbariconpath + icon + suffix, wxSize(24, 24));
+        return LoadEmbeddedSVG("material/toolbar/" + icon + suffix, wxSize(24, 24));
     }
 
     void UpdateToolbarIcons() {
@@ -1037,7 +1016,6 @@ struct TSFrame : wxFrame {
     void RefreshToolBar() {
         for (const auto &name : GetToolbarPaneNames()) { DestroyToolbarPane(name); }
         toolbaricons.clear();
-        toolbariconpath = app->GetDataPath("images/material/toolbar/");
         auto AddToolbarIcon = [&](wxAuiToolBar *tb, const wxChar *name, int action,
                                   const wxString &icon, wxItemKind kind = wxITEM_NORMAL) {
             toolbaricons.push_back({tb, action, icon});
@@ -1133,7 +1111,7 @@ struct TSFrame : wxFrame {
 
         auto *imagetb = NewToolbar();
         AddToolbarLabel(imagetb, _("Image "));
-        imagetb->AddControl(imagedropdown = new ImageDropdown(imagetb, imagepath));
+        imagetb->AddControl(imagedropdown = new ImageDropdown(imagetb, "nuvola/dropdown/"));
         FinishToolbar(imagetb, "imagetb", "Image operations");
 
         // Last, so that on narrow windows, where toolbars get cut off, it doesn't push the others
@@ -1676,7 +1654,9 @@ struct TSFrame : wxFrame {
     }
 
     void OnDDImage(wxCommandEvent &ce) {
-        GetCurrentTab()->doc->ImageChange(imagedropdown->filenames[ce.GetInt()], dd_icon_res_scale);
+        if (auto *image = GetEmbeddedImage(imagedropdown->filenames[ce.GetInt()])) {
+            GetCurrentTab()->doc->ImageChange(*image, dd_icon_res_scale);
+        }
         ReFocus();
     }
 
@@ -1919,7 +1899,7 @@ struct TSFrame : wxFrame {
     }
 
     void RenderFolderIcon() {
-        foldicon.LoadFile(app->GetDataPath("images/nuvola/fold.png"), wxBITMAP_TYPE_PNG);
+        foldicon = LoadEmbeddedBitmap("nuvola/fold.png");
         ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
         foldicons.clear();
     }

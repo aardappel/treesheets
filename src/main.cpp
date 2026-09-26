@@ -322,6 +322,7 @@ enum { TEXT_SPACE = 3, TEXT_SEP = 2, TEXT_CHAR = 1 };
 enum { PASTE_FIT = 0, PASTE_INSERTROWS, PASTE_INSERTCOLUMNS };
 
 #include "aggregate.h"
+#include "embedded_images.h"
 
 #ifdef ENABLE_LOBSTER
     #include "script_interface.h"
