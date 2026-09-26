@@ -101,6 +101,7 @@ struct Grid {
     }
     void CloneStyleFrom(Grid *o) {
         bordercolor = o->bordercolor;
+        user_grid_outer_spacing = o->user_grid_outer_spacing;
         // TODO: what others?
     }
 
