@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -638,6 +638,9 @@ msgid "Discard Changes"
 msgstr ""
 
 msgid "Edit &Note"
+msgstr ""
+
+msgid "Edit Note (CTRL+e)"
 msgstr ""
 
 msgid "Edit the note of the selected cell"
@@ -1574,6 +1577,9 @@ msgstr ""
 msgid "Show sub-grids on match"
 msgstr ""
 
+msgid "Shrink text in nested grids"
+msgstr ""
+
 msgid "Single click maximize from tray"
 msgstr ""
 
@@ -1716,6 +1722,9 @@ msgid "Toggle whether only one click is required to maximize from system tray"
 msgstr ""
 
 msgid "Toggle whether statusbar is shown below the documents"
+msgstr ""
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
 msgstr ""
 
 msgid ""

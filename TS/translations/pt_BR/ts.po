@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -670,6 +670,9 @@ msgstr "Descartar Mudanças"
 
 msgid "Edit &Note"
 msgstr "Editar Anotação"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "Editar Anotação (CTRL+e)"
 
 msgid "Edit the note of the selected cell"
 msgstr "Edita a anotação da célula selecionada"
@@ -1677,6 +1680,9 @@ msgstr "Evidenciar células que contiverem resultados da busca"
 msgid "Show sub-grids on match"
 msgstr "Mostrar subgrades na correspondência"
 
+msgid "Shrink text in nested grids"
+msgstr "Encolher texto em subgrades aninhadas"
+
 msgid "Single click maximize from tray"
 msgstr "Maximizar da bandeja com um único cli&que"
 
@@ -1830,6 +1836,9 @@ msgstr ""
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Define se a barra de status é mostrada abaixo dos documentos"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "Define se o texto fica menor quanto mais profundamente uma grade está aninhada"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "

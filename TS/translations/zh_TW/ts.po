@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -647,6 +647,9 @@ msgstr "捨棄變更"
 
 msgid "Edit &Note"
 msgstr "編輯備註(&N)"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "編輯備註（Ctrl + E）"
 
 msgid "Edit the note of the selected cell"
 msgstr "編輯選取儲存格的備註"
@@ -1590,6 +1593,9 @@ msgstr "僅顯示目前搜尋中的儲存格"
 msgid "Show sub-grids on match"
 msgstr "符合時顯示子網格"
 
+msgid "Shrink text in nested grids"
+msgstr "縮小巢狀網格中的文字"
+
 msgid "Single click maximize from tray"
 msgstr "按一下系統匣圖示即可最大化"
 
@@ -1734,6 +1740,9 @@ msgstr "切換是否只需按一下系統匣圖示即可最大化"
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "切換是否在文件下方顯示狀態列"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "切換網格巢狀越深時文字是否越小"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "

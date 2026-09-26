@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2026-09-07 01:06+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -656,6 +656,9 @@ msgstr "변경 사항 버리기"
 
 msgid "Edit &Note"
 msgstr "노트 편집(&N)"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "노트 편집 (Ctrl+E)"
 
 msgid "Edit the note of the selected cell"
 msgstr "선택한 셀의 노트 편집"
@@ -1618,6 +1621,9 @@ msgstr "현재 검색에서 셀만 표시"
 msgid "Show sub-grids on match"
 msgstr "일치 시 하위 격자 표시"
 
+msgid "Shrink text in nested grids"
+msgstr "중첩된 격자의 텍스트 축소"
+
 msgid "Single click maximize from tray"
 msgstr "트레이에서 한 번 클릭으로 최대화"
 
@@ -1767,6 +1773,9 @@ msgstr "시스템 트레이에서 최대화를 위해 한 번의 클릭만 필�
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "상태 표시줄이 문서 아래에 표시될지 전환"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "격자가 깊이 중첩될수록 텍스트를 작게 할지 전환"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "

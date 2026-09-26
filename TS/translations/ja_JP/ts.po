@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -659,6 +659,9 @@ msgstr "変更を破棄"
 
 msgid "Edit &Note"
 msgstr "ノートを編集(&N)"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "ノートを編集 (Ctrl+E)"
 
 msgid "Edit the note of the selected cell"
 msgstr "選択したセルのノートを編集"
@@ -1645,6 +1648,9 @@ msgstr "現在の検索に一致するセルのみ表示"
 msgid "Show sub-grids on match"
 msgstr "一致したセルのサブグリッドを表示"
 
+msgid "Shrink text in nested grids"
+msgstr "入れ子のグリッドのテキストを縮小"
+
 msgid "Single click maximize from tray"
 msgstr "トレイからシングルクリックで最大化"
 
@@ -1791,6 +1797,9 @@ msgstr "システムトレイから最大化するのに1クリックだけで�
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "ステータスバーをドキュメントの下に表示するかどうかを切り替え"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "グリッドの入れ子が深くなるほどテキストを小さくするかを切り替え"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "

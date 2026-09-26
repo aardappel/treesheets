@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -675,6 +675,9 @@ msgstr "Änderungen verwerfen"
 
 msgid "Edit &Note"
 msgstr "&Notiz bearbeiten"
+
+msgid "Edit Note (CTRL+e)"
+msgstr "Notiz bearbeiten (STRG+e)"
 
 msgid "Edit the note of the selected cell"
 msgstr "Die Notiz in der ausgewählten Zelle bearbeiten"
@@ -1689,6 +1692,9 @@ msgstr "Nur Zellen in der aktuellen Suche anzeigen"
 msgid "Show sub-grids on match"
 msgstr "Untergeordnete Tabellen bei Treffer anzeigen"
 
+msgid "Shrink text in nested grids"
+msgstr "Text in untergeordneten Tabellen verkleinern"
+
 msgid "Single click maximize from tray"
 msgstr "Ein Klick im Benachrichtungsfeld maximiert das Fenster"
 
@@ -1843,6 +1849,9 @@ msgstr ""
 
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Auswählen, ob die Statuszeile unterhalb der Dokumente angezeigt wird"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "Auswählen, ob Text umso kleiner wird, je tiefer eine Tabelle verschachtelt ist"
 
 msgid ""
 "Toggle whether the cursor keys are used for navigation in addition to text "

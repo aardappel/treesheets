@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:43+0200\n"
+"POT-Creation-Date: 2026-09-26 11:44+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -738,6 +738,10 @@ msgstr "Закрыть Без Изменений"
 
 msgid "Edit &Note"
 msgstr "Редактировать &Заметку"
+
+# комментарий к эл-ту Главного Окна
+msgid "Edit Note (CTRL+e)"
+msgstr "Редактировать Заметку (CTRL+e)"
 
 # комментарий к п. Меню
 msgid "Edit the note of the selected cell"
@@ -1896,6 +1900,9 @@ msgstr "Показывать Ячейки только в Текущем Пои�
 msgid "Show sub-grids on match"
 msgstr "Показывать подсетки при совпадении"
 
+msgid "Shrink text in nested grids"
+msgstr "Сжимать текст во вложенных сетках"
+
 msgid "Single click maximize from tray"
 msgstr "Развернуть одним щелчком мыши из Трея"
 
@@ -2073,6 +2080,9 @@ msgstr "Включите для разворачивания из системн
 # комментарий к п. Меню
 msgid "Toggle whether statusbar is shown below the documents"
 msgstr "Вкл/Выкл отображение строки состояния под документами"
+
+msgid "Toggle whether text gets smaller the deeper a grid is nested"
+msgstr "Переключить уменьшение текста по мере увеличения вложенности сетки"
 
 # комментарий к п. Меню
 msgid ""
