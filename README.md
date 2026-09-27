@@ -78,7 +78,7 @@ cd treesheets
 cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release
 ```
 
-   On Windows this needs the Visual Studio C++ compiler.
+   On Windows ARM this needs the Visual Studio C++ compiler.
 
 4. Build and package for binary distribution
 
@@ -88,7 +88,7 @@ cmake --build _build --target package -j
 
    | Platform | Result |
    | -------- | ------ |
-   | Windows | A ZIP archive for portable usage and a Nullsoft installer |
+   | Windows | A ZIP archive for portable usage and an installer |
    | macOS | A disk image for Drag and Drop installation |
    | Linux | A binary Debian package |
 
