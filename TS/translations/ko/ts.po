@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-27 13:57+0200\n"
-"PO-Revision-Date: 2026-09-27 06:30+0900\n"
+"PO-Revision-Date: 2026-09-28 03:57+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
 "Language: ko\n"
@@ -684,7 +684,7 @@ msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "선택한 셀에 PNG 형식으로 이미지 삽입 (기본값)"
 
 msgid "Encrypt the current document with a password when saving it"
-msgstr "저장할 때 현재 문서를 암호로 암호화합니다"
+msgstr "문서를 저장할 때 현재 문서를 비밀번호로 암호화"
 
 msgid "Encrypted document"
 msgstr "암호화된 문서"
@@ -705,7 +705,7 @@ msgid "Enter/exit text edit mode"
 msgstr "텍스트 편집 모드 진입/종료"
 
 msgid "Error encrypting file."
-msgstr "파일을 암호화하는 중 오류가 발생했습니다."
+msgstr "파일 암호화 오류가 발생했습니다."
 
 msgid "Error exporting file!"
 msgstr "파일을 내보내는 중 오류가 발생했습니다!"
@@ -1291,16 +1291,17 @@ msgstr "페이지 설정..."
 
 #, c-format
 msgid "Password for %s:"
-msgstr "%s의 암호:"
+msgstr "%s의 비밀번호:"
 
 msgid ""
 "Password to encrypt this document with when saving (leave empty to save it "
 "unencrypted):"
 msgstr ""
-"저장할 때 이 문서를 암호화할 암호 (비워 두면 암호화하지 않고 저장합니다):"
+"저장 시 이 문서를 암호화할 비밀번호 (암호화되지 않은 상태로 저장하려면 비워 "
+"두세요):"
 
 msgid "Password unchanged."
-msgstr "암호가 변경되지 않았습니다."
+msgstr "비밀번호가 변경되지 않았습니다."
 
 msgid "Paste (CTRL+v)"
 msgstr "붙여넣기 (Ctrl+V)"
@@ -1431,7 +1432,7 @@ msgid "Render document centered"
 msgstr "문서 가운데로 렌더링"
 
 msgid "Repeat the password:"
-msgstr "암호를 다시 입력하세요:"
+msgstr "비밀번호를 다시 입력하세요:"
 
 msgid "Replace "
 msgstr "바꾸기 "
@@ -1571,10 +1572,10 @@ msgid "Set Grid Border Width"
 msgstr "격자 테두리 너비 설정..."
 
 msgid "Set Pass&word..."
-msgstr "암호 설정(&W)..."
+msgstr "비밀번호 설정(&W)..."
 
 msgid "Set Password"
-msgstr "암호 설정"
+msgstr "비밀번호 설정"
 
 msgid "Set Print Scale"
 msgstr "인쇄 비율 설정"
@@ -1755,13 +1756,13 @@ msgid "The browser could not open at least one link."
 msgstr "브라우저에서 최소한 하나의 링크를 열 수 없습니다."
 
 msgid "The document will be encrypted when saved."
-msgstr "문서가 저장될 때 암호화됩니다."
+msgstr "문서는 저장될 때 암호화됩니다."
 
 msgid "The document will be saved unencrypted."
-msgstr "문서가 암호화되지 않은 상태로 저장됩니다."
+msgstr "문서는 암호화되지 않은 상태로 저장됩니다."
 
 msgid "The passwords differ."
-msgstr "암호가 일치하지 않습니다."
+msgstr "비밀번호가 다릅니다."
 
 msgid "There are no images in the selection."
 msgstr "선택 항목에 이미지가 없습니다."
@@ -1928,11 +1929,12 @@ msgid "Word Right"
 msgstr "단어 오른쪽"
 
 msgid "Wrong password (or the file is corrupted)."
-msgstr "암호가 틀렸습니다 (또는 파일이 손상되었습니다)."
+msgstr "비밀번호가 올바르지 않거나 (또는 파일이 손상되었습니다)."
 
 #, c-format
 msgid "Wrong password (or the file is corrupted). Password for %s:"
-msgstr "암호가 틀렸습니다 (또는 파일이 손상되었습니다). %s의 암호:"
+msgstr ""
+"비밀번호가 올바르지 않거나 (또는 파일이 손상되었습니다). %s의 비밀번호:"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (OMPL 등의 속성도 포함)..."
