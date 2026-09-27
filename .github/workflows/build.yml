@@ -150,7 +150,7 @@ jobs:
         -G "Visual Studio 18 2026"
         -DCMAKE_BUILD_TYPE=Release
         -DTREESHEETS_BUNDLE_WXWIDGETS=ON
-        -DTREESHEETS_VERSION=${{ needs.version.outputs.version }}
+        "-DTREESHEETS_VERSION=${{ needs.version.outputs.version }}"
         ${{ matrix.extra_flags }}
     - name: build and package
       run: cmake --build _build --config Release --target package -j
