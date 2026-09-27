@@ -127,7 +127,8 @@ passed to an already running TreeSheets), `-p` runs in portable mode (settings i
 socket, `-m` starts minimized. For scripted tests, use `-i -p` from a scratch directory, so you
 don't touch the user's running instance, open tabs or settings.
 
-- **Agent socket (`-a`):** run Lobster against the open document and read results back. Use the
+- **Agent socket (`-a`):** run Lobster against the open document and read results back (see
+  `TS/docs/AGENT_SOCKET.md`). Use the
   `treesheets-agent` skill, whose `SKILL.md` documents the newline-delimited JSON protocol. This is
   the preferred way to set up documents and check the model state (`ts.goto_selection()`,
   `ts.get_text()`, `ts.agent_result(...)`). Scripts need Lobster's standard modules in
