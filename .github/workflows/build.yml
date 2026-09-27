@@ -28,9 +28,9 @@ jobs:
       run: |
         last=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
         if [ "$GITHUB_REF_TYPE" != tag ]; then
-          # Builds that are not released get the last version plus the run number
+          # Builds that are not released keep the last version
           last=${last:-v0.0.0}
-          echo "version=${last#v}.$GITHUB_RUN_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "version=${last#v}" >> "$GITHUB_OUTPUT"
           exit 0
         fi
         if ! git merge-base --is-ancestor HEAD origin/master; then
