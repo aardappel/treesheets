@@ -106,13 +106,33 @@ jobs:
       run: |
         shopt -s extglob
         for file in _build/treesheets_*:*.deb; do mv -v "${file}" "${file/_+([[:digit:]]):/_}"; done
+    - name: Build AppImage
+      env:
+        APPIMAGE_EXTRACT_AND_RUN: 1
+        DEPLOY_GTK_VERSION: 3
+        LINUXDEPLOY_OUTPUT_VERSION: ${{ needs.version.outputs.version }}
+      run: |
+        mkdir appimage && cd appimage
+        DESTDIR=$PWD/AppDir cmake --install ../_build
+        # TreeSheets looks for its data next to the executable before the absolute install paths
+        ln -s ../share/doc/TreeSheets/docs ../share/doc/TreeSheets/examples ../share/TreeSheets/scripts AppDir/usr/bin/
+        base=https://github.com/linuxdeploy
+        curl -fsSLO $base/linuxdeploy/releases/download/continuous/linuxdeploy-$(uname -m).AppImage
+        curl -fsSLO $base/linuxdeploy-plugin-gtk/raw/master/linuxdeploy-plugin-gtk.sh
+        chmod +x linuxdeploy-*
+        ./linuxdeploy-$(uname -m).AppImage --appdir AppDir --plugin gtk --output appimage \
+          --desktop-file AppDir/usr/share/applications/com.strlen.TreeSheets.desktop \
+          --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/com.strlen.TreeSheets.svg
+        mv TreeSheets-*.AppImage ../_build/
     - name: Upload artifacts
       uses: actions/upload-artifact@v7
       with:
         name: linux-builds-${{ matrix.arch }}
-        path: _build/treesheets_*.deb
+        path: |
+          _build/treesheets_*.deb
+          _build/TreeSheets-*.AppImage
     - name: Remove CPack artifact
-      run: rm -f _build/treesheets_*.deb
+      run: rm -f _build/treesheets_*.deb _build/TreeSheets-*.AppImage
 
   build-windows:
     name: Build Windows (${{ matrix.arch }})
