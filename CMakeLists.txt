@@ -59,11 +59,13 @@ endif()
 
 ## Compiler-specific
 
-# Use statically-linked libraries with MSVC
+# With MSVC, link wxWidgets and the C++ runtime statically by default, so that TreeSheets.exe needs
+# no DLLs or VC++ redistributable. -DwxBUILD_SHARED=ON uses DLLs for both, since they must match.
 if(MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    set(wxBUILD_USE_STATIC_RUNTIME ON CACHE BOOL "" FORCE)
-    set(wxBUILD_SHARED OFF CACHE BOOL "" FORCE)
+    set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
+    if(NOT wxBUILD_SHARED)
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    endif()
 endif()
 
 # Silence warnings in GCC that contain lots of false positives (also in the dependencies)
