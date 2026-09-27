@@ -93,8 +93,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return errormessage;
     }
 
-    bool LoadDocument(const char *filename) override {
-        auto message = sys->LoadDB(filename);
+    // password (nullptr for none) is used for an encrypted file instead of asking for it.
+    bool LoadDocument(const char *filename, const char *password) override {
+        auto pw = password ? wxString::FromUTF8(password) : wxString();
+        auto message = sys->LoadDB(filename, false, -1, password ? &pw : nullptr);
         if (!message.IsEmpty()) { return false; }
 
         SwitchToCurrentDocument();
@@ -124,6 +126,18 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         bool success = false;
         document->SaveDB(&success);
         return success;
+    }
+
+    // Same as the "Set Password" menu action: the document is encrypted from the next save on,
+    // or saved unencrypted if password is empty.
+    bool SetPassword(const char *password) override {
+        return document->SetPassword(wxString::FromUTF8(password));
+    }
+
+    // Same as the Autoexport menu items of the current document.
+    void SetAutoExport(int html, bool pdf) override { document->SetAutoExport(html, pdf); }
+    pair<int, bool> GetAutoExport() override {
+        return {document->autohtmlexport, document->autopdfexport};
     }
 
     void GoToRoot() override { current = document->root.get(); }

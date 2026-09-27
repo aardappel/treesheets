@@ -223,7 +223,9 @@ struct System {
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    wxString LoadDB(const wxString &filename, bool fromreload = false, int insert_at = -1) {
+    // An encrypted file is decrypted with password if given, or else asks for it.
+    wxString LoadDB(const wxString &filename, bool fromreload = false, int insert_at = -1,
+                    const wxString *password = nullptr) {
         auto fn = filename;
         auto loadedfromtmp = false;
 
@@ -274,7 +276,11 @@ struct System {
                     if (!encryption->Read(ffis, versionlastloaded, body)) {
                         return _("File corrupted!");
                     }
-                    for (auto prompt = wxString::Format(_("Password for %s:"), filename);;) {
+                    if (password && !encryption->Decrypt(*password, body)) {
+                        return _("Wrong password (or the file is corrupted).");
+                    }
+                    for (auto prompt = wxString::Format(_("Password for %s:"), filename);
+                         !password;) {
                         wxPasswordEntryDialog dlg(frame, prompt, _("Encrypted document"));
                         if (dlg.ShowModal() != wxID_OK) { return _("Open file cancelled."); }
                         start_loading_time = wxGetLocalTimeMillis();

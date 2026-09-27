@@ -7,10 +7,13 @@ using ibox = std::pair<icoord, icoord>;
 inline constexpr int64_t max_new_grid_cells = 256 * 256;
 
 struct ScriptInterface {
-    virtual bool LoadDocument(const char *filename) = 0;
+    virtual bool LoadDocument(const char *filename, const char *password) = 0;
     virtual void NewDocument(int cols, int rows) = 0;
     virtual bool SaveDocument(bool saveas) = 0;
     virtual bool SaveDocumentAs(const char *filename) = 0;
+    virtual bool SetPassword(const char *password) = 0;
+    virtual void SetAutoExport(int html, bool pdf) = 0;
+    virtual std::pair<int, bool> GetAutoExport() = 0;
     virtual void GoToRoot() = 0;
     virtual void GoToView() = 0;
     virtual bool HasSelection() = 0;

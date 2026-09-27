@@ -305,10 +305,12 @@ BUILTIN(get_filename, "", "", "S", "gets the current documents file name")
     return vm.NewString(si->GetFileName());
 }
 
-BUILTIN(load_document, "filename", "S", "B",
-    "loads a document, and makes it the active one. returns false if failed.")
-(VM &, LString *filename) {
-    return (iint)si->LoadDocument(filename->data());
+BUILTIN(load_document, "filename,password", "SS?", "B",
+    "loads a document, and makes it the active one. an encrypted document is decrypted with "
+    "password if given (a wrong one fails without asking), otherwise a dialog asks for it. "
+    "returns false if failed.")
+(VM &, LString *filename, LString *password) {
+    return (iint)si->LoadDocument(filename->data(), password ? password->data() : nullptr);
 }
 
 BUILTIN(new_document, "cols,rows", "II", "",
@@ -334,6 +336,35 @@ BUILTIN(save_document_as, "filename", "S", "B",
     "the document's filename for subsequent save_document() calls. returns false if failed.")
 (VM &, LString *filename) {
     return (iint)si->SaveDocumentAs(filename->data());
+}
+
+BUILTIN(set_password, "password", "S", "B",
+    "sets the password to encrypt the current document with, from its next save on (same as "
+    "the Set Password menu action). an empty password makes it save unencrypted again. returns "
+    "false if failed.")
+(VM &, LString *password) {
+    return (iint)si->SetPassword(password->data());
+}
+
+BUILTIN(set_autoexport, "html,pdf", "IB", "",
+    "sets the exports made alongside the current document whenever it is saved (same as the "
+    "Autoexport menu items): html 0 = none, 1 = HTML with images, 2 = HTML without images, and "
+    "pdf = true for a PDF too (only in builds with PDF export). stored in the document, which "
+    "needs saving afterwards.")
+(VM &vm, iint html, iint pdf) {
+    if (html < 0 || html > 2) {
+        vm.BuiltinError(cat("ts.set_autoexport: html must be 0, 1 or 2, not ", html));
+    }
+    si->SetAutoExport((int)html, pdf != 0);
+}
+
+BUILTIN(get_autoexport, "", "", "IB",
+    "returns the exports made alongside the current document whenever it is saved, as html "
+    "and pdf (see set_autoexport)")
+(VM &, iint *html) {
+    auto [h, pdf] = si->GetAutoExport();
+    *html = h;
+    return (iint)pdf;
 }
 
 BUILTIN(set_window_size, "width,height", "II", "", "resizes the window")

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:51+0200\n"
+"POT-Creation-Date: 2026-09-27 13:57+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -1940,6 +1940,9 @@ msgstr "Sang trái một từ"
 
 msgid "Word Right"
 msgstr "Sang phải một từ"
+
+msgid "Wrong password (or the file is corrupted)."
+msgstr "Sai mật khẩu (hoặc tệp bị hỏng)."
 
 #, c-format
 msgid "Wrong password (or the file is corrupted). Password for %s:"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:51+0200\n"
+"POT-Creation-Date: 2026-09-27 13:57+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -1953,6 +1953,9 @@ msgstr "左の単語"
 
 msgid "Word Right"
 msgstr "右の単語"
+
+msgid "Wrong password (or the file is corrupted)."
+msgstr "パスワードが違います (またはファイルが破損しています)。"
 
 #, c-format
 msgid "Wrong password (or the file is corrupted). Password for %s:"

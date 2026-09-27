@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:51+0200\n"
+"POT-Creation-Date: 2026-09-27 13:57+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -1993,6 +1993,9 @@ msgstr "Parola sinistra"
 
 msgid "Word Right"
 msgstr "Parola destra"
+
+msgid "Wrong password (or the file is corrupted)."
+msgstr "Password errata (o file danneggiato)."
 
 #, c-format
 msgid "Wrong password (or the file is corrupted). Password for %s:"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:51+0200\n"
+"POT-Creation-Date: 2026-09-27 13:57+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -1894,6 +1894,9 @@ msgstr "左移一個字詞"
 
 msgid "Word Right"
 msgstr "右移一個字詞"
+
+msgid "Wrong password (or the file is corrupted)."
+msgstr "密碼錯誤（或檔案已損毀）。"
 
 #, c-format
 msgid "Wrong password (or the file is corrupted). Password for %s:"

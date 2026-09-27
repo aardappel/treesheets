@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:51+0200\n"
+"POT-Creation-Date: 2026-09-27 13:57+0200\n"
 "PO-Revision-Date: 2026-09-27 06:30+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -1926,6 +1926,9 @@ msgstr "단어 왼쪽"
 
 msgid "Word Right"
 msgstr "단어 오른쪽"
+
+msgid "Wrong password (or the file is corrupted)."
+msgstr "암호가 틀렸습니다 (또는 파일이 손상되었습니다)."
 
 #, c-format
 msgid "Wrong password (or the file is corrupted). Password for %s:"

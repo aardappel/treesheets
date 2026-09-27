@@ -121,7 +121,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_filename</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the current documents file name</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.load_document</b>(filename<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">loads a document, and makes it the active one. returns false if failed.</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.load_document</b>(filename<font color="#666666">: string</font>, password<font color="#666666">: string</font> = nil) -> <font color="#666666">int</font></tt></td><td class="a">loads a document, and makes it the active one. an encrypted document is decrypted with password if given (a wrong one fails without asking), otherwise a dialog asks for it. returns false if failed.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.new_document</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">opens a new, unsaved document in a new tab with a root grid of the given size, and makes it the active one. cols and rows must be at least 1, and cols * rows at most 65536, or this is a runtime error.</td>
@@ -131,6 +131,15 @@
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.save_document_as</b>(filename<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">saves the current document to the given filename, without ever showing a save dialog (unlike save_document(true)). appends .cts if filename has no extension, and makes this the document's filename for subsequent save_document() calls. returns false if failed.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_password</b>(password<font color="#666666">: string</font>) -> <font color="#666666">int</font></tt></td><td class="a">sets the password to encrypt the current document with, from its next save on (same as the Set Password menu action). an empty password makes it save unencrypted again. returns false if failed.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_autoexport</b>(html<font color="#666666">: int</font>, pdf<font color="#666666">: bool</font>)</tt></td><td class="a">sets the exports made alongside the current document whenever it is saved (same as the Autoexport menu items): html 0 = none, 1 = HTML with images, 2 = HTML without images, and pdf = true for a PDF too (only in builds with PDF export). stored in the document, which needs saving afterwards.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_autoexport</b>() -> <font color="#666666">int</font>, <font color="#666666">int</font></tt></td><td class="a">returns the exports made alongside the current document whenever it is saved, as html and pdf (see set_autoexport)</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_window_size</b>(width<font color="#666666">: int</font>, height<font color="#666666">: int</font>)</tt></td><td class="a">resizes the window</td>

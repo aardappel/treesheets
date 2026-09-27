@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:51+0200\n"
+"POT-Creation-Date: 2026-09-27 13:57+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -1998,6 +1998,9 @@ msgstr "Mover o cursor uma palavra à esquerda"
 
 msgid "Word Right"
 msgstr "Mover o cursor uma palavra à direita"
+
+msgid "Wrong password (or the file is corrupted)."
+msgstr "Senha incorreta (ou o arquivo está corrompido)."
 
 #, c-format
 msgid "Wrong password (or the file is corrupted). Password for %s:"
