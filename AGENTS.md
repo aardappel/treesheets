@@ -12,7 +12,7 @@ overview; this file covers what you need to change the code safely.
 | `TS/` | User-facing data: `docs/`, `examples/*.cts`, `images/`, `scripts/*.lobster`, `translations/`, `readme*.html` |
 | `cmake/` | CMake modules: `Lobster.cmake`, `WxPdfDoc.cmake`, `EmbedFiles.cmake`, `Localization.cmake`, `Packaging.cmake`, `UpdateScriptReference.cmake` |
 | `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon; Windows `.rc`/icon |
-| `.github/workflows/build.yml` | CI: Linux (x64, arm64), Windows MSVC (x64, arm64), macOS (arm64), then a release per release marker tag |
+| `.github/workflows/build.yml` | CI: Linux (x64, arm64; .deb and AppImage), Windows MSVC (x64, arm64), macOS (universal), then a release per release marker tag |
 | `.claude/skills/treesheets-agent/` | Skill and wire protocol for driving a running TreeSheets over its agent socket |
 
 ### Unity build: one translation unit
@@ -94,7 +94,7 @@ manifest scrapes these files to keep its dependency versions in sync.
 ```sh
 cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DTREESHEETS_BUNDLE_WXWIDGETS=ON
 cmake --build _build -j            # binary only (add --config Release with MSVC)
-cmake --build _build --target package -j   # .deb / .dmg / NSIS+zip
+cmake --build _build --target package -j   # .deb / .dmg / Inno Setup installer + zip
 ```
 
 Options: `ENABLE_LOBSTER` (ON), `ENABLE_WXPDFDOC` (ON), `ENABLE_IPO` (ON; turn it OFF for faster
@@ -185,6 +185,11 @@ After changing UI strings, run the targets `update-pot` → `update-po` → (tra
   Then the marker is deleted. If the run fails, fix it and re-push the marker with `-f`.
 - Builds that are not released use the last release version. Keep version arguments quoted in
   the Windows steps: PowerShell splits an unquoted `-DTREESHEETS_VERSION=2.0.0` at the first dot.
+- The Linux job also makes an AppImage from the build of the `.deb`: it installs into an `AppDir`,
+  links `docs`, `examples` and `scripts` next to the executable (TreeSheets looks there before the
+  absolute install paths), and bundles the libraries with `linuxdeploy` and its GTK plugin. It is
+  built on `ubuntu-latest`, so it needs that glibc or newer. To test it without FUSE, run it with
+  `APPIMAGE_EXTRACT_AND_RUN=1` and `-i -p`.
 - Releases before v2.0.0 are tagged with the CI run number. Refer to those as `refs/tags/<n>`,
   since numeric tags can collide with branch names. The Debian epoch is 3 so that 2.x packages
   upgrade them.
