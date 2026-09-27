@@ -1,4 +1,4 @@
-# Packaging with CPack. Include after all install() rules.
+# Packaging with CPack. Include after all install() rules. The Windows installer needs CMake 3.27.
 
 set(CPACK_PACKAGE_VENDOR "Wouter van Oortmerssen")
 if(APPLE)

@@ -1,14 +1,6 @@
-cmake_minimum_required(VERSION 3.25)
-
-# The static wx libraries depend on each other, so they come up repeatedly on the link line.
-# Let CMake drop the repeats where the linker doesn't need them, as Apple's ld warns about them.
-if(POLICY CMP0156)
-    cmake_policy(SET CMP0156 NEW)
-endif()
-# Normalize install() destinations, e.g. ./scripts/modules when the data dir is the install root.
-if(POLICY CMP0177)
-    cmake_policy(SET CMP0177 NEW)
-endif()
+# Newer CMake versions use the behavior of 3.31, which e.g. drops repeats of the static wx libraries
+# on the link line (Apple's ld warns about them) and normalizes install() destinations.
+cmake_minimum_required(VERSION 3.25...3.31)
 
 ### Project
 
