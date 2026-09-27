@@ -23,10 +23,15 @@ the [Google group](https://groups.google.com/group/treesheets) for discussion.
 Installation
 ------------
 
-Pre-built binaries for Windows, macOS (Darwin) and Debian-based Linux distributions are available at the
+Pre-built binaries for Windows, macOS (Darwin) and Linux are available at the
 [Release section](https://github.com/aardappel/treesheets/releases). 
 
-Please note that the packages for Debian-based distributions provided are built on `ubuntu-latest` used by [GitHub Actions Runner](https://github.com/actions/runner-images). They could also be installed on other Debian-based distributions depending on whether the required dependency packages are available.
+For Linux, there are packages for Debian-based distributions and AppImages (x86_64 and aarch64) that run on
+most other distributions. To use an AppImage, download it, make it executable
+(`chmod +x TreeSheets-*.AppImage`) and start it.
+
+Both are built on Ubuntu 22.04, so they need a distribution of about the same age or newer. The Debian packages could also be
+installed on other Debian-based distributions, depending on whether the required dependency packages are available.
 
 If you use Flatpak, you can install [TreeSheets from Flathub](https://flathub.org/apps/com.strlen.TreeSheets).
 
