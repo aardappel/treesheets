@@ -55,7 +55,7 @@ Ideas for future features and known bugs are tracked in the [issues](https://git
 Building
 --------
 This project uses CMake to enable compilation on various platforms and CPack on top of it to package the produced binaries. The build, installation and packaging instructions are within `CMakeLists.txt`.
-Please note that you are responsible to know how to use compilers and C++, the hints below are all the help we will give you for building TreeSheets:
+If you're comfortable with a C++ compiler and CMake, these steps will get you a working build of TreeSheets:
 
 1. Clone this repository
 
