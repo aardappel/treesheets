@@ -44,10 +44,10 @@ struct System {
     bool startminimized {false};
     bool centered {true};
     bool fswatch {true};
+    // The global autoexport settings from before they became per document (file version 30),
+    // for documents loaded from older files.
     int autohtmlexport {0};
-    #ifdef ENABLE_WXPDFDOC
-        bool autopdfexport {false};
-    #endif
+    bool autopdfexport {false};
     int defaultimageformat {0};
     bool casesensitivesearch {true};
     bool darkennonmatchingcells {false};
@@ -87,9 +87,7 @@ struct System {
 
         roundness = static_cast<int>(cfg->Read("roundness", roundness));
         autohtmlexport = static_cast<int>(cfg->Read("autohtmlexport", autohtmlexport));
-        #ifdef ENABLE_WXPDFDOC
-            cfg->Read("autopdfexport", &autopdfexport, autopdfexport);
-        #endif
+        cfg->Read("autopdfexport", &autopdfexport, autopdfexport);
         defaultimageformat = static_cast<int>(cfg->Read("defaultimageformat", defaultimageformat));
         defaultfont = cfg->Read("defaultfont", defaultfont);
         defaultfixedfont = cfg->Read("defaultfixedfont", defaultfixedfont);
@@ -296,6 +294,9 @@ struct System {
             auto xs = versionlastloaded >= 21 ? dis.Read8() : 1;
             auto ys = versionlastloaded >= 21 ? dis.Read8() : 1;
             zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
+            auto autoexport = versionlastloaded >= 30
+                                  ? dis.Read8()
+                                  : autohtmlexport | static_cast<int>(autopdfexport) << 2;
             fakelasteditonload = wxDateTime::Now().GetValue();
 
             loadimageids.clear();
@@ -377,6 +378,8 @@ struct System {
 
                         doc = NewTabDoc(true, insert_at);
                         doc->encryption = std::move(encryption);
+                        doc->autohtmlexport = autoexport & 3;
+                        doc->autopdfexport = (autoexport & 4) != 0;
                         if (loadedfromtmp) {
                             doc->undolistsizeatfullsave =
                                 -1;  // if not, user will lose tmp without warning when he closes

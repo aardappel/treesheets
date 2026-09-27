@@ -11,6 +11,9 @@ struct File     // not really a struct, i.e. no alignment, read an element at a 
     uchar xs; // xs is the number of cells within the selection in x direction
     uchar ys; // ys is the number of cells within the selection in y direction
     uchar zoomlevel; // zoom level of the document
+    // Only if version >= 30: exports made along with each save. Bits 0-1: HTML (0 = none,
+    // 1 = with images, 2 = without images), bit 2: PDF.
+    uchar autoexport;
     
     Image images[0 or more];
 

@@ -103,6 +103,9 @@ struct Document {
     bool modified {false};
     bool tmpsavesuccess {true};
     unique_ptr<Encryption> encryption;  // Set if the document is saved with a password.
+    // Exports made along with each save: A_AUTOEXPORT_HTML_* - A_AUTOEXPORT_HTML_NONE, and PDF.
+    int autohtmlexport {0};
+    bool autopdfexport {false};
     wxDataObjectComposite *dndobjc {new wxDataObjectComposite()};
     wxTextDataObject *dndobjt {new wxTextDataObject()};
     wxBitmapDataObject *dndobji {new wxBitmapDataObject()};
@@ -239,6 +242,7 @@ struct Document {
             sos.Write8(selected.xs);
             sos.Write8(selected.ys);
             sos.Write8(ocs != nullptr ? drawpath.size() : 0);  // zoom level
+            sos.Write8(autohtmlexport | static_cast<int>(autopdfexport) << 2);
             RefreshImageRefCount(true);
             int realindex = 0;
             loopv(i, sys->imagelist) {
@@ -300,16 +304,15 @@ struct Document {
                 ::wxRemoveFile(treesheets::System::TmpName(filename));
             }
         }
-        // Automatic exports would leave the contents of a password protected document readable.
-        if (sys->autohtmlexport != 0 && !encryption) {
+        if (autohtmlexport != 0) {
             ExportFile(treesheets::System::ExtName(filename, ".html"),
-                       sys->autohtmlexport == A_AUTOEXPORT_HTML_WITH_IMAGES - A_AUTOEXPORT_HTML_NONE
+                       autohtmlexport == A_AUTOEXPORT_HTML_WITH_IMAGES - A_AUTOEXPORT_HTML_NONE
                            ? A_EXPHTMLTE
                            : A_EXPHTMLT,
                        false);
         }
         #ifdef ENABLE_WXPDFDOC
-            if (sys->autopdfexport && !encryption) {
+            if (autopdfexport) {
                 ExportFile(treesheets::System::ExtName(filename, ".pdf"), A_EXPPDF, false);
             }
         #endif
@@ -1393,6 +1396,14 @@ struct Document {
         return true;
     }
 
+    // html is A_AUTOEXPORT_HTML_* - A_AUTOEXPORT_HTML_NONE.
+    void SetAutoExport(int html, bool pdf) {
+        if (html == autohtmlexport && pdf == autopdfexport) { return; }
+        autohtmlexport = html;
+        autopdfexport = pdf;
+        ModifiedWithoutUndo();
+    }
+
     // For changes to the document settings, which aren't undoable but need saving.
     void ModifiedWithoutUndo() {
         undolistsizeatfullsave = -1;
@@ -1600,6 +1611,17 @@ struct Document {
                 return encryption ? _("The document will be encrypted when saved.")
                                   : _("The document will be saved unencrypted.");
             }
+
+            case A_AUTOEXPORT_HTML_NONE:
+            case A_AUTOEXPORT_HTML_WITH_IMAGES:
+            case A_AUTOEXPORT_HTML_WITHOUT_IMAGES:
+                SetAutoExport(action - A_AUTOEXPORT_HTML_NONE, autopdfexport);
+                return wxEmptyString;
+            #ifdef ENABLE_WXPDFDOC
+                case A_AUTOEXPORT_PDF:
+                    SetAutoExport(autohtmlexport, !autopdfexport);
+                    return wxEmptyString;
+            #endif
 
             case A_EXPXML: return Export("xml", "*.xml", _("Choose XML file to write"), action);
             case A_EXPHTMLT:

@@ -175,6 +175,16 @@ struct TSFrame : wxFrame {
         filehistory.UseMenu(recentmenu);
         filehistory.AddFilesToMenu();
 
+        auto *autoexportmenu = new wxMenu();
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_NONE, _("No autoexport"));
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITH_IMAGES, _("Export with images"),
+                                        _("Export to a HTML file with exported images alongside "
+                                          "the original TreeSheets file when document is saved"));
+        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITHOUT_IMAGES,
+                                        _("Export without images"),
+                                        _("Export to a HTML file alongside the original "
+                                          "TreeSheets file when document is saved"));
+
         auto *filemenu = new wxMenu();
         MyAppend(filemenu, wxID_NEW, _("&New") + "\tCTRL+N", _("Create a new document"));
         MyAppend(filemenu, wxID_OPEN, _("&Open...") + "\tCTRL+O", _("Open an existing document"));
@@ -186,6 +196,10 @@ struct TSFrame : wxFrame {
         MyAppend(filemenu, A_SAVEALL, _("Save All"));
         MyAppend(filemenu, A_SETPASSWORD, _("Set Pass&word..."),
                  _("Encrypt the current document with a password when saving it"));
+        filemenu->AppendSubMenu(autoexportmenu, _("Autoexport to HTML"));
+        #ifdef ENABLE_WXPDFDOC
+            filemenu->AppendCheckItem(A_AUTOEXPORT_PDF, _("Autoexport to PDF"));
+        #endif
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _("Page Setup..."));
         MyAppend(filemenu, A_PRINTSCALE, _("Set Print Scale..."));
@@ -634,17 +648,6 @@ struct TSFrame : wxFrame {
         roundmenu->AppendRadioItem(A_ROUND6, _("Radius &6"));
         roundmenu->Check(sys->roundness + A_ROUND0, true);
 
-        auto *autoexportmenu = new wxMenu();
-        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_NONE, _("No autoexport"));
-        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITH_IMAGES, _("Export with images"),
-                                        _("Export to a HTML file with exported images alongside "
-                                          "the original TreeSheets file when document is saved"));
-        autoexportmenu->AppendRadioItem(A_AUTOEXPORT_HTML_WITHOUT_IMAGES,
-                                        _("Export without images"),
-                                        _("Export to a HTML file alongside the original "
-                                          "TreeSheets file when document is saved"));
-        autoexportmenu->Check(sys->autohtmlexport + A_AUTOEXPORT_HTML_NONE, true);
-
         auto *defaultimagemenu = new wxMenu();
         defaultimagemenu->AppendRadioItem(A_DEFAULTIMAGE_PNG, _("PNG"));
         defaultimagemenu->AppendRadioItem(A_DEFAULTIMAGE_JPEG, _("JPEG"));
@@ -721,11 +724,6 @@ struct TSFrame : wxFrame {
             A_FSWATCH, _("Autoreload documents"),
             _("Reload when another computer has changed a file (if you have made changes, asks)"));
         optmenu->Check(A_FSWATCH, sys->fswatch);
-        optmenu->AppendSubMenu(autoexportmenu, _("Autoexport to HTML"));
-        #ifdef ENABLE_WXPDFDOC
-            optmenu->AppendCheckItem(A_AUTOEXPORT_PDF, _("Autoexport to PDF"));
-            optmenu->Check(A_AUTOEXPORT_PDF, sys->autopdfexport);
-        #endif
         optmenu->AppendSubMenu(defaultimagemenu, _("Default image format"),
                                _("Default format when image is pasted from clipboard or dropped"));
         optmenu->AppendSeparator();
@@ -957,6 +955,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_ICONIZE, &TSFrame::OnIconize, this);
         Bind(wxEVT_SIZE, &TSFrame::OnSize, this);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &TSFrame::OnTabChange, this, wxID_ANY);
+        Bind(wxEVT_MENU_OPEN, &TSFrame::OnMenuOpen, this);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, &TSFrame::OnTabClose, this, wxID_ANY);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSED, &TSFrame::OnTabClosed, this, wxID_ANY);
         Bind(wxEVT_SYS_COLOUR_CHANGED, &TSFrame::OnSysColourChanged, this);
@@ -1502,16 +1501,6 @@ struct TSFrame : wxFrame {
                 Toggle("fswatch", sys->fswatch);
                 sys->UpdateFileSystemWatching();
                 break;
-            case A_AUTOEXPORT_HTML_NONE:
-            case A_AUTOEXPORT_HTML_WITH_IMAGES:
-            case A_AUTOEXPORT_HTML_WITHOUT_IMAGES:
-                Choose("autohtmlexport", sys->autohtmlexport, A_AUTOEXPORT_HTML_NONE);
-                break;
-            #ifdef ENABLE_WXPDFDOC
-                case A_AUTOEXPORT_PDF:
-                    Toggle("autopdfexport", sys->autopdfexport);
-                    break;
-            #endif
             case A_DEFAULTIMAGE_PNG:
             case A_DEFAULTIMAGE_JPEG:
                 Choose("defaultimageformat", sys->defaultimageformat, A_DEFAULTIMAGE_PNG);
@@ -1591,6 +1580,18 @@ struct TSFrame : wxFrame {
                 break;
             }
         }
+    }
+
+    // Shows the per document settings of the current document.
+    void OnMenuOpen(wxMenuEvent &me) {
+        if (auto *canvas = GetCurrentTab()) {
+            auto *menubar = GetMenuBar();
+            menubar->Check(A_AUTOEXPORT_HTML_NONE + canvas->doc->autohtmlexport, true);
+            #ifdef ENABLE_WXPDFDOC
+                menubar->Check(A_AUTOEXPORT_PDF, canvas->doc->autopdfexport);
+            #endif
+        }
+        me.Skip();
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
