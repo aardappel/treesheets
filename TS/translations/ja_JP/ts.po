@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -686,6 +686,12 @@ msgstr "選択したセルの画像を JPEG 形式で埋め込みます (デー�
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "選択したセルの画像を PNG 形式で埋め込みます (デフォルト)"
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr "保存時に現在のドキュメントをパスワードで暗号化します"
+
+msgid "Encrypted document"
+msgstr "暗号化されたドキュメント"
+
 msgid "End date and time"
 msgstr "終了日時"
 
@@ -700,6 +706,9 @@ msgstr "英語"
 
 msgid "Enter/exit text edit mode"
 msgstr "テキスト編集モードに入る/終了する"
+
+msgid "Error encrypting file."
+msgstr "ファイルの暗号化中にエラーが発生しました。"
 
 msgid "Error exporting file!"
 msgstr "ファイルのエクスポート中にエラーが発生しました！"
@@ -1301,6 +1310,20 @@ msgstr ""
 msgid "Page Setup..."
 msgstr "ページ設定..."
 
+#, c-format
+msgid "Password for %s:"
+msgstr "%s のパスワード:"
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr ""
+"保存時にこのドキュメントを暗号化するパスワード (空欄にすると暗号化せずに保存"
+"します):"
+
+msgid "Password unchanged."
+msgstr "パスワードは変更されていません。"
+
 msgid "Paste (CTRL+v)"
 msgstr "貼り付け (Ctrl+V)"
 
@@ -1432,6 +1455,9 @@ msgstr "削除..."
 
 msgid "Render document centered"
 msgstr "ドキュメントを中央揃えでレンダリング"
+
+msgid "Repeat the password:"
+msgstr "パスワードをもう一度入力してください:"
 
 msgid "Replace "
 msgstr "置換 "
@@ -1572,6 +1598,12 @@ msgstr "セミコロン区切りテキスト (CSV)..."
 
 msgid "Set Grid Border Width"
 msgstr "グリッド境界の幅を設定"
+
+msgid "Set Pass&word..."
+msgstr "パスワードを設定(&W)..."
+
+msgid "Set Password"
+msgstr "パスワードを設定"
 
 msgid "Set Print Scale"
 msgstr "印刷スケールを設定"
@@ -1748,6 +1780,15 @@ msgstr "フリーフォーム階層型情報オーガナイザー"
 msgid "The browser could not open at least one link."
 msgstr "ブラウザが少なくとも1つのリンクを開けませんでした。"
 
+msgid "The document will be encrypted when saved."
+msgstr "ドキュメントは保存時に暗号化されます。"
+
+msgid "The document will be saved unencrypted."
+msgstr "ドキュメントは暗号化せずに保存されます。"
+
+msgid "The passwords differ."
+msgstr "パスワードが一致しません。"
+
 msgid "There are no images in the selection."
 msgstr "選択範囲内に画像がありません。"
 
@@ -1912,6 +1953,11 @@ msgstr "左の単語"
 
 msgid "Word Right"
 msgstr "右の単語"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr ""
+"パスワードが違います (またはファイルが破損しています)。%s のパスワード:"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML（OPMLなどの属性も含む）..."

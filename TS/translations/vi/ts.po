@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -682,6 +682,12 @@ msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
 "Nhúng (các) hình ảnh trong các ô được chọn dưới định dạng PNG (mặc định)"
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr "Mã hóa tài liệu hiện tại bằng mật khẩu khi lưu"
+
+msgid "Encrypted document"
+msgstr "Tài liệu đã mã hóa"
+
 msgid "End date and time"
 msgstr "Ngày và giờ kết thúc"
 
@@ -696,6 +702,9 @@ msgstr "Tiếng Anh"
 
 msgid "Enter/exit text edit mode"
 msgstr "Vào/thoát chế độ chỉnh sửa văn bản"
+
+msgid "Error encrypting file."
+msgstr "Lỗi khi mã hóa tệp."
 
 msgid "Error exporting file!"
 msgstr "Lỗi khi xuất tệp!"
@@ -1287,6 +1296,19 @@ msgstr "Tệp PNG (*.png)|*.png|Tệp JPEG (*.jpg)|*.jpg|Tất cả các tệp (
 msgid "Page Setup..."
 msgstr "Thiết lập trang..."
 
+#, c-format
+msgid "Password for %s:"
+msgstr "Mật khẩu cho %s:"
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr ""
+"Mật khẩu dùng để mã hóa tài liệu này khi lưu (để trống để lưu không mã hóa):"
+
+msgid "Password unchanged."
+msgstr "Mật khẩu không thay đổi."
+
 msgid "Paste (CTRL+v)"
 msgstr "Dán (CTRL+v)"
 
@@ -1306,7 +1328,8 @@ msgid "Paste file path"
 msgstr "Dán đường dẫn tệp"
 
 msgid "Paste the text of the clipboard without the styles of the copied cells"
-msgstr "Dán văn bản trong khay nhớ tạm mà không kèm định dạng của các ô đã sao chép"
+msgstr ""
+"Dán văn bản trong khay nhớ tạm mà không kèm định dạng của các ô đã sao chép"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1419,6 +1442,9 @@ msgstr "Xóa..."
 
 msgid "Render document centered"
 msgstr "Hiển thị tài liệu căn giữa"
+
+msgid "Repeat the password:"
+msgstr "Nhập lại mật khẩu:"
 
 msgid "Replace "
 msgstr "Thay thế "
@@ -1558,6 +1584,12 @@ msgstr "Văn bản phân tách bằng dấu chấm phẩy (CSV)..."
 
 msgid "Set Grid Border Width"
 msgstr "Đặt độ dày viền lưới"
+
+msgid "Set Pass&word..."
+msgstr "Đặt mật khẩu (&W)..."
+
+msgid "Set Password"
+msgstr "Đặt mật khẩu"
 
 msgid "Set Print Scale"
 msgstr "Đặt tỷ lệ in"
@@ -1734,6 +1766,15 @@ msgstr "Trình tổ chức thông tin phân cấp tự do"
 msgid "The browser could not open at least one link."
 msgstr "Trình duyệt không thể mở ít nhất một liên kết."
 
+msgid "The document will be encrypted when saved."
+msgstr "Tài liệu sẽ được mã hóa khi lưu."
+
+msgid "The document will be saved unencrypted."
+msgstr "Tài liệu sẽ được lưu không mã hóa."
+
+msgid "The passwords differ."
+msgstr "Mật khẩu không khớp."
+
 msgid "There are no images in the selection."
 msgstr "Không có hình ảnh nào trong vùng chọn."
 
@@ -1899,6 +1940,10 @@ msgstr "Sang trái một từ"
 
 msgid "Word Right"
 msgstr "Sang phải một từ"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr "Sai mật khẩu (hoặc tệp bị hỏng). Mật khẩu cho %s:"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (bao gồm cả thuộc tính, cho OPML v.v.)..."

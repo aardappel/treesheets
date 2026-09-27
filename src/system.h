@@ -252,9 +252,8 @@ struct System {
         {  // limit destructors
             wxBusyCursor wait;
             Cell *ics = nullptr;
-            wxFFileInputStream fis(fn);
-            wxDataInputStream dis(fis);
-            if (!fis.IsOk()) {
+            wxFFileInputStream ffis(fn);
+            if (!ffis.IsOk()) {
                 for (int i = static_cast<int>(frame->filehistory.GetCount()) - 1; i >= 0; i--) {
                     if (frame->filehistory.GetHistoryFile(i) == filename) {
                         frame->filehistory.RemoveFileFromHistory(i);
@@ -264,10 +263,36 @@ struct System {
             }
 
             char buf[4];
-            fis.Read(buf, 4);
+            ffis.Read(buf, 4);
             if (strncmp(buf, "TSFF", 4) != 0) { return _("Not a TreeSheets file."); }
-            fis.Read(&versionlastloaded, 1);
+            ffis.Read(&versionlastloaded, 1);
             if (versionlastloaded > TS_VERSION) { return _("File of newer version."); }
+            unique_ptr<Encryption> encryption;
+            vector<uint8_t> body;
+            if (versionlastloaded >= 30) {
+                auto method = ffis.GetC();
+                if (method == Encryption::method) {
+                    encryption = make_unique<Encryption>();
+                    if (!encryption->Read(ffis, versionlastloaded, body)) {
+                        return _("File corrupted!");
+                    }
+                    for (auto prompt = wxString::Format(_("Password for %s:"), filename);;) {
+                        wxPasswordEntryDialog dlg(frame, prompt, _("Encrypted document"));
+                        if (dlg.ShowModal() != wxID_OK) { return _("Open file cancelled."); }
+                        start_loading_time = wxGetLocalTimeMillis();
+                        if (encryption->Decrypt(dlg.GetValue(), body)) { break; }
+                        prompt = wxString::Format(
+                            _("Wrong password (or the file is corrupted). Password for %s:"),
+                            filename);
+                    }
+                } else if (method != 0) {
+                    return _("File corrupted!");
+                }
+            }
+            // Of an encrypted file, the decrypted rest.
+            wxMemoryInputStream mis(body.data(), body.size());
+            auto &fis = encryption ? static_cast<wxInputStream &>(mis) : ffis;
+            wxDataInputStream dis(fis);
             auto xs = versionlastloaded >= 21 ? dis.Read8() : 1;
             auto ys = versionlastloaded >= 21 ? dis.Read8() : 1;
             zoomlevel = versionlastloaded >= 23 ? dis.Read8() : 0;
@@ -351,6 +376,7 @@ struct System {
                         if (!root || !root->grid) { return _("File corrupted!"); }
 
                         doc = NewTabDoc(true, insert_at);
+                        doc->encryption = std::move(encryption);
                         if (loadedfromtmp) {
                             doc->undolistsizeatfullsave =
                                 -1;  // if not, user will lose tmp without warning when he closes

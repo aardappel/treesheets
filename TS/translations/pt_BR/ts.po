@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -700,6 +700,12 @@ msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
 "Embute a(s) imagem(ns) das células selecionadas em formato PNG (padrão)"
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr "Criptografar o documento atual com uma senha ao salvar"
+
+msgid "Encrypted document"
+msgstr "Documento criptografado"
+
 msgid "End date and time"
 msgstr "Data/hora final"
 
@@ -714,6 +720,9 @@ msgstr "Inglês"
 
 msgid "Enter/exit text edit mode"
 msgstr "Entrar/sair do modo de edição de texto"
+
+msgid "Error encrypting file."
+msgstr "Erro ao criptografar o arquivo."
 
 msgid "Error exporting file!"
 msgstr "Erro ao exportar arquivo!"
@@ -1327,6 +1336,20 @@ msgstr ""
 msgid "Page Setup..."
 msgstr "Configurar &Página..."
 
+#, c-format
+msgid "Password for %s:"
+msgstr "Senha para %s:"
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr ""
+"Senha com a qual criptografar este documento ao salvar (deixe em branco para "
+"salvá-lo sem criptografia):"
+
+msgid "Password unchanged."
+msgstr "Senha inalterada."
+
 msgid "Paste (CTRL+v)"
 msgstr "Colar (CTRL+v)"
 
@@ -1346,7 +1369,8 @@ msgid "Paste file path"
 msgstr "Colar o caminho do arquivo"
 
 msgid "Paste the text of the clipboard without the styles of the copied cells"
-msgstr "Cola o texto da área de transferência sem os estilos das células copiadas"
+msgstr ""
+"Cola o texto da área de transferência sem os estilos das células copiadas"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1461,6 +1485,9 @@ msgstr "&Remover..."
 
 msgid "Render document centered"
 msgstr "Renderizar documento &centralizado na tela"
+
+msgid "Repeat the password:"
+msgstr "Repita a senha:"
 
 msgid "Replace "
 msgstr "Substituir "
@@ -1602,6 +1629,12 @@ msgstr "Texto delimitado por &ponto e vírgula (CSV)..."
 
 msgid "Set Grid Border Width"
 msgstr "Definir Largura da &Borda da Grade"
+
+msgid "Set Pass&word..."
+msgstr "&Definir Senha..."
+
+msgid "Set Password"
+msgstr "Definir Senha"
 
 msgid "Set Print Scale"
 msgstr "&Definir Escala de Impressão"
@@ -1782,6 +1815,15 @@ msgstr "O Organizador de Informações Hierárquicas em Forma Livre"
 msgid "The browser could not open at least one link."
 msgstr "O navegador não pôde abrir ao menos um dos links."
 
+msgid "The document will be encrypted when saved."
+msgstr "O documento será criptografado ao ser salvo."
+
+msgid "The document will be saved unencrypted."
+msgstr "O documento será salvo sem criptografia."
+
+msgid "The passwords differ."
+msgstr "As senhas são diferentes."
+
 msgid "There are no images in the selection."
 msgstr "Não há imagens na seleção."
 
@@ -1956,6 +1998,10 @@ msgstr "Mover o cursor uma palavra à esquerda"
 
 msgid "Word Right"
 msgstr "Mover o cursor uma palavra à direita"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr "Senha incorreta (ou o arquivo está corrompido). Senha para %s:"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (&atributos também, para OPML etc.)..."

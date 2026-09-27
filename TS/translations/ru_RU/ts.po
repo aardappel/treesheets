@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -774,6 +774,14 @@ msgstr ""
 "PNG формат применяется по Умолчанию и к изображениям в выбранных ячейках (ко "
 "всем копиям одного изображения)"
 
+# комментарий к п. Меню
+msgid "Encrypt the current document with a password when saving it"
+msgstr "Шифровать текущий документ паролем при сохранении"
+
+# комментарий к п. Меню
+msgid "Encrypted document"
+msgstr "Зашифрованный документ"
+
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "End date and time"
 msgstr "Дата и Время Завершения"
@@ -789,6 +797,10 @@ msgstr "Английский"
 
 msgid "Enter/exit text edit mode"
 msgstr "Вх/Вых из реж. Редактирования"
+
+# Сообщение (после действия или события)
+msgid "Error encrypting file."
+msgstr "Ошибка при шифровании файла."
 
 # Сообщение (после действия или события)
 msgid "Error exporting file!"
@@ -1490,6 +1502,20 @@ msgstr "PNG файл (*.png)|*.png|JPEG файл (*.jpg)|*.jpg|Все Файлы
 msgid "Page Setup..."
 msgstr "Настройка Страницы..."
 
+#, c-format
+msgid "Password for %s:"
+msgstr "Пароль для %s:"
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr ""
+"Пароль для шифрования этого документа при сохранении (оставьте пустым, чтобы "
+"сохранить без шифрования):"
+
+msgid "Password unchanged."
+msgstr "Пароль не изменён."
+
 # комментарий к эл-ту Главного Окна
 msgid "Paste (CTRL+v)"
 msgstr "Вставить (CTRL+v)"
@@ -1649,6 +1675,9 @@ msgstr "Удалить..."
 msgid "Render document centered"
 msgstr "Отображать документ по Центру"
 
+msgid "Repeat the password:"
+msgstr "Повторите пароль:"
+
 # эл-т Главного Окна
 msgid "Replace "
 msgstr "Заменить "
@@ -1806,6 +1835,12 @@ msgstr "CSV (разделитель - точка &с запятой)..."
 # п. Меню (нет & в исходном тексте)
 msgid "Set Grid Border Width"
 msgstr "Установить Ширину &Границы Сетки"
+
+msgid "Set Pass&word..."
+msgstr "&Задать Пароль..."
+
+msgid "Set Password"
+msgstr "Задать Пароль"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Set Print Scale"
@@ -2016,6 +2051,15 @@ msgstr "Иерархический органайзер информации с�
 msgid "The browser could not open at least one link."
 msgstr "Браузеру не удалось открыть ни одну ссылку."
 
+msgid "The document will be encrypted when saved."
+msgstr "Документ будет зашифрован при сохранении."
+
+msgid "The document will be saved unencrypted."
+msgstr "Документ будет сохранён без шифрования."
+
+msgid "The passwords differ."
+msgstr "Пароли не совпадают."
+
 # Сообщение (после действия или события)
 msgid "There are no images in the selection."
 msgstr "В выборе нет изображений."
@@ -2214,6 +2258,10 @@ msgstr "На Слово вЛево"
 
 msgid "Word Right"
 msgstr ".. вПраво"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr "Неверный пароль (или файл повреждён). Пароль для %s:"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (в т.ч. &атрибуты - для OPML и т.п.)..."

@@ -102,6 +102,7 @@ struct Document {
     long lastsave {wxGetLocalTime()};
     bool modified {false};
     bool tmpsavesuccess {true};
+    unique_ptr<Encryption> encryption;  // Set if the document is saved with a password.
     wxDataObjectComposite *dndobjc {new wxDataObjectComposite()};
     wxTextDataObject *dndobjt {new wxTextDataObject()};
     wxBitmapDataObject *dndobji {new wxBitmapDataObject()};
@@ -227,10 +228,14 @@ struct Document {
                 return _("Error writing to file.");
             }
 
-            wxDataOutputStream sos(fos);
             fos.Write("TSFF", 4);
             char vers = TS_VERSION;
             fos.Write(&vers, 1);
+            fos.PutC(encryption ? Encryption::method : 0);
+            // With a password, the rest is encrypted as a whole once written.
+            wxMemoryOutputStream mos;
+            auto &os = encryption ? static_cast<wxOutputStream &>(mos) : fos;
+            wxDataOutputStream sos(os);
             sos.Write8(selected.xs);
             sos.Write8(selected.ys);
             sos.Write8(ocs != nullptr ? drawpath.size() : 0);  // zoom level
@@ -238,32 +243,44 @@ struct Document {
             int realindex = 0;
             loopv(i, sys->imagelist) {
                 if (auto &image = *sys->imagelist[i]; image.trefc) {
-                    fos.PutC(image.type);
+                    os.PutC(image.type);
                     sos.WriteDouble(image.display_scale);
                     wxInt64 imagelen(image.data.size());
                     sos.Write64(imagelen);
-                    fos.Write(image.data.data(), imagelen);
+                    os.Write(image.data.data(), imagelen);
                     image.savedindex = realindex++;
                 }
             }
 
-            fos.Write("D", 1);
-            wxZlibOutputStream zos(fos, 9);
-            if (!zos.IsOk()) { return _("Zlib error while writing file."); }
-            wxDataOutputStream dos(zos);
-            root->Save(dos, ocs);
-            for (auto &[tag, colors] : tags) {
-                auto &[cellcolor, textcolor] = colors;
-                dos.WriteString(tag);
-                dos.Write32(cellcolor);
-                dos.Write32(textcolor);
+            os.Write("D", 1);
+            {
+                wxZlibOutputStream zos(os, 9);
+                if (!zos.IsOk()) { return _("Zlib error while writing file."); }
+                wxDataOutputStream dos(zos);
+                root->Save(dos, ocs);
+                for (auto &[tag, colors] : tags) {
+                    auto &[cellcolor, textcolor] = colors;
+                    dos.WriteString(tag);
+                    dos.Write32(cellcolor);
+                    dos.Write32(textcolor);
+                }
+                dos.WriteString(wxEmptyString);
             }
-            dos.WriteString(wxEmptyString);
+            if (encryption) {
+                vector<uint8_t> body(mos.GetLength());
+                mos.CopyTo(body.data(), body.size());
+                if (!encryption->Write(fos, body)) { return _("Error encrypting file."); }
+            }
         }
 
-        if (!istempfile && sys->makebaks && ::wxFileExists(filename)) {
-            ::wxRemoveFile(treesheets::System::BakName(filename));
-            ::wxRenameFile(filename, treesheets::System::BakName(filename));
+        if (!istempfile && ::wxFileExists(filename)) {
+            // On the first save with a password, a backup would keep the contents readable.
+            if (encryption && !Encryption::IsEncrypted(filename)) {
+                ::wxRemoveFile(treesheets::System::BakName(filename));
+            } else if (sys->makebaks) {
+                ::wxRemoveFile(treesheets::System::BakName(filename));
+                ::wxRenameFile(filename, treesheets::System::BakName(filename));
+            }
         }
 
         if (!::wxRenameFile(savefilename, targetfilename, true)) {
@@ -283,7 +300,8 @@ struct Document {
                 ::wxRemoveFile(treesheets::System::TmpName(filename));
             }
         }
-        if (sys->autohtmlexport != 0) {
+        // Automatic exports would leave the contents of a password protected document readable.
+        if (sys->autohtmlexport != 0 && !encryption) {
             ExportFile(treesheets::System::ExtName(filename, ".html"),
                        sys->autohtmlexport == A_AUTOEXPORT_HTML_WITH_IMAGES - A_AUTOEXPORT_HTML_NONE
                            ? A_EXPHTMLTE
@@ -291,7 +309,7 @@ struct Document {
                        false);
         }
         #ifdef ENABLE_WXPDFDOC
-            if (sys->autopdfexport) {
+            if (sys->autopdfexport && !encryption) {
                 ExportFile(treesheets::System::ExtName(filename, ".pdf"), A_EXPPDF, false);
             }
         #endif
@@ -1361,6 +1379,28 @@ struct Document {
         return _("File exported successfully.");
     }
 
+    // Takes effect with the next save. An empty password removes it.
+    bool SetPassword(const wxString &password) {
+        if (password.empty()) {
+            if (!encryption) { return true; }
+            encryption.reset();
+        } else {
+            auto e = make_unique<Encryption>();
+            if (!e->SetPassword(password)) { return false; }
+            encryption = std::move(e);
+        }
+        ModifiedWithoutUndo();
+        return true;
+    }
+
+    // For changes to the document settings, which aren't undoable but need saving.
+    void ModifiedWithoutUndo() {
+        undolistsizeatfullsave = -1;
+        lastmodsinceautosave = wxGetLocalTime();
+        modified = true;
+        UpdateFileName();
+    }
+
     wxString Save(bool saveas, bool *success = nullptr) {
         if (!saveas && !filename.empty()) { return SaveDB(success); }
         auto filename = ::wxFileSelector(_("Choose TreeSheets file to save:"), "", "", "cts",
@@ -1540,6 +1580,26 @@ struct Document {
             case wxID_SAVE: return Save(false);
             case wxID_SAVEAS: return Save(true);
             case A_SAVEALL: sys->SaveAll(); return wxEmptyString;
+            case A_SETPASSWORD: {
+                wxPasswordEntryDialog dlg(sys->frame,
+                                          _("Password to encrypt this document with when saving "
+                                            "(leave empty to save it unencrypted):"),
+                                          _("Set Password"));
+                if (dlg.ShowModal() != wxID_OK) { return _("Password unchanged."); }
+                auto password = dlg.GetValue();
+                if (password.empty()) {
+                    if (!encryption) { return _("Password unchanged."); }
+                } else {
+                    wxPasswordEntryDialog confirm(sys->frame, _("Repeat the password:"),
+                                                  _("Set Password"));
+                    if (confirm.ShowModal() != wxID_OK) { return _("Password unchanged."); }
+                    if (confirm.GetValue() != password) { return _("The passwords differ."); }
+                }
+                wxBusyCursor wait;
+                if (!SetPassword(password)) { return _("Error encrypting file."); }
+                return encryption ? _("The document will be encrypted when saved.")
+                                  : _("The document will be saved unencrypted.");
+            }
 
             case A_EXPXML: return Export("xml", "*.xml", _("Choose XML file to write"), action);
             case A_EXPHTMLT:

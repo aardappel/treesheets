@@ -25,9 +25,15 @@
 
 #ifdef _WIN32
     #include <winuser.h>
+    #include <bcrypt.h>
     #include <imm.h>
     #include <wx/msw/dc.h>
     #include <wx/msw/regconf.h>
+#else
+    #include <unistd.h>
+    #ifdef __APPLE__
+        #include <sys/random.h>
+    #endif
 #endif
 
 #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
@@ -66,6 +72,8 @@
 #include <wx/translation.h>
 #include <wx/uilocale.h>
 #include <wx/xml/xml.h>
+
+#include "monocypher.h"
 
 #ifdef ENABLE_WXPDFDOC
     #include "wx/pdfdc.h"

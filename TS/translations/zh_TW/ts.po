@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -674,6 +674,12 @@ msgstr "將選取儲存格中的圖片以 JPEG 格式嵌入（可縮減資料大
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "將選取儲存格中的圖片以 PNG 格式嵌入（預設）"
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr "儲存時以密碼加密目前的文件"
+
+msgid "Encrypted document"
+msgstr "已加密的文件"
+
 msgid "End date and time"
 msgstr "結束日期與時間"
 
@@ -688,6 +694,9 @@ msgstr "English"
 
 msgid "Enter/exit text edit mode"
 msgstr "進入/離開文字編輯模式"
+
+msgid "Error encrypting file."
+msgstr "加密檔案時發生錯誤。"
 
 msgid "Error exporting file!"
 msgstr "匯出檔案時發生錯誤！"
@@ -1258,6 +1267,18 @@ msgstr "PNG 檔案 (*.png)|*.png|JPEG 檔案 (*.jpg)|*.jpg|所有檔案 (*.*)|*.
 msgid "Page Setup..."
 msgstr "頁面設定..."
 
+#, c-format
+msgid "Password for %s:"
+msgstr "%s 的密碼："
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr "儲存時用來加密此文件的密碼（留空則不加密儲存）："
+
+msgid "Password unchanged."
+msgstr "密碼未變更。"
+
 msgid "Paste (CTRL+v)"
 msgstr "貼上（Ctrl + V）"
 
@@ -1385,6 +1406,9 @@ msgstr "移除..."
 
 msgid "Render document centered"
 msgstr "置中繪製文件"
+
+msgid "Repeat the password:"
+msgstr "再次輸入密碼："
 
 msgid "Replace "
 msgstr "取代 "
@@ -1519,6 +1543,12 @@ msgstr "分號分隔文字 (CSV)..."
 
 msgid "Set Grid Border Width"
 msgstr "設定網格框線寬度"
+
+msgid "Set Pass&word..."
+msgstr "設定密碼(&W)..."
+
+msgid "Set Password"
+msgstr "設定密碼"
 
 msgid "Set Print Scale"
 msgstr "設定列印縮放"
@@ -1693,6 +1723,15 @@ msgstr "自由格式的階層式資訊整理工具"
 msgid "The browser could not open at least one link."
 msgstr "瀏覽器至少有一個連結無法開啟。"
 
+msgid "The document will be encrypted when saved."
+msgstr "文件將在儲存時加密。"
+
+msgid "The document will be saved unencrypted."
+msgstr "文件將不加密儲存。"
+
+msgid "The passwords differ."
+msgstr "兩次輸入的密碼不一致。"
+
 msgid "There are no images in the selection."
 msgstr "選取範圍中沒有圖片。"
 
@@ -1855,6 +1894,10 @@ msgstr "左移一個字詞"
 
 msgid "Word Right"
 msgstr "右移一個字詞"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr "密碼錯誤（或檔案已損毀）。%s 的密碼："
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML（含屬性，用於 OPML 等）..."

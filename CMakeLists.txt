@@ -213,6 +213,8 @@ else()
     set(TREESHEETS_PKGDATADIR .)
 endif()
 
+include(cmake/Monocypher.cmake)
+
 ### Optional features
 
 if(ENABLE_LOBSTER)

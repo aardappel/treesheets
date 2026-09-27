@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -706,6 +706,12 @@ msgstr ""
 "Das Bild in der TreeSheets-Datei im PNG-Format abspeichern "
 "(Standardeinstellung)"
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr "Das aktuelle Dokument beim Speichern mit einem Passwort verschlüsseln"
+
+msgid "Encrypted document"
+msgstr "Verschlüsseltes Dokument"
+
 msgid "End date and time"
 msgstr "Enddatum und -zeit"
 
@@ -720,6 +726,9 @@ msgstr "Englisch"
 
 msgid "Enter/exit text edit mode"
 msgstr "Textbearbeitungsmodus betreten/verlassen"
+
+msgid "Error encrypting file."
+msgstr "Fehler beim Verschlüsseln der Datei."
 
 msgid "Error exporting file!"
 msgstr "Fehler beim Exportieren der Datei!"
@@ -1333,6 +1342,20 @@ msgstr ""
 msgid "Page Setup..."
 msgstr "Seiteneinstellungen..."
 
+#, c-format
+msgid "Password for %s:"
+msgstr "Passwort für %s:"
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr ""
+"Passwort, mit dem dieses Dokument beim Speichern verschlüsselt wird (leer "
+"lassen, um es unverschlüsselt zu speichern):"
+
+msgid "Password unchanged."
+msgstr "Passwort unverändert."
+
 msgid "Paste (CTRL+v)"
 msgstr "Einfügen (STRG+v)"
 
@@ -1352,7 +1375,8 @@ msgid "Paste file path"
 msgstr "Dateipfad einfügen"
 
 msgid "Paste the text of the clipboard without the styles of the copied cells"
-msgstr "Den Text aus der Zwischenablage ohne die Stile der kopierten Zellen einfügen"
+msgstr ""
+"Den Text aus der Zwischenablage ohne die Stile der kopierten Zellen einfügen"
 
 msgid "Please enable (Options -> Show Toolbar) to use replace."
 msgstr ""
@@ -1472,6 +1496,9 @@ msgstr "Entfernen..."
 
 msgid "Render document centered"
 msgstr "Dokument mittig rendern"
+
+msgid "Repeat the password:"
+msgstr "Passwort wiederholen:"
 
 msgid "Replace "
 msgstr "Ersetzen mit "
@@ -1613,6 +1640,12 @@ msgstr "Text mit Semikolon als Trennzeichen (CSV)..."
 
 msgid "Set Grid Border Width"
 msgstr "Breite des Tabellenrands setzen"
+
+msgid "Set Pass&word..."
+msgstr "&Passwort festlegen..."
+
+msgid "Set Password"
+msgstr "Passwort festlegen"
 
 msgid "Set Print Scale"
 msgstr "Druckskalierung setzen"
@@ -1794,6 +1827,15 @@ msgstr "Der formfreie hierarchische Informationsorganisator"
 msgid "The browser could not open at least one link."
 msgstr "Der Browser konnte mindestens einen Link nicht öffnen."
 
+msgid "The document will be encrypted when saved."
+msgstr "Das Dokument wird beim Speichern verschlüsselt."
+
+msgid "The document will be saved unencrypted."
+msgstr "Das Dokument wird unverschlüsselt gespeichert."
+
+msgid "The passwords differ."
+msgstr "Die Passwörter stimmen nicht überein."
+
 msgid "There are no images in the selection."
 msgstr "Es befinden sich keine Bilder in der Auswahl."
 
@@ -1972,6 +2014,10 @@ msgstr "Wort links"
 
 msgid "Word Right"
 msgstr "Wort rechts"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr "Falsches Passwort (oder die Datei ist beschädigt). Passwort für %s:"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (auch Attribute, für OPML u.Ä.)"

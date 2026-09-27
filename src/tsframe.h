@@ -184,6 +184,8 @@ struct TSFrame : wxFrame {
         MyAppend(filemenu, wxID_SAVEAS, _("Save &As..."),
                  _("Save current document with a different filename"));
         MyAppend(filemenu, A_SAVEALL, _("Save All"));
+        MyAppend(filemenu, A_SETPASSWORD, _("Set Pass&word..."),
+                 _("Encrypt the current document with a password when saving it"));
         filemenu->AppendSeparator();
         MyAppend(filemenu, A_PAGESETUP, _("Page Setup..."));
         MyAppend(filemenu, A_PRINTSCALE, _("Set Print Scale..."));

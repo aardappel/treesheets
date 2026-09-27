@@ -23,7 +23,7 @@ constants and the `A_*` action enum, then `#include`s every other header in depe
 inside `namespace treesheets` (the Lobster implementation in `treesheets_impl.h` comes first):
 
 ```
-image.h text.h cell.h grid.h selection.h document.h evaluator.h system.h
+image.h text.h cell.h grid.h selection.h encryption.h document.h evaluator.h system.h
 wxtools.h tscanvas.h tsframe.h agent_server.h tsapp.h
 ```
 
@@ -46,6 +46,7 @@ As a result:
 | `grid.h` | `Grid` | 2D array of `Cell`s, layout, rendering, most structural operations |
 | `text.h` | `Text` | Cell text, editing, cursor handling, drawing (with `textruns.h` / `bidi.h` for RTL text) |
 | `selection.h` | `Selection` | A rectangular selection in a grid, or a text cursor range in one cell |
+| `encryption.h` | `Encryption` | Password protected files (Monocypher: Argon2id key, XChaCha20-Poly1305) |
 | `document.h` | `Document` | One open file: load/save, undo/redo, rendering entry points, and `Action(int)`, the big dispatcher for every `A_*`/`wxID_*` command |
 | `evaluator.h` | `Evaluator` | Cell operations/formulas (see `TS/examples/operation-reference.cts`) |
 | `system.h` | `System` (`sys`) | Global state: settings (`sys->cfg`, wxConfig), file loading, fonts, images |

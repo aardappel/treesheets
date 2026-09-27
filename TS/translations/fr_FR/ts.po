@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -704,6 +704,13 @@ msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
 "Intègre les images des cellules sélectionnées au format PNG (par défaut)"
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr ""
+"Chiffrer le document actuel avec un mot de passe lors de l'enregistrement"
+
+msgid "Encrypted document"
+msgstr "Document chiffré"
+
 msgid "End date and time"
 msgstr "Date et heure de fin"
 
@@ -718,6 +725,9 @@ msgstr "Anglais"
 
 msgid "Enter/exit text edit mode"
 msgstr "Entrée/Sortie mode de saisie de texte"
+
+msgid "Error encrypting file."
+msgstr "Erreur lors du chiffrement du fichier."
 
 msgid "Error exporting file!"
 msgstr "Erreur lors de l'export du fichier!"
@@ -1335,6 +1345,20 @@ msgstr ""
 msgid "Page Setup..."
 msgstr "Paramétrage de la page d'impression…"
 
+#, c-format
+msgid "Password for %s:"
+msgstr "Mot de passe pour %s :"
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr ""
+"Mot de passe avec lequel chiffrer ce document lors de l'enregistrement "
+"(laisser vide pour l'enregistrer sans chiffrement) :"
+
+msgid "Password unchanged."
+msgstr "Mot de passe inchangé."
+
 msgid "Paste (CTRL+v)"
 msgstr "Coller (CTRL+v)"
 
@@ -1471,6 +1495,9 @@ msgstr "Retirer..."
 
 msgid "Render document centered"
 msgstr "Centrer le document"
+
+msgid "Repeat the password:"
+msgstr "Répétez le mot de passe :"
 
 msgid "Replace "
 msgstr "Remplacer "
@@ -1615,6 +1642,12 @@ msgstr "Texte séparateur point virgule (CSV)..."
 
 msgid "Set Grid Border Width"
 msgstr "Définir l'épaisseur des bordures de la grille"
+
+msgid "Set Pass&word..."
+msgstr "Définir le mot de &passe..."
+
+msgid "Set Password"
+msgstr "Définir le mot de passe"
 
 msgid "Set Print Scale"
 msgstr "Définir l'échelle d'impression"
@@ -1795,6 +1828,15 @@ msgstr "L'organisateur d'informations hiérarchiques de forme libre"
 msgid "The browser could not open at least one link."
 msgstr "Le navigateur n'a pas pu ouvrir au moins un lien."
 
+msgid "The document will be encrypted when saved."
+msgstr "Le document sera chiffré lors de l'enregistrement."
+
+msgid "The document will be saved unencrypted."
+msgstr "Le document sera enregistré sans chiffrement."
+
+msgid "The passwords differ."
+msgstr "Les mots de passe sont différents."
+
 msgid "There are no images in the selection."
 msgstr "Il n'y a aucune image dans la sélection."
 
@@ -1967,6 +2009,10 @@ msgstr "Début de mot"
 
 msgid "Word Right"
 msgstr "Fin de mot"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr "Mot de passe incorrect (ou fichier corrompu). Mot de passe pour %s :"
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (attributs compris, pour OPML etc.)..."

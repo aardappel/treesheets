@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -674,6 +674,12 @@ msgstr "将所选单元格中的图像以 JPEG 格式嵌入 (减小数据大小)
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "将所选单元格中的图像以 PNG 格式嵌入 (默认)"
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr "保存时用密码加密当前文档"
+
+msgid "Encrypted document"
+msgstr "加密文档"
+
 msgid "End date and time"
 msgstr "结束日期和时间"
 
@@ -688,6 +694,9 @@ msgstr "English"
 
 msgid "Enter/exit text edit mode"
 msgstr "进入/退出文本编辑模式"
+
+msgid "Error encrypting file."
+msgstr "加密文件时出错。"
 
 msgid "Error exporting file!"
 msgstr "导出文件时出错！"
@@ -1258,6 +1267,18 @@ msgstr "PNG 文件 (*.png)|*.png|JPEG 文件 (*.jpg)|*.jpg|所有文件 (*.*)|*.
 msgid "Page Setup..."
 msgstr "页面设置..."
 
+#, c-format
+msgid "Password for %s:"
+msgstr "%s 的密码："
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr "保存时用于加密此文档的密码（留空则不加密保存）："
+
+msgid "Password unchanged."
+msgstr "密码未更改。"
+
 msgid "Paste (CTRL+v)"
 msgstr "粘贴 (CTRL+v)"
 
@@ -1385,6 +1406,9 @@ msgstr "移除(&R)..."
 
 msgid "Render document centered"
 msgstr "居中渲染文档"
+
+msgid "Repeat the password:"
+msgstr "再次输入密码："
 
 msgid "Replace "
 msgstr "替换 "
@@ -1521,6 +1545,12 @@ msgstr "分号分隔文本 (CSV)..."
 
 msgid "Set Grid Border Width"
 msgstr "设置网格边框宽度"
+
+msgid "Set Pass&word..."
+msgstr "设置密码(&W)..."
+
+msgid "Set Password"
+msgstr "设置密码"
 
 msgid "Set Print Scale"
 msgstr "设置打印缩放"
@@ -1696,6 +1726,15 @@ msgstr "自由形态的层级信息组织器"
 msgid "The browser could not open at least one link."
 msgstr "浏览器未能打开至少一个链接。"
 
+msgid "The document will be encrypted when saved."
+msgstr "文档将在保存时加密。"
+
+msgid "The document will be saved unencrypted."
+msgstr "文档将不加密保存。"
+
+msgid "The passwords differ."
+msgstr "两次输入的密码不一致。"
+
 msgid "There are no images in the selection."
 msgstr "所选内容中没有图像。"
 
@@ -1858,6 +1897,10 @@ msgstr "左一个单词"
 
 msgid "Word Right"
 msgstr "右一个单词"
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
+msgstr "密码错误（或文件已损坏）。%s 的密码："
 
 msgid "XML (attributes too, for OPML etc)..."
 msgstr "XML (也包含属性, 用于 OPML 等)..."

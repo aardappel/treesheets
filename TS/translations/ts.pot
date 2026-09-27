@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 21:53+0200\n"
+"POT-Creation-Date: 2026-09-27 13:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -666,6 +666,12 @@ msgstr ""
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
 
+msgid "Encrypt the current document with a password when saving it"
+msgstr ""
+
+msgid "Encrypted document"
+msgstr ""
+
 msgid "End date and time"
 msgstr ""
 
@@ -679,6 +685,9 @@ msgid "English"
 msgstr ""
 
 msgid "Enter/exit text edit mode"
+msgstr ""
+
+msgid "Error encrypting file."
 msgstr ""
 
 msgid "Error exporting file!"
@@ -1242,6 +1251,18 @@ msgstr ""
 msgid "Page Setup..."
 msgstr ""
 
+#, c-format
+msgid "Password for %s:"
+msgstr ""
+
+msgid ""
+"Password to encrypt this document with when saving (leave empty to save it "
+"unencrypted):"
+msgstr ""
+
+msgid "Password unchanged."
+msgstr ""
+
 msgid "Paste (CTRL+v)"
 msgstr ""
 
@@ -1368,6 +1389,9 @@ msgid "Remove..."
 msgstr ""
 
 msgid "Render document centered"
+msgstr ""
+
+msgid "Repeat the password:"
 msgstr ""
 
 msgid "Replace "
@@ -1502,6 +1526,12 @@ msgid "Semi-Colon delimited text (CSV)..."
 msgstr ""
 
 msgid "Set Grid Border Width"
+msgstr ""
+
+msgid "Set Pass&word..."
+msgstr ""
+
+msgid "Set Password"
 msgstr ""
 
 msgid "Set Print Scale"
@@ -1676,6 +1706,15 @@ msgstr ""
 msgid "The browser could not open at least one link."
 msgstr ""
 
+msgid "The document will be encrypted when saved."
+msgstr ""
+
+msgid "The document will be saved unencrypted."
+msgstr ""
+
+msgid "The passwords differ."
+msgstr ""
+
 msgid "There are no images in the selection."
 msgstr ""
 
@@ -1834,6 +1873,10 @@ msgid "Word Left"
 msgstr ""
 
 msgid "Word Right"
+msgstr ""
+
+#, c-format
+msgid "Wrong password (or the file is corrupted). Password for %s:"
 msgstr ""
 
 msgid "XML (attributes too, for OPML etc)..."

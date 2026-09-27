@@ -2,7 +2,7 @@
 #include "textruns.h"
 #include "bidi.h"
 
-static const auto TS_VERSION = 29;
+static const auto TS_VERSION = 30;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
 static const auto g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -47,6 +47,7 @@ enum { TS_TEXT = 0, TS_GRID = 1, TS_BOTH = 2, TS_NEITHER = 3 };
 
 enum {
     A_SAVEALL = 500,
+    A_SETPASSWORD,
     A_COLLAPSE,
     A_ENTERGRID,
     A_ENTERGRIDN,
@@ -371,6 +372,7 @@ struct treesheets {
     #include "cell.h"
     #include "grid.h"
     #include "selection.h"
+    #include "encryption.h"
     #include "document.h"
     #include "evaluator.h"
 

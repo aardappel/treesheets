@@ -1,9 +1,11 @@
-File format spec for TreeSheets .cts files, version 29. This should be enough for a programmer to write an importer/exporter.
+File format spec for TreeSheets .cts files, version 30. This should be enough for a programmer to write an importer/exporter.
 
 struct File     // not really a struct, i.e. no alignment, read an element at a time
 {
     char magic[4] = "TSFF";
-    char version = 29;
+    char version = 30;
+    uchar encryption; // only if version >= 30: 0 = none, 1 = password protected, see Encryption below
+    // With encryption, everything from here to the end of the file is encrypted (see Encryption).
     // TreeSheets saves the selection and the zoom level when the file is saved.
     // These three are single bytes (only present if version >= 21, and zoomlevel if version >= 23).
     uchar xs; // xs is the number of cells within the selection in x direction
@@ -22,6 +24,20 @@ struct File     // not really a struct, i.e. no alignment, read an element at a 
         uint cellcolor;  // only if version >= 24
         uint textcolor;  // only if version >= 24
     }
+}
+
+struct Encryption  // follows the encryption byte if it is 1
+{
+    uint nbblocks;    // Argon2id memory use in KiB
+    uint nbpasses;    // Argon2id passes (iterations)
+    uchar salt[16];   // Argon2id salt
+    uchar nonce[24];  // XChaCha20-Poly1305 nonce, new for every save
+    uchar mac[16];    // Poly1305 authentication tag
+    uchar data[];     // the rest of the file (xs onwards) encrypted with XChaCha20-Poly1305
+    // The 32 byte key is Argon2id(password as UTF-8, salt, nbblocks, nbpasses, 1 lane), as in
+    // RFC 9106. The additional authenticated data is the file header from magic up to and
+    // including nonce (54 bytes). Encryption is Monocypher's crypto_aead_lock, which is the
+    // same as libsodium's crypto_aead_xchacha20poly1305_ietf_encrypt_detached.
 }
 
 struct Image
