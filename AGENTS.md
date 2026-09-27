@@ -175,12 +175,19 @@ After changing UI strings, run the targets `update-pot` → `update-po` → (tra
 ## Git, CI and releases
 
 - Upstream is `aardappel/treesheets`, whose default and CI branch is `master`. Every push to
-  `master` builds all platforms, but only a release marker tag publishes a release. Pushing
-  `git push upstream <commit>:refs/tags/release-bugfix` (or `release-minor`, `release-major`)
-  bumps the last `vX.Y.Z` tag, builds with that version, releases it as `vX.Y.Z` with the commits
-  since the last release of the same level as notes, and deletes the marker. If the run fails,
-  re-push the marker with `-f`. Older releases are tagged with the CI run number; refer to those as
-  `refs/tags/<n>`, since numeric tags can collide with branch names.
+  `master` builds all platforms, but only a release marker tag publishes a release:
+  `git push upstream <commit>:refs/tags/release-bugfix` (or `release-minor`, `release-major`).
+  This pushes the tag without creating it locally, so the marker can be reused.
+- The `version` job in `build.yml` bumps the newest `vX.Y.Z` tag (2.3.6 becomes 2.3.7, 2.4.0 or
+  3.0.0), and all builds use that version. The release is tagged `vX.Y.Z` on the marked commit
+  (which must be on `master`) and becomes the latest release. Its notes list the commits since the
+  last release of the same level: any `v*` for bugfix, `v*.*.0` for minor, `v*.0.0` for major.
+  Then the marker is deleted. If the run fails, fix it and re-push the marker with `-f`.
+- Builds that are not released use the last release version. Keep version arguments quoted in
+  the Windows steps: PowerShell splits an unquoted `-DTREESHEETS_VERSION=2.0.0` at the first dot.
+- Releases before v2.0.0 are tagged with the CI run number. Refer to those as `refs/tags/<n>`,
+  since numeric tags can collide with branch names. The Debian epoch is 3 so that 2.x packages
+  upgrade them.
 - Commit messages: imperative, sentence-case subject that describes the user-visible effect
   ("Keep the cell under the pointer in place when hover zooming"), with a body that explains the why.
   "Fixes #N" in the message closes the issue on push to `master`.
