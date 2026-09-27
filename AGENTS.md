@@ -12,7 +12,7 @@ overview; this file covers what you need to change the code safely.
 | `TS/` | User-facing data: `docs/`, `examples/*.cts`, `images/`, `scripts/*.lobster`, `translations/`, `readme*.html` |
 | `cmake/` | CMake modules: `Lobster.cmake`, `WxPdfDoc.cmake`, `EmbedFiles.cmake`, `Localization.cmake`, `Packaging.cmake`, `UpdateScriptReference.cmake` |
 | `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon; Windows `.rc`/icon |
-| `.github/workflows/build.yml` | CI: Linux (x64, arm64), Windows MSVC (x64, arm64), macOS (arm64), then a release per push to `master` |
+| `.github/workflows/build.yml` | CI: Linux (x64, arm64), Windows MSVC (x64, arm64), macOS (arm64), then a release per release marker tag |
 | `.claude/skills/treesheets-agent/` | Skill and wire protocol for driving a running TreeSheets over its agent socket |
 
 ### Unity build: one translation unit
@@ -175,8 +175,12 @@ After changing UI strings, run the targets `update-pot` → `update-po` → (tra
 ## Git, CI and releases
 
 - Upstream is `aardappel/treesheets`, whose default and CI branch is `master`. Every push to
-  `master` builds all platforms and publishes a GitHub release tagged with the CI run number.
-  Numeric tags can collide with branch names, so refer to them as `refs/tags/<n>`.
+  `master` builds all platforms, but only a release marker tag publishes a release. Pushing
+  `git push upstream <commit>:refs/tags/release-bugfix` (or `release-minor`, `release-major`)
+  bumps the last `vX.Y.Z` tag, builds with that version, releases it as `vX.Y.Z` with the commits
+  since the last release of the same level as notes, and deletes the marker. If the run fails,
+  re-push the marker with `-f`. Older releases are tagged with the CI run number; refer to those as
+  `refs/tags/<n>`, since numeric tags can collide with branch names.
 - Commit messages: imperative, sentence-case subject that describes the user-visible effect
   ("Keep the cell under the pointer in place when hover zooming"), with a body that explains the why.
   "Fixes #N" in the message closes the issue on push to `master`.

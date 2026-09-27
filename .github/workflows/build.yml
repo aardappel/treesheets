@@ -4,13 +4,68 @@ on:
   push:
     branches:
       - master
+    tags:
+      - release-major
+      - release-minor
+      - release-bugfix
   pull_request:
     branches:
       - master
 
 jobs:
+  version:
+    name: Determine version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      notes: ${{ steps.version.outputs.notes }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - name: Determine version and release notes
+      id: version
+      run: |
+        last=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
+        if [ "$GITHUB_REF_TYPE" != tag ]; then
+          # Builds that are not released get the last version plus the run number
+          last=${last:-v0.0.0}
+          echo "version=${last#v}.$GITHUB_RUN_NUMBER" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        if ! git merge-base --is-ancestor HEAD origin/master; then
+          echo "::error::$GITHUB_REF_NAME must point to a commit on master"
+          exit 1
+        fi
+        # Release notes cover everything since the last release of the same level
+        if [ -z "$last" ]; then
+          version=2.0.0 base=
+        else
+          IFS=. read -r major minor bugfix <<< "${last#v}"
+          case ${GITHUB_REF_NAME#release-} in
+            major) version=$((major + 1)).0.0 pattern='v*.0.0' ;;
+            minor) version=$major.$((minor + 1)).0 pattern='v*.*.0' ;;
+            bugfix) version=$major.$minor.$((bugfix + 1)) pattern='v*' ;;
+          esac
+          base=$(git tag -l "$pattern" --sort=-v:refname | head -1)
+        fi
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        {
+          echo "notes<<EOF_NOTES"
+          if [ -n "$base" ]; then
+            echo "Changes since $base:"
+            echo
+            git log --no-merges --format='- %s (%h)' "$base..HEAD"
+          else
+            echo "First release with major.minor.bugfix version numbers."
+          fi
+          echo EOF_NOTES
+        } >> "$GITHUB_OUTPUT"
+        echo "Version $version, notes since ${base:-(none)}"
+
   build-linux:
     name: Build Linux (${{ matrix.arch }})
+    needs: version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -44,7 +99,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
         -DTREESHEETS_BUNDLE_WXWIDGETS=ON \
         -DwxUSE_SYS_LIBS=OFF \
-        -DTREESHEETS_VERSION=${{ github.run_number }}
+        -DTREESHEETS_VERSION=${{ needs.version.outputs.version }}
     - name: build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Remove epoch from .deb filename
@@ -61,6 +116,7 @@ jobs:
 
   build-windows:
     name: Build Windows (${{ matrix.arch }})
+    needs: version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -94,7 +150,7 @@ jobs:
         -G "Visual Studio 18 2026"
         -DCMAKE_BUILD_TYPE=Release
         -DTREESHEETS_BUNDLE_WXWIDGETS=ON
-        -DTREESHEETS_VERSION=${{ github.run_number }}
+        -DTREESHEETS_VERSION=${{ needs.version.outputs.version }}
         ${{ matrix.extra_flags }}
     - name: build and package
       run: cmake --build _build --config Release --target package -j
@@ -114,6 +170,7 @@ jobs:
 
   build-mac:
     name: Build Mac
+    needs: version
     runs-on: macos-latest
     env:
       minmac: 10.15
@@ -131,7 +188,7 @@ jobs:
     - name: Prepare Plist
       run: /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $minmac" platform/osx/Info.plist
     - name: cmake
-      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DTREESHEETS_BUNDLE_WXWIDGETS=ON -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ github.run_number }}
+      run: cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="$minmac" -DTREESHEETS_BUNDLE_WXWIDGETS=ON -DwxUSE_SYS_LIBS=OFF -DTREESHEETS_VERSION=${{ needs.version.outputs.version }}
     - name: Build and package TreeSheets
       run: cmake --build _build --target package -j4
     - name: Upload artifacts
@@ -144,8 +201,8 @@ jobs:
 
   release:
     name: Create release
-    if: github.event_name == 'push'
-    needs: [build-linux, build-windows, build-mac]
+    if: github.ref_type == 'tag'
+    needs: [version, build-linux, build-windows, build-mac]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -158,8 +215,11 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        tag: ${{ github.run_number }}
-        allowUpdates: true
-        omitBody: true
+        tag: v${{ needs.version.outputs.version }}
         commit: ${{ github.sha }}
+        body: ${{ needs.version.outputs.notes }}
         artifacts: "dist/*"
+    - name: Remove release marker tag
+      run: gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$GITHUB_REF_NAME"
+      env:
+        GH_TOKEN: ${{ github.token }}
