@@ -10,6 +10,7 @@ if("${TREESHEETS_VERSION}" STREQUAL "")
     string(TIMESTAMP TREESHEETS_VERSION "%y%m%d.%H%M" UTC)
     message(STATUS "Auto-generated version: ${TREESHEETS_VERSION}")
 else()
+    string(REGEX REPLACE "^v" "" TREESHEETS_VERSION "${TREESHEETS_VERSION}") # Tags are vX.Y.Z
     message(STATUS "User-defined version: ${TREESHEETS_VERSION}")
 endif()
 
