@@ -188,7 +188,9 @@ After changing UI strings, run the targets `update-pot` → `update-po` → (tra
 - The Linux job also makes an AppImage from the build of the `.deb`: it installs into an `AppDir`,
   links `docs`, `examples` and `scripts` next to the executable (TreeSheets looks there before the
   absolute install paths), and bundles the libraries with `linuxdeploy` and its GTK plugin. It is
-  built on `ubuntu-latest`, so it needs that glibc or newer. To test it without FUSE, run it with
+  built on the oldest supported Ubuntu LTS (`ubuntu-22.04`, glibc 2.35, GCC 11), because the AppImage
+  catalog (appimage.github.io) rejects AppImages that need a newer glibc. Move it on only when that
+  release reaches its end of support. To test it without FUSE, run it with
   `APPIMAGE_EXTRACT_AND_RUN=1` and `-i -p`.
 - Releases before v2.0.0 are tagged with the CI run number. Refer to those as `refs/tags/<n>`,
   since numeric tags can collide with branch names. The Debian epoch is 3 so that 2.x packages
