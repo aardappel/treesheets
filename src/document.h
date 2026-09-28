@@ -2381,15 +2381,16 @@ struct Document {
             }
 
             case wxID_PASTE:
-            case A_PASTETEXT: {
+            case A_PASTETEXT:
+            case A_PASTETSV: {
                 int pastemode = selected.PasteMode();
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
                 if (wxTheClipboard->Open()) {
                     if (wxTextDataObject tdo;
                         wxTheClipboard->GetData(tdo) && tdo.GetText().Len() > 0) {
-                        PasteOrDrop(tdo, pastemode, action == A_PASTETEXT);
-                    } else if (action == A_PASTETEXT) {
+                        PasteOrDrop(tdo, pastemode, action != wxID_PASTE, action == A_PASTETSV);
+                    } else if (action != wxID_PASTE) {
                         // Only text can be pasted as text.
                     } else if (wxFileDataObject fdo;
                                wxTheClipboard->GetData(fdo) && fdo.GetFilenames().GetCount() > 0) {
@@ -3047,7 +3048,7 @@ struct Document {
     }
 
     void PasteOrDrop(const wxTextDataObject &textdataobject, int pastemode = PASTE_FIT,
-                     bool astext = false) {
+                     bool astext = false, bool astsv = false) {
         if (textdataobject.GetText() != wxEmptyString) {
             Cell *cell = selected.ThinExpand(this);
             auto text = textdataobject.GetText();
@@ -3056,16 +3057,20 @@ struct Document {
                 cell->Paste(this, sys->cellclipboard.get(), selected, pastemode);
             } else {
                 const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
-                if (lines.size() == 1) {
+                if (lines.size() == 1 && !astsv) {
                     cell->AddUndo(this);
                     cell->ResetLayout();
                     PasteSingleText(cell, lines[0]);
-                } else if (lines.size() > 1) {
+                } else if (!lines.empty()) {
                     cell->parent->AddUndo(this);
                     cell->ResetLayout();
                     cell->grid = nullptr;
-                    sys->FillRows(cell->AddGrid(), lines, treesheets::System::CountCol(lines[0]), 0,
-                                  0);
+                    if (astsv) {
+                        cell->AddGrid(1, static_cast<int>(lines.size()))->CSVImport(lines, L'\t');
+                    } else {
+                        sys->FillRows(cell->AddGrid(), lines,
+                                      treesheets::System::CountCol(lines[0]), 0, 0);
+                    }
                     if (!cell->HasText()) {
                         cell->grid->MergeWithParent(cell->parent->grid, selected, this, pastemode);
                     }

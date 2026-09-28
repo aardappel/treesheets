@@ -209,6 +209,7 @@ enum {
     A_EXPCSV,
     A_PASTESTYLE,
     A_PASTETEXT,
+    A_PASTETSV,
     A_PREVFILE,
     A_NEXTFILE,
     A_IMAGER,

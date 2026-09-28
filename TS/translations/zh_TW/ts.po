@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:57+0200\n"
+"POT-Creation-Date: 2026-09-28 11:23+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -1291,11 +1291,19 @@ msgstr "僅貼上樣式（Ctrl + Shift + V）"
 msgid "Paste as &Text"
 msgstr "貼上為文字(&T)"
 
+msgid "Paste as Tab-Separated &Grid"
+msgstr "貼上為定位字元分隔的網格(&G)"
+
 msgid "Paste clipboard contents"
 msgstr "貼上剪貼簿內容"
 
 msgid "Paste file path"
 msgstr "貼上檔案路徑"
+
+msgid ""
+"Paste the text of the clipboard as a grid, with tabs separating the columns "
+"and lines separating the rows"
+msgstr "將剪貼簿中的文字貼上為網格，以定位字元分隔欄，以換行分隔列"
 
 msgid "Paste the text of the clipboard without the styles of the copied cells"
 msgstr "貼上剪貼簿中的文字，不帶所複製儲存格的樣式"

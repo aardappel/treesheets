@@ -483,6 +483,9 @@ struct TSFrame : wxFrame {
                      _("only sets the colors and style of the copied cell, and keeps the text"));
             MyAppend(editmenu, A_PASTETEXT, _("Paste as &Text"),
                      _("Paste the text of the clipboard without the styles of the copied cells"));
+            MyAppend(editmenu, A_PASTETSV, _("Paste as Tab-Separated &Grid") + "\tCTRL+ALT+V",
+                     _("Paste the text of the clipboard as a grid, with tabs separating the columns "
+                       "and lines separating the rows"));
             MyAppend(editmenu, A_COLLAPSE, _("Collapse Ce&lls") + "\tCTRL+L");
             editmenu->AppendSeparator();
 
