@@ -27,6 +27,7 @@ cmake_install.cmake
 CMakeLists.txt.user
 # Build directory for out-of-tree builds
 _build/
+_build_win32/
 
 TreeSheets/.vs
 
