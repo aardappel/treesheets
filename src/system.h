@@ -481,11 +481,14 @@ struct System {
     void RememberOpenFiles() const {
         cfg->Write("lastopenfile", frame->GetCurrentTab()->doc->filename);
         auto namedfiles = 0;
-        for(auto i: frame->notebook->GetPagesInDisplayOrder(frame->notebook->GetActiveTabCtrl())) {
-            auto *canvas = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i));
-            if (!canvas->doc->filename.IsEmpty()) {
-                cfg->Write(wxString::Format("lastopenfile_%d", namedfiles), canvas->doc->filename);
-                namedfiles++;
+        for (auto *tabctrl : frame->notebook->GetAllTabCtrls()) {
+            for (auto i : frame->notebook->GetPagesInDisplayOrder(tabctrl)) {
+                auto *canvas = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i));
+                if (!canvas->doc->filename.IsEmpty()) {
+                    cfg->Write(wxString::Format("lastopenfile_%d", namedfiles),
+                               canvas->doc->filename);
+                    namedfiles++;
+                }
             }
         }
 
