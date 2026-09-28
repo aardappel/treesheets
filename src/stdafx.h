@@ -45,6 +45,7 @@
 #endif
 
 #include <wx/aui/aui.h>
+#include <wx/aui/serializer.h>
 #include <wx/base64.h>
 #include <wx/bmpbndl.h>
 #include <wx/colordlg.h>

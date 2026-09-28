@@ -157,11 +157,49 @@ struct System {
         auto numfiles = static_cast<int>(cfg->Read("numopenfiles", static_cast<long>(0)));
         lastopenfile = cfg->Read("lastopenfile", "");
         int selection = -1;
+        vector<int> loaded;  // per remembered file: its page index, or -1
         loop(i, numfiles) {
             wxString filename;
             cfg->Read(wxString::Format("lastopenfile_%d", i), &filename);
-            if (!LoadDB(filename) && filename == lastopenfile) { selection = i; }
+            loaded.push_back(LoadDB(filename).IsEmpty()
+                                 ? static_cast<int>(frame->notebook->GetPageCount()) - 1
+                                 : -1);
+            if (filename == lastopenfile) { selection = loaded.back(); }
         }
+        // Restore the tab groups as saved by RememberOpenFiles().
+        struct : wxAuiBookDeserializer {
+            vector<int> loaded;
+            wxString layout;
+            vector<wxAuiTabLayoutInfo> LoadNotebookTabs(const wxString &) override {
+                vector<wxAuiTabLayoutInfo> tabs;
+                for (auto &group : wxSplit(layout, ';')) {
+                    vector<int> v;
+                    for (auto &n : wxSplit(group, ' ')) { v.push_back(wxAtoi(n)); }
+                    if (v.size() < 7) { continue; }
+                    auto page = [&](int file) {
+                        return file >= 0 && file < ssize(loaded) ? loaded[file] : -1;
+                    };
+                    auto &tab = tabs.emplace_back();
+                    tab.dock_direction = v[0];
+                    tab.dock_layer = v[1];
+                    tab.dock_row = v[2];
+                    tab.dock_pos = v[3];
+                    tab.dock_proportion = v[4];
+                    tab.dock_size = v[5];
+                    tab.active = max(page(v[6]), 0);
+                    for (auto f = v.begin() + 7; f != v.end(); f++) {
+                        if (auto p = page(*f); p >= 0) { tab.pages.push_back(p); }
+                    }
+                    if (tab.pages.empty() && tab.dock_direction != wxAUI_DOCK_CENTER) {
+                        tabs.pop_back();
+                    }
+                }
+                return tabs;
+            }
+        } deserializer;
+        deserializer.loaded = std::move(loaded);
+        deserializer.layout = cfg->Read("tablayout", "");
+        frame->notebook->LoadLayout("notebook", deserializer);
 
         if (!filename.IsEmpty()) {
             LoadDB(filename);
@@ -479,20 +517,53 @@ struct System {
     }
 
     void RememberOpenFiles() const {
+        auto *nb = frame->notebook;
         cfg->Write("lastopenfile", frame->GetCurrentTab()->doc->filename);
+        // The tab groups as "direction layer row position proportion size active file...;" for
+        // each group, where active and the files are numbers of the remembered files.
+        struct : wxAuiBookSerializer {
+            vector<int> saved;  // per page: its number among the remembered files, or -1
+            vector<bool> active;
+            wxString layout;
+            void BeforeSaveNotebook(const wxString &) override {}
+            void SaveNotebookTabControl(const wxAuiTabLayoutInfo &tab) override {
+                auto pages = tab.pages;  // empty means all pages in order
+                if (pages.empty()) { loop(i, saved.size()) pages.push_back(i); }
+                wxString files;
+                auto activefile = -1;
+                for (auto i : pages) {
+                    if (saved[i] < 0) { continue; }
+                    files << " " << saved[i];
+                    if (active[i]) { activefile = saved[i]; }
+                }
+                if (files.IsEmpty() && tab.dock_direction != wxAUI_DOCK_CENTER) { return; }
+                layout << wxString::Format("%d %d %d %d %d %d %d", tab.dock_direction,
+                                           tab.dock_layer, tab.dock_row, tab.dock_pos,
+                                           tab.dock_proportion, tab.dock_size, activefile)
+                       << files << ";";
+            }
+        } serializer;
+        serializer.saved.resize(nb->GetPageCount(), -1);
+        serializer.active.resize(nb->GetPageCount());
         auto namedfiles = 0;
-        for (auto *tabctrl : frame->notebook->GetAllTabCtrls()) {
-            for (auto i : frame->notebook->GetPagesInDisplayOrder(tabctrl)) {
-                auto *canvas = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i));
+        for (auto *tabctrl : nb->GetAllTabCtrls()) {
+            // Not tab.active in SaveNotebookTabControl(): wx 3.3.2 saves the position in the
+            // group there, not the page index.
+            auto active = nb->GetPageIndex(tabctrl->GetWindowFromIdx(tabctrl->GetActivePage()));
+            if (active != wxNOT_FOUND) { serializer.active[active] = true; }
+            for (auto i : nb->GetPagesInDisplayOrder(tabctrl)) {
+                auto *canvas = dynamic_cast<TSCanvas *>(nb->GetPage(i));
                 if (!canvas->doc->filename.IsEmpty()) {
                     cfg->Write(wxString::Format("lastopenfile_%d", namedfiles),
                                canvas->doc->filename);
-                    namedfiles++;
+                    serializer.saved[i] = namedfiles++;
                 }
             }
         }
+        nb->SaveLayout("notebook", serializer);
 
         cfg->Write("numopenfiles", namedfiles);
+        cfg->Write("tablayout", serializer.layout);
         cfg->Flush();
     }
 
