@@ -11,7 +11,7 @@ overview; this file covers what you need to change the code safely.
 | `src/` | All source code (≈14k lines, almost entirely headers) |
 | `TS/` | User-facing data: `docs/`, `examples/*.cts`, `images/`, `scripts/*.lobster`, `translations/`, `readme*.html` |
 | `cmake/` | CMake modules: `Lobster.cmake`, `WxPdfDoc.cmake`, `EmbedFiles.cmake`, `Localization.cmake`, `Packaging.cmake`, `UpdateScriptReference.cmake` |
-| `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon; Windows `.rc`/icon |
+| `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon, `toolchain-mingw64.cmake`; Windows `.rc`/icon |
 | `.github/workflows/build.yml` | CI: Linux (x64, arm64; .deb and AppImage), Windows MSVC (x64, arm64), macOS (universal), then a release per release marker tag |
 | `.claude/skills/treesheets-agent/` | Skill and wire protocol for driving a running TreeSheets over its agent socket |
 
@@ -106,7 +106,8 @@ On Linux, the build links GTK3/Pango directly when `gtk+-3.0` is found (`TREESHE
 
 **Windows cross-check from Linux:** Windows CI uses MSVC, and it catches problems that
 Linux GCC/Clang does not, such as Windows macro clashes and missing transitive includes (e.g.
-`<span>`). Before pushing, build with MinGW as well:
+`<span>`). Before pushing, build with MinGW as well (on macOS, use Homebrew's `mingw-w64` with
+`platform/osx/toolchain-mingw64.cmake`):
 
 ```sh
 cmake -S . -B _build_win32 -DCMAKE_TOOLCHAIN_FILE=platform/linux/toolchain-mingw64.cmake \
