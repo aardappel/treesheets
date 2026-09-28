@@ -268,6 +268,8 @@ struct AgentServer : wxEvtHandler {
         if (sock == listener.get()) {
             auto *client = listener->Accept(false);
             if (client == nullptr) return;
+            // Without this, Write() may send only part of a large reply and drop the rest.
+            client->SetFlags(wxSOCKET_WAITALL_WRITE);
             client->SetEventHandler(*this);
             client->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
             client->Notify(true);
