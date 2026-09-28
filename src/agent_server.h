@@ -168,9 +168,15 @@ struct AgentJson {
 
 #define TS_AGENT_SERVER 1
 
+struct AgentConn {
+    std::string in;   // received, not yet complete request lines
+    std::string out;  // replies not yet taken by the socket, from outpos on
+    size_t outpos {0};
+};
+
 struct AgentServer : wxEvtHandler {
     unique_ptr<wxSocketServer> listener;
-    std::map<wxSocketBase *, std::string> conns;  // socket -> pending input buffer
+    std::map<wxSocketBase *, AgentConn> conns;
     std::string token;
     wxString endpoint_path;  // the socket itself, or on Windows the file holding the port
     wxString token_path;
@@ -247,6 +253,8 @@ struct AgentServer : wxEvtHandler {
             }
             pf.Close();
         #endif
+        // wx listens with a backlog of 5, so more clients connecting at once were refused.
+        listen(listener->GetSocket(), SOMAXCONN);
         listener->SetEventHandler(*this);
         listener->SetNotify(wxSOCKET_CONNECTION_FLAG);
         listener->Notify(true);
@@ -266,40 +274,58 @@ struct AgentServer : wxEvtHandler {
         auto *sock = event.GetSocket();
 
         if (sock == listener.get()) {
-            auto *client = listener->Accept(false);
-            if (client == nullptr) return;
-            // Without this, Write() may send only part of a large reply and drop the rest.
-            client->SetFlags(wxSOCKET_WAITALL_WRITE);
-            client->SetEventHandler(*this);
-            client->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
-            client->Notify(true);
-            conns[client] = {};
+            // One event can stand for several clients that connected at the same time.
+            while (auto *client = listener->Accept(false)) {
+                // Write() must not wait for the socket to take a large reply: that runs a nested
+                // event loop, which is slow and handles other requests in the middle of the
+                // reply. Flush() sends what fits, and the rest on the next output event.
+                client->SetFlags(wxSOCKET_NOWAIT_WRITE);
+                client->SetEventHandler(*this);
+                client->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_OUTPUT_FLAG | wxSOCKET_LOST_FLAG);
+                client->Notify(true);
+                conns[client] = {};
+            }
             return;
         }
 
         auto it = conns.find(sock);
         if (it == conns.end()) return;
+        auto &conn = it->second;
 
-        if (event.GetSocketEvent() == wxSOCKET_LOST) {
-            sock->Destroy();
-            conns.erase(it);
-            return;
+        switch (event.GetSocketEvent()) {
+            case wxSOCKET_LOST:
+                sock->Destroy();
+                conns.erase(it);
+                return;
+            case wxSOCKET_OUTPUT: Flush(sock, conn); return;
+            default: break;
         }
 
         char buf[4096];
         sock->Read(buf, sizeof(buf));
         auto n = sock->LastCount();
         if (n == 0) return;
-        it->second.append(buf, n);
+        conn.in.append(buf, n);
 
         size_t nl;
-        while ((nl = it->second.find('\n')) != std::string::npos) {
-            std::string line = it->second.substr(0, nl);
-            it->second.erase(0, nl + 1);
-            std::string reply = HandleLine(line);
-            reply += '\n';
-            sock->Write(reply.data(), reply.size());
+        while ((nl = conn.in.find('\n')) != std::string::npos) {
+            std::string line = conn.in.substr(0, nl);
+            conn.in.erase(0, nl + 1);
+            conn.out += HandleLine(line);
+            conn.out += '\n';
         }
+        Flush(sock, conn);
+    }
+
+    static void Flush(wxSocketBase *sock, AgentConn &conn) {
+        while (conn.outpos < conn.out.size()) {
+            sock->Write(conn.out.data() + conn.outpos, conn.out.size() - conn.outpos);
+            auto n = sock->LastWriteCount();
+            if (n == 0) return;  // the socket is full
+            conn.outpos += n;
+        }
+        conn.out.clear();
+        conn.outpos = 0;
     }
 
     std::string HandleLine(const std::string &line) {

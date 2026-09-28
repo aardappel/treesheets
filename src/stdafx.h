@@ -30,6 +30,7 @@
     #include <wx/msw/dc.h>
     #include <wx/msw/regconf.h>
 #else
+    #include <sys/socket.h>
     #include <unistd.h>
     #ifdef __APPLE__
         #include <sys/random.h>
