@@ -926,7 +926,7 @@ struct Grid {
         doc->canvas->Refresh();
     }
 
-    void ColorChange(Document *doc, int which, uint color, const Selection &sel) {
+    void ColorChange(Document *doc, int which, uint color, const Selection &sel, bool recursive) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         auto range = which == A_TEXTCOLOR && sel.TextEdit() && sel.cursor != sel.cursorend;
@@ -935,7 +935,7 @@ struct Grid {
                 c->text.SetRunColor(color, sel.cursor, sel.cursorend);
                 c->text.WasEdited();
             } else {
-                c->ColorChange(doc, which, color);
+                c->ColorChange(doc, which, color, recursive);
             }
         }
         doc->UpdateLayout();

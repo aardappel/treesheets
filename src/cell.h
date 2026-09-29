@@ -660,7 +660,7 @@ struct Cell {
         if (text.image != nullptr) { text.image->trefc++; }
     }
 
-    void ColorChange(Document *doc, int which, uint color) {
+    void ColorChange(Document *doc, int which, uint color, bool recursive) {
         switch (which) {
             case A_CELLCOLOR:
                 if (IsTag(doc)) {
@@ -682,6 +682,9 @@ struct Cell {
                 break;
         }
         text.WasEdited();
+        if (recursive && grid) {
+            for (auto &c : grid->cells) c->ColorChange(doc, which, color, true);
+        }
     }
 
     void SetGridTextLayout(int ds, bool vert, bool noset) {

@@ -3282,7 +3282,8 @@ struct Document {
             case A_TEXTCOLOR: sys->lasttextcolor = col; break;
             case A_BORDCOLOR: sys->lastbordcolor = col; break;
         }
-        selected.grid->ColorChange(this, which, col, selected);
+        // With Shift held, also color everything inside the selected cells.
+        selected.grid->ColorChange(this, which, col, selected, wxGetKeyState(WXK_SHIFT));
     }
 
     static Image *NewImage(double scale, vector<uint8_t> &&data, char type) {
