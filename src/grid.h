@@ -1193,7 +1193,8 @@ struct Grid {
         return nullptr;
     }
 
-    Selection HierarchySwap(const wxString &tag) {
+    // The tag is a copy, since the cell it comes from may be merged into another and deleted.
+    Selection HierarchySwap(wxString tag) {
         Cell *selcell = nullptr;
         bool done = false;
     lookformore:
