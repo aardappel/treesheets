@@ -196,16 +196,19 @@ BUILTIN(delete, "position,size", "I}:2I}:2", "",
     si->Delete(p.x, p.y, s.x, s.y);
 }
 
-BUILTIN(set_background_color, "color", "F}:4", "", "sets the background color of the current cell")
-(VM &, double4 color) {
+BUILTIN(set_background_color, "color,recursive", "F}:4B?", "",
+    "sets the background color of the current cell. with recursive, also of all cells nested "
+    "inside it")
+(VM &, double4 color, iint recursive) {
     auto col = ToVec<float3>(color);
-    si->SetBackgroundColor(*(uint32_t *)quantizec(col, 0.0f).data());
+    si->SetBackgroundColor(*(uint32_t *)quantizec(col, 0.0f).data(), recursive != 0);
 }
 
-BUILTIN(set_text_color, "color", "F}:4", "", "sets the text color of the current cell")
-(VM &, double4 color) {
+BUILTIN(set_text_color, "color,recursive", "F}:4B?", "",
+    "sets the text color of the current cell. with recursive, also of all cells nested inside it")
+(VM &, double4 color, iint recursive) {
     auto col = ToVec<float3>(color);
-    si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data());
+    si->SetTextColor(*(uint32_t *)quantizec(col, 0.0f).data(), recursive != 0);
 }
 
 BUILTIN(set_text_filtered, "filtered", "B", "", "sets the text filtered of the current cell")
@@ -218,10 +221,12 @@ BUILTIN(is_text_filtered, "", "", "B", "whether the text of the current cell is 
     return (iint)si->IsTextFiltered();
 }
 
-BUILTIN(set_border_color, "color", "F}:4", "", "sets the border color of the current grid")
-(VM &, double4 color) {
+BUILTIN(set_border_color, "color,recursive", "F}:4B?", "",
+    "sets the border color of the current grid. with recursive, also of all grids nested "
+    "inside it")
+(VM &, double4 color, iint recursive) {
     auto col = ToVec<float3>(color);
-    si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data());
+    si->SetBorderColor(*(uint32_t *)quantizec(col, 0.0f).data(), recursive != 0);
 }
 
 BUILTIN(get_relative_size, "", "", "I", "returns the relative text size of the current cell")

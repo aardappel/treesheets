@@ -70,10 +70,10 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.delete</b>(position<font color="#666666">: int2</font>, size<font color="#666666">: int2</font>)</tt></td><td class="a">clears the cells denoted by position/size. also removes columns/rows if they become completely empty, or the entire grid.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_background_color</b>(color<font color="#666666">: float4</font>)</tt></td><td class="a">sets the background color of the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_background_color</b>(color<font color="#666666">: float4</font>, recursive<font color="#666666">: bool</font> = false)</tt></td><td class="a">sets the background color of the current cell. with recursive, also of all cells nested inside it</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_text_color</b>(color<font color="#666666">: float4</font>)</tt></td><td class="a">sets the text color of the current cell</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_text_color</b>(color<font color="#666666">: float4</font>, recursive<font color="#666666">: bool</font> = false)</tt></td><td class="a">sets the text color of the current cell. with recursive, also of all cells nested inside it</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text_filtered</b>(filtered<font color="#666666">: bool</font>)</tt></td><td class="a">sets the text filtered of the current cell</td>
@@ -82,7 +82,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.is_text_filtered</b>() -> <font color="#666666">int</font></tt></td><td class="a">whether the text of the current cell is filtered</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_border_color</b>(color<font color="#666666">: float4</font>)</tt></td><td class="a">sets the border color of the current grid</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_border_color</b>(color<font color="#666666">: float4</font>, recursive<font color="#666666">: bool</font> = false)</tt></td><td class="a">sets the border color of the current grid. with recursive, also of all grids nested inside it</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_relative_size</b>() -> <font color="#666666">int</font></tt></td><td class="a">returns the relative text size of the current cell</td>

@@ -35,11 +35,11 @@ struct ScriptInterface {
     virtual void InsertColumn(int x) = 0;
     virtual void InsertRow(int y) = 0;
     virtual void Delete(int x, int y, int xs, int ys) = 0;
-    virtual void SetBackgroundColor(uint32_t col) = 0;
-    virtual void SetTextColor(uint32_t col) = 0;
+    virtual void SetBackgroundColor(uint32_t col, bool recursive) = 0;
+    virtual void SetTextColor(uint32_t col, bool recursive) = 0;
     virtual void SetTextFiltered(bool filtered) = 0;
     virtual bool IsTextFiltered() = 0;
-    virtual void SetBorderColor(uint32_t col) = 0;
+    virtual void SetBorderColor(uint32_t col, bool recursive) = 0;
     virtual int GetRelativeSize() = 0;
     virtual void SetRelativeSize(int s) = 0;
     virtual void SetStyle(int s) = 0;
