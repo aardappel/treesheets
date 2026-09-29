@@ -12,9 +12,16 @@ else()
 endif()
 set(dump "${scripts_dir}/builtin_functions_reference.html")
 
-# The dump is written into the resolved scripts data directory (see above).
-file(REMOVE_RECURSE "${scripts_dir}")
-file(COPY "${SCRIPTS_SRC}/" DESTINATION "${scripts_dir}")
+# The dump is written into the resolved scripts data directory (see above). An existing one
+# (e.g. installed with the Lobster modules that scripts need) is kept, and only a directory
+# created here is removed again.
+if(EXISTS "${scripts_dir}")
+    set(created_scripts_dir FALSE)
+    file(REMOVE "${dump}")
+else()
+    set(created_scripts_dir TRUE)
+    file(COPY "${SCRIPTS_SRC}/" DESTINATION "${scripts_dir}")
+endif()
 
 # -d implies the single-instance check is skipped (src/tsapp.h), so this always runs its own
 # instance rather than forwarding to one already running for this user.
@@ -25,4 +32,8 @@ if(NOT EXISTS "${dump}")
     message(FATAL_ERROR "TreeSheets did not produce ${dump} (a display is required)")
 endif()
 file(COPY_FILE "${dump}" "${OUTPUT}")
-file(REMOVE_RECURSE "${scripts_dir}")
+if(created_scripts_dir)
+    file(REMOVE_RECURSE "${scripts_dir}")
+else()
+    file(REMOVE "${dump}")
+endif()
