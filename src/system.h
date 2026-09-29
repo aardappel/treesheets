@@ -16,6 +16,7 @@ struct System {
     Evaluator evaluator;
     wxString clipboardcopy;
     unique_ptr<Cell> cellclipboard;
+    int cellclipboardcolwidth {0};  // Column width of a single copied cell.
     vector<unique_ptr<Image>> imagelist;
     vector<int> loadimageids;
     uchar versionlastloaded {0};

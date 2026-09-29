@@ -552,8 +552,10 @@ struct Cell {
         return grid ? grid->Eval(ev) : text.Eval(ev);
     }
 
+    // colwidth is the column width original was copied from, which the column of this cell
+    // grows to if it is narrower.
     void Paste(Document *document, const Cell *original, Selection &selection,
-               int pastemode = PASTE_FIT) {
+               int pastemode = PASTE_FIT, int colwidth = 0) {
         parent->AddUndo(document);
         ResetLayout();
         if (!HasText() || !selection.TextEdit()) { note = original->note; }
@@ -566,6 +568,10 @@ struct Cell {
             text.Insert(document, original->text.t, selection, false, &original->text);
         }
         if (original->text.image != nullptr) { text.image = original->text.image; }
+        if (colwidth > 0 && (!original->grid || HasText())) {
+            auto &width = parent->grid->colwidths[parent->grid->FindCell(this).x];
+            width = std::max(width, colwidth);
+        }
         if (original->grid) {
             shared_ptr<Grid> gridclone = make_shared<Grid>(original->grid->xs, original->grid->ys);
             gridclone->cell = this;

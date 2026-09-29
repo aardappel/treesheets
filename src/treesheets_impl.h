@@ -3,6 +3,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     Cell *current = nullptr;
     Cell *lowestcommonancestor = nullptr;
     unique_ptr<Cell> script_clipboard;
+    int script_clipboard_colwidth {0};
     // Set while ScriptRun() is executing. A script that opens a modal dialog (e.g. Save As)
     // runs a nested event loop, which can deliver another agent request or menu action; a
     // nested ScriptRun() would reset document/current underneath the outer script.
@@ -442,7 +443,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             .utf8_string();
     }
 
-    void CopyCurrent() override { script_clipboard = current->Clone(nullptr); }
+    void CopyCurrent() override {
+        script_clipboard = current->Clone(nullptr);
+        script_clipboard_colwidth = current->ColWidth();
+    }
 
     bool PasteIntoCurrent() override {
         if (!script_clipboard || current->parent == nullptr) return false;
@@ -454,7 +458,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         auto *parent = current->parent;
         int x = s.x, y = s.y;
         if (lowestcommonancestor == current) { lowestcommonancestor = parent; }
-        current->Paste(document, script_clipboard.get(), s);
+        current->Paste(document, script_clipboard.get(), s, PASTE_FIT, script_clipboard_colwidth);
         current = parent->grid->C(x, y).get();
         return true;
     }

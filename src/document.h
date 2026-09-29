@@ -663,7 +663,7 @@ struct Document {
         if (targetcell != nullptr) {
             auto is_parent = targetcell->IsParentOf(cell);
             auto *targetcell_parent = targetcell->parent;  // targetcell may be deleted.
-            targetcell->Paste(this, cell, begindrag, pastemode);
+            targetcell->Paste(this, cell, begindrag, pastemode, cell->ColWidth());
             // If is_parent, cell has been deleted already.
             if (isctrlshiftdrag == 1 && !is_parent) {
                 cell->parent->AddUndo(this);
@@ -708,6 +708,11 @@ struct Document {
         return new wxHTMLDataObject(html);
     }
 
+    void CopyToCellClipboard(Cell *c) {
+        sys->cellclipboard = c != nullptr ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
+        sys->cellclipboardcolwidth = c != nullptr ? c->ColWidth() : 0;
+    }
+
     void Copy(int action) {
         if (selected.grid == nullptr || selected.Thin()) { return; }
         auto *c = selected.GetCell();
@@ -715,8 +720,7 @@ struct Document {
 
         switch (action) {
             case A_DRAGANDDROP: {
-                sys->cellclipboard =
-                    c != nullptr ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
+                CopyToCellClipboard(c);
                 wxDataObjectComposite dragdata;
                 if (c != nullptr && !c->text.t && c->text.image != nullptr) {
                     auto *image = c->text.image;
@@ -754,8 +758,7 @@ struct Document {
             case wxID_COPY:
             case A_COPYWI:
             default: {
-                sys->cellclipboard =
-                    c != nullptr ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
+                CopyToCellClipboard(c);
                 auto clipboarddata = make_unique<wxDataObjectComposite>();
                 auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
                                                       currentdrawroot);
@@ -2408,7 +2411,8 @@ struct Document {
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
                 } else if (sys->cellclipboard && action == wxID_PASTE) {
-                    cell->Paste(this, sys->cellclipboard.get(), selected, pastemode);
+                    cell->Paste(this, sys->cellclipboard.get(), selected, pastemode,
+                                sys->cellclipboardcolwidth);
                     UpdateLayout();
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
@@ -3054,7 +3058,8 @@ struct Document {
             auto text = textdataobject.GetText();
             // The cells copied last, with their styles, unless only their text is wanted.
             if (!astext && sys->clipboardcopy == text && sys->cellclipboard) {
-                cell->Paste(this, sys->cellclipboard.get(), selected, pastemode);
+                cell->Paste(this, sys->cellclipboard.get(), selected, pastemode,
+                            sys->cellclipboardcolwidth);
             } else {
                 const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
                 if (lines.size() == 1 && !astsv) {

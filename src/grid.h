@@ -854,6 +854,8 @@ struct Grid {
                 p->C(tx, ty)->parent = p->cell;
             }
         }
+        // Columns keep the wider of their own and the pasted width.
+        loop(x, xs) p->colwidths[sel.x + x] = std::max(p->colwidths[sel.x + x], colwidths[x]);
         sel.grid = p;
         sel.xs += xs - 1;
         sel.ys += ys - 1;
