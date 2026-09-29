@@ -1095,7 +1095,10 @@ struct Document {
             }
         }
 
-        dc.SetClippingRegion(scrollx, scrolly, maxx - scrollx, maxy - scrolly);
+        // Scaled, maxx/maxy are in document units, and the whole viewport is redrawn anyway.
+        if (currentviewscale == 1.0) {
+            dc.SetClippingRegion(scrollx, scrolly, maxx - scrollx, maxy - scrolly);
+        }
         dc.SetBackground(wxBrush(LightColor(Background())));
         dc.Clear();
 
