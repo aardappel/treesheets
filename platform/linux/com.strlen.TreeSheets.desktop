@@ -13,3 +13,8 @@ StartupWMClass=TreeSheets
 MimeType=application/x-treesheets;
 Categories=Office;Utility;Spreadsheet;TextEditor;
 Keywords=mindmaps;knowledge;organizer;organiser;information;brainstorming;pim;database;todo;
+Actions=agent;
+
+[Desktop Action agent]
+Name=New Window with Agent Socket
+Exec=TreeSheets -i -a %f
