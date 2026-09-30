@@ -14,9 +14,9 @@ It's off by default, only listens locally, and the socket is authenticated
 with a random, per-launch token file readable only by you. It's available on
 macOS, Linux and Windows:
 
-- **macOS and Linux:** a Unix domain socket, `/tmp/TreeSheets-agent-<user>.sock`.
+- **macOS and Linux:** a Unix domain socket, `/tmp/TreeSheets-agent-<user>-<pid>.sock`.
 - **Windows:** a TCP socket on `127.0.0.1`, on a port chosen at each launch
-  and written to `%TEMP%\TreeSheets-agent-<user>.port`. This also works for
+  and written to `%TEMP%\TreeSheets-agent-<user>-<pid>.port`. This also works for
   the Windows build running under Wine on Linux.
 
 In both cases the token is in the same path with `.token` appended. If `-a`
