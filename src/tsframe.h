@@ -1518,9 +1518,7 @@ struct TSFrame : wxFrame {
                 break;
             case A_INVERTRENDER:
                 Toggle("followdarkmode", sys->followdarkmode);
-                sys->colormask = (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark())
-                                     ? 0x00FFFFFF
-                                     : 0;
+                sys->UpdatePens();
                 Refresh();
                 break;
             case A_FULLSCREEN:
@@ -1831,8 +1829,6 @@ struct TSFrame : wxFrame {
     }
 
     void OnSysColourChanged(wxSysColourChangedEvent &se) {
-        sys->colormask =
-            (sys->followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
         sys->UpdatePens();
         UpdateToolbarIcons();
         se.Skip();

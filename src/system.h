@@ -132,10 +132,10 @@ struct System {
         #endif
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
-        colormask = (followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
     }
 
     void UpdatePens() {
+        colormask = (followdarkmode && wxSystemSettings::GetAppearance().IsDark()) ? 0x00FFFFFF : 0;
         pen_tinygridlines = wxPen(wxColour(LightColor(0xf2dcd8UL)));
         pen_gridlines = wxPen(wxColour(LightColor(0xe5b7b0UL)));
         static const wxDash glpattern[] = {1, 3};
