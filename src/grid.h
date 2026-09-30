@@ -846,6 +846,14 @@ struct Grid {
         if (insertcolumns > 0) { p->InsertCells(sel.x + xs - insertcolumns, -1, insertcolumns, 0); }
         if (sel.x + xs > p->xs) { p->InsertCells(p->xs, -1, sel.x + xs - p->xs, 0); }
         if (sel.y + ys > p->ys) { p->InsertCells(-1, p->ys, 0, sel.y + ys - p->ys); }
+        // Columns that are empty (such as those of a new grid, or inserted above) take the pasted
+        // width, others keep the wider of their own and the pasted width.
+        loop(x, xs) {
+            auto &width = p->colwidths[sel.x + x];
+            bool empty = true;
+            loop(y, p->ys) empty = empty && isempty(p->C(sel.x + x, y).get());
+            width = empty ? colwidths[x] : std::max(width, colwidths[x]);
+        }
         foreachcell(c) {
             int tx = x + sel.x;
             int ty = y + sel.y;
@@ -854,8 +862,6 @@ struct Grid {
                 p->C(tx, ty)->parent = p->cell;
             }
         }
-        // Columns keep the wider of their own and the pasted width.
-        loop(x, xs) p->colwidths[sel.x + x] = std::max(p->colwidths[sel.x + x], colwidths[x]);
         sel.grid = p;
         sel.xs += xs - 1;
         sel.ys += ys - 1;
