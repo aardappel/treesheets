@@ -266,6 +266,7 @@ enum {
     A_COPYCT,
     A_COPYBM,
     A_COPYWI,
+    A_FLATCOPY,
     A_MINISIZE,
     A_CUSTKEY,
     A_SETLANG,

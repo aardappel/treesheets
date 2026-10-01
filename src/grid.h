@@ -722,7 +722,7 @@ struct Grid {
     };
 
     wxString ConvertToText(const Selection &sel, int indent, int format, Document *doc,
-                           bool inheritstyle, Cell *root) {
+                           bool inheritstyle, Cell *root, bool flat = false) {
         wxString r;
         const int root_grid_spacing = 2;  // Can't be adjusted in editor, so use a default.
         const int font_size = 14 - indent / 2;
@@ -743,11 +743,21 @@ struct Grid {
                   wxString::Format("<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
                                    grid_border_width, font_size),
                   wxString::Format("<ul style=\"font-size: %dpt;\">\n", font_size));
+        vector<bool> tinycols(sel.xs, flat), tinyrows(sel.ys, flat);
+        if (flat) {
+            foreachcellinsel(c, sel) {
+                tinycols[x - sel.x] = tinycols[x - sel.x] && c->tiny;
+                tinyrows[y - sel.y] = tinyrows[y - sel.y] && c->tiny;
+            }
+        }
         foreachcellinsel(c, sel) {
-            if (x == sel.x) { Formatter(r, format, indent, "<row>\n", "<tr>\n", ""); }
-            r.Append(c->ToText(indent, sel, format, doc, inheritstyle, root));
+            bool tinyrow = tinyrows[y - sel.y];
+            if (x == sel.x && !tinyrow) { Formatter(r, format, indent, "<row>\n", "<tr>\n", ""); }
+            if (!tinyrow && !tinycols[x - sel.x]) {
+                r.Append(c->ToText(indent, sel, format, doc, inheritstyle, root, flat));
+            }
             if (format == A_EXPCSV) { r.Append(x == sel.x + sel.xs - 1 ? '\n' : ','); }
-            if (x == sel.x + sel.xs - 1) {
+            if (x == sel.x + sel.xs - 1 && !tinyrow) {
                 Formatter(r, format, indent, "</row>\n", "</tr>\n", "");
             }
         }

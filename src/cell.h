@@ -301,8 +301,8 @@ struct Cell {
     }
 
     wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle,
-                    Cell *root) {
-        wxString str = text.ToText(indent, sel, format);
+                    Cell *root, bool flat = false) {
+        wxString str = flat && tiny ? wxString() : text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             this != root && !str.IsEmpty()) {
             wxString spanstyle = "white-space: pre-wrap;";
@@ -322,7 +322,9 @@ struct Cell {
         }
         if (sel.cursor != sel.cursorend) { return str; }
         str.Append(LINE_SEPARATOR);
-        if (grid) { str.Append(grid->ToText(indent, sel, format, doc, inheritstyle, root)); }
+        if (grid && !flat) {
+            str.Append(grid->ToText(indent, sel, format, doc, inheritstyle, root));
+        }
         if (format == A_EXPXML) {
             str.Prepend(">");
             if (text.relsize != 0) {

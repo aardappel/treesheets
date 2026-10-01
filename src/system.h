@@ -59,6 +59,7 @@ struct System {
     bool followdarkmode {false};
     bool innerbordercolor {false};
     bool restrictview {false};
+    bool flatcopy {false};
     bool filtershowrows {false};
     bool filtershowsubgrids {false};
     uint colormask {0};
@@ -114,6 +115,7 @@ struct System {
         cfg->Read("fswatch", &fswatch, fswatch);
         cfg->Read("casesensitivesearch", &casesensitivesearch, casesensitivesearch);
         cfg->Read("restrictview", &restrictview, restrictview);
+        cfg->Read("flatcopy", &flatcopy, flatcopy);
         cfg->Read("filtershowrows", &filtershowrows, filtershowrows);
         cfg->Read("filtershowsubgrids", &filtershowsubgrids, filtershowsubgrids);
         cfg->Read("defaultfontsize", &g_deftextsize_default, g_deftextsize_default);

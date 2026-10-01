@@ -729,6 +729,10 @@ struct TSFrame : wxFrame {
         optmenu->Check(A_FSWATCH, sys->fswatch);
         optmenu->AppendSubMenu(defaultimagemenu, _("Default image format"),
                                _("Default format when image is pasted from clipboard or dropped"));
+        optmenu->AppendCheckItem(
+            A_FLATCOPY, _("Copy without tiny cells and sub-grids"),
+            _("Leave out tiny cells and all sub-grids when copying cells as text or HTML"));
+        optmenu->Check(A_FLATCOPY, sys->flatcopy);
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(
             A_CENTERED, _("Render document centered"),
@@ -1536,6 +1540,7 @@ struct TSFrame : wxFrame {
             case A_RESTRICTVIEW:
                 Toggle("restrictview", sys->restrictview);
                 break;
+            case A_FLATCOPY: Toggle("flatcopy", sys->flatcopy); break;
             case wxID_REPLACE:
                 if (replaces != nullptr) {
                     replaces->SetFocus();

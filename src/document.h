@@ -704,7 +704,7 @@ struct Document {
         sys->clipboardcopy = s;
         auto html =
             selected.grid->ConvertToText(selected, 0, action == A_COPYWI ? A_EXPHTMLTI : A_EXPHTMLT,
-                                         this, false, currentdrawroot);
+                                         this, false, currentdrawroot, sys->flatcopy);
         return new wxHTMLDataObject(html);
     }
 
@@ -731,7 +731,7 @@ struct Document {
                     }
                 } else {
                     auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
-                                                          currentdrawroot);
+                                                          currentdrawroot, sys->flatcopy);
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto *htmlobj = CopyEntireCells(s, wxID_COPY);
@@ -746,7 +746,10 @@ struct Document {
                 sys->cellclipboard = nullptr;
                 auto clipboardtextdata = make_unique<wxDataObjectComposite>();
                 wxString s = "";
-                loopallcellssel(c, true) if (!c->text.t.IsEmpty()) { s += c->text.t + " "; }
+                loopallcellssel(c, !sys->flatcopy) {
+                    if (c->text.t.IsEmpty() || (sys->flatcopy && c->tiny)) { continue; }
+                    s += c->text.t + " ";
+                }
                 if (!selected.TextEdit()) { sys->clipboardcopy = s; }
                 clipboardtextdata->Add(new wxTextDataObject(s));
                 if (wxTheClipboard->Open()) {
@@ -761,7 +764,7 @@ struct Document {
                 CopyToCellClipboard(c);
                 auto clipboarddata = make_unique<wxDataObjectComposite>();
                 auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
-                                                      currentdrawroot);
+                                                      currentdrawroot, sys->flatcopy);
                 clipboarddata->Add(new wxTextDataObject(s));
                 if (!selected.TextEdit()) {
                     auto *htmlobj = CopyEntireCells(s, action);
