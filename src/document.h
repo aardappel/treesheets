@@ -145,6 +145,7 @@ struct Document {
     int editfilter {0};
     wxDateTime lastmodificationtime;
     map<wxString, pair<uint, uint>> tags;
+    set<wxString> filtertags;
     vector<Cell *> itercells;
 
     #define loopcellsin(par, c) \
@@ -2039,6 +2040,24 @@ struct Document {
                 return wxEmptyString;
             case A_FILTERS: SetSearchFilter(true); return wxEmptyString;
             case A_FILTEROFF: SetSearchFilter(false); return wxEmptyString;
+            case A_FILTERBYTAGS: {
+                if (tags.empty()) { return _("There are no tags in this document."); }
+                wxArrayString choices;
+                wxArrayInt checked;
+                for (auto &[tag, colors] : tags) {
+                    if (filtertags.contains(tag)) { checked.Add(choices.size()); }
+                    choices.Add(tag);
+                }
+                if (wxGetSelectedChoices(checked, _("Show cells with any of these tags:"),
+                                         _("Filter by tags"), choices, sys->frame) <= 0) {
+                    return wxEmptyString;
+                }
+                filtertags.clear();
+                for (auto i : checked) { filtertags.insert(choices[i]); }
+                ApplyFilter(
+                    [&] { loopallcells(c) c->text.filteredraw = !filtertags.contains(c->text.t); });
+                return wxEmptyString;
+            }
             case A_FILTERUNION:
                 sys->cfg->Write("filterunion", sys->filterunion = !sys->filterunion);
                 return wxEmptyString;
