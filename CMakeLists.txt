@@ -106,7 +106,9 @@ FetchContent_MakeAvailable(wxwidgets)
 
 ### TreeSheets executable
 
-add_executable(TreeSheets src/main.cpp)
+# List headers in IDE projects; they are compiled through main.cpp.
+file(GLOB treesheets_headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
+add_executable(TreeSheets src/main.cpp ${treesheets_headers})
 
 target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VERSION}\"")
 target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net)
