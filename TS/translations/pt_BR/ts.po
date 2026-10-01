@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 11:23+0200\n"
+"POT-Creation-Date: 2026-10-01 14:16+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -582,6 +582,9 @@ msgstr "Copia a seleção"
 msgid "Copy with &Images"
 msgstr "Copiar com &Imagens"
 
+msgid "Copy without tiny cells and sub-grids"
+msgstr "Copiar sem células minúsculas e subgrades"
+
 msgid "Corrupt PNG header."
 msgstr "O cabeçalho do PNG está corrompido."
 
@@ -1089,6 +1092,10 @@ msgstr "Associações de &teclas..."
 
 msgid "Keybinding cancelled."
 msgstr "A associação de teclas foi cancelada."
+
+msgid ""
+"Leave out tiny cells and all sub-grids when copying cells as text or HTML"
+msgstr "Omite células minúsculas e todas as subgrades ao copiar células como texto ou HTML"
 
 msgid "Line Style Rendering"
 msgstr "Renderização com Estilo de Linha"

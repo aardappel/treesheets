@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 11:23+0200\n"
+"POT-Creation-Date: 2026-10-01 14:16+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -565,6 +565,9 @@ msgstr "复制所选内容"
 msgid "Copy with &Images"
 msgstr "带图像复制(&I)"
 
+msgid "Copy without tiny cells and sub-grids"
+msgstr "复制时不含过小的单元格和子网格"
+
 msgid "Corrupt PNG header."
 msgstr "PNG 文件头损坏。"
 
@@ -1034,6 +1037,10 @@ msgstr "按键绑定..."
 
 msgid "Keybinding cancelled."
 msgstr "按键绑定已取消。"
+
+msgid ""
+"Leave out tiny cells and all sub-grids when copying cells as text or HTML"
+msgstr "将单元格复制为文本或 HTML 时省略过小的单元格和所有子网格"
 
 msgid "Line Style Rendering"
 msgstr "线条样式渲染"

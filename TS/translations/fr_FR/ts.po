@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 11:23+0200\n"
+"POT-Creation-Date: 2026-10-01 14:16+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -586,6 +586,9 @@ msgstr "Copier la sélection"
 msgid "Copy with &Images"
 msgstr "Copier avec les &Images"
 
+msgid "Copy without tiny cells and sub-grids"
+msgstr "Copier sans les cellules minuscules ni les sous-grilles"
+
 msgid "Corrupt PNG header."
 msgstr "Entête PNG corrompu."
 
@@ -1097,6 +1100,10 @@ msgstr "Raccourcis clavier..."
 
 msgid "Keybinding cancelled."
 msgstr "Annulation de l'association de touche."
+
+msgid ""
+"Leave out tiny cells and all sub-grids when copying cells as text or HTML"
+msgstr "Omet les cellules minuscules et toutes les sous-grilles lors de la copie de cellules en texte ou en HTML"
 
 msgid "Line Style Rendering"
 msgstr "Mode ligne"

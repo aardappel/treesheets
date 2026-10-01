@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 11:23+0200\n"
+"POT-Creation-Date: 2026-10-01 14:16+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -570,6 +570,9 @@ msgstr "Sao chép vùng chọn"
 msgid "Copy with &Images"
 msgstr "Sao chép kèm theo hình &ảnh"
 
+msgid "Copy without tiny cells and sub-grids"
+msgstr "Sao chép không kèm ô nhỏ và lưới con"
+
 msgid "Corrupt PNG header."
 msgstr "Tiêu đề PNG bị hỏng."
 
@@ -1058,6 +1061,10 @@ msgstr "Gán phím..."
 
 msgid "Keybinding cancelled."
 msgstr "Đã hủy gán phím."
+
+msgid ""
+"Leave out tiny cells and all sub-grids when copying cells as text or HTML"
+msgstr "Bỏ qua các ô nhỏ và tất cả lưới con khi sao chép ô dưới dạng văn bản hoặc HTML"
 
 msgid "Line Style Rendering"
 msgstr "Hiển thị kiểu đường kẻ"

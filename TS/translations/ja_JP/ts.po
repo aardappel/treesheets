@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 11:23+0200\n"
+"POT-Creation-Date: 2026-10-01 14:16+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -575,6 +575,9 @@ msgstr "選択範囲をコピー"
 msgid "Copy with &Images"
 msgstr "画像付きでコピー(&I)"
 
+msgid "Copy without tiny cells and sub-grids"
+msgstr "極小のセルとサブグリッドを除いてコピー"
+
 msgid "Corrupt PNG header."
 msgstr "PNG ヘッダーが破損しています。"
 
@@ -1068,6 +1071,10 @@ msgstr "キーバインド..."
 
 msgid "Keybinding cancelled."
 msgstr "キーバインドがキャンセルされました。"
+
+msgid ""
+"Leave out tiny cells and all sub-grids when copying cells as text or HTML"
+msgstr "セルをテキストまたは HTML としてコピーする際に、極小のセルとすべてのサブグリッドを除外します"
 
 msgid "Line Style Rendering"
 msgstr "ラインスタイルレンダリング"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 11:23+0200\n"
+"POT-Creation-Date: 2026-10-01 14:16+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -643,6 +643,9 @@ msgstr "Копировать выделенное"
 msgid "Copy with &Images"
 msgstr "Копировать с Изображениями"
 
+msgid "Copy without tiny cells and sub-grids"
+msgstr "Копировать без слишком мелких ячеек и подсеток"
+
 # Сообщение (после действия или события)
 msgid "Corrupt PNG header."
 msgstr "Повреждён заголовок PNG."
@@ -1220,6 +1223,10 @@ msgstr "Привязки &клавиш..."
 # Сообщение (после действия или события)
 msgid "Keybinding cancelled."
 msgstr "Привязка клавиш отменена."
+
+msgid ""
+"Leave out tiny cells and all sub-grids when copying cells as text or HTML"
+msgstr "Не включать слишком мелкие ячейки и все подсетки при копировании ячеек как текста или HTML"
 
 msgid "Line Style Rendering"
 msgstr ".. в стиле &Линий"

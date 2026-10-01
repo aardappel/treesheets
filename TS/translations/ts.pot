@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 11:23+0200\n"
+"POT-Creation-Date: 2026-10-01 14:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -557,6 +557,9 @@ msgstr ""
 msgid "Copy with &Images"
 msgstr ""
 
+msgid "Copy without tiny cells and sub-grids"
+msgstr ""
+
 msgid "Corrupt PNG header."
 msgstr ""
 
@@ -1019,6 +1022,10 @@ msgid "Key bindings..."
 msgstr ""
 
 msgid "Keybinding cancelled."
+msgstr ""
+
+msgid ""
+"Leave out tiny cells and all sub-grids when copying cells as text or HTML"
 msgstr ""
 
 msgid "Line Style Rendering"
