@@ -116,6 +116,29 @@ target_precompile_headers(TreeSheets PRIVATE src/stdafx.h)
 include(cmake/EmbedFiles.cmake)
 treesheets_embed_files(images "${CMAKE_CURRENT_SOURCE_DIR}/TS/images" *.png *.svg)
 treesheets_embed_files(translations "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations" *.mo)
+# Also embed the translations of wxWidgets itself (stock buttons and dialogs, the macOS application
+# menu) for these languages, named like ours so that both get the same language. An installed
+# wxWidgets comes with its own.
+if(wxwidgets_SOURCE_DIR)
+    set(wxtranslations_dir "${CMAKE_CURRENT_BINARY_DIR}/wxtranslations")
+    file(GLOB languages RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations"
+         "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations/*/ts.po")
+    foreach(language IN LISTS languages)
+        cmake_path(GET language PARENT_PATH language)
+        string(REGEX REPLACE "_.*" "" base "${language}")
+        file(GLOB catalog "${wxwidgets_SOURCE_DIR}/locale/${language}.mo")
+        if(NOT catalog)
+            file(GLOB catalog "${wxwidgets_SOURCE_DIR}/locale/${base}.mo"
+                 "${wxwidgets_SOURCE_DIR}/locale/${base}_*.mo")
+        endif()
+        if(catalog)
+            list(GET catalog 0 catalog)
+            configure_file("${catalog}" "${wxtranslations_dir}/${language}/wxstd.mo" COPYONLY)
+        endif()
+    endforeach()
+    treesheets_embed_files(wxtranslations "${wxtranslations_dir}" *.mo)
+    target_compile_definitions(TreeSheets PRIVATE TREESHEETS_EMBED_WXTRANSLATIONS)
+endif()
 
 # With wxGTK 3, text is drawn with Pango directly where possible, to reuse the layouts of
 # strings drawn before (see TextLayoutCache in src/wxtools.h). Optional: without the GTK 3

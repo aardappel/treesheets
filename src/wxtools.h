@@ -441,21 +441,39 @@ static wxBitmapBundle LoadEmbeddedSVG(const wxString &name, const wxSize &size) 
                             : wxBitmapBundle();
 }
 
-// Loads the translations compiled into the executable from TS/translations/<language>/<domain>.mo.
-struct EmbeddedTranslationsLoader : wxTranslationsLoader {
+// Loads the translations compiled into the executable from TS/translations/<language>/<domain>.mo,
+// and those of wxWidgets (domain wxstd) if they are embedded too, else the installed ones.
+struct EmbeddedTranslationsLoader : wxFileTranslationsLoader {
+    static constexpr std::span<const EmbeddedFile> catalogs[] = {
+        embedded_translations,
+        #ifdef TREESHEETS_EMBED_WXTRANSLATIONS
+            embedded_wxtranslations,
+        #endif
+    };
+
     wxMsgCatalog *LoadCatalog(const wxString &domain, const wxString &lang) override {
-        auto *file = FindEmbeddedFile(embedded_translations, lang + "/" + domain + ".mo");
-        if (file == nullptr) { return nullptr; }
-        return wxMsgCatalog::CreateFromData(
-            wxCharBuffer::CreateNonOwned(reinterpret_cast<const char *>(file->data), file->size),
-            domain);
+        for (auto files : catalogs) {
+            if (auto *file = FindEmbeddedFile(files, lang + "/" + domain + ".mo")) {
+                return wxMsgCatalog::CreateFromData(
+                    wxCharBuffer::CreateNonOwned(reinterpret_cast<const char *>(file->data),
+                                                 file->size),
+                    domain);
+            }
+        }
+        return domain.StartsWith("wxstd") ? wxFileTranslationsLoader::LoadCatalog(domain, lang)
+                                          : nullptr;
     }
 
     wxArrayString GetAvailableTranslations(const wxString &domain) const override {
         wxArrayString langs;
-        for (const auto &file : embedded_translations) {
-            wxString name = file.name;
-            if (name.AfterFirst('/') == domain + ".mo") { langs.Add(name.BeforeFirst('/')); }
+        for (auto files : catalogs) {
+            for (const auto &file : files) {
+                wxString name = file.name;
+                if (name.AfterFirst('/') == domain + ".mo") { langs.Add(name.BeforeFirst('/')); }
+            }
+        }
+        if (langs.empty() && domain.StartsWith("wxstd")) {
+            return wxFileTranslationsLoader::GetAvailableTranslations(domain);
         }
         return langs;
     }

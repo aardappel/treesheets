@@ -82,6 +82,8 @@ struct TSApp : wxApp {
         #ifdef __WXMAC__
             wxDisableAsserts();
         #endif
+        // Otherwise wxWidgets derives it from the executable name as "Treesheets".
+        SetAppDisplayName("TreeSheets");
         InitPaths();
         const CmdLine cl = ParseCommandLine();
         if (cl.single_instance && ForwardToRunningInstance()) return false;
@@ -186,11 +188,13 @@ struct TSApp : wxApp {
         if (sys->defaultlang.IsEmpty()) {
             trans->SetLanguage(wxEmptyString);
             trans->AddCatalog("ts");
+            trans->AddStdCatalog();
         } else if (sys->defaultlang == "en") {
             trans->SetLanguage(wxLANGUAGE_UNKNOWN);
         } else {
             trans->SetLanguage(sys->defaultlang);
             trans->AddCatalog("ts");
+            trans->AddStdCatalog();
         }
 
         wxTranslations::Set(trans);
