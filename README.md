@@ -84,6 +84,8 @@ cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release
 ```
 
    On Windows ARM this needs the Visual Studio C++ compiler.
+   With a Visual Studio generator, open `_build/TreeSheets.sln` after configuring and select
+   Debug or Release in the IDE. Accept project reloads when CMake regenerates the solution.
 
 4. Build and package for binary distribution
 
@@ -115,6 +117,19 @@ cmake --install _build
    - **Linux:** usually requires root privileges, e.g. run this command with `sudo`.
 
 If you do not have `wxWidgets` installed separately (e.g. as shared library on your distribution or operating system) or want to build it within the TreeSheets CMake project as a static library anyway, add `-DTREESHEETS_BUNDLE_WXWIDGETS=ON` to the build configuration. This builds wxWidgets from source with `wxBUILD_SHARED` and `wxBUILD_INSTALL` set to off, even if an installed wxWidgets is found, so that the wxWidgets libraries are statically linked into TreeSheets and no additional wxWidgets files get installed.
+
+CMake downloads dependencies as needed and reuses them on subsequent builds. Leave
+[`FETCHCONTENT_FULLY_DISCONNECTED`](https://cmake.org/cmake/help/latest/module/FetchContent.html#variable:FETCHCONTENT_FULLY_DISCONNECTED)
+at its default `OFF`. Setting it to `ON` skips downloads and updates, so adding or changing a dependency
+can break an existing build. If CMake reports that a dependency's source directory is missing while
+this option is enabled, reset the saved setting (on Windows or any other platform):
+
+```sh
+cmake -S . -B _build -DFETCHCONTENT_FULLY_DISCONNECTED=OFF
+```
+
+This persists in `_build/CMakeCache.txt`; you do not need to repeat it for each build. Use `ON` only
+when intentionally reusing already populated dependencies whose versions have not changed.
 
 Translating
 -----------
