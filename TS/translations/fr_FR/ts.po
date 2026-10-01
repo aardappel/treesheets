@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:16+0200\n"
+"POT-Creation-Date: 2026-10-01 14:23+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -1092,6 +1092,9 @@ msgstr "JPEG"
 msgid "JPEG file is corrupted!"
 msgstr "Fichier JPEG est corrompu!"
 
+msgid "Keep previous filter matches"
+msgstr "Conserver les résultats de filtre précédents"
+
 msgid "Key binding"
 msgstr "Association de touche"
 
@@ -1103,7 +1106,9 @@ msgstr "Annulation de l'association de touche."
 
 msgid ""
 "Leave out tiny cells and all sub-grids when copying cells as text or HTML"
-msgstr "Omet les cellules minuscules et toutes les sous-grilles lors de la copie de cellules en texte ou en HTML"
+msgstr ""
+"Omet les cellules minuscules et toutes les sous-grilles lors de la copie de "
+"cellules en texte ou en HTML"
 
 msgid "Line Style Rendering"
 msgstr "Mode ligne"
@@ -1753,6 +1758,10 @@ msgstr "Afficher uniquement les cellules de la recherche courante"
 
 msgid "Show sub-grids on match"
 msgstr "Afficher les sous-grilles en cas de correspondance"
+
+msgid ""
+"Show the matches of a new filter in addition to those of the active filter"
+msgstr "Affiche les résultats d'un nouveau filtre en plus de ceux du filtre actif"
 
 msgid "Shrink text in nested grids"
 msgstr "Réduire le texte des grilles imbriquées"

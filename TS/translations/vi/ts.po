@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:16+0200\n"
+"POT-Creation-Date: 2026-10-01 14:23+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -1053,6 +1053,9 @@ msgstr "JPEG"
 msgid "JPEG file is corrupted!"
 msgstr "Tệp JPEG bị hỏng!"
 
+msgid "Keep previous filter matches"
+msgstr "Giữ kết quả lọc trước đó"
+
 msgid "Key binding"
 msgstr "Gán phím"
 
@@ -1064,7 +1067,9 @@ msgstr "Đã hủy gán phím."
 
 msgid ""
 "Leave out tiny cells and all sub-grids when copying cells as text or HTML"
-msgstr "Bỏ qua các ô nhỏ và tất cả lưới con khi sao chép ô dưới dạng văn bản hoặc HTML"
+msgstr ""
+"Bỏ qua các ô nhỏ và tất cả lưới con khi sao chép ô dưới dạng văn bản hoặc "
+"HTML"
 
 msgid "Line Style Rendering"
 msgstr "Hiển thị kiểu đường kẻ"
@@ -1692,6 +1697,10 @@ msgstr "Chỉ hiển thị các ô trong tìm kiếm hiện tại"
 
 msgid "Show sub-grids on match"
 msgstr "Hiện lưới con khi khớp"
+
+msgid ""
+"Show the matches of a new filter in addition to those of the active filter"
+msgstr "Hiện kết quả của bộ lọc mới cùng với kết quả của bộ lọc đang hoạt động"
 
 msgid "Shrink text in nested grids"
 msgstr "Thu nhỏ văn bản trong lưới lồng nhau"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:16+0200\n"
+"POT-Creation-Date: 2026-10-01 14:23+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1029,6 +1029,9 @@ msgstr "JPEG"
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 文件已损坏！"
 
+msgid "Keep previous filter matches"
+msgstr "保留之前的筛选匹配项"
+
 msgid "Key binding"
 msgstr "按键绑定"
 
@@ -1651,6 +1654,10 @@ msgstr "仅显示当前搜索中的单元格"
 
 msgid "Show sub-grids on match"
 msgstr "匹配时显示子网格"
+
+msgid ""
+"Show the matches of a new filter in addition to those of the active filter"
+msgstr "在当前筛选的匹配之外，同时显示新筛选的匹配"
 
 msgid "Shrink text in nested grids"
 msgstr "收缩嵌套网格中的文本"

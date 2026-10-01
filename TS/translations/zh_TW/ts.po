@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:16+0200\n"
+"POT-Creation-Date: 2026-10-01 14:23+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -1029,6 +1029,9 @@ msgstr "JPEG"
 msgid "JPEG file is corrupted!"
 msgstr "JPEG 檔案已毀損！"
 
+msgid "Keep previous filter matches"
+msgstr "保留先前的篩選符合項目"
+
 msgid "Key binding"
 msgstr "快速鍵組合"
 
@@ -1649,6 +1652,10 @@ msgstr "僅顯示目前搜尋中的儲存格"
 
 msgid "Show sub-grids on match"
 msgstr "符合時顯示子網格"
+
+msgid ""
+"Show the matches of a new filter in addition to those of the active filter"
+msgstr "除了目前篩選的符合項目外，同時顯示新篩選的符合項目"
 
 msgid "Shrink text in nested grids"
 msgstr "縮小巢狀網格中的文字"

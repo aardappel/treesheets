@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:16+0200\n"
+"POT-Creation-Date: 2026-10-01 14:23+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -1212,6 +1212,9 @@ msgstr "JPEG"
 msgid "JPEG file is corrupted!"
 msgstr "JPEG-файл поврежден!"
 
+msgid "Keep previous filter matches"
+msgstr "Сохранять предыдущие совпадения фильтра"
+
 # Заголовок Окна п. Меню
 msgid "Key binding"
 msgstr "Привязка клавиш"
@@ -1226,7 +1229,9 @@ msgstr "Привязка клавиш отменена."
 
 msgid ""
 "Leave out tiny cells and all sub-grids when copying cells as text or HTML"
-msgstr "Не включать слишком мелкие ячейки и все подсетки при копировании ячеек как текста или HTML"
+msgstr ""
+"Не включать слишком мелкие ячейки и все подсетки при копировании ячеек как "
+"текста или HTML"
 
 msgid "Line Style Rendering"
 msgstr ".. в стиле &Линий"
@@ -1959,6 +1964,10 @@ msgstr "Показывать Ячейки только в Текущем Пои�
 
 msgid "Show sub-grids on match"
 msgstr "Показывать подсетки при совпадении"
+
+msgid ""
+"Show the matches of a new filter in addition to those of the active filter"
+msgstr "Показывать совпадения нового фильтра вместе с совпадениями активного фильтра"
 
 msgid "Shrink text in nested grids"
 msgstr "Сжимать текст во вложенных сетках"

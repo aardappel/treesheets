@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:16+0200\n"
+"POT-Creation-Date: 2026-10-01 14:23+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -1063,6 +1063,9 @@ msgstr "JPEG"
 msgid "JPEG file is corrupted!"
 msgstr "JPEG ファイルが破損しています！"
 
+msgid "Keep previous filter matches"
+msgstr "前のフィルター一致を保持"
+
 msgid "Key binding"
 msgstr "キーバインド"
 
@@ -1074,7 +1077,9 @@ msgstr "キーバインドがキャンセルされました。"
 
 msgid ""
 "Leave out tiny cells and all sub-grids when copying cells as text or HTML"
-msgstr "セルをテキストまたは HTML としてコピーする際に、極小のセルとすべてのサブグリッドを除外します"
+msgstr ""
+"セルをテキストまたは HTML としてコピーする際に、極小のセルとすべてのサブグ"
+"リッドを除外します"
 
 msgid "Line Style Rendering"
 msgstr "ラインスタイルレンダリング"
@@ -1706,6 +1711,10 @@ msgstr "現在の検索に一致するセルのみ表示"
 
 msgid "Show sub-grids on match"
 msgstr "一致したセルのサブグリッドを表示"
+
+msgid ""
+"Show the matches of a new filter in addition to those of the active filter"
+msgstr "新しいフィルターの一致を、有効なフィルターの一致に加えて表示します"
 
 msgid "Shrink text in nested grids"
 msgstr "入れ子のグリッドのテキストを縮小"
