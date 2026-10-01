@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2022-01-01 10:28+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -922,6 +922,9 @@ msgstr "File della versione più recente."
 msgid "Filter"
 msgstr "Filtro"
 
+msgid "Filter by tags"
+msgstr "Filtra per tag"
+
 msgid "Find and replace in document"
 msgstr "Trova e sostituisci nel documento"
 
@@ -1718,8 +1721,14 @@ msgstr "Mostra il 50% delle ultime modifiche"
 msgid "Show About dialog"
 msgstr "Mostra la finestra di dialogo"
 
+msgid "Show cells with any of these tags:"
+msgstr "Mostra le celle con uno di questi tag:"
+
 msgid "Show cells with notes"
 msgstr "Mostra le celle con note"
+
+msgid "Show cells with tags..."
+msgstr "Mostra le celle con tag..."
 
 msgid "Show cells with the same cell color"
 msgstr "Mostra le celle con lo stesso colore"
@@ -1741,6 +1750,9 @@ msgstr "Mostra solo le celle nella ricerca corrente"
 
 msgid "Show sub-grids on match"
 msgstr "Mostra le griglie secondarie in caso di corrispondenza"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "Mostra le celle il cui testo è uno dei tag selezionati"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1850,6 +1862,9 @@ msgstr "Le password non coincidono."
 
 msgid "There are no images in the selection."
 msgstr "Non ci sono immagini nella selezione."
+
+msgid "There are no tags in this document."
+msgstr "Questo documento non contiene tag."
 
 msgid "There is no content to collapse."
 msgstr "Non ci sono contenuti da far crollare."

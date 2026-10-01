@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -878,6 +878,9 @@ msgstr "檔案版本較新。"
 msgid "Filter"
 msgstr "篩選"
 
+msgid "Filter by tags"
+msgstr "依標籤篩選"
+
 msgid "Find and replace in document"
 msgstr "在文件中尋找並取代"
 
@@ -1631,8 +1634,14 @@ msgstr "顯示最近編輯的 50%"
 msgid "Show About dialog"
 msgstr "顯示「關於」對話方塊"
 
+msgid "Show cells with any of these tags:"
+msgstr "顯示含以下任一標籤的儲存格："
+
 msgid "Show cells with notes"
 msgstr "顯示含備註的儲存格"
+
+msgid "Show cells with tags..."
+msgstr "顯示含標籤的儲存格..."
 
 msgid "Show cells with the same cell color"
 msgstr "顯示相同儲存格色彩的儲存格"
@@ -1654,6 +1663,9 @@ msgstr "僅顯示目前搜尋中的儲存格"
 
 msgid "Show sub-grids on match"
 msgstr "符合時顯示子網格"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "顯示文字為所勾選標籤之一的儲存格"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1758,6 +1770,9 @@ msgstr "兩次輸入的密碼不一致。"
 
 msgid "There are no images in the selection."
 msgstr "選取範圍中沒有圖片。"
+
+msgid "There are no tags in this document."
+msgstr "此文件中沒有標籤。"
 
 msgid "There is no content to collapse."
 msgstr "沒有可摺疊的內容。"

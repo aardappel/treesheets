@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -909,6 +909,9 @@ msgstr "新しいバージョンのファイルです。"
 msgid "Filter"
 msgstr "フィルター"
 
+msgid "Filter by tags"
+msgstr "タグでフィルター"
+
 msgid "Find and replace in document"
 msgstr "ドキュメント内を検索して置換"
 
@@ -1689,8 +1692,14 @@ msgstr "前回の編集の 50% を表示"
 msgid "Show About dialog"
 msgstr "About ダイアログを表示"
 
+msgid "Show cells with any of these tags:"
+msgstr "次のいずれかのタグがあるセルを表示:"
+
 msgid "Show cells with notes"
 msgstr "ノートがあるセルを表示"
+
+msgid "Show cells with tags..."
+msgstr "タグがあるセルを表示..."
 
 msgid "Show cells with the same cell color"
 msgstr "同じセル色のセルを表示"
@@ -1712,6 +1721,9 @@ msgstr "現在の検索に一致するセルのみ表示"
 
 msgid "Show sub-grids on match"
 msgstr "一致したセルのサブグリッドを表示"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "テキストがチェックしたタグのいずれかであるセルを表示します"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1818,6 +1830,9 @@ msgstr "パスワードが一致しません。"
 
 msgid "There are no images in the selection."
 msgstr "選択範囲内に画像がありません。"
+
+msgid "There are no tags in this document."
+msgstr "このドキュメントにはタグがありません。"
 
 msgid "There is no content to collapse."
 msgstr "折りたたむ内容がありません。"

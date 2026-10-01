@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -878,6 +878,9 @@ msgstr "文件版本较新。"
 msgid "Filter"
 msgstr "筛选"
 
+msgid "Filter by tags"
+msgstr "按标签筛选"
+
 msgid "Find and replace in document"
 msgstr "在文档中查找和替换"
 
@@ -1633,8 +1636,14 @@ msgstr "显示最近编辑的 50%"
 msgid "Show About dialog"
 msgstr "显示“关于”对话框"
 
+msgid "Show cells with any of these tags:"
+msgstr "显示带有以下任一标签的单元格："
+
 msgid "Show cells with notes"
 msgstr "显示有备注的单元格"
+
+msgid "Show cells with tags..."
+msgstr "显示带标签的单元格..."
 
 msgid "Show cells with the same cell color"
 msgstr "显示单元格颜色相同的单元格"
@@ -1656,6 +1665,9 @@ msgstr "仅显示当前搜索中的单元格"
 
 msgid "Show sub-grids on match"
 msgstr "匹配时显示子网格"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "显示文本为所勾选标签之一的单元格"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1761,6 +1773,9 @@ msgstr "两次输入的密码不一致。"
 
 msgid "There are no images in the selection."
 msgstr "所选内容中没有图像。"
+
+msgid "There are no tags in this document."
+msgstr "此文档中没有标签。"
 
 msgid "There is no content to collapse."
 msgstr "没有可折叠的内容。"

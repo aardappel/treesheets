@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -924,6 +924,9 @@ msgstr "Arquivo é de uma versão mais recente."
 msgid "Filter"
 msgstr "&Filtrar"
 
+msgid "Filter by tags"
+msgstr "Filtrar por tags"
+
 msgid "Find and replace in document"
 msgstr "Busca e substitui no documento"
 
@@ -1722,8 +1725,14 @@ msgstr "Evidenciar edições mais recentes: últimas 50%"
 msgid "Show About dialog"
 msgstr "Mostra a caixa de diálogo Sobre"
 
+msgid "Show cells with any of these tags:"
+msgstr "Evidenciar células com qualquer uma destas tags:"
+
 msgid "Show cells with notes"
 msgstr "Evidenciar células com anotações"
+
+msgid "Show cells with tags..."
+msgstr "Evidenciar células com tags..."
 
 msgid "Show cells with the same cell color"
 msgstr "Evidenciar células com a mesma cor de célula"
@@ -1745,6 +1754,9 @@ msgstr "Evidenciar células que contiverem resultados da busca"
 
 msgid "Show sub-grids on match"
 msgstr "Mostrar subgrades na correspondência"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "Evidencia as células cujo texto é uma das tags marcadas"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1854,6 +1866,9 @@ msgstr "As senhas são diferentes."
 
 msgid "There are no images in the selection."
 msgstr "Não há imagens na seleção."
+
+msgid "There are no tags in this document."
+msgstr "Este documento não tem tags."
 
 msgid "There is no content to collapse."
 msgstr "Não há conteúdo para mesclar."

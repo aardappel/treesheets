@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2026-09-28 03:57+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -895,6 +895,9 @@ msgstr "최신 버전의 파일입니다."
 msgid "Filter"
 msgstr "필터"
 
+msgid "Filter by tags"
+msgstr "태그로 필터"
+
 msgid "Find and replace in document"
 msgstr "문서에서 찾기 및 바꾸기"
 
@@ -1660,8 +1663,14 @@ msgstr "마지막 편집의 50% 표시"
 msgid "Show About dialog"
 msgstr "정보 대화상자 표시"
 
+msgid "Show cells with any of these tags:"
+msgstr "다음 태그 중 하나가 있는 셀 표시:"
+
 msgid "Show cells with notes"
 msgstr "노트가 있는 셀 표시"
+
+msgid "Show cells with tags..."
+msgstr "태그가 있는 셀 표시..."
 
 msgid "Show cells with the same cell color"
 msgstr "동일한 셀 색상의 셀 표시"
@@ -1683,6 +1692,9 @@ msgstr "현재 검색에서 셀만 표시"
 
 msgid "Show sub-grids on match"
 msgstr "일치하는 하위 격자 표시"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "텍스트가 선택한 태그 중 하나인 셀을 표시합니다"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1792,6 +1804,9 @@ msgstr "비밀번호가 다릅니다."
 
 msgid "There are no images in the selection."
 msgstr "선택 항목에 이미지가 없습니다."
+
+msgid "There are no tags in this document."
+msgstr "이 문서에는 태그가 없습니다."
 
 msgid "There is no content to collapse."
 msgstr "축소할 내용이 없습니다."

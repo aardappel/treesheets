@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -900,6 +900,9 @@ msgstr "Tệp thuộc phiên bản mới hơn."
 msgid "Filter"
 msgstr "Bộ lọc"
 
+msgid "Filter by tags"
+msgstr "Lọc theo thẻ"
+
 msgid "Find and replace in document"
 msgstr "Tìm kiếm và thay thế trong tài liệu"
 
@@ -1675,8 +1678,14 @@ msgstr "Hiển thị 50% các chỉnh sửa cuối"
 msgid "Show About dialog"
 msgstr "Hiển thị hộp thoại thông tin"
 
+msgid "Show cells with any of these tags:"
+msgstr "Hiển thị các ô có một trong các thẻ sau:"
+
 msgid "Show cells with notes"
 msgstr "Hiển thị các ô có ghi chú"
+
+msgid "Show cells with tags..."
+msgstr "Hiển thị các ô có thẻ..."
 
 msgid "Show cells with the same cell color"
 msgstr "Hiển thị các ô có cùng màu ô"
@@ -1698,6 +1707,9 @@ msgstr "Chỉ hiển thị các ô trong tìm kiếm hiện tại"
 
 msgid "Show sub-grids on match"
 msgstr "Hiện lưới con khi khớp"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "Hiển thị các ô có văn bản là một trong các thẻ đã chọn"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1804,6 +1816,9 @@ msgstr "Mật khẩu không khớp."
 
 msgid "There are no images in the selection."
 msgstr "Không có hình ảnh nào trong vùng chọn."
+
+msgid "There are no tags in this document."
+msgstr "Tài liệu này không có thẻ nào."
 
 msgid "There is no content to collapse."
 msgstr "Không có nội dung nào để thu gọn."

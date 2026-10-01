@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -864,6 +864,9 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
+msgid "Filter by tags"
+msgstr ""
+
 msgid "Find and replace in document"
 msgstr ""
 
@@ -1614,7 +1617,13 @@ msgstr ""
 msgid "Show About dialog"
 msgstr ""
 
+msgid "Show cells with any of these tags:"
+msgstr ""
+
 msgid "Show cells with notes"
+msgstr ""
+
+msgid "Show cells with tags..."
 msgstr ""
 
 msgid "Show cells with the same cell color"
@@ -1636,6 +1645,9 @@ msgid "Show only cells in current search"
 msgstr ""
 
 msgid "Show sub-grids on match"
+msgstr ""
+
+msgid "Show the cells whose text is one of the checked tags"
 msgstr ""
 
 msgid ""
@@ -1739,6 +1751,9 @@ msgid "The passwords differ."
 msgstr ""
 
 msgid "There are no images in the selection."
+msgstr ""
+
+msgid "There are no tags in this document."
 msgstr ""
 
 msgid "There is no content to collapse."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -931,6 +931,9 @@ msgstr "Datei weist einen neueren Versionsstand auf."
 msgid "Filter"
 msgstr "Filter..."
 
+msgid "Filter by tags"
+msgstr "Nach Schlagwörtern filtern"
+
 msgid "Find and replace in document"
 msgstr "Im Dokument suchen und ersetzen"
 
@@ -1735,8 +1738,14 @@ msgstr "50% der letzten Änderungen anzeigen"
 msgid "Show About dialog"
 msgstr "Den Über-Dialog anzeigen"
 
+msgid "Show cells with any of these tags:"
+msgstr "Zellen mit einem dieser Schlagwörter anzeigen:"
+
 msgid "Show cells with notes"
 msgstr "Zellen mit Notizen anzeigen"
+
+msgid "Show cells with tags..."
+msgstr "Zellen mit Schlagwörtern anzeigen..."
 
 msgid "Show cells with the same cell color"
 msgstr "Nur Zellen mit der gleichen Zellenfarbe anzeigen"
@@ -1758,6 +1767,10 @@ msgstr "Nur Zellen in der aktuellen Suche anzeigen"
 
 msgid "Show sub-grids on match"
 msgstr "Untergeordnete Tabellen bei Treffer anzeigen"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr ""
+"Die Zellen anzeigen, deren Text eines der ausgewählten Schlagwörter ist"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -1867,6 +1880,9 @@ msgstr "Die Passwörter stimmen nicht überein."
 
 msgid "There are no images in the selection."
 msgstr "Es befinden sich keine Bilder in der Auswahl."
+
+msgid "There are no tags in this document."
+msgstr "Dieses Dokument enthält keine Schlagwörter."
 
 msgid "There is no content to collapse."
 msgstr "Es gibt keinen Inhalt zum Zusammenlegen."

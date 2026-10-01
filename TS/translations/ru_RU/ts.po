@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 4.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 14:27+0200\n"
+"POT-Creation-Date: 2026-10-01 15:08+0200\n"
 "PO-Revision-Date: 2026-07-15 15:39+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -1030,6 +1030,9 @@ msgstr "Более новая версия файла."
 msgid "Filter"
 msgstr "Фильтр"
 
+msgid "Filter by tags"
+msgstr "Фильтр по тегам"
+
 # комментарий к п. Меню
 msgid "Find and replace in document"
 msgstr "Поиск и замена в документе"
@@ -1939,8 +1942,16 @@ msgid "Show About dialog"
 msgstr "Показать окно \"О программе\""
 
 # п. Меню (нет & в исходном тексте)
+msgid "Show cells with any of these tags:"
+msgstr "Показать ячейки с любым из этих тегов:"
+
+# п. Меню (нет & в исходном тексте)
 msgid "Show cells with notes"
 msgstr "Показать ячейки с Заметками"
+
+# п. Меню (нет & в исходном тексте)
+msgid "Show cells with tags..."
+msgstr "Показать ячейки с тегами..."
 
 # п. Меню (нет & в исходном тексте)
 msgid "Show cells with the same cell color"
@@ -1965,6 +1976,9 @@ msgstr "Показывать Ячейки только в Текущем Пои�
 
 msgid "Show sub-grids on match"
 msgstr "Показывать подсетки при совпадении"
+
+msgid "Show the cells whose text is one of the checked tags"
+msgstr "Показать ячейки, текст которых совпадает с одним из отмеченных тегов"
 
 msgid ""
 "Show the matches of a new filter in addition to those of the active filter"
@@ -2091,6 +2105,10 @@ msgstr "Пароли не совпадают."
 # Сообщение (после действия или события)
 msgid "There are no images in the selection."
 msgstr "В выборе нет изображений."
+
+# Сообщение (после действия или события)
+msgid "There are no tags in this document."
+msgstr "В этом документе нет тегов."
 
 # Сообщение (после действия или события)
 msgid "There is no content to collapse."
