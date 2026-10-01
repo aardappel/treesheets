@@ -611,6 +611,10 @@ struct TSFrame : wxFrame {
             _("When a cell matches the current filter, show everything in the grid inside it "
               "normally instead of filtering it too"));
         filtermenu->Check(A_FILTERSHOWSUBGRIDS, sys->filtershowsubgrids);
+        filtermenu->AppendCheckItem(
+            A_FILTERUNION, _("Keep previous filter matches"),
+            _("Show the matches of a new filter in addition to those of the active filter"));
+        filtermenu->Check(A_FILTERUNION, sys->filterunion);
 
         auto *viewmenu = new wxMenu();
         MyAppend(viewmenu, A_ZOOMIN, _("Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");

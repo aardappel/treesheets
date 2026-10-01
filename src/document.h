@@ -2039,6 +2039,9 @@ struct Document {
                 return wxEmptyString;
             case A_FILTERS: SetSearchFilter(true); return wxEmptyString;
             case A_FILTEROFF: SetSearchFilter(false); return wxEmptyString;
+            case A_FILTERUNION:
+                sys->cfg->Write("filterunion", sys->filterunion = !sys->filterunion);
+                return wxEmptyString;
 
             case A_FILTERSHOWROWS: {
                 sys->cfg->Write("filtershowrows", sys->filtershowrows = !sys->filtershowrows);
@@ -2897,35 +2900,25 @@ struct Document {
             }
 
             case A_FILTERBYCELLBG:
-                loopallcells(ci) ci->text.filteredraw = ci->cellcolor != cell->cellcolor;
-                ApplyRowFilterExpansion();
-                root->ResetChildren();
-                UpdateLayout();
-                canvas->Refresh();
+                ApplyFilter([&] {
+                    loopallcells(ci) ci->text.filteredraw = ci->cellcolor != cell->cellcolor;
+                });
                 return wxEmptyString;
 
             case A_FILTERBYSTYLE:
-                loopallcells(ci) ci->text.filteredraw = ci->text.stylebits != cell->text.stylebits;
-                ApplyRowFilterExpansion();
-                root->ResetChildren();
-                UpdateLayout();
-                canvas->Refresh();
+                ApplyFilter([&] {
+                    loopallcells(ci) ci->text.filteredraw =
+                        ci->text.stylebits != cell->text.stylebits;
+                });
                 return wxEmptyString;
 
             case A_FILTERBYTEXT:
-                loopallcells(ci) ci->text.filteredraw = ci->text.t != cell->text.t;
-                ApplyRowFilterExpansion();
-                root->ResetChildren();
-                UpdateLayout();
-                canvas->Refresh();
+                ApplyFilter(
+                    [&] { loopallcells(ci) ci->text.filteredraw = ci->text.t != cell->text.t; });
                 return wxEmptyString;
 
             case A_FILTERNOTE:
-                loopallcells(ci) ci->text.filteredraw = ci->note.IsEmpty();
-                ApplyRowFilterExpansion();
-                root->ResetChildren();
-                UpdateLayout();
-                canvas->Refresh();
+                ApplyFilter([&] { loopallcells(ci) ci->text.filteredraw = ci->note.IsEmpty(); });
                 return wxEmptyString;
 
             case A_FILTERMATCHNEXT: {
@@ -3485,14 +3478,16 @@ struct Document {
         }
     }
 
-    void ApplyEditFilter() {
-        editfilter = std::clamp(editfilter, 1, 99);
-        CollectCells(root.get());
-        ranges::sort(itercells, [](auto a, auto b) {
-            // sort in descending order
-            return a->text.lastedit > b->text.lastedit;
-        });
-        loopv(i, itercells) itercells[i]->text.filteredraw = i > itercells.size() * editfilter / 100;
+    // Sets the raw filter result of all cells with `filter` and updates the display. With "Keep
+    // previous filter matches" on, the cells shown by the active filter (if any) stay shown.
+    void ApplyFilter(auto &&filter, bool keep = true) {
+        vector<Cell *> shown;
+        if (keep && sys->filterunion) {
+            loopallcells(c) if (!c->text.filteredraw) shown.push_back(c);
+            if (shown.size() == itercells.size()) { shown.clear(); }
+        }
+        filter();
+        for (auto *c : shown) { c->text.filteredraw = false; }
         ApplyRowFilterExpansion();
         root->ResetChildren();
         UpdateLayout();
@@ -3500,16 +3495,23 @@ struct Document {
         canvas->Refresh();
     }
 
+    void ApplyEditFilter() {
+        editfilter = std::clamp(editfilter, 1, 99);
+        ApplyFilter([&] {
+            CollectCells(root.get());
+            ranges::sort(itercells, [](auto a, auto b) {
+                // sort in descending order
+                return a->text.lastedit > b->text.lastedit;
+            });
+            loopv(i, itercells) itercells[i]->text.filteredraw =
+                i > itercells.size() * editfilter / 100;
+        });
+    }
+
     void ApplyEditRangeFilter(wxDateTime &rangebegin, wxDateTime &rangeend) {
-        CollectCells(root.get());
-        for (auto *c : itercells) {
-            c->text.filteredraw = !c->text.lastedit.IsBetween(rangebegin, rangeend);
-        }
-        ApplyRowFilterExpansion();
-        root->ResetChildren();
-        UpdateLayout();
-        ScrollIfSelectionOutOfView();
-        canvas->Refresh();
+        ApplyFilter([&] {
+            loopallcells(c) c->text.filteredraw = !c->text.lastedit.IsBetween(rangebegin, rangeend);
+        });
     }
 
     static wxDateTime ParseDateTimeString(const wxString &s) {
@@ -3520,12 +3522,7 @@ struct Document {
     }
 
     void SetSearchFilter(bool on) {
-        loopallcells(c) c->text.filteredraw = on && !c->text.IsInSearch();
-        ApplyRowFilterExpansion();
-        root->ResetChildren();
-        UpdateLayout();
-        ScrollIfSelectionOutOfView();
-        canvas->Refresh();
+        ApplyFilter([&] { loopallcells(c) c->text.filteredraw = on && !c->text.IsInSearch(); }, on);
     }
 
     void ExportAllImages(const wxString &filename, Cell *exportroot) {
