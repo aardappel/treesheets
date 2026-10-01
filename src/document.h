@@ -747,7 +747,7 @@ struct Document {
                 auto clipboardtextdata = make_unique<wxDataObjectComposite>();
                 wxString s = "";
                 loopallcellssel(c, !sys->flatcopy) {
-                    if (c->text.t.IsEmpty() || (sys->flatcopy && c->tiny)) { continue; }
+                    if (c->text.t.IsEmpty() || (sys->flatcopy && c->TinyOrFiltered())) { continue; }
                     s += c->text.t + " ";
                 }
                 if (!selected.TextEdit()) { sys->clipboardcopy = s; }

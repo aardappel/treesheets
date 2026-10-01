@@ -71,6 +71,7 @@ struct Cell {
     bool HasTextState() const { return HasTextSize() || text.image != nullptr; }
     bool HasHeader() const { return HasText() || text.image != nullptr; }
     bool HasContent() const { return HasHeader() || grid; }
+    bool TinyOrFiltered() const { return tiny || text.filtered; }
     bool GridShown(Document *doc) const {
         return grid && (!grid->folded || this == doc->currentdrawroot);
     }
@@ -302,7 +303,7 @@ struct Cell {
 
     wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle,
                     Cell *root, bool flat = false) {
-        wxString str = flat && tiny ? wxString() : text.ToText(indent, sel, format);
+        wxString str = flat && TinyOrFiltered() ? wxString() : text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             this != root && !str.IsEmpty()) {
             wxString spanstyle = "white-space: pre-wrap;";

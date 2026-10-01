@@ -746,8 +746,8 @@ struct Grid {
         vector<bool> tinycols(sel.xs, flat), tinyrows(sel.ys, flat);
         if (flat) {
             foreachcellinsel(c, sel) {
-                tinycols[x - sel.x] = tinycols[x - sel.x] && c->tiny;
-                tinyrows[y - sel.y] = tinyrows[y - sel.y] && c->tiny;
+                tinycols[x - sel.x] = tinycols[x - sel.x] && c->TinyOrFiltered();
+                tinyrows[y - sel.y] = tinyrows[y - sel.y] && c->TinyOrFiltered();
             }
         }
         foreachcellinsel(c, sel) {
