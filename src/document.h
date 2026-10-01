@@ -1131,7 +1131,12 @@ struct Document {
         // then clipped away. This is always safe: callers that still invalidate the
         // whole window (the vast majority today) get an update region that already
         // covers the full viewport, so nothing narrows and behaviour is unchanged.
-        if (currentviewscale == 1.0 && centerx == 0 && centery == 0) {
+        // The clipping region is set before ShiftToCenter(), in window coordinates plus the
+        // scroll position, while Render() culls in document coordinates, which are offset by
+        // the centering on top. Scaled, maxx/maxy are in document units, and the whole viewport
+        // is redrawn anyway.
+        if (currentviewscale == 1.0) {
+            wxRect clip(scrollx, scrolly, maxx - scrollx, maxy - scrolly);
             wxRect updatebox = canvas->GetUpdateRegion().GetBox();
             if (!updatebox.IsEmpty()) {
                 int ux0 = 0, uy0 = 0, ux1 = 0, uy1 = 0;
@@ -1139,16 +1144,13 @@ struct Document {
                                                 &uy0);
                 canvas->CalcUnscrolledPosition(updatebox.GetRight() + 1, updatebox.GetBottom() + 1,
                                                 &ux1, &uy1);
-                scrollx = max(scrollx, ux0);
-                scrolly = max(scrolly, uy0);
-                maxx = min(maxx, ux1);
-                maxy = min(maxy, uy1);
+                clip.Intersect(wxRect(ux0, uy0, ux1 - ux0, uy1 - uy0));
+                scrollx = max(scrollx, ux0 - centerx);
+                scrolly = max(scrolly, uy0 - centery);
+                maxx = min(maxx, ux1 - centerx);
+                maxy = min(maxy, uy1 - centery);
             }
-        }
-
-        // Scaled, maxx/maxy are in document units, and the whole viewport is redrawn anyway.
-        if (currentviewscale == 1.0) {
-            dc.SetClippingRegion(scrollx, scrolly, maxx - scrollx, maxy - scrolly);
+            dc.SetClippingRegion(clip);
         }
         dc.SetBackground(wxBrush(LightColor(Background())));
         dc.Clear();

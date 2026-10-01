@@ -246,6 +246,15 @@ struct Grid {
         return {x0, x1, y0, y1};
     }
 
+    // Cuts a grid line from lo to hi down to the drawn area [clo, chi), with its ends outside
+    // of it and its start moved by whole dash periods only, so that drawing part of the view
+    // gives the same pixels as drawing all of it.
+    static pair<int, int> LineSpan(int lo, int hi, int clo, int chi) {
+        const int slack = 8;  // a multiple of the dash period of the grid lines
+        if (clo - slack > lo) { lo += (clo - slack - lo) / slack * slack; }
+        return {lo, min(hi, chi + slack)};
+    }
+
     template<typename DC>
     void Render(Document *doc, int bx, int by, DC &dc, int depth, int sx, int sy, int xoff,
                 int yoff) {
@@ -273,29 +282,23 @@ struct Grid {
                 for (int x = ldelta; x <= xs - ldelta; x++) {
                     int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
                     if (xl >= doc->scrollx && xl <= doc->maxx) {
-                        loop(line, g_line_width) {
-                            // Extend by ldelta so the line overlaps the rounded outer border
-                            // (drawn afterwards) instead of leaving a 1px gap where the
-                            // exclusive-endpoint line and the inclusive rounded-rect edge meet.
-                            dc.DrawLine(xl + line,
-                                        max(doc->scrolly,
-                                            by + yoff + view_grid_outer_spacing - ldelta),
-                                        xl + line,
-                                        min(doc->maxy, by + maxy + g_line_width) + view_margin +
-                                            ldelta);
-                        }
+                        // Extend by ldelta so the line overlaps the rounded outer border
+                        // (drawn afterwards) instead of leaving a 1px gap where the
+                        // exclusive-endpoint line and the inclusive rounded-rect edge meet.
+                        auto [top, bottom] =
+                            LineSpan(by + yoff + view_grid_outer_spacing - ldelta,
+                                     by + maxy + g_line_width + view_margin + ldelta, doc->scrolly,
+                                     doc->maxy);
+                        loop(line, g_line_width) dc.DrawLine(xl + line, top, xl + line, bottom);
                     }
                 }
                 for (int y = ldelta; y <= ys - ldelta; y++) {
                     int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
                     if (yl >= doc->scrolly && yl <= doc->maxy) {
-                        loop(line, g_line_width) {
-                            dc.DrawLine(
-                                max(doc->scrollx, bx + xoff + view_grid_outer_spacing +
-                                                       g_line_width - ldelta),
-                                yl + line,
-                                min(doc->maxx, bx + maxx) + view_margin + ldelta, yl + line);
-                        }
+                        auto [left, right] =
+                            LineSpan(bx + xoff + view_grid_outer_spacing + g_line_width - ldelta,
+                                     bx + maxx + view_margin + ldelta, doc->scrollx, doc->maxx);
+                        loop(line, g_line_width) dc.DrawLine(left, yl + line, right, yl + line);
                     }
                 }
             };
