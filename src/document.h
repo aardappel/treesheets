@@ -76,6 +76,7 @@ struct Document {
     int anchory {0};
     int layoutxs {0};
     int layoutys {0};
+    int layouts {0};  // how often Layout() laid out cells, see RefreshSelect()
     int hierarchysize {0};
     int fgutter {6};
     int lasttextsize {0};
@@ -555,6 +556,51 @@ struct Document {
         canvas->RefreshRect(wxRect(devx + centerx, devy + centery, r.width, r.height), false);
     }
 
+    // Where DrawSelect() draws s. The line of a thin selection runs along its whole grid.
+    wxRect SelectRect(const Selection &s) {
+        if (s.grid == nullptr) { return {}; }
+        auto r = s.grid->GetRect(this, s);
+        if (s.Thin()) {
+            auto *c = s.grid->cell;
+            if (s.xs == 0) {
+                r.y = c->GetY(this);
+                r.height = c->sy;
+            } else {
+                r.x = c->GetX(this);
+                r.width = c->sx;
+            }
+            r.Inflate(g_line_width + g_cell_margin);
+        }
+        return r;
+    }
+
+    // Taken before a change of the selection, for RefreshSelect() after it.
+    struct SelectBefore {
+        wxRect rect;
+        int layouts;
+        wxPoint view;
+    };
+
+    SelectBefore BeforeSelect() {
+        // Cells waiting to be laid out may change their place, as may a deferred layout.
+        auto *drawroot = WalkPath(drawpath);
+        bool current = !layoutpending && drawroot == currentdrawroot && drawroot->sx != 0;
+        return {current ? SelectRect(selected) : wxRect(), current ? layouts : -1,
+                canvas->GetViewStart()};
+    }
+
+    // Repaints just the old and the new selection if nothing else changed since BeforeSelect():
+    // no layout and no scrolling. All that depends on the selection is drawn by DrawSelect().
+    void RefreshSelect(const SelectBefore &before) {
+        if (before.layouts != layouts || before.view != canvas->GetViewStart() ||
+            currentdrawroot->sx == 0) {
+            canvas->Refresh();
+            return;
+        }
+        if (!before.rect.IsEmpty()) { RefreshDocRect(before.rect); }
+        if (auto r = SelectRect(selected); !r.IsEmpty()) { RefreshDocRect(r); }
+    }
+
     // Grid::Layout() has to revisit every cell in a grid on every call, even when only
     // one cell actually changed, because that's the only way it can tell whether the
     // edited cell's column/row is still governed by some other (unchanged) cell's size.
@@ -917,6 +963,7 @@ struct Document {
         if (psb < 0 || psb == INT_MAX) { psb = 0; }
         if (psb != pathscalebias) { currentdrawroot->ResetChildren(); }
         pathscalebias = psb;
+        if (currentdrawroot->sx == 0) { layouts++; }
         currentdrawroot->LazyLayout(this, dc, 0, currentdrawroot->ColWidth(), false);
         currentdrawroot->AlignContent(this);
         ResetFont(dc);

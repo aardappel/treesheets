@@ -96,16 +96,17 @@ struct TSCanvas : public wxScrolledCanvas {
         if (doc->isctrlshiftdrag != 0) {
             doc->begindrag = doc->hover;
         } else if (!doc->hover.Thin()) {
+            auto before = doc->BeforeSelect();
             if (doc->begindrag.Thin() || doc->selected.Thin()) {
                 doc->SetSelect(doc->hover);
                 doc->ResetCursor();
-                Refresh();
+                doc->RefreshSelect(before);
             } else {
                 Selection old = doc->selected;
                 doc->selected.Merge(doc->begindrag, doc->hover);
                 if (!(old == doc->selected)) {
                     doc->ResetCursor();
-                    Refresh();
+                    doc->RefreshSelect(before);
                 }
             }
         }
@@ -172,9 +173,10 @@ struct TSCanvas : public wxScrolledCanvas {
         }
         doc->isctrlshiftdrag = isctrlshift;
         doc->UpdateHover(dc, mx, my);
+        auto before = doc->BeforeSelect();
         doc->SelectClick(right);
         sys->frame->UpdateStatus(doc->selected, true);
-        Refresh();
+        doc->RefreshSelect(before);
     }
 
     void OnLeftDown(wxMouseEvent &me) {

@@ -157,6 +157,7 @@ struct Selection {
             doc->ScrollIfSelectionOutOfView();
             doc->canvas->Refresh();
         } else {
+            auto before = doc->BeforeSelect();
             if (ctrl && dx != 0)  // implies textedit
             {
                 if (cursor == cursorend) { firstdx = dx; }
@@ -333,7 +334,7 @@ struct Selection {
             }
             doc->UpdateLayout();
             doc->ScrollIfSelectionOutOfView();
-            doc->canvas->Refresh();
+            doc->RefreshSelect(before);
         };
     }
 
@@ -352,6 +353,7 @@ struct Selection {
     }
 
     void Next(Document *doc, bool backwards) {
+        auto before = doc->BeforeSelect();
         ExitEdit(doc);
         if (backwards) {
             if (x > 0) {
@@ -376,7 +378,7 @@ struct Selection {
         EnterEdit(doc, 0, MaxCursor());
         doc->UpdateLayout();
         doc->ScrollIfSelectionOutOfView();
-        doc->canvas->Refresh();
+        doc->RefreshSelect(before);
     }
 
     wxString Wrap(Document *doc) {
