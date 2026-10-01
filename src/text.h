@@ -18,8 +18,16 @@ struct Text {
 
     void WasEdited() { lastedit = wxDateTime::Now(); }
 
+    static void FilterControls(wxString &str) {
+        // Scan without copying; one-for-one replacements preserve rich text positions.
+        for (auto i = str.begin(), end = str.end(); i != end; ++i) {
+            if (*i < ' ') { *i = ' '; }
+        }
+    }
+
     void SetText(const wxString &str) {
         t = str;
+        FilterControls(t);
         runs.clear();
     }
 
@@ -1212,6 +1220,7 @@ struct Text {
 
     void Load(wxDataInputStream &dis) {
         t = dis.ReadString();
+        FilterControls(t);
 
         // if (t.length() > 10000)
         //    printf("");

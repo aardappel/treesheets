@@ -2020,6 +2020,7 @@ struct Document {
             case A_REPLACEALL: {
                 if (sys->searchstring.IsEmpty()) { return _("No search."); }
                 auto replaces = sys->frame->replaces->GetValue();
+                Text::FilterControls(replaces);
                 auto lreplaces =
                     sys->casesensitivesearch ? wxString(wxEmptyString) : replaces.Lower();
                 if (action == A_REPLACEALL) {
@@ -3080,7 +3081,10 @@ struct Document {
         if (!WalkPath(drawpath)->grid) { Zoom(-1); }
     }
 
-    void PasteSingleText(Cell *c, const wxString &s) { c->text.Insert(this, s, selected, false); }
+    void PasteSingleText(Cell *c, wxString s) {
+        Text::FilterControls(s);
+        c->text.Insert(this, s, selected, false);
+    }
 
     // Polymorphism with wxDataObjectSimple does not work on Windows; bitmap format seems to not be
     // recognized.

@@ -439,6 +439,7 @@ struct System {
                             for (;;) {
                                 auto tag = dis.ReadString();
                                 if (tag.IsEmpty()) { break; }
+                                Text::FilterControls(tag);
                                 doc->tags[tag] = {
                                     versionlastloaded >= 24 ? dis.Read32() : g_cellcolor_default,
                                     versionlastloaded >= 24 ? dis.Read32()
@@ -699,8 +700,7 @@ struct System {
                                                                          : def;
     }
 
-    // Text with <run> elements: unlike the plain path this keeps whitespace as is, since it
-    // matters at the boundaries of runs.
+    // Text with <run> elements keeps whitespace positions, since they matter at run boundaries.
     static void FillXMLRichText(Text &text, wxXmlNode *node) {
         vector<wxXmlNode *> parts;
         for (auto *child = node->GetChildren(); child != nullptr; child = child->GetNext()) {
@@ -752,6 +752,7 @@ struct System {
                 c->text.t.Append(words[i]);
             }
         }
+        Text::FilterControls(c->text.t);
 
         if (node->GetName() == "cell") {
             c->text.relsize = -wxAtoi(node->GetAttribute("relsize", "0"));
@@ -837,7 +838,7 @@ struct System {
             } else {
                 if (g->ys <= y) { g->InsertCells(-1, y, 0, 1); }
                 auto &t = g->C(0, y)->text;
-                t.t = s.Trim(false);
+                t.SetText(s.Mid(col));
                 y++;
             }
         }

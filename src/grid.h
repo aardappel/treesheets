@@ -980,7 +980,7 @@ struct Grid {
                 if (s[0] == '\"') {
                     word = "";
                     for (int i = 1;; i++) {
-                        if (!s[i]) {
+                        if (i == static_cast<int>(s.size())) {
                             if (y < static_cast<int>(as.size()) - 1) {
                                 // A quoted field that continues on the next line keeps the line
                                 // break that ended this one.
