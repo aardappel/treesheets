@@ -66,8 +66,8 @@ msgstr "비트맵으로 복사(&C)"
 msgid "&Data"
 msgstr "데이터(&D)"
 
-msgid "&Decrease font size"
-msgstr "글꼴 크기 줄이기(&D)"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "글꼴 크기 줄이기 (Ctrl+SHIFT+마우스 휠)(&D)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "텍스트 크기 줄이기 (Shift+마우스 휠)(&D)"
@@ -111,8 +111,8 @@ msgstr "이미지(&I)..."
 msgid "&Images"
 msgstr "이미지(&I)"
 
-msgid "&Increase font size"
-msgstr "글꼴 크기 키우기(&R)"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "글꼴 크기 키우기 (Ctrl+SHIFT+마우스 휠)(&R)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "텍스트 크기 늘이기 (SHIFT+마우스 휠)(&I)"
@@ -1742,6 +1742,9 @@ msgstr "트레이에서 한 번 클릭으로 최대화"
 #, c-format
 msgid "Size %s"
 msgstr "크기 %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "일부 아이콘은 Microsoft의 vscode-icons(CC BY 4.0)를 기반으로 합니다:"
 
 msgid "Sort &Ascending"
 msgstr "오름차순 정렬(&A)"

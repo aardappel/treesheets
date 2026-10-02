@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-02 19:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,7 +62,7 @@ msgstr ""
 msgid "&Data"
 msgstr ""
 
-msgid "&Decrease font size"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
 msgstr ""
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
@@ -107,7 +107,7 @@ msgstr ""
 msgid "&Images"
 msgstr ""
 
-msgid "&Increase font size"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
 msgstr ""
 
 msgid "&Increase text size (SHIFT+mousewheel)"
@@ -1695,6 +1695,9 @@ msgstr ""
 
 #, c-format
 msgid "Size %s"
+msgstr ""
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
 msgstr ""
 
 msgid "Sort &Ascending"

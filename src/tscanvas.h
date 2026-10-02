@@ -287,12 +287,17 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnMouseWheel(wxMouseEvent &me) {
         AltWithMouse(me);
         bool ctrl = me.CmdDown();
+        bool fontsize = ctrl && me.ShiftDown() && !me.AltDown();
         if (sys->zoomscroll) { ctrl = !ctrl; }
         if (me.AltDown() || ctrl || me.ShiftDown()) {
             mousewheelaccum += me.GetWheelRotation();
             int steps = mousewheelaccum / me.GetWheelDelta();
             if (steps == 0) { return; }
             mousewheelaccum -= steps * me.GetWheelDelta();
+            if (fontsize) {
+                loop(i, abs(steps)) doc->Action(steps > 0 ? A_INCFONTSIZE : A_DECFONTSIZE);
+                return;
+            }
             bool deferlayout = me.AltDown() || me.ShiftDown();
             sys->frame->SetStatus(
                 doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown(), true, deferlayout));

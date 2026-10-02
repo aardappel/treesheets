@@ -66,8 +66,8 @@ msgstr "ビットマップとしてコピー(&C)"
 msgid "&Data"
 msgstr "データ(&D)"
 
-msgid "&Decrease font size"
-msgstr "フォントサイズを縮小(&D)"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "フォントサイズを縮小(&D) (Ctrl+SHIFT+マウスホイール)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "テキストサイズを縮小(&D) (SHIFT+マウスホイール)"
@@ -111,8 +111,8 @@ msgstr "画像(&I)..."
 msgid "&Images"
 msgstr "画像(&I)"
 
-msgid "&Increase font size"
-msgstr "フォントサイズを拡大(&I)"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "フォントサイズを拡大(&I) (Ctrl+SHIFT+マウスホイール)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "テキストサイズを拡大(&I) (SHIFT+マウスホイール)"
@@ -1771,6 +1771,9 @@ msgstr "トレイからシングルクリックで最大化"
 #, c-format
 msgid "Size %s"
 msgstr "サイズ %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "一部のアイコンは Microsoft の vscode-icons (CC BY 4.0) に基づいています:"
 
 msgid "Sort &Ascending"
 msgstr "昇順ソート(&A)"

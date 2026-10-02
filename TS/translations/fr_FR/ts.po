@@ -65,8 +65,8 @@ msgstr "&Copier comme image Bitmap"
 msgid "&Data"
 msgstr "&Donnée"
 
-msgid "&Decrease font size"
-msgstr "&Réduire la taille du texte"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "&Réduire la taille du texte (CTRL+SHIFT+molette)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Diminuer la taille du texte (SHIFT+Molette)"
@@ -110,8 +110,8 @@ msgstr "&Image..."
 msgid "&Images"
 msgstr "&Images"
 
-msgid "&Increase font size"
-msgstr "&Augmenter la taille du texte"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "&Augmenter la taille du texte (CTRL+SHIFT+molette)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Augmenter la taille du texte (SHIFT+roulette)"
@@ -1819,6 +1819,9 @@ msgstr "Maximiser par Un simple clic"
 #, c-format
 msgid "Size %s"
 msgstr "Taille %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "Certaines icônes sont basées sur vscode-icons de Microsoft (CC BY 4.0) :"
 
 msgid "Sort &Ascending"
 msgstr "Tri Croiss&ant"

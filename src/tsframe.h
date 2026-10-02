@@ -622,8 +622,10 @@ struct TSFrame : wxFrame {
         MyAppend(viewmenu, A_ZOOMIN, _("Zoom &In (CTRL+mousewheel)") + "\tCTRL+PGUP");
         MyAppend(viewmenu, A_ZOOMOUT, _("Zoom &Out (CTRL+mousewheel)") + "\tCTRL+PGDN");
         viewmenu->AppendSeparator();
-        MyAppend(viewmenu, A_INCFONTSIZE, _("&Increase font size") + "\tCTRL+.");
-        MyAppend(viewmenu, A_DECFONTSIZE, _("&Decrease font size") + "\tCTRL+,");
+        MyAppend(viewmenu, A_INCFONTSIZE,
+                 _("&Increase font size (CTRL+SHIFT+mousewheel)") + "\tCTRL+.");
+        MyAppend(viewmenu, A_DECFONTSIZE,
+                 _("&Decrease font size (CTRL+SHIFT+mousewheel)") + "\tCTRL+,");
         MyAppend(viewmenu, A_RESETFONTSIZE, _("&Reset font size") + "\tCTRL+-");
         viewmenu->AppendSeparator();
         MyAppend(viewmenu, A_NEXTFILE, _("&Next tab") + "\tCTRL+TAB",

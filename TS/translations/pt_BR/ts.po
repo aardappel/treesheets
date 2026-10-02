@@ -68,8 +68,8 @@ msgstr "Copiar como Bitma&p"
 msgid "&Data"
 msgstr "&Dados"
 
-msgid "&Decrease font size"
-msgstr "&Diminuir tamanho dos textos"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "&Diminuir tamanho dos textos (CTRL+SHIFT+botão de rolagem)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Diminuir tamanho do texto (SHIFT+botão de rolagem)"
@@ -113,8 +113,8 @@ msgstr "I&magem..."
 msgid "&Images"
 msgstr "Imagens"
 
-msgid "&Increase font size"
-msgstr "&Aumentar tamanho dos textos"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "&Aumentar tamanho dos textos (CTRL+SHIFT+botão de rolagem)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Aumentar tamanho do texto (SHIFT+botão de rolagem)"
@@ -1805,6 +1805,9 @@ msgstr "Maximizar da bandeja com um único cli&que"
 #, c-format
 msgid "Size %s"
 msgstr "Tamanho %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "Alguns ícones são baseados no vscode-icons da Microsoft (CC BY 4.0):"
 
 msgid "Sort &Ascending"
 msgstr "Classificar em Ordem &Ascendente"

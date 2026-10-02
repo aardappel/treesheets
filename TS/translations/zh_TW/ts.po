@@ -64,8 +64,8 @@ msgstr "複製為點陣圖(&C)"
 msgid "&Data"
 msgstr "資料(&D)"
 
-msgid "&Decrease font size"
-msgstr "縮小文字大小(&D)"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "縮小文字大小(&D)（Ctrl + Shift + 滑鼠滾輪）"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "縮小文字大小（Shift + 滑鼠滾輪）(&D)"
@@ -109,8 +109,8 @@ msgstr "圖片(&I)..."
 msgid "&Images"
 msgstr "圖片(&I)"
 
-msgid "&Increase font size"
-msgstr "放大文字大小(&I)"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "放大文字大小(&I)（Ctrl + Shift + 滑鼠滾輪）"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "放大文字大小（Shift + 滑鼠滾輪）(&I)"
@@ -1713,6 +1713,9 @@ msgstr "按一下系統匣圖示即可最大化"
 #, c-format
 msgid "Size %s"
 msgstr "大小 %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "部分圖示基於 Microsoft 的 vscode-icons（CC BY 4.0）："
 
 msgid "Sort &Ascending"
 msgstr "遞增排序(&A)"

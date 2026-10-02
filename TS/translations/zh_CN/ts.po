@@ -66,8 +66,8 @@ msgstr "复制为位图(&C)"
 msgid "&Data"
 msgstr "数据(&D)"
 
-msgid "&Decrease font size"
-msgstr "缩小文字大小(&D)"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "缩小文字大小(&D) (CTRL+SHIFT+鼠标滚轮)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "减小文本大小 (SHIFT+鼠标滚轮)(&D)"
@@ -111,8 +111,8 @@ msgstr "图像(&I)..."
 msgid "&Images"
 msgstr "图像(&I)"
 
-msgid "&Increase font size"
-msgstr "放大文字大小(&I)"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "放大文字大小(&I) (CTRL+SHIFT+鼠标滚轮)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "增大文本大小 (SHIFT+鼠标滚轮)(&I)"
@@ -1715,6 +1715,9 @@ msgstr "单击系统托盘图标最大化"
 #, c-format
 msgid "Size %s"
 msgstr "大小 %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "部分图标基于 Microsoft 的 vscode-icons（CC BY 4.0）："
 
 msgid "Sort &Ascending"
 msgstr "升序排序(&A)"

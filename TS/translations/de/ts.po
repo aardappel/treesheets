@@ -65,8 +65,8 @@ msgstr "Als &Bild kopieren"
 msgid "&Data"
 msgstr "&Daten"
 
-msgid "&Decrease font size"
-msgstr "Schriftgröße ver&ringern"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "Schriftgröße ver&ringern (STRG+UMSCHALT+Mausrad)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)"
@@ -110,8 +110,8 @@ msgstr "&Bild..."
 msgid "&Images"
 msgstr "&Bilder"
 
-msgid "&Increase font size"
-msgstr "Schriftgröße er&höhen"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "Schriftgröße er&höhen (STRG+UMSCHALT+Mausrad)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Textgröße vergrößern (UMSCHALT+Mausrad)"
@@ -1820,6 +1820,9 @@ msgstr "Ein Klick im Benachrichtungsfeld maximiert das Fenster"
 #, c-format
 msgid "Size %s"
 msgstr "Größe %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "Einige Symbole basieren auf vscode-icons von Microsoft (CC BY 4.0):"
 
 msgid "Sort &Ascending"
 msgstr "&Aufsteigend sortieren"

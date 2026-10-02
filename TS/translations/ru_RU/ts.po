@@ -70,8 +70,8 @@ msgstr "&Копировать как Растровое Изображение"
 msgid "&Data"
 msgstr "&Данные"
 
-msgid "&Decrease font size"
-msgstr "&Уменьшить размер текста"
+msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgstr "&Уменьшить размер текста (CTRL+SHIFT+КМ)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "У&меньшить..."
@@ -115,8 +115,8 @@ msgstr "&Изображение..."
 msgid "&Images"
 msgstr "&Изображения"
 
-msgid "&Increase font size"
-msgstr "У&величить размер Шрифта"
+msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgstr "У&величить размер Шрифта (CTRL+SHIFT+КМ)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "У&величить Размер текста (SHIFT+КМ)"
@@ -1936,6 +1936,9 @@ msgstr "Развернуть одним щелчком мыши из Трея"
 #, c-format
 msgid "Size %s"
 msgstr "Размер %s"
+
+msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
+msgstr "Некоторые значки основаны на vscode-icons от Microsoft (CC BY 4.0):"
 
 msgid "Sort &Ascending"
 msgstr "Сортировать по &Возрастанию"
