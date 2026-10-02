@@ -80,8 +80,10 @@ As a result:
   `if (sys->versionlastloaded >= N)` in the loaders so older files still open, and update
   `TS/docs/file_format_spec.txt`. Files from a newer version are rejected, so bump only when
   necessary.
-- **Images and translations** are compiled into the executable (`cmake/EmbedFiles.cmake` generates
-  `embedded_images.h` / `embedded_translations.h`). Adding a PNG/SVG under `TS/images` or a
+- **Images, translations, the tutorial/operation reference `.cts` files and Lobster's standard
+  modules** are compiled into the executable (`cmake/EmbedFiles.cmake` generates
+  `embedded_{images,translations,examples,lobster}.h`); the `.cts` files are used when they are not
+  on disk. Adding a PNG/SVG under `TS/images` or a
   `ts.mo` under `TS/translations` needs a CMake re-configure, but no code for the file lookup.
 
 ## Building
@@ -133,10 +135,8 @@ don't touch the user's running instance, open tabs or settings.
   `TS/docs/AGENT_SOCKET.md`). Use the
   `treesheets-agent` skill, whose `SKILL.md` documents the newline-delimited JSON protocol. This is
   the preferred way to set up documents and check the model state (`ts.goto_selection()`,
-  `ts.get_text()`, `ts.agent_result(...)`). Scripts need Lobster's standard modules in
-  `scripts/modules/` next to the executable (installed by `cmake --install`; for a dev build,
-  copy `TS/scripts` and `<lobster-src>/modules/{std,stdtype,vec,color}.lobster` there).
-  **Copy** them rather than symlinking into the repo.
+  `ts.get_text()`, `ts.agent_result(...)`). Lobster's standard modules (`std`, `stdtype`, `vec`,
+  `color`) are compiled into the executable, so a bare build directory runs scripts as is.
 - **UI input (keys, mouse, dialogs):** never drive the user's live display. Use a separate
   X server/compositor (e.g. headless sway with Xwayland plus `xdotool`/`import -window`).
   Move the pointer in several small `xdotool mousemove` steps for drags.

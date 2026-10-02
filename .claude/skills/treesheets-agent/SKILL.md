@@ -76,11 +76,8 @@ A Windows `TreeSheets.exe` (e.g. from the MinGW cross-build in
 `_build_win32/`) works under Wine, and the Linux-side client can reach it:
 Wine maps the Windows TCP socket onto a real host socket on `127.0.0.1`.
 
-- The exe needs `scripts/` (including Lobster's `modules/*.lobster`) next to
-  it; images are compiled in. A bare `cmake --build` directory doesn't have
-  it; `cmake --install` into a folder, or copy `TS/scripts` and the Lobster
-  modules (`_build_win32/_deps/lobster-src/modules/{std,stdtype,vec,color}.lobster`
-  into `scripts/modules/`) next to the exe.
+- Images and Lobster's standard modules are compiled into the exe, so it runs
+  straight from the `cmake --build` directory.
 - Launch it from that folder: `wine TreeSheets.exe -a -i`
   (add `WINEDEBUG=-all` to silence Wine's console noise).
 - For testing, use a throwaway prefix instead of relying on `-i`, just like

@@ -430,6 +430,16 @@ static const EmbeddedFile *GetEmbeddedImage(const wxString &name) {
     return FindEmbeddedFile(embedded_images, name);
 }
 
+// The tutorials and operation references compiled into the executable from TS/examples, for when
+// the file at path (from GetDocPath()) is not installed.
+static const EmbeddedFile *GetEmbeddedExample(wxString path) {
+    path.Replace("\\", "/");
+    for (const auto &file : embedded_examples) {
+        if (("/" + path).EndsWith(wxString("/") + file.name)) { return &file; }
+    }
+    return nullptr;
+}
+
 static wxBitmap LoadEmbeddedBitmap(const wxString &name) {
     auto *image = GetEmbeddedImage(name);
     return image != nullptr ? wxBitmap::NewFromPNGData(image->data, image->size) : wxNullBitmap;

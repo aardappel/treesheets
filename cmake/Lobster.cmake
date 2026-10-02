@@ -51,15 +51,13 @@ target_link_libraries(lobster-impl PUBLIC lobster)
 target_link_libraries(TreeSheets PRIVATE lobster-impl)
 target_compile_definitions(TreeSheets PRIVATE "ENABLE_LOBSTER=1")
 
+# The standard modules that scripts import (see TreeSheetsLoader in src/treesheets_impl.h)
+treesheets_embed_files(lobster "${lobster_SOURCE_DIR}"
+    modules/std.lobster modules/stdtype.lobster modules/vec.lobster modules/color.lobster)
+
 ## Installation
 
 install(DIRECTORY TS/scripts DESTINATION ${TREESHEETS_PKGDATADIR})
-install(FILES
-    ${lobster_SOURCE_DIR}/modules/std.lobster
-    ${lobster_SOURCE_DIR}/modules/stdtype.lobster
-    ${lobster_SOURCE_DIR}/modules/vec.lobster
-    ${lobster_SOURCE_DIR}/modules/color.lobster
-    DESTINATION ${TREESHEETS_PKGDATADIR}/scripts/modules)
 
 ## Script reference
 

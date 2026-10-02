@@ -114,10 +114,13 @@ target_compile_definitions(TreeSheets PRIVATE "PACKAGE_VERSION=\"${TREESHEETS_VE
 target_link_libraries(TreeSheets PRIVATE wx::aui wx::adv wx::core wx::xml wx::net)
 target_precompile_headers(TreeSheets PRIVATE src/stdafx.h)
 
-# Compile the images and translations into the executable (see src/wxtools.h)
+# Compile the images, translations, tutorials and operation references into the executable (see
+# src/wxtools.h)
 include(cmake/EmbedFiles.cmake)
 treesheets_embed_files(images "${CMAKE_CURRENT_SOURCE_DIR}/TS/images" *.png *.svg)
 treesheets_embed_files(translations "${CMAKE_CURRENT_SOURCE_DIR}/TS/translations" *.mo)
+treesheets_embed_files(examples "${CMAKE_CURRENT_SOURCE_DIR}/TS"
+    examples/tutorial*.cts examples/operation-reference*.cts)
 # Also embed the translations of wxWidgets itself (stock buttons and dialogs, the macOS application
 # menu) for these languages, named like ours so that both get the same language. An installed
 # wxWidgets comes with its own.
@@ -257,7 +260,8 @@ install(TARGETS TreeSheets DESTINATION ${TREESHEETS_BINDIR})
 install(DIRECTORY TS/docs DESTINATION ${TREESHEETS_DOCDIR})
 file(GLOB treesheets_readme_files "TS/readme*.html")
 install(FILES ${treesheets_readme_files} DESTINATION ${TREESHEETS_DOCDIR})
-install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR})
+install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR}
+        PATTERN "tutorial*.cts" EXCLUDE PATTERN "operation-reference*.cts" EXCLUDE)
 # The images themselves are compiled into the executable, only their licenses are installed
 install(FILES TS/images/material/LICENSE.material TS/images/material/LICENSE.vscode-icons
         DESTINATION ${TREESHEETS_DOCDIR}/images/material)

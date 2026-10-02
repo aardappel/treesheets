@@ -338,12 +338,14 @@ struct EmbeddedFile {
 };
 
 #include "embedded_images.h"
+#include "embedded_examples.h"
 #include "embedded_translations.h"
 #ifdef TREESHEETS_EMBED_WXTRANSLATIONS
     #include "embedded_wxtranslations.h"
 #endif
 
 #ifdef ENABLE_LOBSTER
+    #include "embedded_lobster.h"
     #include "script_interface.h"
 
     using namespace script;

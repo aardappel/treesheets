@@ -497,6 +497,16 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
 static int64_t TreeSheetsLoader(string_view_nt absfilename, std::string *dest, int64_t start,
                                 int64_t len) {
+    // Lobster's standard modules are compiled in: "import std" asks each data dir for
+    // modules/std.lobster.
+    std::string path(absfilename.sv);
+    std::ranges::replace(path, '\\', '/');
+    for (const auto &file : embedded_lobster) {
+        if (path.ends_with("/"s + file.name)) {
+            dest->assign(reinterpret_cast<const char *>(file.data), file.size);
+            return file.size;
+        }
+    }
     size_t l = 0;
     auto *buf = reinterpret_cast<char *>(loadfile(absfilename.c_str(), &l));
     if (buf == nullptr) { return -1; }

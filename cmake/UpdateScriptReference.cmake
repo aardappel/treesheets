@@ -13,7 +13,7 @@ endif()
 set(dump "${scripts_dir}/builtin_functions_reference.html")
 
 # The dump is written into the resolved scripts data directory (see above). An existing one
-# (e.g. installed with the Lobster modules that scripts need) is kept, and only a directory
+# (e.g. an installed one) is kept, and only a directory
 # created here is removed again.
 if(EXISTS "${scripts_dir}")
     set(created_scripts_dir FALSE)

@@ -295,7 +295,13 @@ struct System {
         {  // limit destructors
             wxBusyCursor wait;
             Cell *ics = nullptr;
-            wxFFileInputStream ffis(fn);
+            unique_ptr<wxInputStream> ffisp;
+            if (auto *file = ::wxFileExists(fn) ? nullptr : GetEmbeddedExample(fn)) {
+                ffisp = make_unique<wxMemoryInputStream>(file->data, file->size);
+            } else {
+                ffisp = make_unique<wxFFileInputStream>(fn);
+            }
+            auto &ffis = *ffisp;
             if (!ffis.IsOk()) {
                 for (int i = static_cast<int>(frame->filehistory.GetCount()) - 1; i >= 0; i--) {
                     if (frame->filehistory.GetHistoryFile(i) == filename) {
@@ -488,7 +494,7 @@ struct System {
     }
 
     void WatchFile(const wxString &filename, Document *doc) {
-        if (!fswatch || filename.IsEmpty()) { return; }
+        if (!fswatch || !::wxFileExists(filename)) { return; }
         doc->lastmodificationtime = wxFileName(filename).GetModificationTime();
         const auto &directorypath =
             wxFileName(filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
