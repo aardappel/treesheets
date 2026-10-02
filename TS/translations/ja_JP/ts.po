@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 15:08+0200\n"
+"POT-Creation-Date: 2026-10-02 08:44+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -416,6 +416,9 @@ msgstr "境界 4(&4)"
 msgid "Border &5"
 msgstr "境界 5(&5)"
 
+msgid "Border color operations"
+msgstr "境界色の操作"
+
 msgid "Bubble Style Rendering"
 msgstr "バブルスタイルレンダリング"
 
@@ -462,6 +465,12 @@ msgstr "大文字と小文字を区別する"
 
 msgid "Cell "
 msgstr "セル "
+
+msgid "Cell color operations"
+msgstr "セル色の操作"
+
+msgid "Cell operations"
+msgstr "セルの操作"
 
 msgid "Center (CTRL+SHIFT+e)"
 msgstr "中央揃え (Ctrl+Shift+E)"
@@ -522,6 +531,9 @@ msgstr "保存する TreeSheets ファイルを選択 :"
 
 msgid "Choose XML file to write"
 msgstr "書き込む XML ファイルを選択"
+
+msgid "Choose file:"
+msgstr "ファイルを選択 :"
 
 msgid "Choose image file to save:"
 msgstr "保存する画像ファイルを選択 :"
@@ -669,6 +681,9 @@ msgstr "ノートを編集(&N)"
 msgid "Edit Note (CTRL+e)"
 msgstr "ノートを編集 (Ctrl+E)"
 
+msgid "Edit operations"
+msgstr "編集の操作"
+
 msgid "Edit the note of the selected cell"
 msgstr "選択したセルのノートを編集"
 
@@ -734,6 +749,9 @@ msgid ""
 msgstr ""
 "TreeSheets ファイルの書き込み中にエラーが発生しました！別の場所に保存します"
 "か？"
+
+msgid "Error writing image file!"
+msgstr "画像ファイルの書き込みエラー！"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
@@ -906,6 +924,9 @@ msgstr "ファイル変更の競合が発生しました！"
 msgid "File of newer version."
 msgstr "新しいバージョンのファイルです。"
 
+msgid "File operations"
+msgstr "ファイルの操作"
+
 msgid "Filter"
 msgstr "フィルター"
 
@@ -917,6 +938,9 @@ msgstr "ドキュメント内を検索して置換"
 
 msgid "Find in document"
 msgstr "ドキュメント内を検索"
+
+msgid "Find operations"
+msgstr "検索の操作"
 
 msgid "Fold All"
 msgstr "すべて折りたたむ"
@@ -1005,6 +1029,9 @@ msgstr "画像 "
 
 msgid "Image Resize"
 msgstr "画像サイズ変更"
+
+msgid "Image operations"
+msgstr "画像の操作"
 
 msgid "Image(s) have been saved to disk."
 msgstr "画像はディスクに保存されました。"
@@ -1235,6 +1262,9 @@ msgstr "TreeSheets ファイルではありません。"
 
 msgid "Note"
 msgstr "ノート"
+
+msgid "Note operations"
+msgstr "ノートの操作"
 
 msgid "Nothing more to redo."
 msgstr "やり直す操作はこれ以上ありません。"
@@ -1502,6 +1532,9 @@ msgstr "現在の選択範囲内を置換して次へジャンプ(&J)"
 
 msgid "Replace in selection"
 msgstr "選択範囲内を置換"
+
+msgid "Replace operations"
+msgstr "置換の操作"
 
 msgid "Reset &colors"
 msgstr "色をリセット(&C)"
@@ -1804,6 +1837,12 @@ msgstr "テキストサイズ"
 msgid "Text Style"
 msgstr "テキストスタイル"
 
+msgid "Text alignment operations"
+msgstr "テキスト配置の操作"
+
+msgid "Text color operations"
+msgstr "テキスト色の操作"
+
 msgid "Text has been replaced."
 msgstr "テキストは置換されました。"
 
@@ -1812,6 +1851,9 @@ msgstr "テキストサイズを縮小しました。"
 
 msgid "Text size increased."
 msgstr "テキストサイズを拡大しました。"
+
+msgid "Text style operations"
+msgstr "テキストスタイルの操作"
 
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "フリーフォーム階層型情報オーガナイザー"
@@ -2030,6 +2072,9 @@ msgstr "ズームアウト (Ctrl+マウスホイール)"
 
 msgid "Zoom on cells cursor hovers on"
 msgstr "カーソルを合わせたセルを拡大表示"
+
+msgid "Zoom operations"
+msgstr "ズームの操作"
 
 msgid "Zoomed in."
 msgstr "ズームインしました。"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 15:08+0200\n"
+"POT-Creation-Date: 2026-10-02 08:44+0200\n"
 "PO-Revision-Date: 2026-09-28 03:57+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -416,6 +416,9 @@ msgstr "테두리 &4"
 msgid "Border &5"
 msgstr "테두리 &5"
 
+msgid "Border color operations"
+msgstr "테두리 색상 작업"
+
 msgid "Bubble Style Rendering"
 msgstr "버블 스타일 렌더링"
 
@@ -461,6 +464,12 @@ msgstr "대소문자 구분 검색"
 
 msgid "Cell "
 msgstr "셀 "
+
+msgid "Cell color operations"
+msgstr "셀 색상 작업"
+
+msgid "Cell operations"
+msgstr "셀 작업"
 
 msgid "Center (CTRL+SHIFT+e)"
 msgstr "가운데 (CTRL+SHIFT+E)"
@@ -521,6 +530,9 @@ msgstr "저장할 TreeSheets 파일 선택:"
 
 msgid "Choose XML file to write"
 msgstr "작성할 XML 파일 선택"
+
+msgid "Choose file:"
+msgstr "파일 선택:"
 
 msgid "Choose image file to save:"
 msgstr "저장할 이미지 파일 선택:"
@@ -666,6 +678,9 @@ msgstr "노트 편집(&N)"
 msgid "Edit Note (CTRL+e)"
 msgstr "노트 편집 (CTRL+E)"
 
+msgid "Edit operations"
+msgstr "편집 작업"
+
 msgid "Edit the note of the selected cell"
 msgstr "선택한 셀의 노트 편집"
 
@@ -730,6 +745,9 @@ msgid ""
 "location?"
 msgstr ""
 "TreeSheets 파일을 쓰는 중 오류가 발생했습니다! 다른 위치에 저장하시겠습니까?"
+
+msgid "Error writing image file!"
+msgstr "이미지 파일 쓰기 오류!"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
@@ -892,6 +910,9 @@ msgstr "파일 수정이 충돌합니다!"
 msgid "File of newer version."
 msgstr "최신 버전의 파일입니다."
 
+msgid "File operations"
+msgstr "파일 작업"
+
 msgid "Filter"
 msgstr "필터"
 
@@ -903,6 +924,9 @@ msgstr "문서에서 찾기 및 바꾸기"
 
 msgid "Find in document"
 msgstr "문서에서 찾기"
+
+msgid "Find operations"
+msgstr "검색 작업"
 
 msgid "Fold All"
 msgstr "모두 접기"
@@ -991,6 +1015,9 @@ msgstr "이미지 "
 
 msgid "Image Resize"
 msgstr "이미지 크기"
+
+msgid "Image operations"
+msgstr "이미지 작업"
 
 msgid "Image(s) have been saved to disk."
 msgstr "이미지가 디스크에 저장되었습니다."
@@ -1221,6 +1248,9 @@ msgstr "TreeSheets 파일이 아닙니다."
 
 msgid "Note"
 msgstr "노트"
+
+msgid "Note operations"
+msgstr "노트 작업"
 
 msgid "Nothing more to redo."
 msgstr "더 이상 다시 실행이 없습니다."
@@ -1476,6 +1506,9 @@ msgstr "현재 선택에서 바꾸고 다음으로 이동(&J)"
 
 msgid "Replace in selection"
 msgstr "선택에서 바꾸기"
+
+msgid "Replace operations"
+msgstr "바꾸기 작업"
 
 msgid "Reset &colors"
 msgstr "색상 재설정(&C)"
@@ -1775,6 +1808,12 @@ msgstr "텍스트 크기"
 msgid "Text Style"
 msgstr "텍스트 스타일"
 
+msgid "Text alignment operations"
+msgstr "텍스트 정렬 작업"
+
+msgid "Text color operations"
+msgstr "텍스트 색상 작업"
+
 msgid "Text has been replaced."
 msgstr "텍스트가 교체되었습니다."
 
@@ -1783,6 +1822,9 @@ msgstr "텍스트 크기가 감소했습니다."
 
 msgid "Text size increased."
 msgstr "텍스트 크기가 증가했습니다."
+
+msgid "Text style operations"
+msgstr "텍스트 스타일 작업"
 
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr ""
@@ -2003,6 +2045,9 @@ msgstr "축소 (Ctrl+마우스 휠)"
 
 msgid "Zoom on cells cursor hovers on"
 msgstr "커서가 있는 셀을 확대/축소"
+
+msgid "Zoom operations"
+msgstr "확대/축소 작업"
 
 msgid "Zoomed in."
 msgstr "확대합니다."

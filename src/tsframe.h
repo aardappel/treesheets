@@ -1041,7 +1041,7 @@ struct TSFrame : wxFrame {
             return new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                     wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_PLAIN_BACKGROUND);
         };
-        auto FinishToolbar = [&](wxAuiToolBar *tb, const char *name, const char *caption) {
+        auto FinishToolbar = [&](wxAuiToolBar *tb, const char *name, const wxString &caption) {
             tb->Realize();
             aui.AddPane(tb, wxAuiPaneInfo()
                                 .Name(name)
@@ -1062,25 +1062,25 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(filetb, _("Open (CTRL+o)"), wxID_OPEN, "fileopen");
         AddToolbarIcon(filetb, _("Save (CTRL+s)"), wxID_SAVE, "filesave");
         AddToolbarIcon(filetb, _("Save as..."), wxID_SAVEAS, "filesaveas");
-        FinishToolbar(filetb, "filetb", "File operations");
+        FinishToolbar(filetb, "filetb", _("File operations"));
 
         auto *edittb = NewToolbar();
         AddToolbarIcon(edittb, _("Undo (CTRL+z)"), wxID_UNDO, "undo");
         AddToolbarIcon(edittb, _("Copy (CTRL+c)"), wxID_COPY, "editcopy");
         AddToolbarIcon(edittb, _("Paste (CTRL+v)"), wxID_PASTE, "editpaste");
         AddToolbarIcon(edittb, _("Paste Style Only (CTRL+SHIFT+v)"), A_PASTESTYLE, "pastestyle");
-        FinishToolbar(edittb, "edittb", "Edit operations");
+        FinishToolbar(edittb, "edittb", _("Edit operations"));
 
         auto *zoomtb = NewToolbar();
         AddToolbarIcon(zoomtb, _("Zoom In (CTRL+mousewheel)"), A_ZOOMIN, "zoomin");
         AddToolbarIcon(zoomtb, _("Zoom Out (CTRL+mousewheel)"), A_ZOOMOUT, "zoomout");
-        FinishToolbar(zoomtb, "zoomtb", "Zoom operations");
+        FinishToolbar(zoomtb, "zoomtb", _("Zoom operations"));
 
         auto *celltb = NewToolbar();
         AddToolbarIcon(celltb, _("New Grid (INS)"), A_ENTERGRID, "newgrid");
         AddToolbarIcon(celltb, _("Add Image"), A_IMAGE, "image");
         AddToolbarIcon(celltb, _("Run"), wxID_EXECUTE, "run");
-        FinishToolbar(celltb, "celltb", "Cell operations");
+        FinishToolbar(celltb, "celltb", _("Cell operations"));
 
         auto *findtb = NewToolbar();
         AddToolbarLabel(findtb, _("Search "));
@@ -1088,7 +1088,7 @@ struct TSFrame : wxFrame {
                                                    FromDIP(wxSize(80, 22)), wxWANTS_CHARS));
         AddToolbarIcon(findtb, _("Clear search"), A_CLEARSEARCH, "cancel");
         AddToolbarIcon(findtb, _("Go to Next Search Result"), A_SEARCHNEXT, "search");
-        FinishToolbar(findtb, "findtb", "Find operations");
+        FinishToolbar(findtb, "findtb", _("Find operations"));
 
         auto *repltb = NewToolbar();
         AddToolbarLabel(repltb, _("Replace "));
@@ -1097,7 +1097,7 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(repltb, _("Clear replace"), A_CLEARREPLACE, "cancel");
         AddToolbarIcon(repltb, _("Replace in selection"), A_REPLACEONCE, "replace");
         AddToolbarIcon(repltb, _("Replace All"), A_REPLACEALL, "replaceall");
-        FinishToolbar(repltb, "repltb", "Replace operations");
+        FinishToolbar(repltb, "repltb", _("Replace operations"));
 
         auto GetColorIndex = [&](int targetcolor, int defaultindex) {
             for (auto i = 1; i < celltextcolors.size(); ++i) {
@@ -1111,24 +1111,24 @@ struct TSFrame : wxFrame {
         AddToolbarLabel(cellcolortb, _("Cell "));
         cellcolortb->AddControl(cellcolordropdown = new ColorDropdown(
             cellcolortb, A_CELLCOLOR, GetColorIndex(sys->lastcellcolor, 1)));
-        FinishToolbar(cellcolortb, "cellcolortb", "Cell color operations");
+        FinishToolbar(cellcolortb, "cellcolortb", _("Cell color operations"));
 
         auto *textcolortb = NewToolbar();
         AddToolbarLabel(textcolortb, _("Text "));
         textcolortb->AddControl(textcolordropdown = new ColorDropdown(
             textcolortb, A_TEXTCOLOR, GetColorIndex(sys->lasttextcolor, 2)));
-        FinishToolbar(textcolortb, "textcolortb", "Text color operations");
+        FinishToolbar(textcolortb, "textcolortb", _("Text color operations"));
 
         auto *bordercolortb = NewToolbar();
         AddToolbarLabel(bordercolortb, _("Border "));
         bordercolortb->AddControl(bordercolordropdown = new ColorDropdown(
             bordercolortb, A_BORDCOLOR, GetColorIndex(sys->lastbordcolor, 7)));
-        FinishToolbar(bordercolortb, "bordercolortb", "Border color operations");
+        FinishToolbar(bordercolortb, "bordercolortb", _("Border color operations"));
 
         auto *imagetb = NewToolbar();
         AddToolbarLabel(imagetb, _("Image "));
         imagetb->AddControl(imagedropdown = new ImageDropdown(imagetb, "nuvola/dropdown/"));
-        FinishToolbar(imagetb, "imagetb", "Image operations");
+        FinishToolbar(imagetb, "imagetb", _("Image operations"));
 
         // Last, so that on narrow windows, where toolbars get cut off, it doesn't push the others
         // out. The pressed state of these follows the selected text, see OnUpdateStyle.
@@ -1140,12 +1140,12 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(styletb, _("Strikethrough (CTRL+t)"), wxID_STRIKETHROUGH, "strikethrough",
                        wxITEM_CHECK);
         AddToolbarIcon(styletb, _("Typewriter (CTRL+ALT+t)"), A_TT, "typewriter", wxITEM_CHECK);
-        FinishToolbar(styletb, "styletb", "Text style operations");
+        FinishToolbar(styletb, "styletb", _("Text style operations"));
 
         auto *notetb = NewToolbar();
         // Pressed when the selected cell has a note, see OnUpdateNote.
         AddToolbarIcon(notetb, _("Edit Note (CTRL+e)"), A_EDITNOTE, "note", wxITEM_CHECK);
-        FinishToolbar(notetb, "notetb", "Note operations");
+        FinishToolbar(notetb, "notetb", _("Note operations"));
 
         // The pressed state of these follows the selected cells, see OnUpdateTextAlign and
         // OnUpdateVertAlign.
@@ -1167,7 +1167,7 @@ struct TSFrame : wxFrame {
                        wxITEM_CHECK);
         AddToolbarIcon(aligntb, _("Align bottom (CTRL+SHIFT+n)"), A_ALIGNBOTTOM, "alignbottom",
                        wxITEM_CHECK);
-        FinishToolbar(aligntb, "aligntb", "Text alignment operations");
+        FinishToolbar(aligntb, "aligntb", _("Text alignment operations"));
 
         auto *artprovider = aui.GetArtProvider();
         artprovider->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 0);

@@ -169,9 +169,9 @@ From the maintainer (see "Contributing" in `README.md`):
 gettext catalogs are in `TS/translations/<lang>/ts.po`, and the template is `TS/translations/ts.pot`.
 After changing UI strings, run the targets `update-pot` → `update-po` → (translate) → `update-mo`
 (see README "Translating"). The `update-pot` target extracts only from `tsframe.h`, `document.h`,
-`system.h` and `wxtools.h`. If you add `_()` strings elsewhere, extend `pot_sources` in
-`cmake/Localization.cmake`. The compiled `.mo` files are embedded into the binary, so rebuild after
-`update-mo`.
+`system.h`, `wxtools.h`, `image.h` and `treesheets_impl.h`. If you add `_()` strings elsewhere,
+extend `pot_sources` in `cmake/Localization.cmake`. The compiled `.mo` files are embedded into the
+binary, so rebuild after `update-mo`.
 
 ## Git, CI and releases
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 15:08+0200\n"
+"POT-Creation-Date: 2026-10-02 08:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -408,6 +408,9 @@ msgstr ""
 msgid "Border &5"
 msgstr ""
 
+msgid "Border color operations"
+msgstr ""
+
 msgid "Bubble Style Rendering"
 msgstr ""
 
@@ -449,6 +452,12 @@ msgid "Case-sensitive search"
 msgstr ""
 
 msgid "Cell "
+msgstr ""
+
+msgid "Cell color operations"
+msgstr ""
+
+msgid "Cell operations"
 msgstr ""
 
 msgid "Center (CTRL+SHIFT+e)"
@@ -505,6 +514,9 @@ msgid "Choose TreeSheets file to save:"
 msgstr ""
 
 msgid "Choose XML file to write"
+msgstr ""
+
+msgid "Choose file:"
 msgstr ""
 
 msgid "Choose image file to save:"
@@ -649,6 +661,9 @@ msgstr ""
 msgid "Edit Note (CTRL+e)"
 msgstr ""
 
+msgid "Edit operations"
+msgstr ""
+
 msgid "Edit the note of the selected cell"
 msgstr ""
 
@@ -711,6 +726,9 @@ msgstr ""
 msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"
+msgstr ""
+
+msgid "Error writing image file!"
 msgstr ""
 
 msgid "Error writing image file! (try saving under new filename)."
@@ -861,6 +879,9 @@ msgstr ""
 msgid "File of newer version."
 msgstr ""
 
+msgid "File operations"
+msgstr ""
+
 msgid "Filter"
 msgstr ""
 
@@ -871,6 +892,9 @@ msgid "Find and replace in document"
 msgstr ""
 
 msgid "Find in document"
+msgstr ""
+
+msgid "Find operations"
 msgstr ""
 
 msgid "Fold All"
@@ -957,6 +981,9 @@ msgid "Image "
 msgstr ""
 
 msgid "Image Resize"
+msgstr ""
+
+msgid "Image operations"
 msgstr ""
 
 msgid "Image(s) have been saved to disk."
@@ -1183,6 +1210,9 @@ msgid "Not a TreeSheets file."
 msgstr ""
 
 msgid "Note"
+msgstr ""
+
+msgid "Note operations"
 msgstr ""
 
 msgid "Nothing more to redo."
@@ -1432,6 +1462,9 @@ msgid "Replace in Current Selection && &Jump Next"
 msgstr ""
 
 msgid "Replace in selection"
+msgstr ""
+
+msgid "Replace operations"
 msgstr ""
 
 msgid "Reset &colors"
@@ -1726,6 +1759,12 @@ msgstr ""
 msgid "Text Style"
 msgstr ""
 
+msgid "Text alignment operations"
+msgstr ""
+
+msgid "Text color operations"
+msgstr ""
+
 msgid "Text has been replaced."
 msgstr ""
 
@@ -1733,6 +1772,9 @@ msgid "Text size decreased."
 msgstr ""
 
 msgid "Text size increased."
+msgstr ""
+
+msgid "Text style operations"
 msgstr ""
 
 msgid "The Free Form Hierarchical Information Organizer"
@@ -1945,6 +1987,9 @@ msgid "Zoom Out (CTRL+mousewheel)"
 msgstr ""
 
 msgid "Zoom on cells cursor hovers on"
+msgstr ""
+
+msgid "Zoom operations"
 msgstr ""
 
 msgid "Zoomed in."

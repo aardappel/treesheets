@@ -7,7 +7,7 @@ file(GLOB po_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/TS/translation
 #   cmake --build <builddir> --target update-pot
 find_program(XGETTEXT_EXECUTABLE xgettext)
 if(XGETTEXT_EXECUTABLE)
-    set(pot_sources tsframe.h document.h system.h wxtools.h)
+    set(pot_sources tsframe.h document.h system.h wxtools.h image.h treesheets_impl.h)
     add_custom_target(
         update-pot
         COMMAND

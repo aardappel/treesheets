@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 15:08+0200\n"
+"POT-Creation-Date: 2026-10-02 08:44+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -417,6 +417,9 @@ msgstr "Rand &4"
 msgid "Border &5"
 msgstr "Rand &5"
 
+msgid "Border color operations"
+msgstr "Operationen für Rahmenfarbe"
+
 msgid "Bubble Style Rendering"
 msgstr "Blasenstil-Rendering"
 
@@ -467,6 +470,12 @@ msgstr "Groß- und Kleinschreibung beachten"
 
 msgid "Cell "
 msgstr "Zelle "
+
+msgid "Cell color operations"
+msgstr "Operationen für Zellfarbe"
+
+msgid "Cell operations"
+msgstr "Zellenoperationen"
 
 msgid "Center (CTRL+SHIFT+e)"
 msgstr "Zentrieren (STRG+UMSCHALT+e)"
@@ -532,6 +541,9 @@ msgstr "Treesheets-Datei zum Schreiben auswählen"
 
 msgid "Choose XML file to write"
 msgstr "XML-Datei zum Schreiben auswählen"
+
+msgid "Choose file:"
+msgstr "Datei auswählen:"
 
 msgid "Choose image file to save:"
 msgstr "Bilddatei zum Abspeichern angeben:"
@@ -685,6 +697,9 @@ msgstr "&Notiz bearbeiten"
 msgid "Edit Note (CTRL+e)"
 msgstr "Notiz bearbeiten (STRG+e)"
 
+msgid "Edit operations"
+msgstr "Bearbeitungsoperationen"
+
 msgid "Edit the note of the selected cell"
 msgstr "Die Notiz in der ausgewählten Zelle bearbeiten"
 
@@ -754,6 +769,9 @@ msgid ""
 msgstr ""
 "Fehler beim Schreiben der TreeSheets-Datei! Möchten Sie versuchen, die Datei "
 "an einem anderen Ort zu speichern?"
+
+msgid "Error writing image file!"
+msgstr "Fehler beim Schreiben der Bilddatei!"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr ""
@@ -928,6 +946,9 @@ msgstr "Konflikt bei der Dateiänderung!"
 msgid "File of newer version."
 msgstr "Datei weist einen neueren Versionsstand auf."
 
+msgid "File operations"
+msgstr "Dateioperationen"
+
 msgid "Filter"
 msgstr "Filter..."
 
@@ -939,6 +960,9 @@ msgstr "Im Dokument suchen und ersetzen"
 
 msgid "Find in document"
 msgstr "Im Dokument suchen"
+
+msgid "Find operations"
+msgstr "Suchoperationen"
 
 msgid "Fold All"
 msgstr "Alles einklappen"
@@ -1029,6 +1053,9 @@ msgstr "Symbol "
 
 msgid "Image Resize"
 msgstr "Bildgröße verändern..."
+
+msgid "Image operations"
+msgstr "Bildoperationen"
 
 msgid "Image(s) have been saved to disk."
 msgstr "Bild(er) wurde(n) auf Datenträger gespeichert"
@@ -1268,6 +1295,9 @@ msgstr "Keine TreeSheets-Datei!"
 
 msgid "Note"
 msgstr "Notiz"
+
+msgid "Note operations"
+msgstr "Notizoperationen"
 
 msgid "Nothing more to redo."
 msgstr "Nichts mehr zum Wiederherstellen."
@@ -1543,6 +1573,9 @@ msgstr "In aktueller Auswahl ersetzen && zum &nächsten Treffer springen"
 
 msgid "Replace in selection"
 msgstr "In aktueller Auswahl ersetzen"
+
+msgid "Replace operations"
+msgstr "Ersetzungsoperationen"
 
 msgid "Reset &colors"
 msgstr "&Farben zurücksetzen"
@@ -1854,6 +1887,12 @@ msgstr "Textgröße"
 msgid "Text Style"
 msgstr "Textstil"
 
+msgid "Text alignment operations"
+msgstr "Operationen für Textausrichtung"
+
+msgid "Text color operations"
+msgstr "Operationen für Textfarbe"
+
 msgid "Text has been replaced."
 msgstr "Text wurde ersetzt."
 
@@ -1862,6 +1901,9 @@ msgstr "Textgröße wurde verkleinert."
 
 msgid "Text size increased."
 msgstr "Textgröße wurde vergrößert."
+
+msgid "Text style operations"
+msgstr "Operationen für Textstil"
 
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "Der formfreie hierarchische Informationsorganisator"
@@ -2093,6 +2135,9 @@ msgstr "Zoom verkleinern (STRG+Mausrad)"
 
 msgid "Zoom on cells cursor hovers on"
 msgstr "Zelle unter dem Mauszeiger vergrößern"
+
+msgid "Zoom operations"
+msgstr "Zoomoperationen"
 
 msgid "Zoomed in."
 msgstr "Zoom vergrößert."

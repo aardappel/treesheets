@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 15:08+0200\n"
+"POT-Creation-Date: 2026-10-02 08:44+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -410,6 +410,9 @@ msgstr "Viền &4"
 msgid "Border &5"
 msgstr "Viền &5"
 
+msgid "Border color operations"
+msgstr "Thao tác màu viền"
+
 msgid "Bubble Style Rendering"
 msgstr "Hiển thị theo kiểu bong bóng"
 
@@ -456,6 +459,12 @@ msgstr "Tìm kiếm phân biệt hoa thường"
 
 msgid "Cell "
 msgstr "Ô "
+
+msgid "Cell color operations"
+msgstr "Thao tác màu ô"
+
+msgid "Cell operations"
+msgstr "Thao tác ô"
 
 msgid "Center (CTRL+SHIFT+e)"
 msgstr "Căn giữa (CTRL+SHIFT+e)"
@@ -517,6 +526,9 @@ msgstr "Chọn tệp TreeSheets để lưu:"
 
 msgid "Choose XML file to write"
 msgstr "Chọn tệp XML để ghi"
+
+msgid "Choose file:"
+msgstr "Chọn tệp:"
 
 msgid "Choose image file to save:"
 msgstr "Chọn tệp hình ảnh để lưu:"
@@ -662,6 +674,9 @@ msgstr "Chỉnh sửa ghi &chú"
 msgid "Edit Note (CTRL+e)"
 msgstr "Chỉnh sửa ghi chú (CTRL+e)"
 
+msgid "Edit operations"
+msgstr "Thao tác chỉnh sửa"
+
 msgid "Edit the note of the selected cell"
 msgstr "Chỉnh sửa ghi chú của ô được chọn"
 
@@ -728,6 +743,9 @@ msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"
 msgstr "Lỗi khi ghi tệp TreeSheets! Bạn có muốn lưu ở một vị trí khác không?"
+
+msgid "Error writing image file!"
+msgstr "Lỗi khi ghi tệp hình ảnh!"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr "Lỗi khi ghi tệp hình ảnh! (hãy thử lưu với tên tệp mới)."
@@ -897,6 +915,9 @@ msgstr "Xung đột thay đổi tệp!"
 msgid "File of newer version."
 msgstr "Tệp thuộc phiên bản mới hơn."
 
+msgid "File operations"
+msgstr "Thao tác tệp"
+
 msgid "Filter"
 msgstr "Bộ lọc"
 
@@ -908,6 +929,9 @@ msgstr "Tìm kiếm và thay thế trong tài liệu"
 
 msgid "Find in document"
 msgstr "Tìm trong tài liệu"
+
+msgid "Find operations"
+msgstr "Thao tác tìm kiếm"
 
 msgid "Fold All"
 msgstr "Gập tất cả"
@@ -996,6 +1020,9 @@ msgstr "Hình ảnh "
 
 msgid "Image Resize"
 msgstr "Thay đổi kích thước hình ảnh"
+
+msgid "Image operations"
+msgstr "Thao tác hình ảnh"
 
 msgid "Image(s) have been saved to disk."
 msgstr "(Các) hình ảnh đã được lưu vào đĩa."
@@ -1228,6 +1255,9 @@ msgstr "Không phải là tệp TreeSheets."
 
 msgid "Note"
 msgstr "Ghi chú"
+
+msgid "Note operations"
+msgstr "Thao tác ghi chú"
 
 msgid "Nothing more to redo."
 msgstr "Không còn gì để làm lại."
@@ -1489,6 +1519,9 @@ msgstr "Thay thế trong vùng chọn && Nhảy đến mục tiếp (&J)"
 
 msgid "Replace in selection"
 msgstr "Thay thế trong vùng chọn"
+
+msgid "Replace operations"
+msgstr "Thao tác thay thế"
 
 msgid "Reset &colors"
 msgstr "Đặt lại màu sắc (&C)"
@@ -1790,6 +1823,12 @@ msgstr "Kích thước văn bản"
 msgid "Text Style"
 msgstr "Kiểu văn bản"
 
+msgid "Text alignment operations"
+msgstr "Thao tác căn chỉnh văn bản"
+
+msgid "Text color operations"
+msgstr "Thao tác màu văn bản"
+
 msgid "Text has been replaced."
 msgstr "Văn bản đã được thay thế."
 
@@ -1798,6 +1837,9 @@ msgstr "Đã giảm kích thước văn bản."
 
 msgid "Text size increased."
 msgstr "Đã tăng kích thước văn bản."
+
+msgid "Text style operations"
+msgstr "Thao tác kiểu văn bản"
 
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "Trình tổ chức thông tin phân cấp tự do"
@@ -2016,6 +2058,9 @@ msgstr "Thu nhỏ (CTRL+lăn chuột)"
 
 msgid "Zoom on cells cursor hovers on"
 msgstr "Thu phóng các ô con trỏ di chuyển trên"
+
+msgid "Zoom operations"
+msgstr "Thao tác thu phóng"
 
 msgid "Zoomed in."
 msgstr "Đã phóng to."

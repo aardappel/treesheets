@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 5.1 (based on TS 2.1.13)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 13:57+0200\n"
+"POT-Creation-Date: 2026-10-02 08:44+0200\n"
 "PO-Revision-Date: 2026-10-01 22:13+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -449,6 +449,9 @@ msgstr "Граница &4"
 msgid "Border &5"
 msgstr "Граница &5"
 
+msgid "Border color operations"
+msgstr "Операции с цветом рамки"
+
 msgid "Bubble Style Rendering"
 msgstr ".. в стиле &Пузырьков"
 
@@ -498,6 +501,12 @@ msgstr "Поиск с учетом &Регистра"
 # эл-т Главного Окна
 msgid "Cell "
 msgstr "Ячейка "
+
+msgid "Cell color operations"
+msgstr "Операции с цветом ячейки"
+
+msgid "Cell operations"
+msgstr "Операции с ячейками"
 
 # комментарий к эл-ту Главного Окна
 msgid "Center (CTRL+SHIFT+e)"
@@ -565,6 +574,9 @@ msgstr "Укажите файл TreeSheets для сохранения:"
 # Заголовок Окна (выбор п. Меню)
 msgid "Choose XML file to write"
 msgstr "Укажите XML-файл для сохранения"
+
+msgid "Choose file:"
+msgstr "Выберите файл:"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Choose image file to save:"
@@ -730,6 +742,9 @@ msgstr "Редактировать &Заметку"
 msgid "Edit Note (CTRL+e)"
 msgstr "Редактировать Заметку (CTRL+e)"
 
+msgid "Edit operations"
+msgstr "Операции редактирования"
+
 # комментарий к п. Меню
 msgid "Edit the note of the selected cell"
 msgstr "Редактировать заметку выбранной ячейки"
@@ -804,6 +819,9 @@ msgstr "Ошибка записи PNG-файла!"
 # Сообщение (после действия или события)
 msgid "Error writing TreeSheets file! Would you like to save at a different location?"
 msgstr "Ошибка записи файла TreeSheets! Хотите сохранить файл в другом месте?"
+
+msgid "Error writing image file!"
+msgstr "Ошибка записи файла изображения!"
 
 # Сообщение (после действия или события)
 msgid "Error writing image file! (try saving under new filename)."
@@ -960,6 +978,9 @@ msgstr "Конфликт изменений файла!"
 msgid "File of newer version."
 msgstr "Более новая версия файла."
 
+msgid "File operations"
+msgstr "Операции с файлами"
+
 msgid "Filter"
 msgstr "Фильтр"
 
@@ -974,6 +995,9 @@ msgstr "Поиск и замена в документе"
 # комментарий к п. Меню
 msgid "Find in document"
 msgstr "Поиск в документе"
+
+msgid "Find operations"
+msgstr "Операции поиска"
 
 # п. Меню (нет & в исходном тексте)
 msgid "Fold All"
@@ -1073,6 +1097,9 @@ msgstr "Изображение "
 # Сообщение (после действия или события)
 msgid "Image Resize"
 msgstr "Изменение Размера изображения"
+
+msgid "Image operations"
+msgstr "Операции с изображениями"
 
 # Сообщение (после действия или события)
 msgid "Image(s) have been saved to disk."
@@ -1340,6 +1367,9 @@ msgstr "Файл не является файлом TreeSheets."
 # Заголовок Окна (выбор п. Меню)
 msgid "Note"
 msgstr "Заметка"
+
+msgid "Note operations"
+msgstr "Операции с заметками"
 
 msgid "Nothing more to redo."
 msgstr "Больше нечего возвращать."
@@ -1626,6 +1656,9 @@ msgstr ".. и Перейти к Cледующему Ре&зультату"
 # комментарий к эл-ту Главного Окна
 msgid "Replace in selection"
 msgstr "Заменить в выделенном"
+
+msgid "Replace operations"
+msgstr "Операции замены"
 
 msgid "Reset &colors"
 msgstr ".. &Цвета"
@@ -1976,6 +2009,12 @@ msgstr "Текст - Ра&змеры"
 msgid "Text Style"
 msgstr "Текст - &Стиль"
 
+msgid "Text alignment operations"
+msgstr "Операции выравнивания текста"
+
+msgid "Text color operations"
+msgstr "Операции с цветом текста"
+
 # Сообщение (после действия или события)
 msgid "Text has been replaced."
 msgstr "Текст был заменен."
@@ -1987,6 +2026,9 @@ msgstr "Размер текста уменьшен."
 # Сообщение (после действия или события)
 msgid "Text size increased."
 msgstr "Размер текста увеличен."
+
+msgid "Text style operations"
+msgstr "Операции со стилем текста"
 
 # в Окне (выбор п. Меню) - О программе
 msgid "The Free Form Hierarchical Information Organizer"
@@ -2236,6 +2278,9 @@ msgstr "Уменьшить (CTRL+КМ)"
 # комментарий к п. Меню
 msgid "Zoom on cells cursor hovers on"
 msgstr "Увеличивать ячейку под курсором"
+
+msgid "Zoom operations"
+msgstr "Операции масштабирования"
 
 # Сообщение (после действия или события)
 msgid "Zoomed in."

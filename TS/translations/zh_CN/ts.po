@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 15:08+0200\n"
+"POT-Creation-Date: 2026-10-02 08:44+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -412,6 +412,9 @@ msgstr "边框 &4"
 msgid "Border &5"
 msgstr "边框 &5"
 
+msgid "Border color operations"
+msgstr "边框颜色操作"
+
 msgid "Bubble Style Rendering"
 msgstr "气泡样式渲染"
 
@@ -454,6 +457,12 @@ msgstr "区分大小写搜索"
 
 msgid "Cell "
 msgstr "单元格 "
+
+msgid "Cell color operations"
+msgstr "单元格颜色操作"
+
+msgid "Cell operations"
+msgstr "单元格操作"
 
 msgid "Center (CTRL+SHIFT+e)"
 msgstr "居中 (CTRL+SHIFT+e)"
@@ -512,6 +521,9 @@ msgstr "选择要保存的 TreeSheets 文件："
 
 msgid "Choose XML file to write"
 msgstr "选择要写入的 XML 文件"
+
+msgid "Choose file:"
+msgstr "选择文件："
 
 msgid "Choose image file to save:"
 msgstr "选择要保存的图像文件："
@@ -657,6 +669,9 @@ msgstr "编辑备注(&N)"
 msgid "Edit Note (CTRL+e)"
 msgstr "编辑备注 (CTRL+e)"
 
+msgid "Edit operations"
+msgstr "编辑操作"
+
 msgid "Edit the note of the selected cell"
 msgstr "编辑所选单元格的备注"
 
@@ -720,6 +735,9 @@ msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"
 msgstr "写入 TreeSheets 文件时出错！是否要保存到其他位置？"
+
+msgid "Error writing image file!"
+msgstr "写入图像文件时出错！"
 
 msgid "Error writing image file! (try saving under new filename)."
 msgstr "写入图像文件时出错！（请尝试使用新文件名保存）。"
@@ -875,6 +893,9 @@ msgstr "文件修改冲突！"
 msgid "File of newer version."
 msgstr "文件版本较新。"
 
+msgid "File operations"
+msgstr "文件操作"
+
 msgid "Filter"
 msgstr "筛选"
 
@@ -886,6 +907,9 @@ msgstr "在文档中查找和替换"
 
 msgid "Find in document"
 msgstr "在文档中查找"
+
+msgid "Find operations"
+msgstr "搜索操作"
 
 msgid "Fold All"
 msgstr "全部折叠"
@@ -972,6 +996,9 @@ msgstr "图像 "
 
 msgid "Image Resize"
 msgstr "调整图像大小"
+
+msgid "Image operations"
+msgstr "图像操作"
 
 msgid "Image(s) have been saved to disk."
 msgstr "图像已保存到磁盘。"
@@ -1199,6 +1226,9 @@ msgstr "不是 TreeSheets 文件。"
 
 msgid "Note"
 msgstr "备注"
+
+msgid "Note operations"
+msgstr "备注操作"
 
 msgid "Nothing more to redo."
 msgstr "没有更多可重做的操作。"
@@ -1450,6 +1480,9 @@ msgstr "在当前选择中替换并跳转到下一个(&J)"
 
 msgid "Replace in selection"
 msgstr "在选择中替换"
+
+msgid "Replace operations"
+msgstr "替换操作"
 
 msgid "Reset &colors"
 msgstr "重置颜色(&C)"
@@ -1747,6 +1780,12 @@ msgstr "文本大小"
 msgid "Text Style"
 msgstr "文本样式"
 
+msgid "Text alignment operations"
+msgstr "文本对齐操作"
+
+msgid "Text color operations"
+msgstr "文本颜色操作"
+
 msgid "Text has been replaced."
 msgstr "文本已被替换。"
 
@@ -1755,6 +1794,9 @@ msgstr "文本大小已减小。"
 
 msgid "Text size increased."
 msgstr "文本大小已增大。"
+
+msgid "Text style operations"
+msgstr "文本样式操作"
 
 msgid "The Free Form Hierarchical Information Organizer"
 msgstr "自由形态的层级信息组织器"
@@ -1970,6 +2012,9 @@ msgstr "缩小 (CTRL+鼠标滚轮)"
 
 msgid "Zoom on cells cursor hovers on"
 msgstr "缩放光标悬停的单元格"
+
+msgid "Zoom operations"
+msgstr "缩放操作"
 
 msgid "Zoomed in."
 msgstr "已放大。"
