@@ -1762,9 +1762,12 @@ struct Document {
                 info.SetName("TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));
                 info.SetCopyright("(C) 2026 Wouter van Oortmerssen and Tobias Predel");
-                auto desc = wxString::Format("%s\n\n%s " wxVERSION_STRING,
-                                             _("The Free Form Hierarchical Information Organizer"),
-                                             _("Uses"));
+                auto desc = wxString::Format(
+                    "%s\n\n%s " wxVERSION_STRING "\n\n%s",
+                    _("The Free Form Hierarchical Information Organizer"), _("Uses"),
+                    _("Some icons are based on vscode-icons by Microsoft (CC BY 4.0):") +
+                        "\nhttps://github.com/microsoft/vscode-icons"
+                        "\nhttps://creativecommons.org/licenses/by/4.0/");
                 info.SetDescription(desc);
                 wxAboutBox(info);
                 return wxEmptyString;

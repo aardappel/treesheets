@@ -263,8 +263,7 @@ install(FILES ${treesheets_readme_files} DESTINATION ${TREESHEETS_DOCDIR})
 install(DIRECTORY TS/examples DESTINATION ${TREESHEETS_DOCDIR}
         PATTERN "tutorial*.cts" EXCLUDE PATTERN "operation-reference*.cts" EXCLUDE)
 # The images themselves are compiled into the executable, only their licenses are installed
-install(FILES TS/images/material/LICENSE.material TS/images/material/LICENSE.vscode-icons
-        DESTINATION ${TREESHEETS_DOCDIR}/images/material)
+install(FILES TS/images/material/LICENSE.material DESTINATION ${TREESHEETS_DOCDIR}/images/material)
 install(FILES TS/images/nuvola/author TS/images/nuvola/license.txt TS/images/nuvola/readme.txt
               TS/images/nuvola/thanks.to
         DESTINATION ${TREESHEETS_DOCDIR}/images/nuvola)
