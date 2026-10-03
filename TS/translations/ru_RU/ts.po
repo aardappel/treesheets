@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 5.1 (based on TS 2.1.13)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2026-10-01 22:13+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -560,6 +560,10 @@ msgid "Choose SVG file to write"
 msgstr "Укажите SVG-файл для записи"
 
 # Заголовок Окна (выбор п. Меню)
+msgid "Choose TSV file to write"
+msgstr "Укажите TSV-файл для сохранения"
+
+# Заголовок Окна (выбор п. Меню)
 msgid "Choose Text file to write"
 msgstr "Укажите TXT-файл для сохранения"
 
@@ -881,6 +885,10 @@ msgstr "Экспорт текущего вида в векторный SVG-фа�
 # Комметарий п. меню.
 msgid "Export the grid of the current view as CSV, skipping sub-grids. Good for spreadsheets and databases (use the Flatten operation first to include sub-grids)"
 msgstr "Экспорт сетки текущего вида в CSV, без подсеток. Для электронных таблиц и баз данных (чтобы включить подсетки, сначала реорганизуйте сетку \"к Табличному виду\")"
+
+# Комметарий п. меню.
+msgid "Export the grid of the current view as tab separated text, skipping sub-grids. Good for spreadsheets (use the Flatten operation first to include sub-grids)"
+msgstr "Экспорт сетки текущего вида в текст с разделителем - табуляцией, без подсеток. Для электронных таблиц (чтобы включить подсетки, сначала реорганизуйте сетку \"к Табличному виду\")"
 
 # комментарий к п. Меню
 msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"
@@ -1978,6 +1986,9 @@ msgstr "Поменять Прокрутку и Масштабирование К
 # вариант выбора языка
 msgid "System Default"
 msgstr "Системный, по умолчанию"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "TSV (разделитель - та&буляция, плоский)..."
 
 msgid "Tab delimited text..."
 msgstr "Текст (разделитель - та&буляция)..."

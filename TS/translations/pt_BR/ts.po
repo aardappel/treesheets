@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -522,6 +522,9 @@ msgstr "Informe o arquivo PNG a gravar"
 msgid "Choose SVG file to write"
 msgstr "Informe o arquivo SVG a gravar"
 
+msgid "Choose TSV file to write"
+msgstr "Informe o arquivo TSV a gravar"
+
 msgid "Choose Text file to write"
 msgstr "Informe o arquivo de texto a gravar"
 
@@ -839,6 +842,12 @@ msgstr ""
 "Exporta a grade da visualização atual como CSV, ignorando as subgrades. Bom "
 "para planilhas e bases de dados (para incluir as subgrades, use primeiro a "
 "operação Horizontalizar)"
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
+"grids)"
+msgstr "Exporta a grade da visualização atual como texto delimitado por tabulações, ignorando as subgrades. Bom para planilhas (para incluir as subgrades, use primeiro a operação Horizontalizar)"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -1841,6 +1850,9 @@ msgstr ""
 
 msgid "System Default"
 msgstr "Padrão do Sistema"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "Texto delimitado por &tabulações (TSV, plano)..."
 
 msgid "Tab delimited text..."
 msgstr "Texto delimitado por &tabulações..."

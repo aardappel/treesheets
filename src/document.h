@@ -760,6 +760,17 @@ struct Document {
         return new wxHTMLDataObject(html);
     }
 
+    // Cells without sub-grids are copied as tab separated text, which spreadsheets understand,
+    // and as indented text otherwise.
+    wxString CopyText() {
+        auto tree = selected.TextEdit();
+        if (!tree && !sys->flatcopy) {
+            loopallcellssel(c, false) tree = tree || c->grid;
+        }
+        return selected.grid->ConvertToText(selected, 0, tree ? A_EXPTEXT : A_EXPTSV, this, false,
+                                            currentdrawroot, sys->flatcopy);
+    }
+
     void CopyToCellClipboard(Cell *c) {
         sys->cellclipboard = c != nullptr ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
         sys->cellclipboardcolwidth = c != nullptr ? c->ColWidth() : 0;
@@ -782,8 +793,7 @@ struct Document {
                         dragdata.Add(new wxBitmapDataObject(bitmap));
                     }
                 } else {
-                    auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
-                                                          currentdrawroot, sys->flatcopy);
+                    auto s = CopyText();
                     dragdata.Add(new wxTextDataObject(s));
                     if (!selected.TextEdit()) {
                         auto *htmlobj = CopyEntireCells(s, wxID_COPY);
@@ -815,8 +825,7 @@ struct Document {
             default: {
                 CopyToCellClipboard(c);
                 auto clipboarddata = make_unique<wxDataObjectComposite>();
-                auto s = selected.grid->ConvertToText(selected, 0, A_EXPTEXT, this, false,
-                                                      currentdrawroot, sys->flatcopy);
+                auto s = CopyText();
                 clipboarddata->Add(new wxTextDataObject(s));
                 if (!selected.TextEdit()) {
                     auto *htmlobj = CopyEntireCells(s, action);
@@ -1439,6 +1448,7 @@ struct Document {
                     break;
                 }
                 case A_EXPCSV:
+                case A_EXPTSV:
                 case A_EXPTEXT: dos.WriteString(content); break;
             }
             if (action == A_EXPHTMLTE) { ExportAllImages(filename, exportroot); }
@@ -1700,6 +1710,7 @@ struct Document {
                 case A_EXPPDF: return Export("pdf", "*.pdf", _("Choose PDF file to write"), action); 
             #endif
             case A_EXPCSV: return Export("csv", "*.csv", _("Choose CSV file to write"), action);
+            case A_EXPTSV: return Export("tsv", "*.tsv", _("Choose TSV file to write"), action);
 
             case A_IMPXML:
             case A_IMPXMLA:
@@ -3132,6 +3143,8 @@ struct Document {
                             sys->cellclipboardcolwidth);
             } else {
                 const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
+                astsv = astsv || ((lines.size() > 1 || !selected.TextEdit()) &&
+                                  treesheets::System::IsTSV(lines));
                 if (lines.size() == 1 && !astsv) {
                     cell->AddUndo(this);
                     cell->ResetLayout();

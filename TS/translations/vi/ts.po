@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2026-09-17 12:38+0700\n"
 "Last-Translator: Vũ Anh Vũ\n"
 "Language-Team: Vietnamese\n"
@@ -511,6 +511,9 @@ msgstr "Chọn tệp PNG để ghi"
 msgid "Choose SVG file to write"
 msgstr "Chọn tệp SVG để ghi"
 
+msgid "Choose TSV file to write"
+msgstr "Chọn tệp TSV để ghi"
+
 msgid "Choose Text file to write"
 msgstr "Chọn tệp văn bản để ghi"
 
@@ -818,6 +821,12 @@ msgstr ""
 "Xuất lưới của chế độ xem hiện tại dưới dạng CSV, bỏ qua các lưới con. Phù "
 "hợp cho bảng tính và cơ sở dữ liệu (sử dụng thao tác Làm phẳng trước để bao "
 "gồm các lưới con)"
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
+"grids)"
+msgstr "Xuất lưới của chế độ xem hiện tại dưới dạng văn bản phân tách bằng tab, bỏ qua các lưới con. Phù hợp cho bảng tính (sử dụng thao tác Làm phẳng trước để bao gồm các lưới con)"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -1791,6 +1800,9 @@ msgstr "Hoán đổi chức năng cuộn và thu phóng của nút cuộn chuộ
 
 msgid "System Default"
 msgstr "Mặc định hệ thống"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "Văn bản phân tách bằng &tab (TSV, phẳng)..."
 
 msgid "Tab delimited text..."
 msgstr "Văn bản phân tách bằng tab..."

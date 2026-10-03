@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2022-11-14 18:00+0200\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language: de\n"
@@ -526,6 +526,9 @@ msgstr "PNG-Datei zum Schreiben auswählen"
 msgid "Choose SVG file to write"
 msgstr "SVG-Datei zum Schreiben auswählen"
 
+msgid "Choose TSV file to write"
+msgstr "TSV-Datei zum Schreiben auswählen"
+
 msgid "Choose Text file to write"
 msgstr "Textdatei zum Schreiben auswählen"
 
@@ -847,6 +850,12 @@ msgstr ""
 "Tabellen. Das eignet sich für Tabellenkalkulationen und Datenbanken (nutzen "
 "Sie zuerst den Verflachen-Vorgang, um untergeordnete Tabellen "
 "einzuschließen)."
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
+"grids)"
+msgstr "Die Tabelle der aktuellen Ansicht als Text mit Tabulatoren als Trennzeichen exportieren, ohne untergeordnete Tabellen. Das eignet sich für Tabellenkalkulationen (nutzen Sie zuerst den Verflachen-Vorgang, um untergeordnete Tabellen einzuschließen)."
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -1856,6 +1865,9 @@ msgstr "Mausrad-Scrolling und Mausrad-Vergrößern/Verkleinern tauschen"
 
 msgid "System Default"
 msgstr "Systemstandard"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "Text mit Ta&bulator als Trennzeichen (TSV, flach)..."
 
 msgid "Tab delimited text..."
 msgstr "Text mit Tabulator als Trennzeichen..."

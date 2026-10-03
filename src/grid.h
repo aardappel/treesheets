@@ -759,7 +759,10 @@ struct Grid {
             if (!tinyrow && !tinycols[x - sel.x]) {
                 r.Append(c->ToText(indent, sel, format, doc, inheritstyle, root, flat));
             }
-            if (format == A_EXPCSV) { r.Append(x == sel.x + sel.xs - 1 ? '\n' : ','); }
+            if (format == A_EXPCSV || format == A_EXPTSV) {
+                if (!tinyrow && !tinycols[x - sel.x]) { r.Append(format == A_EXPCSV ? ',' : '\t'); }
+                if (x == sel.x + sel.xs - 1 && !tinyrow) { r.Last() = '\n'; }
+            }
             if (x == sel.x + sel.xs - 1 && !tinyrow) {
                 Formatter(r, format, indent, "</row>\n", "</tr>\n", "");
             }

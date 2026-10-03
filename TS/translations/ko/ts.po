@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2026-09-28 03:57+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -514,6 +514,9 @@ msgstr "작성할 PNG 파일 선택"
 msgid "Choose SVG file to write"
 msgstr "작성할 SVG 파일 선택"
 
+msgid "Choose TSV file to write"
+msgstr "작성할 TSV 파일 선택"
+
 msgid "Choose Text file to write"
 msgstr "작성할 텍스트 파일 선택"
 
@@ -813,6 +816,12 @@ msgid ""
 msgstr ""
 "현재 보기의 격자를 CSV로 내보내며 하위 격자는 건너뜁니다. 스프레드시트와 데이"
 "터베이스에 적합합니다 (하위 격자를 포함하려면 먼저 평탄화 작업 사용)"
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
+"grids)"
+msgstr "현재 보기의 격자를 탭으로 구분된 텍스트로 내보내며 하위 격자는 건너뜁니다. 스프레드시트에 적합합니다 (하위 격자를 포함하려면 먼저 평탄화 작업 사용)"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -1775,6 +1784,9 @@ msgstr "마우스 휠 스크롤 및 확대/축소 전환"
 
 msgid "System Default"
 msgstr "시스템 기본값"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "탭으로 구분된 텍스트 (TSV, 평면)(&D)..."
 
 msgid "Tab delimited text..."
 msgstr "탭으로 구분된 텍스트..."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -502,6 +502,9 @@ msgstr ""
 msgid "Choose SVG file to write"
 msgstr ""
 
+msgid "Choose TSV file to write"
+msgstr ""
+
 msgid "Choose Text file to write"
 msgstr ""
 
@@ -785,6 +788,12 @@ msgstr ""
 msgid ""
 "Export the grid of the current view as CSV, skipping sub-grids. Good for "
 "spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
+msgstr ""
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
 "grids)"
 msgstr ""
 
@@ -1730,6 +1739,9 @@ msgid "Swap mousewheel scrolling and zooming"
 msgstr ""
 
 msgid "System Default"
+msgstr ""
+
+msgid "Tab &delimited text (TSV, flat)..."
 msgstr ""
 
 msgid "Tab delimited text..."

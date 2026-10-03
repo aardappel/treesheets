@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -507,6 +507,9 @@ msgstr "选择要写入的 PNG 文件"
 msgid "Choose SVG file to write"
 msgstr "选择要写入的 SVG 文件"
 
+msgid "Choose TSV file to write"
+msgstr "选择要写入的 TSV 文件"
+
 msgid "Choose Text file to write"
 msgstr "选择要写入的文本文件"
 
@@ -800,6 +803,12 @@ msgid ""
 msgstr ""
 "将当前视图的网格导出为 CSV，跳过子网格。适用于电子表格和数据库（如需包含子网"
 "格，请先使用“扁平化”操作）"
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
+"grids)"
+msgstr "将当前视图的网格导出为制表符分隔文本，跳过子网格。适用于电子表格（如需包含子网格，请先使用“扁平化”操作）"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -1749,6 +1758,9 @@ msgstr "交换鼠标滚轮的滚动与缩放功能"
 
 msgid "System Default"
 msgstr "系统默认"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "制表符分隔文本 (TSV, 扁平)(&D)..."
 
 msgid "Tab delimited text..."
 msgstr "制表符分隔文本..."

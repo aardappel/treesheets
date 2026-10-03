@@ -829,6 +829,14 @@ struct System {
         return col;
     }
 
+    // Tab separated text, unlike indented text, has tabs after the indentation of a line.
+    static bool IsTSV(const wxArrayString &as) {
+        for (auto &s : as) {
+            if (s.find('\t', CountCol(s)) != wxString::npos) { return true; }
+        }
+        return false;
+    }
+
     int FillRows(Grid *g, const wxArrayString &as, int column, int startrow, int starty) {
         auto y = starty;
         for (int i = startrow, n = as.size(); i < n; i++) {

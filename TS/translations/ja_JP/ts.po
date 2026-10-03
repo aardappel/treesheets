@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -515,6 +515,9 @@ msgstr "書き込む PNG ファイルを選択"
 msgid "Choose SVG file to write"
 msgstr "書き込む SVG ファイルを選択"
 
+msgid "Choose TSV file to write"
+msgstr "書き込む TSV ファイルを選択"
+
 msgid "Choose Text file to write"
 msgstr "書き込むテキストファイルを選択"
 
@@ -824,6 +827,12 @@ msgstr ""
 "現在のビューのグリッドを CSV としてエクスポートします。サブグリッドはスキップ"
 "されます。スプレッドシートやデータベースに適しています（サブグリッドも含める"
 "には、先にフラット化操作を使用してください）"
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
+"grids)"
+msgstr "現在のビューのグリッドをタブ区切りテキストとしてエクスポートします。サブグリッドはスキップされます。スプレッドシートに適しています（サブグリッドも含めるには、先にフラット化操作を使用してください）"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -1804,6 +1813,9 @@ msgstr "マウスホイールのスクロールとズームを入れ替える"
 
 msgid "System Default"
 msgstr "システムデフォルト"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "タブ区切りテキスト(&D) (TSV、フラット)..."
 
 msgid "Tab delimited text..."
 msgstr "タブ区切りテキスト..."

@@ -316,10 +316,11 @@ struct Cell {
             str.Prepend("<span style=\"" + spanstyle + "\">");
             str.Append("</span>");
         }
-        if (format == A_EXPCSV) {
+        if (format == A_EXPCSV || format == A_EXPTSV) {
             if (grid && this == root) {
                 return grid->ToText(indent, sel, format, doc, inheritstyle, root);
             }
+            if (format == A_EXPTSV && !str.StartsWith("\"") && str.Find('\t') < 0) { return str; }
             str.Replace("\"", "\"\"");
             return "\"" + str + "\"";
         }

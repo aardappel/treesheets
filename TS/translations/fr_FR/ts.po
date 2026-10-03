@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 15:23+0200\n"
+"POT-Creation-Date: 2026-10-03 15:43+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -525,6 +525,9 @@ msgstr "Choisir le fichier PNG à éditer"
 msgid "Choose SVG file to write"
 msgstr "Choisir le fichier SVG à écrire"
 
+msgid "Choose TSV file to write"
+msgstr "Choisir le fichier TSV à éditer"
+
 msgid "Choose Text file to write"
 msgstr "Choisir le fichier Text à éditer"
 
@@ -847,6 +850,12 @@ msgstr ""
 "Exporte la grille de la vue actuelle au format CSV, sans les sous-grilles. "
 "Utile pour les feuilles de calcul et les bases de données (utilisez d'abord "
 "l'opération Aplanir pour inclure les sous-grilles)"
+
+msgid ""
+"Export the grid of the current view as tab separated text, skipping sub-"
+"grids. Good for spreadsheets (use the Flatten operation first to include sub-"
+"grids)"
+msgstr "Exporte la grille de la vue actuelle en texte séparé par des tabulations, sans les sous-grilles. Utile pour les feuilles de calcul (utilisez d'abord l'opération Aplanir pour inclure les sous-grilles)"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -1854,6 +1863,9 @@ msgstr "Permuter la molette de la souris entre défilement et zoom"
 
 msgid "System Default"
 msgstr "Par défaut du système"
+
+msgid "Tab &delimited text (TSV, flat)..."
+msgstr "Texte séparateur &tabulation (TSV, à plat)..."
 
 msgid "Tab delimited text..."
 msgstr "Texte séparateur tabulation..."
