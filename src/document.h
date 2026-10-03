@@ -609,6 +609,8 @@ struct Document {
     // rowmaxcache, kept current by the last full Layout()), then by construction no
     // other cell's position could have shifted, and the whole document-wide relayout
     // (UpdateLayout(), which Grid::Layout() is called from) can be skipped entirely.
+    // Unless the cell shrank and was the one setting that max: then the column/row may
+    // shrink with it.
     // `oldsizes` is the (cell, old geometry) chain AddUndo()'s ResetLayout() zeroed out
     // -- via Cell::Reset(), which clears sx/sy/ox/oy/minx/miny/ycenteroff -- for
     // `editedsel`'s cell and its ancestors up to currentdrawroot (see Key()); since
@@ -637,7 +639,10 @@ struct Document {
         Cell *c = g->C(editedsel.x, editedsel.y).get();
         int celldepth = c->Depth() - drawpath.size();
         c->LazyLayout(this, dc, celldepth, g->colwidths[editedsel.x], false);
-        if (c->sx > g->colmaxcache[editedsel.x] || c->sy > g->rowmaxcache[editedsel.y]) {
+        auto &prev = oldsizes[0].second;
+        auto colmax = g->colmaxcache[editedsel.x], rowmax = g->rowmaxcache[editedsel.y];
+        if (c->sx > colmax || c->sy > rowmax || (c->sx < prev.minx && prev.minx >= colmax) ||
+            (c->sy < prev.miny && prev.miny >= rowmax)) {
             return false;
         }
         for (size_t i = 0; i < oldsizes.size(); i++) {
