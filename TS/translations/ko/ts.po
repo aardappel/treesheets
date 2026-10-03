@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # VenusGirl <venusgirl@outlook.com>, 2025.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: 2026-09-28 03:57+0900\n"
 "Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
 "Language-Team: VenusGirl <https://venusgirls.tistory.com/>\n"
@@ -54,8 +53,8 @@ msgstr "지우기(&C)"
 msgid "&Close"
 msgstr "닫기(&C)"
 
-msgid "&Comma delimited text (CSV)..."
-msgstr "쉼표로 구분된 텍스트 (CSV)(&C)..."
+msgid "&Comma delimited text (CSV, flat)..."
+msgstr "쉼표로 구분된 텍스트 (CSV, 평면)(&C)..."
 
 msgid "&Copy"
 msgstr "복사(&C)"
@@ -446,13 +445,6 @@ msgstr "텍스트 편집 취소"
 msgid "Cannot decompress file."
 msgstr "파일 압축을 해제할 수 없습니다."
 
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr ""
-"평평하지 않은 격자를 내보낼 수 없습니다 (보기를 원하는 격자로 확대하거나 평탄"
-"화를 사용)."
-
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "이 셀을 계층에서 위로 이동할 수 없습니다."
 
@@ -771,13 +763,6 @@ msgstr "내보내기가 취소되었습니다."
 msgid "Export the curent view as HTML using nested tables and exported images"
 msgstr "중첩된 테이블과 내보낸 이미지를 사용하여 현재 보기를 HTML로 내보내기"
 
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-"현재 보기를 CSV로 내보냅니다. 스프레드시트와 데이터베이스에 적합합니다. 하위 "
-"격자가 없는 격자에서만 작동합니다 (필요한 경우 먼저 평면화 작업 사용)"
-
 msgid "Export the current view as HTML as nested bullet points."
 msgstr "현재 보기를 HTML로 중첩된 글머리 기호로 내보냅니다."
 
@@ -820,6 +805,14 @@ msgstr "현재 보기를 PDF 파일로 내보내세요."
 
 msgid "Export the current view to a SVG vector file."
 msgstr "현재 보기를 SVG 벡터 파일로 내보냅니다."
+
+msgid ""
+"Export the grid of the current view as CSV, skipping sub-grids. Good for "
+"spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
+msgstr ""
+"현재 보기의 격자를 CSV로 내보내며 하위 격자는 건너뜁니다. 스프레드시트와 데이"
+"터베이스에 적합합니다 (하위 격자를 포함하려면 먼저 평탄화 작업 사용)"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -2081,56 +2074,3 @@ msgstr "변경 사항을 한 번에 한 단계씩 되돌리기"
 
 msgid "scale:"
 msgstr "비율:"
-
-#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
-#~ msgstr ""
-#~ "코어 데이터 파일을 로드하는 중 오류가 발생했습니다 (TreeSheets가 올바르게 "
-#~ "설치되지 않았나요?)"
-
-#~ msgid "Initialization Error"
-#~ msgstr "초기화 오류"
-
-#~ msgid "Filter by the same cell color"
-#~ msgstr "동일한 셀 색상으로 필터링"
-
-#~ msgid ""
-#~ "Please select the language for the interface (requires restart). Please "
-#~ "select the empty row if you want to use the default language."
-#~ msgstr ""
-#~ "인터페이스 언어를 선택해 주세요 (재시작 필요). 기본 언어를 사용하려면 빈 "
-#~ "행을 선택해 주세요."
-
-#~ msgid "Search in folded grids"
-#~ msgstr "접힌 격자에서 검색"
-
-#~ msgid "change will take effect next run of TreeSheets"
-#~ msgstr "변경 사항은 다음 TreeSheets 실행 시 적용됩니다"
-
-#~ msgid "size:"
-#~ msgstr "크기:"
-
-#~ msgid "Export to a HTML file when document is saved"
-#~ msgstr "문서가 저장될 때 HTML 파일로 내보내기"
-
-#, c-format
-#~ msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-#~ msgstr "%s (%d 셀, %d 문자)를 %d 밀리초 단위로 로드했습니다."
-
-#, c-format
-#~ msgid "Saved %s successfully (in %d milliseconds)."
-#~ msgstr "%s을(를) 성공적으로 저장했습니다 (%d 밀리초 단위)."
-
-#~ msgid "Cannot drag & drop more than 1 file."
-#~ msgstr "파일을 두 개 이상 끌어서 놓기를 할 수 없습니다."
-
-#~ msgid ""
-#~ "It seems that you are about to drop a TreeSheets file. What would you "
-#~ "like to do?"
-#~ msgstr "TreeSheets 파일을 삭제하려고 하는 것 같습니다. 어떻게 하시겠습니까?"
-
-#, c-format
-#~ msgid "Selection contains %d cell(s) with %d character(s)."
-#~ msgstr "선택 항목에 %d개 셀 / %d개 문자가 포함되어 있습니다."
-
-#~ msgid "Show statistics"
-#~ msgstr "통계 표시"

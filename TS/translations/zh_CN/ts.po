@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: 2025-08-24 00:32+0800\n"
 "Last-Translator: xbeta\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -54,8 +53,8 @@ msgstr "清除视图(&C)"
 msgid "&Close"
 msgstr "关闭(&C)"
 
-msgid "&Comma delimited text (CSV)..."
-msgstr "逗号分隔文本 (CSV)(&C)..."
+msgid "&Comma delimited text (CSV, flat)..."
+msgstr "逗号分隔文本 (CSV, 扁平)(&C)..."
 
 msgid "&Copy"
 msgstr "复制(&C)"
@@ -441,11 +440,6 @@ msgstr "取消文本编辑"
 msgid "Cannot decompress file."
 msgstr "无法解压文件。"
 
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr "无法导出非扁平化的网格（请将视图缩放至所需网格，或使用“扁平化”功能）。"
-
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "无法在层级中上移此单元格。"
 
@@ -760,13 +754,6 @@ msgstr "导出已取消。"
 msgid "Export the curent view as HTML using nested tables and exported images"
 msgstr "使用嵌套表格和导出的图片将当前视图导出为 HTML"
 
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-"将当前视图导出为 CSV。适用于电子表格和数据库。仅对没有子网格的网格有效（如有"
-"需要，请先使用“扁平化”操作）"
-
 msgid "Export the current view as HTML as nested bullet points."
 msgstr "将当前视图导出为嵌套项目符号的 HTML。"
 
@@ -805,6 +792,14 @@ msgstr "将当前视图导出为 PDF 文件。"
 
 msgid "Export the current view to a SVG vector file."
 msgstr "将当前视图导出为 SVG 矢量文件。"
+
+msgid ""
+"Export the grid of the current view as CSV, skipping sub-grids. Good for "
+"spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
+msgstr ""
+"将当前视图的网格导出为 CSV，跳过子网格。适用于电子表格和数据库（如需包含子网"
+"格，请先使用“扁平化”操作）"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -2048,22 +2043,3 @@ msgstr "逐步还原更改"
 
 msgid "scale:"
 msgstr "缩放："
-
-#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
-#~ msgstr "加载核心数据文件时出错 (TreeSheets 未正确安装？)"
-
-#~ msgid "Initialization Error"
-#~ msgstr "初始化错误"
-
-#~ msgid "size:"
-#~ msgstr "大小："
-
-#~ msgid "Cannot drag & drop more than 1 file."
-#~ msgstr "无法拖放超过 1 个文件。"
-
-#, c-format
-#~ msgid "Selection contains %d cell(s) with %d character(s)."
-#~ msgstr "所选内容包含 %d 个单元格，共 %d 个字符。"
-
-#~ msgid "Show statistics"
-#~ msgstr "显示统计信息"

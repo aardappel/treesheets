@@ -1699,16 +1699,7 @@ struct Document {
             #ifdef ENABLE_WXPDFDOC
                 case A_EXPPDF: return Export("pdf", "*.pdf", _("Choose PDF file to write"), action); 
             #endif
-            case A_EXPCSV: {
-                int maxdepth = 0;
-                int leaves = 0;
-                currentdrawroot->MaxDepthLeaves(0, maxdepth, leaves);
-                if (maxdepth > 1) {
-                    return _(
-                        "Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten).");
-                }
-                return Export("csv", "*.csv", _("Choose CSV file to write"), action);
-            }
+            case A_EXPCSV: return Export("csv", "*.csv", _("Choose CSV file to write"), action);
 
             case A_IMPXML:
             case A_IMPXMLA:

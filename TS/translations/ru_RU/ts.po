@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TreeSheets_RU 5.1 (based on TS 2.1.13)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: 2026-10-01 22:13+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
@@ -58,8 +58,8 @@ msgstr "О&чистить Представления"
 msgid "&Close"
 msgstr "Закрыть"
 
-msgid "&Comma delimited text (CSV)..."
-msgstr "CSV (разделитель - &запятая)..."
+msgid "&Comma delimited text (CSV, flat)..."
+msgstr "CSV (разделитель - &запятая, плоский)..."
 
 msgid "&Copy"
 msgstr "Копировать"
@@ -484,10 +484,6 @@ msgid "Cannot decompress file."
 msgstr "Невозможно распаковать файл."
 
 # Сообщение (после действия или события)
-msgid "Cannot export grid that is not flat (zoom the view to the desired grid, and/or use Flatten)."
-msgstr "Невозможно экспортировать сетку, которая не является плоской. Увеличьте масштаб просмотра до нужной сетки и/или реорганизуйте сетку к Табличному виду."
-
-# Сообщение (после действия или события)
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "Невозможно переместить эту ячейку вверх по иерархии."
 
@@ -851,10 +847,6 @@ msgid "Export the curent view as HTML using nested tables and exported images"
 msgstr "Экспорт в HTML с использованием вложенных таблиц и экспортированных изображений"
 
 # Комметарий п. меню.
-msgid "Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr "Экспорт в CSV. Для электронных таблиц и баз данных. Работает только с сетками, без подсеток (при необходимости, реорганизуйте сетку \"к Табличному виду\")"
-
-# Комметарий п. меню.
 msgid "Export the current view as HTML as nested bullet points."
 msgstr "Экспорт в HTML, в виде вложенных списков."
 
@@ -885,6 +877,10 @@ msgstr "Экспорт текущего вида в PDF-файл."
 # Комметарий п. меню.
 msgid "Export the current view to a SVG vector file."
 msgstr "Экспорт текущего вида в векторный SVG-файл."
+
+# Комметарий п. меню.
+msgid "Export the grid of the current view as CSV, skipping sub-grids. Good for spreadsheets and databases (use the Flatten operation first to include sub-grids)"
+msgstr "Экспорт сетки текущего вида в CSV, без подсеток. Для электронных таблиц и баз данных (чтобы включить подсетки, сначала реорганизуйте сетку \"к Табличному виду\")"
 
 # комментарий к п. Меню
 msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"

@@ -152,8 +152,8 @@ struct TSFrame : wxFrame {
             expmenu, A_EXPTEXT, _("Indented &Text..."),
             _("Export the current view as tree structured text, using spaces for each indentation level. Suitable for importing into mindmanagers and general text programs"));
         MyAppend(
-            expmenu, A_EXPCSV, _("&Comma delimited text (CSV)..."),
-            _("Export the current view as CSV. Good for spreadsheets and databases. Only works on grids with no sub-grids (use the Flatten operation first if need be)"));
+            expmenu, A_EXPCSV, _("&Comma delimited text (CSV, flat)..."),
+            _("Export the grid of the current view as CSV, skipping sub-grids. Good for spreadsheets and databases (use the Flatten operation first to include sub-grids)"));
         expmenu->AppendSeparator();
         MyAppend(expmenu, A_EXPIMAGE, _("&Image..."),
                  _("Export the current view as an image. Useful for faithful renderings of the TreeSheet, and programs that don't accept any of the above options"));

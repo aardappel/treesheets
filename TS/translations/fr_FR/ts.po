@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: 2023-11-11 22:26+0100\n"
 "Last-Translator: Tobias Predel <tobias.predel@gmail.com>\n"
 "Language-Team: French <LL@li.org>\n"
@@ -53,8 +53,8 @@ msgstr "&Effacer Vues"
 msgid "&Close"
 msgstr "&Fermer"
 
-msgid "&Comma delimited text (CSV)..."
-msgstr "&Texte séparateur virgule (CSV)..."
+msgid "&Comma delimited text (CSV, flat)..."
+msgstr "&Texte séparateur virgule (CSV, à plat)..."
 
 msgid "&Copy"
 msgstr "&Copier"
@@ -453,13 +453,6 @@ msgstr "Annuler les modifications texte"
 msgid "Cannot decompress file."
 msgstr "Décompression du fichier impossible."
 
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr ""
-"Impossible d'exporter la grille, elle n'est pas plane (zoomer la vue sur la "
-"grille souhaitée et / ou utiliser aplanissement)."
-
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "Impossible de déplacer cette cellule dans la hierarchie."
 
@@ -797,14 +790,6 @@ msgstr ""
 "Exporte la vue actuelle au format HTML avec des tables imbriquées et des "
 "images exportées"
 
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-"Exporte la vue actuelle au format CSV. Utile pour les feuilles de calcul et "
-"les bases de données. Fonctionne uniquement sur les grilles sans sous-"
-"grilles (utilisez d'abord l'opération Aplatir si nécessaire)"
-
 msgid "Export the current view as HTML as nested bullet points."
 msgstr ""
 "Exporte la vue actuelle au format HTML sous forme d'en-têtes imbriqués, "
@@ -853,6 +838,15 @@ msgstr "Exporte la vue actuelle vers un fichier PDF."
 
 msgid "Export the current view to a SVG vector file."
 msgstr "Exporte la vue actuelle vers un fichier vectoriel SVG."
+
+msgid ""
+"Export the grid of the current view as CSV, skipping sub-grids. Good for "
+"spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
+msgstr ""
+"Exporte la grille de la vue actuelle au format CSV, sans les sous-grilles. "
+"Utile pour les feuilles de calcul et les bases de données (utilisez d'abord "
+"l'opération Aplanir pour inclure les sous-grilles)"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -2168,69 +2162,3 @@ msgstr "annule les changements, une étape à la fois"
 
 msgid "scale:"
 msgstr "échelle:"
-
-#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
-#~ msgstr ""
-#~ "Erreur lors du chargement du fichier de données de base (Installation "
-#~ "TreeSheets incorrecte?)"
-
-#~ msgid "Initialization Error"
-#~ msgstr "Erreur d'initialisation"
-
-#~ msgid "size:"
-#~ msgstr "taille:"
-
-#~ msgid "&Add Image"
-#~ msgstr "&Ajouter Image"
-
-#~ msgid "&Go To Next Search Result"
-#~ msgstr "&Aller Au Résultat de Recherche Suivant"
-
-#~ msgid "&Remove Image(s)"
-#~ msgstr "&Supprimer Image(s)"
-
-#~ msgid "&Scale Image (display only)"
-#~ msgstr "&Redimensionner Image (affichage seulement)"
-
-#~ msgid "Automatically export a .html on every save"
-#~ msgstr "Export automatique en .html à chaque sauvegarde"
-
-#~ msgid "Autosave to .tmp"
-#~ msgstr "Sauvegarde automatique en .tmp"
-
-#~ msgid "Cannot drag & drop more than 1 file."
-#~ msgstr "Impossible de glisser déposer plus d'un fichier."
-
-#~ msgid "Create .bak files"
-#~ msgstr "Générer des fichiers .bak"
-
-#~ msgid "Filter..."
-#~ msgstr "Filtre..."
-
-#~ msgid "Pick Default Font..."
-#~ msgstr "Définir le style caractère par défaut..."
-
-#~ msgid "Pick Document Background..."
-#~ msgstr "Choisir la couleur de fond du document..."
-
-#~ msgid "Save As"
-#~ msgstr "Enregistrer sous"
-
-#~ msgid "Save Image(s) to disk"
-#~ msgstr "Enregistrer le(s) Image(s)"
-
-#~ msgid "Save image as PNG (default)"
-#~ msgstr "Enregistrer l'image en PNG (par défaut)"
-
-#, c-format
-#~ msgid "Selection contains %d cell(s) with %d character(s)."
-#~ msgstr "La sélection contient %d cellule(s) avec %d caractère(s)."
-
-#~ msgid "Show statistics"
-#~ msgstr "Afficher les statistiques"
-
-#~ msgid "Switch to &next file/tab"
-#~ msgstr "Fichier/Onglet suivant"
-
-#~ msgid "Switch to &previous file/tab"
-#~ msgstr "Fichier/Onglet précédent"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: 2026-05-31 09:43+0800\n"
 "Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
 "Language-Team: \n"
@@ -52,8 +52,8 @@ msgstr "清除檢視(&C)"
 msgid "&Close"
 msgstr "關閉(&C)"
 
-msgid "&Comma delimited text (CSV)..."
-msgstr "逗號分隔文字 (CSV)(&C)..."
+msgid "&Comma delimited text (CSV, flat)..."
+msgstr "逗號分隔文字 (CSV, 扁平)(&C)..."
 
 msgid "&Copy"
 msgstr "複製(&C)"
@@ -440,12 +440,6 @@ msgstr "取消文字編輯"
 msgid "Cannot decompress file."
 msgstr "無法解壓縮檔案。"
 
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr ""
-"無法匯出非扁平化的網格（請將檢視縮放至目標網格，或使用「扁平化」功能）。"
-
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "無法在階層中上移此儲存格。"
 
@@ -760,13 +754,6 @@ msgstr "匯出已取消。"
 msgid "Export the curent view as HTML using nested tables and exported images"
 msgstr "使用巢狀表格與匯出的圖片將目前檢視匯出為 HTML"
 
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-"將目前檢視匯出為 CSV。適用於試算表與資料庫。僅適用於無子網格的網格（如有需要"
-"請先使用「扁平化」操作）"
-
 msgid "Export the current view as HTML as nested bullet points."
 msgstr "將目前檢視匯出為巢狀項目符號的 HTML。"
 
@@ -805,6 +792,14 @@ msgstr "將目前檢視匯出為 PDF 檔案。"
 
 msgid "Export the current view to a SVG vector file."
 msgstr "將目前檢視匯出為 SVG 向量檔案。"
+
+msgid ""
+"Export the grid of the current view as CSV, skipping sub-grids. Good for "
+"spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
+msgstr ""
+"將目前檢視的網格匯出為 CSV，略過子網格。適用於試算表與資料庫（如需包含子網"
+"格，請先使用「扁平化」操作）"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -2045,12 +2040,3 @@ msgstr "逐步還原變更"
 
 msgid "scale:"
 msgstr "縮放："
-
-#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
-#~ msgstr "載入核心資料檔時發生錯誤（TreeSheets 是否未正確安裝？）"
-
-#~ msgid "Initialization Error"
-#~ msgstr "初始化錯誤"
-
-#~ msgid "size:"
-#~ msgstr "大小："

@@ -317,7 +317,9 @@ struct Cell {
             str.Append("</span>");
         }
         if (format == A_EXPCSV) {
-            if (grid) { return grid->ToText(indent, sel, format, doc, inheritstyle, root); }
+            if (grid && this == root) {
+                return grid->ToText(indent, sel, format, doc, inheritstyle, root);
+            }
             str.Replace("\"", "\"\"");
             return "\"" + str + "\"";
         }

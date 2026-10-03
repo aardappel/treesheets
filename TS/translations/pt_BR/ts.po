@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: treesheets 3349106752\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: 2026-08-08 16:44-0300\n"
 "Last-Translator: Georger Araújo <georger underscore br at yahoo dot com dot "
 "br>\n"
@@ -56,8 +56,8 @@ msgstr "&Limpar Visualizações"
 msgid "&Close"
 msgstr "&Fechar"
 
-msgid "&Comma delimited text (CSV)..."
-msgstr "Texto delimitado por vírgulas (&CSV)..."
+msgid "&Comma delimited text (CSV, flat)..."
+msgstr "Texto delimitado por vírgulas (&CSV, plano)..."
 
 msgid "&Copy"
 msgstr "&Copiar"
@@ -451,13 +451,6 @@ msgstr "Cancelar edição de texto"
 msgid "Cannot decompress file."
 msgstr "Não é possível descomprimir o arquivo."
 
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr ""
-"Não é possível exportar uma grade não-horizontal (faça zoom para a grade "
-"desejada, e/ou use Horizontalizar)."
-
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "Não é possível mover essa célula para cima na hierarquia."
 
@@ -790,14 +783,6 @@ msgstr ""
 "Exporta a visualização atual como HTML usando tabelas aninhadas e imagens "
 "exportadas"
 
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-"Exporta a visualização atual como CSV. Bom para planilhas e bases de dados. "
-"Só funciona em grades sem subgrades (se necessário, use primeiro a operação "
-"Horizontalizar)"
-
 msgid "Export the current view as HTML as nested bullet points."
 msgstr ""
 "Exporta a visualização atual como HTML na forma de lista com marcadores "
@@ -845,6 +830,15 @@ msgstr "Exporta a visualização atual para um arquivo PDF."
 
 msgid "Export the current view to a SVG vector file."
 msgstr "Exporta a visualização atual para um arquivo vetorial SVG."
+
+msgid ""
+"Export the grid of the current view as CSV, skipping sub-grids. Good for "
+"spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
+msgstr ""
+"Exporta a grade da visualização atual como CSV, ignorando as subgrades. Bom "
+"para planilhas e bases de dados (para incluir as subgrades, use primeiro a "
+"operação Horizontalizar)"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -2153,139 +2147,3 @@ msgstr "Reverte as mudanças, um passo de cada vez"
 
 msgid "scale:"
 msgstr "escala:"
-
-#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
-#~ msgstr ""
-#~ "Erro ao carregar arquivo de dados essencial (o TreeSheets não foi "
-#~ "instalado corretamente?)"
-
-#~ msgid "Initialization Error"
-#~ msgstr "Erro de Inicialização"
-
-#~ msgid "size:"
-#~ msgstr "tamanho:"
-
-#~ msgid "Printing ..."
-#~ msgstr "Imprimindo..."
-
-#~ msgid "Export to a HTML file when document is saved"
-#~ msgstr "Exportar para um arquivo HTML ao salvar o documento"
-
-#, c-format
-#~ msgid "Loaded %s (%d cells, %d characters) in %d milliseconds."
-#~ msgstr "%s (%d célula(s), %d caractere(s)) carregado em %d milissegundo(s)."
-
-#, c-format
-#~ msgid "Saved %s successfully (in %d milliseconds)."
-#~ msgstr "O arquivo %s foi salvo com sucesso (em %d milissegundo(s))."
-
-#~ msgid "Reset column widths\tCTRL+R"
-#~ msgstr "Redefinir largura das colunas\tCTRL+R"
-
-#~ msgid "Cannot drag & drop more than 1 file."
-#~ msgstr "Não é possível arrastar & soltar mais de um arquivo."
-
-#~ msgid ""
-#~ "It seems that you are about to drop a TreeSheets file. What would you "
-#~ "like to do?"
-#~ msgstr ""
-#~ "Parece que você está prestes a soltar um arquivo do TreeSheets. O que "
-#~ "gostaria de fazer?"
-
-#, c-format
-#~ msgid "Selection contains %d cell(s) with %d character(s)."
-#~ msgstr "A seleção contém %d célula(s) com %d caractere(s)."
-
-#~ msgid "Show statistics"
-#~ msgstr "Mostrar es&tatísticas"
-
-#~ msgid "&Add Image"
-#~ msgstr "Adicionar Imagem..."
-
-#~ msgid "&Go To Next Search Result"
-#~ msgstr "Ir para Resultado Se&guinte da Busca"
-
-#~ msgid "&Remove Image(s)"
-#~ msgstr "Remover Imagem(ns)"
-
-#~ msgid "&Scale Image (display only)"
-#~ msgstr "Redimensionar Imagem (somente para exibição)"
-
-#~ msgid "Adding Lobster script(s) cancelled."
-#~ msgstr "Adição de script(s) Lobster cancelada."
-
-#~ msgid "Automatically export a .html on every save"
-#~ msgstr "Exportar um .&html automaticamente a cada salvamento"
-
-#~ msgid "Autosave to .tmp"
-#~ msgstr "Salvar automaticamente para .&tmp"
-
-#~ msgid "Create .bak files"
-#~ msgstr "Criar arquivos .ba&k"
-
-#~ msgid "Filter..."
-#~ msgstr "&Filtrar"
-
-#~ msgid "NOT IMPLEMENTED"
-#~ msgstr "NÃO IMPLEMENTADO"
-
-#~ msgid "Open cancelled."
-#~ msgstr "Abertura cancelada."
-
-#~ msgid "Pick Default Font..."
-#~ msgstr "Escolher Fonte &Padrão..."
-
-#~ msgid "Pick Document Background..."
-#~ msgstr "&Escolher Plano de Fundo do Documento..."
-
-#~ msgid "Save As"
-#~ msgstr "Salvar Como"
-
-#~ msgid "Save Image(s) to disk"
-#~ msgstr "Salvar Imagem(ns) para disco..."
-
-#~ msgid "Save image as PNG (default)"
-#~ msgstr "Salvar imagem como PNG (padrão)"
-
-#~ msgid "Switch to &next file/tab"
-#~ msgstr "Alternar para o arquivo ou a aba &seguinte"
-
-#~ msgid "Switch to &previous file/tab"
-#~ msgstr "Alternar para o arquivo ou a aba &anterior"
-
-#~ msgid "Toggle Zen Mode"
-#~ msgstr "Entrar/Sair do Modo &Zen"
-
-#~ msgid "Empty strings cannot be tags."
-#~ msgstr "Sequências vazias não podem ser tags."
-
-#~ msgid "Cannot tell/seek document?"
-#~ msgstr "Não foi possível executar tell/seek no documento?"
-
-#~ msgid "Copy Image to clipboard"
-#~ msgstr "Copiar Imagem para a área de transferência"
-
-#~ msgid "Copy the image in the selected cell to the clipboard"
-#~ msgstr "Copia a imagem na célula selecionada para a área de transferência"
-
-#~ msgid "Could not load file because of a corrupted embedded JPEG file"
-#~ msgstr ""
-#~ "Não foi possível carregar arquivo porque um JPEG embutido está corrompido"
-
-#~ msgid ""
-#~ "Could not load file because of an embedded image file of unknown type"
-#~ msgstr ""
-#~ "Não foi possível carregar arquivo porque uma imagem embutida é de um tipo "
-#~ "desconhecido"
-
-#~ msgid "Text copied to clipboard"
-#~ msgstr "Texto copiado para a área de transferência"
-
-#~ msgid "Cannot find file."
-#~ msgstr "Não foi possível encontrar o arquivo."
-
-#~ msgid "Cannot launch browser for this link."
-#~ msgstr "Não é possível abrir o navegador para esse link."
-
-#~ msgid "File saved succesfully."
-#~ msgstr "O arquivo foi salvo com sucesso."

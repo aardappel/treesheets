@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:44+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: 2026-09-20 03:10+0900\n"
 "Last-Translator: coolvitto\n"
 "Language-Team: \n"
@@ -54,8 +53,8 @@ msgstr "ビューをクリア(&C)"
 msgid "&Close"
 msgstr "閉じる(&C)"
 
-msgid "&Comma delimited text (CSV)..."
-msgstr "カンマ区切りテキスト(&C) (CSV)..."
+msgid "&Comma delimited text (CSV, flat)..."
+msgstr "カンマ区切りテキスト(&C) (CSV、フラット)..."
 
 msgid "&Copy"
 msgstr "コピー(&C)"
@@ -447,13 +446,6 @@ msgstr "テキスト編集をキャンセル"
 msgid "Cannot decompress file."
 msgstr "ファイルを解凍できません。"
 
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr ""
-"フラットでないグリッドはエクスポートできません (ビューを目的のグリッドにズー"
-"ムするか、フラット化を使用してください)。"
-
 msgid "Cannot move this cell up in the hierarchy."
 msgstr "このセルを階層内で上に移動できません。"
 
@@ -778,14 +770,6 @@ msgstr ""
 "現在のビューをネストされたテーブルとエクスポートされた画像を使用して HTML と"
 "してエクスポートします"
 
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-"現在のビューを CSV としてエクスポートします。スプレッドシートやデータベースに"
-"適しています。サブグリッドのないグリッドでのみ機能します（必要に応じて最初に"
-"フラット化操作を使用してください）"
-
 msgid "Export the current view as HTML as nested bullet points."
 msgstr "現在のビューをネストされた箇条書きとして HTML にエクスポートします。"
 
@@ -831,6 +815,15 @@ msgstr "現在のビューを PDF ファイルにエクスポートします。"
 
 msgid "Export the current view to a SVG vector file."
 msgstr "現在のビューを SVG ベクターファイルにエクスポートします。"
+
+msgid ""
+"Export the grid of the current view as CSV, skipping sub-grids. Good for "
+"spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
+msgstr ""
+"現在のビューのグリッドを CSV としてエクスポートします。サブグリッドはスキップ"
+"されます。スプレッドシートやデータベースに適しています（サブグリッドも含める"
+"には、先にフラット化操作を使用してください）"
 
 msgid ""
 "Export to a HTML file alongside the original TreeSheets file when document "
@@ -2108,27 +2101,3 @@ msgstr "変更を1ステップずつ元に戻します"
 
 msgid "scale:"
 msgstr "スケール :"
-
-#~ msgid "Error loading core data file (TreeSheets not installed correctly?)"
-#~ msgstr ""
-#~ "コアデータファイルの読み込み中にエラーが発生しました (TreeSheets が正しく"
-#~ "インストールされていませんか？)"
-
-#~ msgid "Initialization Error"
-#~ msgstr "初期化エラー"
-
-#~ msgid "size:"
-#~ msgstr "サイズ :"
-
-#~ msgid "Filter by the same cell color"
-#~ msgstr "同じセル色でフィルター"
-
-#~ msgid ""
-#~ "Please select the language for the interface (requires restart). Please "
-#~ "select the empty row if you want to use the default language."
-#~ msgstr ""
-#~ "インターフェースの言語を選択してください（再起動が必要です）。デフォルト言"
-#~ "語を使用する場合は、空の行を選択してください。"
-
-#~ msgid "Search in folded grids"
-#~ msgstr "折り畳まれたグリッド内を検索"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 19:32+0200\n"
+"POT-Creation-Date: 2026-10-03 15:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
-msgid "&Comma delimited text (CSV)..."
+msgid "&Comma delimited text (CSV, flat)..."
 msgstr ""
 
 msgid "&Copy"
@@ -437,11 +437,6 @@ msgstr ""
 msgid "Cannot decompress file."
 msgstr ""
 
-msgid ""
-"Cannot export grid that is not flat (zoom the view to the desired grid, and/"
-"or use Flatten)."
-msgstr ""
-
 msgid "Cannot move this cell up in the hierarchy."
 msgstr ""
 
@@ -752,11 +747,6 @@ msgstr ""
 msgid "Export the curent view as HTML using nested tables and exported images"
 msgstr ""
 
-msgid ""
-"Export the current view as CSV. Good for spreadsheets and databases. Only "
-"works on grids with no sub-grids (use the Flatten operation first if need be)"
-msgstr ""
-
 msgid "Export the current view as HTML as nested bullet points."
 msgstr ""
 
@@ -790,6 +780,12 @@ msgid "Export the current view to a PDF file."
 msgstr ""
 
 msgid "Export the current view to a SVG vector file."
+msgstr ""
+
+msgid ""
+"Export the grid of the current view as CSV, skipping sub-grids. Good for "
+"spreadsheets and databases (use the Flatten operation first to include sub-"
+"grids)"
 msgstr ""
 
 msgid ""
