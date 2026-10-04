@@ -351,6 +351,14 @@ struct Document {
         SetHoverShade(shade);
     }
 
+    // Hovers what's under the mouse pointer, after the cells moved under it.
+    void HoverUnderPointer() {
+        auto p = canvas->ScreenToClient(wxGetMousePosition());
+        if (!canvas->GetClientRect().Contains(p)) { return; }
+        wxInfoDC dc(canvas);
+        UpdateHover(dc, p.x, p.y);
+    }
+
     // Moves the hover shadow, repainting just the cells it leaves and enters.
     void SetHoverShade(const wxRect &shade) {
         if (shade == hovershade) { return; }
@@ -880,6 +888,7 @@ struct Document {
         UpdateLayout();
         ScrollIfSelectionOutOfView();
         canvas->Refresh();
+        HoverUnderPointer();
         return true;
     }
 

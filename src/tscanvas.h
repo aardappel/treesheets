@@ -362,10 +362,7 @@ struct TSCanvas : public wxScrolledCanvas {
     // The cells move under a pointer that stays put, so hover what's under it now.
     void CursorScroll(int dx, int dy) {
         doc->ScrollBy(dx, dy);
-        auto p = ScreenToClient(wxGetMousePosition());
-        if (!GetClientRect().Contains(p)) { return; }
-        wxInfoDC dc(this);
-        doc->UpdateHover(dc, p.x, p.y);
+        doc->HoverUnderPointer();
     }
 
     #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
