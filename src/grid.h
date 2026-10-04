@@ -366,16 +366,11 @@ struct Grid {
             }
         }
         if (view_grid_outer_spacing != 0 && cell->drawstyle == DS_GRID) {
-            dc.SetBrush(*wxTRANSPARENT_BRUSH);
-            dc.SetPen(wxPen(LightColor(bordercolor)));
-            loop(i, view_grid_outer_spacing - 1) {
-                dc.DrawRoundedRectangle(
-                    bx + xoff + view_grid_outer_spacing - i,
-                    by + yoff + view_grid_outer_spacing - i,
-                    maxx - xoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
-                    maxy - yoff - view_grid_outer_spacing + 1 + i * 2 + view_margin,
-                    sys->roundness + i);
-            }
+            DrawRoundedOutlines(dc, LightColor(bordercolor), bx + xoff + view_grid_outer_spacing,
+                                by + yoff + view_grid_outer_spacing,
+                                maxx - xoff - view_grid_outer_spacing + 1 + view_margin,
+                                maxy - yoff - view_grid_outer_spacing + 1 + view_margin,
+                                sys->roundness, view_grid_outer_spacing - 1);
         }
     }
 

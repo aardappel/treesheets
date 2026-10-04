@@ -84,8 +84,10 @@ struct Document {
     // dc.GetCharHeight() of the font PickFont() last selected, or -1 if not measured yet. See
     // CharHeight().
     int lastcharheight {-1};
-    // Only screen DCs share fonts. Printer/export DCs select their own resources.
-    map<pair<int, int>, wxFont> fontcache;
+    // Only screen DCs share fonts, and their heights once measured (-1 before). Printer/export
+    // DCs select their own resources.
+    map<pair<int, int>, pair<wxFont, int>> fontcache;
+    int *lastfontcacheheight {nullptr};
     wxString fontcacheface, fontcachefixedface;
     wxSize fontcachedpi;
     double fontcachescale {0};
@@ -1231,8 +1233,10 @@ struct Document {
             auto key = make_pair(textsize, stylebits & (STYLE_BOLD | STYLE_ITALIC | STYLE_FIXED |
                                                        STYLE_UNDERLINE | STYLE_STRIKETHRU));
             auto it = fontcache.find(key);
+            lastfontcacheheight = nullptr;
             if (usescreenfonts && it != fontcache.end()) {
-                dc.SetFont(it->second);
+                dc.SetFont(it->second.first);
+                lastfontcacheheight = &it->second.second;
             } else {
                 wxFont font(
                     textsize - static_cast<int>(while_printing),
@@ -1244,11 +1248,14 @@ struct Document {
                 if ((stylebits & STYLE_STRIKETHRU) != 0) { font.SetStrikethrough(true); }
                 dc.SetFont(font);
                 // Retain the resource after wx has adjusted it to the window's DPI.
-                if (usescreenfonts) { fontcache.emplace(key, dc.GetFont()); }
+                if (usescreenfonts) {
+                    it = fontcache.emplace(key, make_pair(dc.GetFont(), -1)).first;
+                    lastfontcacheheight = &it->second.second;
+                }
             }
             lasttextsize = textsize;
             laststylebits = stylebits;
-            lastcharheight = -1;
+            lastcharheight = lastfontcacheheight ? *lastfontcacheheight : -1;
         }
         return FontIsMini(textsize);
     }
@@ -1256,7 +1263,10 @@ struct Document {
     // Same as dc.GetCharHeight() for the font PickFont() selected, but only measured once per
     // font change: with wxGCDC (GTK, macOS), every call lays out and measures a string.
     template<typename DC> int CharHeight(DC &dc) {
-        if (lastcharheight < 0) { lastcharheight = dc.GetCharHeight(); }
+        if (lastcharheight < 0) {
+            lastcharheight = dc.GetCharHeight();
+            if (lastfontcacheheight) { *lastfontcacheheight = lastcharheight; }
+        }
         return lastcharheight;
     }
 
@@ -1264,6 +1274,7 @@ struct Document {
         lasttextsize = INT_MAX;
         laststylebits = -1;
         lastcharheight = -1;
+        lastfontcacheheight = nullptr;
     }
 
     template<typename DC> void ResetFont(DC &dc) {

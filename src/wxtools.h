@@ -10,6 +10,50 @@ static void DrawRectangle(DC &dc, uint color, int x, int y, int xs, int ys, bool
     dc.DrawRectangle(x, y, xs, ys);
 }
 
+// Draws a rounded rectangle filled and outlined in color. Cairo strokes the outline many times
+// slower than it fills, so with a graphics context, fill the area the outline grows it to.
+template<typename DC>
+static void DrawRoundedRectangle(DC &dc, const wxColour &color, int x, int y, int xs, int ys,
+                                 double radius) {
+    dc.SetBrush(wxBrush(color));
+    dc.SetPen(wxPen(color));
+    auto *gc = dc.GetGraphicsContext();
+    if (gc == nullptr || dc.AreAutomaticBoundingBoxUpdatesEnabled()) {
+        dc.DrawRoundedRectangle(x, y, xs, ys, radius);
+        return;
+    }
+    // The 1px outline is drawn half a pixel in, from the edge of the rectangle.
+    gc->SetPen(wxNullGraphicsPen);
+    gc->DrawRoundedRectangle(x, y, xs, ys, radius + 0.5);
+    gc->SetPen(dc.GetPen());
+}
+
+// Draws n 1px rounded outlines in color, each 1px further out and rounder than the last. With a
+// graphics context, fill the ring they make up instead of stroking each.
+template<typename DC>
+static void DrawRoundedOutlines(DC &dc, const wxColour &color, int x, int y, int xs, int ys,
+                                double radius, int n) {
+    if (n <= 0) { return; }
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    dc.SetPen(wxPen(color));
+    auto *gc = dc.GetGraphicsContext();
+    if (gc == nullptr || dc.AreAutomaticBoundingBoxUpdatesEnabled()) {
+        loop(i, n) dc.DrawRoundedRectangle(x - i, y - i, xs + i * 2, ys + i * 2, radius + i);
+        return;
+    }
+    // From the outer edge of the outermost outline to the inner edge of the innermost one, each
+    // drawn half a pixel in from its rectangle.
+    auto ring = gc->CreatePath();
+    ring.AddRoundedRectangle(x - n + 1, y - n + 1, xs + n * 2 - 2, ys + n * 2 - 2,
+                             radius + n - 0.5);
+    ring.AddRoundedRectangle(x + 1, y + 1, xs - 2, ys - 2, max(0.0, radius - 0.5));
+    gc->SetPen(wxNullGraphicsPen);
+    gc->SetBrush(wxBrush(color));
+    gc->FillPath(ring, wxODDEVEN_RULE);
+    gc->SetPen(dc.GetPen());
+    gc->SetBrush(dc.GetBrush());
+}
+
 #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
 // wxGTK's graphics context creates, lays out (itemizes, breaks and shapes) and discards a new
 // PangoLayout for every string it draws, which is most of the time spent drawing a screenful of

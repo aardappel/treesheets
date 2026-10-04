@@ -176,17 +176,15 @@ struct Cell {
                 auto *cp = reinterpret_cast<uchar *>(&actualcellcolor);
                 loop(i, 4) cp[i] = cp[i] * 850 / 1000;
             }
-            dc.SetBrush(wxBrush(wxactualcellcolor));
-            dc.SetPen(wxPen(wxactualcellcolor));
-
             if (drawstyle == DS_BLOBSHIER) {
-                dc.DrawRoundedRectangle(bx - cell_margin, by - cell_margin, minx + cell_margin * 2,
-                                        miny + cell_margin * 2, sys->roundness);
+                DrawRoundedRectangle(dc, wxactualcellcolor, bx - cell_margin, by - cell_margin,
+                                     minx + cell_margin * 2, miny + cell_margin * 2,
+                                     sys->roundness);
             } else if (HasHeader()) {
-                dc.DrawRoundedRectangle(bx - cell_margin + g_margin_extra / 2,
-                                        by - cell_margin + ycenteroff + g_margin_extra / 2,
-                                        txs + cell_margin * 2 + g_margin_extra,
-                                        tys + cell_margin * 2 + g_margin_extra, sys->roundness);
+                DrawRoundedRectangle(dc, wxactualcellcolor, bx - cell_margin + g_margin_extra / 2,
+                                     by - cell_margin + ycenteroff + g_margin_extra / 2,
+                                     txs + cell_margin * 2 + g_margin_extra,
+                                     tys + cell_margin * 2 + g_margin_extra, sys->roundness);
             // FIXME: this half a g_margin_extra is a bit of hack
             }
         }
