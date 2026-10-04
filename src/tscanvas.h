@@ -148,7 +148,7 @@ struct TSCanvas : public wxScrolledCanvas {
         // Start at a speed of its own, the pointer can't get far beyond a canvas at the edge of
         // the screen, and speed up with the distance from there.
         auto speed = [](int d) { return d == 0 ? 0 : d + (d > 0 ? 8 : -8); };
-        CursorScroll(speed(dx), speed(dy));
+        doc->ScrollBy(speed(dx), speed(dy));
         // Once scrolled to the end, the edge of the canvas shows the margin around the cells.
         // Stay clear of that, and of the cells' edges, where a thin selection would be hovered.
         auto *root = doc->currentdrawroot;
@@ -359,7 +359,14 @@ struct TSCanvas : public wxScrolledCanvas {
         se.Skip();  // Use default scrolling behavior.
     }
 
-    void CursorScroll(int dx, int dy) { doc->ScrollBy(dx, dy); }
+    // The cells move under a pointer that stays put, so hover what's under it now.
+    void CursorScroll(int dx, int dy) {
+        doc->ScrollBy(dx, dy);
+        auto p = ScreenToClient(wxGetMousePosition());
+        if (!GetClientRect().Contains(p)) { return; }
+        wxInfoDC dc(this);
+        doc->UpdateHover(dc, p.x, p.y);
+    }
 
     #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
     // wxGTK 3.3 subtracts overlay scrollbars from the client size, although they are drawn on
