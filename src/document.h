@@ -888,6 +888,8 @@ struct Document {
         UpdateLayout();
         ScrollIfSelectionOutOfView();
         canvas->Refresh();
+        // The new layout is centered differently, so don't wait for the paint to know where.
+        UpdateCenter();
         HoverUnderPointer();
         return true;
     }
@@ -1102,6 +1104,31 @@ struct Document {
         #endif
     }
 
+    // The offset Draw() shifts the document by: the anchor, or what centers the document in the
+    // window when it is smaller than that.
+    void UpdateCenter() {
+        if (anchored) {
+            centerx = anchorx;
+            centery = anchory;
+            return;
+        }
+        int clientx = 0;
+        int clienty = 0;
+        canvas->GetClientSize(&clientx, &clienty);
+        int sx = 0;
+        int sy = 0;
+        if (currentviewscale == 1.0) { canvas->GetViewStart(&sx, &sy); }
+        auto center = [&](int client, int scroll, int layout) {
+            int m = currentviewscale > 1.0 ? static_cast<int>(client / currentviewscale)
+                                           : client + scroll;
+            return sys->centered && scroll == 0 && m > layout
+                       ? static_cast<int>((m - layout) / 2 * currentviewscale)
+                       : 0;
+        };
+        centerx = center(clientx, sx, layoutxs);
+        centery = center(clienty, sy, layoutys);
+    }
+
     template<typename DC> void Draw(DC &dc) {
         if (!root) return;
         if (layoutxs <= 0 || layoutys <= 0) return;
@@ -1120,20 +1147,12 @@ struct Document {
         }
         int oldcenterx = centerx;
         int oldcentery = centery;
+        UpdateCenter();
         if (anchored) {
-            centerx = anchorx;
-            centery = anchory;
             // Shifted towards the top left, the document shows more of itself at the bottom
             // right. Grid::Render() culls cells against maxx/maxy.
             maxx -= min(0, centerx) / currentviewscale;
             maxy -= min(0, centery) / currentviewscale;
-        } else {
-            centerx = sys->centered && scrollx == 0 && maxx > layoutxs
-                          ? (maxx - layoutxs) / 2 * currentviewscale
-                          : 0;
-            centery = sys->centered && scrolly == 0 && maxy > layoutys
-                          ? (maxy - layoutys) / 2 * currentviewscale
-                          : 0;
         }
         // The centering offset can change without a full repaint. What is already on screen
         // was then drawn at the old offset, and repainting just part of it (the hover shadow,
