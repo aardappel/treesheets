@@ -523,7 +523,8 @@ struct Document {
         double docy = (p.y + sy - centery) / currentviewscale;
         double fx = before.width > 0 ? (docx - before.x) / before.width : 0.0;
         double fy = before.height > 0 ? (docy - before.y) / before.height : 0.0;
-        if (!Zoom(dir)) { return; }
+        // Hovered below, once the view is where it stays.
+        if (!Zoom(dir, false, false)) { return; }
         auto after = CellRect(c);
         // Where the view has to start for that point to be under the pointer again.
         int vx = lround((after.x + fx * after.width) * currentviewscale) - p.x;
@@ -874,7 +875,7 @@ struct Document {
         return drawpath.size() != oldlen;
     }
 
-    bool Zoom(int dir, bool fromroot = false) {
+    bool Zoom(int dir, bool fromroot = false, bool hoverpointer = true) {
         if (sys->hoverzoom && hover.grid != nullptr) SetSelect(hover);
         if (!ZoomSetDrawPath(dir, fromroot)) { return false; }
         ResetAnchor();
@@ -889,8 +890,8 @@ struct Document {
         ScrollIfSelectionOutOfView();
         canvas->Refresh();
         // The new layout is centered differently, so don't wait for the paint to know where.
-        UpdateCenter();
-        HoverUnderPointer();
+        UpdateViewport();
+        if (hoverpointer) { HoverUnderPointer(); }
         return true;
     }
 
@@ -1104,34 +1105,9 @@ struct Document {
         #endif
     }
 
-    // The offset Draw() shifts the document by: the anchor, or what centers the document in the
-    // window when it is smaller than that.
-    void UpdateCenter() {
-        if (anchored) {
-            centerx = anchorx;
-            centery = anchory;
-            return;
-        }
-        int clientx = 0;
-        int clienty = 0;
-        canvas->GetClientSize(&clientx, &clienty);
-        int sx = 0;
-        int sy = 0;
-        if (currentviewscale == 1.0) { canvas->GetViewStart(&sx, &sy); }
-        auto center = [&](int client, int scroll, int layout) {
-            int m = currentviewscale > 1.0 ? static_cast<int>(client / currentviewscale)
-                                           : client + scroll;
-            return sys->centered && scroll == 0 && m > layout
-                       ? static_cast<int>((m - layout) / 2 * currentviewscale)
-                       : 0;
-        };
-        centerx = center(clientx, sx, layoutxs);
-        centery = center(clienty, sy, layoutys);
-    }
-
-    template<typename DC> void Draw(DC &dc) {
-        if (!root) return;
-        if (layoutxs <= 0 || layoutys <= 0) return;
+    // The part of the document Draw() shows, scrollx/scrolly to maxx/maxy, and the offset it
+    // shifts it by: the anchor, or what centers the document in the window when it is smaller.
+    void UpdateViewport() {
         int clientx = 0;
         int clienty = 0;
         canvas->GetClientSize(&clientx, &clienty);
@@ -1140,27 +1116,41 @@ struct Document {
             maxx = clientx / currentviewscale;
             maxy = clienty / currentviewscale;
         } else {
-            canvas->PrepareDC(dc);
             canvas->GetViewStart(&scrollx, &scrolly);
             maxx = clientx + scrollx;
             maxy = clienty + scrolly;
         }
-        int oldcenterx = centerx;
-        int oldcentery = centery;
-        UpdateCenter();
         if (anchored) {
+            centerx = anchorx;
+            centery = anchory;
             // Shifted towards the top left, the document shows more of itself at the bottom
             // right. Grid::Render() culls cells against maxx/maxy.
             maxx -= min(0, centerx) / currentviewscale;
             maxy -= min(0, centery) / currentviewscale;
+        } else {
+            centerx = sys->centered && scrollx == 0 && maxx > layoutxs
+                          ? (maxx - layoutxs) / 2 * currentviewscale
+                          : 0;
+            centery = sys->centered && scrolly == 0 && maxy > layoutys
+                          ? (maxy - layoutys) / 2 * currentviewscale
+                          : 0;
         }
+    }
+
+    template<typename DC> void Draw(DC &dc) {
+        if (!root) return;
+        if (layoutxs <= 0 || layoutys <= 0) return;
+        if (currentviewscale <= 1.0) { canvas->PrepareDC(dc); }
+        int oldcenterx = centerx;
+        int oldcentery = centery;
+        UpdateViewport();
         // The centering offset can change without a full repaint. What is already on screen
         // was then drawn at the old offset, and repainting just part of it (the hover shadow,
         // a partial expose) would leave that part shifted against the rest. E.g. wxGTK 3.3
         // changes the client size by the width of an overlay scrollbar without a size event
         // (see TSCanvas::DoGetClientSize).
         if ((centerx != oldcenterx || centery != oldcentery) &&
-            !canvas->GetUpdateRegion().GetBox().Contains(wxRect(0, 0, clientx, clienty))) {
+            !canvas->GetUpdateRegion().GetBox().Contains(canvas->GetClientRect())) {
             canvas->Refresh();
         }
 
