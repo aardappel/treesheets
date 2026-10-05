@@ -1963,6 +1963,7 @@ struct TSFrame : wxFrame {
         if (page < 0) { return; }
         if (page == notebook->GetSelection()) {
             SetTitle("TreeSheets - " + wxFileName(filename).GetFullName() + mods);
+            SetRepresentedFilename(filename);
         }
         notebook->SetPageText(
             page,
