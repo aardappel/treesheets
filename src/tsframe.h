@@ -232,6 +232,9 @@ struct TSFrame : wxFrame {
                      _("Increase column width (no sub grids)") + "\tCTRL+ALT+PGUP");
             MyAppend(sizemenu, A_DECWIDTHNH,
                      _("Decrease column width (no sub grids)") + "\tCTRL+ALT+PGDN");
+            // ALT+UP/DOWN scroll.
+            sizemenu->FindItem(A_INCWIDTH)->AddExtraAccel({wxACCEL_ALT | wxACCEL_SHIFT, WXK_UP});
+            sizemenu->FindItem(A_DECWIDTH)->AddExtraAccel({wxACCEL_ALT | wxACCEL_SHIFT, WXK_DOWN});
             #ifdef __WXMAC__
                 // Mac keyboards mostly lack Page Up/Down.
                 sizemenu->FindItem(A_INCWIDTHNH)->AddExtraAccel(
