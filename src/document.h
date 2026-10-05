@@ -2605,11 +2605,18 @@ struct Document {
             }
 
             case A_IMAGE: {
-                if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
+                // A thin selection gets its new cell only once an image is actually chosen.
+                cell = selected.GetCell();
+                if (cell == nullptr && !selected.Thin()) { return OneCell(); }
                 auto filename =
                     ::wxFileSelector(_("Please select an image file:"), "", "", "", "*.*",
                                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
-                cell->AddUndo(this);
+                if (filename.empty()) { return wxEmptyString; }
+                if (cell == nullptr) {
+                    cell = selected.ThinExpand(this);
+                } else {
+                    cell->AddUndo(this);
+                }
                 LoadImageIntoCell(filename, cell, sys->frame->FromDIP(1.0));
                 UpdateLayout();
                 canvas->Refresh();
