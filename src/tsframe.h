@@ -232,6 +232,13 @@ struct TSFrame : wxFrame {
                      _("Increase column width (no sub grids)") + "\tCTRL+ALT+PGUP");
             MyAppend(sizemenu, A_DECWIDTHNH,
                      _("Decrease column width (no sub grids)") + "\tCTRL+ALT+PGDN");
+            #ifdef __WXMAC__
+                // Mac keyboards mostly lack Page Up/Down.
+                sizemenu->FindItem(A_INCWIDTHNH)->AddExtraAccel(
+                    {wxACCEL_CTRL | wxACCEL_ALT, WXK_UP});
+                sizemenu->FindItem(A_DECWIDTHNH)->AddExtraAccel(
+                    {wxACCEL_CTRL | wxACCEL_ALT, WXK_DOWN});
+            #endif
             MyAppend(sizemenu, A_RESETWIDTH, _("Reset column widths") + "\tCTRL+R",
                      _("Reset the column widths in the selection to the default column width"));
 
