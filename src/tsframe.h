@@ -1961,7 +1961,9 @@ struct TSFrame : wxFrame {
     void SetPageTitle(const wxString &filename, const wxString &mods, int page = -1) {
         if (page < 0) { page = notebook->GetSelection(); }
         if (page < 0) { return; }
-        if (page == notebook->GetSelection()) { SetTitle("TreeSheets - " + filename + mods); }
+        if (page == notebook->GetSelection()) {
+            SetTitle("TreeSheets - " + wxFileName(filename).GetFullName() + mods);
+        }
         notebook->SetPageText(
             page,
             (filename.empty() ? wxString(_("<unnamed>")) : wxFileName(filename).GetName()) + mods);
