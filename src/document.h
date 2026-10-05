@@ -2538,14 +2538,16 @@ struct Document {
             }
 
             case A_EDITNOTE: {
-                if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
+                // A thin selection gets its new cell only once a note is actually entered.
+                cell = selected.GetCell();
+                if (cell == nullptr && !selected.Thin()) { return OneCell(); }
 
                 wxDialog dlg(sys->frame, wxID_ANY, _("Note"), wxDefaultPosition,
                              wxSize(sys->notesizex, sys->notesizey),
                              wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
                 auto *sizer = new wxBoxSizer(wxVERTICAL);
-                wxTextCtrl text(&dlg, wxID_ANY, cell->note, wxDefaultPosition, wxDefaultSize,
-                                wxTE_MULTILINE);
+                wxTextCtrl text(&dlg, wxID_ANY, cell ? cell->note : wxString(), wxDefaultPosition,
+                                wxDefaultSize, wxTE_MULTILINE);
                 sizer->Add(&text, 1, wxEXPAND | wxALL, 10);
                 auto *btns = dlg.CreateButtonSizer(wxOK | wxCANCEL);
                 sizer->Add(btns, 0, wxALIGN_CENTER | wxBOTTOM, 10);
@@ -2554,8 +2556,12 @@ struct Document {
                 text.SetFocus();
 
                 if (dlg.ShowModal() == wxID_OK) {
-                    if (cell->note != text.GetValue()) {
-                        cell->AddUndo(this);
+                    if (cell ? cell->note != text.GetValue() : !text.GetValue().IsEmpty()) {
+                        if (cell == nullptr) {
+                            cell = selected.ThinExpand(this);
+                        } else {
+                            cell->AddUndo(this);
+                        }
                         cell->note = text.GetValue();
                         UpdateLayout();
                         canvas->Refresh();
