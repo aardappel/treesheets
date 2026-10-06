@@ -626,8 +626,8 @@ msgstr "날짜 및 시간 범위"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "열 너비 줄이기 (ALT+마우스 휠)"
 
-msgid "Decrease column width (no sub grids)"
-msgstr "열 너비 줄이기 (하위 격자 없음)"
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "열 너비 줄이기 (하위 격자 없음, Ctrl+ALT+마우스 휠)"
 
 msgid "Default column width"
 msgstr "기본 열 너비"
@@ -1036,8 +1036,8 @@ msgstr "가져오기"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "열 너비 늘이기 (ALT+마우스 휠)"
 
-msgid "Increase column width (no sub grids)"
-msgstr "열 너비 늘이기 (하위 격자 없음)"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "열 너비 늘이기 (하위 격자 없음, Ctrl+ALT+마우스 휠)"
 
 msgid "Indented &Text..."
 msgstr "텍스트 들여쓰기(&T)..."

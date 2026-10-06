@@ -623,8 +623,8 @@ msgstr "Khoảng ngày và giờ"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "Giảm chiều rộng cột (ALT+lăn chuột)"
 
-msgid "Decrease column width (no sub grids)"
-msgstr "Giảm chiều rộng cột (không có lưới con)"
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Giảm chiều rộng cột (không có lưới con, CTRL+ALT+lăn chuột)"
 
 msgid "Default column width"
 msgstr "Chiều rộng cột mặc định"
@@ -1042,8 +1042,8 @@ msgstr "Nhập từ"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "Tăng chiều rộng cột (ALT+lăn chuột)"
 
-msgid "Increase column width (no sub grids)"
-msgstr "Tăng chiều rộng cột (không có lưới con)"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Tăng chiều rộng cột (không có lưới con, CTRL+ALT+lăn chuột)"
 
 msgid "Indented &Text..."
 msgstr "Văn bản thụt đầu dòng... (&T)"

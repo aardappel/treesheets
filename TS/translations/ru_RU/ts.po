@@ -687,8 +687,8 @@ msgstr "Диапазон Даты и Времени"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "У&меньшить..."
 
-msgid "Decrease column width (no sub grids)"
-msgstr "У&меньшить..."
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "У&меньшить Ширину Столбца (без подсеток, CTRL+ALT+КМ)"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Default column width"
@@ -1123,8 +1123,8 @@ msgstr "&Импортировать из"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "У&величить Ширину Столбца (ALT+КМ)"
 
-msgid "Increase column width (no sub grids)"
-msgstr "У&величить Ширину Столбца (без подсеток)"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "У&величить Ширину Столбца (без подсеток, CTRL+ALT+КМ)"
 
 # & - не в том месте!..
 msgid "Indented &Text..."

@@ -299,8 +299,9 @@ struct TSCanvas : public wxScrolledCanvas {
                 return;
             }
             bool deferlayout = me.AltDown() || me.ShiftDown();
-            sys->frame->SetStatus(
-                doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown(), true, deferlayout));
+            // CTRL+ALT+wheel leaves sub-grids alone, like CTRL+ALT+PGUP/PGDN.
+            sys->frame->SetStatus(doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown(),
+                                             !(me.AltDown() && me.CmdDown()), deferlayout));
         } else if (me.GetWheelAxis() != 0U) {
             CursorScroll(me.GetWheelRotation() * g_scrollratewheel, 0);
         } else {

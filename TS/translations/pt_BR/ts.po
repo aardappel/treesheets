@@ -635,8 +635,8 @@ msgstr "Intervalo de datas e horas"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "Diminuir largura da coluna (ALT+botão de rolagem)"
 
-msgid "Decrease column width (no sub grids)"
-msgstr "Diminuir largura da coluna (subgrades não)"
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Diminuir largura da coluna (sem subgrades, CTRL+ALT+botão de rolagem)"
 
 msgid "Default column width"
 msgstr "Largura padrão das colunas"
@@ -1070,8 +1070,8 @@ msgstr "I&mportar de"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "Aumentar largura da coluna (ALT+botão de rolagem)"
 
-msgid "Increase column width (no sub grids)"
-msgstr "Aumentar largura da coluna (subgrades não)"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Aumentar largura da coluna (sem subgrades, CTRL+ALT+botão de rolagem)"
 
 msgid "Indented &Text..."
 msgstr "Texto &Indentado..."

@@ -639,8 +639,8 @@ msgstr "Date et heure de début et fin"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "Diminuer la largeur de colonne (ALT+molette)"
 
-msgid "Decrease column width (no sub grids)"
-msgstr "Diminuer la largeur de colonne (sous-grilles exclues)"
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Diminuer la largeur de colonne (sous-grilles exclues, CTRL+ALT+molette)"
 
 msgid "Default column width"
 msgstr "Largeur de colonne par défaut"
@@ -1078,8 +1078,8 @@ msgstr "Importer depuis"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "Augmenter la largeur de la colonne (ALT+Molette)"
 
-msgid "Increase column width (no sub grids)"
-msgstr "Augmenter la largeur de la colonne (sous grilles exclues)"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Augmenter la largeur de la colonne (sous-grilles exclues, CTRL+ALT+molette)"
 
 msgid "Indented &Text..."
 msgstr "&Texte indenté..."

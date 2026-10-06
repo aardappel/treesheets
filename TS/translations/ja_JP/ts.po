@@ -627,8 +627,8 @@ msgstr "日時範囲"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "列幅を狭くする (ALT+マウスホイール)"
 
-msgid "Decrease column width (no sub grids)"
-msgstr "列幅を狭くする (サブグリッドなし)"
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "列幅を狭くする (サブグリッドなし、Ctrl+ALT+マウスホイール)"
 
 msgid "Default column width"
 msgstr "デフォルトの列幅"
@@ -1050,8 +1050,8 @@ msgstr "インポート元"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "列幅を広くする (ALT+マウスホイール)"
 
-msgid "Increase column width (no sub grids)"
-msgstr "列幅を広くする (サブグリッドなし)"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "列幅を広くする (サブグリッドなし、Ctrl+ALT+マウスホイール)"
 
 msgid "Indented &Text..."
 msgstr "インデントされたテキスト(&T)..."

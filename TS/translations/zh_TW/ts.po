@@ -619,8 +619,8 @@ msgstr "日期與時間範圍"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "縮減欄寬（Alt + 滑鼠滾輪）"
 
-msgid "Decrease column width (no sub grids)"
-msgstr "縮減欄寬（無子網格）"
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "縮減欄寬（無子網格，Ctrl + Alt + 滑鼠滾輪）"
 
 msgid "Default column width"
 msgstr "預設欄寬"
@@ -1019,8 +1019,8 @@ msgstr "匯入來源"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "增加欄寬（Alt + 滑鼠滾輪）"
 
-msgid "Increase column width (no sub grids)"
-msgstr "增加欄寬（無子網格）"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "增加欄寬（無子網格，Ctrl + Alt + 滑鼠滾輪）"
 
 msgid "Indented &Text..."
 msgstr "縮排文字(&T)..."

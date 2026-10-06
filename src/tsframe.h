@@ -228,10 +228,12 @@ struct TSFrame : wxFrame {
                      _("Increase column width (ALT+mousewheel)") + "\tALT+PGUP");
             MyAppend(sizemenu, A_DECWIDTH,
                      _("Decrease column width (ALT+mousewheel)") + "\tALT+PGDN");
-            MyAppend(sizemenu, A_INCWIDTHNH,
-                     _("Increase column width (no sub grids)") + "\tCTRL+ALT+PGUP");
-            MyAppend(sizemenu, A_DECWIDTHNH,
-                     _("Decrease column width (no sub grids)") + "\tCTRL+ALT+PGDN");
+            MyAppend(
+                sizemenu, A_INCWIDTHNH,
+                _("Increase column width (no sub grids, CTRL+ALT+mousewheel)") + "\tCTRL+ALT+PGUP");
+            MyAppend(
+                sizemenu, A_DECWIDTHNH,
+                _("Decrease column width (no sub grids, CTRL+ALT+mousewheel)") + "\tCTRL+ALT+PGDN");
             // ALT+UP/DOWN scroll.
             sizemenu->FindItem(A_INCWIDTH)->AddExtraAccel({wxACCEL_ALT | wxACCEL_SHIFT, WXK_UP});
             sizemenu->FindItem(A_DECWIDTH)->AddExtraAccel({wxACCEL_ALT | wxACCEL_SHIFT, WXK_DOWN});

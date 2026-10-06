@@ -640,8 +640,8 @@ msgstr "Datum- und Zeitbereich"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "Spaltenbreite verkleinern (ALT+Mausrad)"
 
-msgid "Decrease column width (no sub grids)"
-msgstr "Spaltenbreite verkleinern (keine untergeordnete Tabellen)"
+msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Spaltenbreite verkleinern (keine untergeordneten Tabellen, STRG+ALT+Mausrad)"
 
 msgid "Default column width"
 msgstr "Standardspaltenbreite"
@@ -1077,8 +1077,8 @@ msgstr "Import von"
 msgid "Increase column width (ALT+mousewheel)"
 msgstr "Spaltenbreite vergrößern (ALT+Mausrad)"
 
-msgid "Increase column width (no sub grids)"
-msgstr "Spaltenbreite vergrößern (keine untergeordnete Tabellen)"
+msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr "Spaltenbreite vergrößern (keine untergeordneten Tabellen, STRG+ALT+Mausrad)"
 
 msgid "Indented &Text..."
 msgstr "Eingerückter &Text"
