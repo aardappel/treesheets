@@ -1566,8 +1566,10 @@ struct Document {
                         return Action(shift ? (ctrl ? A_SCRIGHT : A_SRIGHT)
                                             : (ctrl ? A_MRIGHT : A_RIGHT));
                     case WXK_UP:
+                        if (ctrl && alt && shift) { return Action(A_INCWIDTHNH); }
                         return Action(shift ? (ctrl ? A_SCUP : A_SUP) : (ctrl ? A_MUP : A_UP));
                     case WXK_DOWN:
+                        if (ctrl && alt && shift) { return Action(A_DECWIDTHNH); }
                         return Action(shift ? (ctrl ? A_SCDOWN : A_SDOWN)
                                             : (ctrl ? A_MDOWN : A_DOWN));
                     case WXK_HOME:

@@ -235,13 +235,15 @@ struct TSFrame : wxFrame {
             // ALT+UP/DOWN scroll.
             sizemenu->FindItem(A_INCWIDTH)->AddExtraAccel({wxACCEL_ALT | wxACCEL_SHIFT, WXK_UP});
             sizemenu->FindItem(A_DECWIDTH)->AddExtraAccel({wxACCEL_ALT | wxACCEL_SHIFT, WXK_DOWN});
+            // Mac keyboards mostly lack Page Up/Down. Elsewhere, CTRL+ALT+UP/DOWN often switch
+            // workspaces.
             #ifdef __WXMAC__
-                // Mac keyboards mostly lack Page Up/Down.
-                sizemenu->FindItem(A_INCWIDTHNH)->AddExtraAccel(
-                    {wxACCEL_CTRL | wxACCEL_ALT, WXK_UP});
-                sizemenu->FindItem(A_DECWIDTHNH)->AddExtraAccel(
-                    {wxACCEL_CTRL | wxACCEL_ALT, WXK_DOWN});
+                int nhaccel = wxACCEL_CTRL | wxACCEL_ALT;
+            #else
+                int nhaccel = wxACCEL_CTRL | wxACCEL_ALT | wxACCEL_SHIFT;
             #endif
+            sizemenu->FindItem(A_INCWIDTHNH)->AddExtraAccel({nhaccel, WXK_UP});
+            sizemenu->FindItem(A_DECWIDTHNH)->AddExtraAccel({nhaccel, WXK_DOWN});
             MyAppend(sizemenu, A_RESETWIDTH, _("Reset column widths") + "\tCTRL+R",
                      _("Reset the column widths in the selection to the default column width"));
 
