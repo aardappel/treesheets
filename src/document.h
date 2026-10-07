@@ -733,6 +733,12 @@ struct Document {
                 Selection cellselection = cell->parent->grid->FindCell(cell);
                 cell->parent->grid->MultiCellDeleteSub(this, cellselection);
             }
+            // Moving the cell out can leave the grid it was dropped into empty, which deletes it
+            // together with targetcell, so select the cell that held the grid instead.
+            if (targetcell_parent != nullptr && !targetcell_parent->grid) {
+                targetcell = targetcell_parent;
+                targetcell_parent = targetcell->parent;
+            }
             hover = targetcell_parent != nullptr ? targetcell_parent->grid->FindCell(targetcell)
                                                  : Selection();
             SetSelect(hover);
