@@ -2014,8 +2014,8 @@ msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr ""
 "Affiche ou masque la barre d'outils entre la barre de menus et les documents"
 
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "Activer/désactiver l'affichage de la grille des cellules sélectionnées"
+msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
+msgstr "Activer/désactiver l'affichage de la grille des cellules sélectionnées (aussi CTRL+double-clic)"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Bascule la réduction de la fenêtre dans la zone de notification"

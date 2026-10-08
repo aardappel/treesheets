@@ -1998,9 +1998,8 @@ msgstr ""
 "Mostra o nasconde la barra degli strumenti tra la barra dei menu e i "
 "documenti"
 
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr ""
-"Attiva/disattiva la visualizzazione della griglia delle cella(e) selezionate"
+msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
+msgstr "Attiva/disattiva la visualizzazione della griglia delle cella(e) selezionate (anche CTRL+doppio clic)"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Attiva/disattiva la riduzione della finestra nell'area di notifica"

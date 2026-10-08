@@ -222,7 +222,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnLeftDoubleClick(wxMouseEvent &me) {
         wxInfoDC dc(this);
         doc->UpdateHover(dc, me.GetX(), me.GetY());
-        doc->DoubleClick();
+        doc->DoubleClick(me.CmdDown());
         sys->frame->UpdateStatus(doc->selected, true);
         Refresh();
     }

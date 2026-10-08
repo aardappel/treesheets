@@ -544,7 +544,8 @@ struct TSFrame : wxFrame {
                      #else
                      _("Toggle Fold") + "\tF10",
                      #endif
-                     _("Toggles showing the grid of the selected cell(s)"));
+                     _("Toggles showing the grid of the selected cell(s) "
+                       "(also CTRL+double-click)"));
             MyAppend(editmenu, A_FOLDALL, _("Fold All") + "\tCTRL+SHIFT+F10",
                      _("Folds the grid of the selected cell(s) recursively"));
             MyAppend(editmenu, A_UNFOLDALL, _("Unfold All") + "\tCTRL+ALT+F10",

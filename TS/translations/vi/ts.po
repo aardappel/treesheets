@@ -1944,8 +1944,8 @@ msgstr "Bật/tắt việc thu nhỏ cửa sổ thay vì đóng hẳn"
 msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr "Bật/tắt hiển thị thanh công cụ giữa thanh menu và tài liệu"
 
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "Bật/tắt hiển thị lưới của (các) ô được chọn"
+msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
+msgstr "Bật/tắt hiển thị lưới của (các) ô được chọn (hoặc CTRL+nhấp đúp)"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Bật/tắt việc thu nhỏ cửa sổ vào khay hệ thống"

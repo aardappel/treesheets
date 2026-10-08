@@ -2020,8 +2020,8 @@ msgstr ""
 "Auswählen, ob die Werkzeugleiste zwischen der Menüzeile und den Dokumenten "
 "angezeigt wird"
 
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "Tabellen der ausgewählten Zelle(n) anzeigen (ein/aus)"
+msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
+msgstr "Tabellen der ausgewählten Zelle(n) anzeigen (ein/aus, auch STRG+Doppelklick)"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Auswählen, ob das Fenster in den Benachrichtungsbereich minimiert wird"

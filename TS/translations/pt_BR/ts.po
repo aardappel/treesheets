@@ -2003,8 +2003,8 @@ msgstr ""
 "Define se a barra de ferramentas é mostrada entre a barra de menu e os "
 "documentos"
 
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "Mostra/oculta a grade da(s) célula(s) selecionada(s)"
+msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
+msgstr "Mostra/oculta a grade da(s) célula(s) selecionada(s) (também CTRL+clique duplo)"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Define se a janela é minimizada para a bandeja do sistema"

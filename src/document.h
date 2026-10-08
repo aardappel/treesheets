@@ -747,7 +747,13 @@ struct Document {
         }
     }
 
-    void DoubleClick() {
+    void DoubleClick(bool fold) {
+        if (Cell *c = hover.GetCell(); fold && c != nullptr && c->grid) {
+            hover.ExitEdit(this);
+            SetSelect(hover);
+            Action(A_FOLD);
+            return;
+        }
         SetSelect(hover);
         if (selected.Thin() && selected.grid != nullptr) {
             selected.SelAll();

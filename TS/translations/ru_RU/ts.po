@@ -2152,8 +2152,8 @@ msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr "Вкл/Выкл отображение панели инструментов между строкой меню и документами"
 
 # комментарий к п. Меню
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "Сворачивает - Разворачивает подсетки в выбранных ячейках."
+msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
+msgstr "Сворачивает - Разворачивает подсетки в выбранных ячейках (также CTRL+двойной щелчок)."
 
 # комментарий к п. Меню
 msgid "Toogle whether window is minimized to system tray"

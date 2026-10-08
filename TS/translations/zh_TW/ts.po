@@ -1897,8 +1897,8 @@ msgstr "切換關閉視窗時是否改為最小化"
 msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr "切換是否在功能表列與文件之間顯示工具列"
 
-msgid "Toggles showing the grid of the selected cell(s)"
-msgstr "切換是否顯示選取儲存格的網格"
+msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
+msgstr "切換是否顯示選取儲存格的網格（也可 Ctrl + 按兩下）"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "切換視窗是否最小化至系統匣"
