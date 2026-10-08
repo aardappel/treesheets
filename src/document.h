@@ -2779,6 +2779,7 @@ struct Document {
                     c->ResetChildren();
                 }
                 UpdateLayout();
+                ScrollIfSelectionOutOfView();
                 canvas->Refresh();
                 return wxEmptyString;
 
