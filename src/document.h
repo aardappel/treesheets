@@ -748,11 +748,16 @@ struct Document {
     }
 
     void DoubleClick(bool fold) {
-        if (Cell *c = hover.GetCell(); fold && c != nullptr && c->grid) {
-            hover.ExitEdit(this);
-            SetSelect(hover);
-            Action(A_FOLD);
-            return;
+        if (fold && hover.grid != nullptr) {
+            // Toggles the hovered cell's grid, or else folds the grid the pointer is in.
+            Cell *c = hover.GetCell();
+            if (c == nullptr || !c->grid) { c = hover.grid->cell; }
+            if (c != WalkPath(drawpath)) {
+                hover.ExitEdit(this);
+                SetSelect(c->parent->grid->FindCell(c));
+                Action(A_FOLD);
+                return;
+            }
         }
         SetSelect(hover);
         if (selected.Thin() && selected.grid != nullptr) {
