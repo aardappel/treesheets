@@ -1938,8 +1938,8 @@ msgstr "Attiva / disattiva visualizzazione a schermo"
 msgid "Toggle &Scaled Presentation View"
 msgstr "Mostra presentazione a scalare e ridimensionata"
 
-msgid "Toggle Fold"
-msgstr "Commuta piegatura"
+msgid "Toggle Fold (CTRL+double-click)"
+msgstr "Commuta piegatura (CTRL+doppio clic)"
 
 msgid "Toggle Vertical Layout"
 msgstr "Attiva/disattiva layout verticale"
@@ -1998,8 +1998,9 @@ msgstr ""
 "Mostra o nasconde la barra degli strumenti tra la barra dei menu e i "
 "documenti"
 
-msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
-msgstr "Attiva/disattiva la visualizzazione della griglia delle cella(e) selezionate (anche CTRL+doppio clic)"
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr ""
+"Attiva/disattiva la visualizzazione della griglia delle cella(e) selezionate"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Attiva/disattiva la riduzione della finestra nell'area di notifica"

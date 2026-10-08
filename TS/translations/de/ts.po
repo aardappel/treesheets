@@ -1957,8 +1957,8 @@ msgstr "&Vollbildmodus ein-/ausschalten"
 msgid "Toggle &Scaled Presentation View"
 msgstr "&Skalierte Präsentationsansicht ein-/ausschalten"
 
-msgid "Toggle Fold"
-msgstr "Ein-/Ausklappen"
+msgid "Toggle Fold (CTRL+double-click)"
+msgstr "Ein-/Ausklappen (STRG+Doppelklick)"
 
 msgid "Toggle Vertical Layout"
 msgstr "Vertikale Anordnung aktivieren/deaktivieren"
@@ -2020,8 +2020,8 @@ msgstr ""
 "Auswählen, ob die Werkzeugleiste zwischen der Menüzeile und den Dokumenten "
 "angezeigt wird"
 
-msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
-msgstr "Tabellen der ausgewählten Zelle(n) anzeigen (ein/aus, auch STRG+Doppelklick)"
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "Tabellen der ausgewählten Zelle(n) anzeigen (ein/aus)"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Auswählen, ob das Fenster in den Benachrichtungsbereich minimiert wird"

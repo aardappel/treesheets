@@ -1892,8 +1892,8 @@ msgstr "Bật/tắt chế độ toàn màn hình (&F)"
 msgid "Toggle &Scaled Presentation View"
 msgstr "Bật/tắt chế độ trình diễn theo tỷ lệ (&S)"
 
-msgid "Toggle Fold"
-msgstr "Bật/tắt gấp (Fold)"
+msgid "Toggle Fold (CTRL+double-click)"
+msgstr "Bật/tắt gấp (Fold) (CTRL+nhấp đúp)"
 
 msgid "Toggle Vertical Layout"
 msgstr "Bật/tắt bố cục dọc"
@@ -1944,8 +1944,8 @@ msgstr "Bật/tắt việc thu nhỏ cửa sổ thay vì đóng hẳn"
 msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr "Bật/tắt hiển thị thanh công cụ giữa thanh menu và tài liệu"
 
-msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
-msgstr "Bật/tắt hiển thị lưới của (các) ô được chọn (hoặc CTRL+nhấp đúp)"
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "Bật/tắt hiển thị lưới của (các) ô được chọn"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "Bật/tắt việc thu nhỏ cửa sổ vào khay hệ thống"

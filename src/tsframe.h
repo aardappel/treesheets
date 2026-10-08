@@ -540,12 +540,11 @@ struct TSFrame : wxFrame {
             // click on all platforms?
             MyAppend(editmenu, A_FOLD,
                      #ifndef WIN32
-                     _("Toggle Fold") + "\tCTRL+F10",
+                     _("Toggle Fold (CTRL+double-click)") + "\tCTRL+F10",
                      #else
-                     _("Toggle Fold") + "\tF10",
+                     _("Toggle Fold (CTRL+double-click)") + "\tF10",
                      #endif
-                     _("Toggles showing the grid of the selected cell(s) "
-                       "(also CTRL+double-click)"));
+                     _("Toggles showing the grid of the selected cell(s)"));
             MyAppend(editmenu, A_FOLDALL, _("Fold All") + "\tCTRL+SHIFT+F10",
                      _("Folds the grid of the selected cell(s) recursively"));
             MyAppend(editmenu, A_UNFOLDALL, _("Unfold All") + "\tCTRL+ALT+F10",

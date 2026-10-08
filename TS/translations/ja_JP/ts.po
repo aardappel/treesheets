@@ -1905,8 +1905,8 @@ msgstr "全画面表示を切り替え(&F)"
 msgid "Toggle &Scaled Presentation View"
 msgstr "スケール表示プレゼンテーションビューを切り替え(&S)"
 
-msgid "Toggle Fold"
-msgstr "折りたたみを切り替え"
+msgid "Toggle Fold (CTRL+double-click)"
+msgstr "折りたたみを切り替え (Ctrl+ダブルクリック)"
 
 msgid "Toggle Vertical Layout"
 msgstr "垂直レイアウトを切り替え"
@@ -1956,8 +1956,8 @@ msgstr "ウィンドウを閉じる代わりに最小化するかどうかを切
 msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr "ツールバーをメニューバーとドキュメントの間に表示するかどうかを切り替え"
 
-msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
-msgstr "選択したセルのグリッドの表示を切り替え (Ctrl+ダブルクリックでも可)"
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "選択したセルのグリッドの表示を切り替え"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "ウィンドウをシステムトレイに最小化するかどうかを切り替え"

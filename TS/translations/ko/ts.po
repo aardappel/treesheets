@@ -1879,8 +1879,8 @@ msgstr "전체 화면 보기 전환(&F)"
 msgid "Toggle &Scaled Presentation View"
 msgstr "크기 조정된 프레젠테이션 보기 전환(&S)"
 
-msgid "Toggle Fold"
-msgstr "접기 전환"
+msgid "Toggle Fold (CTRL+double-click)"
+msgstr "접기 전환 (Ctrl+더블 클릭)"
 
 msgid "Toggle Vertical Layout"
 msgstr "세로 레이아웃 전환"
@@ -1929,8 +1929,8 @@ msgstr "창이 닫히지 않고 최소화되는지 여부를 전환"
 msgid "Toggle whether toolbar is shown between menu bar and documents"
 msgstr "메뉴 표시줄과 문서 사이에 도구 모음 표시 여부를 전환"
 
-msgid "Toggles showing the grid of the selected cell(s) (also CTRL+double-click)"
-msgstr "선택한 셀의 격자 표시 전환 (Ctrl+더블 클릭으로도 가능)"
+msgid "Toggles showing the grid of the selected cell(s)"
+msgstr "선택한 셀의 격자 표시 전환"
 
 msgid "Toogle whether window is minimized to system tray"
 msgstr "창이 시스템 트레이에 최소화되었는지 여부를 전환"
