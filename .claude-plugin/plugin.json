@@ -1,0 +1,12 @@
+{
+  "name": "treesheets",
+  "description": "Drive a running TreeSheets instance over its local agent socket: run Lobster script against the open document and get results back.",
+  "author": {
+    "name": "Wouter van Oortmerssen"
+  },
+  "homepage": "https://strlen.com/treesheets/",
+  "repository": "https://github.com/aardappel/treesheets",
+  "license": "Zlib",
+  "keywords": ["treesheets", "lobster", "outliner", "spreadsheet"],
+  "skills": "./.claude/skills/"
+}

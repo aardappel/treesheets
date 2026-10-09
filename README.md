@@ -55,7 +55,12 @@ with all functionality easy to find and only in one place (no copy pasting or ov
 in the root of this folder, and distributing to users is then a matter of giving them this folder.
 
 `.claude/skills/treesheets-agent` is a skill that lets Claude Code inspect and script the document open in a
-running TreeSheets, see `TS/docs/AGENT_SOCKET.md`.
+running TreeSheets, see `TS/docs/AGENT_SOCKET.md`. Outside this repository, you can install it as a plugin:
+
+```
+/plugin marketplace add aardappel/treesheets
+/plugin install treesheets@treesheets
+```
 
 Ideas for future features and known bugs are tracked in the [issues](https://github.com/aardappel/treesheets/issues).
 

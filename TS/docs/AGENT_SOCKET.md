@@ -27,6 +27,13 @@ If you're using [Claude Code](https://claude.com/claude-code) in this
 repository, it can drive a running TreeSheets directly through the bundled
 `treesheets-agent` skill (`.claude/skills/treesheets-agent`) — just ask it to
 inspect or script your open document once TreeSheets is running with `-a`.
+Elsewhere, install the skill as a Claude Code plugin from this repository:
+
+```
+/plugin marketplace add aardappel/treesheets
+/plugin install treesheets@treesheets
+```
+
 The skill's `SKILL.md` also documents the underlying wire protocol (a small
 newline-delimited JSON format) and works whether or not you have this
 repository checked out, so other agents or tools can talk to the socket

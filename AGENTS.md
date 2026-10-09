@@ -14,6 +14,7 @@ overview; this file covers what you need to change the code safely.
 | `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon, `toolchain-mingw64.cmake`; Windows `.rc`/icon |
 | `.github/workflows/build.yml` | CI: Linux (x64, arm64; .deb and AppImage), Windows MSVC (x64, arm64), macOS (universal), then a release per release marker tag |
 | `.claude/skills/treesheets-agent/` | Skill and wire protocol for driving a running TreeSheets over its agent socket |
+| `.claude-plugin/` | `marketplace.json` and `plugin.json` that publish that skill as the Claude Code plugin `treesheets` |
 
 ### Unity build: one translation unit
 

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "treesheets",
+  "description": "Claude Code plugins for TreeSheets",
+  "owner": {
+    "name": "Wouter van Oortmerssen"
+  },
+  "plugins": [
+    {
+      "name": "treesheets",
+      "description": "Drive a running TreeSheets instance over its local agent socket: run Lobster script against the open document and get results back.",
+      "category": "productivity",
+      "source": "./"
+    }
+  ]
+}
