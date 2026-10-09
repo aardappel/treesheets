@@ -62,6 +62,9 @@ running TreeSheets, see `TS/docs/AGENT_SOCKET.md`. Outside this repository, you 
 /plugin install treesheets@treesheets
 ```
 
+Claude Code doesn't auto-update plugins from third-party marketplaces by default. To get new versions of the
+skill automatically, enable it under `/plugin` → Marketplaces → treesheets → Enable auto-update.
+
 Ideas for future features and known bugs are tracked in the [issues](https://github.com/aardappel/treesheets/issues).
 
 

@@ -34,6 +34,10 @@ Elsewhere, install the skill as a Claude Code plugin from this repository:
 /plugin install treesheets@treesheets
 ```
 
+Claude Code doesn't auto-update plugins from third-party marketplaces by
+default. To get new versions of the skill automatically, enable it under
+`/plugin` → Marketplaces → treesheets → Enable auto-update.
+
 The skill's `SKILL.md` also documents the underlying wire protocol (a small
 newline-delimited JSON format) and works whether or not you have this
 repository checked out, so other agents or tools can talk to the socket
