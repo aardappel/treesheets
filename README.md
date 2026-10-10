@@ -2,7 +2,7 @@ Welcome to the TreeSheets productivity tool!
 ============================================
 
 <p align="center">
- <img width="607" height="498" alt="image" src="https://github.com/user-attachments/assets/9cabfa45-592b-4f03-b4e3-ed5c1c2ee4c7" />
+ <img width="840" alt="TreeSheets on macOS showing a calendar, todo list, projects and research notes as nested grids" src=".github/screenshot.png" />
 </p>
 
 
