@@ -98,8 +98,8 @@ if(NOT TREESHEETS_BUNDLE_WXWIDGETS)
 endif()
 FetchContent_Declare(
     wxwidgets
-    URL https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.2/wxWidgets-3.3.2.tar.bz2
-    URL_HASH SHA256=50a28cb668de47b0e006cd6ebed8cf4f76c1cac6116fb3c978c44478219103f2
+    URL https://github.com/wxWidgets/wxWidgets/releases/download/v3.3.4/wxWidgets-3.3.4.tar.bz2
+    URL_HASH SHA256=815c16cafa4fcbfcf25c5c0a3418309c62257b8a3b6f91d85a1367a134f98c98
     ${wxwidgets_find_package_args}
 )
 FetchContent_MakeAvailable(wxwidgets)

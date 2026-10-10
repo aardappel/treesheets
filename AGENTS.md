@@ -89,7 +89,7 @@ As a result:
 
 ## Building
 
-CMake ≥ 3.25 and a C++20 compiler are required. wxWidgets 3.3.2, Lobster and wxPdfDocument are
+CMake ≥ 3.25 and a C++20 compiler are required. wxWidgets 3.3.4, Lobster and wxPdfDocument are
 pinned (URL + SHA256) in `CMakeLists.txt`, `cmake/Lobster.cmake` and `cmake/WxPdfDoc.cmake` and are
 fetched with `FetchContent`. Keep the `URL` lines in exactly that shape, because the Flathub
 manifest scrapes these files to keep its dependency versions in sync.

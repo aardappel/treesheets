@@ -1626,11 +1626,13 @@ struct TSFrame : wxFrame {
     }
 
     void OnTabChange(wxAuiNotebookEvent &nbe) {
+        nbe.Skip();
+        // wx 3.3.4 also sends this when the last page was deleted.
+        if (nbe.GetSelection() == wxNOT_FOUND) { return; }
         auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
         canvas->SetFocus();
         canvas->doc->UpdateFileName();
         UpdateStatus(canvas->doc->selected, true);
-        nbe.Skip();
     }
 
     void OnTabClose(wxAuiNotebookEvent &nbe) {
