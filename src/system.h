@@ -535,7 +535,6 @@ struct System {
         // each group, where active and the files are numbers of the remembered files.
         struct : wxAuiBookSerializer {
             vector<int> saved;  // per page: its number among the remembered files, or -1
-            vector<bool> active;
             wxString layout;
             void BeforeSaveNotebook(const wxString &) override {}
             void SaveNotebookTabControl(const wxAuiTabLayoutInfo &tab) override {
@@ -546,7 +545,7 @@ struct System {
                 for (auto i : pages) {
                     if (saved[i] < 0) { continue; }
                     files << " " << saved[i];
-                    if (active[i]) { activefile = saved[i]; }
+                    if (i == tab.active) { activefile = saved[i]; }
                 }
                 if (files.IsEmpty() && tab.dock_direction != wxAUI_DOCK_CENTER) { return; }
                 layout << wxString::Format("%d %d %d %d %d %d %d", tab.dock_direction,
@@ -556,13 +555,8 @@ struct System {
             }
         } serializer;
         serializer.saved.resize(nb->GetPageCount(), -1);
-        serializer.active.resize(nb->GetPageCount());
         auto namedfiles = 0;
         for (auto *tabctrl : nb->GetAllTabCtrls()) {
-            // Not tab.active in SaveNotebookTabControl(): wx 3.3.2 saves the position in the
-            // group there, not the page index.
-            auto active = nb->GetPageIndex(tabctrl->GetWindowFromIdx(tabctrl->GetActivePage()));
-            if (active != wxNOT_FOUND) { serializer.active[active] = true; }
             for (auto i : nb->GetPagesInDisplayOrder(tabctrl)) {
                 auto *canvas = dynamic_cast<TSCanvas *>(nb->GetPage(i));
                 if (!canvas->doc->filename.IsEmpty()) {
