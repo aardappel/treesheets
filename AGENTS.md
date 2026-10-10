@@ -19,7 +19,7 @@ overview; this file covers what you need to change the code safely.
 ### Unity build: one translation unit
 
 `src/main.cpp` is the only TreeSheets `.cpp` file (plus `src/lobster_impl.cpp` for the Lobster
-bindings, `src/stdafx.cpp` for the MSVC PCH, and `src/macclipboard.mm` on macOS). It defines the global
+bindings, `src/stdafx.cpp` for the MSVC PCH, and `src/macos.mm` on macOS). It defines the global
 constants and the `A_*` action enum, then `#include`s every other header in dependency order
 inside `namespace treesheets` (the Lobster implementation in `treesheets_impl.h` comes first):
 

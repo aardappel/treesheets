@@ -185,7 +185,7 @@ if(ENABLE_ASAN)
 endif()
 
 if(APPLE)
-    target_sources(TreeSheets PRIVATE src/macclipboard.mm)
+    target_sources(TreeSheets PRIVATE src/macos.mm)
     set_target_properties(TreeSheets PROPERTIES
         MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}"

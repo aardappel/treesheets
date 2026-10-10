@@ -45,6 +45,14 @@ struct TSCanvas : public wxScrolledCanvas {
         Bind(wxEVT_LEFT_DCLICK, &TSCanvas::OnLeftDoubleClick, this);
         Bind(wxEVT_CHAR, &TSCanvas::OnChar, this);
         Bind(wxEVT_KEY_DOWN, &TSCanvas::OnKeyDown, this);
+        #ifdef __WXMAC__
+            // The menu bar flashes its title for every shortcut it handles, which is distracting
+            // for keys like the arrows or ENTER. Leave only CMD+character shortcuts to it,
+            // OnKeyDown() runs the others.
+            Bind(wxEVT_ACCELERATOR_KEY, [](wxAcceleratorKeyEvent &ae) {
+                if (ae.CmdDown() && wxIsprint(ae.GetUnicodeKey())) { ae.UseAccelerator(); }
+            });
+        #endif
         Bind(wxEVT_KEY_UP, &TSCanvas::OnKeyUp, this);
         Bind(wxEVT_KILL_FOCUS, &TSCanvas::OnKillFocus, this);
         Bind(wxEVT_CONTEXT_MENU, &TSCanvas::OnContextMenuClick, this);
@@ -233,6 +241,13 @@ struct TSCanvas : public wxScrolledCanvas {
             // have it moves the focus away from the canvas.
             if (ke.GetKeyCode() == WXK_TAB && ke.GetModifiers() & wxMOD_CONTROL) {
                 sys->frame->SetStatus(doc->Action(ke.ShiftDown() ? A_PREVFILE : A_NEXTFILE));
+                return;
+            }
+        #endif
+        #ifdef __WXMAC__
+            if (wxAcceleratorEntry entry; FindAcceleratorForKey(ke, entry, nullptr)) {
+                wxCommandEvent ce(wxEVT_MENU, entry.GetCommand());
+                frame->GetEventHandler()->ProcessEvent(ce);
                 return;
             }
         #endif

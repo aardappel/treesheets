@@ -38,3 +38,16 @@ MacClipboardResult GetImageFromMacClipboard() {
     return {wxNullImage, 1.0};
   }
 }
+
+void BypassMacMenuForFunctionKeys(bool (*bypass)()) {
+  // AppKit offers function keys to the menu bar before the key window, even without CMD.
+  [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown
+                                        handler:^NSEvent *(NSEvent *event) {
+                                          if (!(event.modifierFlags & NSEventModifierFlagFunction) ||
+                                              !event.window || !bypass()) {
+                                            return event;
+                                          }
+                                          [event.window sendEvent:event];
+                                          return nil;
+                                        }];
+}

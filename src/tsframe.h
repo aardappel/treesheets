@@ -953,6 +953,10 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_DPI_CHANGED, &TSFrame::OnDPIChanged, this);
         Bind(wxEVT_SIZING, &TSFrame::OnSizing, this);
         Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
+        #ifdef __WXMAC__
+            BypassMacMenuForFunctionKeys(
+                [] { return dynamic_cast<TSCanvas *>(wxWindow::FindFocus()) != nullptr; });
+        #endif
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_BOLD);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, wxID_ITALIC);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateStyle, this, A_TT);

@@ -112,7 +112,7 @@
 
 #ifdef __WXMAC__
     #include <mach-o/dyld.h>
-    #include "macclipboard.h"
+    #include "macos.h"
 #endif
 
 using namespace std;
