@@ -94,7 +94,7 @@ include(FetchContent)
 
 # Use an installed wxWidgets if there is one, unless it's to be bundled
 if(NOT TREESHEETS_BUNDLE_WXWIDGETS)
-    set(wxwidgets_find_package_args FIND_PACKAGE_ARGS 3.3.2 NAMES wxWidgets)
+    set(wxwidgets_find_package_args FIND_PACKAGE_ARGS 3.3.4 NAMES wxWidgets)
 endif()
 FetchContent_Declare(
     wxwidgets

@@ -663,18 +663,17 @@ static void GetFilesFromUser(wxArrayString &filenames, wxWindow *parent, const w
 }
 
 static void HintIMELocation(Document *doc, int bx, int by, int bh, int stylebits) {
-    // TODO: implement on other platforms
+    int scrollx, scrolly;
+    doc->canvas->GetViewStart(&scrollx, &scrolly);
+    doc->canvas->UpdateInputMethodCursorRect(
+        wxRect(doc->centerx + bx * doc->currentviewscale - scrollx,
+               doc->centery + by * doc->currentviewscale - scrolly, 1,
+               max(1, static_cast<int>(bh * doc->currentviewscale))));
     #ifdef __WXMSW__
+        // wx positions the input method windows, but leaves the composition in the system font.
         HWND hwnd = doc->canvas->GetHandle();
         if (hwnd == 0) return;
-        int scrollx, scrolly;
-        doc->canvas->GetViewStart(&scrollx, &scrolly);
-        int imx = doc->centerx + (bx + doc->hierarchysize) * doc->currentviewscale - scrollx;
-        int imy = doc->centery + (by + doc->hierarchysize) * doc->currentviewscale - scrolly;
         if (HIMC himc = ImmGetContext(hwnd)) {
-            COMPOSITIONFORM cof = {.dwStyle = CFS_FORCE_POSITION,
-                                   .ptCurrentPos = {.x = imx, .y = imy}};
-            ImmSetCompositionWindow(himc, &cof);
             LOGFONT lf = {.lfHeight = static_cast<LONG>(-bh * doc->currentviewscale),
                           .lfWeight = stylebits & STYLE_BOLD ? FW_BOLD : FW_REGULAR,
                           .lfItalic = static_cast<BYTE>(stylebits & STYLE_ITALIC),
@@ -684,8 +683,6 @@ static void HintIMELocation(Document *doc, int bx, int by, int bh, int stylebits
                                                                     ? FIXED_PITCH | FF_MODERN
                                                                     : VARIABLE_PITCH | FF_SWISS)};
             ImmSetCompositionFont(himc, &lf);
-            CANDIDATEFORM caf = {.dwStyle = CFS_CANDIDATEPOS, .ptCurrentPos = {.x = imx, .y = imy}};
-            ImmSetCandidateWindow(himc, &caf);
             ImmReleaseContext(hwnd, himc);
         }
     #endif
