@@ -21,7 +21,18 @@ project(TreeSheets
 
 ### Options
 
-option(ENABLE_LOBSTER "Enable Lobster scripting" ON)
+# Lobster runs scripts through its libtcc JIT, and libtcc only has code generators for these
+# CPUs (see TCC_IS_NATIVE in tcc.h). Elsewhere tccrun.c is not compiled and the link fails,
+# so default to building without Lobster there.
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(i[3-6]86|x86_64|amd64|AMD64|arm.*|aarch64|ARM64|riscv64)$")
+    set(TREESHEETS_LOBSTER_DEFAULT ON)
+else()
+    set(TREESHEETS_LOBSTER_DEFAULT OFF)
+endif()
+option(ENABLE_LOBSTER "Enable Lobster scripting" ${TREESHEETS_LOBSTER_DEFAULT})
+if(NOT ENABLE_LOBSTER)
+    message(STATUS "Lobster scripting disabled (no libtcc backend for ${CMAKE_SYSTEM_PROCESSOR}, or ENABLE_LOBSTER=OFF)")
+endif()
 option(ENABLE_WXPDFDOC "Enable direct PDF Export" ON)
 option(ENABLE_IPO "Enable interprocedural/link time optimization" ON)
 option(ENABLE_CLANG_TIDY "Run clang-tidy linter" OFF)
