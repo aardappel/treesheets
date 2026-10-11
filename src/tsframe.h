@@ -993,7 +993,6 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_FORMULABAR);
-        Bind(wxEVT_TEXT_ENTER, &TSFrame::OnFormulaBarEnter, this, A_FORMULABAR);
         #ifdef __WXMSW__
             // Wherever the focus is. Holding Alt repeats it, also while using it with the mouse.
             Bind(wxEVT_CHAR_HOOK, [this](wxKeyEvent &ke) {
@@ -1147,9 +1146,25 @@ struct TSFrame : wxFrame {
 
         auto *formulatb = NewToolbar();
         AddToolbarLabel(formulatb, _("Formula "));
-        formulatb->AddControl(formulabar = new TSTextCtrl(
-                                  formulatb, A_FORMULABAR, "", wxDefaultPosition,
-                                  FromDIP(wxSize(240, 22)), wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        #if defined(__WXGTK3__) && defined(TREESHEETS_USE_PANGO)
+            // wxGTK turns wxTE_PROCESS_ENTER off while the suggestions are shown, but can lose
+            // count of them, so that ENTER applies the formula rather than picking a suggestion.
+            // GTK emits "activate" only for an ENTER that the suggestions don't take.
+            formulatb->AddControl(formulabar = new TSTextCtrl(formulatb, A_FORMULABAR, "",
+                                                              wxDefaultPosition,
+                                                              FromDIP(wxSize(240, 22)),
+                                                              wxWANTS_CHARS));
+            g_signal_connect(formulabar->GetHandle(), "activate",
+                             G_CALLBACK(+[](GtkEntry *, TSFrame *frame) {
+                                 frame->OnFormulaBarEnter();
+                             }),
+                             this);
+        #else
+            formulatb->AddControl(formulabar = new TSTextCtrl(
+                                      formulatb, A_FORMULABAR, "", wxDefaultPosition,
+                                      FromDIP(wxSize(240, 22)), wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+            formulabar->Bind(wxEVT_TEXT_ENTER, [this](wxCommandEvent &) { OnFormulaBarEnter(); });
+        #endif
         formulabar->AutoComplete(formulacompleter = new FormulaCompleter);
         // Keys without CTRL or ALT, such as ENTER and the arrows, are for the formula bar and its
         // suggestions rather than the menu shortcuts. Others are as in any text control.
@@ -1749,7 +1764,7 @@ struct TSFrame : wxFrame {
 
     // ENTER applies the formula bar to the selected cell. It's not handled in OnCharHook(), since
     // ENTER in the list of suggestions only picks one.
-    void OnFormulaBarEnter(wxCommandEvent &) {
+    void OnFormulaBarEnter() {
         auto *canvas = GetCurrentTab();
         if (canvas == nullptr) { return; }
         SetStatus(canvas->doc->SetFormulaBarText(formulabar->GetValue()));
