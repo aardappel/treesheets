@@ -217,8 +217,8 @@ struct Evaluator {
     arithmetic (+ - * / and parentheses) over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of
     a grid, which is named by the text of its cell, e.g. =SUM(Income) - SUM(Expenses). The
     results of other formulas in that grid count as numbers, and their errors carry over. With
-    RECURSIVE in front, e.g. RECURSIVESUM, they also count the data in all its sub-grids, but not
-    the formulas there, which would count subtotals twice.
+    TREE in front, e.g. TREESUM, they also count the data in all its sub-grids, but not the
+    formulas there, which would count subtotals twice.
 */
 struct FormulaEvaluator {
     enum { BUSY, OK, FAILED };
@@ -329,23 +329,23 @@ struct FormulaEvaluator {
         while (before > 1 && wxIsspace(s[before - 1])) { before--; }
         if (wxString("=+-*/(").find(s[before - 1]) == wxString::npos) { return; }
         auto typed = s.Mid(start).Upper();
-        for (auto recursive : {L"", L"RECURSIVE"}) {
+        for (auto prefix : {L"", L"TREE"}) {
             for (auto &[n, f] : Functions()) {
-                auto function = recursive + wxString(n);
+                auto function = prefix + wxString(n);
                 if (function.StartsWith(typed)) { res.Add(s.Left(start) + function + "("); }
             }
         }
     }
 
     // The numbers in the grid named `name` (see FindGrid()), except formula cell `self`, and with
-    // `recursive` also those of the data cells in its sub-grids, depth first.
-    wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers, bool recursive) {
+    // `tree` also those of the data cells in its sub-grids, depth first.
+    wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers, bool tree) {
         auto *g = FindGrid(self, name);
         if (g == nullptr) { return L"#NAME?"; }
-        return Numbers(self, g, numbers, recursive);
+        return Numbers(self, g, numbers, tree);
     }
 
-    wxString Numbers(Cell *self, Grid *g, vector<double> &numbers, bool recursive,
+    wxString Numbers(Cell *self, Grid *g, vector<double> &numbers, bool tree,
                      bool sub = false) {
         for (auto &c : g->cells) {
             if (c.get() != self && !(sub && c->celltype == CT_FORMULA)) {
@@ -355,7 +355,7 @@ struct FormulaEvaluator {
                 double d;
                 if (c->text.GetStrictNum(d)) { numbers.push_back(d); }
             }
-            if (recursive && c->grid) {
+            if (tree && c->grid) {
                 if (auto error = Numbers(self, c->grid.get(), numbers, true, true);
                     !error.IsEmpty()) {
                     return error;
@@ -436,12 +436,12 @@ struct FormulaEvaluator {
             auto name = s.Mid(i, close - i).Trim().Trim(false);
             i = close + 1;
             wxString rest;
-            auto recursive = function.StartsWith(L"RECURSIVE", &rest);
-            if (recursive) { function = rest; }
+            auto tree = function.StartsWith(L"TREE", &rest);
+            if (tree) { function = rest; }
             for (auto &[n, f] : Functions()) {
                 if (function != n) { continue; }
                 vector<double> numbers;
-                auto e = fe.Numbers(self, name, numbers, recursive);
+                auto e = fe.Numbers(self, name, numbers, tree);
                 return e.IsEmpty() ? f(numbers) : Fail(e);
             }
             return Fail(L"#NAME?");
