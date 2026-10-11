@@ -231,7 +231,8 @@ struct FormulaEvaluator {
     wxString Update(Cell *c) {
         if (c == editing || !c->formula) { return {}; }
         if (auto it = state.find(c); it != state.end()) {
-            return it->second == BUSY ? L"#CYCLE!" : it->second == FAILED ? c->text.t : wxString();
+            if (it->second == BUSY) { return L"#CYCLE!"; }
+            return it->second == FAILED ? c->text.t : wxString();
         }
         state[c] = BUSY;
         Parser p {*this, c, *c->formula};
