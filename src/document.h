@@ -676,28 +676,30 @@ struct Document {
     void ScrollOrZoom(bool zoomiftiny = false) {
         if (selected.grid == nullptr) { return; }
         auto *drawroot = WalkPath(drawpath);
+        // If the selection is outside of the view, zoom out only as far as needed to show it: to
+        // the deepest cell on the view's path that contains it.
+        auto *view = drawroot;
+        while (view != selected.grid->cell && !view->IsParentOf(selected.grid->cell)) {
+            view = view->parent;
+        }
         // If we jumped to a cell which may be insided a folded cell, we have to unfold it
         // because the rest of the code doesn't deal with a selection that is invisible :)
-        for (auto *cg = selected.grid->cell; cg != nullptr; cg = cg->parent) {
-            // Unless we're under the drawroot, no need to unfold further.
-            if (cg == drawroot) { break; }
+        for (auto *cg = selected.grid->cell; cg != view; cg = cg->parent) {
             if (cg->grid->folded) {
                 cg->grid->folded = false;
                 cg->ResetLayout();
                 cg->ResetChildren();
             }
         }
-        for (auto *cg = selected.grid->cell; cg != nullptr; cg = cg->parent) {
-            if (cg == drawroot) {
-                if (zoomiftiny) { ZoomTiny(); }
-                UpdateLayout();
-                ScrollIfSelectionOutOfView();
-                canvas->Refresh();
-                return;
-            }
+        if (view == drawroot) {
+            if (zoomiftiny) { ZoomTiny(); }
+            UpdateLayout();
+            ScrollIfSelectionOutOfView();
+            canvas->Refresh();
+        } else {
+            Zoom(view->Depth() - static_cast<int>(drawpath.size()));
+            if (zoomiftiny) { ZoomTiny(); }
         }
-        Zoom(-1, true);
-        if (zoomiftiny) { ZoomTiny(); }
     }
 
     void ZoomTiny() {
