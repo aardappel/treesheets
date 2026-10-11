@@ -525,6 +525,7 @@ struct Document {
         double docy = (p.y + sy - centery) / currentviewscale;
         double fx = before.width > 0 ? (docx - before.x) / before.width : 0.0;
         double fy = before.height > 0 ? (docy - before.y) / before.height : 0.0;
+        SetSelect(hover);
         // Hovered below, once the view is where it stays.
         if (!Zoom(dir, false, false)) { return; }
         auto after = CellRect(c);
@@ -897,7 +898,6 @@ struct Document {
     }
 
     bool Zoom(int dir, bool fromroot = false, bool hoverpointer = true) {
-        if (sys->hoverzoom && hover.grid != nullptr) SetSelect(hover);
         if (!ZoomSetDrawPath(dir, fromroot)) { return false; }
         ResetAnchor();
         auto *drawroot = WalkPath(drawpath);
@@ -992,6 +992,7 @@ struct Document {
                 if (atpointer) {
                     ZoomAtPointer(dir, pointer);
                 } else {
+                    if (sys->hoverzoom && hover.grid != nullptr) { SetSelect(hover); }
                     Zoom(dir);
                 }
             }

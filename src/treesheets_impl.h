@@ -143,13 +143,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void GoToRoot() override { current = document->root.get(); }
     void GoToView() override { current = document->currentdrawroot; }
-    bool Zoom(int levels, bool fromroot) override {
-        // Zoom on the selection, not on what is under the pointer (with hover zoom).
-        document->hover = Selection();
-        bool zoomed = document->Zoom(levels, fromroot, false);
-        document->HoverUnderPointer();
-        return zoomed;
-    }
+    bool Zoom(int levels, bool fromroot) override { return document->Zoom(levels, fromroot); }
     bool HasSelection() override { return document->selected.grid != nullptr; }
     void GoToSelection() override {
         auto *cell = document->selected.GetFirst();
