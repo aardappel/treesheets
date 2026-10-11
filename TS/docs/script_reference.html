@@ -61,7 +61,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_formula</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the formula of the current cell if it is a formula (see set_formula), or else an empty string. its text (see get_text) is the result.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_formula</b>(formula<font color="#666666">: string</font>)</tt></td><td class="a">makes the current cell a formula such as "=SUM(Expenses) - 10", which calculates its text: arithmetic over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of the numbers in the grid of the cell whose text is the name in parentheses, the nearest one first. an empty formula makes it data again, as does set_text().</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_formula</b>(formula<font color="#666666">: string</font>)</tt></td><td class="a">makes the current cell a formula such as "=SUM(Expenses) - 10", which calculates its text: arithmetic over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of the numbers in the grid of the cell whose text is the name in parentheses, the nearest one first, and with RECURSIVE in front (e.g. RECURSIVESUM) also the data in all its sub-grids. an empty formula makes it data again, as does set_text().</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text</b>(text<font color="#666666">: string</font>)</tt></td><td class="a">sets the text of the current cell</td>

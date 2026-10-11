@@ -216,7 +216,9 @@ struct Evaluator {
     Calculates the results of formula cells (CT_FORMULA), which become their text. A formula is
     arithmetic (+ - * / and parentheses) over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of
     a grid, which is named by the text of its cell, e.g. =SUM(Income) - SUM(Expenses). The
-    results of other formulas in that grid count as numbers, and their errors carry over.
+    results of other formulas in that grid count as numbers, and their errors carry over. With
+    RECURSIVE in front, e.g. RECURSIVESUM, they also count the data in all its sub-grids, but not
+    the formulas there, which would count subtotals twice.
 */
 struct FormulaEvaluator {
     enum { BUSY, OK, FAILED };
@@ -327,22 +329,37 @@ struct FormulaEvaluator {
         while (before > 1 && wxIsspace(s[before - 1])) { before--; }
         if (wxString("=+-*/(").find(s[before - 1]) == wxString::npos) { return; }
         auto typed = s.Mid(start).Upper();
-        for (auto &[n, f] : Functions()) {
-            if (wxString(n).StartsWith(typed)) { res.Add(s.Left(start) + n + "("); }
+        for (auto recursive : {L"", L"RECURSIVE"}) {
+            for (auto &[n, f] : Functions()) {
+                auto function = recursive + wxString(n);
+                if (function.StartsWith(typed)) { res.Add(s.Left(start) + function + "("); }
+            }
         }
     }
 
-    // The numbers in the grid named `name` (see FindGrid()), except formula cell `self`.
-    wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers) {
+    // The numbers in the grid named `name` (see FindGrid()), except formula cell `self`, and with
+    // `recursive` also those of the data cells in its sub-grids, depth first.
+    wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers, bool recursive) {
         auto *g = FindGrid(self, name);
-        if (g == nullptr) { return L"#NAME?"; }
+        return g != nullptr ? Numbers(self, g, numbers, recursive) : L"#NAME?";
+    }
+
+    wxString Numbers(Cell *self, Grid *g, vector<double> &numbers, bool recursive,
+                     bool sub = false) {
         for (auto &c : g->cells) {
-            if (c.get() == self) { continue; }
-            if (c->celltype == CT_FORMULA) {
-                if (auto error = Update(c.get()); !error.IsEmpty()) { return error; }
+            if (c.get() != self && !(sub && c->celltype == CT_FORMULA)) {
+                if (c->celltype == CT_FORMULA) {
+                    if (auto error = Update(c.get()); !error.IsEmpty()) { return error; }
+                }
+                double d;
+                if (c->text.GetStrictNum(d)) { numbers.push_back(d); }
             }
-            double d;
-            if (c->text.GetStrictNum(d)) { numbers.push_back(d); }
+            if (recursive && c->grid) {
+                if (auto error = Numbers(self, c->grid.get(), numbers, true, true);
+                    !error.IsEmpty()) {
+                    return error;
+                }
+            }
         }
         return {};
     }
@@ -417,10 +434,13 @@ struct FormulaEvaluator {
             }
             auto name = s.Mid(i, close - i).Trim().Trim(false);
             i = close + 1;
+            wxString rest;
+            auto recursive = function.StartsWith(L"RECURSIVE", &rest);
+            if (recursive) { function = rest; }
             for (auto &[n, f] : Functions()) {
                 if (function != n) { continue; }
                 vector<double> numbers;
-                auto e = fe.Numbers(self, name, numbers);
+                auto e = fe.Numbers(self, name, numbers, recursive);
                 return e.IsEmpty() ? f(numbers) : Fail(e);
             }
             return Fail(L"#NAME?");

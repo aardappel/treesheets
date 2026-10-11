@@ -173,7 +173,8 @@ BUILTIN(get_formula, "", "", "S",
 BUILTIN(set_formula, "formula", "S", "",
     "makes the current cell a formula such as \"=SUM(Expenses) - 10\", which calculates its "
     "text: arithmetic over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of the numbers in "
-    "the grid of the cell whose text is the name in parentheses, the nearest one first. an empty "
+    "the grid of the cell whose text is the name in parentheses, the nearest one first, and with "
+    "RECURSIVE in front (e.g. RECURSIVESUM) also the data in all its sub-grids. an empty "
     "formula makes it data again, as does set_text().")
 (VM &, LString *s) {
     si->SetFormula(s->strv());
