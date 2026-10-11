@@ -80,6 +80,10 @@ struct TSFrame : wxFrame {
     TSTextCtrl *replaces {nullptr};
     TSTextCtrl *formulabar {nullptr};
     FormulaCompleter *formulacompleter {nullptr};  // owned by formulabar
+    #ifdef __WXMAC__
+        bool formulabarskip {false};  // the text changes by deleting or moving in the list
+        bool formulabarcompleting {false};
+    #endif
     ColorDropdown *cellcolordropdown {nullptr};
     ColorDropdown *textcolordropdown {nullptr};
     ColorDropdown *bordercolordropdown {nullptr};
@@ -1166,6 +1170,35 @@ struct TSFrame : wxFrame {
             formulabar->Bind(wxEVT_TEXT_ENTER, [this](wxCommandEvent &) { OnFormulaBarEnter(); });
         #endif
         formulabar->AutoComplete(formulacompleter = new FormulaCompleter);
+        #ifdef __WXMAC__
+            // wxOSX shows the suggestions only for Cocoa's complete: (ESCAPE, which leaves the
+            // formula bar), so show them after each change, as on the other platforms, but not
+            // after deleting or while moving in the list. complete: inserts the first one, also
+            // a change, and only works after Cocoa is done with the key or the chosen one.
+            // wxOSX drops suggestions that don't start with the text, also by case.
+            formulabar->Bind(wxEVT_KEY_DOWN, [this](wxKeyEvent &ke) {
+                auto k = ke.GetKeyCode();
+                formulabarskip = k == WXK_BACK || k == WXK_DELETE || k == WXK_UP || k == WXK_DOWN;
+                ke.Skip();
+            });
+            formulabar->Bind(wxEVT_TEXT, [this](wxCommandEvent &ce) {
+                ce.Skip();
+                if (std::exchange(formulabarskip, false) || formulabarcompleting) { return; }
+                CallAfter([this] {
+                    auto s = formulabar->GetValue();
+                    wxArrayString res;
+                    formulacompleter->GetCompletions(s, res);
+                    if (res.empty()) { return; }
+                    if (!res[0].StartsWith(s)) {
+                        formulabar->ChangeValue(res[0].Left(s.Len()));
+                        formulabar->SetInsertionPointEnd();
+                    }
+                    formulabarcompleting = true;
+                    ShowMacCompletions(formulabar->GetHandle());
+                    formulabarcompleting = false;
+                });
+            });
+        #endif
         // Keys without CTRL or ALT, such as ENTER and the arrows, are for the formula bar and its
         // suggestions rather than the menu shortcuts. Others are as in any text control.
         formulabar->Bind(wxEVT_ACCELERATOR_KEY, [](wxAcceleratorKeyEvent &ae) {

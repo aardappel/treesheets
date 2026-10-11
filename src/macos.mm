@@ -1,4 +1,5 @@
 #import <AppKit/AppKit.h>
+#import <objc/runtime.h>
 
 MacClipboardResult GetImageFromMacClipboard() {
   @autoreleasepool {
@@ -50,4 +51,26 @@ void BypassMacMenuForFunctionKeys(bool (*bypass)()) {
                                           [event.window sendEvent:event];
                                           return nil;
                                         }];
+}
+
+void ShowMacCompletions(WXWidget field) {
+  // wxOSX leaves the first suggestion selected, so that Cocoa inserts it, and accepts it on
+  // a character that doesn't continue the word, such as "(". Select none, as on the others.
+  static dispatch_once_t once;
+  dispatch_once(&once, ^{
+    auto sel = @selector(control:textView:completions:forPartialWordRange:indexOfSelectedItem:);
+    auto method = class_getInstanceMethod([field class], sel);
+    auto original = reinterpret_cast<NSArray *(*)(id, SEL, NSControl *, NSTextView *, NSArray *,
+                                                  NSRange, NSInteger *)>(
+        method_getImplementation(method));
+    method_setImplementation(
+        method, imp_implementationWithBlock(^NSArray *(id self, NSControl *control,
+                                                       NSTextView *textview, NSArray *words,
+                                                       NSRange range, NSInteger *index) {
+          auto res = original(self, sel, control, textview, words, range, index);
+          if (index) *index = -1;
+          return res;
+        }));
+  });
+  [[static_cast<NSTextField *>(field) currentEditor] complete:nil];
 }
