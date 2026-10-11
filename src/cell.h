@@ -583,14 +583,19 @@ struct Cell {
                int pastemode = PASTE_FIT, int colwidth = 0) {
         parent->AddUndo(document);
         ResetLayout();
-        if (!HasText() || !selection.TextEdit()) { note = original->note; }
+        auto textedit = selection.TextEdit();
+        if (!HasText() || !textedit) { note = original->note; }
         if (original->HasText()) {
-            if (!HasText() || !selection.TextEdit()) {
+            if (!HasText() || !textedit) {
                 cellcolor = original->cellcolor;
                 textcolor = original->textcolor;
                 text.stylebits = original->text.stylebits;
             }
             text.Insert(document, original->text.t, selection, false, &original->text);
+        }
+        if (original->formula && !textedit) {  // its result as text, and the formula itself
+            celltype = CT_FORMULA;
+            formula = original->formula;
         }
         if (original->text.image != nullptr) { text.image = original->text.image; }
         if (colwidth > 0 && (!original->grid || HasText())) {

@@ -3306,6 +3306,7 @@ struct Document {
                     cell->AddUndo(this);
                     cell->ResetLayout();
                     PasteSingleText(cell, lines[0]);
+                    textedited = cell;  // as if typed, so "=..." becomes a formula
                 } else if (!lines.empty()) {
                     cell->parent->AddUndo(this);
                     cell->ResetLayout();
