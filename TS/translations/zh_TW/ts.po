@@ -85,6 +85,9 @@ msgstr "檔案(&F)"
 msgid "&Flatten"
 msgstr "扁平化(&F)"
 
+msgid "&Formula"
+msgstr ""
+
 msgid "&Grid Reorganization"
 msgstr "網格重組(&G)"
 
@@ -923,6 +926,12 @@ msgstr "遞迴摺疊選取儲存格的網格"
 
 msgid "Font..."
 msgstr "字型..."
+
+msgid "Formula "
+msgstr ""
+
+msgid "Formula bar"
+msgstr ""
 
 msgid "Found an image type that is not defined in this program."
 msgstr "發現此程式未定義的圖片類型。"

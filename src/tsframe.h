@@ -61,6 +61,7 @@ struct TSFrame : wxFrame {
     wxColour toolbarbackgroundcolor {0xD8C7BC};
     TSTextCtrl *filter {nullptr};
     TSTextCtrl *replaces {nullptr};
+    TSTextCtrl *formulabar {nullptr};
     ColorDropdown *cellcolordropdown {nullptr};
     ColorDropdown *textcolordropdown {nullptr};
     ColorDropdown *bordercolordropdown {nullptr};
@@ -785,6 +786,7 @@ struct TSFrame : wxFrame {
         MyAppend(markmenu, A_MARKVARU, _("Variable &Read") + "\tCTRL+ALT+R", "", wxITEM_CHECK);
         MyAppend(markmenu, A_MARKVIEWH, _("&Horizontal View") + "\tCTRL+ALT+.", "", wxITEM_CHECK);
         MyAppend(markmenu, A_MARKVIEWV, _("&Vertical View") + "\tCTRL+ALT+,", "", wxITEM_CHECK);
+        MyAppend(markmenu, A_MARKFORMULA, _("&Formula"), "", wxITEM_CHECK);
 
         auto *langmenu = new wxMenu();
         MyAppend(langmenu, wxID_EXECUTE, _("&Run") + "\tCTRL+ALT+F5");
@@ -966,11 +968,13 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateVertAlign, this, A_VALIGNAUTO, A_ALIGNBOTTOM);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateBorder, this, A_BORD0, A_BORD5);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateNote, this, A_EDITNOTE);
-        for (int id : {A_MARKDATA, A_MARKCODE, A_MARKVARD, A_MARKVARU, A_MARKVIEWH, A_MARKVIEWV}) {
+        for (int id : {A_MARKDATA, A_MARKCODE, A_MARKVARD, A_MARKVARU, A_MARKVIEWH, A_MARKVIEWV,
+                       A_MARKFORMULA}) {
             Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateCellType, this, id);
         }
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
+        Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_FORMULABAR);
         #ifdef __WXMSW__
             // Wherever the focus is. Holding Alt repeats it, also while using it with the mouse.
             Bind(wxEVT_CHAR_HOOK, [this](wxKeyEvent &ke) {
@@ -1121,6 +1125,13 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(repltb, _("Replace in selection"), A_REPLACEONCE, "replace");
         AddToolbarIcon(repltb, _("Replace All"), A_REPLACEALL, "replaceall");
         FinishToolbar(repltb, "repltb", _("Replace operations"));
+
+        auto *formulatb = NewToolbar();
+        AddToolbarLabel(formulatb, _("Formula "));
+        formulatb->AddControl(formulabar =
+                                  new TSTextCtrl(formulatb, A_FORMULABAR, "", wxDefaultPosition,
+                                                 FromDIP(wxSize(240, 22)), wxWANTS_CHARS));
+        FinishToolbar(formulatb, "formulatb", _("Formula bar"));
 
         auto GetColorIndex = [&](int targetcolor, int defaultindex) {
             for (auto i = 1; i < celltextcolors.size(); ++i) {
@@ -1347,7 +1358,7 @@ struct TSFrame : wxFrame {
         auto *canvas = GetCurrentTab();
         if (canvas == nullptr) { return; }
         auto *focus = wxWindow::FindFocus();
-        if (focus != nullptr && (focus == filter || focus == replaces)) {
+        if (focus != nullptr && (focus == filter || focus == replaces || focus == formulabar)) {
             auto *tc = static_cast<wxTextCtrl *>(focus);
             long from = 0;
             long to = 0;
@@ -1667,6 +1678,17 @@ struct TSFrame : wxFrame {
         auto *canvas = GetCurrentTab();
         if (!canvas) return;
         auto *textctrl = wxDynamicCast(ke.GetEventObject(), wxTextCtrl);
+        if (ke.GetId() == A_FORMULABAR) {
+            // ENTER applies the formula bar to the selected cell, ESCAPE leaves it unchanged.
+            if (ke.GetKeyCode() == WXK_RETURN) {
+                SetStatus(canvas->doc->SetFormulaBarText(formulabar->GetValue()));
+            } else if (ke.GetKeyCode() != WXK_ESCAPE) {
+                ke.Skip();
+                return;
+            }
+            canvas->SetFocus();
+            return;
+        }
         switch (ke.GetKeyCode()) {
             case WXK_RETURN: {
                 auto issearch = ke.GetId() == A_SEARCH;
@@ -2013,6 +2035,16 @@ struct TSFrame : wxFrame {
             notebook->Refresh();
             notebook->Update();
         }
+    }
+
+    // Shows the formula, or else the text, of the selected cell, unless it's being typed in.
+    void UpdateFormulaBar(Document *doc) {
+        if (formulabar == nullptr || wxWindow::FindFocus() == formulabar) { return; }
+        auto *c = doc->selected.GetCell();
+        auto s = c == nullptr                       ? wxString()
+                 : c->formula && c != doc->editcell ? *c->formula
+                                                    : c->text.t;
+        if (formulabar->GetValue() != s) { formulabar->ChangeValue(s); }
     }
 
     void UpdateStatus(const Selection &s, bool updateamount) {

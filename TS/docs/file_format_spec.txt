@@ -54,7 +54,9 @@ struct Image
 
 struct Cell
 {
-    uchar celltype;     // enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV };
+    uchar celltype;     // enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV, CT_FORMULA };
+                        // the text of a CT_FORMULA cell is its formula (e.g. "=SUM(Expenses)"), without runs;
+                        // its result is calculated after loading
     uint cellcolor;
     uint textcolor;
     uchar drawstyle;    // enum { DS_GRID, DS_BLOBSHIER, DS_BLOBLINE };

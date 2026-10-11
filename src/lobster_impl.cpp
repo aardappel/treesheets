@@ -163,6 +163,22 @@ BUILTIN(get_note, "", "", "S", "gets the note of the current cell.")
     return vm.NewString(si->GetNote());
 }
 
+BUILTIN(get_formula, "", "", "S",
+    "gets the formula of the current cell if it is a formula (see set_formula), or else an empty "
+    "string. its text (see get_text) is the result.")
+(VM &vm) {
+    return vm.NewString(si->GetFormula());
+}
+
+BUILTIN(set_formula, "formula", "S", "",
+    "makes the current cell a formula such as \"=SUM(Expenses) - 10\", which calculates its "
+    "text: arithmetic over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of the numbers in "
+    "the grid of the cell whose text is the name in parentheses, the nearest one first. an empty "
+    "formula makes it data again, as does set_text().")
+(VM &, LString *s) {
+    si->SetFormula(s->strv());
+}
+
 BUILTIN(set_text, "text", "S", "", "sets the text of the current cell")
 (VM &, LString *s) {
     si->SetText(s->strv());
@@ -457,7 +473,8 @@ BUILTIN(is_grid, "", "", "B", "whether the current cell has a sub-grid")
 
 BUILTIN(get_cell_type, "", "", "I",
     "returns the evaluation type of the current cell: 0 = data, 1 = operation, "
-    "2 = variable assign, 3 = horizontal view, 4 = variable read, 5 = vertical view")
+    "2 = variable assign, 3 = horizontal view, 4 = variable read, 5 = vertical view, "
+    "6 = formula (see set_formula)")
 (VM &) {
     return (iint)si->GetCellType();
 }
@@ -547,10 +564,11 @@ BUILTIN(get_subtree_text, "format", "I", "S",
 BUILTIN(set_cell_type, "type", "I", "",
     "sets the evaluation type of the current cell (see get_cell_type), same as the Program "
     "menu items. like there, a cell only becomes an operation (1) if its text is one, "
-    "otherwise it becomes data. any other type than 0..5 is a runtime error.")
+    "otherwise it becomes data. a formula (6) takes its text as formula. any other type than "
+    "0..6 is a runtime error.")
 (VM &vm, iint type) {
-    if (type < 0 || type > 5) {
-        vm.BuiltinError(cat("ts.set_cell_type: type ", type, " is invalid, it must be 0..5"));
+    if (type < 0 || type > 6) {
+        vm.BuiltinError(cat("ts.set_cell_type: type ", type, " is invalid, it must be 0..6"));
     }
     si->SetCellType((int)type);
 }

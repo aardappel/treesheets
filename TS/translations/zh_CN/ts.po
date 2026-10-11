@@ -86,6 +86,9 @@ msgstr "文件(&F)"
 msgid "&Flatten"
 msgstr "扁平化(&F)"
 
+msgid "&Formula"
+msgstr ""
+
 msgid "&Grid Reorganization"
 msgstr "网格重组(&G)"
 
@@ -923,6 +926,12 @@ msgstr "递归折叠所选单元格的网格"
 
 msgid "Font..."
 msgstr "字体..."
+
+msgid "Formula "
+msgstr ""
+
+msgid "Formula bar"
+msgstr ""
 
 msgid "Found an image type that is not defined in this program."
 msgstr "发现此程序未定义的图像类型。"

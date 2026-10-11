@@ -99,7 +99,9 @@ struct Text {
         return wxString(t).Trim(true).Trim(false).ToCDouble(&d) && std::isfinite(d);
     }
 
-    void SetNum(double d) {
+    void SetNum(double d) { SetText(NumText(d)); }
+
+    static wxString NumText(double d) {
         std::wstringstream ss;
         // Fixed notation with a limited number of decimals, so we don't show garbage digits
         // beyond the precision, and never resort to an exponent.
@@ -111,8 +113,7 @@ struct Text {
         while (s.back() == '0') { s.pop_back(); }
         // If there were only zeroes, remove '.'.
         if (s.back() == '.') { s.pop_back(); }
-
-        SetText(s);
+        return s;
     }
 
     static wxString htmlify(wxString str) {
@@ -1174,7 +1175,12 @@ struct Text {
         }
     }
 
+    // Typing over a cell replaces its text, and a formula with it.
     void Clear(Document *doc, Selection &s) {
+        if (cell->celltype == CT_FORMULA) {
+            cell->celltype = CT_DATA;
+            cell->formula = nullptr;
+        }
         t.Clear();
         runs.clear();
         s.EnterEdit(doc);
@@ -1196,8 +1202,9 @@ struct Text {
         }
     }
 
-    void Save(wxDataOutputStream &dos) const {
-        dos.WriteString(t.wx_str());
+    // A formula cell saves its formula instead of its result, without the runs of the result.
+    void Save(wxDataOutputStream &dos, const wxString *formula = nullptr) const {
+        dos.WriteString(formula ? formula->wx_str() : t.wx_str());
         dos.Write32(relsize);
         dos.Write32(image != nullptr ? image->savedindex : -1);
         dos.Write32(stylebits);
@@ -1205,7 +1212,8 @@ struct Text {
         dos.Write64(&le, 1);
         // Rich text runs (file version 27). Almost always zero. Positions are counted in
         // Unicode code points, so files don't depend on how this platform stores the text.
-        dos.Write32(static_cast<wxUint32>(runs.v.size()));
+        dos.Write32(formula ? 0 : static_cast<wxUint32>(runs.v.size()));
+        if (formula) { return; }
         CodePointCursor cursor {[&](int i) { return static_cast<uint>(t[i].GetValue()); },
                                 static_cast<int>(t.Len())};
         for (const auto &r : runs.v) {
@@ -1297,6 +1305,14 @@ struct Text {
 
             // Return our current data.
             case CT_DATA: return cell->Clone(nullptr);
+
+            // Return the result as data.
+            case CT_FORMULA: {
+                auto v = cell->Clone(nullptr);
+                v->celltype = CT_DATA;
+                v->formula = nullptr;
+                return v;
+            }
 
             default: return unique_ptr<Cell>();
         }

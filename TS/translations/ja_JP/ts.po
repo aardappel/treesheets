@@ -86,6 +86,9 @@ msgstr "ファイル(&F)"
 msgid "&Flatten"
 msgstr "フラット化(&F)"
 
+msgid "&Formula"
+msgstr ""
+
 msgid "&Grid Reorganization"
 msgstr "グリッド再構成(&G)"
 
@@ -952,6 +955,12 @@ msgstr "選択したセルのグリッドを再帰的に折りたたみます"
 
 msgid "Font..."
 msgstr "フォント..."
+
+msgid "Formula "
+msgstr ""
+
+msgid "Formula bar"
+msgstr ""
 
 msgid "Found an image type that is not defined in this program."
 msgstr "このプログラムで定義されていない画像タイプが見つかりました。"

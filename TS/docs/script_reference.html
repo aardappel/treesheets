@@ -58,6 +58,12 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_note</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the note of the current cell.</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_formula</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the formula of the current cell if it is a formula (see set_formula), or else an empty string. its text (see get_text) is the result.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_formula</b>(formula<font color="#666666">: string</font>)</tt></td><td class="a">makes the current cell a formula such as "=SUM(Expenses) - 10", which calculates its text: arithmetic over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of the numbers in the grid of the cell whose text is the name in parentheses, the nearest one first. an empty formula makes it data again, as does set_text().</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text</b>(text<font color="#666666">: string</font>)</tt></td><td class="a">sets the text of the current cell</td>
 
 </tr>
@@ -187,7 +193,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.is_grid</b>() -> <font color="#666666">int</font></tt></td><td class="a">whether the current cell has a sub-grid</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.get_cell_type</b>() -> <font color="#666666">int</font></tt></td><td class="a">returns the evaluation type of the current cell: 0 = data, 1 = operation, 2 = variable assign, 3 = horizontal view, 4 = variable read, 5 = vertical view</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_cell_type</b>() -> <font color="#666666">int</font></tt></td><td class="a">returns the evaluation type of the current cell: 0 = data, 1 = operation, 2 = variable assign, 3 = horizontal view, 4 = variable read, 5 = vertical view, 6 = formula (see set_formula)</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.is_folded</b>() -> <font color="#666666">int</font></tt></td><td class="a">whether the current cell's grid is folded (collapsed)</td>
@@ -229,7 +235,7 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_subtree_text</b>(format<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">exports the subtree of the current cell to text in one call: 0 = plain indented text, 1 = csv, 2 = xml. much cheaper than manually walking the subtree with goto_child/get_text in a loop.</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.set_cell_type</b>(type<font color="#666666">: int</font>)</tt></td><td class="a">sets the evaluation type of the current cell (see get_cell_type), same as the Program menu items. like there, a cell only becomes an operation (1) if its text is one, otherwise it becomes data. any other type than 0..5 is a runtime error.</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_cell_type</b>(type<font color="#666666">: int</font>)</tt></td><td class="a">sets the evaluation type of the current cell (see get_cell_type), same as the Program menu items. like there, a cell only becomes an operation (1) if its text is one, otherwise it becomes data. a formula (6) takes its text as formula. any other type than 0..6 is a runtime error.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.evaluate</b>(format<font color="#666666">: int</font>) -> <font color="#666666">string</font></tt></td><td class="a">evaluates the current cell the way Program &gt; Run evaluates the whole document (which is what this does on the root cell): fills in the result views in its grid, and returns the result in the given format (see get_subtree_text), or an empty string if there is none. can be undone like any other edit.</td>

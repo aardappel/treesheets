@@ -81,6 +81,9 @@ msgstr "Tệp (&F)"
 msgid "&Flatten"
 msgstr "Làm &phẳng"
 
+msgid "&Formula"
+msgstr ""
+
 msgid "&Grid Reorganization"
 msgstr "Tổ chức lại &lưới"
 
@@ -944,6 +947,12 @@ msgstr "Gập lưới của (các) ô được chọn một cách đệ quy"
 
 msgid "Font..."
 msgstr "Phông chữ..."
+
+msgid "Formula "
+msgstr ""
+
+msgid "Formula bar"
+msgstr ""
 
 msgid "Found an image type that is not defined in this program."
 msgstr "Tìm thấy loại hình ảnh không được định nghĩa trong chương trình này."

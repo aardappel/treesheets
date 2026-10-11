@@ -86,6 +86,9 @@ msgstr "&Datei"
 msgid "&Flatten"
 msgstr "&Verflachen"
 
+msgid "&Formula"
+msgstr "&Formel"
+
 msgid "&Grid Reorganization"
 msgstr "&Tabellen-Umstrukturierung"
 
@@ -976,6 +979,12 @@ msgstr "Klappt die Tabelle der ausgewählten Zelle(n) rekursiv aus."
 
 msgid "Font..."
 msgstr "&Schrift..."
+
+msgid "Formula "
+msgstr "Formel "
+
+msgid "Formula bar"
+msgstr "Formelleiste"
 
 msgid "Found an image type that is not defined in this program."
 msgstr ""

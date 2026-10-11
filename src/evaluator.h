@@ -211,3 +211,163 @@ struct Evaluator {
         ClearVars();
     }
 };
+
+/*
+    Calculates the results of formula cells (CT_FORMULA), which become their text. A formula is
+    arithmetic (+ - * / and parentheses) over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of
+    a grid, which is named by the text of its cell, e.g. =SUM(Income) - SUM(Expenses). The
+    results of other formulas in that grid count as numbers, and their errors carry over.
+*/
+struct FormulaEvaluator {
+    enum { BUSY, OK, FAILED };
+    const Cell *editing;  // whose text is the formula being typed, so it has no result yet
+    std::unordered_map<const Cell *, int> state;
+    vector<Cell *> changed;
+
+    explicit FormulaEvaluator(const Cell *_editing) : editing(_editing) {}
+
+    // Brings the result of formula cell c up to date, after those it depends on. Returns the
+    // error, if any.
+    wxString Update(Cell *c) {
+        if (c == editing || !c->formula) { return {}; }
+        if (auto it = state.find(c); it != state.end()) {
+            return it->second == BUSY ? L"#CYCLE!" : it->second == FAILED ? c->text.t : wxString();
+        }
+        state[c] = BUSY;
+        Parser p {*this, c, *c->formula};
+        auto d = p.Expr();
+        p.Space();
+        if (p.i < p.s.Len()) { p.Fail(L"#ERROR!"); }
+        if (!std::isfinite(d)) { p.Fail(L"#NUM!"); }
+        state[c] = p.error.IsEmpty() ? OK : FAILED;
+        auto result = p.error.IsEmpty() ? Text::NumText(d) : p.error;
+        if (result != c->text.t) {
+            c->text.SetText(result);
+            changed.push_back(c);
+        }
+        return p.error;
+    }
+
+    // The grid of the cell whose text is `name`, searched for breadth first in the grid that
+    // `self` is in, then in each grid around that one.
+    static Grid *FindGrid(const Cell *self, const wxString &name) {
+        for (auto *scope = self->parent; scope != nullptr; scope = scope->parent) {
+            vector<Cell *> level {scope};
+            vector<Cell *> next;
+            while (!level.empty()) {
+                for (auto *c : level) {
+                    if (!c->grid) { continue; }
+                    if (c->text.t == name) { return c->grid.get(); }
+                    for (auto &child : c->grid->cells) { next.push_back(child.get()); }
+                }
+                level.swap(next);
+                next.clear();
+            }
+        }
+        return nullptr;
+    }
+
+    // The numbers in the grid named `name` (see FindGrid()), except formula cell `self`.
+    wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers) {
+        auto *g = FindGrid(self, name);
+        if (g == nullptr) { return L"#NAME?"; }
+        for (auto &c : g->cells) {
+            if (c.get() == self) { continue; }
+            if (c->celltype == CT_FORMULA) {
+                if (auto error = Update(c.get()); !error.IsEmpty()) { return error; }
+            }
+            double d;
+            if (c->text.GetStrictNum(d)) { numbers.push_back(d); }
+        }
+        return {};
+    }
+
+    struct Parser {
+        FormulaEvaluator &fe;
+        Cell *self;
+        const wxString &s;
+        size_t i {1};  // after the "="
+        wxString error;
+
+        double Fail(const wxString &e) {
+            if (error.IsEmpty()) { error = e; }
+            return 0;
+        }
+        void Space() {
+            while (i < s.Len() && wxIsspace(s[i])) { i++; }
+        }
+        bool Eat(wxChar ch) {
+            Space();
+            if (i >= s.Len() || s[i] != ch) { return false; }
+            i++;
+            return true;
+        }
+        double Expr() {
+            auto v = Term();
+            for (;;) {
+                if (Eat('+')) {
+                    v += Term();
+                } else if (Eat('-')) {
+                    v -= Term();
+                } else {
+                    return v;
+                }
+            }
+        }
+        double Term() {
+            auto v = Unary();
+            for (;;) {
+                if (Eat('*')) {
+                    v *= Unary();
+                } else if (Eat('/')) {
+                    auto d = Unary();
+                    v = d != 0 ? v / d : Fail(L"#DIV/0!");
+                } else {
+                    return v;
+                }
+            }
+        }
+        double Unary() { return Eat('-') ? -Unary() : Eat('+') ? Unary() : Primary(); }
+        double Primary() {
+            if (Eat('(')) {
+                auto v = Expr();
+                return Eat(')') ? v : Fail(L"#ERROR!");
+            }
+            auto start = i;
+            if (i < s.Len() && (wxIsdigit(s[i]) || s[i] == '.')) {
+                while (i < s.Len() && (wxIsdigit(s[i]) || s[i] == '.')) { i++; }
+                if (i < s.Len() && (s[i] == 'e' || s[i] == 'E')) {
+                    i++;
+                    if (i < s.Len() && (s[i] == '+' || s[i] == '-')) { i++; }
+                    while (i < s.Len() && wxIsdigit(s[i])) { i++; }
+                }
+                double d;
+                return s.Mid(start, i - start).ToCDouble(&d) ? d : Fail(L"#ERROR!");
+            }
+            while (i < s.Len() && wxIsalpha(s[i])) { i++; }
+            auto function = s.Mid(start, i - start).Upper();
+            auto close = s.find(')', i);
+            if (function.IsEmpty() || !Eat('(') || close == wxString::npos) {
+                return Fail(L"#ERROR!");
+            }
+            auto name = s.Mid(i, close - i).Trim().Trim(false);
+            i = close + 1;
+            using Aggregate = double (*)(const vector<double> &);
+            static const std::pair<const wxChar *, Aggregate> functions[] = {
+                {L"SUM", aggregate::Sum},
+                {L"MIN", aggregate::Min},
+                {L"MAX", aggregate::Max},
+                {L"AVG", aggregate::Avg},
+                {L"AVERAGE", aggregate::Avg},
+                {L"MEDIAN", [](const vector<double> &v) { return aggregate::Median(v); }},
+                {L"COUNT", [](const vector<double> &v) { return static_cast<double>(v.size()); }}};
+            for (auto &[n, f] : functions) {
+                if (function != n) { continue; }
+                vector<double> numbers;
+                auto e = fe.Numbers(self, name, numbers);
+                return e.IsEmpty() ? f(numbers) : Fail(e);
+            }
+            return Fail(L"#NAME?");
+        }
+    };
+};

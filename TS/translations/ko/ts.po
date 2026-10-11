@@ -86,6 +86,9 @@ msgstr "파일(&F)"
 msgid "&Flatten"
 msgstr "평탄화(&F)"
 
+msgid "&Formula"
+msgstr ""
+
 msgid "&Grid Reorganization"
 msgstr "격자 재구성(&G)"
 
@@ -938,6 +941,12 @@ msgstr "선택한 셀의 격자를 재귀적으로 접습니다"
 
 msgid "Font..."
 msgstr "글꼴..."
+
+msgid "Formula "
+msgstr ""
+
+msgid "Formula bar"
+msgstr ""
 
 msgid "Found an image type that is not defined in this program."
 msgstr "이 프로그램에서 정의되지 않은 이미지 유형을 찾았습니다."

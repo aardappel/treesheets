@@ -32,6 +32,10 @@ struct ScriptInterface {
     virtual void SelectRange(int x, int y, int xs, int ys) = 0;
     virtual std::string GetText() = 0;
     virtual std::string GetNote() = 0;
+    // The formula of a formula cell, whose text is its result, or empty for other cells.
+    virtual std::string GetFormula() = 0;
+    // Makes the current cell a formula, or data if formula is empty.
+    virtual void SetFormula(std::string_view formula) = 0;
     virtual void SetText(std::string_view t) = 0;
     virtual void SetNote(std::string_view t) = 0;
     virtual void CreateGrid(int x, int n) = 0;

@@ -146,6 +146,11 @@ struct Document {
     bool scaledviewingmode {false};
     double currentviewscale {1.0};
     int editfilter {0};
+    bool formulasdirty {true};  // see OnIdle()
+    // The cell whose text was being edited at the last OnIdle(), and the cell that was typed in
+    // last. Either may have been deleted since.
+    Cell *editcell {nullptr};
+    const Cell *textedited {nullptr};
     wxDateTime lastmodificationtime;
     map<wxString, pair<uint, uint>> tags;
     set<wxString> filtertags;
@@ -2469,12 +2474,14 @@ struct Document {
             case A_MARKVARU:
             case A_MARKVIEWH:
             case A_MARKVIEWV:
-            case A_MARKCODE: {
+            case A_MARKCODE:
+            case A_MARKFORMULA: {
                 int newcelltype = MarkCellType(action);
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, false) {
                     c->celltype = (newcelltype == CT_CODE) ? sys->evaluator.InferCellType(c->text)
                                                            : newcelltype;
+                    c->SyncFormula();
                 }
                 UpdateLayout();
                 canvas->Refresh();
@@ -3152,6 +3159,91 @@ struct Document {
         return wxEmptyString;
     }
 
+    // Once the events are processed: a cell whose editing ended becomes a formula if its text
+    // is one now, and data if not anymore, a formula cell shows its formula while it's edited,
+    // and the formulas are recalculated after changes.
+    void OnIdle() {
+        auto *c = selected.TextEdit() ? selected.GetCell() : nullptr;
+        if (c != editcell) {
+            if (editcell != nullptr && editcell == textedited) {
+                CollectCells(root.get());
+                if (std::ranges::find(itercells, editcell) != itercells.end()) {
+                    EndFormulaEdit(editcell);
+                }
+                textedited = nullptr;
+            } else if (editcell != nullptr) {
+                formulasdirty = true;  // an edited formula shows its result again
+            }
+            editcell = c;
+            if (c != nullptr) { BeginFormulaEdit(c); }
+        }
+        if (formulasdirty) { RecalcFormulas(); }
+    }
+
+    // Shows the formula instead of the result, unless undo brought back a formula being typed.
+    void BeginFormulaEdit(Cell *c) {
+        if (c->celltype != CT_FORMULA || !c->formula || c->text.t.StartsWith("=")) { return; }
+        c->text.SetText(*c->formula);
+        int len = c->text.t.Len();
+        selected.cursor = selected.cursor != selected.cursorend ? 0 : len;
+        selected.cursorend = len;
+        c->ResetLayout();
+        UpdateLayout();
+        canvas->Refresh();
+    }
+
+    void EndFormulaEdit(Cell *c) {
+        if (c->celltype != CT_DATA && c->celltype != CT_FORMULA) { return; }
+        bool isformula = Cell::IsFormulaText(c->text.t);
+        if (isformula ? c->formula && *c->formula == c->text.t : c->celltype == CT_DATA) {
+            formulasdirty = true;  // unchanged, a formula shows its result again
+            return;
+        }
+        AddUndo(c, false);  // undone together with the typing
+        c->celltype = isformula ? CT_FORMULA : CT_DATA;
+        c->formula = nullptr;
+        c->SyncFormula();
+    }
+
+    // Recalculates the results of all formulas, and lays out those that changed.
+    void RecalcFormulas() {
+        formulasdirty = false;
+        if (!sys->formulasseen) { return; }
+        FormulaEvaluator fe {editcell};
+        loopallcells(c) {
+            if (c->celltype == CT_FORMULA) {
+                c->SyncFormula();
+                fe.Update(c);
+            }
+        }
+        if (fe.changed.empty()) { return; }
+        for (auto *c : fe.changed) { c->ResetLayout(); }
+        UpdateLayout();
+        canvas->Refresh();
+    }
+
+    // From the formula bar: makes the selected cell a formula if s starts with "=", and data with
+    // text s otherwise.
+    wxString SetFormulaBarText(const wxString &s) {
+        auto *c = selected.GetCell();
+        if (c == nullptr) { return OneCell(); }
+        selected.ExitEdit(this);
+        editcell = nullptr;
+        c->AddUndo(this);
+        c->text.SetText(s);
+        if (Cell::IsFormulaText(s)) {
+            c->celltype = CT_FORMULA;
+        } else if (c->celltype == CT_FORMULA) {
+            c->celltype = CT_DATA;
+        }
+        c->formula = nullptr;
+        c->SyncFormula();
+        RecalcFormulas();
+        UpdateLayout();
+        canvas->Refresh();
+        return wxEmptyString;
+    }
+
     void ZoomOutIfNoGrid() {
         if (!WalkPath(drawpath)->grid) { Zoom(-1); }
     }
@@ -3322,6 +3414,8 @@ struct Document {
     }
 
     void AddUndo(Cell *c, bool newgeneration = true, bool textedit = false) {
+        formulasdirty = true;
+        if (textedit) { textedited = c; }
         redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
         if (!modified) {
@@ -3334,9 +3428,10 @@ struct Document {
         if (textedit) {
             // Keep a cell snapshot so image lifetime accounting also sees its text image.
             // Text edits never modify the nested grid, which can be much larger than the text.
-            ui->clone = make_unique<Cell>();
+            ui->clone = make_unique<Cell>(nullptr, nullptr, c->celltype);
             ui->clone->text = c->text;
             ui->clone->text.cell = ui->clone.get();
+            ui->clone->formula = c->formula;  // also restored, typing over a formula clears it
         } else {
             ui->clone = c->Clone(nullptr);
         }
@@ -3395,8 +3490,12 @@ struct Document {
 
         Cell *c = WalkPath(ui->path);
 
+        formulasdirty = true;
         if (ui->textedit) {
+            std::swap(ui->clone->celltype, c->celltype);
+            std::swap(ui->clone->formula, c->formula);
             std::swap(ui->clone->text, c->text);
+            textedited = c;  // as if typed, also when its editing ends
             c->text.cell = c;
             ui->clone->text.cell = ui->clone.get();
         } else if (c->parent != nullptr && c->parent->grid) {
@@ -3477,6 +3576,7 @@ struct Document {
             case A_MARKVIEWH: return CT_VIEWH;
             case A_MARKVIEWV: return CT_VIEWV;
             case A_MARKCODE: return CT_CODE;
+            case A_MARKFORMULA: return CT_FORMULA;
             default: return CT_DATA;
         }
     }

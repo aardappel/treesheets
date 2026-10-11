@@ -5,8 +5,9 @@ CT_VARD: "Variable Assign"
 CT_VARU: "Variable Read"
 CT_VIEWH: "Horizontal View"
 CT_VIEWV: "Vertical View"
+CT_FORMULA: "Formula", e.g. =SUM(Expenses), whose text is its result (see FormulaEvaluator)
 */
-enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV };
+enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV, CT_FORMULA };
 
 /* The drawstyles for a cell:
 
@@ -46,6 +47,7 @@ struct Cell {
     wxUint8 textalign {TEXTALIGN_AUTO};
     wxUint8 vertalign {VERTALIGN_AUTO};
     wxString note;
+    shared_ptr<const wxString> formula;  // for CT_FORMULA, see SyncFormula()
 
     Cell(Cell *_p = nullptr, const Cell *_clonefrom = nullptr, int _ct = CT_DATA,
          const shared_ptr<Grid> &_g = nullptr)
@@ -60,6 +62,8 @@ struct Cell {
     }
 
     void Clear() {
+        if (celltype == CT_FORMULA) { celltype = CT_DATA; }
+        formula = nullptr;
         grid = nullptr;
         text.SetText(wxEmptyString);
         text.image = nullptr;
@@ -278,6 +282,7 @@ struct Cell {
         c->text = text;
         c->text.cell = c.get();
         c->note = note;
+        c->formula = formula;
         if (grid) { grid->Clone(c->grid); }
         return c;
     }
@@ -301,7 +306,9 @@ struct Cell {
 
     wxString ToText(int indent, const Selection &sel, int format, Document *doc, bool inheritstyle,
                     Cell *root, bool flat = false) {
-        wxString str = flat && TinyOrFiltered() ? wxString() : text.ToText(indent, sel, format);
+        wxString str = flat && TinyOrFiltered()        ? wxString()
+                       : format == A_EXPXML && formula ? Text::htmlify(*formula)
+                                                       : text.ToText(indent, sel, format);
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             this != root && !str.IsEmpty()) {
             wxString spanstyle = "white-space: pre-wrap;";
@@ -464,6 +471,19 @@ struct Cell {
         }
     }
 
+    static bool IsFormulaText(const wxString &s) { return s.Len() > 1 && s[0] == '='; }
+
+    // Makes the formula match the cell type: a cell that became a formula gets its text as
+    // formula, until its result replaces it (see Document::RecalcFormulas()).
+    void SyncFormula() {
+        if (celltype != CT_FORMULA) {
+            formula = nullptr;
+        } else if (!formula) {
+            formula = make_shared<const wxString>(text.t.StartsWith("=") ? text.t : "=" + text.t);
+            sys->formulasseen = true;
+        }
+    }
+
     void AddUndo(Document *doc, bool textedit = false) {
         ResetLayout();
         doc->AddUndo(this, true, textedit);
@@ -478,10 +498,10 @@ struct Cell {
         dos.Write8(textalign);
         dos.Write8(vertalign);
         uint cellflags = this == ocs ? TS_SELECTION_MASK : 0;
-        if (HasTextState()) {
+        if (HasTextState() || formula) {
             cellflags |= grid ? TS_BOTH : TS_TEXT;
             dos.Write8(cellflags);
-            text.Save(dos);
+            text.Save(dos, formula.get());
             if (grid) { grid->Save(dos, ocs); }
         } else if (grid) {
             cellflags |= TS_GRID;
@@ -542,6 +562,7 @@ struct Cell {
             case TS_TEXT:
                 c->text.Load(dis);
                 textbytes += c->text.t.Len();
+                c->SyncFormula();
                 if (ts == TS_TEXT) { return c.release(); }
             case TS_GRID:
                 return c->LoadGrid(dis, numcells, textbytes, ics) != nullptr ? c.release()

@@ -85,6 +85,9 @@ msgstr "&File"
 msgid "&Flatten"
 msgstr "&Appiattire"
 
+msgid "&Formula"
+msgstr ""
+
 msgid "&Grid Reorganization"
 msgstr "&Riorganizzazione della griglia"
 
@@ -966,6 +969,12 @@ msgstr "Piega la griglia delle celle selezionate in modo ricorsivo"
 
 msgid "Font..."
 msgstr "Carattere..."
+
+msgid "Formula "
+msgstr ""
+
+msgid "Formula bar"
+msgstr ""
 
 msgid "Found an image type that is not defined in this program."
 msgstr "È stato trovato un tipo di immagine non definito in questo programma."

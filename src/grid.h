@@ -1024,8 +1024,8 @@ struct Grid {
     unique_ptr<Cell> EvalGridCell(Evaluator &ev, unique_ptr<Cell> &c, unique_ptr<Cell> acc, int &x,
                                   int &y, bool &alldata, bool vert) {
         int ct = c->celltype;  // Type of subcell being evaluated
-        // Update alldata condition (variable reads act like data)
-        alldata = alldata && (ct == CT_DATA || ct == CT_VARU);
+        // Update alldata condition (variable reads and formulas act like data)
+        alldata = alldata && (ct == CT_DATA || ct == CT_VARU || ct == CT_FORMULA);
         ev.vert = vert;  // Inform evaluatour of vert status. (?)
         switch (ct) {
             // Var assign

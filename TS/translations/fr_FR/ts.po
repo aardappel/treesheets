@@ -86,6 +86,9 @@ msgstr "&Fichier"
 msgid "&Flatten"
 msgstr "&Aplanir"
 
+msgid "&Formula"
+msgstr "&Formule"
+
 msgid "&Grid Reorganization"
 msgstr "&Réorganisation de la grille"
 
@@ -976,6 +979,12 @@ msgstr "Réduire la grille des cellules sélectionnées mode récursif"
 
 msgid "Font..."
 msgstr "Police..."
+
+msgid "Formula "
+msgstr "Formule "
+
+msgid "Formula bar"
+msgstr "Barre de formule"
 
 msgid "Found an image type that is not defined in this program."
 msgstr "Un type d'image non défini dans ce programme a été trouvé."

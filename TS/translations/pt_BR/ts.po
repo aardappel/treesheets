@@ -89,6 +89,9 @@ msgstr "&Arquivo"
 msgid "&Flatten"
 msgstr "H&orizontalizar"
 
+msgid "&Formula"
+msgstr ""
+
 msgid "&Grid Reorganization"
 msgstr "Reorgani&zação da Grade"
 
@@ -968,6 +971,12 @@ msgstr "Dobra recursivamente a grade da(s) célula(s) selecionada(s)"
 
 msgid "Font..."
 msgstr "&Fonte..."
+
+msgid "Formula "
+msgstr ""
+
+msgid "Formula bar"
+msgstr ""
 
 msgid "Found an image type that is not defined in this program."
 msgstr "Um tipo de imagem que não está definido neste programa foi encontrado."

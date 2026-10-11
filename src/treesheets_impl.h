@@ -71,6 +71,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
             errormessage = "internal error running script: unknown exception";
         }
 
+        document->RecalcFormulas();
         document->root->ResetChildren();
         document->UpdateLayout();
         document->canvas->Refresh();
@@ -229,14 +230,37 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return false;
     }
 
-    std::string GetText() override { return current->text.t.utf8_string(); }
+    std::string GetText() override {
+        if (current->celltype == CT_FORMULA) { document->RecalcFormulas(); }
+        return current->text.t.utf8_string();
+    }
 
     std::string GetNote() override { return current->note.utf8_string(); }
 
+    std::string GetFormula() override {
+        return current->formula ? current->formula->utf8_string() : std::string();
+    }
+
+    // Like typing, this makes a formula cell data.
     void SetText(std::string_view t) override {
         if (current->parent != nullptr) {
             AddUndoIfNecessary();
             current->text.SetText(wxString::FromUTF8(t.data(), t.size()));
+            if (current->celltype == CT_FORMULA) { current->celltype = CT_DATA; }
+            current->SyncFormula();
+        }
+    }
+
+    void SetFormula(std::string_view formula) override {
+        if (current->parent != nullptr) {
+            AddUndoIfNecessary();
+            if (!formula.empty()) {
+                current->text.SetText(wxString::FromUTF8(formula.data(), formula.size()));
+            }
+            current->celltype = formula.empty() ? CT_DATA : CT_FORMULA;
+            current->formula = nullptr;
+            current->SyncFormula();
+            document->formulasdirty = true;
         }
     }
 
@@ -482,10 +506,13 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SetCellType(int type) override {
         AddUndoIfNecessary();
         current->celltype = type == CT_CODE ? sys->evaluator.InferCellType(current->text) : type;
+        current->SyncFormula();
+        document->formulasdirty = true;
     }
 
     std::string Evaluate(int format) override {
         AddUndoIfNecessary();
+        document->RecalcFormulas();
         auto result = current->Eval(sys->evaluator);
         sys->evaluator.ClearVars();
         return result ? CellText(result.get(), format) : std::string();

@@ -59,6 +59,15 @@ struct TSCanvas : public wxScrolledCanvas {
         Bind(wxEVT_SIZE, &TSCanvas::OnSize, this);
         Bind(wxEVT_SCROLL_THUMBTRACK, &TSCanvas::OnScroll, this);
         Bind(wxEVT_SCROLLWIN_THUMBTRACK, &TSCanvas::OnScrollWin, this);
+        Bind(wxEVT_IDLE, [this](wxIdleEvent &ie) {
+            if (doc) {
+                doc->OnIdle();
+                if (frame != nullptr && frame->GetCurrentTab() == this) {
+                    frame->UpdateFormulaBar(doc.get());
+                }
+            }
+            ie.Skip();
+        });
     }
 
     ~TSCanvas() override { frame = nullptr; }
