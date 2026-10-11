@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 5.1 (based on TS 2.1.13)\n"
+"Project-Id-Version: TreeSheets_RU 5.2 (based on TS 2.5.1)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-03 15:43+0200\n"
-"PO-Revision-Date: 2026-10-01 22:13+0300\n"
+"PO-Revision-Date: 2026-10-11 14:37+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -71,10 +71,10 @@ msgid "&Data"
 msgstr "&Данные"
 
 msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
-msgstr "&Уменьшить размер текста (CTRL+SHIFT+КМ)"
+msgstr "У&меньшить .."
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
-msgstr "У&меньшить..."
+msgstr "У&меньшить .."
 
 msgid "&Delete After"
 msgstr "&Удалить После"
@@ -116,10 +116,10 @@ msgid "&Images"
 msgstr "&Изображения"
 
 msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "У&величить размер Шрифта (CTRL+SHIFT+КМ)"
+msgstr "У&величить Размер Шрифта документа (CTRL+SHIFT+КМ)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
-msgstr "У&величить Размер текста (SHIFT+КМ)"
+msgstr "У&величить размер текста, с подсетками (SHIFT+КМ)"
 
 msgid "&Insert New Grid"
 msgstr "&Вставить Новую Сетку"
@@ -178,11 +178,13 @@ msgstr "&Заменить"
 msgid "&Reset Scale (display only)"
 msgstr "Сб&росить Масштаб (только Отображения)"
 
+# +++
 msgid "&Reset font size"
-msgstr "Сбросить &размер Шрифта"
+msgstr "&Сбросить .."
 
+# +++
 msgid "&Reset text sizes"
-msgstr "Сбросить &Размеры текста"
+msgstr "Сбросить &Размеры .."
 
 msgid "&Reset text styles"
 msgstr "Сбросить &Стили Текста"
@@ -219,7 +221,7 @@ msgid "&Set custom color from cell background"
 msgstr "Пользовательский цвет из фона &ячейки"
 
 msgid "&Shrink text of all sub-grids"
-msgstr "С&жать текст Всех Подсеток"
+msgstr "С&жать размеры текста Всех Подсеток"
 
 msgid "&Transpose"
 msgstr "Транспонировать"
@@ -449,6 +451,8 @@ msgstr "Граница &4"
 msgid "Border &5"
 msgstr "Граница &5"
 
+# ???
+#, fuzzy
 msgid "Border color operations"
 msgstr "Операции с цветом рамки"
 
@@ -498,9 +502,13 @@ msgstr "Поиск с учетом &Регистра"
 msgid "Cell "
 msgstr "Ячейка "
 
+# ???
+#, fuzzy
 msgid "Cell color operations"
 msgstr "Операции с цветом ячейки"
 
+# ???
+#, fuzzy
 msgid "Cell operations"
 msgstr "Операции с ячейками"
 
@@ -575,6 +583,7 @@ msgstr "Укажите файл TreeSheets для сохранения:"
 msgid "Choose XML file to write"
 msgstr "Укажите XML-файл для сохранения"
 
+# ??? - Заголовок Окна (выбор п. Меню)
 msgid "Choose file:"
 msgstr "Выберите файл:"
 
@@ -687,8 +696,9 @@ msgstr "Диапазон Даты и Времени"
 msgid "Decrease column width (ALT+mousewheel)"
 msgstr "У&меньшить..."
 
+# +++
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
-msgstr "У&меньшить Ширину Столбца (без подсеток, CTRL+ALT+КМ)"
+msgstr "У&меньшить .."
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Default column width"
@@ -742,6 +752,8 @@ msgstr "Редактировать &Заметку"
 msgid "Edit Note (CTRL+e)"
 msgstr "Редактировать Заметку (CTRL+e)"
 
+# ???
+#, fuzzy
 msgid "Edit operations"
 msgstr "Операции редактирования"
 
@@ -820,6 +832,7 @@ msgstr "Ошибка записи PNG-файла!"
 msgid "Error writing TreeSheets file! Would you like to save at a different location?"
 msgstr "Ошибка записи файла TreeSheets! Хотите сохранить файл в другом месте?"
 
+# ??? - Сообщение (после действия или события)
 msgid "Error writing image file!"
 msgstr "Ошибка записи файла изображения!"
 
@@ -884,11 +897,11 @@ msgstr "Экспорт текущего вида в векторный SVG-фа�
 
 # Комметарий п. меню.
 msgid "Export the grid of the current view as CSV, skipping sub-grids. Good for spreadsheets and databases (use the Flatten operation first to include sub-grids)"
-msgstr "Экспорт сетки текущего вида в CSV, без подсеток. Для электронных таблиц и баз данных (чтобы включить подсетки, сначала реорганизуйте сетку \"к Табличному виду\")"
+msgstr "Экспорт текущей сетки в CSV, без подсеток. Для электронных таблиц и баз данных (чтобы включить подсетки - реорганизуйте сетку к Табличному виду)"
 
 # Комметарий п. меню.
 msgid "Export the grid of the current view as tab separated text, skipping sub-grids. Good for spreadsheets (use the Flatten operation first to include sub-grids)"
-msgstr "Экспорт сетки текущего вида в текст с разделителем - табуляцией, без подсеток. Для электронных таблиц (чтобы включить подсетки, сначала реорганизуйте сетку \"к Табличному виду\")"
+msgstr "Экспорт текущей сетки в текст с разделителем - табуляцией, без подсеток. Для электронных таблиц (чтобы включить подсетки - реорганизуйте сетку к Табличному виду)"
 
 # комментарий к п. Меню
 msgid "Export to a HTML file alongside the original TreeSheets file when document is saved"
@@ -982,6 +995,8 @@ msgstr "Конфликт изменений файла!"
 msgid "File of newer version."
 msgstr "Более новая версия файла."
 
+# ???
+#, fuzzy
 msgid "File operations"
 msgstr "Операции с файлами"
 
@@ -1000,6 +1015,8 @@ msgstr "Поиск и замена в документе"
 msgid "Find in document"
 msgstr "Поиск в документе"
 
+# ???
+#, fuzzy
 msgid "Find operations"
 msgstr "Операции поиска"
 
@@ -1102,6 +1119,8 @@ msgstr "Изображение "
 msgid "Image Resize"
 msgstr "Изменение Размера изображения"
 
+# ???
+#, fuzzy
 msgid "Image operations"
 msgstr "Операции с изображениями"
 
@@ -1372,6 +1391,8 @@ msgstr "Файл не является файлом TreeSheets."
 msgid "Note"
 msgstr "Заметка"
 
+# ???
+#, fuzzy
 msgid "Note operations"
 msgstr "Операции с заметками"
 
@@ -1661,6 +1682,8 @@ msgstr ".. и Перейти к Cледующему Ре&зультату"
 msgid "Replace in selection"
 msgstr "Заменить в выделенном"
 
+# ???
+#, fuzzy
 msgid "Replace operations"
 msgstr "Операции замены"
 
@@ -1941,6 +1964,7 @@ msgstr "Развернуть одним щелчком мыши из Трея"
 msgid "Size %s"
 msgstr "Размер %s"
 
+# Сообщение в Окне (выбор п. Меню) - О программе
 msgid "Some icons are based on vscode-icons by Microsoft (CC BY 4.0):"
 msgstr "Некоторые значки основаны на vscode-icons от Microsoft (CC BY 4.0):"
 
@@ -2019,9 +2043,13 @@ msgstr "Текст - Ра&змеры"
 msgid "Text Style"
 msgstr "Текст - &Стиль"
 
+# ???
+#, fuzzy
 msgid "Text alignment operations"
 msgstr "Операции выравнивания текста"
 
+# ???
+#, fuzzy
 msgid "Text color operations"
 msgstr "Операции с цветом текста"
 
@@ -2037,6 +2065,8 @@ msgstr "Размер текста уменьшен."
 msgid "Text size increased."
 msgstr "Размер текста увеличен."
 
+# ???
+#, fuzzy
 msgid "Text style operations"
 msgstr "Операции со стилем текста"
 
@@ -2095,7 +2125,7 @@ msgid "Toggle &Scaled Presentation View"
 msgstr ".. Масштабированное представление"
 
 msgid "Toggle Fold (CTRL+double-click)"
-msgstr "Свер&нуть - Развернуть (CTRL+двойной щелчок)"
+msgstr "Свер&нуть / Развернуть (CTRL+двойной щелчок)"
 
 msgid "Toggle Vertical Layout"
 msgstr "Переключить &Макет (Вертик/Горизонт)"
@@ -2273,22 +2303,28 @@ msgstr "Вам необходимо выбрать одну ячейку, есл
 msgid "Zlib error while writing file."
 msgstr "Ошибка Zlib при записи файла."
 
+# У&величить
 msgid "Zoom &In (CTRL+mousewheel)"
-msgstr "У&величить (CTRL+КМ)"
+msgstr "&Внутрь/Вглубь (CTRL+КМ)"
 
+# У&меньшить
 msgid "Zoom &Out (CTRL+mousewheel)"
-msgstr "У&меньшить (CTRL+КМ)"
+msgstr "&Наружу/Наверх (CTRL+КМ)"
 
+# комментарий к эл-ту Главного Окна
 msgid "Zoom In (CTRL+mousewheel)"
-msgstr "Увеличить (CTRL+КМ)"
+msgstr "Внутрь/Вглубь (CTRL+КМ)"
 
+# комментарий к эл-ту Главного Окна
 msgid "Zoom Out (CTRL+mousewheel)"
-msgstr "Уменьшить (CTRL+КМ)"
+msgstr "Наружу/Наверх (CTRL+КМ)"
 
 # комментарий к п. Меню
 msgid "Zoom on cells cursor hovers on"
 msgstr "Увеличивать ячейку под курсором"
 
+# ???
+#, fuzzy
 msgid "Zoom operations"
 msgstr "Операции масштабирования"
 
