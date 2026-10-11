@@ -23,6 +23,23 @@ struct TSTextCtrl : wxTextCtrl {
     #endif
 };
 
+// Suggests functions and names while typing into the formula bar. On Windows, GetCompletions()
+// runs in a worker thread, so it only reads the names that the UI thread sets.
+struct FormulaCompleter : wxTextCompleterSimple {
+    std::mutex mutex;
+    vector<wxString> names;
+
+    void SetNames(vector<wxString> n) {
+        std::lock_guard lock(mutex);
+        names = std::move(n);
+    }
+
+    void GetCompletions(const wxString &prefix, wxArrayString &res) override {
+        std::lock_guard lock(mutex);
+        FormulaEvaluator::Completions(names, prefix, res);
+    }
+};
+
 struct TSFrame : wxFrame {
     TSApp *app;
     #ifdef __WXMSW__
@@ -62,6 +79,7 @@ struct TSFrame : wxFrame {
     TSTextCtrl *filter {nullptr};
     TSTextCtrl *replaces {nullptr};
     TSTextCtrl *formulabar {nullptr};
+    FormulaCompleter *formulacompleter {nullptr};  // owned by formulabar
     ColorDropdown *cellcolordropdown {nullptr};
     ColorDropdown *textcolordropdown {nullptr};
     ColorDropdown *bordercolordropdown {nullptr};
@@ -975,6 +993,7 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_SEARCH);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_REPLACE);
         Bind(wxEVT_CHAR_HOOK, &TSFrame::OnCharHook, this, A_FORMULABAR);
+        Bind(wxEVT_TEXT_ENTER, &TSFrame::OnFormulaBarEnter, this, A_FORMULABAR);
         #ifdef __WXMSW__
             // Wherever the focus is. Holding Alt repeats it, also while using it with the mouse.
             Bind(wxEVT_CHAR_HOOK, [this](wxKeyEvent &ke) {
@@ -1128,9 +1147,23 @@ struct TSFrame : wxFrame {
 
         auto *formulatb = NewToolbar();
         AddToolbarLabel(formulatb, _("Formula "));
-        formulatb->AddControl(formulabar =
-                                  new TSTextCtrl(formulatb, A_FORMULABAR, "", wxDefaultPosition,
-                                                 FromDIP(wxSize(240, 22)), wxWANTS_CHARS));
+        formulatb->AddControl(formulabar = new TSTextCtrl(
+                                  formulatb, A_FORMULABAR, "", wxDefaultPosition,
+                                  FromDIP(wxSize(240, 22)), wxWANTS_CHARS | wxTE_PROCESS_ENTER));
+        formulabar->AutoComplete(formulacompleter = new FormulaCompleter);
+        // Keys without CTRL or ALT, such as ENTER and the arrows, are for the formula bar and its
+        // suggestions rather than the menu shortcuts. Others are as in any text control.
+        formulabar->Bind(wxEVT_ACCELERATOR_KEY, [](wxAcceleratorKeyEvent &ae) {
+            if (ae.CmdDown() || ae.AltDown()) { ae.Skip(); }
+        });
+        // The document doesn't change while typing in the formula bar, so its names don't either.
+        formulabar->Bind(wxEVT_SET_FOCUS, [this](wxFocusEvent &fe) {
+            auto *canvas = GetCurrentTab();
+            auto *c = canvas != nullptr ? canvas->doc->selected.GetCell() : nullptr;
+            formulacompleter->SetNames(c != nullptr ? FormulaEvaluator::Names(c)
+                                                    : vector<wxString>());
+            fe.Skip();
+        });
         FinishToolbar(formulatb, "formulatb", _("Formula bar"));
 
         auto GetColorIndex = [&](int targetcolor, int defaultindex) {
@@ -1679,14 +1712,12 @@ struct TSFrame : wxFrame {
         if (!canvas) return;
         auto *textctrl = wxDynamicCast(ke.GetEventObject(), wxTextCtrl);
         if (ke.GetId() == A_FORMULABAR) {
-            // ENTER applies the formula bar to the selected cell, ESCAPE leaves it unchanged.
-            if (ke.GetKeyCode() == WXK_RETURN) {
-                SetStatus(canvas->doc->SetFormulaBarText(formulabar->GetValue()));
-            } else if (ke.GetKeyCode() != WXK_ESCAPE) {
+            // ESCAPE leaves the selected cell unchanged, see OnFormulaBarEnter() for ENTER.
+            if (ke.GetKeyCode() == WXK_ESCAPE) {
+                canvas->SetFocus();
+            } else {
                 ke.Skip();
-                return;
             }
-            canvas->SetFocus();
             return;
         }
         switch (ke.GetKeyCode()) {
@@ -1714,6 +1745,15 @@ struct TSFrame : wxFrame {
                 ke.Skip();
             }
         }
+    }
+
+    // ENTER applies the formula bar to the selected cell. It's not handled in OnCharHook(), since
+    // ENTER in the list of suggestions only picks one.
+    void OnFormulaBarEnter(wxCommandEvent &) {
+        auto *canvas = GetCurrentTab();
+        if (canvas == nullptr) { return; }
+        SetStatus(canvas->doc->SetFormulaBarText(formulabar->GetValue()));
+        canvas->SetFocus();
     }
 
     void OnChangeColor(wxCommandEvent &ce) {

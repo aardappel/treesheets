@@ -70,6 +70,7 @@
 #include <wx/stdpaths.h>
 #include <wx/sysopt.h>
 #include <wx/taskbar.h>
+#include <wx/textcompleter.h>
 #include <wx/timectrl.h>
 #include <wx/translation.h>
 #include <wx/uilocale.h>

@@ -249,23 +249,87 @@ struct FormulaEvaluator {
         return p.error;
     }
 
-    // The grid of the cell whose text is `name`, searched for breadth first in the grid that
-    // `self` is in, then in each grid around that one.
-    static Grid *FindGrid(const Cell *self, const wxString &name) {
+    using Aggregate = double (*)(const vector<double> &);
+    static const auto &Functions() {
+        static const std::pair<const wxChar *, Aggregate> functions[] = {
+            {L"SUM", aggregate::Sum},
+            {L"MIN", aggregate::Min},
+            {L"MAX", aggregate::Max},
+            {L"AVG", aggregate::Avg},
+            {L"AVERAGE", aggregate::Avg},
+            {L"MEDIAN", [](const vector<double> &v) { return aggregate::Median(v); }},
+            {L"COUNT", [](const vector<double> &v) { return static_cast<double>(v.size()); }}};
+        return functions;
+    }
+
+    // Calls f on the cells around `self` in the order names are looked up in: breadth first in
+    // the grid that `self` is in, then in each grid around that one, until f returns true.
+    template<typename F> static void ForNearest(const Cell *self, F f) {
         for (auto *scope = self->parent; scope != nullptr; scope = scope->parent) {
             vector<Cell *> level {scope};
             vector<Cell *> next;
             while (!level.empty()) {
                 for (auto *c : level) {
                     if (!c->grid) { continue; }
-                    if (c->text.t == name) { return c->grid.get(); }
+                    if (f(c)) { return; }
                     for (auto &child : c->grid->cells) { next.push_back(child.get()); }
                 }
                 level.swap(next);
                 next.clear();
             }
         }
-        return nullptr;
+    }
+
+    // The grid of the cell whose text is `name`, the nearest one to `self` (see ForNearest()).
+    static Grid *FindGrid(const Cell *self, const wxString &name) {
+        Grid *g = nullptr;
+        ForNearest(self, [&](Cell *c) {
+            if (c->text.t == name) { g = c->grid.get(); }
+            return g != nullptr;
+        });
+        return g;
+    }
+
+    // The names of grids that a formula in `self` can use, the nearest first.
+    static vector<wxString> Names(const Cell *self) {
+        vector<wxString> names;
+        std::set<wxString> seen;
+        ForNearest(self, [&](Cell *c) {
+            auto &n = c->text.t;
+            if (!n.IsEmpty() && n.find(')') == wxString::npos && seen.insert(n).second) {
+                names.push_back(n);
+            }
+            return names.size() >= 100;
+        });
+        return names;
+    }
+
+    // What formula s may continue with: a function after "=", an operator or "(", and one of
+    // `names` in the parentheses of a function.
+    static void Completions(const vector<wxString> &names, const wxString &s, wxArrayString &res) {
+        if (!s.StartsWith("=")) { return; }
+        auto open = s.rfind('(');
+        auto close = s.rfind(')');
+        if (open != wxString::npos && (close == wxString::npos || close < open) && open > 0 &&
+            wxIsalpha(s[open - 1])) {
+            auto start = open + 1;
+            while (start < s.Len() && wxIsspace(s[start])) { start++; }
+            // Names must match exactly, also where Windows appends the rest to what was typed.
+            auto typed = s.Mid(start);
+            for (auto &n : names) {
+                if (n.StartsWith(typed)) { res.Add(s.Left(start) + n + ")"); }
+            }
+            return;
+        }
+        auto start = s.Len();
+        while (start > 1 && wxIsalpha(s[start - 1])) { start--; }
+        auto before = start;
+        while (before > 1 && wxIsspace(s[before - 1])) { before--; }
+        if (wxString("=+-*/(").find(s[before - 1]) == wxString::npos) { return; }
+        auto typed = s.Mid(start).Upper();
+        for (auto &[n, f] : Functions()) {
+            if (wxString(n).StartsWith(typed)) { res.Add(s.Left(start) + n + "("); }
+        }
     }
 
     // The numbers in the grid named `name` (see FindGrid()), except formula cell `self`.
@@ -353,16 +417,7 @@ struct FormulaEvaluator {
             }
             auto name = s.Mid(i, close - i).Trim().Trim(false);
             i = close + 1;
-            using Aggregate = double (*)(const vector<double> &);
-            static const std::pair<const wxChar *, Aggregate> functions[] = {
-                {L"SUM", aggregate::Sum},
-                {L"MIN", aggregate::Min},
-                {L"MAX", aggregate::Max},
-                {L"AVG", aggregate::Avg},
-                {L"AVERAGE", aggregate::Avg},
-                {L"MEDIAN", [](const vector<double> &v) { return aggregate::Median(v); }},
-                {L"COUNT", [](const vector<double> &v) { return static_cast<double>(v.size()); }}};
-            for (auto &[n, f] : functions) {
+            for (auto &[n, f] : Functions()) {
                 if (function != n) { continue; }
                 vector<double> numbers;
                 auto e = fe.Numbers(self, name, numbers);
