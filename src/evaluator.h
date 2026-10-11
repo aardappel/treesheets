@@ -341,7 +341,8 @@ struct FormulaEvaluator {
     // `recursive` also those of the data cells in its sub-grids, depth first.
     wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers, bool recursive) {
         auto *g = FindGrid(self, name);
-        return g != nullptr ? Numbers(self, g, numbers, recursive) : L"#NAME?";
+        if (g == nullptr) { return L"#NAME?"; }
+        return Numbers(self, g, numbers, recursive);
     }
 
     wxString Numbers(Cell *self, Grid *g, vector<double> &numbers, bool recursive,
