@@ -13,6 +13,12 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.goto_view</b>()</tt></td><td class="a">makes what the user has zoomed into the current cell</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.zoom</b>(levels<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">zooms the view in (levels &gt; 0) towards the selection, or out (levels &lt; 0), by that many levels, like View &gt; Zoom In / Zoom Out. returns whether the view changed.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.zoom_to_root</b>() -> <font color="#666666">int</font></tt></td><td class="a">zooms the view out all the way to the root. returns whether the view changed.</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.has_selection</b>() -> <font color="#666666">int</font></tt></td><td class="a">whether there is a selection</td>
 
 </tr>

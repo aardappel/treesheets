@@ -16,6 +16,9 @@ struct ScriptInterface {
     virtual std::pair<int, bool> GetAutoExport() = 0;
     virtual void GoToRoot() = 0;
     virtual void GoToView() = 0;
+    // Same as View > Zoom In (levels > 0) / Zoom Out (levels < 0), on the selection, by levels
+    // from the current view, or from the root (fromroot).
+    virtual bool Zoom(int levels, bool fromroot) = 0;
     virtual bool HasSelection() = 0;
     virtual void GoToSelection() = 0;
     virtual bool HasParent() = 0;

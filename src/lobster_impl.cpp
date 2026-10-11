@@ -45,6 +45,19 @@ BUILTIN(goto_view, "", "", "", "makes what the user has zoomed into the current 
     si->GoToView();
 }
 
+BUILTIN(zoom, "levels", "I", "B",
+    "zooms the view in (levels > 0) towards the selection, or out (levels < 0), by that many "
+    "levels, like View > Zoom In / Zoom Out. returns whether the view changed.")
+(VM &, iint levels) {
+    return (iint)si->Zoom((int)std::clamp<iint>(levels, -1 << 20, 1 << 20), false);
+}
+
+BUILTIN(zoom_to_root, "", "", "B",
+    "zooms the view out all the way to the root. returns whether the view changed.")
+(VM &) {
+    return (iint)si->Zoom(-1, true);
+}
+
 BUILTIN(has_selection, "", "", "B", "whether there is a selection")
 (VM &) {
     return (iint)si->HasSelection();
