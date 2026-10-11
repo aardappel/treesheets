@@ -696,7 +696,7 @@ struct Document {
                 return;
             }
         }
-        Zoom(-100, false);
+        Zoom(-1, true);
         if (zoomiftiny) { ZoomTiny(); }
     }
 
