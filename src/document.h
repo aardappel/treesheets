@@ -1609,7 +1609,9 @@ struct Document {
                     if (!ctrl) { return Action(A_BACKSPACE); }
                     break;  // Prevent Ctrl+H from being treated as Backspace
                 case WXK_RETURN:
-                    return Action(shift  ? ctrl ? A_ENTERGRIDN : A_ENTERGRID
+                    return Action(shift  ? alt    ? A_SPLITCELL
+                                           : ctrl ? A_ENTERGRIDN
+                                                  : A_ENTERGRID
                                   : ctrl ? A_ENTERCELL_JUMPTOSTART
                                          : A_ENTERCELL);
                 case WXK_ESCAPE:  // docs say it can be used as a menu accelerator, but it does not
@@ -3154,6 +3156,41 @@ struct Document {
         if (!selected.TextEdit()) { return _("only works in cell text mode"); }
 
         switch (action) {
+            case A_SPLITCELL: {
+                cell->AddUndo(this);
+                auto part = [&](int from, int to) {
+                    auto c = make_unique<Cell>(nullptr, cell);
+                    c->text = cell->text;
+                    c->text.cell = c.get();
+                    c->text.RemoveText(to, static_cast<int>(c->text.t.Len()) - to);
+                    c->text.RemoveText(0, from);
+                    return c;
+                };
+                auto first = part(0, selected.cursor);
+                auto second = part(selected.cursor, static_cast<int>(cell->text.t.Len()));
+                second->text.image = nullptr;
+                // An existing subgrid goes next to the one holding the split text.
+                auto existing = cell->grid;
+                cell->Clear();
+                auto *target = cell;
+                if (existing) {
+                    target = cell->AddGrid(2, 1)->C(0, 0).get();
+                    auto *holder = cell->grid->C(1, 0).get();
+                    holder->grid = existing;
+                    existing->ReParent(holder);
+                }
+                auto *g = target->AddGrid(2, 1);
+                g->C(0, 0).reset(first.release()->SetParent(target));
+                g->C(1, 0).reset(second.release()->SetParent(target));
+                cell->ResetChildren();
+                SetSelect(Selection(target->grid, 1, 0, 1, 1));
+                selected.EnterEdit(this);
+                UpdateLayout();
+                ScrollIfSelectionOutOfView();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
+
             case A_CANCELEDIT:
                 if (LastUndoSameCellTextEdit(cell)) {
                     Undo(undolist, redolist);

@@ -386,6 +386,8 @@ struct TSFrame : wxFrame {
                 _("...and progress to the first cell in the new row") + "\t" ALTORCTRL "+ENTER");
             MyAppend(temenu, A_PROGRESSCELL,
                      _("...and progress to the next cell on the right") + "\t" CTRLORALT "+ENTER");
+            MyAppend(temenu, A_SPLITCELL, _("Split cell at the cursor") + "\tALT+SHIFT+ENTER",
+                     _("Splits the text into two cells side by side in a subgrid"));
             MyAppend(temenu, A_CANCELEDIT, _("Cancel text edits") + "\tESC");
 
             auto *stmenu = new wxMenu();

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 14:07+0200\n"
+"POT-Creation-Date: 2026-10-12 15:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1727,6 +1727,12 @@ msgid "Sort &Ascending"
 msgstr ""
 
 msgid "Sort &Descending"
+msgstr ""
+
+msgid "Split cell at the cursor"
+msgstr ""
+
+msgid "Splits the text into two cells side by side in a subgrid"
 msgstr ""
 
 msgid "Start date and time"
