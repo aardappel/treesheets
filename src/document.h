@@ -1376,13 +1376,30 @@ struct Document {
         return bm;
     }
 
+    // wxSVGBitmapEmbedHandler sizes images by their pixels, not by the scale they are drawn at.
+    struct SVGImageHandler : wxSVGBitmapHandler {
+        bool ProcessBitmap(const wxBitmap &bmp, wxCoord x, wxCoord y,
+                           wxOutputStream &stream) const override {
+            wxMemoryOutputStream mem;
+            bmp.ConvertToImage().SaveFile(mem, wxBITMAP_TYPE_PNG);
+            auto s = wxString::Format(
+                "  <image x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" "
+                "xlink:href=\"data:image/png;base64,%s\"/>\n",
+                x, y, wxRound(bmp.GetLogicalWidth()), wxRound(bmp.GetLogicalHeight()),
+                wxBase64Encode(mem.GetOutputStreamBuffer()->GetBufferStart(), mem.GetSize()));
+            auto buf = s.utf8_str();
+            stream.Write(buf.data(), buf.length());
+            return stream.IsOk();
+        }
+    };
+
     template<typename F> wxString GetSVG(const wxRect &r, F draw) {
         scrollx = r.x;
         scrolly = r.y;
         maxx = r.GetRight() + 1;
         maxy = r.GetBottom() + 1;
         wxSVGFileDC sdc(r.GetSize());
-        sdc.SetBitmapHandler(new wxSVGBitmapEmbedHandler());
+        sdc.SetBitmapHandler(new SVGImageHandler());
         sdc.SetDeviceOrigin(-r.x, -r.y);
         draw(sdc);
         return sdc.GetSVGDocument();
