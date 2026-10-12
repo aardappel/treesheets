@@ -215,10 +215,11 @@ struct Evaluator {
 /*
     Calculates the results of formula cells (CT_FORMULA), which become their text. A formula is
     arithmetic (+ - * / and parentheses) over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of
-    a grid, which is named by the text of its cell, e.g. =SUM(Income) - SUM(Expenses). The
-    results of other formulas in that grid count as numbers, and their errors carry over. With
-    TREE in front, e.g. TREESUM, they also count the data in all its sub-grids, but not the
-    formulas there, which would count subtotals twice.
+    a grid, which is named by the text of its cell, e.g. =SUM(Income) - SUM(Expenses). A name on
+    its own, e.g. =Price * Quantity, is the one number in its grid (#VALUE! if there is not
+    exactly one). The results of other formulas in that grid count as numbers, and their errors
+    carry over. With TREE in front, e.g. TREESUM, they also count the data in all its sub-grids,
+    but not the formulas there, which would count subtotals twice.
 */
 struct FormulaEvaluator {
     enum { BUSY, OK, FAILED };
@@ -292,6 +293,8 @@ struct FormulaEvaluator {
         return g;
     }
 
+    static bool IsNameChar(wxChar c) { return wxIsalnum(c) || c == '_'; }
+
     // The names of grids that a formula in `self` can use, the nearest first.
     static vector<wxString> Names(const Cell *self) {
         vector<wxString> names;
@@ -306,8 +309,8 @@ struct FormulaEvaluator {
         return names;
     }
 
-    // What formula s may continue with: a function after "=", an operator or "(", and one of
-    // `names` in the parentheses of a function.
+    // What formula s may continue with: a function or one of `names` after "=", an operator or
+    // "(", and any of `names` in the parentheses of a function.
     static void Completions(const vector<wxString> &names, const wxString &s, wxArrayString &res) {
         if (!s.StartsWith("=")) { return; }
         auto open = s.rfind('(');
@@ -324,15 +327,22 @@ struct FormulaEvaluator {
             return;
         }
         auto start = s.Len();
-        while (start > 1 && wxIsalpha(s[start - 1])) { start--; }
+        while (start > 1 && IsNameChar(s[start - 1])) { start--; }
         auto before = start;
         while (before > 1 && wxIsspace(s[before - 1])) { before--; }
         if (wxString("=+-*/(").find(s[before - 1]) == wxString::npos) { return; }
-        auto typed = s.Mid(start).Upper();
+        auto typed = s.Mid(start);
+        auto upper = typed.Upper();
         for (auto prefix : {L"", L"TREE"}) {
             for (auto &[n, f] : Functions()) {
                 auto function = prefix + wxString(n);
-                if (function.StartsWith(typed)) { res.Add(s.Left(start) + function + "("); }
+                if (function.StartsWith(upper)) { res.Add(s.Left(start) + function + "("); }
+            }
+        }
+        for (auto &n : names) {
+            if (n.StartsWith(typed) && !wxIsdigit(n[0]) &&
+                std::all_of(n.begin(), n.end(), IsNameChar)) {
+                res.Add(s.Left(start) + n);
             }
         }
     }
@@ -427,12 +437,18 @@ struct FormulaEvaluator {
                 double d;
                 return s.Mid(start, i - start).ToCDouble(&d) ? d : Fail(L"#ERROR!");
             }
-            while (i < s.Len() && wxIsalpha(s[i])) { i++; }
-            auto function = s.Mid(start, i - start).Upper();
-            auto close = s.find(')', i);
-            if (function.IsEmpty() || !Eat('(') || close == wxString::npos) {
-                return Fail(L"#ERROR!");
+            while (i < s.Len() && IsNameChar(s[i])) { i++; }
+            auto function = s.Mid(start, i - start);
+            if (function.IsEmpty()) { return Fail(L"#ERROR!"); }
+            if (!Eat('(')) {  // a name on its own is the one number in its grid
+                vector<double> numbers;
+                auto e = fe.Numbers(self, function, numbers, false);
+                if (!e.IsEmpty()) { return Fail(e); }
+                return numbers.size() == 1 ? numbers[0] : Fail(L"#VALUE!");
             }
+            function.MakeUpper();
+            auto close = s.find(')', i);
+            if (close == wxString::npos) { return Fail(L"#ERROR!"); }
             auto name = s.Mid(i, close - i).Trim().Trim(false);
             i = close + 1;
             wxString rest;
