@@ -1700,7 +1700,10 @@ struct TSFrame : wxFrame {
                     RunScript(sys->scripts[id - A_SCRIPT]);
                 #endif
                 } else {
-                    SetStatus(canvas->doc->Action(id));
+                    // Shift only counts on toolbar buttons, as it is part of some shortcuts.
+                    auto recursive = wxDynamicCast(ce.GetEventObject(), wxAuiToolBar) &&
+                                     wxGetKeyState(WXK_SHIFT);
+                    SetStatus(canvas->doc->Action(id, recursive));
                 }
                 // Actions such as cursor movement or select all change the text selection.
                 if (auto *tab = GetCurrentTab()) { UpdateAmountStatus(tab->doc->selected); }

@@ -879,30 +879,36 @@ struct Grid {
         sel.ExitEdit(doc);
     }
 
-    // Whether the text of all selected cells has the style. Stops at the first cell that hasn't,
-    // as the toolbar asks this on every idle event.
-    bool AllHaveStyle(const Selection &sel, int sb) {
+    // Whether the text of all selected cells, and with recursive all cells inside them, has the
+    // style. Stops at the first cell that hasn't, as the toolbar asks this on every idle event.
+    bool AllHaveStyle(const Selection &sel, int sb, bool recursive = false) {
+        auto all = true;
         foreachcellinsel(c, sel) {
-            if (!c->text.HasStyleAll(sb)) { return false; }
+            c->ForCells(recursive, [&](Cell *d) { all = all && d->text.HasStyleAll(sb); });
+            if (!all) { return false; }
         }
         return true;
     }
 
-    void SetStyle(Document *doc, const Selection &sel, int sb) {
+    void SetStyle(Document *doc, const Selection &sel, int sb, bool recursive) {
         cell->AddUndo(doc);
         cell->ResetChildren();
         // Only a selected range of text gets the style; otherwise it applies to the whole cell,
-        // or all selected cells: on, unless all of them already have it (see
-        // Document::SelectionHasStyle, which shows this state in the menu).
+        // or all selected cells (and with recursive all cells inside them): on, unless all of
+        // them already have it (see Document::SelectionHasStyle, which shows this state in the
+        // menu).
         auto range = sel.TextEdit() && sel.cursor != sel.cursorend;
-        auto set = range || !AllHaveStyle(sel, sb);
+        auto set = range || !AllHaveStyle(sel, sb, recursive);
         foreachcellinsel(c, sel) {
             if (range) {
                 c->text.ToggleStyle(sb, sel.cursor, sel.cursorend);
+                c->text.WasEdited();
             } else {
-                c->text.SetStyleAll(sb, set);
+                c->ForCells(recursive, [&](Cell *d) {
+                    d->text.SetStyleAll(sb, set);
+                    d->text.WasEdited();
+                });
             }
-            c->text.WasEdited();
         }
         doc->UpdateLayout();
         doc->canvas->Refresh();
@@ -922,10 +928,10 @@ struct Grid {
         return true;
     }
 
-    void SetTextAlign(Document *doc, const Selection &sel, int align) {
+    void SetTextAlign(Document *doc, const Selection &sel, int align, bool recursive) {
         cell->AddUndo(doc);
         cell->ResetChildren();
-        foreachcellinsel(c, sel) c->textalign = align;
+        foreachcellinsel(c, sel) c->ForCells(recursive, [&](Cell *d) { d->textalign = align; });
         doc->UpdateLayout();
         doc->canvas->Refresh();
     }
@@ -937,10 +943,10 @@ struct Grid {
         return true;
     }
 
-    void SetVertAlign(Document *doc, const Selection &sel, int align) {
+    void SetVertAlign(Document *doc, const Selection &sel, int align, bool recursive) {
         cell->AddUndo(doc);
         cell->ResetChildren();
-        foreachcellinsel(c, sel) c->vertalign = align;
+        foreachcellinsel(c, sel) c->ForCells(recursive, [&](Cell *d) { d->vertalign = align; });
         doc->UpdateLayout();
         doc->canvas->Refresh();
     }

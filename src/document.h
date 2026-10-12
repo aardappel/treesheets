@@ -1679,7 +1679,9 @@ struct Document {
         return wxEmptyString;
     }
 
-    wxString Action(int action) {
+    // With recursive (Shift on a toolbar button), styles and alignments also apply to all cells
+    // nested inside the selected ones.
+    wxString Action(int action, bool recursive = false) {
         switch (action) {
             case wxID_EXECUTE:
                 root->AddUndo(this);
@@ -2442,31 +2444,35 @@ struct Document {
                 return wxEmptyString;
 
             case wxID_BOLD:
-                selected.grid->SetStyle(this, selected, STYLE_BOLD);
+                selected.grid->SetStyle(this, selected, STYLE_BOLD, recursive);
                 return wxEmptyString;
             case wxID_ITALIC:
-                selected.grid->SetStyle(this, selected, STYLE_ITALIC);
+                selected.grid->SetStyle(this, selected, STYLE_ITALIC, recursive);
                 return wxEmptyString;
-            case A_TT: selected.grid->SetStyle(this, selected, STYLE_FIXED); return wxEmptyString;
+            case A_TT:
+                selected.grid->SetStyle(this, selected, STYLE_FIXED, recursive);
+                return wxEmptyString;
             case wxID_UNDERLINE:
-                selected.grid->SetStyle(this, selected, STYLE_UNDERLINE);
+                selected.grid->SetStyle(this, selected, STYLE_UNDERLINE, recursive);
                 return wxEmptyString;
             case wxID_STRIKETHROUGH:
-                selected.grid->SetStyle(this, selected, STYLE_STRIKETHRU);
+                selected.grid->SetStyle(this, selected, STYLE_STRIKETHRU, recursive);
                 return wxEmptyString;
 
             case A_ALIGNAUTO:
             case A_ALIGNLEFT:
             case A_ALIGNCENTER:
             case A_ALIGNRIGHT:
-                selected.grid->SetTextAlign(this, selected, action - A_ALIGNAUTO + TEXTALIGN_AUTO);
+                selected.grid->SetTextAlign(this, selected, action - A_ALIGNAUTO + TEXTALIGN_AUTO,
+                                            recursive);
                 return wxEmptyString;
 
             case A_VALIGNAUTO:
             case A_ALIGNTOP:
             case A_ALIGNMIDDLE:
             case A_ALIGNBOTTOM:
-                selected.grid->SetVertAlign(this, selected, action - A_VALIGNAUTO + VERTALIGN_AUTO);
+                selected.grid->SetVertAlign(this, selected, action - A_VALIGNAUTO + VERTALIGN_AUTO,
+                                            recursive);
                 return wxEmptyString;
 
             case A_MARKDATA:

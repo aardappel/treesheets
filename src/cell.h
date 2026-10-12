@@ -696,6 +696,14 @@ struct Cell {
         if (text.image != nullptr) { text.image->trefc++; }
     }
 
+    // Calls f on this cell, and with recursive also on all cells nested inside it.
+    template<typename F> void ForCells(bool recursive, F f) {
+        f(this);
+        if (recursive && grid) {
+            for (auto &c : grid->cells) c->ForCells(true, f);
+        }
+    }
+
     void ColorChange(Document *doc, int which, uint color, bool recursive) {
         switch (which) {
             case A_CELLCOLOR:

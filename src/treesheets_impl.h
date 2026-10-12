@@ -303,24 +303,16 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         }
     }
 
-    // Calls f on c, and with recursive also on all cells nested inside it.
-    template<typename F> static void ForCells(Cell *c, bool recursive, F f) {
-        f(c);
-        if (recursive && c->grid) {
-            for (auto &child : c->grid->cells) ForCells(child.get(), true, f);
-        }
-    }
-
     void SetBackgroundColor(uint color, bool recursive) override {
         AddUndoIfNecessary();
-        ForCells(current, recursive, [&](Cell *c) { c->cellcolor = color; });
+        current->ForCells(recursive, [&](Cell *c) { c->cellcolor = color; });
     }
 
     uint32_t GetBackgroundColor() override { return current->cellcolor; }
 
     void SetTextColor(uint color, bool recursive) override {
         AddUndoIfNecessary();
-        ForCells(current, recursive, [&](Cell *c) { c->textcolor = color; });
+        current->ForCells(recursive, [&](Cell *c) { c->textcolor = color; });
     }
 
     uint32_t GetTextColor() override { return current->textcolor; }
@@ -337,7 +329,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SetBorderColor(uint color, bool recursive) override {
         if (current->grid) {
             AddUndoIfNecessary();
-            ForCells(current, recursive, [&](Cell *c) {
+            current->ForCells(recursive, [&](Cell *c) {
                 if (c->grid) { c->grid->bordercolor = color; }
             });
         }
