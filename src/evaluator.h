@@ -216,7 +216,7 @@ struct Evaluator {
     Calculates the results of formula cells (CT_FORMULA), which become their text. A formula is
     arithmetic (+ - * / and parentheses) over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of
     a grid, which is named by the text of its cell, e.g. =SUM(Income) - SUM(Expenses). A name on
-    its own, e.g. =Price * Quantity, is the one number in its grid (#VALUE! if there is not
+    its own, e.g. =Unit price * Quantity, is the one number in its grid (#VALUE! if there is not
     exactly one). The results of other formulas in that grid count as numbers, and their errors
     carry over. With TREE in front, e.g. TREESUM, they also count the data in all its sub-grids,
     but not the formulas there, which would count subtotals twice.
@@ -295,6 +295,13 @@ struct FormulaEvaluator {
 
     static bool IsNameChar(wxChar c) { return wxIsalnum(c) || c == '_'; }
 
+    // Whether n can be used on its own in a formula: words of letters, digits and _, separated by
+    // spaces, e.g. =Unit price * 2.
+    static bool IsBareName(const wxString &n) {
+        return !n.IsEmpty() && !wxIsdigit(n[0]) && IsNameChar(n[0]) && IsNameChar(n.Last()) &&
+               std::all_of(n.begin(), n.end(), [](wxChar c) { return IsNameChar(c) || c == ' '; });
+    }
+
     // The names of grids that a formula in `self` can use, the nearest first.
     static vector<wxString> Names(const Cell *self) {
         vector<wxString> names;
@@ -327,10 +334,9 @@ struct FormulaEvaluator {
             return;
         }
         auto start = s.Len();
-        while (start > 1 && IsNameChar(s[start - 1])) { start--; }
-        auto before = start;
-        while (before > 1 && wxIsspace(s[before - 1])) { before--; }
-        if (wxString("=+-*/(").find(s[before - 1]) == wxString::npos) { return; }
+        while (start > 1 && (IsNameChar(s[start - 1]) || s[start - 1] == ' ')) { start--; }
+        if (wxString("=+-*/(").find(s[start - 1]) == wxString::npos) { return; }
+        while (start < s.Len() && s[start] == ' ') { start++; }
         auto typed = s.Mid(start);
         auto upper = typed.Upper();
         for (auto prefix : {L"", L"TREE"}) {
@@ -340,10 +346,7 @@ struct FormulaEvaluator {
             }
         }
         for (auto &n : names) {
-            if (n.StartsWith(typed) && !wxIsdigit(n[0]) &&
-                std::all_of(n.begin(), n.end(), IsNameChar)) {
-                res.Add(s.Left(start) + n);
-            }
+            if (n.StartsWith(typed) && IsBareName(n)) { res.Add(s.Left(start) + n); }
         }
     }
 
@@ -437,7 +440,12 @@ struct FormulaEvaluator {
                 double d;
                 return s.Mid(start, i - start).ToCDouble(&d) ? d : Fail(L"#ERROR!");
             }
-            while (i < s.Len() && IsNameChar(s[i])) { i++; }
+            // Words separated by spaces, e.g. =Unit price * 2, but SUM (Costs) is still a function.
+            while (i < s.Len() && IsNameChar(s[i])) {
+                auto next = ++i;
+                while (next < s.Len() && s[next] == ' ') { next++; }
+                if (next < s.Len() && IsNameChar(s[next])) { i = next; }
+            }
             auto function = s.Mid(start, i - start);
             if (function.IsEmpty()) { return Fail(L"#ERROR!"); }
             if (!Eat('(')) {  // a name on its own is the one number in its grid
