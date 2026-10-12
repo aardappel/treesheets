@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 5.2 (based on TS 2.5.1)\n"
+"Project-Id-Version: TreeSheets_RU 5.3 (based on TS 2.9.1)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-03 15:43+0200\n"
-"PO-Revision-Date: 2026-10-11 14:37+0300\n"
+"PO-Revision-Date: 2026-10-12 16:42+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -92,7 +92,7 @@ msgid "&Flatten"
 msgstr "к &Табличному виду"
 
 msgid "&Formula"
-msgstr ""
+msgstr "&Формула"
 
 msgid "&Grid Reorganization"
 msgstr "Ре&организация Сетки"
@@ -639,15 +639,19 @@ msgstr "Копировать (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "&Копировать как Непрерывный Текст"
 
+# ???
+#, fuzzy
 msgid "Copy as &SVG"
-msgstr ""
+msgstr "&Копировать как SVG"
 
 # комментарий к п. Меню
 msgid "Copy selection"
 msgstr "Копировать выделенное"
 
+# ??? - комментарий к п. Меню
+#, fuzzy
 msgid "Copy the selection as SVG vector graphics"
-msgstr ""
+msgstr "Скопировать выделенное как векторную графику SVG"
 
 msgid "Copy with &Images"
 msgstr "Копировать с Изображениями"
@@ -1041,11 +1045,14 @@ msgstr "Рекурсивно (на всю глубину вложенности)
 msgid "Font..."
 msgstr "Шрифт..."
 
+# эл-т Главного Окна
 msgid "Formula "
-msgstr ""
+msgstr "Формула "
 
+# ???
+#, fuzzy
 msgid "Formula bar"
-msgstr ""
+msgstr "Строка формул"
 
 # Сообщение (после действия или события)
 msgid "Found an image type that is not defined in this program."
@@ -1737,8 +1744,10 @@ msgstr "Запустить сценарий Lobster, не добавляя ег�
 msgid "S&cript"
 msgstr "Сценарий"
 
+# ??? - Сообщение (после действия или события)
+#, fuzzy
 msgid "SVG copied to clipboard"
-msgstr ""
+msgstr "SVG скопирован в буфер обмена"
 
 # раздел Меню - Файл
 msgid "Save &As..."
