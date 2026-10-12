@@ -575,8 +575,14 @@ msgstr "Sao chép (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Sao chép dưới dạng văn bản liên tục"
 
+msgid "Copy as &SVG"
+msgstr ""
+
 msgid "Copy selection"
 msgstr "Sao chép vùng chọn"
+
+msgid "Copy the selection as SVG vector graphics"
+msgstr ""
 
 msgid "Copy with &Images"
 msgstr "Sao chép kèm theo hình &ảnh"
@@ -1564,6 +1570,9 @@ msgstr "Chạy kịch bản Lobster mà không cần thêm vào menu"
 
 msgid "S&cript"
 msgstr "Kị&ch bản"
+
+msgid "SVG copied to clipboard"
+msgstr ""
 
 msgid "Save &As..."
 msgstr "Lưu dưới dạng (&A)..."

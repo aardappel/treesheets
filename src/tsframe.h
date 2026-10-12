@@ -516,6 +516,8 @@ struct TSFrame : wxFrame {
             editmenu->AppendSeparator();
             MyAppend(editmenu, A_COPYWI, _("Copy with &Images") + "\tCTRL+ALT+C");
             MyAppend(editmenu, A_COPYBM, _("&Copy as Bitmap"));
+            MyAppend(editmenu, A_COPYSVG, _("Copy as &SVG"),
+                     _("Copy the selection as SVG vector graphics"));
             MyAppend(editmenu, A_COPYCT, _("Copy As Continuous Text"));
             editmenu->AppendSeparator();
             MyAppend(editmenu, wxID_PASTE, _("&Paste") + "\tCTRL+V", _("Paste clipboard contents"));

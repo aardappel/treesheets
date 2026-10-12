@@ -579,8 +579,14 @@ msgstr "コピー (CTRL+C)"
 msgid "Copy As Continuous Text"
 msgstr "連続テキストとしてコピー"
 
+msgid "Copy as &SVG"
+msgstr ""
+
 msgid "Copy selection"
 msgstr "選択範囲をコピー"
+
+msgid "Copy the selection as SVG vector graphics"
+msgstr ""
 
 msgid "Copy with &Images"
 msgstr "画像付きでコピー(&I)"
@@ -1576,6 +1582,9 @@ msgstr "Lobster スクリプトをメニューに追加せずに実行"
 
 msgid "S&cript"
 msgstr "スクリプト(&C)"
+
+msgid "SVG copied to clipboard"
+msgstr ""
 
 msgid "Save &As..."
 msgstr "名前を付けて保存(&A)..."

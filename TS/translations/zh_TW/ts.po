@@ -571,8 +571,14 @@ msgstr "複製（Ctrl + C）"
 msgid "Copy As Continuous Text"
 msgstr "複製為連續文字"
 
+msgid "Copy as &SVG"
+msgstr ""
+
 msgid "Copy selection"
 msgstr "複製選取內容"
+
+msgid "Copy the selection as SVG vector graphics"
+msgstr ""
 
 msgid "Copy with &Images"
 msgstr "連同圖片複製(&I)"
@@ -1526,6 +1532,9 @@ msgstr "執行 Lobster 指令碼而不加入選單"
 
 msgid "S&cript"
 msgstr "指令碼(&C)"
+
+msgid "SVG copied to clipboard"
+msgstr ""
 
 msgid "Save &As..."
 msgstr "另存新檔(&A)..."

@@ -587,8 +587,14 @@ msgstr "Copiar (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "Copiar como Texto Contín&uo"
 
+msgid "Copy as &SVG"
+msgstr ""
+
 msgid "Copy selection"
 msgstr "Copia a seleção"
+
+msgid "Copy the selection as SVG vector graphics"
+msgstr ""
 
 msgid "Copy with &Images"
 msgstr "Copiar com &Imagens"
@@ -1608,6 +1614,9 @@ msgstr "Executa um script Lobster sem adicioná-lo ao menu"
 
 msgid "S&cript"
 msgstr "&Scripts"
+
+msgid "SVG copied to clipboard"
+msgstr ""
 
 msgid "Save &As..."
 msgstr "Salvar &Como..."

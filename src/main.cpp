@@ -270,6 +270,7 @@ enum {
     A_HOVERSHADOWCOL,
     A_COPYCT,
     A_COPYBM,
+    A_COPYSVG,
     A_COPYWI,
     A_FLATCOPY,
     A_MINISIZE,

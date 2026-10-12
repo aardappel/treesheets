@@ -639,9 +639,15 @@ msgstr "Копировать (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "&Копировать как Непрерывный Текст"
 
+msgid "Copy as &SVG"
+msgstr ""
+
 # комментарий к п. Меню
 msgid "Copy selection"
 msgstr "Копировать выделенное"
+
+msgid "Copy the selection as SVG vector graphics"
+msgstr ""
 
 msgid "Copy with &Images"
 msgstr "Копировать с Изображениями"
@@ -1730,6 +1736,9 @@ msgstr "Запустить сценарий Lobster, не добавляя ег�
 
 msgid "S&cript"
 msgstr "Сценарий"
+
+msgid "SVG copied to clipboard"
+msgstr ""
 
 # раздел Меню - Файл
 msgid "Save &As..."

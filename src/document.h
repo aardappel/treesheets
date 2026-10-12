@@ -1376,14 +1376,35 @@ struct Document {
         return bm;
     }
 
-    bool DrawSVG(const wxString &filename) {
-        maxx = layoutxs;
-        maxy = layoutys;
-        scrollx = scrolly = 0;
-        wxSVGFileDC sdc(filename, maxx, maxy);
+    template<typename F> wxString GetSVG(const wxRect &r, F draw) {
+        scrollx = r.x;
+        scrolly = r.y;
+        maxx = r.GetRight() + 1;
+        maxy = r.GetBottom() + 1;
+        wxSVGFileDC sdc(r.GetSize());
         sdc.SetBitmapHandler(new wxSVGBitmapEmbedHandler());
-        DrawView(sdc);
-        return sdc.IsOk();
+        sdc.SetDeviceOrigin(-r.x, -r.y);
+        draw(sdc);
+        return sdc.GetSVGDocument();
+    }
+
+    // Only the selected cells, on the color they show on, without the cells around them.
+    wxString GetSubSVG(const Selection &sel) {
+        auto r = sel.grid->GetRect(this, sel, true);
+        return GetSVG(r, [&](wxSVGFileDC &dc) {
+            auto *p = sel.grid->cell;
+            while (p != nullptr && p->drawstyle == DS_BLOBLINE) {
+                p = p == currentdrawroot ? nullptr : p->parent;
+            }
+            // wxSVGFileDC writes the clip rectangle as is, outside of the device origin.
+            dc.SetClippingRegion(wxRect(r.GetSize()));
+            DrawRectangle(dc, p != nullptr ? p->actualcellcolor : Background(), r.x, r.y, r.width,
+                          r.height);
+            ResetFont(dc);
+            auto *c = sel.grid->cell;
+            c->grid->Render(this, c->GetX(this), c->GetY(this), dc,
+                            c->Depth() - currentdrawroot->Depth(), 0, 0, 0, 0);
+        });
     }
 
     #ifdef ENABLE_WXPDFDOC
@@ -1448,7 +1469,12 @@ struct Document {
                 return _("Error writing PNG file!");
             }
         } else if (action == A_EXPSVG) {
-            if (!DrawSVG(filename)) { return _("Error exporting to SVG file!"); }
+            auto svg =
+                GetSVG(wxRect(0, 0, layoutxs, layoutys), [&](wxSVGFileDC &dc) { DrawView(dc); });
+            wxFile f(filename, wxFile::write);
+            if (!f.IsOpened() || !f.Write(svg, wxConvUTF8)) {
+                return _("Error exporting to SVG file!");
+            }
             canvas->Refresh();
         } 
         #ifdef ENABLE_WXPDFDOC
@@ -2356,6 +2382,25 @@ struct Document {
                     return _("Bitmap copied to clipboard");
                 }
                 return wxEmptyString;
+
+            case A_COPYSVG: {
+                if (selected.Thin()) { return NoThin(); }
+                if (!wxTheClipboard->Open()) { return wxEmptyString; }
+                auto svg = GetSubSVG(selected);
+                auto buf = svg.utf8_str();
+                #ifdef __WXMAC__
+                    auto *svgobj = new wxCustomDataObject(wxDataFormat("public.svg-image"));
+                #else
+                    auto *svgobj = new wxCustomDataObject(wxDataFormat("image/svg+xml"));
+                #endif
+                svgobj->SetData(buf.length(), buf.data());
+                auto *data = new wxDataObjectComposite();
+                data->Add(svgobj, true);
+                data->Add(new wxTextDataObject(svg));
+                wxTheClipboard->SetData(data);
+                wxTheClipboard->Close();
+                return _("SVG copied to clipboard");
+            }
 
             case A_COLLAPSE: {
                 if (selected.Thin()) { return NoThin(); }

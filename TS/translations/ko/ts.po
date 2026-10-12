@@ -578,8 +578,14 @@ msgstr "복사 (Ctrl+C)"
 msgid "Copy As Continuous Text"
 msgstr "연속 텍스트로 복사"
 
+msgid "Copy as &SVG"
+msgstr ""
+
 msgid "Copy selection"
 msgstr "복사 선택"
+
+msgid "Copy the selection as SVG vector graphics"
+msgstr ""
 
 msgid "Copy with &Images"
 msgstr "이미지와 함께 복사(&I)"
@@ -1550,6 +1556,9 @@ msgstr "메뉴에 추가하지 않고 Lobster 스크립트 실행"
 
 msgid "S&cript"
 msgstr "스크립트(&C)"
+
+msgid "SVG copied to clipboard"
+msgstr ""
 
 msgid "Save &As..."
 msgstr "다른 이름으로 저장(&A)..."
