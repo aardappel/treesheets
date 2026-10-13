@@ -60,6 +60,9 @@ struct Document {
     wxRect hovershade;
     Selection selected;
     Selection begindrag;
+    // The multi-cell selection that a ctrl+click inside it collapsed, which the double-click it
+    // may start folds as a whole.
+    Selection foldsel;
     int isctrlshiftdrag {0};
     int scrollx {0};
     int scrolly {0};
@@ -756,6 +759,12 @@ struct Document {
     }
 
     void DoubleClick(bool fold) {
+        if (fold && foldsel.grid != nullptr && hover.IsInside(foldsel)) {
+            hover.ExitEdit(this);
+            SetSelect(foldsel);
+            Action(A_FOLD);
+            return;
+        }
         if (fold && hover.grid != nullptr) {
             // Toggles the hovered cell's grid, or else folds the grid the pointer is in.
             Cell *c = hover.GetCell();
@@ -1068,6 +1077,9 @@ struct Document {
 
     void SelectClick(bool right = false) {
         begindrag = Selection();
+        foldsel = isctrlshiftdrag == 1 && selected.xs * selected.ys > 1 && hover.IsInside(selected)
+                      ? selected
+                      : Selection();
         if (!right && hoverfoldicon && isctrlshiftdrag == 0) {
             auto *c = hover.GetCell();
             c->AddUndo(this);
