@@ -972,8 +972,8 @@ msgstr "Busca no documento"
 msgid "Find operations"
 msgstr "Operações de busca"
 
-msgid "Fold All"
-msgstr "Dobrar Todas"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "Dobrar Todas (CTRL+SHIFT+clique duplo)"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Dobra recursivamente a grade da(s) célula(s) selecionada(s)"
@@ -2081,8 +2081,8 @@ msgstr "Sublinhado (CTRL+u)"
 msgid "Undo (CTRL+z)"
 msgstr "Desfazer (CTRL+z)"
 
-msgid "Unfold All"
-msgstr "Desdobrar Todas"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "Desdobrar Todas (CTRL+SHIFT+clique duplo)"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "Desdobra recursivamente a grade da(s) célula(s) selecionada(s)"

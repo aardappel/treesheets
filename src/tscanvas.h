@@ -206,6 +206,12 @@ struct TSCanvas : public wxScrolledCanvas {
         SetFocus();
         pressedoncanvas = true;
         if (me.ShiftDown()) {
+            {
+                // Before the selection gets extended.
+                wxInfoDC dc(this);
+                doc->UpdateHover(dc, me.GetX(), me.GetY());
+                doc->KeepFoldSel(me.CmdDown());
+            }
             OnMotion(me);
         } else {
             SelectClick(me.GetX(), me.GetY(), false,
@@ -239,7 +245,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnLeftDoubleClick(wxMouseEvent &me) {
         wxInfoDC dc(this);
         doc->UpdateHover(dc, me.GetX(), me.GetY());
-        doc->DoubleClick(me.CmdDown());
+        doc->DoubleClick(me.CmdDown(), me.ShiftDown());
         sys->frame->UpdateStatus(doc->selected, true);
         Refresh();
     }

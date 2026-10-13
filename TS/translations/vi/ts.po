@@ -948,8 +948,8 @@ msgstr "Tìm trong tài liệu"
 msgid "Find operations"
 msgstr "Thao tác tìm kiếm"
 
-msgid "Fold All"
-msgstr "Gập tất cả"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "Gập tất cả (CTRL+SHIFT+nhấp đúp)"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Gập lưới của (các) ô được chọn một cách đệ quy"
@@ -2022,8 +2022,8 @@ msgstr "Gạch chân (CTRL+u)"
 msgid "Undo (CTRL+z)"
 msgstr "Hoàn tác (CTRL+z)"
 
-msgid "Unfold All"
-msgstr "Mở tất cả"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "Mở tất cả (CTRL+SHIFT+nhấp đúp)"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "Mở lưới của (các) ô được chọn một cách đệ quy"

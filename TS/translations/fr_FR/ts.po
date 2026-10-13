@@ -980,8 +980,8 @@ msgstr "Rechercher dans le document"
 msgid "Find operations"
 msgstr "Opérations de recherche"
 
-msgid "Fold All"
-msgstr "Tout réduire"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "Tout réduire (CTRL+SHIFT+double-clic)"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Réduire la grille des cellules sélectionnées mode récursif"
@@ -2092,8 +2092,8 @@ msgstr "Souligné (CTRL+u)"
 msgid "Undo (CTRL+z)"
 msgstr "Annuler (CTRL+z)"
 
-msgid "Unfold All"
-msgstr "Tout développer"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "Tout développer (CTRL+SHIFT+double-clic)"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "Développer la grille des cellules sélectionnées mode récursif"

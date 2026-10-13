@@ -60,8 +60,8 @@ struct Document {
     wxRect hovershade;
     Selection selected;
     Selection begindrag;
-    // The multi-cell selection that a ctrl+click inside it collapsed, which the double-click it
-    // may start folds as a whole.
+    // The multi-cell selection that a ctrl(+shift)+click inside it changed, which the double-click
+    // it may start folds as a whole.
     Selection foldsel;
     int isctrlshiftdrag {0};
     int scrollx {0};
@@ -758,11 +758,24 @@ struct Document {
         }
     }
 
-    void DoubleClick(bool fold) {
+    void KeepFoldSel(bool ctrl) {
+        foldsel = ctrl && selected.xs * selected.ys > 1 && hover.IsInside(selected) ? selected
+                                                                                    : Selection();
+    }
+
+    bool AnyUnfoldedInSelection() {
+        loopallcellssel(c, false) if (c->grid && !c->grid->folded) return true;
+        return false;
+    }
+
+    void DoubleClick(bool fold, bool recursive) {
+        auto foldselected = [&] {
+            Action(!recursive ? A_FOLD : AnyUnfoldedInSelection() ? A_FOLDALL : A_UNFOLDALL);
+        };
         if (fold && foldsel.grid != nullptr && hover.IsInside(foldsel)) {
             hover.ExitEdit(this);
             SetSelect(foldsel);
-            Action(A_FOLD);
+            foldselected();
             return;
         }
         if (fold && hover.grid != nullptr) {
@@ -772,7 +785,7 @@ struct Document {
             if (c != WalkPath(drawpath)) {
                 hover.ExitEdit(this);
                 SetSelect(c->parent->grid->FindCell(c));
-                Action(A_FOLD);
+                foldselected();
                 return;
             }
         }
@@ -1077,9 +1090,7 @@ struct Document {
 
     void SelectClick(bool right = false) {
         begindrag = Selection();
-        foldsel = isctrlshiftdrag == 1 && selected.xs * selected.ys > 1 && hover.IsInside(selected)
-                      ? selected
-                      : Selection();
+        KeepFoldSel(isctrlshiftdrag == 1);
         if (!right && hoverfoldicon && isctrlshiftdrag == 0) {
             auto *c = hover.GetCell();
             c->AddUndo(this);
@@ -2864,16 +2875,19 @@ struct Document {
 
             case A_FOLD:
             case A_FOLDALL:
-            case A_UNFOLDALL:
+            case A_UNFOLDALL: {
+                // Toggling folds all of the selected grids, unless they are all folded already.
+                auto fold = action == A_FOLDALL || (action == A_FOLD && AnyUnfoldedInSelection());
                 loopallcellssel(c, action != A_FOLD) if (c->grid) {
                     c->AddUndo(this);
-                    c->grid->folded = action == A_FOLD ? !c->grid->folded : action == A_FOLDALL;
+                    c->grid->folded = fold;
                     c->ResetChildren();
                 }
                 UpdateLayout();
                 ScrollIfSelectionOutOfView();
                 canvas->Refresh();
                 return wxEmptyString;
+            }
 
             case A_HOME:
             case A_END:

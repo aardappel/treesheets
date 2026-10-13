@@ -1037,8 +1037,8 @@ msgid "Find operations"
 msgstr "Операции поиска"
 
 # п. Меню (нет & в исходном тексте)
-msgid "Fold All"
-msgstr "Свернуть Всё"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "Свернуть Всё (CTRL+SHIFT+двойной щелчок)"
 
 # комментарий к п. Меню
 msgid "Folds the grid of the selected cell(s) recursively"
@@ -2276,8 +2276,8 @@ msgstr "Подчёркнутый (CTRL+u)"
 msgid "Undo (CTRL+z)"
 msgstr "Отменить (CTRL+z)"
 
-msgid "Unfold All"
-msgstr "Развернуть Всё"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "Развернуть Всё (CTRL+SHIFT+двойной щелчок)"
 
 # комментарий к п. Меню
 msgid "Unfolds the grid of the selected cell(s) recursively"

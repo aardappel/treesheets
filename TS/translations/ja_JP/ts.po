@@ -956,8 +956,8 @@ msgstr "ドキュメント内を検索"
 msgid "Find operations"
 msgstr "検索の操作"
 
-msgid "Fold All"
-msgstr "すべて折りたたむ"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "すべて折りたたむ (Ctrl+SHIFT+ダブルクリック)"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "選択したセルのグリッドを再帰的に折りたたみます"
@@ -2034,8 +2034,8 @@ msgstr "下線 (Ctrl+U)"
 msgid "Undo (CTRL+z)"
 msgstr "元に戻す (Ctrl+Z)"
 
-msgid "Unfold All"
-msgstr "すべて展開"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "すべて展開 (Ctrl+SHIFT+ダブルクリック)"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "選択したセルのグリッドを再帰的に展開します"

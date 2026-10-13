@@ -927,8 +927,8 @@ msgstr "在文件中尋找"
 msgid "Find operations"
 msgstr "搜尋操作"
 
-msgid "Fold All"
-msgstr "全部摺疊"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "全部摺疊（Ctrl + Shift + 按兩下）"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "遞迴摺疊選取儲存格的網格"
@@ -1975,8 +1975,8 @@ msgstr "底線（Ctrl + U）"
 msgid "Undo (CTRL+z)"
 msgstr "復原（Ctrl + Z）"
 
-msgid "Unfold All"
-msgstr "全部展開"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "全部展開（Ctrl + Shift + 按兩下）"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "遞迴展開選取儲存格的網格"

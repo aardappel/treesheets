@@ -927,8 +927,8 @@ msgstr "在文档中查找"
 msgid "Find operations"
 msgstr "搜索操作"
 
-msgid "Fold All"
-msgstr "全部折叠"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "全部折叠 (CTRL+SHIFT+双击)"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "递归折叠所选单元格的网格"
@@ -1978,8 +1978,8 @@ msgstr "下划线 (CTRL+u)"
 msgid "Undo (CTRL+z)"
 msgstr "撤销 (CTRL+z)"
 
-msgid "Unfold All"
-msgstr "全部展开"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "全部展开 (CTRL+SHIFT+双击)"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "递归展开所选单元格的网格"

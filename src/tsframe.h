@@ -574,9 +574,11 @@ struct TSFrame : wxFrame {
                      _("Toggle Fold (CTRL+double-click)") + "\tF10",
                      #endif
                      _("Toggles showing the grid of the selected cell(s)"));
-            MyAppend(editmenu, A_FOLDALL, _("Fold All") + "\tCTRL+SHIFT+F10",
+            MyAppend(editmenu, A_FOLDALL,
+                     _("Fold All (CTRL+SHIFT+double-click)") + "\tCTRL+SHIFT+F10",
                      _("Folds the grid of the selected cell(s) recursively"));
-            MyAppend(editmenu, A_UNFOLDALL, _("Unfold All") + "\tCTRL+ALT+F10",
+            MyAppend(editmenu, A_UNFOLDALL,
+                     _("Unfold All (CTRL+SHIFT+double-click)") + "\tCTRL+ALT+F10",
                      _("Unfolds the grid of the selected cell(s) recursively"));
             editmenu->AppendSeparator();
             editmenu->AppendSubMenu(selmenu, _("&Selection"));

@@ -980,8 +980,8 @@ msgstr "Im Dokument suchen"
 msgid "Find operations"
 msgstr "Suchoperationen"
 
-msgid "Fold All"
-msgstr "Alles einklappen"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "Alles einklappen (STRG+UMSCHALT+Doppelklick)"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Klappt die Tabelle der ausgewählten Zelle(n) rekursiv aus."
@@ -2098,8 +2098,8 @@ msgstr "Unterstrichen (STRG+u)"
 msgid "Undo (CTRL+z)"
 msgstr "Rückgängig machen (STRG+z)"
 
-msgid "Unfold All"
-msgstr "Alles ausklappen"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "Alles ausklappen (STRG+UMSCHALT+Doppelklick)"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr ""

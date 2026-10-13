@@ -942,8 +942,8 @@ msgstr "문서에서 찾기"
 msgid "Find operations"
 msgstr "검색 작업"
 
-msgid "Fold All"
-msgstr "모두 접기"
+msgid "Fold All (CTRL+SHIFT+double-click)"
+msgstr "모두 접기 (Ctrl+SHIFT+더블 클릭)"
 
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "선택한 셀의 격자를 재귀적으로 접습니다"
@@ -2007,8 +2007,8 @@ msgstr "밑줄 (CTRL+u)"
 msgid "Undo (CTRL+z)"
 msgstr "실행 취소 (Ctrl+Z)"
 
-msgid "Unfold All"
-msgstr "모두 펴기"
+msgid "Unfold All (CTRL+SHIFT+double-click)"
+msgstr "모두 펴기 (Ctrl+SHIFT+더블 클릭)"
 
 msgid "Unfolds the grid of the selected cell(s) recursively"
 msgstr "선택한 셀의 격자를 재귀적으로 펼칩니다"
