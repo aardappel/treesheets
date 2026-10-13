@@ -23,7 +23,7 @@ the [Google group](https://groups.google.com/group/treesheets) for discussion. T
 Installation
 ------------
 
-Pre-built binaries for Windows, macOS (Darwin) and Linux are available at the
+Pre-built binaries for Windows, macOS and Linux are available at the
 [Release section](https://github.com/aardappel/treesheets/releases). 
 
 For Linux, there are packages for Debian-based distributions and AppImages (x86_64 and aarch64) that run on
