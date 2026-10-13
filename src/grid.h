@@ -594,6 +594,11 @@ struct Grid {
                 if (x >= sel.x && x < sel.x + sel.xs) { delvert = false; }
             }
         }
+        // If both are possible, prefer the direction that does not delete the whole grid.
+        if (delhoriz && delvert && (sel.xs == xs) != (sel.ys == ys)) {
+            delhoriz = sel.xs == xs;
+            delvert = !delhoriz;
+        }
         if (delhoriz && (!delvert || sel.xs >= sel.ys)) {
             if (sel.ys == ys) {
                 return !DelSelf(doc, sel);
