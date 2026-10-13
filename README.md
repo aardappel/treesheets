@@ -18,7 +18,7 @@ It's like a text editor, but with structure.
 Community
 ---------
 If you like, you are kindly invited to join the [Discord channel](https://discord.gg/HAfKkJz) and 
-the [Google group](https://groups.google.com/group/treesheets) for discussion.
+the [Google group](https://groups.google.com/group/treesheets) for discussion. The community maintains a wiki on this [GitHub page](https://github.com/aardappel/treesheets/wiki).
 
 Installation
 ------------
