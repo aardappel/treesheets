@@ -523,7 +523,13 @@ struct Grid {
             wxRect r(tl->GetX(doc) - cell_margin, tl->GetY(doc) - cell_margin,
                      br->GetX(doc) + br->sx - tl->GetX(doc) + cell_margin * 2,
                      br->GetY(doc) + br->sy - tl->GetY(doc) + cell_margin * 2);
-            if (minimal && tl == br) { r.width -= tl->sx - tl->minx; }
+            if (minimal && tl == br) {
+                // The content moves along with the alignment (see Cell::AlignContent()).
+                auto room = tl->sx - tl->minx;
+                auto align = tl->TextAlign();
+                r.x += align == TEXTALIGN_RIGHT ? room : align == TEXTALIGN_CENTER ? room / 2 : 0;
+                r.width -= room;
+            }
             return r;
         }
     }
