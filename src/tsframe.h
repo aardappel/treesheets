@@ -1548,8 +1548,7 @@ struct TSFrame : wxFrame {
                 }
 
                 case A_RUNSCRIPTCODE: {
-                    wxDialog dlg(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                                 FromDIP(wxSize(760, 480)),
+                    wxDialog dlg(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
                                  wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
                     wxButton *openfrommenu {nullptr}, *saveadd {nullptr};
                     // Shows the file the code came from, and what can be done with it.
@@ -1627,7 +1626,11 @@ struct TSFrame : wxFrame {
                     buttons->Add(dlg.CreateButtonSizer(wxOK | wxCANCEL));
                     sizer->Add(buttons, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
                     dlg.FindWindow(wxID_OK)->SetLabel(_("&Run"));
-                    dlg.SetSizer(sizer);
+                    // At least as wide as the buttons, which are wider in some languages.
+                    dlg.SetSizerAndFit(sizer);
+                    auto size = dlg.GetSize();
+                    size.IncTo(FromDIP(wxSize(760, 480)));
+                    dlg.SetSize(size);
                     text.SetFocus();
                     auto run = dlg.ShowModal() == wxID_OK;
                     scriptcode = text.GetValue();
