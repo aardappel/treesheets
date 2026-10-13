@@ -100,6 +100,7 @@ struct TSCanvas : public wxScrolledCanvas {
             CursorScroll(-p.x, -p.y);
         } else {
             pressedoncanvas = false;
+            doc->EndFoldPeek();  // Released outside of the canvas.
             if (doc->hover != doc->prev && !doc->hover.Thin()) {
                 sys->frame->UpdateStatus(doc->hover, false);
             }
@@ -183,7 +184,7 @@ struct TSCanvas : public wxScrolledCanvas {
         DragToHover();
     }
 
-    void SelectClick(int mx, int my, bool right, int isctrlshift) {
+    void SelectClick(int mx, int my, bool right, int isctrlshift, bool recursive = false) {
         wxInfoDC dc(this);
         if (mx < 0 || my < 0) {
             return;  // for some reason, using just the "menu" key sends a right-click at (-1, -1)
@@ -191,7 +192,7 @@ struct TSCanvas : public wxScrolledCanvas {
         doc->isctrlshiftdrag = isctrlshift;
         doc->UpdateHover(dc, mx, my);
         auto before = doc->BeforeSelect();
-        doc->SelectClick(right);
+        doc->SelectClick(right, recursive);
         sys->frame->UpdateStatus(doc->selected, true);
         doc->RefreshSelect(before);
     }
@@ -212,17 +213,22 @@ struct TSCanvas : public wxScrolledCanvas {
                 doc->UpdateHover(dc, me.GetX(), me.GetY());
                 doc->KeepFoldSel(me.CmdDown());
             }
-            OnMotion(me);
-        } else {
-            SelectClick(me.GetX(), me.GetY(), false,
-                        static_cast<int>(me.CmdDown()) + static_cast<int>(me.AltDown()) * 2);
+            // Shift+click on a fold icon unfolds recursively instead.
+            if (doc->hoverfoldicon.IsEmpty() || me.CmdDown() || me.AltDown()) {
+                OnMotion(me);
+                return;
+            }
         }
+        SelectClick(me.GetX(), me.GetY(), false,
+                    static_cast<int>(me.CmdDown()) + static_cast<int>(me.AltDown()) * 2,
+                    me.ShiftDown());
     }
 
     void OnLeftUp(wxMouseEvent &me) {
         AltWithMouse(me);
         pressedoncanvas = false;
         doc->knobdrag = false;
+        doc->EndFoldPeek(true);
         if (me.CmdDown() || me.AltDown()) {
             wxInfoDC dc(this);
             doc->UpdateHover(dc, me.GetX(), me.GetY());
@@ -277,7 +283,10 @@ struct TSCanvas : public wxScrolledCanvas {
         ke.Skip();
     }
     void OnKillFocus(wxFocusEvent &fe) {
-        if (doc) { doc->FlushPendingLayout(); }
+        if (doc) {
+            doc->FlushPendingLayout();
+            doc->EndFoldPeek();
+        }
         fe.Skip();
     }
     void OnChar(wxKeyEvent &ce) {

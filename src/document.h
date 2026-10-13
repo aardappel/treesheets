@@ -53,7 +53,8 @@ struct Document {
     unique_ptr<Cell> root {nullptr};
     Selection prev;
     Selection hover;
-    bool hoverfoldicon {false};  // The pointer is on the fold icon of the hovered cell.
+    // The fold icon under the pointer, in document coordinates, or empty.
+    wxRect hoverfoldicon;
     bool hoverknob {false};  // The pointer is on the knob at the selection's bottom-right corner.
     bool knobdrag {false};   // The mouse button went down on that knob and is still held.
     bool knobcursor {false};
@@ -66,6 +67,9 @@ struct Document {
     // The multi-cell selection that a ctrl(+shift)+click inside it changed, which the double-click
     // it may start folds as a whole.
     Selection foldsel;
+    // The grids that the press on a fold icon unfolded, while the button is held.
+    vector<shared_ptr<Grid>> foldpeek;
+    wxLongLong foldpeekstart;
     int isctrlshiftdrag {0};
     int scrollx {0};
     int scrolly {0};
@@ -350,7 +354,8 @@ struct Document {
         canvas->CalcUnscrolledPosition(mx, my, &x, &y);
         prev = hover;
         hover = Selection();
-        hoverfoldicon = false;
+        auto prevfoldicon = hoverfoldicon;
+        hoverfoldicon = wxRect();
         auto px = x / currentviewscale - centerx / currentviewscale;
         auto py = y / currentviewscale - centery / currentviewscale;
         auto *drawroot = WalkPath(drawpath);
@@ -371,6 +376,9 @@ struct Document {
             shade = hover.grid->GetRect(this, hover);
         }
         SetHoverShade(shade);
+        auto foldicon = hoverfoldicon;  // as FindXY() found it
+        hoverfoldicon = prevfoldicon;
+        SetHighlight(hoverfoldicon, foldicon);
     }
 
     void SetKnobCursor(bool show) {
@@ -390,19 +398,19 @@ struct Document {
     }
 
     // Moves the hover shadow, repainting just the cells it leaves and enters.
-    void SetHoverShade(const wxRect &shade) {
-        if (shade == hovershade) { return; }
-        if (!hovershade.IsEmpty()) { RefreshDocRect(hovershade); }
-        if (!shade.IsEmpty()) { RefreshDocRect(shade); }
-        hovershade = shade;
+    // Moves a highlighted area to r, repainting just the old and the new one.
+    void SetHighlight(wxRect &area, const wxRect &r) {
+        if (r == area) { return; }
+        if (!area.IsEmpty()) { RefreshDocRect(area); }
+        if (!r.IsEmpty()) { RefreshDocRect(r); }
+        area = r;
     }
 
-    // Shades the hovered cell by drawing the hover shadow color translucently over it. The
-    // default gray darkens light and lightens dark cell colors.
-    template<typename DC> void DrawHoverShade(DC &dc) {
-        const auto &r = hovershade;
-        const wxColour base(LightColor(sys->hovershadowcolor));
-        const wxColour color(base.Red(), base.Green(), base.Blue(), 56);
+    void SetHoverShade(const wxRect &shade) { SetHighlight(hovershade, shade); }
+
+    // Draws color translucently over r: the hover shadow, whose default gray darkens light and
+    // lightens dark cell colors, and the highlight of the fold icon under the pointer.
+    template<typename DC> void DrawShade(DC &dc, const wxRect &r, const wxColour &color) {
         if (auto *gc = dc.GetGraphicsContext(); gc != nullptr) {
             gc->SetPen(*wxTRANSPARENT_PEN);
             gc->SetBrush(wxBrush(color));
@@ -1108,7 +1116,7 @@ struct Document {
         }
     }
 
-    void SelectClick(bool right = false) {
+    void SelectClick(bool right = false, bool recursive = false) {
         if (!right && hoverknob && isctrlshiftdrag == 0) {
             // Dragging the knob moves the bottom-right corner, keeping the top-left one.
             begindrag = Selection(selected.grid, selected.x, selected.y, 1, 1);
@@ -1118,10 +1126,22 @@ struct Document {
         }
         begindrag = Selection();
         KeepFoldSel(isctrlshiftdrag == 1);
-        if (!right && hoverfoldicon && isctrlshiftdrag == 0) {
+        if (!right && !hoverfoldicon.IsEmpty() && isctrlshiftdrag == 0) {
+            // Unfolds for as long as the button is held, see EndFoldPeek().
             auto *c = hover.GetCell();
-            c->AddUndo(this);
-            c->grid->folded = false;
+            if (recursive) {
+                CollectCells(c);
+            } else {
+                itercells = {c};
+            }
+            for (auto *d : itercells) {
+                if (d->grid && d->grid->folded) {
+                    d->grid->folded = false;
+                    foldpeek.push_back(d->grid);
+                }
+            }
+            foldpeekstart = wxGetLocalTimeMillis();
+            c->ResetLayout();
             c->ResetChildren();
             hover.ExitEdit(this);
             SetSelect(hover);
@@ -1138,10 +1158,32 @@ struct Document {
         }
     }
 
+    // A click on a fold icon keeps the grids it unfolded unfolded, undoably. A long press, or
+    // anything else happening while the button is held, folds them again.
+    void EndFoldPeek(bool released = false) {
+        if (foldpeek.empty()) { return; }
+        auto peek = std::move(foldpeek);
+        foldpeek.clear();
+        for (auto &g : peek) { g->folded = true; }
+        auto *c = peek[0]->cell;
+        if (released && wxGetLocalTimeMillis() - foldpeekstart < 500) {
+            c->AddUndo(this);
+            for (auto &g : peek) { g->folded = false; }
+        } else if (auto *sc = selected.grid ? selected.grid->cell : nullptr;
+                   sc && c->parent && (sc == c || c->IsParentOf(sc))) {
+            SetSelect(c->parent->grid->FindCell(c));
+        }
+        c->ResetLayout();
+        c->ResetChildren();
+        UpdateLayout();
+        canvas->Refresh();
+    }
+
     void UpdateLayout() {
         if (!root) return;
-        // Cells may move: drop the shadow until the pointer moves again.
+        // Cells may move: drop the shadow and highlight until the pointer moves again.
         SetHoverShade(wxRect());
+        SetHighlight(hoverfoldicon, wxRect());
         if (layoutpending) {
             // Deferred Wheel() changes left the cached geometry stale (deliberately not reset).
             layoutpending = false;
@@ -1267,7 +1309,14 @@ struct Document {
         ShiftToCenter(dc);
         dc.SetUserScale(currentviewscale, currentviewscale);
         Render(dc);
-        if (sys->hovershadow && !hovershade.IsEmpty()) { DrawHoverShade(dc); }
+        if (sys->hovershadow && !hovershade.IsEmpty()) {
+            const wxColour base(LightColor(sys->hovershadowcolor));
+            DrawShade(dc, hovershade, wxColour(base.Red(), base.Green(), base.Blue(), 56));
+        }
+        if (!hoverfoldicon.IsEmpty()) {
+            const auto base = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
+            DrawShade(dc, hoverfoldicon, wxColour(base.Red(), base.Green(), base.Blue(), 96));
+        }
         DrawSelect(dc, selected);
 
         if (currentviewscale != 1.0) { dc.SetUserScale(1.0, 1.0); }
@@ -1793,6 +1842,7 @@ struct Document {
     // With recursive (Shift on a toolbar button), styles and alignments also apply to all cells
     // nested inside the selected ones.
     wxString Action(int action, bool recursive = false) {
+        EndFoldPeek();
         switch (action) {
             case wxID_EXECUTE:
                 root->AddUndo(this);
@@ -3589,6 +3639,7 @@ struct Document {
     }
 
     void AddUndo(Cell *c, bool newgeneration = true, bool textedit = false) {
+        EndFoldPeek();
         formulasdirty = true;
         if (textedit) { textedited = c; }
         redolist.clear();

@@ -404,7 +404,10 @@ struct Grid {
                 if (c->GridShown(doc)) { c->grid->FindXY(doc, bx, by, dc); }
                 if (doc->hover.grid) { return; }
                 doc->hover = Selection(cell->grid, x, y, 1, 1);
-                doc->hoverfoldicon = c->text.OnFoldIcon(bx, by - c->ycenteroff);
+                if (auto r = c->text.FoldIconRect(); r.Contains(bx, by)) {
+                    r.Offset(c->GetX(doc), c->GetY(doc));
+                    doc->hoverfoldicon = r;
+                }
                 if (c->HasText()) {
                     c->text.FindCursor(doc, bx, by - c->ycenteroff, dc, doc->hover, colwidths[x]);
                 }

@@ -70,15 +70,14 @@ struct Text {
         return image != nullptr ? &image->Display() : nullptr;
     }
 
-    // Whether the cell relative point is on the icon that DisplayImage() shows for a folded grid.
-    bool OnFoldIcon(int bx, int by) const {
-        if (cell->tiny || !cell->grid || !cell->grid->folded) { return false; }
+    // Where DisplayImage() shows the icon of a folded grid, relative to the cell, or empty.
+    wxRect FoldIconRect() const {
+        if (cell->tiny || !cell->grid || !cell->grid->folded) { return {}; }
         auto ixs = 0;
         auto iys = 0;
         treesheets::System::ImageSize(DisplayImage(), ixs, iys);
-        bx -= 1 + g_margin_extra;
-        by -= (cell->tys - iys) / 2 + g_margin_extra;
-        return bx >= 0 && by >= 0 && bx < ixs && by < iys;
+        return {1 + g_margin_extra, cell->ycenteroff + (cell->tys - iys) / 2 + g_margin_extra, ixs,
+                iys};
     }
 
     size_t EstimatedMemoryUse() const {
