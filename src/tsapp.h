@@ -181,6 +181,11 @@ struct TSApp : wxApp {
                 }
             } ignore_missing_languages_key;
         #endif
+        #ifdef __WXGTK__
+            // GTK translates its own labels (stock buttons such as Cancel, file dialogs) into the
+            // language of the system, so have it use the chosen language too.
+            if (!sys->defaultlang.IsEmpty()) { wxSetEnv("LANGUAGE", sys->defaultlang); }
+        #endif
         wxUILocale::UseDefault();
 
         auto *trans = new wxTranslations();
