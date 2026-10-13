@@ -43,7 +43,9 @@ struct Selection {
     }
     bool IsAll() const { return xs == grid->xs && ys == grid->ys; }
     void SetCursorEdit(Document *doc, bool edit) {
-        wxCursor c(edit ? wxCURSOR_IBEAM : wxCURSOR_ARROW);
+        wxCursor c(doc->knobcursor ? wxCURSOR_SIZENWSE
+                   : edit          ? wxCURSOR_IBEAM
+                                   : wxCURSOR_ARROW);
         #ifdef WIN32
         // this changes the cursor instantly, but gets overridden by the local window cursor
         ::SetCursor((HCURSOR)c.GetHCURSOR());
@@ -52,7 +54,7 @@ struct Selection {
         // Outside of text editing, go back to the inherited default cursor: on wxGTK, the stock
         // arrow has GTK's cursor theme size, which can be larger than the desktop's (e.g. XFCE
         // with an unset cursor size).
-        doc->canvas->SetCursor(edit ? c : wxNullCursor);
+        doc->canvas->SetCursor(edit || doc->knobcursor ? c : wxNullCursor);
 
         firstdx = firstdy = 0;
     }

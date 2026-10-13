@@ -54,6 +54,9 @@ struct Document {
     Selection prev;
     Selection hover;
     bool hoverfoldicon {false};  // The pointer is on the fold icon of the hovered cell.
+    bool hoverknob {false};  // The pointer is on the knob at the selection's bottom-right corner.
+    bool knobdrag {false};   // The mouse button went down on that knob and is still held.
+    bool knobcursor {false};
     // With the hover shadow option: the shaded area of the hovered cell, in document
     // coordinates, or empty. A rect rather than `hover`, as that may point into a grid that
     // has been deleted since.
@@ -348,17 +351,34 @@ struct Document {
         prev = hover;
         hover = Selection();
         hoverfoldicon = false;
+        auto px = x / currentviewscale - centerx / currentviewscale;
+        auto py = y / currentviewscale - centery / currentviewscale;
         auto *drawroot = WalkPath(drawpath);
         if (drawroot->grid) {
-            drawroot->grid->FindXY(
-                this, x / currentviewscale - centerx / currentviewscale - hierarchysize,
-                y / currentviewscale - centery / currentviewscale - hierarchysize, dc);
+            drawroot->grid->FindXY(this, px - hierarchysize, py - hierarchysize, dc);
         }
+        auto knob = false;
+        if (selected.grid != nullptr && !selected.Thin()) {
+            auto g = selected.grid->GetRect(this, selected);
+            knob = wxRect(g.x + g.width - 4, g.y + g.height - 4, 9, 9).Contains(px, py);
+        }
+        hoverknob = knob;
+        // Not while dragging a selection over it, only when it can be grabbed.
+        auto ms = wxGetMouseState();
+        SetKnobCursor(knobdrag || (knob && !ms.LeftIsDown() && !ms.RightIsDown()));
         wxRect shade;
         if (sys->hovershadow && hover.grid != nullptr && !hover.Thin()) {
             shade = hover.grid->GetRect(this, hover);
         }
         SetHoverShade(shade);
+    }
+
+    void SetKnobCursor(bool show) {
+        if (show == knobcursor) { return; }
+        knobcursor = show;
+        canvas->SetCursor(show                  ? wxCursor(wxCURSOR_SIZENWSE)
+                          : selected.TextEdit() ? wxCursor(wxCURSOR_IBEAM)
+                                                : wxNullCursor);
     }
 
     // Hovers what's under the mouse pointer, after the cells moved under it.
@@ -1089,6 +1109,13 @@ struct Document {
     }
 
     void SelectClick(bool right = false) {
+        if (!right && hoverknob && isctrlshiftdrag == 0) {
+            // Dragging the knob moves the bottom-right corner, keeping the top-left one.
+            begindrag = Selection(selected.grid, selected.x, selected.y, 1, 1);
+            knobdrag = true;
+            SetKnobCursor(true);
+            return;
+        }
         begindrag = Selection();
         KeepFoldSel(isctrlshiftdrag == 1);
         if (!right && hoverfoldicon && isctrlshiftdrag == 0) {

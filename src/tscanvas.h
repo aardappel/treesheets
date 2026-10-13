@@ -222,6 +222,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnLeftUp(wxMouseEvent &me) {
         AltWithMouse(me);
         pressedoncanvas = false;
+        doc->knobdrag = false;
         if (me.CmdDown() || me.AltDown()) {
             wxInfoDC dc(this);
             doc->UpdateHover(dc, me.GetX(), me.GetY());
