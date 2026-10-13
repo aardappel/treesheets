@@ -10,7 +10,7 @@ overview; this file covers what you need to change the code safely.
 | ---- | -------- |
 | `src/` | All source code (≈14k lines, almost entirely headers) |
 | `TS/` | User-facing data: `docs/`, `examples/*.cts`, `images/`, `scripts/*.lobster`, `translations/`, `readme*.html` |
-| `cmake/` | CMake modules: `Lobster.cmake`, `WxPdfDoc.cmake`, `EmbedFiles.cmake`, `Localization.cmake`, `Packaging.cmake`, `UpdateScriptReference.cmake` |
+| `cmake/` | CMake modules: `Lobster.cmake`, `WxPdfDoc.cmake`, `EmbedFiles.cmake`, `Localization.cmake`, `Packaging.cmake`, `AdHocSign.cmake` (ad-hoc signs the macOS bundle before the .dmg is made), `UpdateScriptReference.cmake` |
 | `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon, `toolchain-mingw64.cmake`; Windows `.rc`/icon |
 | `.github/workflows/build.yml` | CI: Linux (x64, arm64; .deb and AppImage), Windows MSVC (x64, arm64), macOS (universal), then a release per release marker tag |
 | `.claude/skills/treesheets-agent/` | Skill and wire protocol for driving a running TreeSheets over its agent socket |

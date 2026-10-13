@@ -3,6 +3,7 @@
 set(CPACK_PACKAGE_VENDOR "Wouter van Oortmerssen")
 if(APPLE)
     set(CPACK_GENERATOR "DragNDrop")
+    set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/AdHocSign.cmake")
 elseif(WIN32)
     set(CPACK_GENERATOR "INNOSETUP" "ZIP")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY ${PROJECT_NAME})
