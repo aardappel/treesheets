@@ -41,6 +41,9 @@ msgstr "关于(&A)..."
 msgid "&Add Cell Text as Tag"
 msgstr "将单元格文本添加为标签(&A)"
 
+msgid "&Add to Menu..."
+msgstr "添加到菜单(&A)..."
+
 msgid "&Add..."
 msgstr "添加(&A)..."
 
@@ -191,8 +194,8 @@ msgstr "网格边框圆角(&R)"
 msgid "&Run"
 msgstr "运行(&R)"
 
-msgid "&Run..."
-msgstr "运行(&R)..."
+msgid "&Run File..."
+msgstr "运行文件(&R)..."
 
 msgid "&Save"
 msgstr "保存(&S)"
@@ -268,9 +271,6 @@ msgstr "将 Lobster 脚本添加到菜单"
 
 msgid "Add an image to the selected cell"
 msgstr "向所选单元格添加图像"
-
-msgid "Add..."
-msgstr "添加(&A)..."
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "向所选单元格添加 NxN 网格"
@@ -500,6 +500,9 @@ msgstr "选择要写入的 CSV 文件"
 
 msgid "Choose HTML file to write"
 msgstr "选择要写入的 HTML 文件"
+
+msgid "Choose Lobster file to write"
+msgstr "选择要写入的 Lobster 文件"
 
 msgid "Choose PDF file to write"
 msgstr "选择要写入的 PDF 文件"
@@ -1284,6 +1287,12 @@ msgstr "打开示例(&X)..."
 msgid "Open file cancelled."
 msgstr "打开文件已取消。"
 
+msgid "Open from &Menu..."
+msgstr "从菜单打开(&M)..."
+
+msgid "Open from Menu"
+msgstr "从菜单打开"
+
 msgid "Open image dropdown"
 msgstr "打开图像下拉菜单"
 
@@ -1364,6 +1373,9 @@ msgstr "粘贴剪贴板内容"
 msgid "Paste file path"
 msgstr "粘贴文件路径"
 
+msgid "Paste or type Lobster code and run it"
+msgstr "粘贴或输入 Lobster 代码并运行"
+
 msgid ""
 "Paste the text of the clipboard as a grid, with tabs separating the columns "
 "and lines separating the rows"
@@ -1408,6 +1420,9 @@ msgstr "请选择要加载的示例文件："
 msgid "Please select file(s) to import:"
 msgstr "请选择要导入的文件："
 
+msgid "Please select the Lobster script to open:"
+msgstr "请选择要打开的 Lobster 脚本："
+
 msgid "Please select the Lobster script to run:"
 msgstr "请选择要运行的 Lobster 脚本："
 
@@ -1416,6 +1431,9 @@ msgstr "请选择日期时间范围。"
 
 msgid "Please select the language for the interface (requires restart)."
 msgstr "请选择界面语言（需要重新启动）。"
+
+msgid "Please select the script to open:"
+msgstr "请选择要打开的脚本："
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "请选择您想从列表中移除的脚本："
@@ -1456,6 +1474,9 @@ msgstr "圆角 &5"
 msgid "Radius &6"
 msgstr "圆角 &6"
 
+msgid "Re&move from Menu..."
+msgstr "从菜单移除(&M)..."
+
 msgid ""
 "Reload when another computer has changed a file (if you have made changes, "
 "asks)"
@@ -1472,9 +1493,6 @@ msgstr "从菜单列表中移除脚本"
 
 msgid "Remove script from list..."
 msgstr "从列表中移除脚本..."
-
-msgid "Remove..."
-msgstr "移除(&R)..."
 
 msgid "Render document centered"
 msgstr "居中渲染文档"
@@ -1527,6 +1545,12 @@ msgstr "行数："
 msgid "Run"
 msgstr "运行"
 
+msgid "Run &Code..."
+msgstr "运行代码(&C)..."
+
+msgid "Run Lobster code"
+msgstr "运行 Lobster 代码"
+
 msgid "Run a Lobster script without adding it to the menu"
 msgstr "运行 Lobster 脚本而不将其添加到菜单"
 
@@ -1544,6 +1568,9 @@ msgstr "保存 (CTRL+s)"
 
 msgid "Save All"
 msgstr "全部保存"
+
+msgid "Save and &Add to Menu"
+msgstr "保存并添加到菜单(&A)"
 
 msgid "Save and Close"
 msgstr "保存并关闭"

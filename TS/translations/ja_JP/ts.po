@@ -41,6 +41,9 @@ msgstr "TreeSheets について(&A)..."
 msgid "&Add Cell Text as Tag"
 msgstr "セルテキストをタグとして追加(&A)"
 
+msgid "&Add to Menu..."
+msgstr "メニューに追加(&A)..."
+
 msgid "&Add..."
 msgstr "追加(&A)..."
 
@@ -191,8 +194,8 @@ msgstr "グリッド境界の丸み(&R)"
 msgid "&Run"
 msgstr "実行(&R)"
 
-msgid "&Run..."
-msgstr "実行(&R)..."
+msgid "&Run File..."
+msgstr "ファイルを実行(&R)..."
 
 msgid "&Save"
 msgstr "保存(&S)"
@@ -268,9 +271,6 @@ msgstr "Lobster スクリプトをメニューに追加"
 
 msgid "Add an image to the selected cell"
 msgstr "選択したセルに画像を追加"
-
-msgid "Add..."
-msgstr "追加..."
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "選択したセルに NxN グリッドを追加"
@@ -508,6 +508,9 @@ msgstr "書き込む CSV ファイルを選択"
 
 msgid "Choose HTML file to write"
 msgstr "書き込む HTML ファイルを選択"
+
+msgid "Choose Lobster file to write"
+msgstr "書き込む Lobster ファイルを選択"
 
 msgid "Choose PDF file to write"
 msgstr "書き込む PDF ファイルを選択"
@@ -1320,6 +1323,12 @@ msgstr "サンプルを開く(&X)..."
 msgid "Open file cancelled."
 msgstr "ファイルを開く操作がキャンセルされました。"
 
+msgid "Open from &Menu..."
+msgstr "メニューから開く(&M)..."
+
+msgid "Open from Menu"
+msgstr "メニューから開く"
+
 msgid "Open image dropdown"
 msgstr "画像ドロップダウンを開く"
 
@@ -1408,6 +1417,9 @@ msgstr "クリップボードの内容を貼り付け"
 msgid "Paste file path"
 msgstr "ファイルパスを貼り付け"
 
+msgid "Paste or type Lobster code and run it"
+msgstr "Lobster コードを貼り付けまたは入力して実行"
+
 msgid ""
 "Paste the text of the clipboard as a grid, with tabs separating the columns "
 "and lines separating the rows"
@@ -1456,6 +1468,9 @@ msgstr "読み込むサンプルファイルを選択してください :"
 msgid "Please select file(s) to import:"
 msgstr "インポートするファイルを選択してください :"
 
+msgid "Please select the Lobster script to open:"
+msgstr "開く Lobster スクリプトを選択してください :"
+
 msgid "Please select the Lobster script to run:"
 msgstr "実行する Lobster スクリプトを選択してください :"
 
@@ -1464,6 +1479,9 @@ msgstr "日時範囲を選択してください。"
 
 msgid "Please select the language for the interface (requires restart)."
 msgstr "インターフェースの言語を選択してください（再起動が必要です）。"
+
+msgid "Please select the script to open:"
+msgstr "開くスクリプトを選択してください："
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "リストから削除するスクリプトを選択してください："
@@ -1504,6 +1522,9 @@ msgstr "半径 5(&5)"
 msgid "Radius &6"
 msgstr "半径 6(&6)"
 
+msgid "Re&move from Menu..."
+msgstr "メニューから削除(&M)..."
+
 msgid ""
 "Reload when another computer has changed a file (if you have made changes, "
 "asks)"
@@ -1522,9 +1543,6 @@ msgstr "メニューのリストからスクリプトを削除"
 
 msgid "Remove script from list..."
 msgstr "リストからスクリプトを削除..."
-
-msgid "Remove..."
-msgstr "削除..."
 
 msgid "Render document centered"
 msgstr "ドキュメントを中央揃えでレンダリング"
@@ -1577,6 +1595,12 @@ msgstr "行数:"
 msgid "Run"
 msgstr "実行"
 
+msgid "Run &Code..."
+msgstr "コードを実行(&C)..."
+
+msgid "Run Lobster code"
+msgstr "Lobster コードを実行"
+
 msgid "Run a Lobster script without adding it to the menu"
 msgstr "Lobster スクリプトをメニューに追加せずに実行"
 
@@ -1594,6 +1618,9 @@ msgstr "保存 (Ctrl+S)"
 
 msgid "Save All"
 msgstr "すべて保存"
+
+msgid "Save and &Add to Menu"
+msgstr "保存してメニューに追加(&A)"
 
 msgid "Save and Close"
 msgstr "保存して閉じる"

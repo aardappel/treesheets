@@ -36,6 +36,9 @@ msgstr "&Thông tin..."
 msgid "&Add Cell Text as Tag"
 msgstr "&Thêm văn bản ô thành thẻ"
 
+msgid "&Add to Menu..."
+msgstr "Thêm vào menu (&A)..."
+
 msgid "&Add..."
 msgstr "&Thêm..."
 
@@ -186,8 +189,8 @@ msgstr "Độ bo góc của viền lưới (&R)"
 msgid "&Run"
 msgstr "Chạy (&R)"
 
-msgid "&Run..."
-msgstr "Chạy (&R)..."
+msgid "&Run File..."
+msgstr "Chạy tệp (&R)..."
 
 msgid "&Save"
 msgstr "Lưu (&S)"
@@ -263,9 +266,6 @@ msgstr "Thêm kịch bản Lobster vào menu"
 
 msgid "Add an image to the selected cell"
 msgstr "Thêm hình ảnh vào ô được chọn"
-
-msgid "Add..."
-msgstr "Thêm..."
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "Thêm một lưới NxN vào ô được chọn"
@@ -504,6 +504,9 @@ msgstr "Chọn tệp CSV để ghi"
 
 msgid "Choose HTML file to write"
 msgstr "Chọn tệp HTML để ghi"
+
+msgid "Choose Lobster file to write"
+msgstr "Chọn tệp Lobster để ghi"
 
 msgid "Choose PDF file to write"
 msgstr "Chọn tệp PDF để ghi"
@@ -1313,6 +1316,12 @@ msgstr "Mở ví dụ (&X)..."
 msgid "Open file cancelled."
 msgstr "Đã hủy mở tệp."
 
+msgid "Open from &Menu..."
+msgstr "Mở từ menu (&M)..."
+
+msgid "Open from Menu"
+msgstr "Mở từ menu"
+
 msgid "Open image dropdown"
 msgstr "Mở danh sách hình ảnh"
 
@@ -1394,6 +1403,9 @@ msgstr "Dán nội dung khay nhớ tạm"
 msgid "Paste file path"
 msgstr "Dán đường dẫn tệp"
 
+msgid "Paste or type Lobster code and run it"
+msgstr "Dán hoặc nhập mã Lobster rồi chạy"
+
 msgid ""
 "Paste the text of the clipboard as a grid, with tabs separating the columns "
 "and lines separating the rows"
@@ -1445,6 +1457,9 @@ msgstr "Vui lòng chọn (các) tệp ví dụ để tải:"
 msgid "Please select file(s) to import:"
 msgstr "Vui lòng chọn (các) tệp để nhập:"
 
+msgid "Please select the Lobster script to open:"
+msgstr "Vui lòng chọn tệp kịch bản Lobster để mở:"
+
 msgid "Please select the Lobster script to run:"
 msgstr "Vui lòng chọn tệp kịch bản Lobster để chạy:"
 
@@ -1453,6 +1468,9 @@ msgstr "Vui lòng chọn khoảng ngày giờ."
 
 msgid "Please select the language for the interface (requires restart)."
 msgstr "Vui lòng chọn ngôn ngữ giao diện (yêu cầu khởi động lại)."
+
+msgid "Please select the script to open:"
+msgstr "Vui lòng chọn kịch bản để mở:"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Vui lòng chọn kịch bản bạn muốn xóa khỏi danh sách:"
@@ -1493,6 +1511,9 @@ msgstr "Bán kính &5"
 msgid "Radius &6"
 msgstr "Bán kính &6"
 
+msgid "Re&move from Menu..."
+msgstr "Xóa khỏi menu (&M)..."
+
 msgid ""
 "Reload when another computer has changed a file (if you have made changes, "
 "asks)"
@@ -1510,9 +1531,6 @@ msgstr "Xóa kịch bản khỏi danh sách trong menu"
 
 msgid "Remove script from list..."
 msgstr "Xóa kịch bản khỏi danh sách..."
-
-msgid "Remove..."
-msgstr "Xóa..."
 
 msgid "Render document centered"
 msgstr "Hiển thị tài liệu căn giữa"
@@ -1565,6 +1583,12 @@ msgstr "Số hàng:"
 msgid "Run"
 msgstr "Chạy"
 
+msgid "Run &Code..."
+msgstr "Chạy mã (&C)..."
+
+msgid "Run Lobster code"
+msgstr "Chạy mã Lobster"
+
 msgid "Run a Lobster script without adding it to the menu"
 msgstr "Chạy kịch bản Lobster mà không cần thêm vào menu"
 
@@ -1582,6 +1606,9 @@ msgstr "Lưu (CTRL+s)"
 
 msgid "Save All"
 msgstr "Lưu tất cả"
+
+msgid "Save and &Add to Menu"
+msgstr "Lưu và thêm vào menu (&A)"
 
 msgid "Save and Close"
 msgstr "Lưu và Đóng"

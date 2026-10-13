@@ -46,6 +46,9 @@ msgstr "&О программе..."
 msgid "&Add Cell Text as Tag"
 msgstr "Доб&авить Текст Ячейки как Тег"
 
+msgid "&Add to Menu..."
+msgstr "&Добавить в меню..."
+
 msgid "&Add..."
 msgstr "Доб&авить..."
 
@@ -198,8 +201,8 @@ msgstr "&Округлость Границ сетки"
 msgid "&Run"
 msgstr "За&пустить"
 
-msgid "&Run..."
-msgstr "За&пустить..."
+msgid "&Run File..."
+msgstr "Запустить &файл..."
 
 msgid "&Save"
 msgstr "Сохранить"
@@ -283,9 +286,6 @@ msgstr "Добавить сценарии Lobster в меню"
 # комментарий к п. Меню
 msgid "Add an image to the selected cell"
 msgstr "Добавить изображение в выбранную ячейку"
-
-msgid "Add..."
-msgstr "Добавить..."
 
 # комментарий к п. Меню
 msgid "Adds a NxN grid to the selected cell"
@@ -557,6 +557,9 @@ msgstr "Укажите CSV-файл для сохранения"
 # Заголовок Окна (выбор п. Меню)
 msgid "Choose HTML file to write"
 msgstr "Укажите HTML-файл для сохранения"
+
+msgid "Choose Lobster file to write"
+msgstr "Укажите файл Lobster для сохранения"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "Choose PDF file to write"
@@ -1455,6 +1458,12 @@ msgstr "Открыть &пример..."
 msgid "Open file cancelled."
 msgstr "Открытие файла отменено."
 
+msgid "Open from &Menu..."
+msgstr "Открыть из &меню..."
+
+msgid "Open from Menu"
+msgstr "Открыть из меню"
+
 msgid "Open image dropdown"
 msgstr ".. Изображения"
 
@@ -1544,6 +1553,9 @@ msgstr "Вставить содержимое буфера обмена"
 msgid "Paste file path"
 msgstr "Вставить путь к файлу"
 
+msgid "Paste or type Lobster code and run it"
+msgstr "Вставить или ввести код Lobster и запустить его"
+
 # комментарий к п. Меню
 msgid "Paste the text of the clipboard as a grid, with tabs separating the columns and lines separating the rows"
 msgstr "Вставить текст из буфера обмена как сетку: табуляции разделяют столбцы, переводы строк разделяют строки"
@@ -1600,6 +1612,9 @@ msgstr "Выберите файл(ы) примера(ов) для загрузк
 msgid "Please select file(s) to import:"
 msgstr "Выберите файл(ы) для импорта:"
 
+msgid "Please select the Lobster script to open:"
+msgstr "Выберите Lobster-сценарий для открытия:"
+
 # Заголовок Окна (выбор п. Меню)
 msgid "Please select the Lobster script to run:"
 msgstr "Выберите Lobster-сценарий для запуска:"
@@ -1611,6 +1626,9 @@ msgstr "Выберите Диапазон."
 # Сообщение в Окне (выбор п. Меню)
 msgid "Please select the language for the interface (requires restart)."
 msgstr "Выберите язык интерфейса (требуется перезапуск)."
+
+msgid "Please select the script to open:"
+msgstr "Выберите сценарий для открытия:"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Выберите сценарий, который вы хотите удалить из списка:"
@@ -1655,6 +1673,9 @@ msgstr "Радиус &5"
 msgid "Radius &6"
 msgstr "Радиус &6"
 
+msgid "Re&move from Menu..."
+msgstr "&Удалить из меню..."
+
 # комментарий к п. Меню
 msgid "Reload when another computer has changed a file (if you have made changes, asks)"
 msgstr "Перезагружать файл, если другой компьютер изменил его (если вы внесли изменения - появится запрос)"
@@ -1672,10 +1693,6 @@ msgstr "Удалить сценарий из списка меню"
 
 msgid "Remove script from list..."
 msgstr "Удалить сценарий из списка..."
-
-# п. Меню (нет & в исходном тексте)
-msgid "Remove..."
-msgstr "Удалить..."
 
 msgid "Render document centered"
 msgstr "Отображать документ по Центру"
@@ -1737,6 +1754,12 @@ msgstr "Строк:"
 msgid "Run"
 msgstr "Запустить"
 
+msgid "Run &Code..."
+msgstr "Запустить &код..."
+
+msgid "Run Lobster code"
+msgstr "Запустить код Lobster"
+
 # комментарий к п. Меню
 msgid "Run a Lobster script without adding it to the menu"
 msgstr "Запустить сценарий Lobster, не добавляя его в меню"
@@ -1759,6 +1782,9 @@ msgstr "Сохранить (CTRL+s)"
 
 msgid "Save All"
 msgstr "Сохранить Всё"
+
+msgid "Save and &Add to Menu"
+msgstr "Сохранить и &добавить в меню"
 
 # в Окне (выбор п. Меню) - Кнопка
 msgid "Save and Close"

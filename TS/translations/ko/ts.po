@@ -41,6 +41,9 @@ msgstr "정보(&A)..."
 msgid "&Add Cell Text as Tag"
 msgstr "셀 텍스트를 태그로 추가(&A)"
 
+msgid "&Add to Menu..."
+msgstr "메뉴에 추가(&A)..."
+
 msgid "&Add..."
 msgstr "추가(&A)..."
 
@@ -191,8 +194,8 @@ msgstr "격자 테두리의 둥글기(&R)"
 msgid "&Run"
 msgstr "실행(&R)"
 
-msgid "&Run..."
-msgstr "실행(&R)..."
+msgid "&Run File..."
+msgstr "파일 실행(&R)..."
 
 msgid "&Save"
 msgstr "저장(&S)"
@@ -268,9 +271,6 @@ msgstr "메뉴에 Lobster 스크립트 추가"
 
 msgid "Add an image to the selected cell"
 msgstr "선택한 셀에 이미지 추가"
-
-msgid "Add..."
-msgstr "추가..."
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "선택한 셀에 NxN 격자 추가"
@@ -507,6 +507,9 @@ msgstr "작성할 CSV 파일 선택"
 
 msgid "Choose HTML file to write"
 msgstr "작성할 HTML 파일 선택"
+
+msgid "Choose Lobster file to write"
+msgstr "작성할 Lobster 파일 선택"
 
 msgid "Choose PDF file to write"
 msgstr "작성할 PDF 파일 선택"
@@ -1305,6 +1308,12 @@ msgstr "예시 열기(&X)..."
 msgid "Open file cancelled."
 msgstr "파일 열기가 취소되었습니다."
 
+msgid "Open from &Menu..."
+msgstr "메뉴에서 열기(&M)..."
+
+msgid "Open from Menu"
+msgstr "메뉴에서 열기"
+
 msgid "Open image dropdown"
 msgstr "이미지 드롭다운 열기"
 
@@ -1387,6 +1396,9 @@ msgstr "클립보드 내용 붙여넣기"
 msgid "Paste file path"
 msgstr "파일 경로 붙여넣기"
 
+msgid "Paste or type Lobster code and run it"
+msgstr "Lobster 코드를 붙여넣거나 입력하여 실행"
+
 msgid ""
 "Paste the text of the clipboard as a grid, with tabs separating the columns "
 "and lines separating the rows"
@@ -1432,6 +1444,9 @@ msgstr "로드할 예시 파일을 선택해 주세요:"
 msgid "Please select file(s) to import:"
 msgstr "가져올 파일을 선택하세요:"
 
+msgid "Please select the Lobster script to open:"
+msgstr "열 Lobster 스크립트 파일을 선택하세요:"
+
 msgid "Please select the Lobster script to run:"
 msgstr "실행할 Lobster 스크립트 파일을 선택하세요:"
 
@@ -1440,6 +1455,9 @@ msgstr "날짜 범위를 선택해 주세요."
 
 msgid "Please select the language for the interface (requires restart)."
 msgstr "인터페이스 언어를 선택해 주세요 (재시작 필요)."
+
+msgid "Please select the script to open:"
+msgstr "열 스크립트를 선택하세요:"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "목록에서 제거하려는 스크립트를 선택하세요:"
@@ -1480,6 +1498,9 @@ msgstr "반지름 &5"
 msgid "Radius &6"
 msgstr "반지름 &6"
 
+msgid "Re&move from Menu..."
+msgstr "메뉴에서 제거(&M)..."
+
 msgid ""
 "Reload when another computer has changed a file (if you have made changes, "
 "asks)"
@@ -1496,9 +1517,6 @@ msgstr "메뉴 목록에서 스크립트 제거"
 
 msgid "Remove script from list..."
 msgstr "목록에서 스크립트 제거..."
-
-msgid "Remove..."
-msgstr "제거..."
 
 msgid "Render document centered"
 msgstr "문서 가운데로 렌더링"
@@ -1551,6 +1569,12 @@ msgstr "행:"
 msgid "Run"
 msgstr "실행"
 
+msgid "Run &Code..."
+msgstr "코드 실행(&C)..."
+
+msgid "Run Lobster code"
+msgstr "Lobster 코드 실행"
+
 msgid "Run a Lobster script without adding it to the menu"
 msgstr "메뉴에 추가하지 않고 Lobster 스크립트 실행"
 
@@ -1568,6 +1592,9 @@ msgstr "저장 (Ctrl+S)"
 
 msgid "Save All"
 msgstr "모두 저장"
+
+msgid "Save and &Add to Menu"
+msgstr "저장 후 메뉴에 추가(&A)"
 
 msgid "Save and Close"
 msgstr "저장하고 닫기"

@@ -44,6 +44,9 @@ msgstr "&Sobre o TreeSheets"
 msgid "&Add Cell Text as Tag"
 msgstr "&Adicionar Texto da Célula como Tag"
 
+msgid "&Add to Menu..."
+msgstr "A&dicionar ao menu..."
+
 msgid "&Add..."
 msgstr "&Adicionar..."
 
@@ -194,8 +197,8 @@ msgstr "Raio das bordas das &grades"
 msgid "&Run"
 msgstr "&Executar"
 
-msgid "&Run..."
-msgstr "&Executar..."
+msgid "&Run File..."
+msgstr "Executar &arquivo..."
 
 msgid "&Save"
 msgstr "&Salvar"
@@ -273,9 +276,6 @@ msgstr "Adiciona script(s) Lobster ao menu"
 
 msgid "Add an image to the selected cell"
 msgstr "Adiciona uma imagem à célula selecionada"
-
-msgid "Add..."
-msgstr "&Adicionar..."
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "Adiciona uma grade NxN à célula selecionada"
@@ -515,6 +515,9 @@ msgstr "Informe o arquivo CSV a gravar"
 
 msgid "Choose HTML file to write"
 msgstr "Informe o arquivo HTML a gravar"
+
+msgid "Choose Lobster file to write"
+msgstr "Informe o arquivo Lobster a gravar"
 
 msgid "Choose PDF file to write"
 msgstr "Informe o arquivo PDF a gravar"
@@ -1347,6 +1350,12 @@ msgstr "Abrir e&xemplo..."
 msgid "Open file cancelled."
 msgstr "A abertura de arquivo foi cancelada."
 
+msgid "Open from &Menu..."
+msgstr "Abrir do &menu..."
+
+msgid "Open from Menu"
+msgstr "Abrir do menu"
+
 msgid "Open image dropdown"
 msgstr "Abrir lista dropdown Imagem"
 
@@ -1435,6 +1444,9 @@ msgstr "Cola o conteúdo da área de transferência"
 msgid "Paste file path"
 msgstr "Colar o caminho do arquivo"
 
+msgid "Paste or type Lobster code and run it"
+msgstr "Cola ou digita código Lobster e o executa"
+
 msgid ""
 "Paste the text of the clipboard as a grid, with tabs separating the columns "
 "and lines separating the rows"
@@ -1487,6 +1499,9 @@ msgstr "Por favor selecione arquivo(s) de exemplo para carregar:"
 msgid "Please select file(s) to import:"
 msgstr "Por favor selecione o(s) arquivo(s) a importar:"
 
+msgid "Please select the Lobster script to open:"
+msgstr "Por favor selecione o script Lobster a abrir:"
+
 msgid "Please select the Lobster script to run:"
 msgstr "Por favor selecione o script Lobster a executar:"
 
@@ -1495,6 +1510,9 @@ msgstr "Por favor selecione a data/hora inicial e a final."
 
 msgid "Please select the language for the interface (requires restart)."
 msgstr "Por favor escolha o idioma da interface (requer reinício)."
+
+msgid "Please select the script to open:"
+msgstr "Por favor selecione o script a abrir:"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Por favor selecione o script que deseja remover da lista:"
@@ -1535,6 +1553,9 @@ msgstr "Raio &5"
 msgid "Radius &6"
 msgstr "Raio &6"
 
+msgid "Re&move from Menu..."
+msgstr "&Remover do menu..."
+
 msgid ""
 "Reload when another computer has changed a file (if you have made changes, "
 "asks)"
@@ -1553,9 +1574,6 @@ msgstr "Remove script da lista no meu"
 
 msgid "Remove script from list..."
 msgstr "Remover script da lista..."
-
-msgid "Remove..."
-msgstr "&Remover..."
 
 msgid "Render document centered"
 msgstr "Renderizar documento &centralizado na tela"
@@ -1609,6 +1627,12 @@ msgstr "Linhas:"
 msgid "Run"
 msgstr "Executar"
 
+msgid "Run &Code..."
+msgstr "Executar &código..."
+
+msgid "Run Lobster code"
+msgstr "Executar código Lobster"
+
 msgid "Run a Lobster script without adding it to the menu"
 msgstr "Executa um script Lobster sem adicioná-lo ao menu"
 
@@ -1626,6 +1650,9 @@ msgstr "Salvar (CTRL+s)"
 
 msgid "Save All"
 msgstr "Salvar &Todos"
+
+msgid "Save and &Add to Menu"
+msgstr "Salvar e a&dicionar ao menu"
 
 msgid "Save and Close"
 msgstr "Salvar e Fechar"
