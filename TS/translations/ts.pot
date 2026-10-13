@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 15:04+0200\n"
+"POT-Creation-Date: 2026-10-13 19:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,6 +36,9 @@ msgid "&About..."
 msgstr ""
 
 msgid "&Add Cell Text as Tag"
+msgstr ""
+
+msgid "&Add to Menu..."
 msgstr ""
 
 msgid "&Add..."
@@ -188,7 +191,7 @@ msgstr ""
 msgid "&Run"
 msgstr ""
 
-msgid "&Run..."
+msgid "&Run File..."
 msgstr ""
 
 msgid "&Save"
@@ -264,9 +267,6 @@ msgid "Add Lobster scripts to the menu"
 msgstr ""
 
 msgid "Add an image to the selected cell"
-msgstr ""
-
-msgid "Add..."
 msgstr ""
 
 msgid "Adds a NxN grid to the selected cell"
@@ -494,6 +494,9 @@ msgid "Choose CSV file to write"
 msgstr ""
 
 msgid "Choose HTML file to write"
+msgstr ""
+
+msgid "Choose Lobster file to write"
 msgstr ""
 
 msgid "Choose PDF file to write"
@@ -1270,6 +1273,12 @@ msgstr ""
 msgid "Open file cancelled."
 msgstr ""
 
+msgid "Open from &Menu..."
+msgstr ""
+
+msgid "Open from Menu"
+msgstr ""
+
 msgid "Open image dropdown"
 msgstr ""
 
@@ -1348,6 +1357,9 @@ msgstr ""
 msgid "Paste file path"
 msgstr ""
 
+msgid "Paste or type Lobster code and run it"
+msgstr ""
+
 msgid ""
 "Paste the text of the clipboard as a grid, with tabs separating the columns "
 "and lines separating the rows"
@@ -1392,6 +1404,9 @@ msgstr ""
 msgid "Please select file(s) to import:"
 msgstr ""
 
+msgid "Please select the Lobster script to open:"
+msgstr ""
+
 msgid "Please select the Lobster script to run:"
 msgstr ""
 
@@ -1399,6 +1414,9 @@ msgid "Please select the datetime range."
 msgstr ""
 
 msgid "Please select the language for the interface (requires restart)."
+msgstr ""
+
+msgid "Please select the script to open:"
 msgstr ""
 
 msgid "Please select the script you want to remove from the list:"
@@ -1440,6 +1458,9 @@ msgstr ""
 msgid "Radius &6"
 msgstr ""
 
+msgid "Re&move from Menu..."
+msgstr ""
+
 msgid ""
 "Reload when another computer has changed a file (if you have made changes, "
 "asks)"
@@ -1455,9 +1476,6 @@ msgid "Remove script from list in the menu"
 msgstr ""
 
 msgid "Remove script from list..."
-msgstr ""
-
-msgid "Remove..."
 msgstr ""
 
 msgid "Render document centered"
@@ -1511,6 +1529,12 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
+msgid "Run &Code..."
+msgstr ""
+
+msgid "Run Lobster code"
+msgstr ""
+
 msgid "Run a Lobster script without adding it to the menu"
 msgstr ""
 
@@ -1527,6 +1551,9 @@ msgid "Save (CTRL+s)"
 msgstr ""
 
 msgid "Save All"
+msgstr ""
+
+msgid "Save and &Add to Menu"
 msgstr ""
 
 msgid "Save and Close"

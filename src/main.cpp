@@ -287,6 +287,7 @@ enum {
     A_DEFAULTMAXCOLWIDTH,
     #ifdef ENABLE_LOBSTER
         A_RUNSCRIPT,
+        A_RUNSCRIPTCODE,
         A_ADDSCRIPT,
         A_DETSCRIPT,
     #endif

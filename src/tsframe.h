@@ -64,6 +64,8 @@ struct TSFrame : wxFrame {
     wxMenu *editmenupopup;
     #ifdef ENABLE_LOBSTER
         wxMenu *scriptmenu {nullptr};
+        wxString scriptcode;  // The last code of Script > Run Code, and the file it is from.
+        wxString scriptfile;
     #endif
     wxFileHistory filehistory;
     wxFileSystemWatcher *watcher {nullptr};
@@ -1545,17 +1547,104 @@ struct TSFrame : wxFrame {
                     break;
                 }
 
+                case A_RUNSCRIPTCODE: {
+                    wxDialog dlg(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
+                                 FromDIP(wxSize(760, 480)),
+                                 wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                    wxButton *openfrommenu {nullptr}, *saveadd {nullptr};
+                    // Shows the file the code came from, and what can be done with it.
+                    auto update = [&] {
+                        dlg.SetTitle(scriptfile.IsEmpty() ? _("Run Lobster code")
+                                                          : _("Run Lobster code") + " - " +
+                                                                scriptfile);
+                        openfrommenu->Enable(!sys->scripts.IsEmpty());
+                        saveadd->Enable(sys->scripts.Index(scriptfile) == wxNOT_FOUND);
+                    };
+                    auto *sizer = new wxBoxSizer(wxVERTICAL);
+                    wxTextCtrl text(&dlg, wxID_ANY, scriptcode, wxDefaultPosition, wxDefaultSize,
+                                    wxTE_MULTILINE | wxTE_DONTWRAP);
+                    text.SetFont(wxFont(wxFontInfo().Family(wxFONTFAMILY_TELETYPE)));
+                    sizer->Add(&text, 1, wxEXPAND | wxALL, 10);
+                    auto openscript = [&](const wxString &filename) {
+                        wxString code;
+                        if (wxFFile file(filename); !file.IsOpened() || !file.ReadAll(&code)) {
+                            wxMessageBox(_("Cannot open file."), filename, wxOK, &dlg);
+                            return;
+                        }
+                        text.SetValue(code);
+                        scriptfile = filename;
+                        update();
+                    };
+                    // Saves to the file the code came from, or else asks for one.
+                    auto savescript = [&](bool addtomenu) {
+                        auto filename = scriptfile;
+                        if (filename.IsEmpty()) {
+                            filename = ::wxFileSelector(
+                                _("Choose Lobster file to write"),
+                                sys->scripts.IsEmpty() ? wxString() : ScriptDir(), "", "lobster",
+                                _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
+                                wxFD_SAVE | wxFD_OVERWRITE_PROMPT, &dlg);
+                            if (filename.IsEmpty()) return;
+                            if (!wxFileName(filename).HasExt()) { filename.Append(".lobster"); }
+                        }
+                        if (wxFile file; !file.Create(filename, true) ||
+                                         !file.Write(text.GetValue())) {
+                            wxMessageBox(_("Error writing to file!"), filename, wxOK, &dlg);
+                            return;
+                        }
+                        scriptfile = filename;
+                        if (addtomenu) {
+                            AddScript(filename);
+                            UpdateScriptMenu(scriptmenu);
+                        }
+                        update();
+                    };
+                    auto *buttons = new wxBoxSizer(wxHORIZONTAL);
+                    auto addbutton = [&](const wxString &label, auto onclick) {
+                        auto *button = new wxButton(&dlg, wxID_ANY, label);
+                        button->Bind(wxEVT_BUTTON, [=](wxCommandEvent &) { onclick(); });
+                        buttons->Add(button, 0, wxRIGHT, 5);
+                        return button;
+                    };
+                    addbutton(_("&Open..."), [&] {
+                        auto filename = ::wxFileSelector(
+                            _("Please select the Lobster script to open:"), ScriptDir(), "",
+                            "lobster", _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
+                            wxFD_OPEN | wxFD_FILE_MUST_EXIST, &dlg);
+                        if (!filename.IsEmpty()) { openscript(filename); }
+                    });
+                    openfrommenu = addbutton(_("Open from &Menu..."), [&] {
+                        wxSingleChoiceDialog choice(&dlg, _("Please select the script to open:"),
+                                                    _("Open from Menu"), sys->scripts);
+                        if (choice.ShowModal() == wxID_OK && choice.GetSelection() >= 0) {
+                            openscript(sys->scripts[choice.GetSelection()]);
+                        }
+                    });
+                    addbutton(_("&Save"), [&] { savescript(false); });
+                    saveadd = addbutton(_("Save and &Add to Menu"), [&] { savescript(true); });
+                    update();
+                    buttons->AddStretchSpacer();
+                    buttons->Add(dlg.CreateButtonSizer(wxOK | wxCANCEL));
+                    sizer->Add(buttons, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+                    dlg.FindWindow(wxID_OK)->SetLabel(_("&Run"));
+                    dlg.SetSizer(sizer);
+                    text.SetFocus();
+                    auto run = dlg.ShowModal() == wxID_OK;
+                    scriptcode = text.GetValue();
+                    if (run && !scriptcode.IsEmpty()) {
+                        RunScript(scriptfile.IsEmpty() ? wxString("code") : scriptfile,
+                                  scriptcode.utf8_string());
+                    }
+                    break;
+                }
+
                 case A_ADDSCRIPT: {
                     wxArrayString filenames;
                     GetFilesFromUser(filenames, this, _("Please select Lobster script file(s):"),
                                      _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
                                      ScriptDir());
                     if (!filenames.IsEmpty()) {
-                        for (auto &filename : filenames) {
-                            if (sys->scripts.Index(filename) == wxNOT_FOUND) {
-                                sys->scripts.Add(filename);
-                            }
-                        }
+                        for (auto &filename : filenames) { AddScript(filename); }
                         UpdateScriptMenu(scriptmenu);
                     }
                     break;
@@ -2187,10 +2276,15 @@ struct TSFrame : wxFrame {
     }
 
     #ifdef ENABLE_LOBSTER
-        void RunScript(const wxString &filename) {
-            auto message = tssi.ScriptRun(filename.c_str());
+        // If code is non-empty it is run, and filename only labels its errors.
+        void RunScript(const wxString &filename, std::string_view code = {}) {
+            auto message = tssi.ScriptRun(filename.c_str(), code);
             message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
             SetStatus(wxString(message));
+        }
+
+        void AddScript(const wxString &filename) {
+            if (sys->scripts.Index(filename) == wxNOT_FOUND) { sys->scripts.Add(filename); }
         }
 
         // The folder of the most recently added script, or else the bundled scripts.
@@ -2207,11 +2301,13 @@ struct TSFrame : wxFrame {
         void UpdateScriptMenu(wxMenu *menu) {
             if (!menu) return;
             while (menu->GetMenuItemCount() > 0) { menu->Destroy(menu->FindItemByPosition(0)); }
-            MyAppend(menu, A_RUNSCRIPT, _("&Run..."),
+            MyAppend(menu, A_RUNSCRIPT, _("&Run File..."),
                      _("Run a Lobster script without adding it to the menu"));
-            MyAppend(menu, A_ADDSCRIPT, _("Add...") + "\tCTRL+ALT+L",
+            MyAppend(menu, A_RUNSCRIPTCODE, _("Run &Code..."),
+                     _("Paste or type Lobster code and run it"));
+            MyAppend(menu, A_ADDSCRIPT, _("&Add to Menu...") + "\tCTRL+ALT+L",
                      _("Add Lobster scripts to the menu"));
-            MyAppend(menu, A_DETSCRIPT, _("Remove...") + "\tCTRL+SHIFT+ALT+L",
+            MyAppend(menu, A_DETSCRIPT, _("Re&move from Menu...") + "\tCTRL+SHIFT+ALT+L",
                      _("Remove script from list in the menu"));
             if (!sys->scripts.IsEmpty()) { menu->AppendSeparator(); }
             for (size_t i = 0; i < sys->scripts.GetCount(); ++i) {
