@@ -1452,7 +1452,23 @@ struct Document {
         sdc.SetBitmapHandler(new SVGImageHandler());
         sdc.SetDeviceOrigin(-r.x, -r.y);
         draw(sdc);
-        return sdc.GetSVGDocument();
+        // wxSVGFileDC has each line stretched to the width measured here (textLength). Inkscape
+        // does that by spacing the letters apart, which tears right-to-left text apart, so leave
+        // it out there.
+        auto svg = sdc.GetSVGDocument();
+        for (size_t pos = 0; (pos = svg.find("<text ", pos)) != wxString::npos;) {
+            auto end = svg.find("</text>", pos);
+            auto content = svg.substr(pos, end - pos).AfterFirst('>');
+            if (any_of(content.begin(), content.end(), [](wxUniChar c) {
+                    auto k = bidi::Classify(c.GetValue());
+                    return k == bidi::R || k == bidi::AL;
+                })) {
+                auto a = svg.find(" textLength=\"", pos);
+                if (a < end) { svg.erase(a, svg.find('"', a + 13) + 1 - a); }
+            }
+            pos = end;
+        }
+        return svg;
     }
 
     // Only the selected cells, on the color they show on, without the cells around them.
