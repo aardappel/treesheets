@@ -173,9 +173,12 @@ BUILTIN(get_formula, "", "", "S",
 BUILTIN(set_formula, "formula", "S", "",
     "makes the current cell a formula such as \"=SUM(Expenses) - 10\", which calculates its "
     "text: arithmetic over numbers and SUM, MIN, MAX, AVG, MEDIAN and COUNT of the numbers in "
-    "the grid of the cell whose text is the name in parentheses, the nearest one first, and with "
-    "TREE in front (e.g. TREESUM) also the data in all its sub-grids. an empty formula makes it "
-    "data again, as does set_text().")
+    "the grid of the cell whose text is the name in parentheses (in quotes if it has a comma or "
+    "parenthesis), the nearest one first, and with TREE in front (e.g. TREESUM) also the data in "
+    "all its sub-grids. SUBSET(name, columns, rows) is part of a grid, e.g. "
+    "\"=MAX(SUBSET(Sales, 0, 1-))\", with columns and rows from 0 at the top left as a number, an "
+    "inclusive range (0-2, 3-, -4) or - for all. an empty formula makes it data again, as does "
+    "set_text().")
 (VM &, LString *s) {
     si->SetFormula(s->strv());
 }
