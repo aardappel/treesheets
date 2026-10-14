@@ -221,6 +221,8 @@ enum {
     A_IMAGER,
     A_INCWIDTHNH,
     A_DECWIDTHNH,
+    A_INCSIZENH,
+    A_DECSIZENH,
     A_ZOOMSCR,
     A_V_GS,
     A_V_BS,

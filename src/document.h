@@ -1025,12 +1025,12 @@ struct Document {
             if (selected.grid == nullptr) { return NoSel(); }
             if (deferlayout) {
                 AddDeferredUndo(selected.grid->cell);
-                selected.grid->RelSize(-dir, selected, pathscalebias);
+                selected.grid->RelSize(-dir, selected, pathscalebias, hierarchical);
                 layoutpending = true;
             } else {
                 selected.grid->cell->AddUndo(this);
                 selected.grid->ResetChildren();
-                selected.grid->RelSize(-dir, selected, pathscalebias);
+                selected.grid->RelSize(-dir, selected, pathscalebias, hierarchical);
                 UpdateLayout();
                 ScrollIfSelectionOutOfView();
                 canvas->Refresh();
@@ -1774,12 +1774,16 @@ struct Document {
                         if (ctrl) { break; }
                         return Action(shift ? A_PREV : A_NEXT);
                     case WXK_PAGEUP:
-                        if (ctrl) { return Action(alt ? A_INCWIDTHNH : A_ZOOMIN); }
+                        if (ctrl) {
+                            return Action(alt ? A_INCWIDTHNH : shift ? A_INCSIZENH : A_ZOOMIN);
+                        }
                         if (shift) { return Action(A_INCSIZE); }
                         if (!alt) { canvas->CursorScroll(0, -g_scrollratecursor); }
                         return wxEmptyString;
                     case WXK_PAGEDOWN:
-                        if (ctrl) { return Action(alt ? A_DECWIDTHNH : A_ZOOMOUT); }
+                        if (ctrl) {
+                            return Action(alt ? A_DECWIDTHNH : shift ? A_DECSIZENH : A_ZOOMOUT);
+                        }
                         if (shift) { return Action(A_DECSIZE); }
                         if (!alt) { canvas->CursorScroll(0, g_scrollratecursor); }
                         return wxEmptyString;
@@ -2070,6 +2074,8 @@ struct Document {
                              false);  // Zoom(-1, dc); return "zoomed out (menu)";
             case A_INCSIZE: return Wheel(1, false, false, true);
             case A_DECSIZE: return Wheel(-1, false, false, true);
+            case A_INCSIZENH: return Wheel(1, false, false, true, false);
+            case A_DECSIZENH: return Wheel(-1, false, false, true, false);
             case A_INCWIDTH: return Wheel(1, true, false, false);
             case A_DECWIDTH: return Wheel(-1, true, false, false);
             case A_INCWIDTHNH: return Wheel(1, true, false, false, false);

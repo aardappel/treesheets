@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 20:51+0200\n"
+"POT-Creation-Date: 2026-10-14 14:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 msgid "&Data"
 msgstr ""
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
 msgstr ""
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
@@ -113,7 +113,7 @@ msgstr ""
 msgid "&Images"
 msgstr ""
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
 msgstr ""
 
 msgid "&Increase text size (SHIFT+mousewheel)"
@@ -627,6 +627,9 @@ msgstr ""
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr ""
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr ""
+
 msgid "Default column width"
 msgstr ""
 
@@ -1025,6 +1028,9 @@ msgid "Increase column width (ALT+mousewheel)"
 msgstr ""
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
+msgstr ""
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
 msgstr ""
 
 msgid "Indented &Text..."

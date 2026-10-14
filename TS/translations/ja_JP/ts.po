@@ -68,8 +68,8 @@ msgstr "ビットマップとしてコピー(&C)"
 msgid "&Data"
 msgstr "データ(&D)"
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
-msgstr "フォントサイズを縮小(&D) (Ctrl+SHIFT+マウスホイール)"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "フォントサイズを縮小(&D) (Ctrl+ALT+SHIFT+マウスホイール)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "テキストサイズを縮小(&D) (SHIFT+マウスホイール)"
@@ -116,8 +116,8 @@ msgstr "画像(&I)..."
 msgid "&Images"
 msgstr "画像(&I)"
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "フォントサイズを拡大(&I) (Ctrl+SHIFT+マウスホイール)"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "フォントサイズを拡大(&I) (Ctrl+ALT+SHIFT+マウスホイール)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "テキストサイズを拡大(&I) (SHIFT+マウスホイール)"
@@ -642,6 +642,9 @@ msgstr "列幅を狭くする (ALT+マウスホイール)"
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "列幅を狭くする (サブグリッドなし、Ctrl+ALT+マウスホイール)"
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "テキストサイズを縮小 (サブグリッドなし、Ctrl+SHIFT+マウスホイール)"
+
 msgid "Default column width"
 msgstr "デフォルトの列幅"
 
@@ -1070,6 +1073,9 @@ msgstr "列幅を広くする (ALT+マウスホイール)"
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "列幅を広くする (サブグリッドなし、Ctrl+ALT+マウスホイール)"
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "テキストサイズを拡大 (サブグリッドなし、Ctrl+SHIFT+マウスホイール)"
 
 msgid "Indented &Text..."
 msgstr "インデントされたテキスト(&T)..."

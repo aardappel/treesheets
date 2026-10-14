@@ -73,7 +73,7 @@ msgstr "&Копировать как Растровое Изображение"
 msgid "&Data"
 msgstr "&Данные"
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
 msgstr "У&меньшить .."
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
@@ -121,8 +121,8 @@ msgstr "&Изображение..."
 msgid "&Images"
 msgstr "&Изображения"
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "У&величить Размер Шрифта документа (CTRL+SHIFT+КМ)"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "У&величить Размер Шрифта документа (CTRL+ALT+SHIFT+КМ)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "У&величить размер текста, с подсетками (SHIFT+КМ)"
@@ -716,6 +716,9 @@ msgstr "У&меньшить..."
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "У&меньшить .."
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "У&меньшить .."
+
 # Заголовок Окна (выбор п. Меню)
 msgid "Default column width"
 msgstr "Ширина столбца по умолчанию"
@@ -1169,6 +1172,9 @@ msgstr "У&величить Ширину Столбца (ALT+КМ)"
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "У&величить Ширину Столбца (без подсеток, CTRL+ALT+КМ)"
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "У&величить размер текста, без подсеток (CTRL+SHIFT+КМ)"
 
 # & - не в том месте!..
 msgid "Indented &Text..."

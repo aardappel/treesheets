@@ -68,8 +68,8 @@ msgstr "Als &Bild kopieren"
 msgid "&Data"
 msgstr "&Daten"
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
-msgstr "Schriftgröße ver&ringern (STRG+UMSCHALT+Mausrad)"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "Schriftgröße ver&ringern (STRG+ALT+UMSCHALT+Mausrad)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)"
@@ -116,8 +116,8 @@ msgstr "&Bild..."
 msgid "&Images"
 msgstr "&Bilder"
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "Schriftgröße er&höhen (STRG+UMSCHALT+Mausrad)"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "Schriftgröße er&höhen (STRG+ALT+UMSCHALT+Mausrad)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Textgröße vergrößern (UMSCHALT+Mausrad)"
@@ -655,6 +655,9 @@ msgstr "Spaltenbreite verkleinern (ALT+Mausrad)"
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Spaltenbreite verkleinern (keine untergeordneten Tabellen, STRG+ALT+Mausrad)"
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Textgröße verkleinern (keine untergeordneten Tabellen, STRG+UMSCHALT+Mausrad)"
+
 msgid "Default column width"
 msgstr "Standardspaltenbreite"
 
@@ -1097,6 +1100,9 @@ msgstr "Spaltenbreite vergrößern (ALT+Mausrad)"
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Spaltenbreite vergrößern (keine untergeordneten Tabellen, STRG+ALT+Mausrad)"
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Textgröße vergrößern (keine untergeordneten Tabellen, STRG+UMSCHALT+Mausrad)"
 
 msgid "Indented &Text..."
 msgstr "Eingerückter &Text"

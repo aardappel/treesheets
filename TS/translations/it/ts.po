@@ -67,8 +67,8 @@ msgstr "&Copia come bitmap"
 msgid "&Data"
 msgstr "&Dati"
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
-msgstr "&Riduci dimensione del testo (CTRL+MAIUSC+rotellina del mouse)"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "&Riduci dimensione del testo (CTRL+ALT+MAIUSC+rotellina del mouse)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Riduci la dimensione del testo (MAIUSC + rotella del mouse)"
@@ -115,8 +115,8 @@ msgstr "&Immagine..."
 msgid "&Images"
 msgstr "&Immagini"
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "&Aumenta dimensione del testo (CTRL+MAIUSC+rotellina del mouse)"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "&Aumenta dimensione del testo (CTRL+ALT+MAIUSC+rotellina del mouse)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Aumentare la dimensione del testo (MAIUSC + rotellina del mouse)"
@@ -646,6 +646,9 @@ msgstr "Riduci larghezza colonna (ALT + rotellina del mouse)"
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Diminuisci larghezza colonna (nessuna sottogriglia, CTRL+ALT+rotellina del mouse)"
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Riduci la dimensione del testo (nessuna sottogriglia, CTRL+MAIUSC+rotellina del mouse)"
+
 msgid "Default column width"
 msgstr "Larghezza predefinita delle colonne"
 
@@ -1086,6 +1089,9 @@ msgstr "Aumentare la larghezza della colonna (ALT+rotellina del mouse)"
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Aumenta la larghezza della colonna (nessuna sottogriglia, CTRL+ALT+rotellina del mouse)"
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Aumenta la dimensione del testo (nessuna sottogriglia, CTRL+MAIUSC+rotellina del mouse)"
 
 msgid "Indented &Text..."
 msgstr "Testo &rientrato..."

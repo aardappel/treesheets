@@ -441,9 +441,9 @@ struct Cell {
         return str;
     }
 
-    void RelSize(int dir, int zoomdepth) {
+    void RelSize(int dir, int zoomdepth, bool hierarchical = true) {
         text.RelSize(dir, zoomdepth);
-        if (grid) { grid->RelSize(dir, zoomdepth); }
+        if (grid && hierarchical) { grid->RelSize(dir, zoomdepth); }
     }
 
     void Reset() { ox = oy = sx = sy = minx = miny = ycenteroff = 0; }

@@ -67,8 +67,8 @@ msgstr "複製為點陣圖(&C)"
 msgid "&Data"
 msgstr "資料(&D)"
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
-msgstr "縮小文字大小(&D)（Ctrl + Shift + 滑鼠滾輪）"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "縮小文字大小(&D)（Ctrl + Alt + Shift + 滑鼠滾輪）"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "縮小文字大小（Shift + 滑鼠滾輪）(&D)"
@@ -115,8 +115,8 @@ msgstr "圖片(&I)..."
 msgid "&Images"
 msgstr "圖片(&I)"
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "放大文字大小(&I)（Ctrl + Shift + 滑鼠滾輪）"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "放大文字大小(&I)（Ctrl + Alt + Shift + 滑鼠滾輪）"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "放大文字大小（Shift + 滑鼠滾輪）(&I)"
@@ -634,6 +634,9 @@ msgstr "縮減欄寬（Alt + 滑鼠滾輪）"
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "縮減欄寬（無子網格，Ctrl + Alt + 滑鼠滾輪）"
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "縮小文字大小（無子網格，Ctrl + Shift + 滑鼠滾輪）"
+
 msgid "Default column width"
 msgstr "預設欄寬"
 
@@ -1039,6 +1042,9 @@ msgstr "增加欄寬（Alt + 滑鼠滾輪）"
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "增加欄寬（無子網格，Ctrl + Alt + 滑鼠滾輪）"
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "放大文字大小（無子網格，Ctrl + Shift + 滑鼠滾輪）"
 
 msgid "Indented &Text..."
 msgstr "縮排文字(&T)..."

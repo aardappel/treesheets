@@ -71,8 +71,8 @@ msgstr "Copiar como Bitma&p"
 msgid "&Data"
 msgstr "&Dados"
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
-msgstr "&Diminuir tamanho dos textos (CTRL+SHIFT+botão de rolagem)"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "&Diminuir tamanho dos textos (CTRL+ALT+SHIFT+botão de rolagem)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Diminuir tamanho do texto (SHIFT+botão de rolagem)"
@@ -119,8 +119,8 @@ msgstr "I&magem..."
 msgid "&Images"
 msgstr "Imagens"
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "&Aumentar tamanho dos textos (CTRL+SHIFT+botão de rolagem)"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "&Aumentar tamanho dos textos (CTRL+ALT+SHIFT+botão de rolagem)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "&Aumentar tamanho do texto (SHIFT+botão de rolagem)"
@@ -650,6 +650,9 @@ msgstr "Diminuir largura da coluna (ALT+botão de rolagem)"
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Diminuir largura da coluna (sem subgrades, CTRL+ALT+botão de rolagem)"
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Diminuir tamanho do texto (sem subgrades, CTRL+SHIFT+botão de rolagem)"
+
 msgid "Default column width"
 msgstr "Largura padrão das colunas"
 
@@ -1090,6 +1093,9 @@ msgstr "Aumentar largura da coluna (ALT+botão de rolagem)"
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Aumentar largura da coluna (sem subgrades, CTRL+ALT+botão de rolagem)"
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Aumentar tamanho do texto (sem subgrades, CTRL+SHIFT+botão de rolagem)"
 
 msgid "Indented &Text..."
 msgstr "Texto &Indentado..."

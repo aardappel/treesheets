@@ -63,8 +63,8 @@ msgstr "Sao chép dưới dạng &Bitmap"
 msgid "&Data"
 msgstr "&Dữ liệu"
 
-msgid "&Decrease font size (CTRL+SHIFT+mousewheel)"
-msgstr "Giảm kích thước phông chữ (&D) (CTRL+SHIFT+lăn chuột)"
+msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "Giảm kích thước phông chữ (&D) (CTRL+ALT+SHIFT+lăn chuột)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Giảm kích thước chữ (SHIFT+lăn chuột)"
@@ -111,8 +111,8 @@ msgstr "Hình ảnh (&I)..."
 msgid "&Images"
 msgstr "Hình ảnh (&I)"
 
-msgid "&Increase font size (CTRL+SHIFT+mousewheel)"
-msgstr "Tăng kích thước phông chữ (&I) (CTRL+SHIFT+lăn chuột)"
+msgid "&Increase font size (CTRL+ALT+SHIFT+mousewheel)"
+msgstr "Tăng kích thước phông chữ (&I) (CTRL+ALT+SHIFT+lăn chuột)"
 
 msgid "&Increase text size (SHIFT+mousewheel)"
 msgstr "Tăng kích thước chữ (&I) (SHIFT+lăn chuột)"
@@ -638,6 +638,9 @@ msgstr "Giảm chiều rộng cột (ALT+lăn chuột)"
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Giảm chiều rộng cột (không có lưới con, CTRL+ALT+lăn chuột)"
 
+msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Giảm kích thước chữ (không có lưới con, CTRL+SHIFT+lăn chuột)"
+
 msgid "Default column width"
 msgstr "Chiều rộng cột mặc định"
 
@@ -1062,6 +1065,9 @@ msgstr "Tăng chiều rộng cột (ALT+lăn chuột)"
 
 msgid "Increase column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "Tăng chiều rộng cột (không có lưới con, CTRL+ALT+lăn chuột)"
+
+msgid "Increase text size (no sub grids, CTRL+SHIFT+mousewheel)"
+msgstr "Tăng kích thước chữ (không có lưới con, CTRL+SHIFT+lăn chuột)"
 
 msgid "Indented &Text..."
 msgstr "Văn bản thụt đầu dòng... (&T)"

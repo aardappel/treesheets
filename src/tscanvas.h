@@ -327,7 +327,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnMouseWheel(wxMouseEvent &me) {
         AltWithMouse(me);
         bool ctrl = me.CmdDown();
-        bool fontsize = ctrl && me.ShiftDown() && !me.AltDown();
+        bool fontsize = ctrl && me.ShiftDown() && me.AltDown();
         if (sys->zoomscroll) { ctrl = !ctrl; }
         if (me.AltDown() || ctrl || me.ShiftDown()) {
             mousewheelaccum += me.GetWheelRotation();
@@ -339,9 +339,10 @@ struct TSCanvas : public wxScrolledCanvas {
                 return;
             }
             bool deferlayout = me.AltDown() || me.ShiftDown();
-            // CTRL+ALT+wheel leaves sub-grids alone, like CTRL+ALT+PGUP/PGDN.
+            // CTRL+ALT+wheel and CTRL+SHIFT+wheel leave sub-grids alone, like CTRL+ALT+PGUP/PGDN
+            // and CTRL+SHIFT+PGUP/PGDN.
             sys->frame->SetStatus(doc->Wheel(steps, me.AltDown(), ctrl, me.ShiftDown(),
-                                             !(me.AltDown() && me.CmdDown()), deferlayout));
+                                             !me.CmdDown(), deferlayout));
         } else if (me.GetWheelAxis() != 0U) {
             CursorScroll(me.GetWheelRotation() * g_scrollratewheel, 0);
         } else {

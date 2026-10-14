@@ -787,8 +787,8 @@ struct Grid {
     }
 
     void RelSize(int dir, int zoomdepth) { foreachcell(c) c->RelSize(dir, zoomdepth); }
-    void RelSize(int dir, const Selection &sel, int zoomdepth) {
-        foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth);
+    void RelSize(int dir, const Selection &sel, int zoomdepth, bool hierarchical) {
+        foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth, hierarchical);
     }
     void SetBorder(int width) {
         user_grid_outer_spacing = width;

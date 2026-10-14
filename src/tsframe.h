@@ -246,6 +246,12 @@ struct TSFrame : wxFrame {
                      _("&Increase text size (SHIFT+mousewheel)") + "\tSHIFT+PGUP");
             MyAppend(sizemenu, A_DECSIZE,
                      _("&Decrease text size (SHIFT+mousewheel)") + "\tSHIFT+PGDN");
+            MyAppend(sizemenu, A_INCSIZENH,
+                     _("Increase text size (no sub grids, CTRL+SHIFT+mousewheel)") +
+                         "\tCTRL+SHIFT+PGUP");
+            MyAppend(sizemenu, A_DECSIZENH,
+                     _("Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)") +
+                         "\tCTRL+SHIFT+PGDN");
             MyAppend(sizemenu, A_RESETSIZE, _("&Reset text sizes") + "\tCTRL+SHIFT+S");
             MyAppend(sizemenu, A_MINISIZE, _("&Shrink text of all sub-grids") + "\tCTRL+SHIFT+M");
             sizemenu->AppendSeparator();
@@ -671,9 +677,9 @@ struct TSFrame : wxFrame {
         MyAppend(viewmenu, A_ZOOMOUT, _("Zoom &Out (CTRL+mousewheel)") + "\tCTRL+PGDN");
         viewmenu->AppendSeparator();
         MyAppend(viewmenu, A_INCFONTSIZE,
-                 _("&Increase font size (CTRL+SHIFT+mousewheel)") + "\tCTRL+.");
+                 _("&Increase font size (CTRL+ALT+SHIFT+mousewheel)") + "\tCTRL+.");
         MyAppend(viewmenu, A_DECFONTSIZE,
-                 _("&Decrease font size (CTRL+SHIFT+mousewheel)") + "\tCTRL+,");
+                 _("&Decrease font size (CTRL+ALT+SHIFT+mousewheel)") + "\tCTRL+,");
         MyAppend(viewmenu, A_RESETFONTSIZE, _("&Reset font size") + "\tCTRL+-");
         viewmenu->AppendSeparator();
         MyAppend(viewmenu, A_NEXTFILE, _("&Next tab") + "\tCTRL+TAB",
