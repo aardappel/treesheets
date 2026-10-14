@@ -177,8 +177,9 @@ BUILTIN(set_formula, "formula", "S", "",
     "parenthesis), the nearest one first, and with TREE in front (e.g. TREESUM) also the data in "
     "all its sub-grids. SUBSET(name, columns, rows) is part of a grid, e.g. "
     "\"=MAX(SUBSET(Sales, 0, 1-))\", with columns and rows from 0 at the top left as a number, an "
-    "inclusive range (0-2, 3-, -4) or - for all. an empty formula makes it data again, as does "
-    "set_text().")
+    "inclusive range (0-2, 3-, -4) or - for all, and TREESUBSET(name, columns, rows, levels) "
+    "also takes those of the sub-grids of these cells, counting the levels in the range (0 is the "
+    "named grid). an empty formula makes it data again, as does set_text().")
 (VM &, LString *s) {
     si->SetFormula(s->strv());
 }

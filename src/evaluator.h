@@ -224,6 +224,9 @@ struct Evaluator {
     SUBSET(name, columns, rows) is part of a grid, e.g. =MAX(SUBSET("Sales 2025", 0, 0-2)), with
     columns and rows counted from 0 at the top left, each one number, an inclusive range, a range
     open at one end (3- or -4) or - for all of them. On its own, it is its one number, like a name.
+    TREESUBSET(name, columns, rows, levels) also takes the same columns and rows of the sub-grids
+    of those cells, and so on, but counts only the levels in the range, 0 being the named grid,
+    e.g. =SUM(TREESUBSET(Projects, 1, -, 1-)). It skips the formulas in sub-grids like TREE.
 */
 struct FormulaEvaluator {
     enum { BUSY, OK, FAILED };
@@ -298,6 +301,9 @@ struct FormulaEvaluator {
     }
 
     static bool IsNameChar(wxChar c) { return wxIsalnum(c) || c == '_'; }
+    static bool IsSubset(const wxString &function) {
+        return function == L"SUBSET" || function == L"TREESUBSET";
+    }
 
     // Whether n can be used on its own in a formula: words of letters, digits and _, separated by
     // spaces, e.g. =Unit price * 2.
@@ -334,9 +340,11 @@ struct FormulaEvaluator {
             auto typed = s.Mid(start);
             auto function = open;
             while (function > 0 && wxIsalpha(s[function - 1])) { function--; }
-            bool subset = s.Mid(function, open - function).Upper() == L"SUBSET";
-            if (!subset && wxString(L"SUBSET(").StartsWith(typed.Upper())) {
-                res.Add(s.Left(start) + L"SUBSET(");
+            bool subset = IsSubset(s.Mid(function, open - function).Upper());
+            for (auto f : {L"SUBSET(", L"TREESUBSET("}) {
+                if (!subset && wxString(f).StartsWith(typed.Upper())) {
+                    res.Add(s.Left(start) + f);
+                }
             }
             // Names with a ) in them, or a , in SUBSET(), only in quotes.
             wxString quote = typed.StartsWith("\"") ? "\"" : "";
@@ -360,7 +368,9 @@ struct FormulaEvaluator {
                 if (function.StartsWith(upper)) { res.Add(s.Left(start) + function + "("); }
             }
         }
-        if (wxString(L"SUBSET").StartsWith(upper)) { res.Add(s.Left(start) + L"SUBSET("); }
+        for (auto f : {L"SUBSET(", L"TREESUBSET("}) {
+            if (wxString(f).StartsWith(upper)) { res.Add(s.Left(start) + f); }
+        }
         for (auto &n : names) {
             if (n.StartsWith(typed) && IsBareName(n)) { res.Add(s.Left(start) + n); }
         }
@@ -473,7 +483,7 @@ struct FormulaEvaluator {
             if (function.IsEmpty()) { return Fail(L"#ERROR!"); }
             if (!Eat('(')) { return One(fe.Numbers(self, function, numbers, false), numbers); }
             function.MakeUpper();
-            if (function == L"SUBSET") { return One(Subset(numbers, false), numbers); }
+            if (IsSubset(function)) { return One(Subset(numbers, false, function), numbers); }
             wxString rest;
             auto tree = function.StartsWith(L"TREE", &rest);
             if (tree) { function = rest; }
@@ -489,8 +499,9 @@ struct FormulaEvaluator {
             Space();
             auto start = i;
             while (i < s.Len() && wxIsalpha(s[i])) { i++; }
-            if (s.Mid(start, i - start).Upper() == L"SUBSET" && Eat('(')) {
-                auto e = Subset(numbers, tree);
+            auto function = s.Mid(start, i - start).Upper();
+            if (IsSubset(function) && Eat('(')) {
+                auto e = Subset(numbers, tree, function);
                 return !e.IsEmpty() ? e : Eat(')') ? wxString() : wxString(L"#ERROR!");
             }
             i = start;
@@ -513,26 +524,36 @@ struct FormulaEvaluator {
             if (!e.IsEmpty()) { return Fail(e); }
             return numbers.size() == 1 ? numbers[0] : Fail(L"#VALUE!");
         }
-        // The rest of SUBSET(name, columns, rows).
-        wxString Subset(vector<double> &numbers, bool tree) {
+        // The rest of SUBSET(name, columns, rows) or TREESUBSET(name, columns, rows, levels).
+        wxString Subset(vector<double> &numbers, bool tree, const wxString &function) {
             wxString name;
-            int x0, x1, y0, y1;
+            int x0, x1, y0, y1, l0 = 0, l1 = 0;
+            bool levels = function == L"TREESUBSET";
             if (!Name(',', name) || !Eat(',') || !Range(x0, x1) || !Eat(',') || !Range(y0, y1) ||
-                !Eat(')')) {
+                (levels && (!Eat(',') || !Range(l0, l1))) || !Eat(')')) {
                 return L"#ERROR!";
             }
             auto *g = FindGrid(self, name);
             if (g == nullptr) { return L"#NAME?"; }
-            // Clipped to the grid, so that it can grow and shrink.
-            for (int y = y0; y <= min(y1, g->ys - 1); y++) {
-                for (int x = x0; x <= min(x1, g->xs - 1); x++) {
-                    if (auto e = fe.Numbers(self, g->C(x, y).get(), numbers, tree);
-                        !e.IsEmpty()) {
-                        return e;
+            // Clipped to each grid, so that it can grow and shrink. TREE in front adds nothing to
+            // TREESUBSET, which would count sub-grids twice.
+            auto cells = [&](auto &cells, Grid *g, int level) -> wxString {
+                for (int y = y0; y <= min(y1, g->ys - 1); y++) {
+                    for (int x = x0; x <= min(x1, g->xs - 1); x++) {
+                        auto *c = g->C(x, y).get();
+                        if (level >= l0) {
+                            auto e = fe.Numbers(self, c, numbers, tree && !levels, level > 0);
+                            if (!e.IsEmpty()) { return e; }
+                        }
+                        if (level < l1 && c->grid) {
+                            auto e = cells(cells, c->grid.get(), level + 1);
+                            if (!e.IsEmpty()) { return e; }
+                        }
                     }
                 }
-            }
-            return {};
+                return {};
+            };
+            return cells(cells, g, 0);
         }
         // A column or row number, or an inclusive range of them like 0-3, 3- (to the end), -4
         // (from the start) or - for all.
