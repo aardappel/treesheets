@@ -41,6 +41,9 @@ msgstr "정보(&A)..."
 msgid "&Add Cell Text as Tag"
 msgstr "셀 텍스트를 태그로 추가(&A)"
 
+msgid "&Add Files as Templates..."
+msgstr "파일을 템플릿으로 추가(&A)..."
+
 msgid "&Add to Menu..."
 msgstr "메뉴에 추가(&A)..."
 
@@ -140,6 +143,9 @@ msgstr "다음 일치(&N)"
 msgid "&Next tab"
 msgstr "다음 탭(&N)"
 
+msgid "&Open File as Template..."
+msgstr "파일을 템플릿으로 열기(&O)..."
+
 msgid "&Open..."
 msgstr "열기(&O)..."
 
@@ -172,6 +178,9 @@ msgstr "다시 실행(&R)"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "태그에서 셀 텍스트 제거(&R)"
+
+msgid "&Remove Template..."
+msgstr "템플릿 제거(&R)..."
 
 msgid "&Replace"
 msgstr "바꾸기(&R)"
@@ -263,14 +272,23 @@ msgstr "<이름 없음>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "임시 자동 저장 파일이 있는데 대신 로드하시겠습니까?"
 
+msgid "Add &Current Document as Template"
+msgstr "현재 문서를 템플릿으로 추가(&C)"
+
 msgid "Add Image"
 msgstr "이미지 추가"
 
 msgid "Add Lobster scripts to the menu"
 msgstr "메뉴에 Lobster 스크립트 추가"
 
+msgid "Add TreeSheets files to this menu as templates"
+msgstr "TreeSheets 파일을 템플릿으로 이 메뉴에 추가"
+
 msgid "Add an image to the selected cell"
 msgstr "선택한 셀에 이미지 추가"
+
+msgid "Add the file of the current document to this menu as a template"
+msgstr "현재 문서의 파일을 템플릿으로 이 메뉴에 추가"
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "선택한 셀에 NxN 격자 추가"
@@ -604,6 +622,9 @@ msgstr "손상된 블록 헤더입니다."
 
 msgid "Create a new document"
 msgstr "새 문서 만들기"
+
+msgid "Create a new document from a copy of a TreeSheets file"
+msgstr "TreeSheets 파일의 사본으로 새 문서 만들기"
 
 msgid "Create backup file before document is saved to file"
 msgstr "문서가 파일에 저장되기 전에 백업 파일 만들기"
@@ -1227,6 +1248,9 @@ msgstr "새 시트"
 msgid "New file cancelled."
 msgstr "새 파일이 취소되었습니다."
 
+msgid "New from &Template"
+msgstr "템플릿으로 새로 만들기(&T)"
+
 msgid "New subgrid"
 msgstr "새 하위 격자"
 
@@ -1435,6 +1459,9 @@ msgstr "이미지 크기를 조정하려는 비율을 입력하세요:"
 msgid "Please pick a menu item to change the key binding for"
 msgstr "키 바인딩을 변경할 메뉴 항목을 선택하세요"
 
+msgid "Please save the document first."
+msgstr "먼저 문서를 저장하세요."
+
 msgid "Please select Lobster script file(s):"
 msgstr "Lobster 스크립트 파일을 선택하세요:"
 
@@ -1456,6 +1483,12 @@ msgstr "열 Lobster 스크립트 파일을 선택하세요:"
 msgid "Please select the Lobster script to run:"
 msgstr "실행할 Lobster 스크립트 파일을 선택하세요:"
 
+msgid "Please select the TreeSheets file(s) to add as templates:"
+msgstr "템플릿으로 추가할 TreeSheets 파일을 선택하세요:"
+
+msgid "Please select the TreeSheets file(s) to create documents from:"
+msgstr "문서를 만들 TreeSheets 파일을 선택하세요:"
+
 msgid "Please select the datetime range."
 msgstr "날짜 범위를 선택해 주세요."
 
@@ -1467,6 +1500,9 @@ msgstr "열 스크립트를 선택하세요:"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "목록에서 제거하려는 스크립트를 선택하세요:"
+
+msgid "Please select the template you want to remove from the list:"
+msgstr "목록에서 제거하려는 템플릿을 선택하세요:"
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "F11 키를 눌러 전체 화면 모드를 종료합니다."
@@ -1515,6 +1551,9 @@ msgstr "다른 컴퓨터가 파일을 변경한 경우 다시 로드합니다 (�
 msgid "Remo&ve"
 msgstr "제거(&V)"
 
+msgid "Remove a template from this menu"
+msgstr "이 메뉴에서 템플릿 제거"
+
 msgid "Remove image(s) from the selected cells"
 msgstr "선택한 셀에서 이미지 제거"
 
@@ -1523,6 +1562,9 @@ msgstr "메뉴 목록에서 스크립트 제거"
 
 msgid "Remove script from list..."
 msgstr "목록에서 스크립트 제거..."
+
+msgid "Remove template from list..."
+msgstr "목록에서 템플릿 제거..."
 
 msgid "Render document centered"
 msgstr "문서 가운데로 렌더링"

@@ -40,6 +40,9 @@ msgstr "關於(&A)..."
 msgid "&Add Cell Text as Tag"
 msgstr "將儲存格內容加為標籤(&A)"
 
+msgid "&Add Files as Templates..."
+msgstr "將檔案加入為範本(&A)..."
+
 msgid "&Add to Menu..."
 msgstr "加入選單(&A)..."
 
@@ -139,6 +142,9 @@ msgstr "下一個符合項目(&N)"
 msgid "&Next tab"
 msgstr "下一個分頁(&N)"
 
+msgid "&Open File as Template..."
+msgstr "將檔案作為範本開啟(&O)..."
+
 msgid "&Open..."
 msgstr "開啟(&O)..."
 
@@ -171,6 +177,9 @@ msgstr "重做(&R)"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "從標籤中移除儲存格內容(&R)"
+
+msgid "&Remove Template..."
+msgstr "移除範本(&R)..."
 
 msgid "&Replace"
 msgstr "取代(&R)"
@@ -262,14 +271,23 @@ msgstr "<未命名>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "偵測到暫存的自動儲存檔案，是否要改為載入該檔案？"
 
+msgid "Add &Current Document as Template"
+msgstr "將目前文件加入為範本(&C)"
+
 msgid "Add Image"
 msgstr "新增圖片"
 
 msgid "Add Lobster scripts to the menu"
 msgstr "將 Lobster 指令碼加入選單"
 
+msgid "Add TreeSheets files to this menu as templates"
+msgstr "將 TreeSheets 檔案作為範本加入此選單"
+
 msgid "Add an image to the selected cell"
 msgstr "將圖片加入選取的儲存格"
+
+msgid "Add the file of the current document to this menu as a template"
+msgstr "將目前文件的檔案作為範本加入此選單"
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "將 NxN 網格加入選取的儲存格"
@@ -597,6 +615,9 @@ msgstr "區塊標頭毀損。"
 
 msgid "Create a new document"
 msgstr "建立新文件"
+
+msgid "Create a new document from a copy of a TreeSheets file"
+msgstr "從 TreeSheets 檔案的複本建立新文件"
 
 msgid "Create backup file before document is saved to file"
 msgstr "在文件儲存前建立備份檔"
@@ -1207,6 +1228,9 @@ msgstr "新工作表"
 msgid "New file cancelled."
 msgstr "新增檔案已取消。"
 
+msgid "New from &Template"
+msgstr "從範本新增(&T)"
+
 msgid "New subgrid"
 msgstr "新增子網格"
 
@@ -1411,6 +1435,9 @@ msgstr "請輸入圖片縮放的百分比："
 msgid "Please pick a menu item to change the key binding for"
 msgstr "請選擇要變更快速鍵組合的選單項目"
 
+msgid "Please save the document first."
+msgstr "請先儲存文件。"
+
 msgid "Please select Lobster script file(s):"
 msgstr "請選擇 Lobster 指令碼檔案："
 
@@ -1432,6 +1459,12 @@ msgstr "請選擇要開啟的 Lobster 指令碼："
 msgid "Please select the Lobster script to run:"
 msgstr "請選擇要執行的 Lobster 指令碼："
 
+msgid "Please select the TreeSheets file(s) to add as templates:"
+msgstr "請選擇要加入為範本的 TreeSheets 檔案："
+
+msgid "Please select the TreeSheets file(s) to create documents from:"
+msgstr "請選擇用來建立文件的 TreeSheets 檔案："
+
 msgid "Please select the datetime range."
 msgstr "請選擇日期時間範圍。"
 
@@ -1443,6 +1476,9 @@ msgstr "請選擇要開啟的指令碼："
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "請選擇要從清單中移除的指令碼："
+
+msgid "Please select the template you want to remove from the list:"
+msgstr "請選擇要從清單中移除的範本："
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "按 F11 離開全螢幕模式。"
@@ -1491,6 +1527,9 @@ msgstr "其他電腦變更檔案時重新載入（已有變更時會詢問）"
 msgid "Remo&ve"
 msgstr "移除(&V)"
 
+msgid "Remove a template from this menu"
+msgstr "從此選單移除範本"
+
 msgid "Remove image(s) from the selected cells"
 msgstr "從選取的儲存格中移除圖片"
 
@@ -1499,6 +1538,9 @@ msgstr "從選單清單中移除指令碼"
 
 msgid "Remove script from list..."
 msgstr "從清單中移除指令碼..."
+
+msgid "Remove template from list..."
+msgstr "從清單中移除範本..."
 
 msgid "Render document centered"
 msgstr "置中繪製文件"

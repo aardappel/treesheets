@@ -44,6 +44,9 @@ msgstr "&Sobre o TreeSheets"
 msgid "&Add Cell Text as Tag"
 msgstr "&Adicionar Texto da Célula como Tag"
 
+msgid "&Add Files as Templates..."
+msgstr "A&dicionar arquivos como modelos..."
+
 msgid "&Add to Menu..."
 msgstr "A&dicionar ao menu..."
 
@@ -143,6 +146,9 @@ msgstr "Correspondência Se&guinte"
 msgid "&Next tab"
 msgstr "Aba se&guinte"
 
+msgid "&Open File as Template..."
+msgstr "&Abrir arquivo como modelo..."
+
 msgid "&Open..."
 msgstr "&Abrir..."
 
@@ -175,6 +181,9 @@ msgstr "&Refazer"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "&Remover Texto da Célula das Tags"
+
+msgid "&Remove Template..."
+msgstr "&Remover modelo..."
 
 msgid "&Replace"
 msgstr "&Substituir"
@@ -268,14 +277,23 @@ msgstr ""
 "Existe um arquivo temporário do salvamento automático, gostaria de carregá-"
 "lo no lugar?"
 
+msgid "Add &Current Document as Template"
+msgstr "Adicionar documento &atual como modelo"
+
 msgid "Add Image"
 msgstr "Adicionar Imagem"
 
 msgid "Add Lobster scripts to the menu"
 msgstr "Adiciona script(s) Lobster ao menu"
 
+msgid "Add TreeSheets files to this menu as templates"
+msgstr "Adiciona arquivos do TreeSheets a este menu como modelos"
+
 msgid "Add an image to the selected cell"
 msgstr "Adiciona uma imagem à célula selecionada"
+
+msgid "Add the file of the current document to this menu as a template"
+msgstr "Adiciona o arquivo do documento atual a este menu como modelo"
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "Adiciona uma grade NxN à célula selecionada"
@@ -613,6 +631,9 @@ msgstr "O cabeçalho do bloco está corrompido."
 
 msgid "Create a new document"
 msgstr "Cria um novo documento"
+
+msgid "Create a new document from a copy of a TreeSheets file"
+msgstr "Cria um novo documento a partir de uma cópia de um arquivo do TreeSheets"
 
 msgid "Create backup file before document is saved to file"
 msgstr "Cria arquivo de backup antes de salvar o documento"
@@ -1268,6 +1289,9 @@ msgstr "Nova TreeSheet"
 msgid "New file cancelled."
 msgstr "O novo arquivo foi cancelado."
 
+msgid "New from &Template"
+msgstr "Novo a partir de &modelo"
+
 msgid "New subgrid"
 msgstr "Nova subgrade"
 
@@ -1490,6 +1514,9 @@ msgstr ""
 "Por favor escolha um item de menu para o qual deseja mudar a associação de "
 "teclas"
 
+msgid "Please save the document first."
+msgstr "Por favor salve o documento primeiro."
+
 msgid "Please select Lobster script file(s):"
 msgstr "Por favor selecione arquivo(s) de script Lobster:"
 
@@ -1511,6 +1538,12 @@ msgstr "Por favor selecione o script Lobster a abrir:"
 msgid "Please select the Lobster script to run:"
 msgstr "Por favor selecione o script Lobster a executar:"
 
+msgid "Please select the TreeSheets file(s) to add as templates:"
+msgstr "Por favor selecione arquivo(s) do TreeSheets para adicionar como modelos:"
+
+msgid "Please select the TreeSheets file(s) to create documents from:"
+msgstr "Por favor selecione arquivo(s) do TreeSheets a partir dos quais criar documentos:"
+
 msgid "Please select the datetime range."
 msgstr "Por favor selecione a data/hora inicial e a final."
 
@@ -1522,6 +1555,9 @@ msgstr "Por favor selecione o script a abrir:"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Por favor selecione o script que deseja remover da lista:"
+
+msgid "Please select the template you want to remove from the list:"
+msgstr "Por favor selecione o modelo que deseja remover da lista:"
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "Tecle F11 para sair do modo de tela cheia."
@@ -1572,6 +1608,9 @@ msgstr ""
 msgid "Remo&ve"
 msgstr "Remo&ver"
 
+msgid "Remove a template from this menu"
+msgstr "Remove um modelo deste menu"
+
 msgid "Remove image(s) from the selected cells"
 msgstr "Remove imagem(ns) das células selecionadas"
 
@@ -1580,6 +1619,9 @@ msgstr "Remove script da lista no meu"
 
 msgid "Remove script from list..."
 msgstr "Remover script da lista..."
+
+msgid "Remove template from list..."
+msgstr "Remover modelo da lista..."
 
 msgid "Render document centered"
 msgstr "Renderizar documento &centralizado na tela"

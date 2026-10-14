@@ -62,6 +62,7 @@ struct TSFrame : wxFrame {
     wxIcon icon;
     wxTaskBarIcon taskbaricon;
     wxMenu *editmenupopup;
+    wxMenu *templatemenu {nullptr};
     #ifdef ENABLE_LOBSTER
         wxMenu *scriptmenu {nullptr};
         wxString scriptcode;  // The last code of Script > Run Code, and the file it is from.
@@ -215,6 +216,9 @@ struct TSFrame : wxFrame {
 
         auto *filemenu = new wxMenu();
         MyAppend(filemenu, wxID_NEW, _("&New") + "\tCTRL+N", _("Create a new document"));
+        templatemenu = new wxMenu();
+        UpdateTemplateMenu();
+        filemenu->AppendSubMenu(templatemenu, _("New from &Template"));
         MyAppend(filemenu, wxID_OPEN, _("&Open...") + "\tCTRL+O", _("Open an existing document"));
         MyAppend(filemenu, wxID_CLOSE, _("&Close") + "\tCTRL+W", _("Close current document"));
         filemenu->AppendSubMenu(recentmenu, _("&Recent files"));
@@ -1601,7 +1605,7 @@ struct TSFrame : wxFrame {
                         }
                         scriptfile = filename;
                         if (addtomenu) {
-                            AddScript(filename);
+                            AddToList(sys->scripts, filename);
                             UpdateScriptMenu(scriptmenu);
                         }
                         update();
@@ -1655,23 +1659,61 @@ struct TSFrame : wxFrame {
                                      _("Lobster Files (*.lobster)|*.lobster|All Files (*.*)|*.*"),
                                      ScriptDir());
                     if (!filenames.IsEmpty()) {
-                        for (auto &filename : filenames) { AddScript(filename); }
+                        for (auto &filename : filenames) { AddToList(sys->scripts, filename); }
                         UpdateScriptMenu(scriptmenu);
                     }
                     break;
                 }
 
-                case A_DETSCRIPT: {
-                    auto dialog = wxSingleChoiceDialog(
-                        this, _("Please select the script you want to remove from the list:"),
-                        _("Remove script from list..."), sys->scripts);
-                    if (dialog.ShowModal() == wxID_OK && dialog.GetSelection() >= 0) {
-                        sys->scripts.RemoveAt(dialog.GetSelection());
+                case A_DETSCRIPT:
+                    if (RemoveFromList(
+                            sys->scripts,
+                            _("Please select the script you want to remove from the list:"),
+                            _("Remove script from list..."))) {
                         UpdateScriptMenu(scriptmenu);
                     }
                     break;
-                }
             #endif
+
+            case A_OPENTEMPLATE: {
+                wxArrayString filenames;
+                GetFilesFromUser(
+                    filenames, this,
+                    _("Please select the TreeSheets file(s) to create documents from:"),
+                    _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"), TemplateDir());
+                for (auto &filename : filenames) { sys->Open(filename, true); }
+                break;
+            }
+
+            case A_ADDTEMPLATE: {
+                wxArrayString filenames;
+                GetFilesFromUser(filenames, this,
+                                 _("Please select the TreeSheets file(s) to add as templates:"),
+                                 _("TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"),
+                                 TemplateDir());
+                for (auto &filename : filenames) { AddToList(sys->templates, filename); }
+                UpdateTemplateMenu();
+                break;
+            }
+
+            case A_ADDCURTEMPLATE:
+                // A template is a file, so the document needs one.
+                if (canvas->doc->filename.IsEmpty()) {
+                    SetStatus(_("Please save the document first."));
+                    break;
+                }
+                AddToList(sys->templates, canvas->doc->filename);
+                UpdateTemplateMenu();
+                break;
+
+            case A_DETTEMPLATE:
+                if (RemoveFromList(
+                        sys->templates,
+                        _("Please select the template you want to remove from the list:"),
+                        _("Remove template from list..."))) {
+                    UpdateTemplateMenu();
+                }
+                break;
 
             case A_DEFAULTMAXCOLWIDTH: {
                 int w = wxGetNumberFromUser(_("Please enter the default column width:"),
@@ -1793,16 +1835,18 @@ struct TSFrame : wxFrame {
                 #ifdef ENABLE_LOBSTER
                     const int tagsend = A_SCRIPT;
                 #else
-                    const int tagsend = A_MAXACTION;
+                    const int tagsend = A_TEMPLATE;
                 #endif
                 if (id >= wxID_FILE1 && id <= wxID_FILE9) {
                     SetStatus(sys->Open(filehistory.GetHistoryFile(id - wxID_FILE1)));
                 } else if (id >= A_TAGSET && id < tagsend) {
                     SetStatus(canvas->doc->TagSet(id - A_TAGSET));
                 #ifdef ENABLE_LOBSTER
-                } else if (id >= A_SCRIPT && id < A_MAXACTION) {
+                } else if (id >= A_SCRIPT && id < A_TEMPLATE) {
                     RunScript(sys->scripts[id - A_SCRIPT]);
                 #endif
+                } else if (id >= A_TEMPLATE && id < A_MAXACTION) {
+                    sys->Open(sys->templates[id - A_TEMPLATE], true);
                 } else {
                     // Shift only counts on toolbar buttons, as it is part of some shortcuts.
                     auto recursive = wxDynamicCast(ce.GetEventObject(), wxAuiToolBar) &&
@@ -1974,8 +2018,9 @@ struct TSFrame : wxFrame {
         }
         sys->RememberOpenFiles();
         #ifdef ENABLE_LOBSTER
-            sys->RememberScripts();
+            sys->WriteList("script", sys->scripts);
         #endif
+        sys->WriteList("template", sys->templates);
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, notebook->GetPageCount()) {
@@ -2286,16 +2331,49 @@ struct TSFrame : wxFrame {
         if (GetStatusBar()->GetStatusText(4) != amount) { SetStatusText(amount, 4); }
     }
 
+    static void AddToList(wxArrayString &list, const wxString &filename) {
+        if (list.Index(filename) == wxNOT_FOUND) { list.Add(filename); }
+    }
+
+    // Asks which file to remove from list, and returns whether one was.
+    bool RemoveFromList(wxArrayString &list, const wxString &message, const wxString &caption) {
+        wxSingleChoiceDialog dialog(this, message, caption, list);
+        if (dialog.ShowModal() != wxID_OK || dialog.GetSelection() < 0) { return false; }
+        list.RemoveAt(dialog.GetSelection());
+        return true;
+    }
+
+    // The folder of the most recently added template.
+    wxString TemplateDir() const {
+        return sys->templates.IsEmpty() ? wxString()
+                                        : wxFileName(sys->templates.Last()).GetPath();
+    }
+
+    void UpdateTemplateMenu() {
+        auto *menu = templatemenu;
+        while (menu->GetMenuItemCount() > 0) { menu->Destroy(menu->FindItemByPosition(0)); }
+        MyAppend(menu, A_OPENTEMPLATE, _("&Open File as Template..."),
+                 _("Create a new document from a copy of a TreeSheets file"));
+        MyAppend(menu, A_ADDTEMPLATE, _("&Add Files as Templates..."),
+                 _("Add TreeSheets files to this menu as templates"));
+        MyAppend(menu, A_ADDCURTEMPLATE, _("Add &Current Document as Template"),
+                 _("Add the file of the current document to this menu as a template"));
+        MyAppend(menu, A_DETTEMPLATE, _("&Remove Template..."),
+                 _("Remove a template from this menu"));
+        if (!sys->templates.IsEmpty()) { menu->AppendSeparator(); }
+        loop(i, static_cast<int>(sys->templates.GetCount())) {
+            MyAppend(menu, A_TEMPLATE + i,
+                     wxControl::EscapeMnemonics(wxFileName(sys->templates[i]).GetName()),
+                     sys->templates[i]);
+        }
+    }
+
     #ifdef ENABLE_LOBSTER
         // If code is non-empty it is run, and filename only labels its errors.
         void RunScript(const wxString &filename, std::string_view code = {}) {
             auto message = tssi.ScriptRun(filename.c_str(), code);
             message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
             SetStatus(wxString(message));
-        }
-
-        void AddScript(const wxString &filename) {
-            if (sys->scripts.Index(filename) == wxNOT_FOUND) { sys->scripts.Add(filename); }
         }
 
         // The folder of the most recently added script, or else the bundled scripts.

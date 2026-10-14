@@ -304,12 +304,17 @@ enum {
     A_ALIGNTOP,
     A_ALIGNMIDDLE,
     A_ALIGNBOTTOM,
+    A_OPENTEMPLATE,
+    A_ADDTEMPLATE,
+    A_ADDCURTEMPLATE,
+    A_DETTEMPLATE,
     A_NOP,
     A_TAGSET = 1000,  // and all values from here on
     #ifdef ENABLE_LOBSTER
         A_SCRIPT = 2000,  // and all values from here on
     #endif
-    A_MAXACTION = 3000
+    A_TEMPLATE = 3000,  // and all values from here on
+    A_MAXACTION = 4000
 };
 
 enum {

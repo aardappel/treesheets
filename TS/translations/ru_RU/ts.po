@@ -46,6 +46,9 @@ msgstr "&О программе..."
 msgid "&Add Cell Text as Tag"
 msgstr "Доб&авить Текст Ячейки как Тег"
 
+msgid "&Add Files as Templates..."
+msgstr "&Добавить файлы как шаблоны..."
+
 msgid "&Add to Menu..."
 msgstr "&Добавить в меню..."
 
@@ -145,6 +148,9 @@ msgstr "&Следующее Совпадение"
 msgid "&Next tab"
 msgstr "&Cледующая вкладка (CTRL+TAB)"
 
+msgid "&Open File as Template..."
+msgstr "&Открыть файл как шаблон..."
+
 msgid "&Open..."
 msgstr "Открыть..."
 
@@ -177,6 +183,9 @@ msgstr "Вернуть"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "У&далить Текст Ячейки из Тегов"
+
+msgid "&Remove Template..."
+msgstr "&Удалить шаблон..."
 
 msgid "&Replace"
 msgstr "&Заменить"
@@ -276,6 +285,9 @@ msgstr "<безымянный>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "Обнаружен временный файл автосохранения. Загрузить его вместо открытого файла?"
 
+msgid "Add &Current Document as Template"
+msgstr "Добавить &текущий документ как шаблон"
+
 msgid "Add Image"
 msgstr "Добавить изображение"
 
@@ -283,9 +295,15 @@ msgstr "Добавить изображение"
 msgid "Add Lobster scripts to the menu"
 msgstr "Добавить сценарии Lobster в меню"
 
+msgid "Add TreeSheets files to this menu as templates"
+msgstr "Добавить файлы TreeSheets в это меню как шаблоны"
+
 # комментарий к п. Меню
 msgid "Add an image to the selected cell"
 msgstr "Добавить изображение в выбранную ячейку"
+
+msgid "Add the file of the current document to this menu as a template"
+msgstr "Добавить файл текущего документа в это меню как шаблон"
 
 # комментарий к п. Меню
 msgid "Adds a NxN grid to the selected cell"
@@ -674,6 +692,9 @@ msgstr "Повреждён заголовок блока."
 # комментарий к п. Меню
 msgid "Create a new document"
 msgstr "Создать новый документ"
+
+msgid "Create a new document from a copy of a TreeSheets file"
+msgstr "Создать новый документ из копии файла TreeSheets"
 
 # комментарий к п. Меню
 msgid "Create backup file before document is saved to file"
@@ -1358,6 +1379,9 @@ msgstr "Новый Лист"
 msgid "New file cancelled."
 msgstr "Создание нового файла отменено."
 
+msgid "New from &Template"
+msgstr "Новый из &шаблона"
+
 # Заголовок Окна (выбор п. Меню)
 msgid "New subgrid"
 msgstr "Новая подсетка"
@@ -1598,6 +1622,9 @@ msgstr "Введите процент, на который вы хотите м�
 msgid "Please pick a menu item to change the key binding for"
 msgstr "Выберите пункт меню, чтобы изменить назначение клавиш для"
 
+msgid "Please save the document first."
+msgstr "Сначала сохраните документ."
+
 # Заголовок Окна (выбор п. Меню)
 msgid "Please select Lobster script file(s):"
 msgstr "Выберите файл(ы) Lobster-сценария:"
@@ -1625,6 +1652,12 @@ msgstr "Выберите Lobster-сценарий для открытия:"
 msgid "Please select the Lobster script to run:"
 msgstr "Выберите Lobster-сценарий для запуска:"
 
+msgid "Please select the TreeSheets file(s) to add as templates:"
+msgstr "Выберите TreeSheets-файл(ы) для добавления как шаблоны:"
+
+msgid "Please select the TreeSheets file(s) to create documents from:"
+msgstr "Выберите TreeSheets-файл(ы), из которых создать документы:"
+
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Please select the datetime range."
 msgstr "Выберите Диапазон."
@@ -1638,6 +1671,9 @@ msgstr "Выберите сценарий для открытия:"
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "Выберите сценарий, который вы хотите удалить из списка:"
+
+msgid "Please select the template you want to remove from the list:"
+msgstr "Выберите шаблон, который вы хотите удалить из списка:"
 
 # ??? Сообщение (после действия или события)
 msgid "Press F11 to exit fullscreen mode."
@@ -1689,6 +1725,9 @@ msgstr "Перезагружать файл, если другой компью�
 msgid "Remo&ve"
 msgstr "У&далить"
 
+msgid "Remove a template from this menu"
+msgstr "Удалить шаблон из этого меню"
+
 # комментарий к п. Меню
 msgid "Remove image(s) from the selected cells"
 msgstr "Удалить изображение(я) из выбранных ячеек"
@@ -1699,6 +1738,9 @@ msgstr "Удалить сценарий из списка меню"
 
 msgid "Remove script from list..."
 msgstr "Удалить сценарий из списка..."
+
+msgid "Remove template from list..."
+msgstr "Удалить шаблон из списка..."
 
 msgid "Render document centered"
 msgstr "Отображать документ по Центру"

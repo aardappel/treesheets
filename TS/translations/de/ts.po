@@ -41,6 +41,9 @@ msgstr "Über..."
 msgid "&Add Cell Text as Tag"
 msgstr "&Zellentext als Schlagwort hinzufügen"
 
+msgid "&Add Files as Templates..."
+msgstr "Dateien als Vorlagen &hinzufügen..."
+
 msgid "&Add to Menu..."
 msgstr "Zum Menü &hinzufügen..."
 
@@ -140,6 +143,9 @@ msgstr "&Nächster Suchtreffer"
 msgid "&Next tab"
 msgstr "&Nächster Tab"
 
+msgid "&Open File as Template..."
+msgstr "Datei als Vorlage ö&ffnen..."
+
 msgid "&Open..."
 msgstr "&Öffnen..."
 
@@ -172,6 +178,9 @@ msgstr "&Wiederherstellen"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "Zellentext als Schlagwort entfe&rnen"
+
+msgid "&Remove Template..."
+msgstr "Vorlage &entfernen..."
 
 msgid "&Replace"
 msgstr "E&rsetzen"
@@ -265,14 +274,23 @@ msgstr ""
 "Eine temporäre Sicherungskopie existiert. Möchten Sie diese stattdessen "
 "laden?"
 
+msgid "Add &Current Document as Template"
+msgstr "Aktuelles &Dokument als Vorlage hinzufügen"
+
 msgid "Add Image"
 msgstr "Bild hinzufügen"
 
 msgid "Add Lobster scripts to the menu"
 msgstr "Lobster-Skripts zum Menü hinzufügen"
 
+msgid "Add TreeSheets files to this menu as templates"
+msgstr "TreeSheets-Dateien als Vorlagen zu diesem Menü hinzufügen"
+
 msgid "Add an image to the selected cell"
 msgstr "Ein Bild in die ausgewählte Zelle einfügen"
+
+msgid "Add the file of the current document to this menu as a template"
+msgstr "Die Datei des aktuellen Dokuments als Vorlage zu diesem Menü hinzufügen"
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "Eine NxN-Tabelle in die ausgewählte Zelle einfügen"
@@ -618,6 +636,9 @@ msgstr "Beschädigter Block-Header!"
 
 msgid "Create a new document"
 msgstr "Ein neues Dokument erstellen"
+
+msgid "Create a new document from a copy of a TreeSheets file"
+msgstr "Ein neues Dokument aus einer Kopie einer TreeSheets-Datei erstellen"
 
 msgid "Create backup file before document is saved to file"
 msgstr "Eine Sicherungskopie vor dem Speichern des Dokuments erstellen"
@@ -1276,6 +1297,9 @@ msgstr "Neues Blatt"
 msgid "New file cancelled."
 msgstr "Erstellen der neuen Datei abgebrochen!"
 
+msgid "New from &Template"
+msgstr "Neu aus &Vorlage"
+
 msgid "New subgrid"
 msgstr "Neue Untertabelle"
 
@@ -1499,6 +1523,9 @@ msgstr ""
 "Bitte wählen Sie ein Menüeintrag, um die Tastenkombination hierfür ändern zu "
 "können"
 
+msgid "Please save the document first."
+msgstr "Bitte speichern Sie das Dokument zuerst."
+
 msgid "Please select Lobster script file(s):"
 msgstr "Bitte wählen Sie Lobster-Skriptdatei(en) aus:"
 
@@ -1520,6 +1547,12 @@ msgstr "Bitte wählen Sie das zu öffnende Lobster-Skript aus:"
 msgid "Please select the Lobster script to run:"
 msgstr "Bitte wählen Sie das auszuführende Lobster-Skript aus:"
 
+msgid "Please select the TreeSheets file(s) to add as templates:"
+msgstr "Bitte wählen Sie die TreeSheets-Datei(en) aus, die als Vorlagen hinzugefügt werden sollen:"
+
+msgid "Please select the TreeSheets file(s) to create documents from:"
+msgstr "Bitte wählen Sie die TreeSheets-Datei(en) aus, aus denen Dokumente erstellt werden sollen:"
+
 msgid "Please select the datetime range."
 msgstr "Bitte wählen Sie den Datums- und Zeitbereich aus."
 
@@ -1534,6 +1567,9 @@ msgstr "Bitte wählen Sie das zu öffnende Skript aus:"
 msgid "Please select the script you want to remove from the list:"
 msgstr ""
 "Bitte wählen Sie das Skript aus, das sie aus der Liste entfernen möchten:"
+
+msgid "Please select the template you want to remove from the list:"
+msgstr "Bitte wählen Sie die Vorlage aus, die Sie aus der Liste entfernen möchten:"
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "F11 drücken, um den Vollbildmous zu verlassen."
@@ -1584,6 +1620,9 @@ msgstr ""
 msgid "Remo&ve"
 msgstr "Entfe&rnen"
 
+msgid "Remove a template from this menu"
+msgstr "Eine Vorlage aus diesem Menü entfernen"
+
 msgid "Remove image(s) from the selected cells"
 msgstr "Bild(er) aus der ausgewählten Zelle entfernen"
 
@@ -1592,6 +1631,9 @@ msgstr "Skript aus der Liste in dem Menü entfernen"
 
 msgid "Remove script from list..."
 msgstr "Skript aus der Liste entfernen..."
+
+msgid "Remove template from list..."
+msgstr "Vorlage aus der Liste entfernen..."
 
 msgid "Render document centered"
 msgstr "Dokument mittig rendern"

@@ -41,6 +41,9 @@ msgstr "TreeSheets について(&A)..."
 msgid "&Add Cell Text as Tag"
 msgstr "セルテキストをタグとして追加(&A)"
 
+msgid "&Add Files as Templates..."
+msgstr "ファイルをテンプレートとして追加(&A)..."
+
 msgid "&Add to Menu..."
 msgstr "メニューに追加(&A)..."
 
@@ -140,6 +143,9 @@ msgstr "次の一致(&N)"
 msgid "&Next tab"
 msgstr "次のタブ(&N)"
 
+msgid "&Open File as Template..."
+msgstr "ファイルをテンプレートとして開く(&O)..."
+
 msgid "&Open..."
 msgstr "開く(&O)..."
 
@@ -172,6 +178,9 @@ msgstr "やり直し(&R)"
 
 msgid "&Remove Cell Text from Tags"
 msgstr "タグからセルテキストを削除(&R)"
+
+msgid "&Remove Template..."
+msgstr "テンプレートを削除(&R)..."
 
 msgid "&Replace"
 msgstr "置換(&R)"
@@ -263,14 +272,23 @@ msgstr "<名前なし>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "一時的な自動保存ファイルが存在します。代わりにそれを読み込みますか？"
 
+msgid "Add &Current Document as Template"
+msgstr "現在のドキュメントをテンプレートとして追加(&C)"
+
 msgid "Add Image"
 msgstr "画像を追加"
 
 msgid "Add Lobster scripts to the menu"
 msgstr "Lobster スクリプトをメニューに追加"
 
+msgid "Add TreeSheets files to this menu as templates"
+msgstr "TreeSheetsファイルをテンプレートとしてこのメニューに追加"
+
 msgid "Add an image to the selected cell"
 msgstr "選択したセルに画像を追加"
+
+msgid "Add the file of the current document to this menu as a template"
+msgstr "現在のドキュメントのファイルをテンプレートとしてこのメニューに追加"
 
 msgid "Adds a NxN grid to the selected cell"
 msgstr "選択したセルに NxN グリッドを追加"
@@ -605,6 +623,9 @@ msgstr "ブロックヘッダーが破損しています。"
 
 msgid "Create a new document"
 msgstr "新規ドキュメントを作成"
+
+msgid "Create a new document from a copy of a TreeSheets file"
+msgstr "TreeSheetsファイルのコピーから新規ドキュメントを作成"
 
 msgid "Create backup file before document is saved to file"
 msgstr "ドキュメントをファイルに保存する前にバックアップファイルを作成"
@@ -1241,6 +1262,9 @@ msgstr "新しいシート"
 msgid "New file cancelled."
 msgstr "新規ファイル作成がキャンセルされました。"
 
+msgid "New from &Template"
+msgstr "テンプレートから新規作成(&T)"
+
 msgid "New subgrid"
 msgstr "新しいサブグリッド"
 
@@ -1459,6 +1483,9 @@ msgstr "画像をスケールするパーセンテージを入力してくださ
 msgid "Please pick a menu item to change the key binding for"
 msgstr "キーバインドを変更するメニュー項目を選択してください"
 
+msgid "Please save the document first."
+msgstr "先にドキュメントを保存してください。"
+
 msgid "Please select Lobster script file(s):"
 msgstr "Lobsterスクリプトファイルを選択してください :"
 
@@ -1480,6 +1507,12 @@ msgstr "開く Lobster スクリプトを選択してください :"
 msgid "Please select the Lobster script to run:"
 msgstr "実行する Lobster スクリプトを選択してください :"
 
+msgid "Please select the TreeSheets file(s) to add as templates:"
+msgstr "テンプレートとして追加するTreeSheetsファイルを選択してください:"
+
+msgid "Please select the TreeSheets file(s) to create documents from:"
+msgstr "ドキュメントの作成元にするTreeSheetsファイルを選択してください:"
+
 msgid "Please select the datetime range."
 msgstr "日時範囲を選択してください。"
 
@@ -1491,6 +1524,9 @@ msgstr "開くスクリプトを選択してください："
 
 msgid "Please select the script you want to remove from the list:"
 msgstr "リストから削除するスクリプトを選択してください："
+
+msgid "Please select the template you want to remove from the list:"
+msgstr "リストから削除するテンプレートを選択してください："
 
 msgid "Press F11 to exit fullscreen mode."
 msgstr "全画面モードを終了するには F11 を押してください。"
@@ -1541,6 +1577,9 @@ msgstr ""
 msgid "Remo&ve"
 msgstr "削除(&V)"
 
+msgid "Remove a template from this menu"
+msgstr "このメニューからテンプレートを削除"
+
 msgid "Remove image(s) from the selected cells"
 msgstr "選択したセルから画像を削除"
 
@@ -1549,6 +1588,9 @@ msgstr "メニューのリストからスクリプトを削除"
 
 msgid "Remove script from list..."
 msgstr "リストからスクリプトを削除..."
+
+msgid "Remove template from list..."
+msgstr "リストからテンプレートを削除..."
 
 msgid "Render document centered"
 msgstr "ドキュメントを中央揃えでレンダリング"

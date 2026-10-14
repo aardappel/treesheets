@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 14:43+0200\n"
+"POT-Creation-Date: 2026-10-14 16:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,6 +36,9 @@ msgid "&About..."
 msgstr ""
 
 msgid "&Add Cell Text as Tag"
+msgstr ""
+
+msgid "&Add Files as Templates..."
 msgstr ""
 
 msgid "&Add to Menu..."
@@ -137,6 +140,9 @@ msgstr ""
 msgid "&Next tab"
 msgstr ""
 
+msgid "&Open File as Template..."
+msgstr ""
+
 msgid "&Open..."
 msgstr ""
 
@@ -168,6 +174,9 @@ msgid "&Redo"
 msgstr ""
 
 msgid "&Remove Cell Text from Tags"
+msgstr ""
+
+msgid "&Remove Template..."
 msgstr ""
 
 msgid "&Replace"
@@ -260,13 +269,22 @@ msgstr ""
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr ""
 
+msgid "Add &Current Document as Template"
+msgstr ""
+
 msgid "Add Image"
 msgstr ""
 
 msgid "Add Lobster scripts to the menu"
 msgstr ""
 
+msgid "Add TreeSheets files to this menu as templates"
+msgstr ""
+
 msgid "Add an image to the selected cell"
+msgstr ""
+
+msgid "Add the file of the current document to this menu as a template"
 msgstr ""
 
 msgid "Adds a NxN grid to the selected cell"
@@ -589,6 +607,9 @@ msgid "Corrupt block header."
 msgstr ""
 
 msgid "Create a new document"
+msgstr ""
+
+msgid "Create a new document from a copy of a TreeSheets file"
 msgstr ""
 
 msgid "Create backup file before document is saved to file"
@@ -1193,6 +1214,9 @@ msgstr ""
 msgid "New file cancelled."
 msgstr ""
 
+msgid "New from &Template"
+msgstr ""
+
 msgid "New subgrid"
 msgstr ""
 
@@ -1395,6 +1419,9 @@ msgstr ""
 msgid "Please pick a menu item to change the key binding for"
 msgstr ""
 
+msgid "Please save the document first."
+msgstr ""
+
 msgid "Please select Lobster script file(s):"
 msgstr ""
 
@@ -1416,6 +1443,12 @@ msgstr ""
 msgid "Please select the Lobster script to run:"
 msgstr ""
 
+msgid "Please select the TreeSheets file(s) to add as templates:"
+msgstr ""
+
+msgid "Please select the TreeSheets file(s) to create documents from:"
+msgstr ""
+
 msgid "Please select the datetime range."
 msgstr ""
 
@@ -1426,6 +1459,9 @@ msgid "Please select the script to open:"
 msgstr ""
 
 msgid "Please select the script you want to remove from the list:"
+msgstr ""
+
+msgid "Please select the template you want to remove from the list:"
 msgstr ""
 
 msgid "Press F11 to exit fullscreen mode."
@@ -1475,6 +1511,9 @@ msgstr ""
 msgid "Remo&ve"
 msgstr ""
 
+msgid "Remove a template from this menu"
+msgstr ""
+
 msgid "Remove image(s) from the selected cells"
 msgstr ""
 
@@ -1482,6 +1521,9 @@ msgid "Remove script from list in the menu"
 msgstr ""
 
 msgid "Remove script from list..."
+msgstr ""
+
+msgid "Remove template from list..."
 msgstr ""
 
 msgid "Render document centered"

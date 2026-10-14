@@ -12,6 +12,7 @@ struct System {
     wxString searchstring;
     unique_ptr<wxConfigBase> cfg;
     wxArrayString scripts;
+    wxArrayString templates;  // TreeSheets files that File > New from Template copies
     wxString lastopenfile;
     Evaluator evaluator;
     wxString clipboardcopy;
@@ -133,8 +134,9 @@ struct System {
         cfg->Read("lasttextcolor", &lasttextcolor, lasttextcolor);
         cfg->Read("lastbordcolor", &lastbordcolor, lastbordcolor);
         #ifdef ENABLE_LOBSTER
-            ReadScripts();
+            ReadList("script", scripts);
         #endif
+        ReadList("template", templates);
         // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
         // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
@@ -267,13 +269,14 @@ struct System {
         return fn.GetPathWithSep() + fn.GetName() + ext;
     }
 
-    // An encrypted file is decrypted with password if given, or else asks for it.
+    // An encrypted file is decrypted with password if given, or else asks for it. As a template,
+    // the file becomes a new document without a filename, also when it is open already.
     wxString LoadDB(const wxString &filename, bool fromreload = false, int insert_at = -1,
-                    const wxString *password = nullptr) {
+                    const wxString *password = nullptr, bool astemplate = false) {
         auto fn = filename;
         auto loadedfromtmp = false;
 
-        if (!fromreload) {
+        if (!fromreload && !astemplate) {
             if (frame->GetTabByFileName(filename) != nullptr) {
                 return wxEmptyString;  //"this file is already loaded";
             }
@@ -454,7 +457,8 @@ struct System {
                             }
                         }
 
-                        doc->InitWith(std::move(root), filename, ics, xs, ys);
+                        doc->InitWith(std::move(root), astemplate ? wxString() : filename, ics,
+                                      xs, ys);
 
                         auto end_loading_time = wxGetLocalTimeMillis();
 
@@ -485,7 +489,7 @@ struct System {
                          _("PNG decoder failure"), wxOK, frame);
         }
 
-        FileUsed(filename, doc);
+        if (!astemplate) { FileUsed(filename, doc); }
         return wxEmptyString;
     }
 
@@ -516,12 +520,12 @@ struct System {
         }
     }
 
-    wxString Open(const wxString &filename) {
+    wxString Open(const wxString &filename, bool astemplate = false) {
         if (!filename.empty()) {
-            auto msg = LoadDB(filename);
+            auto msg = LoadDB(filename, false, -1, nullptr, astemplate);
             if (!msg.IsEmpty()) {
                 wxMessageBox(msg, filename, wxOK, frame);
-            } else {
+            } else if (!astemplate) {
                 lastopenfile = filename;
             }
             return msg;
@@ -574,25 +578,24 @@ struct System {
         cfg->Flush();
     }
 
-    #ifdef ENABLE_LOBSTER
-        void RememberScripts() const {
-            cfg->Write("numscripts", scripts.GetCount());
-            for (auto i = 0; i < scripts.GetCount(); ++i) {
-                cfg->Write(wxString::Format("script_%d", i), scripts[i]);
-            }
+    // The files of a menu, e.g. the scripts as numscripts and script_0, script_1, ...
+    void WriteList(const wxString &name, const wxArrayString &list) const {
+        cfg->Write("num" + name + "s", list.GetCount());
+        for (auto i = 0; i < list.GetCount(); ++i) {
+            cfg->Write(wxString::Format("%s_%d", name, i), list[i]);
         }
+    }
 
-        void ReadScripts() {
-            auto numscripts = 0;
-            if (cfg->Read("numscripts", &numscripts)) {
-                loop(i, numscripts) {
-                    wxString script {};
-                    cfg->Read(wxString::Format("script_%d", i), &script);
-                    if (!script.IsEmpty()) { scripts.Add(script); }
-                }
+    void ReadList(const wxString &name, wxArrayString &list) const {
+        auto num = 0;
+        if (cfg->Read("num" + name + "s", &num)) {
+            loop(i, num) {
+                wxString filename {};
+                cfg->Read(wxString::Format("%s_%d", name, i), &filename);
+                if (!filename.IsEmpty()) { list.Add(filename); }
             }
         }
-    #endif
+    }
 
     void SaveCheck() const {
         loop(i, frame->notebook->GetPageCount()) {
