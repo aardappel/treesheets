@@ -281,7 +281,7 @@ struct Grid {
             auto drawlines = [&]() {
                 for (int x = ldelta; x <= xs - ldelta; x++) {
                     int xl = (x == xs ? maxx : C(x, 0)->ox - g_line_width) + bx;
-                    if (xl >= doc->scrollx && xl <= doc->maxx) {
+                    if (xl >= doc->scrollx && xl < doc->maxx) {
                         // Extend by ldelta so the line overlaps the rounded outer border
                         // (drawn afterwards) instead of leaving a 1px gap where the
                         // exclusive-endpoint line and the inclusive rounded-rect edge meet.
@@ -294,7 +294,7 @@ struct Grid {
                 }
                 for (int y = ldelta; y <= ys - ldelta; y++) {
                     int yl = (y == ys ? maxy : C(0, y)->oy - g_line_width) + by;
-                    if (yl >= doc->scrolly && yl <= doc->maxy) {
+                    if (yl >= doc->scrolly && yl < doc->maxy) {
                         auto [left, right] =
                             LineSpan(bx + xoff + view_grid_outer_spacing + g_line_width - ldelta,
                                      bx + maxx + view_margin + ldelta, doc->scrollx, doc->maxx);
@@ -366,11 +366,17 @@ struct Grid {
             }
         }
         if (view_grid_outer_spacing != 0 && cell->drawstyle == DS_GRID) {
-            DrawRoundedOutlines(dc, LightColor(bordercolor), bx + xoff + view_grid_outer_spacing,
-                                by + yoff + view_grid_outer_spacing,
-                                maxx - xoff - view_grid_outer_spacing + 1 + view_margin,
-                                maxy - yoff - view_grid_outer_spacing + 1 + view_margin,
-                                sys->roundness, view_grid_outer_spacing - 1);
+            wxRect r(bx + xoff + view_grid_outer_spacing, by + yoff + view_grid_outer_spacing,
+                     maxx - xoff - view_grid_outer_spacing + 1 + view_margin,
+                     maxy - yoff - view_grid_outer_spacing + 1 + view_margin);
+            // Not when only cells inside of it are drawn (Copy as SVG). The rounded corners reach
+            // in by less than a third of their radius.
+            if (!wxRect(r).Deflate(1 + sys->roundness / 3)
+                     .Contains(wxRect(doc->scrollx, doc->scrolly, doc->maxx - doc->scrollx,
+                                      doc->maxy - doc->scrolly))) {
+                DrawRoundedOutlines(dc, LightColor(bordercolor), r.x, r.y, r.width, r.height,
+                                    sys->roundness, view_grid_outer_spacing - 1);
+            }
         }
     }
 

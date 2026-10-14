@@ -1530,8 +1530,14 @@ struct Document {
             }
             // wxSVGFileDC writes the clip rectangle as is, outside of the device origin.
             dc.SetClippingRegion(wxRect(r.GetSize()));
-            DrawRectangle(dc, p != nullptr ? p->actualcellcolor : Background(), r.x, r.y, r.width,
-                          r.height);
+            auto bg = p != nullptr ? p->actualcellcolor : Background();
+            // Unless all the cells cover it with their own color (see Cell::Render()).
+            bool covered = true;
+            loop(y, sel.ys) loop(x, sel.xs) {
+                auto &c = sel.grid->C(sel.x + x, sel.y + y);
+                covered &= c->drawstyle == DS_GRID && c->actualcellcolor != bg;
+            }
+            if (!covered) { DrawRectangle(dc, bg, r.x, r.y, r.width, r.height); }
             ResetFont(dc);
             auto *c = sel.grid->cell;
             c->grid->Render(this, c->GetX(this), c->GetY(this), dc,
