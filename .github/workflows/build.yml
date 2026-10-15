@@ -153,9 +153,11 @@ jobs:
       id: compiler
       shell: pwsh
       run: |
-        # Updates of Visual Studio can change cl.exe within the same MSVC toolset directory
+        # Updates of Visual Studio can change cl.exe within the same MSVC toolset directory. Each
+        # runner image also installs the SDK and VS headers anew, and MSBuild rebuilds everything
+        # when they are newer than the cached objects, so every image gets its own cache.
         $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationVersion
-        "id=$env:ImageOS-vs$vs" >> $env:GITHUB_OUTPUT
+        "id=$env:ImageOS-$env:ImageVersion-vs$vs" >> $env:GITHUB_OUTPUT
     - name: cache build
       uses: actions/cache@v6
       with:
