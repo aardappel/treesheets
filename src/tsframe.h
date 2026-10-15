@@ -905,37 +905,22 @@ struct TSFrame : wxFrame {
                                   wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_CLOSE_ON_ALL_TABS |
                                   GetTabPosition());
 
-        int display_id = wxDisplay::GetFromWindow(this);
-        wxRect disprect = wxDisplay(display_id == wxNOT_FOUND ? 0 : display_id).GetClientArea();
-        const int boundary = 64;
-        const int defx = disprect.width - 2 * boundary;
-        const int defy = disprect.height - 2 * boundary;
-        int resx = 0;
-        int resy = 0;
-        int posx = 0;
-        int posy = 0;
-        sys->cfg->Read("resx", &resx, defx);
-        sys->cfg->Read("resy", &resy, defy);
-        sys->cfg->Read("posx", &posx, boundary + disprect.x);
-        sys->cfg->Read("posy", &posy, boundary + disprect.y);
-        #ifndef __WXGTK__
-        // On X11, disprect only refers to the primary screen. Thus, for a multi-head display,
-        // the conditions below might be fulfilled (e.g. large window spanning multiple screens
-        // or being on the secondary screen), so just ignore them.
-        if (resx > disprect.width || resy > disprect.height || posx < disprect.x ||
-            posy < disprect.y || posx + resx > disprect.width + disprect.x ||
-            posy + resy > disprect.height + disprect.y) {
-            // Screen res has been resized since we last ran, set sizes to default to avoid being
-            // off-screen.
-            resx = defx;
-            resy = defy;
-            posx = posy = boundary;
-            posx += disprect.x;
-            posy += disprect.y;
+        // Where the window was, on the display that showed its middle, made to fit that display.
+        // If that display is gone (or nothing was saved), a default place on the primary one.
+        auto rect = wxDisplay().GetClientArea().Deflate(64);
+        wxRect saved;
+        if (sys->cfg->Read("posx", &saved.x) && sys->cfg->Read("posy", &saved.y) &&
+            sys->cfg->Read("resx", &saved.width) && sys->cfg->Read("resy", &saved.height)) {
+            auto display = wxDisplay::GetFromPoint(saved.GetPosition() + saved.GetSize() / 2);
+            if (display != wxNOT_FOUND) {
+                auto area = wxDisplay(display).GetClientArea();
+                rect.width = std::min(saved.width, area.width);
+                rect.height = std::min(saved.height, area.height);
+                rect.x = std::clamp(saved.x, area.x, area.x + area.width - rect.width);
+                rect.y = std::clamp(saved.y, area.y, area.y + area.height - rect.height);
+            }
         }
-        #endif
-        SetSize(resx, resy);
-        Move(posx, posy);
+        SetSize(rect);
 
         bool ismax = false;
         sys->cfg->Read("maximized", &ismax, true);
