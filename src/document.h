@@ -2579,7 +2579,16 @@ struct Document {
             case A_UP:
             case A_DOWN:
             case A_LEFT:
-            case A_RIGHT: selected.Cursor(this, action, false, false); return wxEmptyString;
+            case A_RIGHT:
+                // Left on the top thin line or Up on the leftmost one, at its start, goes to the
+                // parent, as there's nowhere else to go.
+                if (selected.Thin() && selected.x == 0 && selected.y == 0 &&
+                    selected.grid->cell->parent != nullptr &&
+                    (action == A_LEFT ? selected.ys == 0 : action == A_UP && selected.xs == 0)) {
+                    return Action(A_CANCELEDIT);
+                }
+                selected.Cursor(this, action, false, false);
+                return wxEmptyString;
 
             case A_MUP:
             case A_MDOWN:
