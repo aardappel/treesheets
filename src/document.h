@@ -1998,9 +1998,18 @@ struct Document {
                 info.SetName("TreeSheets");
                 info.SetVersion(wxT(PACKAGE_VERSION));
                 info.SetCopyright("(C) 2026 Wouter van Oortmerssen and Tobias Predel");
+                // The libraries that CMake builds in, see CMakeLists.txt and cmake/*.cmake.
+                wxString libs = wxVERSION_STRING " (wxWindows Library Licence)";
+                #ifdef ENABLE_LOBSTER
+                    libs += "\nLobster (Apache License 2.0)";
+                #endif
+                #ifdef ENABLE_WXPDFDOC
+                    libs += "\nwxPdfDocument (wxWindows Library Licence)";
+                #endif
+                libs += "\nMonocypher (BSD 2-Clause License)\nlibunibreak (zlib License)";
                 auto desc = wxString::Format(
-                    "%s\n\n%s " wxVERSION_STRING "\n\n%s",
-                    _("The Free Form Hierarchical Information Organizer"), _("Uses"),
+                    "%s\n\n%s:\n%s\n\n%s",
+                    _("The Free Form Hierarchical Information Organizer"), _("Uses"), libs,
                     _("Some icons are based on vscode-icons by Microsoft (CC BY 4.0):") +
                         "\nhttps://github.com/microsoft/vscode-icons"
                         "\nhttps://creativecommons.org/licenses/by/4.0/");
