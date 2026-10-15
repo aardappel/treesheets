@@ -258,14 +258,20 @@ struct ThreeChoiceDialog : public wxDialog {
         auto *bsv = new wxBoxSizer(wxVERTICAL);
         bsv->Add(new wxStaticText(this, -1, msg), 0, wxALL, 5);
         auto *bsb = new wxBoxSizer(wxHORIZONTAL);
-        bsb->Prepend(new wxButton(this, 2, ch3), 0, wxALL, 5);
-        bsb->PrependStretchSpacer(1);
-        bsb->Prepend(new wxButton(this, 1, ch2), 0, wxALL, 5);
-        bsb->PrependStretchSpacer(1);
-        bsb->Prepend(new wxButton(this, 0, ch1), 0, wxALL, 5);
+        auto *first = new wxButton(this, 0, ch1);
+        bsb->Add(first, 0, wxALL, 5);
+        bsb->AddStretchSpacer(1);
+        bsb->Add(new wxButton(this, 1, ch2), 0, wxALL, 5);
+        bsb->AddStretchSpacer(1);
+        bsb->Add(new wxButton(this, 2, ch3), 0, wxALL, 5);
         bsv->Add(bsb, 1, wxEXPAND);
         SetSizer(bsv);
         bsv->SetSizeHints(this);
+        // Without a default button, Windows takes the one with id 1 (IDOK), e.g. for the
+        // "Snap To" mouse setting. Escape chooses the last choice like a click on it.
+        first->SetDefault();
+        first->SetFocus();
+        SetEscapeId(2);
 
         Bind(wxEVT_BUTTON, [this](wxCommandEvent &ce) { EndModal(ce.GetId()); }, wxID_ANY);
     }
