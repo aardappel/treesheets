@@ -231,7 +231,7 @@ struct System {
         frame->notebook->LoadLayout("notebook", deserializer);
 
         if (!filename.IsEmpty()) {
-            LoadDB(filename);
+            Open(filename);
         } else if (selection >= 0) {
             frame->notebook->SetSelection(selection);
         }
