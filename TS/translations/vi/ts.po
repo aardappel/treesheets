@@ -801,6 +801,22 @@ msgstr "Lỗi khi ghi vào tệp!"
 msgid "Error writing to file."
 msgstr "Lỗi khi ghi vào tệp."
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "Lỗi đánh giá: \"%s\" thiếu một đối số"
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "Lỗi đánh giá: không có giá trị nào để \"%s\" xử lý"
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "Lỗi đánh giá: biến \"%s\" không có giá trị"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "Lỗi đánh giá: thao tác \"%s\" không xác định"
+
 msgid "Evaluation finished."
 msgstr "Quá trình đánh giá đã hoàn tất."
 

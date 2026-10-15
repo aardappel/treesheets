@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 19:53+0200\n"
+"POT-Creation-Date: 2026-10-15 21:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -785,6 +785,22 @@ msgid "Error writing to file!"
 msgstr ""
 
 msgid "Error writing to file."
+msgstr ""
+
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr ""
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr ""
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr ""
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
 msgstr ""
 
 msgid "Evaluation finished."

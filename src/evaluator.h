@@ -23,6 +23,12 @@ struct Evaluator {
     OperationMap ops;
     VariableMap vars;
     bool vert {false};
+    // The first thing that went wrong in an evaluation, see Fail().
+    enum { FAIL_NONE, FAIL_UNKNOWNOP, FAIL_NOINPUT, FAIL_NOARGUMENT, FAIL_NOVARIABLE };
+    int failure {FAIL_NONE};
+    wxString failedname;
+    const Cell *failedcell {nullptr};  // only if it is in the document
+    const Cell *evalroot {nullptr};
 
     ~Evaluator() = default;
 
@@ -206,7 +212,23 @@ struct Evaluator {
         return (cond ? a : b)->Eval(*this);
     }
 
+    // Notes the first failure, with the operation or variable cell c it happened at. Cells
+    // outside the document are copies made during the evaluation, which can't be selected.
+    nullptr_t Fail(int what, const Cell *c) {
+        if (failure == FAIL_NONE) {
+            failure = what;
+            failedname = c->text.t;
+            auto *top = c;
+            while (top->parent != nullptr) { top = top->parent; }
+            failedcell = top == evalroot ? c : nullptr;
+        }
+        return nullptr;
+    }
+
     void Eval(const Cell *root) {
+        failure = FAIL_NONE;
+        failedcell = nullptr;
+        evalroot = root;
         root->Eval(*this);
         ClearVars();
     }

@@ -808,6 +808,22 @@ msgstr "ファイルへの書き込み中にエラーが発生しました！"
 msgid "Error writing to file."
 msgstr "ファイルへの書き込み中にエラーが発生しました。"
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "評価エラー: \"%s\" の引数が足りません"
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "評価エラー: \"%s\" の対象となる値がありません"
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "評価エラー: 変数 \"%s\" に値がありません"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "評価エラー: 不明な操作 \"%s\""
+
 msgid "Evaluation finished."
 msgstr "評価が完了しました。"
 

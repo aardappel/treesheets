@@ -794,6 +794,22 @@ msgstr "写入文件时出错！"
 msgid "Error writing to file."
 msgstr "写入文件时出错。"
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "评估错误：\"%s\" 缺少参数"
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "评估错误：没有可供 \"%s\" 处理的值"
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "评估错误：变量 \"%s\" 没有值"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "评估错误：未知操作 \"%s\""
+
 msgid "Evaluation finished."
 msgstr "评估完成。"
 

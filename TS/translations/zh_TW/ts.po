@@ -794,6 +794,22 @@ msgstr "寫入檔案時發生錯誤！"
 msgid "Error writing to file."
 msgstr "寫入檔案時發生錯誤。"
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "求值錯誤：\"%s\" 缺少引數"
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "求值錯誤：沒有可供 \"%s\" 處理的值"
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "求值錯誤：變數 \"%s\" 沒有值"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "求值錯誤：未知的操作 \"%s\""
+
 msgid "Evaluation finished."
 msgstr "求值完成。"
 

@@ -830,6 +830,22 @@ msgstr "Erreur lors de l'enregistrement du fichier!"
 msgid "Error writing to file."
 msgstr "Erreur lors de l'enregistrement du fichier."
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "Erreur d'évaluation : il manque un argument à \"%s\""
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "Erreur d'évaluation : rien à quoi appliquer \"%s\""
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "Erreur d'évaluation : la variable \"%s\" n'a pas de valeur"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "Erreur d'évaluation : opération \"%s\" inconnue"
+
 msgid "Evaluation finished."
 msgstr "Evaluation terminée."
 

@@ -1340,6 +1340,7 @@ struct Text {
             case CT_VARU: {
                 auto v = ev.Lookup(t);
                 if (!v) {
+                    ev.Fail(treesheets::Evaluator::FAIL_NOVARIABLE, cell);
                     v = cell->Clone(nullptr);
                     v->celltype = CT_DATA;
                     v->text.SetText("**Variable Load Error**");

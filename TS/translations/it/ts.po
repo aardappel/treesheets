@@ -821,6 +821,22 @@ msgstr "Errore durante la scrittura sul file!"
 msgid "Error writing to file."
 msgstr "Errore durante la scrittura sul file."
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "Errore di valutazione: manca un argomento per \"%s\""
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "Errore di valutazione: niente a cui applicare \"%s\""
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "Errore di valutazione: la variabile \"%s\" non ha un valore"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "Errore di valutazione: operazione \"%s\" sconosciuta"
+
 msgid "Evaluation finished."
 msgstr "Valutazione terminata."
 

@@ -1860,15 +1860,37 @@ struct Document {
     wxString Action(int action, bool recursive = false) {
         EndFoldPeek();
         switch (action) {
-            case wxID_EXECUTE:
+            case wxID_EXECUTE: {
                 root->AddUndo(this);
-                sys->evaluator.Eval(root.get());
+                auto &ev = sys->evaluator;
+                ev.Eval(root.get());
                 root->ResetChildren();
                 selected = Selection();
                 begindrag = Selection();
+                // Select the cell where the first error happened, if it is still there.
+                loopallcells(c) if (c == ev.failedcell) {
+                    SetSelect(c->parent->grid->FindCell(c));
+                    break;
+                }
                 UpdateLayout();
+                if (selected.grid) { ScrollOrZoom(); }
                 canvas->Refresh();
-                return _("Evaluation finished.");
+                switch (ev.failure) {
+                    case treesheets::Evaluator::FAIL_UNKNOWNOP:
+                        return wxString::Format(_("Evaluation error: unknown operation \"%s\""),
+                                                ev.failedname);
+                    case treesheets::Evaluator::FAIL_NOINPUT:
+                        return wxString::Format(
+                            _("Evaluation error: nothing for \"%s\" to work on"), ev.failedname);
+                    case treesheets::Evaluator::FAIL_NOARGUMENT:
+                        return wxString::Format(
+                            _("Evaluation error: \"%s\" is missing an argument"), ev.failedname);
+                    case treesheets::Evaluator::FAIL_NOVARIABLE:
+                        return wxString::Format(
+                            _("Evaluation error: the variable \"%s\" has no value"), ev.failedname);
+                    default: return _("Evaluation finished.");
+                }
+            }
 
             case A_CLRVIEW: {
                 root->AddUndo(this);

@@ -823,6 +823,22 @@ msgstr "Erro ao gravar arquivo!"
 msgid "Error writing to file."
 msgstr "Erro ao gravar arquivo."
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "Erro de execução: falta um argumento para \"%s\""
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "Erro de execução: nada a que aplicar \"%s\""
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "Erro de execução: a variável \"%s\" não tem valor"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "Erro de execução: operação \"%s\" desconhecida"
+
 msgid "Evaluation finished."
 msgstr "Execução concluída."
 

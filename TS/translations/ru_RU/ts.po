@@ -899,6 +899,22 @@ msgstr "Ошибка записи в файл!"
 msgid "Error writing to file."
 msgstr "Ошибка записи в файл."
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "Ошибка оценки: у операции \"%s\" не хватает аргумента"
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "Ошибка оценки: нет значения для операции \"%s\""
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "Ошибка оценки: у переменной \"%s\" нет значения"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "Ошибка оценки: неизвестная операция \"%s\""
+
 # Сообщение (после действия или события)
 msgid "Evaluation finished."
 msgstr "Оценка завершена."

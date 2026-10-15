@@ -1080,43 +1080,22 @@ struct Grid {
             // Operation
             case CT_CODE: {
                 auto *op = ev.FindOp(c->text.t);
-                switch (op != nullptr ? strlen(op->args) : -1) {
-                    default: return nullptr;
-                    case 0: return treesheets::Evaluator::Execute(op);
-                    case 1: return acc ? ev.Execute(op, std::move(acc)) : nullptr;
-                    case 2:
-                        if (vert) {
-                            if (acc && y + 1 < ys) {
-                                return ev.Execute(op, std::move(acc), C(x, ++y).get());
-                            } else {
-                                return nullptr;
-                            }
-                        } else {
-                            if (acc && x + 1 < xs) {
-                                return ev.Execute(op, std::move(acc), C(++x, y).get());
-                            } else {
-                                return nullptr;
-                            }
-                        }
-                    case 3:
-                        if (vert) {
-                            if (acc && y + 2 < ys) {
-                                y += 2;
-                                return ev.Execute(op, std::move(acc), C(x, y - 1).get(),
-                                                  C(x, y).get());
-                            } else {
-                                return nullptr;
-                            }
-                        } else {
-                            if (acc && x + 2 < xs) {
-                                x += 2;
-                                return ev.Execute(op, std::move(acc), C(x - 1, y).get(),
-                                                  C(x, y).get());
-                            } else {
-                                return nullptr;
-                            }
-                        }
+                if (op == nullptr) {
+                    return ev.Fail(treesheets::Evaluator::FAIL_UNKNOWNOP, c.get());
                 }
+                auto nargs = static_cast<int>(strlen(op->args));
+                if (nargs == 0) { return treesheets::Evaluator::Execute(op); }
+                if (!acc) { return ev.Fail(treesheets::Evaluator::FAIL_NOINPUT, c.get()); }
+                if (nargs == 1) { return ev.Execute(op, std::move(acc)); }
+                // The arguments follow the operation, to the right of it or below it.
+                auto &i = vert ? y : x;
+                if (i + nargs - 1 >= (vert ? ys : xs)) {
+                    return ev.Fail(treesheets::Evaluator::FAIL_NOARGUMENT, c.get());
+                }
+                i += nargs - 1;
+                auto arg = [&](int back) { return (vert ? C(x, y - back) : C(x - back, y)).get(); };
+                return nargs == 2 ? ev.Execute(op, std::move(acc), arg(0))
+                                  : ev.Execute(op, std::move(acc), arg(1), arg(0));
             }
             // Var read, Data
             default: return c->Eval(ev);

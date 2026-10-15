@@ -831,6 +831,22 @@ msgstr "Fehler beim Schreiben der Datei!"
 msgid "Error writing to file."
 msgstr "Fehler beim Schreiben der Datei."
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "Auswertungsfehler: bei \"%s\" fehlt ein Argument"
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "Auswertungsfehler: nichts, worauf \"%s\" angewendet werden kann"
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "Auswertungsfehler: die Variable \"%s\" hat keinen Wert"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "Auswertungsfehler: unbekannte Operation \"%s\""
+
 msgid "Evaluation finished."
 msgstr "Auswertung wurde abgeschlossen."
 

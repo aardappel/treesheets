@@ -803,6 +803,22 @@ msgstr "파일 작성 중 오류가 발생했습니다!"
 msgid "Error writing to file."
 msgstr "파일에 쓰는 중 오류가 발생했습니다."
 
+#, c-format
+msgid "Evaluation error: \"%s\" is missing an argument"
+msgstr "평가 오류: \"%s\"에 인수가 없습니다"
+
+#, c-format
+msgid "Evaluation error: nothing for \"%s\" to work on"
+msgstr "평가 오류: \"%s\"을(를) 적용할 값이 없습니다"
+
+#, c-format
+msgid "Evaluation error: the variable \"%s\" has no value"
+msgstr "평가 오류: 변수 \"%s\"에 값이 없습니다"
+
+#, c-format
+msgid "Evaluation error: unknown operation \"%s\""
+msgstr "평가 오류: 알 수 없는 작동 \"%s\""
+
 msgid "Evaluation finished."
 msgstr "평가가 완료되었습니다."
 
