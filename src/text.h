@@ -243,27 +243,47 @@ struct Text {
         return t.Mid(startpos, breakpos - startpos);
     }
 
+    // East Asian wide and fullwidth characters (CJK, Hangul, fullwidth forms) are about as wide as
+    // two others, so they count double for the column width.
+    static bool IsWide(wxChar c) {
+        auto u = static_cast<uint>(c);
+        return (u >= 0x1100 && u <= 0x115F) || (u >= 0x2E80 && u <= 0xA4CF && u != 0x303F) ||
+               (u >= 0xAC00 && u <= 0xD7A3) || (u >= 0xF900 && u <= 0xFAFF) ||
+               (u >= 0xFE30 && u <= 0xFE4F) || (u >= 0xFF00 && u <= 0xFF60) ||
+               (u >= 0xFFE0 && u <= 0xFFE6) || (u >= 0x20000 && u <= 0x3FFFD);
+    }
+
     wxString GetLine(int &i, int maxcolwidth) const {
         auto l = static_cast<int>(t.Len());
 
         if (i >= l) { return wxEmptyString; }
 
-        if (i == 0 && l <= maxcolwidth) {
-            i = l;
-            return t;
-        }  // subsumed by the case below, but this case happens 90% of the time, so more optimal
-        if (l - i <= maxcolwidth) { return GetLinePart(i, l, l); }
+        // The end of what fits into maxcolwidth.
+        auto end = i;
+        for (auto w = 0; end < l && (w += IsWide(t[end]) ? 2 : 1) <= maxcolwidth; end++) {}
+        if (end == l) {
+            if (i == 0) {
+                i = l;
+                return t;
+            }  // subsumed by the case below, but this case happens 90% of the time
+            return GetLinePart(i, l, l);
+        }
 
-        for (auto p = i + maxcolwidth; p >= i; p--) {
-            if (!IsWord(t[p])) { return GetLinePart(i, p, l); }
+        // Text without spaces between words, such as Chinese and Japanese, can break next to any
+        // wide character, but not before punctuation.
+        for (auto p = end; p >= i; p--) {
+            if (!IsWord(t[p]) ||
+                (p > i && !wxIspunct(t[p]) && (IsWide(t[p]) || IsWide(t[p - 1])))) {
+                return GetLinePart(i, p, l);
+            }
         }
 
         // A single word is > maxcolwidth. We split it up anyway.
-        // This happens with long urls and e.g. Japanese text without spaces.
+        // This happens with long urls.
         // Should really do proper unicode linebreaking instead (see libunibreak),
         // but for now this is better than the old code below which allowed for arbitrary long
         // words.
-        return GetLinePart(i, min(i + maxcolwidth, l), l);
+        return GetLinePart(i, max(end, i + 1), l);
 
         // for(int p = i+maxcolwidth; p<l;  p++) if (!IsWord(t[p])) return GetLinePart(i, p, l);  //
         // we arrive here only
