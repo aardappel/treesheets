@@ -123,6 +123,24 @@ struct Text {
         return str;
     }
 
+    static bool IsHTMLFormat(int format) {
+        return format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE ||
+               format == A_EXPHTMLO || format == A_EXPHTMLB;
+    }
+
+    // Like http://example.com or file:///home: a scheme, "://" and no spaces.
+    static bool IsURL(const wxString &s) {
+        auto colon = s.Find("://");
+        if (colon <= 0) { return false; }
+        for (auto c : s.Left(colon)) {
+            if (!wxIsalpha(c)) { return false; }
+        }
+        for (auto c : s) {
+            if (wxIsspace(c)) { return false; }
+        }
+        return true;
+    }
+
     static bool IsRichFormat(int format) {
         return format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
                format == A_EXPHTMLTE;
@@ -180,10 +198,7 @@ struct Text {
                         : RichMarkup(0, len, format);
         } else {
             str = range ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
-            if (format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
-                format == A_EXPHTMLTE || format == A_EXPHTMLO || format == A_EXPHTMLB) {
-                str = htmlify(str);
-            }
+            if (format == A_EXPXML || IsHTMLFormat(format)) { str = htmlify(str); }
         }
         if (format == A_EXPTEXT && image != nullptr) str.Append(" ");
         if (format == A_EXPHTMLTI && image != nullptr) {
@@ -195,6 +210,10 @@ struct Text {
             str.Prepend("<img src=\"" + wxString::Format("%llu", image->hash) +
                         image->GetFileExtension() + "\" width=\"" + relsize + "\" height=\"" +
                         relsize + "\" />");
+        }
+        // A cell that is just a URL, as Browse opens it, becomes a link.
+        if (!range && IsHTMLFormat(format) && IsURL(t)) {
+            str = "<a href=\"" + htmlify(t) + "\">" + str + "</a>";
         }
         return str;
     };
