@@ -2896,9 +2896,6 @@ struct Document {
             case A_RESETWIDTH:
             case A_RESETSTYLE:
             case A_RESETCOLOR:
-            case A_LASTCELLCOLOR:
-            case A_LASTTEXTCOLOR:
-            case A_LASTBORDCOLOR:
             case A_LASTIMAGE:
                 selected.grid->cell->AddUndo(this);
                 loopallcellssel(c, true) switch (action) {
@@ -2924,21 +2921,6 @@ struct Document {
                         c->cellcolor = g_cellcolor_default;
                         if (c->grid) { c->grid->bordercolor = g_bordercolor_default; }
                         break;
-                    case A_LASTCELLCOLOR: c->cellcolor = sys->lastcellcolor; break;
-                    case A_LASTTEXTCOLOR:
-                        if (selected.TextEdit() && selected.cursor != selected.cursorend) {
-                            c->text.SetRunColor(sys->lasttextcolor, selected.cursor,
-                                                selected.cursorend);
-                        } else {
-                            c->textcolor = sys->lasttextcolor;
-                            c->text.ClearRunColors();
-                        }
-                        break;
-                    case A_LASTBORDCOLOR:
-                        if (c->parent != nullptr && c->parent->grid) {
-                            c->parent->grid->bordercolor = sys->lastbordcolor;
-                        }
-                        break;
                     case A_LASTIMAGE:
                         if (sys->lastimage != nullptr) { c->text.image = sys->lastimage; }
                         break;
@@ -2947,6 +2929,17 @@ struct Document {
                 UpdateLayout();
                 canvas->Refresh();
                 sys->frame->UpdateStatus(selected, false);
+                return wxEmptyString;
+
+            // Like picking the color from the dropdown: the selected cells, not the ones inside.
+            case A_LASTCELLCOLOR:
+                selected.grid->ColorChange(this, A_CELLCOLOR, sys->lastcellcolor, selected, false);
+                return wxEmptyString;
+            case A_LASTTEXTCOLOR:
+                selected.grid->ColorChange(this, A_TEXTCOLOR, sys->lasttextcolor, selected, false);
+                return wxEmptyString;
+            case A_LASTBORDCOLOR:
+                selected.grid->ColorChange(this, A_BORDCOLOR, sys->lastbordcolor, selected, false);
                 return wxEmptyString;
 
             case A_MINISIZE: {
