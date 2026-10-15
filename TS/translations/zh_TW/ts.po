@@ -70,6 +70,9 @@ msgstr "複製(&C)"
 msgid "&Copy as Bitmap"
 msgstr "複製為點陣圖(&C)"
 
+msgid "&Copy to clipboard"
+msgstr "複製到剪貼簿(&C)"
+
 msgid "&Data"
 msgstr "資料(&D)"
 
@@ -606,6 +609,10 @@ msgstr ""
 
 msgid "Copy selection"
 msgstr "複製選取內容"
+
+msgid ""
+"Copy the image of the selected cell to the clipboard, at its original size"
+msgstr "將所選儲存格的圖片以原始尺寸複製到剪貼簿"
 
 msgid "Copy the selection as SVG vector graphics"
 msgstr ""

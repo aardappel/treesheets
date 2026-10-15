@@ -76,6 +76,9 @@ msgstr "Копировать"
 msgid "&Copy as Bitmap"
 msgstr "&Копировать как Растровое Изображение"
 
+msgid "&Copy to clipboard"
+msgstr "&Копировать в буфер обмена"
+
 msgid "&Data"
 msgstr "&Данные"
 
@@ -677,6 +680,9 @@ msgstr "&Копировать как SVG"
 # комментарий к п. Меню
 msgid "Copy selection"
 msgstr "Копировать выделенное"
+
+msgid "Copy the image of the selected cell to the clipboard, at its original size"
+msgstr "Копирует изображение выбранной ячейки в буфер обмена в исходном размере"
 
 # ??? - комментарий к п. Меню
 #, fuzzy

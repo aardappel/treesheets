@@ -260,6 +260,7 @@ enum {
     A_IMAGESCF,
     A_IMAGESCN,
     A_IMAGESVA,
+    A_IMAGECOPY,
     A_SAVE_AS_JPEG,
     A_SAVE_AS_PNG,
     A_HELP_OP_REF,

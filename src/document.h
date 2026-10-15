@@ -3081,6 +3081,16 @@ struct Document {
                 return _("Image(s) have been saved to disk.");
             }
 
+            case A_IMAGECOPY:
+                loopallcellssel(c, true) if (auto *image = c->text.image) {
+                    if (!wxTheClipboard->Open()) { return wxEmptyString; }
+                    wxTheClipboard->SetData(new wxBitmapDataObject(
+                        ConvertBufferToWxBitmap(image->data, imagetypes.at(image->type).first)));
+                    wxTheClipboard->Close();
+                    return _("Bitmap copied to clipboard");
+                }
+                return _("There are no images in the selection.");
+
             case A_SAVE_AS_JPEG:
             case A_SAVE_AS_PNG: {
                 char newtype = action == A_SAVE_AS_JPEG ? 'J' : 'I';

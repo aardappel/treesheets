@@ -66,6 +66,9 @@ msgstr "Sao chép (&C)"
 msgid "&Copy as Bitmap"
 msgstr "Sao chép dưới dạng &Bitmap"
 
+msgid "&Copy to clipboard"
+msgstr "Sao chép vào khay nhớ tạm (&C)"
+
 msgid "&Data"
 msgstr "&Dữ liệu"
 
@@ -610,6 +613,10 @@ msgstr ""
 
 msgid "Copy selection"
 msgstr "Sao chép vùng chọn"
+
+msgid ""
+"Copy the image of the selected cell to the clipboard, at its original size"
+msgstr "Sao chép hình ảnh của ô đã chọn vào khay nhớ tạm, với kích thước gốc"
 
 msgid "Copy the selection as SVG vector graphics"
 msgstr ""

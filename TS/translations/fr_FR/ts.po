@@ -71,6 +71,9 @@ msgstr "&Copier"
 msgid "&Copy as Bitmap"
 msgstr "&Copier comme image Bitmap"
 
+msgid "&Copy to clipboard"
+msgstr "&Copier dans le presse-papier"
+
 msgid "&Data"
 msgstr "&Donnée"
 
@@ -626,6 +629,12 @@ msgstr "Copier comme &SVG"
 
 msgid "Copy selection"
 msgstr "Copier la sélection"
+
+msgid ""
+"Copy the image of the selected cell to the clipboard, at its original size"
+msgstr ""
+"Copie l'image de la cellule sélectionnée dans le presse-papier, à sa taille "
+"d'origine"
 
 msgid "Copy the selection as SVG vector graphics"
 msgstr "Copie la sélection comme graphique vectoriel SVG"

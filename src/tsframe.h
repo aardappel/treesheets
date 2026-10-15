@@ -473,6 +473,8 @@ struct TSFrame : wxFrame {
             MyAppend(imgmenu, A_IMAGE, _("&Add..."), _("Add an image to the selected cell"));
             MyAppend(imgmenu, A_IMAGESVA, _("&Save as..."),
                      _("Save image(s) from selected cell(s) to disk. Multiple images will be saved with a counter appended to each file name."));
+            MyAppend(imgmenu, A_IMAGECOPY, _("&Copy to clipboard"),
+                     _("Copy the image of the selected cell to the clipboard, at its original size"));
             imgmenu->AppendSeparator();
             MyAppend(
                 imgmenu, A_IMAGESCP, _("Scale (re-sa&mple pixels, by %)"),

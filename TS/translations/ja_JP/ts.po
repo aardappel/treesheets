@@ -71,6 +71,9 @@ msgstr "コピー(&C)"
 msgid "&Copy as Bitmap"
 msgstr "ビットマップとしてコピー(&C)"
 
+msgid "&Copy to clipboard"
+msgstr "クリップボードにコピー(&C)"
+
 msgid "&Data"
 msgstr "データ(&D)"
 
@@ -614,6 +617,10 @@ msgstr ""
 
 msgid "Copy selection"
 msgstr "選択範囲をコピー"
+
+msgid ""
+"Copy the image of the selected cell to the clipboard, at its original size"
+msgstr "選択したセルの画像を元のサイズでクリップボードにコピーします"
 
 msgid "Copy the selection as SVG vector graphics"
 msgstr ""
