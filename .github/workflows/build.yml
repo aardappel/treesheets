@@ -239,7 +239,7 @@ jobs:
     - name: Create release
       run: >
         gh release create "v$VERSION" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"
-        --notes "$NOTES" --latest
+        --title "v$VERSION" --notes "$NOTES" --latest
       env:
         GH_TOKEN: ${{ github.token }}
         VERSION: ${{ needs.version.outputs.version }}
