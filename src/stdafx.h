@@ -78,6 +78,10 @@
 #include <wx/xml/xml.h>
 
 #include "monocypher.h"
+#include "linebreak.h"
+extern "C" {
+    #include "eastasianwidthdef.h"
+}
 
 #ifdef ENABLE_WXPDFDOC
     #include "wx/pdfdc.h"

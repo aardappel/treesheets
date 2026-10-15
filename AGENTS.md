@@ -10,7 +10,7 @@ overview; this file covers what you need to change the code safely.
 | ---- | -------- |
 | `src/` | All source code (≈14k lines, almost entirely headers) |
 | `TS/` | User-facing data: `docs/`, `examples/*.cts`, `images/`, `scripts/*.lobster`, `translations/`, `readme*.html` |
-| `cmake/` | CMake modules: `Lobster.cmake`, `WxPdfDoc.cmake`, `EmbedFiles.cmake`, `Localization.cmake`, `Packaging.cmake`, `AdHocSign.cmake` (ad-hoc signs the macOS bundle before the .dmg is made), `UpdateScriptReference.cmake` |
+| `cmake/` | CMake modules: `Lobster.cmake`, `WxPdfDoc.cmake`, `Monocypher.cmake`, `Unibreak.cmake`, `EmbedFiles.cmake`, `Localization.cmake`, `Packaging.cmake`, `AdHocSign.cmake` (ad-hoc signs the macOS bundle before the .dmg is made), `UpdateScriptReference.cmake` |
 | `platform/` | Per-OS files: Linux desktop/metainfo/MIME, `lsan.supp`, `toolchain-mingw64.cmake`; macOS `Info.plist`/icon, `toolchain-mingw64.cmake`; Windows `.rc`/icon |
 | `.github/workflows/build.yml` | CI: Linux (x64, arm64; .deb and AppImage), Windows MSVC (x64, arm64), macOS (universal), then a release per release marker tag |
 | `.claude/skills/treesheets-agent/` | Skill and wire protocol for driving a running TreeSheets over its agent socket |
@@ -45,7 +45,7 @@ As a result:
 | ---- | ---- | ---- |
 | `cell.h` | `Cell` | A node: `Text`, optional `Grid *grid`, colors, style, note, `parent` |
 | `grid.h` | `Grid` | 2D array of `Cell`s, layout, rendering, most structural operations |
-| `text.h` | `Text` | Cell text, editing, cursor handling, drawing (with `textruns.h` / `bidi.h` for RTL text) |
+| `text.h` | `Text` | Cell text, editing, cursor handling, drawing (with `textruns.h` / `bidi.h` for RTL text), line wrapping (libunibreak) |
 | `selection.h` | `Selection` | A rectangular selection in a grid, or a text cursor range in one cell |
 | `encryption.h` | `Encryption` | Password protected files (Monocypher: Argon2id key, XChaCha20-Poly1305) |
 | `document.h` | `Document` | One open file: load/save, undo/redo, rendering entry points, and `Action(int)`, the big dispatcher for every `A_*`/`wxID_*` command |
@@ -89,10 +89,11 @@ As a result:
 
 ## Building
 
-CMake ≥ 3.25 and a C++20 compiler are required. wxWidgets 3.3.4, Lobster and wxPdfDocument are
-pinned (URL + SHA256) in `CMakeLists.txt`, `cmake/Lobster.cmake` and `cmake/WxPdfDoc.cmake` and are
-fetched with `FetchContent`. Keep the `URL` lines in exactly that shape, because the Flathub
-manifest scrapes these files to keep its dependency versions in sync.
+CMake ≥ 3.25 and a C++20 compiler are required. wxWidgets 3.3.4, Lobster, wxPdfDocument, Monocypher
+and libunibreak are pinned (URL + SHA256) in `CMakeLists.txt` and `cmake/*.cmake` and are fetched
+with `FetchContent`. Keep the `URL` lines in exactly that shape, because the Flathub manifest
+scrapes these files to keep its dependency versions in sync. A new dependency also needs its
+archive in the Flathub manifest before the first release that uses it, or the Flathub update fails.
 
 ```sh
 cmake -S . -B _build -DCMAKE_BUILD_TYPE=Release -DTREESHEETS_BUNDLE_WXWIDGETS=ON

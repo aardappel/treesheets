@@ -254,6 +254,7 @@ else()
 endif()
 
 include(cmake/Monocypher.cmake)
+include(cmake/Unibreak.cmake)
 
 ### Optional features
 

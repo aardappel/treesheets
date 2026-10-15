@@ -243,14 +243,27 @@ struct Text {
         return t.Mid(startpos, breakpos - startpos);
     }
 
-    // East Asian wide and fullwidth characters (CJK, Hangul, fullwidth forms) are about as wide as
-    // two others, so they count double for the column width.
-    static bool IsWide(wxChar c) {
-        auto u = static_cast<uint>(c);
-        return (u >= 0x1100 && u <= 0x115F) || (u >= 0x2E80 && u <= 0xA4CF && u != 0x303F) ||
-               (u >= 0xAC00 && u <= 0xD7A3) || (u >= 0xF900 && u <= 0xFAFF) ||
-               (u >= 0xFE30 && u <= 0xFE4F) || (u >= 0xFF00 && u <= 0xFF60) ||
-               (u >= 0xFFE0 && u <= 0xFFE6) || (u >= 0x20000 && u <= 0x3FFFD);
+    // East Asian wide and fullwidth characters (e.g. Chinese, Japanese and Korean) are about as
+    // wide as two others, so they count double for the column width.
+    static int CharWidth(wxChar c) {
+        if (c < 0x1100) { return 1; }  // There are none before.
+        auto eaw = ub_get_char_eaw_class(static_cast<utf32_t>(c));
+        return eaw == EAW_W || eaw == EAW_F ? 2 : 1;
+    }
+
+    // The Unicode line break opportunities of t[from, to): brks[k] is LINEBREAK_MUSTBREAK or
+    // LINEBREAK_ALLOWBREAK if a line may end after t[from + k].
+    vector<char> LineBreaks(int from, int to) const {
+        vector<char> brks(to - from);
+        const wchar_t *s = t.wc_str() + from;
+        if constexpr (sizeof(wchar_t) == 2) {
+            set_linebreaks_utf16(reinterpret_cast<const utf16_t *>(s), brks.size(), nullptr,
+                                 brks.data());
+        } else {
+            set_linebreaks_utf32(reinterpret_cast<const utf32_t *>(s), brks.size(), nullptr,
+                                 brks.data());
+        }
+        return brks;
     }
 
     wxString GetLine(int &i, int maxcolwidth) const {
@@ -260,7 +273,7 @@ struct Text {
 
         // The end of what fits into maxcolwidth.
         auto end = i;
-        for (auto w = 0; end < l && (w += IsWide(t[end]) ? 2 : 1) <= maxcolwidth; end++) {}
+        for (auto w = 0; end < l && (w += CharWidth(t[end])) <= maxcolwidth; end++) {}
         if (end == l) {
             if (i == 0) {
                 i = l;
@@ -269,26 +282,19 @@ struct Text {
             return GetLinePart(i, l, l);
         }
 
-        // Text without spaces between words, such as Chinese and Japanese, can break next to any
-        // wide character, but not before punctuation.
-        for (auto p = end; p >= i; p--) {
-            if (!IsWord(t[p]) ||
-                (p > i && !wxIspunct(t[p]) && (IsWide(t[p]) || IsWide(t[p - 1])))) {
-                return GetLinePart(i, p, l);
-            }
+        // The last place the line may end, after t[p - 1] and any spaces after it, by the Unicode
+        // line breaking rules (UAX #14). A bit of the text after it is enough context.
+        auto to = min(l, end + 16);
+        auto brks = LineBreaks(i, to);
+        for (auto p = end; p > i; p--) {
+            if (wxIsspace(t[p - 1])) { continue; }
+            auto q = p;
+            while (q < to && wxIsspace(t[q])) { q++; }
+            if (q == to || brks[q - 1 - i] <= LINEBREAK_ALLOWBREAK) { return GetLinePart(i, p, l); }
         }
 
-        // A single word is > maxcolwidth. We split it up anyway.
-        // This happens with long urls.
-        // Should really do proper unicode linebreaking instead (see libunibreak),
-        // but for now this is better than the old code below which allowed for arbitrary long
-        // words.
+        // A single word is > maxcolwidth, e.g. a long URL. We split it up anyway.
         return GetLinePart(i, max(end, i + 1), l);
-
-        // for(int p = i+maxcolwidth; p<l;  p++) if (!IsWord(t[p])) return GetLinePart(i, p, l);  //
-        // we arrive here only
-        // if a single word is too big for maxcolwidth, so simply return that word
-        // return GetLinePart(i, l, l);     // big word was the last one
     }
 
     // Calls f(start, len, stylebits, hascolor, color) for consecutive segments of the text range
