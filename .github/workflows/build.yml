@@ -200,7 +200,9 @@ jobs:
     - uses: actions/checkout@v7
     - name: compiler version
       id: compiler
-      run: echo "id=${ImageOS:-unknown}-$(c++ -dumpfullversion 2>/dev/null || c++ -dumpversion)" >> "$GITHUB_OUTPUT"
+      # Like on Windows, a new runner image can keep the compiler version but install the SDK
+      # anew, which rebuilds everything, so every image gets its own cache.
+      run: echo "id=${ImageOS:-unknown}-${ImageVersion:-unknown}-$(c++ -dumpfullversion 2>/dev/null || c++ -dumpversion)" >> "$GITHUB_OUTPUT"
     - name: cache build
       uses: actions/cache@v6
       with:
