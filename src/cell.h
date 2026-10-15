@@ -606,6 +606,11 @@ struct Cell {
             shared_ptr<Grid> gridclone = make_shared<Grid>(original->grid->xs, original->grid->ys);
             gridclone->cell = this;
             original->grid->Clone(gridclone);
+            // The sub-grid keeps its text sizes relative to this cell, which may have taken
+            // another size than the original.
+            if (HasText()) {
+                gridclone->RelSize(text.relsize - original->text.relsize, document->pathscalebias);
+            }
             // Note: deleting grid may invalidate c if its a child of grid, so clear it.
             original = nullptr;
             grid = gridclone;
