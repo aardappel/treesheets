@@ -59,6 +59,9 @@ msgstr "&Effacer Vues"
 msgid "&Close"
 msgstr "&Fermer"
 
+msgid "&Colors..."
+msgstr "&Couleurs..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "&Texte séparateur virgule (CSV, à plat)..."
 
@@ -76,6 +79,9 @@ msgstr "&Réduire la taille du texte (CTRL+ALT+SHIFT+molette)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Diminuer la taille du texte (SHIFT+Molette)"
+
+msgid "&Defaults"
+msgstr "&Par défaut"
 
 msgid "&Delete After"
 msgstr "&Supprimer"
@@ -586,6 +592,9 @@ msgstr "Grouper les c&llules"
 msgid "Colorize inner grid border"
 msgstr "Colorer la bordure intérieure de la grille"
 
+msgid "Colors"
+msgstr "Couleurs"
+
 msgid "Column width decreased."
 msgstr "Largeur de la colonne réduite."
 
@@ -645,11 +654,11 @@ msgstr "Créer un fichier de sauvegarde avant l'enregistrement du document"
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Créer un nouveau niveau de hiérarchie autour de la sélection courante"
 
-msgid "Cu&rsor color..."
-msgstr "Couleur du cu&rseur..."
-
 msgid "Cu&t"
 msgstr "Couper"
+
+msgid "Cursor"
+msgstr "Curseur"
 
 msgid "Cursor Left"
 msgstr "Curseur à gauche"
@@ -660,8 +669,8 @@ msgstr "Curseur à droite"
 msgid "Custom"
 msgstr "Personnalisée"
 
-msgid "Custom &color..."
-msgstr "&Couleur personnalisée..."
+msgid "Custom dropdown color"
+msgstr "Couleur personnalisée des listes"
 
 msgid "Cut selection"
 msgstr "Couper la sélection"
@@ -1083,9 +1092,6 @@ msgstr "Disposition horizontale mode Ligne"
 msgid "Hover shadow"
 msgstr "Ombre au survol"
 
-msgid "Hover shadow color..."
-msgstr "Couleur de l'ombre au survol..."
-
 msgid "Hover zoom"
 msgstr "Zoom au survol"
 
@@ -1427,6 +1433,9 @@ msgstr ""
 
 msgid "Operation reference"
 msgstr "Référence des opérations"
+
+msgid "Operations"
+msgstr "Opérations"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1778,6 +1787,9 @@ msgstr ""
 "Recherche et remplace dans le contenu visible de la vue courante (sans les "
 "grilles repliées ni les cellules minuscules)"
 
+msgid "Search results"
+msgstr "Résultats de recherche"
+
 msgid "Select &Parent"
 msgstr "Sélectionner cellule &Parent"
 
@@ -1810,10 +1822,6 @@ msgstr "Définir l'échelle d'impression"
 msgid "Set Print Scale..."
 msgstr "Définir l'échelle d'impression..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr ""
-"Définit une couleur personnalisée pour les listes déroulantes de couleurs"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr ""
@@ -1823,11 +1831,10 @@ msgstr ""
 msgid "Set the color for the document background"
 msgstr "Définit la couleur de l'arrière-plan du document"
 
-msgid "Set the color for the text cursor"
-msgstr "Définit la couleur du curseur de texte"
-
-msgid "Set the color of the hover shadow"
-msgstr "Définit la couleur de l'ombre au survol"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "Définit les couleurs du curseur, de l'ombre au survol, des résultats de recherche, des opérations et la couleur personnalisée des listes de couleurs"
 
 msgid "Set the default column width for a new grid"
 msgstr "Définit la largeur de colonne par défaut d'une nouvelle grille"
@@ -2155,6 +2162,12 @@ msgstr "&Assignation de variable"
 msgid "Variable &Read"
 msgstr "Lecture de Va&riable"
 
+msgid "Variable assignments"
+msgstr "Assignations de variable"
+
+msgid "Variable reads"
+msgstr "Lectures de variable"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "Disposition verticale mode Bubble"
 
@@ -2163,6 +2176,9 @@ msgstr "Disposition verticale mode grille"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "Disposition verticale mode ligne"
+
+msgid "Views"
+msgstr "Vues"
 
 msgid "What size grid would you like to start with?"
 msgstr "Avec quelle taille de grille souhaitez-vous commencer ?"

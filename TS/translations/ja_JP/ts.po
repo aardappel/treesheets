@@ -59,6 +59,9 @@ msgstr "ビューをクリア(&C)"
 msgid "&Close"
 msgstr "閉じる(&C)"
 
+msgid "&Colors..."
+msgstr "色(&C)..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "カンマ区切りテキスト(&C) (CSV、フラット)..."
 
@@ -76,6 +79,9 @@ msgstr "フォントサイズを縮小(&D) (Ctrl+ALT+SHIFT+マウスホイール
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "テキストサイズを縮小(&D) (SHIFT+マウスホイール)"
+
+msgid "&Defaults"
+msgstr "既定値(&D)"
 
 msgid "&Delete After"
 msgstr "後方を削除(&D)"
@@ -575,6 +581,9 @@ msgstr "セルを折りたたむ(&L)"
 msgid "Colorize inner grid border"
 msgstr "内部のグリッド境界を色付け"
 
+msgid "Colors"
+msgstr "色"
+
 msgid "Column width decreased."
 msgstr "列幅を狭くしました。"
 
@@ -633,11 +642,11 @@ msgstr "ドキュメントをファイルに保存する前にバックアップ
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "現在の選択範囲の周囲に新しい階層レベルを作成します"
 
-msgid "Cu&rsor color..."
-msgstr "カーソル色(&R)..."
-
 msgid "Cu&t"
 msgstr "切り取り(&T)"
+
+msgid "Cursor"
+msgstr "カーソル"
 
 msgid "Cursor Left"
 msgstr "カーソルを左へ"
@@ -648,8 +657,8 @@ msgstr "カーソルを右へ"
 msgid "Custom"
 msgstr "カスタム"
 
-msgid "Custom &color..."
-msgstr "カスタムカラー(&C)..."
+msgid "Custom dropdown color"
+msgstr "ドロップダウンのカスタムカラー"
 
 msgid "Cut selection"
 msgstr "選択範囲を切り取り"
@@ -1059,9 +1068,6 @@ msgstr "ラインスタイルレンダリングの水平レイアウト"
 msgid "Hover shadow"
 msgstr "ホバーシャドウ"
 
-msgid "Hover shadow color..."
-msgstr "ホバーシャドウの色..."
-
 msgid "Hover zoom"
 msgstr "ホバーズーム"
 
@@ -1390,6 +1396,9 @@ msgstr ""
 
 msgid "Operation reference"
 msgstr "操作リファレンス"
+
+msgid "Operations"
+msgstr "操作"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1733,6 +1742,9 @@ msgstr ""
 "現在の表示範囲内 (折りたたまれたグリッドや極小のセルは対象外) で検索と置換を"
 "行います"
 
+msgid "Search results"
+msgstr "検索結果"
+
 msgid "Select &Parent"
 msgstr "親を選択(&P)"
 
@@ -1765,9 +1777,6 @@ msgstr "印刷スケールを設定"
 msgid "Set Print Scale..."
 msgstr "印刷スケールを設定..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr "カラードロップダウン用のカスタムカラーを設定"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr "選択したセルの背景からカラードロップダウン用のカスタムカラーを設定"
@@ -1775,11 +1784,10 @@ msgstr "選択したセルの背景からカラードロップダウン用のカ
 msgid "Set the color for the document background"
 msgstr "ドキュメントの背景色を設定"
 
-msgid "Set the color for the text cursor"
-msgstr "テキストカーソルの色を設定"
-
-msgid "Set the color of the hover shadow"
-msgstr "ホバーシャドウの色を設定"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "カーソル、ホバーシャドウ、検索結果、操作の色と、色ドロップダウンのカスタムカラーを設定"
 
 msgid "Set the default column width for a new grid"
 msgstr "新しいグリッドのデフォルト列幅を設定"
@@ -2097,6 +2105,12 @@ msgstr "変数代入(&A)"
 msgid "Variable &Read"
 msgstr "変数読み取り(&R)"
 
+msgid "Variable assignments"
+msgstr "変数代入"
+
+msgid "Variable reads"
+msgstr "変数読み取り"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "バブルスタイルレンダリングの垂直レイアウト"
 
@@ -2105,6 +2119,9 @@ msgstr "グリッドスタイルレンダリングの垂直レイアウト"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "ラインスタイルレンダリングの垂直レイアウト"
+
+msgid "Views"
+msgstr "ビュー"
 
 msgid "What size grid would you like to start with?"
 msgstr "どのサイズのグリッドで開始しますか？"

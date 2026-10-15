@@ -58,6 +58,9 @@ msgstr "清除檢視(&C)"
 msgid "&Close"
 msgstr "關閉(&C)"
 
+msgid "&Colors..."
+msgstr "色彩(&C)..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "逗號分隔文字 (CSV, 扁平)(&C)..."
 
@@ -75,6 +78,9 @@ msgstr "縮小文字大小(&D)（Ctrl + Alt + Shift + 滑鼠滾輪）"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "縮小文字大小（Shift + 滑鼠滾輪）(&D)"
+
+msgid "&Defaults"
+msgstr "預設值(&D)"
 
 msgid "&Delete After"
 msgstr "刪除後方內容(&D)"
@@ -567,6 +573,9 @@ msgstr "摺疊儲存格(&L)"
 msgid "Colorize inner grid border"
 msgstr "為內部網格框線著色"
 
+msgid "Colors"
+msgstr "色彩"
+
 msgid "Column width decreased."
 msgstr "已縮減欄寬。"
 
@@ -625,11 +634,11 @@ msgstr "在文件儲存前建立備份檔"
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "在目前選取範圍外建立新的階層"
 
-msgid "Cu&rsor color..."
-msgstr "游標色彩(&R)..."
-
 msgid "Cu&t"
 msgstr "剪下(&T)"
+
+msgid "Cursor"
+msgstr "游標"
 
 msgid "Cursor Left"
 msgstr "游標左移"
@@ -640,8 +649,8 @@ msgstr "游標右移"
 msgid "Custom"
 msgstr "自訂"
 
-msgid "Custom &color..."
-msgstr "自訂色彩(&C)..."
+msgid "Custom dropdown color"
+msgstr "下拉清單的自訂色彩"
 
 msgid "Cut selection"
 msgstr "剪下選取內容"
@@ -1028,9 +1037,6 @@ msgstr "水平版面配置搭配線條樣式繪製"
 msgid "Hover shadow"
 msgstr "游標懸停陰影"
 
-msgid "Hover shadow color..."
-msgstr "游標懸停陰影色彩..."
-
 msgid "Hover zoom"
 msgstr "游標懸停縮放"
 
@@ -1350,6 +1356,9 @@ msgstr "使用此檔案類型的預設應用程式，開啟選取儲存格中的
 
 msgid "Operation reference"
 msgstr "操作參考"
+
+msgid "Operations"
+msgstr "操作"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1679,6 +1688,9 @@ msgid ""
 "grids, no tiny cells)"
 msgstr "在目前檢視的可見內容中搜尋與取代（不含已摺疊的網格與過小的儲存格）"
 
+msgid "Search results"
+msgstr "搜尋結果"
+
 msgid "Select &Parent"
 msgstr "選取父層級(&P)"
 
@@ -1709,9 +1721,6 @@ msgstr "設定列印縮放"
 msgid "Set Print Scale..."
 msgstr "設定列印縮放..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr "為色彩下拉選單設定自訂色彩"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr "從選取儲存格的背景為色彩下拉選單設定自訂色彩"
@@ -1719,11 +1728,10 @@ msgstr "從選取儲存格的背景為色彩下拉選單設定自訂色彩"
 msgid "Set the color for the document background"
 msgstr "設定文件背景色彩"
 
-msgid "Set the color for the text cursor"
-msgstr "設定文字游標色彩"
-
-msgid "Set the color of the hover shadow"
-msgstr "設定游標懸停陰影的色彩"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "設定游標、游標懸停陰影、搜尋結果、操作的色彩，以及色彩下拉清單的自訂色彩"
 
 msgid "Set the default column width for a new grid"
 msgstr "為新網格設定預設欄寬"
@@ -2038,6 +2046,12 @@ msgstr "變數指定(&A)"
 msgid "Variable &Read"
 msgstr "變數讀取(&R)"
 
+msgid "Variable assignments"
+msgstr "變數指定"
+
+msgid "Variable reads"
+msgstr "變數讀取"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "垂直版面配置搭配氣泡樣式繪製"
 
@@ -2046,6 +2060,9 @@ msgstr "垂直版面配置搭配網格樣式繪製"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "垂直版面配置搭配線條樣式繪製"
+
+msgid "Views"
+msgstr "檢視"
 
 msgid "What size grid would you like to start with?"
 msgstr "要以多大的網格開始？"

@@ -58,6 +58,9 @@ msgstr "&Cancella Visualizzazioni"
 msgid "&Close"
 msgstr "&Chiudi"
 
+msgid "&Colors..."
+msgstr "&Colori..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "&Testo delimitato da virgole (CSV, piatto) ..."
 
@@ -75,6 +78,9 @@ msgstr "&Riduci dimensione del testo (CTRL+ALT+MAIUSC+rotellina del mouse)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Riduci la dimensione del testo (MAIUSC + rotella del mouse)"
+
+msgid "&Defaults"
+msgstr "&Predefiniti"
 
 msgid "&Delete After"
 msgstr "&Elimina dopo"
@@ -579,6 +585,9 @@ msgstr "Collasa le ce&llule"
 msgid "Colorize inner grid border"
 msgstr "Colora bordo interno della griglia"
 
+msgid "Colors"
+msgstr "Colori"
+
 msgid "Column width decreased."
 msgstr "La larghezza della colonna è diminuita."
 
@@ -637,11 +646,11 @@ msgstr "Crea un file di backup prima di salvare il documento"
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Crea un nuovo livello di gerarchia attorno alla selezione corrente"
 
-msgid "Cu&rsor color..."
-msgstr "Colore del cu&rsore..."
-
 msgid "Cu&t"
 msgstr "Taglia"
+
+msgid "Cursor"
+msgstr "Cursore"
 
 msgid "Cursor Left"
 msgstr "Cursore a sinistra"
@@ -652,8 +661,8 @@ msgstr "Cursore a destra"
 msgid "Custom"
 msgstr "Personalizzato"
 
-msgid "Custom &color..."
-msgstr "&Colore personalizzato..."
+msgid "Custom dropdown color"
+msgstr "Colore personalizzato degli elenchi"
 
 msgid "Cut selection"
 msgstr "Taglia selezione"
@@ -1073,9 +1082,6 @@ msgstr "Layout orizzontale con Rendering stile linea"
 msgid "Hover shadow"
 msgstr "Ombra al passaggio"
 
-msgid "Hover shadow color..."
-msgstr "Colore dell'ombra al passaggio..."
-
 msgid "Hover zoom"
 msgstr "Zoom al passaggio"
 
@@ -1413,6 +1419,9 @@ msgstr ""
 
 msgid "Operation reference"
 msgstr "Riferimento operazioni"
+
+msgid "Operations"
+msgstr "Operazioni"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1759,6 +1768,9 @@ msgstr ""
 "Cerca e sostituisce nel contenuto visibile della vista corrente (escluse "
 "griglie ripiegate e celle minuscole)"
 
+msgid "Search results"
+msgstr "Risultati della ricerca"
+
 msgid "Select &Parent"
 msgstr "Seleziona &Genitore"
 
@@ -1791,9 +1803,6 @@ msgstr "Imposta scala di stampa"
 msgid "Set Print Scale..."
 msgstr "Imposta scala di stampa..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr "Imposta un colore personalizzato per i menu a discesa dei colori"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr ""
@@ -1803,11 +1812,10 @@ msgstr ""
 msgid "Set the color for the document background"
 msgstr "Imposta il colore dello sfondo del documento"
 
-msgid "Set the color for the text cursor"
-msgstr "Imposta il colore del cursore di testo"
-
-msgid "Set the color of the hover shadow"
-msgstr "Imposta il colore dell'ombra al passaggio"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "Imposta i colori del cursore, dell'ombra al passaggio, dei risultati della ricerca, delle operazioni e il colore personalizzato degli elenchi dei colori"
 
 msgid "Set the default column width for a new grid"
 msgstr "Imposta la larghezza predefinita delle colonne per una nuova griglia"
@@ -2140,6 +2148,12 @@ msgstr "Assegnazione &variabile"
 msgid "Variable &Read"
 msgstr "Variabile &Letta"
 
+msgid "Variable assignments"
+msgstr "Assegnazioni di variabili"
+
+msgid "Variable reads"
+msgstr "Letture di variabili"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "Layout verticale con Rendering stile Bubble"
 
@@ -2148,6 +2162,9 @@ msgstr "Layout verticale con rendering a stile griglia"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "Layout verticale con Rendering stile linea"
+
+msgid "Views"
+msgstr "Viste"
 
 msgid "What size grid would you like to start with?"
 msgstr "Con quale dimensioni di griglia vorresti iniziare?"

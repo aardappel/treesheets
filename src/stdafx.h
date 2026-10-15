@@ -48,6 +48,7 @@
 #include <wx/aui/serializer.h>
 #include <wx/base64.h>
 #include <wx/bmpbndl.h>
+#include <wx/clrpicker.h>
 #include <wx/colordlg.h>
 #include <wx/datectrl.h>
 #include <wx/dcsvg.h>

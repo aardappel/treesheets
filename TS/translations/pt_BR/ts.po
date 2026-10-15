@@ -62,6 +62,9 @@ msgstr "&Limpar Visualizações"
 msgid "&Close"
 msgstr "&Fechar"
 
+msgid "&Colors..."
+msgstr "&Cores..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "Texto delimitado por vírgulas (&CSV, plano)..."
 
@@ -79,6 +82,9 @@ msgstr "&Diminuir tamanho dos textos (CTRL+ALT+SHIFT+botão de rolagem)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Diminuir tamanho do texto (SHIFT+botão de rolagem)"
+
+msgid "&Defaults"
+msgstr "&Padrões"
 
 msgid "&Delete After"
 msgstr "Excluir Depois"
@@ -583,6 +589,9 @@ msgstr "&Mesclar Células"
 msgid "Colorize inner grid border"
 msgstr "Colorizar borda interna da grade"
 
+msgid "Colors"
+msgstr "Cores"
+
 msgid "Column width decreased."
 msgstr "A largura da coluna diminuiu."
 
@@ -641,11 +650,11 @@ msgstr "Cria arquivo de backup antes de salvar o documento"
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Cria um novo nível de hierarquia ao redor da seleção atual"
 
-msgid "Cu&rsor color..."
-msgstr "Cor do curso&r..."
-
 msgid "Cu&t"
 msgstr "Recort&ar"
+
+msgid "Cursor"
+msgstr "Cursor"
 
 msgid "Cursor Left"
 msgstr "Mover o cursor um caractere à esquerda"
@@ -656,8 +665,8 @@ msgstr "Mover o cursor um caractere à direita"
 msgid "Custom"
 msgstr "Personalizada"
 
-msgid "Custom &color..."
-msgstr "Cor &personalizada..."
+msgid "Custom dropdown color"
+msgstr "Cor personalizada das listas"
 
 msgid "Cut selection"
 msgstr "Recorta a seleção"
@@ -1075,9 +1084,6 @@ msgstr "Layout Horizontal, Renderização com Estilo de Linha"
 msgid "Hover shadow"
 msgstr "Sombrear célula sob o ponteiro do mouse"
 
-msgid "Hover shadow color..."
-msgstr "Cor da sombra sob o ponteiro..."
-
 msgid "Hover zoom"
 msgstr "Ampliar célula sob o po&nteiro do mouse"
 
@@ -1417,6 +1423,9 @@ msgstr ""
 
 msgid "Operation reference"
 msgstr "Referência de &operações"
+
+msgid "Operations"
+msgstr "Operações"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1765,6 +1774,9 @@ msgstr ""
 "Pesquisa e substitui no conteúdo visível da visualização atual (sem grades "
 "recolhidas nem células minúsculas)"
 
+msgid "Search results"
+msgstr "Resultados da pesquisa"
+
 msgid "Select &Parent"
 msgstr "Selecionar &Mãe"
 
@@ -1797,9 +1809,6 @@ msgstr "&Definir Escala de Impressão"
 msgid "Set Print Scale..."
 msgstr "Definir Esca&la de Impressão..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr "Define uma cor personalizada para as listas dropdown de cor"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr ""
@@ -1809,11 +1818,10 @@ msgstr ""
 msgid "Set the color for the document background"
 msgstr "Define a cor do plano de fundo do documento"
 
-msgid "Set the color for the text cursor"
-msgstr "Define a cor do cursor"
-
-msgid "Set the color of the hover shadow"
-msgstr "Define a cor da sombra da célula sob o ponteiro do mouse"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "Define as cores do cursor, da sombra da célula sob o ponteiro do mouse, dos resultados da pesquisa, das operações e a cor personalizada das listas de cores"
 
 msgid "Set the default column width for a new grid"
 msgstr "Define largura padrão das colunas para uma nova grade"
@@ -2144,6 +2152,12 @@ msgstr "&Atribuição de Variável"
 msgid "Variable &Read"
 msgstr "&Leitura de Variável"
 
+msgid "Variable assignments"
+msgstr "Atribuições de variável"
+
+msgid "Variable reads"
+msgstr "Leituras de variável"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "Layout Vertical, Renderização com Estilo de Bolha"
 
@@ -2152,6 +2166,9 @@ msgstr "Layout Vertical, Renderização com Estilo de Grade"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "Layout Vertical, Renderização com Estilo de Linha"
+
+msgid "Views"
+msgstr "Visualizações"
 
 msgid "What size grid would you like to start with?"
 msgstr "Com que tamanho de grade deseja começar?"

@@ -733,15 +733,14 @@ struct TSFrame : wxFrame {
         MyAppend(optmenu, A_DEFAULTMAXCOLWIDTH, _("Default column width..."),
                  _("Set the default column width for a new grid"));
         optmenu->AppendSeparator();
-        MyAppend(optmenu, A_CUSTCOL, _("Custom &color..."),
-                 _("Set a custom color for the color dropdowns"));
+        MyAppend(optmenu, A_COLORS, _("&Colors..."),
+                 _("Set the colors of the cursor, hover shadow, search results, operations and "
+                   "the custom color of the color dropdowns"));
         MyAppend(
             optmenu, A_COLCELL, _("&Set custom color from cell background"),
             _("Set a custom color for the color dropdowns from the selected cell background"));
         MyAppend(optmenu, A_DEFBGCOL, _("Background color..."),
                  _("Set the color for the document background"));
-        MyAppend(optmenu, A_DEFCURCOL, _("Cu&rsor color..."),
-                 _("Set the color for the text cursor"));
         optmenu->AppendSeparator();
         MyAppend(optmenu, A_RESETPERSPECTIVE, _("Reset toolbar"),
                  _("Reset the toolbar appearance"));
@@ -780,8 +779,6 @@ struct TSFrame : wxFrame {
         optmenu->AppendCheckItem(A_HOVERSHADOW, _("Hover shadow"),
                                  _("Shade the cell the mouse pointer hovers over"));
         optmenu->Check(A_HOVERSHADOW, sys->hovershadow);
-        MyAppend(optmenu, A_HOVERSHADOWCOL, _("Hover shadow color..."),
-                 _("Set the color of the hover shadow"));
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_MAKEBAKS, _("Backup files"),
                                  _("Create backup file before document is saved to file"));
@@ -1541,13 +1538,12 @@ struct TSFrame : wxFrame {
                     aui.Update();
                 }
                 break;
-            case A_CUSTCOL: {
-                if (auto color = PickColor(sys->frame, sys->customcolor);
-                    color != static_cast<uint>(-1)) {
-                    sys->cfg->Write("customcolor", sys->customcolor = color);
+            case A_COLORS:
+                if (ColorsDialog dlg(this); dlg.ShowModal() == wxID_OK) {
+                    dlg.Apply();
+                    Refresh();
                 }
                 break;
-            }
 
             #ifdef ENABLE_LOBSTER
                 case A_RUNSCRIPT: {

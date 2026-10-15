@@ -54,6 +54,9 @@ msgstr "&Xóa các chế độ xem"
 msgid "&Close"
 msgstr "Đóng (&C)"
 
+msgid "&Colors..."
+msgstr "Màu &sắc..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "Văn bản phân tách bằng dấu phẩy (&CSV, phẳng)..."
 
@@ -71,6 +74,9 @@ msgstr "Giảm kích thước phông chữ (&D) (CTRL+ALT+SHIFT+lăn chuột)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "&Giảm kích thước chữ (SHIFT+lăn chuột)"
+
+msgid "&Defaults"
+msgstr "Mặc &định"
 
 msgid "&Delete After"
 msgstr "&Xóa phần sau"
@@ -571,6 +577,9 @@ msgstr "Thu gọn các ô (&L)"
 msgid "Colorize inner grid border"
 msgstr "Tô màu đường viền lưới bên trong (&R)"
 
+msgid "Colors"
+msgstr "Màu sắc"
+
 msgid "Column width decreased."
 msgstr "Đã giảm chiều rộng cột."
 
@@ -629,11 +638,11 @@ msgstr "Tạo tệp sao lưu trước khi lưu tài liệu vào tệp"
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Tạo một cấp phân cấp mới bao quanh vùng chọn hiện tại"
 
-msgid "Cu&rsor color..."
-msgstr "Màu con t&rỏ..."
-
 msgid "Cu&t"
 msgstr "Cắ&t"
+
+msgid "Cursor"
+msgstr "Con trỏ"
 
 msgid "Cursor Left"
 msgstr "Con trỏ sang trái"
@@ -644,8 +653,8 @@ msgstr "Con trỏ sang phải"
 msgid "Custom"
 msgstr "Tùy chỉnh"
 
-msgid "Custom &color..."
-msgstr "Màu tùy &chỉnh..."
+msgid "Custom dropdown color"
+msgstr "Màu tùy chỉnh của danh sách thả xuống"
 
 msgid "Cut selection"
 msgstr "Cắt vùng chọn"
@@ -1051,9 +1060,6 @@ msgstr "Bố cục ngang với hiển thị kiểu đường kẻ"
 msgid "Hover shadow"
 msgstr "Tô bóng khi di chuột"
 
-msgid "Hover shadow color..."
-msgstr "Màu tô bóng khi di chuột..."
-
 msgid "Hover zoom"
 msgstr "Thu phóng khi di chuột"
 
@@ -1379,6 +1385,9 @@ msgstr "Mở văn bản từ ô được chọn bằng ứng dụng mặc địn
 
 msgid "Operation reference"
 msgstr "Tham chiếu thao tác"
+
+msgid "Operations"
+msgstr "Thao tác"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1721,6 +1730,9 @@ msgstr ""
 "Tìm kiếm và thay thế trong nội dung hiển thị của chế độ xem hiện tại (không "
 "có lưới gấp, không có ô nhỏ)"
 
+msgid "Search results"
+msgstr "Kết quả tìm kiếm"
+
 msgid "Select &Parent"
 msgstr "Chọn mục cha (&P)"
 
@@ -1752,9 +1764,6 @@ msgstr "Đặt tỷ lệ in"
 msgid "Set Print Scale..."
 msgstr "Đặt tỷ lệ in..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr "Đặt màu tùy chỉnh cho danh sách màu thả xuống"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr "Đặt màu tùy chỉnh cho danh sách màu thả xuống từ nền ô được chọn"
@@ -1762,11 +1771,10 @@ msgstr "Đặt màu tùy chỉnh cho danh sách màu thả xuống từ nền ô
 msgid "Set the color for the document background"
 msgstr "Đặt màu cho nền tài liệu"
 
-msgid "Set the color for the text cursor"
-msgstr "Đặt màu cho con trỏ văn bản"
-
-msgid "Set the color of the hover shadow"
-msgstr "Đặt màu tô bóng khi di chuột"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "Đặt màu con trỏ, tô bóng khi di chuột, kết quả tìm kiếm, thao tác và màu tùy chỉnh của danh sách màu thả xuống"
 
 msgid "Set the default column width for a new grid"
 msgstr "Đặt chiều rộng cột mặc định cho lưới mới"
@@ -2085,6 +2093,12 @@ msgstr "Gán biến (&A)"
 msgid "Variable &Read"
 msgstr "Đọc biến (&R)"
 
+msgid "Variable assignments"
+msgstr "Gán biến"
+
+msgid "Variable reads"
+msgstr "Đọc biến"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "Bố cục dọc với hiển thị kiểu bong bóng"
 
@@ -2093,6 +2107,9 @@ msgstr "Bố cục dọc với hiển thị kiểu lưới"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "Bố cục dọc với hiển thị kiểu đường kẻ"
+
+msgid "Views"
+msgstr "Chế độ xem"
 
 msgid "What size grid would you like to start with?"
 msgstr "Bạn muốn bắt đầu với lưới kích thước bao nhiêu?"

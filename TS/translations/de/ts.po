@@ -59,6 +59,9 @@ msgstr "&Ansichten zurücksetzen"
 msgid "&Close"
 msgstr "&Schließen"
 
+msgid "&Colors..."
+msgstr "&Farben..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "&Text mit Kommata als Trennzeichen (CSV, flach)..."
 
@@ -76,6 +79,9 @@ msgstr "Schriftgröße ver&ringern (STRG+ALT+UMSCHALT+Mausrad)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "Textgröße ver&kleinern (UMSCHALT+Mausrad)"
+
+msgid "&Defaults"
+msgstr "&Standardwerte"
 
 msgid "&Delete After"
 msgstr "&Nachfolgendes Element löschen"
@@ -587,6 +593,9 @@ msgstr "Ze&llen zusammenlegen"
 msgid "Colorize inner grid border"
 msgstr "Innere Tabellenlinien einfärben"
 
+msgid "Colors"
+msgstr "Farben"
+
 msgid "Column width decreased."
 msgstr "Spaltenbreite wurde verkleinert."
 
@@ -646,11 +655,11 @@ msgstr "Eine Sicherungskopie vor dem Speichern des Dokuments erstellen"
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Eine neue Hierarchieebene um die aktuelle Auswahl herum erstellen"
 
-msgid "Cu&rsor color..."
-msgstr "Cu&rsorfarbe..."
-
 msgid "Cu&t"
 msgstr "Ausschneiden"
+
+msgid "Cursor"
+msgstr "Cursor"
 
 msgid "Cursor Left"
 msgstr "Cursor links"
@@ -661,8 +670,8 @@ msgstr "Cursor rechts"
 msgid "Custom"
 msgstr "Benutzerdef."
 
-msgid "Custom &color..."
-msgstr "Benutzer&definierte Farbe..."
+msgid "Custom dropdown color"
+msgstr "Benutzerdefinierte Farbe der Auswahllisten"
 
 msgid "Cut selection"
 msgstr "Auswahl ausschneiden"
@@ -1084,9 +1093,6 @@ msgstr "Horizontale Anordnung mit Zeilenstil-Rendering"
 msgid "Hover shadow"
 msgstr "Schwebeschatten"
 
-msgid "Hover shadow color..."
-msgstr "Farbe des Schwebeschattens..."
-
 msgid "Hover zoom"
 msgstr "Schwebezoom"
 
@@ -1425,6 +1431,9 @@ msgstr ""
 
 msgid "Operation reference"
 msgstr "Programmierreferenz"
+
+msgid "Operations"
+msgstr "Operationen"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1777,6 +1786,9 @@ msgstr ""
 "Im sichtbaren Bereich der aktuellen Ansicht suchen und ersetzen (keine "
 "eingeklappten Tabellen, keine schmalen Zellen)"
 
+msgid "Search results"
+msgstr "Suchergebnisse"
+
 msgid "Select &Parent"
 msgstr "&Übergeordnetes Element auswählen"
 
@@ -1809,9 +1821,6 @@ msgstr "Druckskalierung setzen"
 msgid "Set Print Scale..."
 msgstr "Druckskalierung setzen..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr "Eine benutzerdefinierte Farbe für die Farben-Dropdownmenüs auswählen"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr ""
@@ -1821,11 +1830,10 @@ msgstr ""
 msgid "Set the color for the document background"
 msgstr "Die Farbe für den Dokumentenhintergrund wählen"
 
-msgid "Set the color for the text cursor"
-msgstr "Die Farbe des Textcursors auswählen"
-
-msgid "Set the color of the hover shadow"
-msgstr "Die Farbe des Schwebeschattens auswählen"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "Die Farben des Cursors, des Schwebeschattens, der Suchergebnisse, der Operationen und die benutzerdefinierte Farbe der Farbauswahllisten festlegen"
 
 msgid "Set the default column width for a new grid"
 msgstr "Die Standardspaltenbreite für eine neue Tabelle setzen"
@@ -2163,6 +2171,12 @@ msgstr "V&ariable zuweisen"
 msgid "Variable &Read"
 msgstr "Va&riable lesen"
 
+msgid "Variable assignments"
+msgstr "Variablenzuweisungen"
+
+msgid "Variable reads"
+msgstr "Variablenlesezugriffe"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "Vertikale Anordnung mit Blasenstil-Rendering"
 
@@ -2171,6 +2185,9 @@ msgstr "Vertikale Anordnung mit Tabellenstil-Rendering"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "Vertikale Anordnung mit Zeilenstil-Rendering"
+
+msgid "Views"
+msgstr "Ansichten"
 
 msgid "What size grid would you like to start with?"
 msgstr "Mit welcher Tabellengröße möchten Sie beginnen?"

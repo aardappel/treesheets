@@ -59,6 +59,9 @@ msgstr "지우기(&C)"
 msgid "&Close"
 msgstr "닫기(&C)"
 
+msgid "&Colors..."
+msgstr "색상(&C)..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "쉼표로 구분된 텍스트 (CSV, 평면)(&C)..."
 
@@ -76,6 +79,9 @@ msgstr "글꼴 크기 줄이기 (Ctrl+ALT+SHIFT+마우스 휠)(&D)"
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "텍스트 크기 줄이기 (Shift+마우스 휠)(&D)"
+
+msgid "&Defaults"
+msgstr "기본값(&D)"
 
 msgid "&Delete After"
 msgstr "이후 삭제(&D)"
@@ -574,6 +580,9 @@ msgstr "셀 축소"
 msgid "Colorize inner grid border"
 msgstr "내부 격자 테두리 색칠"
 
+msgid "Colors"
+msgstr "색상"
+
 msgid "Column width decreased."
 msgstr "열 너비가 감소했습니다."
 
@@ -632,11 +641,11 @@ msgstr "문서가 파일에 저장되기 전에 백업 파일 만들기"
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "현재 선택 항목을 중심으로 새로운 계층 구조를 만듭니다"
 
-msgid "Cu&rsor color..."
-msgstr "커서 색상(&R)..."
-
 msgid "Cu&t"
 msgstr "잘라내기(&T)"
+
+msgid "Cursor"
+msgstr "커서"
 
 msgid "Cursor Left"
 msgstr "커서 왼쪽"
@@ -647,8 +656,8 @@ msgstr "커서 오른쪽"
 msgid "Custom"
 msgstr "사용자 지정"
 
-msgid "Custom &color..."
-msgstr "사용자 지정 색상(&C)..."
+msgid "Custom dropdown color"
+msgstr "드롭다운 사용자 지정 색상"
 
 msgid "Cut selection"
 msgstr "잘라내기 선택"
@@ -1045,9 +1054,6 @@ msgstr "선 스타일 렌더링을 사용한 가로 레이아웃"
 msgid "Hover shadow"
 msgstr "호버 그림자"
 
-msgid "Hover shadow color..."
-msgstr "마우스 오버 시 그림자 색상..."
-
 msgid "Hover zoom"
 msgstr "호버 확대/축소"
 
@@ -1371,6 +1377,9 @@ msgstr "파일 형식에 대한 기본 응용 프로그램에서 선택한 셀�
 
 msgid "Operation reference"
 msgstr "작동 참조"
+
+msgid "Operations"
+msgstr "작동"
 
 msgid "PNG"
 msgstr "PNG"
@@ -1706,6 +1715,9 @@ msgid ""
 msgstr ""
 "현재 보기의 표시 가능한 내용에서 검색 및 바꾸기 (접힌 격자 및 작은 셀 없음)"
 
+msgid "Search results"
+msgstr "검색 결과"
+
 msgid "Select &Parent"
 msgstr "부모 선택(&P)"
 
@@ -1736,9 +1748,6 @@ msgstr "인쇄 비율 설정"
 msgid "Set Print Scale..."
 msgstr "인쇄 비율 설정..."
 
-msgid "Set a custom color for the color dropdowns"
-msgstr "색상 드롭다운에 대한 사용자 지정 색상 설정"
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr "선택한 셀 배경에서 색상 드롭다운에 대한 사용자 지정 색상 설정"
@@ -1746,11 +1755,10 @@ msgstr "선택한 셀 배경에서 색상 드롭다운에 대한 사용자 지�
 msgid "Set the color for the document background"
 msgstr "문서 배경의 색상 설정"
 
-msgid "Set the color for the text cursor"
-msgstr "텍스트 커서의 색상 설정"
-
-msgid "Set the color of the hover shadow"
-msgstr "마우스 오버 그림자 색상 설정"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
+msgstr "커서, 호버 그림자, 검색 결과, 작동의 색상과 색상 드롭다운의 사용자 지정 색상 설정"
 
 msgid "Set the default column width for a new grid"
 msgstr "새 격자의 기본 열 너비 설정"
@@ -2070,6 +2078,12 @@ msgstr "변수 할당(&A)"
 msgid "Variable &Read"
 msgstr "변수 읽기(&R)"
 
+msgid "Variable assignments"
+msgstr "변수 할당"
+
+msgid "Variable reads"
+msgstr "변수 읽기"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr "버블 스타일 렌더링을 사용한 세로 레이아웃"
 
@@ -2078,6 +2092,9 @@ msgstr "격자 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr "선 스타일 렌더링을 사용한 세로 레이아웃"
+
+msgid "Views"
+msgstr "보기"
 
 msgid "What size grid would you like to start with?"
 msgstr "어떤 크기의 격자로 시작하시겠습니까?"

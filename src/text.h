@@ -745,7 +745,7 @@ struct Text {
         std::vector<BidiPiece> pieces;
         auto setforeground = [&](bool hascolor, uint color) {
             if (searchfound) {
-                dc.SetTextForeground(*wxRED);
+                dc.SetTextForeground(wxColour(sys->searchcolor));
             } else if (filtered) {
                 dc.SetTextForeground(*wxLIGHT_GREY);
             } else if (istag) {
@@ -760,7 +760,7 @@ struct Text {
         };
         if (cell->tiny) {
             if (searchfound) {
-                dc.SetPen(*wxRED_PEN);
+                dc.SetPen(wxPen(wxColour(sys->searchcolor)));
             } else if (filtered) {
                 dc.SetPen(*wxLIGHT_GREY_PEN);
             } else if (istag) {
@@ -832,7 +832,7 @@ struct Text {
                 dc.SetTextForeground(sys->rubberbandcolor);
             } else {
                 if (searchfound) {
-                    dc.SetTextForeground(*wxRED);
+                    dc.SetTextForeground(wxColour(sys->searchcolor));
                 } else if (filtered) {
                     dc.SetTextForeground(*wxLIGHT_GREY);
                 } else if (istag) {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 16:30+0200\n"
+"POT-Creation-Date: 2026-10-15 12:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,6 +56,9 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+msgid "&Colors..."
+msgstr ""
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr ""
 
@@ -72,6 +75,9 @@ msgid "&Decrease font size (CTRL+ALT+SHIFT+mousewheel)"
 msgstr ""
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
+msgstr ""
+
+msgid "&Defaults"
 msgstr ""
 
 msgid "&Delete After"
@@ -562,6 +568,9 @@ msgstr ""
 msgid "Colorize inner grid border"
 msgstr ""
 
+msgid "Colors"
+msgstr ""
+
 msgid "Column width decreased."
 msgstr ""
 
@@ -618,10 +627,10 @@ msgstr ""
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr ""
 
-msgid "Cu&rsor color..."
+msgid "Cu&t"
 msgstr ""
 
-msgid "Cu&t"
+msgid "Cursor"
 msgstr ""
 
 msgid "Cursor Left"
@@ -633,7 +642,7 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-msgid "Custom &color..."
+msgid "Custom dropdown color"
 msgstr ""
 
 msgid "Cut selection"
@@ -1015,9 +1024,6 @@ msgstr ""
 msgid "Hover shadow"
 msgstr ""
 
-msgid "Hover shadow color..."
-msgstr ""
-
 msgid "Hover zoom"
 msgstr ""
 
@@ -1335,6 +1341,9 @@ msgid ""
 msgstr ""
 
 msgid "Operation reference"
+msgstr ""
+
+msgid "Operations"
 msgstr ""
 
 msgid "PNG"
@@ -1663,6 +1672,9 @@ msgid ""
 "grids, no tiny cells)"
 msgstr ""
 
+msgid "Search results"
+msgstr ""
+
 msgid "Select &Parent"
 msgstr ""
 
@@ -1693,9 +1705,6 @@ msgstr ""
 msgid "Set Print Scale..."
 msgstr ""
 
-msgid "Set a custom color for the color dropdowns"
-msgstr ""
-
 msgid ""
 "Set a custom color for the color dropdowns from the selected cell background"
 msgstr ""
@@ -1703,10 +1712,9 @@ msgstr ""
 msgid "Set the color for the document background"
 msgstr ""
 
-msgid "Set the color for the text cursor"
-msgstr ""
-
-msgid "Set the color of the hover shadow"
+msgid ""
+"Set the colors of the cursor, hover shadow, search results, operations and "
+"the custom color of the color dropdowns"
 msgstr ""
 
 msgid "Set the default column width for a new grid"
@@ -2027,6 +2035,12 @@ msgstr ""
 msgid "Variable &Read"
 msgstr ""
 
+msgid "Variable assignments"
+msgstr ""
+
+msgid "Variable reads"
+msgstr ""
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr ""
 
@@ -2034,6 +2048,9 @@ msgid "Vertical Layout with Grid Style Rendering"
 msgstr ""
 
 msgid "Vertical Layout with Line Style Rendering"
+msgstr ""
+
+msgid "Views"
 msgstr ""
 
 msgid "What size grid would you like to start with?"

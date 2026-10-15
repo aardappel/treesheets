@@ -64,6 +64,9 @@ msgstr "О&чистить Представления"
 msgid "&Close"
 msgstr "Закрыть"
 
+msgid "&Colors..."
+msgstr "&Цвета..."
+
 msgid "&Comma delimited text (CSV, flat)..."
 msgstr "CSV (разделитель - &запятая, плоский)..."
 
@@ -81,6 +84,9 @@ msgstr "У&меньшить .."
 
 msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "У&меньшить .."
+
+msgid "&Defaults"
+msgstr "По &умолчанию"
 
 msgid "&Delete After"
 msgstr "&Удалить После"
@@ -636,6 +642,9 @@ msgstr "Слияние Ячеек"
 msgid "Colorize inner grid border"
 msgstr "Раскрасить внутренние границы сетки"
 
+msgid "Colors"
+msgstr "Цвета"
+
 # Сообщение (после действия или события)
 msgid "Column width decreased."
 msgstr "Ширина столбца уменьшена."
@@ -703,11 +712,11 @@ msgstr "Создавать резервный (.bak) файл перед сох�
 msgid "Creates a new level of hierarchy around the current selection"
 msgstr "Создаёт новый уровень иерархии вокруг текущего выделения"
 
-msgid "Cu&rsor color..."
-msgstr "Цвет Ку&рсора..."
-
 msgid "Cu&t"
 msgstr "Вырезать"
+
+msgid "Cursor"
+msgstr "Курсор"
 
 msgid "Cursor Left"
 msgstr "Курсор вЛево (⊲)"
@@ -719,8 +728,8 @@ msgstr ".. вПраво (⊳)"
 msgid "Custom"
 msgstr "Польз"
 
-msgid "Custom &color..."
-msgstr "Пользовательский &цвет..."
+msgid "Custom dropdown color"
+msgstr "Пользовательский цвет списков"
 
 # комментарий к п. Меню
 msgid "Cut selection"
@@ -1148,10 +1157,6 @@ msgstr ".. в стиле &Линий"
 msgid "Hover shadow"
 msgstr "Затенение при наведении"
 
-# п. Меню (нет & в исходном тексте)
-msgid "Hover shadow color..."
-msgstr "Цвет затенения при наведении..."
-
 # п. Меню (нет & в исходном тексте),  отсутствует в Linux на 2026-09-27
 msgid "Hover zoom"
 msgstr "Увеличение при наведении"
@@ -1521,6 +1526,9 @@ msgstr "Открывает текст из выбранной ячейки в п
 
 msgid "Operation reference"
 msgstr "Справочник по Программе"
+
+msgid "Operations"
+msgstr "Операции"
 
 # п.п. Меню (нет & в исходном тексте)
 msgid "PNG"
@@ -1899,6 +1907,9 @@ msgstr "Поиск "
 msgid "Search and replace in the visible content of the current view (no folded grids, no tiny cells)"
 msgstr "Поиск и замена в видимом содержимом текущего вида (без свёрнутых таблиц и слишком мелких ячеек)"
 
+msgid "Search results"
+msgstr "Результаты поиска"
+
 msgid "Select &Parent"
 msgstr "Выбрать &Родителя"
 
@@ -1935,10 +1946,6 @@ msgid "Set Print Scale..."
 msgstr "Задать Масштаб Печати..."
 
 # комментарий к п. Меню
-msgid "Set a custom color for the color dropdowns"
-msgstr "Установите пользовательский цвет для всех меню выбора цвета"
-
-# комментарий к п. Меню
 msgid "Set a custom color for the color dropdowns from the selected cell background"
 msgstr "Установите пользовательский цвет для раскрывающихся списков цветов на основе цвета фона выбранной ячейки"
 
@@ -1946,13 +1953,8 @@ msgstr "Установите пользовательский цвет для р
 msgid "Set the color for the document background"
 msgstr "Установите цвет фона документа"
 
-# комментарий к п. Меню
-msgid "Set the color for the text cursor"
-msgstr "Установите цвет текстового курсора"
-
-# комментарий к п. Меню
-msgid "Set the color of the hover shadow"
-msgstr "Установите цвет затенения при наведении"
+msgid "Set the colors of the cursor, hover shadow, search results, operations and the custom color of the color dropdowns"
+msgstr "Установите цвета курсора, затенения при наведении, результатов поиска, операций и пользовательский цвет списков цветов"
 
 # комментарий к п. Меню
 msgid "Set the default column width for a new grid"
@@ -2341,6 +2343,12 @@ msgstr "&Назначить Переменную"
 msgid "Variable &Read"
 msgstr "Про&читать Переменную"
 
+msgid "Variable assignments"
+msgstr "Назначения переменных"
+
+msgid "Variable reads"
+msgstr "Чтения переменных"
+
 msgid "Vertical Layout with Bubble Style Rendering"
 msgstr ".. в стиле &Пузырьков"
 
@@ -2349,6 +2357,9 @@ msgstr "Вертикальная компоновка в стиле &Сетки"
 
 msgid "Vertical Layout with Line Style Rendering"
 msgstr ".. в стиле &Линий"
+
+msgid "Views"
+msgstr "Представления"
 
 # в Окне (выбор п. Меню) - Файл / Новый
 msgid "What size grid would you like to start with?"

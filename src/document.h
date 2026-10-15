@@ -2179,24 +2179,6 @@ struct Document {
                 return wxEmptyString;
             }
 
-            case A_DEFCURCOL: {
-                if (auto color = PickColor(sys->frame, sys->cursorcolor);
-                    color != static_cast<uint>(-1)) {
-                    sys->cfg->Write("cursorcolor", sys->cursorcolor = color);
-                    canvas->Refresh();
-                }
-                return wxEmptyString;
-            }
-
-            case A_HOVERSHADOWCOL: {
-                if (auto color = PickColor(sys->frame, sys->hovershadowcolor);
-                    color != static_cast<uint>(-1)) {
-                    sys->cfg->Write("hovershadowcolor", sys->hovershadowcolor = color);
-                    if (!hovershade.IsEmpty()) { RefreshDocRect(hovershade); }
-                }
-                return wxEmptyString;
-            }
-
             case A_SEARCHNEXT:
             case A_SEARCHPREV: {
                 if (!sys->searchstring.IsEmpty()) {

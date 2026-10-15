@@ -40,7 +40,6 @@ struct System {
     bool hoverzoom {false};
     bool hovershadow {false};
     bool formulasseen {false};  // whether any cell has been a formula, see Cell::SyncFormula()
-    int hovershadowcolor {0x808080};
     bool minclose {false};
     bool singletray {false};
     bool bottomtabs {true};
@@ -80,8 +79,32 @@ struct System {
     int lasttextcolor {0};
     int lastbordcolor {0xA0A0A0};
     Image *lastimage {nullptr};
-    int customcolor {0xFFFFFF};
-    int cursorcolor {0x00FF00};
+    int customcolor {0};
+    int cursorcolor {0};
+    int hovershadowcolor {0};
+    int searchcolor {0};
+    int operationcolor {0};
+    int varassigncolor {0};
+    int varreadcolor {0};
+    int viewcolor {0};
+
+    struct ColorSetting {
+        const char *key;
+        int System::*color;
+        int def;
+        wxString label;
+    };
+    // The colors of Options > Colors..., with their settings keys and defaults.
+    static vector<ColorSetting> ColorSettings() {
+        return {{"cursorcolor", &System::cursorcolor, 0x00FF00, _("Cursor")},
+                {"hovershadowcolor", &System::hovershadowcolor, 0x808080, _("Hover shadow")},
+                {"searchcolor", &System::searchcolor, 0x0000FF, _("Search results")},
+                {"operationcolor", &System::operationcolor, 0x8080FF, _("Operations")},
+                {"varassigncolor", &System::varassigncolor, 0xFF8080, _("Variable assignments")},
+                {"varreadcolor", &System::varreadcolor, 0xFFA0A0, _("Variable reads")},
+                {"viewcolor", &System::viewcolor, 0x80FF80, _("Views")},
+                {"customcolor", &System::customcolor, 0xFFFFFF, _("Custom dropdown color")}};
+    }
 
     System(bool portable)
         : cfg(portable ? new wxFileConfig("", "", wxGetCwd() + "/TreeSheets.ini", "", 0)
@@ -104,7 +127,6 @@ struct System {
         cfg->Read("thinselc", &thinselc, thinselc);
         cfg->Read("hoverzoom", &hoverzoom, hoverzoom);
         cfg->Read("hovershadow", &hovershadow, hovershadow);
-        cfg->Read("hovershadowcolor", &hovershadowcolor, hovershadowcolor);
         cfg->Read("autosave", &autosave, autosave);
         cfg->Read("fastrender", &fastrender, fastrender);
         cfg->Read("shrinktext", &shrinktext, shrinktext);
@@ -124,8 +146,7 @@ struct System {
         cfg->Read("filterunion", &filterunion, filterunion);
         cfg->Read("defaultfontsize", &g_deftextsize_default, g_deftextsize_default);
         g_deftextsize = g_deftextsize_default;
-        cfg->Read("customcolor", &customcolor, customcolor);
-        cfg->Read("cursorcolor", &cursorcolor, cursorcolor);
+        for (const auto &cs : ColorSettings()) { cfg->Read(cs.key, &(this->*cs.color), cs.def); }
         cfg->Read("showtoolbar", &showtoolbar, showtoolbar);
         cfg->Read("showstatusbar", &showstatusbar, showstatusbar);
         cfg->Read("notesizex", &notesizex, notesizex);

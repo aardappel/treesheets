@@ -149,11 +149,11 @@ struct Cell {
                 int mb, int maxcolwidth, int cell_margin) {
         // Choose color from celltype (program operations)
         switch (celltype) {
-            case CT_VARD: actualcellcolor = 0xFF8080; break;
-            case CT_VARU: actualcellcolor = 0xFFA0A0; break;
+            case CT_VARD: actualcellcolor = sys->varassigncolor; break;
+            case CT_VARU: actualcellcolor = sys->varreadcolor; break;
             case CT_VIEWH:
-            case CT_VIEWV: actualcellcolor = 0x80FF80; break;
-            case CT_CODE: actualcellcolor = 0x8080FF; break;
+            case CT_VIEWV: actualcellcolor = sys->viewcolor; break;
+            case CT_CODE: actualcellcolor = sys->operationcolor; break;
             default: actualcellcolor = cellcolor; break;
         }
         if (IsTag(doc)) actualcellcolor = doc->tags[text.t].first;

@@ -459,6 +459,41 @@ static uint PickColor(wxWindow *parent, uint defaultcolor) {
     return -1;
 }
 
+// The color settings of System::ColorSettings(), set with Apply().
+struct ColorsDialog : wxDialog {
+    vector<System::ColorSetting> settings {System::ColorSettings()};
+    vector<wxColourPickerCtrl *> pickers;
+
+    ColorsDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, _("Colors")) {
+        auto *grid = new wxFlexGridSizer(2, wxSize(10, 5));
+        for (const auto &cs : settings) {
+            grid->Add(new wxStaticText(this, wxID_ANY, cs.label), 0, wxALIGN_CENTER_VERTICAL);
+            pickers.push_back(
+                new wxColourPickerCtrl(this, wxID_ANY, wxColour(sys.get()->*cs.color)));
+            grid->Add(pickers.back());
+        }
+        auto *defaults = new wxButton(this, wxID_ANY, _("&Defaults"));
+        defaults->Bind(wxEVT_BUTTON, [this](wxCommandEvent &) {
+            loopv(i, settings) pickers[i]->SetColour(wxColour(settings[i].def));
+        });
+        auto *buttons = new wxBoxSizer(wxHORIZONTAL);
+        buttons->Add(defaults, 0, wxALIGN_CENTER_VERTICAL);
+        buttons->AddStretchSpacer();
+        buttons->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL));
+        auto *sizer = new wxBoxSizer(wxVERTICAL);
+        sizer->Add(grid, 0, wxALL, 10);
+        sizer->Add(buttons, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+        SetSizerAndFit(sizer);
+    }
+
+    void Apply() {
+        loopv(i, settings) {
+            sys->cfg->Write(settings[i].key,
+                            sys.get()->*settings[i].color = pickers[i]->GetColour().GetRGB());
+        }
+    }
+};
+
 static uint LightColor(uint color) { return color ^ sys->colormask; }
 
 static const EmbeddedFile *FindEmbeddedFile(std::span<const EmbeddedFile> files,
