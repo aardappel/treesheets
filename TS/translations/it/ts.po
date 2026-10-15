@@ -1070,6 +1070,10 @@ msgstr ""
 "Tieni premuto CTRL mentre premi il tasto destro del mouse per impostare "
 "rapidamente un tag per cella corrente sta' usando un menu popup"
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "Tieni premuto Maiusc mentre lo scegli per modificare le celle selezionate, non quelle al loro interno"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "Layout orizzontale con Rendering stile Bubble"
 

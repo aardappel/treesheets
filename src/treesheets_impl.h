@@ -367,6 +367,8 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     int GetVerticalAlignment() override { return current->vertalign; }
+    int GetRenderStyle() override { return current->drawstyle; }
+    bool IsVerticalLayout() override { return current->verticaltextandgrid; }
 
     void RemoveImage() override {
         AddUndoIfNecessary();

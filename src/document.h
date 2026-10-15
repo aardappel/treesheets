@@ -3372,7 +3372,8 @@ struct Document {
         selected.grid->cell->AddUndo(this);
         bool v = toggle ? !selected.GetFirst()->verticaltextandgrid : vert;
         if (ds >= 0 && selected.IsAll()) { selected.grid->cell->drawstyle = ds; }
-        selected.grid->SetGridTextLayout(ds, v, noset, selected);
+        // With Shift held, only the selected cells, not the ones inside.
+        selected.grid->SetGridTextLayout(ds, v, noset, selected, !wxGetKeyState(WXK_SHIFT));
         selected.grid->cell->ResetChildren();
         UpdateLayout();
         canvas->Refresh();

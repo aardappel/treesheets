@@ -1025,6 +1025,10 @@ msgid ""
 "current cell using a popup menu"
 msgstr "按住 Ctrl 並按下滑鼠右鍵，即可使用彈出式選單快速為目前儲存格設定標籤"
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "選擇時按住 Shift 鍵，只變更所選儲存格，而不變更其中的儲存格"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "水平版面配置搭配氣泡樣式繪製"
 

@@ -1025,6 +1025,10 @@ msgid ""
 "current cell using a popup menu"
 msgstr "按住 CTRL 并单击鼠标右键，可使用弹出菜单快速为当前单元格设置标签"
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "选择时按住 Shift 键，只更改所选单元格，而不更改其中的单元格"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "水平布局与气泡样式渲染"
 

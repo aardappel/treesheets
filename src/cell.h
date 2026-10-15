@@ -731,10 +731,12 @@ struct Cell {
         }
     }
 
-    void SetGridTextLayout(int ds, bool vert, bool noset) {
+    void SetGridTextLayout(int ds, bool vert, bool noset, bool recursive) {
         if (!noset) { verticaltextandgrid = vert; }
         if (ds != -1) { drawstyle = ds; }
-        if (grid) { grid->SetGridTextLayout(ds, vert, noset, grid->SelectAll()); }
+        if (recursive && grid) {
+            grid->SetGridTextLayout(ds, vert, noset, grid->SelectAll(), true);
+        }
     }
 
     bool IsTag(Document *doc) { return doc->tags.contains(text.t); }

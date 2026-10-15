@@ -1072,6 +1072,10 @@ msgstr ""
 "Segure CTRL e clique com o botão direito do mouse para definir rapidamente "
 "uma tag para a célula atual usando um menu popup"
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "Mantenha Shift pressionado ao escolher para alterar as células selecionadas, mas não as que estão dentro delas"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "Layout Horizontal, Renderização com Estilo de Bolha"
 

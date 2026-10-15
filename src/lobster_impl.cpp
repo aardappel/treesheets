@@ -322,6 +322,20 @@ BUILTIN(get_vertical_alignment, "", "", "I",
     return (iint)si->GetVerticalAlignment();
 }
 
+BUILTIN(get_render_style, "", "", "I",
+    "returns how the grid of the current cell is drawn (grid = 0, bubble = 1, line = 2), as set"
+    " with the Layout & Render Style menu")
+(VM &) {
+    return (iint)si->GetRenderStyle();
+}
+
+BUILTIN(is_vertical_layout, "", "", "B",
+    "whether the grid of the current cell is laid out vertically, below its text, rather than"
+    " horizontally, next to it (see the Layout & Render Style menu)")
+(VM &) {
+    return (iint)si->IsVerticalLayout();
+}
+
 BUILTIN(set_status_message, "message", "S", "", "sets the status message in TreeSheets")
 (VM &, LString *s) {
     si->SetStatusMessage(s->strv());

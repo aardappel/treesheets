@@ -1048,6 +1048,10 @@ msgstr ""
 "Nhấn giữ CTRL trong khi bấm chuột phải để đặt nhanh thẻ cho ô hiện tại bằng "
 "menu bật lên"
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "Giữ Shift khi chọn để chỉ thay đổi các ô đã chọn, không thay đổi các ô bên trong"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "Bố cục ngang với hiển thị kiểu bong bóng"
 

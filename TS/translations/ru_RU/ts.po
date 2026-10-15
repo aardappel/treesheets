@@ -1144,6 +1144,9 @@ msgstr "&Смена Иерархии"
 msgid "Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"
 msgstr "Удерживая CTRL, нажмите правую кнопку мыши для выбора Тега из всплывающего Меню Тегов (для текущей ячейки)"
 
+msgid "Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "Удерживайте Shift при выборе, чтобы изменить только выбранные ячейки, но не вложенные в них"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr ".. в стиле &Пузырьков"
 

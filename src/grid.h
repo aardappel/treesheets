@@ -1370,8 +1370,8 @@ struct Grid {
         }
     }
 
-    void SetGridTextLayout(int ds, bool vert, bool noset, const Selection &sel) {
-        foreachcellinsel(c, sel) c->SetGridTextLayout(ds, vert, noset);
+    void SetGridTextLayout(int ds, bool vert, bool noset, const Selection &sel, bool recursive) {
+        foreachcellinsel(c, sel) c->SetGridTextLayout(ds, vert, noset, recursive);
     }
 
     bool IsTable() {

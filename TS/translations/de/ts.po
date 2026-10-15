@@ -1081,6 +1081,10 @@ msgstr ""
 "CTRL-Taste beim Drücken der rechten Maustaste gedrückt halten, um schnell "
 "ein Schlagwort für die aktuelle Zelle mit Hilfe eines Popup-Menüs zu setzen."
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "Beim Auswählen Umschalt gedrückt halten, um nur die ausgewählten Zellen zu ändern, nicht die darin enthaltenen"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "Horizontale Anordnung mit Blasenstil-Rendering"
 

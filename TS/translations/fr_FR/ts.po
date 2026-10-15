@@ -1080,6 +1080,10 @@ msgstr ""
 "Maintenir touche CTRL et click droit pour remplacer rapidement une étiquette "
 "dans la cellule courante via un menu contextuel"
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "Maintenez Maj en le choisissant pour modifier les cellules sélectionnées, mais pas celles qu'elles contiennent"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "Disposition horizontale mode Bubble"
 

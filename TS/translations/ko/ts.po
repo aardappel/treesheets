@@ -1042,6 +1042,10 @@ msgstr ""
 "오른쪽 마우스 버튼을 누른 상태에서 Ctrl을 눌러 팝업 메뉴를 사용하여 현재 셀"
 "의 태그를 빠르게 설정합니다"
 
+msgid ""
+"Hold Shift when choosing it to change the selected cells, not the ones inside"
+msgstr "Shift 키를 누른 채 선택하면 선택한 셀만 변경하고 그 안의 셀은 변경하지 않습니다"
+
 msgid "Horizontal Layout with Bubble Style Rendering"
 msgstr "버블 스타일 렌더링을 사용한 가로 레이아웃"
 
