@@ -237,13 +237,13 @@ jobs:
         path: dist
         merge-multiple: true
     - name: Create release
-      uses: ncipollo/release-action@v1
-      with:
-        tag: v${{ needs.version.outputs.version }}
-        commit: ${{ github.sha }}
-        body: ${{ needs.version.outputs.notes }}
-        makeLatest: true
-        artifacts: "dist/*"
+      run: >
+        gh release create "v$VERSION" dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"
+        --notes "$NOTES" --latest
+      env:
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ needs.version.outputs.version }}
+        NOTES: ${{ needs.version.outputs.notes }}
     - name: Remove release marker tag
       run: gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$GITHUB_REF_NAME"
       env:
