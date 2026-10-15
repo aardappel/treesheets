@@ -1601,11 +1601,17 @@ struct Document {
     wxString ExportFile(const wxString &filename, int action, bool currentview) {
         Cell *exportroot = currentview ? currentdrawroot : root.get();
         if (action == A_EXPIMAGE) {
-            auto bitmap = GetBitmap();
+            auto image = GetBitmap().ConvertToImage();
             canvas->Refresh();
-            if (!bitmap.SaveFile(filename, wxBITMAP_TYPE_PNG)) {
-                return _("Error writing PNG file!");
-            }
+            auto type = wxBITMAP_TYPE_PNG;
+            #if wxUSE_LIBWEBP
+                if (wxFileName(filename).GetExt().Lower() == "webp") {
+                    // Lossless suits the sharp text and flat colors best, and is still small.
+                    image.SetOption(wxIMAGE_OPTION_WEBP_FORMAT, wxWebPImageFormat::Lossless);
+                    type = wxBITMAP_TYPE_WEBP;
+                }
+            #endif
+            if (!image.SaveFile(filename, type)) { return _("Error writing to file."); }
         } else if (action == A_EXPSVG) {
             auto svg =
                 GetSVG(wxRect(0, 0, layoutxs, layoutys), [&](wxSVGFileDC &dc) { DrawView(dc); });
@@ -1933,7 +1939,13 @@ struct Document {
             case A_EXPHTMLO:
                 return Export("html", "*.html", _("Choose HTML file to write"), action);
             case A_EXPTEXT: return Export("txt", "*.txt", _("Choose Text file to write"), action);
-            case A_EXPIMAGE: return Export("png", "*.png", _("Choose PNG file to write"), action);
+            case A_EXPIMAGE:
+                #if wxUSE_LIBWEBP
+                    return Export("png", "PNG (*.png)|*.png|WebP (*.webp)|*.webp",
+                                  _("Choose image file to save:"), action);
+                #else
+                    return Export("png", "*.png", _("Choose PNG file to write"), action);
+                #endif
             case A_EXPSVG: return Export("svg", "*.svg", _("Choose SVG file to write"), action);
             #ifdef ENABLE_WXPDFDOC
                 case A_EXPPDF: return Export("pdf", "*.pdf", _("Choose PDF file to write"), action); 

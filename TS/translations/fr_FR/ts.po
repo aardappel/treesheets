@@ -800,9 +800,6 @@ msgstr "Erreur lors de l'export vers le fichier SVG !"
 msgid "Error renaming temporary file."
 msgstr "Erreur lors du renommage du fichier temporaire."
 
-msgid "Error writing PNG file!"
-msgstr "Erreur d'ecriture du fichier PNG!"
-
 msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"

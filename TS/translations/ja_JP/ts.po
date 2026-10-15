@@ -780,9 +780,6 @@ msgstr "SVG ファイルへのエクスポート中にエラーが発生しま�
 msgid "Error renaming temporary file."
 msgstr "一時ファイルの名前変更中にエラーが発生しました。"
 
-msgid "Error writing PNG file!"
-msgstr "PNG ファイルの書き込み中にエラーが発生しました！"
-
 msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"

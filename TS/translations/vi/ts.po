@@ -777,9 +777,6 @@ msgstr "Lỗi khi xuất sang tệp SVG!"
 msgid "Error renaming temporary file."
 msgstr "Lỗi khi đổi tên tệp tạm thời."
 
-msgid "Error writing PNG file!"
-msgstr "Lỗi khi ghi tệp PNG!"
-
 msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"

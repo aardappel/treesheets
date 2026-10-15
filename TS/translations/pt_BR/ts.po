@@ -795,9 +795,6 @@ msgstr "Erro ao exportar arquivo SVG!"
 msgid "Error renaming temporary file."
 msgstr "Erro ao renomear arquivo temporário."
 
-msgid "Error writing PNG file!"
-msgstr "Erro ao gravar arquivo PNG!"
-
 msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"

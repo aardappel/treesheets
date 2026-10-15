@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 13:14+0200\n"
+"POT-Creation-Date: 2026-10-15 19:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -761,9 +761,6 @@ msgid "Error exporting to SVG file!"
 msgstr ""
 
 msgid "Error renaming temporary file."
-msgstr ""
-
-msgid "Error writing PNG file!"
 msgstr ""
 
 msgid ""

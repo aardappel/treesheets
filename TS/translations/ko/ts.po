@@ -777,9 +777,6 @@ msgstr "SVG 파일로 내보내는 중 오류가 발생했습니다!"
 msgid "Error renaming temporary file."
 msgstr "임시 파일 이름을 변경하는 중 오류가 발생했습니다."
 
-msgid "Error writing PNG file!"
-msgstr "PNG 파일 작성 중 오류 발생가 발생했습니다!"
-
 msgid ""
 "Error writing TreeSheets file! Would you like to save at a different "
 "location?"
