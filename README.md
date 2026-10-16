@@ -26,6 +26,12 @@ Installation
 Pre-built binaries for Windows, macOS and Linux are available at the
 [Release section](https://github.com/aardappel/treesheets/releases). 
 
+On macOS, drag TreeSheets from the disk image into your Applications folder. The app is not signed
+with an Apple Developer ID, so macOS blocks it when you first open it. On macOS 15 and later,
+try to open it once, then go to System Settings > Privacy & Security and click "Open Anyway". On older
+versions, right-click the app, choose Open, and confirm. Alternatively, run
+`xattr -dr com.apple.quarantine /Applications/TreeSheets.app` in Terminal. You only need to do this once.
+
 For Linux, there are packages for Debian-based distributions and AppImages (x86_64 and aarch64) that run on
 most other distributions. To use an AppImage, download it, make it executable
 (`chmod +x TreeSheets-*.AppImage`) and start it.
