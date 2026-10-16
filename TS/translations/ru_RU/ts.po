@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 5.3 (based on TS 2.9.1)\n"
+"Project-Id-Version: TreeSheets_RU 6.1 (based on TS 2.17.2, commit db52cd2)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-03 15:43+0200\n"
-"PO-Revision-Date: 2026-10-12 16:42+0300\n"
+"PO-Revision-Date: 2026-10-16 15:32+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -47,10 +47,10 @@ msgid "&Add Cell Text as Tag"
 msgstr "Доб&авить Текст Ячейки как Тег"
 
 msgid "&Add Files as Templates..."
-msgstr "&Добавить файлы как шаблоны..."
+msgstr "&Добавить Файлы как Шаблоны..."
 
 msgid "&Add to Menu..."
-msgstr "&Добавить в меню..."
+msgstr "&Добавить в Меню..."
 
 msgid "&Add..."
 msgstr "Доб&авить..."
@@ -89,7 +89,7 @@ msgid "&Decrease text size (SHIFT+mousewheel)"
 msgstr "У&меньшить .."
 
 msgid "&Defaults"
-msgstr "По &умолчанию"
+msgstr "По &Умолчанию"
 
 msgid "&Delete After"
 msgstr "&Удалить После"
@@ -158,7 +158,7 @@ msgid "&Next tab"
 msgstr "&Cледующая вкладка (CTRL+TAB)"
 
 msgid "&Open File as Template..."
-msgstr "&Открыть файл как шаблон..."
+msgstr "&Открыть Файл как Шаблон..."
 
 msgid "&Open..."
 msgstr "Открыть..."
@@ -194,7 +194,7 @@ msgid "&Remove Cell Text from Tags"
 msgstr "У&далить Текст Ячейки из Тегов"
 
 msgid "&Remove Template..."
-msgstr "&Удалить шаблон..."
+msgstr "&Удалить Шаблон..."
 
 msgid "&Replace"
 msgstr "&Заменить"
@@ -220,7 +220,7 @@ msgid "&Run"
 msgstr "За&пустить"
 
 msgid "&Run File..."
-msgstr "Запустить &файл..."
+msgstr "За&пустить Файл..."
 
 msgid "&Save"
 msgstr "Сохранить"
@@ -295,7 +295,7 @@ msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "Обнаружен временный файл автосохранения. Загрузить его вместо открытого файла?"
 
 msgid "Add &Current Document as Template"
-msgstr "Добавить &текущий документ как шаблон"
+msgstr "Добавить &Текущий Документ как Шаблон"
 
 msgid "Add Image"
 msgstr "Добавить изображение"
@@ -304,6 +304,7 @@ msgstr "Добавить изображение"
 msgid "Add Lobster scripts to the menu"
 msgstr "Добавить сценарии Lobster в меню"
 
+# комментарий к п. Меню
 msgid "Add TreeSheets files to this menu as templates"
 msgstr "Добавить файлы TreeSheets в это меню как шаблоны"
 
@@ -311,6 +312,7 @@ msgstr "Добавить файлы TreeSheets в это меню как шаб�
 msgid "Add an image to the selected cell"
 msgstr "Добавить изображение в выбранную ячейку"
 
+# комментарий к п. Меню
 msgid "Add the file of the current document to this menu as a template"
 msgstr "Добавить файл текущего документа в это меню как шаблон"
 
@@ -578,14 +580,17 @@ msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Были внесены Изменения. Хотите продолжить?"
 
 msgid "Check for &Updates..."
-msgstr "Проверить &обновления..."
+msgstr "Проверить &Обновления..."
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Check for Updates"
-msgstr "Проверка обновлений"
+msgstr "Проверка Обновлений"
 
+# комментарий к п. Меню
 msgid "Check whether there is a newer release of TreeSheets"
 msgstr "Проверить, есть ли более новый выпуск TreeSheets"
 
+# Сообщение (после действия или события)
 msgid "Checking for updates..."
 msgstr "Проверка обновлений..."
 
@@ -597,6 +602,7 @@ msgstr "Укажите CSV-файл для сохранения"
 msgid "Choose HTML file to write"
 msgstr "Укажите HTML-файл для сохранения"
 
+# Заголовок Окна (выбор в Окне)
 msgid "Choose Lobster file to write"
 msgstr "Укажите файл Lobster для сохранения"
 
@@ -657,6 +663,7 @@ msgstr "Слияние Ячеек"
 msgid "Colorize inner grid border"
 msgstr "Раскрасить внутренние границы сетки"
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Colors"
 msgstr "Цвета"
 
@@ -684,8 +691,6 @@ msgstr "Копировать (CTRL+c)"
 msgid "Copy As Continuous Text"
 msgstr "&Копировать как Непрерывный Текст"
 
-# ???
-#, fuzzy
 msgid "Copy as &SVG"
 msgstr "&Копировать как SVG"
 
@@ -693,11 +698,11 @@ msgstr "&Копировать как SVG"
 msgid "Copy selection"
 msgstr "Копировать выделенное"
 
+# комментарий к п. Меню
 msgid "Copy the image of the selected cell to the clipboard, at its original size"
 msgstr "Копирует изображение выбранной ячейки в буфер обмена в исходном размере"
 
-# ??? - комментарий к п. Меню
-#, fuzzy
+# комментарий к п. Меню
 msgid "Copy the selection as SVG vector graphics"
 msgstr "Скопировать выделенное как векторную графику SVG"
 
@@ -716,10 +721,12 @@ msgstr "Повреждён заголовок PNG."
 msgid "Corrupt block header."
 msgstr "Повреждён заголовок блока."
 
+# Сообщение (после действия или события)
 #, c-format
 msgid "Could not check for updates: %s"
 msgstr "Не удалось проверить обновления: %s"
 
+# Сообщение (после действия или события)
 msgid "Could not check for updates: no release found."
 msgstr "Не удалось проверить обновления: выпуск не найден."
 
@@ -727,6 +734,7 @@ msgstr "Не удалось проверить обновления: выпус�
 msgid "Create a new document"
 msgstr "Создать новый документ"
 
+# комментарий к п. Меню
 msgid "Create a new document from a copy of a TreeSheets file"
 msgstr "Создать новый документ из копии файла TreeSheets"
 
@@ -740,6 +748,7 @@ msgstr "Создаёт новый уровень иерархии вокруг �
 msgid "Cu&t"
 msgstr "Вырезать"
 
+# Текст в Окне (выбор п. Меню) - Цвета...
 msgid "Cursor"
 msgstr "Курсор"
 
@@ -753,8 +762,9 @@ msgstr ".. вПраво (⊳)"
 msgid "Custom"
 msgstr "Польз"
 
+# Текст в Окне (выбор п. Меню) - Цвета...
 msgid "Custom dropdown color"
-msgstr "Пользовательский цвет списков"
+msgstr "Пользовательский цвет в списках"
 
 # комментарий к п. Меню
 msgid "Cut selection"
@@ -918,25 +928,29 @@ msgstr "Ошибка записи в файл!"
 msgid "Error writing to file."
 msgstr "Ошибка записи в файл."
 
+# ??? - Сообщение (после действия или события)
 #, c-format
 msgid "Evaluation error: \"%s\" is missing an argument"
-msgstr "Ошибка оценки: у операции \"%s\" не хватает аргумента"
+msgstr "Ошибка вычисления: в \"%s\" отсутствует аргумент"
 
+# ??? - Сообщение (после действия или события)
 #, c-format
 msgid "Evaluation error: nothing for \"%s\" to work on"
-msgstr "Ошибка оценки: нет значения для операции \"%s\""
+msgstr "Ошибка вычисления: для «%s» нет данных для обработки"
 
+# ??? - Сообщение (после действия или события)
 #, c-format
 msgid "Evaluation error: the variable \"%s\" has no value"
-msgstr "Ошибка оценки: у переменной \"%s\" нет значения"
+msgstr "Ошибка вычисления: у переменной \"%s\" отсутствует значение"
 
+# ??? - Сообщение (после действия или события)
 #, c-format
 msgid "Evaluation error: unknown operation \"%s\""
-msgstr "Ошибка оценки: неизвестная операция \"%s\""
+msgstr "Ошибка вычисления: неизвестная операция \"%s\""
 
-# Сообщение (после действия или события)
+# ??? - Сообщение (после действия или события)
 msgid "Evaluation finished."
-msgstr "Оценка завершена."
+msgstr "Вычисление завершено."
 
 msgid "Export &view as"
 msgstr "&Экспортировать как"
@@ -1181,6 +1195,7 @@ msgstr "&Смена Иерархии"
 msgid "Hold CTRL while pressing right mouse button to quickly set a tag for the current cell using a popup menu"
 msgstr "Удерживая CTRL, нажмите правую кнопку мыши для выбора Тега из всплывающего Меню Тегов (для текущей ячейки)"
 
+# комментарий к п.п. Меню - Макет и Стиль отображения
 msgid "Hold Shift when choosing it to change the selected cells, not the ones inside"
 msgstr "Удерживайте Shift при выборе, чтобы изменить только выбранные ячейки, но не вложенные в них"
 
@@ -1193,7 +1208,7 @@ msgstr "Горизонтальная компоновка в стиле &Сет�
 msgid "Horizontal Layout with Line Style Rendering"
 msgstr ".. в стиле &Линий"
 
-# п. Меню (нет & в исходном тексте)
+# Текст в Окне (выбор п. Меню) - Цвета...
 msgid "Hover shadow"
 msgstr "Затенение при наведении"
 
@@ -1425,7 +1440,7 @@ msgid "New file cancelled."
 msgstr "Создание нового файла отменено."
 
 msgid "New from &Template"
-msgstr "Новый из &шаблона"
+msgstr "Новый из &Шаблона"
 
 # Заголовок Окна (выбор п. Меню)
 msgid "New subgrid"
@@ -1534,10 +1549,11 @@ msgid "Open file cancelled."
 msgstr "Открытие файла отменено."
 
 msgid "Open from &Menu..."
-msgstr "Открыть из &меню..."
+msgstr "Открыть из &Меню..."
 
+# Элемент в Окне (выбор п. Меню)
 msgid "Open from Menu"
-msgstr "Открыть из меню"
+msgstr "Открыть из Меню"
 
 msgid "Open image dropdown"
 msgstr ".. Изображения"
@@ -1567,6 +1583,7 @@ msgstr "Открывает текст из выбранной ячейки в п
 msgid "Operation reference"
 msgstr "Справочник по Программе"
 
+# Текст в Окне (выбор п. Меню) - Цвета...
 msgid "Operations"
 msgstr "Операции"
 
@@ -1631,6 +1648,7 @@ msgstr "Вставить содержимое буфера обмена"
 msgid "Paste file path"
 msgstr "Вставить путь к файлу"
 
+# комментарий к п. Меню
 msgid "Paste or type Lobster code and run it"
 msgstr "Вставить или ввести код Lobster и запустить его"
 
@@ -1670,6 +1688,7 @@ msgstr "Введите процент, на который вы хотите м�
 msgid "Please pick a menu item to change the key binding for"
 msgstr "Выберите пункт меню, чтобы изменить назначение клавиш для"
 
+# ??? - Сообщение (после действия или события)
 msgid "Please save the document first."
 msgstr "Сначала сохраните документ."
 
@@ -1693,6 +1712,7 @@ msgstr "Выберите файл(ы) примера(ов) для загрузк
 msgid "Please select file(s) to import:"
 msgstr "Выберите файл(ы) для импорта:"
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select the Lobster script to open:"
 msgstr "Выберите Lobster-сценарий для открытия:"
 
@@ -1700,11 +1720,13 @@ msgstr "Выберите Lobster-сценарий для открытия:"
 msgid "Please select the Lobster script to run:"
 msgstr "Выберите Lobster-сценарий для запуска:"
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select the TreeSheets file(s) to add as templates:"
-msgstr "Выберите TreeSheets-файл(ы) для добавления как шаблоны:"
+msgstr "Выберите TreeSheets-файл(ы) для добавления в качестве шаблонов:"
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select the TreeSheets file(s) to create documents from:"
-msgstr "Выберите TreeSheets-файл(ы), из которых создать документы:"
+msgstr "Выберите TreeSheets-файл(ы), из которых будут созданы документы:"
 
 # Окно: Вид / Фильтр / .. в Диапазоне Дат
 msgid "Please select the datetime range."
@@ -1714,12 +1736,15 @@ msgstr "Выберите Диапазон."
 msgid "Please select the language for the interface (requires restart)."
 msgstr "Выберите язык интерфейса (требуется перезапуск)."
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select the script to open:"
 msgstr "Выберите сценарий для открытия:"
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select the script you want to remove from the list:"
 msgstr "Выберите сценарий, который вы хотите удалить из списка:"
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Please select the template you want to remove from the list:"
 msgstr "Выберите шаблон, который вы хотите удалить из списка:"
 
@@ -1764,7 +1789,7 @@ msgid "Radius &6"
 msgstr "Радиус &6"
 
 msgid "Re&move from Menu..."
-msgstr "&Удалить из меню..."
+msgstr "&Удалить из Меню..."
 
 # комментарий к п. Меню
 msgid "Reload when another computer has changed a file (if you have made changes, asks)"
@@ -1773,6 +1798,7 @@ msgstr "Перезагружать файл, если другой компью�
 msgid "Remo&ve"
 msgstr "У&далить"
 
+# комментарий к п. Меню
 msgid "Remove a template from this menu"
 msgstr "Удалить шаблон из этого меню"
 
@@ -1787,9 +1813,11 @@ msgstr "Удалить сценарий из списка меню"
 msgid "Remove script from list..."
 msgstr "Удалить сценарий из списка..."
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Remove template from list..."
 msgstr "Удалить шаблон из списка..."
 
+# п. Меню (нет & в исходном тексте)
 msgid "Render document centered"
 msgstr "Отображать документ по Центру"
 
@@ -1851,8 +1879,9 @@ msgid "Run"
 msgstr "Запустить"
 
 msgid "Run &Code..."
-msgstr "Запустить &код..."
+msgstr "Запустить &Код..."
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Run Lobster code"
 msgstr "Запустить код Lobster"
 
@@ -1863,8 +1892,7 @@ msgstr "Запустить сценарий Lobster, не добавляя ег�
 msgid "S&cript"
 msgstr "Сценарий"
 
-# ??? - Сообщение (после действия или события)
-#, fuzzy
+# Сообщение (после действия или события)
 msgid "SVG copied to clipboard"
 msgstr "SVG скопирован в буфер обмена"
 
@@ -1879,6 +1907,7 @@ msgstr "Сохранить (CTRL+s)"
 msgid "Save All"
 msgstr "Сохранить Всё"
 
+# Элемент в Окне (выбор п. Меню)
 msgid "Save and &Add to Menu"
 msgstr "Сохранить и &добавить в меню"
 
@@ -1947,6 +1976,7 @@ msgstr "Поиск "
 msgid "Search and replace in the visible content of the current view (no folded grids, no tiny cells)"
 msgstr "Поиск и замена в видимом содержимом текущего вида (без свёрнутых таблиц и слишком мелких ячеек)"
 
+# Текст в Окне (выбор п. Меню) - Цвета...
 msgid "Search results"
 msgstr "Результаты поиска"
 
@@ -1993,8 +2023,9 @@ msgstr "Установите пользовательский цвет для р
 msgid "Set the color for the document background"
 msgstr "Установите цвет фона документа"
 
+# комментарий к п. Меню
 msgid "Set the colors of the cursor, hover shadow, search results, operations and the custom color of the color dropdowns"
-msgstr "Установите цвета курсора, затенения при наведении, результатов поиска, операций и пользовательский цвет списков цветов"
+msgstr "Установите цвета курсора, затенения при наведении, результатов поиска, операций и пользовательский цвет выпадающих списков цветов"
 
 # комментарий к п. Меню
 msgid "Set the default column width for a new grid"
@@ -2336,6 +2367,7 @@ msgstr "Вкл/Выкл сворачивание окна в системный 
 msgid "Toolbar"
 msgstr "Панель Инструментов"
 
+# Сообщение в Окне (выбор п. Меню)
 #, c-format
 msgid ""
 "TreeSheets %s is available, you have %s.\n"
@@ -2344,6 +2376,7 @@ msgstr ""
 "Доступна версия TreeSheets %s, у вас установлена %s.\n"
 "Открыть страницу загрузки?"
 
+# Сообщение в Окне (выбор п. Меню)
 #, c-format
 msgid "TreeSheets %s is the latest version."
 msgstr "TreeSheets %s — последняя версия."
@@ -2378,6 +2411,7 @@ msgstr "Подчёркнутый (CTRL+u)"
 msgid "Undo (CTRL+z)"
 msgstr "Отменить (CTRL+z)"
 
+# п. Меню (нет & в исходном тексте)
 msgid "Unfold All (CTRL+SHIFT+double-click)"
 msgstr "Развернуть Всё (CTRL+SHIFT+двойной щелчок)"
 
@@ -2395,9 +2429,11 @@ msgstr "&Назначить Переменную"
 msgid "Variable &Read"
 msgstr "Про&читать Переменную"
 
+# Текст в Окне (выбор п. Меню) - Цвета...
 msgid "Variable assignments"
 msgstr "Назначения переменных"
 
+# Текст в Окне (выбор п. Меню) - Цвета...
 msgid "Variable reads"
 msgstr "Чтения переменных"
 
@@ -2410,6 +2446,8 @@ msgstr "Вертикальная компоновка в стиле &Сетки"
 msgid "Vertical Layout with Line Style Rendering"
 msgstr ".. в стиле &Линий"
 
+# ???
+#, fuzzy
 msgid "Views"
 msgstr "Представления"
 
