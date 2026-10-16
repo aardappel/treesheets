@@ -225,12 +225,13 @@ struct Evaluator {
         return nullptr;
     }
 
-    void Eval(const Cell *root) {
+    // Returns the variables it assigned.
+    VariableMap Eval(const Cell *root) {
         failure = FAIL_NONE;
         failedcell = nullptr;
         evalroot = root;
         root->Eval(*this);
-        ClearVars();
+        return std::exchange(vars, {});
     }
 };
 
@@ -249,14 +250,20 @@ struct Evaluator {
     TREESUBSET(name, columns, rows, levels) also takes the same columns and rows of the sub-grids
     of those cells, and so on, but counts only the levels in the range, 0 being the named grid,
     e.g. =SUM(TREESUBSET(Projects, 1, -, 1-)). It skips the formulas in sub-grids like TREE.
+    A name that is no grid can be a variable that the last run of the program assigned (see
+    Evaluator::Assign()), with the numbers of its grid, or its text. Until the program runs, its
+    variables are #N/A.
 */
 struct FormulaEvaluator {
     enum { BUSY, OK, FAILED };
     const Cell *editing;  // whose text is the formula being typed, so it has no result yet
+    const VariableMap &vars;
+    std::optional<std::set<wxString>> assigned;  // see Numbers()
     std::unordered_map<const Cell *, int> state;
     vector<Cell *> changed;
 
-    explicit FormulaEvaluator(const Cell *_editing) : editing(_editing) {}
+    FormulaEvaluator(const Cell *_editing, const VariableMap &_vars)
+        : editing(_editing), vars(_vars) {}
 
     // Brings the result of formula cell c up to date, after those it depends on. Returns the
     // error, if any.
@@ -312,14 +319,20 @@ struct FormulaEvaluator {
         }
     }
 
-    // The grid of the cell whose text is `name`, the nearest one to `self` (see ForNearest()).
-    static Grid *FindGrid(const Cell *self, const wxString &name) {
-        Grid *g = nullptr;
+    // The cell named `name`: the one with a grid nearest to `self` (see ForNearest()), but not a
+    // variable assignment, whose grid holds the names it assigns to, or else variable `name`.
+    // Without it, error says why.
+    Cell *Named(const Cell *self, const wxString &name, wxString &error) {
+        Cell *named = nullptr;
         ForNearest(self, [&](Cell *c) {
-            if (c->text.t == name) { g = c->grid.get(); }
-            return g != nullptr;
+            if (c->text.t == name && c->celltype != CT_VARD) { named = c; }
+            return named != nullptr;
         });
-        return g;
+        if (named != nullptr) { return named; }
+        if (auto it = vars.find(name); it != vars.end()) { return it->second.get(); }
+        if (!assigned) { assigned = Assigned(self); }
+        error = assigned->contains(name) ? L"#N/A" : L"#NAME?";
+        return nullptr;
     }
 
     static bool IsNameChar(wxChar c) { return wxIsalnum(c) || c == '_'; }
@@ -334,17 +347,42 @@ struct FormulaEvaluator {
                std::all_of(n.begin(), n.end(), [](wxChar c) { return IsNameChar(c) || c == ' '; });
     }
 
-    // The names of grids that a formula in `self` can use, the nearest first.
+    // The names of grids that a formula in `self` can use, the nearest first, then those of
+    // variables.
     static vector<wxString> Names(const Cell *self) {
         vector<wxString> names;
         std::set<wxString> seen;
-        ForNearest(self, [&](Cell *c) {
-            auto &n = c->text.t;
+        auto add = [&](const wxString &n) {
             if (!n.IsEmpty() && n.find('"') == wxString::npos && seen.insert(n).second) {
                 names.push_back(n);
             }
             return names.size() >= 100;
-        });
+        };
+        ForNearest(self, [&](Cell *c) { return c->celltype != CT_VARD && add(c->text.t); });
+        for (auto &n : Assigned(self)) {
+            if (add(n)) { break; }
+        }
+        return names;
+    }
+
+    // The names that the variable assignments in the document of `self` assign to, also those in
+    // their grids (see Evaluator::Assign()).
+    static std::set<wxString> Assigned(const Cell *self) {
+        std::set<wxString> names;
+        auto add = [&](auto &add, const Cell *c) -> void {
+            if (c->celltype == CT_VARD) {
+                names.insert(c->text.t);
+                if (c->grid) {
+                    for (auto &n : c->grid->cells) { names.insert(n->text.t); }
+                }
+            }
+            if (c->grid) {
+                for (auto &child : c->grid->cells) { add(add, child.get()); }
+            }
+        };
+        while (self->parent != nullptr) { self = self->parent; }
+        add(add, self);
+        names.erase(wxString());
         return names;
     }
 
@@ -398,12 +436,15 @@ struct FormulaEvaluator {
         }
     }
 
-    // The numbers in the grid named `name` (see FindGrid()), except formula cell `self`, and with
-    // `tree` also those of the data cells in its sub-grids, depth first.
+    // The numbers in the grid of the cell named `name` (see Named()), or its own if it has no
+    // grid, except formula cell `self`, and with `tree` also those of the data cells in its
+    // sub-grids, depth first.
     wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers, bool tree) {
-        auto *g = FindGrid(self, name);
-        if (g == nullptr) { return L"#NAME?"; }
-        return Numbers(self, g, numbers, tree);
+        wxString error;
+        auto *c = Named(self, name, error);
+        if (c == nullptr) { return error; }
+        return c->grid ? Numbers(self, c->grid.get(), numbers, tree)
+                       : Numbers(self, c, numbers, tree);
     }
 
     wxString Numbers(Cell *self, Grid *g, vector<double> &numbers, bool tree,
@@ -555,8 +596,11 @@ struct FormulaEvaluator {
                 (levels && (!Eat(',') || !Range(l0, l1))) || !Eat(')')) {
                 return L"#ERROR!";
             }
-            auto *g = FindGrid(self, name);
-            if (g == nullptr) { return L"#NAME?"; }
+            wxString error;
+            auto *named = fe.Named(self, name, error);
+            if (named == nullptr) { return error; }
+            if (!named->grid) { return L"#VALUE!"; }
+            auto *g = named->grid.get();
             // Clipped to each grid, so that it can grow and shrink. TREE in front adds nothing to
             // TREESUBSET, which would count sub-grids twice.
             auto cells = [&](auto &cells, Grid *g, int level) -> wxString {

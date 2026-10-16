@@ -157,6 +157,8 @@ struct Document {
     double currentviewscale {1.0};
     int editfilter {0};
     bool formulasdirty {true};  // see OnIdle()
+    // The variables that the last run assigned, for formulas (see Evaluator).
+    std::unordered_map<wxString, unique_ptr<Cell>> vars;
     // The cell whose text was being edited at the last OnIdle(), and the cell that was typed in
     // last. Either may have been deleted since.
     Cell *editcell {nullptr};
@@ -1863,7 +1865,8 @@ struct Document {
             case wxID_EXECUTE: {
                 root->AddUndo(this);
                 auto &ev = sys->evaluator;
-                ev.Eval(root.get());
+                vars = ev.Eval(root.get());
+                formulasdirty = true;
                 root->ResetChildren();
                 selected = Selection();
                 begindrag = Selection();
@@ -3483,7 +3486,7 @@ struct Document {
     void RecalcFormulas() {
         formulasdirty = false;
         if (!sys->formulasseen) { return; }
-        FormulaEvaluator fe {editcell};
+        FormulaEvaluator fe {editcell, vars};
         loopallcells(c) {
             if (c->celltype == CT_FORMULA) {
                 c->SyncFormula();
