@@ -388,6 +388,15 @@ struct Grid {
             auto &c = C(x, y);
             int bx = px - c->ox;
             int by = py - c->oy;
+            // The note triangle sits on the top-right corner, with the margins Render() gives.
+            if (auto r = Cell::NoteRect(c->sx + (x == xs - 1 ? view_margin : 0),
+                                        -(y == 0 ? view_margin : g_line_width));
+                c->ShowsNote(doc) && r.Contains(bx, by)) {
+                doc->hover = Selection(cell->grid, x, y, 1, 1);
+                r.Offset(c->GetX(doc), c->GetY(doc));
+                doc->hovernote = r;
+                return;
+            }
             if (bx >= 0 && by >= -g_line_width - g_selmargin && bx < c->sx && by < g_selmargin) {
                 doc->hover = Selection(cell->grid, x, y, 1, 0);
                 return;

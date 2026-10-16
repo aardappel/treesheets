@@ -200,19 +200,23 @@ struct Cell {
             grid->Render(doc, bx, by, dc, depth, sx - xoff, sy - yoff, xoff, yoff);
         }
 
-        if (!note.IsEmpty() && !tiny && this != doc->currentdrawroot) {
-            wxPoint points[3];
-            int size = 6;
-            int right = bx + sx + mr;
-            int top = by - mt;
-            points[0] = wxPoint(right, top);
-            points[1] = wxPoint(right, top + size);
-            points[2] = wxPoint(right - size, top);
-            const wxColour wxtextcolor = LightColor(textcolor);
-            dc.SetBrush(wxBrush(wxtextcolor));
-            dc.SetPen(wxPen(wxtextcolor));
-            dc.DrawPolygon(3, points);
+        if (ShowsNote(doc)) {
+            DrawNote(dc, NoteRect(bx + sx + mr, by - mt), LightColor(textcolor));
         }
+    }
+
+    bool ShowsNote(Document *doc) const {
+        return !note.IsEmpty() && !tiny && this != doc->currentdrawroot;
+    }
+
+    // The triangle that marks a note, in the top-right corner at right, top (outside the margins
+    // of the cell).
+    static wxRect NoteRect(int right, int top) { return {right - 6, top, 7, 7}; }
+    template<typename DC> static void DrawNote(DC &dc, const wxRect &r, const wxColour &color) {
+        wxPoint points[] = {{r.GetRight(), r.y}, {r.GetRight(), r.GetBottom()}, {r.x, r.y}};
+        dc.SetBrush(wxBrush(color));
+        dc.SetPen(wxPen(color));
+        dc.DrawPolygon(3, points);
     }
 
     void CloneStyleFrom(Cell const *o) {

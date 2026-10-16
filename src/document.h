@@ -55,6 +55,7 @@ struct Document {
     Selection hover;
     // The fold icon under the pointer, in document coordinates, or empty.
     wxRect hoverfoldicon;
+    wxRect hovernote;        // The note triangle under the pointer, likewise.
     bool hoverknob {false};  // The pointer is on the knob at the selection's bottom-right corner.
     bool knobdrag {false};   // The mouse button went down on that knob and is still held.
     bool knobcursor {false};
@@ -357,7 +358,8 @@ struct Document {
         prev = hover;
         hover = Selection();
         auto prevfoldicon = hoverfoldicon;
-        hoverfoldicon = wxRect();
+        auto prevnote = hovernote;
+        hoverfoldicon = hovernote = wxRect();
         auto px = x / currentviewscale - centerx / currentviewscale;
         auto py = y / currentviewscale - centery / currentviewscale;
         auto *drawroot = WalkPath(drawpath);
@@ -378,9 +380,12 @@ struct Document {
             shade = hover.grid->GetRect(this, hover);
         }
         SetHoverShade(shade);
-        auto foldicon = hoverfoldicon;  // as FindXY() found it
+        auto foldicon = hoverfoldicon;  // as FindXY() found them
+        auto note = hovernote;
         hoverfoldicon = prevfoldicon;
+        hovernote = prevnote;
         SetHighlight(hoverfoldicon, foldicon);
+        SetHoverNote(note);
     }
 
     void SetKnobCursor(bool show) {
@@ -409,6 +414,17 @@ struct Document {
     }
 
     void SetHoverShade(const wxRect &shade) { SetHighlight(hovershade, shade); }
+
+    // Highlights the note triangle at r, of the hovered cell, and shows its note as tooltip.
+    void SetHoverNote(const wxRect &r) {
+        if (r == hovernote) { return; }
+        if (r.IsEmpty()) {
+            canvas->UnsetToolTip();
+        } else {
+            canvas->SetToolTip(hover.GetCell()->note);
+        }
+        SetHighlight(hovernote, r);
+    }
 
     // Draws color translucently over r: the hover shadow, whose default gray darkens light and
     // lightens dark cell colors, and the highlight of the fold icon under the pointer.
@@ -1128,6 +1144,13 @@ struct Document {
         }
         begindrag = Selection();
         KeepFoldSel(isctrlshiftdrag == 1);
+        if (!right && !hovernote.IsEmpty() && isctrlshiftdrag == 0) {
+            // After the click, as the dialog would take the mouse button release.
+            hover.ExitEdit(this);
+            SetSelect(hover);
+            canvas->CallAfter([this] { sys->frame->SetStatus(Action(A_EDITNOTE)); });
+            return;
+        }
         if (!right && !hoverfoldicon.IsEmpty() && isctrlshiftdrag == 0) {
             // Unfolds for as long as the button is held, see EndFoldPeek().
             auto *c = hover.GetCell();
@@ -1186,6 +1209,7 @@ struct Document {
         // Cells may move: drop the shadow and highlight until the pointer moves again.
         SetHoverShade(wxRect());
         SetHighlight(hoverfoldicon, wxRect());
+        SetHoverNote(wxRect());
         if (layoutpending) {
             // Deferred Wheel() changes left the cached geometry stale (deliberately not reset).
             layoutpending = false;
@@ -1318,6 +1342,9 @@ struct Document {
         if (!hoverfoldicon.IsEmpty()) {
             const auto base = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
             DrawShade(dc, hoverfoldicon, wxColour(base.Red(), base.Green(), base.Blue(), 96));
+        }
+        if (!hovernote.IsEmpty()) {
+            Cell::DrawNote(dc, hovernote, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
         }
         DrawSelect(dc, selected);
 
