@@ -75,6 +75,7 @@
 #include <wx/timectrl.h>
 #include <wx/translation.h>
 #include <wx/uilocale.h>
+#include <wx/webrequest.h>
 #include <wx/xml/xml.h>
 
 #include "monocypher.h"

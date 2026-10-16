@@ -529,6 +529,18 @@ msgstr "메뉴 항목의 키 바인딩 변경"
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "변경 사항이 적용되었습니다. 계속하시겠습니까?"
 
+msgid "Check for &Updates..."
+msgstr "업데이트 확인(&U)..."
+
+msgid "Check for Updates"
+msgstr "업데이트 확인"
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr "TreeSheets의 새 릴리스가 있는지 확인"
+
+msgid "Checking for updates..."
+msgstr "업데이트 확인 중..."
+
 msgid "Choose CSV file to write"
 msgstr "작성할 CSV 파일 선택"
 
@@ -635,6 +647,13 @@ msgstr "손상된 PNG 헤더입니다."
 
 msgid "Corrupt block header."
 msgstr "손상된 블록 헤더입니다."
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr "업데이트를 확인할 수 없습니다: %s"
+
+msgid "Could not check for updates: no release found."
+msgstr "업데이트를 확인할 수 없습니다: 릴리스를 찾을 수 없습니다."
 
 msgid "Create a new document"
 msgstr "새 문서 만들기"
@@ -2062,6 +2081,18 @@ msgstr "창이 시스템 트레이에 최소화되었는지 여부를 전환"
 
 msgid "Toolbar"
 msgstr "도구 모음"
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+"TreeSheets %s을(를) 사용할 수 있습니다. 현재 버전은 %s입니다.\n"
+"다운로드 페이지를 여시겠습니까?"
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
+msgstr "TreeSheets %s이(가) 최신 버전입니다."
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "TreeSheets 파일 (*.cts)|*.cts|모든 파일 (*.*)|*.*"

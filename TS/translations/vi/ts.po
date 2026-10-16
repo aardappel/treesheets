@@ -526,6 +526,18 @@ msgstr "Thay đổi phím tắt của một mục menu"
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Các thay đổi đã được thực hiện, bạn có chắc chắn muốn tiếp tục không?"
 
+msgid "Check for &Updates..."
+msgstr "Kiểm tra cập nhật (&U)..."
+
+msgid "Check for Updates"
+msgstr "Kiểm tra cập nhật"
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr "Kiểm tra xem có bản phát hành mới hơn của TreeSheets không"
+
+msgid "Checking for updates..."
+msgstr "Đang kiểm tra cập nhật..."
+
 msgid "Choose CSV file to write"
 msgstr "Chọn tệp CSV để ghi"
 
@@ -632,6 +644,13 @@ msgstr "Tiêu đề PNG bị hỏng."
 
 msgid "Corrupt block header."
 msgstr "Tiêu đề khối bị hỏng."
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr "Không thể kiểm tra cập nhật: %s"
+
+msgid "Could not check for updates: no release found."
+msgstr "Không thể kiểm tra cập nhật: không tìm thấy bản phát hành."
 
 msgid "Create a new document"
 msgstr "Tạo tài liệu mới"
@@ -2077,6 +2096,18 @@ msgstr "Bật/tắt việc thu nhỏ cửa sổ vào khay hệ thống"
 
 msgid "Toolbar"
 msgstr "Thanh công cụ"
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+"TreeSheets %s đã có, bạn đang dùng %s.\n"
+"Bạn có muốn mở trang tải xuống không?"
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
+msgstr "TreeSheets %s là phiên bản mới nhất."
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "Tệp TreeSheets (*.cts)|*.cts|Tất cả tệp (*.*)|*.*"

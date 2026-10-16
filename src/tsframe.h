@@ -83,6 +83,10 @@ struct TSFrame : wxFrame {
     TSTextCtrl *replaces {nullptr};
     TSTextCtrl *formulabar {nullptr};
     FormulaCompleter *formulacompleter {nullptr};  // owned by formulabar
+    static constexpr auto releasesurl = L"https://github.com/aardappel/treesheets/releases";
+    #if wxUSE_WEBREQUEST
+        wxWebRequest updaterequest;  // see CheckForUpdates()
+    #endif
     #ifdef __WXMAC__
         bool formulabarskip {false};  // the text changes by deleting or moving in the list
         bool formulabarcompleting {false};
@@ -840,6 +844,8 @@ struct TSFrame : wxFrame {
 
         auto *helpmenu = new wxMenu();
         MyAppend(helpmenu, wxID_ABOUT, _("&About..."), _("Show About dialog"));
+        MyAppend(helpmenu, A_CHECKUPDATES, _("Check for &Updates..."),
+                 _("Check whether there is a newer release of TreeSheets"));
         helpmenu->AppendSeparator();
         MyAppend(helpmenu, wxID_HELP, _("Interactive &tutorial") + "\tF1",
                  _("Load an interactive tutorial in TreeSheets"));
@@ -998,6 +1004,9 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateVertAlign, this, A_VALIGNAUTO, A_ALIGNBOTTOM);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateBorder, this, A_BORD0, A_BORD5);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateNote, this, A_EDITNOTE);
+        #if wxUSE_WEBREQUEST
+            Bind(wxEVT_WEBREQUEST_STATE, &TSFrame::OnUpdateCheck, this, A_CHECKUPDATES);
+        #endif
         for (int id : {A_MARKDATA, A_MARKCODE, A_MARKVARD, A_MARKVARU, A_MARKVIEWH, A_MARKVIEWV,
                        A_MARKFORMULA}) {
             Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateCellType, this, id);
@@ -1427,6 +1436,70 @@ struct TSFrame : wxFrame {
         ue.Check(canvas != nullptr && canvas->doc->selected.grid &&
                  canvas->doc->selected.grid->user_grid_outer_spacing == ue.GetId() - A_BORD0 + 1);
     }
+
+    // Asks GitHub for the latest release, see OnUpdateCheck(). Without wxWebRequest, opens the
+    // releases page instead.
+    wxString CheckForUpdates() {
+        #if wxUSE_WEBREQUEST
+            if (updaterequest.IsOk() && updaterequest.GetState() == wxWebRequest::State_Active) {
+                return _("Checking for updates...");
+            }
+            updaterequest = wxWebSession::GetDefault().CreateRequest(
+                this, "https://api.github.com/repos/aardappel/treesheets/releases/latest",
+                A_CHECKUPDATES);
+            updaterequest.SetHeader("Accept", "application/vnd.github+json");
+            updaterequest.SetHeader("User-Agent", "TreeSheets/" PACKAGE_VERSION);
+            updaterequest.Start();
+            return _("Checking for updates...");
+        #else
+            wxLaunchDefaultBrowser(releasesurl);
+            return wxEmptyString;
+        #endif
+    }
+
+    #if wxUSE_WEBREQUEST
+        // Tells whether the latest release is newer than this version, and offers to open its
+        // page. A version that is not a release, e.g. of a local build, counts as older.
+        void OnUpdateCheck(wxWebRequestEvent &we) {
+            auto state = we.GetState();
+            if (state != wxWebRequest::State_Completed && state != wxWebRequest::State_Failed) {
+                return;
+            }
+            SetStatus(wxEmptyString);
+            const auto title = _("Check for Updates");
+            if (state == wxWebRequest::State_Failed) {
+                wxMessageBox(wxString::Format(_("Could not check for updates: %s"),
+                                              we.GetErrorDescription()),
+                             title, wxOK | wxICON_ERROR, this);
+                return;
+            }
+            // The release is a JSON object with one "tag_name": "vX.Y.Z".
+            auto json = we.GetResponse().AsString();
+            auto key = json.find("\"tag_name\"");
+            auto start = key == wxString::npos ? key : json.find('"', json.find(':', key) + 1);
+            auto end = start == wxString::npos ? start : json.find('"', start + 1);
+            auto tag = end == wxString::npos ? wxString() : json.Mid(start + 1, end - start - 1);
+            wxString available;
+            auto version = [](const wxString &s, std::array<int, 3> &v) {
+                return wxSscanf(s, "%d.%d.%d", &v[0], &v[1], &v[2]) == 3;
+            };
+            std::array<int, 3> latest {}, current {};
+            if (!tag.StartsWith("v", &available) || !version(available, latest)) {
+                wxMessageBox(_("Could not check for updates: no release found."), title,
+                             wxOK | wxICON_ERROR, this);
+            } else if (version(PACKAGE_VERSION, current) && !(current < latest)) {
+                wxMessageBox(wxString::Format(_("TreeSheets %s is the latest version."),
+                                              PACKAGE_VERSION),
+                             title, wxOK | wxICON_INFORMATION, this);
+            } else if (wxMessageBox(wxString::Format(_("TreeSheets %s is available, you have "
+                                                       "%s.\nDo you want to open its download "
+                                                       "page?"),
+                                                     available, PACKAGE_VERSION),
+                                    title, wxYES_NO | wxICON_INFORMATION, this) == wxYES) {
+                wxLaunchDefaultBrowser(wxString(releasesurl) + "/tag/" + tag);
+            }
+        }
+    #endif
 
     // Shows whether the selected cell has a note by checking its toolbar button. The menu item
     // can't be checked.

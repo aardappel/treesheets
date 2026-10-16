@@ -107,6 +107,7 @@ enum {
     A_IMPTXTS,
     A_IMPTXTT,
     A_TUTORIALWEBPAGE,
+    A_CHECKUPDATES,
     #ifdef ENABLE_LOBSTER
         A_SCRIPTREFERENCE,
     #endif

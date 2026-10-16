@@ -530,6 +530,18 @@ msgstr "メニュー項目のキーバインドを変更"
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "変更が加えられています。続行してもよろしいですか？"
 
+msgid "Check for &Updates..."
+msgstr "更新を確認(&U)..."
+
+msgid "Check for Updates"
+msgstr "更新の確認"
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr "TreeSheets の新しいリリースがあるか確認します"
+
+msgid "Checking for updates..."
+msgstr "更新を確認しています..."
+
 msgid "Choose CSV file to write"
 msgstr "書き込む CSV ファイルを選択"
 
@@ -636,6 +648,13 @@ msgstr "PNG ヘッダーが破損しています。"
 
 msgid "Corrupt block header."
 msgstr "ブロックヘッダーが破損しています。"
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr "更新を確認できませんでした: %s"
+
+msgid "Could not check for updates: no release found."
+msgstr "更新を確認できませんでした: リリースが見つかりません。"
 
 msgid "Create a new document"
 msgstr "新規ドキュメントを作成"
@@ -2089,6 +2108,18 @@ msgstr "ウィンドウをシステムトレイに最小化するかどうかを
 
 msgid "Toolbar"
 msgstr "ツールバー"
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+"TreeSheets %s が利用できます (現在のバージョンは %s)。\n"
+"ダウンロードページを開きますか?"
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
+msgstr "TreeSheets %s は最新バージョンです。"
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "TreeSheets ファイル (*.cts)|*.cts|すべてのファイル (*.*)|*.*"

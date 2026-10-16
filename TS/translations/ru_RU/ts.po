@@ -577,6 +577,18 @@ msgstr "Изменить привязку клавиш к пункту меню"
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Были внесены Изменения. Хотите продолжить?"
 
+msgid "Check for &Updates..."
+msgstr "Проверить &обновления..."
+
+msgid "Check for Updates"
+msgstr "Проверка обновлений"
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr "Проверить, есть ли более новый выпуск TreeSheets"
+
+msgid "Checking for updates..."
+msgstr "Проверка обновлений..."
+
 # Заголовок Окна (выбор п. Меню)
 msgid "Choose CSV file to write"
 msgstr "Укажите CSV-файл для сохранения"
@@ -703,6 +715,13 @@ msgstr "Повреждён заголовок PNG."
 # Сообщение (после действия или события)
 msgid "Corrupt block header."
 msgstr "Повреждён заголовок блока."
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr "Не удалось проверить обновления: %s"
+
+msgid "Could not check for updates: no release found."
+msgstr "Не удалось проверить обновления: выпуск не найден."
 
 # комментарий к п. Меню
 msgid "Create a new document"
@@ -2316,6 +2335,18 @@ msgstr "Вкл/Выкл сворачивание окна в системный 
 # п. Меню (нет & в исходном тексте)
 msgid "Toolbar"
 msgstr "Панель Инструментов"
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+"Доступна версия TreeSheets %s, у вас установлена %s.\n"
+"Открыть страницу загрузки?"
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
+msgstr "TreeSheets %s — последняя версия."
 
 # в Окне (выбор п. Меню)
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"

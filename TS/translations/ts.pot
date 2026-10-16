@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 21:18+0200\n"
+"POT-Creation-Date: 2026-10-16 11:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -517,6 +517,18 @@ msgstr ""
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr ""
 
+msgid "Check for &Updates..."
+msgstr ""
+
+msgid "Check for Updates"
+msgstr ""
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr ""
+
+msgid "Checking for updates..."
+msgstr ""
+
 msgid "Choose CSV file to write"
 msgstr ""
 
@@ -620,6 +632,13 @@ msgid "Corrupt PNG header."
 msgstr ""
 
 msgid "Corrupt block header."
+msgstr ""
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr ""
+
+msgid "Could not check for updates: no release found."
 msgstr ""
 
 msgid "Create a new document"
@@ -2018,6 +2037,16 @@ msgid "Toogle whether window is minimized to system tray"
 msgstr ""
 
 msgid "Toolbar"
+msgstr ""
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
 msgstr ""
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"

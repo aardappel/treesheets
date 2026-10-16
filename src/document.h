@@ -2084,6 +2084,8 @@ struct Document {
 
             case wxID_HELP: sys->LoadTutorial(); return wxEmptyString;
 
+            case A_CHECKUPDATES: return sys->frame->CheckForUpdates();
+
             case A_HELP_OP_REF: sys->LoadOpRef(); return wxEmptyString;
 
             case A_HELP_EXAMPLES: {

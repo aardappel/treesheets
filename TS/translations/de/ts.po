@@ -541,6 +541,18 @@ msgstr ""
 "Änderungen wurden vorgenommen. Sind Sie sich sicher, dass Sie fortfahren "
 "möchten?"
 
+msgid "Check for &Updates..."
+msgstr "Nach &Updates suchen..."
+
+msgid "Check for Updates"
+msgstr "Nach Updates suchen"
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr "Prüfen, ob es eine neuere Version von TreeSheets gibt"
+
+msgid "Checking for updates..."
+msgstr "Suche nach Updates..."
+
 msgid "Choose CSV file to write"
 msgstr "CSV-Datei zum Schreiben auswählen"
 
@@ -651,6 +663,13 @@ msgstr "Beschädigter PNG-Header!"
 
 msgid "Corrupt block header."
 msgstr "Beschädigter Block-Header!"
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr "Konnte nicht nach Updates suchen: %s"
+
+msgid "Could not check for updates: no release found."
+msgstr "Konnte nicht nach Updates suchen: keine Version gefunden."
 
 msgid "Create a new document"
 msgstr "Ein neues Dokument erstellen"
@@ -2155,6 +2174,18 @@ msgstr "Auswählen, ob das Fenster in den Benachrichtungsbereich minimiert wird"
 
 msgid "Toolbar"
 msgstr "Werkzeugleiste"
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+"TreeSheets %s ist verfügbar, Sie haben %s.\n"
+"Möchten Sie die Download-Seite öffnen?"
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
+msgstr "TreeSheets %s ist die neueste Version."
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "TreeSheets-Dateien (*.cts)|*.cts|Alle Dateien (*.*)|*.*"

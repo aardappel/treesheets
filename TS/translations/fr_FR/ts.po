@@ -540,6 +540,18 @@ msgstr "Modifie le raccourci clavier d'un élément de menu"
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "Enregistrer les modifications du document avant fermeture ?"
 
+msgid "Check for &Updates..."
+msgstr "Rechercher des mises à &jour..."
+
+msgid "Check for Updates"
+msgstr "Rechercher des mises à jour"
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr "Vérifie s'il existe une version plus récente de TreeSheets"
+
+msgid "Checking for updates..."
+msgstr "Recherche de mises à jour..."
+
 msgid "Choose CSV file to write"
 msgstr "Choisir le fichier CSV à éditer"
 
@@ -650,6 +662,13 @@ msgstr "Entête PNG corrompu."
 
 msgid "Corrupt block header."
 msgstr "Entête de bloc corrompu."
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr "Impossible de rechercher des mises à jour : %s"
+
+msgid "Could not check for updates: no release found."
+msgstr "Impossible de rechercher des mises à jour : aucune version trouvée."
 
 msgid "Create a new document"
 msgstr "Créer un nouveau document"
@@ -2148,6 +2167,18 @@ msgstr "Bascule la réduction de la fenêtre dans la zone de notification"
 
 msgid "Toolbar"
 msgstr "Barre d'outils"
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+"TreeSheets %s est disponible, vous avez la version %s.\n"
+"Voulez-vous ouvrir sa page de téléchargement ?"
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
+msgstr "TreeSheets %s est la dernière version."
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "Fichier TreeSheets (*.cts)|*.cts|Tout fichier (*.*)|*.*"

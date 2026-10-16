@@ -84,6 +84,12 @@ endif()
 foreach(option WEBVIEW STC RIBBON PROPGRID RICHTEXT MEDIACTRL)
     set(wxUSE_${option} FALSE)
 endforeach()
+# wxWebRequest checks for updates, with libcurl where the system has no backend of its own.
+# wxWidgets switches both off in the cache when it can't find libcurl, so try again each time.
+if(UNIX AND NOT APPLE)
+    set(wxUSE_WEBREQUEST ON CACHE BOOL "" FORCE)
+    set(wxUSE_WEBREQUEST_CURL ON CACHE BOOL "" FORCE)
+endif()
 # Bundle wxWidgets statically into the executable, so none of its libraries or headers are installed
 if(TREESHEETS_BUNDLE_WXWIDGETS)
     set(wxBUILD_SHARED OFF CACHE BOOL "" FORCE)

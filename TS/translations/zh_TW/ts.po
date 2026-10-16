@@ -522,6 +522,18 @@ msgstr "變更選單項目的快速鍵組合"
 msgid "Changes have been made, are you sure you wish to continue?"
 msgstr "已進行變更，確定要繼續嗎？"
 
+msgid "Check for &Updates..."
+msgstr "檢查更新(&U)..."
+
+msgid "Check for Updates"
+msgstr "檢查更新"
+
+msgid "Check whether there is a newer release of TreeSheets"
+msgstr "檢查是否有較新的 TreeSheets 版本"
+
+msgid "Checking for updates..."
+msgstr "正在檢查更新..."
+
 msgid "Choose CSV file to write"
 msgstr "選擇要寫入的 CSV 檔案"
 
@@ -628,6 +640,13 @@ msgstr "PNG 標頭毀損。"
 
 msgid "Corrupt block header."
 msgstr "區塊標頭毀損。"
+
+#, c-format
+msgid "Could not check for updates: %s"
+msgstr "無法檢查更新：%s"
+
+msgid "Could not check for updates: no release found."
+msgstr "無法檢查更新：找不到發行版本。"
 
 msgid "Create a new document"
 msgstr "建立新文件"
@@ -2030,6 +2049,18 @@ msgstr "切換視窗是否最小化至系統匣"
 
 msgid "Toolbar"
 msgstr "工具列"
+
+#, c-format
+msgid ""
+"TreeSheets %s is available, you have %s.\n"
+"Do you want to open its download page?"
+msgstr ""
+"TreeSheets %s 已推出，您目前的版本是 %s。\n"
+"是否開啟其下載頁面？"
+
+#, c-format
+msgid "TreeSheets %s is the latest version."
+msgstr "TreeSheets %s 是最新版本。"
 
 msgid "TreeSheets Files (*.cts)|*.cts|All Files (*.*)|*.*"
 msgstr "TreeSheets 檔案 (*.cts)|*.cts|所有檔案 (*.*)|*.*"
