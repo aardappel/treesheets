@@ -1681,6 +1681,10 @@ msgstr "另存为..."
 msgid "Save cancelled."
 msgstr "保存已取消。"
 
+msgid ""
+"Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr "在最小化窗口或关闭 TreeSheets 时保存已更改的文档"
+
 msgid "Save current document"
 msgstr "保存当前文档"
 
@@ -1693,6 +1697,9 @@ msgid ""
 msgstr ""
 "将所选单元格中的图像保存到磁盘。多个图像将在每个文件名后附加一个计数器进行保"
 "存。"
+
+msgid "Save on minimize and exit"
+msgstr "最小化和退出时保存"
 
 msgid "Save open documents periodically to temporary files"
 msgstr "定期将打开的文档保存到临时文件"

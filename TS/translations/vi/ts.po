@@ -1719,6 +1719,10 @@ msgstr "Lưu dưới dạng..."
 msgid "Save cancelled."
 msgstr "Đã hủy lưu."
 
+msgid ""
+"Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr "Lưu các tài liệu đã thay đổi khi thu nhỏ cửa sổ hoặc đóng TreeSheets"
+
 msgid "Save current document"
 msgstr "Lưu tài liệu hiện tại"
 
@@ -1731,6 +1735,9 @@ msgid ""
 msgstr ""
 "Lưu (các) hình ảnh từ (các) ô được chọn vào đĩa. Nhiều hình ảnh sẽ được lưu "
 "với một bộ đếm đính kèm vào mỗi tên tệp."
+
+msgid "Save on minimize and exit"
+msgstr "Lưu khi thu nhỏ và thoát"
 
 msgid "Save open documents periodically to temporary files"
 msgstr "Định kỳ lưu các tài liệu đang mở vào các tệp tạm thời"

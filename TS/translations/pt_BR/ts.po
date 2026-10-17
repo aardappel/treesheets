@@ -1765,6 +1765,12 @@ msgstr "Salvar como..."
 msgid "Save cancelled."
 msgstr "O salvamento foi cancelado."
 
+msgid ""
+"Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr ""
+"Salva documentos alterados quando a janela é minimizada ou o TreeSheets é "
+"fechado"
+
 msgid "Save current document"
 msgstr "Salva o documento atual"
 
@@ -1777,6 +1783,9 @@ msgid ""
 msgstr ""
 "Salva imagem(ns) para disco. Múltiplas imagens serão salvas, com um contador "
 "acrescentado ao nome de cada arquivo."
+
+msgid "Save on minimize and exit"
+msgstr "Salvar ao minimizar e sair"
 
 msgid "Save open documents periodically to temporary files"
 msgstr "Salva documentos abertos para arquivos temporários periodicamente"

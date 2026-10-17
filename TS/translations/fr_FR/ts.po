@@ -1776,6 +1776,12 @@ msgstr "Enregistrer sous..."
 msgid "Save cancelled."
 msgstr "Sauvegarde abandonnée."
 
+msgid ""
+"Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr ""
+"Enregistrer les documents modifiés lorsque la fenêtre est réduite ou que "
+"TreeSheets est fermé"
+
 msgid "Save current document"
 msgstr "Enregistrer le document courant"
 
@@ -1788,6 +1794,9 @@ msgid ""
 msgstr ""
 "Enregistre les images des cellules sélectionnées sur le disque. Si plusieurs "
 "images, un numéro est ajouté à la fin de chaque nom de fichier."
+
+msgid "Save on minimize and exit"
+msgstr "Enregistrer à la réduction et à la fermeture"
 
 msgid "Save open documents periodically to temporary files"
 msgstr ""

@@ -1923,6 +1923,9 @@ msgstr "Сохранить как..."
 msgid "Save cancelled."
 msgstr "Сохранение отменено."
 
+msgid "Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr "Сохранять изменённые документы при сворачивании окна или закрытии TreeSheets"
+
 # комментарий к п. Меню
 msgid "Save current document"
 msgstr "Сохранить текущий документ"
@@ -1934,6 +1937,9 @@ msgstr "Сохранить текущий документ с другим им�
 # комментарий к п. Меню
 msgid "Save image(s) from selected cell(s) to disk. Multiple images will be saved with a counter appended to each file name."
 msgstr "Сохранить изображение(я) из выбранной(ых) ячейки(ек) на диск. При сохранении нескольких изображений к имени каждого файла будет добавлен порядковый номер."
+
+msgid "Save on minimize and exit"
+msgstr "Сохранять при сворачивании и выходе"
 
 # комментарий к п. Меню
 msgid "Save open documents periodically to temporary files"

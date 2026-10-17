@@ -1731,6 +1731,12 @@ msgstr "名前を付けて保存..."
 msgid "Save cancelled."
 msgstr "保存がキャンセルされました。"
 
+msgid ""
+"Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr ""
+"ウィンドウを最小化したとき、または TreeSheets を閉じたときに変更されたドキュ"
+"メントを保存"
+
 msgid "Save current document"
 msgstr "現在のドキュメントを保存"
 
@@ -1743,6 +1749,9 @@ msgid ""
 msgstr ""
 "選択したセルから画像をディスクに保存します。複数の画像は、各ファイル名に連番"
 "が追加されて保存されます。"
+
+msgid "Save on minimize and exit"
+msgstr "最小化と終了時に保存"
 
 msgid "Save open documents periodically to temporary files"
 msgstr "開いているドキュメントを定期的に一時ファイルに保存"

@@ -799,6 +799,10 @@ struct TSFrame : wxFrame {
                                  _("Save open documents periodically to temporary files"));
         optmenu->Check(A_AUTOSAVE, sys->autosave);
         optmenu->AppendCheckItem(
+            A_SAVEDISMISS, _("Save on minimize and exit"),
+            _("Save changed documents when the window is minimized or TreeSheets is closed"));
+        optmenu->Check(A_SAVEDISMISS, sys->savedismiss);
+        optmenu->AppendCheckItem(
             A_FSWATCH, _("Autoreload documents"),
             _("Reload when another computer has changed a file (if you have made changes, asks)"));
         optmenu->Check(A_FSWATCH, sys->fswatch);
@@ -1814,6 +1818,7 @@ struct TSFrame : wxFrame {
                 }
                 break;
             case A_AUTOSAVE: Toggle("autosave", sys->autosave); break;
+            case A_SAVEDISMISS: Toggle("savedismiss", sys->savedismiss); break;
             case A_CENTERED:
                 Toggle("centered", sys->centered);
                 if (notebook != nullptr) {
@@ -2044,6 +2049,7 @@ struct TSFrame : wxFrame {
 
     void OnIconize(wxIconizeEvent &me) {
         if (me.IsIconized()) {
+            if (sys->savedismiss) { sys->SaveModified(); }
             #ifndef __WXMAC__
             if (sys->totray) {
                 taskbaricon.SetIcon(icon, "TreeSheets");
@@ -2083,6 +2089,7 @@ struct TSFrame : wxFrame {
             sys->WriteList("script", sys->scripts);
         #endif
         sys->WriteList("template", sys->templates);
+        if (sys->savedismiss) { sys->SaveModified(); }
         if (ce.CanVeto()) {
             // ask to save/discard all files before closing any
             loop(i, notebook->GetPageCount()) {

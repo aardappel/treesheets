@@ -163,6 +163,7 @@ enum {
     A_MAKEBAKS,
     A_TOTRAY,
     A_AUTOSAVE,
+    A_SAVEDISMISS,
     A_FULLSCREEN,
     A_SCALED,
     A_SCOLS,

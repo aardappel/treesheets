@@ -1777,6 +1777,12 @@ msgstr "Speichern &unter..."
 msgid "Save cancelled."
 msgstr "Speicherung wurde abgebrochen."
 
+msgid ""
+"Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr ""
+"Geänderte Dokumente speichern, wenn das Fenster minimiert oder TreeSheets "
+"geschlossen wird"
+
 msgid "Save current document"
 msgstr "Aktuelles Dokument speichern"
 
@@ -1789,6 +1795,9 @@ msgid ""
 msgstr ""
 "Bild(er) aus den ausgewählten Zellen auf Datenträger speichern. Mehrere "
 "Bilder werden gespeichert und ein Zähler an jedem Dateinamen angehängt."
+
+msgid "Save on minimize and exit"
+msgstr "Beim Minimieren und Beenden speichern"
 
 msgid "Save open documents periodically to temporary files"
 msgstr "Geöffnete Dokumente periodisch in temporären Dateien sichern"

@@ -35,6 +35,7 @@ struct System {
     bool makebaks {true};
     bool totray {false};
     bool autosave {true};
+    bool savedismiss {false};
     bool zoomscroll {false};
     bool thinselc {true};
     bool hoverzoom {false};
@@ -128,6 +129,7 @@ struct System {
         cfg->Read("hoverzoom", &hoverzoom, hoverzoom);
         cfg->Read("hovershadow", &hovershadow, hovershadow);
         cfg->Read("autosave", &autosave, autosave);
+        cfg->Read("savedismiss", &savedismiss, savedismiss);
         cfg->Read("fastrender", &fastrender, fastrender);
         cfg->Read("shrinktext", &shrinktext, shrinktext);
         cfg->Read("innerbordercolor", &innerbordercolor, innerbordercolor);
@@ -622,6 +624,13 @@ struct System {
         loop(i, frame->notebook->GetPageCount()) {
             dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i))
                 ->doc->AutoSave(!frame->IsActive(), i);
+        }
+    }
+
+    void SaveModified() const {
+        loop(i, frame->notebook->GetPageCount()) {
+            auto &doc = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i))->doc;
+            if (doc->modified && !doc->filename.empty()) { doc->SaveDB(nullptr, false, i); }
         }
     }
 

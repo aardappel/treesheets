@@ -1705,6 +1705,10 @@ msgstr "다른 이름으로 저장..."
 msgid "Save cancelled."
 msgstr "저장이 취소되었습니다."
 
+msgid ""
+"Save changed documents when the window is minimized or TreeSheets is closed"
+msgstr "창을 최소화하거나 TreeSheets를 닫을 때 변경된 문서를 저장"
+
 msgid "Save current document"
 msgstr "현재 문서 저장"
 
@@ -1717,6 +1721,9 @@ msgid ""
 msgstr ""
 "선택한 셀에서 디스크로 이미지를 저장합니다. 각 파일 이름에 카운터가 추가되어 "
 "여러 이미지가 저장됩니다."
+
+msgid "Save on minimize and exit"
+msgstr "최소화 및 종료 시 저장"
 
 msgid "Save open documents periodically to temporary files"
 msgstr "열린 문서를 임시 파일에 주기적으로 저장"
