@@ -35,6 +35,10 @@ msgstr ""
 "已被另一个程序/计算机在磁盘上修改：\n"
 "您想放弃您的更改并从磁盘重新加载吗？"
 
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
+msgstr "无论焦点在哪里，%s 都会显示或最小化 TreeSheets"
+
 msgid "&About..."
 msgstr "关于(&A)..."
 
@@ -647,6 +651,10 @@ msgstr "无法检查更新：%s"
 
 msgid "Could not check for updates: no release found."
 msgstr "无法检查更新：未找到发布版本。"
+
+#, c-format
+msgid "Could not register the shortcut %s."
+msgstr "无法注册快捷键 %s。"
 
 msgid "Create a new document"
 msgstr "创建新文档"
@@ -1823,6 +1831,9 @@ msgstr "显示最近编辑的 50%"
 
 msgid "Show About dialog"
 msgstr "显示“关于”对话框"
+
+msgid "Show and hide from any application"
+msgstr "从任意应用程序显示和隐藏"
 
 msgid "Show cells with any of these tags:"
 msgstr "显示带有以下任一标签的单元格："

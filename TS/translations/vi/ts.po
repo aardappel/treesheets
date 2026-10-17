@@ -30,6 +30,10 @@ msgstr ""
 "đã bị thay đổi trên đĩa bởi một chương trình / máy tính khác:\n"
 "Bạn có muốn hủy bỏ các thay đổi và tải lại từ đĩa không?"
 
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
+msgstr "%s hiện TreeSheets hoặc thu nhỏ nó, bất kể tiêu điểm đang ở đâu"
+
 msgid "&About..."
 msgstr "&Thông tin..."
 
@@ -651,6 +655,10 @@ msgstr "Không thể kiểm tra cập nhật: %s"
 
 msgid "Could not check for updates: no release found."
 msgstr "Không thể kiểm tra cập nhật: không tìm thấy bản phát hành."
+
+#, c-format
+msgid "Could not register the shortcut %s."
+msgstr "Không thể đăng ký phím tắt %s."
 
 msgid "Create a new document"
 msgstr "Tạo tài liệu mới"
@@ -1864,6 +1872,9 @@ msgstr "Hiển thị 50% các chỉnh sửa cuối"
 
 msgid "Show About dialog"
 msgstr "Hiển thị hộp thoại thông tin"
+
+msgid "Show and hide from any application"
+msgstr "Hiện và ẩn từ bất kỳ ứng dụng nào"
 
 msgid "Show cells with any of these tags:"
 msgstr "Hiển thị các ô có một trong các thẻ sau:"

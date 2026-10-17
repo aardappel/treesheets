@@ -40,6 +40,10 @@ msgstr ""
 "был изменён на диске другой программой или компьютером:\n"
 "Хотите отменить изменения и загрузить файл с диска?"
 
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
+msgstr "%s показывает или сворачивает TreeSheets, где бы ни был фокус"
+
 msgid "&About..."
 msgstr "&О программе..."
 
@@ -729,6 +733,10 @@ msgstr "Не удалось проверить обновления: %s"
 # Сообщение (после действия или события)
 msgid "Could not check for updates: no release found."
 msgstr "Не удалось проверить обновления: выпуск не найден."
+
+#, c-format
+msgid "Could not register the shortcut %s."
+msgstr "Не удалось зарегистрировать сочетание клавиш %s."
 
 # комментарий к п. Меню
 msgid "Create a new document"
@@ -2082,6 +2090,9 @@ msgstr ".. 50%"
 # комментарий к п. Меню
 msgid "Show About dialog"
 msgstr "Показать окно \"О программе\""
+
+msgid "Show and hide from any application"
+msgstr "Показывать и скрывать из любого приложения"
 
 # Сообщение в Окне (выбор п. Меню)
 msgid "Show cells with any of these tags:"

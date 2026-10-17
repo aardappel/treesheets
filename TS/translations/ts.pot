@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17 12:10+0200\n"
+"POT-Creation-Date: 2026-10-17 12:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,6 +30,10 @@ msgid ""
 "%s\n"
 "has been modified on disk by another program / computer:\n"
 "Would you like to discard your changes and re-load from disk?"
+msgstr ""
+
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
 msgstr ""
 
 msgid "&About..."
@@ -639,6 +643,10 @@ msgid "Could not check for updates: %s"
 msgstr ""
 
 msgid "Could not check for updates: no release found."
+msgstr ""
+
+#, c-format
+msgid "Could not register the shortcut %s."
 msgstr ""
 
 msgid "Create a new document"
@@ -1804,6 +1812,9 @@ msgid "Show 50% of last edits"
 msgstr ""
 
 msgid "Show About dialog"
+msgstr ""
+
+msgid "Show and hide from any application"
 msgstr ""
 
 msgid "Show cells with any of these tags:"

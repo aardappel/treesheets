@@ -35,6 +35,10 @@ msgstr ""
 "は別のプログラム/コンピュータによってディスク上で変更されました :\n"
 "変更を破棄してディスクから再読み込みしますか？"
 
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
+msgstr "%s で、フォーカスがどこにあっても TreeSheets を表示または最小化"
+
 msgid "&About..."
 msgstr "TreeSheets について(&A)..."
 
@@ -655,6 +659,10 @@ msgstr "更新を確認できませんでした: %s"
 
 msgid "Could not check for updates: no release found."
 msgstr "更新を確認できませんでした: リリースが見つかりません。"
+
+#, c-format
+msgid "Could not register the shortcut %s."
+msgstr "ショートカット %s を登録できませんでした。"
 
 msgid "Create a new document"
 msgstr "新規ドキュメントを作成"
@@ -1879,6 +1887,9 @@ msgstr "前回の編集の 50% を表示"
 
 msgid "Show About dialog"
 msgstr "About ダイアログを表示"
+
+msgid "Show and hide from any application"
+msgstr "どのアプリケーションからでも表示/非表示"
 
 msgid "Show cells with any of these tags:"
 msgstr "次のいずれかのタグがあるセルを表示:"

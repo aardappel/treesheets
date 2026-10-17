@@ -35,6 +35,10 @@ msgstr ""
 "a été modifié sur le disque par un autre programme / machine:\n"
 "Voulez-vous annuler vos modifications et recharger depuis le fichier?"
 
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
+msgstr "%s affiche TreeSheets ou le réduit, où que soit le focus"
+
 msgid "&About..."
 msgstr "&A propos ..."
 
@@ -669,6 +673,10 @@ msgstr "Impossible de rechercher des mises à jour : %s"
 
 msgid "Could not check for updates: no release found."
 msgstr "Impossible de rechercher des mises à jour : aucune version trouvée."
+
+#, c-format
+msgid "Could not register the shortcut %s."
+msgstr "Impossible d'enregistrer le raccourci %s."
 
 msgid "Create a new document"
 msgstr "Créer un nouveau document"
@@ -1928,6 +1936,9 @@ msgstr "Affiche 50% des dernières modifications"
 
 msgid "Show About dialog"
 msgstr "Affiche la boîte de dialogue À propos"
+
+msgid "Show and hide from any application"
+msgstr "Afficher et masquer depuis n'importe quelle application"
 
 msgid "Show cells with any of these tags:"
 msgstr "Afficher les cellules avec l'une de ces étiquettes :"

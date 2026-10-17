@@ -77,6 +77,7 @@ struct TSFrame : wxFrame {
     wxBitmap foldicon;
     map<int, wxBitmap> foldicons;  // scaled variants, keyed by text size
     bool fromclosebox {true};
+    bool globalkeyregistered {false};
     bool watcherwaitingforuser {false};
     wxColour toolbarbackgroundcolor {0xD8C7BC};
     TSTextCtrl *filter {nullptr};
@@ -780,6 +781,13 @@ struct TSFrame : wxFrame {
         optmenu->AppendCheckItem(A_STARTMINIMIZED, _("Start minimized"),
                                  _("Start the application minimized"));
         optmenu->Check(A_STARTMINIMIZED, sys->startminimized);
+        #if wxUSE_HOTKEY
+            optmenu->AppendCheckItem(
+                A_GLOBALKEY, _("Show and hide from any application"),
+                wxString::Format(_("%s shows TreeSheets or minimizes it, wherever the focus is"),
+                                 sys->globalkeyname));
+            optmenu->Check(A_GLOBALKEY, sys->globalkey);
+        #endif
         optmenu->AppendSeparator();
         optmenu->AppendCheckItem(A_ZOOMSCR, _("Swap mousewheel scrolling and zooming"));
         optmenu->Check(A_ZOOMSCR, sys->zoomscroll);
@@ -1036,6 +1044,10 @@ struct TSFrame : wxFrame {
         // Also give the keyboard back to the document when a dropdown closes without a choice.
         Bind(wxEVT_COMBOBOX_CLOSEUP, [this](wxCommandEvent &) { ReFocus(); });
         Bind(wxEVT_ICONIZE, &TSFrame::OnIconize, this);
+        #if wxUSE_HOTKEY
+            Bind(wxEVT_HOTKEY, [this](wxKeyEvent &) { ToggleShown(); });
+            UpdateGlobalKey();
+        #endif
         Bind(wxEVT_SIZE, &TSFrame::OnSize, this);
         Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, &TSFrame::OnTabChange, this, wxID_ANY);
         Bind(wxEVT_MENU_OPEN, &TSFrame::OnMenuOpen, this);
@@ -1805,6 +1817,10 @@ struct TSFrame : wxFrame {
             case A_TOTRAY: Toggle("totray", sys->totray); break;
             case A_MINCLOSE: Toggle("minclose", sys->minclose); break;
             case A_STARTMINIMIZED: Toggle("startminimized", sys->startminimized); break;
+            case A_GLOBALKEY:
+                Toggle("globalkey", sys->globalkey);
+                UpdateGlobalKey();
+                break;
             case A_ZOOMSCR: Toggle("zoomscroll", sys->zoomscroll); break;
             case A_THINSELC: Toggle("thinselc", sys->thinselc); break;
             case A_HOVERZOOM: Toggle("hoverzoom", sys->hoverzoom); break;
@@ -2208,6 +2224,41 @@ struct TSFrame : wxFrame {
         if (numtabs == 0) { return; }
         offset = offset >= 0 ? 1 : numtabs - 1;  // normalize to non-negative wrt modulo
         notebook->SetSelection((notebook->GetSelection() + offset) % numtabs);
+    }
+
+    void ToggleShown() {
+        if (IsActive() && !IsIconized()) {
+            Iconize();
+            return;
+        }
+        #ifdef __WXMAC__
+            ActivateMacApp();
+        #endif
+        if (IsIconized()) {
+            DeIconize();
+        } else {
+            Raise();
+        }
+    }
+
+    void UpdateGlobalKey() {
+        #if wxUSE_HOTKEY
+            if (globalkeyregistered) { UnregisterHotKey(0); }
+            globalkeyregistered = false;
+            if (!sys->globalkey) { return; }
+            wxAcceleratorEntry key;
+            if (!key.FromString(sys->globalkeyname) ||
+                !(globalkeyregistered = RegisterHotKey(
+                      0,
+                      (key.GetFlags() & wxACCEL_ALT ? wxMOD_ALT : 0) |
+                          (key.GetFlags() & wxACCEL_CTRL ? wxMOD_CONTROL : 0) |
+                          (key.GetFlags() & wxACCEL_RAW_CTRL ? wxMOD_RAW_CONTROL : 0) |
+                          (key.GetFlags() & wxACCEL_SHIFT ? wxMOD_SHIFT : 0),
+                      key.GetKeyCode()))) {
+                SetStatus(wxString::Format(_("Could not register the shortcut %s."),
+                                           sys->globalkeyname));
+            }
+        #endif
     }
 
     void DeIconize() {

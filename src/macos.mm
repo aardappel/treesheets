@@ -53,6 +53,14 @@ void BypassMacMenuForFunctionKeys(bool (*bypass)()) {
                                         }];
 }
 
+void ActivateMacApp() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  // Its replacement -activate in macOS 14 may leave the app in the background.
+  [NSApp activateIgnoringOtherApps:YES];
+#pragma clang diagnostic pop
+}
+
 void ShowMacCompletions(WXWidget field) {
   // wxOSX leaves the first suggestion selected, so that Cocoa inserts it, and accepts it on
   // a character that doesn't continue the word, such as "(". Select none, as on the others.

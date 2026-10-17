@@ -38,6 +38,10 @@ msgstr ""
 "foi modificado em disco por outro programa / computador:\n"
 "Gostaria de descartar suas modificações, e recarregar do disco?"
 
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
+msgstr "%s mostra o TreeSheets ou o minimiza, onde quer que esteja o foco"
+
 msgid "&About..."
 msgstr "&Sobre o TreeSheets"
 
@@ -665,6 +669,10 @@ msgstr "Não foi possível verificar atualizações: %s"
 
 msgid "Could not check for updates: no release found."
 msgstr "Não foi possível verificar atualizações: nenhuma versão encontrada."
+
+#, c-format
+msgid "Could not register the shortcut %s."
+msgstr "Não foi possível registrar o atalho %s."
 
 msgid "Create a new document"
 msgstr "Cria um novo documento"
@@ -1915,6 +1923,9 @@ msgstr "Evidenciar edições mais recentes: últimas 50%"
 
 msgid "Show About dialog"
 msgstr "Mostra a caixa de diálogo Sobre"
+
+msgid "Show and hide from any application"
+msgstr "Mostrar e ocultar de qualquer aplicativo"
 
 msgid "Show cells with any of these tags:"
 msgstr "Evidenciar células com qualquer uma destas tags:"

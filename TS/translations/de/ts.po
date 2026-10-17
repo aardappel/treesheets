@@ -35,6 +35,10 @@ msgstr ""
 "Möchten Sie Ihre Änderungen verwerfen und die Datei vom Datenträger neu "
 "laden?"
 
+#, c-format
+msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
+msgstr "%s zeigt TreeSheets an oder minimiert es, egal wo der Fokus ist"
+
 msgid "&About..."
 msgstr "Über..."
 
@@ -670,6 +674,10 @@ msgstr "Konnte nicht nach Updates suchen: %s"
 
 msgid "Could not check for updates: no release found."
 msgstr "Konnte nicht nach Updates suchen: keine Version gefunden."
+
+#, c-format
+msgid "Could not register the shortcut %s."
+msgstr "Die Tastenkombination %s konnte nicht registriert werden."
 
 msgid "Create a new document"
 msgstr "Ein neues Dokument erstellen"
@@ -1929,6 +1937,9 @@ msgstr "50% der letzten Änderungen anzeigen"
 
 msgid "Show About dialog"
 msgstr "Den Über-Dialog anzeigen"
+
+msgid "Show and hide from any application"
+msgstr "Von jeder Anwendung aus zeigen und ausblenden"
 
 msgid "Show cells with any of these tags:"
 msgstr "Zellen mit einem dieser Schlagwörter anzeigen:"

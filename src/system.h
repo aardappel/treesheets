@@ -36,6 +36,12 @@ struct System {
     bool totray {false};
     bool autosave {true};
     bool savedismiss {false};
+    bool globalkey {false};
+    #ifdef __WXMAC__
+        wxString globalkeyname {"RAWCTRL+ALT+SHIFT+SPACE"};
+    #else
+        wxString globalkeyname {"CTRL+ALT+SHIFT+SPACE"};
+    #endif
     bool zoomscroll {false};
     bool thinselc {true};
     bool hoverzoom {false};
@@ -130,6 +136,8 @@ struct System {
         cfg->Read("hovershadow", &hovershadow, hovershadow);
         cfg->Read("autosave", &autosave, autosave);
         cfg->Read("savedismiss", &savedismiss, savedismiss);
+        cfg->Read("globalkey", &globalkey, globalkey);
+        globalkeyname = cfg->Read("globalkeyname", globalkeyname);
         cfg->Read("fastrender", &fastrender, fastrender);
         cfg->Read("shrinktext", &shrinktext, shrinktext);
         cfg->Read("innerbordercolor", &innerbordercolor, innerbordercolor);

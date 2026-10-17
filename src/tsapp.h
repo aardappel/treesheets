@@ -4,8 +4,12 @@
 
 struct IPCServer : wxServer {
     wxConnectionBase *OnAcceptConnection(const wxString &topic) override {
-        sys->frame->DeIconize();
-        if (!topic.IsEmpty() && topic != "*") { sys->Open(topic); }
+        if (topic.IsEmpty() || topic == "*") {
+            sys->frame->ToggleShown();  // so a desktop shortcut can run TreeSheets to show/hide it
+        } else {
+            sys->frame->DeIconize();
+            sys->Open(topic);
+        }
         return new wxConnection();
     }
 };
