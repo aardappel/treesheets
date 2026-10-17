@@ -72,6 +72,12 @@ struct Document {
     vector<shared_ptr<Grid>> foldpeek;
     wxLongLong foldpeekstart;
     int isctrlshiftdrag {0};
+    // The cells added to the selection with ctrl+click, for the actions in MultiSelAction(). They
+    // last while the selection stays where the last ctrl+click left it (multiselanchor).
+    vector<Selection> multisel;
+    Selection multiselanchor;
+    Selection ctrlclickfrom;  // the selection before the ctrl+click
+    int undogroup {0};  // see ForEachSelection()
     int scrollx {0};
     int scrolly {0};
     int maxx {0};
@@ -344,10 +350,10 @@ struct Document {
                                 end_saving_time - start_saving_time);
     }
 
-    template<typename DC> void DrawSelect(DC &dc, Selection &s) {
+    template<typename DC> void DrawSelect(DC &dc, Selection &s, bool primary = true) {
         if (s.grid == nullptr) { return; }
         ResetFont(dc);
-        s.grid->DrawSelect(this, dc, s);
+        s.grid->DrawSelect(this, dc, s, primary);
     }
 
     template<typename DC> void UpdateHover(DC &dc, int mx, int my) {
@@ -774,7 +780,12 @@ struct Document {
     }
 
     void SelectUp() {
+        if (isctrlshiftdrag == 1 && begindrag.EqLoc(selected)) {
+            CtrlClick();
+            return;
+        }
         if (isctrlshiftdrag == 0 || isctrlshiftdrag == 3 || begindrag.EqLoc(selected)) { return; }
+        ClearMultiSel();
         auto *cell = selected.GetCell();
         if (cell == nullptr) { return; }
         int pastemode = begindrag.PasteMode();
@@ -802,6 +813,102 @@ struct Document {
             wxInfoDC dc(canvas);
             Layout(dc);
         }
+    }
+
+    // A ctrl+click without a drag adds the cell to the selection, or takes it out again.
+    void CtrlClick() {
+        auto *c = selected.GetCell();
+        auto prev = ctrlclickfrom;
+        if (!MultiSelFor(prev) && prev.GetCell() == c) { return; }  // keeps editing it
+        if (c == nullptr || prev.grid == nullptr || prev.Thin()) {
+            ClearMultiSel();
+            return;
+        }
+        if (selected.TextEdit()) { selected.ExitEdit(this); }
+        if (prev.TextEdit()) { prev.ExitEdit(this); }
+        auto it = std::ranges::find_if(multisel, [&](auto &s) { return s.GetCell() == c; });
+        if (prev.GetCell() == c) {
+            selected = multisel.back();
+            multisel.pop_back();
+        } else if (it != multisel.end()) {
+            multisel.erase(it);
+            selected = prev;
+        } else {
+            multisel.push_back(prev);
+        }
+        begindrag = multiselanchor = selected;
+        sys->frame->UpdateStatus(selected, true);
+        canvas->Refresh();
+    }
+
+    // Whether the cells added with ctrl+click still go with s. Drops them if s has moved on, or
+    // one of them is no longer in the document.
+    bool MultiSelFor(const Selection &s) {
+        if (multisel.empty()) { return false; }
+        auto indoc = [&](const Selection &m) {
+            if (!m.grid || m.x + m.xs > m.grid->xs || m.y + m.ys > m.grid->ys ||
+                m.grid->cell->grid != m.grid) {
+                return false;
+            }
+            for (auto *c = m.grid->cell; c != root.get(); c = c->parent) {
+                if (!c->parent || !c->parent->grid || !c->parent->grid->FindCell(c).grid) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        if (s.EqLoc(multiselanchor) && indoc(s) && std::ranges::all_of(multisel, indoc)) {
+            return true;
+        }
+        ClearMultiSel();
+        return false;
+    }
+
+    bool MultiSel() { return MultiSelFor(selected); }
+
+    void ClearMultiSel() {
+        if (multisel.empty()) { return; }
+        multisel.clear();
+        canvas->Refresh();
+    }
+
+    // Calls f with each cell added with ctrl+click as the selection, and then with the selection
+    // itself, so that one undo reverts what they all did.
+    template<typename F> void ForEachSelection(F f) {
+        auto primary = selected;
+        auto extra = MultiSel() ? std::move(multisel) : vector<Selection>();
+        multisel.clear();
+        undogroup = 1;
+        for (auto &s : extra) {
+            selected = s;
+            f();
+        }
+        selected = primary;
+        f();
+        undogroup = 0;
+        multisel = std::move(extra);
+    }
+
+    // The actions that apply to the cells added with ctrl+click as well; any other drops them.
+    wxString MultiSelAction(int action, bool recursive) {
+        int style = action == wxID_BOLD            ? STYLE_BOLD
+                    : action == wxID_ITALIC        ? STYLE_ITALIC
+                    : action == A_TT               ? STYLE_FIXED
+                    : action == wxID_UNDERLINE     ? STYLE_UNDERLINE
+                    : action == wxID_STRIKETHROUGH ? STYLE_STRIKETHRU
+                                                   : 0;
+        // As within one selection, a style goes on unless all cells have it already.
+        auto all = style != 0 && selected.grid->AllHaveStyle(selected, style, recursive) &&
+                   std::ranges::all_of(multisel, [&](auto &s) {
+                       return s.grid->AllHaveStyle(s, style, recursive);
+                   });
+        wxString status;
+        ForEachSelection([&] {
+            if (style == 0 || all || !selected.grid->AllHaveStyle(selected, style, recursive)) {
+                status = Action(action, recursive);
+            }
+        });
+        return status;
     }
 
     void KeepFoldSel(bool ctrl) {
@@ -1143,6 +1250,11 @@ struct Document {
             return;
         }
         begindrag = Selection();
+        if (isctrlshiftdrag == 1 && !right) {
+            ctrlclickfrom = selected;
+        } else if (!right) {
+            ClearMultiSel();
+        }
         KeepFoldSel(isctrlshiftdrag == 1);
         if (!right && !hovernote.IsEmpty() && isctrlshiftdrag == 0) {
             // After the click, as the dialog would take the mouse button release.
@@ -1347,6 +1459,15 @@ struct Document {
             Cell::DrawNote(dc, hovernote, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
         }
         DrawSelect(dc, selected);
+        // While a ctrl+click is held, the selection is already on the cell under the pointer, so
+        // the one it came from is drawn as it will be added on release (unless it's a drag).
+        auto ctrlheld = canvas->pressedoncanvas && isctrlshiftdrag == 1;
+        if (ctrlheld && selected.EqLoc(begindrag) && !ctrlclickfrom.EqLoc(selected)) {
+            DrawSelect(dc, ctrlclickfrom, false);
+        }
+        if (MultiSelFor(ctrlheld ? ctrlclickfrom : selected)) {
+            for (auto &s : multisel) { DrawSelect(dc, s, false); }
+        }
 
         if (currentviewscale != 1.0) { dc.SetUserScale(1.0, 1.0); }
         dc.DestroyClippingRegion();
@@ -1759,6 +1880,7 @@ struct Document {
     }
 
     wxString Key(int uk, int k, bool alt, bool ctrl, bool shift, bool &unprocessed) {
+        ClearMultiSel();
         if (uk == WXK_NONE || k < ' ' && k != 0 || k == WXK_DELETE) {
             switch (k) {
                 case WXK_BACK:  // no menu shortcut available in wxwidgets
@@ -1888,6 +2010,27 @@ struct Document {
     // nested inside the selected ones.
     wxString Action(int action, bool recursive = false) {
         EndFoldPeek();
+        if (MultiSel()) {
+            switch (action) {
+                case wxID_BOLD:
+                case wxID_ITALIC:
+                case A_TT:
+                case wxID_UNDERLINE:
+                case wxID_STRIKETHROUGH:
+                case A_ALIGNAUTO:
+                case A_ALIGNLEFT:
+                case A_ALIGNCENTER:
+                case A_ALIGNRIGHT:
+                case A_VALIGNAUTO:
+                case A_ALIGNTOP:
+                case A_ALIGNMIDDLE:
+                case A_ALIGNBOTTOM:
+                case A_LASTCELLCOLOR:
+                case A_LASTTEXTCOLOR:
+                case A_LASTBORDCOLOR: return MultiSelAction(action, recursive);
+                default: ClearMultiSel();
+            }
+        }
         switch (action) {
             case wxID_EXECUTE: {
                 root->AddUndo(this);
@@ -3746,6 +3889,8 @@ struct Document {
         ui->estimated_size = ui->clone->EstimatedMemoryUse();
         ui->sel = selected;
         ui->cloned_from = (uintptr_t)c;
+        if (undogroup == 2) { newgeneration = false; }
+        if (undogroup == 1) { undogroup = 2; }
         if (!undolist.empty()) {
             ui->generation = undolist.back()->generation + (newgeneration ? 1 : 0);
         }
@@ -3843,7 +3988,9 @@ struct Document {
             case A_BORDCOLOR: sys->lastbordcolor = col; break;
         }
         // With Shift held, also color everything inside the selected cells.
-        selected.grid->ColorChange(this, which, col, selected, wxGetKeyState(WXK_SHIFT));
+        auto recursive = wxGetKeyState(WXK_SHIFT);
+        ForEachSelection(
+            [&] { selected.grid->ColorChange(this, which, col, selected, recursive); });
     }
 
     static Image *NewImage(double scale, vector<uint8_t> &&data, char type) {

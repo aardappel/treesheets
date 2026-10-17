@@ -552,7 +552,9 @@ struct Grid {
         }
     }
 
-    template<typename DC> void DrawSelect(Document *doc, DC &dc, Selection &sel) {
+    // Without primary, as for cells added with ctrl+click: no knob, nor IME position.
+    template<typename DC>
+    void DrawSelect(Document *doc, DC &dc, Selection &sel, bool primary = true) {
         if (sel.Thin()) {
             DrawInsert(doc, dc, sel, 0);
         } else {
@@ -561,20 +563,23 @@ struct Grid {
             wxRect g = GetRect(doc, sel);
             int lw = g_line_width;
             int te = static_cast<int>(sel.TextEdit());
+            int knob = static_cast<int>(primary);
             dc.DrawRectangle(g.x - 1 - lw, g.y - 1 - lw, g.width + 2 + 2 * lw, 2 + lw - te);
-            dc.DrawRectangle(g.x - 1 - lw, g.y - 1 + g.height + te, g.width + 2 + 2 * lw - 5,
-                             2 + lw - te);
+            dc.DrawRectangle(g.x - 1 - lw, g.y - 1 + g.height + te,
+                             g.width + 2 + 2 * lw - 5 * knob, 2 + lw - te);
 
             dc.DrawRectangle(g.x - 1 - lw, g.y + 1 - te, 2 + lw - te, g.height - 2 + 2 * te);
             dc.DrawRectangle(g.x - 1 + g.width + te, g.y + 1 - te, 2 + lw - te,
-                             g.height - 2 + 2 * te - 2 - te);
+                             g.height - 2 + 2 * te - (2 + te) * knob);
 
-            dc.DrawRectangle(g.x + g.width, g.y + g.height - 2, lw + 2, lw + 4);
-            dc.DrawRectangle(g.x + g.width - lw - 1, g.y + g.height - 2 + 2 * te, lw + 1,
-                             lw + 4 - 2 * te);
+            if (primary) {
+                dc.DrawRectangle(g.x + g.width, g.y + g.height - 2, lw + 2, lw + 4);
+                dc.DrawRectangle(g.x + g.width - lw - 1, g.y + g.height - 2 + 2 * te, lw + 1,
+                                 lw + 4 - 2 * te);
+            }
             if (sel.TextEdit()) {
                 DrawCursor(doc, dc, sel, true, sys->cursorcolor);
-            } else {
+            } else if (primary) {
                 HintIMELocation(doc, g.x, g.y, g_deftextsize * 1.333, 0);
             }
         }
