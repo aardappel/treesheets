@@ -621,6 +621,9 @@ msgstr ""
 "열당 반복 요소가 있는 NxN 격자를 계층 구조를 가진 1xN 격자로 변환하여 스프레"
 "드시트에서 데이터를 변환하는 데 유용합니다"
 
+msgid "Cop&y Special"
+msgstr "특수 복사(&Y)"
+
 msgid "Copy (CTRL+c)"
 msgstr "복사 (Ctrl+C)"
 
@@ -1467,6 +1470,9 @@ msgstr "비밀번호가 변경되지 않았습니다."
 
 msgid "Paste (CTRL+v)"
 msgstr "붙여넣기 (Ctrl+V)"
+
+msgid "Paste Speci&al"
+msgstr "선택하여 붙여넣기(&A)"
 
 msgid "Paste Style Only"
 msgstr "스타일만 붙여넣기"

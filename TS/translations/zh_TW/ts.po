@@ -614,6 +614,9 @@ msgstr ""
 "將每欄包含重複元素的 NxN 網格轉換為帶有階層結構的 1xN 網格，適合轉換試算表資"
 "料"
 
+msgid "Cop&y Special"
+msgstr "選擇性複製(&Y)"
+
 msgid "Copy (CTRL+c)"
 msgstr "複製（Ctrl + C）"
 
@@ -1444,6 +1447,9 @@ msgstr "密碼未變更。"
 
 msgid "Paste (CTRL+v)"
 msgstr "貼上（Ctrl + V）"
+
+msgid "Paste Speci&al"
+msgstr "選擇性貼上(&A)"
 
 msgid "Paste Style Only"
 msgstr "僅貼上樣式"

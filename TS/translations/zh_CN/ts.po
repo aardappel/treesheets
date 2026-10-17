@@ -614,6 +614,9 @@ msgstr ""
 "将每列具有重复元素的 NxN 网格转换为具有层级结构的 1xN 网格，有助于转换电子表"
 "格数据"
 
+msgid "Cop&y Special"
+msgstr "选择性复制(&Y)"
+
 msgid "Copy (CTRL+c)"
 msgstr "复制 (CTRL+c)"
 
@@ -1444,6 +1447,9 @@ msgstr "密码未更改。"
 
 msgid "Paste (CTRL+v)"
 msgstr "粘贴 (CTRL+v)"
+
+msgid "Paste Speci&al"
+msgstr "选择性粘贴(&A)"
 
 msgid "Paste Style Only"
 msgstr "仅粘贴样式"

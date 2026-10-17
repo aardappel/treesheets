@@ -630,6 +630,9 @@ msgstr ""
 "Converte uma grade NxN com elementos repetidos por coluna em uma grade 1xN "
 "com hierarquia, útil para converter dados de planilhas"
 
+msgid "Cop&y Special"
+msgstr "Copiar Especia&l"
+
 msgid "Copy (CTRL+c)"
 msgstr "Copiar (CTRL+c)"
 
@@ -1517,6 +1520,9 @@ msgstr "Senha inalterada."
 
 msgid "Paste (CTRL+v)"
 msgstr "Colar (CTRL+v)"
+
+msgid "Paste Speci&al"
+msgstr "Colar E&special"
 
 msgid "Paste Style Only"
 msgstr "Colar &Estilo"

@@ -634,6 +634,9 @@ msgstr ""
 "grille 1xN avec hiérarchie, utile pour convertir des données issues de "
 "feuilles de calcul"
 
+msgid "Cop&y Special"
+msgstr "Copie spécia&le"
+
 msgid "Copy (CTRL+c)"
 msgstr "Copier (CTRL+c)"
 
@@ -1526,6 +1529,9 @@ msgstr "Mot de passe inchangé."
 
 msgid "Paste (CTRL+v)"
 msgstr "Coller (CTRL+v)"
+
+msgid "Paste Speci&al"
+msgstr "Collage spéci&al"
 
 msgid "Paste Style Only"
 msgstr "Coller le style uniquement"

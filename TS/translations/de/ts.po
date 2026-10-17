@@ -635,6 +635,9 @@ msgstr ""
 "1xN-Tabelle mit Hierarchie, nützlich zum Konvertieren von Daten aus "
 "Tabellenkalukulationsprogrammen"
 
+msgid "Cop&y Special"
+msgstr "Spe&zielles Kopieren"
+
 msgid "Copy (CTRL+c)"
 msgstr "Kopieren (STRG+c)"
 
@@ -1524,6 +1527,9 @@ msgstr "Passwort unverändert."
 
 msgid "Paste (CTRL+v)"
 msgstr "Einfügen (STRG+v)"
+
+msgid "Paste Speci&al"
+msgstr "Spezielles Ein&fügen"
 
 msgid "Paste Style Only"
 msgstr "Nur Stil einfügen"

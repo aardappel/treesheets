@@ -537,24 +537,29 @@ struct TSFrame : wxFrame {
             MyAppend(laymenu, A_TEXTGRID, _("Toggle Vertical Layout") + "\t" CTRLORALT "+0",
                      _("Make a hierarchy layout more vertical (default) or more horizontal"));
 
+            auto *copymenu = new wxMenu();
+            MyAppend(copymenu, A_COPYWI, _("Copy with &Images") + "\tCTRL+ALT+C");
+            MyAppend(copymenu, A_COPYBM, _("&Copy as Bitmap"));
+            MyAppend(copymenu, A_COPYSVG, _("Copy as &SVG"),
+                     _("Copy the selection as SVG vector graphics"));
+            MyAppend(copymenu, A_COPYCT, _("Copy As Continuous Text"));
+
+            auto *pastemenu = new wxMenu();
+            MyAppend(pastemenu, A_PASTESTYLE, _("Paste Style Only") + "\tCTRL+SHIFT+V",
+                     _("only sets the colors and style of the copied cell, and keeps the text"));
+            MyAppend(pastemenu, A_PASTETEXT, _("Paste as &Text"),
+                     _("Paste the text of the clipboard without the styles of the copied cells"));
+            MyAppend(pastemenu, A_PASTETSV, _("Paste as Tab-Separated &Grid") + "\tCTRL+ALT+V",
+                     _("Paste the text of the clipboard as a grid, with tabs separating the columns "
+                       "and lines separating the rows"));
+
             editmenu = new wxMenu();
             MyAppend(editmenu, wxID_CUT, _("Cu&t") + "\tCTRL+X", _("Cut selection"));
             MyAppend(editmenu, wxID_COPY, _("&Copy") + "\tCTRL+C", _("Copy selection"));
-            editmenu->AppendSeparator();
-            MyAppend(editmenu, A_COPYWI, _("Copy with &Images") + "\tCTRL+ALT+C");
-            MyAppend(editmenu, A_COPYBM, _("&Copy as Bitmap"));
-            MyAppend(editmenu, A_COPYSVG, _("Copy as &SVG"),
-                     _("Copy the selection as SVG vector graphics"));
-            MyAppend(editmenu, A_COPYCT, _("Copy As Continuous Text"));
-            editmenu->AppendSeparator();
             MyAppend(editmenu, wxID_PASTE, _("&Paste") + "\tCTRL+V", _("Paste clipboard contents"));
-            MyAppend(editmenu, A_PASTESTYLE, _("Paste Style Only") + "\tCTRL+SHIFT+V",
-                     _("only sets the colors and style of the copied cell, and keeps the text"));
-            MyAppend(editmenu, A_PASTETEXT, _("Paste as &Text"),
-                     _("Paste the text of the clipboard without the styles of the copied cells"));
-            MyAppend(editmenu, A_PASTETSV, _("Paste as Tab-Separated &Grid") + "\tCTRL+ALT+V",
-                     _("Paste the text of the clipboard as a grid, with tabs separating the columns "
-                       "and lines separating the rows"));
+            editmenu->AppendSubMenu(copymenu, _("Cop&y Special"));
+            editmenu->AppendSubMenu(pastemenu, _("Paste Speci&al"));
+            editmenu->AppendSeparator();
             MyAppend(editmenu, A_COLLAPSE, _("Collapse Ce&lls") + "\tCTRL+L");
             editmenu->AppendSeparator();
 

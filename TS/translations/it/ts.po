@@ -626,6 +626,9 @@ msgstr ""
 "Convertire una griglia NxN con elementi ripetuti per colonna in una griglia "
 "1xN con gerarchia, utile per convertire i dati da fogli di calcolo"
 
+msgid "Cop&y Special"
+msgstr "Copia spe&ciale"
+
 msgid "Copy (CTRL+c)"
 msgstr "Copia (CTRL+c)"
 
@@ -1511,6 +1514,9 @@ msgstr "Password invariata."
 
 msgid "Paste (CTRL+v)"
 msgstr "Incolla (CTRL+v)"
+
+msgid "Paste Speci&al"
+msgstr "Incolla speci&ale"
 
 msgid "Paste Style Only"
 msgstr "Incolla solo stile"

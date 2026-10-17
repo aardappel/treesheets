@@ -689,6 +689,9 @@ msgstr "CSV (разделитель - &запятая)..."
 msgid "Convert an NxN grid with repeating elements per column into an 1xN grid with hierarchy, useful to convert data from spreadsheets"
 msgstr "Преобразует сетку NxN, с повторяющимися элементами в столбцах - в сетку 1xN с иерархией. Полезно для преобразования данных из электронных таблиц"
 
+msgid "Cop&y Special"
+msgstr "Специальное копи&рование"
+
 msgid "Copy (CTRL+c)"
 msgstr "Копировать (CTRL+c)"
 
@@ -1633,6 +1636,9 @@ msgstr "Пароль не изменён."
 # комментарий к эл-ту Главного Окна
 msgid "Paste (CTRL+v)"
 msgstr "Вставить (CTRL+v)"
+
+msgid "Paste Speci&al"
+msgstr "Специальная вст&авка"
 
 # п. Меню (нет & в исходном тексте)
 msgid "Paste Style Only"

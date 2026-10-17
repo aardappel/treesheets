@@ -618,6 +618,9 @@ msgstr ""
 "Chuyển đổi lưới NxN với các thành phần lặp lại theo cột thành lưới 1xN có "
 "phân cấp, hữu ích khi chuyển đổi dữ liệu từ bảng tính"
 
+msgid "Cop&y Special"
+msgstr "Sao chép đặc biệt (&Y)"
+
 msgid "Copy (CTRL+c)"
 msgstr "Sao chép (CTRL+c)"
 
@@ -1474,6 +1477,9 @@ msgstr "Mật khẩu không thay đổi."
 
 msgid "Paste (CTRL+v)"
 msgstr "Dán (CTRL+v)"
+
+msgid "Paste Speci&al"
+msgstr "Dán đặc biệt (&A)"
 
 msgid "Paste Style Only"
 msgstr "Chỉ dán định dạng"

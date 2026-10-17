@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17 12:21+0200\n"
+"POT-Creation-Date: 2026-10-17 12:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -605,6 +605,9 @@ msgstr ""
 msgid ""
 "Convert an NxN grid with repeating elements per column into an 1xN grid with "
 "hierarchy, useful to convert data from spreadsheets"
+msgstr ""
+
+msgid "Cop&y Special"
 msgstr ""
 
 msgid "Copy (CTRL+c)"
@@ -1427,6 +1430,9 @@ msgid "Password unchanged."
 msgstr ""
 
 msgid "Paste (CTRL+v)"
+msgstr ""
+
+msgid "Paste Speci&al"
 msgstr ""
 
 msgid "Paste Style Only"

@@ -622,6 +622,9 @@ msgstr ""
 "列ごとに繰り返し要素を持つ NxN グリッドを、階層を持つ 1xN グリッドに変換しま"
 "す。スプレッドシートからのデータ変換に便利です"
 
+msgid "Cop&y Special"
+msgstr "特殊コピー(&Y)"
+
 msgid "Copy (CTRL+c)"
 msgstr "コピー (CTRL+C)"
 
@@ -1488,6 +1491,9 @@ msgstr "パスワードは変更されていません。"
 
 msgid "Paste (CTRL+v)"
 msgstr "貼り付け (Ctrl+V)"
+
+msgid "Paste Speci&al"
+msgstr "形式を選択して貼り付け(&A)"
 
 msgid "Paste Style Only"
 msgstr "スタイルのみ貼り付け"
