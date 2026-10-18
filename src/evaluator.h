@@ -250,6 +250,8 @@ struct Evaluator {
     TREESUBSET(name, columns, rows, levels) also takes the same columns and rows of the sub-grids
     of those cells, and so on, but counts only the levels in the range, 0 being the named grid,
     e.g. =SUM(TREESUBSET(Projects, 1, -, 1-)). It skips the formulas in sub-grids like TREE.
+    Instead of a name, both take another SUBSET() or TREESUBSET(), whose cells' grids they use,
+    e.g. =SUM(SUBSET(SUBSET(Projects, 1, 0), 2-, -)) for columns 2 on in the grid of cell (1, 0).
     A name that is no grid can be a variable that the last run of the program assigned (see
     Evaluator::Assign()), with the numbers of its grid, or its text. Until the program runs, its
     variables are #N/A.
@@ -402,9 +404,7 @@ struct FormulaEvaluator {
             while (function > 0 && wxIsalpha(s[function - 1])) { function--; }
             bool subset = IsSubset(s.Mid(function, open - function).Upper());
             for (auto f : {L"SUBSET(", L"TREESUBSET("}) {
-                if (!subset && wxString(f).StartsWith(typed.Upper())) {
-                    res.Add(s.Left(start) + f);
-                }
+                if (wxString(f).StartsWith(typed.Upper())) { res.Add(s.Left(start) + f); }
             }
             // Names with a ) in them, or a , in SUBSET(), only in quotes.
             wxString quote = typed.StartsWith("\"") ? "\"" : "";
@@ -587,39 +587,63 @@ struct FormulaEvaluator {
             if (!e.IsEmpty()) { return Fail(e); }
             return numbers.size() == 1 ? numbers[0] : Fail(L"#VALUE!");
         }
-        // The rest of SUBSET(name, columns, rows) or TREESUBSET(name, columns, rows, levels).
+        // The rest of SUBSET(name, columns, rows) or TREESUBSET(name, columns, rows, levels), with
+        // TREE in front also their sub-grids, which adds nothing to TREESUBSET.
         wxString Subset(vector<double> &numbers, bool tree, const wxString &function) {
+            vector<std::pair<Cell *, bool>> cells;
+            if (auto e = Cells(cells, function); !e.IsEmpty()) { return e; }
+            for (auto [c, sub] : cells) {
+                auto e = fe.Numbers(self, c, numbers, tree && function != L"TREESUBSET", sub);
+                if (!e.IsEmpty()) { return e; }
+            }
+            return {};
+        }
+        // The cells of the rest of a SUBSET() or TREESUBSET(), and whether each one is in a
+        // sub-grid. Instead of a name, it can take another SUBSET() or TREESUBSET(), whose cells'
+        // grids it then uses.
+        wxString Cells(vector<std::pair<Cell *, bool>> &cells, const wxString &function) {
+            vector<Grid *> grids;
+            Space();
+            auto start = i;
+            while (i < s.Len() && wxIsalpha(s[i])) { i++; }
+            auto inner = s.Mid(start, i - start).Upper();
             wxString name;
+            auto nested = IsSubset(inner) && Eat('(');
+            if (nested) {
+                vector<std::pair<Cell *, bool>> picked;
+                if (auto e = Cells(picked, inner); !e.IsEmpty()) { return e; }
+                for (auto [c, sub] : picked) {
+                    if (c->grid) { grids.push_back(c->grid.get()); }
+                }
+            } else {
+                i = start;
+                if (!Name(',', name)) { return L"#ERROR!"; }
+            }
             int x0, x1, y0, y1, l0 = 0, l1 = 0;
             bool levels = function == L"TREESUBSET";
-            if (!Name(',', name) || !Eat(',') || !Range(x0, x1) || !Eat(',') || !Range(y0, y1) ||
+            if (!Eat(',') || !Range(x0, x1) || !Eat(',') || !Range(y0, y1) ||
                 (levels && (!Eat(',') || !Range(l0, l1))) || !Eat(')')) {
                 return L"#ERROR!";
             }
-            wxString error;
-            auto *named = fe.Named(self, name, error);
-            if (named == nullptr) { return error; }
-            if (!named->grid) { return L"#VALUE!"; }
-            auto *g = named->grid.get();
-            // Clipped to each grid, so that it can grow and shrink. TREE in front adds nothing to
-            // TREESUBSET, which would count sub-grids twice.
-            auto cells = [&](auto &cells, Grid *g, int level) -> wxString {
+            if (!nested) {
+                wxString error;
+                auto *named = fe.Named(self, name, error);
+                if (named == nullptr) { return error; }
+                if (named->grid) { grids.push_back(named->grid.get()); }
+            }
+            if (grids.empty()) { return L"#VALUE!"; }
+            // Clipped to each grid, so that it can grow and shrink.
+            auto add = [&](auto &add, Grid *g, int level) -> void {
                 for (int y = y0; y <= min(y1, g->ys - 1); y++) {
                     for (int x = x0; x <= min(x1, g->xs - 1); x++) {
                         auto *c = g->C(x, y).get();
-                        if (level >= l0) {
-                            auto e = fe.Numbers(self, c, numbers, tree && !levels, level > 0);
-                            if (!e.IsEmpty()) { return e; }
-                        }
-                        if (level < l1 && c->grid) {
-                            auto e = cells(cells, c->grid.get(), level + 1);
-                            if (!e.IsEmpty()) { return e; }
-                        }
+                        if (level >= l0) { cells.emplace_back(c, level > 0); }
+                        if (level < l1 && c->grid) { add(add, c->grid.get(), level + 1); }
                     }
                 }
-                return {};
             };
-            return cells(cells, g, 0);
+            for (auto *g : grids) { add(add, g, 0); }
+            return {};
         }
         // A column or row number, or an inclusive range of them like 0-3, 3- (to the end), -4
         // (from the start) or - for all.
