@@ -51,6 +51,12 @@ struct ScriptInterface {
     virtual void SetRelativeSize(int s) = 0;
     virtual void SetStyle(int s) = 0;
     virtual int GetStyle() = 0;
+    // Style and text color of parts of the text (rich text). Positions are UTF-8 byte offsets
+    // into GetText() that start a character.
+    virtual void SetSpanStyle(int start, int size, int stylebits) = 0;
+    virtual int GetSpanStyle(int pos) = 0;
+    virtual void SetSpanTextColor(int start, int size, uint32_t col) = 0;
+    virtual uint32_t GetSpanTextColor(int pos) = 0;
     virtual void SetTextAlignment(int align) = 0;
     virtual int GetTextAlignment() = 0;
     virtual void SetVerticalAlignment(int align) = 0;

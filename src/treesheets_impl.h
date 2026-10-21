@@ -354,6 +354,35 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     int GetStyle() override { return current->text.stylebits; }
 
+    // The position in the text of the current cell of a UTF-8 byte offset into its text.
+    int TextPos(int utf8pos) {
+        auto s = current->text.t.utf8_string();
+        return static_cast<int>(wxString::FromUTF8(s.data(), min<size_t>(utf8pos, s.size())).Len());
+    }
+
+    void SetSpanStyle(int start, int size, int stylebits) override {
+        AddUndoIfNecessary();
+        auto &text = current->text;
+        text.runs.Modify(TextPos(start), TextPos(start + size), static_cast<int>(text.t.Len()),
+                         text.stylebits, [&](TextRun &r) { r.stylebits = stylebits; });
+        text.CheckRuns();
+    }
+
+    int GetSpanStyle(int pos) override {
+        auto *r = current->text.runs.At(TextPos(pos));
+        return r ? r->stylebits : current->text.stylebits;
+    }
+
+    void SetSpanTextColor(int start, int size, uint color) override {
+        AddUndoIfNecessary();
+        current->text.SetRunColor(color, TextPos(start), TextPos(start + size));
+    }
+
+    uint32_t GetSpanTextColor(int pos) override {
+        auto *r = current->text.runs.At(TextPos(pos));
+        return r && r->hascolor ? r->color : current->textcolor;
+    }
+
     void SetTextAlignment(int align) override {
         AddUndoIfNecessary();
         current->textalign = align;

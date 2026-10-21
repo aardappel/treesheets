@@ -109,6 +109,18 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_style_bits</b>() -> <font color="#666666">int</font></tt></td><td class="a">returns the stylebits of the current cell</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_span_style_bits</b>(start<font color="#666666">: int</font>, size<font color="#666666">: int</font>, stylebits<font color="#666666">: int</font>)</tt></td><td class="a">sets the styles (see set_style_bits) of size bytes of the text of the current cell from byte start, counted like find_string(get_text(), ...) does. the rest keeps its style. set_style_bits() and set_text() make the whole text one style and color again.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_span_style_bits</b>(pos<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">returns the stylebits of the character at byte pos of the text of the current cell</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_span_text_color</b>(start<font color="#666666">: int</font>, size<font color="#666666">: int</font>, color<font color="#666666">: float4</font>)</tt></td><td class="a">sets the text color of size bytes of the text of the current cell from byte start (see set_span_style_bits).</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_span_text_color</b>(pos<font color="#666666">: int</font>) -> <font color="#666666">float4</font></tt></td><td class="a">returns the text color of the character at byte pos of the text of the current cell</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text_alignment</b>(alignment<font color="#666666">: int</font>)</tt></td><td class="a">sets the text alignment of the current cell (automatic = 0, left = 1, center = 2, right = 3). Automatic aligns right-to-left text (such as Arabic or Hebrew) right, and all other text left</td>
 
 </tr>

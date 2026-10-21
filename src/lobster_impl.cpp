@@ -288,6 +288,53 @@ BUILTIN(get_style_bits, "", "", "I", "returns the stylebits of the current cell"
     return (iint)si->GetStyle();
 }
 
+// Positions in the text count UTF-8 bytes, like Lobster's string functions, and have to start a
+// character (or be the end of the text).
+static void CheckSpan(VM &vm, const char *builtin, iint start, iint size, bool atchar) {
+    auto t = si->GetText();
+    auto len = (iint)t.size();
+    auto ischarstart = [&](iint p) { return p == len || (t[p] & 0xC0) != 0x80; };
+    if (start < 0 || size < 0 || start + size > len || (atchar && start >= len) ||
+        !ischarstart(start) || !ischarstart(start + size)) {
+        vm.BuiltinError(cat(builtin, ": position ", start, atchar ? "" : cat(" with size ", size),
+                            " is outside the text (", len,
+                            " bytes) or not at the start of a character"));
+    }
+}
+
+BUILTIN(set_span_style_bits, "start,size,stylebits", "III", "",
+    "sets the styles (see set_style_bits) of size bytes of the text of the current cell from "
+    "byte start, counted like find_string(get_text(), ...) does. the rest keeps its style. "
+    "set_style_bits() and set_text() make the whole text one style and color again.")
+(VM &vm, iint start, iint size, iint s) {
+    CheckSpan(vm, "ts.set_span_style_bits", start, size, false);
+    si->SetSpanStyle((int)start, (int)size, (int)s);
+}
+
+BUILTIN(get_span_style_bits, "pos", "I", "I",
+    "returns the stylebits of the character at byte pos of the text of the current cell")
+(VM &vm, iint pos) {
+    CheckSpan(vm, "ts.get_span_style_bits", pos, 0, true);
+    return (iint)si->GetSpanStyle((int)pos);
+}
+
+BUILTIN(set_span_text_color, "start,size,color", "IIF}:4", "",
+    "sets the text color of size bytes of the text of the current cell from byte start (see "
+    "set_span_style_bits).")
+(VM &vm, iint start, iint size, double4 color) {
+    CheckSpan(vm, "ts.set_span_text_color", start, size, false);
+    auto col = ToVec<float3>(color);
+    si->SetSpanTextColor((int)start, (int)size, *(uint32_t *)quantizec(col, 0.0f).data());
+}
+
+BUILTIN(get_span_text_color, "pos", "I", "F}:4",
+    "returns the text color of the character at byte pos of the text of the current cell")
+(VM &vm, iint pos) {
+    CheckSpan(vm, "ts.get_span_text_color", pos, 0, true);
+    uint32_t c = si->GetSpanTextColor((int)pos);
+    return ToVec<double4>(color2vec(*(byte4 *)&c));
+}
+
 BUILTIN(set_text_alignment, "alignment", "I", "",
     "sets the text alignment of the current cell (automatic = 0, left = 1, center = 2,"
     " right = 3). Automatic aligns right-to-left text (such as Arabic or Hebrew) right,"
