@@ -21,6 +21,7 @@ struct CursorPosCache {
     Image *image {nullptr};
     wxString text;
     std::vector<TextRun> runs;
+    std::vector<TextLink<wxString>> links;
     int cursor {-1};
     int stylebits {-1};
     int relsize {INT_MIN};
@@ -56,9 +57,21 @@ struct Document {
     // The fold icon under the pointer, in document coordinates, or empty.
     wxRect hoverfoldicon;
     wxRect hovernote;        // The note triangle under the pointer, likewise.
+    wxRect hoverlink;        // The part of a link under the pointer, likewise.
+    int hoverlinkstart {0};  // where that link starts in the text of the hovered cell
     bool hoverknob {false};  // The pointer is on the knob at the selection's bottom-right corner.
     bool knobdrag {false};   // The mouse button went down on that knob and is still held.
-    bool knobcursor {false};
+    // The pointer for the knob or a link, or wxCURSOR_NONE. See SetHoverCursor().
+    wxStockCursor hovercursor {wxCURSOR_NONE};
+    // While exporting to HTML, the anchors of the cells that internal links go to.
+    std::map<const Cell *, int> htmlanchors;
+    // While exporting to PDF, the parts of links that were drawn.
+    struct DrawnLink {
+        wxRect rect;
+        const Cell *cell;
+        const TextLink<wxString> *link;
+    };
+    vector<DrawnLink> *drawnlinks {nullptr};
     // With the hover shadow option: the shaded area of the hovered cell, in document
     // coordinates, or empty. A rect rather than `hover`, as that may point into a grid that
     // has been deleted since.
@@ -365,7 +378,7 @@ struct Document {
         hover = Selection();
         auto prevfoldicon = hoverfoldicon;
         auto prevnote = hovernote;
-        hoverfoldicon = hovernote = wxRect();
+        hoverfoldicon = hovernote = hoverlink = wxRect();
         auto px = x / currentviewscale - centerx / currentviewscale;
         auto py = y / currentviewscale - centery / currentviewscale;
         auto *drawroot = WalkPath(drawpath);
@@ -380,7 +393,10 @@ struct Document {
         hoverknob = knob;
         // Not while dragging a selection over it, only when it can be grabbed.
         auto ms = wxGetMouseState();
-        SetKnobCursor(knobdrag || (knob && !ms.LeftIsDown() && !ms.RightIsDown()));
+        SetHoverCursor(knobdrag || (knob && !ms.LeftIsDown() && !ms.RightIsDown())
+                           ? wxCURSOR_SIZENWSE
+                       : !hoverlink.IsEmpty() && ms.CmdDown() ? wxCURSOR_HAND
+                                                              : wxCURSOR_NONE);
         wxRect shade;
         if (sys->hovershadow && hover.grid != nullptr && !hover.Thin()) {
             shade = hover.grid->GetRect(this, hover);
@@ -394,10 +410,10 @@ struct Document {
         SetHoverNote(note);
     }
 
-    void SetKnobCursor(bool show) {
-        if (show == knobcursor) { return; }
-        knobcursor = show;
-        canvas->SetCursor(show                  ? wxCursor(wxCURSOR_SIZENWSE)
+    void SetHoverCursor(wxStockCursor c) {
+        if (c == hovercursor) { return; }
+        hovercursor = c;
+        canvas->SetCursor(c != wxCURSOR_NONE    ? wxCursor(c)
                           : selected.TextEdit() ? wxCursor(wxCURSOR_IBEAM)
                                                 : wxNullCursor);
     }
@@ -982,6 +998,26 @@ struct Document {
                                             currentdrawroot, sys->flatcopy);
     }
 
+    // Keeps just the selected text of cell c in the cell clipboard, if it has styles or links,
+    // which then come along when it is pasted.
+    bool CopyTextRange() {
+        auto &cc = *sys->cellclipboard;
+        auto len = static_cast<int>(cc.text.t.Len());
+        auto from = max(selected.cursor, 0);
+        auto to = min(selected.cursorend, len);
+        if (from >= to || !cc.text.Rich()) { return false; }
+        cc.text.RemoveText(to, len - to);
+        cc.text.RemoveText(0, from);
+        if (!cc.text.Rich()) { return false; }
+        cc.celltype = CT_DATA;
+        cc.formula = nullptr;
+        cc.grid = nullptr;
+        cc.text.image = nullptr;
+        cc.note.Clear();
+        sys->cellclipboardcolwidth = 0;
+        return true;
+    }
+
     void CopyToCellClipboard(Cell *c) {
         sys->cellclipboard = c != nullptr ? c->Clone(nullptr) : selected.grid->CloneSel(selected);
         sys->cellclipboardcolwidth = c != nullptr ? c->ColWidth() : 0;
@@ -1041,6 +1077,8 @@ struct Document {
                 if (!selected.TextEdit()) {
                     auto *htmlobj = CopyEntireCells(s, action);
                     clipboarddata->Add(htmlobj);
+                } else if (CopyTextRange()) {
+                    sys->clipboardcopy = s;
                 }
                 if (c != nullptr && !c->text.t && c->text.image != nullptr) {
                     auto *image = c->text.image;
@@ -1097,6 +1135,53 @@ struct Document {
     }
 
     static wxString NoSel() { return _("This operation requires a selection."); }
+    // Opens file f, relative to the document, in the application for its type.
+    bool OpenFile(const wxString &f) const {
+        wxFileName fn(f);
+        if (fn.IsRelative()) { fn.MakeAbsolute(wxFileName(filename).GetPath()); }
+        return wxLaunchDefaultApplication(fn.GetFullPath());
+    }
+
+    // Goes to the cell that internal link k in cell c goes to, or opens the URL or file of an
+    // external one.
+    wxString FollowLink(Cell *c, const TextLink<wxString> &k) {
+        if (k.internal) {
+            auto *target = FormulaEvaluator::LinkTarget(c, k.target);
+            if (target == nullptr) { return _("No matching cell found!"); }
+            SetSelect(target->parent->grid->FindCell(target));
+            ScrollOrZoom(true);
+            return wxEmptyString;
+        }
+        auto opened =
+            Text::HasURLScheme(k.target) ? wxLaunchDefaultBrowser(k.target) : OpenFile(k.target);
+        return opened ? wxString() : _("The link could not be opened.");
+    }
+
+    // Where an external link to `target` goes in an export: a URL as is, and a file as a file
+    // URL, or else relative to the export, which is usually next to the document.
+    static wxString LinkURL(const wxString &target) {
+        if (Text::HasURLScheme(target)) { return target; }
+        wxFileName fn(target);
+        return fn.IsAbsolute() ? wxFileName::FileNameToURL(fn) : fn.GetFullPath(wxPATH_UNIX);
+    }
+
+    // Where link k in cell c goes in HTML: its URL, the anchor of its target, or nowhere if that
+    // isn't exported.
+    wxString LinkHref(const Cell *c, const TextLink<wxString> &k) const {
+        if (!k.internal) { return LinkURL(k.target); }
+        auto it = htmlanchors.find(FormulaEvaluator::LinkTarget(c, k.target));
+        return it != htmlanchors.end() ? wxString::Format("#cell%d", it->second) : wxString();
+    }
+
+    // Whether cell c is drawn in the current view, if it fits in the window.
+    bool InView(const Cell *c) const {
+        for (auto *p = c->parent; p != nullptr; p = p->parent) {
+            if (p == currentdrawroot) { return true; }
+            if (p->grid->folded) { return false; }
+        }
+        return false;
+    }
+
     static wxString OneCell() { return _("This operation works on a single selected cell only."); }
     static wxString NoThin() { return _("This operation doesn't work on thin selections."); }
     static wxString NoGrid() { return _("This operation requires a cell that contains a grid."); }
@@ -1246,7 +1331,18 @@ struct Document {
             // Dragging the knob moves the bottom-right corner, keeping the top-left one.
             begindrag = Selection(selected.grid, selected.x, selected.y, 1, 1);
             knobdrag = true;
-            SetKnobCursor(true);
+            SetHoverCursor(wxCURSOR_SIZENWSE);
+            return;
+        }
+        if (!right && isctrlshiftdrag == 1 && !hoverlink.IsEmpty()) {
+            // Ctrl+click follows a link, after the click, as the browser or file would take the
+            // mouse button release.
+            isctrlshiftdrag = 0;
+            auto *c = hover.GetCell();
+            auto start = hoverlinkstart;
+            canvas->CallAfter([this, c, start] {
+                if (auto *k = c->text.links.At(start)) { sys->frame->SetStatus(FollowLink(c, *k)); }
+            });
             return;
         }
         begindrag = Selection();
@@ -1721,7 +1817,22 @@ struct Document {
             {
                 wxPdfDC dc(&pdf, maxx, maxy);
                 if (!dc.StartDoc(wxEmptyString)) return false;
+                vector<DrawnLink> links;
+                drawnlinks = &links;
                 DrawView(dc);
+                drawnlinks = nullptr;
+                // The page is in the points that the view was drawn in.
+                for (const auto &[r, c, k] : links) {
+                    if (!k->internal) {
+                        pdf.Link(r.x, r.y, r.width, r.height, wxPdfLink(LinkURL(k->target)));
+                        continue;
+                    }
+                    auto *target = FormulaEvaluator::LinkTarget(c, k->target);
+                    if (target == nullptr || !InView(target)) { continue; }
+                    auto link = pdf.AddLink();
+                    pdf.SetLink(link, target->GetY(this));
+                    pdf.Link(r.x, r.y, r.width, r.height, wxPdfLink(link));
+                }
                 dc.EndDoc();
             }
 
@@ -1784,7 +1895,20 @@ struct Document {
                 return _("Error writing to file!");
             }
             wxTextOutputStream dos(fos);
+            // The cells that internal links go to get an anchor, see Cell::ToText().
+            if (Text::IsHTMLFormat(action)) {
+                exportroot->ForCells(true, [&](Cell *c) {
+                    for (const auto &k : c->text.links.v) {
+                        auto *target =
+                            k.internal ? FormulaEvaluator::LinkTarget(c, k.target) : nullptr;
+                        if (target != nullptr && exportroot->IsParentOf(target)) {
+                            htmlanchors.emplace(target, static_cast<int>(htmlanchors.size()));
+                        }
+                    }
+                });
+            }
             wxString content = exportroot->ToText(0, Selection(), action, this, true, exportroot);
+            htmlanchors.clear();
             switch (action) {
                 case A_EXPXML:
                     dos.WriteString(
@@ -3306,6 +3430,15 @@ struct Document {
             }
 
             case A_BROWSE: {
+                // The link at the cursor, or the first one of the selected cell, if any.
+                if (auto *c = selected.GetCell(); c != nullptr && !c->text.links.empty()) {
+                    auto *k = selected.TextEdit() ? c->text.links.At(selected.cursor)
+                                                  : &c->text.links.v[0];
+                    if (k == nullptr && selected.cursor > 0) {
+                        k = c->text.links.At(selected.cursor - 1);
+                    }
+                    if (k != nullptr) { return FollowLink(c, *k); }
+                }
                 wxString returnmessage = "";
                 int counter = 0;
                 loopallcellssel(c, false) {
@@ -3330,10 +3463,7 @@ struct Document {
                         returnmessage = _("Maximum number of launches reached.");
                         break;
                     }
-                    auto f = c->text.ToText(0, selected, A_EXPTEXT);
-                    wxFileName fn(f);
-                    if (fn.IsRelative()) { fn.MakeAbsolute(wxFileName(filename).GetPath()); }
-                    if (!wxLaunchDefaultApplication(fn.GetFullPath())) {
+                    if (!OpenFile(c->text.ToText(0, selected, A_EXPTEXT))) {
                         returnmessage = _("At least one file could not be opened.");
                     } else {
                         counter++;
@@ -3441,6 +3571,54 @@ struct Document {
                 SetSelect(link->parent->grid->FindCell(link));
                 ScrollOrZoom(true);
                 return wxEmptyString;
+            }
+
+            case A_HYPERLINK: {
+                auto &text = cell->text;
+                auto len = static_cast<int>(text.t.Len());
+                auto from = 0;
+                auto to = 0;
+                auto *old = SelectedLink(cell, from, to);
+                if (from >= to) { return _("No text in this cell."); }
+                // What the text links to already, or else the text itself, as a URL or as the
+                // text of the nearest cell with it.
+                auto selection = text.t.Mid(from, to - from);
+                auto url = Text::HasURLScheme(selection);
+                auto internal =
+                    old ? old->internal
+                        : !url && FormulaEvaluator::LinkTarget(cell, selection) != nullptr;
+                wxDialog dlg(sys->frame, wxID_ANY, _("Link"), wxDefaultPosition, wxDefaultSize,
+                             wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                auto *sizer = new wxBoxSizer(wxVERTICAL);
+                const wxString kinds[] = {_("Web page or file"), _("Nearest cell with this text")};
+                wxRadioBox kind(&dlg, wxID_ANY, _("Link to"), wxDefaultPosition, wxDefaultSize, 2,
+                                kinds, 1);
+                kind.SetSelection(internal ? 1 : 0);
+                sizer->Add(&kind, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
+                wxTextCtrl target(&dlg, wxID_ANY,
+                                  old               ? old->target
+                                  : url || internal ? selection
+                                                    : wxString(),
+                                  wxDefaultPosition, wxSize(dlg.FromDIP(400), -1));
+                target.SetHint(_("Empty to remove the link"));
+                sizer->Add(&target, 0, wxEXPAND | wxALL, 10);
+                sizer->Add(dlg.CreateButtonSizer(wxOK | wxCANCEL), 0, wxALIGN_CENTER | wxBOTTOM,
+                           10);
+                dlg.SetSizerAndFit(sizer);
+                target.SetFocus();
+                target.SelectAll();
+                if (dlg.ShowModal() != wxID_OK) { return wxEmptyString; }
+                auto value = target.GetValue().Trim(true).Trim(false);
+                internal = kind.GetSelection() == 1;
+                cell->AddUndo(this);
+                text.links.Set(from, to, len, internal, value);
+                text.CheckRuns();
+                cell->ResetLayout();
+                UpdateLayout();
+                canvas->Refresh();
+                return !internal || value.IsEmpty() || FormulaEvaluator::LinkTarget(cell, value)
+                           ? wxString()
+                           : _("No matching cell found!");
             }
 
             case A_COLCELL: sys->customcolor = cell->cellcolor; return wxEmptyString;
@@ -4016,6 +4194,33 @@ struct Document {
     bool SelectionHasVertAlign(int align) {
         if (selected.grid == nullptr || selected.Thin()) { return false; }
         return selected.grid->AllHaveVertAlign(selected, align);
+    }
+
+    // The text that the link dialog links in cell c, the selected cell: the selected text, all of
+    // it, or the link at the cursor. Returns the first link in it, if any.
+    const TextLink<wxString> *SelectedLink(Cell *c, int &from, int &to) const {
+        auto &links = c->text.links;
+        from = selected.TextEdit() ? selected.cursor : 0;
+        to = selected.TextEdit() ? selected.cursorend : static_cast<int>(c->text.t.Len());
+        if (from == to) {
+            auto *k = links.At(from);
+            if (k == nullptr && from > 0) { k = links.At(from - 1); }
+            if (k != nullptr) {
+                from = k->start;
+                to = k->end();
+            }
+        }
+        for (const auto &k : links.v) {
+            if (k.end() > from && k.start < to) { return &k; }
+        }
+        return nullptr;
+    }
+
+    bool SelectionHasLink() {
+        auto *c = selected.GetCell();
+        auto from = 0;
+        auto to = 0;
+        return c != nullptr && SelectedLink(c, from, to) != nullptr;
     }
 
     bool SelectionHasNote() {

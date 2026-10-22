@@ -1,9 +1,9 @@
-File format spec for TreeSheets .cts files, version 30. This should be enough for a programmer to write an importer/exporter.
+File format spec for TreeSheets .cts files, version 31. This should be enough for a programmer to write an importer/exporter.
 
 struct File     // not really a struct, i.e. no alignment, read an element at a time
 {
     char magic[4] = "TSFF";
-    char version = 30;
+    char version = 31;
     uchar encryption; // only if version >= 30: 0 = none, 1 = password protected, see Encryption below
     // With encryption, everything from here to the end of the file is encrypted (see Encryption).
     // TreeSheets saves the selection and the zoom level when the file is saved.
@@ -55,7 +55,7 @@ struct Image
 struct Cell
 {
     uchar celltype;     // enum { CT_DATA = 0, CT_CODE, CT_VARD, CT_VIEWH, CT_VARU, CT_VIEWV, CT_FORMULA };
-                        // the text of a CT_FORMULA cell is its formula (e.g. "=SUM(Expenses)"), without runs;
+                        // the text of a CT_FORMULA cell is its formula (e.g. "=SUM(Expenses)"), without runs and links;
                         // its result is calculated after loading
     uint cellcolor;
     uint textcolor;
@@ -76,6 +76,7 @@ struct Cell
         uint stylebits;   // enum { STYLE_BOLD = 1, STYLE_ITALIC = 2, STYLE_FIXED = 4, STYLE_UNDERLINE = 8, STYLE_STRIKETHRU = 16 };
         uint64 lastedit;    // internal representation of wxDateTime
         TextRuns runs;      // only if version >= 27
+        TextLinks links;    // only if version >= 31
     }
     if (TS_GRID or TS_BOTH)
     {
@@ -110,5 +111,24 @@ struct Run
 // lengths are counted in Unicode code points (not in UTF-16 code units, and not in bytes of the
 // UTF-8 string). A reader should discard runs that violate this. Readers for versions before 27
 // don't know about runs, and refuse to open files of a newer version.
+
+// Hyperlinks: ranges of the text that link to a target, independently of the runs they may span.
+struct TextLinks
+{
+    uint numlinks;  // usually 0; more than the number of characters in the text is invalid
+    Link links[numlinks];
+}
+
+struct Link
+{
+    uint start;     // position of the first code point in the cell's text, as in Run
+    uint length;    // number of code points, at least 1
+    uchar internal; // 0: target is a URL (with a scheme, e.g. https: or mailto:) or else a file
+                    // path, absolute or relative to the document
+                    // 1: target is the text of a cell; the link goes to the nearest one with it
+                    // (breadth first in the grid of the linking cell, then in each grid around it)
+    String target;  // not empty
+}
+// Links must be sorted by start, must not overlap and must lie within the text, like runs.
 
 struct String  // as wxDataOutputStream::WriteString writes it, apparently UTF-8 prefixed by length

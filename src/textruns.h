@@ -196,3 +196,124 @@ struct TextRuns {
         Normalize(basestylebits);
     }
 };
+
+// Hyperlinks: ranges of a Text's flat string that link to a target, independently of the style
+// runs they may span. An external link goes to a URL or a file, an internal one to the nearest
+// cell whose text is the target. S is the string type of the targets.
+//
+// Invariants (see Valid()): links are sorted, non-overlapping, non-empty and lie within the text.
+template<typename S> struct TextLink {
+    int start {0};
+    int len {0};
+    bool internal {false};
+    S target;
+
+    int end() const { return start + len; }
+    bool SameTarget(const TextLink &o) const {
+        return internal == o.internal && target == o.target;
+    }
+    bool operator==(const TextLink &o) const {
+        return start == o.start && len == o.len && SameTarget(o);
+    }
+};
+
+template<typename S> struct TextLinks {
+    std::vector<TextLink<S>> v;
+
+    bool empty() const { return v.empty(); }
+    void clear() { v.clear(); }
+
+    bool Valid(int textlen) const {
+        auto pos = 0;
+        for (auto &l : v) {
+            if (l.start < pos || l.len <= 0 || l.end() > textlen) { return false; }
+            pos = l.end();
+        }
+        return true;
+    }
+
+    // The link of the character at pos, or nullptr.
+    const TextLink<S> *At(int pos) const {
+        for (auto &l : v) {
+            if (pos < l.start) { break; }
+            if (pos < l.end()) { return &l; }
+        }
+        return nullptr;
+    }
+
+    // Text of length n was inserted at pos. Inside a link it becomes part of it, but not at its
+    // ends, so typing after a link doesn't extend it, unless `atend`.
+    void Insert(int pos, int n, bool atend = false) {
+        if (n <= 0) { return; }
+        for (auto &l : v) {
+            if (l.start < pos && (pos < l.end() || (atend && pos == l.end()))) {
+                l.len += n;
+            } else if (l.start >= pos) {
+                l.start += n;
+            }
+        }
+    }
+
+    // Text [pos, pos + n) was removed.
+    void Remove(int pos, int n) {
+        if (n <= 0) { return; }
+        auto map = [&](int x) { return x <= pos ? x : (x >= pos + n ? x - n : pos); };
+        for (auto &l : v) {
+            auto s = map(l.start);
+            l.len = map(l.end()) - s;
+            l.start = s;
+        }
+        std::erase_if(v, [](const TextLink<S> &l) { return l.len <= 0; });
+    }
+
+    // Text [pos, pos + n) was replaced by text of length m, which takes the link of the first
+    // replaced character.
+    void Replace(int pos, int n, int m) {
+        if (n <= 0) {
+            Insert(pos, m);
+        } else if (m <= 0) {
+            Remove(pos, n);
+        } else {
+            Insert(pos + 1, m, true);
+            Remove(pos, 1);
+            Remove(pos + m, n - 1);
+        }
+    }
+
+    // Links [from, to) to `target`, instead of what any of it linked to. An empty target unlinks
+    // it.
+    void Set(int from, int to, int textlen, bool internal, const S &target) {
+        from = std::max(from, 0);
+        to = std::min(to, textlen);
+        if (from >= to) { return; }
+        std::vector<TextLink<S>> out;
+        auto add = [&](const TextLink<S> &l) {
+            if (l.len <= 0) { return; }
+            if (!out.empty() && out.back().end() == l.start && out.back().SameTarget(l)) {
+                out.back().len += l.len;
+            } else {
+                out.push_back(l);
+            }
+        };
+        auto added = target.empty();
+        for (auto l : v) {
+            if (l.start < from) {
+                auto head = l;
+                head.len = std::min(l.end(), from) - l.start;
+                add(head);
+            }
+            if (!added && l.end() > from) {
+                add({from, to - from, internal, target});
+                added = true;
+            }
+            if (l.end() > to) {
+                auto tail = l;
+                tail.start = std::max(l.start, to);
+                tail.len = l.end() - tail.start;
+                add(tail);
+            }
+        }
+        if (!added) { add({from, to - from, internal, target}); }
+        v = std::move(out);
+    }
+};

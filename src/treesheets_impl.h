@@ -383,6 +383,20 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return r && r->hascolor ? r->color : current->textcolor;
     }
 
+    void SetLink(int start, int size, std::string_view target, bool internal) override {
+        AddUndoIfNecessary();
+        auto &text = current->text;
+        text.links.Set(TextPos(start), TextPos(start + size), static_cast<int>(text.t.Len()),
+                       internal, wxString::FromUTF8(target.data(), target.size()));
+        text.CheckRuns();
+    }
+
+    std::pair<std::string, bool> GetLink(int pos) override {
+        auto *k = current->text.links.At(TextPos(pos));
+        return k ? std::pair(k->target.utf8_string(), k->internal)
+                 : std::pair(std::string(), false);
+    }
+
     void SetTextAlignment(int align) override {
         AddUndoIfNecessary();
         current->textalign = align;

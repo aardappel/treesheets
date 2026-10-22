@@ -57,6 +57,9 @@ struct ScriptInterface {
     virtual int GetSpanStyle(int pos) = 0;
     virtual void SetSpanTextColor(int start, int size, uint32_t col) = 0;
     virtual uint32_t GetSpanTextColor(int pos) = 0;
+    // Links of parts of the text, likewise. An empty target unlinks.
+    virtual void SetLink(int start, int size, std::string_view target, bool internal) = 0;
+    virtual std::pair<std::string, bool> GetLink(int pos) = 0;
     virtual void SetTextAlignment(int align) = 0;
     virtual int GetTextAlignment() = 0;
     virtual void SetVerticalAlignment(int align) = 0;

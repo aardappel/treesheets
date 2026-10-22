@@ -121,6 +121,12 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_span_text_color</b>(pos<font color="#666666">: int</font>) -> <font color="#666666">float4</font></tt></td><td class="a">returns the text color of the character at byte pos of the text of the current cell</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.set_link</b>(start<font color="#666666">: int</font>, size<font color="#666666">: int</font>, target<font color="#666666">: string</font>, internal<font color="#666666">: bool</font> = false)</tt></td><td class="a">links size bytes of the text of the current cell from byte start (see set_span_style_bits) to target: a URL or a file (relative to the document), or with internal the nearest cell whose text is target, as formulas find names. what was linked there before is replaced, and an empty target removes the links there. set_text() removes all links.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_link</b>(pos<font color="#666666">: int</font>) -> <font color="#666666">string</font>, <font color="#666666">int</font></tt></td><td class="a">returns the target of the link of the character at byte pos of the text of the current cell (empty if it has none), and whether the link is internal (see set_link)</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.set_text_alignment</b>(alignment<font color="#666666">: int</font>)</tt></td><td class="a">sets the text alignment of the current cell (automatic = 0, left = 1, center = 2, right = 3). Automatic aligns right-to-left text (such as Arabic or Hebrew) right, and all other text left</td>
 
 </tr>

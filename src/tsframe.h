@@ -505,9 +505,11 @@ struct TSFrame : wxFrame {
 
             auto *navmenu = new wxMenu();
             MyAppend(navmenu, A_BROWSE, _("Open link in &browser") + "\tF5",
-                     _("Opens up the text from the selected cell in browser (should start be a valid URL)"));
+                     _("Follows the link at the cursor or in the selected cell, or else opens its text in the browser"));
             MyAppend(navmenu, A_BROWSEF, _("Open &file") + "\tF4",
                      _("Opens up the text from the selected cell in default application for the file type"));
+            MyAppend(navmenu, A_HYPERLINK, _("&Link...") + "\tSHIFT+F5",
+                     _("Links the selected text to a web page, a file or the nearest cell with that text (CTRL+click follows it)"));
 
             auto *laymenu = new wxMenu();
             auto layhelp =
@@ -1020,7 +1022,8 @@ struct TSFrame : wxFrame {
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateTextAlign, this, A_ALIGNAUTO, A_ALIGNRIGHT);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateVertAlign, this, A_VALIGNAUTO, A_ALIGNBOTTOM);
         Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateBorder, this, A_BORD0, A_BORD5);
-        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateNote, this, A_EDITNOTE);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateNoteOrLink, this, A_EDITNOTE);
+        Bind(wxEVT_UPDATE_UI, &TSFrame::OnUpdateNoteOrLink, this, A_HYPERLINK);
         #if wxUSE_WEBREQUEST
             Bind(wxEVT_WEBREQUEST_STATE, &TSFrame::OnUpdateCheck, this, A_CHECKUPDATES);
         #endif
@@ -1293,10 +1296,12 @@ struct TSFrame : wxFrame {
         AddToolbarIcon(styletb, _("Strikethrough (CTRL+t)"), wxID_STRIKETHROUGH, "strikethrough",
                        wxITEM_CHECK);
         AddToolbarIcon(styletb, _("Typewriter (CTRL+ALT+t)"), A_TT, "typewriter", wxITEM_CHECK);
+        // Pressed when the selected text has a link, see OnUpdateNoteOrLink.
+        AddToolbarIcon(styletb, _("Link (SHIFT+F5)"), A_HYPERLINK, "link", wxITEM_CHECK);
         FinishToolbar(styletb, "styletb", _("Text style operations"));
 
         auto *notetb = NewToolbar();
-        // Pressed when the selected cell has a note, see OnUpdateNote.
+        // Pressed when the selected cell has a note, see OnUpdateNoteOrLink.
         AddToolbarIcon(notetb, _("Edit Note (CTRL+e)"), A_EDITNOTE, "note", wxITEM_CHECK);
         FinishToolbar(notetb, "notetb", _("Note operations"));
 
@@ -1522,12 +1527,14 @@ struct TSFrame : wxFrame {
         }
     #endif
 
-    // Shows whether the selected cell has a note by checking its toolbar button. The menu item
-    // can't be checked.
-    void OnUpdateNote(wxUpdateUIEvent &ue) {
+    // Shows whether the selected cell has a note, or the selected text a link (see
+    // Document::SelectedLink()), by checking its toolbar button. The menu items can't be checked.
+    void OnUpdateNoteOrLink(wxUpdateUIEvent &ue) {
         if (wxDynamicCast(ue.GetEventObject(), wxAuiToolBar) == nullptr) { return; }
         auto *canvas = GetCurrentTab();
-        ue.Check(canvas != nullptr && canvas->doc->SelectionHasNote());
+        ue.Check(canvas != nullptr && (ue.GetId() == A_EDITNOTE
+                                           ? canvas->doc->SelectionHasNote()
+                                           : canvas->doc->SelectionHasLink()));
     }
 
     // Checks the cell type all selected cells have, if they have the same one.

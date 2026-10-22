@@ -139,6 +139,9 @@ msgstr "Chèn lướ&i mới"
 msgid "&Layout && Render Style"
 msgstr "Bố cục && Phong cách hiển thị (&L)"
 
+msgid "&Link..."
+msgstr "&Liên kết..."
+
 msgid "&Mark as"
 msgstr "Đánh dấu là (&M)"
 
@@ -778,6 +781,9 @@ msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
 "Nhúng (các) hình ảnh trong các ô được chọn dưới định dạng PNG (mặc định)"
 
+msgid "Empty to remove the link"
+msgstr "Để trống để xóa liên kết"
+
 msgid "Encrypt the current document with a password when saving it"
 msgstr "Mã hóa tài liệu hiện tại bằng mật khẩu khi lưu"
 
@@ -1037,6 +1043,13 @@ msgstr "Gập tất cả (CTRL+SHIFT+nhấp đúp)"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Gập lưới của (các) ô được chọn một cách đệ quy"
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr ""
+"Đi theo liên kết tại con trỏ hoặc trong ô được chọn, nếu không thì mở văn "
+"bản của ô trong trình duyệt"
+
 msgid "Font..."
 msgstr "Phông chữ..."
 
@@ -1213,6 +1226,25 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr "Hiển thị kiểu đường kẻ"
 
+msgid "Link"
+msgstr "Liên kết"
+
+msgid "Link (SHIFT+F5)"
+msgstr "Liên kết (SHIFT+F5)"
+
+msgid "Link to"
+msgstr "Liên kết đến"
+
+msgid "Links"
+msgstr "Liên kết"
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr ""
+"Liên kết văn bản được chọn tới một trang web, một tệp hoặc ô gần nhất có văn "
+"bản đó (CTRL+nhấp để đi theo liên kết)"
+
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr ""
 "Tải tài liệu tham khảo thao tác chương trình tương tác trong TreeSheets"
@@ -1303,6 +1335,9 @@ msgstr ""
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "Di chuyển giữa các ô bằng các phím mũi tên"
+
+msgid "Nearest cell with this text"
+msgstr "Ô gần nhất có văn bản này"
 
 msgid "New (CTRL+n)"
 msgstr "Mới (CTRL+n)"
@@ -1426,11 +1461,6 @@ msgstr "Mở tài liệu tham khảo kịch bản Lobster trong trình duyệt"
 
 msgid "Open the tutorial web page in browser"
 msgstr "Mở trang web hướng dẫn trong trình duyệt"
-
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
-msgstr "Mở văn bản từ ô được chọn trong trình duyệt (phải là một URL hợp lệ)"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
@@ -2030,6 +2060,9 @@ msgstr "Tài liệu sẽ được mã hóa khi lưu."
 msgid "The document will be saved unencrypted."
 msgstr "Tài liệu sẽ được lưu không mã hóa."
 
+msgid "The link could not be opened."
+msgstr "Không thể mở liên kết."
+
 msgid "The passwords differ."
 msgstr "Mật khẩu không khớp."
 
@@ -2189,6 +2222,9 @@ msgstr "Bố cục dọc với hiển thị kiểu đường kẻ"
 
 msgid "Views"
 msgstr "Chế độ xem"
+
+msgid "Web page or file"
+msgstr "Trang web hoặc tệp"
 
 msgid "What size grid would you like to start with?"
 msgstr "Bạn muốn bắt đầu với lưới kích thước bao nhiêu?"

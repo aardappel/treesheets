@@ -335,6 +335,26 @@ BUILTIN(get_span_text_color, "pos", "I", "F}:4",
     return ToVec<double4>(color2vec(*(byte4 *)&c));
 }
 
+BUILTIN(set_link, "start,size,target,internal", "IISB?", "",
+    "links size bytes of the text of the current cell from byte start (see set_span_style_bits) "
+    "to target: a URL or a file (relative to the document), or with internal the nearest cell "
+    "whose text is target, as formulas find names. what was linked there before is replaced, and "
+    "an empty target removes the links there. set_text() removes all links.")
+(VM &vm, iint start, iint size, LString *target, iint internal) {
+    CheckSpan(vm, "ts.set_link", start, size, false);
+    si->SetLink((int)start, (int)size, target->strv(), internal != 0);
+}
+
+BUILTIN(get_link, "pos", "I", "SB",
+    "returns the target of the link of the character at byte pos of the text of the current "
+    "cell (empty if it has none), and whether the link is internal (see set_link)")
+(VM &vm, LString **target, iint pos) {
+    CheckSpan(vm, "ts.get_link", pos, 0, true);
+    auto [t, internal] = si->GetLink((int)pos);
+    *target = vm.NewString(t);
+    return (iint)internal;
+}
+
 BUILTIN(set_text_alignment, "alignment", "I", "",
     "sets the text alignment of the current cell (automatic = 0, left = 1, center = 2,"
     " right = 3). Automatic aligns right-to-left text (such as Arabic or Hebrew) right,"

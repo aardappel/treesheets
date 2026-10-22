@@ -312,7 +312,11 @@ struct Cell {
                     Cell *root, bool flat = false) {
         wxString str = flat && TinyOrFiltered()        ? wxString()
                        : format == A_EXPXML && formula ? Text::htmlify(*formula)
-                                                       : text.ToText(indent, sel, format);
+                                                       : text.ToText(indent, sel, format, doc);
+        if (auto it = doc->htmlanchors.find(this);
+            it != doc->htmlanchors.end() && Text::IsHTMLFormat(format) && !str.IsEmpty()) {
+            str.Prepend(wxString::Format("<a id=\"cell%d\"></a>", it->second));
+        }
         if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
             this != root && !str.IsEmpty()) {
             wxString spanstyle = "white-space: pre-wrap;";

@@ -144,6 +144,9 @@ msgstr "&Insérer nouvelle sous-cellule"
 msgid "&Layout && Render Style"
 msgstr "&Disposition et style de rendu"
 
+msgid "&Link..."
+msgstr "&Lien..."
+
 msgid "&Mark as"
 msgstr "&Marquer comme"
 
@@ -802,6 +805,9 @@ msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
 "Intègre les images des cellules sélectionnées au format PNG (par défaut)"
 
+msgid "Empty to remove the link"
+msgstr "Vide pour supprimer le lien"
+
 msgid "Encrypt the current document with a password when saving it"
 msgstr ""
 "Chiffrer le document actuel avec un mot de passe lors de l'enregistrement"
@@ -1071,6 +1077,13 @@ msgstr "Tout réduire (CTRL+SHIFT+double-clic)"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Réduire la grille des cellules sélectionnées mode récursif"
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr ""
+"Suit le lien au curseur ou dans la cellule sélectionnée, ou sinon ouvre son "
+"texte dans le navigateur"
+
 msgid "Font..."
 msgstr "Police..."
 
@@ -1254,6 +1267,25 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr "Mode ligne"
 
+msgid "Link"
+msgstr "Lien"
+
+msgid "Link (SHIFT+F5)"
+msgstr "Lien (SHIFT+F5)"
+
+msgid "Link to"
+msgstr "Lien vers"
+
+msgid "Links"
+msgstr "Liens"
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr ""
+"Lie le texte sélectionné à une page web, un fichier ou la cellule la plus "
+"proche avec ce texte (CTRL+clic suit le lien)"
+
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr ""
 "Charge une référence interactive du fonctionnement du programme dans "
@@ -1348,6 +1380,9 @@ msgstr ""
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "Déplacement dans intercellule avec les touches de déplacement"
+
+msgid "Nearest cell with this text"
+msgstr "Cellule la plus proche avec ce texte"
 
 msgid "New (CTRL+n)"
 msgstr "Nouveau (CTRL+n)"
@@ -1472,13 +1507,6 @@ msgstr "Ouvre la référence des scripts Lobster dans le navigateur"
 
 msgid "Open the tutorial web page in browser"
 msgstr "Ouvre la page web du tutoriel dans le navigateur"
-
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
-msgstr ""
-"Ouvre le texte de la cellule sélectionnée dans le navigateur (doit être une "
-"URL valide)"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
@@ -2096,6 +2124,9 @@ msgstr "Le document sera chiffré lors de l'enregistrement."
 msgid "The document will be saved unencrypted."
 msgstr "Le document sera enregistré sans chiffrement."
 
+msgid "The link could not be opened."
+msgstr "Le lien n'a pas pu être ouvert."
+
 msgid "The passwords differ."
 msgstr "Les mots de passe sont différents."
 
@@ -2262,6 +2293,9 @@ msgstr "Disposition verticale mode ligne"
 
 msgid "Views"
 msgstr "Vues"
+
+msgid "Web page or file"
+msgstr "Page web ou fichier"
 
 msgid "What size grid would you like to start with?"
 msgstr "Avec quelle taille de grille souhaitez-vous commencer ?"

@@ -143,6 +143,9 @@ msgstr "插入新網格(&I)"
 msgid "&Layout && Render Style"
 msgstr "版面配置與繪製樣式(&L)"
 
+msgid "&Link..."
+msgstr "連結(&L)..."
+
 msgid "&Mark as"
 msgstr "標記為(&M)"
 
@@ -771,6 +774,9 @@ msgstr "將選取儲存格中的圖片以 JPEG 格式嵌入（可縮減資料大
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "將選取儲存格中的圖片以 PNG 格式嵌入（預設）"
 
+msgid "Empty to remove the link"
+msgstr "留空以移除連結"
+
 msgid "Encrypt the current document with a password when saving it"
 msgstr "儲存時以密碼加密目前的文件"
 
@@ -1016,6 +1022,11 @@ msgstr "全部摺疊（Ctrl + Shift + 按兩下）"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "遞迴摺疊選取儲存格的網格"
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr "開啟游標處或選取儲存格中的連結，否則在瀏覽器中開啟其文字"
+
 msgid "Font..."
 msgstr "字型..."
 
@@ -1189,6 +1200,23 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr "線條樣式繪製"
 
+msgid "Link"
+msgstr "連結"
+
+msgid "Link (SHIFT+F5)"
+msgstr "連結（Shift + F5）"
+
+msgid "Link to"
+msgstr "連結到"
+
+msgid "Links"
+msgstr "連結"
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr "將選取的文字連結到網頁、檔案或含有該文字的最近儲存格（CTRL+按一下可開啟連結）"
+
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr "在 TreeSheets 中載入互動式程式操作參考"
 
@@ -1275,6 +1303,9 @@ msgstr "注意：快速鍵組合將在下次啟動 TreeSheets 時生效。"
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "使用方向鍵在儲存格之間瀏覽"
+
+msgid "Nearest cell with this text"
+msgstr "含有此文字的最近儲存格"
 
 msgid "New (CTRL+n)"
 msgstr "新增（Ctrl + N）"
@@ -1397,11 +1428,6 @@ msgstr "在瀏覽器中開啟 Lobster 指令碼參考"
 
 msgid "Open the tutorial web page in browser"
 msgstr "在瀏覽器中開啟教學網頁"
-
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
-msgstr "在瀏覽器中開啟選取儲存格中的文字（應為有效的 URL）"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
@@ -1985,6 +2011,9 @@ msgstr "文件將在儲存時加密。"
 msgid "The document will be saved unencrypted."
 msgstr "文件將不加密儲存。"
 
+msgid "The link could not be opened."
+msgstr "無法開啟連結。"
+
 msgid "The passwords differ."
 msgstr "兩次輸入的密碼不一致。"
 
@@ -2142,6 +2171,9 @@ msgstr "垂直版面配置搭配線條樣式繪製"
 
 msgid "Views"
 msgstr "檢視"
+
+msgid "Web page or file"
+msgstr "網頁或檔案"
 
 msgid "What size grid would you like to start with?"
 msgstr "要以多大的網格開始？"

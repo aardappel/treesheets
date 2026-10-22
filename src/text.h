@@ -2,12 +2,15 @@ struct Text {
     Cell *cell {nullptr};
     Image *image {nullptr};
     // Never modify `t` other than appending at the end without going through the methods below
-    // (SetText, Clear, InsertText, RemoveText, ReplaceText), or `runs` gets out of sync.
+    // (SetText, Clear, InsertText, RemoveText, ReplaceText), or `runs` and `links` get out of
+    // sync.
     wxString t {wxEmptyString};
     int relsize {0};
     int stylebits {0};
     // Rich text: ranges of `t` that deviate from the base style (`stylebits`, cell->textcolor).
     TextRuns runs;
+    // Hyperlinks, which can span several runs.
+    TextLinks<wxString> links;
     int extent {0};
     wxDateTime lastedit;
     bool filtered {false};
@@ -29,33 +32,41 @@ struct Text {
         t = str;
         FilterControls(t);
         runs.clear();
+        links.clear();
     }
 
     void InsertText(int pos, const wxString &ins) {
         t.insert(pos, ins);
         runs.Insert(pos, static_cast<int>(ins.Len()));
+        links.Insert(pos, static_cast<int>(ins.Len()));
         CheckRuns();
     }
 
     void RemoveText(int pos, int len) {
         t.Remove(pos, len);
         runs.Remove(pos, len, stylebits);
+        links.Remove(pos, len);
         CheckRuns();
     }
 
-    // The replacement takes the style of the first replaced character.
+    // The replacement takes the style and link of the first replaced character.
     void ReplaceText(int pos, int len, const wxString &str) {
         t.Remove(pos, len);
         t.insert(pos, str);
         runs.Replace(pos, len, static_cast<int>(str.Len()), stylebits);
+        links.Replace(pos, len, static_cast<int>(str.Len()));
         CheckRuns();
     }
 
     void CheckRuns() const {
 #ifdef _DEBUG
         ASSERT(runs.Valid(static_cast<int>(t.Len())));
+        ASSERT(links.Valid(static_cast<int>(t.Len())));
 #endif
     }
+
+    // Whether the text is drawn in parts with styles of their own.
+    bool Rich() const { return !runs.empty() || !links.empty(); }
 
     Text() { WasEdited(); }
 
@@ -82,7 +93,8 @@ struct Text {
 
     size_t EstimatedMemoryUse() const {
         ASSERT(wxUSE_UNICODE);
-        return sizeof(Text) + t.Length() * sizeof(wchar_t) + runs.v.capacity() * sizeof(TextRun);
+        return sizeof(Text) + t.Length() * sizeof(wchar_t) + runs.v.capacity() * sizeof(TextRun) +
+               links.v.capacity() * sizeof(TextLink<wxString>);
     }
 
     double GetNum() const {
@@ -141,6 +153,16 @@ struct Text {
         return true;
     }
 
+    // Like https:, mailto: or file:, but not a drive letter like C:.
+    static bool HasURLScheme(const wxString &s) {
+        auto colon = s.Find(':');
+        if (colon < 2 || !wxIsalpha(s[0])) { return false; }
+        for (auto c : s.Left(colon)) {
+            if (!wxIsalnum(c) && c != '+' && c != '-' && c != '.') { return false; }
+        }
+        return true;
+    }
+
     static bool IsRichFormat(int format) {
         return format == A_EXPXML || format == A_EXPHTMLT || format == A_EXPHTMLTI ||
                format == A_EXPHTMLTE;
@@ -189,16 +211,36 @@ struct Text {
         return out;
     }
 
-    wxString ToText(int indent, const Selection &s, int format) const {
+    // The text range [from, to) in `format`, escaped for XML and HTML.
+    wxString Markup(int from, int to, int format) const {
+        if (!runs.empty() && IsRichFormat(format)) { return RichMarkup(from, to, format); }
+        auto str = t.Mid(from, to - from);
+        return format == A_EXPXML || IsHTMLFormat(format) ? htmlify(str) : str;
+    }
+
+    wxString ToText(int indent, const Selection &s, int format,
+                    const Document *doc = nullptr) const {
         auto range = s.cursor != s.cursorend;
+        auto len = static_cast<int>(t.Len());
+        auto from = range ? max(s.cursor, 0) : 0;
+        auto to = range ? min(s.cursorend, len) : len;
         wxString str;
-        if (!runs.empty() && IsRichFormat(format)) {
-            auto len = static_cast<int>(t.Len());
-            str = range ? RichMarkup(max(s.cursor, 0), min(s.cursorend, len), format)
-                        : RichMarkup(0, len, format);
+        if (doc != nullptr && IsHTMLFormat(format) && !links.empty()) {
+            auto pos = from;
+            for (const auto &k : links.v) {
+                auto start = max(k.start, pos);
+                auto end = min(k.end(), to);
+                if (start >= end) { continue; }
+                str += Markup(pos, start, format);
+                auto href = doc->LinkHref(cell, k);
+                str += href.IsEmpty() ? Markup(start, end, format)
+                                      : "<a href=\"" + htmlify(href) + "\">" +
+                                            Markup(start, end, format) + "</a>";
+                pos = end;
+            }
+            str += Markup(pos, to, format);
         } else {
-            str = range ? t.Mid(s.cursor, s.cursorend - s.cursor) : t;
-            if (format == A_EXPXML || IsHTMLFormat(format)) { str = htmlify(str); }
+            str = Markup(from, to, format);
         }
         if (format == A_EXPTEXT && image != nullptr) str.Append(" ");
         if (format == A_EXPHTMLTI && image != nullptr) {
@@ -212,7 +254,7 @@ struct Text {
                         relsize + "\" />");
         }
         // A cell that is just a URL, as Browse opens it, becomes a link.
-        if (!range && IsHTMLFormat(format) && IsURL(t)) {
+        if (!range && IsHTMLFormat(format) && IsURL(t) && links.empty()) {
             str = "<a href=\"" + htmlify(t) + "\">" + str + "</a>";
         }
         return str;
@@ -316,23 +358,50 @@ struct Text {
         return GetLinePart(i, max(end, i + 1), l);
     }
 
+    // ForEachSegment() as the text is drawn, with each part of a link a segment of its own:
+    // underlined, and in the link color unless it has a color of its own.
+    template<typename F> void DrawnSegments(int start, int len, F f) const {
+        ForEachSegment(start, len, f, true);
+    }
+
     // Calls f(start, len, stylebits, hascolor, color) for consecutive segments of the text range
     // [start, start + len) that each have a single style.
-    template<typename F> void ForEachSegment(int start, int len, F f) const {
+    template<typename F>
+    void ForEachSegment(int start, int len, F f, bool withlinks = false) const {
+        auto seg = [&](int s, int l, int sb, bool hascolor, uint color) {
+            if (withlinks) {
+                for (const auto &k : links.v) {
+                    if (k.end() <= s) { continue; }
+                    if (k.start >= s + l) { break; }
+                    if (k.start > s) {
+                        f(s, k.start - s, sb, hascolor, color);
+                        l -= k.start - s;
+                        s = k.start;
+                    }
+                    auto e = min(k.end(), s + l);
+                    // Draw() applies LightColor() to it, which undoes this one.
+                    f(s, e - s, sb | STYLE_UNDERLINE, true,
+                      hascolor ? color : LightColor(sys->linkcolor));
+                    l -= e - s;
+                    s = e;
+                }
+            }
+            if (l > 0) { f(s, l, sb, hascolor, color); }
+        };
         auto pos = start;
         auto end = start + len;
         for (const auto &r : runs.v) {
             if (r.end() <= pos) { continue; }
             if (r.start >= end) { break; }
             if (r.start > pos) {
-                f(pos, r.start - pos, stylebits, false, 0U);
+                seg(pos, r.start - pos, stylebits, false, 0U);
                 pos = r.start;
             }
             auto segend = min(r.end(), end);
-            f(pos, segend - pos, r.stylebits, r.hascolor, r.color);
+            seg(pos, segend - pos, r.stylebits, r.hascolor, r.color);
             pos = segend;
         }
-        if (pos < end) { f(pos, end - pos, stylebits, false, 0U); }
+        if (pos < end) { seg(pos, end - pos, stylebits, false, 0U); }
     }
 
     // Rich text lines have one uniform height: every style's font is aligned on a common
@@ -407,8 +476,8 @@ struct Text {
         doc->PickFont(dc, depth, relsize, stylebits);
         LineMetrics lm;
         lm.height = doc->CharHeight(dc);
-        if (runs.empty()) { return lm; }
         lm.ascent = dc.GetFontMetrics().ascent;
+        if (runs.empty()) { return lm; }
         auto maxdescent = lm.height - lm.ascent;
         auto last = stylebits;
         for (const auto &r : runs.v) {
@@ -429,11 +498,11 @@ struct Text {
     template<typename DC>
     int RangeWidth(Document *doc, DC &dc, int depth, int start, int len) const {
         auto total = 0;
-        if (runs.empty()) {
+        if (!Rich()) {
             dc.GetTextExtent(t.Mid(start, len), &total, nullptr);
             return total;
         }
-        ForEachSegment(start, len, [&](int s, int l, int sb, bool, uint) {
+        DrawnSegments(start, len, [&](int s, int l, int sb, bool, uint) {
             doc->PickFont(dc, depth, relsize, sb);
             auto w = 0;
             dc.GetTextExtent(t.Mid(s, l), &w, nullptr);
@@ -448,7 +517,7 @@ struct Text {
                   Document *doc, int depth) const {
         sx = sy = 0;
         auto i = 0;
-        auto rich = tiny == 0 && !runs.empty();
+        auto rich = tiny == 0 && Rich();
         auto lm = rich ? GetLineMetrics(doc, dc, depth) : LineMetrics();
         for (;;) {
             auto start = i;
@@ -572,7 +641,7 @@ struct Text {
         };
         for (const auto &r : bidi::VisualRuns(b.classes, b.levels, b.base, start, start + len)) {
             auto first = pieces.size();
-            ForEachSegment(r.start, r.len, [&](int s, int l, int sb, bool hascolor, uint color) {
+            DrawnSegments(r.start, r.len, [&](int s, int l, int sb, bool hascolor, uint color) {
                 if (!r.RightToLeft()) {
                     pieces.push_back({s, l, false, false, sb, hascolor, color});
                     return;
@@ -777,7 +846,7 @@ struct Text {
 
         doc->PickFont(dc, depth, relsize, stylebits);
 
-        auto rich = !cell->tiny && !runs.empty();
+        auto rich = !cell->tiny && Rich();
         auto lm = rich ? GetLineMetrics(doc, dc, depth) : LineMetrics();
         auto h = cell->tiny ? 1 : (rich ? lm.height : doc->CharHeight(dc));
         leftoffset = h;
@@ -863,16 +932,16 @@ struct Text {
                     x += AlignOffset(align, w, ixs);
                 }
                 auto ty = by + lines * h + g_margin_extra;
-                ForEachSegment(start, static_cast<int>(curl.Len()),
-                               [&](int s, int l, int sb, bool hascolor, uint color) {
-                    doc->PickFont(dc, depth, relsize, sb);
-                    setforeground(hascolor, color);
-                    auto str = t.Mid(s, l);
-                    auto w = 0;
-                    dc.GetTextExtent(str, &w, nullptr);
-                    DrawText(dc, str, x, ty + lm.ascent - dc.GetFontMetrics().ascent);
-                    x += w;
-                });
+                DrawnSegments(start, static_cast<int>(curl.Len()),
+                              [&](int s, int l, int sb, bool hascolor, uint color) {
+                                  doc->PickFont(dc, depth, relsize, sb);
+                                  setforeground(hascolor, color);
+                                  auto str = t.Mid(s, l);
+                                  auto w = 0;
+                                  dc.GetTextExtent(str, &w, nullptr);
+                                  DrawText(dc, str, x, ty + lm.ascent - dc.GetFontMetrics().ascent);
+                                  x += w;
+                              });
                 doc->PickFont(dc, depth, relsize, stylebits);
                 dc.SetTextForeground(sys->rubberbandcolor);
             } else {
@@ -899,6 +968,14 @@ struct Text {
             }
             lines++;
         }
+        if (doc->drawnlinks != nullptr && !cell->tiny) {
+            for (const auto &k : links.v) {
+                ForEachRangeRect(doc, dc, k.start, k.end(), maxcolwidth,
+                                 [&](int x, int y, int w, int rh) {
+                                     doc->drawnlinks->push_back({wxRect(x, y, w, rh), cell, &k});
+                                 });
+            }
+        }
 
         return max(lines * h, iys);
     }
@@ -917,7 +994,7 @@ struct Text {
 
         auto i = 0;
         auto linestart = 0;
-        auto line = by / (runs.empty() ? doc->CharHeight(dc) : GetLineMetrics(doc, dc, depth).height);
+        auto line = by / (Rich() ? GetLineMetrics(doc, dc, depth).height : doc->CharHeight(dc));
         wxString ls;
 
         loop(l, line + 1) {
@@ -953,7 +1030,7 @@ struct Text {
 
         for (;;) {
             auto x = 0;
-            if (runs.empty()) {
+            if (!Rich()) {
                 dc.GetTextExtent(ls, &x, nullptr);
             } else {
                 x = RangeWidth(doc, dc, depth, linestart, static_cast<int>(ls.Len()));
@@ -967,6 +1044,85 @@ struct Text {
         ASSERT(s.cursor >= 0 && s.cursor <= static_cast<int>(t.Len()));
     }
 
+    // The link at document coordinates x, y, with the part of it there, or nullptr. `cursor` is
+    // the position FindCursor() found there, which in bidirectional text can be next to it only
+    // visually.
+    template<typename DC>
+    const TextLink<wxString> *LinkAt(Document *doc, DC &dc, int x, int y, int cursor,
+                                     int maxcolwidth, wxRect &part) const {
+        if (links.empty()) { return nullptr; }
+        auto rtl = HasRightToLeft();
+        for (const auto &k : links.v) {
+            if (!rtl && (cursor < k.start || cursor > k.end())) { continue; }
+            ForEachRangeRect(doc, dc, k.start, k.end(), maxcolwidth,
+                             [&](int rx, int ry, int w, int rh) {
+                                 if (wxRect(rx, ry, w, rh + 1).Contains(x, y)) {
+                                     part = wxRect(rx, ry, w, rh + 1);
+                                 }
+                             });
+            if (!part.IsEmpty()) { return &k; }
+        }
+        return nullptr;
+    }
+
+    // Calls f(x, y, w, h) for the rectangles, in document coordinates, that the text range
+    // [from, to) takes up: one for each line it is on, or in bidirectional text one for each
+    // place on the line, from left to right.
+    template<typename DC, typename F>
+    void ForEachRangeRect(Document *doc, DC &dc, int from, int to, int maxcolwidth, F f) const {
+        auto ixs = 0;
+        auto iys = 0;
+        if (!cell->tiny) { treesheets::System::ImageSize(DisplayImage(), ixs, iys); }
+        if (ixs != 0) { ixs += 2; }
+        auto depth = cell->Depth() - static_cast<int>(doc->drawpath.size());
+        doc->PickFont(dc, depth, relsize, stylebits);
+        auto h = Rich() ? GetLineMetrics(doc, dc, depth).height : doc->CharHeight(dc);
+        auto align = cell->TextAlign();
+        auto bd = GetBidi();
+        std::vector<BidiPiece> pieces;
+        auto i = 0;
+        for (auto l = 0;; l++) {
+            auto start = i;
+            auto ls = GetLine(i, maxcolwidth);
+            auto len = static_cast<int>(ls.Len());
+            auto end = start + len;
+            int y = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
+            if (!bd.Empty() && from <= end && to >= start) {
+                // The parts of the range in the pieces.
+                auto w = BidiLine(doc, dc, depth, bd, start, len, pieces);
+                auto linex =
+                    cell->GetX(doc) + 2 + ixs + g_margin_extra + AlignOffset(align, w, ixs);
+                std::vector<std::pair<int, int>> spans;
+                for (const auto &p : pieces) {
+                    auto pfrom = max(from, p.start);
+                    auto pto = min(to, p.end());
+                    if (pfrom >= pto) { continue; }
+                    auto x1 = BidiPieceX(doc, dc, depth, p, pfrom);
+                    auto x2 = BidiPieceX(doc, dc, depth, p, pto);
+                    if (x1 > x2) { swap(x1, x2); }
+                    if (!spans.empty() && spans.back().second == x1) {
+                        spans.back().second = x2;
+                    } else {
+                        spans.emplace_back(x1, x2);
+                    }
+                }
+                doc->PickFont(dc, depth, relsize, stylebits);
+                for (auto [x1, x2] : spans) { f(linex + x1, y, x2 - x1, h - 1); }
+            } else if (from <= end && to >= start) {
+                auto x2 = RangeWidth(doc, dc, depth, start, min(to, end) - start);
+                auto x1 = RangeWidth(doc, dc, depth, start, max(from, start) - start);
+                if (x1 != x2) {
+                    auto offset =
+                        align == TEXTALIGN_LEFT
+                            ? 0
+                            : AlignOffset(align, RangeWidth(doc, dc, depth, start, len), ixs);
+                    f(cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra + offset, y, x2 - x1, h - 1);
+                }
+            }
+            if (len == 0) { break; }
+        }
+    }
+
     template<typename DC>
     void DrawCursor(Document *doc, DC &dc, Selection &s, bool full, uint color,
                     int maxcolwidth) const {
@@ -976,7 +1132,7 @@ struct Text {
         if (ixs != 0) { ixs += 2; }
         auto depth = cell->Depth() - static_cast<int>(doc->drawpath.size());
         doc->PickFont(dc, depth, relsize, stylebits);
-        auto h = runs.empty() ? doc->CharHeight(dc) : GetLineMetrics(doc, dc, depth).height;
+        auto h = Rich() ? GetLineMetrics(doc, dc, depth).height : doc->CharHeight(dc);
         auto align = cell->TextAlign();
         auto lineoffset = [&](int start, int len) {
             if (align == TEXTALIGN_LEFT) { return 0; }
@@ -985,57 +1141,13 @@ struct Text {
         std::vector<BidiPiece> pieces;
 
         if (s.cursor != s.cursorend) {
-            // A range selection can span multiple lines (one rectangle drawn per line
-            // below); it changes far less often than the plain typing caret below, so
-            // it isn't worth caching.
-            auto bd = GetBidi();
-            auto i = 0;
-            for (auto l = 0;; l++) {
-                auto start = i;
-                auto ls = GetLine(i, maxcolwidth);
-                auto len = static_cast<int>(ls.Len());
-                auto end = start + len;
-                if (!bd.Empty() && s.cursor <= end && s.cursorend >= start) {
-                    // In bidirectional text a range can be in several places on the line: one
-                    // rectangle for each, from the parts of the range in the pieces, left to
-                    // right.
-                    auto w = BidiLine(doc, dc, depth, bd, start, len, pieces);
-                    auto linex = cell->GetX(doc) + 2 + ixs + g_margin_extra +
-                                 AlignOffset(align, w, ixs);
-                    int starty = cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                    std::vector<std::pair<int, int>> spans;
-                    for (const auto &p : pieces) {
-                        auto from = max(s.cursor, p.start);
-                        auto to = min(s.cursorend, p.end());
-                        if (from >= to) { continue; }
-                        auto x1 = BidiPieceX(doc, dc, depth, p, from);
-                        auto x2 = BidiPieceX(doc, dc, depth, p, to);
-                        if (x1 > x2) { swap(x1, x2); }
-                        if (!spans.empty() && spans.back().second == x1) {
-                            spans.back().second = x2;
-                        } else {
-                            spans.emplace_back(x1, x2);
-                        }
-                    }
-                    doc->PickFont(dc, depth, relsize, stylebits);
-                    for (auto [x1, x2] : spans) {
-                        DrawRectangle(dc, color, linex + x1, starty, x2 - x1, h - 1, true);
-                        HintIMELocation(doc, linex + x1, starty, h - 1, stylebits);
-                    }
-                } else if (s.cursor <= end && s.cursorend >= start) {
-                    auto x2 = RangeWidth(doc, dc, depth, start, min(s.cursorend, end) - start);
-                    auto x1 = RangeWidth(doc, dc, depth, start, max(s.cursor, start) - start);
-                    if (x1 != x2) {
-                        int startx = cell->GetX(doc) + x1 + 2 + ixs + g_margin_extra +
-                                     lineoffset(start, len);
-                        int starty =
-                            cell->GetY(doc) + l * h + 1 + cell->ycenteroff + g_margin_extra;
-                        DrawRectangle(dc, color, startx, starty, x2 - x1, h - 1, true);
-                        HintIMELocation(doc, startx, starty, h - 1, stylebits);
-                    }
-                }
-                if (len == 0) { break; }
-            }
+            // A range selection changes far less often than the plain typing caret below, so it
+            // isn't worth caching.
+            ForEachRangeRect(doc, dc, s.cursor, s.cursorend, maxcolwidth,
+                             [&](int x, int y, int w, int rh) {
+                                 DrawRectangle(dc, color, x, y, w, rh, true);
+                                 HintIMELocation(doc, x, y, rh, stylebits);
+                             });
             return;
         }
 
@@ -1052,14 +1164,14 @@ struct Text {
         auto leading = s.leadingcursor == s.cursor;
         if (cc.cell != cell || cc.image != image || cc.cursor != s.cursor ||
             cc.leading != leading || cc.stylebits != stylebits || cc.relsize != relsize ||
-            cc.maxcolwidth != maxcolwidth ||
-            cc.align != align ||
+            cc.maxcolwidth != maxcolwidth || cc.align != align ||
             (align != TEXTALIGN_LEFT && cc.alignwidth != cell->TextAlignWidth(ixs)) ||
-            cc.text != t || cc.runs != runs.v) {
+            cc.text != t || cc.runs != runs.v || cc.links != links.v) {
             cc.cell = cell;
             cc.image = image;
             cc.text = t;
             cc.runs = runs.v;
+            cc.links = links.v;
             cc.cursor = s.cursor;
             cc.leading = leading;
             cc.stylebits = stylebits;
@@ -1144,9 +1256,12 @@ struct Text {
         }
     }
 
-    // After inserting the text of `src` at pos, gives it the styling it had there.
+    // After inserting the text of `src` at pos, gives it the styling and links it had there.
     void OverlayRuns(int pos, const Text &src) {
         auto len = static_cast<int>(t.Len());
+        for (const auto &k : src.links.v) {
+            links.Set(pos + k.start, pos + k.end(), len, k.internal, k.target);
+        }
         src.ForEachSegment(0, static_cast<int>(src.t.Len()),
                            [&](int s, int l, int sb, bool hascolor, uint color) {
             runs.Modify(pos + s, pos + s + l, len, stylebits, [&](TextRun &r) {
@@ -1158,7 +1273,7 @@ struct Text {
         CheckRuns();
     }
 
-    // `src`: the Text that `ins` was taken from, if its runs should come along.
+    // `src`: the Text that `ins` was taken from, if its runs and links should come along.
     auto Insert(Document *doc, const wxString &ins, Selection &s, bool keeprelsize,
                 const Text *src = nullptr) {
         auto prevl = t.Len();
@@ -1166,7 +1281,7 @@ struct Text {
         RangeSelRemove(s);
         if (prevl == 0U && !keeprelsize) { SetRelSize(s); }
         InsertText(s.cursor, ins);
-        if (src != nullptr && !src->runs.empty() && src->t == ins) { OverlayRuns(s.cursor, *src); }
+        if (src != nullptr && src->Rich() && src->t == ins) { OverlayRuns(s.cursor, *src); }
         s.cursor = s.cursorend = s.cursor + static_cast<int>(ins.Len());
     }
 
@@ -1227,6 +1342,7 @@ struct Text {
         }
         t.Clear();
         runs.clear();
+        links.clear();
         s.EnterEdit(doc);
     }
 
@@ -1246,7 +1362,8 @@ struct Text {
         }
     }
 
-    // A formula cell saves its formula instead of its result, without the runs of the result.
+    // A formula cell saves its formula instead of its result, without the runs and links of the
+    // result.
     void Save(wxDataOutputStream &dos, const wxString *formula = nullptr) const {
         dos.WriteString(formula ? formula->wx_str() : t.wx_str());
         dos.Write32(relsize);
@@ -1257,7 +1374,10 @@ struct Text {
         // Rich text runs (file version 27). Almost always zero. Positions are counted in
         // Unicode code points, so files don't depend on how this platform stores the text.
         dos.Write32(formula ? 0 : static_cast<wxUint32>(runs.v.size()));
-        if (formula) { return; }
+        if (formula) {
+            dos.Write32(0);
+            return;
+        }
         CodePointCursor cursor {[&](int i) { return static_cast<uint>(t[i].GetValue()); },
                                 static_cast<int>(t.Len())};
         for (const auto &r : runs.v) {
@@ -1267,6 +1387,18 @@ struct Text {
             dos.Write32(end - start);
             dos.Write32(r.stylebits);
             dos.Write32((r.color & 0xFFFFFF) | (r.hascolor ? TS_RUN_HASCOLOR : 0));
+        }
+        // Links (file version 31), likewise.
+        dos.Write32(static_cast<wxUint32>(links.v.size()));
+        CodePointCursor linkcursor {[&](int i) { return static_cast<uint>(t[i].GetValue()); },
+                                    static_cast<int>(t.Len())};
+        for (const auto &k : links.v) {
+            auto start = linkcursor.CodePointAt(k.start);
+            auto end = linkcursor.CodePointAt(k.end());
+            dos.Write32(start);
+            dos.Write32(end - start);
+            dos.Write8(k.internal ? 1 : 0);
+            dos.WriteString(k.target);
         }
     }
 
@@ -1299,14 +1431,15 @@ struct Text {
         lastedit = wxDateTime(time);
 
         runs.clear();
+        links.clear();
         if (sys->versionlastloaded >= 27) {
+            auto getunit = [&](int i) { return static_cast<uint>(t[i].GetValue()); };
+            auto len = static_cast<int>(t.Len());
+            auto numcodepoints = CodePointCursor {getunit, len}.CodePointAt(len);
             auto numruns = dis.Read32();
             // A run is at least one character, so more runs than characters means a corrupt file.
             if (numruns <= t.Len()) {
                 runs.v.reserve(numruns);
-                auto getunit = [&](int i) { return static_cast<uint>(t[i].GetValue()); };
-                auto len = static_cast<int>(t.Len());
-                auto numcodepoints = CodePointCursor {getunit, len}.CodePointAt(len);
                 CodePointCursor cursor {getunit, len};
                 auto pos = 0;  // in code points
                 for (wxUint32 i = 0; i < numruns; i++) {
@@ -1329,6 +1462,25 @@ struct Text {
                     }
                 }
                 runs.Normalize(stylebits);
+            }
+            // Links likewise.
+            auto numlinks = sys->versionlastloaded >= 31 ? dis.Read32() : 0;
+            if (numlinks <= t.Len()) {
+                CodePointCursor cursor {getunit, len};
+                auto pos = 0;
+                for (wxUint32 i = 0; i < numlinks; i++) {
+                    auto start = static_cast<int>(dis.Read32());
+                    auto length = static_cast<int>(dis.Read32());
+                    auto internal = dis.Read8() != 0;
+                    auto target = dis.ReadString();
+                    start = max(start, pos);
+                    length = min(length, numcodepoints - start);
+                    if (length > 0 && !target.IsEmpty()) {
+                        pos = start + length;
+                        auto unit = cursor.UnitAt(start);
+                        links.v.push_back({unit, cursor.UnitAt(pos) - unit, internal, target});
+                    }
+                }
             }
         }
         CheckRuns();

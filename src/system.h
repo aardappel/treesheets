@@ -90,6 +90,7 @@ struct System {
     int cursorcolor {0};
     int hovershadowcolor {0};
     int searchcolor {0};
+    int linkcolor {0};
     int operationcolor {0};
     int varassigncolor {0};
     int varreadcolor {0};
@@ -106,6 +107,7 @@ struct System {
         return {{"cursorcolor", &System::cursorcolor, 0x00FF00, _("Cursor")},
                 {"hovershadowcolor", &System::hovershadowcolor, 0x808080, _("Hover shadow")},
                 {"searchcolor", &System::searchcolor, 0x0000FF, _("Search results")},
+                {"linkcolor", &System::linkcolor, 0xCC6600, _("Links")},
                 {"operationcolor", &System::operationcolor, 0x8080FF, _("Operations")},
                 {"varassigncolor", &System::varassigncolor, 0xFF8080, _("Variable assignments")},
                 {"varreadcolor", &System::varreadcolor, 0xFFA0A0, _("Variable reads")},

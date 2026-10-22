@@ -144,6 +144,9 @@ msgstr "새 격자 삽입(&I)"
 msgid "&Layout && Render Style"
 msgstr "레이아웃 및 렌더링 스타일(&L)"
 
+msgid "&Link..."
+msgstr "링크(&L)..."
+
 msgid "&Mark as"
 msgstr "다음과 같이 표시(&M)"
 
@@ -778,6 +781,9 @@ msgstr "선택한 셀에 JPEG 형식으로 이미지 삽입 (데이터 크기 �
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "선택한 셀에 PNG 형식으로 이미지 삽입 (기본값)"
 
+msgid "Empty to remove the link"
+msgstr "비워 두면 링크가 제거됩니다"
+
 msgid "Encrypt the current document with a password when saving it"
 msgstr "문서를 저장할 때 현재 문서를 비밀번호로 암호화"
 
@@ -1031,6 +1037,11 @@ msgstr "모두 접기 (Ctrl+SHIFT+더블 클릭)"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "선택한 셀의 격자를 재귀적으로 접습니다"
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr "커서 위치나 선택한 셀의 링크를 따라가고, 링크가 없으면 셀의 텍스트를 브라우저에서 엽니다"
+
 msgid "Font..."
 msgstr "글꼴..."
 
@@ -1209,6 +1220,23 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr "선 스타일 렌더링"
 
+msgid "Link"
+msgstr "링크"
+
+msgid "Link (SHIFT+F5)"
+msgstr "링크 (SHIFT+F5)"
+
+msgid "Link to"
+msgstr "링크 대상"
+
+msgid "Links"
+msgstr "링크"
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr "선택한 텍스트를 웹 페이지, 파일 또는 그 텍스트가 있는 가장 가까운 셀에 연결합니다 (CTRL+클릭으로 따라감)"
+
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr "TreeSheets에서 대화형 프로그램 작업 참조 불러오기"
 
@@ -1295,6 +1323,9 @@ msgstr "참고: 키 바인딩은 다음 TreeSheets 실행 시 적용됩니다."
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "커서 키로 셀 사이 탐색"
+
+msgid "Nearest cell with this text"
+msgstr "이 텍스트가 있는 가장 가까운 셀"
 
 msgid "New (CTRL+n)"
 msgstr "새로 만들기 (Ctrl+N)"
@@ -1418,11 +1449,6 @@ msgstr "브라우저에서 Lobster 스크립트 참조 열기"
 
 msgid "Open the tutorial web page in browser"
 msgstr "브라우저에서 자습서 웹 페이지 열기"
-
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
-msgstr "브라우저에서 선택한 셀의 텍스트를 엽니다 (유효한 URL로 시작해야 함)"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
@@ -2017,6 +2043,9 @@ msgstr "문서는 저장될 때 암호화됩니다."
 msgid "The document will be saved unencrypted."
 msgstr "문서는 암호화되지 않은 상태로 저장됩니다."
 
+msgid "The link could not be opened."
+msgstr "링크를 열 수 없습니다."
+
 msgid "The passwords differ."
 msgstr "비밀번호가 다릅니다."
 
@@ -2174,6 +2203,9 @@ msgstr "선 스타일 렌더링을 사용한 세로 레이아웃"
 
 msgid "Views"
 msgstr "보기"
+
+msgid "Web page or file"
+msgstr "웹 페이지 또는 파일"
 
 msgid "What size grid would you like to start with?"
 msgstr "어떤 크기의 격자로 시작하시겠습니까?"

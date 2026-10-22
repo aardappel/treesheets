@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17 12:30+0200\n"
+"POT-Creation-Date: 2026-10-22 19:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -139,6 +139,9 @@ msgid "&Insert New Grid"
 msgstr ""
 
 msgid "&Layout && Render Style"
+msgstr ""
+
+msgid "&Link..."
 msgstr ""
 
 msgid "&Mark as"
@@ -764,6 +767,9 @@ msgstr ""
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr ""
 
+msgid "Empty to remove the link"
+msgstr ""
+
 msgid "Encrypt the current document with a password when saving it"
 msgstr ""
 
@@ -1003,6 +1009,11 @@ msgstr ""
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr ""
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr ""
+
 msgid "Font..."
 msgstr ""
 
@@ -1175,6 +1186,23 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr ""
 
+msgid "Link"
+msgstr ""
+
+msgid "Link (SHIFT+F5)"
+msgstr ""
+
+msgid "Link to"
+msgstr ""
+
+msgid "Links"
+msgstr ""
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr ""
+
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr ""
 
@@ -1260,6 +1288,9 @@ msgid "NOTE: key binding will take effect next run of TreeSheets."
 msgstr ""
 
 msgid "Navigate in between cells with cursor keys"
+msgstr ""
+
+msgid "Nearest cell with this text"
 msgstr ""
 
 msgid "New (CTRL+n)"
@@ -1382,11 +1413,6 @@ msgid "Open the Lobster script reference in browser"
 msgstr ""
 
 msgid "Open the tutorial web page in browser"
-msgstr ""
-
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
 msgstr ""
 
 msgid ""
@@ -1974,6 +2000,9 @@ msgstr ""
 msgid "The document will be saved unencrypted."
 msgstr ""
 
+msgid "The link could not be opened."
+msgstr ""
+
 msgid "The passwords differ."
 msgstr ""
 
@@ -2128,6 +2157,9 @@ msgid "Vertical Layout with Line Style Rendering"
 msgstr ""
 
 msgid "Views"
+msgstr ""
+
+msgid "Web page or file"
 msgstr ""
 
 msgid "What size grid would you like to start with?"

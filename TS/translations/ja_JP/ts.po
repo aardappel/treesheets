@@ -144,6 +144,9 @@ msgstr "新規グリッドを挿入(&I)"
 msgid "&Layout && Render Style"
 msgstr "レイアウトとレンダリングスタイル(&L)"
 
+msgid "&Link..."
+msgstr "リンク(&L)..."
+
 msgid "&Mark as"
 msgstr "マーク(&M)"
 
@@ -781,6 +784,9 @@ msgstr "選択したセルの画像を JPEG 形式で埋め込みます (デー�
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "選択したセルの画像を PNG 形式で埋め込みます (デフォルト)"
 
+msgid "Empty to remove the link"
+msgstr "空にするとリンクを削除します"
+
 msgid "Encrypt the current document with a password when saving it"
 msgstr "保存時に現在のドキュメントをパスワードで暗号化します"
 
@@ -1045,6 +1051,11 @@ msgstr "すべて折りたたむ (Ctrl+SHIFT+ダブルクリック)"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "選択したセルのグリッドを再帰的に折りたたみます"
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr "カーソル位置または選択したセルのリンクをたどります。リンクがなければセルのテキストをブラウザで開きます"
+
 msgid "Font..."
 msgstr "フォント..."
 
@@ -1222,6 +1233,23 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr "ラインスタイルレンダリング"
 
+msgid "Link"
+msgstr "リンク"
+
+msgid "Link (SHIFT+F5)"
+msgstr "リンク (Shift+F5)"
+
+msgid "Link to"
+msgstr "リンク先"
+
+msgid "Links"
+msgstr "リンク"
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr "選択したテキストを Web ページ、ファイル、またはそのテキストを持つ最も近いセルにリンクします（CTRL+クリックでリンクをたどります）"
+
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr "TreeSheets に対話型プログラム操作リファレンスを読み込む"
 
@@ -1309,6 +1337,9 @@ msgstr "注意：キーバインドは次回の TreeSheets 起動時に有効に
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "カーソルキーでセル間を移動"
+
+msgid "Nearest cell with this text"
+msgstr "このテキストを持つ最も近いセル"
 
 msgid "New (CTRL+n)"
 msgstr "新規 (Ctrl+N)"
@@ -1433,13 +1464,6 @@ msgstr "Lobster スクリプトリファレンスをブラウザで開く"
 
 msgid "Open the tutorial web page in browser"
 msgstr "チュートリアルのウェブページをブラウザで開く"
-
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
-msgstr ""
-"選択したセルのテキストをブラウザで開きます（有効な URL で始まる必要がありま"
-"す）"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
@@ -2045,6 +2069,9 @@ msgstr "ドキュメントは保存時に暗号化されます。"
 msgid "The document will be saved unencrypted."
 msgstr "ドキュメントは暗号化せずに保存されます。"
 
+msgid "The link could not be opened."
+msgstr "リンクを開けませんでした。"
+
 msgid "The passwords differ."
 msgstr "パスワードが一致しません。"
 
@@ -2203,6 +2230,9 @@ msgstr "ラインスタイルレンダリングの垂直レイアウト"
 
 msgid "Views"
 msgstr "ビュー"
+
+msgid "Web page or file"
+msgstr "Web ページまたはファイル"
 
 msgid "What size grid would you like to start with?"
 msgstr "どのサイズのグリッドで開始しますか？"

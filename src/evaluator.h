@@ -303,16 +303,18 @@ struct FormulaEvaluator {
         return functions;
     }
 
-    // Calls f on the cells around `self` in the order names are looked up in: breadth first in
-    // the grid that `self` is in, then in each grid around that one, until f returns true.
-    template<typename F> static void ForNearest(const Cell *self, F f) {
+    // Calls f on the cells with a grid around `self` (with `all` on all cells) in the order names
+    // are looked up in: breadth first in the grid that `self` is in, then in each grid around
+    // that one, until f returns true.
+    template<typename F> static void ForNearest(const Cell *self, F f, bool all = false) {
         for (auto *scope = self->parent; scope != nullptr; scope = scope->parent) {
             vector<Cell *> level {scope};
             vector<Cell *> next;
             while (!level.empty()) {
                 for (auto *c : level) {
-                    if (!c->grid) { continue; }
+                    if (!c->grid && !all) { continue; }
                     if (f(c)) { return; }
+                    if (!c->grid) { continue; }
                     for (auto &child : c->grid->cells) { next.push_back(child.get()); }
                 }
                 level.swap(next);
@@ -335,6 +337,18 @@ struct FormulaEvaluator {
         if (!assigned) { assigned = Assigned(self); }
         error = assigned->contains(name) ? L"#N/A" : L"#NAME?";
         return nullptr;
+    }
+
+    // The cell that an internal link in `self` to `name` goes to: the nearest other one with that
+    // text, looked up like the names in formulas (see ForNearest()).
+    static Cell *LinkTarget(const Cell *self, const wxString &name) {
+        Cell *target = nullptr;
+        auto named = [&](Cell *c) {
+            if (c != self && c->parent != nullptr && c->text.t == name) { target = c; }
+            return target != nullptr;
+        };
+        ForNearest(self, named, true);
+        return target;
     }
 
     static bool IsNameChar(wxChar c) { return wxIsalnum(c) || c == '_'; }

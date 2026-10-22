@@ -266,6 +266,8 @@ struct TSCanvas : public wxScrolledCanvas {
                 return;
             }
         #endif
+        // Ctrl over a link shows that a click follows it.
+        if (ke.GetKeyCode() == WXK_CONTROL) { doc->HoverUnderPointer(); }
         #ifdef __WXMAC__
             if (wxAcceleratorEntry entry; FindAcceleratorForKey(ke, entry, nullptr)) {
                 wxCommandEvent ce(wxEVT_MENU, entry.GetCommand());
@@ -280,6 +282,7 @@ struct TSCanvas : public wxScrolledCanvas {
     void OnKeyUp(wxKeyEvent &ke) {
         int code = ke.GetKeyCode();
         if (code == WXK_SHIFT || code == WXK_ALT) { doc->FlushPendingLayout(); }
+        if (code == WXK_CONTROL) { doc->HoverUnderPointer(); }
         ke.Skip();
     }
     void OnKillFocus(wxFocusEvent &fe) {

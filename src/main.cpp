@@ -2,7 +2,7 @@
 #include "textruns.h"
 #include "bidi.h"
 
-static const auto TS_VERSION = 30;
+static const auto TS_VERSION = 31;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
 static const auto g_margin_extra = 2;  // TODO, could make this configurable: 0/2/4/6
@@ -184,6 +184,7 @@ enum {
     A_HIFY,
     A_FLATTEN,
     A_BROWSEF,
+    A_HYPERLINK,
     A_ROUND0,
     A_ROUND1,
     A_ROUND2,

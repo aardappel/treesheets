@@ -144,6 +144,9 @@ msgstr "Neue Tabelle e&infügen"
 msgid "&Layout && Render Style"
 msgstr "&Anordnung && Render-Stil"
 
+msgid "&Link..."
+msgstr "&Link..."
+
 msgid "&Mark as"
 msgstr "&Markieren als"
 
@@ -804,6 +807,9 @@ msgstr ""
 "Das Bild in der TreeSheets-Datei im PNG-Format abspeichern "
 "(Standardeinstellung)"
 
+msgid "Empty to remove the link"
+msgstr "Leer, um den Link zu entfernen"
+
 msgid "Encrypt the current document with a password when saving it"
 msgstr "Das aktuelle Dokument beim Speichern mit einem Passwort verschlüsseln"
 
@@ -1071,6 +1077,13 @@ msgstr "Alles einklappen (STRG+UMSCHALT+Doppelklick)"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Klappt die Tabelle der ausgewählten Zelle(n) rekursiv aus."
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr ""
+"Folgt dem Link beim Cursor oder in der ausgewählten Zelle, oder öffnet sonst "
+"ihren Text im Browser"
+
 msgid "Font..."
 msgstr "&Schrift..."
 
@@ -1253,6 +1266,25 @@ msgstr ""
 msgid "Line Style Rendering"
 msgstr "Zeilenstil-Rendering"
 
+msgid "Link"
+msgstr "Link"
+
+msgid "Link (SHIFT+F5)"
+msgstr "Link (UMSCHALT+F5)"
+
+msgid "Link to"
+msgstr "Link zu"
+
+msgid "Links"
+msgstr "Links"
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr ""
+"Verlinkt den ausgewählten Text mit einer Webseite, einer Datei oder der "
+"nächstgelegenen Zelle mit diesem Text (STRG+Klick folgt ihm)"
+
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr "Die interaktive Programmierreferenz in TreeSheets öffnen"
 
@@ -1346,6 +1378,9 @@ msgstr ""
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "Zwischen Zellen mit den Cursortasten navigieren"
+
+msgid "Nearest cell with this text"
+msgstr "Nächstgelegene Zelle mit diesem Text"
 
 msgid "New (CTRL+n)"
 msgstr "Neu (Strg+n)"
@@ -1470,13 +1505,6 @@ msgstr "Die Lobster-Skriptreferenz im Browser öffnen"
 
 msgid "Open the tutorial web page in browser"
 msgstr "Die Tutorial-Webseite im Browser öffnen"
-
-msgid ""
-"Opens up the text from the selected cell in browser (should start be a valid "
-"URL)"
-msgstr ""
-"Öffnet den Text von der ausgewählten Zelle in einem Browser (sollte mit "
-"einer gültigen URL beginnen)"
 
 msgid ""
 "Opens up the text from the selected cell in default application for the file "
@@ -2099,6 +2127,9 @@ msgstr "Das Dokument wird beim Speichern verschlüsselt."
 msgid "The document will be saved unencrypted."
 msgstr "Das Dokument wird unverschlüsselt gespeichert."
 
+msgid "The link could not be opened."
+msgstr "Der Link konnte nicht geöffnet werden."
+
 msgid "The passwords differ."
 msgstr "Die Passwörter stimmen nicht überein."
 
@@ -2271,6 +2302,9 @@ msgstr "Vertikale Anordnung mit Zeilenstil-Rendering"
 
 msgid "Views"
 msgstr "Ansichten"
+
+msgid "Web page or file"
+msgstr "Webseite oder Datei"
 
 msgid "What size grid would you like to start with?"
 msgstr "Mit welcher Tabellengröße möchten Sie beginnen?"

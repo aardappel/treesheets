@@ -149,6 +149,9 @@ msgstr "&Вставить Новую Сетку"
 msgid "&Layout && Render Style"
 msgstr "&Макет и Стиль Отображения"
 
+msgid "&Link..."
+msgstr "&Ссылка..."
+
 msgid "&Mark as"
 msgstr "От&метить как"
 
@@ -875,6 +878,9 @@ msgstr "JPEG формат уменьшает размер *.cts-файла. Пр
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "PNG формат применяется по Умолчанию и к изображениям в выбранных ячейках (ко всем копиям одного изображения)"
 
+msgid "Empty to remove the link"
+msgstr "Пусто, чтобы удалить ссылку"
+
 # комментарий к п. Меню
 msgid "Encrypt the current document with a password when saving it"
 msgstr "Шифровать текущий документ паролем при сохранении"
@@ -1139,6 +1145,11 @@ msgstr "Свернуть Всё (CTRL+SHIFT+двойной щелчок)"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Рекурсивно (на всю глубину вложенности) Сворачивает подсетки выбранных ячеек"
 
+msgid ""
+"Follows the link at the cursor or in the selected cell, or else opens its "
+"text in the browser"
+msgstr "Переходит по ссылке у курсора или в выбранной ячейке, иначе открывает её текст в браузере"
+
 # п. Меню (нет & в исходном тексте)
 msgid "Font..."
 msgstr "Шрифт..."
@@ -1340,6 +1351,23 @@ msgstr "Не включать слишком мелкие и отфильтро�
 msgid "Line Style Rendering"
 msgstr ".. в стиле &Линий"
 
+msgid "Link"
+msgstr "Ссылка"
+
+msgid "Link (SHIFT+F5)"
+msgstr "Ссылка (SHIFT+F5)"
+
+msgid "Link to"
+msgstr "Ссылка на"
+
+msgid "Links"
+msgstr "Ссылки"
+
+msgid ""
+"Links the selected text to a web page, a file or the nearest cell with that "
+"text (CTRL+click follows it)"
+msgstr "Связывает выделенный текст с веб-страницей, файлом или ближайшей ячейкой с этим текстом (CTRL+щелчок переходит по ссылке)"
+
 # комментарий к п. Меню
 msgid "Load an interactive program operation reference in TreeSheets"
 msgstr "Загрузить справочник по интерактивной работе Программы в TreeSheets"
@@ -1433,6 +1461,9 @@ msgstr "ПРИМЕЧАНИЕ: привязка клавиш вступит в с
 
 msgid "Navigate in between cells with cursor keys"
 msgstr "Перемещаться между ячейками с помощью Клавиш Курсора"
+
+msgid "Nearest cell with this text"
+msgstr "Ближайшая ячейка с этим текстом"
 
 # комментарий к эл-ту Главного Окна
 msgid "New (CTRL+n)"
@@ -1582,10 +1613,6 @@ msgstr "Открыть справочник по функциям Lobster в б�
 # комментарий к п. Меню
 msgid "Open the tutorial web page in browser"
 msgstr "Открыть веб-страницу Краткого Введения в браузере"
-
-# комментарий к п. Меню
-msgid "Opens up the text from the selected cell in browser (should start be a valid URL)"
-msgstr "Открывает в браузере текст из выбранной ячейки (он должен представлять собой корректный URL)"
 
 # комментарий к п. Меню
 msgid "Opens up the text from the selected cell in default application for the file type"
@@ -2283,6 +2310,9 @@ msgstr "Документ будет зашифрован при сохранен
 msgid "The document will be saved unencrypted."
 msgstr "Документ будет сохранён без шифрования."
 
+msgid "The link could not be opened."
+msgstr "Не удалось открыть ссылку."
+
 # Сообщение (после действия или события)
 msgid "The passwords differ."
 msgstr "Пароли не совпадают."
@@ -2473,6 +2503,9 @@ msgstr ".. в стиле &Линий"
 #, fuzzy
 msgid "Views"
 msgstr "Представления"
+
+msgid "Web page or file"
+msgstr "Веб-страница или файл"
 
 # в Окне (выбор п. Меню) - Файл / Новый
 msgid "What size grid would you like to start with?"

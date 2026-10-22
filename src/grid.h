@@ -425,6 +425,10 @@ struct Grid {
                 }
                 if (c->HasText()) {
                     c->text.FindCursor(doc, bx, by - c->ycenteroff, dc, doc->hover, colwidths[x]);
+                    if (auto *k = c->text.LinkAt(doc, dc, bx + c->GetX(doc), by + c->GetY(doc),
+                                                 doc->hover.cursor, colwidths[x], doc->hoverlink)) {
+                        doc->hoverlinkstart = k->start;
+                    }
                 }
                 return;
             }
