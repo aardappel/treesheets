@@ -288,6 +288,9 @@ msgstr "<이름 없음>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "임시 자동 저장 파일이 있는데 대신 로드하시겠습니까?"
 
+msgid "A&gent Socket"
+msgstr "에이전트 소켓(&G)"
+
 msgid "Add &Current Document as Template"
 msgstr "현재 문서를 템플릿으로 추가(&C)"
 
@@ -311,6 +314,13 @@ msgstr "선택한 셀에 NxN 격자 추가"
 
 msgid "Adds a grid to the selected cell"
 msgstr "선택한 셀에 격자 추가"
+
+msgid "Agent socket closed"
+msgstr "에이전트 소켓이 닫혔습니다"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "에이전트 소켓: %s"
 
 msgid "Align &automatically"
 msgstr "자동으로 정렬(&A)"
@@ -1216,6 +1226,10 @@ msgid ""
 msgstr ""
 "셀을 텍스트 또는 HTML로 복사할 때 작은 셀, 필터링된 셀 및 모든 하위 격자를 제"
 "외합니다"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr "AI 에이전트가 로컬 소켓을 통해 열린 문서에서 Lobster 스크립트를 실행할 수 있게 합니다"
 
 msgid "Line Style Rendering"
 msgstr "선 스타일 렌더링"

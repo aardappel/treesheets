@@ -1764,6 +1764,14 @@ struct TSFrame : wxFrame {
                     }
                     break;
             #endif
+            #ifdef TS_AGENT_SERVER
+                case A_AGENTSERVER:
+                    scriptmenu->Check(A_AGENTSERVER, app->ToggleAgentServer());
+                    SetStatus(app->agent_server ? wxString::Format(_("Agent socket: %s"),
+                                                                   app->agent_server->endpoint_path)
+                                                : _("Agent socket closed"));
+                    break;
+            #endif
 
             case A_OPENTEMPLATE: {
                 wxArrayString filenames;
@@ -2530,6 +2538,13 @@ struct TSFrame : wxFrame {
                      _("Add Lobster scripts to the menu"));
             MyAppend(menu, A_DETSCRIPT, _("Re&move from Menu...") + "\tCTRL+SHIFT+ALT+L",
                      _("Remove script from list in the menu"));
+            #ifdef TS_AGENT_SERVER
+                MyAppend(menu, A_AGENTSERVER, _("A&gent Socket"),
+                         _("Let AI agents run Lobster scripts on the open document through a "
+                           "local socket"),
+                         wxITEM_CHECK);
+                menu->Check(A_AGENTSERVER, app->agent_server != nullptr);
+            #endif
             if (!sys->scripts.IsEmpty()) { menu->AppendSeparator(); }
             for (size_t i = 0; i < sys->scripts.GetCount(); ++i) {
                 MyAppend(menu, A_SCRIPT + static_cast<int>(i),

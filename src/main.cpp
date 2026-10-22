@@ -2,6 +2,10 @@
 #include "textruns.h"
 #include "bidi.h"
 
+#if defined(ENABLE_LOBSTER) && (defined(wxHAS_UNIX_DOMAIN_SOCKETS) || defined(__WXMSW__))
+    #define TS_AGENT_SERVER 1
+#endif
+
 static const auto TS_VERSION = 31;
 static const auto g_grid_margin = 1;
 static const auto g_cell_margin = 2;
@@ -295,6 +299,7 @@ enum {
         A_RUNSCRIPTCODE,
         A_ADDSCRIPT,
         A_DETSCRIPT,
+        A_AGENTSERVER,
     #endif
     A_SET_FIXED_FONT,
     A_EDITNOTE,
@@ -406,7 +411,7 @@ struct treesheets {
     #include "wxtools.h"
     #include "tscanvas.h"
     #include "tsframe.h"
-    #ifdef ENABLE_LOBSTER
+    #ifdef TS_AGENT_SERVER
         #include "agent_server.h"
     #endif
     #include "tsapp.h"

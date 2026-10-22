@@ -288,6 +288,9 @@ msgstr "<未命名>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "存在一个临时自动保存文件，您想加载它吗？"
 
+msgid "A&gent Socket"
+msgstr "代理套接字(&G)"
+
 msgid "Add &Current Document as Template"
 msgstr "将当前文档添加为模板(&C)"
 
@@ -311,6 +314,13 @@ msgstr "向所选单元格添加 NxN 网格"
 
 msgid "Adds a grid to the selected cell"
 msgstr "向所选单元格添加网格"
+
+msgid "Agent socket closed"
+msgstr "代理套接字已关闭"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "代理套接字: %s"
 
 msgid "Align &automatically"
 msgstr "自动对齐(&A)"
@@ -1196,6 +1206,10 @@ msgid ""
 "text or HTML"
 msgstr ""
 "将单元格复制为文本或 HTML 时省略过小的单元格、被筛选掉的单元格和所有子网格"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr "允许 AI 代理通过本地套接字在打开的文档上运行 Lobster 脚本"
 
 msgid "Line Style Rendering"
 msgstr "线条样式渲染"

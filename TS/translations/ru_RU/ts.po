@@ -301,6 +301,9 @@ msgstr "<безымянный>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "Обнаружен временный файл автосохранения. Загрузить его вместо открытого файла?"
 
+msgid "A&gent Socket"
+msgstr "Сокет а&гента"
+
 msgid "Add &Current Document as Template"
 msgstr "Добавить &Текущий Документ как Шаблон"
 
@@ -330,6 +333,13 @@ msgstr "Добавить сетку размером NxN в выбранную �
 # комментарий к п. Меню
 msgid "Adds a grid to the selected cell"
 msgstr "Добавить сетку в выбранную ячейку"
+
+msgid "Agent socket closed"
+msgstr "Сокет агента закрыт"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "Сокет агента: %s"
 
 msgid "Align &automatically"
 msgstr "&Автоматическое Выравнивание"
@@ -1347,6 +1357,10 @@ msgstr "Привязка клавиш отменена."
 # комментарий к п. Меню
 msgid "Leave out tiny and filtered cells and all sub-grids when copying cells as text or HTML"
 msgstr "Не включать слишком мелкие и отфильтрованные ячейки и все подсетки при копировании ячеек как текста или HTML"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr "Позволяет ИИ-агентам запускать сценарии Lobster в открытом документе через локальный сокет"
 
 msgid "Line Style Rendering"
 msgstr ".. в стиле &Линий"

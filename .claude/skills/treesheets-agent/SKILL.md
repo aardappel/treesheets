@@ -43,7 +43,8 @@ to lives.
 
 ## Prerequisites
 
-TreeSheets must already be running, started with `-a`. Check first rather
+TreeSheets must already be running, started with `-a` (or with
+**Script → Agent Socket** checked in its menu). Check first rather
 than assuming: the endpoint and token files from the table above exist only
 while such an instance is up (substitute your actual username).
 
@@ -260,9 +261,12 @@ these is available, in this order:
 
 Other things worth knowing regardless of how you looked up the API:
 
-- `ts.agent_result(s)` is the one addition made for this channel: call it to
+- `ts.agent_result(s)` is the main addition made for this channel: call it to
   hand a string back in the response's `result` field. Without it, `result`
   is always `""`.
+- `ts.close_agent_socket()` closes the socket after the reply to the current
+  `eval` is sent, e.g. when the person asks you to disconnect when done. Later
+  requests fail until they reopen it (Script → Agent Socket, or restart with `-a`).
 - Every `eval` starts back at the document root (`ScriptRun` resets position
   each call). Most mutators (`set_text`, etc.) are no-ops on the root cell
   since it has no parent — `goto_child(n)`/`goto_selection()` first.

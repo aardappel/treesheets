@@ -288,6 +288,9 @@ msgstr "<名前なし>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "一時的な自動保存ファイルが存在します。代わりにそれを読み込みますか？"
 
+msgid "A&gent Socket"
+msgstr "エージェント ソケット(&G)"
+
 msgid "Add &Current Document as Template"
 msgstr "現在のドキュメントをテンプレートとして追加(&C)"
 
@@ -311,6 +314,13 @@ msgstr "選択したセルに NxN グリッドを追加"
 
 msgid "Adds a grid to the selected cell"
 msgstr "選択したセルにグリッドを追加"
+
+msgid "Agent socket closed"
+msgstr "エージェント ソケットを閉じました"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "エージェント ソケット: %s"
 
 msgid "Align &automatically"
 msgstr "自動で揃える(&A)"
@@ -1229,6 +1239,10 @@ msgid ""
 msgstr ""
 "セルをテキストまたは HTML としてコピーする際に、極小のセル、フィルターで除外"
 "されたセル、すべてのサブグリッドを除外します"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr "AI エージェントがローカル ソケット経由で開いているドキュメントに Lobster スクリプトを実行できるようにします"
 
 msgid "Line Style Rendering"
 msgstr "ラインスタイルレンダリング"

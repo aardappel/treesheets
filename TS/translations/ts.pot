@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-22 19:49+0200\n"
+"POT-Creation-Date: 2026-10-22 22:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -285,6 +285,9 @@ msgstr ""
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr ""
 
+msgid "A&gent Socket"
+msgstr ""
+
 msgid "Add &Current Document as Template"
 msgstr ""
 
@@ -307,6 +310,13 @@ msgid "Adds a NxN grid to the selected cell"
 msgstr ""
 
 msgid "Adds a grid to the selected cell"
+msgstr ""
+
+msgid "Agent socket closed"
+msgstr ""
+
+#, c-format
+msgid "Agent socket: %s"
 msgstr ""
 
 msgid "Align &automatically"
@@ -1181,6 +1191,10 @@ msgstr ""
 msgid ""
 "Leave out tiny and filtered cells and all sub-grids when copying cells as "
 "text or HTML"
+msgstr ""
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
 msgstr ""
 
 msgid "Line Style Rendering"

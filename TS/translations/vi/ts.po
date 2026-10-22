@@ -283,6 +283,9 @@ msgstr "<chưa đặt tên>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "Có tệp tự động lưu tạm thời, bạn có muốn tải tệp đó không?"
 
+msgid "A&gent Socket"
+msgstr "Socket tác tử (&G)"
+
 msgid "Add &Current Document as Template"
 msgstr "Thêm tài liệu hiện tại làm mẫu (&C)"
 
@@ -306,6 +309,13 @@ msgstr "Thêm một lưới NxN vào ô được chọn"
 
 msgid "Adds a grid to the selected cell"
 msgstr "Thêm lưới vào ô được chọn"
+
+msgid "Agent socket closed"
+msgstr "Đã đóng socket tác tử"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "Socket tác tử: %s"
 
 msgid "Align &automatically"
 msgstr "Căn lề tự động (&A)"
@@ -1222,6 +1232,12 @@ msgid ""
 msgstr ""
 "Bỏ qua các ô nhỏ, ô bị lọc và tất cả lưới con khi sao chép ô dưới dạng văn "
 "bản hoặc HTML"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr ""
+"Cho phép tác tử AI chạy kịch bản Lobster trên tài liệu đang mở qua một "
+"socket cục bộ"
 
 msgid "Line Style Rendering"
 msgstr "Hiển thị kiểu đường kẻ"

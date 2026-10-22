@@ -435,6 +435,15 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         return result;
     }
 
+    void CloseAgentSocket() override {
+        #ifdef TS_AGENT_SERVER
+            // Queued, so the socket stays open until the reply to the running request is sent.
+            if (sys->frame->app->agent_server) {
+                wxQueueEvent(sys->frame, new wxCommandEvent(wxEVT_MENU, A_AGENTSERVER));
+            }
+        #endif
+    }
+
     void SetWindowSize(int width, int height) override { sys->frame->SetSize(width, height); }
 
     std::string GetFileNameFromUser(bool is_save) override {

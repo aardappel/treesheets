@@ -416,6 +416,13 @@ BUILTIN(agent_result, "result", "S", "",
     si->SetAgentResult(s->strv());
 }
 
+BUILTIN(close_agent_socket, "", "", "",
+    "closes the agent socket once the current eval request is answered, as unchecking "
+    "Script > Agent Socket does")
+(VM &) {
+    si->CloseAgentSocket();
+}
+
 BUILTIN(get_filename_from_user, "is_save", "I", "S",
     "gets a filename using a file dialog. empty string if cancelled.")
 (VM &vm, iint is_save) {

@@ -293,6 +293,9 @@ msgstr ""
 "Un fichier temporaire de sauvegarde automatique existe déjà, voulez-vous le "
 "charger?"
 
+msgid "A&gent Socket"
+msgstr "Socket d'a&gent"
+
 msgid "Add &Current Document as Template"
 msgstr "Ajouter le document &courant comme modèle"
 
@@ -316,6 +319,13 @@ msgstr "Ajoute une grille NxN à la cellule sélectionnée"
 
 msgid "Adds a grid to the selected cell"
 msgstr "Ajouter une grille à la cellule sélectionnée"
+
+msgid "Agent socket closed"
+msgstr "Socket d'agent fermé"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "Socket d'agent : %s"
 
 msgid "Align &automatically"
 msgstr "Alignement &automatique"
@@ -1263,6 +1273,12 @@ msgid ""
 msgstr ""
 "Omet les cellules minuscules ou filtrées et toutes les sous-grilles lors de "
 "la copie de cellules en texte ou en HTML"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr ""
+"Permet aux agents IA d'exécuter des scripts Lobster sur le document ouvert "
+"via un socket local"
 
 msgid "Line Style Rendering"
 msgstr "Mode ligne"

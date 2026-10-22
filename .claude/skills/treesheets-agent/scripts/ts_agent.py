@@ -94,7 +94,7 @@ def find_endpoint(pid):
     which = f" with pid {pid}" if pid is not None else ""
     raise SystemExit(
         f"error: no reachable TreeSheets agent endpoint{which} found.\n"
-        f"Is TreeSheets running with -a (agent mode)?"
+        f"Is TreeSheets running with -a (agent mode) or Script > Agent Socket checked?"
     )
 
 
@@ -114,7 +114,7 @@ def read_token(endpoint):
     except OSError as e:
         raise SystemExit(
             f"error: can't read token file {token_path}: {e}\n"
-            f"Is TreeSheets running with -a (agent mode)?"
+            f"Is TreeSheets running with -a (agent mode) or Script > Agent Socket checked?"
         )
 
 
@@ -139,7 +139,7 @@ def connect(endpoint, timeout):
     except (OSError, ValueError) as e:
         raise SystemExit(
             f"error: can't connect via {endpoint}: {e}\n"
-            f"Is TreeSheets running with -a (agent mode)?"
+            f"Is TreeSheets running with -a (agent mode) or Script > Agent Socket checked?"
         )
 
 

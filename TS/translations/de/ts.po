@@ -290,6 +290,9 @@ msgstr ""
 "Eine temporäre Sicherungskopie existiert. Möchten Sie diese stattdessen "
 "laden?"
 
+msgid "A&gent Socket"
+msgstr "A&gent-Socket"
+
 msgid "Add &Current Document as Template"
 msgstr "Aktuelles &Dokument als Vorlage hinzufügen"
 
@@ -313,6 +316,13 @@ msgstr "Eine NxN-Tabelle in die ausgewählte Zelle einfügen"
 
 msgid "Adds a grid to the selected cell"
 msgstr "Eine Tabelle in die ausgewählte Zelle einfügen"
+
+msgid "Agent socket closed"
+msgstr "Agent-Socket geschlossen"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "Agent-Socket: %s"
 
 msgid "Align &automatically"
 msgstr "&Automatisch ausrichten"
@@ -1262,6 +1272,12 @@ msgid ""
 msgstr ""
 "Schmale und gefilterte Zellen sowie alle untergeordneten Tabellen beim "
 "Kopieren von Zellen als Text oder HTML weglassen"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr ""
+"Lässt KI-Agenten über einen lokalen Socket Lobster-Skripte im offenen "
+"Dokument ausführen"
 
 msgid "Line Style Rendering"
 msgstr "Zeilenstil-Rendering"

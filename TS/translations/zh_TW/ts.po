@@ -287,6 +287,9 @@ msgstr "<未命名>"
 msgid "A temporary autosave file exists, would you like to load it instead?"
 msgstr "偵測到暫存的自動儲存檔案，是否要改為載入該檔案？"
 
+msgid "A&gent Socket"
+msgstr "代理程式通訊端(&G)"
+
 msgid "Add &Current Document as Template"
 msgstr "將目前文件加入為範本(&C)"
 
@@ -310,6 +313,13 @@ msgstr "將 NxN 網格加入選取的儲存格"
 
 msgid "Adds a grid to the selected cell"
 msgstr "將網格加入選取的儲存格"
+
+msgid "Agent socket closed"
+msgstr "代理程式通訊端已關閉"
+
+#, c-format
+msgid "Agent socket: %s"
+msgstr "代理程式通訊端: %s"
 
 msgid "Align &automatically"
 msgstr "自動對齊(&A)"
@@ -1196,6 +1206,10 @@ msgid ""
 "text or HTML"
 msgstr ""
 "將儲存格複製為文字或 HTML 時省略過小的儲存格、被篩選掉的儲存格與所有子網格"
+
+msgid ""
+"Let AI agents run Lobster scripts on the open document through a local socket"
+msgstr "允許 AI 代理程式透過本機通訊端在開啟的文件上執行 Lobster 指令碼"
 
 msgid "Line Style Rendering"
 msgstr "線條樣式繪製"

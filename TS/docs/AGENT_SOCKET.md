@@ -10,6 +10,10 @@ automate, or build up a TreeSheets document on your behalf.
 TreeSheets -a
 ```
 
+You can also open and close it while TreeSheets is running with
+**Script → Agent Socket**, whose checkmark shows whether it is open. An agent
+can close it itself with `ts.close_agent_socket()` when it is done.
+
 It's off by default, only listens locally, and the socket is authenticated
 with a random, per-launch token file readable only by you. It's available on
 macOS, Linux and Windows:

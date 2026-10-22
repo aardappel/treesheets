@@ -1,5 +1,5 @@
 // Lets an external agent (e.g. an AI coding assistant) run Lobster script against the
-// currently open document over a local socket. Opt-in via -a / --agent.
+// currently open document over a local socket. Opt-in via -a / --agent or the Script menu.
 //
 // Transport: a Unix domain socket where available (/tmp/TreeSheets-agent-<user>-<pid>.sock), and
 // on Windows a TCP socket on 127.0.0.1 with an OS-assigned port, which is written as a decimal
@@ -163,10 +163,6 @@ struct AgentJson {
         return out;
     }
 };
-
-#if defined(wxHAS_UNIX_DOMAIN_SOCKETS) || defined(__WXMSW__)
-
-#define TS_AGENT_SERVER 1
 
 struct AgentConn {
     std::string in;   // received, not yet complete request lines
@@ -359,5 +355,3 @@ struct AgentServer : wxEvtHandler {
         return AgentJson::BuildReply(id, false, "unknown cmd", "");
     }
 };
-
-#endif  // wxHAS_UNIX_DOMAIN_SOCKETS || __WXMSW__

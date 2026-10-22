@@ -116,10 +116,7 @@ struct TSApp : wxApp {
         if (cl.dump_builtins) return false;
 
         #ifdef TS_AGENT_SERVER
-            if (cl.enable_agent) {
-                agent_server = make_unique<AgentServer>();
-                if (!agent_server->Start()) { agent_server.reset(); }
-            }
+            if (cl.enable_agent) frame->scriptmenu->Check(A_AGENTSERVER, ToggleAgentServer());
             // On macOS, Cmd+Q / "Quit" (incl. via AppleScript) is delivered as an Apple Event
             // that wx turns into wxEVT_END_SESSION on the app and then exits the main loop
             // directly, bypassing TSFrame::OnClosing()/Destroy(). Clean up here too so the
@@ -154,6 +151,16 @@ struct TSApp : wxApp {
     #endif
 
     #ifdef TS_AGENT_SERVER
+        bool ToggleAgentServer() {
+            if (agent_server) {
+                agent_server.reset();
+            } else {
+                agent_server = make_unique<AgentServer>();
+                if (!agent_server->Start()) agent_server.reset();
+            }
+            return agent_server != nullptr;
+        }
+
         void OnEndSession(wxCloseEvent &event) {
             agent_server.reset();
             event.Skip();
