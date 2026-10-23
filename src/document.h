@@ -3063,6 +3063,14 @@ struct Document {
             case wxID_PASTE:
             case A_PASTETEXT:
             case A_PASTETSV: {
+                if (!selected.Thin() && selected.GetCell() == nullptr) {
+                    if (PasteFill(action)) {
+                        UpdateLayout();
+                        canvas->Refresh();
+                        return wxEmptyString;
+                    }
+                    selected.xs = selected.ys = 1;  // pasted at the top left instead
+                }
                 int pastemode = selected.PasteMode();
                 if ((cell = selected.ThinExpand(this)) == nullptr) { return OneCell(); }
 
@@ -3819,14 +3827,14 @@ struct Document {
         canvas->Refresh();
     }
 
-    void EndFormulaEdit(Cell *c) {
+    void EndFormulaEdit(Cell *c, bool undo = true) {
         if (c->celltype != CT_DATA && c->celltype != CT_FORMULA) { return; }
         bool isformula = Cell::IsFormulaText(c->text.t);
         if (isformula ? c->formula && *c->formula == c->text.t : c->celltype == CT_DATA) {
             formulasdirty = true;  // unchanged, a formula shows its result again
             return;
         }
-        AddUndo(c, false);  // undone together with the typing
+        if (undo) { AddUndo(c, false); }  // undone together with the typing
         c->celltype = isformula ? CT_FORMULA : CT_DATA;
         c->formula = nullptr;
         c->SyncFormula();
@@ -3873,6 +3881,48 @@ struct Document {
 
     void ZoomOutIfNoGrid() {
         if (!WalkPath(drawpath)->grid) { Zoom(-1); }
+    }
+
+    // Fills a selection of several cells with the copied cell or line of text, or repeats the
+    // copied cells over it if they fit a whole number of times. False if they don't.
+    bool PasteFill(int action) {
+        wxString text;
+        auto opened = wxTheClipboard->Open();
+        if (opened) {
+            if (wxTextDataObject tdo; wxTheClipboard->GetData(tdo)) { text = tdo.GetText(); }
+            wxTheClipboard->Close();
+        }
+        auto &g = selected.grid;
+        if (action == wxID_PASTE && sys->cellclipboard &&
+            (!opened || (!text.IsEmpty() && text == sys->clipboardcopy))) {
+            const Cell *cc = sys->cellclipboard.get();
+            Grid *block = cc->grid && !cc->HasText() ? cc->grid.get() : nullptr;
+            int bx = block ? block->xs : 1;
+            int by = block ? block->ys : 1;
+            if (selected.xs % bx || selected.ys % by) { return false; }
+            g->cell->AddUndo(this);
+            loop(y, selected.ys) loop(x, selected.xs) {
+                const Cell *src = block ? block->C(x % bx, y % by).get() : cc;
+                g->C(selected.x + x, selected.y + y) = src->Clone(g->cell);
+            }
+            loop(x, selected.xs) {
+                auto &width = g->colwidths[selected.x + x];
+                width = max(width, block ? block->colwidths[x % bx] : sys->cellclipboardcolwidth);
+            }
+        } else {
+            const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
+            if (action == A_PASTETSV || lines.size() != 1 || treesheets::System::IsTSV(lines)) {
+                return false;
+            }
+            g->cell->AddUndo(this);
+            loop(y, selected.ys) loop(x, selected.xs) {
+                auto *c = g->C(selected.x + x, selected.y + y).get();
+                c->text.SetText(lines[0]);
+                EndFormulaEdit(c, false);  // as if typed, so "=..." becomes a formula
+            }
+            g->cell->ResetChildren();
+        }
+        return true;
     }
 
     void PasteSingleText(Cell *c, wxString s) {
