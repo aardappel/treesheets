@@ -903,6 +903,8 @@ struct System {
     }
 
     int AddImageToList(double scale, vector<uint8_t> &&data, char type) {
+        // A scale from a file can be anything, and a tiny one makes a huge bitmap.
+        scale = isfinite(scale) ? std::clamp(scale, g_min_image_scale, g_max_image_scale) : 1.0;
         auto hash = CalculateHash(data);
         loopv(i, imagelist) {
             // The scale is part of an image's identity: cells showing the same picture at
