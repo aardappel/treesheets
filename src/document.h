@@ -2030,7 +2030,7 @@ struct Document {
                 // the missing handling of these accelerator keys in the following section.
                 // Please be aware that the custom implementation has the downside of these
                 // "accelerator keys" being suppressed in the menu items on wxGTK.
-                    case WXK_DELETE: return Action(A_DELETE);
+                    case WXK_DELETE: return Action(shift ? A_DELGRID : A_DELETE);
                     case WXK_LEFT:
                         return Action(shift ? (ctrl ? A_SCLEFT : A_SLEFT)
                                             : (ctrl ? A_MLEFT : A_LEFT));
@@ -3324,6 +3324,21 @@ struct Document {
                 }
                 UpdateLayout();
                 ScrollIfSelectionOutOfView();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
+
+            case A_DELGRID: {
+                CollectCellsSel(false);
+                if (std::ranges::none_of(itercells, [](Cell *c) { return c->grid != nullptr; })) {
+                    return NoGrid();
+                }
+                selected.grid->cell->AddUndo(this);
+                for (auto c : itercells) {
+                    c->grid = nullptr;
+                    c->ResetLayout();
+                }
+                UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
             }

@@ -87,6 +87,7 @@ enum {
     A_BACKSPACE,
     A_DELETE_WORD,
     A_BACKSPACE_WORD,
+    A_DELGRID,
     A_LEFT,
     A_RIGHT,
     A_UP,

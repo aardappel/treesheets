@@ -592,6 +592,8 @@ struct TSFrame : wxFrame {
                      _("Adds a grid to the selected cell"));
             MyAppend(editmenu, A_ENTERGRIDN, _("Insert New &NxN Grid") + "\tCTRL+SHIFT+ENTER",
                      _("Adds a NxN grid to the selected cell"));
+            MyAppend(editmenu, A_DELGRID, _("Delete Grid") + "\tSHIFT+DEL",
+                     _("Deletes the grids of the selected cells, keeping their text"));
             MyAppend(editmenu, A_WRAP, _("&Wrap in new parent") + "\tF9",
                      _("Creates a new level of hierarchy around the current selection"));
             editmenu->AppendSeparator();
@@ -880,12 +882,10 @@ struct TSFrame : wxFrame {
                  _("Open the Lobster script reference in browser"));
         #endif
 
-        wxAcceleratorEntry entries[4];
-        entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+        wxAcceleratorEntry entries[2];
+        entries[0].Set(wxACCEL_SHIFT, WXK_DELETE, A_DELGRID);
         entries[1].Set(wxACCEL_NORMAL, WXK_INSERT, A_ENTERGRID);
-        entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-        entries[3].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-        wxAcceleratorTable accel(4, entries);
+        wxAcceleratorTable accel(2, entries);
         SetAcceleratorTable(accel);
 
         auto *menubar = new wxMenuBar();

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-22 22:00+0200\n"
+"POT-Creation-Date: 2026-10-24 19:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -725,6 +725,9 @@ msgstr ""
 msgid "Delete Before"
 msgstr ""
 
+msgid "Delete Grid"
+msgstr ""
+
 msgid "Delete Word After"
 msgstr ""
 
@@ -743,6 +746,9 @@ msgid "Deletes the entire word after the cursor"
 msgstr ""
 
 msgid "Deletes the entire word before the cursor"
+msgstr ""
+
+msgid "Deletes the grids of the selected cells, keeping their text"
 msgstr ""
 
 msgid "Discard Changes"
