@@ -203,6 +203,7 @@ binary, so rebuild after `update-mo`.
   "Fixes #N" in the message closes the issue on push to `master`.
 - CI caches the whole `_build` directory per OS/arch/compiler, keyed on `CMakeLists.txt` and
   `cmake/**`. Changing those files causes one cold build (~10+ min on Windows/macOS). Keep the
-  compiler id in any cache key you touch.
+  compiler id in any cache key you touch. After the builds of a push, the `purge-caches` job deletes
+  caches unused for two days and those of release marker tags, to stay under the 10 GB limit.
 - Windows CI stays on MSVC. MinGW is only for local cross-checking.
 - Don't commit build directories (`_build*/`, `build/`, `install_*`) or scratch files.

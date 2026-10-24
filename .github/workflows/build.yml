@@ -225,6 +225,30 @@ jobs:
     - name: Remove CPack artifact
       run: rm -f _build/TreeSheets-*.dmg
 
+  purge-caches:
+    name: Purge old caches
+    if: github.event_name == 'push'
+    needs: [build-linux, build-windows, build-mac]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+    - name: Delete caches of release tags and caches unused for two days
+      run: |
+        # Every build has restored its cache by now, so caches still in use were just accessed. A
+        # cache that a new runner image or CMake change superseded stops being accessed, but only
+        # once all runners have moved to the new image. Release tags are deleted after the release,
+        # and their builds can restore the caches of master.
+        cutoff=$(date -u -d '2 days ago' +%FT%TZ)
+        gh cache list --repo "$GITHUB_REPOSITORY" --limit 1000 --json id,key,ref,lastAccessedAt \
+          --jq ".[] | select((.ref | contains(\"refs/tags/\")) or .lastAccessedAt < \"$cutoff\") | \"\(.id) \(.key)\"" |
+        while read -r id key; do
+          echo "Deleting $key"
+          gh cache delete "$id" --repo "$GITHUB_REPOSITORY" || echo "::warning::Could not delete $key"
+        done
+      env:
+        GH_TOKEN: ${{ github.token }}
+
   release:
     name: Create release
     if: github.ref_type == 'tag'
