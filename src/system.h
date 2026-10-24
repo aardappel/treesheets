@@ -665,7 +665,7 @@ struct System {
                     if (!doc.Load(filename)) { goto problem; }
                     unique_ptr<Cell> &root = InitDB(1);
                     Cell *c = root->grid->cells[0].get();
-                    FillXML(c, doc.GetRoot(), action == A_IMPXMLA);
+                    FillXML(c, doc.GetRoot(), action == A_IMPXMLA, c->Depth());
                     if (!c->HasText() && c->grid) {
                         unique_ptr<Cell> child = std::move(root->grid->cells[0]);
                         root = std::move(child);
@@ -782,7 +782,8 @@ struct System {
         }
     }
 
-    void FillXML(Cell *c, wxXmlNode *node, bool attributestoo) {
+    // depth is at least that of c, and also counts the elements that only nest in c.
+    void FillXML(Cell *c, wxXmlNode *node, bool attributestoo, int depth) {
         auto hasruns = false;
         if (node->GetName() == "cell") {
             for (auto *child = node->GetChildren(); child != nullptr; child = child->GetNext()) {
@@ -821,11 +822,11 @@ struct System {
         vector<wxXmlNode *> nodes;
         vector<wxXmlAttribute *> attributes;
         auto numrows = GetXMLNodes(node, nodes, &attributes, attributestoo);
-        if (numrows == 0) { return; }
+        if (numrows == 0 || depth >= g_max_depth) { return; }
 
         if (nodes.size() == 1 && (c->text.t.IsEmpty() || nodes[0]->IsWhitespaceOnly()) &&
             nodes[0]->GetName() != "row") {
-            FillXML(c, nodes[0], attributestoo);
+            FillXML(c, nodes[0], attributestoo, depth + 1);
         } else {
             auto allrow = node->GetName() == "grid";
             for (auto *node : nodes) {
@@ -845,7 +846,7 @@ struct System {
                         SetGridSettingsFromXML(c, node);
                     }
                     loop(j, desiredxs) if (ins.size() > j) {
-                        FillXML(c->grid->C(j, i).get(), ins[j], attributestoo);
+                        FillXML(c->grid->C(j, i).get(), ins[j], attributestoo, depth + 1);
                     }
                 }
             } else {
@@ -853,7 +854,8 @@ struct System {
                 SetGridSettingsFromXML(c, node);
                 loopv(i, attributes) c->grid->C(0, i)->text.SetText(attributes[i]->GetValue());
                 loopv(i, nodes)
-                    FillXML(c->grid->C(0, i + attributes.size()).get(), nodes[i], attributestoo);
+                    FillXML(c->grid->C(0, i + attributes.size()).get(), nodes[i], attributestoo,
+                            depth + 1);
             }
         }
     }
@@ -886,8 +888,9 @@ struct System {
             auto s = as[i];
             auto col = CountCol(s);
             if (col < column && startrow != 0) { return i; }
-            if (col > column) {
-                auto *c = g->C(0, y - 1).get();
+            // Lines indented beyond the deepest nesting allowed become rows of that level.
+            if (auto *c = col > column ? g->C(0, y - 1).get() : nullptr;
+                c != nullptr && c->Depth() < g_max_depth) {
                 auto *sg = c->grid.get();
                 i = FillRows(sg != nullptr ? sg : c->AddGrid(), as, col, i,
                              sg != nullptr ? sg->ys : 0) -

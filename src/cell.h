@@ -533,7 +533,8 @@ struct Cell {
     Cell *LoadGrid(wxDataInputStream &dis, int &numcells, int &textbytes, Cell *&ics) {
         int xs = dis.Read32();
         int ys = dis.Read32();
-        if (xs < 1 || ys < 1 || static_cast<int64_t>(xs) * ys > g_max_grid_cells) {
+        if (xs < 1 || ys < 1 || static_cast<int64_t>(xs) * ys > g_max_grid_cells ||
+            Depth() >= g_max_depth) {
             return nullptr;
         }
         auto g = make_shared<Grid>(xs, ys);
