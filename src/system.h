@@ -432,6 +432,10 @@ struct System {
                                     wxInt32 len = dis.Read32();
                                     char fourcc[4];
                                     fis.Read(fourcc, 4);
+                                    // Else a truncated or corrupt file would loop forever.
+                                    if (fis.LastRead() != 4 || len < 0) {
+                                        return _("Corrupt PNG header.");
+                                    }
                                     fis.SeekI(len, wxFromCurrent);  // skip data
                                     dis.Read32();                   // skip CRC
                                     if (memcmp(fourcc, "IEND", 4) == 0) { break; }
