@@ -168,7 +168,9 @@ struct Grid {
         loop(i, ys) sy += ya[i];
         int cx = view_grid_outer_spacing + view_margin + g_line_width + cell_margin + startx;
         int cy = view_grid_outer_spacing + view_margin + g_line_width + cell_margin + starty;
-        if (!cell->tiny) {
+        // Without a header, the cell is tiny exactly when its grid is, see Cell::Layout().
+        bool celltiny = cell->HasHeader() ? cell->tiny : tinyborder;
+        if (!celltiny) {
             cx += g_margin_extra;
             cy += g_margin_extra;
         }
@@ -186,7 +188,7 @@ struct Grid {
             if (x == xs - 1) {
                 cy += ya[y] + g_line_width + cell_margin * 2;
                 cx = view_grid_outer_spacing + view_margin + g_line_width + cell_margin + startx;
-                if (!cell->tiny) { cx += g_margin_extra; }
+                if (!celltiny) { cx += g_margin_extra; }
             }
         }
         start = startx;
