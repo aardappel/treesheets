@@ -2,6 +2,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     Document *document = nullptr;
     Cell *current = nullptr;
     Cell *lowestcommonancestor = nullptr;
+    // The cell of which only the text state was saved for undo, see AddTextUndoIfNecessary().
+    Cell *textundocell = nullptr;
+    // Whether the script changed anything that needs a relayout once it is done.
+    bool changed = false;
     unique_ptr<Cell> script_clipboard;
     int script_clipboard_colwidth {0};
     // Set while ScriptRun() is executing. A script that opens a modal dialog (e.g. Save As)
@@ -16,11 +20,13 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         document = sys->frame->GetCurrentTab()->doc.get();
         current = document->root.get();
         lowestcommonancestor = nullptr;
+        textundocell = nullptr;
     }
 
     void AddUndoIfNecessary() {
+        changed = true;
         if (lowestcommonancestor == nullptr) {
-            UpdateLowestCommonAncestor(true);
+            UpdateLowestCommonAncestor(textundocell == nullptr);
         } else {
             for (auto *p = current; p != nullptr; p = p->parent) {
                 if (p == lowestcommonancestor) {
@@ -41,6 +47,21 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         document->AddUndo(lowestcommonancestor, newgeneration);
     }
 
+    // For changes of only the text state (Text, celltype and formula) of the current cell: the
+    // first such cell saves just that, which is much smaller than the siblings' grid, and
+    // anything after that falls back to AddUndoIfNecessary().
+    void AddTextUndoIfNecessary() {
+        changed = true;
+        if (current == textundocell) { return; }
+        if (lowestcommonancestor != nullptr || textundocell != nullptr ||
+            document->LastUndoSameCellTextEdit(current)) {
+            AddUndoIfNecessary();
+            return;
+        }
+        textundocell = current;
+        document->AddUndo(current, true, true);
+    }
+
     // If code is non-empty it is run directly (filename is then only used to label errors),
     // otherwise filename is loaded from disk.
     std::string ScriptRun(const char *filename, std::string_view code = {}) {
@@ -48,6 +69,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         running = true;
         selecteddoc = nullptr;
         SwitchToCurrentDocument();
+        changed = false;
 
         bool dump_builtins = false;
         #ifdef _DEBUG
@@ -72,8 +94,10 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         }
 
         document->RecalcFormulas();
-        document->root->ResetChildren();
-        document->UpdateLayout();
+        if (changed) {
+            document->root->ResetChildren();
+            document->UpdateLayout();
+        }
         document->canvas->Refresh();
         if (selecteddoc != nullptr) {
             // Later changes by the script may have removed the selected cells again.
@@ -102,6 +126,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         if (!message.IsEmpty()) { return false; }
 
         SwitchToCurrentDocument();
+        changed = true;
         return true;
     }
 
@@ -110,6 +135,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void NewDocument(int cols, int rows) override {
         sys->InitDB(std::max(cols, 1), std::max(rows, 1));
         SwitchToCurrentDocument();
+        changed = true;
     }
 
     // Same as the "Save" (saveas=false) / "Save As" (saveas=true) menu actions. If saveas is
@@ -188,6 +214,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetColWidth(int w) override {
         if (current->parent != nullptr) {
+            changed = true;
             current->parent->grid->SetColWidth(current, std::max(w, g_min_colwidth));
         }
     }
@@ -244,7 +271,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     // Like typing, this makes a formula cell data.
     void SetText(std::string_view t) override {
         if (current->parent != nullptr) {
-            AddUndoIfNecessary();
+            AddTextUndoIfNecessary();
             current->text.SetText(wxString::FromUTF8(t.data(), t.size()));
             if (current->celltype == CT_FORMULA) { current->celltype = CT_DATA; }
             current->SyncFormula();
@@ -253,7 +280,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     void SetFormula(std::string_view formula) override {
         if (current->parent != nullptr) {
-            AddUndoIfNecessary();
+            AddTextUndoIfNecessary();
             if (!formula.empty()) {
                 current->text.SetText(wxString::FromUTF8(formula.data(), formula.size()));
             }
@@ -342,12 +369,12 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     int GetRelativeSize() override { return -current->text.relsize; }
 
     void SetRelativeSize(int relsize) override {
-        AddUndoIfNecessary();
+        AddTextUndoIfNecessary();
         current->text.relsize = -relsize;
     }
 
     void SetStyle(int stylebits) override {
-        AddUndoIfNecessary();
+        AddTextUndoIfNecessary();
         current->text.stylebits = stylebits;
         current->text.runs.clear();
     }
@@ -361,7 +388,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetSpanStyle(int start, int size, int stylebits) override {
-        AddUndoIfNecessary();
+        AddTextUndoIfNecessary();
         auto &text = current->text;
         text.runs.Modify(TextPos(start), TextPos(start + size), static_cast<int>(text.t.Len()),
                          text.stylebits, [&](TextRun &r) { r.stylebits = stylebits; });
@@ -374,7 +401,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetSpanTextColor(int start, int size, uint color) override {
-        AddUndoIfNecessary();
+        AddTextUndoIfNecessary();
         current->text.SetRunColor(color, TextPos(start), TextPos(start + size));
     }
 
@@ -384,7 +411,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     void SetLink(int start, int size, std::string_view target, bool internal) override {
-        AddUndoIfNecessary();
+        AddTextUndoIfNecessary();
         auto &text = current->text;
         text.links.Set(TextPos(start), TextPos(start + size), static_cast<int>(text.t.Len()),
                        internal, wxString::FromUTF8(target.data(), target.size()));
@@ -485,18 +512,23 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     }
 
     // Undo/redo may replace the current cell tree wholesale, so `current` is reset to the root
-    // afterwards rather than risk it dangling into a tree the undo/redo just discarded.
+    // afterwards rather than risk it dangling into a tree the undo/redo just discarded. Later
+    // changes need undo items of their own, since the earlier ones may just have been undone.
     bool Undo() override {
         if (document->undolist.empty()) return false;
+        changed = true;
         document->Undo(document->undolist, document->redolist);
         current = document->root.get();
+        lowestcommonancestor = textundocell = nullptr;
         return true;
     }
 
     bool Redo() override {
         if (document->redolist.empty()) return false;
+        changed = true;
         document->Undo(document->redolist, document->undolist, true);
         current = document->root.get();
+        lowestcommonancestor = textundocell = nullptr;
         return true;
     }
 
