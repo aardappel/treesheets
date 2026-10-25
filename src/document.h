@@ -3155,7 +3155,7 @@ struct Document {
                 if (!sys->cellclipboard) { return _("No style to paste."); }
                 selected.grid->cell->AddUndo(this, selected, false);
                 selected.grid->SetStyles(selected, sys->cellclipboard.get());
-                selected.grid->cell->ResetChildren();
+                loopallcellssel(c, false) c->ResetLayout();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
@@ -3205,7 +3205,7 @@ struct Document {
             case A_IMAGER: {
                 selected.grid->cell->AddUndo(this, selected, false);
                 selected.grid->ClearImages(selected);
-                selected.grid->cell->ResetChildren();
+                loopallcellssel(c, false) c->ResetLayout();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
@@ -3234,7 +3234,6 @@ struct Document {
             case A_BORD5:
                 selected.grid->cell->AddUndo(this, Selection(), false);
                 selected.grid->SetBorder(action - A_BORD0 + 1);
-                selected.grid->cell->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
@@ -3286,7 +3285,12 @@ struct Document {
                         if (sys->lastimage != nullptr) { c->text.image = sys->lastimage; }
                         break;
                 }
-                selected.grid->cell->ResetChildren();
+                // A width applies to all cells of the column.
+                if (action == A_RESETWIDTH) {
+                    selected.grid->cell->ResetChildren();
+                } else {
+                    loopallcellssel(c, false) c->ResetChildren();
+                }
                 UpdateLayout();
                 canvas->Refresh();
                 sys->frame->UpdateStatus(selected, false);
@@ -3317,7 +3321,7 @@ struct Document {
                     }
                 }
                 outer.clear();
-                selected.grid->cell->ResetChildren();
+                loopallcellssel(c, false) c->ResetChildren();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
@@ -3331,7 +3335,6 @@ struct Document {
                 loopallcellssel(c, action != A_FOLD) if (c->grid) {
                     c->AddUndo(this, Selection(), false);
                     c->grid->folded = fold;
-                    c->ResetChildren();
                 }
                 UpdateLayout();
                 ScrollIfSelectionOutOfView();
@@ -3387,8 +3390,6 @@ struct Document {
                                      : v / 100.0;
                     return NewImage(image.display_scale, image.RescaledData(scale), image.type);
                 });
-                currentdrawroot->ResetChildren();
-                currentdrawroot->ResetLayout();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
@@ -3399,8 +3400,6 @@ struct Document {
                     return NewImage(sys->frame->FromDIP(1.0), vector<uint8_t>(image.data),
                                     image.type);
                 });
-                currentdrawroot->ResetChildren();
-                currentdrawroot->ResetLayout();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;
@@ -3818,7 +3817,7 @@ struct Document {
         bool v = toggle ? !selected.GetFirst()->verticaltextandgrid : vert;
         if (ds >= 0 && selected.IsAll()) { selected.grid->cell->drawstyle = ds; }
         selected.grid->SetGridTextLayout(ds, v, noset, selected, recursive);
-        selected.grid->cell->ResetChildren();
+        loopallcellssel(c, false) c->ResetChildren();
         UpdateLayout();
         canvas->Refresh();
         return wxEmptyString;
@@ -4476,7 +4475,10 @@ struct Document {
             if (image == nullptr) { continue; }
             auto [it, inserted] = replacements.try_emplace(image, nullptr);
             if (inserted) { it->second = transform(*image); }
-            if (it->second != nullptr) { c->text.image = it->second; }
+            if (it->second != nullptr) {
+                c->text.image = it->second;
+                c->ResetLayout();
+            }
         }
     }
 
@@ -4538,10 +4540,9 @@ struct Document {
                 loopallcellssel(c, false) {
                     c->text.SetText(tag);
                     c->text.WasEdited();
+                    c->ResetLayout();
                 }
                 selected.ExitEdit(this);
-                selected.grid->cell->ResetChildren();
-                selected.grid->cell->ResetLayout();
                 UpdateLayout();
                 canvas->Refresh();
                 return wxEmptyString;

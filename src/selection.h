@@ -154,7 +154,8 @@ struct Selection {
                 y = ny;
             }
 
-            grid->cell->ResetChildren();
+            // Only cells moved into another column can get another width to lay out in.
+            if (dx != 0) { loop(r, ys) loop(cx, grid->xs) grid->C(cx, y + r)->Reset(); }
             doc->UpdateLayout();
             doc->ScrollIfSelectionOutOfView();
             doc->canvas->Refresh();

@@ -937,22 +937,23 @@ struct Grid {
 
     void SetStyle(Document *doc, const Selection &sel, int sb, bool recursive) {
         cell->AddUndo(doc, sel, recursive);
-        // Underline and strikethrough don't change the size of the text.
-        if (!(sb & (STYLE_UNDERLINE | STYLE_STRIKETHRU))) {
-            foreachcellinsel(c, sel) c->ResetChildren();
-        }
         // Only a selected range of text gets the style; otherwise it applies to the whole cell,
         // or all selected cells (and with recursive all cells inside them): on, unless all of
         // them already have it (see Document::SelectionHasStyle, which shows this state in the
         // menu).
         auto range = sel.TextEdit() && sel.cursor != sel.cursorend;
         auto set = range || !AllHaveStyle(sel, sb, recursive);
+        // Underline and strikethrough don't change the size of text measured in one piece, which
+        // text with runs isn't (see Text::TextSize()).
+        auto keepsize = (sb & (STYLE_UNDERLINE | STYLE_STRIKETHRU)) != 0;
         foreachcellinsel(c, sel) {
             if (range) {
                 c->text.ToggleStyle(sb, sel.cursor, sel.cursorend);
                 c->text.WasEdited();
+                c->ResetLayout();
             } else {
                 c->ForCells(recursive, [&](Cell *d) {
+                    if (!keepsize || d->text.Rich()) { d->ResetLayout(); }
                     d->text.SetStyleAll(sb, set);
                     d->text.WasEdited();
                 });
@@ -976,9 +977,16 @@ struct Grid {
         return true;
     }
 
+    // Alignment doesn't change the size of cells, but is only applied when the grid they are in
+    // is laid out (see Cell::AlignContent()). This grid is laid out again anyway, the grids in
+    // its cells only if reset.
+    void ResetAligned(const Selection &sel, bool recursive) {
+        if (recursive) { foreachcellinsel(c, sel) c->ResetChildren(); }
+    }
+
     void SetTextAlign(Document *doc, const Selection &sel, int align, bool recursive) {
         cell->AddUndo(doc, sel, recursive);
-        cell->ResetChildren();
+        ResetAligned(sel, recursive);
         foreachcellinsel(c, sel) c->ForCells(recursive, [&](Cell *d) { d->textalign = align; });
         doc->UpdateLayout();
         doc->canvas->Refresh();
@@ -993,7 +1001,7 @@ struct Grid {
 
     void SetVertAlign(Document *doc, const Selection &sel, int align, bool recursive) {
         cell->AddUndo(doc, sel, recursive);
-        cell->ResetChildren();
+        ResetAligned(sel, recursive);
         foreachcellinsel(c, sel) c->ForCells(recursive, [&](Cell *d) { d->vertalign = align; });
         doc->UpdateLayout();
         doc->canvas->Refresh();
@@ -1001,13 +1009,20 @@ struct Grid {
 
     void ColorChange(Document *doc, int which, uint color, const Selection &sel, bool recursive) {
         cell->AddUndo(doc, sel, recursive);
-        cell->ResetChildren();
         auto range = which == A_TEXTCOLOR && sel.TextEdit() && sel.cursor != sel.cursorend;
         foreachcellinsel(c, sel) {
+            // Colors don't change the size of cells, except where the text color changes how text
+            // is split into runs, each measured on its own (see Text::TextSize()).
             if (range) {
                 c->text.SetRunColor(color, sel.cursor, sel.cursorend);
                 c->text.WasEdited();
+                c->ResetLayout();
             } else {
+                if (which == A_TEXTCOLOR) {
+                    c->ForCells(recursive, [](Cell *d) {
+                        if (d->text.Rich()) { d->ResetLayout(); }
+                    });
+                }
                 c->ColorChange(doc, which, color, recursive);
             }
         }
@@ -1017,8 +1032,10 @@ struct Grid {
 
     void ReplaceStr(Document *doc, const wxString &s, const wxString &ls, const Selection &sel) {
         cell->AddUndo(doc, sel, false);
-        cell->ResetChildren();
-        foreachcellinsel(c, sel) c->text.ReplaceStr(s, ls);
+        foreachcellinsel(c, sel) {
+            c->text.ReplaceStr(s, ls);
+            c->ResetLayout();
+        }
         doc->UpdateLayout();
         doc->canvas->Refresh();
     }
