@@ -58,15 +58,16 @@ struct Document {
     // Set while Wheel(..., deferlayout = true) changed sizes/widths but left the cached cell
     // geometry untouched (so paints and hover stay consistent); UpdateLayout() resets it.
     bool layoutpending {false};
-    // Identifies the last undo item added by the current deferred burst, so that further steps of
-    // the burst (which the user can't see individually) don't each add another one, unless they
-    // change cells outside of its scope. While it is the last one, nothing else changed the
-    // document since.
+    // Identifies the last undo item added by AddResizeUndo(), so that further steps of a deferred
+    // burst (which the user can't see individually), or of column width changes, don't each add
+    // another one, unless they change cells outside of its scope. While it is the last one,
+    // nothing else changed the document since.
     Cell *pendingundocell {nullptr};
     UndoItem *pendingundoitem {nullptr};
     Selection pendingundoscope;
     bool pendingundorecursive {false};
-    // The cells whose text size the burst changed, to lay out again, or all cells (no grid).
+    bool pendingundowidth {false};
+    // The cells whose size the burst changed, to lay out again, or all cells (no grid).
     Selection pendingsel;
     bool pendinghierarchical {false};
     unique_ptr<Cell> root {nullptr};
@@ -1208,23 +1209,25 @@ struct Document {
         return layoutpending && !undolist.empty() && undolist.back().get() == pendingundoitem;
     }
 
-    // Like Cell::AddUndo(), without zeroing the cached geometry. Steps of a burst are undone
-    // together.
-    void AddDeferredUndo(Cell *c, Selection *scope = nullptr, bool recursive = false) {
-        bool burst = InDeferredBurst() && pendingundocell == c;
-        bool covered = !undolist.empty() && !undolist.back()->partial ||
-                       scope != nullptr && scope->IsInside(pendingundoscope) &&
-                           (pendingundorecursive || !recursive);
-        if (burst && covered) { return; }
-        AddUndo(c, !burst, false, scope, recursive);
+    // Like Cell::AddUndo(), without zeroing the cached geometry. The steps of a burst are undone
+    // together, and so are consecutive column width changes.
+    void AddResizeUndo(Cell *c, Selection &scope, bool recursive, bool width) {
+        bool merge = !undolist.empty() && undolist.back().get() == pendingundoitem &&
+                     pendingundocell == c && undolist.size() != undolistsizeatfullsave &&
+                     (layoutpending || width && pendingundowidth);
+        if (merge && scope.IsInside(pendingundoscope) && (pendingundorecursive || !recursive)) {
+            return;
+        }
+        AddUndo(c, !merge, false, &scope, recursive);
         pendingundocell = c;
         pendingundoitem = undolist.back().get();
-        if (scope != nullptr) { pendingundoscope = *scope; }
+        pendingundoscope = scope;
         pendingundorecursive = recursive;
+        pendingundowidth = width;
     }
 
-    // Adds sel to the cells the deferred burst has to lay out again, or makes that all of them
-    // without a selection or for cells of another grid.
+    // Adds sel to the cells the deferred burst has to lay out again, or makes that all of them for
+    // cells of another grid.
     void AddPendingCells(const Selection &sel, bool hierarchical) {
         if (!layoutpending) {
             pendingsel = sel;
@@ -1260,20 +1263,16 @@ struct Document {
         if (alt) {
             if (selected.grid == nullptr) { return NoSel(); }
             if (selected.xs > 0) {
-                if (!LastUndoSameCellStructure(selected.grid->cell)) {
-                    if (deferlayout) {
-                        AddDeferredUndo(selected.grid->cell);
-                    } else {
-                        selected.grid->cell->AddUndo(this);
-                    }
-                }
+                // The cells of the columns, and if hierarchical those inside them, get a width.
+                Selection cols(selected.grid, selected.x, 0, selected.xs, selected.grid->ys);
+                AddResizeUndo(selected.grid->cell, cols, hierarchical, true);
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
                 if (deferlayout) {
-                    AddPendingCells(Selection(), hierarchical);
+                    AddPendingCells(cols, hierarchical);
                     layoutpending = true;
                 } else {
                     selected.grid->cell->ResetLayout();
-                    selected.grid->cell->ResetChildren();
+                    selected.grid->ResetResized(cols, hierarchical);
                     UpdateLayout();
                     ScrollIfSelectionOutOfView();
                     canvas->Refresh();
@@ -1285,14 +1284,14 @@ struct Document {
         } else if (shift) {
             if (selected.grid == nullptr) { return NoSel(); }
             if (deferlayout) {
-                AddDeferredUndo(selected.grid->cell, &selected, hierarchical);
+                AddResizeUndo(selected.grid->cell, selected, hierarchical, false);
                 selected.grid->RelSize(-dir, selected, pathscalebias, hierarchical);
                 AddPendingCells(selected, hierarchical);
                 layoutpending = true;
             } else {
                 selected.grid->cell->AddUndo(this, selected, hierarchical);
                 selected.grid->RelSize(-dir, selected, pathscalebias, hierarchical);
-                selected.grid->ResetRelSized(selected, hierarchical);
+                selected.grid->ResetResized(selected, hierarchical);
                 UpdateLayout();
                 ScrollIfSelectionOutOfView();
                 canvas->Refresh();
@@ -1475,7 +1474,7 @@ struct Document {
             // just that of the changed cells, if nothing else changed the document since.
             if (pendingsel.grid && InDeferredBurst()) {
                 pendingundocell->ResetLayout();
-                pendingsel.grid->ResetRelSized(pendingsel, pendinghierarchical);
+                pendingsel.grid->ResetResized(pendingsel, pendinghierarchical);
             } else {
                 root->ResetChildren();
             }
@@ -3335,7 +3334,9 @@ struct Document {
                 }
                 // A width applies to all cells of the column.
                 if (action == A_RESETWIDTH) {
-                    selected.grid->cell->ResetChildren();
+                    selected.grid->ResetResized(
+                        Selection(selected.grid, selected.x, 0, selected.xs, selected.grid->ys),
+                        false);
                 } else {
                     loopallcellssel(c, false) c->ResetChildren();
                 }
@@ -4152,12 +4153,6 @@ struct Document {
         return c;
     }
 
-    bool LastUndoSameCellStructure(Cell *c) {
-        return !undolist.empty() && undolist.size() != undolistsizeatfullsave &&
-               !undolist.back()->textedit && !undolist.back()->partial &&
-               undolist.back()->cloned_from == (uintptr_t)c;
-    }
-
     bool LastUndoSameCellTextEdit(Cell *c) {
         // hacky way to detect word boundaries to stop coalescing, but works, and
         // not a big deal if selected is not actually related to this cell
@@ -4178,6 +4173,7 @@ struct Document {
         FinishUndo();
         EndFoldPeek();
         formulasdirty = true;
+        pendingundoitem = nullptr;  // it may be freed, see AddResizeUndo()
         if (textedit) { textedited = c; }
         redolist.clear();
         lastmodsinceautosave = wxGetLocalTime();
