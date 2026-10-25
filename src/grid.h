@@ -937,7 +937,10 @@ struct Grid {
 
     void SetStyle(Document *doc, const Selection &sel, int sb, bool recursive) {
         cell->AddUndo(doc, sel, recursive);
-        cell->ResetChildren();
+        // Underline and strikethrough don't change the size of the text.
+        if (!(sb & (STYLE_UNDERLINE | STYLE_STRIKETHRU))) {
+            foreachcellinsel(c, sel) c->ResetChildren();
+        }
         // Only a selected range of text gets the style; otherwise it applies to the whole cell,
         // or all selected cells (and with recursive all cells inside them): on, unless all of
         // them already have it (see Document::SelectionHasStyle, which shows this state in the
