@@ -815,6 +815,17 @@ struct Grid {
     void RelSize(int dir, const Selection &sel, int zoomdepth, bool hierarchical) {
         foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth, hierarchical);
     }
+    // After RelSize(): the cells inside a cell only change their size if hierarchical, see
+    // Cell::Layout() for when they turn tiny.
+    void ResetRelSized(const Selection &sel, bool hierarchical) {
+        foreachcellinsel(c, sel) {
+            if (hierarchical) {
+                c->ResetChildren();
+            } else {
+                c->Reset();
+            }
+        }
+    }
     void SetBorder(int width) {
         user_grid_outer_spacing = width;
     }

@@ -105,8 +105,13 @@ struct Cell {
 
     template<typename DC>
     void Layout(Document *doc, DC &dc, int depth, int maxcolwidth, bool forcetiny) {
+        bool wastiny = tiny;
         tiny = text.filtered && !grid || forcetiny ||
                doc->PickFont(dc, depth, text.relsize, text.stylebits);
+        // The cells inside are tiny along with this one.
+        if (grid && tiny != wastiny) {
+            for (auto &c : grid->cells) { c->ResetChildren(); }
+        }
         int ixs = 0;
         int iys = 0;
         if (!tiny) { treesheets::System::ImageSize(text.DisplayImage(), ixs, iys); }

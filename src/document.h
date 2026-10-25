@@ -58,10 +58,17 @@ struct Document {
     // Set while Wheel(..., deferlayout = true) changed sizes/widths but left the cached cell
     // geometry untouched (so paints and hover stay consistent); UpdateLayout() resets it.
     bool layoutpending {false};
-    // Identifies the undo item added by the current deferred burst, so that further steps of the
-    // burst (which the user can't see individually) don't each add another one.
+    // Identifies the last undo item added by the current deferred burst, so that further steps of
+    // the burst (which the user can't see individually) don't each add another one, unless they
+    // change cells outside of its scope. While it is the last one, nothing else changed the
+    // document since.
     Cell *pendingundocell {nullptr};
-    size_t pendingundosize {0};
+    UndoItem *pendingundoitem {nullptr};
+    Selection pendingundoscope;
+    bool pendingundorecursive {false};
+    // The cells whose text size the burst changed, to lay out again, or all cells (no grid).
+    Selection pendingsel;
+    bool pendinghierarchical {false};
     unique_ptr<Cell> root {nullptr};
     Selection prev;
     Selection hover;
@@ -1197,11 +1204,43 @@ struct Document {
     static wxString NoThin() { return _("This operation doesn't work on thin selections."); }
     static wxString NoGrid() { return _("This operation requires a cell that contains a grid."); }
 
-    void AddDeferredUndo(Cell *c) {
-        if (layoutpending && pendingundocell == c && pendingundosize == undolist.size()) { return; }
-        AddUndo(c);  // not Cell::AddUndo(), which would zero the cached geometry
+    bool InDeferredBurst() const {
+        return layoutpending && !undolist.empty() && undolist.back().get() == pendingundoitem;
+    }
+
+    // Like Cell::AddUndo(), without zeroing the cached geometry. Steps of a burst are undone
+    // together.
+    void AddDeferredUndo(Cell *c, Selection *scope = nullptr, bool recursive = false) {
+        bool burst = InDeferredBurst() && pendingundocell == c;
+        bool covered = !undolist.empty() && !undolist.back()->partial ||
+                       scope != nullptr && scope->IsInside(pendingundoscope) &&
+                           (pendingundorecursive || !recursive);
+        if (burst && covered) { return; }
+        AddUndo(c, !burst, false, scope, recursive);
         pendingundocell = c;
-        pendingundosize = undolist.size();
+        pendingundoitem = undolist.back().get();
+        if (scope != nullptr) { pendingundoscope = *scope; }
+        pendingundorecursive = recursive;
+    }
+
+    // Adds sel to the cells the deferred burst has to lay out again, or makes that all of them
+    // without a selection or for cells of another grid.
+    void AddPendingCells(const Selection &sel, bool hierarchical) {
+        if (!layoutpending) {
+            pendingsel = sel;
+            pendinghierarchical = hierarchical;
+        } else if (pendingsel.grid != sel.grid) {
+            pendingsel = Selection();
+        } else if (pendingsel.grid) {
+            auto &p = pendingsel;
+            int x1 = max(p.x + p.xs, sel.x + sel.xs);
+            int y1 = max(p.y + p.ys, sel.y + sel.ys);
+            p.x = min(p.x, sel.x);
+            p.y = min(p.y, sel.y);
+            p.xs = x1 - p.x;
+            p.ys = y1 - p.y;
+            pendinghierarchical |= hierarchical;
+        }
     }
 
     // Performs the relayout and redraw that Wheel(..., deferlayout = true) postponed.
@@ -1230,6 +1269,7 @@ struct Document {
                 }
                 selected.grid->ResizeColWidths(dir, selected, hierarchical);
                 if (deferlayout) {
+                    AddPendingCells(Selection(), hierarchical);
                     layoutpending = true;
                 } else {
                     selected.grid->cell->ResetLayout();
@@ -1245,13 +1285,14 @@ struct Document {
         } else if (shift) {
             if (selected.grid == nullptr) { return NoSel(); }
             if (deferlayout) {
-                AddDeferredUndo(selected.grid->cell);
+                AddDeferredUndo(selected.grid->cell, &selected, hierarchical);
                 selected.grid->RelSize(-dir, selected, pathscalebias, hierarchical);
+                AddPendingCells(selected, hierarchical);
                 layoutpending = true;
             } else {
-                selected.grid->cell->AddUndo(this);
-                selected.grid->ResetChildren();
+                selected.grid->cell->AddUndo(this, selected, hierarchical);
                 selected.grid->RelSize(-dir, selected, pathscalebias, hierarchical);
+                selected.grid->ResetRelSized(selected, hierarchical);
                 UpdateLayout();
                 ScrollIfSelectionOutOfView();
                 canvas->Refresh();
@@ -1430,9 +1471,16 @@ struct Document {
         SetHighlight(hoverfoldicon, wxRect());
         SetHoverNote(wxRect());
         if (layoutpending) {
-            // Deferred Wheel() changes left the cached geometry stale (deliberately not reset).
+            // Deferred Wheel() changes left the cached geometry stale (deliberately not reset):
+            // just that of the changed cells, if nothing else changed the document since.
+            if (pendingsel.grid && InDeferredBurst()) {
+                pendingundocell->ResetLayout();
+                pendingsel.grid->ResetRelSized(pendingsel, pendinghierarchical);
+            } else {
+                root->ResetChildren();
+            }
             layoutpending = false;
-            root->ResetChildren();
+            pendingsel = pendingundoscope = Selection();
         }
         {
             wxInfoDC dc(canvas);
