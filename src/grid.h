@@ -815,8 +815,8 @@ struct Grid {
     void RelSize(int dir, const Selection &sel, int zoomdepth, bool hierarchical) {
         foreachcellinsel(c, sel) c->RelSize(dir, zoomdepth, hierarchical);
     }
-    // After RelSize() or ResizeColWidths(): the cells inside a cell only change if hierarchical,
-    // see Cell::Layout() for when they turn tiny.
+    // After RelSize(), ResizeColWidths() or SetGridTextLayout(): the cells inside a cell only
+    // change if hierarchical, see Cell::Layout() for when they turn tiny.
     void ResetResized(const Selection &sel, bool hierarchical) {
         foreachcellinsel(c, sel) {
             if (hierarchical) {

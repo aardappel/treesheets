@@ -505,8 +505,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         image = Document::NewImage(image->display_scale / (scale / 100.0),
                                    vector<uint8_t>(image->data), image->type);
         if (image != nullptr) { current->text.image = image; }
-        document->currentdrawroot->ResetChildren();
-        document->currentdrawroot->ResetLayout();
+        current->ResetLayout();
         document->UpdateLayout();
         document->canvas->Refresh();
     }

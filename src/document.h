@@ -783,8 +783,7 @@ struct Document {
         for (auto *cg = selected.grid->cell; cg != view; cg = cg->parent) {
             if (cg->grid->folded) {
                 cg->grid->folded = false;
-                cg->ResetLayout();
-                cg->ResetChildren();
+                cg->ResetLayout();  // the cells inside kept their layout while folded
             }
         }
         if (view == drawroot) {
@@ -1421,12 +1420,11 @@ struct Document {
             for (auto *d : itercells) {
                 if (d->grid && d->grid->folded) {
                     d->grid->folded = false;
+                    d->ResetLayout();  // the cells inside kept their layout while folded
                     foldpeek.push_back(d->grid);
                 }
             }
             foldpeekstart = wxGetLocalTimeMillis();
-            c->ResetLayout();
-            c->ResetChildren();
             hover.ExitEdit(this);
             SetSelect(hover);
             UpdateLayout();
@@ -1448,7 +1446,10 @@ struct Document {
         if (foldpeek.empty()) { return; }
         auto peek = std::move(foldpeek);
         foldpeek.clear();
-        for (auto &g : peek) { g->folded = true; }
+        for (auto &g : peek) {
+            g->folded = true;
+            g->cell->ResetLayout();
+        }
         auto *c = peek[0]->cell;
         if (released && wxGetLocalTimeMillis() - foldpeekstart < 500) {
             c->AddUndo(this);
@@ -1457,8 +1458,6 @@ struct Document {
                    sc && c->parent && (sc == c || c->IsParentOf(sc))) {
             SetSelect(c->parent->grid->FindCell(c));
         }
-        c->ResetLayout();
-        c->ResetChildren();
         UpdateLayout();
         canvas->Refresh();
     }
@@ -3866,7 +3865,7 @@ struct Document {
         bool v = toggle ? !selected.GetFirst()->verticaltextandgrid : vert;
         if (ds >= 0 && selected.IsAll()) { selected.grid->cell->drawstyle = ds; }
         selected.grid->SetGridTextLayout(ds, v, noset, selected, recursive);
-        loopallcellssel(c, false) c->ResetChildren();
+        selected.grid->ResetResized(selected, recursive);
         UpdateLayout();
         canvas->Refresh();
         return wxEmptyString;
@@ -3992,13 +3991,13 @@ struct Document {
             if (action == A_PASTETSV || lines.size() != 1 || treesheets::System::IsTSV(lines)) {
                 return false;
             }
-            g->cell->AddUndo(this);
+            g->cell->AddUndo(this, selected, false);
             loop(y, selected.ys) loop(x, selected.xs) {
                 auto *c = g->C(selected.x + x, selected.y + y).get();
                 c->text.SetText(lines[0]);
                 EndFormulaEdit(c, false);  // as if typed, so "=..." becomes a formula
+                c->Reset();
             }
-            g->cell->ResetChildren();
         }
         return true;
     }
