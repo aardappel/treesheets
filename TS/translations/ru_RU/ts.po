@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 6.1 (based on TS 2.17.2, commit db52cd2)\n"
+"Project-Id-Version: TreeSheets_RU 6.2 (based on TS 2.22.1, commit a9aecd9)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-03 15:43+0200\n"
-"PO-Revision-Date: 2026-10-16 15:32+0300\n"
+"PO-Revision-Date: 2026-10-25 16:29+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 # комментарий к эл-ту Главного Окна (Инф Строка)
 #, c-format
@@ -40,6 +40,7 @@ msgstr ""
 "был изменён на диске другой программой или компьютером:\n"
 "Хотите отменить изменения и загрузить файл с диска?"
 
+# ???
 #, c-format
 msgid "%s shows TreeSheets or minimizes it, wherever the focus is"
 msgstr "%s показывает или сворачивает TreeSheets, где бы ни был фокус"
@@ -334,9 +335,11 @@ msgstr "Добавить сетку размером NxN в выбранную �
 msgid "Adds a grid to the selected cell"
 msgstr "Добавить сетку в выбранную ячейку"
 
+# Сообщение (после действия или события)
 msgid "Agent socket closed"
 msgstr "Сокет агента закрыт"
 
+# Сообщение (после действия или события)
 #, c-format
 msgid "Agent socket: %s"
 msgstr "Сокет агента: %s"
@@ -750,6 +753,7 @@ msgstr "Не удалось проверить обновления: %s"
 msgid "Could not check for updates: no release found."
 msgstr "Не удалось проверить обновления: выпуск не найден."
 
+# Сообщение (после действия или события)
 #, c-format
 msgid "Could not register the shortcut %s."
 msgstr "Не удалось зарегистрировать сочетание клавиш %s."
@@ -805,6 +809,7 @@ msgstr "У&меньшить..."
 msgid "Decrease column width (no sub grids, CTRL+ALT+mousewheel)"
 msgstr "У&меньшить .."
 
+# +++
 msgid "Decrease text size (no sub grids, CTRL+SHIFT+mousewheel)"
 msgstr "У&меньшить .."
 
@@ -888,6 +893,7 @@ msgstr "JPEG формат уменьшает размер *.cts-файла. Пр
 msgid "Embed the image(s) in the selected cells in PNG format (default)"
 msgstr "PNG формат применяется по Умолчанию и к изображениям в выбранных ячейках (ко всем копиям одного изображения)"
 
+# Сообщение (после действия или события)
 msgid "Empty to remove the link"
 msgstr "Пусто, чтобы удалить ссылку"
 
@@ -1155,9 +1161,8 @@ msgstr "Свернуть Всё (CTRL+SHIFT+двойной щелчок)"
 msgid "Folds the grid of the selected cell(s) recursively"
 msgstr "Рекурсивно (на всю глубину вложенности) Сворачивает подсетки выбранных ячеек"
 
-msgid ""
-"Follows the link at the cursor or in the selected cell, or else opens its "
-"text in the browser"
+# комментарий к п. Меню
+msgid "Follows the link at the cursor or in the selected cell, or else opens its text in the browser"
 msgstr "Переходит по ссылке у курсора или в выбранной ячейке, иначе открывает её текст в браузере"
 
 # п. Меню (нет & в исходном тексте)
@@ -1358,28 +1363,31 @@ msgstr "Привязка клавиш отменена."
 msgid "Leave out tiny and filtered cells and all sub-grids when copying cells as text or HTML"
 msgstr "Не включать слишком мелкие и отфильтрованные ячейки и все подсетки при копировании ячеек как текста или HTML"
 
-msgid ""
-"Let AI agents run Lobster scripts on the open document through a local socket"
+# комментарий к п. Меню
+msgid "Let AI agents run Lobster scripts on the open document through a local socket"
 msgstr "Позволяет ИИ-агентам запускать сценарии Lobster в открытом документе через локальный сокет"
 
 msgid "Line Style Rendering"
 msgstr ".. в стиле &Линий"
 
+# Заголовок Окна (выбор п. Меню)
 msgid "Link"
 msgstr "Ссылка"
 
+# комментарий к эл-ту Главного Окна
 msgid "Link (SHIFT+F5)"
 msgstr "Ссылка (SHIFT+F5)"
 
+# Текст в Окне (выбор п. Меню)
 msgid "Link to"
 msgstr "Ссылка на"
 
+# ???
 msgid "Links"
 msgstr "Ссылки"
 
-msgid ""
-"Links the selected text to a web page, a file or the nearest cell with that "
-"text (CTRL+click follows it)"
+# комментарий к п. Меню
+msgid "Links the selected text to a web page, a file or the nearest cell with that text (CTRL+click follows it)"
 msgstr "Связывает выделенный текст с веб-страницей, файлом или ближайшей ячейкой с этим текстом (CTRL+щелчок переходит по ссылке)"
 
 # комментарий к п. Меню
@@ -1476,6 +1484,7 @@ msgstr "ПРИМЕЧАНИЕ: привязка клавиш вступит в с
 msgid "Navigate in between cells with cursor keys"
 msgstr "Перемещаться между ячейками с помощью Клавиш Курсора"
 
+# Элемент, Текст в Окне (выбор п. Меню) - Ссылка
 msgid "Nearest cell with this text"
 msgstr "Ближайшая ячейка с этим текстом"
 
@@ -1978,6 +1987,7 @@ msgstr "Сохранить как..."
 msgid "Save cancelled."
 msgstr "Сохранение отменено."
 
+# комментарий к п. Меню
 msgid "Save changed documents when the window is minimized or TreeSheets is closed"
 msgstr "Сохранять изменённые документы при сворачивании окна или закрытии TreeSheets"
 
@@ -1993,6 +2003,7 @@ msgstr "Сохранить текущий документ с другим им�
 msgid "Save image(s) from selected cell(s) to disk. Multiple images will be saved with a counter appended to each file name."
 msgstr "Сохранить изображение(я) из выбранной(ых) ячейки(ек) на диск. При сохранении нескольких изображений к имени каждого файла будет добавлен порядковый номер."
 
+# п. Меню (нет & в исходном тексте)
 msgid "Save on minimize and exit"
 msgstr "Сохранять при сворачивании и выходе"
 
@@ -2138,6 +2149,7 @@ msgstr ".. 50%"
 msgid "Show About dialog"
 msgstr "Показать окно \"О программе\""
 
+# ???
 msgid "Show and hide from any application"
 msgstr "Показывать и скрывать из любого приложения"
 
@@ -2324,6 +2336,7 @@ msgstr "Документ будет зашифрован при сохранен
 msgid "The document will be saved unencrypted."
 msgstr "Документ будет сохранён без шифрования."
 
+# Сообщение (после действия или события)
 msgid "The link could not be opened."
 msgstr "Не удалось открыть ссылку."
 
@@ -2518,6 +2531,7 @@ msgstr ".. в стиле &Линий"
 msgid "Views"
 msgstr "Представления"
 
+# Элемент, Текст в Окне (выбор п. Меню) - Ссылка
 msgid "Web page or file"
 msgstr "Веб-страница или файл"
 
