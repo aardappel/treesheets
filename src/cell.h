@@ -634,8 +634,12 @@ struct Cell {
         }
         if (original->text.image != nullptr) { text.image = original->text.image; }
         if (colwidth > 0 && (!original->grid || HasText())) {
-            auto &width = parent->grid->colwidths[parent->grid->FindCell(this).x];
-            width = std::max(width, colwidth);
+            auto x = parent->grid->FindCell(this).x;
+            if (auto &width = parent->grid->colwidths[x]; width < colwidth) {
+                width = colwidth;
+                parent->grid->ResetResized(Selection(parent->grid, x, 0, 1, parent->grid->ys),
+                                           false);
+            }
         }
         if (original->grid) {
             shared_ptr<Grid> gridclone = make_shared<Grid>(original->grid->xs, original->grid->ys);

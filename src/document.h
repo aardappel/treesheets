@@ -3984,7 +3984,11 @@ struct Document {
             }
             loop(x, selected.xs) {
                 auto &width = g->colwidths[selected.x + x];
-                width = max(width, block ? block->colwidths[x % bx] : sys->cellclipboardcolwidth);
+                auto w = block ? block->colwidths[x % bx] : sys->cellclipboardcolwidth;
+                if (width < w) {
+                    width = w;
+                    g->ResetResized(Selection(g, selected.x + x, 0, 1, g->ys), false);
+                }
             }
         } else {
             const wxArrayString &lines = wxStringTokenize(text, LINE_DELIMITERS);
