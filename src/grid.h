@@ -112,11 +112,16 @@ struct Grid {
 
     /* Clones g into this grid. This mutates the grid this function is called on. */
     void Clone(const shared_ptr<Grid> &g) {
+        CloneFields(g.get());
+        foreachcell(c) g->C(x, y) = c->Clone(g->cell);
+    }
+
+    // Everything of Clone() but the cells.
+    void CloneFields(Grid *g) const {
         g->bordercolor = bordercolor;
         g->user_grid_outer_spacing = user_grid_outer_spacing;
         g->folded = folded;
-        foreachcell(c) g->C(x, y) = c->Clone(g->cell);
-        loop(x, xs) g->colwidths[x] = colwidths[x];
+        g->colwidths = colwidths;
     }
 
     unique_ptr<Cell> CloneSel(const Selection &sel) {
@@ -128,7 +133,7 @@ struct Grid {
 
     size_t EstimatedMemoryUse() {
         size_t sum = 0;
-        foreachcell(c) sum += c->EstimatedMemoryUse();
+        foreachcell(c) if (c) { sum += c->EstimatedMemoryUse(); }  // null in undo snapshots
         return sizeof(Grid) + xs * ys * sizeof(Cell *) + sum;
     }
 
@@ -487,7 +492,9 @@ struct Grid {
 
     Selection SelectAll() const { return {cell->grid, 0, 0, xs, ys}; }
     void ImageRefCount(bool includefolded) {
-        if (includefolded || !folded) { foreachcell(c) c->ImageRefCount(includefolded); }
+        if (includefolded || !folded) {
+            foreachcell(c) if (c) { c->ImageRefCount(includefolded); }  // null in undo snapshots
+        }
     }
 
     template<typename DC>
@@ -604,7 +611,7 @@ struct Grid {
         // The delete below may detach this grid from its cell, which would otherwise destroy it
         // while we are still running on it.
         shared_ptr<Grid> keepalive = cell->grid;
-        cell->AddUndo(doc);
+        cell->AddUndo(doc, sel, false);
         MultiCellDeleteSub(doc, sel);
         doc->UpdateLayout();
         doc->canvas->Refresh();
@@ -929,7 +936,7 @@ struct Grid {
     }
 
     void SetStyle(Document *doc, const Selection &sel, int sb, bool recursive) {
-        cell->AddUndo(doc);
+        cell->AddUndo(doc, sel, recursive);
         cell->ResetChildren();
         // Only a selected range of text gets the style; otherwise it applies to the whole cell,
         // or all selected cells (and with recursive all cells inside them): on, unless all of
@@ -967,7 +974,7 @@ struct Grid {
     }
 
     void SetTextAlign(Document *doc, const Selection &sel, int align, bool recursive) {
-        cell->AddUndo(doc);
+        cell->AddUndo(doc, sel, recursive);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->ForCells(recursive, [&](Cell *d) { d->textalign = align; });
         doc->UpdateLayout();
@@ -982,7 +989,7 @@ struct Grid {
     }
 
     void SetVertAlign(Document *doc, const Selection &sel, int align, bool recursive) {
-        cell->AddUndo(doc);
+        cell->AddUndo(doc, sel, recursive);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->ForCells(recursive, [&](Cell *d) { d->vertalign = align; });
         doc->UpdateLayout();
@@ -990,7 +997,7 @@ struct Grid {
     }
 
     void ColorChange(Document *doc, int which, uint color, const Selection &sel, bool recursive) {
-        cell->AddUndo(doc);
+        cell->AddUndo(doc, sel, recursive);
         cell->ResetChildren();
         auto range = which == A_TEXTCOLOR && sel.TextEdit() && sel.cursor != sel.cursorend;
         foreachcellinsel(c, sel) {
@@ -1006,7 +1013,7 @@ struct Grid {
     }
 
     void ReplaceStr(Document *doc, const wxString &s, const wxString &ls, const Selection &sel) {
-        cell->AddUndo(doc);
+        cell->AddUndo(doc, sel, false);
         cell->ResetChildren();
         foreachcellinsel(c, sel) c->text.ReplaceStr(s, ls);
         doc->UpdateLayout();

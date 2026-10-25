@@ -141,7 +141,7 @@ struct Selection {
     void Dir(Document *doc, bool ctrl, bool shift, int dx, int dy, int &v, int &vs, int &ovs,
              bool notboundaryperp, bool notboundarypar, bool exitedit) {
         if (ctrl && !textedit) {
-            grid->cell->AddUndo(doc);
+            grid->cell->AddUndo(doc, Selection(), false);
 
             grid->Move(dx, dy, *this);
             // If the moved selection would no longer fit in the grid it stays where it is, which
@@ -385,7 +385,7 @@ struct Selection {
 
     wxString Wrap(Document *doc) {
         if (Thin()) { return treesheets::Document::NoThin(); }
-        grid->cell->AddUndo(doc);
+        grid->cell->AddUndo(doc, *this, false);
         Cell *np = grid->CloneSel(*this).release();
         np->grid->CloneStyleFrom(grid.get());
         grid->C(x, y)->text.SetText(".");  // avoid this cell getting deleted
@@ -412,12 +412,12 @@ struct Selection {
     Cell *ThinExpand(Document *doc, bool jumptofirst = false) {
         if (Thin()) {
             if (xs != 0) {
-                grid->cell->AddUndo(doc);
+                grid->cell->AddUndo(doc, Selection(), false);
                 grid->InsertCells(-1, y, 0, 1);
                 ys = 1;
                 if (jumptofirst) { x = 0; }
             } else {
-                grid->cell->AddUndo(doc);
+                grid->cell->AddUndo(doc, Selection(), false);
                 grid->InsertCells(x, -1, 1, 0);
                 xs = 1;
                 if (jumptofirst) { y = 0; }

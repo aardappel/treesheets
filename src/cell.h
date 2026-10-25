@@ -46,6 +46,9 @@ struct Cell {
     wxUint8 drawstyle {DS_GRID};
     wxUint8 textalign {TEXTALIGN_AUTO};
     wxUint8 vertalign {VERTALIGN_AUTO};
+    // Whether a partial undo snapshot that is still pending reuses this cell, see
+    // Document::FinishUndo().
+    bool reusedbyundo {false};
     wxString note;
     shared_ptr<const wxString> formula;  // for CT_FORMULA, see SyncFormula()
 
@@ -59,6 +62,10 @@ struct Cell {
             verticaltextandgrid = _p->verticaltextandgrid;
         }
         if (_clonefrom != nullptr) { CloneStyleFrom(_clonefrom); }
+    }
+
+    ~Cell() {
+        if (reusedbyundo) { Document::RescueForUndo(this); }
     }
 
     void Clear() {
@@ -280,14 +287,21 @@ struct Cell {
         grid->ShiftX(max(left, from) - grid->start);
     }
 
-    unique_ptr<Cell> Clone(Cell *_parent) const {
-        unique_ptr<Cell> c = make_unique<Cell>(_parent, this, celltype,
-                                               grid ? make_shared<Grid>(grid->xs, grid->ys) : nullptr);
+    // With sharegrid, the clone has the same grid as this cell rather than a copy of it.
+    unique_ptr<Cell> Clone(Cell *_parent, bool sharegrid = false) const {
+        auto g = grid && !sharegrid ? make_shared<Grid>(grid->xs, grid->ys) : nullptr;
+        unique_ptr<Cell> c = make_unique<Cell>(_parent, this, celltype, g);
         c->text = text;
         c->text.cell = c.get();
         c->note = note;
         c->formula = formula;
-        if (grid) { grid->Clone(c->grid); }
+        if (grid) {
+            if (sharegrid) {
+                c->grid = grid;
+            } else {
+                grid->Clone(c->grid);
+            }
+        }
         return c;
     }
 
@@ -495,6 +509,13 @@ struct Cell {
     void AddUndo(Document *doc, bool textedit = false) {
         ResetLayout();
         doc->AddUndo(this, true, textedit);
+    }
+
+    // For an action that changes only this cell, its grid and the cells of scope in it (none for
+    // one that only moves or deletes cells), see Document::AddUndo().
+    void AddUndo(Document *doc, const Selection &scope, bool recursive) {
+        ResetLayout();
+        doc->AddUndo(this, true, false, &scope, recursive);
     }
 
     void Save(wxDataOutputStream &dos, Cell *ocs) const {

@@ -4,9 +4,20 @@ struct UndoItem {
     Selection sel;
     unique_ptr<Cell> clone;
     bool textedit {false};  // A gridless snapshot; undo swaps only the Text state.
+    // A partial snapshot (see Document::AddUndo()) leaves out the cells of its grid that are null,
+    // and the grids of the cells there that have none: for each, reuse is the position of the
+    // cell in the grid of the cell it replaces when undone that they are taken from, or -1.
+    bool partial {false};
+    vector<int> reuse;
+    // Until Document::FinishUndo(), the left out cells are those of the document in pending
+    // instead, where the cells left out (null for the others) are, and the grids are shared.
+    vector<Cell *> pending;
+    unordered_map<Cell *, int> pendingpos;  // made by Document::RescueForUndo()
     size_t estimated_size {0};
     uintptr_t cloned_from {};  // May be dead.
     int generation {0};
+
+    ~UndoItem() { Document::ForgetPendingUndo(this); }
 };
 
 // Caches the result of locating the thin (non-range) text cursor within its cell's
@@ -3142,7 +3153,7 @@ struct Document {
 
             case A_PASTESTYLE:
                 if (!sys->cellclipboard) { return _("No style to paste."); }
-                selected.grid->cell->AddUndo(this);
+                selected.grid->cell->AddUndo(this, selected, false);
                 selected.grid->SetStyles(selected, sys->cellclipboard.get());
                 selected.grid->cell->ResetChildren();
                 UpdateLayout();
@@ -3192,7 +3203,7 @@ struct Document {
             }
 
             case A_IMAGER: {
-                selected.grid->cell->AddUndo(this);
+                selected.grid->cell->AddUndo(this, selected, false);
                 selected.grid->ClearImages(selected);
                 selected.grid->cell->ResetChildren();
                 UpdateLayout();
@@ -3221,7 +3232,7 @@ struct Document {
             case A_BORD3:
             case A_BORD4:
             case A_BORD5:
-                selected.grid->cell->AddUndo(this);
+                selected.grid->cell->AddUndo(this, Selection(), false);
                 selected.grid->SetBorder(action - A_BORD0 + 1);
                 selected.grid->cell->ResetChildren();
                 UpdateLayout();
@@ -3247,7 +3258,7 @@ struct Document {
             case A_RESETSTYLE:
             case A_RESETCOLOR:
             case A_LASTIMAGE:
-                selected.grid->cell->AddUndo(this);
+                selected.grid->cell->AddUndo(this, selected, true);
                 loopallcellssel(c, true) switch (action) {
                     case A_RESETSIZE: c->text.relsize = 0; break;
                     case A_RESETWIDTH:
@@ -3293,7 +3304,7 @@ struct Document {
                 return wxEmptyString;
 
             case A_MINISIZE: {
-                selected.grid->cell->AddUndo(this);
+                selected.grid->cell->AddUndo(this, selected, true);
                 CollectCellsSel(false);
                 vector<Cell *> outer;
                 outer.insert(outer.end(), itercells.begin(), itercells.end());
@@ -3318,7 +3329,7 @@ struct Document {
                 // Toggling folds all of the selected grids, unless they are all folded already.
                 auto fold = action == A_FOLDALL || (action == A_FOLD && AnyUnfoldedInSelection());
                 loopallcellssel(c, action != A_FOLD) if (c->grid) {
-                    c->AddUndo(this);
+                    c->AddUndo(this, Selection(), false);
                     c->grid->folded = fold;
                     c->ResetChildren();
                 }
@@ -3333,7 +3344,7 @@ struct Document {
                 if (std::ranges::none_of(itercells, [](Cell *c) { return c->grid != nullptr; })) {
                     return NoGrid();
                 }
-                selected.grid->cell->AddUndo(this);
+                selected.grid->cell->AddUndo(this, selected, false);
                 for (auto c : itercells) {
                     c->grid = nullptr;
                     c->ResetLayout();
@@ -3798,11 +3809,12 @@ struct Document {
 
     wxString layrender(int ds, bool vert, bool toggle = false, bool noset = false) {
         if (selected.Thin()) { return NoThin(); }
-        selected.grid->cell->AddUndo(this);
+        // With Shift held, only the selected cells, not the ones inside.
+        auto recursive = !wxGetKeyState(WXK_SHIFT);
+        selected.grid->cell->AddUndo(this, selected, recursive);
         bool v = toggle ? !selected.GetFirst()->verticaltextandgrid : vert;
         if (ds >= 0 && selected.IsAll()) { selected.grid->cell->drawstyle = ds; }
-        // With Shift held, only the selected cells, not the ones inside.
-        selected.grid->SetGridTextLayout(ds, v, noset, selected, !wxGetKeyState(WXK_SHIFT));
+        selected.grid->SetGridTextLayout(ds, v, noset, selected, recursive);
         selected.grid->cell->ResetChildren();
         UpdateLayout();
         canvas->Refresh();
@@ -4047,7 +4059,7 @@ struct Document {
             return _(
                 "Can't sort: make a 1xN selection to indicate what column to sort on, and what rows to affect");
         }
-        selected.grid->cell->AddUndo(this);
+        selected.grid->cell->AddUndo(this, Selection(), false);
         selected.grid->Sort(selected, descending);
         UpdateLayout();
         canvas->Refresh();
@@ -4056,7 +4068,7 @@ struct Document {
 
     void DelRowCol(int &v, int e, int gvs, int dec, int dx, int dy, int nxs, int nys) {
         if (v != e) {
-            selected.grid->cell->AddUndo(this);
+            selected.grid->cell->AddUndo(this, Selection(), false);
             if (gvs == 1) {
                 selected.grid->DelSelf(this, selected);
             } else {
@@ -4092,7 +4104,7 @@ struct Document {
 
     bool LastUndoSameCellStructure(Cell *c) {
         return !undolist.empty() && undolist.size() != undolistsizeatfullsave &&
-               !undolist.back()->textedit &&
+               !undolist.back()->textedit && !undolist.back()->partial &&
                undolist.back()->cloned_from == (uintptr_t)c;
     }
 
@@ -4106,7 +4118,14 @@ struct Document {
                (!c->text.t.EndsWith(" ") || c->text.t.Len() != selected.cursor);
     }
 
-    void AddUndo(Cell *c, bool newgeneration = true, bool textedit = false) {
+    // With a scope, a selection in the grid of c, the snapshot is partial, for an action that
+    // changes nothing but c, its grid (the order of its cells included) and the cells of scope,
+    // and with recursive what is inside them: the other cells may be moved or deleted, and the
+    // grids of the cells of scope dropped, but not changed. What isn't copied is shared with the
+    // document, and taken back from it when this is undone.
+    void AddUndo(Cell *c, bool newgeneration = true, bool textedit = false,
+                 const Selection *scope = nullptr, bool recursive = false) {
+        FinishUndo();
         EndFoldPeek();
         formulasdirty = true;
         if (textedit) { textedited = c; }
@@ -4126,10 +4145,32 @@ struct Document {
             ui->clone->text = c->text;
             ui->clone->text.cell = ui->clone.get();
             ui->clone->formula = c->formula;  // also restored, typing over a formula clears it
+            ui->estimated_size = ui->clone->EstimatedMemoryUse();
+        } else if (scope != nullptr && c->grid) {
+            auto *g = c->grid.get();
+            ui->partial = true;
+            ui->clone = c->Clone(nullptr, true);
+            ui->clone->grid = make_shared<Grid>(g->xs, g->ys, ui->clone.get());
+            g->CloneFields(ui->clone->grid.get());
+            ui->pending.resize(g->cells.size());
+            ui->estimated_size = sizeof(Cell) + c->text.EstimatedMemoryUse() + sizeof(Grid);
+            foreachcellingrid(gc, g) {
+                if (x >= scope->x && x < scope->x + scope->xs && y >= scope->y &&
+                    y < scope->y + scope->ys) {
+                    auto &k = ui->clone->grid->C(x, y);
+                    k = gc->Clone(ui->clone.get(), !recursive);
+                    ui->estimated_size += recursive ? k->EstimatedMemoryUse()
+                                                    : sizeof(Cell) + k->text.EstimatedMemoryUse();
+                } else {
+                    ui->pending[x + y * g->xs] = gc.get();
+                    gc->reusedbyundo = true;
+                }
+            }
+            pendingundo.push_back(ui.get());
         } else {
             ui->clone = c->Clone(nullptr);
+            ui->estimated_size = ui->clone->EstimatedMemoryUse();
         }
-        ui->estimated_size = ui->clone->EstimatedMemoryUse();
         ui->sel = selected;
         ui->cloned_from = (uintptr_t)c;
         if (undogroup == 2) { newgeneration = false; }
@@ -4157,8 +4198,110 @@ struct Document {
         undolistsizeatfullsave -= items_culled;  // Allowed to go < 0
     }
 
+    // The partial snapshots whose left out cells are still those of their document, see
+    // FinishUndo().
+    static inline vector<UndoItem *> pendingundo;
+
+    // The cells that a partial snapshot leaves out may be deleted by the action it is for: then
+    // they are copied before they are gone, as they weren't changed.
+    static void RescueForUndo(Cell *c) {
+        for (auto *ui : pendingundo) {
+            if (ui->pendingpos.empty()) {
+                loopv(i, ui->pending) if (ui->pending[i]) { ui->pendingpos[ui->pending[i]] = i; }
+            }
+            if (auto it = ui->pendingpos.find(c); it != ui->pendingpos.end()) {
+                ui->clone->grid->cells[it->second] = c->Clone(ui->clone.get());
+                ui->pending[it->second] = nullptr;
+                return;
+            }
+        }
+    }
+
+    static void ForgetPendingUndo(UndoItem *ui) {
+        if (std::erase(pendingundo, ui) == 0) { return; }
+        for (auto *c : ui->pending) {
+            if (c != nullptr) { c->reusedbyundo = false; }
+        }
+        ui->pending.clear();
+        ui->pendingpos.clear();
+    }
+
+    // Once the action of a partial snapshot is done, before anything else can change the
+    // document, what it shares with the document is looked up by position in the grid of the
+    // cell it is for. What isn't in that grid anymore is copied, unless the action deleted it.
+    void FinishUndo() {
+        if (pendingundo.empty()) { return; }
+        for (auto &ui : undolist) {
+            if (std::ranges::find(pendingundo, ui.get()) == pendingundo.end()) { continue; }
+            auto *g = WalkPath(ui->path)->grid.get();
+            unordered_map<void *, int> pos;
+            if (g != nullptr) {
+                loopv(j, g->cells) {
+                    pos[g->cells[j].get()] = j;
+                    if (g->cells[j]->grid) { pos[g->cells[j]->grid.get()] = j; }
+                }
+            }
+            auto *k = ui->clone.get();
+            ui->reuse.assign(k->grid->cells.size(), -1);
+            loopv(i, ui->reuse) {
+                auto &kc = k->grid->cells[i];
+                if (auto *c = ui->pending[i]) {
+                    if (auto it = pos.find(c); it != pos.end()) {
+                        ui->reuse[i] = it->second;
+                    } else {
+                        kc = c->Clone(k);
+                    }
+                } else if (kc->grid) {
+                    if (auto it = pos.find(kc->grid.get()); it != pos.end()) {
+                        ui->reuse[i] = it->second;
+                        kc->grid = nullptr;
+                    } else if (kc->grid.use_count() > 1) {
+                        kc = kc->Clone(k);
+                    } else {
+                        Adopt(kc.get());
+                    }
+                }
+            }
+            ForgetPendingUndo(ui.get());
+            ui->estimated_size = k->EstimatedMemoryUse() + ui->reuse.size() * sizeof(int);
+        }
+    }
+
+    // Makes c the cell of the grid it got from another cell.
+    static void Adopt(Cell *c) {
+        c->grid->cell = c;
+        for (auto &gc : c->grid->cells) gc->parent = c;
+    }
+
+    // Moves what the partial snapshot of ui leaves out from the cell c it is about to replace into
+    // it, and leaves in ui->reuse where it is in c, for when c replaces it again.
+    static void TakeBackReused(UndoItem &ui, Cell *c) {
+        auto *k = ui.clone.get();
+        vector<int> back(c->grid ? c->grid->cells.size() : 0, -1);
+        loopv(i, ui.reuse) if (auto j = ui.reuse[i]; j >= 0) {
+            auto &kc = k->grid->cells[i];
+            auto &cc = c->grid->cells[j];
+            if (kc) {
+                kc->grid = std::move(cc->grid);
+                Adopt(kc.get());
+                // Under a cell that may be tiny now or no longer, see Cell::Layout().
+                kc->grid->ResetChildren();
+            } else {
+                kc = std::move(cc);
+                kc->parent = k;
+                // Its layout holds unless it gets another column width.
+                if (c->grid->colwidths[j % c->grid->xs] != k->grid->colwidths[i % k->grid->xs]) {
+                    kc->Reset();
+                }
+            }
+            back[j] = i;
+        }
+        ui.reuse = std::move(back);
+    }
+
     void Undo(vector<unique_ptr<UndoItem>> &fromlist, vector<unique_ptr<UndoItem>> &tolist,
               bool redo = false) {
+        FinishUndo();
         for (bool next = true; next; ) {
             UndoEach(fromlist, tolist, redo);
             next = !fromlist.empty() && !tolist.empty() &&
@@ -4194,16 +4337,19 @@ struct Document {
             textedited = c;  // as if typed, also when its editing ends
             c->text.cell = c;
             ui->clone->text.cell = ui->clone.get();
-        } else if (c->parent != nullptr && c->parent->grid) {
-            Grid *g = c->parent->grid.get();
-            Selection s = g->FindCell(c);
-            std::swap(ui->clone, g->C(s.x, s.y));
-            c = g->C(s.x, s.y).get();
-            c->parent = ui->clone->parent;
         } else {
-            std::swap(ui->clone, root);
-            c = root.get();
-            c->parent = nullptr;
+            if (ui->partial) { TakeBackReused(*ui, c); }
+            if (c->parent != nullptr && c->parent->grid) {
+                Grid *g = c->parent->grid.get();
+                Selection s = g->FindCell(c);
+                std::swap(ui->clone, g->C(s.x, s.y));
+                c = g->C(s.x, s.y).get();
+                c->parent = ui->clone->parent;
+            } else {
+                std::swap(ui->clone, root);
+                c = root.get();
+                c->parent = nullptr;
+            }
         }
         c->ResetLayout();
 
@@ -4320,7 +4466,7 @@ struct Document {
     // other open one, so changing one means handing the cells it applies to a new image.
     void ReplaceSelectedImages(const std::function<Image *(const Image &)> &transform) {
         if (!AnyImagesInSelection()) { return; }
-        selected.grid->cell->AddUndo(this);
+        selected.grid->cell->AddUndo(this, selected, true);
         std::map<Image *, Image *> replacements;
         loopallcellssel(c, true) {
             auto *image = c->text.image;
@@ -4363,7 +4509,7 @@ struct Document {
 
     void ImageChange(const EmbeddedFile &image, double scale) {
         if (selected.grid == nullptr) { return; }
-        selected.grid->cell->AddUndo(this);
+        selected.grid->cell->AddUndo(this, selected, false);
         loopallcellssel(c, false) {
             SetImageBM(c, vector<uint8_t>(image.data, image.data + image.size), 'I', scale);
             c->Reset();
@@ -4385,7 +4531,7 @@ struct Document {
         int i = 0;
         for (auto &[tag, colors] : tags) {
             if (i++ == tagno) {
-                selected.grid->cell->AddUndo(this);
+                selected.grid->cell->AddUndo(this, selected, false);
                 loopallcellssel(c, false) {
                     c->text.SetText(tag);
                     c->text.WasEdited();
