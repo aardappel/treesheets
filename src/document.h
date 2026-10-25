@@ -3660,6 +3660,9 @@ struct Document {
             case A_HSWAP: {
                 auto *pp = cell->parent->parent;
                 if (pp == nullptr) { return _("Cannot move this cell up in the hierarchy."); }
+                // Moving an empty cell up can leave an empty one in its place, which would be found
+                // and moved up again, forever.
+                if (cell->text.t.IsEmpty()) { return _("Can only swap a cell that has text."); }
                 if (pp->grid->xs != 1 && pp->grid->ys != 1) {
                     return _("Can only move this cell into a Nx1 or 1xN grid.");
                 }
