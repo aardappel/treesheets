@@ -106,9 +106,9 @@ struct Cell {
         int leftoffset = 0;
         if (!HasText()) {
             if (ixs == 0 || iys == 0) {
-                sx = sy = tiny ? 1 : dc.GetCharHeight();
+                sx = sy = tiny ? 1 : doc->CharHeight(dc);
             } else {
-                leftoffset = dc.GetCharHeight();
+                leftoffset = doc->CharHeight(dc);
             }
         } else {
             text.TextSize(dc, sx, sy, static_cast<int>(tiny), leftoffset, maxcolwidth, doc, depth);
@@ -117,7 +117,7 @@ struct Cell {
             sx += ixs + 2;
             sy = max(iys + 2, sy);
         }
-        text.extent = sx + depth * dc.GetCharHeight();
+        text.extent = sx + depth * doc->CharHeight(dc);
         txs = sx;
         tys = sy;
         if (GridShown(doc)) {
