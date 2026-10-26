@@ -247,6 +247,8 @@ struct System {
         } else if (selection >= 0) {
             frame->notebook->SetSelection(selection);
         }
+        // LoadLayout() activates the saved tab without a page changed event.
+        if (auto *canvas = frame->GetCurrentTab()) { frame->ActivateTab(canvas); }
 
         if (frame->notebook->GetPageCount() == 0U) { LoadTutorial(); }
 

@@ -1979,7 +1979,10 @@ struct TSFrame : wxFrame {
         nbe.Skip();
         // wx 3.3.4 also sends this when the last page was deleted.
         if (nbe.GetSelection() == wxNOT_FOUND) { return; }
-        auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection()));
+        ActivateTab(dynamic_cast<TSCanvas *>(notebook->GetPage(nbe.GetSelection())));
+    }
+
+    void ActivateTab(TSCanvas *canvas) {
         canvas->SetFocus();
         canvas->doc->UpdateFileName();
         UpdateStatus(canvas->doc->selected, true);
