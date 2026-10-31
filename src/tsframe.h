@@ -1112,7 +1112,10 @@ struct TSFrame : wxFrame {
             auto *tb = wxDynamicCast(pane.window, wxAuiToolBar);
             if (tb != nullptr) { tb->Realize(); }
             pane.window->InvalidateBestSize();
-            pane.BestSize(wxDefaultSize).MinSize(wxDefaultSize).FloatingSize(wxDefaultSize);
+            // Not wxDefaultSize: only AddPane() measures that again, Update() would use it as is.
+            pane.BestSize(pane.window->GetBestSize())
+                .MinSize(wxDefaultSize)
+                .FloatingSize(wxDefaultSize);
         }
         aui.Update();
         ReflowToolbars();
