@@ -973,12 +973,17 @@ struct Text {
             }
             lines++;
         }
-        // Fonts such as Lucida Sans Unicode on Windows lack the checkbox glyph, so draw the box
+        // Fonts such as Lucida Sans Unicode on Windows lack the checkbox glyph, so draw a circle
         // over it.
         if (auto box = CheckBox(); box != 0 && !cell->tiny) {
-            setforeground(false, 0);
+            // In the color of the checkbox character, which a selection of it can give it.
+            const auto *r = runs.At(0);
+            setforeground(r != nullptr && r->hascolor, r != nullptr ? r->color : 0);
             const auto fg = dc.GetTextForeground();
             const auto bg = dc.GetTextBackground();
+            // An open one is filled with white, a ticked one with fg and a white tick, or black
+            // instead of white with light text.
+            const auto contrast = fg.GetLuminance() > 0.5 ? *wxBLACK : *wxWHITE;
             dc.SetTextForeground(sys->rubberbandcolor);
             auto dx = bx - cell->GetX(doc);
             auto dy = by - cell->ycenteroff - cell->GetY(doc);
@@ -993,13 +998,13 @@ struct Text {
                 auto sx = x + max(0, (w - s) / 2);
                 auto sy = y + (rh - s) / 2;
                 dc.SetPen(wxPen(fg, max(1, s / 9)));
-                dc.SetBrush(*wxTRANSPARENT_BRUSH);
-                dc.DrawRectangle(sx, sy, s, s);
+                dc.SetBrush(wxBrush(box == 2 ? fg : contrast));
+                dc.DrawEllipse(sx, sy, s, s);
                 if (box == 2) {
-                    wxPoint tick[] = {{sx + s / 5, sy + s / 2},
-                                      {sx + s * 2 / 5, sy + s * 3 / 4},
-                                      {sx + s * 4 / 5, sy + s / 4}};
-                    dc.SetPen(wxPen(fg, max(1, s / 6)));
+                    wxPoint tick[] = {{sx + s * 3 / 10, sy + s / 2},
+                                      {sx + s * 9 / 20, sy + s * 13 / 20},
+                                      {sx + s * 7 / 10, sy + s * 7 / 20}};
+                    dc.SetPen(wxPen(contrast, max(1, s / 6)));
                     dc.DrawLines(3, tick);
                 }
             });

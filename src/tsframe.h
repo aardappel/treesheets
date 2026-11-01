@@ -417,8 +417,8 @@ struct TSFrame : wxFrame {
             MyAppend(stmenu, wxID_STRIKETHROUGH, _("Toggle cell &strikethrough") + "\tCTRL+T",
                      "", wxITEM_CHECK);
             MyAppend(stmenu, A_TOGGLECHECK, _("Toggle todo chec&kbox") + "\tCTRL+SHIFT+X",
-                     _("Starts the cell text with a checkbox, or ticks or unticks it (also by "
-                       "clicking it)"));
+                     _("Starts the cell text with a checkbox, ticks it, or removes it (a click "
+                       "on it ticks or unticks it)"));
             stmenu->AppendSeparator();
             auto *alignmenu = new wxMenu();
             MyAppend(alignmenu, A_ALIGNAUTO, _("Align &automatically") + "\tCTRL+SHIFT+D",

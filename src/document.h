@@ -1421,7 +1421,7 @@ struct Document {
                 hover.ExitEdit(this);
                 SetSelect(hover);
             }
-            sys->frame->SetStatus(Action(A_TOGGLECHECK));
+            sys->frame->SetStatus(ToggleCheck(true));
             return;
         }
         if (!right && !hoverfoldicon.IsEmpty() && isctrlshiftdrag == 0) {
@@ -3056,36 +3056,7 @@ struct Document {
             case wxID_STRIKETHROUGH:
                 selected.grid->SetStyle(this, selected, STYLE_STRIKETHRU, recursive);
                 return wxEmptyString;
-            case A_TOGGLECHECK: {
-                // Cells without a checkbox get an open one. Once all have one, they get ticked,
-                // or unticked when all are ticked already.
-                auto boxes = true;
-                auto ticked = true;
-                loopallcellssel(c, false) {
-                    boxes = boxes && c->text.CheckBox() != 0;
-                    ticked = ticked && c->text.CheckBox() == 2;
-                }
-                if (itercells.empty()) { return NoSel(); }
-                selected.grid->cell->AddUndo(this, selected, false);
-                for (auto *c : itercells) {
-                    if (!boxes) {
-                        if (c->text.CheckBox() != 0) { continue; }
-                        c->text.InsertText(0, L"\u2610 ");
-                        // The cursor stays at the same character when editing.
-                        if (selected.TextEdit()) {
-                            selected.cursor += 2;
-                            selected.cursorend += 2;
-                        }
-                    } else {
-                        c->text.ReplaceText(0, 1, ticked ? L"\u2610" : L"\u2611");
-                    }
-                    c->text.WasEdited();
-                    c->ResetLayout();
-                }
-                UpdateLayout();
-                canvas->Refresh();
-                return wxEmptyString;
-            }
+            case A_TOGGLECHECK: return ToggleCheck(false);
 
             case A_ALIGNAUTO:
             case A_ALIGNLEFT:
@@ -4622,6 +4593,42 @@ struct Document {
         if (!tags.empty()) { menu.AppendSeparator(); }
         menu.Append(A_TAGADD, _("&Add Cell Text as Tag"));
         menu.Append(A_TAGREMOVE, _("&Remove Cell Text from Tags"));
+    }
+
+    // Cells without a todo checkbox get an open one. Once all have one, they get ticked, and when
+    // all are ticked already, the checkboxes go, or with a click on one, get unticked.
+    wxString ToggleCheck(bool click) {
+        auto boxes = true;
+        auto ticked = true;
+        loopallcellssel(c, false) {
+            boxes = boxes && c->text.CheckBox() != 0;
+            ticked = ticked && c->text.CheckBox() == 2;
+        }
+        if (itercells.empty()) { return NoSel(); }
+        selected.grid->cell->AddUndo(this, selected, false);
+        for (auto *c : itercells) {
+            // The cursor stays at the same character when editing.
+            auto shift = 0;
+            if (!boxes) {
+                if (c->text.CheckBox() != 0) { continue; }
+                c->text.InsertText(0, L"\u2610 ");
+                shift = 2;
+            } else if (ticked && !click) {
+                shift = c->text.t.length() > 1 && c->text.t[1] == ' ' ? -2 : -1;
+                c->text.RemoveText(0, -shift);
+            } else {
+                c->text.ReplaceText(0, 1, ticked ? L"\u2610" : L"\u2611");
+            }
+            if (selected.TextEdit()) {
+                selected.cursor = max(0, selected.cursor + shift);
+                selected.cursorend = max(0, selected.cursorend + shift);
+            }
+            c->text.WasEdited();
+            c->ResetLayout();
+        }
+        UpdateLayout();
+        canvas->Refresh();
+        return wxEmptyString;
     }
 
     wxString TagSet(int tagno) {
