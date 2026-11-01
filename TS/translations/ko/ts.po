@@ -1977,6 +1977,11 @@ msgstr "텍스트의 시작"
 msgid "Start the application minimized"
 msgstr "응용 프로그램 최소화 시작"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "셀 텍스트 앞에 체크박스를 추가하거나, 체크하거나, 제거합니다(체크박스를 클릭하면 체크하거나 해제합니다)"
+
 msgid "Statusbar"
 msgstr "상태 표시줄"
 
@@ -2110,6 +2115,9 @@ msgstr "셀 타자기체 전환(&T)"
 
 msgid "Toggle cell &underlined"
 msgstr "셀 밑줄 전환(&U)"
+
+msgid "Toggle todo chec&kbox"
+msgstr "할 일 체크박스 전환(&K)"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr "문서를 중앙에 렌더링할지 왼쪽 정렬할지 전환"

@@ -1999,6 +1999,11 @@ msgstr "Đầu văn bản"
 msgid "Start the application minimized"
 msgstr "Khởi chạy ứng dụng ở trạng thái thu nhỏ"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "Thêm ô đánh dấu vào đầu văn bản của ô, đánh dấu hoặc xóa nó (nhấp vào ô sẽ đánh dấu hoặc bỏ đánh dấu)"
+
 msgid "Statusbar"
 msgstr "Thanh trạng thái"
 
@@ -2129,6 +2134,9 @@ msgstr "Bật/tắt kiểu chữ đánh máy (&T)"
 
 msgid "Toggle cell &underlined"
 msgstr "Bật/tắt chữ gạch chân (&U)"
+
+msgid "Toggle todo chec&kbox"
+msgstr "Bật/tắt ô đánh dấu việc cần làm (&K)"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr "Bật/tắt hiển thị tài liệu căn giữa hoặc căn trái"

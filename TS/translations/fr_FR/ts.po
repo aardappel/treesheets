@@ -2062,6 +2062,11 @@ msgstr "Aller au début du texte"
 msgid "Start the application minimized"
 msgstr "Démarre l'application réduite"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "Ajoute une case à cocher au début du texte de la cellule, la coche ou la supprime (un clic dessus la coche ou la décoche)"
+
 msgid "Statusbar"
 msgstr "Barre d'état"
 
@@ -2194,6 +2199,9 @@ msgstr "Courrier"
 
 msgid "Toggle cell &underlined"
 msgstr "So&uligné"
+
+msgid "Toggle todo chec&kbox"
+msgstr "Case à &cocher de tâche"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr "Bascule entre l'affichage des documents centré ou aligné à gauche"

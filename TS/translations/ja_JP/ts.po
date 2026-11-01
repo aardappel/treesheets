@@ -2006,6 +2006,11 @@ msgstr "テキストの先頭"
 msgid "Start the application minimized"
 msgstr "アプリケーションを最小化して起動"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "セルのテキストの先頭にチェックボックスを付け、チェックを入れ、または削除します(クリックするとチェックを入れたり外したりします)"
+
 msgid "Statusbar"
 msgstr "ステータスバー"
 
@@ -2136,6 +2141,9 @@ msgstr "セルのタイプライターを切り替え(&T)"
 
 msgid "Toggle cell &underlined"
 msgstr "セルの下線を切り替え(&U)"
+
+msgid "Toggle todo chec&kbox"
+msgstr "ToDoチェックボックスを切り替え(&K)"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr "ドキュメントを中央揃えで表示するか左揃えで表示するかを切り替え"

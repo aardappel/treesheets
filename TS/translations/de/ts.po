@@ -2065,6 +2065,11 @@ msgstr "Beginn des Textes"
 msgid "Start the application minimized"
 msgstr "Die Anwendung minimiert starten"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "Setzt ein Abhakfeld an den Anfang des Zellentexts, hakt es ab oder entfernt es (ein Klick darauf setzt oder entfernt das Häkchen)"
+
 msgid "Statusbar"
 msgstr "Statuszeile"
 
@@ -2196,6 +2201,9 @@ msgstr "Zellen&text in Schreibmaschinenschrift (ein/aus)"
 
 msgid "Toggle cell &underlined"
 msgstr "Zellentext unterstreichen (ein/aus)"
+
+msgid "Toggle todo chec&kbox"
+msgstr "Todo-&Abhakfeld (setzen/abhaken/entfernen)"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr ""

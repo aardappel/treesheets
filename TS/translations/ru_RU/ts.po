@@ -2242,6 +2242,9 @@ msgstr "К Началу Текста Ячейки"
 msgid "Start the application minimized"
 msgstr "Запустить приложение в свернутом виде"
 
+msgid "Starts the cell text with a checkbox, ticks it, or removes it (a click on it ticks or unticks it)"
+msgstr "Добавляет флажок в начало текста ячейки, отмечает его или удаляет (щелчок по нему ставит или снимает отметку)"
+
 # п. Меню (нет & в исходном тексте)
 msgid "Statusbar"
 msgstr "Строка Состояния"
@@ -2398,6 +2401,9 @@ msgstr ".. на &Машинопись"
 
 msgid "Toggle cell &underlined"
 msgstr ".. на &Подчеркнутый"
+
+msgid "Toggle todo chec&kbox"
+msgstr "Флажок &задачи (добавить/отметить/убрать)"
 
 # комментарий к п. Меню
 msgid "Toggle whether documents are rendered centered or left aligned"

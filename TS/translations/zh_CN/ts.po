@@ -1952,6 +1952,11 @@ msgstr "文首"
 msgid "Start the application minimized"
 msgstr "以最小化方式启动应用程序"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "在单元格文本开头添加复选框、勾选或删除它(单击复选框可勾选或取消勾选)"
+
 msgid "Statusbar"
 msgstr "状态栏"
 
@@ -2081,6 +2086,9 @@ msgstr "切换单元格打字机样式(&T)"
 
 msgid "Toggle cell &underlined"
 msgstr "切换单元格下划线(&U)"
+
+msgid "Toggle todo chec&kbox"
+msgstr "切换待办复选框(&K)"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr "切换文档渲染方式为居中或左对齐"

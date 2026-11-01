@@ -1950,6 +1950,11 @@ msgstr "文首"
 msgid "Start the application minimized"
 msgstr "啟動應用程式時最小化"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "在儲存格文字開頭加入核取方塊、勾選或移除它(按一下核取方塊可勾選或取消勾選)"
+
 msgid "Statusbar"
 msgstr "狀態列"
 
@@ -2078,6 +2083,9 @@ msgstr "切換儲存格打字機樣式(&T)"
 
 msgid "Toggle cell &underlined"
 msgstr "切換儲存格底線(&U)"
+
+msgid "Toggle todo chec&kbox"
+msgstr "切換待辦核取方塊(&K)"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr "切換文件繪製方式為置中或靠左對齊"

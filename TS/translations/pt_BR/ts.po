@@ -2049,6 +2049,11 @@ msgstr "Mover o cursor para o início do texto"
 msgid "Start the application minimized"
 msgstr "O TreeSheets inicia minimizado"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "Insere uma caixa de seleção no início do texto da célula, marca-a ou remove-a (um clique nela marca ou desmarca)"
+
 msgid "Statusbar"
 msgstr "Barra de &status"
 
@@ -2181,6 +2186,9 @@ msgstr "Aplicar/remover &monoespaçado"
 
 msgid "Toggle cell &underlined"
 msgstr "Aplicar/remover &sublinhado"
+
+msgid "Toggle todo chec&kbox"
+msgstr "Aplicar/remover &caixa de tarefa"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr ""

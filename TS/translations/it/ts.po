@@ -2046,6 +2046,11 @@ msgstr "Inizio del testo"
 msgid "Start the application minimized"
 msgstr "Avvia l'applicazione ridotta a icona"
 
+msgid ""
+"Starts the cell text with a checkbox, ticks it, or removes it (a click on it "
+"ticks or unticks it)"
+msgstr "Inserisce una casella di controllo all'inizio del testo della cella, la spunta o la rimuove (un clic sulla casella mette o toglie la spunta)"
+
 msgid "Statusbar"
 msgstr "Barra di stato"
 
@@ -2177,6 +2182,9 @@ msgstr "Attiva/disattiva la cella e la macchina da scrivere"
 
 msgid "Toggle cell &underlined"
 msgstr "Attiva/disattiva sottolineatura cella"
+
+msgid "Toggle todo chec&kbox"
+msgstr "Attiva/disattiva &casella attività"
 
 msgid "Toggle whether documents are rendered centered or left aligned"
 msgstr ""
