@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-25 11:38+0100\n"
+"POT-Creation-Date: 2026-11-01 15:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -223,6 +223,9 @@ msgid "&Save"
 msgstr ""
 
 msgid "&Save as..."
+msgstr ""
+
+msgid "&Scaled Presentation View"
 msgstr ""
 
 msgid "&Script reference"
@@ -1949,6 +1952,11 @@ msgstr ""
 msgid "Start the application minimized"
 msgstr ""
 
+msgid ""
+"Starts the cell text with a checkbox, or ticks or unticks it (also by "
+"clicking it)"
+msgstr ""
+
 msgid "Statusbar"
 msgstr ""
 
@@ -2053,9 +2061,6 @@ msgstr ""
 msgid "Toggle &Fullscreen View"
 msgstr ""
 
-msgid "&Scaled Presentation View"
-msgstr ""
-
 msgid "Toggle Fold (CTRL+double-click)"
 msgstr ""
 
@@ -2075,6 +2080,9 @@ msgid "Toggle cell &typewriter"
 msgstr ""
 
 msgid "Toggle cell &underlined"
+msgstr ""
+
+msgid "Toggle todo chec&kbox"
 msgstr ""
 
 msgid "Toggle whether documents are rendered centered or left aligned"

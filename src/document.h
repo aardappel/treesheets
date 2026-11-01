@@ -76,6 +76,7 @@ struct Document {
     // The fold icon under the pointer, in document coordinates, or empty.
     wxRect hoverfoldicon;
     wxRect hovernote;        // The note triangle under the pointer, likewise.
+    wxRect hovercheck;       // The todo checkbox under the pointer, likewise.
     wxRect hoverlink;        // The part of a link under the pointer, likewise.
     int hoverlinkstart {0};  // where that link starts in the text of the hovered cell
     bool hoverknob {false};  // The pointer is on the knob at the selection's bottom-right corner.
@@ -398,7 +399,8 @@ struct Document {
         hover = Selection();
         auto prevfoldicon = hoverfoldicon;
         auto prevnote = hovernote;
-        hoverfoldicon = hovernote = hoverlink = wxRect();
+        auto prevcheck = hovercheck;
+        hoverfoldicon = hovernote = hoverlink = hovercheck = wxRect();
         auto px = x / currentviewscale - centerx / currentviewscale;
         auto py = y / currentviewscale - centery / currentviewscale;
         auto *drawroot = WalkPath(drawpath);
@@ -426,7 +428,10 @@ struct Document {
         auto note = hovernote;
         hoverfoldicon = prevfoldicon;
         hovernote = prevnote;
+        auto check = hovercheck;
+        hovercheck = prevcheck;
         SetHighlight(hoverfoldicon, foldicon);
+        SetHighlight(hovercheck, check);
         SetHoverNote(note);
     }
 
@@ -1410,6 +1415,15 @@ struct Document {
             canvas->CallAfter([this] { sys->frame->SetStatus(Action(A_EDITNOTE)); });
             return;
         }
+        if (!right && !hovercheck.IsEmpty() && isctrlshiftdrag == 0) {
+            // Keeps editing the cell, if it is the one being edited.
+            if (!selected.TextEdit() || selected.GetCell() != hover.GetCell()) {
+                hover.ExitEdit(this);
+                SetSelect(hover);
+            }
+            sys->frame->SetStatus(Action(A_TOGGLECHECK));
+            return;
+        }
         if (!right && !hoverfoldicon.IsEmpty() && isctrlshiftdrag == 0) {
             // Unfolds for as long as the button is held, see EndFoldPeek().
             auto *c = hover.GetCell();
@@ -1468,6 +1482,7 @@ struct Document {
         // Cells may move: drop the shadow and highlight until the pointer moves again.
         SetHoverShade(wxRect());
         SetHighlight(hoverfoldicon, wxRect());
+        SetHighlight(hovercheck, wxRect());
         SetHoverNote(wxRect());
         if (layoutpending) {
             // Deferred Wheel() changes left the cached geometry stale (deliberately not reset):
@@ -1605,9 +1620,10 @@ struct Document {
             const wxColour base(LightColor(sys->hovershadowcolor));
             DrawShade(dc, hovershade, wxColour(base.Red(), base.Green(), base.Blue(), 56));
         }
-        if (!hoverfoldicon.IsEmpty()) {
+        for (const auto &r : {hoverfoldicon, hovercheck}) {
+            if (r.IsEmpty()) { continue; }
             const auto base = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
-            DrawShade(dc, hoverfoldicon, wxColour(base.Red(), base.Green(), base.Blue(), 96));
+            DrawShade(dc, r, wxColour(base.Red(), base.Green(), base.Blue(), 96));
         }
         if (!hovernote.IsEmpty()) {
             Cell::DrawNote(dc, hovernote, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
@@ -3040,6 +3056,36 @@ struct Document {
             case wxID_STRIKETHROUGH:
                 selected.grid->SetStyle(this, selected, STYLE_STRIKETHRU, recursive);
                 return wxEmptyString;
+            case A_TOGGLECHECK: {
+                // Cells without a checkbox get an open one. Once all have one, they get ticked,
+                // or unticked when all are ticked already.
+                auto boxes = true;
+                auto ticked = true;
+                loopallcellssel(c, false) {
+                    boxes = boxes && c->text.CheckBox() != 0;
+                    ticked = ticked && c->text.CheckBox() == 2;
+                }
+                if (itercells.empty()) { return NoSel(); }
+                selected.grid->cell->AddUndo(this, selected, false);
+                for (auto *c : itercells) {
+                    if (!boxes) {
+                        if (c->text.CheckBox() != 0) { continue; }
+                        c->text.InsertText(0, L"\u2610 ");
+                        // The cursor stays at the same character when editing.
+                        if (selected.TextEdit()) {
+                            selected.cursor += 2;
+                            selected.cursorend += 2;
+                        }
+                    } else {
+                        c->text.ReplaceText(0, 1, ticked ? L"\u2610" : L"\u2611");
+                    }
+                    c->text.WasEdited();
+                    c->ResetLayout();
+                }
+                UpdateLayout();
+                canvas->Refresh();
+                return wxEmptyString;
+            }
 
             case A_ALIGNAUTO:
             case A_ALIGNLEFT:

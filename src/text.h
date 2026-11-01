@@ -81,6 +81,11 @@ struct Text {
         return image != nullptr ? &image->Display() : nullptr;
     }
 
+    // The todo checkbox the text starts with: 0 none, 1 open (U+2610), 2 ticked (U+2611).
+    int CheckBox() const {
+        return t.empty() ? 0 : t[0] == L'\u2610' ? 1 : t[0] == L'\u2611' ? 2 : 0;
+    }
+
     // Where DisplayImage() shows the icon of a folded grid, relative to the cell, or empty.
     wxRect FoldIconRect() const {
         if (cell->tiny || !cell->grid || !cell->grid->folded) { return {}; }
@@ -967,6 +972,37 @@ struct Text {
                 }
             }
             lines++;
+        }
+        // Fonts such as Lucida Sans Unicode on Windows lack the checkbox glyph, so draw the box
+        // over it.
+        if (auto box = CheckBox(); box != 0 && !cell->tiny) {
+            setforeground(false, 0);
+            const auto fg = dc.GetTextForeground();
+            const auto bg = dc.GetTextBackground();
+            dc.SetTextForeground(sys->rubberbandcolor);
+            auto dx = bx - cell->GetX(doc);
+            auto dy = by - cell->ycenteroff - cell->GetY(doc);
+            ForEachRangeRect(doc, dc, 0, 1, maxcolwidth, [&](int x, int y, int w, int rh) {
+                x += dx;
+                y += dy;
+                dc.SetPen(*wxTRANSPARENT_PEN);
+                dc.SetBrush(wxBrush(bg));
+                dc.DrawRectangle(x, y, w, rh + 1);
+                // Sized by the line, as a missing glyph can be narrow; the space after it gives room.
+                auto s = max(5, rh * 3 / 5);
+                auto sx = x + max(0, (w - s) / 2);
+                auto sy = y + (rh - s) / 2;
+                dc.SetPen(wxPen(fg, max(1, s / 9)));
+                dc.SetBrush(*wxTRANSPARENT_BRUSH);
+                dc.DrawRectangle(sx, sy, s, s);
+                if (box == 2) {
+                    wxPoint tick[] = {{sx + s / 5, sy + s / 2},
+                                      {sx + s * 2 / 5, sy + s * 3 / 4},
+                                      {sx + s * 4 / 5, sy + s / 4}};
+                    dc.SetPen(wxPen(fg, max(1, s / 6)));
+                    dc.DrawLines(3, tick);
+                }
+            });
         }
         if (doc->drawnlinks != nullptr && !cell->tiny) {
             for (const auto &k : links.v) {

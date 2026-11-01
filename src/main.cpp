@@ -134,6 +134,7 @@ enum {
     A_NEXT,
     A_PREV,
     A_TT,
+    A_TOGGLECHECK,
     A_SEARCH,
     A_RESTRICTVIEW,
     A_CASESENSITIVESEARCH,

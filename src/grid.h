@@ -436,6 +436,16 @@ struct Grid {
                                                  doc->hover.cursor, colwidths[x], doc->hoverlink)) {
                         doc->hoverlinkstart = k->start;
                     }
+                    if (c->text.CheckBox() != 0) {
+                        c->text.ForEachRangeRect(doc, dc, 0, 1, colwidths[x],
+                                                 [&](int rx, int ry, int w, int rh) {
+                                                     wxRect r(rx, ry, w, rh + 1);
+                                                     if (r.Contains(bx + c->GetX(doc),
+                                                                    by + c->GetY(doc))) {
+                                                         doc->hovercheck = r;
+                                                     }
+                                                 });
+                    }
                 }
                 return;
             }
