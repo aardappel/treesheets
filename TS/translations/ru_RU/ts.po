@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: TreeSheets_RU 6.2 (based on TS 2.22.1, commit a9aecd9)\n"
+"Project-Id-Version: TreeSheets_RU 6.3 (based on TS 2.22.7, commit 85c8095)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-03 15:43+0200\n"
-"PO-Revision-Date: 2026-10-25 16:29+0300\n"
+"PO-Revision-Date: 2026-11-01 06:41+0300\n"
 "Last-Translator: Устинов Александр <quarus@ya.ru>\n"
 "Language-Team: Sam\n"
 "Language: ru_RU\n"
@@ -2376,7 +2376,7 @@ msgid "Toggle &Fullscreen View"
 msgstr "Переключить Полноэкранный режим"
 
 msgid "&Scaled Presentation View"
-msgstr ".. Масштабированное представление"
+msgstr "Режим &Презентации с Масштабированием"
 
 msgid "Toggle Fold (CTRL+double-click)"
 msgstr "Свер&нуть / Развернуть (CTRL+двойной щелчок)"
