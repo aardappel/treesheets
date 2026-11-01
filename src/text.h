@@ -981,8 +981,8 @@ struct Text {
             setforeground(r != nullptr && r->hascolor, r != nullptr ? r->color : 0);
             const auto fg = dc.GetTextForeground();
             const auto bg = dc.GetTextBackground();
-            // An open one is filled with white, a ticked one with fg and a white tick, or black
-            // instead of white with light text.
+            // An open one is empty, a ticked one filled with fg and a white tick, or a black one
+            // with light text.
             const auto contrast = fg.GetLuminance() > 0.5 ? *wxBLACK : *wxWHITE;
             dc.SetTextForeground(sys->rubberbandcolor);
             auto dx = bx - cell->GetX(doc);
@@ -998,7 +998,7 @@ struct Text {
                 auto sx = x + max(0, (w - s) / 2);
                 auto sy = y + (rh - s) / 2;
                 dc.SetPen(wxPen(fg, max(1, s / 9)));
-                dc.SetBrush(wxBrush(box == 2 ? fg : contrast));
+                dc.SetBrush(box == 2 ? wxBrush(fg) : *wxTRANSPARENT_BRUSH);
                 dc.DrawEllipse(sx, sy, s, s);
                 if (box == 2) {
                     wxPoint tick[] = {{sx + s * 3 / 10, sy + s / 2},
