@@ -255,6 +255,10 @@ struct Evaluator {
     A name that is no grid can be a variable that the last run of the program assigned (see
     Evaluator::Assign()), with the numbers of its grid, or its text. Until the program runs, its
     variables are #N/A.
+    A formula can also result in text. A name or SUBSET() on its own without any number is the one
+    text in it, & joins text and 'text' is literal ('' for a quote in it), e.g.
+    =Root & '/docs/report.pdf'. See TextFunctions() for the functions on text. Text that is a whole
+    number counts as that number in arithmetic, other text is #VALUE! there.
 */
 struct FormulaEvaluator {
     enum { BUSY, OK, FAILED };
@@ -277,12 +281,12 @@ struct FormulaEvaluator {
         }
         state[c] = BUSY;
         Parser p {*this, c, *c->formula};
-        auto d = p.Expr();
+        auto v = p.Concat();
         p.Space();
         if (p.i < p.s.Len()) { p.Fail(L"#ERROR!"); }
-        if (!std::isfinite(d)) { p.Fail(L"#NUM!"); }
+        if (!v.text && !std::isfinite(v.d)) { p.Fail(L"#NUM!"); }
         state[c] = p.error.IsEmpty() ? OK : FAILED;
-        auto result = p.error.IsEmpty() ? Text::NumText(d) : p.error;
+        auto result = !p.error.IsEmpty() ? p.error : v.text ? v.t : Text::NumText(v.d);
         if (result != c->text.t) {
             c->text.SetText(result);
             changed.push_back(c);
@@ -301,6 +305,22 @@ struct FormulaEvaluator {
             {L"MEDIAN", [](const vector<double> &v) { return aggregate::Median(v); }},
             {L"COUNT", [](const vector<double> &v) { return static_cast<double>(v.size()); }}};
         return functions;
+    }
+
+    // The functions on text, with their number of arguments, which are any expressions: LEN(text),
+    // LEFT(text, count), RIGHT(text, count), MID(text, start, count) with the first character at
+    // 1, UPPER(text), LOWER(text), TRIM(text) of spaces around it and SUBSTITUTE(text, old, new).
+    static const auto &TextFunctions() {
+        static const std::pair<const wxChar *, size_t> functions[] = {
+            {L"LEN", 1},   {L"LEFT", 2},  {L"RIGHT", 2}, {L"MID", 3},
+            {L"UPPER", 1}, {L"LOWER", 1}, {L"TRIM", 1},  {L"SUBSTITUTE", 3}};
+        return functions;
+    }
+    static size_t TextFunctionArgs(const wxString &function) {
+        for (auto &[n, args] : TextFunctions()) {
+            if (function == n) { return args; }
+        }
+        return 0;
     }
 
     // Calls f on the cells with a grid around `self` (with `all` on all cells) in the order names
@@ -405,7 +425,8 @@ struct FormulaEvaluator {
     // What formula s may continue with: a function or one of `names` after "=", an operator or
     // "(", and any of `names` in the parentheses of a function.
     static void Completions(const vector<wxString> &names, const wxString &s, wxArrayString &res) {
-        if (!s.StartsWith("=")) { return; }
+        // Nothing inside a literal text.
+        if (!s.StartsWith("=") || s.Freq('\'') % 2) { return; }
         auto open = s.rfind('(');
         auto close = s.rfind(')');
         if (open != wxString::npos && (close == wxString::npos || close < open) && open > 0 &&
@@ -416,23 +437,28 @@ struct FormulaEvaluator {
             auto typed = s.Mid(start);
             auto function = open;
             while (function > 0 && wxIsalpha(s[function - 1])) { function--; }
-            bool subset = IsSubset(s.Mid(function, open - function).Upper());
+            auto called = s.Mid(function, open - function).Upper();
+            bool subset = IsSubset(called);
+            auto textargs = TextFunctionArgs(called);
             for (auto f : {L"SUBSET(", L"TREESUBSET("}) {
                 if (wxString(f).StartsWith(typed.Upper())) { res.Add(s.Left(start) + f); }
             }
-            // Names with a ) in them, or a , in SUBSET(), only in quotes.
+            // Names with a ) in them, or a , in SUBSET(), only in quotes, and in the expressions
+            // of text functions only names that work without.
             wxString quote = typed.StartsWith("\"") ? "\"" : "";
             for (auto &n : names) {
                 if (n.StartsWith(typed.Mid(quote.Len())) &&
-                    (!quote.IsEmpty() || n.find(subset ? ',' : ')') == wxString::npos)) {
-                    res.Add(s.Left(start) + quote + n + quote + (subset ? ", " : ")"));
+                    (!quote.IsEmpty() || (textargs ? IsBareName(n)
+                                                   : n.find(subset ? ',' : ')') == wxString::npos))) {
+                    res.Add(s.Left(start) + quote + n + quote +
+                            (subset || textargs > 1 ? ", " : ")"));
                 }
             }
             return;
         }
         auto start = s.Len();
         while (start > 1 && (IsNameChar(s[start - 1]) || s[start - 1] == ' ')) { start--; }
-        if (wxString("=+-*/(").find(s[start - 1]) == wxString::npos) { return; }
+        if (wxString("=+-*/(&").find(s[start - 1]) == wxString::npos) { return; }
         while (start < s.Len() && s[start] == ' ') { start++; }
         auto typed = s.Mid(start);
         auto upper = typed.Upper();
@@ -442,6 +468,9 @@ struct FormulaEvaluator {
                 if (function.StartsWith(upper)) { res.Add(s.Left(start) + function + "("); }
             }
         }
+        for (auto &[n, args] : TextFunctions()) {
+            if (wxString(n).StartsWith(upper)) { res.Add(s.Left(start) + n + "("); }
+        }
         for (auto f : {L"SUBSET(", L"TREESUBSET("}) {
             if (wxString(f).StartsWith(upper)) { res.Add(s.Left(start) + f); }
         }
@@ -450,37 +479,59 @@ struct FormulaEvaluator {
         }
     }
 
-    // The numbers in the grid of the cell named `name` (see Named()), or its own if it has no
+    // What is in the cells of a name or function argument.
+    struct Contents {
+        vector<double> numbers;
+        const wxString *number {nullptr};  // the last number as it was typed
+        const wxString *text {nullptr};    // the last other text
+        int texts {0};
+    };
+
+    // The contents of the grid of the cell named `name` (see Named()), or its own if it has no
     // grid, except formula cell `self`, and with `tree` also those of the data cells in its
     // sub-grids, depth first.
-    wxString Numbers(Cell *self, const wxString &name, vector<double> &numbers, bool tree) {
+    wxString Collect(Cell *self, const wxString &name, Contents &contents, bool tree) {
         wxString error;
         auto *c = Named(self, name, error);
         if (c == nullptr) { return error; }
-        return c->grid ? Numbers(self, c->grid.get(), numbers, tree)
-                       : Numbers(self, c, numbers, tree);
+        return c->grid ? Collect(self, c->grid.get(), contents, tree)
+                       : Collect(self, c, contents, tree);
     }
 
-    wxString Numbers(Cell *self, Grid *g, vector<double> &numbers, bool tree,
-                     bool sub = false) {
+    wxString Collect(Cell *self, Grid *g, Contents &contents, bool tree, bool sub = false) {
         for (auto &c : g->cells) {
-            if (auto error = Numbers(self, c.get(), numbers, tree, sub); !error.IsEmpty()) {
+            if (auto error = Collect(self, c.get(), contents, tree, sub); !error.IsEmpty()) {
                 return error;
             }
         }
         return {};
     }
 
-    wxString Numbers(Cell *self, Cell *c, vector<double> &numbers, bool tree, bool sub = false) {
+    wxString Collect(Cell *self, Cell *c, Contents &contents, bool tree, bool sub = false) {
         if (c != self && !(sub && c->celltype == CT_FORMULA)) {
             if (c->celltype == CT_FORMULA) {
                 if (auto error = Update(c); !error.IsEmpty()) { return error; }
             }
             double d;
-            if (c->text.GetStrictNum(d)) { numbers.push_back(d); }
+            if (c->text.GetStrictNum(d)) {
+                contents.numbers.push_back(d);
+                contents.number = &c->text.t;
+            } else if (!c->text.t.IsEmpty()) {
+                contents.text = &c->text.t;
+                contents.texts++;
+            }
         }
-        return tree && c->grid ? Numbers(self, c->grid.get(), numbers, true, true) : wxString();
+        return tree && c->grid ? Collect(self, c->grid.get(), contents, true, true) : wxString();
     }
+
+    // A number, also with the text it came from, if any, or a text.
+    struct Value {
+        double d {0};
+        wxString t;
+        bool text {false};
+        Value(double _d) : d(_d) {}
+        Value(const wxString &_t) : t(_t), text(true) {}
+    };
 
     struct Parser {
         FormulaEvaluator &fe;
@@ -502,42 +553,68 @@ struct FormulaEvaluator {
             i++;
             return true;
         }
-        double Expr() {
+        double Num(const Value &v) {
+            double d;
+            if (!v.text) { return v.d; }
+            return Text::StrictNum(v.t, d) ? d : Fail(L"#VALUE!");
+        }
+        wxString Str(const Value &v) {
+            if (!v.text && !std::isfinite(v.d)) { Fail(L"#NUM!"); }
+            return v.text || !v.t.IsEmpty() ? v.t : Text::NumText(v.d);
+        }
+        Value Concat() {
+            auto v = Expr();
+            while (Eat('&')) {
+                auto left = Str(v);
+                v = left + Str(Expr());
+            }
+            return v;
+        }
+        Value Expr() {
             auto v = Term();
             for (;;) {
                 if (Eat('+')) {
-                    v += Term();
+                    auto left = Num(v);
+                    v = left + Num(Term());
                 } else if (Eat('-')) {
-                    v -= Term();
+                    auto left = Num(v);
+                    v = left - Num(Term());
                 } else {
                     return v;
                 }
             }
         }
-        double Term() {
+        Value Term() {
             auto v = Unary();
             for (;;) {
                 if (Eat('*')) {
-                    v *= Unary();
+                    auto left = Num(v);
+                    v = left * Num(Unary());
                 } else if (Eat('/')) {
-                    auto d = Unary();
-                    v = d != 0 ? v / d : Fail(L"#DIV/0!");
+                    auto left = Num(v);
+                    auto d = Num(Unary());
+                    v = d != 0 ? left / d : Fail(L"#DIV/0!");
                 } else {
                     return v;
                 }
             }
         }
-        double Unary() { return Eat('-') ? -Unary() : Eat('+') ? Unary() : Primary(); }
-        double Primary() {
+        Value Unary() {
+            if (Eat('-')) { return -Num(Unary()); }
+            if (Eat('+')) { return Num(Unary()); }
+            return Primary();
+        }
+        Value Primary() {
             if (Eat('(')) {
-                auto v = Expr();
-                return Eat(')') ? v : Fail(L"#ERROR!");
+                auto v = Concat();
+                return Eat(')') ? v : Value(Fail(L"#ERROR!"));
             }
-            vector<double> numbers;
+            if (Eat('\'')) { return Literal(); }
+            Contents contents;
             if (i < s.Len() && s[i] == '"') {
                 wxString name;
                 if (!Name(')', name)) { return Fail(L"#ERROR!"); }
-                return One(fe.Numbers(self, name, numbers, false), numbers);
+                return One(fe.Collect(self, name, contents, false), contents);
             }
             auto start = i;
             if (i < s.Len() && (wxIsdigit(s[i]) || s[i] == '.')) {
@@ -558,33 +635,76 @@ struct FormulaEvaluator {
             }
             auto function = s.Mid(start, i - start);
             if (function.IsEmpty()) { return Fail(L"#ERROR!"); }
-            if (!Eat('(')) { return One(fe.Numbers(self, function, numbers, false), numbers); }
+            if (!Eat('(')) { return One(fe.Collect(self, function, contents, false), contents); }
             function.MakeUpper();
-            if (IsSubset(function)) { return One(Subset(numbers, false, function), numbers); }
+            if (IsSubset(function)) { return One(Subset(contents, false, function), contents); }
+            if (auto args = TextFunctionArgs(function)) { return TextFunction(function, args); }
             wxString rest;
             auto tree = function.StartsWith(L"TREE", &rest);
             if (tree) { function = rest; }
             for (auto &[n, f] : Functions()) {
                 if (function != n) { continue; }
-                auto e = Argument(numbers, tree);
-                return e.IsEmpty() ? f(numbers) : Fail(e);
+                auto e = Argument(contents, tree);
+                return e.IsEmpty() ? f(contents.numbers) : Fail(e);
             }
             return Fail(L"#NAME?");
         }
-        // The numbers in the parentheses of a function: the name of a grid, or SUBSET() of one.
-        wxString Argument(vector<double> &numbers, bool tree) {
+        // The rest of a literal text, after its opening quote.
+        Value Literal() {
+            wxString t;
+            for (; i < s.Len(); i++) {
+                if (s[i] != '\'') {
+                    t += s[i];
+                } else if (i + 1 < s.Len() && s[i + 1] == '\'') {
+                    t += s[++i];
+                } else {
+                    i++;
+                    return t;
+                }
+            }
+            return Fail(L"#ERROR!");
+        }
+        // The rest of a call of one of the TextFunctions().
+        Value TextFunction(const wxString &function, size_t nargs) {
+            vector<Value> a;
+            do { a.push_back(Concat()); } while (Eat(','));
+            if (!Eat(')') || a.size() != nargs) { return Fail(L"#ERROR!"); }
+            auto count = [&](size_t n) {
+                auto d = Num(a[n]);
+                if (d >= 0) { return static_cast<size_t>(min(d, 1e9)); }
+                Fail(L"#VALUE!");
+                return size_t {0};
+            };
+            auto t = Str(a[0]);
+            if (function == L"LEN") { return static_cast<double>(t.Len()); }
+            if (function == L"UPPER") { return t.Upper(); }
+            if (function == L"LOWER") { return t.Lower(); }
+            if (function == L"TRIM") { return t.Trim(true).Trim(false); }
+            if (function == L"LEFT") { return t.Left(count(1)); }
+            if (function == L"RIGHT") { return t.Right(count(1)); }
+            if (function == L"MID") {
+                auto start = count(1);
+                if (start < 1) { return Fail(L"#VALUE!"); }
+                return t.Mid(start - 1, count(2));
+            }
+            auto old = Str(a[1]);
+            if (!old.IsEmpty()) { t.Replace(old, Str(a[2])); }
+            return t;
+        }
+        // The contents of the parentheses of a function: the name of a grid, or SUBSET() of one.
+        wxString Argument(Contents &contents, bool tree) {
             Space();
             auto start = i;
             while (i < s.Len() && wxIsalpha(s[i])) { i++; }
             auto function = s.Mid(start, i - start).Upper();
             if (IsSubset(function) && Eat('(')) {
-                auto e = Subset(numbers, tree, function);
+                auto e = Subset(contents, tree, function);
                 return !e.IsEmpty() ? e : Eat(')') ? wxString() : wxString(L"#ERROR!");
             }
             i = start;
             wxString name;
             if (!Name(')', name) || !Eat(')')) { return L"#ERROR!"; }
-            return fe.Numbers(self, name, numbers, tree);
+            return fe.Collect(self, name, contents, tree);
         }
         // A name, until `end` or in quotes.
         bool Name(wxChar end, wxString &name) {
@@ -596,18 +716,25 @@ struct FormulaEvaluator {
             i = quoted ? e + 1 : e;
             return true;
         }
-        // The one number of a name or SUBSET() on its own, unless there is an error e.
-        double One(const wxString &e, const vector<double> &numbers) {
+        // The one number of a name or SUBSET() on its own, or else its one text, unless there is an
+        // error e.
+        Value One(const wxString &e, const Contents &contents) {
             if (!e.IsEmpty()) { return Fail(e); }
-            return numbers.size() == 1 ? numbers[0] : Fail(L"#VALUE!");
+            if (contents.numbers.size() == 1) {
+                Value v {contents.numbers[0]};
+                v.t = *contents.number;
+                return v;
+            }
+            if (contents.numbers.empty() && contents.texts == 1) { return *contents.text; }
+            return Fail(L"#VALUE!");
         }
         // The rest of SUBSET(name, columns, rows) or TREESUBSET(name, columns, rows, levels), with
         // TREE in front also their sub-grids, which adds nothing to TREESUBSET.
-        wxString Subset(vector<double> &numbers, bool tree, const wxString &function) {
+        wxString Subset(Contents &contents, bool tree, const wxString &function) {
             vector<std::pair<Cell *, bool>> cells;
             if (auto e = Cells(cells, function); !e.IsEmpty()) { return e; }
             for (auto [c, sub] : cells) {
-                auto e = fe.Numbers(self, c, numbers, tree && function != L"TREESUBSET", sub);
+                auto e = fe.Collect(self, c, contents, tree && function != L"TREESUBSET", sub);
                 if (!e.IsEmpty()) { return e; }
             }
             return {};

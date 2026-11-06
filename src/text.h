@@ -111,8 +111,9 @@ struct Text {
 
     // Stricter than GetNum(): only succeeds if the whole text (ignoring surrounding spaces) is
     // a finite number, so "12abc" or "abc" are not numbers here, rather than 12 and 0.
-    bool GetStrictNum(double &d) const {
-        return wxString(t).Trim(true).Trim(false).ToCDouble(&d) && std::isfinite(d);
+    bool GetStrictNum(double &d) const { return StrictNum(t, d); }
+    static bool StrictNum(wxString s, double &d) {
+        return s.Trim(true).Trim(false).ToCDouble(&d) && std::isfinite(d);
     }
 
     void SetNum(double d) { SetText(NumText(d)); }

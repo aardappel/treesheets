@@ -180,8 +180,11 @@ BUILTIN(set_formula, "formula", "S", "",
     "inclusive range (0-2, 3-, -4) or - for all, and TREESUBSET(name, columns, rows, levels) "
     "also takes those of the sub-grids of these cells, counting the levels in the range (0 is the "
     "named grid). Instead of a name, both take another SUBSET() or TREESUBSET(), whose cells' "
-    "grids they use, e.g. \"=SUM(SUBSET(SUBSET(Sales, 1, 0), 2-, -))\". an empty formula makes "
-    "it data again, as does set_text().")
+    "grids they use, e.g. \"=SUM(SUBSET(SUBSET(Sales, 1, 0), 2-, -))\". A formula can also result "
+    "in text: a name or SUBSET() without a number is its one text, & joins text and 'text' is "
+    "literal, e.g. \"=Root & '/docs/report.pdf'\", with LEN(text), LEFT(text, count), "
+    "RIGHT(text, count), MID(text, start, count) from 1, UPPER(text), LOWER(text), TRIM(text) and "
+    "SUBSTITUTE(text, old, new). an empty formula makes it data again, as does set_text().")
 (VM &, LString *s) {
     si->SetFormula(s->strv());
 }
