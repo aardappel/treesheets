@@ -832,6 +832,13 @@ struct Text {
                                          : t.Lower().Find(sys->searchstring)) >= 0;
     }
 
+    // Where DrawCheckBox() draws its circle. Sized by the line, as a missing glyph can be narrow; the
+    // space after it gives room.
+    static wxRect CheckBoxCircle(int x, int y, int w, int rh) {
+        auto s = max(5, rh * 3 / 5);
+        return {x + max(0, (w - s) / 2), y + (rh - s) / 2, s, s};
+    }
+
     // Covers the checkbox character at x, y with a circle. A ticked one is filled with fg and has a
     // white tick, or a black one with light text. An open one is empty, or with fillopen filled
     // with light text, which would barely show otherwise.
@@ -842,10 +849,10 @@ struct Text {
         dc.SetPen(*wxTRANSPARENT_PEN);
         dc.SetBrush(wxBrush(bg));
         dc.DrawRectangle(x, y, w, rh + 1);
-        // Sized by the line, as a missing glyph can be narrow; the space after it gives room.
-        auto s = max(5, rh * 3 / 5);
-        auto sx = x + max(0, (w - s) / 2);
-        auto sy = y + (rh - s) / 2;
+        const auto circle = CheckBoxCircle(x, y, w, rh);
+        auto s = circle.width;
+        auto sx = circle.x;
+        auto sy = circle.y;
         dc.SetPen(wxPen(fg, max(1, s / 9)));
         dc.SetBrush(CheckBox() == 2 || (light && fillopen) ? wxBrush(fg) : *wxTRANSPARENT_BRUSH);
         dc.DrawEllipse(sx, sy, s, s);

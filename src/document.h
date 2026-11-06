@@ -473,13 +473,19 @@ struct Document {
         SetHighlight(hovernote, r);
     }
 
-    // Draws color translucently over r: the hover shadow, whose default gray darkens light and
-    // lightens dark cell colors, and the highlight of the fold icon under the pointer.
-    template<typename DC> void DrawShade(DC &dc, const wxRect &r, const wxColour &color) {
+    // Draws color translucently over r, or the circle in it: the hover shadow, whose default gray
+    // darkens light and lightens dark cell colors, and the highlight of the fold icon or todo
+    // checkbox under the pointer.
+    template<typename DC>
+    void DrawShade(DC &dc, const wxRect &r, const wxColour &color, bool circle = false) {
         if (auto *gc = dc.GetGraphicsContext(); gc != nullptr) {
             gc->SetPen(*wxTRANSPARENT_PEN);
             gc->SetBrush(wxBrush(color));
-            gc->DrawRectangle(r.x, r.y, r.width, r.height);
+            if (circle) {
+                gc->DrawEllipse(r.x, r.y, r.width, r.height);
+            } else {
+                gc->DrawRectangle(r.x, r.y, r.width, r.height);
+            }
             return;
         }
         #ifdef __WXMSW__
@@ -492,8 +498,13 @@ struct Document {
                 auto y0 = dc.LogicalToDeviceY(r.y);
                 gc->SetPen(*wxTRANSPARENT_PEN);
                 gc->SetBrush(wxBrush(color));
-                gc->DrawRectangle(x0, y0, dc.LogicalToDeviceX(r.x + r.width) - x0,
-                                  dc.LogicalToDeviceY(r.y + r.height) - y0);
+                auto w = dc.LogicalToDeviceX(r.x + r.width) - x0;
+                auto h = dc.LogicalToDeviceY(r.y + r.height) - y0;
+                if (circle) {
+                    gc->DrawEllipse(x0, y0, w, h);
+                } else {
+                    gc->DrawRectangle(x0, y0, w, h);
+                }
                 return;
             }
         #endif
@@ -501,7 +512,11 @@ struct Document {
         dc.SetLogicalFunction(wxXOR);
         dc.SetPen(*wxTRANSPARENT_PEN);
         dc.SetBrush(wxBrush(wxColour(0x14, 0x10, 0x10)));
-        dc.DrawRectangle(r);
+        if (circle) {
+            dc.DrawEllipse(r);
+        } else {
+            dc.DrawRectangle(r);
+        }
         dc.SetLogicalFunction(wxCOPY);
     }
 
@@ -1625,11 +1640,10 @@ struct Document {
             const wxColour base(LightColor(sys->hovershadowcolor));
             DrawShade(dc, hovershade, wxColour(base.Red(), base.Green(), base.Blue(), 56));
         }
-        for (const auto &r : {hoverfoldicon, hovercheck}) {
-            if (r.IsEmpty()) { continue; }
-            const auto base = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
-            DrawShade(dc, r, wxColour(base.Red(), base.Green(), base.Blue(), 96));
-        }
+        const auto base = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
+        const wxColour highlight(base.Red(), base.Green(), base.Blue(), 96);
+        if (!hoverfoldicon.IsEmpty()) { DrawShade(dc, hoverfoldicon, highlight); }
+        if (!hovercheck.IsEmpty()) { DrawShade(dc, hovercheck, highlight, true); }
         if (!hovernote.IsEmpty()) {
             Cell::DrawNote(dc, hovernote, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
         }

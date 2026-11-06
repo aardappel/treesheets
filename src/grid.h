@@ -439,9 +439,11 @@ struct Grid {
                     if (c->text.CheckBox() != 0) {
                         c->text.ForEachRangeRect(doc, dc, 0, 1, colwidths[x],
                                                  [&](int rx, int ry, int w, int rh) {
-                                                     wxRect r(rx, ry, w, rh + 1);
-                                                     if (r.Contains(bx + c->GetX(doc),
-                                                                    by + c->GetY(doc))) {
+                                                     const auto r =
+                                                         Text::CheckBoxCircle(rx, ry, w, rh);
+                                                     if (r.Union({rx, ry, w, rh + 1})
+                                                             .Contains(bx + c->GetX(doc),
+                                                                       by + c->GetY(doc))) {
                                                          doc->hovercheck = r;
                                                      }
                                                  });
