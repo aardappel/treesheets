@@ -1367,6 +1367,11 @@ struct Document {
                     s = s.Left(sys->defaultmaxcolwidth) + "...";
                 }
                 DrawText(dc, s, off, off);
+                if (p->text.CheckBox() != 0 && !p->text.HasRightToLeft()) {
+                    p->text.DrawCheckBox(dc, off, off + 1, dc.GetTextExtent(s.Left(1)).x,
+                                         dc.GetCharHeight() - 1, *wxLIGHT_GREY,
+                                         LightColor(Background()), false);
+                }
             }
         }
         dc.SetTextForeground(sys->rubberbandcolor);
