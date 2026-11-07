@@ -390,7 +390,8 @@ struct Document {
         s.grid->DrawSelect(this, dc, s, primary);
     }
 
-    template<typename DC> void UpdateHover(DC &dc, int mx, int my) {
+    // Without highlight, only the pointer changes, for what a modifier key means over the cell.
+    template<typename DC> void UpdateHover(DC &dc, int mx, int my, bool highlight = true) {
         ResetFont(dc);
         int x = 0;
         int y = 0;
@@ -419,17 +420,18 @@ struct Document {
                            ? wxCURSOR_SIZENWSE
                        : !hoverlink.IsEmpty() && ms.CmdDown() ? wxCURSOR_HAND
                                                               : wxCURSOR_NONE);
-        wxRect shade;
-        if (sys->hovershadow && hover.grid != nullptr && !hover.Thin()) {
-            shade = hover.grid->GetRect(this, hover);
-        }
-        SetHoverShade(shade);
         auto foldicon = hoverfoldicon;  // as FindXY() found them
         auto note = hovernote;
         hoverfoldicon = prevfoldicon;
         hovernote = prevnote;
         auto check = hovercheck;
         hovercheck = prevcheck;
+        if (!highlight) { return; }
+        wxRect shade;
+        if (sys->hovershadow && hover.grid != nullptr && !hover.Thin()) {
+            shade = hover.grid->GetRect(this, hover);
+        }
+        SetHoverShade(shade);
         SetHighlight(hoverfoldicon, foldicon);
         SetHighlight(hovercheck, check);
         SetHoverNote(note);
@@ -444,11 +446,11 @@ struct Document {
     }
 
     // Hovers what's under the mouse pointer, after the cells moved under it.
-    void HoverUnderPointer() {
+    void HoverUnderPointer(bool highlight = true) {
         auto p = canvas->ScreenToClient(wxGetMousePosition());
         if (!canvas->GetClientRect().Contains(p)) { return; }
         wxInfoDC dc(canvas);
-        UpdateHover(dc, p.x, p.y);
+        UpdateHover(dc, p.x, p.y, highlight);
     }
 
     // Moves the hover shadow, repainting just the cells it leaves and enters.
