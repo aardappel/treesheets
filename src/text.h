@@ -86,6 +86,16 @@ struct Text {
         return t.empty() ? 0 : t[0] == L'\u2610' ? 1 : t[0] == L'\u2611' ? 2 : 0;
     }
 
+    // The line or part of a line s starting at start, as measured and drawn. wxPdfDC has no font
+    // fallback, so a font lacking the checkbox character gives it the narrow width of its missing
+    // glyph, too narrow for the circle drawn over it. An em space leaves the room it has on screen.
+    wxString Shown(Document *doc, int start, wxString s) const {
+        if (doc->while_exporting_pdf && start == 0 && !s.empty() && CheckBox() != 0) {
+            s[0] = L'\u2003';
+        }
+        return s;
+    }
+
     // Where DisplayImage() shows the icon of a folded grid, relative to the cell, or empty.
     wxRect FoldIconRect() const {
         if (cell->tiny || !cell->grid || !cell->grid->folded) { return {}; }
@@ -505,13 +515,13 @@ struct Text {
     int RangeWidth(Document *doc, DC &dc, int depth, int start, int len) const {
         auto total = 0;
         if (!Rich()) {
-            dc.GetTextExtent(t.Mid(start, len), &total, nullptr);
+            dc.GetTextExtent(Shown(doc, start, t.Mid(start, len)), &total, nullptr);
             return total;
         }
         DrawnSegments(start, len, [&](int s, int l, int sb, bool, uint) {
             doc->PickFont(dc, depth, relsize, sb);
             auto w = 0;
-            dc.GetTextExtent(t.Mid(s, l), &w, nullptr);
+            dc.GetTextExtent(Shown(doc, s, t.Mid(s, l)), &w, nullptr);
             total += w;
         });
         doc->PickFont(dc, depth, relsize, stylebits);
@@ -527,7 +537,7 @@ struct Text {
         auto lm = rich ? GetLineMetrics(doc, dc, depth) : LineMetrics();
         for (;;) {
             auto start = i;
-            auto curl = GetLine(i, maxcolwidth);
+            auto curl = Shown(doc, start, GetLine(i, maxcolwidth));
             if (curl.IsEmpty()) { break; }
             int x = 0;
             int y = 0;
@@ -924,7 +934,7 @@ struct Text {
         }
         for (;;) {
             auto start = i;
-            auto curl = GetLine(i, maxcolwidth);
+            auto curl = Shown(doc, start, GetLine(i, maxcolwidth));
             if (curl.IsEmpty()) { break; }
             if (cell->tiny) {
                 if (sys->fastrender) {
@@ -975,7 +985,7 @@ struct Text {
                               [&](int s, int l, int sb, bool hascolor, uint color) {
                                   doc->PickFont(dc, depth, relsize, sb);
                                   setforeground(hascolor, color);
-                                  auto str = t.Mid(s, l);
+                                  auto str = Shown(doc, s, t.Mid(s, l));
                                   auto w = 0;
                                   dc.GetTextExtent(str, &w, nullptr);
                                   DrawText(dc, str, x, ty + lm.ascent - dc.GetFontMetrics().ascent);

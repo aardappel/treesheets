@@ -191,6 +191,7 @@ struct Document {
     };
 
     bool while_printing {false};
+    bool while_exporting_pdf {false};
     wxPrintData printData;
     wxPageSetupDialogData pageSetupData;
     uint printscale {0};
@@ -1377,7 +1378,7 @@ struct Document {
         for (auto *p = currentdrawroot->parent; p != nullptr; p = p->parent) {
             if (!p->text.t.IsEmpty()) {
                 int off = hierarchysize - dc.GetCharHeight() * ++i;
-                auto s = p->text.t;
+                auto s = p->text.Shown(this, 0, p->text.t);
                 if (static_cast<int>(s.Len()) > sys->defaultmaxcolwidth) {
                     // should take the width of these into account for layoutys, but really, the
                     // worst that can happen on a thin window is that its rendering gets cut off
@@ -1888,13 +1889,17 @@ struct Document {
 
     #ifdef ENABLE_WXPDFDOC
         bool DrawPDF(const wxString &expfilename) {
+            while_exporting_pdf = true;
             {
                 wxPdfDocument measurePdf;
                 measurePdf.AddPage();
 
                 {
                     wxPdfDC measureDC(&measurePdf, 0, 0);
-                    if (!measureDC.StartDoc(wxEmptyString)) return false;
+                    if (!measureDC.StartDoc(wxEmptyString)) {
+                        while_exporting_pdf = false;
+                        return false;
+                    }
                     currentdrawroot->ResetChildren();
                     Layout(measureDC);
                     measureDC.EndDoc();
@@ -1911,7 +1916,10 @@ struct Document {
 
             {
                 wxPdfDC dc(&pdf, maxx, maxy);
-                if (!dc.StartDoc(wxEmptyString)) return false;
+                if (!dc.StartDoc(wxEmptyString)) {
+                    while_exporting_pdf = false;
+                    return false;
+                }
                 vector<DrawnLink> links;
                 drawnlinks = &links;
                 DrawView(dc);
@@ -1933,6 +1941,7 @@ struct Document {
 
             bool saved = pdf.SaveAsFile(expfilename);
 
+            while_exporting_pdf = false;
             currentdrawroot->ResetChildren();
             UpdateLayout();
             return saved;
