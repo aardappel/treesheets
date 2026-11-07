@@ -852,18 +852,26 @@ struct Text {
 
     // Covers the checkbox character at x, y with a circle. A ticked one is filled with fg and has a
     // white tick, or a black one with light text. An open one is empty, or with fillopen filled
-    // with light text, which would barely show otherwise.
+    // with light text, which would barely show otherwise. A PDF shows the exact shape when zoomed
+    // in, and a unit is a whole point there, so it is drawn in eighths of those.
     template<typename DC>
-    void DrawCheckBox(DC &dc, int x, int y, int w, int rh, const wxColour &fg, const wxColour &bg,
-                      bool fillopen) const {
+    void DrawCheckBox(Document *doc, DC &dc, int x, int y, int w, int rh, const wxColour &fg,
+                      const wxColour &bg, bool fillopen) const {
         const auto light = fg.GetLuminance() > 0.5;
         dc.SetPen(*wxTRANSPARENT_PEN);
         dc.SetBrush(wxBrush(bg));
         dc.DrawRectangle(x, y, w, rh + 1);
         const auto circle = CheckBoxCircle(x, y, w, rh);
-        auto s = circle.width;
-        auto sx = circle.x;
-        auto sy = circle.y;
+        const auto units = doc->while_exporting_pdf ? 8 : 1;
+        auto scalex = 1.0;
+        auto scaley = 1.0;
+        if (units != 1) {
+            dc.GetUserScale(&scalex, &scaley);
+            dc.SetUserScale(scalex / units, scaley / units);
+        }
+        auto s = circle.width * units;
+        auto sx = circle.x * units;
+        auto sy = circle.y * units;
         dc.SetPen(wxPen(fg, max(1, s / 9)));
         dc.SetBrush(CheckBox() == 2 || (light && fillopen) ? wxBrush(fg) : *wxTRANSPARENT_BRUSH);
         dc.DrawEllipse(sx, sy, s, s);
@@ -874,6 +882,7 @@ struct Text {
             dc.SetPen(wxPen(light ? *wxBLACK : *wxWHITE, max(1, s / 6)));
             dc.DrawLines(3, tick);
         }
+        if (units != 1) { dc.SetUserScale(scalex, scaley); }
     }
 
     template<typename DC>
@@ -1029,7 +1038,7 @@ struct Text {
             auto dx = bx - cell->GetX(doc);
             auto dy = by - cell->ycenteroff - cell->GetY(doc);
             ForEachRangeRect(doc, dc, 0, 1, maxcolwidth, [&](int x, int y, int w, int rh) {
-                DrawCheckBox(dc, x + dx, y + dy, w, rh, fg, bg, true);
+                DrawCheckBox(doc, dc, x + dx, y + dy, w, rh, fg, bg, true);
             });
         }
         if (doc->drawnlinks != nullptr && !cell->tiny) {

@@ -1386,7 +1386,7 @@ struct Document {
                 }
                 DrawText(dc, s, off, off);
                 if (p->text.CheckBox() != 0 && !p->text.HasRightToLeft()) {
-                    p->text.DrawCheckBox(dc, off, off + 1, dc.GetTextExtent(s.Left(1)).x,
+                    p->text.DrawCheckBox(this, dc, off, off + 1, dc.GetTextExtent(s.Left(1)).x,
                                          dc.GetCharHeight() - 1, *wxLIGHT_GREY,
                                          LightColor(Background()), false);
                 }
