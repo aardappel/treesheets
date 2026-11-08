@@ -851,8 +851,9 @@ struct Text {
     }
 
     // Covers the checkbox character at x, y with a circle. A ticked one is filled with fg and has a
-    // white tick, or a black one with light text. An open one is empty. A PDF shows the exact shape
-    // when zoomed in, and a unit is a whole point there, so it is drawn in eighths of those.
+    // white tick, or a black one with light text. An open one is empty. A PDF or SVG shows the exact
+    // shape when zoomed in, and a unit is a whole point there, so it is drawn in tenths of those
+    // (wxSVGFileDC writes the scale with two decimals).
     template<typename DC>
     void DrawCheckBox(Document *doc, DC &dc, int x, int y, int w, int rh, const wxColour &fg,
                       const wxColour &bg) const {
@@ -861,7 +862,7 @@ struct Text {
         dc.SetBrush(wxBrush(bg));
         dc.DrawRectangle(x, y, w, rh + 1);
         const auto circle = CheckBoxCircle(x, y, w, rh);
-        const auto units = doc->while_exporting_pdf ? 8 : 1;
+        const auto units = doc->while_exporting_pdf || is_same_v<DC, wxSVGFileDC> ? 10 : 1;
         auto scalex = 1.0;
         auto scaley = 1.0;
         if (units != 1) {
