@@ -851,12 +851,11 @@ struct Text {
     }
 
     // Covers the checkbox character at x, y with a circle. A ticked one is filled with fg and has a
-    // white tick, or a black one with light text. An open one is empty, or with fillopen filled
-    // with light text, which would barely show otherwise. A PDF shows the exact shape when zoomed
-    // in, and a unit is a whole point there, so it is drawn in eighths of those.
+    // white tick, or a black one with light text. An open one is empty. A PDF shows the exact shape
+    // when zoomed in, and a unit is a whole point there, so it is drawn in eighths of those.
     template<typename DC>
     void DrawCheckBox(Document *doc, DC &dc, int x, int y, int w, int rh, const wxColour &fg,
-                      const wxColour &bg, bool fillopen) const {
+                      const wxColour &bg) const {
         const auto light = fg.GetLuminance() > 0.5;
         dc.SetPen(*wxTRANSPARENT_PEN);
         dc.SetBrush(wxBrush(bg));
@@ -873,7 +872,7 @@ struct Text {
         auto sx = circle.x * units;
         auto sy = circle.y * units;
         dc.SetPen(wxPen(fg, max(1, s / 9)));
-        dc.SetBrush(CheckBox() == 2 || (light && fillopen) ? wxBrush(fg) : *wxTRANSPARENT_BRUSH);
+        dc.SetBrush(CheckBox() == 2 ? wxBrush(fg) : *wxTRANSPARENT_BRUSH);
         dc.DrawEllipse(sx, sy, s, s);
         if (CheckBox() == 2) {
             wxPoint tick[] = {{sx + s * 3 / 10, sy + s / 2},
@@ -1038,7 +1037,7 @@ struct Text {
             auto dx = bx - cell->GetX(doc);
             auto dy = by - cell->ycenteroff - cell->GetY(doc);
             ForEachRangeRect(doc, dc, 0, 1, maxcolwidth, [&](int x, int y, int w, int rh) {
-                DrawCheckBox(doc, dc, x + dx, y + dy, w, rh, fg, bg, true);
+                DrawCheckBox(doc, dc, x + dx, y + dy, w, rh, fg, bg);
             });
         }
         if (doc->drawnlinks != nullptr && !cell->tiny) {
