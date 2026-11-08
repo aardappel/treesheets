@@ -1285,8 +1285,8 @@ msgstr "Zeilenstil-Rendering"
 msgid "Link"
 msgstr "Link"
 
-msgid "Link (SHIFT+F5)"
-msgstr "Link (UMSCHALT+F5)"
+msgid "Link (CTRL+K)"
+msgstr "Link (STRG+K)"
 
 msgid "Link to"
 msgstr "Link zu"

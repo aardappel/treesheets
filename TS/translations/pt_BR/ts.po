@@ -1278,8 +1278,8 @@ msgstr "Renderização com Estilo de Linha"
 msgid "Link"
 msgstr "Link"
 
-msgid "Link (SHIFT+F5)"
-msgstr "Link (SHIFT+F5)"
+msgid "Link (CTRL+K)"
+msgstr "Link (CTRL+K)"
 
 msgid "Link to"
 msgstr "Link para"

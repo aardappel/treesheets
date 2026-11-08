@@ -1375,8 +1375,8 @@ msgid "Link"
 msgstr "Ссылка"
 
 # комментарий к эл-ту Главного Окна
-msgid "Link (SHIFT+F5)"
-msgstr "Ссылка (SHIFT+F5)"
+msgid "Link (CTRL+K)"
+msgstr "Ссылка (CTRL+K)"
 
 # Текст в Окне (выбор п. Меню)
 msgid "Link to"

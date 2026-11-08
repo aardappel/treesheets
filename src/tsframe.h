@@ -511,7 +511,7 @@ struct TSFrame : wxFrame {
                      _("Follows the link at the cursor or in the selected cell, or else opens its text in the browser"));
             MyAppend(navmenu, A_BROWSEF, _("Open &file") + "\tF4",
                      _("Opens up the text from the selected cell in default application for the file type"));
-            MyAppend(navmenu, A_HYPERLINK, _("&Link...") + "\tSHIFT+F5",
+            MyAppend(navmenu, A_HYPERLINK, _("&Link...") + "\tCTRL+K",
                      _("Links the selected text to a web page, a file or the nearest cell with that text (CTRL+click follows it)"));
 
             auto *laymenu = new wxMenu();
@@ -646,7 +646,7 @@ struct TSFrame : wxFrame {
         semenu->AppendSeparator();
         MyAppend(semenu, wxID_REPLACE, _("&Replace") + "\tCTRL+H",
                  _("Find and replace in document"));
-        MyAppend(semenu, A_REPLACEONCE, _("Replace in Current &Selection") + "\tCTRL+K");
+        MyAppend(semenu, A_REPLACEONCE, _("Replace in Current &Selection") + "\tCTRL+SHIFT+J");
         MyAppend(semenu, A_REPLACEONCEJ,
                  _("Replace in Current Selection && &Jump Next") + "\tCTRL+J");
         MyAppend(semenu, A_REPLACEALL, _("Replace &All"));
@@ -1307,7 +1307,7 @@ struct TSFrame : wxFrame {
                        wxITEM_CHECK);
         AddToolbarIcon(styletb, _("Typewriter (CTRL+ALT+t)"), A_TT, "typewriter", wxITEM_CHECK);
         // Pressed when the selected text has a link, see OnUpdateNoteOrLink.
-        AddToolbarIcon(styletb, _("Link (SHIFT+F5)"), A_HYPERLINK, "link", wxITEM_CHECK);
+        AddToolbarIcon(styletb, _("Link (CTRL+K)"), A_HYPERLINK, "link", wxITEM_CHECK);
         FinishToolbar(styletb, "styletb", _("Text style operations"));
 
         auto *notetb = NewToolbar();

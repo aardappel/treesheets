@@ -1217,8 +1217,8 @@ msgstr "線條樣式繪製"
 msgid "Link"
 msgstr "連結"
 
-msgid "Link (SHIFT+F5)"
-msgstr "連結（Shift + F5）"
+msgid "Link (CTRL+K)"
+msgstr "連結（Ctrl + K）"
 
 msgid "Link to"
 msgstr "連結到"

@@ -1215,7 +1215,7 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
-msgid "Link (SHIFT+F5)"
+msgid "Link (CTRL+K)"
 msgstr ""
 
 msgid "Link to"

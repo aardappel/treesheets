@@ -1286,8 +1286,8 @@ msgstr "Mode ligne"
 msgid "Link"
 msgstr "Lien"
 
-msgid "Link (SHIFT+F5)"
-msgstr "Lien (SHIFT+F5)"
+msgid "Link (CTRL+K)"
+msgstr "Lien (CTRL+K)"
 
 msgid "Link to"
 msgstr "Lien vers"

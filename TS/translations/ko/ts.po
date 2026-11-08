@@ -1237,8 +1237,8 @@ msgstr "선 스타일 렌더링"
 msgid "Link"
 msgstr "링크"
 
-msgid "Link (SHIFT+F5)"
-msgstr "링크 (SHIFT+F5)"
+msgid "Link (CTRL+K)"
+msgstr "링크 (CTRL+K)"
 
 msgid "Link to"
 msgstr "링크 대상"

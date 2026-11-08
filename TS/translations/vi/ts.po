@@ -1245,8 +1245,8 @@ msgstr "Hiển thị kiểu đường kẻ"
 msgid "Link"
 msgstr "Liên kết"
 
-msgid "Link (SHIFT+F5)"
-msgstr "Liên kết (SHIFT+F5)"
+msgid "Link (CTRL+K)"
+msgstr "Liên kết (CTRL+K)"
 
 msgid "Link to"
 msgstr "Liên kết đến"

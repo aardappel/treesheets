@@ -1250,8 +1250,8 @@ msgstr "ラインスタイルレンダリング"
 msgid "Link"
 msgstr "リンク"
 
-msgid "Link (SHIFT+F5)"
-msgstr "リンク (Shift+F5)"
+msgid "Link (CTRL+K)"
+msgstr "リンク (Ctrl+K)"
 
 msgid "Link to"
 msgstr "リンク先"
