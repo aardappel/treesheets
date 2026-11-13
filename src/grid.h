@@ -1131,7 +1131,7 @@ struct Grid {
                 }
                 // If we have no data, lets see if we can generate something useful from the
                 // subgrid.
-                if (!acc->grid && acc->text.t.IsEmpty()) {
+                if (!acc || (!acc->grid && acc->text.t.IsEmpty())) {
                     acc = c->Eval(ev);
                     if (!acc) { return nullptr; }
                 }
