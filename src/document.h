@@ -1374,7 +1374,7 @@ struct Document {
         dc.SetDeviceOrigin((dlx > 0 ? -dlx : 0) + centerx, (dly > 0 ? -dly : 0) + centery);
     }
 
-    template<typename DC> void Render(DC &dc) {
+    template<typename DC> void Render(DC &dc, bool partial = false) {
         ResetFont(dc);
         PickFont(dc, 0, 0, 0);
         dc.SetTextForeground(*wxLIGHT_GREY);
@@ -1399,7 +1399,8 @@ struct Document {
         dc.SetTextForeground(sys->rubberbandcolor);
         currentdrawroot->Render(this, hierarchysize, hierarchysize, dc, 0, 0, 0, 0, 0,
                                 currentdrawroot->ColWidth(), 0);
-        ClearUnusedBitmaps();
+        // Drawing part of the view doesn't tell which images the rest of it shows.
+        if (!partial) { ClearUnusedBitmaps(); }
     }
 
     void ClearUnusedBitmaps() {
@@ -1623,10 +1624,12 @@ struct Document {
         // scroll position, while Render() culls in document coordinates, which are offset by
         // the centering on top. Scaled, maxx/maxy are in document units, and the whole viewport
         // is redrawn anyway.
+        auto partial = false;
         if (currentviewscale == 1.0) {
             wxRect clip(scrollx, scrolly, maxx - scrollx, maxy - scrolly);
             wxRect updatebox = canvas->GetUpdateRegion().GetBox();
             if (!updatebox.IsEmpty()) {
+                partial = !updatebox.Contains(canvas->GetClientRect());
                 int ux0 = 0, uy0 = 0, ux1 = 0, uy1 = 0;
                 canvas->CalcUnscrolledPosition(updatebox.GetLeft(), updatebox.GetTop(), &ux0,
                                                 &uy0);
@@ -1645,7 +1648,7 @@ struct Document {
 
         ShiftToCenter(dc);
         dc.SetUserScale(currentviewscale, currentviewscale);
-        Render(dc);
+        Render(dc, partial);
         if (sys->hovershadow && !hovershade.IsEmpty()) {
             const wxColour base(LightColor(sys->hovershadowcolor));
             DrawShade(dc, hovershade, wxColour(base.Red(), base.Green(), base.Blue(), 56));
