@@ -999,15 +999,9 @@ struct Text {
                 doc->PickFont(dc, depth, relsize, stylebits);
                 dc.SetTextForeground(sys->rubberbandcolor);
             } else {
-                if (searchfound) {
-                    dc.SetTextForeground(wxColour(sys->searchcolor));
-                } else if (filtered) {
-                    dc.SetTextForeground(*wxLIGHT_GREY);
-                } else if (istag) {
-                    dc.SetTextForeground(LightColor(doc->tags[t].second));
-                } else if (cell->textcolor != 0U) {
-                    dc.SetTextForeground(LightColor(cell->textcolor));  // FIXME: clean up
-                }
+                // The default color is set already, and stays so for the next cell.
+                auto colored = searchfound || filtered || istag || cell->textcolor != 0U;
+                if (colored) { setforeground(false, 0); }
                 auto tx = bx + 2 + ixs;
                 if (align != TEXTALIGN_LEFT) {
                     auto w = 0;
@@ -1016,9 +1010,7 @@ struct Text {
                 }
                 auto ty = by + lines * h;
                 DrawText(dc, curl, tx + g_margin_extra, ty + g_margin_extra);
-                if (searchfound || filtered || istag || cell->textcolor != 0U) {
-                    dc.SetTextForeground(sys->rubberbandcolor);
-                }
+                if (colored) { dc.SetTextForeground(sys->rubberbandcolor); }
             }
             lines++;
         }
