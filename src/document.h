@@ -276,23 +276,20 @@ struct Document {
 
         auto targetfilename = istempfile ? treesheets::System::TmpName(filename) : filename;
         auto savefilename = treesheets::System::NewName(targetfilename);
+        // The file could not be written: asks to save somewhere else instead.
+        auto failed = [&]() -> wxString {
+            if (istempfile) { return _("Error writing to file."); }
+            auto answer = wxMessageBox(_("Error writing TreeSheets file! Would you like to "
+                                         "save at a different location?"),
+                                       savefilename, wxYES_NO | wxICON_QUESTION, sys->frame);
+            return answer == wxYES ? Save(true, success) : _("Save cancelled.");
+        };
+        auto written = false;
 
         {  // limit destructors
             wxBusyCursor wait;
             wxFFileOutputStream fos(savefilename);
-            if (!fos.IsOk()) {
-                if (!istempfile) {
-                    auto answer =
-                        wxMessageBox(_("Error writing TreeSheets file! Would you like to "
-                                       "save at a different location?"),
-                                     savefilename, wxYES_NO | wxICON_QUESTION, sys->frame);
-                    switch (answer) {
-                        case wxYES: return Save(true);
-                        default: return _("Save cancelled.");
-                    }
-                }
-                return _("Error writing to file.");
-            }
+            if (!fos.IsOk()) { return failed(); }
 
             fos.Write("TSFF", 4);
             char vers = TS_VERSION;
@@ -338,6 +335,13 @@ struct Document {
                 mos.CopyTo(body.data(), body.size());
                 if (!encryption->Write(fos, body)) { return _("Error encrypting file."); }
             }
+            // On a full disk, the writes above fail, or only this one of what they buffered.
+            written = fos.IsOk() && fos.GetFile()->Flush();
+        }
+        // The file as it was is worth more than part of the new one in its place.
+        if (!written) {
+            ::wxRemoveFile(savefilename);
+            return failed();
         }
 
         if (!istempfile && ::wxFileExists(filename)) {
