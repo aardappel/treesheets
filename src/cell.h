@@ -364,43 +364,18 @@ struct Cell {
             str.Append(grid->ToText(indent, sel, format, doc, inheritstyle, root));
         }
         if (format == A_EXPXML) {
-            str.Prepend(">");
-            if (text.relsize != 0) {
-                str.Prepend("\"");
-                str.Prepend(wxString() << -text.relsize);
-                str.Prepend(" relsize=\"");
-            }
-            if (text.stylebits != 0) {
-                str.Prepend("\"");
-                str.Prepend(wxString() << text.stylebits);
-                str.Prepend(" stylebits=\"");
-            }
-            if (cellcolor != 0xFFFFFF) {
-                str.Prepend("\"");
-                str.Prepend(wxString::Format("0x%06X", cellcolor));
-                str.Prepend(" colorbg=\"");
-            }
-            if (textcolor != 0x000000) {
-                str.Prepend("\"");
-                str.Prepend(wxString::Format("0x%06X", textcolor));
-                str.Prepend(" colorfg=\"");
-            }
-            if (celltype != CT_DATA) {
-                str.Prepend("\"");
-                str.Prepend(wxString() << celltype);
-                str.Prepend(" type=\"");
-            }
-            if (textalign != TEXTALIGN_AUTO) {
-                str.Prepend("\"");
-                str.Prepend(wxString() << static_cast<int>(textalign));
-                str.Prepend(" align=\"");
-            }
-            if (vertalign != VERTALIGN_AUTO) {
-                str.Prepend("\"");
-                str.Prepend(wxString() << static_cast<int>(vertalign));
-                str.Prepend(" valign=\"");
-            }
-            str.Prepend("<cell");
+            wxString tag = "<cell";
+            auto attr = [&](const char *name, int value, const char *format = "%d") {
+                tag << " " << name << "=\"" << wxString::Format(format, value) << "\"";
+            };
+            if (vertalign != VERTALIGN_AUTO) { attr("valign", vertalign); }
+            if (textalign != TEXTALIGN_AUTO) { attr("align", textalign); }
+            if (celltype != CT_DATA) { attr("type", celltype); }
+            if (textcolor != 0x000000) { attr("colorfg", textcolor, "0x%06X"); }
+            if (cellcolor != 0xFFFFFF) { attr("colorbg", cellcolor, "0x%06X"); }
+            if (text.stylebits != 0) { attr("stylebits", text.stylebits); }
+            if (text.relsize != 0) { attr("relsize", -text.relsize); }
+            str.Prepend(tag + ">");
             str.Append(' ', indent);
             str.Append("</cell>\n");
         } else if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
