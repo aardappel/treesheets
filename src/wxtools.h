@@ -433,7 +433,7 @@ struct ColorPopup : DropdownPopup {
 struct ColorDropdown : wxOwnerDrawnComboBox {
     ColorDropdown(wxWindow *parent, wxWindowID id, int sel) {
         wxArrayString as;
-        as.Add("", sizeof(celltextcolors) / sizeof(uint));
+        as.Add("", celltextcolors.size());
         Create(parent, id, "", wxDefaultPosition, FromDIP(wxSize(44, 22)), as,
                wxCB_READONLY | wxCC_SPECIAL_DCLICK);
         SetPopupControl(new ColorPopup(this));

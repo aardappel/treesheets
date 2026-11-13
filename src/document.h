@@ -2150,10 +2150,9 @@ struct Document {
                         return Action(shift ? (ctrl ? A_SCDOWN : A_SDOWN)
                                             : (ctrl ? A_MDOWN : A_DOWN));
                     case WXK_HOME:
-                        return Action(shift ? (ctrl ? A_SHOME : A_SHOME)
-                                            : (ctrl ? A_CHOME : A_HOME));
+                        return Action(shift ? A_SHOME : ctrl ? A_CHOME : A_HOME);
                     case WXK_END:
-                        return Action(shift ? (ctrl ? A_SEND : A_SEND) : (ctrl ? A_CEND : A_END));
+                        return Action(shift ? A_SEND : ctrl ? A_CEND : A_END);
                     case WXK_TAB:
                         // CTRL+I (italics) arrives as the same keycode as CTRL+TAB, which
                         // TSCanvas::OnKeyDown() handles instead.
