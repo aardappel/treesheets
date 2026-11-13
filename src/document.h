@@ -949,12 +949,7 @@ struct Document {
 
     // The actions that apply to the cells added with ctrl+click as well; any other drops them.
     wxString MultiSelAction(int action, bool recursive) {
-        int style = action == wxID_BOLD            ? STYLE_BOLD
-                    : action == wxID_ITALIC        ? STYLE_ITALIC
-                    : action == A_TT               ? STYLE_FIXED
-                    : action == wxID_UNDERLINE     ? STYLE_UNDERLINE
-                    : action == wxID_STRIKETHROUGH ? STYLE_STRIKETHRU
-                                                   : 0;
+        int style = ActionStyle(action);
         // As within one selection, a style goes on unless all cells have it already.
         auto all = style != 0 && selected.grid->AllHaveStyle(selected, style, recursive) &&
                    std::ranges::all_of(multisel, [&](auto &s) {
@@ -3078,19 +3073,11 @@ struct Document {
                 return wxEmptyString;
 
             case wxID_BOLD:
-                selected.grid->SetStyle(this, selected, STYLE_BOLD, recursive);
-                return wxEmptyString;
             case wxID_ITALIC:
-                selected.grid->SetStyle(this, selected, STYLE_ITALIC, recursive);
-                return wxEmptyString;
             case A_TT:
-                selected.grid->SetStyle(this, selected, STYLE_FIXED, recursive);
-                return wxEmptyString;
             case wxID_UNDERLINE:
-                selected.grid->SetStyle(this, selected, STYLE_UNDERLINE, recursive);
-                return wxEmptyString;
             case wxID_STRIKETHROUGH:
-                selected.grid->SetStyle(this, selected, STYLE_STRIKETHRU, recursive);
+                selected.grid->SetStyle(this, selected, ActionStyle(action), recursive);
                 return wxEmptyString;
             case A_TOGGLECHECK: return ToggleCheck(false);
 
@@ -4539,6 +4526,18 @@ struct Document {
     bool SelectionHasNote() {
         auto *c = selected.GetCell();
         return c != nullptr && !c->note.IsEmpty();
+    }
+
+    // The style a text style menu item or toolbar button toggles, or 0 for any other action.
+    static int ActionStyle(int action) {
+        switch (action) {
+            case wxID_BOLD: return STYLE_BOLD;
+            case wxID_ITALIC: return STYLE_ITALIC;
+            case A_TT: return STYLE_FIXED;
+            case wxID_UNDERLINE: return STYLE_UNDERLINE;
+            case wxID_STRIKETHROUGH: return STYLE_STRIKETHRU;
+            default: return 0;
+        }
     }
 
     // The cell type a Program > Mark as menu item marks cells as.

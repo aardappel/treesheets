@@ -1428,15 +1428,8 @@ struct TSFrame : wxFrame {
     // its toolbar button if it has one.
     void OnUpdateStyle(wxUpdateUIEvent &ue) {
         auto *canvas = GetCurrentTab();
-        auto bit = 0;
-        switch (ue.GetId()) {
-            case wxID_BOLD: bit = STYLE_BOLD; break;
-            case wxID_ITALIC: bit = STYLE_ITALIC; break;
-            case A_TT: bit = STYLE_FIXED; break;
-            case wxID_UNDERLINE: bit = STYLE_UNDERLINE; break;
-            case wxID_STRIKETHROUGH: bit = STYLE_STRIKETHRU; break;
-        }
-        ue.Check(canvas != nullptr && bit != 0 && canvas->doc->SelectionHasStyle(bit));
+        ue.Check(canvas != nullptr &&
+                 canvas->doc->SelectionHasStyle(Document::ActionStyle(ue.GetId())));
     }
 
     // Checks the alignment all selected cells have, if they have the same one.
