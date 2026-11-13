@@ -1172,6 +1172,14 @@ struct Document {
     }
 
     static wxString NoSel() { return _("This operation requires a selection."); }
+    // Shows a file of the documentation in the browser.
+    static void BrowseFile(const wxString &path) {
+        #ifdef __WXMAC__
+            wxLaunchDefaultBrowser("file://" + path);
+        #else
+            wxLaunchDefaultBrowser(path);
+        #endif
+    }
     // Opens file f, relative to the document, in the application for its type.
     bool OpenFile(const wxString &f) const {
         wxFileName fn(f);
@@ -2488,11 +2496,7 @@ struct Document {
                 }
 
                 if (!tutorialpath.IsEmpty()) {
-                    #ifdef __WXMAC__
-                        wxLaunchDefaultBrowser("file://" + tutorialpath);
-                    #else
-                        wxLaunchDefaultBrowser(tutorialpath);
-                    #endif
+                    BrowseFile(tutorialpath);
                     return wxEmptyString;
                 } else {
                     return _("Tutorial web page could not be found.");
@@ -2501,15 +2505,8 @@ struct Document {
 
             #ifdef ENABLE_LOBSTER
                 case A_SCRIPTREFERENCE:
-                    #ifdef __WXMAC__
-                    wxLaunchDefaultBrowser(
-                        "file://" +
-                        sys->frame->app->GetDocPath("docs/script_reference.html"));  // RbrtPntn
-                    #else
-                    wxLaunchDefaultBrowser(
-                        sys->frame->app->GetDocPath("docs/script_reference.html"));
-                    #endif
-                        return wxEmptyString;
+                    BrowseFile(sys->frame->app->GetDocPath("docs/script_reference.html"));
+                    return wxEmptyString;
             #endif
 
             case A_ZOOMIN:
