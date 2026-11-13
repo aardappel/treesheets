@@ -186,12 +186,14 @@ struct Cell {
         if (drawstyle == DS_GRID && actualcellcolor != parentcolor) {
             DrawRectangle(dc, actualcellcolor, bx - ml, by - mt, sx + ml + mr, sy + mt + mb);
         }
+        auto blob = drawstyle != DS_GRID && HasContent() && !tiny;
+        // A blob in the color of what it is drawn on is darker, so that it stands out.
+        if (blob && actualcellcolor == parentcolor) {
+            auto *cp = reinterpret_cast<uchar *>(&actualcellcolor);
+            loop(i, 4) cp[i] = cp[i] * 850 / 1000;
+        }
         const wxColour wxactualcellcolor = LightColor(actualcellcolor);
-        if (drawstyle != DS_GRID && HasContent() && !tiny) {
-            if (actualcellcolor == parentcolor) {
-                auto *cp = reinterpret_cast<uchar *>(&actualcellcolor);
-                loop(i, 4) cp[i] = cp[i] * 850 / 1000;
-            }
+        if (blob) {
             if (drawstyle == DS_BLOBSHIER) {
                 DrawRoundedRectangle(dc, wxactualcellcolor, bx - cell_margin, by - cell_margin,
                                      minx + cell_margin * 2, miny + cell_margin * 2,
