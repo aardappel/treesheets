@@ -176,10 +176,6 @@ struct Document {
             return true;
         }
 
-        bool OnBeginDocument(int startPage, int endPage) override {
-            return wxPrintout::OnBeginDocument(startPage, endPage);
-        }
-
         void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo) override {
             *minPage = 1;
             *maxPage = 1;
@@ -4776,13 +4772,6 @@ struct Document {
         ApplyFilter([&] {
             loopallcells(c) c->text.filteredraw = !c->text.lastedit.IsBetween(rangebegin, rangeend);
         });
-    }
-
-    static wxDateTime ParseDateTimeString(const wxString &s) {
-        wxDateTime dt;
-        wxString::const_iterator end;
-        if (!dt.ParseDateTime(s, &end)) { dt = wxInvalidDateTime; }
-        return dt;
     }
 
     void SetSearchFilter(bool on) {

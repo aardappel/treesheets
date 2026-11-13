@@ -120,7 +120,7 @@ struct ScriptInterface {
 
 extern std::string InitLobster(ScriptInterface *_si, const char *exefilepath,
                                const char *auxfilepath, bool from_bundle, FileLoader sl);
-extern std::string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins);
+extern std::string RunLobster(std::string_view filename, std::string_view code);
 extern void TSDumpBuiltinDoc();
 
 }  // namespace script

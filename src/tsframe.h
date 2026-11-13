@@ -79,7 +79,6 @@ struct TSFrame : wxFrame {
     bool fromclosebox {true};
     bool globalkeyregistered {false};
     bool watcherwaitingforuser {false};
-    wxColour toolbarbackgroundcolor {0xD8C7BC};
     TSTextCtrl *filter {nullptr};
     TSTextCtrl *replaces {nullptr};
     TSTextCtrl *formulabar {nullptr};
@@ -103,8 +102,6 @@ struct TSFrame : wxFrame {
         wxString icon;
     };
     std::vector<ToolbarIcon> toolbaricons;
-    int refreshhack {0};
-    int refreshhackinstances {0};
     std::map<wxString, wxString> menustrings;
 
     TSFrame(TSApp *_app)
@@ -114,7 +111,6 @@ struct TSFrame : wxFrame {
         sys->frame = this;
 
         class MyLog : public wxLog {
-            void DoLogString(const wxChar *message, time_t timestamp) { DoLogText(*message); }
             void DoLogText(const wxString &message) override {
                 #ifdef WIN32
                 OutputDebugString(message.c_str());
@@ -147,12 +143,6 @@ struct TSFrame : wxFrame {
         line_sw = LoadEmbeddedBitmap("render/line_sw.png");
 
         UpdateTaskBarIconEvents();
-
-        bool showtbar = false;
-        bool showsbar = false;
-
-        sys->cfg->Read("showtbar", &showtbar, true);
-        sys->cfg->Read("showsbar", &showsbar, true);
 
         #ifdef __WXMAC__
             #define CTRLORALT "CTRL"
@@ -1009,7 +999,6 @@ struct TSFrame : wxFrame {
         }
 
         Bind(wxEVT_DPI_CHANGED, &TSFrame::OnDPIChanged, this);
-        Bind(wxEVT_SIZING, &TSFrame::OnSizing, this);
         Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
         #ifdef __WXMAC__
             BypassMacMenuForFunctionKeys(
@@ -2094,8 +2083,6 @@ struct TSFrame : wxFrame {
         // doesn't work.
         ReFocus();
     }
-
-    void OnSizing(wxSizeEvent &se) { se.Skip(); }
 
     void OnMaximize(wxMaximizeEvent &me) {
         ReFocus();

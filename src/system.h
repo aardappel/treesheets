@@ -23,7 +23,6 @@ struct System {
     uchar versionlastloaded {0};
     wxLongLong fakelasteditonload;
     wxPen pen_tinytext {wxColour(0x808080UL)};
-    wxPen pen_gridborder {wxColour(0xb5a6a4)};
     wxPen pen_thinselect {*wxLIGHT_GREY};
     wxPen pen_tinygridlines;
     wxPen pen_gridlines;
@@ -75,7 +74,6 @@ struct System {
     int notesizex {300};
     int notesizey {255};
     std::set<wxString> watchedpaths;
-    bool insidefiledialog {false};
     struct TimerStruct : wxTimer {
         void Notify() override {
             sys->SaveCheck();
@@ -170,8 +168,6 @@ struct System {
             ReadList("script", scripts);
         #endif
         ReadList("template", templates);
-        // fsw.Connect(wxID_ANY, wxID_ANY, wxEVT_FSWATCHER,
-        // wxFileSystemWatcherEventHandler(System::OnFileChanged));
     }
 
     void UpdatePens() {
@@ -254,7 +250,6 @@ struct System {
 
         if (frame->notebook->GetPageCount() == 0U) { InitDB(10); }
 
-        // Refresh();
         every_second_timer.Start(1000);
     }
 

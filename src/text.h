@@ -949,10 +949,6 @@ struct Text {
                 if (sys->fastrender) {
                     dc.DrawLine(bx + ixs, by + lines * h, bx + ixs + static_cast<int>(curl.Len()),
                                 by + lines * h);
-                    /*
-                    wxPoint points[] = { wxPoint(bx + ixs, by + lines * h), wxPoint(bx + ixs +
-                    curl.Len(), by + lines * h) }; dc.DrawLines(1, points, 0, 0);
-                     */
                 } else {
                     auto word = 0;
                     loop(p, static_cast<int>(curl.Len()) + 1) {
@@ -1478,9 +1474,6 @@ struct Text {
     void Load(wxDataInputStream &dis) {
         t = dis.ReadString();
         FilterControls(t);
-
-        // if (t.length() > 10000)
-        //    printf("");
 
         if (sys->versionlastloaded <= 11) {
             dis.Read32();  // numlines

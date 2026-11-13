@@ -187,7 +187,7 @@ struct Selection {
                     }
                 }
                 if (shift) {
-                    if (cursorend < cursor) { swap_(cursorend, cursor); }
+                    if (cursorend < cursor) { std::swap(cursorend, cursor); }
                 } else {
                     cursorend = cursor = curs;
                 }

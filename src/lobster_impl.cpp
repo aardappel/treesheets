@@ -746,8 +746,7 @@ string InitLobster(ScriptInterface *_si, const char *exefilepath, const char *au
     return err;
 }
 
-string RunLobster(std::string_view filename, std::string_view code, bool dump_builtins) {
-    (void)dump_builtins;
+string RunLobster(std::string_view filename, std::string_view code) {
     // Like the lobster executable does for its main file, look for files next to the script
     // first, but only while it runs: another script may be in another folder.
     struct ScriptDir {

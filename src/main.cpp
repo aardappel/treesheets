@@ -27,7 +27,6 @@ static const auto g_mintextsize_delta = 8;
 static const auto g_maxtextsize_delta = 32;
 static const auto g_min_deftextsize = 10;
 static const auto g_max_deftextsize = 20;
-static const auto BLINK_TIME = 400;
 static const auto CUSTOMCOLORIDX = 0;
 static const auto TS_SELECTION_MASK = 0x80;
 static const auto g_bordercolor_default = 0xA0A0A0;
@@ -125,7 +124,6 @@ enum {
     A_SHOWSBAR,
     A_SHOWTBAR,
     A_BOTTOMTABS,
-    A_TRADSCROLL,
     A_HOME,
     A_END,
     A_CHOME,
@@ -220,7 +218,6 @@ enum {
     A_FILTERSHOWSUBGRIDS,
     A_FILTERUNION,
     A_FILTERRANGE,
-    A_FILTERDIALOG,
     A_FASTRENDER,
     A_INVERTRENDER,
     A_INNERBORDERCOLOR,

@@ -71,11 +71,6 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         SwitchToCurrentDocument();
         changed = false;
 
-        bool dump_builtins = false;
-        #ifdef _DEBUG
-            //dump_builtins = true;
-        #endif
-
         // RunLobster() only catches (and converts to a returned error string) exceptions of
         // type `string` (Lobster compile errors / RUNTIME_ASSERT failures). Anything else that
         // escapes the VM/JIT layer must not be allowed to propagate further: the agent socket's
@@ -86,7 +81,7 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         // except it hasn't, which makes it far harder to diagnose than an outright hang.
         std::string errormessage;
         try {
-            errormessage = RunLobster(filename, code, dump_builtins);
+            errormessage = RunLobster(filename, code);
         } catch (const std::exception &e) {
             errormessage = std::string("internal error running script: ") + e.what();
         } catch (...) {

@@ -30,8 +30,6 @@ struct Evaluator {
     const Cell *failedcell {nullptr};  // only if it is in the document
     const Cell *evalroot {nullptr};
 
-    ~Evaluator() = default;
-
     void ClearVars() {
         vars.clear();
     }

@@ -1,5 +1,4 @@
 typedef unsigned char uchar;
-typedef unsigned short ushort;
 typedef unsigned int uint;
 
 #ifdef _DEBUG
@@ -15,27 +14,12 @@ typedef unsigned int uint;
 
 #define sign(x) ((x) < 0 ? -1 : 1)
 
-#define varargs(v, fmt, body) \
-    {                         \
-        va_list v;            \
-        va_start(v, fmt);     \
-        body;                 \
-        va_end(v);            \
-    }
-
 #define DELETEP(p)       \
     {                    \
         if (p) {         \
             delete p;    \
             p = nullptr; \
         }                \
-    }
-
-#define bound(v, a, s, e)     \
-    {                         \
-        v += a;               \
-        if (v > (e)) v = (e); \
-        if (v < (s)) v = (s); \
     }
 
 // Any of these ends a line in text we take in, on all platforms, because:
@@ -50,20 +34,6 @@ typedef unsigned int uint;
 #else
     #define LINE_SEPARATOR "\n"
 #endif
-
-#ifdef WIN32
-#define PATH_SEPARATOR "\\"
-#else
-#define PATH_SEPARATOR "/"
-#define __cdecl
-#define _vsnprintf vsnprintf
-#endif
-
-template<class T> inline void swap_(T &a, T &b) {
-    T c = a;
-    a = b;
-    b = c;
-};
 
 inline uchar *loadfile(const char *fn, size_t *lenret = nullptr) {
     FILE *f = fopen(fn, "rb");

@@ -33,9 +33,6 @@ struct Image {
     void ClearBitmap() { bm_display = wxNullBitmap; }
 
     wxBitmap &Display() {
-        // This might run in multiple threads in parallel
-        // so this function must not touch any global resources
-        // and callees must be thread-safe.
         if (!bm_display.IsOk()) {
             auto &it = imagetypes.at(type).first;
             #ifndef __WXMSW__

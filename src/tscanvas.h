@@ -57,8 +57,6 @@ struct TSCanvas : public wxScrolledCanvas {
         Bind(wxEVT_KILL_FOCUS, &TSCanvas::OnKillFocus, this);
         Bind(wxEVT_CONTEXT_MENU, &TSCanvas::OnContextMenuClick, this);
         Bind(wxEVT_SIZE, &TSCanvas::OnSize, this);
-        Bind(wxEVT_SCROLL_THUMBTRACK, &TSCanvas::OnScroll, this);
-        Bind(wxEVT_SCROLLWIN_THUMBTRACK, &TSCanvas::OnScrollWin, this);
         Bind(wxEVT_IDLE, [this](wxIdleEvent &ie) {
             if (doc) {
                 doc->OnIdle();
@@ -293,13 +291,6 @@ struct TSCanvas : public wxScrolledCanvas {
         fe.Skip();
     }
     void OnChar(wxKeyEvent &ce) {
-        /*
-        if (sys->insidefiledialog)
-        {
-            ce.Skip();
-            return;
-        }
-        */
         #ifndef __WXMAC__
             // Without this check, Alt+[Alphanumericals], Alt+Shift+[Alphanumericals] and
             // Alt+[Shift]+cursor (scrolling) don't work. The 128 makes sure unicode entry on e.g.
@@ -394,14 +385,6 @@ struct TSCanvas : public wxScrolledCanvas {
         } else {
             PopupMenu(frame->editmenupopup);
         }
-    }
-
-    void OnScroll(wxScrollEvent &se) {
-        se.Skip();  // Use default scrolling behavior.
-    }
-
-    void OnScrollWin(wxScrollWinEvent &se) {
-        se.Skip();  // Use default scrolling behavior.
     }
 
     // The cells move under a pointer that stays put, so hover what's under it now.

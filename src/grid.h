@@ -496,9 +496,6 @@ struct Grid {
         }
     }
 
-    void ReplaceCell(Cell *o, Cell *n) {
-        foreachcell(c) if (c.get() == o) { c.reset(n); }
-    }
     Selection FindCell(Cell *o) {
         foreachcell(c) if (c.get() == o) { return {cell->grid, x, y, 1, 1}; }
         return {};
@@ -1243,7 +1240,7 @@ struct Grid {
         vector<unique_ptr<Cell>> tr(xs * ys);
         foreachcell(c) tr[y + x * ys] = std::move(c);
         cells = std::move(tr);
-        swap_(xs, ys);
+        std::swap(xs, ys);
         SetOrient();
         // Columns that were rows have no width of their own, so they get the width of the last
         // column that did.
