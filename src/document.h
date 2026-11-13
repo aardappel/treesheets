@@ -4078,7 +4078,7 @@ struct Document {
         const wxString &filename = filenames[0];
         wxFFileInputStream fileinputstream(filename);
         if (fileinputstream.IsOk()) {
-            char buffer[4];
+            char buffer[4] {};
             fileinputstream.Read(buffer, 4);
             if (strncmp(buffer, "TSFF", 4) == 0) {
                 ThreeChoiceDialog askuser(

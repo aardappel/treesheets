@@ -350,7 +350,7 @@ struct System {
                 return _("Cannot open file.");
             }
 
-            char buf[4];
+            char buf[4] {};
             ffis.Read(buf, 4);
             if (strncmp(buf, "TSFF", 4) != 0) { return _("Not a TreeSheets file."); }
             ffis.Read(&versionlastloaded, 1);
