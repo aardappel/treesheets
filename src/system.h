@@ -253,27 +253,19 @@ struct System {
         every_second_timer.Start(1000);
     }
 
+    // The tutorial in the language of the interface (such as pt_BR, or else pt), or else English.
     void LoadTutorial() {
-        if (sys->defaultlang == "en") {
-            LoadDB(frame->app->GetDocPath("examples/tutorial.cts"));
-            return;
+        auto load = [&](const wxString &suffix) {
+            return LoadDB(frame->app->GetDocPath("examples/tutorial" + suffix + ".cts")).IsEmpty();
+        };
+        if (defaultlang != "en") {
+            auto *trans = wxTranslations::Get();
+            auto language = trans != nullptr ? trans->GetBestTranslation("ts") : wxString("");
+            if (language.Len() == 5 && load("-" + language)) { return; }
+            language.Truncate(2);
+            if (language.Len() == 2 && load("-" + language)) { return; }
         }
-
-        auto *trans = wxTranslations::Get();
-        auto language = trans != nullptr ? trans->GetBestTranslation("ts") : wxString("");
-
-        if (language.Len() == 5 &&
-            !LoadDB(frame->app->GetDocPath("examples/tutorial-" + language + ".cts"))[0]) {
-            return;
-        }
-
-        language.Truncate(2);
-        if (language.Len() == 2 &&
-            !LoadDB(frame->app->GetDocPath("examples/tutorial-" + language + ".cts"))[0]) {
-            return;
-        }
-
-        LoadDB(frame->app->GetDocPath("examples/tutorial.cts"));
+        load("");
     }
 
     void LoadOpRef() { LoadDB(frame->app->GetDocPath("examples/operation-reference.cts")); }
