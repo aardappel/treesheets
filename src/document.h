@@ -2048,7 +2048,7 @@ struct Document {
                         << "  img { filter: invert(1); }\n"
                         << "}\n"
                         << "li { }\n</style>\n"
-                        << "<title>export of TreeSheets file " << this->filename
+                        << "<title>export of TreeSheets file " << Text::htmlify(this->filename)
                         << "</title>\n<meta charset=\"UTF-8\" />\n"
                         << "</head>\n<body style=\""
                         << wxString::Format("background-color: #%06X;", SwapColor(root->cellcolor))
