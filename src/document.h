@@ -1472,14 +1472,17 @@ struct Document {
             UpdateLayout();
             return;
         }
-        if (!(right && hover.IsInside(selected))) {
-            if (hover.GetCell() != nullptr && selected.GetCell() == hover.GetCell()) {
-                hover.EnterEditOnly(this);
-            } else {
-                hover.ExitEdit(this);
-            }
-            SetSelect(hover);
+        if (!(right && hover.IsInside(selected))) { SelectHover(); }
+    }
+
+    // Selects what is hovered, to edit its text where the pointer is if it's the selected cell.
+    void SelectHover() {
+        if (hover.GetCell() != nullptr && selected.GetCell() == hover.GetCell()) {
+            hover.EnterEditOnly(this);
+        } else {
+            hover.ExitEdit(this);
         }
+        SetSelect(hover);
     }
 
     // A click on a fold icon keeps the grids it unfolded unfolded, undoably. A long press, or

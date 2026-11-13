@@ -241,11 +241,16 @@ struct DropTarget : wxDropTarget {
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def) override {
         GetData();
         auto *canvas = sys->frame->GetCurrentTab();
+        auto *doc = canvas->doc.get();
         wxInfoDC dc(canvas);
-        canvas->doc->UpdateHover(dc, x, y);
-        canvas->doc->SelectClick();
-        canvas->doc->Drop();
-        canvas->doc->UpdateLayout();
+        doc->UpdateHover(dc, x, y);
+        if (!doc->hover.grid) { return wxDragNone; }
+        // Unlike a click, which there could drag the selection's knob, open a note, tick a
+        // checkbox or unfold a grid instead.
+        doc->ClearMultiSel();
+        doc->SelectHover();
+        doc->Drop();
+        doc->UpdateLayout();
         canvas->Refresh();
         return wxDragCopy;
     }
