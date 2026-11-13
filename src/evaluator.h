@@ -267,6 +267,16 @@ struct FormulaEvaluator {
     std::optional<std::set<wxString>> assigned;  // see Numbers()
     std::unordered_map<const Cell *, int> state;
     vector<Cell *> changed;
+    int depth {0};  // see Level
+
+    // A level of nesting in a formula, or of a formula that uses another one. Calculating them
+    // recurses for each, so more of them than g_max_formula_depth are an error.
+    struct Level {
+        int &depth;
+        Level(FormulaEvaluator &fe) : depth(fe.depth) { depth++; }
+        ~Level() { depth--; }
+        bool TooDeep() const { return depth > g_max_formula_depth; }
+    };
 
     FormulaEvaluator(const Cell *_editing, const VariableMap &_vars)
         : editing(_editing), vars(_vars) {}
@@ -599,7 +609,11 @@ struct FormulaEvaluator {
                 }
             }
         }
+        // All that nests comes through here: signs, parentheses, the arguments of functions and
+        // the formulas of the cells they use.
         Value Unary() {
+            Level level(fe);
+            if (level.TooDeep()) { return Fail(L"#ERROR!"); }
             if (Eat('-')) { return -Num(Unary()); }
             if (Eat('+')) { return Num(Unary()); }
             return Primary();
@@ -751,6 +765,8 @@ struct FormulaEvaluator {
             wxString name;
             auto nested = IsSubset(inner) && Eat('(');
             if (nested) {
+                Level level(fe);
+                if (level.TooDeep()) { return L"#ERROR!"; }
                 vector<std::pair<Cell *, bool>> picked;
                 if (auto e = Cells(picked, inner); !e.IsEmpty()) { return e; }
                 for (auto [c, sub] : picked) {

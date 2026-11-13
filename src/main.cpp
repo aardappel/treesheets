@@ -18,6 +18,7 @@ static const auto g_scrollratewheel = 2;  // relative to 1 step on a fixed wheel
 static const auto g_max_launches = 20;
 static const auto g_max_grid_cells = 4 * 1024 * 1024;
 static const auto g_max_depth = 500;  // of nested grids when loading, else the stack could overflow
+static const auto g_max_formula_depth = 100;  // of nesting in formulas and between them, likewise
 static const auto g_min_image_scale = 1.0 / 16;  // an image drawn at most 16x its pixel size
 static const auto g_max_image_scale = 100.0;
 static const auto g_min_colwidth = 5;
