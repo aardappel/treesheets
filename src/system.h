@@ -471,8 +471,10 @@ struct System {
                         auto numcells = 0;
                         auto textbytes = 0;
                         unique_ptr<Cell> root(Cell::LoadWhich(dis, nullptr, numcells, textbytes, ics));
-                        // The rest of the program assumes the root cell has a grid.
-                        if (!root || !root->grid) { return _("File corrupted!"); }
+                        // The rest of the program assumes the root cell has a grid. Where the data
+                        // is cut off or damaged, the cells from there on read as empty ones. Not
+                        // checked after the tags: files exist whose list of them has no end.
+                        if (!root || !root->grid || !zis.IsOk()) { return _("File corrupted!"); }
 
                         doc = NewTabDoc(true, insert_at);
                         doc->encryption = std::move(encryption);
