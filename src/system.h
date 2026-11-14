@@ -512,7 +512,6 @@ struct System {
 
     done:
 
-        doc->RefreshImageRefCount(false);
         if (zoomlevel == 0) {
             doc->UpdateLayout();
             doc->ScrollIfSelectionOutOfView();
@@ -928,11 +927,11 @@ struct System {
         loopv(i, imagelist) imagelist[i]->trefc = 0;
         loop(i, frame->notebook->GetPageCount()) {
             auto *doc = dynamic_cast<TSCanvas *>(frame->notebook->GetPage(i))->doc.get();
-            if (doc->root) { doc->root->ImageRefCount(true); }
-            for (auto &undoitem : doc->undolist) { undoitem->clone->ImageRefCount(true); }
-            for (auto &redoitem : doc->redolist) { redoitem->clone->ImageRefCount(true); }
+            if (doc->root) { doc->root->ImageRefCount(); }
+            for (auto &undoitem : doc->undolist) { undoitem->clone->ImageRefCount(); }
+            for (auto &redoitem : doc->redolist) { redoitem->clone->ImageRefCount(); }
         }
-        if (cellclipboard) { cellclipboard->ImageRefCount(true); }
+        if (cellclipboard) { cellclipboard->ImageRefCount(); }
         if (lastimage != nullptr) { lastimage->trefc++; }
         std::erase_if(imagelist, [](const unique_ptr<Image> &image) { return image->trefc == 0; });
     }

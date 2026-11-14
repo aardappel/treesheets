@@ -299,7 +299,7 @@ struct Document {
             sos.Write8(selected.ys);
             sos.Write8(ocs != nullptr ? drawpath.size() : 0);  // zoom level
             sos.Write8(autohtmlexport | static_cast<int>(autopdfexport) << 2);
-            RefreshImageRefCount(true);
+            RefreshImageRefCount();
             int realindex = 0;
             loopv(i, sys->imagelist) {
                 if (auto &image = *sys->imagelist[i]; image.trefc) {
@@ -1964,9 +1964,9 @@ struct Document {
         return GetBitmap().GetSubBitmap(r);
     }
 
-    void RefreshImageRefCount(bool includefolded) const {
+    void RefreshImageRefCount() const {
         loopv(i, sys->imagelist) sys->imagelist[i]->trefc = 0;
-        root->ImageRefCount(includefolded);
+        root->ImageRefCount();
     }
 
     wxString ExportFile(const wxString &filename, int action, bool currentview) {

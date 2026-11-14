@@ -502,10 +502,8 @@ struct Grid {
     }
 
     Selection SelectAll() const { return {cell->grid, 0, 0, xs, ys}; }
-    void ImageRefCount(bool includefolded) {
-        if (includefolded || !folded) {
-            foreachcell(c) if (c) { c->ImageRefCount(includefolded); }  // null in undo snapshots
-        }
+    void ImageRefCount() {
+        foreachcell(c) if (c) { c->ImageRefCount(); }  // null in undo snapshots
     }
 
     template<typename DC>
