@@ -104,6 +104,8 @@ struct TSApp : wxApp {
             DeclareHiDpiAwareOnWindows();
         #endif
         frame = new TSFrame(this);
+        // A portable TreeSheets leaves no settings behind on the computer it runs on.
+        if (!cl.portable) { frame->SetFileAssoc(exename); }
 
         #ifdef ENABLE_LOBSTER
             auto serr = ScriptInit(GetDataPath("scripts/"));

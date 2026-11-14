@@ -1008,8 +1008,6 @@ struct TSFrame : wxFrame {
             #endif
         }
 
-        SetFileAssoc(app->exename);
-
         Bind(wxEVT_DPI_CHANGED, &TSFrame::OnDPIChanged, this);
         Bind(wxEVT_SIZING, &TSFrame::OnSizing, this);
         Bind(wxEVT_MENU, &TSFrame::OnMenu, this, wxID_ANY);
