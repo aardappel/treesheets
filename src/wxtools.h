@@ -665,9 +665,11 @@ struct ImageDropdown : wxOwnerDrawnComboBox {
     }
 };
 
+// To at least a pixel: wx doesn't scale to nothing, and gives no bitmap at all.
 static void ScaleBitmap(const wxBitmap &source, double scale, wxBitmap &destination) {
     destination = wxBitmap(source.ConvertToImage().Scale(
-        source.GetWidth() * scale, source.GetHeight() * scale, wxIMAGE_QUALITY_HIGH));
+        max(1, static_cast<int>(source.GetWidth() * scale)),
+        max(1, static_cast<int>(source.GetHeight() * scale)), wxIMAGE_QUALITY_HIGH));
 }
 
 static vector<uint8_t> ConvertWxImageToBuffer(const wxImage &image, wxBitmapType bitmaptype) {
