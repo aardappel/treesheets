@@ -4,8 +4,8 @@
 
 FetchContent_Declare(
     lobster
-    URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.8.tar.gz
-    URL_HASH SHA256=9be91bdadd0987caa62f6e3450efa3943b3a4b337fc51c28826984717cc6d8da
+    URL https://github.com/aardappel/lobster/archive/refs/tags/v2026.9.tar.gz
+    URL_HASH SHA256=4f1de38fb65faf654092c407b2420411a6bfae0cdce186a97844e5f200a399ac
 )
 FetchContent_MakeAvailable(lobster)
 
@@ -19,6 +19,7 @@ add_library(lobster STATIC
     ${lobster_SOURCE_DIR}/dev/src/builtins.cpp
     ${lobster_SOURCE_DIR}/dev/src/compiler.cpp
     ${lobster_SOURCE_DIR}/dev/src/file.cpp
+    ${lobster_SOURCE_DIR}/dev/src/tcp.cpp
     ${lobster_SOURCE_DIR}/dev/src/pakfile.cpp
     ${lobster_SOURCE_DIR}/dev/src/lobsterreader.cpp
     ${lobster_SOURCE_DIR}/dev/src/platform.cpp
@@ -39,8 +40,9 @@ target_include_directories(lobster PUBLIC
     ${lobster_SOURCE_DIR}/dev/external/libtcc)
 target_compile_definitions(lobster PRIVATE "LOBSTER_ENGINE=0")
 if(WIN32 AND NOT MSVC)
-    # Text-to-speech in platform.cpp needs the SAPI GUIDs, which MSVC resolves implicitly.
-    target_link_libraries(lobster PUBLIC sapi)
+    # Text-to-speech in platform.cpp needs the SAPI GUIDs and tcp.cpp Winsock, which MSVC
+    # links through #pragma comment(lib).
+    target_link_libraries(lobster PUBLIC sapi ws2_32)
 endif()
 
 ## lobster-impl (provider of TreeSheets functions in lobster)

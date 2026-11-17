@@ -767,7 +767,8 @@ string RunLobster(std::string_view filename, std::string_view code) {
     try {
         CompileOptions opts;
         string c_codegen;
-        err = Compile(natreg, filename, code, opts, c_codegen);
+        // Lobster loads the file only for a null view: an empty one is an empty program.
+        err = Compile(natreg, filename, code.empty() ? string_view {} : code, opts, c_codegen);
         if (err.empty()) {
             RunOptions ropts;
             RunJIT(natreg, filename, c_codegen, {}, opts, ropts, err);

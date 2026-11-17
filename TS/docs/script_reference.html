@@ -291,6 +291,9 @@
 <tr><td><table class="a" border=1 cellspacing=0 cellpadding=4><tr class="a" valign=top><td class="a"><tt><b>print</b>(x<font color="#666666">: string</font>)</tt></td><td class="a">output any value to the console (with linefeed).</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>flush_output</b>()</tt></td><td class="a">flush console output, for example when a parent process waits for a readiness message on a pipe</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>string</b>(x<font color="#666666">: string</font>) -> <font color="#666666">string</font></tt></td><td class="a">convert any value to string</td>
 
 </tr>
@@ -1355,6 +1358,32 @@
 
 </tr>
 </table></td></tr>
+<tr class="a" valign=top><td><h3>tcp</h3></td></tr>
+<tr><td><table class="a" border=1 cellspacing=0 cellpadding=4><tr class="a" valign=top><td class="a"><tt><b>tcp.listen</b>(ip<font color="#666666">: string</font>, port<font color="#666666">: int</font>) -> <font color="#666666">resource&lt;tcplistener&gt;?</font>, <font color="#666666">string?</font></tt></td><td class="a">open a nonblocking IPv4 TCP listener; use 127.0.0.1 for local access. Port 0 selects a free port. Returns listener, error (nil on success). Resources close their sockets when destroyed.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>tcp.connect</b>(ip<font color="#666666">: string</font>, port<font color="#666666">: int</font>) -> <font color="#666666">resource&lt;tcpsocket&gt;?</font>, <font color="#666666">string?</font></tt></td><td class="a">begin a nonblocking connection to a numeric IPv4 address. Returns socket, error. Poll connected for completion; no DNS lookup or blocking wait is performed.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>tcp.accept</b>(listener<font color="#666666">: resource&lt;tcplistener&gt;</font>) -> <font color="#666666">resource&lt;tcpsocket&gt;?</font>, <font color="#666666">string?</font></tt></td><td class="a">accept one connection without blocking. Returns socket, error; nil, nil means none waiting.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>tcp.port</b>(listener<font color="#666666">: resource&lt;tcplistener&gt;</font>) -> <font color="#666666">int</font>, <font color="#666666">string?</font></tt></td><td class="a">returns the bound local port and an optional error (useful after listen with port 0).</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>tcp.connected</b>(socket<font color="#666666">: resource&lt;tcpsocket&gt;</font>) -> <font color="#666666">int</font>, <font color="#666666">string?</font></tt></td><td class="a">poll connection establishment. Returns false, nil while pending; true, nil once established; false, error on failure. Established sockets report remote closure through receive, not this call.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>tcp.send</b>(socket<font color="#666666">: resource&lt;tcpsocket&gt;</font>, data<font color="#666666">: string</font>, offset<font color="#666666">: int</font> = 0) -> <font color="#666666">int</font>, <font color="#666666">string?</font></tt></td><td class="a">send bytes without blocking. Returns byte count, error; 0, nil means pending/would block (or empty data). Partial writes are normal: retain unsent bytes and retry with the advanced offset. No internal queue.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>tcp.receive</b>(socket<font color="#666666">: resource&lt;tcpsocket&gt;</font>, max_bytes<font color="#666666">: int</font>) -> <font color="#666666">string?</font>, <font color="#666666">string?</font></tt></td><td class="a">receive up to max_bytes (1..1048576), without blocking. Returns data, error. nil, nil means pending/would block; empty string, nil means EOF. TCP has no message boundaries.</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>tcp.wait</b>(listener<font color="#666666">: resource&lt;tcplistener&gt;</font>, socket<font color="#666666">: resource&lt;tcpsocket&gt;</font>, writable<font color="#666666">: bool</font>, seconds<font color="#666666">: float</font>) -> <font color="#666666">int</font></tt></td><td class="a">the one call here that blocks, for a loop with nothing to do until its peer acts: sleeps for at most seconds (0..1), or until the listener has a connection to accept, or the socket has data to receive, was closed, or (with writable) can be sent to. Either may be nil. Returns whether to try those calls now, rather than whether they will succeed.</td>
+
+</tr>
+</table></td></tr>
 <tr class="a" valign=top><td><h3>flatbuffers</h3></td></tr>
 <tr><td><table class="a" border=1 cellspacing=0 cellpadding=4><tr class="a" valign=top><td class="a"><tt><b>flatbuffers.field_int64</b>(string<font color="#666666">: string</font>, tablei<font color="#666666">: int</font>, vo<font color="#666666">: int</font>, def<font color="#666666">: int</font>) -> <font color="#666666">int</font></tt></td><td class="a">reads a flatbuffers field from a string at table location tablei, field vtable offset vo, and default value def. The value must be within bounds of the string. Returns the value (or default if the field was not present)</td>
 
@@ -1421,7 +1450,7 @@
 <tr><td><table class="a" border=1 cellspacing=0 cellpadding=4><tr class="a" valign=top><td class="a"><tt><b>parse_data</b>(typeid<font color="#666666">: typeid(any)</font>, stringdata<font color="#666666">: string</font>) -> <font color="#666666">any?</font>, <font color="#666666">string?</font></tt></td><td class="a">parses a string containing a data structure in lobster syntax (what you get if you convert an arbitrary data structure to a string) back into a data structure. supports int/float/string/vector and classes. classes will be forced to be compatible with their  current definitions, i.e. too many elements will be truncated, missing elements will be set to 0/nil if possible. useful for simple file formats. returns the value and an error string as second return value (or nil if no error)</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>flexbuffers_value_to_binary</b>(val<font color="#666666">: any</font>, max_nesting<font color="#666666">: int</font> = 0, cycle_detection<font color="#666666">: bool</font> = false) -> <font color="#666666">string</font></tt></td><td class="a">turns any reference value into a flexbuffer. max_nesting defaults to 100. cycle_detection is by default off (expensive)</td>
+<tr class="a" valign=top><td class="a"><tt><b>flexbuffers_value_to_binary</b>(val<font color="#666666">: any</font>, max_nesting<font color="#666666">: int</font> = 0, cycle_detection<font color="#666666">: bool</font> = false, include_defaults<font color="#666666">: bool</font> = false) -> <font color="#666666">string</font></tt></td><td class="a">turns any reference value into a flexbuffer. max_nesting defaults to 100. cycle_detection is by default off (expensive). include_defaults preserves fields equal to their default values (off by default, useful for complete JSON protocol responses).</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>flexbuffers_binary_to_value</b>(typeid<font color="#666666">: typeid(any)</font>, flex<font color="#666666">: string</font>) -> <font color="#666666">any?</font>, <font color="#666666">string?</font></tt></td><td class="a">turns a flexbuffer into a value</td>
