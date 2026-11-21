@@ -92,9 +92,9 @@ struct Document {
         const TextLink<wxString> *link;
     };
     vector<DrawnLink> *drawnlinks {nullptr};
-    // With the hover shadow option: the shaded area of the hovered cell, in document
-    // coordinates, or empty. A rect rather than `hover`, as that may point into a grid that
-    // has been deleted since.
+    // With the hover shadow option: the shaded area of the hovered cell or border, in
+    // document coordinates, or empty. A rect rather than `hover`, as that may point into a grid
+    // that has been deleted since.
     wxRect hovershade;
     Selection selected;
     Selection begindrag;
@@ -429,8 +429,11 @@ struct Document {
         hovercheck = prevcheck;
         if (!highlight) { return; }
         wxRect shade;
-        if (sys->hovershadow && hover.grid != nullptr && !hover.Thin()) {
-            shade = hover.grid->GetRect(this, hover);
+        if (sys->hovershadow && hover.grid != nullptr) {
+            // Between cells or at the grid's edge, the border there, a bit wider to be seen. On
+            // cells, their borders too, so there's no unshaded line between them and the cells.
+            shade = hover.Thin() ? hover.grid->InsertRect(this, hover).Inflate(1)
+                                 : hover.grid->GetRect(this, hover).Inflate(g_line_width);
         }
         SetHoverShade(shade);
         SetHighlight(hoverfoldicon, foldicon);

@@ -513,27 +513,34 @@ struct Grid {
         }
     }
 
-    template<typename DC> void DrawInsert(Document *doc, DC &dc, Selection &sel, uint colour) {
-        dc.SetPen(sys->pen_thinselect);
+    // The piece of border along one cell that thin selection sel stands for.
+    wxRect InsertRect(Document *doc, const Selection &sel) {
         if (sel.xs == 0) {
             auto *c = C(sel.x - static_cast<int>(sel.x == xs), sel.y).get();
             int x = c->GetX(doc) +
                     (c->sx + g_line_width + cell_margin) * static_cast<int>(sel.x == xs) -
                     g_line_width - cell_margin;
-            loop(line, g_line_width)
-                dc.DrawLine(x + line, max(cell->GetY(doc), doc->scrolly), x + line,
-                            min(cell->GetY(doc) + cell->sy, doc->maxy));
-            DrawRectangle(dc, colour, x - 1, c->GetY(doc), g_line_width + 2, c->sy);
-        } else {
-            auto *c = C(sel.x, sel.y - static_cast<int>(sel.y == ys)).get();
-            int y = c->GetY(doc) +
-                    (c->sy + g_line_width + cell_margin) * static_cast<int>(sel.y == ys) -
-                    g_line_width - cell_margin;
-            loop(line, g_line_width)
-                dc.DrawLine(max(cell->GetX(doc), doc->scrollx), y + line,
-                            min(cell->GetX(doc) + cell->sx, doc->maxx), y + line);
-            DrawRectangle(dc, colour, c->GetX(doc), y - 1, c->sx, g_line_width + 2);
+            return {x - 1, c->GetY(doc), g_line_width + 2, c->sy};
         }
+        auto *c = C(sel.x, sel.y - static_cast<int>(sel.y == ys)).get();
+        int y = c->GetY(doc) + (c->sy + g_line_width + cell_margin) * static_cast<int>(sel.y == ys) -
+                g_line_width - cell_margin;
+        return {c->GetX(doc), y - 1, c->sx, g_line_width + 2};
+    }
+
+    template<typename DC> void DrawInsert(Document *doc, DC &dc, Selection &sel, uint colour) {
+        dc.SetPen(sys->pen_thinselect);
+        auto r = InsertRect(doc, sel);
+        loop(line, g_line_width) {
+            if (sel.xs == 0) {
+                dc.DrawLine(r.x + 1 + line, max(cell->GetY(doc), doc->scrolly), r.x + 1 + line,
+                            min(cell->GetY(doc) + cell->sy, doc->maxy));
+            } else {
+                dc.DrawLine(max(cell->GetX(doc), doc->scrollx), r.y + 1 + line,
+                            min(cell->GetX(doc) + cell->sx, doc->maxx), r.y + 1 + line);
+            }
+        }
+        DrawRectangle(dc, colour, r.x, r.y, r.width, r.height);
     }
 
     wxRect GetRect(Document *doc, const Selection &sel, bool minimal = false) {
