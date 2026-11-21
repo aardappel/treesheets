@@ -96,6 +96,7 @@ struct Document {
     // document coordinates, or empty. A rect rather than `hover`, as that may point into a grid
     // that has been deleted since.
     wxRect hovershade;
+    wxRect hoverline;  // Likewise, the dashed line through the grid of a hovered border.
     Selection selected;
     Selection begindrag;
     // The multi-cell selection that a ctrl(+shift)+click inside it changed, which the double-click
@@ -429,13 +430,15 @@ struct Document {
         hovercheck = prevcheck;
         if (!highlight) { return; }
         wxRect shade;
+        wxRect line;
         if (sys->hovershadow && hover.grid != nullptr) {
             // Between cells or at the grid's edge, the border there, a bit wider to be seen. On
             // cells, their borders too, so there's no unshaded line between them and the cells.
             shade = hover.Thin() ? hover.grid->InsertRect(this, hover).Inflate(1)
                                  : hover.grid->GetRect(this, hover).Inflate(g_line_width);
+            if (hover.Thin()) { line = hover.grid->InsertLine(this, hover); }
         }
-        SetHoverShade(shade);
+        SetHoverShade(shade, line);
         SetHighlight(hoverfoldicon, foldicon);
         SetHighlight(hovercheck, check);
         SetHoverNote(note);
@@ -466,7 +469,10 @@ struct Document {
         area = r;
     }
 
-    void SetHoverShade(const wxRect &shade) { SetHighlight(hovershade, shade); }
+    void SetHoverShade(const wxRect &shade, const wxRect &line = wxRect()) {
+        SetHighlight(hovershade, shade);
+        SetHighlight(hoverline, line);
+    }
 
     // Highlights the note triangle at r, of the hovered cell, and shows its note as tooltip.
     void SetHoverNote(const wxRect &r) {
@@ -1655,6 +1661,7 @@ struct Document {
             const wxColour base(LightColor(sys->hovershadowcolor));
             DrawShade(dc, hovershade, wxColour(base.Red(), base.Green(), base.Blue(), 56));
         }
+        if (!hoverline.IsEmpty()) { Grid::DrawInsertLine(this, dc, hoverline); }
         const auto base = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
         const wxColour highlight(base.Red(), base.Green(), base.Blue(), 96);
         if (!hoverfoldicon.IsEmpty()) { DrawShade(dc, hoverfoldicon, highlight); }

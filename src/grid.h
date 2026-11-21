@@ -528,18 +528,30 @@ struct Grid {
         return {c->GetX(doc), y - 1, c->sx, g_line_width + 2};
     }
 
-    template<typename DC> void DrawInsert(Document *doc, DC &dc, Selection &sel, uint colour) {
-        dc.SetPen(sys->pen_thinselect);
+    // The line through the whole grid there.
+    wxRect InsertLine(Document *doc, const Selection &sel) {
         auto r = InsertRect(doc, sel);
-        loop(line, g_line_width) {
-            if (sel.xs == 0) {
-                dc.DrawLine(r.x + 1 + line, max(cell->GetY(doc), doc->scrolly), r.x + 1 + line,
-                            min(cell->GetY(doc) + cell->sy, doc->maxy));
-            } else {
-                dc.DrawLine(max(cell->GetX(doc), doc->scrollx), r.y + 1 + line,
-                            min(cell->GetX(doc) + cell->sx, doc->maxx), r.y + 1 + line);
-            }
+        return sel.xs == 0 ? wxRect(r.x + 1, cell->GetY(doc), g_line_width, cell->sy)
+                           : wxRect(cell->GetX(doc), r.y + 1, cell->sx, g_line_width);
+    }
+
+    // Draws it dashed, only where it's in view, as it may run far beyond it.
+    template<typename DC> static void DrawInsertLine(Document *doc, DC &dc, const wxRect &r) {
+        dc.SetPen(sys->pen_thinselect);
+        if (r.height > r.width) {
+            loop(line, r.width)
+                dc.DrawLine(r.x + line, max(r.y, doc->scrolly), r.x + line,
+                            min(r.y + r.height, doc->maxy));
+        } else {
+            loop(line, r.height)
+                dc.DrawLine(max(r.x, doc->scrollx), r.y + line, min(r.x + r.width, doc->maxx),
+                            r.y + line);
         }
+    }
+
+    template<typename DC> void DrawInsert(Document *doc, DC &dc, Selection &sel, uint colour) {
+        DrawInsertLine(doc, dc, InsertLine(doc, sel));
+        auto r = InsertRect(doc, sel);
         DrawRectangle(dc, colour, r.x, r.y, r.width, r.height);
     }
 
