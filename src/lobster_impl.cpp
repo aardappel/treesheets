@@ -183,8 +183,9 @@ BUILTIN(set_formula, "formula", "S", "",
     "grids they use, e.g. \"=SUM(SUBSET(SUBSET(Sales, 1, 0), 2-, -))\". A formula can also result "
     "in text: a name or SUBSET() without a number is its one text, & joins text and 'text' is "
     "literal, e.g. \"=Root & '/docs/report.pdf'\", with LEN(text), LEFT(text, count), "
-    "RIGHT(text, count), MID(text, start, count) from 1, UPPER(text), LOWER(text), TRIM(text) and "
-    "SUBSTITUTE(text, old, new). an empty formula makes it data again, as does set_text().")
+    "RIGHT(text, count), MID(text, start, count) from 1, UPPER(text), LOWER(text), TRIM(text), "
+    "SUBSTITUTE(text, old, new) and TITLE(), the text of the cell whose grid the formula is in. "
+    "an empty formula makes it data again, as does set_text().")
 (VM &, LString *s) {
     si->SetFormula(s->strv());
 }

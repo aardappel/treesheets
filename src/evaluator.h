@@ -479,7 +479,7 @@ struct FormulaEvaluator {
         for (auto &[n, args] : TextFunctions()) {
             if (wxString(n).StartsWith(upper)) { res.Add(s.Left(start) + n + "("); }
         }
-        for (auto f : {L"SUBSET(", L"TREESUBSET("}) {
+        for (auto f : {L"SUBSET(", L"TREESUBSET(", L"TITLE()"}) {
             if (wxString(f).StartsWith(upper)) { res.Add(s.Left(start) + f); }
         }
         for (auto &n : names) {
@@ -650,6 +650,13 @@ struct FormulaEvaluator {
             if (!Eat('(')) { return One(fe.Collect(self, function, contents, false), contents); }
             function.MakeUpper();
             if (IsSubset(function)) { return One(Subset(contents, false, function), contents); }
+            // The text of the cell whose grid the formula is in.
+            if (function == L"TITLE") {
+                if (!Eat(')')) { return Fail(L"#ERROR!"); }
+                auto *title = self->parent;
+                if (auto e = fe.Update(title); !e.IsEmpty()) { return Fail(e); }
+                return title->text.t;
+            }
             if (auto args = TextFunctionArgs(function)) { return TextFunction(function, args); }
             wxString rest;
             auto tree = function.StartsWith(L"TREE", &rest);
