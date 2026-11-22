@@ -52,6 +52,9 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.select_range</b>(position<font color="#666666">: int2</font>, size<font color="#666666">: int2</font>)</tt></td><td class="a">selects the cells denoted by position/size in the grid of the current cell (see selection()), unfolding, zooming and scrolling to show them once the script is done. it is a runtime error if the current cell has no sub-grid, or the cells are not all inside it.</td>
 
 </tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.sort_selection</b>(descending<font color="#666666">: bool</font> = false)</tt></td><td class="a">sorts the rows of the selection (see select_range()) by their text, like Sort Ascending / Descending: on its first column, then on the columns after it, ignoring case. whole rows move, with their sub-grids. it is a runtime error unless the selection has cells in at least two rows, or is a single column.</td>
+
+</tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_text</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the text of the current cell.</td>
 
 </tr>

@@ -30,6 +30,7 @@ struct ScriptInterface {
     virtual void GoToColumnRow(int x, int y) = 0;
     virtual void SelectCurrent() = 0;
     virtual void SelectRange(int x, int y, int xs, int ys) = 0;
+    virtual bool SortSelection(bool descending) = 0;
     virtual std::string GetText() = 0;
     virtual std::string GetNote() = 0;
     // The formula of a formula cell, whose text is its result, or empty for other cells.

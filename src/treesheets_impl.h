@@ -23,27 +23,29 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
         textundocell = nullptr;
     }
 
-    void AddUndoIfNecessary() {
+    // Saves undo for changes to cell c (by default the current one) and its subtree.
+    void AddUndoIfNecessary(Cell *c = nullptr) {
+        if (c == nullptr) { c = current; }
         changed = true;
         if (lowestcommonancestor == nullptr) {
-            UpdateLowestCommonAncestor(textundocell == nullptr);
+            UpdateLowestCommonAncestor(c, textundocell == nullptr);
         } else {
-            for (auto *p = current; p != nullptr; p = p->parent) {
+            for (auto *p = c; p != nullptr; p = p->parent) {
                 if (p == lowestcommonancestor) {
-                    // There is no need to add current to the undo stack as
-                    // lowestcommonancestor including subordinated current
+                    // There is no need to add c to the undo stack as
+                    // lowestcommonancestor including subordinated c
                     // is already in there.
                     return;
                 }
             }
-            UpdateLowestCommonAncestor(false);
+            UpdateLowestCommonAncestor(c, false);
         }
     }
 
-    void UpdateLowestCommonAncestor(bool newgeneration) {
+    void UpdateLowestCommonAncestor(Cell *c, bool newgeneration) {
         // Use parent as lowestcommonancestor so changes to siblings are already covered.
         // The root has no parent, so there it is its own undo scope.
-        lowestcommonancestor = current->parent != nullptr ? current->parent : current;
+        lowestcommonancestor = c->parent != nullptr ? c->parent : c;
         document->AddUndo(lowestcommonancestor, newgeneration);
     }
 
@@ -241,6 +243,18 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
     void SelectRange(int x, int y, int xs, int ys) override {
         document->SetSelect(Selection(current->grid, x, y, xs, ys));
         selecteddoc = document;
+    }
+
+    // Like Sort Ascending/Descending: needs cells in at least two rows or a 1xN selection.
+    bool SortSelection(bool descending) override {
+        auto &s = document->selected;
+        if (!s.grid || !ContainsGrid(document->root.get(), s.grid.get()) ||
+            (s.xs != 1 && s.ys <= 1)) {
+            return false;
+        }
+        AddUndoIfNecessary(s.grid->cell);
+        s.grid->Sort(s, descending);
+        return true;
     }
 
     static bool ContainsGrid(Cell *c, const Grid *g) {

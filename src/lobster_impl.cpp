@@ -153,6 +153,17 @@ BUILTIN(select_range, "position,size", "I}:2I}:2", "",
     si->SelectRange(p.x, p.y, s.x, s.y);
 }
 
+BUILTIN(sort_selection, "descending", "B?", "",
+    "sorts the rows of the selection (see select_range()) by their text, like Sort Ascending / "
+    "Descending: on its first column, then on the columns after it, ignoring case. whole rows "
+    "move, with their sub-grids. it is a runtime error unless the selection has cells in at "
+    "least two rows, or is a single column.")
+(VM &vm, iint descending) {
+    if (!si->SortSelection(descending != 0)) {
+        vm.BuiltinError("ts.sort_selection: select cells in at least two rows, or one column");
+    }
+}
+
 BUILTIN(get_text, "", "", "S", "gets the text of the current cell.")
 (VM &vm) {
     return vm.NewString(si->GetText());
