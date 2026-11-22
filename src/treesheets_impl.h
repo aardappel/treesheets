@@ -481,6 +481,14 @@ struct TreeSheetsScriptImpl : public ScriptInterface {
 
     std::string GetFileName() override { return document->filename.utf8_string(); }
 
+    std::vector<std::string> GetOpenFileNames() override {
+        std::vector<std::string> filenames;
+        if (auto notebook = sys->frame->notebook)
+            loop(i, notebook->GetPageCount()) filenames.push_back(
+                dynamic_cast<TSCanvas *>(notebook->GetPage(i))->doc->filename.utf8_string());
+        return filenames;
+    }
+
     int64_t GetLastEdit() override { return current->text.lastedit.GetValue().GetValue(); }
 
     bool IsTag() override { return current->IsTag(document); }

@@ -438,10 +438,21 @@ BUILTIN(get_filename, "", "", "S", "gets the current documents file name")
     return vm.NewString(si->GetFileName());
 }
 
+BUILTIN(get_open_filenames, "", "", "S]",
+    "gets the file names of all open documents, in tab order (an empty string for a document "
+    "that was never saved). switch to one with load_document")
+(VM &vm) {
+    auto v = (LVector *)vm.NewVec(0, 0, TYPE_ELEM_VECTOR_OF_STRING);
+    for (auto &filename : si->GetOpenFileNames()) v->Push(vm, vm.NewString(filename));
+    return v;
+}
+
 BUILTIN(load_document, "filename,password", "SS?", "B",
-    "loads a document, and makes it the active one. an encrypted document is decrypted with "
-    "password if given (a wrong one fails without asking), otherwise a dialog asks for it. "
-    "returns false if failed.")
+    "loads a document, and makes it the active one. if it is already open (the same file, "
+    "even by another path), switches to its tab instead, without reloading it, so unsaved "
+    "changes are kept. to return, call it again with the get_filename from before. an "
+    "encrypted document is decrypted with password if given (a wrong one fails without "
+    "asking), otherwise a dialog asks for it. returns false if failed.")
 (VM &, LString *filename, LString *password) {
     return (iint)si->LoadDocument(filename->data(), password ? password->data() : nullptr);
 }

@@ -299,6 +299,16 @@ Other things worth knowing regardless of how you looked up the API:
   a fully-emptied column/row also removes it, so this restores the original
   shape exactly. Or use `ts.new_document(cols, rows)` to open a fresh,
   unsaved tab instead of touching whatever's already open.
+- **Reading or writing another open document** (e.g. reading a list from one
+  file into a planner in another): `ts.get_open_filenames()` lists the open
+  tabs' paths (`""` for a never-saved one). `ts.load_document(path, "")` on a
+  file that is already open switches to its tab instead of loading it again,
+  so its unsaved changes are kept; any path to the same file works (relative,
+  `..`, symlinks). Switch back the same way within the same `eval`:
+  `let home = ts.get_filename()`, `ts.load_document(other, "")`, read,
+  `ts.load_document(home, "")`, write. The tab really changes in the UI, and
+  stays changed if the script fails in between. Builds before this change
+  matched only the identical path string; any other path loaded a second copy.
 - **To test this skill itself (launching/killing instances, exercising quit
   behavior, etc.) without any risk to real documents**, launch with an
   isolated, throwaway `$HOME`/`$XDG_CONFIG_HOME` instead of relying on

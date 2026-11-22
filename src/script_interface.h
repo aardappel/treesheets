@@ -74,6 +74,7 @@ struct ScriptInterface {
     virtual void SetWindowSize(int width, int height) = 0;
     virtual std::string GetFileNameFromUser(bool is_save) = 0;
     virtual std::string GetFileName() = 0;
+    virtual std::vector<std::string> GetOpenFileNames() = 0;
     virtual int64_t GetLastEdit() = 0;
     virtual bool IsTag() = 0;
     virtual bool HasImage() = 0;

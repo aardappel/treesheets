@@ -2298,7 +2298,8 @@ struct TSFrame : wxFrame {
         if (notebook != nullptr) {
             loop(i, notebook->GetPageCount()) {
                 auto *canvas = dynamic_cast<TSCanvas *>(notebook->GetPage(i));
-                if (canvas->doc->filename == filename) {
+                if (!canvas->doc->filename.IsEmpty() &&
+                    wxFileName(canvas->doc->filename).SameAs(filename)) {
                     notebook->SetSelection(i);
                     return canvas;
                 }

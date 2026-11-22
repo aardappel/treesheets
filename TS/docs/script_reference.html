@@ -160,7 +160,10 @@
 <tr class="a" valign=top><td class="a"><tt><b>ts.get_filename</b>() -> <font color="#666666">string</font></tt></td><td class="a">gets the current documents file name</td>
 
 </tr>
-<tr class="a" valign=top><td class="a"><tt><b>ts.load_document</b>(filename<font color="#666666">: string</font>, password<font color="#666666">: string</font> = nil) -> <font color="#666666">int</font></tt></td><td class="a">loads a document, and makes it the active one. an encrypted document is decrypted with password if given (a wrong one fails without asking), otherwise a dialog asks for it. returns false if failed.</td>
+<tr class="a" valign=top><td class="a"><tt><b>ts.get_open_filenames</b>() -> <font color="#666666">[string]</font></tt></td><td class="a">gets the file names of all open documents, in tab order (an empty string for a document that was never saved). switch to one with load_document</td>
+
+</tr>
+<tr class="a" valign=top><td class="a"><tt><b>ts.load_document</b>(filename<font color="#666666">: string</font>, password<font color="#666666">: string</font> = nil) -> <font color="#666666">int</font></tt></td><td class="a">loads a document, and makes it the active one. if it is already open (the same file, even by another path), switches to its tab instead, without reloading it, so unsaved changes are kept. to return, call it again with the get_filename from before. an encrypted document is decrypted with password if given (a wrong one fails without asking), otherwise a dialog asks for it. returns false if failed.</td>
 
 </tr>
 <tr class="a" valign=top><td class="a"><tt><b>ts.new_document</b>(cols<font color="#666666">: int</font>, rows<font color="#666666">: int</font>)</tt></td><td class="a">opens a new, unsaved document in a new tab with a root grid of the given size, and makes it the active one. cols and rows must be at least 1, and cols * rows at most 65536, or this is a runtime error.</td>
