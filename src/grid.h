@@ -942,12 +942,14 @@ struct Grid {
         if (sel.x + xs > p->xs) { p->InsertCells(p->xs, -1, sel.x + xs - p->xs, 0); }
         if (sel.y + ys > p->ys) { p->InsertCells(-1, p->ys, 0, sel.y + ys - p->ys); }
         // Columns that are empty (such as those of a new grid, or inserted above) take the pasted
-        // width, others keep the wider of their own and the pasted width.
+        // width, others keep the wider of their own and the pasted width. The cells already in a
+        // column that gets wider then wrap their text anew.
         loop(x, xs) {
             auto &width = p->colwidths[sel.x + x];
             bool empty = true;
             loop(y, p->ys) empty = empty && isempty(p->C(sel.x + x, y).get());
-            width = empty ? colwidths[x] : std::max(width, colwidths[x]);
+            auto old = std::exchange(width, empty ? colwidths[x] : std::max(width, colwidths[x]));
+            if (width != old) { p->ResetResized(Selection(p, sel.x + x, 0, 1, p->ys), false); }
         }
         foreachcell(c) {
             int tx = x + sel.x;
