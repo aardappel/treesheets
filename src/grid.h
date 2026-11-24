@@ -812,7 +812,8 @@ struct Grid {
 
         Formatter(r, format, indent, xmlstr,
                   wxString::Format(
-                      "<table style=\"border: %dpt solid #%06X; font-size: %dpt;\">\n",
+                      "<table style=\"border: %dpt solid #%06X; border-collapse: collapse; "
+                      "font-size: %dpt;\">\n",
                       grid_border_width, SwapColor(bordercolor), font_size),
                   wxString::Format("<ul style=\"font-size: %dpt;\">\n", font_size));
         vector<bool> tinycols(sel.xs, flat), tinyrows(sel.ys, flat);

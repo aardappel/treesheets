@@ -380,7 +380,8 @@ struct Cell {
             str.Append("</cell>\n");
         } else if ((format == A_EXPHTMLT || format == A_EXPHTMLTI || format == A_EXPHTMLTE) &&
                    this != root) {
-            wxString style;
+            wxString style =
+                wxString::Format("border: 1px solid #%06X;", SwapColor(parent->grid->bordercolor));
             if (!inheritstyle || parent == nullptr ||
                 (text.stylebits & STYLE_BOLD) != (parent->text.stylebits & STYLE_BOLD)) {
                 style += (text.stylebits & STYLE_BOLD) != 0 ? "font-weight: bold;"
@@ -427,8 +428,7 @@ struct Cell {
             if (!inheritstyle || exporttextcolor != parenttextcolor) {
                 style += wxString::Format("color: #%06X;", SwapColor(exporttextcolor));
             }
-            str.Prepend(style.IsEmpty() ? wxString("<td>")
-                                        : wxString("<td style=\"") + style + wxString("\">"));
+            str.Prepend("<td style=\"" + style + "\">");
             str.Append(' ', indent);
             str.Append("</td>\n");
         } else if (format == A_EXPHTMLB && (!text.t.IsEmpty() || grid) && this != root) {
