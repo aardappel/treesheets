@@ -811,8 +811,9 @@ struct Grid {
         xmlstr.Append(">\n");
 
         Formatter(r, format, indent, xmlstr,
-                  wxString::Format("<table style=\"border-width: %dpt; font-size: %dpt;\">\n",
-                                   grid_border_width, font_size),
+                  wxString::Format(
+                      "<table style=\"border: %dpt solid #%06X; font-size: %dpt;\">\n",
+                      grid_border_width, SwapColor(bordercolor), font_size),
                   wxString::Format("<ul style=\"font-size: %dpt;\">\n", font_size));
         vector<bool> tinycols(sel.xs, flat), tinyrows(sel.ys, flat);
         if (flat) {
