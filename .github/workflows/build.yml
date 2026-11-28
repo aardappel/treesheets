@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      build: ${{ steps.version.outputs.build }}
       notes: ${{ steps.version.outputs.notes }}
     steps:
     - uses: actions/checkout@v7
@@ -28,11 +29,19 @@ jobs:
       run: |
         last=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
         if [ "$GITHUB_REF_TYPE" != tag ]; then
-          # Builds that are not released keep the last version
+          # Builds that are not released keep the last version. Commits pushed together with a
+          # release marker are built by the run of the marker only.
           last=${last:-v0.0.0}
           echo "version=${last#v}" >> "$GITHUB_OUTPUT"
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ -n "$(git tag -l 'release-*' --points-at HEAD)" ]; then
+            echo "Release marker on $GITHUB_SHA, its run builds the release"
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          fi
           exit 0
         fi
+        echo "build=true" >> "$GITHUB_OUTPUT"
         if ! git merge-base --is-ancestor HEAD origin/master; then
           echo "::error::$GITHUB_REF_NAME must point to a commit on master"
           exit 1
@@ -66,6 +75,7 @@ jobs:
   build-linux:
     name: Build Linux (${{ matrix.arch }})
     needs: version
+    if: needs.version.outputs.build == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -146,6 +156,7 @@ jobs:
   build-windows:
     name: Build Windows (${{ matrix.arch }})
     needs: version
+    if: needs.version.outputs.build == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -202,6 +213,7 @@ jobs:
   build-mac:
     name: Build Mac
     needs: version
+    if: needs.version.outputs.build == 'true'
     runs-on: macos-latest
     env:
       minmac: 10.15

@@ -180,9 +180,13 @@ binary, so rebuild after `update-mo`.
 - Upstream is `aardappel/treesheets`, whose default and CI branch is `master`. Every push to
   `master` builds all platforms, but only a release marker tag publishes a release:
   `git push upstream <commit>:refs/tags/release-bugfix` (or `release-minor`, `release-major`).
-  This pushes the tag without creating it locally, so the marker can be reused.
+  This pushes the tag without creating it locally, so the marker can be reused. To release new
+  commits, push them with the marker in one push (`git push upstream master
+  HEAD:refs/tags/release-bugfix`). The `master` run then skips its builds and only the run of the
+  marker builds.
 - The `version` job in `build.yml` bumps the newest `vX.Y.Z` tag (2.3.6 becomes 2.3.7, 2.4.0 or
-  3.0.0), and all builds use that version. The release is tagged `vX.Y.Z` on the marked commit
+  3.0.0), and all builds use that version. The release is made only when all Linux, Windows and
+  macOS builds succeed. It is tagged `vX.Y.Z` on the marked commit
   (which must be on `master`) and becomes the latest release. Its notes list the commits since the
   last release of the same level: any `v*` for bugfix, `v*.*.0` for minor, `v*.0.0` for major.
   Then the marker is deleted. If the run fails, fix it and re-push the marker with `-f`.
