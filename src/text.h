@@ -73,7 +73,7 @@ struct Text {
     wxBitmap *DisplayImage() const {
         if (cell->grid && cell->grid->folded) {
             auto *tab = sys->frame->GetCurrentTab();
-            if (!tab) { return &sys->frame->foldicon; }
+            if (!tab) { return sys->frame->GetFoldIcon(g_deftextsize); }
             auto *doc = tab->doc.get();
             return sys->frame->GetFoldIcon(
                 doc->TextSize(cell->Depth() - doc->drawpath.size(), relsize));

@@ -74,8 +74,8 @@ struct TSFrame : wxFrame {
     wxAuiManager aui {this};
     wxBitmap line_nw;
     wxBitmap line_sw;
-    wxBitmap foldicon;
-    map<int, wxBitmap> foldicons;  // scaled variants, keyed by text size
+    wxBitmapBundle foldsvg;
+    map<int, wxBitmap> foldicons;  // rendered from foldsvg, keyed by text size
     bool fromclosebox {true};
     bool globalkeyregistered {false};
     bool watcherwaitingforuser {false};
@@ -138,7 +138,7 @@ struct TSFrame : wxFrame {
         icons.AddIcon(iconbig);
         SetIcons(icons);
 
-        RenderFolderIcon();
+        foldsvg = LoadEmbeddedSVG("render/fold.svg", wxSize(16, 16));
         line_nw = LoadEmbeddedBitmap("render/line_nw.png");
         line_sw = LoadEmbeddedBitmap("render/line_sw.png");
 
@@ -2221,7 +2221,7 @@ struct TSFrame : wxFrame {
         wxEventBlocker blocker(this);
         wxBusyCursor wait;
         for (const auto &image : sys->imagelist) image->ClearBitmap();
-        RenderFolderIcon();
+        foldicons.clear();
         // Re-layout after child windows have received their new DPI as well.
         CallAfter([this]() {
             RefitToolbars();
@@ -2344,20 +2344,16 @@ struct TSFrame : wxFrame {
         if (TSCanvas *canvas = GetCurrentTab()) { canvas->SetFocus(); }
     }
 
-    void RenderFolderIcon() {
-        foldicon = LoadEmbeddedBitmap("nuvola/fold.png");
-        ScaleBitmap(foldicon, FromDIP(1.0) / 3.0, foldicon);
-        foldicons.clear();
-    }
-
-    // Fold icon scaled relative to the default text size, so it matches the displayed text.
+    // The fold icon sized relative to the default text size, so it matches the displayed text,
+    // and rendered at the pixels of the display.
     wxBitmap *GetFoldIcon(int textsize) {
-        if (textsize == g_deftextsize || !foldicon.IsOk()) { return &foldicon; }
         auto it = foldicons.find(textsize);
         if (it == foldicons.end()) {
-            wxBitmap scaled;
-            ScaleBitmap(foldicon, static_cast<double>(textsize) / g_deftextsize, scaled);
-            it = foldicons.emplace(textsize, scaled).first;
+            const auto f = GetContentScaleFactor();  // 1 on wxMSW, where FromDIP() scales
+            const auto s = max(1, wxRound(FromDIP(16) * f * textsize / g_deftextsize));
+            auto bm = foldsvg.GetBitmap(wxSize(s, s));
+            if (bm.IsOk()) { bm.SetScaleFactor(f); }
+            it = foldicons.emplace(textsize, bm).first;
         }
         return &it->second;
     }
